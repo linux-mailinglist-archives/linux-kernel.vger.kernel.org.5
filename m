@@ -2,210 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED93278E5C9
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A2F78E5CC
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:37:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346048AbjHaFea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 01:34:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34026 "EHLO
+        id S232138AbjHaFhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 01:37:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242227AbjHaFe1 (ORCPT
+        with ESMTP id S230144AbjHaFhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 01:34:27 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7B74EA;
-        Wed, 30 Aug 2023 22:34:23 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id 41be03b00d2f7-565e54cb93aso312003a12.3;
-        Wed, 30 Aug 2023 22:34:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693460063; x=1694064863; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Jp1GatRvSx1j5dMXHLzSPK88pnwTUhV9wWIcAF5NJs=;
-        b=BSq81ss4oikaIzKkdNUgQkdOO6pEdYkvnhk+pmuEaCARv7QQuxtc13UqPjFL5sVe/w
-         4JwrCQqKfYffMqKxWWSvna4fk60W6/vq4xApj3TBXh1XjEKfkLvaBXo8f/LF849y3M9o
-         4l++O50vFVYazCieD4jARdnjQgqg8Q7liS8STaBgbJ2Zhh3f5QwQGeRZIirLK4BE/RHU
-         72mvkKYIJ4lP+Om+cbNpYzBT5rtGwDtUFt5x2DN1XmQT3Vcn+/DSdLGxKsPzWJSUhqmC
-         tp5ViLcm/w7OuRb54vjPtwvuN7KB5F9F01Hgyci84kiNznab6b0rfP2IjjrAcSbbB/w2
-         RiJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693460063; x=1694064863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3Jp1GatRvSx1j5dMXHLzSPK88pnwTUhV9wWIcAF5NJs=;
-        b=dzMZrmoG3dXIWRLRNd3xb+QgWqeSpwdy21XMOrvg7As1wTzhQnNi7vYq0C3qyaRrFV
-         psIs4CzNqS8jMuCaERFkZ8qs2yhBeZ+ZlBBx0X0hy8PPw/fhXwCGyp8gHGfBcrCLpL1u
-         v9xxnSpSruHuEtd/hdvyHfrH3xt0ss82r+c+cgYeVasSiPzl2BGXtp5gHHVERXIrDD9r
-         QbLdpldp0brFgqbuGw7TjsSQAHUXkNPCfEbVuSpGqYXkYsmWcUzD0InFFGd1jhTT6Epf
-         u0XBVDBSAl7Kp/A8ty9L61hjhQbLlm4p6ocOSrCCy0HRxyLLu9IxJ+f7kAAUpOa7FPEu
-         LRGA==
-X-Gm-Message-State: AOJu0YwJo15+Vp0H91STvp4nfyL7vBK0PLJAKLABeC+ErmjRy+nBsykG
-        mGQFUS7CbJ+1AFksHwBlPNEe+21rbUnm398kbNVDqiWB3GhBmQ==
-X-Google-Smtp-Source: AGHT+IF5wB3svjQf9nWw60DSNQ0IWUqWE6f7PiNfpAcagID37P3DVcd8CpPKm/KleKdno9fUA3gs2cMg82M34w4E25o=
-X-Received: by 2002:a05:6a20:3956:b0:14e:62cd:1370 with SMTP id
- r22-20020a056a20395600b0014e62cd1370mr5066919pzg.14.1693460063192; Wed, 30
- Aug 2023 22:34:23 -0700 (PDT)
+        Thu, 31 Aug 2023 01:37:11 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC73E0;
+        Wed, 30 Aug 2023 22:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1693460224;
+        bh=mcJI19k1bYWrsUV5RrSLseHCYsvRJp714W7vtEfnAuM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=KHPrudNz58s2FxY40QbiANhLtETTg3IVisYvwKTSN3A26Y7DWbl7e4lQXj9sr3w+S
+         7r9x5m0OqvSIZJasmu4WwN1APOTQQUDfNXAS/8ut0mhRQk8X3dFyMuWQBUEICNyZhA
+         2xFpt1sliwhFxJUz5n9BWh9VmOG2qaaAjzqmOWPAz8S+ISKGzSnJsygTu+KqNCdR9K
+         W5COGeoRbzYAhMFM3iDi2s4bsnkzchbtmkAu0AK7m/fkYxTycrJ7A5iJ5QQUy7CJMv
+         UYT9pqgcvX2x2jYCA/h2j5VFzlDteL3enwyq6MzBHrgcke4o2q5kusK1UtTHxW6uGk
+         ikdmejXy4VZgw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rbqfl3jrDz4wy0;
+        Thu, 31 Aug 2023 15:37:03 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Andreas Schwab <schwab@linux-m68k.org>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+In-Reply-To: <87bkeotin8.fsf@igel.home>
+References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
+ <20230819004356.1454718-2-Liam.Howlett@oracle.com>
+ <87bkeotin8.fsf@igel.home>
+Date:   Thu, 31 Aug 2023 15:37:02 +1000
+Message-ID: <87y1hr22o1.fsf@mail.lhotse>
 MIME-Version: 1.0
-References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
- <ZOxkt/6EkQIy+Jkt@alpha.franken.de> <ZO4Mdr9/XUkXDK9j@alpha.franken.de>
- <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com> <alpine.DEB.2.21.2308301619300.43104@angie.orcam.me.uk>
-In-Reply-To: <alpine.DEB.2.21.2308301619300.43104@angie.orcam.me.uk>
-From:   YunQiang Su <wzssyqa@gmail.com>
-Date:   Thu, 31 Aug 2023 13:34:11 +0800
-Message-ID: <CAKcpw6X2wenGkROshareJjdT05xDTvgiJQDxvH03nTicD9X29Q@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Modify die() for MIPS
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maciej W. Rozycki <macro@orcam.me.uk> =E4=BA=8E2023=E5=B9=B48=E6=9C=8831=E6=
-=97=A5=E5=91=A8=E5=9B=9B 02:56=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Wed, 30 Aug 2023, Huacai Chen wrote:
->
-> > > > series applied to mips-next.
-> > >
-> > > I've dropped the series again after feedback from Maciej, that this
-> > > still needs more changes.
-> > I feel a little surprised. This series has appeared for more than ten
-> > days and received some R-b, and we haven't seen any objections from
-> > Maciej. If there are really some bugs that need to be fixed, I think
-> > the normal operation is making additional patches...
->
->  You haven't received any ack from me either, and I stopped reviewing the
-> series as it was taking too much of my time and mental effort and yet
-> changes were going in the wrong direction.  Silence never means an ack.
->
+Andreas Schwab <schwab@linux-m68k.org> writes:
+> This breaks booting on ppc32:
 
-In my opinion, the position of `reviewer` normally means more
-obligation instead of
-power.
-The world is always changing, I don't think that the world needs to
-wait for anybody.
+Does enabling CONFIG_DEBUG_ATOMIC_SLEEP fix the crash? It did for me on
+qemu.
 
-In the open source community, if a person has some position, if
-they/he/she has little
-time to play that position well, he should do something, for example, seek =
-help
-or transfer the position to somebody who can work well.
+cheers
 
->  It's up to the submitter to get things right and not to expect from the
-> reviewer to get issues pointed at by finger one by one, effectively
-> demanding someone else's effort to get their own objectives complete even
-> with the most obvious things.
+> Kernel attemptd to writ user page (1ff0) - exploit attempt? (uid: 0)
+> BUG: Unable to handle kernel data access on write at 0x00001ff0
+> Faulting instruction address: 0xc0009554
+> Vector: 300 (Data Access) at [c0b09d10]
+>     pc: c0009554: do_softirq_own_stack+0x18/0x30
+>     lr: c004f480: __irq_exit_rcu+0x70/0xc0
+>     sp: c0b09dd0
+>    msr: 1032
+>    dar: 1ff0
+>  dsisr: 42000000
+>   current = 0xc0a08360
+>     pid   = 0, comm = swapper
+> Linux version 6.5.0 ...
+> enter ? for help
+> [c0b09de0] c00ff480 __irq_exit_rcu+0x70/0xc0
+> [c0b09df0] c0005a98 Decrementer_virt+0x108/0x10c
+> --- Exception: 900 (Decrementer) at c06cfa0c __schedule+0x4fc/0x510
+> [c0b09ec0] c06cf75c __schedule+0x1cc/0x510 (unreliable)
+> [c0b09ef0] c06cfc90 __cond_resched+0x2c/0x54
+> [c0b09f00] c06d07f8 mutex_lock_killable+0x18/0x5c
+> [c0b09f10] c013c404 pcpu_alloc+0x110/0x4dc
+> [c0b09f70] c000cc34 alloc_descr.isra.18+0x48/0x144
+> [c0b09f90] c0988aa0 early_irq_init+0x64/0x8c
+> [c0b09fa0] c097a5a4 start_kernel+0x5b4/0x7b0
+> [c0b09ff0] 00003dc0
+> mon>
 >
->  And then for a hypothetical case only that the submitter is not able to
-> verify.  For such cases the usual approach is to do nothing until an
-> actual real case is found.
->
-
-I think that it depends. If the patch can solve a part of this problem, and
-won't leave some problem hard to solve in the future or serious
-security problems.
-I think that it is worth considering.
-
-Yes, I agree with a sentence from you "Nobody's perfect", and the same goes=
- for
-software, even Linux kernel.
-
-PS: I never read the code of this thread, it is just common sense, I guess.
-
->  Very simple such a change that one can verify to an acceptable degree
-> that it is correct by just proofreading might be accepted anyway, but it
-> cannot be guaranteed.
->
->  The missed NMI case only proved the submitter didn't do their homework
-> and didn't track down all the call sites as expected with such a change,
-> and instead relied on reviewer's vigilance.
->
->  As to the changes, specifically:
->
-> - 1/4 is bogus, the kernel must not BUG on user activities.  Most simply
->   die() should be told by the NMI caller that it must not return in this
->   case and then it should ignore the NOTIFY_STOP condition.
->
->   I realise we may not be able to just return from the NMI handler to the
->   location at CP0.ErrorEPC and continue, because owing to the privileged
->   ISA design we won't be able to make such an NMI handler reentrant, let
->   alone SMP-safe.  But it should have been given in the change descriptio=
-n
->   as rationale for not handling the NOTIFY_STOP condition for the NMI.
->
->   I leave it as an exercise to the reader to figure out why a returning
->   NMI handler cannot be made reentrant.
->
-> - 2/4 should be a one-liner to handle the NOTIFY_STOP condition just as
->   with the x86 port, which I already (!) communicated, and which was (!!!=
-)
->   ignored.  There is no need to rewrite the rest of die() and make it mor=
-e
->   complex too just because it can be done.
->
-> - 3/4 is not needed if 2/4 was done properly.  And as it stands it should
->   have been folded into 2/4, because fixes to an own pending submission
->   mustn't be made with a separate patch: the original change has to be
->   corrected instead.
->
-> - 4/4 is OK (and I believe the only one that actually got a Reviewed-by:
->   tag).
->
-> Most of these issues would have been avoided if the submitter made
-> themselves familiar with Documentation/process/submitting-patches.rst and
-> followed the rules specified there.
->
->  Otherwise this takes valuable reviewer resources that would best be used
-> elsewhere and it puts submitters of quality changes at a disadvantage,
-> which is not fair.
->
->  It is not our policy to accept known-broken changes and then fix them up
-> afterwards.  Changes are expected to be technically sound to the best of
-> everyone's involved knowledge and it's up to the submitter to prove that
-> it is the case and that a change is worth including.  You would have
-> learnt it from the document referred.  Nobody's perfect and issues may
-> slip through, but we need to make every effort so as to avoid it.
->
->  Mind that we're doing reviews as volunteers entirely in our free time we
-> might instead want to spend with friends or in another enjoyable way.  It
-> is not my day job to review random MIPS/Linux patches posted to a mailing
-> list.  Even composing this reply took a considerable amount of time and
-> effort, which would best be spent elsewhere, because I am talking obvious
-> things here and repeating Documentation/process/submitting-patches.rst
-> stuff.
->
-
-I have noticed that in the note of this series of patches:
-     v3:
-        -- Make each patch can be built without errors and warnings.
-
-I think that how to split the patches is a trade off, not a principle.
-For me, the reasons to split patches are:
-   1. Make the problem obviously.
-   2. Show the problem one by one, and it is easy to understand.
-   3. Make life easier for distributors.
-   4. And maybe more
-
-While if a splitting conflicts with these purposes, it will be another stor=
-y.
-
->   Maciej
-
-
-
---=20
-YunQiang Su
+> -- 
+> Andreas Schwab, schwab@linux-m68k.org
+> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
+> "And now for something completely different."
