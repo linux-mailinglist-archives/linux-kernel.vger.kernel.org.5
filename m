@@ -2,96 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B52878F0DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5810578F0E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346718AbjHaQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36804 "EHLO
+        id S245585AbjHaQGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346712AbjHaQF1 (ORCPT
+        with ESMTP id S230233AbjHaQGb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:05:27 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7CEA1E71;
-        Thu, 31 Aug 2023 09:05:22 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,217,1688396400"; 
-   d="scan'208";a="178328444"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 01 Sep 2023 01:05:21 +0900
-Received: from localhost.localdomain (unknown [10.226.92.179])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id A783E40189C0;
-        Fri,  1 Sep 2023 01:05:19 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 5/5] usb: typec: tcpci_rt1711h: Drop CONFIG_OF ifdeffery
-Date:   Thu, 31 Aug 2023 17:05:01 +0100
-Message-Id: <20230831160501.55081-6-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230831160501.55081-1-biju.das.jz@bp.renesas.com>
-References: <20230831160501.55081-1-biju.das.jz@bp.renesas.com>
+        Thu, 31 Aug 2023 12:06:31 -0400
+X-Greylist: delayed 64229 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Aug 2023 09:06:07 PDT
+Received: from bues.ch (bues.ch [IPv6:2a01:138:9005::1:4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0A610C7;
+        Thu, 31 Aug 2023 09:06:07 -0700 (PDT)
+Received: by bues.ch with esmtpsa (Exim 4.96)
+        (envelope-from <m@bues.ch>)
+        id 1qbkB5-000OJU-02;
+        Thu, 31 Aug 2023 18:05:49 +0200
+Date:   Thu, 31 Aug 2023 18:05:06 +0200
+From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
+To:     =?UTF-8?B?0KDQsNC90LQg0JTQtdC10LE=?= <deeb.rand@confident.ru>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org,
+        =?UTF-8?B?0JLQvtGB0LrRgNC10YHQtdC90YHQutC4?=
+         =?UTF-8?B?0Lkg0KHRgtCw0L3QuNGB0LvQsNCyINCY0LPQvtGA0LXQstC40Yc=?= 
+        <voskresenski.stanislav@confident.ru>
+Subject: Re: [PATCH] ssb-main: Fix division by zero in ssb_calc_clock_rate()
+Message-ID: <20230831180506.30466e8a@barney>
+In-Reply-To: <531722477.1139813.1693465653233.JavaMail.zimbra@confident.ru>
+References: <20230830082759.23336-1-deeb.rand@confident.ru>
+ <4c6d01bf-1a0f-27de-54e1-4afdcf4bc8d5@lwfinger.net>
+ <531722477.1139813.1693465653233.JavaMail.zimbra@confident.ru>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/Qokcis+UCMMyJEsFdt=sS0U";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop of_match_ptr() from rt1711h_of_match and get rid of ugly CONFIG_OF
-ifdeffery. This slightly increases the size of rt1711h_of_match on non-OF
-system and shouldn't be an issue.
+--Sig_/Qokcis+UCMMyJEsFdt=sS0U
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Add mod_devicetable.h include.
+On Thu, 31 Aug 2023 10:07:33 +0300 (MSK)
+=D0=A0=D0=B0=D0=BD=D0=B4 =D0=94=D0=B5=D0=B5=D0=B1 <deeb.rand@confident.ru> =
+wrote:
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-v2:
- * New patch
----
- drivers/usb/typec/tcpm/tcpci_rt1711h.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+> 1- Yes, I agree that your solution is simpler, and I thought about
+> it, but I thought that the one who set the value zero put it for some
+> reason, so I did not want to change it.
 
-diff --git a/drivers/usb/typec/tcpm/tcpci_rt1711h.c b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-index 5d2dc7ead9d0..67422d45eb54 100644
---- a/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-+++ b/drivers/usb/typec/tcpm/tcpci_rt1711h.c
-@@ -7,6 +7,7 @@
- 
- #include <linux/bits.h>
- #include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/module.h>
- #include <linux/i2c.h>
- #include <linux/interrupt.h>
-@@ -411,19 +412,17 @@ static const struct i2c_device_id rt1711h_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, rt1711h_id);
- 
--#ifdef CONFIG_OF
- static const struct of_device_id rt1711h_of_match[] = {
- 	{ .compatible = "richtek,rt1711h", .data = &rt1711h },
- 	{ .compatible = "richtek,rt1715", .data = &rt1715 },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, rt1711h_of_match);
--#endif
- 
- static struct i2c_driver rt1711h_i2c_driver = {
- 	.driver = {
- 		.name = "rt1711h",
--		.of_match_table = of_match_ptr(rt1711h_of_match),
-+		.of_match_table = rt1711h_of_match,
- 	},
- 	.probe = rt1711h_probe,
- 	.remove = rt1711h_remove,
--- 
-2.25.1
 
+Yes, I understand your reasoning and I had the same thought initially.
+But I looked into the code and I am pretty sure that there is no reason
+for the default case returning 0.
+In fact, I think returning a 1 as default makes much more sense as the
+default value for a factor.
+
+Changing this from 0 to 1 will get my ack.
+
+--=20
+Michael B=C3=BCsch
+https://bues.ch/
+
+--Sig_/Qokcis+UCMMyJEsFdt=sS0U
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmTwujIACgkQ9TK+HZCN
+iw4NlhAAtupYTu8Q6OEnSbcpPgBOAAR8EoCVWY2QwXo3SlYqT8XSnALguogkyIsy
+pNpmND8JYmoq62PrEJXdFERAaIi+nTjpjQi7TYiwC+R2Qn4HUeFUsEOmbBfz+vz6
++h3cKJTN8+2BICKjOIuUzTmcCQ0E/Pgj6kh+ZR3nc76hISuAKNGoEArecidAyoTd
+6d2n6Hqjg3FP8NPOu/v3NVrAS4NIeQXm5TLPMUBBXmBLQw95yjV7bNuVsoLI98R8
+beiEWRTwqCAg7wLSDP/67hZSTH37oRZgvMuuweywdjU3RMIlRgIfiOGhsSX/+Z3J
+Z5VgTcxu2TNib4TzgehvpJLahGepBT72TCktW8NnJ5tIwuedvAwXQWmMwxK5HgWs
+mQKSWhvSL6OQV799c3qh04uVAXU3wr55lUJ0iEARwDSdm/DP469Qfz0zHaRmvrWX
+SS3b5C4EBoBLhoT4VUbCLq9o9TxLIwTo/zidUh4LM2uaxJJRJWiUJaQAE4h6CjZC
+6hOb5zLMfruMmiSx1aDvedjIKAQyHN7GBVFZuTRcVyYnVt/f1Kjau90IqFEuHgE+
+45Nhh0X2WxcyIlxhPsXHWN8c670ryrNqV5s97YZpXFc45VwtRrhWP9+szNTtlo0X
+1XwOv0cZLFud7f+guOliHmImffOxnAvQrpCSiToAoGBOA2oXQf4=
+=PTT5
+-----END PGP SIGNATURE-----
+
+--Sig_/Qokcis+UCMMyJEsFdt=sS0U--
