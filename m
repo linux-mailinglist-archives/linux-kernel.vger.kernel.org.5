@@ -2,271 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA1A78F4B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:34:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A71C178F4B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:34:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241784AbjHaVei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 17:34:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
+        id S1347578AbjHaVfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 17:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjHaVeh (ORCPT
+        with ESMTP id S245419AbjHaVe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 17:34:37 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2971107;
-        Thu, 31 Aug 2023 14:34:34 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Thu, 31 Aug 2023 17:34:59 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581541BF;
+        Thu, 31 Aug 2023 14:34:55 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id DD6B4CE223C;
-        Thu, 31 Aug 2023 21:34:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AFB9C433CB;
-        Thu, 31 Aug 2023 21:34:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693517671;
-        bh=Pgd2Yocptj9793lIYLqngAmH9TmBoivbfYxnZc7PBrQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hiPGhd/3c0qNhHdmi69L4PA7g+37wO5CLgwhhcFP5vKqw1scF+yKPrkw1O8ZCIgxB
-         5mCv6ZQSCorvCihaDTfGlfkzApaMZjD0CgCbgyJkLlxL36XFFYfMi/vhpNFLUrqzKD
-         ZUjks1TgN+bvuuZ1ecy7bfJfx7iI8OCKlO0sMOUN+YljqGPJjpBWaSwL/68EVf54DN
-         5z2H/udtRhNY5WJXAUv47YFHb4wu04iA68+4teyLcWal9V1ob9wLN220ljo5F3nApG
-         Z1vw324n6PoFB5fRINXbVN/SoG9APZPdQ5BNQjmvf1Scm53HJznhNaC7mkPGKkNaSw
-         4v8/4TgrclThA==
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-500760b296aso1539461e87.0;
-        Thu, 31 Aug 2023 14:34:30 -0700 (PDT)
-X-Gm-Message-State: AOJu0YyCBL3S99U+N31adkR0LOT79bJpz/eTKUsnYIA7+r5wTU0SUdXB
-        BAU5WtWCnXBPsIa6bHY6WCsmipy/FNXZvCy2jRQ=
-X-Google-Smtp-Source: AGHT+IFSoy9FnYK0eqaRYZrG5VzapGIF4728UjrRo2b8KBxTWSMKta2bRo8O2D4f85IEjpm8toZ0g6qpXrHLuUAWdwU=
-X-Received: by 2002:a05:6512:2347:b0:4f9:6adf:3981 with SMTP id
- p7-20020a056512234700b004f96adf3981mr1297313lfu.33.1693517669059; Thu, 31 Aug
- 2023 14:34:29 -0700 (PDT)
+        (Authenticated sender: alarumbe)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A778D660729F;
+        Thu, 31 Aug 2023 22:34:53 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693517693;
+        bh=Tr8cyPxFm6NZJjvBVjrX3JuZaQwyE6Fdkowrsree0xs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Mn8k0oE/cQXiOiLUmMg2x4XuYG4KUdEds/qopnG47Q0gRnUUy59Ft3CrIFpPexG6c
+         pWwEICfNLvNY4CR5bCqciVW+I8/LQcmeEyykG4yVKoHnpiDlUTwSgrRfi9G1/DmCF8
+         i738yfgmrKIpxvNrmISsjPxyGgM5PWMZ+G+4/KkU1Lx1fzhYhr8tSOSjeePBAFzBQG
+         QY9RoHaPuaJ+2Bsv++Pw3r1yW8c4bNOIeZsjnV4c2QJUGlDMtQvIRUzaFwaK836cW2
+         EPog7es5q68Rc0HglgV/cpVdQhwU7+nYrqINO1tVsFEq+MTmPi1QWeDIT3Fx14U5IF
+         m5xCT2YI6DK1g==
+Date:   Thu, 31 Aug 2023 22:34:51 +0100
+From:   =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        robdclark@gmail.com, quic_abhinavk@quicinc.com,
+        dmitry.baryshkov@linaro.org, sean@poorly.run,
+        marijn.suijten@somainline.org, robh@kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        healych@amazon.com, kernel@collabora.com
+Subject: Re: [PATCH v2 2/6] drm/panfrost: Add fdinfo support GPU load metrics
+Message-ID: <enzglusbu4anwaqyalsyan3bfzecbpxttnq5v2o65hun4foj7s@ql5byzj6krk2>
+References: <20230824013604.466224-1-adrian.larumbe@collabora.com>
+ <20230824013604.466224-3-adrian.larumbe@collabora.com>
+ <23f38307-3246-28a9-f396-5660acb21a18@arm.com>
 MIME-Version: 1.0
-References: <20230831210125.gonna.173-kees@kernel.org>
-In-Reply-To: <20230831210125.gonna.173-kees@kernel.org>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 31 Aug 2023 23:34:17 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXE2kz1raOSy+ethim7YyFvKs+_uP2xhvndXDAbLdJDLdA@mail.gmail.com>
-Message-ID: <CAMj1kXE2kz1raOSy+ethim7YyFvKs+_uP2xhvndXDAbLdJDLdA@mail.gmail.com>
-Subject: Re: [PATCH v2] pstore: Base compression input buffer size on
- estimated compressed size
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <23f38307-3246-28a9-f396-5660acb21a18@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 23:01, Kees Cook <keescook@chromium.org> wrote:
+On 31.08.2023 16:54, Steven Price wrote:
+>On 24/08/2023 02:34, Adrián Larumbe wrote:
+>> The drm-stats fdinfo tags made available to user space are drm-engine,
+>> drm-cycles, drm-max-freq and drm-curfreq, one per job slot.
+>> 
+>> This deviates from standard practice in other DRM drivers, where a single
+>> set of key:value pairs is provided for the whole render engine. However,
+>> Panfrost has separate queues for fragment and vertex/tiler jobs, so a
+>> decision was made to calculate bus cycles and workload times separately.
+>> 
+>> Maximum operating frequency is calculated at devfreq initialisation time.
+>> Current frequency is made available to user space because nvtop uses it
+>> when performing engine usage calculations.
+>> 
+>> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
+>> ---
+>>  drivers/gpu/drm/panfrost/panfrost_devfreq.c |  8 ++++
+>>  drivers/gpu/drm/panfrost/panfrost_devfreq.h |  3 ++
+>>  drivers/gpu/drm/panfrost/panfrost_device.h  | 13 ++++++
+>>  drivers/gpu/drm/panfrost/panfrost_drv.c     | 45 ++++++++++++++++++++-
+>>  drivers/gpu/drm/panfrost/panfrost_job.c     | 30 ++++++++++++++
+>>  drivers/gpu/drm/panfrost/panfrost_job.h     |  4 ++
+>>  6 files changed, 102 insertions(+), 1 deletion(-)
+>> 
 >
-> From: Ard Biesheuvel <ardb@kernel.org>
+>[...]
 >
-> Commit 1756ddea6916 ("pstore: Remove worst-case compression size logic")
-> removed some clunky per-algorithm worst case size estimation routines on
-> the basis that we can always store pstore records uncompressed, and
-> these worst case estimations are about how much the size might
-> inadvertently *increase* due to encapsulation overhead when the input
-> cannot be compressed at all. So if compression results in a size
-> increase, we just store the original data instead.
+>> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> index a2ab99698ca8..3fd372301019 100644
+>> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+>> @@ -267,6 +267,7 @@ static int panfrost_ioctl_submit(struct drm_device *dev, void *data,
+>>  	job->requirements = args->requirements;
+>>  	job->flush_id = panfrost_gpu_get_latest_flush_id(pfdev);
+>>  	job->mmu = file_priv->mmu;
+>> +	job->priv = file_priv;
+>>  
+>>  	slot = panfrost_job_get_slot(job);
+>>  
+>> @@ -483,6 +484,14 @@ panfrost_open(struct drm_device *dev, struct drm_file *file)
+>>  		goto err_free;
+>>  	}
+>>  
+>> +	snprintf(panfrost_priv->fdinfo.engines[0].name, MAX_SLOT_NAME_LEN, "frg");
+>> +	snprintf(panfrost_priv->fdinfo.engines[1].name, MAX_SLOT_NAME_LEN, "vtx");
+>> +#if 0
+>> +	/* Add compute engine in the future */
+>> +	snprintf(panfrost_priv->fdinfo.engines[2].name, MAX_SLOT_NAME_LEN, "cmp");
+>> +#endif
 >
-> However, it seems that the original code was misinterpreting these
-> calculations as an estimation of how much uncompressed data might fit
-> into a compressed buffer of a given size, and it was using the results
-> to consume the input data in larger chunks than the pstore record size,
-> relying on the compression to ensure that what ultimately gets stored
-> fits into the available space.
+>I'm not sure what names are best, but slot 2 isn't actually a compute slot.
 >
-> One result of this, as observed and reported by Linus, is that upgrading
-> to a newer kernel that includes the given commit may result in pstore
-> decompression errors reported in the kernel log. This is due to the fact
-> that the existing records may unexpectedly decompress to a size that is
-> larger than the pstore record size.
+>Slot 0 is fragment, that name is fine.
 >
-> Another potential problem caused by this change is that we may
-> underutilize the fixed sized records on pstore backends such as ramoops.
-> And on pstore backends with variable sized records such as EFI, we will
-> end up creating many more entries than before to store the same amount
-> of compressed data.
+>Slot 1 and 2 are actually the same (from a hardware perspective) but the
+>core affinity of the two slots cannot overlap which means you need to
+>divide the GPU in two to usefully use both slots. The only GPU that this
+>actually makes sense for is the T628[1] as it has two (non-coherent)
+>core groups.
 >
-> So let's fix both issues, by bringing back the typical case estimation of
-> how much ASCII text captured from the dmesg log might fit into a pstore
-> record of a given size after compression. The original implementation
-> used the computation given below for zlib:
->
->   switch (size) {
->   /* buffer range for efivars */
->   case 1000 ... 2000:
->         cmpr = 56;
->         break;
->   case 2001 ... 3000:
->         cmpr = 54;
->         break;
->   case 3001 ... 3999:
->         cmpr = 52;
->         break;
->   /* buffer range for nvram, erst */
->   case 4000 ... 10000:
->         cmpr = 45;
->         break;
->   default:
->         cmpr = 60;
->         break;
->   }
->
->   return (size * 100) / cmpr;
->
-> We will use the previous worst-case of 60% for compression. For
-> decompression go extra large (3x) so we make sure there's enough space
-> for anything.
->
-> While at it, rate limit the error message so we don't flood the log
-> unnecessarily on systems that have accumulated a lot of pstore history.
->
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Eric Biggers <ebiggers@kernel.org>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> Link: https://lore.kernel.org/r/20230830212238.135900-1-ardb@kernel.org
-> Co-developed-by: Kees Cook <keescook@chromium.org>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
-> v2:
->  - reduce compression buffer size to 1.67x from 2x
->  - raise decompression buffer size to 3x
+>The upshot is that slot 1 is used for all of vertex, tiling and compute.
+>Slot 2 is currently never used, but kbase will use it only for compute
+>(and only on the two core group GPUs).
 
-LGTM
+I think I might've be rushed to draw inspiration for this from a comment in panfrost_job.c:
 
-Thanks for picking this up.
+int panfrost_job_get_slot(struct panfrost_job *job)
+{
+	/* JS0: fragment jobs.
+	 * JS1: vertex/tiler jobs
+	 * JS2: compute jobs
+	 */
+         [...]
+}
 
-> v1: https://lore.kernel.org/all/20230830212238.135900-1-ardb@kernel.org
-> ---
->  fs/pstore/platform.c | 34 +++++++++++++++++++++++++++-------
->  1 file changed, 27 insertions(+), 7 deletions(-)
+Maybe I could rename the engine names to "fragment", "vertex-tiler" and "compute-only"?
+There's no reason why I would skimp on engine name length, and anything more
+descriptive would be just as good.
+
+>Personally I'd be tempted to call them "slot 0", "slot 1" and "slot 2" -
+>but I appreciate that's not very helpful to people who aren't intimately
+>familiar with the hardware ;)
+
+The downside of this is that both IGT's fdinfo library and nvtop will use the
+engime name for display, and like you said these numbers might mean nothing to
+someone who isn't acquainted with the hardware.
+
+>Steve
 >
-> diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-> index 62356d542ef6..e5bca9a004cc 100644
-> --- a/fs/pstore/platform.c
-> +++ b/fs/pstore/platform.c
-> @@ -98,7 +98,14 @@ MODULE_PARM_DESC(kmsg_bytes, "amount of kernel log to snapshot (in bytes)");
->
->  static void *compress_workspace;
->
-> +/*
-> + * Compression is only used for dmesg output, which consists of low-entropy
-> + * ASCII text, and so we can assume worst-case 60%.
-> + */
-> +#define DMESG_COMP_PERCENT     60
-> +
->  static char *big_oops_buf;
-> +static size_t max_compressed_size;
->
->  void pstore_set_kmsg_bytes(int bytes)
->  {
-> @@ -196,6 +203,7 @@ static int pstore_compress(const void *in, void *out,
->
->  static void allocate_buf_for_compression(void)
->  {
-> +       size_t compressed_size;
->         char *buf;
->
->         /* Skip if not built-in or compression disabled. */
-> @@ -216,7 +224,8 @@ static void allocate_buf_for_compression(void)
->          * uncompressed record size, since any record that would be expanded by
->          * compression is just stored uncompressed.
->          */
-> -       buf = kvzalloc(psinfo->bufsize, GFP_KERNEL);
-> +       compressed_size = (psinfo->bufsize * 100) / DMESG_COMP_PERCENT;
-> +       buf = kvzalloc(compressed_size, GFP_KERNEL);
->         if (!buf) {
->                 pr_err("Failed %zu byte compression buffer allocation for: %s\n",
->                        psinfo->bufsize, compress);
-> @@ -233,6 +242,7 @@ static void allocate_buf_for_compression(void)
->
->         /* A non-NULL big_oops_buf indicates compression is available. */
->         big_oops_buf = buf;
-> +       max_compressed_size = compressed_size;
->
->         pr_info("Using crash dump compression: %s\n", compress);
->  }
-> @@ -246,6 +256,7 @@ static void free_buf_for_compression(void)
->
->         kvfree(big_oops_buf);
->         big_oops_buf = NULL;
-> +       max_compressed_size = 0;
->  }
->
->  void pstore_record_init(struct pstore_record *record,
-> @@ -305,7 +316,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
->                 record.buf = psinfo->buf;
->
->                 dst = big_oops_buf ?: psinfo->buf;
-> -               dst_size = psinfo->bufsize;
-> +               dst_size = max_compressed_size ?: psinfo->bufsize;
->
->                 /* Write dump header. */
->                 header_size = snprintf(dst, dst_size, "%s#%d Part%u\n", why,
-> @@ -326,8 +337,15 @@ static void pstore_dump(struct kmsg_dumper *dumper,
->                                 record.compressed = true;
->                                 record.size = zipped_len;
->                         } else {
-> -                               record.size = header_size + dump_size;
-> -                               memcpy(psinfo->buf, dst, record.size);
-> +                               /*
-> +                                * Compression failed, so the buffer is most
-> +                                * likely filled with binary data that does not
-> +                                * compress as well as ASCII text. Copy as much
-> +                                * of the uncompressed data as possible into
-> +                                * the pstore record, and discard the rest.
-> +                                */
-> +                               record.size = psinfo->bufsize;
-> +                               memcpy(psinfo->buf, dst, psinfo->bufsize);
->                         }
->                 } else {
->                         record.size = header_size + dump_size;
-> @@ -560,6 +578,7 @@ static void decompress_record(struct pstore_record *record,
->         int ret;
->         int unzipped_len;
->         char *unzipped, *workspace;
-> +       size_t max_uncompressed_size;
->
->         if (!IS_ENABLED(CONFIG_PSTORE_COMPRESS) || !record->compressed)
->                 return;
-> @@ -583,7 +602,8 @@ static void decompress_record(struct pstore_record *record,
->         }
->
->         /* Allocate enough space to hold max decompression and ECC. */
-> -       workspace = kvzalloc(psinfo->bufsize + record->ecc_notice_size,
-> +       max_uncompressed_size = 3 * psinfo->bufsize;
-> +       workspace = kvzalloc(max_uncompressed_size + record->ecc_notice_size,
->                              GFP_KERNEL);
->         if (!workspace)
->                 return;
-> @@ -591,11 +611,11 @@ static void decompress_record(struct pstore_record *record,
->         zstream->next_in        = record->buf;
->         zstream->avail_in       = record->size;
->         zstream->next_out       = workspace;
-> -       zstream->avail_out      = psinfo->bufsize;
-> +       zstream->avail_out      = max_uncompressed_size;
->
->         ret = zlib_inflate(zstream, Z_FINISH);
->         if (ret != Z_STREAM_END) {
-> -               pr_err("zlib_inflate() failed, ret = %d!\n", ret);
-> +               pr_err_ratelimited("zlib_inflate() failed, ret = %d!\n", ret);
->                 kvfree(workspace);
->                 return;
->         }
-> --
-> 2.34.1
->
+>[1] And technically the T608 but that's even rarer and the T60x isn't
+>(yet) supported by Panfrost.
