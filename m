@@ -2,129 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B9EE78E92A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:17:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F70878E93F
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238387AbjHaJRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37482 "EHLO
+        id S236128AbjHaJTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:19:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbjHaJRG (ORCPT
+        with ESMTP id S243840AbjHaJTG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:17:06 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF157CDD;
-        Thu, 31 Aug 2023 02:16:54 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id ffacd0b85a97d-3110ab7110aso435176f8f.3;
-        Thu, 31 Aug 2023 02:16:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693473413; x=1694078213; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0dnYJvLMIpANPASquNaD9gnfxzlO89jbOPtXwZ31rbY=;
-        b=Iy+dIqsCf9PglYA1rzkDbZyIZU5U/uJcQ5cKGDHivEjVmUwtYIh4iuiZGTiaB3Iy2G
-         y25OLec3N4v18XD/gApRii7V7GA5Q7jR2oz0fRW0gd9y/Jg3W5AIyku0ksLxqzeZjWUK
-         JmzWrrxbKPh3vEO8ULTOeDOLtl9SWmUaa98AgH0rafUUFbQG8Bm7sMYE9ChuLkhBFvup
-         FsxwGFRyhGEqors/enR+H3FA/JFHTMUwcf+QwzvnymiwzlnNpXkgGwkCFKnbmohAbDzI
-         Lc3tJr6HevEjrHmPXffDq4CP8r0//W5vw3b8Suyx99F4JEd3KU9h4E0quT84rxsJQ4cm
-         dBaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693473413; x=1694078213;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0dnYJvLMIpANPASquNaD9gnfxzlO89jbOPtXwZ31rbY=;
-        b=KF3SlYX7Kws+qinAX1JOKTPrEiVIpheib+UzLnqwdnpLy3EXf1ktjoz9bU57iTVrub
-         C06wcs0QJKC6uznvBktbUDMZcdt45SoAtmUBW//4PPs/5feJjFocEUIdEmbiNdgO+sm6
-         crhezhcXtuRmiuykTCMwfqhZJIsqA1O4sbFuCfoLWdt/ciLfBt3FiGZqoHT1Tk0Tk+YC
-         2jWADU5hu7QylayZi1Ayz8jakNDT0fC7COKsdc+HteLrU0Yy6fXs5XaMfetvnUZAR5ED
-         YcAbTWZ0MdDHWakCcqs6wvLiweIOCALcQeARMWcIphHIygjG8ra/ZD7iF578/8tZfJS8
-         HGpg==
-X-Gm-Message-State: AOJu0YwCZSInVG62TO4cpESjtGzUamKH1ley/Sv9nYzjdUUt87i1yzEk
-        uX2quxmLFT6MvpGiSKo5NZ4=
-X-Google-Smtp-Source: AGHT+IEEC/IOcwAaa1oeciqMKRGj3e18yNmGwPrz8uNum8h2wf2Xg6roNPMd7mlQPgS5E8Sgdk5faw==
-X-Received: by 2002:a05:6000:110a:b0:31a:e87e:103 with SMTP id z10-20020a056000110a00b0031ae87e0103mr3103180wrw.48.1693473412883;
-        Thu, 31 Aug 2023 02:16:52 -0700 (PDT)
-Received: from localhost (a109-49-32-45.cpe.netcabo.pt. [109.49.32.45])
-        by smtp.gmail.com with ESMTPSA id b2-20020a5d45c2000000b003195504c754sm1528513wrs.31.2023.08.31.02.16.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 02:16:52 -0700 (PDT)
-From:   Rui Miguel Silva <rmfrfs@gmail.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] media: imx-mipi-csis: Remove an incorrect
- fwnode_handle_put() call
-In-Reply-To: <dd5b741f496d074d342958f14baff5bae8c71531.1693429556.git.christophe.jaillet@wanadoo.fr>
-References: <dd5b741f496d074d342958f14baff5bae8c71531.1693429556.git.christophe.jaillet@wanadoo.fr>
-Date:   Thu, 31 Aug 2023 10:16:51 +0100
-Message-ID: <m3msy7eflo.fsf@gmail.com>
+        Thu, 31 Aug 2023 05:19:06 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652E7E61;
+        Thu, 31 Aug 2023 02:18:58 -0700 (PDT)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V9FB8R019774;
+        Thu, 31 Aug 2023 09:18:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=DhHobCxLEkV5FWZ0NaqM4hKdOLVEZC4wYjzajgUIplk=;
+ b=KUNJLxEmi+XlS5dQxss2My1vqrPr1+QDgRtWr2bH6FbldhMeJxCsKyde/Abf0P3On3AB
+ 38b6SOIVjUxGz5TSqwvWA1o+nY4P9op+1iUteHbHwCu3r46LIdCHFl4UHBvGAzYLC0Wb
+ ohc8B1hN8A0bRTrndiXyXDnMWuJqwN4Fjv7API9uneSnE+l8dY8gb8tmmoiGmtSHPq1X
+ pE96qt9xPhXILUEpbmfT5tPUHym3VtbYkiDPHjh/OxvpgBGAVJMxI7kPVl38JfMvNUw2
+ Jb8vUY3PkKmVGuCCo/+MGcm2ngTVNkqd9AkWeV+mQ1i/M8bjT6efWB7U+mUKSCKZHacS vg== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st0tatss8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 09:18:03 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V9I2X8030791
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 09:18:02 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Thu, 31 Aug 2023 02:17:55 -0700
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <arnd@arndb.de>, <geert+renesas@glider.be>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>
+CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: [PATCH v12 0/4] Enable IPQ5332 USB2
+Date:   Thu, 31 Aug 2023 14:47:42 +0530
+Message-ID: <cover.1693468292.git.quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 7Fc4qYBgYd0FPTHqcR8mlRHIg7NVlUnX
+X-Proofpoint-ORIG-GUID: 7Fc4qYBgYd0FPTHqcR8mlRHIg7NVlUnX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_07,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 malwarescore=0 mlxlogscore=471
+ adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310083
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,HK_RANDOM_ENVFROM,
-        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
-Many thanks for the fix.
+This patch series adds the relevant phy and controller
+DT configurations for enabling USB2 on IPQ5332
 
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> writes:
+v12:
+	DTS:	usb2_0_dwc -> usb_dwc
+v11:
+	Driver: Rebased to accommodate https://lore.kernel.org/linux-arm-msm/20230824091345.1072650-1-yangyingliang@huawei.com/
+	DTS:	Sort nodes in alphanumeric order
+v10:
+	Driver: Restore register success print per Dmitry's comment
+	DTS:	usb@8a00000 -> usb@8af8800
+		regulator_s0500 -> regulator-s0500
+v9:
+	Driver: Since the driver code has been picked up for merge,
+		(https://lore.kernel.org/linux-arm-msm/169226613917.81413.1200008047604336868.b4-ty@kernel.org/)
+		adding the coding style fixes alone in this patch.
 
-> The commit in Fixes has removed an fwnode_graph_get_endpoint_by_id() call
-> in mipi_csis_subdev_init().
-> So the reference that was taken should not be released anymore in the
-> error handling path of the probe and in the remove function.
->
-> Remove the now incorrect fwnode_handle_put() calls.
->
-> Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+		Fix line break alignment
+		Remove register success print
+	DTS:	usb2@8a00000 -> usb@8a00000
+		regulator_fixed_5p0: s0500 -> regulator_fixed_5p0: regulator
+v8:
+	Driver:-
+		Change commit subject and message per review comments
+		Don't include of_platform.h
+		Change struct initialization coding style
+		GENMASK -> BIT for one of the defines
+v7:
+	Binding:-
+		Move 'compatible' to be the first entry
+		In the example have 'usb-phy' instead of 'usb2-phy'
+		Add 'Reviewed-by: Krzysztof Kozlowski'
+v6:
+	Binding and dts:-
+		Dropped the qcom,dwc3.yaml patch as it has been picked up for linux-next
+		Add const to compatible, vdd-supply
+		Move nodes per register address
+	Driver:-
+		Add vdd-supply
+		Cleanup error paths in probe with dev_err_probe
+v5:
+	Binding and dts:-
+		Fix email id
+		Removed 'Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>'
+		as had to change bindings file to be able to use generic phy instead of
+		usb-phy
 
-LGTM.
-Reviewed-by: Rui Miguel Silva <rmfrfs@gmail.com>
+	Driver:-
+		Remove unused definition
+		Use generic phy instead of usb-phy
+v4:
+	Binding and dts:-
+		Change node name (bindings & dts)
+	Driver:-
+		Remove unused enum
+		static const for '.data'
+		Error handling for devm_clk_get
+v3:
+	Fix bindings file based on review comments
 
-Cheers,
-   Rui
+v1:
+	Cleanup DTS
+	Combine driver, kconfig and makefile patches
+	Remove unused functions from M31 driver
+	Drop the clock driver changes
 
-> ---
->  drivers/media/platform/nxp/imx-mipi-csis.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
-> index 16f19a640130..5f93712bf485 100644
-> --- a/drivers/media/platform/nxp/imx-mipi-csis.c
-> +++ b/drivers/media/platform/nxp/imx-mipi-csis.c
-> @@ -1490,7 +1490,6 @@ static int mipi_csis_probe(struct platform_device *pdev)
->  	v4l2_async_unregister_subdev(&csis->sd);
->  err_disable_clock:
->  	mipi_csis_clk_disable(csis);
-> -	fwnode_handle_put(csis->sd.fwnode);
->  
->  	return ret;
->  }
-> @@ -1510,7 +1509,6 @@ static void mipi_csis_remove(struct platform_device *pdev)
->  	mipi_csis_clk_disable(csis);
->  	v4l2_subdev_cleanup(&csis->sd);
->  	media_entity_cleanup(&csis->sd.entity);
-> -	fwnode_handle_put(csis->sd.fwnode);
->  	pm_runtime_set_suspended(&pdev->dev);
->  }
->  
-> -- 
-> 2.34.1
+Varadarajan Narayanan (4):
+  phy: qcom: m31: Fix indentation issues
+  arm64: dts: qcom: ipq5332: Add USB related nodes
+  arm64: dts: qcom: ipq5332: Enable USB
+  arm64: defconfig: Enable M31 USB phy driver
+
+ arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts | 23 ++++++++++++
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi       | 55 +++++++++++++++++++++++++++++
+ arch/arm64/configs/defconfig                |  1 +
+ drivers/phy/qualcomm/phy-qcom-m31.c         |  6 ++--
+ 4 files changed, 82 insertions(+), 3 deletions(-)
+
+-- 
+2.7.4
+
