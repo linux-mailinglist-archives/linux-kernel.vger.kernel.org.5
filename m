@@ -2,524 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A376578ED91
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C94678EDA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344193AbjHaMsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
+        id S1346130AbjHaMv6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 08:51:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbjHaMso (ORCPT
+        with ESMTP id S1344929AbjHaMvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:48:44 -0400
-Received: from icts-p-cavuit-1.kulnet.kuleuven.be (icts-p-cavuit-1.kulnet.kuleuven.be [134.58.240.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD8CCED;
-        Thu, 31 Aug 2023 05:48:38 -0700 (PDT)
-X-KULeuven-Envelope-From: jo.vanbulck@cs.kuleuven.be
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
-X-KULeuven-Scanned: Found to be clean
-X-KULeuven-ID: 2C7AB20061.A9BD3
-X-KULeuven-Information: Katholieke Universiteit Leuven
-Received: from icts-p-ceifnet-smtps-1.kuleuven.be (icts-p-ceifnet-smtps.service.icts.svcd [IPv6:2a02:2c40:0:51:132:242:ac11:16])
-        by icts-p-cavuit-1.kulnet.kuleuven.be (Postfix) with ESMTP id 2C7AB20061;
-        Thu, 31 Aug 2023 14:48:35 +0200 (CEST)
-BCmilterd-Mark-Subject: no
-BCmilterd-Errors: 
-BCmilterd-Report: SA-HVU#DKIM_VALID#0.00,SA-HVU#DKIM_SIGNED#0.00,SA-HVU#DKIM_VALID_AU#0.00,SA-HVU#OURIPS#-35.00
-X-CAV-Cluster: smtps
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cs.kuleuven.be;
-        s=cav; t=1693486114;
-        bh=cFUEP0DMVQbwPMJHvYMBm7t3UY3xU31AYrR2jzcQ/so=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=kpHxZ0YAIy3p9w9QAaBcgDArV1K4C/XDdmTwfJOFRHskWrz1imKWSK+9Ps4gCjDvx
-         FeWwMqVqVdcGpr0HbSBPYcjGnMSkRC+AYay6bZT7CSkAzwnTMh8pDlrfcYS+BG2MJz
-         YQoIJ+yR+2iHP93/x9y02KHWRzc2pcBVg+CAzfJA=
-Received: from [IPV6:2a02:2c40:400:b080::1:246b] (unknown [IPv6:2a02:2c40:400:b080::1:246b])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by icts-p-ceifnet-smtps-1.kuleuven.be (Postfix) with ESMTPSA id D416AD4F60CB2;
-        Thu, 31 Aug 2023 14:48:34 +0200 (CEST)
-Message-ID: <5c22de5a-4b3b-1f38-9771-409b4ec7f96d@cs.kuleuven.be>
-Date:   Thu, 31 Aug 2023 14:48:36 +0200
+        Thu, 31 Aug 2023 08:51:54 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DAE2CED;
+        Thu, 31 Aug 2023 05:51:51 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VAuBrw002980;
+        Thu, 31 Aug 2023 12:50:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=CyDKngw7AJLG5s8qNp7PT2cES7mIUxD9uyDeFb/Prwg=;
+ b=TOCmCnljmv6wQmfnlZtAFKYxXxwhX6NQSqbdTT0Xdcdie7+tEwpNBRVi6qyAz9C6Odx1
+ RALuE2LWon4e5jsJBBagfTmGj+oNmuSsv0Nv2UCdxhBh4MJyDlKuujBDCIIIXU6ORv3T
+ BquKy9T0NCLiW+Fnei4J3a54Iff6lhf9Cws0k3qsI+PpLcDaP2LU9x8iad8SGVGx7VfX
+ o5ffDrZRpHo9hWInNkCw4GqTTpSkWgVvP9huVfPis1OD4wKU/FHeOIGe18rt3XkE5eS3
+ c+245i+sR+5DFs82qvEm58hZGNngHfunBWQ6tAAUjrJKMMNubGOJAWuCkvr5xIK8BTcL jg== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stku28um6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 12:50:58 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VCouVH025260
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 12:50:56 GMT
+Received: from [10.201.3.91] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 31 Aug
+ 2023 05:50:47 -0700
+Message-ID: <da4d6f20-650b-44e0-a319-2a1c8db65a2f@quicinc.com>
+Date:   Thu, 31 Aug 2023 18:20:44 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v4 03/13] selftests/sgx: Handle relocations in test
- enclave
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] dt-bindings: phy: qcom,uniphy: Rename ipq4019 usb PHY
+ to UNIPHY
 Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "jarkko@kernel.org" <jarkko@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-References: <20230825133252.9056-1-jo.vanbulck@cs.kuleuven.be>
- <20230825133252.9056-4-jo.vanbulck@cs.kuleuven.be>
- <06f20425546aa13310a9fc25f081b8d70a6f1f44.camel@intel.com>
-X-Kuleuven: This mail passed the K.U.Leuven mailcluster
-From:   Jo Van Bulck <jo.vanbulck@cs.kuleuven.be>
-In-Reply-To: <06f20425546aa13310a9fc25f081b8d70a6f1f44.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <robert.marko@sartura.hr>, <luka.perkov@sartura.hr>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_varada@quicinc.com>
+References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com>
+ <20230829135818.2219438-2-quic_ipkumar@quicinc.com>
+ <CAA8EJpqA-poJ9=XKJa2s=yZUGbBbgOqgiDC-q9skJzBqLux84g@mail.gmail.com>
+ <73879012-581d-47fb-b741-577c90b31dfb@quicinc.com>
+ <CAA8EJpr3PJtvyYKRPqT=hO4sUd4oOjTvOjD3kOqffbjzHdByAw@mail.gmail.com>
+ <4e9a43c5-43ec-4a07-9053-366a517f5c54@quicinc.com>
+ <CAA8EJpofAM4deqg1H_WSh2uJavTEXQC5x=26P1FLAUgJcT7yOg@mail.gmail.com>
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <CAA8EJpofAM4deqg1H_WSh2uJavTEXQC5x=26P1FLAUgJcT7yOg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: qLGZKs3xMkP265zERQ66jxIxoB6pX4Ze
+X-Proofpoint-ORIG-GUID: qLGZKs3xMkP265zERQ66jxIxoB6pX4Ze
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_11,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 spamscore=0 phishscore=0
+ bulkscore=0 priorityscore=1501 adultscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2308310114
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 28.08.23 15:15, Huang, Kai wrote:
-> I am wondering is this the right justification for _this_ particular patch?
-> 
-> Even above paragraph is true, the existing code w/o this patch can work because
-> the generated asm code uses "lea (-xxx)(%rip), %<reg>" to get the right address
-> and store it to the array on the stack.
 
-Yes, I agree the current code *happens* to work with this explicit array 
-initialization.
-
-> It stops to work because you want to use -Os, in which case the generated asm
-> code instead initializes the array by copying an array (which has function
-> addresses starting from 0) generated by the compiler/linker.
-
-I'd say the compiler is free to perform this sensible optimization, as 
-long as it marks any relocations in .rela.dyn. Thus, the *real* reason 
-why it stops to work is that the enclave does not include a startup 
-routine to perform any ELF relocations from .rela.dyn (as included in 
-glibc).
-
-The minimal fix, done in this patch, is to not include a full .rela.dyn 
-relocation routine with all the overheads of parsing, but simply 
-manually relocate the only place where this may be needed, ie the 
-function pointer table. Ultimately, I could imagine a further 
-enhancement may also be to parse .rela.dyn at build time and make sure 
-no other relocations are there (outside the false positives for the TCS 
-as discussed earlier).
-
-> So to me the true justification should be "using -Os breaks the code". 
-
-I'd say compiler optimizations should not break correct code. In other 
-words, the main objective of this patch series is to avoid reliance on 
-undefined, compiler-specific behavior that can make the test results 
-unpredictable and fragile as compiler versions or options may change in 
-the future.
-
-> Or do
-> you think "the compiler generating code to initialize the array on the stack
-> using RIP-relative addressing to get the function address" is completely a lucky
-> thing?
-
-To some extent, yes. While I only saw this with -Os for gcc, I found 
-that clang never initializes the array on the stack and this may also 
-change for gcc at any point I'd expect.
-
-For reference, I'm including the full encl_body assembly for both gcc 
-and clang for -O{1,2,3,s,g} at the bottom of this email.
-
-> Anyway, it will be very helpful to include the assembly code generated both w/
-> and w/o using -Os here to the changelog to demonstrate the problem and we need
-> this patch to fixup. >
-> Without those information, it's basically very hard for people to understand why
-> this is needed.  This will save maintainer's time, and make git blamer's life
-> easy in the future.
-
-Makes sense, will do this for the next revision.
-
->> +	/*
->> +	 * The enclave base address needs to be added, as this call site
->> +	 * *cannot be* made rip-relative by the compiler, or fixed up by
->> +	 * any other possible means.
->> +	 */
-> 
-> Is it better to explicitly call out the compiler generates RIP-relative
-> addressing code to get the address associated with '__encl_base' symbol, so we
-> can get the actual enclave base during runtime?
-> 
-> Maybe it's obvious, but I am not sure :-)
-> 
->> +	op = ((uint64_t)&__encl_base) + encl_op_array[header->type];
->> +
->> +	(*op)(header);
->>   }
-
-I'm including a comment on this a few lines higher, where __encl_base is 
-declared.
-
-Best,
-Jo
-
-------
-clang.-O0.log.elf
-
-0000000000002000 <encl_body>:
-     2000:	55                   	push   %rbp
-     2001:	48 89 e5             	mov    %rsp,%rbp
-     2004:	48 83 ec 60          	sub    $0x60,%rsp
-     2008:	48 8d 05 f1 1f 00 00 	lea    0x1ff1(%rip),%rax        # 4000 
-<encl_entry_core+0x1b77>
-     200f:	48 89 7d f8          	mov    %rdi,-0x8(%rbp)
-     2013:	48 89 75 f0          	mov    %rsi,-0x10(%rbp)
-     2017:	48 8d 4d b0          	lea    -0x50(%rbp),%rcx
-     201b:	48 89 cf             	mov    %rcx,%rdi
-     201e:	48 89 c6             	mov    %rax,%rsi
-     2021:	ba 40 00 00 00       	mov    $0x40,%edx
-     2026:	e8 95 03 00 00       	call   23c0 <memcpy>
-     202b:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
-     202f:	48 89 45 a8          	mov    %rax,-0x58(%rbp)
-     2033:	48 8b 45 a8          	mov    -0x58(%rbp),%rax
-     2037:	48 83 38 08          	cmpq   $0x8,(%rax)
-     203b:	0f 83 15 00 00 00    	jae    2056 <encl_body+0x56>
-     2041:	48 8b 45 a8          	mov    -0x58(%rbp),%rax
-     2045:	48 8b 00             	mov    (%rax),%rax
-     2048:	48 8b 44 c5 b0       	mov    -0x50(%rbp,%rax,8),%rax
-     204d:	48 8b 4d a8          	mov    -0x58(%rbp),%rcx
-     2051:	48 89 cf             	mov    %rcx,%rdi
-     2054:	ff d0                	call   *%rax
-     2056:	48 83 c4 60          	add    $0x60,%rsp
-     205a:	5d                   	pop    %rbp
-     205b:	c3                   	ret
-
-------
-clang.-O1.log.elf
-
-0000000000002000 <encl_body>:
-     2000:	50                   	push   %rax
-     2001:	48 8b 07             	mov    (%rdi),%rax
-     2004:	48 83 f8 07          	cmp    $0x7,%rax
-     2008:	77 0a                	ja     2014 <encl_body+0x14>
-     200a:	48 8d 0d ef 1f 00 00 	lea    0x1fef(%rip),%rcx        # 4000 
-<encl_entry_core+0x1d86>
-     2011:	ff 14 c1             	call   *(%rcx,%rax,8)
-     2014:	58                   	pop    %rax
-     2015:	c3                   	ret
-
-------
-clang.-O2.log.elf
-
-0000000000002000 <encl_body>:
-     2000:	48 8b 07             	mov    (%rdi),%rax
-     2003:	48 83 f8 07          	cmp    $0x7,%rax
-     2007:	77 0a                	ja     2013 <encl_body+0x13>
-     2009:	48 8d 0d f0 1f 00 00 	lea    0x1ff0(%rip),%rcx        # 4000 
-<encl_entry_core+0x1cfa>
-     2010:	ff 24 c1             	jmp    *(%rcx,%rax,8)
-     2013:	c3                   	ret
-
-------
-clang.-O3.log.elf
-
-0000000000002000 <encl_body>:
-     2000:	48 8b 07             	mov    (%rdi),%rax
-     2003:	48 83 f8 07          	cmp    $0x7,%rax
-     2007:	77 0a                	ja     2013 <encl_body+0x13>
-     2009:	48 8d 0d f0 1f 00 00 	lea    0x1ff0(%rip),%rcx        # 4000 
-<encl_entry_core+0x1cfa>
-     2010:	ff 24 c1             	jmp    *(%rcx,%rax,8)
-     2013:	c3                   	ret
-
-------
-clang.-Ofast.log.elf
-
-0000000000002000 <encl_body>:
-     2000:	48 8b 07             	mov    (%rdi),%rax
-     2003:	48 83 f8 07          	cmp    $0x7,%rax
-     2007:	77 0a                	ja     2013 <encl_body+0x13>
-     2009:	48 8d 0d f0 1f 00 00 	lea    0x1ff0(%rip),%rcx        # 4000 
-<encl_entry_core+0x1cfa>
-     2010:	ff 24 c1             	jmp    *(%rcx,%rax,8)
-     2013:	c3                   	ret
-
-------
-clang.-Og.log.elf
-
-0000000000002000 <encl_body>:
-     2000:	50                   	push   %rax
-     2001:	48 8b 07             	mov    (%rdi),%rax
-     2004:	48 83 f8 07          	cmp    $0x7,%rax
-     2008:	77 0a                	ja     2014 <encl_body+0x14>
-     200a:	48 8d 0d ef 1f 00 00 	lea    0x1fef(%rip),%rcx        # 4000 
-<encl_entry_core+0x1d86>
-     2011:	ff 14 c1             	call   *(%rcx,%rax,8)
-     2014:	58                   	pop    %rax
-     2015:	c3                   	ret
-
-------
-clang.-Os.log.elf
-
-0000000000002000 <encl_body>:
-     2000:	48 8b 07             	mov    (%rdi),%rax
-     2003:	48 83 f8 07          	cmp    $0x7,%rax
-     2007:	77 0a                	ja     2013 <encl_body+0x13>
-     2009:	48 8d 0d f0 1f 00 00 	lea    0x1ff0(%rip),%rcx        # 4000 
-<encl_entry_core+0x1e36>
-     2010:	ff 24 c1             	jmp    *(%rcx,%rax,8)
-     2013:	c3                   	ret
-
-------
-gcc.-O0.log.elf
-
-00000000000023f4 <encl_body>:
-     23f4:	f3 0f 1e fa          	endbr64
-     23f8:	55                   	push   %rbp
-     23f9:	48 89 e5             	mov    %rsp,%rbp
-     23fc:	48 83 ec 60          	sub    $0x60,%rsp
-     2400:	48 89 7d a8          	mov    %rdi,-0x58(%rbp)
-     2404:	48 89 75 a0          	mov    %rsi,-0x60(%rbp)
-     2408:	48 8d 05 ec fe ff ff 	lea    -0x114(%rip),%rax        # 22fb 
-<do_encl_op_put_to_buf>
-     240f:	48 89 45 b0          	mov    %rax,-0x50(%rbp)
-     2413:	48 8d 05 18 ff ff ff 	lea    -0xe8(%rip),%rax        # 2332 
-<do_encl_op_get_from_buf>
-     241a:	48 89 45 b8          	mov    %rax,-0x48(%rbp)
-     241e:	48 8d 05 44 ff ff ff 	lea    -0xbc(%rip),%rax        # 2369 
-<do_encl_op_put_to_addr>
-     2425:	48 89 45 c0          	mov    %rax,-0x40(%rbp)
-     2429:	48 8d 05 77 ff ff ff 	lea    -0x89(%rip),%rax        # 23a7 
-<do_encl_op_get_from_addr>
-     2430:	48 89 45 c8          	mov    %rax,-0x38(%rbp)
-     2434:	48 8d 05 aa ff ff ff 	lea    -0x56(%rip),%rax        # 23e5 
-<do_encl_op_nop>
-     243b:	48 89 45 d0          	mov    %rax,-0x30(%rbp)
-     243f:	48 8d 05 4f fc ff ff 	lea    -0x3b1(%rip),%rax        # 2095 
-<do_encl_eaccept>
-     2446:	48 89 45 d8          	mov    %rax,-0x28(%rbp)
-     244a:	48 8d 05 af fb ff ff 	lea    -0x451(%rip),%rax        # 2000 
-<do_encl_emodpe>
-     2451:	48 89 45 e0          	mov    %rax,-0x20(%rbp)
-     2455:	48 8d 05 72 fd ff ff 	lea    -0x28e(%rip),%rax        # 21ce 
-<do_encl_init_tcs_page>
-     245c:	48 89 45 e8          	mov    %rax,-0x18(%rbp)
-     2460:	48 8b 45 a8          	mov    -0x58(%rbp),%rax
-     2464:	48 89 45 f8          	mov    %rax,-0x8(%rbp)
-     2468:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
-     246c:	48 8b 00             	mov    (%rax),%rax
-     246f:	48 83 f8 07          	cmp    $0x7,%rax
-     2473:	77 15                	ja     248a <encl_body+0x96>
-     2475:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
-     2479:	48 8b 00             	mov    (%rax),%rax
-     247c:	48 8b 54 c5 b0       	mov    -0x50(%rbp,%rax,8),%rdx
-     2481:	48 8b 45 f8          	mov    -0x8(%rbp),%rax
-     2485:	48 89 c7             	mov    %rax,%rdi
-     2488:	ff d2                	call   *%rdx
-     248a:	90                   	nop
-     248b:	c9                   	leave
-     248c:	c3                   	ret
-
-------
-gcc.-O1.log.elf
-
-0000000000002239 <encl_body>:
-     2239:	f3 0f 1e fa          	endbr64
-     223d:	48 83 ec 48          	sub    $0x48,%rsp
-     2241:	48 8d 05 b6 fe ff ff 	lea    -0x14a(%rip),%rax        # 20fe 
-<do_encl_op_put_to_buf>
-     2248:	48 89 04 24          	mov    %rax,(%rsp)
-     224c:	48 8d 05 c5 fe ff ff 	lea    -0x13b(%rip),%rax        # 2118 
-<do_encl_op_get_from_buf>
-     2253:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
-     2258:	48 8d 05 d3 fe ff ff 	lea    -0x12d(%rip),%rax        # 2132 
-<do_encl_op_put_to_addr>
-     225f:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
-     2264:	48 8d 05 de fe ff ff 	lea    -0x122(%rip),%rax        # 2149 
-<do_encl_op_get_from_addr>
-     226b:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
-     2270:	48 8d 05 e9 fe ff ff 	lea    -0x117(%rip),%rax        # 2160 
-<do_encl_op_nop>
-     2277:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
-     227c:	48 8d 05 e9 fd ff ff 	lea    -0x217(%rip),%rax        # 206c 
-<do_encl_eaccept>
-     2283:	48 89 44 24 28       	mov    %rax,0x28(%rsp)
-     2288:	48 8d 05 71 fd ff ff 	lea    -0x28f(%rip),%rax        # 2000 
-<do_encl_emodpe>
-     228f:	48 89 44 24 30       	mov    %rax,0x30(%rsp)
-     2294:	48 8d 05 ca fe ff ff 	lea    -0x136(%rip),%rax        # 2165 
-<do_encl_init_tcs_page>
-     229b:	48 89 44 24 38       	mov    %rax,0x38(%rsp)
-     22a0:	48 8b 07             	mov    (%rdi),%rax
-     22a3:	48 83 f8 07          	cmp    $0x7,%rax
-     22a7:	77 03                	ja     22ac <encl_body+0x73>
-     22a9:	ff 14 c4             	call   *(%rsp,%rax,8)
-     22ac:	48 83 c4 48          	add    $0x48,%rsp
-     22b0:	c3                   	ret
-
-------
-gcc.-O2.log.elf
-
-0000000000002210 <encl_body>:
-     2210:	f3 0f 1e fa          	endbr64
-     2214:	48 8d 05 25 ff ff ff 	lea    -0xdb(%rip),%rax        # 2140 
-<do_encl_op_put_to_buf>
-     221b:	48 89 44 24 b8       	mov    %rax,-0x48(%rsp)
-     2220:	48 8d 05 49 ff ff ff 	lea    -0xb7(%rip),%rax        # 2170 
-<do_encl_op_get_from_buf>
-     2227:	48 89 44 24 c0       	mov    %rax,-0x40(%rsp)
-     222c:	48 8d 05 6d ff ff ff 	lea    -0x93(%rip),%rax        # 21a0 
-<do_encl_op_put_to_addr>
-     2233:	48 89 44 24 c8       	mov    %rax,-0x38(%rsp)
-     2238:	48 8d 05 91 ff ff ff 	lea    -0x6f(%rip),%rax        # 21d0 
-<do_encl_op_get_from_addr>
-     223f:	48 89 44 24 d0       	mov    %rax,-0x30(%rsp)
-     2244:	48 8d 05 b5 ff ff ff 	lea    -0x4b(%rip),%rax        # 2200 
-<do_encl_op_nop>
-     224b:	48 89 44 24 d8       	mov    %rax,-0x28(%rsp)
-     2250:	48 8d 05 f9 fd ff ff 	lea    -0x207(%rip),%rax        # 2050 
-<do_encl_eaccept>
-     2257:	48 89 44 24 e0       	mov    %rax,-0x20(%rsp)
-     225c:	48 8d 05 9d fd ff ff 	lea    -0x263(%rip),%rax        # 2000 
-<do_encl_emodpe>
-     2263:	48 89 44 24 e8       	mov    %rax,-0x18(%rsp)
-     2268:	48 8d 05 31 fe ff ff 	lea    -0x1cf(%rip),%rax        # 20a0 
-<do_encl_init_tcs_page>
-     226f:	48 89 44 24 f0       	mov    %rax,-0x10(%rsp)
-     2274:	48 8b 07             	mov    (%rdi),%rax
-     2277:	48 83 f8 07          	cmp    $0x7,%rax
-     227b:	77 0b                	ja     2288 <encl_body+0x78>
-     227d:	ff 64 c4 b8          	jmp    *-0x48(%rsp,%rax,8)
-     2281:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
-     2288:	c3                   	ret
-
-------
-gcc.-O3.log.elf
-
-0000000000002220 <encl_body>:
-     2220:	f3 0f 1e fa          	endbr64
-     2224:	48 8d 05 55 ff ff ff 	lea    -0xab(%rip),%rax        # 2180 
-<do_encl_op_get_from_buf>
-     222b:	48 8d 15 3e ff ff ff 	lea    -0xc2(%rip),%rdx        # 2170 
-<do_encl_op_put_to_buf>
-     2232:	66 48 0f 6e c2       	movq   %rdx,%xmm0
-     2237:	66 48 0f 6e c8       	movq   %rax,%xmm1
-     223c:	48 8d 0d 4d ff ff ff 	lea    -0xb3(%rip),%rcx        # 2190 
-<do_encl_op_put_to_addr>
-     2243:	66 0f 6c c1          	punpcklqdq %xmm1,%xmm0
-     2247:	48 8d 05 82 ff ff ff 	lea    -0x7e(%rip),%rax        # 21d0 
-<do_encl_op_get_from_addr>
-     224e:	48 8d 35 bb ff ff ff 	lea    -0x45(%rip),%rsi        # 2210 
-<do_encl_op_nop>
-     2255:	66 48 0f 6e d0       	movq   %rax,%xmm2
-     225a:	0f 29 44 24 b8       	movaps %xmm0,-0x48(%rsp)
-     225f:	66 48 0f 6e c1       	movq   %rcx,%xmm0
-     2264:	48 8d 05 e5 fd ff ff 	lea    -0x21b(%rip),%rax        # 2050 
-<do_encl_eaccept>
-     226b:	66 0f 6c c2          	punpcklqdq %xmm2,%xmm0
-     226f:	66 48 0f 6e d8       	movq   %rax,%xmm3
-     2274:	48 8d 15 85 fd ff ff 	lea    -0x27b(%rip),%rdx        # 2000 
-<do_encl_emodpe>
-     227b:	0f 29 44 24 c8       	movaps %xmm0,-0x38(%rsp)
-     2280:	66 48 0f 6e c6       	movq   %rsi,%xmm0
-     2285:	48 8d 05 14 fe ff ff 	lea    -0x1ec(%rip),%rax        # 20a0 
-<do_encl_init_tcs_page>
-     228c:	66 0f 6c c3          	punpcklqdq %xmm3,%xmm0
-     2290:	66 48 0f 6e e0       	movq   %rax,%xmm4
-     2295:	48 8b 07             	mov    (%rdi),%rax
-     2298:	0f 29 44 24 d8       	movaps %xmm0,-0x28(%rsp)
-     229d:	66 48 0f 6e c2       	movq   %rdx,%xmm0
-     22a2:	66 0f 6c c4          	punpcklqdq %xmm4,%xmm0
-     22a6:	0f 29 44 24 e8       	movaps %xmm0,-0x18(%rsp)
-     22ab:	48 83 f8 07          	cmp    $0x7,%rax
-     22af:	77 07                	ja     22b8 <encl_body+0x98>
-     22b1:	ff 64 c4 b8          	jmp    *-0x48(%rsp,%rax,8)
-     22b5:	0f 1f 00             	nopl   (%rax)
-     22b8:	c3                   	ret
-
-------
-gcc.-Ofast.log.elf
-
-0000000000002220 <encl_body>:
-     2220:	f3 0f 1e fa          	endbr64
-     2224:	48 8d 05 55 ff ff ff 	lea    -0xab(%rip),%rax        # 2180 
-<do_encl_op_get_from_buf>
-     222b:	48 8d 15 3e ff ff ff 	lea    -0xc2(%rip),%rdx        # 2170 
-<do_encl_op_put_to_buf>
-     2232:	66 48 0f 6e c2       	movq   %rdx,%xmm0
-     2237:	66 48 0f 6e c8       	movq   %rax,%xmm1
-     223c:	48 8d 0d 4d ff ff ff 	lea    -0xb3(%rip),%rcx        # 2190 
-<do_encl_op_put_to_addr>
-     2243:	66 0f 6c c1          	punpcklqdq %xmm1,%xmm0
-     2247:	48 8d 05 82 ff ff ff 	lea    -0x7e(%rip),%rax        # 21d0 
-<do_encl_op_get_from_addr>
-     224e:	48 8d 35 bb ff ff ff 	lea    -0x45(%rip),%rsi        # 2210 
-<do_encl_op_nop>
-     2255:	66 48 0f 6e d0       	movq   %rax,%xmm2
-     225a:	0f 29 44 24 b8       	movaps %xmm0,-0x48(%rsp)
-     225f:	66 48 0f 6e c1       	movq   %rcx,%xmm0
-     2264:	48 8d 05 e5 fd ff ff 	lea    -0x21b(%rip),%rax        # 2050 
-<do_encl_eaccept>
-     226b:	66 0f 6c c2          	punpcklqdq %xmm2,%xmm0
-     226f:	66 48 0f 6e d8       	movq   %rax,%xmm3
-     2274:	48 8d 15 85 fd ff ff 	lea    -0x27b(%rip),%rdx        # 2000 
-<do_encl_emodpe>
-     227b:	0f 29 44 24 c8       	movaps %xmm0,-0x38(%rsp)
-     2280:	66 48 0f 6e c6       	movq   %rsi,%xmm0
-     2285:	48 8d 05 14 fe ff ff 	lea    -0x1ec(%rip),%rax        # 20a0 
-<do_encl_init_tcs_page>
-     228c:	66 0f 6c c3          	punpcklqdq %xmm3,%xmm0
-     2290:	66 48 0f 6e e0       	movq   %rax,%xmm4
-     2295:	48 8b 07             	mov    (%rdi),%rax
-     2298:	0f 29 44 24 d8       	movaps %xmm0,-0x28(%rsp)
-     229d:	66 48 0f 6e c2       	movq   %rdx,%xmm0
-     22a2:	66 0f 6c c4          	punpcklqdq %xmm4,%xmm0
-     22a6:	0f 29 44 24 e8       	movaps %xmm0,-0x18(%rsp)
-     22ab:	48 83 f8 07          	cmp    $0x7,%rax
-     22af:	77 07                	ja     22b8 <encl_body+0x98>
-     22b1:	ff 64 c4 b8          	jmp    *-0x48(%rsp,%rax,8)
-     22b5:	0f 1f 00             	nopl   (%rax)
-     22b8:	c3                   	ret
-
-------
-gcc.-Og.log.elf
-
-000000000000225f <encl_body>:
-     225f:	f3 0f 1e fa          	endbr64
-     2263:	48 83 ec 48          	sub    $0x48,%rsp
-     2267:	48 8d 05 8a ff ff ff 	lea    -0x76(%rip),%rax        # 21f8 
-<do_encl_op_put_to_buf>
-     226e:	48 89 04 24          	mov    %rax,(%rsp)
-     2272:	48 8d 05 99 ff ff ff 	lea    -0x67(%rip),%rax        # 2212 
-<do_encl_op_get_from_buf>
-     2279:	48 89 44 24 08       	mov    %rax,0x8(%rsp)
-     227e:	48 8d 05 a7 ff ff ff 	lea    -0x59(%rip),%rax        # 222c 
-<do_encl_op_put_to_addr>
-     2285:	48 89 44 24 10       	mov    %rax,0x10(%rsp)
-     228a:	48 8d 05 b2 ff ff ff 	lea    -0x4e(%rip),%rax        # 2243 
-<do_encl_op_get_from_addr>
-     2291:	48 89 44 24 18       	mov    %rax,0x18(%rsp)
-     2296:	48 8d 05 bd ff ff ff 	lea    -0x43(%rip),%rax        # 225a 
-<do_encl_op_nop>
-     229d:	48 89 44 24 20       	mov    %rax,0x20(%rsp)
-     22a2:	48 8d 05 cc fd ff ff 	lea    -0x234(%rip),%rax        # 2075 
-<do_encl_eaccept>
-     22a9:	48 89 44 24 28       	mov    %rax,0x28(%rsp)
-     22ae:	48 8d 05 4b fd ff ff 	lea    -0x2b5(%rip),%rax        # 2000 
-<do_encl_emodpe>
-     22b5:	48 89 44 24 30       	mov    %rax,0x30(%rsp)
-     22ba:	48 8d 05 64 fe ff ff 	lea    -0x19c(%rip),%rax        # 2125 
-<do_encl_init_tcs_page>
-     22c1:	48 89 44 24 38       	mov    %rax,0x38(%rsp)
-     22c6:	48 8b 07             	mov    (%rdi),%rax
-     22c9:	48 83 f8 07          	cmp    $0x7,%rax
-     22cd:	77 03                	ja     22d2 <encl_body+0x73>
-     22cf:	ff 14 c4             	call   *(%rsp,%rax,8)
-     22d2:	48 83 c4 48          	add    $0x48,%rsp
-     22d6:	c3                   	ret
-
-------
-gcc.-Os.log.elf
-
-00000000000021a9 <encl_body>:
-     21a9:	f3 0f 1e fa          	endbr64
-     21ad:	49 89 f8             	mov    %rdi,%r8
-     21b0:	48 8d 35 49 1e 00 00 	lea    0x1e49(%rip),%rsi        # 4000 
-<encl_entry_core+0x1e0f>
-     21b7:	48 8d 7c 24 b8       	lea    -0x48(%rsp),%rdi
-     21bc:	b9 10 00 00 00       	mov    $0x10,%ecx
-     21c1:	f3 a5                	rep movsl %ds:(%rsi),%es:(%rdi)
-     21c3:	49 8b 00             	mov    (%r8),%rax
-     21c6:	48 83 f8 07          	cmp    $0x7,%rax
-     21ca:	77 0a                	ja     21d6 <encl_body+0x2d>
-     21cc:	48 8b 44 c4 b8       	mov    -0x48(%rsp,%rax,8),%rax
-     21d1:	4c 89 c7             	mov    %r8,%rdi
-     21d4:	ff e0                	jmp    *%rax
-     21d6:	c3                   	ret
-
+On 8/31/2023 6:04 PM, Dmitry Baryshkov wrote:
+> On Thu, 31 Aug 2023 at 15:30, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>>
+>> On 8/31/2023 5:47 PM, Dmitry Baryshkov wrote:
+>>> On Thu, 31 Aug 2023 at 14:54, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>>>> On 8/29/2023 7:49 PM, Dmitry Baryshkov wrote:
+>>>>> On Tue, 29 Aug 2023 at 16:59, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>>>>>> UNIPHY / Combo PHY used on various qualcomm SoC's are very similar to
+>>>>>> ipq4019 PHY. Hence renaming this dt-binding to uniphy dt-binding and
+>>>>>> can be used for other qualcomm SoCs which are having similar UNIPHY.
+>>>>>>
+>>>>>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>>>>>> ---
+>>>>>>     .../phy/{qcom-usb-ipq4019-phy.yaml => qcom,uniphy.yaml}  | 9 +++++++--
+>>>>>>     1 file changed, 7 insertions(+), 2 deletions(-)
+>>>>>>     rename Documentation/devicetree/bindings/phy/{qcom-usb-ipq4019-phy.yaml => qcom,uniphy.yaml} (78%)
+>>>>>>
+>>>>>> diff --git a/Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+>>>>>> similarity index 78%
+>>>>>> rename from Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+>>>>>> rename to Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+>>>>>> index 09c614952fea..cbe2cc820009 100644
+>>>>>> --- a/Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+>>>>>> +++ b/Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+>>>>>> @@ -1,13 +1,18 @@
+>>>>>>     # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>>>>>     %YAML 1.2
+>>>>>>     ---
+>>>>>> -$id: http://devicetree.org/schemas/phy/qcom-usb-ipq4019-phy.yaml#
+>>>>>> +$id: http://devicetree.org/schemas/phy/qcom,uniphy.yaml#
+>>>>>>     $schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>>>>
+>>>>>> -title: Qualcom IPQ40xx Dakota HS/SS USB PHY
+>>>>>> +title: Qualcomm UNIPHY
+>>>>> We know that UNIPHY was a common design / IP block used for APQ8064
+>>>>> SATA and MSM8974 DSI and HDMI PHYs. Is this the same design, or was
+>>>>> the name reused by the Qualcomm for some other PHYs?
+>>>>> Several latest generations have USB QMP PHYs which are called 'uni-phy'.
+>>>> This PHY is build on top of QCA Uniphy 22ull. A combo PHY used between
+>>>> USB Gen3 / PCIe Gen3 controller.
+>>>> It is different from USB QMP PHYs.
+>>> So we have now three different items called Qualcomm uniphy. Could you
+>>> please add some distinctive name?
+>> There is one more target called IPQ5018 which is also having similar USB
+>> PHY built on top of
+>> Uniphy 28nm LP. That also can leverage this upcoming IPQ5332 USB PHY
+>> driver. Considering that,
+>> given a common name 'uniphy'.
+> Just to verify, do we mean the same thing, when speaking about the
+> 28nm LP UNIPHY?
+> I was referencing the apq8064 SATA and msm8974 HDMI / DSI PHYs. See [1] and [2].
+>
+> [1] https://patchwork.freedesktop.org/patch/544131/?series=118210&rev=2
+> [2] https://patchwork.freedesktop.org/patch/544125/?series=118210&rev=2
+No, this seems different from the PHY used on IPQ5018 / IPQ5332. PHY in 
+QualcommIPQ
+targets requires minimal SW configuration for the bring up.
+>> - Praveenkumar
+>>>> - Praveenkumar
+>>>>>>     maintainers:
+>>>>>>       - Robert Marko <robert.marko@sartura.hr>
+>>>>>> +  - Praveenkumar I <quic_ipkumar@quicinc.com>
+>>>>>> +
+>>>>>> +description:
+>>>>>> +  UNIPHY / COMBO PHY supports physical layer functionality for USB and PCIe on
+>>>>>> +  Qualcomm chipsets.
+>>>>>>
+>>>>>>     properties:
+>>>>>>       compatible:
+>>>>>> --
+>>>>>> 2.34.1
+>>>>>>
+>>>
+>
+>
