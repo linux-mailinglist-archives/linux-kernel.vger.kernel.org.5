@@ -2,244 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E769978F0FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447CD78F108
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244127AbjHaQP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54374 "EHLO
+        id S235671AbjHaQQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:16:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245195AbjHaQP5 (ORCPT
+        with ESMTP id S236280AbjHaQQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:15:57 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA6C1B1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:15:54 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58e4d2b7d16so13102897b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:15:54 -0700 (PDT)
+        Thu, 31 Aug 2023 12:16:55 -0400
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C68ADE50
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:16:51 -0700 (PDT)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52a3ff5f0abso1363834a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:16:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693498554; x=1694103354; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=1otw1nPT//mB6AJ07TcI8yfAnfgP9WtEP40b/k61qsA=;
-        b=jQTM46toJR/PTloWIXLhQPDpOrPIB6bIALXp3hw0v9n8sALokYAFch35HQiXEEjYLs
-         CHouCBnpIDpuG/HS7t/QBRu1l4VLxAeFaBWmsXreS/2K1aDy0LtmtC5ZCgx4J/NZvAvK
-         uCf82fcHMDZ1GaCJYhGEHzHkSzBEldKhPSJBqjTrUg9lQ+vUKhJ9AdeojHty+gwYR5I8
-         98RhvwJ6kY/SfoLJo6gIniGWdwOZdWjXlyttFrPZ6+snYYO4kFbp7Nu1/DFwGOvOAfYz
-         Ukzy+Pp+LojAfWN7V7nOaUdo67uLTXWN+y2rszgdZw9hU1uArwZltg8H1nwxHiAe3/Zk
-         CBtA==
+        d=chromium.org; s=google; t=1693498610; x=1694103410; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=toidrVNWtAC2lj32oW5IOdBKnQPrjUfxHNOgT2JWR+s=;
+        b=CyZ43+10RIRo56VsCEM5vidVMya8MdfKm/+QThQj0HR5R/qAlm+3sVJuLeEOnvmPBI
+         HHUfiwHu8PJT2Sj2KzBHXtBBPHhzHv+T34Flcj7gIoSfTLQVe/y1ZqRLUAtnyDOhMQ9h
+         k2jNy9EKDeCoSJoxglMKpIECjZgPjavlYpwEk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693498554; x=1694103354;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1otw1nPT//mB6AJ07TcI8yfAnfgP9WtEP40b/k61qsA=;
-        b=X8GAcggWsiS9Nzfj/GgaU6L/uKcKp1vpUApzOPHm4016DIk7GpLk+dinyewXkykM/Q
-         HeskneTF+BK86hjGLbyGP/vJe8SHIa0XNX0SMIS2n7gvsdJ20q237wFbSo9H8cynC4ph
-         3MPKYtOYyhi4xshDki2B2m4+EXNxxR46LeKr33geDEVoYsktqfieRF7LXA9+PCWU0tNO
-         fgLOfdD1ae0jeP5N/IdOlKqf+GfLEEPM45MSwCaPyGb0/tAHjdpcHi/pMjonobCRKSDg
-         JIOOdWpkcuW6TyiXlLRpmtUNqNQKcWXuOHvwV+yV0mwtiHtULe3vXM86M8cH8Pfmi26C
-         cNwg==
-X-Gm-Message-State: AOJu0Yz1p+mtYbiNz2IK5zpmrQ7xyFhsYe8HimNU7WYX119WPWzadxYD
-        nSbBc/sf3AXBdlVz9qZBb+jwzIasmnKmNg==
-X-Google-Smtp-Source: AGHT+IGdT9ixCJcLtihXovU0XFLv/QjRMVVDuIGRzj66yDxoxazlQCwzroY9uXPFdAIftMk6TPICgFNlktB9zQ==
-X-Received: from jiao.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:10f3])
- (user=jiaozhou job=sendgmr) by 2002:a81:b306:0:b0:579:f832:74b with SMTP id
- r6-20020a81b306000000b00579f832074bmr191533ywh.10.1693498554011; Thu, 31 Aug
- 2023 09:15:54 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 16:15:50 +0000
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-Message-ID: <20230831161551.2032504-1-jiaozhou@google.com>
-Subject: [PATCH v2] efivarfs: Add Mount Option For Efivarfs
-From:   Jiao Zhou <jiaozhou@google.com>
-To:     Linux FS Development <linux-fsdevel@vger.kernel.org>
-Cc:     Jiao Zhou <jiaozhou@google.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        kernel test robot <oliver.sang@intel.com>
+        d=1e100.net; s=20221208; t=1693498610; x=1694103410;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=toidrVNWtAC2lj32oW5IOdBKnQPrjUfxHNOgT2JWR+s=;
+        b=fvxQ2DoHsw6PYbHXXIsGxhGQ95XMRFJhyXbknDqtJtcS1S93QrgWpfeT+9OAlC6uoH
+         63WB1VhWpbo+hgNj/O0bp+6XFN8yJxr9BeOFK7f6kBhImSZGSx3QJdDSJdj1GVjereiF
+         ae4ZTYvdYyFVBxBfDqBS7sVUCvInmXXWbVui26B1zXdOwv9eKIqyMXdJc0gHr1l/lPQI
+         Qj+Ji9MQ8SOcApPkKpqZdul5Qeg6TnEzrsBWmYj57JnAPMJqgXBZHZuD+T2NGq+p9udI
+         QKqX5f78VbwmtOAlP7/iPQEWIyrrwEQ2xUdSlc6WkPz/vOv4wayzB/l4Jmsbi+rw4vWd
+         IgMQ==
+X-Gm-Message-State: AOJu0YwSgR3TzxvOHAkkhkYlPv6U4HfaXByEo3U2bJT/G146YGZmIsiP
+        ANOGLWxdFpr4U22JwAXBz2sYHBOcqRSa+OqyPpkaSKRF
+X-Google-Smtp-Source: AGHT+IFeUffUXoa2Qv7ydYyYdBX3K2M88vnH67r3GOKTbIl4yjA+1zaQVDbFBLYF7Y4G27kG+ZQklA==
+X-Received: by 2002:a50:fb88:0:b0:523:4933:b024 with SMTP id e8-20020a50fb88000000b005234933b024mr35334edq.14.1693498609847;
+        Thu, 31 Aug 2023 09:16:49 -0700 (PDT)
+Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com. [209.85.128.44])
+        by smtp.gmail.com with ESMTPSA id e23-20020aa7d7d7000000b00525683f9b2fsm947236eds.5.2023.08.31.09.16.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 09:16:49 -0700 (PDT)
+Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4005f0a6c2bso93365e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:16:47 -0700 (PDT)
+X-Received: by 2002:a05:600c:5124:b0:400:fffe:edf6 with SMTP id
+ o36-20020a05600c512400b00400fffeedf6mr145835wms.1.1693498607636; Thu, 31 Aug
+ 2023 09:16:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230831101026.3122590-1-mark.rutland@arm.com>
+In-Reply-To: <20230831101026.3122590-1-mark.rutland@arm.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 31 Aug 2023 09:16:31 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Wb0TRE1AEr=f7f-iGWrnF=Wabdde5XJW2XNjMpy+uJGQ@mail.gmail.com>
+Message-ID: <CAD=FV=Wb0TRE1AEr=f7f-iGWrnF=Wabdde5XJW2XNjMpy+uJGQ@mail.gmail.com>
+Subject: Re: [PATCH] lkdtm/bugs: add test for panic() with stuck secondary CPUs
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org,
+        sumit.garg@linaro.org, swboyd@chromium.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We want to support fwupd for updating system firmware on Reven. 
-Capsule updates need to create UEFI variables. Our current approach
-to UEFI variables of just allowing access to a static list of them 
-at boot time won't work here.
+Hi,
 
-I think we could add mount options to efivarfs to set the uid/gid. 
-We'd then mount the file system with fwupd's uid/gid. 
-This approach is used by a number of other filesystems that don't 
-have native support for ownership, so it should be upstreamable.
+On Thu, Aug 31, 2023 at 3:10=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
+ wrote:
+>
+> Upon a panic() the kernel will use either smp_send_stop() or
+> crash_smp_send_stop() to attempt to stop secondary CPUs via an IPI,
+> which may or may not be an NMI. Generally it's preferable that this is an
+> NMI so that CPUs can be stopped in as many situations as possible, but
+> it's not always possible to provide an NMI, and there are cases where
+> CPUs may be unable to handle the NMI regardless.
+>
+> This patch adds a test for panic() where all other CPUs are stuck with
+> interrupts disabled, which can be used to check whether the kernel
+> gracefully handles CPUs failing to respond to a stop, and whe NMIs stops
+> work.
+>
+> For example, on arm64 *without* an NMI, this results in:
+>
+> | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
+> | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
+> | Kernel panic - not syncing: panic stop irqoff test
+> | CPU: 2 PID: 24 Comm: migration/2 Not tainted 6.5.0-rc3-00077-ge6c782389=
+895-dirty #4
+> | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a=
+4
+> | Call trace:
+> |  dump_backtrace+0x94/0xec
+> |  show_stack+0x18/0x24
+> |  dump_stack_lvl+0x74/0xc0
+> |  dump_stack+0x18/0x24
+> |  panic+0x358/0x3e8
+> |  lkdtm_PANIC+0x0/0x18
+> |  multi_cpu_stop+0x9c/0x1a0
+> |  cpu_stopper_thread+0x84/0x118
+> |  smpboot_thread_fn+0x224/0x248
+> |  kthread+0x114/0x118
+> |  ret_from_fork+0x10/0x20
+> | SMP: stopping secondary CPUs
+> | SMP: failed to stop secondary CPUs 0-3
+> | Kernel Offset: 0x401cf3490000 from 0xffff800080000000
+> | PHYS_OFFSET: 0x40000000
+> | CPU features: 0x00000000,68c167a1,cce6773f
+> | Memory Limit: none
+> | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
+>
+> On arm64 *with* an NMI, this results in:
+>
+> | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
+> | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
+> | Kernel panic - not syncing: panic stop irqoff test
+> | CPU: 1 PID: 19 Comm: migration/1 Not tainted 6.5.0-rc3-00077-ge6c782389=
+895-dirty #4
+> | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a=
+4
+> | Call trace:
+> |  dump_backtrace+0x94/0xec
+> |  show_stack+0x18/0x24
+> |  dump_stack_lvl+0x74/0xc0
+> |  dump_stack+0x18/0x24
+> |  panic+0x358/0x3e8
+> |  lkdtm_PANIC+0x0/0x18
+> |  multi_cpu_stop+0x9c/0x1a0
+> |  cpu_stopper_thread+0x84/0x118
+> |  smpboot_thread_fn+0x224/0x248
+> |  kthread+0x114/0x118
+> |  ret_from_fork+0x10/0x20
+> | SMP: stopping secondary CPUs
+> | Kernel Offset: 0x55a9c0bc0000 from 0xffff800080000000
+> | PHYS_OFFSET: 0x40000000
+> | CPU features: 0x00000000,68c167a1,fce6773f
+> | Memory Limit: none
+> | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
 
-Signed-off-by: Jiao Zhou <jiaozhou@google.com>
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202308291443.ea96ac66-oliver.sang@intel.com
----
-Changelog since v2:
-- Fix a NULL pointer dereference and add a a trailing empty entry to sturct.
+Since Sumit didn't notice it and I had to use a "diff" tool to help me
+spot the difference in your two examples, maybe telegraph for the
+reader of the commit message that the important thing is the lack of
+"SMP: failed to stop secondary CPUs" in your example.
 
- fs/efivarfs/inode.c    |  4 +++
- fs/efivarfs/internal.h |  9 ++++++
- fs/efivarfs/super.c    | 65 ++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 78 insertions(+)
 
-diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
-index 939e5e242b98..de57fb6c28e1 100644
---- a/fs/efivarfs/inode.c
-+++ b/fs/efivarfs/inode.c
-@@ -20,9 +20,13 @@ struct inode *efivarfs_get_inode(struct super_block *sb,
- 				const struct inode *dir, int mode,
- 				dev_t dev, bool is_removable)
- {
-+	struct efivarfs_fs_info *fsi = sb->s_fs_info;
- 	struct inode *inode = new_inode(sb);
-+	struct efivarfs_mount_opts *opts = &fsi->mount_opts;
- 
- 	if (inode) {
-+		inode->i_uid = opts->uid;
-+		inode->i_gid = opts->gid;
- 		inode->i_ino = get_next_ino();
- 		inode->i_mode = mode;
- 		inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
-diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
-index 30ae44cb7453..57deaf56d8e2 100644
---- a/fs/efivarfs/internal.h
-+++ b/fs/efivarfs/internal.h
-@@ -8,6 +8,15 @@
- 
- #include <linux/list.h>
- 
-+struct efivarfs_mount_opts {
-+	kuid_t uid;
-+	kgid_t gid;
-+};
-+
-+struct efivarfs_fs_info {
-+	struct efivarfs_mount_opts mount_opts;
-+};
-+
- extern const struct file_operations efivarfs_file_operations;
- extern const struct inode_operations efivarfs_dir_inode_operations;
- extern bool efivarfs_valid_name(const char *str, int len);
-diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
-index 15880a68faad..d67b0d157ff5 100644
---- a/fs/efivarfs/super.c
-+++ b/fs/efivarfs/super.c
-@@ -8,6 +8,7 @@
- #include <linux/efi.h>
- #include <linux/fs.h>
- #include <linux/fs_context.h>
-+#include <linux/fs_parser.h>
- #include <linux/module.h>
- #include <linux/pagemap.h>
- #include <linux/ucs2_string.h>
-@@ -23,10 +24,27 @@ static void efivarfs_evict_inode(struct inode *inode)
- 	clear_inode(inode);
- }
- 
-+static int efivarfs_show_options(struct seq_file *m, struct dentry *root)
-+{
-+	struct super_block *sb = root->d_sb;
-+	struct efivarfs_fs_info *sbi = sb->s_fs_info;
-+	struct efivarfs_mount_opts *opts = &sbi->mount_opts;
-+
-+	/* Show partition info */
-+	if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
-+		seq_printf(m, ",uid=%u",
-+				from_kuid_munged(&init_user_ns, opts->uid));
-+	if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
-+		seq_printf(m, ",gid=%u",
-+				from_kgid_munged(&init_user_ns, opts->gid));
-+	return 0;
-+}
-+
- static const struct super_operations efivarfs_ops = {
- 	.statfs = simple_statfs,
- 	.drop_inode = generic_delete_inode,
- 	.evict_inode = efivarfs_evict_inode,
-+	.show_options	= efivarfs_show_options,
- };
- 
- /*
-@@ -190,6 +208,41 @@ static int efivarfs_destroy(struct efivar_entry *entry, void *data)
- 	return 0;
- }
- 
-+enum {
-+	Opt_uid, Opt_gid,
-+};
-+
-+static const struct fs_parameter_spec efivarfs_parameters[] = {
-+	fsparam_u32("uid",			Opt_uid),
-+	fsparam_u32("gid",			Opt_gid),
-+	{},
-+};
-+
-+static int efivarfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
-+{
-+	struct efivarfs_fs_info *sbi = fc->s_fs_info;
-+	struct efivarfs_mount_opts *opts = &sbi->mount_opts;
-+	struct fs_parse_result result;
-+	int opt;
-+
-+	opt = fs_parse(fc, efivarfs_parameters, param, &result);
-+	if (opt < 0)
-+		return opt;
-+
-+	switch (opt) {
-+	case Opt_uid:
-+		opts->uid = make_kuid(current_user_ns(), result.uint_32);
-+		break;
-+	case Opt_gid:
-+		opts->gid = make_kgid(current_user_ns(), result.uint_32);
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
- {
- 	struct inode *inode = NULL;
-@@ -233,10 +286,21 @@ static int efivarfs_get_tree(struct fs_context *fc)
- 
- static const struct fs_context_operations efivarfs_context_ops = {
- 	.get_tree	= efivarfs_get_tree,
-+	.parse_param	= efivarfs_parse_param,
- };
- 
- static int efivarfs_init_fs_context(struct fs_context *fc)
- {
-+	struct efivarfs_fs_info *sfi;
-+
-+	sfi = kzalloc(sizeof(struct efivarfs_fs_info), GFP_KERNEL);
-+	if (!sfi)
-+		return -ENOMEM;
-+
-+	sfi->mount_opts.uid = current_uid();
-+	sfi->mount_opts.gid = current_gid();
-+
-+	fc->s_fs_info = sfi;
- 	fc->ops = &efivarfs_context_ops;
- 	return 0;
- }
-@@ -254,6 +318,7 @@ static struct file_system_type efivarfs_type = {
- 	.name    = "efivarfs",
- 	.init_fs_context = efivarfs_init_fs_context,
- 	.kill_sb = efivarfs_kill_sb,
-+	.parameters		= efivarfs_parameters,
- };
- 
- static __init int efivarfs_init(void)
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+> +static void lkdtm_PANIC_STOP_IRQOFF(void)
+> +{
+> +       atomic_t v =3D ATOMIC_INIT(0);
+> +
+> +       cpus_read_lock();
+> +       stop_machine(panic_stop_irqoff_fn, &v, cpu_online_mask);
 
+It broke my brain just a little bit that stop_machine() isn't backed
+by "IPI_CPU_STOP" since the point of this was to test the patch
+modifying how "IPI_CPU_STOP" worked. ;-) Assuming I didn't mess up, I
+guess stop_machine() is just used to get all the CPUs running with
+interrupts disabled and then the last CPU does a panic. The _panic_
+then tests "IPI_CPU_STOP" / "IPI_CPU_CRASH_STOP".
+
+Probably this is obvious to everyone but me, so no action is needed
+unless you agree that it's confusing and can think of a good comment /
+commit message addition to help.
+
+
+In any case, after Sumit's feedback is addressed:
+
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
