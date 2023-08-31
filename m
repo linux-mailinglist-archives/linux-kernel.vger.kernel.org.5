@@ -2,82 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B454378E933
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:18:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4E578E92C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243628AbjHaJSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
+        id S240727AbjHaJSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230227AbjHaJSs (ORCPT
+        with ESMTP id S230227AbjHaJSh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:18:48 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B42DCED;
-        Thu, 31 Aug 2023 02:18:44 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V9FmBQ020063;
-        Thu, 31 Aug 2023 09:18:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=d8sdrQUWGhc1SdIY2ZpxqRRFc9Qt5M2O2/ou6Jwu4Is=;
- b=J/ojzC1f4snWsaXBqVdk8ruDpNKvsGioAR7nsgzU3fe+XouAWDPKJX5UBn96t9cK88bS
- EBfpKEJfv/ZvdhtpGkTE9FaIU4c0PDVG+8gzVvHatFZiwwCvdGX+v1NP0WYwnIMCwrMp
- nB+CTUO/2E7PRky5BU/ma6tojE74ZvXlr0BpoR7SqkKuuAcxI2VhPhdcmC4/D+pM9DO2
- qq4CvpkVlHL94sY74G+AL2zWPglxeCIIiM1UI+lXP6ME1UgKdStDxU13sm5Ql0IbrLBJ
- FXdxRRmsXMriq9XwFSCIn2kx9x9sK0DkSHUriu8eBi4rrMqXbXuq+qbCIvP6q6IjNmhv 3A== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st0tatst0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 09:18:34 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V9IYZi025176
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 09:18:34 GMT
-Received: from [10.218.45.181] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 31 Aug
- 2023 02:18:29 -0700
-Message-ID: <f539613f-e050-a9ec-ae9b-e6b6db5a9a32@quicinc.com>
-Date:   Thu, 31 Aug 2023 14:48:25 +0530
+        Thu, 31 Aug 2023 05:18:37 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC4D9194;
+        Thu, 31 Aug 2023 02:18:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2EB9AB821F0;
+        Thu, 31 Aug 2023 09:18:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83600C433C7;
+        Thu, 31 Aug 2023 09:18:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693473510;
+        bh=TghKzhtzInTbNd94epYbxbWW1bTFyJLNwaYsPJklaGk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Kb8HADBE9koZxowHCox94kI3XM2BPa+qUX3rdP2aem01OXoPxc/KvGRHjxb/gsjlE
+         nc3PvBwRzxRpnfHzTqgZQgxhmCtjDeggKJKfYXAKn678J2/YLLUEi9Gwq2c6gSZHaA
+         WNPuHZhT2TJMldWfWtuHpAz3QjZh42U7DLp5AJs/jWbRhe4bCFNUaZZE1kmSjEnBYm
+         GrWCMS9iqQ30MDrrUMvfP9dqb80TVwSs+0nlE/yPd6FrJ6/43fvnAonpOfNeMqtwN6
+         UrfZ3QheZmhe7bkOU6d90DOFON8YU2VlhIsHO7GklLfJaHa8ByM6Wh0E1daDwjEQWu
+         TG+zdzGUuBdog==
+Date:   Thu, 31 Aug 2023 11:18:27 +0200
+From:   Lorenzo Bianconi <lorenzo@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Kevin Bosien <kbosien@spacex.com>, Jim Gruen <jgruen@spacex.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mario Tesi <mario.tesi@st.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] RFC: iio: lsm6dsx: Support temperature channel on
+ some devices
+Message-ID: <ZPBa40RHJ93proj0@lore-desk>
+References: <20230829-iio-spacex-lsm6ds0-v2-1-584e161b612f@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.3.2
-Subject: Re: [PATCH V5 5/6] scsi: ufs: qcom: Refactor ufs_qcom_cfg_timers
- function.
-Content-Language: en-US
-To:     Manivannan Sadhasivam <mani@kernel.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>, <quic_cang@quicinc.com>,
-        <quic_nguyenb@quicinc.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        "Naveen Kumar Goud Arepalli" <quic_narepall@quicinc.com>
-References: <20230823154413.23788-1-quic_nitirawa@quicinc.com>
- <20230823154413.23788-6-quic_nitirawa@quicinc.com>
- <20230828081719.GG5148@thinkpad>
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-In-Reply-To: <20230828081719.GG5148@thinkpad>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: onuHKTfQx5ospRijv_kUUFyeRYketGzu
-X-Proofpoint-ORIG-GUID: onuHKTfQx5ospRijv_kUUFyeRYketGzu
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_07,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 malwarescore=0 mlxlogscore=999
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310083
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="28VPyD9tiEjc7eLv"
+Content-Disposition: inline
+In-Reply-To: <20230829-iio-spacex-lsm6ds0-v2-1-584e161b612f@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,183 +62,363 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--28VPyD9tiEjc7eLv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 8/28/2023 1:47 PM, Manivannan Sadhasivam wrote:
-> On Wed, Aug 23, 2023 at 09:14:12PM +0530, Nitin Rawat wrote:
->> This change configures SYS1CLK_1US_REG for pre scale up condition. Also
->> move ufs_qcom_cfg_timers from clk scaling post change ops to clk scaling
->> pre change ops to align with the hardware specification.
->>
-> 
-> Same comment as previous patch. This looks like a bug fix to me.
-> 
-> Also, this patch should be splitted into 2. SYS1CLK_1US_REG and
-> ufs_qcom_cfg_timers change.
-> 
-> - Mani
-> 
+> The ISM330 sensors (wai 0x6b) has a temperature channel that can
+> be read out. Modify the lsm6dsx core to accomodate temperature
+> readout on these sensors:
+>=20
+> - Make headspace for three members in the channels and odr_table,
+> - Support offset
+> - Add code to avoid configuring the ODR of the temperature
+>   sensor, it has no real ODR control register.
+>=20
+> This is investigated because the hardware has important real-life
+> use cases using the Linux kernel.
 
+Hi Linus,
 
-In this patch we are trying to refactor ufs_qcom_cfg_timers function and 
-added extra argument to this function. Since it is just refactoring 
-code, IMO it's better to not split in to 2 patches. We will update the 
-commit message to explain more in detail
+please seem my comments inline below.
 
---Nitin
+Regards,
+Lorenzo
 
->> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
->> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
->> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
->> ---
->>   drivers/ufs/host/ufs-qcom.c | 61 +++++++++++++++++++++++++------------
->>   1 file changed, 42 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
->> index 491c0173603e..82cf3ac4193a 100644
->> --- a/drivers/ufs/host/ufs-qcom.c
->> +++ b/drivers/ufs/host/ufs-qcom.c
->> @@ -533,7 +533,8 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
->>    * Return: zero for success and non-zero in case of a failure.
->>    */
->>   static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->> -			       u32 hs, u32 rate, bool update_link_startup_timer)
->> +				 u32 hs, u32 rate, bool link_startup,
->> +				 bool is_pre_scale_up)
->>   {
->>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->>   	struct ufs_clk_info *clki;
->> @@ -564,11 +565,16 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->>   	/*
->>   	 * The Qunipro controller does not use following registers:
->>   	 * SYS1CLK_1US_REG, TX_SYMBOL_CLK_1US_REG, CLK_NS_REG &
->> -	 * UFS_REG_PA_LINK_STARTUP_TIMER
->> -	 * But UTP controller uses SYS1CLK_1US_REG register for Interrupt
->> -	 * Aggregation logic.
->> -	*/
->> -	if (ufs_qcom_cap_qunipro(host) && !ufshcd_is_intr_aggr_allowed(hba))
->> +	 * UFS_REG_PA_LINK_STARTUP_TIMER.
->> +	 * However UTP controller uses SYS1CLK_1US_REG register for Interrupt
->> +	 * Aggregation logic and Auto hibern8 logic.
->> +	 * It is mandatory to write SYS1CLK_1US_REG register on UFS host
->> +	 * controller V4.0.0 onwards.
->> +	 */
->> +	if (ufs_qcom_cap_qunipro(host) &&
->> +	    !(ufshcd_is_intr_aggr_allowed(hba) ||
->> +	    ufshcd_is_auto_hibern8_supported(hba) ||
->> +	    host->hw_ver.major >= 4))
->>   		return 0;
->>
->>   	if (gear == 0) {
->> @@ -577,8 +583,14 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->>   	}
->>
->>   	list_for_each_entry(clki, &hba->clk_list_head, list) {
->> -		if (!strcmp(clki->name, "core_clk"))
->> -			core_clk_rate = clk_get_rate(clki->clk);
->> +		if (!strcmp(clki->name, "core_clk")) {
->> +			if (is_pre_scale_up)
->> +				core_clk_rate = clki->max_freq;
->> +			else
->> +				core_clk_rate = clk_get_rate(clki->clk);
->> +			break;
->> +		}
->> +
->>   	}
->>
->>   	/* If frequency is smaller than 1MHz, set to 1MHz */
->> @@ -658,7 +670,7 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
->>   		mb();
->>   	}
->>
->> -	if (update_link_startup_timer && host->hw_ver.major != 0x5) {
->> +	if (link_startup && host->hw_ver.major != 0x5) {
->>   		ufshcd_writel(hba, ((core_clk_rate / MSEC_PER_SEC) * 100),
->>   			      REG_UFS_CFG0);
->>   		/*
->> @@ -719,7 +731,7 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
->>   	switch (status) {
->>   	case PRE_CHANGE:
->>   		if (ufs_qcom_cfg_timers(hba, UFS_PWM_G1, SLOWAUTO_MODE,
->> -					0, true)) {
->> +					0, true, false)) {
->>   			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
->>   				__func__);
->>   			return -EINVAL;
->> @@ -968,7 +980,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
->>   	case POST_CHANGE:
->>   		if (ufs_qcom_cfg_timers(hba, dev_req_params->gear_rx,
->>   					dev_req_params->pwr_rx,
->> -					dev_req_params->hs_rate, false)) {
->> +					dev_req_params->hs_rate, false, false)) {
->>   			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
->>   				__func__);
->>   			/*
->> @@ -1401,11 +1413,24 @@ static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
->>   static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
->>   {
->>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->> +	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
->> +	int err;
->>
->>   	if (!ufs_qcom_cap_qunipro(host))
->> -		return 0;
->> +		goto out;
->> +
->> +	if (attr) {
->> +		err = ufs_qcom_cfg_timers(hba, attr->gear_rx,
->> +					    attr->pwr_rx, attr->hs_rate,
->> +					    false, true);
->> +		if (err)
->> +			dev_err(hba->dev, "%s ufs cfg timer failed\n",
->> +								__func__);
->> +	}
->>
->> -	return ufs_qcom_cfg_core_clk_ctrl(hba);
->> +	err = ufs_qcom_cfg_core_clk_ctrl(hba);
->> +out:
->> +	return err;
->>   }
->>
->>   static int ufs_qcom_clk_scale_up_post_change(struct ufs_hba *hba)
->> @@ -1441,6 +1466,7 @@ static int ufs_qcom_clk_scale_down_pre_change(struct ufs_hba *hba)
->>   static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
->>   {
->>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->> +	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
->>   	struct list_head *head = &hba->clk_list_head;
->>   	struct ufs_clk_info *clki;
->>   	u32 curr_freq = 0;
->> @@ -1449,6 +1475,9 @@ static int ufs_qcom_clk_scale_down_post_change(struct ufs_hba *hba)
->>   	if (!ufs_qcom_cap_qunipro(host))
->>   		return 0;
->>
->> +	if (attr)
->> +		ufs_qcom_cfg_timers(hba, attr->gear_rx, attr->pwr_rx,
->> +					 attr->hs_rate, false, false);
->>
->>   	list_for_each_entry(clki, head, list) {
->>   		if (!IS_ERR_OR_NULL(clki->clk) &&
->> @@ -1480,7 +1509,6 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
->>   		bool scale_up, enum ufs_notify_change_status status)
->>   {
->>   	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
->> -	struct ufs_pa_layer_attr *dev_req_params = &host->dev_req_params;
->>   	int err = 0;
->>
->>   	/* check the host controller state before sending hibern8 cmd */
->> @@ -1510,11 +1538,6 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
->>   			return err;
->>   		}
->>
->> -		ufs_qcom_cfg_timers(hba,
->> -				    dev_req_params->gear_rx,
->> -				    dev_req_params->pwr_rx,
->> -				    dev_req_params->hs_rate,
->> -				    false);
->>   		ufs_qcom_icc_update_bw(host);
->>   		ufshcd_uic_hibern8_exit(hba);
->>   	}
->> --
->> 2.17.1
->>
-> 
+>=20
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+> The ISM330DHCX is used in the SpaceX Starlink terminals which
+> are running a realtime patched close-to-mainline Linux kernel so
+> let's support temperature readout on it because why not.
+> SpaceX is using the temperature.
+> ---
+> Changes in v2:
+> - Put to RFC because I can't test changes.
+> - Added some mail addresses to SpaceX to the header. Maybe you
+>   guys can check if this works for you. Or forward to designated
+>   open source ambassador or whatever can help. (Addresses found
+>   in SpaceX code drop.)
+> - Drop the code with strings for ism330dhc as we concluded that
+>   this is probably ism330dhcx which is already supported.
+>   (Would be nice if SpaceX can confirm.)
+> - Don't write in nonsense register 0x0a for temperature sensor
+> - More elaborate code to just avoid writing ODR for the temperature
+>   sensor and instead rely on gyro or accelerometer to drive
+>   the odr
+> - Link to v1: https://lore.kernel.org/r/20230811-iio-spacex-lsm6ds0-v1-0-=
+e953a440170d@linaro.org
+> ---
+>  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx.h        | 24 +++++++-
+>  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_buffer.c |  4 ++
+>  drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c   | 79 ++++++++++++++++++++=
++++++-
+>  3 files changed, 102 insertions(+), 5 deletions(-)
+>=20
+
+[...]
+
+>  		},
+>  		.drdy_mask =3D {
+>  			.addr =3D 0x13,
+> @@ -869,6 +878,17 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_s=
+ensor_settings[] =3D {
+>  				.odr_avl[6] =3D { 833000, 0x07 },
+>  				.odr_len =3D 7,
+>  			},
+> +			[ST_LSM6DSX_ID_TEMP] =3D {
+> +				/*
+> +				 * NOTE: this ODR will be capped and controllerd by the
+> +				 * gyro and accelerometer don't have any reg to configure
+> +				 * this ODR.
+> +				 */
+> +				.odr_avl[0] =3D {  12500, 0x01 },
+> +				.odr_avl[1] =3D {  26000, 0x02 },
+> +				.odr_avl[2] =3D {  52000, 0x03 },
+> +				.odr_len =3D 3,
+
+please consider we do not support low-power mode iirc (just high-performanc=
+e -
+bit 4 in CTRL6_C (15h)), so even enabling accel sensor, the temp sensor will
+always runs at 52Hz. Here we should add just one entry, like:
+
+				.odr_avl[0] =3D { 52000, 0x03 },
+				.odr_len =3D 1,
+
+> +			},
+>  		},
+>  		.fs_table =3D {
+>  			[ST_LSM6DSX_ID_ACC] =3D {
+> @@ -937,6 +957,10 @@ static const struct st_lsm6dsx_settings st_lsm6dsx_s=
+ensor_settings[] =3D {
+>  				.addr =3D 0x09,
+>  				.mask =3D GENMASK(7, 4),
+>  			},
+> +			[ST_LSM6DSX_ID_TEMP] =3D {
+> +				.addr =3D 0x0A,
+> +				.mask =3D GENMASK(5, 4),
+> +			},
+>  		},
+>  		.fifo_ops =3D {
+>  			.update_fifo =3D st_lsm6dsx_update_fifo,
+> @@ -1618,8 +1642,8 @@ int st_lsm6dsx_check_odr(struct st_lsm6dsx_sensor *=
+sensor, u32 odr, u8 *val)
+>  	odr_table =3D &sensor->hw->settings->odr_table[sensor->id];
+>  	for (i =3D 0; i < odr_table->odr_len; i++) {
+>  		/*
+> -		 * ext devices can run at different odr respect to
+> -		 * accel sensor
+> +		 * ext devices and temp sensor can run at different odr
+> +		 * respect to accel sensor
+>  		 */
+>  		if (odr_table->odr_avl[i].milli_hz >=3D odr)
+>  			break;
+> @@ -1661,6 +1685,21 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *senso=
+r, u32 req_odr)
+>  	switch (sensor->id) {
+>  	case ST_LSM6DSX_ID_GYRO:
+>  		break;
+> +	case ST_LSM6DSX_ID_TEMP:
+> +		/*
+> +		 * According to the application note AN5398 Rev 3
+> +		 * for ISM330DHCX, section 10, page 109
+> +		 * the ODR for the temperature sensor is equal to the
+> +		 * accelerometer ODR if the gyroscope is powered-down,
+> +		 * up to 52 Hz, but constant 52 Hz if the gyroscope
+> +		 * is powered on. It never goes above 52 Hz.
+> +		 */
+> +		ref_sensor =3D iio_priv(hw->iio_devs[ST_LSM6DSX_ID_GYRO]);
+> +		if ((req_odr > 0) && (hw->enable_mask |=3D BIT(ref_sensor->id)))
+
+is there a typo here?
+
+> +			/* Gyro is on! ODR fixed to 52 Hz */
+> +			return 0;
+> +		/* We fall through and activate accelerometer if need be */
+> +		fallthrough;
+
+I do not think this approach works since please consider what happens with =
+the
+sequence of events reported below:
+- user enables gyro sensor
+- user enables temp sensor
+- user disables gyro sensor
+
+IIUC the accel sensor is not enabled in this case so even the temp one will=
+ be
+powered-down. Is it correct?
+I think for the temp sensor we should introduce a dependency from the gyro =
+one,
+doing something like (just compiled, not tested):
+
+diff --git a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c b/drivers/iio/imu=
+/st_lsm6dsx/st_lsm6dsx_core.c
+index 6a18b363cf73..ccd0d48bfb35 100644
+--- a/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
++++ b/drivers/iio/imu/st_lsm6dsx/st_lsm6dsx_core.c
+@@ -1633,19 +1633,36 @@ int st_lsm6dsx_check_odr(struct st_lsm6dsx_sensor *=
+sensor, u32 odr, u8 *val)
+ }
+=20
+ static int
+-st_lsm6dsx_check_odr_dependency(struct st_lsm6dsx_hw *hw, u32 odr,
+-				enum st_lsm6dsx_sensor_id id)
++st_lsm6dsx_check_odr_dependency(struct st_lsm6dsx_sensor *sensor,
++				enum st_lsm6dsx_sensor_id *odr_map,
++				int odr_map_size, u32 req_odr)
+ {
+-	struct st_lsm6dsx_sensor *ref =3D iio_priv(hw->iio_devs[id]);
++	struct st_lsm6dsx_hw *hw =3D sensor->hw;
++	int i;
+=20
+-	if (odr > 0) {
+-		if (hw->enable_mask & BIT(id))
+-			return max_t(u32, ref->odr, odr);
+-		else
+-			return odr;
+-	} else {
+-		return (hw->enable_mask & BIT(id)) ? ref->odr : 0;
++	for (i =3D 0; i < odr_map_size; i++) {
++		enum st_lsm6dsx_sensor_id id =3D odr_map[i];
++		struct st_lsm6dsx_sensor *ref =3D iio_priv(hw->iio_devs[id]);
++		u32 odr;
++
++		if (!hw->iio_devs[id] || id =3D=3D sensor->id)
++			continue;
++
++		if (req_odr) {
++			if (hw->enable_mask & BIT(id))
++				odr =3D max_t(u32, ref->odr, req_odr);
++			else
++				odr =3D req_odr;
++		} else {
++			odr =3D hw->enable_mask & BIT(id) ? ref->odr : 0;
++		}
++
++		if (odr !=3D req_odr)
++			/* device already configured */
++			return -EBUSY;
+ 	}
++
++	return 0;
+ }
+=20
+ static int
+@@ -1659,14 +1676,30 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor=
+, u32 req_odr)
+ 	int err;
+=20
+ 	switch (sensor->id) {
+-	case ST_LSM6DSX_ID_GYRO:
++	case ST_LSM6DSX_ID_TEMP:
++	case ST_LSM6DSX_ID_GYRO: {
++		enum st_lsm6dsx_sensor_id odr_dep_map[] =3D {
++			ST_LSM6DSX_ID_GYRO,
++			ST_LSM6DSX_ID_TEMP,
++		};
++
++		ref_sensor =3D iio_priv(hw->iio_devs[ST_LSM6DSX_ID_GYRO]);
++		if (st_lsm6dsx_check_odr_dependency(sensor, odr_dep_map,
++						    ARRAY_SIZE(odr_dep_map),
++						    req_odr))
++			return 0;
+ 		break;
++	}
+ 	case ST_LSM6DSX_ID_EXT0:
+ 	case ST_LSM6DSX_ID_EXT1:
+ 	case ST_LSM6DSX_ID_EXT2:
+ 	case ST_LSM6DSX_ID_ACC: {
+-		u32 odr;
+-		int i;
++		enum st_lsm6dsx_sensor_id odr_dep_map[] =3D {
++			ST_LSM6DSX_ID_ACC,
++			ST_LSM6DSX_ID_EXT0,
++			ST_LSM6DSX_ID_EXT1,
++			ST_LSM6DSX_ID_EXT2,
++		};
+=20
+ 		/*
+ 		 * i2c embedded controller relies on the accelerometer sensor as
+@@ -1675,15 +1708,10 @@ st_lsm6dsx_set_odr(struct st_lsm6dsx_sensor *sensor=
+, u32 req_odr)
+ 		 * communicate with i2c slave devices
+ 		 */
+ 		ref_sensor =3D iio_priv(hw->iio_devs[ST_LSM6DSX_ID_ACC]);
+-		for (i =3D ST_LSM6DSX_ID_ACC; i < ST_LSM6DSX_ID_MAX; i++) {
+-			if (!hw->iio_devs[i] || i =3D=3D sensor->id)
+-				continue;
+-
+-			odr =3D st_lsm6dsx_check_odr_dependency(hw, req_odr, i);
+-			if (odr !=3D req_odr)
+-				/* device already configured */
+-				return 0;
+-		}
++		if (st_lsm6dsx_check_odr_dependency(sensor, odr_dep_map,
++						    ARRAY_SIZE(odr_dep_map),
++						    req_odr))
++			return 0;
+ 		break;
+ 	}
+ 	default: /* should never occur */
+
+What do you think? If you agree I can post it as preliminary patch (removin=
+g temp dependency).
+
+Regards,
+Lorenzo
+
+>  	case ST_LSM6DSX_ID_EXT0:
+>  	case ST_LSM6DSX_ID_EXT1:
+>  	case ST_LSM6DSX_ID_EXT2:
+> @@ -1800,6 +1839,10 @@ static int st_lsm6dsx_read_raw(struct iio_dev *iio=
+_dev,
+>  		*val2 =3D sensor->gain;
+>  		ret =3D IIO_VAL_INT_PLUS_NANO;
+>  		break;
+> +	case IIO_CHAN_INFO_OFFSET:
+> +		*val =3D sensor->offset;
+> +		ret =3D IIO_VAL_INT;
+> +		break;
+>  	default:
+>  		ret =3D -EINVAL;
+>  		break;
+> @@ -2106,6 +2149,22 @@ static const struct iio_info st_lsm6dsx_gyro_info =
+=3D {
+>  	.write_raw_get_fmt =3D st_lsm6dsx_write_raw_get_fmt,
+>  };
+> =20
+> +static struct attribute *st_lsm6dsx_temp_attributes[] =3D {
+> +	&iio_dev_attr_sampling_frequency_available.dev_attr.attr,
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group st_lsm6dsx_temp_attribute_group =3D {
+> +	.attrs =3D st_lsm6dsx_temp_attributes,
+> +};
+> +
+> +static const struct iio_info st_lsm6dsx_temp_info =3D {
+> +	.attrs =3D &st_lsm6dsx_temp_attribute_group,
+> +	.read_raw =3D st_lsm6dsx_read_raw,
+> +	.write_raw =3D st_lsm6dsx_write_raw,
+> +	.hwfifo_set_watermark =3D st_lsm6dsx_set_watermark,
+> +};
+> +
+>  static int st_lsm6dsx_get_drdy_pin(struct st_lsm6dsx_hw *hw, int *drdy_p=
+in)
+>  {
+>  	struct device *dev =3D hw->dev;
+> @@ -2379,7 +2438,16 @@ static struct iio_dev *st_lsm6dsx_alloc_iiodev(str=
+uct st_lsm6dsx_hw *hw,
+>  	sensor->id =3D id;
+>  	sensor->hw =3D hw;
+>  	sensor->odr =3D hw->settings->odr_table[id].odr_avl[0].milli_hz;
+> -	sensor->gain =3D hw->settings->fs_table[id].fs_avl[0].gain;
+> +	if (id =3D=3D ST_LSM6DSX_ID_TEMP) {
+> +		/*
+> +		 * The temperature sensor has a fixed scale and offset such
+> +		 * that: temp_C =3D (raw / 256) + 25
+> +		 */
+> +		sensor->gain =3D 3906;
+> +		sensor->offset =3D 25;
+> +	} else {
+> +		sensor->gain =3D hw->settings->fs_table[id].fs_avl[0].gain;
+> +	}
+>  	sensor->watermark =3D 1;
+> =20
+>  	switch (id) {
+> @@ -2393,6 +2461,11 @@ static struct iio_dev *st_lsm6dsx_alloc_iiodev(str=
+uct st_lsm6dsx_hw *hw,
+>  		scnprintf(sensor->name, sizeof(sensor->name), "%s_gyro",
+>  			  name);
+>  		break;
+> +	case ST_LSM6DSX_ID_TEMP:
+> +		iio_dev->info =3D &st_lsm6dsx_temp_info;
+> +		scnprintf(sensor->name, sizeof(sensor->name), "%s_temp",
+> +			  name);
+> +		break;
+>  	default:
+>  		return NULL;
+>  	}
+>=20
+> ---
+> base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
+> change-id: 20230811-iio-spacex-lsm6ds0-33c9365e94bf
+>=20
+> Best regards,
+> --=20
+> Linus Walleij <linus.walleij@linaro.org>
+>=20
+
+--28VPyD9tiEjc7eLv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQTquNwa3Txd3rGGn7Y6cBh0uS2trAUCZPBa4wAKCRA6cBh0uS2t
+rHmXAP0XxTxic9j4NFijs1At83qOHFDG1F+KoWodxwYgbUql+AD+NySX6BdCXpTJ
+1w9tA4CcuF6Cly9AN3L7jdaACPsPUgA=
+=NgAx
+-----END PGP SIGNATURE-----
+
+--28VPyD9tiEjc7eLv--
