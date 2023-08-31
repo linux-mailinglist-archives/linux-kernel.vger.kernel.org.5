@@ -2,198 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B303078F327
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E2A78F329
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347167AbjHaTOx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:14:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57780 "EHLO
+        id S1345539AbjHaTP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230377AbjHaTOw (ORCPT
+        with ESMTP id S230245AbjHaTP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:14:52 -0400
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2486E65
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:14:48 -0700 (PDT)
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3a741f46fadso714252b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:14:48 -0700 (PDT)
+        Thu, 31 Aug 2023 15:15:56 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA76AE65
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:15:53 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68bed8de5b9so970615b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:15:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693509353; x=1694114153; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1x5/SqaXiXZ3Mg7nI4pf+vs5JyKacgMjQR8po9yiRXE=;
+        b=oYco/B03bSO4+Li4WRgcP7OgC0LgrlKf7O4Pns9tL9TsGLkeukBXv/1rVUwmR6Yb++
+         AjLW8IFpB1MtSYk/iCHpjzBu+v9XnP3HUsItx+fgaGhNESALtRBrLZfOWlszVODWiG1x
+         N9skvdM/vOXcA8JTqrPBapjPx/MNqT1Wq12wU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693509288; x=1694114088;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DKQNR25aGF0ZTPxeMhChJGWQzBCVRA6DhkoN17k7mmA=;
-        b=C6LhETBcuyXIK4oEGx6Zf8B2M3N5Nbjs3rJZqJmQTV5H6AmwXeT3LdDqNFn4kVag7w
-         tsh+wVuI9tGA57S2sQOZIA3x0/Ljj/bs234kSOxNqj7Ftgnf/eOIyCoEq0sbV9WlSFIx
-         ckr3Vb9tyhOsB4pMPLQGMKstBXjvH1TlGQrqjHydUjgPUzEQs6rmH+jcI/gI+HIh5g5P
-         4qtlDt0/LtTtqvbu2tHsnN+CEvdXdczwn/AJILjToGJWV3pN++iCSyYnNAVsI8GmmVTf
-         GPkFEJypvBHO969DVqkklW1ubH8jr87BcH9KN0+iwGxmkwuo7FpTy2FdcunP0aM83z1C
-         H4uQ==
-X-Gm-Message-State: AOJu0YxrCnm9D+wjVLsJZz7/TbRhc0MlstYM7ByIk/VV8BMwzvp9REaK
-        ABLe3vGqsnD1DCzyP20Qwt4=
-X-Google-Smtp-Source: AGHT+IFkga06RtEzVOMqIZ1q828PMrseDCQZ+c8dHnBkuw9X4BpfkfBbHGZSLwyc1XDMDRHLRCNDVw==
-X-Received: by 2002:a05:6808:1384:b0:3a7:71fd:57cc with SMTP id c4-20020a056808138400b003a771fd57ccmr688653oiw.12.1693509287990;
-        Thu, 31 Aug 2023 12:14:47 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:2cd8])
-        by smtp.gmail.com with ESMTPSA id k4-20020a0cf284000000b0065160a2c8f0sm823283qvl.138.2023.08.31.12.14.46
+        d=1e100.net; s=20221208; t=1693509353; x=1694114153;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1x5/SqaXiXZ3Mg7nI4pf+vs5JyKacgMjQR8po9yiRXE=;
+        b=JxPmtS4Zz1F3hrgDphk7BDO0SlleAoeLhEsW/z9U3tjQ9MnDmO/YzYgGiYnjPRDGSz
+         HMdcRWQWngKumodgIzrZzoCApJmp2dCAFGAUOlWqvMZpdXH0AZP2FOiVRUCdGdNkxB5l
+         uzhhxcaZmg12NG8Dv8uK297KDVnoa1r4dj4AUW2WKuINL4HyaAm/peJ22LVAeN9G9iw/
+         uhT9SkL6R6uJRgzWeyyfURKOtcd4bQaok4L26Z18EeNYfVZwaT3YzxwKk34ko19dUpYq
+         P4QuBiitAvbGihG9ZIR2GvclBJK78b5n+lUNHFmxMfoI+jAVyV91wIq/A9gHMtjas335
+         ea7Q==
+X-Gm-Message-State: AOJu0Yx483zoghwU2LmB5wlOPEO/awT8qh4mN0Hoe19QSK67LZfb2+5n
+        HVgLvz4oYNyVemdm3mBsqzTO47oGCgJ4AI+t76c=
+X-Google-Smtp-Source: AGHT+IFyi/N98RE5Aute8sb9pjHKGlmxMIqzjq/zmtUqBtm1fVdKa91iY8P9XutUgrsGy/HqMrRMIQ==
+X-Received: by 2002:a05:6a00:2484:b0:68b:e7d4:2564 with SMTP id c4-20020a056a00248400b0068be7d42564mr711944pfv.24.1693509353237;
+        Thu, 31 Aug 2023 12:15:53 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id cg11-20020a056a00290b00b0068c9fc82bfbsm542906pfb.197.2023.08.31.12.15.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 12:14:47 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 14:14:44 -0500
-From:   David Vernet <void@manifault.com>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
-        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
-        kprateek.nayak@amd.com, aaron.lu@intel.com,
-        wuyun.abel@bytedance.com, kernel-team@meta.com,
-        tim.c.chen@intel.com
-Subject: Re: [PATCH v3 7/7] sched: Shard per-LLC shared runqueues
-Message-ID: <20230831191444.GD531917@maniforge>
-References: <20230809221218.163894-1-void@manifault.com>
- <20230809221218.163894-8-void@manifault.com>
- <ZO7e5YaS71cXVxQN@chenyu5-mobl2>
- <20230831000147.GA506447@maniforge>
- <ZPBvN9W6RYOr51zQ@chenyu5-mobl2>
+        Thu, 31 Aug 2023 12:15:52 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 12:15:52 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
+        sumit.garg@linaro.org, swboyd@chromium.org
+Subject: Re: [PATCH] lkdtm/bugs: add test for panic() with stuck secondary
+ CPUs
+Message-ID: <202308311215.BA352518C@keescook>
+References: <20230831101026.3122590-1-mark.rutland@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZPBvN9W6RYOr51zQ@chenyu5-mobl2>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230831101026.3122590-1-mark.rutland@arm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 06:45:11PM +0800, Chen Yu wrote:
-> On 2023-08-30 at 19:01:47 -0500, David Vernet wrote:
-> > On Wed, Aug 30, 2023 at 02:17:09PM +0800, Chen Yu wrote:
-> > > 
-> > > 5. Check the L2 cache miss rate.
-> > > perf stat -e l2_rqsts.references,l2_request.miss sleep 10
-> > > The results show that the L2 cache miss rate is nearly the same with/without
-> > > shared_runqueue enabled.
-> > 
-> > As mentioned below, I expect it would be interesting to also collect
-> > icache / iTLB numbers. In my experience, poor uop cache locality will
-> > also result in poor icache locality, though of course that depends on a
-> > lot of other factors like alignment, how many (un)conditional branches
-> > you have within some byte window, etc. If alignment, etc were the issue
-> > though, we'd likely observe this also without SHARED_RUNQ.
-> >
+On Thu, Aug 31, 2023 at 11:10:26AM +0100, Mark Rutland wrote:
+> Upon a panic() the kernel will use either smp_send_stop() or
+> crash_smp_send_stop() to attempt to stop secondary CPUs via an IPI,
+> which may or may not be an NMI. Generally it's preferable that this is an
+> NMI so that CPUs can be stopped in as many situations as possible, but
+> it's not always possible to provide an NMI, and there are cases where
+> CPUs may be unable to handle the NMI regardless.
 > 
-> [snip...] 
+> This patch adds a test for panic() where all other CPUs are stuck with
+> interrupts disabled, which can be used to check whether the kernel
+> gracefully handles CPUs failing to respond to a stop, and whe NMIs stops
+> work.
 > 
-> > 
-> > Interesting. As mentioned above, I expect we also see an increase in
-> > iTLB and icache misses?
-> > 
+> For example, on arm64 *without* an NMI, this results in:
 > 
-> This is a good point, according to the perf topdown:
+> | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
+> | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
+> | Kernel panic - not syncing: panic stop irqoff test
+> | CPU: 2 PID: 24 Comm: migration/2 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
+> | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
+> | Call trace:
+> |  dump_backtrace+0x94/0xec
+> |  show_stack+0x18/0x24
+> |  dump_stack_lvl+0x74/0xc0
+> |  dump_stack+0x18/0x24
+> |  panic+0x358/0x3e8
+> |  lkdtm_PANIC+0x0/0x18
+> |  multi_cpu_stop+0x9c/0x1a0
+> |  cpu_stopper_thread+0x84/0x118
+> |  smpboot_thread_fn+0x224/0x248
+> |  kthread+0x114/0x118
+> |  ret_from_fork+0x10/0x20
+> | SMP: stopping secondary CPUs
+> | SMP: failed to stop secondary CPUs 0-3
+> | Kernel Offset: 0x401cf3490000 from 0xffff800080000000
+> | PHYS_OFFSET: 0x40000000
+> | CPU features: 0x00000000,68c167a1,cce6773f
+> | Memory Limit: none
+> | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
 > 
-> SHARED_RUNQ is disabled:
+> On arm64 *with* an NMI, this results in:
 > 
->      13.0 %  tma_frontend_bound
->       6.7 %  tma_fetch_latency
->        0.3 %  tma_itlb_misses
->        0.7 %  tma_icache_misses
+> | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
+> | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
+> | Kernel panic - not syncing: panic stop irqoff test
+> | CPU: 1 PID: 19 Comm: migration/1 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
+> | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
+> | Call trace:
+> |  dump_backtrace+0x94/0xec
+> |  show_stack+0x18/0x24
+> |  dump_stack_lvl+0x74/0xc0
+> |  dump_stack+0x18/0x24
+> |  panic+0x358/0x3e8
+> |  lkdtm_PANIC+0x0/0x18
+> |  multi_cpu_stop+0x9c/0x1a0
+> |  cpu_stopper_thread+0x84/0x118
+> |  smpboot_thread_fn+0x224/0x248
+> |  kthread+0x114/0x118
+> |  ret_from_fork+0x10/0x20
+> | SMP: stopping secondary CPUs
+> | Kernel Offset: 0x55a9c0bc0000 from 0xffff800080000000
+> | PHYS_OFFSET: 0x40000000
+> | CPU features: 0x00000000,68c167a1,fce6773f
+> | Memory Limit: none
+> | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
 > 
-> itlb miss ratio is 13.0% * 6.7% * 0.3%
-> icache miss ratio is 13.0% * 6.7% * 0.7%
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Douglas Anderson <dianders@chromium.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Stephen Boyd <swboyd@chromium.org
+> Cc: Sumit Garg <sumit.garg@linaro.org>
+> ---
+>  drivers/misc/lkdtm/bugs.c | 29 ++++++++++++++++++++++++++++-
+>  1 file changed, 28 insertions(+), 1 deletion(-)
 > 
-> SHARED_RUNQ is enabled:
->      20.0 %  tma_frontend_bound
->       11.6 %  tma_fetch_latency
->        0.9 %  tma_itlb_misses
->        0.5 %  tma_icache_misses
+> I've tested this with the arm64 NMI IPI patches:
 > 
-> itlb miss ratio is 20.0% * 11.6% * 0.9%
-> icache miss ratio is 20.0% * 11.6% * 0.5%
+>   https://lore.kernel.org/linux-arm-kernel/20230830191314.1618136-1-dianders@chromium.org/
 > 
-> So both icache and itlb miss ratio increase, and itlb miss increases more,
-> although the bottleneck is neither icache nor itlb.
-> And as you mentioned below, it depends on other factors, including the hardware
-> settings, icache size, tlb size, DSB size, eg.
-
-Thanks for collecting these stats. Good to know that things are making
-sense and the data we're collecting are telling a consistent story.
-
-> > This is something we deal with in HHVM. Like any other JIT engine /
-> > compiler, it is heavily front-end CPU bound, and has very poor icache,
-> > iTLB, and uop cache locality (also lots of branch resteers, etc).
-> > SHARED_RUNQ actually helps this workload quite a lot, as explained in
-> > the cover letter for the patch series. It makes sense that it would: uop
-> > locality is really bad even without increasing CPU util. So we have no
-> > reason not to migrate the task and hop on a CPU.
-> >
+> Specifically, with the patch that uses an NMI for IPI_CPU_STOP and
+> IPI_CPU_CRASH_STOP:
 > 
-> I see, this makes sense.
+>   https://lore.kernel.org/linux-arm-kernel/20230830121115.v12.5.Ifadbfd45b22c52edcb499034dd4783d096343260@changeid/
+> 
+> Mark.
+> 
+> diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+> index 3c95600ab2f71..368da8b83cd1c 100644
+> --- a/drivers/misc/lkdtm/bugs.c
+> +++ b/drivers/misc/lkdtm/bugs.c
+> @@ -6,12 +6,14 @@
+>   * test source files.
+>   */
+>  #include "lkdtm.h"
+> +#include <linux/cpu.h>
+>  #include <linux/list.h>
+>  #include <linux/sched.h>
+>  #include <linux/sched/signal.h>
+>  #include <linux/sched/task_stack.h>
+> -#include <linux/uaccess.h>
+>  #include <linux/slab.h>
+> +#include <linux/stop_machine.h>
+> +#include <linux/uaccess.h>
 >  
-> > > I wonder, if SHARED_RUNQ can consider that, if a task is a long duration one,
-> > > say, p->avg_runtime >= sysctl_migration_cost, maybe we should not put such task
-> > > on the per-LLC shared runqueue? In this way it will not be migrated too offen
-> > > so as to keep its locality(both in terms of L1/L2 cache and DSB).
-> > 
-> > I'm hesitant to apply such heuristics to the feature. As mentioned
-> > above, SHARED_RUNQ works very well on HHVM, despite its potential hit to
-> > icache / iTLB / DSB locality. Those hhvmworker tasks run for a very long
-> > time, sometimes upwards of 20+ms. They also tend to have poor L1 cache
-> > locality in general even when they're scheduled on the same core they
-> > were on before they were descheduled, so we observe better performance
-> > if the task is migrated to a fully idle core rather than e.g. its
-> > hypertwin if it's available. That's not something we can guarantee with
-> > SHARED_RUNQ, but it hopefully illustrates the point that it's an example
-> > of a workload that would suffer with such a heuristic.
-> >
-> 
-> OK, the hackbench is just a microbenchmark to help us evaluate
-> what the impact SHARED_RUNQ could bring. If such heuristic heals
-> hackbench but hurts the real workload then we can consider
-> other direction.
+>  #if IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_UML)
+>  #include <asm/desc.h>
+> @@ -73,6 +75,30 @@ static void lkdtm_PANIC(void)
+>  	panic("dumptest");
+>  }
 >  
-> > Another point to consider is that performance implications that are a
-> > result of Intel micro architectural details don't necessarily apply to
-> > everyone. I'm not as familiar with the instruction decode pipeline on
-> > AMD chips like Zen4. I'm sure they have a uop cache, but the size of
-> > that cache, alignment requirements, the way that cache interfaces with
-> > e.g. their version of the MITE / decoder, etc, are all going to be quite
-> > different.
-> >
-> 
-> Yes, this is true.
+> +static int panic_stop_irqoff_fn(void *arg)
+> +{
+> +	atomic_t *v = arg;
+> +
+> +	/*
+> +	 * Trigger the panic after all other CPUs have entered this function,
+> +	 * so that they are guaranteed to have IRQs disabled.
+> +	 */
+> +	if (atomic_inc_return(v) == num_online_cpus())
+> +		panic("panic stop irqoff test");
+> +
+> +	for (;;)
+> +		cpu_relax();
+> +}
+> +
+> +static void lkdtm_PANIC_STOP_IRQOFF(void)
+> +{
+> +	atomic_t v = ATOMIC_INIT(0);
+> +
+> +	cpus_read_lock();
+> +	stop_machine(panic_stop_irqoff_fn, &v, cpu_online_mask);
+> +	cpus_read_unlock();
+> +}
+> +
+>  static void lkdtm_BUG(void)
+>  {
+>  	BUG();
+> @@ -598,6 +624,7 @@ static noinline void lkdtm_CORRUPT_PAC(void)
 >  
-> > In general, I think it's difficult for heuristics like this to suit all
-> > possible workloads or situations (not that you're claiming it is). My
-> > preference is to keep it as is so that it's easier for users to build a
-> > mental model of what outcome they should expect if they use the feature.
-> > Put another way: As a user of this feature, I'd be a lot more surprised
-> > to see that I enabled it and CPU util stayed low, vs. enabling it and
-> > seeing higher CPU util, but also degraded icache / iTLB locality.
-> >
-> 
-> Understand.
->  
-> > Let me know what you think, and thanks again for investing your time
-> > into this.
-> > 
-> 
-> Let me run other benchmarks to see if others are sensitive to
-> the resource locality.
+>  static struct crashtype crashtypes[] = {
+>  	CRASHTYPE(PANIC),
+> +	CRASHTYPE(PANIC_STOP_IRQOFF),
+>  	CRASHTYPE(BUG),
+>  	CRASHTYPE(WARNING),
+>  	CRASHTYPE(WARNING_MESSAGE),
 
-Great, thank you Chenyu.
+Modulo the other comments in the thread, this looks good to me. :)
 
-FYI, I'll be on vacation for over a week starting later today, so my
-responses may be delayed.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-Thanks in advance for working on this. Looking forward to seeing the
-results when I'm back at work.
-
-Thanks,
-David
+-- 
+Kees Cook
