@@ -2,222 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B9078E8E9
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDBF078E8ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242247AbjHaI5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 04:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56986 "EHLO
+        id S236836AbjHaI6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbjHaI5e (ORCPT
+        with ESMTP id S229715AbjHaI6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:57:34 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE70BCE6
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:57:31 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id E077F1F854;
-        Thu, 31 Aug 2023 08:57:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693472249; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4uEkvqTQyqCEl4x0mfJzRozk0EF93NSdEzQwGO4Dk/A=;
-        b=BmyZcDhD6Gick5wIAELjtZQb1Qmeidp0evdEg2NtXcINPQAkgxKDcs0yLnvJ+y2tt1KCd/
-        fzbXN3tKJeHAMnvXjfX/ruHkqkg5V2z8VOlTid8nwWqBDcKX4BQ+dOsjDxvsuEBqTBjDLo
-        aDK2dcifnR7szEhR0adPo5rI/1MGvH0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693472249;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4uEkvqTQyqCEl4x0mfJzRozk0EF93NSdEzQwGO4Dk/A=;
-        b=0N88Z9MgDfsExBDTRIVcmKE3y8ZClWomuKTziny78mt5wV/FFOalZTsDGMGwpuPd3ME+qk
-        FuesNv/deoODHFDg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B056B13583;
-        Thu, 31 Aug 2023 08:57:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ET8pKvlV8GT1BwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 31 Aug 2023 08:57:29 +0000
-Message-ID: <24ba6014-ce85-9013-fa89-17a4c7fcfc21@suse.de>
-Date:   Thu, 31 Aug 2023 10:57:28 +0200
+        Thu, 31 Aug 2023 04:58:40 -0400
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1E8CE6;
+        Thu, 31 Aug 2023 01:58:38 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 445505C00EF;
+        Thu, 31 Aug 2023 04:58:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Thu, 31 Aug 2023 04:58:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1693472317; x=1693558717; bh=GO+RB/XjbQvZQe1MEUlBwDOw8njnoFbRMlk
+        s6o1U5dw=; b=n2qaDeb/UbimrdbrMvWZDVeSrHCybiKua/Ds0tnvtcnDD+fAU/H
+        MLidxqDFUemvZt4Nef/MLcJbsRAXEk7gKZfq8R+XW1DGiVlp8A9M1UDv1igiNpzD
+        mxaEiSdHC36/jxKMc6Qt7QWGaw8ad0QQRpI5C0bjNYBFJBlE4x2LsCqZmW8oBM0y
+        aYBIkoiTEwoNDmx25o3vSFTBvLKB+vW4QwqJe75TWM393SyWPgbzVhi2ANIBybGi
+        MnI+stDpGYR+tsIdesb92RarDs2XNvYBweyn8Ma5I3zQ9vB73N2HSqIOQWslTfhy
+        YR9JdbCkRPolC0nlqBiV6fvZ4OfGHTIf1Xg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693472317; x=1693558717; bh=GO+RB/XjbQvZQe1MEUlBwDOw8njnoFbRMlk
+        s6o1U5dw=; b=wWCYcoiHIWSq6hvrKzB6e7q/Au0spKWXt3QQFGqdXB+iKS7I5q0
+        YAD+isxn3z2fvMaAMJoaO9dQ0DaDikza3c2HMz85dr2RtQJfPq7pIo4MctLzdSPo
+        jX2EJ1uWH1nd3KGi+A0PNhe/kFOTUrp8HAdwsve/bCxDHCSeL2X/GFhX5BwdAxXZ
+        AJfOOW8xb1pXyNuxe/P2RkSM8hDFd/LawAjpnB/Ly3Lh6qoP8RLyco7YnI5BINaE
+        nYx0YokHgRvzh/h28BNST9da5SzbDnQUXX4lViJ0+a2K6r+7YUqToiwAEktU6a5F
+        wfcIiDfwQdSYS0AJXtCDhcYd89mrKWFe93Q==
+X-ME-Sender: <xms:PVbwZPBZQcINLZAud8gAT3wGw16aUcZAiqu7F-TuunQNL81YnV-dvQ>
+    <xme:PVbwZFgH171shnitFFRpMjcdhFaN5icYBNPXlKIVZG0hEnFeEM87oReuA09_vdvQk
+    rGEc1KuDPrsiwIiUI8>
+X-ME-Received: <xmr:PVbwZKmIpxGdxy7a3OeTqXWTnX8eMJ52WNpo8yytOSgWfnOp97pZWMu6TbRJq2gYOnI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudegtddguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpeflihgr
+    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepudfhkeevvddtueekfeefgfetlefgueegueeltddtieejgeei
+    heevgfehgfdvfeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:PVbwZBxyzNeDwwFLAuITfW_174_Sjg1Q03UsPYOkL1jeAZc4sNXHHg>
+    <xmx:PVbwZESCpUZsAgxq4gR_dHFZOfwKLHZJPQKf32YtegEp6CjasFPKPg>
+    <xmx:PVbwZEYrGFf-4w_aacbqYwOqS6Xfhy3vK_OVftGcoMXEJmBX0PU_iA>
+    <xmx:PVbwZJIIkHoosWFpMmksaFrfEfNg2SeL7N6PgOBB__S82vWtp5K6Mw>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 31 Aug 2023 04:58:33 -0400 (EDT)
+Message-ID: <62a7b292-ea1e-fb88-79cb-e7968d350a5e@flygoat.com>
+Date:   Thu, 31 Aug 2023 16:58:32 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v2 7/8] drm/fb-helper: Add support for DRM_FORMAT_R1
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <62cb6e8c7aba2a037fb3704d46f60b93d7218b90.1692888745.git.geert@linux-m68k.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <62cb6e8c7aba2a037fb3704d46f60b93d7218b90.1692888745.git.geert@linux-m68k.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------bhLbKqqPLKvwg7nEUHCxDpy2"
+Subject: Re: [PATCH v2] pci: loongson: Workaround MIPS firmware MRRS settings
+Content-Language: en-GB
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     linux-pci@vger.kernel.org, bhelgaas@google.com,
+        linux-kernel@vger.kernel.org, kw@linux.com, lpieralisi@kernel.org,
+        stable@vger.kernel.org
+References: <20230725061008.1504292-1-jiaxun.yang@flygoat.com>
+ <e9c103dc-98ac-9a51-7291-f5da1467b2ff@flygoat.com>
+ <CAAhV-H7_OjTaU_wn6mUW0-JSrXS+=A2rXCiBc8cyce5ob49BLg@mail.gmail.com>
+ <861a809d-3df1-327e-e033-87506f6d89e5@flygoat.com>
+ <CAAhV-H67ehyqtm4ocOTWQPGBioWjQjLoyN5H9hALdq0oXdzWVg@mail.gmail.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <CAAhV-H67ehyqtm4ocOTWQPGBioWjQjLoyN5H9hALdq0oXdzWVg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------bhLbKqqPLKvwg7nEUHCxDpy2
-Content-Type: multipart/mixed; boundary="------------ObhbbxdLlOLY2CHIQYAyEeNR";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-ID: <24ba6014-ce85-9013-fa89-17a4c7fcfc21@suse.de>
-Subject: Re: [PATCH v2 7/8] drm/fb-helper: Add support for DRM_FORMAT_R1
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <62cb6e8c7aba2a037fb3704d46f60b93d7218b90.1692888745.git.geert@linux-m68k.org>
-In-Reply-To: <62cb6e8c7aba2a037fb3704d46f60b93d7218b90.1692888745.git.geert@linux-m68k.org>
 
---------------ObhbbxdLlOLY2CHIQYAyEeNR
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
 
-SGkNCg0KQW0gMjQuMDguMjMgdW0gMTc6MDggc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
-DQo+IEFkZCBzdXBwb3J0IGZvciB0aGUgbW9ub2Nocm9tZSBsaWdodC1vbi1kYXJrIGJ1ZmZl
-ciBmb3JtYXQgKFIxKSB0byB0aGUNCj4gZmIgaGVscGVyLCBzbyB0aGlzIGZvcm1hdCBjYW4g
-YmUgdXNlZCBmb3IgZmJkZXYgZW11bGF0aW9uIGFuZCBmb3IgdGhlDQo+IHRleHQgY29uc29s
-ZS4gIFRoaXMgYXZvaWRzIHRoZSBvdmVyaGVhZCBvZiB1c2luZyBYUjI0IGFuZCB0aGUgYXNz
-b2NpYXRlZA0KPiBjb252ZXJzaW9ucyBvbiBkaXNwbGF5IGhhcmR3YXJlIHRoYXQgc3VwcG9y
-dHMgb25seSBhIHNpbXBsZSBtb25vY2hyb21lDQo+IGZvcm1hdC4NCj4gDQo+IFIxIGlzIHZl
-cnkgc2ltaWxhciB0byBDMSAobW9ub2Nocm9tZSBpbmRleGVkIGNvbG9yKSwgYW5kIHNoYXJl
-cyB0aGUgc2FtZQ0KPiBkZXB0aCBhbmQgYnBwLiAgQXMgZHJtX21vZGVfbGVnYWN5X2ZiX2Zv
-cm1hdCgpIHJldHVybnMgYSBmb3JtYXQgYmFzZWQgb24NCj4gb25seSBkZXB0aCBhbmQgYnBw
-LCBpdCBjYW5ub3QgZGlzdGluZ3Vpc2ggYmV0d2VlbiBSMSBhbmQgQzEuICBIZW5jZQ0KDQpD
-b3VsZCB3ZSByYXRoZXIgYWRkIGFub3RoZXIgcGFyYW1ldGVyIHRvIGRybV9tb2RlX2xlZ2Fj
-eV9mYl9mb3JtYXQoKTsgDQpzYXkgJ2Jvb2wgaW5kZXhlZCcuIElmIHNldCB0byB0cnVlLCBp
-dCBwcmVmZXJzIF9DeCBmb3JtYXRzLCBvdGhlcndpc2UgX1J4Lg0KDQpUaGUgcGFyYW1ldGVy
-IHdvdWxkIGJlICd0cnVlJyBmb3IgbW9zdCBjYWxsczsgZXhjZXB0IGluIA0KZHJtX2ZiX2hl
-bHBlcl9maW5kX2Zvcm1hdCgpLiBUaGVyZSwgd2UgY2FuIGdvIHRocm91Z2ggdGhlIGFycmF5
-IG9mIGdpdmVuIA0KZm9ybWF0cyBhbmQgY2hlY2sgaWYgdGhlcmUncyBvbmUgdGhhdCBoYXMg
-aXNfY29sb3JfaW5kZXhlZCBzZXQuIElmIHNvLCANCndlIHNwZWNpZnkgdHJ1ZSwgaWYgbm90
-IHdlIHNwZWNpZnkgZmFsc2UuDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gZHJtX2Zi
-X2hlbHBlcl9maW5kX2Zvcm1hdCgpIGlzIG1vZGlmaWVkIHRvIHRyeSB0byBmYWxsIGJhY2sg
-dG8gUjEgaWYgQzENCj4gaXMgbm90IHN1cHBvcnRlZC4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6
-IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+DQo+IFJldmlld2Vk
-LWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNvbT4NCj4g
-VGVzdGVkLWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNv
-bT4NCj4gLS0tDQo+IHYyOg0KPiAgICAtIEFkZCBSZXZpZXdlZC1ieSwgVGVzdGVkLWJ5Lg0K
-PiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2hlbHBlci5jIHwgNDEgKysrKysr
-KysrKysrKysrKysrKysrKysrLS0tLS0tLS0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDMwIGlu
-c2VydGlvbnMoKyksIDExIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZl
-cnMvZ3B1L2RybS9kcm1fZmJfaGVscGVyLmMgYi9kcml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2hl
-bHBlci5jDQo+IGluZGV4IDRkYzI4ZmRjYzFlMGE2YTQuLjcxYmFmODU5NzUxNmU5ZmQgMTAw
-NjQ0DQo+IC0tLSBhL2RyaXZlcnMvZ3B1L2RybS9kcm1fZmJfaGVscGVyLmMNCj4gKysrIGIv
-ZHJpdmVycy9ncHUvZHJtL2RybV9mYl9oZWxwZXIuYw0KPiBAQCAtMTEzMCw3ICsxMTMwLDcg
-QEAgc3RhdGljIHZvaWQgZHJtX2ZiX2hlbHBlcl9maWxsX3BpeGVsX2ZtdChzdHJ1Y3QgZmJf
-dmFyX3NjcmVlbmluZm8gKnZhciwNCj4gICB7DQo+ICAgCXU4IGRlcHRoID0gZm9ybWF0LT5k
-ZXB0aDsNCj4gICANCj4gLQlpZiAoZm9ybWF0LT5pc19jb2xvcl9pbmRleGVkKSB7DQo+ICsJ
-aWYgKGZvcm1hdC0+Zm9ybWF0ID09IERSTV9GT1JNQVRfUjEgfHwgZm9ybWF0LT5pc19jb2xv
-cl9pbmRleGVkKSB7DQo+ICAgCQl2YXItPnJlZC5vZmZzZXQgPSAwOw0KPiAgIAkJdmFyLT5n
-cmVlbi5vZmZzZXQgPSAwOw0KPiAgIAkJdmFyLT5ibHVlLm9mZnNldCA9IDA7DQo+IEBAIC0x
-MjM2LDYgKzEyMzYsNyBAQCBpbnQgZHJtX2ZiX2hlbHBlcl9jaGVja192YXIoc3RydWN0IGZi
-X3Zhcl9zY3JlZW5pbmZvICp2YXIsDQo+ICAgCWNhc2UgRFJNX0ZPUk1BVF9DMToNCj4gICAJ
-Y2FzZSBEUk1fRk9STUFUX0MyOg0KPiAgIAljYXNlIERSTV9GT1JNQVRfQzQ6DQo+ICsJY2Fz
-ZSBEUk1fRk9STUFUX1IxOg0KPiAgIAkJLyogc3VwcG9ydGVkIGZvcm1hdCB3aXRoIHN1Yi1i
-eXRlIHBpeGVscyAqLw0KPiAgIAkJYnJlYWs7DQo+ICAgDQo+IEBAIC0xNDM5LDEyICsxNDQw
-LDI0IEBAIGludCBkcm1fZmJfaGVscGVyX3Bhbl9kaXNwbGF5KHN0cnVjdCBmYl92YXJfc2Ny
-ZWVuaW5mbyAqdmFyLA0KPiAgIH0NCj4gICBFWFBPUlRfU1lNQk9MKGRybV9mYl9oZWxwZXJf
-cGFuX2Rpc3BsYXkpOw0KPiAgIA0KPiArc3RhdGljIGJvb2wgaXNfc3VwcG9ydGVkX2Zvcm1h
-dCh1aW50MzJfdCBmb3JtYXQsIGNvbnN0IHVpbnQzMl90ICpmb3JtYXRzLA0KPiArCQkJCXNp
-emVfdCBmb3JtYXRfY291bnQpDQo+ICt7DQo+ICsJc2l6ZV90IGk7DQo+ICsNCj4gKwlmb3Ig
-KGkgPSAwOyBpIDwgZm9ybWF0X2NvdW50OyArK2kpIHsNCj4gKwkJaWYgKGZvcm1hdHNbaV0g
-PT0gZm9ybWF0KQ0KPiArCQkJcmV0dXJuIHRydWU7DQo+ICsJfQ0KPiArDQo+ICsJcmV0dXJu
-IGZhbHNlOw0KPiArfQ0KPiArDQo+ICAgc3RhdGljIHVpbnQzMl90IGRybV9mYl9oZWxwZXJf
-ZmluZF9mb3JtYXQoc3RydWN0IGRybV9mYl9oZWxwZXIgKmZiX2hlbHBlciwgY29uc3QgdWlu
-dDMyX3QgKmZvcm1hdHMsDQo+ICAgCQkJCQkgIHNpemVfdCBmb3JtYXRfY291bnQsIHVpbnQz
-Ml90IGJwcCwgdWludDMyX3QgZGVwdGgpDQo+ICAgew0KPiAgIAlzdHJ1Y3QgZHJtX2Rldmlj
-ZSAqZGV2ID0gZmJfaGVscGVyLT5kZXY7DQo+ICAgCXVpbnQzMl90IGZvcm1hdDsNCj4gLQlz
-aXplX3QgaTsNCj4gICANCj4gICAJLyoNCj4gICAJICogRG8gbm90IGNvbnNpZGVyIFlVViBv
-ciBvdGhlciBjb21wbGljYXRlZCBmb3JtYXRzDQo+IEBAIC0xNDU3LDEwICsxNDcwLDEyIEBA
-IHN0YXRpYyB1aW50MzJfdCBkcm1fZmJfaGVscGVyX2ZpbmRfZm9ybWF0KHN0cnVjdCBkcm1f
-ZmJfaGVscGVyICpmYl9oZWxwZXIsIGNvbnN0DQo+ICAgCWlmICghZm9ybWF0KQ0KPiAgIAkJ
-Z290byBlcnI7DQo+ICAgDQo+IC0JZm9yIChpID0gMDsgaSA8IGZvcm1hdF9jb3VudDsgKytp
-KSB7DQo+IC0JCWlmIChmb3JtYXRzW2ldID09IGZvcm1hdCkNCj4gLQkJCXJldHVybiBmb3Jt
-YXQ7DQo+IC0JfQ0KPiArCWlmIChpc19zdXBwb3J0ZWRfZm9ybWF0KGZvcm1hdCwgZm9ybWF0
-cywgZm9ybWF0X2NvdW50KSkNCj4gKwkJcmV0dXJuIGZvcm1hdDsNCj4gKw0KPiArCWlmIChm
-b3JtYXQgPT0gRFJNX0ZPUk1BVF9DMSAmJg0KPiArCSAgICBpc19zdXBwb3J0ZWRfZm9ybWF0
-KERSTV9GT1JNQVRfUjEsIGZvcm1hdHMsIGZvcm1hdF9jb3VudCkpDQo+ICsJCXJldHVybiBE
-Uk1fRk9STUFUX1IxOw0KPiAgIA0KPiAgIGVycjoNCj4gICAJLyogV2UgZm91bmQgbm90aGlu
-Zy4gKi8NCj4gQEAgLTE2ODAsMTEgKzE2OTUsMTUgQEAgc3RhdGljIGludCBkcm1fZmJfaGVs
-cGVyX3NpbmdsZV9mYl9wcm9iZShzdHJ1Y3QgZHJtX2ZiX2hlbHBlciAqZmJfaGVscGVyKQ0K
-PiAgIH0NCj4gICANCj4gICBzdGF0aWMgdm9pZCBkcm1fZmJfaGVscGVyX2ZpbGxfZml4KHN0
-cnVjdCBmYl9pbmZvICppbmZvLCB1aW50MzJfdCBwaXRjaCwNCj4gLQkJCQkgICBib29sIGlz
-X2NvbG9yX2luZGV4ZWQpDQo+ICsJCQkJICAgY29uc3Qgc3RydWN0IGRybV9mb3JtYXRfaW5m
-byAqZm9ybWF0KQ0KPiAgIHsNCj4gICAJaW5mby0+Zml4LnR5cGUgPSBGQl9UWVBFX1BBQ0tF
-RF9QSVhFTFM7DQo+IC0JaW5mby0+Zml4LnZpc3VhbCA9IGlzX2NvbG9yX2luZGV4ZWQgPyBG
-Ql9WSVNVQUxfUFNFVURPQ09MT1INCj4gLQkJCQkJICAgIDogRkJfVklTVUFMX1RSVUVDT0xP
-UjsNCj4gKwlpZiAoZm9ybWF0LT5mb3JtYXQgPT0gRFJNX0ZPUk1BVF9SMSkNCj4gKwkJaW5m
-by0+Zml4LnZpc3VhbCA9IEZCX1ZJU1VBTF9NT05PMTA7DQo+ICsJZWxzZSBpZiAoZm9ybWF0
-LT5pc19jb2xvcl9pbmRleGVkKQ0KPiArCQlpbmZvLT5maXgudmlzdWFsID0gRkJfVklTVUFM
-X1BTRVVET0NPTE9SOw0KPiArCWVsc2UNCj4gKwkJaW5mby0+Zml4LnZpc3VhbCA9IEZCX1ZJ
-U1VBTF9UUlVFQ09MT1I7DQo+ICAgCWluZm8tPmZpeC5tbWlvX3N0YXJ0ID0gMDsNCj4gICAJ
-aW5mby0+Zml4Lm1taW9fbGVuID0gMDsNCj4gICAJaW5mby0+Zml4LnR5cGVfYXV4ID0gMDsN
-Cj4gQEAgLTE3MDcsNiArMTcyNiw3IEBAIHN0YXRpYyB2b2lkIGRybV9mYl9oZWxwZXJfZmls
-bF92YXIoc3RydWN0IGZiX2luZm8gKmluZm8sDQo+ICAgCWNhc2UgRFJNX0ZPUk1BVF9DMToN
-Cj4gICAJY2FzZSBEUk1fRk9STUFUX0MyOg0KPiAgIAljYXNlIERSTV9GT1JNQVRfQzQ6DQo+
-ICsJY2FzZSBEUk1fRk9STUFUX1IxOg0KPiAgIAkJLyogc3VwcG9ydGVkIGZvcm1hdCB3aXRo
-IHN1Yi1ieXRlIHBpeGVscyAqLw0KPiAgIAkJYnJlYWs7DQo+ICAgDQo+IEBAIC0xNzQ3LDgg
-KzE3NjcsNyBAQCB2b2lkIGRybV9mYl9oZWxwZXJfZmlsbF9pbmZvKHN0cnVjdCBmYl9pbmZv
-ICppbmZvLA0KPiAgIHsNCj4gICAJc3RydWN0IGRybV9mcmFtZWJ1ZmZlciAqZmIgPSBmYl9o
-ZWxwZXItPmZiOw0KPiAgIA0KPiAtCWRybV9mYl9oZWxwZXJfZmlsbF9maXgoaW5mbywgZmIt
-PnBpdGNoZXNbMF0sDQo+IC0JCQkgICAgICAgZmItPmZvcm1hdC0+aXNfY29sb3JfaW5kZXhl
-ZCk7DQo+ICsJZHJtX2ZiX2hlbHBlcl9maWxsX2ZpeChpbmZvLCBmYi0+cGl0Y2hlc1swXSwg
-ZmItPmZvcm1hdCk7DQo+ICAgCWRybV9mYl9oZWxwZXJfZmlsbF92YXIoaW5mbywgZmJfaGVs
-cGVyLA0KPiAgIAkJCSAgICAgICBzaXplcy0+ZmJfd2lkdGgsIHNpemVzLT5mYl9oZWlnaHQp
-Ow0KPiAgIA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2ZXIgRGV2
-ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZyYW5rZW5z
-dHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRvdGV2LCBB
-bmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpIUkIgMzY4
-MDkgKEFHIE51ZXJuYmVyZykNCg==
+在 2023/8/31 14:22, Huacai Chen 写道:
 
---------------ObhbbxdLlOLY2CHIQYAyEeNR--
+[...]
+> But it is worth to try, and you can walk the children to set mrrs when
+> the quirk runs on bridges, I think.
+No, this will break hotplug, I had managed to get hotplug work on 2K1000.
+Also we have no guarantee on order of discovering devices.
+>> but the old quirk should run on every single device.
+> Your current patch has a drawback that both quirks will run for MIPS,
+> and their order is random (though it may cause nothing, but not
+> elegant).
+Actually loongson_mrrs_quirk is declared by DECLARE_PCI_FIXUP_EARLY but
+loongson_old_mrrs_quirk is declared by DECLARE_PCI_FIXUP_ENABLE,
+which means loongson_old_mrrs_quirk always runs after loongson_mrrs_quirk as
+expected.
 
---------------bhLbKqqPLKvwg7nEUHCxDpy2
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Thanks
+- Jiaxun
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTwVfgFAwAAAAAACgkQlh/E3EQov+Cf
-YRAApMJPvcDmm/Yr0g3rhlLuoAJYrB9G1w3/tE5Uk960TFl48I51v/TtEpb+AS9qh+XPE3JdZvWP
-R+nBGmh+Ne1KGkJ7tkj+iGLdoe1f5neujaTTWi9ALNQR5RHTM6VEvnWrk6cM7xjH0l7m1wCokYT1
-FGlNWxzaXDTSsYsDpbe5d/6jY/ZWXHEFl7vkQrMkP6/oaontb+gFohTsLVNz9MgnAbosizOBHchX
-MdTG8Jix0/n0zKotVDCILdh99sDNSHKX+roUvyqZ/NmP0+I4oM4phxFfqUQkXJF4WboYPz/Gy5GK
-b6CuUPnpw+OI/wwg56b8kDPMJv3hOMavI3+nSuOnxjnqh4lDkHeKkza3aH4zHeUOeahYt7/uuySZ
-wsjVpNXZIF9XQ5AKB39XHda/BgXvjKdfCFi2JqydUy20+55CLQG+wPYx1OaznYYYs1Y9JmsgnA4r
-QfVJQN53uTH0dD+CMKrjhMKZT5i0HdTocAtswsMhocsWGMgYIfHj8pIBp0j/Fyp4FbPlNpZPyge9
-G0vN1LJV+RMbGLs5GI6H1BQCRRHZTHSIRnFIpZF0b85lKQ1+r/ijiv0T7R9SGayT1JZdqA/W9bV+
-BugzqicGq2887ar7LTOMB6J48jLRPcslWxFXw8JHxxXLJ3PU35Ygi/eNmSNHF/tP/4FA21+VoTzP
-fdQ=
-=CmH/
------END PGP SIGNATURE-----
-
---------------bhLbKqqPLKvwg7nEUHCxDpy2--
+[...]
