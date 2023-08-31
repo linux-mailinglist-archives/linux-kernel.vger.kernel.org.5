@@ -2,80 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B14678E9CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:53:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F39F178E9D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241725AbjHaJxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
+        id S241970AbjHaJ6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:58:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240255AbjHaJxg (ORCPT
+        with ESMTP id S233881AbjHaJ6L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:53:36 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E601CEE
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 02:53:34 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id 5614622812f47-3a7d4030621so306174b6e.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 02:53:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693475613; x=1694080413; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+GDJQNvk1I3RU9eHa9L6NV+dyMRSPGsdEAWk45bEPSw=;
-        b=Z6p2EOaab0QT7yNKxq4F2tEX7dBjgqbzt+X99/c0V+/HtV/al0Q67aLf6gZQvAb/3v
-         UP2uhue8YSOgUKmqTf45g/0/a8H1U164hsynP8hNvGejz9WTZc9bzOjOzX+ozHcppb0a
-         0RLaAor4b/uMMtONfhunp/cEaz2ug1Au+VBi5wj8E/OZX1CPaxD/YIJVZzGVm1T4fjNK
-         hhCJNrgXqDOMB2G/uYnQJ1YKCW00fTBE0ttbpc+FPXtqR15dp5r34KUpynmCeFw7bMQ5
-         K2G19LwlnH7guZIGf0Lw51470sAJCvtz4wlEZmL6ls1MU+WdYelXoEnxqONZ7ycRe/YE
-         /Q4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693475613; x=1694080413;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+GDJQNvk1I3RU9eHa9L6NV+dyMRSPGsdEAWk45bEPSw=;
-        b=bdle5zKQAlT2dW870EDqdp85MO1IVRq3Equ29rdcXDpEsuop+QX5whLyMsfGEe+4ns
-         9lJeYfXrUfVKWs/Zg6cHgHFNs8e6BmiCP3966sP8z7s3XL7c4h/dGNXmoGdiWY/+o8tl
-         NBhFcTIndxQHGuU7KfjDGsIF1a+qmW54IjqEBYDVOy0aDSLM4sf3mcoZ32WghQrnT/I2
-         iFdQIgefMqtr1OVCYxkEFUcGBBo4q30FuTwlN+wq5pz5jonZk0W3KZk7Xu1rC8wwPVjX
-         DMIEb3Im9Hn/+8Y59ErikR05YqkbKkYuDoqmE720r+LZeDAf/B+L3pwCAgLbNHgtDURJ
-         +SaA==
-X-Gm-Message-State: AOJu0YyCHfnLVE+VxYXICMsOrKgYAhq5wWGy0ta7rz9CvyAVmRpPdmfk
-        tWT8LIdf4tv2UAX7WDXS0KI=
-X-Google-Smtp-Source: AGHT+IFuTxBBnsClMiDGJuvLuCYgceaKjoXiFCmcN4xiYtVXao8M2f7wxtZGIsYY6C6Re0yFiTRAlw==
-X-Received: by 2002:a05:6808:210a:b0:3a7:72e2:f6be with SMTP id r10-20020a056808210a00b003a772e2f6bemr5295000oiw.2.1693475613564;
-        Thu, 31 Aug 2023 02:53:33 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id v3-20020a655c43000000b00565e2ad12e5sm924535pgr.91.2023.08.31.02.53.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 02:53:33 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id DB0A18BF2F99; Thu, 31 Aug 2023 16:53:29 +0700 (WIB)
-Date:   Thu, 31 Aug 2023 16:53:29 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Frank Wunderlich <frank-w@public-files.de>,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Amjad Ouled-Ameur <aouledameur@baylibre.com>
-Cc:     Daniel Golle <daniel@makrotopia.org>,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Riabchenko <d3adme4t@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Subject: Re: regression with 33140e668b10 thermal/drivers/mediatek: Control
- buffer enablement tweaks
-Message-ID: <ZPBjGWPjSfl-HmDJ@debian.me>
-References: <trinity-6713557b-fe0a-4dae-84aa-1aa86f7619fa-1693473911557@3c-app-gmx-bs12>
+        Thu, 31 Aug 2023 05:58:11 -0400
+Received: from outbound-smtp39.blacknight.com (outbound-smtp39.blacknight.com [46.22.139.222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5B319A
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 02:58:05 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp39.blacknight.com (Postfix) with ESMTPS id DF3C51E63
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:58:03 +0100 (IST)
+Received: (qmail 434 invoked from network); 31 Aug 2023 09:58:03 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 31 Aug 2023 09:58:03 -0000
+Date:   Thu, 31 Aug 2023 10:58:01 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        punit.agrawal@bytedance.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [External] [v3 4/4] mm: hugetlb: Skip initialization of gigantic
+ tail struct pages if freed by HVO
+Message-ID: <20230831095801.76rtpgdsvdijbw5t@techsingularity.net>
+References: <20230825111836.1715308-1-usama.arif@bytedance.com>
+ <20230825111836.1715308-5-usama.arif@bytedance.com>
+ <486CFF93-3BB1-44CD-B0A0-A47F560F2CAE@linux.dev>
+ <a5ec4389-e7c1-2af5-2a47-495bdcac149c@bytedance.com>
+ <A5CD653A-DAA6-481F-963E-AB04D2170088@linux.dev>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RJwfJEiQhwB0+FtO"
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <trinity-6713557b-fe0a-4dae-84aa-1aa86f7619fa-1693473911557@3c-app-gmx-bs12>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <A5CD653A-DAA6-481F-963E-AB04D2170088@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -84,44 +54,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 31, 2023 at 02:21:06PM +0800, Muchun Song wrote:
+> 
+> 
+> > On Aug 30, 2023, at 18:27, Usama Arif <usama.arif@bytedance.com> wrote:
+> > On 28/08/2023 12:33, Muchun Song wrote:
+> >>> On Aug 25, 2023, at 19:18, Usama Arif <usama.arif@bytedance.com> wrote:
+> >>> 
+> >>> The new boot flow when it comes to initialization of gigantic pages
+> >>> is as follows:
+> >>> - At boot time, for a gigantic page during __alloc_bootmem_hugepage,
+> >>> the region after the first struct page is marked as noinit.
+> >>> - This results in only the first struct page to be
+> >>> initialized in reserve_bootmem_region. As the tail struct pages are
+> >>> not initialized at this point, there can be a significant saving
+> >>> in boot time if HVO succeeds later on.
+> >>> - Later on in the boot, HVO is attempted. If its successful, only the first
+> >>> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct pages
+> >>> after the head struct page are initialized. If it is not successful,
+> >>> then all of the tail struct pages are initialized.
+> >>> 
+> >>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> >> This edition is simpler than before ever, thanks for your work.
+> >> There is premise that other subsystems do not access vmemmap pages
+> >> before the initialization of vmemmap pages associated withe HugeTLB
+> >> pages allocated from bootmem for your optimization. However, IIUC, the
+> >> compacting path could access arbitrary struct page when memory fails
+> >> to be allocated via buddy allocator. So we should make sure that
+> >> those struct pages are not referenced in this routine. And I know
+> >> if CONFIG_DEFERRED_STRUCT_PAGE_INIT is enabled, it will encounter
+> >> the same issue, but I don't find any code to prevent this from
+> >> happening. I need more time to confirm this, if someone already knows,
+> >> please let me know, thanks. So I think HugeTLB should adopt the similar
+> >> way to prevent this.
+> >> Thanks.
+> > 
+> > Thanks for the reviews.
+> > 
+> > So if I understand it correctly, the uninitialized pages due to the optimization in this patch and due to DEFERRED_STRUCT_PAGE_INIT should be treated in the same way during compaction. I see that in isolate_freepages during compaction there is a check to see if PageBuddy flag is set and also there are calls like __pageblock_pfn_to_page to check if the pageblock is valid.
+> > 
+> > But if the struct page is uninitialized then they would contain random data and these checks could pass if certain bits were set?
+> > 
+> > Compaction is done on free list. I think the uninitialized struct pages atleast from DEFERRED_STRUCT_PAGE_INIT would be part of freelist, so I think their pfn would be considered for compaction.
+> > 
+> > Could someone more familiar with DEFERRED_STRUCT_PAGE_INIT and compaction confirm how the uninitialized struct pages are handled when compaction happens? Thanks!
+> 
+> Hi Mel,
+> 
+> Could you help us answer this question? I think you must be the expert of
+> CONFIG_DEFERRED_STRUCT_PAGE_INIT. I summarize the context here. As we all know,
+> some struct pages are uninnitialized when CONFIG_DEFERRED_STRUCT_PAGE_INIT is
+> enabled, if someone allocates a larger memory (e.g. order is 4) via buddy
+> allocator and fails to allocate the memory, then we will go into the compacting
+> routine, which will traverse all pfns and use pfn_to_page to access its struct
+> page, however, those struct pages may be uninnitialized (so it's arbitrary data).
+> Our question is how to prevent the compacting routine from accessing those
+> uninitialized struct pages? We'll be appreciated if you know the answer.
+> 
 
---RJwfJEiQhwB0+FtO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I didn't check the code but IIRC, the struct pages should be at least
+valid and not contain arbitrary data once page_alloc_init_late finishes.
 
-On Thu, Aug 31, 2023 at 11:25:11AM +0200, Frank Wunderlich wrote:
-> Hi,
->=20
-> The commit 33140e668b10 "thermal/drivers/mediatek: Control buffer enablem=
-ent tweaks" is merged between 6.3 and 6.4 and causes a regression where tem=
-perature cannot be read correctly at least for mt7986/Bpi-R3.
->=20
-> bpi-r3 ~ # cat /sys/class/thermal/thermal_zone0/temp
-> -274000
->=20
-> after reverting the commit and fixing some build-errors in 6.5-rc7 becaus=
-e new members used in mt8365_thermal_data too, we can read temperature on m=
-t7986 again.
->=20
-
-Thanks for the regression report. I'm adding it to regzbot:
-
-#regzbot ^introduced: 33140e668b1020
-#regzbot title: incorrect temperature on MT7986 due to tweaking buffer
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---RJwfJEiQhwB0+FtO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZPBjFAAKCRD2uYlJVVFO
-o0mFAP91QuKCfgQVlixmP/Pv1pO2ZddoCUNEegbRBqxDSCFtvAEA+K4HSholbqcJ
-NGGQtAZxl6iJbR5W9KtqFAjrr34MLgo=
-=1gyx
------END PGP SIGNATURE-----
-
---RJwfJEiQhwB0+FtO--
+-- 
+Mel Gorman
+SUSE Labs
