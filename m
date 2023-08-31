@@ -2,136 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22BB578F0B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:55:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B74C278F0BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:55:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346510AbjHaPzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
+        id S1346658AbjHaPz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232289AbjHaPzH (ORCPT
+        with ESMTP id S244344AbjHaPz5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:55:07 -0400
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id D6A281A3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:54:57 -0700 (PDT)
-Received: (qmail 483141 invoked by uid 1000); 31 Aug 2023 11:54:57 -0400
-Date:   Thu, 31 Aug 2023 11:54:57 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: usb-storage: how to extend quirks flags to 64bit?
-Message-ID: <6553da2f-455e-4263-a9d9-b6dc64d61e92@rowland.harvard.edu>
-References: <f9e8acb5-32d5-4a30-859f-d4336a86b31a@gmail.com>
- <6f8b825b-bc41-4080-8128-4a6f0a43f779@rowland.harvard.edu>
- <34aa2eea-5417-4e46-91a0-aac1a46a84cf@gmail.com>
- <2d580337-eaf3-47fb-afa7-1006d9a257ea@rowland.harvard.edu>
- <c4c48d12-c4ce-4bdc-a3f9-c6020067681b@gmail.com>
+        Thu, 31 Aug 2023 11:55:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19DC51BF;
+        Thu, 31 Aug 2023 08:55:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A460160C86;
+        Thu, 31 Aug 2023 15:55:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18603C433C9;
+        Thu, 31 Aug 2023 15:55:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693497353;
+        bh=tNXifSiQHZBG29lO09mqc7pDxfteGdJCL9kXovhDnKI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=mifc4DfhQc6w0kGlDvUq6C7bBg7gAMvCubSyYKgHwFKQ/Qjqb7NWXQzdgjUBTXoET
+         VoT6VIKl2Dte5i6nbQelnbeRbTZRMOpiMwbWRGyyBXOn/0Wz6H+WLle07xW1kxe/7f
+         BxQouvxuEZ6G6Pdvga19MJ+ETwatyQikh7Xm23kzZmLXk2iZoP7mUsCStqQY6Jsfk3
+         4pOr34jBwE+kZulxthUmd9ymhvjcdyi7A9V4nH3EMKCFGq83FCN5zajcsK5abbc7Ay
+         JGignWh/MwJZ8Ur3yTarQOc2Gn0cz98BGOrsyoOB+jL42ijQ+fpd8BUpf/DkruCsDt
+         52A+u9DDK7IJQ==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2bcb54226e7so11231151fa.1;
+        Thu, 31 Aug 2023 08:55:52 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yzt6DD8j2yQwGYtulAihk1R0DFdMSRQsboktjaAUxnXZLlDOu/c
+        XE73MhLnhwx3VQ+girq8jWjbYkEuNtgWow9qt2g=
+X-Google-Smtp-Source: AGHT+IEY5GoXsFCov5SJWiJggz3wcaMCrwHepMriHH9ykWAeGhLUAuw+In0odqUHWAqXRMuqVxP9pXlh9+OifB9IVmU=
+X-Received: by 2002:a2e:b532:0:b0:2b9:aad7:9d89 with SMTP id
+ z18-20020a2eb532000000b002b9aad79d89mr1061025ljm.15.1693497351006; Thu, 31
+ Aug 2023 08:55:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4c48d12-c4ce-4bdc-a3f9-c6020067681b@gmail.com>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230831153108.2021554-1-jiaozhou@google.com>
+In-Reply-To: <20230831153108.2021554-1-jiaozhou@google.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 31 Aug 2023 17:55:39 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXH0jAgP2RJOUiXftZMbQnwkTr_EUqF3VnVU1_esLN=Bvw@mail.gmail.com>
+Message-ID: <CAMj1kXH0jAgP2RJOUiXftZMbQnwkTr_EUqF3VnVU1_esLN=Bvw@mail.gmail.com>
+Subject: Re: [PATCH] kernel: Add Mount Option For Efivarfs
+To:     Jiao Zhou <jiaozhou@google.com>,
+        Matthew Garrett <mjg59@srcf.ucam.org>
+Cc:     Linux FS Development <linux-fsdevel@vger.kernel.org>,
+        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 10:39:07PM +0200, Milan Broz wrote:
-> On 8/27/23 20:55, Alan Stern wrote:
-> 
-> ...
-> 
-> > > > > Someone will need a new quirks flag in the future anyway... :)
-> > > > 
-> > > > I can think of only one way to accomplish this on 32-bit systems: Change
-> > > > the driver_info field from a bit array to an index into a static table
-> > > > of 64-bit flags values.  Each unusual_devs structure would have its own
-> > > > entry in this table.  As far as I can tell, the other unusual_*.h tables
-> > > > could retain their current driver_info interpretations, since no new
-> > > > quirk bits are likely to be relevant to them.
-> > > > 
-> > > > Making this change would be an awkward nuisance, but it should be
-> > > > doable.
-> > > 
-> > > Hm, yes, thanks for the idea,that is a possible solution.
-> > > It will need to modify all unusual macros, though. Just I am not sure I want
-> > > to spent time patching all the drivers as I have not way how to test it.
-> > 
-> > I don't think it will be necessary to change all those macros, just the
-> > ones in usual_tables.c.  And to create the new table containing the
-> > actual flag values, of course.
-> > 
-> > There will also have to be a new argument to usb_stor_probe1()
-> > specifying whether the id->driver_info field is standard (i.e., it
-> > contains the flags directly) or is one of the new indirect index values.
-> > 
-> > And you'll have to figure out a comparable change to the dynamic device
-> > ID table mechanism.
-> > 
-> > (If you want to be really fancy about it, you could design things in
-> > such a way that the indirect flags approach is used only on 32-bit
-> > systems.  64-bit systems can put the new flag bits directly into the
-> > driver_info field.  However, it's probably best not to worry about this
-> > initially.)
-> 
-> Hi Alan,
-> 
-> So, I really tried this approach, spent more time on in than I expected, but
-> produced working code... that I am really not proud of :-]
-> (Thus avoiding to send it here, for now.)
-> 
-> I pushed it to my dm-cryptsetup branch here
-> https://git.kernel.org/pub/scm/linux/kernel/git/mbroz/linux.git/log/?h=dm-cryptsetup
+Hello Jiao Zhou,
 
-I haven't had a chance to look at your changes yet, and I might not get 
-around to it for a while.
+This is the second revision of your patch. Please include this fact in
+the subject header, i.e., [PATCH v2] so it is clearly visible.
 
-> The last patch is the reason why I need it, just for reference.
-> More comments in the patch headers.
-> 
-> Could you please check it if it is *really* what we want?
-> If so, I'll rebase it for usb next tree and send as a patchset.
-> 
-> But the macro magic is crazy... and I really did not find the better way.
+On Thu, 31 Aug 2023 at 17:31, Jiao Zhou <jiaozhou@google.com> wrote:
+>
+> Add uid and gid in efivarfs's mount option, so that
+> we can mount the file system with ownership. This approach
+>  is used by a number of other filesystems that don't have
+> native support for ownership.
+>
+> TEST=FEATURES=test emerge-reven chromeos-kernel-5_15
 
-Another possibility is to create a simple pre-processor program that 
-would read the unusual_devs files and massage the information into the 
-form the driver will want.  Such a program could do things that the C 
-preprocessor isn't capable of.
+What does this line mean? Please drop it if it has internal relevance only.
 
-For example, with this approach you could keep the original flag bits in 
-positions 0 - 30, and reserve bit 31 as an indicator that there are 
-additional flags stored in an "overflow" table entry.  This extra table 
-could be relatively short, since it would need to contain only a small 
-number of entries.  I can't think of any way to get the C preprocessor 
-to do this, but it would be easy to have a separate program do it.
+>
+> Signed-off-by: Jiao Zhou <jiaozhou@google.com>
+> Reported-by: kernel test robot <oliver.sang@intel.com>
+> Closes: https://lore.kernel.org/oe-lkp/202308291443.ea96ac66-oliver.sang@intel.com
 
-> Anyway, it also uncovered some problems
->  - some macros need to be changed a little bit, there is even old one unused
+Please drop these lines - the robot found an issue caused by a
+proposed patch, and the newest revision should no longer trigger that
+issue. So these reports have no long term value, and don't deserve a
+mention in the commit log. I understand that the instructions in those
+reports are inconsistent with this, but those reports should generally
+be taken with a grain of salt in any case.
 
-It doesn't hurt to have someone with fresh eyes taking a look at this.  :-)
+You also failed to include Matthew Garrett's ack.
 
->  - duplicity of entries in UAS and mass-storage are strange (and complicates
->    the approach).
->    I guess the sorting is intentionally that mass-storage is included
->    before UAS, so the mass-storage quirk is found as the first (for non-UAS).
->    (While UAS drive includes only own header.)
+> ---
 
-It's a little tricky because the two drivers need to be aware, to some 
-extent, of which devices either prefer to use UAS or can't work with UAS.
+Here (below the ---) is where we generally expect an informal revision
+history of the patch.
 
-> - the patch significantly increases size of module for 32bit
->   (64bit system use the direct flag store approach)
+So something like
 
-The "overflow table" approach would help a lot with this.
+v2:
+- add missing sentinel entry in fs_parameter_spec[] array
+- whatever else you did to fix the issue reported by the robot.
 
-> - I stored a pointer to the flags array, not the index. Perhaps it should be
->   index only (trivial change, though).
+For subsequent revisions, please append (or prepend) to the existing
+changelog so the entire revision history is documented.
 
-Alan Stern
+Please fix all of those issues in a v3. Some more below.
+
+>  fs/efivarfs/inode.c    |  4 +++
+>  fs/efivarfs/internal.h |  9 ++++++
+>  fs/efivarfs/super.c    | 65 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 78 insertions(+)
+>
+> diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
+> index 939e5e242b98..de57fb6c28e1 100644
+> --- a/fs/efivarfs/inode.c
+> +++ b/fs/efivarfs/inode.c
+> @@ -20,9 +20,13 @@ struct inode *efivarfs_get_inode(struct super_block *sb,
+>                                 const struct inode *dir, int mode,
+>                                 dev_t dev, bool is_removable)
+>  {
+> +       struct efivarfs_fs_info *fsi = sb->s_fs_info;
+>         struct inode *inode = new_inode(sb);
+> +       struct efivarfs_mount_opts *opts = &fsi->mount_opts;
+>
+>         if (inode) {
+> +               inode->i_uid = opts->uid;
+> +               inode->i_gid = opts->gid;
+>                 inode->i_ino = get_next_ino();
+>                 inode->i_mode = mode;
+>                 inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
+> diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
+> index 30ae44cb7453..57deaf56d8e2 100644
+> --- a/fs/efivarfs/internal.h
+> +++ b/fs/efivarfs/internal.h
+> @@ -8,6 +8,15 @@
+>
+>  #include <linux/list.h>
+>
+> +struct efivarfs_mount_opts {
+> +       kuid_t uid;
+> +       kgid_t gid;
+> +};
+> +
+> +struct efivarfs_fs_info {
+> +       struct efivarfs_mount_opts mount_opts;
+> +};
+> +
+>  extern const struct file_operations efivarfs_file_operations;
+>  extern const struct inode_operations efivarfs_dir_inode_operations;
+>  extern bool efivarfs_valid_name(const char *str, int len);
+> diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+> index 15880a68faad..d67b0d157ff5 100644
+> --- a/fs/efivarfs/super.c
+> +++ b/fs/efivarfs/super.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/efi.h>
+>  #include <linux/fs.h>
+>  #include <linux/fs_context.h>
+> +#include <linux/fs_parser.h>
+>  #include <linux/module.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/ucs2_string.h>
+> @@ -23,10 +24,27 @@ static void efivarfs_evict_inode(struct inode *inode)
+>         clear_inode(inode);
+>  }
+>
+> +static int efivarfs_show_options(struct seq_file *m, struct dentry *root)
+> +{
+> +       struct super_block *sb = root->d_sb;
+> +       struct efivarfs_fs_info *sbi = sb->s_fs_info;
+> +       struct efivarfs_mount_opts *opts = &sbi->mount_opts;
+> +
+> +       /* Show partition info */
+> +       if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
+> +               seq_printf(m, ",uid=%u",
+> +                               from_kuid_munged(&init_user_ns, opts->uid));
+> +       if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
+> +               seq_printf(m, ",gid=%u",
+> +                               from_kgid_munged(&init_user_ns, opts->gid));
+> +       return 0;
+> +}
+> +
+>  static const struct super_operations efivarfs_ops = {
+>         .statfs = simple_statfs,
+>         .drop_inode = generic_delete_inode,
+>         .evict_inode = efivarfs_evict_inode,
+> +       .show_options   = efivarfs_show_options,
+>  };
+>
+>  /*
+> @@ -190,6 +208,41 @@ static int efivarfs_destroy(struct efivar_entry *entry, void *data)
+>         return 0;
+>  }
+>
+> +enum {
+> +       Opt_uid, Opt_gid,
+> +};
+> +
+> +static const struct fs_parameter_spec efivarfs_parameters[] = {
+> +       fsparam_u32("uid",                      Opt_uid),
+> +       fsparam_u32("gid",                      Opt_gid),
+> +       {},
+> +};
+> +
+> +static int efivarfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
+> +{
+> +       struct efivarfs_fs_info *sbi = fc->s_fs_info;
+> +       struct efivarfs_mount_opts *opts = &sbi->mount_opts;
+> +       struct fs_parse_result result;
+> +       int opt;
+> +
+> +       opt = fs_parse(fc, efivarfs_parameters, param, &result);
+> +       if (opt < 0)
+> +               return opt;
+> +
+> +       switch (opt) {
+> +       case Opt_uid:
+> +               opts->uid = make_kuid(current_user_ns(), result.uint_32);
+> +               break;
+> +       case Opt_gid:
+> +               opts->gid = make_kgid(current_user_ns(), result.uint_32);
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       return 0;
+> +}
+> +
+>  static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
+>  {
+>         struct inode *inode = NULL;
+> @@ -233,10 +286,21 @@ static int efivarfs_get_tree(struct fs_context *fc)
+>
+>  static const struct fs_context_operations efivarfs_context_ops = {
+>         .get_tree       = efivarfs_get_tree,
+> +       .parse_param    = efivarfs_parse_param,
+>  };
+>
+>  static int efivarfs_init_fs_context(struct fs_context *fc)
+>  {
+> +       struct efivarfs_fs_info *sfi;
+> +
+> +       sfi = kzalloc(sizeof(struct efivarfs_fs_info), GFP_KERNEL);
+
+Please use sizeof(*sfi) here - this avoids future problems if sfi ever
+changes type.
+
+> +       if (!sfi)
+> +               return -ENOMEM;
+> +
+> +       sfi->mount_opts.uid = current_uid();
+> +       sfi->mount_opts.gid = current_gid();
+> +
+
+Could this affect existing users of efivarfs? IIIUC, this will result
+in efivarfs being mounted with the uid/gid of the caller instead of
+root/root, right? So if existing scripts use some other user with the
+right capabilities to mount efivarfs, the uid/gid will change.
+
+Is this part of the change important to your use case?
+
+> +       fc->s_fs_info = sfi;
+>         fc->ops = &efivarfs_context_ops;
+>         return 0;
+>  }
+> @@ -254,6 +318,7 @@ static struct file_system_type efivarfs_type = {
+>         .name    = "efivarfs",
+>         .init_fs_context = efivarfs_init_fs_context,
+>         .kill_sb = efivarfs_kill_sb,
+> +       .parameters             = efivarfs_parameters,
+
+Please either drop the indentation, or re-indent the whole block.
+
+>  };
+>
+>  static __init int efivarfs_init(void)
+> --
+> 2.42.0.rc2.253.gd59a3bf2b4-goog
+>
