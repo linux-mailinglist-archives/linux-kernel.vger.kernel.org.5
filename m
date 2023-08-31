@@ -2,129 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBDC78E40A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B91478E40D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244619AbjHaAlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 20:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+        id S245689AbjHaAmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 20:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229654AbjHaAlm (ORCPT
+        with ESMTP id S231288AbjHaAmh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 20:41:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6F3CCF;
-        Wed, 30 Aug 2023 17:41:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693442499; x=1724978499;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=E0Kpa3glzmhOit+Gfb9EdvlhhILV82Bjg5COBTCvIV4=;
-  b=fOeIwm49maEVtyfdf+ter0TurPRe4CWb4FSupeODdTz5RUZRFVZ3DQx8
-   72albatUQFdQUHI+WzwsnLvInQgtBo7eE+ho2XCG3vXCeNoN6MJYYsSqV
-   0zoLasynUp7xtwRWy0qPKo43wVegbi58uEtEiaqoBmD+45O6ZRUH6dkCt
-   n/iN/ZEUpnHkqMZNVVXJfSbjVwg+nsDn0gbn5GykEUCBy7/bMBHSC2r5W
-   C6EvC4In22qODZ1iu/eE7EK92/TJx7zNQk1WndhTltIo9xKtigoSCHjol
-   MO/eDG4TEnVEFDvokNfzAN6oMnzCksJCr4WXOzQNIK4RQKqkJu1+AQR15
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="462160105"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="462160105"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 17:41:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="774290764"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="774290764"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 30 Aug 2023 17:41:35 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbVkd-000APv-0I;
-        Thu, 31 Aug 2023 00:41:35 +0000
-Date:   Thu, 31 Aug 2023 08:40:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <202308310858.19VshX68-lkp@intel.com>
-References: <20230830175335.1536008-5-yosryahmed@google.com>
+        Wed, 30 Aug 2023 20:42:37 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BB6CCF
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:42:35 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1c4c6717e61so124193fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:42:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693442554; x=1694047354; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Dlcuc28wNXxkp3oqXdY8kbbgG+AHVoBzRLKl6J2yon4=;
+        b=eyKoNb9miinD3fqPA/1xWZsgNTZ2no3IsutWMuR5JNLBWiA+4l3M8dtz7JOyQSXmJU
+         +/71vQfQzS/+XrtDKWsx18NggfR5WGhaM1bMlkxxRR9lz10zNClEP2FJ0hWWsSG78MlN
+         4L01cdROx2vK1BTX68fUGNzX2B2gwaGhTBe/E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693442554; x=1694047354;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dlcuc28wNXxkp3oqXdY8kbbgG+AHVoBzRLKl6J2yon4=;
+        b=Vjla58hQEJwqUJ5HZ/Ay40QreZY7XvCoafE//EMEL9Eg4t6mbR0+wSu302XAR1MexI
+         0Wu/ipp5AysPTZXOFhBMj0+MV4wubc8jsKJFFB+19WJHOzA5FdkgupZxRrk75CHjA0kp
+         4pMZhwhAiUovgN0xkIcNYFygh/esZuOokspRZ7xtO0Uo969ZzQCWFAZOBztTDvSZZQxM
+         br32stjDLt4+71MeRSfiDmt0uLGrxGgIj/7Smi5v9iAk0S9BnCa5a9BstVajClCbsGnH
+         OkQVU55uIWXxvgs1gALTcE3w28HLXNsJIH7fXBvmhnkhbRN3ZvY0Pc+Lmu2FGvZFuT9t
+         ILwA==
+X-Gm-Message-State: AOJu0Yw545OUEV+6jSpiBZwVPZdihHApLowOphUMV+2DC/onsZScPq4O
+        jdH4+9lpcSubPU63COcWOa3YfOo15KwwsxS+UvlWew==
+X-Google-Smtp-Source: AGHT+IFdt+d3mQ5CEdRbz2IFVyH9djoyQRRp5qFBQpfUZVOvZBYJ9SHfV/cmVQO3wDX3fTDpUS6B+wVXcH/37kJVvus=
+X-Received: by 2002:a05:6870:5596:b0:1bb:509a:824f with SMTP id
+ n22-20020a056870559600b001bb509a824fmr4560826oao.55.1693442554700; Wed, 30
+ Aug 2023 17:42:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830175335.1536008-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <391c4270-637a-2afb-210d-6b6dfef01efa@intel.com>
+ <20230828100313.3051403-1-benchuanggli@gmail.com> <CAG-rBig+koxDf3TuC-0p=tcBY_2WM1sPCvRDtjRmR7AnikrN-A@mail.gmail.com>
+ <CACT4zj-BaX4tHji8B8gS5jiKkd-2BcwfzHM4fS-OUn0f8DSxcw@mail.gmail.com>
+ <CAG-rBihBkTeZR6yMSF+5zg-h1U1pxGuN-nv=Y7DXLvxV435hDw@mail.gmail.com>
+ <CACT4zj_84eCYOq56zdqaydaEGqyqBrXDrsTkDRyCntvVF78-0A@mail.gmail.com>
+ <CAG-rBigLPfJ6u5LQZ4FwMMm_h3b5fQiRYFkwNjFHm4cDCN1VRw@mail.gmail.com> <CACT4zj_fVyz2oCw6aw7TLmyfZ04WcPeZmwSr79TdWsSP435xoQ@mail.gmail.com>
+In-Reply-To: <CACT4zj_fVyz2oCw6aw7TLmyfZ04WcPeZmwSr79TdWsSP435xoQ@mail.gmail.com>
+From:   Sven van Ashbrook <svenva@chromium.org>
+Date:   Wed, 30 Aug 2023 20:42:23 -0400
+Message-ID: <CAG-rBiikaMaMbaOgQ9LH4x0LK8T6+m+8p_9ZSyYiRxHUTxn75Q@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix
+ SoCs can suspend
+To:     Ben Chuang <benchuanggli@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        skardach@google.com, adrian.hunter@intel.com,
+        SeanHY.chen@genesyslogic.com.tw, ben.chuang@genesyslogic.com.tw,
+        greg.tu@genesyslogic.com.tw, jason.lai@genesyslogic.com.tw,
+        jasonlai.genesyslogic@gmail.com, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, reniuschengl@gmail.com,
+        stable@vger.kernel.org, ulf.hansson@linaro.org,
+        victor.shih@genesyslogic.com.tw, victorshihgli@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yosry,
+On Wed, Aug 30, 2023 at 8:34=E2=80=AFPM Ben Chuang <benchuanggli@gmail.com>=
+ wrote:
+>
+> Understood, I accept your suggestion.
+>
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master next-20230830]
-[cannot apply to v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-properly-name-and-document-unified-stats-flushing/20230831-015518
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230830175335.1536008-5-yosryahmed%40google.com
-patch subject: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for userspace reads
-config: m68k-randconfig-r016-20230831 (https://download.01.org/0day-ci/archive/20230831/202308310858.19VshX68-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308310858.19VshX68-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308310858.19VshX68-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> mm/memcontrol.c:667:6: warning: no previous prototype for 'mem_cgroup_user_flush_stats' [-Wmissing-prototypes]
-     667 | void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-         |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-vim +/mem_cgroup_user_flush_stats +667 mm/memcontrol.c
-
-   658	
-   659	/*
-   660	 * mem_cgroup_user_flush_stats - do a stats flush for a user read
-   661	 * @memcg: memory cgroup to flush
-   662	 *
-   663	 * Flush the subtree of @memcg. A mutex is used for userspace readers to gate
-   664	 * the global rstat spinlock. This protects in-kernel flushers from userspace
-   665	 * readers hogging the lock.
-   666	 */
- > 667	void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-   668	{
-   669		mutex_lock(&stats_user_flush_mutex);
-   670		do_stats_flush(memcg);
-   671		mutex_unlock(&stats_user_flush_mutex);
-   672	}
-   673	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks so much for the detailed review, much appreciated !
+I shall be posting a v3 later this week. I look forward to Genesys's
+review and/or Acked-by.
