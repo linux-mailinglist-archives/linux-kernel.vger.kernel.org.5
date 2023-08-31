@@ -2,56 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBEEB78E520
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61A0E78E51F
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239842AbjHaDps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 23:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41780 "EHLO
+        id S243544AbjHaDoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 23:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbjHaDpp (ORCPT
+        with ESMTP id S229986AbjHaDoE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 23:45:45 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58F0CCC2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:45:43 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbnBB5tMhz4f3lgD
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:45:38 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.103.91])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6niDPBkLzv8Bw--.12879S4;
-        Thu, 31 Aug 2023 11:45:40 +0800 (CST)
-From:   Xie XiuQi <xiexiuqi@huaweicloud.com>
-To:     akpm@linux-foundation.org
-Cc:     willy@infradead.org, irogers@google.com, acme@redhat.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        yangyingliang@huawei.com
-Subject: [PATCH v3] tools/mm: fix undefined reference to pthread_once
-Date:   Thu, 31 Aug 2023 11:42:05 +0800
-Message-Id: <20230831034205.2376653-1-xiexiuqi@huaweicloud.com>
-X-Mailer: git-send-email 2.25.1
+        Wed, 30 Aug 2023 23:44:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D8A0CD7
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:44:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693453442; x=1724989442;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=a0xEBQbm5pmi8Iittj2MMgKjRgZN4d5azjK0BwF2fXM=;
+  b=JcirXwqWTb2+o0ROQ45+Bi6WvSjxOyXgtdCGzxp2YyK303yrclgu3Rq5
+   wmSkIgKuPTx39fECJNzG4yCXrKbj7yC8+JVJfs11UmGsqI8qi3DpVtDmv
+   DYIBQNw0TSWLZ5LEXHD59f5OuFoKYYAuRWvpkNMliH6Wtg31yNxOtgWLg
+   LBTwO31g2ZZtyIe+Q/2DWVxO0QyNVdvUrY6DniHvqVHKkdgvMcsS7qaDk
+   zzB8pGaseIZZxgm2Xyg8IgqoRCoaCJcTWbDnqR1ZZpOKI1NASTEa2RyYm
+   pYVu36Y/WnphrUim0AQTO8RHYwJY8HPHPwKMbrcSPXeQyUMB1+6UM6uJm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="355300785"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="355300785"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:44:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="742472240"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="742472240"
+Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 30 Aug 2023 20:44:00 -0700
+Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qbYb9-000AYx-14;
+        Thu, 31 Aug 2023 03:43:59 +0000
+Date:   Thu, 31 Aug 2023 11:43:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Christian Brauner <brauner@kernel.org>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Seth Forshee (DigitalOcean)" <sforshee@kernel.org>
+Subject: fs/namespace.c:3039: warning: Function parameter or member 'mp' not
+ described in 'can_move_mount_beneath'
+Message-ID: <202308311134.I4o8LaaZ-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXp6niDPBkLzv8Bw--.12879S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr47AryUKryUur4xZF4xZwb_yoW8Cr4kpa
-        yqkryDAF18XayIka97Ww40vrWUKFy2qa18tFyxGw4YgFy3J3y3Cr9F9Fy2vF1fZrW8Ja15
-        Jw4UG3Z5WrW0yaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
-        c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
-        CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
-        MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6r
-        W3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUv
-        cSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: x0lh5xhxtlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,51 +64,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xie XiuQi <xiexiuqi@huawei.com>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   ef2a0b7cdbc5b84f7b3f6573b7687e72bede0964
+commit: 6ac392815628f317fcfdca1a39df00b9cc4ebc8b fs: allow to mount beneath top mount
+date:   3 months ago
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20230831/202308311134.I4o8LaaZ-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308311134.I4o8LaaZ-lkp@intel.com/reproduce)
 
-Commit 97d5f2e9ee12 ("tools api fs: More thread safety for global
-filesystem variables") introduces pthread_once, so the libpthread
-should be added at link time, or we'll meet the following compile
-error when 'make -C tools/mm':
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308311134.I4o8LaaZ-lkp@intel.com/
 
-  gcc -Wall -Wextra -I../lib/ -o page-types page-types.c ../lib/api/libapi.a
-  ~/linux/tools/lib/api/fs/fs.c:146: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:147: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:148: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:149: undefined reference to `pthread_once'
-  ~/linux/tools/lib/api/fs/fs.c:150: undefined reference to `pthread_once'
-  /usr/bin/ld: ../lib/api/libapi.a(libapi-in.o):~/linux/tools/lib/api/fs/fs.c:151:
-  more undefined references to `pthread_once' follow
-  collect2: error: ld returned 1 exit status
-  make: *** [Makefile:22: page-types] Error 1
+All warnings (new ones prefixed by >>):
 
-Fixes: 97d5f2e9ee12 ("tools api fs: More thread safety for global filesystem variables")
-Signed-off-by: Xie XiuQi <xiexiuqi@huawei.com>
-Acked-by: Ian Rogers <irogers@google.com>
-Cc: Matthew Wilcox <willy@infradead.org>
+>> fs/namespace.c:3039: warning: Function parameter or member 'mp' not described in 'can_move_mount_beneath'
 
----
-v3: add it to both CFLAGS and LDFLAGS
-v2: use '-pthread' instead of -lpthread'
----
- tools/mm/Makefile | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/mm/Makefile b/tools/mm/Makefile
-index 6c1da51f4177..1c5606cc3334 100644
---- a/tools/mm/Makefile
-+++ b/tools/mm/Makefile
-@@ -8,8 +8,8 @@ TARGETS=page-types slabinfo page_owner_sort
- LIB_DIR = ../lib/api
- LIBS = $(LIB_DIR)/libapi.a
- 
--CFLAGS += -Wall -Wextra -I../lib/
--LDFLAGS += $(LIBS)
-+CFLAGS += -Wall -Wextra -I../lib/ -pthread
-+LDFLAGS += $(LIBS) -pthread
- 
- all: $(TARGETS)
- 
+vim +3039 fs/namespace.c
+
+  3015	
+  3016	/**
+  3017	 * can_move_mount_beneath - check that we can mount beneath the top mount
+  3018	 * @from: mount to mount beneath
+  3019	 * @to:   mount under which to mount
+  3020	 *
+  3021	 * - Make sure that @to->dentry is actually the root of a mount under
+  3022	 *   which we can mount another mount.
+  3023	 * - Make sure that nothing can be mounted beneath the caller's current
+  3024	 *   root or the rootfs of the namespace.
+  3025	 * - Make sure that the caller can unmount the topmost mount ensuring
+  3026	 *   that the caller could reveal the underlying mountpoint.
+  3027	 * - Ensure that nothing has been mounted on top of @from before we
+  3028	 *   grabbed @namespace_sem to avoid creating pointless shadow mounts.
+  3029	 * - Prevent mounting beneath a mount if the propagation relationship
+  3030	 *   between the source mount, parent mount, and top mount would lead to
+  3031	 *   nonsensical mount trees.
+  3032	 *
+  3033	 * Context: This function expects namespace_lock() to be held.
+  3034	 * Return: On success 0, and on error a negative error code is returned.
+  3035	 */
+  3036	static int can_move_mount_beneath(const struct path *from,
+  3037					  const struct path *to,
+  3038					  const struct mountpoint *mp)
+> 3039	{
+  3040		struct mount *mnt_from = real_mount(from->mnt),
+  3041			     *mnt_to = real_mount(to->mnt),
+  3042			     *parent_mnt_to = mnt_to->mnt_parent;
+  3043	
+  3044		if (!mnt_has_parent(mnt_to))
+  3045			return -EINVAL;
+  3046	
+  3047		if (!path_mounted(to))
+  3048			return -EINVAL;
+  3049	
+  3050		if (IS_MNT_LOCKED(mnt_to))
+  3051			return -EINVAL;
+  3052	
+  3053		/* Avoid creating shadow mounts during mount propagation. */
+  3054		if (path_overmounted(from))
+  3055			return -EINVAL;
+  3056	
+  3057		/*
+  3058		 * Mounting beneath the rootfs only makes sense when the
+  3059		 * semantics of pivot_root(".", ".") are used.
+  3060		 */
+  3061		if (&mnt_to->mnt == current->fs->root.mnt)
+  3062			return -EINVAL;
+  3063		if (parent_mnt_to == current->nsproxy->mnt_ns->root)
+  3064			return -EINVAL;
+  3065	
+  3066		for (struct mount *p = mnt_from; mnt_has_parent(p); p = p->mnt_parent)
+  3067			if (p == mnt_to)
+  3068				return -EINVAL;
+  3069	
+  3070		/*
+  3071		 * If the parent mount propagates to the child mount this would
+  3072		 * mean mounting @mnt_from on @mnt_to->mnt_parent and then
+  3073		 * propagating a copy @c of @mnt_from on top of @mnt_to. This
+  3074		 * defeats the whole purpose of mounting beneath another mount.
+  3075		 */
+  3076		if (propagation_would_overmount(parent_mnt_to, mnt_to, mp))
+  3077			return -EINVAL;
+  3078	
+  3079		/*
+  3080		 * If @mnt_to->mnt_parent propagates to @mnt_from this would
+  3081		 * mean propagating a copy @c of @mnt_from on top of @mnt_from.
+  3082		 * Afterwards @mnt_from would be mounted on top of
+  3083		 * @mnt_to->mnt_parent and @mnt_to would be unmounted from
+  3084		 * @mnt->mnt_parent and remounted on @mnt_from. But since @c is
+  3085		 * already mounted on @mnt_from, @mnt_to would ultimately be
+  3086		 * remounted on top of @c. Afterwards, @mnt_from would be
+  3087		 * covered by a copy @c of @mnt_from and @c would be covered by
+  3088		 * @mnt_from itself. This defeats the whole purpose of mounting
+  3089		 * @mnt_from beneath @mnt_to.
+  3090		 */
+  3091		if (propagation_would_overmount(parent_mnt_to, mnt_from, mp))
+  3092			return -EINVAL;
+  3093	
+  3094		return 0;
+  3095	}
+  3096	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
