@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F307F78F43A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2784D78F43C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347438AbjHaUlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 16:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
+        id S1347441AbjHaUna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 16:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244299AbjHaUlw (ORCPT
+        with ESMTP id S238671AbjHaUn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 16:41:52 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5904C1B0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:41:49 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-64c2e2572f7so6681006d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:41:49 -0700 (PDT)
+        Thu, 31 Aug 2023 16:43:29 -0400
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 201C11B0;
+        Thu, 31 Aug 2023 13:43:27 -0700 (PDT)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-76f08e302a1so80071285a.1;
+        Thu, 31 Aug 2023 13:43:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1693514508; x=1694119308; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=MGb8UE4K7J1/tZAx27Ih4ZHLsp9ZwY6jXWa1wmWSSW0=;
-        b=I31qRJi90wozqH18C1R2tr4ll/MxoMmVndKe/6SW3YuG7QaNd1U4Gm8hLS+LBJXvco
-         Slk/Gh2F2dQ9vTYwiAukJdQQdf0CCU41Dfr8G2wzBqLZXgsHSmaGLel8c6Ru1LHn13it
-         ohjZYq3nCmBlzTzxkpD7xowQw9kM2Gte6AmjtOPkW3OtmbsmePmlXAUv/nqwgbKD142k
-         5fxxiUWyB9iNWBlVijTmRSgTTK4B2UDi8I+/xVJ06CFliv4p8gZvDae8+rGOXLQZwZjD
-         UdDSJLXoMigRxUAzUs2aMLJBQxcNfYet7V8KXzV+T2Gv2fqfgP5KAkvL6PsHsl73amVC
-         cURw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693514508; x=1694119308;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+        d=gmail.com; s=20221208; t=1693514606; x=1694119406; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=MGb8UE4K7J1/tZAx27Ih4ZHLsp9ZwY6jXWa1wmWSSW0=;
-        b=MV1JglSwqQyv15+0wdF8cHQMHioxgrjfNrowLpdtQcmoqF5dZH3OixSKdkqSRHZuuE
-         boW3rcF18Xn9IAJncjz34ndOO6AvvlU2H4Gm3cWbmshvH4vCB1rlaruB87wrZn9vTk31
-         dk8NHReoF+Q7JarFcqVBdlX0cyLyn5RVXgsjL67moklljQ0R2JQ+zY98Xr+Xh+vGKUUY
-         Tq+//i+Zhf7WhrZ9Z8uoiWxIF8FmuQrVb6dtw0aXGkYZSVA/BlYEfDNW6mpd4Ec7m9BF
-         NbyS2yXfnfA1v9wXQz1Yr2K4Y2PUaEHPpu961xQSLu4qfyqu568RTkc3VMeozRaV7d+1
-         +A+Q==
-X-Gm-Message-State: AOJu0YwWZdwIPSJUQzDLALzBc5Z78e7JSCwTf5AgUvKYcWbAI3G5Mfaq
-        2gRLenJYE72aBDngs2SN1DV7nA==
-X-Google-Smtp-Source: AGHT+IFU9aOd57XMHkjUfgCesvQh4jI8dOaEF345CS48c+uA4Ci+ij/CalBUYdApLt8nWIG9HHvAmA==
-X-Received: by 2002:a0c:8c8e:0:b0:641:8df1:79e3 with SMTP id p14-20020a0c8c8e000000b006418df179e3mr358262qvb.29.1693514508451;
-        Thu, 31 Aug 2023 13:41:48 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
-        by smtp.gmail.com with ESMTPSA id u11-20020a0c8dcb000000b0064f45b8c02bsm899553qvb.49.2023.08.31.13.41.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 13:41:47 -0700 (PDT)
-Message-ID: <fea0cb4a94ab9ba757f32ad5539d075089dc63e7.camel@ndufresne.ca>
-Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     Takashi Iwai <tiwai@suse.de>,
-        Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
-        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 31 Aug 2023 16:41:46 -0400
-In-Reply-To: <87wmxk8jaq.wl-tiwai@suse.de>
-References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
-         <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
-         <87il9xu1ro.wl-tiwai@suse.de>
-         <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
-         <87il9xoddo.wl-tiwai@suse.de>
-         <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
-         <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
-         <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
-         <CAA+D8AMriHO60SD2OqQSDMmi7wm=0MkoW6faR5nyve-j2Q5AEQ@mail.gmail.com>
-         <CAA+D8AN34-NVrgksRAG014PuHGUssTm0p-KR-HYGe+Pt8Yejxg@mail.gmail.com>
-         <87wmxk8jaq.wl-tiwai@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        bh=4ZEkpgI+1xGvtb5oOFsSrJIyIMnI7mF5GQF81tetMAw=;
+        b=Ytl67oD2/ZL7Uy7qwq9htEvDIi8SRgWFjvfldChBUF7TES50M/0956dTwgp0nnBSJd
+         T5AHik5dpG8fj9FhXkgQ+XVVwvx0B+seVoMj+4GR4tOfu/hz8NH6kloufEwhbzhp6T/R
+         fs9UQdRUBmu6vcHFV1oe87OACWytmP43qnN6fuUYyadxRWraQwthibGsO+EWe/9Wx7CQ
+         /KexcCen+WedBhYD/4+KfLOMpu5N98of8u9oFxjOgxBHJbE0LuDRLqPc2X+yPqXHjyCz
+         uUN8uR0o9w9sNQNYWFuUCo5ewp/AI1hbrtbV1ogGI7p4GijJJW3ViHSgWVg8R+d6F7SX
+         b9XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693514606; x=1694119406;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4ZEkpgI+1xGvtb5oOFsSrJIyIMnI7mF5GQF81tetMAw=;
+        b=alyNMCdEFaSHS+I4AP/BxQ9K+DN0MNdD88RZeq79aQ8dzwqC69nDXpKuRHmAQW0Qop
+         WXu7oHVGJAqwVrkZHghLEMsNOxZofmvPkndnd/+WDTr7gM8ciuxkEWlkwnmlAA35O+vs
+         9gX9MZe/8yyBwt7+uX5SDZACFNZu95tIZt5+YxCUva0bO/Vaclm6gtMDAH16LMoWPuRO
+         iMsGNVvFKTzXytqB8mY2ZcOwk3dSEZob8nAXduz5M29sfQbHYtS7nT3cuwtBoSYPy6ll
+         Z6dCIe+jEN7En/+92CTIJiJSGqCvnhLZUL6V9kFgAxA9uZJSquKPwB/novek6cpami7F
+         eA2A==
+X-Gm-Message-State: AOJu0Yyj+WkLyT0tp9ZO94kfAaCe1arJzaI+y/m//hmTqVocCAgpUY99
+        ttSYHt6eQG5Ys1ErtN2svoPLExGd+Bc=
+X-Google-Smtp-Source: AGHT+IEp+IPzo0Pw0JG0bt36rjaOYI2aqAxXTUBCCt/Bq5AbEV5G3X1iHPGrpD6JDmVg+1XHODRsew==
+X-Received: by 2002:a05:620a:17a4:b0:76f:27af:2796 with SMTP id ay36-20020a05620a17a400b0076f27af2796mr627289qkb.60.1693514606114;
+        Thu, 31 Aug 2023 13:43:26 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id p19-20020a05620a113300b0076ef40734c8sm877942qkk.79.2023.08.31.13.43.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 13:43:25 -0700 (PDT)
+Message-ID: <890f7c2a-f87f-308f-fc77-cfa9cfef53f0@gmail.com>
+Date:   Thu, 31 Aug 2023 13:43:09 -0700
 MIME-Version: 1.0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5.15 0/9] 5.15.130-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20230831110830.039135096@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20230831110830.039135096@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 8/31/23 04:10, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.130 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.130-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Le jeudi 24 ao=C3=BBt 2023 =C3=A0 19:03 +0200, Takashi Iwai a =C3=A9crit=C2=
-=A0:
-> > 3. How to handle the xrun issue. pause or resume. which are brought by =
-ALSA.
->=20
-> Doesn't V4L2 handle the overrun/underrun at all?=C2=A0 Also, no resume
-> support?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-just a 2 cents comment. All our video m2m are job based. When there is no j=
-ob
-available they stop and resume when there is more work in queues. As there =
-is no
-time constraints coming from the hardware, there is also no API to know tha=
-t
-there has been a period of time without anything being executed (under
-utilization). Only overrun can be detected by application, each chunk of wo=
-rk is
-in its own v4l2_buffer and the application will run out of buffer in that c=
-ase,
-and will have to wait for free space in the queue. Understand though that t=
-he
-larger the queue, the large the latency. There is currently no way to submi=
-t job
-ahead of the data (unlike DRM subsystem).
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-I have slight impression that all this seems rather inefficient for high ra=
-te /
-small buffer. I'd suggest creating a dummy benchmark driver to verify that =
-the
-overhead isn't just too much for an audio use case.
-
-Nicolas
