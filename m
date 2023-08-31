@@ -2,66 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBB7B78E517
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDEF578E51A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344029AbjHaD3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 23:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35316 "EHLO
+        id S243010AbjHaDaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 23:30:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241909AbjHaD3G (ORCPT
+        with ESMTP id S229986AbjHaDaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 23:29:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BD1CD6;
-        Wed, 30 Aug 2023 20:28:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693452539; x=1724988539;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=mMebp850JOshB3+YN1rRwuWyCX0M90aaEB7z5FJE9VI=;
-  b=ScauuD3sjd3M/H+zFbyF5kRLC2ORV7LCFGKU3kEbRqU0WW83g1YFDHqv
-   nzfIkBn7755vsmgxkpdC5uOFtv3aZu8eynYlZIviCqESfdNjew+W3kW/n
-   4XrKaRlLgIOfSMt2xZIsa14UzFyeFC1TnGlEaIKf7tWqVyxAIfNuyyaTF
-   feF+1MwaJyxsX6dkRiBmFWOIBtaHpDP42aIr8d7OUUaVf3Sz+g3mK8hNy
-   Qt66PJIFQ4wmLPnzyUVqbLMl2XfefUq0xFc59dXHS5yixerny2pUHed9Y
-   CFvc7i4oPEQvsfPTT09g+YzWFyie+ELP410+lNKPqjTRTmsoWSZ1yyT9g
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="356115591"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="356115591"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:28:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="716155798"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="716155798"
-Received: from asehgal1-mobl.amr.corp.intel.com (HELO [10.212.136.74]) ([10.212.136.74])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:28:58 -0700
-Message-ID: <934250db-b05f-4d48-8138-06986a14b3fb@linux.intel.com>
-Date:   Wed, 30 Aug 2023 20:28:57 -0700
+        Wed, 30 Aug 2023 23:30:02 -0400
+Received: from out30-131.freemail.mail.aliyun.com (out30-131.freemail.mail.aliyun.com [115.124.30.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6B4CD6;
+        Wed, 30 Aug 2023 20:29:58 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0Vqwnv08_1693452592;
+Received: from 30.240.112.203(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0Vqwnv08_1693452592)
+          by smtp.aliyun-inc.com;
+          Thu, 31 Aug 2023 11:29:55 +0800
+Message-ID: <d1c8c0fa-815f-6804-e4e5-89a5259e4bb1@linux.alibaba.com>
+Date:   Thu, 31 Aug 2023 11:29:48 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] platform/x86: intel_scu_ipc: Timeout fixes
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH] HWPOISON: add a pr_err message when forcibly send a
+ sigbus
 Content-Language: en-US
-To:     Stephen Boyd <swboyd@chromium.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-References: <20230831011405.3246849-1-swboyd@chromium.org>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20230831011405.3246849-1-swboyd@chromium.org>
+To:     Will Deacon <will@kernel.org>, "Luck, Tony" <tony.luck@intel.com>
+Cc:     catalin.marinas@arm.com, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, dave.hansen@linux.intel.com, luto@kernel.org,
+        peterz@infradead.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+References: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
+ <20230821105025.GB19469@willie-the-truck>
+ <44c4d801-3e21-426b-2cf0-a7884d2bf5ff@linux.alibaba.com>
+ <54114b64-4726-da46-8ffa-16749ec0887a@linux.alibaba.com>
+ <20230830221814.GB30121@willie-the-truck>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <20230830221814.GB30121@willie-the-truck>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-11.1 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,38 +55,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 8/30/2023 6:14 PM, Stephen Boyd wrote:
-> I recently looked at some crash reports on ChromeOS devices that call
-> into this intel_scu_ipc driver. They were hitting timeouts, and it
-> certainly looks possible for those timeouts to be triggering because of
-> scheduling issues. Once things started going south, the timeouts kept
-
-Are you talking about timeouts during IPC command?
-
-> coming. Maybe that's because the other side got seriously confused? I
-> don't know. I'll poke at it some more by injecting timeouts on the
-> kernel side.
-
-Do you think it is possible due to a firmware issue?
-
+On 2023/8/31 06:18, Will Deacon wrote:
+> On Mon, Aug 28, 2023 at 09:41:55AM +0800, Shuai Xue wrote:
+>> On 2023/8/22 09:15, Shuai Xue wrote:
+>>> On 2023/8/21 18:50, Will Deacon wrote:
+>>>>> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+>>>>> index 3fe516b32577..38e2186882bd 100644
+>>>>> --- a/arch/arm64/mm/fault.c
+>>>>> +++ b/arch/arm64/mm/fault.c
+>>>>> @@ -679,6 +679,8 @@ static int __kprobes do_page_fault(unsigned long far, unsigned long esr,
+>>>>>  	} else if (fault & (VM_FAULT_HWPOISON_LARGE | VM_FAULT_HWPOISON)) {
+>>>>>  		unsigned int lsb;
+>>>>>  
+>>>>> +		pr_err("MCE: Killing %s:%d due to hardware memory corruption fault at %lx\n",
+>>>>> +		       current->comm, current->pid, far);
+>>>>>  		lsb = PAGE_SHIFT;
+>>>>>  		if (fault & VM_FAULT_HWPOISON_LARGE)
+>>>>>  			lsb = hstate_index_to_shift(VM_FAULT_GET_HINDEX(fault));
+>>>>
+>>>> Hmm, I'm not convinced by this. We have 'show_unhandled_signals' already,
+>>>> and there's plenty of code in memory-failure.c for handling poisoned pages
+>>>> reported by e.g. GHES. I don't think dumping extra messages in dmesg from
+>>>> the arch code really adds anything.
+>>>
+>>> I see the show_unhandled_signals() will dump the stack but it rely on
+>>> /proc/sys/debug/exception-trace be set.
+>>>
+>>> The memory failure is the top issue in our production cloud and also other hyperscalers.
+>>> We have received complaints from our operations engineers and end users that processes
+>>> are being inexplicably killed :(. Could you please consider add a message?
 > 
-> The first two patches are only lightly tested (normal functions keep
-> working), while the third one is purely speculation. I was going to make
-> the interrupt delay for a long time to see if I could hit the timeout.
+> I don't have any objection to logging this stuff somehow, I'm just not
+> convinced that the console is the best place for that information in 2023.
+> Is there really nothing better?
 > 
-> Stephen Boyd (3):
->   platform/x86: intel_scu_ipc: Check status after timeouts in
->     busy_loop()
->   platform/x86: intel_scu_ipc: Check status upon timeout in
->     ipc_wait_for_interrupt()
->   platform/x86: intel_scu_ipc: Fail IPC send if still busy
-> 
->  drivers/platform/x86/intel_scu_ipc.c | 59 ++++++++++++++++++++--------
->  1 file changed, 42 insertions(+), 17 deletions(-)
-> 
-> 
-> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Hi, Will,
+
+I agree that console might not the better place, but it still plays an important role.
+IMO the most direct idea for end user to check what happened is to check by viewing
+the dmesg. In addition, we deployed some log store service collects all cluster dmesg
+from /var/log/kern.
+
+Do you have any better choice?
+
++ @Tony for ERST
+I found that after /dev/mcelog driver deprecated, both x86 and ARM64 platform does not
+support to collect MCE record of previous boot in persistent storage via APEI ERST.
+I propose to add a mechanism to do it for rasdaemon. Do you have any suggestion?
+
+Thank you.
+Best Regards,
+Shuai
+
