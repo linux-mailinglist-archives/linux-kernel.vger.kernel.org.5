@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 820E278EEB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:34:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4256778EEB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:36:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242124AbjHaNep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:34:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55566 "EHLO
+        id S241222AbjHaNgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:36:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbjHaNep (ORCPT
+        with ESMTP id S231305AbjHaNgW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:34:45 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A51F1A2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
- s=s31663417; t=1693488871; x=1694093671; i=frank-w@public-files.de;
- bh=HMDb6+RioAHke7j9RSJ/2v9RMCbqej1Z9hJqWh6sXGI=;
- h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
- b=sCuHdZdmaz0Bww5gYVmD69aGrl+4ULyboz9dPO4xYrTcCzS+QQF5xeYF6MZuQR4a34MHtTL
- S2JnbfnO3zhy7DOiyA8/wNhhsZ6TUyft5ZMavlsQIQVCdWz3VdaLw8StuefIk95zLdQ41xHWL
- R2TeJB+LSJA8/ONtXht4U4pFeTGabSFh8Xu1bD3AYm52Z7F6FkdyPq26cKeSxpWY5xUQuIzG/
- +gP+Jft1Dv82nuWqUiLiO5qVQNdZeJ4vSrmJ1cVVykpBak2/opg9f6XZ2UJ/QqPpSJRYj6Drg
- 9ZrjPavY79EqmLbhyTVryOhxplSDUJN22pP0N80rCWGA83MsUkTw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [217.61.156.102] ([217.61.156.102]) by web-mail.gmx.net
- (3c-app-gmx-bs12.server.lan [172.19.170.63]) (via HTTP); Thu, 31 Aug 2023
- 15:34:31 +0200
+        Thu, 31 Aug 2023 09:36:22 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A001CFC
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:36:19 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bdc27e00a1so681271a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693488978; x=1694093778; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QqAw1vSdyf4KNpVgJMS6YvMCPUOYkqxMNfc27UX7Zy4=;
+        b=D6JVQgQFWPOgxp59+vNQU/Ugu6CTHatcUbg+YjMrxI26Huz3NJJk8K4QoQasGhVKbC
+         +LN85pIC1qjXrnWJcPvJXgTg7o/XX37ZjGKkfe5kXiBQacmdLoPWg0glMFreReBIieEc
+         W/a+fxxB0loro+ikzq1ttGf+kQivZuWgfsCNZXspxEUMUuox0+EqUzGqJVfQt36r+6d3
+         luEJ95aZbSXtz7+vNumTteUgiB3TmG+Hq8cn9LloLG0huUJ5zOA9FLW7d+py+amtU/vI
+         IQddvHqst+zzzh9MSuVHgDMovNH5aPRzZCs30r3wisqFdJtKfmc9nM/z3DhqRIslEl5F
+         BRww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693488978; x=1694093778;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QqAw1vSdyf4KNpVgJMS6YvMCPUOYkqxMNfc27UX7Zy4=;
+        b=A75O9eyjm7blXPqIBrZtIWaDyHlfjIqqTAKqAdGHma1o4pfgJ2BTHbdMfpPB8N29Kg
+         LNvr9WWnKJJQ9hzxd1+912ZwiM/Sap2chv+MHgzwjvN5CdqWHE0ZdlkjJdoHTBV3IZnN
+         iV/v7rdTCUeYJ5ASnbjUlhvJta913APRPgHVRtWW3dRldHZFygOnS+YwpFsS1YFopVwK
+         RTqpBBbvrdNxCWYjo0XoV/MG5XavNZOjPTTLjfaQAAsTMWVReJSQ2Ojo5GAIbcIdt3OQ
+         jCnba5vDMLNWnCwpH6ONMxa992OZz6G3oOSmpFEcdN//sL42Tot7huraj9GgX3ibgAV7
+         Ksog==
+X-Gm-Message-State: AOJu0YzE/nuJixM2qtH76JlzrCY0mONFG1/OoacmzMCr5dOctvMnAMjH
+        bss7MC9p8sW5wIt3pc8F/W2AEMCyw9XX0aA9IcKudu4/9x67c4Rn
+X-Google-Smtp-Source: AGHT+IHLwKEwQ6Ij8GHHKwNHA115gxE5tfUPeMUXy+HCUY2RaudcNytalLP9wq/BdDRNIoBPy2RPFlUyH5wDcxh/f5Q=
+X-Received: by 2002:a9d:7d0b:0:b0:6b9:52cb:3adf with SMTP id
+ v11-20020a9d7d0b000000b006b952cb3adfmr5581080otn.20.1693488978357; Thu, 31
+ Aug 2023 06:36:18 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <trinity-f3e7d8e0-2e93-4e84-a489-3993c819d2c3-1693488871086@3c-app-gmx-bs12>
-From:   Frank Wunderlich <frank-w@public-files.de>
-To:     Frank Wunderlich <frank-w@public-files.de>
-Cc:     Markus Schneider-Pargmann <msp@baylibre.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        Amjad Ouled-Ameur <aouledameur@baylibre.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Alex Riabchenko <d3adme4t@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
-Subject: Aw: regression with 33140e668b10 thermal/drivers/mediatek: Control
- buffer enablement tweaks
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 31 Aug 2023 15:34:31 +0200
-Importance: normal
-Sensitivity: Normal
-In-Reply-To: <trinity-6713557b-fe0a-4dae-84aa-1aa86f7619fa-1693473911557@3c-app-gmx-bs12>
-References: <trinity-6713557b-fe0a-4dae-84aa-1aa86f7619fa-1693473911557@3c-app-gmx-bs12>
-X-UI-Message-Type: mail
-X-Priority: 3
-X-Provags-ID: V03:K1:eP/i3AepHzHiRNAom7jECnpS1u2vDlFap7n1KSAqYjWklDExb61WSqDcQnfMEfkOwfDiY
- sNo+uiX2QYb22S6mlM+hz6qOa9SpX7CP0Wefp4KREiNQ1rTrQHB66Tcnq+X+yNr8TM3o5Y7bZv4L
- CM46SD9g9Vx8b6BmAL1sYEVhBYdoZ/bD7EEmks/SCKsjzhz8dlhPTYlHjhcPdCmO6ft09BUXHY/s
- IyuMlSjICF1PAuE6D+GSOumLObj2arw7kWjTFXjDvmQIpJUGDmXAG3tFRumpGNpCdDu2tzeVY+fg
- lY=
-UI-OutboundReport: notjunk:1;M01:P0:LkEhvTJkhsg=;P3MZdiEy8f/h0RrrKZCv/RiTxaP
- KmdipGDFp+WDtamBOX35oJAMlGxucryUTElChItGfSflRxao2X2WWzOD7Hs2yTyO124A9m03d
- T0IKGc/yGCUzqT80MRtCeCNYQkwQc1/0YVvWBUbBAZofH1L8K4zcIzSBAXzNA3e6QAtJPQG4z
- WYdhr3TUIbKlNnzB9RBuO45CLb1lSbVJ9NGhnqnHYJYP3SDC3lBJPAbtuSXSnZou6pyXgr4n3
- 0xyj9KrP+L6DWWhNHUbeS3vY8o10l+AmfINgxFDIot0IfGr0m5KK93uIXulvGhAKrjqoj2eE0
- tZzte5RiR7kha+li2LwFR4FXQ3rIUOe444bwNBoEti+HKsQXxi7DrFDVXSxsOHwOWjKBdxfEe
- zbgtBbJc5LkX7nC9gPF77GLH0ZCaqsX7kn59OE6V//I9fROC/ilyTO9lb5FNB6g/NV0804p8q
- /v3ilhw5euma/XNGivkfOsEHiAnDVrqLyKUk9p3/wt4oWiLoP9dtCh60aZhLroPPXraTU6R7+
- 3L2lq8umERA5GpkiAvEbCENKMTtv0w9/iVMXgDHiuKHPf7MozqFNsk8jKf8L82ni5vNe6MQ+Q
- 71SXP4gZoikx1unw9U9GuowZMnNCy8fZDaFPQcPddCZPLQyP7DenSFVUq0LTpro5ALQjKxxzM
- 3xGL4HO3fAlbVZhJcQb47cAXu7BT6BXiA6Re8tzZxXsrjhI8UrRrJ6QupeZJnLJ/N9Bk6qoj1
- rSkAULm5msu5RKPPnj6Qc6zIivGx6eHejgELdLe8Y7lMMEy6Ns99nLZhGguvELXHBo/RfzVGT
- 53ztBt1GT4bEQycXbrQbFoig==
+References: <20230824112741.201353-1-linkmauve@linkmauve.fr>
+ <20230824112741.201353-2-linkmauve@linkmauve.fr> <46a562b5-6984-3b41-3c41-c346107b4c96@linaro.org>
+ <ZOdUiFsAjQCvwp1A@desktop> <622faf2a-58ec-5ff4-1952-19c15d122642@linaro.org>
+In-Reply-To: <622faf2a-58ec-5ff4-1952-19c15d122642@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 31 Aug 2023 15:36:07 +0200
+Message-ID: <CACRpkdaw-sYVUPPrHNGGkdQ9_09CMHg11u2hGcUV-7L8MpLj+w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] power: supply: bq24190: Support bq24193
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        Alexandre Courbot <acourbot@nvidia.com>,
+        azkali <a.ffcc7@gmail.com>, CTCaer <ctcaer@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-looked a bit deeper into it and it looks like i only need to add the field=
-s in the mtk_thermal_data struct
-
-=2D-- a/drivers/thermal/mediatek/auxadc_thermal.c
-+++ b/drivers/thermal/mediatek/auxadc_thermal.c
-@@ -690,6 +690,9 @@ static const struct mtk_thermal_data mt7986_thermal_da=
-ta =3D {
-        .adcpnp =3D mt7986_adcpnp,
-        .sensor_mux_values =3D mt7986_mux_values,
-        .version =3D MTK_THERMAL_V3,
-+       .apmixed_buffer_ctl_reg =3D APMIXED_SYS_TS_CON1,
-+       .apmixed_buffer_ctl_mask =3D GENMASK(31, 6) | BIT(3),
-+       .apmixed_buffer_ctl_set =3D BIT(0),
- };
-
-in my quick test the temprature can be read again and i'm near room temper=
-ature...i though it was a bit higher before, but as far as i understand th=
-e code, the values were fixed before and only made it configurable.
-
-if someone can confirm that i'm right, i can send official patch.
-
-regards Frank
-
-
-> Gesendet: Donnerstag, 31. August 2023 um 11:25 Uhr
-> Von: "Frank Wunderlich" <frank-w@public-files.de>
-> Hi,
+On Thu, Aug 24, 2023 at 3:28=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 24/08/2023 15:00, Emmanuel Gil Peyrot wrote:
 >
-> The commit 33140e668b10 "thermal/drivers/mediatek: Control buffer enable=
-ment tweaks" is merged between 6.3 and 6.4 and causes a regression where t=
-emperature cannot be read correctly at least for mt7986/Bpi-R3.
+> >>> @@ -2027,6 +2028,7 @@ MODULE_DEVICE_TABLE(i2c, bq24190_i2c_ids);
+> >>>  static const struct of_device_id bq24190_of_match[] =3D {
+> >>>     { .compatible =3D "ti,bq24190", },
+> >>>     { .compatible =3D "ti,bq24192", },
+> >>> +   { .compatible =3D "ti,bq24193", },
+> >>>     { .compatible =3D "ti,bq24192i", },
+> >>>     { .compatible =3D "ti,bq24196", },
+> >>
+> >> We should really stop doing this. All of them are compatible, aren't t=
+hey?
+> >
+> > From what I gather from the different datasheets, the main difference
+> > between them is the maximum current they are able to provide, 1.5 A for
+> > the bq24190 and bq24192i, 3 A for bq24192 and 4.5 A for bq24193. The
+> > default current limit is also detected differently it seems.  But yeah,
+> > those are otherwise similar enough to not require anything different in
+> > the driver.
+> >
+> > What would be a good way forward for that?  Adding a new ti,bq2419x
+> > compatible and switching all devices to this one, as long as they don=
+=E2=80=99t
+> > require anything specific?
 >
-> bpi-r3 ~ # cat /sys/class/thermal/thermal_zone0/temp
-> -274000
->
-> after reverting the commit and fixing some build-errors in 6.5-rc7 becau=
-se new members used in mt8365_thermal_data too, we can read temperature on=
- mt7986 again.
->
-> i guess reverting the commit is not the right way, so i ask here for a b=
-etter solution
->
-> regards Frank
+> Not a wildcard but any of existing ones, e.g. "ti,bq24196", "ti,bq24190".
+
+We usually encourage people to over-specify the hardware number,
+because you never know when you need a quirk and then if you can't
+tell them apart you are in a bad place. (But there are exceptions, such
+as jedec-nor...)
+
+The differences pointed out (charge current limit etc) can very well
+result in different code paths at some point, especially if the charger
+interacts with some other component.
+
+Yours,
+Linus Walleij
