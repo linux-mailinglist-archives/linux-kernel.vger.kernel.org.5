@@ -2,135 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE1E78E4F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D9D78E4F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245557AbjHaDI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 23:08:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42838 "EHLO
+        id S240474AbjHaDJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 23:09:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229693AbjHaDIy (ORCPT
+        with ESMTP id S229693AbjHaDJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 23:08:54 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAFEACC2;
-        Wed, 30 Aug 2023 20:08:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693451331; x=1724987331;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mYEk4LI2pL8XWPF1zKc5qz6vdX12xJGX7KbAifejJ34=;
-  b=FcJDNC7z0soWTaunVNw+0vkguzfXZPshXnMQrzTRX32YWy649eQuFfx+
-   CEQ6wIkkbMU+9AZvu4AvqHECloNSVSAJ6xTHrXw1s/oRg2D+3sAHCof39
-   1HbyqIczXJK/A9Z0PX99iHPncOKNw3AIomi8PdEsHh6N3EfpdxwMRPOeq
-   xnqXAJl7JOeV/ORv1uFuWXtQQerrKUupK9AMKrs9JbO6bxlbazwjFuN3V
-   auxBZHkPRGCcKGCrTgHPr4Xa21XpZt2AaAKW/sIsIbd1673tItwr2Z2eq
-   5SnMaQppUVIZD/iXnAQlQ3mcB+t2o/c7bpZskzSmGnY1Pbgz5pyVz5bXr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="462175921"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="462175921"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:08:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="913042869"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="913042869"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 30 Aug 2023 20:08:47 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbY34-000AWX-1Y;
-        Thu, 31 Aug 2023 03:08:46 +0000
-Date:   Thu, 31 Aug 2023 11:08:43 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Subject: Re: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <202308311025.538QuXBV-lkp@intel.com>
-References: <20230830175335.1536008-5-yosryahmed@google.com>
+        Wed, 30 Aug 2023 23:09:40 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0A30CC2;
+        Wed, 30 Aug 2023 20:09:37 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id 006d021491bc7-5734b893a11so284862eaf.1;
+        Wed, 30 Aug 2023 20:09:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693451377; x=1694056177; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9RXlB9MIgueAa9gzs3f/OTKyoQLTxJwUBTOdXek0lCk=;
+        b=BlMK6Pe0cdUsUIwcBwJjKV+W7Fupm8mhQx+YtcGGQFYJwyPw1mF0ekOKNhqA0HhfRZ
+         7NAI/f8GTUCEqDdB1jtmS0l43qJZ7hDDzh/0Pqy74e2/LhZM3I+9J+Ov2mouuwNjebr9
+         40M/FoIk3urrrlFjLhlZA4A3foiJ9dhDPz7pDO5nSDoPskP8Bvl3FfBx/sCrt98bVur1
+         qQ/VQ15r3lMusVfiKibD+lExihbCIfek9kmp2xI80mt8Q75PwgS5w0lvMQR/Bc9zfobJ
+         us0NHSTn2hWveyeG23WIBHQQz0IK2gko9eBNy7ubaRdnn1qTdJwl1Dr1SRjttmOKJEZ5
+         8GTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693451377; x=1694056177;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9RXlB9MIgueAa9gzs3f/OTKyoQLTxJwUBTOdXek0lCk=;
+        b=ZApkyUBhKRGRdnpczvVJdualb0ptNIqVvZXJEuLGURcRhCU40KhaNid3zGz4zVmFYv
+         0xcNDT/c6/1/mLzFWPWd87lCbV6/8g1eqJyw4nF5Sx4yo1a7linEIqydxEOjq5Lvgjud
+         7umuYDBQo26BP6J7Sv0MWTpct7r3wTKL/81T9f+AnvMObkR9nl5xxcJ2UyhhDQ8xykgq
+         nNgvZJEEN5jecV0t9BylXIJGkTVqIkVAyPkFN7G7A0aLoDpE1BzSR+MbdOjh6VHeLcvN
+         ObrTL5D2X3oLHr4LpyFtEHQRwOU9qxvpB+quuN6hS0lTBdek/n/TbGnMj0WtiN5adjla
+         4gsQ==
+X-Gm-Message-State: AOJu0YyBo2wexQx8uSNXXpSqEUPiW1iv81+/HHzCenu/4C9K/p07OypR
+        ga0jZH02zhZEwjpU51LtyfRMI/FU8cwAag==
+X-Google-Smtp-Source: AGHT+IHihW/Qoho00/zN7hAUukH8tbuDBfaQFXuoK0uJ9RpVZhoXnelnCOZDNnYfCHvxt1w5G3QyRQ==
+X-Received: by 2002:a05:6358:9308:b0:139:c75f:63eb with SMTP id x8-20020a056358930800b00139c75f63ebmr3420297rwa.21.1693451377048;
+        Wed, 30 Aug 2023 20:09:37 -0700 (PDT)
+Received: from sw.. (220-128-98-63.hinet-ip.hinet.net. [220.128.98.63])
+        by smtp.gmail.com with ESMTPSA id x7-20020a63b207000000b00563df2ba23bsm324514pge.50.2023.08.30.20.09.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 20:09:36 -0700 (PDT)
+From:   Szuying Chen <chensiying21@gmail.com>
+X-Google-Original-From: Szuying Chen <Chloe_Chen@asmedia.com.tw>
+To:     Niklas.Cassel@wdc.com, dlemoal@kernel.org,
+        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jesse1_Chang@asmedia.com.tw, Richard_Hsu@asmedia.com.tw,
+        Chloe_Chen@asmedia.com.tw
+Subject: [PATCH] ahci: libahci: clear pending interrupt status
+Date:   Thu, 31 Aug 2023 11:09:24 +0800
+Message-Id: <20230831030924.21960-1-Chloe_Chen@asmedia.com.tw>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830175335.1536008-5-yosryahmed@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yosry,
+This patch adds the function to clear pending interrupt before COMRESET.
+It follows the  AHCI1.3.1 - section6.2.2.2 specification.
 
-kernel test robot noticed the following build warnings:
+Signed-off-by: Szuying Chen <Chloe_Chen@asmedia.com.tw>
+---
+ drivers/ata/libahci.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master next-20230830]
-[cannot apply to v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
+index 06aec35f88f2..1ae788251a6c 100644
+--- a/drivers/ata/libahci.c
++++ b/drivers/ata/libahci.c
+@@ -1584,6 +1584,23 @@ static int ahci_pmp_retry_softreset(struct ata_link *link, unsigned int *class,
+ 	return rc;
+ }
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yosry-Ahmed/mm-memcg-properly-name-and-document-unified-stats-flushing/20230831-015518
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20230830175335.1536008-5-yosryahmed%40google.com
-patch subject: [PATCH v3 4/4] mm: memcg: use non-unified stats flushing for userspace reads
-config: i386-randconfig-r013-20230831 (https://download.01.org/0day-ci/archive/20230831/202308311025.538QuXBV-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308311025.538QuXBV-lkp@intel.com/reproduce)
++static void PortClearPendingInterrupt(struct ata_port *ap)
++{
++	struct ahci_host_priv *hpriv = ap->host->private_data;
++	void __iomem *port_mmio = ahci_port_base(ap);
++	u32 tmp;
++
++	/* clear port SERR */
++	tmp = readl(port_mmio + PORT_SCR_ERR);
++	writel(tmp, port_mmio + PORT_SCR_ERR);
++
++	/* clear port IRQ */
++	tmp = readl(port_mmio + PORT_IRQ_STAT);
++	writel(tmp, port_mmio + PORT_IRQ_STAT);
++
++	writel(1 << ap->port_no, hpriv->mmio + HOST_IRQ_STAT);
++}
++
+ int ahci_do_hardreset(struct ata_link *link, unsigned int *class,
+ 		      unsigned long deadline, bool *online)
+ {
+@@ -1602,6 +1619,9 @@ int ahci_do_hardreset(struct ata_link *link, unsigned int *class,
+ 	tf.status = ATA_BUSY;
+ 	ata_tf_to_fis(&tf, 0, 0, d2h_fis);
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308311025.538QuXBV-lkp@intel.com/
++	/* clear pending Interrupt */
++	PortClearPendingInterrupt(ap);
++
+ 	rc = sata_link_hardreset(link, timing, deadline, online,
+ 				 ahci_check_ready);
 
-All warnings (new ones prefixed by >>):
+--
+2.39.2
 
->> mm/memcontrol.c:667:6: warning: no previous prototype for function 'mem_cgroup_user_flush_stats' [-Wmissing-prototypes]
-   void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-        ^
-   mm/memcontrol.c:667:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
-   void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-   ^
-   static 
-   1 warning generated.
-
-
-vim +/mem_cgroup_user_flush_stats +667 mm/memcontrol.c
-
-   658	
-   659	/*
-   660	 * mem_cgroup_user_flush_stats - do a stats flush for a user read
-   661	 * @memcg: memory cgroup to flush
-   662	 *
-   663	 * Flush the subtree of @memcg. A mutex is used for userspace readers to gate
-   664	 * the global rstat spinlock. This protects in-kernel flushers from userspace
-   665	 * readers hogging the lock.
-   666	 */
- > 667	void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-   668	{
-   669		mutex_lock(&stats_user_flush_mutex);
-   670		do_stats_flush(memcg);
-   671		mutex_unlock(&stats_user_flush_mutex);
-   672	}
-   673	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
