@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA8478EB41
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D50678EB48
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344744AbjHaLBc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
+        id S245309AbjHaLCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:02:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231375AbjHaLBb (ORCPT
+        with ESMTP id S234932AbjHaLCI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:01:31 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EABC5CDD;
-        Thu, 31 Aug 2023 04:01:27 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a21b6d105cso75352666b.3;
-        Thu, 31 Aug 2023 04:01:27 -0700 (PDT)
+        Thu, 31 Aug 2023 07:02:08 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F08CFA;
+        Thu, 31 Aug 2023 04:02:05 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a1de3417acso404897166b.0;
+        Thu, 31 Aug 2023 04:02:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693479686; x=1694084486; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=eO3kPR8hwQQNiVrq80EvGuv/qgY68iFDiiKzJDgISpA=;
-        b=sQGjiDMQtLroc4/97tbRzBaGDZk+doUSB8g1gfusUjUaaq4A5uOvYJnRbrKTHYtAew
-         NoBXcIn2vC+t+1hgfyrVTKOZA8SuagjPwFV4J1A+dBtMWIX8EjknqvPlm4r+Ns7YrSXS
-         f/HePrmEFelZUgGH1i5JypJvHygulqOOGOvQASsEumALpPFldLMzK09NBYVRE3DjQA6G
-         7v0QAlQFV4rMQwAsSYDEC9kMklvjnnyHBglrTuE1FG1GVgfnvNQyGYd0vtN7ZbACov5b
-         V2gYGhjZoS9dRMWMLDnsQso1iOTj7dxMJtZvJdGwBKplvcRKBO/wMQ25qgdFOE1ibXRX
-         5llg==
+        d=gmail.com; s=20221208; t=1693479724; x=1694084524; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oTXl8mKJCoSXKQpNwtK+OO0amUPSdiia5crdcPt8muI=;
+        b=E+oqK58T2xDwEFt28ap15LWJt4vmTlg+bnDCandK7A7O8dNb1mv5LaTHniKEOeccoO
+         SHM0+lHqPtLGBxU9/4Fy6r15+TReFKndNTY5qERIYKG+Af3FfXcO1rAtJoQruF4SihUn
+         lfOe+v/F/AsbofieYDEHOCxV71GT9C6JM+ZFE25hoWsaihelCnrOOZ7I7+R3gijJ9Y/d
+         L4RbR4KTDtRZ/P7Hv9luhmCkTwWVPIvU9SoAMC87QRjJ10rTByvXTDVUIuTJSOkl3tkJ
+         2FOTGOS1O+5Uv7vGKMGM6KSQgqV/lKKkk4YfHP1UOA+z+JzL+Q501lmTUFIDtrUo8oKO
+         HhtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693479686; x=1694084486;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eO3kPR8hwQQNiVrq80EvGuv/qgY68iFDiiKzJDgISpA=;
-        b=XL0ld+PXRjD5itQ7PABFwWu4XkuCP8ZNEXA4G5VbgJj3YjHMWGJNwpRqkOr8WJW1Y9
-         UWPvUmBbXBpuokues9wmtb15oCRU9fMBgQHZ0lK6LaFEivFp+GOow/PhWocOwSI27bcf
-         1pdvRvH8AxCTAZFYVo+ZKCEw5g4+B5kajiveeErOy7hRnpDh4+y31EHiKtYuVCgZ7YM+
-         e+4TWS25vvNwMbO62H+z+R0JgbXDHKGgdSDpdGfhbuKUwlbWXjW4/TanxJjGtlUawXug
-         +U+7Rb50LYz9D1H1HP6SxGVD1v0YqRbx5nAgGtxFMaeFUCcOr5JnDcdDVR0MU1VArOzV
-         tBcw==
-X-Gm-Message-State: AOJu0Yy6Oe4jf/Eah0YmLABvtwHzcLNnUa0m86bjjoNThWzpVcsitYvZ
-        Cx0dxxZfRk+qQjSStGNzOQo=
-X-Google-Smtp-Source: AGHT+IFKmUNRd857qFSDmC7Upxx+JxDAYy0VxA0KOk6zd6KKRErWFaSuBzEdyne6H556QfNF9Fh96Q==
-X-Received: by 2002:a17:906:53cd:b0:9a1:fcd7:b825 with SMTP id p13-20020a17090653cd00b009a1fcd7b825mr3980283ejo.71.1693479686140;
-        Thu, 31 Aug 2023 04:01:26 -0700 (PDT)
-Received: from ?IPv6:2001:a61:3488:8a01:c631:bde5:1eff:9b66? ([2001:a61:3488:8a01:c631:bde5:1eff:9b66])
-        by smtp.gmail.com with ESMTPSA id c25-20020a170906529900b0099b42c90830sm638090ejm.36.2023.08.31.04.01.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 04:01:25 -0700 (PDT)
-Message-ID: <066d686946951e270e8fca127d8332c80b6cfac8.camel@gmail.com>
-Subject: Re: [PATCH v4 0/6] iio: Add buffer write() support
-From:   Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Paul Cercueil <paul@crapouillou.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 31 Aug 2023 13:01:24 +0200
-In-Reply-To: <20230830171836.000045c3@Huawei.com>
-References: <20230807112113.47157-1-paul@crapouillou.net>
-         <20230830171118.00007726@Huawei.com> <20230830171836.000045c3@Huawei.com>
+        d=1e100.net; s=20221208; t=1693479724; x=1694084524;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oTXl8mKJCoSXKQpNwtK+OO0amUPSdiia5crdcPt8muI=;
+        b=QjJomj4LvMGns58nrlekzKu8bEV3eCfc6luFpLzoVlPwuS/CzQojY33hhlpr6JC7zR
+         KQwq0798MNmkG4p7WyF6+lVPy4LP+ve5INCQc0gYvCZaUljAsdpwQ7eGxOL8qcjJ2cPv
+         L5U+H8txcibNqFCzQAor5kYuQDXQHEDqkoMAJGZ7cUSSBmPbRPMVxnhD5EmOOdyzucjY
+         f4S97m7F20WVSnq7aP6JcRDzM/6KqMx4yDhDzlYc/aFtj9xt8OjHncB/Y9PhSAwahK+b
+         FCNgLEjxCL5AI+mwvh8DN1MeDaank/XgvDpK2dynQTXtrjQpeLNcd3d7FIpFdEd7EWnz
+         52Tw==
+X-Gm-Message-State: AOJu0Yy9poTVX7d5jWWldKrZh7D3TtOlA4QugbJpks+4BLov33VRTu3i
+        DGbSxqoU3km5WA40rQAJDe8z+1SJqY+4hYfunwd0inVK/3rGgA==
+X-Google-Smtp-Source: AGHT+IFq6TiAayoEpOcVY3q+kTFxUlMOEDYcxgXQPawqzmVsOEzqNB3KNO4GhQ+DoCSP8vjisiE6mD7ms+6bcSzzPmM=
+X-Received: by 2002:a17:906:7311:b0:9a5:b66a:436d with SMTP id
+ di17-20020a170906731100b009a5b66a436dmr2847772ejc.14.1693479723591; Thu, 31
+ Aug 2023 04:02:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230830134241.506464-1-keguang.zhang@gmail.com>
+ <20230830134241.506464-5-keguang.zhang@gmail.com> <1cc2c8f8-1f9b-1d47-05d4-9bcad9a246cd@linaro.org>
+In-Reply-To: <1cc2c8f8-1f9b-1d47-05d4-9bcad9a246cd@linaro.org>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Thu, 31 Aug 2023 19:01:27 +0800
+Message-ID: <CAJhJPsVj1836-DoKTokxMd664FPX70vtSv96x4DfHzBFRZ_9Tg@mail.gmail.com>
+Subject: Re: [PATCH v4 4/4] MAINTAINERS: Update MIPS/LOONGSON1 entry
+To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
-MIME-Version: 1.0
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -77,97 +82,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-30 at 17:18 +0100, Jonathan Cameron wrote:
-> On Wed, 30 Aug 2023 17:11:18 +0100
-> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
->=20
-> > On Mon,=C2=A0 7 Aug 2023 13:21:07 +0200
-> > Paul Cercueil <paul@crapouillou.net> wrote:
-> >=20
-> > > [V3 was: "iio: new DMABUF based API, v3"][1]
-> > >=20
-> > > Hi Jonathan,
-> > >=20
-> > > This is a subset of my patchset that introduced a new interface based=
- on
-> > > DMABUF objects [1]. It adds write() support to the IIO buffer
-> > > infrastructure.
-> > >=20
-> > > The reason it is not the full IIO-DMABUF patchset, is because you
-> > > requested performance benchmarks - and our current numbers are barely
-> > > better (~ +10%) than the fileio interface. There is a good reason for
-> > > that: V3 of the patchset switched from having the IIO core creating t=
-he
-> > > DMABUFs backed by physically contiguous memory, to having the IIO cor=
-e
-> > > being a simple DMABUF importer, and having the DMABUFs created
-> > > externally. We now use the udmabuf driver to create those, and they a=
-re
-> > > allocated from paged memory. While this works perfectly fine, our
-> > > buffers are now cut in 4 KiB chunks (pages), non-contiguous in memory=
-,
-> > > which causes the DMA hardware to create an IRQ storm, as it raises an
-> > > interrupt after each 4 KiB in the worst case scenario.=C2=A0=20
-> >=20
-> > Interesting. I'm guessing you don't necessarily need contiguous memory
-> > and huge pages would get rid of most of that overhead?
-> >=20
-> > Given embedded target those huge pages are hard to get so you need
-> > hugetlb support to improve the chances of it working.=C2=A0 Some quick =
-searching
-> > suggests there is possible support on the way.
-> > https://lore.kernel.org/linux-mm/20230817064623.3424348-1-vivek.kasired=
-dy@intel.com/
-> >=20
-> >=20
-> > >=20
-> > > Anyway, this is not directly a problem of the IIO-DMABUF code - but I
-> > > can't really upstream a shiny new interface that I claim is much fast=
-er,
-> > > without giving numbers.
-> > >=20
-> > > So while we fix this (either by updating the DMA IP and driver to
-> > > support scatter-gather)=C2=A0=20
-> >=20
-> > Long run you almost always end up needing that unless contig requiremen=
-ts
-> > are small and you want a robust solution.=C2=A0 I'm guessing no IOMMU t=
-o pretend
-> > it's all contiguous...=20
-> >=20
-> > > or by hacking something quick to give us
-> > > physically contiguous DMABUFs just for the benchmark), I thought it
-> > > would make sense to upstream the few patches of the V3 patchset that =
-are
-> > > needed for the IIO-DMABUF interface but aren't directly related.=C2=
-=A0=20
-> >=20
-> > Good idea.
-> >=20
-> > >=20
-> > > As for write() support, Nuno (Cc'd) said he will work on upstreaming =
-the
-> > > DAC counterpart of adc/adi-axi-adc.c in the next few weeks, so there
-> > > will be a user for the buffer write() support. I hope you are okay wi=
-th
-> > > this - otherwise, we can just wait until this work is done and submit=
- it
-> > > all at once.=C2=A0=20
-> >=20
-> > Absolutely fine, though I won't pick this up without the user also bein=
-g
-> > ready to go.
->=20
->=20
-> Having looked through these again, they are straight forward so no change=
-s
-> requested from me.=C2=A0 Nuno, if you can add this set into appropriate
-> point in your series that will make use of it that will make my life easi=
-er
-> and ensure and minor rebasing etc happens without having to bother Paul.
->=20
+On Thu, Aug 31, 2023 at 4:40=E2=80=AFPM Philippe Mathieu-Daud=C3=A9
+<philmd@linaro.org> wrote:
+>
+> Hi,
+>
+> On 30/8/23 15:42, Keguang Zhang wrote:
+> > Add two new F: entries for Loongson1 Ethernet driver
+> > and dt-binding document.
+> > Add a new F: entry for the rest Loongson-1 dt-binding documents.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> > V3 -> V4: Update the dt-binding document entry of Loongson1 Ethernet
+> > V2 -> V3: Update the entries and the commit message
+> > V1 -> V2: Improve the commit message
+> >
+> >   MAINTAINERS | 3 +++
+> >   1 file changed, 3 insertions(+)
+> >
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index ff1f273b4f36..2519d06b5aab 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -14344,9 +14344,12 @@ MIPS/LOONGSON1 ARCHITECTURE
+> >   M:  Keguang Zhang <keguang.zhang@gmail.com>
+> >   L:  linux-mips@vger.kernel.org
+> >   S:  Maintained
+> > +F:   Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
+> > +F:   Documentation/devicetree/bindings/net/loongson,ls1*.yaml
+>
+> Why not simply squash in patch 2
+>
+> >   F:  arch/mips/include/asm/mach-loongson32/
+> >   F:  arch/mips/loongson32/
+> >   F:  drivers/*/*loongson1*
+> > +F:   drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+>
+> and 3 of this series?
 
-Sure...
+Do you mean squashing patch 2 and patch 4 into one patch?
+>
+> >   MIPS/LOONGSON2EF ARCHITECTURE
+> >   M:  Jiaxun Yang <jiaxun.yang@flygoat.com>
+>
 
-- Nuno S=C3=A1
->=20
+
+--=20
+Best regards,
+
+Keguang Zhang
