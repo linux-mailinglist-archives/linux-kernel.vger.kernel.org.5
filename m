@@ -2,97 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A2F78E5CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:37:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0662278E5D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbjHaFhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 01:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46002 "EHLO
+        id S236611AbjHaFio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 01:38:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230144AbjHaFhL (ORCPT
+        with ESMTP id S229826AbjHaFin (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 01:37:11 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC73E0;
-        Wed, 30 Aug 2023 22:37:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1693460224;
-        bh=mcJI19k1bYWrsUV5RrSLseHCYsvRJp714W7vtEfnAuM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=KHPrudNz58s2FxY40QbiANhLtETTg3IVisYvwKTSN3A26Y7DWbl7e4lQXj9sr3w+S
-         7r9x5m0OqvSIZJasmu4WwN1APOTQQUDfNXAS/8ut0mhRQk8X3dFyMuWQBUEICNyZhA
-         2xFpt1sliwhFxJUz5n9BWh9VmOG2qaaAjzqmOWPAz8S+ISKGzSnJsygTu+KqNCdR9K
-         W5COGeoRbzYAhMFM3iDi2s4bsnkzchbtmkAu0AK7m/fkYxTycrJ7A5iJ5QQUy7CJMv
-         UYT9pqgcvX2x2jYCA/h2j5VFzlDteL3enwyq6MzBHrgcke4o2q5kusK1UtTHxW6uGk
-         ikdmejXy4VZgw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rbqfl3jrDz4wy0;
-        Thu, 31 Aug 2023 15:37:03 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Andreas Schwab <schwab@linux-m68k.org>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
- readers are possible
-In-Reply-To: <87bkeotin8.fsf@igel.home>
-References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
- <20230819004356.1454718-2-Liam.Howlett@oracle.com>
- <87bkeotin8.fsf@igel.home>
-Date:   Thu, 31 Aug 2023 15:37:02 +1000
-Message-ID: <87y1hr22o1.fsf@mail.lhotse>
+        Thu, 31 Aug 2023 01:38:43 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC7CE0;
+        Wed, 30 Aug 2023 22:38:39 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V4W9bM026222;
+        Thu, 31 Aug 2023 05:38:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=Hs+rcs93upoiY3ZCsIyc6aAAAAfNFy5W2gcoWyavslE=;
+ b=CEDZt2yZy9PW05FvQkOPLISmDwtTolS+BWudTfWjdWTScSA2aX4PQTCFqp3pUWgeEYEk
+ yYLkK4+J17HPN3Kp2QWMq3ZEy/WwtMxWlMnv5Juznn8SFcFkCEyJHIJE7b+cp6hqvo4u
+ HplwmUuROrHhaMwnjdkQ12P/WfFQaH74CY1vVW3jZYiqT9GXZLMc21nyUI1Iq+CEji5x
+ DvUvIol177ufyWZ8nh1BVsfQ2Ad7DzfaULNKr1LiyvaA3HdfIN3P6CW51Gu+OqONRCUx
+ 9HdEbCUA6ZGDig79B+B+g1rSHm1JxYs7vqjp/Qbt95H95dzB20DBIHj4Gydf1e9pe7s9 Dg== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st159tdbt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 05:38:07 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V5c6v5004968
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 05:38:06 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Wed, 30 Aug 2023 22:38:00 -0700
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <arnd@arndb.de>, <geert+renesas@glider.be>,
+        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>
+CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: [PATCH v11 0/4] Enable IPQ5332 USB2
+Date:   Thu, 31 Aug 2023 11:07:46 +0530
+Message-ID: <cover.1693459976.git.quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: _wlLYWLF8oOOxyh4VdkG3KoiLJGhzI2i
+X-Proofpoint-GUID: _wlLYWLF8oOOxyh4VdkG3KoiLJGhzI2i
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_03,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 mlxscore=0 suspectscore=0 spamscore=0 mlxlogscore=471
+ priorityscore=1501 clxscore=1015 bulkscore=0 impostorscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2308310049
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andreas Schwab <schwab@linux-m68k.org> writes:
-> This breaks booting on ppc32:
+This patch series adds the relevant phy and controller
+DT configurations for enabling USB2 on IPQ5332
 
-Does enabling CONFIG_DEBUG_ATOMIC_SLEEP fix the crash? It did for me on
-qemu.
+v11:
+	Driver: Rebased to accommodate https://lore.kernel.org/linux-arm-msm/20230824091345.1072650-1-yangyingliang@huawei.com/
+	DTS:	Sort nodes in alphanumeric order
+v10:
+	Driver: Restore register success print per Dmitry's comment
+	DTS:	usb@8a00000 -> usb@8af8800
+		regulator_s0500 -> regulator-s0500
+v9:
+	Driver: Since the driver code has been picked up for merge,
+		(https://lore.kernel.org/linux-arm-msm/169226613917.81413.1200008047604336868.b4-ty@kernel.org/)
+		adding the coding style fixes alone in this patch.
 
-cheers
+		Fix line break alignment
+		Remove register success print
+	DTS:	usb2@8a00000 -> usb@8a00000
+		regulator_fixed_5p0: s0500 -> regulator_fixed_5p0: regulator
+v8:
+	Driver:-
+		Change commit subject and message per review comments
+		Don't include of_platform.h
+		Change struct initialization coding style
+		GENMASK -> BIT for one of the defines
+v7:
+	Binding:-
+		Move 'compatible' to be the first entry
+		In the example have 'usb-phy' instead of 'usb2-phy'
+		Add 'Reviewed-by: Krzysztof Kozlowski'
+v6:
+	Binding and dts:-
+		Dropped the qcom,dwc3.yaml patch as it has been picked up for linux-next
+		Add const to compatible, vdd-supply
+		Move nodes per register address
+	Driver:-
+		Add vdd-supply
+		Cleanup error paths in probe with dev_err_probe
+v5:
+	Binding and dts:-
+		Fix email id
+		Removed 'Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>'
+		as had to change bindings file to be able to use generic phy instead of
+		usb-phy
 
-> Kernel attemptd to writ user page (1ff0) - exploit attempt? (uid: 0)
-> BUG: Unable to handle kernel data access on write at 0x00001ff0
-> Faulting instruction address: 0xc0009554
-> Vector: 300 (Data Access) at [c0b09d10]
->     pc: c0009554: do_softirq_own_stack+0x18/0x30
->     lr: c004f480: __irq_exit_rcu+0x70/0xc0
->     sp: c0b09dd0
->    msr: 1032
->    dar: 1ff0
->  dsisr: 42000000
->   current = 0xc0a08360
->     pid   = 0, comm = swapper
-> Linux version 6.5.0 ...
-> enter ? for help
-> [c0b09de0] c00ff480 __irq_exit_rcu+0x70/0xc0
-> [c0b09df0] c0005a98 Decrementer_virt+0x108/0x10c
-> --- Exception: 900 (Decrementer) at c06cfa0c __schedule+0x4fc/0x510
-> [c0b09ec0] c06cf75c __schedule+0x1cc/0x510 (unreliable)
-> [c0b09ef0] c06cfc90 __cond_resched+0x2c/0x54
-> [c0b09f00] c06d07f8 mutex_lock_killable+0x18/0x5c
-> [c0b09f10] c013c404 pcpu_alloc+0x110/0x4dc
-> [c0b09f70] c000cc34 alloc_descr.isra.18+0x48/0x144
-> [c0b09f90] c0988aa0 early_irq_init+0x64/0x8c
-> [c0b09fa0] c097a5a4 start_kernel+0x5b4/0x7b0
-> [c0b09ff0] 00003dc0
-> mon>
->
-> -- 
-> Andreas Schwab, schwab@linux-m68k.org
-> GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-> "And now for something completely different."
+	Driver:-
+		Remove unused definition
+		Use generic phy instead of usb-phy
+v4:
+	Binding and dts:-
+		Change node name (bindings & dts)
+	Driver:-
+		Remove unused enum
+		static const for '.data'
+		Error handling for devm_clk_get
+v3:
+	Fix bindings file based on review comments
+
+v1:
+	Cleanup DTS
+	Combine driver, kconfig and makefile patches
+	Remove unused functions from M31 driver
+	Drop the clock driver changes
+
+Varadarajan Narayanan (4):
+  phy: qcom: m31: Fix indentation issues
+  arm64: dts: qcom: ipq5332: Add USB related nodes
+  arm64: dts: qcom: ipq5332: Enable USB
+  arm64: defconfig: Enable M31 USB phy driver
+
+ arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts | 23 ++++++++++++
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi       | 55 +++++++++++++++++++++++++++++
+ arch/arm64/configs/defconfig                |  1 +
+ drivers/phy/qualcomm/phy-qcom-m31.c         |  6 ++--
+ 4 files changed, 82 insertions(+), 3 deletions(-)
+
+-- 
+2.7.4
+
