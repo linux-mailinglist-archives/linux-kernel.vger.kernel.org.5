@@ -2,118 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4BE78EF48
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7311478EF46
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:07:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345755AbjHaOIJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:08:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
+        id S1345367AbjHaOHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:07:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbjHaOIJ (ORCPT
+        with ESMTP id S231364AbjHaOHt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:08:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767E5F4;
-        Thu, 31 Aug 2023 07:08:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693490886; x=1725026886;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=b1giQg6JZeac/5i+rnklAmY2c37piEGAdmDhQDDAAyA=;
-  b=I+Woeh1ngA7agpmS0Ub0PBwz6zJfJMApJYsIpaAe81KmPJYho382N+3U
-   HFOZjCLOyu73RGriiH+3E2RkL2Dk6xWNp4NdBvhYPYbo+pI6JNdi3xUz3
-   qYSkzvap6NURv/NRrItcS+B1Mzdas6dQdrh56dN08oONaGV4FHzD1qyOc
-   EGR5JmVbdGWQq+/zStoDFjobAYixoR/72bTVy/Mg+o50ay7Jql3CtpIkR
-   K/noEBvPdm+WU81bjpsck0aJuocT5uhXsxm1Ko7Rpf5xE+51d7IsBvyIk
-   FNLF1ASDJk+QzIR6AeRpiNnnMqjpt6doiCG4EMF8dJ2K1mqKzwg5juZwm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="462323503"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="462323503"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 07:07:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="809645901"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="809645901"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 07:07:29 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qbiKU-005P9q-1J;
-        Thu, 31 Aug 2023 17:07:26 +0300
-Date:   Thu, 31 Aug 2023 17:07:26 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH 3/3] platform/x86: intel_scu_ipc: Fail IPC send if still
- busy
-Message-ID: <ZPCenoPp/SDesUek@smile.fi.intel.com>
-References: <20230831011405.3246849-1-swboyd@chromium.org>
- <20230831011405.3246849-4-swboyd@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230831011405.3246849-4-swboyd@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 10:07:49 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35578B8;
+        Thu, 31 Aug 2023 07:07:47 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c0ecb9a075so5732935ad.2;
+        Thu, 31 Aug 2023 07:07:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693490866; x=1694095666; darn=vger.kernel.org;
+        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nKmljnXQc8hbvUKMknfY/Hh3OtRtzCqX7FY2eK02Obk=;
+        b=Fx/bMg6bK4cchJSM96ifN5gj8E5+lJzDxStI1fM+YKddgUrKVmJDAfi8DTmIOvStGp
+         fQ7zLnEf38gx5ceTxpyU+Yvw9dKs3NueswarEk0tWFv6GlwmFd8yr8MMZds+NE4gzJFg
+         BJVMmi7jpXxO4aKGiwcRq5AYPEstFH9PP89gzruAPaJLtjsfUhmnaTbRu+1AyWnW/doh
+         b3lkps+QcXClCp/9Xh1sZ/FlQ5BMk7wc1wTr1bUVz25raVNlR/qUqtOeM/fg3YgulJll
+         LGqpmrAaFYKuVKGrR+mDUtPlAwvAwxC2y19HJcDTfKHiJlazryb+j283JxSD86EnlnGy
+         2Ocg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693490866; x=1694095666;
+        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=nKmljnXQc8hbvUKMknfY/Hh3OtRtzCqX7FY2eK02Obk=;
+        b=bAwklKegJFqhM1jnaaKe6GVeZhTRumxOAO7/T6tIbSJOrbnapb0EkRBuPFZGwqb6af
+         zKnKbntulWUOdDbtzYAwpCwDAezl1qZdb5n5w1scP7IAo8JRQmDBDgwrCIc+Eiotc4lp
+         M1Sfp5YttGlqGbkzk3JrtW0cTELQ/11rZoYiUsVXk4tvF6S+UvysGQWRdAzEwb608tsV
+         nZqo3R/9R0iKh0xLqYCwzB8bcAn5fB9dDvvnmeOIwPmQrAlsXVUxGYBqXQ5etfcZNTM1
+         2vZR886nf+CRZbg95awCXUW194J7n8rWJzSyObF2ghURSGpfY9dSkfH8X0JpoElkhRZU
+         lNNw==
+X-Gm-Message-State: AOJu0Yy/CrPU9UgncRJnYT9rcDOvTV0YevYYma7P+6zzyrpsIYMcHxg1
+        fO0yGNbdyTGq06/Q5HqGUTa6bgngLHw=
+X-Google-Smtp-Source: AGHT+IE6CCE2tGlRU53ynLO54L8Y/KpupBA4rXC1ijL2OKBgQwfVG8K+YM9ddKgl+j7RKWpDtK+MKA==
+X-Received: by 2002:a17:903:4283:b0:1bd:a42a:215e with SMTP id ju3-20020a170903428300b001bda42a215emr4583049plb.38.1693490865803;
+        Thu, 31 Aug 2023 07:07:45 -0700 (PDT)
+Received: from dw-tp ([49.207.223.191])
+        by smtp.gmail.com with ESMTPSA id x2-20020a170902fe8200b001bf6ea340a9sm1298360plm.159.2023.08.31.07.07.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 07:07:45 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 19:37:41 +0530
+Message-Id: <87msy78fv6.fsf@doe.com>
+From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 01/11] ext4: factor out codes to update block bitmap and group descriptor on disk from ext4_mb_mark_bb
+In-Reply-To: <f3fb910c-c170-43b9-6cac-41fe0562ad6a@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 06:14:03PM -0700, Stephen Boyd wrote:
-> It's possible for interrupts to get significantly delayed to the point
-> that callers of intel_scu_ipc_dev_command() and friends can call the
-> function once, hit a timeout, and call it again while the interrupt
-> still hasn't been processed. This driver will get seriously confused if
-> the interrupt is finally processed after the second IPC has been sent
-> with ipc_command(). It won't know which IPC has been completed. This
-> could be quite disastrous if calling code assumes something has happened
-> upon return from intel_scu_ipc_dev_simple_command() when it actually
-> hasn't.
-> 
-> Let's avoid this scenario by simply returning -EBUSY in this case.
-> Hopefully higher layers will know to back off or fail gracefully when
-> this happens. It's all highly unlikely anyway, but it's better to be
-> correct here as we have no way to know which IPC the status register is
-> telling us about if we send a second IPC while the previous IPC is still
-> processing.
+Kemeng Shi <shikemeng@huaweicloud.com> writes:
 
-> +static bool intel_scu_ipc_busy(struct intel_scu_ipc_dev *scu)
+> on 8/31/2023 8:33 PM, Ritesh Harjani wrote:
+>> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+>> 
+>> Hello Kemeng,
+>> 
+>>> There are several reasons to add a general function to update block
+>>> bitmap and group descriptor on disk:
+>> 
+>> ... named ext4_mb_mark_context(<params>)
+>> 
+>>> 1. pair behavior of alloc/free bits. For example,
+>>> ext4_mb_new_blocks_simple will update free_clusters in struct flex_groups
+>>> in ext4_mb_mark_bb while ext4_free_blocks_simple forgets this.
+>>> 2. remove repeat code to read from disk, update and write back to disk.
+>>> 3. reduce future unit test mocks to catch real IO to update structure
+>>> on disk.
+>>>
+>>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>>> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>>> ---
+>>>  fs/ext4/mballoc.c | 169 +++++++++++++++++++++++++++-------------------
+>>>  1 file changed, 99 insertions(+), 70 deletions(-)
+>>>
+>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>> index c91db9f57524..e2be572deb75 100644
+>>> --- a/fs/ext4/mballoc.c
+>>> +++ b/fs/ext4/mballoc.c
+>>> @@ -3952,6 +3952,100 @@ void ext4_exit_mballoc(void)
+>>>  	ext4_groupinfo_destroy_slabs();
+>>>  }
+>>>  
+>>> +/*
+>>> + * Collect global setting to reduce the number of variable passing to
+>>> + * ext4_mb_mark_context. Pass target group blocks range directly to
+>>> + * reuse the prepared global setting for multiple block ranges and
+>>> + * to show clearly the specific block range will be marked.
+>>> + */
+>>> +struct ext4_mark_context {
+>>> +	struct super_block *sb;
+>>> +	int state;
+>>> +};
+>> 
+>> This structure definition does not reflect of it's naming.
+>> Why can't we also add cblk & clen, flags to it?
+>> 
+>> I think the idea of defining a new function named
+>> ext4_mb_prepare_mark_context() was that we can prepare "struct ext4_mark_context"
+>> with different cblk, clen & flags arguments for cases where we might
+>> have to call ext4_mb_mark_context() more than once in the same function
+>> or call ext4_mb_mark_context() anywhere but at the start of the function.
+>> 
+>> As I see it in the current series, we are calling
+>> ext4_mb_prepare_mark_context() at the start of every function. Just for
+>> this purpose we don't need an extra function, right? That we can directly do
+>> at the time of declaring a structure variable itself (like how you did
+>> in previous version)
+>> 
+> Hi Ritesh, thanks for reply. The ext4_mark_context structure aims to reduce
+> variable passing to ext4_mb_mark_context. If we have to prepare a lot
+> member in ext4_mb_prepare_mark_context, then too many variables issue occurs
+> in ext4_mb_prepare_mark_context.
+> The name of ext4_mark_context maybe not proper. Actually I want a structure
+> to collect information which is not strongly relevant to mark blk bits. In
+> this way, we can initialize them at beginning of function, then there is no
+> need to pay attention to them or to pass them respectively in each call to
+> ext4_mb_mark_context. Instead, we foucus on the useful information called
+> with ext4_mb_mark_context.
+> This design also achive the goal to define ext4_mb_mark_context once for
+> multiple use in the same function as ext4_mark_context unlikely changes
+> after initialization at beginning.
+>> What do you think of the approach where we add cblk, clen & flags
+>> variables to ext4_mark_context()? Do you see any problems/difficulties
+>> with that design?
+>> 
+> The providing desgin looks good to me. Please let me konw if you still
+> perfre this and I will do this in next version. Thanks!
+>
 
-static int ?
+I would have still preferred, the block and len arguments inside struct
+ext4_mark_context, because that better explains the use and definition of
+structure and it's prepare function.
+However, since this is not any functionality change, I am fine if you
+prefer the current design(as you mentioned above).
+We can always discuss & change it later too :) 
 
-> +{
-> +	u8 status;
-> +
-> +	status = ipc_read_status(scu);
-> +	if (status & IPC_STATUS_BUSY) {
+Since otherwise the refactoring changes looks good to me.
+Please feel free to add -
 
-> +		dev_err(&scu->dev, "device is busy\n");
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-1. Wouldn't it exaggerate the logs? Shouldn't be rate limited?
-2. OTOH if we return -EBUSY directly from here, do we need this at all?
-
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks! 
+-ritesh
