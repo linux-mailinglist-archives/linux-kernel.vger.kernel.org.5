@@ -2,312 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C06D278EE50
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FC078EE5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243018AbjHaNQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:16:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
+        id S234400AbjHaNQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234400AbjHaNQJ (ORCPT
+        with ESMTP id S1346333AbjHaNQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:16:09 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE24CF3;
-        Thu, 31 Aug 2023 06:16:06 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcc4347d2dso14338521fa.0;
-        Thu, 31 Aug 2023 06:16:05 -0700 (PDT)
+        Thu, 31 Aug 2023 09:16:57 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3771A4;
+        Thu, 31 Aug 2023 06:16:54 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3a7aedc57ffso470207b6e.2;
+        Thu, 31 Aug 2023 06:16:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693487764; x=1694092564; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693487814; x=1694092614; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ElGTcVHLy75b73RkQix7jGCTm6pcHFnJzehv0DUiBQU=;
-        b=lrx7zCc+nvlE/uQBwq4PIAioFt3TJF65Arn4hJ6XfeQofE7gmmeaBT2BeE0ru6rF8q
-         1JHf148gb8DcyrmDo7OeXmrapPgRGrE5Eji/CbGI1aRYFDwyCdp45A5WO9MiVD0Nn3pv
-         gykk/d4cY5nw2QR8k8eU5NJjhCXSJGAE7BQwWbh1epNxBBfa4wujIGd4bzBT7uZdk1d6
-         YVu1Ls/VR7cqLUEF3fAj4pifAp8/vHS5s4xnsv/u6nyUJ3OGV6Rfv2BCqc3d7B1XYXAO
-         JNRHzH7q9Nz9Eez5+2nVTOdH4mkKvPj9hWSh8/tbdmKe/nLoAzlAERL4oznPX77DAjhq
-         miHA==
+        bh=rvjEwhjKTzM24zTtto0X2hNb/4jBUMlTIyxRYyU31F8=;
+        b=pf+6JIqXsDsdySQ2L9edkP89gyXurVjbkHf3KpR5UAhkoGNity/geRDKRWIcdiUmyx
+         etzuGbuSXf5gh1JHOzKn6hpZogbUOVZzZkvC2WgL7f1ntWav5qMTBgmC2J6l7BoOHuh7
+         xaF86oOz7bSOPsA+o45gqIi50DdS6b+bgA4mqxWLffxtegdTri+CzCstP1K2VPUSj1DV
+         eT5M5gM+6b+8JAwQqbBWcTbGyV37YcMqG4RmIe+J2Nlh+U9GT+OIUukKczZ5mXEJ0VY0
+         q2RCcVfq7pUgsN1S/mM8qISi3u0hiCk19/3Qwwkhp8dCpHQoX7vbMWUH+kzvGD/4onYT
+         9LzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693487764; x=1694092564;
+        d=1e100.net; s=20221208; t=1693487814; x=1694092614;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ElGTcVHLy75b73RkQix7jGCTm6pcHFnJzehv0DUiBQU=;
-        b=XPKTE6/MPvaDs4kxo8DElxqAhKu77ovozsSJGHRgVDfID0JC+fhJI/Nx1TYjk8Jy0b
-         fMOfH7vZwub5Km0U1oZCwPnV6yXM7DqUgjeVf6YR35qNuG639g0Bnc9Y/s8u1SXxp41h
-         4nyWnpyCeVXbBamhhFfYacBnfVDKwZEEXO6YhXOMIr8kboFWYWCJzRCtj+Ouffj2F5wn
-         uQnqbe+hysGSuhTpkVruSB20mREy1pTlusU87rcD/WWzIsU062x6qQ02/0o1OYRVsC8k
-         z4Skqs5fhwWM40R5TG1h5oCqxiOgTMjXVgTc0GXAqOv5BZoHx78fi7awTMqM5ojEYoPp
-         wvwQ==
-X-Gm-Message-State: AOJu0YxUN1uR3+lLJokMbaMJOf15/X9jFi/HKKc13y5d1MjauZ1GBEus
-        azAycywBaGmbN5icxACa3dE0wvwnuBaRTesacZc=
-X-Google-Smtp-Source: AGHT+IFIidBA270cNOZse7F227U3vdMwLmh2tRMnRoiOic7ci1qpx4vgWbFlRsY/Ps5hpfUmi/KYXIK4pYeqSY8DBoc=
-X-Received: by 2002:a2e:6816:0:b0:2bd:1f8d:e89d with SMTP id
- c22-20020a2e6816000000b002bd1f8de89dmr4526357lja.3.1693487763836; Thu, 31 Aug
- 2023 06:16:03 -0700 (PDT)
+        bh=rvjEwhjKTzM24zTtto0X2hNb/4jBUMlTIyxRYyU31F8=;
+        b=Gqr6J1cZkGUfUQRt8cHvutSQ5cK6Aezfr9f2uoCAmSk17DPG4ooKMegQXapd9H8Z1E
+         Ffpr269+uUIP0ZelpZOLg3QtMqgOXUYeQWXh+VeVaHtzkha2aj+QUHuSqhCs/bh4OZTz
+         wRJjXLdlsYrhIAIjmhcmFpLEVJD/Ols2Mij93KhofxPl1ljSQSihfXaoNxwWBtawWqLw
+         pasLfdT/4trLPqTftmUiUFRe2nCFAz1OvE5tov6StflF85+C2otCP9fOodWdSdny+n+Z
+         E2ZsLP1iOygf27aZsACgF74IxP9KTqR8WdIz+mYqGnKbUkFdeDrAPLNZ6wv31SHbM25G
+         uRiA==
+X-Gm-Message-State: AOJu0Yz0wrMun7OyXzbTecS4c6Stnqxu8gEKixK+hC0yGY+nloQsyioC
+        WwQXiB2k2BoZpOOYtrgC/4coS2bbxzLoN5tkTjxetrgaSjk=
+X-Google-Smtp-Source: AGHT+IE2FhmXyXLAGk+I6c1o0xIfxttEXs+4SdO383eHQBc9YsKQBViTBEroy3HH+mR8crJU8XS0nKNDFuN6ocnrv+8=
+X-Received: by 2002:a05:6808:b:b0:3a3:91f8:d3da with SMTP id
+ u11-20020a056808000b00b003a391f8d3damr5224234oic.13.1693487814147; Thu, 31
+ Aug 2023 06:16:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <mhng-ac1c6e6a-8f27-4539-83bb-6c10ff4d264e@palmer-ri-x1c9> <9e31c290-f1f0-ecfd-c68b-51f8d706db2c@iogearbox.net>
-In-Reply-To: <9e31c290-f1f0-ecfd-c68b-51f8d706db2c@iogearbox.net>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Thu, 31 Aug 2023 15:15:52 +0200
-Message-ID: <CANk7y0i1zGRQRa+cD6gbBSx9pSy1hor=4oUzXNBfbrObvykqQw@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
- in BPF JIT
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, bjorn@kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, pulehui@huawei.com,
-        Conor Dooley <conor.dooley@microchip.com>, ast@kernel.org,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <cover.1693386602.git.pstanner@redhat.com> <46f667e154393a930a97d2218d8e90286d93a062.1693386602.git.pstanner@redhat.com>
+ <CAHp75VfkzV-=XuEZwipYzfHNu4EXuwzbu6vfEKh1Uueseo2=wA@mail.gmail.com> <94b893ef37fe0cc0bcc52e8b54c62be3853a7bbb.camel@redhat.com>
+In-Reply-To: <94b893ef37fe0cc0bcc52e8b54c62be3853a7bbb.camel@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 31 Aug 2023 16:16:17 +0300
+Message-ID: <CAHp75VcNyE9uJu8-v2eVWRdZ3-nm2r-kdxE-naQB4VN6zxPFxg@mail.gmail.com>
+Subject: Re: [PATCH 1/5] string.h: add array-wrappers for (v)memdup_user()
+To:     Philipp Stanner <pstanner@redhat.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Disseldorp <ddiss@suse.de>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Siddh Raman Pant <code@siddh.me>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Zack Rusin <zackr@vmware.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-hardening@vger.kernel.org,
+        David Airlie <airlied@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 12:48=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
-net> wrote:
->
-> On 8/30/23 3:54 PM, Palmer Dabbelt wrote:
-> > On Wed, 30 Aug 2023 01:18:46 PDT (-0700), daniel@iogearbox.net wrote:
-> >> On 8/29/23 12:06 PM, Bj=C3=B6rn T=C3=B6pel wrote:
-> >>> Puranjay Mohan <puranjay12@gmail.com> writes:
-> >>>
-> >>>> Changes in v2 -> v3:
-> >>>> 1. Fix maximum width of code in patches from 80 to 100. [All patches=
-]
-> >>>> 2. Add checks for ctx->ro_insns =3D=3D NULL. [Patch 3]
-> >>>> 3. Fix check for edge condition where amount of text to set > 2 * pa=
-gesize
-> >>>>     [Patch 1 and 2]
-> >>>> 4. Add reviewed-by in patches.
-> >>>> 5. Adding results of selftest here:
-> >>>>     Using the command: ./test_progs on qemu
-> >>>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAI=
-LED
-> >>>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILE=
-D
-> >>>>
-> >>>> Changes in v1 -> v2:
-> >>>> 1. Implement a new function patch_text_set_nosync() to be used in bp=
-f_arch_text_invalidate().
-> >>>>     The implementation in v1 called patch_text_nosync() in a loop an=
-d it was bad as it would
-> >>>>     call flush_icache_range() for every word making it really slow. =
-This was found by running
-> >>>>     the test_tag selftest which would take forever to complete.
-> >>>>
-> >>>> Here is some data to prove the V2 fixes the problem:
-> >>>>
-> >>>> Without this series:
-> >>>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
-> >>>> test_tag: OK (40945 tests)
-> >>>>
-> >>>> real    7m47.562s
-> >>>> user    0m24.145s
-> >>>> sys     6m37.064s
-> >>>>
-> >>>> With this series applied:
-> >>>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
-> >>>> test_tag: OK (40945 tests)
-> >>>>
-> >>>> real    7m29.472s
-> >>>> user    0m25.865s
-> >>>> sys     6m18.401s
-> >>>>
-> >>>> BPF programs currently consume a page each on RISCV. For systems wit=
-h many BPF
-> >>>> programs, this adds significant pressure to instruction TLB. High iT=
-LB pressure
-> >>>> usually causes slow down for the whole system.
-> >>>>
-> >>>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the a=
-bove issue.
-> >>>> It packs multiple BPF programs into a single huge page. It is curren=
-tly only
-> >>>> enabled for the x86_64 BPF JIT.
-> >>>>
-> >>>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being review=
-ed now.
-> >>>>
-> >>>> This patch series enables the BPF prog pack allocator for the RISCV =
-BPF JIT.
-> >>>> This series needs a patch[3] from the ARM64 series to work.
-> >>>>
-> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> >>>> Performance Analysis of prog pack allocator on RISCV64
-> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> >>>>
-> >>>> Test setup:
-> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> >>>>
-> >>>> Host machine: Debian GNU/Linux 11 (bullseye)
-> >>>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
-> >>>> u-boot-qemu Version: 2023.07+dfsg-1
-> >>>> opensbi Version: 1.3-1
-> >>>>
-> >>>> To test the performance of the BPF prog pack allocator on RV, a stre=
-sser
-> >>>> tool[4] linked below was built. This tool loads 8 BPF programs on th=
-e system and
-> >>>> triggers 5 of them in an infinite loop by doing system calls.
-> >>>>
-> >>>> The runner script starts 20 instances of the above which loads 8*20=
-=3D160 BPF
-> >>>> programs on the system, 5*20=3D100 of which are being constantly tri=
-ggered.
-> >>>> The script is passed a command which would be run in the above envir=
-onment.
-> >>>>
-> >>>> The script was run with following perf command:
-> >>>> ./run.sh "perf stat -a \
-> >>>>          -e iTLB-load-misses \
-> >>>>          -e dTLB-load-misses  \
-> >>>>          -e dTLB-store-misses \
-> >>>>          -e instructions \
-> >>>>          --timeout 60000"
-> >>>>
-> >>>> The output of the above command is discussed below before and after =
-enabling the
-> >>>> BPF prog pack allocator.
-> >>>>
-> >>>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. T=
-he rootfs
-> >>>> was created using Bjorn's riscv-cross-builder[5] docker container li=
-nked below.
-> >>>>
-> >>>> Results
-> >>>> =3D=3D=3D=3D=3D=3D=3D
-> >>>>
-> >>>> Before enabling prog pack allocator:
-> >>>> ------------------------------------
-> >>>>
-> >>>> Performance counter stats for 'system wide':
-> >>>>
-> >>>>             4939048      iTLB-load-misses
-> >>>>             5468689      dTLB-load-misses
-> >>>>              465234      dTLB-store-misses
-> >>>>       1441082097998      instructions
-> >>>>
-> >>>>        60.045791200 seconds time elapsed
-> >>>>
-> >>>> After enabling prog pack allocator:
-> >>>> -----------------------------------
-> >>>>
-> >>>> Performance counter stats for 'system wide':
-> >>>>
-> >>>>             3430035      iTLB-load-misses
-> >>>>             5008745      dTLB-load-misses
-> >>>>              409944      dTLB-store-misses
-> >>>>       1441535637988      instructions
-> >>>>
-> >>>>        60.046296600 seconds time elapsed
-> >>>>
-> >>>> Improvements in metrics
-> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >>>>
-> >>>> It was expected that the iTLB-load-misses would decrease as now a si=
-ngle huge
-> >>>> page is used to keep all the BPF programs compared to a single page =
-for each
-> >>>> program earlier.
-> >>>>
-> >>>> --------------------------------------------
-> >>>> The improvement in iTLB-load-misses: -30.5 %
-> >>>> --------------------------------------------
-> >>>>
-> >>>> I repeated this expriment more than 100 times in different setups an=
-d the
-> >>>> improvement was always greater than 30%.
-> >>>>
-> >>>> This patch series is boot tested on the Starfive VisionFive 2 board[=
-6].
-> >>>> The performance analysis was not done on the board because it doesn'=
-t
-> >>>> expose iTLB-load-misses, etc. The stresser program was run on the bo=
-ard to test
-> >>>> the loading and unloading of BPF programs
-> >>>>
-> >>>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.=
-org/
-> >>>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@=
-gmail.com/
-> >>>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@=
-gmail.com/
-> >>>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
-> >>>> [5] https://github.com/bjoto/riscv-cross-builder
-> >>>> [6] https://www.starfivetech.com/en/site/boards
-> >>>>
-> >>>> Puranjay Mohan (3):
-> >>>>    riscv: extend patch_text_nosync() for multiple pages
-> >>>>    riscv: implement a memset like function for text
-> >>>>    bpf, riscv: use prog pack allocator in the BPF JIT
-> >>>
-> >>> Thank you! For the series:
-> >>>
-> >>> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
-> >>> Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
-> >>>
-> >>> @Alexei @Daniel This series depends on a core BPF patch from the Arm
-> >>>                  series [3].
-> >>>
-> >>> @Palmer LMK if you have any concerns taking the RISC-V text patching
-> >>>          stuff via the BPF tree.
-> >>
-> >> Palmer, did the riscv PR already go to Linus?
-> >
-> > Not yet, I usually send on Friday mornings -- and I also generally send=
- two, as there's some stragglers/fixes for the second week.  I'm fine takin=
-g it (Bjorn just poked me), can someone provide a base commit? Bjorn says i=
-t depends on something in Linus' tree, so I'll just pick it up as a straggl=
-er for next week.
->
-> Okay, sgtm.
->
-> > Also, do you mind sending an Ack?
->
-> Bj=C3=B6rn / Puranjay, just to clarify since the arm64 series did not lan=
-d, you are referring
-> to this one as a dependency [0], right? Meaning, you'd route [0] + this s=
-eries via riscv
-> PR to Linus then during this merge win.
->
-> If yes, could one of you send the complete 4-patch series with the prior =
-Acks from [0] + this
-> series collected to both bpf+riscv list (with the small request to extend=
- the commit desc
-> in [0] a bit to better document implications of the change itself for oth=
-er JITs)? After a
-> final look and if BPF CI goes through we can then ack as well and unblock=
- the routing.
->
-> Thanks,
-> Daniel
->
->    [0] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gm=
-ail.com/
+On Thu, Aug 31, 2023 at 3:22=E2=80=AFPM Philipp Stanner <pstanner@redhat.co=
+m> wrote:
+> On Wed, 2023-08-30 at 17:11 +0300, Andy Shevchenko wrote:
+> > On Wed, Aug 30, 2023 at 4:46=E2=80=AFPM Philipp Stanner <pstanner@redha=
+t.com>
+> > wrote:
 
-Hi Daniel,
+...
 
-I have sent the v4[0] of this with the core patch included.
+> > I'm wondering if this has no side-effects as string.h/string.c IIRC
+> > is used also for early stages where some of the APIs are not available.
+>
+> I forgot to address this point in my previous reply.
+>
+> Who's going to decide whether this is a problem or not?
+>
+> My personal guess is that this is unlikely to be a problem because
+>
+>    A. either (v)memdup_user() is available, in which case
+>       (v)memdup_array_user() will always work =E2=80=93
+>    B. or (v)memdup_user() is not available, which would cause the code
+>       that currently uses (v)memdup_user() for copying arrays to fail
+>       anyways.
 
-[0]https://lore.kernel.org/all/20230831131229.497941-1-puranjay12@gmail.com=
-/
+It also uses something from overflow.h. I don't remember if that
+header was ever been used in early stage modules (like
+boot/decompressor).
 
-Thanks.
-Puranjay
+--=20
+With Best Regards,
+Andy Shevchenko
