@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5006878F5B7
+	by mail.lfdr.de (Postfix) with ESMTP id D240D78F5BA
 	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347879AbjHaWm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 18:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48872 "EHLO
+        id S1347807AbjHaWm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 18:42:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347822AbjHaWms (ORCPT
+        with ESMTP id S1343551AbjHaWmr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 18:42:48 -0400
+        Thu, 31 Aug 2023 18:42:47 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EDDD7
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:42:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29246CC;
+        Thu, 31 Aug 2023 15:42:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0764B6280C
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 22:42:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CDC69C433CD;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B3E4760BBA;
+        Thu, 31 Aug 2023 22:42:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 28EA7C433C7;
         Thu, 31 Aug 2023 22:42:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693521764;
-        bh=BFkjwxRj+nSKRBxr7rtqZHA8zcfp1s1LTZb8rdNR1qI=;
+        bh=UGJNd0s2MSSk5ykOJOh3wJPCqKLtZUHsnNTZVWE3tEU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=D+6rwon7IDYDenZYBtvxfnHjTC6/qX8XUFtsjnKSZIGNrSJOLD4rI5oS0OhvjTKDi
-         vPaUU2N/9YQaGrYEWZ5J1GRiDbBX5Pi1kGEToEB8ygQjqme1IL7I71plaOT9DoehmN
-         C4UHvqO+ufrKnaC3tvyXESkKBQrlc9TWXv8IIMKEeKy25WvQDo6v7YunpT04BT3w9s
-         bE0YQyCM2TD66on0ZtFHy+lV4wE7ShxiEPNd3vB7M14N6JR6RRHxosnZHG7pc7PB12
-         k0C3wIAaTIdxFEyJ8hkOuERezOEtijyzUjcX+K0OLa4eOVURl0qgzzZGL8/PonYQvz
-         W3nrYTGJor07Q==
+        b=IMsgLlCzIm+sDAcUV6Ge+KXMUQ8NM7amCma7vtUgMZ1+rqcyLWtnMxHPIMy/yrWSu
+         zbzppw4jAOlwg4AA+O8LCOVpCnV1C7e7yywMYR9VjoMt9quxJK7s2LNUjoK3aJN0H5
+         0dSW6p68t/MRPKfDnr5smaQ1CNm93aqMxvQ7xEv7qooHXprO25bSvmPh43q4+39cx7
+         SRBUfytzd0tqw/Dl2kuDPSeAydxfMx36f8uiLR2PnNkuVCfriDySB/PcnreNKkCak/
+         KGUHFG7etrbujosKpBQGDlhTwO7afrtJpeRwBgoviTtjms7HOeZJv01CwOfxAxt2n+
+         fVpZwzt6WJyGA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BC0D3C595D2;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1140FC595D2;
         Thu, 31 Aug 2023 22:42:44 +0000 (UTC)
-Subject: Re: [GIT PULL] jfs updates for v6.6
+Subject: Re: [GIT PULL] nfsd changes for v6.6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <e73dbacc-f2ba-4210-879e-42524a4d6283@oracle.com>
-References: <e73dbacc-f2ba-4210-879e-42524a4d6283@oracle.com>
+In-Reply-To: <F7285657-5A35-42E0-87B4-1EAEE8DDF618@oracle.com>
+References: <F7285657-5A35-42E0-87B4-1EAEE8DDF618@oracle.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <e73dbacc-f2ba-4210-879e-42524a4d6283@oracle.com>
-X-PR-Tracked-Remote: git@github.com:kleikamp/linux-shaggy.git tags/jfs-6.6
-X-PR-Tracked-Commit-Id: 0225e10972fa809728b8d4c1bd2772b3ec3fdb57
+X-PR-Tracked-Message-Id: <F7285657-5A35-42E0-87B4-1EAEE8DDF618@oracle.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.6
+X-PR-Tracked-Commit-Id: b38a6023da6a12b561f0421c6a5a1f7624a1529c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 7e5cd6f69735d6294965b20e8d26a3bd68ee726e
-Message-Id: <169352176475.24475.921763886436527535.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: f35d1706159e015848ec7421e91b44b614c02dc2
+Message-Id: <169352176406.24475.2460539472651236300.pr-tracker-bot@kernel.org>
 Date:   Thu, 31 Aug 2023 22:42:44 +0000
-To:     Dave Kleikamp <dave.kleikamp@oracle.com>
+To:     Chuck Lever III <chuck.lever@oracle.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "jfs-discussion@lists.sourceforge.net" 
-        <jfs-discussion@lists.sourceforge.net>
+        Linux NFS Mailing List <linux-nfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jeff Layton <jlayton@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -63,12 +63,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 31 Aug 2023 10:21:26 -0500:
+The pull request you sent on Thu, 31 Aug 2023 14:39:35 +0000:
 
-> git@github.com:kleikamp/linux-shaggy.git tags/jfs-6.6
+> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/7e5cd6f69735d6294965b20e8d26a3bd68ee726e
+https://git.kernel.org/torvalds/c/f35d1706159e015848ec7421e91b44b614c02dc2
 
 Thank you!
 
