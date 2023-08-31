@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F06C178EC76
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4114478EC78
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345774AbjHaLvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:51:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
+        id S1346114AbjHaLvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:51:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjHaLvq (ORCPT
+        with ESMTP id S231241AbjHaLvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:51:46 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E53CFF;
-        Thu, 31 Aug 2023 04:51:43 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-794c7d95ba5so26844639f.0;
-        Thu, 31 Aug 2023 04:51:43 -0700 (PDT)
+        Thu, 31 Aug 2023 07:51:48 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6316EE40;
+        Thu, 31 Aug 2023 04:51:45 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34baf19955cso2532165ab.2;
+        Thu, 31 Aug 2023 04:51:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693482703; x=1694087503; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ihsq1G+Hub3rKossUtgp/zZy1yTWO30XUHy6RAXp+uk=;
-        b=nIrjaccbsnE3t/jCjFBWjij+buylw9yDya53fs4k1gEUotlY+HfPp2O8tY5uRqohrR
-         avXtg9E2puV++Q55BpPQEO7/m+9qmtQ+pP8maQ+bTrWbv8+NjKpynV+dnWSB7jLB5/zm
-         qnLxa+3pOBUxzfjVMYY67i1LL7r7jJDFsafElIrqWAEkPeBD3ONkIikZLoDPNT3TCKvg
-         Iv+h5vBMLmMraaT+cbhuQ7HW4Z4hp+zmfefhut4+xZ/PnPho0+3raAAh0gYAzE73Hq9Y
-         o83KiebZfnQcAZtYJcO1l1tXUfqqdSwISbIwOeYaJiXJgEE92eBjuqd26rlG6WnBx1qv
-         jq4Q==
+        d=gmail.com; s=20221208; t=1693482705; x=1694087505; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OfUzkZpC6rdjKYz9PfqxdgDOVImLXmjN2Ob+UFv9fCI=;
+        b=lnP80rYC4furarMha7mKtWVjOOicTgzYZfWWx0q4u5CpmLbY6ZrwbTe5FVyBy3xkmQ
+         kF9AM0HreJEvfqXKft2xAIZA1aF7BE9eiLwaQPcZCiC0YnWEBRbXPH9jAsCjrptfWfEN
+         Qwr7a9U8FMxZf874qv1y09jv9xqk6jxX6/3vhdqYgLNJ6fZzv/oq3vWCcbhjJeD6owKh
+         sk4PLuzTunJH2MaZH9JDFbij4a/azmZ40g5Z4ArPrmuppiR5aBJFjFfLgrLUhw3Famnu
+         nvuGWAJXag0etVrezNJoMnq586hUeQF6Z5otLIU+nyYz8NuXtE22WX3vShL06GkAGwyU
+         B0Ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693482703; x=1694087503;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ihsq1G+Hub3rKossUtgp/zZy1yTWO30XUHy6RAXp+uk=;
-        b=S3+yz8+Li6Yo9BXxsEtX3jVw7Pa2w9iXxOXLo5nYuCiZK42xQKZMntXSojTqnbsSXK
-         a4tS2HhfRcCV+8DQdDH7kCXirzidBESDLF9L2WWX+Jd1PXI2g6/0sGY7IEiDjpDuN3AZ
-         jSviZzqXK44qrGQ1UoBRxjWxZYWcn0xOJ1K2tuyfdw8RaH53QJ7uDKLmfjQCCs7dJt56
-         G8XeXtNd20qgU0lAN4SFIFE1xADYpB9MlRwKTGfPgLMNtq/9G8V+iOcmQuaTu7GIgD2z
-         fbI13WDFI4jBS6DxvQMLYlb7MhavD3z3oMAHd90xr7cGL5cQZ/Pedg5R6bizWqru27eg
-         ln+g==
-X-Gm-Message-State: AOJu0YxyHlpCZnnB5PuW85DPrkLJu1Z01sOm1QVqITMTZx97QewXIcnt
-        bfXxi2LYPk/ITL3H+/S0pPM=
-X-Google-Smtp-Source: AGHT+IEnv1P/QYCarKpZ1Xer0P5ZGSgekwP3ctv3JCpSTmZKWn/RaUOys/p1eV8kWbXegyupSqv0Hw==
-X-Received: by 2002:a6b:fe15:0:b0:787:1a8f:1d08 with SMTP id x21-20020a6bfe15000000b007871a8f1d08mr4906178ioh.15.1693482702990;
-        Thu, 31 Aug 2023 04:51:42 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693482705; x=1694087505;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OfUzkZpC6rdjKYz9PfqxdgDOVImLXmjN2Ob+UFv9fCI=;
+        b=eQ2qQ4C0pyehrFBnHVH+jtk++g15SlCrgL//lWAqIXxFdbX4hO/ojWnxMzj0ZRCmvX
+         1XSBNF405ISOHnxHfD/IQurzfC82NCUkUA2vsd6cnBokcmGlWjZg801Rx7ACsyBU6c12
+         tNHimxmGRPhxrZ0745Pi/EgtwwsAwQKgNdVGKG3ChVGQSARBEJyFboQ5yULRpkZlS8K3
+         3h/S7yRqIjRyKhDA7Q5KWWLrF18hiyEbIHnF2KzIvozy0MAhNC2xwRrAIqbxs4v9jqCg
+         IBI89iKn6gxdfc+S58ERicaGBw3IF6WfR089tA9Pa+uE+l5rGr3e+dPxjVL+ibwxA0wu
+         YYFQ==
+X-Gm-Message-State: AOJu0YxdV6Mjxt3TYgtcyRTZ23b+vIyhn5zL51TEdtJ5IdIs5UOcYatH
+        JlcodIJ1D6FO8lARwhAgR60=
+X-Google-Smtp-Source: AGHT+IFeFDeXFOoBQ84rxQO9XbuweuUTlmCmC4f45FCzPK0ABR8WvTiRSiDkUN3Q3WXEdPhG9P8MRA==
+X-Received: by 2002:a92:4b08:0:b0:34c:a9dd:5fe3 with SMTP id m8-20020a924b08000000b0034ca9dd5fe3mr5415080ilg.23.1693482704623;
+        Thu, 31 Aug 2023 04:51:44 -0700 (PDT)
 Received: from aford-B741.lan ([2601:447:d001:897f:2a0f:e1d5:3688:f2b8])
-        by smtp.gmail.com with ESMTPSA id o28-20020a02cc3c000000b0042b1d495aecsm353529jap.123.2023.08.31.04.51.41
+        by smtp.gmail.com with ESMTPSA id o28-20020a02cc3c000000b0042b1d495aecsm353529jap.123.2023.08.31.04.51.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 04:51:42 -0700 (PDT)
+        Thu, 31 Aug 2023 04:51:44 -0700 (PDT)
 From:   Adam Ford <aford173@gmail.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
@@ -61,10 +62,12 @@ Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
         Fabio Estevam <festevam@gmail.com>,
         NXP Linux Team <linux-imx@nxp.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/4] arm64: dts: imx8mm-beacon: Migrate sound card to simple-audio-card
-Date:   Thu, 31 Aug 2023 06:51:25 -0500
-Message-Id: <20230831115128.254226-1-aford173@gmail.com>
+Subject: [PATCH 2/4] arm64: dts: imx8mm-beacon: Add DMIC support
+Date:   Thu, 31 Aug 2023 06:51:26 -0500
+Message-Id: <20230831115128.254226-2-aford173@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230831115128.254226-1-aford173@gmail.com>
+References: <20230831115128.254226-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,68 +80,84 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of using a custom glue layer connecting the wm8962 CODEC
-to the SAI3 sound-dai, migrate the sound card to simple-audio-card.
-This also brings this board in line with the imx8mn-beacon and
-imx8mp-beacon.
+The baseboard has a connector for a pulse density microphone.
+This is connected via the micfil interface and uses the DMIC
+audio codec with the simple-audio-card.
 
 Signed-off-by: Adam Ford <aford173@gmail.com>
 
 diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-index b10e2a703a44..313e93663d6f 100644
+index 313e93663d6f..d0dd4c81a557 100644
 --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
 +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-@@ -98,18 +98,30 @@ reg_usdhc2_vmmc: regulator-usdhc2 {
+@@ -6,6 +6,13 @@
+ #include <dt-bindings/phy/phy-imx8-pcie.h>
+ 
+ / {
++
++	dmic_codec: dmic-codec {
++		compatible = "dmic-codec";
++		num-channels = <1>;
++		#sound-dai-cells = <0>;
++	};
++
+ 	leds {
+ 		compatible = "gpio-leds";
+ 
+@@ -98,6 +105,22 @@ reg_usdhc2_vmmc: regulator-usdhc2 {
  		enable-active-high;
  	};
  
--	sound {
--		compatible = "fsl,imx-audio-wm8962";
--		model = "wm8962-audio";
--		audio-cpu = <&sai3>;
--		audio-codec = <&wm8962>;
--		audio-routing =
--			"Headphone Jack", "HPOUTL",
--			"Headphone Jack", "HPOUTR",
--			"Ext Spk", "SPKOUTL",
--			"Ext Spk", "SPKOUTR",
--			"AMIC", "MICBIAS",
--			"IN3R", "AMIC";
-+	sound-wm8962 {
++	sound-dmic {
 +		compatible = "simple-audio-card";
-+		simple-audio-card,name = "wm8962";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,widgets = "Headphone", "Headphones",
-+					    "Microphone", "Headset Mic",
-+					    "Speaker", "Speaker";
-+		simple-audio-card,routing = "Headphones", "HPOUTL",
-+					    "Headphones", "HPOUTR",
-+					    "Speaker", "SPKOUTL",
-+					    "Speaker", "SPKOUTR",
-+					    "Headset Mic", "MICBIAS",
-+					    "IN3R", "Headset Mic";
++		simple-audio-card,name = "dmic";
++		simple-audio-card,format = "pdm";
++		simple-audio-card,bitclock-master = <&dailink_master>;
++		simple-audio-card,frame-master = <&dailink_master>;
 +
-+		simple-audio-card,cpu {
-+			sound-dai = <&sai3>;
++		dailink_master: simple-audio-card,cpu {
++			sound-dai = <&micfil>;
 +		};
 +
 +		simple-audio-card,codec {
-+			sound-dai = <&wm8962>;
-+			clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
-+			frame-master;
-+			bitclock-master;
++			sound-dai = <&dmic_codec>;
 +		};
++	};
++
+ 	sound-wm8962 {
+ 		compatible = "simple-audio-card";
+ 		simple-audio-card,name = "wm8962";
+@@ -228,6 +251,16 @@ pca6416_1: gpio@21 {
  	};
  };
  
-@@ -192,6 +204,7 @@ wm8962: audio-codec@1a {
- 			0x0000 /* 4:FN_DMICCDAT */
- 			0x0000 /* 5:Default */
++&micfil {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_pdm>;
++	assigned-clocks = <&clk IMX8MM_CLK_PDM>;
++	assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
++	assigned-clock-rates = <49152000>;
++	status = "okay";
++	#sound-dai-cells = <0>;
++};
++
+ &mipi_csi {
+ 	status = "okay";
+ 	ports {
+@@ -365,6 +398,13 @@ MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x19
  		>;
-+		#sound-dai-cells = <0>;
  	};
  
- 	pca6416_0: gpio@20 {
++	pinctrl_pdm: pdmgrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI5_RXC_PDM_CLK	0xd6
++			MX8MM_IOMUXC_SAI5_RXD0_PDM_DATA0	0xd6
++		>;
++	};
++
+ 	pinctrl_reg_usb_otg1: usbotg1grp {
+ 		fsl,pins = <
+ 			MX8MM_IOMUXC_SAI3_RXC_GPIO4_IO29     0x19
 -- 
 2.39.2
 
