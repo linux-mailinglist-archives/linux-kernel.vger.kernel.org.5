@@ -2,233 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAB5D78EFD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F2978EFD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:56:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346464AbjHaO4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
+        id S1346468AbjHaO4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHaO4T (ORCPT
+        with ESMTP id S229445AbjHaO4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:56:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D121B1;
-        Thu, 31 Aug 2023 07:56:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C9A74B8231B;
-        Thu, 31 Aug 2023 14:56:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ECF3C433C9;
-        Thu, 31 Aug 2023 14:56:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693493772;
-        bh=jmlOubIGHQ2DoRnY5MFlnRc2j08gG6fBV336tJEzh8U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hWprHtsQI7WZikkrJejUZg3tc6n8Q49en1IuK9JtjI53EVBLt7vQVj79edr/S1ulv
-         3eV++NJEQ1VFI3HK7pS7VjeGG6A1uabs/ftvTFqPi0N1di0T3ih/98oPIZDvUGy1yq
-         6bXG6Wg/8PhQranPaJqqwPBD7+suGDJdBjiETLKXymNg5+mDzNFbjez1rfpAmK9luk
-         B0UfrY023ETuOd9sRlVLY3B6L7TCz2z4PqE+IvaXzHlFlMQd3tJ0E0oK9q6dVg5XbM
-         XMClDNHuYZN/sChnTTP5s8ZLjOIztcqyOAWoWaToRg8IZRLCIGCdjqYzOVKHOqreuP
-         +9ro3zIQmqhhQ==
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3a76d882052so537519b6e.0;
-        Thu, 31 Aug 2023 07:56:12 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwjfyXbE9TupBXFiQx76DyjKlpKpYRumBJKkrZnyj3grnEV9YIt
-        mQmKbuXNyP3OplwHJFEN8vnSjsqTtGv94yQsLtQ=
-X-Google-Smtp-Source: AGHT+IG0gmsy4bGiM7pim2MyZEqgCQbnAIeucX3NGRgcSk52LqF6L3rjKgAP+jrG25Z2Ph7RZm0WUxsLixhQAtQhvc0=
-X-Received: by 2002:a05:6808:30a1:b0:3a8:f3e7:d696 with SMTP id
- bl33-20020a05680830a100b003a8f3e7d696mr5583040oib.45.1693493771789; Thu, 31
- Aug 2023 07:56:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAGXv+5EU-qvTee1f0kicZA-er2Li=EcV0zWdOGUPoqdOxi69vw@mail.gmail.com>
-In-Reply-To: <CAGXv+5EU-qvTee1f0kicZA-er2Li=EcV0zWdOGUPoqdOxi69vw@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 31 Aug 2023 23:55:35 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ58pnnk-XThrnJEhL72HUEXo-CFScYdt+yx_PrWqcRTA@mail.gmail.com>
-Message-ID: <CAK7LNAQ58pnnk-XThrnJEhL72HUEXo-CFScYdt+yx_PrWqcRTA@mail.gmail.com>
-Subject: Re: make -jN modules_install breakage in next-20230831
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 31 Aug 2023 10:56:42 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B6D9CC5;
+        Thu, 31 Aug 2023 07:56:38 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37VElhBp024174;
+        Thu, 31 Aug 2023 09:56:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        content-type:mime-version:subject:from:in-reply-to:date:cc
+        :content-transfer-encoding:message-id:references:to; s=
+        PODMain02222019; bh=tL1M2KqPZ1Gruoc257MClXbv1zWRmnPUhuIWXHhN8pc=; b=
+        PpG4EXUCbqlRyrE13oUzznOXr1zcy1uoPi/ggamaQjlPYdUTtF7TDIvPtkm6C2c4
+        5HWlflZH9pc4VVSqaWc+tZtNMO9H7WYLxaM0XjVFBgiOAigL8XxyXtEV64+7oTny
+        IkJV5+x61m6/CEbdo6yGfrCMJczegjtjW5kEOtJzXxibPxjfnjB3FRbtrKQo4/hX
+        XKzEbRRfkzVheCdc/INAIUSxZNIxC242r3t865HoQID99KGr1jd5DPH7ibBdE1O1
+        +ojAoYj3PN2Kl3OpvlTUz9Jz8S5WUYpRkAkETS8Rq5E35/TIHv9tcuoM8CwroDwB
+        RtGb7bE/m66O4ry0xRCaHw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sqdtj5grc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 09:56:20 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 31 Aug
+ 2023 15:56:18 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Thu, 31 Aug 2023 15:56:18 +0100
+Received: from smtpclient.apple (macC02FN0GLMD6T.ad.cirrus.com [141.131.156.196])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id ABAA311D4;
+        Thu, 31 Aug 2023 14:56:16 +0000 (UTC)
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
+Subject: Re: [PATCH v2 1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
+From:   "Rivera-Matos, Ricardo" <rriveram@opensource.cirrus.com>
+In-Reply-To: <737c4114-5b54-444c-8a6a-de4e98566513@sirena.org.uk>
+Date:   Thu, 31 Aug 2023 09:56:05 -0500
+CC:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <5B0EB2A2-2048-4A71-A4A9-D5167C7AB5EC@opensource.cirrus.com>
+References: <20230830195536.448884-1-vkarpovi@opensource.cirrus.com>
+ <737c4114-5b54-444c-8a6a-de4e98566513@sirena.org.uk>
+To:     Mark Brown <broonie@kernel.org>
+X-Mailer: Apple Mail (2.3731.700.6)
+X-Proofpoint-ORIG-GUID: HoQ4lxce8WazZ5vUB_uGKhNFVcYgS3mH
+X-Proofpoint-GUID: HoQ4lxce8WazZ5vUB_uGKhNFVcYgS3mH
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 5:59=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org> w=
-rote:
->
-> Hi,
->
-> I observed some breakage with `make -jN moudles_install`. The scripts pro=
-duce
-> some bogus paths, which `cp` then complains it can't find.
->
-> I run the following for my workflow.
->
->   $ nice -n 10 sh -c "make -j72 Image.lzma dtbs && ./pack-mod.sh && cb/si=
-gn.sh"
->
-> pack-mod.sh is what fails. It basically does:
->
->     make -j72 modules
->     make -j72 modules_install INSTALL_MOD_PATH=3D${TMPDIR}
->     depmod ...
->     tar ...
->     cleanup
->
-> I get errors like the following:
->
->
->   CALL    scripts/checksyscalls.sh
->   CALL    scripts/checksyscalls.sh
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/arch/arm64/crypto/sha1-ce.ko
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/arch/arm64/crypto/chacha-neon.ko
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/arch/arm64/crypto/poly1305-neon.ko
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/kernel/time/test_udelay.ko
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/kernel/configs.ko
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/fs/nfs_common/grace.ko
-> cp: cannot create regular file
-> 'tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty=
-/kernel/kernel/time/test_udelay.ko':
-> No such file or directory
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/fs/nls/nls_cp437.ko
-> make[2]: *** [scripts/Makefile.modinst:127:
-> tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty/=
-kernel/kernel/time/test_udelay.ko]
-> Error 1
-> make[2]: *** Waiting for unfinished jobs....
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/fs/nls/nls_ascii.ko
-> cp: cannot create regular file
-> 'tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty=
-/kernel/kernel/configs.ko':
-> No such file or directory
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/fs/nls/nls_iso8859-1.ko
->   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
-478-dirty/kernel/fs/nls/nls_utf8.ko
-> make[2]: *** [scripts/Makefile.modinst:128:
-> tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty/=
-kernel/kernel/configs.ko]
-> Error 1
-> make[1]: *** [/usr/local/google/home/wenst/linux/mtk/Makefile:1822:
-> modules_install] Error 2
-> make: *** [Makefile:234: __sub-make] Error 2
->
->
-> Note the duplicate "kernel/" in the path for test_udelay.ko and configs.k=
-o.
+Hello Mark,
 
+> On Aug 30, 2023, at 3:59 PM, Mark Brown <broonie@kernel.org> wrote:
+>=20
+> On Wed, Aug 30, 2023 at 02:55:33PM -0500, Vlad Karpovich wrote:
+>> Checks the index computed by the virq offset before printing the
+>> error condition in cs35l45_spk_safe_err() handler.
+>>=20
+>> Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+>> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+>=20
+> Who actually wrote this patch?
 
+I am the original author, allow me to clarify how and why this is =
+supposed to work.
 
-The paths to test_udelay.ko and configs.ko look quite normal to me.
+How:
 
-"kernel/kernel/" is correct.
+static const struct cs35l45_irq cs35l45_irqs[] =3D {
+	CS35L45_IRQ(AMP_SHORT_ERR, "Amplifier short error", =
+cs35l45_spk_safe_err),
+	CS35L45_IRQ(UVLO_VDDBATT_ERR, "VDDBATT undervoltage error", =
+cs35l45_spk_safe_err),
+	CS35L45_IRQ(BST_SHORT_ERR, "Boost inductor error", =
+cs35l45_spk_safe_err),
+	CS35L45_IRQ(BST_UVP_ERR, "Boost undervoltage error", =
+cs35l45_spk_safe_err),
+	CS35L45_IRQ(TEMP_ERR, "Overtemperature error", =
+cs35l45_spk_safe_err),
+	CS35L45_IRQ(AMP_CAL_ERR, "Amplifier calibration error", =
+cs35l45_spk_safe_err),
+	CS35L45_IRQ(UVLO_VDDLV_ERR, "LV threshold detector error", =
+cs35l45_spk_safe_err),
+	CS35L45_IRQ(GLOBAL_ERROR, "Global error", cs35l45_global_err),
+	CS35L45_IRQ(DSP_WDT_EXPIRE, "DSP Watchdog Timer", =
+cs35l45_dsp_wdt_expire),
+	CS35L45_IRQ(PLL_UNLOCK_FLAG_RISE, "PLL unlock flag rise", =
+cs35l45_pll_unlock),
+	CS35L45_IRQ(PLL_LOCK_FLAG, "PLL lock", cs35l45_pll_lock),
+	CS35L45_IRQ(DSP_VIRT2_MBOX, "DSP virtual MBOX 2 write flag", =
+cs35l45_dsp_virt2_mbox_cb),
+};
 
+static irqreturn_t cs35l45_spk_safe_err(int irq, void *data)
+{
+	struct cs35l45_private *cs35l45 =3D data;
+	int i;
 
-The first "kernel/" means in-tree modules.
+	i =3D irq - regmap_irq_get_virq(cs35l45->irq_data, 0);
 
-All in-tree modules are installed
-under /lib/modules/<ver>/kernel/,
-while external modules are installed
-under /lib/modules/<ver>/updates/.
+	if (i < 0 || i > 6)
+		dev_err(cs35l45->dev, "Unspecified global error =
+condition (%d) detected!\n", irq);
+	else
+		dev_err(cs35l45->dev, "%s condition detected!\n", =
+cs35l45_irqs[i].name);
 
+	return IRQ_HANDLED;
+}
 
-The second "kernel/" is the directory in the source tree.
+This snippet here is from the OoT CS35L45 driver. There are only seven =
+root causes for a speaker safe error and when one of those root cause =
+bits are set, we enter the common handler to print the root cause. Using =
+the IRQ and the VIRQ number we do some math and print the name of the =
+error as a dev_err.
 
+Why:
 
+Originally these root cause bits were treated as general bits and simply =
+checked in the cs35l45_global_err() handler. A problem arose when the =
+CS35L45 would come out of hibernation and the root cause bits would be =
+masked by default. Treating the root cause bits as IRQs ensured that, =
+like the other IRQ bits, the root cause bits would be unmasked before an =
+IRQ could be serviced.
 
-I cannot reproduce the error.
+Further notes:
 
+static const struct cs35l45_irq cs35l45_irqs[] =3D {
+<snip>
+	CS35L45_IRQ(GLOBAL_ERROR, "Global error", cs35l45_spk_safe_err),
+	CS35L45_IRQ(DSP_WDT_EXPIRE, "DSP Watchdog Timer", =
+cs35l45_spk_safe_err),
+<snip>
+};
 
+This is from next-20230831. I am not sure how this happened, but these =
+IRQs are not pointing to cs35l45_global_err and cs35l45_dsp_wdt_expire =
+respectively. Maybe a bad cherry-pick. We will address this shortly.
 
+I hope this addresses any confusion, please let me know if I can offer =
+any further details.
 
-But, indeed. Your installation log looks weird overall.
-No idea what is happening in your case.
+Thanks,
+Ricardo
 
-
-If you add V=3D1, Kbuild will show more logs, and we may get more hints.
-
-  make V=3D1 -j72 modules_install INSTALL_MOD_PATH=3D${TMPDIR}
-
-
-
-
-
-
-BTW, you are not testing linux-next, right?
-
-
-The commit hash of next-20230831 is a47fc304d2b678db1a5d760a7d644dac9b06775=
-2
-
-
-
-commit a47fc304d2b678db1a5d760a7d644dac9b067752 (HEAD, tag:
-next-20230831, origin/master, origin/HEAD)
-Author: Stephen Rothwell <sfr@canb.auug.org.au>
-Date:   Thu Aug 31 13:54:04 2023 +1000
-
-    Add linux-next specific files for 20230831
-
-    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-
-
-
-
-
-
-Apparently, your version
-"6.5.0-next-20230831-13697-g09d3bd189478-dirty" is different.
-
-
-I cannot find commit 09d3bd189478.
-And, it seems a lot of local patches applied on top.
-
-
-
-
-
-Next time, please send repro steps for linux-next.
-
-
-
-
-
-
-
->
-> If I revert commit 3ee3181f8721 ("Merge branch 'for-next' of
-> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git"=
-),
-> then everything works again. Not sure which commit is to blame though.
->
->
-> Regards
-> ChenYu
-
-
-
---
-Best Regards
-
-Masahiro Yamada
