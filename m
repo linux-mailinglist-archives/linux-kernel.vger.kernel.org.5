@@ -2,200 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A4478E9B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EB9B78E9B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343568AbjHaJnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:43:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        id S239949AbjHaJnx convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 31 Aug 2023 05:43:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbjHaJnW (ORCPT
+        with ESMTP id S230374AbjHaJnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:43:22 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45029CFA;
-        Thu, 31 Aug 2023 02:43:19 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 743E9C15;
-        Thu, 31 Aug 2023 02:43:58 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C2943F738;
-        Thu, 31 Aug 2023 02:43:17 -0700 (PDT)
-Message-ID: <1486ef1d-6c17-af0a-7df6-bc30640d4825@arm.com>
-Date:   Thu, 31 Aug 2023 10:43:11 +0100
+        Thu, 31 Aug 2023 05:43:52 -0400
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A015BCF2;
+        Thu, 31 Aug 2023 02:43:40 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-58dce1f42d6so24752047b3.0;
+        Thu, 31 Aug 2023 02:43:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693475020; x=1694079820;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=15fJYkK70EO/L01pQbhlxvsvLOdh5C+6wf2tECW+cxA=;
+        b=BBhr1m1cDVSyTTpYlnoyT2KFW3qtPNpUjX8Y8dl9aVpZ8w92/P8NDjx0I9D6ZQKUJa
+         LpeQTA2B2oM32VjTw2UKD8eG2Fe7X68txhelrzTflfmRjJcNANnhPJ41TbirHVbRMx1y
+         Q5KUkcNnZUSy6FyzSWDvW2Cnf5nMSJhiagPSXY4J3mxiFnlTe7Fv16rHI1bAKKNpVtLi
+         0V15CUZy2vQSY+p2fjVcxb5/fEFop+pp/EtOM6YPi4cc9FbKIBnhg1cx0MpzTaCMGMpN
+         GjJ2wdXm5JWElggTbKpOHOraqRACs74RI+jf5JuIv9vONwE99y2t+X9ltPAvYhUiWKwz
+         GMOQ==
+X-Gm-Message-State: AOJu0YzVGL+QxJZUhWVJLv5CgU3tFoJ42GBYRCnqiBx+Ju07ZAo9vbOL
+        uWhLwZj/d/iOdf1W1q5k8mVl8kKT2DZw/A==
+X-Google-Smtp-Source: AGHT+IGV3oWpIkFQCRh6pUiD+AR9nPLL5f/86qEUlIQ9akcbu6HwX10apBOMez98Nv80e89ipFpuzQ==
+X-Received: by 2002:a81:498b:0:b0:58c:5598:be97 with SMTP id w133-20020a81498b000000b0058c5598be97mr2002843ywa.15.1693475019652;
+        Thu, 31 Aug 2023 02:43:39 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id b131-20020a0dd989000000b005772abf6234sm305977ywe.11.2023.08.31.02.43.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 02:43:39 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-d7830c5b20aso785038276.0;
+        Thu, 31 Aug 2023 02:43:39 -0700 (PDT)
+X-Received: by 2002:a25:fc10:0:b0:d71:7d2f:c548 with SMTP id
+ v16-20020a25fc10000000b00d717d2fc548mr2178292ybd.15.1693475018810; Thu, 31
+ Aug 2023 02:43:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1] perf jevents: Use "default_core" for events with no
- Unit
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>
-Cc:     Thomas Richter <tmricht@linux.ibm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230826062203.1058041-1-irogers@google.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230826062203.1058041-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
+ <20230819004356.1454718-2-Liam.Howlett@oracle.com> <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
+ <87v8cv22jh.fsf@mail.lhotse> <CAMuHMdXMpr0spdprjwsV56nJE3vHGTFaodcnVXUa=GMYaB5yKw@mail.gmail.com>
+ <6f663185-2ef1-5075-99c9-e16050329d74@bytedance.com>
+In-Reply-To: <6f663185-2ef1-5075-99c9-e16050329d74@bytedance.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 31 Aug 2023 11:43:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdW+wNma-Nr+595kRgZfG_fS2zgbZxJNbtcNRxnmpCJ=5w@mail.gmail.com>
+Message-ID: <CAMuHMdW+wNma-Nr+595kRgZfG_fS2zgbZxJNbtcNRxnmpCJ=5w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
+ readers are possible
+To:     Peng Zhang <zhangpeng.00@bytedance.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Peng,
 
+On Thu, Aug 31, 2023 at 10:45 AM Peng Zhang <zhangpeng.00@bytedance.com> wrote:
+> 在 2023/8/31 16:25, Geert Uytterhoeven 写道:
+> > On Thu, Aug 31, 2023 at 7:39 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> >> Geert Uytterhoeven <geert@linux-m68k.org> writes:
+> >>> On Fri, 18 Aug 2023, Liam R. Howlett wrote:
+> >>>> The current implementation of append may cause duplicate data and/or
+> >>>> incorrect ranges to be returned to a reader during an update.  Although
+> >>>> this has not been reported or seen, disable the append write operation
+> >>>> while the tree is in rcu mode out of an abundance of caution.
+> >>>>
+> >>>> During the analysis of the mas_next_slot() the following was
+> >>>> artificially created by separating the writer and reader code:
+> >>>>
+> >>>> Writer:                                 reader:
+> >>>> mas_wr_append
+> >>>>     set end pivot
+> >>>>     updates end metata
+> >>>>     Detects write to last slot
+> >>>>     last slot write is to start of slot
+> >>>>     store current contents in slot
+> >>>>     overwrite old end pivot
+> >>>>                                         mas_next_slot():
+> >>>>                                                 read end metadata
+> >>>>                                                 read old end pivot
+> >>>>                                                 return with incorrect range
+> >>>>     store new value
+> >>>>
+> >>>> Alternatively:
+> >>>>
+> >>>> Writer:                                 reader:
+> >>>> mas_wr_append
+> >>>>     set end pivot
+> >>>>     updates end metata
+> >>>>     Detects write to last slot
+> >>>>     last lost write to end of slot
+> >>>>     store value
+> >>>>                                         mas_next_slot():
+> >>>>                                                 read end metadata
+> >>>>                                                 read old end pivot
+> >>>>                                                 read new end pivot
+> >>>>                                                 return with incorrect range
+> >>>>     set old end pivot
+> >>>>
+> >>>> There may be other accesses that are not safe since we are now updating
+> >>>> both metadata and pointers, so disabling append if there could be rcu
+> >>>> readers is the safest action.
+> >>>>
+> >>>> Fixes: 54a611b60590 ("Maple Tree: add new data structure")
+> >>>> Cc: stable@vger.kernel.org
+> >>>> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
+> >>>
+> >>> Thanks for your patch, which is now commit cfeb6ae8bcb96ccf
+> >>> ("maple_tree: disable mas_wr_append() when other readers are
+> >>> possible") in v6.5, and is being backported to stable.
+> >>>
+> >>> On Renesas RZ/A1 and RZ/A2 (single-core Cortex-A9), this causes the
+> >>> following warning:
+> >>>
+> >>>        clocksource: timer@e803b000: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 28958491609 ns
+> >>>        sched_clock: 32 bits at 66MHz, resolution 15ns, wraps every 32537631224ns
+> >>>        /soc/timer@e803b000: used for clocksource
+> >>>        /soc/timer@e803c000: used for clock events
+> >>>       +------------[ cut here ]------------
+> >>>       +WARNING: CPU: 0 PID: 0 at init/main.c:992 start_kernel+0x2f0/0x480
+> >>>       +Interrupts were enabled early
+> >> ...
+> >>>
+> >>> I do not see this issue on any other platform
+> >>> (arm/arm64/risc-v/mips/sh/m68k), several of them use the same
+> >>> RCU configuration.
+> >>
+> >> There's something similar on pmac32 / mac99.
+> >>
+> >>> Do you have a clue?
+> >>
+> >> It seems something in the maple tree code is setting TIF_NEED_RESCHED,
+> >> and that causes a subsequent call to cond_resched() to call schedule()
+> >> and enable interrupts.
+> >>
+> >> On pmac32 enabling CONFIG_DEBUG_ATOMIC_SLEEP fixes/hides the problem.
+> >> But I don't see why.
+> >
+> > Enabling CONFIG_DEBUG_ATOMIC_SLEEP on RZ/A1 and RZ/A2 does
+> > fix the problem.
+> > But there must be more to it, as some of my test configs had it enabled,
+> > and others hadn't, while only RZ/A showed the issue.
+> > I tried disabling it on R-Car M2-W (arm32) and R-Car H3 (arm64), and
+> > that did not cause the problem to happen...
+>
+> I guess this patch triggers a potential problem with the maple tree.
+> I don't have the environment to trigger the problem. Can you apply the
+> following patch to see if the problem still exists? This can help locate
+> the root cause. At least narrow down the scope of the code that has bug.
 
-On 26/08/2023 07:22, Ian Rogers wrote:
-> The json Unit field encodes the name of the PMU to match the events
-> to. When no name is given it has meant the "cpu" core PMU except for
-> tests. On ARM, Intel hybrid and s390 the core PMU is named differently
-> which means that using "cpu" for this case causes the events not to
-> get matched to the PMU. Introduce a new "default_core" string for this
-> case and in the pmu__name_match force all core PMUs to match this
-> name.
-> 
-> Reported-by: Thomas Richter <tmricht@linux.ibm.com>
-> Reported-by: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Fixes: 2e255b4f9f41 ("perf jevents: Group events by PMU")
-> Signed-off-by: Ian Rogers <irogers@google.com>
+Thanks for your suggestion!
 
-Reviewed-by: James Clark <james.clark@arm.com>
-
-> ---
->  tools/perf/pmu-events/jevents.py |  2 +-
->  tools/perf/tests/pmu-events.c    | 19 ++++++++++---------
->  tools/perf/util/pmu.c            |  7 ++++++-
->  3 files changed, 17 insertions(+), 11 deletions(-)
-> 
-> diff --git a/tools/perf/pmu-events/jevents.py b/tools/perf/pmu-events/jevents.py
-> index 712f80d7d071..a7e88332276d 100755
-> --- a/tools/perf/pmu-events/jevents.py
-> +++ b/tools/perf/pmu-events/jevents.py
-> @@ -266,7 +266,7 @@ class JsonEvent:
->      def unit_to_pmu(unit: str) -> Optional[str]:
->        """Convert a JSON Unit to Linux PMU name."""
->        if not unit:
-> -        return 'cpu'
-> +        return 'default_core'
->        # Comment brought over from jevents.c:
->        # it's not realistic to keep adding these, we need something more scalable ...
->        table = {
-> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-> index ce4da9b1d115..f5321fbdee79 100644
-> --- a/tools/perf/tests/pmu-events.c
-> +++ b/tools/perf/tests/pmu-events.c
-> @@ -44,7 +44,7 @@ struct perf_pmu_test_pmu {
->  
->  static const struct perf_pmu_test_event bp_l1_btb_correct = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "bp_l1_btb_correct",
->  		.event = "event=0x8a",
->  		.desc = "L1 BTB Correction",
-> @@ -56,7 +56,7 @@ static const struct perf_pmu_test_event bp_l1_btb_correct = {
->  
->  static const struct perf_pmu_test_event bp_l2_btb_correct = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "bp_l2_btb_correct",
->  		.event = "event=0x8b",
->  		.desc = "L2 BTB Correction",
-> @@ -68,7 +68,7 @@ static const struct perf_pmu_test_event bp_l2_btb_correct = {
->  
->  static const struct perf_pmu_test_event segment_reg_loads_any = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "segment_reg_loads.any",
->  		.event = "event=0x6,period=200000,umask=0x80",
->  		.desc = "Number of segment register loads",
-> @@ -80,7 +80,7 @@ static const struct perf_pmu_test_event segment_reg_loads_any = {
->  
->  static const struct perf_pmu_test_event dispatch_blocked_any = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "dispatch_blocked.any",
->  		.event = "event=0x9,period=200000,umask=0x20",
->  		.desc = "Memory cluster signals to block micro-op dispatch for any reason",
-> @@ -92,7 +92,7 @@ static const struct perf_pmu_test_event dispatch_blocked_any = {
->  
->  static const struct perf_pmu_test_event eist_trans = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "eist_trans",
->  		.event = "event=0x3a,period=200000,umask=0x0",
->  		.desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
-> @@ -104,7 +104,7 @@ static const struct perf_pmu_test_event eist_trans = {
->  
->  static const struct perf_pmu_test_event l3_cache_rd = {
->  	.event = {
-> -		.pmu = "cpu",
-> +		.pmu = "default_core",
->  		.name = "l3_cache_rd",
->  		.event = "event=0x40",
->  		.desc = "L3 cache access, read",
-> @@ -391,8 +391,8 @@ static int compare_alias_to_test_event(struct pmu_event_info *alias,
->  		return -1;
->  	}
->  
+> diff --git a/lib/maple_tree.c b/lib/maple_tree.c
+> index f723024e1426..1b4b6f6e3095 100644
+> --- a/lib/maple_tree.c
+> +++ b/lib/maple_tree.c
+> @@ -4351,9 +4351,6 @@ static inline void mas_wr_modify(struct
+> ma_wr_state *wr_mas)
+>         if (new_end == wr_mas->node_end && mas_wr_slot_store(wr_mas))
+>                 return;
+>
+> -       if (mas_wr_node_store(wr_mas, new_end))
+> -               return;
 > -
-> -	if (!is_same(alias->pmu_name, test_event->event.pmu)) {
-> +	if (!is_same(alias->pmu_name, test_event->event.pmu) &&
-> +	    !is_same(alias->pmu_name, "default_core")) {
->  		pr_debug("testing aliases PMU %s: mismatched pmu_name, %s vs %s\n",
->  			  pmu_name, alias->pmu_name, test_event->event.pmu);
->  		return -1;
-> @@ -409,7 +409,7 @@ static int test__pmu_event_table_core_callback(const struct pmu_event *pe,
->  	struct perf_pmu_test_event const **test_event_table;
->  	bool found = false;
->  
-> -	if (strcmp(pe->pmu, "cpu"))
-> +	if (strcmp(pe->pmu, "default_core"))
->  		test_event_table = &uncore_events[0];
->  	else
->  		test_event_table = &core_events[0];
-> @@ -543,6 +543,7 @@ static int __test_core_pmu_event_aliases(const char *pmu_name, int *count)
->  	INIT_LIST_HEAD(&pmu->caps);
->  	INIT_LIST_HEAD(&pmu->list);
->  	pmu->name = strdup(pmu_name);
-> +	pmu->is_core = true;
->  
->  	pmu->events_table = table;
->  	pmu_add_cpu_aliases_table(pmu, table);
-> diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-> index 502fd58c3ea7..cde33e01959a 100644
-> --- a/tools/perf/util/pmu.c
-> +++ b/tools/perf/util/pmu.c
-> @@ -1747,7 +1747,12 @@ int perf_pmu__for_each_event(struct perf_pmu *pmu, bool skip_duplicate_pmus,
->  bool pmu__name_match(const struct perf_pmu *pmu, const char *pmu_name)
->  {
->  	return !strcmp(pmu->name, pmu_name) ||
-> -		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name));
-> +		(pmu->is_uncore && pmu_uncore_alias_match(pmu_name, pmu->name)) ||
-> +		/*
-> +		 * jevents and tests use default_core as a marker for any core
-> +		 * PMU as the PMU name varies across architectures.
-> +		 */
-> +	        (pmu->is_core && !strcmp(pmu_name, "default_core"));
->  }
->  
->  bool perf_pmu__is_software(const struct perf_pmu *pmu)
+>         if (mas_is_err(mas))
+>                 return;
+
+Unfortunately removing these lines does not help.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
