@@ -2,126 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBE378ECFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:24:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1994378ED02
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346222AbjHaMY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:24:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58672 "EHLO
+        id S1346231AbjHaM0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 08:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230171AbjHaMY4 (ORCPT
+        with ESMTP id S1346225AbjHaMZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:24:56 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAEEA1A4;
-        Thu, 31 Aug 2023 05:24:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id A1C2ACE20DB;
-        Thu, 31 Aug 2023 12:24:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF801C433C9;
-        Thu, 31 Aug 2023 12:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693484689;
-        bh=nXWcobST5xvZcG1UeeKu5sV7yE2+CygPSMmrLOFEf0M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Fs4kR/bSqpjFjNJTJAWL64045RYFRG42iIS580k8R3taCUkllCPBectpxgvkgmDrq
-         q+kNnLogNk65FY+JkDL79buGJga9h42YQdq8IVF/43x2EWQvKsz31BzE++C2+/xZAP
-         zHkASNL3KxS7VJR7XIkcBalnDuCnq8A+qKLP1hh67KTc0B6iImTFPz8dBReoseG2Eg
-         h6v2M96nxJiAuxEpWn3KC5k1cDU26W+ncF+3VI+DN6VlCjMfokCXRkcEDjTCuBe8aS
-         SdATOOW67qPqB25TY8LlKww7ld60C+dOXtW+oBW3opY9/NA2gF5CxVhWkIsn/HqFfz
-         4MJAM/teGorxg==
-Date:   Thu, 31 Aug 2023 13:24:44 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     John Watts <contact@jookia.org>
-Cc:     alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
+        Thu, 31 Aug 2023 08:25:59 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FB81A4
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:25:56 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37VCPW2e090521;
+        Thu, 31 Aug 2023 07:25:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693484732;
+        bh=htMuZc/z2V9h3y6JbF95s32HLoZQm0TE7Foq7+M46rM=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ANIyNH4CzVY9MVRen8utxmt7j3zKBzPl9d7/rj7kvwNRf6c/Cv4iWUTMjprxQNHe+
+         UJN60JbSb14JBWvBFLobcLmEUVfi0c7L+5b6tfVg4iollyJ92ZzfpYtpYid3ZJwnGM
+         wgfB9CnZcqDckGa6GEJezONU1A9OUaOH0/mg12D4=
+Received: from DFLE106.ent.ti.com (dfle106.ent.ti.com [10.64.6.27])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37VCPWHs017489
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 31 Aug 2023 07:25:32 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 31
+ Aug 2023 07:25:32 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 31 Aug 2023 07:25:32 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37VCPV1e018149;
+        Thu, 31 Aug 2023 07:25:31 -0500
+Date:   Thu, 31 Aug 2023 07:25:31 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Helen Mae Koike Fornazier <helen.koike@collabora.com>
+CC:     Jai Luthra <j-luthra@ti.com>, Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Maxime Ripard <mripard@kernel.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/7] sun4i-i2s: Support channel remapping
-Message-ID: <ZPCGjA9g8hVdr2Pm@finisterre.sirena.org.uk>
-References: <20230811201406.4096210-1-contact@jookia.org>
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicolas Belin <nbelin@baylibre.com>,
+        "Andy.Hsieh" <Andy.Hsieh@mediatek.com>,
+        Aradhya Bhatia <a-bhatia1@ti.com>, <devarsht@ti.com>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] drm: bridge: it66121: Fix invalid connector dereference
+Message-ID: <20230831122531.smmqt7ycupvum3gg@stereo>
+References: <20230825-it66121_edid-v1-1-3ab54923e472@ti.com>
+ <6fd4-64ecbf00-7-213b7840@157890373>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="DeugAER/HXv/4y4M"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230811201406.4096210-1-contact@jookia.org>
-X-Cookie: Give him an evasive answer.
+In-Reply-To: <6fd4-64ecbf00-7-213b7840@157890373>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16:35-20230828, Helen Mae Koike Fornazier wrote:
+> On Friday, August 25, 2023 08:02 -03, Jai Luthra <j-luthra@ti.com> wrote:
+> 
+> > Fix the NULL pointer dereference when no monitor is connected, and the
+> > sound card is opened from userspace.
+> > 
+> > Instead return an error as EDID information cannot be provided to
+> > the sound framework if there is no connector attached.
+> > 
+> > Fixes: e0fd83dbe924 ("drm: bridge: it66121: Add audio support")
+> > Reported-by: Nishanth Menon <nm@ti.com>
+> > Closes: https://lore.kernel.org/all/20230825105849.crhon42qndxqif4i@gondola/
+> > Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> 
+> Reviewed-by: Helen Koike <helen.koike@collabora.com>
 
---DeugAER/HXv/4y4M
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Sat, Aug 12, 2023 at 06:13:59AM +1000, John Watts wrote:
+Occurs on today's master: v6.5-8894-gb97d64c72259
+https://gist.github.com/nmenon/6c7166171729342ee0be7de90b65c5c6#file-v6-5-8894-gb97d64c72259-L821
 
-> First, I split up channel-dins and channel-slots. This is mainly
-> because I implemented one first but both of them only make sense
-> together. The registers themselves use a format of a byte per
-> channel with the upper nibble being the din and the lower being
-> the slot. Perhaps this is a better format to copy?
+My only complaint with the patch is - yes, it does'nt crash, but I see
+this spam on my console:
+https://gist.github.com/nmenon/6c7166171729342ee0be7de90b65c5c6#file-with-patch-on-top-L236
 
-I think this is fine.
 
-> Third, channel-slots is available on all sun4i-i2s controllers,
-> but I only have it implemented on the R329 variant for now when
-> there are multiple din pins.
-> I could add support for this on older controllers but there's not
-> really a use case for manual configuration as there's no DIN
-> and I don't have hardware to test it on.
+> 
+> > ---
+> >  drivers/gpu/drm/bridge/ite-it66121.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+> > index 466641c77fe9..d6fa00dea464 100644
+> > --- a/drivers/gpu/drm/bridge/ite-it66121.c
+> > +++ b/drivers/gpu/drm/bridge/ite-it66121.c
+> > @@ -1446,6 +1446,11 @@ static int it66121_audio_get_eld(struct device *dev, void *data,
+> >  {
+> >  	struct it66121_ctx *ctx = dev_get_drvdata(dev);
+> >  
+> > +	if (!ctx->connector) {
+> > +		dev_dbg(dev, "No connector present, cannot provide EDID data");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> >  	mutex_lock(&ctx->lock);
+> >  
+> >  	memcpy(buf, ctx->connector->eld,
+> > 
+> > ---
+> > base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+> > change-id: 20230825-it66121_edid-6ee98517808b
+> > 
+> > Best regards,
+> > -- 
+> > Jai Luthra <j-luthra@ti.com>
+> >
+> 
 
-It's fine to leave this for someone who cares about that hardware to
-implement, might be nice to add a warning if the properties are set but
-not supported but it's not essential.
-
-> Fourth, I don't limit the readable channels to the channels
-> listed. Reading more channels than you have currently results in
-> the controller assuming you want to use TDM, but that's not the
-> case here and you can have strange duplicate channels show up.
-
-It would be better to have constraints which prevent userspace doing the
-wrong thing here.
-
-> Fifth, it might be a good idea to increase the maximum channels
-> from 8 to 16, especially if people are going to be running
-> multiple TDM streams on one controller.
-
-If there's no reason not to...
-
---DeugAER/HXv/4y4M
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTwhowACgkQJNaLcl1U
-h9CjTAf9Eb9zBoEzAuUZtcuChIs4gYOvUP+KJHWZQvgZ7KMKd9UsThI0n7CTASTY
-yvJjmMWvrFRTRoW1aGyk4Vc+bBYNX+fVBlmwxcqrQtNda7MSGKlIpf/FNpGOOZEz
-h5OjmgfIsLqH0KWJKkWrdQK581QDxGXtVGaJ/gzKtKmhsKyVyGsVHYRe4mc1kn47
-dabSfrqQV1S1B3U6HhtVsZ4eF3kvxfiGkaGgyjr1Kwij5xkoAYW+HrYJf3N/lO5P
-kCl1OMYD/9HGpIZneXwp+765K5ja28fM/nXtlbwrBIyN7BlNuFXoKo1rVqWXmpQc
-9x/1s+zCXiDfKj9iX3gpEt4IrHmg1Q==
-=CYGX
------END PGP SIGNATURE-----
-
---DeugAER/HXv/4y4M--
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
