@@ -2,167 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC0DC78EC95
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EA478EC9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243683AbjHaLyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:54:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37168 "EHLO
+        id S1346143AbjHaLyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:54:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230414AbjHaLye (ORCPT
+        with ESMTP id S243781AbjHaLyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:54:34 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C68C5;
-        Thu, 31 Aug 2023 04:54:30 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 2DD14805C1;
-        Thu, 31 Aug 2023 13:54:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693482868;
-        bh=s9C/kMwJurNj9m5xf2qLpYtZKtu6ZCmIyRCq5Ip5Eqo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=p+WqBSHUPbXCvCZDLbLMtIA8KOuD0G+MMfbHjVWJtAvIsFbd3JwHtQC5jRKiBbgUW
-         mIAO/oR3hV/MkIKcbojuv5+eTqFjxzaIcT5V/yNZJX5V6fbPcbs//LptZrGtXoDP1p
-         HQvHB4IuA6759gW32sTIVt62PRt/gZ63NhUz+62hPRK5hrD9Q+MNx7Juck/BnCX0mi
-         rVh6bv5arwhtXNp1DZNtTULdzbyt/LmeIg6MnZ0fMtFzxRZRrHHQtiEk4YONiV2rdz
-         71TKbim71JgIm2d0NldvPKpCruxAv3S5JiqTFd+A27ev7nFwYhM+QLZxJkGiiyggg5
-         WHhBGtXEBU6mA==
-Date:   Thu, 31 Aug 2023 13:54:15 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Paolo Abeni <pabeni@redhat.com>
-Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
-        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>, Tristram.Ha@microchip.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
-        George McCollister <george.mccollister@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] net: dsa: hsr: Enable HSR HW offloading for
- KSZ9477
-Message-ID: <20230831135415.1dfd8c5c@wsk>
-In-Reply-To: <b6aa2a338c2a2db597415e073819a5fe6d0187a9.camel@redhat.com>
-References: <20230831111827.548118-1-lukma@denx.de>
-        <b6aa2a338c2a2db597415e073819a5fe6d0187a9.camel@redhat.com>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 31 Aug 2023 07:54:45 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5252CFF
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:54:42 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-99c93638322so141782366b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:54:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693482881; x=1694087681; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/hD9FTxJbMKacozOlk38SeaYZ8nm15TjXdv4WV8+FzQ=;
+        b=B7kaoMOkhaQEV8+d2OJLv/GMBYNhhr2mkjlrAX91TYhJYJM641006iI6xzluCknU3P
+         zEz/z/zLUJzeWErbWpkeWLuxKP7DVxgSOJNFzq49XT3NFKdumtVa1tJ4NREpzfbQ/G76
+         5kR5NgvgGyyNoKwnSciQEEywEqQhknhyKlJC6T7hdjJt97QGk9378vmKd+o+KtMzhvzw
+         vX0rnhLTd+Zv6cIprR9iJtCKWuMRuqnUyQcsSghKvBut4vbt1N8XHsxJOZC2dAFOFb3o
+         a6bzBV/mmeN2w4w9WCxaL45HlvE5MEwfMANvCQSus/L2Es757que78Rph5tRFnJ9o3k+
+         EfZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693482881; x=1694087681;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/hD9FTxJbMKacozOlk38SeaYZ8nm15TjXdv4WV8+FzQ=;
+        b=PujBo/8c/fitoz/xZzP2yCFXUucL/e9Vcyj/0QlfBIeGaC+23zXZTGqMHa/XIq/j7i
+         oJIap08pdxXQfYthF6Zh2kxN4Lwnrn/TPkSQYxrqMgN6LV8lv2SXP8Fs5G+X/bwK6Wk6
+         4uicp7zUSR4ta/x4nmTZ6m2xlIp+aOtfyHRx2ku06u4EUc042hFgGkwps3ZdZmJI+wqx
+         2fyhNxZtjvIf9jmvc0KeNbbNXELD6C8MxkNTXZgUgaXxerYpsZSA3TdDAeeHrj8MMyKE
+         0iTwwDO6Y+f/vZdvb4E0O/Yc6obwYYcZ21Pc95KovwHQH6RJXxnqkOSyHWwJdupio9wc
+         ztcA==
+X-Gm-Message-State: AOJu0YySJQlDlcU+vPehBWiGhDuDS52a/DV7xNN2bCou+ROAmdPaqtvJ
+        CiWfdfETb0m1SxEEaKjZYg6SGA==
+X-Google-Smtp-Source: AGHT+IEv7SRBdXlCmMcMYVzriOzfH5+6r/nMV6Or12OHswNkE+1axAP7Y6sSExBTWPJjO3FYpjyL4Q==
+X-Received: by 2002:a17:907:781a:b0:99c:5056:4e31 with SMTP id la26-20020a170907781a00b0099c50564e31mr3138983ejc.15.1693482881101;
+        Thu, 31 Aug 2023 04:54:41 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id k13-20020a17090646cd00b00997e00e78e6sm673645ejs.112.2023.08.31.04.54.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 04:54:40 -0700 (PDT)
+Message-ID: <728003b9-db27-fdc0-e761-197a02a38c24@linaro.org>
+Date:   Thu, 31 Aug 2023 13:54:37 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/jM9aM9xWa7OVx/m1qz5B46K";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 04/11] arm64: dts: qcom: pm7250b: make SID configurable
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Luca Weiss <luca.weiss@fairphone.com>
+Cc:     cros-qcom-dts-watchers@chromium.org,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pm@vger.kernel.org
+References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
+ <20230830-fp5-initial-v1-4-5a954519bbad@fairphone.com>
+ <b82f4683-e8b5-b424-8f7a-6d2ba1cab61f@linaro.org>
+ <CV6NF0466658.20DGU7QKF2UBR@otso>
+ <CAA8EJpr1+W3f08X-FpiiVrJ98kg52HaMwbbKn=fG15Whm4C8aQ@mail.gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAA8EJpr1+W3f08X-FpiiVrJ98kg52HaMwbbKn=fG15Whm4C8aQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/jM9aM9xWa7OVx/m1qz5B46K
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 31/08/2023 13:33, Dmitry Baryshkov wrote:
+> On Thu, 31 Aug 2023 at 13:13, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>>
+>> On Wed Aug 30, 2023 at 12:06 PM CEST, Krzysztof Kozlowski wrote:
+>>> On 30/08/2023 11:58, Luca Weiss wrote:
+>>>> Like other Qualcomm PMICs the PM7250B can be used on different addresses
+>>>> on the SPMI bus. Use similar defines like the PMK8350 to make this
+>>>> possible.
+>>>>
+>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>>> ---
+>>>>  arch/arm64/boot/dts/qcom/pm7250b.dtsi | 23 ++++++++++++++++-------
+>>>>  1 file changed, 16 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/arch/arm64/boot/dts/qcom/pm7250b.dtsi b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+>>>> index e8540c36bd99..3514de536baa 100644
+>>>> --- a/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+>>>> +++ b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
+>>>> @@ -7,6 +7,15 @@
+>>>>  #include <dt-bindings/interrupt-controller/irq.h>
+>>>>  #include <dt-bindings/spmi/spmi.h>
+>>>>
+>>>> +/* This PMIC can be configured to be at different SIDs */
+>>>> +#ifndef PM7250B_SID
+>>>> +   #define PM7250B_SID 2
+>>>> +#endif
+>>>
+>>> Why do you send the same patch as v1, without any reference to previous
+>>> discussions?
+>>>
+>>> You got here feedback already.
+>>>
+>>> https://lore.kernel.org/linux-arm-msm/f52524da-719b-790f-ad2c-0c3f313d9fe9@linaro.org/
+>>
+>> Hi Krzysztof,
+>>
+>> I did mention that original patch in the cover letter of this series.
+>> I'm definitely aware of the discussion earlier this year there but also
+>> tried to get an update lately if there's any update with no response.
+> 
+> I think the overall consensus was that my proposal is too complicated
+> for the DT files.
 
-Hi Paolo,
+I proposed to duplicate the entries. Do you keep QUP nodes in DTSI and
+customize per address? No.
 
-> On Thu, 2023-08-31 at 13:18 +0200, Lukasz Majewski wrote:
-> > This patch series provides support for HSR HW offloading in KSZ9477
-> > switch IC.
-> >=20
-> > To test this feature:
-> > ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision
-> > 45 version 1 ifconfig lan1 up;ifconfig lan2 up
-> > ifconfig hsr0 192.168.0.1 up
-> >=20
-> > To remove HSR network device:
-> > ip link del hsr0
-> >=20
-> > Test HW:
-> > Two KSZ9477-EVB boards with HSR ports set to "Port1" and "Port2".
-> >=20
-> > Performance SW used:
-> > nuttcp -S --nofork
-> > nuttcp -vv -T 60 -r 192.168.0.2
-> > nuttcp -vv -T 60 -t 192.168.0.2
-> >=20
-> > Code: v6.5-rc7 Linux repository
-> > Tested HSR v0 and v1
-> > Results:
-> > With KSZ9477 offloading support added: RX: 100 Mbps TX: 98 Mbps
-> > With no offloading 		       RX: 63 Mbps  TX: 63 Mbps
-> >=20
-> >=20
-> > Lukasz Majewski (4):
-> >   net: dsa: Extend the ksz_device structure to hold info about HSR
-> > ports net: dsa: Extend ksz9477 TAG setup to support HSR frames
-> > duplication net: dsa: hsr: Enable in KSZ9477 switch HW HSR
-> > offloading net: dsa: hsr: Provide generic HSR ksz_hsr_{join|leave}
-> > functions
-> >=20
-> >  drivers/net/dsa/microchip/ksz9477.c    | 96
-> > ++++++++++++++++++++++++++ drivers/net/dsa/microchip/ksz9477.h    |
-> >  4 ++ drivers/net/dsa/microchip/ksz_common.c | 81
-> > ++++++++++++++++++++++ drivers/net/dsa/microchip/ksz_common.h |  3 +
-> >  include/linux/dsa/ksz_common.h         |  1 +
-> >  net/dsa/tag_ksz.c                      |  5 ++
-> >  6 files changed, 190 insertions(+)
-> >  =20
-> I'm sorry, it looks like I was not clear previously.
-> ---
-> ## Form letter - net-next-closed
->=20
-> The merge window for v6.6 has begun and therefore net-next is closed
-> for new drivers, features, code refactoring and optimizations.
-> We are currently accepting bug fixes only.
->=20
-> Please repost when net-next reopens after Sept 11th.
->=20
+I definitely do not agree to these ifndef->define. Maybe using just
+define would work (so drop ifndef->define), because this makes it
+obvious and fail-safe if included in wrong place... except that it is
+still not the define we expect. This is not the coding style present in
+other DTSes.
 
-This is in fact the RFC kind of patch, as you were the only one who
-replied with feedback on it.
-
-If possible - I would like to gain as much feedback as possible until
-11.09, so this patch set could be applied then.
-
-> RFC patches sent for review only are obviously welcome at any time.
->=20
-
-Shall I send RFC again? Or is the above explanation enough to proceed
-with review?
-
-> See:
-> https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#devel=
-opment-cycle
+The true problem how these SPMI bindings were created. Requiring SID
+address in every child is clearly redundant and I think we do not follow
+such approach anywhere else.
 
 Best regards,
+Krzysztof
 
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/jM9aM9xWa7OVx/m1qz5B46K
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTwf2cACgkQAR8vZIA0
-zr0dwgf8D8mGVYVc8/LUKsa1Orc0F8I/RrqxRziPuHP8bmqquJDXCoy8szrT4o9r
-RVUSqefsOTmMNYB2V5FqCyqQbf9pjeSpssNDXLOm6qwbm+byNegHgp9e52IixBud
-nq5553wBWCfByz8PNcGwDTJ6irYbwQkKMiLQNoIfhx30OfLFscaGcKuZRFx8wEI1
-ppl7E7v3Tj0bSmgjFw20FIQ8/tvxJdIYgxCHU98a2cZCaKVNR2LB3nv7pXjZouvr
-9la2jWBQ2cYpUnqFnuvlzSyQexb5ipAtE6ADP3gd2oz+ibmytd2yEw2Bg0pjyNJI
-pwZFsk5s9fWxbMGdKBTH9L5AJ21G2A==
-=aVyX
------END PGP SIGNATURE-----
-
---Sig_/jM9aM9xWa7OVx/m1qz5B46K--
