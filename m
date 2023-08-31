@@ -2,135 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C74478F056
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:30:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A376E78F059
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237542AbjHaPaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:30:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
+        id S245192AbjHaPbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:31:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229963AbjHaPaV (ORCPT
+        with ESMTP id S229963AbjHaPbR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:30:21 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB48E4C;
-        Thu, 31 Aug 2023 08:30:18 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so17578721fa.2;
-        Thu, 31 Aug 2023 08:30:18 -0700 (PDT)
+        Thu, 31 Aug 2023 11:31:17 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C85E4C
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:31:14 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d74a012e6a6so764244276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:31:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693495817; x=1694100617; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=d5/t/HKn5nFvDJ6p71UlBWH51trAjRS5q+GK7CmmUHg=;
-        b=EQuWKBn9RH3hj5eYgh6yYzw1EpYaUcXxQ6Ts890kMEHGzJTvgteuaTHIiVTiBU1pj4
-         IvtVccj+tfURB+bTYotPw/m9sI8iLAP1rIPs86PoEQfOVwnz7fD8AEbvRk23Z80ajsvE
-         Wd79+28r+ymQjoZD5WqjuWa+uWiUAYqtDOBL+Op/PT8qMqqB/ZsYD5nHGJWiLGhScwcm
-         Yl19koN1903LnGNzkKHLYXNHjfBuc5skYH91amP3hJEa0uKG59s0VlEOIeVXCYlbws+c
-         wMOauOplam0uN56TJNK8O2T8P3mUrPnpNYddhrrEPYGWf+3hzv6Q/ohR/cBpyXZ6Qco9
-         wKwQ==
+        d=google.com; s=20221208; t=1693495874; x=1694100674; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=YYGG+XzZagKaNgC6mCifv/7D9GeC0jOA4/MyNnHVbhA=;
+        b=v7ZoRswLLJHq4g26c6qRoNEwLsfNBEtBuBpc0PFXhWDZ44RewrHh6mZZiqFB4pd+8L
+         TsSTtbxhSBUdYYNu6yCqDKMIK0oEWdXJ81rgX6oDFoWTYPxuAt3Av32AtRC6CITOZvEZ
+         AuBgpQOx8x9GtLpt+PPf2kQBB4LUPcwl5KipDXE6MJ9yY+hXPpjYeA3Sx0izAed8GEW4
+         zxY9e9leGwcWBl5cwKDXNCoc45YfGWCTu8ggqHOLHMeRqQAIdfPFw219M45JrDKJnGlk
+         lNevUM0x2j9C7w9jhTif/PO/eZqLw0J7toNvLZVBppBTLIh15CbVrfk3ba8iO0SF+v7y
+         VFng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693495817; x=1694100617;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d5/t/HKn5nFvDJ6p71UlBWH51trAjRS5q+GK7CmmUHg=;
-        b=Q3V+Jt+1xH38036SS6lfNAWdWzdYNqLBETPwERSC4nA5+2l0fcdsEjv3dkKIhTUUWE
-         2YXcTzueIR7j51mE309pUhvV6h0JAPAZpmotDyq/vdlPP7ujagqZ7wI7H+yEzOT1H3uW
-         sU+SJj+4dEZAWSsGiT/44lJof+L00WW4oEI5clga2ZIAWN0ATjk2eMI0zJAITfhp35jX
-         6mK219lRo7cGXkozwiF0aAb0MIW5Gs40uEF+h/LrmPb4j6hcVHiJeaWrRvK2pIFnflQk
-         x5/s9BxaPWNerEwGmGupN1bosvPCte2n17cu1y7cK3JLB4OK7Tckxe1kb3AdBmWQEaCM
-         hyaw==
-X-Gm-Message-State: AOJu0Yy9savNAZrA2tC2eGUv8O7AWVlMdMi9gufhrVMUrezNIizgznPF
-        FV7wsoeosBgpCdTSdfjPNgClGOyg4NApJEvEHy4=
-X-Google-Smtp-Source: AGHT+IFyyPhOC5V1BnZwlW+JcwwzIhZ0+DJeu/EMhcz2JBOv+XWrjeHI1t+NqUSXZZhK2x7t72WDhAhZYCYJmZyREJw=
-X-Received: by 2002:a2e:9889:0:b0:2b6:a08d:e142 with SMTP id
- b9-20020a2e9889000000b002b6a08de142mr4188601ljj.7.1693495816811; Thu, 31 Aug
- 2023 08:30:16 -0700 (PDT)
-MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Thu, 31 Aug 2023 10:30:05 -0500
-Message-ID: <CAH2r5mvMSeqLQkNqwrxr5Q1FpJrQ85VUkp7_c4WP0BugQfpHPg@mail.gmail.com>
-Subject: [GIT PULL] ksmb server fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Namjae Jeon <linkinjeon@kernel.org>
+        d=1e100.net; s=20221208; t=1693495874; x=1694100674;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YYGG+XzZagKaNgC6mCifv/7D9GeC0jOA4/MyNnHVbhA=;
+        b=YhIU5MAOwRNZaeQiu6+CoaBtrZWYGdH52YD6ZUflYr4akblL+XRl+aJuQhExomwaVz
+         SabCafbGpO3BNF8DFWBhlXzmQGy3C3u2DGtMQs/svXXDK6HTvdmBm97A7Mylx3C1r7SM
+         JXobXjd1FE3HV+VuZT/l3LgxNdbI6qlreVbDIi8w2jU9cVKYe080HV9wWCmSrHi/AF1G
+         LMi4wztkapP/L+uwiF8oYw9GfL3HVBeRZquvK+/djqlWeUv9slj5coL4p8MUbJyAcKpG
+         Ee0+b4Z7ZDmUX7yOg6NNc/39pN17hv/BrCplNlXY73AW81+S7fR/H1+cvB0WPYhuzAwn
+         shEQ==
+X-Gm-Message-State: AOJu0YwCNBpQFmkhPgG0iTuxd2eKdE+TK+/h1qdoUennlBV4YuHXclVE
+        1bpo1+hawVqPTPJhQ4D0F3rIS7MkpzFFLg==
+X-Google-Smtp-Source: AGHT+IEIHYQdIhGB2Ji1oeSVhSO+5aRlsotSLt3BwRj5CHDEB8OxnCqh7cVIonfM7celv0tWBDGKSJWtWjG97A==
+X-Received: from jiao.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:10f3])
+ (user=jiaozhou job=sendgmr) by 2002:a05:6902:11c9:b0:d20:7752:e384 with SMTP
+ id n9-20020a05690211c900b00d207752e384mr560ybu.3.1693495874213; Thu, 31 Aug
+ 2023 08:31:14 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 15:31:07 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+Message-ID: <20230831153108.2021554-1-jiaozhou@google.com>
+Subject: [PATCH] kernel: Add Mount Option For Efivarfs
+From:   Jiao Zhou <jiaozhou@google.com>
+To:     Linux FS Development <linux-fsdevel@vger.kernel.org>
+Cc:     Jiao Zhou <jiaozhou@google.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Jeremy Kerr <jk@ozlabs.org>, linux-efi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        kernel test robot <oliver.sang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
+Add uid and gid in efivarfs's mount option, so that
+we can mount the file system with ownership. This approach
+ is used by a number of other filesystems that don't have
+native support for ownership.
 
-  Linux 6.5 (2023-08-27 14:49:51 -0700)
+TEST=FEATURES=test emerge-reven chromeos-kernel-5_15
 
-are available in the Git repository at:
+Signed-off-by: Jiao Zhou <jiaozhou@google.com>
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202308291443.ea96ac66-oliver.sang@intel.com
+---
+ fs/efivarfs/inode.c    |  4 +++
+ fs/efivarfs/internal.h |  9 ++++++
+ fs/efivarfs/super.c    | 65 ++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 78 insertions(+)
 
-  git://git.samba.org/ksmbd.git tags/6.6-rc-ksmbd-fixes-part1
+diff --git a/fs/efivarfs/inode.c b/fs/efivarfs/inode.c
+index 939e5e242b98..de57fb6c28e1 100644
+--- a/fs/efivarfs/inode.c
++++ b/fs/efivarfs/inode.c
+@@ -20,9 +20,13 @@ struct inode *efivarfs_get_inode(struct super_block *sb,
+ 				const struct inode *dir, int mode,
+ 				dev_t dev, bool is_removable)
+ {
++	struct efivarfs_fs_info *fsi = sb->s_fs_info;
+ 	struct inode *inode = new_inode(sb);
++	struct efivarfs_mount_opts *opts = &fsi->mount_opts;
+ 
+ 	if (inode) {
++		inode->i_uid = opts->uid;
++		inode->i_gid = opts->gid;
+ 		inode->i_ino = get_next_ino();
+ 		inode->i_mode = mode;
+ 		inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
+diff --git a/fs/efivarfs/internal.h b/fs/efivarfs/internal.h
+index 30ae44cb7453..57deaf56d8e2 100644
+--- a/fs/efivarfs/internal.h
++++ b/fs/efivarfs/internal.h
+@@ -8,6 +8,15 @@
+ 
+ #include <linux/list.h>
+ 
++struct efivarfs_mount_opts {
++	kuid_t uid;
++	kgid_t gid;
++};
++
++struct efivarfs_fs_info {
++	struct efivarfs_mount_opts mount_opts;
++};
++
+ extern const struct file_operations efivarfs_file_operations;
+ extern const struct inode_operations efivarfs_dir_inode_operations;
+ extern bool efivarfs_valid_name(const char *str, int len);
+diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+index 15880a68faad..d67b0d157ff5 100644
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -8,6 +8,7 @@
+ #include <linux/efi.h>
+ #include <linux/fs.h>
+ #include <linux/fs_context.h>
++#include <linux/fs_parser.h>
+ #include <linux/module.h>
+ #include <linux/pagemap.h>
+ #include <linux/ucs2_string.h>
+@@ -23,10 +24,27 @@ static void efivarfs_evict_inode(struct inode *inode)
+ 	clear_inode(inode);
+ }
+ 
++static int efivarfs_show_options(struct seq_file *m, struct dentry *root)
++{
++	struct super_block *sb = root->d_sb;
++	struct efivarfs_fs_info *sbi = sb->s_fs_info;
++	struct efivarfs_mount_opts *opts = &sbi->mount_opts;
++
++	/* Show partition info */
++	if (!uid_eq(opts->uid, GLOBAL_ROOT_UID))
++		seq_printf(m, ",uid=%u",
++				from_kuid_munged(&init_user_ns, opts->uid));
++	if (!gid_eq(opts->gid, GLOBAL_ROOT_GID))
++		seq_printf(m, ",gid=%u",
++				from_kgid_munged(&init_user_ns, opts->gid));
++	return 0;
++}
++
+ static const struct super_operations efivarfs_ops = {
+ 	.statfs = simple_statfs,
+ 	.drop_inode = generic_delete_inode,
+ 	.evict_inode = efivarfs_evict_inode,
++	.show_options	= efivarfs_show_options,
+ };
+ 
+ /*
+@@ -190,6 +208,41 @@ static int efivarfs_destroy(struct efivar_entry *entry, void *data)
+ 	return 0;
+ }
+ 
++enum {
++	Opt_uid, Opt_gid,
++};
++
++static const struct fs_parameter_spec efivarfs_parameters[] = {
++	fsparam_u32("uid",			Opt_uid),
++	fsparam_u32("gid",			Opt_gid),
++	{},
++};
++
++static int efivarfs_parse_param(struct fs_context *fc, struct fs_parameter *param)
++{
++	struct efivarfs_fs_info *sbi = fc->s_fs_info;
++	struct efivarfs_mount_opts *opts = &sbi->mount_opts;
++	struct fs_parse_result result;
++	int opt;
++
++	opt = fs_parse(fc, efivarfs_parameters, param, &result);
++	if (opt < 0)
++		return opt;
++
++	switch (opt) {
++	case Opt_uid:
++		opts->uid = make_kuid(current_user_ns(), result.uint_32);
++		break;
++	case Opt_gid:
++		opts->gid = make_kgid(current_user_ns(), result.uint_32);
++		break;
++	default:
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
+ static int efivarfs_fill_super(struct super_block *sb, struct fs_context *fc)
+ {
+ 	struct inode *inode = NULL;
+@@ -233,10 +286,21 @@ static int efivarfs_get_tree(struct fs_context *fc)
+ 
+ static const struct fs_context_operations efivarfs_context_ops = {
+ 	.get_tree	= efivarfs_get_tree,
++	.parse_param	= efivarfs_parse_param,
+ };
+ 
+ static int efivarfs_init_fs_context(struct fs_context *fc)
+ {
++	struct efivarfs_fs_info *sfi;
++
++	sfi = kzalloc(sizeof(struct efivarfs_fs_info), GFP_KERNEL);
++	if (!sfi)
++		return -ENOMEM;
++
++	sfi->mount_opts.uid = current_uid();
++	sfi->mount_opts.gid = current_gid();
++
++	fc->s_fs_info = sfi;
+ 	fc->ops = &efivarfs_context_ops;
+ 	return 0;
+ }
+@@ -254,6 +318,7 @@ static struct file_system_type efivarfs_type = {
+ 	.name    = "efivarfs",
+ 	.init_fs_context = efivarfs_init_fs_context,
+ 	.kill_sb = efivarfs_kill_sb,
++	.parameters		= efivarfs_parameters,
+ };
+ 
+ static __init int efivarfs_init(void)
+-- 
+2.42.0.rc2.253.gd59a3bf2b4-goog
 
-for you to fetch changes up to 0e2378eaa2b3a663726cf740d4aaa8a801e2cb31:
-
-  ksmbd: add missing calling smb2_set_err_rsp() on error (2023-08-29
-12:30:20 -0500)
-
-----------------------------------------------------------------
-Ten ksmbd server fixes
-- Fix two potential overflows in decoding create and in session setup reque=
-sts
-- Three cleanup fixes
-- Two compounding fixes, including one for MacOS compounded read requests
-- Session setup error handling fix
-- Fix mode bit bug when applying force_directory_mode and force_create_mode
-- RDMA (smbdirect) write fix
-----------------------------------------------------------------
-Atte Heikkil=C3=A4 (1):
-      ksmbd: fix `force create mode' and `force directory mode'
-
-Namjae Jeon (7):
-      ksmbd: add support for read compound
-      ksmbd: fix wrong interim response on compound
-      ksmbd: reduce descriptor size if remaining bytes is less than request=
- size
-      ksmbd: fix wrong DataOffset validation of create context
-      ksmbd: fix slub overflow in ksmbd_decode_ntlmssp_auth_blob()
-      ksmbd: replace one-element array with flex-array member in
-struct smb2_ea_info
-      ksmbd: add missing calling smb2_set_err_rsp() on error
-
-Yang Li (1):
-      ksmbd: Fix one kernel-doc comment
-
-Yang Yingliang (1):
-      ksmbd: switch to use kmemdup_nul() helper
-
- fs/smb/server/asn1.c              |   4 +-
- fs/smb/server/auth.c              |  14 +-
- fs/smb/server/connection.c        |  55 ++--
- fs/smb/server/connection.h        |   2 +-
- fs/smb/server/ksmbd_work.c        |  93 ++++++-
- fs/smb/server/ksmbd_work.h        |  34 ++-
- fs/smb/server/mgmt/share_config.h |  29 +--
- fs/smb/server/oplock.c            |  31 +--
- fs/smb/server/server.c            |   8 +-
- fs/smb/server/smb2pdu.c           | 527 +++++++++++++++++-----------------=
-----
- fs/smb/server/smb2pdu.h           |   2 +-
- fs/smb/server/smb_common.c        |  13 +-
- fs/smb/server/transport_rdma.c    |  29 ++-
- fs/smb/server/vfs.c               |   4 +-
- fs/smb/server/vfs.h               |   4 +-
- 15 files changed, 432 insertions(+), 417 deletions(-)
-
-
---=20
-Thanks,
-
-Steve
