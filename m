@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A644178EBE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B737678EBE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:22:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346066AbjHaLUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43138 "EHLO
+        id S238498AbjHaLWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:22:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231882AbjHaLUu (ORCPT
+        with ESMTP id S230223AbjHaLWh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:20:50 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1BE4E4C;
-        Thu, 31 Aug 2023 04:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=7XFdGYMDNVSq8CV1JzaT+3F2PZ/VizVU8Z8a8zgCGPo=; b=zDW8azAAIuKKg48t8Mi7GqHGvY
-        Clz5Gwzm2v1bLMpZSI66ouPq9ds69t80FrLoDwja566j4PE5jzZO19NnieBxUOxHXPjyeJx2aYrNQ
-        kyVhojBLd/Urr+Svbj96r+OsNAPQ8oxZ0u/V96wz7mcmlGh9kqPMfXLI8SP97fyo1J5Fd2bGwm074
-        NFaFU0vI7dk9QC5xb+VGdcLIt7g4xj91+THiJds4wdv0qyRrMDorGnvIxaLNsCMX5jMBzDEcPvOIE
-        0GCY2kgWNaxNikXGGMQ4zw8IFhuz3m6HNvfQY8lS+JbvgtoaoPlvJcvj1t/i/L7hJvkBRHlW8OBRc
-        JrW1eviQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:55220)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qbfij-0002kB-22;
-        Thu, 31 Aug 2023 12:20:17 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qbfij-0006kS-CR; Thu, 31 Aug 2023 12:20:17 +0100
-Date:   Thu, 31 Aug 2023 12:20:17 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Lukasz Majewski <lukma@denx.de>
-Subject: Re: [PATCH net v1] net: phy: micrel: Correct bit assignment for
- MICREL_KSZ8_P1_ERRATA flag
-Message-ID: <ZPB3cYMnFq1qGRv0@shell.armlinux.org.uk>
-References: <20230831110427.3551432-1-o.rempel@pengutronix.de>
+        Thu, 31 Aug 2023 07:22:37 -0400
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1369DCF3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:22:35 -0700 (PDT)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-271cf74f2a2so839104a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:22:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693480954; x=1694085754;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=C47g7eG4Z3NHn1IyTXipothfao1p4iMkSkhWe9h0jN4=;
+        b=dT1+KgvFb5naO8Eb1zvh5L9agf/F28qWD51NulW/ymh7zSQUD7JbfFS9Abn/Dl8xnV
+         qwNIf+3TDgJ4hAhv+VTzxevJsSsyp2auQ0nU9Hf2JoDrFXw/hcO9fWURTSBszcC8hNsM
+         xWjljFZymVmCdEBOBgFjjol7OYolOaqITzOa3sNtRsUf9+pwoiOxBPAP+pTZU0dPTx7d
+         z++UkjsCOsiZHhxFR/EMYk/rXAk9jtZ2mObWsoAW6f08gc9pthWf9yw/iaNOE+MjHnJb
+         t6V6FobadQlgl/4L5MWofLE68CDAlCYydaeQ5cOjIKzfEIgNOSxAxTyuw83YsEbmWOtQ
+         B0Nw==
+X-Gm-Message-State: AOJu0YyCapKQRBrxS9s5TUHWvuDD7XpS7vr8GdgFz7tg/xKoYUeshP4y
+        ULmd2caG0zcrBo0kFyZyKcU3KaEQYMr6AXxnnYsdr4dnCsiV
+X-Google-Smtp-Source: AGHT+IFe3NYFjS6LyOenVJEo4KugpG2QAoLO3/wzDMU8O8jVaY1yPphhTpJmw44tyo7xp4Zg4YKUSR8dSD+sV3h1rMI1BKPJfxYK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230831110427.3551432-1-o.rempel@pengutronix.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:d18a:b0:262:ffae:56cf with SMTP id
+ fu10-20020a17090ad18a00b00262ffae56cfmr804890pjb.8.1693480954656; Thu, 31 Aug
+ 2023 04:22:34 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 04:22:34 -0700
+In-Reply-To: <20230831105150.4549-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bc839e060436421f@google.com>
+Subject: Re: [syzbot] [kernel?] general protection fault in netdev_register_kobject
+From:   syzbot <syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 01:04:27PM +0200, Oleksij Rempel wrote:
-> The previous assignment of the phy_device quirk for the
-> MICREL_KSZ8_P1_ERRATA flag was incorrect, working only due to
-> coincidental conditions. Specifically:
-> 
-> - The flag MICREL_KSZ8_P1_ERRATA, intended for KSZ88xx switches, was
->   mistakenly overlapping with the MICREL_PHY_FXEN and
->   MICREL_PHY_50MHZ_CLK flags.
-> - MICREL_PHY_FXEN is used by the KSZ8041 PHY, and its related code path
->   wasn't executed for KSZ88xx PHYs and other way around.
-> - Additionally, the code path associated with the MICREL_PHY_50MHZ_CLK
->   flag wasn't executed for KSZ88xx either.
-> 
-> Fixes: 49011e0c1555d ("net: phy: micrel: ksz886x/ksz8081: add cabletest support")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  include/linux/micrel_phy.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
-> index 8bef1ab62bba3..0cedbeb9167c3 100644
-> --- a/include/linux/micrel_phy.h
-> +++ b/include/linux/micrel_phy.h
-> @@ -43,7 +43,7 @@
->  /* struct phy_device dev_flags definitions */
->  #define MICREL_PHY_50MHZ_CLK	0x00000001
->  #define MICREL_PHY_FXEN		0x00000002
-> -#define MICREL_KSZ8_P1_ERRATA	0x00000003
-> +#define MICREL_KSZ8_P1_ERRATA	BIT(3)
+Hello,
 
-Please can you also convert the other two flags to use BIT() as well to
-make the entire thing explicitly bit-orientated? Thanks.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Reported-and-tested-by: syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         a47fc304 Add linux-next specific files for 20230831
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1716e99fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8294f0401243efe1
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2c31705e468a347e6db
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10a4e470680000
+
+Note: testing is done by a robot and is best-effort only.
