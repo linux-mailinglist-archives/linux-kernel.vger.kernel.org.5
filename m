@@ -2,89 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D20EC78F55B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9F078F55E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347677AbjHaWXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 18:23:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47018 "EHLO
+        id S1344938AbjHaW0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 18:26:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241654AbjHaWXG (ORCPT
+        with ESMTP id S230300AbjHaW0g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 18:23:06 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B1CFB5
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:23:03 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D61902C018A;
-        Fri,  1 Sep 2023 10:22:59 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1693520579;
-        bh=/Dx9lwBhy7aLn3yNxBpIYSI7vTIkWfYBZyHu+D8I5M8=;
-        h=From:To:Subject:Date:From;
-        b=EnxK2b6UIet75kObHtdvsm9EvqA8L+pXEwFeGoZoEaWXKWpD9S50RQzd2OYSvdmP0
-         IEqHuuW2VW5aMwHiWSJbgIBtb9lfqQ2HNUvFWxG07f0v4JOATbrY66tqt1JycMhWv4
-         qYig5l8noFlHiXHag3mxaxBOlaMt/UuvhArPwAlMxZHhzqxnysj+Cmtgd4aCSj+COm
-         LW0pK6EcVtq8NTm4DImx/soEITqkSJct58QtOC6LGDh2NLeKNTCnIejhDa1azkoq74
-         o0vqM0qGq60ZoiOGFngLsh/gXYKGJc5phx6VoBtaQ1HYbfjh+wUNw+Bur+yECGqP3d
-         JcJId7SpT/0vg==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B64f112c30001>; Fri, 01 Sep 2023 10:22:59 +1200
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8:f753:6de:11c0:a008) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 1 Sep 2023 10:22:59 +1200
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.037; Fri, 1 Sep 2023 10:22:59 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kbuild@vger.kernel.org" <linux-kbuild@vger.kernel.org>
-Subject: Build failures for specific .dtb file on v6.5
-Thread-Topic: Build failures for specific .dtb file on v6.5
-Thread-Index: AQHZ3FmyiwelnZWiQk+WOldARXNLsg==
-Date:   Thu, 31 Aug 2023 22:22:59 +0000
-Message-ID: <d76d5ea3-6e6b-4899-b125-1166d86ff359@alliedtelesis.co.nz>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.33.22.30]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D57420C9C24981468E7738D0878046CB@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Thu, 31 Aug 2023 18:26:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71F31B5;
+        Thu, 31 Aug 2023 15:26:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693520793; x=1725056793;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=unM5k75mL0PN6hQnk5H25AHrLOCYujwuZsO9n7FmSrE=;
+  b=ixeU39XNIT9mpxAkEti1Bvlln2Ir3eHzP/9/Rh3FOZJIft7XMuld+k9b
+   ax8eLdvM3bZJVJSd3J4DwcQkBeQ7R+e50vjAGoNsmdiGfdzRRSXRM0Ryg
+   sPE55nOs6otZhyowIW2IyVXCtiRto6kPnYLetT8dZsjHL3ashLUKqzNqG
+   Xd3na2AVX768soTwJ8Pu6qwvtQquSlmoGJ/Tx6OdiKEwx1Z3JmqT+xD5G
+   l0CsrDOfIodcC6V1QGQizwcX7l4RKMCfBxTuk7Cl5kV9ntKeOOh84SHIJ
+   ogo90btl/in6+sqAGa8CQd6M/1UDlh8rzRs9dZfKhAVjO0ErLFySNRh/r
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="378813954"
+X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
+   d="scan'208";a="378813954"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 15:26:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="854457434"
+X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
+   d="scan'208";a="854457434"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 31 Aug 2023 15:26:30 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 151EA3B5; Fri,  1 Sep 2023 01:26:28 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] serial: 8250_port: Check IRQ data before use
+Date:   Fri,  1 Sep 2023 01:25:55 +0300
+Message-Id: <20230831222555.614426-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=fYfTNHYF c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=75chYTbOgJ0A:10 a=IkcTkHD0fZMA:10 a=zNV7Rl7Rt7sA:10 a=W0Rc6id6NaKoFi5Yx2MA:9 a=QEXdDO2ut3YA:10 a=zZCYzV9kfG8A:10
-X-SEG-SpamProfiler-Score: 0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCkluIGVhcmxpZXIga2VybmVsIHZlcnNpb25zIChqdXN0IHJlY29uZmlybWVkIG9uIHY2
-LjQpIEkgY2FuIGRvDQoNCiDCoCBtYWtlIEFSQ0g9YXJtIE89YnVpbGQgbXVsdGlfdjdfZGVmY29u
-ZmlnDQogwqAgbWFrZSBBUkNIPWFybSBPPWJ1aWxkIGFybWFkYS14cC1kYi1keGJjMi5kdGINCg0K
-YW5kIHRoYXQgb25lIHNwZWNpZmljIC5kdGIgZmlsZSB3aWxsIGJlIGdlbmVyYXRlZC4NCg0KV2l0
-aCB2Ni41IChhbmQgbWFzdGVyLCBjdXJyZW50bHkgODdkZmQ4NWMzODkyKcKgIEkgZ2V0IHRoZSBm
-b2xsb3dpbmcgZXJyb3INCg0KIMKgIG1ha2UgQVJDSD1hcm0gTz1idWlsZCBtdWx0aV92N19kZWZj
-b25maWcNCiDCoCBtYWtlIEFSQ0g9YXJtIE89YnVpbGQgYXJtYWRhLXhwLWRiLWR4YmMyLmR0Yg0K
-IMKgIC4uLg0KIMKgIG1ha2VbM106ICoqKiBObyBydWxlIHRvIG1ha2UgdGFyZ2V0IA0KJ2FyY2gv
-YXJtL2Jvb3QvZHRzL2FybWFkYS14cC1kYi1keGJjMi5kdGInLsKgIFN0b3AuDQogwqAgbWFrZVsy
-XTogKioqIFtzcmMvbGludXgvTWFrZWZpbGU6MTQ2OTogYXJtYWRhLXhwLWRiLWR4YmMyLmR0Yl0g
-RXJyb3IgMg0KIMKgIG1ha2VbMV06ICoqKiBbc3JjL2xpbnV4L01ha2VmaWxlOjIzNDogX19zdWIt
-bWFrZV0gRXJyb3IgMg0KIMKgIG1ha2VbMV06IExlYXZpbmcgZGlyZWN0b3J5ICdzcmMvbGludXgv
-YnVpbGQnDQogwqAgbWFrZTogKioqIFtNYWtlZmlsZToyMzQ6IF9fc3ViLW1ha2VdIEVycm9yIDIN
-Cg0KSSB3YXNuJ3QgZW50aXJlbHkgc3VyZSB3aGljaCBtYWlsaW5nIGxpc3QgdG8gZGlyZWN0IHRo
-aXMgYXQgc28gSSd2ZSBjYXN0IA0KdGhlIG5ldCBmYWlybHkgd2lkZS4gSSdsbCB0cnkgdG8gc2V0
-dXAgYW4gYXV0b21hdGVkIGJpc2VjdCBhbmQgcmVwb3J0IA0KYmFjayBpZiBJIG5hcnJvdyB0aGUg
-cHJvYmxlbSBkb3duLg0KDQpUaGFua3MsDQpDaHJpcw0K
+In case the leaf driver wants to use IRQ polling (irq = 0) and
+IIR register shows that an interrupt happened in the 8250 hardware
+the IRQ data can be NULL. In such a case we need to skip the wake
+event as we came to this path from the timer interrupt and quite
+likely system is already awake.
+
+Without this fix we have got an Oops:
+
+    serial8250: ttyS0 at I/O 0x3f8 (irq = 0, base_baud = 115200) is a 16550A
+    ...
+    BUG: kernel NULL pointer dereference, address: 0000000000000010
+    RIP: 0010:serial8250_handle_irq+0x7c/0x240
+    Call Trace:
+     ? serial8250_handle_irq+0x7c/0x240
+     ? __pfx_serial8250_timeout+0x10/0x10
+
+Fixes: 0ba9e3a13c6a ("serial: 8250: Add missing wakeup event reporting")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/tty/serial/8250/8250_port.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index fb891b67968f..141627370aab 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -1936,7 +1936,10 @@ int serial8250_handle_irq(struct uart_port *port, unsigned int iir)
+ 		skip_rx = true;
+ 
+ 	if (status & (UART_LSR_DR | UART_LSR_BI) && !skip_rx) {
+-		if (irqd_is_wakeup_set(irq_get_irq_data(port->irq)))
++		struct irq_data *d;
++
++		d = irq_get_irq_data(port->irq);
++		if (d && irqd_is_wakeup_set(d))
+ 			pm_wakeup_event(tport->tty->dev, 0);
+ 		if (!up->dma || handle_rx_dma(up, iir))
+ 			status = serial8250_rx_chars(up, status);
+-- 
+2.40.0.1.gaa8946217a0b
+
