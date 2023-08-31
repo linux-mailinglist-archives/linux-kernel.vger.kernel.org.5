@@ -2,85 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6226878EFCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB5D78EFD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:56:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346462AbjHaOyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
+        id S1346464AbjHaO4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229445AbjHaOyM (ORCPT
+        with ESMTP id S229445AbjHaO4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:54:12 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC6501B1;
-        Thu, 31 Aug 2023 07:54:09 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1bdbf10333bso7180355ad.1;
-        Thu, 31 Aug 2023 07:54:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693493649; x=1694098449; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=tEC87zX549E+U9vV1oszlAIcg0x95pSsoYr9+gGAPGg=;
-        b=DLesYJFQ2BdGuLLLc9ejRsO2gbpVoFY51bT5OLiF0KQHs9irBRL0m91JokUiFLfiVv
-         Z71cnX6z2q0VNibLBGVPcibVZrZex+X0JneeTQy5QSZfXSa+9GjGtx75ggwuGh2Wpkpt
-         B0qWIAnHoFsE46q38HfIlqZP7c6OAF/WaroUs9mYrfwBqCq06brdBYovmC3S/Pzxy8Ru
-         yZmxb3EZYy/KfahuiqiMG0bn4LrFXQQT9cLbP/foebzBCN3AE8FFCKFttxHUtzboRLRp
-         SRBROBqcPVT78IQorM+i0L5LYyXjV/PGsS5qLC9fuDTEXGdOqJBGl0wjbIVPwg9ZEmR+
-         rBdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693493649; x=1694098449;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tEC87zX549E+U9vV1oszlAIcg0x95pSsoYr9+gGAPGg=;
-        b=cktPdbdZN1FgqvIcJ/WhJqHmXPpXkSWhJEAQLU3zYk5FPNq3oN9yS1RG7g21foRQ3Q
-         HzoL5Zsqwrw2stBKPRZ9UcdrqcJwyKM/pWMxwTQJFqDRYhshKUIWvjID1P308MT0CpVZ
-         wMdN40i3b9ALxl0GpSYhVR3XN/8qV9L9SV3srBGLAAtoLsWPbf5aQ/kGhc4Z3dj4O3mP
-         JuSNEM1kyLtYNbDk9ygE5LPV4Rrc6+7YrSgMyl5Zz5xIa9ae/9iw4NW5sLzqOVDVzOVq
-         WO2c3VpG4puF2Y+GNjkj4Obd2xRqfibPr0Z82k/gEO2NwkK1KFkTj45IIvqlCJoatR62
-         jFhA==
-X-Gm-Message-State: AOJu0Yw8c37kZDTWU8eaeefThXEt0D8A+Lla9cxcjIuCFAbbZBW72TF8
-        2Yu38x4b27kEYTda1WQbgGQ=
-X-Google-Smtp-Source: AGHT+IFif2uVPz+tA6oL7Hzvt2UjKSQ9canwj2E14FUfSGqTe6utdnK5JoLTrBnjrZkAGA3TVO+A1g==
-X-Received: by 2002:a17:903:11c5:b0:1bb:c06e:647a with SMTP id q5-20020a17090311c500b001bbc06e647amr5915734plh.53.1693493649066;
-        Thu, 31 Aug 2023 07:54:09 -0700 (PDT)
-Received: from ?IPV6:2600:8802:b00:4a48:f5ca:eebd:7e8f:7734? ([2600:8802:b00:4a48:f5ca:eebd:7e8f:7734])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902c24d00b001bb1f0605b2sm1357534plg.214.2023.08.31.07.54.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 07:54:08 -0700 (PDT)
-Message-ID: <4a69c0c0-5e8a-9a3a-6527-3eb7e51a955e@gmail.com>
-Date:   Thu, 31 Aug 2023 07:54:06 -0700
+        Thu, 31 Aug 2023 10:56:19 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70D121B1;
+        Thu, 31 Aug 2023 07:56:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C9A74B8231B;
+        Thu, 31 Aug 2023 14:56:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8ECF3C433C9;
+        Thu, 31 Aug 2023 14:56:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693493772;
+        bh=jmlOubIGHQ2DoRnY5MFlnRc2j08gG6fBV336tJEzh8U=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hWprHtsQI7WZikkrJejUZg3tc6n8Q49en1IuK9JtjI53EVBLt7vQVj79edr/S1ulv
+         3eV++NJEQ1VFI3HK7pS7VjeGG6A1uabs/ftvTFqPi0N1di0T3ih/98oPIZDvUGy1yq
+         6bXG6Wg/8PhQranPaJqqwPBD7+suGDJdBjiETLKXymNg5+mDzNFbjez1rfpAmK9luk
+         B0UfrY023ETuOd9sRlVLY3B6L7TCz2z4PqE+IvaXzHlFlMQd3tJ0E0oK9q6dVg5XbM
+         XMClDNHuYZN/sChnTTP5s8ZLjOIztcqyOAWoWaToRg8IZRLCIGCdjqYzOVKHOqreuP
+         +9ro3zIQmqhhQ==
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3a76d882052so537519b6e.0;
+        Thu, 31 Aug 2023 07:56:12 -0700 (PDT)
+X-Gm-Message-State: AOJu0YwjfyXbE9TupBXFiQx76DyjKlpKpYRumBJKkrZnyj3grnEV9YIt
+        mQmKbuXNyP3OplwHJFEN8vnSjsqTtGv94yQsLtQ=
+X-Google-Smtp-Source: AGHT+IG0gmsy4bGiM7pim2MyZEqgCQbnAIeucX3NGRgcSk52LqF6L3rjKgAP+jrG25Z2Ph7RZm0WUxsLixhQAtQhvc0=
+X-Received: by 2002:a05:6808:30a1:b0:3a8:f3e7:d696 with SMTP id
+ bl33-20020a05680830a100b003a8f3e7d696mr5583040oib.45.1693493771789; Thu, 31
+ Aug 2023 07:56:11 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 5.10 00/84] 5.10.193-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Manuel Lauss <manuel.lauss@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        stable <stable@vger.kernel.org>, patches@lists.linux.dev,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org,
-        Pavel Machek <pavel@denx.de>, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <20230828101149.146126827@linuxfoundation.org>
- <5b30ff73-46cb-1d1e-3823-f175dbfbd91b@roeck-us.net>
- <2023083014-barley-upscale-518e@gregkh>
- <64374066-4086-3e92-8650-ab1563350f0c@roeck-us.net>
- <95baa835-9940-a257-cf96-93c543aa389f@gmail.com>
- <CAOLZvyEuj=93tpObwDgyAK01Jyz8NfXQzJfAX5=vVwG1wxo-cA@mail.gmail.com>
- <2023083138-frustrate-race-9264@gregkh>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <2023083138-frustrate-race-9264@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+References: <CAGXv+5EU-qvTee1f0kicZA-er2Li=EcV0zWdOGUPoqdOxi69vw@mail.gmail.com>
+In-Reply-To: <CAGXv+5EU-qvTee1f0kicZA-er2Li=EcV0zWdOGUPoqdOxi69vw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 31 Aug 2023 23:55:35 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ58pnnk-XThrnJEhL72HUEXo-CFScYdt+yx_PrWqcRTA@mail.gmail.com>
+Message-ID: <CAK7LNAQ58pnnk-XThrnJEhL72HUEXo-CFScYdt+yx_PrWqcRTA@mail.gmail.com>
+Subject: Re: make -jN modules_install breakage in next-20230831
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -89,61 +66,169 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 31, 2023 at 5:59=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org> w=
+rote:
+>
+> Hi,
+>
+> I observed some breakage with `make -jN moudles_install`. The scripts pro=
+duce
+> some bogus paths, which `cp` then complains it can't find.
+>
+> I run the following for my workflow.
+>
+>   $ nice -n 10 sh -c "make -j72 Image.lzma dtbs && ./pack-mod.sh && cb/si=
+gn.sh"
+>
+> pack-mod.sh is what fails. It basically does:
+>
+>     make -j72 modules
+>     make -j72 modules_install INSTALL_MOD_PATH=3D${TMPDIR}
+>     depmod ...
+>     tar ...
+>     cleanup
+>
+> I get errors like the following:
+>
+>
+>   CALL    scripts/checksyscalls.sh
+>   CALL    scripts/checksyscalls.sh
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/arch/arm64/crypto/sha1-ce.ko
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/arch/arm64/crypto/chacha-neon.ko
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/arch/arm64/crypto/poly1305-neon.ko
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/kernel/time/test_udelay.ko
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/kernel/configs.ko
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/fs/nfs_common/grace.ko
+> cp: cannot create regular file
+> 'tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty=
+/kernel/kernel/time/test_udelay.ko':
+> No such file or directory
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/fs/nls/nls_cp437.ko
+> make[2]: *** [scripts/Makefile.modinst:127:
+> tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty/=
+kernel/kernel/time/test_udelay.ko]
+> Error 1
+> make[2]: *** Waiting for unfinished jobs....
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/fs/nls/nls_ascii.ko
+> cp: cannot create regular file
+> 'tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty=
+/kernel/kernel/configs.ko':
+> No such file or directory
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/fs/nls/nls_iso8859-1.ko
+>   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189=
+478-dirty/kernel/fs/nls/nls_utf8.ko
+> make[2]: *** [scripts/Makefile.modinst:128:
+> tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirty/=
+kernel/kernel/configs.ko]
+> Error 1
+> make[1]: *** [/usr/local/google/home/wenst/linux/mtk/Makefile:1822:
+> modules_install] Error 2
+> make: *** [Makefile:234: __sub-make] Error 2
+>
+>
+> Note the duplicate "kernel/" in the path for test_udelay.ko and configs.k=
+o.
 
 
-On 8/31/2023 3:31 AM, Greg Kroah-Hartman wrote:
-> On Wed, Aug 30, 2023 at 07:38:09PM +0200, Manuel Lauss wrote:
->> Hello all,
->>
->> Florian Fainelli <f.fainelli@gmail.com> schrieb am Mi., 30. Aug. 2023, 19:07:
->>>
->>> + Manuel,
->>>
->>> On 8/30/23 09:01, Guenter Roeck wrote:
->>>> On 8/30/23 03:52, Greg Kroah-Hartman wrote:
->>>>> On Mon, Aug 28, 2023 at 09:42:11AM -0700, Guenter Roeck wrote:
->>>>>> On 8/28/23 03:13, Greg Kroah-Hartman wrote:
->>>>>>> This is the start of the stable review cycle for the 5.10.193 release.
->>>>>>> There are 84 patches in this series, all will be posted as a response
->>>>>>> to this one.  If anyone has any issues with these being applied, please
->>>>>>> let me know.
->>>>>>>
->>>>>>> Responses should be made by Wed, 30 Aug 2023 10:11:30 +0000.
->>>>>>> Anything received after that time might be too late.
->>>>>>>
->>>>>>
->>>>>> FWIW, commit 619672bf2d04 ("MIPS: Alchemy: fix dbdma2") should be
->>>>>> reverted
->>>>>> v5.10.y since it doesn't fix anything but breaks the build for
->>>>>> affected boards
->>>>>> completely.
->>>>>>
->>>>>> arch/mips/alchemy/common/dbdma.c: In function 'au1xxx_dbdma_put_source':
->>>>>> arch/mips/alchemy/common/dbdma.c:632:14: error:
->>>>>> 'dma_default_coherent' undeclared
->>>>>>
->>>>>> There is no 'dma_default_coherent' in v5.10.y.
->>>>>
->>>>> But that was added in 5.10.185, from back in June.  What changed to
->>>>> suddenly cause this to fail now?
->>>>>
->>>>
->>>> Nothing. I started to build this configuration and tracked down the
->>>> problem after the build failure was reported by others. Sorry, I didn't
->>>> initially realize that this is an old problem.
->>>
->>> We could back port 6d4e9a8efe3d59f31367d79e970c2f328da139a4 ("driver
->>> core: lift dma_default_coherent into common code") but that won't work
->>> too well on 4.14 or 4.19. I believe it would be simpler to adjust the
->>> branches with this patch, Manuel does that work?
->>
->> Please drop this patch from all stable releases. I didn't CC stable
->> when I submitted it,
->> and have no idea why it ended up there anyway.
->> It was intended to fix a problem initially found in 5.18 (I think).
-> 
-> I'm going to revert it now, thanks!
 
-I prepared reverts yesterday that I can send out if you want?
--- 
-Florian
+The paths to test_udelay.ko and configs.ko look quite normal to me.
+
+"kernel/kernel/" is correct.
+
+
+The first "kernel/" means in-tree modules.
+
+All in-tree modules are installed
+under /lib/modules/<ver>/kernel/,
+while external modules are installed
+under /lib/modules/<ver>/updates/.
+
+
+The second "kernel/" is the directory in the source tree.
+
+
+
+I cannot reproduce the error.
+
+
+
+
+But, indeed. Your installation log looks weird overall.
+No idea what is happening in your case.
+
+
+If you add V=3D1, Kbuild will show more logs, and we may get more hints.
+
+  make V=3D1 -j72 modules_install INSTALL_MOD_PATH=3D${TMPDIR}
+
+
+
+
+
+
+BTW, you are not testing linux-next, right?
+
+
+The commit hash of next-20230831 is a47fc304d2b678db1a5d760a7d644dac9b06775=
+2
+
+
+
+commit a47fc304d2b678db1a5d760a7d644dac9b067752 (HEAD, tag:
+next-20230831, origin/master, origin/HEAD)
+Author: Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Thu Aug 31 13:54:04 2023 +1000
+
+    Add linux-next specific files for 20230831
+
+    Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
+
+
+
+
+
+
+Apparently, your version
+"6.5.0-next-20230831-13697-g09d3bd189478-dirty" is different.
+
+
+I cannot find commit 09d3bd189478.
+And, it seems a lot of local patches applied on top.
+
+
+
+
+
+Next time, please send repro steps for linux-next.
+
+
+
+
+
+
+
+>
+> If I revert commit 3ee3181f8721 ("Merge branch 'for-next' of
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git"=
+),
+> then everything works again. Not sure which commit is to blame though.
+>
+>
+> Regards
+> ChenYu
+
+
+
+--
+Best Regards
+
+Masahiro Yamada
