@@ -2,140 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9422278E688
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:30:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C265578E68E
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344047AbjHaGaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 02:30:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49914 "EHLO
+        id S1344492AbjHaGba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 02:31:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjHaGaE (ORCPT
+        with ESMTP id S232908AbjHaGb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 02:30:04 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E11A4
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:30:01 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso503606a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:30:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693463400; x=1694068200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WUwBGHC5VsjZQFl8xxzGqyyCgwF3lKTjHm0TdmJHFiA=;
-        b=haFc70tGz3VgZ/nhUm0F9/wqvr9YwKYVE0PC7hJK8YXRxAcfCKLRtx+AzGfRgStgpp
-         uSuxjo0NICpUAQXzeZxY/6cvqNxDngM+yPCMERv6RZBCfNqGTzrwhBiXokjN4O6XUe09
-         xdQYBLZi5ZwaWnrzKO7rgFi/GN9hdqJ+wCaKodt8xcVJyGbO614xxJI2XHkLXJuud+/4
-         gJT733sABLNzldLyINzRgRngdDREBVQnPO0yayVN4uZfvqSkqVfRzaPrBFziEZidG9wd
-         c7SYk5UJKY3L4HQ6wa0CkxfvEYup88HVxMQQS3U4xPE9jssDY7i0bqnZrRocB29ofpm4
-         AplQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693463400; x=1694068200;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WUwBGHC5VsjZQFl8xxzGqyyCgwF3lKTjHm0TdmJHFiA=;
-        b=OFupceNO26DvD0ckUsxl9+oVG+wBNHsmkBOIghFhPoo+cNK+EWgq3RZLyvVtdBYxCk
-         QQ5ZAJuZpXrfH+fDSz5wXYDLIH0fNpznKdTRyMzxyTNgH9yb6nJAhC/mEKMpIBcwrdcE
-         HrPeyoEox723lE9cMNzs1Rvrx41XWqDrAuFZS5bZur1Zap8Kpyy55UoxiAZ80+NYSVcs
-         cPZuLfj+yyqiqqk5DZk7cUMHGuIPKYDAWueJEaz+WT2nAmAqB8ZKw7pFwSWt1UuHx1Ks
-         O4Ab6TpbSCv8d0O6y9tpBJxMHy1L+s0b384ACglY1Pil8Kgjo/ZvW2tDcp310SaH0cFx
-         BAjA==
-X-Gm-Message-State: AOJu0YwFc5iov6fRoHDulFUTkaGAa29BOYomh4ZiJzPzqZT5I/UIY6oT
-        /W3yCgBLoTpLNOo4z3WVOKBoOg==
-X-Google-Smtp-Source: AGHT+IHp2w3tyUGuLVWtNA64xNLW9YemH8IoPOq4F/4imyApmLAKS8Dl+HuDQigZxMGX0xl+6mldEA==
-X-Received: by 2002:aa7:d7cf:0:b0:523:2df6:396a with SMTP id e15-20020aa7d7cf000000b005232df6396amr3637022eds.37.1693463399750;
-        Wed, 30 Aug 2023 23:29:59 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id l26-20020a056402125a00b00525c01f91b0sm405241edw.42.2023.08.30.23.29.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 23:29:59 -0700 (PDT)
-Message-ID: <cea3472a-e9f7-39cb-419c-d042b3bf0682@linaro.org>
-Date:   Thu, 31 Aug 2023 08:29:57 +0200
-MIME-Version: 1.0
+        Thu, 31 Aug 2023 02:31:29 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2054.outbound.protection.outlook.com [40.107.95.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DB2A4
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:31:26 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bAPAal8mCHwyWCH17FphX/7v7jVJgUb5WibwLo+C99t6ZmQPQokiskwxzQJykZO9nysOmg1k3rGczIubGo7I4VlSX3pLX4kIv3cSncALuXBXZJLUd+MWvfW5r6G03sMeIr3FXTlNDsDvvrMAtG7wWuwSlGs4+7iM4XDjH3A9mrG++EUgBwtDDoN2srrdmVmFsH/sQ91z3vYdlRNNNOsqsTlercf+DP4dB4bhpSZesOw1m0g1oLmUy4Hsp72vAR+mCMXuEBrp2sL0qnAnm5L5x5+E6A1Az//Xk3rDbC6evbx9WN9n8qMwTE19puouKpEybMEZYqdVsNBPtsWoSY+Z0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LRnwTB6e4UprRvmIQK26IrUM9GbqgxJCLeh8dW4tBCU=;
+ b=Lv59YG9F7GztKcEzDLusuhFiwC15gouqg6Bh7G61EtfKkp/t7B+r58NaFHpARW82B9g2uQvsfa/4pGEuZXMXL6SQEGeQzRE+mRGrOJnZSSJe+QEdkFHqkJgI63MAaN2TmEPnzZtDOQcxqNQKGXLmobFJjTenIugQG8Fz3jhx3gYVR9v1vnfMf/2+N8QYIxp9vwDMRzAAw/7ObQ3Tw3EysiDuhGjOdyuhEbyW2KlNV0+G59EJQc8iGRdb0QGNTYOQIdsXmNRAWnUpTucHjLvXYPEzUq09Q7uL0vvKRS21XZ01WL8BSuEWWYeesQvnsFuI4oOeNfDIFCbSyBG7GeDSvw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LRnwTB6e4UprRvmIQK26IrUM9GbqgxJCLeh8dW4tBCU=;
+ b=vtaZDaJzLWVNcHXHHQKd8BJE/Q77dvAbajC5plHxEAMhJQgs9YC4rCjgaWbdYVnwaRQaExw6KgDxPJtbtzdaqI7yNIaKMfp9hrSlFrlGsvZjznPHa9zltX9ixK9Z7CRpWsWJa/n+37ksbEDwU1coiyhtyOrBbqPuQycs+6YMnYc=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by SJ0PR12MB5408.namprd12.prod.outlook.com (2603:10b6:a03:305::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Thu, 31 Aug
+ 2023 06:31:23 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6745.021; Thu, 31 Aug 2023
+ 06:31:23 +0000
+Message-ID: <5b9f24d0-00b3-4581-826d-0bce8c9349ce@amd.com>
+Date:   Thu, 31 Aug 2023 08:31:17 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v4 2/3] dt-bindings: usb: snps,dwc3: Add
- runtime-suspend-on-usb-suspend property
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] drm/amdgpu: Create an option to disable soft
+ recovery
 Content-Language: en-US
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Elson Serrao <quic_eserrao@quicinc.com>
-Cc:     Roger Quadros <rogerq@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-References: <31fa930a-51fb-6a7f-300d-e71f6b399eb1@linaro.org>
- <a0a6c561-6319-00ba-c6db-f1dec9f0f0aa@quicinc.com>
- <5dfae814-7233-eb1f-cae7-f335e54ce1b6@linaro.org>
- <cf0227c8-cd02-81b6-9e13-2e7fe6f505f2@kernel.org>
- <20230826015257.mbogiefsbz5474ft@synopsys.com>
- <afd4843b-427a-8535-78e2-f81879378371@linaro.org>
- <969988f6-f01f-0e31-6a98-7d02c5a3a4ad@quicinc.com>
- <20230830013739.srnh2uyhly66yvu2@synopsys.com>
- <d30a8d6a-236a-b6eb-76d7-115cc9950ce1@quicinc.com>
- <6f70a710-c409-23c0-890b-370ccd23e088@linaro.org>
- <20230831030134.z46fjwyr6edl3t7x@synopsys.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230831030134.z46fjwyr6edl3t7x@synopsys.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
+        pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>
+References: <20230830220808.421935-1-andrealmeid@igalia.com>
+ <20230830220808.421935-3-andrealmeid@igalia.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20230830220808.421935-3-andrealmeid@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: FR0P281CA0242.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:af::12) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ0PR12MB5408:EE_
+X-MS-Office365-Filtering-Correlation-Id: 11e0b0c8-fe4c-4536-826e-08dba9ebe561
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eX6niz1kds1VJHN8QL5wKa5omfgLlgVdFa1kggCsQICthdyHrY3J7cT7A3VpNFBe0fP/vHhSN0p/2VQE9o0mmF9lC9DF+HV/rH1vZl+s3q3iZUCUVb2uHPKoz0Dyauow92nXdnZkEPrL5VfN+De1nlSEfc8xZZifz/9bmn5Gj2t+Dqz2J5IE+2WjMlZ1ed8JB+J9im0ZqiMrluhjrshRf8YtgdOdxsHoWOzIv3txcjizMhVtJeSx5kySjqUc7f28tSRhrtbg4SPw6280p6TjhEtTQyxNx7RaGwKpnPG2NWcTpSvkq5yIMpi+HTqLgqJstFXsMYaENbE6owVRebEBdfDBVGkL5odhJkgJp+WQNG5F5QPoX+319GV5Hu4k2kKU6Irz5DuWNd1YmFd/buFeONYat8wy9bWrh/MUN6gzBehZzcqaUxihrWWyhtl6UeRinAXbi5fszBIaPEFc11x37xTkLSvF6+WvjbE3QWxAvjj6VqQVwCpsfdi69Ag+AGGdIMFRgWxrMz7Hgy52p42wPM8JQ2Rkd5W7KY/pTrEa6nohzRw9p76nooo3GW5KYF6x5SVRT4jE9s5aBI4RVK2qfkF6dvcNYZBeH9c4jhc7UmrUmXXOqj3XhcaQRuTgPjm8LkEcxUKRubtaOJoJLQw6dQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39860400002)(366004)(396003)(346002)(186009)(451199024)(1800799009)(6512007)(6486002)(6506007)(6666004)(83380400001)(478600001)(2906002)(26005)(316002)(66476007)(4326008)(66574015)(66556008)(8676002)(41300700001)(66946007)(5660300002)(8936002)(86362001)(36756003)(31696002)(38100700002)(2616005)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?b2hTZUNmU2tzZVc2eW5sL2YzN0trYUx1RjhVNmJOVVJQQjlXQ0RLZmZvalNP?=
+ =?utf-8?B?VldlL0NXZVV5YnFzK21NNVZLMW5LWDNGV21ZNEEzZ3NUdkN3cDFEbUFVTHhB?=
+ =?utf-8?B?b1ZDZ1kvUjN2S0gxd09BRkxYK0YrL0RFSTFQN1RJSnNTWTBsREFxcUM5SWM5?=
+ =?utf-8?B?RGllaVE1blJLQWpBQ1k0cEpvRWUyTHpTZWVwR0VKeW0zNmNaYVRSM2dmWm45?=
+ =?utf-8?B?OUVScXdSTTN4cG5EVkYvM2t6VUtrQ05OZDZRV0ZKZkl5RHJlVWoya0FjZHZ1?=
+ =?utf-8?B?eHJSMncwRmJubW96TFJGYTlQemJGVEFFSU5ZWVpJNERaaVd6REQxdXNKaGdH?=
+ =?utf-8?B?YUJXYWhlRVQwdmMySUVLcjJKcTVwR3lCRnhCOUpHMWgwbzlPVndnR2ZSSy8y?=
+ =?utf-8?B?STY1dmF4L1dneHBBV3B4ejFEcXYrTEozWFVIZkFxR2hzMnBZTXdRMnowZXNj?=
+ =?utf-8?B?Q0lwelJxVWROUTJ4SGp4TXRycmZyZ3ExSU11MWI0TzVWZkdRV1NwKy8weXF4?=
+ =?utf-8?B?b3VjWGxEUHBtR1hWVGU0eWpBbGRMS2pmcE5hcDA4VTljUGtsMzJOUTIxNUls?=
+ =?utf-8?B?dXd6KzNqaUxEenVZV1dWQUNpTU5rTGxVc3lLZ3pMdmJTVkIwOUtuUytPaWo5?=
+ =?utf-8?B?R2dxRVRiZWJhUlpneEh0YUIrTE5yZkt2dnN3UXNqOG56dnJZSWFCZ0pzWTR3?=
+ =?utf-8?B?aUZ6cGlmV202d0dKbUN4alBhVGxWS2JYVjB1aFdROXRRQVk0VnJGYXhrUGRC?=
+ =?utf-8?B?R0RDTGVLMG1IdXFxdEFQcmRtS2loUTBvV1B0TVpERFBtdCtNR3pGRllpL1h6?=
+ =?utf-8?B?ZWNVSlhzYzZhcWprckJadXlIU2FuTXYvM2t0RGVnZ0RvZ1Y0c3lBYnpLWkRh?=
+ =?utf-8?B?WElYSUVOTnAyS1JYdkwwMzBQSWRQbWRFb3VZYmxMWW16YVJYTk5ocE4zVSto?=
+ =?utf-8?B?YVp2c2JNMXZDUFgyK2dvNkY0V0Q5NTB4Q2dOc2lFYVkwUUh3QjBCOVdVN203?=
+ =?utf-8?B?elZRMHRpSmlPUzRNUWFhdXUxTkdwQmg0OG95clNPK3ZEWk1HRmMrdTlERXdQ?=
+ =?utf-8?B?dEJMa3lXdlNNSVNKWWxMUkMrN2lyMFovRVlVZXBhMjR0SFpFejlKQXBSa2pI?=
+ =?utf-8?B?Zkp6Z2U0UEZ3RXM3S3J2VE1mRStPUXBJQkxFR1RjclovTlEyTWlWbUE2dHc3?=
+ =?utf-8?B?SkdHK3lVVWF0QUtGWG42aXJEVjR2QmIvL2dQTE9Eb1BxdTZpSDAvRmRrelZC?=
+ =?utf-8?B?bGk0b21GaVRiM1hKUUdORmRTeUZrTDJWVVBTaFZ1cDQrbFRyTHlrWmlUbWJm?=
+ =?utf-8?B?cU9vVDg4SGlXMW9LZlNLMkpvWmE1MkVDM0d2OFNoclBsYlZyWG4zN1o3a1Jj?=
+ =?utf-8?B?Sk5XcWRaYXJRNEIvRzBJZlVTR0UxUFROc2hWbFl2VUwwMXo1aUxRMDlCSmZu?=
+ =?utf-8?B?UFVYN0QwOEVIQmpVRlNBZ05ZVEdncFpmdGVFT29pT3hVd2RNWUpQamxpNGpp?=
+ =?utf-8?B?Qll2K1VCY2RvN0lxUHdKWW9TWFd2bUM4TktxWW1iSHlpejNvS2o0Wk1lazVW?=
+ =?utf-8?B?cXlObzdnSnVkVmhvcFNvSkNCU1hzK054bm90V1B3c04xV213L0ZXT0dCbFhM?=
+ =?utf-8?B?SmRXYzNvVnh4cEo1TkhoUGpBVXdkMnJSOXJENUt5bTlHcTNaWVRMZ1hNRTdQ?=
+ =?utf-8?B?Z2VybXpIaDMvb09kNlp0cVYxTjdDTG5WMTRtbytQR3JHTm5SQmdvOEhhcDVF?=
+ =?utf-8?B?a1RRbk85YytMRk9MUzR4LzBlcDVyQTVWZXNtU25YeVFoVmh1U0UxbW5YRU1l?=
+ =?utf-8?B?WGFRYThpMm9SbHJHK2tzajR4TGg5NUo1Ulh6T2JIdkhqSnlYTHlRMDV3UVE5?=
+ =?utf-8?B?dFBKc3Rsend5cXpjdGwrWXRMRE1LWFpId2dxbmtlMktKbGhqWTU4ems2WEpS?=
+ =?utf-8?B?SmxoSTVkTnB0aktUSS9XTyt3QWdqdU5FYVJnN2twcWtLcE5sdno4UWVTcFNm?=
+ =?utf-8?B?SmVIZkVQRy9GSjRDMkRXOXBXQTVJaTQvY1BsUytnenI5U2ZxdmZPT09xV2FQ?=
+ =?utf-8?B?NWxWMFloSk1RSFdiaWJLMnRtQkYzbUszSGVjTXMwZVdMNXpqa210Z2ZXUGd0?=
+ =?utf-8?Q?DsOsyPnw94UCYUxIp2kxhG/Xu?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 11e0b0c8-fe4c-4536-826e-08dba9ebe561
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 06:31:23.6261
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: EBfj/TZKme+f/+X4DdwkAA1KqWPmTM7nsyOvPT0JbyEs7dwqk5Rs3nxfogjdZa2t
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB5408
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/08/2023 05:01, Thinh Nguyen wrote:
-> On Wed, Aug 30, 2023, Krzysztof Kozlowski wrote:
->> On 30/08/2023 06:31, Elson Serrao wrote:
->>>
->>>
->>> On 8/29/2023 6:37 PM, Thinh Nguyen wrote:
->>>> Just want to clarify, there are dwc3 properties and there are dt binding
->>>> properties. Often the case that dt binding matches 1-to-1 with dwc3
->>>> driver property. Now, we need to enhance the checkers so that the dwc3
->>>> driver property to match cases where it is platform specific and through
->>>> compatible string.
->>>>
->>>
->>> Thank you for the clarification Thinh.
->>> To confirm, we would need to modify the driver to parse a new compatible 
->>> string (say "snps,dwc3-ext-wakeup") and add .data field so that the 
->>> driver is aware that this particular platform supports external wakeup 
->>> detection.Right ?
->>
->> No, it's not then platform specific. You said it depends on each
->> platform. Platform is Qualcomm SM8450 for example.
->>
-> 
-> Hi Elson,
-> 
-> Use the compatible string of your platform.
-> 
-> e.g.
-> if (dev->of_node) {
-> 	struct device_node *parent = of_get_parent(dev->of_node);
-> 
-> 	dwc->no_disconnect_on_usb_suspend =
-> 		of_device_is_compatible(parent, "qcom,your-compatible-string") ||
-> 		of_device_is_compatible(parent, "some-other-platform");
-> }
-> 
-> You need to enhance dwc3_get_properties(). This may get big as dwc3 adds
-> more properties. Perhaps you can help come up with ideas to keep this
-> clean. Perhaps we can separate this out of dwc3 core.c?
+Am 31.08.23 um 00:08 schrieb André Almeida:
+> Create a module option to disable soft recoveries on amdgpu, making
+> every recovery go through the device reset path. This option makes
+> easier to force device resets for testing and debugging purposes.
+>
+> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h      | 1 +
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 6 ++++++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c | 6 +++++-
+>   drivers/gpu/drm/amd/include/amd_shared.h | 1 +
+>   4 files changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> index 82eaccfce347..5f49e2c0ae7a 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -1105,6 +1105,7 @@ struct amdgpu_device {
+>   	/* Debug */
+>   	bool                            debug_vm;
+>   	bool                            debug_largebar;
+> +	bool                            debug_disable_soft_recovery;
+>   };
+>   
+>   static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> index 0cd48c025433..59e9fe594b51 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
+> @@ -927,6 +927,7 @@ MODULE_PARM_DESC(enforce_isolation, "enforce process isolation between graphics
+>    * - 0x2: Enable simulating large-bar capability on non-large bar system. This
+>    *   limits the VRAM size reported to ROCm applications to the visible
+>    *   size, usually 256MB.
+> + * - 0x4: Disable GPU soft recovery
 
-This should be a flag or quirk in device ID table match data.
+"Disable GPU soft recovery, always do a full reset."
 
-Best regards,
-Krzysztof
+Apart from that Reviewed-by: Christian König <christian.koenig@amd.com>.
+
+Regards,
+Christian.
+
+>    */
+>   MODULE_PARM_DESC(debug_mask, "debug options for amdgpu, disabled by default");
+>   module_param_named(debug_mask, amdgpu_debug_mask, uint, 0444);
+> @@ -2046,6 +2047,11 @@ static void amdgpu_init_debug_options(struct amdgpu_device *adev)
+>   		pr_info("debug: enabled simulating large-bar capability on non-large bar system\n");
+>   		adev->debug_largebar = true;
+>   	}
+> +
+> +	if (amdgpu_debug_mask & AMDGPU_DEBUG_DISABLE_GPU_SOFT_RECOVERY) {
+> +		pr_info("debug: soft reset for GPU recovery disabled\n");
+> +		adev->debug_disable_soft_recovery = true;
+> +	}
+>   }
+>   
+>   static int amdgpu_pci_probe(struct pci_dev *pdev,
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+> index 80d6e132e409..6a80d3ec887e 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
+> @@ -434,8 +434,12 @@ bool amdgpu_ring_soft_recovery(struct amdgpu_ring *ring, unsigned int vmid,
+>   			       struct dma_fence *fence)
+>   {
+>   	unsigned long flags;
+> +	ktime_t deadline;
+>   
+> -	ktime_t deadline = ktime_add_us(ktime_get(), 10000);
+> +	if (unlikely(ring->adev->debug_disable_soft_recovery))
+> +		return false;
+> +
+> +	deadline = ktime_add_us(ktime_get(), 10000);
+>   
+>   	if (amdgpu_sriov_vf(ring->adev) || !ring->funcs->soft_recovery || !fence)
+>   		return false;
+> diff --git a/drivers/gpu/drm/amd/include/amd_shared.h b/drivers/gpu/drm/amd/include/amd_shared.h
+> index 2fd6af2183cc..32ee982be99e 100644
+> --- a/drivers/gpu/drm/amd/include/amd_shared.h
+> +++ b/drivers/gpu/drm/amd/include/amd_shared.h
+> @@ -263,6 +263,7 @@ enum amd_dpm_forced_level;
+>   enum AMDGPU_DEBUG_MASK {
+>   	AMDGPU_DEBUG_VM = BIT(0),
+>   	AMDGPU_DEBUG_LARGEBAR = BIT(1),
+> +	AMDGPU_DEBUG_DISABLE_GPU_SOFT_RECOVERY = BIT(2),
+>   };
+>   
+>   /**
 
