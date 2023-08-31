@@ -2,86 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB39B78E4D6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2795778E4D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240161AbjHaCvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 22:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
+        id S242954AbjHaC5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 22:57:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231688AbjHaCvT (ORCPT
+        with ESMTP id S231688AbjHaC5H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 22:51:19 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B601BF;
-        Wed, 30 Aug 2023 19:51:16 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V2S2aX013410;
-        Thu, 31 Aug 2023 02:50:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=gm1AbBaS6tTXaMdt9QpEidBZ5HzmTnaUJfvH6F1e1AI=;
- b=VR4/1wSUs0/rVP5uNhvjT3Qm03HRu8/5r9DXh1Y5ktkca9sq5w8AwV2KnUEhBeeCtbMB
- WWDaELfgyJvU79C9TXPigYs5RKRDAtKxNF5edgpS8rBXAJEGC50FB/o8epBiq3KKWXiV
- fWukEpn3Ho1JNOcK2jwabM0+koe+EVaeUaZiAXSP7ajKx3nzmeG7DzEOqnoahqAIuYho
- qqT4N1YYmwuBUFeYrmRusM9fUSTk1W5+twvQV4Nu10ZjG1iqvDKZM0pQ+P6krPxVPEI7
- 7kbG0grbhu44yOA9b/yaOx1leqeVFZ+ct/RvMC6ZAmyIFhT8GSD5yEBIsV4Fkw1MZY/x lw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stj378199-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 02:50:58 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V2ovHb018369
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 02:50:57 GMT
-Received: from [10.50.47.209] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 30 Aug
- 2023 19:50:40 -0700
-Message-ID: <732a5351-f51f-59fe-ec5f-88ad638e5c81@quicinc.com>
-Date:   Thu, 31 Aug 2023 08:20:32 +0530
+        Wed, 30 Aug 2023 22:57:07 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5987DCC2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 19:57:03 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rbm6345Xgz4f3kp8
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:56:59 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBH1qh6AfBkRm_5Bw--.63649S3;
+        Thu, 31 Aug 2023 10:57:00 +0800 (CST)
+Subject: Re: [PATCH v2 3/8] crash_core: change parse_crashkernel() to support
+ crashkernel=,high|low parsing
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
+        thunder.leizhen@huawei.com, dyoung@redhat.com, prudo@redhat.com,
+        samuel.holland@sifive.com, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org
+References: <20230829121610.138107-1-bhe@redhat.com>
+ <20230829121610.138107-4-bhe@redhat.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <c4a1f96e-2c8d-a496-61f3-0299d77c5c84@huaweicloud.com>
+Date:   Thu, 31 Aug 2023 10:56:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 4/5] arm64: dts: qcom: ipq5018: Add USB related nodes
+In-Reply-To: <20230829121610.138107-4-bhe@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        Amandeep Singh <quic_amansing@quicinc.com>
-References: <20230825093531.7399-1-quic_nsekar@quicinc.com>
- <20230825093531.7399-5-quic_nsekar@quicinc.com>
- <CAA8EJprLwi3QKgTksTeSWkjmhFL69PO8Zmc=j3VMfAr_UpXJ=g@mail.gmail.com>
-From:   Nitheesh Sekar <quic_nsekar@quicinc.com>
-In-Reply-To: <CAA8EJprLwi3QKgTksTeSWkjmhFL69PO8Zmc=j3VMfAr_UpXJ=g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 18UEUSAl_1CghyGxmk-O1L6pm_KOgJVH
-X-Proofpoint-ORIG-GUID: 18UEUSAl_1CghyGxmk-O1L6pm_KOgJVH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_01,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- clxscore=1011 lowpriorityscore=0 mlxlogscore=819 bulkscore=0
- malwarescore=0 spamscore=0 phishscore=0 impostorscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310024
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-CM-TRANSID: gCh0CgBH1qh6AfBkRm_5Bw--.63649S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF4UCF4UAFW5Gw4kGrykZrb_yoW5ZF1Upr
+        yrCa1FkryUtFn7K3WfA39xWrWrAw48ta429F9avryrAF9rtFn8Xr1UWw129rWjkr98GFW2
+        yFWIgFZIka4UZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+        e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUrR6zUUUUU
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -90,67 +69,117 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 8/31/2023 1:45 AM, Dmitry Baryshkov wrote:
-> On Fri, 25 Aug 2023 at 12:37, Nitheesh Sekar <quic_nsekar@quicinc.com> wrote:
->> Add USB phy and controller nodes.
->>
->> Co-developed-by: Amandeep Singh <quic_amansing@quicinc.com>
->> Signed-off-by: Amandeep Singh <quic_amansing@quicinc.com>
->> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq5018.dtsi | 54 +++++++++++++++++++++++++++
->>   1 file changed, 54 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> index 9f13d2dcdfd5..ff477923a823 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> +++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
->> @@ -238,6 +238,60 @@
->>                                  status = "disabled";
->>                          };
->>                  };
->> +
->> +               usbphy0: phy@5b000 {
->> +                       compatible = "qcom,ipq5018-usb-hsphy";
->> +                       reg = <0x0005b000 0x120>;
->> +
->> +                       clocks = <&gcc GCC_USB0_PHY_CFG_AHB_CLK>;
->> +
->> +                       resets = <&gcc GCC_QUSB2_0_PHY_BCR>;
->> +
->> +                       #phy-cells = <0>;
->> +
->> +                       status = "disabled";
->> +               };
->> +
->> +               usb: usb2@8a00000 {
->> +                       compatible = "qcom,ipq5018-dwc3", "qcom,dwc3";
->> +                       reg = <0x08af8800 0x400>;
->> +
->> +                       interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
->> +                       interrupt-names = "hs_phy_irq";
->> +
->> +                       clocks = <&gcc GCC_USB0_MASTER_CLK>,
->> +                                <&gcc GCC_SYS_NOC_USB0_AXI_CLK>,
->> +                                <&gcc GCC_USB0_SLEEP_CLK>,
->> +                                <&gcc GCC_USB0_MOCK_UTMI_CLK>;
->> +                       clock-names = "core",
->> +                                     "iface",
->> +                                     "sleep",
->> +                                     "mock_utmi";
->> +
->> +                       resets = <&gcc GCC_USB0_BCR>;
->> +
->> +                       qcom,select-utmi-as-pipe-clk;
->> +                       #address-cells = <1>;
->> +                       #size-cells = <1>;
->> +                       ranges;
->> +
->> +                       status = "disabled";
->> +
->> +                       usb2_0_dwc: usb@8a00000 {
-> Could you please remove the `2_0' part of the label?
-Sure.
 
+On 2023/8/29 20:16, Baoquan He wrote:
+> Now parse_crashkernel() is a real entry point for all kinds of
+> crahskernel parsing on any architecture.
+> 
+> And wrap the crahskernel=,high|low handling inside
+> CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION ifdeffery scope.
+> 
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  include/linux/crash_core.h |  6 ++++++
+>  kernel/crash_core.c        | 28 +++++++++++++++++++++++++++-
+>  2 files changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> index 2e76289699ff..85260bf4a734 100644
+> --- a/include/linux/crash_core.h
+> +++ b/include/linux/crash_core.h
+> @@ -77,6 +77,12 @@ Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+>  			  void *data, size_t data_len);
+>  void final_note(Elf_Word *buf);
+>  
+> +#ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> +#ifndef DEFAULT_CRASH_KERNEL_LOW_SIZE
+> +#define DEFAULT_CRASH_KERNEL_LOW_SIZE  (128UL << 20)
+> +#endif
+> +#endif
+> +
+>  int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
+>  		unsigned long long *crash_size, unsigned long long *crash_base,
+>  		unsigned long long *low_size, bool *high);
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index f6a5c219e2e1..355b0ab5189c 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -276,6 +276,9 @@ static int __init __parse_crashkernel(char *cmdline,
+>  /*
+>   * That function is the entry point for command line parsing and should be
+>   * called from the arch-specific code.
+> + *
+> + * If crashkernel=,high|low is supported on architecture, non-NULL values
+> + * should be passed to parameters 'low_size' and 'high'.
+>   */
+>  int __init parse_crashkernel(char *cmdline,
+>  			     unsigned long long system_ram,
+> @@ -291,7 +294,30 @@ int __init parse_crashkernel(char *cmdline,
+>  				crash_base, NULL);
+>  	if (!high)
+>  		return ret;
+> -
+> +#ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> +	else if (ret == -ENOENT) {
+> +		ret = __parse_crashkernel(cmdline, 0, crash_size,
+> +				crash_base, suffix_tbl[SUFFIX_HIGH]);
+> +		if (ret || !*crash_size)
+> +			return -1;
+
+Change -1 to -EINVAL?
+
+> +
+> +		/*
+> +		 * crashkernel=Y,low can be specified or not, but invalid value
+> +		 * is not allowed.
+> +		 */
+> +		ret = __parse_crashkernel(cmdline, 0, low_size,
+> +				crash_base, suffix_tbl[SUFFIX_LOW]);
+> +		if (ret == -ENOENT)
+> +			*low_size = DEFAULT_CRASH_KERNEL_LOW_SIZE;
+> +		else if (ret)
+> +			return -1;
+
+return ret;
+
+> +
+> +		*high = true;
+> +	} else if (ret || !*crash_size) {
+
+This check can be moved outside of #ifdef. Because even '!high', it's completely
+applicable. The overall adjustment is as follows:
+
+-  	if (!high)
+-  		return ret;
+
+#ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+	if (high && ret == -ENOENT) {
+		... ...
+		if (ret || !*crash_size)	//parse HIGH
+		... ...
+	}
+
+	//At this point, *crash_size is not 0 and ret is 0.
+	//We can also delete if (!*crash_size) above because it will be checked later.
+#endif
+
+	if (!*crash_size)
+		ret = -EINVAL;
+
+	return ret;
+
+-  	return 0;
+
+> +		/* The specified value is invalid */
+> +		return -1;
+> +	}
+> +#endif
+>  	return 0;
+>  }
+>  
+> 
+
+-- 
 Regards,
-Nitheesh
+  Zhen Lei
+
