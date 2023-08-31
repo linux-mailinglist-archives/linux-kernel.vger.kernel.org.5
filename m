@@ -2,88 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE9D78E4A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A090A78E4A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:11:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234307AbjHaCJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 22:09:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59478 "EHLO
+        id S238379AbjHaCLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 22:11:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjHaCJN (ORCPT
+        with ESMTP id S229666AbjHaCLs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 22:09:13 -0400
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FA483;
-        Wed, 30 Aug 2023 19:09:10 -0700 (PDT)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3a81154c5f5so160555b6e.1;
-        Wed, 30 Aug 2023 19:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693447749; x=1694052549; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YiJWGS9QSG5pm9eFpdJh/9c1XSBlOP0lrKi0Maa/xLI=;
-        b=SCbfGoclBHKNQuGiaQafnJVL/U5UFRLw4rkNCnAfDud0bI9B1oy+FPehHD5tCakerb
-         pjSDNbCE+HwiOw5r7CWLkiZ28HZSiwdwQFtSFo6pce1ZPuK+7s1s3a5rIcuMo8IBW5Q1
-         TPT71EAa7nRDY6PVHteqDhBn2sB/MCHN0h41AthKY9753MhhiLgJuOB8zyHelV/glFie
-         XX7XBDxbmEvj7VQkwKPkavgfnZ0n6lFCEs0BIBds/VtPWTnR5NjDAfxjz/bxT/uLdOPm
-         15lCW71GtbfYi9kTkUB6Zq3rnH1Z8CkUmR5F1sVrK9gY6CiOkrtFtxK1ao4KXnKK0PmW
-         h4XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693447749; x=1694052549;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YiJWGS9QSG5pm9eFpdJh/9c1XSBlOP0lrKi0Maa/xLI=;
-        b=P3Umf2fT8WSIuXWWtZ/LENWnv1pKzhwbWVfW53XUz3j2bRYeSEHNlSQPnvEyJWxAW7
-         FsiBqVOlYhCXKgWFgJbWx39yAZ3B6yzIJz0YThmH45UK2O4Dnyddru5Y82kNrRoIHllH
-         ZafKQ0+oukYwQkp+gt4284x4IiQ9dacL0IBOkjF9RiMvM30/FSfp+AkDLkJjEoj5c9Ew
-         G1ASrbKNBj5ZKn/OUXmTUXyZxnYDfS7jW/rFsQFZquNMKHqmhgOjh+tTdu65wGmQbaP0
-         NW0RjmHnf21EuZkNddUW3tuXjjS0h41eIb0Tyyxrk2M90szsbvzKNOtsQc7doIC0Eier
-         1krw==
-X-Gm-Message-State: AOJu0YwsB7UaWmbkckkmHIs3s1h9CS1b9OjOqpqXHbswxoi7n1+PCw0X
-        LwvAe0QXWK9K53YQMbrXlDo=
-X-Google-Smtp-Source: AGHT+IGrfwKkZN3+Rw/So9KnHaZvT8lisPhNxPoJ1/P4sO+qGO53lvq/dUmv9nQ5OiG6qiAJv5lVVg==
-X-Received: by 2002:a54:4887:0:b0:3a7:38a1:fd19 with SMTP id r7-20020a544887000000b003a738a1fd19mr3446377oic.37.1693447749387;
-        Wed, 30 Aug 2023 19:09:09 -0700 (PDT)
-Received: from localhost ([2605:59c8:148:ba00:6947:11d8:e02e:66d1])
-        by smtp.gmail.com with ESMTPSA id k13-20020a63ab4d000000b005642a68a508sm274116pgp.35.2023.08.30.19.09.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 19:09:08 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 19:09:07 -0700
-From:   John Fastabend <john.fastabend@gmail.com>
-To:     Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>
-Message-ID: <64eff643ba8c8_9941c2083c@john.notmuch>
-In-Reply-To: <20230831014346.2931397-1-xukuohai@huaweicloud.com>
-References: <20230831014346.2931397-1-xukuohai@huaweicloud.com>
-Subject: RE: [PATCH bpf-next] bpf, sockmap: Rename sock_map_get_from_fd to
- sock_map_prog_attach
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+        Wed, 30 Aug 2023 22:11:48 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6DC83;
+        Wed, 30 Aug 2023 19:11:44 -0700 (PDT)
+Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rbl1c5lv7zNn6X;
+        Thu, 31 Aug 2023 10:08:04 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 31 Aug 2023 10:11:41 +0800
+Message-ID: <b03162f7-7bdf-1e52-a7ba-718389fbeafc@huawei.com>
+Date:   Thu, 31 Aug 2023 10:11:40 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v4 0/9] scsi:scsi_debug: Add error injection for single
+ device
+Content-Language: en-US
+To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Douglas Gilbert <dgilbert@interlog.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <louhongxiang@huawei.com>, <wubo40@huawei.com>
+References: <20230815122316.4129333-1-haowenchao2@huawei.com>
+From:   "haowenchao (C)" <haowenchao2@huawei.com>
+In-Reply-To: <20230815122316.4129333-1-haowenchao2@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600012.china.huawei.com (7.193.23.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Xu Kuohai wrote:
-> From: Xu Kuohai <xukuohai@huawei.com>
+On 2023/8/15 20:23, Wenchao Hao wrote:
+> The original error injection mechanism was based on scsi_host which
+> could not inject fault for a single SCSI device.
 > 
-> What function sock_map_get_from_fd does is to attach a bpf prog to
-> a sock map, so rename it to sock_map_prog_attach to make it more
-> readable.
+> This patchset provides the ability to inject errors for a single
+> SCSI device. Now we supports inject timeout errors, queuecommand
+> errors, and hostbyte, driverbyte, statusbyte, and sense data for
+> specific SCSI Command. Two new error injection is defined to make
+> abort command or reset LUN failed.
 > 
-> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
-> ---
+> Besides error injection for single device, this patchset add a
+> new interface to make reset target failed for each scsi_target.
+> 
+> The first two patch add an debugfs interface to add and inquiry single
+> device's error injection info; the third patch defined how to remove
+> an injection which has been added. The following 5 patches use the
+> injection info and generate the related error type. The last one just
+> Add a new interface to make reset target failed.
+> 
 
-I don't really think the rename is needed. It will just make any
-backports difficult.
+Ping...
+
+> V4:
+>    - Fix BUG_ON triggered by schedule in atomic context when rmmod scsi_debug
+>      Closes: https://lore.kernel.org/oe-lkp/202308031027.5941ce5f-oliver.sang@intel.com
+> 
+> V3:
+>    - Add two more error types to fail abort command and lun reset
+>    - Fix memleak when rmmod scsi_debug without clearing errors injected
+>    - Fix memkeak because did not implement release in sdebug_error_fops
+>    - Fix possible NULL point access in scsi_debug_slave_destroy
+>    - Move specific error type's description to each single patch which
+>      implement this error type
+>    - Add interface to make target reset fail
+> 
+> V2:
+>    - Using debugfs rather than sysfs attribute interface to manage error
+> 
+> Wenchao Hao (9):
+>    scsi:scsi_debug: create scsi_debug directory in the debugfs filesystem
+>    scsi:scsi_debug: Add interface to manage single device's error inject
+>    scsi:scsi_debug: Define grammar to remove added error injection
+>    scsi:scsi_debug: timeout command if the error is injected
+>    scsi:scsi_debug: Return failed value if the error is injected
+>    scsi:scsi_debug: set command's result and sense data if the error is injected
+>    scsi:scsi_debug: Add new error injection abort failed
+>    scsi:scsi_debug: Add new error injection reset lun failed
+>    scsi:scsi_debug: Add debugfs interface to fail target reset
+> 
+>   drivers/scsi/scsi_debug.c | 512 +++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 507 insertions(+), 5 deletions(-)
+> 
+
