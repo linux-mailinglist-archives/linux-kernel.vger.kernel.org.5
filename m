@@ -2,142 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 437E678EC17
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2201078EC20
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243491AbjHaLd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        id S1343567AbjHaLgG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236551AbjHaLdz (ORCPT
+        with ESMTP id S231672AbjHaLgD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:33:55 -0400
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FBB0CF9
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:33:52 -0700 (PDT)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-58caaedb20bso8826327b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:33:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693481631; x=1694086431; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ibzG3mVx4GFurVxbkoUFG27FCbRg5ZUj4tD8lzqeKtg=;
-        b=C4xhoFvG4nLN7VivM88cB7ikaRDgW++/+abHV4+cUxfpoloOBfF1B+T89Cn28V3Q3I
-         4t7EYiuW8hwfNZDv3AWIkk+/uxv9ezg3dc8s0dXl0ZUbp7zp0iknhnrhJcPfrZmwQ1Lp
-         RBikaZAUGrUuDWy6ZdcFjLKkbRdcGHPAl45Kmdr4SJyjKuphggz7zS/0hyy8u4BIxAH6
-         lXCpz7uqrY8D1uT3BeyeP/U28UIWqaODMbccSz1c76Y/EyxqLKAbspt7Y7a+X5xpcXsU
-         pxi2ky5piudDNwclyg3JNU5VQVxQv7vzas+BjamDc/VByzds9mKI+xs28isIU0RzoZsZ
-         Jk4Q==
+        Thu, 31 Aug 2023 07:36:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7FECFE
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:35:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693481718;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=La0/Hh+TRze+Vb0q9LsgA7s23V5L37y71l1wEuOHLns=;
+        b=NaRLwIzupXBJ/p3+axo3UHVMQ64aMrYlfeyPJCYHEr8klypnXGAuNd/7gdtnCJBNBz4fXK
+        a80nSU6a6ajN31g/vaBVeLtMgBpDushL74DrHTgBZK3fCFDLhJ1ImdhJHUzb47xJ8YhKWG
+        WqxClBS0NdiZnNNvTKUkViCb62xTONw=
+Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
+ [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-85-GekwheLjPH6s-qWYX8piYg-1; Thu, 31 Aug 2023 07:35:17 -0400
+X-MC-Unique: GekwheLjPH6s-qWYX8piYg-1
+Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2b9cca3c395so2753981fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:35:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693481631; x=1694086431;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ibzG3mVx4GFurVxbkoUFG27FCbRg5ZUj4tD8lzqeKtg=;
-        b=Yen+Em2fYyYlxkHIZoROMYaz+3sezNQ9PTUdTA+bAarwG4AcPdGLAEDc3a+WIW7vyN
-         RGLWYxaGt6kzesTb6/vzC6P6qo9rURx8eQIigsyTIyql/0AwqzAhvKGJDszkhFKIJyC1
-         iQwsHBj3YAz8/fQXhaQqHt+UkHwTGexzEpo2Bw5QVS23RYAQ+TMSOaUPfDhgdU5y1AgA
-         I8/iuWg6ghgUqa82GnauWNc9Ri4UrjaxxA4+5OHsE+UcjSasmvw5XtbdmtZQ0A3gXAAu
-         sAsDCAQqGf6/UgOa+gzGMG+YIp8QEUpypvB185KVQAChxhlxs3I7sFOOaGLxj8/1YI+U
-         zMCQ==
-X-Gm-Message-State: AOJu0YwwuU3dm0jck2QgEEywNuEeAqhordMWETV73RC4Qq+R5TOUuIma
-        I7tVfNw2IcK9l2xj/C1/rTfQxiPLtc9ym2+mRh9QYQ==
-X-Google-Smtp-Source: AGHT+IHeKlJ2Cnt3SKF3aIUgqGGMgbJPVvaV8pDIkWX0azrFs3oQc15jhGlTDqlAxq2mojbE2e8cDhdUFN1nTd6fj8U=
-X-Received: by 2002:a25:b116:0:b0:d78:538:8017 with SMTP id
- g22-20020a25b116000000b00d7805388017mr4779117ybj.61.1693481631542; Thu, 31
- Aug 2023 04:33:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-4-5a954519bbad@fairphone.com> <b82f4683-e8b5-b424-8f7a-6d2ba1cab61f@linaro.org>
- <CV6NF0466658.20DGU7QKF2UBR@otso>
-In-Reply-To: <CV6NF0466658.20DGU7QKF2UBR@otso>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 31 Aug 2023 14:33:39 +0300
-Message-ID: <CAA8EJpr1+W3f08X-FpiiVrJ98kg52HaMwbbKn=fG15Whm4C8aQ@mail.gmail.com>
-Subject: Re: [PATCH 04/11] arm64: dts: qcom: pm7250b: make SID configurable
-To:     Luca Weiss <luca.weiss@fairphone.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org
+        d=1e100.net; s=20221208; t=1693481715; x=1694086515;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=La0/Hh+TRze+Vb0q9LsgA7s23V5L37y71l1wEuOHLns=;
+        b=ljm976yb42inlz0myL4yU2XgBfFWT78XO/xgN9zPK4jiXJvnVdyq8ynEqLhbCQJFpM
+         kanQIs5XSUQTFS9EDYANWkV/hcLDdtTNOnewGnWSqhbx+axjBnRTbayWZKaEjn3Swpab
+         4Cubam24vPF9O6oQqSIbT8zCO+BuJw722nz0xmx/ZHMn9b8K8iPVRtaDNYKqQfrf0Obs
+         eAHcKxtrBBJWVweRMjvRTRsXfBnSa3XVOkq4Bp03FItyi/Uu+p/cqBTPTtUsd+bAFUF5
+         75liw4MY9DFFPSsc7UTikXQhb1wIp55RmvrwYw+9oRr1x7FlJfm6AqAGaerxDMs5sGPH
+         BSEQ==
+X-Gm-Message-State: AOJu0YzmpCUNlwSJrA5D3sJ7iSsu3u28KZ7g93JSDFTqggbDFWn1X7f6
+        XAPpP6PTBqLFLSdP/5UDDAZNinPjmjQSZq3rDdYd2kWK5lCTSgFUruMu3JnUS3Ja3trLRuerko/
+        SHV+td/iFGn7nf21zGq0WMqUs
+X-Received: by 2002:a05:651c:1256:b0:2b9:54bd:caed with SMTP id h22-20020a05651c125600b002b954bdcaedmr3544624ljh.1.1693481715596;
+        Thu, 31 Aug 2023 04:35:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEy3FYJX5luMRBPc3d0+cP01B48hkyJoTaRTZEr1XfwDPFrLtu3gar1njfVMOw9Y1lh+onO3g==
+X-Received: by 2002:a05:651c:1256:b0:2b9:54bd:caed with SMTP id h22-20020a05651c125600b002b954bdcaedmr3544605ljh.1.1693481715252;
+        Thu, 31 Aug 2023 04:35:15 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-255-219.dyn.eolo.it. [146.241.255.219])
+        by smtp.gmail.com with ESMTPSA id a25-20020a1709064a5900b009a2202bfce5sm655485ejv.118.2023.08.31.04.35.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 04:35:14 -0700 (PDT)
+Message-ID: <b6aa2a338c2a2db597415e073819a5fe6d0187a9.camel@redhat.com>
+Subject: Re: [PATCH v2 0/4] net: dsa: hsr: Enable HSR HW offloading for
+ KSZ9477
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Lukasz Majewski <lukma@denx.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>
+Cc:     Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
+        George McCollister <george.mccollister@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Thu, 31 Aug 2023 13:35:13 +0200
+In-Reply-To: <20230831111827.548118-1-lukma@denx.de>
+References: <20230831111827.548118-1-lukma@denx.de>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+MIME-Version: 1.0
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 13:13, Luca Weiss <luca.weiss@fairphone.com> wrote:
->
-> On Wed Aug 30, 2023 at 12:06 PM CEST, Krzysztof Kozlowski wrote:
-> > On 30/08/2023 11:58, Luca Weiss wrote:
-> > > Like other Qualcomm PMICs the PM7250B can be used on different addresses
-> > > on the SPMI bus. Use similar defines like the PMK8350 to make this
-> > > possible.
-> > >
-> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > > ---
-> > >  arch/arm64/boot/dts/qcom/pm7250b.dtsi | 23 ++++++++++++++++-------
-> > >  1 file changed, 16 insertions(+), 7 deletions(-)
-> > >
-> > > diff --git a/arch/arm64/boot/dts/qcom/pm7250b.dtsi b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
-> > > index e8540c36bd99..3514de536baa 100644
-> > > --- a/arch/arm64/boot/dts/qcom/pm7250b.dtsi
-> > > +++ b/arch/arm64/boot/dts/qcom/pm7250b.dtsi
-> > > @@ -7,6 +7,15 @@
-> > >  #include <dt-bindings/interrupt-controller/irq.h>
-> > >  #include <dt-bindings/spmi/spmi.h>
-> > >
-> > > +/* This PMIC can be configured to be at different SIDs */
-> > > +#ifndef PM7250B_SID
-> > > +   #define PM7250B_SID 2
-> > > +#endif
-> >
-> > Why do you send the same patch as v1, without any reference to previous
-> > discussions?
-> >
-> > You got here feedback already.
-> >
-> > https://lore.kernel.org/linux-arm-msm/f52524da-719b-790f-ad2c-0c3f313d9fe9@linaro.org/
->
-> Hi Krzysztof,
->
-> I did mention that original patch in the cover letter of this series.
-> I'm definitely aware of the discussion earlier this year there but also
-> tried to get an update lately if there's any update with no response.
+On Thu, 2023-08-31 at 13:18 +0200, Lukasz Majewski wrote:
+> This patch series provides support for HSR HW offloading in KSZ9477
+> switch IC.
+>=20
+> To test this feature:
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 ver=
+sion 1
+> ifconfig lan1 up;ifconfig lan2 up
+> ifconfig hsr0 192.168.0.1 up
+>=20
+> To remove HSR network device:
+> ip link del hsr0
+>=20
+> Test HW:
+> Two KSZ9477-EVB boards with HSR ports set to "Port1" and "Port2".
+>=20
+> Performance SW used:
+> nuttcp -S --nofork
+> nuttcp -vv -T 60 -r 192.168.0.2
+> nuttcp -vv -T 60 -t 192.168.0.2
+>=20
+> Code: v6.5-rc7 Linux repository
+> Tested HSR v0 and v1
+> Results:
+> With KSZ9477 offloading support added: RX: 100 Mbps TX: 98 Mbps
+> With no offloading 		       RX: 63 Mbps  TX: 63 Mbps
+>=20
+>=20
+> Lukasz Majewski (4):
+>   net: dsa: Extend the ksz_device structure to hold info about HSR ports
+>   net: dsa: Extend ksz9477 TAG setup to support HSR frames duplication
+>   net: dsa: hsr: Enable in KSZ9477 switch HW HSR offloading
+>   net: dsa: hsr: Provide generic HSR ksz_hsr_{join|leave} functions
+>=20
+>  drivers/net/dsa/microchip/ksz9477.c    | 96 ++++++++++++++++++++++++++
+>  drivers/net/dsa/microchip/ksz9477.h    |  4 ++
+>  drivers/net/dsa/microchip/ksz_common.c | 81 ++++++++++++++++++++++
+>  drivers/net/dsa/microchip/ksz_common.h |  3 +
+>  include/linux/dsa/ksz_common.h         |  1 +
+>  net/dsa/tag_ksz.c                      |  5 ++
+>  6 files changed, 190 insertions(+)
+>=20
+I'm sorry, it looks like I was not clear previously.
+---
+## Form letter - net-next-closed
 
-I think the overall consensus was that my proposal is too complicated
-for the DT files.
+The merge window for v6.6 has begun and therefore net-next is closed
+for new drivers, features, code refactoring and optimizations.
+We are currently accepting bug fixes only.
 
->
-> If you want to block this patch, I'll have to remove pm7250b from the
-> device dts, so we'll lose some functionality. Not sure what other
-> approaches there could be.
->
-> Regards
-> Luca
->
-> >
-> > Best regards,
-> > Krzysztof
->
+Please repost when net-next reopens after Sept 11th.
 
+RFC patches sent for review only are obviously welcome at any time.
 
--- 
-With best wishes
-Dmitry
+See:
+https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#develop=
+ment-cycle
+--=20
+pw-bot: defer
+
