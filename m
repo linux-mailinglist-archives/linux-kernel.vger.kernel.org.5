@@ -2,108 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFBF378EB7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:10:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE71578EB9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:12:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345742AbjHaLKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:10:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        id S244932AbjHaLL7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:11:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345708AbjHaLKr (ORCPT
+        with ESMTP id S245513AbjHaLL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:10:47 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE2CE7E;
-        Thu, 31 Aug 2023 04:10:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id ED78863A6C;
-        Thu, 31 Aug 2023 11:10:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF4F6C433C7;
-        Thu, 31 Aug 2023 11:10:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693480208;
-        bh=C8mJdh9rCO6kTZ6zW5t3/ttkSd6LuHAND1Dut0RKW08=;
-        h=From:To:Cc:Subject:Date:From;
-        b=EuxEhOCP8R7OXu1dsFwMV/dKUyDiULuHHbrznnlwWV6UEl+KpmGGb1NIkQot0ib+i
-         CItgF914JS2opRQWDpDJbr9+2LdD6Ge9x2vlEjC+TaTBceTyDcMV0jaN35ddzkplvn
-         Y4SsN0gn82x/TOGEzalG744UrNpRteuPHad2Uu4s=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: [PATCH 5.4 0/3] 5.4.256-rc1 review
-Date:   Thu, 31 Aug 2023 13:09:54 +0200
-Message-ID: <20230831110828.874071888@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
+        Thu, 31 Aug 2023 07:11:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E278E63;
+        Thu, 31 Aug 2023 04:11:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693480295; x=1725016295;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=O3UskZztiSHiG62oxbXUlE5RV3C35EYtv8AyacANeBw=;
+  b=MXP5XDGiXv8AykbV7re4ZeIY+hL0ssvb4awmtPdznjkFnvXATN/NAjzJ
+   K6DeK+ib3j+C/G4tnugkWoGOuuP8HvVPTjalfGXydmUK2hrf14nrp1PpN
+   NzC6cwTdxZ7cMrT8xloT/sYXCXTa+S+1q61GQM4h2bNeApghqHNQhHJ1M
+   ZqasdFDAO1z+gVWgiF40SQ1tFEcdrRmcToouYHNSL6ORxLTXbb5/BZ6M+
+   m6xRD0FuWkVLhV0wS4wAWDHf47vBk9FwPcMwYWIkzc0mh8aJIME7fR5x0
+   jhaKCj6I5EDSXSuZ7ESB1QSk/Ek3lS4zz6HZRKBL6w07+vLiSFQ01aCm2
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="366099750"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="366099750"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 04:10:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="854136946"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="854136946"
+Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
+  by fmsmga002.fm.intel.com with ESMTP; 31 Aug 2023 04:10:46 -0700
+Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qbfZU-00004N-0A;
+        Thu, 31 Aug 2023 11:10:44 +0000
+Date:   Thu, 31 Aug 2023 19:10:07 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        John Fastabend <john.fastabend@gmail.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>
+Cc:     oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH bpf-next] bpf, sockmap: Rename sock_map_get_from_fd to
+ sock_map_prog_attach
+Message-ID: <202308311959.Snzn4Unt-lkp@intel.com>
+References: <20230831014346.2931397-1-xukuohai@huaweicloud.com>
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.256-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.4.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.4.256-rc1
-X-KernelTest-Deadline: 2023-09-02T11:08+00:00
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831014346.2931397-1-xukuohai@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.4.256 release.
-There are 3 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+Hi Xu,
 
-Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
-Anything received after that time might be too late.
+kernel test robot noticed the following build errors:
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.256-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-and the diffstat can be found below.
+[auto build test ERROR on bpf-next/master]
 
-thanks,
+url:    https://github.com/intel-lab-lkp/linux/commits/Xu-Kuohai/bpf-sockmap-Rename-sock_map_get_from_fd-to-sock_map_prog_attach/20230831-094551
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git master
+patch link:    https://lore.kernel.org/r/20230831014346.2931397-1-xukuohai%40huaweicloud.com
+patch subject: [PATCH bpf-next] bpf, sockmap: Rename sock_map_get_from_fd to sock_map_prog_attach
+config: parisc-randconfig-r012-20230831 (https://download.01.org/0day-ci/archive/20230831/202308311959.Snzn4Unt-lkp@intel.com/config)
+compiler: hppa-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308311959.Snzn4Unt-lkp@intel.com/reproduce)
 
-greg k-h
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202308311959.Snzn4Unt-lkp@intel.com/
 
--------------
-Pseudo-Shortlog of commits:
+All errors (new ones prefixed by >>):
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.4.256-rc1
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Revert "MIPS: Alchemy: fix dbdma2"
-
-YueHaibing <yuehaibing@huawei.com>
-    powerpc/pmac/smp: Drop unnecessary volatile qualifier
-
-Ilie Halip <ilie.halip@gmail.com>
-    powerpc/pmac/smp: Avoid unused-variable warnings
+   kernel/bpf/syscall.c: In function 'bpf_prog_attach':
+>> kernel/bpf/syscall.c:3825:23: error: implicit declaration of function 'sock_map_prog_attach'; did you mean 'sock_map_prog_detach'? [-Werror=implicit-function-declaration]
+    3825 |                 ret = sock_map_prog_attach(attr, prog);
+         |                       ^~~~~~~~~~~~~~~~~~~~
+         |                       sock_map_prog_detach
+   cc1: some warnings being treated as errors
 
 
--------------
+vim +3825 kernel/bpf/syscall.c
 
-Diffstat:
+  3782	
+  3783	#define BPF_F_ATTACH_MASK_BASE	\
+  3784		(BPF_F_ALLOW_OVERRIDE |	\
+  3785		 BPF_F_ALLOW_MULTI |	\
+  3786		 BPF_F_REPLACE)
+  3787	
+  3788	#define BPF_F_ATTACH_MASK_MPROG	\
+  3789		(BPF_F_REPLACE |	\
+  3790		 BPF_F_BEFORE |		\
+  3791		 BPF_F_AFTER |		\
+  3792		 BPF_F_ID |		\
+  3793		 BPF_F_LINK)
+  3794	
+  3795	static int bpf_prog_attach(const union bpf_attr *attr)
+  3796	{
+  3797		enum bpf_prog_type ptype;
+  3798		struct bpf_prog *prog;
+  3799		u32 mask;
+  3800		int ret;
+  3801	
+  3802		if (CHECK_ATTR(BPF_PROG_ATTACH))
+  3803			return -EINVAL;
+  3804	
+  3805		ptype = attach_type_to_prog_type(attr->attach_type);
+  3806		if (ptype == BPF_PROG_TYPE_UNSPEC)
+  3807			return -EINVAL;
+  3808		mask = bpf_mprog_supported(ptype) ?
+  3809		       BPF_F_ATTACH_MASK_MPROG : BPF_F_ATTACH_MASK_BASE;
+  3810		if (attr->attach_flags & ~mask)
+  3811			return -EINVAL;
+  3812	
+  3813		prog = bpf_prog_get_type(attr->attach_bpf_fd, ptype);
+  3814		if (IS_ERR(prog))
+  3815			return PTR_ERR(prog);
+  3816	
+  3817		if (bpf_prog_attach_check_attach_type(prog, attr->attach_type)) {
+  3818			bpf_prog_put(prog);
+  3819			return -EINVAL;
+  3820		}
+  3821	
+  3822		switch (ptype) {
+  3823		case BPF_PROG_TYPE_SK_SKB:
+  3824		case BPF_PROG_TYPE_SK_MSG:
+> 3825			ret = sock_map_prog_attach(attr, prog);
+  3826			break;
+  3827		case BPF_PROG_TYPE_LIRC_MODE2:
+  3828			ret = lirc_prog_attach(attr, prog);
+  3829			break;
+  3830		case BPF_PROG_TYPE_FLOW_DISSECTOR:
+  3831			ret = netns_bpf_prog_attach(attr, prog);
+  3832			break;
+  3833		case BPF_PROG_TYPE_CGROUP_DEVICE:
+  3834		case BPF_PROG_TYPE_CGROUP_SKB:
+  3835		case BPF_PROG_TYPE_CGROUP_SOCK:
+  3836		case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
+  3837		case BPF_PROG_TYPE_CGROUP_SOCKOPT:
+  3838		case BPF_PROG_TYPE_CGROUP_SYSCTL:
+  3839		case BPF_PROG_TYPE_SOCK_OPS:
+  3840		case BPF_PROG_TYPE_LSM:
+  3841			if (ptype == BPF_PROG_TYPE_LSM &&
+  3842			    prog->expected_attach_type != BPF_LSM_CGROUP)
+  3843				ret = -EINVAL;
+  3844			else
+  3845				ret = cgroup_bpf_prog_attach(attr, ptype, prog);
+  3846			break;
+  3847		case BPF_PROG_TYPE_SCHED_CLS:
+  3848			ret = tcx_prog_attach(attr, prog);
+  3849			break;
+  3850		default:
+  3851			ret = -EINVAL;
+  3852		}
+  3853	
+  3854		if (ret)
+  3855			bpf_prog_put(prog);
+  3856		return ret;
+  3857	}
+  3858	
 
- Makefile                              |  4 ++--
- arch/mips/alchemy/common/dbdma.c      | 27 ++++++++++++---------------
- arch/powerpc/platforms/powermac/smp.c |  8 ++++----
- 3 files changed, 18 insertions(+), 21 deletions(-)
-
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
