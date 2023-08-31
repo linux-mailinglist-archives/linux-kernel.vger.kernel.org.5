@@ -2,76 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB7F78F2D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDBE778F2D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347086AbjHaSmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 14:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
+        id S238613AbjHaSm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 14:42:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244547AbjHaSmG (ORCPT
+        with ESMTP id S231697AbjHaSmY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 14:42:06 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBA5CE65
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:42:03 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-4036bd4fff1so48521cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:42:03 -0700 (PDT)
+        Thu, 31 Aug 2023 14:42:24 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1808310C6
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:42:17 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68bed2c786eso966980b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:42:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693507323; x=1694112123; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=s4feh4x9tPVvkEXLj6eZMjNnNSFlhOTihQ2j4idVY+Y=;
-        b=X4Qgg7//QoHuoEmxhXUVeFJAYKDV2N7nye61dGBgk4H8wbIhhZeiXvR0JXJXUyd5kr
-         Azg6okNFFZ18lCyB4INKQQWacaWXpm0CWGGiKnytDPhUmcULsfaxuHORlzbZbUPpC+Uu
-         hjdX1hr/zHRZzx6cRZ9YcgM/hCaMgvdEUZ70PGw3PJp+DzX2J6a5H+GFybmfXFUBwmYu
-         9qJeD44ojytXAJkuPQsiiJgJhFvJM+EFHfLpBstCJ+7O3AuD/P5/tJgw90gNqbOzM1PK
-         xwYWHk4EpXaqWO3Lj/rmlB6ceKXal+Fae914AcaXrd6TCxve7ky4MDeAImDtl080WTt9
-         CjHA==
+        d=chromium.org; s=google; t=1693507336; x=1694112136; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tz4a2x19zbfNUm77S91HyO3WUpP/Tfo2YEu/Zh4ddEg=;
+        b=WXjYVGlH0bDciHH8xzHjB9eVOAkttQguc8MMRsSScYw+J4N/8KaJHTfSp1MWmWWnUd
+         GHrUyzZwJw/UvN/xePqvWpS5c5mmD29Zumq2aWGlFBkde+9RBNEt6yFBd+7Uiuz+2PAp
+         tNwaf/iv1Q47LHUllFNc7NeXiKzxyrQdsaK1w=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693507323; x=1694112123;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=s4feh4x9tPVvkEXLj6eZMjNnNSFlhOTihQ2j4idVY+Y=;
-        b=dI+V6WQiSJe4yE6UuIKxsrj/mlfh/Bey+onkXp1iQ5nkw5/Nc8D5mIEFD3TsUaC6Rm
-         UyvtRhJDAuOrBILM4c8oFpjAyZ2+8z7N/HGl35AkQKN0veYz3FNkAzYzRO627gcdsx2N
-         NTkrnNfAy9o248zTLqZ1sj5YtNPr97oyQr3Mr+bFgb0KuqtPpi09baGHLbR48QsJsqY4
-         V2DeheTqXB6oAotUSAF9FhFsIOEeoR1Kt+WwNagKqU3o2g6p3S55NZ1nsvK76oMQ+JcX
-         p8SD0CJVAvS30DJgne+PkHEpwspwjXpKr+8muHq+RfEK/lECz57p8RDMp7mgNkHv7yC8
-         sqUg==
-X-Gm-Message-State: AOJu0Yz4/aG84I5flLqczeSJ2ancX8o/PO5tjXM8/wogL1pUO1byHQfl
-        4cvtakdybzf6aWJooGlI/hF5WpDbCXzpTMZExmidhQ==
-X-Google-Smtp-Source: AGHT+IHJb0qPPBvoEHY3Cc9MLqEJF0TK82p0deucPj+88LsYtYD5P0Ig91TrPhf9HWbjnpX+GbhljvdkMbi0CpMPkVc=
-X-Received: by 2002:ac8:51cd:0:b0:40d:eb06:d3cc with SMTP id
- d13-20020ac851cd000000b0040deb06d3ccmr32739qtn.7.1693507322812; Thu, 31 Aug
- 2023 11:42:02 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693507336; x=1694112136;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Tz4a2x19zbfNUm77S91HyO3WUpP/Tfo2YEu/Zh4ddEg=;
+        b=OyWjWYXKjTvZ6lQ1XfVuYsNhIhmHO80kToB6PkPxPcUozLxT9Wnks9591LM1VwFsQs
+         PkqAXi6BNmbL7QgwjKNoq5C74Wg5QoTC4qeMCE3PXESBdo7OZ+L2w+KVaX6iybcCAIlQ
+         zJcOusGdRl9jBJidouOTrFp5kIEiNWzP5Gv9K2zL8epx0LxiXgGTbeysddoytLlZ/tgY
+         pUH70u/yTKA62UglYFkcNH2zfV3BRbgw0WmuFJD0q2VAJZMzHqFEYQQT3TwBiXTtKzwR
+         hoExshXYjN8s8ZcTlFQIhcqvdg7CAxrZ8a7lvm/VFvU5IwqYJ9CnFNPsFnfrxeRJJ0Wh
+         KMtg==
+X-Gm-Message-State: AOJu0YxqIRxsJIlTeigTMb57cE3x6l6R5n5MUn+I5kVA+PAKcbl2r3yB
+        TtGJyd90qbSu1lL4T3v46BdmYA==
+X-Google-Smtp-Source: AGHT+IGMmkdigA5BBQO6iDcRuVwj0b/wtfySuh+4OgLVGbZtxIXHhrSkmvb+qgLuaThXCX4M+JQBeg==
+X-Received: by 2002:a05:6a20:914f:b0:14c:de3:95e8 with SMTP id x15-20020a056a20914f00b0014c0de395e8mr611901pzc.52.1693507336493;
+        Thu, 31 Aug 2023 11:42:16 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v25-20020aa78099000000b0068b1149ea4dsm1590960pff.69.2023.08.31.11.42.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 11:42:15 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 11:42:15 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] scsi: target: Replace strlcpy with strscpy
+Message-ID: <202308311141.612BF8D@keescook>
+References: <20230831143638.232596-1-azeemshaikh38@gmail.com>
 MIME-Version: 1.0
-References: <20230831071421.2201358-1-irogers@google.com> <c2affcc9-468f-bf4c-a080-65b31e05a83f@linux.intel.com>
-In-Reply-To: <c2affcc9-468f-bf4c-a080-65b31e05a83f@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 31 Aug 2023 11:41:51 -0700
-Message-ID: <CAP-5=fWdH_1or1yhH3pqFymnK=-w=OTzx63mVgknFNgqxf6T+A@mail.gmail.com>
-Subject: Re: [PATCH v1 0/3] perf list/debug output fixes
-To:     "Liang, Kan" <kan.liang@linux.intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Rob Herring <robh@kernel.org>,
-        James Clark <james.clark@arm.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831143638.232596-1-azeemshaikh38@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,41 +69,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 11:28=E2=80=AFAM Liang, Kan <kan.liang@linux.intel.=
-com> wrote:
->
->
->
-> On 2023-08-31 3:14 a.m., Ian Rogers wrote:
-> > Fix a long standing parse_events_term cloning bug so that the bad
-> > display of terms can be fixed and the code somewhat more intuitive:
-> > https://lore.kernel.org/lkml/20230830070753.1821629-2-irogers@google.co=
-m/
-> >
->
-> Tested-by: Kan Liang <kan.liang@linux.intel.com>
+On Thu, Aug 31, 2023 at 02:36:38PM +0000, Azeem Shaikh wrote:
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
+> 
+> Direct replacement is safe here since return value of -errno
+> is used to check for truncation instead of sizeof(dest).
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> [2] https://github.com/KSPP/linux/issues/89
+> 
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> ---
+> v3:
+>  * Address readability comment.
+> 
+> v2:
+>  * Replace all instances of strlcpy in this file instead of just 1.
+>  * https://lore.kernel.org/all/20230830210724.4156575-1-azeemshaikh38@gmail.com/
+> 
+> v1:
+>  * https://lore.kernel.org/all/20230830200717.4129442-1-azeemshaikh38@gmail.com/
+> 
+>  drivers/target/target_core_configfs.c |   24 ++++++++++++------------
+>  1 file changed, 12 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+> index 936e5ff1b209..d5860c1c1f46 100644
+> --- a/drivers/target/target_core_configfs.c
+> +++ b/drivers/target/target_core_configfs.c
+> @@ -1392,16 +1392,16 @@ static ssize_t target_wwn_vendor_id_store(struct config_item *item,
+>  	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+>  	unsigned char buf[INQUIRY_VENDOR_LEN + 2];
+>  	char *stripped = NULL;
+> -	size_t len;
+> +	ssize_t len;
+>  	ssize_t ret;
+> 
+> -	len = strlcpy(buf, page, sizeof(buf));
+> -	if (len < sizeof(buf)) {
+> +	len = strscpy(buf, page, sizeof(buf));
+> +	if (len > 0) {
+>  		/* Strip any newline added from userspace. */
+>  		stripped = strstrip(buf);
+>  		len = strlen(stripped);
+>  	}
+> -	if (len > INQUIRY_VENDOR_LEN) {
+> +	if (len < 0 || len > INQUIRY_VENDOR_LEN) {
 
-Thanks Kan!
-Ian
+Agh, sorry I missed this before: the first "if" needs to be "len >= 0"
+otherwise this:
 
-> Thanks,
-> Kan
->
-> > Fix a bug caused by the rename of 'cpu' to 'default_core' in perf list.
-> >
-> > Add more documentation, increase type safety and fix some related bugs
-> > where terms weren't initialized properly.
-> >
-> > Ian Rogers (3):
-> >   perf list: Don't print Unit for default_core
-> >   perf parse-events: Name the two term enums
-> >   perf parse-events: Fix propagation of term's no_value when cloning
-> >
-> >  tools/perf/builtin-list.c      |   2 +-
-> >  tools/perf/util/parse-events.c | 203 +++++++++++++++++++++++----------
-> >  tools/perf/util/parse-events.h |  60 +++++++---
-> >  tools/perf/util/parse-events.l |   2 +-
-> >  tools/perf/util/parse-events.y |  27 +++--
-> >  tools/perf/util/pmu.c          |   2 +-
-> >  6 files changed, 207 insertions(+), 89 deletions(-)
-> >
+        ret = target_check_inquiry_data(stripped);
+
+will be passing a NULL pointer...
+
+-- 
+Kees Cook
