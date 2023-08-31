@@ -2,126 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B14B878EFF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED0778EFFA
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346485AbjHaPLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35744 "EHLO
+        id S1346493AbjHaPMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:12:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbjHaPLN (ORCPT
+        with ESMTP id S241589AbjHaPMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:11:13 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D7F2E4C
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:11:09 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bd0bc8b429so17810491fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:11:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693494668; x=1694099468; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OOFcgWJvykU3ufqPjMeqWWJXmE/XqPoeHSC5WspwBo8=;
-        b=sTbdHp2zDtjcLXvz+flCdxxtgBkfcYgwV4O45gYt3bGT9Tzhm6ObfsjJUqYNuz5xbh
-         1zzyLqWk3bnyTfOeZj+m0ejb+8Ij2mEfZop6SgMiMlNYYFALrSOM/ZG/UzhGvTxv9CUv
-         I6mkuUDKIGjrGVOni5LteaoRUCX/3jArWgxbcfG8+J50yVrds6WgGgdqieleHt58EGI5
-         R5Phygxi27e06MTTyYLnYwyoCPyD4fPF1MrhiwLBN2XRk9ELDacxeiJ501MmiaHLobql
-         1T+14S2W8ZHO9hxxg2bCjaS+0JuUBYq1jT6I+uS6EiWZq/7xbOtyKekdIZsD73iC95DQ
-         wq3g==
+        Thu, 31 Aug 2023 11:12:06 -0400
+Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD93EE50
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:12:01 -0700 (PDT)
+Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-26d4ced65c1so1100120a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:12:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693494668; x=1694099468;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OOFcgWJvykU3ufqPjMeqWWJXmE/XqPoeHSC5WspwBo8=;
-        b=P9IGp7+lfsOADKRog1/YD3hgUuGYU7s9Umls0jPmcr6rYh4B1qHooq1WNMNjZswPqz
-         l9fshHlW1N+Dw4jV5hULUcwQdUl9sKZ0sUygZTehtk6PcraCYB7/FqS1iES0POdKlZ/h
-         563YYHdD2+fsO9e72s+4xZek+vnd5J32OzQF0JsrRMowzrxphouSoi5a4QIjOlSGttJF
-         p46RRs761syf8xwN8rQbKfOcOkIOR80DK/j2fjZCkeVHm1TbmakVALo41HBFh5hqwmpj
-         eqKOBX80HiVLR+qHyXNTaNtEWds6+xzXTbP44qznhGLsv8yRFuCe+U3WQSHVD5J37iak
-         JtsA==
-X-Gm-Message-State: AOJu0Yz+eXjKBxrF0RYfUZd4qcur/07pGx3ZYa9dro4221wl2GBk1W7S
-        gtslpqXttxbPdXhwZ/51Qa0FjQ==
-X-Google-Smtp-Source: AGHT+IG3/w4gj2xbUPTCxyRSzFHoeJLeFZiW2uiiFnMe/1mHL0wORIqiK41cZCBiiOqL4QB/7ON/5A==
-X-Received: by 2002:a2e:3515:0:b0:2b9:f2e8:363 with SMTP id z21-20020a2e3515000000b002b9f2e80363mr4195887ljz.51.1693494667500;
-        Thu, 31 Aug 2023 08:11:07 -0700 (PDT)
-Received: from [192.168.1.101] (abxh58.neoplus.adsl.tpnet.pl. [83.9.1.58])
-        by smtp.gmail.com with ESMTPSA id r11-20020a2eb60b000000b002b9cc2f5c39sm356202ljn.37.2023.08.31.08.11.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 08:11:07 -0700 (PDT)
-Message-ID: <4c6877c9-97ad-4092-86a3-f9b314f131ef@linaro.org>
-Date:   Thu, 31 Aug 2023 17:11:05 +0200
+        d=1e100.net; s=20221208; t=1693494720; x=1694099520;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=73T5VhzIYfyXx1BlIn+rQpmkj/AzBZfrfI73pg6gsRQ=;
+        b=TWfI/h2tVt7qKkfQta4KIxaxn0M2v1mg3YhYXxlABLCNVDi7jdczh2e7Jad92yKLNT
+         IGioJeHF7IAdiLDFjsN3giZEO8LcL0WUfIMcBtMPUZ+hrLx7Cti9FdD3pu5aGQso/20e
+         FniqZJYa8/Ypi+FfCwVjZwwmUUHEjk6xEsXfyK4tRWmcARTDv9vKU0lYomBaoTiaVjfA
+         qDd2vAAUZgfTGMyoYr1t2pnm9lVfIkfWKz3RkGOVdEvtPcGielzhWczs6h2Xvw+muJ2/
+         9ecGlm6SRmmlaLVNOjwFlvcTnPUQQa3tRJ0D0ZmOhEulscDwQ17dIuFf0ltRk/KCHbhi
+         sCKw==
+X-Gm-Message-State: AOJu0Ywy+DCDa9Z9q+X4W+rITgHWO9fbn2ZDO8f87HKjpWJkL2uLQ0Rg
+        0KNCzG6xEreaiSK9KjP0bUGAWKj5R7UXGepmPBDpZ0FP7zMG
+X-Google-Smtp-Source: AGHT+IE+n5U6gPEuIVgdvvqKVxBkdD8wzcdp0/xAS7Ek6WqWs2uLnTGexuh4H6dvyrUcZ1auiGkJDt2JAxYPCv1CaNRZoqOSuJDB
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/4] phy: qualcomm: phy-qcom-eusb2-repeater: Zero out
- untouched tuning regs
-Content-Language: en-US
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Abel Vesa <abel.vesa@linaro.org>
-Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230830-topic-eusb2_override-v1-0-ab23825385a8@linaro.org>
- <20230830-topic-eusb2_override-v1-3-ab23825385a8@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230830-topic-eusb2_override-v1-3-ab23825385a8@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:a08:b0:26d:2b05:4926 with SMTP id
+ gg8-20020a17090b0a0800b0026d2b054926mr952109pjb.1.1693494720590; Thu, 31 Aug
+ 2023 08:12:00 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 08:12:00 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003ffd3806043977e1@google.com>
+Subject: [syzbot] [ext4?] general protection fault in inode_permission (2)
+From:   syzbot <syzbot+f5b965c58efb9c510227@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, brauner@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30.08.2023 04:40, Konrad Dybcio wrote:
-> The vendor kernel zeroes out all tuning data outside the init sequence
-> as part of initialization. Follow suit to avoid UB.
-This patch doesn't do what it says. It passes 0x0 as val and mask
-to regmap_update_bits resulting in a NOP, still..
+Hello,
 
-Konrad
+syzbot found the following issue on:
+
+HEAD commit:    28f20a19294d Merge tag 'x86-urgent-2023-08-26' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=153271dfa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1e4a882f77ed77bd
+dashboard link: https://syzkaller.appspot.com/bug?extid=f5b965c58efb9c510227
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16aab870680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=175a687ba80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6b7215a1c9ca/disk-28f20a19.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c5935df3c66a/vmlinux-28f20a19.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3974ee7fd77d/bzImage-28f20a19.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/4d843a4575f5/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f5b965c58efb9c510227@syzkaller.appspotmail.com
+
+general protection fault, probably for non-canonical address 0xeeb017db1ffff112: 0000 [#1] PREEMPT SMP KASAN
+KASAN: maybe wild-memory-access in range [0x7580ded8ffff8890-0x7580ded8ffff8897]
+CPU: 0 PID: 5055 Comm: syz-executor397 Not tainted 6.5.0-rc7-syzkaller-00185-g28f20a19294d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:do_inode_permission fs/namei.c:460 [inline]
+RIP: 0010:inode_permission fs/namei.c:528 [inline]
+RIP: 0010:inode_permission+0x35d/0x5e0 fs/namei.c:503
+Code: 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 5d 02 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 73 20 49 8d 7e 10 48 89 fa 48 c1 ea 03 <80> 3c 02 00 0f 85 30 02 00 00 4d 8b 76 10 4d 85 f6 0f 84 ab 01 00
+RSP: 0000:ffffc90003caf5a0 EFLAGS: 00010216
+RAX: dffffc0000000000 RBX: ffff88807580dcb0 RCX: 0000000000000000
+RDX: 0eb01bdb1ffff112 RSI: ffffffff81ec15b5 RDI: 7580ded8ffff8890
+RBP: 0000000000000081 R08: 0000000000000003 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffffff8cb84420
+R13: 0000000000000000 R14: 7580ded8ffff8880 R15: ffff88807580dcb2
+FS:  0000555555f8d3c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffc7 CR3: 000000002a981000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ may_lookup fs/namei.c:1716 [inline]
+ link_path_walk.part.0.constprop.0+0x26f/0xce0 fs/namei.c:2267
+ link_path_walk fs/namei.c:2250 [inline]
+ path_parentat+0xaa/0x1b0 fs/namei.c:2526
+ __filename_parentat+0x1f2/0x640 fs/namei.c:2550
+ filename_parentat fs/namei.c:2568 [inline]
+ do_unlinkat+0x109/0x6d0 fs/namei.c:4368
+ do_coredump+0x18bd/0x3fc0 fs/coredump.c:675
+ get_signal+0x2464/0x2770 kernel/signal.c:2867
+ arch_do_signal_or_restart+0x89/0x5f0 arch/x86/kernel/signal.c:308
+ exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
+ exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
+ irqentry_exit_to_user_mode+0x9/0x40 kernel/entry/common.c:310
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:570
+RIP: 0033:0x7f96f653c143
+Code: e8 46 45 00 00 66 0f 1f 44 00 00 48 83 ec 08 48 89 fa 48 89 f1 31 ff 31 f6 e8 4d 01 03 00 85 c0 75 09 48 83 c4 08 c3 0f 1f 40 <00> 48 c7 c2 b0 ff ff ff 64 89 02 b8 ff ff ff ff eb e6 66 2e 0f 1f
+RSP: 002b:00007ffc5e7c7220 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 000000000006cd02 RCX: 00007f96f656c2b3
+RDX: 00007ffc5e7c7230 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000066 R08: 00000000000001be R09: 0000000000000001
+R10: 0000000000000000 R11: 0000000000000202 R12: 00007ffc5e7c7300
+R13: 0000000000000025 R14: 431bde82d7b634db R15: 00007ffc5e7c7284
+ </TASK>
+Modules linked in:
+----------------
+Code disassembly (best guess):
+   0:	48 89 fa             	mov    %rdi,%rdx
+   3:	48 c1 ea 03          	shr    $0x3,%rdx
+   7:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
+   b:	0f 85 5d 02 00 00    	jne    0x26e
+  11:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  18:	fc ff df
+  1b:	4c 8b 73 20          	mov    0x20(%rbx),%r14
+  1f:	49 8d 7e 10          	lea    0x10(%r14),%rdi
+  23:	48 89 fa             	mov    %rdi,%rdx
+  26:	48 c1 ea 03          	shr    $0x3,%rdx
+* 2a:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e:	0f 85 30 02 00 00    	jne    0x264
+  34:	4d 8b 76 10          	mov    0x10(%r14),%r14
+  38:	4d 85 f6             	test   %r14,%r14
+  3b:	0f                   	.byte 0xf
+  3c:	84                   	.byte 0x84
+  3d:	ab                   	stos   %eax,%es:(%rdi)
+  3e:	01 00                	add    %eax,(%rax)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
