@@ -2,213 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CA878F3B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:58:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB3D778F3BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235925AbjHaT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:58:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59826 "EHLO
+        id S241931AbjHaUCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 16:02:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229688AbjHaT6W (ORCPT
+        with ESMTP id S229688AbjHaUCi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:58:22 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99C11EA
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:58:18 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 577E4C15;
-        Thu, 31 Aug 2023 12:58:57 -0700 (PDT)
-Received: from [10.57.65.16] (unknown [10.57.65.16])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 837C53FBD2;
-        Thu, 31 Aug 2023 12:57:57 -0700 (PDT)
-Message-ID: <31aa40aa-1471-44ca-9cc8-3f5476fbde7e@arm.com>
-Date:   Thu, 31 Aug 2023 20:57:51 +0100
+        Thu, 31 Aug 2023 16:02:38 -0400
+Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D9711B;
+        Thu, 31 Aug 2023 13:02:35 -0700 (PDT)
+Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34df0976c3bso3991945ab.2;
+        Thu, 31 Aug 2023 13:02:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693512155; x=1694116955; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=fwRxBWWBbkN10ubdKW/uHCOV/7q0O2q4Ji9kDfhQu84=;
+        b=h9/xjoSyR1qHEhNr0sivmBraSTXlXTqMtK1hOuZFTl709M2Mx1sYALfIZBUbXBDBb8
+         hVjTJkmmH4g9lvQXdzeAfYiJzg0uitN39uMv7hYrEXgKvQmXbea4u3VaFM8/c9tgqZEw
+         ufCdsCiIhS0EU4ysW5pSoDpohHqOXVq03AcU9GuF3zs4h8459n9dnn8KPk45gCXJP+uu
+         zP2HIeYzaRksms2l/cBQoE2vNWwLmnnD9ofwvhw5MEYowp3dpwt8TQx+Zm11aSvPv8qM
+         z1G7ZW6fnhcFC9JJLHPqeZWmoQv3J5x/ZyOD60rG2LOhqIhOTwoxqyMSDU1ktf7olAVW
+         KlKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693512155; x=1694116955;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fwRxBWWBbkN10ubdKW/uHCOV/7q0O2q4Ji9kDfhQu84=;
+        b=RHh6VvQ4+WpP2vgysYfbXDLfLX5J1mxyfkLEtHLWrqnw//vLUtWFMA9RU2bqWJdFoU
+         HWR19I+l+EaqTxfAe2CkToiSDcNX0yukI7H7atmeBUVNGgo8/NucQ0MPeUXSyeKv/Ewl
+         s0O7O9Dx21efsVo05bDDqT0aMkSkHKI5JH/PBiLZDHena/LvpLQJXaKuh3EDeB0Z0fnT
+         LKopA3R5Yv4pdSODWD993U/kWUPeQdP57tPJ1GMRaU3BBSCr6Jb8iO+u0Uf8iWVbW9p4
+         OwcxLsdOmJpEYU1c0ktT06zSgMofbrJuTd9nvJnUiCQC/mLmAy/tFpOJV999N2CKzUPe
+         sf9A==
+X-Gm-Message-State: AOJu0YydOyrefE9Ff31WhWTdYf/Wazn8DRgwSWqweLQ7dyKETpKfozeN
+        OAkRWc3NYQ0Bn8qxYPsNoAwlfYpjobY=
+X-Google-Smtp-Source: AGHT+IEJAj1pVkTefkkj7cJhPthe9gp589Jjo5zciu/foCLyUTwmj3iH5J50ebb0rIRx3e8jlH0SIg==
+X-Received: by 2002:a92:dd09:0:b0:34d:f0b9:97ff with SMTP id n9-20020a92dd09000000b0034df0b997ffmr567138ilm.5.1693512154718;
+        Thu, 31 Aug 2023 13:02:34 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id x10-20020a92d30a000000b003423af2fda6sm606478ila.83.2023.08.31.13.02.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 13:02:33 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <6883223f-20ec-e5be-8015-256198f1305f@roeck-us.net>
+Date:   Thu, 31 Aug 2023 13:02:32 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/5] mm: Refector release_pages()
-Content-Language: en-GB
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Will Deacon <will@kernel.org>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20230830095011.1228673-1-ryan.roberts@arm.com>
- <20230830095011.1228673-5-ryan.roberts@arm.com>
- <ZO+US8nVJTpbFGx3@casper.infradead.org>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <ZO+US8nVJTpbFGx3@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] hwmon: add POWER-Z driver
+Content-Language: en-US
+To:     =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <20230831-powerz-v2-1-5c62c53debd4@weissschuh.net>
+ <ca72a21b-af05-c754-99a0-34d913edf304@roeck-us.net>
+ <ecb91dd0-1b0e-4227-b4ab-79f85a93f43a@t-8ch.de>
+From:   Guenter Roeck <linux@roeck-us.net>
+In-Reply-To: <ecb91dd0-1b0e-4227-b4ab-79f85a93f43a@t-8ch.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 30/08/2023 20:11, Matthew Wilcox wrote:
-> On Wed, Aug 30, 2023 at 10:50:10AM +0100, Ryan Roberts wrote:
->> In preparation for implementing folios_put_refs() in the next patch,
->> refactor release_pages() into a set of helper functions, which can be
->> reused. The primary difference between release_pages() and
->> folios_put_refs() is how they iterate over the set of folios. The
->> per-folio actions are identical.
+On 8/31/23 11:03, Thomas Weißschuh wrote:
+> Hi Guenter,
 > 
-> As you noted, we have colliding patchsets.  I'm not hugely happy with
-> how patch 4 turned out, 
-
-Could you describe the issues as you see them? I'm keen not to repeat the same
-bad patterns in future.
-
-so I thought I'd send some addendum patches to
-> my RFC series that implement pfn_range_put() (maybe should have been
-> pfn_ranges_put()?) on top of my patch series.  I think it's a bit nicer,
-> but not quite as nice as it could be.
+> thanks for your review!
 > 
-> I'm thinking about doing ...
+> Ack to most of your points.
 > 
-> void release_unref_folios(struct folio_batch *folios)
-> {
-> 	struct lruvec *lruvec = NULL;
-> 	unsigned long flags = 0;
-> 	int i;
+>> [..]
 > 
-> 	for (i = 0; i < folios->nr; i++) {
-> 		struct folio *folio = folios->folios[i];
-> 		free_swap_cache(folio);
-
-Agree this can't go here - would put it in pfn_range_put(). But would not want
-it in folios_put() as you suggeted in the other email - that would surely change
-the behaviour of folios_put()?
-
-> 		__page_cache_release(folio, &lruvec, &flags);
-> 	}
-
-I think you would need to add:
-
-	if (lruvec)
-		unlock_page_lruvec_irqrestore(lruvec, flags);
-
-> 	mem_cgroup_uncharge_folios(folios);
-> 	free_unref_folios(folios);
-> }
+>>> +
+>>> +#define DRIVER_NAME	"powerz"
+>>> +#define POWERZ_EP_CMD_OUT	0x01
+>>> +#define POWERZ_EP_DATA_IN	0x81
+>>> +
+>>> +struct powerz_sensor_data {
+>>> +	u8 _unknown_1[8];
+>>> +	__le32 Vbus;
+>>
+>> CHECK: Avoid CamelCase: <Vbus>
+>> #160: FILE: drivers/hwmon/powerz.c:18:
+>> +	__le32 Vbus;
+>>
+>> Please run your patches through checkpatch --strict.
 > 
-> then this becomes:
+> I did. Weird that it didn't show. I'll investigate.
+> (And fix it)
 > 
-> void folios_put(struct folio_batch *folios)
-> {
->         int i, j;
+>>
+>>> +	__le32 Ibus;
+>>> +	__le32 Vbus_avg;
+>>> +	__le32 Ibus_avg;
+>>> +	u8 _unknown_2[8];
+>>> +	u8 temp[2];
+>>> +	__le16 cc1;
+>>> +	__le16 cc2;
+>>> +	__le16 dp;
+>>> +	__le16 dm;
+>>> +	u8 _unknown_3[6];
+>>> +} __packed;
+>>> +
 > 
->         for (i = 0, j = 0; i < folios->nr; i++) {
->                 struct folio *folio = folios->folios[i];
+>> [..]
 > 
->                 if (is_huge_zero_page(&folio->page))
->                         continue;
->                 if (folio_is_zone_device(folio)) {
->                        if (put_devmap_managed_page(&folio->page))
->                                 continue;
->                         if (folio_put_testzero(folio))
->                                 free_zone_device_page(&folio->page);
->                         continue;
->                 }
+>>> +static int powerz_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
+>>> +		       int channel, long *val)
+>>> +{
+>>> +	struct usb_interface *intf = to_usb_interface(dev->parent);
+>>> +	struct usb_device *udev = interface_to_usbdev(intf);
+>>> +	struct powerz_sensor_data *data;
+>>> +	struct powerz_usb_ctx *ctx;
+>>> +
+>>> +	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
+>>> +	if (!ctx)
+>>> +		return -ENOMEM;
+>>> +
+>>
+>> I think it would be much better to allocate ctx once as part of
+>> struct powerz_priv and keep it around. Sure, that means that this
+>> function requires a lock, but I don't see that as problem (and who
+>> knows how the device reacts to multiple pending usb transactions).
+>>
+>> You'd need to allocate transfer_buffer separately because it needs to be
+>> dma aligned, but that should not be a problem either.
 > 
->                 if (!folio_put_testzero(folio))
->                         continue;
->                 if (folio_test_hugetlb(folio)) {
->                        free_huge_folio(folio);
->                         continue;
->                 }
+> What is your opinion on making the transfer buffer the first member of
+> struct powerz_priv? It would simplify the code and still provide a
+> DMA-capable buffer.
 > 
->                 if (j != i)
->                         folios->folios[j] = folio;
->                 j++;
->         }
+
+Sure, works for me.
+
+>> [..]
 > 
->         folios->nr = j;
->         if (!j)
->                 return;
-> 	release_unref_folios(folios);
-> }
+>>> +static int powerz_probe(struct usb_interface *intf, const struct usb_device_id *id)
+>>> +{
+>>> +	struct usb_device *udev = interface_to_usbdev(intf);
+>>> +	struct powerz_priv *priv;
+>>> +	struct device *parent;
+>>> +	const char *name;
+>>> +	int ret;
+>>> +
+>>> +	parent = &intf->dev;
+>>> +
+>>> +	priv = devm_kzalloc(parent, sizeof(*priv), GFP_KERNEL);
+>>> +	if (!priv)
+>>> +		return -ENOMEM;
+>>> +
+>>> +	name = devm_hwmon_sanitize_name(parent, udev->product ?: DRIVER_NAME);
+>>
+>> Why not just use DRIVER_NAME ? This would be much more consistent.
 > 
-> and pfn_range_put() also becomes shorter and loses all the lruvec work.
-
-something like this?
-
-void pfn_range_put(struct pfn_range *range, unsigned int nr)
-{
-	struct folio_batch folios;
-	unsigned int i;
-
-	folio_batch_init(&folios);
-	for (i = 0; i < nr; i++) {
-		struct folio *folio = pfn_folio(range[i].start);
-		unsigned int refs = range[i].end - range[i].start;
-
-		free_swap_cache(folio); // <<<<< HERE? To be equivalent to
-					//       free_pages_and_swap_cache()
-
-		if (is_huge_zero_page(&folio->page))
-                         continue;
-
-		if (folio_is_zone_device(folio)) {
-			if (put_devmap_managed_page_refs(&folio->page, refs))
-				continue;
-			if (folio_ref_sub_and_test(folio, refs))
-				free_zone_device_page(&folio->page);
-			continue;
-		}
-
-		if (!folio_ref_sub_and_test(folio, refs))
-			continue;
-
-		/* hugetlb has its own memcg */
-		if (folio_test_hugetlb(folio)) {
-			free_huge_folio(folio);
-			continue;
-		}
-
-		if (folio_batch_add(&folios, folio) == 0)
-			release_unref_folios(&folios);
-	}
-
-	if (folios.nr)
-		release_unref_folios(&folios);
-}
-
+> I liked the more detailed name better.
+> But if you prefer otherwise I'll simplify it.
 > 
-> Thoughts?
 
-Looks like its getting there to me. Although the bulk of the logic inside the
-loop is still common between folios_put() and pfn_range_put(); perhaps we can
-have a common helper for that, which would just need to take (folio, refs)?
-
-So by adding free_swap_cache() above, we can call pfn_range_put() direct and can
-remove free_pages_and_swap_cache() entirely.
-
-What's the best way to move forward here? Two options as I see it:
-
- - I drop patch 4 and create a version of pfn_range_put() that has the same
-semantic as above but essentially just copies the old release_pages() (similar
-to my v1). That keeps my series independent. Then you can replace with the new
-pfn_range_put() as part of your series.
-
- - We can just hook my patches up to the end of your series and do it all in one go.
-
-Opinion?
+I think it just confuses users because it isn't well defined.
 
 Thanks,
-Ryan
+Guenter
 
