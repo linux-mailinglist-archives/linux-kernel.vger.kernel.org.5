@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4504E78E701
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:13:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ED1678E6FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245197AbjHaHNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:13:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35680 "EHLO
+        id S244591AbjHaHNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244968AbjHaHNh (ORCPT
+        with ESMTP id S229656AbjHaHNb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:13:37 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F9771B1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:13:34 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-794cd987ea6so19806939f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:13:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693466013; x=1694070813; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D0uJEXICar/m6wRe8rgnaCoFUj0NDUfeIIguEQQrQtA=;
-        b=QdXmEYUO0R67juQerc6xiM6XSYWL5hyWW8El1DG1ZhMbqGLy8yYLRMWgf7BAP2h3KR
-         hdlRvKrrZFXf6+O+t1V1YkgOdhR4/TL6mpvqUOKhe2u1n3gq9H3MZU/epNrrVpoaqHgp
-         iaep+dpxmFmscOMJq2Pv6OwLBSHT5XlV56F9A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693466013; x=1694070813;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D0uJEXICar/m6wRe8rgnaCoFUj0NDUfeIIguEQQrQtA=;
-        b=TLQhYqmi+rkucJ80nEWZSs8jPhbVu/5X4MaZBSbrzxFk+35vU9Jn+R0QaWFLjBmCLv
-         no3OqIPrlo5sebQNKcSyJEx706elylNKW27kdzc46OkeBgxPrwnueLwbGpJk/xqejIWz
-         8LcGtjU7mRcNPog/AUJJ/W7Jcare8umU4437TCezLwgbBF4bvpvMdY8q4n3+To7umHxn
-         9Rr/yhfmJbcEsl1ax/Xi3YueinIQrhldK9QtSfzfLvKkNGhVvgb63Fi2JadzHrPhJSI/
-         XKtLPH9QTkxIJPBhZegQ26zUaxPNN2bgCjzT2icVtAxuewvMT9BG4+4GZ4C92WoXFbRt
-         NC7g==
-X-Gm-Message-State: AOJu0YzTFJe3ECM0lEm+zn9TM89yCDazJjStuH2M3r5QVPci2H/gM+8V
-        sESF+ebkz8AItAAk9sgYGOILelXwftvzRd6D95I=
-X-Google-Smtp-Source: AGHT+IHIJrpmLFcTf6ppIPjqgPvLO1GY+HRZ69Z5ZAXXtUbLTlqJ7qolhg6ix6pK2L0XNomDLGlFBw==
-X-Received: by 2002:a6b:4f09:0:b0:790:c3d0:8f87 with SMTP id d9-20020a6b4f09000000b00790c3d08f87mr4782101iob.19.1693466013640;
-        Thu, 31 Aug 2023 00:13:33 -0700 (PDT)
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com. [209.85.166.46])
-        by smtp.gmail.com with ESMTPSA id t16-20020a028790000000b00430979b6aa5sm246860jai.0.2023.08.31.00.13.32
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 00:13:32 -0700 (PDT)
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7928dc54896so19918339f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:13:32 -0700 (PDT)
-X-Received: by 2002:a05:6602:2768:b0:783:4f8d:4484 with SMTP id
- l8-20020a056602276800b007834f8d4484mr4957838ioe.2.1693466011946; Thu, 31 Aug
- 2023 00:13:31 -0700 (PDT)
+        Thu, 31 Aug 2023 03:13:31 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D871A3;
+        Thu, 31 Aug 2023 00:13:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=nQmwGWZMB7/FjyQkzIZQo5e/NXyg0NMGcJ/zVLN4YVM=; b=TLvYmZJoAD9oJIu60xxX1dp8bi
+        BX9vjHQ10bcTo5gtekRo6qb+qBAWzvJUQ32D/qhLOo7FpL9FU6ngg9zVl6vHgEl4S8I/s6uIHoS9m
+        IH0H2zFT7bHOu1i+f5ttnG0U9Dj3UFpdvCAT367a0LoIl2fUGrI7f7O078ILYoOVqHVuICnn3SSAE
+        LnwGySpujw8zr6vt4nX6dodbDmebk47PUY79PfFlqNg1KuaSaFM8qm/SAJFVrYZ2d1x/TF4fXhmqg
+        FbQaLtPRkcmP9If36evOZSk92+WUnT2rdWMB5srGxIYD76jU8YG3/yh8wA5czv+i23WGRu+tKbCmH
+        GLRJfmWQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:59796)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qbbrc-0002Vr-1x;
+        Thu, 31 Aug 2023 08:13:12 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qbbra-0006aH-J6; Thu, 31 Aug 2023 08:13:10 +0100
+Date:   Thu, 31 Aug 2023 08:13:10 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Lukasz Majewski <lukma@denx.de>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>, Tristram.Ha@microchip.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Heiner Kallweit <hkallweit1@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] net: phy: Provide Module 4 KSZ9477 errata
+ (DS80000754C)
+Message-ID: <ZPA9hmlew3mT2TVr@shell.armlinux.org.uk>
+References: <20230830125224.1012459f@wsk>
+ <20230830105941.GH31399@pengutronix.de>
+ <20230830135151.683303db@wsk>
+ <20230830121738.GJ31399@pengutronix.de>
+ <ZO83htinyfAp4mWw@shell.armlinux.org.uk>
+ <20230830130649.GK31399@pengutronix.de>
+ <ZO9Ejx9G8laNRasu@shell.armlinux.org.uk>
+ <20230830142650.GL31399@pengutronix.de>
+ <20230830183818.1f42919b@wsk>
+ <20230831044004.GA17603@pengutronix.de>
 MIME-Version: 1.0
-References: <20230822132646.9811-1-jason-jh.lin@mediatek.com>
-In-Reply-To: <20230822132646.9811-1-jason-jh.lin@mediatek.com>
-From:   Fei Shao <fshao@chromium.org>
-Date:   Thu, 31 Aug 2023 16:12:55 +0900
-X-Gmail-Original-Message-ID: <CAC=S1njUVqt969Wv+dMc5wD3Uyu-2Cm4qCUwkp7kfeG_uBbpVw@mail.gmail.com>
-Message-ID: <CAC=S1njUVqt969Wv+dMc5wD3Uyu-2Cm4qCUwkp7kfeG_uBbpVw@mail.gmail.com>
-Subject: Re: [PATCH] drm/mediatek: Add spinlock for setting vblank event in atomic_begin
-To:     "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-Cc:     Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        Eugen Hristev <eugen.hristev@collabora.com>,
-        Jason-ch Chen <jason-ch.chen@mediatek.com>,
-        Johnson Wang <johnson.wang@mediatek.com>,
-        Singo Chang <singo.chang@mediatek.com>,
-        Nancy Lin <nancy.lin@mediatek.com>,
-        Shawn Sung <shawn.sung@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831044004.GA17603@pengutronix.de>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 10:27=E2=80=AFPM Jason-JH.Lin <jason-jh.lin@mediate=
-k.com> wrote:
->
-> Add spinlock protection to avoid race condition on vblank event
-> between mtk_drm_crtc_atomic_begin() and mtk_drm_finish_page_flip().
->
-> Fixes: 119f5173628a ("drm/mediatek: Add DRM Driver for Mediatek SoC MT817=
-3.")
-> Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
+On Thu, Aug 31, 2023 at 06:40:04AM +0200, Oleksij Rempel wrote:
+> Hi Lukasz,
+> 
+> On Wed, Aug 30, 2023 at 06:38:18PM +0200, Lukasz Majewski wrote:
+> > Hi Oleksij,
+>  
+> > The implementation as you suggested seems to work :-)
+> > 
+> > The ksz_get_phy_flags() - where the MICREL_NO_EEE is set is executed
+> > before ksz9477_config_init().
+> > 
+> > And then the eee_broken_modes are taken into account.
+> > 
+> > # ethtool --show-eee lan1
+> > EEE Settings for lan1:
+> >         EEE status: disabled
+> >         Tx LPI: 0 (us)
+> >         Supported EEE link modes:  100baseT/Full 
+> >                                    1000baseT/Full 
+> >         Advertised EEE link modes:  Not reported
+> >         Link partner advertised EEE link modes:  Not reported
+> > 
+> > I will prepare tomorrow a proper patch.
+> 
+> can you please by the way remove this line:
+> https://elixir.bootlin.com/linux/v6.5/source/drivers/net/phy/micrel.c#L1803
+> 
+> it is obsolet by eee_broken_modes.
 
-Reviewed-by: Fei Shao <fshao@chromium.org>
+... and if possible verify on the link partner side that indeed no
+EEE modes are being advertised by the Micrel device.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
