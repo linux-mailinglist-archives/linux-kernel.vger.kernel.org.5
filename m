@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0546F78EBFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DCD78EBFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240658AbjHaL3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:29:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
+        id S243245AbjHaLaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:30:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229553AbjHaL3x (ORCPT
+        with ESMTP id S230369AbjHaLaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:29:53 -0400
-Received: from out-247.mta0.migadu.com (out-247.mta0.migadu.com [91.218.175.247])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4CFCF3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:29:50 -0700 (PDT)
-Message-ID: <0261d27e-f9b5-c0fe-1bae-2b76062e7386@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693481386; h=from:from:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dsNW9x8p5/MYaUYpuhJyG4wYF90x9MqL7y3yj9nXMaw=;
-        b=rFYBUzi7n5za5aMrFhJ4GszeFjuiR8iEUoh2gz36MHNgVXaRvr6oKzSHzSa0TF8Yc1Y+C7
-        4NdsAjh6NluDOmkeNKmBJ+O4kBBc7ai1mTpIr4qHujy6FQAkoq8UAKa7gHpcWJ3NImYl0D
-        X+WckfDgDdRvciIjC/jh6wNZ8JADGGQ=
-Date:   Thu, 31 Aug 2023 07:29:38 -0400
+        Thu, 31 Aug 2023 07:30:21 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BEACF3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:30:18 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-58fb73e26a6so8626187b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693481418; x=1694086218; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=P69XUW20N8v7WEMjFdBLz18m8BcCG/JpWdxrnZjKH6E=;
+        b=fnN+VNeVUpKwQQt0k3Xnu27qeFcOSU9nH1noWjivYHbOohp/QG3cxNzA3QhRS8Pfm7
+         +MhmYcS6vePiOO6Vek6PxtFeSbxh6F/ZTF9yzwvyNl+qLPWH6AWIz5ghs1kk4BJbzw3m
+         d8dRrq6eY3u7ga9Z6IS3luxtLQUynjp69R3bQJBuZ8hbODLQl8K+z0kB+ckW2SNHnb+z
+         G5LqnqBztKHjvk/7V3jmcCaGrRIldTyk9kZh1f96+oyjHWs6sbYF3kfQicAxVZTwn4aN
+         ZUUic92eA4GIOXiULeiSejxxvSe2GktH4cZQAYg87Jx3Qkjya+btCp9Rdko30NSKOspW
+         +tOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693481418; x=1694086218;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=P69XUW20N8v7WEMjFdBLz18m8BcCG/JpWdxrnZjKH6E=;
+        b=URQxss5Gm5Vge6EDgzMU4ZFXIC2XgQrLxk/5JFj8Z/E1aKKo2c2HoC4J+Lupy0B27y
+         ZCrA7k027b4ARqnutLQNhoLGwUhcmay8gVyb+k5tUSpTRfQaKMSC++CSag66E0zKf0KX
+         c2IFAIqFF4N5dlf/u61veNY9Io/dMY2WQaJV5bxSNOi4kzu6eDkaNM+LnFushLQ/jw/u
+         7Uq7HS256h2dHiZbSm80/5D98U3wYOvXXCXLQ3ygP9D4Btl/91fLeQ5wTCiZe+IsjupF
+         Xqwzz2elmY2o9WVtvokw4QByrXaKxQGhZ0TEjjdJ5EAakaHT6o0ig4+cfNyG4CaxsuU6
+         HFtA==
+X-Gm-Message-State: AOJu0YywbK8hSzw+R9250rNVDCDjEk1XSObhSHxWJxTay4J/rBzEEzhd
+        /zyeLrazI42nMXU226DOOITb8guHw5IHIkHAhjGjjA==
+X-Google-Smtp-Source: AGHT+IG3wpX5o5TiwoJaSIAlQpooeho0BC4+cHA8fCogEyPi1wHFnguG8bxZPAZFD7dF/rKVCn4IqkeFKeyBGy0NZRo=
+X-Received: by 2002:a5b:889:0:b0:d78:5d61:ddee with SMTP id
+ e9-20020a5b0889000000b00d785d61ddeemr4745877ybq.30.1693481417767; Thu, 31 Aug
+ 2023 04:30:17 -0700 (PDT)
 MIME-Version: 1.0
-Reply-To: yonghong.song@linux.dev
-Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
- skip_if_dup_files check
-Content-Language: en-US
-To:     Oleg Nesterov <oleg@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yonghong Song <yhs@fb.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Kui-Feng Lee <kuifeng@fb.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230825161842.GA16750@redhat.com>
- <20230825161947.GA16871@redhat.com> <20230825170406.GA16800@redhat.com>
- <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
- <20230827201909.GC28645@redhat.com>
- <ac60ff18-22b0-0291-256c-0e0c3abb7b62@linux.dev>
- <20230828105453.GB19186@redhat.com>
- <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
- <20230830235459.GA3570@redhat.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <20230830235459.GA3570@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20230829213441.310655-1-ulf.hansson@linaro.org>
+ <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
+ <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
+ <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
+ <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
+ <CAHk-=wj1j0HuNWKLEzi74zEr2rGnMLEFZjLvV=rzdqzQPqOzdQ@mail.gmail.com> <CAHk-=whpfnSqToqx9f7G4-QssDHW2TBPqiXc5q1=q7w9NKxiSg@mail.gmail.com>
+In-Reply-To: <CAHk-=whpfnSqToqx9f7G4-QssDHW2TBPqiXc5q1=q7w9NKxiSg@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 31 Aug 2023 13:29:41 +0200
+Message-ID: <CAPDyKFpeH5XV36NaaoWQw8tuXhi6jOtEAfWujC9An-tSzSStvQ@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
@@ -66,66 +75,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 31 Aug 2023 at 02:08, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Wed, 30 Aug 2023 at 08:07, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+> >
+> > On Wed, 30 Aug 2023 at 01:34, Ulf Hansson <ulf.hansson@linaro.org> wrote:
+> > >
+> > > Please advise me on how to move forward.
+> >
+> > Just to not cause pain during the merge window, I think I'll take the
+> > current trees (eventually - I still have other things pending first),
+>
+> I took the existing pull requests since they were next in my pile.
 
+Thanks!
 
-On 8/30/23 7:54 PM, Oleg Nesterov wrote:
-> On 08/28, Yonghong Song wrote:
->>
->> On 8/28/23 3:54 AM, Oleg Nesterov wrote:
->>>
->>> Could you review 6/6 as well?
->>
->> I think we can wait patch 6/6 after
->>     https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
->> is merged.
-> 
-> OK.
-> 
->>> Should I fold 1-5 into a single patch? I tried to document every change
->>> and simplify the review, but I do not want to blow the git history.
->>
->> Currently, because patch 6, the whole patch set cannot be tested by
->> bpf CI since it has a build failure:
->>    https://github.com/kernel-patches/bpf/pull/5580
-> 
-> Heh. I thought this is obvious. I thought you can test 1-5 without 6/6
-> and _review_ 6/6.
-> 
-> I simply can't understand how can this pull/5580 come when I specially
-> mentioned
-> 
-> 	> 6/6 obviously depends on
-> 	>
-> 	>	[PATCH 1/2] introduce __next_thread(), fix next_tid() vs exec() race
-> 	>	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
-> 	>
-> 	> which was not merged yet.
-> 
-> in 0/6.
+>
+> But I hope we can get the naming sorted out still during this merge
+> window and not leave it pending for some later time.
 
-The process in CI for testing is fully automated, and it does
-not look at commit message. That is why it takes the whole
-series. This is true for all other patch set.
+No problem, I will take care of this. Allow me a few days to send you
+another pull-request for this.
 
-> 
->> I suggest you get patch 1-5 and resubmit with tag like
->>    "bpf-next v2"
->>    [Patch bpf-next v2 x/5] ...
->> so CI can build with different architectures and compilers to
->> ensure everything builds and runs fine.
-> 
-> I think we can wait for
-> 
-> 	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
-> 
-> as you suggest above, then I'll send the s/next_thread/__next_thread/
-> oneliner without 1-5. I no longer think it makes sense to try to cleanup
-> the poor task_group_seq_get_next() when IMHO the whole task_iter logic
-> needs the complete rewrite. Yes, yes, I know, it is very easy to blame
-> someone else's code, sorry can't resist ;)
-> 
-> The only "fix" in this series is 3/6, but this code has more serious
-> bugs, so I guess we can forget it.
-> 
-> Oleg.
-> 
+Would "drivers/pmdomain" be okay for you, as suggested by Rafael?
+
+Kind regards
+Uffe
