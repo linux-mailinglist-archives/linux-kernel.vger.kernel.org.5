@@ -2,133 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE10F78ED31
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:34:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED12878ED38
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346266AbjHaMeT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:34:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45390 "EHLO
+        id S245057AbjHaMfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 08:35:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbjHaMeT (ORCPT
+        with ESMTP id S235225AbjHaMe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:34:19 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E19DC19A
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:34:15 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F3D83C15;
-        Thu, 31 Aug 2023 05:34:54 -0700 (PDT)
-Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C333A3F738;
-        Thu, 31 Aug 2023 05:34:14 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 13:34:12 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Qiujun Huang <hqjagain@gmail.com>
-Cc:     cristian.marussi@arm.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] firmware: arm_scmi: Fix NULL pointer dereference in
- mailbox_clear_channel
-Message-ID: <20230831123412.wetnqqb7owqfyqov@bogus>
-References: <ED5DC8DB-AE81-4380-8AE5-588F370CD4B0@gmail.com>
- <20230830093902.duvvjimgwddh7qbt@bogus>
- <F59FC6AB-40E6-4BBA-A0BD-C7221160854B@gmail.com>
+        Thu, 31 Aug 2023 08:34:58 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B501E53;
+        Thu, 31 Aug 2023 05:34:52 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id 41be03b00d2f7-56a8794b5adso615181a12.2;
+        Thu, 31 Aug 2023 05:34:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693485291; x=1694090091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=T8qtfSYPASZsR2rv+sOsRKO0t16oVqa7LJBcF2xhXPs=;
+        b=oII/cxjy/YLqXU3R5/zi4XqcTLWcSDIZK42tdwK/0bbjuse/+0chUFK2IuPlPB/yXn
+         NpjNhujcGumO2EZ1ZwZjtq/FbIJmyDhASpiBsyigmcuXimcs/vglDJ8UPQMoVWjBv6Xq
+         fbzSD9NpY/owdETtvAyTztGqB5Aj9JhixMFtvYlJg+MsLICUJ47EX4S4dmBfN56dR7JV
+         whwiQdtHshlqLKHL/zbekw05ZFkeehTqmX0TCgDXi9ehcXWW5WkoiCZX6z3NrAg464JJ
+         PUECt0RQxnYbu5SizlMKqOQk+I/y/vFfAHXneGbgqe+olZCJdpT4SWjlryJAG8KkwYqU
+         at9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693485291; x=1694090091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=T8qtfSYPASZsR2rv+sOsRKO0t16oVqa7LJBcF2xhXPs=;
+        b=RrUeFk/0M2WG5APZzm429T/Mvjh95GXT1tiRTSvcKGKDggg0PVqQtb2WErUSjJDEbb
+         pnhQZci7mG7OArQi6ZC4G/CI6Eewj1QFKNk+9a5aYGoW7cyqEHG+pkwHK5US3ICcSKK+
+         K+vwX67846MsKaymjvpoGYUfHCX06YNC+JneEBLVIagJIxvj0HOBqrjWkvlH0pPGyh72
+         DCW0+2+UvisyfJCcLFTWrHJ6GuBeROg9wIadrZcH067DkRD9XZ2iqK9uIMpRE2yKILJe
+         wF3av3kx6efTkdbGHAPTWWzbIW9dFLYNDAGf3M/FDxs6wj5EHiv/d/8tGFAxEOZI3QfG
+         TDgA==
+X-Gm-Message-State: AOJu0YyGOaTFnG0/KqkAiGEwWEZ3iBFpOj7MR7n0INh8a5d+eTJbZEQa
+        PDJNjF0dsakB68VjgxppX/MxIm8eMs8n8Y5ieAE=
+X-Google-Smtp-Source: AGHT+IE9JEp2n1DYTHTgritm96XaJMShBw83vd2pIVn7QmnoMMXDocvWrdhklQkBFjK0CoIm9lrUxAcm3VTMQBtubHI=
+X-Received: by 2002:a17:90a:4982:b0:26c:f9a5:4493 with SMTP id
+ d2-20020a17090a498200b0026cf9a54493mr4896454pjh.5.1693485291299; Thu, 31 Aug
+ 2023 05:34:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <F59FC6AB-40E6-4BBA-A0BD-C7221160854B@gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230831115128.254226-1-aford173@gmail.com> <20230831115128.254226-4-aford173@gmail.com>
+In-Reply-To: <20230831115128.254226-4-aford173@gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 31 Aug 2023 07:34:39 -0500
+Message-ID: <CAHCN7xKDT-2GJMWwUtOQqHE4R24BOLWvsQy99gw0VP8zULtK+A@mail.gmail.com>
+Subject: Re: [PATCH 4/4] arm64: dts: imx8mp-beacon: Add DMIC support
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 09:23:58PM +0800, Qiujun Huang wrote:
-> 
-> 
-> > 2023年8月30日 下午5:39，Sudeep Holla <sudeep.holla@arm.com> 写道：
-> > 
-> > On Wed, Aug 30, 2023 at 01:07:47AM +0800, Qiujun Huang wrote:
-> >> There is a race between the failure of probe and rx_callback (due to a
-> >> delayed response).
-> >> 
-> >> scmi_probe
-> >> scmi_acquire_protocal
-> >> do_xfer
-> >> timeout
-> >> mailbox_chan_free
-> >>                                                    <--- delay response
-> >>                                                           rx_callback
-> >> mbox_free_channel
-> >> cinfo->transport_info = NULL
-> >>                                                          mailbox_clear_channel
-> >>                                                         dereference cinfo->transport_info
-> > 
-> > It is always good to provide the kernel stacktrace which you get when a
-> > NULL pointer is dereference. It helps for review and also to document it.
-> > 
-> > -- 
-> > Regards,
-> > Sudeep
-> 
-> Get it. Here is the splat.
-> 
-> [    1.942240][    C0] Unable to handle kernel NULL pointer dereference at virtual address 0000000000000048
-> [    1.942241][    C0] Mem abort info:
-> [    1.942243][    C0]   ESR = 0x96000005
-> [    1.944888][    T9] spmi spmi-1: PMIC arbiter version v7 (0x70000000)
-> [    1.950652][    C0]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [    1.950653][    C0]   SET = 0, FnV = 0
-> [    1.950654][    C0]   EA = 0, S1PTW = 0
-> [    1.950656][    C0] Data abort info:
-> [    1.950657][    C0]   ISV = 0, ISS = 0x00000005
-> [    1.950658][    C0]   CM = 0, WnR = 0
-> [    1.950660][    C0] [0000000000000048] user address but active_mm is swapper
-> [    1.950663][    C0] Internal error: Oops: 96000005 [#1] PREEMPT SMP
-> [    2.338929][    C0] pc : mailbox_clear_channel+0x18/0x64
-> [    2.344384][    C0] lr : scmi_handle_response+0x17c/0x4f4
-> [    2.349923][    C0] sp : ffffffc010003db0
-> [    2.354045][    C0] x29: ffffffc010003dc0 x28: ffffffd85263f000 
-> [    2.360216][    C0] x27: ffffffd851621068 x26: ffffffd84ec815c8 
-> [    2.366386][    C0] x25: ffffffd85263bf80 x24: ffffffd85263d230 
-> [    2.372556][    C0] x23: ffffff803cd70cc0 x22: 0000000000000008 
-> [    2.378726][    C0] x21: ffffff8036cf0df8 x20: ffffffd85161bac8 
-> [    2.384896][    C0] x19: ffffff8043ffa580 x18: ffffffc010005050 
-> [    2.391065][    C0] x17: 0000000000000000 x16: 00000000000000d8 
-> [    2.397234][    C0] x15: ffffffd8507965e8 x14: ffffffd84eaebdf0 
-> [    2.403404][    C0] x13: 00000000000001ea x12: 0000000000007ffb 
-> [    2.409574][    C0] x11: 000000000000ffff x10: ffffffd852c5a000 
-> [    2.415744][    C0] x9 : d7be1a9b75f29500 x8 : 0000000000000000 
-> [    2.421914][    C0] x7 : 382e31202020205b x6 : ffffffd852c57e7c 
-> [    2.428084][    C0] x5 : ffffffffffffffff x4 : 0000000000000000 
-> [    2.434254][    C0] x3 : ffffffd84eae6668 x2 : 0000000000000001 
-> [    2.440424][    C0] x1 : 0000000000000000 x0 : ffffff8043ffa580 
-> [    2.446594][    C0] Call trace:
-> [    2.449819][    C0]  mailbox_clear_channel+0x18/0x64
+On Thu, Aug 31, 2023 at 6:51=E2=80=AFAM Adam Ford <aford173@gmail.com> wrot=
+e:
+>
+> The baseboard has a connector for a pulse density microphone.
+> This is connected via the micfil interface and uses the DMIC
+> audio codec with the simple-audio-card.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+>
 
-Is this with latest kernel ? IIUC the mailbox_clear_channel should get called
-only for delayed response and notification in this path(scmi_handle_response).
-You are saying it happens as part of probe and again IIUC probe doesn't have
-any delayed response command. What am I missing ?
+Shawn,
 
-Any additional changes in the tree ? My build has much smaller
-mailbox_clear_channel.
+I forgot to mention that this patch depends on a different patch that is fo=
+und:
 
-> [    2.454916][    C0]  scmi_handle_response+0x17c/0x4f4
-> [    2.460100][    C0]  rx_callback+0x60/0xec
-> [    2.464311][    C0]  mbox_chan_received_data+0x44/0x94
-> [    2.469584][    C0]  qcom_rimps_rx_interrupt+0xc0/0x144 [qcom_rimps]
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20230831044431.=
+250338-2-aford173@gmail.com/
 
-This suggests out of tree driver, any pointers ?
+Sorry about that.
 
-Also I vaguely remember discussing this in the past. Perhaps at [1] or
-somewhere else.
+adam
 
---
-Regards,
-Sudeep
-
-[1] https://lore.kernel.org/linux-arm-kernel/cfa26ff3-c95a-1986-58fc-b49fc9be49d5@quicinc.com/
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts b/arch/a=
+rm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> index acd265d8b58e..ee64c6ffb551 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8mp-beacon-kit.dts
+> @@ -49,6 +49,12 @@ ss_ep: endpoint {
+>                 };
+>         };
+>
+> +       dmic_codec: dmic-codec {
+> +               compatible =3D "dmic-codec";
+> +               num-channels =3D <1>;
+> +               #sound-dai-cells =3D <0>;
+> +       };
+> +
+>         gpio-keys {
+>                 compatible =3D "gpio-keys";
+>                 autorepeat;
+> @@ -147,6 +153,22 @@ reg_usb1_host_vbus: regulator-usb1-vbus {
+>                 enable-active-high;
+>         };
+>
+> +       sound-dmic {
+> +               compatible =3D "simple-audio-card";
+> +               simple-audio-card,name =3D "sound-pdm";
+> +               simple-audio-card,format =3D "i2s";
+> +               simple-audio-card,bitclock-master =3D <&dailink_master>;
+> +               simple-audio-card,frame-master =3D <&dailink_master>;
+> +
+> +               dailink_master: simple-audio-card,cpu {
+> +                       sound-dai =3D <&micfil>;
+> +               };
+> +
+> +               simple-audio-card,codec {
+> +                       sound-dai =3D <&dmic_codec>;
+> +               };
+> +       };
+> +
+>         sound-wm8962 {
+>                 compatible =3D "simple-audio-card";
+>                 simple-audio-card,name =3D "wm8962";
+> @@ -174,6 +196,11 @@ simple-audio-card,codec {
+>         };
+>  };
+>
+> +&audio_blk_ctrl {
+> +       assigned-clocks =3D <&clk IMX8MP_AUDIO_PLL1>, <&clk IMX8MP_AUDIO_=
+PLL2>;
+> +       assigned-clock-rates =3D <393216000>, <135475200>;
+> +};
+> +
+>  &ecspi2 {
+>         pinctrl-names =3D "default";
+>         pinctrl-0 =3D <&pinctrl_ecspi2>;
+> @@ -364,6 +391,15 @@ hd3ss3220_out_ep: endpoint {
+>         };
+>  };
+>
+> +&micfil {
+> +       pinctrl-names =3D "default";
+> +       pinctrl-0 =3D <&pinctrl_pdm>;
+> +       assigned-clocks =3D <&clk IMX8MP_CLK_PDM>;
+> +       assigned-clock-parents =3D <&clk IMX8MP_AUDIO_PLL1_OUT>;
+> +       assigned-clock-rates =3D <49152000>;
+> +       status =3D "okay";
+> +};
+> +
+>  &pcie {
+>         pinctrl-names =3D "default";
+>         pinctrl-0 =3D <&pinctrl_pcie>;
+> @@ -545,6 +581,13 @@ MX8MP_IOMUXC_SAI2_RXFS__GPIO4_IO21 0x10    /* PCIe_n=
+RST */
+>                 >;
+>         };
+>
+> +       pinctrl_pdm: pdmgrp {
+> +               fsl,pins =3D <
+> +                       MX8MP_IOMUXC_SAI5_RXC__AUDIOMIX_PDM_CLK         0=
+xd6
+> +                       MX8MP_IOMUXC_SAI5_RXD0__AUDIOMIX_PDM_BIT_STREAM00=
+       0xd6
+> +               >;
+> +       };
+> +
+>         pinctrl_reg_usdhc2_vmmc: regusdhc2vmmcgrp {
+>                 fsl,pins =3D <
+>                         MX8MP_IOMUXC_SD2_RESET_B__GPIO2_IO19    0x40
+> --
+> 2.39.2
+>
