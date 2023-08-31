@@ -2,107 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 318EC78F492
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98E0778F495
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347578AbjHaV1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 17:27:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47338 "EHLO
+        id S1347589AbjHaV1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 17:27:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347588AbjHaV1J (ORCPT
+        with ESMTP id S240794AbjHaV1q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 17:27:09 -0400
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FF61BF;
-        Thu, 31 Aug 2023 14:27:00 -0700 (PDT)
-Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-76da1331db9so111157885a.0;
-        Thu, 31 Aug 2023 14:27:00 -0700 (PDT)
+        Thu, 31 Aug 2023 17:27:46 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FE910C2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:27:35 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31c79850df5so1097124f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:27:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693517220; x=1694122020; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OKupqeRqjjG5+ZAE8jQOr7HoDwD4mmWqhqzhxE9SrKI=;
-        b=QnyiCWdRrbA/RyCaAQg3I6GxFoYYv6uf1NfaAhtRe15/07V/hvd/G4mdmoO7eV/8Tg
-         UsOpPIrfm40X0BygGmg17G+5MtK/tvLD+IUBxDzjYQnHKmTKqudCoJ3/RneeCfiqHeG2
-         ccNq+fVYyFbIFn2aF+RlkJBvl5jrSlWTo/h1IFPRCDVlaaiawnl4h3UyrAujdNjQlw8a
-         3vavVSgJTiizxuife2Dn6o3wf0Vxp8IbeVhGoM4APbw6p9HaMI5aDxkjFCf82duUM+2P
-         w/7v3yLm5jYzw4Yp+yaa3Y1PuiwlF7AmaJD5ZekURDGjdde6Il0h4b7Buhir5mkfIIuH
-         3ypg==
+        d=gmail.com; s=20221208; t=1693517254; x=1694122054; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iupIS6httnGz7fIFmLRtaWsIeoTcrOCgOigpl3lsPnI=;
+        b=LxaYlAcPHCKDILPNmLqXi/7MOM6L4vVRdSBH1xKGKPhLkl+KqyvowgERK3JYY8y1rZ
+         a2vY7wK4wFk5UEcPj4/UEvph5ExvmcNwyuhHLpTmvWO6NQxjJVnoXJMtpybF1L4W6WKO
+         /bYUYxbEQFnZX0RHlFWB/5QDCnkhRmUO1vKsda6M7eHmORhuRaSY6gxnWSbTH1y2hFGr
+         3HfIjLZGFksnsaZ8isOSP7z/1RLessWLE93zqDq96qm1Jd6u6Xj/AxjrY4jZwVo8RYDO
+         oB1ljJUc0j5pDllNLiUwKAD8UY9lsIcdpBljDbzbqHR7/RLmREvkfS3avvZU8UGpLkMM
+         Xjvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693517220; x=1694122020;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OKupqeRqjjG5+ZAE8jQOr7HoDwD4mmWqhqzhxE9SrKI=;
-        b=P+GC8+Y4u3KYLexEFk134LddDRBqUCUd7GYm3qmWsT5idc8MtpUQAXMhuP8/zu4QI+
-         4ljGeOlpNvFl0YYGjbb6YouHCu8VHmfjOg8AEOe0FkgxqW5hPn4+Cz1t+xj2sSv3PFNJ
-         vTYuNNj1gcIA+Av7xNVsMKWh3+uxKXbHTBK3aGIrxFbCPkCwUqhXeLsjIDFx+h7dbUUT
-         +mAmWES66WDkFIB0S8mRpXo5bAfl9m9ZJXlrky+pb2HiHMXUF/fjxDyymko4SBel6RMb
-         5js6bogOgUcgUrAAOdc4VsMNwzHUh8xE9l4exAXLBzeZUubaUzxZufSMX3sSN845gThx
-         mRmg==
-X-Gm-Message-State: AOJu0Yy1R9CWz5u3+/RmZOXVLWypi6GdrJx/9xVCZErP5GJPdI7iinzp
-        LZ2augQN5F2hNAgH7jtHDaI=
-X-Google-Smtp-Source: AGHT+IH8hKJ4Mmc2oI9vlaszFEwDZpJ7dW2OgV1Y3HBF44zcBYMVO9UjJQvmLZcPpZCnvNsz+Ja66w==
-X-Received: by 2002:a0c:f4c7:0:b0:647:3346:1289 with SMTP id o7-20020a0cf4c7000000b0064733461289mr1296596qvm.11.1693517219718;
-        Thu, 31 Aug 2023 14:26:59 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i29-20020a0cab5d000000b0064713c8fab7sm923855qvb.59.2023.08.31.14.26.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 14:26:58 -0700 (PDT)
-Message-ID: <fc349a26-a56b-f3ed-65a3-4c18f88b650f@gmail.com>
-Date:   Thu, 31 Aug 2023 14:26:38 -0700
+        d=1e100.net; s=20221208; t=1693517254; x=1694122054;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iupIS6httnGz7fIFmLRtaWsIeoTcrOCgOigpl3lsPnI=;
+        b=MqmjJQijPPymAb6qduULSAvG9AeqHs9tkr9OEbdeK9ISES9OBoQdvb44l0lHU3eca8
+         ce4apjX/Oy0/9aoJi53Te/m/cG4bWFtXxG4HlX1Xuxz7EMauXu7y6a+lLpYZAnWNoojR
+         hKt0d+/Imakn5R5Jt0KJiSIrOI8B3vvs7y+gw5+wW+dReflX6/kfyF7HGMSF8FyoXF48
+         l9XafYykU4QJjSvx98dm749gbcq8VKTl04R1Regh7o2oMljzQSsgTbkH0Yfx90aXbbaO
+         0O9jXye550R9jGwZ5IOTvm6CH+ZZ2WsGFt3zf+3qbRw6q336tXRdYW7gcE1wqKjqsPjj
+         gC2g==
+X-Gm-Message-State: AOJu0YxTeGXqKokEZYwb9In0JWXT/BnaLDKaI3iWOfCMr6G12Ir2KKGs
+        eZHTn7aHwvVfinI7j8RcjevKJxUJ7TQ=
+X-Google-Smtp-Source: AGHT+IFzXfZgzc7JItB3iHju8fUuIV3J9BS+3eO1oyJ42ucX2P4sD6yGCzM5Q3fc5dqNzCF4AHcucg==
+X-Received: by 2002:adf:f30d:0:b0:317:eee2:6fba with SMTP id i13-20020adff30d000000b00317eee26fbamr455352wro.40.1693517254017;
+        Thu, 31 Aug 2023 14:27:34 -0700 (PDT)
+Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
+        by smtp.gmail.com with ESMTPSA id s10-20020adfecca000000b003197869bcd7sm3332128wro.13.2023.08.31.14.27.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 14:27:33 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Thu, 31 Aug 2023 23:27:31 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] powerpc: Fix pud_mkwrite() definition after pte_mkwrite()
+ API changes [was: Re: [GIT PULL] x86/shstk for 6.6-rc1]
+Message-ID: <ZPEFw1XGrI69ZbJ6@gmail.com>
+References: <20230830234752.19858-1-dave.hansen@linux.intel.com>
+ <CAHk-=wipDVFEfSJxbnUSDqENs5i8RzSsgJOFdb69pH=b7BOFiQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.4 0/9] 6.4.14-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20230831111127.667900990@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20230831111127.667900990@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wipDVFEfSJxbnUSDqENs5i8RzSsgJOFdb69pH=b7BOFiQ@mail.gmail.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/23 04:11, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.14 release.
-> There are 9 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 02 Sep 2023 11:11:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
-BMIPS_GENERIC:
+* Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+> On Wed, 30 Aug 2023 at 16:48, Dave Hansen <dave.hansen@linux.intel.com> wrote:
+> >
+> > Add x86 shadow stack support
+> 
+> I assume you are aware of the system call renumbering from linux-next,
+> but I thought I'd mention it anyway. 452 was taken by fchmodat2, so
+> your new map_shadow_stack() system call is merged as 453.
+> 
+> I do also note that it looks like the merge resolution of the
+> _COMMON_PAGE_CHG_MASK bits in linux-next is wrong, and lost the
+> _PAGE_DIRTY_BITS part in Ingo's -tip merge 783560d95e0e ("Merge branch
+> 'x86/mm' into x86/merge, to ease integration testing").
+> 
+> Anyway, please do double-check my merge for correctness, and test it
+> on some machine that hopefully supports this and has the
+> infrastructure set up for it.
+
+I believe there's one semantic conflict you missed, which breaks the powerpc64
+build: recent changes to arch/powerpc/include/asm/book3s/64/pgtable.h created
+a new semantic conflict due to the changes to the pte_mkwrite() API:
+
+  161e393c0f63 ("mm: Make pte_mkwrite() take a VMA")
+
+... resolved with the fix below.
+
+Only build tested though.
+
+The crossing upstream commit was:
+
+  27af67f35631 ("powerpc/book3s64/mm: enable transparent pud hugepage")
+
+Thanks,
+
+	Ingo
+
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+
+ arch/powerpc/include/asm/book3s/64/pgtable.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/powerpc/include/asm/book3s/64/pgtable.h b/arch/powerpc/include/asm/book3s/64/pgtable.h
+index 136232a89739..5c497c862d75 100644
+--- a/arch/powerpc/include/asm/book3s/64/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/64/pgtable.h
+@@ -931,7 +931,7 @@ static inline pte_t *pudp_ptep(pud_t *pud)
+ #define pud_mkdirty(pud)	pte_pud(pte_mkdirty(pud_pte(pud)))
+ #define pud_mkclean(pud)	pte_pud(pte_mkclean(pud_pte(pud)))
+ #define pud_mkyoung(pud)	pte_pud(pte_mkyoung(pud_pte(pud)))
+-#define pud_mkwrite(pud)	pte_pud(pte_mkwrite(pud_pte(pud)))
++#define pud_mkwrite(pud)	pte_pud(pte_mkwrite_novma(pud_pte(pud)))
+ #define pud_write(pud)		pte_write(pud_pte(pud))
+ 
+ #ifdef CONFIG_HAVE_ARCH_SOFT_DIRTY
 
