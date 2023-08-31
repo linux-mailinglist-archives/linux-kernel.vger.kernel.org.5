@@ -2,172 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2777578EC23
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9AF78EC2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239056AbjHaLhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:37:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50188 "EHLO
+        id S1344656AbjHaLj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231672AbjHaLho (ORCPT
+        with ESMTP id S231672AbjHaLjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:37:44 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAFBAB
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:37:41 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d7e387c33f3so454097276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:37:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693481859; x=1694086659; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lypt1ExDbkEeEChHfWqa/VhxnyCI/TkoTn/TCNMR5X8=;
-        b=R2JGTmkbBgl3zqlkmLHoy2ank7534YpjhfaQs028wD55qijwQmFc2vDYtefr39KsrU
-         4olE/2Lp8pueYwXJK3Nsh/Pev7QqmbfKYvRWgkwMCgkBu2UJ4lERZAsZR+HBuFy93vLY
-         RQgAQi38Sd4QCviiZwyvgBc26ymGDnjm+nEoGOkYBgUGhyazg5PoGabxinPEtSaTjj8u
-         Vg7+NTX8b3EOM+oE0Kkf1er80WoLlXNkz1EIgLcEvsm4P6Akp82Z+PfdyrkFvTxNSW2M
-         CxfpnJ9hvmRF5KSC1BezYmVTmt/MSMxeKDOVifWQkiBxbdpwKSfMbBvmiNuSFrVf74Hz
-         3itw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693481859; x=1694086659;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lypt1ExDbkEeEChHfWqa/VhxnyCI/TkoTn/TCNMR5X8=;
-        b=PYP3BPcrowpAPQ+Nh7mXUEUWEjrbaFel4oc1V+cG2wjomZxOsFV/DRB6FP+8wsbi6/
-         kvCGNN21wp1I5r/Xp6sJ9k7ae0naShfb5NYfxZvFRgNMMvpA2m/yFnQZeDbL/6njPkO2
-         16mkrMyNtxeEYKqfDpWMcQekHBCcNkje06l1FaCuMrBYjQxabDINZy0Aa/kZOwPU2NJC
-         WRL0KtXN3diUuEoPGGX31P5J36ppyOSgqRZnHEfrolAWW0F5eJb5Z2vxbeHP3IWlKku0
-         dWtWgVP6qNnytM3MVV8ZjpmuRYOGgAT1SyDkjtJe+rsAhGtwPh22XOTDXbyYKjM6cz+4
-         QKCA==
-X-Gm-Message-State: AOJu0YwZvZPfpnYfteJxotikSE4ypPLbw1XgMge0xlGrH3PiC1tonuj3
-        U2umc33sd/clNSNUfesoN11zo3ibyp7WmHlq/z/e3A==
-X-Google-Smtp-Source: AGHT+IGBvK3EVwNwH9rlAiV5YEc2n1O3boSOPFtTlRByjOV/DKA4yqbSCqz3ilp2WwhzpF6hM6wL2mYOd3TXCTemySw=
-X-Received: by 2002:a25:fc21:0:b0:d0e:99be:5da2 with SMTP id
- v33-20020a25fc21000000b00d0e99be5da2mr4719634ybd.65.1693481859667; Thu, 31
- Aug 2023 04:37:39 -0700 (PDT)
+        Thu, 31 Aug 2023 07:39:24 -0400
+Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F776BC;
+        Thu, 31 Aug 2023 04:39:21 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbzQr3hldz9xFQH;
+        Thu, 31 Aug 2023 19:27:16 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwDHebm+e_BkHQreAQ--.24451S2;
+        Thu, 31 Aug 2023 12:38:52 +0100 (CET)
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Subject: [PATCH v2 20/25] security: Introduce key_post_create_or_update hook
+Date:   Thu, 31 Aug 2023 13:37:58 +0200
+Message-Id: <20230831113803.910630-1-roberto.sassu@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230831104136.903180-1-roberto.sassu@huaweicloud.com>
+References: <20230831104136.903180-1-roberto.sassu@huaweicloud.com>
 MIME-Version: 1.0
-References: <20230829213441.310655-1-ulf.hansson@linaro.org>
- <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
- <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
- <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
- <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com> <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com>
-In-Reply-To: <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Thu, 31 Aug 2023 13:37:03 +0200
-Message-ID: <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: LxC2BwDHebm+e_BkHQreAQ--.24451S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFWruF13Jw45ZFWUJr4Utwb_yoWrWw18pa
+        yYk3W5K3yFkFyaqrZxAF17Way5t3y0gry7K39xWw1rtFnYqa1xXr42kFn8CrW3XryfA340
+        va17Zr43GrnFyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E
+        87Iv6xkF7I0E14v26rxl6s0DYxBIdaVFxhVjvjDU0xZFpf9x07UAkuxUUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAGBF1jj49drAAAsP
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,MAY_BE_FORGED,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 11:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
->
-> On Wed, Aug 30, 2023 at 10:34=E2=80=AFAM Ulf Hansson <ulf.hansson@linaro.=
-org> wrote:
-> >
-> > On Wed, 30 Aug 2023 at 03:20, Linus Torvalds
-> > <torvalds@linux-foundation.org> wrote:
-> > >
-> > > On Tue, 29 Aug 2023 at 17:48, Arnd Bergmann <arnd@arndb.de> wrote:
-> > > >
-> > > > How about moving it to drivers/power/domain/ instead?
-> > >
-> > > That sounds like a sensible name and would seem to fit logically with
-> > > our existing tree structure quite well.
-> >
-> > I am sincerely sorry if I have annoyed you with picking the name
-> > "genpd" as the directory-name - and especially without further
-> > explanation. The genpd thing certainly deserves to be documented
-> > better, I will try to get some time to do this soon. Anyway, me and
-> > many others in the power/performance areas that have been working with
-> > the genpd interface, have simply gotten comfortable using the "genpd"
-> > acronym. Hence, the naming was a no-brainer to me.
-> >
-> > That said, if you feel that the above directory-path/name is a better
-> > fit I can certainly move it over there, np! Although, before you make
-> > the final decision I want to point out a few things for you to
-> > consider.
-> >
-> > *) The new subsystem is solely intended for the generic PM domain
-> > providers. Other PM domains providers, like the ACPI PM domains for
-> > example (drivers/acpi/*), don't really belong here, at least in my
-> > opinion. So, maybe "domain" isn't specific enough? Although, if not
-> > using "genpd", I have no better suggestion.
-> >
-> > **) Please keep in mind that we have several other power/performance
-> > related subsystems that don't live under drivers/power/*. Moving more
-> > things in there is not really going to help the people that work on
-> > these things. No matter where and what the name of the subsystem is,
-> > one simply needs to dive into the details anyway. Moreover, in this
-> > case, "genpd" isn't just about "power" (idle management) but
-> > performance management too.
-> >
-> > >
-> > > > I don't think we can easily rename the interfaces that have been
-> > > > in use for the past 12 years
-> > >
-> > > I actually think the interface names are much less of an issue, since
-> > > anybody using them is presumably familiar with the naming.
-> > >
-> > > It was only with the directory structure that I reacted to it, becaus=
-e
-> > > that kind of exposes the naming to people who definitely are *not*
-> > > familiar with it (ie me, but presumably anybody else who sees the
-> > > diffstats etc fly past).
-> > >
-> > > And yes, we have a number of other pretty obscure driver names in our
-> > > tree (I end up having to remind myself what "ntb" and "hsi" etc mean)=
-,
-> > > and I don't tend to love them either, but at least they tend to be
-> > > industry / vendor names.
-> >
-> > I get your point. I was indeed trying to obey the current naming
-> > strategy, but I think it's not entirely easy to understand what is
-> > prefered.
-> >
-> > Please advise me on how to move forward.
->
-> If I may suggest something, I would call this "pmdomain" instead of
-> "genpd".  I don't think that /drivers/power/ is a particularly
-> suitable location for it, because it doesn't really have much to do
-> with power supplies and more to do with device PM.
+From: Roberto Sassu <roberto.sassu@huawei.com>
 
-"pmdomain" is probably giving a reasonable good hint of what goes on
-in this subsystem. This works fine for me, thanks!
+In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+the key_post_create_or_update hook.
 
->
-> Also, I would move drivers/base/power/domain.c to drivers/pmdomain/
-> (and rename it to something like core.c), because it would be a better
-> location for that fiile IMO.
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+---
+ include/linux/lsm_hook_defs.h |  3 +++
+ include/linux/security.h      | 11 +++++++++++
+ security/keys/key.c           |  7 ++++++-
+ security/security.c           | 19 +++++++++++++++++++
+ 4 files changed, 39 insertions(+), 1 deletion(-)
 
-We could certainly do that, let's discuss it a bit more.
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index eedc26790a07..7512b4c46aa8 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -399,6 +399,9 @@ LSM_HOOK(void, LSM_RET_VOID, key_free, struct key *key)
+ LSM_HOOK(int, 0, key_permission, key_ref_t key_ref, const struct cred *cred,
+ 	 enum key_need_perm need_perm)
+ LSM_HOOK(int, 0, key_getsecurity, struct key *key, char **buffer)
++LSM_HOOK(void, LSM_RET_VOID, key_post_create_or_update, struct key *keyring,
++	 struct key *key, const void *payload, size_t payload_len,
++	 unsigned long flags, bool create)
+ #endif /* CONFIG_KEYS */
+ 
+ #ifdef CONFIG_AUDIT
+diff --git a/include/linux/security.h b/include/linux/security.h
+index e543ae80309b..f50b78481753 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -1959,6 +1959,9 @@ void security_key_free(struct key *key);
+ int security_key_permission(key_ref_t key_ref, const struct cred *cred,
+ 			    enum key_need_perm need_perm);
+ int security_key_getsecurity(struct key *key, char **_buffer);
++void security_key_post_create_or_update(struct key *keyring, struct key *key,
++					const void *payload, size_t payload_len,
++					unsigned long flags, bool create);
+ 
+ #else
+ 
+@@ -1986,6 +1989,14 @@ static inline int security_key_getsecurity(struct key *key, char **_buffer)
+ 	return 0;
+ }
+ 
++static inline void security_key_post_create_or_update(struct key *keyring,
++						      struct key *key,
++						      const void *payload,
++						      size_t payload_len,
++						      unsigned long flags,
++						      bool create)
++{ }
++
+ #endif
+ #endif /* CONFIG_KEYS */
+ 
+diff --git a/security/keys/key.c b/security/keys/key.c
+index 5c0c7df833f8..0f9c6faf3491 100644
+--- a/security/keys/key.c
++++ b/security/keys/key.c
+@@ -934,6 +934,8 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
+ 		goto error_link_end;
+ 	}
+ 
++	security_key_post_create_or_update(keyring, key, payload, plen, flags,
++					   true);
+ 	ima_post_key_create_or_update(keyring, key, payload, plen,
+ 				      flags, true);
+ 
+@@ -967,10 +969,13 @@ static key_ref_t __key_create_or_update(key_ref_t keyring_ref,
+ 
+ 	key_ref = __key_update(key_ref, &prep);
+ 
+-	if (!IS_ERR(key_ref))
++	if (!IS_ERR(key_ref)) {
++		security_key_post_create_or_update(keyring, key, payload, plen,
++						   flags, false);
+ 		ima_post_key_create_or_update(keyring, key,
+ 					      payload, plen,
+ 					      flags, false);
++	}
+ 
+ 	goto error_free_prep;
+ }
+diff --git a/security/security.c b/security/security.c
+index 32c3dc34432e..e6783c2f0c65 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -5169,6 +5169,25 @@ int security_key_getsecurity(struct key *key, char **buffer)
+ 	*buffer = NULL;
+ 	return call_int_hook(key_getsecurity, 0, key, buffer);
+ }
++
++/**
++ * security_key_post_create_or_update() - Notification of key create or update
++ * @keyring: keyring to which the key is linked to
++ * @key: created or updated key
++ * @payload: data used to instantiate or update the key
++ * @payload_len: length of payload
++ * @flags: key flags
++ * @create: flag indicating whether the key was created or updated
++ *
++ * Notify the caller of a key creation or update.
++ */
++void security_key_post_create_or_update(struct key *keyring, struct key *key,
++					const void *payload, size_t payload_len,
++					unsigned long flags, bool create)
++{
++	call_void_hook(key_post_create_or_update, keyring, key, payload,
++		       payload_len, flags, create);
++}
+ #endif	/* CONFIG_KEYS */
+ 
+ #ifdef CONFIG_AUDIT
+-- 
+2.34.1
 
-Although, at this point I want to focus on the genpd providers, as to
-release some of the burden from arm-soc maintainers.
-
->
-> I can also handle future pull requests for this if that's fine with every=
-one.
-
-Thanks a lot for your offer! However, if a re-route is preferred (I
-think not?), this is probably better suited via arm-soc, as most
-changes are going to be arm platform specific.
-
-Kind regards
-Uffe
