@@ -2,131 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4C1778EFC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A5C78EFC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345657AbjHaOq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:46:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40688 "EHLO
+        id S1346169AbjHaOtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:49:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236294AbjHaOq2 (ORCPT
+        with ESMTP id S236294AbjHaOtq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:46:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63F7CD6
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:45:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693493136;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BTd3wy/OVxecIaD6rgBVuZb82dl7b8CuRSfdLyU+dL4=;
-        b=hlZ60v8rW7BnrCDbIJw6DsySjMR5m91OI3MOB+Q8zDoo31WPBecszK+uyI5HGbcnFAZntV
-        yav9HjYLCNcJMAix9WOPh0/w2QUMMLnFlMgM76+/tWu5MghNIaCihlDfk9V0va7S3blHQN
-        XIMCkX0LJp4Z+cLxn0Llv6Ae0Si33xo=
-Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
- [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-629-6lTesbxrOLG7LziuF31O1Q-1; Thu, 31 Aug 2023 10:45:35 -0400
-X-MC-Unique: 6lTesbxrOLG7LziuF31O1Q-1
-Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6bd899e2d3aso1129210a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:45:35 -0700 (PDT)
+        Thu, 31 Aug 2023 10:49:46 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C2231B1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:49:40 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so9364945e9.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:49:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693493379; x=1694098179; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NYzNNWTbXx2Ehv1Xqnr5+Jyg1rByrT48Wq+qGpaaLU8=;
+        b=NvzE768TPm6/QPR3b3zsQUpY3v7UuaFSIQfsffcpSqXAz12o1ZaxEYrT4Eo+yxdm9Q
+         a6wE1LfOqKi17Wj3ZzW/YPlEv2JAhnU10uPNpRzRxuXc0siG9hhSWYO+xjf2F3AuITVG
+         gKma5uWK6MRW/mbwX69FPD5+br+69ikAs5KlIcg0uhcacrKbKyg5rVkGCFcTSqtgIHlb
+         oFImjI3wW4FPtmAy7hXAuou5oFoE1AVHc3ruN+1Vib0NsX45cobzZHR4OFM9rSR06ZO7
+         40JWudGea41hAFjcB1PUIv2IOdOQUEsn3IvYBWgxH/Pqwemh36MwPzkjrN5gblfsndI7
+         br2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693493134; x=1694097934;
+        d=1e100.net; s=20221208; t=1693493379; x=1694098179;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BTd3wy/OVxecIaD6rgBVuZb82dl7b8CuRSfdLyU+dL4=;
-        b=BvaED7Kv+2os/XtgPfJZmgGDWtgDjPC+aur+qVilrjru1S0KGG4dem7A62JVQ0TJ4f
-         wB2imfwN6CzxgIoNUBUdtzvCB8NGK2z5q4n1gW0/s6BsuO1v1gtaihQgFr2ipqslBvNh
-         Es+p1Qpq0h+8JhwJoDiqbIzLgSXbHrez4FJcZ+94Wwy0m0EGladjZHsSjb4bV5A5WVea
-         Wg/4G3XQlOImMh3uoY0pRGbi6t5w26atQosvHB9g623uW2/Q3xJOXkYpYcZ3+DsH/tvr
-         lYEsGDvGjhVQG5s/cbIg5/U3eRAhhcgop8wn6W/YuYXfPpfkUK/xsjzgLKt490hs7e9a
-         /SgQ==
-X-Gm-Message-State: AOJu0YxLxZZRiaYRPSaTNoNHhj21AixNPSz6FtmmqHuAeSByY8ZenY7M
-        EFO28KbLnbrcOqoM2kvPhVjTj5S+7jR4zBKj8FGFkzqtj99XRU1IiFl3QoREkuIUFOXotaUVqA/
-        fbiCJy8/SPV8dUCoxLriNVK9bIirAVxfKmdXv/Zea
-X-Received: by 2002:a05:6830:1692:b0:6b2:91c9:8e1e with SMTP id k18-20020a056830169200b006b291c98e1emr6023706otr.2.1693493134751;
-        Thu, 31 Aug 2023 07:45:34 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF0pI9uK2ToEtl8xqf16/qumOaryQOQqIewGouu2F54UiswiP68mqZsTvi5SjT3LsoV6gI2LE+dETgXBTmSrRc=
-X-Received: by 2002:a05:6830:1692:b0:6b2:91c9:8e1e with SMTP id
- k18-20020a056830169200b006b291c98e1emr6023690otr.2.1693493134533; Thu, 31 Aug
- 2023 07:45:34 -0700 (PDT)
+        bh=NYzNNWTbXx2Ehv1Xqnr5+Jyg1rByrT48Wq+qGpaaLU8=;
+        b=J57znmVQVaVLQW0zkerzxGLum6JfoHqMjauZagw8KzYlmK1WmuALo3iuoLviZbRsn7
+         iuyeicf4750olGi8z5EDDudqpRjIxyF++I8K4e9E5UMP7yUzHgYncX+LiyFEL4/P09M0
+         s8X1GVaFyE+Zwublun3SEZ3krGQX3sLLv08KXbT/APRw0rl7LoP2fF4rFWt8yN7Odu12
+         RzEmNUhVkFc8ej8YH+GxJIAWjJ1ZuW4kSx43gkbQVB0iu2MPRn0C4zn3B5c+W7Bigglh
+         xfIUKDYXFfT9oC2eDzWFemDE5uDiF32p4oi3RyDn9+3Us0mCSiDU5sWYeOCh30q782oZ
+         tR7Q==
+X-Gm-Message-State: AOJu0Yx46TRENZGcqLF8Hh+YK5fJEoLSiXL8ABUFSVLdAleH2fjQzoqo
+        jIcKtiRlYdyQPzj6xxdb9ho5O3M7ayyX9t5ug7c=
+X-Google-Smtp-Source: AGHT+IFjTC8nbArwDx+ol6fGY7cYqbVM5nzbgV0lIucPfXPRItanMflTJwp6bLIQdCN2aAPRDDlantYHSAtBtw8N28Q=
+X-Received: by 2002:a05:6000:10a:b0:314:5f4a:5a63 with SMTP id
+ o10-20020a056000010a00b003145f4a5a63mr4389888wrx.54.1693493378300; Thu, 31
+ Aug 2023 07:49:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230831123931.60606-1-wander@redhat.com> <20230831133750.GB15759@breakpoint.cc>
-In-Reply-To: <20230831133750.GB15759@breakpoint.cc>
-From:   Wander Lairson Costa <wander@redhat.com>
-Date:   Thu, 31 Aug 2023 11:45:23 -0300
-Message-ID: <CAAq0SU=nesniZCLBa7xoqJ853sk2_+LaBhenVSZeYoe=82Syow@mail.gmail.com>
-Subject: Re: [PATCH nf v2] netfilter/osf: avoid OOB read
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Fernando Fernandez Mancera <ffmancera@riseup.net>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, stable@kernel.org
+References: <ED5DC8DB-AE81-4380-8AE5-588F370CD4B0@gmail.com>
+ <20230830093902.duvvjimgwddh7qbt@bogus> <F59FC6AB-40E6-4BBA-A0BD-C7221160854B@gmail.com>
+ <20230831123412.wetnqqb7owqfyqov@bogus>
+In-Reply-To: <20230831123412.wetnqqb7owqfyqov@bogus>
+From:   Qiujun Huang <hqjagain@gmail.com>
+Date:   Thu, 31 Aug 2023 22:49:26 +0800
+Message-ID: <CAJRQjof3UtmL=mGOQ54E-a6hM-NOG_g0aD8Peta5Xp=wm7wSRg@mail.gmail.com>
+Subject: Re: [PATCH v1] firmware: arm_scmi: Fix NULL pointer dereference in mailbox_clear_channel
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     cristian.marussi@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 10:37=E2=80=AFAM Florian Westphal <fw@strlen.de> wr=
-ote:
+On Thu, Aug 31, 2023 at 8:34=E2=80=AFPM Sudeep Holla <sudeep.holla@arm.com>=
+ wrote:
 >
-> Wander Lairson Costa <wander@redhat.com> wrote:
+> On Wed, Aug 30, 2023 at 09:23:58PM +0800, Qiujun Huang wrote:
 > >
-> > diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_os=
-f.c
-> > index 8f1bfa6ccc2d..13fedf2aaa0f 100644
-> > --- a/net/netfilter/nfnetlink_osf.c
-> > +++ b/net/netfilter/nfnetlink_osf.c
-> > @@ -315,6 +315,9 @@ static int nfnl_osf_add_callback(struct sk_buff *sk=
-b,
 > >
-> >       f =3D nla_data(osf_attrs[OSF_ATTR_FINGER]);
+> > > 2023=E5=B9=B48=E6=9C=8830=E6=97=A5 =E4=B8=8B=E5=8D=885:39=EF=BC=8CSud=
+eep Holla <sudeep.holla@arm.com> =E5=86=99=E9=81=93=EF=BC=9A
+> > >
+> > > On Wed, Aug 30, 2023 at 01:07:47AM +0800, Qiujun Huang wrote:
+> > >> There is a race between the failure of probe and rx_callback (due to=
+ a
+> > >> delayed response).
+> > >>
+> > >> scmi_probe
+> > >> scmi_acquire_protocal
+> > >> do_xfer
+> > >> timeout
+> > >> mailbox_chan_free
+> > >>                                                    <--- delay respon=
+se
+> > >>                                                           rx_callbac=
+k
+> > >> mbox_free_channel
+> > >> cinfo->transport_info =3D NULL
+> > >>                                                          mailbox_cle=
+ar_channel
+> > >>                                                         dereference =
+cinfo->transport_info
+> > >
+> > > It is always good to provide the kernel stacktrace which you get when=
+ a
+> > > NULL pointer is dereference. It helps for review and also to document=
+ it.
+> > >
+> > > --
+> > > Regards,
+> > > Sudeep
 > >
-> > +     if (f->opt_num > ARRAY_SIZE(f->opt))
-> > +             return -EINVAL;
-> > +
+> > Get it. Here is the splat.
+> >
+> > [    1.942240][    C0] Unable to handle kernel NULL pointer dereference=
+ at virtual address 0000000000000048
+> > [    1.942241][    C0] Mem abort info:
+> > [    1.942243][    C0]   ESR =3D 0x96000005
+> > [    1.944888][    T9] spmi spmi-1: PMIC arbiter version v7 (0x70000000=
+)
+> > [    1.950652][    C0]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> > [    1.950653][    C0]   SET =3D 0, FnV =3D 0
+> > [    1.950654][    C0]   EA =3D 0, S1PTW =3D 0
+> > [    1.950656][    C0] Data abort info:
+> > [    1.950657][    C0]   ISV =3D 0, ISS =3D 0x00000005
+> > [    1.950658][    C0]   CM =3D 0, WnR =3D 0
+> > [    1.950660][    C0] [0000000000000048] user address but active_mm is=
+ swapper
+> > [    1.950663][    C0] Internal error: Oops: 96000005 [#1] PREEMPT SMP
+> > [    2.338929][    C0] pc : mailbox_clear_channel+0x18/0x64
+> > [    2.344384][    C0] lr : scmi_handle_response+0x17c/0x4f4
+> > [    2.349923][    C0] sp : ffffffc010003db0
+> > [    2.354045][    C0] x29: ffffffc010003dc0 x28: ffffffd85263f000
+> > [    2.360216][    C0] x27: ffffffd851621068 x26: ffffffd84ec815c8
+> > [    2.366386][    C0] x25: ffffffd85263bf80 x24: ffffffd85263d230
+> > [    2.372556][    C0] x23: ffffff803cd70cc0 x22: 0000000000000008
+> > [    2.378726][    C0] x21: ffffff8036cf0df8 x20: ffffffd85161bac8
+> > [    2.384896][    C0] x19: ffffff8043ffa580 x18: ffffffc010005050
+> > [    2.391065][    C0] x17: 0000000000000000 x16: 00000000000000d8
+> > [    2.397234][    C0] x15: ffffffd8507965e8 x14: ffffffd84eaebdf0
+> > [    2.403404][    C0] x13: 00000000000001ea x12: 0000000000007ffb
+> > [    2.409574][    C0] x11: 000000000000ffff x10: ffffffd852c5a000
+> > [    2.415744][    C0] x9 : d7be1a9b75f29500 x8 : 0000000000000000
+> > [    2.421914][    C0] x7 : 382e31202020205b x6 : ffffffd852c57e7c
+> > [    2.428084][    C0] x5 : ffffffffffffffff x4 : 0000000000000000
+> > [    2.434254][    C0] x3 : ffffffd84eae6668 x2 : 0000000000000001
+> > [    2.440424][    C0] x1 : 0000000000000000 x0 : ffffff8043ffa580
+> > [    2.446594][    C0] Call trace:
+> > [    2.449819][    C0]  mailbox_clear_channel+0x18/0x64
 >
-> Hmm, this isn't enough; as far as I can see there is no validation
-> whatsoever.
+> Is this with latest kernel ? IIUC the mailbox_clear_channel should get ca=
+lled
+no, it's on 5.10-stable kernel
+> only for delayed response and notification in this path(scmi_handle_respo=
+nse).
+> You are saying it happens as part of probe and again IIUC probe doesn't h=
+ave
+> any delayed response command. What am I missing ?
 >
-
-I didn't get it. It guarantees there is no OOB read of the opt array.
-
-> This should also check that all of:
+> Any additional changes in the tree ? My build has much smaller
+> mailbox_clear_channel.
 >
->  char    genre[MAXGENRELEN];
->  char    version[MAXGENRELEN];
->  char    subtype[MAXGENRELEN];
+> > [    2.454916][    C0]  scmi_handle_response+0x17c/0x4f4
+> > [    2.460100][    C0]  rx_callback+0x60/0xec
+> > [    2.464311][    C0]  mbox_chan_received_data+0x44/0x94
+> > [    2.469584][    C0]  qcom_rimps_rx_interrupt+0xc0/0x144 [qcom_rimps]
 >
-> ... have a NUL byte. You could use strnlen() =3D=3D ARRAY_SIZE() -> EINVA=
-L
-> for those.
+> This suggests out of tree driver, any pointers ?
 >
-
-I think the correct way would be memchr(genre/version/subtype, 0, MAXGENREL=
-EN).
-
-> Maybe there is more to be validated. I did not followup with all the
-> nested structures buried in user_finger struct.
+> Also I vaguely remember discussing this in the past. Perhaps at [1] or
+> somewhere else.
+Get that. It looks painful
 >
-
-I focused on the reported issue mainly because I am unfamiliar with
-the Netfilter layer. Let me take a deeper look.
-
+> --
+> Regards,
+> Sudeep
+>
+> [1] https://lore.kernel.org/linux-arm-kernel/cfa26ff3-c95a-1986-58fc-b49f=
+c9be49d5@quicinc.com/
