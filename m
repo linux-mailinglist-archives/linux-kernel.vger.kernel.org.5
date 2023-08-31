@@ -2,252 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE5E578F552
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0B478F555
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347657AbjHaWR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 18:17:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
+        id S1347657AbjHaWUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 18:20:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242423AbjHaWR0 (ORCPT
+        with ESMTP id S241654AbjHaWUA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 18:17:26 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E859C0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:17:23 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so13750865e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:17:23 -0700 (PDT)
+        Thu, 31 Aug 2023 18:20:00 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C069C
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:19:57 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bee82fad0fso10560065ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:19:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693520242; x=1694125042; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=FFR7IXFH5vdXwTI+w0PeN8v80S5zu8pFt4YOGxCAYgs=;
-        b=OJQ71RGeqNadP3Q+2ZoEJGfmhFNWOJBi0XKieM3JRCsZ8VlbHtu70FlvauSAYOJl9v
-         OyKDylqqjPsTtWWuGh1E3TO9BpDbaKHyL4jPifl14SozDUjaeYmPfw0v11MxXGWXwEpe
-         mUEP1KWgA+KUtDAH+WSFTGDwJ8sOZtREeKKPo=
+        d=gmail.com; s=20221208; t=1693520397; x=1694125197; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=WL1OlRhy0NdGZsgMXamAAmSAYVi0KD+OtQoBvLKcCEI=;
+        b=nibL5F8rK+TDOXPQ2XMUSCI8LpvQSkTBB1ip2CdXP90pbsV4KtGe9Z6K0fIsfKJFfF
+         w+Go3toEBtyo39lbIF+Np8J93rE1Z1UC/WpiK9CMsLGD6Pjw1aQDNJr9GHbxd7EY73yL
+         Y9knxQTzFnH4PduuXNMZzSVD3sf8Q6FsKJ6rsSjsM22GgFtKa+7oqyc/1L+00GeOsnRC
+         TyRg1pjiNqTSqFp5NUWVrrvu8+ExCmO2w9VAtQ08miXwjU/dBixFPaiioWkgQQva1kRE
+         PMQ6bjvC6eZgqavcEI2ODaBIIfnjjz6N2QCeVty9sJfYHWrsNTbPvoJWbgveTGN6eJOz
+         rzyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693520242; x=1694125042;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693520397; x=1694125197;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FFR7IXFH5vdXwTI+w0PeN8v80S5zu8pFt4YOGxCAYgs=;
-        b=Kh06MA27rE8VkVP8cZPhHL4eeLMhFrZw7O0+IVF6w6/8vtgB4Wo+VaJlOY4ah2nxG0
-         zzw0aoqi/XobUL6BQ/bfTXv57LcdMtHtBdz1aq8iDSQmyM33h7c1Vr0l3d06A2XJSZuC
-         juzlbEW0i6RfByGIaCKubs64XH2D6XdWEWnDKLXG675d6T77VZfB779uLB4e6zaYTsut
-         vi0xtloxCjlz/fpSdKCOwY276V/V+x6APXPZh0tzmXRWsLTAnKrQJ4pJyt27CaFSqsXF
-         eJHhirNn1meFrIp1oRPBbiCb9lZxoqDfZaBDPOIdMR7UUwJhdOg5jHUa45Q1otNz2Uc/
-         7sUw==
-X-Gm-Message-State: AOJu0YwFXRQLJZQNdVH9oPbiHYb7qqcNUtKnniVrAoeC1g3U56i0cGVW
-        bntgi7cyDWBx3L3VQmMNaBjAb0D6A6JMczb6zWGTe5vcFPiR+bpyoQ4=
-X-Google-Smtp-Source: AGHT+IFrt9EHDJFs0kDfujnPEwNUsOU4CWXcywu2cSrN7omiMwRyg1PxyHqh/a2NR/oqZId8O3IqpLzlz61Pl0wpgls=
-X-Received: by 2002:a5d:4b87:0:b0:317:3d6c:5b27 with SMTP id
- b7-20020a5d4b87000000b003173d6c5b27mr571527wrt.46.1693520241666; Thu, 31 Aug
- 2023 15:17:21 -0700 (PDT)
+        bh=WL1OlRhy0NdGZsgMXamAAmSAYVi0KD+OtQoBvLKcCEI=;
+        b=gX6uZ/+ICjAnNw5GWNPcyYZeX0von6veQtHvLRQJl806PVO8IqsbVFYpox43DrTbFJ
+         703IEDEnWF7o41Jb43yg84MTndTJNoG5ZCU2691r/98+8ie079s/WB8Iya30d5eI9aSw
+         fgOsxHlp0l8NJZ2S45za+01fjBrbEmqvi1iHd/JjFkcR06rWUk9uwwKbX5/5J/Rl2fHj
+         5SEd9DBESzD06VUjZbb1p4aUdFr/fDJOs21e6hOaneKIYtXICErpD7XjNBYihQcTYPyh
+         LMFav7YBBoj/HT42cuXEH/MmqA8bpYBGzWwiToibmsZ7IsJL4nb/JxYTYMd75Y+kyJMa
+         b2GQ==
+X-Gm-Message-State: AOJu0Yw1ZdN/U41o9kEDi+dLfBjg7MwwH21hmL2wqrQlBVoTnJ8gZXu9
+        7N1/pgD1eYLQZ4Nds5UyQRHmEDBRDJ0=
+X-Google-Smtp-Source: AGHT+IGb645GXMN9LSDVQrAhRV8/ayyqkna2+hsdu7bgIBvD4UjGzM4Gu6N7dRTtqbMoBuTuiZ3Qvw==
+X-Received: by 2002:a17:902:9a43:b0:1c0:ad3c:c723 with SMTP id x3-20020a1709029a4300b001c0ad3cc723mr1024424plv.10.1693520396637;
+        Thu, 31 Aug 2023 15:19:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:eca7])
+        by smtp.gmail.com with ESMTPSA id l18-20020a170902d35200b001bbf7fd354csm1683303plk.213.2023.08.31.15.19.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 15:19:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 31 Aug 2023 12:19:54 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: [GIT PULL] workqueue: Changes for v6.6
+Message-ID: <ZPESClTTFQ0xo6ku@slm.duckdns.org>
 MIME-Version: 1.0
-References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
- <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
- <CAPnjgZ1S8G=7eCBF9PcDk4H5sk3AcxSSWXO575jK8SjA9dR8qw@mail.gmail.com>
- <CAMj1kXH83_TB4S0PL3jswxjCP+907YpgS7FRuVTO3G62s7nn5w@mail.gmail.com>
- <CAPnjgZ2kkUt1eOWX8K+EsbjcQZPefNvj5DSaFb9QrvRg0t2h7w@mail.gmail.com>
- <CAMj1kXGe84uaJ9j9ic0V4HC43p7QBoKQ5ssTYd5DMBGtZ3++Jw@mail.gmail.com>
- <CAPnjgZ3L-jGxoXNHnsXY0MXU=jTAN66KNAxSLHPVeHinHMjzkQ@mail.gmail.com>
- <CAMj1kXGw6DGK=gVF3bMH5dp=LL89V9n1V1LMGKDn0CZWGHh8qg@mail.gmail.com>
- <CAPnjgZ1fjee3rf91onPbuLpgqTHe3dZgz0WBSzoiKAabO+ETkQ@mail.gmail.com> <CAMj1kXFvLGeXXmyK1wSXLk5yq42f2G3GvBGoN40JF=y4bvCo=Q@mail.gmail.com>
-In-Reply-To: <CAMj1kXFvLGeXXmyK1wSXLk5yq42f2G3GvBGoN40JF=y4bvCo=Q@mail.gmail.com>
-From:   Simon Glass <sjg@chromium.org>
-Date:   Thu, 31 Aug 2023 16:17:03 -0600
-Message-ID: <CAPnjgZ25VqPCBSZ69fyb+G93=hzS-gX6zVa0J3vYyY49p0CZmw@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        ron minnich <rminnich@gmail.com>,
-        Tom Rini <trini@konsulko.com>,
-        Lean Sheng Tan <sheng.tan@9elements.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ard,
+The following changes since commit aa6fde93f3a49e42c0fe0490d7f3711bac0d162e:
 
-On Thu, 31 Aug 2023 at 15:48, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Thu, 31 Aug 2023 at 21:03, Simon Glass <sjg@chromium.org> wrote:
-> >
-> > Hi Ard,
-> >
-> > On Thu, 31 Aug 2023 at 06:28, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > On Wed, 30 Aug 2023 at 23:11, Simon Glass <sjg@chromium.org> wrote:
-> > > >
-> > > > Hi Ard,
-> > > >
-> > > > On Tue, 29 Aug 2023 at 15:32, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > > >
-> > > > > On Tue, 29 Aug 2023 at 21:18, Simon Glass <sjg@chromium.org> wrote:
-> > > > > >
-> > > > > > Hi Ard,
-> > > > > >
-> > > > > > On Thu, 24 Aug 2023 at 03:10, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > ...
-> > > > > > > In summary, I don't see why a non-UEFI payload would care about UEFI
-> > > > > > > semantics for pre-existing memory reservations, or vice versa. Note
-> > > > > > > that EDK2 will manage its own memory map, and expose it via UEFI boot
-> > > > > > > services and not via DT.
-> > > > > >
-> > > > > > Bear in mind that one or both sides of this interface may be UEFI.
-> > > > > > There is no boot-services link between the two parts that I have
-> > > > > > outlined.
-> > > > > >
-> > > > >
-> > > > > I don't understand what this means.
-> > > > >
-> > > > > UEFI specifies how one component invokes another, and it is not based
-> > > > > on a DT binding. If the second component calls UEFI boot or runtime
-> > > > > services, it should be invoked in this manner. If it doesn't, then it
-> > > > > doesn't care about these memory reservations (and the OS will not be
-> > > > > booted via UEFI either)
-> > > > >
-> > > > > So I feel I am missing something here. Perhaps a practical example
-> > > > > would be helpful?
-> > > >
-> > > > Let's say we want to support these combinations:
-> > > >
-> > > > Platform Init -> Payload
-> > > > --------------------------------
-> > > > U-Boot -> Tianocore
-> > > > coreboot -> U-Boot
-> > > > Tianocore -> U-Boot
-> > > > Tianocore -> Tianocore
-> > > > U-Boot -> U-Boot
-> > > >
-> > > > Some of the above things have UEFI interfaces, some don't. But in the
-> > > > case of Tianocore -> Tianocore we want things to work as if it were
-> > > > Tianocore -> (its own handoff mechanism) Tiancore.
-> > > >
-> > >
-> > > If Tianocore is the payload, it is either implemented as a EFI app, in
-> > > which case it has access to EFI services, or it is not, in which case
-> > > it doesn't care about UEFI semantics of the existing reserved regions,
-> > > and it only needs to know which regions exist and which of those are
-> > > reserved.
-> > >
-> > > And I think the same applies to all other rows in your table: either
-> > > the existence of UEFI needs to be carried forward, which needs to be
-> > > done via EFI services, or it doesn't, in which case the UEFI specific
-> > > reservations can be dropped, and only reserved and available memory is
-> > > relevant.
-> > >
-> > > > Some Platform Init may create runtime code which needs to accessible later.
-> > > >
-> > >
-> > > But not UEFI runtime code, right? If the payload is not UEFI based,
-> > > the OS would never be able to call that runtime code unless it is
-> > > described in a different, non-UEFI way. This is fine, but it is not
-> > > UEFI so we shouldn't call it UEFI runtime memory.
-> > >
-> > > > The way I think of it is that we need to generalise the memory map a
-> > > > bit. Saying that you must use UEFI boot services to discover it is too
-> > > > UEFI-specific.
-> > > >
-> > >
-> > > What I am questioning is why a memory map with UEFI semantics is even
-> > > relevant when those boot services do not exist.
-> > >
-> > > Could you be more specific about why a payload would have to be aware
-> > > of the existence of UEFI boot/runtime service regions if it does not
-> > > consume the UEFI interfaces of the platform init? And if the payload
-> > > exposes UEFI services to the OS, why would it consume a memory map
-> > > with UEFI semantics rather than a simple list of memblocks and memory
-> > > reservations?
-> >
-> > It seems like you are thinking of the Payload as grub, or something
-> > like that? This is not about grub. If there are EFI boot services to
-> > be provided, they are provided by the Payload, not Platform Init. I am
-> > not that familiar with Tianocore, but if you are, perhaps think of it
-> > as splitting Tianocore into two pieces, one of which inits the silicon
-> > and the other which provides the EFI boot services.
-> >
-> > Again, if you are familiar with Tianocore, it can be built either as a
-> > monolithic whole, or as a coreboot Payload. The Payload part of the
-> > code is (roughly) the same in each case. But the Platform Init is
-> > different[1]
-> >
->
-> I co-maintain OVMF [including the ARM port that I created from
-> scratch] as well as the ARM architecture support in Tianocore, along
-> with a couple of platform ports for ARM boards, some of which could by
-> now be characterized as 'historical' (AMD Seattle, Socionext SynQuacer
-> and Raspberry Pi 3/4). So I think I have a pretty good handle on how
-> Tianocore based firmware is put together.
->
-> Tianocore as a payload will expose boot services to the OS, and will
-> provide the OS with a memory map using the UEFI APIs. But you still
-> haven't explained why the memory description this Tianocore inherits
-> from the Platform Init would include any UEFI boot or runtime service
-> regions, or any of the other memory regions with UEFI semantics.
-> TIanocore just needs to know a) where memory lives b) which parts of
-> it are already in use (as far as the memory map is concerned), and the
-> existing bindings suffice for this purpose.
->
-> In short, the memory regions with UEFI semantics are created by the
-> boot phase that actually exposes UEFI to the OS, in which case the
-> boot services can be used to obtain the memory map. If the consumer is
-> not UEFI based, there is no reason to bother it with descriptions of
-> memory regions that have no significance to it.
+  workqueue: Scale up wq_cpu_intensive_thresh_us if BogoMIPS is below 4000 (2023-07-25 11:49:57 -1000)
 
-But aren't you assuming that the Payload knows how to handle the
-hardware and can implement the runtime services? What if (for example)
-powering off the device is hardware-specific and only Platform Init
-knows how?
+are available in the Git repository at:
 
-On another track, would it help if we just dropped all mention of
-UEFI? The binding does not mention it.
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/ tags/wq-for-6.6
 
-On a third track, what if Platform Init wants to set aside some memory
-for runtime code, e.g. in SRAM?
+for you to fetch changes up to fe48ba7daefe75bbbefa2426deddc05f2d530d2d:
 
-I'm just not sure that Platform Init and Payload are as completely
-independent as you seem to be suggesting. Once we get into the
-Payload, the only things we know are what Platform Init told us.
+  workqueue: fix data race with the pwq->stats[] increment (2023-08-29 09:52:16 -1000)
 
->
-> > >
-> > > Again, I am inclined to treat this as a firmware implementation
-> > > detail, and the OS must never consume this binding. But I am still
-> > > puzzled about what exact purpose it is expected to serve.
-> >
-> > It really is purely so we can mix and match Platform Init (perhaps
-> > silicon init is a more familiar term?) and the Payload.
-> >
->
-> That part is clear to me.
->
-> > [1] Of course, coreboot uses blobs which are chunks of UEFI, but that
-> > is a separate issue
->
-> I suppose you are referring to the proprietary FSP components? Those
-> are mostly made up of PEIMs (in Tianocore/EDK2 speak) for DDR training
-> and chipset initialization, and don't really take part in the
-> implementation of the UEFI APIs. Strictly, they are not 'chunks of
-> UEFI' but 'chunks of PI' (but even Tianocore itself, being the
-> reference implementation of both UEFI and PI, does a terrible job at
-> distinguishing between the two)
+----------------------------------------------------------------
+workqueue: Changes for v6.6
 
-OK I see. From my POV they seem like binary blobs that are built from
-UEFI, but I will try to remember about PI.
+* Unbound workqueues now support more flexible affinity scopes. The default
+  behavior is to soft-affine according to last level cache boundaries. A
+  work item queued from a given LLC is executed by a worker running on the
+  same LLC but the worker may be moved across cache boundaries as the
+  scheduler sees fit. On machines which multiple L3 caches, which are
+  becoming more popular along with chiplet designs, this improves cache
+  locality while not harming work conservation too much.
 
-Regards,
-Simon
+  Unbound workqueues are now also a lot more flexible in terms of execution
+  affinity. Differeing levels of affinity scopes are supported and both the
+  default and per-workqueue affinity settings can be modified dynamically.
+  This should help working around amny of sub-optimal behaviors observed
+  recently with asymmetric ARM CPUs.
+
+  This involved signficant restructuring of workqueue code. Nothing was
+  reported yet but there's some risk of subtle regressions. Should keep an
+  eye out.
+
+* Rescuer workers now has more identifiable comms.
+
+* workqueue.unbound_cpus added so that CPUs which can be used by workqueue
+  can be constrained early during boot.
+
+* Now that all the in-tree users have been flushed out, trigger warning if
+  system-wide workqueues are flushed.
+
+* One pull commit from for-6.5-fixes to avoid cascading conflicts in the
+  affinity scope patchset.
+
+----------------------------------------------------------------
+Aaron Tomlin (1):
+      workqueue: Rename rescuer kworker
+
+Mirsad Goran Todorovac (1):
+      workqueue: fix data race with the pwq->stats[] increment
+
+Tejun Heo (27):
+      workqueue: Merge branch 'for-6.5-fixes' into for-6.6
+      workqueue: Drop the special locking rule for worker->flags and worker_pool->flags
+      workqueue: Cleanups around process_scheduled_works()
+      workqueue: Not all work insertion needs to wake up a worker
+      workqueue: Rename wq->cpu_pwqs to wq->cpu_pwq
+      workqueue: Relocate worker and work management functions
+      workqueue: Remove module param disable_numa and sysfs knobs pool_ids and numa
+      workqueue: Use a kthread_worker to release pool_workqueues
+      workqueue: Make per-cpu pool_workqueues allocated and released like unbound ones
+      workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug
+      workqueue: Make unbound workqueues to use per-cpu pool_workqueues
+      workqueue: Rename workqueue_attrs->no_numa to ->ordered
+      workqueue: Rename NUMA related names to use pod instead
+      workqueue: Move wq_pod_init() below workqueue_init()
+      workqueue: Initialize unbound CPU pods later in the boot
+      workqueue: Factor out actual cpumask calculation to reduce subtlety in wq_update_pod()
+      workqueue: Factor out clearing of workqueue-only attrs fields
+      workqueue: Generalize unbound CPU pods
+      workqueue: Add tools/workqueue/wq_dump.py which prints out workqueue configuration
+      workqueue: Modularize wq_pod_type initialization
+      workqueue: Add multiple affinity scopes and interface to select them
+      workqueue: Factor out work to worker assignment and collision handling
+      workqueue: Factor out need_more_worker() check and worker wake-up
+      workqueue: Add workqueue_attrs->__pod_cpumask
+      workqueue: Implement non-strict affinity scope for unbound workqueues
+      workqueue: Add "Affinity Scopes and Performance" section to documentation
+      workqueue: Make default affinity_scope dynamically updatable
+
+Tetsuo Handa (1):
+      workqueue: Warn attempt to flush system-wide workqueues.
+
+Yang Yingliang (1):
+      workqueue: use LIST_HEAD to initialize cull_list
+
+tiozhang (1):
+      workqueue: add cmdline parameter `workqueue.unbound_cpus` to further constrain wq_unbound_cpumask at boot time
+
+ Documentation/admin-guide/kernel-parameters.txt |   28 +-
+ Documentation/core-api/workqueue.rst            |  356 ++++-
+ include/linux/workqueue.h                       |  115 +-
+ init/main.c                                     |    1 +
+ kernel/workqueue.c                              | 1618 +++++++++++++----------
+ kernel/workqueue_internal.h                     |    2 +-
+ tools/workqueue/wq_dump.py                      |  177 +++
+ tools/workqueue/wq_monitor.py                   |   21 +-
+ 8 files changed, 1513 insertions(+), 805 deletions(-)
+ create mode 100644 tools/workqueue/wq_dump.py
+
+-- 
+tejun
