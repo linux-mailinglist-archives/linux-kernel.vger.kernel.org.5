@@ -2,201 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E21078F08C
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1C7E78F093
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:47:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346646AbjHaPpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:45:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
+        id S1346534AbjHaPru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:47:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243602AbjHaPpx (ORCPT
+        with ESMTP id S231431AbjHaPrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:45:53 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F4A4E4C;
-        Thu, 31 Aug 2023 08:45:50 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 158B1C15;
-        Thu, 31 Aug 2023 08:46:29 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB55A3F64C;
-        Thu, 31 Aug 2023 08:45:41 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 16:45:33 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Doug Anderson <dianders@chromium.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>,
-        Tomohiro Misono <misono.tomohiro@fujitsu.com>,
-        Stephane Eranian <eranian@google.com>,
-        kgdb-bugreport@lists.sourceforge.net,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stephen Boyd <swboyd@chromium.org>, ito-yuichi@fujitsu.com,
-        linux-perf-users@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v12 1/7] irqchip/gic-v3: Enable support for SGIs to act
- as NMIs
-Message-ID: <ZPC1nUw3qKWrC85l@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230830191314.1618136-1-dianders@chromium.org>
- <20230830121115.v12.1.I1223c11c88937bd0cbd9b086d4ef216985797302@changeid>
- <ZPBVB_z3FTl2nBy0@FVFF77S0Q05N>
- <CAD=FV=V3-XaT_KsJXwUXVuaXfx-RfbW3ehW4JJcvWLsty_9fcA@mail.gmail.com>
+        Thu, 31 Aug 2023 11:47:49 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3771A3;
+        Thu, 31 Aug 2023 08:47:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 29241B82336;
+        Thu, 31 Aug 2023 15:47:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24ED3C433C7;
+        Thu, 31 Aug 2023 15:47:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693496864;
+        bh=5mQXYKt6vGAv9319MthmUhxTFPuM6XRnJS1sdwqwBB0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=byDFihe2+iK0CORw/mKsL0Y2hRd5XulSDVEduYeIv3NpQvpNuVJy9V1V4dNtsD0wO
+         8aGI4E+L5UxtqUFBCqNqNJC0obGY/pJfZKR28ABTMXVNf6QbIroM94O4pz6ZGCjTQy
+         yqldoUbyxJflxoPfBG6OanGcqELTkP2Hawg90PYjd697uiLch/TO/GOCAv3ovcOEb4
+         Gva/o1fd58zHf+SI41K1ogecu1ucbrjd4F+elitaSo0kYqu456RDHO5h6T4GGBwVCo
+         AYcijWddsPSFJ22IGw4/G4rwoFY4YrUGBgJwOCalb2LGT8izwwlnDkyUc0l+r7Ub18
+         GQvWdMqoPMGAg==
+Date:   Thu, 31 Aug 2023 16:47:39 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,usb-snps-femto-v2: Add REFGEN
+ regulator
+Message-ID: <20230831-asleep-revisable-17e16524f886@spud>
+References: <20230830-topic-refgenphy-v1-0-892db196a1c0@linaro.org>
+ <20230830-topic-refgenphy-v1-1-892db196a1c0@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0wmHf2n6L8Edbw7d"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=V3-XaT_KsJXwUXVuaXfx-RfbW3ehW4JJcvWLsty_9fcA@mail.gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230830-topic-refgenphy-v1-1-892db196a1c0@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 08:31:37AM -0700, Doug Anderson wrote:
-> Hi,
-> 
-> On Thu, Aug 31, 2023 at 1:53 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Wed, Aug 30, 2023 at 12:11:22PM -0700, Douglas Anderson wrote:
-> > > As of commit 6abbd6988971 ("irqchip/gic, gic-v3: Make SGIs use
-> > > handle_percpu_devid_irq()") SGIs are treated the same as PPIs/EPPIs
-> > > and use handle_percpu_devid_irq() by default. Unfortunately,
-> > > handle_percpu_devid_irq() isn't NMI safe, and so to run in an NMI
-> > > context those should use handle_percpu_devid_fasteoi_nmi().
-> > >
-> > > In order to accomplish this, we just have to make room for SGIs in the
-> > > array of refcounts that keeps track of which interrupts are set as
-> > > NMI. We also rename the array and create a new indexing scheme that
-> > > accounts for SGIs.
-> > >
-> > > Also, enable NMI support prior to gic_smp_init() as allocation of SGIs
-> > > as IRQs/NMIs happen as part of this routine.
-> > >
-> > > Co-developed-by: Sumit Garg <sumit.garg@linaro.org>
-> > > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > ---
-> > > I'll note that this change is a little more black magic to me than
-> > > others in this series. I don't have a massive amounts of familiarity
-> > > with all the moving parts of gic-v3, so I mostly just followed Mark
-> > > Rutland's advice [1]. Please pay extra attention to make sure I didn't
-> > > do anything too terrible.
-> > >
-> > > Mark's advice wasn't a full patch and I ended up doing a bit of work
-> > > to translate it to reality, so I did not add him as "Co-developed-by"
-> > > here. Mark: if you would like this tag then please provide it and your
-> > > Signed-off-by. I certainly won't object.
-> >
-> > That's all reasonable, and I'm perfectly happy without a tag.
-> >
-> > I have one trivial nit below, but with or without that fixed up:
-> >
-> > Acked-by: Mark Rutland <mark.rutland@arm.com>
-> >
-> > >
-> > > [1] https://lore.kernel.org/r/ZNC-YRQopO0PaIIo@FVFF77S0Q05N.cambridge.arm.com
-> > >
-> > > Changes in v12:
-> > > - Added a comment about why we account for 16 SGIs when Linux uses 8.
-> > >
-> > > Changes in v10:
-> > > - Rewrite as needed for 5.11+ as per Mark Rutland and Sumit.
-> > >
-> > >  drivers/irqchip/irq-gic-v3.c | 59 +++++++++++++++++++++++++-----------
-> > >  1 file changed, 41 insertions(+), 18 deletions(-)
-> > >
-> > > diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> > > index eedfa8e9f077..8d20122ba0a8 100644
-> > > --- a/drivers/irqchip/irq-gic-v3.c
-> > > +++ b/drivers/irqchip/irq-gic-v3.c
-> > > @@ -78,6 +78,13 @@ static DEFINE_STATIC_KEY_TRUE(supports_deactivate_key);
-> > >  #define GIC_LINE_NR  min(GICD_TYPER_SPIS(gic_data.rdists.gicd_typer), 1020U)
-> > >  #define GIC_ESPI_NR  GICD_TYPER_ESPIS(gic_data.rdists.gicd_typer)
-> > >
-> > > +/*
-> > > + * There are 16 SGIs, though we only actually use 8 in Linux. The other 8 SGIs
-> > > + * are potentially stolen by the secure side. Some code, especially code dealing
-> > > + * with hwirq IDs, is simplified by accounting for all 16.
-> > > + */
-> > > +#define SGI_NR               16
-> > > +
-> > >  /*
-> > >   * The behaviours of RPR and PMR registers differ depending on the value of
-> > >   * SCR_EL3.FIQ, and the behaviour of non-secure priority registers of the
-> > > @@ -125,8 +132,8 @@ EXPORT_SYMBOL(gic_nonsecure_priorities);
-> > >               __priority;                                             \
-> > >       })
-> > >
-> > > -/* ppi_nmi_refs[n] == number of cpus having ppi[n + 16] set as NMI */
-> > > -static refcount_t *ppi_nmi_refs;
-> > > +/* rdist_nmi_refs[n] == number of cpus having the rdist interrupt n set as NMI */
-> > > +static refcount_t *rdist_nmi_refs;
-> > >
-> > >  static struct gic_kvm_info gic_v3_kvm_info __initdata;
-> > >  static DEFINE_PER_CPU(bool, has_rss);
-> > > @@ -519,9 +526,22 @@ static u32 __gic_get_ppi_index(irq_hw_number_t hwirq)
-> > >       }
-> > >  }
-> > >
-> > > -static u32 gic_get_ppi_index(struct irq_data *d)
-> > > +static u32 __gic_get_rdist_idx(irq_hw_number_t hwirq)
-> > > +{
-> > > +     switch (__get_intid_range(hwirq)) {
-> > > +     case SGI_RANGE:
-> > > +     case PPI_RANGE:
-> > > +             return hwirq;
-> > > +     case EPPI_RANGE:
-> > > +             return hwirq - EPPI_BASE_INTID + 32;
-> > > +     default:
-> > > +             unreachable();
-> > > +     }
-> > > +}
-> > > +
-> > > +static u32 gic_get_rdist_idx(struct irq_data *d)
-> > >  {
-> > > -     return __gic_get_ppi_index(d->hwirq);
-> > > +     return __gic_get_rdist_idx(d->hwirq);
-> > >  }
-> >
-> > Nit: It would be nicer to call this gic_get_rdist_index() to match
-> > gic_get_ppi_index(); likewise with __gic_get_rdist_index().
-> >
-> > That's my fault given I suggested the gic_get_rdist_idx() name in:
-> >
-> >   https://lore.kernel.org/linux-arm-kernel/ZNC-YRQopO0PaIIo@FVFF77S0Q05N.cambridge.arm.com/
-> >
-> > ... so sorry about that!
-> 
-> Yeah, I kept the name you suggested even though it seemed a little
-> inconsistent. I'll happily send a v13 with that fixed up, though I'll
-> probably wait a little bit just to avoid spamming new versions too
-> quickly. It's not like the patches can land in the middle of the merge
-> window anyway.
-> 
-> Unless someone says otherwise, I guess this series is in good shape to
-> land then. 
 
-I think so, yes.
+--0wmHf2n6L8Edbw7d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> Does anyone have any plans for the details of how to land it? I guess this
-> would be something that Marc, Catalin and Will would need to hash out since
-> the first patch would ideally go through a different tree than the others.
+On Wed, Aug 30, 2023 at 11:13:51PM +0200, Konrad Dybcio wrote:
+> The HSPHY is (or at least can be) one of the users of the reference
+> voltage generating regulator. Ensure that dependency is described
+> properly.
+>=20
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml | 3 +++
+>  1 file changed, 3 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2=
+=2Eyaml b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+> index 0f200e3f97a9..e895b6c4ee49 100644
+> --- a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
+> @@ -53,6 +53,9 @@ properties:
+>      items:
+>        - description: PHY core reset
+> =20
+> +  refgen-supply:
+> +    description: phandle to the REFGEN regulator node
+> +
+>    vdda-pll-supply:
+>      description: phandle to the regulator VDD supply node.
 
-I suspect that as long as the GIC patch doesn't conflict with anything in the
-irqchip tree (and assuming Marc's happy with it), we could route this all
-through the arm64 tree as that's what we did when we added support for
-pseudo-NMI in the first place.
+My OCD isn't keen on the inconsistent full stop usage but that's a
+nitpick of the context, not of the patch itself.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Marc, thoughts?
+Thanks,
+Conor,
 
-Mark.
+> =20
+>=20
+> --=20
+> 2.42.0
+>=20
+
+--0wmHf2n6L8Edbw7d
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHQEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPC2GwAKCRB4tDGHoIJi
+0vJaAP9rRzGpps5j5CxJkm7BgsWK5+zfGZT7HUjJD7fwv1yhHwD42Ji6OwShQoNl
+BWABX5M3jTUiImtdZq+sIulqU7bKDA==
+=s7w1
+-----END PGP SIGNATURE-----
+
+--0wmHf2n6L8Edbw7d--
