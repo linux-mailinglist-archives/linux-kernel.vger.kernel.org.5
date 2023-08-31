@@ -2,61 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F1278EFA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56C4378EFA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241818AbjHaOgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60222 "EHLO
+        id S242786AbjHaOgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:36:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234628AbjHaOgU (ORCPT
+        with ESMTP id S239985AbjHaOgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:36:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2CA1B1;
-        Thu, 31 Aug 2023 07:36:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3A02562086;
-        Thu, 31 Aug 2023 14:36:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FF0EC433C7;
-        Thu, 31 Aug 2023 14:36:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693492575;
-        bh=XiEYRHD6f7n6Wq7OwAEtV+qRG7lBnS7kZP4pD/d1s3o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fjViHdvdSM3bmJ62G13mEf/iNiwaZxjGEyuq3rdhPSPp6Lheejl/13Z3KJNL9mVi3
-         zEIk2DRfQY4iajkIoQSA8Xx3yofS9WMYwN22xKTqBTjSG49RRyHMwEgVCdjcSuKRy9
-         Cwfdfn9U+KIpWltfaAjdp5ZAvkbghv2dQ9EhMjU4=
-Date:   Thu, 31 Aug 2023 16:36:13 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alistair Francis <alistair23@gmail.com>
-Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
-        Jonathan.Cameron@huawei.com, lukas@wunner.de,
-        alex.williamson@redhat.com, christian.koenig@amd.com,
-        kch@nvidia.com, logang@deltatee.com, linux-kernel@vger.kernel.org,
-        chaitanyak@nvidia.com, rdunlap@infradead.org,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v6 2/3] sysfs: Add a attr_is_visible function to
- attribute_group
-Message-ID: <2023083139-underling-amuser-772e@gregkh>
-References: <20230817235810.596458-1-alistair.francis@wdc.com>
- <20230817235810.596458-2-alistair.francis@wdc.com>
- <2023081959-spinach-cherisher-b025@gregkh>
- <CAKmqyKM+DNTF1f0FvDEda_db792Ta4w_uAKNTZ6E3NkYoVcPFQ@mail.gmail.com>
- <2023082325-cognitive-dispose-1180@gregkh>
- <CAKmqyKMMKJN7HU_achBc8S6-Jx16owrthwDDRWysMZe=jymnMA@mail.gmail.com>
- <2023083111-impulsive-majestic-24ee@gregkh>
+        Thu, 31 Aug 2023 10:36:52 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE1C1BF;
+        Thu, 31 Aug 2023 07:36:49 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79277cfc73bso32740039f.1;
+        Thu, 31 Aug 2023 07:36:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693492609; x=1694097409; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5R1GdPaeLcvWWf/P/bdBnkb1To4X1joTlLoTaa9dNMw=;
+        b=Fp8ZAVbTJwfUxPao4o/YHV/16QlpLImTT+Sd6PrZLuhVM+Wp5GiH0WDDxyqQua49xA
+         mZ5iCruERv+JXAnpD7LkraarXDp9psq4z5BjjNov4lz/f63lofA9ZAe2gGlnm316oGK6
+         75EopaDQNreC1ymRALKkOpw2NRXw/MndMdS3OaFn6GmmkkHB0G5ICSf0VB80YxgKul5d
+         9UecFrgvZBoYTzjbNhT99NBrc/QPm7kXNs87TkGdzF1F2rzXv2kiHmWwKe56ANFa27/Y
+         vLXPOaN7o2+cmA1EbKXDi0hvU2PyVnKPm+SHe4G7PUGfO2T5fQkNdzEilwR0ASpGz8FA
+         cV0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693492609; x=1694097409;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5R1GdPaeLcvWWf/P/bdBnkb1To4X1joTlLoTaa9dNMw=;
+        b=S/Q2xGsH4atNXRY+3u4Cs69aM8E1hgoNxN4VjPC2V9M4pNgLK7XH4je2CZC/GBqHNI
+         CioipfoFVJMYe7Uwy4gtAX1FL+AAaw4DRmxas4k6MCfnGZohKkYo9tuR0jyd0xdWIX8z
+         UvEUKsMop1ysG8IyTtT1j7AIxeBU1J9QxkQq4bRbpoLyUUqKbxvjiIeWTVplmq6fRbnY
+         VoBnCMuEbxXShwaKOco5/+0ywqBjz9xMfCUMrvGTACFMKviV57xsA2sdBa4iCF4LbM+k
+         k/vyr9iDmbO5sPd0MKlLAZPGSBgodxVoaoZV1TSiForuGv2w6SqK5ZfZCMY6pfIMAxQr
+         3g9w==
+X-Gm-Message-State: AOJu0YznYTP+3X1ZFRuLEIPCaM8ASPlOT/8+yqvlPo7zHyO3GMZAhMKS
+        QQJxlKgPsJOO0hvomiRwXPU=
+X-Google-Smtp-Source: AGHT+IHc4441gdCO3ea8BbmsDiYb9wcircb59yZeHUBrb9SNWuN5jM+SsQvtxyiKZd/l8q9YDDUByw==
+X-Received: by 2002:a05:6e02:10a:b0:34b:ae9b:d039 with SMTP id t10-20020a056e02010a00b0034bae9bd039mr5578936ilm.18.1693492608886;
+        Thu, 31 Aug 2023 07:36:48 -0700 (PDT)
+Received: from azeems-kspp.c.googlers.com.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id ee15-20020a056638292f00b0042b47e8869bsm434201jab.49.2023.08.31.07.36.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 07:36:48 -0700 (PDT)
+From:   Azeem Shaikh <azeemshaikh38@gmail.com>
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3] scsi: target: Replace strlcpy with strscpy
+Date:   Thu, 31 Aug 2023 14:36:38 +0000
+Message-ID: <20230831143638.232596-1-azeemshaikh38@gmail.com>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2023083111-impulsive-majestic-24ee@gregkh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,269 +72,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 10:31:07AM +0200, Greg KH wrote:
-> On Mon, Aug 28, 2023 at 03:05:41PM +1000, Alistair Francis wrote:
-> > On Wed, Aug 23, 2023 at 5:02 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > On Tue, Aug 22, 2023 at 04:20:06PM -0400, Alistair Francis wrote:
-> > > > On Sat, Aug 19, 2023 at 6:57 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > > > >
-> > > > > On Thu, Aug 17, 2023 at 07:58:09PM -0400, Alistair Francis wrote:
-> > > > > > The documentation for sysfs_merge_group() specifically says
-> > > > > >
-> > > > > >     This function returns an error if the group doesn't exist or any of the
-> > > > > >     files already exist in that group, in which case none of the new files
-> > > > > >     are created.
-> > > > > >
-> > > > > > So just not adding the group if it's empty doesn't work, at least not
-> > > > > > with the code we currently have. The code can be changed to support
-> > > > > > this, but it is difficult to determine how this will affect existing use
-> > > > > > cases.
-> > > > >
-> > > > > Did you try?  I'd really really really prefer we do it this way as it's
-> > > > > much simpler overall to have the sysfs core "do the right thing
-> > > > > automatically" than to force each and every bus/subsystem to have to
-> > > > > manually add this type of attribute.
-> > > > >
-> > > > > Also, on a personal level, I want this function to work as it will allow
-> > > > > us to remove some code in some busses that don't really need to be there
-> > > > > (dynamic creation of some device attributes), which will then also allow
-> > > > > me to remove some apis in the driver core that should not be used at all
-> > > > > anymore (but keep creeping back in as there is still a few users.)
-> > > > >
-> > > > > So I'll be selfish here and say "please try to get my proposed change to
-> > > > > work, it's really the correct thing to do here."
-> > > >
-> > > > I did try!
-> > > >
-> > > > This is an attempt:
-> > > > https://github.com/alistair23/linux/commit/56b55756a2d7a66f7b6eb8a5692b1b5e2f81a9a9
-> > > >
-> > > > It is based on your original patch with a bunch of:
-> > > >
-> > > > if (!parent) {
-> > > >     parent = kernfs_create_dir_ns(kobj->sd, grp->name,
-> > > >                   S_IRWXU | S_IRUGO | S_IXUGO,
-> > > >                   uid, gid, kobj, NULL);
-> > > >     ...
-> > > >     }
-> > > >
-> > > >
-> > > > added throughout the code base.
-> > > >
-> > > > Very basic testing shows that it does what I need it to do and I don't
-> > > > see any kernel oops on boot.
-> > >
-> > > Nice!
-> > >
-> > > Mind if I take it and clean it up a bit and test with it here?  Again, I
-> > > need this functionality for other stuff as well, so getting it merged
-> > > for your feature is fine with me.
-> > 
-> > Sure! Go ahead. Sorry I was travelling last week.
-> > 
-> > >
-> > > > I prefer the approach I have in this mailing list patch. But if you
-> > > > like the commit mentioned above I can tidy and clean it up and then
-> > > > use that instead
-> > >
-> > > I would rather do it this way.  I can work on this on Friday if you want
-> > > me to.
-> > 
-> > Yeah, that's fine with me. If you aren't able to let me know and I can
-> > finish up the patch and send it with this series
-> 
-> Great, and for the email record, as github links are not stable, here's
-> the patch that you have above attached below.  I'll test this out and
-> clean it up a bit more and see how it goes...
-> 
-> thanks,
-> 
-> greg k-h
-> 
-> 
-> From 2929d17b58d02dcf52d0345fa966c616e09a5afa Mon Sep 17 00:00:00 2001
-> From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Date: Wed, 24 Aug 2022 15:45:36 +0200
-> Subject: [PATCH] sysfs: do not create empty directories if no attributes are
->  present
-> 
-> When creating an attribute group, if it is named a subdirectory is
-> created and the sysfs files are placed into that subdirectory.  If no
-> files are created, normally the directory would still be present, but it
-> would be empty.  Clean this up by removing the directory if no files
-> were successfully created in the group at all.
-> 
-> Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Co-developed-by: Alistair Francis <alistair.francis@wdc.com>
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
-> ---
->  fs/sysfs/file.c  | 14 ++++++++++--
->  fs/sysfs/group.c | 56 ++++++++++++++++++++++++++++++++++++------------
->  2 files changed, 54 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/sysfs/file.c b/fs/sysfs/file.c
-> index a12ac0356c69..7aab6c09662c 100644
-> --- a/fs/sysfs/file.c
-> +++ b/fs/sysfs/file.c
-> @@ -391,8 +391,18 @@ int sysfs_add_file_to_group(struct kobject *kobj,
->  		kernfs_get(parent);
->  	}
->  
-> -	if (!parent)
-> -		return -ENOENT;
-> +	if (!parent) {
-> +		parent = kernfs_create_dir_ns(kobj->sd, group,
-> +					  S_IRWXU | S_IRUGO | S_IXUGO,
-> +					  uid, gid, kobj, NULL);
-> +		if (IS_ERR(parent)) {
-> +			if (PTR_ERR(parent) == -EEXIST)
-> +				sysfs_warn_dup(kobj->sd, group);
-> +			return PTR_ERR(parent);
-> +		}
-> +
-> +		kernfs_get(parent);
-> +	}
->  
->  	kobject_get_ownership(kobj, &uid, &gid);
->  	error = sysfs_add_file_mode_ns(parent, attr, attr->mode, uid, gid,
-> diff --git a/fs/sysfs/group.c b/fs/sysfs/group.c
-> index 138676463336..013fa333cd3c 100644
-> --- a/fs/sysfs/group.c
-> +++ b/fs/sysfs/group.c
-> @@ -31,12 +31,14 @@ static void remove_files(struct kernfs_node *parent,
->  			kernfs_remove_by_name(parent, (*bin_attr)->attr.name);
->  }
->  
-> +/* returns -ERROR if error, or >= 0 for number of files actually created */
->  static int create_files(struct kernfs_node *parent, struct kobject *kobj,
->  			kuid_t uid, kgid_t gid,
->  			const struct attribute_group *grp, int update)
->  {
->  	struct attribute *const *attr;
->  	struct bin_attribute *const *bin_attr;
-> +	int files_created = 0;
->  	int error = 0, i;
->  
->  	if (grp->attrs) {
-> @@ -65,6 +67,8 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
->  						       gid, NULL);
->  			if (unlikely(error))
->  				break;
-> +
-> +			files_created++;
->  		}
->  		if (error) {
->  			remove_files(parent, grp);
-> @@ -95,12 +99,15 @@ static int create_files(struct kernfs_node *parent, struct kobject *kobj,
->  							   NULL);
->  			if (error)
->  				break;
-> +			files_created++;
->  		}
->  		if (error)
->  			remove_files(parent, grp);
->  	}
->  exit:
-> -	return error;
-> +	if (error)
-> +		return error;
-> +	return files_created;
->  }
->  
->  
-> @@ -130,9 +137,14 @@ static int internal_create_group(struct kobject *kobj, int update,
->  		if (update) {
->  			kn = kernfs_find_and_get(kobj->sd, grp->name);
->  			if (!kn) {
-> -				pr_warn("Can't update unknown attr grp name: %s/%s\n",
-> -					kobj->name, grp->name);
-> -				return -EINVAL;
-> +				kn = kernfs_create_dir_ns(kobj->sd, grp->name,
-> +							  S_IRWXU | S_IRUGO | S_IXUGO,
-> +							  uid, gid, kobj, NULL);
-> +				if (IS_ERR(kn)) {
-> +					if (PTR_ERR(kn) == -EEXIST)
-> +						sysfs_warn_dup(kobj->sd, grp->name);
-> +					return PTR_ERR(kn);
-> +				}
->  			}
->  		} else {
->  			kn = kernfs_create_dir_ns(kobj->sd, grp->name,
-> @@ -150,11 +162,18 @@ static int internal_create_group(struct kobject *kobj, int update,
->  
->  	kernfs_get(kn);
->  	error = create_files(kn, kobj, uid, gid, grp, update);
-> -	if (error) {
-> +	if (error <= 0) {
-> +		/*
-> +		 * If an error happened _OR_ if no files were created in the
-> +		 * attribute group, and we have a name for this group, delete
-> +		 * the name so there's not an empty directory.
-> +		 */
->  		if (grp->name)
->  			kernfs_remove(kn);
-> +	} else {
-> +		error = 0;
-> +		kernfs_put(kn);
->  	}
-> -	kernfs_put(kn);
->  
->  	if (grp->name && update)
->  		kernfs_put(kn);
-> @@ -318,13 +337,12 @@ void sysfs_remove_groups(struct kobject *kobj,
->  EXPORT_SYMBOL_GPL(sysfs_remove_groups);
->  
->  /**
-> - * sysfs_merge_group - merge files into a pre-existing attribute group.
-> + * sysfs_merge_group - merge files into a attribute group.
->   * @kobj:	The kobject containing the group.
->   * @grp:	The files to create and the attribute group they belong to.
->   *
-> - * This function returns an error if the group doesn't exist or any of the
-> - * files already exist in that group, in which case none of the new files
-> - * are created.
-> + * This function returns an error if any of the files already exist in
-> + * that group, in which case none of the new files are created.
->   */
->  int sysfs_merge_group(struct kobject *kobj,
->  		       const struct attribute_group *grp)
-> @@ -336,12 +354,22 @@ int sysfs_merge_group(struct kobject *kobj,
->  	struct attribute *const *attr;
->  	int i;
->  
-> -	parent = kernfs_find_and_get(kobj->sd, grp->name);
-> -	if (!parent)
-> -		return -ENOENT;
-> -
->  	kobject_get_ownership(kobj, &uid, &gid);
->  
-> +	parent = kernfs_find_and_get(kobj->sd, grp->name);
-> +	if (!parent) {
-> +		parent = kernfs_create_dir_ns(kobj->sd, grp->name,
-> +					  S_IRWXU | S_IRUGO | S_IXUGO,
-> +					  uid, gid, kobj, NULL);
-> +		if (IS_ERR(parent)) {
-> +			if (PTR_ERR(parent) == -EEXIST)
-> +				sysfs_warn_dup(kobj->sd, grp->name);
-> +			return PTR_ERR(parent);
-> +		}
-> +
-> +		kernfs_get(parent);
-> +	}
-> +
->  	for ((i = 0, attr = grp->attrs); *attr && !error; (++i, ++attr))
->  		error = sysfs_add_file_mode_ns(parent, *attr, (*attr)->mode,
->  					       uid, gid, NULL);
-> -- 
-> 2.42.0
-> 
+strlcpy() reads the entire source buffer first.
+This read may exceed the destination size limit.
+This is both inefficient and can lead to linear read
+overflows if a source string is not NUL-terminated [1].
+In an effort to remove strlcpy() completely [2], replace
+strlcpy() here with strscpy().
 
-And as the 0-day bot just showed, this patch isn't going to work
-properly, the uid/gid stuff isn't all hooked up properly, I'll work on
-fixing that up when I get some cycles...
+Direct replacement is safe here since return value of -errno
+is used to check for truncation instead of sizeof(dest).
 
-thanks,
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+[2] https://github.com/KSPP/linux/issues/89
 
-greg k-h
+Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+---
+v3:
+ * Address readability comment.
+
+v2:
+ * Replace all instances of strlcpy in this file instead of just 1.
+ * https://lore.kernel.org/all/20230830210724.4156575-1-azeemshaikh38@gmail.com/
+
+v1:
+ * https://lore.kernel.org/all/20230830200717.4129442-1-azeemshaikh38@gmail.com/
+
+ drivers/target/target_core_configfs.c |   24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+index 936e5ff1b209..d5860c1c1f46 100644
+--- a/drivers/target/target_core_configfs.c
++++ b/drivers/target/target_core_configfs.c
+@@ -1392,16 +1392,16 @@ static ssize_t target_wwn_vendor_id_store(struct config_item *item,
+ 	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+ 	unsigned char buf[INQUIRY_VENDOR_LEN + 2];
+ 	char *stripped = NULL;
+-	size_t len;
++	ssize_t len;
+ 	ssize_t ret;
+
+-	len = strlcpy(buf, page, sizeof(buf));
+-	if (len < sizeof(buf)) {
++	len = strscpy(buf, page, sizeof(buf));
++	if (len > 0) {
+ 		/* Strip any newline added from userspace. */
+ 		stripped = strstrip(buf);
+ 		len = strlen(stripped);
+ 	}
+-	if (len > INQUIRY_VENDOR_LEN) {
++	if (len < 0 || len > INQUIRY_VENDOR_LEN) {
+ 		pr_err("Emulated T10 Vendor Identification exceeds"
+ 			" INQUIRY_VENDOR_LEN: " __stringify(INQUIRY_VENDOR_LEN)
+ 			"\n");
+@@ -1448,16 +1448,16 @@ static ssize_t target_wwn_product_id_store(struct config_item *item,
+ 	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+ 	unsigned char buf[INQUIRY_MODEL_LEN + 2];
+ 	char *stripped = NULL;
+-	size_t len;
++	ssize_t len;
+ 	ssize_t ret;
+
+-	len = strlcpy(buf, page, sizeof(buf));
+-	if (len < sizeof(buf)) {
++	len = strscpy(buf, page, sizeof(buf));
++	if (len > 0) {
+ 		/* Strip any newline added from userspace. */
+ 		stripped = strstrip(buf);
+ 		len = strlen(stripped);
+ 	}
+-	if (len > INQUIRY_MODEL_LEN) {
++	if (len < 0 || len > INQUIRY_MODEL_LEN) {
+ 		pr_err("Emulated T10 Vendor exceeds INQUIRY_MODEL_LEN: "
+ 			 __stringify(INQUIRY_MODEL_LEN)
+ 			"\n");
+@@ -1504,16 +1504,16 @@ static ssize_t target_wwn_revision_store(struct config_item *item,
+ 	/* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+ 	unsigned char buf[INQUIRY_REVISION_LEN + 2];
+ 	char *stripped = NULL;
+-	size_t len;
++	ssize_t len;
+ 	ssize_t ret;
+
+-	len = strlcpy(buf, page, sizeof(buf));
+-	if (len < sizeof(buf)) {
++	len = strscpy(buf, page, sizeof(buf));
++	if (len > 0) {
+ 		/* Strip any newline added from userspace. */
+ 		stripped = strstrip(buf);
+ 		len = strlen(stripped);
+ 	}
+-	if (len > INQUIRY_REVISION_LEN) {
++	if (len < 0 || len > INQUIRY_REVISION_LEN) {
+ 		pr_err("Emulated T10 Revision exceeds INQUIRY_REVISION_LEN: "
+ 			 __stringify(INQUIRY_REVISION_LEN)
+ 			"\n");
+--
+2.42.0.283.g2d96d420d3-goog
+
+
