@@ -2,178 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B179C78F31A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02F478F31C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347144AbjHaTJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:09:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54118 "EHLO
+        id S1347146AbjHaTLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347143AbjHaTJf (ORCPT
+        with ESMTP id S241453AbjHaTLL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:09:35 -0400
-Received: from hall.aurel32.net (hall.aurel32.net [IPv6:2001:bc8:30d7:100::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0523E69
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:09:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=aurel32.net
-        ; s=202004.hall; h=In-Reply-To:Content-Type:MIME-Version:References:
-        Message-ID:Subject:Cc:To:From:Date:Content-Transfer-Encoding:From:Reply-To:
-        Subject:Content-ID:Content-Description:X-Debbugs-Cc;
-        bh=QQCvMl5iMBaAhl4A9VB4FX1lg99oI6M+k4A+VnsS760=; b=eeTKv5sc+qoSkyRdfWwBiayYnA
-        fRIEcM2cuYOtu9szoyB/1KbY0pbnZE3IryzyXBynpK6X/FSDQnIWM20f2P9DS018eZjSRjSFCorgS
-        DoBofkkXFjOHA61Ntf2rCFdPsHmI349XRVOI1rzSTTIwNU4AtztLvvH3Jnt63WzYywMbNLz+P/N7h
-        5M3tgAuLFhoOdwRdVSH7414vCk1cDp2lXun6DsWxBS1SOonwPCC6g3H5YPQyO/12W0EjZW6/zqoaP
-        xMCIM1DXzoN/pVWi35kYOVsPcy+ewiTRjgRdKqMUKTfTV0jKi1LOZJ5G6Bt9avmf5PE70sAJar9wu
-        gqCwGS+g==;
-Received: from [2a01:e34:ec5d:a741:9a7b:5831:531:65c9] (helo=ohm.rr44.fr)
-        by hall.aurel32.net with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1qbn2H-001LAk-Dy; Thu, 31 Aug 2023 21:08:57 +0200
-Received: from aurel32 by ohm.rr44.fr with local (Exim 4.96)
-        (envelope-from <aurelien@aurel32.net>)
-        id 1qbn2G-009WjP-2E;
-        Thu, 31 Aug 2023 21:08:56 +0200
-Date:   Thu, 31 Aug 2023 21:08:56 +0200
-From:   Aurelien Jarno <aurelien@aurel32.net>
-To:     Conor Dooley <conor.dooley@microchip.com>
-Cc:     jiajie.ho@starfivetech.com, huan.feng@starfivetech.com,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel@esmil.dk,
-        linux-riscv@lists.infradead.org, davidlt@rivosinc.com
-Subject: Re: starfive crypto list_add corruption
-Message-ID: <ZPDlSLQQkYuIVLYJ@aurel32.net>
-Mail-Followup-To: Conor Dooley <conor.dooley@microchip.com>,
-        jiajie.ho@starfivetech.com, huan.feng@starfivetech.com,
-        herbert@gondor.apana.org.au, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, kernel@esmil.dk,
-        linux-riscv@lists.infradead.org, davidlt@rivosinc.com
-References: <20230830-track-glutinous-39f536b4ced1@wendy>
+        Thu, 31 Aug 2023 15:11:11 -0400
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E350E65
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:11:07 -0700 (PDT)
+Received: by mail-vs1-f49.google.com with SMTP id ada2fe7eead31-44ede2dce3aso504725137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:11:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693509066; x=1694113866;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6aekfPdATovdcltGUaCVW5RchzyOTI3qY3vA6dj0eFw=;
+        b=hHpui03iLnMLeRSZmu9gRw6SUxzj+YUBJn0U7hJClkKOBBxC8W57s+QFA886H4oPqm
+         1RLRCRzapZbPKRoH5XuSkEpAbRxpiwZHzMFtiFk6CqeS/WeOP67jXt5MNDdFyYUM62EI
+         7VE3jf2O7WsHDv9fE46s5ZGlhirX2Lxe1ax7Kyy7Hc1r9GC4NsXJsHboFqOT+0fv0SAq
+         JhrnQi8BVL5Se3P8xClNoWO34lH5/i3/1N1jliabg/K2GnA677FiT2n8uLyhl+lWMWOg
+         SVtpMzJfFlxEKc9RCsa2Aq3RZXeimTrXVFkLZu4F5bYtAmpq5HfFT3vcG80oTKAXrifs
+         qY+A==
+X-Gm-Message-State: AOJu0YxlA7MlG1NPbaIzotyQ1L7C9CXpnGt9+ymnBX+QkvZfFxbtMsTY
+        lXU9j88n4x03FFBa2o1l+dE=
+X-Google-Smtp-Source: AGHT+IEYJ9EfleIAq3DJb7buumjBI3MsC0QJIdoKt2C89iekeFPYJ/kRFSENn6v/aiyjyVj0+ay6NQ==
+X-Received: by 2002:a05:6102:4b5:b0:44e:a216:59a2 with SMTP id r21-20020a05610204b500b0044ea21659a2mr566509vsa.7.1693509066539;
+        Thu, 31 Aug 2023 12:11:06 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:2cd8])
+        by smtp.gmail.com with ESMTPSA id a27-20020a0ca99b000000b0064f50e2c551sm839748qvb.1.2023.08.31.12.11.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 12:11:06 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 14:11:03 -0500
+From:   David Vernet <void@manifault.com>
+To:     K Prateek Nayak <kprateek.nayak@amd.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
+        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
+        aaron.lu@intel.com, wuyun.abel@bytedance.com, kernel-team@meta.com
+Subject: Re: [RFC PATCH 3/3] sched/fair: Add a per-shard overload flag
+Message-ID: <20230831191103.GC531917@maniforge>
+References: <31aeb639-1d66-2d12-1673-c19fed0ab33a@amd.com>
+ <20230831104508.7619-1-kprateek.nayak@amd.com>
+ <20230831104508.7619-4-kprateek.nayak@amd.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jML+LdgAwhBXYINm"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230830-track-glutinous-39f536b4ced1@wendy>
-User-Agent: Mutt/2.2.9 (2022-11-12)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230831104508.7619-4-kprateek.nayak@amd.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 31, 2023 at 04:15:08PM +0530, K Prateek Nayak wrote:
 
---jML+LdgAwhBXYINm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Prateek,
 
-Hi Conor,
+> Even with the two patches, I still observe the following lock
+> contention when profiling the tbench 128-clients run with IBS:
+> 
+>   -   12.61%  swapper          [kernel.vmlinux]         [k] native_queued_spin_lock_slowpath
+>      - 10.94% native_queued_spin_lock_slowpath
+>         - 10.73% _raw_spin_lock
+>            - 9.57% __schedule
+>                 schedule_idle
+>                 do_idle
+>               + cpu_startup_entry
+>            - 0.82% task_rq_lock
+>                 newidle_balance
+>                 pick_next_task_fair
+>                 __schedule
+>                 schedule_idle
+>                 do_idle
+>               + cpu_startup_entry
+> 
+> Since David mentioned rq->avg_idle check is probably not the right step
+> towards the solution, this experiment introduces a per-shard
+> "overload" flag. Similar to "rq->rd->overload", per-shard overload flag
+> notifies of the possibility of one or more rq covered in the shard's
+> domain having a queued task. shard's overload flag is set at the same
+> time as "rq->rd->overload", and is cleared when shard's list is found
+> to be empty.
 
-On 2023-08-30 11:26, Conor Dooley wrote:
-> Hi,
->=20
-> There's been a report on the irc fedora-riscv irc of list_add corruption
-> with the starfive crypto stuff:
-> 	list_add corruption. next->prev should be prev (ffffffff02f65320), but w=
-as ffffffd8eef15848. (next=3Dffffffd8eef15840).
-> 	------------[ cut here ]------------
-> 	kernel BUG at lib/list_debug.c:29!
-> 	Kernel BUG [#1]
+I think this is an interesting idea, but I feel that it's still working
+against the core proposition of SHARED_RUNQ, which is to enable work
+conservation.
 
-[snip]
+> With these changes, following are the results for tbench 128-clients:
 
-> I feel like this isn't the first report I saw, but the other might've
-> been for the equivalent driver in the vendor tree & I probably didn't
-> pay any attention to.
+Just to make sure I understand, this is to address the contention we're
+observing on tbench with 64 - 256 clients, right?  That's my
+understanding from Gautham's reply in [0].
 
-I got this issue, if I remember correctly, I fixed it by enabling
-CONFIG_ARM_AMBA and CONFIG_AMBA_PL08X. It improved things a bit, but now
-the driver is still not functional and instead I get this kind of trace
-appearing during the self test of the driver:
+[0]: https://lore.kernel.org/all/ZOc7i7wM0x4hF4vL@BLR-5CG11610CF.amd.com/
 
-------------[ cut here ]------------
-WARNING: CPU: 3 PID: 292 at crypto/api.c:176 crypto_wait_for_test+0x8e/0x92
-Modules linked in: nvme_fabrics ad7418 binfmt_misc jh7110_tdm snd_soc_core =
-snd_pcm_dmaengine ofpart spi_nor snd_pcm starfive_wdt mtd watchdog jh7110_c=
-rypto(+) snd_timer jh7110_trng crypto_engine rng_core snd soundcore sfctemp=
- cpufreq_dt drm loop fuse drm_panel_orientation_quirks configfs ip_tables x=
-_tables autofs4 ext4 crc32c_generic crc16 mbcache jbd2 rtc_ds1307 dm_mod da=
-x nvme xhci_pci nvme_core t10_pi crc64_rocksoft crc64 crc_t10dif crct10dif_=
-generic crct10dif_common xhci_hcd usbcore axp20x_regulator dwmac_starfive s=
-tmmac_platform usb_common dw_mmc_starfive dw_mmc_pltfm axp20x_i2c axp20x mf=
-d_core regmap_i2c stmmac dw_mmc pcs_xpcs of_mdio fixed_phy phylink fwnode_m=
-dio mmc_core libphy clk_starfive_jh7110_vout clk_starfive_jh7110_isp clk_st=
-arfive_jh7110_aon spi_cadence_quadspi i2c_designware_platform clk_starfive_=
-jh7110_stg phy_jh7110_usb phy_jh7110_pcie i2c_designware_core
-CPU: 3 PID: 292 Comm: (udev-worker) Not tainted 6.5.0-rc7+ #1
-Hardware name: StarFive VisionFive 2 v1.2A (DT)
-epc : crypto_wait_for_test+0x8e/0x92
- ra : crypto_wait_for_test+0x44/0x92
-epc : ffffffff803d421e ra : ffffffff803d41d4 sp : ffffffc80067b830
- gp : ffffffff8198de98 tp : ffffffd8ce189b80 t0 : 0000000000000000
- t1 : 00000000000000aa t2 : 000000000000031e s0 : ffffffc80067b850
- s1 : ffffffd8d9df5e00 a0 : fffffffffffffe00 a1 : ffffffc80067b798
- a2 : ffffffc80067b798 a3 : ffffffd8d9df5f98 a4 : 0000000000000000
- a5 : fffffffffffffe00 a6 : ffffffd8c1285400 a7 : 00000000000000a9
- s2 : ffffffff0343e340 s3 : 0000000000000000 s4 : ffffffff0343e280
- s5 : 000000000000000a s6 : ffffffff80e5cef0 s7 : ffffffff819ceba8
- s8 : 0000000000000000 s9 : ffffffc80067bd58 s10: ffffffff0343fb58
- s11: ffffffc80067bca0 t3 : 000000000000ff00 t4 : 0000000000ff0000
- t5 : 0000000000000040 t6 : 0000000000000006
-status: 0000000200000120 badaddr: 0000000000000000 cause: 0000000000000003
-[<ffffffff803d421e>] crypto_wait_for_test+0x8e/0x92
-[<ffffffff803d62f8>] crypto_register_alg+0xa8/0xea
-[<ffffffff803d941c>] crypto_register_ahashes+0x4c/0xd0
-[<ffffffff033e48e0>] starfive_hash_register_algs+0x22/0x2a [jh7110_crypto]
-[<ffffffff033e35dc>] starfive_cryp_probe+0x3ca/0x468 [jh7110_crypto]
-[<ffffffff806525d6>] platform_probe+0x5e/0xba
-[<ffffffff8064f5f4>] really_probe+0xa0/0x35a
-[<ffffffff8064f928>] __driver_probe_device+0x7a/0x138
-[<ffffffff8064fa1e>] driver_probe_device+0x38/0xc6
-[<ffffffff8064fc60>] __driver_attach+0xd0/0x1b8
-[<ffffffff8064d18e>] bus_for_each_dev+0x6c/0xba
-[<ffffffff8064ee8a>] driver_attach+0x26/0x2e
-[<ffffffff8064e688>] bus_add_driver+0x108/0x20a
-[<ffffffff80650d52>] driver_register+0x52/0xf4
-[<ffffffff806521c2>] __platform_driver_register+0x28/0x30
-[<ffffffff033e9028>] starfive_cryp_driver_init+0x28/0x1000 [jh7110_crypto]
-[<ffffffff800028be>] do_one_initcall+0x5c/0x22e
-[<ffffffff800b3e36>] do_init_module+0x5e/0x21a
-[<ffffffff800b5b06>] load_module+0x1842/0x1db4
-[<ffffffff800b6272>] init_module_from_file+0x82/0xba
-[<ffffffff800b645e>] sys_finit_module+0x194/0x326
-[<ffffffff80939194>] do_trap_ecall_u+0xc6/0x134
-[<ffffffff80003cec>] ret_from_exception+0x0/0x64
----[ end trace 0000000000000000 ]---
+If so, are we sure this change won't regress other workloads that would
+have benefited from the work conservation?
 
-Regards
-Aurelien
+Also, I assume that you don't see the improved contention without this,
+even if you include your fix to the newidle_balance() that has us skip
+over the <= LLC domain?
 
---=20
-Aurelien Jarno                          GPG: 4096R/1DDD8C9B
-aurelien@aurel32.net                     http://aurel32.net
+Thanks,
+David
 
---jML+LdgAwhBXYINm
-Content-Type: application/pgp-signature; name="signature.asc"
+P.S. Taking off on vacation now, so any replies will be very delayed.
+Thanks again for working on this!
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEUryGlb40+QrX1Ay4E4jA+JnoM2sFAmTw5UUACgkQE4jA+Jno
-M2sOaA/9FhG3LlDZCMNJuvXF/y7l1hS0VD90XHzDhWSVid2wYZCs8J2HvLBfgbmc
-8ilS/cg8fyPRPgnPNoU5FhNa/9V2TRu40oxolf8i/eJIPlcEldcnfIOO/l0py1Fc
-VhUHItmAxoOzAow9fO1C4+3HdnER/TWbw/sC30Z8Q7QIMQJUoKq9KcLpr6gvXmCg
-aBq5pcAw5cT4dPQYJFsiaWwzQPqnmwRPsE13wWu8eYnE3CaJCdMY7kIXlJWofr6r
-axRSrUlbZIhsYVBXybsCcOr9Wt6FCoQAs+gR1QXYL2H4fCt/aZK+poYSxIf7KUmF
-JpDt2pzP9/BBGMnLEL8no6BBQCfuL0XdzqkUxMVzw5wea0MtHCtrrr4Q3mus8WYj
-4zecZJCdn1pgtVQwosxgIY8XtS2bt37ZkjrI3Ta4+lDPf0tRg1zJJ5JFmrHqg4TS
-NKJGmF6cfYLSI+ufvsdJKUN+YrtVDk2yCBW8ULm+v1rBtGFzfvNNPVPJFtTkwwv+
-kmSD3YhqexXPzBE1ep30ylLhQP0xxb7/5PgfJRUpaIWxTacT5R0vZrFfXXuagKVo
-tYdg3QDIStwNrGCHBUO4W3qVHyxlgsoVW6iWnrs8RORV9Haz/SQLoZGIdA64wQqr
-7yOky1stPb88p0i9hempEplCFJ8Z3dL8wFE58X+aRzx5U7QmLs4=
-=PXOJ
------END PGP SIGNATURE-----
-
---jML+LdgAwhBXYINm--
+> 
+> tip				: 1.00 (var: 1.00%)
+> tip + v3 + series till patch 2	: 0.41 (var: 1.15%) (diff: -58.81%)
+> tip + v3 + full series		: 1.01 (var: 0.36%) (diff: +00.92%)
+> 
+> Signed-off-by: K Prateek Nayak <kprateek.nayak@amd.com>
+> ---
+>  kernel/sched/fair.c  | 13 +++++++++++--
+>  kernel/sched/sched.h | 17 +++++++++++++++++
+>  2 files changed, 28 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 446ffdad49e1..31fe109fdaf0 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -186,6 +186,7 @@ static void shared_runq_reassign_domains(void)
+>  		rq->cfs.shared_runq = shared_runq;
+>  		rq->cfs.shard = &shared_runq->shards[shard_idx];
+>  		rq_unlock(rq, &rf);
+> +		WRITE_ONCE(rq->cfs.shard->overload, 0);
+>  	}
+>  }
+>  
+> @@ -202,6 +203,7 @@ static void __shared_runq_drain(struct shared_runq *shared_runq)
+>  		list_for_each_entry_safe(p, tmp, &shard->list, shared_runq_node)
+>  			list_del_init(&p->shared_runq_node);
+>  		raw_spin_unlock(&shard->lock);
+> +		WRITE_ONCE(shard->overload, 0);
+>  	}
+>  }
+>  
+> @@ -258,13 +260,20 @@ shared_runq_pop_task(struct shared_runq_shard *shard, int target)
+>  {
+>  	struct task_struct *p;
+>  
+> -	if (list_empty(&shard->list))
+> +	if (!READ_ONCE(shard->overload))
+>  		return NULL;
+>  
+> +	if (list_empty(&shard->list)) {
+> +		WRITE_ONCE(shard->overload, 0);
+> +		return NULL;
+> +	}
+> +
+>  	raw_spin_lock(&shard->lock);
+>  	p = list_first_entry_or_null(&shard->list, struct task_struct,
+>  				     shared_runq_node);
+> -	if (p && is_cpu_allowed(p, target))
+> +	if (!p)
+> +		WRITE_ONCE(shard->overload, 0);
+> +	else if (is_cpu_allowed(p, target))
+>  		list_del_init(&p->shared_runq_node);
+>  	else
+>  		p = NULL;
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index f50176f720b1..e8d4d948f742 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -601,6 +601,20 @@ do {									\
+>  struct shared_runq_shard {
+>  	struct list_head list;
+>  	raw_spinlock_t lock;
+> +	/*
+> +	 * shared_runq_shard can contain running tasks.
+> +	 * In such cases where all the tasks are running,
+> +	 * it is futile to attempt to pull tasks from the
+> +	 * list. Overload flag is used to indicate case
+> +	 * where one or more rq in the shard domain may
+> +	 * have a queued task. If the flag is 0, it is
+> +	 * very likely that all tasks in the shard are
+> +	 * running and cannot be migrated. This is not
+> +	 * guarded by the shard lock, and since it may
+> +	 * be updated often, it is placed into its own
+> +	 * cacheline.
+> +	 */
+> +	int overload ____cacheline_aligned;
+>  } ____cacheline_aligned;
+>  
+>  /* This would likely work better as a configurable knob via debugfs */
+> @@ -2585,6 +2599,9 @@ static inline void add_nr_running(struct rq *rq, unsigned count)
+>  	if (prev_nr < 2 && rq->nr_running >= 2) {
+>  		if (!READ_ONCE(rq->rd->overload))
+>  			WRITE_ONCE(rq->rd->overload, 1);
+> +
+> +		if (rq->cfs.shard && !READ_ONCE(rq->cfs.shard->overload))
+> +			WRITE_ONCE(rq->cfs.shard->overload, 1);
+>  	}
+>  #endif
+>  
+> -- 
+> 2.34.1
+> 
