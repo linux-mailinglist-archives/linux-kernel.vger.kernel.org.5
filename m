@@ -2,142 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9CC878ED79
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:42:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A1778ED82
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242954AbjHaMm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:42:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
+        id S239985AbjHaMoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 08:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239553AbjHaMmy (ORCPT
+        with ESMTP id S242640AbjHaMoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:42:54 -0400
-Received: from mail-vk1-xa35.google.com (mail-vk1-xa35.google.com [IPv6:2607:f8b0:4864:20::a35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8795D1A4;
-        Thu, 31 Aug 2023 05:42:48 -0700 (PDT)
-Received: by mail-vk1-xa35.google.com with SMTP id 71dfb90a1353d-48cfdfa7893so314405e0c.0;
-        Thu, 31 Aug 2023 05:42:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693485767; x=1694090567; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=a1xOciFEJ8HjM2SzGUTsUdShfH1iAQ0wqaSrJGRWK40=;
-        b=mE1QwtBSQ1WQFDY4nQpw7W1W8yn5v+Ed8WFK2RbeAfAbAnB2TJPWsWFzt/RJUEYdmn
-         q46qHkaKvCJQy8NIZodtkt7X8Lzkzjs3COhYEdMVCD9HjDJUjaF6Lx3Y/7ilM9j0gCS1
-         fdr4LqWZyTVf4985UFDlNhxy0RAf5mXA1pj9+uBz6NEBHplXH6A1jS4DEqRnyu431DrA
-         Zfov427vofUUOmWVbXMBRk1hF4v3kNu1v847RuozufaYJFGsL2S9xRPbb3ZL8SHOYRF5
-         ZTu8tCY2spPA//Fw9hzzfUkGXmhZ0dMvoLsE0wcAOwOXgPKabVhs8TT2Ud9FWM6VsYOe
-         c29w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693485767; x=1694090567;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a1xOciFEJ8HjM2SzGUTsUdShfH1iAQ0wqaSrJGRWK40=;
-        b=YshPyGHqMakygFz8yGoVUZ7X2nYLTwPlNDKEJ0aFd5JA4fiIjd5YUWT2T4SnC+vpu/
-         uWyNJuAQqW8dtleF/OsvvtlXupQc6D0U1xPQ8y9Pgu7b/um+OR8n441R4eVOPJrzFB0h
-         da6vVEQZPDS5E526fLclFCYVlYuO3oD0zKEHbk3C2YLzmMbd3YERuy/HCvf0GcoNEvAT
-         aCCy6in7pQ9uOFf4EsxckzIwcsCTNKCEvdS9V0UtllgXDsRA2aVkJRHIQeH4h26AE2Dv
-         ZdGYGh8EAQ9C6bvZhnxSeDREyPX9yyGvcRbuOJ4mVYUZZ6GcUXR89R4ldZPzsEiITp7h
-         ibeg==
-X-Gm-Message-State: AOJu0YxSWQ50iacODfeBi06HqyKCEhNUgNWOWEne5RnweS4NCGF+2lwC
-        tQVg3jKNeLYLwJpCc+bNwYxKAnWN1Q///stAGjw=
-X-Google-Smtp-Source: AGHT+IG+ZUnkpRdPLlTVk21k4SpEvZwMjipenH8jcSc0l7Lhd+kc0DKaqOWOz4BxF4hDJ9YB1nhCciRqrK+QcApXhIw=
-X-Received: by 2002:a1f:ac54:0:b0:490:a0fb:e08f with SMTP id
- v81-20020a1fac54000000b00490a0fbe08fmr4010195vke.1.1693485767538; Thu, 31 Aug
- 2023 05:42:47 -0700 (PDT)
+        Thu, 31 Aug 2023 08:44:07 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2046.outbound.protection.outlook.com [40.107.95.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9638DCDB;
+        Thu, 31 Aug 2023 05:44:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eFl5Ms9g93ApTgNHoupzu6swP1GxNOFsfEzrl9HA2MSiLeU2zcu6obglIqowEU/t7QNRo9xs8X7CqAfPrvMDQ74kpsubAXQyqPZYuSEJt1DptWLAlhNeSUfm5Sj3rFN9ahgIZKMAjx59UCAVap4KtPPgWNhu+mUb1G4Q4RkeipXPzj3heiw2jfoX+e0KfHs2d1yzujYR618IJcCuo5gpaWPIIt3/TrNCTyT+pmUa1jrBGcKGyn1DBEOV8ul+0ZPA3a1UHdwAo0h0s+yEaTOXznoz3J+f6hOqIpCNPzC2u16Cz2HRTaF+Hjq7cn56ypJPlaWt3gcSP6xNlRN2vXteFQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C9g0VfqM/vFZRPnxhSK0n8E6J2VT8EdVl/kE4eWG5Cc=;
+ b=DXjron5rJxxnt81CnyDid76Al41rBMpLaqBccSEBaI9ROFpXkKmjieFINBuE08NX8F/2FfVsQb2G3RTqUfwC/juQL8tozNoG4DthCMCu1PLqFyGGy/skaSyPGBO61GU3AU7hPzfV2ByJvLqusIwDMOzj/QAgPJoWXc6Wrmh+kCg6t+FwippS7xnsp/mnD5hWsACyiIETbOLcJzJ0rNjhow2ViZ8IyB3X1tYbgHjOF2e/2wNp2zt15pMYLrF4oUiPlA1JosKOKiW/2z5V2pPvyyjmKEZ67dr9NQlxLkN2G50CrKJxQMRj1UvEjdiuUIrNZx0q6dYbL9MV0QR/fyERqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C9g0VfqM/vFZRPnxhSK0n8E6J2VT8EdVl/kE4eWG5Cc=;
+ b=KNtrhnKmEbu5dXkCzmIdQ3oA1IBi7jT/KI5xT6MgASa+2AgMbxSvxc2Wz3xZvM/93Kt1cec15DL1UoWVkipg9kER3duYQaqHFQkzNPcO9Q4KZRxnGTa/V1SyxgLDlJtbggrQXFFEh//mbBpsxBJdjI5tMv4Ws3fQACPq/WA2Dxs=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
+ by MW3PR12MB4363.namprd12.prod.outlook.com (2603:10b6:303:56::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Thu, 31 Aug
+ 2023 12:44:00 +0000
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::1dc1:222:24b8:16b8]) by DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::1dc1:222:24b8:16b8%4]) with mapi id 15.20.6745.022; Thu, 31 Aug 2023
+ 12:44:00 +0000
+Date:   Thu, 31 Aug 2023 14:43:53 +0200
+From:   Robert Richter <rrichter@amd.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Terry Bowman <terry.bowman@amd.com>, alison.schofield@intel.com,
+        vishal.l.verma@intel.com, ira.weiny@intel.com, bwidawsk@kernel.org,
+        dan.j.williams@intel.com, dave.jiang@intel.com,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com
+Subject: Re: [PATCH v9 02/15] cxl/regs: Prepare for multiple users of
+ register mappings
+Message-ID: <ZPCLCSngB95EGBMk@rric.localdomain>
+References: <20230825233211.3029825-1-terry.bowman@amd.com>
+ <20230825233211.3029825-3-terry.bowman@amd.com>
+ <20230829145254.00003259@Huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829145254.00003259@Huawei.com>
+X-ClientProxiedBy: FR2P281CA0086.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9b::14) To DM6PR12MB3657.namprd12.prod.outlook.com
+ (2603:10b6:5:149::18)
 MIME-Version: 1.0
-References: <20230828091859.3889817-1-milkfafa@gmail.com> <20230828091859.3889817-8-milkfafa@gmail.com>
- <0c91f68d-d172-bd14-9115-b6977ad2d01f@xs4all.nl>
-In-Reply-To: <0c91f68d-d172-bd14-9115-b6977ad2d01f@xs4all.nl>
-From:   Kun-Fa Lin <milkfafa@gmail.com>
-Date:   Thu, 31 Aug 2023 20:42:38 +0800
-Message-ID: <CADnNmFqVbRWs5Uf_tJdrM0AopF_CmSHYwBK8-+1go_K6Hefkcw@mail.gmail.com>
-Subject: Re: [PATCH v14 7/7] media: nuvoton: Add driver for NPCM video capture
- and encode engine
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     mchehab@kernel.org, avifishman70@gmail.com, tmaimon77@gmail.com,
-        tali.perry1@gmail.com, venture@google.com, yuenn@google.com,
-        benjaminfair@google.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, andrzej.p@collabora.com,
-        devicetree@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
-        kwliu@nuvoton.com, kflin@nuvoton.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3657:EE_|MW3PR12MB4363:EE_
+X-MS-Office365-Filtering-Correlation-Id: 29d57228-ba76-4ef6-8e92-08dbaa1ff2f8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XUzOjTOVyf9NEswxjf+hbAuXPRt0fkpxdKjJX9Br3N+0C01cHmvjBQvhpBYP6Z42vt0kwNZZ4XZdUDYLegqqULjDOKXFBtqQHEuZ59E8knLt+JoJKBx58EUHh8f5ktFEWIkRClxL/2uWyR4J5qbvTUtRliBGa4vcX7Mp5zPgbD/uqtNO15pXG8aHxAGyGweOxRtEIuk0QkLZnGmjYCQGuroz8gtqOMiDlpY1kx3tBIzZ8xzC6DEvuHE2BFRKosjsdNG8BI/4zlUQDwQoVg9QOwTspbFRK8ODhC9DG61tiW3HDBAbm/ld7/+VXqpDiFtpXJHOpaVFHHnYwGOx9QOMlv29KDxAIJObk19/gepflZBPXkq0Zz6aVuCjvbQCy/DY2SqfEKobnAYprRhitxaR5Dtqrf67onfnqCMhs1in7OmDP4M7RZrue5MYBegaH50N+ByHy6LsnydW8ESibGf4vZqC9kB9/hEhZ0qlH0KlZmQDwBPSA++XaS9eWk/s6quL29PuqLRYw86zVYePdeJf60VdZOynuzr8Xw6PJDzX0HlYkeboLZwqHwhp+xmhu5A1
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(346002)(376002)(396003)(136003)(1800799009)(186009)(451199024)(6666004)(6486002)(6506007)(9686003)(6512007)(53546011)(478600001)(83380400001)(2906002)(26005)(7416002)(41300700001)(66476007)(6916009)(66556008)(316002)(66946007)(8936002)(8676002)(5660300002)(4326008)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?HtgYaqc5uDHOvmSRkJdnEWskdNj9NPgqDhHwYi+hsz9uBoDwmNSElbSgYOT9?=
+ =?us-ascii?Q?pen0h1ZrZHMIaGZRwY5JyeiN+CispJCu6hayqhdZlmz+fAZewHw5d5aVJX6z?=
+ =?us-ascii?Q?6ieH6j+k7C2VfMX01/9jb4ml5IauFZQTHx/rx5jpG2V4uFrFUFs1cq5Egu1w?=
+ =?us-ascii?Q?7euaBVodISHi+gJAhQXl4ufDK1LDbPNYH7H28eH7tQAGan07AJ/lwFW/ijfN?=
+ =?us-ascii?Q?IcdYfHfACrf4I/ef/Krp1+t+KoPFpwp7uKI03h9hlv6il0RjFCqWZMe3k41q?=
+ =?us-ascii?Q?helfL9FXqGqJLI03rK6oroTNl/uIzlHpDrCb1eLpJ5T0UV7InWvSUR5VbPpE?=
+ =?us-ascii?Q?XZoaQdMLTWOxKJcTnEJhsCPqgNOt7LyOiAZCiqVPKFVSn+BDPtLKiKlHhg+4?=
+ =?us-ascii?Q?A0aF9G/mSXB1nx5JKsWD3CiGL8OaOArA4tv8p//fPctdZpaJRlSexK6w6s99?=
+ =?us-ascii?Q?onCtIPN1d6hsa3n2eEu/lB5Rx6ot6k99sALjP3w6fonKJVZ8+IcQ8uOlICDG?=
+ =?us-ascii?Q?3pLtXBMm6okhlWvvRNVjw1jcFMLjpNeaROcMtI0MUn92iUY6R2og4Yq3fqg7?=
+ =?us-ascii?Q?yMPL23bTTNNWkYp+OZR3p0InMlXJdjD7+etTw+CWcOyUGd1m/qZtPupysVtq?=
+ =?us-ascii?Q?/zRnt2f60MUwTvugwrNQ+5UKZTrF2PB4sP3ljdOEhsmuj23uBVd+5IjwKP5O?=
+ =?us-ascii?Q?GevaDNbA0FFwm972Q6+Rh/9D2FHTQ1icyfFtfu0Bkb252K+RBN3os0WGMjmf?=
+ =?us-ascii?Q?RaPlYzP7kE/ey8OObTDTmn6YICBowBE3wSLbkeZYO/0+AOwo/JFU0XgQOmyh?=
+ =?us-ascii?Q?25ysjtDig1GFYNV3hrJDQGd3onJYbU6/Ow/xlHd7prS69j7no9Q1Mh4ORksk?=
+ =?us-ascii?Q?GeoSuTnKz3BwrYXFwCerncdpx2cHR04qFdvh4a/ETKsyVzi1OVvVXalMO8+q?=
+ =?us-ascii?Q?boZJytu77CHwd/UdOF9KilewbkA1bC4TZ1K5qNO4wh8OUHg7DjYxEyMydTJQ?=
+ =?us-ascii?Q?Gl/EqYrinPqrx7yJcIoIwJukdUeRAxHBCh1S27ziSk8dzgIa3Mq2evXbZNHE?=
+ =?us-ascii?Q?r011zBK9uBJkzupzm+4xhal+abyZhcr+1vj/XwVq6aqbFmlJ25blqNvs9vSI?=
+ =?us-ascii?Q?S5w9cqyTm5pbXTRFkbS2JwvVdk1Erpwulfdrrck7bsNey0L5mpHFuTWeLmHr?=
+ =?us-ascii?Q?LvgywEN63Ilv6ZePOe+cGGApAHJvi2qgmm0Wo9CfuLTiId7eiFPYTu5aI/9Y?=
+ =?us-ascii?Q?NwOg5Vq7mAnQPSxZBGwsZCaYBeYV9+rQ6iXvtiEkl8ae8sh5S9Z3skAMcmqF?=
+ =?us-ascii?Q?zXQ42uOSpRzQuvwM5gV0pyT0Od4208lumb0m928n+PWoFgSAVaS+iAxy9e+Y?=
+ =?us-ascii?Q?ecvcFjhgAV2q09X0KHbGWL3bSwyRPjATvX7P99JT4GzWpZfIpD8hPF+FhP8e?=
+ =?us-ascii?Q?etZkCEPwaV0BPoPRZIhPx7RMO7nGxg5LdnIQdynTuCN0dfZVuviPt0gbGzEZ?=
+ =?us-ascii?Q?1Rgu5P7zuf2PU5QRLZ0DDlsfORZKWngUeTBtV3DpmHUFGh4IHeCqsu22Gq1m?=
+ =?us-ascii?Q?mYu1La7HmqKeBIK9V4zSFT8hoNupm0KZ1ezzzaHF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 29d57228-ba76-4ef6-8e92-08dbaa1ff2f8
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 12:44:00.1752
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Vs6XaXHV0IcTxfnHpaVIlJGA69nDLhBmbywcoGq0PefUus3ir3Cr7GtOmFrtlrVvT3TIpgvSPk3Y516GgIW2HA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4363
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+On 29.08.23 14:52:54, Jonathan Cameron wrote:
+> On Fri, 25 Aug 2023 18:31:58 -0500
+> Terry Bowman <terry.bowman@amd.com> wrote:
+> 
+> > From: Robert Richter <rrichter@amd.com>
+> > 
+> > The function devm_cxl_iomap_block() is used to map register mappings
+> > of CXL component or device registers. A @dev is used to unmap the IO
+> > regions during device removal.
+> > 
+> > Now, there are multiple devices using the register mappings. E.g. the
+> > RAS cap of the Component Registers is used by cxl_pci, the HDM cap
+> > used in cxl_mem. This could cause IO blocks not being freed and a
+> > subsequent reinitialization to fail if the same device is used for
+> > both.
+> > 
+> > To prevent that, expand cxl_map_component_regs() to pass a @dev to be
+> > used with devm to IO unmap. This allows to pass the device that
+> > actually is creating and using the IO region.
+> > 
+> > For symmetry also change the function i/f of cxl_map_device_regs().
+> > 
+> > Signed-off-by: Robert Richter <rrichter@amd.com>
+> > Signed-off-by: Terry Bowman <terry.bowman@amd.com>
+> 
+> I'm not sure we should leave map->dev around after this change
+> as it's not obvious where it is valid to use and where it isn't.
+> 
+> Perhaps we just need to pass the device into the few calls
+> that use it other than the ones you have here.
 
-Thanks for the review.
+I have checked that and it turned out we would need to pass @dev
+through multiple functions (see cxl_setup_regs()). So I left it in as
+devm is a special case (mis)using it.
 
-> > +     snprintf(cap->bus_info, sizeof(cap->bus_info), "platform:%s", DEVICE_NAME);
->
-> You can drop this last line, it is already filled in by the V4L2 core for
-> platform devices.
+> 
+> This patch itself looks fine to me.
 
-> > +static const char * const npcm_ctrl_capture_mode_menu[] = {
-> > +     "COMPLETE mode",
-> > +     "DIFF mode",
->
-> Hmm, I would drop the 'mode' bit, since it is already obvious that
-> these are the modes.
+I will take it as a Reviewed-by:?
 
-OK. Will drop them in the next version.
+Thanks,
 
-> > +static const struct v4l2_ctrl_config npcm_ctrl_rect_count = {
-> > +     .ops = &npcm_video_ctrl_ops,
-> > +     .id = V4L2_CID_NPCM_RECT_COUNT,
-> > +     .name = "NPCM Compressed Hextile Rectangle Count",
-> > +     .type = V4L2_CTRL_TYPE_INTEGER,
-> > +     .flags = V4L2_CTRL_FLAG_VOLATILE,
-> > +     .min = 0,
-> > +     .max = (MAX_WIDTH / RECT_W) * (MAX_HEIGHT / RECT_H),
-> > +     .step = 1,
-> > +     .def = 0,
-> > +};
->
-> Just to confirm: you decided against using an integer array control?
->
-> There is a real danger that if userspace isn't reading this control
-> quickly enough (i.e. before the next frame arrives at the driver), then
-> the control's value is that of that next frame instead of the current
-> frame.
->
-> It doesn't feel robust to me.
+-Robert
 
-Actually the driver will store the frames and counts for each buffer
-index till userspace dequeues them.
-
-Ex. assume that driver has captured 3 frames:
-- 1st capture (buffer index = 0):
-     video->list[0] => store the list of HEXTILE rects for the 1st frame
-     video->rect[0] => store the rect count of video->list[0]
-- 2nd capture (buffer index = 1):
-     video->list[1] => store the list of HEXTILE rects for the 2nd frame
-     video->rect[1] => store the rect count of video->list[1]
-- 3rd capture (buffer index = 2):
-     video->list[2] => store the list of HEXTILE rects for the 3rd frame
-     video->rect[2] => store the rect count of video->list[2]
-
-When userspace dequeues the 1st buffer (video->list[0]), it needs to
-know the count of HEXTILE rectangles in the buffer,
-so after dequeuing the buffer it will call this control to get the
-rect count (video->rect[0]). And when a buffer is dequeued,
-npcm_video_buf_finish() will be called, in which the buffer index (in
-this example, buffer index = 0) will be stored to video->vb_index.
-Then when userspace calls this control, npcm_video_get_volatile_ctrl()
-will return the rect count of vb_index = 0.
-In this way, I think userspace is always reading the correct control's
-value even if userspace is slow.
-Does it make sense to you or is there anything I missed?
-
-Regards,
-Marvin
+> 
+> Jonathan
+> 
+> > ---
+> >  drivers/cxl/core/hdm.c  | 3 ++-
+> >  drivers/cxl/core/regs.c | 4 ++--
+> >  drivers/cxl/cxl.h       | 2 ++
+> >  drivers/cxl/pci.c       | 4 ++--
+> >  4 files changed, 8 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> > index 4449b34a80cc..17c8ba8c75e0 100644
+> > --- a/drivers/cxl/core/hdm.c
+> > +++ b/drivers/cxl/core/hdm.c
+> > @@ -98,7 +98,8 @@ static int map_hdm_decoder_regs(struct cxl_port *port, void __iomem *crb,
+> >  		return -ENODEV;
+> >  	}
+> >  
+> > -	return cxl_map_component_regs(&map, regs, BIT(CXL_CM_CAP_CAP_ID_HDM));
+> > +	return cxl_map_component_regs(&map, &port->dev, regs,
+> > +				      BIT(CXL_CM_CAP_CAP_ID_HDM));
+> >  }
+> >  
+> >  static bool should_emulate_decoders(struct cxl_endpoint_dvsec_info *info)
+> > diff --git a/drivers/cxl/core/regs.c b/drivers/cxl/core/regs.c
+> > index 6281127b3e9d..dfc3e272e7d8 100644
+> > --- a/drivers/cxl/core/regs.c
+> > +++ b/drivers/cxl/core/regs.c
+> > @@ -201,10 +201,10 @@ void __iomem *devm_cxl_iomap_block(struct device *dev, resource_size_t addr,
+> >  }
+> >  
+> >  int cxl_map_component_regs(const struct cxl_register_map *map,
+> > +			   struct device *dev,
+> >  			   struct cxl_component_regs *regs,
+> >  			   unsigned long map_mask)
+> >  {
+> > -	struct device *dev = map->dev;
+> >  	struct mapinfo {
+> >  		const struct cxl_reg_map *rmap;
+> >  		void __iomem **addr;
+> > @@ -235,9 +235,9 @@ int cxl_map_component_regs(const struct cxl_register_map *map,
+> >  EXPORT_SYMBOL_NS_GPL(cxl_map_component_regs, CXL);
+> >  
+> >  int cxl_map_device_regs(const struct cxl_register_map *map,
+> > +			struct device *dev,
+> >  			struct cxl_device_regs *regs)
+> >  {
+> > -	struct device *dev = map->dev;
+> >  	resource_size_t phys_addr = map->resource;
+> >  	struct mapinfo {
+> >  		const struct cxl_reg_map *rmap;
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > index 76d92561af29..ec8ba9ebcf64 100644
+> > --- a/drivers/cxl/cxl.h
+> > +++ b/drivers/cxl/cxl.h
+> > @@ -274,9 +274,11 @@ void cxl_probe_component_regs(struct device *dev, void __iomem *base,
+> >  void cxl_probe_device_regs(struct device *dev, void __iomem *base,
+> >  			   struct cxl_device_reg_map *map);
+> >  int cxl_map_component_regs(const struct cxl_register_map *map,
+> > +			   struct device *dev,
+> >  			   struct cxl_component_regs *regs,
+> >  			   unsigned long map_mask);
+> >  int cxl_map_device_regs(const struct cxl_register_map *map,
+> > +			struct device *dev,
+> >  			struct cxl_device_regs *regs);
+> >  int cxl_map_pmu_regs(struct pci_dev *pdev, struct cxl_pmu_regs *regs,
+> >  		     struct cxl_register_map *map);
+> > diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
+> > index 48f88d96029d..88ddcff8a0b2 100644
+> > --- a/drivers/cxl/pci.c
+> > +++ b/drivers/cxl/pci.c
+> > @@ -827,7 +827,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  	if (rc)
+> >  		return rc;
+> >  
+> > -	rc = cxl_map_device_regs(&map, &cxlds->regs.device_regs);
+> > +	rc = cxl_map_device_regs(&map, cxlds->dev, &cxlds->regs.device_regs);
+> >  	if (rc)
+> >  		return rc;
+> >  
+> > @@ -844,7 +844,7 @@ static int cxl_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> >  
+> >  	cxlds->component_reg_phys = map.resource;
+> >  
+> > -	rc = cxl_map_component_regs(&map, &cxlds->regs.component,
+> > +	rc = cxl_map_component_regs(&map, cxlds->dev, &cxlds->regs.component,
+> >  				    BIT(CXL_CM_CAP_CAP_ID_RAS));
+> >  	if (rc)
+> >  		dev_dbg(&pdev->dev, "Failed to map RAS capability.\n");
+> 
