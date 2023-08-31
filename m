@@ -2,147 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BC678F46B
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:18:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E2A78F46D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347511AbjHaVSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 17:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33086 "EHLO
+        id S1347517AbjHaVTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 17:19:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243528AbjHaVSX (ORCPT
+        with ESMTP id S243528AbjHaVTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 17:18:23 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD87EFF
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:18:20 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-597f461adc5so2410957b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693516700; x=1694121500; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YO6r55IA8eElX5w/+X8zOZmT73jh5i8DqE52ZxJWYQc=;
-        b=hguwOPHMZfKtisF5e+gBBaqL6WbtLkRcf2jMAyVAdY8HAcwb2w2zJkAdSOOvRbGjbA
-         kMN271Y/Bg4nTxMzuRKRdwO59El6BiwSpOaVXhtVFIxsnRq2o1EgiIdlOaJLHcZ5/+k4
-         zT03hvFqNg6A7blr+MN/SPn9RJlLr8QOOqafiHMsKOX0syTih8CdWTr3oPvqKIei53ld
-         Q6ih0C81J1DF+qKiSGaGw+1VVQ6FTYGqDTSS71pLg0Pq5ZiecLtMJxfhnXr2oGa4E8xg
-         +rmK7ofH6iqpL1cxdWvRzjKKFpe+8ki74vJ5zd1hHmtD4w9iLyUWpXVY7Or3rttxT4oA
-         gIMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693516700; x=1694121500;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YO6r55IA8eElX5w/+X8zOZmT73jh5i8DqE52ZxJWYQc=;
-        b=dzMBhBmQ51vuboAyruVGkoPar6gAhTW6RL2aVvPB0xjHMGCxUoUjGj2Q5UZoRJQEIl
-         TNNm0KzgmLwmmv3YyuccMlmlaGZ4ff+mna1lb9XFQmm8YAcWnA+6u8TeIiAfn1ZybNlI
-         idVTYje/7hdkUcxvntmtbufCtFoQ7KVU2RDkAdl/L96vjKg1CJcLIo6RMCnL48omDXTl
-         TXc2lNVUloHVEy1OOIszhM9Tv+qugUC36Y/nivM6GJDELt7Ng+a1q8cvzSYTa/vtQAI7
-         sh8xTQKoKl8w5h2yr4Kl21VxdXHGy5PfucNXTxI7+fdkGj3kB2NpPUs2F/91TC4DGOUn
-         CPRQ==
-X-Gm-Message-State: AOJu0Yw/0pNk5BXr+p2H8PqWYlrzDHasfsTS0CxRKP4mn8aLCW+v1hKv
-        gQqzL6EicmuIgfAQ/yCQfg8C8DeYTSs=
-X-Google-Smtp-Source: AGHT+IEZwzQUuTI7C6FFX7BSq8V52BjhaRfu7MbpFPM/CoSsWVx5jFl7L8T8aMfs6TbWHc+jUHpp1k/u52U=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:721:b0:586:5d03:67c8 with SMTP id
- bt1-20020a05690c072100b005865d0367c8mr16211ywb.3.1693516700041; Thu, 31 Aug
- 2023 14:18:20 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 14:18:18 -0700
-In-Reply-To: <CAD=HUj6XYKGgRLb2VWBnYEEH9YQUMROBf2YBXaTOvWZS5ejhmg@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230704075054.3344915-1-stevensd@google.com> <20230704075054.3344915-6-stevensd@google.com>
- <20230705102547.hr2zxkdkecdxp5tf@linux.intel.com> <CAD=HUj7F6CUNt_9txEu0upB=PBwJzkL5dBhNs_BVHX1cicqBgw@mail.gmail.com>
- <ZOd0IMeKSkBwGIer@google.com> <CAD=HUj6XYKGgRLb2VWBnYEEH9YQUMROBf2YBXaTOvWZS5ejhmg@mail.gmail.com>
-Message-ID: <ZPEDmnloiOs/HNr+@google.com>
-Subject: Re: [PATCH v7 5/8] KVM: x86/mmu: Don't pass FOLL_GET to __kvm_follow_pfn
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Stevens <stevensd@chromium.org>
-Cc:     Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Xu <peterx@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 17:19:30 -0400
+Received: from www62.your-server.de (www62.your-server.de [213.133.104.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2D4132;
+        Thu, 31 Aug 2023 14:19:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=iogearbox.net; s=default2302; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID;
+        bh=AVqEC1ZrpUaF6BT7L4/c6pVTuwexXmoWf8iVfpz/+iE=; b=IhAnK30GLCUQiDttWvcf9ecQ1c
+        hzIkLxntxXod2h5tP03+ccM+I41Ifro20Zm6VyX7BIPR0DVwOBBlgCfMbUiGQLty7+6kI+0ijRs/U
+        dYge2cips68TazHgOLKkvdBjG/IXdaqQ3tf1+6ii9lZcxVZWhk3Tq60OWJGa84fb7qS0fqwWdqWEA
+        hlyyhlWh0XaK6tGq3/tMxBWu9S4X5kmaCJI9gyrZMxhdTnjMEztCjE9TRN57PLFO7Ze3NEM3qpzoR
+        kRJUhxGF4S9Iixg27zl/dMxMuIjKXuzaS1oxvUGYrpbLnhadoMtQVGWSlrL4oGQmmnmC4DDqWgN8/
+        7FhMXBEg==;
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qbp4F-000BIs-Rh; Thu, 31 Aug 2023 23:19:08 +0200
+Received: from [178.197.249.54] (helo=linux.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1qbp4F-000UFr-Hu; Thu, 31 Aug 2023 23:19:07 +0200
+Subject: Re: [PATCH bpf-next v4 0/4] bpf, riscv: use BPF prog pack allocator
+ in BPF JIT
+To:     Puranjay Mohan <puranjay12@gmail.com>, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, pulehui@huawei.com,
+        conor.dooley@microchip.com, ast@kernel.org, andrii@kernel.org,
+        martin.lau@linux.dev, song@kernel.org, yhs@fb.com,
+        kpsingh@kernel.org, bjorn@kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20230831131229.497941-1-puranjay12@gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <3e32eae9-7d5a-cf3e-2968-5b2f0ba34ccf@iogearbox.net>
+Date:   Thu, 31 Aug 2023 23:19:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20230831131229.497941-1-puranjay12@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.8/27017/Thu Aug 31 09:40:48 2023)
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023, David Stevens wrote:
-> On Fri, Aug 25, 2023 at 12:15=E2=80=AFAM Sean Christopherson <seanjc@goog=
-le.com> wrote:
-> >
-> > On Thu, Aug 24, 2023, David Stevens wrote:
-> > > On Wed, Jul 5, 2023 at 7:25=E2=80=AFPM Yu Zhang <yu.c.zhang@linux.int=
-el.com> wrote:
-> > > >
-> > > > On Tue, Jul 04, 2023 at 04:50:50PM +0900, David Stevens wrote:
-> > > > > @@ -4529,7 +4540,8 @@ static int kvm_tdp_mmu_page_fault(struct kv=
-m_vcpu *vcpu,
-> > > > >
-> > > > >  out_unlock:
-> > > > >       read_unlock(&vcpu->kvm->mmu_lock);
-> > > > > -     kvm_release_pfn_clean(fault->pfn);
-> > > >
-> > > > Yet kvm_release_pfn() can still be triggered for the kvm_vcpu_maped=
- gfns.
-> > > > What if guest uses a non-referenced page(e.g., as a vmcs12)? Althou=
-gh I
-> > > > believe this is not gonna happen in real world...
-> > >
-> > > kvm_vcpu_map still uses gfn_to_pfn, which eventually passes FOLL_GET
-> > > to __kvm_follow_pfn. So if a guest tries to use a non-refcounted page
-> > > like that, then kvm_vcpu_map will fail and the guest will probably
-> > > crash. It won't trigger any bugs in the host, though.
-> > >
-> > > It is unfortunate that the guest will be able to use certain types of
-> > > memory for some purposes but not for others. However, while it is
-> > > theoretically fixable, it's an unreasonable amount of work for
-> > > something that, as you say, nobody really cares about in practice [1]=
-.
-> > >
-> > > [1] https://lore.kernel.org/all/ZBEEQtmtNPaEqU1i@google.com/
-> >
-> > There are use cases that care, which is why I suggested allow_unsafe_km=
-ap.
-> > Specifically, AWS manages their pool of guest memory in userspace and m=
-aps it all
-> > via /dev/mem.  Without that module param to let userspace opt-in, this =
-series will
-> > break such setups.  It still arguably is a breaking change since it req=
-uires
-> > userspace to opt-in, but allowing such behavior by default is simply no=
-t a viable
-> > option, and I don't have much sympathy since so much of this mess has i=
-ts origins
-> > in commit e45adf665a53 ("KVM: Introduce a new guest mapping API").
-> >
-> > The use cases that no one cares about (AFAIK) is allowing _untrusted_ u=
-serspace
-> > to back guest RAM with arbitrary memory.  In other words, I want KVM to=
- allow
-> > (by default) mapping device memory into the guest for things like vGPUs=
-, without
-> > having to do the massive and invasive overhaul needed to safely allow b=
-acking guest
-> > RAM with completely arbitrary memory.
->=20
-> Do you specifically want the allow_unsafe_kmap breaking change? v7 of
-> this series should have supported everything that is currently
-> supported by KVM, but you're right that the v8 version of
-> hva_to_pfn_remapped doesn't support mapping
-> !kvm_pfn_to_refcounted_page() pages. That could be supported
-> explicitly with allow_unsafe_kmap as you suggested,
+On 8/31/23 3:12 PM, Puranjay Mohan wrote:
+> Changes in v3 -> v4:
+> 1. Add Acked-by:, Tested-by:, etc.
+> 2. Add the core BPF patch[3] which was earlier sent with ARM64 series to
+>     this series so it can go with this.
+> 
+> Changes in v2 -> v3:
+> 1. Fix maximum width of code in patches from 80 to 100. [All patches]
+> 2. Add checks for ctx->ro_insns == NULL. [Patch 3]
+> 3. Fix check for edge condition where amount of text to set > 2 * pagesize
+>     [Patch 1 and 2]
+> 4. Add reviewed-by in patches.
+> 5. Adding results of selftest here:
+>     Using the command: ./test_progs on qemu
+>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILED
+> 
+> Changes in v1 -> v2:
+> 1. Implement a new function patch_text_set_nosync() to be used in bpf_arch_text_invalidate().
+>     The implementation in v1 called patch_text_nosync() in a loop and it was bad as it would
+>     call flush_icache_range() for every word making it really slow. This was found by running
+>     the test_tag selftest which would take forever to complete.
+> 
+> Here is some data to prove the V2 fixes the problem:
+> 
+> Without this series:
+> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
+> test_tag: OK (40945 tests)
+> 
+> real    7m47.562s
+> user    0m24.145s
+> sys     6m37.064s
+> 
+> With this series applied:
+> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
+> test_tag: OK (40945 tests)
+> 
+> real    7m29.472s
+> user    0m25.865s
+> sys     6m18.401s
+> 
+> BPF programs currently consume a page each on RISCV. For systems with many BPF
+> programs, this adds significant pressure to instruction TLB. High iTLB pressure
+> usually causes slow down for the whole system.
+> 
+> Song Liu introduced the BPF prog pack allocator[1] to mitigate the above issue.
+> It packs multiple BPF programs into a single huge page. It is currently only
+> enabled for the x86_64 BPF JIT.
+> 
+> I enabled this allocator on the ARM64 BPF JIT[2]. It is being reviewed now.
+> 
+> This patch series enables the BPF prog pack allocator for the RISCV BPF JIT.
+> 
+> ======================================================
+> Performance Analysis of prog pack allocator on RISCV64
+> ======================================================
+> 
+> Test setup:
+> ===========
+> 
+> Host machine: Debian GNU/Linux 11 (bullseye)
+> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+> u-boot-qemu Version: 2023.07+dfsg-1
+> opensbi Version: 1.3-1
+> 
+> To test the performance of the BPF prog pack allocator on RV, a stresser
+> tool[4] linked below was built. This tool loads 8 BPF programs on the system and
+> triggers 5 of them in an infinite loop by doing system calls.
+> 
+> The runner script starts 20 instances of the above which loads 8*20=160 BPF
+> programs on the system, 5*20=100 of which are being constantly triggered.
+> The script is passed a command which would be run in the above environment.
+> 
+> The script was run with following perf command:
+> ./run.sh "perf stat -a \
+>          -e iTLB-load-misses \
+>          -e dTLB-load-misses  \
+>          -e dTLB-store-misses \
+>          -e instructions \
+>          --timeout 60000"
+> 
+> The output of the above command is discussed below before and after enabling the
+> BPF prog pack allocator.
+> 
+> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. The rootfs
+> was created using Bjorn's riscv-cross-builder[5] docker container linked below.
+> 
+> Results
+> =======
+> 
+> Before enabling prog pack allocator:
+> ------------------------------------
+> 
+> Performance counter stats for 'system wide':
+> 
+>             4939048      iTLB-load-misses
+>             5468689      dTLB-load-misses
+>              465234      dTLB-store-misses
+>       1441082097998      instructions
+> 
+>        60.045791200 seconds time elapsed
+> 
+> After enabling prog pack allocator:
+> -----------------------------------
+> 
+> Performance counter stats for 'system wide':
+> 
+>             3430035      iTLB-load-misses
+>             5008745      dTLB-load-misses
+>              409944      dTLB-store-misses
+>       1441535637988      instructions
+> 
+>        60.046296600 seconds time elapsed
+> 
+> Improvements in metrics
+> =======================
+> 
+> It was expected that the iTLB-load-misses would decrease as now a single huge
+> page is used to keep all the BPF programs compared to a single page for each
+> program earlier.
+> 
+> --------------------------------------------
+> The improvement in iTLB-load-misses: -30.5 %
+> --------------------------------------------
+> 
+> I repeated this expriment more than 100 times in different setups and the
+> improvement was always greater than 30%.
+> 
+> This patch series is boot tested on the Starfive VisionFive 2 board[6].
+> The performance analysis was not done on the board because it doesn't
+> expose iTLB-load-misses, etc. The stresser program was run on the board to test
+> the loading and unloading of BPF programs
 
-I think it needs to be explicit, i.e. needs the admin to opt-in to the unsa=
-fe
-behavior.
+@Palmer, as discussed with regards to routing via riscv PR in this merge win - for
+the series:
+
+Acked-by: Daniel Borkmann <daniel@iogearbox.net>
+
+Thanks,
+Daniel
+
+> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.org/
+> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@gmail.com/
+> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gmail.com/
+> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+> [5] https://github.com/bjoto/riscv-cross-builder
+> [6] https://www.starfivetech.com/en/site/boards
+> 
+> Puranjay Mohan (4):
+>    bpf: make bpf_prog_pack allocator portable
+>    riscv: extend patch_text_nosync() for multiple pages
+>    riscv: implement a memset like function for text
+>    bpf, riscv: use prog pack allocator in the BPF JIT
+> 
+>   arch/riscv/include/asm/patch.h  |   1 +
+>   arch/riscv/kernel/patch.c       | 114 ++++++++++++++++++++++++++++++--
+>   arch/riscv/net/bpf_jit.h        |   3 +
+>   arch/riscv/net/bpf_jit_comp64.c |  60 +++++++++++++----
+>   arch/riscv/net/bpf_jit_core.c   | 106 ++++++++++++++++++++++++-----
+>   kernel/bpf/core.c               |   8 +--
+>   6 files changed, 255 insertions(+), 37 deletions(-)
+> 
+
