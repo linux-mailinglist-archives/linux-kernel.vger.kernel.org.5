@@ -2,224 +2,374 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F0ED78F321
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507D778F323
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:13:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347156AbjHaTNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:13:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38320 "EHLO
+        id S1347169AbjHaTNr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:13:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347154AbjHaTNh (ORCPT
+        with ESMTP id S1347154AbjHaTNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:13:37 -0400
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2046.outbound.protection.outlook.com [40.107.244.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77A99E65;
-        Thu, 31 Aug 2023 12:13:29 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jEIe7DDraeu1r3ulY4IBVYqrxkscJ+bdpGCNulBlkzw4ut7jtImDMh7Gfx1LzXr5fIotNp+hFVoYhqB9jHxjUOlT2KVRyY1euIcBK8L2yqfTiCINcMKY/52CyNort04c6D3Y7lhFln+2/efzBV6Hth7MuHLeU5nH0NKQCP7N3/DlsKztElGZHNZPIVAvruO4HM1pjem9fKyDqRD3uXr9f9ZYoTcfVOO0SX9DzuYL4n2GyMcmTGBfA/EIQwe+R422j+OENB94khGP4O00et0Nk91YzAduqfhvBPBM1k1bRC1jeIxqXL4/TsPGrWm1fO5GKaqrVbJpUgLKD3eq7NhrLw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FrmuSdUNU4k0o/rBQBYgfGGhhSJn6cpsR2j+tBK1jhQ=;
- b=Xo74BM/bFLWS7ADB9JuC1hHkNLvWB2xdgNUw7iCocb2rmtHBZD1/ASMA8Pd+TASE1NGWwi4e0FUSeu0lxLKpbp8S3AHQpxB0VWHCGm7WO68CK2YEUXmnFwPEKo1kY3h4ntFWVKlW9OTCIhTVbUXVwg7ff8W9jwYeepkqzaywT+NbIzSHjOqNR96QolYkTRZETzxpAbQ30yVs/YaAgbOiXImjiTc9m+qHqV8mgRSs4ZDM85vAIJ3App+IOKQ9lOV7nUIGHIi8OyAG9At1wFrc9svT5VBFEnqghynn2Nt79ZCDkEPWqnd1TmkOc5d86Xj1Q3VXS2zI4ElUcgUPe68yvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FrmuSdUNU4k0o/rBQBYgfGGhhSJn6cpsR2j+tBK1jhQ=;
- b=EyfF7GISGdlG5eJxD+vIkxT50AyIt1nMUuN+ALOGP1oCryVJMe0ANlesc2HQedarO0NxG0duAZYVv8SfyfIFeuBaKaaD5BalHlbnukxoJKt7ZJXYl0PL1TNIC1wlzvcQOfF30J6xGRwCKtZKJIa6Y0GVsf2vQo/OrGPBzpOaRn0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com (2603:10b6:5:358::13)
- by DS0PR12MB7995.namprd12.prod.outlook.com (2603:10b6:8:14e::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.35; Thu, 31 Aug
- 2023 19:13:26 +0000
-Received: from CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f]) by CO6PR12MB5427.namprd12.prod.outlook.com
- ([fe80::121e:5e68:c78a:1f2f%3]) with mapi id 15.20.6745.021; Thu, 31 Aug 2023
- 19:13:26 +0000
-Message-ID: <9689ecc6-5570-41c4-99d9-19ce4fcea8c3@amd.com>
-Date:   Thu, 31 Aug 2023 15:13:20 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Revert "drm/amd/display: Remove v_startup workaround for
- dcn3+"
-Content-Language: en-US
-To:     Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        amd-gfx@lists.freedesktop.org
-Cc:     stable@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <jun.lei@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        Alvin Lee <Alvin.Lee2@amd.com>,
-        Sung Joon Kim <sungjoon.kim@amd.com>,
-        Daniel Miess <daniel.miess@amd.com>,
-        Leo Chen <sancchen@amd.com>, Gabe Teeger <gabe.teeger@amd.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20230829201042.322173-1-hamza.mahfooz@amd.com>
-From:   Harry Wentland <harry.wentland@amd.com>
-In-Reply-To: <20230829201042.322173-1-hamza.mahfooz@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: YQBPR0101CA0273.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:c01:68::22) To CO6PR12MB5427.namprd12.prod.outlook.com
- (2603:10b6:5:358::13)
+        Thu, 31 Aug 2023 15:13:46 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D5DE6A
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:13:41 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c0bae4da38so7854565ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:13:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693509221; x=1694114021; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iK6EVwim7jDoafXdUDxWuQQIWFAzKU65AsSWw3Wjc04=;
+        b=iddyumzjtAMKQeO7tlefvv1qFjQoZXwKD1LPYChX37X1igYWjHm8EFyM84m9Zbi6AO
+         N+DLNAu2A5xR/fhbRIpBAy82pgR0K3ecCPJ6+hidomkhwijSGTGoLp7S3q/3vsFrh1CY
+         2FbVps8ENjN26zo9MGKe6txGXI3lpC8mvxRr0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693509221; x=1694114021;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iK6EVwim7jDoafXdUDxWuQQIWFAzKU65AsSWw3Wjc04=;
+        b=b03CtM6n6V8tb36sBsNMalKghDPKkL6dMD2YNA7JGXLmw8sCyzt+bn5MAWIbv/8SIr
+         xazOWYMJRWQ/JD0Hf5V+pMP3LOQAyDFFBNnYp/sBnvyP7V/8Zw90fWnz28JXjYtVqkSr
+         nLbzA4M3b4IVXMUmB2tcRcNs+mh+C57p6EIcThDxr3+hEYPTfVi/E1M6udQnT0C2YN5Z
+         7+nNm11yHanx02VLWK3lJ7IBDNhonKsMiVJsQpBcJjwGy7unQfsoPoxNXxrM8xyVn6Ba
+         gR7k1IiwVHldVIVZG8BDokUowTflQpFqIh1an8ZNFsnqRCeLoz84FevTMJivsJHZmJq8
+         ZQgQ==
+X-Gm-Message-State: AOJu0Yzonuuj/6QmMrNrsY3ctpRXDnCS706jbtpmF3UNz+D7agtJUE1G
+        5Vp1JEoqs1R5Cq9dFKk2bS7Lrw==
+X-Google-Smtp-Source: AGHT+IHWy5qCvXvRwCCU+AouBnW4dazUiYq9g8WzKmoiTKNksgwo7MvfQ9WvCNaOnrbY+2PL1tTNSA==
+X-Received: by 2002:a17:902:d34b:b0:1b7:f64b:379b with SMTP id l11-20020a170902d34b00b001b7f64b379bmr429310plk.17.1693509221158;
+        Thu, 31 Aug 2023 12:13:41 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id p12-20020a170902eacc00b001bf095dfb79sm1568776pld.235.2023.08.31.12.13.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 12:13:40 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH v3] kbuild: Show marked Kconfig fragments in "help"
+Date:   Thu, 31 Aug 2023 12:13:39 -0700
+Message-Id: <20230831191335.give.534-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO6PR12MB5427:EE_|DS0PR12MB7995:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb6450d5-0957-4139-d9e3-08dbaa5659c2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Vd3oEacZ2XMqGGhXn9Y9eowrrr1AlA/KNhpOIbIT+fHl2igzm4xaOTWZeLumz54WZgcO76/D2vbItBLEirv9QZ4MOcZDFo0EJOr8z1XkvxGBEboj3TfUO6dPcQNelDS++EchJxzJXdsAXQJasjPc2FOUwY8IK6cM7P1/i165rZOoCcQMUOVXn0J3h/VAlA9pv+vW4h0uLSe3p44t10pvuL4apwL7dxTvPh1Er+k4+nmvSOKIzZhZSRln9tzr5PJCXTnxdrSUjhEnvNhsCzCCkxWwu9UQ+bOBMpVgHUyjphsTxdQIHvXxiXcivDMES3PJwtZNV/VEwBqfIBOFKBUVGvNa92fQ4Q0+aGvD0ADJ4Ftye6/D4k/8IBxSaQd4z3QCcrZIcUsDXBrt67yMjf8p2oUu9JvTS02pQ9b19gkZpoGS2mZknr4IqkLi2A1Zs/ETUQm1KBtHE5Z6pD7Q7pmJFk8pQwiBM3R2wenFwp2Gj64QTBFo6h7XDq/SA9eEIWQ7K1T6ygBLLgU6YMeWJuWNsmP+qy6QQWGOTFaWCbIlTMRSeuySiko2kYysImjS7YlC9L7qVZ5Wzsy3k99OWqtWRCgn7/DeFbrYrV6Cs7EvGktraY9Q3pZDNGfhL4iGWIy1oERttCqE2UqEik3ZWxX38g==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5427.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(366004)(136003)(396003)(39860400002)(186009)(1800799009)(451199024)(41300700001)(53546011)(6666004)(38100700002)(478600001)(2616005)(31696002)(6506007)(86362001)(83380400001)(966005)(6512007)(6486002)(26005)(36756003)(66556008)(66476007)(316002)(66946007)(54906003)(2906002)(5660300002)(8676002)(8936002)(4326008)(44832011)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWQ4UVlnWkZEYWdYS1JKeGoxTXpZN0k3M3ZXSVJJQWkzMEhvUnpGMGxVNWhD?=
- =?utf-8?B?WS9naEc2eWg2ME1oZWZ6RkhWSEpZMGxEUExBS1NCMFdRZ1l0YlhubU5XQWhm?=
- =?utf-8?B?S3kxOHVxbE9hWjVPOGZOMlBuMktSbVM2TG1JLzlIZnJlZ3VoNUFiL0xveHpC?=
- =?utf-8?B?cDJva3pmRXBJNW9wbm9XbFFxQXhmRXBUaVZuUE8zYWgwOXVYYjhVWHB2MUxZ?=
- =?utf-8?B?TVc2d1E1UEtVTnBCUWQ2cUFiOHdySk5TSDJieEdJckFwcXJQekNSM1grVGVq?=
- =?utf-8?B?Y1BDTXB5S0NURUxkUlpXNXUwc3NqZllmOEdDamNxZUpkTXVYWnNpWTVBMElo?=
- =?utf-8?B?NG9jdTBhSzFSZWRrQTZSQ1BUYWVTbytCdTFmeFpqSTFhUnFOZXNzYXJvRFFr?=
- =?utf-8?B?UUNLaEtMYVVzN2hIdWhOb2E3d3dFWjRCcVpwN3d4M3FtaVM3WmE0MC9TMFZm?=
- =?utf-8?B?S1NSV0ZrUGw2M2R0OXcxai9YdU1nNTZHVk9WUnVTY1hNM1hxVmUyaDJKNlB0?=
- =?utf-8?B?UFZ1dWFFK3kwUjVDaXhFQnEzUDJIQ1ZsQTUwVUxzeDhuR1FvRmZuMjFUUW1P?=
- =?utf-8?B?U0dIMlBTRFlyTjQzZGdtNzlsd2NNc0tHNzJVbHVjbm9udDBzQzE0MXFIWitn?=
- =?utf-8?B?ZlE5eGNQTG9UcTQ1MXBINW1IY29KNEpvSW4zc2tia0QrN1doUDg5QW05bXNZ?=
- =?utf-8?B?c0hwQll4azE0WHJwUU1HdllKS244NkNrdjZRUk14NWJYQVlWSzhmeWxYK3lx?=
- =?utf-8?B?WU9tUTc5NnF4ZW9oZS8yaHhOUERaY3Q3TGExaVB3MlY0dnorOFZPUnFvZS96?=
- =?utf-8?B?T3hnZXBuZkxhSTFaMklET2JqK08vUEhvajhCYWphaXFKMmRkVDFqNFJJREk1?=
- =?utf-8?B?MUpMSjkySHhlYjlqSXFOa2VkUVErVXBaSnNRekQvT2FDZ095SUJWRFFjdTVk?=
- =?utf-8?B?R2FLamhaZERVR0pVbXh1cVlrMS96WFZsMzJ5NFhrQXdiNDlzdmsyWFRaT05O?=
- =?utf-8?B?UzhZODkwdzErR0Z5ZVdPNFMrdCtWWVhkNmxsbE04RXJRbWFKbjMyTmVwYWw5?=
- =?utf-8?B?d3ljR0p5cnlQb2g1OG4yWnBSVmhxWVFXZEUyaE9KQWl3RjVFbi9TakpMZmVB?=
- =?utf-8?B?V0owOXY0WUJzTXQ5ckgyOUlQOVhhTWtKRThKVjJURWlZeXNEZm9OOGpQdjJh?=
- =?utf-8?B?T3M4eWdMVU1sZ09wQ0pXeWM5SHlwZ3JuYkxmK2svVnhmSExpemhkWUdQSm1V?=
- =?utf-8?B?cWZFY1VPL0Z0US9Sbk9iRVZMdVU1V0xjTjUvRXNRZlVOSXFhVUZzcWtwVnhP?=
- =?utf-8?B?TnY1SzZIZDlOUzJQTXJlK3Fxb3AyY0hsclBLYmFuSnRibk5zZXBQUmJneWRC?=
- =?utf-8?B?QlliYWtMd0l6MjE4R3JpbUl5ZnZDV0lIQUVyTXJQR3l0K0RCMDBMOXJIVXpq?=
- =?utf-8?B?d2NBVGNiLyt3UW1ZSGhIT3o4V2VGVjZxVWtDdXB3QVZSMnQ2TDhCRU9Ma04r?=
- =?utf-8?B?SGVxM0ZhWXhxMENpbHd4QVlnMWVkT2RrR3JnZkd6S0RCZDNnSkZ2MXlnYlpq?=
- =?utf-8?B?NnAxbitlZ1RSVmJvL0g1U1hlOHlrL0pGb1VHUFZMVnhMamFndWF2bGVjZk0x?=
- =?utf-8?B?ekZ3NDI0dXZKazBMT3NMM3Q0WXNsUHJLbDRmUDRyYkp4YzNLSGlvSzU3Uld2?=
- =?utf-8?B?MThPYy9EMStvcUNQV1d4Tm9LR2tCL09BbTVhSUJMcXc4WmE2ejQ4Q05pc3NP?=
- =?utf-8?B?cEhHS0xxVDZWcEJEaEVOaVo2d3BJU0hUdVk2ZWtKS2xkMGRLWGFnc3NDSXBt?=
- =?utf-8?B?eUhIZU85NExEUzVlUjNpYWtQV1AwZlJoWkVIemtRdmxsYlRRZ285R1lSZWlw?=
- =?utf-8?B?cjU4U3FoellZT3NrOUwvWk0yUThBcXBHcXhidnBZcTVpd3BJd2s3bkt4TjRx?=
- =?utf-8?B?S2l6UkhENElMclVVKzZHWlc3blNpVFRrbzNLMEZmUGdxeXpyT3EyaDhEck1w?=
- =?utf-8?B?SzNHWFU2S29oeS8zSVc3dlMyLzhsdHdvd2d5MnZyak5BbzZWbG9YazZqZ2wr?=
- =?utf-8?B?Y1ZzeXorTklVc1ZuWmgvSStpMGVnazBwVUxOL3BBSmZPOUZIQk5sNGNxOWJv?=
- =?utf-8?Q?/RLZyZBRQAZhlJMlGtnEXysAy?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb6450d5-0957-4139-d9e3-08dbaa5659c2
-X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5427.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 19:13:25.9403
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WLv8OzesFxnpBYYfMhiDLyKcHLxVsP4Fb35Ih5uedQ6rXE9U/x0sUuIsAOVCGStPyNIMElcvpsWtg7jwyc49mg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7995
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=11582; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=r2lzEobTI2oueJzBA83pjzi2JMLF23GOhlMsRmSj4aM=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk8OZicS8b451VlnotjEhofuGltC2UZgLJ9Z7DM
+ gcAWx8Ppc2JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZPDmYgAKCRCJcvTf3G3A
+ JoiSD/4mV2jBtkx28Gp9i/TwILnjqF6/HvZEoDRT98Lk/YoRTEa2yTQ04K716TK1DRv9WnTzf4Q
+ c3U5Qr4tmhKULZ4sL5/hrDh9kALE8jL8j2gzD8hI+F0Uk+ohaTeo4XByKrrF0bGHpGMNcPsY5S+
+ vRDzsJg4vmBSLWNOKIIgkmVWx+2weEo7Q6zOQzk9GwasdRTjB0LKmoiiWnGzHigVWBDL5Yrvpc9
+ 2r8wmBCZp14btUMFwsEp0xAgJp/bmERz9MWqrm1SR4VDkhvwbddASMlNvMhzKCNZLmhJ9+GMOX6
+ vDatGwqIQIfpCHNtThI1cjtNKDpXjAgWdqO+WAR5o/NyYGhXeC35Cz0oRcVSco4pTPYupraZnol
+ mkH+Drr+v7kuWyLK3zBrEhh8V1iQD4idAmyP5aJqyw4VQomArKi9Kn4DeD+vqFdRfDDn7z6gi/c
+ KEwsrVx5njHOgNxtPRj3eTPOQXOLMnf37fp2h9Fnl2Hhj6F3WTHPVQSo4YVkFwD/76VCF2fX3F6
+ Nix1DSBocxDPPXWJIg9ckt2VakA+EHP7pqHGg1aQ4ed4n6/zBn77QeMGVIroBYxwM5PsKNV93DB
+ AjUAGhyWMEdWRp+uf+QkyI+Wu8lTa95KsHDRvsq4NRmV8GL0lhMV39xQAXBcFe2NTDgHi1GSHtH
+ ep/kye zOfAxtBAQ==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-29 16:10, Hamza Mahfooz wrote:
-> This reverts commit 3a31e8b89b7240d9a17ace8a1ed050bdcb560f9e.
-> 
+Currently the Kconfig fragments in kernel/configs and arch/*/configs
+that aren't used internally aren't discoverable through "make help",
+which consists of hard-coded lists of config fragments. Instead, list
+all the fragment targets that have a "# Help: " comment prefix so the
+targets can be generated dynamically.
 
-This isn't a straight-up revert. Please split it into a revert (git revert),
-followed by a patch to limit the revert to < DCN_VERSION_3_1.
+Add logic to the Makefile to search for and display the fragment and
+comment. Add comments to fragments that are intended to be direct targets.
 
-Harry
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Randy Dunlap <rdunlap@infradead.org>
+Cc: linux-kernel@vger.kernel.org
+Cc: x86@kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-s390@vger.kernel.org
+Cc: linux-kbuild@vger.kernel.org
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+Co-developed-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+v3:
+- Use Makefile logic from Masahiro Yamada
+- Use "# Help: " prefix, but only on desired fragment targets
+v2: https://lore.kernel.org/all/20230825194329.gonna.911-kees@kernel.org
+v1: https://lore.kernel.org/all/20230824223606.never.762-kees@kernel.org
+---
+ Makefile                                   |  1 -
+ arch/arm/configs/dram_0x00000000.config    |  1 +
+ arch/arm/configs/dram_0xc0000000.config    |  1 +
+ arch/arm/configs/dram_0xd0000000.config    |  1 +
+ arch/arm/configs/lpae.config               |  1 +
+ arch/arm64/configs/virt.config             |  1 +
+ arch/powerpc/configs/disable-werror.config |  1 +
+ arch/powerpc/configs/security.config       |  4 +++-
+ arch/riscv/configs/32-bit.config           |  1 +
+ arch/riscv/configs/64-bit.config           |  1 +
+ arch/s390/configs/btf.config               |  1 +
+ arch/s390/configs/kasan.config             |  1 +
+ arch/x86/Makefile                          |  4 ----
+ kernel/configs/debug.config                |  2 ++
+ kernel/configs/kvm_guest.config            |  1 +
+ kernel/configs/nopm.config                 |  2 ++
+ kernel/configs/rust.config                 |  1 +
+ kernel/configs/tiny.config                 |  2 ++
+ kernel/configs/x86_debug.config            |  1 +
+ kernel/configs/xen.config                  |  2 ++
+ scripts/kconfig/Makefile                   | 15 ++++++++++++---
+ 21 files changed, 36 insertions(+), 9 deletions(-)
 
-> We still need to call dcn20_adjust_freesync_v_startup() for older DCN3+
-> ASICs otherwise it can cause DP to HDMI 2.1 PCONs to fail to light up.
-> So, reintroduce the reverted code and limit it to ASICs older than
-> DCN31.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2809
-> Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
-> ---
->  .../drm/amd/display/dc/dml/dcn20/dcn20_fpu.c  | 24 ++++---------------
->  1 file changed, 4 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
-> index 0989a0152ae8..0841176e8d6c 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
-> @@ -1099,6 +1099,10 @@ void dcn20_calculate_dlg_params(struct dc *dc,
->  		context->res_ctx.pipe_ctx[i].plane_res.bw.dppclk_khz =
->  						pipes[pipe_idx].clks_cfg.dppclk_mhz * 1000;
->  		context->res_ctx.pipe_ctx[i].pipe_dlg_param = pipes[pipe_idx].pipe.dest;
-> +		if (dc->ctx->dce_version < DCN_VERSION_3_1 &&
-> +		    context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
-> +			dcn20_adjust_freesync_v_startup(&context->res_ctx.pipe_ctx[i].stream->timing,
-> +							&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
->  
->  		pipe_idx++;
->  	}
-> @@ -1927,7 +1931,6 @@ static bool dcn20_validate_bandwidth_internal(struct dc *dc, struct dc_state *co
->  	int vlevel = 0;
->  	int pipe_split_from[MAX_PIPES];
->  	int pipe_cnt = 0;
-> -	int i = 0;
->  	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
->  	DC_LOGGER_INIT(dc->ctx->logger);
->  
-> @@ -1951,15 +1954,6 @@ static bool dcn20_validate_bandwidth_internal(struct dc *dc, struct dc_state *co
->  	dcn20_calculate_wm(dc, context, pipes, &pipe_cnt, pipe_split_from, vlevel, fast_validate);
->  	dcn20_calculate_dlg_params(dc, context, pipes, pipe_cnt, vlevel);
->  
-> -	for (i = 0; i < dc->res_pool->pipe_count; i++) {
-> -		if (!context->res_ctx.pipe_ctx[i].stream)
-> -			continue;
-> -		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
-> -			dcn20_adjust_freesync_v_startup(
-> -				&context->res_ctx.pipe_ctx[i].stream->timing,
-> -				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
-> -	}
-> -
->  	BW_VAL_TRACE_END_WATERMARKS();
->  
->  	goto validate_out;
-> @@ -2232,7 +2226,6 @@ bool dcn21_validate_bandwidth_fp(struct dc *dc,
->  	int vlevel = 0;
->  	int pipe_split_from[MAX_PIPES];
->  	int pipe_cnt = 0;
-> -	int i = 0;
->  	display_e2e_pipe_params_st *pipes = kzalloc(dc->res_pool->pipe_count * sizeof(display_e2e_pipe_params_st), GFP_ATOMIC);
->  	DC_LOGGER_INIT(dc->ctx->logger);
->  
-> @@ -2261,15 +2254,6 @@ bool dcn21_validate_bandwidth_fp(struct dc *dc,
->  	dcn21_calculate_wm(dc, context, pipes, &pipe_cnt, pipe_split_from, vlevel, fast_validate);
->  	dcn20_calculate_dlg_params(dc, context, pipes, pipe_cnt, vlevel);
->  
-> -	for (i = 0; i < dc->res_pool->pipe_count; i++) {
-> -		if (!context->res_ctx.pipe_ctx[i].stream)
-> -			continue;
-> -		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
-> -			dcn20_adjust_freesync_v_startup(
-> -				&context->res_ctx.pipe_ctx[i].stream->timing,
-> -				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
-> -	}
-> -
->  	BW_VAL_TRACE_END_WATERMARKS();
->  
->  	goto validate_out;
+diff --git a/Makefile b/Makefile
+index 4739c21a63e2..91c90ce8e0e3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1674,7 +1674,6 @@ help:
+ 	@echo  '  mrproper	  - Remove all generated files + config + various backup files'
+ 	@echo  '  distclean	  - mrproper + remove editor backup and patch files'
+ 	@echo  ''
+-	@echo  'Configuration targets:'
+ 	@$(MAKE) -f $(srctree)/scripts/kconfig/Makefile help
+ 	@echo  ''
+ 	@echo  'Other generic targets:'
+diff --git a/arch/arm/configs/dram_0x00000000.config b/arch/arm/configs/dram_0x00000000.config
+index db96dcb420ce..8803a0f58343 100644
+--- a/arch/arm/configs/dram_0x00000000.config
++++ b/arch/arm/configs/dram_0x00000000.config
+@@ -1 +1,2 @@
++# Help: DRAM base at 0x00000000
+ CONFIG_DRAM_BASE=0x00000000
+diff --git a/arch/arm/configs/dram_0xc0000000.config b/arch/arm/configs/dram_0xc0000000.config
+index 343d5333d973..aab8f864686b 100644
+--- a/arch/arm/configs/dram_0xc0000000.config
++++ b/arch/arm/configs/dram_0xc0000000.config
+@@ -1 +1,2 @@
++# Help: DRAM base at 0xc0000000
+ CONFIG_DRAM_BASE=0xc0000000
+diff --git a/arch/arm/configs/dram_0xd0000000.config b/arch/arm/configs/dram_0xd0000000.config
+index 61ba7045f8a1..4aabce4ea3d4 100644
+--- a/arch/arm/configs/dram_0xd0000000.config
++++ b/arch/arm/configs/dram_0xd0000000.config
+@@ -1 +1,2 @@
++# Help: DRAM base at 0xd0000000
+ CONFIG_DRAM_BASE=0xd0000000
+diff --git a/arch/arm/configs/lpae.config b/arch/arm/configs/lpae.config
+index a6d6f7ab3c01..1ab94da8345d 100644
+--- a/arch/arm/configs/lpae.config
++++ b/arch/arm/configs/lpae.config
+@@ -1,2 +1,3 @@
++# Help: Enable Large Physical Address Extension mode
+ CONFIG_ARM_LPAE=y
+ CONFIG_VMSPLIT_2G=y
+diff --git a/arch/arm64/configs/virt.config b/arch/arm64/configs/virt.config
+index 6865d54e68f8..c47c36f8f67b 100644
+--- a/arch/arm64/configs/virt.config
++++ b/arch/arm64/configs/virt.config
+@@ -1,3 +1,4 @@
++# Help: Virtualization guest
+ #
+ # Base options for platforms
+ #
+diff --git a/arch/powerpc/configs/disable-werror.config b/arch/powerpc/configs/disable-werror.config
+index 6ea12a12432c..7776b91da37f 100644
+--- a/arch/powerpc/configs/disable-werror.config
++++ b/arch/powerpc/configs/disable-werror.config
+@@ -1 +1,2 @@
++# Help: Disable -Werror
+ CONFIG_PPC_DISABLE_WERROR=y
+diff --git a/arch/powerpc/configs/security.config b/arch/powerpc/configs/security.config
+index 1c91a35c6a73..0d54e29e2cdf 100644
+--- a/arch/powerpc/configs/security.config
++++ b/arch/powerpc/configs/security.config
+@@ -1,3 +1,5 @@
++# Help: Common security options for PowerPC builds
++
+ # This is the equivalent of booting with lockdown=integrity
+ CONFIG_SECURITY=y
+ CONFIG_SECURITYFS=y
+@@ -12,4 +14,4 @@ CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
+ 
+ # UBSAN bounds checking is very cheap and good for hardening
+ CONFIG_UBSAN=y
+-# CONFIG_UBSAN_MISC is not set
+\ No newline at end of file
++# CONFIG_UBSAN_MISC is not set
+diff --git a/arch/riscv/configs/32-bit.config b/arch/riscv/configs/32-bit.config
+index f6af0f708df4..16ee163847b4 100644
+--- a/arch/riscv/configs/32-bit.config
++++ b/arch/riscv/configs/32-bit.config
+@@ -1,3 +1,4 @@
++# Help: Build a 32-bit image
+ CONFIG_ARCH_RV32I=y
+ CONFIG_32BIT=y
+ # CONFIG_PORTABLE is not set
+diff --git a/arch/riscv/configs/64-bit.config b/arch/riscv/configs/64-bit.config
+index 313edc554d84..d872a2d533f2 100644
+--- a/arch/riscv/configs/64-bit.config
++++ b/arch/riscv/configs/64-bit.config
+@@ -1,2 +1,3 @@
++# Help: Build a 64-bit image
+ CONFIG_ARCH_RV64I=y
+ CONFIG_64BIT=y
+diff --git a/arch/s390/configs/btf.config b/arch/s390/configs/btf.config
+index 39227b4511af..eb7f84f5925c 100644
+--- a/arch/s390/configs/btf.config
++++ b/arch/s390/configs/btf.config
+@@ -1 +1,2 @@
++# Help: Enable BTF debug info
+ CONFIG_DEBUG_INFO_BTF=y
+diff --git a/arch/s390/configs/kasan.config b/arch/s390/configs/kasan.config
+index 700a8b25c3ff..84c2b551e992 100644
+--- a/arch/s390/configs/kasan.config
++++ b/arch/s390/configs/kasan.config
+@@ -1,3 +1,4 @@
++# Help: Enable KASan for debugging
+ CONFIG_KASAN=y
+ CONFIG_KASAN_INLINE=y
+ CONFIG_KASAN_VMALLOC=y
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index fdc2e3abd615..c4b2a8a19fc8 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -335,9 +335,5 @@ define archhelp
+   echo  '			  bzdisk/fdimage*/hdimage/isoimage also accept:'
+   echo  '			  FDARGS="..."  arguments for the booted kernel'
+   echo  '			  FDINITRD=file initrd for the booted kernel'
+-  echo  ''
+-  echo  '  kvm_guest.config	- Enable Kconfig items for running this kernel as a KVM guest'
+-  echo  '  xen.config		- Enable Kconfig items for running this kernel as a Xen guest'
+-  echo  '  x86_debug.config	- Enable tip tree debugging options for testing'
+ 
+ endef
+diff --git a/kernel/configs/debug.config b/kernel/configs/debug.config
+index e8db8d938661..4722b998a324 100644
+--- a/kernel/configs/debug.config
++++ b/kernel/configs/debug.config
+@@ -1,3 +1,5 @@
++# Help: Debugging for CI systems and finding regressions
++#
+ # The config is based on running daily CI for enterprise Linux distros to
+ # seek regressions on linux-next builds on different bare-metal and virtual
+ # platforms. It can be used for example,
+diff --git a/kernel/configs/kvm_guest.config b/kernel/configs/kvm_guest.config
+index 208481d91090..d0877063d925 100644
+--- a/kernel/configs/kvm_guest.config
++++ b/kernel/configs/kvm_guest.config
+@@ -1,3 +1,4 @@
++# Help: Bootable as a KVM guest
+ CONFIG_NET=y
+ CONFIG_NET_CORE=y
+ CONFIG_NETDEVICES=y
+diff --git a/kernel/configs/nopm.config b/kernel/configs/nopm.config
+index 81ff07863576..ebfdc3d8aa9a 100644
+--- a/kernel/configs/nopm.config
++++ b/kernel/configs/nopm.config
+@@ -1,3 +1,5 @@
++# Help: Disable Power Management
++
+ CONFIG_PM=n
+ CONFIG_SUSPEND=n
+ CONFIG_HIBERNATION=n
+diff --git a/kernel/configs/rust.config b/kernel/configs/rust.config
+index 38a7c5362c9c..2c6e001a7284 100644
+--- a/kernel/configs/rust.config
++++ b/kernel/configs/rust.config
+@@ -1 +1,2 @@
++# Help: Enable Rust
+ CONFIG_RUST=y
+diff --git a/kernel/configs/tiny.config b/kernel/configs/tiny.config
+index 00009f7d0835..60a4b6d80b36 100644
+--- a/kernel/configs/tiny.config
++++ b/kernel/configs/tiny.config
+@@ -1,3 +1,5 @@
++# Help: Size-optimized kernel image
++#
+ # CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE is not set
+ CONFIG_CC_OPTIMIZE_FOR_SIZE=y
+ # CONFIG_KERNEL_GZIP is not set
+diff --git a/kernel/configs/x86_debug.config b/kernel/configs/x86_debug.config
+index 6fac5b405334..35f48671b8d5 100644
+--- a/kernel/configs/x86_debug.config
++++ b/kernel/configs/x86_debug.config
+@@ -1,3 +1,4 @@
++# Help: Debugging options for tip tree testing
+ CONFIG_X86_DEBUG_FPU=y
+ CONFIG_LOCK_STAT=y
+ CONFIG_DEBUG_VM=y
+diff --git a/kernel/configs/xen.config b/kernel/configs/xen.config
+index 436f806aa1ed..6878b9a49be8 100644
+--- a/kernel/configs/xen.config
++++ b/kernel/configs/xen.config
+@@ -1,3 +1,5 @@
++# Help: Bootable as a Xen guest
++#
+ # global stuff - these enable us to allow some
+ # of the not so generic stuff below for xen
+ CONFIG_PARAVIRT=y
+diff --git a/scripts/kconfig/Makefile b/scripts/kconfig/Makefile
+index af1c96198f49..4eee155121a8 100644
+--- a/scripts/kconfig/Makefile
++++ b/scripts/kconfig/Makefile
+@@ -93,11 +93,13 @@ endif
+ %_defconfig: $(obj)/conf
+ 	$(Q)$< $(silent) --defconfig=arch/$(SRCARCH)/configs/$@ $(Kconfig)
+ 
+-configfiles=$(wildcard $(srctree)/kernel/configs/$@ $(srctree)/arch/$(SRCARCH)/configs/$@)
++configfiles = $(wildcard $(srctree)/kernel/configs/$(1) $(srctree)/arch/$(SRCARCH)/configs/$(1))
++all-config-fragments = $(call configfiles,*.config)
++config-fragments = $(call configfiles,$@)
+ 
+ %.config: $(obj)/conf
+-	$(if $(call configfiles),, $(error No configuration exists for this target on this architecture))
+-	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m .config $(configfiles)
++	$(if $(config-fragments),, $(error $@ fragment does not exists on this architecture))
++	$(Q)$(CONFIG_SHELL) $(srctree)/scripts/kconfig/merge_config.sh -m .config $(config-fragments)
+ 	$(Q)$(MAKE) -f $(srctree)/Makefile olddefconfig
+ 
+ PHONY += tinyconfig
+@@ -115,6 +117,7 @@ clean-files += tests/.cache
+ 
+ # Help text used by make help
+ help:
++	@echo  'Configuration targets:'
+ 	@echo  '  config	  - Update current config utilising a line-oriented program'
+ 	@echo  '  nconfig         - Update current config utilising a ncurses menu based program'
+ 	@echo  '  menuconfig	  - Update current config utilising a menu based program'
+@@ -141,6 +144,12 @@ help:
+ 	@echo  '                    default value without prompting'
+ 	@echo  '  tinyconfig	  - Configure the tiniest possible kernel'
+ 	@echo  '  testconfig	  - Run Kconfig unit tests (requires python3 and pytest)'
++	@echo  ''
++	@echo  'Configuration topic targets:'
++	@$(foreach f, $(all-config-fragments), \
++		if help=$$(grep -m1 '^# Help: ' $(f)); then \
++			printf '  %-25s - %s\n' '$(notdir $(f))' "$${help#*: }"; \
++		fi;)
+ 
+ # ===========================================================================
+ # object files used by all kconfig flavours
+-- 
+2.34.1
 
