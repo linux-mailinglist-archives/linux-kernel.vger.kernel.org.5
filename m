@@ -2,123 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C638278F1BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 19:19:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4574F78F1C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 19:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242042AbjHaRT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 13:19:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37828 "EHLO
+        id S1346866AbjHaRVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 13:21:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242807AbjHaRT2 (ORCPT
+        with ESMTP id S231726AbjHaRVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 13:19:28 -0400
+        Thu, 31 Aug 2023 13:21:13 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F94FCC5
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:18:37 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34AB9107
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:20:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693502315;
+        s=mimecast20190719; t=1693502424;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jBklFU3iiv7RvzlkD14uYmQsEA+NjOWwBhgNqF5FB9A=;
-        b=eaI+f+Wz7W7IuaGRPipqEcYPsPGk9dLmXBl+oY2abxtKo+2xniRhok926OmNB+6PhD1oPZ
-        /2ew0nyJoCO9ofkziPv7+10aGk4/KDER1ae1UH22HGsvNIPKFeFLsQbVi0OeVX+SixO6c6
-        fCkJC7cU52WNt047+jo/LKYKfcNwA3Y=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-599-Fouv2VfFPIOGfNHhFeDIRQ-1; Thu, 31 Aug 2023 13:18:32 -0400
-X-MC-Unique: Fouv2VfFPIOGfNHhFeDIRQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 20E9D3C11A18;
-        Thu, 31 Aug 2023 17:18:30 +0000 (UTC)
-Received: from [10.22.17.50] (unknown [10.22.17.50])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 302C74021C8;
-        Thu, 31 Aug 2023 17:18:29 +0000 (UTC)
-Message-ID: <b43508ea-c222-5e38-2486-a4a7e7263d61@redhat.com>
-Date:   Thu, 31 Aug 2023 13:18:28 -0400
+        bh=ymQvv7X9AMYZ6FyxsIOelJNS5mGxhoE6nVc+5tdBMkg=;
+        b=MlTKTwY30zHMz3EKA72MZzuCmy4RfNOhxE50jY9glb5ppYTy+8eOOnIjIHGNULIvaP8BN3
+        5AeYHRnox87hcu74z1gQug2ajOZgGwpLGuUyK6HRl1Bg4QcSzwF58T4xODyhGXzWL47+bR
+        IS3hGr3/512Rt1nAfGTPWdCjKgT/udQ=
+Received: from mail-vs1-f69.google.com (mail-vs1-f69.google.com
+ [209.85.217.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-541-HToUe34BMf-AA2rmk_HFLA-1; Thu, 31 Aug 2023 13:20:21 -0400
+X-MC-Unique: HToUe34BMf-AA2rmk_HFLA-1
+Received: by mail-vs1-f69.google.com with SMTP id ada2fe7eead31-44d5ac106ddso507058137.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:20:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693502421; x=1694107221;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ymQvv7X9AMYZ6FyxsIOelJNS5mGxhoE6nVc+5tdBMkg=;
+        b=l/9gTB9zkEObbqwNjGBUyAHagm6sm64QwtB7v+ptlc1oYD/7UZx5tENaaZiQlJAiCz
+         IoQF3GbUurs/ynB1grxfn6D1nJGSxhB7xaNxbQXCjlrnkUWKV0QFsAgsr23wYoqYHNb2
+         ru5vuL3p2EpPkeU/Lx85JJDr9AX5DK4xdWpw+W0sGvoQJzGYsm5oYESiXfunOk7SCi78
+         NXOjFwtKn3JUOQ7pGge8F9n6PIGoHfia9J9cIUWiminQ+pv82ZThu+Xd92Xn9P7eHizK
+         IdgCPQi0xVsgaGHGFihWBqLFp5UN6jr8Fbcy18W9aal4uy9Lkr62iLe7nQWoT0mmAdQL
+         01Ig==
+X-Gm-Message-State: AOJu0YyzSiwFqD/sJOtBHPuVjjsZO/CBb36VV7t/mcwB9Uiv9zFIW6xX
+        LAmdRl2FBOgQ/OeSTMKmxWwW/FVlLeu9z7Zfs1E4fbQbIliU38As98V0a1iGKEZorRJags84J0M
+        ODSnOUBS71OhKIrDR11qHeFAGF3DPnrf+Lu06P1eK
+X-Received: by 2002:a05:6102:2454:b0:44e:d28f:e49c with SMTP id g20-20020a056102245400b0044ed28fe49cmr219951vss.23.1693502421367;
+        Thu, 31 Aug 2023 10:20:21 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHJzkOTnPItPnNZWsXGncuPRF1efAk4j4Fn3ZuMQ2PcrdaFfgq4G0JeoLlyEqDyllBC3Jlg2e47I507J/cwdko=
+X-Received: by 2002:a05:6102:2454:b0:44e:d28f:e49c with SMTP id
+ g20-20020a056102245400b0044ed28fe49cmr219936vss.23.1693502421158; Thu, 31 Aug
+ 2023 10:20:21 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH v4 0/4] memcg: non-unified flushing for userspace stats
-Content-Language: en-US
-To:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230831165611.2610118-1-yosryahmed@google.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230831165611.2610118-1-yosryahmed@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830000633.3158416-1-seanjc@google.com> <20230830000633.3158416-2-seanjc@google.com>
+In-Reply-To: <20230830000633.3158416-2-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Date:   Thu, 31 Aug 2023 19:20:09 +0200
+Message-ID: <CABgObfYjUzE6H4KLxwFS+WqP5deimRE8ip8Sy1t37b_HtC_eqg@mail.gmail.com>
+Subject: Re: [GIT PULL] KVM: Non-x86 changes for 6.6
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/23 12:56, Yosry Ahmed wrote:
-> Most memcg flushing contexts using "unified" flushing, where only one
-> flusher is allowed at a time (others skip), and all flushers need to
-> flush the entire tree. This works well with high concurrency, which
-> mostly comes from in-kernel flushers (e.g. reclaim, refault, ..).
+On Wed, Aug 30, 2023 at 2:06=E2=80=AFAM Sean Christopherson <seanjc@google.=
+com> wrote:
 >
-> For userspace reads, unified flushing leads to non-deterministic stats
-> staleness and reading cost. This series clarifies and documents the
-> differences between unified and non-unified flushing (patches 1 & 2),
-> then opts userspace reads out of unified flushing (patch 3).
+> Please pull a few smallish KVM-wide changes.  This will conflict with the=
+ MMU
+> pull request, which changed a WARN_ON() to a WARN_ON_ONCE().  The resolut=
+ion
+> is pretty straightfoward.
 >
-> This patch series is a follow up on the discussion in [1]. That was a
-> patch that proposed that userspace reads wait for ongoing unified
-> flushers to complete before returning. There were concerns about the
-> latency that this introduces to userspace reads, especially with ongoing
-> reports of expensive stat reads even with unified flushing. Hence, this
-> series follows a different approach, by opting userspace reads out of
-> unified flushing completely. The cost of userspace reads are now
-> determinstic, and depend on the size of the subtree being read. This
-> should fix both the *sometimes* expensive reads (due to flushing the
-> entire tree) and occasional staless (due to skipping flushing).
+> diff --cc arch/x86/kvm/mmu/tdp_mmu.c
+> index 6250bd3d20c1,b5629bc60e36..6c63f2d1675f
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@@ -1241,7 -1241,7 +1241,7 @@@ static bool set_spte_gfn(struct kvm *kv
+>         u64 new_spte;
 >
-> I attempted to remove unified flushing completely, but noticed that
-> in-kernel flushers with high concurrency (e.g. hundreds of concurrent
-> reclaimers). This sort of concurrency is not expected from userspace
-> reads. More details about testing and some numbers in the last patch's
-> changelog.
+>         /* Huge pages aren't expected to be modified without first being =
+zapped. */
+> -       WARN_ON(pte_huge(range->arg.pte) || range->start + 1 !=3D range->=
+end);
+>  -      WARN_ON_ONCE(pte_huge(range->pte) || range->start + 1 !=3D range-=
+>end);
+> ++      WARN_ON_ONCE(pte_huge(range->arg.pte) || range->start + 1 !=3D ra=
+nge->end);
 >
-> v4 -> v5:
-> - Fixed build error in the last patch with W=1 because of a missed
->    'static'.
+>         if (iter->level !=3D PG_LEVEL_4K ||
+>             !is_shadow_present_pte(iter->old_spte))
 >
-> v4: https://lore.kernel.org/lkml/20230830175335.1536008-1-yosryahmed@google.com/
+> The following changes since commit fdf0eaf11452d72945af31804e2a1048ee1b57=
+4c:
 >
-> Yosry Ahmed (4):
->    mm: memcg: properly name and document unified stats flushing
->    mm: memcg: add a helper for non-unified stats flushing
->    mm: memcg: let non-unified root stats flushes help unified flushes
->    mm: memcg: use non-unified stats flushing for userspace reads
+>   Linux 6.5-rc2 (2023-07-16 15:10:37 -0700)
 >
->   include/linux/memcontrol.h |   8 +--
->   mm/memcontrol.c            | 106 +++++++++++++++++++++++++++----------
->   mm/vmscan.c                |   2 +-
->   mm/workingset.c            |   4 +-
->   4 files changed, 85 insertions(+), 35 deletions(-)
+> are available in the Git repository at:
 >
-LGTM
+>   https://github.com/kvm-x86/linux.git tags/kvm-x86-generic-6.6
+>
+> for you to fetch changes up to 458933d33af2cb3663bd8c0080c1efd1f9483db4:
+>
+>   KVM: Remove unused kvm_make_cpus_request_mask() declaration (2023-08-17=
+ 11:59:43 -0700)
 
-Acked-by: Waiman Long <longman@redhat.com>
+Pulled, thanks.
+
+Paolo
+
+> ----------------------------------------------------------------
+> Common KVM changes for 6.6:
+>
+>  - Wrap kvm_{gfn,hva}_range.pte in a union to allow mmu_notifier events t=
+o pass
+>    action specific data without needing to constantly update the main han=
+dlers.
+>
+>  - Drop unused function declarations
+>
+> ----------------------------------------------------------------
+> Sean Christopherson (1):
+>       KVM: Wrap kvm_{gfn,hva}_range.pte in a per-action union
+>
+> Yue Haibing (2):
+>       KVM: Remove unused kvm_device_{get,put}() declarations
+>       KVM: Remove unused kvm_make_cpus_request_mask() declaration
+>
+>  arch/arm64/kvm/mmu.c       |  2 +-
+>  arch/mips/kvm/mmu.c        |  2 +-
+>  arch/riscv/kvm/mmu.c       |  2 +-
+>  arch/x86/kvm/mmu/mmu.c     |  2 +-
+>  arch/x86/kvm/mmu/tdp_mmu.c |  6 +++---
+>  include/linux/kvm_host.h   | 10 +++++-----
+>  virt/kvm/kvm_main.c        | 19 ++++++++++---------
+>  7 files changed, 22 insertions(+), 21 deletions(-)
+>
 
