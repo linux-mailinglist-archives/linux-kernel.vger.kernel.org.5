@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 559BF78EF07
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:54:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE07278EF13
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:57:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239185AbjHaNya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:54:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54588 "EHLO
+        id S243280AbjHaN56 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:57:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229540AbjHaNy3 (ORCPT
+        with ESMTP id S240727AbjHaN55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:54:29 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64DD5CEB;
-        Thu, 31 Aug 2023 06:54:26 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-34cc8e8cbd4so3008345ab.0;
-        Thu, 31 Aug 2023 06:54:26 -0700 (PDT)
+        Thu, 31 Aug 2023 09:57:57 -0400
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE1FB8;
+        Thu, 31 Aug 2023 06:57:54 -0700 (PDT)
+Received: by mail-il1-x136.google.com with SMTP id e9e14a558f8ab-34c5fec2a95so2903155ab.3;
+        Thu, 31 Aug 2023 06:57:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693490066; x=1694094866; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693490274; x=1694095074; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=iOuGqkTcGQRx+iRAXqiXLaMEVlHPNpp4SZcX65o0z1M=;
-        b=FD1HmsSGzAp1CUgK6vy8Lq8vO17MpqifwlWnYFg3jxlVU8yHPCXjDnzJn85OOVQs/i
-         vp5CSdICqjNgjy+CGU9e1y/MqBH9o0SLv4vRrd6ESAbKBwf63kPF4LdGvHGFTz2msyX9
-         NCmZTgAS6vVuf7m/Vt/xMoUc4GGGpujzpq8uSTrcGMQEt5O0kHQZee7Wvgy+nxc/UZG4
-         8PzJwImFXeaDzyiuQWivvnW5q1OUL8Cxq82q1oatJqFbUaNxHbG/0kAJHThfzwjt7eNH
-         8E4gM1rSSbndVox82ruik3Vy0W9ool5p7s+znKmkmH+YIWqrggt7ME8GgprdPtr1OI0J
-         Ga9A==
+        bh=OrjBYAvFpUX6DSC/lthNg14YPHSorb1JxUZYg6+nTYE=;
+        b=FKruF52x2Z1NFX1zak2uu09siv+0P+EdV3EKFiRjlg2WV61ad+YtAJtkORDmXNeQXF
+         ISzI9IBu4P2ZWN8C+4A6ZIBEK3MV4Uvgn+roLAVNFy0OfKOPPFRscsXeMveQfuPI5xZW
+         LGmaVCNuBQf6+zZNfh/y9v9pGKWLbonqSnh+CC/koLRVXjjJcjHKWUKXYGbydkH/ENmh
+         QKFP7qaRycIMmEL7sWureEaVQtOqwybkY2ltT5wsjiyLL/fhJdmBpo/opBbYiAUR9Fzk
+         RnXR5q9wo3EZLlqntMUVjm069cuSUzSve3cKIiW+iapqpzRilO0GZngfl9cZzWaw/5R5
+         adVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693490066; x=1694094866;
+        d=1e100.net; s=20221208; t=1693490274; x=1694095074;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iOuGqkTcGQRx+iRAXqiXLaMEVlHPNpp4SZcX65o0z1M=;
-        b=L5keM/9CrJscWQbLOGGHIMsxE+9e+a4g8TBFqbOnZsI9Ke9l1ajP/OXCcLN9ev7Du0
-         AG5j45SrPH2lXgXNdPO8MB+WTXY9vOprbJ9dqn267vr6vbV73xkozNUymd2kNaMATvmV
-         KFenWmrsvrKNNASkeq6HvOR3S/rIogGxzutM8LROaxmWoC8mp1S4DZV3QfZioY9SYaHI
-         DBQTxwfRKr+zxerJoYtKMc5FfRneSsNoKCKUUxcN6NyYFB6ve2YImNzFhR/stI7JrAbD
-         i4t89YQ5m8TOs94Y3vOfpSn8br/bt0ioOI+ynDwS8dXJi1XPzXkuNVMV4qwSp+ZQyGMD
-         xgpA==
-X-Gm-Message-State: AOJu0YzYSYk6ntQ+zloUxfj3IhREjl460yzOtiN7SBiXckO5DNozShwx
-        SDLxXMW05SlnhumMZvlPg98=
-X-Google-Smtp-Source: AGHT+IGue5NC06PfG1MsWTONPo4UfzRset+l1+uMMwOHPf8RfejHUNkZRXAmOAc3Xcbd/j6fVXDfSA==
-X-Received: by 2002:a05:6e02:12ee:b0:34d:ec00:2ce8 with SMTP id l14-20020a056e0212ee00b0034dec002ce8mr6046377iln.21.1693490065627;
-        Thu, 31 Aug 2023 06:54:25 -0700 (PDT)
+        bh=OrjBYAvFpUX6DSC/lthNg14YPHSorb1JxUZYg6+nTYE=;
+        b=A96ku+z9nWW01zq7qkI2+0R7DWH+lzHzNQxpFqhOy0s3fARi2CVxf3vJb5R8CfoeeY
+         6RIytmzxEvDqqOShh9KJgb3Qepvayws1raKFKF0IJ4adj8iuUyQU6Lnw6DRd9Ix/zND5
+         ubTJYiNCtxYzM0NbNXm8ZOSRLzTc8v84hTxeyzzLU5ZbJtQIcT2N5wAZUz1eBmwMBjfo
+         ecKdz2EzQVWItrbXCa6qEpzvcgJQ98NhiDPrMbFunZxU1iLJPFE6RyUGzX/B1HUIX/eM
+         Lm5H7a5ZgxEcyP/PzRt1VdlUEtJ0TIipuuD67gm+35O1Pr2Aqodi4WntcWPDC6UEzQqP
+         ZIHw==
+X-Gm-Message-State: AOJu0Yy8pGCxRNObZcMWRgOdjFKAkl4l2tldmz8nn59AnOfGqWYYHvv8
+        zQ0iBUS4u0zcurMfunOCV9c=
+X-Google-Smtp-Source: AGHT+IGhSlJOTL5cRDk0waAv2iu6tqSMoCmyYgC44RNtmj6R5QN6Ym/33i4lmR2EUwyCq1pOg302Hw==
+X-Received: by 2002:a92:c809:0:b0:345:fae5:666c with SMTP id v9-20020a92c809000000b00345fae5666cmr5462094iln.4.1693490274196;
+        Thu, 31 Aug 2023 06:57:54 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id el17-20020a0566384d9100b0042b8566a982sm420395jab.41.2023.08.31.06.54.24
+        by smtp.gmail.com with ESMTPSA id o20-20020a056638125400b0042b91ec7e31sm412353jas.3.2023.08.31.06.57.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 06:54:24 -0700 (PDT)
+        Thu, 31 Aug 2023 06:57:52 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 31 Aug 2023 06:54:23 -0700
+Date:   Thu, 31 Aug 2023 06:57:50 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc:     broonie@kernel.org, lee@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linus.walleij@linaro.org, vkoul@kernel.org, lgirdwood@gmail.com,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 3/6] mfd: cs42l43: Add support for cs42l43 core driver
-Message-ID: <12eb7505-19b0-4341-8ec2-be42d6f94c9b@roeck-us.net>
-References: <20230804104602.395892-1-ckeepax@opensource.cirrus.com>
- <20230804104602.395892-4-ckeepax@opensource.cirrus.com>
- <b122a788-acee-4747-be6d-a7456ee110dc@roeck-us.net>
+To:     Lizhi Hou <lizhi.hou@amd.com>
+Cc:     linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh@kernel.org, max.zhen@amd.com,
+        sonal.santan@amd.com, stefano.stabellini@xilinx.com
+Subject: Re: [PATCH V13 2/5] PCI: Create device tree node for bridge
+Message-ID: <2187619d-55bc-41bb-bbb4-6059399db997@roeck-us.net>
+References: <1692120000-46900-1-git-send-email-lizhi.hou@amd.com>
+ <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b122a788-acee-4747-be6d-a7456ee110dc@roeck-us.net>
+In-Reply-To: <1692120000-46900-3-git-send-email-lizhi.hou@amd.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -82,37 +76,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 07:06:29AM -0700, Guenter Roeck wrote:
-> On Fri, Aug 04, 2023 at 11:45:59AM +0100, Charles Keepax wrote:
-> > The CS42L43 is an audio CODEC with integrated MIPI SoundWire interface
-> > (Version 1.2.1 compliant), I2C, SPI, and I2S/TDM interfaces designed
-> > for portable applications. It provides a high dynamic range, stereo
-> > DAC for headphone output, two integrated Class D amplifiers for
-> > loudspeakers, and two ADCs for wired headset microphone input or
-> > stereo line input. PDM inputs are provided for digital microphones.
-> > 
-> > The MFD component registers and initialises the device and provides
-> > PM/system power management.
-> > 
-> Unfortunately, on systems without pm support:
+On Tue, Aug 15, 2023 at 10:19:57AM -0700, Lizhi Hou wrote:
+> The PCI endpoint device such as Xilinx Alveo PCI card maps the register
+> spaces from multiple hardware peripherals to its PCI BAR. Normally,
+> the PCI core discovers devices and BARs using the PCI enumeration process.
+> There is no infrastructure to discover the hardware peripherals that are
+> present in a PCI device, and which can be accessed through the PCI BARs.
 > 
-> Building s390:allmodconfig ... failed
-> --------------
-> Error log:
-> drivers/mfd/cs42l43.c:1138:12: error: 'cs42l43_runtime_resume' defined but not used [-Werror=unused-function]
->  1138 | static int cs42l43_runtime_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~~~
-> drivers/mfd/cs42l43.c:1124:12: error: 'cs42l43_runtime_suspend' defined but not used [-Werror=unused-function]
->  1124 | static int cs42l43_runtime_suspend(struct device *dev)
->       |            ^~~~~~~~~~~~~~~~~~~~~~~
-> drivers/mfd/cs42l43.c:1106:12: error: 'cs42l43_resume' defined but not used [-Werror=unused-function]
->  1106 | static int cs42l43_resume(struct device *dev)
->       |            ^~~~~~~~~~~~~~
-> drivers/mfd/cs42l43.c:1076:12: error: 'cs42l43_suspend' defined but not used [-Werror=unused-function]
->  1076 | static int cs42l43_suspend(struct device *dev)
+> Apparently, the device tree framework requires a device tree node for the
+> PCI device. Thus, it can generate the device tree nodes for hardware
+> peripherals underneath. Because PCI is self discoverable bus, there might
+> not be a device tree node created for PCI devices. Furthermore, if the PCI
+> device is hot pluggable, when it is plugged in, the device tree nodes for
+> its parent bridges are required. Add support to generate device tree node
+> for PCI bridges.
 > 
+> Add an of_pci_make_dev_node() interface that can be used to create device
+> tree node for PCI devices.
+> 
+> Add a PCI_DYNAMIC_OF_NODES config option. When the option is turned on,
+> the kernel will generate device tree nodes for PCI bridges unconditionally.
+> 
+> Initially, add the basic properties for the dynamically generated device
+> tree nodes which include #address-cells, #size-cells, device_type,
+> compatible, ranges, reg.
+> 
+> Acked-by: Bjorn Helgaas <bhelgaas@google.com>
+> Signed-off-by: Lizhi Hou <lizhi.hou@amd.com>
 
-This patch now made it into the mainline kernel (without fix)
-and breaks various builds there.
+This patch results in the following build error.
+
+Building sparc64:allmodconfig ... failed
+--------------
+Error log:
+<stdin>:1519:2: warning: #warning syscall clone3 not implemented [-Wcpp]
+sparc64-linux-ld: drivers/pci/of_property.o: in function `of_pci_prop_intr_map':
+of_property.c:(.text+0xc4): undefined reference to `of_irq_parse_raw'
 
 Guenter
