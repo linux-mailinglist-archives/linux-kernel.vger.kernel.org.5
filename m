@@ -2,582 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D1E78E3A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15A6F78E3A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344589AbjHaABQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 20:01:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
+        id S1344594AbjHaAB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 20:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344586AbjHaABP (ORCPT
+        with ESMTP id S245549AbjHaAB5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 20:01:15 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36513CD8
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:01:10 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d7820f9449bso105168276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693440069; x=1694044869; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lQKxg9Fr2oTuswK2Hdyabm6Yn4GrjyLgwWWN7V3HWL4=;
-        b=g+EPL9uRO69vQVpdSOckI92TzHFpmfZxkjA9+IT9DYnbul9Oz17WrwLnwfrtiAEbql
-         iveE/OV34OVUjDWqre09FuVNWgZ9NdGiD9PlYxMIDhn9alrjz+sErZM7+7uCcMy1RGOf
-         RPlASSokQ436RKkF5E1uCM4S+XXVzTP7JIxb5J+7Z/uANpJsTohWsbIth6mp325TgiBB
-         pwZfdcz2w0e3X+NmsoZVbnI2+qHvb+YUC3bcd1j2o4zI0zm7V/3La18cxepJa1njVgLS
-         XpRphbvTvjHaJZ44TbLMw/DTPbkgId49q8bRP3tfeHGlm2jUE9Ym5e0gluPobSrWnReL
-         dSzQ==
+        Wed, 30 Aug 2023 20:01:57 -0400
+Received: from mail-vk1-f174.google.com (mail-vk1-f174.google.com [209.85.221.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35715CC9
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:01:52 -0700 (PDT)
+Received: by mail-vk1-f174.google.com with SMTP id 71dfb90a1353d-48fde7dae7dso102863e0c.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:01:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693440069; x=1694044869;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lQKxg9Fr2oTuswK2Hdyabm6Yn4GrjyLgwWWN7V3HWL4=;
-        b=awtVyq//FOt2zsyUK/wE1CKweSK2aku+1RUvAby8XXTtXxP/bgHpGPccBuutwd8YgQ
-         9wSUauaDypYcnl1oG95wms5WnrA0CJ/O1NSDdPvihBuU54YN9fRAXj2s6DAN4b2Qmczu
-         zaNYreXtZs1v96Bcn7onrzM+CD8NWZvdPVe63qU6WBgGPx8TUD7qv8YiDzEeJmg4QH3s
-         LrABfjU379O2AGTPwwtXh2DoptnyD+tI98c6Iv13Iw67eYFkLF6GafoCG+acYLzhBgdj
-         4hf1en5xKGq/Bn/35ami+F+E9QLEZAlG83Cy8S3NDNvNg+iJYmcwctcM0nFW51hTVPan
-         CwKg==
-X-Gm-Message-State: AOJu0Yy1ckzpsX1OCbZpBfaLfuFcNyECInT8BJolvODtNBqsl7XeYY61
-        WivecnHP9GFT7emSx0NpJUbhLSlZfi8HNQQBtFsmkA==
-X-Google-Smtp-Source: AGHT+IE+LcVfnFUTR2ZY4fATKigj2uxw8JlVOLuY9Gy5cSCmdR9NcN/+vY6jYBD9oeoM8qev8K2+a6il6kFleTacqxA=
-X-Received: by 2002:a25:5f45:0:b0:d6c:16c7:4403 with SMTP id
- h5-20020a255f45000000b00d6c16c74403mr3351260ybm.20.1693440069283; Wed, 30 Aug
- 2023 17:01:09 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693440111; x=1694044911;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q2IiBMjfIGjHi4QdQd00uanD/L/RlNyxraz3B5OlXo8=;
+        b=eK/F+J6oj0ZMDbFEa9zb7PSLtPYupgAJFY5njlh0luejk9ilImFlVSo4xtBy0554fi
+         VaElBfTcD0F0nhc7EiXjmoHtfTWv5bKqngdzSxLVxuPnO6dyViPBuvvRlkIJQUETUjrb
+         VTsQ6iE59wiVk8vV9rnSgNdWZpD6XAp3gWlMSwMA1tqBYiAuQMVkyZWq+vtK+BP3HcD4
+         2gnj20AC3tVhSaywssHHuI7so+4810eVBN/1zqSonducrLjacNQ5sUmJ9YeE/BbCmTai
+         CrA2oDtAA+kugVKwAVCCAkBOP08C2mlqQUSiha14Vjafet6OSuJtoEZ0FEVpyI08uf7j
+         9QQg==
+X-Gm-Message-State: AOJu0YyxSoMemLFlbXvT8bkXllyZefZjUkmXRvJsKFQdXL4HtXr6DG9+
+        E14l+ly5aBcnrcLwSimk13M=
+X-Google-Smtp-Source: AGHT+IGmLLGYBd74byiA07/Gh5m5M3c/RpCW9pFjvAuGwV1Q4S8gaoBmO6pFz0oypuUxztu8QDjCdg==
+X-Received: by 2002:a67:fd45:0:b0:44d:4dd6:7966 with SMTP id g5-20020a67fd45000000b0044d4dd67966mr3406457vsr.34.1693440111112;
+        Wed, 30 Aug 2023 17:01:51 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:1c30])
+        by smtp.gmail.com with ESMTPSA id b1-20020ac812c1000000b004109fb22216sm74458qtj.79.2023.08.30.17.01.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 17:01:50 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 19:01:47 -0500
+From:   David Vernet <void@manifault.com>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
+        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
+        kprateek.nayak@amd.com, aaron.lu@intel.com,
+        wuyun.abel@bytedance.com, kernel-team@meta.com,
+        tim.c.chen@intel.com
+Subject: Re: [PATCH v3 7/7] sched: Shard per-LLC shared runqueues
+Message-ID: <20230831000147.GA506447@maniforge>
+References: <20230809221218.163894-1-void@manifault.com>
+ <20230809221218.163894-8-void@manifault.com>
+ <ZO7e5YaS71cXVxQN@chenyu5-mobl2>
 MIME-Version: 1.0
-References: <20230830224910.8091-1-quic_abhinavk@quicinc.com> <20230830224910.8091-7-quic_abhinavk@quicinc.com>
-In-Reply-To: <20230830224910.8091-7-quic_abhinavk@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 31 Aug 2023 03:00:57 +0300
-Message-ID: <CAA8EJpowk1veNE1z_gwzkF2o9whz7XjCViTaXKR36nu9Gkc+OQ@mail.gmail.com>
-Subject: Re: [PATCH 06/16] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM block
-To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
-        quic_parellan@quicinc.com, quic_khsieh@quicinc.com,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZO7e5YaS71cXVxQN@chenyu5-mobl2>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> CDM block comes with its own set of registers and operations
-> which can be done. In-line with other hardware sub-blocks, this
-> change adds the dpu_hw_cdm abstraction for the CDM block.
->
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/Makefile                |   1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c  | 272 ++++++++++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h  | 135 ++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h |   1 +
->  4 files changed, 409 insertions(+)
->  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
->  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
->
-> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
-> index 8d02d8c33069..2010cb1ca995 100644
-> --- a/drivers/gpu/drm/msm/Makefile
-> +++ b/drivers/gpu/drm/msm/Makefile
-> @@ -63,6 +63,7 @@ msm-$(CONFIG_DRM_MSM_DPU) += \
->         disp/dpu1/dpu_encoder_phys_wb.o \
->         disp/dpu1/dpu_formats.o \
->         disp/dpu1/dpu_hw_catalog.o \
-> +       disp/dpu1/dpu_hw_cdm.o \
->         disp/dpu1/dpu_hw_ctl.o \
->         disp/dpu1/dpu_hw_dsc.o \
->         disp/dpu1/dpu_hw_dsc_1_2.o \
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
-> new file mode 100644
-> index 000000000000..a2f7ee8f54e4
-> --- /dev/null
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
-> @@ -0,0 +1,272 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#include <drm/drm_managed.h>
-> +
-> +#include "dpu_hw_mdss.h"
-> +#include "dpu_hw_util.h"
-> +#include "dpu_hw_catalog.h"
-> +#include "dpu_hw_cdm.h"
-> +#include "dpu_kms.h"
-> +
-> +#define CDM_CSC_10_OPMODE                  0x000
-> +#define CDM_CSC_10_BASE                    0x004
-> +
-> +#define CDM_CDWN2_OP_MODE                  0x100
-> +#define CDM_CDWN2_CLAMP_OUT                0x104
-> +#define CDM_CDWN2_PARAMS_3D_0              0x108
-> +#define CDM_CDWN2_PARAMS_3D_1              0x10C
-> +#define CDM_CDWN2_COEFF_COSITE_H_0         0x110
-> +#define CDM_CDWN2_COEFF_COSITE_H_1         0x114
-> +#define CDM_CDWN2_COEFF_COSITE_H_2         0x118
-> +#define CDM_CDWN2_COEFF_OFFSITE_H_0        0x11C
-> +#define CDM_CDWN2_COEFF_OFFSITE_H_1        0x120
-> +#define CDM_CDWN2_COEFF_OFFSITE_H_2        0x124
-> +#define CDM_CDWN2_COEFF_COSITE_V           0x128
-> +#define CDM_CDWN2_COEFF_OFFSITE_V          0x12C
-> +#define CDM_CDWN2_OUT_SIZE                 0x130
-> +
-> +#define CDM_HDMI_PACK_OP_MODE              0x200
-> +#define CDM_CSC_10_MATRIX_COEFF_0          0x004
-> +
-> +#define CDM_MUX                            0x224
-> +
-> +/**
-> + * Horizontal coefficients for cosite chroma downscale
-> + * s13 representation of coefficients
-> + */
-> +static u32 cosite_h_coeff[] = {0x00000016, 0x000001cc, 0x0100009e};
-> +
-> +/**
-> + * Horizontal coefficients for offsite chroma downscale
-> + */
-> +static u32 offsite_h_coeff[] = {0x000b0005, 0x01db01eb, 0x00e40046};
-> +
-> +/**
-> + * Vertical coefficients for cosite chroma downscale
-> + */
-> +static u32 cosite_v_coeff[] = {0x00080004};
-> +/**
-> + * Vertical coefficients for offsite chroma downscale
-> + */
-> +static u32 offsite_v_coeff[] = {0x00060002};
-> +
-> +static int dpu_hw_cdm_setup_csc_10bit(struct dpu_hw_cdm *ctx, struct dpu_csc_cfg *data)
-> +{
-> +       dpu_hw_csc_setup(&ctx->hw, CDM_CSC_10_MATRIX_COEFF_0, data, true);
+On Wed, Aug 30, 2023 at 02:17:09PM +0800, Chen Yu wrote:
+> Hi David,
 
-Where was this defined?
+Hi Chenyu,
 
-> +
-> +       return 0;
-> +}
-> +
-> +static int dpu_hw_cdm_setup_cdwn(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cfg)
-> +{
-> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
-> +       u32 opmode = 0;
-> +       u32 out_size = 0;
-> +
-> +       if (cfg->output_bit_depth == CDM_CDWN_OUTPUT_10BIT)
-> +               opmode &= ~BIT(7);
-> +       else
-> +               opmode |= BIT(7);
-> +
-> +       /* ENABLE DWNS_H bit */
-> +       opmode |= BIT(1);
-> +
-> +       switch (cfg->h_cdwn_type) {
-> +       case CDM_CDWN_DISABLE:
-> +               /* CLEAR METHOD_H field */
-> +               opmode &= ~(0x18);
-> +               /* CLEAR DWNS_H bit */
-> +               opmode &= ~BIT(1);
-> +               break;
-> +       case CDM_CDWN_PIXEL_DROP:
-> +               /* Clear METHOD_H field (pixel drop is 0) */
-> +               opmode &= ~(0x18);
-> +               break;
-> +       case CDM_CDWN_AVG:
-> +               /* Clear METHOD_H field (Average is 0x1) */
-> +               opmode &= ~(0x18);
-> +               opmode |= (0x1 << 0x3);
-> +               break;
-> +       case CDM_CDWN_COSITE:
-> +               /* Clear METHOD_H field (Average is 0x2) */
-> +               opmode &= ~(0x18);
-> +               opmode |= (0x2 << 0x3);
-> +               /* Co-site horizontal coefficients */
-> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_0,
-> +                               cosite_h_coeff[0]);
-> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_1,
-> +                               cosite_h_coeff[1]);
-> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_2,
-> +                               cosite_h_coeff[2]);
-> +               break;
-> +       case CDM_CDWN_OFFSITE:
-> +               /* Clear METHOD_H field (Average is 0x3) */
-> +               opmode &= ~(0x18);
-> +               opmode |= (0x3 << 0x3);
-> +
-> +               /* Off-site horizontal coefficients */
-> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_0,
-> +                               offsite_h_coeff[0]);
-> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_1,
-> +                               offsite_h_coeff[1]);
-> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_2,
-> +                               offsite_h_coeff[2]);
-> +               break;
-> +       default:
-> +               pr_err("%s invalid horz down sampling type\n", __func__);
-> +               return -EINVAL;
-> +       }
-> +
-> +       /* ENABLE DWNS_V bit */
-> +       opmode |= BIT(2);
-> +
-> +       switch (cfg->v_cdwn_type) {
-> +       case CDM_CDWN_DISABLE:
-> +               /* CLEAR METHOD_V field */
-> +               opmode &= ~(0x60);
+Thank you for running these tests, and for your very in-depth analysis
+and explanation of the performance you were observing.
 
-#define, GENMASK
+> On 2023-08-09 at 17:12:18 -0500, David Vernet wrote:
+> > The SHARED_RUNQ scheduler feature creates a FIFO queue per LLC that
+> > tasks are put into on enqueue, and pulled from when a core in that LLC
+> > would otherwise go idle. For CPUs with large LLCs, this can sometimes
+> > cause significant contention, as illustrated in [0].
+> > 
+> > [0]: https://lore.kernel.org/all/c8419d9b-2b31-2190-3058-3625bdbcb13d@meta.com/
+> > 
+> > So as to try and mitigate this contention, we can instead shard the
+> > per-LLC runqueue into multiple per-LLC shards.
+> > 
+> > While this doesn't outright prevent all contention, it does somewhat mitigate it.
+> >
+>  
+> Thanks for this proposal to make idle load balance more efficient. As we
+> dicussed previously, I launched hackbench on Intel Sapphire Rapids
+> and I have some findings.
+> 
+> This platform has 2 sockets, each socket has 56C/112T. To avoid the
+> run-run variance, only 1 socket is online, the cpufreq govenor is set to
+> performance, the turbo is disabled, and C-states deeper than C1 are disabled.
+> 
+> hackbench
+> =========
+> case                    load            baseline(std%)  compare%( std%)
+> process-pipe            1-groups         1.00 (  1.09)   +0.55 (  0.20)
+> process-pipe            2-groups         1.00 (  0.60)   +3.57 (  0.28)
+> process-pipe            4-groups         1.00 (  0.30)   +5.22 (  0.26)
+> process-pipe            8-groups         1.00 (  0.10)  +43.96 (  0.26)
+> process-sockets         1-groups         1.00 (  0.18)   -1.56 (  0.34)
+> process-sockets         2-groups         1.00 (  1.06)  -12.37 (  0.11)
+> process-sockets         4-groups         1.00 (  0.29)   +0.21 (  0.19)
+> process-sockets         8-groups         1.00 (  0.06)   +3.59 (  0.39)
+> 
+> The 8 groups pipe mode has an impressive improvement, while the 2 groups sockets
+> mode did see some regressions.
+> 
+> The possible reason to cause the regression is at the end of this reply, in
+> case you want to see the conclusion directly : )
 
-> +               /* CLEAR DWNS_V bit */
-> +               opmode &= ~BIT(2);
-> +               break;
-> +       case CDM_CDWN_PIXEL_DROP:
-> +               /* Clear METHOD_V field (pixel drop is 0) */
-> +               opmode &= ~(0x60);
-> +               break;
-> +       case CDM_CDWN_AVG:
-> +               /* Clear METHOD_V field (Average is 0x1) */
-> +               opmode &= ~(0x60);
-> +               opmode |= (0x1 << 0x5);
+I read through everything, and it all made sense. I'll reply to your
+conclusion below.
 
-#define
+> To investigate the regression, I did slight hack on the hackbench, by renaming
+> the workload to sender and receiver.
+> 
+> When it is in 2 groups mode, there would be 2 groups of senders and receivers.
+> Each group has 14 senders and 14 receivers. So there are totally 56 tasks running
+> on 112 CPUs. In each group, sender_i sends package to receiver_j  ( i, j belong to [1,14] )
+> 
+> 
+> 1. Firstly use 'top' to monitor the CPU utilization:
+> 
+>    When shared_runqueue is disabled, many CPUs are 100%, while the other
+>    CPUs remain 0%.
+>    When shared_runqueue is enabled, most CPUs are busy and the utilization is
+>    in 40%~60%.
+> 
+>    This means that shared_runqueue works as expected.
+> 
+> 2. Then the bpf wakeup latency is monitored:
+> 
+> tracepoint:sched:sched_wakeup,
+> tracepoint:sched:sched_wakeup_new
+> {
+>         if (args->comm == "sender") {
+>                 @qstime[args->pid] = nsecs;
+>         }
+>         if (args->comm == "receiver") {
+>                 @qrtime[args->pid] = nsecs;
+>         }
+> }
+> 
+> tracepoint:sched:sched_switch
+> {
+>         if (args->next_comm == "sender") {
+>                 $ns = @qstime[args->next_pid];
+>                 if ($ns) {
+>                         @sender_wakeup_lat = hist((nsecs - $ns) / 1000);
+>                         delete(@qstime[args->next_pid]);
+>                 }
+>         }
+>         if (args->next_comm == "receiver") {
+>                 $ns = @qrtime[args->next_pid];
+>                 if ($ns) {
+>                         @receiver_wakeup_lat = hist((nsecs - $ns) / 1000);
+>                         delete(@qstime[args->next_pid]);
+>                 }
+>         }
+> }
+> 
+> 
+> It shows that, the wakeup latency of the receiver has been increased a little
+> bit. But consider that this symptom is the same when the hackbench is in pipe mode,
+> and there is no regression in pipe mode, the wakeup latency overhead might not be
+> the cause of the regression.
+> 
+> 3. Then FlameGraph is used to compare the bottleneck.
+> There is still no obvious difference noticed. One obvious bottleneck is the atomic
+> write to a memory cgroup page count(and runqueue lock contention is not observed).
+> The backtrace:
+> 
+> obj_cgroup_charge_pages;obj_cgroup_charge;__kmem_cache_alloc_node;
+> __kmalloc_node_track_caller;kmalloc_reserve;__alloc_skb;
+> alloc_skb_with_frags;sock_alloc_send_pskb;unix_stream_sendmsg
+> 
+> However there is no obvious ratio difference between with/without shared runqueue
+> enabled. So this one might not be the cause.
+> 
+> 4. Check the wakeup task migration count
+> 
+> Borrow the script from Aaron:
+> kretfunc:select_task_rq_fair
+> {
+>         $p = (struct task_struct *)args->p;
+>         if ($p->comm == "sender") {
+>                 if ($p->thread_info.cpu != retval) {
+>                         @wakeup_migrate_sender = count();
+>                 } else {
+>                         @wakeup_prev_sender = count();
+>                 }
+>         }
+>         if ($p->comm == "receiver") {
+>                 if ($p->thread_info.cpu != retval) {
+>                         @wakeup_migrate_receiver = count();
+>                 } else {
+>                         @wakeup_prev_receiver = count();
+>                 }
+>         }
+> }
+> 
+> Without shared_runqueue enabled, the wakee task are mostly woken up on it
+> previous running CPUs.
+> With shared_runqueue disabled, the wakee task are mostly woken up on a
+> completely different idle CPUs.
+> 
+> This reminds me that, is it possible the regression was caused by the broken
+> cache locallity?
+> 
+> 
+> 5. Check the L2 cache miss rate.
+> perf stat -e l2_rqsts.references,l2_request.miss sleep 10
+> The results show that the L2 cache miss rate is nearly the same with/without
+> shared_runqueue enabled.
 
-> +               break;
-> +       case CDM_CDWN_COSITE:
-> +               /* Clear METHOD_V field (Average is 0x2) */
-> +               opmode &= ~(0x60);
-> +               opmode |= (0x2 << 0x5);
-> +               /* Co-site vertical coefficients */
-> +               DPU_REG_WRITE(c,
-> +                               CDM_CDWN2_COEFF_COSITE_V,
-> +                               cosite_v_coeff[0]);
+As mentioned below, I expect it would be interesting to also collect
+icache / iTLB numbers. In my experience, poor uop cache locality will
+also result in poor icache locality, though of course that depends on a
+lot of other factors like alignment, how many (un)conditional branches
+you have within some byte window, etc. If alignment, etc were the issue
+though, we'd likely observe this also without SHARED_RUNQ.
 
-align to opening bracket
+> I did not check the L3 miss rate, because:
+>    3.1 there is only 1 socket of CPUs online
+>    3.2 the working set the hackbench is 56 * 100 * 300000, which is nearly
+>        the same as LLC cache size.
+> 
+> 6. As mentioned in step 3, the bottleneck is a atomic write to a global
+>    variable. Then use perf c2c to check if there is any false/true sharing.
+> 
+>    According to the result, the total number and average cycles of local HITM
+>    is low.So this might indicate that this is not a false sharing or true
+>    sharing issue.
+> 
+> 
+> 7. Then use perf topdown to dig into the detail. The methodology is at
+>    https://perf.wiki.kernel.org/index.php/Top-Down_Analysis
+> 
+> 
+>    When shared runqueue is disabled:
+> 
+>     #     65.2 %  tma_backend_bound
+>     #      2.9 %  tma_bad_speculation
+>     #     13.1 %  tma_frontend_bound
+>     #     18.7 %  tma_retiring
+> 
+> 
+> 
+>    When shared runqueue is enabled:
+> 
+>     #     52.4 %  tma_backend_bound
+>     #      3.3 %  tma_bad_speculation
+>     #     20.5 %  tma_frontend_bound
+>     #     23.8 %  tma_retiring
+>     
+> 
+> We can see that, the ratio of frontend_bound has increased from 13.1% to
+> 20.5%.  As a comparison, this ratio does not increase when the hackbench
+> is in pipe mode.
+> 
+> Then further dig into the deeper level of frontend_bound:
+> 
+> When shared runqueue is disabled:
+> #      6.9 %  tma_fetch_latency   ---->  #      7.3 %  tma_ms_switches
+>                                   |
+>                                   ---->  #      7.1 %  tma_dsb_switches
+> 
+> 
+> When shared runqueue is enabled:
+> #     11.6 %  tma_fetch_latency   ----> #      6.7 %  tma_ms_switches
+>                                   |
+>                                   ----> #      7.8 %  tma_dsb_switches
+> 
+> 
+> 1. The DSB(Decode Stream Buffer) switches count increases
+>    from 13.1% * 6.9% * 7.1% to 20.5% * 11.6% * 7.8%
 
-> +               break;
-> +       case CDM_CDWN_OFFSITE:
-> +               /* Clear METHOD_V field (Average is 0x3) */
-> +               opmode &= ~(0x60);
-> +               opmode |= (0x3 << 0x5);
-> +
-> +               /* Off-site vertical coefficients */
-> +               DPU_REG_WRITE(c,
-> +                               CDM_CDWN2_COEFF_OFFSITE_V,
-> +                               offsite_v_coeff[0]);
+Indeed, these switches are quite costly from what I understand.
 
-align to opening bracket
+> 2. The MS(Microcode Sequencer) switches count increases
+>    from 13.1% * 6.9% * 7.3% to 20.5% * 11.6% * 6.7%
+> 
+> DSB is the cached decoded uops, which is similar to L1 icache,
+> except that icache has the original instructions, while DSB has the
+> decoded one. DSB reflects the instruction footprint. The increase
+> of DSB switches mean that, the cached buffer has been thrashed a lot.
+> 
+> MS is to decode the complex instructions, the increase of MS switch counter
+> usually means that the workload is running some complex instruction.
+> that the workload is running complex instructions.
+> 
+> In summary:
+> 
+> So the scenario to cause this issue I'm thinking of is:
+> Task migration increases the DSB switches count. With shared_runqueue enabled,
+> the task could be migrated to different CPUs more offen. And it has to fill its
+> new uops into the DSB, but that DSB has already been filled by the old task's
+> uops. So DSB switches is triggered to decode the new macro ops. This is usually
+> not a problem if the workload runs some simple instructions. However if
+> this workload's instruction footprint increases, task migration might break
+> the DSB uops locality, which is similar to L1/L2 cache locality.
 
-> +               break;
-> +       default:
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (cfg->v_cdwn_type || cfg->h_cdwn_type)
-> +               opmode |= BIT(0); /* EN CDWN module */
+Interesting. As mentioned above, I expect we also see an increase in
+iTLB and icache misses?
 
-#define
+This is something we deal with in HHVM. Like any other JIT engine /
+compiler, it is heavily front-end CPU bound, and has very poor icache,
+iTLB, and uop cache locality (also lots of branch resteers, etc).
+SHARED_RUNQ actually helps this workload quite a lot, as explained in
+the cover letter for the patch series. It makes sense that it would: uop
+locality is really bad even without increasing CPU util. So we have no
+reason not to migrate the task and hop on a CPU.
 
-> +       else
-> +               opmode &= ~BIT(0);
-> +
-> +       out_size = (cfg->output_width & 0xFFFF) |
-> +               ((cfg->output_height & 0xFFFF) << 16);
-> +       DPU_REG_WRITE(c, CDM_CDWN2_OUT_SIZE, out_size);
-> +       DPU_REG_WRITE(c, CDM_CDWN2_OP_MODE, opmode);
-> +       DPU_REG_WRITE(c, CDM_CDWN2_CLAMP_OUT,
-> +                       ((0x3FF << 16) | 0x0));
-> +
-> +       return 0;
-> +}
-> +
-> +int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
-> +{
-> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
-> +       const struct dpu_format *fmt;
-> +       u32 opmode = 0;
-> +       u32 csc = 0;
-> +
-> +       if (!ctx || !cdm)
-> +               return -EINVAL;
-> +
-> +       fmt = cdm->output_fmt;
-> +
-> +       if (!DPU_FORMAT_IS_YUV(fmt))
-> +               return -EINVAL;
-> +
-> +       if (cdm->output_type == CDM_CDWN_OUTPUT_HDMI) {
-> +               if (fmt->chroma_sample != DPU_CHROMA_H1V2)
-> +                       return -EINVAL; /*unsupported format */
-> +               opmode = BIT(0);
-> +               opmode |= (fmt->chroma_sample << 1);
-> +       }
-> +
-> +       csc |= BIT(2);
-> +       csc &= ~BIT(1);
-> +       csc |= BIT(0);
+> I wonder, if SHARED_RUNQ can consider that, if a task is a long duration one,
+> say, p->avg_runtime >= sysctl_migration_cost, maybe we should not put such task
+> on the per-LLC shared runqueue? In this way it will not be migrated too offen
+> so as to keep its locality(both in terms of L1/L2 cache and DSB).
 
-Can we get some sensible #defines for all this magic, please?
+I'm hesitant to apply such heuristics to the feature. As mentioned
+above, SHARED_RUNQ works very well on HHVM, despite its potential hit to
+icache / iTLB / DSB locality. Those hhvmworker tasks run for a very long
+time, sometimes upwards of 20+ms. They also tend to have poor L1 cache
+locality in general even when they're scheduled on the same core they
+were on before they were descheduled, so we observe better performance
+if the task is migrated to a fully idle core rather than e.g. its
+hypertwin if it's available. That's not something we can guarantee with
+SHARED_RUNQ, but it hopefully illustrates the point that it's an example
+of a workload that would suffer with such a heuristic.
 
-> +
-> +       if (ctx && ctx->ops.bind_pingpong_blk)
-> +               ctx->ops.bind_pingpong_blk(ctx, true,
-> +                               cdm->pp_id);
-> +
-> +       DPU_REG_WRITE(c, CDM_CSC_10_OPMODE, csc);
-> +       DPU_REG_WRITE(c, CDM_HDMI_PACK_OP_MODE, opmode);
-> +       return 0;
-> +}
-> +
-> +void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
-> +{
-> +       if (!ctx)
-> +               return;
-> +
-> +       if (ctx && ctx->ops.bind_pingpong_blk)
-> +               ctx->ops.bind_pingpong_blk(ctx, false, 0);
+Another point to consider is that performance implications that are a
+result of Intel micro architectural details don't necessarily apply to
+everyone. I'm not as familiar with the instruction decode pipeline on
+AMD chips like Zen4. I'm sure they have a uop cache, but the size of
+that cache, alignment requirements, the way that cache interfaces with
+e.g. their version of the MITE / decoder, etc, are all going to be quite
+different.
 
-PINGPONG_NONE.
+In general, I think it's difficult for heuristics like this to suit all
+possible workloads or situations (not that you're claiming it is). My
+preference is to keep it as is so that it's easier for users to build a
+mental model of what outcome they should expect if they use the feature.
+Put another way: As a user of this feature, I'd be a lot more surprised
+to see that I enabled it and CPU util stayed low, vs. enabling it and
+seeing higher CPU util, but also degraded icache / iTLB locality.
 
-> +}
-> +
-> +static void dpu_hw_cdm_bind_pingpong_blk(struct dpu_hw_cdm *ctx, bool enable,
-> +                                        const enum dpu_pingpong pp)
-> +{
-> +       struct dpu_hw_blk_reg_map *c;
-> +       int mux_cfg = 0xF;
-> +
-> +       if (!ctx || (enable && (pp < PINGPONG_0 || pp >= PINGPONG_MAX)))
-> +               return;
+Let me know what you think, and thanks again for investing your time
+into this.
 
-I'd say, this is useless. We don't have such checks in other
-bind_pingpong_blk() callbacks.
-
-Also there should be a guarding check for DPU >= 5.0 either here or at
-the ops init.
-
-> +
-> +       c = &ctx->hw;
-> +
-> +       if (enable)
-> +               mux_cfg = (pp - PINGPONG_0) & 0x7;
-> +
-> +       DPU_REG_WRITE(c, CDM_MUX, mux_cfg);
-> +}
-> +
-> +static void _setup_cdm_ops(struct dpu_hw_cdm_ops *ops, unsigned long features)
-
-Please inline
-
-> +{
-> +       ops->setup_csc_data = dpu_hw_cdm_setup_csc_10bit;
-> +       ops->setup_cdwn = dpu_hw_cdm_setup_cdwn;
-> +       ops->enable = dpu_hw_cdm_enable;
-> +       ops->disable = dpu_hw_cdm_disable;
-> +       ops->bind_pingpong_blk = dpu_hw_cdm_bind_pingpong_blk;
-
-As you seem to call this function directly, we might as well drop the
-callback from the ops.
-
-> +}
-> +
-> +struct dpu_hw_cdm *dpu_hw_cdm_init(const struct dpu_cdm_cfg *cfg, void __iomem *addr)
-> +{
-> +       struct dpu_hw_cdm *c;
-> +
-> +       c = kzalloc(sizeof(*c), GFP_KERNEL);
-> +       if (!c)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       c->hw.blk_addr = addr + cfg->base;
-> +       c->hw.log_mask = DPU_DBG_MASK_CDM;
-> +
-> +       /* Assign ops */
-> +       c->idx = cfg->id;
-> +       c->caps = cfg;
-> +       _setup_cdm_ops(&c->ops, c->caps->features);
-> +
-> +       return c;
-> +}
-> +
-> +void dpu_hw_cdm_destroy(struct dpu_hw_cdm *cdm)
-> +{
-> +       kfree(cdm);
-
-I'd prefer not to introduce another manual kzalloc/kfree pair, see
-https://patchwork.freedesktop.org/series/120366/
-
-> +}
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
-> new file mode 100644
-> index 000000000000..da60893a5c02
-> --- /dev/null
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
-> @@ -0,0 +1,135 @@
-> +/* SPDX-License-Identifier: GPL-2.0-only */
-> +/*
-> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
-> + */
-> +
-> +#ifndef _DPU_HW_CDM_H
-> +#define _DPU_HW_CDM_H
-> +
-> +#include "dpu_hw_mdss.h"
-> +#include "dpu_hw_top.h"
-> +
-> +struct dpu_hw_cdm;
-> +
-> +struct dpu_hw_cdm_cfg {
-> +       u32 output_width;
-> +       u32 output_height;
-> +       u32 output_bit_depth;
-> +       u32 h_cdwn_type;
-> +       u32 v_cdwn_type;
-> +       const struct dpu_format *output_fmt;
-> +       u32 output_type;
-> +       int pp_id;
-> +};
-> +
-> +enum dpu_hw_cdwn_type {
-> +       CDM_CDWN_DISABLE,
-> +       CDM_CDWN_PIXEL_DROP,
-> +       CDM_CDWN_AVG,
-> +       CDM_CDWN_COSITE,
-> +       CDM_CDWN_OFFSITE,
-> +};
-> +
-> +enum dpu_hw_cdwn_output_type {
-> +       CDM_CDWN_OUTPUT_HDMI,
-> +       CDM_CDWN_OUTPUT_WB,
-> +};
-> +
-> +enum dpu_hw_cdwn_output_bit_depth {
-> +       CDM_CDWN_OUTPUT_8BIT,
-> +       CDM_CDWN_OUTPUT_10BIT,
-> +};
-> +
-> +/**
-> + * struct dpu_hw_cdm_ops : Interface to the chroma down Hw driver functions
-> + *                         Assumption is these functions will be called after
-> + *                         clocks are enabled
-> + *  @setup_csc:            Programs the csc matrix
-> + *  @setup_cdwn:           Sets up the chroma down sub module
-> + *  @enable:               Enables the output to interface and programs the
-> + *                         output packer
-> + *  @disable:              Puts the cdm in bypass mode
-> + *  @bind_pingpong_blk:    enable/disable the connection with pingpong which
-> + *                         will feed pixels to this cdm
-> + */
-> +struct dpu_hw_cdm_ops {
-> +       /**
-> +        * Programs the CSC matrix for conversion from RGB space to YUV space,
-> +        * it is optional to call this function as this matrix is automatically
-> +        * set during initialization, user should call this if it wants
-> +        * to program a different matrix than default matrix.
-> +        * @cdm:          Pointer to the chroma down context structure
-> +        * @data          Pointer to CSC configuration data
-> +        * return:        0 if success; error code otherwise
-> +        */
-> +       int (*setup_csc_data)(struct dpu_hw_cdm *cdm, struct dpu_csc_cfg *data);
-> +
-> +       /**
-> +        * Programs the Chroma downsample part.
-> +        * @cdm         Pointer to chroma down context
-> +        * @cfg         Pointer to the cdm configuration data
-> +        */
-> +       int (*setup_cdwn)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
-> +
-> +       /**
-> +        * Enable the CDM module
-> +        * @cdm         Pointer to chroma down context
-> +        */
-> +       int (*enable)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
-> +
-> +       /**
-> +        * Disable the CDM module
-> +        * @cdm         Pointer to chroma down context
-> +        */
-> +       void (*disable)(struct dpu_hw_cdm *cdm);
-> +
-> +       /**
-> +        * Enable/disable the connection with pingpong
-> +        * @cdm         Pointer to chroma down context
-> +        * @enable      Enable/disable control
-> +        * @pp          pingpong block id.
-> +        */
-> +       void (*bind_pingpong_blk)(struct dpu_hw_cdm *cdm, bool enable,
-> +                                 const enum dpu_pingpong pp);
-> +};
-> +
-> +/**
-> + * struct dpu_hw_cdm - cdm description
-> + * @base: Hardware block base structure
-> + * @hw: Block hardware details
-> + * @idx: CDM index
-> + * @caps: Pointer to cdm_cfg
-> + * @ops: handle to operations possible for this CDM
-> + */
-> +struct dpu_hw_cdm {
-> +       struct dpu_hw_blk base;
-> +       struct dpu_hw_blk_reg_map hw;
-> +
-> +       /* chroma down */
-> +       const struct dpu_cdm_cfg *caps;
-> +       enum  dpu_cdm  idx;
-> +
-> +       /* ops */
-> +       struct dpu_hw_cdm_ops ops;
-> +};
-> +
-> +/**
-> + * dpu_hw_cdm_init - initializes the cdm hw driver object.
-> + * should be called once before accessing every cdm.
-> + * @cdm: CDM catalog entry for which driver object is required
-> + * @addr :   mapped register io address of MDSS
-> + */
-> +struct dpu_hw_cdm *dpu_hw_cdm_init(const struct dpu_cdm_cfg *cdm, void __iomem *addr);
-> +
-> +/**
-> + * dpu_hw_cdm_destroy - destroys cdm driver context
-> + * @cdm:   Pointer to cdm driver context returned by dpu_hw_cdm_init
-> + */
-> +void dpu_hw_cdm_destroy(struct dpu_hw_cdm *cdm);
-> +
-> +static inline struct dpu_hw_cdm *to_dpu_hw_cdm(struct dpu_hw_blk *hw)
-> +{
-> +       return container_of(hw, struct dpu_hw_cdm, base);
-> +}
-> +
-> +#endif /*_DPU_HW_CDM_H */
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> index 4d6dba18caf0..34f943102499 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
-> @@ -463,6 +463,7 @@ struct dpu_mdss_color {
->  #define DPU_DBG_MASK_ROT      (1 << 9)
->  #define DPU_DBG_MASK_DSPP     (1 << 10)
->  #define DPU_DBG_MASK_DSC      (1 << 11)
-> +#define DPU_DBG_MASK_CDM      (1 << 12)
->
->  /**
->   * struct dpu_hw_tear_check - Struct contains parameters to configure
-> --
-> 2.40.1
->
-
-
---
-With best wishes
-Dmitry
+Thanks,
+David
