@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB9878E8A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:45:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 672FA78E8A7
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240255AbjHaIpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 04:45:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45300 "EHLO
+        id S240443AbjHaIqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:46:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237008AbjHaIph (ORCPT
+        with ESMTP id S242724AbjHaIqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:45:37 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 179A4CED
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:45:34 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68bed2c786eso451268b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:45:34 -0700 (PDT)
+        Thu, 31 Aug 2023 04:46:01 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CF1CFE
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:45:54 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401d2e11dacso10990135e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:45:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1693471533; x=1694076333; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZNxZe7wq6zfCLgqQzHCfOQafdDDt4naDzhWZ4W2JCy0=;
-        b=V+mYZRQio5HPSbcI31mPQVxC7r29mwPfHr6mnsTIwjpRWGyIR2a1GY7UFbbb61uqZx
-         Qo/pI0evzkdZjd/gG7lcZ3p8ERqn1xmmozT4E8h+RCuuDPj6179u1WFQPzMS4p8W2ULf
-         HXEJGuR+T1YS96wHqsZlkDC1Y+r0RBRl75mcJRymNXlcKPbEifIVZJwtHWD3wbB3M3j6
-         ZEV8qa3ZGc6lA7HOd5k+/v8xDq6i2G4wEi5/T4gmVa+wSmolUZrPUEiJBuT69EkFWxlB
-         aPMeLh5BlNbpcwCm1C8HTXJSZgLn5kA1VLgLKzYjcwC9HFdHJb8O812gomEkI0co4GtD
-         cxCw==
+        d=linaro.org; s=google; t=1693471553; x=1694076353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZZ+yS+F58ugHAlTKRPgu0kDyKeO8Xi8M/RaN8CDHdU4=;
+        b=NFQER+MVp3uKvqO9M+QMHbWlPKTnLBLjOqAeuYswCtHUNw0btHne34/4OX4TmWZiY/
+         F3qSQ5Msb2ZzyQpdtFx82XvnKjLJwtqTBN9HczMG6yBtayqkpj6wrqZ0H6Xo8YIQzpqu
+         sXYSGBOMVOEtv5hcFU21P8G6MsXKIi0ear745lXUEEq3I1/FfpTwns9SZ0vreIU8pgX/
+         kd4EbYXeikRWNjJhsg8teMOpnDTchDMWTjmwqUlJFk//8rSz15f/nDB0GICIy4+51FkW
+         nPJr6+wytXFom/n1NxHe8eps+pUp6TkRbaRYu/H1VhJ9vFrFCLXt+FoDtJVnJDyXkVwm
+         2CVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693471533; x=1694076333;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ZNxZe7wq6zfCLgqQzHCfOQafdDDt4naDzhWZ4W2JCy0=;
-        b=O+4D/z+4bhkbMV9otnXbuLfNsEPv8279NsmISoRH3c8d+56BaKtNlpaTmu5cTHx3uK
-         elkc9WxQlpCBr7fPGHL9L61mkBIoD2D1NappOgZAnRzXTZKy6wj/qxrd3214jZT0kI1A
-         91VjnawTFr9Lh/zTVEGIWTlMV0TePPndcyBclCi2tkBTnKUf0XYau7J11voUTPC//cTf
-         iYE/pLLrzbi5DNnXLxSzdJhq1a1TbrwxCcerjNJPls8Ey7C4AN3Ady3srGP/rabwq5LK
-         +1eeb0jh9rAcIw2dlo4A+1F8sjBVVAC0IJhDyeXC6ODAVKGRv/t5R/LROJo1byiywJj7
-         katQ==
-X-Gm-Message-State: AOJu0Ywcalhg04FYKzzELh3dFEs4nVOFiLq8hLi8Y0s3Dn6mzen5cQn3
-        oBYW93wnFLDfsAazzBQ0NxurJR+J6TNp+CCoFi4=
-X-Google-Smtp-Source: AGHT+IHmDx6e4zcXFyVDOOb6K6jjaG05hYVckI6PjHTSQt3YBiSkSKUf78rOgWt26G+FeWf5a+kTUg==
-X-Received: by 2002:a05:6a00:148f:b0:68b:dd1d:4932 with SMTP id v15-20020a056a00148f00b0068bdd1d4932mr5037278pfu.33.1693471533186;
-        Thu, 31 Aug 2023 01:45:33 -0700 (PDT)
-Received: from [10.254.254.90] ([139.177.225.231])
-        by smtp.gmail.com with ESMTPSA id k30-20020a637b5e000000b0056b920051b3sm930402pgn.7.2023.08.31.01.45.28
+        d=1e100.net; s=20221208; t=1693471553; x=1694076353;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZZ+yS+F58ugHAlTKRPgu0kDyKeO8Xi8M/RaN8CDHdU4=;
+        b=i68xxYhl2uTcKTsnQC75vAGUYCPw8018+UjRtGfSv5yhUxcG4i0t2ptEqUqTW6in/V
+         SX0FSd2vLMe2gB2+rk9qRcaFI8473srt6l5mSflLcpKzZZbP/9hye+zLKUfn8XfsD+vu
+         yCKJqB8kFbWC2atlRYFq2dvbJCFzp3P4f7nqMgivU6PXoTjxTawnyk0crks0Pxhvmdq0
+         Zd3HtyXjjhits9C4+PowDD4p4hdQJsWF2K5rY+2D/KSZoBDDssZgVHQ1TmLiiCpp7Cv4
+         M3KY3e43RH7hBIbmeOBysOXQFbst9Pb5kF6Bthkb3KUFQxYJRvsOqVyKbu20EGlYy4eA
+         zwAg==
+X-Gm-Message-State: AOJu0Yyu6xE+fKAEQLgEsPzvxYLKRJ2RcpENaNuq9n/Uq4cj/599VIgn
+        FJA94OUz/UpC6a4Qe3J5oureSQ==
+X-Google-Smtp-Source: AGHT+IGFxJLXuR+da13QNbYWUX8dvbC9JAb+ODYlVceGovcYhI03utBPdqMMrKxTGZuEjaSZwqcNGg==
+X-Received: by 2002:a7b:c84f:0:b0:401:b504:b6a8 with SMTP id c15-20020a7bc84f000000b00401b504b6a8mr1476717wml.2.1693471553037;
+        Thu, 31 Aug 2023 01:45:53 -0700 (PDT)
+Received: from [192.168.69.115] ([176.187.199.245])
+        by smtp.gmail.com with ESMTPSA id c20-20020a7bc854000000b003feef5b0bb7sm1241764wml.40.2023.08.31.01.45.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 01:45:32 -0700 (PDT)
-Message-ID: <6f663185-2ef1-5075-99c9-e16050329d74@bytedance.com>
-Date:   Thu, 31 Aug 2023 16:45:25 +0800
+        Thu, 31 Aug 2023 01:45:52 -0700 (PDT)
+Message-ID: <205cfbcb-a989-dc72-8f5d-46d2a00b01d9@linaro.org>
+Date:   Thu, 31 Aug 2023 10:45:50 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
- readers are possible
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
- <20230819004356.1454718-2-Liam.Howlett@oracle.com>
- <3f86d58e-7f36-c6b4-c43a-2a7bcffd3bd@linux-m68k.org>
- <87v8cv22jh.fsf@mail.lhotse>
- <CAMuHMdXMpr0spdprjwsV56nJE3vHGTFaodcnVXUa=GMYaB5yKw@mail.gmail.com>
-From:   Peng Zhang <zhangpeng.00@bytedance.com>
-In-Reply-To: <CAMuHMdXMpr0spdprjwsV56nJE3vHGTFaodcnVXUa=GMYaB5yKw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] vfio: trivially use __aligned_u64 for ioctl
+ structs
+Content-Language: en-US
+To:     Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org
+Cc:     David Laight <David.Laight@ACULAB.COM>,
+        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jason Gunthorpe <jgg@nvidia.com>
+References: <20230829182720.331083-1-stefanha@redhat.com>
+ <20230829182720.331083-2-stefanha@redhat.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230829182720.331083-2-stefanha@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -83,123 +80,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2023/8/31 16:25, Geert Uytterhoeven 写道:
-> Hi Michael,
+On 29/8/23 20:27, Stefan Hajnoczi wrote:
+> u64 alignment behaves differently depending on the architecture and so
+> <uapi/linux/types.h> offers __aligned_u64 to achieve consistent behavior
+> in kernel<->userspace ABIs.
 > 
-> On Thu, Aug 31, 2023 at 7:39 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->> Geert Uytterhoeven <geert@linux-m68k.org> writes:
->>> On Fri, 18 Aug 2023, Liam R. Howlett wrote:
->>>> The current implementation of append may cause duplicate data and/or
->>>> incorrect ranges to be returned to a reader during an update.  Although
->>>> this has not been reported or seen, disable the append write operation
->>>> while the tree is in rcu mode out of an abundance of caution.
->>>>
->>>> During the analysis of the mas_next_slot() the following was
->>>> artificially created by separating the writer and reader code:
->>>>
->>>> Writer:                                 reader:
->>>> mas_wr_append
->>>>     set end pivot
->>>>     updates end metata
->>>>     Detects write to last slot
->>>>     last slot write is to start of slot
->>>>     store current contents in slot
->>>>     overwrite old end pivot
->>>>                                         mas_next_slot():
->>>>                                                 read end metadata
->>>>                                                 read old end pivot
->>>>                                                 return with incorrect range
->>>>     store new value
->>>>
->>>> Alternatively:
->>>>
->>>> Writer:                                 reader:
->>>> mas_wr_append
->>>>     set end pivot
->>>>     updates end metata
->>>>     Detects write to last slot
->>>>     last lost write to end of slot
->>>>     store value
->>>>                                         mas_next_slot():
->>>>                                                 read end metadata
->>>>                                                 read old end pivot
->>>>                                                 read new end pivot
->>>>                                                 return with incorrect range
->>>>     set old end pivot
->>>>
->>>> There may be other accesses that are not safe since we are now updating
->>>> both metadata and pointers, so disabling append if there could be rcu
->>>> readers is the safest action.
->>>>
->>>> Fixes: 54a611b60590 ("Maple Tree: add new data structure")
->>>> Cc: stable@vger.kernel.org
->>>> Signed-off-by: Liam R. Howlett <Liam.Howlett@oracle.com>
->>>
->>> Thanks for your patch, which is now commit cfeb6ae8bcb96ccf
->>> ("maple_tree: disable mas_wr_append() when other readers are
->>> possible") in v6.5, and is being backported to stable.
->>>
->>> On Renesas RZ/A1 and RZ/A2 (single-core Cortex-A9), this causes the
->>> following warning:
->>>
->>>        clocksource: timer@e803b000: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 28958491609 ns
->>>        sched_clock: 32 bits at 66MHz, resolution 15ns, wraps every 32537631224ns
->>>        /soc/timer@e803b000: used for clocksource
->>>        /soc/timer@e803c000: used for clock events
->>>       +------------[ cut here ]------------
->>>       +WARNING: CPU: 0 PID: 0 at init/main.c:992 start_kernel+0x2f0/0x480
->>>       +Interrupts were enabled early
->> ...
->>>
->>> I do not see this issue on any other platform
->>> (arm/arm64/risc-v/mips/sh/m68k), several of them use the same
->>> RCU configuration.
->>
->> There's something similar on pmac32 / mac99.
->>
->>> Do you have a clue?
->>
->> It seems something in the maple tree code is setting TIF_NEED_RESCHED,
->> and that causes a subsequent call to cond_resched() to call schedule()
->> and enable interrupts.
->>
->> On pmac32 enabling CONFIG_DEBUG_ATOMIC_SLEEP fixes/hides the problem.
->> But I don't see why.
+> There are structs in <uapi/linux/vfio.h> that can trivially be updated
+> to __aligned_u64 because the struct sizes are multiples of 8 bytes.
+> There is no change in memory layout on any CPU architecture and
+> therefore this change is safe.
 > 
-> Enabling CONFIG_DEBUG_ATOMIC_SLEEP on RZ/A1 and RZ/A2 does
-> fix the problem.
-> But there must be more to it, as some of my test configs had it enabled,
-> and others hadn't, while only RZ/A showed the issue.
-> I tried disabling it on R-Car M2-W (arm32) and R-Car H3 (arm64), and
-> that did not cause the problem to happen...
-
-I guess this patch triggers a potential problem with the maple tree.
-I don't have the environment to trigger the problem. Can you apply the
-following patch to see if the problem still exists? This can help locate
-the root cause. At least narrow down the scope of the code that has bug.
-
-Thanks.
-
-diff --git a/lib/maple_tree.c b/lib/maple_tree.c
-index f723024e1426..1b4b6f6e3095 100644
---- a/lib/maple_tree.c
-+++ b/lib/maple_tree.c
-@@ -4351,9 +4351,6 @@ static inline void mas_wr_modify(struct 
-ma_wr_state *wr_mas)
-  	if (new_end == wr_mas->node_end && mas_wr_slot_store(wr_mas))
-  		return;
-
--	if (mas_wr_node_store(wr_mas, new_end))
--		return;
--
-  	if (mas_is_err(mas))
-  		return;
-
-
+> The commits that follow this one handle the trickier cases where
+> explanation about ABI breakage is necessary.
 > 
-> Gr{oetje,eeting}s,
-> 
->                          Geert
-> 
+> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+> ---
+>   include/uapi/linux/vfio.h | 18 +++++++++---------
+>   1 file changed, 9 insertions(+), 9 deletions(-)
+
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+
