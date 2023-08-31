@@ -2,133 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0AD78EF16
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4813778EF1F
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:01:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244998AbjHaN62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42322 "EHLO
+        id S239660AbjHaOBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231384AbjHaN61 (ORCPT
+        with ESMTP id S229543AbjHaOBL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:58:27 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E49B5B5;
-        Thu, 31 Aug 2023 06:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693490304; x=1725026304;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HglTuLoHbYLIfAQzy82eLjJIMlyaJ7UjkVVkzK1ra54=;
-  b=BsAR/i1P1XruqXrzHWWxKqja2giVH56vl2yOz6gA19ewqXr52R0Lu8dT
-   wQ2zhHuXXRO/E9PAu2oRy2uTV5U3kh6OLQtFTBT2mv4xkjqQWI3G9QCAf
-   avyAyI5rpvlCOos3n2/ioFELakgedJDnXRdBD4OUl6/GMBw7h1/X5bsM9
-   4+JRr4k9/BvwJwQr/9Uo45CicIAgNnXlKy+0IjCE9XZQ0MX/Ci4hXVjjH
-   YeUxfh2Mra/F1tPl6RMgMu+TqXkmBF3mbsx99CQoZ6QXQ4wtMa35mt7Dg
-   9N0J7JM5blkB26HjXLMzM+WHCL04notlJob90YzPoiYm4xHXA9S+m4hSt
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="355450948"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="355450948"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 06:58:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="805002182"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="805002182"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 06:58:21 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qbiBe-005P1x-29;
-        Thu, 31 Aug 2023 16:58:18 +0300
-Date:   Thu, 31 Aug 2023 16:58:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        platform-driver-x86@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Prashant Malani <pmalani@chromium.org>
-Subject: Re: [PATCH 2/3] platform/x86: intel_scu_ipc: Check status upon
- timeout in ipc_wait_for_interrupt()
-Message-ID: <ZPCcevAt4CwCADe2@smile.fi.intel.com>
-References: <20230831011405.3246849-1-swboyd@chromium.org>
- <20230831011405.3246849-3-swboyd@chromium.org>
+        Thu, 31 Aug 2023 10:01:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F68C3;
+        Thu, 31 Aug 2023 07:01:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5EA29B81EB8;
+        Thu, 31 Aug 2023 14:01:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93068C433C8;
+        Thu, 31 Aug 2023 14:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693490464;
+        bh=bhdJzbcUDiU8F267YV9GPJNZorUfdGvRfv0Zanffxlc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dt4grCozA/NuOXr8/L7WRrWozLJyn4aujUgLwxM1zCLIzhVDGU86YnC9Z1+oQ4yD4
+         eLcaMYJfwZ17CMnPDEYh7xhyCS6DgXJ3shvcan1nxj4IF9AkmJ9TOXwMnWLwFFZSAI
+         /o84xxJ2DVEn56tt5q1w/mg3IWr9ZzKXEZ4WRrBI=
+Date:   Thu, 31 Aug 2023 16:01:01 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     Chia-I Wu <olvaffe@gmail.com>, Sasha Levin <sashal@kernel.org>,
+        airlied@linux.ie, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Lang Yu <Lang.Yu@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Subject: Re: [PATCH AUTOSEL 5.10 13/22] drm/amdgpu: install stub fence into
+ potential unused fence pointers
+Message-ID: <2023083144-railroad-daybreak-7f41@gregkh>
+References: <20230724012419.2317649-1-sashal@kernel.org>
+ <20230724012419.2317649-13-sashal@kernel.org>
+ <CAPaKu7RTgAMBLHbwtp4zgiBSDrTFtAj07k5qMzkuLQy2Zr+sZA@mail.gmail.com>
+ <55fc4a28-1e17-44df-2069-a688828080e6@gmail.com>
+ <2023083145-scoured-celery-2511@gregkh>
+ <c657653e-24d8-5790-a91c-4c13bb9eaeb0@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230831011405.3246849-3-swboyd@chromium.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c657653e-24d8-5790-a91c-4c13bb9eaeb0@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 06:14:02PM -0700, Stephen Boyd wrote:
-> It's possible for the completion in ipc_wait_for_interrupt() to timeout,
-> simply because the interrupt was delayed in being processed. A timeout
-> in itself is not an error. This driver should check the status register
-> upon a timeout to ensure that scheduling or interrupt processing delays
-> don't affect the outcome of the IPC return value.
+On Thu, Aug 31, 2023 at 03:26:28PM +0200, Christian König wrote:
+> Am 31.08.23 um 12:56 schrieb Greg KH:
+> > On Thu, Aug 31, 2023 at 12:27:27PM +0200, Christian König wrote:
+> > > Am 30.08.23 um 20:53 schrieb Chia-I Wu:
+> > > > On Sun, Jul 23, 2023 at 6:24 PM Sasha Levin <sashal@kernel.org> wrote:
+> > > > > From: Lang Yu <Lang.Yu@amd.com>
+> > > > > 
+> > > > > [ Upstream commit 187916e6ed9d0c3b3abc27429f7a5f8c936bd1f0 ]
+> > > > > 
+> > > > > When using cpu to update page tables, vm update fences are unused.
+> > > > > Install stub fence into these fence pointers instead of NULL
+> > > > > to avoid NULL dereference when calling dma_fence_wait() on them.
+> > > > > 
+> > > > > Suggested-by: Christian König <christian.koenig@amd.com>
+> > > > > Signed-off-by: Lang Yu <Lang.Yu@amd.com>
+> > > > > Reviewed-by: Christian König <christian.koenig@amd.com>
+> > > > > Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > > > > ---
+> > > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 6 ++++--
+> > > > >    1 file changed, 4 insertions(+), 2 deletions(-)
+> > > > We start getting this warning spew on chromeos
+> > > Yeah because the older kernels still kept track of the last VM fence in the
+> > > syncobj.
+> > > 
+> > > This patch here should probably not have been back ported.
+> > > 
+> > > Why was that done anyway? The upstream commit doesn't have a CC stable and
+> > > this is only a bug fix for a new feature not present on older kernels.
+> > It is part of the AUTOSEL process.
 > 
->  CPU0                                                   SCU
->  ----                                                   ---
->  ipc_wait_for_interrupt()
->   wait_for_completion_timeout(&scu->cmd_complete)
->   [TIMEOUT]                                             status[IPC_BUSY]=0
-> 
-> Fix this problem by reading the status bit in all cases, regardless of
-> the timeout. If the completion times out, we'll assume the problem was
-> that the IPC_BUSY bit was still set, but if the status bit is cleared in
-> the meantime we know that we hit some scheduling delay and we should
-> just check the error bit.
+> Could we prevent patches from being backported by adding a Fixes: tag?
 
-Makes sense, thanks for fixing this!
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Yes, that will show exactly where the patch should be backported to.
 
-Also see below.
+thanks,
 
-...
-
->  /* Wait till ipc ioc interrupt is received or timeout in 10 HZ */
-
-Not sure if this comment needs to be updated / amended.
-
-...
-
->  	status = ipc_read_status(scu);
-> -	if (status & IPC_STATUS_ERR)
-> -		return -EIO;
-> +	if (!(status & IPC_STATUS_BUSY))
-> +		err = (status & IPC_STATUS_ERR) ? -EIO : 0;
->  
-> -	return 0;
-> +	return err;
-
-I would write it as:
-
-	status = ipc_read_status(scu);
-	if (status & IPC_STATUS_BUSY)
-		return 0;
-	if (status & IPC_STATUS_ERR)
-		return -EIO;
-
-	return 0;
-
-Also would be good, in case you are not doing it yet, to use --patience when
-formatting your patches.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
