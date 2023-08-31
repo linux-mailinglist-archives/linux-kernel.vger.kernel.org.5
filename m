@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC98878F0EE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:10:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B61678F0F2
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346714AbjHaQKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:10:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36492 "EHLO
+        id S240151AbjHaQLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:11:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243358AbjHaQKJ (ORCPT
+        with ESMTP id S243358AbjHaQLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:10:09 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A701A3;
-        Thu, 31 Aug 2023 09:10:06 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-349a94f3d69so5458885ab.1;
-        Thu, 31 Aug 2023 09:10:06 -0700 (PDT)
+        Thu, 31 Aug 2023 12:11:10 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22CE41A3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:11:03 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-26f533e6ec8so1208687a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:11:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693498205; x=1694103005; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=41c/fNK1qQC2XK9KwuU0p8MqEE5Km30gP6fWHcjfMQo=;
-        b=TN6J36xxtrovuQiFOCdK8U0oyxsATKW8WNbGxPn65zV+Gkj+1VgOwxJJBK9mGSma5o
-         YHbibb0ilD0aI1f7Nd1il6rSsDZqtikkuMMwNeWqXL21n2wkf71lCADyJE6LjrJhakae
-         RVmpcbsH0mIva8Ubx2nBbcwouNWYWu4WTgWIVO0N6muDoXV9OTY9wAYUkB4E9+e+pVN+
-         LkzAsKgHrcJGpUGKKty75tO9x3vqnUg5s9yXtp0Gc71mj0GfpJEwm7J6ABLsWEKOnTb4
-         syCdUiQDXP+BvUkQIihD3+s3Y4nyp22UPPQFUPQm6ZlxV6xcrHL8Da2s+Afvdb3KDGde
-         xY+A==
+        d=google.com; s=20221208; t=1693498262; x=1694103062; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iB3LXAZFghXeVvnwdo2HBopRNlG+ea2UbPoVCxVRfBA=;
+        b=My2nM8aOODM862BxpTUGmX4IcMAG1xm6wO95JhKAz1S5Vn7MDSWeZvm8Oso+VsDH5W
+         QiaQRT7M+TUxOIc8Lm0vzwSI23WijX6igfuQcozYx/kGlOoRCsbT+byvPKeOEFm90Dld
+         Fj1cvkjbuqr8BuYNW25gZ9GDJWd+Ojl5pPPr2I5UqjomnYsJpX1ZhGqq2iGwRSD4vlGM
+         DflkZ0ocLSAWQEoz+feuFkRzTlPT7HPABxfij2b7ixbDazKrsDzf+ez8IhWNGG2CBITg
+         2m10iF+W6w/3UMG2KEFPbpJbpolUBJsH9h9Mbo7XaGRLKSbiLw6q9oJedTphaJRB7ZlI
+         BhJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693498205; x=1694103005;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=41c/fNK1qQC2XK9KwuU0p8MqEE5Km30gP6fWHcjfMQo=;
-        b=cad3vSQXs1kRc0nnSW4I4ZRK4t8Mq//LyiW1Q5C/2GeEQvpcL2ZkCTfWYqrLs26FZB
-         9dHhe4pQU6jPrt7BvL8otn457H37EA7n+oBHJPAxN8KSC01LBQoe7jKeM/haj4jGVg2L
-         xRZA8UdfMYF1JXZFzfMhVoush04X5/X3875kA3ZrrJ08jEvlI7CCJPdoRsJhgSbkMfSu
-         GMElwl9YpH0hj/IFwENMxfBkLCho78OoGMSNf/AillZA2LfVNp34PYqeh2zPgc+tearN
-         InpK85mjy7icZKwaDS8eUKHeJ3Sk+uHDJMmewwtgKXjA/x/wFerjPBf/2v1WwANSsRHc
-         1ISw==
-X-Gm-Message-State: AOJu0YyF1QNJL6Uiv1cYZWwoRI6DkC8jKz7+pE6iJDSKbxEJ9Zw6mMPg
-        CvHOz9V6DAjkYXJ1avO9VkiTkfyDvt8=
-X-Google-Smtp-Source: AGHT+IGIk5fg7IzlO0S8uOjOP4VIcjkOGCNo8gyiNl5yp19xKSOvib6enwnc/oDThB57xVEIL0ilLA==
-X-Received: by 2002:a05:6e02:f41:b0:348:b07e:fdac with SMTP id y1-20020a056e020f4100b00348b07efdacmr251422ilj.3.1693498205551;
-        Thu, 31 Aug 2023 09:10:05 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id f5-20020a056e0204c500b003489ccea184sm514510ils.10.2023.08.31.09.10.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 09:10:04 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 31 Aug 2023 09:10:02 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 4.19 0/1] 4.19.294-rc1 review
-Message-ID: <fbefb0cd-e056-4504-b0b2-ebd778d4996f@roeck-us.net>
-References: <20230831110828.433348914@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230831110828.433348914@linuxfoundation.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        d=1e100.net; s=20221208; t=1693498262; x=1694103062;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iB3LXAZFghXeVvnwdo2HBopRNlG+ea2UbPoVCxVRfBA=;
+        b=ODTAksJmkcQtk1h39EIcTPwM7BcVOqMkjIdv6xYoceeKh/UxM/DtzNLpcbvhs+9Oij
+         48FQIGlHRfSLshHt2H5FHjOorxSK8RD2SlnLNmza1MySC56HLr+YiRNV5M2yijMwC7G3
+         m9U0WrYrclEU7TjwUNIuaaomQm8OdxX8fYjvvQgTKemQ6NQtAZconZw0zCOiH3ClhvZi
+         KJrp9wFArRMPOvCbTSm7q0yQ+y5XvJ/X7tw9Mr+OfdGWR5Jg94EQ784+lzZhQwLYz0VU
+         D473+UZtf12fLludjMyltF/cT3T08TVT/W9UBjV3uDNLiK4121UyaEqR5NYZGSyzfv7S
+         zaJg==
+X-Gm-Message-State: AOJu0Yy7DScv3s14lkuPqVDccjJjAyuTgvClX62vxWUf1ufjy0uGVCL1
+        FH2La2KFq01oDdKx+bZzjYMNNlZRIsI=
+X-Google-Smtp-Source: AGHT+IGyBhJnapmMHK4Z1oZ4+3bPLoyELO7vJv0KTl0PtWnmatDJoHfM6+bwBYhcreMVseAOjaV1D4vE6sA=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:e557:b0:263:3437:a0b0 with SMTP id
+ ei23-20020a17090ae55700b002633437a0b0mr1008643pjb.3.1693498262512; Thu, 31
+ Aug 2023 09:11:02 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 09:11:00 -0700
+In-Reply-To: <7a6488f2-fef4-6709-6a95-168b0c034ff4@gmail.com>
+Mime-Version: 1.0
+References: <20230729013535.1070024-1-seanjc@google.com> <20230729013535.1070024-17-seanjc@google.com>
+ <6c691bc5-dbfc-46f9-8c09-9c74c51d8708@gmail.com> <ZO+roobNH2QbZZWn@google.com>
+ <7a6488f2-fef4-6709-6a95-168b0c034ff4@gmail.com>
+Message-ID: <ZPC7lLW8haAlQZu9@google.com>
+Subject: Re: [PATCH v4 16/29] KVM: x86: Reject memslot MOVE operations if
+ KVMGT is attached
+From:   Sean Christopherson <seanjc@google.com>
+To:     Like Xu <like.xu.linux@gmail.com>
+Cc:     kvm@vger.kernel.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Yan Zhao <yan.y.zhao@intel.com>,
+        Yongwei Ma <yongwei.ma@intel.com>,
+        Ben Gardon <bgardon@google.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,21 +76,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 01:09:48PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.294 release.
-> There are 1 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, Aug 31, 2023, Like Xu wrote:
+> On 31/8/2023 4:50 am, Sean Christopherson wrote:
+> > On Wed, Aug 30, 2023, Like Xu wrote:
+> > > On 2023/7/29 09:35, Sean Christopherson wrote:
+> > > > Disallow moving memslots if the VM has external page-track users, i.e. if
+> > > > KVMGT is being used to expose a virtual GPU to the guest, as KVMGT doesn't
+> > > > correctly handle moving memory regions.
+> > > > 
+> > > > Note, this is potential ABI breakage!  E.g. userspace could move regions
+> > > > that aren't shadowed by KVMGT without harming the guest.  However, the
+> > > > only known user of KVMGT is QEMU, and QEMU doesn't move generic memory
+> > > 
+> > > This change breaks two kvm selftests:
+> > > 
+> > > - set_memory_region_test;
+> > > - memslot_perf_test;
+> > 
+> > It shoudn't.  As of this patch, KVM doesn't register itself as a page-track user,
+> > i.e. KVMGT is the only remaining caller to kvm_page_track_register_notifier().
+> > Unless I messed up, the only way kvm_page_track_has_external_user() can return
+> > true is if KVMGT is attached to the VM.  The selftests most definitely don't do
+> > anything with KVMGT, so I don't see how they can fail.
+> > 
+> > Are you seeing actually failures?
 > 
-> Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
-> Anything received after that time might be too late.
+> $ set_memory_region_test
+
+...
+
+> At one point I wondered if some of the less common kconfig's were enabled,
+> but the above two test failures could be easily fixed with the following diff:
+
+Argh, none of the configs I actually ran selftests on selected
+CONFIG_KVM_EXTERNAL_WRITE_TRACKING=y. 
+
+> diff --git a/arch/x86/kvm/mmu/page_track.h b/arch/x86/kvm/mmu/page_track.h
+> index 62f98c6c5af3..d4d72ed999b1 100644
+> --- a/arch/x86/kvm/mmu/page_track.h
+> +++ b/arch/x86/kvm/mmu/page_track.h
+> @@ -32,7 +32,7 @@ void kvm_page_track_delete_slot(struct kvm *kvm, struct
+> kvm_memory_slot *slot);
 > 
+>  static inline bool kvm_page_track_has_external_user(struct kvm *kvm)
+>  {
+> -	return hlist_empty(&kvm->arch.track_notifier_head.track_notifier_list);
+> +	return !hlist_empty(&kvm->arch.track_notifier_head.track_notifier_list);
+>  }
+>  #else
+>  static inline int kvm_page_track_init(struct kvm *kvm) { return 0; }
+> 
+> , so I guess it's pretty obvious what's going on here.
 
-arch/arm/mach-ep93xx/timer-ep93xx.c:12:10: fatal error: platform.h: No such file or directory
-   12 | #include "platform.h"
+Yes.  I'll rerun tests today and get the above posted on your behalf (unless you
+don't want me to do that).
 
-"ARM: ep93xx: fix missing-prototype warnings" needs to be reverted in
-v4.19.y as well.
-
-Thanks,
-Guenter
+Sorry for yet another screw up, and thanks for testing!
