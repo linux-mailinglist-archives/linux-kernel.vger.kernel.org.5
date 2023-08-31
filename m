@@ -2,274 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5459378F03E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C948278F049
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346593AbjHaP0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:26:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
+        id S242522AbjHaP24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231325AbjHaPZ7 (ORCPT
+        with ESMTP id S231934AbjHaP2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:25:59 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF15E4F
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:25:56 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso9422835e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:25:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693495555; x=1694100355; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=d6znyQKCV8DafBmq+P0iqvg8LkmCAkhxHacNwGIHAdE=;
-        b=pVwKLqqiaSAFqang4Gtl2lH+IrGStVepPDktHzErhLw7EaJ+vAxRFFEnB60XaWxoqY
-         Ni+GMpr6obfFyfReCy+cJ/EwfqVwa8exsnKJoZvRgJ/nkVBbefhB8UlywaVMZhvfKiG/
-         9pEshq5yryYF5ToQpIv6aSI1rNgFIJursguh8DX6FKTz4TVugtNMdKOV6gxwY4fAsPvl
-         U/BHMhOgbvpk7S79oEWbgIm90CsNFl5y/95rRAP0Hqn6xvEoIjqOJriD/kQrHqHU9136
-         cCRbux8LS1EPPSA4nIXO+DCH/f3L+tk8g9rnVzSRNXmPp1+wGBG1YlPwBPj4nQF1bShf
-         juCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693495555; x=1694100355;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=d6znyQKCV8DafBmq+P0iqvg8LkmCAkhxHacNwGIHAdE=;
-        b=Uw39aocuBzpe8H+cHfkUeV6fuEyIvlqFHCiuPPuQF/REoFKwNrXXqp/vG/s++epg9H
-         +Zza/JN8Xc6r0GCrfzvUvavoMoyumeNwfPHYktO2UdcWh5RILAtbyhK71cRtgBPuVeJM
-         j+LsJL0cwBB5wIsAiC9BxgGe1y5tOzrA4nfCzgSluXavBmCv5We3OkEwI/TunE9+6hR0
-         Amiqru0tYBV9413GQlkUMvfN+s8ZZ4bIGLO9NoM4IMyfUdnRVMYEiTLitrfJRKu7SEFm
-         KF+bQ6MvaFQdsJll7WdvepiP9Q2sbTe2ESW/w04YQX17TqcPjViWpp6gFJZr6m5AaXAx
-         +62g==
-X-Gm-Message-State: AOJu0Yxm2dCclnjhECEHLKaTbajLekTaSh4crBcrOt+pnU/Aa4qE+NHJ
-        2/1KzONcjhZqrCbNQIZAa8ck7Q==
-X-Google-Smtp-Source: AGHT+IGqi6Zhg7O/e3nNg0h/YAXgrMhFBgTWmCrq5DFYHS6y7lj1ivdYRiX1hWZH0S5ZMRcWpnLT8w==
-X-Received: by 2002:a5d:44c5:0:b0:319:6b6c:dd01 with SMTP id z5-20020a5d44c5000000b003196b6cdd01mr4202339wrr.17.1693495554816;
-        Thu, 31 Aug 2023 08:25:54 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id o4-20020a5d4084000000b00317b0155502sm2546410wrp.8.2023.08.31.08.25.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 08:25:54 -0700 (PDT)
-From:   Neil Armstrong <neil.armstrong@linaro.org>
-Date:   Thu, 31 Aug 2023 17:25:49 +0200
-Subject: [PATCH] arm64: dts: qcom: split pmr735d into 2
+        Thu, 31 Aug 2023 11:28:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6115CE4C;
+        Thu, 31 Aug 2023 08:28:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1BE96B8233A;
+        Thu, 31 Aug 2023 15:28:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA20C433CD;
+        Thu, 31 Aug 2023 15:28:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693495728;
+        bh=S2JxCj+utsus7xUsAEYU9GApDgIxA0EMvwHxFuJAiQU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Jk0IdTS2wLC9qkCP1fTeA9bx/huMU0IAykKLg48GjDyuA2JeSYrvdbOx2CbuH05Zs
+         YIU396fiRdo3g8lnWTflw5kxtJZfAmhySiPdAJoZxXUkqZPpX85BF7i4ejt0Oyf/T8
+         TWZzf2CF9dXUZrKmi6PPM49k1wmAPTxt99jKsPlFTfRjgdDNTo8FAQ2AkbdjYkV5UX
+         cMOychn9KEij1GIQqc0BYIcEUGOaS+fYpMZQzVR3pV2l4GS9lpdNQX0c4EbIDgvYgu
+         OBSiHqRAQGstbLelSPtHE+mjZaG0GbcR9wz8Yq3iUTXHv5rlj/OcWpEpri0v0ynbcj
+         FSuyhLxI3SStw==
+Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1c4cf775a14so520615fac.3;
+        Thu, 31 Aug 2023 08:28:48 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx4zSizwmhug+XIDCXxNMDEpLa7cHf9xG0Ab9WkpwM+ZCpElb9e
+        xA7YFLTVxbeQt0c2/ng3k/2rZnPvTxp0XhZ0hXg=
+X-Google-Smtp-Source: AGHT+IFCiyR2gGxBqm1Lw/zYcW02ESnV4aEiiYEIvUoA7RtX3mNANDsc/ssaTIH99t7jiPNPGODPP18q5Ci4SbTLkos=
+X-Received: by 2002:a05:6870:c108:b0:1bf:5559:4aaf with SMTP id
+ f8-20020a056870c10800b001bf55594aafmr6163401oad.34.1693495727936; Thu, 31 Aug
+ 2023 08:28:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230831-topic-sm8550-upstream-pmr735d-split-v1-1-98e632636415@linaro.org>
-X-B4-Tracking: v=1; b=H4sIAPyw8GQC/x3NwQrCMAyA4VcZORvIVqqbryIeShc1YLeQdCKMv
- bvF43f5/x2cTdjh2u1g/BGXdWnoTx3kV1qejDI3w0BDoDH0WFeVjF7GGAk39WqcCmqxS4gzur6
- l4jTFTER8TpygldT4Id//5XY/jh9Y6I88dQAAAA==
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4777;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=9fw5Mg+Da85nnJhVVEO1GAnxk4nSA+fneKHtZag2yj4=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBk8LEB2EbaTJ09Te/feC97tbyfSwS3tA6XVDNYmkAh
- z8J+H2SJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZPCxAQAKCRB33NvayMhJ0UTgD/
- 9pWE+/6Hjn/x0eUcC2yelmeWou5gRf/8Rp5garpQI4Cajod9jvC5wIYafGVSnBYuRzhIke0fwcv/a2
- /R4Lv0m4eZaU/LkYRcTJ5iz5PJSse6oQtq09F87SSteAe+3OA+v1p28jYC1v+FN7/IbNA5FHDNB1u9
- TafL2XLqgTs1zhRt/padMxVQl5G3eTxpn69DhYjzZDWFONH3XR++GEvH93wlpse+IEryuXB/YSZOYU
- RZb3j7X9RGTB4DwgPK7MvOqrVWXv8spn9r6fMWtlcnd9q+Alk/rRP1GvrYBI20kOcLvwWLTmzGmYgO
- PAW9sSmu5HHELHzcnZLe4kV7+z2EvLBQM6y6fevMR32OIaSMC+f8Yhj1sktcfdD2tJ5JokE/Ec7sRO
- 6wqgvrZpyM/vEbVT0WfTCMWzxhRMqV/x9SI054+uY9BvKICy15nI+dDNj0k9HaafP8yxGy9B8k3ycy
- iajF7y9hfwXKgWrS8nY4Z5dzZs0qhWfu6nUEZwTvEyBeA1D8SjcW38kHUnSKyPZzy7lq6DoI+602rD
- JU/8oejz73uLiJ2M8d+ee9h8jy9fGHtc6rA7FyVyZBilvXMC+EUsSRAtVnFFRsI+8HUldZ9SVkh+o8
- cHOpnYbyZq5NYWPS1MYrEBNiX++HZNixf/H9YRwJcTKnVzgccxgQEM50vmig==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230817012007.131868-1-senozhatsky@chromium.org>
+ <CAK7LNASJWKSsdzn5ccgWaC35-XvHGU7pnE6C=eZFDbqrrghtdQ@mail.gmail.com>
+ <20230820024519.GK907732@google.com> <CAK7LNAS9KC1GjPgadMEivSpy4TMYU8mQ+BrtfJpNs2kvhK18yA@mail.gmail.com>
+ <20230820072119.GM907732@google.com> <20230820073332.GN907732@google.com>
+ <CAK7LNARTZXvWD8PrA3bC+Ok7LK85qO=pkMs4kOPGn90OBooL6w@mail.gmail.com>
+ <20230822061203.GA610023@google.com> <CAK7LNAS0qEZk+xAq84=7SuJSQz5F3dNBjYKPoeKTd_caq-QMKg@mail.gmail.com>
+ <CAAFQd5DeDEhPUQScXB67v9giiV=G33L-YDdtF4e-+UcmBXG6jA@mail.gmail.com>
+ <CAK7LNATj-jnOLMkgzz=3MfqWgUjKF-MwSKQkr4hW0g7+tEsXUw@mail.gmail.com> <CAAFQd5AhN5m8eaGsrKfh1gHPLiOVd9_3BwoHpr7u6iY92Ft-bg@mail.gmail.com>
+In-Reply-To: <CAAFQd5AhN5m8eaGsrKfh1gHPLiOVd9_3BwoHpr7u6iY92Ft-bg@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Fri, 1 Sep 2023 00:28:11 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR6o=K=eGzi194Ly787Ji4Twfqq3dcr8NE5m23ayGM3Fg@mail.gmail.com>
+Message-ID: <CAK7LNAR6o=K=eGzi194Ly787Ji4Twfqq3dcr8NE5m23ayGM3Fg@mail.gmail.com>
+Subject: Re: [RFC][PATCH] kconfig: introduce listunknownconfig
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Ying Sun <sunying@nj.iscas.ac.cn>,
+        Jesse T <mr.bossman075@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The second PMR735D PMIC is not always presend on SM8550 based devices,
-split the pmr735d.dtsi file in two so boards files can only include the
-ones present on the platform.
+On Thu, Aug 31, 2023 at 11:30=E2=80=AFAM Tomasz Figa <tfiga@chromium.org> w=
+rote:
+>
+> On Sat, Aug 26, 2023 at 10:11=E2=80=AFAM Masahiro Yamada <masahiroy@kerne=
+l.org> wrote:
+> >
+> > On Thu, Aug 24, 2023 at 2:30=E2=80=AFPM Tomasz Figa <tfiga@chromium.org=
+> wrote:
+> > >
+> > > Hi Masahiro,
+> > >
+> > > On Thu, Aug 24, 2023 at 10:00=E2=80=AFAM Masahiro Yamada <masahiroy@k=
+ernel.org> wrote:
+> > > >
+> > > > On Tue, Aug 22, 2023 at 4:30=E2=80=AFPM Sergey Senozhatsky
+> > > > <senozhatsky@chromium.org> wrote:
+> > > > >
+> > > > > On (23/08/21 21:27), Masahiro Yamada wrote:
+> > > > > >
+> > > > > > My (original) hope was to add a single switch, KCONFIG_VERBOSE,=
+ to address both:
+> > > > > >
+> > > > > >   - A CONFIG option is hidden by unmet dependency (Ying Sun's c=
+ase)
+> > > > > >   - A CONFIG option no longer exists  (your case)
+> > > > > >   - Anything else we need to be careful
+> > > > >
+> > > > > A quick question: is it too late to suggest an alternative name?
+> > > > > Could KCONFIG_SANITY_CHECKS be a little cleaner? Because we basic=
+ally
+> > > > > run sanity checks on the config.
+> > > >
+> > > >
+> > > > Ying's is not applied yet. So, it is not too late.
+> > > >
+> > > > But, I started to be a little worried
+> > > > because it is unpredictable how many KCONFIG_* env
+> > > > variables will increase until people are satisfied.
+> > > >
+> > >
+> > > Is there really a problem with having those? There are a lot of
+> > > different env variables affecting different parts of the kernel build=
+.
+> > > If they are useful, and even better, allow catching issues quickly,
+> > > should we favor less options or usefulness for users?
+> >
+> >
+> >
+> > I am considering how to implement it.
+> >
+> >
+> >
+> > One way is to add env variables as a new request arises.
+> >
+> > Sergey is doing two things by one option.
+> >
+> >
+> >    KCONFIG_WARN_UNKNWON_SYMBOL : warn unknown symbol in input .config
+> > or defconfig
+> >    KCONFIG_WARN_TO_ERROR       : turn warnings into errors
+> >
+> >
+> >
+> > Another way is to handle those as command line options.
+> >
+> >   -Wunknown-symbol
+> >   -Werror             (associated with W=3De)
+> >   -Wall               (associated with W=3D1)
+> >
+> >
+> >
+> >   $ make W=3D1e olddefconfig
+> >
+> >
+> > will work to sanity check.
+> >
+> >
+>
+> I see, I think I misunderstood your previous message, sorry. Agreed
+> that there could be other approaches than an environment variable and
+> a command line option could definitely work as well. I'll leave the
+> details to you and Sergey, but ideally we would have something that is
+> simple to use both in scripts (e.g. distro build systems) and in
+> manual build for end users
+>
+> >
+> >
+> >
+> > > > >
+> > > > > And one more question: those sanity checks seem very reasonable.
+> > > > > Is there any reason we would not want to keep them ON by default?
+> > > > > And those brave souls, that do not wish for the tool to very that
+> > > > > the .config is sane and nothing will get downgraded/disabled, can
+> > > > > always set KCONFIG_SANITY_CHECKS to 0.
+> > > >
+> > > >
+> > > > Kconfig is meant to resolve the dependency without causing an error=
+.
+> > > > If a feature is not available, it is automatically, silently hidden=
+,
+> > > > and that works well.
+> > >
+> > > How do you come to the conclusion that it works well? I've heard many
+> > > people unhappy about the way Kconfig works. How does one know that
+> > > something is missing (and should maybe be fixed?) if Kconfig silently
+> > > hides it?
+> >
+> >
+> > Kconfig has worked like that for a long time, but I do not know
+> > how to detect non-existing symbols.
+> >
+> >
+>
+> I think a tool to detect symbols present in old config, but missing in
+> new kernel solves the "upgraded config" part of the problem.
+>
+> The other part ("new config") would probably be solved by some kind of
+> a tool that looks at the currently present hardware and spews a list
+> of Kconfig options together with their dependencies, but arguably
+> that's not something that would be a part of Kconfig itself.
+>
+> For the graphical configuration tools like menuconfig I could imagine
+> that the options with unmet dependencies could be still displayed but
+> greyed out, so at least one can open the help for the item and check
+> which dependencies are missing.
 
-Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- .../boot/dts/qcom/{pmr735d.dtsi => pmr735d_a.dtsi} | 45 -----------------
- arch/arm64/boot/dts/qcom/pmr735d_b.dtsi            | 59 ++++++++++++++++++++++
- arch/arm64/boot/dts/qcom/sm8550-mtp.dts            |  3 +-
- arch/arm64/boot/dts/qcom/sm8550-qrd.dts            |  3 +-
- 4 files changed, 63 insertions(+), 47 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/qcom/pmr735d.dtsi b/arch/arm64/boot/dts/qcom/pmr735d_a.dtsi
-similarity index 55%
-rename from arch/arm64/boot/dts/qcom/pmr735d.dtsi
-rename to arch/arm64/boot/dts/qcom/pmr735d_a.dtsi
-index 41fb664a10b3..37daaefe3431 100644
---- a/arch/arm64/boot/dts/qcom/pmr735d.dtsi
-+++ b/arch/arm64/boot/dts/qcom/pmr735d_a.dtsi
-@@ -28,27 +28,6 @@ trip1 {
- 				};
- 			};
- 		};
--
--		pmr735d-l-thermal {
--			polling-delay-passive = <100>;
--			polling-delay = <0>;
--
--			thermal-sensors = <&pmr735d_l_temp_alarm>;
--
--			trips {
--				trip0 {
--					temperature = <95000>;
--					hysteresis = <0>;
--					type = "passive";
--				};
--
--				trip1 {
--					temperature = <115000>;
--					hysteresis = <0>;
--					type = "hot";
--				};
--			};
--		};
- 	};
- };
- 
-@@ -77,28 +56,4 @@ pmr735d_k_gpios: gpio@8800 {
- 			#interrupt-cells = <2>;
- 		};
- 	};
--
--	pmr735d_l: pmic@b {
--		compatible = "qcom,pmr735d", "qcom,spmi-pmic";
--		reg = <0xb SPMI_USID>;
--		#address-cells = <1>;
--		#size-cells = <0>;
--
--		pmr735d_l_temp_alarm: temp-alarm@a00 {
--			compatible = "qcom,spmi-temp-alarm";
--			reg = <0xa00>;
--			interrupts = <0xb 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
--			#thermal-sensor-cells = <0>;
--		};
--
--		pmr735d_l_gpios: gpio@8800 {
--			compatible = "qcom,pmr735d-gpio", "qcom,spmi-gpio";
--			reg = <0x8800>;
--			gpio-controller;
--			gpio-ranges = <&pmr735d_l_gpios 0 0 2>;
--			#gpio-cells = <2>;
--			interrupt-controller;
--			#interrupt-cells = <2>;
--		};
--	};
- };
-diff --git a/arch/arm64/boot/dts/qcom/pmr735d_b.dtsi b/arch/arm64/boot/dts/qcom/pmr735d_b.dtsi
-new file mode 100644
-index 000000000000..3b470f6ac46f
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/pmr735d_b.dtsi
-@@ -0,0 +1,59 @@
-+// SPDX-License-Identifier: BSD-3-Clause
-+/*
-+ * Copyright (c) 2022, Linaro Limited
-+ */
-+
-+#include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/spmi/spmi.h>
-+
-+/ {
-+	thermal-zones {
-+		pmr735d-l-thermal {
-+			polling-delay-passive = <100>;
-+			polling-delay = <0>;
-+
-+			thermal-sensors = <&pmr735d_l_temp_alarm>;
-+
-+			trips {
-+				trip0 {
-+					temperature = <95000>;
-+					hysteresis = <0>;
-+					type = "passive";
-+				};
-+
-+				trip1 {
-+					temperature = <115000>;
-+					hysteresis = <0>;
-+					type = "hot";
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+
-+&spmi_bus {
-+	pmr735d_l: pmic@b {
-+		compatible = "qcom,pmr735d", "qcom,spmi-pmic";
-+		reg = <0xb SPMI_USID>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		pmr735d_l_temp_alarm: temp-alarm@a00 {
-+			compatible = "qcom,spmi-temp-alarm";
-+			reg = <0xa00>;
-+			interrupts = <0xb 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
-+			#thermal-sensor-cells = <0>;
-+		};
-+
-+		pmr735d_l_gpios: gpio@8800 {
-+			compatible = "qcom,pmr735d-gpio", "qcom,spmi-gpio";
-+			reg = <0x8800>;
-+			gpio-controller;
-+			gpio-ranges = <&pmr735d_l_gpios 0 0 2>;
-+			#gpio-cells = <2>;
-+			interrupt-controller;
-+			#interrupt-cells = <2>;
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-index f29cce5186ac..a0d7d6eba0c6 100644
---- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
-@@ -13,7 +13,8 @@
- #include "pm8550ve.dtsi"
- #include "pm8550vs.dtsi"
- #include "pmk8550.dtsi"
--#include "pmr735d.dtsi"
-+#include "pmr735d_a.dtsi"
-+#include "pmr735d_b.dtsi"
- 
- / {
- 	model = "Qualcomm Technologies, Inc. SM8550 MTP";
-diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-index 2c09ce8aeafd..afee755c075a 100644
---- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-+++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
-@@ -14,7 +14,8 @@
- #include "pm8550ve.dtsi"
- #include "pm8550vs.dtsi"
- #include "pmk8550.dtsi"
--#include "pmr735d.dtsi"
-+#include "pmr735d_a.dtsi"
-+#include "pmr735d_b.dtsi"
- 
- / {
- 	model = "Qualcomm Technologies, Inc. SM8550 QRD";
+Yes. That idea exists, and at least for xconfig,
+I got a patch to grey out hidden options.
 
----
-base-commit: a47fc304d2b678db1a5d760a7d644dac9b067752
-change-id: 20230831-topic-sm8550-upstream-pmr735d-split-995c000e6aea
+https://lore.kernel.org/linux-kbuild/20200708133015.12286-1-maxime.chretien=
+@bootlin.com/
 
-Best regards,
--- 
-Neil Armstrong <neil.armstrong@linaro.org>
 
+I liked the idea, and suggested improvements, but did not receive v2.
+
+Maybe I could revisit it when I have some time,
+but I always have TODOs more than my capacity.
+
+
+
+Anyway, I applied Sergey's patch, so the life of you guys
+will get a little easier.
+
+
+
+--
+Best Regards
+Masahiro Yamada
