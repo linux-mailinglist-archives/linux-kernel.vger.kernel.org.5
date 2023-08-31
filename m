@@ -2,872 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5126A78E4C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0C678E4CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:44:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343865AbjHaCdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 22:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49606 "EHLO
+        id S242302AbjHaCoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 22:44:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242302AbjHaCdE (ORCPT
+        with ESMTP id S232768AbjHaCoV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 22:33:04 -0400
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99C06CD6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 19:32:59 -0700 (PDT)
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-64b3504144cso1989436d6.2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 19:32:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693449178; x=1694053978;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fqDHAbb0+180sYxrmrpKE74ucjMV+7CXYqGixgPrIJI=;
-        b=ktG7zQb4Z8m8l+5TPIsTCAcAaZ2ajLm08rewvmOs/tKti128FUXM9/P8W2dixKKjkQ
-         ylrK2gyAXicZwkdVt73tAxnuV5vHaqzGRVUAjhj2m47CechSF8Z3G5oKj3JPad/SOequ
-         US1GQEU7F4OJ1gh+qZ+ZdQFd4TaBj1yDyWdpPYOHt7LVUz2qMj+JpSlZw80uvFqB1oW8
-         NB+zPbDodcScSwWdQNISjxRptMzcF9DaCI2ARGolA80pdZbcKEOkfKcEkwEGWrIeVqAl
-         sFb/qfbKTWAcGK50ryKaG2CWAMdS2X6YLi40Cm1gGDOF8ZUxDxphTiRNIlhgu2CujxU7
-         eRVQ==
-X-Gm-Message-State: AOJu0YxsUq3DxS6STdjHj3RnPUSpooHWqEbDT8c2E2yxVBlmwUoK8Fd+
-        mHxEY/+JcU9XV3+dnw4Rb6A=
-X-Google-Smtp-Source: AGHT+IHTuT04Iks084ln8Pk2HM7BlG2n0dWlc/6EOmFtWEnoZUiDpo4wobWEjM45yxLXnAKNrhXxTg==
-X-Received: by 2002:a0c:da10:0:b0:64f:92d2:44f8 with SMTP id x16-20020a0cda10000000b0064f92d244f8mr1501628qvj.59.1693449178182;
-        Wed, 30 Aug 2023 19:32:58 -0700 (PDT)
-Received: from maniforge ([2620:10d:c091:400::5:1c30])
-        by smtp.gmail.com with ESMTPSA id t10-20020a0cde0a000000b0062de51d8a12sm188387qvk.26.2023.08.30.19.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 19:32:57 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 21:32:54 -0500
-From:   David Vernet <void@manifault.com>
-To:     K Prateek Nayak <kprateek.nayak@amd.com>
-Cc:     "Gautham R. Shenoy" <gautham.shenoy@amd.com>,
-        linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
-        roman.gushchin@linux.dev, aaron.lu@intel.com,
-        wuyun.abel@bytedance.com, kernel-team@meta.com
-Subject: Re: [PATCH v3 0/7] sched: Implement shared runqueue in CFS
-Message-ID: <20230831023254.GC506447@maniforge>
-References: <20230809221218.163894-1-void@manifault.com>
- <ZN3dW5Gvcb0LFWjs@BLR-5CG11610CF.amd.com>
- <20230818050355.GA5718@maniforge>
- <ZN8wfiAVttkNnFDe@BLR-5CG11610CF.amd.com>
- <ZOc7i7wM0x4hF4vL@BLR-5CG11610CF.amd.com>
- <20230824225150.GB6119@maniforge>
- <31aeb639-1d66-2d12-1673-c19fed0ab33a@amd.com>
+        Wed, 30 Aug 2023 22:44:21 -0400
+Received: from mx0a-00230701.pphosted.com (mx0a-00230701.pphosted.com [148.163.156.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49286CD6;
+        Wed, 30 Aug 2023 19:44:18 -0700 (PDT)
+Received: from pps.filterd (m0098571.ppops.net [127.0.0.1])
+        by mx0a-00230701.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V278UL030887;
+        Wed, 30 Aug 2023 19:43:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=pfptdkimsnps;
+ bh=qu3ZyD/7JigxIo15Q+tV0IyvXxntjh6loSp828F8YRo=;
+ b=vBy4lXzmhvyD05g85TB5mUYYDUr2dE4SJecxn7rycsLS95H86AbTsofbmATpx/z7d5zV
+ THKgWfV3pjOyMUlxD/K4DLGtGjZVCqy7qV9G44Qd0fpH2BZCf61XpqvXKBa7thyxhbg+
+ bhIlanffrj4YNNzeeTwc0jl3pyRiMBUWbrUFgqBxyvzLGuDM6caZvcRlk4RLp/rMCtPb
+ y6KOUer8rmGth1KFh4/EvTz3najlqOnoyQLUYfBOE8i3mwKXIPuHxLGKUNEbsQcGQ9ZV
+ sfRRZWxDFMAozJ2WPkZHNp+2WN+qA/hF4+Ju9K06HAnXBcu3l9Emll8G002n8UQzJqp+ 4g== 
+Received: from smtprelay-out1.synopsys.com (smtprelay-out1.synopsys.com [149.117.73.133])
+        by mx0a-00230701.pphosted.com (PPS) with ESMTPS id 3sqgdmm87a-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 30 Aug 2023 19:43:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
+        t=1693449836; bh=qu3ZyD/7JigxIo15Q+tV0IyvXxntjh6loSp828F8YRo=;
+        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
+        b=QKRUjln4iTqA8Af+isJ7sQ91JNJEs0A2JNuaa8IBvYlJ2fKFjyj2XRkEvZDwamaia
+         +aJup5/3y+a7jm4SPRoU2C0bSyQGXDMA9ptsTkHleCXyQeFbVAvob/nsphWGxnkAMl
+         L40sF41IHXO/6+eky34KV8Wx4TWfaKhBjZ6eiVa8wfTraDFpMvBzV/8kjz67u7v4Yo
+         5hDPIBTOXM+MZs5aTyW2WhhCND5f3cXlVkeC5fuA1m5ONAqoDJTc1BpOtxIS7r1tle
+         UJNZx6MZqg0mjpK9fArf94Bh1DFWotj4whUTEelrRPl0wGMGE7/WetIhy9w/4/wzb7
+         nDHbI/JuqmZHA==
+Received: from mailhost.synopsys.com (badc-mailhost3.synopsys.com [10.192.0.81])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits)
+         client-signature RSA-PSS (2048 bits))
+        (Client CN "mailhost.synopsys.com", Issuer "SNPSica2" (verified OK))
+        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id AC37F4012B;
+        Thu, 31 Aug 2023 02:43:55 +0000 (UTC)
+Received: from o365relay-in.synopsys.com (sv2-o365relay3.synopsys.com [10.202.1.139])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client CN "o365relay-in.synopsys.com", Issuer "Entrust Certification Authority - L1K" (verified OK))
+        by mailhost.synopsys.com (Postfix) with ESMTPS id 38744A007F;
+        Thu, 31 Aug 2023 02:43:55 +0000 (UTC)
+Authentication-Results: o365relay-in.synopsys.com; dmarc=pass (p=reject dis=none) header.from=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com; spf=pass smtp.mailfrom=synopsys.com
+Authentication-Results: o365relay-in.synopsys.com;
+        dkim=pass (1024-bit key; unprotected) header.d=synopsys.com header.i=@synopsys.com header.a=rsa-sha256 header.s=selector1 header.b=XkFobvDn;
+        dkim-atps=neutral
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11lp2171.outbound.protection.outlook.com [104.47.56.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.protection.outlook.com", Issuer "DigiCert Cloud Services CA-1" (verified OK))
+        by o365relay-in.synopsys.com (Postfix) with ESMTPS id 9894940359;
+        Thu, 31 Aug 2023 02:43:54 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RGKb2C7cA+fx9+qTgXE1nplqtA2M2dYo8Iu4tpz5j2KGlTUaHs/TTLAWXmE/enQ5h/InSIS9+cLNaAto66QcY9hwEpkOBJf8HBHxRxWWrtebAgdFVbODGKjy3UeMxam9/NBEDnT06cumFdSkcj62+44rWHTxqvpyjE/cIYRGhkaVZXRJd1bpKFDIeZGXaIpM9TUqce3TWVsw7blyw8t8OhGT4eD13vX0lUGtRta+IqbPgk02wUCZHYrwH5pZXDSlBnkakMcjRLaL+W3YWUUI4hJUrEM/o7MP6ZUsOujnWPed88rdLpfbY8WYbVCvOxKeryZTUoLMO0TjymjhI1P99g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qu3ZyD/7JigxIo15Q+tV0IyvXxntjh6loSp828F8YRo=;
+ b=Dt67yKlhZy52uYLZITFin48huqu0uyY5+v8tbArmp08YmqWiFvwFjga0hFxG1sbBLEUQNzuNrCADbZIDEg/nhUSXvrJCbKcnRgWnZ7TPbZRieQdnxXUveb60UUTSb4j+dNQA4YrlD3MI6831aJocNloto6WsY8T62TyqX6DpAXiPITXuNK6rQ7Jf5LZ8Rd3llvbcLA1qt+FVbTtnpS0IZHLobLQRC+QFAJ2NrTr0Bv5qAa5NBBoD/+YnaZQPfoB0Hjp4dviND9mdwDcXf/27I0gJpndtxzo28x27/Y5rpZashUQLBDbqqZ3JWyoLX/LO7rMnR8WC2+gAxRtn7Hcu4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=synopsys.com; dmarc=pass action=none header.from=synopsys.com;
+ dkim=pass header.d=synopsys.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=synopsys.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qu3ZyD/7JigxIo15Q+tV0IyvXxntjh6loSp828F8YRo=;
+ b=XkFobvDnu7r3ngDLrKZ10oolJXcs+I1dsh4FFs9skwaWtYb9rXx+FHw/ROz3z0ONKb0d+7LJeUEJsvJuQelJKT72Fsd7sx/lg+aW7uuflEs2wBEDB9yaH/+ajcCbNkj1uAoH/9rgT/tyq4dOpxREI+hSUkTOeKmu1wDH62KM92o=
+Received: from BN8PR12MB4787.namprd12.prod.outlook.com (2603:10b6:408:a1::11)
+ by CH2PR12MB4311.namprd12.prod.outlook.com (2603:10b6:610:a8::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Thu, 31 Aug
+ 2023 02:43:52 +0000
+Received: from BN8PR12MB4787.namprd12.prod.outlook.com
+ ([fe80::8dbe:70eb:1dee:71d2]) by BN8PR12MB4787.namprd12.prod.outlook.com
+ ([fe80::8dbe:70eb:1dee:71d2%4]) with mapi id 15.20.6745.021; Thu, 31 Aug 2023
+ 02:43:52 +0000
+X-SNPS-Relay: synopsys.com
+From:   Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: dwc3: unusual handling of setup requests with wLength == 0
+Thread-Topic: dwc3: unusual handling of setup requests with wLength == 0
+Thread-Index: AQHZ0WkxsEX2ZGMtZEmcF1gvP2WuTK/vPhuAgAAY0oCAAAlogIAACMGAgAEOQgCAADc1AIAAELKAgAKA6gCAA+wcgIAA2rMAgAAtNoCAABaOgIAAMuwAgABCyQCAAxO2AIAAHuQAgAYtxwCAAN5PAIAAx/iA
+Date:   Thu, 31 Aug 2023 02:43:51 +0000
+Message-ID: <20230831024345.lwd6ehcbjdlczjpa@synopsys.com>
+References: <20230823021429.rlgixqehry4rsqmm@synopsys.com>
+ <5d5973b9-d590-4567-b1d6-4b5f8aeca68b@rowland.harvard.edu>
+ <20230823175903.bpumanwv5fkpwc44@synopsys.com>
+ <08a3759d-4c6b-4034-8516-685e4d96a41e@rowland.harvard.edu>
+ <20230823222202.k7y7hxndsbi7h4x7@synopsys.com>
+ <9b175f9e-ab70-47a3-a943-bfd05601aa23@rowland.harvard.edu>
+ <20230826012024.mboftu3wk7fsrslp@synopsys.com>
+ <ba06679f-93d2-4cb4-9218-9e288065bdfb@rowland.harvard.edu>
+ <20230830013222.ukw5dtburjnrrjko@synopsys.com>
+ <61cf24db-9dbb-4bf3-aafe-d515fc37cca8@rowland.harvard.edu>
+In-Reply-To: <61cf24db-9dbb-4bf3-aafe-d515fc37cca8@rowland.harvard.edu>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BN8PR12MB4787:EE_|CH2PR12MB4311:EE_
+x-ms-office365-filtering-correlation-id: 3a8cd055-92ce-4546-7399-08dba9cc1c71
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: m6xHx4d/NCJGeNQRSdXPHxGSwg9iKgLG12f4uu1luU7BsZMDhlRbq6hddxQce4FfTbr8KJS10A9mqzKq38KTq/vWAdGXYbTqDhT7BF86JTy8syXJI2cEzG6ws1P+/FTvykKN/uVaNNlsmMvLWOST9yzXXK2DKefvk7v05BS88V1ceW7LOY0AOsPSqN5jxxeZBZtVCWRxSjtS98MMturToEkyqqk5r70B2fEizAiYpUalOgr/Y5FOLZKKM2gn2f1i6HsrRskaVF/8wxkPjnpjKqFoOwXUCIaFr4Dhdotg8qx2Lwjsf6lYqA8RxqH11WWQ7si42vDJWeT1K77s/LPawr3H0/HOUyP+mz2m6dZ5zpkPB6imfYIdOofgFU/nQEH50xPxdomnr0AMS4UIduM5dHRGlf2FxSAuz5OqTawKY7eilOJLUbx2JgAYiyxElYlB/N1Mv3+kIA4HZulPvqU8F2cBCfDwsPJbix5281n9Ghcm9M1XwA6mkbuyZxvz3qiRwA10zmsEKoiGAW7wf3/F+6lf2famnQfOouVXEqYWYSIuICG/zwInzfWfuUaxmDSS+D/tes6mOWddslNhZ1QhMXwv8a/ZuLRcF8eQPpRDOw0P1rX57mfVPC/IZC0G782A
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB4787.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(376002)(366004)(396003)(136003)(1800799009)(186009)(451199024)(41300700001)(83380400001)(8936002)(66556008)(8676002)(4326008)(64756008)(66476007)(478600001)(71200400001)(91956017)(66946007)(76116006)(6916009)(316002)(26005)(6512007)(2616005)(6486002)(1076003)(6506007)(54906003)(66446008)(2906002)(38100700002)(122000001)(38070700005)(5660300002)(36756003)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?TG15N3I3WDZLaHEwL3RLYkJlRDFXMk5BVVVZZjYzNWxETXlyZUxnbDNpdjJh?=
+ =?utf-8?B?SUFuVzJIR3FoQUdlUVBEYmdhcnY2YytsODRKampqYU1kV0dTanlQYlRKR2t3?=
+ =?utf-8?B?Y2tFVDlxMGt0clUzR2tXSTUyaDc3RmNucGlXUFFCMU9vSmRwc0Nwa0VyNXpo?=
+ =?utf-8?B?Q3lWUG1scGNITHZnZUR1aDdCWDROQVErK0l6TVRrMWwwQWxncCsyS2dxVVRh?=
+ =?utf-8?B?K0cvT2JhbE5QUXRaNjN0UFhBakhSeXJqKzNnL05mMGJLMzIxVk1jS0RhaGtP?=
+ =?utf-8?B?RGtRUEVBak5CbFlQUHVyQUF3YVNIY29vRktCT1JUS2hWNXRnMUdaVVNNVnBB?=
+ =?utf-8?B?c3FQOVRTdEUzQ0wxNHpTTm9RMEo0cGN1Qml4TjhiemV1ZUozMWgvU25pQU1X?=
+ =?utf-8?B?K2JlMXNsK0hVMmxZZDdZblc1VW51ZVRSUHJZYm02U29EaWZnL3hoUWpFbHk0?=
+ =?utf-8?B?SFpZM1FuZmxwT2hRZm9FZ1VEWE8vc1Q1aFZNUERTdjF5blQ1V0hWcW5GVHYw?=
+ =?utf-8?B?WFh3QWJpNTBBT1pkTjFOTDBTTUMxdE4rVVQrc0p1K2QrMStzbVNTZVl6aGhy?=
+ =?utf-8?B?cEhFSnVGQm03V1IrZDN2VGROQ1dHZElQMTE2dnpDbDVsdjhpNU5xWWF6aXo5?=
+ =?utf-8?B?ejY3aElPN1cyVWRMUy80S1JLVng3TWh3TDJacVFBN0p4UTlJUFN0VmNCVXNz?=
+ =?utf-8?B?aWdFdmpNaTZkV0hMdGg3TXNDTFMwY3N2U0drM3lxMmlDeGgvUDBnRG8zQmNM?=
+ =?utf-8?B?dW1Wc0kwbU5DNVBUakVXQlBlSVRKM2QzM2lEb0NaY3VyMTZlWUJMRys3R3d3?=
+ =?utf-8?B?MndwdkpkZTNieGh4Z2o4cWM0RTI4emtCeGtBdkxkMWYwMEJhaDlnaVRBY1ZD?=
+ =?utf-8?B?cnFuNXJEZEhWYkxzU3h0M08rbk96NzNRazhMTVR1a1VnZlNncVRLZ05NZXk3?=
+ =?utf-8?B?c0hxY1VENWhZRU5MRDA1a3VLQ3hiZzFLdnYyTjhCckZFVUh4d3lGellqYVBN?=
+ =?utf-8?B?WjFBUHdrN1Z0a2VHUWhseDZGcmpSRmtWZHBKdG93ZDJ5NHZjUFhWbVg5UjRS?=
+ =?utf-8?B?bTVOOVFnZ3JPL3dvcXM1VzlzT0VIVGdzSlY5MHpvc3htVGltcE9JSmt2bnFk?=
+ =?utf-8?B?Vzl5SFBKMnZINC8wNTRDenFkUzNiLzNiSnJCRHNRa1Y5cUVZNkRCZVp4aGhD?=
+ =?utf-8?B?UWc3RE0yT3dVa1lsYm0rTGd0cjd3L2xMN3c1eGYvNW5mTERtM2dvTmpKVk12?=
+ =?utf-8?B?YTFkdHBjNXlmSHNqd24rMmRUdzRwYmxoK0Mxa1p2MURGYXBwSDhRVXhKL0Nt?=
+ =?utf-8?B?UE5udFM4eVFwVTltUU1aVmpPTDdSMHlKSm1rS3NPTE51Zm52alAyYWxKNVM1?=
+ =?utf-8?B?WDBzclJObTZ6ZFA2cTAxWkZqWGpJQXBZQlFlMGJnMmlsd2pqZXpwTnBWbVR0?=
+ =?utf-8?B?SXhVem9VY21tS1ZINkRjdmNWRFpSK1NLUm5yc2xUSjVyMjd0UERMU1FZdFVR?=
+ =?utf-8?B?eHVEOGJ2bkxJdWkrMUJjODhvS0pOSWZudlBRSVJYT09WcHVuUitoalRJT0xC?=
+ =?utf-8?B?SHdLanVRSVlvZWNRWXlyNzNFeERuWDI3R1hwYktRcTM3QkxwdTFQRzVMM3NM?=
+ =?utf-8?B?cUk0b2ozNFA1cWt6MnhwS2x1M3g4cERzSzh6SjlHT3luWENTd1JQUXpmdW1n?=
+ =?utf-8?B?YWg1U2FQa3lidDI0UHE3TE5JN3U5dHRjTkFhakI4OWRsTUF5T1RiNVB2OVda?=
+ =?utf-8?B?ZXZ6UVAzU1VWdE85T0R3RkZQTmc0VE9MUnBObEtRYUhaZmJnU2VWV0F0dzY4?=
+ =?utf-8?B?cUlrSHR5eWJWdWZpTCtOZGc0QmFmZGhLVkQ5d1FVYlZYSHB6dTBOc0pmYzFz?=
+ =?utf-8?B?cXdWY0pHeXZHYjdxRUNhV2lxb1NCakFVaTFnQUFwT2xNSUttOGJNY2NZbG5o?=
+ =?utf-8?B?bjYwajFUT0QyUkhpbzJpYWZBVy90U3NlaWtMdDVvRXIzZjliTlkzOE84eXFp?=
+ =?utf-8?B?dnZyakdTWDBWSGVEYXV0QlVQczRmZWpBb3gyR2REZEZuU2UzM2VpWmpFUGt6?=
+ =?utf-8?B?a3VNTGFVQnh2S3FwYzBNb0puSmVNWHJ6NjVYdkZOdkkySEswMTJYOTVqYVpa?=
+ =?utf-8?B?R2JmanlSeVJDcURheGk0bGpLREdIQjYrWVUwa3FuYmdYWFNZdkdFaG9KOTNq?=
+ =?utf-8?B?NUE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <5D587E5AB27A5C4C9A3922F4C86A541E@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <31aeb639-1d66-2d12-1673-c19fed0ab33a@amd.com>
-User-Agent: Mutt/2.2.10 (2023-03-25)
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?MTRwUlNsZE5QWUlHeDExQXVBVjJGWlN5SDNpdFZ5L1I2U0pySjU3UlRzMGd2?=
+ =?utf-8?B?bGlHSTE2ODVZcDRqMVVHN3RiRU40M3dFT3dESmJSMSt4bWZGa2thV3Qvb3Bw?=
+ =?utf-8?B?Q0xuSGpYNk5venpKYzk3YW95QlRQVXFsc2NNWUpDQyt4b2RJd0Z0cjJIMjNJ?=
+ =?utf-8?B?UGhhdSthMVNFTmVqNlNpdzdFb3NvZWlzaFA4VndXTWI0UFRQY3FiUmY5UWpm?=
+ =?utf-8?B?ZUdCSnVwNVUvYkhSTmFvcU41Y2FwMlJmOEw4L2FvMUl6V25JUGVVQ2hYbFRj?=
+ =?utf-8?B?RjVpR0dBZEJVT3lzeUh6Tlo0bHIwa2VxUGdiaEFlU2Npb2tzTEx3VWxRdUdR?=
+ =?utf-8?B?TEUxUmVtR2ZwKytEWXEvWkVNNkdQVTUxQlVpWXdhT0pRbUkvVkpDSGgxMElT?=
+ =?utf-8?B?ZEhpdUV0R2JRNGRNRmZHbzE3eGkweTlnV2MzQXRUaFJQUjVvamhkbENOS2Nl?=
+ =?utf-8?B?MXVuYTdmbmZ2eXJsaEJ5dWNLTGt6Sm5TaFU2N0M5c3FVRUl3Ym10RlMyRmlt?=
+ =?utf-8?B?TTIzb3lIamFjT2tycTI5Nkk3elV0Q2c3OWxEZVZSQlRydnluZUJPcm1LMSta?=
+ =?utf-8?B?SHB3Qzl5Vk56OHBCY1E5bUlZc0h3ZTUrTFFkUU1sWW5qNTdBRkVhMDV2MGhv?=
+ =?utf-8?B?dSs4OTF3UFNiUkMvRWdDVzlOWU4vK0Z2cThCcStibkdFb1h5QkFkb28zUkh5?=
+ =?utf-8?B?dVdTcjVMRGxGZnJxc1lpbWlKemNlcHJpU3JLQ05DOW1jVng2UzA3UVNoeFZQ?=
+ =?utf-8?B?dUR4MXBIVUNKSG5sQmMwM1RXS1pZcmpiR1ZvUTVCYkx2VW1XcWZIR2F4Rmdk?=
+ =?utf-8?B?MXNvcWtyQVNhZkkvbUtTVWd2MnJzcHBVbndaU2lRS21UaFZFUVFNSnRXaVR4?=
+ =?utf-8?B?RHRKeG8vV1loOU9TcEh6VEJLajBlbmJQamFrRFBLei85aWNlYzBDMHlUWGVp?=
+ =?utf-8?B?T1FFc21ZN0RpWFVLdXRqQm12UjNGdnNDejZaVkNwQWNaU2t0aUJycEltT3JB?=
+ =?utf-8?B?ZXZnRmc3ZlF0WVM0eE96dGV3bmFzVjQ1L0pBdG1Sd25NMy82NTJGOE9ZRmxG?=
+ =?utf-8?B?R2xYc2g2a3hhUGVreHhWbmg0UTZnc3RnZHh6NUlpU3AvNFJ3bU5WY3dLN0F5?=
+ =?utf-8?B?MVVab2NqOUVIVFBBYjhQcDZRVndTTDllRmpCOWNlSzZoNGxDZ1pTUExJMmhG?=
+ =?utf-8?B?V1pBelBJNVo4ZUt4aFc2MlpYTzFvcGhaYjM2Z0VxVGlDVkZUSTNjcTd4TkVR?=
+ =?utf-8?B?dnZOTm9hODlrWnVRYmgxT3Q4RUJRNlN5d0UwZlFFOURFMFZuZz09?=
+X-OriginatorOrg: synopsys.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB4787.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a8cd055-92ce-4546-7399-08dba9cc1c71
+X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2023 02:43:51.8675
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: c33c9f88-1eb7-4099-9700-16013fd9e8aa
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: HoAQLGxX9zJQN5iiy2yt0CTZnkoZdAgf2j0YU9tNKci2B7kdoZ0GwuijKF0VLbJfbC6ceQ094NRhXIGPwWQuww==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4311
+X-Proofpoint-GUID: YSPVXoYxf-KS7G0WdwkDLEmhj7vSooxN
+X-Proofpoint-ORIG-GUID: YSPVXoYxf-KS7G0WdwkDLEmhj7vSooxN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_01,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_active_cloned_notspam policy=outbound_active_cloned score=0
+ adultscore=0 mlxlogscore=999 impostorscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0
+ phishscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2308310023
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 03:26:40PM +0530, K Prateek Nayak wrote:
-> Hello David,
-
-Hello Prateek,
-
-> 
-> Short update based on some of my experimentation.
-> 
-> Disclaimer: I've been only looking at tbench 128 client case on a dual
-> socket 3rd Generation EPYC system (2x 64C/128T). Wider results may
-> vary but I have some information that may help with the debug and to
-> proceed further.
-> 
-> On 8/25/2023 4:21 AM, David Vernet wrote:
-> > On Thu, Aug 24, 2023 at 04:44:19PM +0530, Gautham R. Shenoy wrote:
-> >> Hello David,
-> >>
-> >> On Fri, Aug 18, 2023 at 02:19:03PM +0530, Gautham R. Shenoy wrote:
-> >>> Hello David,
-> >>>
-> >>> On Fri, Aug 18, 2023 at 12:03:55AM -0500, David Vernet wrote:
-> >>>> On Thu, Aug 17, 2023 at 02:12:03PM +0530, Gautham R. Shenoy wrote:
-> >>>>> Hello David,
-> >>>>
-> >>>> Hello Gautham,
-> >>>>
-> >>>> Thanks a lot as always for running some benchmarks and analyzing these
-> >>>> changes.
-> >>>>
-> >>>>> On Wed, Aug 09, 2023 at 05:12:11PM -0500, David Vernet wrote:
-> >>>>>> Changes
-> >>>>>> -------
-> >>>>>>
-> >>>>>> This is v3 of the shared runqueue patchset. This patch set is based off
-> >>>>>> of commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs
-> >>>>>> bandwidth in use") on the sched/core branch of tip.git.
-> >>>>>
-> >>>>>
-> >>>>> I tested the patches on Zen3 and Zen4 EPYC Servers like last time. I
-> >>>>> notice that apart from hackbench, every other bechmark is showing
-> >>>>> regressions with this patch series. Quick summary of my observations:
-> >>>>
-> >>>> Just to verify per our prior conversation [0], was this latest set of
-> >>>> benchmarks run with boost disabled?
-> >>>
-> >>> Boost is enabled by default. I will queue a run tonight with boost
-> >>> disabled.
-> >>
-> >> Apologies for the delay. I didn't see any changes with boost-disabled
-> >> and with reverting the optimization to bail out of the
-> >> newidle_balance() for SMT and MC domains when there was no task to be
-> >> pulled from the shared-runq. I reran the whole thing once again, just
-> >> to rule out any possible variance. The results came out the same.
-> > 
-> > Thanks a lot for taking the time to run more benchmarks.
-> > 
-> >> With the boost disabled, and the optimization reverted, the results
-> >> don't change much.
-> > 
-> > Hmmm, I see. So, that was the only real substantive "change" between v2
-> > -> v3. The other changes were supporting hotplug / domain recreation,
-> > optimizing locking a bit, and fixing small bugs like the return value
-> > from shared_runq_pick_next_task(), draining the queue when the feature
-> > is disabled, and fixing the lkp errors.
-> > 
-> > With all that said, it seems very possible that the regression is due to
-> > changes in sched/core between commit ebb83d84e49b ("sched/core: Avoid
-> > multiple calling update_rq_clock() in __cfsb_csd_unthrottle()") in v2,
-> > and commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when cfs
-> > bandwidth in use") in v3. EEVDF was merged in that window, so that could
-> > be one explanation for the context switch rate being so much higher.
-> > 
-> >> It doesn't appear that the optimization is the cause for increase in
-> >> the number of load-balancing attempts at the DIE and the NUMA
-> >> domains. I have shared the counts of the newidle_balance with and
-> >> without SHARED_RUNQ below for tbench and it can be noticed that the
-> >> counts are significantly higher for the 64 clients and 128 clients. I
-> >> also captured the counts/s of find_busiest_group() using funccount.py
-> >> which tells the same story. So the drop in the performance for tbench
-> >> with your patches strongly correlates with the increase in
-> >> load-balancing attempts.
-> >>
-> >> newidle balance is undertaken only if the overload flag is set and the
-> >> expected idle duration is greater than the avg load balancing cost. It
-> >> is hard to imagine why should the shared runq cause the overload flag
-> >> to be set!
-> > 
-> > Yeah, I'm not sure either about how or why woshared_runq uld cause this
-> > This is purely hypothetical, but is it possible that shared_runq causes
-> > idle cores to on average _stay_ idle longer due to other cores pulling
-> > tasks that would have otherwise been load balanced to those cores?
-> > 
-> > Meaning -- say CPU0 is idle, and there are tasks on other rqs which
-> > could be load balanced. Without shared_runq, CPU0 might be woken up to
-> > run a task from a periodic load balance. With shared_runq, any active
-> > core that would otherwise have gone idle could pull the task, keeping
-> > CPU0 idle.
-> > 
-> > What do you think? I could be totally off here.
-> > 
-> > From my perspective, I'm not too worried about this given that we're
-> > seeing gains in other areas such as kernel compile as I showed in [0],
-> > though I definitely would like to better understand it.
-> 
-> Let me paste a cumulative diff containing everything I've tried since
-> it'll be easy to explain.
-> 
-> o Performance numbers for tbench 128 clients:
-> 
-> tip			: 1.00 (Var: 0.57%)
-> tip + vanilla v3	: 0.39 (var: 1.15%) (%diff: -60.74%)
-> tip + v3 + diff		: 0.99 (var: 0.61%) (%diff: -00.24%)
-> 
-> tip is at commit 88c56cfeaec4 ("sched/fair: Block nohz tick_stop when
-> cfs bandwidth in use"), same as what Gautham used, so no EEVDF yet.
-> 
-> o Cumulative Diff
-> 
-> Should apply cleanly on top of tip at above commit + this series as is.
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -198,7 +198,7 @@ struct shared_runq_shard {
->  } ____cacheline_aligned;
->  
->  /* This would likely work better as a configurable knob via debugfs */
-> -#define SHARED_RUNQ_SHARD_SZ 6
-> +#define SHARED_RUNQ_SHARD_SZ 16
->  #define SHARED_RUNQ_MAX_SHARDS \
->  	((NR_CPUS / SHARED_RUNQ_SHARD_SZ) + (NR_CPUS % SHARED_RUNQ_SHARD_SZ != 0))
->  
-> @@ -322,20 +322,36 @@ void shared_runq_toggle(bool enabling)
->  }
->  
->  static struct task_struct *
-> -shared_runq_pop_task(struct shared_runq_shard *shard, int target)
-> +shared_runq_pop_task(struct shared_runq_shard *shard, struct rq *rq)
->  {
-> +	int target = cpu_of(rq);
->  	struct task_struct *p;
->  
->  	if (list_empty(&shard->list))
->  		return NULL;
->  
->  	raw_spin_lock(&shard->lock);
-> +again:
->  	p = list_first_entry_or_null(&shard->list, struct task_struct,
->  				     shared_runq_node);
-> -	if (p && is_cpu_allowed(p, target))
-> +
-> +	/* If we find a task, delete if from list regardless */
-> +	if (p) {
->  		list_del_init(&p->shared_runq_node);
-> -	else
-> -		p = NULL;
-> +
-> +		if (!task_on_rq_queued(p) ||
-> +		    task_on_cpu(task_rq(p), p) ||
-
-Have you observed !task_on_rq_queued() or task_on_cpu() returning true
-here? The task should have removed itself from the shard when
-__dequeue_entity() is called from set_next_entity() when it's scheduled
-in pick_next_task_fair(). The reason we have to check in
-shared_runq_pick_next_task() is that between dequeuing the task from the
-shared_runq and getting its rq lock, it could have been scheduled on its
-current rq. But if the task was scheduled first, it should have removed
-itself from the shard.
-
-> +		    !is_cpu_allowed(p, target)) {
-> +			if (rq->ttwu_pending) {
-> +				p = NULL;
-> +				goto out;
-> +			}
-
-Have you observed this as well? If the task is enqueued on the ttwu
-queue wakelist, it isn't enqueued on the waking CPU, so it shouldn't be
-added to the shared_runq right?
-
-> +
-> +			goto again;
-> +		}
-> +	}
-> +
-> +out:
->  	raw_spin_unlock(&shard->lock);
->  
->  	return p;
-> @@ -380,9 +396,12 @@ static int shared_runq_pick_next_task(struct rq *rq, struct rq_flags *rf)
->  		curr_idx = (starting_idx + i) % num_shards;
->  		shard = &shared_runq->shards[curr_idx];
->  
-> -		p = shared_runq_pop_task(shard, cpu_of(rq));
-> +		p = shared_runq_pop_task(shard, rq);
->  		if (p)
->  			break;
-> +
-> +		if (rq->ttwu_pending)
-> +			return 0;
-
-Same here r.e. rq->ttwu_pending. This should be handled in the
-
-if (task_on_rq_queued(p) && !task_on_cpu(src_rq, p))
-
-check below, no? Note that task_on_rq_queued(p) should only return true
-if the task has made it to ttwu_do_activate(), and if it hasn't, I don't
-think it should be in the shard in the first place.
-
->  	}
->  	if (!p)
->  		return 0;
-> @@ -395,17 +414,16 @@ static int shared_runq_pick_next_task(struct rq *rq, struct rq_flags *rf)
->  	if (task_on_rq_queued(p) && !task_on_cpu(src_rq, p)) {
->  		update_rq_clock(src_rq);
->  		src_rq = move_queued_task(src_rq, &src_rf, p, cpu_of(rq));
-> -		ret = 1;
->  	}
->  
->  	if (src_rq != rq) {
->  		task_rq_unlock(src_rq, p, &src_rf);
->  		raw_spin_rq_lock(rq);
->  	} else {
-> +		ret = 1;
->  		rq_unpin_lock(rq, &src_rf);
->  		raw_spin_unlock_irqrestore(&p->pi_lock, src_rf.flags);
->  	}
-> -	rq_repin_lock(rq, rf);
-
-Huh, wouldn't this cause a WARN to be issued the next time we invoke
-rq_clock() in newidle_balance() if we weren't able to find a task? Or
-was it because we moved the SHARED_RUNQ logic to below where we check
-rq_clock()? In general though, I don't think this should be removed. At
-the very least, it should be tested with lockdep.
-
->  	return ret;
->  }
-> @@ -12344,50 +12362,59 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  	if (!cpu_active(this_cpu))
->  		return 0;
->  
-> -	if (sched_feat(SHARED_RUNQ)) {
-> -		pulled_task = shared_runq_pick_next_task(this_rq, rf);
-> -		if (pulled_task)
-> -			return pulled_task;
-> -	}
-> -
->  	/*
->  	 * We must set idle_stamp _before_ calling idle_balance(), such that we
->  	 * measure the duration of idle_balance() as idle time.
->  	 */
->  	this_rq->idle_stamp = rq_clock(this_rq);
->  
-> -	/*
-> -	 * This is OK, because current is on_cpu, which avoids it being picked
-> -	 * for load-balance and preemption/IRQs are still disabled avoiding
-> -	 * further scheduler activity on it and we're being very careful to
-> -	 * re-start the picking loop.
-> -	 */
-> -	rq_unpin_lock(this_rq, rf);
-> -
->  	rcu_read_lock();
-> -	sd = rcu_dereference_check_sched_domain(this_rq->sd);
-> -
-> -	/*
-> -	 * Skip <= LLC domains as they likely won't have any tasks if the
-> -	 * shared runq is empty.
-> -	 */
-> -	if (sched_feat(SHARED_RUNQ)) {
-> +	if (sched_feat(SHARED_RUNQ))
->  		sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
-> -		if (likely(sd))
-> -			sd = sd->parent;
-> -	}
-> +	else
-> +		sd = rcu_dereference_check_sched_domain(this_rq->sd);
->  
->  	if (!READ_ONCE(this_rq->rd->overload) ||
->  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
->  
-> -		if (sd)
-> +		while (sd) {
->  			update_next_balance(sd, &next_balance);
-> +			sd = sd->child;
-> +		}
-> +
->  		rcu_read_unlock();
->  
->  		goto out;
->  	}
->  	rcu_read_unlock();
->  
-> +	t0 = sched_clock_cpu(this_cpu);
-> +	if (sched_feat(SHARED_RUNQ)) {
-> +		pulled_task = shared_runq_pick_next_task(this_rq, rf);
-> +		if (pulled_task) {
-> +			curr_cost = sched_clock_cpu(this_cpu) - t0;
-> +			update_newidle_cost(sd, curr_cost);
-> +			goto out_swq;
-> +		}
-> +	}
-
-Hmmm, why did you move this further down in newidle_balance()? We don't
-want to skip trying to get a task from the shared_runq if rq->avg_idle <
-sd->max_newidle_lb_cost.
-
-> +
-> +	/* Check again for pending wakeups */
-> +	if (this_rq->ttwu_pending)
-> +		return 0;
-> +
-> +	t1 = sched_clock_cpu(this_cpu);
-> +	curr_cost += t1 - t0;
-> +
-> +	if (sd)
-> +		update_newidle_cost(sd, curr_cost);
-> +
-> +	/*
-> +	 * This is OK, because current is on_cpu, which avoids it being picked
-> +	 * for load-balance and preemption/IRQs are still disabled avoiding
-> +	 * further scheduler activity on it and we're being very careful to
-> +	 * re-start the picking loop.
-> +	 */
-> +	rq_unpin_lock(this_rq, rf);
->  	raw_spin_rq_unlock(this_rq);
->  
->  	t0 = sched_clock_cpu(this_cpu);
-> @@ -12400,6 +12427,13 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  		update_next_balance(sd, &next_balance);
->  
-> +		/*
-> +		 * Skip <= LLC domains as they likely won't have any tasks if the
-> +		 * shared runq is empty.
-> +		 */
-> +		if (sched_feat(SHARED_RUNQ) && (sd->flags & SD_SHARE_PKG_RESOURCES))
-> +			continue;
-
-This makes sense to me, good call.
-
-> +
->  		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
->  			break;
->  
-> @@ -12429,6 +12463,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  	raw_spin_rq_lock(this_rq);
->  
-> +out_swq:
->  	if (curr_cost > this_rq->max_idle_balance_cost)
->  		this_rq->max_idle_balance_cost = curr_cost;
->  
-> --
-> 
-> o Breakdown
-> 
-> I'll proceed to annotate a copy of diff with reasoning behind the changes:
-
-Ah, ok, you provided explanations :-) I'll leave my questions above
-regardless for posterity.
-
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -198,7 +198,7 @@ struct shared_runq_shard {
->  } ____cacheline_aligned;
->  
->  /* This would likely work better as a configurable knob via debugfs */
-> -#define SHARED_RUNQ_SHARD_SZ 6
-> +#define SHARED_RUNQ_SHARD_SZ 16
->  #define SHARED_RUNQ_MAX_SHARDS \
->  	((NR_CPUS / SHARED_RUNQ_SHARD_SZ) + (NR_CPUS % SHARED_RUNQ_SHARD_SZ != 0))
-> 
-> --
-> 
-> 	Here I'm setting the SHARED_RUNQ_SHARD_SZ to sd_llc_size for
-> 	my machine. I played around with this and did not see any
-> 	contention for shared_rq lock while running tbench.
-
-I don't really mind making the shard bigger because it will never be one
-size fits all, but for what it's worth, I saw less contention in netperf
-with a size of 6, but everything else performed fine with a larger
-shard. This is one of those "there's no right answer" things, I'm
-afraid. I think it will be inevitable to make this configurable at some
-point, if we find that it's really causing inefficiencies.
-
-> --
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -322,20 +322,36 @@ void shared_runq_toggle(bool enabling)
->  }
->  
->  static struct task_struct *
-> -shared_runq_pop_task(struct shared_runq_shard *shard, int target)
-> +shared_runq_pop_task(struct shared_runq_shard *shard, struct rq *rq)
->  {
-> +	int target = cpu_of(rq);
->  	struct task_struct *p;
->  
->  	if (list_empty(&shard->list))
->  		return NULL;
->  
->  	raw_spin_lock(&shard->lock);
-> +again:
->  	p = list_first_entry_or_null(&shard->list, struct task_struct,
->  				     shared_runq_node);
-> -	if (p && is_cpu_allowed(p, target))
-> +
-> +	/* If we find a task, delete if from list regardless */
-
-As I mentioned in my other reply [0], I don't think we should always
-have to delete here. Let me know if I'm missing something.
-
-[0]: https://lore.kernel.org/all/20230831013435.GB506447@maniforge/
-
-> +	if (p) {
->  		list_del_init(&p->shared_runq_node);
-> -	else
-> -		p = NULL;
-> +
-> +		if (!task_on_rq_queued(p) ||
-> +		    task_on_cpu(task_rq(p), p) ||
-> +		    !is_cpu_allowed(p, target)) {
-> +			if (rq->ttwu_pending) {
-> +				p = NULL;
-> +				goto out;
-> +			}
-> +
-> +			goto again;
-> +		}
-> +	}
-> +
-> +out:
->  	raw_spin_unlock(&shard->lock);
->  
->  	return p;
-> --
-> 
-> 	Context: When running perf with IBS, I saw following lock
-> 	contention:
-> 
-> -   12.17%  swapper          [kernel.vmlinux]          [k] native_queued_spin_lock_slowpath
->    - 10.48% native_queued_spin_lock_slowpath
->       - 10.30% _raw_spin_lock
->          - 9.11% __schedule
->               schedule_idle
->               do_idle
->             + cpu_startup_entry
->          - 0.86% task_rq_lock
->               newidle_balance
->               pick_next_task_fair
->               __schedule
->               schedule_idle
->               do_idle
->             + cpu_startup_entry
-> 
-> 	So I imagined the newidle_balance is contending with another
-> 	run_queue going idle when pulling task. Hence, I moved some
-> 	checks in shared_runq_pick_next_task() to here.
-
-Hmm, so the idea was to avoid contending on the rq lock? As I mentioned
-above, I'm not sure these checks actually buy us anything.
-
-> 	I was not sure if the task's rq lock needs to be held to do this
-> 	to get an accurate result so I've left the original checks in
-> 	shared_runq_pick_next_task() as it is.
-
-Yep, we need to have the rq lock held for these functions to return
-consistent data.
-
-> 	Since retry may be costly, I'm using "rq->ttwu_pending" as a
-> 	bail out threshold. Maybe there are better alternates with
-> 	the lb_cost and rq->avg_idle but this was simpler for now.
-
-Hmm, not sure I'm quite understanding this one. As I mentioned above, I
-don't _think_ this should ever be set for a task enqueued in a shard.
-Were you observing that?
-
-> 	(Realizing as I write this that this will cause more contention
-> 	with enqueue/dequeue in a busy system. I'll check if that is the
-> 	case)
-> 
-> 	P.S. This did not affect the ~60% regression I was seeing one
-> 	bit so the problem was deeper.
-> 
-> --
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -380,9 +396,12 @@ static int shared_runq_pick_next_task(struct rq *rq, struct rq_flags *rf)
->  		curr_idx = (starting_idx + i) % num_shards;
->  		shard = &shared_runq->shards[curr_idx];
->  
-> -		p = shared_runq_pop_task(shard, cpu_of(rq));
-> +		p = shared_runq_pop_task(shard, rq);
->  		if (p)
->  			break;
-> +
-> +		if (rq->ttwu_pending)
-> +			return 0;
->  	}
->  	if (!p)
->  		return 0;
-> --
-> 
-> 	More bailout logic.
-> 
-> --
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -395,17 +414,16 @@ static int shared_runq_pick_next_task(struct rq *rq, struct rq_flags *rf)
->  	if (task_on_rq_queued(p) && !task_on_cpu(src_rq, p)) {
->  		update_rq_clock(src_rq);
->  		src_rq = move_queued_task(src_rq, &src_rf, p, cpu_of(rq));
-> -		ret = 1;
->  	}
->  
->  	if (src_rq != rq) {
->  		task_rq_unlock(src_rq, p, &src_rf);
->  		raw_spin_rq_lock(rq);
->  	} else {
-> +		ret = 1;
->  		rq_unpin_lock(rq, &src_rf);
->  		raw_spin_unlock_irqrestore(&p->pi_lock, src_rf.flags);
->  	}
-> -	rq_repin_lock(rq, rf);
->  
->  	return ret;
->  }
-> --
-> 
-> 	Only return 1 is task is actually pulled else return -1
-> 	signifying the path has released and re-aquired the lock.
-
-Not sure I'm following. If we migrate the task to the current rq, we
-want to return 1 to signify that there are new fair tasks present in the
-rq don't we? It doesn't need to have started there originally for it to
-be present after we move it.
-
-> 
-> 	Also leave the rq_repin_lock() part to caller, i.e.,
-> 	newidle_balance() since it makes up for a nice flow (see
-> 	below).
-> 
-> --
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -12344,50 +12362,59 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  	if (!cpu_active(this_cpu))
->  		return 0;
->  
-> -	if (sched_feat(SHARED_RUNQ)) {
-> -		pulled_task = shared_runq_pick_next_task(this_rq, rf);
-> -		if (pulled_task)
-> -			return pulled_task;
-> -	}
-> -
->  	/*
->  	 * We must set idle_stamp _before_ calling idle_balance(), such that we
->  	 * measure the duration of idle_balance() as idle time.
->  	 */
->  	this_rq->idle_stamp = rq_clock(this_rq);
->  
-> -	/*
-> -	 * This is OK, because current is on_cpu, which avoids it being picked
-> -	 * for load-balance and preemption/IRQs are still disabled avoiding
-> -	 * further scheduler activity on it and we're being very careful to
-> -	 * re-start the picking loop.
-> -	 */
-> -	rq_unpin_lock(this_rq, rf);
-> -
->  	rcu_read_lock();
-> -	sd = rcu_dereference_check_sched_domain(this_rq->sd);
-> -
-> -	/*
-> -	 * Skip <= LLC domains as they likely won't have any tasks if the
-> -	 * shared runq is empty.
-> -	 */
-> -	if (sched_feat(SHARED_RUNQ)) {
-> +	if (sched_feat(SHARED_RUNQ))
->  		sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
-> -		if (likely(sd))
-> -			sd = sd->parent;
-> -	}
-> +	else
-> +		sd = rcu_dereference_check_sched_domain(this_rq->sd);
->  
->  	if (!READ_ONCE(this_rq->rd->overload) ||
->  	    (sd && this_rq->avg_idle < sd->max_newidle_lb_cost)) {
->  
-> -		if (sd)
-> +		while (sd) {
->  			update_next_balance(sd, &next_balance);
-> +			sd = sd->child;
-> +		}
-> +
->  		rcu_read_unlock();
->  
->  		goto out;
->  	}
->  	rcu_read_unlock();
->  
-> +	t0 = sched_clock_cpu(this_cpu);
-> +	if (sched_feat(SHARED_RUNQ)) {
-> +		pulled_task = shared_runq_pick_next_task(this_rq, rf);
-> +		if (pulled_task) {
-> +			curr_cost = sched_clock_cpu(this_cpu) - t0;
-> +			update_newidle_cost(sd, curr_cost);
-> +			goto out_swq;
-> +		}
-> +	}
-> +
-> +	/* Check again for pending wakeups */
-> +	if (this_rq->ttwu_pending)
-> +		return 0;
-> +
-> +	t1 = sched_clock_cpu(this_cpu);
-> +	curr_cost += t1 - t0;
-> +
-> +	if (sd)
-> +		update_newidle_cost(sd, curr_cost);
-> +
-> +	/*
-> +	 * This is OK, because current is on_cpu, which avoids it being picked
-> +	 * for load-balance and preemption/IRQs are still disabled avoiding
-> +	 * further scheduler activity on it and we're being very careful to
-> +	 * re-start the picking loop.
-> +	 */
-> +	rq_unpin_lock(this_rq, rf);
->  	raw_spin_rq_unlock(this_rq);
->  
->  	t0 = sched_clock_cpu(this_cpu);
-> --
-> 
-> 	This hunk does a few things:
-> 
-> 	1. If a task is successfully pulled from shared rq, or if the rq
-> 	   lock had been released and re-acquired with, jump to the
-> 	   very end where we check a bunch of conditions and return
-> 	   accordingly.
-> 
-> 	2. Move the shared rq picking after the "rd->overload" and
-> 	   checks against "rq->avg_idle".
-> 
-> 	   P.S. This recovered half the performance that was lost.
-
-Sorry, which performance are you referring to? I'm not thrilled about
-this part because it's another heuristic for users to have to reason
-about. _Maybe_ it makes sense to keep the rd->overload check? I don't
-think we should keep the rq->avg_idle check though unless it's
-absolutely necessary, and I'd have to think more about the rq->overload
-check.
-
-> 	3. Update the newidle_balance_cost via update_newidle_cost()
-> 	   since that is also used to determine the previous bailout
-> 	   threshold.
-
-I think this makes sense as well, but need to think about it more.
-
-> 	4. A bunch of update_next_balance().
-
-I guess this should be OK, though I would expect us to have to load
-balance less with SHARED_RUNQ.
-
-> 	5. Move rq_unpin_lock() below. I do not know the implication of
-> 	   this the kernel is not complaining so far (mind you I'm on
-> 	   x86 and I do not have lockdep enabled)
-
-If you move rq_unpin_lock(), you should probably run with lockdep to see
-what happens :-) There are also implications for tracking whether it's
-safe to look at the rq clock.
-
-> 
-> 	A combination of 3 and 4 seemed to give back the other half of
-> 	tbench performance.
-> 
-> --
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -12400,6 +12427,13 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  		update_next_balance(sd, &next_balance);
->  
-> +		/*
-> +		 * Skip <= LLC domains as they likely won't have any tasks if the
-> +		 * shared runq is empty.
-> +		 */
-> +		if (sched_feat(SHARED_RUNQ) && (sd->flags & SD_SHARE_PKG_RESOURCES))
-> +			continue;
-> +
-
-Agreed on this.
-
->  		if (this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost)
->  			break;
->  
-> --
-> 
-> 	This was based on my suggestion in the parallel thread.
-> 
-> 	P.S. This alone, without the changes in previous hunk showed no
-> 	difference in performance with results same as vanilla v3.
-> 
-> --
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index d67d86d3bfdf..f1e64412fd48 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -12429,6 +12463,7 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
->  
->  	raw_spin_rq_lock(this_rq);
->  
-> +out_swq:
->  	if (curr_cost > this_rq->max_idle_balance_cost)
->  		this_rq->max_idle_balance_cost = curr_cost;
->  
-> --
-> 
-> 	The last part of newidle_balance() does a bunch of accounting
-> 	which is relevant after the above changes. Also the
-> 	rq_repin_lock() I had removed now happens here.
-> 
-> --
-> 
-> Again most of this is lightly tested with just one workload but I would
-> like to hear your thoughts, especially with the significance of
-> "rd->overload", "max_newidle_lb_cost", and "update_next_balance()".
-> however, I'm afraid these may be the bits that led to the drop in
-> utilization you mentioned in the first place.
-
-Exactly :-( I think your proposal to fix how we skip load balancing on
-the LLC if SHARED_RUNQ is enabled makes sense, but I'd really prefer to
-avoid adding these heuristics to avoid contention for specific
-workloads. The goal of SHARED_RUNQ is really to drive up CPU util. I
-don't think we're really doing the user many favors if we try to guess
-for them when they actually want that to happen.
-
-If there's a time where we _really_ don't want or need to do it then
-absolutely, let's skip it. But I would really like to see this go in
-without checks on max_newidle_lb_cost, etc. The whole point of
-SHARED_RUNQ is that it should be less costly than iterating over O(n)
-cores to find tasks, so we _want_ to be more aggressive in doing so.
-
-> Most of the experimentation (except for rq lock contention using IBS)
-> was done by reading the newidle_balance() code.
-
-And kudos for doing so!
-
-> Finally a look at newidle_balance counts (tip vs tip + v3 + diff) for
-> 128-clients of tbench on the test machine:
-> 
-> 
-> < ----------------------------------------  Category:  newidle (SMT)  ---------------------------------------- >
-> load_balance cnt on cpu newly idle                         :     921871,   0	(diff: -100.00%)
-> --
-> < ----------------------------------------  Category:  newidle (MC)   ---------------------------------------- >
-> load_balance cnt on cpu newly idle                         :     472412,   0	(diff: -100.00%)
-> --
-> < ----------------------------------------  Category:  newidle (DIE)  ---------------------------------------- >
-> load_balance cnt on cpu newly idle                         :        114, 279	(diff: +144.74%)
-> --
-> < ----------------------------------------  Category:  newidle (NUMA) ---------------------------------------- >
-> load_balance cnt on cpu newly idle                         :          9,   9	(diff: +00.00%)
-> --
-> 
-> Let me know if you have any queries. I'll go back and try to bisect the
-> diff to see if only a couple of changes that I thought were important
-> are good enought to yield back the lost performance. I'll do wider
-> testing post hearing your thoughts.
-
-Hopefully my feedback above should give you enough context to bisect and
-find the changes that we really think are most helpful? To reiterate: I
-definitely think your change to avoid iterating over the LLC sd is
-correct and makes sense. Others possibly do as well such as checking
-rd->overload (though not 100% sure), but others such as the
-max_newidle_lb_cost checks I would strongly prefer to avoid.
-
-Prateek -- thank you for doing all of this work, it's very much
-appreciated.
-
-As I mentioned on the other email, I'll be on vacation for about a week
-and a half starting tomorrow afternoon, so I may be slow to respond in
-that time.
-
-Thanks,
-David
+T24gV2VkLCBBdWcgMzAsIDIwMjMsIEFsYW4gU3Rlcm4gd3JvdGU6DQo+IE9uIFdlZCwgQXVnIDMw
+LCAyMDIzIGF0IDAxOjMyOjI4QU0gKzAwMDAsIFRoaW5oIE5ndXllbiB3cm90ZToNCj4gPiBUaGF0
+IHJlbWluZHMgbWUgYW5vdGhlciB0aGluZywgaWYgdGhlIGhvc3QgKHhoY2kgaW4gdGhpcyBjYXNl
+KSBkb2VzIGENCj4gPiBoYXJkIHJlc2V0IHRvIHRoZSBlbmRwb2ludCwgaXQgYWxzbyByZXNldHMg
+dGhlIFRSQiBwb2ludGVyIHdpdGggZGVxdWV1ZQ0KPiA+IGVwIGNvbW1hbmQuIFNvLCB0aGUgdHJh
+bnNmZXIgc2hvdWxkIG5vdCByZXN1bWUuIEl0IG5lZWRzIHRvIGJlDQo+ID4gY2FuY2VsbGVkLiBU
+aGlzIHhIQ0kgYmVoYXZpb3IgaXMgdGhlIHNhbWUgZm9yIFdpbmRvd3MgYW5kIExpbnV4Lg0KPiAN
+Cj4gVGhhdCdzIG9uIHRoZSBob3N0IHNpZGUsIHJpZ2h0PyAgSG93IGRvZXMgdGhpcyBhZmZlY3Qg
+dGhlIGdhZGdldCBzaWRlPw0KPiANCj4gVGhhdCBpcywgY2FuY2VsbGluZyBhIHRyYW5zZmVyIG9u
+IHRoZSBob3N0IGRvZXNuJ3QgbmVjZXNzYXJpbHkgbWVhbiBpdCANCj4gaGFzIHRvIGJlIGNhbmNl
+bGxlZCBvbiB0aGUgZ2FkZ2V0LiAgRG9lcyBpdCBoYXZlIGFueSBpbXBsaWNhdGlvbnMgYXQgYWxs
+IA0KPiBmb3IgdGhlIGdhZGdldCBkcml2ZXI/DQoNClRoZXJlIGFyZSAyIHRoaW5ncyB0aGF0IG5l
+ZWRzIHRvIGJlIGluIHN5bmMnZWQgYmV0d2VlbiBob3N0IGFuZCBkZXZpY2U6DQoxKSBUaGUgZGF0
+YSBzZXF1ZW5jZS4NCjIpIFRoZSB0cmFuc2Zlci4NCg0KSWYgaG9zdCBkb2Vzbid0IHNlbmQgQ0xF
+QVJfRkVBVFVSRShoYWx0X2VwKSwgYmVzdCBjYXNlIHNjZW5hcmlvLCB0aGUNCmRhdGEgc2VxdWVu
+Y2UgZG9lcyd0IG1hdGNoIGFuZCB0aGUgaG9zdCBpc3N1ZXMgdXNiIHJlc2V0IGFmdGVyIHNvbWUN
+CnRpbWVvdXQgYmVjYXVzZSB0aGUgcGFja2V0IHdvbid0IGdvIHRocm91Z2guIFdvcnN0IGNhc2Ug
+c2NlbmFyaW8sIHRoZQ0KZGF0YSBzZXF1ZW5jZSBtYXRjaGVzIDAsIGFuZCB0aGUgd3JvbmcgZGF0
+YSBpcyByZWNlaXZlZCBjYXVzaW5nDQpjb3JydXB0aW9uLg0KDQpJZiB0aGUgZGV2aWNlIGRvZXNu
+J3QgY2FuY2VsIHRoZSB0cmFuc2ZlciBpbiByZXNwb25zZSB0bw0KQ0xFQVJfRkVBVFVSRShoYWx0
+X2VwKSwgaXQgbWF5IHNlbmQvcmVjZWl2ZSBkYXRhIG9mIGEgZGlmZmVyZW50IHRyYW5zZmVyDQpi
+ZWNhdXNlIHRoZSBob3N0IGRvZXNuJ3QgcmVzdW1lIHdoZXJlIGl0IGxlZnQgb2ZmLCBjYXVzaW5n
+IGNvcnJ1cHRpb24uDQoNCkJhc2Ugb24gdGhlIGNsYXNzIHByb3RvY29sLCB0aGUgY2xhc3MgZHJp
+dmVyIGFuZCBnYWRnZXQgZHJpdmVyIGtub3cNCndoYXQgbWFrZXMgdXAgYSAidHJhbnNmZXIiIGFu
+ZCBjYW4gYXBwcm9wcmlhdGVseSBjYW5jZWwgYSB0cmFuc2ZlciB0bw0Kc3RheSBpbiBzeW5jLg0K
+DQo+IA0KPiA+ID4gSSB0aGluayBpdCBzaG91bGQgYmUgdGhlIG9wcG9zaXRlOyB0aGUgY2xhc3Mg
+cHJvdG9jb2wgc2hvdWxkIHNwZWNpZnkNCj4gPiA+IGhvdyB0byByZWNvdmVyIGZyb20gZXJyb3Jz
+LiAgSWYgZm9yIG5vIG90aGVyIHJlYXNvbiB0aGVuIHRvIGF2b2lkIHRoZQ0KPiA+ID4gZGF0YSBk
+dXBsaWNhdGlvbiBwcm9ibGVtIGZvciBVU0ItMi4gIEhvd2V2ZXIsIGlmIGl0IGRvZXNuJ3Qgc3Bl
+Y2lmeSBhDQo+ID4gPiByZWNvdmVyeSBwcm9jZWR1cmUgdGhlbiB0aGVyZSdzIG5vdCBtdWNoIGVs
+c2UgeW91IGNhbiBkby4NCj4gPiANCj4gPiBSaWdodCwgdW5mb3J0dW5hdGVseSB0aGF0J3Mgbm90
+IGFsd2F5cyB0aGUgY2FzZSB0aGF0IGNsYXNzIHByb3RvY29sDQo+ID4gc3BlbGwgb3V0IGhvdyB0
+byBoYW5kbGUgdHJhbnNhY3Rpb24gZXJyb3IuDQo+IA0KPiBBbGwgdG9vIHRydWUuLi4NCj4gDQo+
+ID4gPiBCdXQgcmVnYXJkbGVzcywgaG93IGNhbiB0aGUgZ2FkZ2V0IGRyaXZlciBtYWtlIGFueSB1
+c2Ugb2YgdGhlDQo+ID4gPiBrbm93bGVkZ2UgdGhhdCB0aGUgVURDIHJlY2VpdmVkIGEgQ2xlYXIt
+SGFsdD8gIFdoYXQgd291bGQgaXQgZG8NCj4gPiA+IGRpZmZlcmVudGx5PyAgSWYgdGhlIGludGVu
+dCBpcyBzaW1wbHkgdG8gY2xlYXIgYW4gZXJyb3IgY29uZGl0aW9uIGFuZA0KPiA+ID4gY29udGlu
+dWUgd2l0aCB0aGUgZXhpc3RpbmcgdHJhbnNmZXIsIHRoZSBnYWRnZXQgZHJpdmVyIGRvZXNuJ3Qg
+bmVlZCB0bw0KPiA+ID4gZG8gYW55dGhpbmcuDQo+ID4gDQo+ID4gSXQncyBub3Qgc2ltcGxlIHRv
+IGNsZWFyIGFuIGVycm9yLiBJdCBpcyB0byBub3RpZnkgdGhlIGdhZGdldCBkcml2ZXIgdG8NCj4g
+PiBjYW5jZWwgdGhlIGFjdGl2ZSB0cmFuc2ZlciBhbmQgcmVzeW5jIHdpdGggdGhlIGhvc3QuDQo+
+IA0KPiBIb3cgZG9lcyB0aGUgZ2FkZ2V0IGRyaXZlciBzeW5jIHdpdGggdGhlIGhvc3QgaWYgdGhl
+IGNsYXNzIHByb3RvY29sIA0KPiBkb2Vzbid0IHNheSB3aGF0IHNob3VsZCBiZSBkb25lPw0KPiAN
+Cj4gQWxzbywgd2hhdCBpZiB0aGVyZSBpcyBubyBhY3RpdmUgdHJhbnNmZXI/ICBUaGF0IGlzLCB3
+aGF0IGlmIHRoZSANCj4gdHJhbnNhY3Rpb24gdGhhdCBnb3QgYW4gZXJyb3Igb24gdGhlIGhvc3Qg
+YXBwZWFyZWQgdG8gYmUgc3VjY2Vzc2Z1bCBvbiANCj4gdGhlIGdhZGdldCBhbmQgaXQgd2FzIHRo
+ZSBsYXN0IHRyYW5zYWN0aW9uIGluIHRoZSBmaW5hbCB0cmFuc2ZlciBxdWV1ZWQgDQo+IGZvciB0
+aGUgZW5kcG9pbnQ/ICBIb3cgd291bGQgdGhlIFVEQyBkcml2ZXIgbm90aWZ5IHRoZSBnYWRnZXQg
+ZHJpdmVyIGluIA0KPiB0aGlzIHNpdHVhdGlvbj8NCg0KVGhhdCdzIGZpbmUuIElmIHRoZXJlJ3Mg
+bm8gYWN0aXZlIHRyYW5zZmVyLCB0aGUgZ2FkZ2V0IGRvZXNuJ3QgbmVlZCB0bw0KY2FuY2VsIGFu
+eXRoaW5nLiBBcyBsb25nIGFzIHRoZSBob3N0IGtub3dzIHRoYXQgdGhlIHRyYW5zZmVyIGRpZCBu
+b3QNCmNvbXBsZXRlLCBpdCBjYW4gcmV0cnkgYW5kIGJlIGluIHN5bmMuIEZvciBVQVNQLCB0aGUg
+aG9zdCB3aWxsIHNlbmQgYQ0KbmV3IE1TQyBjb21tYW5kIHRvIHJldHJ5IHRoZSBmYWlsZWQgdHJh
+bnNmZXIuIGllLiBUaGUgaG9zdCB3b3VsZA0Kb3ZlcndyaXRlL3JlLXJlYWQgdGhlIHRyYW5zZmVy
+IHdpdGggdGhlIHNhbWUgdHJhbnNmZXIgb2Zmc2V0Lg0KDQpUaGUgcHJvYmxlbSBhcmlzZXMgaWYg
+dGhlIGdhZGdldCBhdHRlbXB0cyB0byByZXN1bWUgdGhlIGluY29tcGxldGUNCnRyYW5zZmVyLg0K
+DQo+IA0KPiA+ICBUaGlzIGlzIG9ic2VydmVkIGluDQo+ID4gVUFTUCBkcml2ZXIgaW4gV2luZG93
+cyBhbmQgaG93IHZhcmlvdXMgY29uc3VtZXIgVUFTUCBkZXZpY2VzIGhhbmRsZSBpdC4NCj4gDQo+
+IEkgZG9uJ3QgdW5kZXJzdGFuZCB3aGF0IHlvdSdyZSBzYXlpbmcgaGVyZS4gIEhvdyBjYW4geW91
+IG9ic2VydmUgd2hldGhlciANCj4gYSB0cmFuc2ZlciBpcyBjYW5jZWxsZWQgaW4gYSBjb25zdW1l
+ciBVQVMgZGV2aWNlPyAgQW5kIGhvdyBkb2VzIHRoZSANCj4gY29uc3VtZXIgZGV2aWNlIHJlc3lu
+YyB3aXRoIHRoZSBob3N0Pw0KDQpZb3UgY2FuIHNlZSBhIGhhbmcgaWYgdGhlIHRyYW5zZmVyIGFy
+ZSBvdXQgb2Ygc3luYy4gSWYgdGhlIHRyYW5zZmVyDQppc24ndCBjYW5jZWxsZWQsIHRoZSBkZXZp
+Y2Ugd291bGQgb25seSBzb3VyY2Uvc2luayB3aGF0ZXZlciB0aGUNCnJlbWFpbmluZyBvZiB0aGUg
+cHJldmlvdXMgdHJhbnNmZXIgYnV0IG5vdCBlbm91Z2ggdG8gY29tcGxldGUgdGhlIG5ldw0KdHJh
+bnNmZXIuIFRoZSBuZXcgdHJhbnNmZXIgaXMgc2VlbiBhcyBpbmNvbXBsZXRlIGZyb20gaG9zdCBh
+bmQgdGh1cyB0aGUNCmhhbmcgYW5kIHRoZSB1c2IgcmVzZXQuDQoNCj4gDQo+ID4gVGhlcmUgbm8g
+ZXFpdmFsZW50IG9mIEJ1bGstT25seSBNYXNzIFN0b3JhZ2UgUmVzZXQgcmVxdWVzdCBmcm9tIHRo
+ZQ0KPiA+IGNsYXNzIHByb3RvY29sLiBXZSBzdGlsbCBoYXZlIHRoZSBVU0IgYW5hbHl6ZXIgdHJh
+Y2VzIGZvciB0aGlzLg0KPiANCj4gQ2FuIHlvdSBwb3N0IGFuIGV4YW1wbGU/ICBOb3QgbmVjZXNz
+YXJpbHkgaW4gY29tcGxldGUgZGV0YWlsLCBidXQgZW5vdWdoIA0KPiBzbyB0aGF0IHdlIGNhbiBz
+ZWUgd2hhdCdzIGdvaW5nIG9uLg0KPiANCj4gPiBSZWdhcmRsZXNzIHdoZXRoZXIgdGhlIGNsYXNz
+IHByb3RvY29sIHNwZWxscyBvdXQgaG93IHRvIGhhbmRsZSB0aGUNCj4gPiB0cmFuc2FjdGlvbiBl
+cnJvciwgaWYgdGhlcmUncyB0cmFuc2FjdGlvbiBlcnJvciwgdGhlIGhvc3QgbWF5IHNlbmQNCj4g
+PiBDTEVBUl9GRUFUVVJFKGhhbHRfZXApIGFzIG9ic2VydmVkIGluIFdpbmRvd3MuIFRoZSBnYWRn
+ZXQgZHJpdmVyIG5lZWRzDQo+ID4gdG8ga25vdyBhYm91dCBpdCB0byBjYW5jZWwgdGhlIGFjdGl2
+ZSB0cmFuc2ZlciBhbmQgcmVzeW5jIHdpdGggdGhlIGhvc3QuDQo+IA0KPiBJJ2xsIGJlIGFibGUg
+dG8gdW5kZXJzdGFuZCB0aGlzIGJldHRlciBhZnRlciBzZWVpbmcgYW4gZXhhbXBsZS4gIERvIHlv
+dSANCj4gaGF2ZSBhbnkgdHJhY2VzIHRoYXQgd2VyZSBtYWRlIGZvciBhIEhpZ2gtc3BlZWQgY29u
+bmVjdGlvbiAoc2F5LCB1c2luZyANCj4gYSBVU0ItMiBjYWJsZSk/ICBJdCB3b3VsZCBwcm9iYWJs
+eSBiZSBlYXNpZXIgdG8gZm9sbG93IHRoYW4gYSBTdXBlclNwZWVkIA0KPiBleGFtcGxlLg0KPiAN
+Cg0KVW5mb3J0dW5hdGVseSBJIG9ubHkgaGF2ZSBMZUNyb3kgdXNiIGFuYWx5emVyIHRyYWNlcyBv
+ZiBHZW4gMngxLCBub3QgZm9yDQp1c2IyIHNwZWVkLiBJdCdzIGEgYml0IHRyaWNreSBjb252ZXJ0
+aW5nIGl0IHRvIHRleHQgd2l0aCBhbGwgdGhlIHByb3Blcg0KaW5mbyB0byBzZWUgYWxsIHRoZSBj
+b250ZXh0LiBJZiBteSBleHBsYW5hdGlvbiBpc24ndCBjbGVhciwgSSdsbCB0cnkgdG8NCmZpZ3Vy
+ZSBvdXQgaG93IHRvIHByb2NlZWQuDQoNClRoYW5rcywNClRoaW5o
