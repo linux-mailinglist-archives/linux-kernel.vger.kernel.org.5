@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3969D78F42D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:37:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28B378F430
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347420AbjHaUhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 16:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59240 "EHLO
+        id S1347428AbjHaUhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 16:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231266AbjHaUhT (ORCPT
+        with ESMTP id S1347432AbjHaUh3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 16:37:19 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C734AE65
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:37:15 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7b957fd276so1018872276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:37:15 -0700 (PDT)
+        Thu, 31 Aug 2023 16:37:29 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACCEB10C0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:37:25 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d745094c496so1030931276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:37:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693514235; x=1694119035; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Riep5pyahAnxXOHIAicjRGy5HGdPOIzlJBXzr6RzmUM=;
-        b=d/tC/9gCiFcMnNxE3maBKwVuY5qvIt6zYsH3KEo7xLnXPE65YE0sNlyQLdm5zpja53
-         ci5w6djzFf7cPny4E3Jt7x85cP5duyK8doqAsAr3hxJ+gERTU7tTO1nBpxnmjfG5v6Gh
-         IqO36G4YiCXcHnfLSA7KbuiVGkrWny3b6QNIud109AeL+ShJBP9+wktprm1V8UXg7Lfl
-         OUesBf2RLh7dqJq8zAFIAHVFt2791297eamndqeiX3iGzevcXXehdBfadl4DADJLUMRB
-         /+ABw/o933QtEpbByEgABP4hfm2J03cRUAp6GjQ37iwpmf3fUf3z12sjdjC8W4GUosa4
-         1kDg==
+        d=google.com; s=20221208; t=1693514245; x=1694119045; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yBbx4b8+p9YSAXqpoHoy5g7vSJRSgSl+lhiyxSfb/eU=;
+        b=0ZPTG/K7z5/cT3ShYOz0vb8RRH4Nw5JXxa7KNOL84iPd1CZJTHmMWpm+xmKxB9Vedi
+         o6croEnyFXHRTciz3Ezy+AR6G9NjYBw/vR2C12GNnJbH9rG6IxMXq7cU+A/KN30iWzo0
+         C3kmfe//Nq5Upsh9aBAVG16S3pEbGPBhnd2VcTeSnecYNGtP0waNq6wqZhBL1Mrl3GgV
+         exqBkHKhdfVkahdff25HfoKIw99yBYeqZbnLDr1ofsMz8R8AgCzoXG+wlrl6e83I3qnt
+         WrAnR8VQUb5EsgG9+ZTMMgQOFUFLNAcDHIbyMmbDg+nmGxrxAKF0aoCHA/ey26lhxVZz
+         OfYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693514235; x=1694119035;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Riep5pyahAnxXOHIAicjRGy5HGdPOIzlJBXzr6RzmUM=;
-        b=Sl6uys4A1krsFTr1+AZhzQVqRfuaJyCrHzVS0/RjxFdLU1xQ7qHTFLDQK7m2K2LRJI
-         wsJBRe+U0ZvOMhqAQuwgSg+slrIDljMzMoBahmMrLiI4hBIkonJdxZJog7h8/3mCDDj+
-         fJl2XZihKC59k8/I1RG0LLcDgNnRSq/o/W0Vv/Uj7PU8xOnChSBbYAC/XACjuQfGg8TU
-         JPK0Yv75LWzaUb4qPf3qsDEWgKboPeoyBzf/FqjN9KfDGw5TquQuagfOc3UQY07FkENY
-         u8tszs7TOTlwEhEfndIQvSxkSX4dRJmlu34WLVrIRaQfaNtwWqUY61zK6XQNvA+pkwt6
-         1LQA==
-X-Gm-Message-State: AOJu0YxomYCMTcKg05TA/wzFKk3JEl4KNxsGfFtMRqWmDUqymLA8JfVZ
-        gIFocPqha9BH/bez84J+NaSADPiIu8FkJ7lw
-X-Google-Smtp-Source: AGHT+IFcu8cOp7pIa9OilL6fag67y6JJgGLJBhTT1SQk4UIAxSrG1Tx5R8I4WGtPGGNkLdRhCeCUlRFRF/gQcWz4
+        d=1e100.net; s=20221208; t=1693514245; x=1694119045;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yBbx4b8+p9YSAXqpoHoy5g7vSJRSgSl+lhiyxSfb/eU=;
+        b=WIyVjc6NMABng3+8EPU9zgMn2JbXFX5RKzwjFO4wKHOoadD3zxzyZ7Zm4jO1eMNYZC
+         Q8SNE/0ir1/k8Vi8MjVzutFeYeEnmgCcn2wnBh/csm8l8beOZTrjJJ86YJq5oeaoFJZV
+         C2RyTs2YSETPyHCuEXsZF2mMfzJxj9Pl9iaB+CcjMjzu8gNSuEadqkjOQVQJb5D8gA8Z
+         Rn5jVA2oKmptfih3N/CuqXq9DPdnuEgWyFVUCweUn2ANYeQCFnggx03YU07xdCMSU0UA
+         bYpg3UVtF2hBEBwemFCPyxY+q41cY75r246ONB8r+/5U0QSe2Eu6SyK53V1dJxfThYsR
+         iwgQ==
+X-Gm-Message-State: AOJu0YyqhLqcYcg9vLVHSDbkQO2yZtq9/HZ2x2yYhczNg7Jkj7Ex91dm
+        wp1lOc0oLFX6q0vPxZEvJaoTX+gtcSL+MhCQ
+X-Google-Smtp-Source: AGHT+IF1LWmDxsSgnrtvI1kzQAdmqG9kkHzoMRjXO6gEE8jOd/mbGmywsGSMUbTy0xnAonh3GTBUSjDNwaJZ1HZV
 X-Received: from mclapinski.waw.corp.google.com ([2a00:79e0:9b:0:36f8:f0a:6df2:a7d5])
- (user=mclapinski job=sendgmr) by 2002:a25:9f89:0:b0:d4f:d7a5:ba3b with SMTP
- id u9-20020a259f89000000b00d4fd7a5ba3bmr21259ybq.8.1693514235020; Thu, 31 Aug
- 2023 13:37:15 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 22:36:45 +0200
+ (user=mclapinski job=sendgmr) by 2002:a05:6902:11c9:b0:d20:7752:e384 with
+ SMTP id n9-20020a05690211c900b00d207752e384mr22037ybu.3.1693514245015; Thu,
+ 31 Aug 2023 13:37:25 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 22:36:46 +0200
+In-Reply-To: <20230831203647.558079-1-mclapinski@google.com>
 Mime-Version: 1.0
+References: <20230831203647.558079-1-mclapinski@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230831203647.558079-1-mclapinski@google.com>
-Subject: [PATCH 0/2] fcntl: add fcntl(F_CHECK_ORIGINAL_MEMFD)
+Message-ID: <20230831203647.558079-2-mclapinski@google.com>
+Subject: [PATCH 1/2] fcntl: add fcntl(F_CHECK_ORIGINAL_MEMFD)
 From:   Michal Clapinski <mclapinski@google.com>
 To:     Jeff Layton <jlayton@kernel.org>,
         Chuck Lever <chuck.lever@oracle.com>,
@@ -76,34 +78,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This change introduces a new fcntl to check if an fd points to a memfd's
-original open fd (the one created by memfd_create).
+Add a way to check if an fd points to the memfd's original open fd
+(the one created by memfd_create).
+Useful because only the original open fd can be both writable and
+executable.
 
-We encountered an issue with migrating memfds in CRIU (checkpoint
-restore in userspace - it migrates running processes between
-machines). Imagine a scenario:
-1. Create a memfd. By default it's open with O_RDWR and yet one can
-exec() to it (unlike with regular files, where one would get ETXTBSY).
-2. Reopen that memfd with O_RDWR via /proc/self/fd/<fd>.
+Signed-off-by: Michal Clapinski <mclapinski@google.com>
+---
+ fs/fcntl.c                 | 3 +++
+ include/uapi/linux/fcntl.h | 9 +++++++++
+ 2 files changed, 12 insertions(+)
 
-Now those 2 fds are indistinguishable from userspace. You can't exec()
-to either of them (since the reopen incremented inode->i_writecount)
-and their /proc/self/fdinfo/ are exactly the same. Unfortunately they
-are not the same. If you close the second one, the first one becomes
-exec()able again. If you close the first one, the other doesn't become
-exec()able. Therefore during migration it does matter which is recreated
-first and which is reopened but there is no way for CRIU to tell which
-was first.
-
-Michal Clapinski (2):
-  fcntl: add fcntl(F_CHECK_ORIGINAL_MEMFD)
-  selftests: test fcntl(F_CHECK_ORIGINAL_MEMFD)
-
- fs/fcntl.c                                 |  3 ++
- include/uapi/linux/fcntl.h                 |  9 ++++++
- tools/testing/selftests/memfd/memfd_test.c | 32 ++++++++++++++++++++++
- 3 files changed, 44 insertions(+)
-
+diff --git a/fs/fcntl.c b/fs/fcntl.c
+index e871009f6c88..301527e07a4d 100644
+--- a/fs/fcntl.c
++++ b/fs/fcntl.c
+@@ -419,6 +419,9 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+ 	case F_SET_RW_HINT:
+ 		err = fcntl_rw_hint(filp, cmd, arg);
+ 		break;
++	case F_CHECK_ORIGINAL_MEMFD:
++		err = !(filp->f_mode & FMODE_WRITER);
++		break;
+ 	default:
+ 		break;
+ 	}
+diff --git a/include/uapi/linux/fcntl.h b/include/uapi/linux/fcntl.h
+index 6c80f96049bd..9a10fe3aafa7 100644
+--- a/include/uapi/linux/fcntl.h
++++ b/include/uapi/linux/fcntl.h
+@@ -56,6 +56,15 @@
+ #define F_GET_FILE_RW_HINT	(F_LINUX_SPECIFIC_BASE + 13)
+ #define F_SET_FILE_RW_HINT	(F_LINUX_SPECIFIC_BASE + 14)
+ 
++/*
++ * Check if the fd points to the memfd's original open fd (the one created by
++ * memfd_create). Returns 1 if yes, 0 if no.
++ * If the fd doesn't point to a memfd, the value should not be interpreted.
++ * Useful because only the original open fd can be both writable and
++ * executable.
++ */
++#define F_CHECK_ORIGINAL_MEMFD	(F_LINUX_SPECIFIC_BASE + 15)
++
+ /*
+  * Valid hint values for F_{GET,SET}_RW_HINT. 0 is "not set", or can be
+  * used to clear any hints previously set.
 -- 
 2.42.0.283.g2d96d420d3-goog
 
