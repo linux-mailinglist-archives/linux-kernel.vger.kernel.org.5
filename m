@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A359178F141
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:28:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3F778F143
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345009AbjHaQ2o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:28:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51044 "EHLO
+        id S1346825AbjHaQ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346803AbjHaQ2m (ORCPT
+        with ESMTP id S1346593AbjHaQ2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:28:42 -0400
+        Thu, 31 Aug 2023 12:28:45 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC611B1;
-        Thu, 31 Aug 2023 09:28:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF380E56;
+        Thu, 31 Aug 2023 09:28:38 -0700 (PDT)
 Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VB1Z4K022576;
-        Thu, 31 Aug 2023 16:28:34 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VBLQn3026710;
+        Thu, 31 Aug 2023 16:28:37 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=xq7+zIPggv88IdH+1zROOSkLFNRaEa1BCwSadmhKsSw=;
- b=cNim4vwZktTWjLRCU+H+ihNp2nhQSKgm9zPi5l61+GIqCJ9QshQxR5lUHM+inJo1k3DC
- 0Y0dYrYXA5aPkKhpM2mtu6nJOSS+pS/ATYrYjgcDohs6v+O4DM8HFORYKMIvC68tzAjt
- /Tf+GD+QBi5l0FpS3RpC7wYucxVxVKk9Pjj3/uNGJNhQw6gx8pglWR4F96KBhXg6bScd
- dZQfToMtCP8x+mApgX31TYELLTdKBSwrSj73RMPXs0i3WoPe0Tzgx6YqCYOU3EgXdKKt
- Hv64nolFo961kLQUmiqXbFoUaBS6LZpkzO614MqOnkdvMOo6SnB6AFZimDVLK57yxB1c kA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st4p3kepw-1
+ bh=f2xxe08v/bSPU7Buh1A+IhrKRh1d6l13UuA+QofE+ok=;
+ b=Lr6uBHSqffQT+PZb4UxxZpfGcU5MHtVf5ZnvRFi7YeX5Z8xcESWiJor+bEEMFEerUvoF
+ CvycxHuV2tqN2q9Ot8PpK0WvBmT0RLfFyULX/7hHu41+l4+46hMm1ff0VZ2m/57t8v0h
+ gxnXQkVKfoir31VsG5AKMFpG9aE0Vw42dRLpJefZmtffoDaru/KUYn9zlFzsEVg7mPG9
+ XBFAsUKXTjZYSu17+zImhgf9m5MeoYqh499EnV90RfMlotuz9SBtTQv0ge7WmdPIhPcj
+ zdHfrVvFT2EiBNialqa7hMF2gi/Txx53KE+BwZe0hzm9j7Geo6GcAe7iXRwPopTonWHP BA== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st4p3keq2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 16:28:34 +0000
+        Thu, 31 Aug 2023 16:28:36 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VGSXwl000395
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VGSaL4005911
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 16:28:33 GMT
+        Thu, 31 Aug 2023 16:28:36 GMT
 Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 31 Aug 2023 09:28:30 -0700
+ 15.2.1118.36; Thu, 31 Aug 2023 09:28:33 -0700
 From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
 To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
 CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
         <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
         <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
-Subject: [PATCH v1 4/5] misc: fastrpc: Add support to save and restore interrupted
-Date:   Thu, 31 Aug 2023 21:58:11 +0530
-Message-ID: <1693499292-19083-5-git-send-email-quic_ekangupt@quicinc.com>
+Subject: [PATCH v1 5/5] misc: fastrpc: Add support to allocate shared context bank
+Date:   Thu, 31 Aug 2023 21:58:12 +0530
+Message-ID: <1693499292-19083-6-git-send-email-quic_ekangupt@quicinc.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1693499292-19083-1-git-send-email-quic_ekangupt@quicinc.com>
 References: <1693499292-19083-1-git-send-email-quic_ekangupt@quicinc.com>
@@ -57,8 +57,8 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 7WuBLWcfLappWo7-FVn7XnLpRwPWG0zT
-X-Proofpoint-GUID: 7WuBLWcfLappWo7-FVn7XnLpRwPWG0zT
+X-Proofpoint-ORIG-GUID: _KLg7Bc2j454ofvKivu20ewl0wYMR9Ak
+X-Proofpoint-GUID: _KLg7Bc2j454ofvKivu20ewl0wYMR9Ak
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-08-31_14,2023-08-31_01,2023-05-22_02
@@ -77,166 +77,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For any remote call, driver sends a message to DSP using RPMSG
-framework. After message is sent, there is a wait on a completion
-object at driver which is completed when DSP response is received.
-
-There is a possibility that a signal is received while waiting
-causing the wait function to return -ERESTARTSYS. In this case
-the context should be saved and it should get restored for the
-next invocation for the thread.
-
-Adding changes to support saving and restoring of interrupted
-fastrpc contexts.
+Context banks could be set as a shared one using a DT propery
+"qcom,nsessions". The property takes the number of session to
+be created of the context bank. This change provides a control
+mechanism for user to use shared context banks for light weight
+processes. The session is set as shared while its creation and if
+a user requests for shared context bank, the same will be allocated
+during process initialization.
 
 Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
 ---
- drivers/misc/fastrpc.c | 76 +++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 72 insertions(+), 4 deletions(-)
+ drivers/misc/fastrpc.c | 121 +++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 82 insertions(+), 39 deletions(-)
 
 diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index f8c1c381..1b26718 100644
+index 1b26718..6ac1403 100644
 --- a/drivers/misc/fastrpc.c
 +++ b/drivers/misc/fastrpc.c
-@@ -332,6 +332,7 @@ struct fastrpc_user {
- 	struct list_head user;
- 	struct list_head maps;
- 	struct list_head pending;
-+	struct list_head interrupted;
- 	struct list_head mmaps;
+@@ -296,6 +296,7 @@ struct fastrpc_session_ctx {
+ 	int sid;
+ 	bool used;
+ 	bool valid;
++	bool sharedcb;
+ };
  
- 	struct fastrpc_channel_ctx *cctx;
-@@ -711,6 +712,40 @@ static struct fastrpc_invoke_ctx *fastrpc_context_alloc(
- 	return ERR_PTR(ret);
- }
+ struct fastrpc_channel_ctx {
+@@ -343,12 +344,22 @@ struct fastrpc_user {
+ 	int tgid;
+ 	int pd;
+ 	bool is_secure_dev;
++	bool sharedcb;
+ 	/* Lock for lists */
+ 	spinlock_t lock;
+ 	/* lock for allocations */
+ 	struct mutex mutex;
+ };
  
-+static struct fastrpc_invoke_ctx *fastrpc_context_restore_interrupted(
-+			struct fastrpc_user *fl, struct fastrpc_invoke *inv)
-+{
-+	struct fastrpc_invoke_ctx *ctx = NULL, *ictx = NULL, *n;
++struct fastrpc_ctrl_smmu {
++	u32 sharedcb;	/* Set to SMMU share context bank */
++};
 +
-+	spin_lock(&fl->lock);
-+	list_for_each_entry_safe(ictx, n, &fl->interrupted, node) {
-+		if (ictx->pid == current->pid) {
-+			if (inv->sc != ictx->sc || ictx->fl != fl) {
-+				dev_err(ictx->fl->sctx->dev,
-+					"interrupted sc (0x%x) or fl (%pK) does not match with invoke sc (0x%x) or fl (%pK)\n",
-+					ictx->sc, ictx->fl, inv->sc, fl);
-+				spin_unlock(&fl->lock);
-+				return ERR_PTR(-EINVAL);
-+			}
-+			ctx = ictx;
-+			list_del(&ctx->node);
-+			list_add_tail(&ctx->node, &fl->pending);
++struct fastrpc_internal_control {
++	u32 req;
++	struct fastrpc_ctrl_smmu smmu;
++};
++
+ static inline int64_t getnstimediff(struct timespec64 *start)
+ {
+ 	int64_t ns;
+@@ -850,6 +861,37 @@ static const struct dma_buf_ops fastrpc_dma_buf_ops = {
+ 	.release = fastrpc_release,
+ };
+ 
++static struct fastrpc_session_ctx *fastrpc_session_alloc(
++					struct fastrpc_channel_ctx *cctx, bool sharedcb)
++{
++	struct fastrpc_session_ctx *session = NULL;
++	unsigned long flags;
++	int i;
++
++	spin_lock_irqsave(&cctx->lock, flags);
++	for (i = 0; i < cctx->sesscount; i++) {
++		if (!cctx->session[i].used && cctx->session[i].valid &&
++			cctx->session[i].sharedcb == sharedcb) {
++			cctx->session[i].used = true;
++			session = &cctx->session[i];
 +			break;
 +		}
 +	}
-+	spin_unlock(&fl->lock);
-+	return ctx;
++	spin_unlock_irqrestore(&cctx->lock, flags);
++
++	return session;
 +}
 +
-+static void fastrpc_context_save_interrupted(
-+			struct fastrpc_invoke_ctx *ctx)
++static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
++				 struct fastrpc_session_ctx *session)
 +{
-+	spin_lock(&ctx->fl->lock);
-+	list_del(&ctx->node);
-+	list_add_tail(&ctx->node, &ctx->fl->interrupted);
-+	spin_unlock(&ctx->fl->lock);
++	unsigned long flags;
++
++	spin_lock_irqsave(&cctx->lock, flags);
++	session->used = false;
++	spin_unlock_irqrestore(&cctx->lock, flags);
 +}
 +
- static struct sg_table *
- fastrpc_map_dma_buf(struct dma_buf_attachment *attachment,
- 		    enum dma_data_direction dir)
-@@ -1261,6 +1296,14 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 		return -EPERM;
- 	}
- 
-+	if (!kernel) {
-+		ctx = fastrpc_context_restore_interrupted(fl, inv);
-+		if (IS_ERR(ctx))
-+			return PTR_ERR(ctx);
-+		if (ctx)
-+			goto wait;
-+	}
-+
- 	ctx = fastrpc_context_alloc(fl, kernel, sc, invoke);
- 	if (IS_ERR(ctx))
- 		return PTR_ERR(ctx);
-@@ -1284,6 +1327,7 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 		goto bail;
- 	PERF_END);
- 
-+wait:
- 	if (kernel) {
- 		if (!wait_for_completion_timeout(&ctx->work, 10 * HZ))
- 			err = -ETIMEDOUT;
-@@ -1320,6 +1364,9 @@ static int fastrpc_internal_invoke(struct fastrpc_user *fl,  u32 kernel,
- 	}
- 
- 	if (err == -ERESTARTSYS) {
-+		if (ctx)
-+			fastrpc_context_save_interrupted(ctx);
-+
- 		list_for_each_entry_safe(buf, b, &fl->mmaps, node) {
- 			list_del(&buf->node);
- 			list_add_tail(&buf->node, &fl->cctx->invoke_interrupted_mmaps);
-@@ -1620,6 +1667,25 @@ static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
- 	spin_unlock_irqrestore(&cctx->lock, flags);
- }
- 
-+static void fastrpc_context_list_free(struct fastrpc_user *fl)
-+{
-+	struct fastrpc_invoke_ctx *ctx, *n;
-+
-+	list_for_each_entry_safe(ctx, n, &fl->interrupted, node) {
-+		spin_lock(&fl->lock);
-+		list_del(&ctx->node);
-+		spin_unlock(&fl->lock);
-+		fastrpc_context_put(ctx);
-+	}
-+
-+	list_for_each_entry_safe(ctx, n, &fl->pending, node) {
-+		spin_lock(&fl->lock);
-+		list_del(&ctx->node);
-+		spin_unlock(&fl->lock);
-+		fastrpc_context_put(ctx);
-+	}
-+}
-+
- static int fastrpc_release_current_dsp_process(struct fastrpc_user *fl)
+ static int fastrpc_map_create(struct fastrpc_user *fl, int fd,
+ 			      u64 len, u32 attr, struct fastrpc_map **ppmap)
  {
- 	struct fastrpc_invoke_args args[1];
-@@ -1656,10 +1722,7 @@ static int fastrpc_device_release(struct inode *inode, struct file *file)
- 	if (fl->init_mem)
- 		fastrpc_buf_free(fl->init_mem);
- 
--	list_for_each_entry_safe(ctx, n, &fl->pending, node) {
--		list_del(&ctx->node);
--		fastrpc_context_put(ctx);
--	}
-+	fastrpc_context_list_free(fl);
- 
- 	list_for_each_entry_safe(map, m, &fl->maps, node)
- 		fastrpc_map_put(map);
-@@ -1700,6 +1763,7 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
- 	spin_lock_init(&fl->lock);
- 	mutex_init(&fl->mutex);
- 	INIT_LIST_HEAD(&fl->pending);
-+	INIT_LIST_HEAD(&fl->interrupted);
- 	INIT_LIST_HEAD(&fl->maps);
- 	INIT_LIST_HEAD(&fl->mmaps);
- 	INIT_LIST_HEAD(&fl->user);
-@@ -2555,6 +2619,10 @@ static void fastrpc_notify_users(struct fastrpc_user *user)
- 		ctx->retval = -EPIPE;
- 		complete(&ctx->work);
+@@ -1446,6 +1488,10 @@ static int fastrpc_init_create_static_process(struct fastrpc_user *fl,
+ 		goto err_name;
  	}
-+	list_for_each_entry(ctx, &user->interrupted, node) {
-+		ctx->retval = -EPIPE;
-+		complete(&ctx->work);
-+	}
- 	spin_unlock(&user->lock);
+ 
++	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
++	if (!fl->sctx)
++		return -EBUSY;
++
+ 	if (!fl->cctx->remote_heap) {
+ 		err = fastrpc_remote_heap_alloc(fl, fl->sctx->dev, init.memlen,
+ 						&fl->cctx->remote_heap);
+@@ -1563,6 +1609,10 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
+ 		goto err;
+ 	}
+ 
++	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
++	if (!fl->sctx)
++		return -EBUSY;
++
+ 	inbuf.pgid = fl->tgid;
+ 	inbuf.namelen = strlen(current->comm) + 1;
+ 	inbuf.filelen = init.filelen;
+@@ -1637,36 +1687,6 @@ static int fastrpc_init_create_process(struct fastrpc_user *fl,
+ 	return err;
  }
  
+-static struct fastrpc_session_ctx *fastrpc_session_alloc(
+-					struct fastrpc_channel_ctx *cctx)
+-{
+-	struct fastrpc_session_ctx *session = NULL;
+-	unsigned long flags;
+-	int i;
+-
+-	spin_lock_irqsave(&cctx->lock, flags);
+-	for (i = 0; i < cctx->sesscount; i++) {
+-		if (!cctx->session[i].used && cctx->session[i].valid) {
+-			cctx->session[i].used = true;
+-			session = &cctx->session[i];
+-			break;
+-		}
+-	}
+-	spin_unlock_irqrestore(&cctx->lock, flags);
+-
+-	return session;
+-}
+-
+-static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
+-				 struct fastrpc_session_ctx *session)
+-{
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&cctx->lock, flags);
+-	session->used = false;
+-	spin_unlock_irqrestore(&cctx->lock, flags);
+-}
+-
+ static void fastrpc_context_list_free(struct fastrpc_user *fl)
+ {
+ 	struct fastrpc_invoke_ctx *ctx, *n;
+@@ -1771,15 +1791,6 @@ static int fastrpc_device_open(struct inode *inode, struct file *filp)
+ 	fl->cctx = cctx;
+ 	fl->is_secure_dev = fdevice->secure;
+ 
+-	fl->sctx = fastrpc_session_alloc(cctx);
+-	if (!fl->sctx) {
+-		dev_err(&cctx->rpdev->dev, "No session available\n");
+-		mutex_destroy(&fl->mutex);
+-		kfree(fl);
+-
+-		return -EBUSY;
+-	}
+-
+ 	spin_lock_irqsave(&cctx->lock, flags);
+ 	list_add_tail(&fl->user, &cctx->users);
+ 	spin_unlock_irqrestore(&cctx->lock, flags);
+@@ -1838,6 +1849,10 @@ static int fastrpc_init_attach(struct fastrpc_user *fl, int pd)
+ 	struct fastrpc_enhanced_invoke ioctl;
+ 	int tgid = fl->tgid;
+ 
++	fl->sctx = fastrpc_session_alloc(fl->cctx, fl->sharedcb);
++	if (!fl->sctx)
++		return -EBUSY;
++
+ 	args[0].ptr = (u64)(uintptr_t) &tgid;
+ 	args[0].length = sizeof(tgid);
+ 	args[0].fd = -1;
+@@ -1884,11 +1899,32 @@ static int fastrpc_invoke(struct fastrpc_user *fl, char __user *argp)
+ 	return err;
+ }
+ 
++static int fastrpc_internal_control(struct fastrpc_user *fl,
++					struct fastrpc_internal_control *cp)
++{
++	int err = 0;
++
++	if (!fl)
++		return -EBADF;
++	if (!cp)
++		return -EINVAL;
++
++	case FASTRPC_CONTROL_SMMU:
++		fl->sharedcb = cp->smmu.sharedcb;
++		break;
++	default:
++		err = -EBADRQC;
++		break;
++	}
++	return err;
++}
++
+ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
+ {
+ 	struct fastrpc_enhanced_invoke einv;
+ 	struct fastrpc_invoke_args *args = NULL;
+ 	struct fastrpc_ioctl_multimode_invoke invoke;
++	struct fastrpc_internal_control cp = {0};
+ 	u32 nscalars;
+ 	u64 *perf_kernel;
+ 	int err;
+@@ -1921,6 +1957,12 @@ static int fastrpc_multimode_invoke(struct fastrpc_user *fl, char __user *argp)
+ 		err = fastrpc_internal_invoke(fl, false, &einv);
+ 		kfree(args);
+ 		break;
++	case FASTRPC_INVOKE_CONTROL:
++		if (copy_from_user(&cp, (void __user *)(uintptr_t)invoke.invparam, sizeof(cp)))
++			return  -EFAULT;
++
++		err = fastrpc_internal_control(fl, &cp);
++		break;
+ 	default:
+ 		err = -ENOTTY;
+ 		break;
+@@ -2421,6 +2463,7 @@ static int fastrpc_cb_probe(struct platform_device *pdev)
+ 	if (sessions > 0) {
+ 		struct fastrpc_session_ctx *dup_sess;
+ 
++		sess->sharedcb = true;
+ 		for (i = 1; i < sessions; i++) {
+ 			if (cctx->sesscount >= FASTRPC_MAX_SESSIONS)
+ 				break;
 -- 
 2.7.4
 
