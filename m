@@ -2,428 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ABBB78E6C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:51:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7684D78E6C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238441AbjHaGvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 02:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57054 "EHLO
+        id S240255AbjHaGvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 02:51:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232427AbjHaGvL (ORCPT
+        with ESMTP id S238194AbjHaGvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 02:51:11 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B8DAB;
-        Wed, 30 Aug 2023 23:51:05 -0700 (PDT)
+        Thu, 31 Aug 2023 02:51:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61C52BE;
+        Wed, 30 Aug 2023 23:51:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693464665; x=1725000665;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Vpk5sOevamTYSoOMQUv0RfujFkQagcssabdouNLSXWo=;
-  b=jwFN+Lqt9Qnuko4IqSHB9DbQ/c0SHPfecRY3kJRuyrIkGiSFcOdlyfw0
-   ayx+/OGlL1FRUUuiy6Lfk+s3xKwK7yymhgDTPEwVCDx1/Qj6WJeOkwQK5
-   mUFYZbLDj9l3Vr6hmAAU/C41gQo+GCBjeF1vpiWIG7E5th0e1JY2Jo+IL
-   fUbS0n9lEhzDWkn0+BX8HPB6nBEOsq2dohI56HSTnK20P1LiGZl7NkhgR
-   ttjCTr/pWQFnxlgxGhPt0Kzo9x2hx9TiTkcF10iy5//v41sdb+zT+cyWl
-   3fvpruVJh7epkil8O+FJHFzePX5yF/N/ZAp/hKI7wZ/dBqgqyetf+JETK
+  t=1693464692; x=1725000692;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=BuV0/WYKN+hx6/L7/TI61rUqz10RbmRnyT588x+1934=;
+  b=dauQ9ZZ6GzA5viwdCcaacXmRRgvKHPAl1TItCOuexW7nFmznTTzlEYzZ
+   LtCwOYVcTM66Jj27palaxJnkySVnmVQlus5OlsiEfBNMDI0KJwb9uLPYC
+   ihFO+Ulwx06pyzWhokfF8rFo7fyTI6VNQh6ENvQh+2UOnPpEBUCYCP3DD
+   rQeKg+/x48mku6dchPaJvOumfi9aLpy+2t3Wq4wI8BbscZnIP4RfCGL+u
+   zUM7kQSnPyqnqPJkPjvgfzwsGyIfJnaZYIrZJlkQTnwLv4z8Q5glw2tbu
+   yt46d8YvXrx+N706KPWrvm9RoeAb2KGlegTrbGHtKzbN+Hdr2blCdCxMg
    w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="374748446"
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="360823325"
 X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="374748446"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 23:51:05 -0700
+   d="scan'208";a="360823325"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 23:51:31 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="986072486"
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="689197163"
 X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="986072486"
-Received: from mtkaczyk-mobl.ger.corp.intel.com (HELO localhost) ([10.249.134.233])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 23:51:02 -0700
-Date:   Thu, 31 Aug 2023 08:50:57 +0200
-From:   Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>
-To:     Yu Kuai <yukuai1@huaweicloud.com>
-Cc:     Song Liu <song@kernel.org>, AceLan Kao <acelan@gmail.com>,
-        Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>,
-        "yukuai (C)" <yukuai3@huawei.com>
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
-Message-ID: <20230831085057.00001795@linux.intel.com>
-In-Reply-To: <03b79ab0-0bb0-ac29-4a70-37d902f9a05b@huaweicloud.com>
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
-        <20230818101630.000027f4@linux.intel.com>
-        <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
-        <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
-        <20230822083923.00007fb6@linux.intel.com>
-        <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
-        <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
-        <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
-        <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
-        <CAMz9Wg9y52iuxJRSQFC2N5Katt72v-o=JvEjegJt-MwORmw9tQ@mail.gmail.com>
-        <CAPhsuW7XEy4q3XR389F7CUvXvJ=0JR0QkMOr4LU03avT0erAfg@mail.gmail.com>
-        <354004ce-ad4e-5ad5-8fe6-303216647e0c@huaweicloud.com>
-        <03b79ab0-0bb0-ac29-4a70-37d902f9a05b@huaweicloud.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+   d="scan'208";a="689197163"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 30 Aug 2023 23:51:31 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 30 Aug 2023 23:51:30 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 30 Aug 2023 23:51:30 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 30 Aug 2023 23:51:30 -0700
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.46) by
+ edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 30 Aug 2023 23:51:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=avC6OpFcwTQnAC9jSvKUSLCGsVaBsAhtVtEUdwdf40DE3/5peYnFrFL3rXMY9gmSGjtFuNVZrjzHmc9K59T5/uNMo3eVhLH9BNuT9fGuvDq+WYOAVQJT/482TfMrQ5qo+0y3Ct5OjAGJOyXEPpvcFAmH72vl/HKqbIa0EkB2cJ0YR+E3/Yk0b+nupvZoTc2GPk+sytvY6zwPo6pEJPxdqJrUNcLd19JTJLV/8T9xvrEY6m1vFn1uhX7B6q4f32X1j7vOQDSDxhgN3bjrg5ZvEFSHnknnctT0GkZRZ1z+IL3RXgY9oynLvuItceJd3PY0OXCDMANjaEgHeMRdEHswIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kQkToH0omcOD0I64rLF+IIiGAx2kAZrKu54lvPMmY7Y=;
+ b=N9eoaH6P7FfXug4wt98FqQnlxOH0xeM6rbNAFNiKVgyQvbXKPO3m3psOm2IRoJXwcC6M8t21KWeSJdzRzRZ2TWywS8JIV5H9DA6peCa4hTazHIaP5vyEClqNxDBotVWIUUXhQP8F9P8QZPcwojMamB2T+O/AZ4SDlWv2k0gLwMBGcuos1jJsaeQKO/bRmP/D4ZkOqg+HuWR99+AAaDtlpIA81wF6P4/nakaxDRKU5MwdMgCRgFLLgrRII8hM7UszWdYuyvnnk7x9x0nI/DoUa31C8TV+kcosESV+00LDN3hubQqVVjJIIg+yL1bjmGy3NjgwrgKkl8e/xmkumGU5gw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
+ by MW4PR11MB6885.namprd11.prod.outlook.com (2603:10b6:303:21b::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.20; Thu, 31 Aug
+ 2023 06:51:28 +0000
+Received: from MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::8824:ea30:b0ab:f107]) by MN0PR11MB6231.namprd11.prod.outlook.com
+ ([fe80::8824:ea30:b0ab:f107%4]) with mapi id 15.20.6745.020; Thu, 31 Aug 2023
+ 06:51:27 +0000
+Date:   Thu, 31 Aug 2023 08:51:15 +0200
+From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     "Yu, Fenghua" <fenghua.yu@intel.com>,
+        "Chatre, Reinette" <reinette.chatre@intel.com>,
+        Peter Newman <peternewman@google.com>,
+        "Jonathan Corbet" <corbet@lwn.net>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
+        James Morse <james.morse@arm.com>,
+        Jamie Iles <quic_jiles@quicinc.com>,
+        "Babu Moger" <babu.moger@amd.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "patches@lists.linux.dev" <patches@lists.linux.dev>
+Subject: Re: [PATCH v5 8/8] selftests/resctrl: Adjust effective L3 cache size
+ when SNC enabled
+Message-ID: <zulbpqdmui664qflvo3fcw3wnuailsiwkjtfu4xr37kutdoagy@54z7s6hud2vf>
+References: <20230722190740.326190-1-tony.luck@intel.com>
+ <20230829234426.64421-1-tony.luck@intel.com>
+ <20230829234426.64421-9-tony.luck@intel.com>
+ <frfa3olxop3xjnouvvv7y2s36varmto5qwhmkitvslmiawzwkd@zh2jhob4o5qe>
+ <SJ1PR11MB60838CA98A341F59260BDE18FCE6A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <SJ1PR11MB60838CA98A341F59260BDE18FCE6A@SJ1PR11MB6083.namprd11.prod.outlook.com>
+X-ClientProxiedBy: FR0P281CA0089.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:1e::11) To MN0PR11MB6231.namprd11.prod.outlook.com
+ (2603:10b6:208:3c4::15)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|MW4PR11MB6885:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7b413e63-0c46-4675-32df-08dba9eeb29f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4ulfu+nQsuw5l+tiUeK4gR+SWQm8bVZ1dHq4flKTbieQ6WqgRFOpjOWL5QXFOX/zmiP+deT+3BZUKCNB+/H8ypPB/gWyI7OGh3kiFZOTCY92MjRgNpTocPiurZXDRueoELtbXZADY1lQKpzifJsUlAog/9uNdZecu9ESNb+x95jAYHbhWUpTBBkHSeQSuWsavZu+bZVQtCo4WqxukvRrpOe7Bl9lPpo9q9naBjOetx4ALAg8ZjY8exQK8UC0YmcFTSwDrgpTkGX2C3ewCjkO7WeovDCOCJMMCjROsSqQJIPlncGNAYu5fqKIHhFlm7ki0kRZ1bbGc4zfNaKPbBdzlX6e1EA6BIVwSb9y4NKBP/THqriOlJTrimDtzB9JCV3z+3di5BrznphgWugdTNLT4PbDjl1U9UahKEmTBchX0fIEXSHhtIS0+uV4ECF7Rw/bQuYVMzQc2dX+6ySmtkJzY5vCWKLGpGK3Eu2E8SnMgE/7AYm+l9EEyaaDRlQJn1oTkF2wSi2o/yaneQB9vZ9OHseSUIgXf3+p3UfMnhwUlCA/NO42UwtREayrsaDOM1V7
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(396003)(366004)(376002)(346002)(39860400002)(1800799009)(186009)(451199024)(33716001)(2906002)(86362001)(7416002)(5660300002)(38100700002)(82960400001)(6862004)(4326008)(8676002)(8936002)(83380400001)(41300700001)(6512007)(66556008)(53546011)(316002)(9686003)(6486002)(6506007)(26005)(6636002)(478600001)(66476007)(6666004)(66946007)(54906003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?o8Y1dBtaj50aGAQFH3BHcQotvrjm+mZo56uvaNr1p5tMKM7/55oUBvA4+Q?=
+ =?iso-8859-1?Q?cyqVTrn0XdPBWsEa+slm1uczPA6pqhU7Mw20TQ6GkUD3nx4B+LTN/mLcA6?=
+ =?iso-8859-1?Q?XD1bpw0REtW2cjH4SO8RlpinXTFniDqqdI1IW/fXNUEUYa6ufQZrFTTWo2?=
+ =?iso-8859-1?Q?MyrX5fCup8+YWJ0iZJnxWdTM+yAkdVADRz372rzied636/oxYFLh/qC/U4?=
+ =?iso-8859-1?Q?bmtFRWEeObY9x4W+4zWitsGXWPkSPaFxBnT8jrmVUFiM/QLjjVlGe2kez+?=
+ =?iso-8859-1?Q?hbxI8RmRDw6gS9voONv4ehK78IkT8dx7hr+bY/62+zoATZPi/yDZ3MNJKn?=
+ =?iso-8859-1?Q?Pdi5zb0MfhFXBTh60Mj24eCdMzmoMp02S63VFiNyl4vRslFu8EyUrJH/82?=
+ =?iso-8859-1?Q?50K7GPuCo0vtb3XiJyRG3IndVMOEodK7KwvIYNMbXdN+2wLoGjrq3VlThO?=
+ =?iso-8859-1?Q?7KNfKdDxRLoW8EZbvrcJ22khc4yJXwyGVI6b/cYBDwmcIbEWGF3gM2fdvf?=
+ =?iso-8859-1?Q?QiZvT6lmke9llGmD1B+0lCVwsSUEKO3jVOIu1+4D/ddVdRiZqRypqJzNa2?=
+ =?iso-8859-1?Q?WOR6npMPsw+T7BLozRufZtV8ZYqs1PmxLF5w5cXECAKpZZJ/zFaSJxH1by?=
+ =?iso-8859-1?Q?OTGjPjiVpxCzupKLMxe0QKEZpE45NO0F4VQJoU5zuzcLPGgmDU1LUc0Gk7?=
+ =?iso-8859-1?Q?BQzZmmuVralrm1MgjusNmvdmCAwDSrikNTWRgv+z/JdiOfhjEDNMEAx6Cr?=
+ =?iso-8859-1?Q?yUmVEMuXBGZmOq5wnJavDHZ56IO19FXKJlC+7ocWMm1X4V8ctO3qj3TwrW?=
+ =?iso-8859-1?Q?+M/UIVrNdmoRDK/q9BHi9eJqdlnceeOk70U6KaEgmhEQWHarls753IuEIL?=
+ =?iso-8859-1?Q?L638TuNgKX/ATYvAsI+vWp2qtwQ5B+fHua3wvmNYmulNao7+mWO71azY3e?=
+ =?iso-8859-1?Q?0kXFRRvzmL2cIGhsMUM2HW+OBPv4txNBL1AQpFzTP/Q8Zd8zuNfzpHFrAR?=
+ =?iso-8859-1?Q?fAbctsiFVBRzRBltNTSJ2VsRDj4OClxgLBGw+j0/WeAu9boWtzrxcgvbM/?=
+ =?iso-8859-1?Q?4Ly1ZlHZNtecE7urbvN4QfXGAJx4XySc/SQNCyeQcEtwSEYHtxKpw6fH92?=
+ =?iso-8859-1?Q?WEeJps4tmO9381DCvtCu1SXkhjiCB5Hkb20RkkPpSP874ZVRf+tW8txIuL?=
+ =?iso-8859-1?Q?VCP5kMPmNeu40qqDYRHjNk73UAsEGcQvQjFukF3cfkWxCJPTGdtJrYPDjk?=
+ =?iso-8859-1?Q?b1lbST176s1/AkQvp45E/EZf+nf08w0/gTc68ToBfnbqYGTvpIlTND31oG?=
+ =?iso-8859-1?Q?xfGKQvCO/+lS+Dej4AcN6PiaQFhGRoEM86b3DApgVOm3hS0OZ6Dk6eLNJv?=
+ =?iso-8859-1?Q?xj9g2n/7uQXlQzJSGMH8kwG+AloDUMK4uKwGy4t76Fl1EiSLHSw8IHLMis?=
+ =?iso-8859-1?Q?rQwGoY2IujkKIfiHxyPqdY4muqfyrZetLSYfgt4ARma+YiZJQ5pAskqQ0p?=
+ =?iso-8859-1?Q?dYMXvufBP/8ZqBbB7LnyVbs/FRAoE4SsOF9iEHD7FuSI0s91xoytfN/taK?=
+ =?iso-8859-1?Q?oZYu+DWDZIHsjmJ+9L4yU8rm5fykaY/o1Rx/gS414+OpFoYjt4RURlnzR+?=
+ =?iso-8859-1?Q?LLcXtMT8p/5fslqXwT8r5ngCe8AVhDAdA4Ht9pd98bILP9Pj88a1osBcfX?=
+ =?iso-8859-1?Q?MVhkYB7xmsiNQglVT8I=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7b413e63-0c46-4675-32df-08dba9eeb29f
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 06:51:27.1081
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xdjRoAE32p1RDMygOVQLktpbZH6MZ49zNDay2DXbanQkv6qpbj37g8+0WN2vnaQI/nm4VWhF6BaD9MgOcpBOlhgUw/YLMDL+Je8gdNDgjBY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6885
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 10:28:44 +0800
-Yu Kuai <yukuai1@huaweicloud.com> wrote:
-
-> Hi, Acelan,
->=20
-> =E5=9C=A8 2023/08/28 21:50, Yu Kuai =E5=86=99=E9=81=93:
-> > Hi,
-> >=20
-> > =E5=9C=A8 2023/08/28 13:20, Song Liu =E5=86=99=E9=81=93: =20
-> >> Hi AceLan,
-> >>
-> >> Thanks for running the experiments.
-> >>
-> >> On Fri, Aug 25, 2023 at 9:32=E2=80=AFPM AceLan Kao <acelan@gmail.com> =
-wrote:
-> >> [...] =20
-> >>>>
-> >>>> Could you please run the follow two experiments?
-> >>>>
-> >>>> 1. Confirm 12a6caf273240a triggers this. Specifically:
-> >>>> =C2=A0=C2=A0=C2=A0 git checkout 12a6caf273240a =3D> repros
-> >>>> =C2=A0=C2=A0=C2=A0 git checkout 12a6caf273240a~1 =3D> cannot repro =
-=20
-> >>> Yes, I'm pretty sure about this, that's my bisect result and I just
-> >>> confirmed it again.
-> >>> I also tried reverting 12a6caf273240a and the issue is gone. =20
-> >>
-> >> The log doesn't match my guess. Specifically:
-> >>
-> >> [=C2=A0 420.068142] systemd-shutdown[1]: Stopping MD /dev/md123 (9:123=
-).
-> >> [=C2=A0 420.074718] md_open:md123 openers++ =3D 1 by systemd-shutdow
-> >> [=C2=A0 420.080787] systemd-shutdown[1]: Failed to sync MD block device
-> >> /dev/md123, ignoring: Input/output error
-> >> [=C2=A0 420.090831] md: md123 stopped.
-> >> [=C2=A0 420.094465] systemd-shutdown[1]: Stopping MD /dev/md122 (9:122=
-).
-> >> [=C2=A0 420.101045] systemd-shutdown[1]: Could not stop MD /dev/md122:
-> >> Device or resource busy =20
-> >=20
-> > I see that:
-> >=20
-> > systemd-shutdown[1]: Couldn't finalize remaining=C2=A0 MD devices, tryi=
-ng again.
-> >=20
-> > Can we make sure is this why power off hang?
-> >=20
-> > Because in my VM, power off is not hang and I got:
-> >=20
-> > systemd-shutdown[1]: Could not stop MD /dev/md1: Device or resource busy
-> > systemd-shutdown[1]: Failed to finalize MD devices, ignoring. =20
-> >>
-> >> For a successful stop on md123, we reach the pr_info() in md_open().
-> >> For a failed stop on md122, the kernel returns -EBUSY before that
-> >> pr_info() in md_open(). There are some changes in md_open() in
-> >> the past few release, so I am not quite sure we are looking at the
-> >> same code. =20
-> >=20
-> > By the way, based on code review, looks like md_open never return
-> > -EBUSY, and I think following is the only place can return -EBUSY before
-> > md_open() is called:
-> >=20
-> > blkdev_open
-> >  =C2=A0blkdev_get_by_dev
-> >  =C2=A0 bd_prepare_to_claim
-> >  =C2=A0=C2=A0 bd_may_claim=C2=A0=C2=A0=C2=A0=C2=A0 -> -EBUSY
-> >=20
-> > Acelan, can you add following debug patch on the top of Song's patch
-> > and reporduce it again? Hope it'll confirm why stop array failed with
-> > -EBUSY.
-> >  =20
->=20
-> I saw your reply:
->=20
-> https://lore.kernel.org/all/CAMz9Wg9VXJzZkKWCosm0_=3DRz6gG9r3pCMrhvBZQVCQ=
-b8i0kd-w@mail.gmail.com/
->=20
-> But I didn't recieve you emails, please reply to me through this email
-> address: yukuai3@huawei.com. yukuai1@huaweicloud.com is just used for
-> sending, and I always missing emails from huaweicloud.com, my apologize
-> for this inconvenience, I have to do it this way due to my company
-> policy.
->=20
-> There is something interesting on test result:
->=20
-> At first, md122 is the root device, I guess this is why I can't repoduce
-> this problem in my local VM.
-> [   14.478619] systemd-gpt-auto-generator[585]: md122p3: Root device=20
-> /dev/md122.
-> [   14.481823] block md122: the capability attribute has been deprecated.
->=20
-> Then, before trying to stop md122, following log shows that md122 is
-> still mounted:
-> [ 1368.369926] [3462]: Remounting '/' read-only with options=20
-> 'errors=3Dremount-ro,stripe=3D128'.
-> [ 1368.396287] EXT4-fs (md122p3): re-mounted=20
-> 6d53dc8e-3f45-4efa-bc0e-4af477fac217 ro. Quota mode: none.
->=20
-> And since then, there is no log aboug md_open(), which means no one
-> ever open md122 since this remount.
->=20
-> At last, there are lots of log shows that md122 can't be opened
-> exclusively:
-> [ 1368.812952] md122:systemd-shutdow bd_prepare_to_claim return -16
-> [ 1368.819189] md122:systemd-shutdow blkdev_get_by_dev return -16
+On 2023-08-30 at 15:43:05 +0000, Luck, Tony wrote:
+>> >+static int count_sys_bitmap_bits(char *name)
+>> >+{
+>> >+    FILE *fp = fopen(name, "r");
+>> >+    int count = 0, c;
+>> >+
+>> >+    if (!fp)
+>> >+            return 0;
+>> >+
+>> >+    while ((c = fgetc(fp)) != EOF) {
+>> >+            if (!isxdigit(c))
+>> >+                    continue;
+>> >+            switch (c) {
+>> >+            case 'f':
+>> >+                    count++;
+>> >+            case '7': case 'b': case 'd': case 'e':
+>> >+                    count++;
+>> >+            case '3': case '5': case '6': case '9': case 'a': case 'c':
+>> >+                    count++;
+>> >+            case '1': case '2': case '4': case '8':
+>> >+                    count++;
+>> >+            }
+>> >+    }
+>> >+    fclose(fp);
+>> >+
+>> >+    return count;
+>> >+}
+>> >+
+>>
+>> The resctrl selftest has a function for counting bits, could it be used
+>> here instead of the switch statement like this for example?
+>>
+>> count = count_bits(c);
+>>
+>> Or is there some reason this wouldn't be a good fit here?
 >
-> Which indicate that md122 is still mounted, and systemd-shutdow can't
-> stop this array. This behaviour looks correct to me, because rootfs
-> can't be umounted while systemd-shutdown is still running.
->=20
-> However, there are some questions I don't have answers for now, I'm not
-> familiar with how systemd works:
->=20
-> 1) In the normal case that raid is root device, how can systemd-shutdown
-> make progress and how is rootfs unmounted?
+>Thanks for looking at my patch.
+>
+>That count_bits() function is doing so with input from an "unsigned long"
+>argument.  My function is parsing the string result from a sysfs file which
+>might look like this:
+>
+>$ cat shared_cpu_map
+>0000,00000fff,ffffff00,0000000f,ffffffff
+>
+>To use count_bits() I'd have to use something like strtol() on each of the
+>comma separated fields first to convert from ascii strings to binary
+>values to feed into count_bits().
 
-Thanks for digging into!
+I missed they are being read as characters and not bytes, sorry.
 
-In that case systemd-shutdown should skip this device. It should be umounte=
-d by
-dracut. systemd-shutdown implements naive way to try stop MD devices, simple
-ioctl(fd, STOP_ARRAY, NULL).
-We are expecting failure if resource is still mounted.
+Out of curiosity, what about using fscanf instead of fgetc? With the
+format being %x and reading one byte at the time. Then instead of
+isxdigit just checking if the read number was bigger than 0xF.
 
-Here dracut code:
-https://github.com/dracutdevs/dracut/blob/master/modules.d/90mdraid/md-shut=
-down.sh
+I also remembered there is a gcc (and I think clang has it as well)
+builtin function that returns the number of set bits in a number.
 
-Ohh, it is ubuntu so it is handled by initramfs-tools not by dracut, but I =
-hope
-you will find it useful for the future.=20
+So it would look like this:
 
-and system-shutdown:
-https://github.com/systemd/systemd/blob/main/src/shutdown/shutdown.c#L483C7=
--L483C7
+	while ((fscanf(fp, "%x", c)) != EOF ) {
+	    if (c > 0xF)
+		    continue;
+	    count = __builtin_popcount(c);
+	}
 
-When the functionality in systemd-shutdown was fixed by me, I asked if we c=
-an
-make it configurable- Lennart disagreed so there is now way to disable it n=
-ow.=20
+Are there some problems with an approach like that?
 
-> 2) How does this scenario related to commit 12a6caf273240a.
-
-I'm unable to reproduce it on Redhat, Ubuntu is on the way now.
-I'm starting to be convinced that it could be related with initramfs-tools =
-but
-I cannot prove this theory yet. I need to reproduce the issue first.
-
-Thanks,
-Mariusz
->=20
-> I must read systemd source code to get answers, and it'll be appreciated
-> if someone has answers.
->=20
-> Thanks,
-> Kuai
->=20
-> > diff --git a/block/bdev.c b/block/bdev.c
-> > index 979e28a46b98..699739223dcb 100644
-> > --- a/block/bdev.c
-> > +++ b/block/bdev.c
-> > @@ -789,8 +789,11 @@ struct block_device *blkdev_get_by_dev(dev_t dev,=
-=20
-> > blk_mode_t mode, void *holder,
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (holder) {
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 mode |=3D BLK_OPEN_EXCL;
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ret =3D bd_prepare_to_claim(bdev, holder, hops);
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 if (ret)
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 if (ret) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_warn("%s=
-:%s bd_prepare_to_claim return %d\n",
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 disk->disk_name, current->comm, ret);
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto =
-put_blkdev;
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 }
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else {
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 if (WARN_ON_ONCE(mode & BLK_OPEN_EXCL)) {
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =
-=3D -EIO;
-> > diff --git a/block/fops.c b/block/fops.c
-> > index eaa98a987213..2d69119c71f6 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -587,8 +587,11 @@ static int blkdev_open(struct inode *inode, struct=
-=20
-> > file *filp)
-> >=20
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bdev =3D blkdev_get_by_dev(=
-inode->i_rdev, file_to_blk_mode(filp),
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 filp->private_data, NULL);
-> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(bdev))
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(bdev)) {
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 pr_warn("%pD:%s blkdev_get_by_dev return %ld\n",
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 filp, curre=
-nt->comm, PTR_ERR(bdev));
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 return PTR_ERR(bdev);
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >=20
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (bdev_nowait(bdev))
-> >  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 filp->f_mode |=3D FMODE_NOWAIT;
-> >=20
-> > Thanks,
-> > Kuai
-> >  =20
-> >>
-> >> Therefore, could you please help clarify:
-> >>
-> >> 1. Which base kernel are you using?
-> >> =20
-> >>> From the log, you are using 6.5-rc7-706a74159504. However, =20
-> >> I think we cannot cleanly revert 12a6caf273240a on top of
-> >> 6.5-rc7-706a74159504. Did you manually fix some issue in the
-> >> revert? If so, could you please share the revert commit?
-> >>
-> >> 2. If you are not using 6.5-rc7-706a74159504 as base kernel, which
-> >> one are you using?
-> >>
-> >> Thanks,
-> >> Song
-> >> =20
-> >>> =20
-> >>>>
-> >>>> 2. Try with the following change (add debug messages), which hopeful=
-ly
-> >>>> =C2=A0=C2=A0=C2=A0 shows which command is holding a reference on mdd=
-ev->openers.
-> >>>>
-> >>>> Thanks,
-> >>>> Song
-> >>>>
-> >>>> diff --git i/drivers/md/md.c w/drivers/md/md.c
-> >>>> index 78be7811a89f..3e9b718b32c1 100644
-> >>>> --- i/drivers/md/md.c
-> >>>> +++ w/drivers/md/md.c
-> >>>> @@ -7574,11 +7574,15 @@ static int md_ioctl(struct block_device *bde=
-v,
-> >>>> blk_mode_t mode,
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (mddev->pers && atomic_read(&mddev->opene=
-rs) > 1) {
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 mutex_unlock(&mddev->open_mutex);
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 err =3D -EBUSY;
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_warn(=
-"%s return -EBUSY for %s with
-> >>>> mddev->openers =3D %d\n",
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __func__, mdname(mddev),
-> >>>> atomic_read(&mddev->openers));
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 goto out;
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_and_set_bit(MD_CLOSING, &mddev->fla=
-gs)) {
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 mutex_unlock(&mddev->open_mutex);
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 err =3D -EBUSY;
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_warn(=
-"%s return -EBUSY for %s with
-> >>>> MD_CLOSING bit set\n",
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 __func__, mdname(mddev));
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 goto out;
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 did_set_md_closing =3D true;
-> >>>> @@ -7789,6 +7793,8 @@ static int md_open(struct gendisk *disk,=20
-> >>>> blk_mode_t mode)
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out_unlock;
-> >>>>
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_inc(&mddev->=
-openers);
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_info("%s:%s openers++ =3D %=
-d by %s\n", __func__,=20
-> >>>> mdname(mddev),
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 atomic_read(&mddev->openers), current->comm);
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&mddev=
-->open_mutex);
-> >>>>
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 disk_check_media_ch=
-ange(disk);
-> >>>> @@ -7807,6 +7813,8 @@ static void md_release(struct gendisk *disk)
-> >>>>
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BUG_ON(!mddev);
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 atomic_dec(&mddev->=
-openers);
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pr_info("%s:%s openers-- =3D %=
-d by %s\n", __func__,=20
-> >>>> mdname(mddev),
-> >>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 atomic_read(&mddev->openers), current->comm);
-> >>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mddev_put(mddev);
-> >>>> =C2=A0 } =20
-> >>> It's pretty strange that I can't reproduce the issue after applied=20
-> >>> the patch.
-> >>>
-> >>> I tried to figure out which part affect the issue and found when I
-> >>> comment out the pr_info() In md_release(), the issue could be
-> >>> reproduced.
-> >>>
-> >>> --=20
-> >>> Chia-Lin Kao(AceLan)
-> >>> http://blog.acelan.idv.tw/
-> >>> E-Mail: acelan.kaoATcanonical.com (s/AT/@/) =20
-> >> .
-> >> =20
-> >=20
-> > .
-> >  =20
->=20
-
+-- 
+Kind regards
+Maciej Wieczór-Retman
