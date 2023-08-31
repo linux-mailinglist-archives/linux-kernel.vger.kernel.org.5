@@ -2,117 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8A478E72E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248F478E72C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236925AbjHaH3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
+        id S235101AbjHaH3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbjHaH3m (ORCPT
+        with ESMTP id S229680AbjHaH3B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:29:42 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F8401A3;
-        Thu, 31 Aug 2023 00:29:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-        Content-Type; bh=571iF6/ERr6OK1Pg9hk3ChGUq70/StuYdmAQEv8xtgY=;
-        b=Zmon+ep7z+miXx2UYeqbYw83cnXRJUQ6dM83QF0iQvWrQu9pPxlkCA8VaSH373
-        CQg/iZTLqr6Limq6Xq+E8HPeddcYAVV2A3PkatmzUTZyKgz2yYCy9RP2FO96NEma
-        03ntITlD+52DaANYS43Kju4ioh+bUTv4wYx9XAEjujibo=
-Received: from [172.20.10.2] (unknown [39.144.138.235])
-        by zwqz-smtp-mta-g3-2 (Coremail) with SMTP id _____wA3n0glQfBkyAYgAw--.15827S3;
-        Thu, 31 Aug 2023 15:28:38 +0800 (CST)
-Message-ID: <d3780074-a5af-92ef-9aa3-1b321a14233c@163.com>
-Date:   Thu, 31 Aug 2023 15:28:37 +0800
+        Thu, 31 Aug 2023 03:29:01 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE29E1A4
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:28:58 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 77317B8214E
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:28:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B408C433C9
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:28:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693466936;
+        bh=aAsHT2HzQhTcrO+4j0ndVmaexFGGJKnxvEIZY4yryN8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=np3yit3dWU+KvMRcRuve1HYQ8szdLTgQUAV++aqlxieYYPxKTymuiRHI2MA3luxtH
+         tiQvYapxG9sYlUq8uOoD0Hs+5RPOWUqDVy/+r7NexaVxPYoj2hVw5UNQ+U6mjXEop7
+         buGPp9RfTcT+8N5s5eD1kyEk22YcBRYqHlwgO8Chcj3MuoR3yf+f16jTlszlmXMqIi
+         1OjE0ctx7MopzU7SM1NjN2biFMQhxANFHsdWmzrm5Rc4N1irugBz3yI+EXbdcuF9wq
+         jjdfMfCOFy7AqWccusNQbc+B5HbrJwfE3hLDCOVAZ2bPkaNpIHmlsdgOVrS/ze/F7G
+         gXP+wTxfM1tSQ==
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2b9d07a8d84so9114351fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:28:56 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yy8abhLfD8Zr4bmDuKctHsYGZKEsocL7i2qm2tw4phF5/TDM6wW
+        P8ITmVeg7IdZXj/l+QDPQWPgtlHC0MGx42n8OZI=
+X-Google-Smtp-Source: AGHT+IGgDLm30eOwMWGy981HPEL4q1aK6Ow2DA9Nzy+Mr3D7p8aTPGDoeNJPffQ7eLjODERFv3WalNMw5BXB6mpot+A=
+X-Received: by 2002:a2e:a178:0:b0:2b9:f0b4:eaa1 with SMTP id
+ u24-20020a2ea178000000b002b9f0b4eaa1mr3008469ljl.16.1693466934183; Thu, 31
+ Aug 2023 00:28:54 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/1] gpio-f7188x: fix base values conflicts with other
- gpio pins
-Content-Language: en-US
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     brgl@bgdev.pl, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, xingtong.wu@siemens.com,
-        andy.shevchenko@gmail.com, simon.guinot@sequanux.org,
-        "Schaffner, Tobias" <tobias.schaffner@siemens.com>,
-        "Haeussler, Gerd" <gerd.haeussler.ext@siemens.com>
-References: <20230529025011.2806-1-xingtong_wu@163.com>
- <20230529025011.2806-2-xingtong_wu@163.com>
- <CACRpkdaLyEmdhutqsMUoV3ObW8bFePtNGHFqr5qiKV3w0ripug@mail.gmail.com>
-From:   "xingtong.wu" <xingtong_wu@163.com>
-In-Reply-To: <CACRpkdaLyEmdhutqsMUoV3ObW8bFePtNGHFqr5qiKV3w0ripug@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wA3n0glQfBkyAYgAw--.15827S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW7KrW3GrykWFW5ZF43JF1DZFb_yoW8uF1Dpr
-        WfCa1akr18J3yxAwn3Ka1fAFyfuw17A3y3Zas8Kw4UZF9rZF95WF4ayrWYv39rG3srJry5
-        GF4Ig34Fv3Z8C3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UE-ewUUUUU=
-X-Originating-IP: [39.144.138.235]
-X-CM-SenderInfo: p0lqw35rqjs4rx6rljoofrz/xtbCfg7c0GDcPcItPgABst
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,RCVD_IN_MSPIKE_L4,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830212238.135900-1-ardb@kernel.org> <202308301608.739BFA8@keescook>
+ <20230831052009.GA1349@sol.localdomain>
+In-Reply-To: <20230831052009.GA1349@sol.localdomain>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 31 Aug 2023 09:28:42 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGmVZHW4fdYKM+pqaHGBDALXgDZQ5Tg4TiqNR5jFpTekg@mail.gmail.com>
+Message-ID: <CAMj1kXGmVZHW4fdYKM+pqaHGBDALXgDZQ5Tg4TiqNR5jFpTekg@mail.gmail.com>
+Subject: Re: [PATCH] pstore: Base compression input buffer size on estimated
+ compressed size
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/5/29 21:02, Linus Walleij wrote:
-> On Mon, May 29, 2023 at 4:55 AM <xingtong_wu@163.com> wrote:
-> 
->> From: "xingtong.wu" <xingtong.wu@siemens.com>
->>
->> switch pin base from static to automatic allocation to
->> avoid conflicts and align with other gpio chip drivers
->>
->> Signed-off-by: xingtong.wu <xingtong.wu@siemens.com>
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> 
-> If this platform does not have a ton of userspace using the obsolete
-> sysfs this should be fine to apply. I say let's apply and see what happens.
-> 
-> Yours,
-> Linus Walleij
+On Thu, 31 Aug 2023 at 07:20, Eric Biggers <ebiggers@kernel.org> wrote:
+>
+> On Wed, Aug 30, 2023 at 04:43:37PM -0700, Kees Cook wrote:
+> > On Wed, Aug 30, 2023 at 11:22:38PM +0200, Ard Biesheuvel wrote:
+> > > Commit 1756ddea6916 ("pstore: Remove worst-case compression size logic")
+> > > removed some clunky per-algorithm worst case size estimation routines on
+> > > the basis that we can always store pstore records uncompressed, and
+> > > these worst case estimations are about how much the size might
+> > > inadvertently *increase* due to encapsulation overhead when the input
+> > > cannot be compressed at all. So if compression results in a size
+> > > increase, we just store the original data instead.
+> >
+> > Does the Z_FINISH vs Z_SYNC_FLUSH thing need to be fixed as well, or
+> > does that become a non-issue with this change?
+>
+> I haven't seen any real evidence that that issue actually exists.
+>
 
-Hi
+Indeed. The workaround in crypto/deflate.c was added in 2003 by James
+Morris, and the zlib fork was rebased onto a newer upstream at least
+once since then.
 
-Seems the issue happened again, the module "gpio-f7188x" register
-gpio_chip failed because of the base value conflict. I hope the patch
-can be merged soon, I'm afraid that you forgot it...
+> > >  void pstore_record_init(struct pstore_record *record,
+> > > @@ -305,7 +314,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+> > >             record.buf = psinfo->buf;
+> > >
+> > >             dst = big_oops_buf ?: psinfo->buf;
+> > > -           dst_size = psinfo->bufsize;
+> > > +           dst_size = max_uncompressed_size ?: psinfo->bufsize;
+> > >
+> > >             /* Write dump header. */
+> > >             header_size = snprintf(dst, dst_size, "%s#%d Part%u\n", why,
+> > > @@ -326,8 +335,15 @@ static void pstore_dump(struct kmsg_dumper *dumper,
+> > >                             record.compressed = true;
+> > >                             record.size = zipped_len;
+> > >                     } else {
+> > > -                           record.size = header_size + dump_size;
+> > > -                           memcpy(psinfo->buf, dst, record.size);
+> > > +                           /*
+> > > +                            * Compression failed, so the buffer is most
+> > > +                            * likely filled with binary data that does not
+> > > +                            * compress as well as ASCII text. Copy as much
+> > > +                            * of the uncompressed data as possible into
+> > > +                            * the pstore record, and discard the rest.
+> > > +                            */
+> > > +                           record.size = psinfo->bufsize;
+> > > +                           memcpy(psinfo->buf, dst, psinfo->bufsize);
+> >
+> > I don't think this is "friendly" enough. :P
+> >
+> > In the compression failure case, we've got a larger dst_size (and
+> > dump_size, but technically it might not be true if something else went
+> > wrong) than psinfo->bufsize, so we want to take the trailing bytes
+> > (i.e. panic details are more likely at the end). And we should keep
+> > the header, which is already present in "dst". I think we need to do
+> > something like this:
+> >
+> >       size_t buf_size_available = psinfo->bufsize - header_size;
+> >       size_t dump_size_wanted = min(dump_size, buf_size_available);
+> >
+> >       record.size = header_size + dump_size_wanted;
+> >       memcpy(psinfo->buf, dst, header_size);
+> >       memcpy(psinfo->buf + header_size,
+> >              dst + header_size + (dump_size - dump_size_wanted),
+> >              dump_size_wanted);
+> >
+> > My eyes, my eyes.
+> >
+>
+> How hard would it be to write two uncompressed records when compression fails to
+> achieve the targeted 50% ratio?
+>
 
-The log is below:
-[    6.872049] gpio-f7188x: Unsupported Fintek device 0x0303
-[    6.872137] gpio-f7188x: Found nct6126d at 0x4e
-[    6.899965] gpiochip_find_base: cannot find free range
-[    6.899967] gpiochip_add_data_with_key: GPIOs 0..7 (gpio-f7188x-6) failed to register, -28
-[    6.899970] gpio-f7188x gpio-f7188x: Failed to register gpiochip 6: -28
-[    6.903329] simatic_ipc_batt simatic_ipc_batt: cannot find GPIO chip gpio-f7188x-6, deferring
+It wouldn't be that hard, and this crossed my mind as well.
 
-There is a gpio_chip created by "pinctrl-tigerlake":
-/sys/class/gpio/gpiochip49# ls -l
-total 0
--r--r--r--. 1 root root 4096 Aug 31 06:40 base
-lrwxrwxrwx. 1 root root    0 Aug 31 06:40 device -> ../../../INT34C6:00
--r--r--r--. 1 root root 4096 Aug 31 06:40 label
--r--r--r--. 1 root root 4096 Aug 31 06:40 ngpio
-drwxr-xr-x. 2 root root    0 Aug 31 06:40 power
-lrwxrwxrwx. 1 root root    0 Aug 31 06:38 subsystem -> ../../../../../class/gpio
--rw-r--r--. 1 root root 4096 Aug 31 06:38 uevent
+However, we should ask ourselves when this is ever going to happen,
+and what the implications are for those records. The reason we want to
+capture the dmesg output is because it contains human readable ASCII
+text that explains what happened right before the system crashed.
 
-The base value is 49, label = INT34C6:00, ngpio = 463
-
-The issue arose by chance, because the driver "pinctrl-tigerlake" apply gpio_chip->base
-randomly, this time it apply the base value 49, so it have conflict to here:
-https://github.com/torvalds/linux/blob/master/drivers/gpio/gpio-f7188x.c#L283
-
-But sometime it apply other base values, so the issue do not happen.
-
-BRs,
-Xing Tong Wu
-
+The zlib library code uses pre-allocated buffers and so the most
+likely reason for failure is that the 2x estimation does not hold for
+the buffer in question. It is highly unlikely that that buffer
+contains ASCII text or anything resembling it in that case, and so it
+is most probably garbage that happens to compress really poorly. Do we
+really need to capture all of that? And if we don't, does it really
+matter whether the we capture the first bit or the last bit?
