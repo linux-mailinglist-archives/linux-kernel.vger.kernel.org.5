@@ -2,171 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD0978E747
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D4178E74D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236447AbjHaHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48334 "EHLO
+        id S242500AbjHaHme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:42:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231460AbjHaHkY (ORCPT
+        with ESMTP id S231280AbjHaHmc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:40:24 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B5BC1A3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:40:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 354DB1F45E;
-        Thu, 31 Aug 2023 07:40:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693467620; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Mb/+GLhiWSZbycgMGS19cUQ5prv6SddRIOrfO+XQ9k=;
-        b=STJ84M+RFphvH2eI+UMQQCdk1b3vJlbCd/jZNKQ6zYijbFBGFCPf569XpXRkPZXKnJAKa2
-        GHLqDDa8hjSch9XmHNf7s8TugG3tdE+qZ6RpkXhn7Grnm30IrKvxR5RypIGSVIWI+qi7n1
-        u0ROVVzq6j0r4M/TtmEZvd2scmA8gRM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693467620;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3Mb/+GLhiWSZbycgMGS19cUQ5prv6SddRIOrfO+XQ9k=;
-        b=hkO0IbXjX7iJ0iAk0n30kowhr4KsurSP6rYz8+t+qYTe6yF9g2JE0CMjCWj+MiJURx9O0A
-        j/Jc6B7Qgk74yXAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 08DFE13587;
-        Thu, 31 Aug 2023 07:40:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Jrc6AeRD8GRdWwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 31 Aug 2023 07:40:20 +0000
-Message-ID: <1a98bb80-9990-dc65-5f14-066315a7e7d8@suse.de>
-Date:   Thu, 31 Aug 2023 09:40:19 +0200
+        Thu, 31 Aug 2023 03:42:32 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31D2CE9;
+        Thu, 31 Aug 2023 00:42:26 -0700 (PDT)
+X-QQ-mid: bizesmtp83t1693467717tjppi0fc
+Received: from linux-lab-host.localdomain ( [116.30.129.10])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Thu, 31 Aug 2023 15:41:56 +0800 (CST)
+X-QQ-SSF: 01200000000000E0Y000000A0000000
+X-QQ-FEAT: znfcQSa1hKYH0zoCp5Zp2HaCo5iexADJwVyIao2rnb8O35uwGJtpePirIWdhX
+        +t6M08ma11Uzbs5A1Qkm5Ka+AW726SCjsH1GNBG/rvXCS4c0hAezj4PeUqO6e4Wz7gDDPeI
+        a7sgdEl7sWgvNxUWnyAW5hE8o39GFzzsBw9szsUUbzsPdCpYS0fWGdFfqZ8shv4vC6kJ7uT
+        H+FNwTXSGMFyqUF0fqeP6/Qt108LIXlIMd5MdULNDDP5ppMbXY5HwMewE7X/fx/ri7aWZMl
+        yDVGP+6WMirNLght8g/UJZxFca8QwPNLdU+ulA9fts8qrL/taFk1d39UxIjT1GO0dZgAca/
+        m9NQvpvJmePN22JXM37JG694RF4vbq7BNribew05OcJswjmdtzLGKO38zoqtg==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 6240959322990113860
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     david.laight@aculab.com
+Cc:     ammarfaizi2@gnuweeb.org, arnd@arndb.de, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org, thomas@t-8ch.de, w@1wt.eu
+Subject: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with single -ENOSYS return
+Date:   Thu, 31 Aug 2023 15:41:51 +0800
+Message-Id: <20230831074151.7900-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <2d52dbd55e6240d5a91ebdce67fe0b7b@AcuMS.aculab.com>
+References: <2d52dbd55e6240d5a91ebdce67fe0b7b@AcuMS.aculab.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/8] drm/dumb-buffers: Fix drm_mode_create_dumb() for
- bpp < 8
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <16d488639e99f43ca3977ee7b8f76fc26c34aa86.1692888745.git.geert@linux-m68k.org>
-Content-Language: en-US
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <16d488639e99f43ca3977ee7b8f76fc26c34aa86.1692888745.git.geert@linux-m68k.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------PSncTkiKSf6vH11O5L4YSqbe"
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------PSncTkiKSf6vH11O5L4YSqbe
-Content-Type: multipart/mixed; boundary="------------mxMUxbexaJGl0UyRZmCdUbcy";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-ID: <1a98bb80-9990-dc65-5f14-066315a7e7d8@suse.de>
-Subject: Re: [PATCH v2 1/8] drm/dumb-buffers: Fix drm_mode_create_dumb() for
- bpp < 8
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <16d488639e99f43ca3977ee7b8f76fc26c34aa86.1692888745.git.geert@linux-m68k.org>
-In-Reply-To: <16d488639e99f43ca3977ee7b8f76fc26c34aa86.1692888745.git.geert@linux-m68k.org>
+Hi, David, Hi Ammar
 
---------------mxMUxbexaJGl0UyRZmCdUbcy
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+> From: Ammar Faizi
+> > Sent: 30 August 2023 15:41
+> > 
+> > On 8/28/23 4:51 AM, David Laight wrote:
+> > > I just found a(nother) clang bug:
+> > > 	int f(void) { return "a"[2]; }
+> > > compiles to just a 'return'.
+> > 
+> > I don't think that's a bug. It's undefined behavior due to an
+> > out-of-bound read. What do you expect it to return?
+> 
+> I was actually expecting a warning/error if it didn't just read
+> the byte after the end of the string.
+> 
+> Just silently doing nothing didn't seem right for a modern compiler.
+>
 
-SGkNCg0KQW0gMjQuMDguMjMgdW0gMTc6MDggc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
-DQo+IGRybV9tb2RlX2NyZWF0ZV9kdW1iKCkgY2FsY3VsYXRlcyB0aGUgbnVtYmVyIG9mIGNo
-YXJhY3RlcnMgcGVyIHBpeGVsDQo+IGZyb20gdGhlIG51bWJlciBvZiBiaXRzIHBlciBwaXhl
-bCBieSByb3VuZGluZyB1cCwgd2hpY2ggaXMgbm90IGNvcnJlY3QNCj4gYXMgdGhlIGFjdHVh
-bCB2YWx1ZSBvZiBjcHAgbWF5IGJlIG5vbi1pbnRlZ2VyLiAgV2hpbGUgd2UgZG8gbm90IG5l
-ZWQgdG8NCj4gY2FyZSBoZXJlIGFib3V0IGNvbXBsZXggZm9ybWF0cyBsaWtlIFlVViwgYnBw
-IDwgOCBpcyBhIHZhbGlkIHVzZSBjYXNlLg0KPiANCj4gICAgLSBUaGUgb3ZlcmZsb3cgY2hl
-Y2sgZm9yIHRoZSBidWZmZXIgd2lkdGggaXMgbm90IGNvcnJlY3QgaWYgYnBwIDwgOC4NCj4g
-ICAgICBIb3dldmVyLCBpdCBkb2Vzbid0IGh1cnQsIGFzIHdpZHRocyBsYXJnZXIgdGhhbiBV
-MzJfTUFYIC8gOCBzaG91bGQNCj4gICAgICBub3QgaGFwcGVuIGZvciByZWFsIGFueXdheS4g
-IEFkZCBhIGNvbW1lbnQgdG8gY2xhcmlmeS4NCj4gICAgLSBDYWxjdWxhdGluZyB0aGUgc3Ry
-aWRlIGZyb20gdGhlIG51bWJlciBvZiBjaGFyYWN0ZXJzIHBlciBwaXhlbCBpcw0KPiAgICAg
-IG5vdCBjb3JyZWN0LiAgRml4IHRoaXMgYnkgY2FsY3VsYXRpbmcgaXQgZnJvbSB0aGUgbnVt
-YmVyIG9mIGJpdHMgcGVyDQo+ICAgICAgcGl4ZWwgaW5zdGVhZC4NCj4gDQo+IFNpZ25lZC1v
-ZmYtYnk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+DQo+IFJl
-dmlld2VkLWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNv
-bT4NCj4gVGVzdGVkLWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVk
-aGF0LmNvbT4NCj4gLS0tDQo+IHYyOg0KPiAgICAtIEFkZCBSZXZpZXdlZC1ieSwgVGVzdGVk
-LWJ5Lg0KPiAtLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vZHJtX2R1bWJfYnVmZmVycy5jIHwg
-MyArKy0NCj4gICAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9u
-KC0pDQo+IA0KPiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJtL2RybV9kdW1iX2J1ZmZl
-cnMuYyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fZHVtYl9idWZmZXJzLmMNCj4gaW5kZXggNzAw
-MzJiYmExYzk3ZTc4Ny4uMjFhMDRjMzJhNWUzZDc4NSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVy
-cy9ncHUvZHJtL2RybV9kdW1iX2J1ZmZlcnMuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0v
-ZHJtX2R1bWJfYnVmZmVycy5jDQo+IEBAIC03MSwxMCArNzEsMTEgQEAgaW50IGRybV9tb2Rl
-X2NyZWF0ZV9kdW1iKHN0cnVjdCBkcm1fZGV2aWNlICpkZXYsDQo+ICAgCS8qIG92ZXJmbG93
-IGNoZWNrcyBmb3IgMzJiaXQgc2l6ZSBjYWxjdWxhdGlvbnMgKi8NCj4gICAJaWYgKGFyZ3Mt
-PmJwcCA+IFUzMl9NQVggLSA4KQ0KPiAgIAkJcmV0dXJuIC1FSU5WQUw7DQo+ICsJLyogSW5j
-b3JyZWN0IChlc3BlY2lhbGx5IGlmIGJwcCA8IDgpLCBidXQgZG9lc24ndCBodXJ0IG11Y2gg
-Ki8NCj4gICAJY3BwID0gRElWX1JPVU5EX1VQKGFyZ3MtPmJwcCwgOCk7DQo+ICAgCWlmIChj
-cHAgPiBVMzJfTUFYIC8gYXJncy0+d2lkdGgpDQo+ICAgCQlyZXR1cm4gLUVJTlZBTDsNCg0K
-QXQgZmlyc3QsIEkgd2FzIGNvbmZ1c2VkIGJ5IHRoaXMuIFNvIEknZCByZWFsbHkgcHJlZmVy
-IHRvIG91dHJpZ2h0IA0KZGVsZXRlIHRoaXMgY29kZS4gQXMgeW91IHNheSwgaXQncyBpbmNv
-cnJlY3QgYW5kIGRvZXNuJ3QgYWRkIGFueXRoaW5nLiANClRoZSBjb25jZXB0IG9mIGNwcCBp
-cyBzb21ld2hhdCB3cm9uZyBhbnl3YXkuDQoNCj4gLQlzdHJpZGUgPSBjcHAgKiBhcmdzLT53
-aWR0aDsNCj4gKwlzdHJpZGUgPSBESVZfUk9VTkRfVVAoYXJncy0+YnBwICogYXJncy0+d2lk
-dGgsIDgpOw0KDQpEbyB3ZSBuZWVkIGFuIG92ZXJmbG93IGNoZWNrIGZvciAoYnBwICogd2lk
-dGggPCBVMzJfTUFYKSA/DQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gICAJaWYgKGFy
-Z3MtPmhlaWdodCA+IFUzMl9NQVggLyBzdHJpZGUpDQo+ICAgCQlyZXR1cm4gLUVJTlZBTDsN
-Cj4gICANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVs
-b3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vuc3Ry
-YXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3RldiwgQW5k
-cmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2ODA5
-IChBRyBOdWVybmJlcmcpDQo=
+godbolt.org uses 'orange' color (see its right top) to indicate a
+warning, it does report a warning (see Output label in right bottom)
+when we access the byte after the end of the string, but gcc doesn't
+report a warning ;-)
 
---------------mxMUxbexaJGl0UyRZmCdUbcy--
+	int test_outofbound(void)
+	{
+	    return "a"[10];
+	}
 
---------------PSncTkiKSf6vH11O5L4YSqbe
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+see the last test case in https://godbolt.org/z/9jY4xoWrT
 
------BEGIN PGP SIGNATURE-----
+But it is safe if we use the trick like David used for the above
+__atoi() macro:
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTwQ+MFAwAAAAAACgkQlh/E3EQov+Ag
-EA//VI4y6CwqjTFYKTzY/XCdqAFQB5Ck4rsWxaOcUye2V8a1z9G11FNxs7jLNpMUQbruC792IyGy
-CkioLQA/48miJ+Mx5vAOOxFf2Fs6UZDx4iGtqO7y0muGuLRvQDc9leB3wAAupq1Kngks5aryuf68
-/V7bUAX0k1u9Yuh1UfzjRtOKPzK6e4ajnGLL8kpDLEv2XYbm5Diy+IkgyuCdRLRfroDaakJoNAZT
-6gDUgElj7fr9JUrmojRq0KiT2sy+er062Up3f0bUnKnadEGfH5nuok3R1w3EuF7vw1MxqGj/yvDZ
-dMg59iBd9G/UD3kUSI1Mne6Y2WK7H1GAQlP6neVcBxRumTcm7cXZn/4SR9lyfx2gVLGXI9zrjWwl
-T4M7kUxIR7GKgRzbYRpWUincddabFg9k7oJcq8sWssc1Z2Cp+cvl3QBPriGPl/9Cw0SSFj4ezV8m
-iamaGi2jANWhKhAlOXCh9USW+KSQMAL7o4DobQC4PHP0ty73GU9t9AOthaJzuYa7KHlui7jYQo2S
-O5y5B3a9z1abW3dmM6hk10bflw13uHF0RMGATqnenFo+S+eeWnbEulgM3NPzbI0tL2Cpx7Q3Q8a8
-Ub8ovj9Bg3GIKfUMz1tRKWS95gqQWeOS/hJTyjrnu2Mz7fwwOoUnX4NM+ZONYzag7DdvvpIfYjtD
-HPU=
-=RVja
------END PGP SIGNATURE-----
+    if (str[0]) {  /* always make sure the index is safe and stop at the end of string */
+        if (str[1]) {
+	    if (str[2]) {
+	       ....
+	    }
+	}
+    }
 
---------------PSncTkiKSf6vH11O5L4YSqbe--
+We also need this style of checking for the delta logic in __atoi_add(). have
+randomly tried different clang and gcc versions, seems all of them work
+correctly, but the compiling speed is not that good if we want to support the
+worst cases like "((0x900000 + 0x0f0000) + 5)", the shorter one
+"((0x900000+0x0f0000)+5)" is used by ARM+OABI (not supported by nolibc
+currently), therefore, we can strip some tailing branches but it is either not
+that fast, of course, the other architectures/variants can use faster
+__atoi_add() versions with less branches and without hex detection, comparison
+and calculating.
+
+As a short summary, the compling speed should not be a big problem for most of
+the architectures but to support the worst case __NR_*, the compiling speed
+will be very slow (for these cases, perhaps we can use a C version of
+atoi_add() instead or convert them to a more generic style: (6000 + 111), no
+hex and no multiple add), and the .i output is a little ugly and the debugging
+may be also a problem: for we can not assume the kernel developers always
+define a short and a simple style of __NR_* as we expected. So, the __nrtoi()
+requires more work, let's delay the whole RFC patchset and work on some more
+urgent tasks at first as suggested by Willy, but David's NR_toi() prototype is
+really a very valuable base for future work, really appreciate, I will back to
+this discussion if have any new progress, thanks!
+
+Thanks very much,
+Zhangjin
+
+> 	David
