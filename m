@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5173178F476
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:21:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9488678F47B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:21:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347541AbjHaVVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 17:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36160 "EHLO
+        id S1347548AbjHaVVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 17:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344132AbjHaVVb (ORCPT
+        with ESMTP id S1344132AbjHaVVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 17:21:31 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E362CC5
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:21:28 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-500cfb168c6so2326802e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:21:28 -0700 (PDT)
+        Thu, 31 Aug 2023 17:21:33 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B9B1B2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:21:29 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-500b66f8b27so2477080e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:21:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693516886; x=1694121686; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693516887; x=1694121687; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=C0OzPy7KKMoqMhNMJWRq7SaDsIGmS+NZYE/XfvpI7LI=;
-        b=ujySdFgiGjnSDQQhTsS8WYSgEFYaikdr0h8QMyhuNEAzlt0xaZ21ht/pxLlvq3QjNq
-         JVKi1EAwUM1B8QYbiLVOdsVjXr4o4ceRkcYacaBUOAO+lAcfTCID3USxrYxXdpdGwtWC
-         zjo4X+BF2z/arEzYeriLeffWGm4bsRpWRv+twWuyD+aDNCs0vyzJh/qjLcWztcsGugZ+
-         yFb/rnyjCpPBott5YS6IOxrUDtPYBcfmylN+f7dWW7EQEAdPagrGx11dAjDUsWW9t2v5
-         Q7EKZRmbEg6l5rjZUc7nGKzuBJl4sukhyA4lV/o671B5UQPjuhM9KEa0Cx/E0ATtKI+A
-         94tA==
+        bh=2STMuo5K4qFq5jgAxZCjN/B7yzobUMbdyNQ8KrypW4c=;
+        b=OvklatLXNn3tSuO3FFDp1Kg/32EVYB8WmroIsGXESZNbG+Nu+KWmJlkO77mgdKCJ8w
+         pdRKCSuTQZ2nnkWKhMQYYiXV+nZFQh10Xd2ojJD7WyhNudgz1Fi4FFBKXj4WmM3EPXYp
+         W3V8zwE7lpvIkRyCLHAprIo8YNM0x3WRrkuCOGdvp2v0W8D0vm2CPq5W5LBmvaDe9/94
+         Oal99HOYin+gyCfM/liyCGlL9UXPld2/OhBzECO+6nYYKVMq7EzLxWCXdX0aVb9IdJTV
+         x5cnbMWrjZ7Y6aALwcrZ5dk1WDf390wHnwAjpv1FtTry5J4Eh8S1BcDNg3sLsZ2Nc66g
+         NYRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693516886; x=1694121686;
+        d=1e100.net; s=20221208; t=1693516887; x=1694121687;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=C0OzPy7KKMoqMhNMJWRq7SaDsIGmS+NZYE/XfvpI7LI=;
-        b=DYnNV4/vk0K767y/NnsLyBKwQQVOrZSVVaCVvvLcITduRV7hzssMVPNHydWyvtX8eV
-         KrFkQjAToTDF88DWsTelkFjSexFnzsRqAFeYxMMsbBGuGXJg4bKzf51zZnInnckvbuDS
-         5SY6+UUFd+Gu4X7VujqfgqMaJ9UpoI+dyGRN6Kpk71EhGHn4NesXMNbAEKMW0EVkiAVF
-         UW21sSZ1JuY+WIShDhOx9wAXO3NoqBBaozZvAaJkWAHZXFqquRgJJx/gBSXTsJyPSG7/
-         DtErs22+fDm5Ae9W+L+f8OXzwGq9Twj1NHHtPDpEUxxUyx5RXTiLSqnl9xPXGWqtc/Eb
-         feGA==
-X-Gm-Message-State: AOJu0YxbqBMxQJKsMLhosiVuZqQb5/OmE0GkTr2B5CMz3mRveH2vey2P
-        +VfhJKUQOyIuw/66FgXkuT6uNg==
-X-Google-Smtp-Source: AGHT+IFFz02rQw2ty8kyHs10Ue+NvQj62FxymrVwT63vS223FUbAVT51OAf/BjB4OXgRXDz4dvwjHw==
-X-Received: by 2002:ac2:5383:0:b0:500:ac3:dd77 with SMTP id g3-20020ac25383000000b005000ac3dd77mr300192lfh.10.1693516886409;
-        Thu, 31 Aug 2023 14:21:26 -0700 (PDT)
+        bh=2STMuo5K4qFq5jgAxZCjN/B7yzobUMbdyNQ8KrypW4c=;
+        b=eWrsNIYScmlI7UY22ySj6HODQV87Yy3hnQIRs3LvJRXM9sAzBi6W0UoZEQya9iyksS
+         EKPMK55W3OICRKWyNYw11xpqdicZuzC+Qk5ycxYQTdLgKs72qkC/obvb9c/srUwddxoY
+         eCLLZvs7ors3MsibjVV38Fc9XobG8YEjm/zspaEiMIAiilGy5aaHR4T70TIyHqj4CG5S
+         YzWAEBlE+8Uug4oex7SkA4Zuf7OKTIMU3sRIwSObBOQMHRmWIS7tBy5soFmkFCS7AOuV
+         uwpz7JY0p00KdwHOZhMxLH/BPEGrK+BVju4fv8XMUrSdJrs2cKO5AhEyNvr2JlFX1HIA
+         y3LQ==
+X-Gm-Message-State: AOJu0YyZWR5tEaXRdLDkQY5/OaSzfVF2W6jJEXstKWOxAZLiHrxMGtkr
+        Ovua1r2Rsn0oH+6v3kMogG6img==
+X-Google-Smtp-Source: AGHT+IH5oCWzHqwNvMG+N+3PhajpCiw6c+Ce/Q0cFv3KqmAFkH4G6f7rbYNaiOmIXFVbypycZg0lAA==
+X-Received: by 2002:a05:6512:34c4:b0:500:79f7:1738 with SMTP id w4-20020a05651234c400b0050079f71738mr287094lfr.17.1693516887595;
+        Thu, 31 Aug 2023 14:21:27 -0700 (PDT)
 Received: from [192.168.1.101] (abxh154.neoplus.adsl.tpnet.pl. [83.9.1.154])
-        by smtp.gmail.com with ESMTPSA id eo4-20020a056512480400b004fbc0c7218bsm414866lfb.118.2023.08.31.14.21.25
+        by smtp.gmail.com with ESMTPSA id eo4-20020a056512480400b004fbc0c7218bsm414866lfb.118.2023.08.31.14.21.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 14:21:25 -0700 (PDT)
+        Thu, 31 Aug 2023 14:21:27 -0700 (PDT)
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Date:   Thu, 31 Aug 2023 23:21:22 +0200
-Subject: [PATCH v2 1/4] pinctrl: qcom: msm8996: Add MPM pin mappings
+Date:   Thu, 31 Aug 2023 23:21:23 +0200
+Subject: [PATCH v2 2/4] pinctrl: qcom: sm6115: Add MPM pin mappings
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230809-topic-mpm_mappings-v2-1-4c2b4495e654@linaro.org>
+Message-Id: <20230809-topic-mpm_mappings-v2-2-4c2b4495e654@linaro.org>
 References: <20230809-topic-mpm_mappings-v2-0-4c2b4495e654@linaro.org>
 In-Reply-To: <20230809-topic-mpm_mappings-v2-0-4c2b4495e654@linaro.org>
 To:     Andy Gross <agross@kernel.org>,
@@ -67,11 +67,11 @@ Cc:     Marijn Suijten <marijn.suijten@somainline.org>,
         linux-kernel@vger.kernel.org,
         Konrad Dybcio <konrad.dybcio@linaro.org>
 X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693516884; l=1978;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693516884; l=1748;
  i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
- bh=y+HxWBisjasmptzHCoZUfO307q4p8IY/42ufI9xwDHE=;
- b=iApaShKJu5gKXLEYLvOKO2GrNWHSHVvqAWTwja+PzdG1FnIgqF3v5BOy9ZUud8wxM+Bxjsd9Y
- b5GhTfDRsIcC5h7daPtaSyxEr/FK83itlvYKbf81KXRewPlb751cDSs
+ bh=rE9bSf4wp2vzKQ+tQr4HglWzMe5L975B07F8Yc/C25Q=;
+ b=7FZhf4tVSpwiLfhIftWHigm+xG+pKpKULLg/CylFRVdIS0lFIpD1gMQ07QYeVQFzg7Y07wU8N
+ 0vItGzr1lkCAcEmoksZBWP5wVLTKrsZ9pygvOkCwwt5VhvmoLJX73/q
 X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
  pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -89,41 +89,39 @@ through MPM-connected pins.
 
 Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- drivers/pinctrl/qcom/pinctrl-msm8996.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+ drivers/pinctrl/qcom/pinctrl-sm6115.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/pinctrl/qcom/pinctrl-msm8996.c b/drivers/pinctrl/qcom/pinctrl-msm8996.c
-index 46cc0b49dbab..1b5d80eaab83 100644
---- a/drivers/pinctrl/qcom/pinctrl-msm8996.c
-+++ b/drivers/pinctrl/qcom/pinctrl-msm8996.c
-@@ -1880,6 +1880,18 @@ static const struct msm_pingroup msm8996_groups[] = {
- 	SDC_QDSD_PINGROUP(sdc1_rclk, 0x12c000, 15, 0),
+diff --git a/drivers/pinctrl/qcom/pinctrl-sm6115.c b/drivers/pinctrl/qcom/pinctrl-sm6115.c
+index 2a06025f4885..4e91c75ad952 100644
+--- a/drivers/pinctrl/qcom/pinctrl-sm6115.c
++++ b/drivers/pinctrl/qcom/pinctrl-sm6115.c
+@@ -867,6 +867,16 @@ static const struct msm_pingroup sm6115_groups[] = {
+ 	[120] = SDC_QDSD_PINGROUP(sdc2_data, SOUTH, 0x73000, 9, 0),
  };
  
-+static const struct msm_gpio_wakeirq_map msm8996_mpm_map[] = {
-+	{ 1, 3 }, { 5, 4 }, { 9, 5 }, { 11, 6 }, { 66, 7 }, { 22, 8 }, { 24, 9 }, { 26, 10 },
-+	{ 34, 11 }, { 36, 12 }, { 37, 13 }, { 38, 14 }, { 40, 15 }, { 42, 16 }, { 46, 17 },
-+	{ 50, 18 }, { 53, 19 }, { 54, 20 }, { 56, 21 }, { 57, 22 }, { 58, 23 }, { 59, 24 },
-+	{ 60, 25 }, { 61, 26 }, { 62, 27 }, { 63, 28 }, { 64, 29 }, { 71, 30 }, { 73, 31 },
-+	{ 77, 32 }, { 78, 33 }, { 79, 34 }, { 80, 35 }, { 82, 36 }, { 86, 37 }, { 91, 38 },
-+	{ 92, 39 }, { 95, 40 }, { 97, 41 }, { 101, 42 }, { 104, 43 }, { 106, 44 }, { 108, 45 },
-+	{ 112, 46 }, { 113, 47 }, { 110, 48 }, { 127, 50 }, { 115, 51 }, { 116, 54 }, { 117, 55 },
-+	{ 118, 56 }, { 119, 57 }, { 120, 58 }, { 121, 59 }, { 122, 60 }, { 123, 61 }, { 124, 62 },
-+	{ 125, 63 }, { 126, 64 }, { 129, 65 }, { 131, 66 }, { 132, 67 }, { 133, 68 }, { 145, 69 },
++static const struct msm_gpio_wakeirq_map sm6115_mpm_map[] = {
++	{ 0, 84 }, { 3, 75 }, { 4, 16 }, { 6, 59 }, { 8, 63 }, { 11, 17 }, { 13, 18 },
++	{ 14, 51 }, { 17, 20 }, { 18, 52 }, { 19, 53 }, { 24, 6 }, { 25, 71 }, { 27, 73 },
++	{ 28, 41 }, { 31, 27 }, { 32, 54 }, { 33, 55 }, { 34, 56 }, { 35, 57 }, { 36, 58 },
++	{ 39, 28 }, { 46, 29 }, { 62, 60 }, { 63, 61 }, { 64, 62 }, { 65, 30 }, { 66, 31 },
++	{ 67, 32 }, { 69, 33 }, { 70, 34 }, { 72, 72 }, { 75, 35 }, { 79, 36 }, { 80, 21 },
++	{ 81, 38 }, { 83, 9 }, { 84, 39 }, { 85, 40 }, { 86, 19 }, { 87, 42 }, { 88, 43 },
++	{ 89, 45 }, { 91, 74 }, { 93, 46 }, { 94, 47 }, { 95, 48 }, { 96, 49 }, { 97, 50 },
 +};
 +
- static const struct msm_pinctrl_soc_data msm8996_pinctrl = {
- 	.pins = msm8996_pins,
- 	.npins = ARRAY_SIZE(msm8996_pins),
-@@ -1888,6 +1900,8 @@ static const struct msm_pinctrl_soc_data msm8996_pinctrl = {
- 	.groups = msm8996_groups,
- 	.ngroups = ARRAY_SIZE(msm8996_groups),
- 	.ngpios = 150,
-+	.wakeirq_map = msm8996_mpm_map,
-+	.nwakeirq_map = ARRAY_SIZE(msm8996_mpm_map),
+ static const struct msm_pinctrl_soc_data sm6115_tlmm = {
+ 	.pins = sm6115_pins,
+ 	.npins = ARRAY_SIZE(sm6115_pins),
+@@ -877,6 +887,8 @@ static const struct msm_pinctrl_soc_data sm6115_tlmm = {
+ 	.ngpios = 114,
+ 	.tiles = sm6115_tiles,
+ 	.ntiles = ARRAY_SIZE(sm6115_tiles),
++	.wakeirq_map = sm6115_mpm_map,
++	.nwakeirq_map = ARRAY_SIZE(sm6115_mpm_map),
  };
  
- static int msm8996_pinctrl_probe(struct platform_device *pdev)
+ static int sm6115_tlmm_probe(struct platform_device *pdev)
 
 -- 
 2.42.0
