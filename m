@@ -2,72 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B811F78E750
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E8E78E756
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:45:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243618AbjHaHna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
+        id S243800AbjHaHpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbjHaHn3 (ORCPT
+        with ESMTP id S233744AbjHaHpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:43:29 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E161A3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:43:26 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-407db3e9669so180541cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:43:26 -0700 (PDT)
+        Thu, 31 Aug 2023 03:45:06 -0400
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A81DCE0;
+        Thu, 31 Aug 2023 00:44:59 -0700 (PDT)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-52713d2c606so567510a12.2;
+        Thu, 31 Aug 2023 00:44:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693467805; x=1694072605; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a/yP9Hex2mzmKq9qt42F0CpGQPzC37DJdUwVClKUJvM=;
-        b=Wfzg+DGS8qVa4YrtZG5khX9q/iXJgiAUSYPehA4DGtUjIlh79bUGwbktAHBVpcur+g
-         0zJrPXi7snmZ+YIhM0+wTB+E86uuwLGDxH9tCutuCcROVhkLLEZM65zfl0Bxoza5IwsD
-         XeuN61RNgZsPA17ciuMzv4w2VyokdEh9C3MheNFzZAdg/OSFYWIoibpAm2lOBC0GTd8w
-         yw7780bHoRvfcR2vFLXWrfIDO6h5LPScY2OQCqS3QgvIb528Hq4GpGpRwNQ5wD9deKIj
-         Y6b9MzBPCZ/LEcdQpiAsk+iVSR8VlnMOR0LIuyi86YyNQLOmXMbPshQrCPTBYXLJVyqK
-         3qPg==
+        d=gmail.com; s=20221208; t=1693467898; x=1694072698; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=cVKRGRq/CkwraPzok1l2JYLAmjBhqQlubDR5w+hvVHM=;
+        b=slra5N+wxQz+hAahHbIBwHPRfnsJQrWDrs7tMPJCqQTwM2g+yAno8pgve6/GHjJLFq
+         whEBOAI4MhG8fo4iiwk525ioHqLK/Gpophjt1N8zY8+AeDltEzX4C+0AgOl/rtDWkwEQ
+         wxSYNW6wHAGYFqOv142wDI804tpfBn3fbfD1NISZUJHU9LlwWl8aPpvUw9JTnIp3xlSw
+         /7byPWXgpoxtghOGvxvnQt4QbFrLFEbPi2HrrBIGAeCuYcby5b2QXDxPO1083JwT24jn
+         VlYfuQhye7RVxmnRy/KlEGb8cLVZ9lrquoluW5xSkpNlrT7cN7WMM4BhrCsIITuLHt2G
+         1ikw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693467805; x=1694072605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=a/yP9Hex2mzmKq9qt42F0CpGQPzC37DJdUwVClKUJvM=;
-        b=R91EJlLaDnxE6tpRqOQkL2p7cyEoqqjN08/g9+ikYOFiuZmE9yYnc60PZHr7rLNkCK
-         +0Vwy1Z+wKQso4yNU3/3JZrk8EMhM+8yxYB1MUKDx4n33/C6mTh2z56h+JHtqDbPjl2A
-         qJ9nU2nm/fBrUK0L9nw+w8GW8mdamPF5UZavSEzx622mDTvlW9WN+9trYYAFERtqtAVB
-         gL3ZknjnTfY07RYG3//I0fjjixGLHx/3IV95nWw70B0zZLdzJiI6TuWs8LDmSbi0LUqn
-         qxO2NGJgIrvFLxd0ITMeLNKOl9PYId5S2Elp72I6h0TejwNOLDd6RsBMfp6uvZDaEFr5
-         zecg==
-X-Gm-Message-State: AOJu0Yydgu44BnReIXCh7h559UJg5XBg/eG6CyRmQKEgQa/enCWDV75O
-        tkey4TjlyQwE89n5awpmU3pTnhD3rymeZpG+lxCmDA==
-X-Google-Smtp-Source: AGHT+IHie0Dk2J204QFPIL1R69ZKhIXfwsmjixwhPxeDxqBowkuZ/sWGD9yhup18zNzoNI9H50sl/FNxkLPX/07WS24=
-X-Received: by 2002:a05:622a:130d:b0:403:aa88:cf7e with SMTP id
- v13-20020a05622a130d00b00403aa88cf7emr116118qtk.29.1693467805394; Thu, 31 Aug
- 2023 00:43:25 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693467898; x=1694072698;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cVKRGRq/CkwraPzok1l2JYLAmjBhqQlubDR5w+hvVHM=;
+        b=CJupJJQCHNP+aiUvh+N02XmOYTE5ItNI8787/posL3nLlOMIEgf1G0fL/uOycjNbKl
+         0eMjn/ymi/knV8yHo04lPrjX1a0WkOVktXQHqYprEA0KiXG6Jh7APTn/bvkJTpsi68zU
+         ef+vv4AQP/PKiYGiSTp0q3qzrIEHhwctrrPGIJLvfPi82ItkM3TLhDZ4rZmMT027EF4C
+         +gjoFKCpZGk0HqGUM7SayKZ9/Kuee0sQGt+yvXnuk5b6N7Hw3mcUk0rBCq+fLiXJDxV8
+         v1Gr8XyG3VBSaG73ZKTP8g1Rw5rZReAm0EhwcHaHUyvenKh4pJ9dJ2VTQYBnQBqjL2IB
+         2lvA==
+X-Gm-Message-State: AOJu0Yyz9LK7ffvdcqsbpMw7OnstW5wGs+AOTFhBVSTKCXmQoH0zvd0G
+        YiKnIO82ZIA4ioxE+DkhZ6cOLt6E70G58jcwghQ=
+X-Google-Smtp-Source: AGHT+IHK++clkmnkFhKU4FyPc7ZCh6XFoGtVe3ysfsM3rReQKYDg6T7O0WdSPtWq7W1gaV4VLEyOcRGLjms2Qq6uZVQ=
+X-Received: by 2002:a17:906:3108:b0:9a1:f5b1:c867 with SMTP id
+ 8-20020a170906310800b009a1f5b1c867mr3214996ejx.41.1693467897484; Thu, 31 Aug
+ 2023 00:44:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <64ed7188a2745_9cf208e1@penguin.notmuch> <20230830232811.9876-1-mkhalfella@purestorage.com>
- <CANn89iJVnS_dGDtU7AVWgVrun-p68DZ0A3Pde47MHNeeQ2nwRA@mail.gmail.com> <20230831072957.GA3696339@medusa>
-In-Reply-To: <20230831072957.GA3696339@medusa>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 31 Aug 2023 09:43:14 +0200
-Message-ID: <CANn89iL52irOwq+nL=UManHd1m8KQLswcLh9vrz-6u4CC6RchA@mail.gmail.com>
-Subject: Re: [PATCH v2] skbuff: skb_segment, Call zero copy functions before
- using skbuff frags
-To:     Mohamed Khalfella <mkhalfella@purestorage.com>
-Cc:     willemdebruijn.kernel@gmail.com, alexanderduyck@fb.com,
-        bpf@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
-        dhowells@redhat.com, keescook@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, willemb@google.com, stable@vger.kernel.org
+References: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com> <20230817094520.21286-5-Huangzheng.Lai@unisoc.com>
+In-Reply-To: <20230817094520.21286-5-Huangzheng.Lai@unisoc.com>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Thu, 31 Aug 2023 15:44:20 +0800
+Message-ID: <CAAfSe-vGXco2PaLEdb8cTAEkX4db3o6v++hz-vL3o00i=7_wgw@mail.gmail.com>
+Subject: Re: [PATCH 4/8] i2c: sprd: Add IIC controller driver to support
+ dynamic switching of 400K/1M/3.4M frequency
+To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+Cc:     Andi Shyti <andi.shyti@kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,89 +72,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 9:30=E2=80=AFAM Mohamed Khalfella
-<mkhalfella@purestorage.com> wrote:
+On Thu, 17 Aug 2023 at 17:46, Huangzheng Lai <Huangzheng.Lai@unisoc.com> wrote:
 >
-> On 2023-08-31 08:58:51 +0200, Eric Dumazet wrote:
-> > On Thu, Aug 31, 2023 at 1:28=E2=80=AFAM Mohamed Khalfella
-> > <mkhalfella@purestorage.com> wrote:
-> > >         do {
-> > >                 struct sk_buff *nskb;
-> > >                 skb_frag_t *nskb_frag;
-> > > @@ -4465,6 +4471,10 @@ struct sk_buff *skb_segment(struct sk_buff *he=
-ad_skb,
-> > >                     (skb_headlen(list_skb) =3D=3D len || sg)) {
-> > >                         BUG_ON(skb_headlen(list_skb) > len);
-> > >
-> > > +                       nskb =3D skb_clone(list_skb, GFP_ATOMIC);
-> > > +                       if (unlikely(!nskb))
-> > > +                               goto err;
-> > > +
-> >
-> > This patch is quite complex to review, so I am asking if this part was
-> > really needed ?
->
-> Unfortunately the patch is complex because I try to avoid calling
-> skb_orphan_frags() in the middle of processing these frags. Otherwise
-> it would be much harder to implement because as reallocated frags do not
-> map 1:1 with existing frags as Willem mentioned.
->
-> > <1>  : You moved here <2> and <3>
->
-> <2> was moved here because skb_clone() calls skb_orphan_frags(). By
+> When IIC-slaves supporting different frequencies use the same IIC
 
-Oh right, I think we should amend skb_clone() documentation, it is
-slightly wrong.
+%s/I2C/IIC
 
-( I will take care of this change)
+> controller, the IIC controller usually only operates at lower frequencies.
+> In order to improve the performance of IIC-slaves transmission supporting
+> faster frequencies, we dynamically configure the IIC operating frequency
+> based on the value of the input parameter msg ->flag.
+>
+> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+> ---
+>  drivers/i2c/busses/i2c-sprd.c | 17 ++++++++++++++++-
+>  1 file changed, 16 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
+> index 549b60dd3273..02c11a9ff2da 100644
+> --- a/drivers/i2c/busses/i2c-sprd.c
+> +++ b/drivers/i2c/busses/i2c-sprd.c
+> @@ -75,7 +75,14 @@
+>  #define SPRD_I2C_PM_TIMEOUT    1000
+>  /* timeout (ms) for transfer message */
+>  #define I2C_XFER_TIMEOUT       1000
+> -
+> +/* dynamic modify clk_freq flag  */
+> +#define        I2C_3M4_FLAG            0x0100
 
-> moving this up we do not need to call skb_orphan_frags() for list_skb
-> and we can start to use nr_frags and frags without worrying their value
-> is going to change.
+#define <space> I2C_3M4_FLAG <tab> 0x0100
+
+> +#define        I2C_1M_FLAG             0x0080
+> +#define        I2C_400K_FLAG           0x0040
+> +
+> +#define        I2C_FREQ_400K           400000
+> +#define        I2C_FREQ_1M             1000000
+> +#define        I2C_FREQ_3_4M           3400000
+
+ditto
+
+>  /* SPRD i2c data structure */
+>  struct sprd_i2c {
+>         struct i2c_adapter adap;
+> @@ -94,6 +101,8 @@ struct sprd_i2c {
+>         int err;
+>  };
 >
-> <3> was moved here because <2> was moved here. Fail fast if we can not
-> clone list_skb.
+> +static void sprd_i2c_set_clk(struct sprd_i2c *i2c_dev, u32 freq);
+
+I would suggest moving this whole function above its caller.
+
+> +
+>  static void sprd_i2c_set_count(struct sprd_i2c *i2c_dev, u32 count)
+>  {
+>         writel(count, i2c_dev->base + I2C_COUNT);
+> @@ -269,6 +278,12 @@ static int sprd_i2c_handle_msg(struct i2c_adapter *i2c_adap,
+>                 sprd_i2c_send_stop(i2c_dev, !!is_last_msg);
+>         }
 >
-> >
-> > If this is not strictly needed, please keep the code as is to ease
-> > code review...
-> >
-> > >                         i =3D 0;
-> > >                         nfrags =3D skb_shinfo(list_skb)->nr_frags;
-> > >                         frag =3D skb_shinfo(list_skb)->frags;
-> > > @@ -4483,12 +4493,8 @@ struct sk_buff *skb_segment(struct sk_buff *he=
-ad_skb,
-> > >                                 frag++;
-> > >                         }
-> > >
-> > > -                       nskb =3D skb_clone(list_skb, GFP_ATOMIC);
-> >
-> > <2>
-> >
-> > >                         list_skb =3D list_skb->next;
-> > >
-> > > -                       if (unlikely(!nskb))
-> > > -                               goto err;
-> > > -
-> >
-> > <3>
-> >
-> > >                         if (unlikely(pskb_trim(nskb, len))) {
-> > >                                 kfree_skb(nskb);
-> > >                                 goto err;
-> > > @@ -4564,12 +4570,16 @@ struct sk_buff *skb_segment(struct sk_buff *h=
-ead_skb,
-> > >                 skb_shinfo(nskb)->flags |=3D skb_shinfo(head_skb)->fl=
-ags &
-> > >                                            SKBFL_SHARED_FRAG;
-> > >
-> > > -               if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
-> > > -                   skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
-> > > +               if (skb_zerocopy_clone(nskb, list_skb, GFP_ATOMIC))
-> >
-> > Why using list_skb here instead of frag_skb ?
-> > Again, I have to look at the whole thing to understand why you did this=
-.
+> +       if (msg->flags & I2C_400K_FLAG)
+
+Where does this flag set? I'm not sure we can use msg->flags like
+this. I don't know i2c very well.
+
+Thanks,
+Chunyan
+
+> +               sprd_i2c_set_clk(i2c_dev, I2C_FREQ_400K);
+> +       else if (msg->flags & I2C_1M_FLAG)
+> +               sprd_i2c_set_clk(i2c_dev, I2C_FREQ_1M);
+> +       else if (msg->flags & I2C_3M4_FLAG)
+> +               sprd_i2c_set_clk(i2c_dev, I2C_FREQ_3_4M);
+>         /*
+>          * We should enable rx fifo full interrupt to get data when receiving
+>          * full data.
+> --
+> 2.17.1
 >
-> Oops, this is a mistake. It should be frag_skb. Will fix it run the test
-> one more time and post v3.
