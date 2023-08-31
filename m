@@ -2,45 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5810578F0E1
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F83F78F0DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:05:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245585AbjHaQGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38440 "EHLO
+        id S1346706AbjHaQFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230233AbjHaQGb (ORCPT
+        with ESMTP id S1346698AbjHaQFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:06:31 -0400
-X-Greylist: delayed 64229 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Aug 2023 09:06:07 PDT
-Received: from bues.ch (bues.ch [IPv6:2a01:138:9005::1:4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0A610C7;
-        Thu, 31 Aug 2023 09:06:07 -0700 (PDT)
-Received: by bues.ch with esmtpsa (Exim 4.96)
-        (envelope-from <m@bues.ch>)
-        id 1qbkB5-000OJU-02;
-        Thu, 31 Aug 2023 18:05:49 +0200
-Date:   Thu, 31 Aug 2023 18:05:06 +0200
-From:   Michael =?UTF-8?B?QsO8c2No?= <m@bues.ch>
-To:     =?UTF-8?B?0KDQsNC90LQg0JTQtdC10LE=?= <deeb.rand@confident.ru>
-Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org,
-        =?UTF-8?B?0JLQvtGB0LrRgNC10YHQtdC90YHQutC4?=
-         =?UTF-8?B?0Lkg0KHRgtCw0L3QuNGB0LvQsNCyINCY0LPQvtGA0LXQstC40Yc=?= 
-        <voskresenski.stanislav@confident.ru>
-Subject: Re: [PATCH] ssb-main: Fix division by zero in ssb_calc_clock_rate()
-Message-ID: <20230831180506.30466e8a@barney>
-In-Reply-To: <531722477.1139813.1693465653233.JavaMail.zimbra@confident.ru>
-References: <20230830082759.23336-1-deeb.rand@confident.ru>
- <4c6d01bf-1a0f-27de-54e1-4afdcf4bc8d5@lwfinger.net>
- <531722477.1139813.1693465653233.JavaMail.zimbra@confident.ru>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
+        Thu, 31 Aug 2023 12:05:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BA01B0;
+        Thu, 31 Aug 2023 09:05:18 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D4933B82336;
+        Thu, 31 Aug 2023 16:05:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE302C433C8;
+        Thu, 31 Aug 2023 16:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693497915;
+        bh=7hx7dENCRJJYC1sdS/KEN2Hx0CzgtkyQU3faU/Y4KgY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Czr8DBk0c+4Rk/t2YiSSHUOaqbZdTLZ+IMPpytBgoFAig6GZQFxXK1MTMLMpPND1H
+         BkSBycm92EBwXy233EhHUZx5t+b+eb5qZ6w5dnXVftPLGWfNoWLr4cEhGRkXsMijaS
+         sgQZgj7G832dEghI8nexABPET8qudZQgRvowUhxxSljotd4UbjTxWiVj72AREjRG/p
+         6rPdWiXwfrb7KTVKEGRLqAaWtaWsHme216MsqIgwgIJGVSoQWJa48ntE6VdfwOJTUj
+         U9rYXsS6cUsyxjFw6k//b7lRnxLukAE/5LLRf0AdzCDRTHYvKUSgiYfYJIaJRtNyTS
+         UoKVzc84DmTuQ==
+Date:   Thu, 31 Aug 2023 17:05:09 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     "Rivera-Matos, Ricardo" <rriveram@opensource.cirrus.com>,
+        Vlad Karpovich <vkarpovi@opensource.cirrus.com>,
+        James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
+        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
+Message-ID: <def16e52-3ba9-475d-9d8f-63513c47a392@sirena.org.uk>
+References: <20230830195536.448884-1-vkarpovi@opensource.cirrus.com>
+ <737c4114-5b54-444c-8a6a-de4e98566513@sirena.org.uk>
+ <5B0EB2A2-2048-4A71-A4A9-D5167C7AB5EC@opensource.cirrus.com>
+ <d97094c6-1534-05ad-0452-c627d7c45802@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Qokcis+UCMMyJEsFdt=sS0U";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sg7FyDwimPhJ1e+i"
+Content-Disposition: inline
+In-Reply-To: <d97094c6-1534-05ad-0452-c627d7c45802@opensource.cirrus.com>
+X-Cookie: "Pok pok pok, P'kok!"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,50 +68,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Qokcis+UCMMyJEsFdt=sS0U
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, 31 Aug 2023 10:07:33 +0300 (MSK)
-=D0=A0=D0=B0=D0=BD=D0=B4 =D0=94=D0=B5=D0=B5=D0=B1 <deeb.rand@confident.ru> =
-wrote:
+--sg7FyDwimPhJ1e+i
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 1- Yes, I agree that your solution is simpler, and I thought about
-> it, but I thought that the one who set the value zero put it for some
-> reason, so I did not want to change it.
+On Thu, Aug 31, 2023 at 04:22:52PM +0100, Richard Fitzgerald wrote:
 
+> I think Mark's comment is that the Signed-off-by chain doesn't match
+> the patch author. The s-o-b order implies that Ricardo wrote it and
+> Vlad is upstreaming it - but in that case this email should start with
+> a From: line to say that the author is Ricardo.
 
-Yes, I understand your reasoning and I had the same thought initially.
-But I looked into the code and I am pretty sure that there is no reason
-for the default case returning 0.
-In fact, I think returning a 1 as default makes much more sense as the
-default value for a factor.
+Yes, that's what I'm querying.
 
-Changing this from 0 to 1 will get my ack.
-
---=20
-Michael B=C3=BCsch
-https://bues.ch/
-
---Sig_/Qokcis+UCMMyJEsFdt=sS0U
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--sg7FyDwimPhJ1e+i
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEihRzkKVZOnT2ipsS9TK+HZCNiw4FAmTwujIACgkQ9TK+HZCN
-iw4NlhAAtupYTu8Q6OEnSbcpPgBOAAR8EoCVWY2QwXo3SlYqT8XSnALguogkyIsy
-pNpmND8JYmoq62PrEJXdFERAaIi+nTjpjQi7TYiwC+R2Qn4HUeFUsEOmbBfz+vz6
-+h3cKJTN8+2BICKjOIuUzTmcCQ0E/Pgj6kh+ZR3nc76hISuAKNGoEArecidAyoTd
-6d2n6Hqjg3FP8NPOu/v3NVrAS4NIeQXm5TLPMUBBXmBLQw95yjV7bNuVsoLI98R8
-beiEWRTwqCAg7wLSDP/67hZSTH37oRZgvMuuweywdjU3RMIlRgIfiOGhsSX/+Z3J
-Z5VgTcxu2TNib4TzgehvpJLahGepBT72TCktW8NnJ5tIwuedvAwXQWmMwxK5HgWs
-mQKSWhvSL6OQV799c3qh04uVAXU3wr55lUJ0iEARwDSdm/DP469Qfz0zHaRmvrWX
-SS3b5C4EBoBLhoT4VUbCLq9o9TxLIwTo/zidUh4LM2uaxJJRJWiUJaQAE4h6CjZC
-6hOb5zLMfruMmiSx1aDvedjIKAQyHN7GBVFZuTRcVyYnVt/f1Kjau90IqFEuHgE+
-45Nhh0X2WxcyIlxhPsXHWN8c670ryrNqV5s97YZpXFc45VwtRrhWP9+szNTtlo0X
-1XwOv0cZLFud7f+guOliHmImffOxnAvQrpCSiToAoGBOA2oXQf4=
-=PTT5
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTwujQACgkQJNaLcl1U
+h9C2XQf/e12wM/5qI0klirzI3B5cxQSYtxwT4u4kiP20chaYcc4ZyUzfuqCD800b
+INi0tijp1M4LgZjrvVHpzkwGVCdXbAp4rUAw9DYtOqof7LDDZNapno6EwM+cPv7Y
+ev1suWR2Rre4fNI8aBZQ7qm5MCVF2ISY0AbvzHJK63NR4epe6Ji16bnWCZ5D97m1
+qBwMjRxyu8PSTnLD4x34INVkSxWNw0LGhhnq1J+zas+qEQEKTzTP29S07asSmPNi
+9B/TDxUj0bLkdyA8f6bV4eFTAtmRSlo2r+l65vSxRL7cpF7ONB0C2m9vTHSYCFQV
+fJsHN9MnLDDbT0Xj0NJ7rLDwndTM7A==
+=7p8c
 -----END PGP SIGNATURE-----
 
---Sig_/Qokcis+UCMMyJEsFdt=sS0U--
+--sg7FyDwimPhJ1e+i--
