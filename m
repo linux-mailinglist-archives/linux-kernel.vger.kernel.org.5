@@ -2,64 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1E778EC71
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F06C178EC76
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344706AbjHaLsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
+        id S1345774AbjHaLvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjHaLsx (ORCPT
+        with ESMTP id S231241AbjHaLvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:48:53 -0400
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0F9E45;
-        Thu, 31 Aug 2023 04:48:48 -0700 (PDT)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37VBmVxc079737;
-        Thu, 31 Aug 2023 06:48:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693482511;
-        bh=rUzskDRuUxd5GNL1WaRYRS9VAZF5I2dFCZM8IxXPpiQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=rOi2LLyKwAAZeO1Hq8sxUNfIOH+JCEedPMvvwQS+DHP/XYmQcAuB+n5wAHvF35wyH
-         WPHSy3j1+/F6zwXgQcH/N62hEy8+67pMHdH50wvG8am1jow3yq68dkn69b5pP0mArM
-         rrTpomlnqNsYCGRX8JKghdVkqeq6PqjuaXcrWq8Y=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37VBmVCx123704
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 31 Aug 2023 06:48:31 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 31
- Aug 2023 06:48:31 -0500
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 31 Aug 2023 06:48:30 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37VBmUm5013704;
-        Thu, 31 Aug 2023 06:48:30 -0500
-Date:   Thu, 31 Aug 2023 06:48:30 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Keerthy <j-keerthy@ti.com>
-CC:     <vigneshr@ti.com>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <kristo@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/5] arm64: dts: ti: k3-j721s2-main: Add main domain
- watchdog entries
-Message-ID: <20230831114830.oenlyvwyxbi2uerq@deserving>
-References: <20230830072622.19539-1-j-keerthy@ti.com>
- <20230830072622.19539-5-j-keerthy@ti.com>
+        Thu, 31 Aug 2023 07:51:46 -0400
+Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E53CFF;
+        Thu, 31 Aug 2023 04:51:43 -0700 (PDT)
+Received: by mail-io1-xd31.google.com with SMTP id ca18e2360f4ac-794c7d95ba5so26844639f.0;
+        Thu, 31 Aug 2023 04:51:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693482703; x=1694087503; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ihsq1G+Hub3rKossUtgp/zZy1yTWO30XUHy6RAXp+uk=;
+        b=nIrjaccbsnE3t/jCjFBWjij+buylw9yDya53fs4k1gEUotlY+HfPp2O8tY5uRqohrR
+         avXtg9E2puV++Q55BpPQEO7/m+9qmtQ+pP8maQ+bTrWbv8+NjKpynV+dnWSB7jLB5/zm
+         qnLxa+3pOBUxzfjVMYY67i1LL7r7jJDFsafElIrqWAEkPeBD3ONkIikZLoDPNT3TCKvg
+         Iv+h5vBMLmMraaT+cbhuQ7HW4Z4hp+zmfefhut4+xZ/PnPho0+3raAAh0gYAzE73Hq9Y
+         o83KiebZfnQcAZtYJcO1l1tXUfqqdSwISbIwOeYaJiXJgEE92eBjuqd26rlG6WnBx1qv
+         jq4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693482703; x=1694087503;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ihsq1G+Hub3rKossUtgp/zZy1yTWO30XUHy6RAXp+uk=;
+        b=S3+yz8+Li6Yo9BXxsEtX3jVw7Pa2w9iXxOXLo5nYuCiZK42xQKZMntXSojTqnbsSXK
+         a4tS2HhfRcCV+8DQdDH7kCXirzidBESDLF9L2WWX+Jd1PXI2g6/0sGY7IEiDjpDuN3AZ
+         jSviZzqXK44qrGQ1UoBRxjWxZYWcn0xOJ1K2tuyfdw8RaH53QJ7uDKLmfjQCCs7dJt56
+         G8XeXtNd20qgU0lAN4SFIFE1xADYpB9MlRwKTGfPgLMNtq/9G8V+iOcmQuaTu7GIgD2z
+         fbI13WDFI4jBS6DxvQMLYlb7MhavD3z3oMAHd90xr7cGL5cQZ/Pedg5R6bizWqru27eg
+         ln+g==
+X-Gm-Message-State: AOJu0YxyHlpCZnnB5PuW85DPrkLJu1Z01sOm1QVqITMTZx97QewXIcnt
+        bfXxi2LYPk/ITL3H+/S0pPM=
+X-Google-Smtp-Source: AGHT+IEnv1P/QYCarKpZ1Xer0P5ZGSgekwP3ctv3JCpSTmZKWn/RaUOys/p1eV8kWbXegyupSqv0Hw==
+X-Received: by 2002:a6b:fe15:0:b0:787:1a8f:1d08 with SMTP id x21-20020a6bfe15000000b007871a8f1d08mr4906178ioh.15.1693482702990;
+        Thu, 31 Aug 2023 04:51:42 -0700 (PDT)
+Received: from aford-B741.lan ([2601:447:d001:897f:2a0f:e1d5:3688:f2b8])
+        by smtp.gmail.com with ESMTPSA id o28-20020a02cc3c000000b0042b1d495aecsm353529jap.123.2023.08.31.04.51.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 04:51:42 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] arm64: dts: imx8mm-beacon: Migrate sound card to simple-audio-card
+Date:   Thu, 31 Aug 2023 06:51:25 -0500
+Message-Id: <20230831115128.254226-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230830072622.19539-5-j-keerthy@ti.com>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,53 +77,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12:56-20230830, Keerthy wrote:
-> Add DT entries for main domain watchdog instances.
-> 
-> Signed-off-by: Keerthy <j-keerthy@ti.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-> index 87841bcc509d..33276d31faa1 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
-> @@ -1513,4 +1513,22 @@
->  		reg = <0x0 0x700000 0x0 0x1000>;
->  		ti,esm-pins = <344>, <345>;
->  	};
-> +
-> +	watchdog0: watchdog@2200000 {
-> +		compatible = "ti,j7-rti-wdt";
-> +		reg = <0x0 0x2200000 0x0 0x100>;
-> +		clocks = <&k3_clks 286 1>;
-> +		power-domains = <&k3_pds 286 TI_SCI_PD_EXCLUSIVE>;
-> +		assigned-clocks = <&k3_clks 286 1>;
-> +		assigned-clock-parents = <&k3_clks 286 5>;
-> +	};
-> +
-> +	watchdog1: watchdog@2210000 {
-> +		compatible = "ti,j7-rti-wdt";
-> +		reg = <0x0 0x2210000 0x0 0x100>;
-> +		clocks = <&k3_clks 287 1>;
-> +		power-domains = <&k3_pds 287 TI_SCI_PD_EXCLUSIVE>;
-> +		assigned-clocks = <&k3_clks 287 1>;
-> +		assigned-clock-parents = <&k3_clks 287 5>;
-> +	};
+Instead of using a custom glue layer connecting the wm8962 CODEC
+to the SAI3 sound-dai, migrate the sound card to simple-audio-card.
+This also brings this board in line with the imx8mn-beacon and
+imx8mp-beacon.
 
-Are these all the wdts in main domain - do define and leave the other wdts
-disabled as they are tightly coupled to other processors (and must be
-enabled by the OS running on them), but defining them allows us to reuse
-the definitions in OSes running on R5s (for instance) to reuse the same
-device definitions.
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
->  };
-> -- 
-> 2.17.1
-> 
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
+index b10e2a703a44..313e93663d6f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
+@@ -98,18 +98,30 @@ reg_usdhc2_vmmc: regulator-usdhc2 {
+ 		enable-active-high;
+ 	};
+ 
+-	sound {
+-		compatible = "fsl,imx-audio-wm8962";
+-		model = "wm8962-audio";
+-		audio-cpu = <&sai3>;
+-		audio-codec = <&wm8962>;
+-		audio-routing =
+-			"Headphone Jack", "HPOUTL",
+-			"Headphone Jack", "HPOUTR",
+-			"Ext Spk", "SPKOUTL",
+-			"Ext Spk", "SPKOUTR",
+-			"AMIC", "MICBIAS",
+-			"IN3R", "AMIC";
++	sound-wm8962 {
++		compatible = "simple-audio-card";
++		simple-audio-card,name = "wm8962";
++		simple-audio-card,format = "i2s";
++		simple-audio-card,widgets = "Headphone", "Headphones",
++					    "Microphone", "Headset Mic",
++					    "Speaker", "Speaker";
++		simple-audio-card,routing = "Headphones", "HPOUTL",
++					    "Headphones", "HPOUTR",
++					    "Speaker", "SPKOUTL",
++					    "Speaker", "SPKOUTR",
++					    "Headset Mic", "MICBIAS",
++					    "IN3R", "Headset Mic";
++
++		simple-audio-card,cpu {
++			sound-dai = <&sai3>;
++		};
++
++		simple-audio-card,codec {
++			sound-dai = <&wm8962>;
++			clocks = <&clk IMX8MM_CLK_SAI3_ROOT>;
++			frame-master;
++			bitclock-master;
++		};
+ 	};
+ };
+ 
+@@ -192,6 +204,7 @@ wm8962: audio-codec@1a {
+ 			0x0000 /* 4:FN_DMICCDAT */
+ 			0x0000 /* 5:Default */
+ 		>;
++		#sound-dai-cells = <0>;
+ 	};
+ 
+ 	pca6416_0: gpio@20 {
 -- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+2.39.2
+
