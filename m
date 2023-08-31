@@ -2,61 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4813778EF1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0246678EF20
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:01:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239660AbjHaOBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:01:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52792 "EHLO
+        id S245669AbjHaOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:01:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHaOBL (ORCPT
+        with ESMTP id S229543AbjHaOBS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:01:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F68C3;
-        Thu, 31 Aug 2023 07:01:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 5EA29B81EB8;
-        Thu, 31 Aug 2023 14:01:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93068C433C8;
-        Thu, 31 Aug 2023 14:01:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693490464;
-        bh=bhdJzbcUDiU8F267YV9GPJNZorUfdGvRfv0Zanffxlc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dt4grCozA/NuOXr8/L7WRrWozLJyn4aujUgLwxM1zCLIzhVDGU86YnC9Z1+oQ4yD4
-         eLcaMYJfwZ17CMnPDEYh7xhyCS6DgXJ3shvcan1nxj4IF9AkmJ9TOXwMnWLwFFZSAI
-         /o84xxJ2DVEn56tt5q1w/mg3IWr9ZzKXEZ4WRrBI=
-Date:   Thu, 31 Aug 2023 16:01:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Christian =?iso-8859-1?Q?K=F6nig?= 
-        <ckoenig.leichtzumerken@gmail.com>
-Cc:     Chia-I Wu <olvaffe@gmail.com>, Sasha Levin <sashal@kernel.org>,
-        airlied@linux.ie, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        stable@vger.kernel.org, Lang Yu <Lang.Yu@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [PATCH AUTOSEL 5.10 13/22] drm/amdgpu: install stub fence into
- potential unused fence pointers
-Message-ID: <2023083144-railroad-daybreak-7f41@gregkh>
-References: <20230724012419.2317649-1-sashal@kernel.org>
- <20230724012419.2317649-13-sashal@kernel.org>
- <CAPaKu7RTgAMBLHbwtp4zgiBSDrTFtAj07k5qMzkuLQy2Zr+sZA@mail.gmail.com>
- <55fc4a28-1e17-44df-2069-a688828080e6@gmail.com>
- <2023083145-scoured-celery-2511@gregkh>
- <c657653e-24d8-5790-a91c-4c13bb9eaeb0@gmail.com>
+        Thu, 31 Aug 2023 10:01:18 -0400
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E8ACC;
+        Thu, 31 Aug 2023 07:01:15 -0700 (PDT)
+Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79536bc6697so31479339f.1;
+        Thu, 31 Aug 2023 07:01:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693490475; x=1694095275; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SQ2cGHJVHSShioqtMZDfDzYLhYEcSFYiRM+Mt80HyFU=;
+        b=H1acRkQljRxx7snyI72iSnHTQNMgDi7/jWQmbIxM/gihAkxPMshgwd+WAl/AHziTjW
+         uwUC8t8ZhtFc7k4yTrOHuG0qh7aR+JzTexPvY63IlyCg0u3hbV02g+RyT1NClpDRVXUU
+         ljsV/MyNFjQsoySotBlfc/2v01CV1EvsNtpROaZP0tibF/ky4CUTwIZcaWxHBTxyPq6F
+         RZxyiqY6dRr7dEvcnukEga1HG4av28CQWifzusv5sKbHE398Ag6KFoYQuHpRWNLenuIL
+         Z7od/XCKqtN9R0fpm2krSEO7leC+RieC4NpZcKPTEk4pK0FDUpyPkXDqBUdbYN8T4nJg
+         K24g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693490475; x=1694095275;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SQ2cGHJVHSShioqtMZDfDzYLhYEcSFYiRM+Mt80HyFU=;
+        b=AkBW27UxtoAX2oJF1KbAjcWT1kNLgy8UHbc0UhaAo6wUJ3MHLEi8h51ytaylNp26+W
+         pdMbPJlp6wjI1xGmm/wWVYpyZ4nefVw9bAx6Bg/cAODz17kIBIYWQxjosTvg++vLZ/dC
+         S8K9c9sO8x7/LJvbzQ9nJkk6iuRbTvnnL/RVJYykN2BziVu+cNXSNDzLRug70io4z4Lx
+         JIg2hhzuNcIJcA7ncxcb3yzIq0tFF1vUiD6cHBEnNgLIGHdlp2Cw5+ZaF1bDc2tfQmaq
+         czZzfghki2xVq9dECGECkBVv2zurW7mUzSrVfTwrwpIMsAX/mzPv0GCheaS1gQ/RqbM+
+         Bnkw==
+X-Gm-Message-State: AOJu0YyQgqATJOUzKTpieAaDw7jxwWq8KSUfwB0EETwDDpQGrX8Eu4Oo
+        rGhxUvQfeqrLE6ZiYqDZeOVH224njM1rF9QK
+X-Google-Smtp-Source: AGHT+IH/SGjAn3d+l5/G5NjEXOZVb2wuBP+jsvbVT8g/CLAysp+5APFcI8N9wqPNt3gHjgUPk6FsEw==
+X-Received: by 2002:a6b:a05:0:b0:795:16b8:85fc with SMTP id z5-20020a6b0a05000000b0079516b885fcmr6191833ioi.0.1693490474774;
+        Thu, 31 Aug 2023 07:01:14 -0700 (PDT)
+Received: from azeems-kspp.c.googlers.com.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
+        by smtp.gmail.com with ESMTPSA id c11-20020a5e8f0b000000b007926ee42341sm402862iok.50.2023.08.31.07.01.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 07:01:14 -0700 (PDT)
+From:   Azeem Shaikh <azeemshaikh38@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kees Cook <keescook@chromium.org>
+Cc:     linux-hardening@vger.kernel.org,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v4] kobject: Replace strlcpy with strscpy
+Date:   Thu, 31 Aug 2023 14:01:04 +0000
+Message-ID: <20230831140104.207019-1-azeemshaikh38@gmail.com>
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c657653e-24d8-5790-a91c-4c13bb9eaeb0@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,41 +72,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 03:26:28PM +0200, Christian König wrote:
-> Am 31.08.23 um 12:56 schrieb Greg KH:
-> > On Thu, Aug 31, 2023 at 12:27:27PM +0200, Christian König wrote:
-> > > Am 30.08.23 um 20:53 schrieb Chia-I Wu:
-> > > > On Sun, Jul 23, 2023 at 6:24 PM Sasha Levin <sashal@kernel.org> wrote:
-> > > > > From: Lang Yu <Lang.Yu@amd.com>
-> > > > > 
-> > > > > [ Upstream commit 187916e6ed9d0c3b3abc27429f7a5f8c936bd1f0 ]
-> > > > > 
-> > > > > When using cpu to update page tables, vm update fences are unused.
-> > > > > Install stub fence into these fence pointers instead of NULL
-> > > > > to avoid NULL dereference when calling dma_fence_wait() on them.
-> > > > > 
-> > > > > Suggested-by: Christian König <christian.koenig@amd.com>
-> > > > > Signed-off-by: Lang Yu <Lang.Yu@amd.com>
-> > > > > Reviewed-by: Christian König <christian.koenig@amd.com>
-> > > > > Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-> > > > > Signed-off-by: Sasha Levin <sashal@kernel.org>
-> > > > > ---
-> > > > >    drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c | 6 ++++--
-> > > > >    1 file changed, 4 insertions(+), 2 deletions(-)
-> > > > We start getting this warning spew on chromeos
-> > > Yeah because the older kernels still kept track of the last VM fence in the
-> > > syncobj.
-> > > 
-> > > This patch here should probably not have been back ported.
-> > > 
-> > > Why was that done anyway? The upstream commit doesn't have a CC stable and
-> > > this is only a bug fix for a new feature not present on older kernels.
-> > It is part of the AUTOSEL process.
-> 
-> Could we prevent patches from being backported by adding a Fixes: tag?
+strlcpy() reads the entire source buffer first.
+This read may exceed the destination size limit.
+This is both inefficient and can lead to linear read
+overflows if a source string is not NUL-terminated [1].
+In an effort to remove strlcpy() completely [2], replace
+strlcpy() here with strscpy().
 
-Yes, that will show exactly where the patch should be backported to.
+Direct replacement is safe here since return value of -errno
+is used to check for truncation instead of sizeof(dest).
 
-thanks,
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+[2] https://github.com/KSPP/linux/issues/89
 
-greg k-h
+Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+---
+v4:
+ * Fixes errors reported by checkpatch.pl
+
+v3:
+ * Fixed weird indentation.
+ * https://lore.kernel.org/all/20230830202021.4134348-1-azeemshaikh38@gmail.com/
+
+v2:
+ * Updated error message to remove @len which is errno now.
+ * https://lore.kernel.org/all/20230830150136.3798414-1-azeemshaikh38@gmail.com/
+
+v1:
+ * https://lore.kernel.org/all/20230703180528.3709258-1-azeemshaikh38@gmail.com/
+
+
+ lib/kobject_uevent.c |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
+index 7c44b7ae4c5c..fb9a2f06dd1e 100644
+--- a/lib/kobject_uevent.c
++++ b/lib/kobject_uevent.c
+@@ -254,10 +254,10 @@ static int init_uevent_argv(struct kobj_uevent_env *env, const char *subsystem)
+ 	int buffer_size = sizeof(env->buf) - env->buflen;
+ 	int len;
+
+-	len = strlcpy(&env->buf[env->buflen], subsystem, buffer_size);
+-	if (len >= buffer_size) {
+-		pr_warn("init_uevent_argv: buffer size of %d too small, needed %d\n",
+-			buffer_size, len);
++	len = strscpy(&env->buf[env->buflen], subsystem, buffer_size);
++	if (len < 0) {
++		pr_warn("%s: insufficient buffer space (%u left) for %s\n",
++			__func__, buffer_size, subsystem);
+ 		return -ENOMEM;
+ 	}
+
+--
+2.42.0.283.g2d96d420d3-goog
+
+
