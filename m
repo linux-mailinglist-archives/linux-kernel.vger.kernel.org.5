@@ -2,178 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD9178EC81
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DBF278EC9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234428AbjHaLw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38752 "EHLO
+        id S1346159AbjHaLyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:54:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346142AbjHaLw1 (ORCPT
+        with ESMTP id S1346151AbjHaLyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:52:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 210DCCFC
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693482701;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HA1rOAetNRxuhUM9NoRUcE5ZYks/FWqTpfdzdFJKn8s=;
-        b=e3oiv28esg0fVlMQsFL/LY47WrZml6T4RtOxMOIBuFiYKF24byNr4mLxjDdVZSxH9n96KY
-        B9NUaYp88aupifdllJm2vUlF+CXFeaGvM8CgK5MkMi+UPAewQk7GorFawVdskASf2kWhfd
-        WwkTImRVMy/10B+yp20zcWOw4VJr5To=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-673-MAkcaTslMcGV90Qrr2KIHQ-1; Thu, 31 Aug 2023 07:51:39 -0400
-X-MC-Unique: MAkcaTslMcGV90Qrr2KIHQ-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a1c758ef63so5921066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:51:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693482698; x=1694087498;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HA1rOAetNRxuhUM9NoRUcE5ZYks/FWqTpfdzdFJKn8s=;
-        b=gBmYyd1Z1bj9TjJlLCd12o0k9IDy5QLJ1uqZxAEuUTIhOY0sNnu+S7PHp3JcZwT2Lj
-         1xp+dCi7lndEYnlwfOSSZumb+rAboJ5hrQkzKPAD8Rc6kSTlt1G9hUdJ/33kAWJQsQdM
-         cuvXS5pYjKORIrCoXxbU844TY4DLwYiauIlTnz+zOpdUD9v26ApGr9uNB2w99KU4M0c7
-         YP43ckry2JY2z7gmDYRDLJyKE0nkrNcVYrbWwmIkjx+D9Xh8keuOUawOX0r0yhPdUZiH
-         imNMrPatNqAVN7v1X01y599zDxPgPBwfYRraKF0XetVWWlsWxeBJypXJ6/Gac6KbHxBx
-         8yYw==
-X-Gm-Message-State: AOJu0Yx5Wx7B4+jDk8FfDuI/cCxIRoVVTeib/1/HNOlFasiMycsG5Sk6
-        GDZWQVDJ3MEJ/QJ7YsCqlO4YaZOOnOLK831vkf85KzJbX1KKjk1nD77VCr4ofFYJEooKbCu6do3
-        VjO8fSEUzkyEVQoEsJk4HtKGH
-X-Received: by 2002:a17:906:19:b0:9a1:f96c:4bb9 with SMTP id 25-20020a170906001900b009a1f96c4bb9mr3536660eja.6.1693482698712;
-        Thu, 31 Aug 2023 04:51:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFGfqbMiAZnbTzey2RXfsU5qEewFCbDRPo/4/Oy55iKUmW3AuIcCEVbKwGjLs907T3p3M11hA==
-X-Received: by 2002:a17:906:19:b0:9a1:f96c:4bb9 with SMTP id 25-20020a170906001900b009a1f96c4bb9mr3536650eja.6.1693482698359;
-        Thu, 31 Aug 2023 04:51:38 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-255-219.dyn.eolo.it. [146.241.255.219])
-        by smtp.gmail.com with ESMTPSA id yy10-20020a170906dc0a00b0099364d9f0e2sm681691ejb.98.2023.08.31.04.51.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 04:51:37 -0700 (PDT)
-Message-ID: <b32f292d26aec59ae68749bbd3107d51cf3c2f1f.camel@redhat.com>
-Subject: Re: [PATCH v4 0/4] Move Loongson1 MAC arch-code to the driver dir
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Date:   Thu, 31 Aug 2023 13:51:36 +0200
-In-Reply-To: <20230830134241.506464-1-keguang.zhang@gmail.com>
-References: <20230830134241.506464-1-keguang.zhang@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Thu, 31 Aug 2023 07:54:50 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958E7E54;
+        Thu, 31 Aug 2023 04:54:45 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VAtKpV008861;
+        Thu, 31 Aug 2023 11:54:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ln9W+1/tu6jELF7c4HBDDM3MPqq7CJqkt6tbQ7JY83o=;
+ b=p6fc+shQMUcWFavaImcygl3gjfV3d0O58i2F9WbE05gE77HyPIGFdDb1LwH5tX/1+XD+
+ 3nxEozJ5JlJUlr3RabnfaDbzHjPodyyCiwd8upXav8APiresAGEK7/REg5e2Ib2KkkyS
+ QRiekHai4ViQDBCx6aOA8DqCVzW/rYvrfPs1o/hN9lNKkHb65RBZK2U3viAY7kr/OnQl
+ id0PSnHPbOcXh3kbHBoJasZMLbOj7IS9kU/ezm8YNj+j8cq1cczUDHEDScfutwanta9p
+ +SfzEi3QEB9ksAW1qRXpiWdWheNJ9gSPJrcLgdWVGbYpUC5GtGthDA67b2U1A3n6VP3Z Qw== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st4p3jf8m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 11:54:08 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VBs6oY026563
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 11:54:06 GMT
+Received: from [10.201.3.91] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 31 Aug
+ 2023 04:53:59 -0700
+Message-ID: <73879012-581d-47fb-b741-577c90b31dfb@quicinc.com>
+Date:   Thu, 31 Aug 2023 17:23:55 +0530
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] dt-bindings: phy: qcom,uniphy: Rename ipq4019 usb PHY
+ to UNIPHY
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <robert.marko@sartura.hr>, <luka.perkov@sartura.hr>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <quic_varada@quicinc.com>
+References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com>
+ <20230829135818.2219438-2-quic_ipkumar@quicinc.com>
+ <CAA8EJpqA-poJ9=XKJa2s=yZUGbBbgOqgiDC-q9skJzBqLux84g@mail.gmail.com>
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <CAA8EJpqA-poJ9=XKJa2s=yZUGbBbgOqgiDC-q9skJzBqLux84g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: he6N0M1o3_Z22uLQBnvrl5asdGQTJkbv
+X-Proofpoint-GUID: he6N0M1o3_Z22uLQBnvrl5asdGQTJkbv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_09,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 clxscore=1015 suspectscore=0 mlxlogscore=999
+ lowpriorityscore=0 phishscore=0 spamscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310106
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-08-30 at 21:42 +0800, Keguang Zhang wrote:
-> In order to convert Loongson1 MAC platform devices to the devicetree
-> nodes, Loongson1 MAC arch-code should be moved to the driver dir.
-> Add dt-binding document and update MAINTAINERS file accordingly.=20
->    =20
-> In other words, this patchset is a preparation for converting
-> Loongson1 platform devices to devicetree.
->=20
-> Changelog
-> V3 -> V4: Add Acked-by tag from Krzysztof Kozlowski
->           Add "|" to description part
->           Amend "phy-mode" property
->           Drop ls1x_dwmac_syscon definition and its instances
->           Drop three redundant fields from the ls1x_dwmac structure
->           Drop the ls1x_dwmac_init() method.
->           Update the dt-binding document entry of Loongson1 Ethernet
->           Some minor improvements
-> V2 -> V3: Split the DT-schema file into loongson,ls1b-gmac.yaml
->           and loongson,ls1c-emac.yaml (suggested by Serge Semin)
->           Change the compatibles to loongson,ls1b-gmac and loongson,ls1c-=
-emac
->           Rename loongson,dwmac-syscon to loongson,ls1-syscon
->           Amend the title
->           Add description
->           Add Reviewed-by tag from Krzysztof Kozlowski
->           Change compatibles back to loongson,ls1b-syscon
->           and loongson,ls1c-syscon
->           Determine the device ID by physical
->           base address(suggested by Serge Semin)
->           Use regmap instead of regmap fields
->           Use syscon_regmap_lookup_by_phandle()
->           Some minor fixes
->           Update the entries of MAINTAINERS
-> V1 -> V2: Leave the Ethernet platform data for now
->           Make the syscon compatibles more specific
->           Fix "clock-names" and "interrupt-names" property
->           Rename the syscon property to "loongson,dwmac-syscon"
->           Drop "phy-handle" and "phy-mode" requirement
->           Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
->           to snps,dwmac.yaml
->           Fix the build errors due to CONFIG_OF being unset
->           Change struct reg_field definitions to const
->           Rename the syscon property to "loongson,dwmac-syscon"
->           Add MII PHY mode for LS1C
->           Improve the commit message
->=20
-> Keguang Zhang (4):
->   dt-bindings: mfd: syscon: Add compatibles for Loongson-1 syscon
->   dt-bindings: net: Add Loongson-1 Ethernet Controller
->   net: stmmac: Add glue layer for Loongson-1 SoC
->   MAINTAINERS: Update MIPS/LOONGSON1 entry
->=20
->  .../devicetree/bindings/mfd/syscon.yaml       |   2 +
->  .../bindings/net/loongson,ls1b-gmac.yaml      | 114 +++++++++
->  .../bindings/net/loongson,ls1c-emac.yaml      | 113 +++++++++
->  MAINTAINERS                                   |   3 +
->  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
->  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
->  .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 219 ++++++++++++++++++
->  7 files changed, 463 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1b-g=
-mac.yaml
->  create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1c-e=
-mac.yaml
->  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
->=20
->=20
-> base-commit: 56585460cc2ec44fc5d66924f0a116f57080f0dc
 
-I guess the whole series should go through the networking tree, but
-please note that net-next is currently closed:
+On 8/29/2023 7:49 PM, Dmitry Baryshkov wrote:
+> On Tue, 29 Aug 2023 at 16:59, Praveenkumar I <quic_ipkumar@quicinc.com> wrote:
+>> UNIPHY / Combo PHY used on various qualcomm SoC's are very similar to
+>> ipq4019 PHY. Hence renaming this dt-binding to uniphy dt-binding and
+>> can be used for other qualcomm SoCs which are having similar UNIPHY.
+>>
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+>>   .../phy/{qcom-usb-ipq4019-phy.yaml => qcom,uniphy.yaml}  | 9 +++++++--
+>>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>   rename Documentation/devicetree/bindings/phy/{qcom-usb-ipq4019-phy.yaml => qcom,uniphy.yaml} (78%)
+>>
+>> diff --git a/Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml b/Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+>> similarity index 78%
+>> rename from Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+>> rename to Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+>> index 09c614952fea..cbe2cc820009 100644
+>> --- a/Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+>> +++ b/Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+>> @@ -1,13 +1,18 @@
+>>   # SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>>   %YAML 1.2
+>>   ---
+>> -$id: http://devicetree.org/schemas/phy/qcom-usb-ipq4019-phy.yaml#
+>> +$id: http://devicetree.org/schemas/phy/qcom,uniphy.yaml#
+>>   $schema: http://devicetree.org/meta-schemas/core.yaml#
+>>
+>> -title: Qualcom IPQ40xx Dakota HS/SS USB PHY
+>> +title: Qualcomm UNIPHY
+> We know that UNIPHY was a common design / IP block used for APQ8064
+> SATA and MSM8974 DSI and HDMI PHYs. Is this the same design, or was
+> the name reused by the Qualcomm for some other PHYs?
+> Several latest generations have USB QMP PHYs which are called 'uni-phy'.
+This PHY is build on top of QCA Uniphy 22ull. A combo PHY used between 
+USB Gen3 / PCIe Gen3 controller.
+It is different from USB QMP PHYs.
 
----
-## Form letter - net-next-closed
-
-The merge window for v6.6 has begun and therefore net-next is closed
-for new drivers, features, code refactoring and optimizations.
-We are currently accepting bug fixes only.
-
-Please repost when net-next reopens after Sept 11th.
-
-RFC patches sent for review only are obviously welcome at any time.
-
-See:
-https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#develop=
-ment-cycle
-
+- Praveenkumar
+>>   maintainers:
+>>     - Robert Marko <robert.marko@sartura.hr>
+>> +  - Praveenkumar I <quic_ipkumar@quicinc.com>
+>> +
+>> +description:
+>> +  UNIPHY / COMBO PHY supports physical layer functionality for USB and PCIe on
+>> +  Qualcomm chipsets.
+>>
+>>   properties:
+>>     compatible:
+>> --
+>> 2.34.1
+>>
+>
