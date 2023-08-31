@@ -2,81 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE1CE78F270
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:20:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3505378F27A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346914AbjHaSU0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 14:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42252 "EHLO
+        id S1346976AbjHaSWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 14:22:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346889AbjHaSUY (ORCPT
+        with ESMTP id S1346898AbjHaSWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 14:20:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B836EE64;
-        Thu, 31 Aug 2023 11:20:21 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 249E1B82347;
-        Thu, 31 Aug 2023 18:20:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA0BC433C7;
-        Thu, 31 Aug 2023 18:20:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693506018;
-        bh=VMnBjyrMJOvmmAgU2WXJPR+bylx7hdXAwRuW/89n7us=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DuDRQpPJLpUetJX+eu1xAKM5tG6Nw3ZT2OB//CZahw4n25KWDRhYSpQW8Ko2pmTsM
-         f0H+bZKp8Ibnbs+cLX2bMC7p8tuNw8hXUkqeDhOxJexaMIbvWGpQ9+TdE09B4clgc/
-         9MNzk2bdlT6hBgPEbSSRsdQZOYDaluoErXaBRpQB7lldEiUasU629p4ufwq+QPM/ov
-         wcfJDuUdbF7YymifoaQchIBwu1ZGH9MLLxEOyjiQ7AWbpUvh6ZUslE7b5U2ZpOgmCw
-         crOol2oqxAkzCxIJ0d3hPqMDDj7GTjkkop1Vss5/jqqxus4GI3AEbJY7OjCxmvOcxr
-         Oxl2L0rOjoxEQ==
-Received: (nullmailer pid 2541286 invoked by uid 1000);
-        Thu, 31 Aug 2023 18:20:16 -0000
-Date:   Thu, 31 Aug 2023 13:20:16 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, linux-arm-msm@vger.kernel.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Abel Vesa <abel.vesa@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        dmaengine@vger.kernel.org,
-        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
-        Conor Dooley <conor+dt@kernel.org>
-Subject: Re: [PATCH 2/7] dt-bindings: qcom: geni-se: Allow dma-coherent
-Message-ID: <169350601590.2541228.13173749815664428921.robh@kernel.org>
-References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
- <20230830-topic-8550_dmac2-v1-2-49bb25239fb1@linaro.org>
+        Thu, 31 Aug 2023 14:22:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC6E8E5F
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693506114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kDd6agFPPBZ563tT5sO0tAnh1fA6v2usb5U/Ua+TJqU=;
+        b=IXKdTjmqeJjes1VeKwLwX5kUooNSQqE3kxgprTVut3ip/Lx44lcfIIQCko4ii9XhkClspC
+        KOpLhY415E+o4acGTTj8EI9nPMBNIpdih9fmhra1k9o3mYHGfPOal+HUFsa8xoxRXVlZS1
+        BuXe8mW9S+9VJ3x5zwUjUA8KKbmtqCM=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-643-Aa3U8a2cO6mGbD8E4fH8wg-1; Thu, 31 Aug 2023 14:21:53 -0400
+X-MC-Unique: Aa3U8a2cO6mGbD8E4fH8wg-1
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-34cabcb985cso7356315ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:21:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693506113; x=1694110913;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kDd6agFPPBZ563tT5sO0tAnh1fA6v2usb5U/Ua+TJqU=;
+        b=PlJLeXRz/81/e31MNZ3Ul2NoKCxCTmwORFBCudRgZEHX41CdXONRtO/tqUlnZy/Jfv
+         ODhq7kgA3qxHXAbaTo7uSuUYRZ7AgIq4ZL4jlNLkhgXPdX7SW7gOTxvOwsgn+CvS93Hf
+         oyw6NRtSRwHCG7csfvPzBdXFuuzgpoQkadk/y/Cr9s07zwydqAmXHVDb6Z3QSyEubn+Y
+         C5HEtvjhRjYvMgZD70P8877wawHH2tpbQvXt43+mMeM1AnhyFAzVwxVJruFUCXfSiOFu
+         PM7IlZusxasKwTtCRqYgPFGHmDGY2sukpkayFg2J0yt0pLbR/Fa9rgBk9Hp32neS0bew
+         XBnQ==
+X-Gm-Message-State: AOJu0YzEa5BG3FGGbxjHF3zsR3eizu1iBupAv34YKqLoR27+0m4dOCcC
+        mdQzqOLEltM+32+ghLls0pgOb68eAfXsI3pZHJfCWo83nz6yvQC5RXi/I5M0oNg22JrVQpoSp86
+        73L07LegODljIl8hf6lBQdH0Y
+X-Received: by 2002:a05:6e02:eec:b0:34c:e16d:6796 with SMTP id j12-20020a056e020eec00b0034ce16d6796mr329531ilk.16.1693506112878;
+        Thu, 31 Aug 2023 11:21:52 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE8vns95higbpw7EtaVkzMpHzdrkGJ9Y2vvSqykV851tdz6ITxD49qYcHcmB/e7+Q3TZCiTtw==
+X-Received: by 2002:a05:6e02:eec:b0:34c:e16d:6796 with SMTP id j12-20020a056e020eec00b0034ce16d6796mr329518ilk.16.1693506112687;
+        Thu, 31 Aug 2023 11:21:52 -0700 (PDT)
+Received: from redhat.com ([38.15.60.12])
+        by smtp.gmail.com with ESMTPSA id w18-20020a92c892000000b00345da2c4776sm557598ilo.81.2023.08.31.11.21.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 11:21:51 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 12:21:50 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Christoph Hellwig <hch@infradead.org>
+Cc:     Ankit Agrawal <ankita@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Yishai Hadas <yishaih@nvidia.com>,
+        "shameerali.kolothum.thodi@huawei.com" 
+        <shameerali.kolothum.thodi@huawei.com>,
+        "kevin.tian@intel.com" <kevin.tian@intel.com>,
+        Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Andy Currid <acurrid@nvidia.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Dan Williams <danw@nvidia.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Airlie <airlied@redhat.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH v7 1/1] vfio/nvgpu: Add vfio pci variant module for
+ grace hopper
+Message-ID: <20230831122150.2b97511b.alex.williamson@redhat.com>
+In-Reply-To: <ZPCd2sHXrAZHjsHg@infradead.org>
+References: <20230822202303.19661-1-ankita@nvidia.com>
+        <ZO9JKKurjv4PsmXh@infradead.org>
+        <ZO9imcoN5l28GE9+@nvidia.com>
+        <ZPCG9/P0fm88E2Zi@infradead.org>
+        <BY5PR12MB37631B2F41DB62CBDD7B1F69B0E5A@BY5PR12MB3763.namprd12.prod.outlook.com>
+        <ZPCd2sHXrAZHjsHg@infradead.org>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830-topic-8550_dmac2-v1-2-49bb25239fb1@linaro.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 31 Aug 2023 07:04:10 -0700
+Christoph Hellwig <hch@infradead.org> wrote:
 
-On Wed, 30 Aug 2023 14:48:41 +0200, Konrad Dybcio wrote:
-> On SM8550, the QUP controller is coherent with the CPU.
-> Allow specifying that.
+> On Thu, Aug 31, 2023 at 01:51:11PM +0000, Ankit Agrawal wrote:
+> > Hi Christoph,
+> >   
+> > >Whats the actual consumer running in a qemu VM here?  
+> > The primary use case in the VM is to run the open source Nvidia
+> > driver (https://github.com/NVIDIA/open-gpu-kernel-modules)
+> > and workloads.  
 > 
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
-> ---
->  Documentation/devicetree/bindings/soc/qcom/qcom,geni-se.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+> So this infrastructure to run things in a VM that we don't even support
+> in mainline?  I think we need nouveau support for this hardware in the
+> drm driver first, before adding magic vfio support.
 
-Acked-by: Rob Herring <robh@kernel.org>
+There's really never a guarantee that the thing we're exposing via the
+vfio uAPI has mainline drivers, for example we don't consult the
+nouveau device table before we expose an NVIDIA GPU to a Windows guest
+running proprietary device drivers.
+
+We've also never previously made a requirement that any new code in
+vfio must directly contribute to supporting a mainline driver, in fact
+I think you'll find examples where we do have such code.
+
+This driver is proposing to expose a coherent memory region associated
+with the device, composed as a PCI BAR, largely to bring it into the
+vfio device model.  Access to that memory region is still pass-through.
+This is essentially behavior that we also enable though mdev drivers
+like kvmgt (modulo the coherent aspect).
+
+I assume the above driver understands how to access and make use of
+this coherent memory whether running bare-metal or virtualized, so
+potentially we have some understanding of how it's used by the driver,
+which can't be said for all devices used with vfio.  I'm therefore not
+sure how we can suddenly decide to impose a mainline driver requirement
+for exposing a device to userspace.  Thanks,
+
+Alex
 
