@@ -2,110 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 887B678E53C
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 06:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF5D778E544
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 06:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244739AbjHaEEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 00:04:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52080 "EHLO
+        id S237917AbjHaEGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 00:06:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240243AbjHaEEv (ORCPT
+        with ESMTP id S233848AbjHaEGf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 00:04:51 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6510CA1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 21:04:48 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RbncG49ZSz4wy6;
-        Thu, 31 Aug 2023 14:04:46 +1000 (AEST)
-From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <c90780017b624b91771a3e4240dcbadc68137915.1692684784.git.christophe.leroy@csgroup.eu>
-References: <c90780017b624b91771a3e4240dcbadc68137915.1692684784.git.christophe.leroy@csgroup.eu>
-Subject: Re: [PATCH] powerpc/85xx: Mark some functions static and add missing includes to fix no previous prototype error
-Message-Id: <169345455027.11824.1278535983200395426.b4-ty@ellerman.id.au>
-Date:   Thu, 31 Aug 2023 14:02:30 +1000
+        Thu, 31 Aug 2023 00:06:35 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992CFA1;
+        Wed, 30 Aug 2023 21:06:32 -0700 (PDT)
+X-UUID: c13e8eae47b311ee9cb5633481061a41-20230831
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=Hac1eOr0HMqvjUkNqmT/hwInrwdrbDUqtSKUfCEWDkk=;
+        b=K8/+j9y0HlkqJLI+dKBUy77VXuKbbAAeqYleE1aDlfpqFgcVFOx9duBZS/Lhn7PCamCOPM7YSc1GMPweIf6V1gezfqhhYi7cYb52ugwszdqbv5vPWlN06bsIBregxFW8Q6h8Yy+SFrHNBiDB3CLfLgzZr1+SsQqmetTy41wypZo=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:fc58b336-9926-46f5-8033-7a266f63a0aa,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:2469f21f-33fd-4aaa-bb43-d3fd68d9d5ae,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: c13e8eae47b311ee9cb5633481061a41-20230831
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 765949934; Thu, 31 Aug 2023 12:06:26 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Thu, 31 Aug 2023 12:06:25 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs11n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Thu, 31 Aug 2023 12:06:24 +0800
+Message-ID: <3fb9999c-9bdb-d81a-73cc-3f15749521c8@mediatek.com>
+Date:   Thu, 31 Aug 2023 12:06:21 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v2 4/4] arm64: dts: mediatek: mt8195-demo: simplify mt6360
+ nodes
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        "Fabien Parent" <fparent@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+References: <20230825114623.16884-1-macpaul.lin@mediatek.com>
+ <20230830111532.9048-1-macpaul.lin@mediatek.com>
+ <20230830111532.9048-4-macpaul.lin@mediatek.com>
+ <657fcef0-8e15-0bdd-b91c-9a172e2ad391@linaro.org>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <657fcef0-8e15-0bdd-b91c-9a172e2ad391@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 22 Aug 2023 08:13:13 +0200, Christophe Leroy wrote:
-> corenet{32/64}_smp_defconfig leads to:
+On 8/30/23 19:30, Krzysztof Kozlowski wrote:
+> 	
 > 
->   CC      arch/powerpc/sysdev/ehv_pic.o
-> arch/powerpc/sysdev/ehv_pic.c:45:6: error: no previous prototype for 'ehv_pic_unmask_irq' [-Werror=missing-prototypes]
->    45 | void ehv_pic_unmask_irq(struct irq_data *d)
->       |      ^~~~~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/ehv_pic.c:52:6: error: no previous prototype for 'ehv_pic_mask_irq' [-Werror=missing-prototypes]
->    52 | void ehv_pic_mask_irq(struct irq_data *d)
->       |      ^~~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/ehv_pic.c:59:6: error: no previous prototype for 'ehv_pic_end_irq' [-Werror=missing-prototypes]
->    59 | void ehv_pic_end_irq(struct irq_data *d)
->       |      ^~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/ehv_pic.c:66:6: error: no previous prototype for 'ehv_pic_direct_end_irq' [-Werror=missing-prototypes]
->    66 | void ehv_pic_direct_end_irq(struct irq_data *d)
->       |      ^~~~~~~~~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/ehv_pic.c:71:5: error: no previous prototype for 'ehv_pic_set_affinity' [-Werror=missing-prototypes]
->    71 | int ehv_pic_set_affinity(struct irq_data *d, const struct cpumask *dest,
->       |     ^~~~~~~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/ehv_pic.c:112:5: error: no previous prototype for 'ehv_pic_set_irq_type' [-Werror=missing-prototypes]
->   112 | int ehv_pic_set_irq_type(struct irq_data *d, unsigned int flow_type)
->       |     ^~~~~~~~~~~~~~~~~~~~
->   CC      arch/powerpc/sysdev/fsl_rio.o
-> arch/powerpc/sysdev/fsl_rio.c:102:5: error: no previous prototype for 'fsl_rio_mcheck_exception' [-Werror=missing-prototypes]
->   102 | int fsl_rio_mcheck_exception(struct pt_regs *regs)
->       |     ^~~~~~~~~~~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/fsl_rio.c:306:5: error: no previous prototype for 'fsl_map_inb_mem' [-Werror=missing-prototypes]
->   306 | int fsl_map_inb_mem(struct rio_mport *mport, dma_addr_t lstart,
->       |     ^~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/fsl_rio.c:357:6: error: no previous prototype for 'fsl_unmap_inb_mem' [-Werror=missing-prototypes]
->   357 | void fsl_unmap_inb_mem(struct rio_mport *mport, dma_addr_t lstart)
->       |      ^~~~~~~~~~~~~~~~~
-> arch/powerpc/sysdev/fsl_rio.c:445:5: error: no previous prototype for 'fsl_rio_setup' [-Werror=missing-prototypes]
->   445 | int fsl_rio_setup(struct platform_device *dev)
->       |     ^~~~~~~~~~~~~
->   CC      arch/powerpc/sysdev/fsl_rmu.o
-> arch/powerpc/sysdev/fsl_rmu.c:362:6: error: no previous prototype for 'msg_unit_error_handler' [-Werror=missing-prototypes]
->   362 | void msg_unit_error_handler(void)
->       |      ^~~~~~~~~~~~~~~~~~~~~~
->   CC      arch/powerpc/platforms/85xx/corenet_generic.o
-> arch/powerpc/platforms/85xx/corenet_generic.c:33:13: error: no previous prototype for 'corenet_gen_pic_init' [-Werror=missing-prototypes]
->    33 | void __init corenet_gen_pic_init(void)
->       |             ^~~~~~~~~~~~~~~~~~~~
-> arch/powerpc/platforms/85xx/corenet_generic.c:51:13: error: no previous prototype for 'corenet_gen_setup_arch' [-Werror=missing-prototypes]
->    51 | void __init corenet_gen_setup_arch(void)
->       |             ^~~~~~~~~~~~~~~~~~~~~~
-> arch/powerpc/platforms/85xx/corenet_generic.c:104:12: error: no previous prototype for 'corenet_gen_publish_devices' [-Werror=missing-prototypes]
->   104 | int __init corenet_gen_publish_devices(void)
->       |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~
->   CC      arch/powerpc/platforms/85xx/qemu_e500.o
-> arch/powerpc/platforms/85xx/qemu_e500.c:28:13: error: no previous prototype for 'qemu_e500_pic_init' [-Werror=missing-prototypes]
->    28 | void __init qemu_e500_pic_init(void)
->       |             ^~~~~~~~~~~~~~~~~~
->   CC      arch/powerpc/kernel/pmc.o
-> arch/powerpc/kernel/pmc.c:78:6: error: no previous prototype for 'power4_enable_pmcs' [-Werror=missing-prototypes]
->    78 | void power4_enable_pmcs(void)
->       |      ^~~~~~~~~~~~~~~~~~
+> External email : Please do not click links or open attachments until you 
+> have verified the sender or the content.
 > 
-> [...]
+> On 30/08/2023 13:15, Macpaul Lin wrote:
+>> The dts file for the MediaTek MT8195 demo board has been refactored
+>> to improve the configuration of the MT6360 multi-function PMIC.
+>> 
+>> The changes include:
+>>  - Addition of the mt6360.dtsi include file, which contains the common
+>>    configuration of the MT6360 for all mt8195 boards.
+>>  - Removal of the direct inclusion of the mt6360-regulator.h file.
+>>  - Removal of the common configuration of the MT6360 PMIC since
+>>    the included mt6360.dtsi is used.
+>>  - Add names according to the schematic of mt8195-demo board for
+>>    mt6360 nodes.
+>> 
+>> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+>> ---
+>>  arch/arm64/boot/dts/mediatek/mt8195-demo.dts | 173 ++++++++-----------
+>>  1 file changed, 74 insertions(+), 99 deletions(-)
+>> 
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+>> index 8aea6f5d72b3..d082d679dbbe 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+>> +++ b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+>> @@ -11,7 +11,6 @@
+>>  #include <dt-bindings/gpio/gpio.h>
+>>  #include <dt-bindings/input/input.h>
+>>  #include <dt-bindings/pinctrl/mt8195-pinfunc.h>
+>> -#include <dt-bindings/regulator/mediatek,mt6360-regulator.h>
+>>  
+>>  / {
+>>  model = "MediaTek MT8195 demo board";
+>> @@ -130,103 +129,9 @@
+>>  mt6360: pmic@34 {
+>>  compatible = "mediatek,mt6360";
+>>  reg = <0x34>;
+>> -interrupt-controller;
+>> +pinctrl-0 = <&mt6360_pins>;
+>> +pinctrl-names = "default";
+>>  interrupts-extended = <&pio 101 IRQ_TYPE_EDGE_FALLING>;
+>> -interrupt-names = "IRQB";
+>> -
+>> -charger {
+>> -compatible = "mediatek,mt6360-chg";
+>> -richtek,vinovp-microvolt = <14500000>;
+>> -
+>> -otg_vbus_regulator: usb-otg-vbus-regulator {
+>> -regulator-compatible = "usb-otg-vbus";
+>> -regulator-name = "usb-otg-vbus";
+>> -regulator-min-microvolt = <4425000>;
+>> -regulator-max-microvolt = <5825000>;
+>> -};
+>> -};
+>> -
+>> -regulator {
+>> -compatible = "mediatek,mt6360-regulator";
+>> -LDO_VIN3-supply = <&mt6360_buck2>;
+>> -
+>> -mt6360_buck1: buck1 {
+> 
+> Your patchset does not look bisectable. Does not look tested, either...
+> Why having duplicated regulators (?) and then removing correct
+> regulators and keeping wrong ones?
+> 
+>> -regulator-compatible = "BUCK1";
+>> -regulator-name = "mt6360,buck1";
+>> -regulator-min-microvolt = <300000>;
+>> -regulator-max-microvolt = <1300000>;
+>> -regulator-allowed-modes = <MT6360_OPMODE_NORMAL
+>> -   MT6360_OPMODE_LP
+>> -   MT6360_OPMODE_ULP>;
+>> -regulator-always-on;
+>> -};
+> 
+> ...
+> 
+>>  };
+>>  };
+>>  
+>> @@ -259,8 +164,8 @@
+>>  cap-sd-highspeed;
+>>  sd-uhs-sdr50;
+>>  sd-uhs-sdr104;
+>> -vmmc-supply = <&mt6360_ldo5>;
+>> -vqmmc-supply = <&mt6360_ldo3>;
+>> +vmmc-supply = <&mt6360_vmch_pmu_ldo5_reg>;
+>> +vqmmc-supply = <&mt6360_vmc_pmu_ldo3_reg>;
+>>  status = "okay";
+>>  };
+>>  
+>> @@ -300,6 +205,67 @@
+>>  regulator-always-on;
+>>  };
+>>  
+>> +#include "mt6360.dtsi"
+> 
+> Includes are in the top part of the DTS. Sometimes bottom, but never in
+> the middle.
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Applied to powerpc/next.
+MT6360 is an external component controlled by I2C.
+On some mt8195 boards, it is connected to I2C6.
+But on some smart phone boards, they are connected to I2C5.
+I agree to put the includes in the top or in the bottom,
+but it to include I2C node together in mt6360.dtsi will be necessary
+to avoid build error. It might introduce mt6360-i2c5.dtsi
+or mt6360-i2c6.dtsi in the future.
 
-[1/1] powerpc/85xx: Mark some functions static and add missing includes to fix no previous prototype error
-      https://git.kernel.org/powerpc/c/c265735ff5b1f13272e2bfb196f5c55f9b3c9bac
+I think the better approach is to expand the common nodes in the board's 
+dts, rather than organizing them into dtsi.
 
-cheers
+Please drop these 2 patches for adding mt6360.dtsi and modification for 
+mt8195-demo.dts (patch 3/4 and 4/4) for the patch set.
+
+Thanks for the review. :)
+Macpaul Lin
+
