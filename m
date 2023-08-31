@@ -2,162 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA1C478F1BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 19:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD7FC78F1BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 19:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346877AbjHaRSn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 13:18:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60180 "EHLO
+        id S1343903AbjHaRSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 13:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346723AbjHaRSi (ORCPT
+        with ESMTP id S231409AbjHaRSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 13:18:38 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6574ED1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:18:34 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-7928ba24936so39680439f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:18:34 -0700 (PDT)
+        Thu, 31 Aug 2023 13:18:33 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64FDED1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:18:30 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a21b6d105cso126498966b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:18:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693502313; x=1694107113; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693502309; x=1694107109; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=j/9/PG9jMlcZB3crQaMzRcArzBV6KYUSerMEBj6hrg8=;
-        b=wnXucAJkc2nuHeATCDpeHVx9G1R69YpGFcXqhsDDMu5Di7FZMIEzmSpOH1kXZOPdBi
-         WDuXkyGZqQuUTChlJsr7VZXnXl3LTWt57hw9d+HkXQfbEIvnURNj/cDO6otoy+oiKHV0
-         KEODxwkdQWMDeIk2bsG9rHmKAyvgfSLdLndro=
+        bh=a/PFtjw8ywCWYRYwEbyQ3M+f6bU7Fthi2CVpLFrWSdk=;
+        b=HrB0BFAr86hwxXdM+Eh3TpNG+Pd73LThLvS0r5cDgU9HlHtriHHhn9fqfYWzdcw8eg
+         aUqd7X6nuX/+wZQKYFzd1W3rGkBYr/ek7hfoyKJnknkgmuQNbe6BKZVSf4NSoMxGuzaJ
+         gJjdYmMYIH0AuhOW4yBwdnqKAUf0KkYfOMZKB4fNbI3PBseLBW5+VSBIRhR6d8K/z01q
+         V8icKu1veD66HchjGINh3tDw1fv3cY6T9j5Yw8Hpbf/v6aLhD5w7hN5Y3P/Nl/hImI3f
+         3WsdjPNnCRgwvFUAaYQ0z1cBK8prB9/LRH06TrY1tRgsNSUImljzSty0fkTo5upiIzO+
+         Nb8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693502313; x=1694107113;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j/9/PG9jMlcZB3crQaMzRcArzBV6KYUSerMEBj6hrg8=;
-        b=IaN3JB1YDF0aljV3quzLZgLNduSRnSGqa2DBVS/l9y4cza/QLDoHsKiu6BHmwmv4VZ
-         RuOdhOZuFzU/eoQveWB4jSoabidwCjmSbqJEcPDOcG4DDQ3d/odIoURv6Yi0No4ntf/V
-         cD7t4gFzX02y0XWRG/V3gjy2RZ/wpl3owozIkYyqRIgXISBpQot+Rvcw22uayDV04c8r
-         6/pVye8+f1Fix52idYhbRHWPO1geglhzDgMfeWGCdLPysir5hY2tv2Pf1s3vwISGWTWr
-         LiDNoAmMna4nLAk6GrgIz5Bl5Y8CWaC1CGTPVW95GMnANPIQKzXx5N5vcXh6vW/ibPLt
-         JdlA==
-X-Gm-Message-State: AOJu0YzOYPjoT9C7D4InA5gxY6wN2wwnR0gcNfQ+MO/PPux43Y/60UTZ
-        NXXq0s2Qimv6zAJ3KClCiVWut+RFwDaKc+FphcU=
-X-Google-Smtp-Source: AGHT+IHcox5PcaIvs7MVFvtB0jCP2GW2W8V6QqMbhxRIywTxp3y1gSk6Bn/EIRCUTsCRwW8btiaIxA==
-X-Received: by 2002:a05:6602:370a:b0:792:4d29:ecc7 with SMTP id bh10-20020a056602370a00b007924d29ecc7mr6959672iob.15.1693502313379;
-        Thu, 31 Aug 2023 10:18:33 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id a16-20020a056638019000b0042af069eeefsm489720jaq.50.2023.08.31.10.18.32
+        d=1e100.net; s=20221208; t=1693502309; x=1694107109;
+        h=content-transfer-encoding:cc:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=a/PFtjw8ywCWYRYwEbyQ3M+f6bU7Fthi2CVpLFrWSdk=;
+        b=kIAjqR4asFvUwvknyhhPN3jhNu+S2iq9h6dnv9aRMJgkh/a83I6fCSO1nrAQdevceR
+         Zl6h4hm5VEDvpnYyFYkKu6Rx9Jvq7buNKYXsRtgNUgMsdZtIRaWCX+IUeDuq0TmwEkcY
+         7rOPNSpTqT+LDkW22iZtFkAiYtJjTu94jAmeAmbnFcv/Fc96tx34GIj8wW0cmNtKhzWT
+         ceH+XGNlF2x+sVH8jPnFzMw8P6o6jEn2g0YP/pdkHJfAzKMoqCRF68heMB2If+DhIVrr
+         gx5X0bFdALuoxknEIYfXIc/g6z+oEkOnbBNtoIqznXSM2WfOL0YH2CewjQkx586QdCS1
+         ZvIA==
+X-Gm-Message-State: AOJu0Yx/ZNQM6/JNWhBW6ShONqqQ4CYmY9gsrnBbLlPmNtW4q6wOZ7R3
+        b47ht/kYQK7gJf2Hd0qV7R8=
+X-Google-Smtp-Source: AGHT+IGzlkM35B7LBqs6TbuegHGsGHszuf6Xhif70TmtERB7ioqoD/Xsg/ukYduSJkVqHM/1iLFv8w==
+X-Received: by 2002:a17:906:3d22:b0:99b:4a29:fb6a with SMTP id l2-20020a1709063d2200b0099b4a29fb6amr4920090ejf.59.1693502308571;
+        Thu, 31 Aug 2023 10:18:28 -0700 (PDT)
+Received: from shift (p200300d5ff160300aaa159fffeeb01f1.dip0.t-ipconnect.de. [2003:d5:ff16:300:aaa1:59ff:feeb:1f1])
+        by smtp.gmail.com with ESMTPSA id mc24-20020a170906eb5800b009829d2e892csm979984ejb.15.2023.08.31.10.18.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 10:18:32 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>,
-        Joel Fernandes <joel@joelfernandes.org>, linux-mm@kvack.org
-Subject: [PATCH v2 2/2] rcu: Dump vmalloc memory info safely
-Date:   Thu, 31 Aug 2023 17:18:26 +0000
-Message-ID: <20230831171827.2625016-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
-In-Reply-To: <20230831171827.2625016-1-joel@joelfernandes.org>
-References: <20230831171827.2625016-1-joel@joelfernandes.org>
+        Thu, 31 Aug 2023 10:18:28 -0700 (PDT)
+Received: from localhost.daheim ([127.0.0.1])
+        by shift with esmtp (Exim 4.96)
+        (envelope-from <chunkeey@gmail.com>)
+        id 1qblJL-000MJJ-1l;
+        Thu, 31 Aug 2023 19:18:27 +0200
+Message-ID: <89fad050-e074-463e-8c27-a72b89de620c@gmail.com>
+Date:   Thu, 31 Aug 2023 19:18:27 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: de-DE, en-US
+From:   Christian Lamparter <chunkeey@gmail.com>
+Subject: Missing L3 linesize on AMD Ryzen 7940HS chip causes crash in
+ amd_cpuid4.
+To:     vbox-dev@virtualbox.org, open list <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang1211@gmail.com>
+Greetings,
 
-Currently, for double invoke call_rcu(), will dump rcu_head objects
-memory info, if the objects is not allocated from the slab allocator,
-the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-need to be held, since the call_rcu() can be invoked in interrupt context,
-therefore, there is a possibility of spinlock deadlock scenarios.
+a PhD-Student complained that his virtualbox-supported linux VM wouldn't start
+on his brand new laptop... And I took the bait. (Note: I helped him installing
+Linux Mint 21.1 on the same Laptop and it worked without issues). But as
+soon as he tried porting his virtualbox VMs he got the following panic during
+the early boot:
 
-And in Preempt-RT kernel, the rcutorture test also trigger the following
-lockdep warning:
-
-BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-preempt_count: 1, expected: 0
-RCU nest depth: 1, expected: 1
-3 locks held by swapper/0/1:
- #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
- #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
- #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
-irq event stamp: 565512
-hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
-hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
-softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
-softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
-Preemption disabled at:
-[<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
-CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x68/0xb0
- dump_stack+0x14/0x20
- __might_resched+0x1aa/0x280
- ? __pfx_rcu_torture_err_cb+0x10/0x10
- rt_spin_lock+0x53/0x130
- ? find_vmap_area+0x1f/0x70
- find_vmap_area+0x1f/0x70
- vmalloc_dump_obj+0x20/0x60
- mem_dump_obj+0x22/0x90
- __call_rcu_common+0x5bf/0x940
- ? debug_smp_processor_id+0x1b/0x30
- call_rcu_hurry+0x14/0x20
- rcu_torture_init+0x1f82/0x2370
- ? __pfx_rcu_torture_leak_cb+0x10/0x10
- ? __pfx_rcu_torture_leak_cb+0x10/0x10
- ? __pfx_rcu_torture_init+0x10/0x10
- do_one_initcall+0x6c/0x300
- ? debug_smp_processor_id+0x1b/0x30
- kernel_init_freeable+0x2b9/0x540
- ? __pfx_kernel_init+0x10/0x10
- kernel_init+0x1f/0x150
- ret_from_fork+0x40/0x50
- ? __pfx_kernel_init+0x10/0x10
- ret_from_fork_asm+0x1b/0x30
- </TASK>
-
-The previous patch fixes this by using the deadlock-safe best-effort
-version of find_vm_area. However, in case of failure print the fact that
-the pointer was a vmalloc pointer so that we print at least something.
-
-Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
- mm/util.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/mm/util.c b/mm/util.c
-index dd12b9531ac4..406634f26918 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
- 	if (vmalloc_dump_obj(object))
- 		return;
- 
--	if (virt_addr_valid(object))
-+	if (is_vmalloc_addr(object))
-+		type = "vmalloc memory";
-+	else if (virt_addr_valid(object))
- 		type = "non-slab/vmalloc memory";
- 	else if (object == NULL)
- 		type = "NULL pointer";
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
+| divide error: 0000 [#1] PREEMPT SMP NOPTI | CPU: 0 PID: 19 Comm: cpuhp/0 Not tainted 5.19.0-46-generic #47~22.04.1-Ubuntu | Hardware name: innotek GmbH VirtualBox/VirtualBox, BIOS VirtualBox 12/01/2006 | RIP: 0010:amd_cpuid4+0x195/0x2f0 | Code: c1 e0 0a 81 e3 ff 03 00 00 81 e2 ff 0f 00 00 48 8b 7d b0 c1 e3 0c 09 d3 89 f2 81 e6 ff 03 00 00 c1 e2 16 83 c6 01 09 d3 31 d2 <f7> f1 41 89 1f 31 d2 f7 f6 83 e8 01 89 07 48 8b 45 d0 65 48 2b 04 | RSP: 0018:ffffbb78800a3ce8 EFLAGS: 00010246 | RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000 | RDX: 0000000000000000 RSI: 0000000000000400 RDI: ffffbb78800a3d60 | RBP: ffffbb78800a3d48 R08: 0000000000000000 R09: 0000000000000000 | R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000003 | R13: ffffbb78800a3d08 R14: ffffbb78800a3d58 R15: ffffbb78800a3d5c | FS: 0000000000000000(0000) GS:ffffa05759a00000(0000) 
+knlGS:0000000000000000 | CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033 | CR2: 00007f2946fc1e24 CR3: 0000000108010000 CR4: 00000000000506f0 | Call Trace: |  <TASK> | cpuid4_cache_lookup_regs+0x14d/0x160 | populate_cache_leaves+0x180/0x200 | cacheinfo_cpu_online+0xc1/0x1c0 | cache_add_dev+0x420/0x420 | [...]
+
+---
+
+looking at amd_cpuid4() function in arch/x86/kernel/cpu/cacheinfo.c, it reads the cpuid values for 0x80000005 and 0x80000006. I convinced the student to run "cpuid -1 -r" and received the these:
+
+| 0x80000005 0x00: eax=0xff48ff40 ebx=0xff48ff40 ecx=0x20080140 edx=0x20080140 | 0x80000006 0x00: eax=0x5c002200 ebx=0x6c004200 ecx=0x04006140 >> edx=0x00009000 <<
+
+(The 0x80000006 edx=0x00009000 is the important bit)
+
+Plugging these values into the amd_cpuid4 function() causes an division by zero
+in line 297:
+| ecx <https://elixir.bootlin.com/linux/v5.19.10/C/ident/ecx>->split <https://elixir.bootlin.com/linux/v5.19.10/C/ident/split>.number_of_sets <https://elixir.bootlin.com/linux/v5.19.10/C/ident/number_of_sets> = (size_in_kb <https://elixir.bootlin.com/linux/v5.19.10/C/ident/size_in_kb> * 1024) / line_size <https://elixir.bootlin.com/linux/v5.19.10/C/ident/line_size> /
+|                                                    (ebx <https://elixir.bootlin.com/linux/v5.19.10/C/ident/ebx>->split <https://elixir.bootlin.com/linux/v5.19.10/C/ident/split>.ways_of_associativity <https://elixir.bootlin.com/linux/v5.19.10/C/ident/ways_of_associativity> + 1) - 1;
+
+This is because L3 cache's line_size is "0" (this is coming from the 80000006 edx
+value of 0x00009000).
+
+This can't be right... or? Well, digging around. I found the following explanation
+in AMD's community forum:
+<https://community.amd.com/t5/processors/ryzen-7-3700x-cpuid-function-id-0x80000006-returns-wrong-number/td-p/376937>
+So there's an issue with "wonky L3 values" that happens even earlier with the
+AMD 3700X. In this forum post, the author talks about the
+"L3 cache associativity (bits 12-15) is 0x9".
+
+And the same is happening with both AMD 7950X and 7940HS.
+The kicker is: this value of "9" means:
+"Please look at CPUID.8000_001D".
+
+Which I think boils down to implementing X86_FEATURE_TOPOEXT
+for virtualbox to get over this issue?
+
+Now, is there something I'm missing? I don't know if qemu is be affected.
+Or if there's another way around it.
+
+Regards,
+Christian Lamparter
+
+Note:
+
+For now with Virtualbox. The problem can be mitigated by running | vboxmanage setextradata $VM VBoxInternal/CPUM/HostCPUID/80000006/edx 0x02009140
+
+(The value 0x02009140 is coming from an AMD Ryzen 7950X. While also "wonky", this allowed the Virtualbox VMs to boot).
 
