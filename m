@@ -2,76 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB2578E4BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D2DF78E4BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245404AbjHaC3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 22:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51830 "EHLO
+        id S1343572AbjHaCab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 22:30:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244653AbjHaC27 (ORCPT
+        with ESMTP id S242302AbjHaCa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 22:28:59 -0400
+        Wed, 30 Aug 2023 22:30:29 -0400
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 225EB1BF;
-        Wed, 30 Aug 2023 19:28:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72371BF
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 19:30:24 -0700 (PDT)
 Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RblTY4DX8z4f3pHV;
-        Thu, 31 Aug 2023 10:28:49 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6nd+u9k19T3Bw--.8997S3;
-        Thu, 31 Aug 2023 10:28:46 +0800 (CST)
-Subject: Re: Infiniate systemd loop when power off the machine with multiple
- MD RAIDs
-To:     Yu Kuai <yukuai1@huaweicloud.com>, Song Liu <song@kernel.org>,
-        AceLan Kao <acelan@gmail.com>
-Cc:     Guoqing Jiang <guoqing.jiang@linux.dev>,
-        Mariusz Tkaczyk <mariusz.tkaczyk@linux.intel.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RAID <linux-raid@vger.kernel.org>,
-        "yukuai (C)" <yukuai3@huawei.com>
-References: <028a21df-4397-80aa-c2a5-7c754560f595@gmail.com>
- <20230818101630.000027f4@linux.intel.com>
- <b0488ff7-10c8-4b4e-28b8-01809133c297@linux.dev>
- <CAPhsuW6cSLqwRVO_EpFyimvc7hgi1rb3T8-NA+stHdwrqrScBA@mail.gmail.com>
- <20230822083923.00007fb6@linux.intel.com>
- <CAMz9Wg8KE1rDkSaQnUTJ5ikzH7YGGYbkLM3AcrVue3=JgK+14w@mail.gmail.com>
- <35130b3f-c0fd-e2d6-e849-a5ceb6a2895f@linux.dev>
- <CAMz9Wg_zKSJ2vL=r2zAtLBOv4GSMT63+ZQGXfYTjVJsE+DLQGA@mail.gmail.com>
- <CAPhsuW6W0XgFjH1zNC+EFYjujd4smEiWs+-nYCWQ+KaFmbuvkg@mail.gmail.com>
- <CAMz9Wg9y52iuxJRSQFC2N5Katt72v-o=JvEjegJt-MwORmw9tQ@mail.gmail.com>
- <CAPhsuW7XEy4q3XR389F7CUvXvJ=0JR0QkMOr4LU03avT0erAfg@mail.gmail.com>
- <354004ce-ad4e-5ad5-8fe6-303216647e0c@huaweicloud.com>
-From:   Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <03b79ab0-0bb0-ac29-4a70-37d902f9a05b@huaweicloud.com>
-Date:   Thu, 31 Aug 2023 10:28:44 +0800
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RblWJ6jYlz4f3m6t
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:30:20 +0800 (CST)
+Received: from [10.174.178.55] (unknown [10.174.178.55])
+        by APP4 (Coremail) with SMTP id gCh0CgBH16k8++9kWev3Bw--.61986S3;
+        Thu, 31 Aug 2023 10:30:22 +0800 (CST)
+Subject: Re: [PATCH v2 2/8] crash_core: change the prototype of function
+ parse_crashkernel()
+To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
+        thunder.leizhen@huawei.com, dyoung@redhat.com, prudo@redhat.com,
+        samuel.holland@sifive.com, kexec@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, x86@kernel.org
+References: <20230829121610.138107-1-bhe@redhat.com>
+ <20230829121610.138107-3-bhe@redhat.com>
+From:   "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Message-ID: <77c34c98-f6b1-75e1-dbf3-a148691e7f9d@huaweicloud.com>
+Date:   Thu, 31 Aug 2023 10:30:20 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <354004ce-ad4e-5ad5-8fe6-303216647e0c@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgAXp6nd+u9k19T3Bw--.8997S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxtryDZr4kGFyrXFWfXFWDurg_yoWDJF4kpr
-        WkJFyUGryUJr18Jr1Utr1UXFyUtr1UJw1UJr1UJFyUJr17Jr1jqr1UXr1jgr1UJr48Jr1U
-        tr1UJr17Zr1UJr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9F14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-        0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-        kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-        67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-        CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E
-        3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcS
-        sGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
+In-Reply-To: <20230829121610.138107-3-bhe@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: gCh0CgBH16k8++9kWev3Bw--.61986S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFW5uw17JF4kAw1xGr45Wrg_yoWfZFykpr
+        1UAF4rKr4jyFykCa4xAr93urWrJ3Wv9a47WFyUAr95tF9rXF15tr4rW3W7WrWjqrs093WI
+        yasYqFsaga10gaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+        07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+        GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+        CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7IU1zuWJUUUUU==
+X-CM-SenderInfo: hwkx0vthuozvpl2kv046kxt4xhlfz01xgou0bp/
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
@@ -82,242 +68,241 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Acelan,
 
-在 2023/08/28 21:50, Yu Kuai 写道:
-> Hi,
+
+On 2023/8/29 20:16, Baoquan He wrote:
+> Add two parameters 'low_size' and 'high' to function parse_crashkernel(),
+> later crashkernel=,high|low parsing will be added. Make adjustments in all
+> call sites of parse_crashkernel() in arch.
+
+Reviewed-by: Zhen Lei <thunder.leizhen@huawei.com>
+
 > 
-> 在 2023/08/28 13:20, Song Liu 写道:
->> Hi AceLan,
->>
->> Thanks for running the experiments.
->>
->> On Fri, Aug 25, 2023 at 9:32 PM AceLan Kao <acelan@gmail.com> wrote:
->> [...]
->>>>
->>>> Could you please run the follow two experiments?
->>>>
->>>> 1. Confirm 12a6caf273240a triggers this. Specifically:
->>>>     git checkout 12a6caf273240a => repros
->>>>     git checkout 12a6caf273240a~1 => cannot repro
->>> Yes, I'm pretty sure about this, that's my bisect result and I just
->>> confirmed it again.
->>> I also tried reverting 12a6caf273240a and the issue is gone.
->>
->> The log doesn't match my guess. Specifically:
->>
->> [  420.068142] systemd-shutdown[1]: Stopping MD /dev/md123 (9:123).
->> [  420.074718] md_open:md123 openers++ = 1 by systemd-shutdow
->> [  420.080787] systemd-shutdown[1]: Failed to sync MD block device
->> /dev/md123, ignoring: Input/output error
->> [  420.090831] md: md123 stopped.
->> [  420.094465] systemd-shutdown[1]: Stopping MD /dev/md122 (9:122).
->> [  420.101045] systemd-shutdown[1]: Could not stop MD /dev/md122:
->> Device or resource busy
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/arm/kernel/setup.c              |  3 ++-
+>  arch/arm64/mm/init.c                 |  2 +-
+>  arch/ia64/kernel/setup.c             |  2 +-
+>  arch/loongarch/kernel/setup.c        |  4 +++-
+>  arch/mips/kernel/setup.c             |  3 ++-
+>  arch/powerpc/kernel/fadump.c         |  2 +-
+>  arch/powerpc/kexec/core.c            |  2 +-
+>  arch/powerpc/mm/nohash/kaslr_booke.c |  2 +-
+>  arch/riscv/mm/init.c                 |  2 +-
+>  arch/s390/kernel/setup.c             |  4 ++--
+>  arch/sh/kernel/machine_kexec.c       |  2 +-
+>  arch/x86/kernel/setup.c              |  3 ++-
+>  include/linux/crash_core.h           |  3 ++-
+>  kernel/crash_core.c                  | 15 ++++++++++++---
+>  14 files changed, 32 insertions(+), 17 deletions(-)
 > 
-> I see that:
-> 
-> systemd-shutdown[1]: Couldn't finalize remaining  MD devices, trying again.
-> 
-> Can we make sure is this why power off hang?
-> 
-> Because in my VM, power off is not hang and I got:
-> 
-> systemd-shutdown[1]: Could not stop MD /dev/md1: Device or resource busy
-> systemd-shutdown[1]: Failed to finalize MD devices, ignoring.
->>
->> For a successful stop on md123, we reach the pr_info() in md_open().
->> For a failed stop on md122, the kernel returns -EBUSY before that
->> pr_info() in md_open(). There are some changes in md_open() in
->> the past few release, so I am not quite sure we are looking at the
->> same code.
-> 
-> By the way, based on code review, looks like md_open never return
-> -EBUSY, and I think following is the only place can return -EBUSY before
-> md_open() is called:
-> 
-> blkdev_open
->   blkdev_get_by_dev
->    bd_prepare_to_claim
->     bd_may_claim     -> -EBUSY
-> 
-> Acelan, can you add following debug patch on the top of Song's patch
-> and reporduce it again? Hope it'll confirm why stop array failed with
-> -EBUSY.
+> diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
+> index c66b560562b3..e2bb7afd0683 100644
+> --- a/arch/arm/kernel/setup.c
+> +++ b/arch/arm/kernel/setup.c
+> @@ -1010,7 +1010,8 @@ static void __init reserve_crashkernel(void)
+>  
+>  	total_mem = get_total_mem();
+>  	ret = parse_crashkernel(boot_command_line, total_mem,
+> -				&crash_size, &crash_base);
+> +				&crash_size, &crash_base,
+> +				NULL, NULL);
+>  	/* invalid value specified or crashkernel=0 */
+>  	if (ret || !crash_size)
+>  		return;
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 4fcb88a445ef..4ad637508b75 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -142,7 +142,7 @@ static void __init reserve_crashkernel(void)
+>  
+>  	/* crashkernel=X[@offset] */
+>  	ret = parse_crashkernel(cmdline, memblock_phys_mem_size(),
+> -				&crash_size, &crash_base);
+> +				&crash_size, &crash_base, NULL, NULL);
+>  	if (ret == -ENOENT) {
+>  		ret = parse_crashkernel_high(cmdline, 0, &crash_size, &crash_base);
+>  		if (ret || !crash_size)
+> diff --git a/arch/ia64/kernel/setup.c b/arch/ia64/kernel/setup.c
+> index 5a55ac82c13a..4faea2d2cf07 100644
+> --- a/arch/ia64/kernel/setup.c
+> +++ b/arch/ia64/kernel/setup.c
+> @@ -277,7 +277,7 @@ static void __init setup_crashkernel(unsigned long total, int *n)
+>  	int ret;
+>  
+>  	ret = parse_crashkernel(boot_command_line, total,
+> -			&size, &base);
+> +			&size, &base, NULL, NULL);
+>  	if (ret == 0 && size > 0) {
+>  		if (!base) {
+>  			sort_regions(rsvd_region, *n);
+> diff --git a/arch/loongarch/kernel/setup.c b/arch/loongarch/kernel/setup.c
+> index 9d830ab4e302..776a068d8718 100644
+> --- a/arch/loongarch/kernel/setup.c
+> +++ b/arch/loongarch/kernel/setup.c
+> @@ -267,7 +267,9 @@ static void __init arch_parse_crashkernel(void)
+>  	unsigned long long crash_base, crash_size;
+>  
+>  	total_mem = memblock_phys_mem_size();
+> -	ret = parse_crashkernel(boot_command_line, total_mem, &crash_size, &crash_base);
+> +	ret = parse_crashkernel(boot_command_line, total_mem,
+> +				&crash_size, &crash_base,
+> +				NULL, NULL);
+>  	if (ret < 0 || crash_size <= 0)
+>  		return;
+>  
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index cb871eb784a7..08321c945ac4 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -460,7 +460,8 @@ static void __init mips_parse_crashkernel(void)
+>  
+>  	total_mem = memblock_phys_mem_size();
+>  	ret = parse_crashkernel(boot_command_line, total_mem,
+> -				&crash_size, &crash_base);
+> +				&crash_size, &crash_base,
+> +				NULL, NULL);
+>  	if (ret != 0 || crash_size <= 0)
+>  		return;
+>  
+> diff --git a/arch/powerpc/kernel/fadump.c b/arch/powerpc/kernel/fadump.c
+> index ea0a073abd96..7dbdeba56e74 100644
+> --- a/arch/powerpc/kernel/fadump.c
+> +++ b/arch/powerpc/kernel/fadump.c
+> @@ -313,7 +313,7 @@ static __init u64 fadump_calculate_reserve_size(void)
+>  	 * memory at a predefined offset.
+>  	 */
+>  	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
+> -				&size, &base);
+> +				&size, &base, NULL, NULL);
+>  	if (ret == 0 && size > 0) {
+>  		unsigned long max_size;
+>  
+> diff --git a/arch/powerpc/kexec/core.c b/arch/powerpc/kexec/core.c
+> index de64c7962991..9346c960b296 100644
+> --- a/arch/powerpc/kexec/core.c
+> +++ b/arch/powerpc/kexec/core.c
+> @@ -109,7 +109,7 @@ void __init reserve_crashkernel(void)
+>  	total_mem_sz = memory_limit ? memory_limit : memblock_phys_mem_size();
+>  	/* use common parsing */
+>  	ret = parse_crashkernel(boot_command_line, total_mem_sz,
+> -			&crash_size, &crash_base);
+> +			&crash_size, &crash_base, NULL, NULL);
+>  	if (ret == 0 && crash_size > 0) {
+>  		crashk_res.start = crash_base;
+>  		crashk_res.end = crash_base + crash_size - 1;
+> diff --git a/arch/powerpc/mm/nohash/kaslr_booke.c b/arch/powerpc/mm/nohash/kaslr_booke.c
+> index 2fb3edafe9ab..b4f2786a7d2b 100644
+> --- a/arch/powerpc/mm/nohash/kaslr_booke.c
+> +++ b/arch/powerpc/mm/nohash/kaslr_booke.c
+> @@ -178,7 +178,7 @@ static void __init get_crash_kernel(void *fdt, unsigned long size)
+>  	int ret;
+>  
+>  	ret = parse_crashkernel(boot_command_line, size, &crash_size,
+> -				&crash_base);
+> +				&crash_base, NULL, NULL);
+>  	if (ret != 0 || crash_size == 0)
+>  		return;
+>  	if (crash_base == 0)
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index e4c35ac2357f..a9ef0824f905 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -1332,7 +1332,7 @@ static void __init reserve_crashkernel(void)
+>  	}
+>  
+>  	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
+> -				&crash_size, &crash_base);
+> +				&crash_size, &crash_base, NULL, NULL);
+>  	if (ret || !crash_size)
+>  		return;
+>  
+> diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+> index c744104e4a9c..98204a5f62b1 100644
+> --- a/arch/s390/kernel/setup.c
+> +++ b/arch/s390/kernel/setup.c
+> @@ -626,8 +626,8 @@ static void __init reserve_crashkernel(void)
+>  	phys_addr_t low, high;
+>  	int rc;
+>  
+> -	rc = parse_crashkernel(boot_command_line, ident_map_size, &crash_size,
+> -			       &crash_base);
+> +	rc = parse_crashkernel(boot_command_line, ident_map_size,
+> +			       &crash_size, &crash_base, NULL, NULL);
+>  
+>  	crash_base = ALIGN(crash_base, KEXEC_CRASH_MEM_ALIGN);
+>  	crash_size = ALIGN(crash_size, KEXEC_CRASH_MEM_ALIGN);
+> diff --git a/arch/sh/kernel/machine_kexec.c b/arch/sh/kernel/machine_kexec.c
+> index 223c14f44af7..fa3a7b36190a 100644
+> --- a/arch/sh/kernel/machine_kexec.c
+> +++ b/arch/sh/kernel/machine_kexec.c
+> @@ -154,7 +154,7 @@ void __init reserve_crashkernel(void)
+>  	int ret;
+>  
+>  	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
+> -			&crash_size, &crash_base);
+> +			&crash_size, &crash_base, NULL, NULL);
+>  	if (ret == 0 && crash_size > 0) {
+>  		crashk_res.start = crash_base;
+>  		crashk_res.end = crash_base + crash_size - 1;
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index fd975a4a5200..382c66d2cf71 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -558,7 +558,8 @@ static void __init reserve_crashkernel(void)
+>  	total_mem = memblock_phys_mem_size();
+>  
+>  	/* crashkernel=XM */
+> -	ret = parse_crashkernel(boot_command_line, total_mem, &crash_size, &crash_base);
+> +	ret = parse_crashkernel(boot_command_line, total_mem,
+> +				&crash_size, &crash_base, NULL, NULL);
+>  	if (ret != 0 || crash_size <= 0) {
+>  		/* crashkernel=X,high */
+>  		ret = parse_crashkernel_high(boot_command_line, total_mem,
+> diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> index de62a722431e..2e76289699ff 100644
+> --- a/include/linux/crash_core.h
+> +++ b/include/linux/crash_core.h
+> @@ -78,7 +78,8 @@ Elf_Word *append_elf_note(Elf_Word *buf, char *name, unsigned int type,
+>  void final_note(Elf_Word *buf);
+>  
+>  int __init parse_crashkernel(char *cmdline, unsigned long long system_ram,
+> -		unsigned long long *crash_size, unsigned long long *crash_base);
+> +		unsigned long long *crash_size, unsigned long long *crash_base,
+> +		unsigned long long *low_size, bool *high);
+>  int parse_crashkernel_high(char *cmdline, unsigned long long system_ram,
+>  		unsigned long long *crash_size, unsigned long long *crash_base);
+>  int parse_crashkernel_low(char *cmdline, unsigned long long system_ram,
+> diff --git a/kernel/crash_core.c b/kernel/crash_core.c
+> index f27b4e45d410..f6a5c219e2e1 100644
+> --- a/kernel/crash_core.c
+> +++ b/kernel/crash_core.c
+> @@ -280,10 +280,19 @@ static int __init __parse_crashkernel(char *cmdline,
+>  int __init parse_crashkernel(char *cmdline,
+>  			     unsigned long long system_ram,
+>  			     unsigned long long *crash_size,
+> -			     unsigned long long *crash_base)
+> +			     unsigned long long *crash_base,
+> +			     unsigned long long *low_size,
+> +			     bool *high)
+>  {
+> -	return __parse_crashkernel(cmdline, system_ram, crash_size, crash_base,
+> -				NULL);
+> +	int ret;
+> +
+> +	/* crashkernel=X[@offset] */
+> +	ret = __parse_crashkernel(cmdline, system_ram, crash_size,
+> +				crash_base, NULL);
+> +	if (!high)
+> +		return ret;
+> +
+> +	return 0;
+>  }
+>  
+>  int __init parse_crashkernel_high(char *cmdline,
 > 
 
-I saw your reply:
-
-https://lore.kernel.org/all/CAMz9Wg9VXJzZkKWCosm0_=Rz6gG9r3pCMrhvBZQVCQb8i0kd-w@mail.gmail.com/
-
-But I didn't recieve you emails, please reply to me through this email
-address: yukuai3@huawei.com. yukuai1@huaweicloud.com is just used for
-sending, and I always missing emails from huaweicloud.com, my apologize
-for this inconvenience, I have to do it this way due to my company
-policy.
-
-There is something interesting on test result:
-
-At first, md122 is the root device, I guess this is why I can't repoduce
-this problem in my local VM.
-[   14.478619] systemd-gpt-auto-generator[585]: md122p3: Root device 
-/dev/md122.
-[   14.481823] block md122: the capability attribute has been deprecated.
-
-Then, before trying to stop md122, following log shows that md122 is
-still mounted:
-[ 1368.369926] [3462]: Remounting '/' read-only with options 
-'errors=remount-ro,stripe=128'.
-[ 1368.396287] EXT4-fs (md122p3): re-mounted 
-6d53dc8e-3f45-4efa-bc0e-4af477fac217 ro. Quota mode: none.
-
-And since then, there is no log aboug md_open(), which means no one
-ever open md122 since this remount.
-
-At last, there are lots of log shows that md122 can't be opened
-exclusively:
-[ 1368.812952] md122:systemd-shutdow bd_prepare_to_claim return -16
-[ 1368.819189] md122:systemd-shutdow blkdev_get_by_dev return -16
-
-Which indicate that md122 is still mounted, and systemd-shutdow can't
-stop this array. This behaviour looks correct to me, because rootfs
-can't be umounted while systemd-shutdown is still running.
-
-However, there are some questions I don't have answers for now, I'm not
-familiar with how systemd works:
-
-1) In the normal case that raid is root device, how can systemd-shutdown
-make progress and how is rootfs unmounted?
-2) How does this scenario related to commit 12a6caf273240a.
-
-I must read systemd source code to get answers, and it'll be appreciated
-if someone has answers.
-
-Thanks,
-Kuai
-
-> diff --git a/block/bdev.c b/block/bdev.c
-> index 979e28a46b98..699739223dcb 100644
-> --- a/block/bdev.c
-> +++ b/block/bdev.c
-> @@ -789,8 +789,11 @@ struct block_device *blkdev_get_by_dev(dev_t dev, 
-> blk_mode_t mode, void *holder,
->          if (holder) {
->                  mode |= BLK_OPEN_EXCL;
->                  ret = bd_prepare_to_claim(bdev, holder, hops);
-> -               if (ret)
-> +               if (ret) {
-> +                       pr_warn("%s:%s bd_prepare_to_claim return %d\n",
-> +                               disk->disk_name, current->comm, ret);
->                          goto put_blkdev;
-> +               }
->          } else {
->                  if (WARN_ON_ONCE(mode & BLK_OPEN_EXCL)) {
->                          ret = -EIO;
-> diff --git a/block/fops.c b/block/fops.c
-> index eaa98a987213..2d69119c71f6 100644
-> --- a/block/fops.c
-> +++ b/block/fops.c
-> @@ -587,8 +587,11 @@ static int blkdev_open(struct inode *inode, struct 
-> file *filp)
-> 
->          bdev = blkdev_get_by_dev(inode->i_rdev, file_to_blk_mode(filp),
->                                   filp->private_data, NULL);
-> -       if (IS_ERR(bdev))
-> +       if (IS_ERR(bdev)) {
-> +               pr_warn("%pD:%s blkdev_get_by_dev return %ld\n",
-> +                       filp, current->comm, PTR_ERR(bdev));
->                  return PTR_ERR(bdev);
-> +       }
-> 
->          if (bdev_nowait(bdev))
->                  filp->f_mode |= FMODE_NOWAIT;
-> 
-> Thanks,
-> Kuai
-> 
->>
->> Therefore, could you please help clarify:
->>
->> 1. Which base kernel are you using?
->>
->>> From the log, you are using 6.5-rc7-706a74159504. However,
->> I think we cannot cleanly revert 12a6caf273240a on top of
->> 6.5-rc7-706a74159504. Did you manually fix some issue in the
->> revert? If so, could you please share the revert commit?
->>
->> 2. If you are not using 6.5-rc7-706a74159504 as base kernel, which
->> one are you using?
->>
->> Thanks,
->> Song
->>
->>>
->>>>
->>>> 2. Try with the following change (add debug messages), which hopefully
->>>>     shows which command is holding a reference on mddev->openers.
->>>>
->>>> Thanks,
->>>> Song
->>>>
->>>> diff --git i/drivers/md/md.c w/drivers/md/md.c
->>>> index 78be7811a89f..3e9b718b32c1 100644
->>>> --- i/drivers/md/md.c
->>>> +++ w/drivers/md/md.c
->>>> @@ -7574,11 +7574,15 @@ static int md_ioctl(struct block_device *bdev,
->>>> blk_mode_t mode,
->>>>                  if (mddev->pers && atomic_read(&mddev->openers) > 1) {
->>>>                          mutex_unlock(&mddev->open_mutex);
->>>>                          err = -EBUSY;
->>>> +                       pr_warn("%s return -EBUSY for %s with
->>>> mddev->openers = %d\n",
->>>> +                               __func__, mdname(mddev),
->>>> atomic_read(&mddev->openers));
->>>>                          goto out;
->>>>                  }
->>>>                  if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
->>>>                          mutex_unlock(&mddev->open_mutex);
->>>>                          err = -EBUSY;
->>>> +                       pr_warn("%s return -EBUSY for %s with
->>>> MD_CLOSING bit set\n",
->>>> +                               __func__, mdname(mddev));
->>>>                          goto out;
->>>>                  }
->>>>                  did_set_md_closing = true;
->>>> @@ -7789,6 +7793,8 @@ static int md_open(struct gendisk *disk, 
->>>> blk_mode_t mode)
->>>>                  goto out_unlock;
->>>>
->>>>          atomic_inc(&mddev->openers);
->>>> +       pr_info("%s:%s openers++ = %d by %s\n", __func__, 
->>>> mdname(mddev),
->>>> +               atomic_read(&mddev->openers), current->comm);
->>>>          mutex_unlock(&mddev->open_mutex);
->>>>
->>>>          disk_check_media_change(disk);
->>>> @@ -7807,6 +7813,8 @@ static void md_release(struct gendisk *disk)
->>>>
->>>>          BUG_ON(!mddev);
->>>>          atomic_dec(&mddev->openers);
->>>> +       pr_info("%s:%s openers-- = %d by %s\n", __func__, 
->>>> mdname(mddev),
->>>> +               atomic_read(&mddev->openers), current->comm);
->>>>          mddev_put(mddev);
->>>>   }
->>> It's pretty strange that I can't reproduce the issue after applied 
->>> the patch.
->>>
->>> I tried to figure out which part affect the issue and found when I
->>> comment out the pr_info() In md_release(), the issue could be
->>> reproduced.
->>>
->>> -- 
->>> Chia-Lin Kao(AceLan)
->>> http://blog.acelan.idv.tw/
->>> E-Mail: acelan.kaoATcanonical.com (s/AT/@/)
->> .
->>
-> 
-> .
-> 
+-- 
+Regards,
+  Zhen Lei
 
