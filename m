@@ -2,134 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C14F578F04E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:29:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C74478F056
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346610AbjHaP3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41644 "EHLO
+        id S237542AbjHaPaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:30:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243654AbjHaP3U (ORCPT
+        with ESMTP id S229963AbjHaPaV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:29:20 -0400
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FEDE50
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-        s=20170329; h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:
-        In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Ee2PYNMBdzOZ49Y+w9ncEHigb36Yfuv93A7KODPkfj8=; b=QSMQTFShCziydhCK8uH1kbkNb4
-        TrO1XSS+Jh0ijb1WQYdQS8Veevmw0c+DsJ81UXUy30yYT8Up3Y4txT+ewJWx/qgITr2bRmSjZYygl
-        dBWcvsIZVCMUt/yT13qsEO/sQC7hJuCnvEK7uUl+9xx7aLA025WYQYFj02zg4+yyPJdygJ62ECxOi
-        otWU+lTYFZ/0Yq023wcaDUXThUiR8kjo6Mmb8XHUkGCzkFN8LM4rxkaD+M1v9/z/hj0poxoaYDbMP
-        mCcgor64pnwJLqmS6YgsrxsMVC9PyMj84dcSliKYrZ0fc8JHCMale6j50YNvF8tOOzkq2A8X0k8ka
-        VIxJkxtw==;
-Received: from [191.193.15.45] (helo=steammachine.lan)
-        by fanzine2.igalia.com with esmtpsa 
-        (Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-        id 1qbjbf-000VNg-40; Thu, 31 Aug 2023 17:29:15 +0200
-From:   =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-To:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?q?=27Marek=20Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-        =?UTF-8?q?Andr=C3=A9=20Almeida?= <andrealmeid@igalia.com>
-Subject: [PATCH v3 2/2] drm/amdgpu: Create an option to disable soft recovery
-Date:   Thu, 31 Aug 2023 12:29:03 -0300
-Message-ID: <20230831152903.521404-3-andrealmeid@igalia.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20230831152903.521404-1-andrealmeid@igalia.com>
-References: <20230831152903.521404-1-andrealmeid@igalia.com>
+        Thu, 31 Aug 2023 11:30:21 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB48E4C;
+        Thu, 31 Aug 2023 08:30:18 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so17578721fa.2;
+        Thu, 31 Aug 2023 08:30:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693495817; x=1694100617; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=d5/t/HKn5nFvDJ6p71UlBWH51trAjRS5q+GK7CmmUHg=;
+        b=EQuWKBn9RH3hj5eYgh6yYzw1EpYaUcXxQ6Ts890kMEHGzJTvgteuaTHIiVTiBU1pj4
+         IvtVccj+tfURB+bTYotPw/m9sI8iLAP1rIPs86PoEQfOVwnz7fD8AEbvRk23Z80ajsvE
+         Wd79+28r+ymQjoZD5WqjuWa+uWiUAYqtDOBL+Op/PT8qMqqB/ZsYD5nHGJWiLGhScwcm
+         Yl19koN1903LnGNzkKHLYXNHjfBuc5skYH91amP3hJEa0uKG59s0VlEOIeVXCYlbws+c
+         wMOauOplam0uN56TJNK8O2T8P3mUrPnpNYddhrrEPYGWf+3hzv6Q/ohR/cBpyXZ6Qco9
+         wKwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693495817; x=1694100617;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d5/t/HKn5nFvDJ6p71UlBWH51trAjRS5q+GK7CmmUHg=;
+        b=Q3V+Jt+1xH38036SS6lfNAWdWzdYNqLBETPwERSC4nA5+2l0fcdsEjv3dkKIhTUUWE
+         2YXcTzueIR7j51mE309pUhvV6h0JAPAZpmotDyq/vdlPP7ujagqZ7wI7H+yEzOT1H3uW
+         sU+SJj+4dEZAWSsGiT/44lJof+L00WW4oEI5clga2ZIAWN0ATjk2eMI0zJAITfhp35jX
+         6mK219lRo7cGXkozwiF0aAb0MIW5Gs40uEF+h/LrmPb4j6hcVHiJeaWrRvK2pIFnflQk
+         x5/s9BxaPWNerEwGmGupN1bosvPCte2n17cu1y7cK3JLB4OK7Tckxe1kb3AdBmWQEaCM
+         hyaw==
+X-Gm-Message-State: AOJu0Yy9savNAZrA2tC2eGUv8O7AWVlMdMi9gufhrVMUrezNIizgznPF
+        FV7wsoeosBgpCdTSdfjPNgClGOyg4NApJEvEHy4=
+X-Google-Smtp-Source: AGHT+IFyyPhOC5V1BnZwlW+JcwwzIhZ0+DJeu/EMhcz2JBOv+XWrjeHI1t+NqUSXZZhK2x7t72WDhAhZYCYJmZyREJw=
+X-Received: by 2002:a2e:9889:0:b0:2b6:a08d:e142 with SMTP id
+ b9-20020a2e9889000000b002b6a08de142mr4188601ljj.7.1693495816811; Thu, 31 Aug
+ 2023 08:30:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From:   Steve French <smfrench@gmail.com>
+Date:   Thu, 31 Aug 2023 10:30:05 -0500
+Message-ID: <CAH2r5mvMSeqLQkNqwrxr5Q1FpJrQ85VUkp7_c4WP0BugQfpHPg@mail.gmail.com>
+Subject: [GIT PULL] ksmb server fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Namjae Jeon <linkinjeon@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create a module option to disable soft recoveries on amdgpu, making
-every recovery go through the device reset path. This option makes
-easier to force device resets for testing and debugging purposes.
+Please pull the following changes since commit
+2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
 
-Signed-off-by: André Almeida <andrealmeid@igalia.com>
-Reviewed-by: Christian König <christian.koenig@amd.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu.h      | 1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 7 +++++++
- drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c | 6 +++++-
- 3 files changed, 13 insertions(+), 1 deletion(-)
+  Linux 6.5 (2023-08-27 14:49:51 -0700)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index 82eaccfce347..5f49e2c0ae7a 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1105,6 +1105,7 @@ struct amdgpu_device {
- 	/* Debug */
- 	bool                            debug_vm;
- 	bool                            debug_largebar;
-+	bool                            debug_disable_soft_recovery;
- };
- 
- static inline struct amdgpu_device *drm_to_adev(struct drm_device *ddev)
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-index 33fddf7b1c4f..861830e1afa8 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-@@ -124,6 +124,7 @@
- enum AMDGPU_DEBUG_MASK {
- 	AMDGPU_DEBUG_VM = BIT(0),
- 	AMDGPU_DEBUG_LARGEBAR = BIT(1),
-+	AMDGPU_DEBUG_DISABLE_GPU_SOFT_RECOVERY = BIT(2),
- };
- 
- unsigned int amdgpu_vram_limit = UINT_MAX;
-@@ -935,6 +936,7 @@ MODULE_PARM_DESC(enforce_isolation, "enforce process isolation between graphics
-  * - 0x2: Enable simulating large-bar capability on non-large bar system. This
-  *   limits the VRAM size reported to ROCm applications to the visible
-  *   size, usually 256MB.
-+ * - 0x4: Disable GPU soft recovery, always do a full reset
-  */
- MODULE_PARM_DESC(debug_mask, "debug options for amdgpu, disabled by default");
- module_param_named(debug_mask, amdgpu_debug_mask, uint, 0444);
-@@ -2054,6 +2056,11 @@ static void amdgpu_init_debug_options(struct amdgpu_device *adev)
- 		pr_info("debug: enabled simulating large-bar capability on non-large bar system\n");
- 		adev->debug_largebar = true;
- 	}
-+
-+	if (amdgpu_debug_mask & AMDGPU_DEBUG_DISABLE_GPU_SOFT_RECOVERY) {
-+		pr_info("debug: soft reset for GPU recovery disabled\n");
-+		adev->debug_disable_soft_recovery = true;
-+	}
- }
- 
- static int amdgpu_pci_probe(struct pci_dev *pdev,
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-index 80d6e132e409..6a80d3ec887e 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c
-@@ -434,8 +434,12 @@ bool amdgpu_ring_soft_recovery(struct amdgpu_ring *ring, unsigned int vmid,
- 			       struct dma_fence *fence)
- {
- 	unsigned long flags;
-+	ktime_t deadline;
- 
--	ktime_t deadline = ktime_add_us(ktime_get(), 10000);
-+	if (unlikely(ring->adev->debug_disable_soft_recovery))
-+		return false;
-+
-+	deadline = ktime_add_us(ktime_get(), 10000);
- 
- 	if (amdgpu_sriov_vf(ring->adev) || !ring->funcs->soft_recovery || !fence)
- 		return false;
--- 
-2.42.0
+are available in the Git repository at:
 
+  git://git.samba.org/ksmbd.git tags/6.6-rc-ksmbd-fixes-part1
+
+for you to fetch changes up to 0e2378eaa2b3a663726cf740d4aaa8a801e2cb31:
+
+  ksmbd: add missing calling smb2_set_err_rsp() on error (2023-08-29
+12:30:20 -0500)
+
+----------------------------------------------------------------
+Ten ksmbd server fixes
+- Fix two potential overflows in decoding create and in session setup reque=
+sts
+- Three cleanup fixes
+- Two compounding fixes, including one for MacOS compounded read requests
+- Session setup error handling fix
+- Fix mode bit bug when applying force_directory_mode and force_create_mode
+- RDMA (smbdirect) write fix
+----------------------------------------------------------------
+Atte Heikkil=C3=A4 (1):
+      ksmbd: fix `force create mode' and `force directory mode'
+
+Namjae Jeon (7):
+      ksmbd: add support for read compound
+      ksmbd: fix wrong interim response on compound
+      ksmbd: reduce descriptor size if remaining bytes is less than request=
+ size
+      ksmbd: fix wrong DataOffset validation of create context
+      ksmbd: fix slub overflow in ksmbd_decode_ntlmssp_auth_blob()
+      ksmbd: replace one-element array with flex-array member in
+struct smb2_ea_info
+      ksmbd: add missing calling smb2_set_err_rsp() on error
+
+Yang Li (1):
+      ksmbd: Fix one kernel-doc comment
+
+Yang Yingliang (1):
+      ksmbd: switch to use kmemdup_nul() helper
+
+ fs/smb/server/asn1.c              |   4 +-
+ fs/smb/server/auth.c              |  14 +-
+ fs/smb/server/connection.c        |  55 ++--
+ fs/smb/server/connection.h        |   2 +-
+ fs/smb/server/ksmbd_work.c        |  93 ++++++-
+ fs/smb/server/ksmbd_work.h        |  34 ++-
+ fs/smb/server/mgmt/share_config.h |  29 +--
+ fs/smb/server/oplock.c            |  31 +--
+ fs/smb/server/server.c            |   8 +-
+ fs/smb/server/smb2pdu.c           | 527 +++++++++++++++++-----------------=
+----
+ fs/smb/server/smb2pdu.h           |   2 +-
+ fs/smb/server/smb_common.c        |  13 +-
+ fs/smb/server/transport_rdma.c    |  29 ++-
+ fs/smb/server/vfs.c               |   4 +-
+ fs/smb/server/vfs.h               |   4 +-
+ 15 files changed, 432 insertions(+), 417 deletions(-)
+
+
+--=20
+Thanks,
+
+Steve
