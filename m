@@ -2,195 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47CA78F56F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:31:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C95178F571
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:33:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbjHaWbI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 18:31:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        id S1345983AbjHaWdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 18:33:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjHaWbG (ORCPT
+        with ESMTP id S233074AbjHaWdG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 18:31:06 -0400
-Received: from sonic309-27.consmr.mail.ne1.yahoo.com (sonic309-27.consmr.mail.ne1.yahoo.com [66.163.184.153])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26572FB
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:31:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693521062; bh=s03qU1EPYaO4PcsqM7OOZRQKPrE+3wLRBq2scPo08MQ=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=e4axbn+ooC1WbiX816lg5j2tJcTXyazl96BudFVILQjSnv0R4+8BdF3VbegRYo9VCDVFBxJbbne2YGINlGnE6H0eEQae45Cs/pBMr7cSut+NjY3VKhouy+jFDBnmMk3KiOyR6BFoDrt9WPYBlYlEfrL6vvjFHVqq/IzHogldRDlQJZqJJ6EwDmAdDLlqU345V3LykEo4yvpPcL+SSNfm0V9RCkJhdO+vRHgggqNuOkRXsep93FAdsdLYp4hmtj7U+u6QDYaWaocCSczad0sFdqr35OXwGsYlnS7ieBEWZWx6KIdlSoSkP1oZsnR/osY3WRchD6xKHR1SjMLJiPj2aA==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693521062; bh=1Y1PmljuqGZVQQ+RjXhLC089ltG6mqsxjodSB8b1rI4=; h=X-Sonic-MF:Date:Subject:To:From:From:Subject; b=WahDngz4ORx3tuhYTS8FFATAD7z5OY5CtewkZ3BH7rCNRsM9fAqj6wgNZaFR4wPHig7Y3bJYsiL8yx9Ac6SQXhhzSynFehm/LEw5n0JfB/hjzxpgW1RVDi62zD3uLaJq68mwPLOk/voEs1TMpN+Cow13YBKzsUvBBXWP4SdDEMVJfjwwEncIxq/55ML4a0QEGvkq84ZPzPecy9WUqw2EEh/yr6KdR3oMDiMu9M+hH+/DpYzRkvy87ycVd4mA80WBatZMTZdxXFvLWllSV4KHIVxOQSXeJCDt9cPiZjS0AZQa+JuP8kZcep7WPhEkInXuaEmF9TWTth/fi0Z6U+GbXA==
-X-YMail-OSG: 15hnpoAVM1kW.TsuLvEPgaEYarONH29t8nHBeNeHjvIFDCYpkwyxs6kU7T_mY9e
- 1t0xoK.3FfdB8VufY2cDFCkKdKSDqZR.M9sD3co7Ss8bBKsxdWwF713qnDBCNPuPg7zQgUa_fkkK
- O_2zisBQGyJFrH2cbpxWBUp44HUv4GmRMSdwA9fGJkJNz25HhnvLzxm_mCzFFwwAXIFlBjxdD8je
- 6U.qhJFPw_9yL0g922LboxoVCq4AkewZ.qzHDd24FxOUVa_PKfCcgQktmeY8uGjJoQJH0g0oU7BQ
- qhVS240HvVWEPCuNF1lpzsjI4AzrBS4wv0SkjK9CGZm7_Ihbe9lw6vm0BCYStXaMnjx142niux.k
- P1T35OEXuI8SijS_0zZegROkmstBKUpXQORAy8z341QPeO88xnutil88Zl33netwEvUfErQFtRYd
- _L1wrZ3kqWK11xuaWankMUpNJ22nkrBZQRSnTbOSChcO9UJHAxgdYGulxiPjdbHVdskrtXMcP8tz
- WB9Iw5ZXCJrsEhwncSEeBxZD3EbBqXqyYNSGKYWPsyjJmeYHTse0eFToR7cMhkr7N0lmqLW07VsK
- iSfO1rAU9o9S2sJsni7GkK2kvhl2r59YOK8s1EEUi3j9aN1sfV9LYE311yPo1iLiA9fl_BkNcdE9
- CB9Q8fa_jqC8dO.lEqNy886Vke78lN4LFfdNv43UlHpqfkZ8qyymiDjP1tCHTgyqMHxbHly_0GTQ
- QXdp2638f8K7M.kL2vnyhScHkgJakBaJQXBcE6SQIxEvrlu52K81cP69Lit8QvukinOsW0Chmowj
- sawQRsnL1Vr4RJjkuh6NcSDkrj3z36Q8xoM7U1oxAyoz3xpHiskIf35R0Hp.U0VlvuSp92cjRuNy
- V_aZ1Xubabu2lEtXWi5hdVo.3UbhtwqWNtf0Qi2ysVnZAZTKA5SygThlBhdExWRljM1nLERYbyvu
- 4.IUXzh80fXJUfgvuT0O2_6MxjIPgPIxoMPuXUjDSok1ifG0ZluId7NDt3dCF9ce8NJEylX4a8BO
- kM8jSzColmPQl5OQ_k3uOz2.uPs7DLsG4f4KRxKeVhyczZOD3rywFoopoXE1dffhant13hc4yZuB
- CclggMazurB.ITUwnqGlCOBId1JHU7x5OdIxACmn9nkc4LsR2MiOc5k66D5Lmp1GKUn7s5p6WJMw
- oj1pHTkM2i5ZQg75epJtqnyDtfLqcX_H4wiEMrXY94JKj8bxbQub4PJZ_0s3pHaohf081vUY_SJR
- IhT7IvxHUU6LH5cpfG84s1RGgVYbrjja6BKgdxM_8DP.0kaVzWz96yBLVloi54EHIpMTuWdGJ9w4
- WhiKvRPia75vqamQtDsoZcXR7kklbmrWqdlsCNJJoo0vKBOELaOEmR057ecR.R_XIq16YMuu6hkN
- 58ovsKI6YvbwJ2dHSQqEeAqfcFsQQk1vu6L5DmG90DJQ.SZS_BNKeSFv9mvpaRTe9xq3CbNdYz9h
- uTr.wR3a6By8u.xN288H7KTXGnte.XHLKoaayTqLnEwhdVjDSTAT6_3bUMZM1jDgLFEdUIXgV6WZ
- Z2VX82LUUg4t34f3MpP9KOXn5zgSw3pp58LLzVDYJhlp28.oVI9m_9EhCM4RQeyE_GUhKZMuc2Av
- YQ0zOos4cMj6Y0xs9zS6H0JIZIXcuEHgeFtvCkdSEXPMwWhLz8UzlnaL1mxDyV0Hw6h613NtHunm
- dSARAvfEnn2X2Y9uxsW70Ut4249vby5fdiVKeij3e6.R6BK1iVSFDtw.6onwmgSVkedr0NT_T0tj
- M5NTUdOEHc3_J6W_dBP5E1IO.e3OBac.1K_6o67MqlN10jG0hNUsXQKlSnF3ZG855BNTcadUBQzp
- jSaCpXBsrxQuWZ1KoDNylisawgXUJvXlczQkmqV_6awbnIiGElKqrHaauW1Q1IsbLF.vqcYgMtM6
- Cms3scFY24Z_PgNqh2hatttsWzazY2GYmo_slSR1wuFsemUmy84LuevPpY.lzSJyVxZ6rN4jqWhd
- mMwb.QwswKW8SUIaekIjYrLNMw3jsNxa5VcEa54Tz0HUZjGJGq5wxLhMBJpY_HDmWXtjOOv2bJvc
- N7QrMXHlLTM9waoVNctOYvMqbw2ocUYpOYHiS89VlU_m7PGUznm7uGI4I0n0QCTQ2CTm11biaeSU
- 4doVAeepfOUAEbdf7IUlCpBPMwohIw3GZvISH9OgEjiH7WKbNY7KQZj25pP00gsrrWiaLYuQQpqm
- fHKotcMW2CEG73IUOGhca.XxxrnFZU2WgwYd_db2n.SSNSAKUPDNTSZbP927UYcJX44LAUk0-
-X-Sonic-MF: <casey@schaufler-ca.com>
-X-Sonic-ID: 25b6638a-be32-488f-910b-fbcbbc466835
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.ne1.yahoo.com with HTTP; Thu, 31 Aug 2023 22:31:02 +0000
-Received: by hermes--production-bf1-865889d799-sjjww (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID aefbc0a6450dcf793468959f28e0b194;
-          Thu, 31 Aug 2023 22:30:56 +0000 (UTC)
-Message-ID: <bd4a2d7e-3c00-9066-63ed-59027cc4fdb7@schaufler-ca.com>
-Date:   Thu, 31 Aug 2023 15:30:52 -0700
+        Thu, 31 Aug 2023 18:33:06 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2056.outbound.protection.outlook.com [40.107.237.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7712BC0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:33:03 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mdqdyqSNRFIzuyYsMiGGh1CpwEYDP181/C0pN6bdWA1fhLX1/LaMxyvjIpNNLPY1xQVCEZjkxPMyBmCJMtP9lD9EgzqX0M6Kg8IITvjB/ZabTeUkkgzYDLR+gu9EjIdg8So2g9iteThF2l97dJAmFQQ6bu5i9HUjtvA45OiTN2Qwm97UufFzb5Rw4kaw/yKl0KUuo6fD8fViLvQNF85PYzKC4BDI06aS8GsKEzPhCj8iWShFjTsSTDxVt+hJTjZRvCS7jkrIeFJF7NYSlHXaFpkFu0TBJpbXOMnCEAOPpFE25oLs3HyaaO+/VappQtUDT9vWQodtC9MtKauJe7Vaew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=aCtaIfTqsyS4gJ3qvX+gTuxrVhkr9c7Kls2HrzM2sAo=;
+ b=K/hrxFDG/yqKBP7mjKK/lVS6jocQdh+f6cKPNuYCs51C/DHLwv5XfP1dhLpWN22nHMwrr7wktLRCh9aX+q5gzWLdFU9hYMxnB5i8YXY5LYTI0ycyeRLnIv4AylVjf2tybmUZTc1cd/Gd2ykGmOc6lpf/bQvQRy5Pg4+Z6Mu4zhRJAXQ1kPZGu7AAh/viyt+z/DLjtbc3yk/RrwwLw5RKCW2BqSpmXbeUuBefky7N0kKm1QlWmyDrrspybdN5sZAAJpAU2S86iIJw1JpDOsLjJ4Yse6lDwmJtBcCkQWD0fI4JQtUf349LPi/cix10qVqOc3+YreAdlsG7v1SK4siFew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=google.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aCtaIfTqsyS4gJ3qvX+gTuxrVhkr9c7Kls2HrzM2sAo=;
+ b=axttrVozzizglI4mKwa+JSYp2ADQfbzwt9qUll2Sw3BAXoyc/gmGZdAUAoLTlJwnRWXi05MsIDp1wVhe57Q6Yjehe+R0n4jjsDPB1/gaNTYbT2SPMZwwM7riQphQgPoLU2T2zDvEoooBK89rXbe46sYL1tD2IEjjPTdpBUbe503QNHjbhUQpTWfhiPUfKvViGdVjqx+h/qfG1fYWPylx4MeOMe6XSiX+ELFkH/Ani/4RdraTkQHuvqo837jSxZjSP+SicfajlQlFjTogxDzumGC3mHtsCFhuCyPBs+KH9xJ1MIGqq0PbQukPw90aqaMBPhnG5DKvCqy+meHqxHc6XA==
+Received: from BLAPR05CA0020.namprd05.prod.outlook.com (2603:10b6:208:36e::23)
+ by PH8PR12MB8429.namprd12.prod.outlook.com (2603:10b6:510:258::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Thu, 31 Aug
+ 2023 22:33:01 +0000
+Received: from BL02EPF0001A103.namprd05.prod.outlook.com
+ (2603:10b6:208:36e:cafe::78) by BLAPR05CA0020.outlook.office365.com
+ (2603:10b6:208:36e::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.15 via Frontend
+ Transport; Thu, 31 Aug 2023 22:33:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BL02EPF0001A103.mail.protection.outlook.com (10.167.241.133) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6745.20 via Frontend Transport; Thu, 31 Aug 2023 22:33:00 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Thu, 31 Aug 2023
+ 15:32:49 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Thu, 31 Aug 2023 15:32:49 -0700
+Received: from Asurada-Nvidia (10.127.8.10) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
+ Transport; Thu, 31 Aug 2023 15:32:48 -0700
+Date:   Thu, 31 Aug 2023 15:32:46 -0700
+From:   Nicolin Chen <nicolinc@nvidia.com>
+To:     Michael Shavit <mshavit@google.com>
+CC:     <iommu@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <jean-philippe@linaro.org>,
+        <jgg@nvidia.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Yicong Yang <yangyicong@hisilicon.com>
+Subject: Re: [PATCH v7 6/9] iommu/arm-smmu-v3: Move CD table to
+ arm_smmu_master
+Message-ID: <ZPEVDnlGOf7s0NoK@Asurada-Nvidia>
+References: <20230831174536.103472-1-mshavit@google.com>
+ <20230901014413.v7.6.Ice063dcf87d1b777a72e008d9e3406d2bcf6d876@changeid>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 13/25] security: Introduce inode_post_removexattr hook
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>,
-        Casey Schaufler <casey@schaufler-ca.com>
-References: <20230831104136.903180-1-roberto.sassu@huaweicloud.com>
- <20230831104136.903180-14-roberto.sassu@huaweicloud.com>
-From:   Casey Schaufler <casey@schaufler-ca.com>
-In-Reply-To: <20230831104136.903180-14-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: WebService/1.1.21763 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230901014413.v7.6.Ice063dcf87d1b777a72e008d9e3406d2bcf6d876@changeid>
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A103:EE_|PH8PR12MB8429:EE_
+X-MS-Office365-Filtering-Correlation-Id: 971ad0ac-47b4-4fa6-1afb-08dbaa723bd0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OfWoA3o6ppmejYTWs7iuotPXuLA3/e9DDgcCFtGBAvtqffUZ1AMAiSXhEETg+20oWS+DgdBtU9MhxbB+4Bd4jtkdyaBNFjNp10soqmWmvZC814ulhTPiiSUUmr/b3i4jJTaIx/jUl1XZdNj+qEm/tCFKGuIHUf81csl1+p0sY5Zfowt6jstXXG4rvjO/fMvxgIiXdtHU8fY6v21mH4UiH2UrNfIBQaXkQU6tuju1YFx4RpVBRvIdmw2i6DDsdLocSjLlH5D98j59wlbePhPQrNcCUbthq4GgtqVr/52Ug4irTRW6YdcfOj3VphuL8TdVSaQ0/W1Zh4xi2zPRGTtCqRy3chHFIu5d39KLu0xtrivjX7JHki0HsRMvsnrJLwl0RK64bkiGK/CEwRtj+9tUvH6vfPUraMpcfA/QC0fwMi5Gy2AqetMevXUBb0nWoFuS62lsD877wMyEgB/CBdiZzcqTJiIFNdirJsmlDI1e2hUfi/hbz4bmNnxJ9NCuyN2golnXRMJwQi/R7oAYDqwCl+fO3ojq4/LlQ0xuhHPKg9jueVj2dX2zTmwCbcEFhClK7TuutkASnGNzT2Bi3VXugKAJ3CvUVWs32755YOaf8Ut1kFj31UED+ozZKgcxcQBdt/9t47mKFw+np9FkBnKie+BTEcxO2B7BEdoKVth43Tmu1ilYTlNlSH9wJWsNf4Ppu6SLrgPtdI3RhKLrWwLnM09S6U1uJo5RQNZ5Vl1C1rY=
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(136003)(376002)(1800799009)(186009)(451199024)(82310400011)(40470700004)(36840700001)(46966006)(356005)(7636003)(82740400003)(9686003)(40460700003)(36860700001)(86362001)(47076005)(40480700001)(55016003)(2906002)(4744005)(426003)(336012)(26005)(83380400001)(478600001)(70206006)(8936002)(70586007)(54906003)(8676002)(4326008)(5660300002)(7416002)(41300700001)(6916009)(316002)(33716001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 22:33:00.7669
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 971ad0ac-47b4-4fa6-1afb-08dbaa723bd0
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A103.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB8429
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/2023 3:41 AM, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the inode_post_removexattr hook.
+On Fri, Sep 01, 2023 at 01:44:35AM +0800, Michael Shavit wrote:
 
-This applies to all new LSM hooks:
-
-Would you please include some explanation of how an LSM would use this hook?
-You might start with a description of how it is used in IMA/EVM, and why that
-could be generally useful.
-
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  fs/xattr.c                    |  9 +++++----
->  include/linux/lsm_hook_defs.h |  2 ++
->  include/linux/security.h      |  5 +++++
->  security/security.c           | 14 ++++++++++++++
->  4 files changed, 26 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index e7bbb7f57557..4a0280295686 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -552,11 +552,12 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
->  		goto out;
->  
->  	error = __vfs_removexattr(idmap, dentry, name);
-> +	if (error)
-> +		goto out;
->  
-> -	if (!error) {
-> -		fsnotify_xattr(dentry);
-> -		evm_inode_post_removexattr(dentry, name);
-> -	}
-> +	fsnotify_xattr(dentry);
-> +	security_inode_post_removexattr(dentry, name);
-> +	evm_inode_post_removexattr(dentry, name);
->  
->  out:
->  	return error;
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index 995d30336cfa..1153e7163b8b 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -148,6 +148,8 @@ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
->  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
->  LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
->  	 struct dentry *dentry, const char *name)
-> +LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
-> +	 const char *name)
->  LSM_HOOK(int, 0, inode_set_acl, struct mnt_idmap *idmap,
->  	 struct dentry *dentry, const char *acl_name, struct posix_acl *kacl)
->  LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 820899db5276..665bba3e0081 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -374,6 +374,7 @@ int security_inode_getxattr(struct dentry *dentry, const char *name);
->  int security_inode_listxattr(struct dentry *dentry);
->  int security_inode_removexattr(struct mnt_idmap *idmap,
->  			       struct dentry *dentry, const char *name);
-> +void security_inode_post_removexattr(struct dentry *dentry, const char *name);
->  int security_inode_need_killpriv(struct dentry *dentry);
->  int security_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry);
->  int security_inode_getsecurity(struct mnt_idmap *idmap,
-> @@ -919,6 +920,10 @@ static inline int security_inode_removexattr(struct mnt_idmap *idmap,
->  	return cap_inode_removexattr(idmap, dentry, name);
->  }
->  
-> +static inline void security_inode_post_removexattr(struct dentry *dentry,
-> +						   const char *name)
-> +{ }
-> +
->  static inline int security_inode_need_killpriv(struct dentry *dentry)
->  {
->  	return cap_inode_need_killpriv(dentry);
-> diff --git a/security/security.c b/security/security.c
-> index 764a6f28b3b9..3947159ba5e9 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2354,6 +2354,20 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
->  	return evm_inode_removexattr(idmap, dentry, name);
->  }
->  
-> +/**
-> + * security_inode_post_removexattr() - Update the inode after a removexattr op
-> + * @dentry: file
-> + * @name: xattr name
-> + *
-> + * Update the inode after a successful removexattr operation.
-> + */
-> +void security_inode_post_removexattr(struct dentry *dentry, const char *name)
-> +{
-> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +		return;
-> +	call_void_hook(inode_post_removexattr, dentry, name);
-> +}
-> +
->  /**
->   * security_inode_need_killpriv() - Check if security_inode_killpriv() required
->   * @dentry: associated dentry
+> With this change, each master will now own its own CD table instead of
+> sharing one with other masters attached to the same domain. Attaching a
+> stage 1 domain installs CD entries into the master's CD table. SVA
+> writes its CD entries into each master's CD table if the domain is
+> shared across masters.
+> 
+> Also add the device to the devices list before writing the CD to the
+> table so that SVA will know that the CD needs to be re-written to this
+> device's CD table as well if it decides to update the CD's ASID
+> concurrently with this function.
+> 
+> Tested-by: Nicolin Chen <nicolinc@nvidia.com>
+> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
+> Signed-off-by: Michael Shavit <mshavit@google.com>
+ 
+Reviewed-by: Nicolin Chen <nicolinc@nvidia.com>
