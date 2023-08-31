@@ -2,115 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F0778EE90
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:26:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8429178EE9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241865AbjHaN0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:26:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        id S240377AbjHaN1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229446AbjHaN0j (ORCPT
+        with ESMTP id S229694AbjHaN1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:26:39 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86720CEB;
-        Thu, 31 Aug 2023 06:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693488396; x=1725024396;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HgeKJLJxLH8yLNJRCPDzLYvby7ECj242FxWkt/dJEFg=;
-  b=K7Mo1Gj7ITuQFrjz/XSrcq1aapUbhtkblpUAmjuhUUiharjv2PQblSRs
-   dQE77b7xi64enbqPh5CL0eqpw1LUvdsxVzJlW084AKducmpIVDTDzuLOD
-   cJLKHuikH6c+vimVDhcOiy+PD7Y/uq3Y29pv/aOg1Eb5p1Hz0gcWSDF6h
-   Sb7c5hoQpeX8gPIY5rWQNBc91b4cdEG0hodLUlr5D78VHg9ElufPR8H+S
-   OadP4Wgftpw81NLOpI09FHO+FhPxcHEsOB4fcOguqD4NVwMFSRqx8JO0W
-   auE5DNCH0dB5PyzDhzfHeiAhcfzqipMmoFidCQE5XbpMOX5IW2Og6OPCy
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="355441464"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="355441464"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 06:26:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="742703754"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="742703754"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 06:26:33 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qbhgt-005Oew-0N;
-        Thu, 31 Aug 2023 16:26:31 +0300
-Date:   Thu, 31 Aug 2023 16:26:30 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Lucas Segarra Fernandez <lucas.segarra.fernandez@intel.com>,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        qat-linux@intel.com, alx@kernel.org,
-        Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: Re: [PATCH v2 1/2] crypto: qat - refactor included headers
-Message-ID: <ZPCVBnf9xzUF+8Da@smile.fi.intel.com>
-References: <20230818102322.142582-1-lucas.segarra.fernandez@intel.com>
- <20230818102322.142582-2-lucas.segarra.fernandez@intel.com>
- <ZOiEHCsjBCL04Z3x@gondor.apana.org.au>
- <ZOigoVJbjdOx9Wea@smile.fi.intel.com>
- <ZOx1SOBKbmdIvz+b@gondor.apana.org.au>
- <ZOx6+i5HEAY4F4X3@smile.fi.intel.com>
- <ZO3F8AgOS/NnVaeU@gondor.apana.org.au>
- <ZO375Wg0+nTCgCIJ@smile.fi.intel.com>
- <ZPAPSOnSTMgYrlV/@gondor.apana.org.au>
+        Thu, 31 Aug 2023 09:27:49 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442FE1A2;
+        Thu, 31 Aug 2023 06:27:46 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Rc23v3QtxzrSK2;
+        Thu, 31 Aug 2023 21:26:03 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 31 Aug 2023 21:27:43 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <xukuohai@huawei.com>,
+        <zhengyejian1@huawei.com>
+Subject: [PATCH] tracing: Fix race issue between cpu buffer write and swap
+Date:   Thu, 31 Aug 2023 21:27:39 +0800
+Message-ID: <20230831132739.4070878-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPAPSOnSTMgYrlV/@gondor.apana.org.au>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 11:55:52AM +0800, Herbert Xu wrote:
-> On Tue, Aug 29, 2023 at 05:08:37PM +0300, Andy Shevchenko wrote:
-> >
-> > Do I understand correctly that you want *ideally* to have THE kernel.h
-> > as a _single_ header and that's it?
-> 
-> My rule of thumb for a .c file is that if you need more than two
-> headers directly included by kernel.h then you should just use
-> kernel.h.
-> 
-> > While I understand your motivation as a maintainer, I hate the idea of current
-> > kernel.h to be included as a silver bullet to every file because people are not
-> > capable to understand this C language part of design. The usage of the proper
-> > headers show that developer _thought_ very well about what they are doing in
-> > the driver. Neglecting this affects the quality of the code in my opinion.
-> > That's why I strongly recommend to avoid kernel.h inclusion unless it's indeed
-> > the one that provides something that is used in the driver. Even though, the
-> > rest headers also need to be included (as it wasn't done by kernel.h at any
-> > circumstances).
-> 
-> I have no qualms with fixing header files that include kernel.h
-> to include whatever it is that they need directly.  That is a
-> worthy goal and should be enforced for all new header files.
-> 
-> I just don't share your enthusiasm about doing the same for .c
-> files.
+Warning happened in rb_end_commit() at code:
+	if (RB_WARN_ON(cpu_buffer, !local_read(&cpu_buffer->committing)))
 
-I see, thanks for clarifying this. While you are right about *.c files that
-it's not so critical for them, the kernel.h use is still a burden everywhere
-in the kernel (at least in the current form). That's why I prefer to exclude
-it from *.c-files as well. This will reduce amount of work in the future in
-case we will be capable to clean up the crap from kernel.h and make it sane.
+  WARNING: CPU: 0 PID: 139 at kernel/trace/ring_buffer.c:3142
+	rb_commit+0x402/0x4a0
+  Call Trace:
+   ring_buffer_unlock_commit+0x42/0x250
+   trace_buffer_unlock_commit_regs+0x3b/0x250
+   trace_event_buffer_commit+0xe5/0x440
+   trace_event_buffer_reserve+0x11c/0x150
+   trace_event_raw_event_sched_switch+0x23c/0x2c0
+   __traceiter_sched_switch+0x59/0x80
+   __schedule+0x72b/0x1580
+   schedule+0x92/0x120
+   worker_thread+0xa0/0x6f0
 
+It is because the race between writing event into cpu buffer and swapping
+cpu buffer through file per_cpu/cpu0/snapshot:
+
+  Write on CPU 0             Swap buffer by per_cpu/cpu0/snapshot on CPU 1
+  --------                   --------
+                             tracing_snapshot_write()
+                               [...]
+
+  ring_buffer_lock_reserve()
+    cpu_buffer = buffer->buffers[cpu]; // 1. Suppose find 'cpu_buffer_a';
+    [...]
+    rb_reserve_next_event()
+      [...]
+
+                               ring_buffer_swap_cpu()
+                                 if (local_read(&cpu_buffer_a->committing))
+                                     goto out_dec;
+                                 if (local_read(&cpu_buffer_b->committing))
+                                     goto out_dec;
+                                 buffer_a->buffers[cpu] = cpu_buffer_b;
+                                 buffer_b->buffers[cpu] = cpu_buffer_a;
+                                 // 2. cpu_buffer has swapped here.
+
+      rb_start_commit(cpu_buffer);
+      if (unlikely(READ_ONCE(cpu_buffer->buffer)
+          != buffer)) { // 3. This check passed due to 'cpu_buffer->buffer'
+        [...]           //    has not changed here.
+        return NULL;
+      }
+                                 cpu_buffer_b->buffer = buffer_a;
+                                 cpu_buffer_a->buffer = buffer_b;
+                                 [...]
+
+      // 4. Reserve event from 'cpu_buffer_a'.
+
+  ring_buffer_unlock_commit()
+    [...]
+    cpu_buffer = buffer->buffers[cpu]; // 5. Now find 'cpu_buffer_b' !!!
+    rb_commit(cpu_buffer)
+      rb_end_commit()  // 6. WARN for the wrong 'committing' state !!!
+
+Based on above analysis, we can easily reproduce by following testcase:
+  ``` bash
+  #!/bin/bash
+
+  dmesg -n 7
+  sysctl -w kernel.panic_on_warn=1
+  TR=/sys/kernel/tracing
+  echo 7 > ${TR}/buffer_size_kb
+  echo "sched:sched_switch" > ${TR}/set_event
+  while [ true ]; do
+          echo 1 > ${TR}/per_cpu/cpu0/snapshot
+  done &
+  while [ true ]; do
+          echo 1 > ${TR}/per_cpu/cpu0/snapshot
+  done &
+  while [ true ]; do
+          echo 1 > ${TR}/per_cpu/cpu0/snapshot
+  done &
+  ```
+
+To fix it, IIUC, we can use smp_call_function_single() to do the swap on
+the target cpu where the buffer is located, so that above race would be
+avoided.
+
+Fixes: f1affcaaa861 ("tracing: Add snapshot in the per_cpu trace directories")
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/trace/trace.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 8e64aaad5361..55bb08aaf392 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -7618,6 +7618,11 @@ static int tracing_snapshot_open(struct inode *inode, struct file *file)
+ 	return ret;
+ }
+ 
++static void tracing_swap_cpu_buffer(void *tr)
++{
++	update_max_tr_single((struct trace_array *)tr, current, smp_processor_id());
++}
++
+ static ssize_t
+ tracing_snapshot_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 		       loff_t *ppos)
+@@ -7676,13 +7681,15 @@ tracing_snapshot_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 			ret = tracing_alloc_snapshot_instance(tr);
+ 		if (ret < 0)
+ 			break;
+-		local_irq_disable();
+ 		/* Now, we're going to swap */
+-		if (iter->cpu_file == RING_BUFFER_ALL_CPUS)
++		if (iter->cpu_file == RING_BUFFER_ALL_CPUS) {
++			local_irq_disable();
+ 			update_max_tr(tr, current, smp_processor_id(), NULL);
+-		else
+-			update_max_tr_single(tr, current, iter->cpu_file);
+-		local_irq_enable();
++			local_irq_enable();
++		} else {
++			smp_call_function_single(iter->cpu_file, tracing_swap_cpu_buffer,
++						 (void *)tr, 1);
++		}
+ 		break;
+ 	default:
+ 		if (tr->allocated_snapshot) {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
