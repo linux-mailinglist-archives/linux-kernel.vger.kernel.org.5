@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B737678EBE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16E2778EBE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:23:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238498AbjHaLWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:22:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58544 "EHLO
+        id S244173AbjHaLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:23:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjHaLWh (ORCPT
+        with ESMTP id S230223AbjHaLXw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:22:37 -0400
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1369DCF3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:22:35 -0700 (PDT)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-271cf74f2a2so839104a91.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:22:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693480954; x=1694085754;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=C47g7eG4Z3NHn1IyTXipothfao1p4iMkSkhWe9h0jN4=;
-        b=dT1+KgvFb5naO8Eb1zvh5L9agf/F28qWD51NulW/ymh7zSQUD7JbfFS9Abn/Dl8xnV
-         qwNIf+3TDgJ4hAhv+VTzxevJsSsyp2auQ0nU9Hf2JoDrFXw/hcO9fWURTSBszcC8hNsM
-         xWjljFZymVmCdEBOBgFjjol7OYolOaqITzOa3sNtRsUf9+pwoiOxBPAP+pTZU0dPTx7d
-         z++UkjsCOsiZHhxFR/EMYk/rXAk9jtZ2mObWsoAW6f08gc9pthWf9yw/iaNOE+MjHnJb
-         t6V6FobadQlgl/4L5MWofLE68CDAlCYydaeQ5cOjIKzfEIgNOSxAxTyuw83YsEbmWOtQ
-         B0Nw==
-X-Gm-Message-State: AOJu0YyCapKQRBrxS9s5TUHWvuDD7XpS7vr8GdgFz7tg/xKoYUeshP4y
-        ULmd2caG0zcrBo0kFyZyKcU3KaEQYMr6AXxnnYsdr4dnCsiV
-X-Google-Smtp-Source: AGHT+IFe3NYFjS6LyOenVJEo4KugpG2QAoLO3/wzDMU8O8jVaY1yPphhTpJmw44tyo7xp4Zg4YKUSR8dSD+sV3h1rMI1BKPJfxYK
+        Thu, 31 Aug 2023 07:23:52 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B6CCE4
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:23:50 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qbfm3-0000KS-J6; Thu, 31 Aug 2023 13:23:43 +0200
+Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qbfm2-0000FF-LD; Thu, 31 Aug 2023 13:23:42 +0200
+Date:   Thu, 31 Aug 2023 13:23:42 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Lukasz Majewski <lukma@denx.de>
+Subject: Re: [PATCH net v1] net: phy: micrel: Correct bit assignment for
+ MICREL_KSZ8_P1_ERRATA flag
+Message-ID: <20230831112342.GD17603@pengutronix.de>
+References: <20230831110427.3551432-1-o.rempel@pengutronix.de>
+ <ZPB3cYMnFq1qGRv0@shell.armlinux.org.uk>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:d18a:b0:262:ffae:56cf with SMTP id
- fu10-20020a17090ad18a00b00262ffae56cfmr804890pjb.8.1693480954656; Thu, 31 Aug
- 2023 04:22:34 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 04:22:34 -0700
-In-Reply-To: <20230831105150.4549-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000bc839e060436421f@google.com>
-Subject: Re: [syzbot] [kernel?] general protection fault in netdev_register_kobject
-From:   syzbot <syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZPB3cYMnFq1qGRv0@shell.armlinux.org.uk>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Thu, Aug 31, 2023 at 12:20:17PM +0100, Russell King (Oracle) wrote:
+> On Thu, Aug 31, 2023 at 01:04:27PM +0200, Oleksij Rempel wrote:
+> > The previous assignment of the phy_device quirk for the
+> > MICREL_KSZ8_P1_ERRATA flag was incorrect, working only due to
+> > coincidental conditions. Specifically:
+> > 
+> > - The flag MICREL_KSZ8_P1_ERRATA, intended for KSZ88xx switches, was
+> >   mistakenly overlapping with the MICREL_PHY_FXEN and
+> >   MICREL_PHY_50MHZ_CLK flags.
+> > - MICREL_PHY_FXEN is used by the KSZ8041 PHY, and its related code path
+> >   wasn't executed for KSZ88xx PHYs and other way around.
+> > - Additionally, the code path associated with the MICREL_PHY_50MHZ_CLK
+> >   flag wasn't executed for KSZ88xx either.
+> > 
+> > Fixes: 49011e0c1555d ("net: phy: micrel: ksz886x/ksz8081: add cabletest support")
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  include/linux/micrel_phy.h | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
+> > index 8bef1ab62bba3..0cedbeb9167c3 100644
+> > --- a/include/linux/micrel_phy.h
+> > +++ b/include/linux/micrel_phy.h
+> > @@ -43,7 +43,7 @@
+> >  /* struct phy_device dev_flags definitions */
+> >  #define MICREL_PHY_50MHZ_CLK	0x00000001
+> >  #define MICREL_PHY_FXEN		0x00000002
+> > -#define MICREL_KSZ8_P1_ERRATA	0x00000003
+> > +#define MICREL_KSZ8_P1_ERRATA	BIT(3)
+> 
+> Please can you also convert the other two flags to use BIT() as well to
+> make the entire thing explicitly bit-orientated? Thanks.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Ack. This patch is for the net. The cleanup will got to the net-next.
+Except clean up will be accepted for the net too?
 
-Reported-and-tested-by: syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         a47fc304 Add linux-next specific files for 20230831
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1716e99fa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8294f0401243efe1
-dashboard link: https://syzkaller.appspot.com/bug?extid=d2c31705e468a347e6db
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10a4e470680000
-
-Note: testing is done by a robot and is best-effort only.
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
