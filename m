@@ -2,173 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F47178EBD6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B57A78EBDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346064AbjHaLTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:19:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44266 "EHLO
+        id S1346020AbjHaLTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:19:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242946AbjHaLS5 (ORCPT
+        with ESMTP id S235573AbjHaLTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:18:57 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7441ACE4;
-        Thu, 31 Aug 2023 04:18:54 -0700 (PDT)
-Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 3097686572;
-        Thu, 31 Aug 2023 13:18:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693480732;
-        bh=Oh6+2Og4JNes230QX3F+ylAvYwPth7/wlwN9Q1c/94U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FmMSDZ9mZ5CFNV1LNupGDeIr3YAF85e+bEV0ZY3P1NeODZBIm0gZP9bzOiZFqtQ+d
-         HvoSSpTejq/HCXFbaS+lPeAJVDGlZH/95/8fW5yCvJ3m6/23a5B0QEDJzqKors/s0d
-         JTBooF2BVyLe5LIKpfgXxNwaM2dEAt7LoKUxamkRYHud7XTEO4z57abV/z3l+6HLj0
-         qgRk91XE4zP2ONkiw/aRCILwcXKmc0ytdoPwhOpKNFVObBxCsfxrSqC7+3xGvMqSG4
-         sRVaUqPxzHgMmmyF903HDxviVI/2O28P9KdE/71K43GvI6SmP8SKUvk5qvetDqLbg6
-         RGcFLDQs4Jtvw==
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
-        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Cc:     Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
-        George McCollister <george.mccollister@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukasz Majewski <lukma@denx.de>
-Subject: [PATCH v2 4/4] net: dsa: hsr: Provide generic HSR ksz_hsr_{join|leave} functions
-Date:   Thu, 31 Aug 2023 13:18:27 +0200
-Message-Id: <20230831111827.548118-5-lukma@denx.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230831111827.548118-1-lukma@denx.de>
-References: <20230831111827.548118-1-lukma@denx.de>
+        Thu, 31 Aug 2023 07:19:22 -0400
+Received: from smtp-fw-80009.amazon.com (smtp-fw-80009.amazon.com [99.78.197.220])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83836E5F;
+        Thu, 31 Aug 2023 04:19:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1693480752; x=1725016752;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=h/nMy0t4wtPt6LFAJDminDBn1Pn/Vgam85P5np4XTd4=;
+  b=swCz9v3YRVTMd5259QHRH4KEnJ5nD9O+h/bouBOKcW9hWeTF38JyTTSI
+   kPR8jDIPqnlPKgMU1VmUUnCa5+RFEz5/81NyMwwn8N9oSQ2r2z0P9e2lL
+   MiUBG7wXNbn8m46gn/fRyiN0/4y4EJfUFmY9O48l0ejtvPYzLce3qpDlT
+   8=;
+X-IronPort-AV: E=Sophos;i="6.02,216,1688428800"; 
+   d="scan'208";a="26125601"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-6e7a78d7.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80009.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 11:19:09 +0000
+Received: from EX19MTAUWA002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-iad-1e-m6i4x-6e7a78d7.us-east-1.amazon.com (Postfix) with ESMTPS id 8D7A7808D7;
+        Thu, 31 Aug 2023 11:19:08 +0000 (UTC)
+Received: from EX19D002ANA003.ant.amazon.com (10.37.240.141) by
+ EX19MTAUWA002.ant.amazon.com (10.250.64.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.37; Thu, 31 Aug 2023 11:19:01 +0000
+Received: from b0f1d8753182.ant.amazon.com (10.106.83.27) by
+ EX19D002ANA003.ant.amazon.com (10.37.240.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1118.37;
+ Thu, 31 Aug 2023 11:18:57 +0000
+From:   Takahiro Itazuri <itazur@amazon.com>
+To:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+CC:     Jonathan Corbet <corbet@lwn.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@alien8.de>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Takahiro Itazuri <zulinx86@gmail.com>,
+        Takahiro Itazuri <itazur@amazon.com>
+Subject: [PATCH v2] docs: Update desc of best effort mode
+Date:   Thu, 31 Aug 2023 12:18:47 +0100
+Message-ID: <20230831111847.71030-1-itazur@amazon.com>
+X-Mailer: git-send-email 2.38.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.106.83.27]
+X-ClientProxiedBy: EX19D035UWB004.ant.amazon.com (10.13.138.104) To
+ EX19D002ANA003.ant.amazon.com (10.37.240.141)
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch provides the common KSZ (i.e. Microchip) DSA code with support
-for HSR aware devices.
+Moves the description of the best effort mitigation mode to the table of
+the possible values in the mds and tsx_async_abort docs, and adds the
+same one to the mmio_stale_data doc.
 
-To be more specific - generic ksz_hsr_{join|leave} functions are provided,
-now only supporting KSZ9477 IC.
-
-Signed-off-by: Lukasz Majewski <lukma@denx.de>
+Signed-off-by: Takahiro Itazuri <itazur@amazon.com>
 ---
-Changes for v2:
-- None
----
- drivers/net/dsa/microchip/ksz_common.c | 69 ++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
 
-diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
-index 579fde54d1e1..853f9fe60758 100644
---- a/drivers/net/dsa/microchip/ksz_common.c
-+++ b/drivers/net/dsa/microchip/ksz_common.c
-@@ -16,6 +16,7 @@
- #include <linux/etherdevice.h>
- #include <linux/if_bridge.h>
- #include <linux/if_vlan.h>
-+#include <linux/if_hsr.h>
- #include <linux/irq.h>
- #include <linux/irqdomain.h>
- #include <linux/of_mdio.h>
-@@ -3433,6 +3434,72 @@ u16 ksz_hsr_get_ports(struct dsa_switch *ds)
- 	return 0;
- }
+v1 -> v2: https://lore.kernel.org/all/20230830144426.80258-1-itazur@amazon.com/
+- Puts the desc into the table of the possible values.
+
+---
+ Documentation/admin-guide/hw-vuln/mds.rst     | 33 ++++++++-----------
+ .../hw-vuln/processor_mmio_stale_data.rst     | 13 +++++++-
+ .../admin-guide/hw-vuln/tsx_async_abort.rst   | 32 ++++++++----------
+ 3 files changed, 38 insertions(+), 40 deletions(-)
+
+diff --git a/Documentation/admin-guide/hw-vuln/mds.rst b/Documentation/admin-guide/hw-vuln/mds.rst
+index 48ca0bd85..0fe98151a 100644
+--- a/Documentation/admin-guide/hw-vuln/mds.rst
++++ b/Documentation/admin-guide/hw-vuln/mds.rst
+@@ -102,9 +102,19 @@ The possible values in this file are:
+      * - 'Vulnerable'
+        - The processor is vulnerable, but no mitigation enabled
+      * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
+-       - The processor is vulnerable but microcode is not updated.
+-
+-         The mitigation is enabled on a best effort basis. See :ref:`vmwerv`
++       - The processor is vulnerable but microcode is not updated. The
++         mitigation is enabled on a best effort basis.
++
++         If the processor is vulnerable but the availability of the microcode
++         based mitigation mechanism is not advertised via CPUID, the kernel
++         selects a best effort mitigation mode. This mode invokes the mitigation
++         instructions without a guarantee that they clear the CPU buffers.
++
++         This is done to address virtualization scenarios where the host has the
++         microcode update applied, but the hypervisor is not yet updated to
++         expose the CPUID to the guest. If the host has updated microcode the
++         protection takes effect; otherwise a few CPU cycles are wasted
++         pointlessly.
+      * - 'Mitigation: Clear CPU buffers'
+        - The processor is vulnerable and the CPU buffer clearing mitigation is
+          enabled.
+@@ -119,23 +129,6 @@ to the above information:
+     'SMT Host state unknown'  Kernel runs in a VM, Host SMT state unknown
+     ========================  ============================================
  
-+static int ksz_hsr_join(struct dsa_switch *ds, int port, struct net_device *hsr)
-+{
-+	struct dsa_port *partner = NULL, *dp;
-+	struct ksz_device *dev = ds->priv;
-+	enum hsr_version ver;
-+	int ret;
+-.. _vmwerv:
+-
+-Best effort mitigation mode
+-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-
+-  If the processor is vulnerable, but the availability of the microcode based
+-  mitigation mechanism is not advertised via CPUID the kernel selects a best
+-  effort mitigation mode.  This mode invokes the mitigation instructions
+-  without a guarantee that they clear the CPU buffers.
+-
+-  This is done to address virtualization scenarios where the host has the
+-  microcode update applied, but the hypervisor is not yet updated to expose
+-  the CPUID to the guest. If the host has updated microcode the protection
+-  takes effect otherwise a few cpu cycles are wasted pointlessly.
+-
+-  The state in the mds sysfs file reflects this situation accordingly.
+-
+ 
+ Mitigation mechanism
+ -------------------------
+diff --git a/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst b/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
+index c98fd1190..1302fd1b5 100644
+--- a/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
++++ b/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
+@@ -225,8 +225,19 @@ The possible values in this file are:
+      * - 'Vulnerable'
+        - The processor is vulnerable, but no mitigation enabled
+      * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
+-       - The processor is vulnerable, but microcode is not updated. The
++       - The processor is vulnerable but microcode is not updated. The
+          mitigation is enabled on a best effort basis.
 +
-+	ret = hsr_get_version(hsr, &ver);
-+	if (ret)
-+		return ret;
++         If the processor is vulnerable but the availability of the microcode
++         based mitigation mechanism is not advertised via CPUID, the kernel
++         selects a best effort mitigation mode. This mode invokes the mitigation
++         instructions without a guarantee that they clear the CPU buffers.
 +
-+	switch (dev->chip_id) {
-+	case KSZ9477_CHIP_ID:
-+		if (ver == PRP_V1)
-+			return -EOPNOTSUPP;
-+	}
++         This is done to address virtualization scenarios where the host has the
++         microcode update applied, but the hypervisor is not yet updated to
++         expose the CPUID to the guest. If the host has updated microcode the
++         protection takes effect; otherwise a few CPU cycles are wasted
++         pointlessly.
+      * - 'Mitigation: Clear CPU buffers'
+        - The processor is vulnerable and the CPU buffer clearing mitigation is
+          enabled.
+diff --git a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
+index 014167ef8..c6400fe6b 100644
+--- a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
++++ b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
+@@ -98,7 +98,19 @@ The possible values in this file are:
+    * - 'Vulnerable'
+      - The CPU is affected by this vulnerability and the microcode and kernel mitigation are not applied.
+    * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
+-     - The system tries to clear the buffers but the microcode might not support the operation.
++     - The processor is vulnerable but microcode is not updated. The
++       mitigation is enabled on a best effort basis.
 +
-+	/* We can't enable redundancy on the switch until both
-+	 * redundant ports have signed up.
-+	 */
-+	dsa_hsr_foreach_port(dp, ds, hsr) {
-+		if (dp->index != port) {
-+			partner = dp;
-+			break;
-+		}
-+	}
++       If the processor is vulnerable but the availability of the microcode
++       based mitigation mechanism is not advertised via CPUID, the kernel
++       selects a best effort mitigation mode. This mode invokes the mitigation
++       instructions without a guarantee that they clear the CPU buffers.
 +
-+	if (!partner)
-+		return 0;
-+
-+	switch (dev->chip_id) {
-+	case KSZ9477_CHIP_ID:
-+		return ksz9477_hsr_join(ds, port, hsr, partner);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ksz_hsr_leave(struct dsa_switch *ds, int port,
-+			 struct net_device *hsr)
-+{
-+	struct dsa_port *partner = NULL, *dp;
-+	struct ksz_device *dev = ds->priv;
-+
-+	dsa_hsr_foreach_port(dp, ds, hsr) {
-+		if (dp->index != port) {
-+			partner = dp;
-+			break;
-+		}
-+	}
-+
-+	if (!partner)
-+		return 0;
-+
-+	switch (dev->chip_id) {
-+	case KSZ9477_CHIP_ID:
-+		return ksz9477_hsr_leave(ds, port, hsr, partner);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+
-+	return 0;
-+}
-+
- static const struct dsa_switch_ops ksz_switch_ops = {
- 	.get_tag_protocol	= ksz_get_tag_protocol,
- 	.connect_tag_protocol   = ksz_connect_tag_protocol,
-@@ -3452,6 +3519,8 @@ static const struct dsa_switch_ops ksz_switch_ops = {
- 	.get_sset_count		= ksz_sset_count,
- 	.port_bridge_join	= ksz_port_bridge_join,
- 	.port_bridge_leave	= ksz_port_bridge_leave,
-+	.port_hsr_join		= ksz_hsr_join,
-+	.port_hsr_leave		= ksz_hsr_leave,
- 	.port_stp_state_set	= ksz_port_stp_state_set,
- 	.port_pre_bridge_flags	= ksz_port_pre_bridge_flags,
- 	.port_bridge_flags	= ksz_port_bridge_flags,
++       This is done to address virtualization scenarios where the host has the
++       microcode update applied, but the hypervisor is not yet updated to
++       expose the CPUID to the guest. If the host has updated microcode the
++       protection takes effect; otherwise a few CPU cycles are wasted
++       pointlessly.
+    * - 'Mitigation: Clear CPU buffers'
+      - The microcode has been updated to clear the buffers. TSX is still enabled.
+    * - 'Mitigation: TSX disabled'
+@@ -106,24 +118,6 @@ The possible values in this file are:
+    * - 'Not affected'
+      - The CPU is not affected by this issue.
+ 
+-.. _ucode_needed:
+-
+-Best effort mitigation mode
+-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-
+-If the processor is vulnerable, but the availability of the microcode-based
+-mitigation mechanism is not advertised via CPUID the kernel selects a best
+-effort mitigation mode.  This mode invokes the mitigation instructions
+-without a guarantee that they clear the CPU buffers.
+-
+-This is done to address virtualization scenarios where the host has the
+-microcode update applied, but the hypervisor is not yet updated to expose the
+-CPUID to the guest. If the host has updated microcode the protection takes
+-effect; otherwise a few CPU cycles are wasted pointlessly.
+-
+-The state in the tsx_async_abort sysfs file reflects this situation
+-accordingly.
+-
+ 
+ Mitigation mechanism
+ --------------------
 -- 
-2.20.1
+2.40.1
 
