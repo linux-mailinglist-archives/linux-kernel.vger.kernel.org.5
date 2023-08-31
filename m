@@ -2,125 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC2A78F19F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 19:03:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5838B78F1B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 19:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346785AbjHaRDI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 13:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53042 "EHLO
+        id S1345667AbjHaRKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 13:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346695AbjHaRDF (ORCPT
+        with ESMTP id S237542AbjHaRKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 13:03:05 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46348F
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:03:02 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c1e780aa95so7250275ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:03:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1693501382; x=1694106182; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LHgjjj35OJGXCjuPasaEGJ/b/jcHEmhkYoXcUVIk7ww=;
-        b=kw1iHdM3wd9fH4rBn2CqW3Pp1R1zEfWD/YtWbYepI8tGr9+ks5wfgsaYELHIpTejT+
-         NEfRlrGoprpz6DCTkuuWeiX6xA2xsLvPCs0rTeCzJqeViYqgiJCfPtPqg0KbKxVEZGlK
-         0Y2I3K6k8caGBtB/9Nnq8Aef/rQhWbOhHFl3xt9cPcZJ7eBNOL29Z3E+6/OSr/uhYko4
-         4WnAo4FyjotTccDNpIpn0f3h4zEjibiZMH1ehpvzHmIn9ld0Sj0cc77KPBoh2GqiyTgk
-         l6oFxzV3s4fSuCBx3jcBuVIS89ZJ9yODf6+PKvdHvAp0F8iI5KwcgT2C/l9lFuaDw3Vy
-         saRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693501382; x=1694106182;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LHgjjj35OJGXCjuPasaEGJ/b/jcHEmhkYoXcUVIk7ww=;
-        b=lB06psrfTxoz4VrI49i9N6xIH8yYYzaNaFsOgCcj5L8GUw7cXhZZr6RmXjrk1P0CUu
-         6B0BybTJ/O4VotZsQP+9Z3IFKHYMr03GSvOLTYdSI+uUvIIuC711iA5bssxJ5OuIfyl1
-         pMhRqI81s8NYnpi2bCFjk7kRfEHIc+kt3sXN84BT7orpMajcW9exr79TgDNaKt3uFddT
-         wseOlb7r31m/ltysh/iaDY08nCcR4JwFmN4Fv5N/8y/Vp6Whk2ajEfbReCpTjW7nsHzP
-         T7odJLbR0jjFbM8KIKIB/1FDFuReeD7U2UYlNrZb6AxjFxG740lsINsNeIp3iysZHG9w
-         IkiA==
-X-Gm-Message-State: AOJu0Yy4XwAtmNuA7j6TWyMhW+sB6lhmSxnK063pPArU0G9G2fdNSJaT
-        Ijauuv6dc05RlPTD7rEX23ii4A==
-X-Google-Smtp-Source: AGHT+IF+htXs2E3/1dWO3dXoakLSbjGOY+B/JfHkO5GVPE7OJGYw2rF1HEEP9wx5/tbOWtsOFEQO4g==
-X-Received: by 2002:a17:902:b588:b0:1b6:649b:92cc with SMTP id a8-20020a170902b58800b001b6649b92ccmr185987pls.69.1693501382283;
-        Thu, 31 Aug 2023 10:03:02 -0700 (PDT)
-Received: from ziepe.ca ([207.140.200.197])
-        by smtp.gmail.com with ESMTPSA id jw14-20020a170903278e00b001b9d95945afsm1482930plb.155.2023.08.31.10.03.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 10:03:00 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1qbl4M-000IVp-Uu;
-        Thu, 31 Aug 2023 14:02:58 -0300
-Date:   Thu, 31 Aug 2023 14:02:58 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     Tina Zhang <tina.zhang@intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Michael Shavit <mshavit@google.com>, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/5] iommu: Introduce mm_get_pasid() helper function
-Message-ID: <ZPDHwseKQ3IC8dT9@ziepe.ca>
-References: <20230827084401.819852-1-tina.zhang@intel.com>
- <20230827084401.819852-3-tina.zhang@intel.com>
- <7000c8d5-6989-0329-05ad-b96ed68631c0@linux.intel.com>
+        Thu, 31 Aug 2023 13:10:42 -0400
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53AB91B2;
+        Thu, 31 Aug 2023 10:10:37 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 8AD1D120009;
+        Thu, 31 Aug 2023 20:10:33 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 8AD1D120009
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1693501833;
+        bh=U7WOQB5SYQHqP+B3KeYZ1/+2ZrmmQCAK40U7/k61lho=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=ZTC65bNT3c5Vn+sjGor0A1bjvGv7JUmXe9yZwyZL8D4HYnCCs1jRQKQscD4OzSDPg
+         HteSX8e5c9kw/hHponCh/QnMh7ARe9LxpBWT8TpY75uap+xitSENmu0GxnRneT3uyT
+         +7m9WOpEYHqayiyPTJwyHx9kIzQdscY1+egt03d8J6aLlrBWp/TCkQOosGIY5sc4/D
+         JlkLTS8hX6v2YrQTnk3bk93+D/B97zK1r8KQWLHNE8NRb7Lyjm2gJvMVnTwmCOhlUZ
+         owIEPJqNosRAiaNKxcQfvMhLk+K7/k7cbJmqCnU5Q80hez02oTBXXCIxgvcT1XRiAj
+         CQ4qLqC9C1guA==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Thu, 31 Aug 2023 20:10:33 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Thu, 31 Aug 2023 20:10:02 +0300
+Message-ID: <d4e46f76-b245-3815-3dde-00d81f02942f@salutedevices.com>
+Date:   Thu, 31 Aug 2023 20:04:15 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7000c8d5-6989-0329-05ad-b96ed68631c0@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH v2 0/2] vsock: handle writes to shutdowned socket
+Content-Language: en-US
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20230826175900.3693844-1-avkrasnov@salutedevices.com>
+ <7byt3iwpo5ewpxkjwh6adlzq2nerrbv7trlreujuchsrkworxk@2jxzyul3o5cz>
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <7byt3iwpo5ewpxkjwh6adlzq2nerrbv7trlreujuchsrkworxk@2jxzyul3o5cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179574 [Aug 31 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;lore.kernel.org:7.1.1;127.0.0.199:7.1.2;git.kernel.org:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/08/31 14:51:00
+X-KSMG-LinksScanning: Clean, bases: 2023/08/31 14:51:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/08/31 11:36:00 #21745758
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 01:14:20PM +0800, Baolu Lu wrote:
-> On 2023/8/27 16:43, Tina Zhang wrote:
-> > diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-> > index e95b339e9cdc0..e6377cff6a935 100644
-> > --- a/drivers/iommu/intel/svm.c
-> > +++ b/drivers/iommu/intel/svm.c
-> > @@ -306,13 +306,13 @@ static int intel_svm_bind_mm(struct intel_iommu *iommu, struct device *dev,
-> >   	unsigned long sflags;
-> >   	int ret = 0;
-> > -	svm = pasid_private_find(mm->pasid);
-> > +	svm = pasid_private_find(mm_get_pasid(mm));
-> >   	if (!svm) {
-> >   		svm = kzalloc(sizeof(*svm), GFP_KERNEL);
-> >   		if (!svm)
-> >   			return -ENOMEM;
-> > -		svm->pasid = mm->pasid;
-> > +		svm->pasid = mm_get_pasid(mm);
-> >   		svm->mm = mm;
-> >   		INIT_LIST_HEAD_RCU(&svm->devs);
-> > @@ -350,7 +350,7 @@ static int intel_svm_bind_mm(struct intel_iommu *iommu, struct device *dev,
-> >   	/* Setup the pasid table: */
-> >   	sflags = cpu_feature_enabled(X86_FEATURE_LA57) ? PASID_FLAG_FL5LP : 0;
-> > -	ret = intel_pasid_setup_first_level(iommu, dev, mm->pgd, mm->pasid,
-> > +	ret = intel_pasid_setup_first_level(iommu, dev, mm->pgd, mm_get_pasid(mm),
-> >   					    FLPT_DEFAULT_DID, sflags);
-> >   	if (ret)
-> >   		goto free_sdev;
-> > @@ -364,7 +364,7 @@ static int intel_svm_bind_mm(struct intel_iommu *iommu, struct device *dev,
-> >   free_svm:
-> >   	if (list_empty(&svm->devs)) {
-> >   		mmu_notifier_unregister(&svm->notifier, mm);
-> > -		pasid_private_remove(mm->pasid);
-> > +		pasid_private_remove(mm_get_pasid(mm));
-> >   		kfree(svm);
-> >   	}
-> 
-> There is no need to use mm_get_pasid(mm) in the set_dev_pasid path. The
-> pasid has already passed as a parameter. Perhaps, pass domain and pasid
-> to intel_svm_bind_mm(), or simply merge intel_svm_bind_mm() to
-> intel_svm_set_dev_pasid()?
-> 
-> Something like below?
 
-Yes please! As a prep patch 'remove mm->pasid references from vt-d'
 
-Jason
+On 31.08.2023 18:23, Stefano Garzarella wrote:
+> Hi Arseniy,
+> 
+> On Sat, Aug 26, 2023 at 08:58:58PM +0300, Arseniy Krasnov wrote:
+>> Hello,
+>>
+>> this small patchset adds POSIX compliant behaviour on writes to the
+>> socket which was shutdowned with 'shutdown()' (both sides - local with
+>> SHUT_WR flag, peer - with SHUT_RD flag). According POSIX we must send
+>> SIGPIPE in such cases (but SIGPIPE is not send when MSG_NOSIGNAL is set).
+>>
+>> First patch is implemented in the same way as net/ipv4/tcp.c:tcp_sendmsg_locked().
+>> It uses 'sk_stream_error()' function which handles EPIPE error. Another
+>> way is to use code from net/unix/af_unix.c:unix_stream_sendmsg() where
+>> same logic from 'sk_stream_error()' is implemented "from scratch", but
+>> it doesn't check 'sk_err' field. I think error from this field has more
+>> priority to be returned from syscall. So I guess it is better to reuse
+>> currently implemented 'sk_stream_error()' function.
+>>
+>> Test is also added.
+>>
+>> Head for this patchset is:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=b38460bc463c54e0c15ff3b37e81f7e2059bb9bb
+>>
+>> Link to v1:
+>> https://lore.kernel.org/netdev/20230801141727.481156-1-AVKrasnov@sberdevices.ru/
+>>
+>> Changelog:
+>> v1 -> v2:
+>> * 0001 stills the same - SIGPIPE is sent only for SOCK_STREAM as discussed in v1
+>>   with Stefano Garzarella <sgarzare@redhat.com>.
+>> * 0002 - use 'sig_atomic_t' instead of 'bool' for flag variables updated from
+>>   signal handler.
+>>
+>> Arseniy Krasnov (2):
+>>  vsock: send SIGPIPE on write to shutdowned socket
+>>  test/vsock: shutdowned socket test
+> 
+> Thanks for this series, I fully reviewed it, LGTM!
+> 
+> Please send it targeting net-next when it reopens.
+
+Hi Stefano,
+
+Ok and thanks for review!
+
+Thanks, Arseniy
+
+> 
+> Stefano
+> 
