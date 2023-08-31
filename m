@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3733278ECD4
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A73F678ECD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345667AbjHaMOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:14:21 -0400
+        id S1346166AbjHaMOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 08:14:22 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232305AbjHaMOU (ORCPT
+        with ESMTP id S236659AbjHaMOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 31 Aug 2023 08:14:20 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89430CFE
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:14:16 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-401da71b85eso6851585e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:14:16 -0700 (PDT)
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F51CFF
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:14:18 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bccda76fb1so13951471fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:14:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1693484055; x=1694088855; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2Y280bHt32vSOMwN3pJA4Lm3adazJUGW99dZ6wwJlE0=;
-        b=HPaqQ84uCPOMimzD3RchsDOfrghM29pjwKHsftIKVPktU/z5d1G7BmbAJ6zlMYFTtV
-         YKO6G9CwHX/9bcMZWHTadU8FrhnTUhrAXqyMRxyVk5i+yqXZqM6CUXOoPmns3E+FIEGC
-         nh01YFPTDjA7YfZg2nUuWgsq0idxlV0wil/G+Ojd7o5fswEsYybEo5WpBozoSXgoyj9A
-         wR9mTVQBfIxDyCCk28xJP5VfB4JA54CHpsdPKhlNH5IdQoEm3RTZAKltg0HUKvbBCguW
-         DTbTpWLlUbRisTAIK1gMVA01ZzqSJiSL8Tika1S8Ps2XWYICW8n+iwMZ2b2URQF8r06/
-         2u0g==
+        d=9elements.com; s=google; t=1693484056; x=1694088856; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=pVsS59qilvjuc8pISvBl0xkp2xoZ2lqHu9VV6p7+8P0=;
+        b=Wbt3xwTHsd9vsWrVS0q2mpF7IzsZXOnLSP7a1nvJuML52qoWD94Nz6+cqWhqW7U4Hf
+         N1HVG1EB+cKk1TIpxJl2qlvASiceJdK1T7Pe++qMumUCE1wNFkGek7Xds3kty/x3Ls8y
+         i0QZ0AUsKpC+2W56hkpS429nWuYGomiaXQatWHxD75ZSWf79yTEZWUiNVGEFHblN2SXq
+         KcBT7iVFBOY1pEbEYaSGWdRPomovo6pQyCcJYqF0bFy8S6LGtEs3ryVS6PmhMpAMwpxX
+         ujOtm5csAyWEipUY/gU0aowjzlVBQct9IO1Kpcnw8gXe7khdw0lH3bK2mn/YPNgS4tkO
+         NAGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693484055; x=1694088855;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2Y280bHt32vSOMwN3pJA4Lm3adazJUGW99dZ6wwJlE0=;
-        b=gTslJQ1yBMbNTi3rKs81SbdRRuXx2ICroIQ7gXfUaCHE4HhsVK/xjzRGk8HqfRsU13
-         COCUcK5TXhRVNMWXE9YATeVp7i2oqjERjPHAYtgL+Xv6XU/AIL8AbYbvR7amshrBWCm2
-         NrqVSWHcFr1SycsBYLQIyqXZ7dSg2UkVe+4V/IY3G5hlHXfGjn18hxy4cQevx8hryz8A
-         EAaqgZ59wOxH2LQhvZG/v+bxDXWn5ScW8s0uPDJc7puscN2FGGwcEXv917JTEAL1i0Hc
-         nRylbw872xffQKPJyYAk2tmdT+GrniVm1H2F0OQywVvvc7GPapCdSRnbetj6aVEi7BZN
-         v4aQ==
-X-Gm-Message-State: AOJu0Yw2BwxOa5TW9NqadfAqQAfsCY5bdxggsvbunKLnpuw9hnZ/XjsZ
-        II+6hHluOtF+FzLZN2U3jQ8M3WG72OJpnah8K450Kg==
-X-Google-Smtp-Source: AGHT+IGxTlzRRZH+FJ0vMjkT9ZfqWnFBgrftiy3OxX0XiVlkI/M74GnS0gNZZTDOKAPCzy5UmARpkQ==
-X-Received: by 2002:a7b:c84b:0:b0:401:b204:3b8d with SMTP id c11-20020a7bc84b000000b00401b2043b8dmr4303382wml.27.1693484054896;
-        Thu, 31 Aug 2023 05:14:14 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693484056; x=1694088856;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pVsS59qilvjuc8pISvBl0xkp2xoZ2lqHu9VV6p7+8P0=;
+        b=l7TGnQ5f+xO2Ocp9YYWuyvp+8fOz/UvzOnSFWtmz2oP1mk5274RMuMgswtzTWvYIki
+         oQR5vo91JV8GrR5nC5E8UTfonYX0993S+wk5J/Kf65zCR7dcdVqWAKYeeQNKZBmuxY5g
+         H2FGTck3DfUJJ7QND9BhSl30bOGy98JE9LB4MaBi/0T9YKK2qnZfDhO4iwoGQBiQ7eXI
+         oissHYkM5EkivK0Jh74lC8waRZTFFtApoY5sIGLqw15fkjSlc5rUOh0T04pmRVzcHGcj
+         MqytONEfBtR1ZZMw61MTpi4bUx9npekodUCdL/wzn2PAsKY7LBKLhBvpy1suDDmZXyhB
+         YEQA==
+X-Gm-Message-State: AOJu0Yy7G481vdWvMjmVeOuSxtcA5BupjXyg+a0h7nKlJfpWKTDdS1ss
+        sQifEraoC6DJFWZH3TzB4kduvQ==
+X-Google-Smtp-Source: AGHT+IEpk7ruzwTjBkc5zX2fDA7VOac/dCyuZtj/Agm3vXUwr1FsdEx961QszJ43TV9ej4jL3fKkvQ==
+X-Received: by 2002:a2e:3109:0:b0:2bd:16e6:e34a with SMTP id x9-20020a2e3109000000b002bd16e6e34amr4165814ljx.19.1693484056105;
+        Thu, 31 Aug 2023 05:14:16 -0700 (PDT)
 Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id p9-20020a1c7409000000b003fee53feab5sm1799448wmc.10.2023.08.31.05.14.13
+        by smtp.gmail.com with ESMTPSA id p9-20020a1c7409000000b003fee53feab5sm1799448wmc.10.2023.08.31.05.14.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 05:14:14 -0700 (PDT)
+        Thu, 31 Aug 2023 05:14:15 -0700 (PDT)
 From:   Naresh Solanki <naresh.solanki@9elements.com>
 X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
 To:     broonie@kernel.org, zev@bewilderbeest.net,
         Liam Girdwood <lgirdwood@gmail.com>
 Cc:     Naresh Solanki <Naresh.Solanki@9elements.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] regulator: Add uapi header
-Date:   Thu, 31 Aug 2023 14:14:08 +0200
-Message-ID: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
+Subject: [PATCH 2/3] regulator: userspace-consumer: Add regulator event support
+Date:   Thu, 31 Aug 2023 14:14:09 +0200
+Message-ID: <20230831121412.2359239-2-Naresh.Solanki@9elements.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
+References: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -70,141 +73,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add UAPI header for regulator.
-Include regulator events in the header.
+Add sysfs attribute to track regulator events received from regulator
+notifier block handler.
 
 Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 ---
- include/linux/regulator/consumer.h | 47 +--------------------------
- include/uapi/linux/regulator.h     | 52 ++++++++++++++++++++++++++++++
- 2 files changed, 53 insertions(+), 46 deletions(-)
- create mode 100644 include/uapi/linux/regulator.h
+ drivers/regulator/userspace-consumer.c | 54 +++++++++++++++++++++++++-
+ 1 file changed, 53 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
-index 39b666b40ea6..fb65cf35beca 100644
---- a/include/linux/regulator/consumer.h
-+++ b/include/linux/regulator/consumer.h
-@@ -33,6 +33,7 @@
+diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
+index 97f075ed68c9..a936661d99cd 100644
+--- a/drivers/regulator/userspace-consumer.c
++++ b/drivers/regulator/userspace-consumer.c
+@@ -29,6 +29,10 @@ struct userspace_consumer_data {
  
- #include <linux/err.h>
- #include <linux/suspend.h>
-+#include <uapi/linux/regulator.h>
+ 	int num_supplies;
+ 	struct regulator_bulk_data *supplies;
++
++	struct kobject *kobj;
++	struct notifier_block nb;
++	unsigned long events;
+ };
  
- struct device;
- struct notifier_block;
-@@ -84,52 +85,6 @@ struct regulator_dev;
- #define REGULATOR_MODE_IDLE			0x4
- #define REGULATOR_MODE_STANDBY			0x8
+ static ssize_t name_show(struct device *dev,
+@@ -89,12 +93,30 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
+ 	return count;
+ }
  
--/*
-- * Regulator notifier events.
-- *
-- * UNDER_VOLTAGE  Regulator output is under voltage.
-- * OVER_CURRENT   Regulator output current is too high.
-- * REGULATION_OUT Regulator output is out of regulation.
-- * FAIL           Regulator output has failed.
-- * OVER_TEMP      Regulator over temp.
-- * FORCE_DISABLE  Regulator forcibly shut down by software.
-- * VOLTAGE_CHANGE Regulator voltage changed.
-- *                Data passed is old voltage cast to (void *).
-- * DISABLE        Regulator was disabled.
-- * PRE_VOLTAGE_CHANGE   Regulator is about to have voltage changed.
-- *                      Data passed is "struct pre_voltage_change_data"
-- * ABORT_VOLTAGE_CHANGE Regulator voltage change failed for some reason.
-- *                      Data passed is old voltage cast to (void *).
-- * PRE_DISABLE    Regulator is about to be disabled
-- * ABORT_DISABLE  Regulator disable failed for some reason
-- *
-- * NOTE: These events can be OR'ed together when passed into handler.
-- */
--
--#define REGULATOR_EVENT_UNDER_VOLTAGE		0x01
--#define REGULATOR_EVENT_OVER_CURRENT		0x02
--#define REGULATOR_EVENT_REGULATION_OUT		0x04
--#define REGULATOR_EVENT_FAIL			0x08
--#define REGULATOR_EVENT_OVER_TEMP		0x10
--#define REGULATOR_EVENT_FORCE_DISABLE		0x20
--#define REGULATOR_EVENT_VOLTAGE_CHANGE		0x40
--#define REGULATOR_EVENT_DISABLE			0x80
--#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE	0x100
--#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE	0x200
--#define REGULATOR_EVENT_PRE_DISABLE		0x400
--#define REGULATOR_EVENT_ABORT_DISABLE		0x800
--#define REGULATOR_EVENT_ENABLE			0x1000
--/*
-- * Following notifications should be emitted only if detected condition
-- * is such that the HW is likely to still be working but consumers should
-- * take a recovery action to prevent problems esacalating into errors.
-- */
--#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
--#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
--#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
--#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
--#define REGULATOR_EVENT_WARN_MASK		0x1E000
--
- /*
-  * Regulator errors that can be queried using regulator_get_error_flags
-  *
-diff --git a/include/uapi/linux/regulator.h b/include/uapi/linux/regulator.h
-new file mode 100644
-index 000000000000..d5f94a301841
---- /dev/null
-+++ b/include/uapi/linux/regulator.h
-@@ -0,0 +1,52 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
++static DEFINE_SPINLOCK(events_lock);
 +
-+#ifndef __UAPI_LINUX_REGULATOR_CONSUMER_H_
-+#define __UAPI_LINUX_REGULATOR_CONSUMER_H_
++static ssize_t events_show(struct device *dev,
++			   struct device_attribute *attr, char *buf)
++{
++	struct userspace_consumer_data *data = dev_get_drvdata(dev);
++	unsigned long e;
 +
-+/*
-+ * Regulator notifier events.
-+ *
-+ * UNDER_VOLTAGE  Regulator output is under voltage.
-+ * OVER_CURRENT   Regulator output current is too high.
-+ * REGULATION_OUT Regulator output is out of regulation.
-+ * FAIL           Regulator output has failed.
-+ * OVER_TEMP      Regulator over temp.
-+ * FORCE_DISABLE  Regulator forcibly shut down by software.
-+ * VOLTAGE_CHANGE Regulator voltage changed.
-+ *                Data passed is old voltage cast to (void *).
-+ * DISABLE        Regulator was disabled.
-+ * PRE_VOLTAGE_CHANGE   Regulator is about to have voltage changed.
-+ *                      Data passed is "struct pre_voltage_change_data"
-+ * ABORT_VOLTAGE_CHANGE Regulator voltage change failed for some reason.
-+ *                      Data passed is old voltage cast to (void *).
-+ * PRE_DISABLE    Regulator is about to be disabled
-+ * ABORT_DISABLE  Regulator disable failed for some reason
-+ *
-+ * NOTE: These events can be OR'ed together when passed into handler.
-+ */
++	spin_lock(&events_lock);
++	e = data->events;
++	data->events = 0;
++	spin_unlock(&events_lock);
 +
-+#define REGULATOR_EVENT_UNDER_VOLTAGE		0x01
-+#define REGULATOR_EVENT_OVER_CURRENT		0x02
-+#define REGULATOR_EVENT_REGULATION_OUT		0x04
-+#define REGULATOR_EVENT_FAIL			0x08
-+#define REGULATOR_EVENT_OVER_TEMP		0x10
-+#define REGULATOR_EVENT_FORCE_DISABLE		0x20
-+#define REGULATOR_EVENT_VOLTAGE_CHANGE		0x40
-+#define REGULATOR_EVENT_DISABLE			0x80
-+#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE	0x100
-+#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE	0x200
-+#define REGULATOR_EVENT_PRE_DISABLE		0x400
-+#define REGULATOR_EVENT_ABORT_DISABLE		0x800
-+#define REGULATOR_EVENT_ENABLE			0x1000
-+/*
-+ * Following notifications should be emitted only if detected condition
-+ * is such that the HW is likely to still be working but consumers should
-+ * take a recovery action to prevent problems esacalating into errors.
-+ */
-+#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
-+#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
-+#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
-+#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
-+#define REGULATOR_EVENT_WARN_MASK		0x1E000
++	return sprintf(buf, "0x%lx\n", e);
++}
 +
-+#endif
-
-base-commit: 35d0d2350d774fecf596cfb2fb050559fe5e1850
+ static DEVICE_ATTR_RO(name);
+ static DEVICE_ATTR_RW(state);
++static DEVICE_ATTR_RO(events);
+ 
+ static struct attribute *attributes[] = {
+ 	&dev_attr_name.attr,
+ 	&dev_attr_state.attr,
++	&dev_attr_events.attr,
+ 	NULL,
+ };
+ 
+@@ -115,12 +137,30 @@ static const struct attribute_group attr_group = {
+ 	.is_visible =  attr_visible,
+ };
+ 
++static int regulator_userspace_notify(struct notifier_block *nb,
++				      unsigned long event,
++				      void *ignored)
++{
++	struct userspace_consumer_data *data =
++		container_of(nb, struct userspace_consumer_data, nb);
++	static const char * const *envp[] = { "NAME=events", NULL };
++
++	spin_lock(&events_lock);
++	data->events |= event;
++	spin_unlock(&events_lock);
++
++	sysfs_notify(data->kobj, NULL, dev_attr_events.attr.name);
++	kobject_uevent_env(data->kobj, KOBJ_CHANGE, envp);
++
++	return NOTIFY_OK;
++}
++
+ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+ {
+ 	struct regulator_userspace_consumer_data tmpdata;
+ 	struct regulator_userspace_consumer_data *pdata;
+ 	struct userspace_consumer_data *drvdata;
+-	int ret;
++	int i, ret;
+ 
+ 	pdata = dev_get_platdata(&pdev->dev);
+ 	if (!pdata) {
+@@ -153,6 +193,7 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+ 	drvdata->num_supplies = pdata->num_supplies;
+ 	drvdata->supplies = pdata->supplies;
+ 	drvdata->no_autoswitch = pdata->no_autoswitch;
++	drvdata->kobj = &pdev->dev.kobj;
+ 
+ 	mutex_init(&drvdata->lock);
+ 
+@@ -186,6 +227,13 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+ 	}
+ 	drvdata->enabled = !!ret;
+ 
++	drvdata->nb.notifier_call = regulator_userspace_notify;
++	for (i = 0; i < drvdata->num_supplies; i++) {
++		ret = devm_regulator_register_notifier(drvdata->supplies[i].consumer, &drvdata->nb);
++		if (ret)
++			goto err_enable;
++	}
++
+ 	return 0;
+ 
+ err_enable:
+@@ -197,6 +245,10 @@ static int regulator_userspace_consumer_probe(struct platform_device *pdev)
+ static int regulator_userspace_consumer_remove(struct platform_device *pdev)
+ {
+ 	struct userspace_consumer_data *data = platform_get_drvdata(pdev);
++	int i;
++
++	for (i = 0; i < data->num_supplies; i++)
++		devm_regulator_unregister_notifier(data->supplies[i].consumer, &data->nb);
+ 
+ 	sysfs_remove_group(&pdev->dev.kobj, &attr_group);
+ 
 -- 
 2.41.0
 
