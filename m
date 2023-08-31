@@ -2,88 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFF3878EE1D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:09:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43D5278EE2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345247AbjHaNJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
+        id S232659AbjHaNKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230368AbjHaNJM (ORCPT
+        with ESMTP id S232913AbjHaNKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:09:12 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A131A4;
-        Thu, 31 Aug 2023 06:09:08 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VCeiMC027349;
-        Thu, 31 Aug 2023 13:08:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=OwzPjGSLhqM1CWMZJdC21er6tHXS2yZCDBB1mbhXGA0=;
- b=X/pyhYC9ho/T+ZALC+tXk/X9xREEDCZ3quHyTtYFR+j/GilEHV0T1yPg3fIxPneYtjz6
- rUoW2Ec9riIvn/1YGP6juSaFwS9FIHyfcFre9A5JpRs9Xf3od3BODwvVlbTae2SVoVzn
- AwMMHai3DUfPXKdbSGFVQrzL1lAThD/5y2ypDdx8kWWSzBLXiUuLAQR8owQr4K+Yc+X6
- KZBlmEzjtF6U3VtckGZ6lS4i7Y6lgpet9YMLBAtn9QYKYIcSZax78sajTuCJ2VPVv9N8
- 4KqNTvO54hBdzaF1+lZ7DZKKhQsG324/erE8pRH01HMaOKBXSEWthBH+jpOE5urYz2hY dQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3str1ngehn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 13:08:12 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VD8Bvp008094
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 13:08:11 GMT
-Received: from [10.201.3.91] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 31 Aug
- 2023 06:08:04 -0700
-Message-ID: <36103bcd-fd4e-4a1a-b65e-238f6b63544c@quicinc.com>
-Date:   Thu, 31 Aug 2023 18:38:01 +0530
+        Thu, 31 Aug 2023 09:10:20 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A382BC;
+        Thu, 31 Aug 2023 06:10:17 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 1EC09B8229B;
+        Thu, 31 Aug 2023 13:10:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE6DAC433CA;
+        Thu, 31 Aug 2023 13:10:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693487414;
+        bh=Tx7w8FI/pLlA3uFq5GwLia/GR2hgOf2fgjsGhZzl+sk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iGIOjWFaoc2o3+D9pAiu+tKS35mKl+S0jaHg8kypiV3yFq21+2GVITjISQhWfpAdv
+         bCcRVTXC++Bq4bS/DAS9XrufWeAlZf2Z50hk/OFSA35ImHW9DBOmxOEwrl/m/BmpkM
+         9JveujHt2tgFXJjAiqLHHXP5lvXIKa+o6txV7VcCQN8qEnP6WAMnbiUlfU9KjpZ5tr
+         YCKbxu71rqllAEenrYcz/5UKmN2n+DVJm0UHlFflCh5sIdP4j7KIOCfHFVJ+XdfFTD
+         rDByGBAUoq+TwyJkqDDPbYuC+W2PsII4MlqFItMcYoshcRexmdKL+gG55NqyXn8W1X
+         h9Ot5ry6gTl+w==
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6bcade59b24so692956a34.0;
+        Thu, 31 Aug 2023 06:10:14 -0700 (PDT)
+X-Gm-Message-State: AOJu0YzeH3h4OxsxfGVO42ZgqsV7r0pqSmQjKzTUrghg0huT+GEbPXte
+        KfcwZtgJhGpQpE9Anlvy3btH4foE/HGW53AUzwI=
+X-Google-Smtp-Source: AGHT+IG8i3WbP148tu9tcR8zh6tpPXpF5XXUrFtO3K953V/IifgX01VT9BiDyttjPL/yAvgZZMXCRFBxgo8FSTUsb7I=
+X-Received: by 2002:a05:6830:606:b0:6bd:bba9:2d63 with SMTP id
+ w6-20020a056830060600b006bdbba92d63mr5298073oti.9.1693487413878; Thu, 31 Aug
+ 2023 06:10:13 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/9] phy: qcom: uniphy: Rename ipq4019 USB phy driver to
- UNIPHY driver
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <robert.marko@sartura.hr>, <luka.perkov@sartura.hr>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
-        <will@kernel.org>, <p.zabel@pengutronix.de>, <arnd@arndb.de>,
-        <geert+renesas@glider.be>, <nfraprado@collabora.com>,
-        <rafal@milecki.pl>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
-CC:     <quic_varada@quicinc.com>
-References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com>
- <20230829135818.2219438-3-quic_ipkumar@quicinc.com>
- <d30742d6-7fe2-c5fe-ac42-86642acc076e@linaro.org>
-From:   Praveenkumar I <quic_ipkumar@quicinc.com>
-In-Reply-To: <d30742d6-7fe2-c5fe-ac42-86642acc076e@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: dJH7yNdDb4WX9KE1xtrsPdKLIgklPI7U
-X-Proofpoint-ORIG-GUID: dJH7yNdDb4WX9KE1xtrsPdKLIgklPI7U
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_11,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxlogscore=993 spamscore=0 malwarescore=0 priorityscore=1501
- suspectscore=0 adultscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310117
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+References: <20230825-strncpy-habanalabs-combined-v1-1-daa05a89b7e3@google.com>
+ <202308251513.0F6BF9FEE6@keescook>
+In-Reply-To: <202308251513.0F6BF9FEE6@keescook>
+From:   Oded Gabbay <ogabbay@kernel.org>
+Date:   Thu, 31 Aug 2023 16:09:47 +0300
+X-Gmail-Original-Message-ID: <CAFCwf12yWnz6wP+3Th=QiTkeMhiPjn6c4sg2b3-2fE55w3pyEQ@mail.gmail.com>
+Message-ID: <CAFCwf12yWnz6wP+3Th=QiTkeMhiPjn6c4sg2b3-2fE55w3pyEQ@mail.gmail.com>
+Subject: Re: [PATCH] accel/habanalabs: refactor deprecated strncpy to strscpy_pad
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Justin Stitt <justinstitt@google.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,72 +67,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Aug 26, 2023 at 1:13=E2=80=AFAM Kees Cook <keescook@chromium.org> w=
+rote:
+>
+> On Fri, Aug 25, 2023 at 10:09:51PM +0000, Justin Stitt wrote:
+> > `strncpy` is deprecated for use on NUL-terminated destination strings [=
+1].
+> >
+> > We see that `prop->cpucp_info.card_name` is supposed to be
+> > NUL-terminated based on its usage within `__hwmon_device_register()`
+> > (wherein it's called "name"):
+> > |     if (name && (!strlen(name) || strpbrk(name, "-* \t\n")))
+> > |             dev_warn(dev,
+> > |                      "hwmon: '%s' is not a valid name attribute, plea=
+se fix\n",
+> > |                      name);
+> >
+> > A suitable replacement is `strscpy_pad` [2] due to the fact that it
+> > guarantees both NUL-termination and NUL-padding on its destination
+> > buffer.
+> >
+> > NUL-padding on `prop->cpucp_info.card_name` is not strictly necessary a=
+s
+> > `hdev->prop` is explicitly zero-initialized but should be used
+> > regardless as it gets copied out to userspace directly -- as per Kees' =
+suggestion.
+> >
+> > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on=
+-nul-terminated-strings[1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+.html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+>
+> Thanks for the consolidation and refresh. :)
+>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+>
+> --
+> Kees Cook
+Pushed to habanalabs-next-6.7
 
-On 8/29/2023 10:25 PM, Krzysztof Kozlowski wrote:
-> On 29/08/2023 15:58, Praveenkumar I wrote:
->> UNIPHY / Combo PHY used on various qualcomm SoC's are very similar to
->> ipq4019 PHY. Hence renaming this driver to uniphy driver and can be
->> used for other SoC's which are having the similar UNIPHY.
->>
->> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
->> ---
->>   MAINTAINERS                                                | 7 ++++---
->>   drivers/phy/qualcomm/Kconfig                               | 7 ++++---
->>   drivers/phy/qualcomm/Makefile                              | 2 +-
->>   .../qualcomm/{phy-qcom-ipq4019-usb.c => phy-qcom-uniphy.c} | 0
->>   4 files changed, 9 insertions(+), 7 deletions(-)
->>   rename drivers/phy/qualcomm/{phy-qcom-ipq4019-usb.c => phy-qcom-uniphy.c} (100%)
->>
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index ff1f273b4f36..7f4553c1a69a 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -17774,13 +17774,14 @@ F:	Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
->>   F:	drivers/mailbox/qcom-ipcc.c
->>   F:	include/dt-bindings/mailbox/qcom-ipcc.h
->>   
->> -QUALCOMM IPQ4019 USB PHY DRIVER
->> +QUALCOMM UNIPHY DRIVER
->>   M:	Robert Marko <robert.marko@sartura.hr>
->>   M:	Luka Perkov <luka.perkov@sartura.hr>
->> +M:	Praveenkumar I <quic_ipkumar@quicinc.com>
->>   L:	linux-arm-msm@vger.kernel.org
->>   S:	Maintained
->> -F:	Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
->> -F:	drivers/phy/qualcomm/phy-qcom-ipq4019-usb.c
->> +F:	Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
-> You broke the path in your previous commit, but anyway this will go away.
->
->> +F:	drivers/phy/qualcomm/phy-qcom-uniphy.c
->>   
->>   QUALCOMM IPQ4019 VQMMC REGULATOR DRIVER
->>   M:	Robert Marko <robert.marko@sartura.hr>
->> diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
->> index d891058b7c39..e6981bc212b3 100644
->> --- a/drivers/phy/qualcomm/Kconfig
->> +++ b/drivers/phy/qualcomm/Kconfig
->> @@ -28,12 +28,13 @@ config PHY_QCOM_EDP
->>   	  Enable this driver to support the Qualcomm eDP PHY found in various
->>   	  Qualcomm chipsets.
->>   
->> -config PHY_QCOM_IPQ4019_USB
->> -	tristate "Qualcomm IPQ4019 USB PHY driver"
->> +config PHY_QCOM_UNIPHY
->> +	tristate "Qualcomm UNIPHY driver"
->>   	depends on OF && (ARCH_QCOM || COMPILE_TEST)
->>   	select GENERIC_PHY
->>   	help
->> -	  Support for the USB PHY-s on Qualcomm IPQ40xx SoC-s.
->> +	  Enable this driver to support the Qualcomm UNIPHY found in various
->> +	  Qualcomm chipsets.
-> I don't quite get why this is renamed, either. Just because you re-use
-> it? Re-usage is not affected with old name...
-Understood. As suggested by Dmitry Baryshkov, will add new driver for 
-Qualcomm IPQ5332 USB Gen3
-PHY driver.
-
-- Praveenkumar
->
-> Best regards,
-> Krzysztof
->
+Thanks for the patch,
+Oded.
