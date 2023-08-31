@@ -2,71 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2890278E537
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D144478E53D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 06:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239914AbjHaD7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 23:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36908 "EHLO
+        id S1343837AbjHaEE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 00:04:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbjHaD7i (ORCPT
+        with ESMTP id S242143AbjHaEEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 23:59:38 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36C2CC2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:59:35 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4cbso374740a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:59:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693454374; x=1694059174; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=32Wr8NYu6HSmc0mkG+FLn0sx5HN2+FhcGiqyKWtv7y8=;
-        b=htestwlF5DdghKeMk3UrzsnxUWcimyGZy/IP4Q7RFYb6UbMedUrtqJVYqc5ISvSih7
-         Vb4oBmZ/wFofHnzn4DdcW5c926kq1S/ajvZF3A3/kdZ+6CQ4tQHnpmz/FMsb3NkCRFgv
-         Y+mte31bn0vurt2OIS6BnoCVBG+8c+H+IoChA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693454374; x=1694059174;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=32Wr8NYu6HSmc0mkG+FLn0sx5HN2+FhcGiqyKWtv7y8=;
-        b=hVP+QrVrUf+ECLLzIuebsisvIpB1viqhFunXu7kn+5ukMXal5cb5KvH9m0sWPHIbYl
-         unGpJlbVSAnJQH39LPlRWhhtG6L7SyyRRq3bkQI5zXbShKMDiebSMhSCJ/CvMXfh78Gd
-         DIbLvBalvKq5ADboQdu8GT2MkzFYa6qmuulYIgJM90MlMDQgKsloHngZEphvq7yeduO1
-         XeOed1KSEJAYaLDigL5fXW7uLuGiU41FgLdGromE0+TeEdB4q30IjsQEzFiWQmcgaJrd
-         EHy21k0MPSaF8gsZIVGrVxmUC66LPxTdNpSrQQGW7thpeltcGOqJaVW+93liThF7T6sW
-         PGWg==
-X-Gm-Message-State: AOJu0YzIwoN1AdLYJPTOOlJw78HMfgTjmIqF8mD9aekypMzZM1JeKMkE
-        QFgRIEwtCH1bVTya1ZbhkrqtX4YV4HVxRmlP45tE7Q==
-X-Google-Smtp-Source: AGHT+IFMcBnrdnctyby/Y7nXXS7QhE+vs2TBoiDjsvnehzDJvzPdYcPkxdYj/rt8Ms3ZNtDcFCFQew==
-X-Received: by 2002:a17:906:c110:b0:9a4:dd49:da41 with SMTP id do16-20020a170906c11000b009a4dd49da41mr4103797ejc.76.1693454373891;
-        Wed, 30 Aug 2023 20:59:33 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id u23-20020a170906951700b0099d0a8ccb5fsm266977ejx.152.2023.08.30.20.59.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 20:59:33 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-9936b3d0286so36901366b.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:59:33 -0700 (PDT)
-X-Received: by 2002:a17:907:7844:b0:9a5:c4ae:9fec with SMTP id
- lb4-20020a170907784400b009a5c4ae9fecmr3151324ejc.52.1693454372889; Wed, 30
- Aug 2023 20:59:32 -0700 (PDT)
+        Thu, 31 Aug 2023 00:04:51 -0400
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFDDA3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 21:04:49 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RbncJ0hVkz4x2W;
+        Thu, 31 Aug 2023 14:04:48 +1000 (AEST)
+From:   Michael Ellerman <patch-notifications@ellerman.id.au>
+To:     gregkh@linuxfoundation.org, mirimmad@outlook.com
+Cc:     Immad Mir <mirimmad17@gmail.com>,
+        Ivan Orlov <ivan.orlov0322@gmail.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+In-Reply-To: <CY5PR12MB64553EE96EBB3927311DB598C6459@CY5PR12MB6455.namprd12.prod.outlook.com>
+References: <CY5PR12MB64553EE96EBB3927311DB598C6459@CY5PR12MB6455.namprd12.prod.outlook.com>
+Subject: Re: [PATCH] powerpc: fix debugfs_create_dir error checking
+Message-Id: <169345455026.11824.17837854226293688534.b4-ty@ellerman.id.au>
+Date:   Thu, 31 Aug 2023 14:02:30 +1000
 MIME-Version: 1.0
-References: <ZO/Te6LU1ENf58ZW@nvidia.com>
-In-Reply-To: <ZO/Te6LU1ENf58ZW@nvidia.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 30 Aug 2023 20:59:15 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg_L-97_06_ruO7xL7vxX4QpaqGQKw-6LtKAR_CB1cyYw@mail.gmail.com>
-Message-ID: <CAHk-=wg_L-97_06_ruO7xL7vxX4QpaqGQKw-6LtKAR_CB1cyYw@mail.gmail.com>
-Subject: Re: [GIT PULL] Please pull IOMMUFD subsystem changes
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     iommu@lists.linux.dev, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,30 +45,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Aug 2023 at 16:40, Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> This includes a shared branch with VFIO:
->
->  - Enhance VFIO_DEVICE_GET_PCI_HOT_RESET_INFO so it can work with iommufd
->    FDs, not just group FDs. [...]
+On Sun, 28 May 2023 13:16:44 +0530, mirimmad@outlook.com wrote:
+> The debugfs_create_dir returns ERR_PTR incase of an error and the
+> correct way of checking it by using the IS_ERR inline function, and
+> not the simple null comparision. This patch fixes this.
+> 
+> 
 
-So because I had pulled the vfio changes independently with their own
-merge message, I ended up editing out all the commentary you had about
-the vfio side of the changes.
+Applied to powerpc/next.
 
-Which is kind of sad, since you arguably put some more information and
-effort into it than Alex had done in his vfio pull request. But the
-vfio parts just weren't part of the merge any more.
+[1/1] powerpc: fix debugfs_create_dir error checking
+      https://git.kernel.org/powerpc/c/429356fac0440b962aaa6d3688709813a21dd122
 
-I did put a link to your pull request in the commit, so people can
-find this info, but I thought I'd mention how I ruthlessly edited down
-the merge commit message to just the parts that were new to the merge.
-
-I appreciate the extra background, even if I then decided that by the
-time I merged your part, some of it was "old news" and not actually
-about what I merged when I pulled your branch.
-
-.. and if I had realized when I merged the vfio parts, I probably
-could have added your commentary to that merge. Oh well.
-
-                  Linus
+cheers
