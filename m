@@ -2,36 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D144478E53D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 06:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 216F778E539
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 06:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343837AbjHaEE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 00:04:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242143AbjHaEEv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S240235AbjHaEEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 31 Aug 2023 00:04:51 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BFDDA3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 21:04:49 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52074 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232889AbjHaEEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 31 Aug 2023 00:04:50 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6BDD95
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 21:04:47 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RbncJ0hVkz4x2W;
-        Thu, 31 Aug 2023 14:04:48 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RbncG10wsz4wy4;
+        Thu, 31 Aug 2023 14:04:46 +1000 (AEST)
 From:   Michael Ellerman <patch-notifications@ellerman.id.au>
-To:     gregkh@linuxfoundation.org, mirimmad@outlook.com
-Cc:     Immad Mir <mirimmad17@gmail.com>,
-        Ivan Orlov <ivan.orlov0322@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-In-Reply-To: <CY5PR12MB64553EE96EBB3927311DB598C6459@CY5PR12MB6455.namprd12.prod.outlook.com>
-References: <CY5PR12MB64553EE96EBB3927311DB598C6459@CY5PR12MB6455.namprd12.prod.outlook.com>
-Subject: Re: [PATCH] powerpc: fix debugfs_create_dir error checking
-Message-Id: <169345455026.11824.17837854226293688534.b4-ty@ellerman.id.au>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kernel test robot <lkp@intel.com>
+In-Reply-To: <5e0f97d5cbcd05238b56b4424ab096468296824d.1692684461.git.christophe.leroy@csgroup.eu>
+References: <5e0f97d5cbcd05238b56b4424ab096468296824d.1692684461.git.christophe.leroy@csgroup.eu>
+Subject: Re: [PATCH] powerpc/64e: Fix circular dependency with CONFIG_SMP disabled
+Message-Id: <169345455027.11824.17933728050023011677.b4-ty@ellerman.id.au>
 Date:   Thu, 31 Aug 2023 14:02:30 +1000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -45,16 +43,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 28 May 2023 13:16:44 +0530, mirimmad@outlook.com wrote:
-> The debugfs_create_dir returns ERR_PTR incase of an error and the
-> correct way of checking it by using the IS_ERR inline function, and
-> not the simple null comparision. This patch fixes this.
+On Tue, 22 Aug 2023 08:07:50 +0200, Christophe Leroy wrote:
+> asm/percpu.h includes asm/paca.h which needs struct tlb_core_data
+> which is defined in mmu-e500.h
 > 
+> asm/percpu.h is included from asm/mmu.h in a #ifdef CONFIG_E500
+> before the inclusion of mmu-e500.h
 > 
+> To fix that, move the inclusion of asm/percpu.h into mmu-e500.h
+> after the definition of struct tlb_core_data
+> 
+> [...]
 
 Applied to powerpc/next.
 
-[1/1] powerpc: fix debugfs_create_dir error checking
-      https://git.kernel.org/powerpc/c/429356fac0440b962aaa6d3688709813a21dd122
+[1/1] powerpc/64e: Fix circular dependency with CONFIG_SMP disabled
+      https://git.kernel.org/powerpc/c/0e2a34c467a0de2b0309d033e2700ce608e3fbf4
 
 cheers
