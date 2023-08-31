@@ -2,67 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0482F78F4E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64B5D78F4E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347640AbjHaVxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 17:53:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33088 "EHLO
+        id S1345735AbjHaV4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 17:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbjHaVxI (ORCPT
+        with ESMTP id S229634AbjHaV4D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 17:53:08 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22DA31B0;
-        Thu, 31 Aug 2023 14:53:05 -0700 (PDT)
-Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: marex@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 06A6286146;
-        Thu, 31 Aug 2023 23:53:02 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693518783;
-        bh=7zNiAYmjqejwICsTZJq3BxAP06RQWgh69LgCsjNl+Lc=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=uRx7kevIBzaKZHWDa6nk1U95Zv0YF9lq3NYfR21MkcUKxm9SGs2+9OEKa4mlsnSxx
-         Uv1ZgDJ06E4T6qL/KtM8Xf8O7qTviC/0w52I85/NwvasIUO7zJianktiaqRr2ggJHU
-         m4fRDcuG0dzJ9hE9uvAhNDjJvfEYFl8JZT8v0V1do1oQUAnQka3oa+YJAol5Vzafrw
-         BHrEk7zGzyXUH/RKr6tJ2ygnMwvgu7jCbbWRZJaMNXR8AoXgN7sktahRo6moKCxV1B
-         IMllStmHtrXxEmk5A07wpVHCv4ABWenJgVyfcEEwGzcwNw20eLXb+E56lMpqlFE4ln
-         3OfBfQQu3enEQ==
-Message-ID: <4d700304-3e10-a19b-d3f0-d0a1aec11580@denx.de>
-Date:   Thu, 31 Aug 2023 23:53:02 +0200
+        Thu, 31 Aug 2023 17:56:03 -0400
+Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E02B8
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:55:58 -0700 (PDT)
+Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1b88decb2a9so27062235ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:55:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693518958; x=1694123758;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WlgV8wrYCLE7nM5q2YQjmftKxu1TXPg1tFkhluAyzHI=;
+        b=cA8dhekGHcQr0kJfpbHsdcWswZk1Kwg8Kvw1MV4pNqUorBa3wO8UbCTxlmbKX90kjZ
+         zjqvhAmbNc2PB5gcz1WOPLiKCOf2Vto+oSOA4A4uQf6jlnakDBKkNeEwp1uOSsuJyNso
+         w5g3P9IQj1Fm0XoWH63QRpGn2hTxztlXeZWpIuy9T60diDZWlQDD9v6FHK52TXUd3XEJ
+         5MrOwinuvGi5ROJmQ9YGWi9va/u3G6Uof+2CtwJHf0T7P/H02lhYqOoR5vxiwVNYo97I
+         Dq1QgQ07MuYRElBuxJifhNnSQ9gT5YOjfHE3MBV3/EIY9rEy5YIW26aBeaN1DQMKUJYt
+         XjDA==
+X-Gm-Message-State: AOJu0Yw47NUBXs0mzneGIO7RTi24ihJ2xYSiQTPPkSYRYqtC4VpAQVLM
+        tXD1ZqB4Huk+KTRCZbr/za6Plk8+Z5psSq+6JsmeyN1TWPCT
+X-Google-Smtp-Source: AGHT+IEMa+7OoF8rPhRMSuOTOd+TToApfjLKNhg9gHUwCviU0tWvzFBAbQcDYmm1Ay4GzZXxEXRwq4u9ure6IfJf2IG9pgg94w+/
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH V3 2/3] arm64: dts: imx8mp: Add micfil node
-Content-Language: en-US
-To:     Adam Ford <aford173@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-References: <20230831044431.250338-1-aford173@gmail.com>
- <20230831044431.250338-2-aford173@gmail.com>
-From:   Marek Vasut <marex@denx.de>
-In-Reply-To: <20230831044431.250338-2-aford173@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a17:902:ec88:b0:1bc:7312:78e0 with SMTP id
+ x8-20020a170902ec8800b001bc731278e0mr188385plg.6.1693518958158; Thu, 31 Aug
+ 2023 14:55:58 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 14:55:58 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ebea2b06043f1b1f@google.com>
+Subject: [syzbot] [reiserfs?] BUG: unable to handle kernel paging request in __raw_callee_save___kvm_vcpu_is_preempted
+From:   syzbot <syzbot+1f1de29389f950944703@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,43 +54,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/23 06:44, Adam Ford wrote:
-> The i.MX8MP has a micfil controller which is used for interfacing
-> with a pulse density microphone. Add the node and mark it as
-> disabled by default.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
-> V3:  The AUDIOMIX_PDM_ROOT doesn't exist and the real clock is
->       called IMX8MP_CLK_AUDIOMIX_PDM_SEL, so swap it out.
-> 
-> V2:  No change
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> index 3167706d81e1..341fd0369ce9 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> @@ -1479,6 +1479,27 @@ easrc: easrc@30c90000 {
->   					fsl,asrc-format = <2>;
->   					status = "disabled";
->   				};
-> +
-> +				micfil: audio-controller@30ca0000 {
-> +					compatible = "fsl,imx8mp-micfil";
-> +					reg = <0x30ca0000 0x10000>;
-> +					#sound-dai-cells = <0>;
-> +					interrupts = <GIC_SPI 109 IRQ_TYPE_LEVEL_HIGH>,
-> +						     <GIC_SPI 110 IRQ_TYPE_LEVEL_HIGH>,
-> +						     <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>,
-> +						     <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
-> +					clocks = <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_PDM_IPG>,
-> +						 <&audio_blk_ctrl IMX8MP_CLK_AUDIOMIX_PDM_SEL>,
-> +						 <&clk IMX8MP_AUDIO_PLL1_OUT>,
-> +						 <&clk IMX8MP_AUDIO_PLL2_OUT>,
-> +						 <&clk IMX8MP_CLK_EXT3>;
-> +					clock-names = "ipg_clk", "ipg_clk_app",
-> +						      "pll8k", "pll11k", "clkext3";
-> +					dmas = <&sdma2 24 25 0x80000000>;
-> +					dma-names = "rx";
+Hello,
 
-Is dma-names really required if there is only a single DMA channel in DT ?
+syzbot found the following issue on:
+
+HEAD commit:    b97d64c72259 Merge tag '6.6-rc-smb3-client-fixes-part1' of..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14b1212fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=958c1fdc38118172
+dashboard link: https://syzkaller.appspot.com/bug?extid=1f1de29389f950944703
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/99875b49c50b/disk-b97d64c7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5bcacc1a3f5b/vmlinux-b97d64c7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/e2fe9c8de38a/bzImage-b97d64c7.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1f1de29389f950944703@syzkaller.appspotmail.com
+
+loop3: detected capacity change from 0 to 1024
+BUG: unable to handle page fault for address: 000000078ccae8f8
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+PGD 83d20067 P4D 83d20067 PUD 0 
+Oops: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 31278 Comm: syz-executor.3 Not tainted 6.5.0-syzkaller-08894-gb97d64c72259 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:__raw_callee_save___kvm_vcpu_is_preempted+0x4/0x20
+Code: 21 10 01 c0 be 03 00 00 00 e8 c8 ea 36 03 bf 21 10 01 c0 be 0e 00 00 00 e9 b9 ea 36 03 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa <48> 8b 04 fd 00 e9 ca 8c 80 b8 d0 83 02 00 00 0f 95 c0 c3 66 0f 1f
+RSP: 0018:ffffc90015d2f560 EFLAGS: 00010286
+RAX: 1ffffffff1a3373f RBX: ffff888030204028 RCX: ffffffff816ba91d
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: 00000000ffffffff
+RBP: 00000000ffffffff R08: ffff88803020402f R09: 1ffff11006040805
+R10: dffffc0000000000 R11: ffffed1006040806 R12: ffff88802b268014
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f5de3a856c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000078ccae8f8 CR3: 000000002f2a1000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ pv_vcpu_is_preempted arch/x86/include/asm/paravirt.h:608 [inline]
+ vcpu_is_preempted arch/x86/include/asm/qspinlock.h:63 [inline]
+ owner_on_cpu include/linux/sched.h:2306 [inline]
+ mutex_can_spin_on_owner kernel/locking/mutex.c:409 [inline]
+ mutex_optimistic_spin+0x17b/0x2b0 kernel/locking/mutex.c:452
+ __mutex_lock_common+0x20a/0x2530 kernel/locking/mutex.c:607
+ __mutex_lock kernel/locking/mutex.c:747 [inline]
+ mutex_lock_nested+0x1b/0x20 kernel/locking/mutex.c:799
+ reiserfs_write_lock+0x7a/0xd0 fs/reiserfs/lock.c:27
+ reiserfs_lookup+0x162/0x580 fs/reiserfs/namei.c:364
+ lookup_open fs/namei.c:3473 [inline]
+ open_last_lookups fs/namei.c:3563 [inline]
+ path_openat+0x11f1/0x3180 fs/namei.c:3793
+ do_filp_open+0x234/0x490 fs/namei.c:3823
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_open fs/open.c:1445 [inline]
+ __se_sys_open fs/open.c:1441 [inline]
+ __x64_sys_open+0x225/0x270 fs/open.c:1441
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f5de2c7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f5de3a850c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007f5de2d9bf80 RCX: 00007f5de2c7cae9
+RDX: 0000000000000000 RSI: 0000000000145142 RDI: 0000000020007f80
+RBP: 00007f5de2cc847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f5de2d9bf80 R15: 00007ffcdd81fee8
+ </TASK>
+Modules linked in:
+CR2: 000000078ccae8f8
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__raw_callee_save___kvm_vcpu_is_preempted+0x4/0x20
+Code: 21 10 01 c0 be 03 00 00 00 e8 c8 ea 36 03 bf 21 10 01 c0 be 0e 00 00 00 e9 b9 ea 36 03 66 0f 1f 84 00 00 00 00 00 f3 0f 1e fa <48> 8b 04 fd 00 e9 ca 8c 80 b8 d0 83 02 00 00 0f 95 c0 c3 66 0f 1f
+RSP: 0018:ffffc90015d2f560 EFLAGS: 00010286
+RAX: 1ffffffff1a3373f RBX: ffff888030204028 RCX: ffffffff816ba91d
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: 00000000ffffffff
+RBP: 00000000ffffffff R08: ffff88803020402f R09: 1ffff11006040805
+R10: dffffc0000000000 R11: ffffed1006040806 R12: ffff88802b268014
+R13: dffffc0000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f5de3a856c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000078ccae8f8 CR3: 000000002f2a1000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	21 10                	and    %edx,(%rax)
+   2:	01 c0                	add    %eax,%eax
+   4:	be 03 00 00 00       	mov    $0x3,%esi
+   9:	e8 c8 ea 36 03       	call   0x336ead6
+   e:	bf 21 10 01 c0       	mov    $0xc0011021,%edi
+  13:	be 0e 00 00 00       	mov    $0xe,%esi
+  18:	e9 b9 ea 36 03       	jmp    0x336ead6
+  1d:	66 0f 1f 84 00 00 00 	nopw   0x0(%rax,%rax,1)
+  24:	00 00
+  26:	f3 0f 1e fa          	endbr64
+* 2a:	48 8b 04 fd 00 e9 ca 	mov    -0x73351700(,%rdi,8),%rax <-- trapping instruction
+  31:	8c
+  32:	80 b8 d0 83 02 00 00 	cmpb   $0x0,0x283d0(%rax)
+  39:	0f 95 c0             	setne  %al
+  3c:	c3                   	ret
+  3d:	66                   	data16
+  3e:	0f                   	.byte 0xf
+  3f:	1f                   	(bad)
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
