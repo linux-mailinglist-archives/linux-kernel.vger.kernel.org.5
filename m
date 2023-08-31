@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEE8D78E7D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02AC278E7D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242437AbjHaIY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 04:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36176 "EHLO
+        id S244505AbjHaIYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238429AbjHaIYZ (ORCPT
+        with ESMTP id S239007AbjHaIYh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:24:25 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A96A71A1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:24:21 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 6C2B421860;
-        Thu, 31 Aug 2023 08:24:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693470260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j7I+sD8PCqK24WP0JsqbnNm6ZTawzNHh251ipGBCY5k=;
-        b=Jp93a0xzhgBHXCp0qyKiM/jxCcpfgGwJ5CGPFc/0IPeBSCHawNWkkYjhMEyiuC8nwUnEKj
-        8QT2AEvPRKdW9JRXM5eBtvoS+RSq80T0wdz1M/ep/lAETQUX1efDs7bY08jcl6pXQvppv4
-        LOZ0lZeb3Txu42q8fVOGqVntIYiB33o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693470260;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=j7I+sD8PCqK24WP0JsqbnNm6ZTawzNHh251ipGBCY5k=;
-        b=WWtqouBsXVtJh1dpuscFhkkgT3n93OzM/GtWvpkBETJbiUItTZ+Cz1gqjY1VJZE36CKHIn
-        pDX7pNYFQac6K3DQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 40F4613587;
-        Thu, 31 Aug 2023 08:24:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WtHjDjRO8GQrdAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 31 Aug 2023 08:24:20 +0000
-Message-ID: <e08780cb-9121-e917-2619-80e2c767c451@suse.de>
-Date:   Thu, 31 Aug 2023 10:24:19 +0200
+        Thu, 31 Aug 2023 04:24:37 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3A6019A;
+        Thu, 31 Aug 2023 01:24:32 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so10329531fa.3;
+        Thu, 31 Aug 2023 01:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693470271; x=1694075071; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RCWJJwiJwfEQ9qvx03Zju0AtGmnp0ECHX3E9Svs/RYI=;
+        b=m92kKAhz0YpjS1cMAYgv4lcKBINA0qqrmfekN1MSSjtqhvoVUypiPmxhn2i5k3PqFd
+         NdQyr52pTBA+fByQaaCDNbgJe2Ip1QTgKzgNq0L5nASBg+k+MMMO3hPnI5kpngrDLScq
+         sxXJ1R0IEGPS4L5IoFz1z3cG7vQY4+PHEy0DfaLEjISkevgoC4S2lyWE3ETMh0BfJxwS
+         JogrYp/rfC/LGcFEE09Lp3ATGsEdI1rqDgomReaEMt8svEy2vIvY45rrewwp/p4Mkz9v
+         qB2ySVzapspUJwjZrMTtckt1yUcpa7STEIW+QJZCv86pRFVRp0lsNnEnUcoBWLYYYjO5
+         uogw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693470271; x=1694075071;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RCWJJwiJwfEQ9qvx03Zju0AtGmnp0ECHX3E9Svs/RYI=;
+        b=g+FMQj/CaPrzqELEhf6AP34zXyL3Uoayz8iORLNm4eOPFb8LJZiJMzpbG1Qu4mb0i+
+         gDxCv/3D2ijXM8lUpxyDQxJA1piKxkFOxAdWbEYfIpNrAyyFY/MLdI4a89ApHt7tRLlH
+         chahv3rfS9OuVxumMI19obgq1tuc+uVvp2GOZu1Wj8MiGtTGCFbWe6+4OC5p4CkWvMWW
+         bAzvuAl9Tq5LXr1TLo04qfs7rD1vbo9nkGfceCsS7Ktwa5zGaDc5X7Q1cCuZ7b7t3AV8
+         kYsJmbNxIBcP87lJzoBBGzF4PXSWnYDWpLxeWB0JxSLrQP9DOhrO4F3r8uI+hO7mUnlC
+         o2zg==
+X-Gm-Message-State: AOJu0YyJ1Mk8IBcmBpoddfM/7IsRK2gaBzH6O2rePmV52aGMKGeWnojz
+        scfrqwlZyMrruU0ojH4t5bkhVWRv4PM=
+X-Google-Smtp-Source: AGHT+IFxLfxrECU7sYMtQj9pSLPx/MdT/61MWAXp/Q1zUB8CUl8NybrX5cxZVT1gNPBjgOgyy5mpMg==
+X-Received: by 2002:a2e:3314:0:b0:2bd:14cc:ab1b with SMTP id d20-20020a2e3314000000b002bd14ccab1bmr3255489ljc.44.1693470270660;
+        Thu, 31 Aug 2023 01:24:30 -0700 (PDT)
+Received: from krava (2001-1ae9-1c2-4c00-726e-c10f-8833-ff22.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:726e:c10f:8833:ff22])
+        by smtp.gmail.com with ESMTPSA id x10-20020a1709064a8a00b0099b8234a9fesm486903eju.1.2023.08.31.01.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 01:24:30 -0700 (PDT)
+From:   Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date:   Thu, 31 Aug 2023 10:24:28 +0200
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Stanislav Fomichev <sdf@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [ANN] bpf development stats for 6.6
+Message-ID: <ZPBOPM0o3Cj61Xy1@krava>
+References: <ZO6O27Z9RvresmiV@google.com>
+ <CAADnVQJdB-vQwEsfq1uk8VciXUxu1RQgC3xZhRCOd==wxwi6iQ@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 6/8] drm/fb-helper: Pass buffer format via
- drm_fb_helper_surface_size
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <df91abce8e86bdf71b9062718b7643c3c143788b.1692888745.git.geert@linux-m68k.org>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <df91abce8e86bdf71b9062718b7643c3c143788b.1692888745.git.geert@linux-m68k.org>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------mPyLR7tYc5tvlKqZVyqmmLtW"
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAADnVQJdB-vQwEsfq1uk8VciXUxu1RQgC3xZhRCOd==wxwi6iQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,128 +75,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------mPyLR7tYc5tvlKqZVyqmmLtW
-Content-Type: multipart/mixed; boundary="------------r3mMLIG7gprTr3ocRFGyDusF";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Javier Martinez Canillas <javierm@redhat.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Message-ID: <e08780cb-9121-e917-2619-80e2c767c451@suse.de>
-Subject: Re: [PATCH v2 6/8] drm/fb-helper: Pass buffer format via
- drm_fb_helper_surface_size
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <df91abce8e86bdf71b9062718b7643c3c143788b.1692888745.git.geert@linux-m68k.org>
-In-Reply-To: <df91abce8e86bdf71b9062718b7643c3c143788b.1692888745.git.geert@linux-m68k.org>
+On Wed, Aug 30, 2023 at 02:24:19PM -0700, Alexei Starovoitov wrote:
 
---------------r3mMLIG7gprTr3ocRFGyDusF
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+SNIP
 
-SGkNCg0KQW0gMjQuMDguMjMgdW0gMTc6MDggc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
-DQo+IGRybV9mYl9oZWxwZXJfc2luZ2xlX2ZiX3Byb2JlKCkgZmlyc3QgY2FsbHMgZHJtX2Zi
-X2hlbHBlcl9maW5kX3NpemVzKCksDQo+IGZvbGxvd2VkIGJ5IGRybV9mYmRldl9nZW5lcmlj
-X2hlbHBlcl9mYl9wcm9iZSgpOg0KPiAgICAtIFRoZSBmb3JtZXIgdHJpZXMgdG8gZmluZCBh
-IHN1aXRhYmxlIGJ1ZmZlciBmb3JtYXQsIHRha2luZyBpbnRvDQo+ICAgICAgYWNjb3VudCBs
-aW1pdGF0aW9ucyBvZiB0aGUgd2hvbGUgZGlzcGxheSBwaXBlbGluZSwNCj4gICAgLSBUaGUg
-bGF0dGVyIGp1c3QgY2FsbHMgZHJtX21vZGVfbGVnYWN5X2ZiX2Zvcm1hdCgpIGFnYWluLg0K
-PiANCj4gU2ltcGxpZnkgdGhpcyBieSBwYXNzaW5nIHRoZSBidWZmZXIgZm9ybWF0IGJldHdl
-ZW4gdGhlc2UgZnVuY3Rpb25zDQo+IHZpYSBhIG5ldyBidWZmZXIgZm9ybWF0IG1lbWJlciBp
-biB0aGUgZHJtX2ZiX2hlbHBlcl9zdXJmYWNlX3NpemUNCj4gc3RydWN0dXJlLg0KDQpUaGF0
-IGlzIGEgYml0IHByZW1hdHVyZSBhbmQgSSdkIGxpa2UgdG8gbm90IG1lcmdlIHRoaXMgcGF0
-Y2guDQoNCkEgbnVtYmVyIG9mIGRyaXZlcnMgaW1wbGVtZW50IGZiZGV2IGVtdWxhdGlvbiB3
-aXRoIHRoZWlyIG93biB3b3JrYXJvdW5kcyANCmZvciBzdXJmYWNlX2JwcCBhbmQgc3VyZmFj
-ZV9kZXB0aC4gTXkgcGxhbiBoYXMgYmVlbiB0byBwdXNoIA0KX2ZpbmRfc2l6ZXMoKSBpbnRv
-IHRoZSBkcml2ZXJzJyBmYl9wcm9iZSBoZWxwZXJzIGFuZCBsZXQgdGhlbSBoYW5kbGUgDQpl
-dmVyeXRoaW5nLiBPbmNlIGV2ZXJ5dGhpbmcgaGFzIGJlZW4gY2xlYW5lZCB1cCwgc3VyZmFj
-ZV9icHAgYW5kIA0Kc3VyZmFjZV9kZXB0aCBjYW4gaG9wZWZ1bGx5IGJlIHJlbW92ZWQgZW50
-aXJlbHkuDQoNCkJlc3QgcmVnYXJkcw0KVGhvbWFzDQoNCj4gDQo+IFNpZ25lZC1vZmYtYnk6
-IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+DQo+IFJldmlld2Vk
-LWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNvbT4NCj4g
-VGVzdGVkLWJ5OiBKYXZpZXIgTWFydGluZXogQ2FuaWxsYXMgPGphdmllcm1AcmVkaGF0LmNv
-bT4NCj4gLS0tDQo+IHYyOg0KPiAgICAtIEZpeCBhY2NpZGVudGFsIGRlYnVnIGxldmVsIGlu
-Y3JlYXNlLA0KPiAgICAtIEFkZCBSZXZpZXdlZC1ieSwgVGVzdGVkLWJ5Lg0KPiAtLS0NCj4g
-ICBkcml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2hlbHBlci5jICAgICB8IDEgKw0KPiAgIGRyaXZl
-cnMvZ3B1L2RybS9kcm1fZmJkZXZfZ2VuZXJpYy5jIHwgOSArKysrLS0tLS0NCj4gICBpbmNs
-dWRlL2RybS9kcm1fZmJfaGVscGVyLmggICAgICAgICB8IDIgKysNCj4gICAzIGZpbGVzIGNo
-YW5nZWQsIDcgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1n
-aXQgYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2hlbHBlci5jIGIvZHJpdmVycy9ncHUvZHJt
-L2RybV9mYl9oZWxwZXIuYw0KPiBpbmRleCBkNjEyMTMzZTJjZjdlYzk5Li40ZGMyOGZkY2Mx
-ZTBhNmE0IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vZHJtX2ZiX2hlbHBlci5j
-DQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9kcm1fZmJfaGVscGVyLmMNCj4gQEAgLTE1NjQs
-NiArMTU2NCw3IEBAIHN0YXRpYyBpbnQgX19kcm1fZmJfaGVscGVyX2ZpbmRfc2l6ZXMoc3Ry
-dWN0IGRybV9mYl9oZWxwZXIgKmZiX2hlbHBlciwNCj4gICAJaW5mbyA9IGRybV9mb3JtYXRf
-aW5mbyhzdXJmYWNlX2Zvcm1hdCk7DQo+ICAgCXNpemVzLT5zdXJmYWNlX2JwcCA9IGRybV9m
-b3JtYXRfaW5mb19icHAoaW5mbywgMCk7DQo+ICAgCXNpemVzLT5zdXJmYWNlX2RlcHRoID0g
-aW5mby0+ZGVwdGg7DQo+ICsJc2l6ZXMtPnN1cmZhY2VfZm9ybWF0ID0gc3VyZmFjZV9mb3Jt
-YXQ7DQo+ICAgDQo+ICAgCS8qIGZpcnN0IHVwIGdldCBhIGNvdW50IG9mIGNydGNzIG5vdyBp
-biB1c2UgYW5kIG5ldyBtaW4vbWF4ZXMgd2lkdGgvaGVpZ2h0cyAqLw0KPiAgIAljcnRjX2Nv
-dW50ID0gMDsNCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9kcm1fZmJkZXZfZ2Vu
-ZXJpYy5jIGIvZHJpdmVycy9ncHUvZHJtL2RybV9mYmRldl9nZW5lcmljLmMNCj4gaW5kZXgg
-ZDY0N2Q4OTc2NGNiOTg5NC4uMzgzMGQyNWJjYzNhZDAzNSAxMDA2NDQNCj4gLS0tIGEvZHJp
-dmVycy9ncHUvZHJtL2RybV9mYmRldl9nZW5lcmljLmMNCj4gKysrIGIvZHJpdmVycy9ncHUv
-ZHJtL2RybV9mYmRldl9nZW5lcmljLmMNCj4gQEAgLTc3LDE2ICs3NywxNSBAQCBzdGF0aWMg
-aW50IGRybV9mYmRldl9nZW5lcmljX2hlbHBlcl9mYl9wcm9iZShzdHJ1Y3QgZHJtX2ZiX2hl
-bHBlciAqZmJfaGVscGVyLA0KPiAgIAlzdHJ1Y3QgZmJfaW5mbyAqaW5mbzsNCj4gICAJc2l6
-ZV90IHNjcmVlbl9zaXplOw0KPiAgIAl2b2lkICpzY3JlZW5fYnVmZmVyOw0KPiAtCXUzMiBm
-b3JtYXQ7DQo+ICAgCWludCByZXQ7DQo+ICAgDQo+IC0JZHJtX2RiZ19rbXMoZGV2LCAic3Vy
-ZmFjZSB3aWR0aCglZCksIGhlaWdodCglZCkgYW5kIGJwcCglZClcbiIsDQo+ICsJZHJtX2Ri
-Z19rbXMoZGV2LCAic3VyZmFjZSB3aWR0aCglZCksIGhlaWdodCglZCksIGJwcCglZCkgYW5k
-IGZvcm1hdCglcDRjYylcbiIsDQo+ICAgCQkgICAgc2l6ZXMtPnN1cmZhY2Vfd2lkdGgsIHNp
-emVzLT5zdXJmYWNlX2hlaWdodCwNCj4gLQkJICAgIHNpemVzLT5zdXJmYWNlX2JwcCk7DQo+
-ICsJCSAgICBzaXplcy0+c3VyZmFjZV9icHAsICZzaXplcy0+c3VyZmFjZV9mb3JtYXQpOw0K
-PiAgIA0KPiAtCWZvcm1hdCA9IGRybV9tb2RlX2xlZ2FjeV9mYl9mb3JtYXQoc2l6ZXMtPnN1
-cmZhY2VfYnBwLCBzaXplcy0+c3VyZmFjZV9kZXB0aCk7DQo+ICAgCWJ1ZmZlciA9IGRybV9j
-bGllbnRfZnJhbWVidWZmZXJfY3JlYXRlKGNsaWVudCwgc2l6ZXMtPnN1cmZhY2Vfd2lkdGgs
-DQo+IC0JCQkJCSAgICAgICBzaXplcy0+c3VyZmFjZV9oZWlnaHQsIGZvcm1hdCk7DQo+ICsJ
-CQkJCSAgICAgICBzaXplcy0+c3VyZmFjZV9oZWlnaHQsDQo+ICsJCQkJCSAgICAgICBzaXpl
-cy0+c3VyZmFjZV9mb3JtYXQpOw0KPiAgIAlpZiAoSVNfRVJSKGJ1ZmZlcikpDQo+ICAgCQly
-ZXR1cm4gUFRSX0VSUihidWZmZXIpOw0KPiAgIA0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9k
-cm0vZHJtX2ZiX2hlbHBlci5oIGIvaW5jbHVkZS9kcm0vZHJtX2ZiX2hlbHBlci5oDQo+IGlu
-ZGV4IDM3NTczN2ZkNmMzNmVkMTkuLmFhM2Q2MmE1MzFkMTJmMzcgMTAwNjQ0DQo+IC0tLSBh
-L2luY2x1ZGUvZHJtL2RybV9mYl9oZWxwZXIuaA0KPiArKysgYi9pbmNsdWRlL2RybS9kcm1f
-ZmJfaGVscGVyLmgNCj4gQEAgLTQ1LDYgKzQ1LDcgQEAgc3RydWN0IGRybV9mYl9oZWxwZXI7
-DQo+ICAgICogQHN1cmZhY2VfaGVpZ2h0OiBzY2Fub3V0IGJ1ZmZlciBoZWlnaHQNCj4gICAg
-KiBAc3VyZmFjZV9icHA6IHNjYW5vdXQgYnVmZmVyIGJwcA0KPiAgICAqIEBzdXJmYWNlX2Rl
-cHRoOiBzY2Fub3V0IGJ1ZmZlciBkZXB0aA0KPiArICogQHN1cmZhY2VfZm9ybWF0OiBzY2Fu
-b3V0IGJ1ZmZlciBmb3JtYXQgKG9wdGlvbmFsKQ0KPiAgICAqDQo+ICAgICogTm90ZSB0aGF0
-IHRoZSBzY2Fub3V0IHN1cmZhY2Ugd2lkdGgvaGVpZ2h0IG1heSBiZSBsYXJnZXIgdGhhbiB0
-aGUgZmJkZXYNCj4gICAgKiB3aWR0aC9oZWlnaHQuICBJbiBjYXNlIG9mIG11bHRpcGxlIGRp
-c3BsYXlzLCB0aGUgc2Nhbm91dCBzdXJmYWNlIGlzIHNpemVkDQo+IEBAIC02MSw2ICs2Miw3
-IEBAIHN0cnVjdCBkcm1fZmJfaGVscGVyX3N1cmZhY2Vfc2l6ZSB7DQo+ICAgCXUzMiBzdXJm
-YWNlX2hlaWdodDsNCj4gICAJdTMyIHN1cmZhY2VfYnBwOw0KPiAgIAl1MzIgc3VyZmFjZV9k
-ZXB0aDsNCj4gKwl1MzIgc3VyZmFjZV9mb3JtYXQ7DQo+ICAgfTsNCj4gICANCj4gICAvKioN
-Cg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERldmVsb3Blcg0K
-U1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vuc3RyYXNzZSAx
-NDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3RldiwgQW5kcmV3IE15
-ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2ODA5IChBRyBO
-dWVybmJlcmcpDQo=
+> > Company rankings
+> > ----------------
+> >
+> > Top reviewers (thr):                 Top reviewers (msg):
+> >    1 (   ) [20] Meta                    1 (   ) [50] Meta
+> >    2 (   ) [ 8] Isovalent               2 (   ) [16] RedHat
+> >    3 (   ) [ 7] Google                  3 ( +1) [15] Google
+> >    4 (   ) [ 6] RedHat                  4 ( -1) [12] Isovalent
+> >    5 (   ) [ 3] Intel                   5 (   ) [ 7] Intel
+> >    6 ( +3) [ 3] Huawei                  6 ( +2) [ 7] Huawei
+> >    7 (+24) [ 2] Oracle                  7 (+41) [ 4] Oracle
+> >    8 ( -2) [ 2] Corigine                8 (+49) [ 3] Rivos
+> >    9 ( -1) [ 1] nVidia                  9 ( -3) [ 3] Corigine
+> >   10 (+34) [ 1] Rivos                  10 ( -3) [ 2] nVidia
+> >
+> > Top authors (thr):                   Top authors (msg):
+> >    1 (   ) [9] Meta                     1 (   ) [40] Meta
+> >    2 ( +3) [6] Huawei                   2 ( +1) [31] Isovalent
+> >    3 ( -1) [4] Isovalent                3 ( +1) [24] Intel
+> >    4 ( -1) [3] Google                   4 ( +2) [19] Huawei
+> >    5 ( +1) [3] Intel                    5 ( -3) [17] Google
+> >    6 ( -2) [2] RedHat                   6 ( +2) [ 9] RedHat
+> >    7 (***) [2] Juniper Networks         7 (***) [ 8] SUSE
+> >    8 (***) [2] SUSE                     8 ( +5) [ 7] Bytedance
+> >    9 ( +8) [1] Oracle                   9 (***) [ 6] Juniper Networks
+> >   10 (+42) [1] Linaro                  10 (***) [ 5] Hao Xu
+> >
+> > Development vs reviewing scores
+> > -------------------------------
+> >
+> > Top scores (positive):               Top scores (negative):
+> >    1 ( +1) [144] Alexei Starovoitov     1 (***) [46] Jiri Olsa
+> >    2 ( +4) [ 50] Martin KaFai Lau       2 ( +4) [39] Larysa Zaremba
+> >    3 (+15) [ 40] Stanislav Fomichev     3 (   ) [37] Masami Hiramatsu (Google)
+> >    4 ( -3) [ 38] Yonghong Song          4 (***) [34] Geliang Tang
+> >    5 ( +4) [ 37] Jakub Kicinski         5 ( +7) [22] Dave Marchevsky
+> >    6 ( -1) [ 34] Andrii Nakryiko        6 ( -4) [22] Maciej Fijalkowski
+> >    7 (***) [ 30] Jesper Dangaard Brouer    7 (***) [19] Hao Xu
+> >    8 (***) [ 25] John Fastabend         8 (+26) [18] Roberto Sassu
+> >    9 (***) [ 24] Hou Tao                9 (***) [16] Valentin Schneider
+> >   10 ( -7) [ 23] Daniel Borkmann       10 (***) [16] Tejun Heo
+> 
+> Jiri,
+> you've managed to be in the top reviewers and top negative :)
+> I guess that means that we need to tweak the positive/negative formula
+> to more accurately represent the value each person brings
+> to the community.
 
---------------r3mMLIG7gprTr3ocRFGyDusF--
+heh nice, win-win ;-)
 
---------------mPyLR7tYc5tvlKqZVyqmmLtW
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+jirka
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTwTjMFAwAAAAAACgkQlh/E3EQov+D4
-pxAAxx5YiMPzdibP7QLNQG24ot5HrcAWxkx/JdHc1+YSk9thIep5bSNXJTpBPWzLPghCa2haS5Zf
-QkaIEuR8BwCzO8PYfbj4nDNDU7Q4+N0xgRU5md30z7JLwDQTIwHqq8KesIcGQHb6/xAQhiPgu5Ft
-oRIqrj/4DmTLyS02jTEctOStGoa0WG8DjC/jiw67or4u1lNWTWvSvbdi3xLtFtNcMAZHunQQ2Wjj
-8RoiAnLZZ9IVslroZfRcRtZzCKXyuPAa8tpwd+b8ufmW75YGl++Olv2wB0sZBHKGkpT441jkfdRz
-7VCGOTz1ZgqzL5zG1lcL4Nzq86dd0tPPQMjJOOnkP2eDRaIXNxVquoCtunlWBtKePEo7S+Ef88wA
-hy+qtcfGHOhuYpWyYSUQBuXYAh0GbK/BgF6xa98p6m29SZazW3c3FxDIkWWBZra1g8XJvV5X76He
-D1fzppxqIeQDOj9IyZP6s8V+8D1QUYiWDR7oNpEwxEm2VXniLSlyNKoMiZtZviLp5u+d2OLuE9pi
-bjM9CLXdX8iXqavXPizTl92RbJZHR9dxwFAN4czY1p0aaLYg9s4eu3htqPgrgLDh5PI/Qv5T3VUX
-JlzO89dG8Ef45NXaY/spROiE3avOUnLkXiFn56Wl5w0gaJuvElVyZQ6FuV40kUs5lbMsIqn16R/7
-REs=
-=WX4z
------END PGP SIGNATURE-----
-
---------------mPyLR7tYc5tvlKqZVyqmmLtW--
+> 
+> >
+> > Top scores (positive):               Top scores (negative):
+> >    1 (   ) [142] Meta                   1 ( +1) [49] Intel
+> >    2 (   ) [ 52] RedHat                 2 (+11) [38] Huawei
+> >    3 (***) [ 28] Google                 3 ( +5) [28] Bytedance
+> >    4 ( -1) [ 22] Corigine               4 (***) [22] SUSE
+> >    5 (***) [ 18] Oracle                 5 (***) [19] Isovalent
+> >    6 (+37) [  8] Rivos                  6 (***) [19] Hao Xu
+> >    7 ( -2) [  8] Microsoft              7 ( -3) [13] Alibaba
+> >    8 (***) [  7] Markus Elfring         8 (***) [12] Aviatrix
+> >    9 (   ) [  6] Amazon                 9 (***) [12] Juniper Networks
+> >   10 (***) [  5] Huacai Chen           10 (***) [11] Leon Hwang
+> >   11 (+28) [  5] Dave Thaler           11 (***) [10] IBM
+> >
+> > More raw stats
+> > --------------
+> >
+> > Prev: start: Thu, 27 Apr 2023 08:55:55 +0200
+> >         end: Wed, 28 Jun 2023 17:27:38 +0200
+> > Prev: messages: 4234 days: 62 (68 msg/day)
+> > Prev: direct commits: 664 (11 commits/day)
+> > Prev: people/aliases: 241  {'author': 89, 'commenter': 103, 'both': 49}
+> > Prev: review pct: 12.95%  x-corp pct: 12.05%
+> >
+> > Curr: start: Wed, 28 Jun 2023 22:18:25 -0700
+> >         end: Tue, 29 Aug 2023 15:24:18 -0700
+> > Curr: messages: 5240 days: 62 (85 msg/day)
+> > Curr: direct commits: 384 (6 commits/day)
+> > Curr: people/aliases: 279  {'author': 112, 'commenter': 120, 'both': 47}
+> > Curr: review pct: 24.22%  x-corp pct: 23.44%
+> >
+> > Diff: +23.8% msg/day
+> > Diff: -42.2% commits/day
+> > Diff: +15.8% people/day
+> > Diff: review pct: +11.3%
+> >       x-corp pct: +11.4%
+> >
+> 
