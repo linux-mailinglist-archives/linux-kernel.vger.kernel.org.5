@@ -2,235 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7567978EE09
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3DD78EE13
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345539AbjHaNDR convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 31 Aug 2023 09:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48454 "EHLO
+        id S238306AbjHaNIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:08:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232438AbjHaNDQ (ORCPT
+        with ESMTP id S232184AbjHaNIG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:03:16 -0400
-Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE20CFE;
-        Thu, 31 Aug 2023 06:03:13 -0700 (PDT)
-Received: by mail-oo1-f48.google.com with SMTP id 006d021491bc7-5711d5dac14so182600eaf.0;
-        Thu, 31 Aug 2023 06:03:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693486992; x=1694091792;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y9jm6k3mZ7DtL6C9l6hYtOCCTfhPR3psQJlw1t5U+L8=;
-        b=HqV91C8UZKr+2fcz8t3Ot1cXPuHmQoPeDMhP4uhkGUxqkYq+FAarJT/aLuQcug7A1h
-         hx1Ekw1lfUGOiQPs/YPbvmka1092Ct99kioXrIrJiWb2vIMMw4jxTaBgL/ZUiHyc92Xo
-         FXj4XWwRlmlyDk+YtR+TObUBijFYiXSHrQnW6U8q5670ftPGqiV1z2Xgre5VzMlrLkVv
-         BbVNOYgw8/8CN8RwlzzxYQmmUIBUs7l/BwK3Oj86CS9DdM60BFbQvNSkxqvf1rqaFdHy
-         yMXBnj/Z6hnlhsHDvv/7OLykdlKmt2Esy9lrbfd9SzMdciMFxACn98nCI8/3cjW0a9sp
-         kBPw==
-X-Gm-Message-State: AOJu0YyeuTzhhDd6GReFhJl27jRnZchhhLacLNPJZlvN/FvkdfGrMq6+
-        /HmqTEw0I8/JsptZ7uLuRQiM4uEGhtvalKc0GIM=
-X-Google-Smtp-Source: AGHT+IFnz0uQbTsxb2U4BE8XUd/FYbV05/gm2etOOQk9Yh8996UEbCDBlW6vWoZsK6H0LKC8ecHBuIgWwo8N2ML7M18=
-X-Received: by 2002:a4a:bd8f:0:b0:573:2a32:6567 with SMTP id
- k15-20020a4abd8f000000b005732a326567mr4905484oop.0.1693486992644; Thu, 31 Aug
- 2023 06:03:12 -0700 (PDT)
+        Thu, 31 Aug 2023 09:08:06 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8A689BC
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:08:03 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4518C15;
+        Thu, 31 Aug 2023 06:08:42 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.128])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 610753F738;
+        Thu, 31 Aug 2023 06:08:02 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 14:07:23 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
+        keescook@chromium.org, swboyd@chromium.org
+Subject: Re: [PATCH] lkdtm/bugs: add test for panic() with stuck secondary
+ CPUs
+Message-ID: <ZPCQi68pQms78tsh@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230831101026.3122590-1-mark.rutland@arm.com>
+ <CAFA6WYPSbzi5ZKaEdsigtJgdxaK0NXSa_Qyc+_qAvUjqonw10g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230808111325.8600-1-TonyWWang-oc@zhaoxin.com>
- <CAJZ5v0h8M-hNJfRTSxtVmfmpF09h9zmNmG-e=iMemzPwsK50Zg@mail.gmail.com> <e9b4de96-624e-96a5-0a41-93de36719340@zhaoxin.com>
-In-Reply-To: <e9b4de96-624e-96a5-0a41-93de36719340@zhaoxin.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 31 Aug 2023 15:03:01 +0200
-Message-ID: <CAJZ5v0j7c2aO7=AQrjnF9_DGLjdqibDdm72Y9BLzFxWEvQhnvw@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, viresh.kumar@linaro.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        CobeChen@zhaoxin.com, TimGuo@zhaoxin.com, LeoLiu-oc@zhaoxin.com,
-        LindaChai@zhaoxin.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFA6WYPSbzi5ZKaEdsigtJgdxaK0NXSa_Qyc+_qAvUjqonw10g@mail.gmail.com>
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 12:19 PM Tony W Wang-oc
-<TonyWWang-oc@zhaoxin.com> wrote:
->
->
-> On 8/23/23 04:01, Rafael J. Wysocki wrote:
-> > On Tue, Aug 8, 2023 at 1:13 PM Tony W Wang-oc <TonyWWang-oc@zhaoxin.com> wrote:
-> >>
-> >> The _CPC method can get per-core highest frequency.
+On Thu, Aug 31, 2023 at 06:15:29PM +0530, Sumit Garg wrote:
+> Hi Mark,
+> 
+> Thanks for putting up a test case for this.
+> 
+> On Thu, 31 Aug 2023 at 15:40, Mark Rutland <mark.rutland@arm.com> wrote:
 > >
-> > Well, not exactly.  A more precise way to say this would be "The
-> > per-core highest frequency can be obtained via CPPC."
+> > Upon a panic() the kernel will use either smp_send_stop() or
+> > crash_smp_send_stop() to attempt to stop secondary CPUs via an IPI,
+> > which may or may not be an NMI. Generally it's preferable that this is an
+> > NMI so that CPUs can be stopped in as many situations as possible, but
+> > it's not always possible to provide an NMI, and there are cases where
+> > CPUs may be unable to handle the NMI regardless.
 > >
->
-> Thanks for your reply, will rewrite the commit in next version.
->
-> >> The highest frequency may varies between cores which mean cores can
+> > This patch adds a test for panic() where all other CPUs are stuck with
+> > interrupts disabled, which can be used to check whether the kernel
+> > gracefully handles CPUs failing to respond to a stop, and whe NMIs stops
+> 
+> s/whe/when/
+> 
+> > work.
 > >
-> > "may vary" and "which means"
+> > For example, on arm64 *without* an NMI, this results in:
 > >
-> >> running at different max frequency, so can use it as a core priority
+> > | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
+> > | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
+> > | Kernel panic - not syncing: panic stop irqoff test
+> > | CPU: 2 PID: 24 Comm: migration/2 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
+> > | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> > | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
+> > | Call trace:
+> > |  dump_backtrace+0x94/0xec
+> > |  show_stack+0x18/0x24
+> > |  dump_stack_lvl+0x74/0xc0
+> > |  dump_stack+0x18/0x24
+> > |  panic+0x358/0x3e8
+> > |  lkdtm_PANIC+0x0/0x18
+> > |  multi_cpu_stop+0x9c/0x1a0
+> > |  cpu_stopper_thread+0x84/0x118
+> > |  smpboot_thread_fn+0x224/0x248
+> > |  kthread+0x114/0x118
+> > |  ret_from_fork+0x10/0x20
+> > | SMP: stopping secondary CPUs
+> > | SMP: failed to stop secondary CPUs 0-3
+> > | Kernel Offset: 0x401cf3490000 from 0xffff800080000000
+> > | PHYS_OFFSET: 0x40000000
+> > | CPU features: 0x00000000,68c167a1,cce6773f
+> > | Memory Limit: none
+> > | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
 > >
-> > "can run", but it would be better to say "may run".
-> >
-> >> and give a hint to scheduler in order to put critical task to the
-> >> higher priority core.
-> >
-> > Well, roughly speaking ...
-> >
-> > You should really talk about ITMT and how it can be hooked up to this.
-> >
->
-> Ok, Got it.
->
-> >> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> >> ---
-> >> v1->v2: Fix build errors reported by kernel test robot
-> >>
-> >>  arch/x86/kernel/itmt.c         |  2 ++
-> >>  drivers/cpufreq/acpi-cpufreq.c | 59 ++++++++++++++++++++++++++++++----
-> >>  2 files changed, 54 insertions(+), 7 deletions(-)
-> >>
-> >> diff --git a/arch/x86/kernel/itmt.c b/arch/x86/kernel/itmt.c
-> >> index ee4fe8cdb857..b49ac8ecbbd6 100644
-> >> --- a/arch/x86/kernel/itmt.c
-> >> +++ b/arch/x86/kernel/itmt.c
-> >> @@ -122,6 +122,7 @@ int sched_set_itmt_support(void)
-> >>
-> >>         return 0;
-> >>  }
-> >> +EXPORT_SYMBOL_GPL(sched_set_itmt_support);
-> >
-> > This requires an ACK from the x86 maintainers.
-> >
-> >>
-> >>  /**
-> >>   * sched_clear_itmt_support() - Revoke platform's support of ITMT
-> >> @@ -181,3 +182,4 @@ void sched_set_itmt_core_prio(int prio, int cpu)
-> >>  {
-> >>         per_cpu(sched_core_priority, cpu) = prio;
-> >>  }
-> >> +EXPORT_SYMBOL_GPL(sched_set_itmt_core_prio);
-> >
-> > And same here.
-> >
-> >> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> >> index b2f05d27167e..5733323e04ac 100644
-> >> --- a/drivers/cpufreq/acpi-cpufreq.c
-> >> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> >> @@ -628,28 +628,35 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
-> >>  #endif
-> >>
-> >>  #ifdef CONFIG_ACPI_CPPC_LIB
-> >> -static u64 get_max_boost_ratio(unsigned int cpu)
-> >> +static void cpufreq_get_core_perf(int cpu, u64 *highest_perf, u64 *nominal_perf)
-> >
-> > This is not a cpufreq core function, so please use a different prefix
-> > in its name.
-> >
->
-> Ok. Will remove the prefix of "cpufreq_".
->
-> >>  {
-> >>         struct cppc_perf_caps perf_caps;
-> >> -       u64 highest_perf, nominal_perf;
-> >>         int ret;
-> >>
-> >>         if (acpi_pstate_strict)
-> >> -               return 0;
-> >> +               return;
-> >>
-> >>         ret = cppc_get_perf_caps(cpu, &perf_caps);
-> >>         if (ret) {
-> >>                 pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
-> >>                          cpu, ret);
-> >> -               return 0;
-> >> +               return;
-> >>         }
-> >>
-> >>         if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
-> >> -               highest_perf = amd_get_highest_perf();
-> >> +               *highest_perf = amd_get_highest_perf();
-> >>         else
-> >> -               highest_perf = perf_caps.highest_perf;
-> >> +               *highest_perf = perf_caps.highest_perf;
-> >> +
-> >> +       *nominal_perf = perf_caps.nominal_perf;
-> >> +       return;
-> >> +}
-> >>
-> >> -       nominal_perf = perf_caps.nominal_perf;
-> >> +static u64 get_max_boost_ratio(unsigned int cpu)
-> >> +{
-> >> +       u64 highest_perf, nominal_perf;
-> >> +
-> >> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
-> >>
-> >>         if (!highest_perf || !nominal_perf) {
-> >>                 pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
-> >> @@ -663,8 +670,44 @@ static u64 get_max_boost_ratio(unsigned int cpu)
-> >>
-> >>         return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
-> >>  }
-> >> +
-> >> +static void cpufreq_sched_itmt_work_fn(struct work_struct *work)
-> >
-> > A similar comment applies here.
-> >
-> >> +{
-> >> +       sched_set_itmt_support();
-> >> +}
-> >> +
-> >> +static DECLARE_WORK(sched_itmt_work, cpufreq_sched_itmt_work_fn);
-> >> +
-> >> +static void cpufreq_set_itmt_prio(int cpu)
-> >> +{
-> >> +       u64 highest_perf, nominal_perf;
-> >> +       static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
-> >> +
-> >> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
-> >> +
-> >> +       sched_set_itmt_core_prio(highest_perf, cpu);
-> >> +
-> >> +       if (max_highest_perf <= min_highest_perf) {
-> >> +               if (highest_perf > max_highest_perf)
-> >> +                       max_highest_perf = highest_perf;
-> >> +
-> >> +               if (highest_perf < min_highest_perf)
-> >> +                       min_highest_perf = highest_perf;
-> >> +
-> >> +               if (max_highest_perf > min_highest_perf) {
-> >> +                       /*
-> >> +                        * This code can be run during CPU online under the
-> >> +                        * CPU hotplug locks, so sched_set_itmt_support()
-> >> +                        * cannot be called from here.  Queue up a work item
-> >> +                        * to invoke it.
-> >> +                        */
-> >> +                       schedule_work(&sched_itmt_work);
-> >> +               }
-> >
-> > This potentially runs before ITMT priorities are set for all CPUs.
-> > Isn't it a problem?
-> >
->
-> Yes, you are right.
-> Will use schedule_delayed_work(&sched_itmt_work, msecs_to_jiffies(500))
-> to fix this.
+> > On arm64 *with* an NMI, this results in:
+> 
+> I suppose a more interesting test scenario to show difference among
+> NMI stop IPI and regular stop IPI would be:
+> 
+> - First put any CPU into hard lockup state via:
+>    $ echo HARDLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT
+> 
+> - And then provoke following from other CPU:
+>    $ echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
 
-If the ordering matters, it is better to enforce it directly (through
-an explicit code dependency, for example) than to rely on the timing
-to do the right thing.
+I don't follow. IIUC that's only going to test whether a HW watchdog can fire
+and reset the system?
 
-If you do the above, then it will not be clear why it is done (a
-comment may help to address that, though) and why the delay is 500 us
-in particular.
+The PANIC_STOP_IRQOFF test has each CPU run panic_stop_irqoff_fn() with IRQs
+disabled, and if one CPU is stuck in the HARDLOCKUP test, we'll never get all
+CPUs into panic_stop_irqoff_fn(), and so all CPUs will be stuck with IRQs
+disabled, spinning.
+
+The PANIC_STOP_IRQOFF test itself tests the different between an NMI stop IPI
+and regular stop IPI, as the results in the commit message shows. Look for the
+line above that says:
+
+| SMP: failed to stop secondary CPUs 0-3
+
+... which is *not* present in the NMI case (though we don't have an explicit
+"stoppped all CPUs" message).
+
+> >
+> > | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
+> > | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
+> > | Kernel panic - not syncing: panic stop irqoff test
+> > | CPU: 1 PID: 19 Comm: migration/1 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
+> > | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
+> > | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
+> > | Call trace:
+> > |  dump_backtrace+0x94/0xec
+> > |  show_stack+0x18/0x24
+> > |  dump_stack_lvl+0x74/0xc0
+> > |  dump_stack+0x18/0x24
+> > |  panic+0x358/0x3e8
+> > |  lkdtm_PANIC+0x0/0x18
+> > |  multi_cpu_stop+0x9c/0x1a0
+> > |  cpu_stopper_thread+0x84/0x118
+> > |  smpboot_thread_fn+0x224/0x248
+> > |  kthread+0x114/0x118
+> > |  ret_from_fork+0x10/0x20
+> > | SMP: stopping secondary CPUs
+> > | Kernel Offset: 0x55a9c0bc0000 from 0xffff800080000000
+> > | PHYS_OFFSET: 0x40000000
+> > | CPU features: 0x00000000,68c167a1,fce6773f
+> > | Memory Limit: none
+> > | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
+> >
+> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> > Cc: Douglas Anderson <dianders@chromium.org>
+> > Cc: Kees Cook <keescook@chromium.org>
+> > Cc: Stephen Boyd <swboyd@chromium.org
+> > Cc: Sumit Garg <sumit.garg@linaro.org>
+> > ---
+> >  drivers/misc/lkdtm/bugs.c | 29 ++++++++++++++++++++++++++++-
+> >  1 file changed, 28 insertions(+), 1 deletion(-)
+> >
+> > I've tested this with the arm64 NMI IPI patches:
+> >
+> >   https://lore.kernel.org/linux-arm-kernel/20230830191314.1618136-1-dianders@chromium.org/
+> >
+> > Specifically, with the patch that uses an NMI for IPI_CPU_STOP and
+> > IPI_CPU_CRASH_STOP:
+> >
+> >   https://lore.kernel.org/linux-arm-kernel/20230830121115.v12.5.Ifadbfd45b22c52edcb499034dd4783d096343260@changeid/
+> >
+> > Mark.
+> >
+> > diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
+> > index 3c95600ab2f71..368da8b83cd1c 100644
+> > --- a/drivers/misc/lkdtm/bugs.c
+> > +++ b/drivers/misc/lkdtm/bugs.c
+> > @@ -6,12 +6,14 @@
+> >   * test source files.
+> >   */
+> >  #include "lkdtm.h"
+> > +#include <linux/cpu.h>
+> >  #include <linux/list.h>
+> >  #include <linux/sched.h>
+> >  #include <linux/sched/signal.h>
+> >  #include <linux/sched/task_stack.h>
+> > -#include <linux/uaccess.h>
+> >  #include <linux/slab.h>
+> > +#include <linux/stop_machine.h>
+> > +#include <linux/uaccess.h>
+> >
+> >  #if IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_UML)
+> >  #include <asm/desc.h>
+> > @@ -73,6 +75,30 @@ static void lkdtm_PANIC(void)
+> >         panic("dumptest");
+> >  }
+> >
+> > +static int panic_stop_irqoff_fn(void *arg)
+> > +{
+> > +       atomic_t *v = arg;
+> > +
+> > +       /*
+> > +        * Trigger the panic after all other CPUs have entered this function,
+> > +        * so that they are guaranteed to have IRQs disabled.
+> > +        */
+> > +       if (atomic_inc_return(v) == num_online_cpus())
+> > +               panic("panic stop irqoff test");
+> > +
+> > +       for (;;)
+> > +               cpu_relax();
+> > +}
+> > +
+> > +static void lkdtm_PANIC_STOP_IRQOFF(void)
+> > +{
+> > +       atomic_t v = ATOMIC_INIT(0);
+> > +
+> > +       cpus_read_lock();
+> > +       stop_machine(panic_stop_irqoff_fn, &v, cpu_online_mask);
+> > +       cpus_read_unlock();
+> 
+> stop_machine() does internally use cpus_read_{lock/unlock}(), is there
+> any need to have them here as well?
+
+For some reason I thought that stop_machine() copied the mask prior to calling
+cpus_read_lock(), and hance it was necessary to avoid the online mask changing,
+but from taking a look just now that's not the case.
+
+I'll drop the cpus_read_lock() .. cpus_read_unlock() here.
+
+Thanks,
+Mark.
