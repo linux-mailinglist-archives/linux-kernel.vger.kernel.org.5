@@ -2,86 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D61C878F34F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383C078F348
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:26:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347067AbjHaT07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:26:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        id S1345995AbjHaT0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:26:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238398AbjHaT06 (ORCPT
+        with ESMTP id S230137AbjHaT03 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:26:58 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B47DDE6E;
-        Thu, 31 Aug 2023 12:26:51 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VIxiHZ014585;
-        Thu, 31 Aug 2023 19:26:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=KJZIA2tDsMsYLt1Yscsua7zldn6z73pHDwRWVxjgHmc=;
- b=mn7YO8v0nrhdcdmbKi55yIIXX6+92O5wKUBtIT1vpx4bksh1YASD7WLyLvf2OYgLBgcr
- UQyQ57JacTnu49UX2Tkqk8bALmWAer4NvlRL6NzW77aUZPeJJi4Xb5is5ORDF/Sj4aL6
- lQWGXYN/jWTRJsVqsqSw1nvnsnuYZ1eG7zyFhr5pejYdMv+EG5RvYPMjhWQhgwXdDBIA
- X0VbLhTJybLKWb9hyCyKmnR7ziFTn/plQPIKkIdw3aRS342/5sv3jhAI5uxLBvm0dTkm
- bFTy2w1DzgcKLex9gvaqSemSSsTtiLczwCDiwNJS2hxHrykoVhLxyFWQwL7hjG3NOVaO Pg== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stv5n94hd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 19:26:03 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VJQ3SJ015310
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 19:26:03 GMT
-Received: from [10.71.114.68] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 31 Aug
- 2023 12:26:02 -0700
-Message-ID: <67e199a9-0e65-a142-f1bf-03d3d91ef46a@quicinc.com>
-Date:   Thu, 31 Aug 2023 12:25:58 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v5 13/32] dt-bindings: usb: dwc3: Add
- snps,num-hc-interrupters definition
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-CC:     <srinivas.kandagatla@linaro.org>, <mathias.nyman@intel.com>,
-        <perex@perex.cz>, <lgirdwood@gmail.com>, <andersson@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <gregkh@linuxfoundation.org>,
-        <Thinh.Nguyen@synopsys.com>, <broonie@kernel.org>,
-        <bgoswami@quicinc.com>, <tiwai@suse.com>, <agross@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, <devicetree@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>, <quic_jackp@quicinc.com>,
-        <quic_plai@quicinc.com>
-References: <20230829210657.9904-1-quic_wcheng@quicinc.com>
- <20230829210657.9904-14-quic_wcheng@quicinc.com>
- <20230831172413.GB2460067-robh@kernel.org>
-From:   Wesley Cheng <quic_wcheng@quicinc.com>
-In-Reply-To: <20230831172413.GB2460067-robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 0IPdhZSVNG7HtNWwVNUglvEcjBj6LYXN
-X-Proofpoint-ORIG-GUID: 0IPdhZSVNG7HtNWwVNUglvEcjBj6LYXN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_17,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- priorityscore=1501 mlxlogscore=999 spamscore=0 adultscore=0
- lowpriorityscore=0 phishscore=0 malwarescore=0 bulkscore=0 impostorscore=0
- mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310173
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        Thu, 31 Aug 2023 15:26:29 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165F81BF
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:26:27 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7814efcccbso1066661276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:26:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693509986; x=1694114786; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g6Tf3ZAjz5BRxqYmSOmi3DFQDfVDfYaSY76D6qeC9yM=;
+        b=prWdRNlrHbuDnVYQvJbbzFEynY/Jr5XkGcV6GHNmAWPMTH68ynv7sHKD7PeFWsTP4J
+         x5bZWo1U9WS7zyLobPpxw8+ic4zaTvy1qyidIrheJLVm05HhTcJoRmrE/iS73OUMt9M4
+         XnV1zrtIybohnvWfvPxsTvtABHb3XIWVHH/y96d07t1LZDz9u1qEY1dtC4FQBZ+DaaO+
+         RZczjM3/a0OCqdyQKBhTgyep0YcqJLC4c8NtK26O1USe2WKCAEr1Tw7d+GOG362Lbgiv
+         /ZLXmqixBJDBHZcERoE6Wdl9BTKCktEjGNMH2sjPAUUrKz6wfhAm8HPSIcp7MPaZyen5
+         L5zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693509986; x=1694114786;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=g6Tf3ZAjz5BRxqYmSOmi3DFQDfVDfYaSY76D6qeC9yM=;
+        b=JnT4qkW0F3Fyhi89pw/bFLneUSGIeEiq7n22+lTkylBaet6eXCNvi8xZENi8jPHjbi
+         eOMcsAP4J1W5OYe1yvvNRexkQfns6T5T9gOHHpXs901tbzy5VzihFH/h1u62TC3PvXTp
+         lP3NKjIBJtZral0OK4bGb2QC3aER3Iyo/DmQr3QNgmOqbvZ2rQNY5VHZIWSMxNVX8wWh
+         wwde8aXbG8oi8IbfqlUN55SuXzZtHQFOu03RL42XmNuS8vYbzk5uCLMSkB017iOz8GhY
+         SZcTmvU7TrhtyOiL2memM/1feRHtFdG5ZrF8OphoB+yUcplUO5uUhkKUj8+8gXWaSvRT
+         vOiA==
+X-Gm-Message-State: AOJu0Yz1sk2bEfMbe0r/v+1CnbhQzz081VlNdIsC936Jp472/y9KKcbA
+        RzlJVDJBRvaX/pgOBKIFBkifiyF1bwg=
+X-Google-Smtp-Source: AGHT+IH8M0VYP2jot5+095k6ObFx+ZWf24y1Sxn22pYWebzpMsn5f2iAMF3TVhv2FinHGqonFYaHnN5B71s=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:bb12:0:b0:d7a:6a4c:b657 with SMTP id
+ z18-20020a25bb12000000b00d7a6a4cb657mr22072ybg.0.1693509986347; Thu, 31 Aug
+ 2023 12:26:26 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 12:26:24 -0700
+In-Reply-To: <7463d8dd-5290-59c0-73bc-68053d6a320a@linux.intel.com>
+Mime-Version: 1.0
+References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
+ <20230719144131.29052-2-binbin.wu@linux.intel.com> <ZN0454peMb3z/0Bg@google.com>
+ <7463d8dd-5290-59c0-73bc-68053d6a320a@linux.intel.com>
+Message-ID: <ZPDpYGzt0GdDQxEQ@google.com>
+Subject: Re: [PATCH v10 1/9] KVM: x86/mmu: Use GENMASK_ULL() to define __PT_BASE_ADDR_MASK
+From:   Sean Christopherson <seanjc@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        David.Laight@aculab.com, robert.hu@linux.intel.com,
+        guang.zeng@intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,50 +71,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-On 8/31/2023 10:24 AM, Rob Herring wrote:
-> On Tue, Aug 29, 2023 at 02:06:38PM -0700, Wesley Cheng wrote:
->> Add a new definition for specifying how many XHCI secondary interrupters
->> can be allocated.  XHCI in general can potentially support up to 1024
->> interrupters, which some uses may want to limit depending on how many
->> users utilize the interrupters.
->>
->> Signed-off-by: Wesley Cheng <quic_wcheng@quicinc.com>
->> ---
->>   .../devicetree/bindings/usb/snps,dwc3.yaml          | 13 +++++++++++++
->>   1 file changed, 13 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> index a696f23730d3..596762ef9b9f 100644
->> --- a/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> +++ b/Documentation/devicetree/bindings/usb/snps,dwc3.yaml
->> @@ -376,6 +376,19 @@ properties:
->>       items:
->>         enum: [1, 4, 8, 16, 32, 64, 128, 256]
->>   
->> +  snps,num-hc-interrupters:
+On Mon, Aug 28, 2023, Binbin Wu wrote:
 > 
-> Why do you still have this when you defined a common property?
 > 
-> If you want to limit it here, just do:
+> On 8/17/2023 5:00 AM, Sean Christopherson wrote:
+> > On Wed, Jul 19, 2023, Binbin Wu wrote:
+> > > Use GENMASK_ULL() to define __PT_BASE_ADDR_MASK.
+> > Using GENMASK_ULL() is an opportunistic cleanup, it is not the main purpose for
+> > this patch.  The main purpose is to extract the maximum theoretical mask for guest
+> > MAXPHYADDR so that it can be used to strip bits from CR3.
+> > 
+> > And rather than bury the actual use in "KVM: x86: Virtualize CR3.LAM_{U48,U57}",
+> > I think it makes sense to do the masking in this patch.  That change only becomes
+> > _necessary_ when LAM comes along, but it's completely valid without LAM.
+> > 
+> > That will also provide a place to explain why we decided to unconditionally mask
+> > the pgd (it's harmless for 32-bit guests, querying 64-bit mode would be more
+> > expensive, and for EPT the mask isn't tied to guest mode).
+> OK.
 > 
-> num-hc-interrupters:
->    maximum: 8
-> 
+> > And it should also
+> > explain that using PT_BASE_ADDR_MASK would actually be wrong (PAE has 64-bit
+> > elements _except_ for CR3).
+> Hi Sean, I am not sure if I understand it correctly.  Do you mean when KVM
+> shadows the page table of guest using 32-bit paging or PAE paging, guest CR3
+> is or can be 32 bits for 32-bit paging or PAE paging, so that apply the mask
+> to a 32-bit value CR3 "would actually be wrong" ?
 
-Thanks for the review, and apologies for missing your response in the 
-previous revision.
-
-Currently, the DWC3 driver creates and populates the XHCI platform 
-device properties from the DWC3 host driver.  Properties need to be 
-propagated from DWC3 --> XHCI plat, and is currently done this way for
-"snps,usb3_lpm_capable"
-"snps,usb2-lpm-disable"
-
-XHCI plat can be used for other non-DWC3 implementations as well, which 
-would have their own way of creating the XHCI plat platform device. 
-This is the reason we'd need to have these two definitions.
-
-Thanks
-Wesley Cheng
+It would be technically wrong for PAE paging, as the PTEs themselves are 64 bits,
+i.e. PT_BASE_ADDR_MASK would be 51:12, but CR3 is still only 32 bits.  Wouldn't
+matter in practice, but I think it's worth calling out that going out of our way
+to use PT_BASE_ADDR_MASK wouldn't actually "fix" anything.
