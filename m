@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 098FD78E3B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:04:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B3E78E3B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344610AbjHaAED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 20:04:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        id S1344617AbjHaAEt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 20:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237781AbjHaAEC (ORCPT
+        with ESMTP id S244576AbjHaAEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 20:04:02 -0400
-Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987A7CDA
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:58 -0700 (PDT)
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 37UN7ruj001335
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=s2048-2021-q4;
- bh=9w64N/q3DFoDcjGEuuQm5zoxeFSu57f6UwIHrvy8DEw=;
- b=KeJ7m5v5PEYtuPM4/BRyIRx1T7FMS1IEmrlgtyc35Bl1RlouQEQR7v0lyb18mgsPviIK
- F0ru8TPs6NV1lv8pNreWa5Gt5rZI1a/dKLPbCBeRimb1sa2mj16XNLn+yJnJOKoXMp4c
- EFEcuh2QCkMWI2grHh3afWZy6vtKv6bYeZFEV/m0+l1BMkqjB+jlmv7OSRKRm82BSxAm
- Uk3JVgX9X26cGgbIoIJ0K9XeaLnTxQDxqLR2cl5/OYSbqmFJ70ez6uQ6m9Tjj26lp4wZ
- uCLeTbEU2F2f11XtFK7Rg1y3L84GW0enK4/0pjWH7cmrCh2x8jzJzTyx43HOBOuOJiTG 0Q== 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by m0089730.ppops.net (PPS) with ESMTPS id 3st4dn641n-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:57 -0700
-Received: from twshared6713.09.ash9.facebook.com (2620:10d:c085:108::8) by
- mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.23; Wed, 30 Aug 2023 17:03:57 -0700
-Received: by devvm5565.lla0.facebook.com (Postfix, from userid 378941)
-        id 5840BED8EAE; Wed, 30 Aug 2023 17:03:50 -0700 (PDT)
-From:   Pawel Zmarzly <pzmarzly@meta.com>
-To:     Damien Le Moal <dlemoal@kernel.org>
-CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Pawel Zmarzly <pzmarzly@meta.com>
-Subject: [PATCH] ata: Disable NCQ_TRIM on Micron 1100 drives
-Date:   Wed, 30 Aug 2023 17:02:22 -0700
-Message-ID: <20230831000222.576254-1-pzmarzly@meta.com>
-X-Mailer: git-send-email 2.39.3
+        Wed, 30 Aug 2023 20:04:48 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0DDACD2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:04:45 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso1557445ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:04:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693440285; x=1694045085; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2wclbGISi0DTsfnw2wuB5z2VMldigUtFlGGDgvrtyHY=;
+        b=i5emslwmEfx6A6P3nRttHrDbA0mNyP9zy0qnWunRqBPf/DtfXT3l30rX2T0zHYQdEH
+         yEpo5WUZDGCiaHEcSnCv5VWn+TCugNATZKKEZVmfZfz4gyVOyxfN5yendgfJzugV9cq+
+         Add8CLfWPQFY0bT8j2R2pKd9Yw186y/oC3z34=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693440285; x=1694045085;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2wclbGISi0DTsfnw2wuB5z2VMldigUtFlGGDgvrtyHY=;
+        b=S2f7Xyaqy9NMOWfpzaEtejSwn5S+ea5pvdfCDyXxRkImHFilVH/oDLbnPdRuX9FX1j
+         lB4OpVh86Vo+qoP6Pd9I1xQKx9W6GGgTq4s+xWgzuFZBLrwkU+4GlgXax6TJYJ6wvAHC
+         hHcRSw0qXrF8tE9YVnbIzEDRNDRSeLwLNDmyLkx4lINeEWebq/qBjuznRT5xaCqNAhu5
+         m32JM+73IefSmL9w4xvJkFrvMCCBOdAmhY+qCx49sHRoIreQPLbCb8/8V0tJewXZDDgp
+         R3BCtPD55iU4BCNVk2oLelZe8KRM8FTHp/Rcfg5rCD7rX8jvpaWLWWSs+2ZIM+Pq0I5M
+         FGIg==
+X-Gm-Message-State: AOJu0YwIL+hLiCZl+cNiclYSn6Kyn1odDvm955lQS2frfH8/GkVNXiWh
+        z/CieLqBEWEXVwm5Zb4wQKfayg==
+X-Google-Smtp-Source: AGHT+IFGMTemHoGX0sBWxi5Tew5dUP8jSwJec6Ka+YeMhrkhHDOargCzGiUpjQ6Og16mC5nefUj++g==
+X-Received: by 2002:a17:902:d34d:b0:1bf:5df2:8e97 with SMTP id l13-20020a170902d34d00b001bf5df28e97mr3592551plk.4.1693440285320;
+        Wed, 30 Aug 2023 17:04:45 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id x13-20020a170902820d00b001c0cb2aa2easm67102pln.121.2023.08.30.17.04.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 17:04:44 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 17:04:44 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-hardening@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] m68k/atari: Replace strlcpy with strscpy
+Message-ID: <202308301704.7A3F0F9CBD@keescook>
+References: <20230830185428.4109426-1-azeemshaikh38@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-GUID: _wgjkYMd9z9RiZkOn1lgHLYS11qMj9Gg
-X-Proofpoint-ORIG-GUID: _wgjkYMd9z9RiZkOn1lgHLYS11qMj9Gg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-30_19,2023-08-29_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830185428.4109426-1-azeemshaikh38@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Micron 1100 drives lock up when encountering queued TRIM command.
-It is a quite old hardware series, for past years we have been
-running our machines with these drives using
-libata.force=3Dnoncqtrim.
+On Wed, Aug 30, 2023 at 06:54:28PM +0000, Azeem Shaikh wrote:
+> strlcpy() reads the entire source buffer first.
+> This read may exceed the destination size limit.
+> This is both inefficient and can lead to linear read
+> overflows if a source string is not NUL-terminated [1].
+> In an effort to remove strlcpy() completely [2], replace
+> strlcpy() here with strscpy().
+> 
+> Direct replacement is safe here since return value of -errno
+> is used to check for truncation instead of sizeof(dest).
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> [2] https://github.com/KSPP/linux/issues/89
+> 
+> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
 
-Signed-off-by: Pawel Zmarzly <pzmarzly@meta.com>
----
- drivers/ata/libata-core.c | 2 ++
- 1 file changed, 2 insertions(+)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-index 175b2a9dc000..d2466f2c5fea 100644
---- a/drivers/ata/libata-core.c
-+++ b/drivers/ata/libata-core.c
-@@ -4564,6 +4564,8 @@ static const struct ata_blacklist_entry ata_device_=
-blacklist [] =3D {
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
- 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
- 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-+	{ "Micron_1100_*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-+					ATA_HORKAGE_ZERO_AFTER_TRIM, },
-=20
- 	/* devices that don't properly handle TRIM commands */
- 	{ "SuperSSpeed S238*",		NULL,	ATA_HORKAGE_NOTRIM, },
---=20
-2.39.3
-
+-- 
+Kees Cook
