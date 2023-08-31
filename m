@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 672FA78E8A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74E5178E8AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240443AbjHaIqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 04:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
+        id S240330AbjHaIri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:47:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242724AbjHaIqB (ORCPT
+        with ESMTP id S239767AbjHaIrh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:46:01 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CF1CFE
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:45:54 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401d2e11dacso10990135e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:45:54 -0700 (PDT)
+        Thu, 31 Aug 2023 04:47:37 -0400
+Received: from mail-qt1-x832.google.com (mail-qt1-x832.google.com [IPv6:2607:f8b0:4864:20::832])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0837CEA
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:47:33 -0700 (PDT)
+Received: by mail-qt1-x832.google.com with SMTP id d75a77b69052e-40a47e8e38dso199771cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:47:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693471553; x=1694076353; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZZ+yS+F58ugHAlTKRPgu0kDyKeO8Xi8M/RaN8CDHdU4=;
-        b=NFQER+MVp3uKvqO9M+QMHbWlPKTnLBLjOqAeuYswCtHUNw0btHne34/4OX4TmWZiY/
-         F3qSQ5Msb2ZzyQpdtFx82XvnKjLJwtqTBN9HczMG6yBtayqkpj6wrqZ0H6Xo8YIQzpqu
-         sXYSGBOMVOEtv5hcFU21P8G6MsXKIi0ear745lXUEEq3I1/FfpTwns9SZ0vreIU8pgX/
-         kd4EbYXeikRWNjJhsg8teMOpnDTchDMWTjmwqUlJFk//8rSz15f/nDB0GICIy4+51FkW
-         nPJr6+wytXFom/n1NxHe8eps+pUp6TkRbaRYu/H1VhJ9vFrFCLXt+FoDtJVnJDyXkVwm
-         2CVw==
+        d=google.com; s=20221208; t=1693471653; x=1694076453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ik1gJpmACdK/zEYsDZLMBYhWNKKU7+LfXVBjZIp1WHE=;
+        b=Vwaq3KoY2hbu2eXGNEYSR/QWN2d9ZOJdrEe3JPif0ZkLN7t+NT0cQyAThAxBylr1X+
+         K8xr9AwpnwFe3t+r826UumNfHwmiFHKmKMExeG4pwiaIS68ByiLBid6OdQ9IIDOPyIU1
+         UyxrmhDHKOdIvRLEOcre975KO2iog8RCrYz9lSMB+d8j0KYL9IH/aX4gWYNoB1o1jjTG
+         KqwUthLHoQVouaDCpq2ASj2jWr/5E9SOH3P4w71aWKoQMHXOwFWdSK+biXAHW6lFDbSF
+         GAPVv20/Bdg00KwuccWBMJ1csDi20324w2JoHE0r5n3QXwlc9qxno3RukxQAPjby+eHZ
+         0AhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693471553; x=1694076353;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZZ+yS+F58ugHAlTKRPgu0kDyKeO8Xi8M/RaN8CDHdU4=;
-        b=i68xxYhl2uTcKTsnQC75vAGUYCPw8018+UjRtGfSv5yhUxcG4i0t2ptEqUqTW6in/V
-         SX0FSd2vLMe2gB2+rk9qRcaFI8473srt6l5mSflLcpKzZZbP/9hye+zLKUfn8XfsD+vu
-         yCKJqB8kFbWC2atlRYFq2dvbJCFzp3P4f7nqMgivU6PXoTjxTawnyk0crks0Pxhvmdq0
-         Zd3HtyXjjhits9C4+PowDD4p4hdQJsWF2K5rY+2D/KSZoBDDssZgVHQ1TmLiiCpp7Cv4
-         M3KY3e43RH7hBIbmeOBysOXQFbst9Pb5kF6Bthkb3KUFQxYJRvsOqVyKbu20EGlYy4eA
-         zwAg==
-X-Gm-Message-State: AOJu0Yyu6xE+fKAEQLgEsPzvxYLKRJ2RcpENaNuq9n/Uq4cj/599VIgn
-        FJA94OUz/UpC6a4Qe3J5oureSQ==
-X-Google-Smtp-Source: AGHT+IGFxJLXuR+da13QNbYWUX8dvbC9JAb+ODYlVceGovcYhI03utBPdqMMrKxTGZuEjaSZwqcNGg==
-X-Received: by 2002:a7b:c84f:0:b0:401:b504:b6a8 with SMTP id c15-20020a7bc84f000000b00401b504b6a8mr1476717wml.2.1693471553037;
-        Thu, 31 Aug 2023 01:45:53 -0700 (PDT)
-Received: from [192.168.69.115] ([176.187.199.245])
-        by smtp.gmail.com with ESMTPSA id c20-20020a7bc854000000b003feef5b0bb7sm1241764wml.40.2023.08.31.01.45.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 01:45:52 -0700 (PDT)
-Message-ID: <205cfbcb-a989-dc72-8f5d-46d2a00b01d9@linaro.org>
-Date:   Thu, 31 Aug 2023 10:45:50 +0200
+        d=1e100.net; s=20221208; t=1693471653; x=1694076453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ik1gJpmACdK/zEYsDZLMBYhWNKKU7+LfXVBjZIp1WHE=;
+        b=IhUZjX7MMl/mBTJzGkiDO197tQEq2dZb4Vh0BlWiIsodBZ5LBdu+pu9JkarZjrltvl
+         JyFM3lsL6qJ8Fe3KHJSyCPB6rAphU1lX1ei7x2WhKSsw8eQUx2Pr2qUO7T4JxLTkAmWz
+         BDMP0V4WusqWRmk2+spYe9ViZmejoH3WnrfU6Z+tLWkzOw2O3/tQSbo/o5UR6GjGsTm2
+         /VRkzlFqSN1TeTAaYS9e0v1Qq0i4FGll3kkdbaraduLCKL7K3HHzVHjmdrMAgDYYDFzo
+         8hltgC/Zjz2kli+MmldbErSxNrTIkBPWnW6wpi6oKJb7UxO+dFgm0+c3xXEoYvD0lWw3
+         oigA==
+X-Gm-Message-State: AOJu0Yy/0I8Q68ARI8vzNFJ048LLHiGbNkGSgTFRelrb5RYW+1b7gb77
+        Zb9/duKQFYIQLWJod7h1AsWM6xZ24V2k+M2guOQc5Q==
+X-Google-Smtp-Source: AGHT+IGjhbtjPkyPgzUQ4bF4aaMCSzibBATftYGGU7NMw4m85xX9Rl+6D9tDH8+xK+2pmXRvIerhq+IHrN68JY9N+Do=
+X-Received: by 2002:a05:622a:1ba7:b0:410:9855:acd with SMTP id
+ bp39-20020a05622a1ba700b0041098550acdmr210744qtb.14.1693471652689; Thu, 31
+ Aug 2023 01:47:32 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v2 1/3] vfio: trivially use __aligned_u64 for ioctl
- structs
-Content-Language: en-US
-To:     Stefan Hajnoczi <stefanha@redhat.com>, kvm@vger.kernel.org
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jason Gunthorpe <jgg@nvidia.com>
-References: <20230829182720.331083-1-stefanha@redhat.com>
- <20230829182720.331083-2-stefanha@redhat.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20230829182720.331083-2-stefanha@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+References: <64ed7188a2745_9cf208e1@penguin.notmuch> <20230831081702.101342-1-mkhalfella@purestorage.com>
+In-Reply-To: <20230831081702.101342-1-mkhalfella@purestorage.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 31 Aug 2023 10:47:21 +0200
+Message-ID: <CANn89iLNACt6vh5OAjDmRxpQ3-DkuUP_Vfh9AZGpGinzwJ-1dw@mail.gmail.com>
+Subject: Re: [PATCH v3] skbuff: skb_segment, Call zero copy functions before
+ using skbuff frags
+To:     Mohamed Khalfella <mkhalfella@purestorage.com>
+Cc:     willemdebruijn.kernel@gmail.com, alexanderduyck@fb.com,
+        bpf@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
+        dhowells@redhat.com, keescook@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, willemb@google.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,25 +74,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 29/8/23 20:27, Stefan Hajnoczi wrote:
-> u64 alignment behaves differently depending on the architecture and so
-> <uapi/linux/types.h> offers __aligned_u64 to achieve consistent behavior
-> in kernel<->userspace ABIs.
-> 
-> There are structs in <uapi/linux/vfio.h> that can trivially be updated
-> to __aligned_u64 because the struct sizes are multiples of 8 bytes.
-> There is no change in memory layout on any CPU architecture and
-> therefore this change is safe.
-> 
-> The commits that follow this one handle the trickier cases where
-> explanation about ABI breakage is necessary.
-> 
-> Suggested-by: Jason Gunthorpe <jgg@nvidia.com>
-> Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-> Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
+On Thu, Aug 31, 2023 at 10:17=E2=80=AFAM Mohamed Khalfella
+<mkhalfella@purestorage.com> wrote:
+>
+> Commit bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions
+> once per nskb") added the call to zero copy functions in skb_segment().
+> The change introduced a bug in skb_segment() because skb_orphan_frags()
+> may possibly change the number of fragments or allocate new fragments
+> altogether leaving nrfrags and frag to point to the old values. This can
+> cause a panic with stacktrace like the one below.
+>
+>
+
+> In this case calling skb_orphan_frags() updated nr_frags leaving nrfrags
+> local variable in skb_segment() stale. This resulted in the code hitting
+> i >=3D nrfrags prematurely and trying to move to next frag_skb using
+> list_skb pointer, which was NULL, and caused kernel panic. Move the call
+> to zero copy functions before using frags and nr_frags.
+>
+> Fixes: bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions onc=
+e per nskb")
+> Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
+> Reported-by: Amit Goyal <agoyal@purestorage.com>
+> Cc: stable@vger.kernel.org
 > ---
->   include/uapi/linux/vfio.h | 18 +++++++++---------
->   1 file changed, 9 insertions(+), 9 deletions(-)
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-
+Reviewed-by: Eric Dumazet <edumazet@google.com>
