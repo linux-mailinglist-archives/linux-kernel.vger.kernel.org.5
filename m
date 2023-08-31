@@ -2,49 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A240D78E5EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:44:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9340D78E5EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238422AbjHaFoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 01:44:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41184 "EHLO
+        id S239767AbjHaFpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 01:45:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbjHaFoU (ORCPT
+        with ESMTP id S229898AbjHaFpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 01:44:20 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E96B2E0;
-        Wed, 30 Aug 2023 22:44:13 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qbaTQ-0007eD-L3; Thu, 31 Aug 2023 07:44:08 +0200
-Message-ID: <a2e995aa-8c21-c78c-f4b1-ef5bf2eed1b6@leemhuis.info>
-Date:   Thu, 31 Aug 2023 07:44:07 +0200
+        Thu, 31 Aug 2023 01:45:13 -0400
+Received: from zproxy1.foxvalley.net (zimbra.foxvalley.net [212.78.26.134])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id A9A11E0;
+        Wed, 30 Aug 2023 22:45:10 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zproxy1.foxvalley.net (Postfix) with ESMTP id 15E3440042;
+        Thu, 31 Aug 2023 00:45:10 -0500 (CDT)
+Received: from zproxy1.foxvalley.net ([127.0.0.1])
+ by localhost (zproxy1.foxvalley.net [127.0.0.1]) (amavis, port 10032)
+ with ESMTP id 6M-gKkwQniDA; Thu, 31 Aug 2023 00:45:09 -0500 (CDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by zproxy1.foxvalley.net (Postfix) with ESMTP id B73E040F9F;
+        Thu, 31 Aug 2023 00:45:09 -0500 (CDT)
+X-Virus-Scanned: amavis at zproxy1.foxvalley.net
+Received: from zproxy1.foxvalley.net ([127.0.0.1])
+ by localhost (zproxy1.foxvalley.net [127.0.0.1]) (amavis, port 10026)
+ with ESMTP id pwh8NBh1opZu; Thu, 31 Aug 2023 00:45:09 -0500 (CDT)
+Received: from [192.168.1.3] (unknown [161.97.241.227])
+        by zproxy1.foxvalley.net (Postfix) with ESMTPSA id 54CA740042;
+        Thu, 31 Aug 2023 00:45:09 -0500 (CDT)
+Message-ID: <82b80554-2042-7dcb-83c5-6a6b640c71be@foxvalley.net>
+Date:   Wed, 30 Aug 2023 23:45:07 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: mainline build failure due to c8171a86b274 ("csky: Fixup
- -Wmissing-prototypes warning")
-Content-Language: en-US, de-DE
-To:     Guo Ren <guoren@kernel.org>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Oleg Nesterov <oleg@redhat.com>, linux-csky@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>
-References: <ZO8qkS0Skg9L4xzr@debian>
- <527df158-7d32-42ba-d5f1-9dad30704cc1@leemhuis.info>
- <CAJF2gTQWWi_Cb1iQiLOr4114kZW7L93KNwjCu3ArKb7ffxcO+A@mail.gmail.com>
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <CAJF2gTQWWi_Cb1iQiLOr4114kZW7L93KNwjCu3ArKb7ffxcO+A@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] vt: Fix potential read overflow of kernel memory
+Content-Language: en-US
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20230830160410.3820390-1-azeemshaikh38@gmail.com>
+ <2023083035-unpadded-amulet-8c7e@gregkh>
+ <CADmuW3Wbgb7s+jRm8F0hcjzreWysVdzNvv778yUbGCOxAJHwjQ@mail.gmail.com>
+ <202308301421.997C4034B5@keescook>
+ <aa488b1d-51b2-7b55-7a8d-552306ca16dd@foxvalley.net>
+ <202308301646.8397A6A11@keescook>
+From:   Dan Raymond <draymond@foxvalley.net>
+In-Reply-To: <202308301646.8397A6A11@keescook>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693460654;a84ee4de;
-X-HE-SMSGID: 1qbaTQ-0007eD-L3
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SPF_TEMPERROR autolearn=ham
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,63 +65,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.08.23 03:15, Guo Ren wrote:
-> On Wed, Aug 30, 2023 at 9:07 PM Linux regression tracking (Thorsten
-> Leemhuis) <regressions@leemhuis.info> wrote:
->>
->> On 30.08.23 13:40, Sudip Mukherjee (Codethink) wrote:
->>>
->>> The latest mainline kernel branch fails to build csky allmodconfig with
->>> the error:
->>
->> Thx for the report and involving regzbot. To make one thing more obvious:
->>
->> Guo Ren, it seems to be caused by a commit of yours.
->>
->> And fun fact: seem 0day bot found the same problem nearly thee weeks
->> ago, but nobody cared afaics:
->> https://lore.kernel.org/all/202308120502.MXpchFC1-lkp@intel.com/
->>
->>> In file included from ./arch/csky/include/asm/ptrace.h:7,
->>>                  from ./arch/csky/include/asm/processor.h:8,
->>>                  from ./include/linux/prefetch.h:15,
->>>                  from drivers/net/ethernet/intel/i40e/i40e_txrx.c:4:
->>> ./arch/csky/include/asm/traps.h:43:11: error: expected ';' before 'void'
->>>    43 | asmlinkage void do_trap_unknown(struct pt_regs *regs);
->>>       |           ^~~~~
->>>       |           ;
->>> [...]
->>>
->>> git bisect pointed to c8171a86b274 ("csky: Fixup -Wmissing-prototypes warning").
->>>
->>> Reverting the commit has fixed the build failure.
->>>
->>> I will be happy to test any patch or provide any extra log if needed.
->>>
->>> #regzbot introduced: c8171a86b27401aa1f492dd1f080f3102264f1ab
->>
->> #regzbot monitor:
->> https://lore.kernel.org/all/202308120502.MXpchFC1-lkp@intel.com/
+On 8/30/2023 5:48 PM, Kees Cook wrote:
+> Warning: This email is from an unusual correspondent.
+> Warning: Make sure this is someone you trust.
 > 
-> Sorry, Fixes have been sent, I'm waiting for it into the linux-next,
-> and then I will send 2nd pull request.
+> On Wed, Aug 30, 2023 at 05:17:12PM -0600, Dan Raymond wrote:
+>> In my opinion strlcpy() is being used correctly here as a defensive
+>> precaution.  If the source string is larger than the destination buffer
+>> it will truncate rather than corrupt kernel memory.  However the
+>> return value of strlcpy() is being misused.  If truncation occurred
+>> the copy_to_user() call will corrupt user memory instead.
+>>
+>> I also agree that this is not currently a bug.  It is fragile and it
+>> could break if someone added a very large string to the table.
+>>
+>> Why not fix this by avoiding the redundant string copy?  How about
+>> something like this:
+>>
+>> ptr = func_table[kb_func] ? : "";
+>> len = strlen(ptr);
+>>
+>> if (len >= sizeof(user_kdgkb->kb_string))
+>> 	return -ENOSPC;
+>>
+>> if (copy_to_user(user_kdgkb->kb_string, ptr, len + 1))
+>> 	return -EFAULT;
 > 
-> https://lore.kernel.org/linux-csky/20230830094653.2833443-1-guoren@kernel.org/
+> This would work if not for func_buf_lock. The bounce buffer is used to
+> avoid needing to hold the spin lock across copy_to_user.
+> 
 
-Ohh, it seems Guenter ran into this as well... Whatever, things happen.
+Ah you're right.  Thanks for setting me straight.  Now I realize that my
+entire assessment was wrong.  The original author was not using strlcpy()
+as a defensive measure to prevent a buffer overflow.  He was using it so
+that he could create a copy of the string and measure its length using
+only one pass.  This minimizes the time spent holding the spinlock.
 
-Thx for taking care of this.
-
-#regzbot monitor:
-https://lore.kernel.org/all/20230830094653.2833443-1-guoren@kernel.org/
-#regzbot monitor:
-https://lore.kernel.org/all/cd3924fb-8639-4fa5-8aae-bc2b20a63dec@roeck-us.net/
-#regzbot fix: csky: Fixup compile error
-
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
-
-#regzbot ignore-activity
+The surrounding code was written such that a buffer overflow is
+impossible.  No additional checks are needed.  The proposed patch is
+unnecessary.  But at least it preserves the spirit of the original
+author's code by performing only one pass of the source string
+while holding the spinlock.
