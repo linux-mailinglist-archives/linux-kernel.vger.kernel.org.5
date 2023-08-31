@@ -2,117 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4256778EEB9
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE9278EEBB
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241222AbjHaNgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:36:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        id S1344409AbjHaNiJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:38:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbjHaNgW (ORCPT
+        with ESMTP id S231305AbjHaNiI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:36:22 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A001CFC
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:36:19 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id 46e09a7af769-6bdc27e00a1so681271a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:36:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693488978; x=1694093778; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QqAw1vSdyf4KNpVgJMS6YvMCPUOYkqxMNfc27UX7Zy4=;
-        b=D6JVQgQFWPOgxp59+vNQU/Ugu6CTHatcUbg+YjMrxI26Huz3NJJk8K4QoQasGhVKbC
-         +LN85pIC1qjXrnWJcPvJXgTg7o/XX37ZjGKkfe5kXiBQacmdLoPWg0glMFreReBIieEc
-         W/a+fxxB0loro+ikzq1ttGf+kQivZuWgfsCNZXspxEUMUuox0+EqUzGqJVfQt36r+6d3
-         luEJ95aZbSXtz7+vNumTteUgiB3TmG+Hq8cn9LloLG0huUJ5zOA9FLW7d+py+amtU/vI
-         IQddvHqst+zzzh9MSuVHgDMovNH5aPRzZCs30r3wisqFdJtKfmc9nM/z3DhqRIslEl5F
-         BRww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693488978; x=1694093778;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QqAw1vSdyf4KNpVgJMS6YvMCPUOYkqxMNfc27UX7Zy4=;
-        b=A75O9eyjm7blXPqIBrZtIWaDyHlfjIqqTAKqAdGHma1o4pfgJ2BTHbdMfpPB8N29Kg
-         LNvr9WWnKJJQ9hzxd1+912ZwiM/Sap2chv+MHgzwjvN5CdqWHE0ZdlkjJdoHTBV3IZnN
-         iV/v7rdTCUeYJ5ASnbjUlhvJta913APRPgHVRtWW3dRldHZFygOnS+YwpFsS1YFopVwK
-         RTqpBBbvrdNxCWYjo0XoV/MG5XavNZOjPTTLjfaQAAsTMWVReJSQ2Ojo5GAIbcIdt3OQ
-         jCnba5vDMLNWnCwpH6ONMxa992OZz6G3oOSmpFEcdN//sL42Tot7huraj9GgX3ibgAV7
-         Ksog==
-X-Gm-Message-State: AOJu0YzE/nuJixM2qtH76JlzrCY0mONFG1/OoacmzMCr5dOctvMnAMjH
-        bss7MC9p8sW5wIt3pc8F/W2AEMCyw9XX0aA9IcKudu4/9x67c4Rn
-X-Google-Smtp-Source: AGHT+IHLwKEwQ6Ij8GHHKwNHA115gxE5tfUPeMUXy+HCUY2RaudcNytalLP9wq/BdDRNIoBPy2RPFlUyH5wDcxh/f5Q=
-X-Received: by 2002:a9d:7d0b:0:b0:6b9:52cb:3adf with SMTP id
- v11-20020a9d7d0b000000b006b952cb3adfmr5581080otn.20.1693488978357; Thu, 31
- Aug 2023 06:36:18 -0700 (PDT)
+        Thu, 31 Aug 2023 09:38:08 -0400
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A0651A2;
+        Thu, 31 Aug 2023 06:38:05 -0700 (PDT)
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+        (envelope-from <fw@strlen.de>)
+        id 1qbhrq-0000RJ-9x; Thu, 31 Aug 2023 15:37:50 +0200
+Date:   Thu, 31 Aug 2023 15:37:50 +0200
+From:   Florian Westphal <fw@strlen.de>
+To:     Wander Lairson Costa <wander@redhat.com>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Fernando Fernandez Mancera <ffmancera@riseup.net>,
+        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
+        "open list:NETFILTER" <coreteam@netfilter.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Lucas Leong <wmliang@infosec.exchange>, stable@kernel.org
+Subject: Re: [PATCH nf v2] netfilter/osf: avoid OOB read
+Message-ID: <20230831133750.GB15759@breakpoint.cc>
+References: <20230831123931.60606-1-wander@redhat.com>
 MIME-Version: 1.0
-References: <20230824112741.201353-1-linkmauve@linkmauve.fr>
- <20230824112741.201353-2-linkmauve@linkmauve.fr> <46a562b5-6984-3b41-3c41-c346107b4c96@linaro.org>
- <ZOdUiFsAjQCvwp1A@desktop> <622faf2a-58ec-5ff4-1952-19c15d122642@linaro.org>
-In-Reply-To: <622faf2a-58ec-5ff4-1952-19c15d122642@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 31 Aug 2023 15:36:07 +0200
-Message-ID: <CACRpkdaw-sYVUPPrHNGGkdQ9_09CMHg11u2hGcUV-7L8MpLj+w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] power: supply: bq24190: Support bq24193
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        Alexandre Courbot <acourbot@nvidia.com>,
-        azkali <a.ffcc7@gmail.com>, CTCaer <ctcaer@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831123931.60606-1-wander@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 3:28=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
-> On 24/08/2023 15:00, Emmanuel Gil Peyrot wrote:
->
-> >>> @@ -2027,6 +2028,7 @@ MODULE_DEVICE_TABLE(i2c, bq24190_i2c_ids);
-> >>>  static const struct of_device_id bq24190_of_match[] =3D {
-> >>>     { .compatible =3D "ti,bq24190", },
-> >>>     { .compatible =3D "ti,bq24192", },
-> >>> +   { .compatible =3D "ti,bq24193", },
-> >>>     { .compatible =3D "ti,bq24192i", },
-> >>>     { .compatible =3D "ti,bq24196", },
-> >>
-> >> We should really stop doing this. All of them are compatible, aren't t=
-hey?
-> >
-> > From what I gather from the different datasheets, the main difference
-> > between them is the maximum current they are able to provide, 1.5 A for
-> > the bq24190 and bq24192i, 3 A for bq24192 and 4.5 A for bq24193. The
-> > default current limit is also detected differently it seems.  But yeah,
-> > those are otherwise similar enough to not require anything different in
-> > the driver.
-> >
-> > What would be a good way forward for that?  Adding a new ti,bq2419x
-> > compatible and switching all devices to this one, as long as they don=
-=E2=80=99t
-> > require anything specific?
->
-> Not a wildcard but any of existing ones, e.g. "ti,bq24196", "ti,bq24190".
+Wander Lairson Costa <wander@redhat.com> wrote:
+> 
+> diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
+> index 8f1bfa6ccc2d..13fedf2aaa0f 100644
+> --- a/net/netfilter/nfnetlink_osf.c
+> +++ b/net/netfilter/nfnetlink_osf.c
+> @@ -315,6 +315,9 @@ static int nfnl_osf_add_callback(struct sk_buff *skb,
+>  
+>  	f = nla_data(osf_attrs[OSF_ATTR_FINGER]);
+>  
+> +	if (f->opt_num > ARRAY_SIZE(f->opt))
+> +		return -EINVAL;
+> +
 
-We usually encourage people to over-specify the hardware number,
-because you never know when you need a quirk and then if you can't
-tell them apart you are in a bad place. (But there are exceptions, such
-as jedec-nor...)
+Hmm, this isn't enough; as far as I can see there is no validation
+whatsover.
 
-The differences pointed out (charge current limit etc) can very well
-result in different code paths at some point, especially if the charger
-interacts with some other component.
+This should also check that all of:
 
-Yours,
-Linus Walleij
+ char    genre[MAXGENRELEN];
+ char    version[MAXGENRELEN];
+ char    subtype[MAXGENRELEN];
+
+... have a NUL byte.  You could use strnlen() == ARRAY_SIZE() -> EINVAL
+for those.
+
+Maybe there is more to be validated, I did not followup with all the
+nested structures buried in user_finger struct.
