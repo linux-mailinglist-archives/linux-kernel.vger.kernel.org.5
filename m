@@ -2,129 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6021E78E9E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 12:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A11DC78E9E5
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 12:05:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244766AbjHaKEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 06:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48410 "EHLO
+        id S245133AbjHaKFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 06:05:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbjHaKEv (ORCPT
+        with ESMTP id S245239AbjHaKFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 06:04:51 -0400
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33A45CEE;
-        Thu, 31 Aug 2023 03:04:48 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id CC4595C0094;
-        Thu, 31 Aug 2023 06:04:45 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Thu, 31 Aug 2023 06:04:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1693476285; x=1693562685; bh=3Bxg+078KgJz5tyNgD/JmbFy76+3swKXt6B
-        GQD9tQ3o=; b=xQaKSO/slhT3iA6z7K5DoGuYaIFmdHmzjpEo0OmEiUFCe4VqLi1
-        xU6xeQdztTvQFeaH/AfVmqolCmgFZvEOTNITKudVAa956Q/5yA6eGWh41wiMOI8x
-        gT5YyXsGBaGDCRgfSY2z5Y1LoiotjF5ZEroa5bW/lTJNwMKXey5sce2CQ+BGsk5c
-        vulklhbn4WCP1/koVDm3jTQn9SeX2QG6kRNkfzCm0ixri46ljbKecFa4U3faxS7X
-        I6MYBozS+vrqSgIgqruc58RES+kXRq0+heaBLB3gQ8bZ8m25KIzn5t6OlYvEMYVk
-        wP8OwtVgbC4lfhTwDAzNdfwP9PJyui/efGw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1693476285; x=1693562685; bh=3Bxg+078KgJz5tyNgD/JmbFy76+3swKXt6B
-        GQD9tQ3o=; b=iZqLyH1wWf1q38vMPMgm18pJKTKFDes4WE2z36cbp7XPNyN3mct
-        GRyOX2+EibJYON8+OHzOfQ0apZwy2Uaf6mPPF+AQERGPw4grTA7Cizk8ElpHqipN
-        F/Pb9CW11XMYHBRnMLIlctSYfR7JkiE1i4epHorM/+59Ff1uZR175D3+ufl+RGml
-        r3ooSFRWDc93kxePIDZEWICdYBGsCZ3bJ11sesWxIDJULk0mwyKLufcCA5MTCPNv
-        HzffujUf7yeB2lwlE1ZgsujxWUiUJf03Wm1Tb1wiVz8U2YpcJByPwwNouVdTq4wN
-        G7kCrdApfeVAVUtbHtmZh9jz+uX3nlfuubQ==
-X-ME-Sender: <xms:vWXwZC5R80CMhc2NqPXLLWQmCsYNIZAMB4INNYpn5kJ-UpevC4-Q4Q>
-    <xme:vWXwZL4A50RvpyCJNS9k6Kcioso7gByj0B5sIALzPowYUAxlE83F7fUCDWWImWT-m
-    h3SPYXIOWmMqu_J9I0>
-X-ME-Received: <xmr:vWXwZBddjksLpDu2OdNMJIyjlB7hnFN8M70VruPerbW6mLhPvZkPoLmTVf4Ql4C7ogI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudegtddgvdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepudfhkeevvddtueekfeefgfetlefgueegueeltddtieejgeei
-    heevgfehgfdvfeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:vWXwZPK4VxsqzirdmzYzIkS3ak87x8UypnEQwm_vi_LtHzhqKqtpQg>
-    <xmx:vWXwZGLv3gtGxxurFIh3H3zHTuBlvjCpi1nsfEDSlxC0nxInnEgcEA>
-    <xmx:vWXwZAyVPITB9rQZ-eY82o6uN71I1q-xhzMzrk_jW64_q8WyAybPKA>
-    <xmx:vWXwZIh3luAq_2MkqKsF5ZB-PFtgOUw2yOa8J2EGDHr4SlEjo6E2qg>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 31 Aug 2023 06:04:43 -0400 (EDT)
-Message-ID: <c2bdde51-4dcc-59ac-5f54-bcf43152fc92@flygoat.com>
-Date:   Thu, 31 Aug 2023 18:04:39 +0800
+        Thu, 31 Aug 2023 06:05:21 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A3F7CFA
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 03:05:15 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6229CC15;
+        Thu, 31 Aug 2023 03:05:54 -0700 (PDT)
+Received: from [10.57.4.144] (unknown [10.57.4.144])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9BF223F64C;
+        Thu, 31 Aug 2023 03:05:13 -0700 (PDT)
+Message-ID: <8d2eec52-a47e-f712-51fc-45f2414990e6@arm.com>
+Date:   Thu, 31 Aug 2023 11:05:09 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
  Thunderbird/102.14.0
-Subject: Re: [PATCH v2] pci: loongson: Workaround MIPS firmware MRRS settings
+Subject: Re: [PATCH] coresight: tmc-etr: Don't fail probe when non-secure
+ access is disabled
 Content-Language: en-GB
-To:     Huacai Chen <chenhuacai@kernel.org>, bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kw@linux.com, lpieralisi@kernel.org, stable@vger.kernel.org
-References: <20230725061008.1504292-1-jiaxun.yang@flygoat.com>
- <e9c103dc-98ac-9a51-7291-f5da1467b2ff@flygoat.com>
- <CAAhV-H7_OjTaU_wn6mUW0-JSrXS+=A2rXCiBc8cyce5ob49BLg@mail.gmail.com>
- <861a809d-3df1-327e-e033-87506f6d89e5@flygoat.com>
- <CAAhV-H67ehyqtm4ocOTWQPGBioWjQjLoyN5H9hALdq0oXdzWVg@mail.gmail.com>
- <62a7b292-ea1e-fb88-79cb-e7968d350a5e@flygoat.com>
- <CAAhV-H4DRFrsWOusyVPo5U_F-fwcfUUktGe31x9S3=E7vci=pQ@mail.gmail.com>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-In-Reply-To: <CAAhV-H4DRFrsWOusyVPo5U_F-fwcfUUktGe31x9S3=E7vci=pQ@mail.gmail.com>
+To:     Yabin Cui <yabinc@google.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Mike Leach <mike.leach@linaro.org>,
+        James Clark <james.clark@arm.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230825233930.1875819-1-yabinc@google.com>
+ <382193a4-4f30-d804-47da-a9c705b6bee5@arm.com>
+ <CALJ9ZPNQAWCLrK4u+j3vMZmu3TaLUN_Ne+yqetkquU2QS_XQFQ@mail.gmail.com>
+ <034c226d-7d0f-849c-45ae-a909839a4d2e@arm.com>
+ <CALJ9ZPODSc0R=B4yJb2QO3f+gmEaBHO7ZZQy3bNRp+jz3rnr9Q@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <CALJ9ZPODSc0R=B4yJb2QO3f+gmEaBHO7ZZQy3bNRp+jz3rnr9Q@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023-08-30 18:49, Yabin Cui wrote:
+> Hi Suzuki,
+> 
+>> Are you not able to build the coresight drivers as modules and load
+>> them after the device has been authenticated and NS access enabled ?
+>> Running a trace session without NS access enabled on a normal device
+>> would be asking for trouble in the "normal world".
+> 
+> Theoretically we can load coresight drivers after getting NS access.
+> But in practice,
+> it makes the userspace work more complex. The process will be as below:
+> 1. Use device specific checks to know if we have NS access authorized.
+>      Because we can't use the general coresight sysfs interface to read
+> authstatus.
+> 2. Load coresight driver modules.
+> 3. Use ETM/ETR.
+> 
+> It needs to add device specific checks in Android AOSP code (which we
+> don't prefer),
+> and add an extra step to load driver modules. It's more complex no matter we do
+> it in a daemon or want to use ETM/ETR manually.
+> 
+> If we can load the coresight drivers at boot time. The process is
+> simplified as below:
+> 1. Use the coresight sysfs interface to read authstatus. It works on
+> all devices.
+> 2. If authorized, use ETM/ETR.
+> 
+> The authorization used on Pixel devices can be granted/revoked while running.
+> So not allowing loading coresight drivers doesn't help us. We always need to
+> check authstatus each time before using ETM/ETR. And the check can be
+> easily added in tools using ETM/ETR.
 
+What, and "needing to connect to a server to verify identification after 
+booting" isn't already a complex extra step? You have to do that, and 
+you presumably have to trigger some firmware call to toggle DBGEN, so it 
+doesn't seem obvious why you couldn't synchronise module loading to a 
+point within that process. Heck, it doesn't even need to be a module 
+load, you could simply trigger a manual re-probe of a built-in (or 
+already-loaded) driver. If you can parse sysfs to find a specific path 
+to a device's "authstatus" attribute at the point when you think it 
+should be available, I'm sure you can just as easily construct the 
+relevant string to write to the relevant "probe" attribute if it is not.
 
-在 2023/8/31 17:42, Huacai Chen 写道:
-> On Thu, Aug 31, 2023 at 4:58 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+Really the big question here is why should upstream care about 
+supporting some private product-specific internal workflow that is 
+irrelevant to end users? Especially if doing so makes the end users' 
+experience objectively worse, by making the driver look like it should 
+work when in reality it won't.
+
+Thanks,
+Robin.
+
+> 
+> Thanks,
+> Yabin
+> 
+> On Wed, Aug 30, 2023 at 1:52 AM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
 >>
+>> Hi Yabin
 >>
->> 在 2023/8/31 14:22, Huacai Chen 写道:
+>> On 29/08/2023 22:16, Yabin Cui wrote:
+>>>> How can this be enabled ? Why not enable it before probing the ETR ?
+>>> How can a user know if this has been done or not ?
+>>>
+>>> Pixel devices (like Pixel 6, 7) support enabling some debugging features
+>>> (including granting non-secure access to ETM/ETR) even on devices with
+>>> secure boot. It is only used internally and has strict requirements,
+>>> needing to connect to a server to verify identification after booting.
+>>> So it can't be established when probing ETR at device boot time.
 >>
->> [...]
->>> But it is worth to try, and you can walk the children to set mrrs when
->>> the quirk runs on bridges, I think.
->> No, this will break hotplug, I had managed to get hotplug work on 2K1000.
->> Also we have no guarantee on order of discovering devices.
->>>> but the old quirk should run on every single device.
->>> Your current patch has a drawback that both quirks will run for MIPS,
->>> and their order is random (though it may cause nothing, but not
->>> elegant).
->> Actually loongson_mrrs_quirk is declared by DECLARE_PCI_FIXUP_EARLY but
->> loongson_old_mrrs_quirk is declared by DECLARE_PCI_FIXUP_ENABLE,
->> which means loongson_old_mrrs_quirk always runs after loongson_mrrs_quirk as
->> expected.
-> Then I think it is better to put this quirk in arch/mips/loongson64/,
-> just as pci_fixup_radeon().
-
-Hmm, spiting two quirks with similar functionality into two places 
-doesn't sound
-like a good idea.
-
-PCI folks, what do you think?
-
-Thanks.
-- Jiaxun
-
-[...]
+>> Are you not able to build the coresight drivers as modules and load
+>> them after the device has been authenticated and NS access enabled ?
+>> Running a trace session without NS access enabled on a normal device
+>> would be asking for trouble in the "normal world".
+>>
+>> Suzuki
+>>
+>>>
+>>>
+>>> On Sun, Aug 27, 2023 at 2:37 PM Suzuki K Poulose <suzuki.poulose@arm.com> wrote:
+>>>>
+>>>> On 26/08/2023 00:39, Yabin Cui wrote:
+>>>>> Because the non-secure access can be enabled later on some devices.
+>>>>
+>>>> How can this be enabled ? Why not enable it before probing the ETR ?
+>>>> How can a user know if this has been done or not ? It is asking for
+>>>> trouble to continue without this.
+>>>>
+>>>> Suzuki
+>>>>
+>>>>>
+>>>>> Signed-off-by: Yabin Cui <yabinc@google.com>
+>>>>> ---
+>>>>>     drivers/hwtracing/coresight/coresight-tmc-core.c | 2 +-
+>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+>>>>> index c106d142e632..5ebfd12b627b 100644
+>>>>> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+>>>>> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+>>>>> @@ -370,7 +370,7 @@ static int tmc_etr_setup_caps(struct device *parent, u32 devid, void *dev_caps)
+>>>>>         struct tmc_drvdata *drvdata = dev_get_drvdata(parent);
+>>>>>
+>>>>>         if (!tmc_etr_has_non_secure_access(drvdata))
+>>>>> -             return -EACCES;
+>>>>> +             dev_warn(parent, "TMC ETR doesn't have non-secure access\n");
+>>>>>
+>>>>>         /* Set the unadvertised capabilities */
+>>>>>         tmc_etr_init_caps(drvdata, (u32)(unsigned long)dev_caps);
+>>>>
+>>
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
