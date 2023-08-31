@@ -2,155 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA51E78E6B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B340878E6B6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:45:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240146AbjHaGpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 02:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
+        id S244762AbjHaGpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 02:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232653AbjHaGpW (ORCPT
+        with ESMTP id S232653AbjHaGpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 02:45:22 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857DEFC;
-        Wed, 30 Aug 2023 23:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1693464307; x=1694069107; i=j.neuschaefer@gmx.net;
- bh=YDHe3ibS11T8nF3ocTf88X/4bPZZBo6JF9SStUra4Hk=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
- b=XCOMPC1MpBOMv8M2zn1iMjS2CmeCDIpP63q2qWrn28+/VkJweCrEJZh0X/JeDcyeHp+fvdG
- HqDDMhpZl4cNBoFAMPGcDQ/2k2mUWKhyl02ZjCNzLEofVmousCx1vMBvtJUJFnmDGtPwbCRE1
- UVuuZcuoLfyWA9N9PM+ilTbhc9FFveJPQ2VLNFf8NM4oSP0K1G8q2UqUPT1w4ciinHXVbKUC8
- e7dltqU3rvdRJCjWnPYCpWryydhcxvCj6WbwkzNjd2L8k1flJIgJl0tE9l70saX1RIa5oD6Y4
- hA0PNSjM67PRlSDYoefqjHJ7rK+GWEd2Pu8SyEn7keXzgSvn1Evw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([87.154.222.166]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MORAa-1qJVVd01p0-00Pu9d; Thu, 31
- Aug 2023 08:45:07 +0200
+        Thu, 31 Aug 2023 02:45:06 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF6CB0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:45:03 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-99df431d4bfso47053966b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693464302; x=1694069102; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7dWDS9dtVikyI/W6YgtSMrS78Am1qgdN+VctPtJJV0I=;
+        b=R336AHxdUPYPkx/0JdUSthzKIRa+K4WoVEoFylye4SYGVfjDe+OcVT+rauRYu7kUrn
+         VaIY8cZmuz4tljXmzOUla+8LvBhMZdHuUq3zsh5pBXHUSVWNA3+QibwswILgig473+Si
+         15uvF5q43IJl4m3Zb+XxDbFLRA27zRO91QlXF93L310VVcrXsy1AMVqXk6zcPhmwGrJZ
+         ELZR97fVJpPLdhAUV9k036e33sLrUKxMRkuL9Hvnt6asAycY2P8a4m4QWTs+6hJtVblw
+         B5pCkpDVAQHwt9qD1KdMot55bWGwR4ZyOO3ymgbcl7s4X0WA2MxBYxEX+Mtub/Q+Ap7M
+         HlNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693464302; x=1694069102;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7dWDS9dtVikyI/W6YgtSMrS78Am1qgdN+VctPtJJV0I=;
+        b=HF1FcHb+Ze5D5mTrIwZQdF8I6cjpT6pkkskDa2G2sw+OzamIM6UdGrov+wAJrGViKw
+         IBcEyK5RvWiqUjwFpNe/cqoZ4EFB5pshZU43vIIfzqkh1wFP6hKeJJPTiy8xt+N2GQoV
+         1OEwY12nEPwI2xvV7miaP/Gw7VufqZusldhB/1JtqQ8s2+agHh2FbC2u/i8EHZkv7lh/
+         Xfejf/S8QYtkf+3IWWrqEXa5XF75voRuYEZIk30iUledNGehICcmYvkcF5U6rntn8moS
+         z4gLR7FF6sqSy96Ay0WPOXPUh5kI1udimPNkuo5T5gFJ7wlKONf/4HblLTSvvvlSUgjJ
+         0XAw==
+X-Gm-Message-State: AOJu0YwhaPIZkfWOJ/gMewJD+DNOgurufSAC2GNMPcMT3t1LfescT4Px
+        SansddttD0s5uPtTmHQ5IXS3qw==
+X-Google-Smtp-Source: AGHT+IG8ER1DZkwLkS8ltwacGdYzwYVFueweMXPTg7CdldbbujGszPJH8OBoJS3YdZo+OIGoPR3GsQ==
+X-Received: by 2002:a17:906:318a:b0:9a5:8afe:8c5d with SMTP id 10-20020a170906318a00b009a58afe8c5dmr2942537ejy.16.1693464301690;
+        Wed, 30 Aug 2023 23:45:01 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id a3-20020a17090680c300b009a19fa8d2e9sm383452ejx.206.2023.08.30.23.45.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 23:45:01 -0700 (PDT)
+Message-ID: <9c23d906-bba3-533e-ac31-3bad4fa46d64@linaro.org>
 Date:   Thu, 31 Aug 2023 08:44:59 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        linux-fbdev@vger.kernel.org, Helge Deller <deller@gmx.de>,
-        Rob Clark <robdclark@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jingoo Han <jg1.han@samsung.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fbdev: Update fbdev source file paths
-Message-ID: <ZPA26xdbTRdfuveS@probook>
-References: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
- <d9a02d20-8b59-cbdd-d054-eac14f9771d2@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="61gvMeB4klPZ0LE6"
-Content-Disposition: inline
-In-Reply-To: <d9a02d20-8b59-cbdd-d054-eac14f9771d2@suse.de>
-X-Provags-ID: V03:K1:YN6hA2pipnB/LXgD3D6FB3XD/XV2ApQtg1Gl2emx7q4JFOmIzo2
- ob6XmirzZ/fR7rpCb7VKiemUi3sjoUP5J4M/1OFZSTKXGqdx5skiQP2Ts6rdOZ8lxkWwllS
- P/V9TsrAy02cBPEhq4Cfi7kJ8aKuiH+tnX1a+e1ryYyi6rw9sofshSPHRS4lbuH1epJ5tD2
- KGBxW2jq/hjoazWPS3WmQ==
-UI-OutboundReport: notjunk:1;M01:P0:7uYDAgx4GK0=;fnI+DBYs1JXOUhRWd/YF0tyANGA
- BAtZAGKZujgbDymtxmVeZXIMkjS+tUTMV3C9CoBxKnj8hNN3s6f1qjv0dWHvS0JbpKd4G2Rdk
- h5olINI+fmdRlq1NP3FPu7W/Nus+ZI1WXEzazcni3AwGi3QWVmrBY1hxcNWXO/MoRru9CfeGg
- eks9SHMXWGKhkAVHPFEsvJJ1VMKqYxa5/KJaId5pp4tpm1aCs2M8/EWm+KfyG7G715Hht4T4k
- 0U/v4RW7sYLGwQEnedchwvhcAgOmlG6iukPD5EcUEt20XRat8jlXzGVdd9VQ8gsS1LGYSALrD
- BvzqNS5z/6dbGlyr8EIU9ivAeupQ6oD1ySlgBZzrlhbf3Qc6ATTsq2bM3OyIWvmEyeUpm1ean
- d3kMnW6n+oiDE9xRXaNKUcrqEobfJOZeEtlBxl+pv0qncQ06sXkUIM0ae1yNRot+FxPVpG4y0
- HwlEJcX6CNvzQe+eIUbQoiUpgRDWqcHQnu5Gli+DXXr6awFEj+ugsrlZ0GWc9dWPmYMFNgMPW
- ufcYxecjhq84V98glT/5KQTHWWMB+A3ZSPaibt1uzpWxo0LpmQjdumbAyLjjhcWddJH4pQmcT
- X15dACKBDFU21dhiHI+QsfE4lCMpaYpufHtfmfnn9x3jx4b2CXTJcElo+udWJhWsHOc3sYjl3
- JcPmgfkU9LFN2PR1lqmOI+unmxjqOPyyuu8bb0R7JP9sMwsF+dvW9Q7b++pa10sBNFDlNWOo8
- 5X9WyPzseAkeHoxJt3v9MUBoiENJXFjLA66gva40SxutSTCOVMc5KDeLHlUB4tjZqjX/tbNQ9
- pUCShdedl674G7VdJ+4+2UIn70kIAym6j02E+URqRNBC5s/DaJxlDJRavGFLG0OXhz15meXgt
- Amryy/D94Tutpg/U5rctl77LyPQllS/9PnM8dLtEhUJqUMdo09NAP6wcZUe0omHISxQM8PZd4
- G8dc+/ESUwBI5G0gjUfSx5bFlio=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v5 1/2] ARM: dts: aspeed: Minerva: Add Facebook Minerva
+ (AST2600) BMC
+To:     PeterYin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
+        daniel-hsu@quantatw.com
+References: <20230831055030.3958798-1-peteryin.openbmc@gmail.com>
+ <20230831055030.3958798-2-peteryin.openbmc@gmail.com>
+ <4cbe662d-cd20-ceef-e3e4-6608029f94b7@linaro.org>
+ <5347163b-c225-d805-d851-fe28e6b57c56@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <5347163b-c225-d805-d851-fe28e6b57c56@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 31/08/2023 08:34, PeterYin wrote:
+> 
+> On 8/31/23 14:20, Krzysztof Kozlowski wrote:
+>> On 31/08/2023 07:50, Peter Yin wrote:
+>>> Add linux device tree entry related to
+>>> Minerva specific devices connected to BMC SoC.
+>>>
+>>> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+>>> ---
+>>>   arch/arm/boot/dts/Makefile                    |   1 +
+>>>   .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 377 ++++++++++++++++++
+>>>   2 files changed, 378 insertions(+)
+>>>   create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+>>>
+>>> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+>>> index 9e1d7bf3cff6..edb0b2105333 100644
+>>> --- a/arch/arm/boot/dts/Makefile
+>>> +++ b/arch/arm/boot/dts/Makefile
+>>> @@ -1604,6 +1604,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>>>   	aspeed-bmc-facebook-wedge400.dtb \
+>>>   	aspeed-bmc-facebook-yamp.dtb \
+>>>   	aspeed-bmc-facebook-yosemitev2.dtb \
+>>> +	aspeed-bmc-facebook-minerva.dtb \
+>> Third or fourth time: that's not a correct order. This is a nit, but
+>> since you keep ignoring it, I don't believe any other feedback was
+>> applied. Why you did not respond to my comments but just ignored them?
+> Sorry, I don't notice this is different file.
 
---61gvMeB4klPZ0LE6
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+You just skipped that comment and did not respond to it in your last
+private reply... Just like in previous versions. Go through all the
+comments from previous versions, not few.
 
-On Wed, Aug 30, 2023 at 09:10:26AM +0200, Thomas Zimmermann wrote:
-> Hi
->=20
-> Am 29.08.23 um 22:02 schrieb Jonathan Neusch=C3=A4fer:
-> > The files fbmem.c, fb_defio.c, fbsysfs.c, fbmon.c, modedb.c, and
-> > fbcmap.c were moved to drivers/video/fbdev, and subsequently to
-> > drivers/video/fbdev/core, in the commits listed below.
-> >=20
-> > Reported by kalekale in #kernel (Libera IRC).
-> >=20
-> > Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
-> > Fixes: 19757fc8432a ("fbdev: move fbdev core files to separate director=
-y")
-> > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
->=20
-> IMHO these comments might just be removed.
+Best regards,
+Krzysztof
 
-I think it's nice to have some sort of visual separation between groups
-of functions in fb.h, which these comments provide at the moment.
-Therefore I'm currently leaning towards my patch as it is, but I'm
-willing to have my mind changed and do a v2 which just removes the
-comments.
-
-
-Thanks
-
->=20
-> Best regards
-> Thomas
->=20
-> > ---
-> >   include/linux/fb.h | 12 ++++++------
-> >   1 file changed, 6 insertions(+), 6 deletions(-)
-> >=20
-> > diff --git a/include/linux/fb.h b/include/linux/fb.h
-> > index ce7d588edc3e6..3cda5b9f2469b 100644
-> > --- a/include/linux/fb.h
-> > +++ b/include/linux/fb.h
-> > @@ -592,7 +592,7 @@ extern ssize_t fb_sys_write(struct fb_info *info, c=
-onst char __user *buf,
-> >   	__FB_DEFAULT_SYS_OPS_DRAW, \
-> >   	__FB_DEFAULT_SYS_OPS_MMAP
-> >=20
-> > -/* drivers/video/fbmem.c */
-> > +/* drivers/video/fbdev/core/fbmem.c */
-> >   extern int register_framebuffer(struct fb_info *fb_info);
-> >   extern void unregister_framebuffer(struct fb_info *fb_info);
-> >   extern int fb_prepare_logo(struct fb_info *fb_info, int rotate);
-
---61gvMeB4klPZ0LE6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmTwNsIACgkQCDBEmo7z
-X9tvbRAAsO2oUGtTVNk9irtcdEBvhsF/pwPMV+PMmjLZl6u7R0ANKB62mvrX57rJ
-uT2lHBORu4DG6pL89TEJjv6nvVXbiz2bC7g7/Ej07U6ebSgFJ2MBcCUfp9IcLmF3
-YLNfIYBrXg9dzOJFt2SbgsxZ/07pDKUbj59lroPdiVcMwZTfm7Rm4nPCJaCzuqPr
-HBZgtVhkIZHifdyElC1Ccat3QNAyYzJ+5R45mV/Nah34JBmZk10dCtmwRYuQ8dXs
-ci3EI8eHZiFf5mvR7Hc6hED5PgsMpKwbI+MJxLz3+N2Z9DL2cFvGn+Z35SCrS2ed
-IycjY9mKlOwm3zhUHDOvGHhAiDvIXFHlIWSNe0ARhTqvvI+DFdy1MdmLk46hbeWg
-utlsA9Iyi8wt3UhWShNWga5FyJVgV78yXEcNHC8ER2TGps2XcSblktgANyVYsWS+
-KvlaPRZ4xE0T3aoeHcjfxSKEdPBv1r6nbuOqq7DGmVM2U2nTZWA4bhndiCyCaoo6
-2JZkx7z2MLoCx96gnM479FBqiEutZ5N9PvBvKmSOB0leem0XfxpjwN1TAR54Ge7f
-66BJ+6KQokqa7XqL0hzJUROjCPseIVxH+3VvvyEo9jKkvPyjyshqMVp6gH1B0tAA
-KStDEv5oAu26Oqa6glA7IvNZlY2T6BAL3ZiGEzcEQKmosdZWmn8=
-=I5hY
------END PGP SIGNATURE-----
-
---61gvMeB4klPZ0LE6--
