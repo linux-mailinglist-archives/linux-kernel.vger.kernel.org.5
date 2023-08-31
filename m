@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ED8678E3B1
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098FD78E3B2
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344605AbjHaADr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 20:03:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
+        id S1344610AbjHaAED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 20:04:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344601AbjHaADq (ORCPT
+        with ESMTP id S237781AbjHaAEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 20:03:46 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2217CDA
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:43 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-564af0ac494so286524a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693440223; x=1694045023; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6VbAFF+mQ3qo4IqvELdDEKnEePt5q/NF9cOLJ4fQs4c=;
-        b=NtTxdPtzChlphLzPyHgbZIRPE8CfMvug72kjB3FwHqjTOmd9myq9J8Tfk2maGVtMSH
-         yjhSeihyHNphoN91OLUbGRPekKYBNHwR+yBDLAsLN2wBWUsMJaX3zfiRAH4lRXDrWZ5V
-         jT7OhB8gOfuj/vLumSFrnyeecGERkxJtyCN/k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693440223; x=1694045023;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6VbAFF+mQ3qo4IqvELdDEKnEePt5q/NF9cOLJ4fQs4c=;
-        b=Np7q3ct3tTXvAguJNfbsoV6UOK3G7/Cne/V1dx8/Vwrl1gYuE2ZJo360z1ZdU8iTPN
-         z6NLeuJUBRk7VOXWsr5kFWe1wSYqogp5KfVXrXvvUaZiIyanQrIXDq0DT6GkfyvsLKab
-         //jqDQYQ4hhpfmC9mIJeH28KTDAAitq5lRtgJ7ysSpmwv7/YTGkP82h2CMBXJ3GJSvV0
-         LXPzcVEMCl5qyhIv3sXaP95e52YXzvWmPN/NwK+xcq9aMHCryqTC0wRyo5OMJr09JHmK
-         dMyfevXTITH5Q0/IrWpbNuqzPzb23XzWclo5EkaYQ4EeltoGMXcx633+c7Zg+34py4mQ
-         j4NQ==
-X-Gm-Message-State: AOJu0YxfsU25yTcK54zLXBxD0QQdFJgVYN8YOX6p4Av9eI3rCTaCilIp
-        5GzEWsxdMjjxrVqV4msfzbAg0A==
-X-Google-Smtp-Source: AGHT+IGzXuhNKvCDESQE2QRrtYZBrvFQDlCXvQaZKzcZ7GFJqvb5A0aJYkymW5POHQPY6ycQWRimsg==
-X-Received: by 2002:a17:90a:fa88:b0:26f:4685:5b66 with SMTP id cu8-20020a17090afa8800b0026f46855b66mr3639939pjb.8.1693440223411;
-        Wed, 30 Aug 2023 17:03:43 -0700 (PDT)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ft15-20020a17090b0f8f00b002684b837d88sm152885pjb.14.2023.08.30.17.03.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 17:03:42 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 17:03:42 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Nicolas Schier <nicolas@fjasle.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] kbuild: Show Kconfig fragments in "help"
-Message-ID: <202308301702.4EB6F55@keescook>
-References: <20230825194329.gonna.911-kees@kernel.org>
- <CAK7LNATcTw+btQVri7SBA8gFbDNMYz7D2gMQaoZp9sQGFjCw8Q@mail.gmail.com>
- <87ttsjlmho.fsf@mail.lhotse>
- <ZO2NVLipjlzIh0YS@bergen.fjasle.eu>
- <CAK7LNARjsB+LTBGRfWX68Ld7oehhuBv9SY8scoC=Xk8EJc-OHw@mail.gmail.com>
+        Wed, 30 Aug 2023 20:04:02 -0400
+Received: from mx0a-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987A7CDA
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:58 -0700 (PDT)
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.17.1.19/8.17.1.19) with ESMTP id 37UN7ruj001335
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=s2048-2021-q4;
+ bh=9w64N/q3DFoDcjGEuuQm5zoxeFSu57f6UwIHrvy8DEw=;
+ b=KeJ7m5v5PEYtuPM4/BRyIRx1T7FMS1IEmrlgtyc35Bl1RlouQEQR7v0lyb18mgsPviIK
+ F0ru8TPs6NV1lv8pNreWa5Gt5rZI1a/dKLPbCBeRimb1sa2mj16XNLn+yJnJOKoXMp4c
+ EFEcuh2QCkMWI2grHh3afWZy6vtKv6bYeZFEV/m0+l1BMkqjB+jlmv7OSRKRm82BSxAm
+ Uk3JVgX9X26cGgbIoIJ0K9XeaLnTxQDxqLR2cl5/OYSbqmFJ70ez6uQ6m9Tjj26lp4wZ
+ uCLeTbEU2F2f11XtFK7Rg1y3L84GW0enK4/0pjWH7cmrCh2x8jzJzTyx43HOBOuOJiTG 0Q== 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net (PPS) with ESMTPS id 3st4dn641n-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:03:57 -0700
+Received: from twshared6713.09.ash9.facebook.com (2620:10d:c085:108::8) by
+ mail.thefacebook.com (2620:10d:c085:11d::8) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.23; Wed, 30 Aug 2023 17:03:57 -0700
+Received: by devvm5565.lla0.facebook.com (Postfix, from userid 378941)
+        id 5840BED8EAE; Wed, 30 Aug 2023 17:03:50 -0700 (PDT)
+From:   Pawel Zmarzly <pzmarzly@meta.com>
+To:     Damien Le Moal <dlemoal@kernel.org>
+CC:     <linux-ide@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Pawel Zmarzly <pzmarzly@meta.com>
+Subject: [PATCH] ata: Disable NCQ_TRIM on Micron 1100 drives
+Date:   Wed, 30 Aug 2023 17:02:22 -0700
+Message-ID: <20230831000222.576254-1-pzmarzly@meta.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK7LNARjsB+LTBGRfWX68Ld7oehhuBv9SY8scoC=Xk8EJc-OHw@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-FB-Internal: Safe
+Content-Type: text/plain
+X-Proofpoint-GUID: _wgjkYMd9z9RiZkOn1lgHLYS11qMj9Gg
+X-Proofpoint-ORIG-GUID: _wgjkYMd9z9RiZkOn1lgHLYS11qMj9Gg
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-30_19,2023-08-29_01,2023-05-22_02
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 11:57:19PM +0900, Masahiro Yamada wrote:
-> The attached patch will work too.
-> 
-> I dropped the "in the first line" restriction
-> because SPDX might be placed in the first line
-> of config fragments.
+Micron 1100 drives lock up when encountering queued TRIM command.
+It is a quite old hardware series, for past years we have been
+running our machines with these drives using
+libata.force=3Dnoncqtrim.
 
-Good call. Yes, this looks excellent; thank you! Do you want to send a
-formal patch? Please consider it:
+Signed-off-by: Pawel Zmarzly <pzmarzly@meta.com>
+---
+ drivers/ata/libata-core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
+index 175b2a9dc000..d2466f2c5fea 100644
+--- a/drivers/ata/libata-core.c
++++ b/drivers/ata/libata-core.c
+@@ -4564,6 +4564,8 @@ static const struct ata_blacklist_entry ata_device_=
+blacklist [] =3D {
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
+ 	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
+ 						ATA_HORKAGE_ZERO_AFTER_TRIM, },
++	{ "Micron_1100_*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
++					ATA_HORKAGE_ZERO_AFTER_TRIM, },
+=20
+ 	/* devices that don't properly handle TRIM commands */
+ 	{ "SuperSSpeed S238*",		NULL,	ATA_HORKAGE_NOTRIM, },
+--=20
+2.39.3
 
--- 
-Kees Cook
