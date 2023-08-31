@@ -2,218 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A67B178F44F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560BC78F450
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243694AbjHaUzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 16:55:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
+        id S1347465AbjHaU4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 16:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233704AbjHaUzI (ORCPT
+        with ESMTP id S233704AbjHaU4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 16:55:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F22D1B0;
-        Thu, 31 Aug 2023 13:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693515305; x=1725051305;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=D5MKd0EognNthiZZNZN30iHIGBUfCWSvq+JGCaxbtPc=;
-  b=kIQga41FJpLQUsmiLEiLTJbzFev2yLPfe65Z26hfH5sNBDe3eWXzgFaC
-   uVHOav4YM5DeqqX8e9KntIW6k7dXNuzDsi9VvqDPAeHpBk30P2XoCwW6P
-   zes2HzPRvOUvVGHFOChBWTNMIA/CJyERlBTsDQzPKm9G975VL7X7c1czO
-   8CTTciOGX4K+D7wMDzHcU6WzpxnPPTwD0NQfMwQGtzhiJsTxVjYiF6smw
-   7vpR3QFxT32528YGbZ+e2QUoK3RHj66OUQktuv7EMz2ZECmAqFaApz7bI
-   zxyQHYqGYNDTLut/xkTsn/jl4ncft7no2jFHgTf8jG0NXlGxleVpgaYHV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="375998302"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="375998302"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 13:55:04 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="739682735"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="739682735"
-Received: from folaez-mobl1.amr.corp.intel.com (HELO desk) ([10.209.111.20])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 13:55:04 -0700
-Date:   Thu, 31 Aug 2023 13:54:55 -0700
-From:   Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-To:     Takahiro Itazuri <itazur@amazon.com>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Takahiro Itazuri <zulinx86@gmail.com>
-Subject: Re: [PATCH v2] docs: Update desc of best effort mode
-Message-ID: <20230831205455.ozr7iaraatcaj2ug@desk>
-References: <20230831111847.71030-1-itazur@amazon.com>
+        Thu, 31 Aug 2023 16:56:48 -0400
+Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D238ACFE
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:56:45 -0700 (PDT)
+Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1c4d8eaa8ebso785736fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:56:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693515405; x=1694120205; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:sender:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=4KEw87/vvOhiR1QFpwjWnIxbs8bTupPtRnvmmCM2ldo=;
+        b=FWCzeBdNFNPGwfbjV8C7/TVnvd+z/gc0prpBoNfVQYD3hPn2tB4LFYGA1ivAiFEwYS
+         ChUGdI4d5P4s99WdMmgderk6L4s99XnsEX1TvsdtdTTj2k/tqWrqaHcaiTMcIZGVbPOB
+         JRmV0rsHaorB9ctEd4GYXxcHR+2SZm22qhVZkRTVN9zJG8Pte1e1V1dxbdxpobr96qhX
+         0uWPwGyHkuSttp5MOJ3t7Pqj0HUgS188oFGnxnMaP9VglDfdZq8Z5Q1SvLdp58NQYZN1
+         dHBwT6r78vXHKavJtDdrgUOpSf0M++idfQoMJfVym1ix+JvSj/UGL8CvDWa9X6I5n1Kv
+         AsvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693515405; x=1694120205;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:sender:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4KEw87/vvOhiR1QFpwjWnIxbs8bTupPtRnvmmCM2ldo=;
+        b=LAcScHE59clTNpiERuVd1v/f6OMvk5Xg4JOvPxIS8KX5VCB7J24GnP8lJP3L3DxEue
+         5tv+ObSRKV5n43ejME54o7yQaeaesH9/+2R+48dFMMrGy5HBJWJ44sXUUg1/bUvhBAMa
+         lwMZhmAPK5GQJfqY+i5DWfqyI3+sELkJtWOM3xC7x62fgOtWcMCPtd7aC9Yw7LY/AVbo
+         7MNlErRwMuXGYbTKhqhe2BaWAz1eTNCgvAo3ZqHt5ppy6tYkU2Q6fJZn9aXbNiJviZ/B
+         HD8D2ClV1JwgoO0oI6ZHGpGvgBfk6QKqwfObHtfrhkrLug3fcqqI3Dl/2lTrWgzTxcmg
+         dR1Q==
+X-Gm-Message-State: AOJu0Yzy54N85ZM+wVNZuMkG5xcKh2+VzchbDDf6CK4Z8uBnxGVyOXmJ
+        j7//g6eNoWhrzBQH3zE9VRa/BQDgqTk=
+X-Google-Smtp-Source: AGHT+IFuPKGyV72OAOzy5Z2YacZYlY6BSjljcbGWZE6zH/4LnzXf8ctK1GJSz66ya9ZMUbALO0hSCw==
+X-Received: by 2002:a05:6870:2189:b0:1d0:e371:e95c with SMTP id l9-20020a056870218900b001d0e371e95cmr542020oae.40.1693515405078;
+        Thu, 31 Aug 2023 13:56:45 -0700 (PDT)
+Received: from [192.168.0.162] ([216.130.59.33])
+        by smtp.gmail.com with ESMTPSA id l8-20020a9d7348000000b006b753685cc5sm1109039otk.79.2023.08.31.13.56.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 13:56:44 -0700 (PDT)
+Sender: Larry Finger <larry.finger@gmail.com>
+Message-ID: <6738ca0d-ee66-7dde-3307-e8a55a115757@lwfinger.net>
+Date:   Thu, 31 Aug 2023 15:56:40 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230831111847.71030-1-itazur@amazon.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Content-Language: en-US
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+From:   Larry Finger <Larry.Finger@lwfinger.net>
+Subject: Comment on "memfd: improve userspace warnings for missing
+ exec-related flags"
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 12:18:47PM +0100, Takahiro Itazuri wrote:
-> Moves the description of the best effort mitigation mode to the table of
-> the possible values in the mds and tsx_async_abort docs, and adds the
-> same one to the mmio_stale_data doc.
+Aleksa,
 
-I would suggest to change the subject prefix to:
+In commit 434ed3350f57 ("memfd: improve userspace warnings for missing 
+exec-related flags"), your changing of pr_warn_once() to pr_info_ratelimited() 
+was justified as it would "... incentivise userspace to switch to passing 
+MFD_EXEC and MFD_NOEXEC_SEAL, we need to provide a warning on each attempt to 
+call memfd_create() without the new flags."
 
-docs/hw-vuln: Update desc of best effort mode
+It would be easier to get userspace to implement these flags if they were 
+documented somewhere other than the kernel source. The man page for 
+memfd_create() does not mention them at all.
 
-or
+Larry
 
-Documentation/hw-vuln: Update desc of best effort mode
-
-> Signed-off-by: Takahiro Itazuri <itazur@amazon.com>
-> ---
-> 
-> v1 -> v2: https://lore.kernel.org/all/20230830144426.80258-1-itazur@amazon.com/
-> - Puts the desc into the table of the possible values.
-> 
-> ---
->  Documentation/admin-guide/hw-vuln/mds.rst     | 33 ++++++++-----------
->  .../hw-vuln/processor_mmio_stale_data.rst     | 13 +++++++-
->  .../admin-guide/hw-vuln/tsx_async_abort.rst   | 32 ++++++++----------
->  3 files changed, 38 insertions(+), 40 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/hw-vuln/mds.rst b/Documentation/admin-guide/hw-vuln/mds.rst
-> index 48ca0bd85..0fe98151a 100644
-> --- a/Documentation/admin-guide/hw-vuln/mds.rst
-> +++ b/Documentation/admin-guide/hw-vuln/mds.rst
-> @@ -102,9 +102,19 @@ The possible values in this file are:
->       * - 'Vulnerable'
->         - The processor is vulnerable, but no mitigation enabled
->       * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
-> -       - The processor is vulnerable but microcode is not updated.
-> -
-> -         The mitigation is enabled on a best effort basis. See :ref:`vmwerv`
-> +       - The processor is vulnerable but microcode is not updated. The
-> +         mitigation is enabled on a best effort basis.
-> +
-> +         If the processor is vulnerable but the availability of the microcode
-> +         based mitigation mechanism is not advertised via CPUID, the kernel
-> +         selects a best effort mitigation mode. This mode invokes the mitigation
-> +         instructions without a guarantee that they clear the CPU buffers.
-> +
-> +         This is done to address virtualization scenarios where the host has the
-> +         microcode update applied, but the hypervisor is not yet updated to
-> +         expose the CPUID to the guest. If the host has updated microcode the
-> +         protection takes effect; otherwise a few CPU cycles are wasted
-> +         pointlessly.
->       * - 'Mitigation: Clear CPU buffers'
->         - The processor is vulnerable and the CPU buffer clearing mitigation is
->           enabled.
-> @@ -119,23 +129,6 @@ to the above information:
->      'SMT Host state unknown'  Kernel runs in a VM, Host SMT state unknown
->      ========================  ============================================
->  
-> -.. _vmwerv:
-> -
-> -Best effort mitigation mode
-> -^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> -
-> -  If the processor is vulnerable, but the availability of the microcode based
-> -  mitigation mechanism is not advertised via CPUID the kernel selects a best
-> -  effort mitigation mode.  This mode invokes the mitigation instructions
-> -  without a guarantee that they clear the CPU buffers.
-> -
-> -  This is done to address virtualization scenarios where the host has the
-> -  microcode update applied, but the hypervisor is not yet updated to expose
-> -  the CPUID to the guest. If the host has updated microcode the protection
-> -  takes effect otherwise a few cpu cycles are wasted pointlessly.
-> -
-> -  The state in the mds sysfs file reflects this situation accordingly.
-> -
-
-This deletion leaves an extra newline. Same for TAA.
-
->  Mitigation mechanism
->  -------------------------
-> diff --git a/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst b/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
-> index c98fd1190..1302fd1b5 100644
-> --- a/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
-> +++ b/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
-> @@ -225,8 +225,19 @@ The possible values in this file are:
->       * - 'Vulnerable'
->         - The processor is vulnerable, but no mitigation enabled
->       * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
-> -       - The processor is vulnerable, but microcode is not updated. The
-> +       - The processor is vulnerable but microcode is not updated. The
->           mitigation is enabled on a best effort basis.
-> +
-> +         If the processor is vulnerable but the availability of the microcode
-> +         based mitigation mechanism is not advertised via CPUID, the kernel
-> +         selects a best effort mitigation mode. This mode invokes the mitigation
-> +         instructions without a guarantee that they clear the CPU buffers.
-> +
-> +         This is done to address virtualization scenarios where the host has the
-> +         microcode update applied, but the hypervisor is not yet updated to
-> +         expose the CPUID to the guest. If the host has updated microcode the
-> +         protection takes effect; otherwise a few CPU cycles are wasted
-> +         pointlessly.
->       * - 'Mitigation: Clear CPU buffers'
->         - The processor is vulnerable and the CPU buffer clearing mitigation is
->           enabled.
-> diff --git a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-> index 014167ef8..c6400fe6b 100644
-> --- a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-> +++ b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-> @@ -98,7 +98,19 @@ The possible values in this file are:
->     * - 'Vulnerable'
->       - The CPU is affected by this vulnerability and the microcode and kernel mitigation are not applied.
->     * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
-> -     - The system tries to clear the buffers but the microcode might not support the operation.
-> +     - The processor is vulnerable but microcode is not updated. The
-> +       mitigation is enabled on a best effort basis.
-> +
-> +       If the processor is vulnerable but the availability of the microcode
-> +       based mitigation mechanism is not advertised via CPUID, the kernel
-> +       selects a best effort mitigation mode. This mode invokes the mitigation
-> +       instructions without a guarantee that they clear the CPU buffers.
-> +
-> +       This is done to address virtualization scenarios where the host has the
-> +       microcode update applied, but the hypervisor is not yet updated to
-> +       expose the CPUID to the guest. If the host has updated microcode the
-> +       protection takes effect; otherwise a few CPU cycles are wasted
-> +       pointlessly.
->     * - 'Mitigation: Clear CPU buffers'
->       - The microcode has been updated to clear the buffers. TSX is still enabled.
->     * - 'Mitigation: TSX disabled'
-> @@ -106,24 +118,6 @@ The possible values in this file are:
->     * - 'Not affected'
->       - The CPU is not affected by this issue.
->  
-> -.. _ucode_needed:
-> -
-> -Best effort mitigation mode
-> -^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> -
-> -If the processor is vulnerable, but the availability of the microcode-based
-> -mitigation mechanism is not advertised via CPUID the kernel selects a best
-> -effort mitigation mode.  This mode invokes the mitigation instructions
-> -without a guarantee that they clear the CPU buffers.
-> -
-> -This is done to address virtualization scenarios where the host has the
-> -microcode update applied, but the hypervisor is not yet updated to expose the
-> -CPUID to the guest. If the host has updated microcode the protection takes
-> -effect; otherwise a few CPU cycles are wasted pointlessly.
-> -
-> -The state in the tsx_async_abort sysfs file reflects this situation
-> -accordingly.
-> -
-
-Reviewed-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
