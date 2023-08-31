@@ -2,269 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF84778EC6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B1E778EC71
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345339AbjHaLse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
+        id S1344706AbjHaLsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:48:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231241AbjHaLsd (ORCPT
+        with ESMTP id S231241AbjHaLsx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:48:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB163C5;
-        Thu, 31 Aug 2023 04:48:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 423316146C;
-        Thu, 31 Aug 2023 11:48:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0F35C433C8;
-        Thu, 31 Aug 2023 11:48:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693482509;
-        bh=lt6Dfc0PcUO4CkQPKYP4ayUpOMx8UlAuNXxheoPljfM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f6ueSnFewdHLh/k/xGULrXbf+/onOyOO68DI/jTtTT8cBdkteTuDGSReu1qUqBkGR
-         VPEi0a6V34fyiytWfzOj+bmDUdkcFhcYZHcpz7Gh1ZcYrvfN9/SyIxR/9KLyFIlH6+
-         zlottUp6b4VQb+eb0PWes1UTj/dVRaOfwycRMaTwI/3irRCUoTOEZyoaReFhjEbe6d
-         2F9Cla0RwXylhNpsyg71p5y7wCp8n8WRbwUsbsI6+40At5wpw0eg3s4rg9LlPJQccg
-         FiksDXiE2mIWOjP40mV/MHCMPRXseDsDW35Rz75O3gwejpDQtYQv119+euBfd1Cf8G
-         QUaDYz/UvS1uA==
-Received: (nullmailer pid 1959264 invoked by uid 1000);
-        Thu, 31 Aug 2023 11:48:27 -0000
-Date:   Thu, 31 Aug 2023 06:48:27 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Henrik Rydberg <rydberg@bitmath.org>,
-        Bastian Hecht <hechtb@gmail.com>,
-        Michael Riesch <michael.riesch@wolfvision.net>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 2/4] dt-bindings: touchscreen: add overlay-touchscreen
- and overlay-buttons properties
-Message-ID: <20230831114827.GA1941458-robh@kernel.org>
-References: <20230510-feature-ts_virtobj_patch-v4-0-5c6c0fc1eed6@wolfvision.net>
- <20230510-feature-ts_virtobj_patch-v4-2-5c6c0fc1eed6@wolfvision.net>
+        Thu, 31 Aug 2023 07:48:53 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B0F9E45;
+        Thu, 31 Aug 2023 04:48:48 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 37VBmVxc079737;
+        Thu, 31 Aug 2023 06:48:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693482511;
+        bh=rUzskDRuUxd5GNL1WaRYRS9VAZF5I2dFCZM8IxXPpiQ=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=rOi2LLyKwAAZeO1Hq8sxUNfIOH+JCEedPMvvwQS+DHP/XYmQcAuB+n5wAHvF35wyH
+         WPHSy3j1+/F6zwXgQcH/N62hEy8+67pMHdH50wvG8am1jow3yq68dkn69b5pP0mArM
+         rrTpomlnqNsYCGRX8JKghdVkqeq6PqjuaXcrWq8Y=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 37VBmVCx123704
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 31 Aug 2023 06:48:31 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 31
+ Aug 2023 06:48:31 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 31 Aug 2023 06:48:30 -0500
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 37VBmUm5013704;
+        Thu, 31 Aug 2023 06:48:30 -0500
+Date:   Thu, 31 Aug 2023 06:48:30 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Keerthy <j-keerthy@ti.com>
+CC:     <vigneshr@ti.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <kristo@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/5] arm64: dts: ti: k3-j721s2-main: Add main domain
+ watchdog entries
+Message-ID: <20230831114830.oenlyvwyxbi2uerq@deserving>
+References: <20230830072622.19539-1-j-keerthy@ti.com>
+ <20230830072622.19539-5-j-keerthy@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230510-feature-ts_virtobj_patch-v4-2-5c6c0fc1eed6@wolfvision.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230830072622.19539-5-j-keerthy@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 03:17:10PM +0200, Javier Carrasco wrote:
-> The overlay-touchscreen object defines an area within the touchscreen
-> where touch events are reported and their coordinates get converted to
-> the overlay origin. This object avoids getting events from areas that
-> are physically hidden by overlay frames.
+On 12:56-20230830, Keerthy wrote:
+> Add DT entries for main domain watchdog instances.
 > 
-> For touchscreens where overlay buttons on the touchscreen surface are
-> provided, the overlay-buttons object contains a node for every button
-> and the key event that should be reported when pressed.
-> 
-> Signed-off-by: Javier Carrasco <javier.carrasco@wolfvision.net>
+> Signed-off-by: Keerthy <j-keerthy@ti.com>
 > ---
->  .../bindings/input/touchscreen/touchscreen.yaml    | 152 +++++++++++++++++++++
->  1 file changed, 152 insertions(+)
+>  arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
-> index 895592da9626..d90cbb4932b5 100644
-> --- a/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/touchscreen.yaml
-> @@ -80,6 +80,158 @@ properties:
->    touchscreen-y-plate-ohms:
->      description: Resistance of the Y-plate in Ohms
->  
-> +  overlay-touchscreen:
-> +    description: Clipped touchscreen area
+> diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+> index 87841bcc509d..33276d31faa1 100644
+> --- a/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+> +++ b/arch/arm64/boot/dts/ti/k3-j721s2-main.dtsi
+> @@ -1513,4 +1513,22 @@
+>  		reg = <0x0 0x700000 0x0 0x1000>;
+>  		ti,esm-pins = <344>, <345>;
+>  	};
 > +
-> +      This object can be used to describe a frame that restricts the area
-> +      within touch events are reported, ignoring the events that occur outside
-> +      this area. This is of special interest if the touchscreen is shipped
-> +      with a physical overlay on top of it with a frame that hides some part
-> +      of the original touchscreen area.
+> +	watchdog0: watchdog@2200000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x0 0x2200000 0x0 0x100>;
+> +		clocks = <&k3_clks 286 1>;
+> +		power-domains = <&k3_pds 286 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 286 1>;
+> +		assigned-clock-parents = <&k3_clks 286 5>;
+> +	};
 > +
-> +      The x-origin and y-origin properties of this object define the offset of
-> +      a new origin from where the touchscreen events are referenced.
-> +      This offset is applied to the events accordingly. The x-size and y-size
-> +      properties define the size of the overlay-touchscreen (effective area).
-> +
-> +      The following example shows the new touchscreen area and the new origin
-> +      (0',0') for the touch events generated by the device.
-> +
-> +                   Touchscreen (full area)
-> +         ┌────────────────────────────────────────┐
-> +         │    ┌───────────────────────────────┐   │
-> +         │    │                               │   │
-> +         │    ├ y-size                        │   │
-> +         │    │                               │   │
-> +         │    │      overlay-touchscreen      │   │
-> +         │    │                               │   │
-> +         │    │                               │   │
-> +         │    │            x-size             │   │
-> +         │   ┌└──────────────┴────────────────┘   │
-> +         │(0',0')                                 │
-> +        ┌└────────────────────────────────────────┘
-> +      (0,0)
-> +
-> +     where (0',0') = (0+x-origin,0+y-origin)
+> +	watchdog1: watchdog@2210000 {
+> +		compatible = "ti,j7-rti-wdt";
+> +		reg = <0x0 0x2210000 0x0 0x100>;
+> +		clocks = <&k3_clks 287 1>;
+> +		power-domains = <&k3_pds 287 TI_SCI_PD_EXCLUSIVE>;
+> +		assigned-clocks = <&k3_clks 287 1>;
+> +		assigned-clock-parents = <&k3_clks 287 5>;
+> +	};
 
-What happens if touchscreen-inverted-x/y are set?
+Are these all the wdts in main domain - do define and leave the other wdts
+disabled as they are tightly coupled to other processors (and must be
+enabled by the OS running on them), but defining them allows us to reuse
+the definitions in OSes running on R5s (for instance) to reuse the same
+device definitions.
 
-Though the existing binding never defines what the non-inverted 
-orientation is.
+>  };
+> -- 
+> 2.17.1
+> 
 
-> +
-> +    type: object
-> +
-> +    properties:
-> +      x-origin:
-> +        description: horizontal origin of the clipped area
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      y-origin:
-> +        description: vertical origin of the clipped area
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      x-size:
-> +        description: horizontal resolution of the clipped area
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +      y-size:
-> +        description: vertical resolution of the clipped area
-> +        $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +        required:
-> +          - x-origin
-> +          - y-origin
-> +          - x-size
-> +          - y-size
-> +
-> +  overlay-buttons:
-> +    description: list of nodes defining the buttons on the touchscreen
-> +
-> +      This object can be used to describe buttons on the touchscreen area,
-> +      reporting the touch events on their surface as key events instead of
-> +      the original touch events.
-> +
-> +      This is of special interest if the touchscreen is shipped with a
-> +      physical overlay on top of it where a number of buttons with some
-> +      predefined functionality are printed. In that case a specific behavior
-> +      is expected from those buttons instead of raw touch events.
-> +
-> +      The overlay-buttons properties define a per-button area as well as an
-> +      origin relative to the real touchscreen origin. Touch events within the
-> +      button area are reported as the key event defined in the linux,code
-> +      property. Given that the key events do not provide coordinates, the
-> +      button origin is only used to place the button area on the touchscreen
-> +      surface. Any event outside the overlay-buttons object is reported as a
-> +      touch event with no coordinate transformation.
-> +
-> +      The following example shows a touchscreen with a single button on it
-> +
-> +              Touchscreen (full area)
-> +        ┌───────────────────────────────────┐
-> +        │                                   │
-> +        │                                   │
-> +        │   ┌─────────┐                     │
-> +        │   │button 0 │                     │
-> +        │   │KEY_POWER│                     │
-> +        │   └─────────┘                     │
-> +        │                                   │
-> +        │                                   │
-> +       ┌└───────────────────────────────────┘
-> +     (0,0)
-> +
-> +      The overlay-buttons object can  be combined with the overlay-touchscreen
-> +      object as shown in the following example. In that case only the events
-> +      within the overlay-touchscreen object are reported as touch events.
-> +
-> +                  Touchscreen (full area)
-> +        ┌─────────┬──────────────────────────────┐
-> +        │         │                              │
-> +        │         │    ┌───────────────────────┐ │
-> +        │ button 0│    │                       │ │
-> +        │KEY_POWER│    │                       │ │
-> +        │         │    │                       │ │
-> +        ├─────────┤    │  overlay-touchscreen  │ │
-> +        │         │    │                       │ │
-> +        │         │    │                       │ │
-> +        │ button 1│    │                       │ │
-> +        │ KEY_INFO│   ┌└───────────────────────┘ │
-> +        │         │(0',0')                       │
-> +       ┌└─────────┴──────────────────────────────┘
-> +     (0,0)
-> +
-> +    type: object
-> +
-> +    patternProperties:
-> +      '^button-':
-> +        type: object
-> +        description:
-> +          Each button (key) is represented as a sub-node.
-> +
-> +        properties:
-> +          label:
-> +            $ref: /schemas/types.yaml#/definitions/string
-> +            description: descriptive name of the button
-> +
-> +          linux,code: true
-> +
-> +          x-origin:
-> +            description: horizontal origin of the button area
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +          y-origin:
-> +            description: vertical origin of the button area
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +          x-size:
-> +            description: horizontal resolution of the button area
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +          y-size:
-> +            description: vertical resolution of the button area
-> +            $ref: /schemas/types.yaml#/definitions/uint32
-> +
-> +        required:
-> +          - linux,code
-> +          - x-origin
-> +          - y-origin
-> +          - x-size
-> +          - y-size
-
-We have the same properties defined twice. Move all the common ones to a 
-$def entry and then reference it here and in overlay-touchscreen.
-
-$defs:
-  overlay-node:
-    type: object
-    properties:
-      x-origin:
-      ...
-
-And then here:
-
-'^button-':
-  $ref: '#/$defs/overlay-node
-  unevaluatedProperties: false
-
-  properties:
-    label:
-      ...
-
-
-Rob
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
