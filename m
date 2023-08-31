@@ -2,153 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC6178E967
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE05378E96B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:30:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244802AbjHaJ3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:29:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44078 "EHLO
+        id S244832AbjHaJaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:30:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238163AbjHaJ3s (ORCPT
+        with ESMTP id S231946AbjHaJau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:29:48 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36C2CF2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 02:29:42 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 91366223;
-        Thu, 31 Aug 2023 11:28:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693474096;
-        bh=mmnCc3usX68hnUMuwcOIGkPfRe9piFESiry8XIREDig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OAeOv++2BFnN1qI03k2/aReiZ72KzGhxZOBWTvm+75qqO7s8OoW2knicCyGZGxbt/
-         srvFt9qge3PU4SyuwNbmakWpKZcUA0QLksetsWEjDoj8PO3lM2q+sY5zKKalio7tlL
-         boyzq/4E6XpWjJlcPvkEbZrFZd+p1gc6VBfN1pOA=
-Date:   Thu, 31 Aug 2023 12:29:49 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Douglas Anderson <dianders@chromium.org>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Zhu Wang <wangzhu9@huawei.com>,
-        =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Guillaume BRUN <the.cheaterman@gmail.com>,
-        Rob Herring <robh@kernel.org>, Sandor Yu <Sandor.yu@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Ondrej Jirman <megi@xff.cz>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH v6 3/4] drm/bridge: Drop CONFIG_OF conditionals around
- of_node pointers
-Message-ID: <20230831092949.GE2698@pendragon.ideasonboard.com>
-References: <20230831080938.47454-1-biju.das.jz@bp.renesas.com>
- <20230831080938.47454-4-biju.das.jz@bp.renesas.com>
+        Thu, 31 Aug 2023 05:30:50 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD6ECDD;
+        Thu, 31 Aug 2023 02:30:47 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V9RNpD015667;
+        Thu, 31 Aug 2023 09:30:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=A4FM5Ir5byOJyGSv8Y9c+sr2exQIrOCrArK40xB6VVw=;
+ b=U+peTBDOAHCnOQTXnAp+RlAUV7gSUTuJaU1jMU6lwNNdSyofbQBuJQwCqeAxyKt5ijTb
+ K8Ape0KRGxR9uhBSHr913QHkDL3B2iT/l1SsM/hGbBgwFBAiJYIGMFcnFdt4KZcQG5Oa
+ HdFD3cJals5wqWOS2MdMG/gt6R4yrmS3ag7mKufeLKq85qQkDN56t428sb4sXrdFz5+C
+ SVFUizCxL4kpjkMDVRFgmlq2N5acycyy074MuEpRCEPrTic0V5T3l2XVhJHpc55XYqU2
+ iaHnf4P6aEcT5pIQkyagu8FRVRDcbp1Oe0P3HZfa4mjZR4ATEqEBSNieERp8c8ct0JnX qg== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stks5rhb3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 09:30:40 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V9Udcl019356
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 09:30:39 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Thu, 31 Aug 2023 02:30:36 -0700
+Date:   Thu, 31 Aug 2023 15:00:32 +0530
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     Stephen Boyd <sboyd@kernel.org>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <mturquette@baylibre.com>
+Subject: Re: [PATCH] clk: qcom: ipq5332: Drop set rate parent from gpll0
+ dependent clocks
+Message-ID: <20230831093031.GB29822@varda-linux.qualcomm.com>
+References: <1693377310-8540-1-git-send-email-quic_varada@quicinc.com>
+ <12a65758db2058322898cc505fcb8cf7.sboyd@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230831080938.47454-4-biju.das.jz@bp.renesas.com>
+In-Reply-To: <12a65758db2058322898cc505fcb8cf7.sboyd@kernel.org>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: AXsLcsT7GA5JGzNAc0B5yZabDqrBn9PL
+X-Proofpoint-ORIG-GUID: AXsLcsT7GA5JGzNAc0B5yZabDqrBn9PL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_07,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ spamscore=0 impostorscore=0 clxscore=1015 malwarescore=0 bulkscore=0
+ mlxlogscore=730 suspectscore=0 lowpriorityscore=0 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310085
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Biju,
+On Wed, Aug 30, 2023 at 04:37:40PM -0700, Stephen Boyd wrote:
+> Quoting Varadarajan Narayanan (2023-08-29 23:35:10)
+> > IPQ5332's GPLL0's nominal/turbo frequency is 800MHz.
+> > This must not be scaled based on the requirement of
+> > dependent clocks. Hence remove the CLK_SET_RATE_PARENT
+> > flag.
+> >
+> > Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+> > ---
+>
+> Any Fixes tag?
 
-Thank you for the patch.
+Have posted v2 with Fixes tag. Please take a look.
 
-On Thu, Aug 31, 2023 at 09:09:37AM +0100, Biju Das wrote:
-> Having conditional around the of_node pointers turns out to make driver
-> code use ugly #ifdef and #if blocks. So drop the conditionals.
-> 
-> Suggested-by: Douglas Anderson <dianders@chromium.org>
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Douglas Anderson <dianders@chromium.org>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> v5->v6:
->  * Added Rb tag from Douglas Anderson.
->  * Dropped conditionals from remaining drm/bridge drivers.
-> v5:
->  * Split from patch#2
-> ---
->  drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c | 2 --
->  drivers/gpu/drm/bridge/panel.c                     | 2 --
->  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c          | 2 --
->  drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c      | 2 --
->  4 files changed, 8 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-> index 6169db73d2fe..ad8241758896 100644
-> --- a/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-> +++ b/drivers/gpu/drm/bridge/analogix/analogix-anx78xx.c
-> @@ -1231,9 +1231,7 @@ static int anx78xx_i2c_probe(struct i2c_client *client)
->  
->  	mutex_init(&anx78xx->lock);
->  
-> -#if IS_ENABLED(CONFIG_OF)
->  	anx78xx->bridge.of_node = client->dev.of_node;
-> -#endif
->  
->  	anx78xx->client = client;
->  	i2c_set_clientdata(client, anx78xx);
-> diff --git a/drivers/gpu/drm/bridge/panel.c b/drivers/gpu/drm/bridge/panel.c
-> index 9316384b4474..7f41525f7a6e 100644
-> --- a/drivers/gpu/drm/bridge/panel.c
-> +++ b/drivers/gpu/drm/bridge/panel.c
-> @@ -302,9 +302,7 @@ struct drm_bridge *drm_panel_bridge_add_typed(struct drm_panel *panel,
->  	panel_bridge->panel = panel;
->  
->  	panel_bridge->bridge.funcs = &panel_bridge_bridge_funcs;
-> -#ifdef CONFIG_OF
->  	panel_bridge->bridge.of_node = panel->dev->of_node;
-> -#endif
->  	panel_bridge->bridge.ops = DRM_BRIDGE_OP_MODES;
->  	panel_bridge->bridge.type = connector_type;
->  
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> index 6c1d79474505..52d91a0df85e 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> @@ -3541,9 +3541,7 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
->  			 | DRM_BRIDGE_OP_HPD;
->  	hdmi->bridge.interlace_allowed = true;
->  	hdmi->bridge.ddc = hdmi->ddc;
-> -#ifdef CONFIG_OF
->  	hdmi->bridge.of_node = pdev->dev.of_node;
-> -#endif
->  
->  	memset(&pdevinfo, 0, sizeof(pdevinfo));
->  	pdevinfo.parent = dev;
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> index 04d4a1a10698..a8dd2a2e7c7b 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-mipi-dsi.c
-> @@ -1182,9 +1182,7 @@ __dw_mipi_dsi_probe(struct platform_device *pdev,
->  
->  	dsi->bridge.driver_private = dsi;
->  	dsi->bridge.funcs = &dw_mipi_dsi_bridge_funcs;
-> -#ifdef CONFIG_OF
->  	dsi->bridge.of_node = pdev->dev.of_node;
-> -#endif
->  
->  	return dsi;
->  }
-
--- 
-Regards,
-
-Laurent Pinchart
+Thanks
+Varada
