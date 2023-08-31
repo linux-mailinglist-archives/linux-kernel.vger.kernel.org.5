@@ -2,114 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF0F78E636
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F16078E66D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243066AbjHaGVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 02:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56784 "EHLO
+        id S1346089AbjHaGWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 02:22:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241569AbjHaGVD (ORCPT
+        with ESMTP id S1346086AbjHaGWe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 02:21:03 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F5CCD6
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:20:58 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52a39a1c4d5so469112a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:20:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693462857; x=1694067657; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pG3JY/czPpavqqVu3lLo9xEZ0gRVLmUoMl7zqpjOA3s=;
-        b=EdnRbBdvPpZU4vumaNgsB82foaLnlqZkwl5KNQ8OBcQ+t+CD7Y4Evr2H1g6PtUdw4c
-         b+AchJRBZ8vd31ltg5kDi8Hu8x/QLPDbB1B3+9WLEqcjQppeooXD5/4DLTEGBm9hJJTQ
-         2Xzb+5stxnKjI14dr4R9SevVg252I/M3uD3HVIk1Y1Cibt6//8ZcFoukzR57EwEOO/eF
-         YehuRO7+ZZ9dpBfNZ33R40hD7TQKJ40G97DOGnyu1LKYhCetnQpEZjZWH6dWsOGm7OuK
-         2jALxPsJAtgSO9sd/uxlE8UStDZW0TzlY3quajQzyMguB2OnAr/j88tZCncB/h7qnVhI
-         aG4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693462857; x=1694067657;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pG3JY/czPpavqqVu3lLo9xEZ0gRVLmUoMl7zqpjOA3s=;
-        b=QxZ3yA5OZrw2Ddu86rzX2cUhWGodYlZNhm9EvfpQ0YUzIlJwedJSgY0nqIAMLt8Atj
-         qYakCCfeOSXp8sRejo/fazAuuaE7ctbUQxQHzWvDMsZHcRggCz5YwL32okMt+4PEVLTN
-         X+tRb67o7HZHEO8D6nCvTj+ePz4h4WzYPQllMK/WtYizSToBZ6hFrRJSto9CSBiJyNqm
-         yQYlD/m87uiEXxmXexYPwyNfJiow0joxPPMpV9JMHaIgS+bMqfchPlO0Hl6lo0N2hZAQ
-         GRy1/2vB2cy78vkbm47T1duMZJIcL/tU7beDJjCxglHfUb8lJKbNcVl16jTMrfWgLyfU
-         JW3w==
-X-Gm-Message-State: AOJu0YwHlSiX1d2PJ1w7NsGXCDtCTI5nXVQjeBtzCSK33yRY5J23rC14
-        BHvjLZZ7fMHbHKLMIU6ohT5VJg==
-X-Google-Smtp-Source: AGHT+IE5VrHVFgWGXJLbJl+dOweoU18kkN+ftvOBbWJPeXG1U8hZQKsjqxQ+o+0QMmm7ATpbH7hmvA==
-X-Received: by 2002:a17:906:8466:b0:9a5:c4ae:9fd4 with SMTP id hx6-20020a170906846600b009a5c4ae9fd4mr3234720ejc.59.1693462857179;
-        Wed, 30 Aug 2023 23:20:57 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id h18-20020a1709066d9200b0099b5a71b0bfsm384516ejt.94.2023.08.30.23.20.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 23:20:56 -0700 (PDT)
-Message-ID: <4cbe662d-cd20-ceef-e3e4-6608029f94b7@linaro.org>
-Date:   Thu, 31 Aug 2023 08:20:55 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v5 1/2] ARM: dts: aspeed: Minerva: Add Facebook Minerva
- (AST2600) BMC
-Content-Language: en-US
-To:     Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
-        daniel-hsu@quantatw.com
-References: <20230831055030.3958798-1-peteryin.openbmc@gmail.com>
- <20230831055030.3958798-2-peteryin.openbmc@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230831055030.3958798-2-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 02:22:34 -0400
+Received: from out-249.mta0.migadu.com (out-249.mta0.migadu.com [91.218.175.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8927170C
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:21:55 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693462911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XpQNp0A8i0S7SQfKTwp86WbNGnfzkLE8YkfFQsWuvUM=;
+        b=X140LA5XVSse65boP6zP2hcTtma2Vup+iEfNBHXkmt0K3YzHrytzoMCTuIRmymld+BWC9O
+        BSseNNTlDRlB4rJ90jaxCNTS7a6as5yKaFlXaFcbmlQ/tFnvOv8nfND+MM8RcvqHyUzesV
+        jh57Am7jhW9FRzWn8Vw7VVDzAAJ/1KA=
+Mime-Version: 1.0
+Subject: Re: [External] [v3 4/4] mm: hugetlb: Skip initialization of gigantic
+ tail struct pages if freed by HVO
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <a5ec4389-e7c1-2af5-2a47-495bdcac149c@bytedance.com>
+Date:   Thu, 31 Aug 2023 14:21:06 +0800
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        punit.agrawal@bytedance.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Usama Arif <usama.arif@bytedance.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A5CD653A-DAA6-481F-963E-AB04D2170088@linux.dev>
+References: <20230825111836.1715308-1-usama.arif@bytedance.com>
+ <20230825111836.1715308-5-usama.arif@bytedance.com>
+ <486CFF93-3BB1-44CD-B0A0-A47F560F2CAE@linux.dev>
+ <a5ec4389-e7c1-2af5-2a47-495bdcac149c@bytedance.com>
+To:     Mel Gorman <mgorman@techsingularity.net>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31/08/2023 07:50, Peter Yin wrote:
-> Add linux device tree entry related to
-> Minerva specific devices connected to BMC SoC.
-> 
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> ---
->  arch/arm/boot/dts/Makefile                    |   1 +
->  .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 377 ++++++++++++++++++
->  2 files changed, 378 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
-> 
-> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-> index 9e1d7bf3cff6..edb0b2105333 100644
-> --- a/arch/arm/boot/dts/Makefile
-> +++ b/arch/arm/boot/dts/Makefile
-> @@ -1604,6 +1604,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
->  	aspeed-bmc-facebook-wedge400.dtb \
->  	aspeed-bmc-facebook-yamp.dtb \
->  	aspeed-bmc-facebook-yosemitev2.dtb \
-> +	aspeed-bmc-facebook-minerva.dtb \
-
-Third or fourth time: that's not a correct order. This is a nit, but
-since you keep ignoring it, I don't believe any other feedback was
-applied. Why you did not respond to my comments but just ignored them?
 
 
-Best regards,
-Krzysztof
+> On Aug 30, 2023, at 18:27, Usama Arif <usama.arif@bytedance.com> =
+wrote:
+> On 28/08/2023 12:33, Muchun Song wrote:
+>>> On Aug 25, 2023, at 19:18, Usama Arif <usama.arif@bytedance.com> =
+wrote:
+>>>=20
+>>> The new boot flow when it comes to initialization of gigantic pages
+>>> is as follows:
+>>> - At boot time, for a gigantic page during __alloc_bootmem_hugepage,
+>>> the region after the first struct page is marked as noinit.
+>>> - This results in only the first struct page to be
+>>> initialized in reserve_bootmem_region. As the tail struct pages are
+>>> not initialized at this point, there can be a significant saving
+>>> in boot time if HVO succeeds later on.
+>>> - Later on in the boot, HVO is attempted. If its successful, only =
+the first
+>>> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct =
+pages
+>>> after the head struct page are initialized. If it is not successful,
+>>> then all of the tail struct pages are initialized.
+>>>=20
+>>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+>> This edition is simpler than before ever, thanks for your work.
+>> There is premise that other subsystems do not access vmemmap pages
+>> before the initialization of vmemmap pages associated withe HugeTLB
+>> pages allocated from bootmem for your optimization. However, IIUC, =
+the
+>> compacting path could access arbitrary struct page when memory fails
+>> to be allocated via buddy allocator. So we should make sure that
+>> those struct pages are not referenced in this routine. And I know
+>> if CONFIG_DEFERRED_STRUCT_PAGE_INIT is enabled, it will encounter
+>> the same issue, but I don't find any code to prevent this from
+>> happening. I need more time to confirm this, if someone already =
+knows,
+>> please let me know, thanks. So I think HugeTLB should adopt the =
+similar
+>> way to prevent this.
+>> Thanks.
+>=20
+> Thanks for the reviews.
+>=20
+> So if I understand it correctly, the uninitialized pages due to the =
+optimization in this patch and due to DEFERRED_STRUCT_PAGE_INIT should =
+be treated in the same way during compaction. I see that in =
+isolate_freepages during compaction there is a check to see if PageBuddy =
+flag is set and also there are calls like __pageblock_pfn_to_page to =
+check if the pageblock is valid.
+>=20
+> But if the struct page is uninitialized then they would contain random =
+data and these checks could pass if certain bits were set?
+>=20
+> Compaction is done on free list. I think the uninitialized struct =
+pages atleast from DEFERRED_STRUCT_PAGE_INIT would be part of freelist, =
+so I think their pfn would be considered for compaction.
+>=20
+> Could someone more familiar with DEFERRED_STRUCT_PAGE_INIT and =
+compaction confirm how the uninitialized struct pages are handled when =
+compaction happens? Thanks!
+
+Hi Mel,
+
+Could you help us answer this question? I think you must be the expert =
+of
+CONFIG_DEFERRED_STRUCT_PAGE_INIT. I summarize the context here. As we =
+all know,
+some struct pages are uninnitialized when =
+CONFIG_DEFERRED_STRUCT_PAGE_INIT is
+enabled, if someone allocates a larger memory (e.g. order is 4) via =
+buddy
+allocator and fails to allocate the memory, then we will go into the =
+compacting
+routine, which will traverse all pfns and use pfn_to_page to access its =
+struct
+page, however, those struct pages may be uninnitialized (so it's =
+arbitrary data).
+Our question is how to prevent the compacting routine from accessing =
+those
+uninitialized struct pages? We'll be appreciated if you know the answer.
+
+Thanks.
+
 
