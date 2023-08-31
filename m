@@ -2,99 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F83F78F0DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581FE78F0E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346706AbjHaQFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
+        id S230233AbjHaQHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346698AbjHaQFU (ORCPT
+        with ESMTP id S242070AbjHaQHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:05:20 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BA01B0;
-        Thu, 31 Aug 2023 09:05:18 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D4933B82336;
-        Thu, 31 Aug 2023 16:05:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE302C433C8;
-        Thu, 31 Aug 2023 16:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693497915;
-        bh=7hx7dENCRJJYC1sdS/KEN2Hx0CzgtkyQU3faU/Y4KgY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Czr8DBk0c+4Rk/t2YiSSHUOaqbZdTLZ+IMPpytBgoFAig6GZQFxXK1MTMLMpPND1H
-         BkSBycm92EBwXy233EhHUZx5t+b+eb5qZ6w5dnXVftPLGWfNoWLr4cEhGRkXsMijaS
-         sgQZgj7G832dEghI8nexABPET8qudZQgRvowUhxxSljotd4UbjTxWiVj72AREjRG/p
-         6rPdWiXwfrb7KTVKEGRLqAaWtaWsHme216MsqIgwgIJGVSoQWJa48ntE6VdfwOJTUj
-         U9rYXsS6cUsyxjFw6k//b7lRnxLukAE/5LLRf0AdzCDRTHYvKUSgiYfYJIaJRtNyTS
-         UoKVzc84DmTuQ==
-Date:   Thu, 31 Aug 2023 17:05:09 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc:     "Rivera-Matos, Ricardo" <rriveram@opensource.cirrus.com>,
-        Vlad Karpovich <vkarpovi@opensource.cirrus.com>,
-        James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
-Message-ID: <def16e52-3ba9-475d-9d8f-63513c47a392@sirena.org.uk>
-References: <20230830195536.448884-1-vkarpovi@opensource.cirrus.com>
- <737c4114-5b54-444c-8a6a-de4e98566513@sirena.org.uk>
- <5B0EB2A2-2048-4A71-A4A9-D5167C7AB5EC@opensource.cirrus.com>
- <d97094c6-1534-05ad-0452-c627d7c45802@opensource.cirrus.com>
+        Thu, 31 Aug 2023 12:07:46 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34703E53
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:07:43 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c1e780aa95so6740795ad.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:07:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1693498062; x=1694102862; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wt+9EjvduU5MHNDAuSvAQ3bNBgQszfIiKkzKEcdHNCE=;
+        b=Bux0AVKVQ148OQpuc4kUfzK/FiG7/6EQyXdHB8y5fdg/EJmYPC1AIvV2EeXUe6fKJH
+         aC/rANPxF4hPGrEU1f7+VZBApzFAt9j6pM2fIVdjHKUU+Aa29aDGA4ioRfd4JbbNLSWk
+         oDMGGesWgmmZIvklAtUFStmEBAHIJQmVAuDOrz9AN5vLdcgCbrTfG/CNwYrBEhOi4onM
+         RUwmrEpb1hoz3gXQtdq+P0pM+VDOZRIFmv/lno4NNA6iZp12PY1t2yayFbbWEOqIVDjR
+         4odyPttOwTUeArlAako5iG7Ht9dGGwsN3w77mEiFhI2sSZnw5T3LDKM4arRdjipEkbTI
+         Oaog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693498062; x=1694102862;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wt+9EjvduU5MHNDAuSvAQ3bNBgQszfIiKkzKEcdHNCE=;
+        b=UMUk2Cs61E05NdStYaNWf9uJECwWYMEmi6I1ECCm2V2+W5KD3UTAnjOIUV+t5VEpEX
+         Mn3Pr8KB4Dm47ohVsaBbSAj8bqKYywFJh52yVARlRP8yJ2xiwj7h7sAsuwIP/COWiLkv
+         3tucLWY+w12sbK3u4WpFO/hp/IoOZGRHd3gRWjJCU6ZGYnELbG6M1XvXQXz653106Ru0
+         eSsgde0OeZMD2vIpBGB2k+HOKGB4LoBWJn/c3EpY2XbOxKMyGgEmavWiQRmH6ikwjzVn
+         +5gL44PRTUGvYIia2up1s17OsDOY3zVACWHJ8qgxEaL45pd3OpqVHXHt/pnDABYH8fPC
+         61mQ==
+X-Gm-Message-State: AOJu0YyKdc9JOaY/ul0JnCUbNFPMsPSRLEjB+vPR2MEFlquapww+Sioj
+        I1Wt6naapKM4t1m3hOErRENOdgJD+iPFCgzN4Aarjw==
+X-Google-Smtp-Source: AGHT+IFt6g5apacYzh41nAGLXuzY3wp2OZedNRsJ9t+ZlewDMLKiSlOv0TsmobMtse+QKI+IUKH0jyY7uAazI5diPLY=
+X-Received: by 2002:a17:90a:e2ca:b0:268:c5c7:f7ed with SMTP id
+ fr10-20020a17090ae2ca00b00268c5c7f7edmr5255644pjb.30.1693498062492; Thu, 31
+ Aug 2023 09:07:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="sg7FyDwimPhJ1e+i"
-Content-Disposition: inline
-In-Reply-To: <d97094c6-1534-05ad-0452-c627d7c45802@opensource.cirrus.com>
-X-Cookie: "Pok pok pok, P'kok!"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230806024715.3061589-1-xiao.w.wang@intel.com>
+ <CAAhSdy2_djw2JX+8tmF2V190+x9KLvt7u8rCX-TaGCKQrUVOYQ@mail.gmail.com>
+ <DM8PR11MB57512001CAFA07EC58203A7BB8E6A@DM8PR11MB5751.namprd11.prod.outlook.com>
+ <20230830-breeze-washboard-ef496d5c9d5a@wendy> <DM8PR11MB575116E5EE183D7D41361B74B8E5A@DM8PR11MB5751.namprd11.prod.outlook.com>
+In-Reply-To: <DM8PR11MB575116E5EE183D7D41361B74B8E5A@DM8PR11MB5751.namprd11.prod.outlook.com>
+From:   Anup Patel <apatel@ventanamicro.com>
+Date:   Thu, 31 Aug 2023 21:37:30 +0530
+Message-ID: <CAK9=C2XTS539ew_rty6_MOwyZkdBBbGBCzxp33u1UpMP5STAqQ@mail.gmail.com>
+Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
+Cc:     Conor Dooley <conor.dooley@microchip.com>,
+        Anup Patel <anup@brainfault.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "Li, Haicheng" <haicheng.li@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Jones <ajones@ventanamicro.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++Andrew
 
---sg7FyDwimPhJ1e+i
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Aug 31, 2023 at 9:29=E2=80=AFPM Wang, Xiao W <xiao.w.wang@intel.com=
+> wrote:
+>
+>
+> > -----Original Message-----
+> > From: Conor Dooley <conor.dooley@microchip.com>
+> > Sent: Wednesday, August 30, 2023 2:59 PM
+> > To: Wang, Xiao W <xiao.w.wang@intel.com>
+> > Cc: Anup Patel <anup@brainfault.org>; paul.walmsley@sifive.com;
+> > palmer@dabbelt.com; aou@eecs.berkeley.edu; ardb@kernel.org; Li, Haichen=
+g
+> > <haicheng.li@intel.com>; linux-riscv@lists.infradead.org; linux-
+> > efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> > Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> >
+> > On Wed, Aug 30, 2023 at 06:14:12AM +0000, Wang, Xiao W wrote:
+> > > Hi,
+> > >
+> > > > -----Original Message-----
+> > > > From: Anup Patel <anup@brainfault.org>
+> > > > Sent: Tuesday, August 29, 2023 7:08 PM
+> > > > To: Wang, Xiao W <xiao.w.wang@intel.com>
+> > > > Cc: paul.walmsley@sifive.com; palmer@dabbelt.com;
+> > > > aou@eecs.berkeley.edu; ardb@kernel.org; Li, Haicheng
+> > > > <haicheng.li@intel.com>; linux-riscv@lists.infradead.org; linux-
+> > > > efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > > Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> > > >
+> > > > On Sun, Aug 6, 2023 at 8:09=E2=80=AFAM Xiao Wang <xiao.w.wang@intel=
+.com>
+> > wrote:
+> > > > >
+> > > > > This patch leverages the alternative mechanism to dynamically opt=
+imize
+> > > > > bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. =
+When
+> > > > > Zbb ext is not supported by the runtime CPU, legacy implementatio=
+n is
+> > > > > used. If Zbb is supported, then the optimized variants will be se=
+lected
+> > > > > via alternative patching.
+> > > > >
+> > > > > The legacy bitops support is taken from the generic C implementat=
+ion as
+> > > > > fallback.
+> > > > >
+> > > > > If the parameter is a build-time constant, we leverage compiler b=
+uiltin to
+> > > > > calculate the result directly, this approach is inspired by x86 b=
+itops
+> > > > > implementation.
+> > > > >
+> > > > > EFI stub runs before the kernel, so alternative mechanism should =
+not be
+> > > > > used there, this patch introduces a macro EFI_NO_ALTERNATIVE for =
+this
+> > > > > purpose.
+> > > >
+> > > > I am getting the following compile error with this patch:
+> > > >
+> > > >   GEN     Makefile
+> > > >   UPD     include/config/kernel.release
+> > > >   UPD     include/generated/utsrelease.h
+> > > >   CC      kernel/bounds.s
+> > > > In file included from /home/anup/Work/riscv-
+> > > > test/linux/include/linux/bitmap.h:9,
+> > > >                  from
+> > > > /home/anup/Work/riscv-
+> > test/linux/arch/riscv/include/asm/cpufeature.h:9,
+> > > >                  from
+> > > > /home/anup/Work/riscv-test/linux/arch/riscv/include/asm/hwcap.h:90,
+> > >
+> > >
+> > > It looks there's a cyclic header including, which leads to this build=
+ error.
+> > > I checked https://github.com/kvm-riscv/linux/tree/master and
+> > > https://github.com/torvalds/linux/tree/master, but I don't see
+> > > "asm/cpufeature.h" is included in asm/hwcap.h:90, maybe I miss
+> > something,
+> > > could you help point me to the repo/branch I should work on?
+> >
+> > From MAINTAINERS:
+> >       RISC-V ARCHITECTURE
+> >       ...
+> >       T:      git git://git.kernel.org/pub/scm/linux/kernel/git/riscv/l=
+inux.git
+> >
+> > The for-next branch there is what you should be basing work on top of.
+> > AFAICT, you've made bitops.h include hwcap.h while cpufeature.h include=
+s
+> > both bitops.h (indirectly) and hwcap.h.
+>
+> Thanks for the info, but I can't reproduce Anup's build error with this f=
+or-next branch, cpufeature.h is not included by hwcap.h there.
+> Maybe Anup could help double check the test environment?
 
-On Thu, Aug 31, 2023 at 04:22:52PM +0100, Richard Fitzgerald wrote:
+I figured that cpufeature.h included in hwcap.h is added by
+Drew's patch "RISC-V: Enable cbo.zero in usermode"
 
-> I think Mark's comment is that the Signed-off-by chain doesn't match
-> the patch author. The s-o-b order implies that Ricardo wrote it and
-> Vlad is upstreaming it - but in that case this email should start with
-> a From: line to say that the author is Ricardo.
+I had tried this patch on-top-of dev-upstream branch of
+https://github.com/ventanamicro/linux.git
 
-Yes, that's what I'm querying.
+Regards,
+Anup
 
---sg7FyDwimPhJ1e+i
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTwujQACgkQJNaLcl1U
-h9C2XQf/e12wM/5qI0klirzI3B5cxQSYtxwT4u4kiP20chaYcc4ZyUzfuqCD800b
-INi0tijp1M4LgZjrvVHpzkwGVCdXbAp4rUAw9DYtOqof7LDDZNapno6EwM+cPv7Y
-ev1suWR2Rre4fNI8aBZQ7qm5MCVF2ISY0AbvzHJK63NR4epe6Ji16bnWCZ5D97m1
-qBwMjRxyu8PSTnLD4x34INVkSxWNw0LGhhnq1J+zas+qEQEKTzTP29S07asSmPNi
-9B/TDxUj0bLkdyA8f6bV4eFTAtmRSlo2r+l65vSxRL7cpF7ONB0C2m9vTHSYCFQV
-fJsHN9MnLDDbT0Xj0NJ7rLDwndTM7A==
-=7p8c
------END PGP SIGNATURE-----
-
---sg7FyDwimPhJ1e+i--
+>
+> BRs,
+> Xiao
+>
+>
+> >
+> > Hope that helps,
+> > Conor.
+> >
+> > > >                  from
+> > > > /home/anup/Work/riscv-test/linux/arch/riscv/include/asm/bitops.h:26=
+,
+> > > >                  from
+> > > > /home/anup/Work/riscv-test/linux/include/linux/bitops.h:68,
+> > > >                  from /home/anup/Work/riscv-test/linux/include/linu=
+x/log2.h:12,
+> > > >                  from /home/anup/Work/riscv-test/linux/kernel/bound=
+s.c:13:
+> > > > /home/anup/Work/riscv-test/linux/include/linux/find.h: In function
+> > > > 'find_next_bit':
+> > > > /home/anup/Work/riscv-test/linux/include/linux/find.h:64:30: error:
+> > > > implicit declaration of function '__ffs'
+> > > > [-Werror=3Dimplicit-function-declaration]
+> > > >    64 |                 return val ? __ffs(val) : size;
+> > > >
+> > > > Regards,
+> > > > Anup
+> > > >
+> > > >
+> > > > >
+> > > > > Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> > > > > ---
+> > > > >  arch/riscv/include/asm/bitops.h       | 266
+> > +++++++++++++++++++++++++-
+> > > > >  drivers/firmware/efi/libstub/Makefile |   2 +-
+> > > > >  2 files changed, 264 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > diff --git a/arch/riscv/include/asm/bitops.h
+> > > > b/arch/riscv/include/asm/bitops.h
+> > > > > index 3540b690944b..f727f6489cd5 100644
+> > > > > --- a/arch/riscv/include/asm/bitops.h
+> > > > > +++ b/arch/riscv/include/asm/bitops.h
+> > > > > @@ -15,13 +15,273 @@
+> > > > >  #include <asm/barrier.h>
+> > > > >  #include <asm/bitsperlong.h>
