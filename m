@@ -2,127 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22CD478EA2A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 12:28:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6901E78EA2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 12:29:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242183AbjHaK2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 06:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        id S242314AbjHaK27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 06:28:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbjHaK22 (ORCPT
+        with ESMTP id S236969AbjHaK25 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 06:28:28 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECFF9C5;
-        Thu, 31 Aug 2023 03:28:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=wnCzNlSkE5F1zMwOiuhnLrO8y6BR8P83DNKq+cd66L8=; b=ZBOgF45Taa4/lnz9gOK4Q7kkEx
-        wiHtJVoX++1Dz95Wk9dDKq9AU/33l8hCG2WMcZ5zFlPICqLUi/eXT7J7TPu0UtIp4CvlZ1yBKxNK2
-        hdEs52sGIrUV6UIzegyqhuYRVUA9WzVJ3WatxMBk1adOy6BV7hQ/tg+zwIpK/7lbjqLJFkV36SwlE
-        Pb9Tst2LNeNwX9SBJ6gGqWOIkT3DjGrhrSgOtO/Au71EREeLJqsREdA4quruoGpsvHn8CqyqQcAO0
-        KSGBAjNaoACjh+Ad+GPE4oAUBp0FSkyFqfPoP8cbMPuIESOHfLS4r0VeVpLE1xVRHV6leXH8xssQ7
-        SG9NO5iQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36888)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qbeu9-0002hL-34;
-        Thu, 31 Aug 2023 11:28:01 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qbeu8-0006iI-6t; Thu, 31 Aug 2023 11:28:00 +0100
-Date:   Thu, 31 Aug 2023 11:28:00 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] net: phy: Provide Module 4 KSZ9477 errata
- (DS80000754C)
-Message-ID: <ZPBrMMPiWubgFEZ0@shell.armlinux.org.uk>
-References: <20230831072527.537839-1-lukma@denx.de>
+        Thu, 31 Aug 2023 06:28:57 -0400
+Received: from outbound-smtp01.blacknight.com (outbound-smtp01.blacknight.com [81.17.249.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79854C5
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 03:28:53 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp01.blacknight.com (Postfix) with ESMTPS id 0F7ACC4AD7
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:28:52 +0100 (IST)
+Received: (qmail 28140 invoked from network); 31 Aug 2023 10:28:51 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 31 Aug 2023 10:28:51 -0000
+Date:   Thu, 31 Aug 2023 11:28:49 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Muchun Song <muchun.song@linux.dev>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        fam.zheng@bytedance.com, liangma@liangbit.com,
+        punit.agrawal@bytedance.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Usama Arif <usama.arif@bytedance.com>
+Subject: Re: [External] [v3 4/4] mm: hugetlb: Skip initialization of gigantic
+ tail struct pages if freed by HVO
+Message-ID: <20230831102849.zsbwebyq4hkyvwyb@techsingularity.net>
+References: <20230825111836.1715308-1-usama.arif@bytedance.com>
+ <20230825111836.1715308-5-usama.arif@bytedance.com>
+ <486CFF93-3BB1-44CD-B0A0-A47F560F2CAE@linux.dev>
+ <a5ec4389-e7c1-2af5-2a47-495bdcac149c@bytedance.com>
+ <A5CD653A-DAA6-481F-963E-AB04D2170088@linux.dev>
+ <20230831095801.76rtpgdsvdijbw5t@techsingularity.net>
+ <07E9202B-CA8B-4E1E-93FC-7BF84CB8E988@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20230831072527.537839-1-lukma@denx.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <07E9202B-CA8B-4E1E-93FC-7BF84CB8E988@linux.dev>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 09:25:27AM +0200, Lukasz Majewski wrote:
-> diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
-> index 8bef1ab62bba..eed474fc7308 100644
-> --- a/include/linux/micrel_phy.h
-> +++ b/include/linux/micrel_phy.h
-> @@ -44,6 +44,7 @@
->  #define MICREL_PHY_50MHZ_CLK	0x00000001
->  #define MICREL_PHY_FXEN		0x00000002
->  #define MICREL_KSZ8_P1_ERRATA	0x00000003
-> +#define MICREL_NO_EEE	0x00000004
+On Thu, Aug 31, 2023 at 06:01:08PM +0800, Muchun Song wrote:
+> 
+> 
+> > On Aug 31, 2023, at 17:58, Mel Gorman <mgorman@techsingularity.net> wrote:
+> > 
+> > On Thu, Aug 31, 2023 at 02:21:06PM +0800, Muchun Song wrote:
+> >> 
+> >> 
+> >>> On Aug 30, 2023, at 18:27, Usama Arif <usama.arif@bytedance.com> wrote:
+> >>> On 28/08/2023 12:33, Muchun Song wrote:
+> >>>>> On Aug 25, 2023, at 19:18, Usama Arif <usama.arif@bytedance.com> wrote:
+> >>>>> 
+> >>>>> The new boot flow when it comes to initialization of gigantic pages
+> >>>>> is as follows:
+> >>>>> - At boot time, for a gigantic page during __alloc_bootmem_hugepage,
+> >>>>> the region after the first struct page is marked as noinit.
+> >>>>> - This results in only the first struct page to be
+> >>>>> initialized in reserve_bootmem_region. As the tail struct pages are
+> >>>>> not initialized at this point, there can be a significant saving
+> >>>>> in boot time if HVO succeeds later on.
+> >>>>> - Later on in the boot, HVO is attempted. If its successful, only the first
+> >>>>> HUGETLB_VMEMMAP_RESERVE_SIZE / sizeof(struct page) - 1 tail struct pages
+> >>>>> after the head struct page are initialized. If it is not successful,
+> >>>>> then all of the tail struct pages are initialized.
+> >>>>> 
+> >>>>> Signed-off-by: Usama Arif <usama.arif@bytedance.com>
+> >>>> This edition is simpler than before ever, thanks for your work.
+> >>>> There is premise that other subsystems do not access vmemmap pages
+> >>>> before the initialization of vmemmap pages associated withe HugeTLB
+> >>>> pages allocated from bootmem for your optimization. However, IIUC, the
+> >>>> compacting path could access arbitrary struct page when memory fails
+> >>>> to be allocated via buddy allocator. So we should make sure that
+> >>>> those struct pages are not referenced in this routine. And I know
+> >>>> if CONFIG_DEFERRED_STRUCT_PAGE_INIT is enabled, it will encounter
+> >>>> the same issue, but I don't find any code to prevent this from
+> >>>> happening. I need more time to confirm this, if someone already knows,
+> >>>> please let me know, thanks. So I think HugeTLB should adopt the similar
+> >>>> way to prevent this.
+> >>>> Thanks.
+> >>> 
+> >>> Thanks for the reviews.
+> >>> 
+> >>> So if I understand it correctly, the uninitialized pages due to the optimization in this patch and due to DEFERRED_STRUCT_PAGE_INIT should be treated in the same way during compaction. I see that in isolate_freepages during compaction there is a check to see if PageBuddy flag is set and also there are calls like __pageblock_pfn_to_page to check if the pageblock is valid.
+> >>> 
+> >>> But if the struct page is uninitialized then they would contain random data and these checks could pass if certain bits were set?
+> >>> 
+> >>> Compaction is done on free list. I think the uninitialized struct pages atleast from DEFERRED_STRUCT_PAGE_INIT would be part of freelist, so I think their pfn would be considered for compaction.
+> >>> 
+> >>> Could someone more familiar with DEFERRED_STRUCT_PAGE_INIT and compaction confirm how the uninitialized struct pages are handled when compaction happens? Thanks!
+> >> 
+> >> Hi Mel,
+> >> 
+> >> Could you help us answer this question? I think you must be the expert of
+> >> CONFIG_DEFERRED_STRUCT_PAGE_INIT. I summarize the context here. As we all know,
+> >> some struct pages are uninnitialized when CONFIG_DEFERRED_STRUCT_PAGE_INIT is
+> >> enabled, if someone allocates a larger memory (e.g. order is 4) via buddy
+> >> allocator and fails to allocate the memory, then we will go into the compacting
+> >> routine, which will traverse all pfns and use pfn_to_page to access its struct
+> >> page, however, those struct pages may be uninnitialized (so it's arbitrary data).
+> >> Our question is how to prevent the compacting routine from accessing those
+> >> uninitialized struct pages? We'll be appreciated if you know the answer.
+> >> 
+> > 
+> > I didn't check the code but IIRC, the struct pages should be at least
+> > valid and not contain arbitrary data once page_alloc_init_late finishes.
+> 
+> However, the buddy allocator is ready before page_alloc_init_late(), so it
+> may access arbitrary data in compacting routine, right?
+> 
 
-Erm... Maybe someone should clarify this... we have in the code the
-following tests for these "flags":
-
-	/* Support legacy board-file configuration */
-	if (phydev->dev_flags & MICREL_PHY_50MHZ_CLK) {
-	        priv->rmii_ref_clk_sel = true;
-	        priv->rmii_ref_clk_sel_val = true;
-	}
-
-	/* Skip auto-negotiation in fiber mode */
-	if (phydev->dev_flags & MICREL_PHY_FXEN) {
-	        phydev->speed = SPEED_100;
-	        return 0;
-	}
-
-	if (phydev->dev_flags & MICREL_KSZ8_P1_ERRATA)
-		return -EOPNOTSUPP;
-
-	/* According to KSZ9477 Errata DS80000754C (Module 4) all EEE modes
-	 * in this switch shall be regarded as broken.
-	 */
-	if (phydev->dev_flags & MICREL_NO_EEE)
-	        phydev->eee_broken_modes = -1;
-
-Is it intentional that setting MICREL_PHY_50MHZ_CLK on its own also
-activates the MICREL_KSZ8_P1_ERRATA and vice versa? Is it intentional
-that setting MICREL_PHY_FXEN also activates MICREL_KSZ8_P1_ERRATA and
-vice versa?
-
-To me, this looks horribly broken, and this patch just perpetuates the
-brokenness (but at least 0x4 doesn't overlap with the other flags.)
-
-If it is intentional, then MICREL_KSZ8_P1_ERRATA should be defined to
-make it explicit - in other words, as
-(MICREL_PHY_FXEN|MICREL_PHY_50MHZ_CLK). If not, all these flags should
-be defined using (1 << n) or BIT() to make it explicit that they're a
-bit, and not just a hex number that gets incremented when the next flag
-is added.
-
-Thanks.
+Again, I didn't check the code but given that there is a minimum amount of
+the zone that must be initialised and only the highest zone is deferred
+for initialisation (again, didn't check this), there may be an implicit
+assumption that compaction is not required in early boot. Even if it was
+attempted, it would likely have nothing to do as fragmentation-related events
+that can be resolved by compaction should not occur that early in boot.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Mel Gorman
+SUSE Labs
