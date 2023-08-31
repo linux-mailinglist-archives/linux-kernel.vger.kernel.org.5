@@ -2,186 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 008C278E7B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F16778E7BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237584AbjHaIPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 04:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50324 "EHLO
+        id S244894AbjHaIRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:17:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbjHaIP2 (ORCPT
+        with ESMTP id S230222AbjHaIRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:15:28 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36983EE
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:15:26 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id EB2F71F45E;
-        Thu, 31 Aug 2023 08:15:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693469724; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fhMY2Zsvpbf+QUGLyWy57YKkixRuQXmp7K4/zxBhXWU=;
-        b=wiVcmm68EtFRQK3FOH8STO6wdKUqtC8NICM9ysdE/A4n67Al+ay/ii66rD9HwGe3AsH3My
-        +vLm+07pJqukdKtAsZHrxmsuIuc5+F9MNg5HA95ggTJiK6PNRfDFx7tpak70t2ShQKP0gz
-        Fo4K7w9G5GhK6U3dls/psCgRtLpHG9w=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693469724;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fhMY2Zsvpbf+QUGLyWy57YKkixRuQXmp7K4/zxBhXWU=;
-        b=YqaJYQuSv9drHysdEwD5hQWt3H+Vu3W8wujVRgQjhdGetm4niBrWsGDd9D5xW105agLyKO
-        daAM+EA45sKsYeCg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B072F13587;
-        Thu, 31 Aug 2023 08:15:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id OlgzKhxM8GRibwAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 31 Aug 2023 08:15:24 +0000
-Message-ID: <619a8ad9-724c-16d0-482f-dc7cb75a44f6@suse.de>
-Date:   Thu, 31 Aug 2023 10:15:23 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2 5/8] drm/client: Convert drm_client_buffer_addfb() to
- drm_mode_addfb2()
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Daniel Stone <daniel@fooishbar.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <50762fd1694d3b5f6df1bdfa482564adb2ee7f36.1692888745.git.geert@linux-m68k.org>
- <CAPj87rNr7PTcquaz+VzwmXh0mSWSSK25_Fa6uxC2VOfj=wMmcQ@mail.gmail.com>
- <CAMuHMdWyMNZJ3seWWHqigLfXwCnp47Xwzs1B6ixOyY+n7cir-A@mail.gmail.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-In-Reply-To: <CAMuHMdWyMNZJ3seWWHqigLfXwCnp47Xwzs1B6ixOyY+n7cir-A@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------Oe887Gj3QpjjMtlK0cIyTz9L"
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 04:17:35 -0400
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8990819A
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:17:31 -0700 (PDT)
+Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7926b7f8636so12133639f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1693469851; x=1694074651; darn=vger.kernel.org;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MET/hQwpeova7Ho1GgzgDeTkiQ/1n+JC7QsFR+YAzPA=;
+        b=RMNs5f1WFrirnZtwwIPAdXnGsNAL4yKRBufYVnB32Mm8ZlWubGHYWAWjapSgn38uWN
+         C2fyT+m/4dKBbvVGQVRdeLjLFNCeZLCDFzkCXbt0LTkZTnj7cSssEE2aR3joc0+Iu3of
+         FIPKeOSWessfrNcU0Gymfq9mwJSc2tuHhtj+lJ7qCKycFiCZdyIcTXhImIOpK+9X8NMk
+         DssKoJssc6hEy3thG19BSYN80PDZKgMDCgZE2kqhOwEUOgpVIvzupPgHT60q2OQFC8CL
+         9jV1blsY5+xBQTF9GIyPR+4JmERSd7MGiLH2yhV9T+y3mwlbY1eFl62Dp2gnP5p4gqHO
+         n/OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693469851; x=1694074651;
+        h=references:in-reply-to:message-id:date:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MET/hQwpeova7Ho1GgzgDeTkiQ/1n+JC7QsFR+YAzPA=;
+        b=RnkkBwpHXgfiYaUarT6uE/WPmM/vvMWMSMcJMGzwDSHtB6c2ysz5mcU5dPsG6PWUfN
+         PuzHqQyvuqW+v1ufqtg2Afe5NfnaorvuA4qknqPpQCMpIEXFUXAvZ584FE5xbUVxjJw2
+         demVqboaSJNeeWJVvTPdCzsW+DtYQkUshcahlJrZApu7PQaR9Lmb2i0L9e6TU5WAy/5B
+         k6yqftWvQSQMRywwulyH8siLvtJw9OheQUNapGhi5w8i4A2GwRAogBqqTtyiI9nWhn88
+         CBJmz5maQYMP5jthh2PXPuh5d+m5VURG94fpQOsoYuI7ekwA5QDjv4bJEy1oLXa3Gt6+
+         P+AQ==
+X-Gm-Message-State: AOJu0Ywm+xo38deXtNJY7p/gCSrcOVOoyOZ27Qpv19tTjth/HgX6EDuX
+        JBiRHAft0h2RnZt5zTi+g74EbA==
+X-Google-Smtp-Source: AGHT+IEmrcoYzrntW7B3jhyZRnwIUzkciWvOSXmi4UX/2NMeseAAguKjuoc//VCN5QB0kFm3teffJA==
+X-Received: by 2002:a5d:9d92:0:b0:791:8f62:31ef with SMTP id ay18-20020a5d9d92000000b007918f6231efmr2154312iob.5.1693469850925;
+        Thu, 31 Aug 2023 01:17:30 -0700 (PDT)
+Received: from dev-mkhalfella2.dev.purestorage.com ([208.88.159.128])
+        by smtp.googlemail.com with ESMTPSA id dm8-20020a0566023b8800b00791e6ae3aa4sm312282iob.23.2023.08.31.01.17.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 01:17:30 -0700 (PDT)
+From:   Mohamed Khalfella <mkhalfella@purestorage.com>
+To:     willemdebruijn.kernel@gmail.com
+Cc:     alexanderduyck@fb.com, bpf@vger.kernel.org, brouer@redhat.com,
+        davem@davemloft.net, dhowells@redhat.com, edumazet@google.com,
+        keescook@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, mkhalfella@purestorage.com,
+        netdev@vger.kernel.org, pabeni@redhat.com, willemb@google.com,
+        stable@vger.kernel.org
+Subject: [PATCH v3] skbuff: skb_segment, Call zero copy functions before using skbuff frags
+Date:   Thu, 31 Aug 2023 02:17:02 -0600
+Message-Id: <20230831081702.101342-1-mkhalfella@purestorage.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <64ed7188a2745_9cf208e1@penguin.notmuch>
+References: <64ed7188a2745_9cf208e1@penguin.notmuch>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------Oe887Gj3QpjjMtlK0cIyTz9L
-Content-Type: multipart/mixed; boundary="------------iqt7v30HAC093lPnlAfEQwGk";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Geert Uytterhoeven <geert@linux-m68k.org>,
- Daniel Stone <daniel@fooishbar.org>
-Cc: Javier Martinez Canillas <javierm@redhat.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
- dri-devel@lists.freedesktop.org
-Message-ID: <619a8ad9-724c-16d0-482f-dc7cb75a44f6@suse.de>
-Subject: Re: [PATCH v2 5/8] drm/client: Convert drm_client_buffer_addfb() to
- drm_mode_addfb2()
-References: <cover.1692888745.git.geert@linux-m68k.org>
- <50762fd1694d3b5f6df1bdfa482564adb2ee7f36.1692888745.git.geert@linux-m68k.org>
- <CAPj87rNr7PTcquaz+VzwmXh0mSWSSK25_Fa6uxC2VOfj=wMmcQ@mail.gmail.com>
- <CAMuHMdWyMNZJ3seWWHqigLfXwCnp47Xwzs1B6ixOyY+n7cir-A@mail.gmail.com>
-In-Reply-To: <CAMuHMdWyMNZJ3seWWHqigLfXwCnp47Xwzs1B6ixOyY+n7cir-A@mail.gmail.com>
+Commit bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions
+once per nskb") added the call to zero copy functions in skb_segment().
+The change introduced a bug in skb_segment() because skb_orphan_frags()
+may possibly change the number of fragments or allocate new fragments
+altogether leaving nrfrags and frag to point to the old values. This can
+cause a panic with stacktrace like the one below.
 
---------------iqt7v30HAC093lPnlAfEQwGk
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+[  193.894380] BUG: kernel NULL pointer dereference, address: 00000000000000bc
+[  193.895273] CPU: 13 PID: 18164 Comm: vh-net-17428 Kdump: loaded Tainted: G           O      5.15.123+ #26
+[  193.903919] RIP: 0010:skb_segment+0xb0e/0x12f0
+[  194.021892] Call Trace:
+[  194.027422]  <TASK>
+[  194.072861]  tcp_gso_segment+0x107/0x540
+[  194.082031]  inet_gso_segment+0x15c/0x3d0
+[  194.090783]  skb_mac_gso_segment+0x9f/0x110
+[  194.095016]  __skb_gso_segment+0xc1/0x190
+[  194.103131]  netem_enqueue+0x290/0xb10 [sch_netem]
+[  194.107071]  dev_qdisc_enqueue+0x16/0x70
+[  194.110884]  __dev_queue_xmit+0x63b/0xb30
+[  194.121670]  bond_start_xmit+0x159/0x380 [bonding]
+[  194.128506]  dev_hard_start_xmit+0xc3/0x1e0
+[  194.131787]  __dev_queue_xmit+0x8a0/0xb30
+[  194.138225]  macvlan_start_xmit+0x4f/0x100 [macvlan]
+[  194.141477]  dev_hard_start_xmit+0xc3/0x1e0
+[  194.144622]  sch_direct_xmit+0xe3/0x280
+[  194.147748]  __dev_queue_xmit+0x54a/0xb30
+[  194.154131]  tap_get_user+0x2a8/0x9c0 [tap]
+[  194.157358]  tap_sendmsg+0x52/0x8e0 [tap]
+[  194.167049]  handle_tx_zerocopy+0x14e/0x4c0 [vhost_net]
+[  194.173631]  handle_tx+0xcd/0xe0 [vhost_net]
+[  194.176959]  vhost_worker+0x76/0xb0 [vhost]
+[  194.183667]  kthread+0x118/0x140
+[  194.190358]  ret_from_fork+0x1f/0x30
+[  194.193670]  </TASK>
 
-SGkNCg0KQW0gMjQuMDguMjMgdW0gMTc6MjIgc2NocmllYiBHZWVydCBVeXR0ZXJob2V2ZW46
-DQo+IEhpIERhbmllbCwNCj4gDQo+IE9uIFRodSwgQXVnIDI0LCAyMDIzIGF0IDU6MTLigK9Q
-TSBEYW5pZWwgU3RvbmUgPGRhbmllbEBmb29pc2hiYXIub3JnPiB3cm90ZToNCj4+IE9uIFRo
-dSwgMjQgQXVnIDIwMjMgYXQgMTY6MDksIEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGlu
-dXgtbTY4ay5vcmc+IHdyb3RlOg0KPj4+ICAgICAgICAgIHN0cnVjdCBkcm1fY2xpZW50X2Rl
-diAqY2xpZW50ID0gYnVmZmVyLT5jbGllbnQ7DQo+Pj4gLSAgICAgICBzdHJ1Y3QgZHJtX21v
-ZGVfZmJfY21kIGZiX3JlcSA9IHsgfTsNCj4+PiAtICAgICAgIGNvbnN0IHN0cnVjdCBkcm1f
-Zm9ybWF0X2luZm8gKmluZm87DQo+Pj4gKyAgICAgICBzdHJ1Y3QgZHJtX21vZGVfZmJfY21k
-MiBmYl9yZXEgPSB7IH07DQo+Pj4gICAgICAgICAgaW50IHJldDsNCj4+Pg0KPj4+IC0gICAg
-ICAgaW5mbyA9IGRybV9mb3JtYXRfaW5mbyhmb3JtYXQpOw0KPj4+IC0gICAgICAgZmJfcmVx
-LmJwcCA9IGRybV9mb3JtYXRfaW5mb19icHAoaW5mbywgMCk7DQo+Pj4gLSAgICAgICBmYl9y
-ZXEuZGVwdGggPSBpbmZvLT5kZXB0aDsNCj4+PiAgICAgICAgICBmYl9yZXEud2lkdGggPSB3
-aWR0aDsNCj4+PiAgICAgICAgICBmYl9yZXEuaGVpZ2h0ID0gaGVpZ2h0Ow0KPj4+IC0gICAg
-ICAgZmJfcmVxLmhhbmRsZSA9IGhhbmRsZTsNCj4+PiAtICAgICAgIGZiX3JlcS5waXRjaCA9
-IGJ1ZmZlci0+cGl0Y2g7DQo+Pj4gKyAgICAgICBmYl9yZXEucGl4ZWxfZm9ybWF0ID0gZm9y
-bWF0Ow0KPj4+ICsgICAgICAgZmJfcmVxLmhhbmRsZXNbMF0gPSBoYW5kbGU7DQo+Pj4gKyAg
-ICAgICBmYl9yZXEucGl0Y2hlc1swXSA9IGJ1ZmZlci0+cGl0Y2g7DQo+Pj4NCj4+PiAtICAg
-ICAgIHJldCA9IGRybV9tb2RlX2FkZGZiKGNsaWVudC0+ZGV2LCAmZmJfcmVxLCBjbGllbnQt
-PmZpbGUpOw0KPj4+ICsgICAgICAgcmV0ID0gZHJtX21vZGVfYWRkZmIyKGNsaWVudC0+ZGV2
-LCAmZmJfcmVxLCBjbGllbnQtPmZpbGUpOw0KPj4+ICAgICAgICAgIGlmIChyZXQpDQo+Pj4g
-ICAgICAgICAgICAgICAgICByZXR1cm4gcmV0Ow0KPj4NCj4+IFRoaXMgc2hvdWxkIGV4cGxp
-Y2l0bHkgc2V0IHRoZSBMSU5FQVIgbW9kaWZpZXIgKGFuZCB0aGUgbW9kaWZpZXIgZmxhZykN
-Cj4+IGlmIHRoZSBkcml2ZXIgc3VwcG9ydHMgbW9kaWZpZXJzLg0KPiANCj4gVGhhbmtzIGZv
-ciB5b3VyIGNvbW1lbnQhDQo+IA0KPiBJIGhhdmUgbm8gaWRlYSBob3cgdG8gZG8gdGhhdCwg
-YW5kIEkgZG8gbm90IGtub3cgd2hhdCB0aGUgaW1wYWN0DQo+IHdvdWxkIGJlLiAgQWxsIEkg
-a25vdyBpcyB0aGF0IHRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uIG9mDQo+IGRybV9jbGll
-bnRfYnVmZmVyX2FkZGZiKCkgZG9lcyBub3QgZG8gdGhhdCwgc28gY2hhbmdpbmcgdGhhdCBp
-biB0aGlzDQo+IHBhdGNoIHdvdWxkIG1lYW4gdGhhdCB0aGlzIHdvdWxkIG5vIGxvbmdlciBi
-ZSBhIHRyaXZpYWwgY29udmVyc2lvbi4NCg0KSSBhZ3JlZS4gVGhhdCBjaGFuZ2UgaXMgdG9v
-IGxhcmdlIGFuZCBpbnZhc2l2ZSBmb3IgdGhpcyBwYXRjaHNldC4gUmF0aGVyIA0KYWRkIGEg
-Y29tbWVudCBvciBUT0RPIGl0ZW0uDQoNClRoZSBjb3JyZWN0IHdheSBmb3IgYWRkaW5nIHRo
-ZSBtb2RpZmllciBpcyB0byBleHRlbmQgdGhlIA0KZHJtX2NsaWVudF9idWZmZXJfYWRkZmIo
-KSBhbmQgcGFzcyBpbiB0aGUgaW5mb3JtYXRpb24gZnJvbSB0aGUgY2FsbGVyLiANClRoYXQg
-Y2FsbGVyIGlzIGZiZGV2IGNvZGUuIFdlIGN1cnJlbnRseSBkZXRlY3QgdGhlIGZvcm1hdCBm
-cm9tIChicHAsIA0KZGVwdGgpIHZhbHVlcyBhbmQgZm9yd2FyZCB0aGUgZm9ybWF0IHRvIF9h
-ZGRmYigpLiBbMV0gSGVyZSB3ZSdkIGhhdmUgdG8gDQpjaGVjayB0aGUgZHJpdmVyIGZvciBh
-IG1vZGlmaWVyIGFzIHdlbGwgYW5kIGZvcndhcmQgaXQgdG8gX2FkZGZiKCkNCg0KWzFdIA0K
-aHR0cHM6Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjYuNS9zb3VyY2UvZHJpdmVycy9n
-cHUvZHJtL2RybV9mYmRldl9nZW5lcmljLmMjTDg4DQoNClRoZSBwYWlyIG9mIChicHAsIGRl
-cHRoKSB2YWx1ZXMgY29tZXMgZnJvbSBfX2RybV9mYl9oZWxwZXJfZmluZF9zaXplcywgDQpb
-Ml0gd2hpY2ggbG9va3MgdGhyb3VnaCB0aGUgcGxhbmVzJyBmb3JtYXRzIGFuZCB0cmllcyB0
-byBmaW5kIHNvbWV0aGluZyANCnRoYXQgZml0cyB0aGUgdXNlcidzIHJlcXVlc3RlZCBjb2xv
-ciBtb2RlLiBJdCB3b3VsZCBoYXZlIHRvIGxvb2sgZm9yIA0KbW9kaWZpZXJzIGFzIHdlbGwu
-IEF0IHNvbWUgcG9pbnQsIEkgd2FudCB0aGUgaGVscGVyIHRvIHJldHVybiBmb3JtYXRzIA0K
-ZGlyZWN0bHksIGJ1dCB0aGF0J3Mgc3RpbGwgYSBiaXQgYXdheS4NCg0KWzJdIA0KaHR0cHM6
-Ly9lbGl4aXIuYm9vdGxpbi5jb20vbGludXgvdjYuNS9zb3VyY2UvZHJpdmVycy9ncHUvZHJt
-L2RybV9mYl9oZWxwZXIuYyNMMTUwNA0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0KDQo+IA0K
-PiBHcntvZXRqZSxlZXRpbmd9cywNCj4gDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICBH
-ZWVydA0KPiANCg0KLS0gDQpUaG9tYXMgWmltbWVybWFubg0KR3JhcGhpY3MgRHJpdmVyIERl
-dmVsb3Blcg0KU1VTRSBTb2Z0d2FyZSBTb2x1dGlvbnMgR2VybWFueSBHbWJIDQpGcmFua2Vu
-c3RyYXNzZSAxNDYsIDkwNDYxIE51ZXJuYmVyZywgR2VybWFueQ0KR0Y6IEl2byBUb3Rldiwg
-QW5kcmV3IE15ZXJzLCBBbmRyZXcgTWNEb25hbGQsIEJvdWRpZW4gTW9lcm1hbg0KSFJCIDM2
-ODA5IChBRyBOdWVybmJlcmcpDQo=
+In this case calling skb_orphan_frags() updated nr_frags leaving nrfrags
+local variable in skb_segment() stale. This resulted in the code hitting
+i >= nrfrags prematurely and trying to move to next frag_skb using
+list_skb pointer, which was NULL, and caused kernel panic. Move the call
+to zero copy functions before using frags and nr_frags.
 
---------------iqt7v30HAC093lPnlAfEQwGk--
+Fixes: bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions once per nskb")
+Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
+Reported-by: Amit Goyal <agoyal@purestorage.com>
+Cc: stable@vger.kernel.org
+---
+ net/core/skbuff.c | 34 ++++++++++++++++++++--------------
+ 1 file changed, 20 insertions(+), 14 deletions(-)
 
---------------Oe887Gj3QpjjMtlK0cIyTz9L
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+index a298992060e6..74a8829a6b59 100644
+--- a/net/core/skbuff.c
++++ b/net/core/skbuff.c
+@@ -4354,21 +4354,20 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 	struct sk_buff *segs = NULL;
+ 	struct sk_buff *tail = NULL;
+ 	struct sk_buff *list_skb = skb_shinfo(head_skb)->frag_list;
+-	skb_frag_t *frag = skb_shinfo(head_skb)->frags;
+ 	unsigned int mss = skb_shinfo(head_skb)->gso_size;
+ 	unsigned int doffset = head_skb->data - skb_mac_header(head_skb);
+-	struct sk_buff *frag_skb = head_skb;
+ 	unsigned int offset = doffset;
+ 	unsigned int tnl_hlen = skb_tnl_header_len(head_skb);
+ 	unsigned int partial_segs = 0;
+ 	unsigned int headroom;
+ 	unsigned int len = head_skb->len;
++	struct sk_buff *frag_skb;
++	skb_frag_t *frag;
+ 	__be16 proto;
+ 	bool csum, sg;
+-	int nfrags = skb_shinfo(head_skb)->nr_frags;
+ 	int err = -ENOMEM;
+ 	int i = 0;
+-	int pos;
++	int nfrags, pos;
+ 
+ 	if ((skb_shinfo(head_skb)->gso_type & SKB_GSO_DODGY) &&
+ 	    mss != GSO_BY_FRAGS && mss != skb_headlen(head_skb)) {
+@@ -4445,6 +4444,13 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 	headroom = skb_headroom(head_skb);
+ 	pos = skb_headlen(head_skb);
+ 
++	if (skb_orphan_frags(head_skb, GFP_ATOMIC))
++		return ERR_PTR(-ENOMEM);
++
++	nfrags = skb_shinfo(head_skb)->nr_frags;
++	frag = skb_shinfo(head_skb)->frags;
++	frag_skb = head_skb;
++
+ 	do {
+ 		struct sk_buff *nskb;
+ 		skb_frag_t *nskb_frag;
+@@ -4465,6 +4471,10 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 		    (skb_headlen(list_skb) == len || sg)) {
+ 			BUG_ON(skb_headlen(list_skb) > len);
+ 
++			nskb = skb_clone(list_skb, GFP_ATOMIC);
++			if (unlikely(!nskb))
++				goto err;
++
+ 			i = 0;
+ 			nfrags = skb_shinfo(list_skb)->nr_frags;
+ 			frag = skb_shinfo(list_skb)->frags;
+@@ -4483,12 +4493,8 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 				frag++;
+ 			}
+ 
+-			nskb = skb_clone(list_skb, GFP_ATOMIC);
+ 			list_skb = list_skb->next;
+ 
+-			if (unlikely(!nskb))
+-				goto err;
+-
+ 			if (unlikely(pskb_trim(nskb, len))) {
+ 				kfree_skb(nskb);
+ 				goto err;
+@@ -4564,12 +4570,16 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 		skb_shinfo(nskb)->flags |= skb_shinfo(head_skb)->flags &
+ 					   SKBFL_SHARED_FRAG;
+ 
+-		if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
+-		    skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
++		if (skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
+ 			goto err;
+ 
+ 		while (pos < offset + len) {
+ 			if (i >= nfrags) {
++				if (skb_orphan_frags(list_skb, GFP_ATOMIC) ||
++				    skb_zerocopy_clone(nskb, list_skb,
++						       GFP_ATOMIC))
++					goto err;
++
+ 				i = 0;
+ 				nfrags = skb_shinfo(list_skb)->nr_frags;
+ 				frag = skb_shinfo(list_skb)->frags;
+@@ -4583,10 +4593,6 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
+ 					i--;
+ 					frag--;
+ 				}
+-				if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
+-				    skb_zerocopy_clone(nskb, frag_skb,
+-						       GFP_ATOMIC))
+-					goto err;
+ 
+ 				list_skb = list_skb->next;
+ 			}
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTwTBsFAwAAAAAACgkQlh/E3EQov+DI
-JA//S8P7H+Rp74pwZrhoX0D843Pj5WGuH/6h1ul8A3dAd4kiAbs/UnWoB1DyCGSBpBorY2mmyi77
-QZ287oHpHa61hV6kHSXa7gBt5xgEwUWhXL9GXs2xUkc98CiQ8Rjvze/x1A0NhimRb95LspiMvRle
-DLv6nqGbpAhQDNl0VFS4PMW+vNiPsC16QCsZaRUdxtlbS8VfUddP1FJlQ5rEtH593OmOZPnAVif6
-thyhfudIAqKaqcky1BTuVygoM0+4XX5jqH6I3vTvB/7Ql3aLH0YWlFj7hWHladBvDfzILsw/Di6a
-Qq8KxhtteRKMWHBb6SaYcUQ54XN7RdzOGcIwMDmjuR7/F57ISTjQEbIcfJrEBqh8SkK0e5fHu4VN
-2PdBWdguuTJl3cOndCs+3LjQPMLP43Yxiehi0mcDJFwQmZ+dh8DnGO9ABHNHyBtJ0mk/prtfFkAu
-Lm//LkkNfmpQRbuRuWsDXjGnwUQikY0u7SGcrcMw1y243uaii5cCaS4WPGXtX+EVjporM3oBqqxH
-kyEPRUGvVCkf79wVTk51HNV3hKiczrwtAiwxfktwlXEtNaqlHKvLTZfV31NmaUd48Gm2cETA+LGP
-Czrgwms0HtyM0Mdzc/Jx6wEihjM41Q6IsKIxg2qILLQcnPKwF90cl3py0XvFN5Wdem1JmBb/Z6lM
-kTc=
-=opIP
------END PGP SIGNATURE-----
-
---------------Oe887Gj3QpjjMtlK0cIyTz9L--
