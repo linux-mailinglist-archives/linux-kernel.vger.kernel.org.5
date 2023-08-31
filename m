@@ -2,262 +2,582 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DE578E3A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D1E78E3A6
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 02:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344579AbjHaAAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 20:00:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37294 "EHLO
+        id S1344589AbjHaABQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 20:01:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244290AbjHaAAf (ORCPT
+        with ESMTP id S1344586AbjHaABP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 20:00:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC21CC9
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:00:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693440031; x=1724976031;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=JsG0T95QKICmO4tV+QqCsK8u/qRV2qWaCXJ8mpqkUxM=;
-  b=GNAb/sxRZhbbhoz9QExwOGlfzR3WcvjBe61eOgMtNOE8m9nQJQepqYFK
-   Adg1/GPn1WDMp1fr6qITeeGhG/pNc7veBHFV1NHBMuEDCFolhKGYzRp3A
-   QCuamudIndapwEICdLmjwu2zRGj5VYzEqpKkuQ2otnw3yEFvdkCQF3IbU
-   35iwb/FKGvEZNYxuna6LMwq22klq41Xru2DOdlwmTfzabRMLRBYPiPkJk
-   pfikNEWrK87OgDri7XTNNra7J1+ffqVGDDTyBoml/HU7ttgo0WGzgGyWg
-   wtERadboS22r4+vAfg7NcTr3ayB3+usxymY93J3iHQo/ncuDO0S0ya+0r
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="379526989"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="379526989"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 17:00:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="1070008387"
-X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
-   d="scan'208";a="1070008387"
-Received: from lkp-server02.sh.intel.com (HELO daf8bb0a381d) ([10.239.97.151])
-  by fmsmga005.fm.intel.com with ESMTP; 30 Aug 2023 17:00:14 -0700
-Received: from kbuild by daf8bb0a381d with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbV6Y-000ANY-1t;
-        Thu, 31 Aug 2023 00:00:10 +0000
-Date:   Thu, 31 Aug 2023 07:59:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        alsa-devel@alsa-project.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH v4 10/11] ASoC: SOF: Intel: Move binding to display
- driver outside of deferred probe
-Message-ID: <202308310715.lBXHTY4I-lkp@intel.com>
-References: <20230830153652.217855-11-maarten.lankhorst@linux.intel.com>
+        Wed, 30 Aug 2023 20:01:15 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36513CD8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:01:10 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d7820f9449bso105168276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 17:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693440069; x=1694044869; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lQKxg9Fr2oTuswK2Hdyabm6Yn4GrjyLgwWWN7V3HWL4=;
+        b=g+EPL9uRO69vQVpdSOckI92TzHFpmfZxkjA9+IT9DYnbul9Oz17WrwLnwfrtiAEbql
+         iveE/OV34OVUjDWqre09FuVNWgZ9NdGiD9PlYxMIDhn9alrjz+sErZM7+7uCcMy1RGOf
+         RPlASSokQ436RKkF5E1uCM4S+XXVzTP7JIxb5J+7Z/uANpJsTohWsbIth6mp325TgiBB
+         pwZfdcz2w0e3X+NmsoZVbnI2+qHvb+YUC3bcd1j2o4zI0zm7V/3La18cxepJa1njVgLS
+         XpRphbvTvjHaJZ44TbLMw/DTPbkgId49q8bRP3tfeHGlm2jUE9Ym5e0gluPobSrWnReL
+         dSzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693440069; x=1694044869;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lQKxg9Fr2oTuswK2Hdyabm6Yn4GrjyLgwWWN7V3HWL4=;
+        b=awtVyq//FOt2zsyUK/wE1CKweSK2aku+1RUvAby8XXTtXxP/bgHpGPccBuutwd8YgQ
+         9wSUauaDypYcnl1oG95wms5WnrA0CJ/O1NSDdPvihBuU54YN9fRAXj2s6DAN4b2Qmczu
+         zaNYreXtZs1v96Bcn7onrzM+CD8NWZvdPVe63qU6WBgGPx8TUD7qv8YiDzEeJmg4QH3s
+         LrABfjU379O2AGTPwwtXh2DoptnyD+tI98c6Iv13Iw67eYFkLF6GafoCG+acYLzhBgdj
+         4hf1en5xKGq/Bn/35ami+F+E9QLEZAlG83Cy8S3NDNvNg+iJYmcwctcM0nFW51hTVPan
+         CwKg==
+X-Gm-Message-State: AOJu0Yy1ckzpsX1OCbZpBfaLfuFcNyECInT8BJolvODtNBqsl7XeYY61
+        WivecnHP9GFT7emSx0NpJUbhLSlZfi8HNQQBtFsmkA==
+X-Google-Smtp-Source: AGHT+IE+LcVfnFUTR2ZY4fATKigj2uxw8JlVOLuY9Gy5cSCmdR9NcN/+vY6jYBD9oeoM8qev8K2+a6il6kFleTacqxA=
+X-Received: by 2002:a25:5f45:0:b0:d6c:16c7:4403 with SMTP id
+ h5-20020a255f45000000b00d6c16c74403mr3351260ybm.20.1693440069283; Wed, 30 Aug
+ 2023 17:01:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830153652.217855-11-maarten.lankhorst@linux.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230830224910.8091-1-quic_abhinavk@quicinc.com> <20230830224910.8091-7-quic_abhinavk@quicinc.com>
+In-Reply-To: <20230830224910.8091-7-quic_abhinavk@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 31 Aug 2023 03:00:57 +0300
+Message-ID: <CAA8EJpowk1veNE1z_gwzkF2o9whz7XjCViTaXKR36nu9Gkc+OQ@mail.gmail.com>
+Subject: Re: [PATCH 06/16] drm/msm/dpu: add dpu_hw_cdm abstraction for CDM block
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, quic_jesszhan@quicinc.com,
+        quic_parellan@quicinc.com, quic_khsieh@quicinc.com,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maarten,
+On Thu, 31 Aug 2023 at 01:50, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+> CDM block comes with its own set of registers and operations
+> which can be done. In-line with other hardware sub-blocks, this
+> change adds the dpu_hw_cdm abstraction for the CDM block.
+>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/Makefile                |   1 +
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c  | 272 ++++++++++++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h  | 135 ++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h |   1 +
+>  4 files changed, 409 insertions(+)
+>  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+>  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+>
+> diff --git a/drivers/gpu/drm/msm/Makefile b/drivers/gpu/drm/msm/Makefile
+> index 8d02d8c33069..2010cb1ca995 100644
+> --- a/drivers/gpu/drm/msm/Makefile
+> +++ b/drivers/gpu/drm/msm/Makefile
+> @@ -63,6 +63,7 @@ msm-$(CONFIG_DRM_MSM_DPU) += \
+>         disp/dpu1/dpu_encoder_phys_wb.o \
+>         disp/dpu1/dpu_formats.o \
+>         disp/dpu1/dpu_hw_catalog.o \
+> +       disp/dpu1/dpu_hw_cdm.o \
+>         disp/dpu1/dpu_hw_ctl.o \
+>         disp/dpu1/dpu_hw_dsc.o \
+>         disp/dpu1/dpu_hw_dsc_1_2.o \
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> new file mode 100644
+> index 000000000000..a2f7ee8f54e4
+> --- /dev/null
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.c
+> @@ -0,0 +1,272 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#include <drm/drm_managed.h>
+> +
+> +#include "dpu_hw_mdss.h"
+> +#include "dpu_hw_util.h"
+> +#include "dpu_hw_catalog.h"
+> +#include "dpu_hw_cdm.h"
+> +#include "dpu_kms.h"
+> +
+> +#define CDM_CSC_10_OPMODE                  0x000
+> +#define CDM_CSC_10_BASE                    0x004
+> +
+> +#define CDM_CDWN2_OP_MODE                  0x100
+> +#define CDM_CDWN2_CLAMP_OUT                0x104
+> +#define CDM_CDWN2_PARAMS_3D_0              0x108
+> +#define CDM_CDWN2_PARAMS_3D_1              0x10C
+> +#define CDM_CDWN2_COEFF_COSITE_H_0         0x110
+> +#define CDM_CDWN2_COEFF_COSITE_H_1         0x114
+> +#define CDM_CDWN2_COEFF_COSITE_H_2         0x118
+> +#define CDM_CDWN2_COEFF_OFFSITE_H_0        0x11C
+> +#define CDM_CDWN2_COEFF_OFFSITE_H_1        0x120
+> +#define CDM_CDWN2_COEFF_OFFSITE_H_2        0x124
+> +#define CDM_CDWN2_COEFF_COSITE_V           0x128
+> +#define CDM_CDWN2_COEFF_OFFSITE_V          0x12C
+> +#define CDM_CDWN2_OUT_SIZE                 0x130
+> +
+> +#define CDM_HDMI_PACK_OP_MODE              0x200
+> +#define CDM_CSC_10_MATRIX_COEFF_0          0x004
+> +
+> +#define CDM_MUX                            0x224
+> +
+> +/**
+> + * Horizontal coefficients for cosite chroma downscale
+> + * s13 representation of coefficients
+> + */
+> +static u32 cosite_h_coeff[] = {0x00000016, 0x000001cc, 0x0100009e};
+> +
+> +/**
+> + * Horizontal coefficients for offsite chroma downscale
+> + */
+> +static u32 offsite_h_coeff[] = {0x000b0005, 0x01db01eb, 0x00e40046};
+> +
+> +/**
+> + * Vertical coefficients for cosite chroma downscale
+> + */
+> +static u32 cosite_v_coeff[] = {0x00080004};
+> +/**
+> + * Vertical coefficients for offsite chroma downscale
+> + */
+> +static u32 offsite_v_coeff[] = {0x00060002};
+> +
+> +static int dpu_hw_cdm_setup_csc_10bit(struct dpu_hw_cdm *ctx, struct dpu_csc_cfg *data)
+> +{
+> +       dpu_hw_csc_setup(&ctx->hw, CDM_CSC_10_MATRIX_COEFF_0, data, true);
 
-kernel test robot noticed the following build warnings:
+Where was this defined?
 
-[auto build test WARNING on broonie-sound/for-next]
-[also build test WARNING on tiwai-sound/for-next tiwai-sound/for-linus linus/master next-20230830]
-[cannot apply to v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> +
+> +       return 0;
+> +}
+> +
+> +static int dpu_hw_cdm_setup_cdwn(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cfg)
+> +{
+> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> +       u32 opmode = 0;
+> +       u32 out_size = 0;
+> +
+> +       if (cfg->output_bit_depth == CDM_CDWN_OUTPUT_10BIT)
+> +               opmode &= ~BIT(7);
+> +       else
+> +               opmode |= BIT(7);
+> +
+> +       /* ENABLE DWNS_H bit */
+> +       opmode |= BIT(1);
+> +
+> +       switch (cfg->h_cdwn_type) {
+> +       case CDM_CDWN_DISABLE:
+> +               /* CLEAR METHOD_H field */
+> +               opmode &= ~(0x18);
+> +               /* CLEAR DWNS_H bit */
+> +               opmode &= ~BIT(1);
+> +               break;
+> +       case CDM_CDWN_PIXEL_DROP:
+> +               /* Clear METHOD_H field (pixel drop is 0) */
+> +               opmode &= ~(0x18);
+> +               break;
+> +       case CDM_CDWN_AVG:
+> +               /* Clear METHOD_H field (Average is 0x1) */
+> +               opmode &= ~(0x18);
+> +               opmode |= (0x1 << 0x3);
+> +               break;
+> +       case CDM_CDWN_COSITE:
+> +               /* Clear METHOD_H field (Average is 0x2) */
+> +               opmode &= ~(0x18);
+> +               opmode |= (0x2 << 0x3);
+> +               /* Co-site horizontal coefficients */
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_0,
+> +                               cosite_h_coeff[0]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_1,
+> +                               cosite_h_coeff[1]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_COSITE_H_2,
+> +                               cosite_h_coeff[2]);
+> +               break;
+> +       case CDM_CDWN_OFFSITE:
+> +               /* Clear METHOD_H field (Average is 0x3) */
+> +               opmode &= ~(0x18);
+> +               opmode |= (0x3 << 0x3);
+> +
+> +               /* Off-site horizontal coefficients */
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_0,
+> +                               offsite_h_coeff[0]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_1,
+> +                               offsite_h_coeff[1]);
+> +               DPU_REG_WRITE(c, CDM_CDWN2_COEFF_OFFSITE_H_2,
+> +                               offsite_h_coeff[2]);
+> +               break;
+> +       default:
+> +               pr_err("%s invalid horz down sampling type\n", __func__);
+> +               return -EINVAL;
+> +       }
+> +
+> +       /* ENABLE DWNS_V bit */
+> +       opmode |= BIT(2);
+> +
+> +       switch (cfg->v_cdwn_type) {
+> +       case CDM_CDWN_DISABLE:
+> +               /* CLEAR METHOD_V field */
+> +               opmode &= ~(0x60);
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Maarten-Lankhorst/ASoC-SOF-core-add-no_wq-probe-and-remove-callbacks/20230831-033512
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-patch link:    https://lore.kernel.org/r/20230830153652.217855-11-maarten.lankhorst%40linux.intel.com
-patch subject: [PATCH v4 10/11] ASoC: SOF: Intel: Move binding to display driver outside of deferred probe
-config: x86_64-randconfig-005-20230831 (https://download.01.org/0day-ci/archive/20230831/202308310715.lBXHTY4I-lkp@intel.com/config)
-compiler: clang version 15.0.7 (https://github.com/llvm/llvm-project.git 8dfdcc7b7bf66834a761bd8de445840ef68e4d1a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230831/202308310715.lBXHTY4I-lkp@intel.com/reproduce)
+#define, GENMASK
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202308310715.lBXHTY4I-lkp@intel.com/
+> +               /* CLEAR DWNS_V bit */
+> +               opmode &= ~BIT(2);
+> +               break;
+> +       case CDM_CDWN_PIXEL_DROP:
+> +               /* Clear METHOD_V field (pixel drop is 0) */
+> +               opmode &= ~(0x60);
+> +               break;
+> +       case CDM_CDWN_AVG:
+> +               /* Clear METHOD_V field (Average is 0x1) */
+> +               opmode &= ~(0x60);
+> +               opmode |= (0x1 << 0x5);
 
-All warnings (new ones prefixed by >>):
+#define
 
->> sound/soc/sof/intel/hda.c:1173:19: warning: variable 'bus' set but not used [-Wunused-but-set-variable]
-           struct hdac_bus *bus;
-                            ^
-   1 warning generated.
+> +               break;
+> +       case CDM_CDWN_COSITE:
+> +               /* Clear METHOD_V field (Average is 0x2) */
+> +               opmode &= ~(0x60);
+> +               opmode |= (0x2 << 0x5);
+> +               /* Co-site vertical coefficients */
+> +               DPU_REG_WRITE(c,
+> +                               CDM_CDWN2_COEFF_COSITE_V,
+> +                               cosite_v_coeff[0]);
+
+align to opening bracket
+
+> +               break;
+> +       case CDM_CDWN_OFFSITE:
+> +               /* Clear METHOD_V field (Average is 0x3) */
+> +               opmode &= ~(0x60);
+> +               opmode |= (0x3 << 0x5);
+> +
+> +               /* Off-site vertical coefficients */
+> +               DPU_REG_WRITE(c,
+> +                               CDM_CDWN2_COEFF_OFFSITE_V,
+> +                               offsite_v_coeff[0]);
+
+align to opening bracket
+
+> +               break;
+> +       default:
+> +               return -EINVAL;
+> +       }
+> +
+> +       if (cfg->v_cdwn_type || cfg->h_cdwn_type)
+> +               opmode |= BIT(0); /* EN CDWN module */
+
+#define
+
+> +       else
+> +               opmode &= ~BIT(0);
+> +
+> +       out_size = (cfg->output_width & 0xFFFF) |
+> +               ((cfg->output_height & 0xFFFF) << 16);
+> +       DPU_REG_WRITE(c, CDM_CDWN2_OUT_SIZE, out_size);
+> +       DPU_REG_WRITE(c, CDM_CDWN2_OP_MODE, opmode);
+> +       DPU_REG_WRITE(c, CDM_CDWN2_CLAMP_OUT,
+> +                       ((0x3FF << 16) | 0x0));
+> +
+> +       return 0;
+> +}
+> +
+> +int dpu_hw_cdm_enable(struct dpu_hw_cdm *ctx, struct dpu_hw_cdm_cfg *cdm)
+> +{
+> +       struct dpu_hw_blk_reg_map *c = &ctx->hw;
+> +       const struct dpu_format *fmt;
+> +       u32 opmode = 0;
+> +       u32 csc = 0;
+> +
+> +       if (!ctx || !cdm)
+> +               return -EINVAL;
+> +
+> +       fmt = cdm->output_fmt;
+> +
+> +       if (!DPU_FORMAT_IS_YUV(fmt))
+> +               return -EINVAL;
+> +
+> +       if (cdm->output_type == CDM_CDWN_OUTPUT_HDMI) {
+> +               if (fmt->chroma_sample != DPU_CHROMA_H1V2)
+> +                       return -EINVAL; /*unsupported format */
+> +               opmode = BIT(0);
+> +               opmode |= (fmt->chroma_sample << 1);
+> +       }
+> +
+> +       csc |= BIT(2);
+> +       csc &= ~BIT(1);
+> +       csc |= BIT(0);
+
+Can we get some sensible #defines for all this magic, please?
+
+> +
+> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> +               ctx->ops.bind_pingpong_blk(ctx, true,
+> +                               cdm->pp_id);
+> +
+> +       DPU_REG_WRITE(c, CDM_CSC_10_OPMODE, csc);
+> +       DPU_REG_WRITE(c, CDM_HDMI_PACK_OP_MODE, opmode);
+> +       return 0;
+> +}
+> +
+> +void dpu_hw_cdm_disable(struct dpu_hw_cdm *ctx)
+> +{
+> +       if (!ctx)
+> +               return;
+> +
+> +       if (ctx && ctx->ops.bind_pingpong_blk)
+> +               ctx->ops.bind_pingpong_blk(ctx, false, 0);
+
+PINGPONG_NONE.
+
+> +}
+> +
+> +static void dpu_hw_cdm_bind_pingpong_blk(struct dpu_hw_cdm *ctx, bool enable,
+> +                                        const enum dpu_pingpong pp)
+> +{
+> +       struct dpu_hw_blk_reg_map *c;
+> +       int mux_cfg = 0xF;
+> +
+> +       if (!ctx || (enable && (pp < PINGPONG_0 || pp >= PINGPONG_MAX)))
+> +               return;
+
+I'd say, this is useless. We don't have such checks in other
+bind_pingpong_blk() callbacks.
+
+Also there should be a guarding check for DPU >= 5.0 either here or at
+the ops init.
+
+> +
+> +       c = &ctx->hw;
+> +
+> +       if (enable)
+> +               mux_cfg = (pp - PINGPONG_0) & 0x7;
+> +
+> +       DPU_REG_WRITE(c, CDM_MUX, mux_cfg);
+> +}
+> +
+> +static void _setup_cdm_ops(struct dpu_hw_cdm_ops *ops, unsigned long features)
+
+Please inline
+
+> +{
+> +       ops->setup_csc_data = dpu_hw_cdm_setup_csc_10bit;
+> +       ops->setup_cdwn = dpu_hw_cdm_setup_cdwn;
+> +       ops->enable = dpu_hw_cdm_enable;
+> +       ops->disable = dpu_hw_cdm_disable;
+> +       ops->bind_pingpong_blk = dpu_hw_cdm_bind_pingpong_blk;
+
+As you seem to call this function directly, we might as well drop the
+callback from the ops.
+
+> +}
+> +
+> +struct dpu_hw_cdm *dpu_hw_cdm_init(const struct dpu_cdm_cfg *cfg, void __iomem *addr)
+> +{
+> +       struct dpu_hw_cdm *c;
+> +
+> +       c = kzalloc(sizeof(*c), GFP_KERNEL);
+> +       if (!c)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       c->hw.blk_addr = addr + cfg->base;
+> +       c->hw.log_mask = DPU_DBG_MASK_CDM;
+> +
+> +       /* Assign ops */
+> +       c->idx = cfg->id;
+> +       c->caps = cfg;
+> +       _setup_cdm_ops(&c->ops, c->caps->features);
+> +
+> +       return c;
+> +}
+> +
+> +void dpu_hw_cdm_destroy(struct dpu_hw_cdm *cdm)
+> +{
+> +       kfree(cdm);
+
+I'd prefer not to introduce another manual kzalloc/kfree pair, see
+https://patchwork.freedesktop.org/series/120366/
+
+> +}
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> new file mode 100644
+> index 000000000000..da60893a5c02
+> --- /dev/null
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_cdm.h
+> @@ -0,0 +1,135 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * Copyright (c) 2023, The Linux Foundation. All rights reserved.
+> + */
+> +
+> +#ifndef _DPU_HW_CDM_H
+> +#define _DPU_HW_CDM_H
+> +
+> +#include "dpu_hw_mdss.h"
+> +#include "dpu_hw_top.h"
+> +
+> +struct dpu_hw_cdm;
+> +
+> +struct dpu_hw_cdm_cfg {
+> +       u32 output_width;
+> +       u32 output_height;
+> +       u32 output_bit_depth;
+> +       u32 h_cdwn_type;
+> +       u32 v_cdwn_type;
+> +       const struct dpu_format *output_fmt;
+> +       u32 output_type;
+> +       int pp_id;
+> +};
+> +
+> +enum dpu_hw_cdwn_type {
+> +       CDM_CDWN_DISABLE,
+> +       CDM_CDWN_PIXEL_DROP,
+> +       CDM_CDWN_AVG,
+> +       CDM_CDWN_COSITE,
+> +       CDM_CDWN_OFFSITE,
+> +};
+> +
+> +enum dpu_hw_cdwn_output_type {
+> +       CDM_CDWN_OUTPUT_HDMI,
+> +       CDM_CDWN_OUTPUT_WB,
+> +};
+> +
+> +enum dpu_hw_cdwn_output_bit_depth {
+> +       CDM_CDWN_OUTPUT_8BIT,
+> +       CDM_CDWN_OUTPUT_10BIT,
+> +};
+> +
+> +/**
+> + * struct dpu_hw_cdm_ops : Interface to the chroma down Hw driver functions
+> + *                         Assumption is these functions will be called after
+> + *                         clocks are enabled
+> + *  @setup_csc:            Programs the csc matrix
+> + *  @setup_cdwn:           Sets up the chroma down sub module
+> + *  @enable:               Enables the output to interface and programs the
+> + *                         output packer
+> + *  @disable:              Puts the cdm in bypass mode
+> + *  @bind_pingpong_blk:    enable/disable the connection with pingpong which
+> + *                         will feed pixels to this cdm
+> + */
+> +struct dpu_hw_cdm_ops {
+> +       /**
+> +        * Programs the CSC matrix for conversion from RGB space to YUV space,
+> +        * it is optional to call this function as this matrix is automatically
+> +        * set during initialization, user should call this if it wants
+> +        * to program a different matrix than default matrix.
+> +        * @cdm:          Pointer to the chroma down context structure
+> +        * @data          Pointer to CSC configuration data
+> +        * return:        0 if success; error code otherwise
+> +        */
+> +       int (*setup_csc_data)(struct dpu_hw_cdm *cdm, struct dpu_csc_cfg *data);
+> +
+> +       /**
+> +        * Programs the Chroma downsample part.
+> +        * @cdm         Pointer to chroma down context
+> +        * @cfg         Pointer to the cdm configuration data
+> +        */
+> +       int (*setup_cdwn)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
+> +
+> +       /**
+> +        * Enable the CDM module
+> +        * @cdm         Pointer to chroma down context
+> +        */
+> +       int (*enable)(struct dpu_hw_cdm *cdm, struct dpu_hw_cdm_cfg *cfg);
+> +
+> +       /**
+> +        * Disable the CDM module
+> +        * @cdm         Pointer to chroma down context
+> +        */
+> +       void (*disable)(struct dpu_hw_cdm *cdm);
+> +
+> +       /**
+> +        * Enable/disable the connection with pingpong
+> +        * @cdm         Pointer to chroma down context
+> +        * @enable      Enable/disable control
+> +        * @pp          pingpong block id.
+> +        */
+> +       void (*bind_pingpong_blk)(struct dpu_hw_cdm *cdm, bool enable,
+> +                                 const enum dpu_pingpong pp);
+> +};
+> +
+> +/**
+> + * struct dpu_hw_cdm - cdm description
+> + * @base: Hardware block base structure
+> + * @hw: Block hardware details
+> + * @idx: CDM index
+> + * @caps: Pointer to cdm_cfg
+> + * @ops: handle to operations possible for this CDM
+> + */
+> +struct dpu_hw_cdm {
+> +       struct dpu_hw_blk base;
+> +       struct dpu_hw_blk_reg_map hw;
+> +
+> +       /* chroma down */
+> +       const struct dpu_cdm_cfg *caps;
+> +       enum  dpu_cdm  idx;
+> +
+> +       /* ops */
+> +       struct dpu_hw_cdm_ops ops;
+> +};
+> +
+> +/**
+> + * dpu_hw_cdm_init - initializes the cdm hw driver object.
+> + * should be called once before accessing every cdm.
+> + * @cdm: CDM catalog entry for which driver object is required
+> + * @addr :   mapped register io address of MDSS
+> + */
+> +struct dpu_hw_cdm *dpu_hw_cdm_init(const struct dpu_cdm_cfg *cdm, void __iomem *addr);
+> +
+> +/**
+> + * dpu_hw_cdm_destroy - destroys cdm driver context
+> + * @cdm:   Pointer to cdm driver context returned by dpu_hw_cdm_init
+> + */
+> +void dpu_hw_cdm_destroy(struct dpu_hw_cdm *cdm);
+> +
+> +static inline struct dpu_hw_cdm *to_dpu_hw_cdm(struct dpu_hw_blk *hw)
+> +{
+> +       return container_of(hw, struct dpu_hw_cdm, base);
+> +}
+> +
+> +#endif /*_DPU_HW_CDM_H */
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> index 4d6dba18caf0..34f943102499 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h
+> @@ -463,6 +463,7 @@ struct dpu_mdss_color {
+>  #define DPU_DBG_MASK_ROT      (1 << 9)
+>  #define DPU_DBG_MASK_DSPP     (1 << 10)
+>  #define DPU_DBG_MASK_DSC      (1 << 11)
+> +#define DPU_DBG_MASK_CDM      (1 << 12)
+>
+>  /**
+>   * struct dpu_hw_tear_check - Struct contains parameters to configure
+> --
+> 2.40.1
+>
 
 
-vim +/bus +1173 sound/soc/sof/intel/hda.c
-
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1168  
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1169  int hda_dsp_probe(struct snd_sof_dev *sdev)
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1170  {
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1171  	struct pci_dev *pci = to_pci_dev(sdev->dev);
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1172  	struct sof_intel_hda_dev *hdev = sdev->pdata->hw_pdata;
-47f868f27a979a Pierre-Louis Bossart  2023-08-30 @1173  	struct hdac_bus *bus;
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1174  	int ret = 0;
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1175  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1176  	hdev->dmic_dev = platform_device_register_data(sdev->dev, "dmic-codec",
-dd96daca6c83ec Liam Girdwood         2019-04-12  1177  						       PLATFORM_DEVID_NONE,
-dd96daca6c83ec Liam Girdwood         2019-04-12  1178  						       NULL, 0);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1179  	if (IS_ERR(hdev->dmic_dev)) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1180  		dev_err(sdev->dev, "error: failed to create DMIC device\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1181  		return PTR_ERR(hdev->dmic_dev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1182  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1183  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1184  	/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1185  	 * use position update IPC if either it is forced
-dd96daca6c83ec Liam Girdwood         2019-04-12  1186  	 * or we don't have other choice
-dd96daca6c83ec Liam Girdwood         2019-04-12  1187  	 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1188  #if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_FORCE_IPC_POSITION)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1189  	hdev->no_ipc_position = 0;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1190  #else
-dd96daca6c83ec Liam Girdwood         2019-04-12  1191  	hdev->no_ipc_position = sof_ops(sdev)->pcm_pointer ? 1 : 0;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1192  #endif
-dd96daca6c83ec Liam Girdwood         2019-04-12  1193  
-1f7b5d52be130e Peter Ujfalusi        2023-04-04  1194  	if (sdev->dspless_mode_selected)
-1f7b5d52be130e Peter Ujfalusi        2023-04-04  1195  		hdev->no_ipc_position = 1;
-1f7b5d52be130e Peter Ujfalusi        2023-04-04  1196  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1197  	/* set up HDA base */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1198  	bus = sof_to_bus(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1199  
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1200  	if (sdev->dspless_mode_selected)
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1201  		goto skip_dsp_setup;
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1202  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1203  	/* DSP base */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1204  	sdev->bar[HDA_DSP_BAR] = pci_ioremap_bar(pci, HDA_DSP_BAR);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1205  	if (!sdev->bar[HDA_DSP_BAR]) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1206  		dev_err(sdev->dev, "error: ioremap error\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1207  		ret = -ENXIO;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1208  		goto hdac_bus_unmap;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1209  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1210  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1211  	sdev->mmio_bar = HDA_DSP_BAR;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1212  	sdev->mailbox_bar = HDA_DSP_BAR;
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1213  skip_dsp_setup:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1214  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1215  	/* allow 64bit DMA address if supported by H/W */
-ab152afa2427bb Takashi Iwai          2021-01-14  1216  	if (dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(64))) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1217  		dev_dbg(sdev->dev, "DMA mask is 32 bit\n");
-ab152afa2427bb Takashi Iwai          2021-01-14  1218  		dma_set_mask_and_coherent(&pci->dev, DMA_BIT_MASK(32));
-dd96daca6c83ec Liam Girdwood         2019-04-12  1219  	}
-8872fc0d045929 Takashi Iwai          2022-02-15  1220  	dma_set_max_seg_size(&pci->dev, UINT_MAX);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1221  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1222  	/* init streams */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1223  	ret = hda_dsp_stream_init(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1224  	if (ret < 0) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1225  		dev_err(sdev->dev, "error: failed to init streams\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1226  		/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1227  		 * not all errors are due to memory issues, but trying
-dd96daca6c83ec Liam Girdwood         2019-04-12  1228  		 * to free everything does not harm
-dd96daca6c83ec Liam Girdwood         2019-04-12  1229  		 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1230  		goto free_streams;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1231  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1232  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1233  	/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1234  	 * register our IRQ
-dd96daca6c83ec Liam Girdwood         2019-04-12  1235  	 * let's try to enable msi firstly
-dd96daca6c83ec Liam Girdwood         2019-04-12  1236  	 * if it fails, use legacy interrupt mode
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1237  	 * TODO: support msi multiple vectors
-dd96daca6c83ec Liam Girdwood         2019-04-12  1238  	 */
-bb67dd1878de57 Pierre-Louis Bossart  2019-08-06  1239  	if (hda_use_msi && pci_alloc_irq_vectors(pci, 1, 1, PCI_IRQ_MSI) > 0) {
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1240  		dev_info(sdev->dev, "use msi interrupt mode\n");
-7c11af9fcdc425 Bard Liao             2019-12-04  1241  		sdev->ipc_irq = pci_irq_vector(pci, 0);
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1242  		/* initialised to "false" by kzalloc() */
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1243  		sdev->msi_enabled = true;
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1244  	}
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1245  
-672ff5e3596ee2 Guennadi Liakhovetski 2019-07-22  1246  	if (!sdev->msi_enabled) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1247  		dev_info(sdev->dev, "use legacy interrupt mode\n");
-dd96daca6c83ec Liam Girdwood         2019-04-12  1248  		/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1249  		 * in IO-APIC mode, hda->irq and ipc_irq are using the same
-dd96daca6c83ec Liam Girdwood         2019-04-12  1250  		 * irq number of pci->irq
-dd96daca6c83ec Liam Girdwood         2019-04-12  1251  		 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1252  		sdev->ipc_irq = pci->irq;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1253  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1254  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1255  	dev_dbg(sdev->dev, "using IPC IRQ %d\n", sdev->ipc_irq);
-7c11af9fcdc425 Bard Liao             2019-12-04  1256  	ret = request_threaded_irq(sdev->ipc_irq, hda_dsp_interrupt_handler,
-7c11af9fcdc425 Bard Liao             2019-12-04  1257  				   hda_dsp_interrupt_thread,
-7c11af9fcdc425 Bard Liao             2019-12-04  1258  				   IRQF_SHARED, "AudioDSP", sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1259  	if (ret < 0) {
-dd96daca6c83ec Liam Girdwood         2019-04-12  1260  		dev_err(sdev->dev, "error: failed to register IPC IRQ %d\n",
-dd96daca6c83ec Liam Girdwood         2019-04-12  1261  			sdev->ipc_irq);
-7c11af9fcdc425 Bard Liao             2019-12-04  1262  		goto free_irq_vector;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1263  	}
-dd96daca6c83ec Liam Girdwood         2019-04-12  1264  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1265  	pci_set_master(pci);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1266  	synchronize_irq(pci->irq);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1267  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1268  	/*
-dd96daca6c83ec Liam Girdwood         2019-04-12  1269  	 * clear TCSEL to clear playback on some HD Audio
-dd96daca6c83ec Liam Girdwood         2019-04-12  1270  	 * codecs. PCI TCSEL is defined in the Intel manuals.
-dd96daca6c83ec Liam Girdwood         2019-04-12  1271  	 */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1272  	snd_sof_pci_update_bits(sdev, PCI_TCSEL, 0x07, 0);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1273  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1274  	/* init HDA capabilities */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1275  	ret = hda_init_caps(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1276  	if (ret < 0)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1277  		goto free_ipc_irq;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1278  
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1279  	if (!sdev->dspless_mode_selected) {
-1f5253b08e06bc Zhu Yingjiang         2019-05-22  1280  		/* enable ppcap interrupt */
-1f5253b08e06bc Zhu Yingjiang         2019-05-22  1281  		hda_dsp_ctrl_ppcap_enable(sdev, true);
-1f5253b08e06bc Zhu Yingjiang         2019-05-22  1282  		hda_dsp_ctrl_ppcap_int_enable(sdev, true);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1283  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1284  		/* set default mailbox offset for FW ready message */
-dd96daca6c83ec Liam Girdwood         2019-04-12  1285  		sdev->dsp_box.offset = HDA_DSP_MBOX_UPLINK_OFFSET;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1286  
-63e51fd33fef04 Ranjani Sridharan     2020-01-29  1287  		INIT_DELAYED_WORK(&hdev->d0i3_work, hda_dsp_d0i3_work);
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1288  	}
-63e51fd33fef04 Ranjani Sridharan     2020-01-29  1289  
-e2379d4a83da44 Pierre-Louis Bossart  2022-09-20  1290  	init_waitqueue_head(&hdev->waitq);
-e2379d4a83da44 Pierre-Louis Bossart  2022-09-20  1291  
-95fa7a62e16463 Pierre-Louis Bossart  2022-04-21  1292  	hdev->nhlt = intel_nhlt_init(sdev->dev);
-95fa7a62e16463 Pierre-Louis Bossart  2022-04-21  1293  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1294  	return 0;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1295  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1296  free_ipc_irq:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1297  	free_irq(sdev->ipc_irq, sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1298  free_irq_vector:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1299  	if (sdev->msi_enabled)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1300  		pci_free_irq_vectors(pci);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1301  free_streams:
-dd96daca6c83ec Liam Girdwood         2019-04-12  1302  	hda_dsp_stream_free(sdev);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1303  /* dsp_unmap: not currently used */
-9fc6786f549c4d Pierre-Louis Bossart  2023-04-04  1304  	if (!sdev->dspless_mode_selected)
-dd96daca6c83ec Liam Girdwood         2019-04-12  1305  		iounmap(sdev->bar[HDA_DSP_BAR]);
-dd96daca6c83ec Liam Girdwood         2019-04-12  1306  hdac_bus_unmap:
-5bb0ecddb2a7f6 Pierre-Louis Bossart  2021-03-01  1307  	platform_device_unregister(hdev->dmic_dev);
-47f868f27a979a Pierre-Louis Bossart  2023-08-30  1308  
-dd96daca6c83ec Liam Girdwood         2019-04-12  1309  	return ret;
-dd96daca6c83ec Liam Girdwood         2019-04-12  1310  }
-dd96daca6c83ec Liam Girdwood         2019-04-12  1311  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--
+With best wishes
+Dmitry
