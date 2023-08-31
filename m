@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D22E78EDDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:59:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EAC78EDF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242077AbjHaM7F convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 31 Aug 2023 08:59:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
+        id S1345255AbjHaNCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:02:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjHaM7E (ORCPT
+        with ESMTP id S229716AbjHaNCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:59:04 -0400
-Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A82CF3;
-        Thu, 31 Aug 2023 05:58:59 -0700 (PDT)
-Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-573128cd77dso68828eaf.0;
-        Thu, 31 Aug 2023 05:58:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693486739; x=1694091539;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0uNl6jFskdrLBmjyS7+9CIbwuUHiMSI+rI9yedXX/qQ=;
-        b=jCyLEG1I26gNP7CJrVpYa/Gnjurjg36dEqLURycaD2plqy9Sa0bPVpZFcaw3PjPU7z
-         QyFY635fcrAN/RprlDghodeqsi0oWgHVOUCjGTJob1YMtSAki35ox4L7uwNKn8ULlgBL
-         AQNdnPqVPwRgfF3e3IXpI5l0ZvXiJ+M3aQhqqTorpYd0FseAWNZ0kGNlwnN1CldUg16B
-         AL1HrtE5YKd2SKucYlL3Ras3nVOY4W+oCCsmNqzzVqOz+dtcMSvvFAH6oLz9ki+JQLH1
-         4FWH4vTbbuB+eABKXT5WB25OyYr8hOjj9zNbowpVpdUMbjO2GILqbczx99QAFCylVG+G
-         8dBg==
-X-Gm-Message-State: AOJu0Ywbw6Htm2ZcjGh5O8m6Lwmy3Z97U2/LumV0vTgxkmm09ddTcmvn
-        ysDn7wVCMU1f+KzU9V7yi7DjpxlMuJ/a68c1ZgQ=
-X-Google-Smtp-Source: AGHT+IEmGYX9g/ETXL3g53lOPMLKPSoIb0ND1MPTFYNli229Abq6tXAuUZTAqX6cK/rNN33pZ3n/43SiMLCKfy8PE1o=
-X-Received: by 2002:a4a:b4c5:0:b0:56e:6532:467a with SMTP id
- g5-20020a4ab4c5000000b0056e6532467amr5345539ooo.1.1693486739131; Thu, 31 Aug
- 2023 05:58:59 -0700 (PDT)
+        Thu, 31 Aug 2023 09:02:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94F741A4;
+        Thu, 31 Aug 2023 06:02:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 48F08B8228F;
+        Thu, 31 Aug 2023 13:02:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8901CC433C9;
+        Thu, 31 Aug 2023 13:01:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693486920;
+        bh=m6Nl6Id8RoMewEtH5d20+zLMfYasZ5KSlv3RtZKHV3Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=NE83sSaLByG8i26eCcjMTDtoO6coDvgiqce0pkCSzpQQBhmgnCzqEWvbHN8a9kRdC
+         yn7vSFbUIgitryijAyyyV0BvqpP7W0/Cy+gAcBX7XptP2fCXKPB4wv997NmU+P0+YX
+         W26C4QMO1+RU25GNiA0jGUi30dcoeZkRmPh28DWiChzwRJAgVbO/TPkem5Tl8E2BjA
+         YQo5OfD7N6PZQ44R6WdOXz9o1/FH4bD3Mlm6xjIWORIvOcWizKJeALcOzB3eFRAWu9
+         NxKxTglZepw8T8e2j2LLgAFkhMVwcdRAUuPuWUIf836TCDsp9dGw2n4u5qReZQrBsM
+         2Bgqr8y5gkMIg==
+From:   Christian Brauner <brauner@kernel.org>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] fs: have setattr_copy handle multigrain timestamps appropriately
+Date:   Thu, 31 Aug 2023 15:01:52 +0200
+Message-Id: <20230831-fernbedienung-ovale-4232fdd5bff6@brauner>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230830-kdevops-v1-1-ef2be57755dd@kernel.org>
+References: <20230830-kdevops-v1-1-ef2be57755dd@kernel.org>
 MIME-Version: 1.0
-References: <20230829213441.310655-1-ulf.hansson@linaro.org>
- <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
- <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
- <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
- <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
- <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com> <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
-In-Reply-To: <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 31 Aug 2023 14:58:47 +0200
-Message-ID: <CAJZ5v0j52eotamMABZpu3-L3mmW=MwJEtTHCu3j8tAA0dZJzzA@mail.gmail.com>
-Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
-        Sebastian Reichel <sebastian.reichel@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1422; i=brauner@kernel.org; h=from:subject:message-id; bh=m6Nl6Id8RoMewEtH5d20+zLMfYasZ5KSlv3RtZKHV3Q=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaR86Le88eGrcdMPxkOZ88RXFDFezVZeb/F+vceTVsFlkkvW snPXdpSyMIhxMciKKbI4tJuEyy3nqdhslKkBM4eVCWQIAxenAEzEQZaR4abV677d3at5j4REGvtHKj xfn2fiN+vaGieG/xrXFlRfvsbI8HP/0ylV7YvubTcKOr3G/jZ3hf7ri9EXbJ57PtXSvvszlBsA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 1:37 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Thu, 31 Aug 2023 at 11:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> >
-> > On Wed, Aug 30, 2023 at 10:34 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+On Wed, 30 Aug 2023 14:28:43 -0400, Jeff Layton wrote:
+> The setattr codepath is still using coarse-grained timestamps, even on
+> multigrain filesystems. To fix this, we need to fetch the timestamp for
+> ctime updates later, at the point where the assignment occurs in
+> setattr_copy.
+> 
+> On a multigrain inode, ignore the ia_ctime in the attrs, and always
+> update the ctime to the current clock value. Update the atime and mtime
+> with the same value (if needed) unless they are being set to other
+> specific values, a'la utimes().
+> 
+> [...]
 
-[cut]
+Picking this into vfs.ctime. Let me know if this has to go somewhere else.
 
-> > > Please advise me on how to move forward.
-> >
-> > If I may suggest something, I would call this "pmdomain" instead of
-> > "genpd".  I don't think that /drivers/power/ is a particularly
-> > suitable location for it, because it doesn't really have much to do
-> > with power supplies and more to do with device PM.
->
-> "pmdomain" is probably giving a reasonable good hint of what goes on
-> in this subsystem. This works fine for me, thanks!
->
-> >
-> > Also, I would move drivers/base/power/domain.c to drivers/pmdomain/
-> > (and rename it to something like core.c), because it would be a better
-> > location for that fiile IMO.
->
-> We could certainly do that, let's discuss it a bit more.
->
-> Although, at this point I want to focus on the genpd providers, as to
-> release some of the burden from arm-soc maintainers.
+---
 
-That's fine, it's just a suggestion.
+Applied to the vfs.ctime branch of the vfs/vfs.git tree.
+Patches in the vfs.ctime branch should appear in linux-next soon.
 
-The rationale is that the "core" code is used by the providers, so
-putting it next to them would be more convenient in case it needs to
-be modified along with the providers, for example.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-> >
-> > I can also handle future pull requests for this if that's fine with everyone.
->
-> Thanks a lot for your offer! However, if a re-route is preferred (I
-> think not?), this is probably better suited via arm-soc, as most
-> changes are going to be arm platform specific.
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
-Whichever works for you better.
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.ctime
+
+[1/1] fs: have setattr_copy handle multigrain timestamps appropriately
+      https://git.kernel.org/vfs/vfs/c/2846ab555339
