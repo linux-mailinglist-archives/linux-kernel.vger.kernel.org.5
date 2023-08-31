@@ -2,62 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E06678E435
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACE1778E437
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345484AbjHaBNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 21:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47454 "EHLO
+        id S1345496AbjHaBOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 21:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345477AbjHaBNx (ORCPT
+        with ESMTP id S1345480AbjHaBOP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 21:13:53 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B2DE46
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:13:29 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RbjpZ018xz4f3mWP
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:13:25 +0800 (CST)
-Received: from [10.174.177.236] (unknown [10.174.177.236])
-        by APP4 (Coremail) with SMTP id gCh0CgAXp6k06e9kAX3zBw--.4999S3;
-        Thu, 31 Aug 2023 09:13:26 +0800 (CST)
-Subject: Re: [PATCH RESEND] tools/mm: fix undefined reference to pthread_once
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     akpm@linux-foundation.org, irogers@google.com, acme@redhat.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yang Yingliang <yangyingliang@huawei.com>
-References: <20230828122157.1541087-1-xiexiuqi@huaweicloud.com>
- <ZOyZ9FgRUOGPh3qm@casper.infradead.org>
-From:   Xie XiuQi <xiexiuqi@huaweicloud.com>
-Message-ID: <e4027374-88a9-9484-1619-8c3f887a58ca@huaweicloud.com>
-Date:   Thu, 31 Aug 2023 09:13:24 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Wed, 30 Aug 2023 21:14:15 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B9CCDA
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:14:07 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1bf078d5f33so2110385ad.3
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693444447; x=1694049247; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1sUp2yimFnL41Syp4fRWiGYEjv3jeQXhshgUbuWCXiU=;
+        b=hPACS1F46EEGmI5xV/eAzlwhcd0oqu4f2lRwcNaQFh+coaZwfqmW8GgiS1PZh7mStQ
+         0+VN4FJiTSzPNrXVoqu+HJ6oXwxRcAoaZpJnfRFnq7I38x5gSrkosj4zxj5Kc9PYcUTt
+         QBe5jbbp9Lco/lBkZqGm3UdplyoxN36YCPp/8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693444447; x=1694049247;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1sUp2yimFnL41Syp4fRWiGYEjv3jeQXhshgUbuWCXiU=;
+        b=j3IUA43nBU6rAympiCg1ldt1sGgir2/VNY3TrvBjcAtqw4w+xlgKwmVNHUtRmPDfOK
+         MomDeQnFZOIM4Xl0SKIKM2oJpFavltQMUW0+PUBLICL5pdzF8+ZI4kyGR04fYQrFO1Va
+         FDo4i595gdmoEb7gb07BSLxJMVg5ciYtnBuP2A8wv3AZzE+Q7yiF6V/ibhtSDGRdBwZH
+         hJCS3kosu6yTFT5V8WkjyZwy2Fw/GSa4KbS7ldmaa3/qBS7nzFcIpMN0iyYK8kTr+gux
+         Lgr08w+2T2RcecH/+82iR4l+mqmvNUQS1I20aJS63fl62sVxsVc5IlgS4w0YGkd5YzDo
+         BiBQ==
+X-Gm-Message-State: AOJu0YzKroezj8wDsJunJaCX0YhUoQoaevJSYT1BXDK1Z/bbzoJkXp43
+        P8w0NyZV39IQ39oq7wr1pvuX1Q==
+X-Google-Smtp-Source: AGHT+IEsaxAUmzOWP3YLPRyIonJDP5ynhSyj/X3KF7NV/5+fcbROj48eTEq1IrBDZ7PjIKflMZop6Q==
+X-Received: by 2002:a17:902:ea94:b0:1bc:2188:ef88 with SMTP id x20-20020a170902ea9400b001bc2188ef88mr3832312plb.3.1693444447266;
+        Wed, 30 Aug 2023 18:14:07 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:11a:201:248f:d364:b451:2bc0])
+        by smtp.gmail.com with ESMTPSA id im23-20020a170902bb1700b001bbb7af4963sm132604plb.68.2023.08.30.18.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 18:14:06 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH 0/3] platform/x86: intel_scu_ipc: Timeout fixes
+Date:   Wed, 30 Aug 2023 18:14:00 -0700
+Message-ID: <20230831011405.3246849-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
 MIME-Version: 1.0
-In-Reply-To: <ZOyZ9FgRUOGPh3qm@casper.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: gCh0CgAXp6k06e9kAX3zBw--.4999S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF48ur45trW8XF1rtry5Jwb_yoWfZwcE9a
-        yIqr47Ww4UurZ7Jrs0krsxKryvkFnY9rn5AF4rJr1Svry5GrykXF4v9FnavF4YqF4v9asx
-        KFyrZFn8uw1xKjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbzkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-        Y4v20xvaj40_JrC_JFWl1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-        A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-        67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-        AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-        j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-        kEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAK
-        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-        0EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-        7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: x0lh5xhxtlqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,33 +72,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+I recently looked at some crash reports on ChromeOS devices that call
+into this intel_scu_ipc driver. They were hitting timeouts, and it
+certainly looks possible for those timeouts to be triggering because of
+scheduling issues. Once things started going south, the timeouts kept
+coming. Maybe that's because the other side got seriously confused? I
+don't know. I'll poke at it some more by injecting timeouts on the
+kernel side.
 
-On 2023/8/28 20:58, Matthew Wilcox wrote:
-> On Mon, Aug 28, 2023 at 08:21:57PM +0800, Xie XiuQi wrote:
->> diff --git a/tools/mm/Makefile b/tools/mm/Makefile
->> index 6c1da51f4177..9997b2e401ae 100644
->> --- a/tools/mm/Makefile
->> +++ b/tools/mm/Makefile
->> @@ -9,7 +9,7 @@ LIB_DIR = ../lib/api
->>  LIBS = $(LIB_DIR)/libapi.a
->>  
->>  CFLAGS += -Wall -Wextra -I../lib/
->> -LDFLAGS += $(LIBS)
->> +LDFLAGS += $(LIBS) -lpthread
-> 
-> Is this the right fix?  I'm pretty sure you're suppose to use -pthread
-> in CFLAGS in case there are other things the compiler/linker/whatever
-> need.
-> 
+The first two patches are only lightly tested (normal functions keep
+working), while the third one is purely speculation. I was going to make
+the interrupt delay for a long time to see if I could hit the timeout.
 
-Thanks for your comment. I'll fix it and send v2.
+Stephen Boyd (3):
+  platform/x86: intel_scu_ipc: Check status after timeouts in
+    busy_loop()
+  platform/x86: intel_scu_ipc: Check status upon timeout in
+    ipc_wait_for_interrupt()
+  platform/x86: intel_scu_ipc: Fail IPC send if still busy
 
-> '-pthread'
->      Define additional macros required for using the POSIX threads
->      library.  You should use this option consistently for both
->      compilation and linking.  This option is supported on GNU/Linux
->      targets, most other Unix derivatives, and also on x86 Cygwin and
->      MinGW targets.
-> 
+ drivers/platform/x86/intel_scu_ipc.c | 59 ++++++++++++++++++++--------
+ 1 file changed, 42 insertions(+), 17 deletions(-)
+
+
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+-- 
+https://chromeos.dev
 
