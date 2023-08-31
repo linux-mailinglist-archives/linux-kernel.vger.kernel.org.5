@@ -2,223 +2,407 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5678678F4CD
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F17678F4D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:48:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347606AbjHaVsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 17:48:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        id S1347620AbjHaVsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 17:48:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345373AbjHaVsP (ORCPT
+        with ESMTP id S1347608AbjHaVsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 17:48:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A214B8;
-        Thu, 31 Aug 2023 14:48:11 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DE793B8231D;
-        Thu, 31 Aug 2023 21:48:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88C43C433C8;
-        Thu, 31 Aug 2023 21:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693518488;
-        bh=KeVVWWTD17B/6hwPR+f3bpOs1cN39GfXUiKSj9N9f2s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=gmoZePOqZQarBaPe2JGo/Num1p7EFrZ+ZGt4ZlR+8hKWNTsnjHtMNN2mOpmuXgvTp
-         C0yr0MU2gGCxi0kTwZMlncQH3STiRjXrN0FbHUSQ+WICgcTEyz9kghGFlWkbFJ1SZS
-         LXhh4zrQRJ5rYt3BaloFLMu1gkmJr1xXfnUGg2+qxJQ7feKykMpObxoubeTHuKU/+a
-         S7Y9PEIv1A3X0KLKJaacW//FfT1dq4LUfpiwbAo9rmMnqItWsdqQhyil+LsnMb2G3B
-         edhVAnPalUih/adMWIGWNJdOe+B8v7U1yRg6YlEAKq3+ArzGj0ze02OpUnmMN1bg+k
-         wxWyrslBQVcng==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-500bdef7167so3049721e87.0;
-        Thu, 31 Aug 2023 14:48:08 -0700 (PDT)
-X-Gm-Message-State: AOJu0YylTlZctAirWPrG4P0Rnz19ZiHwYdKYOYmYApmoSrypuSPElRIq
-        pTiwhC3LHXRdHaLghBV1aiOsbrxk2A7lL3osWH8=
-X-Google-Smtp-Source: AGHT+IHR5q2pesvi36NMoSEfYqkRp/yXUcWlo+ZqPpYi3Vv2mu8r0vmM7L+9kZSDNHjoNC8BFybZ4l8k23PxI8qLHyY=
-X-Received: by 2002:a05:6512:3d08:b0:4fe:27a0:68bc with SMTP id
- d8-20020a0565123d0800b004fe27a068bcmr1423708lfv.27.1693518486520; Thu, 31 Aug
- 2023 14:48:06 -0700 (PDT)
+        Thu, 31 Aug 2023 17:48:41 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 299D810CB;
+        Thu, 31 Aug 2023 14:48:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693518507; x=1725054507;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=E2MUvGomcaDLRRQ2W8QhMBn1Z2fhpnx1GrJqgtA2PV0=;
+  b=CPv7roRlK73z1PIPgC8fvSHj5yKzAZUQmCxRGpg4J20F7m3v506lcK5I
+   htAPffT4GOlWkOVSlI89wyMG/OPbBDip5QD0ioaK+txCGJ6hYLH08Jayy
+   tGfVtl7jxm1c9dOyANhh1Gd8yXVuLWN3kBliSGoBK1J7U3r4Jvzk6/C7L
+   A6YMOGe7dU/qbN+OAtkKKYoTT7yd8YdLYIYU6ZoxPUVHkDqWuc+bM11SI
+   EMAcUWQoYqfNRLCc1zPeuzXwtWchFLp6r9UxSjvokjSw+hg0lINh8EZEs
+   GUPaHZX8t0EGdw8G6ZzsR8WHbMal8UGewKVRuLb+UNaBbBu3JeB6sSQNh
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="356388262"
+X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
+   d="scan'208";a="356388262"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 14:48:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="733292071"
+X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
+   d="scan'208";a="733292071"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Aug 2023 14:48:24 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Thu, 31 Aug 2023 14:48:24 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Thu, 31 Aug 2023 14:48:24 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (104.47.70.102)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Thu, 31 Aug 2023 14:48:24 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=B3nFdNyji6FF1tDGnEmcXiyX46MT4TfRThm+QmtvNhgK+mZWm53tugBa4X25ZKlghPfRn5l4ZNmF97c4xddVsVTwPym8omOvzCabtiTUIYqRuTiTLfbp0L7sqccpZUH6zsyyaMdgL33L6YiF8s9I+0fHYZGmZPwRVDhXgmFXntUT4H6c2Shn/uQaB2yKAgzJ3ZrEHkKl8PmOzoB3YlugoiRj4Y7oK7wkOWfeQDAUoU+nugl2ZLAKh4aT3M5YoJRQZOUtQeH0wXn+5xme9WApCy1NNSAMCv+YKYSjuzbi108BBLINyGOF5tVDJqq8Rm6yQ1MvoBzm7+D/YjYZ2CY7Ug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SAc7X1KfYrvQo+Z7PU/EMccycokK8lC+hJ8tPmRhOz4=;
+ b=m2L5+25mEGtJtmj93oBJdl1gmNPkSw6Y4KeHd4dRbLehkqn08oifLl9n8DEV+7zqAj8Kso/eJ06aUyy4GmwJ/3XSaXWN81tZ+bixjh/SA94GE/0ZvfURxnZA128IuBNX/+w9d2zQ3G5zTv7P/UJ3yMKdeXAVBR929sG9kSytG9x9ZF3Et/x9Wy5IhVga6rDd4fBSlb5PGyI8aIg5MbdJYsbV3HKjcl4cZkNsPzXKUrFjkO+BD+oUpcCD6ZpvInye7NlWZZ1bMERZLy2NrqndgJgCyA4alfyDrYha0OdBIA7yBALNTPPvYyJLg2JANigmvZt6fvNGTyuh56cFt39m3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com (2603:10b6:510:1e3::15)
+ by PH0PR11MB5595.namprd11.prod.outlook.com (2603:10b6:510:e5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.18; Thu, 31 Aug
+ 2023 21:48:22 +0000
+Received: from PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::9563:9642:bbde:293f]) by PH7PR11MB5984.namprd11.prod.outlook.com
+ ([fe80::9563:9642:bbde:293f%7]) with mapi id 15.20.6745.022; Thu, 31 Aug 2023
+ 21:48:21 +0000
+Message-ID: <83a9a5e9-c876-7d26-f119-342237216dc1@intel.com>
+Date:   Thu, 31 Aug 2023 14:48:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Betterbird/102.13.0
+Subject: Re: [PATCH RFC v2 13/18] dax/bus: Factor out dev dax resize logic
+To:     Ira Weiny <ira.weiny@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>
+CC:     Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Alison Schofield <alison.schofield@intel.com>,
+        "Vishal Verma" <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+ <20230604-dcd-type2-upstream-v2-13-f740c47e7916@intel.com>
+Content-Language: en-US
+From:   Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <20230604-dcd-type2-upstream-v2-13-f740c47e7916@intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BYAPR06CA0023.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::36) To PH7PR11MB5984.namprd11.prod.outlook.com
+ (2603:10b6:510:1e3::15)
 MIME-Version: 1.0
-References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
- <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
- <CAPnjgZ1S8G=7eCBF9PcDk4H5sk3AcxSSWXO575jK8SjA9dR8qw@mail.gmail.com>
- <CAMj1kXH83_TB4S0PL3jswxjCP+907YpgS7FRuVTO3G62s7nn5w@mail.gmail.com>
- <CAPnjgZ2kkUt1eOWX8K+EsbjcQZPefNvj5DSaFb9QrvRg0t2h7w@mail.gmail.com>
- <CAMj1kXGe84uaJ9j9ic0V4HC43p7QBoKQ5ssTYd5DMBGtZ3++Jw@mail.gmail.com>
- <CAPnjgZ3L-jGxoXNHnsXY0MXU=jTAN66KNAxSLHPVeHinHMjzkQ@mail.gmail.com>
- <CAMj1kXGw6DGK=gVF3bMH5dp=LL89V9n1V1LMGKDn0CZWGHh8qg@mail.gmail.com> <CAPnjgZ1fjee3rf91onPbuLpgqTHe3dZgz0WBSzoiKAabO+ETkQ@mail.gmail.com>
-In-Reply-To: <CAPnjgZ1fjee3rf91onPbuLpgqTHe3dZgz0WBSzoiKAabO+ETkQ@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 31 Aug 2023 23:47:55 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXFvLGeXXmyK1wSXLk5yq42f2G3GvBGoN40JF=y4bvCo=Q@mail.gmail.com>
-Message-ID: <CAMj1kXFvLGeXXmyK1wSXLk5yq42f2G3GvBGoN40JF=y4bvCo=Q@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
-To:     Simon Glass <sjg@chromium.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
-        Rob Herring <robh@kernel.org>,
-        Chiu Chasel <chasel.chiu@intel.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Yunhui Cui <cuiyunhui@bytedance.com>,
-        ron minnich <rminnich@gmail.com>,
-        Tom Rini <trini@konsulko.com>,
-        Lean Sheng Tan <sheng.tan@9elements.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH7PR11MB5984:EE_|PH0PR11MB5595:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8f79f681-8ed2-4437-c42a-08dbaa6bfe8f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Jf1fUiDo8giwJqEbLzCavkmTA/Fu4+P9ubUsggGrBUxdqwKxaL9M+T9z++iEllQUAWdrqJSiqrWaFLDYEQd+jQ+BPhiu2wfH7Iqvc4a7Bza16iuO9rYxz2H6UqVXhGIG+BTkSNR7SmZJ4BYOhltCfjYSOxeemnT4fqRrYgxRHs1g5lRYt95hIQrerH4MP1BkOQHgVro62yKKhKGKtN3fGUyVeHybmEG0phqvQJxn9HrfWQyS0CUwjX+r4GhC6Lt44pQ1HXZbCzzCC1N/uUhl2bp081faLJWAo57KKAUM4LjM/3vewFe39Xbf9umStiv9JEvR4W3OUnYz0xl7Oe0aCdXFewojF43LQ24rreUIy4wyPLwuWpW7lzPi4lQZS21C0idPg35rw2WJWm5Cgu7gieMFRWXubOUniRvQ+myIR1XPNT1OKufwLEuZDHfNHpII+QhYa2CnCVUXUo4SQLV1UxUslB3l5O8KqX81uTKnRpMUCUSA3d1gfKo5ECvzVmKkZx4d9EmnQCaEtry3Kgh0kQeJXhH04i3SHQvv+u0qnVTFqRvmxJLlD39KVDm1w5iWr5eujGxVXnQGFDB06tZ2ispc9mRq9reM2Jp3pGrlL8sc21fxyrTGLy5I9ajhlHtEEDpkbNpDLUtB2otJzzK7pg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB5984.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(39860400002)(396003)(136003)(366004)(451199024)(186009)(1800799009)(2906002)(6506007)(6512007)(6666004)(6486002)(53546011)(478600001)(26005)(2616005)(5660300002)(66946007)(54906003)(8676002)(316002)(41300700001)(4326008)(66556008)(44832011)(83380400001)(66476007)(6636002)(110136005)(36756003)(31696002)(82960400001)(38100700002)(86362001)(8936002)(31686004)(66899024)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?cUJsNGgybnNGOW9uUVJvbE4xTmQ5OWppSTVDK2R1bFQ2LzRCWVBkY3dEYW8x?=
+ =?utf-8?B?WFI5RFhpK3BNVm81L0JlSnFsN0ZwZWtOdkkvRldNaHpTRmhZVDcybjkzanBD?=
+ =?utf-8?B?RGhJS25ZSWtwSitpODlacUtXZUplT2pyMVl6Q2NqVWN3SG80V0d1YUhGd0hv?=
+ =?utf-8?B?c082M1ZuT0JBTG1xelloOGRZVGYxUnQ4bVpQTzlTblVCSWVEN0hJdm1jUXUy?=
+ =?utf-8?B?aVNOeGdiYTBZRkx1eU9MNDZKcC9HSjhIMWVsRU83STlhM0Fub2VhWmJyODVI?=
+ =?utf-8?B?Mzk4OElmYk5oTmhPOG5NaXJFRk9FMktlb3VOaE5ZNllQTVlBM2x5MmVnd01V?=
+ =?utf-8?B?TlQ5Vnl3SjZ6MllpeHRHeitDMEZsOU1CaC9GcWdtaFQzUG5vMVNpemJycEV0?=
+ =?utf-8?B?eU5qWVNuVFRVR0JyUkszSlRicjgzNFhrT3lieFIySk9UZU85bWJmUTRWODZt?=
+ =?utf-8?B?amFoNmYxSlhTQzVMdmJxSlo1cjREQ3dsV2VobHBvWk1iVFBSYmZYMmdURGhz?=
+ =?utf-8?B?S3RtdnNDV0hRUHc5a3VGcU5mblAvQzRRR0lodzNoRkQ1OVdvaEorL045cEEx?=
+ =?utf-8?B?ZVhlNGtQWXUvN3gvblJGV2F2MEtqMnR6UXhPVzhNYnNlNW1FMDgrbXVBcCts?=
+ =?utf-8?B?TG5HMjB1dHJhbjUwQUI4VEF3cFo1RzI4d2tDNVFKR21ZN21BYkgyVlJlQ0Ur?=
+ =?utf-8?B?TUx2MGU5MVZsejVmK1ZLTVdIc2pabEVkTEdkUXcxeXNMdDJaMkgyMzFDSnkw?=
+ =?utf-8?B?d2NMRjRvODc0SnFsVGh0bnFpKzNDODBLZUJwRGplaHlkR2dUaVluWjRPQTE0?=
+ =?utf-8?B?RlFaRjVDeTNzOTlwNFl1YWZyQ1ovRGgwbVVuQ1lMTkR5c28rbkp3ZFl1aTZG?=
+ =?utf-8?B?dC9JVElQb21qZDNUUHpjSUNyMGczY0xSZVNXTU4wS05XcHluM3ZITGxkR3gr?=
+ =?utf-8?B?TWV0S3hRU0swV0VZWjhROElKTlZYNEpZYmFibkZoM0dEODg0VVprbEp4by9S?=
+ =?utf-8?B?RFlJay9KWWpqRnIvc2ZKV0gvOTU1UU54Vk93SFRNay8zelpnYWpwZ0NUZkla?=
+ =?utf-8?B?aWQ5RHc3ODlwY0FEQllKa3VJQllyWStiM2FpT2FtWlN2dEExUmdYdjRVMlBu?=
+ =?utf-8?B?Y2VldXVKV1ozd0Mxdk1YeExzOUxFaXhoRzRrR0VoOUw4YnhMTWY3TkpJUmcw?=
+ =?utf-8?B?am0rQ3Nvd1hvMlFCdUs2bHVVQ1IrTXJCM2pGRk44T05wZzk4cUxoNjhaMDlo?=
+ =?utf-8?B?bGdudVZyZy9lS2VPNUxFenhMVERxQUFoY2p1QTBEcGExRVhXdEVQMVVUaURa?=
+ =?utf-8?B?dzJESVBBOHpHMEluK1BuMUxyZjFMcktIVXlJS2gvTTd0WU13OEd6YStKZE0r?=
+ =?utf-8?B?Z2gwN01RaHBpaHZJWWJranZ5MDA4bjAyNmpCTmlGams5bUdOMWFUQUQvMFRU?=
+ =?utf-8?B?R3JCRFFSYXVYSTc3YW9WMVJheklCMThLMy94ZGRHRUhyOUZaUGgzdTU5MzJX?=
+ =?utf-8?B?ckJjb2NRU2o3ejlHZ0hGRFZ3N2hvTnNXWGkyRkNEeGdSejRNSmlYV0d5L0Ju?=
+ =?utf-8?B?aUJWcmh3VncxNW41V3h5OGpobmJsd3R2b01GaHRFVDBLQitJWHVFaThxOHFs?=
+ =?utf-8?B?Vi9pWVUzOWNTMmQ3VVNLWHZXM203UElQVklweTM5MUJ6b3lnSmV5ZEJENHJF?=
+ =?utf-8?B?ajRMbnlOTjZXYUtYLzQ1dWlkVXludmg0U1FxbUdJcXlrUDZTYUxEbnJQMkEz?=
+ =?utf-8?B?NWE3a05VMUxSMG10S3BocXJjTzl2UlVZRURIRGtleVIvb3NaWnZrdjhJc0ln?=
+ =?utf-8?B?SnVGRE12MWNtcUVrRkpTd2NaeVhWNUpKMlQySEQvSno3bnlhbWI4dkN5RzNp?=
+ =?utf-8?B?czE2bnNMekd5QndPWktYU1RUZVVYZmlsMjFSY3NoNUNUdGhiaHQvZkNoV0dw?=
+ =?utf-8?B?aUJlOS9FK1dpendadEV6dzNuOTdUYlVtT3llektaMTVLTmdJdlpPVDIwRUMx?=
+ =?utf-8?B?Tk1vdzJ5QXhncUZBVmdHVFRBcDRXdDBzak9zWEQ0ZTRLb2xrMjcxa25LcERa?=
+ =?utf-8?B?TjJ6Y0FGL0tvUlhGYktJYk5uVlFtTGZEZHFjK3B6eGV5Z09YUzViTjY0K3Z3?=
+ =?utf-8?Q?em+XiE6bW8E7RG3MHpx34dof5?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8f79f681-8ed2-4437-c42a-08dbaa6bfe8f
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB5984.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 21:48:21.5496
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yBimXBnPo7rK2yMjLTln+DEWQYJ/VC5T93Tec1jdggpzgtntVk3mZyjCh3ISLgmB+S8zgSBhdAuBBejIL33eVQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5595
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 21:03, Simon Glass <sjg@chromium.org> wrote:
->
-> Hi Ard,
->
-> On Thu, 31 Aug 2023 at 06:28, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Wed, 30 Aug 2023 at 23:11, Simon Glass <sjg@chromium.org> wrote:
-> > >
-> > > Hi Ard,
-> > >
-> > > On Tue, 29 Aug 2023 at 15:32, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > >
-> > > > On Tue, 29 Aug 2023 at 21:18, Simon Glass <sjg@chromium.org> wrote:
-> > > > >
-> > > > > Hi Ard,
-> > > > >
-> > > > > On Thu, 24 Aug 2023 at 03:10, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > ...
-> > > > > > In summary, I don't see why a non-UEFI payload would care about UEFI
-> > > > > > semantics for pre-existing memory reservations, or vice versa. Note
-> > > > > > that EDK2 will manage its own memory map, and expose it via UEFI boot
-> > > > > > services and not via DT.
-> > > > >
-> > > > > Bear in mind that one or both sides of this interface may be UEFI.
-> > > > > There is no boot-services link between the two parts that I have
-> > > > > outlined.
-> > > > >
-> > > >
-> > > > I don't understand what this means.
-> > > >
-> > > > UEFI specifies how one component invokes another, and it is not based
-> > > > on a DT binding. If the second component calls UEFI boot or runtime
-> > > > services, it should be invoked in this manner. If it doesn't, then it
-> > > > doesn't care about these memory reservations (and the OS will not be
-> > > > booted via UEFI either)
-> > > >
-> > > > So I feel I am missing something here. Perhaps a practical example
-> > > > would be helpful?
-> > >
-> > > Let's say we want to support these combinations:
-> > >
-> > > Platform Init -> Payload
-> > > --------------------------------
-> > > U-Boot -> Tianocore
-> > > coreboot -> U-Boot
-> > > Tianocore -> U-Boot
-> > > Tianocore -> Tianocore
-> > > U-Boot -> U-Boot
-> > >
-> > > Some of the above things have UEFI interfaces, some don't. But in the
-> > > case of Tianocore -> Tianocore we want things to work as if it were
-> > > Tianocore -> (its own handoff mechanism) Tiancore.
-> > >
-> >
-> > If Tianocore is the payload, it is either implemented as a EFI app, in
-> > which case it has access to EFI services, or it is not, in which case
-> > it doesn't care about UEFI semantics of the existing reserved regions,
-> > and it only needs to know which regions exist and which of those are
-> > reserved.
-> >
-> > And I think the same applies to all other rows in your table: either
-> > the existence of UEFI needs to be carried forward, which needs to be
-> > done via EFI services, or it doesn't, in which case the UEFI specific
-> > reservations can be dropped, and only reserved and available memory is
-> > relevant.
-> >
-> > > Some Platform Init may create runtime code which needs to accessible later.
-> > >
-> >
-> > But not UEFI runtime code, right? If the payload is not UEFI based,
-> > the OS would never be able to call that runtime code unless it is
-> > described in a different, non-UEFI way. This is fine, but it is not
-> > UEFI so we shouldn't call it UEFI runtime memory.
-> >
-> > > The way I think of it is that we need to generalise the memory map a
-> > > bit. Saying that you must use UEFI boot services to discover it is too
-> > > UEFI-specific.
-> > >
-> >
-> > What I am questioning is why a memory map with UEFI semantics is even
-> > relevant when those boot services do not exist.
-> >
-> > Could you be more specific about why a payload would have to be aware
-> > of the existence of UEFI boot/runtime service regions if it does not
-> > consume the UEFI interfaces of the platform init? And if the payload
-> > exposes UEFI services to the OS, why would it consume a memory map
-> > with UEFI semantics rather than a simple list of memblocks and memory
-> > reservations?
->
-> It seems like you are thinking of the Payload as grub, or something
-> like that? This is not about grub. If there are EFI boot services to
-> be provided, they are provided by the Payload, not Platform Init. I am
-> not that familiar with Tianocore, but if you are, perhaps think of it
-> as splitting Tianocore into two pieces, one of which inits the silicon
-> and the other which provides the EFI boot services.
->
-> Again, if you are familiar with Tianocore, it can be built either as a
-> monolithic whole, or as a coreboot Payload. The Payload part of the
-> code is (roughly) the same in each case. But the Platform Init is
-> different[1]
->
 
-I co-maintain OVMF [including the ARM port that I created from
-scratch] as well as the ARM architecture support in Tianocore, along
-with a couple of platform ports for ARM boards, some of which could by
-now be characterized as 'historical' (AMD Seattle, Socionext SynQuacer
-and Raspberry Pi 3/4). So I think I have a pretty good handle on how
-Tianocore based firmware is put together.
 
-Tianocore as a payload will expose boot services to the OS, and will
-provide the OS with a memory map using the UEFI APIs. But you still
-haven't explained why the memory description this Tianocore inherits
-from the Platform Init would include any UEFI boot or runtime service
-regions, or any of the other memory regions with UEFI semantics.
-TIanocore just needs to know a) where memory lives b) which parts of
-it are already in use (as far as the memory map is concerned), and the
-existing bindings suffice for this purpose.
+On 8/28/23 22:21, Ira Weiny wrote:
+> Dynamic Capacity regions must limit dev dax resources to those areas
+> which have extents backing real memory.  Four alternatives were
+> considered to manage the intersection of region space and extents:
+> 
+> 1) Create a single region resource child on region creation which
+>     reserves the entire region.  Then as extents are added punch holes in
+>     this reservation.  This requires new resource manipulation to punch
+>     the holes and still requires an additional iteration over the extent
+>     areas which may already have existing dev dax resources used.
+> 
+> 2) Maintain an ordered xarray of extents which can be queried while
+>     processing the resize logic.  The issue is that existing region->res
+>     children may artificially limit the allocation size sent to
+>     alloc_dev_dax_range().  IE the resource children can't be directly
+>     used in the resize logic to find where space in the region is.
+> 
+> 3) Maintain a separate resource tree with extents.  This option is the
+>     same as 2) but with a different data structure.  Most ideally we have
+>     some unified representation of the resource tree.
+> 
+> 4) Create region resource children for each extent.  Manage the dax dev
+>     resize logic in the same way as before but use a region child
+>     (extent) resource as the parents to find space within each extent.
+> 
+> Option 4 can leverage the existing resize algorithm to find space within
+> the extents.
+> 
+> In preparation for this change, factor out the dev_dax_resize logic.
+> For static regions use dax_region->res as the parent to find space for
+> the dax ranges.  Future patches will use the same algorithm with
+> individual extent resources as the parent.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-In short, the memory regions with UEFI semantics are created by the
-boot phase that actually exposes UEFI to the OS, in which case the
-boot services can be used to obtain the memory map. If the consumer is
-not UEFI based, there is no reason to bother it with descriptions of
-memory regions that have no significance to it.
-
-> >
-> > Again, I am inclined to treat this as a firmware implementation
-> > detail, and the OS must never consume this binding. But I am still
-> > puzzled about what exact purpose it is expected to serve.
->
-> It really is purely so we can mix and match Platform Init (perhaps
-> silicon init is a more familiar term?) and the Payload.
->
-
-That part is clear to me.
-
-> [1] Of course, coreboot uses blobs which are chunks of UEFI, but that
-> is a separate issue
-
-I suppose you are referring to the proprietary FSP components? Those
-are mostly made up of PEIMs (in Tianocore/EDK2 speak) for DDR training
-and chipset initialization, and don't really take part in the
-implementation of the UEFI APIs. Strictly, they are not 'chunks of
-UEFI' but 'chunks of PI' (but even Tianocore itself, being the
-reference implementation of both UEFI and PI, does a terrible job at
-distinguishing between the two)
+Reviewed-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+>   drivers/dax/bus.c | 128 +++++++++++++++++++++++++++++++++---------------------
+>   1 file changed, 79 insertions(+), 49 deletions(-)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index b76e49813a39..ea7ae82b4687 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
+> @@ -817,11 +817,10 @@ static int devm_register_dax_mapping(struct dev_dax *dev_dax, int range_id)
+>   	return 0;
+>   }
+>   
+> -static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+> -		resource_size_t size)
+> +static int alloc_dev_dax_range(struct resource *parent, struct dev_dax *dev_dax,
+> +			       u64 start, resource_size_t size)
+>   {
+>   	struct dax_region *dax_region = dev_dax->region;
+> -	struct resource *res = &dax_region->res;
+>   	struct device *dev = &dev_dax->dev;
+>   	struct dev_dax_range *ranges;
+>   	unsigned long pgoff = 0;
+> @@ -839,14 +838,14 @@ static int alloc_dev_dax_range(struct dev_dax *dev_dax, u64 start,
+>   		return 0;
+>   	}
+>   
+> -	alloc = __request_region(res, start, size, dev_name(dev), 0);
+> +	alloc = __request_region(parent, start, size, dev_name(dev), 0);
+>   	if (!alloc)
+>   		return -ENOMEM;
+>   
+>   	ranges = krealloc(dev_dax->ranges, sizeof(*ranges)
+>   			* (dev_dax->nr_range + 1), GFP_KERNEL);
+>   	if (!ranges) {
+> -		__release_region(res, alloc->start, resource_size(alloc));
+> +		__release_region(parent, alloc->start, resource_size(alloc));
+>   		return -ENOMEM;
+>   	}
+>   
+> @@ -997,50 +996,45 @@ static bool adjust_ok(struct dev_dax *dev_dax, struct resource *res)
+>   	return true;
+>   }
+>   
+> -static ssize_t dev_dax_resize(struct dax_region *dax_region,
+> -		struct dev_dax *dev_dax, resource_size_t size)
+> +/*
+> + * dev_dax_resize_static - Expand the device into the unused portion of the
+> + * region. This may involve adjusting the end of an existing resource, or
+> + * allocating a new resource.
+> + *
+> + * @parent: parent resource to allocate this range in.
+> + * @dev_dax: DAX device we are creating this range for
+> + * @to_alloc: amount of space to alloc; must be <= space available in @parent
+> + *
+> + * Return the amount of space allocated or -ERRNO on failure
+> + */
+> +static ssize_t dev_dax_resize_static(struct resource *parent,
+> +				     struct dev_dax *dev_dax,
+> +				     resource_size_t to_alloc)
+>   {
+> -	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+> -	resource_size_t dev_size = dev_dax_size(dev_dax);
+> -	struct resource *region_res = &dax_region->res;
+> -	struct device *dev = &dev_dax->dev;
+>   	struct resource *res, *first;
+> -	resource_size_t alloc = 0;
+>   	int rc;
+>   
+> -	if (dev->driver)
+> -		return -EBUSY;
+> -	if (size == dev_size)
+> -		return 0;
+> -	if (size > dev_size && size - dev_size > avail)
+> -		return -ENOSPC;
+> -	if (size < dev_size)
+> -		return dev_dax_shrink(dev_dax, size);
+> -
+> -	to_alloc = size - dev_size;
+> -	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
+> -			"resize of %pa misaligned\n", &to_alloc))
+> -		return -ENXIO;
+> -
+> -	/*
+> -	 * Expand the device into the unused portion of the region. This
+> -	 * may involve adjusting the end of an existing resource, or
+> -	 * allocating a new resource.
+> -	 */
+> -retry:
+> -	first = region_res->child;
+> -	if (!first)
+> -		return alloc_dev_dax_range(dev_dax, dax_region->res.start, to_alloc);
+> +	first = parent->child;
+> +	if (!first) {
+> +		rc = alloc_dev_dax_range(parent, dev_dax,
+> +					   parent->start, to_alloc);
+> +		if (rc)
+> +			return rc;
+> +		return to_alloc;
+> +	}
+>   
+> -	rc = -ENOSPC;
+>   	for (res = first; res; res = res->sibling) {
+>   		struct resource *next = res->sibling;
+> +		resource_size_t alloc;
+>   
+>   		/* space at the beginning of the region */
+> -		if (res == first && res->start > dax_region->res.start) {
+> -			alloc = min(res->start - dax_region->res.start, to_alloc);
+> -			rc = alloc_dev_dax_range(dev_dax, dax_region->res.start, alloc);
+> -			break;
+> +		if (res == first && res->start > parent->start) {
+> +			alloc = min(res->start - parent->start, to_alloc);
+> +			rc = alloc_dev_dax_range(parent, dev_dax,
+> +						 parent->start, alloc);
+> +			if (rc)
+> +				return rc;
+> +			return alloc;
+>   		}
+>   
+>   		alloc = 0;
+> @@ -1049,21 +1043,55 @@ static ssize_t dev_dax_resize(struct dax_region *dax_region,
+>   			alloc = min(next->start - (res->end + 1), to_alloc);
+>   
+>   		/* space at the end of the region */
+> -		if (!alloc && !next && res->end < region_res->end)
+> -			alloc = min(region_res->end - res->end, to_alloc);
+> +		if (!alloc && !next && res->end < parent->end)
+> +			alloc = min(parent->end - res->end, to_alloc);
+>   
+>   		if (!alloc)
+>   			continue;
+>   
+>   		if (adjust_ok(dev_dax, res)) {
+>   			rc = adjust_dev_dax_range(dev_dax, res, resource_size(res) + alloc);
+> -			break;
+> +			if (rc)
+> +				return rc;
+> +			return alloc;
+>   		}
+> -		rc = alloc_dev_dax_range(dev_dax, res->end + 1, alloc);
+> -		break;
+> +		rc = alloc_dev_dax_range(parent, dev_dax, res->end + 1, alloc);
+> +		if (rc)
+> +			return rc;
+> +		return alloc;
+>   	}
+> -	if (rc)
+> -		return rc;
+> +
+> +	/* available was already calculated and should never be an issue */
+> +	dev_WARN_ONCE(&dev_dax->dev, 1, "space not found?");
+> +	return 0;
+> +}
+> +
+> +static ssize_t dev_dax_resize(struct dax_region *dax_region,
+> +		struct dev_dax *dev_dax, resource_size_t size)
+> +{
+> +	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+> +	resource_size_t dev_size = dev_dax_size(dev_dax);
+> +	struct device *dev = &dev_dax->dev;
+> +	resource_size_t alloc = 0;
+> +
+> +	if (dev->driver)
+> +		return -EBUSY;
+> +	if (size == dev_size)
+> +		return 0;
+> +	if (size > dev_size && size - dev_size > avail)
+> +		return -ENOSPC;
+> +	if (size < dev_size)
+> +		return dev_dax_shrink(dev_dax, size);
+> +
+> +	to_alloc = size - dev_size;
+> +	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
+> +			"resize of %pa misaligned\n", &to_alloc))
+> +		return -ENXIO;
+> +
+> +retry:
+> +	alloc = dev_dax_resize_static(&dax_region->res, dev_dax, to_alloc);
+> +	if (alloc <= 0)
+> +		return alloc;
+>   	to_alloc -= alloc;
+>   	if (to_alloc)
+>   		goto retry;
+> @@ -1154,7 +1182,8 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
+>   
+>   	to_alloc = range_len(&r);
+>   	if (alloc_is_aligned(dev_dax, to_alloc))
+> -		rc = alloc_dev_dax_range(dev_dax, r.start, to_alloc);
+> +		rc = alloc_dev_dax_range(&dax_region->res, dev_dax, r.start,
+> +					 to_alloc);
+>   	device_unlock(dev);
+>   	device_unlock(dax_region->dev);
+>   
+> @@ -1371,7 +1400,8 @@ struct dev_dax *devm_create_dev_dax(struct dev_dax_data *data)
+>   	device_initialize(dev);
+>   	dev_set_name(dev, "dax%d.%d", dax_region->id, dev_dax->id);
+>   
+> -	rc = alloc_dev_dax_range(dev_dax, dax_region->res.start, data->size);
+> +	rc = alloc_dev_dax_range(&dax_region->res, dev_dax, dax_region->res.start,
+> +				 data->size);
+>   	if (rc)
+>   		goto err_range;
+>   
+> 
