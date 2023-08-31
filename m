@@ -2,80 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A112778F456
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:01:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EF378F459
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 23:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347473AbjHaVBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 17:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57366 "EHLO
+        id S1347482AbjHaVCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 17:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345052AbjHaVBe (ORCPT
+        with ESMTP id S1345052AbjHaVCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 17:01:34 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6A49FF
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:01:31 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1bc0d39b52cso9537645ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:01:31 -0700 (PDT)
+        Thu, 31 Aug 2023 17:02:40 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23801C0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:02:38 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf11b1c7d0so16805945ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 14:02:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693515691; x=1694120491; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fWpFWDJT2+LpVO7mSwGG21NXDpOKixMY4mi0VY93uuY=;
-        b=aq09DfrB94135F1DSv94+gbxrovCDg2etrzOZVLil6dZwvzGdmAhGZ6+xx3yR6tUCx
-         QP/JQzktlzeQs7e6JSsDKkL89Znqq5QdOfCS8QeWo/xBqlJ4lFdSocUciK9/E6ttcnFE
-         a6TS4/Uw34D+7qWnIXflESWd/iZtuLxUpdKlk=
+        d=chromium.org; s=google; t=1693515757; x=1694120557; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=YPjmJfrcP1DlcVvCXznbWohWnUvBbmeVedMj4uSaPwY=;
+        b=n+M30yIjH1Azx8OPIxyuNtwk7z7p3qzyAXgl9j/6QvquuUtp3tJgx5Xu9Lc78aAZhr
+         Wnm2id4V/Og91GMBzoNIZmg3X9Vhxcl5XuLmcSiyKRq21WJy55uEpOAH7PZihN+L03jX
+         0C1j8pSkemXlj+1Enxh1wck5C4laJgLzo3usQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693515691; x=1694120491;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fWpFWDJT2+LpVO7mSwGG21NXDpOKixMY4mi0VY93uuY=;
-        b=k9Rwzo9CD6GiyeVBda2jttOBvX2ZMZEDilRr+oaiCyX8Y/21fvc+UBjA6tipFFyMbK
-         wfahNLWih16X5Ap2vqsDNdySUgXuq559D7U9T/oM7vB2LhxLCoK7UYXsERAZ5P9CvNfN
-         RnyA0fTNyb0tgoeUGCltPQTnJnW7eoKu0BNV55EteaBNqcjV/x2Je7f5aavnVWOLGKnW
-         DJAgT6dn/9LOnB0DxHg4eK9qx6jyyrTQ/hcarwnI0pFd2i8tjB4mqqhUgiLeEYfbx3Zd
-         nwlVNPh3KWg7GrkL1LK8nVaU/WkyXDu9AOHlaRVL3yQjOzlrX8dumjZW5QnVZZnhvsf8
-         Ahkg==
-X-Gm-Message-State: AOJu0YxcE3oGdHcaY1vHKwtK4kQ63ah8PHu85bva8FGSxnjH45/SZCuh
-        qRPAaCCMxdSxut7wR+pWx2t0Rg==
-X-Google-Smtp-Source: AGHT+IE92lVSPrZRJsC/qf3bc6ySeB3GZv8J+2fi3SJsb+iAb142MsWoI+pUmo3RNvzCzhqeIEwB7Q==
-X-Received: by 2002:a17:903:245:b0:1bf:3c10:1d70 with SMTP id j5-20020a170903024500b001bf3c101d70mr859998plh.6.1693515691049;
-        Thu, 31 Aug 2023 14:01:31 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693515757; x=1694120557;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YPjmJfrcP1DlcVvCXznbWohWnUvBbmeVedMj4uSaPwY=;
+        b=KP5Gc+/wEze1AyEt0aEW0xOwMsjMZD9zPJqSmshQehaH/ZJGU9YsgNkH2ndUvorCSI
+         KzK/CAVxtXHwCPv50Sfivn6O9ZawlitkqRGtsmT7OM9vh9s4hHShniQ1N0aCnsopRYum
+         nBZ9NNICs4xlj+an5jzB26QL/kv1Zz36ZhWeDTmLXUEnIj/tn9NOtgA+ZRC8t6MRih5L
+         uiS2qvwSYcIfggoPlxmtSg+D5extYEyMly22viIo1LIocl/pzl09MZMgZRGQYuzeLeqO
+         Al62h43c9pA94uGA5N+Z4tVyr7GXl1hKrAiByMuA4gt2A2T/TEGMVMqBnrlgPGP7RXke
+         ay6w==
+X-Gm-Message-State: AOJu0YwpBEUGMX3MWYuVzYGFHaoQbaQHbhhoJu7Mj7r/1cVA8Oyva7xf
+        69IwQg6/Wm7i4/Qmb8CRwYEmgA==
+X-Google-Smtp-Source: AGHT+IFEU9mcbMzKzrjRSeo06SsVZLZJ9AMVv07T/VwIDnFU2B4i9ZLF9BEAXIcYdSLlQyBKd7/Blw==
+X-Received: by 2002:a17:903:244d:b0:1b2:676d:1143 with SMTP id l13-20020a170903244d00b001b2676d1143mr838409pls.15.1693515757554;
+        Thu, 31 Aug 2023 14:02:37 -0700 (PDT)
 Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id ja20-20020a170902efd400b001bdc6ca748esm1640343plb.185.2023.08.31.14.01.30
+        by smtp.gmail.com with ESMTPSA id c4-20020a170902d48400b001bc18e579aesm1641989plg.101.2023.08.31.14.02.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 14:01:30 -0700 (PDT)
+        Thu, 31 Aug 2023 14:02:36 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 14:02:36 -0700
 From:   Kees Cook <keescook@chromium.org>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: [PATCH v2] pstore: Base compression input buffer size on estimated compressed size
-Date:   Thu, 31 Aug 2023 14:01:29 -0700
-Message-Id: <20230831210125.gonna.173-kees@kernel.org>
-X-Mailer: git-send-email 2.34.1
+To:     Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-hardening@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] scsi: target: Replace strlcpy with strscpy
+Message-ID: <202308311402.8F9854D6A@keescook>
+References: <20230831143638.232596-1-azeemshaikh38@gmail.com>
+ <202308311141.612BF8D@keescook>
+ <CADmuW3XpGR-jzq0SP8wVp+W3ZXZ9hgLpNrLrEox0K3Pyw5kfXg@mail.gmail.com>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7087; i=keescook@chromium.org;
- h=from:subject:message-id; bh=08rQ65NmN7AKINJfj5K5sjGCEO2d6SyOG1A8TI9/ha0=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk8P+oQ68Qv77Ri7W+Nyf+HhjSOMI67h/f/sqjY
- 8GyNij9EPOJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZPD/qAAKCRCJcvTf3G3A
- JrKeEACh3QAAJIydjiaTvOUH/qrJeiwjUP5PjBWRv12TDEOk6Y/HTrWChB3HFp7t9l/34fEuj8r
- 20U2TU1IFGrl0ioSUj/zf8i0BEfSa0utOfLnG3QEU14qHXYaY3ZeBx5lWei7FL6qCG1Oy1T7zfF
- uaIGgMxdgN7r21S/rI0Nf5aXiDvBshLVuBISBbwsV1xL2CiK62gg6zy+Pv0UgqCoWJ60cidZO++
- 3p5LNZSIpnj99zOUJU+stK31hmNiCTjx8EjA2gc+Yapg5XCsyThBsxN+g6e5E4QjSQKo2K4Jmt1
- LF24an4utCkwJeFGO4/1gmR2peoOI0c7LAGeKFrr6Y6eHEmyx6Fju3L/nKicI4/kgHfF6570ene
- l1KuITxfkdcrs00qaeLpWPc/jo+neN3dLRi64a1YvbL0bwib2qhFjqr89fSEtHFqwuBuZvqrzjo
- Bv/I6b79d0kyOl1dyvnGZZl8YrqwwYdd0m/ThIKLH6l+iMr3+N2GKhQCHCDi/q85jDs4qVsBnes
- kuO9MzNFP+E/nE7bWtI+zp7Y0eI9UZ18rdmXtp35HyKz34biskfLYEBKHaG/OAMRifqKHESkAU+
- VaIVQWcZLejzWH1vK3YiTR7eif6wfKuiILqbh/p4Rx6sLQCnQUIOMKRGxXnYJjlWLtm3VPBMRk/
- 5E+1H2T tRmLBsPQ==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CADmuW3XpGR-jzq0SP8wVp+W3ZXZ9hgLpNrLrEox0K3Pyw5kfXg@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -85,198 +72,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ard Biesheuvel <ardb@kernel.org>
+On Thu, Aug 31, 2023 at 03:20:47PM -0400, Azeem Shaikh wrote:
+> On Thu, Aug 31, 2023 at 2:42 PM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > On Thu, Aug 31, 2023 at 02:36:38PM +0000, Azeem Shaikh wrote:
+> > > strlcpy() reads the entire source buffer first.
+> > > This read may exceed the destination size limit.
+> > > This is both inefficient and can lead to linear read
+> > > overflows if a source string is not NUL-terminated [1].
+> > > In an effort to remove strlcpy() completely [2], replace
+> > > strlcpy() here with strscpy().
+> > >
+> > > Direct replacement is safe here since return value of -errno
+> > > is used to check for truncation instead of sizeof(dest).
+> > >
+> > > [1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+> > > [2] https://github.com/KSPP/linux/issues/89
+> > >
+> > > Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
+> > > ---
+> > > v3:
+> > >  * Address readability comment.
+> > >
+> > > v2:
+> > >  * Replace all instances of strlcpy in this file instead of just 1.
+> > >  * https://lore.kernel.org/all/20230830210724.4156575-1-azeemshaikh38@gmail.com/
+> > >
+> > > v1:
+> > >  * https://lore.kernel.org/all/20230830200717.4129442-1-azeemshaikh38@gmail.com/
+> > >
+> > >  drivers/target/target_core_configfs.c |   24 ++++++++++++------------
+> > >  1 file changed, 12 insertions(+), 12 deletions(-)
+> > >
+> > > diff --git a/drivers/target/target_core_configfs.c b/drivers/target/target_core_configfs.c
+> > > index 936e5ff1b209..d5860c1c1f46 100644
+> > > --- a/drivers/target/target_core_configfs.c
+> > > +++ b/drivers/target/target_core_configfs.c
+> > > @@ -1392,16 +1392,16 @@ static ssize_t target_wwn_vendor_id_store(struct config_item *item,
+> > >       /* +2 to allow for a trailing (stripped) '\n' and null-terminator */
+> > >       unsigned char buf[INQUIRY_VENDOR_LEN + 2];
+> > >       char *stripped = NULL;
+> > > -     size_t len;
+> > > +     ssize_t len;
+> > >       ssize_t ret;
+> > >
+> > > -     len = strlcpy(buf, page, sizeof(buf));
+> > > -     if (len < sizeof(buf)) {
+> > > +     len = strscpy(buf, page, sizeof(buf));
+> > > +     if (len > 0) {
+> > >               /* Strip any newline added from userspace. */
+> > >               stripped = strstrip(buf);
+> > >               len = strlen(stripped);
+> > >       }
+> > > -     if (len > INQUIRY_VENDOR_LEN) {
+> > > +     if (len < 0 || len > INQUIRY_VENDOR_LEN) {
+> >
+> > Agh, sorry I missed this before: the first "if" needs to be "len >= 0"
+> > otherwise this:
+> >
+> >         ret = target_check_inquiry_data(stripped);
+> >
+> > will be passing a NULL pointer...
+> >
+> 
+> Hmm, the current implementation of strscpy never returns 0. If
+> sizeof(buf) is 0, it'll return -E2BIG. Do you still prefer that I
+> update this to check for len >= 0?
 
-Commit 1756ddea6916 ("pstore: Remove worst-case compression size logic")
-removed some clunky per-algorithm worst case size estimation routines on
-the basis that we can always store pstore records uncompressed, and
-these worst case estimations are about how much the size might
-inadvertently *increase* due to encapsulation overhead when the input
-cannot be compressed at all. So if compression results in a size
-increase, we just store the original data instead.
+Oh right! Nevermind, then. Fine as-is. :)
 
-However, it seems that the original code was misinterpreting these
-calculations as an estimation of how much uncompressed data might fit
-into a compressed buffer of a given size, and it was using the results
-to consume the input data in larger chunks than the pstore record size,
-relying on the compression to ensure that what ultimately gets stored
-fits into the available space.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-One result of this, as observed and reported by Linus, is that upgrading
-to a newer kernel that includes the given commit may result in pstore
-decompression errors reported in the kernel log. This is due to the fact
-that the existing records may unexpectedly decompress to a size that is
-larger than the pstore record size.
-
-Another potential problem caused by this change is that we may
-underutilize the fixed sized records on pstore backends such as ramoops.
-And on pstore backends with variable sized records such as EFI, we will
-end up creating many more entries than before to store the same amount
-of compressed data.
-
-So let's fix both issues, by bringing back the typical case estimation of
-how much ASCII text captured from the dmesg log might fit into a pstore
-record of a given size after compression. The original implementation
-used the computation given below for zlib:
-
-  switch (size) {
-  /* buffer range for efivars */
-  case 1000 ... 2000:
-  	cmpr = 56;
-  	break;
-  case 2001 ... 3000:
-  	cmpr = 54;
-  	break;
-  case 3001 ... 3999:
-  	cmpr = 52;
-  	break;
-  /* buffer range for nvram, erst */
-  case 4000 ... 10000:
-  	cmpr = 45;
-  	break;
-  default:
-  	cmpr = 60;
-  	break;
-  }
-
-  return (size * 100) / cmpr;
-
-We will use the previous worst-case of 60% for compression. For
-decompression go extra large (3x) so we make sure there's enough space
-for anything.
-
-While at it, rate limit the error message so we don't flood the log
-unnecessarily on systems that have accumulated a lot of pstore history.
-
-Cc: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Eric Biggers <ebiggers@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-Link: https://lore.kernel.org/r/20230830212238.135900-1-ardb@kernel.org
-Co-developed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
-v2:
- - reduce compression buffer size to 1.67x from 2x
- - raise decompression buffer size to 3x
-v1: https://lore.kernel.org/all/20230830212238.135900-1-ardb@kernel.org
----
- fs/pstore/platform.c | 34 +++++++++++++++++++++++++++-------
- 1 file changed, 27 insertions(+), 7 deletions(-)
-
-diff --git a/fs/pstore/platform.c b/fs/pstore/platform.c
-index 62356d542ef6..e5bca9a004cc 100644
---- a/fs/pstore/platform.c
-+++ b/fs/pstore/platform.c
-@@ -98,7 +98,14 @@ MODULE_PARM_DESC(kmsg_bytes, "amount of kernel log to snapshot (in bytes)");
- 
- static void *compress_workspace;
- 
-+/*
-+ * Compression is only used for dmesg output, which consists of low-entropy
-+ * ASCII text, and so we can assume worst-case 60%.
-+ */
-+#define DMESG_COMP_PERCENT	60
-+
- static char *big_oops_buf;
-+static size_t max_compressed_size;
- 
- void pstore_set_kmsg_bytes(int bytes)
- {
-@@ -196,6 +203,7 @@ static int pstore_compress(const void *in, void *out,
- 
- static void allocate_buf_for_compression(void)
- {
-+	size_t compressed_size;
- 	char *buf;
- 
- 	/* Skip if not built-in or compression disabled. */
-@@ -216,7 +224,8 @@ static void allocate_buf_for_compression(void)
- 	 * uncompressed record size, since any record that would be expanded by
- 	 * compression is just stored uncompressed.
- 	 */
--	buf = kvzalloc(psinfo->bufsize, GFP_KERNEL);
-+	compressed_size = (psinfo->bufsize * 100) / DMESG_COMP_PERCENT;
-+	buf = kvzalloc(compressed_size, GFP_KERNEL);
- 	if (!buf) {
- 		pr_err("Failed %zu byte compression buffer allocation for: %s\n",
- 		       psinfo->bufsize, compress);
-@@ -233,6 +242,7 @@ static void allocate_buf_for_compression(void)
- 
- 	/* A non-NULL big_oops_buf indicates compression is available. */
- 	big_oops_buf = buf;
-+	max_compressed_size = compressed_size;
- 
- 	pr_info("Using crash dump compression: %s\n", compress);
- }
-@@ -246,6 +256,7 @@ static void free_buf_for_compression(void)
- 
- 	kvfree(big_oops_buf);
- 	big_oops_buf = NULL;
-+	max_compressed_size = 0;
- }
- 
- void pstore_record_init(struct pstore_record *record,
-@@ -305,7 +316,7 @@ static void pstore_dump(struct kmsg_dumper *dumper,
- 		record.buf = psinfo->buf;
- 
- 		dst = big_oops_buf ?: psinfo->buf;
--		dst_size = psinfo->bufsize;
-+		dst_size = max_compressed_size ?: psinfo->bufsize;
- 
- 		/* Write dump header. */
- 		header_size = snprintf(dst, dst_size, "%s#%d Part%u\n", why,
-@@ -326,8 +337,15 @@ static void pstore_dump(struct kmsg_dumper *dumper,
- 				record.compressed = true;
- 				record.size = zipped_len;
- 			} else {
--				record.size = header_size + dump_size;
--				memcpy(psinfo->buf, dst, record.size);
-+				/*
-+				 * Compression failed, so the buffer is most
-+				 * likely filled with binary data that does not
-+				 * compress as well as ASCII text. Copy as much
-+				 * of the uncompressed data as possible into
-+				 * the pstore record, and discard the rest.
-+				 */
-+				record.size = psinfo->bufsize;
-+				memcpy(psinfo->buf, dst, psinfo->bufsize);
- 			}
- 		} else {
- 			record.size = header_size + dump_size;
-@@ -560,6 +578,7 @@ static void decompress_record(struct pstore_record *record,
- 	int ret;
- 	int unzipped_len;
- 	char *unzipped, *workspace;
-+	size_t max_uncompressed_size;
- 
- 	if (!IS_ENABLED(CONFIG_PSTORE_COMPRESS) || !record->compressed)
- 		return;
-@@ -583,7 +602,8 @@ static void decompress_record(struct pstore_record *record,
- 	}
- 
- 	/* Allocate enough space to hold max decompression and ECC. */
--	workspace = kvzalloc(psinfo->bufsize + record->ecc_notice_size,
-+	max_uncompressed_size = 3 * psinfo->bufsize;
-+	workspace = kvzalloc(max_uncompressed_size + record->ecc_notice_size,
- 			     GFP_KERNEL);
- 	if (!workspace)
- 		return;
-@@ -591,11 +611,11 @@ static void decompress_record(struct pstore_record *record,
- 	zstream->next_in	= record->buf;
- 	zstream->avail_in	= record->size;
- 	zstream->next_out	= workspace;
--	zstream->avail_out	= psinfo->bufsize;
-+	zstream->avail_out	= max_uncompressed_size;
- 
- 	ret = zlib_inflate(zstream, Z_FINISH);
- 	if (ret != Z_STREAM_END) {
--		pr_err("zlib_inflate() failed, ret = %d!\n", ret);
-+		pr_err_ratelimited("zlib_inflate() failed, ret = %d!\n", ret);
- 		kvfree(workspace);
- 		return;
- 	}
 -- 
-2.34.1
-
+Kees Cook
