@@ -2,86 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDF678E4DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3408578E4DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244379AbjHaC5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 22:57:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42314 "EHLO
+        id S245133AbjHaC5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 22:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230292AbjHaC5h (ORCPT
+        with ESMTP id S245430AbjHaC5r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 22:57:37 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F8ECDA;
-        Wed, 30 Aug 2023 19:57:34 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V1a6wf029521;
-        Thu, 31 Aug 2023 02:57:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=oEz/Lyu/cfszPLvySMrLwJSZOc5ppq4Z3OZDTaksbtM=;
- b=AnK2lOkiu44elfGkUMJx1cQTUa+1INqN8zZQXSqoT/tyLFzx4Rpv7tjavWDwxTmAs/h8
- mJAo4s4unHb4Bb7Cni25+t9WqbEV60M9YIFjqUmGdQjRR1pGmL6CjNWsmhZC2LZArV54
- e2e8YRK+gUKZZ3oXjWUkb7ALd7BQqCjudsV/vWGaanMJe8Wc+9U9CDv5MLjcfNbUcUaB
- bJWDc8oPUFiyDshQFxo43fpZoxl2ULTqRYGbAa44gs8LvKgLOiQeeNCp5t/s5Vloq6+/
- jcHpn4yhGj5fj1vWgBZSQ7P0uI53HtJbDtDVhZu7DvknXeZdFi3/9Fu0iiUW6Xk7Mc/j LA== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st0tat5gc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 02:57:25 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V2vNiN026374
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 02:57:23 GMT
-Received: from [10.50.47.209] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 30 Aug
- 2023 19:57:18 -0700
-Message-ID: <8f9b68a1-c5d3-1ffe-e651-eabbd4d4bf0a@quicinc.com>
-Date:   Thu, 31 Aug 2023 08:27:15 +0530
+        Wed, 30 Aug 2023 22:57:47 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7583ECE6
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 19:57:44 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rbm6r2kGrz4f3p10
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 10:57:40 +0800 (CST)
+Received: from [10.174.177.236] (unknown [10.174.177.236])
+        by APP4 (Coremail) with SMTP id gCh0CgA3x6mjAfBkDnn5Bw--.31629S3;
+        Thu, 31 Aug 2023 10:57:41 +0800 (CST)
+Subject: Re: [PATCH RESEND] tools/mm: fix undefined reference to pthread_once
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, irogers@google.com, acme@redhat.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yang Yingliang <yangyingliang@huawei.com>
+References: <20230828122157.1541087-1-xiexiuqi@huaweicloud.com>
+ <ZOyZ9FgRUOGPh3qm@casper.infradead.org>
+ <e4027374-88a9-9484-1619-8c3f887a58ca@huaweicloud.com>
+ <ZO/6JcbLV7+Eb0Vz@casper.infradead.org>
+From:   Xie XiuQi <xiexiuqi@huaweicloud.com>
+Message-ID: <f07bfca6-7b9a-8a9b-91c6-b6d7e6b161a5@huaweicloud.com>
+Date:   Thu, 31 Aug 2023 10:57:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 5/5] arm64: dts: qcom: ipq5018: Enable USB
+In-Reply-To: <ZO/6JcbLV7+Eb0Vz@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>,
-        Amandeep Singh <quic_amansing@quicinc.com>
-References: <20230825093531.7399-1-quic_nsekar@quicinc.com>
- <20230825093531.7399-6-quic_nsekar@quicinc.com>
- <CAA8EJppvNS_hy=L+zgk5HAB5iDEZE_j5LvEmQgAfcnwfy_7wNA@mail.gmail.com>
-From:   Nitheesh Sekar <quic_nsekar@quicinc.com>
-In-Reply-To: <CAA8EJppvNS_hy=L+zgk5HAB5iDEZE_j5LvEmQgAfcnwfy_7wNA@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: hqpVFcWf2wphb0l-LBZaNsm-fw74MzbA
-X-Proofpoint-ORIG-GUID: hqpVFcWf2wphb0l-LBZaNsm-fw74MzbA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_01,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 malwarescore=0 mlxlogscore=737
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310025
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-CM-TRANSID: gCh0CgA3x6mjAfBkDnn5Bw--.31629S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZF13Zr1rJrWkGw1kCFWDXFb_yoW8Jw43p3
+        95Ga4kAF4kJrWrtr1Sq3WrXFWUKr12gr1UXr1kGr1UCa4qqr45Kryxtr429FyxWr1xG3WU
+        ZrW7GFy2qF4DJwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6r1F6r1fM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: x0lh5xhxtlqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,47 +67,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
-On 8/31/2023 1:41 AM, Dmitry Baryshkov wrote:
-> On Fri, 25 Aug 2023 at 12:37, Nitheesh Sekar <quic_nsekar@quicinc.com> wrote:
->> Enable USB2 in host mode.
+On 2023/8/31 10:25, Matthew Wilcox wrote:
+> On Thu, Aug 31, 2023 at 09:13:24AM +0800, Xie XiuQi wrote:
+>> Hi,
 >>
->> Co-developed-by: Amandeep Singh <quic_amansing@quicinc.com>
->> Signed-off-by: Amandeep Singh <quic_amansing@quicinc.com>
->> Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 12 ++++++++++++
->>   1 file changed, 12 insertions(+)
+>> On 2023/8/28 20:58, Matthew Wilcox wrote:
+>>> On Mon, Aug 28, 2023 at 08:21:57PM +0800, Xie XiuQi wrote:
+>>>> diff --git a/tools/mm/Makefile b/tools/mm/Makefile
+>>>> index 6c1da51f4177..9997b2e401ae 100644
+>>>> --- a/tools/mm/Makefile
+>>>> +++ b/tools/mm/Makefile
+>>>> @@ -9,7 +9,7 @@ LIB_DIR = ../lib/api
+>>>>  LIBS = $(LIB_DIR)/libapi.a
+>>>>  
+>>>>  CFLAGS += -Wall -Wextra -I../lib/
+>>>> -LDFLAGS += $(LIBS)
+>>>> +LDFLAGS += $(LIBS) -lpthread
+>>>
+>>> Is this the right fix?  I'm pretty sure you're suppose to use -pthread
+>>> in CFLAGS in case there are other things the compiler/linker/whatever
+>>> need.
+>>>
 >>
->> diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
->> index e636a1cb9b77..cdf5e22ec54e 100644
->> --- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
->> +++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
->> @@ -70,3 +70,15 @@
->>   &xo_board_clk {
->>          clock-frequency = <24000000>;
->>   };
->> +
->> +&usbphy0 {
->> +       status = "okay";
->> +};
->> +
->> +&usb {
->> +       status = "okay";
->> +};
->> +
->> +&usb2_0_dwc {
->> +       dr_mode = "host";
->> +};
-> Let me sort these for you:
->
-> - usb
-> - usb2_0_dwc
-> - usbphy0
->
-> Like in a dictionary.
-I will remove "2_0" in usb2_0_dwc and then sort and reorder the nodes 
-again in the latest V2 version.
+>> Thanks for your comment. I'll fix it and send v2.
+> 
+> You added it to LDFLAGS, not CFLAGS.
 
-Regards,
-Nitheesh
+Sorry, it's my fault. I'll add it to CFALGS:
+
+  CFLAGS += -Wall -Wextra -I../lib/ -pthread
+
+> 
+>>> '-pthread'
+>>>      Define additional macros required for using the POSIX threads
+>>>      library.  You should use this option consistently for both
+>                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>>>      compilation and linking.  This option is supported on GNU/Linux
+>          ^^^^^^^^^^^^^^^^^^^^^^^
+>>>      targets, most other Unix derivatives, and also on x86 Cygwin and
+>>>      MinGW targets.
+>>>
+>>
+>>
+
