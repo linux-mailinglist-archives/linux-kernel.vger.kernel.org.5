@@ -2,227 +2,394 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6BC78E89E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 556C978E8A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235170AbjHaIoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 04:44:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54120 "EHLO
+        id S238462AbjHaIpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:45:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240161AbjHaIoM (ORCPT
+        with ESMTP id S237008AbjHaIpa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:44:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8729E1A6;
-        Thu, 31 Aug 2023 01:44:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693471446; x=1725007446;
-  h=date:from:to:cc:subject:message-id:references:
-   content-transfer-encoding:in-reply-to:mime-version;
-  bh=WiJTQ5Manw+ms9oVyWiuyB4zAd/2oAP27hAkvfpJLEQ=;
-  b=WgTXtV6AFT2TlrVqBKuXw3joxztvpGuS5J/5luod/Oct64EX8/fPEgSc
-   ku+auyObWr/hKVdWHvTGrGPur8BNYdgc6jdqbugLD7HZFQ8BS1bmaX5mW
-   Mq435pE/zCuZvy4eq2UI7cZkSQgQTWA4YArdRvSS0pUwKOEyv7/Ac7y0J
-   DIUchqN8biDrj0ZqWTx+UpYqkoq0livbUY7kv7Q2eyks0uofLCjvYEOZo
-   EidspL8E95UPMwoqQoz/1eTSJ80uAaT3FIDrxlIA0zqnlTLoOcNWC5LDF
-   WkTR3Oz37WzRyt2GKsIjoCjwbtYvXdM/2XPS6cn0G1sIllgZICIzRcSMB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="356179756"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="356179756"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 01:44:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="809498419"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="809498419"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Aug 2023 01:44:06 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 31 Aug 2023 01:44:06 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 31 Aug 2023 01:44:06 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.171)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 31 Aug 2023 01:44:06 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EkniTGDe06WeiFftr+cjIutmYy2b4lEGXlvByS84pMApPin4RSQoAEznFhE8Jh96kuLNRWHyZIlZ71+4MVQGW++CVs/MrGdsFiFJxpPPSocKa8elLvPVrNabbHDsRxF0Qp+wq+yxo2R3d059zv2NKsuDto+IQBPGRgr54L6B9RAWsCNFuRr40/QivfNWrpQFkGkeQDTkeXvQ9MpjutG/EC29VGjc2+9AU4FomtX0Zwf5XafcaVmCBeZIei+siMxSAhM9cW5I9zGI8KulsZGil9luCvFXRmZI4xJhIMq8MPdTbK4H7T9EA0n1ngeLfjYRSZp/8XTHbfLD/+6F6ap+Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ft2FrVeTBvQ+k4jq8l5WPDiiHIkqMje8TBI5fGJVC1g=;
- b=c2hkITRfLrCenLwXdFlENp86buh/QAQcAYYWKmeIIZBBO47DByTf3cw+8eu5/yp14lnF0bSjufC+db3XySZMvtgrzTjuv20QyfIrSFzhwkdHFo34MKxInJcK/yWkW4vedLZ4BRUK9oT8FxNOmSCQPHKcivUHdAtihqCF4y0sysq0DwYX0K+OFVUdgrwy3RXdXKezIMXxVxGeRxUAhD9j2UB0fg0ozHuvNxVU9dliwwjeGREucg1h4fmNN52N0ukStOMLPsj7aI/bXK91Fk6wkmIeiJcbVj4kO9FABkVlrI52IVwVffUkPmP+C2NkvEUT18nA9GdxqaCVj38fHjLRMw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com (2603:10b6:208:3c4::15)
- by SJ0PR11MB5939.namprd11.prod.outlook.com (2603:10b6:a03:42e::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Thu, 31 Aug
- 2023 08:44:04 +0000
-Received: from MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::8824:ea30:b0ab:f107]) by MN0PR11MB6231.namprd11.prod.outlook.com
- ([fe80::8824:ea30:b0ab:f107%4]) with mapi id 15.20.6745.020; Thu, 31 Aug 2023
- 08:44:03 +0000
-Date:   Thu, 31 Aug 2023 10:43:52 +0200
-From:   Maciej =?utf-8?Q?Wiecz=C3=B3r-Retman?= 
-        <maciej.wieczor-retman@intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-        <shuah@kernel.org>, <fenghua.yu@intel.com>,
-        <ilpo.jarvinen@linux.intel.com>
-Subject: Re: [PATCH v2 2/2] selftests/resctrl: Move run_benchmark() to a more
- fitting file
-Message-ID: <v6bjvvjofvgly4k2jzvikr43mjz3ugzic2umlobjlkzchqmww3@sbw5xz6rbd4r>
-References: <cover.1693213468.git.maciej.wieczor-retman@intel.com>
- <e527be8b871212823ff83f3800b6eecc2a75e455.1693213468.git.maciej.wieczor-retman@intel.com>
- <16eccb6b-a968-c6ee-dfb3-221ed8ec023c@intel.com>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <16eccb6b-a968-c6ee-dfb3-221ed8ec023c@intel.com>
-X-ClientProxiedBy: FR0P281CA0266.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:b5::11) To MN0PR11MB6231.namprd11.prod.outlook.com
- (2603:10b6:208:3c4::15)
+        Thu, 31 Aug 2023 04:45:30 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13362CE7;
+        Thu, 31 Aug 2023 01:45:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1693471525;
+        bh=TOpHrg+THcLjDGrTsyHrj4Fe/3SIuVeJALTfT8X71I0=;
+        h=From:Date:Subject:To:Cc:From;
+        b=pfg1mULBM51414DN6H6SAo+iDSXQ6WNEjWg85FUSwg6DgmfYjL3r2SOyBPv9ynh8N
+         Z97xOfOpEEqdZjsTqPgRUUXa7mTE0lC7xYinkwvD45o1y2PxGj/uuG3G76DIIV4IFP
+         jg/H58GndOOLN3r+cJRV7A/+I5LtyXV+wka0wDb4=
+From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+Date:   Thu, 31 Aug 2023 10:44:48 +0200
+Subject: [PATCH] hwmon: add POWER-Z driver
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6231:EE_|SJ0PR11MB5939:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38d299cf-8df3-460a-c437-08dba9fe6dae
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sVqvgdcB29e7D84g1hFLhMwUwN0z5CHlTGYyrkRsvj64UwnjCTx+GYJ3HRM9DAPIs8i0HWe3Y3CufWs3dE45WS3DIO6rywGEZG5gdVhkdQU+cCP/taq8u3JtL7mbLj1banWbvzaIr2X9ZLisCUK5nBsDIv4IZY073NDZ5hEfHUM9ve1efoa+RF5Pn1i3rkwof0SN7kl+U3beMcaj+gmK7nqqTBBbF8BpfrrmOqmFCzMMarjyrxtPnUE4dIimZb5Z2aWWan1RcNqYsIvatk0sGCEwf2h77kWqnnKKNyfuWhS7BdRS9c2FvpYMWE/oIyfbk8LY5RBwS4G2diJYCpyM5Q0ymyxNmNEnGC/dji/rdAjg+gDO4BIxw+KRNCVi7eMENNjw+0RpFoCFnVOShER1yz0DPa74c88fru19cR2ALRvXI93mbPag1IkxakZrNL5Ax9F50yuhOsnHViTurnbHLGOPTKqSe2x63Y/yB40S8hBlUM+oGqxxCt4Vrn+Bvz4p5aJ2M726DyzXpQ2cNPNMvoLEl/grIts5WK3p9Gjg+djIr9KLVuLZU9ZAXvr2d6C3
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6231.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(346002)(376002)(366004)(396003)(136003)(186009)(1800799009)(451199024)(2906002)(66899024)(82960400001)(83380400001)(38100700002)(53546011)(6486002)(6506007)(6636002)(316002)(66946007)(66476007)(66556008)(6666004)(41300700001)(9686003)(6512007)(478600001)(33716001)(86362001)(26005)(5660300002)(4326008)(8676002)(8936002)(6862004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?mWP3NTzwr9esGuMDc9leTvZAChAkiiJLy21kjusyUt35eKo+PbBUbCZcEp?=
- =?iso-8859-1?Q?6PhyOxDfXLAjdoG1RfeW5iOWv0pWTk1U1yYJFEOw1erZ+H34wYV/T0dc4r?=
- =?iso-8859-1?Q?6nQQzulIywIqpi+gDUTDQ7nlnFdQEBKsSCniB+n6s5umKJWIn9LY/da0Vj?=
- =?iso-8859-1?Q?mUDq0BU5LPyTo8idsXxBwX4jnZnbjgY69nfXuNHOl0xRnGASbV0vBrNE2t?=
- =?iso-8859-1?Q?A7O1oiAbOG4VmhPqlsW6TJBYubkZlz69FFPrXdAEd7Mohv9vnDCELq1aBV?=
- =?iso-8859-1?Q?NM9gQVZhCsdQiRM/mniXKCon/ZeBI/dKUxJrM36GU7M6j0iF4pX4cSeMRk?=
- =?iso-8859-1?Q?OiW5Rf+WeStDjTaGqSxwIiVW3wD/gPerNejLBzL0OXYqhj4XZho38ecb0E?=
- =?iso-8859-1?Q?BlOk2eAfHg+AGvP8dSskX8wC2NEaYnAYTqUZ72OR8qu0Iyl+ig8a3LV+HO?=
- =?iso-8859-1?Q?T2W6VJdd42L9XJ0hZ+l1KQUrXSQeNBjzxAnuWYfqGQaSie8rTExRjlblbA?=
- =?iso-8859-1?Q?pNdSvq3WnPbmk0DdEj1lpkKRcJyzbWKFiAVXuzlZzP3M+rF0VlbqlZiJEJ?=
- =?iso-8859-1?Q?UFx4Y/2Nqt13ncVpLZNBCKX/ZACtikTcosLcSX5Ipa9CLCyNNznxHB5Jpq?=
- =?iso-8859-1?Q?XegvBIVZ4RynhbE9HdgJQZEdIKYMwtkFGvj19KsD2bR1EDl1GzXE6MTziZ?=
- =?iso-8859-1?Q?LlS9MEdVxpc1uxEHFf2Ep/u/6uA/+gsWc3NLgYYX/g8BFwYu2OFCQ3z5yH?=
- =?iso-8859-1?Q?x0d6wFHqWfiH2CBdTLUNpot3Tg2iq6Y2h043EfZngBibpqbQZ28Je7ovT/?=
- =?iso-8859-1?Q?3GlYkdQSkR2rM7znm7G/u3DTg4vnUPW+guKwrdJ51cwaOsiB6js1J//aN6?=
- =?iso-8859-1?Q?5O0JaSvtbiJkZYndxtnxOGSfnFOgzj60xwDKsQraN5Wp8sygSZflDmSRgB?=
- =?iso-8859-1?Q?FenWXMQkXXb9LYEesNjDpGVOLygdwf0cJVCKZiurJii35Xz8n+hR2o4xh8?=
- =?iso-8859-1?Q?uF2Upyy5UrqChxSsGWsw5F3Wyiv4La7fDs135gyyE0Dz8KiPM0tzhJLPdm?=
- =?iso-8859-1?Q?o7SdVhUmBBiy21tPsSbK0UTFjKQObOKkddz19rgOj4VuF2ENcpPbGmjdAq?=
- =?iso-8859-1?Q?hEgr7SwqAMxzF6Lat50zECJ9HE53ivLK19LyvKrer/u2iN/3gJSBNzyAWp?=
- =?iso-8859-1?Q?nJGoYrXt65xRPB5D8tXyGD2/LBtldzzepnyJOBUe1uAjrWu0reeQiggwRq?=
- =?iso-8859-1?Q?bnif8US2v5+lQaV7LWqV7JzOPwUOXvWMMKjZp7wbLC/+zwl1HcOSwC5ofB?=
- =?iso-8859-1?Q?FT9Xa5TmCeJuifEqPt16i08QHRYyFr+GdMRjcpFDAQyAreBEaVgy/Su+GQ?=
- =?iso-8859-1?Q?PsGM+4v/aK8DmZduB8UycyDoXRdCTF3d/j283zSyxjwnLMiFpmmq4SegZE?=
- =?iso-8859-1?Q?mEa3YnfnMa1c7VxwZsHtbrKOheF/EyYrzm0ebTDp2ahujIeeu3Cal+3YOZ?=
- =?iso-8859-1?Q?PeZuyFzlEJe/W+i6yeMKZ9aNfMdwH5aR6yQjdqf9hYSAvDpZFG2Yh6igtY?=
- =?iso-8859-1?Q?p0659fTnwMNhOFYarABCiTBWz0wgrWG6TmmfflMGPwZ3iFV9v+btTRfeLr?=
- =?iso-8859-1?Q?A3RlcQ2Sl7Y0c4HV2cfGvrqh5i8s1Sw8IA1MNqJJTOOfFx4FA7vpQbJyjy?=
- =?iso-8859-1?Q?YgOMMSadx+zVJwnSlzc=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38d299cf-8df3-460a-c437-08dba9fe6dae
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6231.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 08:44:03.6656
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2iJ6D1mZ0/Tu++g1m6cO0uflCyxWPPHeoHENkkGUQguU9EJ+0yMWWgtPB0zI0UVZZLZxt0j33rFcAUdfJQ6wQl3hAuYuzR3F8RO5J8PpTDw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB5939
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20230831-powerz-v1-1-03979e519f52@weissschuh.net>
+X-B4-Tracking: v=1; b=H4sIAP9S8GQC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2MDC2ND3YL88tSiKl2j5OQkS3OLRItUU3MloOKCotS0zAqwQdGxtbUAfPg
+ X61gAAAA=
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693471524; l=10059;
+ i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
+ bh=TOpHrg+THcLjDGrTsyHrj4Fe/3SIuVeJALTfT8X71I0=;
+ b=hyCLX2cfHW5yCX7NKzClmr8fP4PwHpiMP7RJYItFAjlrtSHUwbBPioPZQ8E8JIuz6lyCxJ4AG
+ IgRuV1TQBykDkFAIdiAnaiA9bXRyCOINu225U15Vpf5f+LiV31VWO2V
+X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
+ pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+POWER-Z is a series of devices to monitor power characteristics of USB-C
+connections and display those on a on-device display.
+Some of the devices, notably KM002C and KM003C, contain an additional
+port which exposes the measurements via USB.
 
-On 2023-08-30 at 13:51:29 -0700, Reinette Chatre wrote:
->Hi Maciej,
->
->On 8/28/2023 2:56 AM, Wieczor-Retman, Maciej wrote:
->> Resctrlfs.c file contains mostly functions that interact in some way
->> with resctrl FS entries while functions inside resctrl_val.c deal with
->> measurements and benchmarking.
->> 
->> Run_benchmark() function is located in resctrlfs.c file even though it's
->> purpose is not interacting with the resctrl FS but to execute cache
->> checking logic.
->
->It looks like your editor may be automatically capitalize first words
->of sentences like Resctrlfs.c and Run_benchmark() above.
+This is a driver for this monitor port.
 
-I'll fix it.
+It was developed and tested with the KM003C.
 
->Also please note that when using () to indicate a function it is not
->necessary to say it is a function. For example above can just be:
->"run_benchmark() is located ..." ... similarly you can just say
->"resctrlfs.c contains ...".
+Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
+---
+ MAINTAINERS            |   6 ++
+ drivers/hwmon/Kconfig  |  10 ++
+ drivers/hwmon/Makefile |   1 +
+ drivers/hwmon/powerz.c | 258 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 275 insertions(+)
 
-Thanks for the tip, will apply it from now on.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 4e3419c04f27..12bcf14597c4 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -4795,6 +4795,12 @@ X:	drivers/char/ipmi/
+ X:	drivers/char/random.c
+ X:	drivers/char/tpm/
+ 
++CHARGERLAB POWER-Z HARDWARE MONITOR DRIVER
++M:	Thomas Weißschuh <linux@weissschuh.net>
++L:	linux-hwmon@vger.kernel.org
++S:	Maintained
++F:	drivers/hwmon/powerz.c
++
+ CHECKPATCH
+ M:	Andy Whitcroft <apw@canonical.com>
+ M:	Joe Perches <joe@perches.com>
+diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+index ec38c8892158..a055f9cdef16 100644
+--- a/drivers/hwmon/Kconfig
++++ b/drivers/hwmon/Kconfig
+@@ -839,6 +839,16 @@ config SENSORS_JC42
+ 	  This driver can also be built as a module. If so, the module
+ 	  will be called jc42.
+ 
++config SENSORS_POWERZ
++	tristate "ChargerLAB POWER-Z USB-C tester");
++	depends on USB
++	help
++	  If you say yes here you get support for ChargerLAB POWER-Z series of
++	  USB-C charging testers.
++
++	  This driver can also be built as a module. If so, the module
++	  will be called powerz.
++
+ config SENSORS_POWR1220
+ 	tristate "Lattice POWR1220 Power Monitoring"
+ 	depends on I2C
+diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+index 4ac9452b5430..019189500e5d 100644
+--- a/drivers/hwmon/Makefile
++++ b/drivers/hwmon/Makefile
+@@ -176,6 +176,7 @@ obj-$(CONFIG_SENSORS_OXP) += oxp-sensors.o
+ obj-$(CONFIG_SENSORS_PC87360)	+= pc87360.o
+ obj-$(CONFIG_SENSORS_PC87427)	+= pc87427.o
+ obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591.o
++obj-$(CONFIG_SENSORS_POWERZ)	+= powerz.o
+ obj-$(CONFIG_SENSORS_POWR1220)  += powr1220.o
+ obj-$(CONFIG_SENSORS_PWM_FAN)	+= pwm-fan.o
+ obj-$(CONFIG_SENSORS_RASPBERRYPI_HWMON)	+= raspberrypi-hwmon.o
+diff --git a/drivers/hwmon/powerz.c b/drivers/hwmon/powerz.c
+new file mode 100644
+index 000000000000..898ab4c2516d
+--- /dev/null
++++ b/drivers/hwmon/powerz.c
+@@ -0,0 +1,258 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ *  Copyright (C) 2023 Thomas Weißschuh <linux@weissschuh.net>
++ */
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++
++#include <linux/completion.h>
++#include <linux/hwmon.h>
++#include <linux/module.h>
++#include <linux/usb.h>
++
++#define DRIVER_NAME	"powerz"
++#define POWERZ_EP_CMD_OUT	0x01
++#define POWERZ_EP_DATA_IN	0x81
++
++struct powerz_sensor_data {
++	u8 _unknown_1[8];
++	__le32 Vbus;
++	__le32 Ibus;
++	__le32 Vbus_avg;
++	__le32 Ibus_avg;
++	u8 _unknown_2[8];
++	u8 temp[2];
++	__le16 cc1;
++	__le16 cc2;
++	__le16 dp;
++	__le16 dm;
++	u8 _unknown_3[6];
++} __packed;
++
++struct powerz_priv {
++	struct device *hwmon_dev;
++	struct usb_interface *intf;
++};
++
++static const struct hwmon_channel_info * const powerz_info[] = {
++	HWMON_CHANNEL_INFO(in,
++			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_AVERAGE,
++			   HWMON_I_INPUT | HWMON_I_LABEL,
++			   HWMON_I_INPUT | HWMON_I_LABEL,
++			   HWMON_I_INPUT | HWMON_I_LABEL,
++			   HWMON_I_INPUT | HWMON_I_LABEL),
++	HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_AVERAGE),
++	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
++	NULL
++};
++
++static umode_t powerz_is_visible(const void *data, enum hwmon_sensor_types type,
++				 u32 attr, int channel)
++{
++	return 0444;
++}
++
++static int powerz_read_string(struct device *dev, enum hwmon_sensor_types type,
++			      u32 attr, int channel, const char **str)
++{
++	if (type == hwmon_curr && attr == hwmon_curr_label)
++		*str = "bus";
++	else if (type == hwmon_in && attr == hwmon_in_label && channel == 0)
++		*str = "bus";
++	else if (type == hwmon_in && attr == hwmon_in_label && channel == 1)
++		*str = "cc1";
++	else if (type == hwmon_in && attr == hwmon_in_label && channel == 2)
++		*str = "cc2";
++	else if (type == hwmon_in && attr == hwmon_in_label && channel == 3)
++		*str = "dp";
++	else if (type == hwmon_in && attr == hwmon_in_label && channel == 4)
++		*str = "dm";
++	else if (type == hwmon_temp && attr == hwmon_temp_label)
++		*str = "temp";
++	else
++		return -EINVAL;
++
++	return 0;
++}
++
++struct powerz_usb_ctx {
++	char transfer_buffer[64];
++	struct completion completion;
++	int status;
++};
++
++static void powerz_usb_data_complete(struct urb *urb)
++{
++	struct powerz_usb_ctx *ctx = urb->context;
++
++	ctx->status = 0;
++	complete(&ctx->completion);
++}
++
++static void powerz_usb_cmd_complete(struct urb *urb)
++{
++	struct powerz_usb_ctx *ctx = urb->context;
++	int ret;
++
++	usb_fill_bulk_urb(urb, urb->dev, usb_rcvbulkpipe(urb->dev, POWERZ_EP_DATA_IN),
++			  ctx->transfer_buffer, sizeof(ctx->transfer_buffer),
++			  powerz_usb_data_complete, ctx);
++
++	ret = usb_submit_urb(urb, GFP_ATOMIC);
++	if (ret) {
++		usb_free_urb(urb);
++		ctx->status = ret;
++		complete(&ctx->completion);
++	}
++}
++
++static struct powerz_sensor_data *powerz_read_data(struct usb_device *udev,
++						   struct powerz_usb_ctx *ctx)
++{
++	struct urb *urb;
++	int r;
++
++	ctx->status = -ETIMEDOUT;
++	init_completion(&ctx->completion);
++
++	urb = usb_alloc_urb(0, GFP_KERNEL);
++	if (!urb)
++		return ERR_PTR(-ENOMEM);
++
++	ctx->transfer_buffer[0] = 0x0c;
++	ctx->transfer_buffer[1] = 0x00;
++	ctx->transfer_buffer[2] = 0x02;
++	ctx->transfer_buffer[3] = 0x00;
++
++	usb_fill_bulk_urb(urb, udev, usb_sndbulkpipe(udev, POWERZ_EP_CMD_OUT),
++			  ctx->transfer_buffer, 4, powerz_usb_cmd_complete, ctx);
++	r = usb_submit_urb(urb, GFP_KERNEL);
++	if (r) {
++		usb_free_urb(urb);
++		return ERR_PTR(r);
++	}
++
++	if (!wait_for_completion_interruptible_timeout(&ctx->completion, msecs_to_jiffies(5))) {
++		usb_kill_urb(urb);
++		usb_free_urb(urb);
++		return ERR_PTR(-EIO);
++	}
++
++	if (ctx->status) {
++		usb_free_urb(urb);
++		return ERR_PTR(ctx->status);
++	}
++
++	if (urb->actual_length < (sizeof(struct powerz_sensor_data))) {
++		usb_free_urb(urb);
++		return ERR_PTR(-EIO);
++	}
++
++	usb_free_urb(urb);
++	return (struct powerz_sensor_data *)(ctx->transfer_buffer);
++}
++
++static int powerz_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
++		       int channel, long *val)
++{
++	struct usb_interface *intf = to_usb_interface(dev->parent);
++	struct usb_device *udev = interface_to_usbdev(intf);
++	struct powerz_sensor_data *data;
++	struct powerz_usb_ctx *ctx;
++
++	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
++	if (!ctx)
++		return -ENOMEM;
++
++	data = powerz_read_data(udev, ctx);
++	if (IS_ERR(data)) {
++		kfree(ctx);
++		return PTR_ERR(data);
++	}
++
++	if (type == hwmon_curr && attr == hwmon_curr_input)
++		*val =  ((s32)le32_to_cpu(data->Ibus)) / 1000;
++	else if (type == hwmon_curr && attr == hwmon_curr_average)
++		*val =  ((s32)le32_to_cpu(data->Ibus_avg)) / 1000;
++	else if (type == hwmon_in && attr == hwmon_in_input && channel == 0)
++		*val =  le32_to_cpu(data->Vbus) / 1000;
++	else if (type == hwmon_in && attr == hwmon_in_average && channel == 0)
++		*val =  le32_to_cpu(data->Vbus_avg) / 1000;
++	else if (type == hwmon_in && attr == hwmon_in_input && channel == 1)
++		*val =  le16_to_cpu(data->cc1) / 10;
++	else if (type == hwmon_in && attr == hwmon_in_input && channel == 2)
++		*val =  le16_to_cpu(data->cc2) / 10;
++	else if (type == hwmon_in && attr == hwmon_in_input && channel == 3)
++		*val =  le16_to_cpu(data->dp) / 10;
++	else if (type == hwmon_in && attr == hwmon_in_input && channel == 4)
++		*val =  le16_to_cpu(data->dm) / 10;
++	else if (type == hwmon_temp && attr == hwmon_temp_input)
++		*val = ((long)data->temp[1]) * 2000 + ((long)data->temp[0]) * 1000 / 128;
++	else
++		return -EINVAL;
++
++	kfree(ctx);
++
++	return 0;
++}
++
++static const struct hwmon_ops powerz_hwmon_ops = {
++	.is_visible  = powerz_is_visible,
++	.read        = powerz_read,
++	.read_string = powerz_read_string,
++};
++
++static const struct hwmon_chip_info powerz_chip_info = {
++	.ops  = &powerz_hwmon_ops,
++	.info = powerz_info,
++};
++
++static int powerz_probe(struct usb_interface *intf, const struct usb_device_id *id)
++{
++	struct usb_device *udev = interface_to_usbdev(intf);
++	struct powerz_priv *priv;
++	struct device *parent;
++	const char *name;
++	int ret;
++
++	parent = &intf->dev;
++
++	priv = devm_kzalloc(parent, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	name = devm_hwmon_sanitize_name(parent, udev->product ?: DRIVER_NAME);
++	priv->hwmon_dev = hwmon_device_register_with_info(parent, name,
++							  priv,
++							  &powerz_chip_info,
++							  NULL);
++	ret = PTR_ERR_OR_ZERO(priv->hwmon_dev);
++	priv->intf = intf;
++	usb_set_intfdata(intf, priv);
++
++	return ret;
++}
++
++static void powerz_disconnect(struct usb_interface *intf)
++{
++	struct powerz_priv *priv = usb_get_intfdata(intf);
++
++	hwmon_device_unregister(priv->hwmon_dev);
++}
++
++static const struct usb_device_id powerz_id_table[] = {
++	{ USB_DEVICE_INTERFACE_NUMBER(0x5FC9, 0x0063, 0x00) }, /* ChargerLAB POWER-Z KM003C */
++	{ }
++};
++MODULE_DEVICE_TABLE(usb, powerz_id_table);
++
++static struct usb_driver powerz_driver = {
++	.name       = DRIVER_NAME,
++	.id_table   = powerz_id_table,
++	.probe      = powerz_probe,
++	.disconnect = powerz_disconnect,
++};
++module_usb_driver(powerz_driver);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Thomas Weißschuh <linux@weissschuh.net>");
++MODULE_DESCRIPTION("ChargerLAB POWER-Z USB-C tester");
 
->> 
->> Move run_benchmark() to resctrl_val.c just before resctrl_val() function
->> that makes use of run_benchmark().
->> 
->> Remove return comment from kernel-doc since the function is type void.
->> 
->> Changelog v2:
->> - Add dots at the end of patch msg sentences.
->> - Remove "Return: void" from run_benchmark() kernel-doc comment.
->> 
->
->same comment about changelog.
+---
+base-commit: b97d64c722598ffed42ece814a2cb791336c6679
+change-id: 20230831-powerz-2ccb978a8e57
 
-It'll be fixed next time.
-
->> Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
->> ---
->>  tools/testing/selftests/resctrl/resctrl_val.c | 50 ++++++++++++++++++
->>  tools/testing/selftests/resctrl/resctrlfs.c   | 52 -------------------
->>  2 files changed, 50 insertions(+), 52 deletions(-)
->> 
->> diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
->> index f0f6c5f6e98b..5c8dc0a7bab9 100644
->> --- a/tools/testing/selftests/resctrl/resctrl_val.c
->> +++ b/tools/testing/selftests/resctrl/resctrl_val.c
->> @@ -621,6 +621,56 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
->>  	return 0;
->>  }
->>  
->> +/*
->> + * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
->> + *		   in specified signal. Direct benchmark stdio to /dev/null.
->> + * @signum:	signal number
->> + * @info:	signal info
->> + * @ucontext:	user context in signal handling
->> + */
->> +void run_benchmark(int signum, siginfo_t *info, void *ucontext)
->
->Can run_benchmark() now be made static and its declaration removed from
->the header file?
-
-Thanks for noticing. Yes, from my side it seems turning it into static
-is okay. I tried it out on Ilpo's branches that I know he's currently
-working on and there were no errors either.
-
+Best regards,
 -- 
-Kind regards
-Maciej Wiecz�r-Retman
+Thomas Weißschuh <linux@weissschuh.net>
+
