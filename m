@@ -2,214 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8612D78E775
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1629078E774
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243661AbjHaH6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49694 "EHLO
+        id S235690AbjHaH6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:58:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244303AbjHaH6d (ORCPT
+        with ESMTP id S231284AbjHaH6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:58:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F7FA4
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693468672;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=oMSp8JxFtHZeRBC/fQLH1dpfeLSCYczBKIaSZ0ygFTo=;
-        b=Z0GmwKgpaqduHb9reW9+sduxBXM+wLQ0tjabQmwlI/ThiyyDecmCKGf3VfMT7mM/o0AW+H
-        B1Rl7gunQfcrqKtqB1x4DzsMz3UFjV6Fow/XSnlpfQFOZGUjIakE7vy83ZLyWzKyzMMMBp
-        GiUWPJb1eYdTw2fLw24Hs1hlWaSd+kk=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-64-ZVrdEs1-Om6hLQaqL-Ah_A-1; Thu, 31 Aug 2023 03:57:51 -0400
-X-MC-Unique: ZVrdEs1-Om6hLQaqL-Ah_A-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31c470305cfso252386f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:57:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693468670; x=1694073470;
-        h=content-transfer-encoding:in-reply-to:subject:organization:from
-         :references:cc:to:content-language:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oMSp8JxFtHZeRBC/fQLH1dpfeLSCYczBKIaSZ0ygFTo=;
-        b=g80SFp6h3NpC0M7llGJtrTWT0x1q0IPbf+yRkhbxbXY6cFmcaqD+15om8d8y9lhh9d
-         0HC52bcsbHvOB/6bK/a8Ihw/wHGxtAKx528lIYtf9mOhDxH3XHs8+Ag6cQVCM9JW2YM2
-         sKPev9a/YP7rMvYgi+FViKrlLZzzFHAKfNNm5CYm5FGkjV1mVnH5kChkY3woYFTGWZMI
-         9oD3Vn3RxuqYFUJUdOV8dzix1Ajt/YxtYpsvAIA7J2VuVJBLdW66z76VSOUpkCv9LcgG
-         ZOZhUXy+fU//zQzDNUDMwQgeRM4PYsMxWxDsmGWfFYir8PI7pgpVn1sHldKs9a5e6WCa
-         NBiQ==
-X-Gm-Message-State: AOJu0YxWwzRtHnn3b+audkywrJZeJTCWRYzsE+lORDgRyW2k+rM6YXL/
-        u7x2Wrn/KHXLTQfEOds6pCazjNDC91u7zwZXAypdaTiWo+eXyxqlSFIuuyxxdV/XoZfhizullwe
-        lIaawF9XwiQSqPvbEgll0hsLp
-X-Received: by 2002:adf:f810:0:b0:319:8cc9:6d9b with SMTP id s16-20020adff810000000b003198cc96d9bmr3058461wrp.8.1693468669785;
-        Thu, 31 Aug 2023 00:57:49 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFmf9db3nUPfPoa19iO4dhVJUc1/FRSk62XgaHiLc1gUr0i4tAPTMDJpCSPchW+Ucy0bLAPBQ==
-X-Received: by 2002:adf:f810:0:b0:319:8cc9:6d9b with SMTP id s16-20020adff810000000b003198cc96d9bmr3058445wrp.8.1693468669310;
-        Thu, 31 Aug 2023 00:57:49 -0700 (PDT)
-Received: from [10.59.19.200] (pd956a06e.dip0.t-ipconnect.de. [217.86.160.110])
-        by smtp.gmail.com with ESMTPSA id y1-20020adff6c1000000b00317a29af4b2sm1290796wrp.68.2023.08.31.00.57.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 00:57:48 -0700 (PDT)
-Message-ID: <4e14730b-4e4c-de30-04bb-9f3ec4a93754@redhat.com>
-Date:   Thu, 31 Aug 2023 09:57:46 +0200
+        Thu, 31 Aug 2023 03:58:12 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB5D1A4
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:58:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 30C25B8212F
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:58:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 873E4C433C8;
+        Thu, 31 Aug 2023 07:58:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693468686;
+        bh=egUkiVsevLMU8xG5XU5h1UuKxB2QeM6GeSDTlW2cmUU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=IT4fE548/yUWkzJkJXUfarQ2N0rVHpLsTCG9Pzf/ssUC960n1s9u1v3LmYTN98wly
+         fw1DxLoILilmmUSEbRlsPc5od3XI+X2A5tEG5RyGz/nfE+z7RjlTbeAnEcoc0OI6CT
+         bWDtbzc+TJejuNPw3PIFe1qvrJW/jW9sSrDx++AQ=
+Date:   Thu, 31 Aug 2023 09:58:04 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@collabora.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: Stability guarantees on uevent variables?
+Message-ID: <2023083110-delicacy-thinly-5af6@gregkh>
+References: <c0d32695-9e3e-4173-8448-7d123f38824e@notapiano>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     "Huang, Ying" <ying.huang@intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230810142942.3169679-1-ryan.roberts@arm.com>
- <20230810142942.3169679-4-ryan.roberts@arm.com>
- <87v8dg6lfu.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <5c9ba378-2920-4892-bdf0-174e47d528b7@arm.com>
- <87cyz43s63.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v5 3/5] mm: LARGE_ANON_FOLIO for improved performance
-In-Reply-To: <87cyz43s63.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c0d32695-9e3e-4173-8448-7d123f38824e@notapiano>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.08.23 03:40, Huang, Ying wrote:
-> Ryan Roberts <ryan.roberts@arm.com> writes:
+On Thu, Aug 24, 2023 at 07:08:39PM -0400, Nícolas F. R. A. Prado wrote:
+> Hi,
 > 
->> On 15/08/2023 22:32, Huang, Ying wrote:
->>> Hi, Ryan,
->>>
->>> Ryan Roberts <ryan.roberts@arm.com> writes:
->>>
->>>> Introduce LARGE_ANON_FOLIO feature, which allows anonymous memory to be
->>>> allocated in large folios of a determined order. All pages of the large
->>>> folio are pte-mapped during the same page fault, significantly reducing
->>>> the number of page faults. The number of per-page operations (e.g. ref
->>>> counting, rmap management lru list management) are also significantly
->>>> reduced since those ops now become per-folio.
->>>>
->>>> The new behaviour is hidden behind the new LARGE_ANON_FOLIO Kconfig,
->>>> which defaults to disabled for now; The long term aim is for this to
->>>> defaut to enabled, but there are some risks around internal
->>>> fragmentation that need to be better understood first.
->>>>
->>>> Large anonymous folio (LAF) allocation is integrated with the existing
->>>> (PMD-order) THP and single (S) page allocation according to this policy,
->>>> where fallback (>) is performed for various reasons, such as the
->>>> proposed folio order not fitting within the bounds of the VMA, etc:
->>>>
->>>>                  | prctl=dis | prctl=ena   | prctl=ena     | prctl=ena
->>>>                  | sysfs=X   | sysfs=never | sysfs=madvise | sysfs=always
->>>> ----------------|-----------|-------------|---------------|-------------
->>>> no hint         | S         | LAF>S       | LAF>S         | THP>LAF>S
->>>> MADV_HUGEPAGE   | S         | LAF>S       | THP>LAF>S     | THP>LAF>S
->>>> MADV_NOHUGEPAGE | S         | S           | S             | S
->>>
->>> IMHO, we should use the following semantics as you have suggested
->>> before.
->>>
->>>                  | prctl=dis | prctl=ena   | prctl=ena     | prctl=ena
->>>                  | sysfs=X   | sysfs=never | sysfs=madvise | sysfs=always
->>> ----------------|-----------|-------------|---------------|-------------
->>> no hint         | S         | S           | LAF>S         | THP>LAF>S
->>> MADV_HUGEPAGE   | S         | S           | THP>LAF>S     | THP>LAF>S
->>> MADV_NOHUGEPAGE | S         | S           | S             | S
->>>
->>> Or even,
->>>
->>>                  | prctl=dis | prctl=ena   | prctl=ena     | prctl=ena
->>>                  | sysfs=X   | sysfs=never | sysfs=madvise | sysfs=always
->>> ----------------|-----------|-------------|---------------|-------------
->>> no hint         | S         | S           | S             | THP>LAF>S
->>> MADV_HUGEPAGE   | S         | S           | THP>LAF>S     | THP>LAF>S
->>> MADV_NOHUGEPAGE | S         | S           | S             | S
->>>
->>>  From the implementation point of view, PTE mapped PMD-sized THP has
->>> almost no difference with LAF (just some small sized THP).  It will be
->>> confusing to distinguish them from the interface point of view.
->>>
->>> So, IMHO, the real difference is the policy.  For example, prefer
->>> PMD-sized THP, prefer small sized THP, or fully auto.  The sysfs
->>> interface is used to specify system global policy.  In the long term, it
->>> can be something like below,
->>>
->>> never:      S               # disable all THP
->>> madvise:                    # never by default, control via madvise()
->>> always:     THP>LAF>S       # prefer PMD-sized THP in fact
->>> small:      LAF>S           # prefer small sized THP
->>> auto:                       # use in-kernel heuristics for THP size
->>>
->>> But it may be not ready to add new policies now.  So, before the new
->>> policies are ready, we can add a debugfs interface to override the
->>> original policy in /sys/kernel/mm/transparent_hugepage/enabled.  After
->>> we have tuned enough workloads, collected enough data, we can add new
->>> policies to the sysfs interface.
->>
->> I think we can all imagine many policy options. But we don't really have much
->> evidence yet for what it best. The policy I'm currently using is intended to
->> give some flexibility for testing (use LAF without THP by setting sysfs=never,
->> use THP without LAF by compiling without LAF) without adding any new knobs at
->> all. Given that, surely we can defer these decisions until we have more data?
->>
->> In the absence of data, your proposed solution sounds very sensible to me. But
->> for the purposes of scaling up perf testing, I don't think its essential given
->> the current policy will also produce the same options.
->>
->> If we were going to add a debugfs knob, I think the higher priority would be a
->> knob to specify the folio order. (but again, I would rather avoid if possible).
+> my question boils down to the following:
 > 
-> I totally understand we need some way to control PMD-sized THP and LAF
-> to tune the workload, and nobody likes debugfs knob.
+> Is there a stability guarantee on the format and content of the variables in
+> uevents produced by the kernel?
+
+Only if the normal userspace tools that use those variables require it.
+
+> I would assume so, given that uevents are explicitly produced for userspace, and
+> users will rely on them. However, looking through the ABI documentation I could
+> only find two instances of uevents being defined (testing/usb-uevent and
+> testing/usb-charger-uevent) and neither mention the variables added in the
+> KOBJ_ADD action. The document for the uevent file in sysfs,
+> testing/sysfs-uevent, only mentions writing synthetic uevents, rather than
+> reading existing ones. Is the documentation simply lacking or is it intentional
+> that uevent variables aren't covered?
 > 
-> My concern about interface is that we have no way to disable LAF
-> system-wise without rebuilding the kernel.  In the future, should we add
-> a new policy to /sys/kernel/mm/transparent_hugepage/enabled to be
-> stricter than "never"?  "really_never"?
+> I'm particularly interested in the format for the MODALIAS uevent variable. My
+> understanding is that its only use is to match against the modules' aliases in
+> the modules.alias file. For that reason I'm wondering whether for this variable,
+> the guarantee would only be that the format of the value will match the one in
+> modules.alias, but the precise format is not guaranteed (for example, a new
+> field could potentially be introduced in the future if added to both the device
+> uevent and module's alias). However, I do see a few ABI documentation pages for
+> the modalias file in sysfs (eg in testing/sysfs-bus-pci), which explicitly
+> describe the format, and that's supposed to be the same as the MODALIAS uevent,
+> so does that mean the format itself is stable?
 
-Let's talk about that in a bi-weekly MM session. (I proposed it as a 
-topic for next week).
+No, modalias is not stable, it can change over time (add new fields), as
+it is just a userspace representation of how to call 'modprobe' and
+match up with the kernel-provided module alias fields.
 
-As raised in another mail, we can then discuss
-* how we want to call this feature (transparent large pages? there is
-   the concern that "THP" might confuse users. Maybe we can consider
-   "large" the more generic version and "huge" only PMD-size, TBD)
-* how to expose it in stats towards the user (e.g., /proc/meminfo)
-* which minimal toggles we want
+So the value will always match the module alias fields, but userspace
+shouldn't be attempting to parse the thing at all, as that makes no
+sense (the kernel understands the format, userspace does not need to.)
 
-I think there *really* has to be a way to disable it for a running 
-system, otherwise no distro will dare pulling it in, even after we 
-figured out the other stuff.
+> I'll be happy to improve the ABI documentation based on the reply to these
+> questions.
+> 
+> As for the full context for these questions, as part of an effort to improve the
+> detection of regressions affecting device probe, I want to be able to check
+> whether devices under a discoverable bus (USB, PCI) were populated and probed by
+> a driver.
 
-Note that for the pagecache, large folios can be disabled and 
-distributions are actively making use of that.
+So you want to see if a driver is possible for this device, or if the
+driver failed to bind to the device?  Those are different things.
 
--- 
-Cheers,
+> We currently do this by checking against driver and device names [1],
+> but as has been pointed out before, that's not stable ABI, and the test might
+> break if things get renamed or moved around.
 
-David / dhildenb
+Yes, driver names get changed all the time, and move around the kernel
+tree as well.  That's not going to stop, but it shouldn't affect
+testing, right?
 
+> So my intention is to change that
+> check to use modaliases or other uevents to find the device in a stable way and
+> check for the driver symlink to verify it's been probed.
+
+Just use the symlink, that shows if a device actually has a driver bound
+to it.  Note that drivers can refuse to bind to a device for loads of
+reasons, even if it's probe function is properly called by the kernel.
+
+So for regressions, just see if there is a link from all devices to a
+driver and you should be fine.  No need to mess around with module
+aliases at all, as you don't want to put the parsing of those structures
+in userspace as well, right?
+
+thanks,
+
+greg k-h
