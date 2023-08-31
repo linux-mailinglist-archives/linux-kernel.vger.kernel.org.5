@@ -2,104 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 318B678F309
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE3E78F30D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:07:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345236AbjHaTEF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:04:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
+        id S1347118AbjHaTHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:07:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237445AbjHaTEF (ORCPT
+        with ESMTP id S231875AbjHaTHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:04:05 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E88EE6A
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:04:01 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5280ef23593so1499608a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:04:01 -0700 (PDT)
+        Thu, 31 Aug 2023 15:07:39 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98E8E65
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:07:35 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-3fee5ddc23eso11459965e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:07:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693508640; x=1694113440; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=MxGEoM6NvMI83xhY8G/ImCWZyFVY8xF2ffN+doaTRi0=;
-        b=KhgLzpCYjpxbyaSXMPtJJDXy56CWpI0HSMYo01C/wsL2jw4Avp+/shatNnyP4VpgZv
-         +ksX9D3wMbi8/zubUzc4GgSdgOD5o5CZoWYcaMiyYd4aaz9INhizWFrRzdE8XzMPxJTV
-         Ki9RrwQWkG9xC6r7DAXHb3uvljeflKXT1kUY8=
+        d=9elements.com; s=google; t=1693508854; x=1694113654; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FYcBf9zwOXM34XkHVSj+a44vhkm5AHZw6edl4HRxYQk=;
+        b=LpMrgSec2TLxuFrlheY4P9u/7Tf7/MbQ7EaqIxQZvy+e1oW9x+9NYBI6fr8rW6Uccn
+         YTub1ldB1rXKuNQRf0C25UDQdSXgP7xypZYPZ8hT7RzJuBsh/IXHQ2+Kco5O/9SmFEFK
+         BMzKP5LdQGavGmGDnTPsvUgf2CTS+by2Y1X4JEnKBPJHGY5lX28cf546+5zD89QiWV+v
+         lQ3YIY3z3U0JbwJOthowLeSCBraqmAMZWl6zjHUI0im4BevPkez5o6bdv8LH0cbiyFSB
+         3ZJqJ9B2iH1UyiZs0FeTzO5yKCQ8Wyse1laC3pTRQ1FpYyvkSdLRk8iw3B1C+CbsbIRh
+         l9+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693508640; x=1694113440;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693508854; x=1694113654;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MxGEoM6NvMI83xhY8G/ImCWZyFVY8xF2ffN+doaTRi0=;
-        b=hhAHkd3P2jLO5QIsAsq7mKLE+6cEoRFuEjxHbTcGHZyPq28NBTde/zvLVv8izZYhZl
-         L23k4t+Cgapby/6IiNNuY/ZocjfC45/i78pxR3/KuGdXFE42GmmDkBq4BCpHM4zaQKis
-         96ogbShbC7CR4xwB6qSBpQMVHHeeo+K3pNw3foxa1NDhdUR/UwoJPP1TKJk47mNgx0qc
-         Wj3S2SwNBc239N2Od7OWdhMalZXF2WJ+9JUNBfZGJKzHRJhr3WlTiBeCH2TrnVxh05bI
-         xZbHjlMze/1/irn/suQybGMuvfg3eY7hW6Pm9uurNHzNcQgFCSgFlg//VmD/g5lPOsp2
-         UZ9g==
-X-Gm-Message-State: AOJu0YxfB4nfh7/ptc6W3cNsTAsdrKn92OzZta/gIm9K219DBuatat2n
-        gZqkODQfh1m71KIFfbv1cZrw7NZZnR+Tyzicx1S0I6K1
-X-Google-Smtp-Source: AGHT+IFM3iTYhcbhZolSgfZFzBRag5kNzPBWTqsb/PxwRI+d6ai/1HnhwJFG+awqAw7csNDw7g4tEA==
-X-Received: by 2002:aa7:d911:0:b0:522:4cd7:efb0 with SMTP id a17-20020aa7d911000000b005224cd7efb0mr352454edr.17.1693508639938;
-        Thu, 31 Aug 2023 12:03:59 -0700 (PDT)
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com. [209.85.221.53])
-        by smtp.gmail.com with ESMTPSA id z14-20020aa7c64e000000b00528922bb53bsm1115795edr.76.2023.08.31.12.03.58
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 12:03:58 -0700 (PDT)
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-31977ace1c8so1009788f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:03:58 -0700 (PDT)
-X-Received: by 2002:a5d:5242:0:b0:315:8a13:ef17 with SMTP id
- k2-20020a5d5242000000b003158a13ef17mr269497wrc.65.1693508638437; Thu, 31 Aug
- 2023 12:03:58 -0700 (PDT)
+        bh=FYcBf9zwOXM34XkHVSj+a44vhkm5AHZw6edl4HRxYQk=;
+        b=QFqB9jrrdsIAFzfwxmW4DEug25mf2vg5sU9uFsdlep6+j90RV6LYZf8dY3mZSwANUS
+         f09RWwngf99k6N4WdaFTs5EIYDX0qMXLEZxl7/v/6Iv1SbiVpoxf+96Vw4NQpDo5xsyW
+         xLR196zuzUbLKwP4HxUO/AC7uE4Prgjnw3SMKxifZn4gfMRr5W1UqeqSLL5d3CsJ++V8
+         Fv70NdbKguk2EGishZ9/QMZtPIEKPmKqZaOBKqa7HBrPA9jWVc/R0L2zl1//nPqQcwLp
+         cDyvovFd8FIRGfG/X6uh5deRQsR1y5SPPA6rGWS1k4wTN7TsF4AaSmx/XdkXItRFXZlv
+         Nrsw==
+X-Gm-Message-State: AOJu0YycFGSBfqgPRv/NGhqhpDM6rL+HNUVbym7exr38JHS9rUSs1W1+
+        GXn5tAbmFEyehUrWBCc9WAdzHgAq3rp2mkxrqjEeU/Am
+X-Google-Smtp-Source: AGHT+IFUuWSxKgFiBa3LWAugIwI6zKreITHvXpuh2+aVPok62U+1tFXhBO7QKPQ6CuKZBnglh+uI2w==
+X-Received: by 2002:a5d:550b:0:b0:317:51ff:c249 with SMTP id b11-20020a5d550b000000b0031751ffc249mr342579wrv.13.1693508854433;
+        Thu, 31 Aug 2023 12:07:34 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id x9-20020adfdd89000000b003196b1bb528sm3058627wrl.64.2023.08.31.12.07.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 12:07:34 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Naresh Solanki <Naresh.Solanki@9elements.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/3] dt-bindings: hwmon: Add Infineon TDA38640
+Date:   Thu, 31 Aug 2023 21:07:27 +0200
+Message-ID: <20230831190731.265099-1-Naresh.Solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <ZPDgdGBbxrTl+m2s@debian>
-In-Reply-To: <ZPDgdGBbxrTl+m2s@debian>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 31 Aug 2023 12:03:41 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg4vpuourbbUPn19yFx2cNj93O6t0PhiARLLL6z22yV4Q@mail.gmail.com>
-Message-ID: <CAHk-=wg4vpuourbbUPn19yFx2cNj93O6t0PhiARLLL6z22yV4Q@mail.gmail.com>
-Subject: Re: mainline build failure due to 501126083855 ("fbdev/g364fb: Use
- fbdev I/O helpers")
-To:     "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        regressions@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 11:48, Sudip Mukherjee (Codethink)
-<sudipm.mukherjee@gmail.com> wrote:
-> The latest mainline kernel branch fails to build mips jazz_defconfig with
-> the error:
->
-> drivers/video/fbdev/g364fb.c:115:9: error: 'FB_DEFAULT_IOMEM_HELPERS' undeclared here (not in a function); did you mean 'FB_DEFAULT_IOMEM_OPS'?
->   115 |         FB_DEFAULT_IOMEM_HELPERS,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~
->       |         FB_DEFAULT_IOMEM_OPS
->
->
-> git bisect pointed to 501126083855 ("fbdev/g364fb: Use fbdev I/O helpers").
->
-> Reverting the commit has fixed the build failure.
->
-> I will be happy to test any patch or provide any extra log if needed.
+From: Patrick Rudolph <patrick.rudolph@9elements.com>
 
-Would you mind testing the exact thing that the compiler suggested?
+Add the DT property 'infineon,en-pin-fixed-level' to
+indicated that the chip EN pin is at fixed level
+or left unconnected(has internal pull-down).
 
-So instead of the revert, just replace FB_DEFAULT_IOMEM_HELPERS with
-FB_DEFAULT_IOMEM_OPS.
+Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+----
+Changes in V5:
+- Update pin name to align with datasheet
+Changes in V4:
+- Update property name & description.
+- Update commit message.
+---
+ .../hwmon/pmbus/infineon,tda38640.yaml        | 50 +++++++++++++++++++
+ .../devicetree/bindings/trivial-devices.yaml  |  2 -
+ 2 files changed, 50 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
 
-I think it's just a typo / confusion with the config variable (which
-is called FB_IOMEM_HELPERS).
+diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+new file mode 100644
+index 000000000000..9eecfae5dfcf
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/pmbus/infineon,tda38640.yaml
+@@ -0,0 +1,50 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++
++$id: http://devicetree.org/schemas/hwmon/pmbus/infineon,tda38640.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Infineon TDA38640 Synchronous Buck Regulator with SVID and I2C
++
++maintainers:
++  - Naresh Solanki <naresh.solanki@9elements.com>
++
++description: |
++  The Infineon TDA38640 is a 40A Single-voltage Synchronous Buck
++  Regulator with SVID and I2C designed for Industrial use.
++
++  Datasheet: https://www.infineon.com/dgdl/Infineon-TDA38640-0000-DataSheet-v02_04-EN.pdf?fileId=8ac78c8c80027ecd018042f2337f00c9
++
++properties:
++  compatible:
++    enum:
++      - infineon,tda38640
++
++  reg:
++    maxItems: 1
++
++  infineon,en-pin-fixed-level:
++    description:
++      Indicates that the chip EN pin is at fixed level or left
++      unconnected(has internal pull-down).
++    type: boolean
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        tda38640@40 {
++            compatible = "infineon,tda38640";
++            reg = <0x40>;
++        };
++    };
++
+diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Documentation/devicetree/bindings/trivial-devices.yaml
+index 40bc475ee7e1..86c7d34f63bf 100644
+--- a/Documentation/devicetree/bindings/trivial-devices.yaml
++++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+@@ -151,8 +151,6 @@ properties:
+           - infineon,slb9645tt
+             # Infineon SLB9673 I2C TPM 2.0
+           - infineon,slb9673
+-            # Infineon TDA38640 Voltage Regulator
+-          - infineon,tda38640
+             # Infineon TLV493D-A1B6 I2C 3D Magnetic Sensor
+           - infineon,tlv493d-a1b6
+             # Infineon Multi-phase Digital VR Controller xdpe11280
 
-               Linus
+base-commit: 919a83d020a8dfa1411c1dc1cff23a833f0f5268
+-- 
+2.41.0
+
