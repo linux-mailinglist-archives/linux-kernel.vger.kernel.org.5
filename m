@@ -2,70 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F56A78EA14
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 12:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A5C78EA15
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 12:20:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344193AbjHaKT4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 06:19:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60958 "EHLO
+        id S1344339AbjHaKT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 06:19:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230043AbjHaKTy (ORCPT
+        with ESMTP id S242212AbjHaKTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 06:19:54 -0400
-Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4619ACEE
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 03:19:51 -0700 (PDT)
-X-ASG-Debug-ID: 1693477188-1eb14e75120bc70001-xx1T2L
-Received: from ZXSHMBX2.zhaoxin.com (ZXSHMBX2.zhaoxin.com [10.28.252.164]) by mx2.zhaoxin.com with ESMTP id J0PZCilp7tOSkaPO (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Thu, 31 Aug 2023 18:19:48 +0800 (CST)
-X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX2.zhaoxin.com
- (10.28.252.164) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 31 Aug
- 2023 18:19:48 +0800
-Received: from [10.32.65.158] (10.32.65.158) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 31 Aug
- 2023 18:19:46 +0800
-X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.164
-Message-ID: <e9b4de96-624e-96a5-0a41-93de36719340@zhaoxin.com>
-X-Barracuda-RBL-Trusted-Forwarder: 10.32.65.158
-Date:   Thu, 31 Aug 2023 18:19:18 +0800
+        Thu, 31 Aug 2023 06:19:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C61D9CF3;
+        Thu, 31 Aug 2023 03:19:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DE55DB82171;
+        Thu, 31 Aug 2023 10:19:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9C177C433C7;
+        Thu, 31 Aug 2023 10:19:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693477189;
+        bh=YkOxDXBCUDLl6Cguo4+rc9hRV8tH3QYa5BZ+A8uztWA=;
+        h=From:Date:Subject:To:Cc:Reply-To:From;
+        b=bRBzAiUkzGOjkp1o+lGoEBBKUuDzEpGZJWeKDbbWfrMueA9BPcSG8omcTONDiizi0
+         r/EBGGaC2EMxnjAgVWbCkD9XPJIiS87jqXmxVbr1u8t95YU1XapGAvPolyIp2rFy+P
+         OWGkQ330jnV5IbaVwuvvIpaMTo3OguF3BTy49JqeuIwtRj+JRxV8Lqy5t1xJt5ggqx
+         irRZCz/Lh80ZGLLSmXPZmLREdjYp23Cm47nm6uXApGZJZ13AnDoHwKbGjZ5Jp6/Va+
+         IB72gXhVKGQngK2vsJvNPBVbT7ovUMTm67Ax14nrfGc4ASHkhKvDu9uq2hBpCAeJ0W
+         hBg8P4HlEQsOw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by smtp.lore.kernel.org (Postfix) with ESMTP id 7DE31C83F12;
+        Thu, 31 Aug 2023 10:19:49 +0000 (UTC)
+From:   Hui Liu via B4 Relay <devnull+quic_huliu.quicinc.com@kernel.org>
+Date:   Thu, 31 Aug 2023 18:19:45 +0800
+Subject: [PATCH v5] usb: typec: qcom: Update the logic of regulator enable
+ and disable
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
-Content-Language: en-US
-X-ASG-Orig-Subj: Re: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     <viresh.kumar@linaro.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <CobeChen@zhaoxin.com>,
-        <TimGuo@zhaoxin.com>, <LeoLiu-oc@zhaoxin.com>,
-        <LindaChai@zhaoxin.com>
-References: <20230808111325.8600-1-TonyWWang-oc@zhaoxin.com>
- <CAJZ5v0h8M-hNJfRTSxtVmfmpF09h9zmNmG-e=iMemzPwsK50Zg@mail.gmail.com>
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-In-Reply-To: <CAJZ5v0h8M-hNJfRTSxtVmfmpF09h9zmNmG-e=iMemzPwsK50Zg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.32.65.158]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
-X-Barracuda-Connect: ZXSHMBX2.zhaoxin.com[10.28.252.164]
-X-Barracuda-Start-Time: 1693477188
-X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
-X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at zhaoxin.com
-X-Barracuda-Scan-Msg-Size: 6215
-X-Barracuda-BRTS-Status: 0
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
-X-Barracuda-Spam-Score: -2.02
-X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.113472
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230831-qcom-tcpc-v5-1-5e2661dc6c1d@quicinc.com>
+X-B4-Tracking: v=1; b=H4sIAEJp8GQC/2XMyw6CMBCF4VchXVvTyxRaV76HcVGmRbqQu0RDe
+ HcLiUkNyzOZ71/I6IfgR3LJFjL4OYyhbeJQp4xgbZuHp8HFTQQTkmkhaI/tk07YIXXAjQKLuao
+ sif/d4Kvw3lu3e9x1GKd2+OzpmW/XX0UmlZlTTiuruWUGLVP5tX8FDA2e4wvZOrNILaRWRCud0
+ yhBgMrhaGVqdWpltN6osrCVleDM0UJiJUstRIvclMxo0IUp/+26rl978+U1WAEAAA==
+To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_fenglinw@quicinc.com,
+        subbaram@quicinc.com, Hui Liu <quic_huliu@quicinc.com>
+X-Mailer: b4 0.13-dev-83828
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693477188; l=3206;
+ i=quic_huliu@quicinc.com; s=20230823; h=from:subject:message-id;
+ bh=2oArl3p3f4nGra9OaL8wrTdlGSIGZy5nArkkLq2X1WQ=;
+ b=wOFTaj5NpC1jhXmeOUvbOaohgy/Xu/GtXVUzhJKflZyqduIAuYv5G39xqA53jvCNzGTHHKqpR
+ Bfc2iH5VL1UAyHiaeHQ/Ns4YOJLUt+SFai/7v3Un2em5H1yxHpyAkSq
+X-Developer-Key: i=quic_huliu@quicinc.com; a=ed25519;
+ pk=1z+A50UnTuKe/FdQv2c0W3ajDsJOYddwIHo2iivhTTA=
+X-Endpoint-Received: by B4 Relay for quic_huliu@quicinc.com/20230823 with auth_id=80
+X-Original-From: Hui Liu <quic_huliu@quicinc.com>
+Reply-To: <quic_huliu@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,188 +78,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Hui Liu <quic_huliu@quicinc.com>
 
-On 8/23/23 04:01, Rafael J. Wysocki wrote:
-> On Tue, Aug 8, 2023 at 1:13 PM Tony W Wang-oc <TonyWWang-oc@zhaoxin.com> wrote:
->>
->> The _CPC method can get per-core highest frequency.
-> 
-> Well, not exactly.  A more precise way to say this would be "The
-> per-core highest frequency can be obtained via CPPC."
-> 
+Removed the call logic of disable and enable regulator
+in reset function. Enable the regulator in qcom_pmic_typec_start
+function and disable it in qcom_pmic_typec_stop function to
+avoid unbalanced regulator disable warnings.
 
-Thanks for your reply, will rewrite the commit in next version.
+Fixes: a4422ff22142 ("usb: typec: qcom: Add Qualcomm PMIC Type-C driver")
+Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Acked-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+Tested-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org> # rb5
+Signed-off-by: Hui Liu <quic_huliu@quicinc.com>
+---
+Changes in v5:
+- Removed Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+- Updated V4 history
+- Link to v4: https://lore.kernel.org/r/20230830-qcom-tcpc-v4-1-c19b0984879b@quicinc.com
 
->> The highest frequency may varies between cores which mean cores can
-> 
-> "may vary" and "which means"
-> 
->> running at different max frequency, so can use it as a core priority
-> 
-> "can run", but it would be better to say "may run".
-> 
->> and give a hint to scheduler in order to put critical task to the
->> higher priority core.
-> 
-> Well, roughly speaking ...
-> 
-> You should really talk about ITMT and how it can be hooked up to this.
-> 
+Changes in v4:
+- Rephrased commit text
+- Link to v3: https://lore.kernel.org/r/20230828-qcom-tcpc-v3-1-e95b7afa34d9@quicinc.com
 
-Ok, Got it.
+Changes in v3:
+- Take Bryan's proposal to remove enable/disable operation in pdphy
+enable and pdphy disable function, then enable regulator in pdphy start
+function and disable it in pdphy stop function.
+- Link to v2: https://lore.kernel.org/r/20230824-qcom-tcpc-v2-1-3dd8c3424564@quicinc.com
 
->> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
->> ---
->> v1->v2: Fix build errors reported by kernel test robot
->>
->>  arch/x86/kernel/itmt.c         |  2 ++
->>  drivers/cpufreq/acpi-cpufreq.c | 59 ++++++++++++++++++++++++++++++----
->>  2 files changed, 54 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/x86/kernel/itmt.c b/arch/x86/kernel/itmt.c
->> index ee4fe8cdb857..b49ac8ecbbd6 100644
->> --- a/arch/x86/kernel/itmt.c
->> +++ b/arch/x86/kernel/itmt.c
->> @@ -122,6 +122,7 @@ int sched_set_itmt_support(void)
->>
->>         return 0;
->>  }
->> +EXPORT_SYMBOL_GPL(sched_set_itmt_support);
-> 
-> This requires an ACK from the x86 maintainers.
-> 
->>
->>  /**
->>   * sched_clear_itmt_support() - Revoke platform's support of ITMT
->> @@ -181,3 +182,4 @@ void sched_set_itmt_core_prio(int prio, int cpu)
->>  {
->>         per_cpu(sched_core_priority, cpu) = prio;
->>  }
->> +EXPORT_SYMBOL_GPL(sched_set_itmt_core_prio);
-> 
-> And same here.
-> 
->> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
->> index b2f05d27167e..5733323e04ac 100644
->> --- a/drivers/cpufreq/acpi-cpufreq.c
->> +++ b/drivers/cpufreq/acpi-cpufreq.c
->> @@ -628,28 +628,35 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
->>  #endif
->>
->>  #ifdef CONFIG_ACPI_CPPC_LIB
->> -static u64 get_max_boost_ratio(unsigned int cpu)
->> +static void cpufreq_get_core_perf(int cpu, u64 *highest_perf, u64 *nominal_perf)
-> 
-> This is not a cpufreq core function, so please use a different prefix
-> in its name.
-> 
+Changes in v2:
+- Add Fixes tag
+- Link to v1: https://lore.kernel.org/r/20230823-qcom-tcpc-v1-1-fa81a09ca056@quicinc.com
+---
+ drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Ok. Will remove the prefix of "cpufreq_".
+diff --git a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+index bb0b8479d80f..52c81378e36e 100644
+--- a/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
++++ b/drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_pdphy.c
+@@ -381,10 +381,6 @@ static int qcom_pmic_typec_pdphy_enable(struct pmic_typec_pdphy *pmic_typec_pdph
+ 	struct device *dev = pmic_typec_pdphy->dev;
+ 	int ret;
+ 
+-	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
+-	if (ret)
+-		return ret;
+-
+ 	/* PD 2.0, DR=TYPEC_DEVICE, PR=TYPEC_SINK */
+ 	ret = regmap_update_bits(pmic_typec_pdphy->regmap,
+ 				 pmic_typec_pdphy->base + USB_PDPHY_MSG_CONFIG_REG,
+@@ -422,8 +418,6 @@ static int qcom_pmic_typec_pdphy_disable(struct pmic_typec_pdphy *pmic_typec_pdp
+ 	ret = regmap_write(pmic_typec_pdphy->regmap,
+ 			   pmic_typec_pdphy->base + USB_PDPHY_EN_CONTROL_REG, 0);
+ 
+-	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+-
+ 	return ret;
+ }
+ 
+@@ -447,6 +441,10 @@ int qcom_pmic_typec_pdphy_start(struct pmic_typec_pdphy *pmic_typec_pdphy,
+ 	int i;
+ 	int ret;
+ 
++	ret = regulator_enable(pmic_typec_pdphy->vdd_pdphy);
++	if (ret)
++		return ret;
++
+ 	pmic_typec_pdphy->tcpm_port = tcpm_port;
+ 
+ 	ret = pmic_typec_pdphy_reset(pmic_typec_pdphy);
+@@ -467,6 +465,8 @@ void qcom_pmic_typec_pdphy_stop(struct pmic_typec_pdphy *pmic_typec_pdphy)
+ 		disable_irq(pmic_typec_pdphy->irq_data[i].irq);
+ 
+ 	qcom_pmic_typec_pdphy_reset_on(pmic_typec_pdphy);
++
++	regulator_disable(pmic_typec_pdphy->vdd_pdphy);
+ }
+ 
+ struct pmic_typec_pdphy *qcom_pmic_typec_pdphy_alloc(struct device *dev)
 
->>  {
->>         struct cppc_perf_caps perf_caps;
->> -       u64 highest_perf, nominal_perf;
->>         int ret;
->>
->>         if (acpi_pstate_strict)
->> -               return 0;
->> +               return;
->>
->>         ret = cppc_get_perf_caps(cpu, &perf_caps);
->>         if (ret) {
->>                 pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
->>                          cpu, ret);
->> -               return 0;
->> +               return;
->>         }
->>
->>         if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
->> -               highest_perf = amd_get_highest_perf();
->> +               *highest_perf = amd_get_highest_perf();
->>         else
->> -               highest_perf = perf_caps.highest_perf;
->> +               *highest_perf = perf_caps.highest_perf;
->> +
->> +       *nominal_perf = perf_caps.nominal_perf;
->> +       return;
->> +}
->>
->> -       nominal_perf = perf_caps.nominal_perf;
->> +static u64 get_max_boost_ratio(unsigned int cpu)
->> +{
->> +       u64 highest_perf, nominal_perf;
->> +
->> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
->>
->>         if (!highest_perf || !nominal_perf) {
->>                 pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
->> @@ -663,8 +670,44 @@ static u64 get_max_boost_ratio(unsigned int cpu)
->>
->>         return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
->>  }
->> +
->> +static void cpufreq_sched_itmt_work_fn(struct work_struct *work)
-> 
-> A similar comment applies here.
-> 
->> +{
->> +       sched_set_itmt_support();
->> +}
->> +
->> +static DECLARE_WORK(sched_itmt_work, cpufreq_sched_itmt_work_fn);
->> +
->> +static void cpufreq_set_itmt_prio(int cpu)
->> +{
->> +       u64 highest_perf, nominal_perf;
->> +       static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
->> +
->> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
->> +
->> +       sched_set_itmt_core_prio(highest_perf, cpu);
->> +
->> +       if (max_highest_perf <= min_highest_perf) {
->> +               if (highest_perf > max_highest_perf)
->> +                       max_highest_perf = highest_perf;
->> +
->> +               if (highest_perf < min_highest_perf)
->> +                       min_highest_perf = highest_perf;
->> +
->> +               if (max_highest_perf > min_highest_perf) {
->> +                       /*
->> +                        * This code can be run during CPU online under the
->> +                        * CPU hotplug locks, so sched_set_itmt_support()
->> +                        * cannot be called from here.  Queue up a work item
->> +                        * to invoke it.
->> +                        */
->> +                       schedule_work(&sched_itmt_work);
->> +               }
-> 
-> This potentially runs before ITMT priorities are set for all CPUs.
-> Isn't it a problem?
-> 
+---
+base-commit: bbb9e06d2c6435af9c62074ad7048910eeb2e7bc
+change-id: 20230822-qcom-tcpc-d41954ac65fa
 
-Yes, you are right.
-Will use schedule_delayed_work(&sched_itmt_work, msecs_to_jiffies(500))
-to fix this.
+Best regards,
+-- 
+Hui Liu <quic_huliu@quicinc.com>
 
-Sincerely.
-TonyWWang-oc
-
->> +       }
->> +}
->>  #else
->>  static inline u64 get_max_boost_ratio(unsigned int cpu) { return 0; }
->> +static void cpufreq_set_itmt_prio(int cpu) { return; }
->>  #endif
->>
->>  static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
->> @@ -870,6 +913,8 @@ static int acpi_cpufreq_cpu_init(struct cpufreq_policy *policy)
->>         /* notify BIOS that we exist */
->>         acpi_processor_notify_smm(THIS_MODULE);
->>
->> +       cpufreq_set_itmt_prio(cpu);
->> +
->>         pr_debug("CPU%u - ACPI performance management activated.\n", cpu);
->>         for (i = 0; i < perf->state_count; i++)
->>                 pr_debug("     %cP%d: %d MHz, %d mW, %d uS\n",
->> --
