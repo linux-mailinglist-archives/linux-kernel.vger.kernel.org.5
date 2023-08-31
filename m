@@ -2,222 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F16778E7BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37BA78E7C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:19:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244894AbjHaIRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 04:17:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        id S243324AbjHaITD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:19:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230222AbjHaIRf (ORCPT
+        with ESMTP id S230172AbjHaITD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:17:35 -0400
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8990819A
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:17:31 -0700 (PDT)
-Received: by mail-io1-xd36.google.com with SMTP id ca18e2360f4ac-7926b7f8636so12133639f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:17:31 -0700 (PDT)
+        Thu, 31 Aug 2023 04:19:03 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FA4EE;
+        Thu, 31 Aug 2023 01:19:00 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-2685bcd046eso385482a91.3;
+        Thu, 31 Aug 2023 01:19:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1693469851; x=1694074651; darn=vger.kernel.org;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MET/hQwpeova7Ho1GgzgDeTkiQ/1n+JC7QsFR+YAzPA=;
-        b=RMNs5f1WFrirnZtwwIPAdXnGsNAL4yKRBufYVnB32Mm8ZlWubGHYWAWjapSgn38uWN
-         C2fyT+m/4dKBbvVGQVRdeLjLFNCeZLCDFzkCXbt0LTkZTnj7cSssEE2aR3joc0+Iu3of
-         FIPKeOSWessfrNcU0Gymfq9mwJSc2tuHhtj+lJ7qCKycFiCZdyIcTXhImIOpK+9X8NMk
-         DssKoJssc6hEy3thG19BSYN80PDZKgMDCgZE2kqhOwEUOgpVIvzupPgHT60q2OQFC8CL
-         9jV1blsY5+xBQTF9GIyPR+4JmERSd7MGiLH2yhV9T+y3mwlbY1eFl62Dp2gnP5p4gqHO
-         n/OQ==
+        d=gmail.com; s=20221208; t=1693469939; x=1694074739; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=79o83Qkg5gPiVXMzByDb0PZBKtFKnERDAxY9w8aR938=;
+        b=LFb029jzmRtLrLADBZd4VxX9k96GYlzjeSy4EUmKP4hYlCjK8f6/207ir9glcRKOwN
+         bQmkzvn9cbMlESHuXWuQLsdFooKEcl6sWRgbvpq1+Or/FSc3R8mz9mE7djLw53agPlsi
+         0ej+it9oUtr8fpO88t9RQqSd1tuwOkdmTGMufNAwCx5pBBUNh+AJiHGT9rea64LoIhx6
+         zudKwWKPocVQFu65dNYCnA71DEv9Hi2jD2K5dU2D8U/vUtpTzBDdXZ0xPw61gD+/mnob
+         cZsidL/BKL5RonVRNLyn7im9t8qnhShISkiREh9hWag6/uxaI/hIHn+bJa5X4xQWkqhL
+         c0dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693469851; x=1694074651;
-        h=references:in-reply-to:message-id:date:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MET/hQwpeova7Ho1GgzgDeTkiQ/1n+JC7QsFR+YAzPA=;
-        b=RnkkBwpHXgfiYaUarT6uE/WPmM/vvMWMSMcJMGzwDSHtB6c2ysz5mcU5dPsG6PWUfN
-         PuzHqQyvuqW+v1ufqtg2Afe5NfnaorvuA4qknqPpQCMpIEXFUXAvZ584FE5xbUVxjJw2
-         demVqboaSJNeeWJVvTPdCzsW+DtYQkUshcahlJrZApu7PQaR9Lmb2i0L9e6TU5WAy/5B
-         k6yqftWvQSQMRywwulyH8siLvtJw9OheQUNapGhi5w8i4A2GwRAogBqqTtyiI9nWhn88
-         CBJmz5maQYMP5jthh2PXPuh5d+m5VURG94fpQOsoYuI7ekwA5QDjv4bJEy1oLXa3Gt6+
-         P+AQ==
-X-Gm-Message-State: AOJu0Ywm+xo38deXtNJY7p/gCSrcOVOoyOZ27Qpv19tTjth/HgX6EDuX
-        JBiRHAft0h2RnZt5zTi+g74EbA==
-X-Google-Smtp-Source: AGHT+IEmrcoYzrntW7B3jhyZRnwIUzkciWvOSXmi4UX/2NMeseAAguKjuoc//VCN5QB0kFm3teffJA==
-X-Received: by 2002:a5d:9d92:0:b0:791:8f62:31ef with SMTP id ay18-20020a5d9d92000000b007918f6231efmr2154312iob.5.1693469850925;
-        Thu, 31 Aug 2023 01:17:30 -0700 (PDT)
-Received: from dev-mkhalfella2.dev.purestorage.com ([208.88.159.128])
-        by smtp.googlemail.com with ESMTPSA id dm8-20020a0566023b8800b00791e6ae3aa4sm312282iob.23.2023.08.31.01.17.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 01:17:30 -0700 (PDT)
-From:   Mohamed Khalfella <mkhalfella@purestorage.com>
-To:     willemdebruijn.kernel@gmail.com
-Cc:     alexanderduyck@fb.com, bpf@vger.kernel.org, brouer@redhat.com,
-        davem@davemloft.net, dhowells@redhat.com, edumazet@google.com,
-        keescook@chromium.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, mkhalfella@purestorage.com,
-        netdev@vger.kernel.org, pabeni@redhat.com, willemb@google.com,
-        stable@vger.kernel.org
-Subject: [PATCH v3] skbuff: skb_segment, Call zero copy functions before using skbuff frags
-Date:   Thu, 31 Aug 2023 02:17:02 -0600
-Message-Id: <20230831081702.101342-1-mkhalfella@purestorage.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <64ed7188a2745_9cf208e1@penguin.notmuch>
-References: <64ed7188a2745_9cf208e1@penguin.notmuch>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1693469939; x=1694074739;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=79o83Qkg5gPiVXMzByDb0PZBKtFKnERDAxY9w8aR938=;
+        b=dVuXLuwBFpNhB8A/mUvdbDW5I9Hrh7VKVhRxVUwxoB84Uv5G5QdFAszAD0McPWMQsz
+         tZp3IQSaNz6w0BVLZEYb8p+jko+JuNSItDXWNhpUTc+MmCC3m2hUt8o5ecEzXCcgtdLf
+         PpgdbauA/lOwe6jTvs/84wjBC+xGx0+/7cVV9PW4mt81BwZXHF6dp2rsVhyOpvCUf3lD
+         qmkT0elboEVv8KERm1AOPgasisiekiB5OOuc8f4x3PdD4PELfVF3L5MZS38Y/68z5pTy
+         O/M76m4G7npku+gFai4az1bA5rty3Xdme+W889cbQx0YBp4bAYRJ6wpKDZViRgSvtlf1
+         JliQ==
+X-Gm-Message-State: AOJu0YyxOiMe6EVpoqy2Xb8vJhpIBVUH23CYhnyav5dg6vFPCON2Aca6
+        D89Ssz719LoUdQUiBHL/doWcieIvbimjQ/NYhVU=
+X-Google-Smtp-Source: AGHT+IE3edyRU9tiOyRiSNwpAeiDSCfeF0zhwsUo4Ex9wfq+t2eHBbb/B8+Nn1uGN4WCDY+zOXquI4RGYizvqdeJt6A=
+X-Received: by 2002:a17:90b:3657:b0:26b:6e98:29ce with SMTP id
+ nh23-20020a17090b365700b0026b6e9829cemr3893854pjb.27.1693469939462; Thu, 31
+ Aug 2023 01:18:59 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230707092414.866760-1-zyytlz.wz@163.com> <8c8bd3ec-a5a4-32e4-45b5-ee16eeeac246@collabora.com>
+ <CAJedcCxPG1mKtgB7AcJSwaQB_qvODObwq3gz6eM_1w777b2PfQ@mail.gmail.com> <54b14ebe-b51b-2744-328d-2adcdaaf6d0e@collabora.com>
+In-Reply-To: <54b14ebe-b51b-2744-328d-2adcdaaf6d0e@collabora.com>
+From:   Zheng Hacker <hackerzheng666@gmail.com>
+Date:   Thu, 31 Aug 2023 16:18:47 +0800
+Message-ID: <CAJedcCyn+VHxcSXH+HqP3yiXX8L0wjNao+suti5GgyQzYORcYA@mail.gmail.com>
+Subject: Re: [RESEND PATCH v2] media: mtk-jpeg: Fix use after free bug due to
+ uncanceled work
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     Zheng Wang <zyytlz.wz@163.com>, Kyrie.Wu@mediatek.com,
+        bin.liu@mediatek.com, mchehab@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, Irui.Wang@mediatek.com,
+        security@kernel.org, 1395428693sheep@gmail.com,
+        alex000young@gmail.com, Collabora Kernel ML <kernel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions
-once per nskb") added the call to zero copy functions in skb_segment().
-The change introduced a bug in skb_segment() because skb_orphan_frags()
-may possibly change the number of fragments or allocate new fragments
-altogether leaving nrfrags and frag to point to the old values. This can
-cause a panic with stacktrace like the one below.
+Dmitry Osipenko <dmitry.osipenko@collabora.com> =E4=BA=8E2023=E5=B9=B48=E6=
+=9C=8828=E6=97=A5=E5=91=A8=E4=B8=80 10:04=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On 8/24/23 11:20, Zheng Hacker wrote:
+> > Dmitry Osipenko <dmitry.osipenko@collabora.com> =E4=BA=8E2023=E5=B9=B48=
+=E6=9C=8823=E6=97=A5=E5=91=A8=E4=B8=89 02:51=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> >>
+> >> Hello Zheng,
+> >>
+> >> On 7/7/23 12:24, Zheng Wang wrote:
+> >>> In mtk_jpeg_probe, &jpeg->job_timeout_work is bound with
+> >>> mtk_jpeg_job_timeout_work. Then mtk_jpeg_dec_device_run
+> >>> and mtk_jpeg_enc_device_run may be called to start the
+> >>> work.
+> >>> If we remove the module which will call mtk_jpeg_remove
+> >>> to make cleanup, there may be a unfinished work. The
+> >>> possible sequence is as follows, which will cause a
+> >>> typical UAF bug.
+> >>>
+> >>> Fix it by canceling the work before cleanup in the mtk_jpeg_remove
+> >>>
+> >>> CPU0                  CPU1
+> >>>
+> >>>                     |mtk_jpeg_job_timeout_work
+> >>> mtk_jpeg_remove     |
+> >>>   v4l2_m2m_release  |
+> >>>     kfree(m2m_dev); |
+> >>>                     |
+> >>>                     | v4l2_m2m_get_curr_priv
+> >>>                     |   m2m_dev->curr_ctx //use
+> >>> Fixes: b2f0d2724ba4 ("[media] vcodec: mediatek: Add Mediatek JPEG Dec=
+oder Driver")
+> >>> Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
+> >>> ---
+> >>> - v2: use cancel_delayed_work_sync instead of cancel_delayed_work sug=
+gested by Kyrie.
+> >>> ---
+> >>>  drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c | 1 +
+> >>>  1 file changed, 1 insertion(+)
+> >>>
+> >>> diff --git a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c b/d=
+rivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
+> >>> index 0051f372a66c..6069ecf420b0 100644
+> >>> --- a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
+> >>> +++ b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
+> >>> @@ -1816,6 +1816,7 @@ static void mtk_jpeg_remove(struct platform_dev=
+ice *pdev)
+> >>>  {
+> >>>       struct mtk_jpeg_dev *jpeg =3D platform_get_drvdata(pdev);
+> >>>
+> >>> +     cancel_delayed_work_sync(&jpeg->job_timeout_work);
+> >>>       pm_runtime_disable(&pdev->dev);
+> >>>       video_unregister_device(jpeg->vdev);
+> >>>       v4l2_m2m_release(jpeg->m2m_dev);
+> >>
+> >> AFAICS, there is a fundamental problem here. The job_timeout_work uses
+> >> v4l2_m2m_get_curr_priv() and at the time when driver module is unloade=
+d,
+> >> all the v4l contexts must be closed and released. Hence the
+> >> v4l2_m2m_get_curr_priv() shall return NULL and crash the kernel when
+> >> work is executed before cancel_delayed_work_sync().
+> >>
+> >
+> > Hi Dmitry,
+> >
+> > Thanks for your reply. I think you're right. As m2m_dev is freed in
+> > v4l2_m2m_release,
+> > the invoking in v4l2_m2m_get_curr_priv might cause either UAF or null
+> > pointer dereference
+> > bug. I am sure that context is closed when we invoke mtk_jpeg_remove.
+> > But I'm not sure if
+> > context is released when mtk_jpegdec_timeout_work running.
+> >
+> >> At the time when mtk_jpeg_remove() is invoked, there shall be no
+> >> job_timeout_work running in background because all jobs should be
+> >> completed before context is released. If you'll look at
+> >> v4l2_m2m_cancel_job(), you can see that it waits for the task completi=
+on
+> >> before closing context.
+> >
+> > Yes, so I think the better way is to put the cancel_delayed_work_sync
+> > invoking into
+> > v4l2_m2m_ctx_release function?
+>
+> The v4l2_m2m_ctx_release() already should wait for the job_timeout_work
+> completion or for the interrupt fire. Apparently it doesn't work in
+> yours case. You'll need to debug why v4l job or job_timeout_work is
+> running after v4l2_m2m_ctx_release(), it shouldn't happen.
+>
 
-[  193.894380] BUG: kernel NULL pointer dereference, address: 00000000000000bc
-[  193.895273] CPU: 13 PID: 18164 Comm: vh-net-17428 Kdump: loaded Tainted: G           O      5.15.123+ #26
-[  193.903919] RIP: 0010:skb_segment+0xb0e/0x12f0
-[  194.021892] Call Trace:
-[  194.027422]  <TASK>
-[  194.072861]  tcp_gso_segment+0x107/0x540
-[  194.082031]  inet_gso_segment+0x15c/0x3d0
-[  194.090783]  skb_mac_gso_segment+0x9f/0x110
-[  194.095016]  __skb_gso_segment+0xc1/0x190
-[  194.103131]  netem_enqueue+0x290/0xb10 [sch_netem]
-[  194.107071]  dev_qdisc_enqueue+0x16/0x70
-[  194.110884]  __dev_queue_xmit+0x63b/0xb30
-[  194.121670]  bond_start_xmit+0x159/0x380 [bonding]
-[  194.128506]  dev_hard_start_xmit+0xc3/0x1e0
-[  194.131787]  __dev_queue_xmit+0x8a0/0xb30
-[  194.138225]  macvlan_start_xmit+0x4f/0x100 [macvlan]
-[  194.141477]  dev_hard_start_xmit+0xc3/0x1e0
-[  194.144622]  sch_direct_xmit+0xe3/0x280
-[  194.147748]  __dev_queue_xmit+0x54a/0xb30
-[  194.154131]  tap_get_user+0x2a8/0x9c0 [tap]
-[  194.157358]  tap_sendmsg+0x52/0x8e0 [tap]
-[  194.167049]  handle_tx_zerocopy+0x14e/0x4c0 [vhost_net]
-[  194.173631]  handle_tx+0xcd/0xe0 [vhost_net]
-[  194.176959]  vhost_worker+0x76/0xb0 [vhost]
-[  194.183667]  kthread+0x118/0x140
-[  194.190358]  ret_from_fork+0x1f/0x30
-[  194.193670]  </TASK>
+Yes, v4l2_m2m_cancel_job waits for m2m_ctx->job_flags to be  ~TRANS_RUNNING=
+,
+the mtk_jpeg_job_timeout_work will finally invoke v4l2_m2m_job_finish
+to trigger that.
 
-In this case calling skb_orphan_frags() updated nr_frags leaving nrfrags
-local variable in skb_segment() stale. This resulted in the code hitting
-i >= nrfrags prematurely and trying to move to next frag_skb using
-list_skb pointer, which was NULL, and caused kernel panic. Move the call
-to zero copy functions before using frags and nr_frags.
+However, this is not the only path to call v4l2_m2m_job_finish. Here
+is a invoking chain:
+v4l_streamon
+  ->v4l2_m2m_ioctl_streamon
+    ->v4l2_m2m_streamon
+      ->v4l2_m2m_try_schedule
+        ->v4l2_m2m_try_run
+          ->mtk_jpeg_dec_device_run
+            ->schedule_delayed_work(&jpeg->job_timeout_work...
+            ->error path goto dec_end
+            ->v4l2_m2m_job_finish
 
-Fixes: bf5c25d60861 ("skbuff: in skb_segment, call zerocopy functions once per nskb")
-Signed-off-by: Mohamed Khalfella <mkhalfella@purestorage.com>
-Reported-by: Amit Goyal <agoyal@purestorage.com>
-Cc: stable@vger.kernel.org
----
- net/core/skbuff.c | 34 ++++++++++++++++++++--------------
- 1 file changed, 20 insertions(+), 14 deletions(-)
+In some specific situation, it starts the worker and also calls
+v4l2_m2m_job_finish, which might
+make v4l2_m2m_cancel_job continues.
 
-diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-index a298992060e6..74a8829a6b59 100644
---- a/net/core/skbuff.c
-+++ b/net/core/skbuff.c
-@@ -4354,21 +4354,20 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 	struct sk_buff *segs = NULL;
- 	struct sk_buff *tail = NULL;
- 	struct sk_buff *list_skb = skb_shinfo(head_skb)->frag_list;
--	skb_frag_t *frag = skb_shinfo(head_skb)->frags;
- 	unsigned int mss = skb_shinfo(head_skb)->gso_size;
- 	unsigned int doffset = head_skb->data - skb_mac_header(head_skb);
--	struct sk_buff *frag_skb = head_skb;
- 	unsigned int offset = doffset;
- 	unsigned int tnl_hlen = skb_tnl_header_len(head_skb);
- 	unsigned int partial_segs = 0;
- 	unsigned int headroom;
- 	unsigned int len = head_skb->len;
-+	struct sk_buff *frag_skb;
-+	skb_frag_t *frag;
- 	__be16 proto;
- 	bool csum, sg;
--	int nfrags = skb_shinfo(head_skb)->nr_frags;
- 	int err = -ENOMEM;
- 	int i = 0;
--	int pos;
-+	int nfrags, pos;
- 
- 	if ((skb_shinfo(head_skb)->gso_type & SKB_GSO_DODGY) &&
- 	    mss != GSO_BY_FRAGS && mss != skb_headlen(head_skb)) {
-@@ -4445,6 +4444,13 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 	headroom = skb_headroom(head_skb);
- 	pos = skb_headlen(head_skb);
- 
-+	if (skb_orphan_frags(head_skb, GFP_ATOMIC))
-+		return ERR_PTR(-ENOMEM);
-+
-+	nfrags = skb_shinfo(head_skb)->nr_frags;
-+	frag = skb_shinfo(head_skb)->frags;
-+	frag_skb = head_skb;
-+
- 	do {
- 		struct sk_buff *nskb;
- 		skb_frag_t *nskb_frag;
-@@ -4465,6 +4471,10 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 		    (skb_headlen(list_skb) == len || sg)) {
- 			BUG_ON(skb_headlen(list_skb) > len);
- 
-+			nskb = skb_clone(list_skb, GFP_ATOMIC);
-+			if (unlikely(!nskb))
-+				goto err;
-+
- 			i = 0;
- 			nfrags = skb_shinfo(list_skb)->nr_frags;
- 			frag = skb_shinfo(list_skb)->frags;
-@@ -4483,12 +4493,8 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 				frag++;
- 			}
- 
--			nskb = skb_clone(list_skb, GFP_ATOMIC);
- 			list_skb = list_skb->next;
- 
--			if (unlikely(!nskb))
--				goto err;
--
- 			if (unlikely(pskb_trim(nskb, len))) {
- 				kfree_skb(nskb);
- 				goto err;
-@@ -4564,12 +4570,16 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 		skb_shinfo(nskb)->flags |= skb_shinfo(head_skb)->flags &
- 					   SKBFL_SHARED_FRAG;
- 
--		if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
--		    skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
-+		if (skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
- 			goto err;
- 
- 		while (pos < offset + len) {
- 			if (i >= nfrags) {
-+				if (skb_orphan_frags(list_skb, GFP_ATOMIC) ||
-+				    skb_zerocopy_clone(nskb, list_skb,
-+						       GFP_ATOMIC))
-+					goto err;
-+
- 				i = 0;
- 				nfrags = skb_shinfo(list_skb)->nr_frags;
- 				frag = skb_shinfo(list_skb)->frags;
-@@ -4583,10 +4593,6 @@ struct sk_buff *skb_segment(struct sk_buff *head_skb,
- 					i--;
- 					frag--;
- 				}
--				if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
--				    skb_zerocopy_clone(nskb, frag_skb,
--						       GFP_ATOMIC))
--					goto err;
- 
- 				list_skb = list_skb->next;
- 			}
--- 
-2.17.1
+> The interrupt handler cancels job_timeout_work, you shouldn't need to
+> flush the work.
 
+It will, but as I said, there might be an early invocation chain to
+start the work.(Not very sure)
+
+>
+> Technically, interrupt handler may race with job_timeout_work, but the
+> timeout is set to 1 second and in practice should be difficult to
+> trigger the race. The interrupt handler needs to be threaded, it should
+> use cancel_delayed_work_sync() and check the return value of this functio=
+n.
+>
+
+Yes, it's better to use cancel_delayed_work_sync here.
+
+> >>
+> >> You shouldn't be able to remove driver module while it has active/open=
+ed
+> >> v4l contexts. If you can do that, then this is yours bug that needs to
+> >> be fixed.
+> >>
+> >> In addition to this all, the job_timeout_work is initialized only for
+> >> the single-core JPEG device. I'd expect this patch should crash
+> >> multi-core JPEG devices.
+> >>
+> >
+> > I think that's true. As I'm not familiar with the code here. Could you
+> > please give me some advice about the patch?
+>
+> We'll need to understand why v4l2_m2m_ctx_release() doesn't work as
+> expected before thinking about the patch.
+>
+> --
+> Best regards,
+> Dmitry
+>
