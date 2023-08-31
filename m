@@ -2,244 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EE678E71E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:22:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BDBA78E729
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239173AbjHaHWI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:22:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44020 "EHLO
+        id S243594AbjHaH0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230455AbjHaHWG (ORCPT
+        with ESMTP id S234180AbjHaH0A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:22:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC3F1A3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:22:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693466523; x=1725002523;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=4wer6v6mJCcyvDaQedevv0Y3ICKv0dvwH5/s2/0rEW4=;
-  b=TBdxc82J3n4hvrU3vbzLxBUfh+b3m19uZiOIM0d7BLuQVCf1e/9uQUah
-   /gymiELhG0eApQ/nh8tRB1bDeyQtJx/cwjffQOfxM0zRxxISnVOjU58WJ
-   EpQw3jV33BWOD58VjF70khQqkTwyEX1HDHALMYCE0MQnnub+FdWTSoIzv
-   i8WwK0EBrDFaI+yrB2/I2M11e2I+NeED1VCpAfbNkd5hjIFx2yWp8WiAD
-   xOLSIm9VIYBDYA95wLOG9CIkvKF4w8kyJyueY7B1qC5tMA+5DvTXcVMBh
-   ahMjPSqm7eZH0yxHvAR85d59aoGhRpQzDQiZaQSvDzxxl1VJEEajFMYn4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="360831495"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="360831495"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 00:22:02 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="986093986"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="986093986"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.87]) ([10.254.210.87])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 00:21:59 -0700
-Message-ID: <0e4ed22f-19cf-a92e-1117-6587fbe6e1e7@linux.intel.com>
-Date:   Thu, 31 Aug 2023 15:21:57 +0800
+        Thu, 31 Aug 2023 03:26:00 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC10E1A3;
+        Thu, 31 Aug 2023 00:25:55 -0700 (PDT)
+Received: from localhost.localdomain (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 54CB486553;
+        Thu, 31 Aug 2023 09:25:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1693466753;
+        bh=LmJ+R00fIDY5vMQf7vbplFSGlX0EieN90/WMaosRzto=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j+OdS2AxdImgzU/sMZ3nedL8Zb5DiFOLfkqKu61OJDxbnPR87cHuV6I19F5GDOBpQ
+         msAkiPG/erduSLLCD45+aHPkYkQHXznkoGcAKz+U3YpWQL2hMQR6ZepM83Zge3Dbdk
+         T5QXye8kXzPjgRp4rT5dxuPosGlAvPK3pTHjiyARaAt01VuOYUWjUue6FFcuOUug5r
+         /9PKLBOyIuXi2LWLpFZ1BO0ggODUDwGQ9uCQ97iKVOsNxu1G0Aeq+j2yjqv4XvjIZM
+         mComkNEXYvziU1jfivgOPrDWiJ5jmqRZcUKzKTWPl5ANbKV6rxPTBeW4cTQVKR9Ef6
+         /b6zoCT6B6Mpg==
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Russell King <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukasz Majewski <lukma@denx.de>
+Subject: [PATCH v3] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
+Date:   Thu, 31 Aug 2023 09:25:27 +0200
+Message-Id: <20230831072527.537839-1-lukma@denx.de>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] iommu: Support mm PASID 1:n with sva domains
-Content-Language: en-US
-To:     Tina Zhang <tina.zhang@intel.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Michael Shavit <mshavit@google.com>
-References: <20230827084401.819852-1-tina.zhang@intel.com>
- <20230827084401.819852-5-tina.zhang@intel.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <20230827084401.819852-5-tina.zhang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/27 16:44, Tina Zhang wrote:
-> Each mm bound to devices gets a PASID and corresponding sva domains
-> allocated in iommu_sva_bind_device(), which are referenced by iommu_mm
-> field of the mm. The PASID is released in __mmdrop(), while a sva domain
-> is released when no one is using it (the reference count is decremented
-> in iommu_sva_unbind_device()).
-> 
-> Since the required info of PASID and sva domains is kept in struct
-> iommu_mm_data of a mm, use mm->iommu_mm field instead of the old pasid
-> field in mm struct. The sva domain list is protected by iommu_sva_lock.
-> 
-> Besides, this patch removes mm_pasid_init(), as with the introduced
-> iommu_mm structure, initializing mm pasid in mm_init() is unnecessary.
-> 
-> Signed-off-by: Tina Zhang <tina.zhang@intel.com>
-> ---
->   drivers/iommu/iommu-sva.c | 38 +++++++++++++++++++++++++-------------
->   include/linux/iommu.h     | 10 +++-------
->   kernel/fork.c             |  1 -
->   3 files changed, 28 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/iommu/iommu-sva.c b/drivers/iommu/iommu-sva.c
-> index 0a4a1ed40814c..35366f51ad27d 100644
-> --- a/drivers/iommu/iommu-sva.c
-> +++ b/drivers/iommu/iommu-sva.c
-> @@ -15,6 +15,7 @@ static DEFINE_IDA(iommu_global_pasid_ida);
->   /* Allocate a PASID for the mm within range (inclusive) */
->   static int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t max)
->   {
-> +	struct iommu_mm_data *iommu_mm = NULL;
+The KSZ9477 errata points out (in 'Module 4') the link up/down problems
+when EEE (Energy Efficient Ethernet) is enabled in the device to which
+the KSZ9477 tries to auto negotiate.
 
-No need to initialize this variable.
+The suggested workaround is to clear advertisement of EEE for PHYs in
+this chip driver.
 
->   	int ret = 0;
->   
->   	if (min == IOMMU_PASID_INVALID ||
-> @@ -33,11 +34,22 @@ static int iommu_sva_alloc_pasid(struct mm_struct *mm, ioasid_t min, ioasid_t ma
->   		goto out;
->   	}
->   
-> +	iommu_mm = kzalloc(sizeof(struct iommu_mm_data), GFP_KERNEL);
-> +	if (!iommu_mm) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
->   	ret = ida_alloc_range(&iommu_global_pasid_ida, min, max, GFP_KERNEL);
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		kfree(iommu_mm);
->   		goto out;
-> +	}
-> +
-> +	iommu_mm->pasid = ret;
-> +	mm->iommu_mm = iommu_mm;
-> +	INIT_LIST_HEAD(&mm->iommu_mm->sva_domains);
+To avoid regressions with other switch ICs the new MICREL_NO_EEE flag
+has been introduced.
 
-If you change the order of the two lines above, it will look more
-comfortable.
+Moreover, the in-register disablement of MMD_DEVICE_ID_EEE_ADV.MMD_EEE_ADV
+MMD register is removed, as this code is both; now executed too late
+(after previous rework of the PHY and DSA for KSZ switches) and not
+required as setting all members of eee_broken_modes bit field prevents
+the KSZ9477 from advertising EEE.
 
->   
-> -	mm->pasid = ret;
->   	ret = 0;
->   out:
->   	mutex_unlock(&iommu_sva_lock);
-> @@ -82,16 +94,12 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
->   
->   	mutex_lock(&iommu_sva_lock);
->   	/* Search for an existing domain. */
-> -	domain = iommu_get_domain_for_dev_pasid(dev, mm_get_pasid(mm),
-> -						IOMMU_DOMAIN_SVA);
-> -	if (IS_ERR(domain)) {
-> -		ret = PTR_ERR(domain);
-> -		goto out_unlock;
-> -	}
-> -
-> -	if (domain) {
-> -		domain->users++;
-> -		goto out;
-> +	list_for_each_entry(domain, &mm->iommu_mm->sva_domains, next) {
-> +		ret = iommu_attach_device_pasid(domain, dev, mm_get_pasid(mm));
-> +		if (!ret) {
-> +			domain->users++;
-> +			goto out;
-> +		}
->   	}
->   
->   	/* Allocate a new domain and set it on device pasid. */
-> @@ -105,6 +113,8 @@ struct iommu_sva *iommu_sva_bind_device(struct device *dev, struct mm_struct *mm
->   	if (ret)
->   		goto out_free_domain;
->   	domain->users = 1;
-> +	list_add(&domain->next, &mm->iommu_mm->sva_domains);
-> +
->   out:
->   	mutex_unlock(&iommu_sva_lock);
->   	handle->dev = dev;
-> @@ -137,8 +147,9 @@ void iommu_sva_unbind_device(struct iommu_sva *handle)
->   	struct device *dev = handle->dev;
->   
->   	mutex_lock(&iommu_sva_lock);
-> +	iommu_detach_device_pasid(domain, dev, pasid);
->   	if (--domain->users == 0) {
-> -		iommu_detach_device_pasid(domain, dev, pasid);
-> +		list_del(&domain->next);
->   		iommu_domain_free(domain);
->   	}
->   	mutex_unlock(&iommu_sva_lock);
-> @@ -218,4 +229,5 @@ void mm_pasid_drop(struct mm_struct *mm)
->   		return;
->   
->   	ida_free(&iommu_global_pasid_ida, mm_get_pasid(mm));
-> +	kfree(mm->iommu_mm);
->   }
-> diff --git a/include/linux/iommu.h b/include/linux/iommu.h
-> index 937f3abc26f2e..cfbd35ceb375f 100644
-> --- a/include/linux/iommu.h
-> +++ b/include/linux/iommu.h
-> @@ -109,6 +109,7 @@ struct iommu_domain {
->   		struct {	/* IOMMU_DOMAIN_SVA */
->   			struct mm_struct *mm;
->   			int users;
-> +			struct list_head next;
+Fixes: 69d3b36ca045 ("net: dsa: microchip: enable EEE support") (for KSZ9477).
 
-It looks better if you add a comment to describe how this list node is
-used and how the list is protected.
+Signed-off-by: Lukasz Majewski <lukma@denx.de>
 
->   		};
->   	};
->   };
-> @@ -1177,17 +1178,13 @@ static inline bool tegra_dev_iommu_get_stream_id(struct device *dev, u32 *stream
->   }
->   
->   #ifdef CONFIG_IOMMU_SVA
-> -static inline void mm_pasid_init(struct mm_struct *mm)
-> -{
-> -	mm->pasid = IOMMU_PASID_INVALID;
-> -}
->   static inline bool mm_valid_pasid(struct mm_struct *mm)
->   {
-> -	return mm->pasid != IOMMU_PASID_INVALID;
-> +	return mm->iommu_mm ? true : false;
->   }
->   static inline u32 mm_get_pasid(struct mm_struct *mm)
->   {
-> -	return mm->pasid;
-> +	return mm->iommu_mm ? mm->iommu_mm->pasid : IOMMU_PASID_INVALID;
->   }
->   static inline u32 mm_get_enqcmd_pasid(struct mm_struct *mm)
->   {
-> @@ -1213,7 +1210,6 @@ static inline u32 iommu_sva_get_pasid(struct iommu_sva *handle)
->   {
->   	return IOMMU_PASID_INVALID;
->   }
-> -static inline void mm_pasid_init(struct mm_struct *mm) {}
->   static inline bool mm_valid_pasid(struct mm_struct *mm) { return false; }
->   static inline u32 mm_get_pasid(struct mm_struct *mm)
->   {
-> diff --git a/kernel/fork.c b/kernel/fork.c
-> index d2e12b6d2b180..f06392dd1ca8a 100644
-> --- a/kernel/fork.c
-> +++ b/kernel/fork.c
-> @@ -1274,7 +1274,6 @@ static struct mm_struct *mm_init(struct mm_struct *mm, struct task_struct *p,
->   	mm_init_cpumask(mm);
->   	mm_init_aio(mm);
->   	mm_init_owner(mm, p);
-> -	mm_pasid_init(mm);
->   	RCU_INIT_POINTER(mm->exe_file, NULL);
->   	mmu_notifier_subscriptions_init(mm);
->   	init_tlb_flush_pending(mm);
+---
+Changes for v2:
+- Move this fix from clearing directly
+  MMD_DEVICE_ID_EEE_ADV.MMD_EEE_ADV MMD register in KSZ DSA switch
+  initialization to more generic solution in the micrel.c PHY driver
 
-This patch overall looks good to me. With above nits addressed,
+Changes for v3:
+- Drop the rename patch
+- Use MICREL_NO_EEE flag as suggested by Oleksij
+- Extend the ksz9477_config_init to avoid regression
+- Do not use the direct write to MMD 7.60 register - instead the
+  phydev->eee_broken_modes is used
+---
+ drivers/net/dsa/microchip/ksz_common.c | 16 +++++++++++++++-
+ drivers/net/phy/micrel.c               |  9 ++++++---
+ include/linux/micrel_phy.h             |  1 +
+ 3 files changed, 22 insertions(+), 4 deletions(-)
 
-Reviewed-by: Lu Baolu <baolu.lu@linux.intel.com>
+diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+index 6c0623f88654..d9d843efd111 100644
+--- a/drivers/net/dsa/microchip/ksz_common.c
++++ b/drivers/net/dsa/microchip/ksz_common.c
+@@ -2337,13 +2337,27 @@ static u32 ksz_get_phy_flags(struct dsa_switch *ds, int port)
+ {
+ 	struct ksz_device *dev = ds->priv;
+ 
+-	if (dev->chip_id == KSZ8830_CHIP_ID) {
++	switch (dev->chip_id) {
++	case KSZ8830_CHIP_ID:
+ 		/* Silicon Errata Sheet (DS80000830A):
+ 		 * Port 1 does not work with LinkMD Cable-Testing.
+ 		 * Port 1 does not respond to received PAUSE control frames.
+ 		 */
+ 		if (!port)
+ 			return MICREL_KSZ8_P1_ERRATA;
++		break;
++	case KSZ9477_CHIP_ID:
++		/* KSZ9477 Errata DS80000754C
++		 *
++		 * Module 4: Energy Efficient Ethernet (EEE) feature select must
++		 * be manually disabled
++		 *   The EEE feature is enabled by default, but it is not fully
++		 *   operational. It must be manually disabled through register
++		 *   controls. If not disabled, the PHY ports can auto-negotiate
++		 *   to enable EEE, and this feature can cause link drops when
++		 *   linked to another device supporting EEE.
++		 */
++		return MICREL_NO_EEE;
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
+index b6d7981b2d1e..927d3d54658e 100644
+--- a/drivers/net/phy/micrel.c
++++ b/drivers/net/phy/micrel.c
+@@ -1800,9 +1800,6 @@ static const struct ksz9477_errata_write ksz9477_errata_writes[] = {
+ 	/* Transmit waveform amplitude can be improved (1000BASE-T, 100BASE-TX, 10BASE-Te) */
+ 	{0x1c, 0x04, 0x00d0},
+ 
+-	/* Energy Efficient Ethernet (EEE) feature select must be manually disabled */
+-	{0x07, 0x3c, 0x0000},
+-
+ 	/* Register settings are required to meet data sheet supply current specifications */
+ 	{0x1c, 0x13, 0x6eff},
+ 	{0x1c, 0x14, 0xe6ff},
+@@ -1847,6 +1844,12 @@ static int ksz9477_config_init(struct phy_device *phydev)
+ 			return err;
+ 	}
+ 
++	/* According to KSZ9477 Errata DS80000754C (Module 4) all EEE modes
++	 * in this switch shall be regarded as broken.
++	 */
++	if (phydev->dev_flags & MICREL_NO_EEE)
++		phydev->eee_broken_modes = -1;
++
+ 	err = genphy_restart_aneg(phydev);
+ 	if (err)
+ 		return err;
+diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
+index 8bef1ab62bba..eed474fc7308 100644
+--- a/include/linux/micrel_phy.h
++++ b/include/linux/micrel_phy.h
+@@ -44,6 +44,7 @@
+ #define MICREL_PHY_50MHZ_CLK	0x00000001
+ #define MICREL_PHY_FXEN		0x00000002
+ #define MICREL_KSZ8_P1_ERRATA	0x00000003
++#define MICREL_NO_EEE	0x00000004
+ 
+ #define MICREL_KSZ9021_EXTREG_CTRL	0xB
+ #define MICREL_KSZ9021_EXTREG_DATA_WRITE	0xC
+-- 
+2.20.1
 
-Best regards,
-baolu
