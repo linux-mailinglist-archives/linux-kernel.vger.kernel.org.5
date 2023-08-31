@@ -2,155 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD62378EE3C
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06D278EE50
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346351AbjHaNMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56674 "EHLO
+        id S243018AbjHaNQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:16:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346334AbjHaNMq (ORCPT
+        with ESMTP id S234400AbjHaNQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:12:46 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15AE0E45
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:12:43 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-40a47e8e38dso266381cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:12:43 -0700 (PDT)
+        Thu, 31 Aug 2023 09:16:09 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CE24CF3;
+        Thu, 31 Aug 2023 06:16:06 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcc4347d2dso14338521fa.0;
+        Thu, 31 Aug 2023 06:16:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693487562; x=1694092362; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693487764; x=1694092564; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T/huV5o30ehyBDkZTLAeL6fF4iNyMfdkbrHpT0k6p7w=;
-        b=JEEGdW7Df4+eZS9q9mioz6hTbBnhFF5+hnHvlo71vwmhpxksSXInE3keIGmjrWY+nE
-         ubrkQdXYSu9v2UP2S6H0WF07JnrASkJwgcky9bibSb7OH6lHCXRlNezqZUlpEHSceW0k
-         ebJ0fzZixK5Z80T6mcq0nykOodLliLYOArDqkL0Bv8pg3/QBgTYup1bw+3DlgX4pvHD1
-         uuQcvHYhaGo+286BA9yWWsHx2miI/Yajb/XmtEIbe70L1G6i0I1Dg8b3Cn52lTzd5i2s
-         8Ad8a3nfXbtbA5alABNejlvwlUu9iRM5M/LIwru1GNlmFogjNj/xwgtIN40HZsyemLPH
-         Ea5A==
+        bh=ElGTcVHLy75b73RkQix7jGCTm6pcHFnJzehv0DUiBQU=;
+        b=lrx7zCc+nvlE/uQBwq4PIAioFt3TJF65Arn4hJ6XfeQofE7gmmeaBT2BeE0ru6rF8q
+         1JHf148gb8DcyrmDo7OeXmrapPgRGrE5Eji/CbGI1aRYFDwyCdp45A5WO9MiVD0Nn3pv
+         gykk/d4cY5nw2QR8k8eU5NJjhCXSJGAE7BQwWbh1epNxBBfa4wujIGd4bzBT7uZdk1d6
+         YVu1Ls/VR7cqLUEF3fAj4pifAp8/vHS5s4xnsv/u6nyUJ3OGV6Rfv2BCqc3d7B1XYXAO
+         JNRHzH7q9Nz9Eez5+2nVTOdH4mkKvPj9hWSh8/tbdmKe/nLoAzlAERL4oznPX77DAjhq
+         miHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693487562; x=1694092362;
+        d=1e100.net; s=20221208; t=1693487764; x=1694092564;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=T/huV5o30ehyBDkZTLAeL6fF4iNyMfdkbrHpT0k6p7w=;
-        b=LwAiN8ZbQEjUwaUj5uLcgDuJWfiOj+o4Tr9dzOHHEVZLUnj3FHzU5ngrrHo764hOpY
-         PdCDscWm0YgDtFRXF+iqPq0EwJJCmRY2dw4SwXFh5pyBf9CgrXAFsdy1XlyIxqoxaAKO
-         4dEPlFXzExExtSCFpm0SubLZ3ZEH9vuiKUGQOx8j3VLZpW7E+7hDn3HfVEKs/jsAKnhZ
-         Kct70fcW0qWEaJAn9qOVTO7kHadrjGxqqDqomTDfvDSHn+3GXvCcA+TJPxTsWIqIxbD/
-         OE/Fl3qxxnemlgEShSgDYnMdijwZwXIQseCynmokzrvlrxuf2zQNxGf+OunJExaNQQx7
-         2P5A==
-X-Gm-Message-State: AOJu0YxktvuC4f60Q8C+Asss+lSH2NzE2ncJv+W0bWAGFTX00g65Hlal
-        0PGnYVa7YoY2vsJ9jIcXxrAbjOHuUj6v2BXKf+THJw==
-X-Google-Smtp-Source: AGHT+IH2mkhQfIcjyTWUqv498TnaRV47GCJhQNbYRwFZwHLARHlgpCh8NdEpndJYLzEfOEy2RNlPQC1YpcWg7JoGIYA=
-X-Received: by 2002:ac8:7e83:0:b0:403:ac9c:ac2f with SMTP id
- w3-20020ac87e83000000b00403ac9cac2fmr189216qtj.17.1693487561914; Thu, 31 Aug
- 2023 06:12:41 -0700 (PDT)
+        bh=ElGTcVHLy75b73RkQix7jGCTm6pcHFnJzehv0DUiBQU=;
+        b=XPKTE6/MPvaDs4kxo8DElxqAhKu77ovozsSJGHRgVDfID0JC+fhJI/Nx1TYjk8Jy0b
+         fMOfH7vZwub5Km0U1oZCwPnV6yXM7DqUgjeVf6YR35qNuG639g0Bnc9Y/s8u1SXxp41h
+         4nyWnpyCeVXbBamhhFfYacBnfVDKwZEEXO6YhXOMIr8kboFWYWCJzRCtj+Ouffj2F5wn
+         uQnqbe+hysGSuhTpkVruSB20mREy1pTlusU87rcD/WWzIsU062x6qQ02/0o1OYRVsC8k
+         z4Skqs5fhwWM40R5TG1h5oCqxiOgTMjXVgTc0GXAqOv5BZoHx78fi7awTMqM5ojEYoPp
+         wvwQ==
+X-Gm-Message-State: AOJu0YxUN1uR3+lLJokMbaMJOf15/X9jFi/HKKc13y5d1MjauZ1GBEus
+        azAycywBaGmbN5icxACa3dE0wvwnuBaRTesacZc=
+X-Google-Smtp-Source: AGHT+IFIidBA270cNOZse7F227U3vdMwLmh2tRMnRoiOic7ci1qpx4vgWbFlRsY/Ps5hpfUmi/KYXIK4pYeqSY8DBoc=
+X-Received: by 2002:a2e:6816:0:b0:2bd:1f8d:e89d with SMTP id
+ c22-20020a2e6816000000b002bd1f8de89dmr4526357lja.3.1693487763836; Thu, 31 Aug
+ 2023 06:16:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230830112600.4483-1-hdanton@sina.com> <f607a7d5-8075-f321-e3c0-963993433b14@I-love.SAKURA.ne.jp>
- <20230831114108.4744-1-hdanton@sina.com>
-In-Reply-To: <20230831114108.4744-1-hdanton@sina.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 31 Aug 2023 15:12:30 +0200
-Message-ID: <CANn89iLCCGsP7SFn9HKpvnKu96Td4KD08xf7aGtiYgZnkjaL=w@mail.gmail.com>
-Subject: Re: selftests: net: pmtu.sh: Unable to handle kernel paging request
- at virtual address
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-        Netdev <netdev@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <mhng-ac1c6e6a-8f27-4539-83bb-6c10ff4d264e@palmer-ri-x1c9> <9e31c290-f1f0-ecfd-c68b-51f8d706db2c@iogearbox.net>
+In-Reply-To: <9e31c290-f1f0-ecfd-c68b-51f8d706db2c@iogearbox.net>
+From:   Puranjay Mohan <puranjay12@gmail.com>
+Date:   Thu, 31 Aug 2023 15:15:52 +0200
+Message-ID: <CANk7y0i1zGRQRa+cD6gbBSx9pSy1hor=4oUzXNBfbrObvykqQw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v3 0/3] bpf, riscv: use BPF prog pack allocator
+ in BPF JIT
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, bjorn@kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, pulehui@huawei.com,
+        Conor Dooley <conor.dooley@microchip.com>, ast@kernel.org,
+        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yhs@fb.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 2:17=E2=80=AFPM Hillf Danton <hdanton@sina.com> wro=
-te:
+On Thu, Aug 31, 2023 at 12:48=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.=
+net> wrote:
 >
-> On Wed, 30 Aug 2023 21:44:57 +0900 Tetsuo Handa <penguin-kernel@I-love.SA=
-KURA.ne.jp>
-> >On 2023/08/30 20:26, Hillf Danton wrote:
-> >>> <4>[  399.014716] Call trace:
-> >>> <4>[  399.015702]  percpu_counter_add_batch+0x28/0xd0
-> >>> <4>[  399.016399]  dst_destroy+0x44/0x1e4
-> >>> <4>[  399.016681]  dst_destroy_rcu+0x14/0x20
-> >>> <4>[  399.017009]  rcu_core+0x2d0/0x5e0
-> >>> <4>[  399.017311]  rcu_core_si+0x10/0x1c
-> >>> <4>[  399.017609]  __do_softirq+0xd4/0x23c
-> >>> <4>[  399.017991]  ____do_softirq+0x10/0x1c
-> >>> <4>[  399.018320]  call_on_irq_stack+0x24/0x4c
-> >>> <4>[  399.018723]  do_softirq_own_stack+0x1c/0x28
-> >>> <4>[  399.022639]  __irq_exit_rcu+0x6c/0xcc
-> >>> <4>[  399.023434]  irq_exit_rcu+0x10/0x1c
-> >>> <4>[  399.023962]  el1_interrupt+0x8c/0xc0
-> >>> <4>[  399.024810]  el1h_64_irq_handler+0x18/0x24
-> >>> <4>[  399.025324]  el1h_64_irq+0x64/0x68
-> >>> <4>[  399.025612]  _raw_spin_lock_bh+0x0/0x6c
-> >>> <4>[  399.026102]  cleanup_net+0x280/0x45c
-> >>> <4>[  399.026403]  process_one_work+0x1d4/0x310
-> >>> <4>[  399.027140]  worker_thread+0x248/0x470
-> >>> <4>[  399.027621]  kthread+0xfc/0x184
-> >>> <4>[  399.028068]  ret_from_fork+0x10/0x20
+> On 8/30/23 3:54 PM, Palmer Dabbelt wrote:
+> > On Wed, 30 Aug 2023 01:18:46 PDT (-0700), daniel@iogearbox.net wrote:
+> >> On 8/29/23 12:06 PM, Bj=C3=B6rn T=C3=B6pel wrote:
+> >>> Puranjay Mohan <puranjay12@gmail.com> writes:
+> >>>
+> >>>> Changes in v2 -> v3:
+> >>>> 1. Fix maximum width of code in patches from 80 to 100. [All patches=
+]
+> >>>> 2. Add checks for ctx->ro_insns =3D=3D NULL. [Patch 3]
+> >>>> 3. Fix check for edge condition where amount of text to set > 2 * pa=
+gesize
+> >>>>     [Patch 1 and 2]
+> >>>> 4. Add reviewed-by in patches.
+> >>>> 5. Adding results of selftest here:
+> >>>>     Using the command: ./test_progs on qemu
+> >>>>     Without the series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAI=
+LED
+> >>>>     With this series: Summary: 336/3162 PASSED, 56 SKIPPED, 90 FAILE=
+D
+> >>>>
+> >>>> Changes in v1 -> v2:
+> >>>> 1. Implement a new function patch_text_set_nosync() to be used in bp=
+f_arch_text_invalidate().
+> >>>>     The implementation in v1 called patch_text_nosync() in a loop an=
+d it was bad as it would
+> >>>>     call flush_icache_range() for every word making it really slow. =
+This was found by running
+> >>>>     the test_tag selftest which would take forever to complete.
+> >>>>
+> >>>> Here is some data to prove the V2 fixes the problem:
+> >>>>
+> >>>> Without this series:
+> >>>> root@rv-selftester:~/src/kselftest/bpf# time ./test_tag
+> >>>> test_tag: OK (40945 tests)
+> >>>>
+> >>>> real    7m47.562s
+> >>>> user    0m24.145s
+> >>>> sys     6m37.064s
+> >>>>
+> >>>> With this series applied:
+> >>>> root@rv-selftester:~/src/selftest/bpf# time ./test_tag
+> >>>> test_tag: OK (40945 tests)
+> >>>>
+> >>>> real    7m29.472s
+> >>>> user    0m25.865s
+> >>>> sys     6m18.401s
+> >>>>
+> >>>> BPF programs currently consume a page each on RISCV. For systems wit=
+h many BPF
+> >>>> programs, this adds significant pressure to instruction TLB. High iT=
+LB pressure
+> >>>> usually causes slow down for the whole system.
+> >>>>
+> >>>> Song Liu introduced the BPF prog pack allocator[1] to mitigate the a=
+bove issue.
+> >>>> It packs multiple BPF programs into a single huge page. It is curren=
+tly only
+> >>>> enabled for the x86_64 BPF JIT.
+> >>>>
+> >>>> I enabled this allocator on the ARM64 BPF JIT[2]. It is being review=
+ed now.
+> >>>>
+> >>>> This patch series enables the BPF prog pack allocator for the RISCV =
+BPF JIT.
+> >>>> This series needs a patch[3] from the ARM64 series to work.
+> >>>>
+> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >>>> Performance Analysis of prog pack allocator on RISCV64
+> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> >>>>
+> >>>> Test setup:
+> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >>>>
+> >>>> Host machine: Debian GNU/Linux 11 (bullseye)
+> >>>> Qemu Version: QEMU emulator version 8.0.3 (Debian 1:8.0.3+dfsg-1)
+> >>>> u-boot-qemu Version: 2023.07+dfsg-1
+> >>>> opensbi Version: 1.3-1
+> >>>>
+> >>>> To test the performance of the BPF prog pack allocator on RV, a stre=
+sser
+> >>>> tool[4] linked below was built. This tool loads 8 BPF programs on th=
+e system and
+> >>>> triggers 5 of them in an infinite loop by doing system calls.
+> >>>>
+> >>>> The runner script starts 20 instances of the above which loads 8*20=
+=3D160 BPF
+> >>>> programs on the system, 5*20=3D100 of which are being constantly tri=
+ggered.
+> >>>> The script is passed a command which would be run in the above envir=
+onment.
+> >>>>
+> >>>> The script was run with following perf command:
+> >>>> ./run.sh "perf stat -a \
+> >>>>          -e iTLB-load-misses \
+> >>>>          -e dTLB-load-misses  \
+> >>>>          -e dTLB-store-misses \
+> >>>>          -e instructions \
+> >>>>          --timeout 60000"
+> >>>>
+> >>>> The output of the above command is discussed below before and after =
+enabling the
+> >>>> BPF prog pack allocator.
+> >>>>
+> >>>> The tests were run on qemu-system-riscv64 with 8 cpus, 16G memory. T=
+he rootfs
+> >>>> was created using Bjorn's riscv-cross-builder[5] docker container li=
+nked below.
+> >>>>
+> >>>> Results
+> >>>> =3D=3D=3D=3D=3D=3D=3D
+> >>>>
+> >>>> Before enabling prog pack allocator:
+> >>>> ------------------------------------
+> >>>>
+> >>>> Performance counter stats for 'system wide':
+> >>>>
+> >>>>             4939048      iTLB-load-misses
+> >>>>             5468689      dTLB-load-misses
+> >>>>              465234      dTLB-store-misses
+> >>>>       1441082097998      instructions
+> >>>>
+> >>>>        60.045791200 seconds time elapsed
+> >>>>
+> >>>> After enabling prog pack allocator:
+> >>>> -----------------------------------
+> >>>>
+> >>>> Performance counter stats for 'system wide':
+> >>>>
+> >>>>             3430035      iTLB-load-misses
+> >>>>             5008745      dTLB-load-misses
+> >>>>              409944      dTLB-store-misses
+> >>>>       1441535637988      instructions
+> >>>>
+> >>>>        60.046296600 seconds time elapsed
+> >>>>
+> >>>> Improvements in metrics
+> >>>> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> >>>>
+> >>>> It was expected that the iTLB-load-misses would decrease as now a si=
+ngle huge
+> >>>> page is used to keep all the BPF programs compared to a single page =
+for each
+> >>>> program earlier.
+> >>>>
+> >>>> --------------------------------------------
+> >>>> The improvement in iTLB-load-misses: -30.5 %
+> >>>> --------------------------------------------
+> >>>>
+> >>>> I repeated this expriment more than 100 times in different setups an=
+d the
+> >>>> improvement was always greater than 30%.
+> >>>>
+> >>>> This patch series is boot tested on the Starfive VisionFive 2 board[=
+6].
+> >>>> The performance analysis was not done on the board because it doesn'=
+t
+> >>>> expose iTLB-load-misses, etc. The stresser program was run on the bo=
+ard to test
+> >>>> the loading and unloading of BPF programs
+> >>>>
+> >>>> [1] https://lore.kernel.org/bpf/20220204185742.271030-1-song@kernel.=
+org/
+> >>>> [2] https://lore.kernel.org/all/20230626085811.3192402-1-puranjay12@=
+gmail.com/
+> >>>> [3] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@=
+gmail.com/
+> >>>> [4] https://github.com/puranjaymohan/BPF-Allocator-Bench
+> >>>> [5] https://github.com/bjoto/riscv-cross-builder
+> >>>> [6] https://www.starfivetech.com/en/site/boards
+> >>>>
+> >>>> Puranjay Mohan (3):
+> >>>>    riscv: extend patch_text_nosync() for multiple pages
+> >>>>    riscv: implement a memset like function for text
+> >>>>    bpf, riscv: use prog pack allocator in the BPF JIT
+> >>>
+> >>> Thank you! For the series:
+> >>>
+> >>> Acked-by: Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org>
+> >>> Tested-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
+> >>>
+> >>> @Alexei @Daniel This series depends on a core BPF patch from the Arm
+> >>>                  series [3].
+> >>>
+> >>> @Palmer LMK if you have any concerns taking the RISC-V text patching
+> >>>          stuff via the BPF tree.
 > >>
-> >> static void cleanup_net(struct work_struct *work)
-> >> {
-> >>      ...
-> >>
-> >>      synchronize_rcu();
-> >>
-> >>      /* Run all of the network namespace exit methods */
-> >>      list_for_each_entry_reverse(ops, &pernet_list, list)
-> >>              ops_exit_list(ops, &net_exit_list);
-> >>      ...
-> >>
-> >> Why did the RCU sync above fail to work in this report, Eric?
+> >> Palmer, did the riscv PR already go to Linus?
 > >
-> > Why do you assume that synchronize_rcu() failed to work?
+> > Not yet, I usually send on Friday mornings -- and I also generally send=
+ two, as there's some stragglers/fixes for the second week.  I'm fine takin=
+g it (Bjorn just poked me), can someone provide a base commit? Bjorn says i=
+t depends on something in Linus' tree, so I'll just pick it up as a straggl=
+er for next week.
 >
-> In the ipv6 pernet_operations [1] for instance, dst_entries_destroy() is
-> invoked after RCU sync to ensure that nobody is using the exiting net,
-> but this report shows that protection falls apart.
+> Okay, sgtm.
+>
+> > Also, do you mind sending an Ack?
+>
+> Bj=C3=B6rn / Puranjay, just to clarify since the arm64 series did not lan=
+d, you are referring
+> to this one as a dependency [0], right? Meaning, you'd route [0] + this s=
+eries via riscv
+> PR to Linus then during this merge win.
+>
+> If yes, could one of you send the complete 4-patch series with the prior =
+Acks from [0] + this
+> series collected to both bpf+riscv list (with the small request to extend=
+ the commit desc
+> in [0] a bit to better document implications of the change itself for oth=
+er JITs)? After a
+> final look and if BPF CI goes through we can then ack as well and unblock=
+ the routing.
+>
+> Thanks,
+> Daniel
+>
+>    [0] https://lore.kernel.org/all/20230626085811.3192402-2-puranjay12@gm=
+ail.com/
 
-Because synchronize_rcu() is not the same than rcu_barrier()
+Hi Daniel,
 
-The dst_entries_add()/ percpu_counter_add_batch() call should not
-happen after an rcu grace period.
+I have sent the v4[0] of this with the core patch included.
 
-Something like this (untested) patch
+[0]https://lore.kernel.org/all/20230831131229.497941-1-puranjay12@gmail.com=
+/
 
-diff --git a/net/core/dst.c b/net/core/dst.c
-index 980e2fd2f013b3e50cc47ed0666ee5f24f50444b..f02fdd1da6066a4d56c2a0aa803=
-8eca76d62f8bd
-100644
---- a/net/core/dst.c
-+++ b/net/core/dst.c
-@@ -163,8 +163,13 @@ EXPORT_SYMBOL(dst_dev_put);
-
- void dst_release(struct dst_entry *dst)
- {
--       if (dst && rcuref_put(&dst->__rcuref))
-+       if (dst && rcuref_put(&dst->__rcuref)) {
-+               if (!(dst->flags & DST_NOCOUNT)) {
-+                       dst->flags |=3D DST_NOCOUNT;
-+                       dst_entries_add(dst->ops, -1);
-+               }
-                call_rcu_hurry(&dst->rcu_head, dst_destroy_rcu);
-+       }
- }
- EXPORT_SYMBOL(dst_release);
-
-It is not even clear why we are still counting dst these days.
-We removed the ipv4 route cache a long time ago, and ipv6 got a
-similar treatment.
+Thanks.
+Puranjay
