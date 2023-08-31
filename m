@@ -2,106 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A1E778E8F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA26C78E8F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233624AbjHaJBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
+        id S239224AbjHaJCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:02:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230141AbjHaJBR (ORCPT
+        with ESMTP id S230141AbjHaJCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:01:17 -0400
-Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A9F5CE6
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 02:01:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=inria.fr; s=dc;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=sVn5DkV6XBahYJlGgHVxn87Ah3hspPLN913g7w+bU/A=;
-  b=QmyxZR7yHgsYAIVV1d9eCNMC82DB/AxldjVnAlGUdMiHzZ8gdtijdU41
-   xfsIpjjut+G8Gs8X+dcOT+wK56vd8es4B3gG93heSqpEC+63UqEBtY2Aa
-   9em8swmrerKEOQRrarSXAEVCm6IHq8gIhCrc9ZaqoOnit3UMS2zNMyYEY
-   c=;
-Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
-X-IronPort-AV: E=Sophos;i="6.02,216,1688421600"; 
-   d="scan'208";a="123636226"
-Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 11:01:02 +0200
-Date:   Thu, 31 Aug 2023 11:01:02 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-cc:     linux-kernel@vger.kernel.org, oe-kbuild-all@lists.linux.dev
-Subject: [paulmck-rcu:dev.2023.08.22a 63/69] kernel/locking/locktorture.c:294:20-23:
- ERROR: t is NULL but dereferenced. (fwd)
-Message-ID: <e24280d0-dfbb-f4f-64aa-9f50268450b@inria.fr>
+        Thu, 31 Aug 2023 05:02:22 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 046AECE6;
+        Thu, 31 Aug 2023 02:02:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1693472525; x=1694077325; i=deller@gmx.de;
+ bh=Z3/WXbzpGh0X1vA04EAjzYhScxnI0aPgGENMGpZ8MkI=;
+ h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+ b=CXcX2uWw42XHJnL9r1sYGIzWr6J53lUoCXj87oAq1eFKvTf0Dcej6EdOT78lTHs9OM8RHJz
+ EL4BimG2n+PZSLIC2J1o0SyRX0cw9CPzVanCf+CjDPzAERcX4sPZ5S0aJ/OCnfusv8Nnr+s8h
+ aS9hvqHHXzKatBpgE8HeEjqJEzs+oKCe0eqoSSWSzvH3Avgr6pKeRWIe5xsCysK4Vypjzsbjt
+ za6vU45yv5H0DtMlI06R82mtNjYsit1rKwIxUwXPU6VmktUvkTx05hk80Txb9fwq1mVckPf1g
+ eHOCaB6ugwfn5o1aGSCSc53I42ahXlc7U9h+cVtxEgohB03yhavw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBm1U-1qWAzJ2lhM-00CCRo; Thu, 31
+ Aug 2023 11:02:05 +0200
+Message-ID: <d0646771-d426-45c6-e189-517b1e6e6248@gmx.de>
+Date:   Thu, 31 Aug 2023 11:02:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,RCVD_IN_DNSWL_BLOCKED,T_SPF_HELO_TEMPERROR,T_SPF_TEMPERROR
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] fbdev: Update fbdev source file paths
+Content-Language: en-US
+To:     =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-fbdev@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jingoo Han <jg1.han@samsung.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
+ <d9a02d20-8b59-cbdd-d054-eac14f9771d2@suse.de> <ZPA26xdbTRdfuveS@probook>
+ <ZPBUdJwZzvYYrNei@phenom.ffwll.local>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <ZPBUdJwZzvYYrNei@phenom.ffwll.local>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:O2yGuAHpJ+Kd6jLLCyCriT0fI4YNGD0ZOhRGg+ixiMnJRT1rk93
+ 1lOyBX1xAEwHlixvdpXP7tNpzpq3/9rktNxBMTSmJiKWn8ULng7TkyBK9gYceiWtSiYrR7N
+ k+G+8oheT1KklcR2KTHrJzJnNSoR8OyJ46AnlRFLN++ij6S5GTThPOsqwu613Dy+f+hRNRL
+ J1rADhVvUPpSM+9Dj+Qmg==
+UI-OutboundReport: notjunk:1;M01:P0:vlXaveO6BBE=;YfnYiTUou7/PzAAttstceGBQ3Iw
+ 7//m6qQfZfieXnNOmP7ZOWS+8Kgbc70Bm1czCCYPhKY06kkBfzX6gHdQkxRFKHEejCfOYXOIm
+ uS7Kr7uVC3DunvGoOMsYdiBOFuOSrf23vkwTHOtcE3oY7j1A4Ev2yO7nGim1syAnRcVz0Xxm1
+ ZKgiuX2dLpx/S7yqk5/nkxoaKsl6e75Jeu4fpyzJ/5o/OhARj0qxEJO/xB+QS6qRcOQhfKqf/
+ ALCfrKwlZXCeQco2EkHl6+hZkL6EOXllJ45UPBA0BlwdAJJw1JLAdsia5nbkQd9c8SPOQYEcM
+ to1AriCosUV1SJsjQKwDkJmqCWUqDTLxgtCDfAOzcl1P1q182PutaVzEqvttk4MrxpVOHcWID
+ BypusfoAPQsqftAHELRoApPVzcyC6LbENxURFmpvB2HGx1wuKvAkDVCr3Jxy92pcBZ18hXS0E
+ iNdpkgYOboDmiaKaA6CQb/3WjJobtf9Gv99tOo3NIepZ3GBaHNt5wqDm+sCdMl2yoRkYJl93g
+ aLaEIGpv8T/FbM2lmunZuobKij7Zcrb7BFC070l6a+vkXFsdzN6VzNsJM+uIMW9T/rlqYO5yJ
+ 6sVV6LvXitRCYOrplEE/ORf4Fe5OtxN988V1Rcom/MbDmE074OBTPVNDQJo05TjNlMickcWbA
+ ZbIgHQVN7bpXUfTE/OwkpdfsCijmJQJKblUqat1qoZwPR/Xg/fRwxBekbAPDuFIOfIQrJwGM0
+ p2uhquCUo7ua1A9mQf/26CZ7kv5alAD1XJC7i2Xe/CNnArHJ47U3O5zzR8mZEcGqyXkD7WZ7e
+ 5m4r+2aegjM51CviuV9GNji+ogTQ8b5Hv6EuqvwEvsBrOfhT1cMn96HlrU5r5V6z9gtYqRXHw
+ S88VR9ysG6JTh9eXKy55PT6BlKn6pAc915ezGcDfbvAq1LkwemuLay1Hrijo1BM7XB0RWtCql
+ GXYxibKAqJn1eau5YHWiw6Rv+HA=
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maybe a ! has been forgotton on line 290?
+On 8/31/23 10:51, Daniel Vetter wrote:
+> On Thu, Aug 31, 2023 at 08:44:59AM +0200, Jonathan Neusch=C3=A4fer wrote=
+:
+>> On Wed, Aug 30, 2023 at 09:10:26AM +0200, Thomas Zimmermann wrote:
+>>> Hi
+>>>
+>>> Am 29.08.23 um 22:02 schrieb Jonathan Neusch=C3=A4fer:
+>>>> The files fbmem.c, fb_defio.c, fbsysfs.c, fbmon.c, modedb.c, and
+>>>> fbcmap.c were moved to drivers/video/fbdev, and subsequently to
+>>>> drivers/video/fbdev/core, in the commits listed below.
+>>>>
+>>>> Reported by kalekale in #kernel (Libera IRC).
+>>>>
+>>>> Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
+>>>> Fixes: 19757fc8432a ("fbdev: move fbdev core files to separate direct=
+ory")
+>>>> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+>>>
+>>> IMHO these comments might just be removed.
+>>
+>> I think it's nice to have some sort of visual separation between groups
+>> of functions in fb.h, which these comments provide at the moment.
+>> Therefore I'm currently leaning towards my patch as it is, but I'm
+>> willing to have my mind changed and do a v2 which just removes the
+>> comments.
+>
+> Just the filename without the full path maybe?
 
-julia
+Yes, I'd prefer that as well.
 
----------- Forwarded message ----------
-Date: Thu, 31 Aug 2023 10:46:56 +0800
-From: kernel test robot <lkp@intel.com>
-To: oe-kbuild@lists.linux.dev
-Cc: lkp@intel.com, Julia Lawall <julia.lawall@inria.fr>
-Subject: [paulmck-rcu:dev.2023.08.22a 63/69]
-    kernel/locking/locktorture.c:294:20-23: ERROR: t is NULL but dereferenced.
+Helge
 
-BCC: lkp@intel.com
-CC: oe-kbuild-all@lists.linux.dev
-CC: linux-kernel@vger.kernel.org
-TO: "Paul E. McKenney" <paulmck@kernel.org>
+> That's enough to find the
+> right file, and it's also better at highlighting the actual important pa=
+rt
+> of the comment since the path is very redundant.
+> -Sima
+>
+>>
+>>
+>> Thanks
+>>
+>>>
+>>> Best regards
+>>> Thomas
+>>>
+>>>> ---
+>>>>    include/linux/fb.h | 12 ++++++------
+>>>>    1 file changed, 6 insertions(+), 6 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/fb.h b/include/linux/fb.h
+>>>> index ce7d588edc3e6..3cda5b9f2469b 100644
+>>>> --- a/include/linux/fb.h
+>>>> +++ b/include/linux/fb.h
+>>>> @@ -592,7 +592,7 @@ extern ssize_t fb_sys_write(struct fb_info *info,=
+ const char __user *buf,
+>>>>    	__FB_DEFAULT_SYS_OPS_DRAW, \
+>>>>    	__FB_DEFAULT_SYS_OPS_MMAP
+>>>>
+>>>> -/* drivers/video/fbmem.c */
+>>>> +/* drivers/video/fbdev/core/fbmem.c */
+>>>>    extern int register_framebuffer(struct fb_info *fb_info);
+>>>>    extern void unregister_framebuffer(struct fb_info *fb_info);
+>>>>    extern int fb_prepare_logo(struct fb_info *fb_info, int rotate);
+>
+>
+>
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2023.08.22a
-head:   354957ec11dc80eac68c4b1e10c237d69adc1833
-commit: 758918804e0d5216981df3cef99ffd7ba0842192 [63/69] locktorture: Add indication of task write-holding lock
-:::::: branch date: 6 days ago
-:::::: commit date: 7 days ago
-config: i386-randconfig-053-20230831 (https://download.01.org/0day-ci/archive/20230831/202308311022.j7jKnIdL-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce: (https://download.01.org/0day-ci/archive/20230831/202308311022.j7jKnIdL-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Julia Lawall <julia.lawall@inria.fr>
-| Closes: https://lore.kernel.org/r/202308311022.j7jKnIdL-lkp@intel.com/
-
-cocci warnings: (new ones prefixed by >>)
->> kernel/locking/locktorture.c:294:20-23: ERROR: t is NULL but dereferenced.
-   kernel/locking/locktorture.c:294:43-47: ERROR: t is NULL but dereferenced.
-
-vim +294 kernel/locking/locktorture.c
-
-bdd8d60bd4047a Paul E. McKenney 2023-08-23  284
-94a8fb5e4673d7 Paul E. McKenney 2023-08-22  285  static int torture_spin_lock_dump(struct notifier_block *nb, unsigned long v, void *ptr)
-94a8fb5e4673d7 Paul E. McKenney 2023-08-22  286  {
-758918804e0d52 Paul E. McKenney 2023-08-23  287  	struct task_struct *t = READ_ONCE(lock_is_write_held);
-758918804e0d52 Paul E. McKenney 2023-08-23  288
-94a8fb5e4673d7 Paul E. McKenney 2023-08-22  289  	pr_alert("%s invoked: v=%lu, duration=%lu.\n", __func__, v, (unsigned long)ptr);
-758918804e0d52 Paul E. McKenney 2023-08-23  290  	if (t) {
-758918804e0d52 Paul E. McKenney 2023-08-23  291  		pr_alert("%s No task holding lock.\n", __func__);
-758918804e0d52 Paul E. McKenney 2023-08-23  292  	} else {
-758918804e0d52 Paul E. McKenney 2023-08-23  293  		pr_alert("%s Lock held by task %ps %d %*s\n",
-758918804e0d52 Paul E. McKenney 2023-08-23 @294  			 __func__, t, t->pid, TASK_COMM_LEN, t->comm);
-758918804e0d52 Paul E. McKenney 2023-08-23  295  		sched_show_task(t);
-758918804e0d52 Paul E. McKenney 2023-08-23  296  	}
-bdd8d60bd4047a Paul E. McKenney 2023-08-23  297  	spinlock_dump(&torture_spinlock, true);
-94a8fb5e4673d7 Paul E. McKenney 2023-08-22  298  	return NOTIFY_OK;
-94a8fb5e4673d7 Paul E. McKenney 2023-08-22  299  }
-94a8fb5e4673d7 Paul E. McKenney 2023-08-22  300
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
