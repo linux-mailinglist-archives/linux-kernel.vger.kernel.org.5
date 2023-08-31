@@ -2,50 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 839DE78EFC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B1D478EFC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346408AbjHaOvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
+        id S1346426AbjHaOwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:52:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjHaOvA (ORCPT
+        with ESMTP id S229445AbjHaOwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:51:00 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B0D1B1;
-        Thu, 31 Aug 2023 07:50:57 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qbj0S-0000qg-Ea; Thu, 31 Aug 2023 16:50:48 +0200
-Date:   Thu, 31 Aug 2023 16:50:48 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     Wander Lairson Costa <wander@redhat.com>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Fernando Fernandez Mancera <ffmancera@riseup.net>,
-        "open list:NETFILTER" <netfilter-devel@vger.kernel.org>,
-        "open list:NETFILTER" <coreteam@netfilter.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>, stable@kernel.org
-Subject: Re: [PATCH nf v2] netfilter/osf: avoid OOB read
-Message-ID: <20230831145048.GC15759@breakpoint.cc>
-References: <20230831123931.60606-1-wander@redhat.com>
- <20230831133750.GB15759@breakpoint.cc>
- <CAAq0SU=nesniZCLBa7xoqJ853sk2_+LaBhenVSZeYoe=82Syow@mail.gmail.com>
+        Thu, 31 Aug 2023 10:52:41 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B8FB7CC5
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:52:38 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B4C84C15;
+        Thu, 31 Aug 2023 07:53:17 -0700 (PDT)
+Received: from [10.1.26.48] (e122027.cambridge.arm.com [10.1.26.48])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 76B7A3F64C;
+        Thu, 31 Aug 2023 07:52:36 -0700 (PDT)
+Message-ID: <7d35a0f4-031b-d6a8-e0df-a97fc6b68b3b@arm.com>
+Date:   Thu, 31 Aug 2023 15:52:34 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAq0SU=nesniZCLBa7xoqJ853sk2_+LaBhenVSZeYoe=82Syow@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] MAINTAINERS: Add Boris Brezillon as Panfrost driver
+ maintainer
+Content-Language: en-GB
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>,
+        Rob Herring <robh@kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Tomeu Vizoso <tomeu@tomeuvizoso.net>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20230822052555.538110-1-dmitry.osipenko@collabora.com>
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <20230822052555.538110-1-dmitry.osipenko@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,55 +50,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wander Lairson Costa <wander@redhat.com> wrote:
-> On Thu, Aug 31, 2023 at 10:37 AM Florian Westphal <fw@strlen.de> wrote:
-> >
-> > Wander Lairson Costa <wander@redhat.com> wrote:
-> > >
-> > > diff --git a/net/netfilter/nfnetlink_osf.c b/net/netfilter/nfnetlink_osf.c
-> > > index 8f1bfa6ccc2d..13fedf2aaa0f 100644
-> > > --- a/net/netfilter/nfnetlink_osf.c
-> > > +++ b/net/netfilter/nfnetlink_osf.c
-> > > @@ -315,6 +315,9 @@ static int nfnl_osf_add_callback(struct sk_buff *skb,
-> > >
-> > >       f = nla_data(osf_attrs[OSF_ATTR_FINGER]);
-> > >
-> > > +     if (f->opt_num > ARRAY_SIZE(f->opt))
-> > > +             return -EINVAL;
-> > > +
-> >
-> > Hmm, this isn't enough; as far as I can see there is no validation
-> > whatsoever.
-> >
+On 22/08/2023 06:25, Dmitry Osipenko wrote:
+> Add Boris Brezillon as Panfrost driver maintainer. Boris is a new lead
+> developer of the Panfrost Mesa driver and main developer behind the
+> upcoming Panthor kernel driver that will serve next-gen Mali GPUs.
 > 
-> I didn't get it. It guarantees there is no OOB read of the opt array.
-
-Sorry.  This is enough to validate opt_num.
-
-But other members need validation too.
-
-> > This should also check that all of:
-> >
-> >  char    genre[MAXGENRELEN];
-> >  char    version[MAXGENRELEN];
-> >  char    subtype[MAXGENRELEN];
-> >
-> > ... have a NUL byte. You could use strnlen() == ARRAY_SIZE() -> EINVAL
-> > for those.
-> >
+> Remove Tomeu and Alyssa, who left Collabora and stepped down from working
+> on Panfrost.
 > 
-> I think the correct way would be memchr(genre/version/subtype, 0, MAXGENRELEN).
+> Acked-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Acked-by: Tomeu Vizoso <tomeu.vizoso@tomeuvizoso.net>
+> Acked-by: Alyssa Rosenzweig <alyssa@rosenzweig.io>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 
-I don't really care how it looks like, just that its clear that
-it is supposed to catch and reject non-null terminated c strings
+FWIW:
 
-:-)
+Acked-by: Steven Price <steven.price@arm.com>
 
-> > Maybe there is more to be validated. I did not followup with all the
-> >
+Steve
+
+> ---
 > 
-> I focused on the reported issue mainly because I am unfamiliar with
-> the Netfilter layer. Let me take a deeper look.
+> Changelog:
+> 
+> v2: - Added acks from Boris, Alyssa and Tomeu. Tomeu answered with ack
+>       to the v1 email, though he answered to me only and not "to all",
+>       so it's not visible on the ML.
+> 
+>     - Made Boris' entry first as was requested by Rob Herring.
+> 
+>  MAINTAINERS | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index cd882b87a3c6..b2fc771e1f2d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -1614,10 +1614,9 @@ F:	drivers/gpu/drm/arm/display/include/
+>  F:	drivers/gpu/drm/arm/display/komeda/
+>  
+>  ARM MALI PANFROST DRM DRIVER
+> +M:	Boris Brezillon <boris.brezillon@collabora.com>
+>  M:	Rob Herring <robh@kernel.org>
+> -M:	Tomeu Vizoso <tomeu.vizoso@collabora.com>
+>  R:	Steven Price <steven.price@arm.com>
+> -R:	Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
+>  L:	dri-devel@lists.freedesktop.org
+>  S:	Supported
+>  T:	git git://anongit.freedesktop.org/drm/drm-misc
 
-I don't think there is anyone really familiar with OSF infra, it
-was added quite a while back.
