@@ -2,423 +2,498 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D71278E46A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:31:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8F7B78E46E
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345636AbjHaBb6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 21:31:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
+        id S230172AbjHaBex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 21:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237370AbjHaBbj (ORCPT
+        with ESMTP id S231201AbjHaBev (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 21:31:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAA7CC9;
-        Wed, 30 Aug 2023 18:31:35 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 01:31:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693445492;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SIEiuq+phcT6zT/bGbnOehllZbVW7EVkwnhzAdsV0Q8=;
-        b=UB5URhmcSrmX4t1Wdkw6jnblfXNJquk575OWSr4VvAejqDu1ocP7Cof8QyFqkTETvkLBcY
-        /9U+GCxCvrby4bjcW1FYITzrgbg9vvbmctoRUlTdwIY3DHUZPWDOfCYSwVYVYHBIVeRRqj
-        LY/E8Cl8cN15xMW7q97AbisPQEkF5IZnmy4YOt24raSBeFo9cWEvnz8gsOOZobtex5OrY7
-        DwpXVJxem6aSjMHHsoYV7RcCvT45B4l8dYAJiGhfMwcK6ib02Nryffug3a99O958Pbt9rT
-        VcqSERGrujl3ZbWeJE2+9+n4E9lABcxBF36AeGSHxomgJJqiq/r2eUZMMEQTxg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693445492;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SIEiuq+phcT6zT/bGbnOehllZbVW7EVkwnhzAdsV0Q8=;
-        b=HRjE5fKQUiBmZmG5qdX13fJTNVZKnSUozRNsPAXW1H0lcIJo2bpQQDzn30Xn/7lFwYab9q
-        p/sNVisvvlySboAg==
-From:   "tip-bot2 for Neil Armstrong" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] clocksource/drivers/timer-oxnas-rps: Remove
- obsolete timer driver
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Andy Shevchenko <andy@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230630-topic-oxnas-upstream-remove-v2-3-fb6ab3dea87c@linaro.org>
-References: <20230630-topic-oxnas-upstream-remove-v2-3-fb6ab3dea87c@linaro.org>
+        Wed, 30 Aug 2023 21:34:51 -0400
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C892CDD
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:34:39 -0700 (PDT)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-41205469f4eso1278131cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:34:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693445678; x=1694050478;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0ycVucuHicSZGEnZTAPWyL52dXoSy//AnKkfpuHUU/k=;
+        b=i/mtlhpZYpVWsb4byTCUob/V6udPZcnKoBVfRgIhsJa38Nyam9K5i4Bhgb3WO3TYzu
+         AhG29MZUvPSWbX6bTXyIy8c1vnr33qqhCBrb787Opf4e4g7cXxNNswLm6VVZcuvTqxuM
+         lsUNMlx7ERJFuFtNEbY5ggR9IgviAg9CmAVn4587r4doR4Wx7jsUg8YeQcILR99us9bP
+         ezCP9SCaJBK+4oT8MNW5fgqrw8LyrZduC0YPT4XwFj/kwDGZHC6XpXRHePTk8VxuYj2L
+         iNEPl2F8MZiQB7a2nfM30gW82L0/DYMsiytzFjxv/cHWRBJNlz2bwQATQvQ4i2sjTlJ+
+         ziTA==
+X-Gm-Message-State: AOJu0YzIb16QCmk018vY9uRvST7ypGKYGFJIkt5iExoXPzb0hwEEQHv/
+        piRcYj3d2ruNzCe9C1GS09Q=
+X-Google-Smtp-Source: AGHT+IFL7AER4os0VrqnlZaujpKVLD++B7iHzTSqCfsu1pTwN2fXSfPJTawatpTRawfVb0Dfwc5eqA==
+X-Received: by 2002:ac8:7ef2:0:b0:3fd:ed14:6eb9 with SMTP id r18-20020ac87ef2000000b003fded146eb9mr1458975qtc.11.1693445678456;
+        Wed, 30 Aug 2023 18:34:38 -0700 (PDT)
+Received: from maniforge ([2620:10d:c091:400::5:1c30])
+        by smtp.gmail.com with ESMTPSA id fp17-20020a05622a509100b0041087c90049sm140950qtb.52.2023.08.30.18.34.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 18:34:37 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 20:34:35 -0500
+From:   David Vernet <void@manifault.com>
+To:     K Prateek Nayak <kprateek.nayak@amd.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, tj@kernel.org,
+        roman.gushchin@linux.dev, gautham.shenoy@amd.com,
+        aaron.lu@intel.com, wuyun.abel@bytedance.com, kernel-team@meta.com
+Subject: Re: [PATCH v3 6/7] sched: Implement shared runqueue in CFS
+Message-ID: <20230831013435.GB506447@maniforge>
+References: <20230809221218.163894-1-void@manifault.com>
+ <20230809221218.163894-7-void@manifault.com>
+ <3e32bec6-5e59-c66a-7676-7d15df2c961c@amd.com>
 MIME-Version: 1.0
-Message-ID: <169344549224.27769.334689179583835411.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e32bec6-5e59-c66a-7676-7d15df2c961c@amd.com>
+User-Agent: Mutt/2.2.10 (2023-03-25)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        LOTS_OF_MONEY,MONEY_NOHTML,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+On Wed, Aug 30, 2023 at 12:16:17PM +0530, K Prateek Nayak wrote:
+> Hello David,
 
-Commit-ID:     56f99cdc5b11a65a19410171b6a84c612778f0c9
-Gitweb:        https://git.kernel.org/tip/56f99cdc5b11a65a19410171b6a84c612778f0c9
-Author:        Neil Armstrong <neil.armstrong@linaro.org>
-AuthorDate:    Fri, 30 Jun 2023 18:58:28 +02:00
-Committer:     Daniel Lezcano <daniel.lezcano@linaro.org>
-CommitterDate: Thu, 13 Jul 2023 14:46:17 +02:00
+Hello Prateek,
 
-clocksource/drivers/timer-oxnas-rps: Remove obsolete timer driver
+> 
+> On 8/10/2023 3:42 AM, David Vernet wrote:
+> > [..snip..]
+> > diff --git a/include/linux/sched.h b/include/linux/sched.h
+> > index 2aab7be46f7e..8238069fd852 100644
+> > --- a/include/linux/sched.h
+> > +++ b/include/linux/sched.h
+> > @@ -769,6 +769,8 @@ struct task_struct {
+> >  	unsigned long			wakee_flip_decay_ts;
+> >  	struct task_struct		*last_wakee;
+> >  
+> > +	struct list_head		shared_runq_node;
+> > +
+> >  	/*
+> >  	 * recent_used_cpu is initially set as the last CPU used by a task
+> >  	 * that wakes affine another task. Waker/wakee relationships can
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index 385c565da87f..fb7e71d3dc0a 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -4529,6 +4529,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+> >  #ifdef CONFIG_SMP
+> >  	p->wake_entry.u_flags = CSD_TYPE_TTWU;
+> >  	p->migration_pending = NULL;
+> > +	INIT_LIST_HEAD(&p->shared_runq_node);
+> >  #endif
+> >  	init_sched_mm_cid(p);
+> >  }
+> > @@ -9764,6 +9765,18 @@ int sched_cpu_deactivate(unsigned int cpu)
+> >  	return 0;
+> >  }
+> >  
+> > +void sched_update_domains(void)
+> > +{
+> > +	const struct sched_class *class;
+> > +
+> > +	update_sched_domain_debugfs();
+> > +
+> > +	for_each_class(class) {
+> > +		if (class->update_domains)
+> > +			class->update_domains();
+> > +	}
+> > +}
+> > +
+> >  static void sched_rq_cpu_starting(unsigned int cpu)
+> >  {
+> >  	struct rq *rq = cpu_rq(cpu);
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 9c23e3b948fc..6e740f8da578 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -139,20 +139,235 @@ static int __init setup_sched_thermal_decay_shift(char *str)
+> >  }
+> >  __setup("sched_thermal_decay_shift=", setup_sched_thermal_decay_shift);
+> >  
+> > +/**
+> > + * struct shared_runq - Per-LLC queue structure for enqueuing and migrating
+> > + * runnable tasks within an LLC.
+> > + *
+> > + * WHAT
+> > + * ====
+> > + *
+> > + * This structure enables the scheduler to be more aggressively work
+> > + * conserving, by placing waking tasks on a per-LLC FIFO queue that can then be
+> > + * pulled from when another core in the LLC is going to go idle.
+> > + *
+> > + * struct rq stores a pointer to its LLC's shared_runq via struct cfs_rq.
+> > + * Waking tasks are enqueued in the calling CPU's struct shared_runq in
+> > + * __enqueue_entity(), and are opportunistically pulled from the shared_runq
+> > + * in newidle_balance(). Tasks enqueued in a shared_runq may be scheduled prior
+> > + * to being pulled from the shared_runq, in which case they're simply dequeued
+> > + * from the shared_runq in __dequeue_entity().
+> > + *
+> > + * There is currently no task-stealing between shared_runqs in different LLCs,
+> > + * which means that shared_runq is not fully work conserving. This could be
+> > + * added at a later time, with tasks likely only being stolen across
+> > + * shared_runqs on the same NUMA node to avoid violating NUMA affinities.
+> > + *
+> > + * HOW
+> > + * ===
+> > + *
+> > + * A shared_runq is comprised of a list, and a spinlock for synchronization.
+> > + * Given that the critical section for a shared_runq is typically a fast list
+> > + * operation, and that the shared_runq is localized to a single LLC, the
+> > + * spinlock will typically only be contended on workloads that do little else
+> > + * other than hammer the runqueue.
+> > + *
+> > + * WHY
+> > + * ===
+> > + *
+> > + * As mentioned above, the main benefit of shared_runq is that it enables more
+> > + * aggressive work conservation in the scheduler. This can benefit workloads
+> > + * that benefit more from CPU utilization than from L1/L2 cache locality.
+> > + *
+> > + * shared_runqs are segmented across LLCs both to avoid contention on the
+> > + * shared_runq spinlock by minimizing the number of CPUs that could contend on
+> > + * it, as well as to strike a balance between work conservation, and L3 cache
+> > + * locality.
+> > + */
+> > +struct shared_runq {
+> > +	struct list_head list;
+> > +	raw_spinlock_t lock;
+> > +} ____cacheline_aligned;
+> > +
+> >  #ifdef CONFIG_SMP
+> > +
+> > +static DEFINE_PER_CPU(struct shared_runq, shared_runqs);
+> > +
+> > +static struct shared_runq *rq_shared_runq(struct rq *rq)
+> > +{
+> > +	return rq->cfs.shared_runq;
+> > +}
+> > +
+> > +static void shared_runq_reassign_domains(void)
+> > +{
+> > +	int i;
+> > +	struct shared_runq *shared_runq;
+> > +	struct rq *rq;
+> > +	struct rq_flags rf;
+> > +
+> > +	for_each_possible_cpu(i) {
+> > +		rq = cpu_rq(i);
+> > +		shared_runq = &per_cpu(shared_runqs, per_cpu(sd_llc_id, i));
+> > +
+> > +		rq_lock(rq, &rf);
+> > +		rq->cfs.shared_runq = shared_runq;
+> > +		rq_unlock(rq, &rf);
+> > +	}
+> > +}
+> > +
+> > +static void __shared_runq_drain(struct shared_runq *shared_runq)
+> > +{
+> > +	struct task_struct *p, *tmp;
+> > +
+> > +	raw_spin_lock(&shared_runq->lock);
+> > +	list_for_each_entry_safe(p, tmp, &shared_runq->list, shared_runq_node)
+> > +		list_del_init(&p->shared_runq_node);
+> > +	raw_spin_unlock(&shared_runq->lock);
+> > +}
+> > +
+> > +static void update_domains_fair(void)
+> > +{
+> > +	int i;
+> > +	struct shared_runq *shared_runq;
+> > +
+> > +	/* Avoid racing with SHARED_RUNQ enable / disable. */
+> > +	lockdep_assert_cpus_held();
+> > +
+> > +	shared_runq_reassign_domains();
+> > +
+> > +	/* Ensure every core sees its updated shared_runq pointers. */
+> > +	synchronize_rcu();
+> > +
+> > +	/*
+> > +	 * Drain all tasks from all shared_runq's to ensure there are no stale
+> > +	 * tasks in any prior domain runq. This can cause us to drain live
+> > +	 * tasks that would otherwise have been safe to schedule, but this
+> > +	 * isn't a practical problem given how infrequently domains are
+> > +	 * rebuilt.
+> > +	 */
+> > +	for_each_possible_cpu(i) {
+> > +		shared_runq = &per_cpu(shared_runqs, i);
+> > +		__shared_runq_drain(shared_runq);
+> > +	}
+> > +}
+> > +
+> >  void shared_runq_toggle(bool enabling)
+> > -{}
+> > +{
+> > +	int cpu;
+> > +
+> > +	if (enabling)
+> > +		return;
+> > +
+> > +	/* Avoid racing with hotplug. */
+> > +	lockdep_assert_cpus_held();
+> > +
+> > +	/* Ensure all cores have stopped enqueueing / dequeuing tasks. */
+> > +	synchronize_rcu();
+> > +
+> > +	for_each_possible_cpu(cpu) {
+> > +		int sd_id;
+> > +
+> > +		sd_id = per_cpu(sd_llc_id, cpu);
+> > +		if (cpu == sd_id)
+> > +			__shared_runq_drain(rq_shared_runq(cpu_rq(cpu)));
+> > +	}
+> > +}
+> > +
+> > +static struct task_struct *shared_runq_pop_task(struct rq *rq)
+> > +{
+> > +	struct task_struct *p;
+> > +	struct shared_runq *shared_runq;
+> > +
+> > +	shared_runq = rq_shared_runq(rq);
+> > +	if (list_empty(&shared_runq->list))
+> > +		return NULL;
+> > +
+> > +	raw_spin_lock(&shared_runq->lock);
+> > +	p = list_first_entry_or_null(&shared_runq->list, struct task_struct,
+> > +				     shared_runq_node);
+> > +	if (p && is_cpu_allowed(p, cpu_of(rq)))
+> > +		list_del_init(&p->shared_runq_node);
+> 
+> I wonder if we should remove the task from the list if
+> "is_cpu_allowed()" return false.
+> 
+> Consider the following scenario: A task that does not sleep, is pinned
+> to single CPU. Since this is now at the head of the list, and cannot be
+> moved, we leave it there, but since the task also never sleeps, it'll
+> stay there, thus preventing the queue from doing its job.
 
-Due to lack of maintenance and stall of development for a few years now,
-and since no new features will ever be added upstream, remove support
-for OX810 and OX820 timer.
+Hmm, sorry, I may not be understanding your suggestion. If a task was
+pinned to a single CPU, it would be dequeued from the shared_runq before
+being pinned (see __set_cpus_allowed_ptr_locked()), and then would not
+be added back to the shard in shared_runq_enqueue_task() because of
+p->nr_cpus_allowed == 1. The task would also be dequeued from the shard
+before it started running (unless I'm misunderstanding what you mean by
+"a task that does not sleep"). Please let me know if I'm missing
+something.
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Daniel Golle <daniel@makrotopia.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-Acked-by: Andy Shevchenko <andy@kernel.org>
-Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-Link: https://lore.kernel.org/r/20230630-topic-oxnas-upstream-remove-v2-3-fb6ab3dea87c@linaro.org
----
- drivers/clocksource/Kconfig           |   7 +-
- drivers/clocksource/Makefile          |   1 +-
- drivers/clocksource/timer-oxnas-rps.c | 288 +-------------------------
- 3 files changed, 296 deletions(-)
- delete mode 100644 drivers/clocksource/timer-oxnas-rps.c
+> Further implication ...  
+> 
+> > +	else
+> > +		p = NULL;
+> > +	raw_spin_unlock(&shared_runq->lock);
+> > +
+> > +	return p;
+> > +}
+> > +
+> > +static void shared_runq_push_task(struct rq *rq, struct task_struct *p)
+> > +{
+> > +	struct shared_runq *shared_runq;
+> > +
+> > +	shared_runq = rq_shared_runq(rq);
+> > +	raw_spin_lock(&shared_runq->lock);
+> > +	list_add_tail(&p->shared_runq_node, &shared_runq->list);
+> > +	raw_spin_unlock(&shared_runq->lock);
+> > +}
+> >  
+> >  static void shared_runq_enqueue_task(struct rq *rq, struct task_struct *p)
+> > -{}
+> > +{
+> > +	/*
+> > +	 * Only enqueue the task in the shared runqueue if:
+> > +	 *
+> > +	 * - SHARED_RUNQ is enabled
+> > +	 * - The task isn't pinned to a specific CPU
+> > +	 */
+> > +	if (p->nr_cpus_allowed == 1)
+> > +		return;
+> > +
+> > +	shared_runq_push_task(rq, p);
+> > +}
+> >  
+> >  static int shared_runq_pick_next_task(struct rq *rq, struct rq_flags *rf)
+> >  {
+> > -	return 0;
+> > +	struct task_struct *p = NULL;
+> > +	struct rq *src_rq;
+> > +	struct rq_flags src_rf;
+> > +	int ret = -1;
+> > +
+> > +	p = shared_runq_pop_task(rq);
+> > +	if (!p)
+> > +		return 0;
+> 
+> ...
+> 
+> Since we return 0 here in such a scenario, we'll take the old
+> newidle_balance() path but ...
+> 
+> > +
+> > +	rq_unpin_lock(rq, rf);
+> > +	raw_spin_rq_unlock(rq);
+> > +
+> > +	src_rq = task_rq_lock(p, &src_rf);
+> > +
+> > +	if (task_on_rq_queued(p) && !task_on_cpu(src_rq, p)) {
+> > +		update_rq_clock(src_rq);
+> > +		src_rq = move_queued_task(src_rq, &src_rf, p, cpu_of(rq));
+> > +		ret = 1;
+> > +	}
+> > +
+> > +	if (src_rq != rq) {
+> > +		task_rq_unlock(src_rq, p, &src_rf);
+> > +		raw_spin_rq_lock(rq);
+> > +	} else {
+> > +		rq_unpin_lock(rq, &src_rf);
+> > +		raw_spin_unlock_irqrestore(&p->pi_lock, src_rf.flags);
+> > +	}
+> > +	rq_repin_lock(rq, rf);
+> > +
+> > +	return ret;
+> >  }
+> >  
+> >  static void shared_runq_dequeue_task(struct task_struct *p)
+> > -{}
+> > +{
+> > +	struct shared_runq *shared_runq;
+> > +
+> > +	if (!list_empty(&p->shared_runq_node)) {
+> > +		shared_runq = rq_shared_runq(task_rq(p));
+> > +		raw_spin_lock(&shared_runq->lock);
+> > +		/*
+> > +		 * Need to double-check for the list being empty to avoid
+> > +		 * racing with the list being drained on the domain recreation
+> > +		 * or SHARED_RUNQ feature enable / disable path.
+> > +		 */
+> > +		if (likely(!list_empty(&p->shared_runq_node)))
+> > +			list_del_init(&p->shared_runq_node);
+> > +		raw_spin_unlock(&shared_runq->lock);
+> > +	}
+> > +}
+> >  
+> >  /*
+> >   * For asym packing, by default the lower numbered CPU has higher priority.
+> > @@ -12093,6 +12308,16 @@ static int newidle_balance(struct rq *this_rq, struct rq_flags *rf)
+> >  	rcu_read_lock();
+> >  	sd = rcu_dereference_check_sched_domain(this_rq->sd);
+> >  
+> > +	/*
+> > +	 * Skip <= LLC domains as they likely won't have any tasks if the
+> > +	 * shared runq is empty.
+> > +	 */
+> 
+> ... now we skip all the way ahead of MC domain, overlooking any
+> imbalance that might still exist within the SMT and MC groups
+> since shared runq is not exactly empty.
+> 
+> Let me know if I've got something wrong!
 
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index c4d671a..0ba0dc4 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -461,13 +461,6 @@ config VF_PIT_TIMER
- 	help
- 	  Support for Periodic Interrupt Timer on Freescale Vybrid Family SoCs.
- 
--config OXNAS_RPS_TIMER
--	bool "Oxford Semiconductor OXNAS RPS Timers driver" if COMPILE_TEST
--	select TIMER_OF
--	select CLKSRC_MMIO
--	help
--	  This enables support for the Oxford Semiconductor OXNAS RPS timers.
--
- config SYS_SUPPORTS_SH_CMT
- 	bool
- 
-diff --git a/drivers/clocksource/Makefile b/drivers/clocksource/Makefile
-index 5d93c9e..368c346 100644
---- a/drivers/clocksource/Makefile
-+++ b/drivers/clocksource/Makefile
-@@ -54,7 +54,6 @@ obj-$(CONFIG_MTK_TIMER)		+= timer-mediatek.o
- obj-$(CONFIG_MTK_CPUX_TIMER)	+= timer-mediatek-cpux.o
- obj-$(CONFIG_CLKSRC_PISTACHIO)	+= timer-pistachio.o
- obj-$(CONFIG_CLKSRC_TI_32K)	+= timer-ti-32k.o
--obj-$(CONFIG_OXNAS_RPS_TIMER)	+= timer-oxnas-rps.o
- obj-$(CONFIG_OWL_TIMER)		+= timer-owl.o
- obj-$(CONFIG_MILBEAUT_TIMER)	+= timer-milbeaut.o
- obj-$(CONFIG_SPRD_TIMER)	+= timer-sprd.o
-diff --git a/drivers/clocksource/timer-oxnas-rps.c b/drivers/clocksource/timer-oxnas-rps.c
-deleted file mode 100644
-index d514b44..0000000
---- a/drivers/clocksource/timer-oxnas-rps.c
-+++ /dev/null
-@@ -1,288 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- * drivers/clocksource/timer-oxnas-rps.c
-- *
-- * Copyright (C) 2009 Oxford Semiconductor Ltd
-- * Copyright (C) 2013 Ma Haijun <mahaijuns@gmail.com>
-- * Copyright (C) 2016 Neil Armstrong <narmstrong@baylibre.com>
-- */
--
--#define pr_fmt(fmt)	KBUILD_MODNAME ": " fmt
--
--#include <linux/init.h>
--#include <linux/irq.h>
--#include <linux/io.h>
--#include <linux/clk.h>
--#include <linux/slab.h>
--#include <linux/interrupt.h>
--#include <linux/of_irq.h>
--#include <linux/of_address.h>
--#include <linux/clockchips.h>
--#include <linux/sched_clock.h>
--
--/* TIMER1 used as tick
-- * TIMER2 used as clocksource
-- */
--
--/* Registers definitions */
--
--#define TIMER_LOAD_REG		0x0
--#define TIMER_CURR_REG		0x4
--#define TIMER_CTRL_REG		0x8
--#define TIMER_CLRINT_REG	0xC
--
--#define TIMER_BITS		24
--
--#define TIMER_MAX_VAL		(BIT(TIMER_BITS) - 1)
--
--#define TIMER_PERIODIC		BIT(6)
--#define TIMER_ENABLE		BIT(7)
--
--#define TIMER_DIV1		(0)
--#define TIMER_DIV16		(1 << 2)
--#define TIMER_DIV256		(2 << 2)
--
--#define TIMER1_REG_OFFSET	0
--#define TIMER2_REG_OFFSET	0x20
--
--/* Clockevent & Clocksource data */
--
--struct oxnas_rps_timer {
--	struct clock_event_device clkevent;
--	void __iomem *clksrc_base;
--	void __iomem *clkevt_base;
--	unsigned long timer_period;
--	unsigned int timer_prescaler;
--	struct clk *clk;
--	int irq;
--};
--
--static irqreturn_t oxnas_rps_timer_irq(int irq, void *dev_id)
--{
--	struct oxnas_rps_timer *rps = dev_id;
--
--	writel_relaxed(0, rps->clkevt_base + TIMER_CLRINT_REG);
--
--	rps->clkevent.event_handler(&rps->clkevent);
--
--	return IRQ_HANDLED;
--}
--
--static void oxnas_rps_timer_config(struct oxnas_rps_timer *rps,
--				   unsigned long period,
--				   unsigned int periodic)
--{
--	uint32_t cfg = rps->timer_prescaler;
--
--	if (period)
--		cfg |= TIMER_ENABLE;
--
--	if (periodic)
--		cfg |= TIMER_PERIODIC;
--
--	writel_relaxed(period, rps->clkevt_base + TIMER_LOAD_REG);
--	writel_relaxed(cfg, rps->clkevt_base + TIMER_CTRL_REG);
--}
--
--static int oxnas_rps_timer_shutdown(struct clock_event_device *evt)
--{
--	struct oxnas_rps_timer *rps =
--		container_of(evt, struct oxnas_rps_timer, clkevent);
--
--	oxnas_rps_timer_config(rps, 0, 0);
--
--	return 0;
--}
--
--static int oxnas_rps_timer_set_periodic(struct clock_event_device *evt)
--{
--	struct oxnas_rps_timer *rps =
--		container_of(evt, struct oxnas_rps_timer, clkevent);
--
--	oxnas_rps_timer_config(rps, rps->timer_period, 1);
--
--	return 0;
--}
--
--static int oxnas_rps_timer_set_oneshot(struct clock_event_device *evt)
--{
--	struct oxnas_rps_timer *rps =
--		container_of(evt, struct oxnas_rps_timer, clkevent);
--
--	oxnas_rps_timer_config(rps, rps->timer_period, 0);
--
--	return 0;
--}
--
--static int oxnas_rps_timer_next_event(unsigned long delta,
--				struct clock_event_device *evt)
--{
--	struct oxnas_rps_timer *rps =
--		container_of(evt, struct oxnas_rps_timer, clkevent);
--
--	oxnas_rps_timer_config(rps, delta, 0);
--
--	return 0;
--}
--
--static int __init oxnas_rps_clockevent_init(struct oxnas_rps_timer *rps)
--{
--	ulong clk_rate = clk_get_rate(rps->clk);
--	ulong timer_rate;
--
--	/* Start with prescaler 1 */
--	rps->timer_prescaler = TIMER_DIV1;
--	rps->timer_period = DIV_ROUND_UP(clk_rate, HZ);
--	timer_rate = clk_rate;
--
--	if (rps->timer_period > TIMER_MAX_VAL) {
--		rps->timer_prescaler = TIMER_DIV16;
--		timer_rate = clk_rate / 16;
--		rps->timer_period = DIV_ROUND_UP(timer_rate, HZ);
--	}
--	if (rps->timer_period > TIMER_MAX_VAL) {
--		rps->timer_prescaler = TIMER_DIV256;
--		timer_rate = clk_rate / 256;
--		rps->timer_period = DIV_ROUND_UP(timer_rate, HZ);
--	}
--
--	rps->clkevent.name = "oxnas-rps";
--	rps->clkevent.features = CLOCK_EVT_FEAT_PERIODIC |
--				 CLOCK_EVT_FEAT_ONESHOT |
--				 CLOCK_EVT_FEAT_DYNIRQ;
--	rps->clkevent.tick_resume = oxnas_rps_timer_shutdown;
--	rps->clkevent.set_state_shutdown = oxnas_rps_timer_shutdown;
--	rps->clkevent.set_state_periodic = oxnas_rps_timer_set_periodic;
--	rps->clkevent.set_state_oneshot = oxnas_rps_timer_set_oneshot;
--	rps->clkevent.set_next_event = oxnas_rps_timer_next_event;
--	rps->clkevent.rating = 200;
--	rps->clkevent.cpumask = cpu_possible_mask;
--	rps->clkevent.irq = rps->irq;
--	clockevents_config_and_register(&rps->clkevent,
--					timer_rate,
--					1,
--					TIMER_MAX_VAL);
--
--	pr_info("Registered clock event rate %luHz prescaler %x period %lu\n",
--			clk_rate,
--			rps->timer_prescaler,
--			rps->timer_period);
--
--	return 0;
--}
--
--/* Clocksource */
--
--static void __iomem *timer_sched_base;
--
--static u64 notrace oxnas_rps_read_sched_clock(void)
--{
--	return ~readl_relaxed(timer_sched_base);
--}
--
--static int __init oxnas_rps_clocksource_init(struct oxnas_rps_timer *rps)
--{
--	ulong clk_rate = clk_get_rate(rps->clk);
--	int ret;
--
--	/* use prescale 16 */
--	clk_rate = clk_rate / 16;
--
--	writel_relaxed(TIMER_MAX_VAL, rps->clksrc_base + TIMER_LOAD_REG);
--	writel_relaxed(TIMER_PERIODIC | TIMER_ENABLE | TIMER_DIV16,
--			rps->clksrc_base + TIMER_CTRL_REG);
--
--	timer_sched_base = rps->clksrc_base + TIMER_CURR_REG;
--	sched_clock_register(oxnas_rps_read_sched_clock,
--			     TIMER_BITS, clk_rate);
--	ret = clocksource_mmio_init(timer_sched_base,
--				    "oxnas_rps_clocksource_timer",
--				    clk_rate, 250, TIMER_BITS,
--				    clocksource_mmio_readl_down);
--	if (WARN_ON(ret)) {
--		pr_err("can't register clocksource\n");
--		return ret;
--	}
--
--	pr_info("Registered clocksource rate %luHz\n", clk_rate);
--
--	return 0;
--}
--
--static int __init oxnas_rps_timer_init(struct device_node *np)
--{
--	struct oxnas_rps_timer *rps;
--	void __iomem *base;
--	int ret;
--
--	rps = kzalloc(sizeof(*rps), GFP_KERNEL);
--	if (!rps)
--		return -ENOMEM;
--
--	rps->clk = of_clk_get(np, 0);
--	if (IS_ERR(rps->clk)) {
--		ret = PTR_ERR(rps->clk);
--		goto err_alloc;
--	}
--
--	ret = clk_prepare_enable(rps->clk);
--	if (ret)
--		goto err_clk;
--
--	base = of_iomap(np, 0);
--	if (!base) {
--		ret = -ENXIO;
--		goto err_clk_prepare;
--	}
--
--	rps->irq = irq_of_parse_and_map(np, 0);
--	if (!rps->irq) {
--		ret = -EINVAL;
--		goto err_iomap;
--	}
--
--	rps->clkevt_base = base + TIMER1_REG_OFFSET;
--	rps->clksrc_base = base + TIMER2_REG_OFFSET;
--
--	/* Disable timers */
--	writel_relaxed(0, rps->clkevt_base + TIMER_CTRL_REG);
--	writel_relaxed(0, rps->clksrc_base + TIMER_CTRL_REG);
--	writel_relaxed(0, rps->clkevt_base + TIMER_LOAD_REG);
--	writel_relaxed(0, rps->clksrc_base + TIMER_LOAD_REG);
--	writel_relaxed(0, rps->clkevt_base + TIMER_CLRINT_REG);
--	writel_relaxed(0, rps->clksrc_base + TIMER_CLRINT_REG);
--
--	ret = request_irq(rps->irq, oxnas_rps_timer_irq,
--			  IRQF_TIMER | IRQF_IRQPOLL,
--			  "rps-timer", rps);
--	if (ret)
--		goto err_iomap;
--
--	ret = oxnas_rps_clocksource_init(rps);
--	if (ret)
--		goto err_irqreq;
--
--	ret = oxnas_rps_clockevent_init(rps);
--	if (ret)
--		goto err_irqreq;
--
--	return 0;
--
--err_irqreq:
--	free_irq(rps->irq, rps);
--err_iomap:
--	iounmap(base);
--err_clk_prepare:
--	clk_disable_unprepare(rps->clk);
--err_clk:
--	clk_put(rps->clk);
--err_alloc:
--	kfree(rps);
--
--	return ret;
--}
--
--TIMER_OF_DECLARE(ox810se_rps,
--		       "oxsemi,ox810se-rps-timer", oxnas_rps_timer_init);
--TIMER_OF_DECLARE(ox820_rps,
--		       "oxsemi,ox820-rps-timer", oxnas_rps_timer_init);
+Yep, I mentioned this to Gautham as well in [0].
+
+[0]: https://lore.kernel.org/all/20230818050355.GA5718@maniforge/
+
+I agree that I think we should remove this heuristic from v4. Either
+that, or add logic to iterate over the shared_runq until a viable task
+is found.
+
+> 
+> > +	if (sched_feat(SHARED_RUNQ)) {
+> > +		sd = rcu_dereference(*this_cpu_ptr(&sd_llc));
+> > +		if (likely(sd))
+> > +			sd = sd->parent;
+> > +	}
+> 
+> Speaking of skipping ahead of MC domain, I don't think this actually
+> works since the domain traversal uses the "for_each_domain" macro
+> which is defined as:
+
+*blinks*
+
+Uhhh, yeah, wow. Good catch!
+
+> #define for_each_domain(cpu, __sd) \
+> 	for (__sd = rcu_dereference_check_sched_domain(cpu_rq(cpu)->sd); \
+> 			__sd; __sd = __sd->parent)
+> 
+> The traversal starts from rq->sd overwriting your initialized value
+> here. This is why we see "load_balance count on cpu newly idle" in
+> Gautham's first report
+> (https://lore.kernel.org/lkml/ZN3dW5Gvcb0LFWjs@BLR-5CG11610CF.amd.com/)
+> to be non-zero.
+>
+> One way to do this would be as follows:
+> 
+> static int newidle_balance() {
+> 
+> 	...
+> 	for_each_domain(this_cpu, sd) {
+> 
+> 		...
+> 		/* Skip balancing until LLc domain */
+> 		if (sched_feat(SHARED_RUNQ) &&
+> 		    (sd->flags & SD_SHARE_PKG_RESOURCES))
+> 			continue;
+> 
+> 		...
+> 	}
+> 	...
+> }
+
+Yep, I think this makes sense to do.
+
+> With this I see the newidle balance count for SMT and MC domain
+> to be zero:
+
+And indeed, I think this was the intention. Thanks again for catching
+this. I'm excited to try this out when running benchmarks for v4.
+
+> < ----------------------------------------  Category:  newidle (SMT)  ---------------------------------------- >
+> load_balance cnt on cpu newly idle                         :          0    $      0.000 $    [    0.00000 ]
+> --
+> < ----------------------------------------  Category:  newidle (MC)   ---------------------------------------- >
+> load_balance cnt on cpu newly idle                         :          0    $      0.000 $    [    0.00000 ]
+> --
+> < ----------------------------------------  Category:  newidle (DIE)  ---------------------------------------- >
+> load_balance cnt on cpu newly idle                         :       2170    $      9.319 $    [   17.42832 ]
+> --
+> < ----------------------------------------  Category:  newidle (NUMA) ---------------------------------------- >
+> load_balance cnt on cpu newly idle                         :         30    $    674.067 $    [    0.24094 ]
+> --
+> 
+> Let me know if I'm missing something here :)
+
+No, I think you're correct, we should be doing this. Assuming we want to
+keep this heuristic, I think the block above is also correct so that we
+properly account sd->max_newidle_lb_cost and rq->next_balance. Does that
+make sense to you too?
+
+> 
+> Note: The lb counts for DIE and NUMA are down since I'm experimenting
+> with the implementation currently. I'll update of any new findings on
+> the thread.
+
+Ack, thank you for doing that.
+
+Just FYI, I'll be on vacation for about 1.5 weeks starting tomorrow
+afternoon. If I'm slow to respond, that's why.
+
+Thanks,
+David
