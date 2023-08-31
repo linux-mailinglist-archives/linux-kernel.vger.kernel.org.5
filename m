@@ -2,81 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7B178F300
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D9978F306
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242956AbjHaTB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52344 "EHLO
+        id S1347110AbjHaTD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbjHaTBv (ORCPT
+        with ESMTP id S240348AbjHaTD2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:01:51 -0400
-X-Greylist: delayed 76618 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Aug 2023 12:01:46 PDT
-Received: from mail-out.m-online.net (mail-out.m-online.net [IPv6:2001:a60:0:28:0:1:25:1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6234E65
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:01:46 -0700 (PDT)
-Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
-        by mail-out.m-online.net (Postfix) with ESMTP id 4Rc9W85fh1z1sCHT;
-        Thu, 31 Aug 2023 21:01:39 +0200 (CEST)
-Received: from localhost (dynscan1.mnet-online.de [192.168.6.68])
-        by mail.m-online.net (Postfix) with ESMTP id 4Rc9W73sV1z1qqlY;
-        Thu, 31 Aug 2023 21:01:39 +0200 (CEST)
-X-Virus-Scanned: amavis at mnet-online.de
-Received: from mail.mnet-online.de ([192.168.8.182])
- by localhost (dynscan1.mail.m-online.net [192.168.6.68]) (amavis, port 10024)
- with ESMTP id 3t2LcBBBC5P6; Thu, 31 Aug 2023 21:01:38 +0200 (CEST)
-X-Auth-Info: lXkH32dCcJBd+12DFQPqBK2TsYUkx9qeK/d1QE75ehLNaJXCOJQ9jpTXTWJ0N5Py
-Received: from igel.home (aftr-62-216-205-244.dynamic.mnet-online.de [62.216.205.244])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.mnet-online.de (Postfix) with ESMTPSA;
-        Thu, 31 Aug 2023 21:01:38 +0200 (CEST)
-Received: by igel.home (Postfix, from userid 1000)
-        id 3B0CF2C1069; Thu, 31 Aug 2023 21:01:38 +0200 (CEST)
-From:   Andreas Schwab <schwab@linux-m68k.org>
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        maple-tree@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v2 1/2] maple_tree: Disable mas_wr_append() when other
- readers are possible
-In-Reply-To: <87y1hr22o1.fsf@mail.lhotse> (Michael Ellerman's message of "Thu,
-        31 Aug 2023 15:37:02 +1000")
-References: <20230819004356.1454718-1-Liam.Howlett@oracle.com>
-        <20230819004356.1454718-2-Liam.Howlett@oracle.com>
-        <87bkeotin8.fsf@igel.home> <87y1hr22o1.fsf@mail.lhotse>
-X-Yow:  Everything will be ALL RIGHT if we can just remember things about
- ALGEBRA.. or SOCCER..  or SOCIALISM..
-Date:   Thu, 31 Aug 2023 21:01:38 +0200
-Message-ID: <87cyz3594d.fsf@igel.home>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Thu, 31 Aug 2023 15:03:28 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C672E67
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:03:24 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d743a5fe05aso902631276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:03:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693508604; x=1694113404; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0mQPB8XxUb5OP/KXE1oeSlmWSBTEOE9Ge4MhauaXzcU=;
+        b=X8tpNHEyhugJur8VoEnXX15d6uACX4Fc6QPRIYjSFXAq9Cy/XbpWerbBC7YsgolaWx
+         V7hk4soqAqKQAU5Q8etE+CNPV6OhBdFrDsc519KVmWhPXaCgpeDfwJlNZ9v2L4NiONsQ
+         MQl8t33m52L6uT7G50UfanvYa7QgIzpqAqSXc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693508604; x=1694113404;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0mQPB8XxUb5OP/KXE1oeSlmWSBTEOE9Ge4MhauaXzcU=;
+        b=ZcVplYvoETw81yw87x1XWizy0C5bYTZHSADF5yRv/bviX/2yeaDxYOCpR7TRmFolIU
+         zmXNJWABV+1cCrYi4Ix++pub8qRChJ2OTT/s+4INFk1d3fuupsYKnAX4OYD3keuknHJl
+         8br0iNM0EzVep8thy9B9vldXOocxN+Q8vo5Y2tcX3ae2uPXaGvTHBdBiVyLbPLGDS3HH
+         5blS2LAFI0KAY0S5ibjnXqNWR8feYO+txuTuxf0UdeXJCCD9w7jz28FElOh4lyNMvxR3
+         CleGu762qypxN1gJON3bBzOAQDqZxzgW7YwO5zlDEwG2VMby/RthYa7LVwq8GGFL1J4G
+         vZ1A==
+X-Gm-Message-State: AOJu0YwUygBOR/AoxIZ1V2QYN9no9wB957xl6owT289Fymb4PVWAYGif
+        rc9pzhVVWU/9HDk4yKTEG3euE0bnqSjkpmi4gmoCqA==
+X-Google-Smtp-Source: AGHT+IFgK3CYg/SLq61wmdqsP6GkeNlwlUUqSxXvTpLJ9zbWqnbqaeeme9BcbxPZX+EdxGR7aKxWcikWGBuh/0Fvn1M=
+X-Received: by 2002:a25:cf12:0:b0:d7e:3db3:da2c with SMTP id
+ f18-20020a25cf12000000b00d7e3db3da2cmr611334ybg.43.1693508603480; Thu, 31 Aug
+ 2023 12:03:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=3.2 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
+ <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
+ <CAPnjgZ1S8G=7eCBF9PcDk4H5sk3AcxSSWXO575jK8SjA9dR8qw@mail.gmail.com>
+ <CAMj1kXH83_TB4S0PL3jswxjCP+907YpgS7FRuVTO3G62s7nn5w@mail.gmail.com>
+ <CAPnjgZ2kkUt1eOWX8K+EsbjcQZPefNvj5DSaFb9QrvRg0t2h7w@mail.gmail.com>
+ <CAMj1kXGe84uaJ9j9ic0V4HC43p7QBoKQ5ssTYd5DMBGtZ3++Jw@mail.gmail.com>
+ <CAPnjgZ3L-jGxoXNHnsXY0MXU=jTAN66KNAxSLHPVeHinHMjzkQ@mail.gmail.com> <CAMj1kXGw6DGK=gVF3bMH5dp=LL89V9n1V1LMGKDn0CZWGHh8qg@mail.gmail.com>
+In-Reply-To: <CAMj1kXGw6DGK=gVF3bMH5dp=LL89V9n1V1LMGKDn0CZWGHh8qg@mail.gmail.com>
+From:   Simon Glass <sjg@chromium.org>
+Date:   Thu, 31 Aug 2023 13:02:05 -0600
+Message-ID: <CAPnjgZ1fjee3rf91onPbuLpgqTHe3dZgz0WBSzoiKAabO+ETkQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Aug 31 2023, Michael Ellerman wrote:
+Hi Ard,
 
-> Andreas Schwab <schwab@linux-m68k.org> writes:
->> This breaks booting on ppc32:
+On Thu, 31 Aug 2023 at 06:28, Ard Biesheuvel <ardb@kernel.org> wrote:
 >
-> Does enabling CONFIG_DEBUG_ATOMIC_SLEEP fix the crash?
+> On Wed, 30 Aug 2023 at 23:11, Simon Glass <sjg@chromium.org> wrote:
+> >
+> > Hi Ard,
+> >
+> > On Tue, 29 Aug 2023 at 15:32, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > On Tue, 29 Aug 2023 at 21:18, Simon Glass <sjg@chromium.org> wrote:
+> > > >
+> > > > Hi Ard,
+> > > >
+> > > > On Thu, 24 Aug 2023 at 03:10, Ard Biesheuvel <ardb@kernel.org> wrote:
+> ...
+> > > > > In summary, I don't see why a non-UEFI payload would care about UEFI
+> > > > > semantics for pre-existing memory reservations, or vice versa. Note
+> > > > > that EDK2 will manage its own memory map, and expose it via UEFI boot
+> > > > > services and not via DT.
+> > > >
+> > > > Bear in mind that one or both sides of this interface may be UEFI.
+> > > > There is no boot-services link between the two parts that I have
+> > > > outlined.
+> > > >
+> > >
+> > > I don't understand what this means.
+> > >
+> > > UEFI specifies how one component invokes another, and it is not based
+> > > on a DT binding. If the second component calls UEFI boot or runtime
+> > > services, it should be invoked in this manner. If it doesn't, then it
+> > > doesn't care about these memory reservations (and the OS will not be
+> > > booted via UEFI either)
+> > >
+> > > So I feel I am missing something here. Perhaps a practical example
+> > > would be helpful?
+> >
+> > Let's say we want to support these combinations:
+> >
+> > Platform Init -> Payload
+> > --------------------------------
+> > U-Boot -> Tianocore
+> > coreboot -> U-Boot
+> > Tianocore -> U-Boot
+> > Tianocore -> Tianocore
+> > U-Boot -> U-Boot
+> >
+> > Some of the above things have UEFI interfaces, some don't. But in the
+> > case of Tianocore -> Tianocore we want things to work as if it were
+> > Tianocore -> (its own handoff mechanism) Tiancore.
+> >
+>
+> If Tianocore is the payload, it is either implemented as a EFI app, in
+> which case it has access to EFI services, or it is not, in which case
+> it doesn't care about UEFI semantics of the existing reserved regions,
+> and it only needs to know which regions exist and which of those are
+> reserved.
+>
+> And I think the same applies to all other rows in your table: either
+> the existence of UEFI needs to be carried forward, which needs to be
+> done via EFI services, or it doesn't, in which case the UEFI specific
+> reservations can be dropped, and only reserved and available memory is
+> relevant.
+>
+> > Some Platform Init may create runtime code which needs to accessible later.
+> >
+>
+> But not UEFI runtime code, right? If the payload is not UEFI based,
+> the OS would never be able to call that runtime code unless it is
+> described in a different, non-UEFI way. This is fine, but it is not
+> UEFI so we shouldn't call it UEFI runtime memory.
+>
+> > The way I think of it is that we need to generalise the memory map a
+> > bit. Saying that you must use UEFI boot services to discover it is too
+> > UEFI-specific.
+> >
+>
+> What I am questioning is why a memory map with UEFI semantics is even
+> relevant when those boot services do not exist.
+>
+> Could you be more specific about why a payload would have to be aware
+> of the existence of UEFI boot/runtime service regions if it does not
+> consume the UEFI interfaces of the platform init? And if the payload
+> exposes UEFI services to the OS, why would it consume a memory map
+> with UEFI semantics rather than a simple list of memblocks and memory
+> reservations?
 
-Yes, it does.
+It seems like you are thinking of the Payload as grub, or something
+like that? This is not about grub. If there are EFI boot services to
+be provided, they are provided by the Payload, not Platform Init. I am
+not that familiar with Tianocore, but if you are, perhaps think of it
+as splitting Tianocore into two pieces, one of which inits the silicon
+and the other which provides the EFI boot services.
 
--- 
-Andreas Schwab, schwab@linux-m68k.org
-GPG Key fingerprint = 7578 EB47 D4E5 4D69 2510  2552 DF73 E780 A9DA AEC1
-"And now for something completely different."
+Again, if you are familiar with Tianocore, it can be built either as a
+monolithic whole, or as a coreboot Payload. The Payload part of the
+code is (roughly) the same in each case. But the Platform Init is
+different[1]
+
+>
+> Again, I am inclined to treat this as a firmware implementation
+> detail, and the OS must never consume this binding. But I am still
+> puzzled about what exact purpose it is expected to serve.
+
+It really is purely so we can mix and match Platform Init (perhaps
+silicon init is a more familiar term?) and the Payload.
+
+Regards,
+Simon
+
+[1] Of course, coreboot uses blobs which are chunks of UEFI, but that
+is a separate issue
