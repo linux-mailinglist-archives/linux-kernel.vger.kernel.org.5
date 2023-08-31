@@ -2,137 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1DB78E95E
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3894878E963
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244471AbjHaJ15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S244530AbjHaJ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230021AbjHaJ14 (ORCPT
+        with ESMTP id S244869AbjHaJ3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:27:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29DBD194;
-        Thu, 31 Aug 2023 02:27:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693474073; x=1725010073;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=RdDc48cBbQRqzQzMzPcG7WW8BdV8myxLOLz2N8nkdHM=;
-  b=Dxvmf95uxEeifBTfN4uuSc/IxhsvEKl+YUA/Oree7WV+cge5Y/mjJfko
-   zVAxWwZ7onfSU8aLnHNZ1Pg3l1bVKpkNNOh0Up2kXM6HeUo9Q4RC5+vZH
-   2uXm/ZQqoiBUR1OPWYmbKQxM7vo5eT8y2FfAHtRw3ZmsxcSZ6eVeDs7D5
-   lnaiTjQkzvcxr/rQCmYqbNFhvt5FJ/nd+bRksKK+nCF0CfZAlkBAm4HsV
-   RoFl24V/hstxFLPYQClcnxYpQ6krFfBPzBapWtLLBVB35H8wqAVjXsPmk
-   DrN2fDmONSApoQSmL9NM4UWW66/w6XqgMlRIpK152+wplQFOTm/ybLbCl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="379625933"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="379625933"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 02:27:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="739431210"
-X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
-   d="scan'208";a="739431210"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.87]) ([10.254.210.87])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 02:27:49 -0700
-Message-ID: <67aa00ae-01e6-0dd8-499f-279cb6df3ddd@linux.intel.com>
-Date:   Thu, 31 Aug 2023 17:27:47 +0800
+        Thu, 31 Aug 2023 05:29:16 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C553194;
+        Thu, 31 Aug 2023 02:29:14 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V9Eqng019727;
+        Thu, 31 Aug 2023 09:29:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=5HDcXyS0ZaPptlrPHdam7BHT8Aw3osgEIMHQTratx+o=;
+ b=UnavEU/QHa4CaR+dzeFUVe2OAozKlZR2kRIdvCNogBWkrU+qdPh8H1Dq/iUFBcCzK8yw
+ IhbGb/9/YSmUdta02ebKo4+xAUnxO4xGSAwngrevoy3nD7RhfrxumTJ4Bj4jBMR+EBOV
+ KxPJXVxyIwyWzdOtZs38vcQqMXdAC9H22r2UzqAMbBuTPSLjYIIPI4vG6hkFt53s6Sqs
+ ggzF6VDMSA0eWgmQwNA5lC3PCdz6uuMgqq2YU7bpS/drZxNqYMXC9YLt2TtHYHb1fGPo
+ bV7cpap6Y/SMgE47N00lWM4krFaco8DjaAJ0PsQtd6BO99TBnW8qifCJDHVlaSgzZAgw wg== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stj378pty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 09:29:06 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V9T5AU014791
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 09:29:05 GMT
+Received: from varda-linux.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Thu, 31 Aug 2023 02:29:02 -0700
+From:   Varadarajan Narayanan <quic_varada@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <quic_kathirav@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
+Subject: [PATCH v2] clk: qcom: ipq5332: Drop set rate parent from gpll0 dependent clocks
+Date:   Thu, 31 Aug 2023 14:58:53 +0530
+Message-ID: <1693474133-10467-1-git-send-email-quic_varada@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>
-References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
- <20230825023026.132919-10-baolu.lu@linux.intel.com>
- <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <cbfbe969-1a92-52bf-f00c-3fb89feefd66@linux.intel.com>
- <BN9PR11MB52768891BC89107AD291E45C8CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52768891BC89107AD291E45C8CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: i1uuD_8xgY2Ks4dcxydaSI4A_yl10XjC
+X-Proofpoint-ORIG-GUID: i1uuD_8xgY2Ks4dcxydaSI4A_yl10XjC
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_07,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=861 bulkscore=0
+ malwarescore=0 spamscore=0 phishscore=0 impostorscore=0 adultscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310085
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/30 15:43, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Saturday, August 26, 2023 4:01 PM
->>
->> On 8/25/23 4:17 PM, Tian, Kevin wrote:
->>>> +
->>>>    /**
->>>>     * iopf_queue_flush_dev - Ensure that all queued faults have been
->>>> processed
->>>>     * @dev: the endpoint whose faults need to be flushed.
->>> Presumably we also need a flush callback per domain given now
->>> the use of workqueue is optional then flush_workqueue() might
->>> not be sufficient.
->>>
->>
->> The iopf_queue_flush_dev() function flushes all pending faults from the
->> IOMMU queue for a specific device. It has no means to flush fault queues
->> out of iommu core.
->>
->> The iopf_queue_flush_dev() function is typically called when a domain is
->> detaching from a PASID. Hence it's necessary to flush the pending faults
->> from top to bottom. For example, iommufd should flush pending faults in
->> its fault queues after detaching the domain from the pasid.
->>
-> 
-> Is there an ordering problem? The last step of intel_svm_drain_prq()
-> in the detaching path issues a set of descriptors to drain page requests
-> and responses in hardware. It cannot complete if not all software queues
-> are drained and it's counter-intuitive to drain a software queue after
-> the hardware draining has already been completed.
-> 
-> btw just flushing requests is probably insufficient in iommufd case since
-> the responses are received asynchronously. It requires an interface to
-> drain both requests and responses (presumably with timeouts in case
-> of a malicious guest which never responds) in the detach path.
+IPQ5332's GPLL0's nominal/turbo frequency is 800MHz.
+This must not be scaled based on the requirement of
+dependent clocks. Hence remove the CLK_SET_RATE_PARENT
+flag.
 
-You are right. Good catch.
+Fixes: 3d89d52970fd ("clk: qcom: add Global Clock controller (GCC) driver for IPQ5332 SoC")
+Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+---
+ drivers/clk/qcom/gcc-ipq5332.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-To put it simply, iopf_queue_flush_dev() is insufficient to support the
-case of forwarding iopf's over iommufd. Do I understand it right?
+diff --git a/drivers/clk/qcom/gcc-ipq5332.c b/drivers/clk/qcom/gcc-ipq5332.c
+index b02026f..b836159 100644
+--- a/drivers/clk/qcom/gcc-ipq5332.c
++++ b/drivers/clk/qcom/gcc-ipq5332.c
+@@ -71,7 +71,6 @@ static struct clk_fixed_factor gpll0_div2 = {
+ 				&gpll0_main.clkr.hw },
+ 		.num_parents = 1,
+ 		.ops = &clk_fixed_factor_ops,
+-		.flags = CLK_SET_RATE_PARENT,
+ 	},
+ };
+ 
+@@ -85,7 +84,6 @@ static struct clk_alpha_pll_postdiv gpll0 = {
+ 				&gpll0_main.clkr.hw },
+ 		.num_parents = 1,
+ 		.ops = &clk_alpha_pll_postdiv_ro_ops,
+-		.flags = CLK_SET_RATE_PARENT,
+ 	},
+ };
+ 
+-- 
+2.7.4
 
-Perhaps we should drain the partial list and the response pending list?
-With these two lists drained, no more iopf's for the specific pasid will
-be forwarded up, and page response from upper layer will be dropped.
-
-> 
-> it's not a problem for sva as responses are synchrounsly delivered after
-> handling mm fault. So fine to not touch it in this series but certainly
-> this area needs more work when moving to support iommufd. 😊
-
-Yes, SVA is not affected. The flush_workqueue() is enough for it. As a
-preparation series, I hope we can solve this in it. :-)
-
-> 
-> btw why is iopf_queue_flush_dev() called only in intel-iommu driver?
-> Isn't it a common requirement for all sva-capable drivers?
-
-Jean answered this.
-
-Best regards,
-baolu
