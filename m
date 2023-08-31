@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C36778F113
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD0BB78F11C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346766AbjHaQSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
+        id S244285AbjHaQVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:21:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239540AbjHaQSh (ORCPT
+        with ESMTP id S241201AbjHaQVS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:18:37 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D0CB0;
-        Thu, 31 Aug 2023 09:18:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 62E9AB82324;
-        Thu, 31 Aug 2023 16:18:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE41BC433C8;
-        Thu, 31 Aug 2023 16:18:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693498708;
-        bh=8mihFSvYYGejx9N0MfZQyqwmoRIFUqz4THpIXBeJ4gQ=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=cm+dXHMYOMpdB+oqp24HHZI0Q743h4HkYXXgCxcV4b0Mq7lVAiVowaIp7S1asTz1Y
-         3HAfbYzQAlgq27ijXObLqIDuufPNgVD2Wcfdp1ges0xBS+e5vW0AciQQmx864OJuqY
-         k5rM7816ErCmqGgU4MdL/awjMDZ8O/xIpAnOmSV7euW0XpczSKxgeru0rkAKyVgdRW
-         P+xKYKL64qdrNt08/R3Mpq1imNqpZ1FtaQmWFokjCFP2FhNiLF1fdC4J8Fy1Q8NIbX
-         +XG0puuzhWK7Eqi8tS3qrRScgUk2YxOx6lO4rDK/k2myORRkNsoLPlb3kz6uMlBysX
-         LsXxV9ZGH8C2g==
-From:   =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org
-Cc:     =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next] selftests/bpf: Include build flavors for
- install target
-In-Reply-To: <abe27949-6e35-07e6-ef29-bbc749fc40d5@iogearbox.net>
-References: <20230828183329.546959-1-bjorn@kernel.org>
- <abe27949-6e35-07e6-ef29-bbc749fc40d5@iogearbox.net>
-Date:   Thu, 31 Aug 2023 18:18:25 +0200
-Message-ID: <87ttsf18z2.fsf@all.your.base.are.belong.to.us>
+        Thu, 31 Aug 2023 12:21:18 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 514E61BF;
+        Thu, 31 Aug 2023 09:21:16 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 37VF9jT2009857;
+        Thu, 31 Aug 2023 11:20:57 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=v
+        9izTZHSJz/cxSDw2DvHeuhuoYs2eAtVfEb4uqYV/I4=; b=fiSalqjVfebRZJ+Tm
+        4Y0Z9uCpTwuxZWSdLUF3uEPyUklSXV5nm/nYlLNDvWwo1ixEW+ZIren/5YSCdgr4
+        oHpTqWB6o2YYTyYeVVQZl7erD8TVxuu8gaPJygdRSU/E8IZDtvYwM0UKorRtD02J
+        bOMHG8gLMTBZUjrXUJEyU58PvkegJ/Dg7sSC/kKYMTOI6crPsav1J+dv+V77IfiX
+        OOmJjr9NC/dPUtUlwcgVsLRyEM5/AFq61wiCQtMjFZJuQNgWNZHJ/C8abg91fN45
+        edVbIATSvDcOQ1406feXEsXjyw+1KuaEYcV4ojE0nfG6JembbwwW9ZaFxISjcP6m
+        0P20w==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sqesyep1p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 11:20:56 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Thu, 31 Aug
+ 2023 17:20:54 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Thu, 31 Aug 2023 17:20:54 +0100
+Received: from vkarpovich-ThinkStation-P620.crystal.cirrus.com (vkarpovich-ThinkStation-P620.ad.cirrus.com [141.131.145.49])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9937111D6;
+        Thu, 31 Aug 2023 16:20:52 +0000 (UTC)
+From:   Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        "Ricardo Rivera-Matos" <rriveram@opensource.cirrus.com>,
+        Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+Subject: [PATCH v3 1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
+Date:   Thu, 31 Aug 2023 11:20:39 -0500
+Message-ID: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: sM0T7B4ftU-mp34Q5K-zrbgE_n38BaiR
+X-Proofpoint-GUID: sM0T7B4ftU-mp34Q5K-zrbgE_n38BaiR
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daniel Borkmann <daniel@iogearbox.net> writes:
+From: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
 
-> On 8/28/23 8:33 PM, Bj=C3=B6rn T=C3=B6pel wrote:
->> From: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->>=20
->> When using the "install" or targets depending on install,
->> e.g. "gen_tar", the BPF machine flavors weren't included.
->>=20
->> A command like:
->>    | make ARCH=3Driscv CROSS_COMPILE=3Driscv64-linux-gnu- O=3D/workspace=
-/kbuild \
->>    |    HOSTCC=3Dgcc FORMAT=3D SKIP_TARGETS=3D"arm64 ia64 powerpc sparc6=
-4 x86 sgx" \
->>    |    -C tools/testing/selftests gen_tar
->> would not include bpf/no_alu32, bpf/cpuv4, or bpf/bpf-gcc.
->>=20
->> Include the BPF machine flavors for "install" make target.
->>=20
->> Signed-off-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
->
-> Looks good and BPF CI also seems to be fine with it, wrt INSTDIRS could w=
-e use
-> a more appropriate location where we define it? Was thinking sth like:
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftes=
-ts/bpf/Makefile
-> index 7c77a21c3371..8b724efb8b7f 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -50,14 +50,17 @@ TEST_GEN_PROGS =3D test_verifier test_tag test_maps t=
-est_lru_map test_lpm_map test
->          test_cgroup_storage \
->          test_tcpnotify_user test_sysctl \
->          test_progs-no_alu32
-> +TEST_INST_SUBDIRS :=3D no_alu32
->
->   # Also test bpf-gcc, if present
->   ifneq ($(BPF_GCC),)
->   TEST_GEN_PROGS +=3D test_progs-bpf_gcc
-> +TEST_INST_SUBDIRS +=3D bpf_gcc
->   endif
->
->   ifneq ($(CLANG_CPUV4),)
->   TEST_GEN_PROGS +=3D test_progs-cpuv4
-> +TEST_INST_SUBDIRS +=3D cpuv4
->   endif
->
-> [...]
+Checks the index computed by the virq offset before printing the
+error condition in cs35l45_spk_safe_err() handler.
 
-Ok! I'll spin a v2!
+Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+---
+ sound/soc/codecs/cs35l45.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/cs35l45.c b/sound/soc/codecs/cs35l45.c
+index 2ac4612402eb..02b1172d2647 100644
+--- a/sound/soc/codecs/cs35l45.c
++++ b/sound/soc/codecs/cs35l45.c
+@@ -1023,7 +1023,10 @@ static irqreturn_t cs35l45_spk_safe_err(int irq, void *data)
+ 
+ 	i = irq - regmap_irq_get_virq(cs35l45->irq_data, 0);
+ 
+-	dev_err(cs35l45->dev, "%s condition detected!\n", cs35l45_irqs[i].name);
++	if (i < 0 || i >= ARRAY_SIZE(cs35l45_irqs))
++		dev_err(cs35l45->dev, "Unspecified global error condition (%d) detected!\n", irq);
++	else
++		dev_err(cs35l45->dev, "%s condition detected!\n", cs35l45_irqs[i].name);
+ 
+ 	return IRQ_HANDLED;
+ }
+-- 
+2.25.1
+
