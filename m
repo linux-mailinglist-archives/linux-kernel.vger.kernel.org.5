@@ -2,61 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE85578E515
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:28:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB7B78E517
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 05:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243705AbjHaD2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 23:28:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47048 "EHLO
+        id S1344029AbjHaD3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 23:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231263AbjHaD2j (ORCPT
+        with ESMTP id S241909AbjHaD3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 23:28:39 -0400
-Received: from out-247.mta0.migadu.com (out-247.mta0.migadu.com [IPv6:2001:41d0:1004:224b::f7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EA7D185
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 20:28:35 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693452513;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VIeM3nyX8rQsoSZOOJBtrylSeTVSP/9u4tsI5GW+b0I=;
-        b=GDP1BPLu5hRvbUVAUyMhkrvbjzXXrHtH7tALDkLcCW81o/bTst5s5Hro+nPfQDIztk1Ma2
-        GAB93DMcmsfObQWpmJsPT+khIly/x5V67WZuA/saNnSumiAYYwuAgGpHkTbkR/77NKKx3J
-        NhGI7eKlwgsiGdcsCGwT5fzdpyzc+hQ=
-Mime-Version: 1.0
-Subject: Re: [PATCH 09/12] hugetlb_vmemmap: Optimistically set Optimized flag
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230830224706.GC55006@monkey>
-Date:   Thu, 31 Aug 2023 11:27:52 +0800
-Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        David Hildenbrand <david@redhat.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        David Rientjes <rientjes@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7D01FB21-5182-428D-BCD8-89C679ABEEC8@linux.dev>
-References: <20230825190436.55045-1-mike.kravetz@oracle.com>
- <20230825190436.55045-10-mike.kravetz@oracle.com>
- <8e298c9f-1ef3-5c99-d7b5-47fd6703cf83@linux.dev>
- <20230830224706.GC55006@monkey>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 30 Aug 2023 23:29:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44BD1CD6;
+        Wed, 30 Aug 2023 20:28:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693452539; x=1724988539;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=mMebp850JOshB3+YN1rRwuWyCX0M90aaEB7z5FJE9VI=;
+  b=ScauuD3sjd3M/H+zFbyF5kRLC2ORV7LCFGKU3kEbRqU0WW83g1YFDHqv
+   nzfIkBn7755vsmgxkpdC5uOFtv3aZu8eynYlZIviCqESfdNjew+W3kW/n
+   4XrKaRlLgIOfSMt2xZIsa14UzFyeFC1TnGlEaIKf7tWqVyxAIfNuyyaTF
+   feF+1MwaJyxsX6dkRiBmFWOIBtaHpDP42aIr8d7OUUaVf3Sz+g3mK8hNy
+   Qt66PJIFQ4wmLPnzyUVqbLMl2XfefUq0xFc59dXHS5yixerny2pUHed9Y
+   CFvc7i4oPEQvsfPTT09g+YzWFyie+ELP410+lNKPqjTRTmsoWSZ1yyT9g
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="356115591"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="356115591"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:28:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="716155798"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="716155798"
+Received: from asehgal1-mobl.amr.corp.intel.com (HELO [10.212.136.74]) ([10.212.136.74])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 20:28:58 -0700
+Message-ID: <934250db-b05f-4d48-8138-06986a14b3fb@linux.intel.com>
+Date:   Wed, 30 Aug 2023 20:28:57 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] platform/x86: intel_scu_ipc: Timeout fixes
+Content-Language: en-US
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+References: <20230831011405.3246849-1-swboyd@chromium.org>
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20230831011405.3246849-1-swboyd@chromium.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,105 +70,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-> On Aug 31, 2023, at 06:47, Mike Kravetz <mike.kravetz@oracle.com> =
-wrote:
->=20
-> On 08/30/23 15:26, Muchun Song wrote:
->>=20
->>=20
->> On 2023/8/26 03:04, Mike Kravetz wrote:
->>> At the beginning of hugetlb_vmemmap_optimize, optimistically set
->>> the HPageVmemmapOptimized flag in the head page.  Clear the flag
->>> if the operation fails.
->>>=20
->>> No change in behavior.  However, this will become important in
->>> subsequent patches where we batch delay TLB flushing.  We need to
->>> make sure the content in the old and new vmemmap pages are the same.
->>=20
->> Sorry, I didn't get the point here. Could you elaborate it?
->>=20
->=20
-> Sorry, this really could use a better explanation.
->=20
->>>=20
->>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>>  mm/hugetlb_vmemmap.c | 8 +++++---
->>>  1 file changed, 5 insertions(+), 3 deletions(-)
->>>=20
->>> diff --git a/mm/hugetlb_vmemmap.c b/mm/hugetlb_vmemmap.c
->>> index e390170c0887..500a118915ff 100644
->>> --- a/mm/hugetlb_vmemmap.c
->>> +++ b/mm/hugetlb_vmemmap.c
->>> @@ -566,7 +566,9 @@ static void __hugetlb_vmemmap_optimize(const =
-struct hstate *h,
->>>   if (!vmemmap_should_optimize(h, head))
->>>   return;
->>> + /* Optimistically assume success */
->>>   static_branch_inc(&hugetlb_optimize_vmemmap_key);
->>> + SetHPageVmemmapOptimized(head);
->>>   vmemmap_end =3D vmemmap_start + hugetlb_vmemmap_size(h);
->>>   vmemmap_reuse =3D vmemmap_start;
->>> @@ -577,10 +579,10 @@ static void __hugetlb_vmemmap_optimize(const =
-struct hstate *h,
->>>    * to the page which @vmemmap_reuse is mapped to, then free the =
-pages
->>>    * which the range [@vmemmap_start, @vmemmap_end] is mapped to.
->>>    */
->>> - if (vmemmap_remap_free(vmemmap_start, vmemmap_end, vmemmap_reuse, =
-bulk_pages))
->>> + if (vmemmap_remap_free(vmemmap_start, vmemmap_end, vmemmap_reuse, =
-bulk_pages)) {
->>>   static_branch_dec(&hugetlb_optimize_vmemmap_key);
->>> - else
->>> - SetHPageVmemmapOptimized(head);
->>> + ClearHPageVmemmapOptimized(head);
->>> + }
->=20
-> Consider the case where we have successfully remapped vmemmap AND
-> - we have replaced the page table page (pte page) containing the =
-struct
->  page of the hugetlb head page.  Joao's commit 11aad2631bf7
->  'mm/hugetlb_vmemmap: remap head page to newly allocated page'.
-> - we have NOT flushed the TLB after remapping due to batching the
->  operations before flush.
->=20
-> In this case, it is possible that the old head page is still in the =
-TLB
-> and caches and SetHPageVmemmapOptimized(head) will actually set the =
-flag
-> in the old pte page.  We then have an optimized hugetlb page without =
-the
-> HPageVmemmapOptimized flag set.  When developing this series, we
-> experienced various BUGs as a result of this situation.
+On 8/30/2023 6:14 PM, Stephen Boyd wrote:
+> I recently looked at some crash reports on ChromeOS devices that call
+> into this intel_scu_ipc driver. They were hitting timeouts, and it
+> certainly looks possible for those timeouts to be triggering because of
+> scheduling issues. Once things started going south, the timeouts kept
 
-Now, I got it. Thanks for your elaboration.
+Are you talking about timeouts during IPC command?
 
->=20
-> In the case of an error during optimization, we do a TLB flush so if
-> we need to clear the flag we will write to the correct pte page.
+> coming. Maybe that's because the other side got seriously confused? I
+> don't know. I'll poke at it some more by injecting timeouts on the
+> kernel side.
 
-Right.
+Do you think it is possible due to a firmware issue?
 
->=20
-> Hope that makes sense.
->=20
-> I add an explanation like this to the commit message and perhaps put
-> this closer to/or squash with the patch that batches operations before
-> flushing TLB.
+> 
+> The first two patches are only lightly tested (normal functions keep
+> working), while the third one is purely speculation. I was going to make
+> the interrupt delay for a long time to see if I could hit the timeout.
+> 
+> Stephen Boyd (3):
+>   platform/x86: intel_scu_ipc: Check status after timeouts in
+>     busy_loop()
+>   platform/x86: intel_scu_ipc: Check status upon timeout in
+>     ipc_wait_for_interrupt()
+>   platform/x86: intel_scu_ipc: Fail IPC send if still busy
+> 
+>  drivers/platform/x86/intel_scu_ipc.c | 59 ++++++++++++++++++++--------
+>  1 file changed, 42 insertions(+), 17 deletions(-)
+> 
+> 
+> base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
 
-Yes. But I'd also like to add a big comment to explain what's going on =
-here
-instead of a simple "Optimistically assume success". This one really =
-makes
-me think it is an optimization not a mandatory premise.
-
-Thanks.
-
-> --=20
-> Mike Kravetz
->=20
->>>  }
->>>  /**
-
-
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
