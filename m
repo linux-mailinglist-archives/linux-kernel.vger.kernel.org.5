@@ -2,144 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED0BB78F374
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCF878F379
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347201AbjHaTjL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:39:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39260 "EHLO
+        id S1345017AbjHaTlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:41:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347193AbjHaTjK (ORCPT
+        with ESMTP id S229545AbjHaTlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:39:10 -0400
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2087.outbound.protection.outlook.com [40.107.96.87])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65190E65;
-        Thu, 31 Aug 2023 12:39:07 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EAwQEmHFG634pnc+7mIn/7ck3Az055aG0+Yn+JBOA6g2xwYXDe3JugyPKPN0DbJ0heZY+ew5eKRYG7OIUhUaHDFh8ZMRxz10eQYGJC3zaZ3p+5bU6lq3MCn3MsnNwyFffQraHKvqPBjadCNtI5tixu3wHh0X1K8abvb5qkRZhCVu+h/YinJ4qPvVFu6LYkGcdPzFFAYt/XwM6aooqzVydtVIoFE0Tab8P4cX4tze0jHsND7J5cAk3Wf13yLCKnWaXC/X2vG/6Lh3Dja80iNbJnurR8V3XBHwstW5k8SeeVVcO3qeI6lnuTzZLDonK8K/PlP4h7p4MjrhMUtYxvR9AA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZPt/2+Caib+CQ2sVodXIXOm8LykQ9DOPiSx6tD3J0zw=;
- b=VIlO03jm0FjhI8rq4bASuq/uJz+h5JcCpjv83ecnRzieqHcnZ4vEfbsNpPGbN50ut9snOGkE5B1R6sCHXq49xR/ijbfdK9ellwFHTqv491reEy536TXSqII0Qnck238BPGy46WDX4m6HPaAMUXKCk2DaCe+5EsnX8SxCp7eb/iTaVDLjg95EivxkyLrJm5zigwQxM9DBFG5wHyzi9S2Nv0ECiEuDcva4GMVo/GH9oxKygGzU0vjBP7J7j40XiYnKoV2vcDsLyxdSRMdia/ocDXNqPeM//r8ks0FsAQCURAECaw2W0qsuY+GCR6U3/rFNGukvI2vyj7bN+fKEI0GP1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZPt/2+Caib+CQ2sVodXIXOm8LykQ9DOPiSx6tD3J0zw=;
- b=KJiJ1H5nnVBFDiGFqQH1YTHJv5+sBSCWUo6AzCdey3tg8DIw6bvmZBKqMIL6p7J/19PORbcPTBZX3953DaKANHQsWhdRsROAAEeJvh38TtG287a+AO7DfUPya4+jzy5hfrkoyeqrdvyxp+XkWIi6IyPIHvs2HG4Z1O+7NLgOQlo=
-Received: from SJ2PR07CA0022.namprd07.prod.outlook.com (2603:10b6:a03:505::24)
- by PH7PR12MB5710.namprd12.prod.outlook.com (2603:10b6:510:1e1::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Thu, 31 Aug
- 2023 19:39:04 +0000
-Received: from CO1PEPF000044F3.namprd05.prod.outlook.com
- (2603:10b6:a03:505:cafe::35) by SJ2PR07CA0022.outlook.office365.com
- (2603:10b6:a03:505::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22 via Frontend
- Transport; Thu, 31 Aug 2023 19:39:04 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044F3.mail.protection.outlook.com (10.167.241.73) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6745.17 via Frontend Transport; Thu, 31 Aug 2023 19:39:04 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 31 Aug
- 2023 14:39:01 -0500
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-To:     <amd-gfx@lists.freedesktop.org>
-CC:     Fangzhi Zuo <jerry.zuo@amd.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        <stable@vger.kernel.org>, Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        "Alex Deucher" <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Jun Lei <jun.lei@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        "Nicholas Kazlauskas" <nicholas.kazlauskas@amd.com>,
-        Wenjing Liu <wenjing.liu@amd.com>,
-        Alvin Lee <Alvin.Lee2@amd.com>,
-        Sung Joon Kim <sungjoon.kim@amd.com>,
-        "Daniel Miess" <daniel.miess@amd.com>,
-        Gabe Teeger <gabe.teeger@amd.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] drm/amd/display: limit the v_startup workaround for ASICs older than DCN3.1
-Date:   Thu, 31 Aug 2023 15:38:42 -0400
-Message-ID: <20230831193844.154254-2-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230831193844.154254-1-hamza.mahfooz@amd.com>
-References: <20230831193844.154254-1-hamza.mahfooz@amd.com>
+        Thu, 31 Aug 2023 15:41:07 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AF41BF
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:41:02 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5007abb15e9so2319304e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693510860; x=1694115660; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=9lFziVFqioUGyeOGzUW1l/wvWLY3b5anS2Z+ZANPwmM=;
+        b=XbUiZEWqtxrNK4ZHUDbHPQxP+FBfqZuYkPbDiM9snYmCrK6+5oM8F6ZtWua7nWNVwd
+         +ih4d/qrn+PYVbEenn1lrrsxqmV3ltXHJKHl04CtyhpVuRpQuIm64Ng1QEZIHh+1gyaC
+         YbkolXOiQCOfbx7eUR1LBGTvkH5K7+YnsEXUk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693510860; x=1694115660;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9lFziVFqioUGyeOGzUW1l/wvWLY3b5anS2Z+ZANPwmM=;
+        b=H1Pm+UhrlalLqecC6DzBHimbzRc2cwnJDqaBQBIBHiv9npRwkl8Y2ppQw9FFJ1Q6Cm
+         kFgLGtOnrZoAWWXf2Vb7mLQxlh3GeKrD74ALrJyZgjTkBp3EcPlto5j/eyjS1GkFhiha
+         v3wm3r51N1N1BbOP29+EUScKQfgKUOfDqPew7aarjuRnM1dZi2xar2+Fff7zXwmO70Ad
+         CesOsdtV1AjMEzvUEtbAoUCkXcE7CX1Zgb85hkSOF4BGBnMZaxLWQ0r2kp2t68EdYoJm
+         H3QJGgCo8enPMmWKRG462H8KF3P3imMUwZU/FVOiHLgBJHB5YmdoFj2wqr28k1jQPu5p
+         tJWw==
+X-Gm-Message-State: AOJu0YxO25wnnadN3FNZuLmXrnUpkPLG0yaNEDIxY5ZCU9u0IeJvnItJ
+        XIWEuLlfJf3xZAQpw9PxNYjhp5XZJebRkNqt0selfkLY
+X-Google-Smtp-Source: AGHT+IHc3bMDRpeYmCFP12xrNrDK0xlA91qO4DXfZbo9XmDqbqKZkrSjkghnqd7ZGbcvfRFyf95mIw==
+X-Received: by 2002:a05:6512:481d:b0:4fb:8de9:ac0e with SMTP id eo29-20020a056512481d00b004fb8de9ac0emr146113lfb.1.1693510860566;
+        Thu, 31 Aug 2023 12:41:00 -0700 (PDT)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id q26-20020ac24a7a000000b00500832b083esm384092lfp.298.2023.08.31.12.40.59
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 12:41:00 -0700 (PDT)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so22086261fa.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:40:59 -0700 (PDT)
+X-Received: by 2002:a05:6512:32d5:b0:500:c180:59c6 with SMTP id
+ f21-20020a05651232d500b00500c18059c6mr147282lfg.33.1693510859634; Thu, 31 Aug
+ 2023 12:40:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044F3:EE_|PH7PR12MB5710:EE_
-X-MS-Office365-Filtering-Correlation-Id: f48e3f57-d8d5-495f-e7a5-08dbaa59ef1d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PViyb30tqUBzp6AbuFkZ3mKZTbrznUUwtBjtGbkmKqMwSoVpL/jEkMAio9oET6I5knyBvU1tq93UpSdSFHTkA79pz8WX0P7hI+zmVlVxgKvwkysFdUCs4O083wYhw3EqH/tRut/5jhRBfyt5Go7R41IotFzyg/Zbh+zBljsCm9v3oRrvSl0ujW7oHfB+TvoL1AZTIqc9dr61VXEtmEfU+ly1uCID7I20qe9vpRzQAdgM+x+2HFDB5QVEKWcQcVGt0pj2ywXDTg5Wz2Mgu08mHVEJp/95hR1RWihATk8U/769DQMMH+CuX3hWqsb/7E7ydpGTreR8JMu2FBchGaE3Q2gzwgKTVej8kPRMKaoeQ3NEWUr/8iB+bau7bqAFaGRpBUgnpWreC4MrT3SXuHcRmDMrqCT+SokFpg4R0RXWwdsVCd1DA/ukK1te0qDISYAcAX7hGAPSjuAvDEhyuguZU4UxP73jMl3z5s6jumCvA+TQ3u2kngayj/vbADgFIhAklKZL4DoMyoGaDXX17n92u3wJ0i0D5leB1pRuy1eb/JX8va5h2kgEwjUEkBkmJlQMCY9wcYIftGkq7NgAgCgo08+rT56I8uoqBchdbe1glysRMaXwFRKkqFrTLIgwRDaPFNeD6Dmr8YrBODZV4NALbXLubs0shuI4bxSzq92PM9smf5t2fHSat9Yo1VegVZn7YaU5JPMlrECpVodu7NEIoeK6qV6uYyqcnpqN3S+lC2NGJraogQtluHU19NAbXJiOKSNSfHpm7x1MiIRT1oO3ZVNIpnxO3JaLsB71qvF2lSugAkEVAX/mWSL8CXSvJYUy
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(39860400002)(136003)(376002)(1800799009)(186009)(451199024)(82310400011)(46966006)(36840700001)(40470700004)(82740400003)(356005)(6666004)(36756003)(40460700003)(86362001)(81166007)(36860700001)(40480700001)(47076005)(2616005)(1076003)(2906002)(426003)(336012)(26005)(16526019)(83380400001)(478600001)(70206006)(70586007)(8936002)(54906003)(8676002)(4326008)(5660300002)(44832011)(41300700001)(6916009)(316002)(16060500005)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 19:39:04.2176
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f48e3f57-d8d5-495f-e7a5-08dbaa59ef1d
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044F3.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5710
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230830234752.19858-1-dave.hansen@linux.intel.com>
+In-Reply-To: <20230830234752.19858-1-dave.hansen@linux.intel.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 31 Aug 2023 12:40:42 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wipDVFEfSJxbnUSDqENs5i8RzSsgJOFdb69pH=b7BOFiQ@mail.gmail.com>
+Message-ID: <CAHk-=wipDVFEfSJxbnUSDqENs5i8RzSsgJOFdb69pH=b7BOFiQ@mail.gmail.com>
+Subject: Re: [GIT PULL] x86/shstk for 6.6-rc1
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since, calling dcn20_adjust_freesync_v_startup() on DCN3.1+ ASICs
-can cause the display to flicker and underflow to occur we shouldn't
-call it for them. So, ensure that the DCN version is less than
-DCN_VERSION_3_1 before calling dcn20_adjust_freesync_v_startup().
+On Wed, 30 Aug 2023 at 16:48, Dave Hansen <dave.hansen@linux.intel.com> wrote:
+>
+> Add x86 shadow stack support
 
-Cc: stable@vger.kernel.org
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
----
- drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I assume you are aware of the system call renumbering from linux-next,
+but I thought I'd mention it anyway. 452 was taken by fchmodat2, so
+your new map_shadow_stack() system call is merged as 453.
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
-index 1bfdf0271fdf..a68fb45ed487 100644
---- a/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml/dcn20/dcn20_fpu.c
-@@ -1099,7 +1099,8 @@ void dcn20_calculate_dlg_params(struct dc *dc,
- 		context->res_ctx.pipe_ctx[i].plane_res.bw.dppclk_khz =
- 						pipes[pipe_idx].clks_cfg.dppclk_mhz * 1000;
- 		context->res_ctx.pipe_ctx[i].pipe_dlg_param = pipes[pipe_idx].pipe.dest;
--		if (context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
-+		if (dc->ctx->dce_version < DCN_VERSION_3_1 &&
-+		    context->res_ctx.pipe_ctx[i].stream->adaptive_sync_infopacket.valid)
- 			dcn20_adjust_freesync_v_startup(
- 				&context->res_ctx.pipe_ctx[i].stream->timing,
- 				&context->res_ctx.pipe_ctx[i].pipe_dlg_param.vstartup_start);
--- 
-2.41.0
+I do also note that it looks like the merge resolution of the
+_COMMON_PAGE_CHG_MASK bits in linux-next is wrong, and lost the
+_PAGE_DIRTY_BITS part in Ingo's -tip merge 783560d95e0e ("Merge branch
+'x86/mm' into x86/merge, to ease integration testing").
 
+Anyway, please do double-check my merge for correctness, and test it
+on some machine that hopefully supports this and has the
+infrastructure set up for it.
+
+             Linus
