@@ -2,398 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C756278E9D3
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4568B78E9D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 12:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242835AbjHaJ7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:59:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
+        id S243293AbjHaKAk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 06:00:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233881AbjHaJ7G (ORCPT
+        with ESMTP id S233881AbjHaKAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:59:06 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E371ECED;
-        Thu, 31 Aug 2023 02:59:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1693475940;
-        bh=R9BFFc07QbTd81j9mT+6xhPVk6Dk7uM+agbq34uhpXc=;
-        h=From:Date:Subject:To:Cc:From;
-        b=DZuywoFCi7lm5ko75l+UHsdE3wUtwI+Q4xqIaR5Uh5Je7swVHnTxASF6jas69r+gR
-         lrOByK9JRjbKfxkAY7OtGkByLXWqJC8C/GceojIZR1iWYVVlV0T0nGaZBc3QqkIlOW
-         wj+MnoLDXGDhDXR3kcmLPWqmg3t7/enZ/7cgW7x4=
-From:   =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date:   Thu, 31 Aug 2023 11:58:56 +0200
-Subject: [PATCH v2] hwmon: add POWER-Z driver
+        Thu, 31 Aug 2023 06:00:39 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EA82CED;
+        Thu, 31 Aug 2023 03:00:35 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V9GP4v032484;
+        Thu, 31 Aug 2023 10:00:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=uh2tVtIUs3ZV9uZDdyhxj6TuRdsD5ZaJVkC1lFuqyjc=;
+ b=GBXOQyRKIEj7tgYISTcJORwXHUbiqSBsmmevysG/Yw38pYLSQC8eTCOvfimdDwug0IHq
+ Z2GTMK8WwsXUgabhC7b8AK3Hcv8o68ZCCx2M/GJZoHeMJ8QjZHtsrSQBjF6QxmGzUJyq
+ 6BOLKBYqT6aY8p4u5vF00i6M4kquKd3MwG9ZxmB9ZlgNItpL7FI0Bd9SAPKTZBRH817x
+ r06Cf53lV5UHtFSx/pdJKyfxj7YbUXx7URrDXkaKyKhxOYTpG3IHjKuJ/F8r5DYJws5L
+ ydTHrJAmSLO+Km90EVqstzxb3Zq6u73364iZPDcDYt6Q8zEL6MgT4SePNDRIoKpG6obK 3w== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sswbv2vty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 10:00:30 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VA0TTr020290
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 10:00:29 GMT
+Received: from [10.218.10.146] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 31 Aug
+ 2023 03:00:23 -0700
+Message-ID: <7d4a2cd5-291c-e058-9834-1d7eaf911821@quicinc.com>
+Date:   Thu, 31 Aug 2023 15:30:19 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20230831-powerz-v2-1-5c62c53debd4@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAF9k8GQC/2XMQQ7CIBCF4as0sxYDNKTgynuYLipOZTa0YVqqN
- txd7Nbl//Ly7cCYCBkuzQ4JMzFNsYY+NeDDEJ8o6FEbtNSttK0S87Rh+gjt/d11drBoOqjnOeF
- IrwO69bUD8TKl9+Fm9Vv/iKyEErJ1nUOj3Gj0dUNiZh/WcI64QF9K+QIKcVjaoQAAAA==
-To:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693475940; l=10223;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=R9BFFc07QbTd81j9mT+6xhPVk6Dk7uM+agbq34uhpXc=;
- b=s91iRqR/ivEZ1buKaN+Wj7rkd5oyP9fbTJFz+u52jF0hnklcntdnKlP7Twyq/fGPfe2cUOKGu
- rKEetwNvJYfA143zkCXluKiDOpmS5NLzbIWwzCY4GEfBdrjdJyiRwUc
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.2
+Subject: Re: [PATCH 3/4] dt-bindings: clock: qcom: Add GCC clocks for SM4450
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Michael Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230824173410.550126-1-quic_ajipan@quicinc.com>
+ <20230824173410.550126-4-quic_ajipan@quicinc.com>
+ <161de126-87b0-3440-8517-330b529c3fb6@linaro.org>
+From:   Ajit Pandey <quic_ajipan@quicinc.com>
+In-Reply-To: <161de126-87b0-3440-8517-330b529c3fb6@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: gl8gxOXJflGu-4r4GQnPBpF3UPZ9ZV9Z
+X-Proofpoint-GUID: gl8gxOXJflGu-4r4GQnPBpF3UPZ9ZV9Z
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_07,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 bulkscore=0 spamscore=0
+ mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
+ clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310088
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-POWER-Z is a series of devices to monitor power characteristics of USB-C
-connections and display those on a on-device display.
-Some of the devices, notably KM002C and KM003C, contain an additional
-port which exposes the measurements via USB.
 
-This is a driver for this monitor port.
 
-It was developed and tested with the KM003C.
+On 8/24/2023 11:40 PM, Krzysztof Kozlowski wrote:
+> On 24/08/2023 19:34, Ajit Pandey wrote:
+>> Add support for qcom global clock controller bindings for SM4450 platform.
+>>
+>> Signed-off-by: Ajit Pandey <quic_ajipan@quicinc.com>
+>> ---
+>>   .../bindings/clock/qcom,sm4450-gcc.yaml       |  54 +++++
+>>   include/dt-bindings/clock/qcom,sm4450-gcc.h   | 197 ++++++++++++++++++
+>>   2 files changed, 251 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/clock/qcom,sm4450-gcc.yaml
+>>   create mode 100644 include/dt-bindings/clock/qcom,sm4450-gcc.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/qcom,sm4450-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,sm4450-gcc.yaml
+>> new file mode 100644
+>> index 000000000000..8c767bdf7f9d
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/clock/qcom,sm4450-gcc.yaml
+>> @@ -0,0 +1,54 @@
+>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/clock/qcom,sm4450-gcc.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Global Clock & Reset Controller on SM4450
+>> +
+>> +maintainers:
+>> +  - Ajit Pandey <quic_ajipan@quicinc.com>
+>> +  - Taniya Das <quic_tdas@quicinc.com>
+>> +
+>> +description: |
+>> +  Qualcomm global clock control module provides the clocks, resets and power
+>> +  domains on SM4450
+>> +
+>> +  See also:: include/dt-bindings/clock/qcom,sm4450-gcc.h
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: qcom,sm4450-gcc
+>> +
+>> +  clocks:
+>> +    items:
+>> +      - description: Board XO source
+>> +      - description: Sleep clock source
+>> +      - description: UFS Phy Rx symbol 0 clock source (Optional clock)
+>> +      - description: UFS Phy Rx symbol 1 clock source (Optional clock)
+>> +      - description: UFS Phy Tx symbol 0 clock source (Optional clock)
+>> +      - description: USB3 Phy wrapper pipe clock source (Optional clock)
+> 
+> I doubt that these are really optional clocks. They are set as parents
+> of your clocks in the controller, so if these clocks are physically
+> missing, how does the clock controller work?
+> 
+> 
+> Best regards,
+> Krzysztof
+> 
 
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
-Changes in v2:
-- fix syntax error in Kconfig
-- avoid double free of urb in case of failure
-- Link to v1: https://lore.kernel.org/r/20230831-powerz-v1-1-03979e519f52@weissschuh.net
----
- MAINTAINERS            |   6 ++
- drivers/hwmon/Kconfig  |  10 ++
- drivers/hwmon/Makefile |   1 +
- drivers/hwmon/powerz.c | 257 +++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 274 insertions(+)
+Yeah, if these optional clocks are missing, few dependent child clocks 
+functionality (UFS/USB) will not work and clock controller will work 
+with limited functionality, but I agree that the tag "Optional Clock" is 
+bit confusing here and will remove this in next patch series.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4e3419c04f27..12bcf14597c4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4795,6 +4795,12 @@ X:	drivers/char/ipmi/
- X:	drivers/char/random.c
- X:	drivers/char/tpm/
- 
-+CHARGERLAB POWER-Z HARDWARE MONITOR DRIVER
-+M:	Thomas Weißschuh <linux@weissschuh.net>
-+L:	linux-hwmon@vger.kernel.org
-+S:	Maintained
-+F:	drivers/hwmon/powerz.c
-+
- CHECKPATCH
- M:	Andy Whitcroft <apw@canonical.com>
- M:	Joe Perches <joe@perches.com>
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index ec38c8892158..12af9f9cfd9f 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -839,6 +839,16 @@ config SENSORS_JC42
- 	  This driver can also be built as a module. If so, the module
- 	  will be called jc42.
- 
-+config SENSORS_POWERZ
-+	tristate "ChargerLAB POWER-Z USB-C tester"
-+	depends on USB
-+	help
-+	  If you say yes here you get support for ChargerLAB POWER-Z series of
-+	  USB-C charging testers.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called powerz.
-+
- config SENSORS_POWR1220
- 	tristate "Lattice POWR1220 Power Monitoring"
- 	depends on I2C
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index 4ac9452b5430..019189500e5d 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -176,6 +176,7 @@ obj-$(CONFIG_SENSORS_OXP) += oxp-sensors.o
- obj-$(CONFIG_SENSORS_PC87360)	+= pc87360.o
- obj-$(CONFIG_SENSORS_PC87427)	+= pc87427.o
- obj-$(CONFIG_SENSORS_PCF8591)	+= pcf8591.o
-+obj-$(CONFIG_SENSORS_POWERZ)	+= powerz.o
- obj-$(CONFIG_SENSORS_POWR1220)  += powr1220.o
- obj-$(CONFIG_SENSORS_PWM_FAN)	+= pwm-fan.o
- obj-$(CONFIG_SENSORS_RASPBERRYPI_HWMON)	+= raspberrypi-hwmon.o
-diff --git a/drivers/hwmon/powerz.c b/drivers/hwmon/powerz.c
-new file mode 100644
-index 000000000000..cbdbc1ce0e81
---- /dev/null
-+++ b/drivers/hwmon/powerz.c
-@@ -0,0 +1,257 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Copyright (C) 2023 Thomas Weißschuh <linux@weissschuh.net>
-+ */
-+#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+
-+#include <linux/completion.h>
-+#include <linux/hwmon.h>
-+#include <linux/module.h>
-+#include <linux/usb.h>
-+
-+#define DRIVER_NAME	"powerz"
-+#define POWERZ_EP_CMD_OUT	0x01
-+#define POWERZ_EP_DATA_IN	0x81
-+
-+struct powerz_sensor_data {
-+	u8 _unknown_1[8];
-+	__le32 Vbus;
-+	__le32 Ibus;
-+	__le32 Vbus_avg;
-+	__le32 Ibus_avg;
-+	u8 _unknown_2[8];
-+	u8 temp[2];
-+	__le16 cc1;
-+	__le16 cc2;
-+	__le16 dp;
-+	__le16 dm;
-+	u8 _unknown_3[6];
-+} __packed;
-+
-+struct powerz_priv {
-+	struct device *hwmon_dev;
-+	struct usb_interface *intf;
-+};
-+
-+static const struct hwmon_channel_info * const powerz_info[] = {
-+	HWMON_CHANNEL_INFO(in,
-+			   HWMON_I_INPUT | HWMON_I_LABEL | HWMON_I_AVERAGE,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL,
-+			   HWMON_I_INPUT | HWMON_I_LABEL),
-+	HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT | HWMON_C_LABEL | HWMON_C_AVERAGE),
-+	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT | HWMON_T_LABEL),
-+	NULL
-+};
-+
-+static umode_t powerz_is_visible(const void *data, enum hwmon_sensor_types type,
-+				 u32 attr, int channel)
-+{
-+	return 0444;
-+}
-+
-+static int powerz_read_string(struct device *dev, enum hwmon_sensor_types type,
-+			      u32 attr, int channel, const char **str)
-+{
-+	if (type == hwmon_curr && attr == hwmon_curr_label)
-+		*str = "bus";
-+	else if (type == hwmon_in && attr == hwmon_in_label && channel == 0)
-+		*str = "bus";
-+	else if (type == hwmon_in && attr == hwmon_in_label && channel == 1)
-+		*str = "cc1";
-+	else if (type == hwmon_in && attr == hwmon_in_label && channel == 2)
-+		*str = "cc2";
-+	else if (type == hwmon_in && attr == hwmon_in_label && channel == 3)
-+		*str = "dp";
-+	else if (type == hwmon_in && attr == hwmon_in_label && channel == 4)
-+		*str = "dm";
-+	else if (type == hwmon_temp && attr == hwmon_temp_label)
-+		*str = "temp";
-+	else
-+		return -EINVAL;
-+
-+	return 0;
-+}
-+
-+struct powerz_usb_ctx {
-+	char transfer_buffer[64];
-+	struct completion completion;
-+	int status;
-+};
-+
-+static void powerz_usb_data_complete(struct urb *urb)
-+{
-+	struct powerz_usb_ctx *ctx = urb->context;
-+
-+	ctx->status = 0;
-+	complete(&ctx->completion);
-+}
-+
-+static void powerz_usb_cmd_complete(struct urb *urb)
-+{
-+	struct powerz_usb_ctx *ctx = urb->context;
-+	int ret;
-+
-+	usb_fill_bulk_urb(urb, urb->dev, usb_rcvbulkpipe(urb->dev, POWERZ_EP_DATA_IN),
-+			  ctx->transfer_buffer, sizeof(ctx->transfer_buffer),
-+			  powerz_usb_data_complete, ctx);
-+
-+	ret = usb_submit_urb(urb, GFP_ATOMIC);
-+	if (ret) {
-+		ctx->status = ret;
-+		complete(&ctx->completion);
-+	}
-+}
-+
-+static struct powerz_sensor_data *powerz_read_data(struct usb_device *udev,
-+						   struct powerz_usb_ctx *ctx)
-+{
-+	struct urb *urb;
-+	int r;
-+
-+	ctx->status = -ETIMEDOUT;
-+	init_completion(&ctx->completion);
-+
-+	urb = usb_alloc_urb(0, GFP_KERNEL);
-+	if (!urb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	ctx->transfer_buffer[0] = 0x0c;
-+	ctx->transfer_buffer[1] = 0x00;
-+	ctx->transfer_buffer[2] = 0x02;
-+	ctx->transfer_buffer[3] = 0x00;
-+
-+	usb_fill_bulk_urb(urb, udev, usb_sndbulkpipe(udev, POWERZ_EP_CMD_OUT),
-+			  ctx->transfer_buffer, 4, powerz_usb_cmd_complete, ctx);
-+	r = usb_submit_urb(urb, GFP_KERNEL);
-+	if (r) {
-+		usb_free_urb(urb);
-+		return ERR_PTR(r);
-+	}
-+
-+	if (!wait_for_completion_interruptible_timeout(&ctx->completion, msecs_to_jiffies(5))) {
-+		usb_kill_urb(urb);
-+		usb_free_urb(urb);
-+		return ERR_PTR(-EIO);
-+	}
-+
-+	if (ctx->status) {
-+		usb_free_urb(urb);
-+		return ERR_PTR(ctx->status);
-+	}
-+
-+	if (urb->actual_length < (sizeof(struct powerz_sensor_data))) {
-+		usb_free_urb(urb);
-+		return ERR_PTR(-EIO);
-+	}
-+
-+	usb_free_urb(urb);
-+	return (struct powerz_sensor_data *)(ctx->transfer_buffer);
-+}
-+
-+static int powerz_read(struct device *dev, enum hwmon_sensor_types type, u32 attr,
-+		       int channel, long *val)
-+{
-+	struct usb_interface *intf = to_usb_interface(dev->parent);
-+	struct usb_device *udev = interface_to_usbdev(intf);
-+	struct powerz_sensor_data *data;
-+	struct powerz_usb_ctx *ctx;
-+
-+	ctx = kmalloc(sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	data = powerz_read_data(udev, ctx);
-+	if (IS_ERR(data)) {
-+		kfree(ctx);
-+		return PTR_ERR(data);
-+	}
-+
-+	if (type == hwmon_curr && attr == hwmon_curr_input)
-+		*val =  ((s32)le32_to_cpu(data->Ibus)) / 1000;
-+	else if (type == hwmon_curr && attr == hwmon_curr_average)
-+		*val =  ((s32)le32_to_cpu(data->Ibus_avg)) / 1000;
-+	else if (type == hwmon_in && attr == hwmon_in_input && channel == 0)
-+		*val =  le32_to_cpu(data->Vbus) / 1000;
-+	else if (type == hwmon_in && attr == hwmon_in_average && channel == 0)
-+		*val =  le32_to_cpu(data->Vbus_avg) / 1000;
-+	else if (type == hwmon_in && attr == hwmon_in_input && channel == 1)
-+		*val =  le16_to_cpu(data->cc1) / 10;
-+	else if (type == hwmon_in && attr == hwmon_in_input && channel == 2)
-+		*val =  le16_to_cpu(data->cc2) / 10;
-+	else if (type == hwmon_in && attr == hwmon_in_input && channel == 3)
-+		*val =  le16_to_cpu(data->dp) / 10;
-+	else if (type == hwmon_in && attr == hwmon_in_input && channel == 4)
-+		*val =  le16_to_cpu(data->dm) / 10;
-+	else if (type == hwmon_temp && attr == hwmon_temp_input)
-+		*val = ((long)data->temp[1]) * 2000 + ((long)data->temp[0]) * 1000 / 128;
-+	else
-+		return -EINVAL;
-+
-+	kfree(ctx);
-+
-+	return 0;
-+}
-+
-+static const struct hwmon_ops powerz_hwmon_ops = {
-+	.is_visible  = powerz_is_visible,
-+	.read        = powerz_read,
-+	.read_string = powerz_read_string,
-+};
-+
-+static const struct hwmon_chip_info powerz_chip_info = {
-+	.ops  = &powerz_hwmon_ops,
-+	.info = powerz_info,
-+};
-+
-+static int powerz_probe(struct usb_interface *intf, const struct usb_device_id *id)
-+{
-+	struct usb_device *udev = interface_to_usbdev(intf);
-+	struct powerz_priv *priv;
-+	struct device *parent;
-+	const char *name;
-+	int ret;
-+
-+	parent = &intf->dev;
-+
-+	priv = devm_kzalloc(parent, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	name = devm_hwmon_sanitize_name(parent, udev->product ?: DRIVER_NAME);
-+	priv->hwmon_dev = hwmon_device_register_with_info(parent, name,
-+							  priv,
-+							  &powerz_chip_info,
-+							  NULL);
-+	ret = PTR_ERR_OR_ZERO(priv->hwmon_dev);
-+	priv->intf = intf;
-+	usb_set_intfdata(intf, priv);
-+
-+	return ret;
-+}
-+
-+static void powerz_disconnect(struct usb_interface *intf)
-+{
-+	struct powerz_priv *priv = usb_get_intfdata(intf);
-+
-+	hwmon_device_unregister(priv->hwmon_dev);
-+}
-+
-+static const struct usb_device_id powerz_id_table[] = {
-+	{ USB_DEVICE_INTERFACE_NUMBER(0x5FC9, 0x0063, 0x00) }, /* ChargerLAB POWER-Z KM003C */
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(usb, powerz_id_table);
-+
-+static struct usb_driver powerz_driver = {
-+	.name       = DRIVER_NAME,
-+	.id_table   = powerz_id_table,
-+	.probe      = powerz_probe,
-+	.disconnect = powerz_disconnect,
-+};
-+module_usb_driver(powerz_driver);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Thomas Weißschuh <linux@weissschuh.net>");
-+MODULE_DESCRIPTION("ChargerLAB POWER-Z USB-C tester");
-
----
-base-commit: b97d64c722598ffed42ece814a2cb791336c6679
-change-id: 20230831-powerz-2ccb978a8e57
-
-Best regards,
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+Thanks, and Regards
+Ajit
