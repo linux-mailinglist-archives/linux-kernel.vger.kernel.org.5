@@ -2,121 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D4178E74D
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B811F78E750
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242500AbjHaHme (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38578 "EHLO
+        id S243618AbjHaHna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231280AbjHaHmc (ORCPT
+        with ESMTP id S231280AbjHaHn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:42:32 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.154.54.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31D2CE9;
-        Thu, 31 Aug 2023 00:42:26 -0700 (PDT)
-X-QQ-mid: bizesmtp83t1693467717tjppi0fc
-Received: from linux-lab-host.localdomain ( [116.30.129.10])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Thu, 31 Aug 2023 15:41:56 +0800 (CST)
-X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: znfcQSa1hKYH0zoCp5Zp2HaCo5iexADJwVyIao2rnb8O35uwGJtpePirIWdhX
-        +t6M08ma11Uzbs5A1Qkm5Ka+AW726SCjsH1GNBG/rvXCS4c0hAezj4PeUqO6e4Wz7gDDPeI
-        a7sgdEl7sWgvNxUWnyAW5hE8o39GFzzsBw9szsUUbzsPdCpYS0fWGdFfqZ8shv4vC6kJ7uT
-        H+FNwTXSGMFyqUF0fqeP6/Qt108LIXlIMd5MdULNDDP5ppMbXY5HwMewE7X/fx/ri7aWZMl
-        yDVGP+6WMirNLght8g/UJZxFca8QwPNLdU+ulA9fts8qrL/taFk1d39UxIjT1GO0dZgAca/
-        m9NQvpvJmePN22JXM37JG694RF4vbq7BNribew05OcJswjmdtzLGKO38zoqtg==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 6240959322990113860
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     david.laight@aculab.com
-Cc:     ammarfaizi2@gnuweeb.org, arnd@arndb.de, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de, w@1wt.eu
-Subject: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with single -ENOSYS return
-Date:   Thu, 31 Aug 2023 15:41:51 +0800
-Message-Id: <20230831074151.7900-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <2d52dbd55e6240d5a91ebdce67fe0b7b@AcuMS.aculab.com>
-References: <2d52dbd55e6240d5a91ebdce67fe0b7b@AcuMS.aculab.com>
+        Thu, 31 Aug 2023 03:43:29 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E161A3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:43:26 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-407db3e9669so180541cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:43:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693467805; x=1694072605; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a/yP9Hex2mzmKq9qt42F0CpGQPzC37DJdUwVClKUJvM=;
+        b=Wfzg+DGS8qVa4YrtZG5khX9q/iXJgiAUSYPehA4DGtUjIlh79bUGwbktAHBVpcur+g
+         0zJrPXi7snmZ+YIhM0+wTB+E86uuwLGDxH9tCutuCcROVhkLLEZM65zfl0Bxoza5IwsD
+         XeuN61RNgZsPA17ciuMzv4w2VyokdEh9C3MheNFzZAdg/OSFYWIoibpAm2lOBC0GTd8w
+         yw7780bHoRvfcR2vFLXWrfIDO6h5LPScY2OQCqS3QgvIb528Hq4GpGpRwNQ5wD9deKIj
+         Y6b9MzBPCZ/LEcdQpiAsk+iVSR8VlnMOR0LIuyi86YyNQLOmXMbPshQrCPTBYXLJVyqK
+         3qPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693467805; x=1694072605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a/yP9Hex2mzmKq9qt42F0CpGQPzC37DJdUwVClKUJvM=;
+        b=R91EJlLaDnxE6tpRqOQkL2p7cyEoqqjN08/g9+ikYOFiuZmE9yYnc60PZHr7rLNkCK
+         +0Vwy1Z+wKQso4yNU3/3JZrk8EMhM+8yxYB1MUKDx4n33/C6mTh2z56h+JHtqDbPjl2A
+         qJ9nU2nm/fBrUK0L9nw+w8GW8mdamPF5UZavSEzx622mDTvlW9WN+9trYYAFERtqtAVB
+         gL3ZknjnTfY07RYG3//I0fjjixGLHx/3IV95nWw70B0zZLdzJiI6TuWs8LDmSbi0LUqn
+         qxO2NGJgIrvFLxd0ITMeLNKOl9PYId5S2Elp72I6h0TejwNOLDd6RsBMfp6uvZDaEFr5
+         zecg==
+X-Gm-Message-State: AOJu0Yydgu44BnReIXCh7h559UJg5XBg/eG6CyRmQKEgQa/enCWDV75O
+        tkey4TjlyQwE89n5awpmU3pTnhD3rymeZpG+lxCmDA==
+X-Google-Smtp-Source: AGHT+IHie0Dk2J204QFPIL1R69ZKhIXfwsmjixwhPxeDxqBowkuZ/sWGD9yhup18zNzoNI9H50sl/FNxkLPX/07WS24=
+X-Received: by 2002:a05:622a:130d:b0:403:aa88:cf7e with SMTP id
+ v13-20020a05622a130d00b00403aa88cf7emr116118qtk.29.1693467805394; Thu, 31 Aug
+ 2023 00:43:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <64ed7188a2745_9cf208e1@penguin.notmuch> <20230830232811.9876-1-mkhalfella@purestorage.com>
+ <CANn89iJVnS_dGDtU7AVWgVrun-p68DZ0A3Pde47MHNeeQ2nwRA@mail.gmail.com> <20230831072957.GA3696339@medusa>
+In-Reply-To: <20230831072957.GA3696339@medusa>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Thu, 31 Aug 2023 09:43:14 +0200
+Message-ID: <CANn89iL52irOwq+nL=UManHd1m8KQLswcLh9vrz-6u4CC6RchA@mail.gmail.com>
+Subject: Re: [PATCH v2] skbuff: skb_segment, Call zero copy functions before
+ using skbuff frags
+To:     Mohamed Khalfella <mkhalfella@purestorage.com>
+Cc:     willemdebruijn.kernel@gmail.com, alexanderduyck@fb.com,
+        bpf@vger.kernel.org, brouer@redhat.com, davem@davemloft.net,
+        dhowells@redhat.com, keescook@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        pabeni@redhat.com, willemb@google.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, David, Hi Ammar
-
-> From: Ammar Faizi
-> > Sent: 30 August 2023 15:41
-> > 
-> > On 8/28/23 4:51 AM, David Laight wrote:
-> > > I just found a(nother) clang bug:
-> > > 	int f(void) { return "a"[2]; }
-> > > compiles to just a 'return'.
-> > 
-> > I don't think that's a bug. It's undefined behavior due to an
-> > out-of-bound read. What do you expect it to return?
-> 
-> I was actually expecting a warning/error if it didn't just read
-> the byte after the end of the string.
-> 
-> Just silently doing nothing didn't seem right for a modern compiler.
+On Thu, Aug 31, 2023 at 9:30=E2=80=AFAM Mohamed Khalfella
+<mkhalfella@purestorage.com> wrote:
 >
+> On 2023-08-31 08:58:51 +0200, Eric Dumazet wrote:
+> > On Thu, Aug 31, 2023 at 1:28=E2=80=AFAM Mohamed Khalfella
+> > <mkhalfella@purestorage.com> wrote:
+> > >         do {
+> > >                 struct sk_buff *nskb;
+> > >                 skb_frag_t *nskb_frag;
+> > > @@ -4465,6 +4471,10 @@ struct sk_buff *skb_segment(struct sk_buff *he=
+ad_skb,
+> > >                     (skb_headlen(list_skb) =3D=3D len || sg)) {
+> > >                         BUG_ON(skb_headlen(list_skb) > len);
+> > >
+> > > +                       nskb =3D skb_clone(list_skb, GFP_ATOMIC);
+> > > +                       if (unlikely(!nskb))
+> > > +                               goto err;
+> > > +
+> >
+> > This patch is quite complex to review, so I am asking if this part was
+> > really needed ?
+>
+> Unfortunately the patch is complex because I try to avoid calling
+> skb_orphan_frags() in the middle of processing these frags. Otherwise
+> it would be much harder to implement because as reallocated frags do not
+> map 1:1 with existing frags as Willem mentioned.
+>
+> > <1>  : You moved here <2> and <3>
+>
+> <2> was moved here because skb_clone() calls skb_orphan_frags(). By
 
-godbolt.org uses 'orange' color (see its right top) to indicate a
-warning, it does report a warning (see Output label in right bottom)
-when we access the byte after the end of the string, but gcc doesn't
-report a warning ;-)
+Oh right, I think we should amend skb_clone() documentation, it is
+slightly wrong.
 
-	int test_outofbound(void)
-	{
-	    return "a"[10];
-	}
+( I will take care of this change)
 
-see the last test case in https://godbolt.org/z/9jY4xoWrT
-
-But it is safe if we use the trick like David used for the above
-__atoi() macro:
-
-    if (str[0]) {  /* always make sure the index is safe and stop at the end of string */
-        if (str[1]) {
-	    if (str[2]) {
-	       ....
-	    }
-	}
-    }
-
-We also need this style of checking for the delta logic in __atoi_add(). have
-randomly tried different clang and gcc versions, seems all of them work
-correctly, but the compiling speed is not that good if we want to support the
-worst cases like "((0x900000 + 0x0f0000) + 5)", the shorter one
-"((0x900000+0x0f0000)+5)" is used by ARM+OABI (not supported by nolibc
-currently), therefore, we can strip some tailing branches but it is either not
-that fast, of course, the other architectures/variants can use faster
-__atoi_add() versions with less branches and without hex detection, comparison
-and calculating.
-
-As a short summary, the compling speed should not be a big problem for most of
-the architectures but to support the worst case __NR_*, the compiling speed
-will be very slow (for these cases, perhaps we can use a C version of
-atoi_add() instead or convert them to a more generic style: (6000 + 111), no
-hex and no multiple add), and the .i output is a little ugly and the debugging
-may be also a problem: for we can not assume the kernel developers always
-define a short and a simple style of __NR_* as we expected. So, the __nrtoi()
-requires more work, let's delay the whole RFC patchset and work on some more
-urgent tasks at first as suggested by Willy, but David's NR_toi() prototype is
-really a very valuable base for future work, really appreciate, I will back to
-this discussion if have any new progress, thanks!
-
-Thanks very much,
-Zhangjin
-
-> 	David
+> moving this up we do not need to call skb_orphan_frags() for list_skb
+> and we can start to use nr_frags and frags without worrying their value
+> is going to change.
+>
+> <3> was moved here because <2> was moved here. Fail fast if we can not
+> clone list_skb.
+>
+> >
+> > If this is not strictly needed, please keep the code as is to ease
+> > code review...
+> >
+> > >                         i =3D 0;
+> > >                         nfrags =3D skb_shinfo(list_skb)->nr_frags;
+> > >                         frag =3D skb_shinfo(list_skb)->frags;
+> > > @@ -4483,12 +4493,8 @@ struct sk_buff *skb_segment(struct sk_buff *he=
+ad_skb,
+> > >                                 frag++;
+> > >                         }
+> > >
+> > > -                       nskb =3D skb_clone(list_skb, GFP_ATOMIC);
+> >
+> > <2>
+> >
+> > >                         list_skb =3D list_skb->next;
+> > >
+> > > -                       if (unlikely(!nskb))
+> > > -                               goto err;
+> > > -
+> >
+> > <3>
+> >
+> > >                         if (unlikely(pskb_trim(nskb, len))) {
+> > >                                 kfree_skb(nskb);
+> > >                                 goto err;
+> > > @@ -4564,12 +4570,16 @@ struct sk_buff *skb_segment(struct sk_buff *h=
+ead_skb,
+> > >                 skb_shinfo(nskb)->flags |=3D skb_shinfo(head_skb)->fl=
+ags &
+> > >                                            SKBFL_SHARED_FRAG;
+> > >
+> > > -               if (skb_orphan_frags(frag_skb, GFP_ATOMIC) ||
+> > > -                   skb_zerocopy_clone(nskb, frag_skb, GFP_ATOMIC))
+> > > +               if (skb_zerocopy_clone(nskb, list_skb, GFP_ATOMIC))
+> >
+> > Why using list_skb here instead of frag_skb ?
+> > Again, I have to look at the whole thing to understand why you did this=
+.
+>
+> Oops, this is a mistake. It should be frag_skb. Will fix it run the test
+> one more time and post v3.
