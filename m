@@ -2,225 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DE378E567
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 06:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F1778E56A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 06:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343531AbjHaEYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 00:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44318 "EHLO
+        id S1345692AbjHaEaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 00:30:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233272AbjHaEYA (ORCPT
+        with ESMTP id S1344749AbjHaEaM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 00:24:00 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B69A1;
-        Wed, 30 Aug 2023 21:23:58 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id e9e14a558f8ab-349a94f3d69so4055145ab.1;
-        Wed, 30 Aug 2023 21:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693455837; x=1694060637; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dhlBBVej6Nml2vr84s2B7ZHFeM4Uz1y/q2puOA0f7cA=;
-        b=p/9Sqs4oEbu7iMAednY8l9L0rgMY/0woLxQX34M9Y/ucceQbVIK3KFLPieNk7MlxgL
-         nCuBchVMympZGAcJ62yUWYvBpcZ5pOBPA18VUxugQsP7KUgdzNUexXFKgFLPL0o3kKLN
-         xBVRUF7xKrd16ff9+xuc8Tkp9aKIcvEM3goe266EwGJYDYmoFRMvA6rPDPeEaZQT3S4T
-         qzphw5hQhLGjI16vjFi7/0zpoAgC3g2mMY/30rQxp1EjYp28sy8QcbSMfY7Q4Q81XhY1
-         Z7JPyjGpKv7R43UtE1x/uDaZ47QT0+rsHo3XvONxOqZ7vWco4cMhioXJLYu/UAcoQ+Gh
-         Gw8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693455837; x=1694060637;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dhlBBVej6Nml2vr84s2B7ZHFeM4Uz1y/q2puOA0f7cA=;
-        b=JBKPwIo90Kp4gPFK2SkQORje6aSlRDsbK1vR1hNNpe1OYUaAKQjrXfEzghs/oPCv1C
-         nGmKGYYjeRMSTMtB2oWdNJlFeOGaTP6KIXRaNDZuP4GuxxIT/QwoVnWt3jatB3G98wUr
-         gCHYUKB68OdVkSWRsOxxpDGv+Woc2LW1xqcjlPdFDMzQazW4f/EmtrW0nQnCgsbhVrrv
-         b9ESybEe6oZYfn0cVnCULXYzqxIEnP6WrBOIIKS8NVSZvm9pSFxBbIZkdvSq0EX8z/pq
-         9aYhONEjyXwS87v5XzU82UUIDhu/6bfJdffxVOBe7NOqTgspyaUp3sgxqChfJkX3f1EN
-         aRBg==
-X-Gm-Message-State: AOJu0YxNWxDI5bL2c5twzP/iPbEpI7FPXLkm/c2OyN7GlkUrrP3Yvim1
-        P+N20SLtaxzlPMy139RMW12gKU8dY30=
-X-Google-Smtp-Source: AGHT+IG25BHJQOn1u3c6tB8KZi2RYp+fp9jTh9k1ULxnYBgFZqrVeVoBOeYRxtoQK4oo2p7qXQcMYQ==
-X-Received: by 2002:a92:cf0a:0:b0:346:4f37:9ee7 with SMTP id c10-20020a92cf0a000000b003464f379ee7mr1177240ilo.13.1693455837131;
-        Wed, 30 Aug 2023 21:23:57 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p17-20020a92d291000000b003460b697bc0sm198963ilp.59.2023.08.30.21.23.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 21:23:56 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <567a09b4-2184-1bd8-a3fc-8a5fd4d682ad@roeck-us.net>
-Date:   Wed, 30 Aug 2023 21:23:54 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        Benson Leung <bleung@chromium.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <jstultz@google.com>, linux-rtc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brian Norris <briannorris@chromium.org>
-References: <20230817225537.4053865-1-linux@roeck-us.net>
- <20230817225537.4053865-3-linux@roeck-us.net>
- <6991631008bab403e957534d6d05360c.sboyd@kernel.org>
- <afa30d68-4f53-4903-b470-0d337c9aa7aa@roeck-us.net>
- <8bde38a9e447fc4c3a8834220a3073fa.sboyd@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 2/7] rtc: alarmtimer: Use maximum alarm time offset
-In-Reply-To: <8bde38a9e447fc4c3a8834220a3073fa.sboyd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 00:30:12 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ED2A1
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 21:30:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id E6BD662025
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:30:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5B35AC433C9;
+        Thu, 31 Aug 2023 04:30:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693456209;
+        bh=Uezw268IlI2ncqkg6nwncMxImF/dZgC6hLzyvH2pNgA=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=BB+J+/Hq67oYbtMsbGxKsD4bbdYhsLeA0lKdFV6KMvW+2WZReP7O5+eGxvyS7ZnVK
+         wvzUMbzPym4/lkiNZpjT3GirLGTcWv3XG28ZXfkAKF/+Ptg/sFSX5zp9PVN5jGXNg4
+         z+n0X8xux3RF496aeOz6hetVZxvATnoNKcjIqon4sKL7jferaGZUTEUpT3qS9Iwfe8
+         Yw4OzF6X4tq1fox0C1RCuvSv+S+i4h/wO7sW8/kILRBbeXSARv9+qRl7k4OcGtOAW6
+         WfvG5Xluw8UK86SPnRVdwzBSPjLOYkvf2UrTBlPsu37ZDA5j++9yzW1rhkal0OIKDJ
+         lwyC5JgAC+j6w==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 47399E270FB;
+        Thu, 31 Aug 2023 04:30:09 +0000 (UTC)
+Subject: Re: [GIT PULL] NVDIMM and DAX for 6.6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <12c76f8e-aae8-2cab-4ab0-571a8c806423@intel.com>
+References: <12c76f8e-aae8-2cab-4ab0-571a8c806423@intel.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <12c76f8e-aae8-2cab-4ab0-571a8c806423@intel.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-for-6.6
+X-PR-Tracked-Commit-Id: 08ca6906a4b7e48f8e93b7c1f49a742a415be6d5
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 47d154eb2ac4e508555937207031ba062119e371
+Message-Id: <169345620926.29893.16589404508854183628.pr-tracker-bot@kernel.org>
+Date:   Thu, 31 Aug 2023 04:30:09 +0000
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     torvalds@linux-foundation.org, dan.j.williams@intel.com,
+        vishal.l.verma@intel.com, Ira Weiny <ira.weiny@intel.com>,
+        nvdimm@lists.linux.dev, linux-kernel <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/23 14:16, Stephen Boyd wrote:
-> Quoting Guenter Roeck (2023-08-30 00:13:09)
->> On 8/29/23 14:50, Stephen Boyd wrote:
->>> Quoting Guenter Roeck (2023-08-17 15:55:32)
->>>> Some userspace applications use timerfd_create() to request wakeups after
->>>> a long period of time. For example, a backup application may request a
->>>> wakeup once per week. This is perfectly fine as long as the system does
->>>> not try to suspend. However, if the system tries to suspend and the
->>>> system's RTC does not support the required alarm timeout, the suspend
->>>> operation will fail with an error such as
->>>>
->>>> rtc_cmos 00:01: Alarms can be up to one day in the future
->>>> PM: dpm_run_callback(): platform_pm_suspend+0x0/0x4a returns -22
->>>> alarmtimer alarmtimer.4.auto: platform_pm_suspend+0x0/0x4a returned -22 after 117 usecs
->>>> PM: Device alarmtimer.4.auto failed to suspend: error -22
->>>>
->>>> This results in a refusal to suspend the system, causing substantial
->>>> battery drain on affected systems.
->>>>
->>>> To fix the problem, use the maximum alarm time offset as reported by rtc
->>>> drivers to set the maximum alarm time. While this will result in brief
->>>> spurious wakeups from suspend, it is still much better than not suspending
->>>> at all.
->>>>
->>>> Cc: Brian Norris <briannorris@chromium.org>
->>>> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
->>>> ---
->>>> v2: Rename range_max_offset -> alarm_offset_max
->>>>
->>>>    kernel/time/alarmtimer.c | 13 +++++++++++++
->>>>
->>>> diff --git a/kernel/time/alarmtimer.c b/kernel/time/alarmtimer.c
->>>> index 8d9f13d847f0..895e3a6d6444 100644
->>>> --- a/kernel/time/alarmtimer.c
->>>> +++ b/kernel/time/alarmtimer.c
->>>> @@ -290,6 +290,19 @@ static int alarmtimer_suspend(struct device *dev)
->>>>           rtc_timer_cancel(rtc, &rtctimer);
->>>>           rtc_read_time(rtc, &tm);
->>>>           now = rtc_tm_to_ktime(tm);
->>>> +
->>>> +       /*
->>>> +        * If the RTC alarm timer only supports a limited time offset, set
->>>> +        * the alarm time to the maximum supported value.
->>>> +        * The system will wake up earlier than necessary and is expected
->>>> +        * to go back to sleep if it has nothing to do.
->>>
->>> Does this assume that the kernel is configured for autosuspend
->>> (CONFIG_PM_AUTOSLEEP)? Maybe we should only do this when that config is
->>> enabled.
->>>
->>
->> It doesn't really assume anything. It standardizes behavior if the rtc
->> does not support the requested alarm time. Today that either fails
->> or the rtc silently adjusts the alarm time (sometimes to 1 day + 1 minute ->
->> one minute) depending on the implementation in the rtc driver. With this
->> patch in place, the the rtc driver informing the rtc core about the limit,
->> the alarm would fire at the maximum time supported by the rtc if the
->> requested alarm time is larger than its limit.
->>
->> I see that as improvement, no matter if CONFIG_PM_AUTOSLEEP is enabled or not.
-> 
-> Agreed. It's an improvement.
-> 
-> The ABI of alarmtimers seem to be "Run this timer at time X, and wake up
-> the system from suspend if necessary to run the timer at time X".
-> 
->>
->>> If userspace is the one autosuspending, then I don't know what we do, or
->>> how the kernel knows it is OK. Maybe we need another alarmtimer clock id
->>> that will fail creation if the wakeup time is larger than what the rtc
->>> can be programmed for? Or maybe that new clock id can have this fixed
->>> behavior to wakeup early with the assumption that userspace will go back
->>> to sleep, and outdated userspace can use the original alarmtimer clock
->>> id if they don't care about suspend failing?
->>>
->>
->> I don't know how to answer this. Again, I see my suggested patch as improvement
->> over not suspending at all or resuming at a more or less random time, which
->> is what you get today depending on the rtc driver.
->>
->> Actually, I would argue that the above situation applies even if the rtc supports
->> the requested alarm time. Currently, if userspace is the one autosuspending,
->> the system wakes up after the alarm time expires (assuming the rtc supports it).
->> Then what ? Your above question applies to that situation as well and is
->> really independent of the alarm time limit supported by the rtc.
-> 
-> The comment in the code is causing me confusion. It says
-> 
->    The system will wake up earlier than necessary and is expected
->    to go back to sleep if it has nothing to do.
-> 
-> I'd reword this to not talk about auto-suspend because the ABI of
-> alarmtimers doesn't concern itself with autosuspend.
-> 
->    The system will wake up earlier (possibly much earlier) than when the
->    alarmtimer runs. This is the best the kernel can do because the
->    alarmtimer exceeds the time that the rtc device can be programmed for.
-> 
+The pull request you sent on Wed, 30 Aug 2023 10:07:56 -0700:
 
-Makes sense, and I agree that this is much better. I changed the comment
-accordingly.
+> git://git.kernel.org/pub/scm/linux/kernel/git/nvdimm/nvdimm.git tags/libnvdimm-for-6.6
 
->>
->> I would agree that various improvements on how to handle the situation where
->> the requested alarm time is larger than the rtc limit may be possible,
->> but I see those as independent and orthogonal to this patch.
-> 
-> I certainly hope that userspace isn't relying on the existing behavior.
-> 
->>
->>> I see another problem too. What do we do if an alarmtimer is created,
->>> the rtc device is unregistered, and then we enter suspend? It looks like
->>> alarmtimer_suspend() bails out early with no error, so suspend
->>> continues. That looks wrong. Presumably we should fail suspend entirely
->>> at that point because we'll never be able to wakeup to run the
->>> alarmtimer.
->>
->> Maybe I am missing something, but I think this is equivalent of not having
->> an rtc in the system, or for CONFIG_RTC_CLASS=n. Currently the system just
->> suspends without waking up in those situations. Changing that would be a
->> substantial functional change since suddenly systems without rtc would
->> simply fail to suspend if there is a pending alarm.
-> 
-> We fail alarmtimer creation in the case that CONFIG_RTC_CLASS=n or when
-> there isn't an rtc. See alarmtimer_get_rtcdev() and how it is called. I
-> doubt it ever really happens in practice, but it looks possible to
-> simulate by unbinding the rtc device driver.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/47d154eb2ac4e508555937207031ba062119e371
 
-Thanks for the clarification. That really makes me wonder what happens
-if an rtc device is unregistered. The .remove_dev callback of
-alarmtimer_rtc_interface is not populated, and rtc_dev is never cleared.
-That means unbinding an rtc device driver should result in a crash.
-Am I missing something ?
+Thank you!
 
-Thanks,
-Guenter
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
