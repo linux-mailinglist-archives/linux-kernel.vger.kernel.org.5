@@ -2,50 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE51D78F0BE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3ACA778F0C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344809AbjHaP4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43414 "EHLO
+        id S1346668AbjHaP6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:58:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbjHaP4p (ORCPT
+        with ESMTP id S231980AbjHaP6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:56:45 -0400
+        Thu, 31 Aug 2023 11:58:38 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092541A3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:56:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70BA41B0;
+        Thu, 31 Aug 2023 08:58:35 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B6A27B8233E
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:56:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49CAEC433C8;
-        Thu, 31 Aug 2023 15:56:38 +0000 (UTC)
-Date:   Thu, 31 Aug 2023 11:56:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Eric Vaughn <ervaughn@linux.microsoft.com>,
-        Sishuai Gong <sishuai.system@gmail.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Yue Haibing <yuehaibing@huawei.com>,
-        Zhang Zekun <zhangzekun11@huawei.com>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: [GIT PULL] tracing: Updates for 6.6
-Message-ID: <20230831115635.1bdea0d7@rorschach.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2B6FCB8226C;
+        Thu, 31 Aug 2023 15:58:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCE2FC433C7;
+        Thu, 31 Aug 2023 15:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693497512;
+        bh=NlQHAlRSWJmw3BpQmppIzYbTKnU63kdcr30JgkmYLIM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=cOd+R2yDkLOJQ3pT9aougIZLtGJ5cWB99CqeZoxE+FnXTRz+YpzH3atrfMaU+6jpO
+         7Il4vRln0t0VxRV5cgysytUuaAM33O6UhY7TwmzXm+Lgs3ZUFR5ZJ618CtWbrpTnE+
+         3UJU+mgbkEShQ2XqXyAZFnOJMKmieFFjNCiRAaU+z5qJ4sPuZTbM46GjrHgZpsgEg3
+         WYYpVPUSYJUaVm4ls/0tHyk1SVZBb6MjEAPTvTttyQ0+4Ll9fGW+Qlu2/plPUsobls
+         Zky75L6m0972WAqFUDYiYFbzoUdAa0pmgHUVyiszj1/i8KRMGs3N8LKZpRXaRontgS
+         NnE4yTVlPp1Ng==
+Date:   Thu, 31 Aug 2023 16:58:26 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Anjelique Melendez <quic_amelende@quicinc.com>
+Cc:     pavel@ucw.cz, lee@kernel.org, thierry.reding@gmail.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, agross@kernel.org, andersson@kernel.org,
+        luca.weiss@fairphone.com, konrad.dybcio@linaro.org,
+        u.kleine-koenig@pengutronix.de, quic_subbaram@quicinc.com,
+        quic_gurus@quicinc.com, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org,
+        kernel@quicinc.com,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: [PATCH v4 2/7] dt-bindings: leds: leds-qcom-lpg: Add support for
+ LPG PPG
+Message-ID: <20230831-dose-eligibly-dee96e1f4dc2@spud>
+References: <20230830180600.1865-2-quic_amelende@quicinc.com>
+ <20230830180600.1865-5-quic_amelende@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="siNBzA7SpfMo2ngy"
+Content-Disposition: inline
+In-Reply-To: <20230830180600.1865-5-quic_amelende@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -53,140 +67,172 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Linus,
+--siNBzA7SpfMo2ngy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[ Note, there's a minor conflict which should be fixed by:
-        mutex_lock(&trace_types_lock);
--       if (unlikely(tr->current_trace && iter->trace->name != tr->current_trace->name)) {
-+       if (unlikely(tr->current_trace != iter->trace))
- +              /* Close iter->trace before switching to the new current tracer */
- +              if (iter->trace->close)
- +                      iter->trace->close(iter);
--               *iter->trace = *tr->current_trace;
-+               iter->trace = tr->current_trace;
- +              /* Reopen the new current tracer */
- +              if (iter->trace->open)
- +                      iter->trace->open(iter);
- +      }
-        mutex_unlock(&trace_types_lock);
-]
+On Wed, Aug 30, 2023 at 11:05:57AM -0700, Anjelique Melendez wrote:
+> Update leds-qcom-lpg binding to support LPG PPG.
+>=20
+> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  .../bindings/leds/leds-qcom-lpg.yaml          | 89 ++++++++++++++++++-
+>  1 file changed, 88 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/=
+Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> index e6f1999cb22f..067ebe35ca5e 100644
+> --- a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> @@ -11,7 +11,7 @@ maintainers:
+> =20
+>  description: >
+>    The Qualcomm Light Pulse Generator consists of three different hardwar=
+e blocks;
+> -  a ramp generator with lookup table, the light pulse generator and a th=
+ree
+> +  a ramp generator with lookup table (LUT), the light pulse generator an=
+d a three
+>    channel current sink. These blocks are found in a wide range of Qualco=
+mm PMICs.
+> =20
+>  properties:
+> @@ -63,6 +63,29 @@ properties:
+>          - description: dtest line to attach
+>          - description: flags for the attachment
+> =20
+> +  nvmem:
 
-Tracing updates for 6.6:
+> +    description: >
 
- User visible changes:
+Why do you have these chomping operators? I can't see any formatting
+that'd require them. Unless you're respinning for other reasons, you can
+ignore this comment.
 
-  - Added a way to easier filter with cpumasks:
-     # echo 'cpumask & CPUS{17-42}' > /sys/kernel/tracing/events/ipi_send_cpumask/filter
-
-  - Show actual size of ring buffer after modifying the ring buffer size via
-    buffer_size_kb. Currently it just returns what was written, but the actual
-    size rounds up to the sub buffer size. Show that real size instead.
-
- Major changes:
-
-  - Added "eventfs". This is the code that handles the inodes and dentries of
-    tracefs/events directory. As there are thousands of events, and each event
-    has several inodes and dentries that currently exist even when tracing is
-    never used, they take up precious memory. Instead, eventfs will allocate
-    the inodes and dentries in a JIT way (similar to what procfs does). There
-    is now metadata that handles the events and subdirectories, and will create
-    the inodes and dentries when they are used.
-
-    Note, I also have patches that remove the subdirectory meta data, but will
-    wait till the next merge window before applying them. It's a little more
-    complex, and I want to make sure the dynamic code works properly before
-    adding more complexity, making it easier to revert if need be.
-
- Minor changes:
-
-  - Optimization to user event list traversal.
-
-  - Remove intermediate permission of tracefs files (note the intermediate
-    permission removes all access to the files so it is not a security concern,
-    but just a clean up.)
-
-  - Add the complex fix to FORTIFY_SOURCE to the kernel stack event logic.
-
-  - Other minor clean ups.
+Thanks,
+Conor.
 
 
-Please pull the latest trace-v6.6 tree, which can be found at:
+> +      This property is required for PMICs that supports PPG, which is wh=
+en a
+> +      PMIC stores LPG per-channel data and pattern LUT in SDAM modules i=
+nstead
+> +      of in a LUT peripheral. For PMICs, such as PM8350C, per-channel da=
+ta
+> +      and pattern LUT is separated into 2 SDAM modules. In that case, ph=
+andles
+> +      to both SDAM modules need to be specified.
+> +    minItems: 1
+> +    maxItems: 2
+> +
+> +  nvmem-names:
+> +    minItems: 1
+> +    items:
+> +      - const: lpg_chan_sdam
+> +      - const: lut_sdam
+> +
+> +  qcom,pbs:
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +    description: >
+> +      Phandle of the Qualcomm Programmable Boot Sequencer node (PBS).
+> +      PBS node is used to trigger LPG pattern sequences for PMICs that s=
+upport
+> +      single SDAM PPG.
+> +
+>    multi-led:
+>      type: object
+>      $ref: leds-class-multicolor.yaml#
+> @@ -106,6 +129,39 @@ required:
+> =20
+>  additionalProperties: false
+> =20
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: qcom,pmi632-lpg
+> +    then:
+> +      properties:
+> +        nvmem:
+> +          maxItems: 1
+> +        nvmem-names:
+> +          maxItems: 1
+> +      required:
+> +        - nvmem
+> +        - nvmem-names
+> +        - qcom,pbs
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - qcom,pm8350c-pwm
+> +              - qcom,pm8550-pwm
+> +    then:
+> +      properties:
+> +        nvmem:
+> +          minItems: 2
+> +        nvmem-names:
+> +          minItems: 2
+> +      required:
+> +        - nvmem
+> +        - nvmem-names
+> +
+>  examples:
+>    - |
+>      #include <dt-bindings/leds/common.h>
+> @@ -191,4 +247,35 @@ examples:
+>        compatible =3D "qcom,pm8916-pwm";
+>        #pwm-cells =3D <2>;
+>      };
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    led-controller {
+> +      compatible =3D "qcom,pmi632-lpg";
+> +      #address-cells =3D <1>;
+> +      #size-cells =3D <0>;
+> +      #pwm-cells =3D <2>;
+> +      nvmem-names =3D "lpg_chan_sdam";
+> +      nvmem =3D <&pmi632_sdam_7>;
+> +      qcom,pbs =3D <&pmi632_pbs_client3>;
+> +
+> +      led@1 {
+> +        reg =3D <1>;
+> +        color =3D <LED_COLOR_ID_RED>;
+> +        label =3D "red";
+> +      };
+> +
+> +      led@2 {
+> +        reg =3D <2>;
+> +        color =3D <LED_COLOR_ID_GREEN>;
+> +        label =3D "green";
+> +      };
+> +
+> +      led@3 {
+> +        reg =3D <3>;
+> +        color =3D <LED_COLOR_ID_BLUE>;
+> +        label =3D "blue";
+> +      };
+> +    };
+> +
+>  ...
+> --=20
+> 2.41.0
+>=20
 
+--siNBzA7SpfMo2ngy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace-v6.6
+-----BEGIN PGP SIGNATURE-----
 
-Tag SHA1: 1065c0c85cfdb141b5cc2064b6e379fd564f0779
-Head SHA1: 8c96b70171584f38940eb2ba65b84eee38b549ba
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPC4ogAKCRB4tDGHoIJi
+0rvnAQCC/NP8ZnTt8cM3IdN+5mZMI0oAy5tg3F8KoasVqxYwXwEAggM0YFw0w7Vk
+RTdsGwIHbsfaMnnBOL+FBI0RD5ZK1wA=
+=EpUf
+-----END PGP SIGNATURE-----
 
-
-Ajay Kaher (9):
-      eventfs: Implement tracefs_inode_cache
-      tracefs: Rename and export some tracefs functions
-      eventfs: Implement eventfs dir creation functions
-      eventfs: Implement eventfs file add functions
-      eventfs: Implement eventfs lookup, read, open functions
-      eventfs: Implement functions to create files and dirs when accessed
-      eventfs: Implement removal of meta data from eventfs
-      eventfs: Move tracing/events to eventfs
-      test: ftrace: Fix kprobe test for eventfs
-
-Eric Vaughn (1):
-      tracing/user_events: Optimize safe list traversals
-
-Sishuai Gong (1):
-      tracefs: Avoid changing i_mode to a temp value
-
-Steven Rostedt (Google) (5):
-      tracing: Add back FORTIFY_SOURCE logic to kernel_stack event structure
-      tracing: Remove unnecessary copying of tr->current_trace
-      tracing: Add free_trace_iter_content() helper function
-      tracing: Require all trace events to have a TRACE_SYSTEM
-      tracefs: Remove kerneldoc from struct eventfs_file
-
-Uros Bizjak (1):
-      ring_buffer: Use try_cmpxchg instead of cmpxchg
-
-Valentin Schneider (9):
-      tracing/filters: Dynamically allocate filter_pred.regex
-      tracing/filters: Enable filtering a cpumask field by another cpumask
-      tracing/filters: Enable filtering a scalar field by a cpumask
-      tracing/filters: Enable filtering the CPU common field by a cpumask
-      tracing/filters: Optimise cpumask vs cpumask filtering when user mask is a single CPU
-      tracing/filters: Optimise scalar vs cpumask filtering when the user mask is a single CPU
-      tracing/filters: Optimise CPU vs cpumask filtering when the user mask is a single CPU
-      tracing/filters: Further optimise scalar vs cpumask comparison
-      tracing/filters: Document cpumask filtering
-
-Yue Haibing (1):
-      tracing: Remove unused function declarations
-
-Zhang Zekun (1):
-      ftrace: Remove empty declaration ftrace_enable_daemon() and ftrace_disable_daemon()
-
-Zheng Yejian (1):
-      tracing: Set actual size after ring buffer resize
-
-----
- Documentation/trace/events.rst                     |  14 +
- fs/tracefs/Makefile                                |   1 +
- fs/tracefs/event_inode.c                           | 807 +++++++++++++++++++++
- fs/tracefs/inode.c                                 | 157 +++-
- fs/tracefs/internal.h                              |  29 +
- include/linux/ftrace.h                             |   5 -
- include/linux/trace_events.h                       |   2 +
- include/linux/tracefs.h                            |  23 +
- kernel/trace/ring_buffer.c                         |  20 +-
- kernel/trace/trace.c                               |  99 +--
- kernel/trace/trace.h                               |  14 +-
- kernel/trace/trace_entries.h                       |   2 +-
- kernel/trace/trace_events.c                        |  76 +-
- kernel/trace/trace_events_filter.c                 | 302 +++++++-
- kernel/trace/trace_events_user.c                   |  15 +-
- kernel/trace/trace_export.c                        |   9 +
- .../ftrace/test.d/kprobe/kprobe_args_char.tc       |   9 +-
- .../ftrace/test.d/kprobe/kprobe_args_string.tc     |   9 +-
- 18 files changed, 1424 insertions(+), 169 deletions(-)
- create mode 100644 fs/tracefs/event_inode.c
- create mode 100644 fs/tracefs/internal.h
----------------------------
+--siNBzA7SpfMo2ngy--
