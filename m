@@ -2,116 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48C5D78EDC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D22E78EDDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:59:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346175AbjHaMzn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36118 "EHLO
+        id S242077AbjHaM7F convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 31 Aug 2023 08:59:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243034AbjHaMzm (ORCPT
+        with ESMTP id S229716AbjHaM7E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:55:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE550CF2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:54:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693486497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=cMsX5nBfb23hEuPzCptzvRIDXnrXr0QfihjCT9ZyFbI=;
-        b=bmHz8MF6eBFP4FJyOcWIF5WdEUSnp9y/t97aqk1bSZoLrzXsb58e7/VECppv92nOEOjuYA
-        SLNuqSVVPLCdzBSXmbzhQDmZyYQ6xfjgqw0BkUH3FsJiwo+PhVSr/yiDy8qtThyQ7eEiIk
-        XFkmnSfBbL9F9+jm+Omt/gPTwsmgIuA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-467-SOzm8YnbNm2aPAHakOuC6g-1; Thu, 31 Aug 2023 08:54:53 -0400
-X-MC-Unique: SOzm8YnbNm2aPAHakOuC6g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5A796858EED;
-        Thu, 31 Aug 2023 12:54:53 +0000 (UTC)
-Received: from bfoster.redhat.com (unknown [10.22.16.94])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B4D8F1121315;
-        Thu, 31 Aug 2023 12:54:52 +0000 (UTC)
-From:   Brian Foster <bfoster@redhat.com>
-To:     linux-trace-kernel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, rostedt@goodmis.org,
-        zhengyejian1@huawei.com
-Subject: [PATCH] tracing: zero the pipe cpumask on alloc to avoid spurious -EBUSY
-Date:   Thu, 31 Aug 2023 08:55:00 -0400
-Message-ID: <20230831125500.986862-1-bfoster@redhat.com>
+        Thu, 31 Aug 2023 08:59:04 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5A82CF3;
+        Thu, 31 Aug 2023 05:58:59 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-573128cd77dso68828eaf.0;
+        Thu, 31 Aug 2023 05:58:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693486739; x=1694091539;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0uNl6jFskdrLBmjyS7+9CIbwuUHiMSI+rI9yedXX/qQ=;
+        b=jCyLEG1I26gNP7CJrVpYa/Gnjurjg36dEqLURycaD2plqy9Sa0bPVpZFcaw3PjPU7z
+         QyFY635fcrAN/RprlDghodeqsi0oWgHVOUCjGTJob1YMtSAki35ox4L7uwNKn8ULlgBL
+         AQNdnPqVPwRgfF3e3IXpI5l0ZvXiJ+M3aQhqqTorpYd0FseAWNZ0kGNlwnN1CldUg16B
+         AL1HrtE5YKd2SKucYlL3Ras3nVOY4W+oCCsmNqzzVqOz+dtcMSvvFAH6oLz9ki+JQLH1
+         4FWH4vTbbuB+eABKXT5WB25OyYr8hOjj9zNbowpVpdUMbjO2GILqbczx99QAFCylVG+G
+         8dBg==
+X-Gm-Message-State: AOJu0Ywbw6Htm2ZcjGh5O8m6Lwmy3Z97U2/LumV0vTgxkmm09ddTcmvn
+        ysDn7wVCMU1f+KzU9V7yi7DjpxlMuJ/a68c1ZgQ=
+X-Google-Smtp-Source: AGHT+IEmGYX9g/ETXL3g53lOPMLKPSoIb0ND1MPTFYNli229Abq6tXAuUZTAqX6cK/rNN33pZ3n/43SiMLCKfy8PE1o=
+X-Received: by 2002:a4a:b4c5:0:b0:56e:6532:467a with SMTP id
+ g5-20020a4ab4c5000000b0056e6532467amr5345539ooo.1.1693486739131; Thu, 31 Aug
+ 2023 05:58:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230829213441.310655-1-ulf.hansson@linaro.org>
+ <CAHk-=wg0gc4Cc90OL29Vr5gDtd4mnsKD+TxtoNtQbAryaWHkZQ@mail.gmail.com>
+ <CAHk-=wjLO=Jsdk2prq0piznMMCk+V0_fRaFRHEPuaALpF8J=hw@mail.gmail.com>
+ <96bb0de0-06d9-46f8-b02f-dc924afff13c@app.fastmail.com> <CAHk-=wi5Lh-NG_rvcx3Zyqd2Uhj76G4V73tWCFULhVzOU6e1xg@mail.gmail.com>
+ <CAPDyKFrJH-1uaPCwnWZDPi4MRtOm=N2CHSRyvjXRDbQ1y-oOrw@mail.gmail.com>
+ <CAJZ5v0hqWYnkNXVju3U3n-9i8eqtjs197tLLNWv8Qa_N9T=KEw@mail.gmail.com> <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
+In-Reply-To: <CAPDyKFpXLj_2HAgyV_VJf+GPQVmxb_iiDe77Q2MY17MDNqy9fA@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 31 Aug 2023 14:58:47 +0200
+Message-ID: <CAJZ5v0j52eotamMABZpu3-L3mmW=MwJEtTHCu3j8tAA0dZJzzA@mail.gmail.com>
+Subject: Re: [GIT PULL] ARM: SoC/genpd driver updates for v6.6
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pipe cpumask used to serialize opens between the main and percpu
-trace pipes is not zeroed or initialized. This can result in
-spurious -EBUSY returns if underlying memory is not fully zeroed.
-This has been observed by immediate failure to read the main
-trace_pipe file on an otherwise newly booted and idle system:
+On Thu, Aug 31, 2023 at 1:37 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+>
+> On Thu, 31 Aug 2023 at 11:33, Rafael J. Wysocki <rafael@kernel.org> wrote:
+> >
+> > On Wed, Aug 30, 2023 at 10:34 AM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
- # cat /sys/kernel/debug/tracing/trace_pipe
- cat: /sys/kernel/debug/tracing/trace_pipe: Device or resource busy
+[cut]
 
-Zero the allocation of pipe_cpumask to avoid the problem.
+> > > Please advise me on how to move forward.
+> >
+> > If I may suggest something, I would call this "pmdomain" instead of
+> > "genpd".  I don't think that /drivers/power/ is a particularly
+> > suitable location for it, because it doesn't really have much to do
+> > with power supplies and more to do with device PM.
+>
+> "pmdomain" is probably giving a reasonable good hint of what goes on
+> in this subsystem. This works fine for me, thanks!
+>
+> >
+> > Also, I would move drivers/base/power/domain.c to drivers/pmdomain/
+> > (and rename it to something like core.c), because it would be a better
+> > location for that fiile IMO.
+>
+> We could certainly do that, let's discuss it a bit more.
+>
+> Although, at this point I want to focus on the genpd providers, as to
+> release some of the burden from arm-soc maintainers.
 
-Fixes: c2489bb7e6be ("tracing: Introduce pipe_cpumask to avoid race on trace_pipes")
-Signed-off-by: Brian Foster <bfoster@redhat.com>
----
+That's fine, it's just a suggestion.
 
-Hi,
+The rationale is that the "core" code is used by the providers, so
+putting it next to them would be more convenient in case it needs to
+be modified along with the providers, for example.
 
-I ran into this problem just recently on one of my test VMs immediately
-after updating to a v6.5 base. A revert of the aforementioned commit
-addressed the problem. I'm not terribly familiar with the tracing code,
-but on further inspection I noticed the cpumask doesn't appear to be
-initialized anywhere. I suppose this could alternatively do a
-cpumask_clear() or whatever after allocation, but either way this
-addresses the problem for me.
+> >
+> > I can also handle future pull requests for this if that's fine with everyone.
+>
+> Thanks a lot for your offer! However, if a re-route is preferred (I
+> think not?), this is probably better suited via arm-soc, as most
+> changes are going to be arm platform specific.
 
-Please CC on replies as I'm not subscribed to the list. Thanks.
-
-Brian
-
- kernel/trace/trace.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 8e64aaad5361..2656ca3b9b39 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -9486,7 +9486,7 @@ static struct trace_array *trace_array_create(const char *name)
- 	if (!alloc_cpumask_var(&tr->tracing_cpumask, GFP_KERNEL))
- 		goto out_free_tr;
- 
--	if (!alloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
-+	if (!zalloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
- 		goto out_free_tr;
- 
- 	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
-@@ -10431,7 +10431,7 @@ __init static int tracer_alloc_buffers(void)
- 	if (trace_create_savedcmd() < 0)
- 		goto out_free_temp_buffer;
- 
--	if (!alloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
-+	if (!zalloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
- 		goto out_free_savedcmd;
- 
- 	/* TODO: make the number of buffers hot pluggable with CPUS */
--- 
-2.41.0
-
+Whichever works for you better.
