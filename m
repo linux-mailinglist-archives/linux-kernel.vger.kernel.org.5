@@ -2,196 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C73178EF4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC12178EF4C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241062AbjHaOIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43008 "EHLO
+        id S1345995AbjHaOJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242974AbjHaOIW (ORCPT
+        with ESMTP id S1346143AbjHaOJB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:08:22 -0400
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2040.outbound.protection.outlook.com [40.107.21.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42618E8;
-        Thu, 31 Aug 2023 07:08:18 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HKTQ7mN7B0m1IA3+gpstpeSpKMizlK4uVV8LlwlfSDzB7OsoVFIrAwgPzO8RgV3FaSmDhE1Bf1w+DXZ7zehv3EFVqMr1lPeTfSMFvarEvE9fIWHU1sbnEAoymBQtAT8kSAZ78B6OU2/irwBJVY6oCfVikZUMBuryVXa9rbH0pHlTHl9vTUBjUquILGQEawqXp0OLld4Wf0hQiWi1gxuo7B+hkLUMNo3CEqorZliR9rh3w4k7XFvhJHqzddg72Lt+4sb7S23dDv5Td3STOaLY3Z5nzR/tI8RSQdPhPtQ0ZFO+fAe1ORqg7/HNHshwiA6aRCtJq3aSwI0m4Ijq1V+bPg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=d+6J/SBTnfomLD0rn2r+T4OZmNA457gu8XaILmAediI=;
- b=d/vpCy9f4eZfRYtydHtXP1w6AyCBsMeO2JF+SFjszjxcs/G8jJlOphJgB7NUP1zePQ4XuqV+zcCEnkWi09I9hUt3EWs6JQ+VMKYwI6fmwC1I5aC8SAZIDUDdONyBX2+DiI/cQ2Dx8mIcg4qI3LXxIi2TnR/t4IoPdAuE/b0SGHmbFbDtCAIgbkvFMpvvDhu8Emf8T3IVXBKj4Fz/kkrI68DNhifBpF3Fb7SndzWKv7UrmDKwR3P/lg5tlrCimtYXBMCspgfzcGDi8vIf6STmzB9J80hg/c1xuicvw+BnZa/7CCwEPJsCJB/+3tzzw3igXZZJ7LLczh/B7tr8WGE6Tw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=d+6J/SBTnfomLD0rn2r+T4OZmNA457gu8XaILmAediI=;
- b=lIvFHe88GUT5cl14EIxxF/ybBob0m9ugYP4Vzh9u9pRx3ckM/1IeXUs7OAnxIfpwOk3ZgMiEHBK/FK/KZCZuSD/Fw3l+HDeUHpxRJ8aGUyoOn7nt2+q6HxuguWTxb00aAUopmjjqf/wLTSmQCNf227zuX58zF3hFPToeQWkqZgqlLELJrMh1pjnvLaKW4Cyr3LypmHq09+e2xe1XmV+IzwK/tJsiLUq18NUtuQhLCr3U8e70AWKB/d/wopMPlTCenu3kqr+MzEmNS27GT+2uPgGaYhaCRPzAPJ5eMvBuhEn1QvJNp80X7ChINqxHAGYQbpOXWhA26+QxcuwPg1+C9w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by AM9PR04MB8714.eurprd04.prod.outlook.com (2603:10a6:20b:43d::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Thu, 31 Aug
- 2023 14:08:15 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::274c:c30b:ac8c:2361%2]) with mapi id 15.20.6745.021; Thu, 31 Aug 2023
- 14:08:15 +0000
-Message-ID: <acf21174-13b2-1114-28f2-2b2f3c038aa0@suse.com>
-Date:   Thu, 31 Aug 2023 17:08:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RESEND] USB PD broken on Lenovo P15gen2
-Content-Language: en-US
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Anthony Iliopoulos <ailiopoulos@suse.com>
-References: <0da9d8a4-1761-20a3-ebd6-a47fe48b94f8@suse.com>
- <04e8de7a-55e3-4d12-921d-537750fe6217@suse.com>
- <9841c4f5-614e-bfff-e725-2398fad4e927@suse.com>
- <ZPCYiMEzEUZrv2OR@kuha.fi.intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <ZPCYiMEzEUZrv2OR@kuha.fi.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1P195CA0040.EURP195.PROD.OUTLOOK.COM
- (2603:10a6:802:5a::29) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Thu, 31 Aug 2023 10:09:01 -0400
+Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA2ED7
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:08:51 -0700 (PDT)
+Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-570096f51acso782257a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:08:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693490930; x=1694095730;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y69wRiW/7EFoXp8Ea7n7MhAJ3pFY/pldn4BtBDUsmqU=;
+        b=K7W7tLlCMCrpot2RFtcVSP4fL0beiLdrPH+VUic7hOxL+WY/ZBYijrEvgfsPqWv/97
+         HCtsEslS2KNPycxYJJYU/W1C+cyP9Uzwt3Kf1fq94VpQzgl6Uacxc0tc8bOG5rbiMJgp
+         7AbSkbbDhsvGtCv7d9JdvuZw8kmc9xJA3/KZzjL26mPKOmAanrr6/i+j8Nc4EeJdp0WO
+         406ZKjsFIcJD9FipjUZKmRVdllFgwzJO7BqgcavIXkYO7hG3IeDhLsfhQEHIWDWqPmaY
+         3yzCIvmf4eT8QA5HrJh8ZkxCkWNNaIjHXHbJANq1C/6y6d6mEiCrQFhtwmKpmr0qMQgL
+         r6WQ==
+X-Gm-Message-State: AOJu0YxMuS7xGkpxJAdpvQf4YSSwF2aAFGM1waXbicFbfox7H00nhPuN
+        qtyegnHKxW0e0vvPOUM479hI7FPdenk0lQcy9Rorl/iIlAWu
+X-Google-Smtp-Source: AGHT+IEoWEesxBYhnOkNEGeUDVkC0t8e9++tzg0ettwj9zEij2pOOzEpFby+X5r/wkOwKcHbgnjwTKoGkOHxittipopVJ5/+YbVX
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|AM9PR04MB8714:EE_
-X-MS-Office365-Filtering-Correlation-Id: a4e5a0ef-6453-4861-0172-08dbaa2bb7e6
-X-LD-Processed: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba,ExtFwd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: xyNNm7TdJnYgvsUV71XHCgWV/jTNiZdKX/CHhuxCS7Egtr4fEA8SVGPWlWDtxOXr5J5dHsasvrABA+X0t7X0mRFMwh9oGyRiOxkYL6ADLyPalTr1yKK6dJm9Jav1VbSD1+97KTG7lxmSg91leCG+1V+wTrqxUspgLlg0W13OtVxuS+vCYuPUSLadJnOPBydYmtW5brjVIDLB+GeCV7GCXJIF5TeIllnxT9e+lwbD0+2GzEWF9nOO/oxS4SzhmQ8fKKDP94Qw9J1OHvVzRvTW+IMt07tmrm+D1d+EGSsdcevM2tHam8yLN0HWUpyI0KFawY82CeP5Arli1yG3lXhjICdwIaD1Q6UFIuUbYcf4i08XxffC4bI+gOD5tX9fbrz1QrJzt8Ni1g+b0xKTrPBwbjDmGtfxBpVlsOLXKhffBQCtyDf1BVK5+aGkHqUXHuGEQF3FIiMb6Zsprm5ZdqxMZjw0/m1+xpmVp2D16Y7cy2i4yzhNk8RBWRbODbF1RWV2UMMi42mrc7NWtlWpJJTGeMG07ZMPT8Q0RBLfjXl9UVex+zCmpHysqWs5jqjMYs+4qcFgbJZquHU8bjmWphXsnTY5amEKQfzQnic0iWNg+h6gLH6RZ2zA6hXDZHLJYSRzzlWXZXrIT+0mdxgc9fZ9HA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(136003)(366004)(39860400002)(376002)(1800799009)(186009)(451199024)(41300700001)(38100700002)(6666004)(31696002)(86362001)(478600001)(2616005)(83380400001)(26005)(107886003)(6512007)(6486002)(6506007)(66556008)(66946007)(36756003)(54906003)(316002)(6916009)(66476007)(2906002)(4326008)(8676002)(8936002)(31686004)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?OFdFc2YyMzlNVGVDam9xM0xvVzNhV29iQnhTQVFuT0FnU2ZZcTZoL2hZZEx3?=
- =?utf-8?B?a1VYMkI4bWQybm0xTTdVQ2ttM2RzL0MzQVUzZ29ETEV3QUVuRHFLeWxCSitl?=
- =?utf-8?B?dlc5YTdaMEhSUjBWZWJJNU43Wlh1bFM3M3lQMmlEWVdzOHI3cHZQRUI3T3dE?=
- =?utf-8?B?elViMWsxVGppQ3l6MXEzZTE1REw4dmFjSnZZaUt1ZVREaDVxaUswZjJvNGVr?=
- =?utf-8?B?SC9GcFkwVkF0MVpVSjkwYktiOW9ZV2NRVk50K3RVMDZrK2NIR2NxQkVPNHkv?=
- =?utf-8?B?Z2RkOUVtbjVvNGxESUhrZDVRTE9BU0VRRS9WQmRDV2c3bFV0bzBLVlhwNkRR?=
- =?utf-8?B?YmYxb0poYnAvdjV3bTdwMFBhNDA0amxrMnhIMGExZzJRUXgxT0dxeG5uVnln?=
- =?utf-8?B?TVRqTEhIUkx3aElGbFZKNXVyc09sc3BBeHdObERHdmpVcEIyb2d5eVZLUW9C?=
- =?utf-8?B?YjZEVG0xd1FJa2dPTmdBaW0weTlFYnd5OHk0dkk4WC9wcGxjdGlEM2xjOWlp?=
- =?utf-8?B?UjBIQ3AvN2hnNW5uRUpINWp5dnFQU2xyeVNkT0dwbnhNc0lHdlF4STFlY1V6?=
- =?utf-8?B?WmUxOE9WaGNVb1RVcFAwbVlWcGJiR3FMV2MvN0pqS045Y3J1eFEzejAvOVdF?=
- =?utf-8?B?OEtXaVpNb2JRN0xpempnRGFJK1hLMmxYWmdkQmlUTHk2ZkdHTkNwM2tWVWhl?=
- =?utf-8?B?Ry9yQm82bWFGUlppTFlialNpZUtMU0o3aDBoSkFtbG0wTFQzNzR2ZzBxWEc3?=
- =?utf-8?B?K0pqeHlWM0FUS25CVWgrK2lINXlaR3BZR3RuZmlNdDdoMDlnOEZzcC9JZ09n?=
- =?utf-8?B?cjl3YVVQMHBtSEdEdGdRdGdSY1FLWExHbEdwUklQN0lFL2g4YXBFMzJPVFRR?=
- =?utf-8?B?M2lKd0F4cmNpK1VKVG1RRHdSRkVMS2hNdDk5N09zUFdxWW5nUElhbWJSYmlV?=
- =?utf-8?B?ZFBsZGtra013MTRRb3VCUjRCdUVDNmg1RGduMjh6RldXUitTOUR4NkhMS0w5?=
- =?utf-8?B?azBZRHdIaWgzMFE1YWdneGUwLys4M2h5QzVDSGlLL1hwV2p5aVVYKzBmaldR?=
- =?utf-8?B?clJJU2c5YUVTOUFaZy9pd3hWQzhuVUlnaEhqeWFOT1R1L2FCcEtrTzhqMUta?=
- =?utf-8?B?cU1iT3hRekhiSnFZN3dkVlArcmVKWEpJMHY3Y2ZzTGFsV1FOTmhySkVISXoz?=
- =?utf-8?B?S29DU3JablRETGNRakRGVlI0aTJMZGQvOE9DMHdhdms3YVk4UnVBdTNNamR6?=
- =?utf-8?B?RUcyVEtaYVRReDNIYXJzaGE4SnNVeXFIbnlhaTN2VlRRQTU4WlJNT3M1Qk84?=
- =?utf-8?B?a3d4NHRSVnBSWFNmeHpwMExKNkxtaXZEZytNWWVRamMrZTNzR1JFSG5aYm1V?=
- =?utf-8?B?VytnRkpCMFFYVW1pdUx5MWppZkVwNUs5VGRPNEFkdS9iazBkS2RLbTJLUkJv?=
- =?utf-8?B?dGVmbmpnNnZSNTRLaHF6cWgvdThkRk1ZRTMwNDVNMEtWWlprTThjWU10b2xY?=
- =?utf-8?B?dHl2bUhITFNRNDZiSnh5bndHdmxuczlBRUxKcnFnd2RadElNdjE3NTF5aDFr?=
- =?utf-8?B?T3JPUzRvc1VsT04vQ0QrYm5ETUFza2V3b2Z0R0FmdFY5eGNXeTg0ckRMM0U2?=
- =?utf-8?B?U2xVWjNIek0vMmsyei9xV0w3Q09PM1NQdFBtWVpwM1ovcGtacElYQ01UUWhi?=
- =?utf-8?B?UU51MllPVGx1OEp5VG1RNTVkQndqYUYvT3dZbUJldWJJZWhXeTBBb0xHRXAz?=
- =?utf-8?B?QldIb3UyMndvMGNTTTBwWjNHdzNnclVNOFZqdjJVRmExTXZ6ajVYVW1hMkVw?=
- =?utf-8?B?bzlydjc4Y1E5SGxDMGd1cWhybWd5eEIzdWQ3S0E5S2sxTUtNcnlsMVhMTDBQ?=
- =?utf-8?B?bWVKQzl1QXgxNVVxSWtJbzcySVl2dXNqNUpjSUYyaitOdHF1ZWhEelNHRE1R?=
- =?utf-8?B?L2Q5cGVXK1l6SkRhb2l2UTgxZUdqencwNEhwU3ZTazZ4RDBQVVFyUXcrSElI?=
- =?utf-8?B?WDhIS1NqbllKTUFlbkVlTDRZeVdWV2RDN1JEVTJmZW5pVzFjM0tVNDFXSkJY?=
- =?utf-8?B?UmtuK1NxK040RUNFT3hUTmVxZWVub0o5MTFzTzJCc3ZONVNQeS9ZNE5HMmVp?=
- =?utf-8?Q?gAew96jTASLwMHRFARJE14Ucq?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a4e5a0ef-6453-4861-0172-08dbaa2bb7e6
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 14:08:15.0158
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rVPr1HfwpOSAY/Usa6aLupCKj+L3TXfrQJynQN5RqI1EzybkP41a5oro/SOLTBSIJ57kI61wMD87eWI1L/ZjPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8714
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:754f:0:b0:56c:55eb:252b with SMTP id
+ f15-20020a63754f000000b0056c55eb252bmr294350pgn.5.1693490930766; Thu, 31 Aug
+ 2023 07:08:50 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 07:08:50 -0700
+In-Reply-To: <000000000000ebf27305f64b04d8@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005bdb2106043895cc@google.com>
+Subject: Re: [syzbot] [kernel?] KASAN: slab-use-after-free Read in dev_uevent
+From:   syzbot <syzbot+5ee79919ffe91d629b96@syzkaller.appspotmail.com>
+To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+syzbot has found a reproducer for the following issue on:
+
+HEAD commit:    ef2a0b7cdbc5 Merge tag 'devicetree-header-cleanups-for-6.6..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1636912fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=70a96c99bb5352a3
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ee79919ffe91d629b96
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1113aa10680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1738dfffa80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/207d0a5481f5/disk-ef2a0b7c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/33a620ea40a4/vmlinux-ef2a0b7c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/93ff8f39ac26/bzImage-ef2a0b7c.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+5ee79919ffe91d629b96@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: slab-use-after-free in string_nocheck lib/vsprintf.c:645 [inline]
+BUG: KASAN: slab-use-after-free in string+0x218/0x2b0 lib/vsprintf.c:727
+Read of size 1 at addr ffff88802c09a487 by task udevd/9531
+
+CPU: 0 PID: 9531 Comm: udevd Not tainted 6.5.0-syzkaller-08262-gef2a0b7cdbc5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0x163/0x540 mm/kasan/report.c:475
+ kasan_report+0x175/0x1b0 mm/kasan/report.c:588
+ string_nocheck lib/vsprintf.c:645 [inline]
+ string+0x218/0x2b0 lib/vsprintf.c:727
+ vsnprintf+0x10fc/0x1d80 lib/vsprintf.c:2818
+ add_uevent_var+0x1c4/0x440 lib/kobject_uevent.c:665
+ dev_uevent+0x3ec/0x8f0 drivers/base/core.c:2575
+ uevent_show+0x19a/0x310 drivers/base/core.c:2646
+ dev_attr_show+0x54/0xc0 drivers/base/core.c:2349
+ sysfs_kf_seq_show+0x331/0x4b0 fs/sysfs/file.c:59
+ seq_read_iter+0x43e/0xd10 fs/seq_file.c:230
+ call_read_iter include/linux/fs.h:1979 [inline]
+ new_sync_read fs/read_write.c:389 [inline]
+ vfs_read+0x795/0xb00 fs/read_write.c:470
+ ksys_read+0x1a0/0x2c0 fs/read_write.c:613
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f49f3b16b6a
+Code: 00 3d 00 00 41 00 75 0d 50 48 8d 3d 2d 08 0a 00 e8 ea 7d 01 00 31 c0 e9 07 ff ff ff 64 8b 04 25 18 00 00 00 85 c0 75 1b 0f 05 <48> 3d 00 f0 ff ff 76 6c 48 8b 15 8f a2 0d 00 f7 d8 64 89 02 48 83
+RSP: 002b:00007ffcd3fc9478 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
+RAX: ffffffffffffffda RBX: 000055dfae9e07a0 RCX: 00007f49f3b16b6a
+RDX: 0000000000001000 RSI: 000055dfae9e0980 RDI: 0000000000000008
+RBP: 000055dfae9e07a0 R08: 0000000000000008 R09: 0000000000000000
+R10: 000000000000010f R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000003fff R14: 00007ffcd3fc9958 R15: 000000000000000a
+ </TASK>
+
+Allocated by task 12253:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:599 [inline]
+ raw_ioctl_init drivers/usb/gadget/legacy/raw_gadget.c:462 [inline]
+ raw_ioctl+0x1aad/0x3cd0 drivers/usb/gadget/legacy/raw_gadget.c:1252
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Freed by task 12253:
+ kasan_save_stack mm/kasan/common.c:45 [inline]
+ kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
+ kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
+ kasan_slab_free include/linux/kasan.h:162 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook mm/slub.c:1826 [inline]
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3822
+ dev_free drivers/usb/gadget/legacy/raw_gadget.c:210 [inline]
+ kref_put+0xb5/0x7c0 include/linux/kref.h:65
+ raw_release+0x138/0x1e0 drivers/usb/gadget/legacy/raw_gadget.c:426
+ __fput+0x3f8/0x910 fs/file_table.c:384
+ task_work_run+0x24a/0x300 kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0x68f/0x2290 kernel/exit.c:874
+ do_group_exit+0x206/0x2c0 kernel/exit.c:1024
+ __do_sys_exit_group kernel/exit.c:1035 [inline]
+ __se_sys_exit_group kernel/exit.c:1033 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1033
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+The buggy address belongs to the object at ffff88802c09a480
+ which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 7 bytes inside of
+ freed 32-byte region [ffff88802c09a480, ffff88802c09a4a0)
+
+The buggy address belongs to the physical page:
+page:ffffea0000b02680 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x2c09a
+ksm flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000800 ffff888012841500 ffffea000057f180 dead000000000003
+raw: 0000000000000000 0000000000400040 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as allocated
+page last allocated via order 0, migratetype Unmovable, gfp_mask 0x12c40(GFP_NOFS|__GFP_NOWARN|__GFP_NORETRY), pid 4463, tgid 4463 (S02klogd), ts 15840613892, free_ts 14931433200
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
+ prep_new_page mm/page_alloc.c:1543 [inline]
+ get_page_from_freelist+0x31ec/0x3370 mm/page_alloc.c:3183
+ __alloc_pages+0x255/0x670 mm/page_alloc.c:4439
+ alloc_slab_page+0x6a/0x160 mm/slub.c:1870
+ allocate_slab mm/slub.c:2017 [inline]
+ new_slab+0x84/0x2f0 mm/slub.c:2070
+ ___slab_alloc+0xade/0x1100 mm/slub.c:3223
+ __slab_alloc mm/slub.c:3322 [inline]
+ __slab_alloc_node mm/slub.c:3375 [inline]
+ slab_alloc_node mm/slub.c:3468 [inline]
+ __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3517
+ __do_kmalloc_node mm/slab_common.c:1022 [inline]
+ __kmalloc+0xa8/0x230 mm/slab_common.c:1036
+ kmalloc include/linux/slab.h:603 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ tomoyo_encode2 security/tomoyo/realpath.c:45 [inline]
+ tomoyo_encode+0x26f/0x530 security/tomoyo/realpath.c:80
+ tomoyo_realpath_from_path+0x598/0x5e0 security/tomoyo/realpath.c:283
+ tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
+ tomoyo_check_open_permission+0x254/0x4e0 security/tomoyo/file.c:771
+ security_file_open+0x63/0xa0 security/security.c:2836
+ do_dentry_open+0x325/0x1430 fs/open.c:916
+ do_open fs/namei.c:3639 [inline]
+ path_openat+0x27bb/0x3180 fs/namei.c:3796
+ do_filp_open+0x234/0x490 fs/namei.c:3823
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1422
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1136 [inline]
+ free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
+ free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
+ kasan_depopulate_vmalloc_pte+0x74/0x90 mm/kasan/shadow.c:427
+ apply_to_pte_range mm/memory.c:2585 [inline]
+ apply_to_pmd_range mm/memory.c:2629 [inline]
+ apply_to_pud_range mm/memory.c:2665 [inline]
+ apply_to_p4d_range mm/memory.c:2701 [inline]
+ __apply_to_page_range+0x8e2/0xdf0 mm/memory.c:2735
+ kasan_release_vmalloc+0x9a/0xb0 mm/kasan/shadow.c:544
+ __purge_vmap_area_lazy+0xc0f/0x19c0 mm/vmalloc.c:1770
+ _vm_unmap_aliases+0x79d/0x840 mm/vmalloc.c:2306
+ change_page_attr_set_clr+0x2f8/0xf80 arch/x86/mm/pat/set_memory.c:1838
+ change_page_attr_set arch/x86/mm/pat/set_memory.c:1879 [inline]
+ set_memory_nx+0xf2/0x130 arch/x86/mm/pat/set_memory.c:2072
+ free_init_pages arch/x86/mm/init.c:927 [inline]
+ free_kernel_image_pages arch/x86/mm/init.c:946 [inline]
+ free_initmem+0x75/0xc0 arch/x86/mm/init.c:973
+ kernel_init+0x31/0x2a0 init/main.c:1446
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+
+Memory state around the buggy address:
+ ffff88802c09a380: 00 00 00 fc fc fc fc fc fa fb fb fb fc fc fc fc
+ ffff88802c09a400: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+>ffff88802c09a480: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+                   ^
+ ffff88802c09a500: fa fb fb fb fc fc fc fc 00 00 00 00 fc fc fc fc
+ ffff88802c09a580: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
+==================================================================
 
 
-On 31.08.23 г. 16:41 ч., Heikki Krogerus wrote:
-> Hi Nikolay,
-> 
-> Thanks for the report.
-> 
-> On Wed, Aug 30, 2023 at 04:07:55PM +0300, Nikolay Borisov wrote:
->>
->>
->> On 28.08.23 г. 17:52 ч., Nikolay Borisov wrote:
->>>
->>> [Resending as I had initially attached  a full acpi dump and it got
->>> bounced from the usb mailing list]
->>>
->>> Hello,
->>>
->>> I'm not able to use usb PD on a Lenovo Thinkpad P15gen2 laptop. It's
->>> equipped with 2 thunderbolt ports and a usb 3.2 gen2 usb port, all of
->>> which are supposed to support PD 2.0:
->>
->> <snip>
->> So I've been debugging this and what the PPM reports is the following:
->>
->> modprobe-529501  [004] ..... 33507.058332: ucsi_register: Supported UCSI spec: 100
->>       kworker/4:0-524223  [004] ..... 33507.486591: ucsi_init_work: Connectors supported: 3
->>       kworker/4:0-524223  [004] ..... 33507.486592: ucsi_init_work: GET_CAP: USB_PD: 0 TYPEC_CURRENT: 1 POWER_VBUS: 0, POWER_OTHER: 0, POWER_AC_SUPPLY: 1, BATTERY_CHARGING: 0 bcVersion: 0x102 typec_version: 0x100 pd_version: 0x200 PDO_DETAILS: 0
->>       kworker/4:0-524223  [004] ..... 33507.682726: ucsi_init_work: [Register port 1]: OPMODE: E4 flag:1
->>       kworker/4:0-524223  [004] ..... 33508.850438: ucsi_init_work: [Register port 2]: OPMODE: E4 flag:1
->>       kworker/4:0-524223  [004] ..... 33509.986672: ucsi_init_work: [Register port 3]: OPMODE: E4 flag:1
->>
->>
->> So all three ports support DRP/USB2/USB3/ALT_MODE and they can be a provider.
->>
->>
->> I find it strange that USB_PD is reported as 0 yet pd_version is reported as 2. I contacted Lenovo's support and they confirmed that this particular model indeed supports PD 3.0 on all USBC ports.
->>
->> I see a couple of problems with the current upstream code:
->>
->> 1. It assumes that USB_PD is valid because the PD version from pd_version is being propagated to several places (like in ucsi_register_port() cap->pd_revision = ucsi->cap.pd_version;)
-> 
-> This part should be fixed.
-> 
->> 2. When typec_register_port() is called from ucsi_register_port() cap->pd is 0 hence the port->pd = cap->pd; assignment in typec_register_port is a noop. In fact I don't see where cap->pd is being initialized since we initialize con->pd when we call usb_power_delivery_register in ucsi_register_port().
-> 
-> That "pd" member in struct typec_capability is optional. It can be
-> used if the driver has a set of USB PD capabilities meant for USB
-> Type-C port ready before the port is registered, but in UCSI driver
-> the PD stuff are registered after the port.
-> 
-> So I'm not sure there is anything wrong here.
-> 
->> Is it mandatory that GET_PDOS is supported if PD is supported, the UCSI spec doesn't say anything other than GET_PDOS is optional and signaled by bit in the GET_CAP call ?
-> 
-> It looks like nobody ever checked is the command supported or not
-> before using it. That's a bug.
-
-
-If we assume support of this command is checked based on the respective 
-bit in the optional capabilities member of GET_CAPS message. Is this 
-command actually mandatory to properly support PD. I'm currently in 
-contact with Lenovo as it seems there might be problems in their 
-firmware as well i.e what they are reporting.
-> 
-> thanks,
-> 
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
