@@ -2,119 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E183478F2B2
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:33:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8315678F2B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 20:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345097AbjHaSde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 14:33:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54430 "EHLO
+        id S1347067AbjHaSe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 14:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233343AbjHaSdc (ORCPT
+        with ESMTP id S234565AbjHaSeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 14:33:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1B7E65;
-        Thu, 31 Aug 2023 11:33:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693506805; x=1725042805;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=px3FvT2RH7DAb7h5X2rn9hNLxQJQvAASvN2jtIrqh9o=;
-  b=AASgif7GedMH45eJW5YI5lYhSf+bVlvKGTOR1avgmDoWx6eQbu40itm8
-   +PsirLsTy1GjYGcvDyMveHMOGhp1e5x1fab0ZQ0BioKFBG0Y3zH3RFzT5
-   toYEIWW8IG0gYV0SHrx/n7/okGAe04UrH2djXDF1/k3JXZh6SgW6cfeyU
-   uVnH0EvIGYxILj8nNzFME2e/7wqDi8Xrh4EOUYtiCHhiy9UwMRLPGzoLs
-   vXP7HSin5KprmsW8+Z1KVZRR6xRS9evG3vyafCEF8ohSwrfsOGpfDfkin
-   5SojNl/Jt0Dq1WMuEgjycO5H+qJ4VlXRCwf4yzGohlc0iIC/CJBv8gW/T
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="375969039"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="375969039"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 11:33:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="863234151"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="863234151"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 11:33:17 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1qbmTh-005Tcq-0j;
-        Thu, 31 Aug 2023 21:33:13 +0300
-Date:   Thu, 31 Aug 2023 21:33:12 +0300
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     "Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        William Hubbs <w.d.hubbs@gmail.com>,
-        Chris Brannon <chris@the-brannons.com>,
-        Kirk Reiser <kirk@reisers.ca>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Max Staudt <max@enpas.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Dario Binacchi <dario.binacchi@amarulasolutions.com>,
-        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
-        Jeremy Kerr <jk@codeconstruct.com.au>,
-        Matt Johnston <matt@codeconstruct.com.au>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Subject: Re: [PATCH 16/36] tty: use u8 for chars
-Message-ID: <ZPDc6P2tp4lQzrKA@smile.fi.intel.com>
-References: <20230810091510.13006-1-jirislaby@kernel.org>
- <20230810091510.13006-17-jirislaby@kernel.org>
- <27366cad-30b2-e326-8d8f-c6fe17cf4899@linux.intel.com>
+        Thu, 31 Aug 2023 14:34:25 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7EBBE64
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:34:22 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id 98e67ed59e1d1-271914b8aa4so825024a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:34:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1693506862; x=1694111662; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=libU7Rt7ZI5S+r4uHABLMi5BcLRzKen88gKTlWDNkJM=;
+        b=f8WJPwYycEp8Wl8b4Iy2zXEcGNIBgK/rKE1RZD/2p1ehA3N99E0OLlsISYivE+aOyH
+         emKvs8sGZX1NdsMcBtNvNA0FXbeVC8rfR74dvW0fDABAw+EcQH5lJlXBgdlYsLP3VvvI
+         x7qjwHJ+PYkN257PBFU7SteBM1W7yxJvmDFCyF/qcTgAn7FUSxB6XtIKk46gIgue5I2j
+         1nHkRDxYW6dfWKW+6U3058DfQMN4RuqkuszgNJe0sJEaTaLNYg/htyTsJmK0dJIHUhQ3
+         U0yl2mrjxtBRGi/EVVgDdF4AOZcbb3LpptpAJOYc/GvsK8I+edsBqTr99itWMKBLaK5L
+         LG5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693506862; x=1694111662;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=libU7Rt7ZI5S+r4uHABLMi5BcLRzKen88gKTlWDNkJM=;
+        b=WW8nIKSoQmhw6jRDHJGtepKX97wTGgN834odTs+1snnpsRlUBDPJEOHlDPVx1Ofvri
+         OrdtAwUIQqphpaj2xPvz4z4oNGgLWEsaCZlAU1qLtvs+jBjLvCk65kxSfTmCd8qCc8t0
+         xOXopauxsHhDunYjVVaOqpODFB09UN9wWrIQgMBk2F0TD/b3EyckM6GRV/f6tFr/9GDL
+         MI3LdnB+q/Ry9BEL558CYKjRgEg9W8ZIbT3moV85nAba8k6ffUb8sUXx1oUhnqtzDJQH
+         HpYnv+iLLv5NOwzkEDDEKlXscKIrmPu2cXYk0b/RQqmHtmLTCgR6OoDx8RCG53lVRJrR
+         0rMQ==
+X-Gm-Message-State: AOJu0Yx9Vez3MytJkvH51oR9rKqr5vD+X4gdrVY+XVZTvhju+HKf2Af0
+        QvloGmncsqHEBrQSALrs2X2Es2lvF4KRUgjpZ0PQvWWOrOkKzrNOzpCm5O77
+X-Google-Smtp-Source: AGHT+IHPow69FStqp53qeys+PTI6Rp+jbySd/IKrYP66LcErfTXPdQQTwmnk1bpH/dV5yxggud2kmZd4Oqpox52Bias=
+X-Received: by 2002:a17:90a:1c16:b0:262:f798:b60d with SMTP id
+ s22-20020a17090a1c1600b00262f798b60dmr176631pjs.6.1693506862088; Thu, 31 Aug
+ 2023 11:34:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <27366cad-30b2-e326-8d8f-c6fe17cf4899@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230831121412.2359239-1-Naresh.Solanki@9elements.com> <813261e9-71d8-4fb6-aab0-474915662598@sirena.org.uk>
+In-Reply-To: <813261e9-71d8-4fb6-aab0-474915662598@sirena.org.uk>
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+Date:   Fri, 1 Sep 2023 00:04:13 +0530
+Message-ID: <CABqG17hrfLMynD0OKurfR2694ak0LN0pnpK82DOPqDAW-rhO0A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] regulator: Add uapi header
+To:     Mark Brown <broonie@kernel.org>
+Cc:     zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 11, 2023 at 01:28:56PM +0300, Ilpo Järvinen wrote:
-> On Thu, 10 Aug 2023, Jiri Slaby (SUSE) wrote:
-
-...
-
-> > @@ -22,9 +22,9 @@ struct tty_buffer {
-> >  	unsigned long data[];
-> >  };
-> >  
-> > -static inline unsigned char *char_buf_ptr(struct tty_buffer *b, int ofs)
-> > +static inline u8 *char_buf_ptr(struct tty_buffer *b, int ofs)
-> >  {
-> > -	return ((unsigned char *)b->data) + ofs;
-> > +	return ((u8 *)b->data) + ofs;
-> >  }
-> 
-> Any particular reason why b->data is left unsigned long?
-
-It might be the performance issue due to unaligned accesses on some
-architectures. But I'm just speculating...
-
--- 
-With Best Regards,
-Andy Shevchenko
+Hi
 
 
+On Thu, 31 Aug 2023 at 18:05, Mark Brown <broonie@kernel.org> wrote:
+>
+> On Thu, Aug 31, 2023 at 02:14:08PM +0200, Naresh Solanki wrote:
+>
+> > +#define REGULATOR_EVENT_UNDER_VOLTAGE                0x01
+> > +#define REGULATOR_EVENT_OVER_CURRENT         0x02
+> > +#define REGULATOR_EVENT_REGULATION_OUT               0x04
+> > +#define REGULATOR_EVENT_FAIL                 0x08
+> > +#define REGULATOR_EVENT_OVER_TEMP            0x10
+> > +#define REGULATOR_EVENT_FORCE_DISABLE                0x20
+> > +#define REGULATOR_EVENT_VOLTAGE_CHANGE               0x40
+> > +#define REGULATOR_EVENT_DISABLE                      0x80
+> > +#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE   0x100
+> > +#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE 0x200
+> > +#define REGULATOR_EVENT_PRE_DISABLE          0x400
+> > +#define REGULATOR_EVENT_ABORT_DISABLE                0x800
+> > +#define REGULATOR_EVENT_ENABLE                       0x1000
+>
+> I'm not sure embedded the raw numbers in the UAPI like this for just one
+> driver is ideal - it might be better to do something string based,
+> though that would result in us ending up with a file per event which is
+> a bit noisy.
+I guess this is the standard approach & can be a starting point for
+future use cases.
+
+If you still insist on string based then can you please elaborate on it.
+Is the events attribute is expected to print string of space separated
+events like
+for REGULATOR_EVENT_ENABLE -> ENABLE
+And even multiple events like: 'UNDER_VOLTAGE REGULATION_OUT'
+
+Let me know your thoughts.
+
+Regards,
+Naresh
