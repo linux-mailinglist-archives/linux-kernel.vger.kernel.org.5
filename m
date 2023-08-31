@@ -2,155 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF93178F438
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F307F78F43A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:41:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347430AbjHaUkt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 16:40:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35430 "EHLO
+        id S1347438AbjHaUlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 16:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244299AbjHaUks (ORCPT
+        with ESMTP id S244299AbjHaUlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 16:40:48 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E8E3CFE
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:40:44 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-500d13a8fafso2403584e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:40:44 -0700 (PDT)
+        Thu, 31 Aug 2023 16:41:52 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5904C1B0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:41:49 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-64c2e2572f7so6681006d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:41:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693514443; x=1694119243; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=jmh9FExlycgbmfRymrwXGINB5p9AMhlFKblzDNqy3Qk=;
-        b=JuhebmW0QQiDIH/L7C5RxJikxIjRPg8Idt1kpr2HwTQ82O/7Cl7NUoKqMsIcJpbXBE
-         ZTIIGNP1Or+1USixtPa6jjGi8/A3fa3n3QfUu06ag5lLnOSFWURlZhxAj18njKHUFnA7
-         4EWf1XW3cSGOrCX/3BKVmy9es8rq6Zr7kkK/wUX2+ctb//Px8lR8vbmg1BOXUzB+bb4W
-         U407XBlhy0gjF4vpQ6FSmKrjJXTaNtu8qXEsUmqrR4NZF5DdEtUNv0vlRWAfffIBjrW6
-         eA1uanDYqg165cB3P0i1FoX8/U+01IQd3kbVWSadkv3waQAoEhe+fEFKAi+IVzq+vvXb
-         vUIw==
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1693514508; x=1694119308; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=MGb8UE4K7J1/tZAx27Ih4ZHLsp9ZwY6jXWa1wmWSSW0=;
+        b=I31qRJi90wozqH18C1R2tr4ll/MxoMmVndKe/6SW3YuG7QaNd1U4Gm8hLS+LBJXvco
+         Slk/Gh2F2dQ9vTYwiAukJdQQdf0CCU41Dfr8G2wzBqLZXgsHSmaGLel8c6Ru1LHn13it
+         ohjZYq3nCmBlzTzxkpD7xowQw9kM2Gte6AmjtOPkW3OtmbsmePmlXAUv/nqwgbKD142k
+         5fxxiUWyB9iNWBlVijTmRSgTTK4B2UDi8I+/xVJ06CFliv4p8gZvDae8+rGOXLQZwZjD
+         UdDSJLXoMigRxUAzUs2aMLJBQxcNfYet7V8KXzV+T2Gv2fqfgP5KAkvL6PsHsl73amVC
+         cURw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693514443; x=1694119243;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jmh9FExlycgbmfRymrwXGINB5p9AMhlFKblzDNqy3Qk=;
-        b=VzZCNSQpBo9P4GIH+wSv1m7Ng5OVcXSBr4CPSUAiSKWuPZtflYX+VruG/75UmgGFEx
-         KLxI+MwR+YQIk5cNDuSzXmPfVnE4dQVoYFoxNB1GEoRVhucfAUghtzjOUGawgBm9d/+Q
-         ahz+4WFWUdrO4mhUHhwXD845s04L+hKiRlFQHi5iCnArFdSmOtqJjPAdNjJZloNGcwdG
-         YBxImJG1eNm66wZ8bZq+v5OonbDY+45Iw1IA4UuFfBRVVE8Jvs38WvQbXdHmmOqLCKci
-         2TJhAiV3T2BsXfJwXDgD2c+IAR9LEoHyicIo2irLlkfFEBCSjpeJHjrEYFuNKGuYCP72
-         1jGA==
-X-Gm-Message-State: AOJu0Yxd+/JRUeGlKEkY7Ym/PCw0BZxCkv+kZpTvglTTpTFqyKT2i7Wh
-        COfpZUB8Ct4ovA1wrxnGoXrO/A==
-X-Google-Smtp-Source: AGHT+IHvucSDAeT+xVwHkfOaHi/9UEs2qNN5mdDevojByrsF5+OU84HysdBunzySgfm2pK3iRiW+yw==
-X-Received: by 2002:a19:5e0b:0:b0:500:8fc1:8aba with SMTP id s11-20020a195e0b000000b005008fc18abamr218772lfb.26.1693514442333;
-        Thu, 31 Aug 2023 13:40:42 -0700 (PDT)
-Received: from [192.168.1.101] (abxj164.neoplus.adsl.tpnet.pl. [83.9.3.164])
-        by smtp.gmail.com with ESMTPSA id g23-20020ac25397000000b004ff884e9936sm409207lfh.12.2023.08.31.13.40.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 13:40:41 -0700 (PDT)
-Message-ID: <9de94c43-5274-4eb3-96b3-a77db2822b92@linaro.org>
-Date:   Thu, 31 Aug 2023 22:40:39 +0200
+        d=1e100.net; s=20221208; t=1693514508; x=1694119308;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MGb8UE4K7J1/tZAx27Ih4ZHLsp9ZwY6jXWa1wmWSSW0=;
+        b=MV1JglSwqQyv15+0wdF8cHQMHioxgrjfNrowLpdtQcmoqF5dZH3OixSKdkqSRHZuuE
+         boW3rcF18Xn9IAJncjz34ndOO6AvvlU2H4Gm3cWbmshvH4vCB1rlaruB87wrZn9vTk31
+         dk8NHReoF+Q7JarFcqVBdlX0cyLyn5RVXgsjL67moklljQ0R2JQ+zY98Xr+Xh+vGKUUY
+         Tq+//i+Zhf7WhrZ9Z8uoiWxIF8FmuQrVb6dtw0aXGkYZSVA/BlYEfDNW6mpd4Ec7m9BF
+         NbyS2yXfnfA1v9wXQz1Yr2K4Y2PUaEHPpu961xQSLu4qfyqu568RTkc3VMeozRaV7d+1
+         +A+Q==
+X-Gm-Message-State: AOJu0YwWZdwIPSJUQzDLALzBc5Z78e7JSCwTf5AgUvKYcWbAI3G5Mfaq
+        2gRLenJYE72aBDngs2SN1DV7nA==
+X-Google-Smtp-Source: AGHT+IFU9aOd57XMHkjUfgCesvQh4jI8dOaEF345CS48c+uA4Ci+ij/CalBUYdApLt8nWIG9HHvAmA==
+X-Received: by 2002:a0c:8c8e:0:b0:641:8df1:79e3 with SMTP id p14-20020a0c8c8e000000b006418df179e3mr358262qvb.29.1693514508451;
+        Thu, 31 Aug 2023 13:41:48 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:15:bae9::7a9])
+        by smtp.gmail.com with ESMTPSA id u11-20020a0c8dcb000000b0064f45b8c02bsm899553qvb.49.2023.08.31.13.41.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 13:41:47 -0700 (PDT)
+Message-ID: <fea0cb4a94ab9ba757f32ad5539d075089dc63e7.camel@ndufresne.ca>
+Subject: Re: [RFC PATCH v2 0/7] Add audio support in v4l2 framework
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     Takashi Iwai <tiwai@suse.de>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Hans Verkuil <hverkuil@xs4all.nl>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
+        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu, 31 Aug 2023 16:41:46 -0400
+In-Reply-To: <87wmxk8jaq.wl-tiwai@suse.de>
+References: <1690265540-25999-1-git-send-email-shengjiu.wang@nxp.com>
+         <47d66c28-1eb2-07f5-d6f9-779d675aefe8@xs4all.nl>
+         <87il9xu1ro.wl-tiwai@suse.de>
+         <CAA+D8ANmBKMp_L2GS=Lp-saMQKja6L4E6No3yP-e=a5YQBD_jQ@mail.gmail.com>
+         <87il9xoddo.wl-tiwai@suse.de>
+         <CAA+D8AOVEpGxO0YNeS1p+Ym86k6VP-CNQB3JmbeT7mPKg0R99A@mail.gmail.com>
+         <844ef9b6-d5e2-46a9-b7a5-7ee86a2e449c@sirena.org.uk>
+         <CAA+D8AOnsx+7t3MrWm42waxtetL07nbKURLsh1hBx39LUDm+Zg@mail.gmail.com>
+         <CAA+D8AMriHO60SD2OqQSDMmi7wm=0MkoW6faR5nyve-j2Q5AEQ@mail.gmail.com>
+         <CAA+D8AN34-NVrgksRAG014PuHGUssTm0p-KR-HYGe+Pt8Yejxg@mail.gmail.com>
+         <87wmxk8jaq.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: phy: qcom,usb-snps-femto-v2: Add REFGEN
- regulator
-To:     Rob Herring <robh@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-References: <20230830-topic-refgenphy-v1-0-892db196a1c0@linaro.org>
- <20230830-topic-refgenphy-v1-1-892db196a1c0@linaro.org>
- <20230831182505.GA2541736-robh@kernel.org>
-Content-Language: en-US
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230831182505.GA2541736-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.08.2023 20:25, Rob Herring wrote:
-> On Wed, Aug 30, 2023 at 11:13:51PM +0200, Konrad Dybcio wrote:
->> The HSPHY is (or at least can be) one of the users of the reference
->> voltage generating regulator. Ensure that dependency is described
->> properly.
->>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml | 3 +++
->>  1 file changed, 3 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
->> index 0f200e3f97a9..e895b6c4ee49 100644
->> --- a/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
->> +++ b/Documentation/devicetree/bindings/phy/qcom,usb-snps-femto-v2.yaml
->> @@ -53,6 +53,9 @@ properties:
->>      items:
->>        - description: PHY core reset
->>  
->> +  refgen-supply:
->> +    description: phandle to the REFGEN regulator node
-> 
-> Supply names are local to the device (sink name), but this seems to be 
-> named based on the supply source. Maybe hard to do if all internal 
-> stuff. What is this supplying and what's the source if not REFGEN?
-I don't think I have anything that would answer this question..
-Though I would not at all be surprised if Qualcomm also called the
-input "refgen"..
+Hi,
 
-Maybe Bjorn or Dmitry would know.
+Le jeudi 24 ao=C3=BBt 2023 =C3=A0 19:03 +0200, Takashi Iwai a =C3=A9crit=C2=
+=A0:
+> > 3. How to handle the xrun issue. pause or resume. which are brought by =
+ALSA.
+>=20
+> Doesn't V4L2 handle the overrun/underrun at all?=C2=A0 Also, no resume
+> support?
 
-Konrad
+just a 2 cents comment. All our video m2m are job based. When there is no j=
+ob
+available they stop and resume when there is more work in queues. As there =
+is no
+time constraints coming from the hardware, there is also no API to know tha=
+t
+there has been a period of time without anything being executed (under
+utilization). Only overrun can be detected by application, each chunk of wo=
+rk is
+in its own v4l2_buffer and the application will run out of buffer in that c=
+ase,
+and will have to wait for free space in the queue. Understand though that t=
+he
+larger the queue, the large the latency. There is currently no way to submi=
+t job
+ahead of the data (unlike DRM subsystem).
+
+I have slight impression that all this seems rather inefficient for high ra=
+te /
+small buffer. I'd suggest creating a dummy benchmark driver to verify that =
+the
+overhead isn't just too much for an audio use case.
+
+Nicolas
