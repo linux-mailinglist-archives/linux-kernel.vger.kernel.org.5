@@ -2,150 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC4278E6EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A45578E6F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236610AbjHaHEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:04:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44374 "EHLO
+        id S243280AbjHaHF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:05:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjHaHEv (ORCPT
+        with ESMTP id S229807AbjHaHF4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:04:51 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B084F1A4;
-        Thu, 31 Aug 2023 00:04:47 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-99bf1f632b8so50283366b.1;
-        Thu, 31 Aug 2023 00:04:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693465486; x=1694070286; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=chnLjaozS5BkRXrr1nwrjahyfsHhcF+8pv2DcBooXIg=;
-        b=UurrKLOZkwX1m2fPOPEzzal8sUS12pMpLDwh6XKIvJxKNkIX2Cq5ntcZsuwjOHvmim
-         yGnxsUH1oVC+ulyj0f7hj5KFYFSoYtumC0Oycj6OjILnJnc43jEkrMJhAX33Z+a5eWNZ
-         Zl1i9of9moVMvK1Ja2VB4UGJsFyfJRrRQLOhr+icj/CQngWff3RYQkHHVqd6rakyy07O
-         SiKdA1CPOZWzgU5cJXldQVauaPmc80bfFO/euGY7O6yyBhC/+lShRwTpepwoW/OD0dtJ
-         5R66Elj2gABKDIohMIW60yRW2BT8LoiU2E4kW26WX4MIce3+KvkNkU1ruGSSzMxf+a7j
-         Kn9w==
+        Thu, 31 Aug 2023 03:05:56 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFF71A3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:05:53 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1c091a563ecso4743595ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:05:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693465486; x=1694070286;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=chnLjaozS5BkRXrr1nwrjahyfsHhcF+8pv2DcBooXIg=;
-        b=H6zWPvsHJb6G+V9HSuvNBRW9UEDbW1RCB2NmOGPEPIsk04EdKw6AWlm0F2nBb9pMsH
-         JOYU8Fai5svpUhhjqQTLnS484qqChuMIFfOipUelFpr0QviLu2VTIzra8pFRS752vqdJ
-         26TQAK/pwN7TtlLENrwguB6siASJ+MKXvQn0Y9n6fuShWYM24tAguMKt8gN/pvj/CkXb
-         t9V41suWzNat3HF+f/akwZiLyWcfj5cJE93u7pNlES04Qy3kO9U0H8APUpC+cSHqvras
-         SzuwklVhTlrrzM2R78kfIULtB/um8tKgMkcc0f4uTarogglx69HJvkBq+PPOc3a9KH4e
-         yMMg==
-X-Gm-Message-State: AOJu0YzFRmC7svVMTDsarRgUb9THmOJL7HCNgUWnz+bSnO+mupaXFssG
-        Un2JYsXv8wFFiGzwhlYOhlhMc2Kpb14Degn3TQ8=
-X-Google-Smtp-Source: AGHT+IHLfUxxL2I3zNJ6fIvxFxoAHgkzrNwPgkRDdbgvEpN/3pAlSjNvVvqAP30nz9hQwMI8Y7JIfX3w7t5w9KNvH5A=
-X-Received: by 2002:a17:906:3287:b0:9a1:ca55:b668 with SMTP id
- 7-20020a170906328700b009a1ca55b668mr3329979ejw.59.1693465485857; Thu, 31 Aug
- 2023 00:04:45 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693465553; x=1694070353;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Q/zzuvvC8StoeWkqoybq9MCCX56SYSyIvhVVvbRcc3k=;
+        b=TCibYjF80l6SRJu2wt7yov0fqAGcSzwRsIsDDy/uAko/mxFFS8/qE/Dtjnta5rg8iv
+         L0/KjRZZir7pUtLQSh5H3TA0pX9UQoS2QHWcF9aDQxCIuVTACDxc1XXOOiJTQ+3Hm0Ua
+         ycG54mPnME2g6tvp2orXIWr1VsOIQLjaKqBYL+gsnnDatIct/CfSf28mF+o50s1mDxr/
+         hLS7wTppFaQEXprQ31AkzPMyIjHos44g47pIN7cd5t9bJxzRzVlWwxWFYCq6ZETKJQKb
+         bOZINUBIs3k7RJJsrvRaoSE55pn6WH8lVGULWlX6Wa/7A9hLjUttIYhk4PYqdR9kJqad
+         Ziiw==
+X-Gm-Message-State: AOJu0Yz1rsJ4EBUYOhOAnVv44HYLB79KoJh16HSh+aUBfzTbHmnIY/iT
+        8k0qdC1Hf8yW5GhBkwkPkTHVStv7dwTrKH+2uCxePlYG0mjh
+X-Google-Smtp-Source: AGHT+IGsrRNk14dFDrlEQROWk06gz7z9aStZq/qv4VIh9CiaRNzjMrnXKDAKTAuiUhpCKQNFVkkKceeMEelJvKFF4AYHNVwEJ7wd
 MIME-Version: 1.0
-References: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com> <20230817094520.21286-4-Huangzheng.Lai@unisoc.com>
-In-Reply-To: <20230817094520.21286-4-Huangzheng.Lai@unisoc.com>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Thu, 31 Aug 2023 15:04:08 +0800
-Message-ID: <CAAfSe-uv-PrUHXFT=LGQAr1=ptBpfkcfT1LODi5ALJR8qTjH7g@mail.gmail.com>
-Subject: Re: [PATCH 3/8] i2c: sprd: Use global variables to record IIC
- ack/nack status instead of local variables
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-Cc:     Andi Shyti <andi.shyti@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+X-Received: by 2002:a17:903:1248:b0:1c1:fbec:bc2d with SMTP id
+ u8-20020a170903124800b001c1fbecbc2dmr822711plh.12.1693465553245; Thu, 31 Aug
+ 2023 00:05:53 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 00:05:53 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bd9b26060432ac0c@google.com>
+Subject: [syzbot] [kernel?] general protection fault in netdev_register_kobject
+From:   syzbot <syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com>
+To:     andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Aug 2023 at 17:46, Huangzheng Lai <Huangzheng.Lai@unisoc.com> wrote:
->
-> We found that when the interrupt bit of the IIC controller is cleared,
-> the ack/nack bit is also cleared at the same time. After clearing the
-> interrupt bit in sprd_i2c_isr(), incorrect ack/nack information will be
-> obtained in sprd_i2c_isr_thread(), resulting in incorrect communication
-> when nack cannot be recognized. To solve this problem, we used a global
-> variable to record ack/nack information before clearing the interrupt
-> bit instead of a local variable.
->
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-> ---
->  drivers/i2c/busses/i2c-sprd.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
->
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index 066b3a9c30c8..549b60dd3273 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -85,6 +85,7 @@ struct sprd_i2c {
->         struct clk *clk;
->         u32 src_clk;
->         u32 bus_freq;
-> +       bool ack_flag;
->         struct completion complete;
->         struct reset_control *rst;
->         u8 *buf;
-> @@ -384,7 +385,6 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->  {
->         struct sprd_i2c *i2c_dev = dev_id;
->         struct i2c_msg *msg = i2c_dev->msg;
-> -       bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
->         u32 i2c_tran;
->
->         if (msg->flags & I2C_M_RD)
-> @@ -400,7 +400,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->          * For reading data, ack is always true, if i2c_tran is not 0 which
->          * means we still need to contine to read data from slave.
->          */
-> -       if (i2c_tran && ack) {
-> +       if (i2c_tran && i2c_dev->ack_flag) {
->                 sprd_i2c_data_transfer(i2c_dev);
->                 return IRQ_HANDLED;
->         }
-> @@ -411,7 +411,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->          * If we did not get one ACK from slave when writing data, we should
->          * return -EIO to notify users.
->          */
-> -       if (!ack)
-> +       if (!i2c_dev->ack_flag)
->                 i2c_dev->err = -EIO;
->         else if (msg->flags & I2C_M_RD && i2c_dev->count)
->                 sprd_i2c_read_bytes(i2c_dev, i2c_dev->buf, i2c_dev->count);
-> @@ -428,7 +428,6 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
->  {
->         struct sprd_i2c *i2c_dev = dev_id;
->         struct i2c_msg *msg = i2c_dev->msg;
-> -       bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
->         u32 i2c_tran;
->
->         if (msg->flags & I2C_M_RD)
-> @@ -447,7 +446,8 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
->          * means we can read all data in one time, then we can finish this
->          * transmission too.
->          */
-> -       if (!i2c_tran || !ack) {
-> +       i2c_dev->ack_flag = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
+Hello,
 
-Do we need clear i2c_dev->ack_flag in sprd_i2c_clear_ack()?
+syzbot found the following issue on:
 
-> +       if (!i2c_tran || !i2c_dev->ack_flag) {
->                 sprd_i2c_clear_start(i2c_dev);
->                 sprd_i2c_clear_irq(i2c_dev);
->         }
-> --
-> 2.17.1
->
+HEAD commit:    2ee82481c392 Add linux-next specific files for 20230828
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=16ea87b7a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=e82a7781f9208c0d
+dashboard link: https://syzkaller.appspot.com/bug?extid=d2c31705e468a347e6db
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141c0267a80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1585c0c0680000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/30801702ce78/disk-2ee82481.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8d9b67709145/vmlinux-2ee82481.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/47f8ef9bffd0/bzImage-2ee82481.xz
+
+The issue was bisected to:
+
+commit d21fdd07cea418c0d98c8a15fc95b8b8970801e7
+Author: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Date:   Thu Aug 17 09:12:21 2023 +0000
+
+    driver core: Return proper error code when dev_set_name() fails
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16cefca8680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=15cefca8680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=11cefca8680000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com
+Fixes: d21fdd07cea4 ("driver core: Return proper error code when dev_set_name() fails")
+
+RBP: 0000000000000002 R08: 00007ffd497ebaf6 R09: 0000000100000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 00000000000f4240 R14: 00000000000162a9 R15: 00007ffd497ebd74
+ </TASK>
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 0 PID: 5057 Comm: syz-executor401 Not tainted 6.5.0-next-20230828-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:strchr+0x1b/0xb0 lib/string.c:329
+Code: a3 ac f7 48 8b 74 24 08 48 8b 14 24 eb 89 90 f3 0f 1e fa 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 c1 ea 03 53 48 83 ec 10 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 51 0f b6 07 89
+RSP: 0018:ffffc90003abf058 EFLAGS: 00010282
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000025 RDI: 0000000000000000
+RBP: ffffc90003abf0e8 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90003abf0e8
+R13: 0000000000000cc0 R14: ffff8880142f8880 R15: 0000000000000001
+FS:  0000555555e44380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f8bf2d75fc4 CR3: 000000007211d000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ kvasprintf_const+0x25/0x190 lib/kasprintf.c:45
+ kobject_set_name_vargs+0x5a/0x130 lib/kobject.c:272
+ kobject_add_varg lib/kobject.c:366 [inline]
+ kobject_add+0x12a/0x240 lib/kobject.c:424
+ device_add+0x290/0x1ac0 drivers/base/core.c:3560
+ netdev_register_kobject+0x183/0x3f0 net/core/net-sysfs.c:2044
+ register_netdevice+0xbcb/0x1490 net/core/dev.c:10133
+ macvlan_common_newlink+0x1102/0x1a40 drivers/net/macvlan.c:1545
+ rtnl_newlink_create net/core/rtnetlink.c:3485 [inline]
+ __rtnl_newlink+0x1177/0x1940 net/core/rtnetlink.c:3705
+ rtnl_newlink+0x67/0xa0 net/core/rtnetlink.c:3718
+ rtnetlink_rcv_msg+0x439/0xd30 net/core/rtnetlink.c:6444
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:753
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2540
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2594
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2623
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f8bf2d14ce9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd497ebd58 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f8bf2d14ce9
+RDX: 0000000000000000 RSI: 0000000020000280 RDI: 0000000000000003
+RBP: 0000000000000002 R08: 00007ffd497ebaf6 R09: 0000000100000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 0000000000000000
+R13: 00000000000f4240 R14: 00000000000162a9 R15: 00007ffd497ebd74
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:strchr+0x1b/0xb0 lib/string.c:329
+Code: a3 ac f7 48 8b 74 24 08 48 8b 14 24 eb 89 90 f3 0f 1e fa 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 c1 ea 03 53 48 83 ec 10 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 51 0f b6 07 89
+RSP: 0018:ffffc90003abf058 EFLAGS: 00010282
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000025 RDI: 0000000000000000
+RBP: ffffc90003abf0e8 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90003abf0e8
+R13: 0000000000000cc0 R14: ffff8880142f8880 R15: 0000000000000001
+FS:  0000555555e44380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005628e3c36050 CR3: 000000007211d000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	a3 ac f7 48 8b 74 24 	movabs %eax,0x480824748b48f7ac
+   7:	08 48
+   9:	8b 14 24             	mov    (%rsp),%edx
+   c:	eb 89                	jmp    0xffffff97
+   e:	90                   	nop
+   f:	f3 0f 1e fa          	endbr64
+  13:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  1a:	fc ff df
+  1d:	48 89 fa             	mov    %rdi,%rdx
+  20:	55                   	push   %rbp
+  21:	48 c1 ea 03          	shr    $0x3,%rdx
+  25:	53                   	push   %rbx
+  26:	48 83 ec 10          	sub    $0x10,%rsp
+* 2a:	0f b6 04 02          	movzbl (%rdx,%rax,1),%eax <-- trapping instruction
+  2e:	48 89 fa             	mov    %rdi,%rdx
+  31:	83 e2 07             	and    $0x7,%edx
+  34:	38 d0                	cmp    %dl,%al
+  36:	7f 04                	jg     0x3c
+  38:	84 c0                	test   %al,%al
+  3a:	75 51                	jne    0x8d
+  3c:	0f b6 07             	movzbl (%rdi),%eax
+  3f:	89                   	.byte 0x89
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
