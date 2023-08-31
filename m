@@ -2,110 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF90978E5DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C666B78E5E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:39:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbjHaFjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 01:39:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        id S1344992AbjHaFjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 01:39:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346097AbjHaFjM (ORCPT
+        with ESMTP id S244683AbjHaFjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 01:39:12 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B194E66;
-        Wed, 30 Aug 2023 22:38:59 -0700 (PDT)
-Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V4x2Wa016371;
-        Thu, 31 Aug 2023 05:38:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=qTlEoXnnHYNqDm1VU3fN0Bupb7BcKSQ1LaSO+OWm68w=;
- b=ZEBC4yGBxb+BBdhEKf7ysCyVC9hyRWb2Ullp3uPcypXqRecSKhdUDKgbzr6CcVjqHQhZ
- xlCGSDNrsGuVpBibhJlRlbhpzciFPQ1UwDvRM5wC+pIuoo3hZ5l2tIB0ffKTjZv8p3cY
- pASBqcORqR8qUNU8i/nEmNE04ww2lHQ5QSS7qrflUk7DD7IbQE4F/jIgSaNv9swpyJZM
- mxQVv/91r++DzjS19qlu1yZ0l3GEPuMuniVmLYGMuJ+ctNES1FG6KiJU2KFUIy9JFRl9
- NhWRxb8m4Pbse6RCsGumgrVwEfESB6yHRC6ZaYaO45Bm1d7jSib5MtMUSFmPTvsIc929 /w== 
-Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st0tatdgy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 05:38:30 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V5cTID025831
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 05:38:30 GMT
-Received: from varda-linux.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 30 Aug 2023 22:38:23 -0700
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <arnd@arndb.de>, <geert+renesas@glider.be>,
-        <nfraprado@collabora.com>, <rafal@milecki.pl>, <peng.fan@nxp.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-phy@lists.infradead.org>
-CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: [PATCH v11 4/4] arm64: defconfig: Enable M31 USB phy driver
-Date:   Thu, 31 Aug 2023 11:07:50 +0530
-Message-ID: <d9b8926112d45fc6b28e802293d7ed7d255da39b.1693459976.git.quic_varada@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <cover.1693459976.git.quic_varada@quicinc.com>
-References: <cover.1693459976.git.quic_varada@quicinc.com>
+        Thu, 31 Aug 2023 01:39:17 -0400
+Received: from mail-oi1-f208.google.com (mail-oi1-f208.google.com [209.85.167.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48325E70
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 22:39:00 -0700 (PDT)
+Received: by mail-oi1-f208.google.com with SMTP id 5614622812f47-3a9e0f4e17fso514080b6e.2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 22:39:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693460339; x=1694065139;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=soFosyDp1uCJmsl2PKWOCioo+0yKoaNhADP2lI3aq7k=;
+        b=NpAKGOWzXudKPhEBLmBzAx/FKAYvCrI9vSCGPPrs/4esL7jTz7lDYCqH8JnXqEsrMW
+         MH1p0pHS87sNGVwDVAeKb42wCs7AKSXBqgXeZCd2OxqO4ezPLnYqx3QFbPuvCyMuq0Rm
+         OBeW6WCRW8hEH9Qj1WeFjOODRenSzwJTg+4RPdRntXsFVcRH2NzXTWOhOO3MNjD/JaOb
+         qlCmEI+/DSQqjIPVxg9VUzTrIvY2sR39lwhzIOZx/wr/if7pa+GBheLd4IYNiwiZYE1S
+         aiLwyqZARJKTndMu3zx8tObYDu9JHE/9jrzlMzxVz7TSCOrdWQ001zi9ip63FU1z229o
+         m5hQ==
+X-Gm-Message-State: AOJu0Yzy7lXOXNXbAdm8C7s25Lj2cU/mbCyScp7en+b9fo5qTctyE4ye
+        utyGc0vw5Rl3f1XzqOJtAWb+bL+TR6nT1Sm8ggaxf12rYGpQ
+X-Google-Smtp-Source: AGHT+IHIgdqfKUOnVR68do56qlQhXeHtdbiq+KB8bx8rQnOxL40q5/RxtSAUIlD500lSfQsIFj+/s0Inp05QBFh7YCBw9O/0AqJh
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: qFrfXE_vMzoYgS2vlhm52iDbqe-BKoOA
-X-Proofpoint-ORIG-GUID: qFrfXE_vMzoYgS2vlhm52iDbqe-BKoOA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_03,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- spamscore=0 suspectscore=0 bulkscore=0 priorityscore=1501
- lowpriorityscore=0 impostorscore=0 malwarescore=0 mlxlogscore=599
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310049
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6808:1587:b0:3a4:18d1:1686 with SMTP id
+ t7-20020a056808158700b003a418d11686mr788824oiw.10.1693460339403; Wed, 30 Aug
+ 2023 22:38:59 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 22:38:59 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f8b2d7060431755a@google.com>
+Subject: [syzbot] [btrfs?] WARNING in btrfs_quota_enable
+From:   syzbot <syzbot+f919c2a4aa16cd906ab7@syzkaller.appspotmail.com>
+To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable M31 USB phy driver present in IPQ5332.
+Hello,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
+syzbot found the following issue on:
+
+HEAD commit:    3b35375f19fe Merge tag 'irq-urgent-2023-08-26' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=103e2acba80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
+dashboard link: https://syzkaller.appspot.com/bug?extid=f919c2a4aa16cd906ab7
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/be3796252a5a/disk-3b35375f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/44ebaf698631/vmlinux-3b35375f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/727e7da83980/bzImage-3b35375f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f919c2a4aa16cd906ab7@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: CPU: 1 PID: 8137 at fs/btrfs/qgroup.c:1039 btrfs_quota_enable+0x197c/0x1f40 fs/btrfs/qgroup.c:1039
+Modules linked in:
+CPU: 1 PID: 8137 Comm: syz-executor.4 Not tainted 6.5.0-rc7-syzkaller-00182-g3b35375f19fe #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:btrfs_quota_enable+0x197c/0x1f40 fs/btrfs/qgroup.c:1039
+Code: ff ff be 08 00 00 00 48 89 df e8 9f 87 3f fe e9 3d e8 ff ff e8 f5 a5 e6 fd 48 c7 c7 80 cd 4b 8b 48 8b 74 24 20 e8 14 bf ad fd <0f> 0b e9 9f f9 ff ff e8 d8 a5 e6 fd 48 c7 c7 80 cd 4b 8b be f4 ff
+RSP: 0018:ffffc9001788fca0 EFLAGS: 00010246
+RAX: ecef377177158500 RBX: ffff888078194001 RCX: 0000000000040000
+RDX: ffffc9000bbd5000 RSI: 000000000000698d RDI: 000000000000698e
+RBP: ffffc9001788fea8 R08: ffffffff8152d442 R09: 1ffff11017325162
+R10: dffffc0000000000 R11: ffffed1017325163 R12: dffffc0000000000
+R13: ffff8880751b5248 R14: 1ffff1100ea36a49 R15: 0000000000000000
+FS:  00007fdab1cee6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f972ed67f00 CR3: 000000007ca4b000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ btrfs_ioctl_quota_ctl+0x144/0x180 fs/btrfs/ioctl.c:3694
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:870 [inline]
+ __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:856
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7fdab107cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fdab1cee0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007fdab119c120 RCX: 00007fdab107cae9
+RDX: 00000000200013c0 RSI: 00000000c0109428 RDI: 0000000000000006
+RBP: 00007fdab10c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000006e R14: 00007fdab119c120 R15: 00007ffc4fefa1c8
+ </TASK>
+
+
 ---
-v2:
-	Add full stop to commit log.
----
- arch/arm64/configs/defconfig | 1 +
- 1 file changed, 1 insertion(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 5315789..c1e2372 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -1422,6 +1422,7 @@ CONFIG_PHY_QCOM_USB_SNPS_FEMTO_V2=m
- CONFIG_PHY_QCOM_USB_HS_28NM=m
- CONFIG_PHY_QCOM_USB_SS=m
- CONFIG_PHY_QCOM_SGMII_ETH=m
-+CONFIG_PHY_QCOM_M31_USB=m
- CONFIG_PHY_R8A779F0_ETHERNET_SERDES=y
- CONFIG_PHY_RCAR_GEN3_PCIE=y
- CONFIG_PHY_RCAR_GEN3_USB2=y
--- 
-2.7.4
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
