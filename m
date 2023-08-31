@@ -2,144 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 361EF78F3E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D4AB78F3EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 22:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347344AbjHaUYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 16:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        id S1344734AbjHaU1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 16:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238602AbjHaUYu (ORCPT
+        with ESMTP id S234431AbjHaU1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 16:24:50 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D22BFE6F
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:24:45 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-570096f51acso1162171a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693513485; x=1694118285; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hLtP0B7QCbV/ETdNMxsWIMxjZHiPOti8qoiN6z1b1eo=;
-        b=VHMxxokSRzqyBhlSZ7UhoftOI9uuXb7aOG1Bn3meu5bIiiKNslQDLUxyDsYjJamK3x
-         MYsudD2am3x8WHq85yB6FM9M+YLNFdaEPR95L77HUnhz1o4hGtUvAaErREBJotdsMPSB
-         RqywTzah69CU40v0wyuNsvoO3pMW9b+vQ05jcMaStUBDIo14Geqi9zSG3aWxgJbbmeE4
-         yq5mB00X027GgrtWdG2QLkgrivKzJ41PiC3y136EsSLCiAWXBIkhIGAIXD4B9ycVHq+H
-         vlHiv8oTNFt7yTM4/rT+4p07ptGn24wNXvyMUjum3jGW1YrijeMdsvUszXUgGxovjAes
-         EVsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693513485; x=1694118285;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hLtP0B7QCbV/ETdNMxsWIMxjZHiPOti8qoiN6z1b1eo=;
-        b=FokINy0TxWgyiAOvojbUvi7HgFWARkhryNiHb1Qqm/Z92KWImP6n0OZFefXXy8PP7L
-         ZgNkCYSLHA9R4/8Bp2b8/cKmesKeLvhAfojK7WNZtgHr9V4L2mlD7se0RAkbROwQinhs
-         9kuUXH3B+u5eWGMClvlamTKXp+8F/SfTiMHGV3YG4TzFyOBiwv+WZ+G7UscUrR0jXgqx
-         FlGKN8MmRXuif6R8OyZvuqBTzDOCvYcjcWip6N7PY5CNt2WuH4Zmd7OI1gCqaRW/yKt+
-         YqF2baeadjaRDw92dQjbhPZLtkH8XhYT/mrGBeVKPHtOVNCJCGCcrJdovSKUUjV96KFd
-         CVMQ==
-X-Gm-Message-State: AOJu0Yw3hgkqtnQEBxZo9iUNv1jK06klWG6ESC8mlKFvU7FNbXTLfjsd
-        shNOvVN52kmuiUujAuPHE6Cr1mhEJ8g=
-X-Google-Smtp-Source: AGHT+IEIR7uyyBtFUvM+BS8m3vckRckLqxPkMKgsib26tB7v3QMYK/vMPUnX7d2k+P2sC+84IAeEcYo9RDM=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a65:6046:0:b0:565:e585:cb56 with SMTP id
- a6-20020a656046000000b00565e585cb56mr161663pgp.2.1693513485291; Thu, 31 Aug
- 2023 13:24:45 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 13:24:43 -0700
-In-Reply-To: <873ccab4-1470-3ff0-2e59-01d1110809be@intel.com>
-Mime-Version: 1.0
-References: <20230719144131.29052-1-binbin.wu@linux.intel.com>
- <ZN1M5RvuARP1YMfp@google.com> <6e990b88-1e28-9563-2c2f-0d5d52f9c7ca@linux.intel.com>
- <e4aa03cb-0f80-bd5f-f69e-39b636476f00@linux.intel.com> <ZN93wp9lgmuJqYIA@google.com>
- <873ccab4-1470-3ff0-2e59-01d1110809be@intel.com>
-Message-ID: <ZPD3C/AFnvs9S6vs@google.com>
-Subject: Re: [PATCH v10 0/9] Linear Address Masking (LAM) KVM Enabling
-From:   Sean Christopherson <seanjc@google.com>
-To:     Zeng Guang <guang.zeng@intel.com>
-Cc:     Binbin Wu <binbin.wu@linux.intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        Chao Gao <chao.gao@intel.com>, Kai Huang <kai.huang@intel.com>,
-        "David.Laight@aculab.com" <David.Laight@aculab.com>,
-        "robert.hu@linux.intel.com" <robert.hu@linux.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 16:27:41 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C89CCFE
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 13:27:38 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VKG0gX023003;
+        Thu, 31 Aug 2023 20:27:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=yw8e1V8u2464ibmRn7uh1/kPRu9TFVtGLSd6q46WCKk=;
+ b=lQCe33NWjNDhm5OBkZ9XiwDKfB/85nC+i2FU/EiIJBQ8o4Q/3BAfFrvKS8fTvMgNn7Gv
+ zOiNmIbbocPlJLr+6ICD8nKrCmcwmgsvT5tc+5+RTqia1aXt/tVC/ZqTet6//fGDSD47
+ PVUNdCiBXDtjPjomOlzNcB1FKD6Lb/dNRESmt0JSKgY5BVscYD4Y7AXv3qhoKrtYHxyo
+ UXubUOnvRGc2hLonVzhaWR+ux/sm2N8/ajm6gyP3d6I9fIKGvQ4w/JcQUKhQ4PxFiUOT
+ dta9lgT7Sv3570mw8GbXgK6CY7dQedFAW+KVrVr/WTUVcKUmTa+pkvWv5/obvH9zvJyH ng== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st4p3ky1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 20:27:24 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VKRNwX005403
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 20:27:23 GMT
+Received: from [10.71.108.94] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Thu, 31 Aug
+ 2023 13:27:22 -0700
+Message-ID: <de6855ec-0122-034b-1b9a-7478681b4209@quicinc.com>
+Date:   Thu, 31 Aug 2023 13:27:15 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/7] drm/msm/dp: Replace open-coded
+ drm_dp_read_dpcd_caps()
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <patches@lists.linux.dev>,
+        Sean Paul <sean@poorly.run>, <dri-devel@lists.freedesktop.org>,
+        <freedreno@lists.freedesktop.org>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>
+References: <20230829184735.2841739-1-swboyd@chromium.org>
+ <20230829184735.2841739-2-swboyd@chromium.org>
+Content-Language: en-US
+From:   Kuogee Hsieh <quic_khsieh@quicinc.com>
+In-Reply-To: <20230829184735.2841739-2-swboyd@chromium.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: UYkR2o3wmCOFfhGoLL0sfbyYjXkWrqd2
+X-Proofpoint-GUID: UYkR2o3wmCOFfhGoLL0sfbyYjXkWrqd2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_17,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 clxscore=1011 suspectscore=0 mlxlogscore=902
+ lowpriorityscore=0 phishscore=0 spamscore=0 adultscore=0 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310181
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023, Zeng Guang wrote:
->=20
-> On 8/18/2023 9:53 PM, Sean Christopherson wrote:
-> > On Fri, Aug 18, 2023, Binbin Wu wrote:
-> > > On 8/17/2023 5:17 PM, Binbin Wu wrote:
-> > > > On 8/17/2023 6:25 AM, Sean Christopherson wrote:
-> > > > > On Wed, Jul 19, 2023, Binbin Wu wrote:
-> > > > > For the next version, can you (or Zeng) send a single series for =
-LAM
-> > > > > and LASS?  They're both pretty much ready to go, i.e. I don't exp=
-ect
-> > > > > one to hold up the other at this point, and posting a single seri=
-es
-> > > > > will reduce the probability of me screwing up a conflict resoluti=
-on
-> > > > > or missing a dependency when applying.
-> > > > >=20
-> > > Hi Sean,
-> > > Do you still prefer a single series for LAM and LASS=C2=A0 for the ne=
-xt version
-> > > when we don't need to rush for v6.6?
-> > Yes, if it's not too much trouble on your end.  Since the two have over=
-lapping
-> > prep work and concepts, and both series are in good shape, my strong pr=
-eference
-> > is to grab them at the same time.  I would much rather apply what you'v=
-e tested
-> > and reduce the probability of messing up any conflicts.
-> >=20
-> >=20
-> >=20
-> Hi Sean,
-> One more concern, KVM LASS patch has an extra dependency on kernel LASS
-> series in which enumerates lass feature bit (X86_FEATURE_LASS/X86_CR4_LAS=
-S).
-> So far kernel lass patch is still under review, as alternative we may ext=
-ract
-> relevant patch part along with kvm lass patch set for a single series in =
-case
-> kernel lass cannot be merged before v6.7.  Do you think it OK in that way=
-?
 
-Hmm, since getting LASS support in KVM isn't urgent, I think it makes sense=
- to
-wait for kernel support, no reason to complicate things.
-
-To avoid delaying LAM, just put all the LAM patches first, it's trivally ea=
-sy for
-me to grab a partial series.
-
-Speaking of kernel support, one thing we should explicit discuss is whether=
- or
-not KVM should require kernel support for LASS, i.e. if KVM should support =
-LASS
-if it's present in hardware, even if it's not enabled in the host.
-
-Looking at the kernel patches, LASS will be disabled if vsyscall is in emul=
-ate
-mode.  Ah, digging deeper, that's an incredibly esoteric and deprecated mod=
-e.
-bf00745e7791 ("x86/vsyscall: Remove CONFIG_LEGACY_VSYSCALL_EMULATE").
-
-So scratch that, let's again keep things simple.  Might be worth a call out=
- in
-the changelog that adds F(LASS), though.
+On 8/29/2023 11:47 AM, Stephen Boyd wrote:
+> This function duplicates the common function drm_dp_read_dpcd_caps().
+> The array of DPCD registers filled in is one size larger than the
+> function takes, but from what I can tell that extra byte was never used.
+> Resize the array and use the common function to reduce the code here.
+>
+> Cc: Vinod Polimera <quic_vpolimer@quicinc.com>
+> Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+Tested-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+Reviewed-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> ---
+>   drivers/gpu/drm/msm/dp/dp_panel.c | 42 ++++---------------------------
+>   drivers/gpu/drm/msm/dp/dp_panel.h |  4 +--
+>   2 files changed, 6 insertions(+), 40 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/dp/dp_panel.c b/drivers/gpu/drm/msm/dp/dp_panel.c
+> index 42d52510ffd4..09d4f6c38ef8 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_panel.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_panel.c
+> @@ -48,47 +48,15 @@ static int dp_panel_read_dpcd(struct dp_panel *dp_panel)
+>   	ssize_t rlen;
+>   	struct dp_panel_private *panel;
+>   	struct dp_link_info *link_info;
+> -	u8 *dpcd, major = 0, minor = 0, temp;
+> -	u32 offset = DP_DPCD_REV;
+> +	u8 *dpcd, major, minor;
+>   
+> +	panel = container_of(dp_panel, struct dp_panel_private, dp_panel);
+>   	dpcd = dp_panel->dpcd;
+> +	rc = drm_dp_read_dpcd_caps(panel->aux, dpcd);
+> +	if (rc)
+> +		return rc;
+>   
+> -	panel = container_of(dp_panel, struct dp_panel_private, dp_panel);
+>   	link_info = &dp_panel->link_info;
+> -
+> -	rlen = drm_dp_dpcd_read(panel->aux, offset,
+> -			dpcd, (DP_RECEIVER_CAP_SIZE + 1));
+> -	if (rlen < (DP_RECEIVER_CAP_SIZE + 1)) {
+> -		DRM_ERROR("dpcd read failed, rlen=%zd\n", rlen);
+> -		if (rlen == -ETIMEDOUT)
+> -			rc = rlen;
+> -		else
+> -			rc = -EINVAL;
+> -
+> -		goto end;
+> -	}
+> -
+> -	temp = dpcd[DP_TRAINING_AUX_RD_INTERVAL];
+> -
+> -	/* check for EXTENDED_RECEIVER_CAPABILITY_FIELD_PRESENT */
+> -	if (temp & BIT(7)) {
+> -		drm_dbg_dp(panel->drm_dev,
+> -				"using EXTENDED_RECEIVER_CAPABILITY_FIELD\n");
+> -		offset = DPRX_EXTENDED_DPCD_FIELD;
+> -	}
+> -
+> -	rlen = drm_dp_dpcd_read(panel->aux, offset,
+> -		dpcd, (DP_RECEIVER_CAP_SIZE + 1));
+> -	if (rlen < (DP_RECEIVER_CAP_SIZE + 1)) {
+> -		DRM_ERROR("dpcd read failed, rlen=%zd\n", rlen);
+> -		if (rlen == -ETIMEDOUT)
+> -			rc = rlen;
+> -		else
+> -			rc = -EINVAL;
+> -
+> -		goto end;
+> -	}
+> -
+>   	link_info->revision = dpcd[DP_DPCD_REV];
+>   	major = (link_info->revision >> 4) & 0x0f;
+>   	minor = link_info->revision & 0x0f;
+> diff --git a/drivers/gpu/drm/msm/dp/dp_panel.h b/drivers/gpu/drm/msm/dp/dp_panel.h
+> index ed1030e17e1b..6d733480a62d 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_panel.h
+> +++ b/drivers/gpu/drm/msm/dp/dp_panel.h
+> @@ -13,8 +13,6 @@
+>   
+>   struct edid;
+>   
+> -#define DPRX_EXTENDED_DPCD_FIELD	0x2200
+> -
+>   #define DP_DOWNSTREAM_PORTS		4
+>   #define DP_DOWNSTREAM_CAP_SIZE		4
+>   
+> @@ -40,7 +38,7 @@ struct dp_panel_psr {
+>   
+>   struct dp_panel {
+>   	/* dpcd raw data */
+> -	u8 dpcd[DP_RECEIVER_CAP_SIZE + 1];
+> +	u8 dpcd[DP_RECEIVER_CAP_SIZE];
+>   	u8 ds_cap_info[DP_DOWNSTREAM_PORTS * DP_DOWNSTREAM_CAP_SIZE];
+>   	u32 ds_port_cnt;
+>   	u32 dfp_present;
