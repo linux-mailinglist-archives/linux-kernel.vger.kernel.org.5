@@ -2,105 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB69B78F0AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:54:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC1F78F0B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345774AbjHaPyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:54:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41318 "EHLO
+        id S1346202AbjHaPzK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345659AbjHaPyj (ORCPT
+        with ESMTP id S245371AbjHaPzI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:54:39 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB57E63;
-        Thu, 31 Aug 2023 08:54:35 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 792A96303F;
-        Thu, 31 Aug 2023 15:54:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F603C433C7;
-        Thu, 31 Aug 2023 15:54:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693497274;
-        bh=utWCl4di2E0c8+B6XfoLjlyezr54F2TWyx2lJDu8LXs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YLMox02tzT/Xf8O7Qmf2whCC4gzNsHKPTaJ8DsfveT8E8rIc5pxtRZkGHeA88ls41
-         jWo+ID4K+My6+Yk6Txj9s1IMQ4pQ37a5eNCQlYVNoXBR9FdLRj5ur6TIZBnNg+C9nV
-         QEK7Za8T5ZfB/P40InQ14RXGEuj3KLwrU21cHt/gNeW2dmIpHy118mkKh8xqCUoKI7
-         pbDLVNYWWHFs2qNNijIfhuK/7o2sRbf60hiGTiQ2cprKsPcOOyzCe1NqIWKdylNaCY
-         je0Fmk4jGSnIpDG4lcU31G1Ts1Ci/ILGnkZlHCHTplN2zeeMMz4X2U3zrx6pEcO9vh
-         g76zaP9GNO3YA==
-Date:   Thu, 31 Aug 2023 16:54:30 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] dt-bindings: hwmon: Add Infineon TDA38640
-Message-ID: <20230831-defrost-rebalance-5efda5e5ff5c@spud>
-References: <20230830103620.3611761-1-Naresh.Solanki@9elements.com>
- <20230830-waving-stinky-d510fefbbf82@spud>
- <CABqG17hvSYbsnYYGOQxVsiXsqLXFnovXvkhgc=pYR9osgF0-1g@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="O1fh9UNgJ3s4p8a/"
-Content-Disposition: inline
-In-Reply-To: <CABqG17hvSYbsnYYGOQxVsiXsqLXFnovXvkhgc=pYR9osgF0-1g@mail.gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 11:55:08 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25F42E64
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693497298; x=1725033298;
+  h=date:from:to:cc:subject:message-id;
+  bh=Lw1Yu+gPqrsswxZQnNAbaUNOtb/XB4Q0Ee70y8DmYvs=;
+  b=fN+LnwGrH8jDpHONsZ7sStS4wc/DT8G3Ox6O87mghsh+mewQgdMT2vK4
+   WTQsIUiD8j1c3wm7nQ9GV6D60cPpCR/+kQXE0qRPts0qMrt/aKgQWAYnF
+   MDoOM3Z1WZxn13MwbYI+VbSpE4uFabmbs183+2GBHzGJol8LePbIJ5mSk
+   u7JuPziOhkzZDijjjLlSRJmJ6wGyiC+f5vk2koY4xRs5zEZbagM90ydVZ
+   FsPMO7hZLd+JxyyekhsjKQlwFXlT6dxhECJJHKFx0PlLmHnuT275tYcFV
+   53LosMelsp6bLD8pSi19hTR4n91Z5Cowpu8x2SfC/spZp61Y0JcB7pWS3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="462350189"
+X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
+   d="scan'208";a="462350189"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 08:54:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="739573275"
+X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
+   d="scan'208";a="739573275"
+Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 31 Aug 2023 08:54:55 -0700
+Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qbk0T-0000JK-0p;
+        Thu, 31 Aug 2023 15:54:53 +0000
+Date:   Thu, 31 Aug 2023 23:54:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:timers/core] BUILD SUCCESS
+ 5146e1f589ccb04cf987b45296aa27f90a2407dc
+Message-ID: <202308312344.tHGpqn9O-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers/core
+branch HEAD: 5146e1f589ccb04cf987b45296aa27f90a2407dc  Merge tag 'timers-v6.6-rc1' of https://git.linaro.org/people/daniel.lezcano/linux into timers/core
 
---O1fh9UNgJ3s4p8a/
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+elapsed time: 842m
 
-On Thu, Aug 31, 2023 at 12:49:32AM +0530, Naresh Solanki wrote:
-> Hi
->=20
-> On Wed, 30 Aug 2023 at 21:02, Conor Dooley <conor@kernel.org> wrote:
-> > On Wed, Aug 30, 2023 at 12:36:16PM +0200, Naresh Solanki wrote:
+configs tested: 160
+configs skipped: 2
 
-> > > +      Indicates that the chip ENABLE pin is at fixed level or left
-> > > +      unconnected(has internal pull-down).
-> >
-> > Maybe you've already been over this, but if the pin is called "enable"
-> > why not use the same wording in the property?
-> EN & ENABLE is used interchangeably in the datasheet.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Maybe we can go 1 for 2 in terms of consistency then, rather than 0 for
-2.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20230831   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                                 defconfig   gcc  
+arm                   randconfig-001-20230831   gcc  
+arm64                            allmodconfig   gcc  
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                randconfig-r025-20230831   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                 randconfig-r014-20230831   gcc  
+csky                 randconfig-r026-20230831   gcc  
+hexagon               randconfig-001-20230831   clang
+hexagon               randconfig-002-20230831   clang
+hexagon              randconfig-r003-20230831   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20230831   gcc  
+i386         buildonly-randconfig-002-20230831   gcc  
+i386         buildonly-randconfig-003-20230831   gcc  
+i386         buildonly-randconfig-004-20230831   gcc  
+i386         buildonly-randconfig-005-20230831   gcc  
+i386         buildonly-randconfig-006-20230831   gcc  
+i386                              debian-10.3   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20230831   gcc  
+i386                  randconfig-002-20230831   gcc  
+i386                  randconfig-003-20230831   gcc  
+i386                  randconfig-004-20230831   gcc  
+i386                  randconfig-005-20230831   gcc  
+i386                  randconfig-006-20230831   gcc  
+i386                  randconfig-011-20230831   clang
+i386                  randconfig-012-20230831   clang
+i386                  randconfig-013-20230831   clang
+i386                  randconfig-014-20230831   clang
+i386                  randconfig-015-20230831   clang
+i386                  randconfig-016-20230831   clang
+i386                 randconfig-r036-20230831   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                        allyesconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20230831   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                 randconfig-r013-20230831   gcc  
+m68k                 randconfig-r015-20230831   gcc  
+m68k                 randconfig-r032-20230831   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                             allmodconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                randconfig-r024-20230831   gcc  
+openrisc                         allmodconfig   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+openrisc             randconfig-r033-20230831   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   gcc  
+powerpc              randconfig-r012-20230831   clang
+powerpc              randconfig-r021-20230831   clang
+riscv                            allmodconfig   gcc  
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                               defconfig   gcc  
+riscv                 randconfig-001-20230831   gcc  
+riscv                          rv32_defconfig   gcc  
+s390                             allmodconfig   gcc  
+s390                              allnoconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                                defconfig   gcc  
+s390                  randconfig-001-20230831   clang
+s390                 randconfig-r011-20230831   clang
+s390                 randconfig-r016-20230831   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                   randconfig-r001-20230831   gcc  
+sh                   randconfig-r004-20230831   gcc  
+sh                   randconfig-r005-20230831   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                            allyesconfig   gcc  
+sparc                               defconfig   gcc  
+sparc                randconfig-r034-20230831   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64              randconfig-r006-20230831   gcc  
+sparc64              randconfig-r031-20230831   gcc  
+sparc64              randconfig-r035-20230831   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   clang
+um                                  defconfig   gcc  
+um                             i386_defconfig   gcc  
+um                           x86_64_defconfig   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20230831   gcc  
+x86_64       buildonly-randconfig-002-20230831   gcc  
+x86_64       buildonly-randconfig-003-20230831   gcc  
+x86_64       buildonly-randconfig-004-20230831   gcc  
+x86_64       buildonly-randconfig-005-20230831   gcc  
+x86_64       buildonly-randconfig-006-20230831   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20230831   clang
+x86_64                randconfig-002-20230831   clang
+x86_64                randconfig-003-20230831   clang
+x86_64                randconfig-004-20230831   clang
+x86_64                randconfig-005-20230831   clang
+x86_64                randconfig-006-20230831   clang
+x86_64                randconfig-011-20230831   gcc  
+x86_64                randconfig-013-20230831   gcc  
+x86_64                randconfig-014-20230831   gcc  
+x86_64                randconfig-015-20230831   gcc  
+x86_64                randconfig-016-20230831   gcc  
+x86_64                randconfig-071-20230831   gcc  
+x86_64                randconfig-072-20230831   gcc  
+x86_64                randconfig-073-20230831   gcc  
+x86_64                randconfig-074-20230831   gcc  
+x86_64                randconfig-075-20230831   gcc  
+x86_64                randconfig-076-20230831   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                           allyesconfig   gcc  
+xtensa               randconfig-r002-20230831   gcc  
+xtensa               randconfig-r022-20230831   gcc  
+xtensa               randconfig-r023-20230831   gcc  
 
-> Just to keep property name short I use EN.
-
-Consistency & readability trump brevity. Please pick one term, or point
-out that this is called two things in the datasheet.
-
-
---O1fh9UNgJ3s4p8a/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPC3tgAKCRB4tDGHoIJi
-0vXlAP0RUs5Q+UPtuiUUIIYh8V3uiABYhs8EIOVx51t+Sc2UpgEA30+M0Z1uzNoF
-VoEdVvlU2zzYPyg3LvNdK79mokJJsgw=
-=wh5+
------END PGP SIGNATURE-----
-
---O1fh9UNgJ3s4p8a/--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
