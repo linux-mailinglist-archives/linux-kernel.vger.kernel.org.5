@@ -2,187 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D5AC78F16A
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206EE78F16C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:41:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345288AbjHaQlD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:41:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59412 "EHLO
+        id S1346723AbjHaQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:41:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229892AbjHaQlB (ORCPT
+        with ESMTP id S234103AbjHaQlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:41:01 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D2A1B1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:40:57 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2b962535808so19337141fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:40:57 -0700 (PDT)
+        Thu, 31 Aug 2023 12:41:24 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B8F12D
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:41:21 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1c0db66af1bso7088585ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:41:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693500055; x=1694104855; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=32VO4iE+9AUaoXKhjN8FGYng4VNGJNxRjuAGulwkX3A=;
-        b=D0/zGLLGmuydeo7/WdPm0BrabT8Evt0zrPhVdb41Jy2q6lUV3r5C66Zhuc4xnOfef9
-         sgDpb1PjOhmj2mZa8b9Wd3vK5WfYeyFCAbWT62ePCL4AikXNOnFD5lX1COE0RH50OR9D
-         8omciMzj2qtJ7dKvAh+SPAncTvaJ9VCcHvp6eJDI5GNb+niHEXVKHVMNw3Y9VzHhc+vc
-         LuqG3IrpYEbd9Vfu9bpXwcU4qd4slSU4K6BH9hEW92P8yYiCNBRSJUHFWvfmdzEYVQjt
-         BK5YIRUZdbnRkO7d1jxXzJ5J1+uexcFL/vIEl7BH6dM7KiH6oe+ol8I+VJCpTBlaTtgk
-         VShQ==
+        d=google.com; s=20221208; t=1693500081; x=1694104881; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=UO6pqyK10xxtcpdFIBil60H7lDX6OkZTct96m5CdV+k=;
+        b=oeHjSbP/6dhM3fr5tS/NHXokCICG/aUMjnh47CXrA1O/pTPRyjS/cggaErbfU/c/N6
+         N/Ud0BcSaZ5dCBCwnjGrDmxBicckD/Dc4+wCXkqh5w4gyBGmbtNyXxZFvgiCq8QalKa8
+         DmgvBr1iQmfnYLfL14x4XEa1tvtKzpqsrtZyECzWq8+T8mYdickPr1l2jf9h0CkHffzT
+         JVorClkr9h2JU/BEybTHGgYjo7TPk+OMFY+5eoGLOVoEvPrNOIJTwyWkQjg3PBYTnWLF
+         bI0AkoQRkXk3PA0mAUxgjnDW3PuFihFfTaG1wbb8sDfbEeqdlfnvswLOjRmVBlvEUO38
+         TCGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693500055; x=1694104855;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=32VO4iE+9AUaoXKhjN8FGYng4VNGJNxRjuAGulwkX3A=;
-        b=lERClGJhxvlcPkUIvUjlNMpCkEfWOwxUgsb3sFSSWPZh6K3RCTbH5Z1aj6LDU0Xu0Z
-         73+OHiazX3qgR7Q05UFwSOpHd9Sz2Bh6gpg09GTyrJubK+5UziXl+xcnVkJnWVClyy0O
-         EcKXAZRdFMybgGMeVabeg2kbHOpk5JtXsLZT2NWLAV6D/G9qAYymfLg8x8p54pBLM1B9
-         wbQzw1esi/uVVNt74CJqiuKjdlBs/gPBFkP0falrssKGOZUCtEyOsip0zlWY3if6KNxg
-         upE24URpgEIs4W6YEiZZKlr6PR6OeZ78ubaE1gKu0IpufloM2lNpLh7fbIUXNYY4fd0R
-         2c3g==
-X-Gm-Message-State: AOJu0Yyx8XmSRcVnLdFdNw2OusBkobpW9ljv88/R+bLGILzbb6A4kWRP
-        87WV6XDfnUTquAhUEltpE21MjQ==
-X-Google-Smtp-Source: AGHT+IHEKkqBMsrhr42Vv9weNDnAD6WdXqK5Onb+9zx4IfnsLu7lPJA5n4KeZI7uo9A9Og4Aq9qTcw==
-X-Received: by 2002:a2e:8e89:0:b0:2bc:fdb9:5bf4 with SMTP id z9-20020a2e8e89000000b002bcfdb95bf4mr4375910ljk.11.1693500055525;
-        Thu, 31 Aug 2023 09:40:55 -0700 (PDT)
-Received: from [192.168.1.101] (abyk13.neoplus.adsl.tpnet.pl. [83.9.30.13])
-        by smtp.gmail.com with ESMTPSA id c1-20020a2e9d81000000b002b9b9fd0f92sm378214ljj.105.2023.08.31.09.40.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 09:40:55 -0700 (PDT)
-Message-ID: <f1f60df1-7632-48a2-a211-dcd6c1fa419f@linaro.org>
-Date:   Thu, 31 Aug 2023 18:40:53 +0200
+        d=1e100.net; s=20221208; t=1693500081; x=1694104881;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UO6pqyK10xxtcpdFIBil60H7lDX6OkZTct96m5CdV+k=;
+        b=UZVmfDDzmkBjBC8VFWan4cRStZt4D/vElwsBFEVK36JBrY1j0bCvPZPFOpiFU722Xy
+         0+ylC2cgl4/HZeKHGGJeNRpkazNL4w1MkPRFyqXZZDfUb0Y0cZbJRs3HGaEp0XoUlfe5
+         YHb3X89shryiNaTA3uKQhlBIcTtH9r++Hm1OY3d7/EtHNtJhn6kyX+xrQLFPs/GDTRak
+         iZaTDfRVWFO9s6aAds5KRROY/GfgR3JwIZhXGcC1F9xrIQMRDpcSK9rpiWznkTfNDul7
+         9qurAZ1gjUtrwFnmqTWHw4TT4iGEUDh61qxf0ZKF4qCjLD1FP8VaELuN6GbIvSUTJZF/
+         jehg==
+X-Gm-Message-State: AOJu0YyyaQh1kbmmpwfvvnLmavnpuyTRdBjUTWjgnsnCUFzjlIeIUJ7D
+        IdhjJprhMO7lstnqiKlKMF/l0A==
+X-Google-Smtp-Source: AGHT+IG1MfNklZsEKSo6sQRl8EAAG9/w3oikkT83M4JC4OzEIjaR15+W1LxNMxkxLd2D9xQHficg5w==
+X-Received: by 2002:a17:902:a410:b0:1b3:ea47:796c with SMTP id p16-20020a170902a41000b001b3ea47796cmr187614plq.29.1693500080251;
+        Thu, 31 Aug 2023 09:41:20 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id i2-20020a170902c94200b001b392bf9192sm1457492pla.145.2023.08.31.09.41.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 09:41:19 -0700 (PDT)
+Date:   Thu, 31 Aug 2023 16:41:13 +0000
+From:   Carlos Llamas <cmllamas@google.com>
+To:     Qi Zheng <zhengqi.arch@bytedance.com>
+Cc:     akpm@linux-foundation.org, david@fromorbit.com, tkhai@ya.ru,
+        vbabka@suse.cz, roman.gushchin@linux.dev, djwong@kernel.org,
+        brauner@kernel.org, paulmck@kernel.org, tytso@mit.edu,
+        steven.price@arm.com, cel@kernel.org, senozhatsky@chromium.org,
+        yujie.liu@intel.com, gregkh@linuxfoundation.org,
+        muchun.song@linux.dev, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: Re: [PATCH v5 03/45] binder: dynamically allocate the android-binder
+ shrinker
+Message-ID: <ZPDCqbjJzueiEReu@google.com>
+References: <20230824034304.37411-1-zhengqi.arch@bytedance.com>
+ <20230824034304.37411-4-zhengqi.arch@bytedance.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v14 3/9] dt-bindings: soc: qcom: cpr3: Add bindings for
- CPR3 driver
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Robert Marko <robimarko@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Jeffrey Hugo <quic_jhugo@quicinc.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-References: <20230217-topic-cpr3h-v14-0-9fd23241493d@linaro.org>
- <20230217-topic-cpr3h-v14-3-9fd23241493d@linaro.org>
- <CAPDyKFrXT+2NEMUzVv-kWjXAhLinXq99GKq4_Ge2VjthtYxtaA@mail.gmail.com>
- <20230831162835.GA2390385-robh@kernel.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <20230831162835.GA2390385-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230824034304.37411-4-zhengqi.arch@bytedance.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.08.2023 18:28, Rob Herring wrote:
-> On Tue, Aug 29, 2023 at 01:01:44PM +0200, Ulf Hansson wrote:
->> On Mon, 28 Aug 2023 at 13:42, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
->>>
->>> From: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->>>
->>> Add the bindings for the CPR3 driver to the documentation.
->>>
->>> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
->>> [Konrad: Make binding check pass; update AGdR's email]
->>> Tested-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
->>> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->>> ---
->>>  .../devicetree/bindings/soc/qcom/qcom,cpr3.yaml    | 286 +++++++++++++++++++++
->>>  1 file changed, 286 insertions(+)
->>>
->>> diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml b/Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml
->>> new file mode 100644
->>> index 000000000000..acf2e294866b
->>
->> [...]
->>
->>> +
->>> +examples:
->>> +  - |
->>> +    #include <dt-bindings/clock/qcom,gcc-msm8998.h>
->>> +    #include <dt-bindings/interrupt-controller/irq.h>
->>> +
->>> +    cpus {
->>> +        #address-cells = <2>;
->>> +        #size-cells = <0>;
->>> +
->>> +        cpu@0 {
->>> +            compatible = "qcom,kryo280";
->>> +            device_type = "cpu";
->>> +            reg = <0x0 0x0>;
->>> +            operating-points-v2 = <&cpu0_opp_table>;
->>> +            power-domains = <&apc_cprh 0>;
->>> +            power-domain-names = "cprh";
->>
->> Rather than using a Qcom specific power-domain-name, perhaps a common
->> power-domain-name for cpus, that can be used for "the performance
->> domain" would be a good idea here?
->>
->> I have suggested using "perf" for the SCMI performance domain [1],
->> perhaps that description should be extended to cover this and other
->> performance domains too?
+On Thu, Aug 24, 2023 at 11:42:22AM +0800, Qi Zheng wrote:
+> Use new APIs to dynamically allocate the android-binder shrinker.
 > 
-> Better yet, nothing. There's no value to -names when there is only 1 
-> entry.
-As of today, it's required for devm_pm_opp_attach_genpd()
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Muchun Song <songmuchun@bytedance.com>
+> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> CC: Carlos Llamas <cmllamas@google.com>
+> ---
 
-Ulf, is there a better way to do this that doesn't require names?
+Looks good to me, thanks!
 
-Konrad
+Acked-by: Carlos Llamas <cmllamas@google.com>
