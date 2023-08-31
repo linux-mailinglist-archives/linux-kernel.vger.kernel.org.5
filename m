@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1777C78EBBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:13:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E638878EBC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242232AbjHaLNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45740 "EHLO
+        id S239697AbjHaLRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238498AbjHaLNa (ORCPT
+        with ESMTP id S229965AbjHaLRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:13:30 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C95E4A
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:13:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 75F5FB82268
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 11:13:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18CEEC433C7;
-        Thu, 31 Aug 2023 11:13:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693480401;
-        bh=SPHANn9l1aOOZbuKkHiRpjhNj85DHBeIek4xuIuO3qc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qUE+WeUxeiHx3CcuGplbTOAmNIDsGfHBqkHI9/ApYlZTYcB4PoeFDSE007CnC3Jwf
-         PNa7W6FxJOsGj9dGa/z38NQ68DPgEvulCKKE+pGfTwJytRVIzNlWZUi2d6DhYJHqEx
-         jF6H60I/s8lcvDqgEnsuXV0QNfPFRPsQkZbgJMc+HaWCuSfsxklFgR16sz61hRbWBm
-         iCBYHXssVtDZepjaJFMVduY1QBBbQ4TFaJigxPxqakjWEfYMKgxCXlEIEnV8RlEddK
-         je69hMuIceU21T0/hItgj6K6O7cSRsJGVfMuVZDAaNq7J/+nme1Gk2aqsye6Yf8xgu
-         Rhh0e7O9WkMHg==
-Date:   Thu, 31 Aug 2023 12:13:16 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/9] regulator/core: regulator_ena_gpio_ctrl: pull in
- ena_gpio state handling
-Message-ID: <4434c869-6ef5-40b4-869d-8e4d292ac30e@sirena.org.uk>
-References: <cover.1693431144.git.mirq-linux@rere.qmqm.pl>
- <c2551b3da420ab9b69f80ec7a0d646ff69bd0a03.1693431144.git.mirq-linux@rere.qmqm.pl>
+        Thu, 31 Aug 2023 07:17:02 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97D17CFA;
+        Thu, 31 Aug 2023 04:16:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693480619; x=1725016619;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=mHnMhORAN6ESyUeI0X3KU+KDJrXJu4+KoaEIxjPWmmE=;
+  b=mPfn4yxz73VNHifEwK2FRg1pHOz34ifOc9fAsyp6knf1Q/E2+nHUhF/X
+   ylKfUhtuxC7tmufiKVw+B8pAzXhcGFm76kNcf8XU63Z70Y/yOEoAhKEgd
+   anUASrUeUIQVnGqVrPEEKtB/5r4HLkRGIIv25+mfHtaX6d3riJJgHGgZV
+   Txev4yQKiX5N8ywfumbtWnBDMUNgaD5agldUEqrTwZ3+q1TLj3N2lgcYO
+   MUv1RHD9DXlgvYeOrrf1rBc4Auw4IOyvb9hPHTRTA1MIGh/W6Sp9sVujT
+   J5/eEUdMPXkaLDSS8JyhQESUVPUCXCHrt8XRlSvNXqu6R9QhmsA5rXTrm
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="374817444"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="374817444"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 04:16:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="716303618"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="716303618"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 31 Aug 2023 04:16:57 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id C694F3B5; Thu, 31 Aug 2023 14:16:55 +0300 (EEST)
+Date:   Thu, 31 Aug 2023 14:16:55 +0300
+From:   "mika.westerberg@linux.intel.com" <mika.westerberg@linux.intel.com>
+To:     David Binderman <dcb314@hotmail.com>
+Cc:     "andreas.noever@gmail.com" <andreas.noever@gmail.com>,
+        "michael.jamet@intel.com" <michael.jamet@intel.com>,
+        "YehezkelShB@gmail.com" <YehezkelShB@gmail.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Possible cut'n'paste error in linux-6.5/drivers/thunderbolt/tmu.c
+Message-ID: <20230831111655.GP3465@black.fi.intel.com>
+References: <DB6P189MB056829997A31D4B968AEA77C9CE5A@DB6P189MB0568.EURP189.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="l9GbPXnldKAxL0sa"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <c2551b3da420ab9b69f80ec7a0d646ff69bd0a03.1693431144.git.mirq-linux@rere.qmqm.pl>
-X-Cookie: "Pok pok pok, P'kok!"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <DB6P189MB056829997A31D4B968AEA77C9CE5A@DB6P189MB0568.EURP189.PROD.OUTLOOK.COM>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---l9GbPXnldKAxL0sa
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, Aug 31, 2023 at 11:02:58AM +0000, David Binderman wrote:
+> Hello there,
+> 
+> I just tried out static analyser cppcheck on linux-6.5. It said:
+> 
+> linux-6.5/drivers/thunderbolt/tmu.c:385:50: style: Expression is always false because 'else if' condition matches previous condition at line 383. [multiCondition]
+> 
+> Source code is
+> 
+>             if (tmu_rates[TB_SWITCH_TMU_MODE_LOWRES] == rate)
+>                 sw->tmu.mode = TB_SWITCH_TMU_MODE_LOWRES;
+>             else if (tmu_rates[TB_SWITCH_TMU_MODE_LOWRES] == rate)
+>                 sw->tmu.mode = TB_SWITCH_TMU_MODE_HIFI_UNI;
+> 
 
-On Wed, Aug 30, 2023 at 11:38:56PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
+Thanks for the report. Indeed, this should be
 
-> -		if (pin->enable_count > 1) {
-> -			pin->enable_count--;
-> -			return 0;
-> -		}
-> -
->  		/* Disable GPIO if not used */
-> -		if (pin->enable_count <=3D 1) {
-> +		if (pin->enable_count-- <=3D 1) {
+             else if (tmu_rates[TB_SWITCH_TMU_MODE_HIFI_UNI] == rate)
+                 sw->tmu.mode = TB_SWITCH_TMU_MODE_HIFI_UNI;
 
-The goal isn't to write the minimum number of lines possible - this just
-makes the logic harder to follow and for bonus points isn't obviously
-related to the chnages described in changelog.
-
---l9GbPXnldKAxL0sa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTwdcwACgkQJNaLcl1U
-h9DlFQgAg1KCgvuzosDYCz5cvzh+BGg9BK6t89Zb3UklQq4XS8Um+ru004DbMb70
-wHccOXaqBdVdyyMKK/MnoJ3mU7Yu2wJk5BMErWsIkz0X4ZvEiOjevanAJfU25YvR
-xZBbqhnJbACI8A9nUeOCV+puSq7JjKh/iOnzfmp33ojRIlXls3dNjlOxgw6X6wvz
-pmxL17uka23CVJXvYACU7hZ9YBqaceRM8eghE0Ti4ox576lBnA6cQrRyhYWgSP4m
-0jDzNZTQSMPKeJ9N2cX2nRr3f/HUrOV6pE+9x0VFxle8HAyvTShzxusUhBcUq6Tx
-/NQT4DLdZ6G2rMz8fqrBJikpsmm7Bw==
-=4Oah
------END PGP SIGNATURE-----
-
---l9GbPXnldKAxL0sa--
+I will fix it up and send out after v6.6-rc1 is released.
