@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A090A78E4A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB74878E4B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 04:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238379AbjHaCLt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 22:11:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54828 "EHLO
+        id S237074AbjHaCV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 22:21:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjHaCLs (ORCPT
+        with ESMTP id S229666AbjHaCV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 22:11:48 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6DC83;
-        Wed, 30 Aug 2023 19:11:44 -0700 (PDT)
-Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rbl1c5lv7zNn6X;
-        Thu, 31 Aug 2023 10:08:04 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 31 Aug 2023 10:11:41 +0800
-Message-ID: <b03162f7-7bdf-1e52-a7ba-718389fbeafc@huawei.com>
-Date:   Thu, 31 Aug 2023 10:11:40 +0800
+        Wed, 30 Aug 2023 22:21:58 -0400
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C242CD2;
+        Wed, 30 Aug 2023 19:21:55 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4RblKS6pHkz4f3kFC;
+        Thu, 31 Aug 2023 10:21:48 +0800 (CST)
+Received: from [10.67.111.192] (unknown [10.67.111.192])
+        by APP4 (Coremail) with SMTP id gCh0CgA3FKc_+e9kXG_3Bw--.49987S2;
+        Thu, 31 Aug 2023 10:21:52 +0800 (CST)
+Message-ID: <29cb8e96-0157-4e86-fb7c-ce5abcd4eadd@huaweicloud.com>
+Date:   Thu, 31 Aug 2023 10:21:51 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v4 0/9] scsi:scsi_debug: Add error injection for single
- device
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH bpf-next] bpf, sockmap: Rename sock_map_get_from_fd to
+ sock_map_prog_attach
 Content-Language: en-US
-To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Douglas Gilbert <dgilbert@interlog.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <louhongxiang@huawei.com>, <wubo40@huawei.com>
-References: <20230815122316.4129333-1-haowenchao2@huawei.com>
-From:   "haowenchao (C)" <haowenchao2@huawei.com>
-In-Reply-To: <20230815122316.4129333-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Xu Kuohai <xukuohai@huaweicloud.com>, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Jakub Sitnicki <jakub@cloudflare.com>
+References: <20230831014346.2931397-1-xukuohai@huaweicloud.com>
+ <64eff643ba8c8_9941c2083c@john.notmuch>
+From:   Xu Kuohai <xukuohai@huaweicloud.com>
+In-Reply-To: <64eff643ba8c8_9941c2083c@john.notmuch>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600012.china.huawei.com (7.193.23.74)
+X-CM-TRANSID: gCh0CgA3FKc_+e9kXG_3Bw--.49987S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYz7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
+        Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0
+        xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
+        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
+        73UjIFyTuYvjfU5WlkUUUUU
+X-CM-SenderInfo: 50xn30hkdlqx5xdzvxpfor3voofrz/
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        MAY_BE_FORGED,NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/15 20:23, Wenchao Hao wrote:
-> The original error injection mechanism was based on scsi_host which
-> could not inject fault for a single SCSI device.
+On 8/31/2023 10:09 AM, John Fastabend wrote:
+> Xu Kuohai wrote:
+>> From: Xu Kuohai <xukuohai@huawei.com>
+>>
+>> What function sock_map_get_from_fd does is to attach a bpf prog to
+>> a sock map, so rename it to sock_map_prog_attach to make it more
+>> readable.
+>>
+>> Signed-off-by: Xu Kuohai <xukuohai@huawei.com>
+>> ---
 > 
-> This patchset provides the ability to inject errors for a single
-> SCSI device. Now we supports inject timeout errors, queuecommand
-> errors, and hostbyte, driverbyte, statusbyte, and sense data for
-> specific SCSI Command. Two new error injection is defined to make
-> abort command or reset LUN failed.
-> 
-> Besides error injection for single device, this patchset add a
-> new interface to make reset target failed for each scsi_target.
-> 
-> The first two patch add an debugfs interface to add and inquiry single
-> device's error injection info; the third patch defined how to remove
-> an injection which has been added. The following 5 patches use the
-> injection info and generate the related error type. The last one just
-> Add a new interface to make reset target failed.
+> I don't really think the rename is needed. It will just make any
+> backports difficult.
 > 
 
-Ping...
+OK, please ignore this patch, this function has been around for a
+long time, maybe everyone is used to the name and I don't insist
+on renaming it.
 
-> V4:
->    - Fix BUG_ON triggered by schedule in atomic context when rmmod scsi_debug
->      Closes: https://lore.kernel.org/oe-lkp/202308031027.5941ce5f-oliver.sang@intel.com
 > 
-> V3:
->    - Add two more error types to fail abort command and lun reset
->    - Fix memleak when rmmod scsi_debug without clearing errors injected
->    - Fix memkeak because did not implement release in sdebug_error_fops
->    - Fix possible NULL point access in scsi_debug_slave_destroy
->    - Move specific error type's description to each single patch which
->      implement this error type
->    - Add interface to make target reset fail
-> 
-> V2:
->    - Using debugfs rather than sysfs attribute interface to manage error
-> 
-> Wenchao Hao (9):
->    scsi:scsi_debug: create scsi_debug directory in the debugfs filesystem
->    scsi:scsi_debug: Add interface to manage single device's error inject
->    scsi:scsi_debug: Define grammar to remove added error injection
->    scsi:scsi_debug: timeout command if the error is injected
->    scsi:scsi_debug: Return failed value if the error is injected
->    scsi:scsi_debug: set command's result and sense data if the error is injected
->    scsi:scsi_debug: Add new error injection abort failed
->    scsi:scsi_debug: Add new error injection reset lun failed
->    scsi:scsi_debug: Add debugfs interface to fail target reset
-> 
->   drivers/scsi/scsi_debug.c | 512 +++++++++++++++++++++++++++++++++++++-
->   1 file changed, 507 insertions(+), 5 deletions(-)
-> 
+> .
 
