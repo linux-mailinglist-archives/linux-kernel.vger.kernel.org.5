@@ -2,105 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E2778EBE7
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FD1E78EBEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244173AbjHaLXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39888 "EHLO
+        id S1345356AbjHaLYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjHaLXw (ORCPT
+        with ESMTP id S229790AbjHaLYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:23:52 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09B6CCE4
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:23:50 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qbfm3-0000KS-J6; Thu, 31 Aug 2023 13:23:43 +0200
-Received: from ore by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qbfm2-0000FF-LD; Thu, 31 Aug 2023 13:23:42 +0200
-Date:   Thu, 31 Aug 2023 13:23:42 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Lukasz Majewski <lukma@denx.de>
-Subject: Re: [PATCH net v1] net: phy: micrel: Correct bit assignment for
- MICREL_KSZ8_P1_ERRATA flag
-Message-ID: <20230831112342.GD17603@pengutronix.de>
-References: <20230831110427.3551432-1-o.rempel@pengutronix.de>
- <ZPB3cYMnFq1qGRv0@shell.armlinux.org.uk>
+        Thu, 31 Aug 2023 07:24:49 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69ADECE4;
+        Thu, 31 Aug 2023 04:24:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693481086; x=1725017086;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4rqbmzPeLwpZ36uQPiLAzAn3sRKRt2FDC24MP4o0xkM=;
+  b=fEG4ZRjRLZ3v3IZ7JyadZj+/5vYIk8SZcEYDsIdiF50GyQuw6oRWjzG9
+   aIbjWUsXiB4P9LGJgHTMZr2mdLNjzoyu6ji89hiNBnwYgos8T9OjjL6m3
+   HWn6nPilI1xnOgmCad+AaVZ+5+9BdWl3LYMkAlJOiIAudm/ogggx3lJbX
+   8O//qrZ9Nm9rFPKwldbsOai/cpNds64bmNP7RcQfECGDxoP0vSCVr/u/H
+   1x5xo0o6M2cK1kSYAF9o/v5PvBSmgKy12wk/UXweT58l1d1qJVKwcQVic
+   jepPyNiiRF/X3ukN1WK5KvjNRxDgCCd53Duo5SsV8PuGCdbrY4l4hvoRv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="462280834"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="462280834"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 04:24:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="689286681"
+X-IronPort-AV: E=Sophos;i="6.02,216,1688454000"; 
+   d="scan'208";a="689286681"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.210.87]) ([10.254.210.87])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 04:24:42 -0700
+Message-ID: <ed11a5c4-7256-e6ea-e94e-0dfceba6ddbf@linux.intel.com>
+Date:   Thu, 31 Aug 2023 19:24:40 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZPB3cYMnFq1qGRv0@shell.armlinux.org.uk>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
+ <20230825023026.132919-10-baolu.lu@linux.intel.com>
+ <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <cfd9e0b8-167e-a79b-9ef1-b3bfa38c9199@linux.intel.com>
+ <BN9PR11MB5276926066CC3A8FCCFD3DB08CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB5276926066CC3A8FCCFD3DB08CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-7.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 12:20:17PM +0100, Russell King (Oracle) wrote:
-> On Thu, Aug 31, 2023 at 01:04:27PM +0200, Oleksij Rempel wrote:
-> > The previous assignment of the phy_device quirk for the
-> > MICREL_KSZ8_P1_ERRATA flag was incorrect, working only due to
-> > coincidental conditions. Specifically:
-> > 
-> > - The flag MICREL_KSZ8_P1_ERRATA, intended for KSZ88xx switches, was
-> >   mistakenly overlapping with the MICREL_PHY_FXEN and
-> >   MICREL_PHY_50MHZ_CLK flags.
-> > - MICREL_PHY_FXEN is used by the KSZ8041 PHY, and its related code path
-> >   wasn't executed for KSZ88xx PHYs and other way around.
-> > - Additionally, the code path associated with the MICREL_PHY_50MHZ_CLK
-> >   flag wasn't executed for KSZ88xx either.
-> > 
-> > Fixes: 49011e0c1555d ("net: phy: micrel: ksz886x/ksz8081: add cabletest support")
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> > ---
-> >  include/linux/micrel_phy.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/include/linux/micrel_phy.h b/include/linux/micrel_phy.h
-> > index 8bef1ab62bba3..0cedbeb9167c3 100644
-> > --- a/include/linux/micrel_phy.h
-> > +++ b/include/linux/micrel_phy.h
-> > @@ -43,7 +43,7 @@
-> >  /* struct phy_device dev_flags definitions */
-> >  #define MICREL_PHY_50MHZ_CLK	0x00000001
-> >  #define MICREL_PHY_FXEN		0x00000002
-> > -#define MICREL_KSZ8_P1_ERRATA	0x00000003
-> > +#define MICREL_KSZ8_P1_ERRATA	BIT(3)
+On 2023/8/30 15:55, Tian, Kevin wrote:
+>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>> Sent: Saturday, August 26, 2023 4:04 PM
+>>
+>> On 8/25/23 4:17 PM, Tian, Kevin wrote:
+>>>> +static void assert_no_pending_iopf(struct device *dev, ioasid_t pasid)
+>>>> +{
+>>>> +	struct iommu_fault_param *iopf_param = dev->iommu-
+>>>>> fault_param;
+>>>> +	struct iopf_fault *iopf;
+>>>> +
+>>>> +	if (!iopf_param)
+>>>> +		return;
+>>>> +
+>>>> +	mutex_lock(&iopf_param->lock);
+>>>> +	list_for_each_entry(iopf, &iopf_param->partial, list) {
+>>>> +		if (WARN_ON(iopf->fault.prm.pasid == pasid))
+>>>> +			break;
+>>>> +	}
+>>> partial list is protected by dev_iommu lock.
+>>>
+>>
+>> Ah, do you mind elaborating a bit more? In my mind, partial list is
+>> protected by dev_iommu->fault_param->lock.
+>>
 > 
-> Please can you also convert the other two flags to use BIT() as well to
-> make the entire thing explicitly bit-orientated? Thanks.
+> well, it's not how the code is currently written. iommu_queue_iopf()
+> doesn't hold dev_iommu->fault_param->lock to update the partial
+> list.
+> 
+> while at it looks there is also a mislocking in iopf_queue_discard_partial()
+> which only acquires queue->lock.
+> 
+> So we have three places touching the partial list all with different locks:
+> 
+> - iommu_queue_iopf() relies on dev_iommu->lock
+> - iopf_queue_discard_partial() relies on queue->lock
+> - this new assert function uses dev_iommu->fault_param->lock
 
-Ack. This patch is for the net. The cleanup will got to the net-next.
-Except clean up will be accepted for the net too?
+Yeah, I see your point now. Thanks for the explanation.
 
-Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+So, my understanding is that dev_iommu->lock protects the whole
+pointer of dev_iommu->fault_param, while dev_iommu->fault_param->lock
+protects the lists inside it.
+
+Is this locking mechanism different from what you think?
+
+Best regards,
+baolu
