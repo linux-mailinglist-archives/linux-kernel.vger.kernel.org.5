@@ -2,226 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3DD78EE13
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF3878EE1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 15:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238306AbjHaNIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 09:08:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        id S1345247AbjHaNJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 09:09:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232184AbjHaNIG (ORCPT
+        with ESMTP id S230368AbjHaNJM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 09:08:06 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8A689BC
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 06:08:03 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4518C15;
-        Thu, 31 Aug 2023 06:08:42 -0700 (PDT)
-Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.36.128])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 610753F738;
-        Thu, 31 Aug 2023 06:08:02 -0700 (PDT)
-Date:   Thu, 31 Aug 2023 14:07:23 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, dianders@chromium.org,
-        keescook@chromium.org, swboyd@chromium.org
-Subject: Re: [PATCH] lkdtm/bugs: add test for panic() with stuck secondary
- CPUs
-Message-ID: <ZPCQi68pQms78tsh@FVFF77S0Q05N.cambridge.arm.com>
-References: <20230831101026.3122590-1-mark.rutland@arm.com>
- <CAFA6WYPSbzi5ZKaEdsigtJgdxaK0NXSa_Qyc+_qAvUjqonw10g@mail.gmail.com>
+        Thu, 31 Aug 2023 09:09:12 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14A131A4;
+        Thu, 31 Aug 2023 06:09:08 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37VCeiMC027349;
+        Thu, 31 Aug 2023 13:08:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=OwzPjGSLhqM1CWMZJdC21er6tHXS2yZCDBB1mbhXGA0=;
+ b=X/pyhYC9ho/T+ZALC+tXk/X9xREEDCZ3quHyTtYFR+j/GilEHV0T1yPg3fIxPneYtjz6
+ rUoW2Ec9riIvn/1YGP6juSaFwS9FIHyfcFre9A5JpRs9Xf3od3BODwvVlbTae2SVoVzn
+ AwMMHai3DUfPXKdbSGFVQrzL1lAThD/5y2ypDdx8kWWSzBLXiUuLAQR8owQr4K+Yc+X6
+ KZBlmEzjtF6U3VtckGZ6lS4i7Y6lgpet9YMLBAtn9QYKYIcSZax78sajTuCJ2VPVv9N8
+ 4KqNTvO54hBdzaF1+lZ7DZKKhQsG324/erE8pRH01HMaOKBXSEWthBH+jpOE5urYz2hY dQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3str1ngehn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 13:08:12 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37VD8Bvp008094
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 13:08:11 GMT
+Received: from [10.201.3.91] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Thu, 31 Aug
+ 2023 06:08:04 -0700
+Message-ID: <36103bcd-fd4e-4a1a-b65e-238f6b63544c@quicinc.com>
+Date:   Thu, 31 Aug 2023 18:38:01 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFA6WYPSbzi5ZKaEdsigtJgdxaK0NXSa_Qyc+_qAvUjqonw10g@mail.gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/9] phy: qcom: uniphy: Rename ipq4019 USB phy driver to
+ UNIPHY driver
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <robert.marko@sartura.hr>, <luka.perkov@sartura.hr>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <p.zabel@pengutronix.de>, <arnd@arndb.de>,
+        <geert+renesas@glider.be>, <nfraprado@collabora.com>,
+        <rafal@milecki.pl>, <peng.fan@nxp.com>, <quic_wcheng@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+CC:     <quic_varada@quicinc.com>
+References: <20230829135818.2219438-1-quic_ipkumar@quicinc.com>
+ <20230829135818.2219438-3-quic_ipkumar@quicinc.com>
+ <d30742d6-7fe2-c5fe-ac42-86642acc076e@linaro.org>
+From:   Praveenkumar I <quic_ipkumar@quicinc.com>
+In-Reply-To: <d30742d6-7fe2-c5fe-ac42-86642acc076e@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: dJH7yNdDb4WX9KE1xtrsPdKLIgklPI7U
+X-Proofpoint-ORIG-GUID: dJH7yNdDb4WX9KE1xtrsPdKLIgklPI7U
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_11,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
+ mlxlogscore=993 spamscore=0 malwarescore=0 priorityscore=1501
+ suspectscore=0 adultscore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310117
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 06:15:29PM +0530, Sumit Garg wrote:
-> Hi Mark,
-> 
-> Thanks for putting up a test case for this.
-> 
-> On Thu, 31 Aug 2023 at 15:40, Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > Upon a panic() the kernel will use either smp_send_stop() or
-> > crash_smp_send_stop() to attempt to stop secondary CPUs via an IPI,
-> > which may or may not be an NMI. Generally it's preferable that this is an
-> > NMI so that CPUs can be stopped in as many situations as possible, but
-> > it's not always possible to provide an NMI, and there are cases where
-> > CPUs may be unable to handle the NMI regardless.
-> >
-> > This patch adds a test for panic() where all other CPUs are stuck with
-> > interrupts disabled, which can be used to check whether the kernel
-> > gracefully handles CPUs failing to respond to a stop, and whe NMIs stops
-> 
-> s/whe/when/
-> 
-> > work.
-> >
-> > For example, on arm64 *without* an NMI, this results in:
-> >
-> > | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
-> > | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
-> > | Kernel panic - not syncing: panic stop irqoff test
-> > | CPU: 2 PID: 24 Comm: migration/2 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
-> > | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-> > | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
-> > | Call trace:
-> > |  dump_backtrace+0x94/0xec
-> > |  show_stack+0x18/0x24
-> > |  dump_stack_lvl+0x74/0xc0
-> > |  dump_stack+0x18/0x24
-> > |  panic+0x358/0x3e8
-> > |  lkdtm_PANIC+0x0/0x18
-> > |  multi_cpu_stop+0x9c/0x1a0
-> > |  cpu_stopper_thread+0x84/0x118
-> > |  smpboot_thread_fn+0x224/0x248
-> > |  kthread+0x114/0x118
-> > |  ret_from_fork+0x10/0x20
-> > | SMP: stopping secondary CPUs
-> > | SMP: failed to stop secondary CPUs 0-3
-> > | Kernel Offset: 0x401cf3490000 from 0xffff800080000000
-> > | PHYS_OFFSET: 0x40000000
-> > | CPU features: 0x00000000,68c167a1,cce6773f
-> > | Memory Limit: none
-> > | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
-> >
-> > On arm64 *with* an NMI, this results in:
-> 
-> I suppose a more interesting test scenario to show difference among
-> NMI stop IPI and regular stop IPI would be:
-> 
-> - First put any CPU into hard lockup state via:
->    $ echo HARDLOCKUP > /sys/kernel/debug/provoke-crash/DIRECT
-> 
-> - And then provoke following from other CPU:
->    $ echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
 
-I don't follow. IIUC that's only going to test whether a HW watchdog can fire
-and reset the system?
+On 8/29/2023 10:25 PM, Krzysztof Kozlowski wrote:
+> On 29/08/2023 15:58, Praveenkumar I wrote:
+>> UNIPHY / Combo PHY used on various qualcomm SoC's are very similar to
+>> ipq4019 PHY. Hence renaming this driver to uniphy driver and can be
+>> used for other SoC's which are having the similar UNIPHY.
+>>
+>> Signed-off-by: Praveenkumar I <quic_ipkumar@quicinc.com>
+>> ---
+>>   MAINTAINERS                                                | 7 ++++---
+>>   drivers/phy/qualcomm/Kconfig                               | 7 ++++---
+>>   drivers/phy/qualcomm/Makefile                              | 2 +-
+>>   .../qualcomm/{phy-qcom-ipq4019-usb.c => phy-qcom-uniphy.c} | 0
+>>   4 files changed, 9 insertions(+), 7 deletions(-)
+>>   rename drivers/phy/qualcomm/{phy-qcom-ipq4019-usb.c => phy-qcom-uniphy.c} (100%)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index ff1f273b4f36..7f4553c1a69a 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -17774,13 +17774,14 @@ F:	Documentation/devicetree/bindings/mailbox/qcom-ipcc.yaml
+>>   F:	drivers/mailbox/qcom-ipcc.c
+>>   F:	include/dt-bindings/mailbox/qcom-ipcc.h
+>>   
+>> -QUALCOMM IPQ4019 USB PHY DRIVER
+>> +QUALCOMM UNIPHY DRIVER
+>>   M:	Robert Marko <robert.marko@sartura.hr>
+>>   M:	Luka Perkov <luka.perkov@sartura.hr>
+>> +M:	Praveenkumar I <quic_ipkumar@quicinc.com>
+>>   L:	linux-arm-msm@vger.kernel.org
+>>   S:	Maintained
+>> -F:	Documentation/devicetree/bindings/phy/qcom-usb-ipq4019-phy.yaml
+>> -F:	drivers/phy/qualcomm/phy-qcom-ipq4019-usb.c
+>> +F:	Documentation/devicetree/bindings/phy/qcom,uniphy.yaml
+> You broke the path in your previous commit, but anyway this will go away.
+>
+>> +F:	drivers/phy/qualcomm/phy-qcom-uniphy.c
+>>   
+>>   QUALCOMM IPQ4019 VQMMC REGULATOR DRIVER
+>>   M:	Robert Marko <robert.marko@sartura.hr>
+>> diff --git a/drivers/phy/qualcomm/Kconfig b/drivers/phy/qualcomm/Kconfig
+>> index d891058b7c39..e6981bc212b3 100644
+>> --- a/drivers/phy/qualcomm/Kconfig
+>> +++ b/drivers/phy/qualcomm/Kconfig
+>> @@ -28,12 +28,13 @@ config PHY_QCOM_EDP
+>>   	  Enable this driver to support the Qualcomm eDP PHY found in various
+>>   	  Qualcomm chipsets.
+>>   
+>> -config PHY_QCOM_IPQ4019_USB
+>> -	tristate "Qualcomm IPQ4019 USB PHY driver"
+>> +config PHY_QCOM_UNIPHY
+>> +	tristate "Qualcomm UNIPHY driver"
+>>   	depends on OF && (ARCH_QCOM || COMPILE_TEST)
+>>   	select GENERIC_PHY
+>>   	help
+>> -	  Support for the USB PHY-s on Qualcomm IPQ40xx SoC-s.
+>> +	  Enable this driver to support the Qualcomm UNIPHY found in various
+>> +	  Qualcomm chipsets.
+> I don't quite get why this is renamed, either. Just because you re-use
+> it? Re-usage is not affected with old name...
+Understood. As suggested by Dmitry Baryshkov, will add new driver for 
+Qualcomm IPQ5332 USB Gen3
+PHY driver.
 
-The PANIC_STOP_IRQOFF test has each CPU run panic_stop_irqoff_fn() with IRQs
-disabled, and if one CPU is stuck in the HARDLOCKUP test, we'll never get all
-CPUs into panic_stop_irqoff_fn(), and so all CPUs will be stuck with IRQs
-disabled, spinning.
-
-The PANIC_STOP_IRQOFF test itself tests the different between an NMI stop IPI
-and regular stop IPI, as the results in the commit message shows. Look for the
-line above that says:
-
-| SMP: failed to stop secondary CPUs 0-3
-
-... which is *not* present in the NMI case (though we don't have an explicit
-"stoppped all CPUs" message).
-
-> >
-> > | # echo PANIC_STOP_IRQOFF > /sys/kernel/debug/provoke-crash/DIRECT
-> > | lkdtm: Performing direct entry PANIC_STOP_IRQOFF
-> > | Kernel panic - not syncing: panic stop irqoff test
-> > | CPU: 1 PID: 19 Comm: migration/1 Not tainted 6.5.0-rc3-00077-ge6c782389895-dirty #4
-> > | Hardware name: QEMU QEMU Virtual Machine, BIOS 0.0.0 02/06/2015
-> > | Stopper: multi_cpu_stop+0x0/0x1a0 <- stop_machine_cpuslocked+0x158/0x1a4
-> > | Call trace:
-> > |  dump_backtrace+0x94/0xec
-> > |  show_stack+0x18/0x24
-> > |  dump_stack_lvl+0x74/0xc0
-> > |  dump_stack+0x18/0x24
-> > |  panic+0x358/0x3e8
-> > |  lkdtm_PANIC+0x0/0x18
-> > |  multi_cpu_stop+0x9c/0x1a0
-> > |  cpu_stopper_thread+0x84/0x118
-> > |  smpboot_thread_fn+0x224/0x248
-> > |  kthread+0x114/0x118
-> > |  ret_from_fork+0x10/0x20
-> > | SMP: stopping secondary CPUs
-> > | Kernel Offset: 0x55a9c0bc0000 from 0xffff800080000000
-> > | PHYS_OFFSET: 0x40000000
-> > | CPU features: 0x00000000,68c167a1,fce6773f
-> > | Memory Limit: none
-> > | ---[ end Kernel panic - not syncing: panic stop irqoff test ]---
-> >
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Douglas Anderson <dianders@chromium.org>
-> > Cc: Kees Cook <keescook@chromium.org>
-> > Cc: Stephen Boyd <swboyd@chromium.org
-> > Cc: Sumit Garg <sumit.garg@linaro.org>
-> > ---
-> >  drivers/misc/lkdtm/bugs.c | 29 ++++++++++++++++++++++++++++-
-> >  1 file changed, 28 insertions(+), 1 deletion(-)
-> >
-> > I've tested this with the arm64 NMI IPI patches:
-> >
-> >   https://lore.kernel.org/linux-arm-kernel/20230830191314.1618136-1-dianders@chromium.org/
-> >
-> > Specifically, with the patch that uses an NMI for IPI_CPU_STOP and
-> > IPI_CPU_CRASH_STOP:
-> >
-> >   https://lore.kernel.org/linux-arm-kernel/20230830121115.v12.5.Ifadbfd45b22c52edcb499034dd4783d096343260@changeid/
-> >
-> > Mark.
-> >
-> > diff --git a/drivers/misc/lkdtm/bugs.c b/drivers/misc/lkdtm/bugs.c
-> > index 3c95600ab2f71..368da8b83cd1c 100644
-> > --- a/drivers/misc/lkdtm/bugs.c
-> > +++ b/drivers/misc/lkdtm/bugs.c
-> > @@ -6,12 +6,14 @@
-> >   * test source files.
-> >   */
-> >  #include "lkdtm.h"
-> > +#include <linux/cpu.h>
-> >  #include <linux/list.h>
-> >  #include <linux/sched.h>
-> >  #include <linux/sched/signal.h>
-> >  #include <linux/sched/task_stack.h>
-> > -#include <linux/uaccess.h>
-> >  #include <linux/slab.h>
-> > +#include <linux/stop_machine.h>
-> > +#include <linux/uaccess.h>
-> >
-> >  #if IS_ENABLED(CONFIG_X86_32) && !IS_ENABLED(CONFIG_UML)
-> >  #include <asm/desc.h>
-> > @@ -73,6 +75,30 @@ static void lkdtm_PANIC(void)
-> >         panic("dumptest");
-> >  }
-> >
-> > +static int panic_stop_irqoff_fn(void *arg)
-> > +{
-> > +       atomic_t *v = arg;
-> > +
-> > +       /*
-> > +        * Trigger the panic after all other CPUs have entered this function,
-> > +        * so that they are guaranteed to have IRQs disabled.
-> > +        */
-> > +       if (atomic_inc_return(v) == num_online_cpus())
-> > +               panic("panic stop irqoff test");
-> > +
-> > +       for (;;)
-> > +               cpu_relax();
-> > +}
-> > +
-> > +static void lkdtm_PANIC_STOP_IRQOFF(void)
-> > +{
-> > +       atomic_t v = ATOMIC_INIT(0);
-> > +
-> > +       cpus_read_lock();
-> > +       stop_machine(panic_stop_irqoff_fn, &v, cpu_online_mask);
-> > +       cpus_read_unlock();
-> 
-> stop_machine() does internally use cpus_read_{lock/unlock}(), is there
-> any need to have them here as well?
-
-For some reason I thought that stop_machine() copied the mask prior to calling
-cpus_read_lock(), and hance it was necessary to avoid the online mask changing,
-but from taking a look just now that's not the case.
-
-I'll drop the cpus_read_lock() .. cpus_read_unlock() here.
-
-Thanks,
-Mark.
+- Praveenkumar
+>
+> Best regards,
+> Krzysztof
+>
