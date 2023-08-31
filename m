@@ -2,123 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B71B678E5BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BA8078E5C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 07:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343775AbjHaFcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 01:32:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59154 "EHLO
+        id S1344236AbjHaFcx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 01:32:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343909AbjHaFcY (ORCPT
+        with ESMTP id S1346067AbjHaFc3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 01:32:24 -0400
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93532CD8;
-        Wed, 30 Aug 2023 22:32:15 -0700 (PDT)
-X-UUID: bb32912047bf11eeb20a276fd37b9834-20230831
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=KIe7sbzhr8pclxwbNUsUe49QcjNI1ozgaMNN0nDCuPo=;
-        b=A91S28/WjW2FJ3wfdi5SmOKt8er1oh/JyCxWPTBgijxqZPgkqleibKznw8lJp8Mq/ZLwyQVvF7GyqSnrCwBzME4Ey68WP1X71ZrH+Vdm/MQjSpWRIB82cIC0HAV4n04l9A828a+h+nwsPseLa+Ir/r+5+Wrofxz0R8WCNKiwAQE=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:37e88b3c-2346-458f-b55c-3a2cb111c316,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:0ad78a4,CLOUDID:d0826313-4929-4845-9571-38c601e9c3c9,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: bb32912047bf11eeb20a276fd37b9834-20230831
-Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw02.mediatek.com
-        (envelope-from <macpaul.lin@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 248086274; Thu, 31 Aug 2023 13:32:10 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs13n2.mediatek.inc (172.21.101.108) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 31 Aug 2023 13:32:08 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkmbs11n1.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
- Transport; Thu, 31 Aug 2023 13:32:08 +0800
-Message-ID: <39c24e4b-6ef7-6891-3292-b73fada9f252@mediatek.com>
-Date:   Thu, 31 Aug 2023 13:32:05 +0800
+        Thu, 31 Aug 2023 01:32:29 -0400
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76DEE43;
+        Wed, 30 Aug 2023 22:32:21 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-52a250aa012so436105a12.3;
+        Wed, 30 Aug 2023 22:32:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693459940; x=1694064740;
+        h=content-transfer-encoding:in-reply-to:subject:from:content-language
+         :references:cc:to:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pWVU2emzKXoGwZDt9vJyrPNkV5rPwoUzokQnAVFFcdk=;
+        b=j/bxe/J/h8og76bfu49y9jrnVxfMLzgjdmby1m6K+Jzv9QZK0FPvIvkOKK7f18FLjM
+         t9N7ax0mHh9SNEKie23PBH66iRP2aW7VFokvt/3p5Qp+gsIFwVW0GbGCS4safwqQ6OP5
+         T1yDwiw3I4yVvjE7Ct51r7GOAHp6u8wAMOH5XMv/Gd1ECMXwlDyVT0H82oeSzaj5Erci
+         4plkq9+6FggccJZOzSr5rjYbkRxmFTq8/x5JIXQmSDcWSmJSiCSu3bhvQWpeRFCu178J
+         ymltEeeSz+Q+OiNIdv5Swz9AqaRWegmi22AzAzhwcYyjB6kenXSaLMfnptwd6Pa9EnMr
+         bKHA==
+X-Gm-Message-State: AOJu0Yw2Ww5UDh5RKba6SA4K8S0sCjFBVohgvoIcMZ5VCH/mP7nWRPz+
+        LA38xudAN8+r2eVGl/OcTtwG7Q1wNn4o7g==
+X-Google-Smtp-Source: AGHT+IEerIrNC2i8KrayM6DoN13BvZp7dqB6SxVq5E6w4q5Lp4zn5tDbHt5z7LIRVBCL0epVyoHTGw==
+X-Received: by 2002:a17:906:310d:b0:9a5:b875:d76 with SMTP id 13-20020a170906310d00b009a5b8750d76mr3157954ejx.28.1693459939968;
+        Wed, 30 Aug 2023 22:32:19 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
+        by smtp.gmail.com with ESMTPSA id l18-20020a1709066b9200b009930308425csm339562ejr.31.2023.08.30.22.32.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 22:32:19 -0700 (PDT)
+Message-ID: <c44d1f9f-90e0-3e83-8394-854feb449539@kernel.org>
+Date:   Thu, 31 Aug 2023 07:32:18 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH v2 3/4] arm64: dts: mediatek: mt6360: add PMIC MT6360
- related nodes
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+To:     Kees Cook <keescook@chromium.org>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20230830160410.3820390-1-azeemshaikh38@gmail.com>
+ <2023083035-unpadded-amulet-8c7e@gregkh>
+ <CADmuW3Wbgb7s+jRm8F0hcjzreWysVdzNvv778yUbGCOxAJHwjQ@mail.gmail.com>
+ <202308301421.997C4034B5@keescook>
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alexandre Mergnat <amergnat@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Fabien Parent <fparent@baylibre.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-CC:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-References: <20230825114623.16884-1-macpaul.lin@mediatek.com>
- <20230830111532.9048-1-macpaul.lin@mediatek.com>
- <20230830111532.9048-3-macpaul.lin@mediatek.com>
- <7cba182f-2b35-84e5-16c7-770a6aff5062@linaro.org>
-From:   Macpaul Lin <macpaul.lin@mediatek.com>
-In-Reply-To: <7cba182f-2b35-84e5-16c7-770a6aff5062@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RDNS_NONE,SPF_HELO_PASS,
-        T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH] vt: Fix potential read overflow of kernel memory
+In-Reply-To: <202308301421.997C4034B5@keescook>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 30. 08. 23, 23:28, Kees Cook wrote:
+> On Wed, Aug 30, 2023 at 03:25:54PM -0400, Azeem Shaikh wrote:
+>> On Wed, Aug 30, 2023 at 1:57 PM Greg Kroah-Hartman
+>> <gregkh@linuxfoundation.org> wrote:
+>>>
+>>> On Wed, Aug 30, 2023 at 04:04:10PM +0000, Azeem Shaikh wrote:
+>>>> strlcpy() reads the entire source buffer first.
+>>>> This read may exceed the destination size limit if
+>>>> a source string is not NUL-terminated [1].
+>>>
+>>> But that's not the case here, right?  So your "potential read overflow"
+>>> isn't relevant here.
+>>>
+>>>> The copy_to_user() call uses @len returned from strlcpy() directly
+>>>> without checking its value. This could potentially lead to read
+>>>> overflow.
+>>>
+>>> But can it?  How?
+>>>
+>>
+>> The case I was considering is when the null-terminated hardcoded
+>> string @func_table[kb_func] has length @new_len > @len. In this case,
+>> strlcpy() will assign @len = @new_len and copy_to_user() would read
+>> @new_len from the kmalloc-ed memory of @len. This is the potential
+>> read overflow I was referring to. Let me know if I'm mistaken.
+> 
+> First there is:
+> 
+> ssize_t len = sizeof(user_kdgkb->kb_string);
+> 
+> "struct user_kdgkb" is UAPI (therefore unlikely to change), and kb_string
+> is 512:
+> 
+> struct kbsentry {
+>          unsigned char kb_func;
+>          unsigned char kb_string[512];
+> };
+> 
+> Then we do:
+> 
+>                  len = strlcpy(kbs, func_table[kb_func] ? : "", len);
+> 
+> This is the anti-pattern (take the length of the _source_) we need to
+> remove.
 
+But len is the length of kbs, i.e. the destination. Or what am I missing?
 
-On 8/30/23 19:20, Krzysztof Kozlowski wrote:
-> 	
-> 
-> External email : Please do not click links or open attachments until you 
-> have verified the sender or the content.
-> 
-> On 30/08/2023 13:15, Macpaul Lin wrote:
->> +
->> +led {
->> +compatible = "mediatek,mt6360-led";
->> +};
->> +
->> +regulator {
->> +compatible = "mediatek,mt6360-regulator";
->> +LDO_VIN3-supply = <&mt6360_emi_vddq_buck2_reg>;
->> +
->> +mt6360_emi_vdd2_buck1_reg: buck1-emi-vdd2 {
-> 
-> It does not look like you tested the DTS against bindings. Please run
-> `make dtbs_check W=1` (see
-> Documentation/devicetree/bindings/writing-schema.rst or
-> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/  <https://urldefense.com/v3/__https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/__;!!CTRNKA9wMg0ARbw!nP-6nVffZXG2NCdjcl06my5g9HAohnT-GF-EIGrMWpegsBvwmqgOjfVQba5Ub13z_AWAJwGOlsQ3DSIWGo0ojHlPvDZ74WE$>
-> for instructions).
-> 
-> Best regards,
-> Krzysztof
-> 
-> 
+                 kbs = kmalloc(len, GFP_KERNEL);
+                 len = strlcpy(kbs, func_table[kb_func] ? : "", len);
 
-Thanks for the review.
-Since next patch 4/4 of the patch set to modify mt6360 nodes in
-mt8195-demo.dts is no longer required, please drop this patch, too.
+> However, func_table[] is made up of either %NUL-terminated
+> strings:
+> 
+> char func_buf[] = {
+>          '\033', '[', '[', 'A', 0,
+>          '\033', '[', '[', 'B', 0,
+> ...
+> char *func_table[MAX_NR_FUNC] = {
+>          func_buf + 0,
+>          func_buf + 5,
+> ...
+> 
+> Or a NULL address itself. The ?: operator handles the NULL case, so
+> "len" can only ever be 0 through the longest string in func_buf. So it's
+> what I'd call "accidentally correct". i.e. it's using a fragile
+> anti-pattern, but in this case everything is hard-coded and less than
+> 512.
+> 
+> Regardless, we need to swap for a sane pattern, which you've done. But
+> the commit log is misleading, so it needs some more detail. :)
 
-Thanks
-Macpaul Lin
+I am still missing what is wrong in the above code with strlcpy(). The 
+dest is deliberately made as long as the source, so the returned len is 
+never less then the passed len. No checking needed IMO. Perhaps, we 
+might switch to strcpy()?
+
+FWIW I introduced this in commit 82e61c3909db5. So if it needs fixing, 
+the patch deserves a Fixes: 82e61c3909db5 tag.
+
+thanks,
+-- 
+js
+suse labs
+
