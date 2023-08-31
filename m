@@ -2,70 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3894878E963
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:29:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B89778E965
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244530AbjHaJ3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:29:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44770 "EHLO
+        id S244672AbjHaJ33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244869AbjHaJ3Q (ORCPT
+        with ESMTP id S238163AbjHaJ32 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:29:16 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C553194;
-        Thu, 31 Aug 2023 02:29:14 -0700 (PDT)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V9Eqng019727;
-        Thu, 31 Aug 2023 09:29:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=5HDcXyS0ZaPptlrPHdam7BHT8Aw3osgEIMHQTratx+o=;
- b=UnavEU/QHa4CaR+dzeFUVe2OAozKlZR2kRIdvCNogBWkrU+qdPh8H1Dq/iUFBcCzK8yw
- IhbGb/9/YSmUdta02ebKo4+xAUnxO4xGSAwngrevoy3nD7RhfrxumTJ4Bj4jBMR+EBOV
- KxPJXVxyIwyWzdOtZs38vcQqMXdAC9H22r2UzqAMbBuTPSLjYIIPI4vG6hkFt53s6Sqs
- ggzF6VDMSA0eWgmQwNA5lC3PCdz6uuMgqq2YU7bpS/drZxNqYMXC9YLt2TtHYHb1fGPo
- bV7cpap6Y/SMgE47N00lWM4krFaco8DjaAJ0PsQtd6BO99TBnW8qifCJDHVlaSgzZAgw wg== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stj378pty-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 09:29:06 +0000
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V9T5AU014791
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 09:29:05 GMT
-Received: from varda-linux.qualcomm.com (10.80.80.8) by
- nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Thu, 31 Aug 2023 02:29:02 -0700
-From:   Varadarajan Narayanan <quic_varada@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>, <quic_kathirav@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Subject: [PATCH v2] clk: qcom: ipq5332: Drop set rate parent from gpll0 dependent clocks
-Date:   Thu, 31 Aug 2023 14:58:53 +0530
-Message-ID: <1693474133-10467-1-git-send-email-quic_varada@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 31 Aug 2023 05:29:28 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79847CEA;
+        Thu, 31 Aug 2023 02:29:24 -0700 (PDT)
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id 3D11B86556;
+        Thu, 31 Aug 2023 11:29:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1693474162;
+        bh=1D3Qgb3Pi6YnUtvh04RQFkgAJbK1KQQ0PEsZIO0c6W0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=N3DCE24p+3/frfNRwhmRtciInUxjmkqmRSCmPmqUQbcs3zYhieAAGHm4o7av1k+eC
+         Op15I/GeshFQJ0X5IRpLfVG3fWAM6VYuKLWxd4yxcEXiud3+uNwptYv+d0qYbFtCEW
+         I0lQYu/fnkib38Clj1tnqQ/q+m9o57Ui5OXPiyoWbvmt/eT/cdrAXGVVom04UNl29p
+         w1oBCHRjdDf2nN6ZnRn/YntmMaJi3s8Dl2zI+Qbj6gULmFMxLMQCVMS2hfFAAv78a0
+         FcqwMDCtKS2j+OQ8cjIve+ZqbBk/JcipuI0+Qzh1vwJFi1OxdEDkfDAnwT2DCoo9UR
+         CFgq4iEdsrVqg==
+Date:   Thu, 31 Aug 2023 11:29:15 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Paolo Abeni <pabeni@redhat.com>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        davem@davemloft.net, Woojung Huh <woojung.huh@microchip.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] net: dsa: Extend the dsa_switch structure to hold
+ info about HSR ports
+Message-ID: <20230831112915.5b114379@wsk>
+In-Reply-To: <6b4733f4a5bedd465b7ee5ea435dcdaf12a61321.camel@redhat.com>
+References: <20230829121132.414335-1-lukma@denx.de>
+        <20230829121132.414335-2-lukma@denx.de>
+        <6b4733f4a5bedd465b7ee5ea435dcdaf12a61321.camel@redhat.com>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: i1uuD_8xgY2Ks4dcxydaSI4A_yl10XjC
-X-Proofpoint-ORIG-GUID: i1uuD_8xgY2Ks4dcxydaSI4A_yl10XjC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_07,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 mlxlogscore=861 bulkscore=0
- malwarescore=0 spamscore=0 phishscore=0 impostorscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310085
+Content-Type: multipart/signed; boundary="Sig_/660TvqHPzRjNY.MftTFaPm.";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -75,37 +64,108 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-IPQ5332's GPLL0's nominal/turbo frequency is 800MHz.
-This must not be scaled based on the requirement of
-dependent clocks. Hence remove the CLK_SET_RATE_PARENT
-flag.
+--Sig_/660TvqHPzRjNY.MftTFaPm.
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 3d89d52970fd ("clk: qcom: add Global Clock controller (GCC) driver for IPQ5332 SoC")
-Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
----
- drivers/clk/qcom/gcc-ipq5332.c | 2 --
- 1 file changed, 2 deletions(-)
+Hi Paolo,
 
-diff --git a/drivers/clk/qcom/gcc-ipq5332.c b/drivers/clk/qcom/gcc-ipq5332.c
-index b02026f..b836159 100644
---- a/drivers/clk/qcom/gcc-ipq5332.c
-+++ b/drivers/clk/qcom/gcc-ipq5332.c
-@@ -71,7 +71,6 @@ static struct clk_fixed_factor gpll0_div2 = {
- 				&gpll0_main.clkr.hw },
- 		.num_parents = 1,
- 		.ops = &clk_fixed_factor_ops,
--		.flags = CLK_SET_RATE_PARENT,
- 	},
- };
- 
-@@ -85,7 +84,6 @@ static struct clk_alpha_pll_postdiv gpll0 = {
- 				&gpll0_main.clkr.hw },
- 		.num_parents = 1,
- 		.ops = &clk_alpha_pll_postdiv_ro_ops,
--		.flags = CLK_SET_RATE_PARENT,
- 	},
- };
- 
--- 
-2.7.4
+> On Tue, 2023-08-29 at 14:11 +0200, Lukasz Majewski wrote:
+> > Information about HSR aware ports in a DSA switch can be helpful
+> > when one needs tags to be adjusted before the HSR frame is sent.
+> >=20
+> > For example - with ksz9477 switch - the TAG needs to be adjusted to
+> > have both HSR ports marked in tag to allow execution of HW based
+> > frame duplication.
+> >=20
+> > Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> > ---
+> >  include/net/dsa.h | 3 +++
+> >  1 file changed, 3 insertions(+)
+> >=20
+> > diff --git a/include/net/dsa.h b/include/net/dsa.h
+> > index d309ee7ed04b..15274afc42bb 100644
+> > --- a/include/net/dsa.h
+> > +++ b/include/net/dsa.h
+> > @@ -470,6 +470,9 @@ struct dsa_switch {
+> >  	/* Number of switch port queues */
+> >  	unsigned int		num_tx_queues;
+> > =20
+> > +	/* Bitmask indicating ports supporting HSR */
+> > +	u16                     hsr_ports;
+> > +
+> >  	/* Drivers that benefit from having an ID associated with
+> > each
+> >  	 * offloaded LAG should set this to the maximum number of
+> >  	 * supported IDs. DSA will then maintain a mapping of _at =20
+>=20
+> Out of sheer ignorance, I think this new field does not belong to
+> dsa_switch, at least not in this form. AFAICS there is no current hard
+> limitation on the number of ports a DSA switch can handle at the API
+> level, and this will introduce an hard one.
+>=20
+> I think you are better off keeping this field in the KSZ-specific
+> struct.
 
+That was mine first idea - to move it to struct ksz_device from
+./drivers/net/dsa/ksz_common.h
+
+However, this file and this struct is not easily accessible from
+net/dsa/tag_ksz.c
+
+One idea was to use an exported function - e.g. ksz_get_hsr_ports() and
+in it I would read the hsr_ports member ?
+
+Another option would be to loop through all switch ports with
+hsr_for_each_port(), but this would affect overall network performance.
+
+> If you really want to keep it here you should remove the above
+> limitation somehow (possibly a query op to check if a given port is
+> HSR aware???)
+
+I will use the idea of exported helper function to get HSR members
+ports.
+
+>=20
+> In any case this series looks like net-next material, does not apply
+> correctly to net-next and net-next is currently closed. You can share
+> a new version as RFC or wait for net-next to re-open in ~2w.
+>=20
+
+I will prepare v2 and then adjust it to net-next when required.
+
+> Cheers,
+>=20
+> Paolo
+>=20
+
+
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/660TvqHPzRjNY.MftTFaPm.
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmTwXWsACgkQAR8vZIA0
+zr3diQgA3y/D/XBRsPzCT0wKoUyGMoext1WPk/GH4t9IQJAHHVtRZgBU7Y5B1Gh0
+ADbhxOxQUOqfR7avWZR6n4S46/3LD2E5xiA9Y36ZtXrxFibDgLhYWtuLiu0mG0nT
+eqWcZEKnPl6jpf6V+kGFBJSqGJxlIFKLJW5iBHZEgrAc3FIAu+oVv+0JUnAv9C4d
+Kna3Cp4ifwpLd9yGBHVphhXrV4HISoGctpsBCXyNdf6Pqsu/5gxXLF2yPYe+dAUT
+uZS2SYYx6cI/HtoMQRVHOK8HQl7jYYZD7TwueuMHBTIhWOE622aR2Ho1S7CCkmKN
+GyCG9p1E4hWH89wWXKmx5qZrV117YA==
+=YLWD
+-----END PGP SIGNATURE-----
+
+--Sig_/660TvqHPzRjNY.MftTFaPm.--
