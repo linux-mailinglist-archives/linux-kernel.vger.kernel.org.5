@@ -2,227 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C428B78F038
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5459378F03E
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 17:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237210AbjHaPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 11:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33104 "EHLO
+        id S1346593AbjHaP0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 11:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244888AbjHaPYs (ORCPT
+        with ESMTP id S231325AbjHaPZ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 11:24:48 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9BAE72;
-        Thu, 31 Aug 2023 08:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693495477; x=1725031477;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ISnIAiV3sQftjSWrFLSe+1rRrZSVhzSvoVMhGj2UrhE=;
-  b=Swaif+gNlzbqJqA/Ln0ocIWswj9QN8GXqXa60MaENYuxxmztN5kx7PCJ
-   4bIHEVc/4aDA6v2f0ECzPWDLcLAVmRYm5Rz5PAwqO3SGbO0Qajx0bC68j
-   hL1sHpxx8NfWtWHpc68KWEJazROuth1zygLoiCsygOya847B7790EiIi6
-   CSYfr8u1T4CrCYFrzZ39hDSc/stlqEaKXZDLUsbDdiAzcYRrzciL/XD1O
-   JqxLhZfyHFQCjoHNKlDCMaDPqsIJ05eMlziQP3jllOgoEKmS2Kdd6kkE0
-   JYmEUUwPlQr2jIDODra8vHJLniSOHouCyhm1MT+2I2NGeqXulahYJBCbo
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="375918107"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="375918107"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 08:24:37 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="863124066"
-X-IronPort-AV: E=Sophos;i="6.02,217,1688454000"; 
-   d="scan'208";a="863124066"
-Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
-  by orsmga004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 31 Aug 2023 08:24:37 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 31 Aug 2023 08:24:36 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Thu, 31 Aug 2023 08:24:36 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Thu, 31 Aug 2023 08:24:36 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.107)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Thu, 31 Aug 2023 08:24:36 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMujJZuI6pbTMIEU4yuUt13ro791/kIoqNHJb7jTvccRnAGqZpbRogYqOfUzRBLJLrGbdy8myVdYKXsgTNKgkreXm7qZqw7Pp2nkj8/wMGULtySdVB+5fmMHaz1cg+C33n3IrbMYZwMJf/8imXXVmUkyjB814jPMFp0HILbqLTUzy8HJMkW//m6Ms4uueCYYOubQ83GepAXNHbvs/JOHugs03+8T+Vw/DENlrkCWlm8BclKQX19G48A20DJJvCDogrYSbHBAnzeac999vaT400/+KPgLOU96eajqTmP6RTNuUIOotv8E2Tt1+CD4hwVSAGXwX3Wv1kCc+cqrqkMeXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pDXxd16qXkgFz+LNeohJN9KL1jOaX5JObMrOWx2xwf4=;
- b=WDN0Sh/e8qXeVNOALkaiwqJpTA+FELq+Z6UFtdTXk588Wc6sv0mUd/pu1yZUhgi10u+g21M8ZQUXtUyHNbD6KF9QDoyUk6Xom1aqUrQ3/zT4T6BQdrClZeaaEIOxpQLw0tDbzHWtvBNelPpu/XpOPpBzhzvByiH1KDt5TR5PLrKxjM6IcqEk2Ec7esqhjplQkEJfbfLdFXtmedoD+hfqFGEInjnmS5DP2SEgnATlQWuBBuMa5wCNqwMv9Eco/XxHHqiuCrjKM7laX0hFJxyD+6sLhJ0rCGj4SwzF2IxxtXMk0+DRbKv23fEYShk/3vZg5zUL3EK6EXU7vkWNNBarSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com (2603:10b6:301:6a::31)
- by DM4PR11MB5517.namprd11.prod.outlook.com (2603:10b6:5:388::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Thu, 31 Aug
- 2023 15:24:34 +0000
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::da4:d67d:40ed:9786]) by MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::da4:d67d:40ed:9786%4]) with mapi id 15.20.6699.035; Thu, 31 Aug 2023
- 15:24:34 +0000
-From:   "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>,
-        "pmalani@chromium.org" <pmalani@chromium.org>,
-        "chrome-platform@lists.linux.dev" <chrome-platform@lists.linux.dev>
-CC:     "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "bleung@chromium.org" <bleung@chromium.org>
-Subject: RE: [PATCH v2 4/5] platform/chrome: cros_ec_typec: Add Displayport
- Alternatemode 2.1 Support
-Thread-Topic: [PATCH v2 4/5] platform/chrome: cros_ec_typec: Add Displayport
- Alternatemode 2.1 Support
-Thread-Index: AQHZ25LloUpSuUlFqEqhUDSvXhP6krAEhr0g
-Date:   Thu, 31 Aug 2023 15:24:34 +0000
-Message-ID: <MWHPR11MB0048D87555CACAC4DC7DF1DFA9E5A@MWHPR11MB0048.namprd11.prod.outlook.com>
-References: <20230830223950.1360865-1-utkarsh.h.patel@intel.com>
- <20230830223950.1360865-5-utkarsh.h.patel@intel.com>
-In-Reply-To: <20230830223950.1360865-5-utkarsh.h.patel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MWHPR11MB0048:EE_|DM4PR11MB5517:EE_
-x-ms-office365-filtering-correlation-id: 1c6ff42d-f7e3-4584-a7e2-08dbaa366194
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Ra0m/CriG1+i689cNe5DgF8d6Uoa8YlkgLTMfdxv0fIvMtyD5vFkCc5Jl9JN/B5dyWnfEjmwKV1tx6BNgagTec/ceADM5KYH1K8JUeKXLqgtGUXnUOKa82693LTTHwDJsxJ21+VoG0aZKsov0Nl4cC6Yizu7zcNwXrs+Pt910uxHE7PY+Cmf+ux9EUrqO348tqdBkkLdIWnIepA0bVjiWnnw64I0FyQjcnjMiiIL68NUuZTl5foUqTBLEbsIusXKEMU5F9sELN/mhYPQ8tp4GXLl7nBOqDrZPqLYGrX0S2y0Zkzdl3G4dwXAbzQuPkcVv8FengZZX58ITm9Yb8nMRkfCEVkmL28vOm6n96sjtPm7b6YI4jlZOHDka3HuAV1PzHb1Es6Fu3bsQc3AC2IPJdWVdpigjwnpfSWdlhLjNXskTuJHVwnNpU2KGvH8DC+vmB67LoPiGOVoB6IgyzfNEJeW7Bicr/8HD32Tdh1dxB+2ViRG6+kq4MCHL0GrRKSBkKwtJQhOQt+rpfRiR3rL5U84gbh7CNkEO8XalF2Sv8+uXtxDug6Ds7J79rtlrUdXd/shlGbAnyEzDWBZen9jX+fIfLUPNLQHZLVOW10OuXBZeu9rUxr69javz2nZG2qQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0048.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(366004)(376002)(39860400002)(346002)(451199024)(1800799009)(186009)(6506007)(7696005)(2906002)(9686003)(41300700001)(76116006)(110136005)(71200400001)(5660300002)(52536014)(26005)(38070700005)(38100700002)(66946007)(66556008)(66476007)(54906003)(64756008)(66446008)(8676002)(4326008)(316002)(8936002)(82960400001)(122000001)(86362001)(478600001)(33656002)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?MFagmfKylMI7nW7eeZyM3Tv0wr5M049lSKjWU31F9jvwzuK/gPMuEAFxXNSu?=
- =?us-ascii?Q?5jLxF2tAMNCsr4wYFeyCBi5fRY9aKVZ7rFmSK2MSgdl0bvrkFMwVE5nx71XA?=
- =?us-ascii?Q?SbhV8IC7Wp8sFGmztelDk8x2z8SZBhXprZjeWovHd1SZHQUW7Sg5iskNp6ZA?=
- =?us-ascii?Q?vQJWV1Q29gx1PyDzyBkf28ErwZF7a+WZgO5iLhTcvNKSgZEGCepWnS84q9jT?=
- =?us-ascii?Q?BEPMyFfVZ8TIzWlyAbg/Iqd536Vj0zH1Ekahz+pavxWZiZp12+FSSFDtznDJ?=
- =?us-ascii?Q?gkh8eu6ofCxKpNeDVRV2xPlBofOqWkGQkrojggownesz9EOGDHR/bvJDfiAX?=
- =?us-ascii?Q?h6r3e/lJkLgBH2t9xTJj89B0xxR6r2jpn1rhuuEVBF93HygZDvdKU4fU3d1g?=
- =?us-ascii?Q?ap6VMZxkAFIf+akyc/0pUaMYiqRLBUmUq/9oN7mT3UtQ/ksP0saJpAcFyalq?=
- =?us-ascii?Q?P5zai5sr1IiyeuswllsXpewFhKfVgwkN4uQ0JmskATiijfg2quaEI5YFFTlH?=
- =?us-ascii?Q?7NsVPKlpzTy1aRlX/wRimWWyy1/cMh2rk0e0EkEgyRWOXXTZ3JSBPAc1tRaE?=
- =?us-ascii?Q?4zBS6skiwlWUgqqk+jOzk/fmmPc1tNro2ofRzT2sX2ex3YDf9IbQvfKFPkrT?=
- =?us-ascii?Q?bn7coZ/lCjJc+Bq3Ux004TKKFEULZgLB8S1NxI1N9ASL8xIGfV/ew2oPGdDX?=
- =?us-ascii?Q?UzV5fynz6JoYWRtF6JCrAhBaSe9yHAQE93sWicAkwfKuU4rUpJoauWkXuVzB?=
- =?us-ascii?Q?w1m2C595xMcSqGQlZ/XXiV5f1aWM7+BWA8eNMVT5KNyML5n7DdpTP5iwvPsQ?=
- =?us-ascii?Q?7GRodw2J008RexdaSQEuskca6BI0opRNxUl2DUCo7QL0qji4fd0OkHuEkRx1?=
- =?us-ascii?Q?9CKPw4ZkpYtgjQDmisLnqwk6aIsae/Mh26gQ5ochzvQfY69cJ1U8AV3FoN2U?=
- =?us-ascii?Q?0g5phzExpfqivS2aeKWAA3jVIUrzwcdChrChSUoAbA9YrAViWNFoWMYeKuRH?=
- =?us-ascii?Q?fDRuJK5OPpeJGwEg6DrnwpDS//jYYY5fj6GJQgTUgOptOBhQBRGixCpMQ9vD?=
- =?us-ascii?Q?DLqtqpqzBEXysW1NgxuhWEIPLXxbtaLcFg37xNQVEq4C5AjI6ZeDPzv7BMLt?=
- =?us-ascii?Q?wXbCJoXZLrHoxywYBnmne3m2nkAw3YdkVQFYbVBZuvgo0KMNz6euZMKvlvBD?=
- =?us-ascii?Q?9Ut6Iq+OmhHQrC7Hf3Hj7vr8p3OnW3gp+waSz8HVlLY4sxVEbgdAQdJ5qKyM?=
- =?us-ascii?Q?QkFsFU97uq/RarwCkxgxzZ4Ms+QwOt5dz3PSBvZ8/XWn197XO1gifQMxgM21?=
- =?us-ascii?Q?REwkRW7od7kLzAKKEJx9KZRWbuvmm3PCnv6O7HQWMQdahJQIH/6GoDLco9mZ?=
- =?us-ascii?Q?ENJQAT2zvDkIgSzCos52ZhFefdgYw0PgNOjvBpItEiwPKoc8C/SLqzs+wM0X?=
- =?us-ascii?Q?mJoo9yuUgGECQTeVmFEv5xU7Oksu5G63C0lvgtlIZQMi8UnPt7M1L90lLqYj?=
- =?us-ascii?Q?y37zAWbNbAJrbAcU0SqierAZ2bjaihaXDI5SZLDNcCHbq7lm1C4MNHWBOr8Z?=
- =?us-ascii?Q?oRRWgNyI6+tJbxH52sDNh8kOLN9Y2J1mlqNheg8C?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 31 Aug 2023 11:25:59 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CF15E4F
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:25:56 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso9422835e9.2
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 08:25:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693495555; x=1694100355; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=d6znyQKCV8DafBmq+P0iqvg8LkmCAkhxHacNwGIHAdE=;
+        b=pVwKLqqiaSAFqang4Gtl2lH+IrGStVepPDktHzErhLw7EaJ+vAxRFFEnB60XaWxoqY
+         Ni+GMpr6obfFyfReCy+cJ/EwfqVwa8exsnKJoZvRgJ/nkVBbefhB8UlywaVMZhvfKiG/
+         9pEshq5yryYF5ToQpIv6aSI1rNgFIJursguh8DX6FKTz4TVugtNMdKOV6gxwY4fAsPvl
+         U/BHMhOgbvpk7S79oEWbgIm90CsNFl5y/95rRAP0Hqn6xvEoIjqOJriD/kQrHqHU9136
+         cCRbux8LS1EPPSA4nIXO+DCH/f3L+tk8g9rnVzSRNXmPp1+wGBG1YlPwBPj4nQF1bShf
+         juCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693495555; x=1694100355;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=d6znyQKCV8DafBmq+P0iqvg8LkmCAkhxHacNwGIHAdE=;
+        b=Uw39aocuBzpe8H+cHfkUeV6fuEyIvlqFHCiuPPuQF/REoFKwNrXXqp/vG/s++epg9H
+         +Zza/JN8Xc6r0GCrfzvUvavoMoyumeNwfPHYktO2UdcWh5RILAtbyhK71cRtgBPuVeJM
+         j+LsJL0cwBB5wIsAiC9BxgGe1y5tOzrA4nfCzgSluXavBmCv5We3OkEwI/TunE9+6hR0
+         Amiqru0tYBV9413GQlkUMvfN+s8ZZ4bIGLO9NoM4IMyfUdnRVMYEiTLitrfJRKu7SEFm
+         KF+bQ6MvaFQdsJll7WdvepiP9Q2sbTe2ESW/w04YQX17TqcPjViWpp6gFJZr6m5AaXAx
+         +62g==
+X-Gm-Message-State: AOJu0Yxm2dCclnjhECEHLKaTbajLekTaSh4crBcrOt+pnU/Aa4qE+NHJ
+        2/1KzONcjhZqrCbNQIZAa8ck7Q==
+X-Google-Smtp-Source: AGHT+IGqi6Zhg7O/e3nNg0h/YAXgrMhFBgTWmCrq5DFYHS6y7lj1ivdYRiX1hWZH0S5ZMRcWpnLT8w==
+X-Received: by 2002:a5d:44c5:0:b0:319:6b6c:dd01 with SMTP id z5-20020a5d44c5000000b003196b6cdd01mr4202339wrr.17.1693495554816;
+        Thu, 31 Aug 2023 08:25:54 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id o4-20020a5d4084000000b00317b0155502sm2546410wrp.8.2023.08.31.08.25.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 08:25:54 -0700 (PDT)
+From:   Neil Armstrong <neil.armstrong@linaro.org>
+Date:   Thu, 31 Aug 2023 17:25:49 +0200
+Subject: [PATCH] arm64: dts: qcom: split pmr735d into 2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0048.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1c6ff42d-f7e3-4584-a7e2-08dbaa366194
-X-MS-Exchange-CrossTenant-originalarrivaltime: 31 Aug 2023 15:24:34.4662
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: g8C4UikZENvfCVE6hDJS93MX+nnUCrA0Xp49pQh9lC6Fi1JTvF2/I9QZg2M61m5DOwewxjLJ1jZdYL6TPYdeR+vXg4MPrFU1Nf9sr8WEPIw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB5517
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230831-topic-sm8550-upstream-pmr735d-split-v1-1-98e632636415@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAPyw8GQC/x3NwQrCMAyA4VcZORvIVqqbryIeShc1YLeQdCKMv
+ bvF43f5/x2cTdjh2u1g/BGXdWnoTx3kV1qejDI3w0BDoDH0WFeVjF7GGAk39WqcCmqxS4gzur6
+ l4jTFTER8TpygldT4Id//5XY/jh9Y6I88dQAAAA==
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4777;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=9fw5Mg+Da85nnJhVVEO1GAnxk4nSA+fneKHtZag2yj4=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBk8LEB2EbaTJ09Te/feC97tbyfSwS3tA6XVDNYmkAh
+ z8J+H2SJAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZPCxAQAKCRB33NvayMhJ0UTgD/
+ 9pWE+/6Hjn/x0eUcC2yelmeWou5gRf/8Rp5garpQI4Cajod9jvC5wIYafGVSnBYuRzhIke0fwcv/a2
+ /R4Lv0m4eZaU/LkYRcTJ5iz5PJSse6oQtq09F87SSteAe+3OA+v1p28jYC1v+FN7/IbNA5FHDNB1u9
+ TafL2XLqgTs1zhRt/padMxVQl5G3eTxpn69DhYjzZDWFONH3XR++GEvH93wlpse+IEryuXB/YSZOYU
+ RZb3j7X9RGTB4DwgPK7MvOqrVWXv8spn9r6fMWtlcnd9q+Alk/rRP1GvrYBI20kOcLvwWLTmzGmYgO
+ PAW9sSmu5HHELHzcnZLe4kV7+z2EvLBQM6y6fevMR32OIaSMC+f8Yhj1sktcfdD2tJ5JokE/Ec7sRO
+ 6wqgvrZpyM/vEbVT0WfTCMWzxhRMqV/x9SI054+uY9BvKICy15nI+dDNj0k9HaafP8yxGy9B8k3ycy
+ iajF7y9hfwXKgWrS8nY4Z5dzZs0qhWfu6nUEZwTvEyBeA1D8SjcW38kHUnSKyPZzy7lq6DoI+602rD
+ JU/8oejz73uLiJ2M8d+ee9h8jy9fGHtc6rA7FyVyZBilvXMC+EUsSRAtVnFFRsI+8HUldZ9SVkh+o8
+ cHOpnYbyZq5NYWPS1MYrEBNiX++HZNixf/H9YRwJcTKnVzgccxgQEM50vmig==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The second PMR735D PMIC is not always presend on SM8550 based devices,
+split the pmr735d.dtsi file in two so boards files can only include the
+ones present on the platform.
 
->  drivers/platform/chrome/cros_ec_typec.c | 31
-> +++++++++++++++++++++++++
->  1 file changed, 31 insertions(+)
->=20
-> diff --git a/drivers/platform/chrome/cros_ec_typec.c
-> b/drivers/platform/chrome/cros_ec_typec.c
-> index d0b4d3fc40ed..8372f13052a8 100644
-> --- a/drivers/platform/chrome/cros_ec_typec.c
-> +++ b/drivers/platform/chrome/cros_ec_typec.c
-> @@ -492,6 +492,8 @@ static int cros_typec_enable_dp(struct
-> cros_typec_data *typec,  {
->  	struct cros_typec_port *port =3D typec->ports[port_num];
->  	struct typec_displayport_data dp_data;
-> +	u32 cable_tbt_vdo;
-> +	u32 cable_dp_vdo;
->  	int ret;
->=20
->  	if (typec->pd_ctrl_ver < 2) {
-> @@ -524,6 +526,35 @@ static int cros_typec_enable_dp(struct
-> cros_typec_data *typec,
->  	port->state.data =3D &dp_data;
->  	port->state.mode =3D TYPEC_MODAL_STATE(ffs(pd_ctrl->dp_mode));
->=20
-> +	/* Get cable VDO for cables with DPSID to check DPAM2.1 is
-> supported */
-> +	cable_dp_vdo =3D cros_typec_get_cable_vdo(port,
-> USB_TYPEC_DP_SID);
-> +
-> +	/**
-> +	 * Get cable VDO for thunderbolt cables and cables with DPSID but
-> does not
-> +	 * support DPAM2.1.
-> +	 */
-> +	cable_tbt_vdo =3D cros_typec_get_cable_vdo(port,
-> USB_TYPEC_TBT_SID);
-> +
-> +	if (cable_dp_vdo & DP_CAP_DPAM_VERSION) {
-> +		dp_data.conf |=3D cable_dp_vdo;
-> +	} else if (cable_tbt_vdo) {
-> +		u8 cable_speed =3D TBT_CABLE_SPEED(cable_tbt_vdo);
-> +
-> +		dp_data.conf |=3D cable_speed <<
-> DP_CONF_SIGNALLING_SHIFT;
-> +
-> +		/* Cable Type */
-> +		if (cable_tbt_vdo & TBT_CABLE_OPTICAL)
-> +			dp_data.conf |=3D DP_CONF_CABLE_TYPE_OPTICAL <<
-> DP_CONF_CABLE_TYPE_SHIFT;
-> +		else if (cable_tbt_vdo & TBT_CABLE_RETIMER)
-> +			dp_data.conf |=3D DP_CONF_CABLE_TYPE_RE_TIMER <<
-> DP_CONF_CABLE_TYPE_SHIFT;
-> +		else if (cable_tbt_vdo & TBT_CABLE_ACTIVE_PASSIVE)
-> +			dp_data.conf |=3D DP_CONF_CABLE_TYPE_RE_DRIVER
-> << DP_CONF_CABLE_TYPE_SHIFT;
-> +	} else if (PD_IDH_PTYPE(port->c_identity.id_header) =3D=3D
-> IDH_PTYPE_PCABLE) {
-> +		u8 cable_speed =3D VDO_CABLE_SPEED(port-
-> >c_identity.vdo[0]);
+Suggested-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ .../boot/dts/qcom/{pmr735d.dtsi => pmr735d_a.dtsi} | 45 -----------------
+ arch/arm64/boot/dts/qcom/pmr735d_b.dtsi            | 59 ++++++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sm8550-mtp.dts            |  3 +-
+ arch/arm64/boot/dts/qcom/sm8550-qrd.dts            |  3 +-
+ 4 files changed, 63 insertions(+), 47 deletions(-)
 
-I have wrong macro name here, will correct it in next version.
-It should be VDO_TYPEC_CABLE_SPEED.=20
+diff --git a/arch/arm64/boot/dts/qcom/pmr735d.dtsi b/arch/arm64/boot/dts/qcom/pmr735d_a.dtsi
+similarity index 55%
+rename from arch/arm64/boot/dts/qcom/pmr735d.dtsi
+rename to arch/arm64/boot/dts/qcom/pmr735d_a.dtsi
+index 41fb664a10b3..37daaefe3431 100644
+--- a/arch/arm64/boot/dts/qcom/pmr735d.dtsi
++++ b/arch/arm64/boot/dts/qcom/pmr735d_a.dtsi
+@@ -28,27 +28,6 @@ trip1 {
+ 				};
+ 			};
+ 		};
+-
+-		pmr735d-l-thermal {
+-			polling-delay-passive = <100>;
+-			polling-delay = <0>;
+-
+-			thermal-sensors = <&pmr735d_l_temp_alarm>;
+-
+-			trips {
+-				trip0 {
+-					temperature = <95000>;
+-					hysteresis = <0>;
+-					type = "passive";
+-				};
+-
+-				trip1 {
+-					temperature = <115000>;
+-					hysteresis = <0>;
+-					type = "hot";
+-				};
+-			};
+-		};
+ 	};
+ };
+ 
+@@ -77,28 +56,4 @@ pmr735d_k_gpios: gpio@8800 {
+ 			#interrupt-cells = <2>;
+ 		};
+ 	};
+-
+-	pmr735d_l: pmic@b {
+-		compatible = "qcom,pmr735d", "qcom,spmi-pmic";
+-		reg = <0xb SPMI_USID>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-
+-		pmr735d_l_temp_alarm: temp-alarm@a00 {
+-			compatible = "qcom,spmi-temp-alarm";
+-			reg = <0xa00>;
+-			interrupts = <0xb 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
+-			#thermal-sensor-cells = <0>;
+-		};
+-
+-		pmr735d_l_gpios: gpio@8800 {
+-			compatible = "qcom,pmr735d-gpio", "qcom,spmi-gpio";
+-			reg = <0x8800>;
+-			gpio-controller;
+-			gpio-ranges = <&pmr735d_l_gpios 0 0 2>;
+-			#gpio-cells = <2>;
+-			interrupt-controller;
+-			#interrupt-cells = <2>;
+-		};
+-	};
+ };
+diff --git a/arch/arm64/boot/dts/qcom/pmr735d_b.dtsi b/arch/arm64/boot/dts/qcom/pmr735d_b.dtsi
+new file mode 100644
+index 000000000000..3b470f6ac46f
+--- /dev/null
++++ b/arch/arm64/boot/dts/qcom/pmr735d_b.dtsi
+@@ -0,0 +1,59 @@
++// SPDX-License-Identifier: BSD-3-Clause
++/*
++ * Copyright (c) 2022, Linaro Limited
++ */
++
++#include <dt-bindings/interrupt-controller/irq.h>
++#include <dt-bindings/spmi/spmi.h>
++
++/ {
++	thermal-zones {
++		pmr735d-l-thermal {
++			polling-delay-passive = <100>;
++			polling-delay = <0>;
++
++			thermal-sensors = <&pmr735d_l_temp_alarm>;
++
++			trips {
++				trip0 {
++					temperature = <95000>;
++					hysteresis = <0>;
++					type = "passive";
++				};
++
++				trip1 {
++					temperature = <115000>;
++					hysteresis = <0>;
++					type = "hot";
++				};
++			};
++		};
++	};
++};
++
++
++&spmi_bus {
++	pmr735d_l: pmic@b {
++		compatible = "qcom,pmr735d", "qcom,spmi-pmic";
++		reg = <0xb SPMI_USID>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		pmr735d_l_temp_alarm: temp-alarm@a00 {
++			compatible = "qcom,spmi-temp-alarm";
++			reg = <0xa00>;
++			interrupts = <0xb 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
++			#thermal-sensor-cells = <0>;
++		};
++
++		pmr735d_l_gpios: gpio@8800 {
++			compatible = "qcom,pmr735d-gpio", "qcom,spmi-gpio";
++			reg = <0x8800>;
++			gpio-controller;
++			gpio-ranges = <&pmr735d_l_gpios 0 0 2>;
++			#gpio-cells = <2>;
++			interrupt-controller;
++			#interrupt-cells = <2>;
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+index f29cce5186ac..a0d7d6eba0c6 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-mtp.dts
+@@ -13,7 +13,8 @@
+ #include "pm8550ve.dtsi"
+ #include "pm8550vs.dtsi"
+ #include "pmk8550.dtsi"
+-#include "pmr735d.dtsi"
++#include "pmr735d_a.dtsi"
++#include "pmr735d_b.dtsi"
+ 
+ / {
+ 	model = "Qualcomm Technologies, Inc. SM8550 MTP";
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+index 2c09ce8aeafd..afee755c075a 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-qrd.dts
+@@ -14,7 +14,8 @@
+ #include "pm8550ve.dtsi"
+ #include "pm8550vs.dtsi"
+ #include "pmk8550.dtsi"
+-#include "pmr735d.dtsi"
++#include "pmr735d_a.dtsi"
++#include "pmr735d_b.dtsi"
+ 
+ / {
+ 	model = "Qualcomm Technologies, Inc. SM8550 QRD";
 
-Sincerely,
-Utkarsh Patel.=20
+---
+base-commit: a47fc304d2b678db1a5d760a7d644dac9b067752
+change-id: 20230831-topic-sm8550-upstream-pmr735d-split-995c000e6aea
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
