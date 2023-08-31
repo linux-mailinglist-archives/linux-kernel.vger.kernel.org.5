@@ -2,58 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D2E378F150
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5306778F152
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 18:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244577AbjHaQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 12:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
+        id S241930AbjHaQaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 12:30:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233190AbjHaQa2 (ORCPT
+        with ESMTP id S1346832AbjHaQae (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 12:30:28 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F75DCC5
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 09:29:49 -0700 (PDT)
+        Thu, 31 Aug 2023 12:30:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC912CDB;
+        Thu, 31 Aug 2023 09:30:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C355EB8215C
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 16:29:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA047C433C8;
-        Thu, 31 Aug 2023 16:29:44 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 78FD7B82345;
+        Thu, 31 Aug 2023 16:30:06 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CAF8C433C8;
+        Thu, 31 Aug 2023 16:30:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693499386;
-        bh=9Pr9fegNoNUn//WzmCMU1Histd8f9wgBhE+pRfO0JRU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AuPs3RaYJA/9emJHcwCOySVCskILTl6kosxIZvHqkUtS3d4eylDKQknnFeQGEuMk/
-         bDUFH28qqwkrlKsh19PS6GBfVNTFVuUV41Tk51hAkeiATEEJlKdeCkTQAdWDw31DXk
-         u3E8hos4Qn3n0GQNALOvmIzjpgdeeDdU4B2e4YoenkyV46esTgKFUlYE7ixJHfW7lZ
-         uTC9Spt4h5wSrUJSM0eqlaR1wCkQYlXdjdE2HgDZ+vf73GJNNPgkrbDMiv2f9rP9rz
-         b2SgNof35GV+eWEp/mvsFFc3ydeNnS86dgPW/DYdTXq+G3KsGSIlWbKyJmwOEelR/P
-         Qzz73QAPDzP6w==
-Date:   Thu, 31 Aug 2023 17:29:42 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Nam Cao <namcaov@gmail.com>
-Cc:     Conor Dooley <conor.dooley@microchip.com>,
-        Guo Ren <guoren@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        bjorn@kernel.org
-Subject: Re: [PATCH] riscv: provide riscv-specific is_trap_insn()
-Message-ID: <20230831-untidy-geologic-8c8232eb3cac@spud>
-References: <20230827205641.46836-1-namcaov@gmail.com>
- <CAJF2gTQysBBSbtFcx1uY_ztTnzN5jRWpG2OD4O3aJ0u9Ekwsag@mail.gmail.com>
- <20230829-unbridle-condense-2fc45a442bb6@wendy>
- <ZO2p1tScBT1UFMh1@nam-dell>
+        s=k20201202; t=1693499405;
+        bh=Yc26o0/FY2D6dfkAPvN4YeN+YrHn6pS0APrtvKi+iJY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GDhWBuBscGEAJYnkRo1z17fL4qXj3Yg/oY523IeIFbdDGS+aOE2gzrrL5vKEw2t7a
+         2JPJZJQ0Ey7q4Bjd+OUgo3fTtwN0YDKNCG2crMzIHElbdJ0uHNEzzehmA+FPcXAjKr
+         bzH2OBA5Zh6EV02Q4JRxlNDGArUuF+8EwCyGtGs+C8mtZN5nveKGJchpB+dUZMyWZw
+         jAqvyPIlDAyUmoZOAvGIlfEx0wrDUHUpMKMpjkJ4zX6cS/V2nxS4PWcUXUSrfYTljF
+         key1DDeceUlJgqrZjxK53E2mkqC3ajlvf1oHphVJCLbgJkQIMN+I3vOfI2jzwNn7BW
+         5MzAOJwqMkC3g==
+From:   =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>
+To:     Andrii Nakryiko <andrii@kernel.org>,
+        Mykola Lysenko <mykolal@fb.com>, bpf@vger.kernel.org,
+        Daniel Borkmann <daniel@iogearbox.net>, netdev@vger.kernel.org
+Cc:     =?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@rivosinc.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH bpf v2] selftests/bpf: Include build flavors for install target
+Date:   Thu, 31 Aug 2023 18:29:54 +0200
+Message-Id: <20230831162954.111485-1-bjorn@kernel.org>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="pX1jrx4hiKgkc+Cg"
-Content-Disposition: inline
-In-Reply-To: <ZO2p1tScBT1UFMh1@nam-dell>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -64,28 +57,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Björn Töpel <bjorn@rivosinc.com>
 
---pX1jrx4hiKgkc+Cg
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+When using the "install" or targets depending on install,
+e.g. "gen_tar", the BPF machine flavors weren't included.
 
-On Tue, Aug 29, 2023 at 10:18:30AM +0200, Nam Cao wrote:
+A command like:
+  | make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- O=/workspace/kbuild \
+  |    HOSTCC=gcc FORMAT= SKIP_TARGETS="arm64 ia64 powerpc sparc64 x86 sgx" \
+  |    -C tools/testing/selftests gen_tar
+would not include bpf/no_alu32, bpf/cpuv4, or bpf/bpf-gcc.
 
-> Now I'm not sure what you mean. But I agree with Guo Ren here, users can use
-> compressed instructions but kernel does not have it enabled. So we should
-> always check c.ebreak regardless of RISCV_ISA_C.
+Include the BPF machine flavors for "install" make target.
 
-I think I was just being dumb, apologies for the noise.
+Signed-off-by: Björn Töpel <bjorn@rivosinc.com>
+---
+  v1->v2: Rename the subdir variable, and define/populate it at more
+  clear locations. (Daniel)
+---
+ tools/testing/selftests/bpf/Makefile | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
---pX1jrx4hiKgkc+Cg
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+index edef49fcd23e..caede9b574cb 100644
+--- a/tools/testing/selftests/bpf/Makefile
++++ b/tools/testing/selftests/bpf/Makefile
+@@ -50,14 +50,17 @@ TEST_GEN_PROGS = test_verifier test_tag test_maps test_lru_map test_lpm_map test
+ 	test_cgroup_storage \
+ 	test_tcpnotify_user test_sysctl \
+ 	test_progs-no_alu32
++TEST_INST_SUBDIRS := no_alu32
+ 
+ # Also test bpf-gcc, if present
+ ifneq ($(BPF_GCC),)
+ TEST_GEN_PROGS += test_progs-bpf_gcc
++TEST_INST_SUBDIRS += bpf_gcc
+ endif
+ 
+ ifneq ($(CLANG_CPUV4),)
+ TEST_GEN_PROGS += test_progs-cpuv4
++TEST_INST_SUBDIRS += cpuv4
+ endif
+ 
+ TEST_GEN_FILES = test_lwt_ip_encap.bpf.o test_tc_edt.bpf.o
+@@ -714,3 +717,12 @@ EXTRA_CLEAN := $(TEST_CUSTOM_PROGS) $(SCRATCH_DIR) $(HOST_SCRATCH_DIR)	\
+ 
+ # Delete partially updated (corrupted) files on error
+ .DELETE_ON_ERROR:
++
++DEFAULT_INSTALL_RULE := $(INSTALL_RULE)
++override define INSTALL_RULE
++	$(DEFAULT_INSTALL_RULE)
++	@for DIR in $(TEST_INST_SUBDIRS); do		  \
++		mkdir -p $(INSTALL_PATH)/$$DIR;   \
++		rsync -a $(OUTPUT)/$$DIR/*.bpf.o $(INSTALL_PATH)/$$DIR;\
++	done
++endef
 
------BEGIN PGP SIGNATURE-----
+base-commit: d11ae1b16b0a57fac524cad8e277a20ec62600d1
+-- 
+2.39.2
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPC/9gAKCRB4tDGHoIJi
-0iNIAQDlFOLhVRwewDs3RynOY+M19AyVbnv6fuCWrcIVf6rtpQEAuxuaR9YxMsh/
-J1iTji590xUIscZGwQx0MV/Mn6UZTgA=
-=Oo6H
------END PGP SIGNATURE-----
-
---pX1jrx4hiKgkc+Cg--
