@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0246678EF20
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:01:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3367778EF2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 16:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245669AbjHaOBT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 10:01:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33570 "EHLO
+        id S1344824AbjHaOCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 10:02:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjHaOBS (ORCPT
+        with ESMTP id S1344764AbjHaOCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 10:01:18 -0400
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E8ACC;
-        Thu, 31 Aug 2023 07:01:15 -0700 (PDT)
-Received: by mail-io1-xd30.google.com with SMTP id ca18e2360f4ac-79536bc6697so31479339f.1;
-        Thu, 31 Aug 2023 07:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693490475; x=1694095275; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=SQ2cGHJVHSShioqtMZDfDzYLhYEcSFYiRM+Mt80HyFU=;
-        b=H1acRkQljRxx7snyI72iSnHTQNMgDi7/jWQmbIxM/gihAkxPMshgwd+WAl/AHziTjW
-         uwUC8t8ZhtFc7k4yTrOHuG0qh7aR+JzTexPvY63IlyCg0u3hbV02g+RyT1NClpDRVXUU
-         ljsV/MyNFjQsoySotBlfc/2v01CV1EvsNtpROaZP0tibF/ky4CUTwIZcaWxHBTxyPq6F
-         RZxyiqY6dRr7dEvcnukEga1HG4av28CQWifzusv5sKbHE398Ag6KFoYQuHpRWNLenuIL
-         Z7od/XCKqtN9R0fpm2krSEO7leC+RieC4NpZcKPTEk4pK0FDUpyPkXDqBUdbYN8T4nJg
-         K24g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693490475; x=1694095275;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SQ2cGHJVHSShioqtMZDfDzYLhYEcSFYiRM+Mt80HyFU=;
-        b=AkBW27UxtoAX2oJF1KbAjcWT1kNLgy8UHbc0UhaAo6wUJ3MHLEi8h51ytaylNp26+W
-         pdMbPJlp6wjI1xGmm/wWVYpyZ4nefVw9bAx6Bg/cAODz17kIBIYWQxjosTvg++vLZ/dC
-         S8K9c9sO8x7/LJvbzQ9nJkk6iuRbTvnnL/RVJYykN2BziVu+cNXSNDzLRug70io4z4Lx
-         JIg2hhzuNcIJcA7ncxcb3yzIq0tFF1vUiD6cHBEnNgLIGHdlp2Cw5+ZaF1bDc2tfQmaq
-         czZzfghki2xVq9dECGECkBVv2zurW7mUzSrVfTwrwpIMsAX/mzPv0GCheaS1gQ/RqbM+
-         Bnkw==
-X-Gm-Message-State: AOJu0YyQgqATJOUzKTpieAaDw7jxwWq8KSUfwB0EETwDDpQGrX8Eu4Oo
-        rGhxUvQfeqrLE6ZiYqDZeOVH224njM1rF9QK
-X-Google-Smtp-Source: AGHT+IH/SGjAn3d+l5/G5NjEXOZVb2wuBP+jsvbVT8g/CLAysp+5APFcI8N9wqPNt3gHjgUPk6FsEw==
-X-Received: by 2002:a6b:a05:0:b0:795:16b8:85fc with SMTP id z5-20020a6b0a05000000b0079516b885fcmr6191833ioi.0.1693490474774;
-        Thu, 31 Aug 2023 07:01:14 -0700 (PDT)
-Received: from azeems-kspp.c.googlers.com.com (161.74.123.34.bc.googleusercontent.com. [34.123.74.161])
-        by smtp.gmail.com with ESMTPSA id c11-20020a5e8f0b000000b007926ee42341sm402862iok.50.2023.08.31.07.01.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 07:01:14 -0700 (PDT)
-From:   Azeem Shaikh <azeemshaikh38@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v4] kobject: Replace strlcpy with strscpy
-Date:   Thu, 31 Aug 2023 14:01:04 +0000
-Message-ID: <20230831140104.207019-1-azeemshaikh38@gmail.com>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+        Thu, 31 Aug 2023 10:02:40 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53070CF
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:02:35 -0700 (PDT)
+Received: from [192.168.68.123] (unknown [177.134.102.128])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: koike)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 242B066072A3;
+        Thu, 31 Aug 2023 15:02:30 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693490553;
+        bh=fdO6arFEzTYnGlM+QX5TsE8ARcapWX+TioKV3VJD1xc=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=EkGzYmC43KDEqfPYzVZxL8vlKX0CRGieqzzt+wX9fUjG96YXNhsIAww9Jj4zmKOUd
+         BO1pfZNeqBoErLAZaBaOKjtZypa2vYjZXhKqbsYPeCT6Co6QMD+fks6yqUt5BvjV2f
+         PGg1aQO25i1RuZwbBJrhQf5YtmA21wh6HRqi93doPcMHG44N9WQJEX9zPhU8s3EIk0
+         T/e43yBjiE8xuXOyooMtouFNcdeSxhVBb332UL6AJK1FEk9rw3gMTnWbj3W/93LOLI
+         Q2SCcMpxAqMi+V08GZzN6WAJPQMYuqEo0ONHx+1Gudhg1vsm+tQo8b9BGISubwXl92
+         7xi35t8L/mldg==
+Message-ID: <37e21200-f294-2768-ed2e-cdadfc6d17fc@collabora.com>
+Date:   Thu, 31 Aug 2023 11:02:26 -0300
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 0/2] Merge all debug module parameters
+Content-Language: en-US
+To:     =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        kernel-dev@igalia.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com
+References: <20230830220808.421935-1-andrealmeid@igalia.com>
+From:   Helen Koike <helen.koike@collabora.com>
+In-Reply-To: <20230830220808.421935-1-andrealmeid@igalia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strlcpy() reads the entire source buffer first.
-This read may exceed the destination size limit.
-This is both inefficient and can lead to linear read
-overflows if a source string is not NUL-terminated [1].
-In an effort to remove strlcpy() completely [2], replace
-strlcpy() here with strscpy().
+Hi André,
 
-Direct replacement is safe here since return value of -errno
-is used to check for truncation instead of sizeof(dest).
+Thanks for your patches.
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
-[2] https://github.com/KSPP/linux/issues/89
-
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
----
-v4:
- * Fixes errors reported by checkpatch.pl
-
-v3:
- * Fixed weird indentation.
- * https://lore.kernel.org/all/20230830202021.4134348-1-azeemshaikh38@gmail.com/
-
-v2:
- * Updated error message to remove @len which is errno now.
- * https://lore.kernel.org/all/20230830150136.3798414-1-azeemshaikh38@gmail.com/
-
-v1:
- * https://lore.kernel.org/all/20230703180528.3709258-1-azeemshaikh38@gmail.com/
+On 30/08/2023 19:08, André Almeida wrote:
+> As suggested by Christian at [0], this patchset merges all debug modules
+> parameters and creates a new one for disabling soft recovery:
+> 
+>> Maybe we can overload the amdgpu_gpu_recovery module option with this.
+>> Or even better merge all the developer module parameter into a
+>> amdgpu_debug option. This way it should be pretty obvious that this
+>> isn't meant to be used by someone who doesn't know how to use it.
+> 
+> [0] https://lore.kernel.org/dri-devel/55f69184-1aa2-55d6-4a10-1560d75c7324@amd.com/
 
 
- lib/kobject_uevent.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Would you mind to test your patchset with drm-ci ? There is an amdgpu 
+test there and I would love to get your feedback of the ci.
 
-diff --git a/lib/kobject_uevent.c b/lib/kobject_uevent.c
-index 7c44b7ae4c5c..fb9a2f06dd1e 100644
---- a/lib/kobject_uevent.c
-+++ b/lib/kobject_uevent.c
-@@ -254,10 +254,10 @@ static int init_uevent_argv(struct kobj_uevent_env *env, const char *subsystem)
- 	int buffer_size = sizeof(env->buf) - env->buflen;
- 	int len;
+You basically just need to apply the ci patch which is available on
+https://cgit.freedesktop.org/drm/drm/commit/?h=topic/drm-ci&id=0119c894ab0dc468bcb03f28063239c0a4cf970f
 
--	len = strlcpy(&env->buf[env->buflen], subsystem, buffer_size);
--	if (len >= buffer_size) {
--		pr_warn("init_uevent_argv: buffer size of %d too small, needed %d\n",
--			buffer_size, len);
-+	len = strscpy(&env->buf[env->buflen], subsystem, buffer_size);
-+	if (len < 0) {
-+		pr_warn("%s: insufficient buffer space (%u left) for %s\n",
-+			__func__, buffer_size, subsystem);
- 		return -ENOMEM;
- 	}
-
---
-2.42.0.283.g2d96d420d3-goog
+There are instruction on the docs, but in short: to configure it, you 
+push your branch to gitlab.freedesktop.org, go to the settings and 
+change the CI/CD configuration file from .gitlab-ci.yml to
+drivers/gpu/drm/ci/gitlab-ci.yml, and you can trigger a pipeline on your 
+branch to get tests running.
 
 
+Thank you!
+Helen
+
+
+> 
+> Changelog:
+> - drop old module params
+> - use BIT() macros
+> - replace global var with adev-> vars
+> v1: https://lore.kernel.org/lkml/20230824162505.173399-1-andrealmeid@igalia.com/
+> 
+> André Almeida (2):
+>    drm/amdgpu: Merge debug module parameters
+>    drm/amdgpu: Create an option to disable soft recovery
+> 
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h      |  5 +++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_cs.c   |  2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c  | 54 +++++++++++++++---------
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_gem.c  |  2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_ring.c |  6 ++-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c   |  2 +-
+>   drivers/gpu/drm/amd/amdkfd/kfd_chardev.c |  2 +-
+>   drivers/gpu/drm/amd/amdkfd/kfd_crat.c    |  2 +-
+>   drivers/gpu/drm/amd/include/amd_shared.h |  9 ++++
+>   9 files changed, 58 insertions(+), 26 deletions(-)
+> 
