@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A00C78E699
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6718578E6AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239387AbjHaGfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 02:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42810 "EHLO
+        id S243597AbjHaGlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 02:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbjHaGfh (ORCPT
+        with ESMTP id S231905AbjHaGlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 02:35:37 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C88F1A4;
-        Wed, 30 Aug 2023 23:35:34 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V5YVAC021131;
-        Thu, 31 Aug 2023 06:35:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=qcppdkim1;
- bh=WzerLMcNT2xn2+ycWcyPuhqRW5rpT+KvWl6imIS2M6g=;
- b=jVgVDUUFn2/tX7HsBqF55N/YMZsfGKQUS3YwxAZczl4sbh2CEYycy3/Vm84j9alZ6f9y
- 3Jg8LuqtKD0zNbC8kKl5rJ/WzYdSBCVyrus/b7w1OBL/DV2+vfyZSZM3WXExQiQOZa7t
- cgraV+mpNHmZFpfnolNxsW5r/uUoEGqweJXkMHw/IYgjcXh333lFBE5CHuTs4/B9RhLg
- TWf0fsa+BNWq6hN/Di8iok2JMpWcZcOT0P6Yz9T/CSJcrl0OPrQXzARN1VUfQlBFME5d
- Powgk+RgBnSbCoKFRkOb4iB5iYx1dMxjljN0GivIRC6t4+T2yAICu4NBW8OR+8Knpb0m VQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ssy5q2dbv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 06:35:32 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V6ZVTL020954
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 31 Aug 2023 06:35:31 GMT
-Received: from ekangupt-linux.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Wed, 30 Aug 2023 23:35:28 -0700
-From:   Ekansh Gupta <quic_ekangupt@quicinc.com>
-To:     <srinivas.kandagatla@linaro.org>, <linux-arm-msm@vger.kernel.org>
-CC:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        <ekangupt@qti.qualcomm.com>, <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>, <fastrpc.upstream@qti.qualcomm.com>
-Subject: [PATCH v1] misc: fastrpc: Reset metadata buffer to avoid incorrect free
-Date:   Thu, 31 Aug 2023 12:05:23 +0530
-Message-ID: <1693463723-16937-1-git-send-email-quic_ekangupt@quicinc.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 31 Aug 2023 02:41:10 -0400
+Received: from mail.3ffe.de (0001.3ffe.de [159.69.201.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E8FA8
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:41:05 -0700 (PDT)
+Received: from 3ffe.de (0001.3ffe.de [IPv6:2a01:4f8:c0c:9d57::1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.3ffe.de (Postfix) with ESMTPSA id 0C24B30A;
+        Thu, 31 Aug 2023 08:41:03 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2022082101;
+        t=1693464063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0qlSvXs72kihayFUUjvnu+kLjorvIfsIcAxoti/RKzE=;
+        b=aFV6oVgTw5GVt4vQrfNy1/y3LH+ddTydLGMJ4Q7XwyoYCdZXSVW/iFOFGp9NJoT098VstI
+        MdlApVahHGk0shS3derZotrCHvA/U6X5b7/cTupVZWwB+4OsIplUFADNnJwzjZW9bp+aWH
+        Sv2NepLDfqrJma7uZDUj+A1NL6Exjo3gdo/aA3sxC8zBprU38OJGHxhNQWR7KsxavYzK3t
+        X+TRzLBXMx7FfSkN2Jd1MZ7aiZIyOoJbieKSVolVm7b2ojaKznNlUI/dbtTwTheXZCX0/9
+        oqgUYCqW9YJGL6EyXuxH2q/Yy8QxbCFaknXH3BltgrHf6BSmNtzPi79zORry9Q==
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: vN1T6XLJvlVlOWBhcaP-rKTLpBay3FeG
-X-Proofpoint-GUID: vN1T6XLJvlVlOWBhcaP-rKTLpBay3FeG
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-08-31_04,2023-08-29_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 spamscore=0
- suspectscore=0 priorityscore=1501 malwarescore=0 phishscore=0
- clxscore=1015 adultscore=0 lowpriorityscore=0 mlxlogscore=999 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2308310057
+Date:   Thu, 31 Aug 2023 08:41:02 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     SSunk <ssunkkan@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        miquel.raynal@bootlin.com, pratyush@kernel.org, richard@nod.at,
+        ssunkkan@gmail.com, tudor.ambarus@linaro.org, vigneshr@ti.com
+Subject: Re: [PATCH] Add support for more XMC series
+In-Reply-To: <20230831041344.4653-1-ssunkkan@gmail.com>
+References: <1c04bbe2a65f13b9815ce465cc8dcdd5@walle.cc>
+ <20230831041344.4653-1-ssunkkan@gmail.com>
+Message-ID: <c7b200d180278b43ddf8e1f870c846df@walle.cc>
+X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -73,31 +58,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Metadata buffer is allocated during get_args for any remote call.
-This buffer carries buffers, fdlists and other payload information
-for the call. If the buffer is not reset, put_args might find some
-garbage FDs in the fdlist which might have an existing mapping in
-the list. This could result in improper freeing of FD map when DSP
-might still be using the buffer. Added change to reset the metadata
-buffer after allocation.
+Hi,
 
-Signed-off-by: Ekansh Gupta <quic_ekangupt@quicinc.com>
----
- drivers/misc/fastrpc.c | 1 +
- 1 file changed, 1 insertion(+)
+>>>> Since this is the first time I've submitted code to the Linux
+>>>> community, please forgive me for some of the missteps that I've 
+>>>> made.
+>>>> I uploaded the incorrect patch file.
+>>>> In a previous e-mail you said：
+>>>> XMC parts seem to have SFDP tables and they should work out of the 
+>>>> box
+>>>> without any patches with the generic spi nor driver [1]. Therefore,
+>>>> you don't need any entry at all.
+>>>> 
+>>>> I think it is related to the PARSE_SFDP flag.
+>>>> The XMC flash part supports SFDP, so i don’t need to add
+>>>> NO_SFDP_FLAGS() macro.
+>>>> drivers/mtd/spi-nor/xmc.c | 17 +++++++++++++----
+>>>> 1 file changed, 13 insertions(+), 4 deletions(-)
+>>>> 
+>>>> diff --git a/drivers/mtd/spi-nor/xmc.c b/drivers/mtd/spi-nor/xmc.c
+>>>> index 051411e86339..e78bf11792d9 100644
+>>>> --- a/drivers/mtd/spi-nor/xmc.c
+>>>> +++ b/drivers/mtd/spi-nor/xmc.c
+>>>> @@ -11,11 +11,20 @@
+>>>> static const struct flash_info xmc_nor_parts[] = {
+>>>> 	/* XMC (Wuhan Xinxin Semiconductor Manufacturing Corp.) */
+>>>> 	{ "XM25QH64A", INFO(0x207017, 0, 64 * 1024, 128)
+>>>> -		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>>>> -			      SPI_NOR_QUAD_READ) },
+>>>> +		PARSE_SFDP },
+>>>> 	{ "XM25QH128A", INFO(0x207018, 0, 64 * 1024, 256)
+>>>> -		NO_SFDP_FLAGS(SECT_4K | SPI_NOR_DUAL_READ |
+>>>> -			      SPI_NOR_QUAD_READ) },
+>>>> +		PARSE_SFDP },
+>>>> +	{ "XM25QH128C", INFO(0x204018, 0, 64 * 1024, 256)
+>>>> +		PARSE_SFDP },
+>>>> +	{ "XM25QH256C", INFO(0x204019, 0, 64 * 1024, 512)
+>>>> +		PARSE_SFDP },
+>>>> +	{ "XM25QU256C", INFO(0x204119, 0, 64 * 1024, 512)
+>>>> +		PARSE_SFDP },
+>>>> +	{ "XM25QH512C", INFO(0x204020, 0, 64 * 1024, 1024)
+>>>> +		PARSE_SFDP },
+>>>> +	{ "XM25QU512C", INFO(0x204120, 0, 64 * 1024, 1024)
+>>>> +		PARSE_SFDP },
+>>>> +
+>>>> };
+>>>> 
+>>>> const struct spi_nor_manufacturer spi_nor_xmc = {
+>>>>> Correct. If the flash is working with PARSE_SFDP, it has SFDP and
+>>>>> all the information of the flash_info table is pulled from the SFDP
+>>>>> tables, except for the part name. Therefore, you don't need any 
+>>>>> entry
+>>>>> at all. The flash should just work out of the box. Are you using 
+>>>>> the
+>>>>> latest kernel?
+>>>>> 
+>>>>> -michael
+>>> --
+>>> Hi Michael,
+>>> 
+>>> According to you, does this piece of my code still need to be 
+>>> modified?
+>> 
+>> You don't need it at all. The flash will work as is - that is without
+>> that
+>> piece of code.
+>> 
+>> -michael
+> --
+> Hi michael,
+> 
+> If these entries are not added, the flash part name is unknown and our 
+> customers
+> cannot see our flash part name on the kernel log.
+> So,I think it's necessary to add these entries.
 
-diff --git a/drivers/misc/fastrpc.c b/drivers/misc/fastrpc.c
-index 9666d28..8acdeb5 100644
---- a/drivers/misc/fastrpc.c
-+++ b/drivers/misc/fastrpc.c
-@@ -955,6 +955,7 @@ static int fastrpc_get_args(u32 kernel, struct fastrpc_invoke_ctx *ctx)
- 	if (err)
- 		return err;
- 
-+	memset(ctx->buf->virt, 0, pkt_size);
- 	rpra = ctx->buf->virt;
- 	list = fastrpc_invoke_buf_start(rpra, ctx->nscalars);
- 	pages = fastrpc_phy_page_start(list, ctx->nscalars);
--- 
-2.7.4
+They can still see the jedec id in the sysfs. We don't add entries just 
+for the
+names. Sorry.
 
+-michael
