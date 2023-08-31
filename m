@@ -2,76 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 623E178F5BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12D1878F5BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347890AbjHaWnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 18:43:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42422 "EHLO
+        id S241696AbjHaWnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 18:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234541AbjHaWmw (ORCPT
+        with ESMTP id S231237AbjHaWni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 18:42:52 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 396B5E8;
-        Thu, 31 Aug 2023 15:42:46 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C42AB60BBA;
-        Thu, 31 Aug 2023 22:42:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2ED51C433CC;
-        Thu, 31 Aug 2023 22:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693521765;
-        bh=lBuLmR7sMzaYvwSC0UjddYmyisoAQY7yO4HT3g9vVbA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=T1eMSkl63WiEfXphFDmJy5pa8pqRkOvTbJ7mbbupufMMa1qbgQ4JC7U1SBVPPeY4p
-         ZcSXUEICeTkp5bbu3T9YrumWhWP/+FcEqzeRwhqYcHx3HBb+LeJfnZH255FDnrDvcu
-         EbL+kq3v0dxq/XTO/PSsSdW0najyOcA/L/74sX9FbR13NGujirRITTLGtdZlcw7DbG
-         6gdhG8+vy0V/YASvRFWIS+k3mlCJlOHeDVGhh0tHfl9KWrSOPQmPS03qdEQe73Io0n
-         hlf/GKNqgsfz6qH5pS+P5ibreMZWz2szrDllsttBIl27LXzeofbCGJfePg7nzLBa3C
-         BCW+nh6k/BKeg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1E327C595D2;
-        Thu, 31 Aug 2023 22:42:45 +0000 (UTC)
-Subject: Re: [GIT PULL] ksmb server fixes
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAH2r5mvMSeqLQkNqwrxr5Q1FpJrQ85VUkp7_c4WP0BugQfpHPg@mail.gmail.com>
-References: <CAH2r5mvMSeqLQkNqwrxr5Q1FpJrQ85VUkp7_c4WP0BugQfpHPg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAH2r5mvMSeqLQkNqwrxr5Q1FpJrQ85VUkp7_c4WP0BugQfpHPg@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.samba.org/ksmbd.git tags/6.6-rc-ksmbd-fixes-part1
-X-PR-Tracked-Commit-Id: 0e2378eaa2b3a663726cf740d4aaa8a801e2cb31
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 8ae5d298ef2005da5454fc1680f983e85d3e1622
-Message-Id: <169352176511.24475.1672811562650246330.pr-tracker-bot@kernel.org>
-Date:   Thu, 31 Aug 2023 22:42:45 +0000
-To:     Steve French <smfrench@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Namjae Jeon <linkinjeon@kernel.org>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 18:43:38 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC862CC
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:43:35 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RcGRB3KsDz5s;
+        Fri,  1 Sep 2023 00:43:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1693521814; bh=EweCD2J3flQ/hUUS9jLoV+AsXy7NZcrw8OsFoGGPHCE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ALYqpVe9ZIFgz1V2ssP+vo49B8m69INRRp6NRDPD+Gue5orn2pGx6JWLYDQrfEhKK
+         ePEBKdQnBAb5UdbNJdJlkd6bawayTfPpVeIcpeAtff3WtvBfxihc1w5Mgy1MuE69PD
+         5aXvTyyUHJPdISS28HZXkAiBb9LTD103hS/SXnsH1Nm7IFjjuKCQ1q5vyOUObXusLl
+         EDSq5feLleFM2jgtHZHJgSfQiG/g8h9rFUPktM79tUh3lUrHZJNTCaflmBQ0RzVwAE
+         h8wlOn0pn6BmJq1TSibc5kC790+RLbl66aukD57E+6FevZZ3CTliUjSXOWQixdaYX0
+         6NMSNnxuxnyow==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Fri, 1 Sep 2023 00:43:33 +0200
+From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/7] regulator/core: regulator_lock_nested: simplify
+ nested locking
+Message-ID: <ZPEXlf26YBQB4WMt@qmqm.qmqm.pl>
+References: <cover.1693416477.git.mirq-linux@rere.qmqm.pl>
+ <56ae0bf828d942c92ca867afb3aae95fcabd5498.1693416477.git.mirq-linux@rere.qmqm.pl>
+ <CAE-0n53a75cgRNJOdn1=19OG_yJt9DDXHZ4quhZwCtZiQ1RUxQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-2
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAE-0n53a75cgRNJOdn1=19OG_yJt9DDXHZ4quhZwCtZiQ1RUxQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 31 Aug 2023 10:30:05 -0500:
+On Wed, Aug 30, 2023 at 01:36:38PM -0700, Stephen Boyd wrote:
+> Quoting Micha³ Miros³aw (2023-08-30 10:35:31)
+> > Simplify regulator locking by removing locking around locking.
+> 
+> Maybe this should say "Simplify regulator_lock_nested() by removing the
+> `regulator_nesting_mutex` now that rdev is locked whenever rdev->ref_cnt or
+> rdev->owner are modified"?
 
-> git://git.samba.org/ksmbd.git tags/6.6-rc-ksmbd-fixes-part1
+I'll rework the message. Thanks for the hints!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/8ae5d298ef2005da5454fc1680f983e85d3e1622
+[...]
+> > Note: return -EALREADY is removed as no caller depends on it and in that
+> > case the lock count is incremented anyway.
+> 
+> Where is -EALREADY removed in this patch? Perhaps "removed" should be
+> "ignored"?
+> 
+> Note: A return value of -EALREADY from ww_mutex_lock() in
+> regulator_lock_nested() is ignored as no caller depends on it.
 
-Thank you!
+I can actually remove this altogether: ww_mutex_lock() won't ever
+return -EALREADY as it's called only if (rdev->mutex_owner != current).
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Best Regards.
+Micha³ Miros³aw
