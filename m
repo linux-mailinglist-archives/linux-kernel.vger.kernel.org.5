@@ -2,109 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 463C678ECCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3733278ECD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 14:14:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243848AbjHaMK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 08:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45810 "EHLO
+        id S1345667AbjHaMOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 08:14:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232305AbjHaMK0 (ORCPT
+        with ESMTP id S232305AbjHaMOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 08:10:26 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826AFE47;
-        Thu, 31 Aug 2023 05:10:23 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qbgVA-0000Zg-WF; Thu, 31 Aug 2023 14:10:21 +0200
-Message-ID: <e48a555b-46ec-9f6e-f548-94dbe0577e03@leemhuis.info>
-Date:   Thu, 31 Aug 2023 14:10:20 +0200
+        Thu, 31 Aug 2023 08:14:20 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89430CFE
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:14:16 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-401da71b85eso6851585e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 05:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=9elements.com; s=google; t=1693484055; x=1694088855; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=2Y280bHt32vSOMwN3pJA4Lm3adazJUGW99dZ6wwJlE0=;
+        b=HPaqQ84uCPOMimzD3RchsDOfrghM29pjwKHsftIKVPktU/z5d1G7BmbAJ6zlMYFTtV
+         YKO6G9CwHX/9bcMZWHTadU8FrhnTUhrAXqyMRxyVk5i+yqXZqM6CUXOoPmns3E+FIEGC
+         nh01YFPTDjA7YfZg2nUuWgsq0idxlV0wil/G+Ojd7o5fswEsYybEo5WpBozoSXgoyj9A
+         wR9mTVQBfIxDyCCk28xJP5VfB4JA54CHpsdPKhlNH5IdQoEm3RTZAKltg0HUKvbBCguW
+         DTbTpWLlUbRisTAIK1gMVA01ZzqSJiSL8Tika1S8Ps2XWYICW8n+iwMZ2b2URQF8r06/
+         2u0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693484055; x=1694088855;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2Y280bHt32vSOMwN3pJA4Lm3adazJUGW99dZ6wwJlE0=;
+        b=gTslJQ1yBMbNTi3rKs81SbdRRuXx2ICroIQ7gXfUaCHE4HhsVK/xjzRGk8HqfRsU13
+         COCUcK5TXhRVNMWXE9YATeVp7i2oqjERjPHAYtgL+Xv6XU/AIL8AbYbvR7amshrBWCm2
+         NrqVSWHcFr1SycsBYLQIyqXZ7dSg2UkVe+4V/IY3G5hlHXfGjn18hxy4cQevx8hryz8A
+         EAaqgZ59wOxH2LQhvZG/v+bxDXWn5ScW8s0uPDJc7puscN2FGGwcEXv917JTEAL1i0Hc
+         nRylbw872xffQKPJyYAk2tmdT+GrniVm1H2F0OQywVvvc7GPapCdSRnbetj6aVEi7BZN
+         v4aQ==
+X-Gm-Message-State: AOJu0Yw2BwxOa5TW9NqadfAqQAfsCY5bdxggsvbunKLnpuw9hnZ/XjsZ
+        II+6hHluOtF+FzLZN2U3jQ8M3WG72OJpnah8K450Kg==
+X-Google-Smtp-Source: AGHT+IGxTlzRRZH+FJ0vMjkT9ZfqWnFBgrftiy3OxX0XiVlkI/M74GnS0gNZZTDOKAPCzy5UmARpkQ==
+X-Received: by 2002:a7b:c84b:0:b0:401:b204:3b8d with SMTP id c11-20020a7bc84b000000b00401b2043b8dmr4303382wml.27.1693484054896;
+        Thu, 31 Aug 2023 05:14:14 -0700 (PDT)
+Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
+        by smtp.gmail.com with ESMTPSA id p9-20020a1c7409000000b003fee53feab5sm1799448wmc.10.2023.08.31.05.14.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 05:14:14 -0700 (PDT)
+From:   Naresh Solanki <naresh.solanki@9elements.com>
+X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
+To:     broonie@kernel.org, zev@bewilderbeest.net,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Naresh Solanki <Naresh.Solanki@9elements.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] regulator: Add uapi header
+Date:   Thu, 31 Aug 2023 14:14:08 +0200
+Message-ID: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Fwd: in linux 6.3.7-200.fc38.x86_64 goes vlc in time to switch tv
- channels to zombie-process
-Content-Language: en-US, de-DE
-To:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Linux regressions mailing list <regressions@lists.linux.dev>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media <linux-media@vger.kernel.org>,
-        Linux Stable <stable@vger.kernel.org>
-References: <a7f997fc-e7cc-cf67-3ac0-80ed30346511@gmail.com>
- <cdacb249-9d1d-cad9-44a9-ffa7b4b5b887@leemhuis.info>
- <150a5670-8220-5c2f-351c-181ceeddf307@xs4all.nl>
- <c362089e-8cdb-c735-762f-7a56552b68c2@leemhuis.info>
- <3ca18d1d-c286-183b-10fe-f7e9fc42c41a@xs4all.nl>
-From:   "Linux regression tracking (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <3ca18d1d-c286-183b-10fe-f7e9fc42c41a@xs4all.nl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693483823;d121534d;
-X-HE-SMSGID: 1qbgVA-0000Zg-WF
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 31.08.23 13:47, Hans Verkuil wrote:
-> On 31/08/2023 13:00, Thorsten Leemhuis wrote:
->> On 31.08.23 12:35, Hans Verkuil wrote:
->>> On 31/08/2023 11:26, Linux regression tracking #update (Thorsten Leemhuis) wrote:
->>>> [TLDR: This mail in primarily relevant for Linux kernel regression
->>>> tracking. See link in footer if these mails annoy you.]
->>>>
->>>> On 19.06.23 02:24, Bagas Sanjaya wrote:
->>>>>
->>>>> I notice a regression report on Bugzilla [1]. Quoting from it:
->>>>> [...]
->>>>>
->>>>> #regzbot introduced: v6.3.5..v6.3.7 https://bugzilla.kernel.org/show_bug.cgi?id=217566
->>>>> #regzbot title: switching TV channel causes VLC and firmware loading hang
->>>>
->>>> #regzbot fix: 7cfab4c9dc09ca3a9d57c187894055a22bdcd
->>>> #regzbot ignore-activity
->>>>
->>>> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
->>>> --
->>>> Everything you wanna know about Linux kernel regression tracking:
->>>> https://linux-regtracking.leemhuis.info/about/#tldr
->>>> That page also explains what to do if mails like this annoy you.
->>>
->>> >From what I can gather from the bugzilla report, whatever the issue was appears
->>> to be resolved or at least improved in later kernels.
->>
->> I'm pretty (but not 100%) sure the initial report in that ticket were
->> issues caused by a backport of a patch that was reverted later:
->> https://lore.kernel.org/all/20230609082238.3671398-1-mchehab@kernel.org/
-> 
-> Ah, you have a better memory than I have. That might well be the culprit.
-> I didn't check for changes in the dvb core, I should have done that.
-> 
-> That patch was introduced in 6.3.7 and reverted in 6.3.9.
-> 
-> That doesn't quite match the "#regzbot introduced: v6.3.5..v6.3.7" report,
-> though. I wonder if fedora backported that problematic patch to their v6.3.5
-> release?
+Add UAPI header for regulator.
+Include regulator events in the header.
 
-Nope, as it matches (I'd say). The reporter never bisected this and just
-claimed that 6.3.5 was fine and 6.3.7 was broken (and 6.3.6 iirc was
-never tested). In that case we tell regzbot that the culprit is
-somewhere in that range (which is was[1]), as that's the important thing
-to know in the context of the 6.3.y regression (that it also happened in
-mainline is a different story).
+Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+---
+ include/linux/regulator/consumer.h | 47 +--------------------------
+ include/uapi/linux/regulator.h     | 52 ++++++++++++++++++++++++++++++
+ 2 files changed, 53 insertions(+), 46 deletions(-)
+ create mode 100644 include/uapi/linux/regulator.h
 
-Is this too confusing? Would it be better to handle things differently
-somehow?
+diff --git a/include/linux/regulator/consumer.h b/include/linux/regulator/consumer.h
+index 39b666b40ea6..fb65cf35beca 100644
+--- a/include/linux/regulator/consumer.h
++++ b/include/linux/regulator/consumer.h
+@@ -33,6 +33,7 @@
+ 
+ #include <linux/err.h>
+ #include <linux/suspend.h>
++#include <uapi/linux/regulator.h>
+ 
+ struct device;
+ struct notifier_block;
+@@ -84,52 +85,6 @@ struct regulator_dev;
+ #define REGULATOR_MODE_IDLE			0x4
+ #define REGULATOR_MODE_STANDBY			0x8
+ 
+-/*
+- * Regulator notifier events.
+- *
+- * UNDER_VOLTAGE  Regulator output is under voltage.
+- * OVER_CURRENT   Regulator output current is too high.
+- * REGULATION_OUT Regulator output is out of regulation.
+- * FAIL           Regulator output has failed.
+- * OVER_TEMP      Regulator over temp.
+- * FORCE_DISABLE  Regulator forcibly shut down by software.
+- * VOLTAGE_CHANGE Regulator voltage changed.
+- *                Data passed is old voltage cast to (void *).
+- * DISABLE        Regulator was disabled.
+- * PRE_VOLTAGE_CHANGE   Regulator is about to have voltage changed.
+- *                      Data passed is "struct pre_voltage_change_data"
+- * ABORT_VOLTAGE_CHANGE Regulator voltage change failed for some reason.
+- *                      Data passed is old voltage cast to (void *).
+- * PRE_DISABLE    Regulator is about to be disabled
+- * ABORT_DISABLE  Regulator disable failed for some reason
+- *
+- * NOTE: These events can be OR'ed together when passed into handler.
+- */
+-
+-#define REGULATOR_EVENT_UNDER_VOLTAGE		0x01
+-#define REGULATOR_EVENT_OVER_CURRENT		0x02
+-#define REGULATOR_EVENT_REGULATION_OUT		0x04
+-#define REGULATOR_EVENT_FAIL			0x08
+-#define REGULATOR_EVENT_OVER_TEMP		0x10
+-#define REGULATOR_EVENT_FORCE_DISABLE		0x20
+-#define REGULATOR_EVENT_VOLTAGE_CHANGE		0x40
+-#define REGULATOR_EVENT_DISABLE			0x80
+-#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE	0x100
+-#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE	0x200
+-#define REGULATOR_EVENT_PRE_DISABLE		0x400
+-#define REGULATOR_EVENT_ABORT_DISABLE		0x800
+-#define REGULATOR_EVENT_ENABLE			0x1000
+-/*
+- * Following notifications should be emitted only if detected condition
+- * is such that the HW is likely to still be working but consumers should
+- * take a recovery action to prevent problems esacalating into errors.
+- */
+-#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
+-#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
+-#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
+-#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
+-#define REGULATOR_EVENT_WARN_MASK		0x1E000
+-
+ /*
+  * Regulator errors that can be queried using regulator_get_error_flags
+  *
+diff --git a/include/uapi/linux/regulator.h b/include/uapi/linux/regulator.h
+new file mode 100644
+index 000000000000..d5f94a301841
+--- /dev/null
++++ b/include/uapi/linux/regulator.h
+@@ -0,0 +1,52 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __UAPI_LINUX_REGULATOR_CONSUMER_H_
++#define __UAPI_LINUX_REGULATOR_CONSUMER_H_
++
++/*
++ * Regulator notifier events.
++ *
++ * UNDER_VOLTAGE  Regulator output is under voltage.
++ * OVER_CURRENT   Regulator output current is too high.
++ * REGULATION_OUT Regulator output is out of regulation.
++ * FAIL           Regulator output has failed.
++ * OVER_TEMP      Regulator over temp.
++ * FORCE_DISABLE  Regulator forcibly shut down by software.
++ * VOLTAGE_CHANGE Regulator voltage changed.
++ *                Data passed is old voltage cast to (void *).
++ * DISABLE        Regulator was disabled.
++ * PRE_VOLTAGE_CHANGE   Regulator is about to have voltage changed.
++ *                      Data passed is "struct pre_voltage_change_data"
++ * ABORT_VOLTAGE_CHANGE Regulator voltage change failed for some reason.
++ *                      Data passed is old voltage cast to (void *).
++ * PRE_DISABLE    Regulator is about to be disabled
++ * ABORT_DISABLE  Regulator disable failed for some reason
++ *
++ * NOTE: These events can be OR'ed together when passed into handler.
++ */
++
++#define REGULATOR_EVENT_UNDER_VOLTAGE		0x01
++#define REGULATOR_EVENT_OVER_CURRENT		0x02
++#define REGULATOR_EVENT_REGULATION_OUT		0x04
++#define REGULATOR_EVENT_FAIL			0x08
++#define REGULATOR_EVENT_OVER_TEMP		0x10
++#define REGULATOR_EVENT_FORCE_DISABLE		0x20
++#define REGULATOR_EVENT_VOLTAGE_CHANGE		0x40
++#define REGULATOR_EVENT_DISABLE			0x80
++#define REGULATOR_EVENT_PRE_VOLTAGE_CHANGE	0x100
++#define REGULATOR_EVENT_ABORT_VOLTAGE_CHANGE	0x200
++#define REGULATOR_EVENT_PRE_DISABLE		0x400
++#define REGULATOR_EVENT_ABORT_DISABLE		0x800
++#define REGULATOR_EVENT_ENABLE			0x1000
++/*
++ * Following notifications should be emitted only if detected condition
++ * is such that the HW is likely to still be working but consumers should
++ * take a recovery action to prevent problems esacalating into errors.
++ */
++#define REGULATOR_EVENT_UNDER_VOLTAGE_WARN	0x2000
++#define REGULATOR_EVENT_OVER_CURRENT_WARN	0x4000
++#define REGULATOR_EVENT_OVER_VOLTAGE_WARN	0x8000
++#define REGULATOR_EVENT_OVER_TEMP_WARN		0x10000
++#define REGULATOR_EVENT_WARN_MASK		0x1E000
++
++#endif
 
-Ciao, Thorsten
+base-commit: 35d0d2350d774fecf596cfb2fb050559fe5e1850
+-- 
+2.41.0
 
-[1] $ git rev-list v6.3.5..v6.3.7 --oneline | grep "Fix use-after-free
-on race condition at dvb_frontend"
-8994830135b3 media: dvb-core: Fix use-after-free on race condition at
-dvb_frontend
