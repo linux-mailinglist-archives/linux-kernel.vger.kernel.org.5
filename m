@@ -2,120 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4C778EBF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0546F78EBFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 13:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232694AbjHaL2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 07:28:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        id S240658AbjHaL3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 07:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjHaL2H (ORCPT
+        with ESMTP id S229553AbjHaL3x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 07:28:07 -0400
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54554CF3
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:28:04 -0700 (PDT)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a603159f33so67883566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:28:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1693481283; x=1694086083; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9yvHyjPG7qUuINUCRplJZoEcbwB6qImIpL5RY/TwBK8=;
-        b=gJPowC5T5XnE2dRfmE1HYdTrXIJUiGjy10McutUK/lhG2Hl2hrLyYC2sp5NqioJr4v
-         aF5VY/zgu882zOxp2UY6NEGyBiVPXUXRa3rP+ZWNtKWn+e+b+hFtOgzziUNE4AG5wOTx
-         Qvw9OP58Y5qNHW39HdGvLzNBtzDrKh9xWVUtiv1tsKe45f8yIqrFPns17Cer45bskcwo
-         4xcWiy7Z6lz8OfaGc+inoTw34CxFSYyweK2WUKp1lI0qy8GPpbCiG4xFEsyuU5eAOn2C
-         LKJDMxe4ZdLjwoTvAQLXPDz6fgOLR+DLe4eJ4zjPc9+2VyexjSJuSHwj4qQgPdt3XNPe
-         dfew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693481283; x=1694086083;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9yvHyjPG7qUuINUCRplJZoEcbwB6qImIpL5RY/TwBK8=;
-        b=gbhBqSGlyzWMLUwRKynzuNmdZr2ONID7J01v352dgHJZLaAngT+R8T0NCeyEhdNjJm
-         l9ZHI1DOhUqOQjb2d6QzCciHA++A1QEbLYnn0JpXCCrvr1XAruTJBFs2CmDRqjVfFmrD
-         jq6acDGxoB5uW73JFVymmG+CfeEbr3i9XBVuezowde/tAre5may+OEWq3hXCjL0FINE+
-         JMUsTmKYZ1gdxTohWs8/WwOFFdrnXzoUq2wjoHC8cHgH9oi8uDAEImumoUdYmjxHcQvt
-         mG9wGjnHdx+LQidoOiDLq2/cB4xS92dH601hMspr+ntVOEbdyJABfnOv4N0VP9B5wvWH
-         GhgQ==
-X-Gm-Message-State: AOJu0YyJ2jkWfXFk/PHbzrwED+f4J58FKim4oMv6zDGxDfkPPAyggZKw
-        I+IN4enLkOsyu2HpBiZoxVEL1g==
-X-Google-Smtp-Source: AGHT+IG/hpDsEDtftxv8WRfScAb1QpBlf4Zc8+8cS6j6PB4BK2HHNwPv823nbljA1+JmHjuosy8iUw==
-X-Received: by 2002:a17:906:3195:b0:9a5:c49e:7145 with SMTP id 21-20020a170906319500b009a5c49e7145mr3734010ejy.69.1693481282782;
-        Thu, 31 Aug 2023 04:28:02 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id r10-20020a170906c28a00b0099297782aa9sm655606ejz.49.2023.08.31.04.28.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 31 Aug 2023 04:28:02 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Thu, 31 Aug 2023 13:28:01 +0200
-Message-Id: <CV6P0GSF8HWI.1I9L17HVQA7CJ@otso>
-Cc:     <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH 03/11] arm64: dts: qcom: sc7280: Move qfprom clock to
- chrome-common
-From:   "Luca Weiss" <luca.weiss@fairphone.com>
-To:     "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        "Andy Gross" <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Viresh Kumar" <viresh.kumar@linaro.org>
-X-Mailer: aerc 0.15.2
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-3-5a954519bbad@fairphone.com>
- <0ab29903-9861-4736-b827-5dd45b504baa@linaro.org>
-In-Reply-To: <0ab29903-9861-4736-b827-5dd45b504baa@linaro.org>
+        Thu, 31 Aug 2023 07:29:53 -0400
+Received: from out-247.mta0.migadu.com (out-247.mta0.migadu.com [91.218.175.247])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E4CFCF3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 04:29:50 -0700 (PDT)
+Message-ID: <0261d27e-f9b5-c0fe-1bae-2b76062e7386@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693481386; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dsNW9x8p5/MYaUYpuhJyG4wYF90x9MqL7y3yj9nXMaw=;
+        b=rFYBUzi7n5za5aMrFhJ4GszeFjuiR8iEUoh2gz36MHNgVXaRvr6oKzSHzSa0TF8Yc1Y+C7
+        4NdsAjh6NluDOmkeNKmBJ+O4kBBc7ai1mTpIr4qHujy6FQAkoq8UAKa7gHpcWJ3NImYl0D
+        X+WckfDgDdRvciIjC/jh6wNZ8JADGGQ=
+Date:   Thu, 31 Aug 2023 07:29:38 -0400
+MIME-Version: 1.0
+Reply-To: yonghong.song@linux.dev
+Subject: Re: [PATCH 3/6] bpf: task_group_seq_get_next: fix the
+ skip_if_dup_files check
+Content-Language: en-US
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kui-Feng Lee <kuifeng@fb.com>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230825161842.GA16750@redhat.com>
+ <20230825161947.GA16871@redhat.com> <20230825170406.GA16800@redhat.com>
+ <e254a6db-66eb-8bfc-561f-464327a1005a@linux.dev>
+ <20230827201909.GC28645@redhat.com>
+ <ac60ff18-22b0-0291-256c-0e0c3abb7b62@linux.dev>
+ <20230828105453.GB19186@redhat.com>
+ <25be098a-dc41-7907-5590-1835308ebe28@linux.dev>
+ <20230830235459.GA3570@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20230830235459.GA3570@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Aug 30, 2023 at 12:09 PM CEST, Konrad Dybcio wrote:
-> On 30.08.2023 11:58, Luca Weiss wrote:
-> > On non-ChromeOS boards the clock cannot be touched, so move it in the
-> > chrome-common dtsi which is the only place where it's needed.
-> >=20
-> > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> > ---
-> If that clock is not registered (e.g. it's in protected-clocks =3D <>,
-> would the _optional handler not handle it just fine?
 
-Right, that appears to work!
 
-~ # ls -d /sys/bus/platform/drivers/qcom,qfprom/*.efuse
-/sys/bus/platform/drivers/qcom,qfprom/784000.efuse
-~ # cat /sys/firmware/devicetree/base/soc@0/efuse@784000/clock-names; echo
-core
-~ # hexdump -C /sys/firmware/devicetree/base/soc@0/efuse@784000/clocks
-00000000  00 00 00 03 00 00 00 b8                           |........|
-00000008
+On 8/30/23 7:54 PM, Oleg Nesterov wrote:
+> On 08/28, Yonghong Song wrote:
+>>
+>> On 8/28/23 3:54 AM, Oleg Nesterov wrote:
+>>>
+>>> Could you review 6/6 as well?
+>>
+>> I think we can wait patch 6/6 after
+>>     https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+>> is merged.
+> 
+> OK.
+> 
+>>> Should I fold 1-5 into a single patch? I tried to document every change
+>>> and simplify the review, but I do not want to blow the git history.
+>>
+>> Currently, because patch 6, the whole patch set cannot be tested by
+>> bpf CI since it has a build failure:
+>>    https://github.com/kernel-patches/bpf/pull/5580
+> 
+> Heh. I thought this is obvious. I thought you can test 1-5 without 6/6
+> and _review_ 6/6.
+> 
+> I simply can't understand how can this pull/5580 come when I specially
+> mentioned
+> 
+> 	> 6/6 obviously depends on
+> 	>
+> 	>	[PATCH 1/2] introduce __next_thread(), fix next_tid() vs exec() race
+> 	>	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+> 	>
+> 	> which was not merged yet.
+> 
+> in 0/6.
 
-Never tested this case before, but since it appears to work with the
-patched qfprom driver (other patch in this series) I think we can drop
-this patch.
-Will also have to adjust some other patches in my local tree then that
-do similar things ;)
+The process in CI for testing is fully automated, and it does
+not look at commit message. That is why it takes the whole
+series. This is true for all other patch set.
 
-Regards
-Luca
-
->
-> Konrad
-
+> 
+>> I suggest you get patch 1-5 and resubmit with tag like
+>>    "bpf-next v2"
+>>    [Patch bpf-next v2 x/5] ...
+>> so CI can build with different architectures and compilers to
+>> ensure everything builds and runs fine.
+> 
+> I think we can wait for
+> 
+> 	https://lore.kernel.org/all/20230824143142.GA31222@redhat.com/
+> 
+> as you suggest above, then I'll send the s/next_thread/__next_thread/
+> oneliner without 1-5. I no longer think it makes sense to try to cleanup
+> the poor task_group_seq_get_next() when IMHO the whole task_iter logic
+> needs the complete rewrite. Yes, yes, I know, it is very easy to blame
+> someone else's code, sorry can't resist ;)
+> 
+> The only "fix" in this series is 3/6, but this code has more serious
+> bugs, so I guess we can forget it.
+> 
+> Oleg.
+> 
