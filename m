@@ -2,90 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EDD78E898
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:43:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E3478E882
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:41:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238082AbjHaIne convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 31 Aug 2023 04:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
+        id S236338AbjHaIlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:41:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234624AbjHaInd (ORCPT
+        with ESMTP id S236639AbjHaIlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 04:43:33 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EE70CF7
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:43:28 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-311-LRFvNPzzO7iMs2R3ZDsrzw-1; Thu, 31 Aug 2023 09:37:14 +0100
-X-MC-Unique: LRFvNPzzO7iMs2R3ZDsrzw-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 31 Aug
- 2023 09:37:12 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 31 Aug 2023 09:37:12 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Zhangjin Wu' <falcon@tinylab.org>
-CC:     "ammarfaizi2@gnuweeb.org" <ammarfaizi2@gnuweeb.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "tanyuan@tinylab.org" <tanyuan@tinylab.org>,
-        "thomas@t-8ch.de" <thomas@t-8ch.de>, "w@1wt.eu" <w@1wt.eu>
-Subject: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with single
- -ENOSYS return
-Thread-Topic: [RFC] tools/nolibc: replace duplicated -ENOSYS return with
- single -ENOSYS return
-Thread-Index: AdnbXfVru8RTG9gTQ+SsAG5ax7hYowAeEOWAAANtgiA=
-Date:   Thu, 31 Aug 2023 08:37:11 +0000
-Message-ID: <f7f06eb4a5b44ce29718341e28c823f8@AcuMS.aculab.com>
-References: <2d52dbd55e6240d5a91ebdce67fe0b7b@AcuMS.aculab.com>
- <20230831074151.7900-1-falcon@tinylab.org>
-In-Reply-To: <20230831074151.7900-1-falcon@tinylab.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 31 Aug 2023 04:41:14 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71739E54
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:40:51 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-5256d74dab9so641919a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 01:40:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693471248; x=1694076048; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4oj9ZHh9uIvpj0ERp23NgRxjtB8A/WDYvtNWK07v2zI=;
+        b=GN31XdmsfylTAo9cekW7yHl9SPIoQSERRZqVvKX9ghQGtgDJrGlRz72VEqdZXW6KCD
+         TtnuLvFmoP0XGAFsX5cT+TMz3drzgOAeUgx/c3pmaz+WMY3R3+RQ7CpfUIZ32cFL4icK
+         6ScXCJ29qa51V0/1izVjKUZ3ek3oikYN4S+v/x6/ZiyOuv8WDTVaP38jZAO5wHr5eRzN
+         AQKMpLrCvgPkLdGkbg7OUjFop5/cYIffoh2Vc7O4BWPEEhU4rmYqMCgdtsWWNQUAleSq
+         9ZSDAv3krMlnkFB4+5zA3usrBssuvJNCiTgJ9U7v6f/tTE7Wv9uj9TVZGAkaLlBBAO+w
+         h9sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693471248; x=1694076048;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4oj9ZHh9uIvpj0ERp23NgRxjtB8A/WDYvtNWK07v2zI=;
+        b=Zz9adQtW6Ge+3vxj8cB5QTFvyzSDR4v/vDCTcIUjSCa3TvavTPWHDXq2Y267gwcR+6
+         6JHKvqGOkBNIYYpbkb/VpTL7GnD4NwGBXF961xS7qVD7aT/YmgKfrheQouaAYryVPV0P
+         g1a5llkzFQa83+fD/vY9YFxKzMJdMsH8BZADaxO6vo5NZDL0nzSUeNc3pm0DaTLZGUTT
+         1D/ALiHZmAz8NRLWPOdAhpEwtz8ayVGpdtNh9sGNFqnhKOmJfKZi2hosq9+4pIYH7FLF
+         4hSFbvoMcwv/h7NoIXxs2+lRig+Fq9XO8Lm+NjwjWghc04FvYBfJqjyLovdUcTmBO7gF
+         76SA==
+X-Gm-Message-State: AOJu0YxcO+5vqwvlatTTjAjcRRPh7kWtF6LCkwBIEl1vNpPHa+yGxUgi
+        wMEBSkUbX+ZR3j8Q4Wy35lfUow==
+X-Google-Smtp-Source: AGHT+IEC5YtV2U2cEklN+/jylIkWH4T7gor9vRqdxcg0xCCXWtlM2PpTXI6h2lSgtqlfrGIVvathzQ==
+X-Received: by 2002:a05:6402:646:b0:526:9c4:bc06 with SMTP id u6-20020a056402064600b0052609c4bc06mr3431058edx.18.1693471248160;
+        Thu, 31 Aug 2023 01:40:48 -0700 (PDT)
+Received: from [192.168.69.115] ([176.187.199.245])
+        by smtp.gmail.com with ESMTPSA id l22-20020a056402345600b0052c11951f4asm522481edc.82.2023.08.31.01.40.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 01:40:47 -0700 (PDT)
+Message-ID: <1cc2c8f8-1f9b-1d47-05d4-9bcad9a246cd@linaro.org>
+Date:   Thu, 31 Aug 2023 10:40:45 +0200
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v4 4/4] MAINTAINERS: Update MIPS/LOONGSON1 entry
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Keguang Zhang <keguang.zhang@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+References: <20230830134241.506464-1-keguang.zhang@gmail.com>
+ <20230830134241.506464-5-keguang.zhang@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230830134241.506464-5-keguang.zhang@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> We also need this style of checking for the delta logic in __atoi_add(). have
-> randomly tried different clang and gcc versions, seems all of them work
-> correctly, but the compiling speed is not that good if we want to support the
-> worst cases like "((0x900000 + 0x0f0000) + 5)", the shorter one
-> "((0x900000+0x0f0000)+5)" is used by ARM+OABI (not supported by nolibc
-> currently), therefore, we can strip some tailing branches but it is either not
-> that fast, of course, the other architectures/variants can use faster
-> __atoi_add() versions with less branches and without hex detection, comparison
-> and calculating.
+Hi,
 
-If there are only a few prefix offsets then the code can be optimised
-to explicitly detect them - rather than decoding arbitrary hex values.
-After all it only needs to decode the values that actually appear.
+On 30/8/23 15:42, Keguang Zhang wrote:
+> Add two new F: entries for Loongson1 Ethernet driver
+> and dt-binding document.
+> Add a new F: entry for the rest Loongson-1 dt-binding documents.
+> 
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> ---
+> V3 -> V4: Update the dt-binding document entry of Loongson1 Ethernet
+> V2 -> V3: Update the entries and the commit message
+> V1 -> V2: Improve the commit message
+> 
+>   MAINTAINERS | 3 +++
+>   1 file changed, 3 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ff1f273b4f36..2519d06b5aab 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -14344,9 +14344,12 @@ MIPS/LOONGSON1 ARCHITECTURE
+>   M:	Keguang Zhang <keguang.zhang@gmail.com>
+>   L:	linux-mips@vger.kernel.org
+>   S:	Maintained
+> +F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
+> +F:	Documentation/devicetree/bindings/net/loongson,ls1*.yaml
 
-The code also needs a compile-time assert that the result
-is constant (__buitin_constant_p() will do the check.
-But you can't use _Static_assert() to report the error
-because that requires an 'integer constant expression'.
+Why not simply squash in patch 2
 
-	David
+>   F:	arch/mips/include/asm/mach-loongson32/
+>   F:	arch/mips/loongson32/
+>   F:	drivers/*/*loongson1*
+> +F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+and 3 of this series?
+
+>   MIPS/LOONGSON2EF ARCHITECTURE
+>   M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
 
