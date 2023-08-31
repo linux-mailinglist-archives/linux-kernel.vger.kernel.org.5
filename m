@@ -2,175 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B6578E449
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:24:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2894078E44B
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 03:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345529AbjHaBXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 30 Aug 2023 21:23:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34718 "EHLO
+        id S1345535AbjHaBY5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 30 Aug 2023 21:24:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240157AbjHaBXO (ORCPT
+        with ESMTP id S240157AbjHaBY4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 30 Aug 2023 21:23:14 -0400
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53265CD2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:23:07 -0700 (PDT)
-Received: by mail-il1-x134.google.com with SMTP id e9e14a558f8ab-34dee07e676so1198875ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:23:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693444986; x=1694049786; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=mfrpiacLG55EsVroukdPrDZnWpVBbqJS76x8bQJH6GM=;
-        b=powRNzSMcXSudHcuFZg2l7VNytBKYmm0sZTRiZr3uxfIXXNtc6G1fDoSmMl2vbToOs
-         /YEAwyxkIuEantRnnOXT4W43ygJOuPdWkrQB/Ag5hYv9evUrFGQT3Ds0ZkNZcnvR2O7r
-         xa7EKpWob/gL6dq9XbHFQL8FdkPBcmJxNYoxc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693444986; x=1694049786;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mfrpiacLG55EsVroukdPrDZnWpVBbqJS76x8bQJH6GM=;
-        b=V6yVrAF8zlKZsQEmjRya2ZnUyIKcrZThKa9siRhfG/cVAsKuuNR9j+hr3zDiywSTCE
-         A0+a1InVaU7BkLwhL1IoxreTSEGcIb1NxcMzvl8rJ49RdURYMF1/2Yiw3794Pb3NDPYm
-         1owXlxG/PyaR4467KWvgaPvwQ1hh4xZr0OwlilJDck/ZHY2gdxt4wgTFBMzrJVWUot1N
-         vJyEo6T6lZxgkooWiAlYz/qATqg5a1Sr7hDiIUKnqkIXiAnQLK/t28rALrloWV4V8Bzy
-         mzmUTh7A9TBqyAMcIXeDlfJ60OyxC90R/M86QzUDKBRHvRPi73Xm07tbKn3KEGqtaLRy
-         +6bQ==
-X-Gm-Message-State: AOJu0YzjKuy48c4WIe4k9Nm5db9FO2x0aIr+pbAPT3xljeSItyAoSMmp
-        Vi6KIS8Mq0iuc2ySs4eKDYOPRyTd5XIVGHwAd5U=
-X-Google-Smtp-Source: AGHT+IHaENoXtnzrr7fuZXKqz4/lq4K9G/ULxNDoBvb1t6a4EdSA66et5IkDOMzgcfQi70UU5Bsisg==
-X-Received: by 2002:a05:6e02:dc7:b0:342:655f:6f25 with SMTP id l7-20020a056e020dc700b00342655f6f25mr3841501ilj.31.1693444986205;
-        Wed, 30 Aug 2023 18:23:06 -0700 (PDT)
-Received: from joelboxx5.c.googlers.com.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id k9-20020a02c769000000b0042b2e309f97sm99572jao.177.2023.08.30.18.23.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 18:23:05 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        rcu@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH] rcu/torture: Improve badness extraction from console logs
-Date:   Thu, 31 Aug 2023 01:22:56 +0000
-Message-ID: <20230831012257.1189964-1-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.42.0.rc2.253.gd59a3bf2b4-goog
+        Wed, 30 Aug 2023 21:24:56 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 137A01A2
+        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 18:24:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693445092; x=1724981092;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=CgifBdJiGZTbPCR1soR1AkTqoqytvIeicxFznA0ChKE=;
+  b=dyhPcqKqTdO9O9NiCV3qbwfcnI03AL18r+7YqHInz1F48Ulx7GdFxr0l
+   4zqgD1J+FeBf+Sr3eAcYNhXYPhE5yvpkMIRaM6BqWUbno2vFLt/4sH6xD
+   fC1+IUmroPrW5JO42aoAb1gggckxVFDgahOMgAuzS1HGlisErpUxm9a+H
+   WBnHyp27UwZJybxgU8sMQsJVnSOgtC1QGXtgi1oMKyqsX+mjBItU2MaMn
+   7cKBjFYbWoiYcqSVICu/CSDL0nCmzk9Z2R1ZfsW7t34uS3R8RUx5mczuC
+   d42njJCiY6Dm+1NYQsx64jWv5NWspt1A1L4uH5x68DDpr/RbYls2AGFpO
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="379537506"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="379537506"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 18:24:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="1070033524"
+X-IronPort-AV: E=Sophos;i="6.02,215,1688454000"; 
+   d="scan'208";a="1070033524"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga005.fm.intel.com with ESMTP; 30 Aug 2023 18:24:51 -0700
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Wed, 30 Aug 2023 18:24:50 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Wed, 30 Aug 2023 18:24:50 -0700
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.105)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Wed, 30 Aug 2023 18:24:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UefJPJwrc4aJqC6K9sqMwfDsF6eDyMR0jkDmbiPYTSQUK50MSPielXknKOoHMDi+JOinO7iIkgY2yUB1dzgreSQYu09elLZZ6YB4oKQWU5aqf6TLe/1fsjEI5UmJT536wjYzXWCaNI3XxuRYXT1/zY684IR0JOtl4g3DIjboklgBiSEPDUGm9ZiVvG1hteL0aKx84yjDJ3S76X09BHUM199ZKO7GUjFdJNeuui0YY1xVUsjxK3V6qVNYXMc/gYrfX+ivovtRVRX+8921lDE/yprZISEVsbcv7HP8yub1ewzQDQqeNfOiuOp43WUQ2KguZDPXzJCFtXgdrFx38Ah+sQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nNZgYS+ZuO6RczK/++V1B9FimXNaJ+AYutYKjh9UUjI=;
+ b=h7RLqc0KEWEB9u9VFodsEHDMl7pV86XnRaqfgCjXPcxxp/jug6XEacw+zn3EvjnX1V30KtfJo5tuA7x0UDwXIIeO4bX8yEPDPhAqdegD3pS1M3mdHBTeu/5ViFJmwRJNU8+iOTDBY1QdWs3zNS/gltFPiXn5aa0vdcXM7SHTTYMh5ampp3x+hNOy0K1TkzCwNqKI5KjK8/eW6olWELxeXPXEoGLmVpwOSAam4fnUkHD4HqUHaNCYmH8KZOaPJKVjb03voG56WHiKVf0j2M0xLybn5DNJQiZ/Wxk4PLTSuPxY/saLl7uv0DhL9XVKPIki/nIrZX6TTPnPIfAFYx798Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by SN7PR11MB6776.namprd11.prod.outlook.com (2603:10b6:806:263::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Thu, 31 Aug
+ 2023 01:24:48 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::acb0:6bd3:58a:c992]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::acb0:6bd3:58a:c992%5]) with mapi id 15.20.6745.020; Thu, 31 Aug 2023
+ 01:24:47 +0000
+Date:   Wed, 30 Aug 2023 18:24:44 -0700
+From:   Dan Williams <dan.j.williams@intel.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        <linux-coco@lists.linux.dev>
+CC:     Dionna Amalie Glaze <dionnaglaze@google.com>,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        Peter Gonda <pgonda@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Samuel Ortiz <sameo@rivosinc.com>, <peterz@infradead.org>,
+        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>
+Subject: Re: [PATCH v3 2/5] configfs-tsm: Introduce a shared ABI for
+ attestation reports
+Message-ID: <64efebdc97b9f_29e220294e6@dwillia2-xfh.jf.intel.com.notmuch>
+References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
+ <169342400469.3934343.12316161608372095860.stgit@dwillia2-xfh.jf.intel.com>
+ <7333e392-a557-49e4-a457-067f18d12139@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <7333e392-a557-49e4-a457-067f18d12139@linux.intel.com>
+X-ClientProxiedBy: MW4PR04CA0215.namprd04.prod.outlook.com
+ (2603:10b6:303:87::10) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|SN7PR11MB6776:EE_
+X-MS-Office365-Filtering-Correlation-Id: 59a86b62-fe04-4941-4a0a-08dba9c11084
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RZC7or9KdtNuGfUWKphiBNUeEbGo47W2UqlEmzDVOnLOm4t402SmN4DrdQ5qF3Hd2aPEYrmhgQDgza/neXcf9/IigxjIVhOqTLHyT6XElGeQrbSsiKvtdEKR7UqBZ2Zl/ixTsZf5VNqLzZ+K7ornt/QzKqp/X4RUVhs9N61ZR0bf3cWv4RItIAH5fJKUyL704auC7qqPPNrA0EU6vtjHcKdmjTKp7hOPjqT562RrxTMGnkr1YUWamedOzJQIDoI3cVp3FhNe3DbeQMHpYppavjf+TGrRz9I8Ier2jOX0af+Lcoxw85DUX2BJvMzopklvtNW28BmXkQdtxnRdchgk64rw5/HkCeWQpDAB5EV8gxXfzShXn0VwU4YI6+kQNWJwPNO3tjWsXTeFXPwdKGb49vezdo0chzCS+fq5hiV7AdINAIS7+3pNMXmfH6lI7ASRLRfob3YVeh6V6O++HeqJVL0fmOK6VMg3rh4jpRkdgpFqoY8/ZW1xJUhxCBllVRgO14LaEFylFopFzzep8miId1ZPPnDd+Y+k47hkg+llU1g=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(136003)(39860400002)(346002)(186009)(1800799009)(451199024)(478600001)(966005)(83380400001)(26005)(6486002)(6512007)(6506007)(110136005)(9686003)(6666004)(82960400001)(4744005)(66556008)(7416002)(8676002)(38100700002)(316002)(2906002)(8936002)(4326008)(54906003)(86362001)(5660300002)(41300700001)(66476007)(66946007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yTzQ/bCEGr1uOdSYtLqGa1HmSC/HC/1MXnanBlQp5rkqACyQmwnbFHEysWRc?=
+ =?us-ascii?Q?PVmCV4gSNqwIpNayckhYJ66tiSd804wqtCF+srR9KBmEk/Ri8j1nRTWiXa1W?=
+ =?us-ascii?Q?ArBIsuco5sIpNk3X2ghrKixDQ5GrTWNJ3b4YlI72I12I0Lr59LZYmo3hj6Qb?=
+ =?us-ascii?Q?RkqI5IQd8F1GYfjrPxlJbew4LFmAgFzxPY0R19HgaHq1Wa9p8BZccT0KElWw?=
+ =?us-ascii?Q?Qw3zawhiot4xkBMw3kwwBar6jKjLdXVKinU/L9mLvzICVGZ0vru5oi1v9FVy?=
+ =?us-ascii?Q?arNgbbocb9aPoZEqGSNBYBUTA0FCtc+B+XiPx7IYohlp2pKa2EKXN0/IDwH+?=
+ =?us-ascii?Q?9/nw8Xs6+hySXo5MxxsSZDH7xJi2K8opaQUnZMruBYDckXWh+etIohdpN4re?=
+ =?us-ascii?Q?LAqtVMMioCamjo2wg0vABwyw8xoAQ6WvCicDRH/tu5evR1DTIYJ6fCDS6X9G?=
+ =?us-ascii?Q?yyXZuZ8RC1EY1X5PvqgHjqbXO/0H0JsSzBfdk4hYVH03U6D7Z1GK3QMB+6X0?=
+ =?us-ascii?Q?pSVnX+pp53VFmUzG+znPfObSC9En2e6PM0MopGBzx5utRDSPGFwTy5lmH0MJ?=
+ =?us-ascii?Q?gbts5EliUeqy0U51NbrbpknZnMKNa6oDVEsVs1Ib4lwurdcDCMOttIUPSc0u?=
+ =?us-ascii?Q?HpKrkFLbRUZBaD+B2H6HSMoDngp7u0+niTcTz8L9/wPD+KmJ7MpFqvgfaWnv?=
+ =?us-ascii?Q?gaBAkI7q9N9ksinNBX2HXyv2NWa53lj0JVt8sYRI7bssQt1EccqyRp0yCvCi?=
+ =?us-ascii?Q?N+up5C2BpAAuqWMK1MxlmROJOIKfIO2oypH1IV4PGd6rgK1FhQ6mF+RA/MXW?=
+ =?us-ascii?Q?KLMMNjqXkrFJBKLOVoIWteV453YazIXOp6N/IeJwGxLN7V6fp+WKsd1j8FPR?=
+ =?us-ascii?Q?kM2XAVEzX1JGakspM10yhz/D2KkMBgdNxh5Vp9ufV6GCr0YTZfI2PITRIvH/?=
+ =?us-ascii?Q?NtaV+8v4Fp2zHY/xsCfldXLM7/VioLabgIy/7fkidKxjRZP7aLKxnxdTFQNm?=
+ =?us-ascii?Q?hHnrVLgxgTAW8o+ryXx6y9oyVSd44HY6nvshc7ho/o2ZRg5paiUVi3pYhhd+?=
+ =?us-ascii?Q?bSZRKCc3aq9B9xLUInMzJ7ianG7dc+WtWAa/ZrAo97oqKRrb0DyaA+vA/wRx?=
+ =?us-ascii?Q?tpT81jxmiRT2oYr5qJbGWUA5RuSOAEDJHtUOtDg2GMl4fzV5V6dBGaqZueY3?=
+ =?us-ascii?Q?YUHi8QloK046YHwC8DAfnC+IzZCtWTmbj3Hb2Ii0PQy1ff2lRktbyqju3Wyq?=
+ =?us-ascii?Q?XF8pYFiMSm8O0wypW8Ss8xNvtulgh2oqMZRbIGuuQv5F42BF8Bn1B5bd+s3Z?=
+ =?us-ascii?Q?43AyzQW3sDGzCkhrTU00XQX9EmoFz7E0brquDPsmEdektukdx4b+oFxzrFGZ?=
+ =?us-ascii?Q?naFPp8vu6EzewPvpP3wKVozGkHaAGUGodQtg+gvv7kfbasHJnu9s7rEatWOK?=
+ =?us-ascii?Q?4SLKhI7upiW8PdSjZQP+hh+3C8QjgssB9jruDCb8SS4obzt9GztBM0WFCT6+?=
+ =?us-ascii?Q?DmVhUJnCDrtIvHtDStFDo1WqQiMo1SdRUrs+TdAH3dBjOl0zPEpcfdj/yfCQ?=
+ =?us-ascii?Q?B8YBCr4MVTF6Vyy4Ck3kpYVbKmFPcSR3WURLWrfxz+JzJkyy7Tk46FM5Hfnk?=
+ =?us-ascii?Q?Cw=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59a86b62-fe04-4941-4a0a-08dba9c11084
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Aug 2023 01:24:47.5106
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 33JaoD7kreppGftV7gcDqnp9ON1m68p3ReV1MS/uS4jgix6wl0kyNuO/mM5QVXAQHqDgq5XgUR1Bc1WTrs+WyiVRez0yGhpf+GeqR86ZFb4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB6776
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently console.log.diags contains an output like follows:
-[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
-[ 2457.542385] Call Trace:
+Kuppuswamy Sathyanarayanan wrote:
+[..]
+> > diff --git a/drivers/virt/coco/tdx-guest/Kconfig b/drivers/virt/coco/tdx-guest/Kconfig
+> > index 14246fc2fb02..22dd59e19431 100644
+> > --- a/drivers/virt/coco/tdx-guest/Kconfig
+> > +++ b/drivers/virt/coco/tdx-guest/Kconfig
+> > @@ -1,6 +1,7 @@
+> >  config TDX_GUEST_DRIVER
+> >  	tristate "TDX Guest driver"
+> >  	depends on INTEL_TDX_GUEST
+> > +	select TSM_REPORTS
+> 
+> I think it is more appropriate to let TDX support patch add it. Agree?
 
-This is not very useful and the Call trace is desired. Improve the
-script by Extracting more lines after each grep match.
+Oh definitely, I think this was a leftover from some local debug.
 
-With this the above becomes:
+I have fixed that up along with Greg's feedback and pushed an updated
+set here:
 
-Issue 1:
-[ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
-[ 2457.326661] Modules linked in:
-[ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.128+ #381
-[ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-[ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
-[ 2457.386691] Code: 48 63 c7 48 8b 0
-[ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
-[ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 0000000000000003
-[ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 0000000000000003
-[ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000000000001
-[ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: ffff8db902d87f40
-[ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: ffff8db9011a3200
-[ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000) knlGS:0000000000000000
-[ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 00000000000006e0
-[ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 2457.542385] Call Trace:
-[ 2457.546756]  <TASK>
-[ 2457.550349]  ? __warn+0x7b/0x100
-[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
--------------------------------------
-Issue 2:
-[ 2457.542385] Call Trace:
-[ 2457.546756]  <TASK>
-[ 2457.550349]  ? __warn+0x7b/0x100
-[ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
-[ 2457.574948]  ? report_bug+0x99/0xc0
-[ 2457.593824]  ? handle_bug+0x3c/0x70
-[ 2457.599534]  ? exc_invalid_op+0x13/0x60
-[ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
-[ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
-[ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
-[ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
-[ 2457.705658]  rcu_tasks_kthread+0x114/0x200
-[ 2457.712450]  ? wait_woken+0x70/0x70
-[ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
-[ 2457.746221]  kthread+0x130/0x160
-[ 2457.751487]  ? set_kthread_struct+0x40/0x40
-[ 2457.758178]  ret_from_fork+0x22/0x30
-[ 2457.763909]  </TASK>
-[ 2457.767546] irq event stamp: 29544441
-[ 2457.773344] hardirqs last  enabled at (29544451): [<ffffffffaace6cbd>] __up_console_sem+0x4d/0x60
-[ 2457.786967] hardirqs last disabled at (29544460): [<ffffffffaace6ca2>] __up_console_sem+0x32/0x60
--------------------------------------
+https://git.kernel.org/pub/scm/linux/kernel/git/djbw/linux.git/log/?h=for-6.7/coco
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- .../rcutorture/bin/console-badness.sh         | 24 ++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/rcutorture/bin/console-badness.sh b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-index aad51e7c0183..d28efcd86b64 100755
---- a/tools/testing/selftests/rcutorture/bin/console-badness.sh
-+++ b/tools/testing/selftests/rcutorture/bin/console-badness.sh
-@@ -9,10 +9,32 @@
- # Copyright (C) 2020 Facebook, Inc.
- #
- # Authors: Paul E. McKenney <paulmck@kernel.org>
-+INPUT_DATA=$(< /dev/stdin)
- 
--grep -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
-+# Get the line numbers for all the grep matches
-+GREP_LINES="$(echo "$INPUT_DATA" |
-+grep -n -E 'Badness|WARNING:|Warn|BUG|===========|BUG: KCSAN:|Call Trace:|Oops:|detected stalls on CPUs/tasks:|self-detected stall on CPU|Stall ended before state dump start|\?\?\? Writer stall state|rcu_.*kthread starved for|!!!' |
- grep -v 'ODEBUG: ' |
- grep -v 'This means that this is a DEBUG kernel and it is' |
- grep -v 'Warning: unable to open an initial console' |
- grep -v 'Warning: Failed to add ttynull console. No stdin, stdout, and stderr.*the init process!' |
- grep -v 'NOHZ tick-stop error: Non-RCU local softirq work is pending, handler'
-+)"
-+
-+# Exit if no grep matches
-+if [ ! -n "$GREP_LINES" ]; then exit 0; fi
-+
-+# Go through each line of GREP_LINES, extract the line number and then
-+# print from that line and 20 lines after that line. Do that for each
-+# grep match.
-+issue_num=1
-+while IFS= read -r line; do
-+    # Extract the line number from the line
-+    num=$(echo "$line" | awk -F: '{print $1}')
-+    # Print 20 lines after the matched line
-+    echo "Issue $issue_num:"
-+    issue_num="$(($issue_num + 1))"
-+    echo "$INPUT_DATA" | sed -n "${num},$(($num + 20))p"
-+    echo "-------------------------------------"
-+done <<< "$GREP_LINES"
-+
--- 
-2.42.0.rc2.253.gd59a3bf2b4-goog
-
+...will keep that up to date as review feedback arrives.
