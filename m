@@ -2,88 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E4E78F3AF
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9CA878F3B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347290AbjHaTyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53774 "EHLO
+        id S235925AbjHaT6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243079AbjHaTyc (ORCPT
+        with ESMTP id S229688AbjHaT6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:54:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03A9FE5C
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:54:30 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8DE096336F
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 19:54:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id E7EC0C433C7;
-        Thu, 31 Aug 2023 19:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693511669;
-        bh=4xBwQYrDYvELTUVIq5HoKyekNXLiRMNL1WiKGCIHSGE=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=rPB36fpt8aXiurhkM9PYEXHy+mON8p24DqHQ3HoO+zGOLNZtLX9v3tuvUUqk9XYfW
-         H7NwzRTGzmDlKUHFX6S9bMDtHVn9XP2notR++pRw9OOiVN3csEEMSc71Thw+GtblCi
-         n9HIrmiP5syeoV14aNdncQcBN6ekqOMTz0wfhVVUKwpuRhx+REzkYupEC2fttYws7U
-         1nm2vbJ2MWU4ayRjNbU57Z9ld/CCBjWHyynV1CjzYA12KRYgZ+GerlNgycnxySXMCz
-         52GHe7VnpoqzAJSOKcKK5ZQH3WwLUT1lJHcGibgSWe5VB7mGEoiSJRFQLoZp95M6eN
-         b8Vb5Bmakj8tA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D3380C595D2;
-        Thu, 31 Aug 2023 19:54:28 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-6.6-1 tag
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87o7in1iz3.fsf@mail.lhotse>
-References: <87o7in1iz3.fsf@mail.lhotse>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87o7in1iz3.fsf@mail.lhotse>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.6-1
-X-PR-Tracked-Commit-Id: 85a616416e9e01db0bfa92f26457e92642e2236b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4ad0a4c2343d3981e92df2b39fa262be62a9091a
-Message-Id: <169351166885.26416.7613414703938254596.pr-tracker-bot@kernel.org>
-Date:   Thu, 31 Aug 2023 19:54:28 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>, ajd@linux.ibm.com,
-        aneesh.kumar@linux.ibm.com, arnd@arndb.de, bgray@linux.ibm.com,
-        bhelgaas@google.com, christophe.leroy@csgroup.eu,
-        fbarrat@linux.ibm.com, gautam@linux.ibm.com,
-        hbathini@linux.ibm.com, joel@jms.id.au, justinstitt@google.com,
-        kjain@linux.ibm.com, krzysztof.kozlowski@linaro.org,
-        ldufour@linux.ibm.com, linus.walleij@linaro.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        mahesh@linux.ibm.com, masahiroy@kernel.org, mirimmad17@gmail.com,
-        msuchanek@suse.de, nathanl@linux.ibm.com, naveen@kernel.org,
-        ndesaulniers@google.com, npiggin@gmail.com, osandov@fb.com,
-        rdunlap@infradead.org, robh@kernel.org, ruanjinjie@huawei.com,
-        ruscur@russell.cc, sourabhjain@linux.ibm.com, tanyuan@tinylab.org,
-        twoerner@gmail.com, u.kleine-koenig@pengutronix.de,
-        vaibhav@linux.ibm.com, wangxiongfeng2@huawei.com, windhl@126.com,
-        zhangjialin11@huawei.com, zhengzengkai@huawei.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 31 Aug 2023 15:58:22 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99C11EA
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:58:18 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 577E4C15;
+        Thu, 31 Aug 2023 12:58:57 -0700 (PDT)
+Received: from [10.57.65.16] (unknown [10.57.65.16])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 837C53FBD2;
+        Thu, 31 Aug 2023 12:57:57 -0700 (PDT)
+Message-ID: <31aa40aa-1471-44ca-9cc8-3f5476fbde7e@arm.com>
+Date:   Thu, 31 Aug 2023 20:57:51 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/5] mm: Refector release_pages()
+Content-Language: en-GB
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Will Deacon <will@kernel.org>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Hildenbrand <david@redhat.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20230830095011.1228673-1-ryan.roberts@arm.com>
+ <20230830095011.1228673-5-ryan.roberts@arm.com>
+ <ZO+US8nVJTpbFGx3@casper.infradead.org>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <ZO+US8nVJTpbFGx3@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 31 Aug 2023 22:42:24 +1000:
+On 30/08/2023 20:11, Matthew Wilcox wrote:
+> On Wed, Aug 30, 2023 at 10:50:10AM +0100, Ryan Roberts wrote:
+>> In preparation for implementing folios_put_refs() in the next patch,
+>> refactor release_pages() into a set of helper functions, which can be
+>> reused. The primary difference between release_pages() and
+>> folios_put_refs() is how they iterate over the set of folios. The
+>> per-folio actions are identical.
+> 
+> As you noted, we have colliding patchsets.  I'm not hugely happy with
+> how patch 4 turned out, 
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.6-1
+Could you describe the issues as you see them? I'm keen not to repeat the same
+bad patterns in future.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4ad0a4c2343d3981e92df2b39fa262be62a9091a
+so I thought I'd send some addendum patches to
+> my RFC series that implement pfn_range_put() (maybe should have been
+> pfn_ranges_put()?) on top of my patch series.  I think it's a bit nicer,
+> but not quite as nice as it could be.
+> 
+> I'm thinking about doing ...
+> 
+> void release_unref_folios(struct folio_batch *folios)
+> {
+> 	struct lruvec *lruvec = NULL;
+> 	unsigned long flags = 0;
+> 	int i;
+> 
+> 	for (i = 0; i < folios->nr; i++) {
+> 		struct folio *folio = folios->folios[i];
+> 		free_swap_cache(folio);
 
-Thank you!
+Agree this can't go here - would put it in pfn_range_put(). But would not want
+it in folios_put() as you suggeted in the other email - that would surely change
+the behaviour of folios_put()?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> 		__page_cache_release(folio, &lruvec, &flags);
+> 	}
+
+I think you would need to add:
+
+	if (lruvec)
+		unlock_page_lruvec_irqrestore(lruvec, flags);
+
+> 	mem_cgroup_uncharge_folios(folios);
+> 	free_unref_folios(folios);
+> }
+> 
+> then this becomes:
+> 
+> void folios_put(struct folio_batch *folios)
+> {
+>         int i, j;
+> 
+>         for (i = 0, j = 0; i < folios->nr; i++) {
+>                 struct folio *folio = folios->folios[i];
+> 
+>                 if (is_huge_zero_page(&folio->page))
+>                         continue;
+>                 if (folio_is_zone_device(folio)) {
+>                        if (put_devmap_managed_page(&folio->page))
+>                                 continue;
+>                         if (folio_put_testzero(folio))
+>                                 free_zone_device_page(&folio->page);
+>                         continue;
+>                 }
+> 
+>                 if (!folio_put_testzero(folio))
+>                         continue;
+>                 if (folio_test_hugetlb(folio)) {
+>                        free_huge_folio(folio);
+>                         continue;
+>                 }
+> 
+>                 if (j != i)
+>                         folios->folios[j] = folio;
+>                 j++;
+>         }
+> 
+>         folios->nr = j;
+>         if (!j)
+>                 return;
+> 	release_unref_folios(folios);
+> }
+> 
+> and pfn_range_put() also becomes shorter and loses all the lruvec work.
+
+something like this?
+
+void pfn_range_put(struct pfn_range *range, unsigned int nr)
+{
+	struct folio_batch folios;
+	unsigned int i;
+
+	folio_batch_init(&folios);
+	for (i = 0; i < nr; i++) {
+		struct folio *folio = pfn_folio(range[i].start);
+		unsigned int refs = range[i].end - range[i].start;
+
+		free_swap_cache(folio); // <<<<< HERE? To be equivalent to
+					//       free_pages_and_swap_cache()
+
+		if (is_huge_zero_page(&folio->page))
+                         continue;
+
+		if (folio_is_zone_device(folio)) {
+			if (put_devmap_managed_page_refs(&folio->page, refs))
+				continue;
+			if (folio_ref_sub_and_test(folio, refs))
+				free_zone_device_page(&folio->page);
+			continue;
+		}
+
+		if (!folio_ref_sub_and_test(folio, refs))
+			continue;
+
+		/* hugetlb has its own memcg */
+		if (folio_test_hugetlb(folio)) {
+			free_huge_folio(folio);
+			continue;
+		}
+
+		if (folio_batch_add(&folios, folio) == 0)
+			release_unref_folios(&folios);
+	}
+
+	if (folios.nr)
+		release_unref_folios(&folios);
+}
+
+> 
+> Thoughts?
+
+Looks like its getting there to me. Although the bulk of the logic inside the
+loop is still common between folios_put() and pfn_range_put(); perhaps we can
+have a common helper for that, which would just need to take (folio, refs)?
+
+So by adding free_swap_cache() above, we can call pfn_range_put() direct and can
+remove free_pages_and_swap_cache() entirely.
+
+What's the best way to move forward here? Two options as I see it:
+
+ - I drop patch 4 and create a version of pfn_range_put() that has the same
+semantic as above but essentially just copies the old release_pages() (similar
+to my v1). That keeps my series independent. Then you can replace with the new
+pfn_range_put() as part of your series.
+
+ - We can just hook my patches up to the end of your series and do it all in one go.
+
+Opinion?
+
+Thanks,
+Ryan
+
