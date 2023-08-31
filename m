@@ -2,39 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BB3378F340
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:23:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7718478F343
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 21:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245758AbjHaTXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 15:23:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39350 "EHLO
+        id S1347059AbjHaTZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 15:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230245AbjHaTXs (ORCPT
+        with ESMTP id S230137AbjHaTZ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 15:23:48 -0400
-Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62243E65
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 12:23:45 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,217,1688396400"; 
-   d="scan'208";a="174630762"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 01 Sep 2023 04:23:44 +0900
-Received: from localhost.localdomain (unknown [10.226.92.179])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id BB31B400F4FA;
-        Fri,  1 Sep 2023 04:23:42 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Lee Jones <lee@kernel.org>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        patches@opensource.cirrus.com, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH v3] mfd: arizona-i2c: Simplify probe()
-Date:   Thu, 31 Aug 2023 20:23:40 +0100
-Message-Id: <20230831192340.80452-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 31 Aug 2023 15:25:26 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31F9C1BF;
+        Thu, 31 Aug 2023 12:25:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C44F56252F;
+        Thu, 31 Aug 2023 19:25:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0BDFC433C9;
+        Thu, 31 Aug 2023 19:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693509923;
+        bh=iIRc5Ix5Kg1oYFJwWyasGAi6WX06E00nlXjSEafSnHU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VsjV+o/JAqZq+CCMHKZfiBYRQ51+nE9UzY5/cJTQSathbLQLEx+t00NfsUJ2f2XwF
+         rhdPaZacBAzcefKT+rNMvssS/fst3C6HPVJ8ldCvV/2lFTrmZsDg3H+BwoqyY3wTCZ
+         9zysaic6amGMKfOqayEF6+59gq5qSKrIJvF7r795V3O1kAca484eekGF2CyzUhf9ic
+         alTjnMOytH2yXCfgwUIyDn8i9rNpLxIWhcZwFVDssJRZbhxaL2+Xz+AQ+6yYyta4i8
+         LhQaBooyXkF1ruMSZeiLZezE2BkaNmm39flmWtmEmtMk5On0X7WXuDT+hNqJbx3nOE
+         Re191jYcsOiTA==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 106D640722; Thu, 31 Aug 2023 16:25:20 -0300 (-03)
+Date:   Thu, 31 Aug 2023 16:25:19 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Ian Rogers <irogers@google.com>
+Cc:     "Liang, Kan" <kan.liang@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Rob Herring <robh@kernel.org>,
+        James Clark <james.clark@arm.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/3] perf list/debug output fixes
+Message-ID: <ZPDpH2HauctN2nwo@kernel.org>
+References: <20230831071421.2201358-1-irogers@google.com>
+ <c2affcc9-468f-bf4c-a080-65b31e05a83f@linux.intel.com>
+ <CAP-5=fWdH_1or1yhH3pqFymnK=-w=OTzx63mVgknFNgqxf6T+A@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+In-Reply-To: <CAP-5=fWdH_1or1yhH3pqFymnK=-w=OTzx63mVgknFNgqxf6T+A@mail.gmail.com>
+X-Url:  http://acmel.wordpress.com
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,51 +69,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify probe() by replacing device_get_match_data() and ID lookup for
-retrieving match data by i2c_get_match_data().
+Em Thu, Aug 31, 2023 at 11:41:51AM -0700, Ian Rogers escreveu:
+> On Thu, Aug 31, 2023 at 11:28 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
+> >
+> >
+> >
+> > On 2023-08-31 3:14 a.m., Ian Rogers wrote:
+> > > Fix a long standing parse_events_term cloning bug so that the bad
+> > > display of terms can be fixed and the code somewhat more intuitive:
+> > > https://lore.kernel.org/lkml/20230830070753.1821629-2-irogers@google.com/
+> > >
+> >
+> > Tested-by: Kan Liang <kan.liang@linux.intel.com>
+> 
+> Thanks Kan!
+> Ian
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Tested-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
-Note:
- This patch is only compile tested.
+Thanks, applied.
 
-v2->v3:
- * Used uintptr_t for enum casting.
-v1->v2:
- * Added Ack and Tested-by tag from Charles Keepax
- * Dropped unnecessary blank line before switch statement.
----
- drivers/mfd/arizona-i2c.c | 11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
-
-diff --git a/drivers/mfd/arizona-i2c.c b/drivers/mfd/arizona-i2c.c
-index 9b7183ffc928..10e76fc8f12e 100644
---- a/drivers/mfd/arizona-i2c.c
-+++ b/drivers/mfd/arizona-i2c.c
-@@ -22,19 +22,12 @@
+- Arnaldo
  
- static int arizona_i2c_probe(struct i2c_client *i2c)
- {
--	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
--	const void *match_data;
- 	struct arizona *arizona;
- 	const struct regmap_config *regmap_config = NULL;
--	unsigned long type = 0;
-+	unsigned long type;
- 	int ret;
- 
--	match_data = device_get_match_data(&i2c->dev);
--	if (match_data)
--		type = (unsigned long)match_data;
--	else if (id)
--		type = id->driver_data;
--
-+	type = (uintptr_t)i2c_get_match_data(i2c);
- 	switch (type) {
- 	case WM5102:
- 		if (IS_ENABLED(CONFIG_MFD_WM5102))
+> > Thanks,
+> > Kan
+> >
+> > > Fix a bug caused by the rename of 'cpu' to 'default_core' in perf list.
+> > >
+> > > Add more documentation, increase type safety and fix some related bugs
+> > > where terms weren't initialized properly.
+> > >
+> > > Ian Rogers (3):
+> > >   perf list: Don't print Unit for default_core
+> > >   perf parse-events: Name the two term enums
+> > >   perf parse-events: Fix propagation of term's no_value when cloning
+> > >
+> > >  tools/perf/builtin-list.c      |   2 +-
+> > >  tools/perf/util/parse-events.c | 203 +++++++++++++++++++++++----------
+> > >  tools/perf/util/parse-events.h |  60 +++++++---
+> > >  tools/perf/util/parse-events.l |   2 +-
+> > >  tools/perf/util/parse-events.y |  27 +++--
+> > >  tools/perf/util/pmu.c          |   2 +-
+> > >  6 files changed, 207 insertions(+), 89 deletions(-)
+> > >
+
 -- 
-2.25.1
 
+- Arnaldo
