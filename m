@@ -2,73 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CD978E910
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5684B78E915
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 11:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243280AbjHaJFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 05:05:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        id S243296AbjHaJHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 05:07:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242756AbjHaJFo (ORCPT
+        with ESMTP id S230351AbjHaJHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 05:05:44 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13696CEA;
-        Thu, 31 Aug 2023 02:05:39 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BDD2F21871;
-        Thu, 31 Aug 2023 09:05:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693472737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DujY6dkqedsXFZeiaLXoDY/sYyiJ8dFrPRvd9QhXe4U=;
-        b=TQbe7rXxOquuL1eiRja1QjBmuTWQRynSoCpR94kHmbf3Tw7pzzFmN0XBlcVvgYoueYiyQZ
-        EAuxq5zsTcDlPZA2bzGEcVIGn3riohjif4a+PCyY7jvWVrgmvzDzsMsNttjkkgrEGpfBJH
-        4CsiLRzknMGJH4L/emjN7lQ08pLIzkU=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AD66813583;
-        Thu, 31 Aug 2023 09:05:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WcOdKeFX8GTpDAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Thu, 31 Aug 2023 09:05:37 +0000
-Date:   Thu, 31 Aug 2023 11:05:37 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] mm: memcg: use non-unified stats flushing for
- userspace reads
-Message-ID: <ZPBX4S6XKX+HsDdW@dhcp22.suse.cz>
-References: <ZOcDLD/1WaOwWis9@dhcp22.suse.cz>
- <CAJD7tkZby2enWa8_Js8joHqFx_tHB=aRqHOizaSiXMUjvEei4g@mail.gmail.com>
- <CAJD7tkadEtjK_NFwRe8yhUh_Mdx9LCLmCuj5Ty-pqp1rHTb-DA@mail.gmail.com>
- <ZOhSyvDxAyYUJ45i@dhcp22.suse.cz>
- <ZO48h7c9qwQxEPPA@slm.duckdns.org>
- <CAJD7tkaQ1hD9HHyYTK_vfCQ9PCVZag7qMBueKyB+sEn=swvNJA@mail.gmail.com>
- <ZO5IuULSCXMe9_pN@slm.duckdns.org>
- <CAJD7tkYtnhemCLBqFqOVurfWEaCjKtyEM745JYRxFS0r5cpZwQ@mail.gmail.com>
- <ZO5RROsZ1VESCsMG@slm.duckdns.org>
- <CAJD7tkZn_7ppFB1B1V8tBEw12LXCnEOue2Beq6e19PkUAVHUSQ@mail.gmail.com>
+        Thu, 31 Aug 2023 05:07:33 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4BBCE6;
+        Thu, 31 Aug 2023 02:07:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1693472783; x=1694077583; i=deller@gmx.de;
+ bh=qiP5UOqA+gzhfcaF5sKr/vdJh4CV+yEqs4zNd7JpAfk=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=DvEgzH9UIlq+M8K6CV42j6Kus0WxSgNMO9xSludqbxL3il6qtnA3+aIZ2bdbQ9PTDDntBfd
+ cEPP22hsKypIA3QkGCOyrZDiGuu1w5ZJ+H0xC3D7WdevgUCxnIQvb27xxrd20G+YoyKTPY/CN
+ DSpoI2omtWjNZ5HJD5ITn6F5nO6ab4YysSZMKJIFc9+imIOkVvsAo7vxvcGAHTHd+FBy/kmRp
+ 2H7GjTqixeoEK4amMg9M3lOUckL0aD0+TXtpfoRuLwqJXz9cQ5VIU2ru66aEKsW7EpbgF3FPe
+ jQmX6hZtLe0z53gE5z4n/E4TWtHif9+flK1iE6Y3IGEtUP9XlQrQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.8.0.6] ([78.94.87.245]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MHXFx-1qOjTa1kZ7-00DVAW; Thu, 31
+ Aug 2023 11:06:23 +0200
+Message-ID: <c9284441-be6e-d2a0-9283-9e90c9d2da41@gmx.de>
+Date:   Thu, 31 Aug 2023 11:06:19 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJD7tkZn_7ppFB1B1V8tBEw12LXCnEOue2Beq6e19PkUAVHUSQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] HWPOISON: add a pr_err message when forcibly send a
+ sigbus
+Content-Language: en-US
+To:     Shuai Xue <xueshuai@linux.alibaba.com>,
+        Will Deacon <will@kernel.org>,
+        "Luck, Tony" <tony.luck@intel.com>
+Cc:     catalin.marinas@arm.com, James.Bottomley@HansenPartnership.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org
+References: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
+ <20230821105025.GB19469@willie-the-truck>
+ <44c4d801-3e21-426b-2cf0-a7884d2bf5ff@linux.alibaba.com>
+ <54114b64-4726-da46-8ffa-16749ec0887a@linux.alibaba.com>
+ <20230830221814.GB30121@willie-the-truck>
+ <d1c8c0fa-815f-6804-e4e5-89a5259e4bb1@linux.alibaba.com>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <d1c8c0fa-815f-6804-e4e5-89a5259e4bb1@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:cAVDVAOnVNvhXMayZoHPCd7B1NYhu9/J3S2XaNDuHqLBSZ2Xx3d
+ +yc5uObfitVsYb93qeQbxC/E4jE9c4NM19/mILdb6FiH7kxcYaB6cGD/QitOlRO/buB9xgy
+ DvWKqrvVQGuXyoTvMyPP2DV/P+k9HZYw5zN6HJBZx9pLm1tsca0aOdZfu30IPWzaJkzMVwQ
+ ax3bCDqEQd0Enrgw1QVJw==
+UI-OutboundReport: notjunk:1;M01:P0:/svm5qatxX0=;tEZyNlkJFn4TR6HgnZiFCQF8uAW
+ ZV7/6AF2ZLaM57Uxjxgyr9jaogETchQ/NQm0EGaufZmxOE9qeuccQwoAYcvutV5+iIvfvWXHO
+ 0cgw5chPvGySDXw01m3sMbOtdHZoz+A4q6ez9N3+ajZJALphBBgY420z4Bq72nVlyObzu/lMg
+ kXqaVG5AS9fnSWnGjztqwD9shUcdCVlyVI2JBQOrYXQvh/t3gXZ0v2e/yFj2WoybNSvdqLysO
+ T8WuHJMArzNFWmmvPbpx601t3Ptb/JyF+0mawokNyNGIBjmEpEa+tuoGeAv0QhcqhCFCgK7B9
+ mYtNRQi4cxJACcvi7jpAeoIYSxIJ5tnoJR0iL2Pfy6nl1+SIgCLHII29Hu9hApuPWioFjj2m5
+ pb+0Pq+MXvXhUMFoJ5HejaH8Y/0w3TFHYiDigH+CQ+3hSlZYfWN1w09uaQPssKeIE7qluNi4D
+ ithEQ4bMXI4JpbgbRaHfHMbXq28wswWYn+sVlgx8rysmqHNgs2mOD4Qk9jb1HSqyYEjB9Ynih
+ 9X0HTvXZTRRW/LPMdQGciHmnGbp1lnCRTudk1HkWI5qf01hGbsFm7uaCzMKYkeXZ6QKZzu6Eq
+ LZqSJvUecaysnNLmKDro3qQnwXPyl1AG5on/ZXuqrrL+gCQevXXMvHvXt/pwLHPoCC9Z5fwZX
+ 03xVE1PEGpEeUBPvLsYHRv29RHit7rYVBkNOB9bIfyp7f30unSbUKuW4hh3NOGP+SySMtbG/K
+ ohVjtoV9uwyt2cKw8jy1pJxhwUVTjYcF6DUIZ4+Vhg6Yo2EiT5RnjeJZXEgTR/1d4A64Rjro9
+ nSCOTxlSgtUBg/4o0+mE43OhVyrq/G96B89N3Yqd/fmpDAh6hDpnNqsN3GVT9xeQBxWjQDXG8
+ /TJ1oEwL5Q09wts+QQsw2K1SmXenxt5F5kdGZfkPmjmp3as1Yg2FY+LFrz8S/imheGk2nW6JT
+ Wqa/fA==
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,31 +83,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 29-08-23 13:20:34, Yosry Ahmed wrote:
-[...]
-> I will add a mutex on the userspace read side then and spin a v3.
-> Hopefully this addresses Michal's concern as well. The lock dropping
-> logic will still exist for the inner lock, but when one userspace
-> reader drops the inner lock other readers won't be able to pick it up.
+On 8/31/23 05:29, Shuai Xue wrote:
+> On 2023/8/31 06:18, Will Deacon wrote:
+>> On Mon, Aug 28, 2023 at 09:41:55AM +0800, Shuai Xue wrote:
+>>> On 2023/8/22 09:15, Shuai Xue wrote:
+>>>> On 2023/8/21 18:50, Will Deacon wrote:
+>>>>>> diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
+>>>>>> index 3fe516b32577..38e2186882bd 100644
+>>>>>> --- a/arch/arm64/mm/fault.c
+>>>>>> +++ b/arch/arm64/mm/fault.c
+>>>>>> @@ -679,6 +679,8 @@ static int __kprobes do_page_fault(unsigned lon=
+g far, unsigned long esr,
+>>>>>>   	} else if (fault & (VM_FAULT_HWPOISON_LARGE | VM_FAULT_HWPOISON)=
+) {
+>>>>>>   		unsigned int lsb;
+>>>>>>
+>>>>>> +		pr_err("MCE: Killing %s:%d due to hardware memory corruption fau=
+lt at %lx\n",
+>>>>>> +		       current->comm, current->pid, far);
+>>>>>>   		lsb =3D PAGE_SHIFT;
+>>>>>>   		if (fault & VM_FAULT_HWPOISON_LARGE)
+>>>>>>   			lsb =3D hstate_index_to_shift(VM_FAULT_GET_HINDEX(fault));
+>>>>>
+>>>>> Hmm, I'm not convinced by this. We have 'show_unhandled_signals' alr=
+eady,
+>>>>> and there's plenty of code in memory-failure.c for handling poisoned=
+ pages
+>>>>> reported by e.g. GHES. I don't think dumping extra messages in dmesg=
+ from
+>>>>> the arch code really adds anything.
+>>>>
+>>>> I see the show_unhandled_signals() will dump the stack but it rely on
+>>>> /proc/sys/debug/exception-trace be set.
+>>>>
+>>>> The memory failure is the top issue in our production cloud and also =
+other hyperscalers.
+>>>> We have received complaints from our operations engineers and end use=
+rs that processes
+>>>> are being inexplicably killed :(. Could you please consider add a mes=
+sage?
+>>
+>> I don't have any objection to logging this stuff somehow, I'm just not
+>> convinced that the console is the best place for that information in 20=
+23.
+>> Is there really nothing better?
 
-Yes, that would minimize the risk of the worst case pathological
-behavior.
+> I agree that console might not the better place, but it still plays an i=
+mportant role.
+> IMO the most direct idea for end user to check what happened is to check=
+ by viewing
+> the dmesg. In addition, we deployed some log store service collects all =
+cluster dmesg
+> from /var/log/kern.
 
-> > I don't have a strong preference. As long as we stay away from introducing a
-> > new user interface construct and can address the noticed scalability issues,
-> > it should be fine. Note that there are other ways to address priority
-> > inversions and contentions too - e.g. we can always bounce flushing to a
-> > [kthread_]kworker and rate limit (or rather latency limit) how often
-> > different classes of users can trigger flushing. I don't think we have to go
-> > there yet but if the simpler meaures don't work out, there are still many
-> > ways to solve the problem within the kernel.
-> 
-> I whole-heartedly agree with the preference to fix the problem within
-> the kernel with minimal/none user space involvement.
+Right, pr_err() is not just console.
+It ends up in the syslog, which ends up in a lot of places, e.g. through s=
+yslog forwarding.
+Most monitoring tools monitor the syslog as well.
 
-Let's see. While I would love to see a solution that works for everybody
-without explicit interface we have hit problems with locks involved in
-stat files in the past.
--- 
-Michal Hocko
-SUSE Labs
+So, IMHO pr_err() is the right thing.
+
+Helge
+
+
+
+>
+> Hi, Will,
+>
+
+
+
+>
+> Do you have any better choice?
+>
+> + @Tony for ERST
+> I found that after /dev/mcelog driver deprecated, both x86 and ARM64 pla=
+tform does not
+> support to collect MCE record of previous boot in persistent storage via=
+ APEI ERST.
+> I propose to add a mechanism to do it for rasdaemon. Do you have any sug=
+gestion?
+>
+> Thank you.
+> Best Regards,
+> Shuai
+>
+
