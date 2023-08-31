@@ -2,101 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D6278E624
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1555A78E62A
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 08:11:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239488AbjHaGJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 02:09:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46726 "EHLO
+        id S245210AbjHaGLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 02:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238961AbjHaGJS (ORCPT
+        with ESMTP id S232588AbjHaGLB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 02:09:18 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADEEC2
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:09:15 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-ccc462deca6so267082276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 30 Aug 2023 23:09:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693462155; x=1694066955; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=E2DoMZ95jX+7wuzxk8MbNgguoc+FvSC+cq1FLxzCeJs=;
-        b=SbE6RVToDh3hDMM5zP/JdBVM57eFgVnu56CYzBYpoI2zHSEy2VW+SrAL+Ut67dG+27
-         sV315/AFd4dHdbZahO3eVbNU6T4k8Crem+RTyxR2L7CUUUxwn9lrBpOekA56s6JWlMo+
-         53KXr3epx7bYZry72B/HuoLKP9tf+D8FsYrHSlfORrZolfcx2iPZElFDcxEpMllaA9/B
-         Pz/nn6TrG5STgnCHQkbpWUnK5oFiYjEgQOTBuePTNOE6G+MuGxWkbSPfitUb8022iX2f
-         4iFKZxA1rVKebJBaIL4nLBXnJnniZ4uU3DG6HxTXDcQahp++5e6vmBNnpX2HPPETRJ2T
-         uvTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693462155; x=1694066955;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=E2DoMZ95jX+7wuzxk8MbNgguoc+FvSC+cq1FLxzCeJs=;
-        b=VruUUWF3HtVEkpPCHfTitPEgTaRckCZPwvJXpm3OtWLyX6xDVTINJAxMi5udHBMq59
-         CYDiEhbRYLqAuJDZzpA9NzCHNSJdAOoScIVa3x49uHU/1yikZcJMpqExdd2yXhbLO6Tq
-         vNrzmTP6NTB7LxHDYjCmsqmxliDf0SHnvj5L6im6wQg5QsYrmQT4TdYJNvDHYubuPZnc
-         xWpHkeh5U/gXMWb3LxZgwki9L2YyuelLmr4G8Obrj068jIJPBkl8H8OGHYkgVtYMDhy2
-         C0nIIKUZma+nqVPPV5APTTcNugmnhDbgDS+Fm5J1vOlJ8ZvogNV6WueHpkCRqJ5IyLXH
-         PrIA==
-X-Gm-Message-State: AOJu0YzWVAheAhpS7DvPwsz3D/Wy10DTk5cjworPjhJPv3lduPynebpg
-        OpviEJ6thZOIa2sDQtnl3srqs2yi0K4ZF+NJJpc4bQ==
-X-Google-Smtp-Source: AGHT+IEuWMji+FhSDPy8F+AsT4+lUhey0SmJPV6Oswthd7RlIIMoF1+2/PDJhmzGazPZy/T7YL2GtTm6CgPZ/rjpQ5s=
-X-Received: by 2002:a25:b0a1:0:b0:d05:fa02:5bf5 with SMTP id
- f33-20020a25b0a1000000b00d05fa025bf5mr4284152ybj.48.1693462155113; Wed, 30
- Aug 2023 23:09:15 -0700 (PDT)
+        Thu, 31 Aug 2023 02:11:01 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F1CFE0;
+        Wed, 30 Aug 2023 23:10:59 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 37V5WmGl030948;
+        Thu, 31 Aug 2023 06:10:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=fXMYq1GgugiApxviuhU/l2UCt3A4SW3Pp7aUIiZqVoo=;
+ b=IZ6Y/x54NEd7YQytE+Ec/y/EHTYB8HO1HeTFWwQOaeImz1YQ8OaZlH3quOqUyU22kjer
+ K4s+NLm+JgP/EIG/JVSiLoB7qJTNEb0qWCH/4q52aceuD0VNaaPkF4eWRE0wXeudAKEn
+ 75HcHaL3+lwR7HyVLZRroZIHs8yTEb3UIp2J7HRC1ZyMuBIjXiUOzkyJF66+5sRmB3uG
+ JgnLjtx1GV4JhXhYq/3ZjywtL7pTW2Dfo4dS8g4SQl2cfU8CHK+Ib1TYq8r02sx+9zKW
+ YK7Ogdoal5Jhf/NuQOtNtkCwl0qbgkX+mr3tMYkm7RWT4vx3uUFhmXd3C2/CCzdJTrcs VA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3st6ct9pjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 06:10:52 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 37V6Anxj010632
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 31 Aug 2023 06:10:49 GMT
+Received: from [10.201.192.51] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Wed, 30 Aug
+ 2023 23:10:44 -0700
+Message-ID: <1aad08e5-d3a4-e3cf-3535-deb54ecf0169@quicinc.com>
+Date:   Thu, 31 Aug 2023 11:40:41 +0530
 MIME-Version: 1.0
-References: <cover.1693459976.git.quic_varada@quicinc.com> <7c14a3e29ee274f334444f809fa820e725e255dd.1693459976.git.quic_varada@quicinc.com>
-In-Reply-To: <7c14a3e29ee274f334444f809fa820e725e255dd.1693459976.git.quic_varada@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 31 Aug 2023 09:09:04 +0300
-Message-ID: <CAA8EJpoRJLGE7g-Ur4e-gx6kD7jX-GpO3u=tZbGx0FP6ViqYEQ@mail.gmail.com>
-Subject: Re: [PATCH v11 3/4] arm64: dts: qcom: ipq5332: Enable USB
-To:     Varadarajan Narayanan <quic_varada@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        vkoul@kernel.org, kishon@kernel.org, arnd@arndb.de,
-        geert+renesas@glider.be, nfraprado@collabora.com, rafal@milecki.pl,
-        peng.fan@nxp.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-phy@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH 3/3] arm64: dts: qcom: ipq5018: enable the CPUFreq support
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     Robert Marko <robimarko@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <jassisinghbrar@gmail.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_varada@quicinc.com>, <quic_srichara@quicinc.com>
+References: <20230829095423.760641-1-quic_gokulsri@quicinc.com>
+ <20230829095423.760641-4-quic_gokulsri@quicinc.com>
+ <f457ee94-81d0-bd28-1432-ba2828dabb79@linaro.org>
+ <efe09cb6-7b67-9307-28e7-99e238a3672b@gmail.com>
+ <0941e2f4-6b58-a4e7-3dda-c1723f5503ac@linaro.org>
+ <CAOX2RU4j57H51ceYdKk9K-2ZNO7N4MDA6BOKrP2N3DNbphQAow@mail.gmail.com>
+ <f7a350a9-5580-c3b9-a917-69a9b16dbf41@quicinc.com>
+ <CAA8EJpoE=oF86piKCnt-7-Nw8xa9nYg-TqSOaP1V-vb=Oxwwng@mail.gmail.com>
+From:   Gokul Sriram P <quic_gokulsri@quicinc.com>
+In-Reply-To: <CAA8EJpoE=oF86piKCnt-7-Nw8xa9nYg-TqSOaP1V-vb=Oxwwng@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: oVU8rjJsxSQBKBNtdRnQeXJJetB8JRWp
+X-Proofpoint-ORIG-GUID: oVU8rjJsxSQBKBNtdRnQeXJJetB8JRWp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-08-31_04,2023-08-29_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ clxscore=1015 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=791
+ suspectscore=0 spamscore=0 lowpriorityscore=0 mlxscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2308310055
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 08:39, Varadarajan Narayanan
-<quic_varada@quicinc.com> wrote:
->
-> Enable USB2 in host mode.
->
-> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
-> ---
-> v11:
->         Sort nodes in alphanumeric order
-> v10:
->         regulator_s0500 -> regulator-s0500
->         "make W=1 ARCH=arm64 -j 16 CHECK_DTBS=y DT_SCHEMA_FILES=qcom,ipq5332-usb-hsphy.yaml dtbs_check" passed
-> v9:
->         regulator_fixed_5p0: s0500 -> regulator_fixed_5p0: regulator_s0500
->         "make ARCH=arm64 -j 16 CHECK_DTBS=y DT_SCHEMA_FILES=qcom,ipq5332-usb-hsphy.yaml dtbs_check" passed
-> v6:
->         Add vdd-supply and corresponding regulator
-> v1:
->         Enable usb-phy node
-> ---
->  arch/arm64/boot/dts/qcom/ipq5332-rdp468.dts | 23 +++++++++++++++++++++++
->  1 file changed, 23 insertions(+)
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+On 8/31/2023 1:12 AM, Dmitry Baryshkov wrote:
+> On Wed, 30 Aug 2023 at 21:32, Gokul Sriram P <quic_gokulsri@quicinc.com> wrote:
+>>
+>>>>>>>     #include <dt-bindings/interrupt-controller/arm-gic.h>
+>>>>>>>     #include <dt-bindings/clock/qcom,gcc-ipq5018.h>
+>>>>>>>     #include <dt-bindings/reset/qcom,gcc-ipq5018.h>
+>>>>>>> +#include <dt-bindings/clock/qcom,apss-ipq.h>
+>>>>>> c is before r.
+>>    Sure, will update.
+>>
+>> [...]
+>>>>>>> +   cpu_opp_table: opp-table-cpu {
+>>>>>>> +           compatible = "operating-points-v2";
+>>>>>>> +           opp-shared;
+>>>>>>> +
+>>>>>>> +           opp-1008000000 {
+>>>>>>> +                   opp-hz = /bits/ 64 <1008000000>;
+>>>>>>> +                   opp-microvolt = <1100000>;
+>>>>>>> +                   clock-latency-ns = <200000>;
+>>>>>> And the rest of OPPs?
+>>>>> Hi Krzysztof,
+>>>>> IPQ5018 only supports running at 1.1GHz, but its running at 800MHz
+>>>>> by default from the bootloader so there is only one OPP.
+>>>> Isn't this contradictory? If it is running at 800 initially, then it
+>>>> supports running at 800...
+>>> I can only guess that it's not validated at 800MHz.
+>> As per the h/w design team, there is negligible power or thermal benefit
+>> by lowering to 800MHz clock.
+>> Hence, 800MHz opp wasn't included here.
+> Just my 2c. If 800 MHz is supported, it should be included. Even if
+> just to prevent the kernel from throwing a warning about the CPU
+> running at the unsupported frequency. Then one can use scheduler
+> tunings to prevent the CPU from going to 800 MHz state.
 
---
-With best wishes
-Dmitry
+sure, understood. Will add opp at 800MHz. Thanks.
+
+Regards,
+Gokul
+
