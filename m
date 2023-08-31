@@ -2,50 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1629078E774
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 986A878E77C
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 10:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235690AbjHaH6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
+        id S242627AbjHaIBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 04:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231284AbjHaH6M (ORCPT
+        with ESMTP id S230363AbjHaIBD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:58:12 -0400
+        Thu, 31 Aug 2023 04:01:03 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB5D1A4
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 00:58:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D002A4;
+        Thu, 31 Aug 2023 01:01:00 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 30C25B8212F
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 07:58:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 873E4C433C8;
-        Thu, 31 Aug 2023 07:58:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693468686;
-        bh=egUkiVsevLMU8xG5XU5h1UuKxB2QeM6GeSDTlW2cmUU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IT4fE548/yUWkzJkJXUfarQ2N0rVHpLsTCG9Pzf/ssUC960n1s9u1v3LmYTN98wly
-         fw1DxLoILilmmUSEbRlsPc5od3XI+X2A5tEG5RyGz/nfE+z7RjlTbeAnEcoc0OI6CT
-         bWDtbzc+TJejuNPw3PIFe1qvrJW/jW9sSrDx++AQ=
-Date:   Thu, 31 Aug 2023 09:58:04 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: Stability guarantees on uevent variables?
-Message-ID: <2023083110-delicacy-thinly-5af6@gregkh>
-References: <c0d32695-9e3e-4173-8448-7d123f38824e@notapiano>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4641FB8214E;
+        Thu, 31 Aug 2023 08:00:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A84EC433C7;
+        Thu, 31 Aug 2023 07:59:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693468858;
+        bh=bjOBnN5cuaqL4BPOfU9w7ettZB2fL/iGFa3BBWRvIeQ=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=fUzA/orkD5oTBNPo8NuZmzn2EGr1G/jgtVX/Il5yIja4v8V90CXpnM9+NpwKnWdYw
+         UZV0Ser/hd6UBvDG1TdvDNZH17m8WQjVA3tXLuK44j0OZUl2NYvuZFtEC0B97vPKBW
+         dW12XUOD8IB+y7vjF2MjnQ5rOgy3scO28TXQjXmXu6JiqURsTHiwoaFF8Lr31b1CL8
+         wL1NiPNy50twyPvJmlgxylAG05M8Hp2o0gYHNybet7hAoi9xHPucQrCO112KL5jp/w
+         xaBfyX7IWigxKGZeMNglTBIKNCbuvYGDdKeQSiIUUwoZkd7KAhtAWxQfuyGJY5ZdZm
+         dSYK772a6qwHQ==
+Message-ID: <557b4345-3cdd-6099-5bdc-d546a44d7ddd@kernel.org>
+Date:   Thu, 31 Aug 2023 09:59:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c0d32695-9e3e-4173-8448-7d123f38824e@notapiano>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [ANNOUNCEMENT] CFP: Real-time and Scheduling MC at LPC
+From:   Daniel Bristot de Oliveira <bristot@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Abel Wu <wuyun.abel@bytedance.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Hao Jia <jiahao.os@bytedance.com>,
+        Huaixin Chang <changhuaixin@linux.alibaba.com>,
+        Huang Ying <ying.huang@intel.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Josh Don <joshdon@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Odin Ugedal <odin@uged.al>,
+        Patrick Bellasi <patrick.bellasi@arm.com>,
+        Peng Wang <rocking@linux.alibaba.com>,
+        Phil Auld <pauld@redhat.com>,
+        Qais Yousef <qais.yousef@arm.com>, Qian Cai <cai@lca.pw>,
+        Quentin Perret <qperret@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Waiman Long <longman@redhat.com>,
+        Will Deacon <will@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Zhen Ni <nizhen@uniontech.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Clark Williams <williams@redhat.com>,
+        Mel Gorman <mgorman@suse.de>, Ben Segall <bsegall@google.com>,
+        John Stultz <jstultz@google.com>,
+        David Vernet <void@manifault.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Chris Mason <clm@fb.com>,
+        Tejun Heo <tj@kernel.org>,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        John Kacur <jkacur@redhat.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        "paulmck@kernel.org" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vineeth Remanan Pillai <vineeth@bitbyteword.org>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Kate Stewart <kstewart@linuxfoundation.org>,
+        Min Yu <myu@linuxfoundation.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        =?UTF-8?Q?Luis_Claudio_R=2e_Gon=c3=a7alves?= <lclaudio@redhat.com>,
+        Daniel Wagner <wagi@monom.org>,
+        Tom Zanussi <zanussi@kernel.org>,
+        Mark Brown <mark.brown@linaro.org>,
+        joseph.salisbury@canonical.com,
+        Morten Rasmussen <Morten.Rasmussen@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <d6113bec-6591-2efc-2255-66867e5db899@kernel.org>
+ <c53cb40d-86c2-0325-4103-af135fd0e680@kernel.org>
+Content-Language: en-US, pt-BR, it-IT
+In-Reply-To: <c53cb40d-86c2-0325-4103-af135fd0e680@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -54,76 +131,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 07:08:39PM -0400, Nícolas F. R. A. Prado wrote:
-> Hi,
+On 8/25/23 17:57, Daniel Bristot de Oliveira wrote:
+> Hello
 > 
-> my question boils down to the following:
-> 
-> Is there a stability guarantee on the format and content of the variables in
-> uevents produced by the kernel?
+> This is a gentle reminder about RT and SCHED MC. We will have to send the
+> schedule on the next weeks. Please, submit your topic ASAP.
 
-Only if the normal userspace tools that use those variables require it.
+Last call: we will close the CPF on Sept 4th.
 
-> I would assume so, given that uevents are explicitly produced for userspace, and
-> users will rely on them. However, looking through the ABI documentation I could
-> only find two instances of uevents being defined (testing/usb-uevent and
-> testing/usb-charger-uevent) and neither mention the variables added in the
-> KOBJ_ADD action. The document for the uevent file in sysfs,
-> testing/sysfs-uevent, only mentions writing synthetic uevents, rather than
-> reading existing ones. Is the documentation simply lacking or is it intentional
-> that uevent variables aren't covered?
-> 
-> I'm particularly interested in the format for the MODALIAS uevent variable. My
-> understanding is that its only use is to match against the modules' aliases in
-> the modules.alias file. For that reason I'm wondering whether for this variable,
-> the guarantee would only be that the format of the value will match the one in
-> modules.alias, but the precise format is not guaranteed (for example, a new
-> field could potentially be introduced in the future if added to both the device
-> uevent and module's alias). However, I do see a few ABI documentation pages for
-> the modalias file in sysfs (eg in testing/sysfs-bus-pci), which explicitly
-> describe the format, and that's supposed to be the same as the MODALIAS uevent,
-> so does that mean the format itself is stable?
+Thanks!
 
-No, modalias is not stable, it can change over time (add new fields), as
-it is just a userspace representation of how to call 'modprobe' and
-match up with the kernel-provided module alias fields.
-
-So the value will always match the module alias fields, but userspace
-shouldn't be attempting to parse the thing at all, as that makes no
-sense (the kernel understands the format, userspace does not need to.)
-
-> I'll be happy to improve the ABI documentation based on the reply to these
-> questions.
-> 
-> As for the full context for these questions, as part of an effort to improve the
-> detection of regressions affecting device probe, I want to be able to check
-> whether devices under a discoverable bus (USB, PCI) were populated and probed by
-> a driver.
-
-So you want to see if a driver is possible for this device, or if the
-driver failed to bind to the device?  Those are different things.
-
-> We currently do this by checking against driver and device names [1],
-> but as has been pointed out before, that's not stable ABI, and the test might
-> break if things get renamed or moved around.
-
-Yes, driver names get changed all the time, and move around the kernel
-tree as well.  That's not going to stop, but it shouldn't affect
-testing, right?
-
-> So my intention is to change that
-> check to use modaliases or other uevents to find the device in a stable way and
-> check for the driver symlink to verify it's been probed.
-
-Just use the symlink, that shows if a device actually has a driver bound
-to it.  Note that drivers can refuse to bind to a device for loads of
-reasons, even if it's probe function is properly called by the kernel.
-
-So for regressions, just see if there is a link from all devices to a
-driver and you should be fine.  No need to mess around with module
-aliases at all, as you don't want to put the parsing of those structures
-in userspace as well, right?
-
-thanks,
-
-greg k-h
+-- Daniel
