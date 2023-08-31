@@ -2,104 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 058F478E70F
-	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 686BF78E717
+	for <lists+linux-kernel@lfdr.de>; Thu, 31 Aug 2023 09:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230124AbjHaHQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 03:16:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44504 "EHLO
+        id S235309AbjHaHRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 03:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjHaHQ1 (ORCPT
+        with ESMTP id S235662AbjHaHRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 03:16:27 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8380AE62;
-        Thu, 31 Aug 2023 00:16:02 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (117.145-247-81.adsl-dyn.isp.belgacom.be [81.247.145.117])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 75645836;
-        Thu, 31 Aug 2023 09:14:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693466054;
-        bh=tVpuZI+y28Ywlldd4PZ6z5BJVpXZjNaH4iaRbuAIPbI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lu2ZvOQ6sdIZ+07h4wvxA+rgmdmI7xLnvfEztbfY4wd9O0X7cNRGhrbrF4SEwlslZ
-         VMvY9qmgXY7M6IuqD93rozTmaHdikGsVeCIu+ej4t8QF3BASPmahKkatNYrDvD+NKA
-         b+Xm8/4rrLr2ZlgJBgLU9eaqIHn2UY1y8/lOkrs8=
-Date:   Thu, 31 Aug 2023 10:15:47 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Rui Miguel Silva <rmfrfs@gmail.com>,
-        Martin Kepplinger <martink@posteo.de>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] media: imx-mipi-csis: Remove an incorrect
- fwnode_handle_put() call
-Message-ID: <20230831071547.GC2698@pendragon.ideasonboard.com>
-References: <dd5b741f496d074d342958f14baff5bae8c71531.1693429556.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <dd5b741f496d074d342958f14baff5bae8c71531.1693429556.git.christophe.jaillet@wanadoo.fr>
+        Thu, 31 Aug 2023 03:17:52 -0400
+X-Greylist: delayed 165 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Aug 2023 00:17:46 PDT
+Received: from out-251.mta0.migadu.com (out-251.mta0.migadu.com [91.218.175.251])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0039E1A4;
+        Thu, 31 Aug 2023 00:17:45 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1693466264;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DFazo8t+x34pBbM7FhZAQZ14ar3Xb4GsuBZugiC8qbg=;
+        b=TmoDr3ge1UyYX8ugRY7XZkb1xippW67sMxQbI3dFiX3Dbs/J/HBs2sO7VWfWEzPmxOfLQe
+        irrOtXTt8xSQ97Xkijkm0FIC9OgQEr/Td6ezNmKG3h7hR9QGia9r5MoB5IEtbw4+D4m6uq
+        CfCbsYqz98UwThxz+SvZ0LkR7PL5hUE=
+Mime-Version: 1.0
+Subject: Re: [PATCH 2/3] use nth_page() in place of direct struct page
+ manipulation.
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <20230830182753.55367-3-zi.yan@sent.com>
+Date:   Thu, 31 Aug 2023 15:17:15 +0800
+Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <50EF53C6-0CE2-4256-B8AB-AE9BF290419D@linux.dev>
+References: <20230830182753.55367-1-zi.yan@sent.com>
+ <20230830182753.55367-3-zi.yan@sent.com>
+To:     Zi Yan <ziy@nvidia.com>
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
 
-Thank you for the patch.
 
-On Wed, Aug 30, 2023 at 11:06:14PM +0200, Christophe JAILLET wrote:
-> The commit in Fixes has removed an fwnode_graph_get_endpoint_by_id() call
-> in mipi_csis_subdev_init().
-> So the reference that was taken should not be released anymore in the
-> error handling path of the probe and in the remove function.
+> On Aug 31, 2023, at 02:27, Zi Yan <zi.yan@sent.com> wrote:
 > 
-> Remove the now incorrect fwnode_handle_put() calls.
+> From: Zi Yan <ziy@nvidia.com>
 > 
-> Fixes: 1029939b3782 ("media: v4l: async: Simplify async sub-device fwnode matching")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/media/platform/nxp/imx-mipi-csis.c | 2 --
->  1 file changed, 2 deletions(-)
+> When dealing with hugetlb pages, struct page is not guaranteed to be
+> contiguous on SPARSEMEM without VMEMMAP. Use nth_page() to handle it
+> properly.
 > 
-> diff --git a/drivers/media/platform/nxp/imx-mipi-csis.c b/drivers/media/platform/nxp/imx-mipi-csis.c
-> index 16f19a640130..5f93712bf485 100644
-> --- a/drivers/media/platform/nxp/imx-mipi-csis.c
-> +++ b/drivers/media/platform/nxp/imx-mipi-csis.c
-> @@ -1490,7 +1490,6 @@ static int mipi_csis_probe(struct platform_device *pdev)
->  	v4l2_async_unregister_subdev(&csis->sd);
->  err_disable_clock:
->  	mipi_csis_clk_disable(csis);
-> -	fwnode_handle_put(csis->sd.fwnode);
->  
->  	return ret;
->  }
-> @@ -1510,7 +1509,6 @@ static void mipi_csis_remove(struct platform_device *pdev)
->  	mipi_csis_clk_disable(csis);
->  	v4l2_subdev_cleanup(&csis->sd);
->  	media_entity_cleanup(&csis->sd.entity);
-> -	fwnode_handle_put(csis->sd.fwnode);
->  	pm_runtime_set_suspended(&pdev->dev);
->  }
->  
+> Signed-off-by: Zi Yan <ziy@nvidia.com <mailto:ziy@nvidia.com>>
 
--- 
-Regards,
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-Laurent Pinchart
+It's better to add a Fixes tag to the commit 38c1ddbde6.
+
+Thanks.
+
