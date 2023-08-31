@@ -2,173 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0B478F555
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E4878F557
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 00:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347657AbjHaWUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 18:20:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56118 "EHLO
+        id S1347664AbjHaWWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 18:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241654AbjHaWUA (ORCPT
+        with ESMTP id S231196AbjHaWWQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 18:20:00 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C069C
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:19:57 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bee82fad0fso10560065ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:19:57 -0700 (PDT)
+        Thu, 31 Aug 2023 18:22:16 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CDE3E65
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:22:13 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2b9f0b7af65so23254161fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:22:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693520397; x=1694125197; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=WL1OlRhy0NdGZsgMXamAAmSAYVi0KD+OtQoBvLKcCEI=;
-        b=nibL5F8rK+TDOXPQ2XMUSCI8LpvQSkTBB1ip2CdXP90pbsV4KtGe9Z6K0fIsfKJFfF
-         w+Go3toEBtyo39lbIF+Np8J93rE1Z1UC/WpiK9CMsLGD6Pjw1aQDNJr9GHbxd7EY73yL
-         Y9knxQTzFnH4PduuXNMZzSVD3sf8Q6FsKJ6rsSjsM22GgFtKa+7oqyc/1L+00GeOsnRC
-         TyRg1pjiNqTSqFp5NUWVrrvu8+ExCmO2w9VAtQ08miXwjU/dBixFPaiioWkgQQva1kRE
-         PMQ6bjvC6eZgqavcEI2ODaBIIfnjjz6N2QCeVty9sJfYHWrsNTbPvoJWbgveTGN6eJOz
-         rzyw==
+        d=linux-foundation.org; s=google; t=1693520531; x=1694125331; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R6PBikJYb7xQXhgePqx77WnTwF8snc03B9lP8paS8tQ=;
+        b=QaHAjkyelskzK7Bhd3DooPVVfBxxPEXCeY3mNrWbMgEck1HgVrfU4IdkSf1dw+k5Qz
+         3qVeNvnXxAV590zFIHkGHwrbDdva0pppiEoJlGAYl5cs707i7GJFK9I0dOMJw3xNs/S4
+         pm916RIWuLLxLmOcq5WCxae02y03wnXDUVPHA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693520397; x=1694125197;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693520531; x=1694125331;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=WL1OlRhy0NdGZsgMXamAAmSAYVi0KD+OtQoBvLKcCEI=;
-        b=gX6uZ/+ICjAnNw5GWNPcyYZeX0von6veQtHvLRQJl806PVO8IqsbVFYpox43DrTbFJ
-         703IEDEnWF7o41Jb43yg84MTndTJNoG5ZCU2691r/98+8ie079s/WB8Iya30d5eI9aSw
-         fgOsxHlp0l8NJZ2S45za+01fjBrbEmqvi1iHd/JjFkcR06rWUk9uwwKbX5/5J/Rl2fHj
-         5SEd9DBESzD06VUjZbb1p4aUdFr/fDJOs21e6hOaneKIYtXICErpD7XjNBYihQcTYPyh
-         LMFav7YBBoj/HT42cuXEH/MmqA8bpYBGzWwiToibmsZ7IsJL4nb/JxYTYMd75Y+kyJMa
-         b2GQ==
-X-Gm-Message-State: AOJu0Yw1ZdN/U41o9kEDi+dLfBjg7MwwH21hmL2wqrQlBVoTnJ8gZXu9
-        7N1/pgD1eYLQZ4Nds5UyQRHmEDBRDJ0=
-X-Google-Smtp-Source: AGHT+IGb645GXMN9LSDVQrAhRV8/ayyqkna2+hsdu7bgIBvD4UjGzM4Gu6N7dRTtqbMoBuTuiZ3Qvw==
-X-Received: by 2002:a17:902:9a43:b0:1c0:ad3c:c723 with SMTP id x3-20020a1709029a4300b001c0ad3cc723mr1024424plv.10.1693520396637;
-        Thu, 31 Aug 2023 15:19:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:eca7])
-        by smtp.gmail.com with ESMTPSA id l18-20020a170902d35200b001bbf7fd354csm1683303plk.213.2023.08.31.15.19.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 15:19:56 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 31 Aug 2023 12:19:54 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [GIT PULL] workqueue: Changes for v6.6
-Message-ID: <ZPESClTTFQ0xo6ku@slm.duckdns.org>
+        bh=R6PBikJYb7xQXhgePqx77WnTwF8snc03B9lP8paS8tQ=;
+        b=erQ24fuW15p6Df6FEUBwtmi1GhB+mPq46pRhSZB24VjqkjjsXffzmjezMRfevhUSOK
+         L7D1v0DtD3M/pDskyCQ/Ny1suHjyrSNJPBWjGwIPw++yoSsww0WF8ZZUqfgUmTiqBPbX
+         vyC1MDdg43smsBaICezvhd0sQaB19REDq//oYHG5xUsVneKniHcEjEGYgsLVt9t7Q5Oe
+         1uOA2la6zirtD1BYaCj+yAGoHyhgDYVXqkOTCy+W/6+iyjF+fQgu6dIgmltnmU2xlU98
+         VAhNFLnd5bHSAql3XpS1JZg9uqduNYfUxVdF+G5eThYyCuwwpEJZJsK04gcnkFnk55rN
+         0dIA==
+X-Gm-Message-State: AOJu0Yz+jXMf9ewgjl2Y3BQUiuIEjTe1M5XtK5a0+TIOeiBElx91UIv7
+        QxgcU/a8KrbKQoqhmwztmkOi+5moDIj8IzWz7pBglEhB
+X-Google-Smtp-Source: AGHT+IFG6nJ0MCEnbwqeugvYsxfX9RL/bAV6OE54e68sUy7POIc9pACnypTPjY6mDnNL1GKg1Tq/VQ==
+X-Received: by 2002:a2e:9e92:0:b0:2ba:38c4:1621 with SMTP id f18-20020a2e9e92000000b002ba38c41621mr340495ljk.9.1693520531125;
+        Thu, 31 Aug 2023 15:22:11 -0700 (PDT)
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com. [209.85.167.51])
+        by smtp.gmail.com with ESMTPSA id d5-20020a2e8905000000b002b6ea79c613sm521508lji.94.2023.08.31.15.22.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 31 Aug 2023 15:22:10 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-500b66f8b27so2554350e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 15:22:10 -0700 (PDT)
+X-Received: by 2002:a05:6512:3c85:b0:500:be7e:e84d with SMTP id
+ h5-20020a0565123c8500b00500be7ee84dmr450789lfv.61.1693520530153; Thu, 31 Aug
+ 2023 15:22:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230831150155.GA364946@mit.edu>
+In-Reply-To: <20230831150155.GA364946@mit.edu>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 31 Aug 2023 15:21:52 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgD-QfNUxqbvg5wLBnBCd4aBCR-Z7uuNSDHa+seNm4--Q@mail.gmail.com>
+Message-ID: <CAHk-=wgD-QfNUxqbvg5wLBnBCd4aBCR-Z7uuNSDHa+seNm4--Q@mail.gmail.com>
+Subject: Re: [GIT PULL] Ext4 updates for 6.6
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit aa6fde93f3a49e42c0fe0490d7f3711bac0d162e:
+On Thu, 31 Aug 2023 at 08:02, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+>   * Miscenallenous syzbot and other bug fixes
 
-  workqueue: Scale up wq_cpu_intensive_thresh_us if BogoMIPS is below 4000 (2023-07-25 11:49:57 -1000)
+.. and this is why we write that word as just "Misc". Because pretty
+much everybody gets it wrong after the first four or five letters.
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git/ tags/wq-for-6.6
-
-for you to fetch changes up to fe48ba7daefe75bbbefa2426deddc05f2d530d2d:
-
-  workqueue: fix data race with the pwq->stats[] increment (2023-08-29 09:52:16 -1000)
-
-----------------------------------------------------------------
-workqueue: Changes for v6.6
-
-* Unbound workqueues now support more flexible affinity scopes. The default
-  behavior is to soft-affine according to last level cache boundaries. A
-  work item queued from a given LLC is executed by a worker running on the
-  same LLC but the worker may be moved across cache boundaries as the
-  scheduler sees fit. On machines which multiple L3 caches, which are
-  becoming more popular along with chiplet designs, this improves cache
-  locality while not harming work conservation too much.
-
-  Unbound workqueues are now also a lot more flexible in terms of execution
-  affinity. Differeing levels of affinity scopes are supported and both the
-  default and per-workqueue affinity settings can be modified dynamically.
-  This should help working around amny of sub-optimal behaviors observed
-  recently with asymmetric ARM CPUs.
-
-  This involved signficant restructuring of workqueue code. Nothing was
-  reported yet but there's some risk of subtle regressions. Should keep an
-  eye out.
-
-* Rescuer workers now has more identifiable comms.
-
-* workqueue.unbound_cpus added so that CPUs which can be used by workqueue
-  can be constrained early during boot.
-
-* Now that all the in-tree users have been flushed out, trigger warning if
-  system-wide workqueues are flushed.
-
-* One pull commit from for-6.5-fixes to avoid cascading conflicts in the
-  affinity scope patchset.
-
-----------------------------------------------------------------
-Aaron Tomlin (1):
-      workqueue: Rename rescuer kworker
-
-Mirsad Goran Todorovac (1):
-      workqueue: fix data race with the pwq->stats[] increment
-
-Tejun Heo (27):
-      workqueue: Merge branch 'for-6.5-fixes' into for-6.6
-      workqueue: Drop the special locking rule for worker->flags and worker_pool->flags
-      workqueue: Cleanups around process_scheduled_works()
-      workqueue: Not all work insertion needs to wake up a worker
-      workqueue: Rename wq->cpu_pwqs to wq->cpu_pwq
-      workqueue: Relocate worker and work management functions
-      workqueue: Remove module param disable_numa and sysfs knobs pool_ids and numa
-      workqueue: Use a kthread_worker to release pool_workqueues
-      workqueue: Make per-cpu pool_workqueues allocated and released like unbound ones
-      workqueue: Call wq_update_unbound_numa() on all CPUs in NUMA node on CPU hotplug
-      workqueue: Make unbound workqueues to use per-cpu pool_workqueues
-      workqueue: Rename workqueue_attrs->no_numa to ->ordered
-      workqueue: Rename NUMA related names to use pod instead
-      workqueue: Move wq_pod_init() below workqueue_init()
-      workqueue: Initialize unbound CPU pods later in the boot
-      workqueue: Factor out actual cpumask calculation to reduce subtlety in wq_update_pod()
-      workqueue: Factor out clearing of workqueue-only attrs fields
-      workqueue: Generalize unbound CPU pods
-      workqueue: Add tools/workqueue/wq_dump.py which prints out workqueue configuration
-      workqueue: Modularize wq_pod_type initialization
-      workqueue: Add multiple affinity scopes and interface to select them
-      workqueue: Factor out work to worker assignment and collision handling
-      workqueue: Factor out need_more_worker() check and worker wake-up
-      workqueue: Add workqueue_attrs->__pod_cpumask
-      workqueue: Implement non-strict affinity scope for unbound workqueues
-      workqueue: Add "Affinity Scopes and Performance" section to documentation
-      workqueue: Make default affinity_scope dynamically updatable
-
-Tetsuo Handa (1):
-      workqueue: Warn attempt to flush system-wide workqueues.
-
-Yang Yingliang (1):
-      workqueue: use LIST_HEAD to initialize cull_list
-
-tiozhang (1):
-      workqueue: add cmdline parameter `workqueue.unbound_cpus` to further constrain wq_unbound_cpumask at boot time
-
- Documentation/admin-guide/kernel-parameters.txt |   28 +-
- Documentation/core-api/workqueue.rst            |  356 ++++-
- include/linux/workqueue.h                       |  115 +-
- init/main.c                                     |    1 +
- kernel/workqueue.c                              | 1618 +++++++++++++----------
- kernel/workqueue_internal.h                     |    2 +-
- tools/workqueue/wq_dump.py                      |  177 +++
- tools/workqueue/wq_monitor.py                   |   21 +-
- 8 files changed, 1513 insertions(+), 805 deletions(-)
- create mode 100644 tools/workqueue/wq_dump.py
-
--- 
-tejun
+             Linus
