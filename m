@@ -2,55 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C67E79040C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 01:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F075790408
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 01:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349079AbjIAXkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 19:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41910 "EHLO
+        id S1351083AbjIAXkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 19:40:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231126AbjIAXkB (ORCPT
+        with ESMTP id S1349714AbjIAXkD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 19:40:01 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7491DE65
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 16:39:58 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-591138c0978so28765387b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 16:39:58 -0700 (PDT)
+        Fri, 1 Sep 2023 19:40:03 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C04D0E65
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 16:40:00 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7493fcd829so2172270276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 16:40:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693611597; x=1694216397; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=YZKcv2qm654M/FYmU/pcNkIGZSygQHgArJvC8qgakL4=;
-        b=cfUcMREeIHoZMx9zz/xZVLL96jrrq+P176s1qFuRb9Rf+5aO62K7P5hAw3Q9Rm+49v
-         LSxf8fIF1SAsRiyWDANRbSqDKCFlMKDD7AWrxXfcC9yOvBB34lRwhw7fIRXj+t6JCQJb
-         XIPauonP+Nmli/W9VFnY9dbaBHEa6XvghdH701LsDgxN1bsVAK4/Iu31QVXK7/zjV13O
-         embm0Ngr8ablKpmj/hSrSRdCOvHw3T3tjRPaRqyZc3i416qlDpcI5llVUSSc0HIhqHih
-         oF8aiJL49397F0r2IMXSZyMJr88pHcxzomYyQ+wz8R/S6iAD7hsy1UdVoKFll9m7bhPB
-         pMQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693611597; x=1694216397;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
+        d=google.com; s=20221208; t=1693611600; x=1694216400; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=YZKcv2qm654M/FYmU/pcNkIGZSygQHgArJvC8qgakL4=;
-        b=PPGXeamdyDONEWSZwbbDZnHpXuRk0qpEykNuNcJpK9zPPdnU2Rzy3tR9KCrNJ0Q2cp
-         BNYhQ5QGCeA5Sw7II7UhC5zTeinAt0FsH/lCWT40+tlSIcnxeoGye1I7F5ttwTVTm/he
-         cUmlFpXCoIwDDarhw5m+xlOAvBkqhnKKnW+d9oiGh8/aWXyWjCHSUxOlghBYTdhY7dkf
-         1K8LzNxKXy4uzvDzJ7xEg2ovc9+JB5Rgdze6E+ctqB9fOcYk9lv7/elg2RvpR/MN8ylr
-         JtTbhFeDQiOPteJ0FpLmQMiSZE7VbqIk5Du1ekIrsh/4I31CeO6TVJmcb8sYVso6vK2W
-         dVVQ==
-X-Gm-Message-State: AOJu0Yxuoqbrvb2q6hJbfk4VlvEavc2nNRAIPgVSuJ/yhM4hQwA6B+Ty
-        4zlIjRkRX+8vRF1AoRPrVRuJZqnVVhH0
-X-Google-Smtp-Source: AGHT+IGUf8z/Ef1N9qQpMlK8pusRkaUoi/oIp67o+SdQgTpqE2A1CYGXu8LHKWLrOKdYfGF0ucSeN7DaD3gz
+        bh=qPYkQ8Xw70h9DqHSSmMkj0hho7Qvwic0o4hOL1SmVO8=;
+        b=VTP5HWYJ6lT0EWTf4vSFsDAr8J3aCbLE042P84hYsONrrq6C/HlA2UPPJcHDL8eJap
+         zjtrvn78rFeQyEl5wLu9izsy7Vp/Y5fBCGfOps5V+iCMpg/Bpo5rXqKuUHYCnhxeQ48k
+         WnZIjR0ECBPQjWlaU3pr2y1nREkM8sBzNP1OvZUQg6OljlgqlrAlKmdehVsKh4ioJW4k
+         mb1kRPoCr2476T+IUMq96D8/ItN4+QUfx7hCZthWVBkScfg8McR45VBDYobb/yFzCa6c
+         MbuxAeoeMv6GZB+B4Obsf6IJy2z6mM2GqcnsyOFQ6B74lXHj21ueID8HDGMrWWqCkrQO
+         DDkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693611600; x=1694216400;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qPYkQ8Xw70h9DqHSSmMkj0hho7Qvwic0o4hOL1SmVO8=;
+        b=Dtz4zd5SK5ii47hH4qsNfEwEjQO9F0gUDkeTpvsjpmCZFf2RR+hp2YffWBBoRcIBSr
+         zG0CHaF4KKJZFagIRxO7EBcFXYeqwgcbP5O+6FyK6ZkGiY8T++mZsOGLrqve8PWpoaxj
+         7WDz0bYf09gdf+HCWO+SOHjN/U+YX+TAgrz68sVF11wy7a6fnzN5XFBiIIvRTDA1BWjh
+         DoN7X+D/JY5E8eh/ELcfYsfIc6BRkJ6NTPCDDM0dtC/HOFs84kJHEL0hbuXpCtKowXt7
+         bSwi5O5MU+oTXONSGu/Uw95iujAU3mAW/wnSdl3GmFRKTjF2uST/nW86fFuUewfGWC/c
+         U3kw==
+X-Gm-Message-State: AOJu0Yyi9aF0JgBLY6xssR6tuya3bYkkAUJFRprbC3q82cCl+dNO0Bo3
+        XL53Evm1t8lcSObqS8gLq4FtHmtvXyXD
+X-Google-Smtp-Source: AGHT+IGxloGRu70SiEhB2mwb4HGbhgX1oJ+wp7rpTws/IEeT5tolfsEc540yl+Geu2DFv9zeeUq8m3CZtyhn
 X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:51bc:d985:dbbd:10b])
- (user=irogers job=sendgmr) by 2002:a25:ca11:0:b0:d11:6816:2d31 with SMTP id
- a17-20020a25ca11000000b00d1168162d31mr100143ybg.7.1693611597740; Fri, 01 Sep
- 2023 16:39:57 -0700 (PDT)
-Date:   Fri,  1 Sep 2023 16:39:44 -0700
-Message-Id: <20230901233949.2930562-1-irogers@google.com>
+ (user=irogers job=sendgmr) by 2002:a25:a56a:0:b0:d77:f7c3:37db with SMTP id
+ h97-20020a25a56a000000b00d77f7c337dbmr113992ybi.8.1693611600107; Fri, 01 Sep
+ 2023 16:40:00 -0700 (PDT)
+Date:   Fri,  1 Sep 2023 16:39:45 -0700
+In-Reply-To: <20230901233949.2930562-1-irogers@google.com>
+Message-Id: <20230901233949.2930562-2-irogers@google.com>
 Mime-Version: 1.0
+References: <20230901233949.2930562-1-irogers@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Subject: [PATCH v1 1/6] perf parse-events: Fixes relating to no_value terms
+Subject: [PATCH v1 2/6] perf parse-events: Remove unnecessary __maybe_unused
 From:   Ian Rogers <irogers@google.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
@@ -76,65 +78,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A term may have no value in which case it is assumed to have a value
-of 1. It doesn't just apply to alias/event terms so change the
-parse_events_term__to_strbuf assert.
+The parameter head_terms is always used in get_config_terms.
 
-Commit 99e7138eb789 ("perf tools: Fail on using multiple bits long
-terms without value") made it so that no_value terms could only be for
-a single bit. Prior to commit 64199ae4b8a3 ("perf parse-events: Fix
-propagation of term's no_value when cloning") this missed a test case
-where config1 had no_value.
-
-Fixes: 64199ae4b8a3 ("perf parse-events: Fix propagation of term's no_value when cloning")
 Signed-off-by: Ian Rogers <irogers@google.com>
 ---
- tools/perf/tests/parse-events.c | 2 +-
- tools/perf/util/parse-events.c  | 2 +-
- tools/perf/util/parse-events.h  | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+ tools/perf/util/parse-events.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/tools/perf/tests/parse-events.c b/tools/perf/tests/parse-events.c
-index d86076d575ed..d47f1f871164 100644
---- a/tools/perf/tests/parse-events.c
-+++ b/tools/perf/tests/parse-events.c
-@@ -2170,7 +2170,7 @@ static const struct evlist_test test__events[] = {
- 
- static const struct evlist_test test__events_pmu[] = {
- 	{
--		.name  = "cpu/config=10,config1,config2=3,period=1000/u",
-+		.name  = "cpu/config=10,config1=1,config2=3,period=1000/u",
- 		.valid = test__pmu_cpu_valid,
- 		.check = test__checkevent_pmu,
- 		/* 0 */
 diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-index 68fe2c4ff49f..65608a3cba81 100644
+index 65608a3cba81..e9e3623f3fed 100644
 --- a/tools/perf/util/parse-events.c
 +++ b/tools/perf/util/parse-events.c
-@@ -2607,7 +2607,7 @@ int parse_events_term__to_strbuf(struct list_head *term_list, struct strbuf *sb)
+@@ -34,8 +34,7 @@
+ #ifdef PARSER_DEBUG
+ extern int parse_events_debug;
+ #endif
+-static int get_config_terms(struct list_head *head_config,
+-			    struct list_head *head_terms __maybe_unused);
++static int get_config_terms(struct list_head *head_config, struct list_head *head_terms);
  
- 		if (term->type_val == PARSE_EVENTS__TERM_TYPE_NUM)
- 			if (term->no_value) {
--				assert(term->type_term == PARSE_EVENTS__TERM_TYPE_USER);
-+				assert(term->val.num == 1);
- 				ret = strbuf_addf(sb, "%s", term->config);
- 			} else
- 				ret = strbuf_addf(sb, "%s=%#"PRIx64, term->config, term->val.num);
-diff --git a/tools/perf/util/parse-events.h b/tools/perf/util/parse-events.h
-index 855b0725c5d4..594e5d2dc67f 100644
---- a/tools/perf/util/parse-events.h
-+++ b/tools/perf/util/parse-events.h
-@@ -124,8 +124,8 @@ struct parse_events_term {
- 	 */
- 	bool weak;
- 	/**
--	 * @no_value: Is there no value. TODO: this should really be part of
--	 * type_val.
-+	 * @no_value: Is there no value. If a numeric term has no value then the
-+	 * value is assumed to be 1. An event name also has no value.
- 	 */
- 	bool no_value;
- };
+ struct event_symbol event_symbols_hw[PERF_COUNT_HW_MAX] = {
+ 	[PERF_COUNT_HW_CPU_CYCLES] = {
+@@ -1079,8 +1078,7 @@ static int config_attr(struct perf_event_attr *attr,
+ 	return 0;
+ }
+ 
+-static int get_config_terms(struct list_head *head_config,
+-			    struct list_head *head_terms __maybe_unused)
++static int get_config_terms(struct list_head *head_config, struct list_head *head_terms)
+ {
+ #define ADD_CONFIG_TERM(__type, __weak)				\
+ 	struct evsel_config_term *__t;			\
 -- 
 2.42.0.283.g2d96d420d3-goog
 
