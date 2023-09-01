@@ -2,174 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695F27902C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:19:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73AB87902C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350705AbjIAUTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 16:19:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45466 "EHLO
+        id S1350711AbjIAUU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 16:20:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjIAUTq (ORCPT
+        with ESMTP id S229668AbjIAUU6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 16:19:46 -0400
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C10E65;
-        Fri,  1 Sep 2023 13:19:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1693599583; x=1725135583;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=mxWj7PT1vyruSsL4OzV7oJYzGt4qRA3ZqeDWDJbgs8E=;
-  b=ewhqcpZbMTp7DBQv/zbgcr5/JhSlVUECoY4HNk9VQJFuoj77V9nu1LY9
-   kiT59usmbYucZ7SolTdBf8XCebD+wukwicn94nxYhEkFMSlVAd4wi1eDB
-   FIMyigNhT10BT2qYwdCMnWj5gzHUPobHfydFaCJeppfQUarQEi2aDfECX
-   ckj4vY3NRbwVlXdBGPKkbVbs4s1dkt7WJPu/dCakx+VIS76+b3ABCCtce
-   Jmc2+d7/8spNl0/WDnsFGMsvyszViUx06L7W7umnRyBEpox5prOz6T3TS
-   8R8ThSE2yywtM08C8UaR6MopnwjFecSvkWICjPogJiGFPHR+GyU7BciKg
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.02,220,1688400000"; 
-   d="scan'208";a="354787106"
-Received: from mail-dm6nam04lp2049.outbound.protection.outlook.com (HELO NAM04-DM6-obe.outbound.protection.outlook.com) ([104.47.73.49])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Sep 2023 04:19:43 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DeIaWUY0vVx0YFfK587OYmRZFkAXXJaqhktkASg0LdvNCTH01Uufq/y7+qucUht7QsWf0hpp7Ipzm5XpLrAyouoJ4S6FSyEdQRlxZnc4z28Su4wNWE6evHFdjh8i9cieLIXbz0aY42Jc6I0KDYRQlz+pobhfduSu9Kup7rfY8DwXLCfWBxnlIJj1NBCdOTfIstseau4bzx2FjbDH1Oyo60UY5LXcNQJkMgBN9q3pTIggFUPogLUOVmPmJ83aq0dGvdsYihtOHiHwWQZU2XujzW8+41xEQG4xzCx/Ktf/6sbbD2uKyUi7CyWT2tDhd8SBbHfELsN4FREHzpiq/KLqyg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nYxQmCmJRtQEN011xefoyQw0FaOQ5ZtVIq2UQArrXEs=;
- b=hzGfLV05ks9Y4I7X0cU0ZTPFjubN5x5l5QmSIV3tAmZhXLMhFqyiIyMsXX2n/eEbvYI2xaOjQ9DQcgpLFhX9l7dDPwFHoMVPjMhDcwsLIuv3jqu/KCcp9G3HygmQ5tzJUxWQ3MVqvEkTDIJwQuRweOoEEAUeM63XNZ40OlS0/3KDk/StCpXhaz8f6+Sj3sgh01OQ6ggPEdy+EFzW3dRxgsWKRXZH60hiubBflk2sZcXItubctynExgRh8CHfvC+plLvRAFa8yQJSSIvQqgehpdS1M6WQEpM+fTF12vEkrJPBKcS4rqjIWbgGv4VpLPRzefeZRkwASQ1TuU074Bp9Vg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nYxQmCmJRtQEN011xefoyQw0FaOQ5ZtVIq2UQArrXEs=;
- b=fwLDKxcBaGOBYBwcagXw/SNyCmk+i7f6+zUC2ZpWBswKeASWFit4Lc1b+A7JeI1VV0rV4OZuksVFqEzaVsy3y5CrXq3JQtfbMw9ISbrI9oVAIaNdrhNYS5CLxHPlyOqlkhA/dq4ESy1hlI5cvMV3Lo1q8YxiegJu0XzQIKwyrBQ=
-Received: from MN2PR04MB6272.namprd04.prod.outlook.com (2603:10b6:208:e0::27)
- by BY1PR04MB8752.namprd04.prod.outlook.com (2603:10b6:a03:535::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.16; Fri, 1 Sep
- 2023 20:19:41 +0000
-Received: from MN2PR04MB6272.namprd04.prod.outlook.com
- ([fe80::ac1f:2999:a2a6:35a5]) by MN2PR04MB6272.namprd04.prod.outlook.com
- ([fe80::ac1f:2999:a2a6:35a5%2]) with mapi id 15.20.6768.014; Fri, 1 Sep 2023
- 20:19:41 +0000
-From:   Niklas Cassel <Niklas.Cassel@wdc.com>
-To:     Pawel Zmarzly <pzmarzly@meta.com>
-CC:     Damien Le Moal <dlemoal@kernel.org>,
-        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] ata: Disable NCQ_TRIM on Micron 1100 drives
-Thread-Topic: [PATCH v3] ata: Disable NCQ_TRIM on Micron 1100 drives
-Thread-Index: AQHZ3Q9TwQL+r0AWy0SwzhN5UdvRc7AGaSYA
-Date:   Fri, 1 Sep 2023 20:19:41 +0000
-Message-ID: <ZPJHXAQcDn0zNVyg@x1-carbon>
-References: <ZPIyxg+iSWa+W93Q@x1-carbon>
- <20230901200220.3891806-1-pzmarzly@meta.com>
-In-Reply-To: <20230901200220.3891806-1-pzmarzly@meta.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MN2PR04MB6272:EE_|BY1PR04MB8752:EE_
-x-ms-office365-filtering-correlation-id: 962de591-7872-4771-dac1-08dbab28c629
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nCDdRe4o/ji6i4FT5GNkEWJ7KlAF9c+wyMcw5PI1S0TJMm3o9nbhCMg6J8n6BX2QFAa3BxzVG5tMpKBUahlxVM6V7PdNy+r2a7DW7KRx9MbNAVvGWVCBt2M25E0OSVGcWBOCT9akOmbQNo9Y/q6oWYAlEy4XqT6n+9wJtWhRKcAl0dbx3kYOqpHhUloMSdbIs5sdexNX2p/5p8lhXrGKrFWnJVaze8cyJyTdKQpNXKU2TEY97+5J1L0BF83O0XnwMWooNvtPgxvlvmx44yb37Nb+pHMJXBmfoHsg+zhCmx4gmtgrXaUSruqtggBjCZIliSXlNevtPUaVU2udhDQbJ5iiqQvXFtjjGH8jUK9SWc9Agb4Sr3fTGDhGDEdQdAwst0n1J3OKdfQkCkPwasRnXaWASSMyE4DCPjQDLjiW8Rj2vJkm2GagN/8CNXGuYRXmJsmCXq6pqDHadiBtlXUw8iXcaJcxmuol4j4K+PilmfJNnhreAhXgaXSljmUGuO24SH3QWtNOR1Ekzk+mJO5ykeSvs3q0shZKpISktqG4VkePMTlvQ/tSVA5QAq5PtcQK59G7lTFWY7OxzVESZxU+oNBv32CbXZsOapabwJ8xPc38h95bvdNR8Q0HMp/NPRta
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR04MB6272.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(366004)(39860400002)(396003)(346002)(1800799009)(451199024)(186009)(33716001)(86362001)(2906002)(5660300002)(316002)(8936002)(4326008)(8676002)(6916009)(41300700001)(66556008)(66946007)(66476007)(66446008)(64756008)(54906003)(91956017)(76116006)(6506007)(26005)(82960400001)(6486002)(122000001)(38100700002)(83380400001)(478600001)(38070700005)(6512007)(9686003)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?8jQDCDuiXDezQvIlinhgKZoOZ0+W37XSTqq4Ggvg5+cyoVp520esgLhrecv0?=
- =?us-ascii?Q?lb0sOs69vqJmGn98UWCKxUTnTU5pBnp4RBdvmSs5tbJWe0YUWtNYIOaEW1Rc?=
- =?us-ascii?Q?bveX9no1btQR0aANqMHK570Z82wrTWDnHkf3kCQpyOppNilDKmrNXyDGQVB7?=
- =?us-ascii?Q?1UJ6GoRuNB+hpbOSc/tjfVbmVCfd5PJhmgbOROTrd3x9dWJALnyFQK7cHgoV?=
- =?us-ascii?Q?mNiZxtS21HPTgLJHVGgXvx9jW74L/2KqDsx9qyILw+qTBQdD7DuwRFp3ts9i?=
- =?us-ascii?Q?YF4hcMJWqB4jZg8FQjF8ETIXw0cfITDCxvKK4eNThwOy4h4CBhq93d7sG5fC?=
- =?us-ascii?Q?XgQJd83+F/XRU9Wo6hm7Bo46lQ5GtKQSdGXz4GT9PfE7zgsQSSvTBFEmJzgU?=
- =?us-ascii?Q?8SBIQu8qM2TigjUZwMhfPK9TeWIaW6N/rcinpVcKbISYpCw7fVc78MOLJnGx?=
- =?us-ascii?Q?GiTQYauWV3V3ICvKzY3a526BAFn5MBSJr+v1cD6mQTgRylY9ynuegQZAYVtp?=
- =?us-ascii?Q?XX93prNnjMSKBrsGD5BlzLKD0fetsTdUqxH8pJnWL6SIqbIVGhYLNrywQ0ZA?=
- =?us-ascii?Q?ME0xSwipWWcwMuLggQoDjjEp4iGp2R9PiRI7DEAo4cgKjRcTUYkUuu6zSPEA?=
- =?us-ascii?Q?d7OO1Sv7EBpxdJMy3FrMTNcOl6q/om//aXkVXPwRYY+RX8TmcKO4y+GWmVO7?=
- =?us-ascii?Q?ucXj3lNEdGbZ48YW7+3IGvQEL6zHSbvs0SVsvbCNJATKKnapu/FpurqGb6W9?=
- =?us-ascii?Q?8o3co2k8iEPcEgh3bu8Uo23P+Esj+RPjuVI1dh1OfVJbRl+DUJ8aiBDznaxS?=
- =?us-ascii?Q?Ngm0tzsx30iNOGaQsl7zuhweQVyYIwtVt+S+5AneWM1fRTnwljDZwYvVu2KN?=
- =?us-ascii?Q?lyQP2wBfHjuXN0wBeTwaBkDd2FKT40ghTEV4A0MHMzPP3g4laPqQCLY5+yta?=
- =?us-ascii?Q?YkFJHHL9MR6tz5scV/BukfkONUuA0K9NerRfBl/FHIhZ8bYPpxCvXolVhiTp?=
- =?us-ascii?Q?JtitGYx2h0+yR7tQR5yavbuC591HmAoYiqGUTZwC2UDg/6ayfwGbKV0S298H?=
- =?us-ascii?Q?MOsN2AbInw+YEskSDxXdrdPyOsvn36CG8lNtCz+D1VVUP/STai61g+O/QtJJ?=
- =?us-ascii?Q?R6Iixb2kVsFTr7Fzjs+UsDxFnfEtFkowpZTvJ4YS4lV7bHgQmhajQwKEwgv8?=
- =?us-ascii?Q?KvcTZCK6ZJ/qAfrwW9GeeW+/YwNTeTTjISOE80argjyRQBrn38zI5lykxRiJ?=
- =?us-ascii?Q?Jug/QSLIWnxcqzx5Kg8P5+R9Va7IePDM+uAnc3UItlqs/p6mfXhA6pgDqwGJ?=
- =?us-ascii?Q?sHDLwkMZUR/hvNlDPNKxDO768aOBXHrHFr8MR70ECrO7z3mkM/WWCaST7IR2?=
- =?us-ascii?Q?jcHC6XCSD92BEJuD47RIT7PhBwYm0LAzqQD4FSrQxEtBdk06+pWO6wWsRK+t?=
- =?us-ascii?Q?GetBOKMKixTWlqKTtfMcnzZ023C+/i4KrtM+w2O7tVx7Q/5tYueqesP3HWzi?=
- =?us-ascii?Q?kQ4MgHGLnkNpxTApvLDPNITAFyZvV8rvZxLrcEzW9yLPM6+D2sA7B+BuN1IT?=
- =?us-ascii?Q?lKiBrlfsgXXyf+mO7xbQ5lcxkyRC8594yNn+pD477xn/taLIJ6sRDlVAWm+/?=
- =?us-ascii?Q?Bw=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <52D4D4E1715A5F409E8EB3A0E427296A@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Fri, 1 Sep 2023 16:20:58 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44691E65;
+        Fri,  1 Sep 2023 13:20:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693599655; x=1725135655;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=NsjR7KxMOb5iZXiBkPgMybuVtt5nRRRiYgj01lwdMoo=;
+  b=lgjbEU2ig6Dyxkczkrps/9K5KgWTsnQCnPxIhP9CZ+4RnLwtQSD0Qc/F
+   MVmfwhCbcBIjLkV4fzyDbwgynizRjIb0HeofGJNfOd2L/ayTuLedQ003X
+   Fu/jZQ1aajEV2dqKviZ6uXhgkrlcmp4jltQFmhYgeXorY+xtPo/bDOrph
+   pAhO85mQVm3ZZearaNo2gXWauWNFvtvs9Cp2gtcdyYfWOTzy4vADcK2r4
+   qp79brvfrHCUyt8wAUo6Q7GTMA5nIvVtexqpBlfJw9i4cSo9jgwK2dmRw
+   3DLjL3Em2td6NjCyQ8Y1z3sdLmd/5RONwlWLqutVBmCYrzW1N6+G6utxp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="407296611"
+X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
+   d="scan'208";a="407296611"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 13:20:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="743240759"
+X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
+   d="scan'208";a="743240759"
+Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 01 Sep 2023 13:20:52 -0700
+Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qcAdO-0001c7-0i;
+        Fri, 01 Sep 2023 20:20:50 +0000
+Date:   Sat, 2 Sep 2023 04:20:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
+        daniel@ffwll.ch, javierm@redhat.com, sam@ravnborg.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 4/7] fbdev/core: Move logo functions into separate source
+ file
+Message-ID: <202309020442.Ef28qbgO-lkp@intel.com>
+References: <20230829142109.4521-5-tzimmermann@suse.de>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: oqo1mGo4SbBcGtC+DV7cCmccBMv7DGAuH8ucP6VJH/76HCyOrCSkSQy5GuWudkDo+n+XgDDmKPrzadbeZo4i9v84A/rxxiO+xTnVibDuiw5JCkhASkdZ92Hf1XPCBAdq8yHxBfsW4Xc6SzM/WK6BcAYec2+xqVhGTWK5GgAKVQl80cNzUf/HEa+1gSWi9yubG8RG7Z7Pq/nquqdsqE+2SdH/Q8bFxVe+wvkbLmdnh/iLeHt85oj1ZzajQ0syNsdQpxfkEM9AUtGKijCkUqvmq6Xyt82/5oAJGvtzV0ouMUL9dkMVGMqwkTXM6vsnSq7jX+FR0iQzvWty68wzfCHs1WkhvXPJ+GMUv+/K23Ka4JOSk+IuicHVr8zMv13kKR1ZOsn1nvVAZ9oQh1vUaUvLmgRC6MMLkl+AiKCyzyC1KIU/qFED40L4/y8rmgGolOWRkack0SzJso6WIF6aLkGypCnK6elGS7IAquDa86uC0br8aifsw/NBZQyBFarHUXKGR0hHOUnCnFJG62kKogZWHQJ30nqriBdpEA6bbZeZD+97/fzmnslIUhcYnEIPuH3CpnnoHOU17GdwL7cTDvmOy+vVtfMMmf+e3iNgTJu9Rf64qe1ndiwYtnF3o+qhqUyy7vqu7Bw1KpaJbT+PCr54KsLivgAbm2PHsf5d1uUznlgWNyu9ccrUgioqVrPZjE1tyHLVKOB/VXl89xhf1YQg9PRvyBxJFi64DPGW/lymYlN8bxicUPtnzCBfcQlpzdLFQ/CSCZWtbN0hQ45OU3Lkx+UG36hDU0c0unWurRt9H5lGPbefQs/m4xQUb3650t7hdpq+mTMDjoyfWdJHRi0AHg==
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR04MB6272.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 962de591-7872-4771-dac1-08dbab28c629
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2023 20:19:41.4279
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 4URptLJf+H2jF1t2CZGmazdLFLJ0/IGjGcAxbcyz2f+sgsiQvZi6JuDMp5cD9czMImKNS84F2NxLMXIup3reGg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY1PR04MB8752
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829142109.4521-5-tzimmermann@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 01:02:21PM -0700, Pawel Zmarzly wrote:
-> Micron 1100 drives lock up when encountering queued TRIM command.
-> It is a quite old hardware series, for past years we have been
-> running our machines with these drives using
-> libata.force=3Dnoncqtrim.
->=20
-> Signed-off-by: Pawel Zmarzly <pzmarzly@meta.com>
-> ---
-> V1 -> V2: Fixed formatting.
-> V2 -> V3: Added missing Signed off line. Sorry, this is my
-> first time upstreaming.
->=20
->  drivers/ata/libata-core.c | 2 ++
->  1 file changed, 2 insertions(+)
->=20
-> diff --git a/drivers/ata/libata-core.c b/drivers/ata/libata-core.c
-> index 175b2a9dc000..116f5fd6e3f7 100644
-> --- a/drivers/ata/libata-core.c
-> +++ b/drivers/ata/libata-core.c
-> @@ -4564,6 +4564,8 @@ static const struct ata_blacklist_entry ata_device_=
-blacklist [] =3D {
->  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
->  	{ "FCCT*M500*",			NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
->  						ATA_HORKAGE_ZERO_AFTER_TRIM, },
-> +	{ "Micron_1100_*",		NULL,	ATA_HORKAGE_NO_NCQ_TRIM |
-> +						ATA_HORKAGE_ZERO_AFTER_TRIM, },
->=20
->  	/* devices that don't properly handle TRIM commands */
->  	{ "SuperSSpeed S238*",		NULL,	ATA_HORKAGE_NOTRIM, },
-> --
-> 2.39.3
+Hi Thomas,
 
-Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>=
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on linus/master next-20230831]
+[cannot apply to v6.5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/fbdev-au1200fb-Do-not-display-boot-up-logo/20230829-222419
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20230829142109.4521-5-tzimmermann%40suse.de
+patch subject: [PATCH 4/7] fbdev/core: Move logo functions into separate source file
+config: x86_64-buildonly-randconfig-001-20230902 (https://download.01.org/0day-ci/archive/20230902/202309020442.Ef28qbgO-lkp@intel.com/config)
+compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230902/202309020442.Ef28qbgO-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309020442.Ef28qbgO-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/video/fbdev/core/fb_logo.c:433:5: warning: no previous declaration for 'fb_prepare_logo' [-Wmissing-declarations]
+    int fb_prepare_logo(struct fb_info *info, int rotate)
+        ^~~~~~~~~~~~~~~
+>> drivers/video/fbdev/core/fb_logo.c:506:5: warning: no previous declaration for 'fb_show_logo' [-Wmissing-declarations]
+    int fb_show_logo(struct fb_info *info, int rotate)
+        ^~~~~~~~~~~~
+
+
+vim +/fb_prepare_logo +433 drivers/video/fbdev/core/fb_logo.c
+
+   432	
+ > 433	int fb_prepare_logo(struct fb_info *info, int rotate)
+   434	{
+   435		int depth = fb_get_color_depth(&info->var, &info->fix);
+   436		unsigned int yres;
+   437		int height;
+   438	
+   439		memset(&fb_logo, 0, sizeof(struct logo_data));
+   440	
+   441		if (info->flags & FBINFO_MISC_TILEBLITTING ||
+   442		    info->fbops->owner || !fb_logo_count)
+   443			return 0;
+   444	
+   445		if (info->fix.visual == FB_VISUAL_DIRECTCOLOR) {
+   446			depth = info->var.blue.length;
+   447			if (info->var.red.length < depth)
+   448				depth = info->var.red.length;
+   449			if (info->var.green.length < depth)
+   450				depth = info->var.green.length;
+   451		}
+   452	
+   453		if (info->fix.visual == FB_VISUAL_STATIC_PSEUDOCOLOR && depth > 4) {
+   454			/* assume console colormap */
+   455			depth = 4;
+   456		}
+   457	
+   458		/* Return if no suitable logo was found */
+   459		fb_logo.logo = fb_find_logo(depth);
+   460	
+   461		if (!fb_logo.logo)
+   462			return 0;
+   463	
+   464		if (rotate == FB_ROTATE_UR || rotate == FB_ROTATE_UD)
+   465			yres = info->var.yres;
+   466		else
+   467			yres = info->var.xres;
+   468	
+   469		if (fb_logo.logo->height > yres) {
+   470			fb_logo.logo = NULL;
+   471			return 0;
+   472		}
+   473	
+   474		/* What depth we asked for might be different from what we get */
+   475		if (fb_logo.logo->type == LINUX_LOGO_CLUT224)
+   476			fb_logo.depth = 8;
+   477		else if (fb_logo.logo->type == LINUX_LOGO_VGA16)
+   478			fb_logo.depth = 4;
+   479		else
+   480			fb_logo.depth = 1;
+   481	
+   482	
+   483		if (fb_logo.depth > 4 && depth > 4) {
+   484			switch (info->fix.visual) {
+   485			case FB_VISUAL_TRUECOLOR:
+   486				fb_logo.needs_truepalette = 1;
+   487				break;
+   488			case FB_VISUAL_DIRECTCOLOR:
+   489				fb_logo.needs_directpalette = 1;
+   490				fb_logo.needs_cmapreset = 1;
+   491				break;
+   492			case FB_VISUAL_PSEUDOCOLOR:
+   493				fb_logo.needs_cmapreset = 1;
+   494				break;
+   495			}
+   496		}
+   497	
+   498		height = fb_logo.logo->height;
+   499		if (fb_center_logo)
+   500			height += (yres - fb_logo.logo->height) / 2;
+   501	
+   502		return fb_prepare_extra_logos(info, height, yres);
+   503	}
+   504	EXPORT_SYMBOL(fb_prepare_logo);
+   505	
+ > 506	int fb_show_logo(struct fb_info *info, int rotate)
+   507	{
+   508		unsigned int count;
+   509		int y;
+   510	
+   511		if (!fb_logo_count)
+   512			return 0;
+   513	
+   514		count = fb_logo_count < 0 ? num_online_cpus() : fb_logo_count;
+   515		y = fb_show_logo_line(info, rotate, fb_logo.logo, 0, count);
+   516		y = fb_show_extra_logos(info, y, rotate);
+   517	
+   518		return y;
+   519	}
+   520	EXPORT_SYMBOL(fb_show_logo);
+   521	#else
+   522	int fb_prepare_logo(struct fb_info *info, int rotate)
+   523	{
+   524		return 0;
+   525	}
+   526	EXPORT_SYMBOL(fb_prepare_logo);
+   527	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
