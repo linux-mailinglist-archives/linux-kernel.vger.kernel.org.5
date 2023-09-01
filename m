@@ -2,154 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5C47900CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E2D7900D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346700AbjIAQi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 12:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39428 "EHLO
+        id S1347208AbjIAQli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 12:41:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233026AbjIAQiZ (ORCPT
+        with ESMTP id S238320AbjIAQlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 12:38:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E754810EC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:38:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693586301; x=1725122301;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=02xKn3rDPAuwcIuZh/zz8MUF8I7DQTtaf8ynNc9E93o=;
-  b=gXI09b4+YII01UFpURLr/skbgS0YOL+h2llUjQMb90X4iw9EGAZE/i/Z
-   9S+rvfaKNovrRhG5b1qezY2Kw2D3E5JEsocGfbFmC75Qw9BQ+fNBz1hCe
-   GGnLBY6j8GM0nFmmgTnPn0PtU3Hiy8M+am98GqaZW7LHH7DYrXMCCKyyi
-   PtWT4z5QrRA8WpO6z3XsaMXuxwizfaJ8PyqhF/3zHj1CN00uJaVQnWHyK
-   jPlgI/OZHAjn/xsl0CWMQU8Xri+otr+nEN08apad/xtrFOD54BQGVgmuq
-   dD+taPyQFBnYwkANnoS0KL4nGcQR5qa0tXbjc7peQc2Jwk9VrLpjMckDj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="380044233"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="380044233"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 09:38:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="1070802995"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="1070802995"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Sep 2023 09:38:20 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 1 Sep 2023 09:38:20 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 1 Sep 2023 09:38:19 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 1 Sep 2023 09:38:19 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.171)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 1 Sep 2023 09:38:19 -0700
+        Fri, 1 Sep 2023 12:41:37 -0400
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on20622.outbound.protection.outlook.com [IPv6:2a01:111:f400:7eab::622])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB99C10EB;
+        Fri,  1 Sep 2023 09:41:34 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OPCzpNbrQWE4pb4llQMrNbLZHYngH0wB5ReaJooyqvquDzcxcHPGD+FgKLNkqYv833e+Z/Xtmj6RpMVHQbivSeQfGMcSyiRizVemnDngQ5laHa3Il+eNy45A/aWYbwVLoAiTVX80GRKB2jPl+4BIrHJiih2tX4cUSLyqitMBCEMkS3Lv48cz9Gix7v0VxOsdeZ3LLOhi4EiygBwcaEHwCVeqzOimp1L+RD9rpQmL9jU61dvHvvezIqyoAz1PwqhTEUtdaPcqChi8Tyv13izD0NLnDplHhlHtZgvqJG7NVTUMz/6PvJCSy8VPDd9oKyzpw+GftqpAqbyU634PZa0Xlg==
+ b=kb5cOQlTu0RaA0Q//VVVuyY2jo1HnDXasdujELJ+2PyCEFRc39FCKiKCX6nqijEm/nri2GMJoXQlNyh1zFtu5kcqPY5AFbY58Kg4fkvEv+qGpYvaKOx0ADvSnn5JwgVhBZZfbpTppVze56oReVXWlYWa5Irva3HPmKiyw4dTyscwkKQViYL8z33tRYLWoaINw9wFQNxX1smuhGoDLN81pr2h/aPwkd7SZjhcaXVmYgIcTR/vMQvfBT9YIXWFVJUPUDs5YSyJKVf+0Zv/CN5MoU0jqDhwUn4gu/F9ZP4iyc1dnpxijdv5O5I3lqVH4OfPPCXZiwc8ew39ybW6iNiK2w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=IEM5OOUKE3fvf6YgJbV+aDP9AQIG8VTeofk8DHuheVE=;
- b=D7mZ8/EUQb3Fh2toC9qYDB+IyoV/+NB8nRXd/W0QwvL/zZ38Cyz6Zlywj8koRU2OHusSc3S1KdkBegxE2A3nqJ+DuaeLcDudkCib1D65q36cDzDIxs89pOJB1V5qILI80j1b8pnRYgBpNpYIEueM2rWLxpJOJ31x+l8m6gdq6QKo+aMz63NxjDOIfpbIqg/D8zdVQDqnhKbT58rmz518Ne6M4uWLf5ZLQwz2isBfBXDVB3zo42YAIaqEk5VQDIYKKkKWc+StGdtjAGK5k/fWy067UNm8xPlxyFm4zxD/10JqFj/K0JqLjAuVc3eNC98FumeUkAIwPyvrEt6wA8CSSw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by CO1PR11MB5154.namprd11.prod.outlook.com (2603:10b6:303:99::15) with
+ bh=WzM+607jMPN5yXKcn3Nu+imnsL5vsDssKjrwO7RYBKs=;
+ b=IDvzP9Sfxu5qY0Tqk08elW/ZnNxTGbo91v04rM1a1j45RsW92A3b9wcwo+7BVzmgTSr8DlLGO/xdaO7gcRZEFzuXqT/T36y7URFiDGpNPdwAkc4+Y9WKvHEGBcfzRwHvvEGxjMWXHtckzrE75GtjMRz8S71LKEkV0Lq/68UCYSad+CiEAJYwHtmFO15YqmEggS3ZtorbgDskEZoT/dfnvCFGYjy7bHaYUws154ylLUmUXa+76CHUMG9HTGqyjsAAqB1I814d0GRR7jSGndDWrjC8QJRxwGdoZcGFHVnfBXUTnaJcAxGwN2Qk5aI/PrORhzsd+wG9vzPb4pOtPfbkYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WzM+607jMPN5yXKcn3Nu+imnsL5vsDssKjrwO7RYBKs=;
+ b=Z/dEIVXWOWqkTMpWiflOXC/tFtPDiZHQ7X2Kppei7fEwT/tkCKvUCxhz/OSllIKCHr2/0pmvrGb/bNpQFQwNl6QxQMamhGvl8s7IBk1J57CuQ8cq5Mnun9QAIVL8tX3RiqOIHk3FKY1+PpvTpc+x/483ngzvZRkhiCHPv1xko6fj4LdoY7+AOJYW3pG+0QWX/qABle4l3AAp2tnBXuZ8Rb5xQdwi2ieRKsLR5LnpWIE26Zb0KTo2MtJoVhRjQcKDnWMBYEU96w1pS/DYSmiJyCP9QSEDjB+MPatd3LFUpi7auKnQmA2Xtgp9fS6y45FoDftGFHu7TCQrOpnb1ZqbSw==
+Received: from CH0PR03CA0434.namprd03.prod.outlook.com (2603:10b6:610:10e::16)
+ by SJ2PR12MB9241.namprd12.prod.outlook.com (2603:10b6:a03:57b::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Fri, 1 Sep
- 2023 16:38:15 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::acb0:6bd3:58a:c992%5]) with mapi id 15.20.6745.020; Fri, 1 Sep 2023
- 16:38:14 +0000
-Date:   Fri, 1 Sep 2023 09:38:11 -0700
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        <linux-coco@lists.linux.dev>
-CC:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, <peterz@infradead.org>,
-        <linux-kernel@vger.kernel.org>, <tglx@linutronix.de>
-Subject: Re: [PATCH v3 5/5] virt: sevguest: Add TSM_REPORTS support for
- SNP_{GET, GET_EXT}_REPORT
-Message-ID: <64f2137362305_4c1f3294f4@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
- <169342402274.3934343.11704206926819634506.stgit@dwillia2-xfh.jf.intel.com>
- <4e4407b0-179d-4be4-bf0b-0d674103d4f6@linux.microsoft.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <4e4407b0-179d-4be4-bf0b-0d674103d4f6@linux.microsoft.com>
-X-ClientProxiedBy: MW4PR04CA0215.namprd04.prod.outlook.com
- (2603:10b6:303:87::10) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6699.34; Fri, 1 Sep
+ 2023 16:41:29 +0000
+Received: from DS2PEPF00003440.namprd02.prod.outlook.com
+ (2603:10b6:610:10e:cafe::41) by CH0PR03CA0434.outlook.office365.com
+ (2603:10b6:610:10e::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.27 via Frontend
+ Transport; Fri, 1 Sep 2023 16:41:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DS2PEPF00003440.mail.protection.outlook.com (10.167.18.43) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6745.20 via Frontend Transport; Fri, 1 Sep 2023 16:41:29 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 1 Sep 2023
+ 09:41:28 -0700
+Received: from drhqmail203.nvidia.com (10.126.190.182) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Fri, 1 Sep 2023 09:41:28 -0700
+Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
+ (10.126.190.182) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Fri, 1 Sep 2023 09:41:25 -0700
+From:   Sumit Gupta <sumitg@nvidia.com>
+To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
+        <sumitg@nvidia.com>, <amiettinen@nvidia.com>
+Subject: [Patch v2 0/2] Improvements to the Tegra CPUFREQ driver
+Date:   Fri, 1 Sep 2023 22:11:11 +0530
+Message-ID: <20230901164113.29139-1-sumitg@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CO1PR11MB5154:EE_
-X-MS-Office365-Filtering-Correlation-Id: c33352de-fb6d-4f20-abc7-08dbab09d67a
+X-MS-TrafficTypeDiagnostic: DS2PEPF00003440:EE_|SJ2PR12MB9241:EE_
+X-MS-Office365-Filtering-Correlation-Id: 69ebeaa2-6734-4fb6-a665-08dbab0a4aa6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: E8XQmd9yM1efdSFXAkoKsE6i9i86Au7WIUfy5XXM0GYeE2/IEOWstP+vWT+J5VnWFA/3QrCTc0mCOLxBR1tu2Ui9c8f3rwbkb5coc1W9qI7DjboBjTRoh4eZOeSDnhtbYRSyyGgKxuIM3m/DdE1fC4KQmls4YLbtIEo1YDqkxFGvRwE8+Y42rkvtACYhPFeKRb0h3FNAlbbpd2idYPhHM30ujn5QlE72DJYt4ZqQFFx6KOmNyrVyNCa4/tb2ez+G5bmHYj36ZzPDKPBX4M+s2sBCAxfKrDThnIUJw4/EJdmGlZye/nOMSL8Go1JZ0ncCbCe6EXSFPaIuPnqGIfbNr+S+8P+zIosVSZ17GRiJfPsXTQ3w7A5mewn0vxBYr+lsBDGlOroI4h/96BHeSvCy4zyUYwB30A9ztx4sCSshL46/j6QUjB+CZ3sFFmqroo40wy2xyskOYwYdwGLEh6deo0sky/glCOE938wzIU7MoqHxm9IBwIups/dngZ44EXobzkSAJqKpB8ugMm4pRzV2Nu+xZZum9LvhNLGNGTnBpazsJA65uKHD/7PL7h0ZyQQr3psFQ9F9iUGQZNPTtZXso8Y4MQOg38i2mbDegSVD6k4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(376002)(396003)(39860400002)(186009)(1800799009)(451199024)(41300700001)(26005)(38100700002)(966005)(66556008)(83380400001)(110136005)(66476007)(54906003)(66946007)(316002)(82960400001)(5660300002)(478600001)(6666004)(2906002)(53546011)(86362001)(6512007)(9686003)(8936002)(8676002)(6506007)(6486002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?nxZNdWlf0ueFdYNRogbuSXNRWcxvOUIBZ6X0zzBxmghVR4ogtOSr/na44kiz?=
- =?us-ascii?Q?PcFZdUVUBUaybBN5ovzHMooYzIC/SFn6pSA0g+p2cN16yNJVGbR5e/dBcq2p?=
- =?us-ascii?Q?3NnxvtSuXvPwe5oKgQWFjkdliMoy2NWsQr12B/UVOhwgt+MFdY/giApHFKDQ?=
- =?us-ascii?Q?vTdCb6g2KqJbEqJUeQlbfCjloGnbQaOK/mAUChM6UC3XOoegREBPm7O6eVJJ?=
- =?us-ascii?Q?RNF7MwIzzty5J3rekMZvuSqkyoR69QEIbyyvQgG4OOhCpy46YMnZSY0zSbXo?=
- =?us-ascii?Q?6ZlvngDUMLYvZJZV9wSfYUAvU7/2WfHOCP2IuBQHfxAC/OesUGs5dLbbG3c6?=
- =?us-ascii?Q?6wmn6MvWDzjH4b9ulV/sFuD96CWXN1PRPXtiuRje7UgvEpfjJlWAY6cfpKxb?=
- =?us-ascii?Q?3RGddZYFT3QlcWX3igoYCxO2jI7HiDGqmRd6seRLPNXkYUf2uKjWdDzKTLjD?=
- =?us-ascii?Q?/uBiYCyvawcHJhbKLURLQaqr4TSatzc9WlTsqQoW5sf/5nO3GIW1pKmpxv+K?=
- =?us-ascii?Q?PhIQPcs6NK74VSqd9vC8e4cuSd5xklc4v3hs34m2yT/dmFlo2WhZ172QX9js?=
- =?us-ascii?Q?mJ5vSjTDyMOAGIWuO/svPZjbFFnRDIzl2rzbdgnGvsn0ce98BmcnpsxVnWGV?=
- =?us-ascii?Q?CIajr+hRc8e/IPFxxPkENQZnoDCd7xRyWfqjILMkpyH/9ajuKoozawKr44Fb?=
- =?us-ascii?Q?FhwItkWC3CynBnohDWv/r8Jk5Sqb2sEbA3waUafL/lfFuPTzCM82u27mByYm?=
- =?us-ascii?Q?VKtyNOe3UIDsc7OmXv8Rc4VJr9gLfgQORwII0hLuez4tyrfH+qLaBw8Ncgny?=
- =?us-ascii?Q?pNNLLq6m24vDNTPDSfwvAZD/jtkBeY5520Dt2Zq4OwBOxcTCn/HBrCXV1fB6?=
- =?us-ascii?Q?DaykOS8F9lUWK6/2mEeSekR1RgOE9qtdXsCJ1dYoEDrEe2Kd7FohFbHKNkX4?=
- =?us-ascii?Q?RLB2kko8EEdyoZ83VEzscL+cTYzuIf1H7AMrd2p0NRGkzd5cogms0iVBRNSx?=
- =?us-ascii?Q?SfgLj/L6cHbBhTmf0RK7nWF8VcrO4hnhNBCjYiypI5BWeXlJ0oK+FG/InkyU?=
- =?us-ascii?Q?37fKo15Tjf5hzDe+iStf1+QZu7uKqe4IrMjL7DYzQQhsbhYIU019pHlkCPZA?=
- =?us-ascii?Q?qTSLTSAQuwLEjh3k+GOjyyXf63MBWQQ0OySEZpanIuvb8Hgun2MixKDaFYYI?=
- =?us-ascii?Q?bKFaJtswpEBl8saahvk5Wydb3uHNp59JaeF7oUf7VHMRrciiB63w0GgrwDPC?=
- =?us-ascii?Q?n93Xjnw0EicXwghW8ej8QT4SaHzhEbAC0mIzKv2XF6wAkit/Q5VuoFEFuwUK?=
- =?us-ascii?Q?uCtAB5LAjVY02wH7w/hsDesh7h/t5CLrUFt1IL1gMPZiZKRjH7+62ltP6flo?=
- =?us-ascii?Q?pU3RNcliI3lMS/jh3qD0A8VCjOZVx1ZZzqf26KIJfuaw41lIQZEuQTrmhAp4?=
- =?us-ascii?Q?ObtLDcNvTIlq41XYrmbSQLFw1LR1uPT+aEc59j9xpnFi7WacoCOuoOJZFx74?=
- =?us-ascii?Q?XcxpalDe2rUOWOPSdz1xqwZGODNmRMQ486efOPHt4Swjsaq8nqML6MmvNxYq?=
- =?us-ascii?Q?lnwO+nNu4qNF/vvJcox+IBnKImx7zT/PKOvsm0PmOKKXytDterkRdKKroIjj?=
- =?us-ascii?Q?0w=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: c33352de-fb6d-4f20-abc7-08dbab09d67a
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 16:38:14.5952
+X-Microsoft-Antispam-Message-Info: CmBDgRCp5soYcdJz+5hfla5utfAh58l4O6dYyWcwrVCuiTiI/hUAQbGbndmP4i2inVQMTDBZJ1QWOYz1uRxd9XhlZNvrUmmtOdKXEz9smRn/W61Q7SfRhjFmDPKUn0vb9oBrKzm4eRWjheDST6XYMAfXHAEjTxL/MBbdGjDErTj/lm5UhCMJYKxtM7jwQQelHDp04CX6N4Qzxdgt62EGrylF3/QY1g5tqSn5fhsm5uvwadnEd+L/b/9vnbXBgloARTLOHVL2cFJEteqCDO/gwlkzy6/49oUDhijYh4/yhhPFoFPrrselYmqL0j8SmVZxYg8x1Fj+lQhoBkApj+oiwjv62TVYYmBPVdVJ2C4WJ00Finquonuys4NnknL0qFQRCXfb6KiXojMLz4r/A0aMOFldlq8Yfwcu4m1rQn5E4rme30nbRBo+S71XHM+uFnUsIvm9PMkabKFzjXLk4XgeMjBzRvfkAZtuVSyEw8P0MOkknkQ9K/uwHYnhHJOLivu7Y1eCBSB4DlvvWtqzE77IDS5bJYiOv4TUznHmQIhiL1CSDDKjJAuvucozbxeO1rYtIGTB9GUFTYwh51Gmmi/XxnMM+5KU+ocR2oXqcvQ8xQZBx88xnSBaSo0jNs9nucENPBZgYBwXx8iYet1DbvfQGB/o9oXEwzVAqSlLutXgzRU7rddGAUZdpO3yFbnIZoIhoC0kBZbEOfbaFDVJLrMAcfYSh/kokvF/aFu9ioBWpG7AGJazq+di2J8FC84SKOZW
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(136003)(346002)(396003)(39860400002)(186009)(82310400011)(1800799009)(451199024)(40470700004)(36840700001)(46966006)(41300700001)(40460700003)(83380400001)(356005)(7636003)(86362001)(6666004)(478600001)(82740400003)(47076005)(426003)(7696005)(1076003)(36860700001)(2616005)(40480700001)(4744005)(336012)(26005)(107886003)(70206006)(110136005)(70586007)(36756003)(54906003)(5660300002)(316002)(2906002)(4326008)(8676002)(8936002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 16:41:29.2109
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JXzj2HpsS/C1hCOnidgMGD7d6IfSIdMDKaPXQCUlk1FGNbxXRn5Pe4fd9iUKmmX0b5vqh/bVXOIvqgo46T9Hiz4sYgqC9bf7T8rati4kkkA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB5154
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-MS-Exchange-CrossTenant-Network-Message-Id: 69ebeaa2-6734-4fb6-a665-08dbab0a4aa6
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003440.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB9241
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -157,204 +105,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jeremi Piotrowski wrote:
-> On 8/30/2023 9:33 PM, Dan Williams wrote:
-> > The sevguest driver was a first mover in the confidential computing
-> > space. As a first mover that afforded some leeway to build the driver
-> > without concern for common infrastructure.
-> > 
-> > Now that sevguest is no longer a singleton [1] the common operation of
-> > building and transmitting attestation report blobs can / should be made
-> > common. In this model the so called "TSM-provider" implementations can
-> > share a common envelope ABI even if the contents of that envelope remain
-> > vendor-specific. When / if the industry agrees on an attestation record
-> > format, that definition can also fit in the same ABI. In the meantime
-> > the kernel's maintenance burden is reduced and collaboration on the
-> > commons is increased.
-> > 
-> > Convert sevguest to use CONFIG_TSM_REPORTS to retrieve the blobs that
-> > the SNP_{GET,GET_EXT}_REPORT ioctls produce. An example flow follows for
-> > retrieving the SNP_GET_REPORT blob via the TSM interface utility,
-> > assuming no nonce and VMPL==2:
-> > 
-> >     report=/sys/kernel/config/tsm/report/report0
-> >     mkdir $report
-> >     echo 2 > $report/privlevel
-> >     dd if=/dev/urandom bs=64 count=1 > $report/inblob
-> >     hexdump -C $report/outblob
-> >     rmdir $report
-> > 
-> > ...while the SNP_GET_EXT_REPORT flow needs to additionally set the
-> > format to "extended":
-> > 
-> >     report=/sys/kernel/config/tsm/report/report1
-> >     mkdir $report
-> >     echo extended > $report/format
-> >     dd if=/dev/urandom bs=64 count=1 > $report/inblob
-> >     hexdump -C $report/outblob
-> >     rmdir $report
-> > 
-> > The old ioctls can be lazily deprecated, the main motivation of this
-> > effort is to stop the proliferation of new ioctls, and to increase
-> > cross-vendor collaboration.
-> > 
-> > Note, only compile-tested.
-> > 
-> > Link: http://lore.kernel.org/r/64961c3baf8ce_142af829436@dwillia2-xfh.jf.intel.com.notmuch [1]
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> > Cc: Dionna Glaze <dionnaglaze@google.com>
-> > Cc: Brijesh Singh <brijesh.singh@amd.com>
-> > Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> > ---
-> >  drivers/virt/coco/sev-guest/Kconfig     |    1 
-> >  drivers/virt/coco/sev-guest/sev-guest.c |   83 +++++++++++++++++++++++++++++++
-> >  2 files changed, 84 insertions(+)
-> > 
-> > diff --git a/drivers/virt/coco/sev-guest/Kconfig b/drivers/virt/coco/sev-guest/Kconfig
-> > index da2d7ca531f0..1cffc72c41cb 100644
-> > --- a/drivers/virt/coco/sev-guest/Kconfig
-> > +++ b/drivers/virt/coco/sev-guest/Kconfig
-> > @@ -5,6 +5,7 @@ config SEV_GUEST
-> >  	select CRYPTO
-> >  	select CRYPTO_AEAD2
-> >  	select CRYPTO_GCM
-> > +	select TSM_REPORTS
-> >  	help
-> >  	  SEV-SNP firmware provides the guest a mechanism to communicate with
-> >  	  the PSP without risk from a malicious hypervisor who wishes to read,
-> > diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-> > index c3c9e9ea691f..c7bbb8f372a3 100644
-> > --- a/drivers/virt/coco/sev-guest/sev-guest.c
-> > +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-> > @@ -16,10 +16,12 @@
-> >  #include <linux/miscdevice.h>
-> >  #include <linux/set_memory.h>
-> >  #include <linux/fs.h>
-> > +#include <linux/tsm.h>
-> >  #include <crypto/aead.h>
-> >  #include <linux/scatterlist.h>
-> >  #include <linux/psp-sev.h>
-> >  #include <linux/sockptr.h>
-> > +#include <linux/cleanup.h>
-> >  #include <uapi/linux/sev-guest.h>
-> >  #include <uapi/linux/psp-sev.h>
-> >  
-> > @@ -759,6 +761,79 @@ static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno
-> >  	return key;
-> >  }
-> >  
-> > +static u8 *sev_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
-> > +{
-> > +	struct snp_guest_dev *snp_dev = data;
-> > +	const int report_size = SZ_4K;
-> > +	const int ext_size = SZ_16K;
-> > +	int ret, size;
-> > +
-> > +	if (desc->inblob_len != 64)
-> > +		return ERR_PTR(-EINVAL);
-> > +
-> > +	if (desc->outblob_format == TSM_FORMAT_EXTENDED)
-> > +		size = report_size + ext_size;
-> > +	else
-> > +		size = report_size;
-> > +
-> > +	u8 *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
-> > +
-> > +	guard(mutex)(&snp_cmd_mutex);
-> > +	if (desc->outblob_format == TSM_FORMAT_EXTENDED) {
-> > +		struct snp_ext_report_req ext_req = {
-> > +			.data = { .vmpl = desc->privlevel },
-> > +			.certs_address = (__u64)buf + report_size,
-> > +			.certs_len = ext_size,
-> > +		};
-> > +		memcpy(&ext_req.data.user_data, desc->inblob, desc->inblob_len);
-> > +
-> > +		struct snp_guest_request_ioctl input = {
-> > +			.msg_version = 1,
-> > +			.req_data = (__u64)&ext_req,
-> > +			.resp_data = (__u64)buf,
-> > +		};
-> > +		struct snp_req_resp io = {
-> > +			.req_data = KERNEL_SOCKPTR(&ext_req),
-> > +			.resp_data = KERNEL_SOCKPTR(buf),
-> > +		};
-> > +
-> > +		ret = get_ext_report(snp_dev, &input, &io);
-> > +	} else {
-> > +		struct snp_report_req req = {
-> > +			.vmpl = desc->privlevel,
-> > +		};
-> > +		memcpy(&req.user_data, desc->inblob, desc->inblob_len);
-> > +
-> > +		struct snp_guest_request_ioctl input = {
-> > +			.msg_version = 1,
-> > +			.req_data = (__u64)&req,
-> > +			.resp_data = (__u64)buf,
-> > +		};
-> > +		struct snp_req_resp io = {
-> > +			.req_data = KERNEL_SOCKPTR(&req),
-> > +			.resp_data = KERNEL_SOCKPTR(buf),
-> > +		};
-> > +
-> > +		ret = get_report(snp_dev, &input, &io);
-> > +	}
-> > +
-> > +	if (ret)
-> > +		return ERR_PTR(ret);
-> > +
-> > +	*outblob_len = size;
-> > +	return_ptr(buf);
-> > +}
-> > +
-> > +static const struct tsm_ops sev_tsm_ops = {
-> > +	.name = KBUILD_MODNAME,
-> > +	.report_new = sev_report_new,
-> > +};
-> > +
-> > +static void unregister_sev_tsm(void *data)
-> > +{
-> > +	unregister_tsm(&sev_tsm_ops);
-> > +}
-> > +
-> >  static int __init sev_guest_probe(struct platform_device *pdev)
-> >  {
-> >  	struct snp_secrets_page_layout *layout;
-> > @@ -832,6 +907,14 @@ static int __init sev_guest_probe(struct platform_device *pdev)
-> >  	snp_dev->input.resp_gpa = __pa(snp_dev->response);
-> >  	snp_dev->input.data_gpa = __pa(snp_dev->certs_data);
-> >  
-> > +	ret = register_tsm(&sev_tsm_ops, snp_dev, &tsm_report_ext_type);
-> > +	if (ret)
-> > +		goto e_free_cert_data;
-> > +
-> > +	ret = devm_add_action_or_reset(&pdev->dev, unregister_sev_tsm, NULL);
-> > +	if (ret)
-> > +		goto e_free_cert_data;
-> > +
-> >  	ret =  misc_register(misc);
-> >  	if (ret)
-> >  		goto e_free_cert_data;
-> > 
-> 
-> I tried this with the non-extended request
+This patch set adds below improvements to the Tegra194 CPUFREQ driver.
+They are applicable to all the Tegra SoC's supported by the driver.
 
-Thanks for testing!
+1) Patch 1: Avoid making SMP call on every frequency request to reduce
+   the time for frequency set and get calls.
 
-> ...and realized it's a bit awkward from
-> a uapi point of view. The returned outblob has a header prepended (table 23 in [1])
-> and is arbitrarily sized at 4096. It would be more natural to only return the report
-> field and the count bytes that the report actually has. I've attached a rough patch
-> below to give you an idea of what I mean.
+2) Patch 2: Use reference clock count based loop instead of udelay()
+   to improve the accuracy of re-generated CPU frequency.
 
-It makes sense, especially if that is what the legacy ioctl output
-buffer is emitting.
+The patches are not related but have minor conflict. So, need to be
+applied in order of patch numbers. If 'Patch 2' is to be applied first
+then will rebase that and send separately.
 
-> The extended guest request is another topic, since userspace has to be aware of
-> where the kernel choses to put the extended data, and fixup all the offsets in the
-> table (section 4.1.8.1 in [2]). It would be better to return this data through a
-> separate file.
+Sumit Gupta (2):
+  cpufreq: tegra194: save CPU data to avoid repeated SMP calls
+  cpufreq: tegra194: use refclk delta based loop instead of udelay
 
-I notice that the TDX report also includes a certificate blob, so if
-that is a common concept then yes, it makes sense to have a separate
-file for that.
+ drivers/cpufreq/tegra194-cpufreq.c | 151 ++++++++++++++++++++---------
+ 1 file changed, 106 insertions(+), 45 deletions(-)
+
+-- 
+2.17.1
+
