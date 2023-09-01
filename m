@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C0C78FC15
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:07:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B87B78FC13
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:07:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349100AbjIALHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:07:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
+        id S1349094AbjIALH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233414AbjIALHk (ORCPT
+        with ESMTP id S240603AbjIALH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:07:40 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973D210F0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:07:34 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fef2fafee2so49355e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:07:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693566453; x=1694171253; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZF7QmbvYJUWyLTiiJZH0vAH9wqTPWy/RK++Y8NS9peY=;
-        b=sY2Yso6INJTujb0ok9vq2vBaA7pLmnW9+8b3Oei5dSltHlsjjS6mDYjWhwsMzW7s66
-         4Oyz5SmkgM585vL7fDG9aSMUmDUiK/nuXQBbYahFB2lmDMpg9n4T11baKxFLSUFFboNd
-         tkliXVnB7gnCML8blEh7kr6X/HFyY1PacwjSVcoGhyEsLbHZSWr+EhHwCbyznwN2zLQd
-         eErwXa0VduwZ1pskP7ksBYrMrwEk8AzCn8vNU+HnqMRAx1U5uoS/XRE4/t1b68qjYIf+
-         ug9mfjDzsL8Ikfml477jSxcuEpWr4UbDwPvK8ZxvAdo9463XS0vxIZG2agl16orWj9hO
-         hmOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693566453; x=1694171253;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZF7QmbvYJUWyLTiiJZH0vAH9wqTPWy/RK++Y8NS9peY=;
-        b=ZzVqEtcgYq23bnGAKXz7ejAwfPRauDcVkHiMfsWGIKc7nPMp40Jc6aDxWA5MvYcjP/
-         zQabuLtoP1Ve/d6F4b87r+JvzBGYQExG8Dz4BnjmqqCi+iaGxIddNIlfCc/IcMNNK7LU
-         JunOqp6RRN1411Re+rQw4nP+UU5cMfrSxsi4AvO6u4dR7qI60VvPO7v0QO0a+fR0YY5p
-         C0v8w2rPd/MQ+f4kZIwpVDW5jPuXIReW71Sc6RGWOTpEDanex6nNXbVPzt9Mmv8NoWrW
-         1R2fRigLXXLhsZoPTXf/8ZP8o0gaoeHQH5JhOl5BdEH3LYXI3ROu9z+y/Zd8hbXuLG6Q
-         XpoA==
-X-Gm-Message-State: AOJu0YxgkrNqrRcayyoCi9fOWxi0OUohhoB0Z6uzaY0jLDwjzKGj948L
-        ygWgk3li5IRIanVX+eZxwTYzJl0lomvZO1CX7zkhH16yXRGLN5iCG6CMkA==
-X-Google-Smtp-Source: AGHT+IEko/ujs9GkS9oO5Tp3CX3QCsCTDzB1tdH/41M/YlHp6EdTK7Xx/Ixze8gzx9pu752jBCSd38w9DXkyTrS9n2U=
-X-Received: by 2002:a05:600c:4886:b0:3fe:cd3a:ef92 with SMTP id
- j6-20020a05600c488600b003fecd3aef92mr123311wmp.6.1693566452937; Fri, 01 Sep
- 2023 04:07:32 -0700 (PDT)
+        Fri, 1 Sep 2023 07:07:27 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D6FE42;
+        Fri,  1 Sep 2023 04:07:23 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CAECD2185F;
+        Fri,  1 Sep 2023 11:07:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693566441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8a57AjKskzWCykzi4HsClcp/cOx+3HL/9e63h2uPTF4=;
+        b=IcxVSLHhJ6IEwkLwitDotQ00lwS6BOSQWmQAAlN5CwhS3rzd+E8j4iFjMTw4lt4LldyVyC
+        rhXd0yYekF317gTrF6Sei8v8ZtW5QyJfpOfr6llJb/bfWnxQgQ/RTe+sAuG+IpJNI2xTY2
+        PKaFzJNZoxgRCMRyU3JGWI/hFrcFFkM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693566441;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8a57AjKskzWCykzi4HsClcp/cOx+3HL/9e63h2uPTF4=;
+        b=H2/AX4Bd9itzYhoL7+z7uqLchSRAQX7Y9Iozu/HLAZej1BQol9UAnz1JH56WkADWtYUJUe
+        EgMc93+f69FYaeDg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 95F7513582;
+        Fri,  1 Sep 2023 11:07:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 0f+AIunF8WTwdQAAMHmgww
+        (envelope-from <dkirjanov@suse.de>); Fri, 01 Sep 2023 11:07:21 +0000
+Message-ID: <a67042bc-ec43-17a4-257e-8276646fc0e3@suse.de>
+Date:   Fri, 1 Sep 2023 14:07:21 +0300
 MIME-Version: 1.0
-References: <ZPCfeaBrzF433cWE@smile.fi.intel.com> <000000000000c5ab74060438a6f8@google.com>
- <CANp29Y5GFuGe9=kBp-xmTb8tesLY4oAjewZ5c_31jmf8+AocBQ@mail.gmail.com>
- <ZPC0GTe3yc9Kl8uh@smile.fi.intel.com> <CANp29Y62czRE-U=a0=ak0AkUv7vKZSECY9pnm74jEAuHRL1sxA@mail.gmail.com>
- <ZPDA1Z8Hwq3jdvgh@smile.fi.intel.com>
-In-Reply-To: <ZPDA1Z8Hwq3jdvgh@smile.fi.intel.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Fri, 1 Sep 2023 13:07:20 +0200
-Message-ID: <CANp29Y5Bq1fo8pFWGxKT9NTNW_-C6vf=A_hUKG2BJey5JRrO1g@mail.gmail.com>
-Subject: Re: [syzbot] [kernel?] general protection fault in netdev_register_kobject
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     syzbot <syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: =?UTF-8?Q?Re=3a_=5bPATCH=5d_net/socket=3a_Remove_unnecessary_?=
+ =?UTF-8?B?4oCYMOKAmSB2YWx1ZXMgZnJvbSB1c2Vk?=
+Content-Language: en-US
+To:     Li zeming <zeming@nfschina.com>, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230902182228.3124-1-zeming@nfschina.com>
+From:   Denis Kirjanov <dkirjanov@suse.de>
+In-Reply-To: <20230902182228.3124-1-zeming@nfschina.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,65 +75,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 6:33=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Aug 31, 2023 at 05:53:29PM +0200, Aleksandr Nogikh wrote:
-> > On Thu, Aug 31, 2023 at 5:39=E2=80=AFPM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Thu, Aug 31, 2023 at 04:15:23PM +0200, Aleksandr Nogikh wrote:
-> > > > #syz dup: general protection fault in nfc_register_device
-> > >
-> > > Thanks!
-> > >
-> > > Maybe you can improve it to
-> > > 1) drop those prefixes by itself;
-> >
-> > Yeah, I've just thought about it too when I was correcting the command.
-> >
-> > > 2) explain better in the quick help below what "exact" means.
-> > >
-> > > Also is it possible to test just patches without repository?
-> > > Can you add this feature when you simply submit a message ID
-> > > to it and it uses lore.kernel.org for the patch or series?
-> >
-> > Thanks, these are good suggestions!
-> > The first one is easy to do (we actually already support that
-> > internally, so only a small change is needed), the second one is a bit
-> > trickier, but I'll look into that.
 
-FTR I've just sent two PRs:
-1) Support `#syz test` without arguments -- in that case, syzbot
-checks out the latest commit on the fuzzed branch.
-2) Parse all kinds of email titles in `#syz dup`.
 
-I'll deploy them soon.
+On 9/2/23 21:22, Li zeming wrote:
+> used is assigned first, so it does not need to initialize the
+> assignment.
 
->
-> JFYI:
-> 20230828145824.3895288-1-andriy.shevchenko@linux.intel.com
->
-> Can be used for testing.
-> So I like to write
->
-> #syz test patch: 20230828145824.3895288-1-andriy.shevchenko@linux.intel.c=
-om
+that should be posted to net-next once it open
 
-Thanks for the idea!
-I've filed https://github.com/google/syzkaller/issues/4182
-
-The biggest problem is to figure out the command syntax that'd also
-let us specify the tree on which to apply the patch. Or to restrict
-the patch testing to either apply the patch from lore on top of the
-fuzzed tree or to accept repo/branch/patch explicitly.
-
->
-> The responses can be (among others?):
-> 1/ tested and test results;
-> 2/ not found.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+> 
+> Signed-off-by: Li zeming <zeming@nfschina.com>
+> ---
+>  net/socket.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/socket.c b/net/socket.c
+> index 2b0e54b2405c..743e54eba06f 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -569,12 +569,12 @@ static ssize_t sockfs_listxattr(struct dentry *dentry, char *buffer,
+>  				size_t size)
+>  {
+>  	ssize_t len;
+> -	ssize_t used = 0;
+> +	ssize_t used;
+>  
+>  	len = security_inode_listsecurity(d_inode(dentry), buffer, size);
+>  	if (len < 0)
+>  		return len;
+> -	used += len;
+> +	used = len;
+>  	if (buffer) {
+>  		if (size < used)
+>  			return -ERANGE;
