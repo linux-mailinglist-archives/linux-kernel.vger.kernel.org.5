@@ -2,78 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4831790384
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 00:03:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBF97790333
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 23:51:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237972AbjIAWDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 18:03:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39760 "EHLO
+        id S1350784AbjIAVvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 17:51:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237855AbjIAVwQ (ORCPT
+        with ESMTP id S1350865AbjIAVqY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 17:52:16 -0400
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0FB198E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 14:11:22 -0700 (PDT)
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 7C78341D2F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 21:11:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1693602681;
-        bh=XwIOmpIe/RrfEoBvhvmbdhClCHMkiyeb31e6bLO57k4=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=RbRDFyHFknrfKtv/KobzhPOjs+v3Oj9QX/6zhij3WTbGo1Hui2RDCRRbaJF45Z1Hm
-         DFYAdxMdqDoXit+RtRcT7bP+/roeyQtxoyRNSJXIgC7YtiaEmuz/EWh8dpTbYu1gy6
-         eiKIXxhzLkrqppn7MjX3yntGkx+4/YMwlhn0U0bBuo7yRHrvWYsHNmpyHgPD5xQBeb
-         Tywfm4xWNmhz3iGetMwB2YEuCcBdfnscv9IEVx7dgBvidsaxX1Sx9Yrbwo1bIEF6yb
-         2dbkTg3EQFCVdVgrkRvj2911arsJpHN5yn2PwW9jBuYtcmayWhVKEmHPeWzx52iV4K
-         EvKSJga3BShEA==
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-570bbc311c6so2506974eaf.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 14:11:21 -0700 (PDT)
+        Fri, 1 Sep 2023 17:46:24 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA0E3CD7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 14:45:45 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6bcade59b24so1974140a34.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 14:45:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693604745; x=1694209545; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xrM57ibCVE1vPyfYNR7KfD9pKOSb0WIIoAK4UJ07VUc=;
+        b=h6OVLq+MCiBk6ml4GH27yU8WVJe20F2FdLUM80yH5QmEyJcv7WV5xdiuCgKUvqjvLC
+         zwnZ5tVXCcVwhsbvd62npaP2ogKnNWYGRtMWuavJOa5Kca5k+UseSMv6ZbOzZGiEVQjQ
+         3vIbssALphdYj2hfGmS9Gtfcw2sNIDJ6M2TTEInrplsAHjzIoLe8xfUdIRywjqbru8xA
+         t2yDgFtQESFfwSd7gH7PxAcRixypdDpz5VwFBaHpylPbbn0ci0uouYcVxZUaXbBKfhl0
+         NB423pu/EiROAucwGXbnRPbPHuPNrWQMxp+9r7hbfrf0I5QdJIhcb04Idu7ag/ySpF08
+         AeQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693602680; x=1694207480;
+        d=1e100.net; s=20221208; t=1693604745; x=1694209545;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=XwIOmpIe/RrfEoBvhvmbdhClCHMkiyeb31e6bLO57k4=;
-        b=NM9mUTej8HZyj488Zgy1BeMqppp1Sa0KGdZc/fp33Ov67w8LRYXoGHMwbmK7xEyfH6
-         6LMm1LHT0mMXT0HTQxmn2ot0sDmBHPrtHeDGax4dE4gCpgAGUPFUs8TkR0szIS99lmaD
-         jrtnFJ/ZihHoGRYVTf8gjVA4mJjLDMRaLfTbcWqPXF+owdr+d3lCyzmzX5ja15TRU8CS
-         yPXqFdug9sa4Xzevgtf+SP+w18CDBoYMDDRVeQnrLxOlIorr3IsO3dZ1Oo3HTazQ5Jtf
-         iYRzoSw1en15RCyqJXMX79LRuQfUEBKZcjuBUwxW/CtPahV7YEqJofJs2jBShRXXHYXr
-         KdMA==
-X-Gm-Message-State: AOJu0Yw6GmtD7sPgzx/YrCDR18RpLsSZ7HbmwqxsWKiSZsgkGs59l7hz
-        FoUD4ayfDJ1/7pNpjUuq1shKyiAxvppuj8wlaKqYTWlv6rmqVb10GUl5wOrx+xfMpj/d2pvytP0
-        agCPc6jBiImug3D6e3B+WRSWpqHKurvvAFB2uZ+nzhoEUk66vKIY/FJLyvg==
-X-Received: by 2002:a05:6358:5e1c:b0:129:d242:f782 with SMTP id q28-20020a0563585e1c00b00129d242f782mr2635961rwn.0.1693602680326;
-        Fri, 01 Sep 2023 14:11:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEl1MahQid8Pf8m4MydU5h0YzxnIX7NzFxvCQdVjKARyFXsvglURYjIg08zlkxTrL8/EbnM+/FQSo0UQik7w3c=
-X-Received: by 2002:a05:6358:5e1c:b0:129:d242:f782 with SMTP id
- q28-20020a0563585e1c00b00129d242f782mr2635947rwn.0.1693602680104; Fri, 01 Sep
- 2023 14:11:20 -0700 (PDT)
+        bh=xrM57ibCVE1vPyfYNR7KfD9pKOSb0WIIoAK4UJ07VUc=;
+        b=KcGhnrPolM+QZutuUBHux2211AW3ALocv5dUO9TCyuJ4X/xXTL8uL7G+huJhpyO+If
+         F+6rra8nVfk1BZy11xMKPYihK/uRKB0x5OOEgN1qpWmec9j9P/YviLKyVsSxhrCbZTaz
+         np6F/AiDIIQJNya9iE2Fd7hCjr8QYqgeEY14PNKoGQFTh0L0Xi6CdBSoBocCRCyEPE7G
+         WEUV5Zb/CcMHMCNGRUx0SQjX7DxePLE6XKAGP0rn6i4l9d0yYNop+R9vXAOrclV6wZGF
+         GiWtjmq8uLRoFkz2uxO9zzEbq6xtujcVngcEKhNsDMlRsgZCBPA140H3Q/iVhhOnUIXI
+         7WQQ==
+X-Gm-Message-State: AOJu0YzfEY6Ry/5tOoR/1BRMUQEDJoRqesVqMpbXC4feh8EUsCFO0aNB
+        SvwWGU6hwBaGZYP6+h/Z3cC1aktxuSKaDdiXMljvXr9ct172oA==
+X-Google-Smtp-Source: AGHT+IEwH9jqCPrF4EwMbxbghsphucND1JEWN9TIvBzRB5VYc4FotGYNgxPoBh3Ap/wslpCrq3VZ+EmAXOm+532S1P0=
+X-Received: by 2002:a5d:8f94:0:b0:786:7389:51d7 with SMTP id
+ l20-20020a5d8f94000000b00786738951d7mr4532869iol.5.1693602814209; Fri, 01 Sep
+ 2023 14:13:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230901205145.10640-A-hca@linux.ibm.com> <20230901205613.59455-1-kuniyu@amazon.com>
-In-Reply-To: <20230901205613.59455-1-kuniyu@amazon.com>
-From:   Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date:   Fri, 1 Sep 2023 23:11:09 +0200
-Message-ID: <CAEivzxfhLC5zSxPUk8PE6jC9s0KbAzD2YzbomY2-skpF-dKMog@mail.gmail.com>
-Subject: Re: [PATCH net-next v7 1/4] scm: add SO_PASSPIDFD and SCM_PIDFD
-To:     Kuniyuki Iwashima <kuniyu@amazon.com>
-Cc:     hca@linux.ibm.com, arnd@arndb.de, bluca@debian.org,
-        brauner@kernel.org, davem@davemloft.net, dsahern@kernel.org,
-        edumazet@google.com, keescook@chromium.org, kuba@kernel.org,
-        ldv@strace.io, leon@kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mzxreary@0pointer.de,
-        netdev@vger.kernel.org, pabeni@redhat.com
+References: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <c9da6ffe-7a58-1efa-f625-41d73346d6a2@infradead.org>
+In-Reply-To: <c9da6ffe-7a58-1efa-f625-41d73346d6a2@infradead.org>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 1 Sep 2023 22:12:41 +0100
+Message-ID: <CA+V-a8tyUpgDSBrpHBBfWfie4xnR7iKCZben3U5dX1puFu3_1A@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Kconfig.errata: Add dependency for RISCV_SBI in
+ ERRATA_ANDES config
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,58 +77,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 1, 2023 at 10:56=E2=80=AFPM Kuniyuki Iwashima <kuniyu@amazon.co=
-m> wrote:
+Hi Randy,
+
+On Fri, Sep 1, 2023 at 9:27=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org>=
+ wrote:
 >
-> From: Heiko Carstens <hca@linux.ibm.com>
-> Date: Fri, 1 Sep 2023 22:51:45 +0200
-> > On Fri, Sep 01, 2023 at 01:33:22PM -0700, Kuniyuki Iwashima wrote:
-> > > From: Heiko Carstens <hca@linux.ibm.com>
-> > > Date: Fri, 1 Sep 2023 22:05:17 +0200
-> > > > On Thu, Jun 08, 2023 at 10:26:25PM +0200, Alexander Mikhalitsyn wro=
-te:
-> > > > > +       if ((msg->msg_controllen <=3D sizeof(struct cmsghdr)) ||
-> > > > > +           (msg->msg_controllen - sizeof(struct cmsghdr)) < size=
-of(int)) {
-> > > > > +               msg->msg_flags |=3D MSG_CTRUNC;
-> > > > > +               return;
-> > > > > +       }
-> > > >
-> > > > This does not work for compat tasks since the size of struct cmsghd=
-r (aka
-> > > > struct compat_cmsghdr) is differently. If the check from put_cmsg()=
- is
-> > > > open-coded here, then also a different check for compat tasks needs=
- to be
-> > > > added.
-> > > >
-> > > > Discovered this because I was wondering why strace compat tests fai=
-l; it
-> > > > seems because of this.
-> > > >
-> > > > See https://github.com/strace/strace/blob/master/tests/scm_pidfd.c
-> > > >
-> > > > For compat tasks recvmsg() returns with msg_flags=3DMSG_CTRUNC sinc=
-e the
-> > > > above code expects a larger buffer than is necessary.
-> > >
-> > > Can you test this ?
-> >
-> > Works for me.
-> >
-> > Tested-by: Heiko Carstens <hca@linux.ibm.com>
-
-Reviewed-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-
-Thanks for reporting this, Heiko!
-My bad.
-
-Kuniyuki,
-Thanks for the quick fix.
-
-Kind regards,
-Alex
-
+> Hi,
 >
-> Thanks!
-> I'll post a formal patch.
+> On 9/1/23 04:03, Prabhakar wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Andes errata uses sbi_ecalll() which is only available if RISCV_SBI is
+> > enabled. So add an dependency for RISCV_SBI in ERRATA_ANDES config to
+> > avoid any build failures.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp=
+@intel.com/
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > ---
+> >  arch/riscv/Kconfig.errata | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
+> > index bee5d838763b..566bcefeab50 100644
+> > --- a/arch/riscv/Kconfig.errata
+> > +++ b/arch/riscv/Kconfig.errata
+> > @@ -2,7 +2,7 @@ menu "CPU errata selection"
+> >
+> >  config ERRATA_ANDES
+> >       bool "Andes AX45MP errata"
+> > -     depends on RISCV_ALTERNATIVE
+> > +     depends on RISCV_ALTERNATIVE && RISCV_SBI
+> >       help
+> >         All Andes errata Kconfig depend on this Kconfig. Disabling
+> >         this Kconfig will disable all Andes errata. Please say "Y"
+>
+>
+> I'm still seeing build warnings/errors after applying all 3 RISC-V
+> Kconfig patches from today (2023 SEP 01).
+>
+> WARNING: unmet direct dependencies detected for ERRATA_ANDES
+>   Depends on [n]: RISCV_ALTERNATIVE [=3Dy] && RISCV_SBI [=3Dn]
+>   Selected by [y]:
+>   - ARCH_R9A07G043 [=3Dy] && SOC_RENESAS [=3Dy] && RISCV [=3Dy]
+>
+> ../arch/riscv/errata/andes/errata.c: In function 'ax45mp_iocp_sw_workarou=
+nd':
+> ../arch/riscv/errata/andes/errata.c:29:23: error: storage size of 'ret' i=
+sn't known
+>    29 |         struct sbiret ret;
+>       |                       ^~~
+> ../arch/riscv/errata/andes/errata.c:35:15: error: implicit declaration of=
+ function 'sbi_ecall' [-Werror=3Dimplicit-function-declaration]
+>    35 |         ret =3D sbi_ecall(ANDESTECH_SBI_EXT_ANDES, ANDES_SBI_EXT_=
+IOCP_SW_WORKAROUND,
+>       |               ^~~~~~~~~
+> ../arch/riscv/errata/andes/errata.c:29:23: warning: unused variable 'ret'=
+ [-Wunused-variable]
+>    29 |         struct sbiret ret;
+>       |                       ^~~
+>
+> ARCH_R9A07G043 in drivers/soc/renesas/Kconfig selects ERRATA_ANDES and
+> ERRATA_ANDES_CMO even though RISCV_SBI is not set/enabled.
+>
+
+You need to apply patch [1] aswell.
+
+[1] https://patchwork.kernel.org/project/linux-riscv/patch/20230901110936.3=
+13171-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
+
+Cheers,
+Prabhakar
