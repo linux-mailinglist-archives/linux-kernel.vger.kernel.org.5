@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4B078F92A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DB1078F92F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348499AbjIAHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 03:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52540 "EHLO
+        id S1348508AbjIAHhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 03:37:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234471AbjIAHfV (ORCPT
+        with ESMTP id S234471AbjIAHhL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 03:35:21 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5111010D2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:35:18 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68a4bcf8a97so1227929b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 00:35:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693553718; x=1694158518; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=twC24zwbv4rxrutTxkfSyT3gLWKA93+iK2AGFx/l/NE=;
-        b=SKnLI9TUQ8UOQzraFdSHVXjnDnmc1JKu2SlQ2/VzdUVinUuyArUplhvL56QySnOSWd
-         2qVV7svLC2z5cYaLwP/KUm7pONjXDM2k7qQt62ZAUeuNizG2ou2oeptFVf3BbGwQgMQS
-         qLpjH5DKebm2ZrxktUW9lkVv8JjTNU/G01WM7vJtPK1XS4o8nGiw2Q9/FxgJD2r60k3b
-         3pfejLDTiWWIvLZbZSKCHRtovus+JPGkL69TMeP7N/Al71QUt1hvgAhtJFz8ZpZQdsRL
-         tDo2ZGFTPn/TKFSAEnmW4PsG4xebfGZsMG48PI0JQDdcOIQHmmsSToHOr+ohcL1V7cap
-         YJXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693553718; x=1694158518;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=twC24zwbv4rxrutTxkfSyT3gLWKA93+iK2AGFx/l/NE=;
-        b=ROPKEwt4MlZvDDkNk3WgEgDK+i9hXABssBNWmUH+fbz1Jc+DC9qL9LRGZsf99v5RWw
-         KYcFSOrypY/S82Dbf9AtFKQ4NKVY6iq+jFeuolBYYYxFHkZ172jiz57hrfvqcly4NOf4
-         yGNTmiyXOukKkniYXmaZF/dPxo97GbHyYfBOWxiUsmW6nmOr19//sEVgMyynZLiujmXi
-         FJKCZqxi4RwZ2H3SNNgnVQ7mafOMj88qL4cyjGitRiloK8+m87bVzSDo6xoxxLQbwmKc
-         fGJW0zeTOiEkdKYV62DPttOaDMB5IHuMvsoe0xxlTeG4TThUGWIpRCmTRaaMUOjCqUwk
-         aAUQ==
-X-Gm-Message-State: AOJu0YwqmQcSWAHtmRp2px4zkGrLxO57363YfYBS7pF2N5TOWu64/Cq2
-        yPQwZiPIWZmXDDsQSy4ZzsCz
-X-Google-Smtp-Source: AGHT+IEbqx6ojHyG0IAXecWFY7u2o3fb/zTxAc6jY/6YNuNvZeWI4jiOxr2Du4dLiD2wjQrRHcx6Iw==
-X-Received: by 2002:a05:6a00:180f:b0:68a:3bb9:7e86 with SMTP id y15-20020a056a00180f00b0068a3bb97e86mr2327112pfa.0.1693553717713;
-        Fri, 01 Sep 2023 00:35:17 -0700 (PDT)
-Received: from localhost.localdomain ([59.92.102.217])
-        by smtp.gmail.com with ESMTPSA id g20-20020a62e314000000b00688214cff65sm2376427pfh.44.2023.09.01.00.35.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 00:35:17 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     mhi@lists.linux.dev
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_msarkar@quicinc.com, schintav@quicinc.com,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] bus: mhi: ep: Do not allocate event ring element on stack
-Date:   Fri,  1 Sep 2023 13:05:02 +0530
-Message-Id: <20230901073502.69385-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Fri, 1 Sep 2023 03:37:11 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5181410D2;
+        Fri,  1 Sep 2023 00:37:08 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3815wRc6013405;
+        Fri, 1 Sep 2023 07:36:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=CKvBT38tHSqEYMIsnstJQ+NMjLwRjhLHwqunnq7Hwrw=;
+ b=dJUHyCbL4uqlEbAl2+uwzaAdjO42eSiS+jEErBee1wphUy98hagXMCHV3T1qegvYWuC/
+ Oeoe4VyGnPS9NVsTt32HmKVzOQDonTqyN5eiK7rt8vP9lq8dkPxeyEZ4/pWLiKLP3it5
+ 4f4W6tQHNNDcrHAcFQFVvbRHFuxVFXBP4ppfdBeWeSTBgDW3r38dsq5hrQOlPzk93gXL
+ kdQgw3+oEaAwdxx2P1rVoSStn8/o6eFH/nP/kFNr80T4lsQ7AnwoFyVilrHfiSGyWziT
+ j9gtn0aeDJys5svA5/0JPBnYkjhRRZTG0pig7XkZ0JINuK7mAsCMP/KsvPGLm8HwbB+w NQ== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3su89e8edb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 07:36:59 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3817awft032413
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Sep 2023 07:36:58 GMT
+Received: from devipriy-linux.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.36; Fri, 1 Sep 2023 00:36:54 -0700
+From:   Devi Priya <quic_devipriy@quicinc.com>
+To:     <andersson@kernel.org>, <agross@kernel.org>,
+        <konrad.dybcio@linaro.org>, <mturquette@baylibre.com>,
+        <sboyd@kernel.org>, <mturquette@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_devipriy@quicinc.com>, <quic_saahtoma@quicinc.com>
+Subject: [PATCH V2] clk: qcom: clk-rcg2: Fix clock rate overflow for high parent frequencies
+Date:   Fri, 1 Sep 2023 13:06:40 +0530
+Message-ID: <20230901073640.4973-1-quic_devipriy@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 4Z3cnFO4cjXB8yxRsPz1NXuYH4RTN16n
+X-Proofpoint-GUID: 4Z3cnFO4cjXB8yxRsPz1NXuYH4RTN16n
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_04,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ priorityscore=1501 adultscore=0 clxscore=1011 suspectscore=0
+ malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ mlxlogscore=953 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309010071
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -70,101 +75,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that the host controller driver would use DMA framework to
-write the event ring element. So avoid allocating event ring element on the
-stack as DMA cannot work on vmalloc memory.
+If the parent clock rate is greater than unsigned long max/2 then
+integer overflow happens when calculating the clock rate on 32-bit systems.
+As RCG2 uses half integer dividers, the clock rate is first being
+multiplied by 2 which will overflow the unsigned long max value.
+Hence, replace the common pattern of doing 64-bit multiplication
+and then a do_div() call with simpler mult_frac call.
 
-Cc: stable@vger.kernel.org
-Fixes: 961aeb689224 ("bus: mhi: ep: Add support for sending events to the host")
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Fixes: bcd61c0f535a ("clk: qcom: Add support for root clock generators (RCGs)")
+Signed-off-by: Devi Priya <quic_devipriy@quicinc.com>
 ---
- drivers/bus/mhi/ep/main.c | 52 +++++++++++++++++++++++++--------------
- 1 file changed, 34 insertions(+), 18 deletions(-)
+ Changes in V2:
+	- Replaced 64-bit multiplication & a do_div call with mult_frac
+	  call as suggested by Marijn Suijten.
+	- Updated the subject title
+	- Added Fixes tag
+	- Did not pick up the R-b tag due to the above changes.
 
-diff --git a/drivers/bus/mhi/ep/main.c b/drivers/bus/mhi/ep/main.c
-index 600881808982..66ca470bf302 100644
---- a/drivers/bus/mhi/ep/main.c
-+++ b/drivers/bus/mhi/ep/main.c
-@@ -71,45 +71,61 @@ static int mhi_ep_send_event(struct mhi_ep_cntrl *mhi_cntrl, u32 ring_idx,
- static int mhi_ep_send_completion_event(struct mhi_ep_cntrl *mhi_cntrl, struct mhi_ep_ring *ring,
- 					struct mhi_ring_element *tre, u32 len, enum mhi_ev_ccs code)
+ drivers/clk/qcom/clk-rcg2.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/clk/qcom/clk-rcg2.c b/drivers/clk/qcom/clk-rcg2.c
+index a42f661550ca..f64d69164547 100644
+--- a/drivers/clk/qcom/clk-rcg2.c
++++ b/drivers/clk/qcom/clk-rcg2.c
+@@ -159,15 +159,11 @@ static unsigned long
+ calc_rate(unsigned long rate, u32 m, u32 n, u32 mode, u32 hid_div)
  {
--	struct mhi_ring_element event = {};
-+	struct mhi_ring_element *event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
-+	int ret;
-+
-+	event->ptr = cpu_to_le64(ring->rbase + ring->rd_offset * sizeof(*tre));
-+	event->dword[0] = MHI_TRE_EV_DWORD0(code, len);
-+	event->dword[1] = MHI_TRE_EV_DWORD1(ring->ch_id, MHI_PKT_TYPE_TX_EVENT);
+ 	if (hid_div) {
+-		rate *= 2;
+-		rate /= hid_div + 1;
++		rate = mult_frac(rate, 2, hid_div + 1);
+ 	}
  
--	event.ptr = cpu_to_le64(ring->rbase + ring->rd_offset * sizeof(*tre));
--	event.dword[0] = MHI_TRE_EV_DWORD0(code, len);
--	event.dword[1] = MHI_TRE_EV_DWORD1(ring->ch_id, MHI_PKT_TYPE_TX_EVENT);
-+	ret = mhi_ep_send_event(mhi_cntrl, ring->er_index, event, MHI_TRE_DATA_GET_BEI(tre));
-+	kfree(event);
+ 	if (mode) {
+-		u64 tmp = rate;
+-		tmp *= m;
+-		do_div(tmp, n);
+-		rate = tmp;
++		rate = mult_frac(rate, m, n);
+ 	}
  
--	return mhi_ep_send_event(mhi_cntrl, ring->er_index, &event, MHI_TRE_DATA_GET_BEI(tre));
-+	return ret;
- }
- 
- int mhi_ep_send_state_change_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_state state)
- {
--	struct mhi_ring_element event = {};
-+	struct mhi_ring_element *event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
-+	int ret;
-+
-+	event->dword[0] = MHI_SC_EV_DWORD0(state);
-+	event->dword[1] = MHI_SC_EV_DWORD1(MHI_PKT_TYPE_STATE_CHANGE_EVENT);
- 
--	event.dword[0] = MHI_SC_EV_DWORD0(state);
--	event.dword[1] = MHI_SC_EV_DWORD1(MHI_PKT_TYPE_STATE_CHANGE_EVENT);
-+	ret = mhi_ep_send_event(mhi_cntrl, 0, event, 0);
-+	kfree(event);
- 
--	return mhi_ep_send_event(mhi_cntrl, 0, &event, 0);
-+	return ret;
- }
- 
- int mhi_ep_send_ee_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_ee_type exec_env)
- {
--	struct mhi_ring_element event = {};
-+	struct mhi_ring_element *event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
-+	int ret;
-+
-+	event->dword[0] = MHI_EE_EV_DWORD0(exec_env);
-+	event->dword[1] = MHI_SC_EV_DWORD1(MHI_PKT_TYPE_EE_EVENT);
- 
--	event.dword[0] = MHI_EE_EV_DWORD0(exec_env);
--	event.dword[1] = MHI_SC_EV_DWORD1(MHI_PKT_TYPE_EE_EVENT);
-+	ret = mhi_ep_send_event(mhi_cntrl, 0, event, 0);
-+	kfree(event);
- 
--	return mhi_ep_send_event(mhi_cntrl, 0, &event, 0);
-+	return ret;
- }
- 
- static int mhi_ep_send_cmd_comp_event(struct mhi_ep_cntrl *mhi_cntrl, enum mhi_ev_ccs code)
- {
-+	struct mhi_ring_element *event = kzalloc(sizeof(struct mhi_ring_element), GFP_KERNEL);
- 	struct mhi_ep_ring *ring = &mhi_cntrl->mhi_cmd->ring;
--	struct mhi_ring_element event = {};
-+	int ret;
-+
-+	event->ptr = cpu_to_le64(ring->rbase + ring->rd_offset * sizeof(struct mhi_ring_element));
-+	event->dword[0] = MHI_CC_EV_DWORD0(code);
-+	event->dword[1] = MHI_CC_EV_DWORD1(MHI_PKT_TYPE_CMD_COMPLETION_EVENT);
- 
--	event.ptr = cpu_to_le64(ring->rbase + ring->rd_offset * sizeof(struct mhi_ring_element));
--	event.dword[0] = MHI_CC_EV_DWORD0(code);
--	event.dword[1] = MHI_CC_EV_DWORD1(MHI_PKT_TYPE_CMD_COMPLETION_EVENT);
-+	ret = mhi_ep_send_event(mhi_cntrl, 0, event, 0);
-+	kfree(event);
- 
--	return mhi_ep_send_event(mhi_cntrl, 0, &event, 0);
-+	return ret;
- }
- 
- static int mhi_ep_process_cmd_ring(struct mhi_ep_ring *ring, struct mhi_ring_element *el)
+ 	return rate;
 -- 
-2.25.1
+2.34.1
 
