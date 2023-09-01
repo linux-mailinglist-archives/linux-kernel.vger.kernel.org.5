@@ -2,125 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 546FD78F68E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 03:05:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5267378F690
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 03:07:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348014AbjIABFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 21:05:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47082 "EHLO
+        id S1348010AbjIABHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 21:07:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232486AbjIABFJ (ORCPT
+        with ESMTP id S234411AbjIABHq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 21:05:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3C5A10DE;
-        Thu, 31 Aug 2023 18:04:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 536B361DF0;
-        Fri,  1 Sep 2023 01:04:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64525C433C7;
-        Fri,  1 Sep 2023 01:04:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693530290;
-        bh=fvTxfLUhfAuU7bfbtfdaYACrGVKGUe+QNGoHK+K2ylo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gDe/hH1m7pkRXSZQRAm0VU7IQn0tgHn5KB2wON37b5hOrw62LK/u54jC7dF92TwX0
-         qQ5CcOverLysYLfRVpIHiK0SkyjxLjIDUVyCkaD+2JMgz0qfTiOWlquOFiyzw7MaCg
-         +gWkbNFQSfsjVgJUiLbk54HD0WkAgIg5lWnYwBugTfgs+MkfcsyB3S10IugnL69WYJ
-         kSrWdVjKHubWlFYmRvR+86zMWHersGdyydz+g1wgbCZ1js3n9A9G46UTOU5fK2R+J7
-         xqY8L5X3/StoUUfZ7f9REe2XV8Enq0KTvoyu++FsWilM5XRbIvwAjzogSWLRllUN6f
-         wx65epoHrmLBg==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.4 0/9] 6.4.14-rc1 review
-Date:   Fri,  1 Sep 2023 01:04:47 +0000
-Message-Id: <20230901010447.49402-1-sj@kernel.org>
+        Thu, 31 Aug 2023 21:07:46 -0400
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFD4C0
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 18:07:40 -0700 (PDT)
+Received: from epcas2p3.samsung.com (unknown [182.195.41.55])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230901010736epoutp039886f1cad3e37de37709c8e40b031a65~AoPoxjYpi2087020870epoutp03Z
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:07:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230901010736epoutp039886f1cad3e37de37709c8e40b031a65~AoPoxjYpi2087020870epoutp03Z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1693530456;
+        bh=TWUihyjImQSBvSzAnLEVBpAHA8hqk5DUUsqb5h6VCgU=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=mDhqSS/uUWtFqHbBef7sSuVoVc3ow5LMtwRCOwJedELVMNEhpdot+GZAx9fvB9Y7f
+         yke1ZN/+CXEbh2a0aCVCIICdMpUAS1tSZ2ev47xeycoIiI0GvUb0S4lvX/gm0Yz6M4
+         Ic5Au3LTr92UfDlnxh9WBqh+vghNAc/Lq1vA5dUM=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20230901010735epcas2p3b0cb03b5243ce310825f6fca61a87706~AoPoT6xQ50273402734epcas2p3T;
+        Fri,  1 Sep 2023 01:07:35 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.36.101]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4RcKdM28vlz4x9Q0; Fri,  1 Sep
+        2023 01:07:35 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4C.ED.09660.75931F46; Fri,  1 Sep 2023 10:07:35 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230901010734epcas2p4aadced02d68d3db407fda23de34601d2~AoPnTNrfy1950619506epcas2p4r;
+        Fri,  1 Sep 2023 01:07:34 +0000 (GMT)
+Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230901010734epsmtrp1b3325334f442cb623ae99dec827316b5~AoPnSkWpy2935729357epsmtrp1o;
+        Fri,  1 Sep 2023 01:07:34 +0000 (GMT)
+X-AuditID: b6c32a47-d5dfa700000025bc-e2-64f13957170b
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5A.CF.08788.65931F46; Fri,  1 Sep 2023 10:07:34 +0900 (KST)
+Received: from KORCO045595.samsungds.net (unknown [10.229.38.76]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230901010734epsmtip28240f2b1d54fc586ccbbdeec49855683~AoPnHJwYc2052620526epsmtip2u;
+        Fri,  1 Sep 2023 01:07:34 +0000 (GMT)
+From:   Bongkyu Kim <bongkyu7.kim@samsung.com>
+To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, boqun.feng@gmail.com
+Cc:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        bongkyu7.kim@samsung.com
+Subject: [PATCH v2 0/2] Make reader optimistic spinning optional
+Date:   Fri,  1 Sep 2023 10:07:02 +0900
+Message-Id: <20230901010704.18493-1-bongkyu7.kim@samsung.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230831111127.667900990@linuxfoundation.org>
-References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDJsWRmVeSWpSXmKPExsWy7bCmqW645ccUg0cT+C1eN75kslizpZHJ
+        onnxejaLy7vmsFmcPnaCxeLSgQVMFsd7DzBZtNwxdeDw2DnrLrvH5hVaHptWdbJ57J+7ht3j
+        /b6rbB59W1YxenzeJBfAHtXAaJNYlJyRWZaqkJqXnJ+SmZduqxQa4qZroaSQkV9cYqsUbWho
+        pGdoYK5nZGSkZ2oUa2VkqqSQl5ibaqtUoQvVq6RQlFwAVJtbWQw0ICdVDyquV5yal+KQlV8K
+        8ohecWJucWleul5yfq6SQlliTinQCCX9hG+MGV/2fmQsOCRcMXf3M7YGxkbeLkZODgkBE4nV
+        E/4ydjFycQgJ7GCUWHtvKROE84lR4ticJ1DON0aJab+2M8G0vJx1kRUisZdRYsL0GcxwVV/O
+        v2UEqWIT0JH4v3oGUAcHh4hAusTCF/kgYWaBCInJq9rZQWxhAQeJpdu2gA1lEVCV6H5xgBXE
+        5hWwlWi+PxFqmbzEzEvf2SHighInZz5hgZgjL9G8dTbYXgmBW+wSRy9NZINocJFYueAXO4Qt
+        LPHq+BYoW0riZX8blJ0tcebOeUYIu0Li5d8/UHFjiVnP2hlBbmYW0JRYv0sfxJQQUJY4cgtq
+        LZ9Ex+G/UNWCEqevdTNDlPBKdLQJQYTVJHY/b2WFsGUkDp5dC/WJh8S1g5PBbCGBWIkP8z4z
+        TWBUmIXksVlIHpuFcMMCRuZVjGKpBcW56anFRgXGyFG8iRGccLXcdzDOePtB7xAjEwfjIUYJ
+        DmYlEd5Ys3cpQrwpiZVVqUX58UWlOanFhxiTgUE9kVlKNDkfmPLzSuINzcwsLSyNTC0sTU0t
+        CAubWBqYmJkZmhuZGpgrifPea52bIiSQnliSmp2aWpBaBLOFiYNTqoGJo7F5Z/VU6QuP+Pdx
+        N19QbKjbHPzIs/XeFtmGu3/e8jGH2fWyZfEsZwtQK1jYLz1/TofZZd3kdzPvSLLJTD77riLv
+        Off331Ltds4PuR7+nqsV9t+oJnK1UvZTR9Z5MyL4ZMqYloY8z5WU8DSY1rZo597mxwrCJ52n
+        ZXEWPF25PEb33Bw5pQL/Q6enL/Wzb2xpMZ3Ge2c+68s1/A/XsHTf+ZN/4ISFzdVF+p98Nvp/
+        /7nBXW3x03DP9a+ehwnf+avS8a6GTyg4nq3/NdfKYiZRgbSg/o3/Ct7l91l6lx72StZetMXB
+        MMvf0WXGTqkb2eYP37SU3s2xDhVTNE+Ly5L2eVCltZd5SVtn4O9fVkosxRmJhlrMRcWJAHbB
+        idNvBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDLMWRmVeSWpSXmKPExsWy7bCSvG6Y5ccUg4+/1S1eN75kslizpZHJ
+        onnxejaLy7vmsFmcPnaCxeLSgQVMFsd7DzBZtNwxdeDw2DnrLrvH5hVaHptWdbJ57J+7ht3j
+        /b6rbB59W1YxenzeJBfAHsVlk5Kak1mWWqRvl8CV8WXvR8aCQ8IVc3c/Y2tgbOTtYuTkkBAw
+        kXg56yJrFyMXh5DAbkaJU1/OsUEkZCQO/VvLBGELS9xvOQJV9IVRYvOCa2AJNgEdif+rZ4DZ
+        IgK5Ek+/XAKzmQWiJL5PWsoCYgsLOEgs3bYFLM4ioCrR/eIAK4jNK2Ar0Xx/ItQCeYmZl76z
+        Q8QFJU7OfMICMUdeonnrbOYJjHyzkKRmIUktYGRaxSiZWlCcm55bbFhglJdarlecmFtcmpeu
+        l5yfu4kRHMBaWjsY96z6oHeIkYmD8RCjBAezkghvrNm7FCHelMTKqtSi/Pii0pzU4kOM0hws
+        SuK83173pggJpCeWpGanphakFsFkmTg4pRqYBP9bHY+ME110ZC7T14Spj0/uW5MVubdl6ct4
+        ZiEPbU22DVdWdl5arWg7/3/Mzs5gv2i29pdS/T8eWvyU6PXcH6kczGsQGfrb/qrfrp32R9yV
+        TtqoJz/X2rNEcaf3/VSDfwmcc/+lvJI7JOliZ3ih2HGN6Q8+rW+Ob+KFjxeHs7ftCDnwSpmn
+        6rR1nWbxv/Pem6YsbjkQfzC4TL9C5ueJsvSKefMqS/nTHt/kXfXxoNGZFScTohV1tjGGVF3y
+        33O9yfrCibPmEzZ6FCRMOahcILzNst7oJLe427Hdl55vmJC+MM01tcQx43/v0/kVTbOsO06d
+        DCjOT5TwFfPi2Pkj6bBfoWyE4qXsGoYcv99KLMUZiYZazEXFiQCJc6nozwIAAA==
+X-CMS-MailID: 20230901010734epcas2p4aadced02d68d3db407fda23de34601d2
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-ArchiveUser: EV
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230901010734epcas2p4aadced02d68d3db407fda23de34601d2
+References: <CGME20230901010734epcas2p4aadced02d68d3db407fda23de34601d2@epcas2p4.samsung.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-On Thu, 31 Aug 2023 13:11:27 +0200 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+This is rework of the following discussed patch.
+https://lore.kernel.org/all/20230613043308.GA1027@KORCO045595.samsungds.net/
 
-> This is the start of the stable review cycle for the 6.4.14 release.
-> There are 9 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 02 Sep 2023 11:11:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
+Changes from the previous patch
+- Split to revert and modify patches
+- Change according to Waiman Long's review
+    More wording to documentation part
+    Change module_param to early_param
+    Code change by Waiman Long's suggestion
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+In mobile environment, reader optimistic spinning is still useful
+because there're not many readers. In my test result at android device,
+it improves application startup time about 3.8%
+App startup time is most important factor for android user expriences.
+So, re-enable reader optimistic spinning by this commit. And,
+make it optional feature by cmdline.
 
-Tested-by: SeongJae Park <sj@kernel.org>
+Test result:
+This is 15 application startup performance in our exynos soc.
+- Cortex A78*2 + Cortex A55*6
+- unit: ms (lower is better)
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 499afdc4a899 ("Linux 6.4.14-rc1")
+Application             base  opt_rspin  Diff  Diff(%)
+--------------------  ------  ---------  ----  -------
+* Total(geomean)         343        330   -13    +3.8%
+--------------------  ------  ---------  ----  -------
+helloworld               110        108    -2    +1.8%
+Amazon_Seller            397        388    -9    +2.3%
+Whatsapp                 311        304    -7    +2.3%
+Simple_PDF_Reader        500        463   -37    +7.4%
+FaceApp                  330        317   -13    +3.9%
+Timestamp_Camera_Free    451        443    -8    +1.8%
+Kindle                   629        597   -32    +5.1%
+Coinbase                 243        233   -10    +4.1%
+Firefox                  425        399   -26    +6.1%
+Candy_Crush_Soda         552        538   -14    +2.5%
+Hill_Climb_Racing        245        230   -15    +6.1%
+Call_Recorder            437        426   -11    +2.5%
+Color_Fill_3D            190        180   -10    +5.3%
+eToro                    512        505    -7    +1.4%
+GroupMe                  281        266   -15    +5.3%
 
-Thanks,
-SJ
+Changes v1 -> v2:
+- Move the rwsem_opt_rspin definition out of the "ifdef
+  CONFIG_RWSEM_SPIN_ON_OWNER" and add _ro_after_init to rwsem_opt_rspin.
 
-[...]
+Bongkyu Kim (2):
+  Revert "locking/rwsem: Remove reader optimistic spinning"
+  locking/rwsem: Make reader optimistic spinning optional
 
----
+ .../admin-guide/kernel-parameters.txt         |   9 +
+ kernel/locking/lock_events_list.h             |   5 +-
+ kernel/locking/rwsem.c                        | 297 +++++++++++++++---
+ 3 files changed, 263 insertions(+), 48 deletions(-)
 
- [32m
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_m68k.sh
-ok 12 selftests: damon-tests: build_arm64.sh
-ok 13 selftests: damon-tests: build_i386_idle_flag.sh
-ok 14 selftests: damon-tests: build_i386_highpte.sh
-ok 15 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
-_remote_run_corr.sh SUCCESS
+-- 
+2.36.1
+
