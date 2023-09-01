@@ -2,151 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 586CE79028D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 21:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DAA79029C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 21:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350664AbjIATs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 15:48:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
+        id S239166AbjIATug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 15:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236606AbjIATs6 (ORCPT
+        with ESMTP id S233176AbjIATue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 15:48:58 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA87010FB;
-        Fri,  1 Sep 2023 12:48:53 -0700 (PDT)
-X-QQ-mid: bizesmtp75t1693597700tvurg4sl
-Received: from linux-lab-host.localdomain ( [119.123.130.254])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 02 Sep 2023 03:48:19 +0800 (CST)
-X-QQ-SSF: 01200000000000E0Y000000A0000000
-X-QQ-FEAT: jXjag1m6xl7V8vq+Tnca4THfX4IQyAbZCcaSwMnXfVrKGFdfMm8RciDVjTSNF
-        VgfZCgWLj8yjvPbVPvfTsn6nfkMkU9QDJCj7YkAkF3wSIVT3sxcjo/9Q05Gc3g5Xrkg+Gab
-        W0SZSaWnA2CEsPIh2jmvwFeKLxEsWMBc9fqlbQAnF4751Rc8vSv1/NpnENhCzfIIBInSbw4
-        ZNEmUrRToyPHJomXLhIOr08WYSycawyiK45Le+wpYdvM/63yZBKYnmh2wsHjdEQ/FUnsPDq
-        Qv3pQzkHCo2gvi+M/AbB2ooucYerdqV3BpJvOSwIV0baCMQ6ufqMsbgyvsWwGkJ3pp1piDp
-        pohrZp6MLFgdwqc3UHv3snrtV1Lzyc3ITla+14qRsPb40JnEcAh9qIQqdNEfA==
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 13888216478072652093
-From:   Zhangjin Wu <falcon@tinylab.org>
-To:     david.laight@aculab.com
-Cc:     ammarfaizi2@gnuweeb.org, arnd@arndb.de, falcon@tinylab.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        tanyuan@tinylab.org, thomas@t-8ch.de, w@1wt.eu
-Subject: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with single -ENOSYS return
-Date:   Sat,  2 Sep 2023 03:48:18 +0800
-Message-Id: <20230901194818.6495-1-falcon@tinylab.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <f7f06eb4a5b44ce29718341e28c823f8@AcuMS.aculab.com>
-References: <f7f06eb4a5b44ce29718341e28c823f8@AcuMS.aculab.com>
+        Fri, 1 Sep 2023 15:50:34 -0400
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE5110FB
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 12:50:31 -0700 (PDT)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c0c6d4d650so19659695ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 12:50:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693597831; x=1694202631; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=TnGlOgpcJfhSyX3oWtweduRxRFI+vcvjVBEfz8W6REE=;
+        b=fthS1VCzHXcUTE00n6Svm+w9LyBnWbPXRCnrtKgX+lTjv3pVBau3i2G6Pvfs8DVQzU
+         /nfveQ+9ZqExXKHzR6oyct+mYWKIOxeSp3O/Vx8676FV08K0KqjBfMlfIm31/aag0RFb
+         yo7ea3ltuXO9s6NKx5UR7Anzy/EYzDLZSjHfI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693597831; x=1694202631;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=TnGlOgpcJfhSyX3oWtweduRxRFI+vcvjVBEfz8W6REE=;
+        b=AZZZP/u6Z8AuKGPLZ79GGJFKDq+J/jVyXC/7AlKCG9WMI9ASFjQ7VCy+wTHvJItyT2
+         KBFgaRzvcu3XdVMoAQ6fw3PAGxZD/vuLP41Oav1oxOvWDfzjeTNnO0ea/2wDBh1p/8Kx
+         /snHxR3mJPpO4vx/tH9NRDaYG1O45XO35MU5nskfSurIJU824cDIK2OG+MiDk4Zpf6Eu
+         oAREGHibevgntEDD+kdv3gd4Ij/SYiCbQfZlT+l70HJ/uAeAkzED9HwTtpYQrVtLlg4a
+         nxVagM46BRtH6Vluy9/62/N73XWJOEA0DhgntxENuJ4LvID8laskbbiYlMhFAKwB6NO9
+         Futg==
+X-Gm-Message-State: AOJu0YyPYMLMG1ED3GGA4sHq5TTf5f8EA4irxhFlU9iXBrRluvRgBLQ7
+        jLBPz6/2XQzAuGrEnR0Ec2fG85r/+v+WMp5mwD8=
+X-Google-Smtp-Source: AGHT+IFLMLtB06xgjItzzUv50zhsXFZ37ehwBfgJSIF2V6heU41cis1M/xhTkDTyzQL7J2okpu7MHw==
+X-Received: by 2002:a17:902:f682:b0:1c0:b7f4:5b86 with SMTP id l2-20020a170902f68200b001c0b7f45b86mr3871500plg.65.1693597830846;
+        Fri, 01 Sep 2023 12:50:30 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d10-20020a170902654a00b001b8b2b95068sm3397478pln.204.2023.09.01.12.50.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 12:50:30 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 12:50:29 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nicolas Schier <nicolas@fjasle.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] kbuild: Show marked Kconfig fragments in "help"
+Message-ID: <202309011250.AB0DAA03@keescook>
+References: <20230831191335.give.534-kees@kernel.org>
+ <CAK7LNATENQQy6LrWS10S-EXsyAvTraSj2WA=O7rFsS9Ht6a+3g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <CAK7LNATENQQy6LrWS10S-EXsyAvTraSj2WA=O7rFsS9Ht6a+3g@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, David
-
-> ...
-> > We also need this style of checking for the delta logic in __atoi_add(). have
-> > randomly tried different clang and gcc versions, seems all of them work
-> > correctly, but the compiling speed is not that good if we want to support the
-> > worst cases like "((0x900000 + 0x0f0000) + 5)", the shorter one
-> > "((0x900000+0x0f0000)+5)" is used by ARM+OABI (not supported by nolibc
-> > currently), therefore, we can strip some tailing branches but it is either not
-> > that fast, of course, the other architectures/variants can use faster
-> > __atoi_add() versions with less branches and without hex detection, comparison
-> > and calculating.
+On Fri, Sep 01, 2023 at 04:58:37PM +0900, Masahiro Yamada wrote:
+> On Fri, Sep 1, 2023 at 4:13 AM Kees Cook <keescook@chromium.org> wrote:
+> >
+> > Currently the Kconfig fragments in kernel/configs and arch/*/configs
+> > that aren't used internally aren't discoverable through "make help",
+> > which consists of hard-coded lists of config fragments. Instead, list
+> > all the fragment targets that have a "# Help: " comment prefix so the
+> > targets can be generated dynamically.
+> >
+> > Add logic to the Makefile to search for and display the fragment and
+> > comment. Add comments to fragments that are intended to be direct targets.
+> >
+> > Cc: Nicolas Schier <nicolas@fjasle.eu>
+> > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > Cc: Randy Dunlap <rdunlap@infradead.org>
+> > Cc: linux-kernel@vger.kernel.org
+> > Cc: x86@kernel.org
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linuxppc-dev@lists.ozlabs.org
+> > Cc: linux-riscv@lists.infradead.org
+> > Cc: linux-s390@vger.kernel.org
+> > Cc: linux-kbuild@vger.kernel.org
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > Co-developed-by: Masahiro Yamada <masahiroy@kernel.org>
+> > ---
+> > v3:
+> > - Use Makefile logic from Masahiro Yamada
+> > - Use "# Help: " prefix, but only on desired fragment targets
+> > v2: https://lore.kernel.org/all/20230825194329.gonna.911-kees@kernel.org
+> > v1: https://lore.kernel.org/all/20230824223606.never.762-kees@kernel.org
+> > ---
+> >  Makefile                                   |  1 -
+> >  arch/arm/configs/dram_0x00000000.config    |  1 +
+> >  arch/arm/configs/dram_0xc0000000.config    |  1 +
+> >  arch/arm/configs/dram_0xd0000000.config    |  1 +
+> >  arch/arm/configs/lpae.config               |  1 +
+> >  arch/arm64/configs/virt.config             |  1 +
+> >  arch/powerpc/configs/disable-werror.config |  1 +
+> >  arch/powerpc/configs/security.config       |  4 +++-
+> >  arch/riscv/configs/32-bit.config           |  1 +
+> >  arch/riscv/configs/64-bit.config           |  1 +
+> >  arch/s390/configs/btf.config               |  1 +
+> >  arch/s390/configs/kasan.config             |  1 +
+> >  arch/x86/Makefile                          |  4 ----
+> >  kernel/configs/debug.config                |  2 ++
+> >  kernel/configs/kvm_guest.config            |  1 +
+> >  kernel/configs/nopm.config                 |  2 ++
+> >  kernel/configs/rust.config                 |  1 +
+> >  kernel/configs/tiny.config                 |  2 ++
+> >  kernel/configs/x86_debug.config            |  1 +
+> >  kernel/configs/xen.config                  |  2 ++
+> >  scripts/kconfig/Makefile                   | 15 ++++++++++++---
+> >  21 files changed, 36 insertions(+), 9 deletions(-)
+> >
 > 
-> If there are only a few prefix offsets then the code can be optimised
-> to explicitly detect them - rather than decoding arbitrary hex values.
-> After all it only needs to decode the values that actually appear.
 > 
-> The code also needs a compile-time assert that the result
-> is constant (__buitin_constant_p() will do the check.
-> But you can't use _Static_assert() to report the error
-> because that requires an 'integer constant expression'.
->
-
-Thanks a lot, your above suggestion inspired me a lot.
-
-I have explored ARM and MIPS again and found their __NR_* definitions
-have only a 'dynamic' part, that is the right part:
-
-    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_io_uring_register (__NR_Linux + 427)
-    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_open_tree (__NR_Linux + 428)
-    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_move_mount (__NR_Linux + 429)
-    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_fsopen (__NR_Linux + 430)
-    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_fsconfig (__NR_Linux + 431)
-
-    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_io_uring_setup (__NR_SYSCALL_BASE + 425)
-    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_io_uring_enter (__NR_SYSCALL_BASE + 426)
-    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_io_uring_register (__NR_SYSCALL_BASE + 427)
-    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_open_tree (__NR_SYSCALL_BASE + 428)
-    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_move_mount (__NR_SYSCALL_BASE + 429)
-
-The left part: __NR_Linux and __NR_SYSCALL_BASE are always defined, so,
-we can get their values directly, without the need of stringify and
-unstringify, as a result, the delta addition work becomes:
-
-    base + __atoi_from(str, sizeof(#base) + 3)
-
-And we can simply convert our old __atoi() to __atoi_from(), change the
-fixed 0 'from' to a dynamic 'from'. and a simple __get_from() can help
-us to get the right offset for more complicated cases, such as:
-(__NR_Linux+1), (__NR_Linux + 1).
-
-So, the new __atoi_add() becomes:
-
-    __atoi_add(str, base):
-
-    --> __atoi_add(__stringify(__NR_open_tree), __NR_Linux)
-    --> __atoi_add("(4000 + 428)", 4000)
-    --> __atoi_from("(4000 + 428)", sizeof(#4000) + 3) + 4000
-    --> __atoi_from("(4000 + 428)", 8) + 4000
-                      ~~~~   ^     /    ~~~~
-		      base    \___/     base
-		              from
-    --> 428 + 4000
-    --> 4428
-
-It is very fast and the cost time is deterministic. It also works for
-the most complicated case we have mentioned:
-
-    __atoi_add("((0x900000+0x0f0000)+5)", (0x900000+0x0f0000))
-
-    --> __atoi_from("((0x900000+0x0f0000)+5)", sizeof(#(0x900000+0x0f0000)) + 1) + (0x900000+0x0f0000)
-                                          ^                   /
-					   \_________________/
-    --> ...
-    --> 5 + (0x900000+0x0f0000)
-
-So, the calculating of the most complicated part can be simply skipped,
-we only need to convert the minimal 'dynamic' part from string to
-integer and since the 'dynamic' part is not that big, most of them may
-be less than 1000 in the not long future, only 4 characters and
-therefore only 4-level depth branches for __atoi_from(), so, even with
-hex 'dynamic' part conversion (but we may don't need it any more), the
-compile speed is also very fast.
-
-A simple local test on most of the architectures shows, the compile
-speed is very near to the one with our old proposed NOLIBC__NR_* macros
-for every __NR_* (defined as (-1L) when __NR_* not defined) and their
-generated binary size is the same, so, we are near the ultimate solution,
-but still need more tests. Thanks again for your positive suggestion!
-
-Best regards,
-Zhangjin
-
-> 	David
+> Just one thing.
 > 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+> 
+> 
+> 
+> 
+> > diff --git a/kernel/configs/tiny.config b/kernel/configs/tiny.config
+> > index 00009f7d0835..60a4b6d80b36 100644
+> > --- a/kernel/configs/tiny.config
+> > +++ b/kernel/configs/tiny.config
+> > @@ -1,3 +1,5 @@
+> > +# Help: Size-optimized kernel image
+> 
+> 
+> I will drop this.
+> 
+> 
+> We already have a hard-coded help message.
+> 
+>   tinyconfig   - Configure the tiniest possible kernel
+> 
+> 
+> 
+> 
+> Then, some lines below, again.
+> 
+>   tiny.config               - Size-optimized kernel image
+> 
+> 
+> 
+> tiny.config is for internal use for tinyconfig.
+
+Shall I send a v4, or did you fix this up already?
+
+-- 
+Kees Cook
