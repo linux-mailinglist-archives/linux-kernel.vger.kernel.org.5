@@ -2,147 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6B5790219
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DE93790220
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350608AbjIASig (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 14:38:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53242 "EHLO
+        id S1350611AbjIASjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 14:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231890AbjIASif (ORCPT
+        with ESMTP id S231890AbjIASjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 14:38:35 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2088.outbound.protection.outlook.com [40.107.220.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E386B107;
-        Fri,  1 Sep 2023 11:38:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LMo2eZper8fEdGBGtdI9qCzT4anLJTQWbcqjLlUO4gO32aBgyQoc4jxSAxO+TMp0OZJZUYRatkgZejjY3CjvQLiFvniq0ni26+kst0lQK2fIJyi2eoWrrhz1qHbPDx/p7D5btAhTBYLJHeGO9F9Wf0WNk3CxER5MwNkycKNApXVsv3vMLFdmf5GDEX2KOH7bG5W+GN8wjDEHI3cofB/CfCXMao1byrCRnTK9I7IY3aT1EIZ34klVUcMGxS4kgTSXXhp5pX0haQKqGY/oLKV79MyAogHyFDMKWnNWgLk52e/UToJa+4Ts35yi9hcq+a5VSWPti4X8161lp2pDEsQqwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=jUXT4ReyLXJxz3/14FJusModeCnTpnXJv+fFQL6CiQE=;
- b=deyZY4xwX4y97zmscyRJ1zO3mnG2hmD15dCxKJjKnooOfZulTvKbg5+FqDOc5ISCSwP5ya3JXaHYe1Uyx8Cqgvh+0PNxkl9H19kc/ATwqmWs5Rso2hAIdDI4kUZWqQXdpMA7vquCo+pAKsPNDO1NWaffB/byCURoAhiOr4zHv6DMf+u8XRMB80zH2VPz5+MTlf1nA/29IYbrm8Mm+wxKscapdkJPQvODBKUpfMYAvlhxLy365k/aP8HstkCpBJJVrZ5tE3lbhfKF53R6+FPNdleDwtTdLeXi2o52NFDtsgzWvl8ro+Hu8arChXCEZvu4OtZJ/GX4uBxxkrFNL9FCyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=linuxfoundation.org
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jUXT4ReyLXJxz3/14FJusModeCnTpnXJv+fFQL6CiQE=;
- b=OUFKnVaLSk2ITgPmxAPa5EpfRVN9IGHjIzuiWgV7oNk95Vplx3JMjTfX61NdysiA8Hfj4R7Azjc83zQH4+GACi9r4LDjeXZCZMC6fRM/Nl5VY/Eufl6uWma+LMHcA445HFFM04s4HP6QnFL5fL3L9E8psnl0j5u1O1FAaplHgXQURJNAgBRBjJjlE3rK6hXrtZknY+jjkXUDf/MYAGtX07kDs6g23wCAEw8nEdsxMtjuy/OhJyvsoDm4yAPJws1+PRTAbju9vgI+IZwaDhnW2Q7+gkXPOQzQLGlsUEyCasWEEmcRfWH0Jpa4acHep/he/z5MuPj39fVnsyyCF8lTCA==
-Received: from DS7PR06CA0012.namprd06.prod.outlook.com (2603:10b6:8:2a::22) by
- MW4PR12MB5641.namprd12.prod.outlook.com (2603:10b6:303:186::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.27; Fri, 1 Sep 2023 18:38:29 +0000
-Received: from DS1PEPF00017092.namprd03.prod.outlook.com
- (2603:10b6:8:2a:cafe::20) by DS7PR06CA0012.outlook.office365.com
- (2603:10b6:8:2a::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.27 via Frontend
- Transport; Fri, 1 Sep 2023 18:38:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- DS1PEPF00017092.mail.protection.outlook.com (10.167.17.135) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.20 via Frontend Transport; Fri, 1 Sep 2023 18:38:29 +0000
-Received: from rnnvmail203.nvidia.com (10.129.68.9) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 1 Sep 2023
- 11:38:15 -0700
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by rnnvmail203.nvidia.com
- (10.129.68.9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37; Fri, 1 Sep 2023
- 11:38:15 -0700
-Received: from jonathanh-vm-01.nvidia.com (10.127.8.9) by mail.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.37 via Frontend
- Transport; Fri, 1 Sep 2023 11:38:14 -0700
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <patches@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
-        <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <sudipm.mukherjee@gmail.com>, <srw@sladewatkins.net>,
-        <rwarsow@gmx.de>, <conor@kernel.org>,
-        <linux-tegra@vger.kernel.org>, <stable@vger.kernel.org>
-Subject: Re: [PATCH 4.19 0/2] 4.19.294-rc2 review
-In-Reply-To: <20230831172214.759342877@linuxfoundation.org>
-References: <20230831172214.759342877@linuxfoundation.org>
-X-NVConfidentiality: public
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-MIME-Version: 1.0
-Message-ID: <242a73bb-c355-43e8-9fb0-0d7634d23c6f@rnnvmail202.nvidia.com>
-Date:   Fri, 1 Sep 2023 11:38:14 -0700
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF00017092:EE_|MW4PR12MB5641:EE_
-X-MS-Office365-Filtering-Correlation-Id: d242dfdf-c4dc-4e7d-9e45-08dbab1aa32b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: g7oOhps2UQU/pJmIz4d0ppudKaa+XG0uWhhTN/RZEIzRkzxbCOUmrnKraOSMwySec4pHDG6GlpTLv/WaYc33yYbMq8KYNqp+lc0S2TjCfgJRZwZ5PgPUB3b2pyy9PVilrgf9Zo3tFB3tXlIyQfwTCA6aOR/nCdyzR1LPEDal3s2ljNZvOX86oIYvEa6I7UbYvt/iuHrM0MMh0cBVwGFw0s5e4uhlvng3M4IV0wFiPhtjDi/sySUgWWjSCEa760ya6mn2skUMR9TmvZlMsGWNzxRONOge5f69lmIiChV9aXUdmQGQynmg7JiaHaPrIFk3hM8kz9HGNY8wFIkPcoVVTtDOH1xF8f0xY51aNTY0YAg87yVGYuISzCpfxAAvaaT3fWElggy/sIBSgJu1Mm3t/ERmRAL4elTMj3/8A8khwe77KDAy1y6l/HBcKpQIeorZoEANB/Zw9SfVdxTqDeLjBc7mqkzzjXkjV7GYk/Ouyif7gTifWxKOy0iR+CZJPrJFJD/wbk7wE+r6ShBJAg2uCamwmAC1UvAmioKiOrRRl/bNRhdVwYILuE+EhSvSP7MQ/f/9xErK0QCyIJIZX2Nor7LsbEzgBotXhQ8arEDQgOeGsgaeQIcsuAIu1RVsNdcYMV3dpgoPHxKSesNaY/U+5Wrw8iA93RzXuLYp3e5X1h/nIUxmBTpgXS9s0Pc1SsI85qFXl8t89fzpF5YYx4e6DJCRFKpg8JGarcwQ94k11/swNaisRA5KogHz0zKqjgFsHJMT/0aw/dqVobUwK3Tt4aqLQyAopL2T+fGdKIofg/E=
-X-Forefront-Antispam-Report: CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(376002)(396003)(346002)(39860400002)(136003)(186009)(1800799009)(82310400011)(451199024)(40470700004)(36840700001)(46966006)(41300700001)(40460700003)(316002)(7416002)(2906002)(82740400003)(426003)(26005)(336012)(356005)(40480700001)(5660300002)(7636003)(8936002)(8676002)(4326008)(6916009)(47076005)(36860700001)(966005)(478600001)(31696002)(86362001)(31686004)(70586007)(70206006)(54906003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 18:38:29.6538
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d242dfdf-c4dc-4e7d-9e45-08dbab1aa32b
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS1PEPF00017092.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5641
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        Fri, 1 Sep 2023 14:39:31 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C92CD8
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:39:27 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso22823175e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 11:39:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user; t=1693593566; x=1694198366; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bA5Lm6a1t+KFAs7vnfL5/17M6lm4KSTTxqyCI/pc5BY=;
+        b=ZiqUuk9p4uZ/yOZAr5a+RcMr0ew02/QrP2SaKXTOtNRKAhMTGpo/XtFQGJu0Omhu1K
+         qhpkoPCaQFESaNA6OeK3whxRVLW/NkzbKlzwIo+kCnF8K+4ckSIjxaA5NeQyi9+e5nPo
+         ShDY1K5wYQudm+SXQKDcI2MUete8t0pGLXXpxfy70IeHaXjTbeidkHbDBM5wCnpDrnRV
+         240RgKdpMmDvmkJsWumT31Sm/IK7KK6lbeuPndS69jE4WaLoQibwU97TQdGjgHA//Cq1
+         frJIX1mfv3AlWny/85CNz67tz4O94lqM7DUTW+kg/ZDXIPdAxk0UTChPNey1MvEU8bv/
+         kBeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693593566; x=1694198366;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bA5Lm6a1t+KFAs7vnfL5/17M6lm4KSTTxqyCI/pc5BY=;
+        b=OVbBRPwClum3b2CEo3fGtT/Mjgrs8Za/a4e06ogWKwdMeeZHbpzUl0zPIqQSNuxrI2
+         zkEMqckvI8OWA5ehCOh7NQXL4jNpwCfVNjibHzjwWkLhMw5v5ASpUGYNB0mo7H/KRdbw
+         Or8EexYMRnZLVhj+v57obLJQcY8qGTeVTb8FMrunbqVhBhePiyh78sV6v6Cdw2R+k6Ee
+         qc9rgskcIX5I+PK5JRLhVHjkJfx47QCaR10Ld8Cl6QI+VijBb4YJRj768BCtpxtBYDSj
+         lyAawxVKPXAUmv66jf6kBsdQpZ/CkijdQwXKnnXsK9sgepgEXMi+sPLlu1u47pviLqCq
+         2Pcw==
+X-Gm-Message-State: AOJu0Yw2UfSbM+Fz/cC093w7u9O1lQsnXZPHf6/M2zIfqwDivG6j1uzU
+        4BIDr/Gpt45K480c9QJFQku4wg==
+X-Google-Smtp-Source: AGHT+IHwt+wcmiHzIzpBrobUBa991WScHeOvwtCAq4Ysh3WkCDFvhnNCS5xE0Y9TRcLz8axynzkOjA==
+X-Received: by 2002:a7b:c8ca:0:b0:401:b204:3b95 with SMTP id f10-20020a7bc8ca000000b00401b2043b95mr2441626wml.15.1693593566116;
+        Fri, 01 Sep 2023 11:39:26 -0700 (PDT)
+Received: from smtpclient.apple ([131.111.5.246])
+        by smtp.gmail.com with ESMTPSA id l8-20020a05600c1d0800b003fef6881350sm5840720wms.25.2023.09.01.11.39.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 Sep 2023 11:39:25 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+In-Reply-To: <20230901-affected-wanting-ab517791a870@spud>
+Date:   Fri, 1 Sep 2023 19:39:14 +0100
+Cc:     William Qiu <william.qiu@starfivetech.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-mmc@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C9C76D81-7244-4549-97E2-83CE10050A74@jrtc27.com>
+References: <20230830031846.127957-1-william.qiu@starfivetech.com>
+ <20230830031846.127957-2-william.qiu@starfivetech.com>
+ <20230830-commence-trickery-40eaa193cb15@wendy>
+ <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
+ <20230830-procedure-frostbite-56c751f7c276@wendy>
+ <efab6f52-4d7f-ea3c-0fc3-4e3ad03c14c7@starfivetech.com>
+ <20230901-remold-sublease-a1ddb1fc6348@spud>
+ <9EF26965-10E5-4BCA-AC5E-93C5AA55A0DF@jrtc27.com>
+ <20230901-affected-wanting-ab517791a870@spud>
+To:     Conor Dooley <conor@kernel.org>
+X-Mailer: Apple Mail (2.3731.600.7)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 19:30:20 +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.294 release.
-> There are 2 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 02 Sep 2023 17:22:08 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.294-rc2.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On 1 Sep 2023, at 18:43, Conor Dooley <conor@kernel.org> wrote:
+>=20
+> On Fri, Sep 01, 2023 at 06:20:38PM +0100, Jessica Clarke wrote:
+>> On 1 Sep 2023, at 16:42, Conor Dooley <conor@kernel.org> wrote:
+>>>=20
+>>> On Fri, Sep 01, 2023 at 10:33:13AM +0800, William Qiu wrote:
+>>>>=20
+>>>>=20
+>>>> On 2023/8/30 16:34, Conor Dooley wrote:
+>>>>> On Wed, Aug 30, 2023 at 09:29:20AM +0200, Krzysztof Kozlowski =
+wrote:
+>>>>>> On 30/08/2023 08:50, Conor Dooley wrote:
+>>>>>>> On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
+>>>>>>>> Due to the change of tuning implementation, it's no longer =
+necessary to
+>>>>>>>> use the "starfive,sysreg" property in dts, so drop the relevant
+>>>>>>>> description in dt-bindings here.
+>>>>>>>=20
+>>>>>>> How does changing your software implantation invalidate a =
+description of
+>>>>>>> the hardware?
+>>>>>>>=20
+>>>>>>=20
+>>>>>> Which is kind of proof that this syscon was just to substitute
+>>>>>> incomplete hardware description (e.g. missing clocks and phys). =
+We
+>>>>>> should have rejected it. Just like we should reject them in the =
+future.
+>>>>>=20
+>>>>> :s I dunno what to do with this... I'm inclined to say not to =
+remove it
+>>>>> from the binding or dts at all & only change the software.
+>>>>>=20
+>>>>>> There are just few cases where syscon is reasonable. All others =
+is just
+>>>>>> laziness. It's not only starfivetech, of course. Several other
+>>>>>> contributors do the same.
+>>>>>=20
+>>>>> I'm not sure if laziness is fair, lack of understanding is usually =
+more
+>>>>> likely.
+>>>>=20
+>>>> For this, I tend to keep it in binding, but remove it from =
+required. Because
+>>>> we only modify the tuning implementation, it doesn't mean that this =
+property
+>>>> need to be removed, it's just no longer be the required one.
+>>>=20
+>>> Please only remove it from required if the current driver doesn't =
+break
+>>> if the regmap is removed.
+>>=20
+>> Either way please make sure the documentation clearly states =E2=80=9Cn=
+ever use
+>> this, if you=E2=80=99re using it you=E2=80=99re doing it wrong, this =
+only exists
+>> because it was wrongly used in the past=E2=80=9D. Otherwise people =
+writing
+>> drivers for other OSes will probably use it too thinking they need =
+to.
+>=20
+> Maybe we should just delete it if the impact is going to be =
+negligible,
+> sounds like you're not using it in FreeBSD, which was part of what I =
+was
+> worried about. Guess it depends on what Emil & the distro heads think.
 
-All tests passing for Tegra ...
+FreeBSD doesn=E2=80=99t have StarFive drivers yet; I don=E2=80=99t have =
+time to write
+them, and a community member has taken it upon themselves as a hobby
+but is rather inexperienced and has been struggling for months. OpenBSD
+has drivers, including a modified dwmmc, but doesn=E2=80=99t use this =
+property
+(in fact its driver doesn=E2=80=99t use the compatible other than to =
+probe the
+generic driver). I don=E2=80=99t think anyone else has a serious port; =
+Haiku=E2=80=99s
+the closest but also has no StarFive support.
 
-Test results for stable-v4.19:
-    11 builds:	11 pass, 0 fail
-    22 boots:	22 pass, 0 fail
-    40 tests:	40 pass, 0 fail
+Jess
 
-Linux version:	4.19.294-rc2-gcb2cdf227208
-Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
-                tegra194-p2972-0000, tegra20-ventana,
-                tegra210-p2371-2180, tegra30-cardhu-a04
-
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-
-Jon
