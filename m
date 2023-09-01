@@ -2,100 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DABF78FBC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:31:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB86F78FBC8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348902AbjIAK30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59146 "EHLO
+        id S1348919AbjIAKci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236336AbjIAK3Y (ORCPT
+        with ESMTP id S233166AbjIAKci (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:29:24 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A020E77
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:29:20 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-5007f3d3235so3302972e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 03:29:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693564158; x=1694168958; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X+t8kfqP7SRFvrY+4t1ktFBHXc2PGv/4ttfq6M5urQM=;
-        b=gKfXS7OyFsqHMQFCYvu+fU3g1pzeGsb/sPgEIojaINoJUn0X8t+W+4pRWAlfNkcTzL
-         vAnLLoPBFfR6mN3miZpsyg5LcTjtme39g04LDJaigkh1/mSDOAeC2i+hzF68dYHSm0TL
-         lk3APm5jzs8qNZINGSnaEjBrN8M6eDMi903tz/hCLZ26eHy1oUBl7nzKL7BIxfK2h5IZ
-         U8OzzJiI9rqdQfsWeqN+HYZinQPeky4qyFaLn8J1+ChRSxXxVPYa33WgCz6ugg/E7qUj
-         QI5t+BkzXi4eGI5kBkYDAl2JP+ri5ugSTXYAXtNjj4+FFX3WfINJmMt1WgHPV+q/iKkl
-         ttkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693564158; x=1694168958;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X+t8kfqP7SRFvrY+4t1ktFBHXc2PGv/4ttfq6M5urQM=;
-        b=LdPNCnY91sIHTzpG3XIVRwLWwzwez5DHAPmlYYfqBmOanHOk8gi0BFnC+7SyPlIOAN
-         zyHHPeSsbHVpcvywv5Is81TzrXYTecZuGd5+D2Mn2h1oD3MSLCoQ5Oy6MpzZf3+DKD4K
-         aIDE+jgUAyeI8gTDBF9xzo0YrtSqyv+AJq9VXYo5hanS+PjO1fVKgqslcIRi0+bImnVn
-         EbIc2d3QSihjq9sSIkkj6qiP6BEmAq8fY0Sbx3xT0dpN5bvRPl/iww3z1oWILuC7TYSl
-         kHDDCpk+MOCLQoJeBmTs4zMsq4yQD4hjG5vr9gwVDaop3D4IgjZOKdhiF75T8l1/9F6O
-         67Hg==
-X-Gm-Message-State: AOJu0YxEZebJ3+hkPBW4GCWg7Lq+QeA2x7dy6XjNYIfsx6r8exW7GaOa
-        6y3+97s9qfMMxPIuDYy4vLd+r6OvOK0kOaNeiaY=
-X-Google-Smtp-Source: AGHT+IG4LUJYZFTOVapIp0bbwJLeQHqiuXlYfgLzHiuLSHVI+oT1hQVbjIKDTadjAJbetwvvZI5/Phf0FUXP8W+py9Y=
-X-Received: by 2002:a05:6512:3e1f:b0:4fa:21d4:b3ca with SMTP id
- i31-20020a0565123e1f00b004fa21d4b3camr1511436lfv.2.1693564158433; Fri, 01 Sep
- 2023 03:29:18 -0700 (PDT)
+        Fri, 1 Sep 2023 06:32:38 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D68DAE77;
+        Fri,  1 Sep 2023 03:32:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ZZNI5SzDjMh+n3YnZIoystrFj1gwCWGIlQs4OUIewrM=; b=yyMeIRUokVZVffJiqFH2xxha/5
+        eKLpaZqIvtwBAOi9z116/fAqqaNn34BDwytAcy7qG4ziEkBkEdn+W+qka0JU0YXk9Cg9w0pm7BGqY
+        ACVBxj7KgzHKMxYq08tjWjZClRqaD+cFlo8oajlN0f8tpVjERMZlS4RhjYttH8uyfTjhYmE8BDyHs
+        tvt/7RPkUyPNCf3MhZuJd+spvv1/XuURlNrBfKBEasGCOs950mLMJkCrlet7Y4lJFWibX9rFZmKv4
+        dlww0dspNqzbT7HQbgPMWubiouOgLWN2ow2GKiu6AMuWOdSaXf75gRK2SzHCKo8WeNAYk7y5Ryf87
+        KvIDOT8A==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50336)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qc1Rt-0003xC-18;
+        Fri, 01 Sep 2023 11:32:21 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qc1Rr-0007kZ-VU; Fri, 01 Sep 2023 11:32:19 +0100
+Date:   Fri, 1 Sep 2023 11:32:19 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Sabrina Dubroca <sd@queasysnail.net>
+Cc:     Radu Pirea <radu-nicolae.pirea@nxp.com>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        "Radu-nicolae Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sebastian Tobuschat <sebastian.tobuschat@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
+ mdo_insert_tx_tag
+Message-ID: <ZPG9s1LDbphnBHUE@shell.armlinux.org.uk>
+References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
+ <ZOx0L722xg5-J_he@hog>
+ <5d42d6c9-2f0c-8913-49ec-50a25860c49f@oss.nxp.com>
+ <ZO8pbtnlOVauabjC@hog>
+ <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
+ <ZPG35HfRseiv80Pb@hog>
 MIME-Version: 1.0
-References: <20230831105252.1385911-1-zhaoyang.huang@unisoc.com> <ZPCEim0AZG5hTSYH@casper.infradead.org>
-In-Reply-To: <ZPCEim0AZG5hTSYH@casper.infradead.org>
-From:   Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date:   Fri, 1 Sep 2023 18:29:07 +0800
-Message-ID: <CAGWkznGAJVZtn49zNHsMAjRSfTRR707QXYY0m8Q+yABTsiig2Q@mail.gmail.com>
-Subject: Re: [PATCH] mm: make __GFP_SKIP_ZERO visible to skip zero operation
-To:     Matthew Wilcox <willy@infradead.org>, glider@google.com
-Cc:     "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ke.wang@unisoc.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPG35HfRseiv80Pb@hog>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-loop alex
+On Fri, Sep 01, 2023 at 12:07:32PM +0200, Sabrina Dubroca wrote:
+> 2023-09-01, 09:09:06 +0000, Radu Pirea wrote:
+> > On Wed, 2023-08-30 at 13:35 +0200, Sabrina Dubroca wrote:
+> > ...
+> > 
+> > > And it's not restored when the link goes back up? That's inconvenient
+> > > :/
+> > > Do we end up with inconsistent state? ie driver and core believe
+> > > everything is still offloaded, but HW lost all state? do we leak
+> > > some resources allocated by the driver?
+> > 
+> > Yes. We end up with inconsistent state. The HW will lost all state when
+> > the phy is reseted. No resource is leaked, everything is there, but the
+> > configuration needs to be reapplied.
+> > 
+> > > 
+> > > We could add a flush/restore in macsec_notify when the lower device
+> > > goes down/up, maybe limited to devices that request this (I don't
+> > > know
+> > > if all devices would need it, or maybe all devices offloading to the
+> > > PHY but not to the MAC).
+> > 
+> > Agreed.
+> > We can do a flush very simple, but to restore the configuration maybe
+> > we should to save the key in the macsec_key structure. I am not sure if
+> > the key can be extracted from crypto_aead structure.
+> 
+> Either that or in the driver. I have a small preference for driver,
+> because then cases that don't need this restore won't have to keep the
+> key in memory, reducing the likelihood of accidentally sharing it.
+> OTOH, if we centralize that code, it's easier to make sure everything
+> is cleared from kernel memory when we delete the SA.
 
-On Thu, Aug 31, 2023 at 8:16=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Aug 31, 2023 at 06:52:52PM +0800, zhaoyang.huang wrote:
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> >
-> > There is no explicit gfp flags to let the allocation skip zero
-> > operation when CONFIG_INIT_ON_ALLOC_DEFAULT_ON=3Dy. I would like to mak=
-e
-> > __GFP_SKIP_ZERO be visible even if kasan is not configured.
->
-> This bypasses a security feature so you're going to have to do a little
-> better than "I want it".
-Thanks for pointing this out. What I want to do is to give the user a
-way to exempt some types of pages from being zeroed, which could help
-on performance issues.  Could we have the most safety concern admin
-use INIT_ON_FREE while the less concerned use INIT_ON_ALLOC &
-__GFP_SKIP_ZERO as a light version method?
->
-> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > ---
-> >  include/linux/gfp_types.h | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> >  mode change 100644 =3D> 100755 include/linux/gfp_types.h
->
-> What is this garbage?  Header files should not be executable.
-sorry for that, will remove
+Maybe consider about doing it as a library function, so drivers that
+need this don't have to reimplement the functionality in randomly
+buggy ways?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
