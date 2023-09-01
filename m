@@ -2,99 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1987778FA3D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:51:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B7078FA3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:51:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347212AbjIAIvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:51:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44906 "EHLO
+        id S1345982AbjIAIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:51:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348551AbjIAIvJ (ORCPT
+        with ESMTP id S1347212AbjIAIvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:51:09 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D7410EF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:51:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693558264; x=1725094264;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=N2JhWu16noynEhUFQXj18o427aexXuBHoBeQG2E9mLo=;
-  b=cQB1VpT4BnQI9wdMJEd/Eh2scoTWFpgkRinnY5conM7Hfx5LiiF/jmgh
-   x+WNaivLhkj4sUzqVkRE/p2r31JVbUtqCZiipBiKxM1xwSlvobv0R1k7p
-   H3UV+NdGlDuC2z7nWWC6KKp849M02I7ke7iw9a1yFhw/XIcWR+tbq+I3c
-   kqxrTKZtupwYFGvftFTNBejVlX6EVoExJKftcvTe43HgrpV9TgesjCzEv
-   uYhiRL4gZudzTYNza/lKmOKNbBCaYjyykAn3XXiHjD6Vm8kETwtGFY6GI
-   +n1a4/g28rtIIVvZrxRFB6mYi1JL/GdVs3XDS5TbxtsdSmmJ9gN9a2gC3
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="407164851"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="407164851"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:51:03 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="739854298"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="739854298"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:51:00 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qbzrk-005co0-3D;
-        Fri, 01 Sep 2023 11:50:56 +0300
-Date:   Fri, 1 Sep 2023 11:50:56 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Biju Das <biju.das.jz@bp.renesas.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] ASoC: wm8580: Move OF table
-Message-ID: <ZPGl8CroYVfRUDwk@smile.fi.intel.com>
-References: <20230831201429.94554-1-biju.das.jz@bp.renesas.com>
- <20230831201429.94554-3-biju.das.jz@bp.renesas.com>
- <ZPEiGxftpGsHrhdc@smile.fi.intel.com>
- <OS0PR01MB59225F3B6218648EE650606B86E4A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+        Fri, 1 Sep 2023 04:51:04 -0400
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682E010DE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:51:00 -0700 (PDT)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c07778146aso20453215ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 01:51:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693558260; x=1694163060;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1JPBrIi1YcL7e89Gl1EkswK53QZiuLZ5XXe0Xsa1kO4=;
+        b=SEOLo+4guZHPBNBbEQ3i9FTDqsV32uPILIwWM+Ui5IjqkarebrbG/n6Hd76TwOIpnk
+         twVjxmWcia5JV69XY9YAmD5YY5GLtmZqXj0svCrkQdGYsDJ72hEAFFDkQt7n5ytoJIF3
+         Z2GaVYbiymj3mlR/Gm6Z23y/WWNRnrQq85c0YWltwPmru3l+vE33b/wEnvgJ+oIe2Ypm
+         4cciQnMMJf9brJHM50sO7RnTmpyytRnD1Y/pIS1WQvkPAHGQXnH6l1otwuzzV5T5NsVv
+         +jR12MFKIGDEvWs2xiX/ujk8pzTGdC1ErmcfxA8rXWLq7CsF6fOrVml1f5Hn4CO7Ar73
+         +jDg==
+X-Gm-Message-State: AOJu0YxMwolcx2wIdlFBKRRF5yxRJ1CeHjGBlXu0zVeIwKbUj9exgTSC
+        eaMxOcqDadpQYmwBAE3si+njhvoSuL8WkGWxUKkMyz7qJI3t
+X-Google-Smtp-Source: AGHT+IGdMvUwSFkgk8ztcqPBglfZ1o2YcdWxhLDfDrX8aHtAkIJ0r/BBQ2jHGmSJQyONLVqUzaIwY9d05O5hFpXpEbRAURtzXVdx
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <OS0PR01MB59225F3B6218648EE650606B86E4A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:dad2:b0:1c3:19d6:3585 with SMTP id
+ q18-20020a170902dad200b001c319d63585mr214822plx.13.1693558259958; Fri, 01 Sep
+ 2023 01:50:59 -0700 (PDT)
+Date:   Fri, 01 Sep 2023 01:50:59 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007dc85106044842d8@google.com>
+Subject: [syzbot] Monthly bluetooth report (Sep 2023)
+From:   syzbot <syzbot+list89977501de2dccb36fe7@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 06:33:08AM +0000, Biju Das wrote:
-> Hi Andy,
-> 
-> > Subject: Re: [PATCH v3 2/2] ASoC: wm8580: Move OF table
-> > 
-> > On Thu, Aug 31, 2023 at 09:14:29PM +0100, Biju Das wrote:
-> > > Move OF table near to the user.
-> > 
-> > It does a bit more that that.
-> 
-> OK I will send separate patch for removing trailing comma
-> in terminator.
+Hello bluetooth maintainers/developers,
 
-It's fine to have them in a single patch as they are kinda related
-(since you touch the lines anyway). My point is that this change
-also needs to be described in the commit message.
+This is a 31-day syzbot report for the bluetooth subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/bluetooth
 
--- 
-With Best Regards,
-Andy Shevchenko
+During the period, 2 new issues were detected and 1 were fixed.
+In total, 20 issues are still open and 55 have been fixed so far.
 
+Some of the still happening issues:
 
+Ref  Crashes Repro Title
+<1>  8940    Yes   possible deadlock in rfcomm_sk_state_change
+                   https://syzkaller.appspot.com/bug?extid=d7ce59b06b3eb14fd218
+<2>  4685    Yes   WARNING in hci_conn_timeout
+                   https://syzkaller.appspot.com/bug?extid=2446dd3cb07277388db6
+<3>  2847    Yes   possible deadlock in rfcomm_dlc_exists
+                   https://syzkaller.appspot.com/bug?extid=b69a625d06e8ece26415
+<4>  1418    Yes   BUG: sleeping function called from invalid context in hci_cmd_sync_submit
+                   https://syzkaller.appspot.com/bug?extid=e7be5be00de0c3c2d782
+<5>  1064    Yes   INFO: task can't die in __lock_sock
+                   https://syzkaller.appspot.com/bug?extid=7d51f807c81b190a127d
+<6>  224     Yes   WARNING in call_timer_fn
+                   https://syzkaller.appspot.com/bug?extid=6fb78d577e89e69602f9
+<7>  90      No    possible deadlock in hci_unregister_dev
+                   https://syzkaller.appspot.com/bug?extid=c933391d8e4089f1f53e
+<8>  65      Yes   KASAN: slab-use-after-free Read in hci_send_acl
+                   https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
+<9>  57      No    possible deadlock in discov_off
+                   https://syzkaller.appspot.com/bug?extid=f047480b1e906b46a3f4
+<10> 8       Yes   BUG: sleeping function called from invalid context in __hci_cmd_sync_sk
+                   https://syzkaller.appspot.com/bug?extid=c715e1bd8dfbcb1ab176
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
