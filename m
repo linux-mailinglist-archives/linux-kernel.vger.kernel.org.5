@@ -2,138 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A521578FAB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:24:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B31778FB11
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:41:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242128AbjIAJYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:24:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
+        id S1348874AbjIAJlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:41:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbjIAJYO (ORCPT
+        with ESMTP id S243709AbjIAJls (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:24:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BE710D7
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:23:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693560197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3JiqN1iSPyqNyznyXLs6ZwGpCEi8bweMuS3U8aoR6Xg=;
-        b=WRlBLTIvGInmZst2vctVqQPG55lfvbD2fmy0iBzVwpBfe9KMoPCdlc5ksdODRlR9a/AuKB
-        NnCwjYu2fvwK48zyNZfh6SmHQiw6f6jXENYHE3JQtg9C7DlNEh8+zzTTzByoz435NkY+jC
-        uMFmegAcVeZDG1hq1wMKJ91L/eAm6AE=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-402-sQ8S_eVRPjGg7G9nxF9_Qg-1; Fri, 01 Sep 2023 05:23:16 -0400
-X-MC-Unique: sQ8S_eVRPjGg7G9nxF9_Qg-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31c554c8867so969765f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:23:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693560195; x=1694164995;
-        h=content-transfer-encoding:mime-version:message-id:date:references
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3JiqN1iSPyqNyznyXLs6ZwGpCEi8bweMuS3U8aoR6Xg=;
-        b=QkmYKjrq74UYQ4VfD9BgPePbD/tb8BAYT5fJhE/prBzm8wcyDS0IDeVqGX8e5BW5LQ
-         S7Z4ZSfqp8i29kgfrdrrmASqC0cIZJh48oOGytMlGmqysvi0XtVZHSE2hFF2hEsN5Nfq
-         SHppetL47NBcaCcTSo9W58kCC/6+tUer4aWytVOkzhUpoEaxe9lGPlX6NlhXI9aTsKqx
-         qyuB8X4goVsvWs1IYNUR5PkeV/nyy3oOycuPgjaB6lmwPU7Dmpv78KAM86Xycv5dFk0B
-         GBE66cToGaCOOgOfDISlskwUzQjVeYoi9PIlJ1ZkKW9x/hnKqSuV+0HlShgI0CJ+IOBy
-         hBnQ==
-X-Gm-Message-State: AOJu0YxOPIietqDvjWEWV54oXVs8opPwRBdUXs1w3sFnLR7KRZxumOsp
-        NnKdxje/tmznaSjOnHmQfAqbwVC85Rl6aAsqrHG298IQ/3sS04NCaQp4q2c5pzE1/3c1HM+MaUd
-        5N8nVmtlV/gSHR8vQpsEbMyBgtDfcErBS
-X-Received: by 2002:adf:e9cf:0:b0:31c:65aa:b15a with SMTP id l15-20020adfe9cf000000b0031c65aab15amr1248551wrn.65.1693560194868;
-        Fri, 01 Sep 2023 02:23:14 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFnVXywsk9L8AfytnZixOeQ8XSkN487jgB7u3LA7+rTXed2ndu9kqHa49rXP5sHOxvFdS+u9Q==
-X-Received: by 2002:adf:e9cf:0:b0:31c:65aa:b15a with SMTP id l15-20020adfe9cf000000b0031c65aab15amr1248534wrn.65.1693560194548;
-        Fri, 01 Sep 2023 02:23:14 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id m15-20020a056000180f00b003142ea7a661sm4629884wrh.21.2023.09.01.02.23.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:23:14 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Maxime Ripard <mripard@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
- .atomic_check() callback
-In-Reply-To: <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
-References: <20230830062546.720679-1-javierm@redhat.com>
- <zitno3p7tbnld5auedkx5g4wey2csng4ncmtdhzinbuhblunyk@chnwsnsgq36v>
- <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
-Date:   Fri, 01 Sep 2023 11:23:13 +0200
-Message-ID: <87h6oe5jsu.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 1 Sep 2023 05:41:48 -0400
+X-Greylist: delayed 916 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Sep 2023 02:41:44 PDT
+Received: from mickerik.phytec.de (mickerik.phytec.de [91.26.50.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE148C0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:41:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; d=phytec.de; s=a4; c=relaxed/simple;
+        q=dns/txt; i=@phytec.de; t=1693560380; x=1696152380;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:CC:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=Wk+v8UMEl5LiUTyiWv4t09O7PSYZehWA/PcV3yt7YOo=;
+        b=nEVHQYpiI2cBP0m8DbAz488k+4VNUsu9YRQv042opHIB2OO61hcqmPyo5QkPwloA
+        YHUMfAihIcNWtHv/VBEVv8tecKiy7sRAy7UcajtjxKTJ7KRNoKKjWm7EwwNq4gr2
+        1qtaX6irM/7EOxJTvv8h0E2Zd8J7i96VTm3hcdTwHOg=;
+X-AuditID: ac14000a-917fe70000007ecb-fc-64f1ae3ce3c8
+Received: from berlix.phytec.de (Unknown_Domain [172.25.0.12])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mickerik.phytec.de (PHYTEC Mail Gateway) with SMTP id F8.5A.32459.C3EA1F46; Fri,  1 Sep 2023 11:26:20 +0200 (CEST)
+Received: from lws-moog.phytec.de (172.25.0.11) by Berlix.phytec.de
+ (172.25.0.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.18; Fri, 1 Sep
+ 2023 11:26:20 +0200
+From:   Yannic Moog <y.moog@phytec.de>
+Subject: [PATCH 0/2] Add support for the phyGATE-Tauri-L IoT Gateway
+Date:   Fri, 1 Sep 2023 11:26:15 +0200
+Message-ID: <20230901-tauri_upstream_support-v1-0-ed30c6df789b@phytec.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADeu8WQC/x3MQQqAIBBA0avErBPUiKSrRITUVLOoZEYjkO6et
+ HyL/zMIMqFAX2VgvEnoOgtMXcG8+3NDRUsxWG0b7axT0SemKQWJjP6YJIVwcVTarX62pmtNq6H
+ EgXGl5x8P4/t+rAjV7WgAAAA=
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <upstream@lists.phytec.de>,
+        Yannic Moog <y.moog@phytec.de>
+X-Mailer: b4 0.12.3
+X-Originating-IP: [172.25.0.11]
+X-ClientProxiedBy: Berlix.phytec.de (172.25.0.12) To Berlix.phytec.de
+ (172.25.0.12)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPLMWRmVeSWpSXmKPExsWyRpKBR9dm3ccUg4dn5S3W7D3HZDH/yDlW
+        i4dX/S1WTd3JYtH34iGzxaHmA0wWmx5fY7Xo+rWS2eLyrjlsFq17j7Bb/N2+icXixRZxi+53
+        6g68Hjtn3WX32LSqk83jzrU9bB6bl9R79He3sHpsfLeDyaP/r4HH501yARxRXDYpqTmZZalF
+        +nYJXBnNp/6wFxxkq5i4+y9TA+Mq1i5GTg4JAROJ26vXM3cxcnEICSxhkti14wEjhPOQUWJ2
+        1xxGkCo2ARWJxy/ugXUIC7hILJtwjA3EZgGKP7p+GqyGV8BTYld/GzOELShxcuYTli5GDg5m
+        AU2J9bv0QcLMAvIS29/OYYZYvIVR4l2rFsguEYEXTBLHpv1gBXGYBVYwSmx6/IwNokpYon3R
+        LSYQW0hAVuLF+V52iLi8xLRzr6EmhUps/bKdaQKj4Cwku2ch7J6FZPcCRuZVjEK5mcnZqUWZ
+        2XoFGZUlqcl6KambGEGRJMLAtYOxb47HIUYmDsZDjBIczEoivLFm71KEeFMSK6tSi/Lji0pz
+        UosPMUpzsCiJ897vYUoUEkhPLEnNTk0tSC2CyTJxcEo1MMbb6pSVxH+fUjw9lLVUqO+tder3
+        R//0ghdO6G5tzmztuiB91eqUxV2Zx8vWJt+Y78p8Z/0M6cJ1NxX/fLLpqD96vdZ+L1tezono
+        zfkzj6krbJnZa3lV6euZxoqGk3Ys7kIJrYUhTxd/2WRnz9Mj4nQ89v/CdfXbkxlf7zr36bJm
+        0qUZgtb39JVYijMSDbWYi4oTAXv+8OGSAgAA
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+The phyGATE-Tauri-L is a SBC that uses the phyCORE-i.MX8MM SoM, but has
+a different carrier board.
+This series adds support for the board and most of its interfaces.
+Notably, RS485 support is missing.
 
-> Hi Maxime,
->
-> On Fri, Sep 1, 2023 at 10:22=E2=80=AFAM Maxime Ripard <mripard@kernel.org=
-> wrote:
->> On Wed, Aug 30, 2023 at 08:25:08AM +0200, Javier Martinez Canillas wrote:
->> > The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
->> > .atomic_check() callback") moved the allocation of the intermediate and
->> > HW buffers from the encoder's .atomic_enable callback to primary plane=
-'s
->> > .atomic_check callback.
->> >
->> > This was suggested by Maxime Ripard because drivers aren't allowed to =
-fail
->> > after drm_atomic_helper_swap_state() has been called, and the encoder's
->> > .atomic_enable happens after the new atomic state has been swapped.
->> >
->> > But that change caused a performance regression in very slow platforms,
->> > since now the allocation happens for every plane's atomic state commit.
->> > For example, Geert Uytterhoeven reports that is the case on a VexRiscV
->> > softcore (RISC-V CPU implementation on an FPGA).
->>
->> I'd like to have numbers on that. It's a bit surprising to me that,
->> given how many objects we already allocate during a commit, two small
->> additional allocations affect performances so dramatically, even on a
->> slow platform.
->
-> To be fair, I didn't benchmark that.  Perhaps it's just too slow due to
-> all these other allocations (and whatever else happens).
->
-> I just find it extremely silly to allocate a buffer over and over again,
-> while we know that buffer is needed for each and every display update.
->
+Signed-off-by: Yannic Moog <y.moog@phytec.de>
+---
+Yannic Moog (2):
+      dt-bindings: arm: fsl: add phyGATE-Tauri-L board
+      arm64: dts: freescale: add phyGATE-Tauri i.MX 8M Mini Support
 
-Is not efficient that's true, but on the other hand we have other objects
-that are destroyed and created on each atomic update.
+ Documentation/devicetree/bindings/arm/fsl.yaml     |   4 +-
+ arch/arm64/boot/dts/freescale/Makefile             |   1 +
+ .../boot/dts/freescale/imx8mm-phygate-tauri-l.dts  | 488 +++++++++++++++++++++
+ 3 files changed, 492 insertions(+), 1 deletion(-)
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230828-tauri_upstream_support-08fac2175150
 
-In the ssd1307fb driver, the buffer is allocated on ssd1307fb_update_rect()
-(by calling the ssd1307fb_alloc_array() function), so it also happens for
-every display update in the fbdev driver.
-
-> Gr{oetje,eeting}s,
->
-
---=20
 Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+-- 
+Yannic Moog <y.moog@phytec.de>
 
