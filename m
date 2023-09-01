@@ -2,103 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC39278FBEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A755978FBF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:55:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349047AbjIAKxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:53:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47574 "EHLO
+        id S1349060AbjIAKzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:55:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjIAKxg (ORCPT
+        with ESMTP id S232274AbjIAKzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:53:36 -0400
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7E510CE;
-        Fri,  1 Sep 2023 03:53:33 -0700 (PDT)
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-268bc714ce0so2086401a91.0;
-        Fri, 01 Sep 2023 03:53:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693565613; x=1694170413;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FWZQOEBhVxoOt4tiQqlHUEMdli9ckDzD5FzzgBxRbUE=;
-        b=M4TpwkcFKIhTR143nsWIg8eLxYTFgn9YpXehWxC9P48CA+VMyw2HcMBOB80koJDkuY
-         TSy6N87cur9+X9NpwCk9oO+eTouYgxlrQQHEHZYqPqZWkKHKVpwF9XRlAy//TrGWtUSi
-         AZSWlM0CtRj1euE9k1MByZR44rhemdryC4Z9X2+WsOrnKmlnr5i3WTOx+Xtfj2/l29IJ
-         Qwy2x7g3raAXYmkQYJX+Zgkyy8R7KnkeYT8+TeaYuhE3fCQGHC11jvGg64yt2wiujptm
-         wuSKgf517OPKEehKGtQuHflfWpEr+17TOXKLM0daMzDHyDdC0R2NbQXVXFOlwncXXR5O
-         /AeA==
-X-Gm-Message-State: AOJu0YwNQGGSO4y3MFLmEgjXrxss86DMCpsJAPhFiMdk1NGByLeejBVT
-        JZ4tVG6g6Am+DyzCt0HT2hMXwVrdLi3L8TEmU4U=
-X-Google-Smtp-Source: AGHT+IHhVLMZe0+O1NerBCfGRiwl5y30FYWye0njx9w566sNUkxJRRfEq/ORX6uAUsYDbODgfRqDBFVrhKW5mQMAcX4=
-X-Received: by 2002:a17:90a:9cc:b0:268:8ff2:5c0d with SMTP id
- 70-20020a17090a09cc00b002688ff25c0dmr2879920pjo.17.1693565612603; Fri, 01 Sep
- 2023 03:53:32 -0700 (PDT)
+        Fri, 1 Sep 2023 06:55:12 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3752210CE;
+        Fri,  1 Sep 2023 03:55:09 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 777E4FEC;
+        Fri,  1 Sep 2023 03:55:47 -0700 (PDT)
+Received: from [10.57.91.85] (unknown [10.57.91.85])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC11F3FBD2;
+        Fri,  1 Sep 2023 03:55:05 -0700 (PDT)
+Message-ID: <060108f8-1ef0-d616-12de-88b05a2e7df9@arm.com>
+Date:   Fri, 1 Sep 2023 11:55:04 +0100
 MIME-Version: 1.0
-References: <20230901082755.27104-1-jiasheng@iscas.ac.cn>
-In-Reply-To: <20230901082755.27104-1-jiasheng@iscas.ac.cn>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Fri, 1 Sep 2023 19:53:21 +0900
-Message-ID: <CAMZ6RqK3MWEmEO8Yt3KjCYakya5cG0ccxGPcqbHpM2imKuzpVg@mail.gmail.com>
-Subject: Re: [PATCH] can: etas_es58x: Add check for alloc_can_err_skb
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        arunachalam.santhanam@in.bosch.com, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v8 08/13] coresight-tpdm: Add node to set dsb programming
+ mode
+To:     Tao Zhang <quic_taozha@quicinc.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Konrad Dybcio <konradybcio@gmail.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
+        Leo Yan <leo.yan@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Tingwei Zhang <quic_tingweiz@quicinc.com>,
+        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Hao Zhang <quic_hazha@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, andersson@kernel.org
+References: <1692681973-20764-1-git-send-email-quic_taozha@quicinc.com>
+ <1692681973-20764-9-git-send-email-quic_taozha@quicinc.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+In-Reply-To: <1692681973-20764-9-git-send-email-quic_taozha@quicinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri. 1 Sept 2023 at 19:22, Jiasheng Jiang <jiasheng@iscas.ac.cn> wrote:
-> Add check for the return value of alloc_can_err_skb in order to
-> avoid NULL pointer dereference.
->
-> Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+On 22/08/2023 06:26, Tao Zhang wrote:
+> Add node to set and show programming mode for TPDM DSB subunit.
+> Once the DSB programming mode is set, it will be written to the
+> register DSB_CR.
+> 
+> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
 > ---
->  drivers/net/can/usb/etas_es58x/es58x_core.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
-> index 0c7f7505632c..d694cb22d9f4 100644
-> --- a/drivers/net/can/usb/etas_es58x/es58x_core.c
-> +++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
-> @@ -680,6 +680,8 @@ int es58x_rx_err_msg(struct net_device *netdev, enum es58x_err error,
->         }
->
->         skb = alloc_can_err_skb(netdev, &cf);
-> +       if (!skb)
-> +               return -ENOMEM;
+>   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 14 ++++++
+>   drivers/hwtracing/coresight/coresight-tpdm.c       | 53 ++++++++++++++++++++++
+>   drivers/hwtracing/coresight/coresight-tpdm.h       | 19 ++++++++
+>   3 files changed, 86 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> index 9e26e30..e17d1b4 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
+> @@ -43,3 +43,17 @@ Description:
+>   		Accepts only one of the 2 values -  0 or 1.
+>   		0 : Set the DSB trigger type to false
+>   		1 : Set the DSB trigger type to true
+> +
+> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_mode
+> +Date:		March 2023
+> +KernelVersion	6.5
 
-NAK.
+Please fix this to 6.7
 
-The checks on skb or cf are skipped intentionally here in order to
-continue the error handling.
+Rest looks fine to me
 
-Later in this function, all the access to skb or cf and guarded by an:
-
-        if (cf)
-
-And if cf is not NULL, skb is also guaranteed not to be NULL. For
-further details, please refer to this commit:
-
-  https://git.kernel.org/torvalds/c/c8129487441e
+Suzuki
 
 
-Yours sincerely,
-Vincent Mailhol
+> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
+> +Description:
+> +		(RW) Set/Get the programming mode of the DSB for tpdm.
+> +
+> +		Accepts the value needs to be greater than 0. What data
+> +		bits do is listed below.
+> +		Bit[0:1] : Test mode control bit for choosing the inputs.
+> +		Bit[3] : Set to 0 for low performance mode.
+> +				 Set to 1 for high performance mode.
+> +		Bit[4:8] : Select byte lane for high performance mode.
+> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+> index 8e11c9b..2424eb7 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+> @@ -4,6 +4,7 @@
+>    */
+>   
+>   #include <linux/amba/bus.h>
+> +#include <linux/bitfield.h>
+>   #include <linux/bitmap.h>
+>   #include <linux/coresight.h>
+>   #include <linux/coresight-pmu.h>
+> @@ -47,6 +48,27 @@ static void tpdm_reset_datasets(struct tpdm_drvdata *drvdata)
+>   	}
+>   }
+>   
+> +static void set_dsb_mode(struct tpdm_drvdata *drvdata, u32 *val)
+> +{
+> +	u32 mode;
+> +
+> +	/* Set the test accurate mode */
+> +	mode = TPDM_DSB_MODE_TEST(drvdata->dsb->mode);
+> +	*val &= ~TPDM_DSB_CR_TEST_MODE;
+> +	*val |= FIELD_PREP(TPDM_DSB_CR_TEST_MODE, mode);
+> +
+> +	/* Set the byte lane for high-performance mode */
+> +	mode = TPDM_DSB_MODE_HPBYTESEL(drvdata->dsb->mode);
+> +	*val &= ~TPDM_DSB_CR_HPSEL;
+> +	*val |= FIELD_PREP(TPDM_DSB_CR_HPSEL, mode);
+> +
+> +	/* Set the performance mode */
+> +	if (drvdata->dsb->mode & TPDM_DSB_MODE_PERF)
+> +		*val |= TPDM_DSB_CR_MODE;
+> +	else
+> +		*val &= ~TPDM_DSB_CR_MODE;
+> +}
+> +
+>   static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+>   {
+>   	u32 val;
+> @@ -60,6 +82,8 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
+>   	writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
+>   
+>   	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
+> +	/* Set the mode of DSB dataset */
+> +	set_dsb_mode(drvdata, &val);
+>   	/* Set trigger type */
+>   	if (drvdata->dsb->trig_type)
+>   		val |= TPDM_DSB_CR_TRIG_TYPE;
+> @@ -244,6 +268,34 @@ static struct attribute_group tpdm_attr_grp = {
+>   	.attrs = tpdm_attrs,
+>   };
+>   
+> +static ssize_t dsb_mode_show(struct device *dev,
+> +				struct device_attribute *attr,
+> +				char *buf)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +
+> +	return sysfs_emit(buf, "%x\n", drvdata->dsb->mode);
+> +}
+> +
+> +static ssize_t dsb_mode_store(struct device *dev,
+> +				struct device_attribute *attr,
+> +				const char *buf,
+> +				size_t size)
+> +{
+> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
+> +	unsigned long val;
+> +
+> +	if ((kstrtoul(buf, 0, &val)) || (val < 0) ||
+> +			(val & ~TPDM_DSB_MODE_MASK))
+> +		return -EINVAL;
+> +
+> +	spin_lock(&drvdata->spinlock);
+> +	drvdata->dsb->mode = val & TPDM_DSB_MODE_MASK;
+> +	spin_unlock(&drvdata->spinlock);
+> +	return size;
+> +}
+> +static DEVICE_ATTR_RW(dsb_mode);
+> +
+>   static ssize_t dsb_trig_type_show(struct device *dev,
+>   		  struct device_attribute *attr, char *buf)
+>   {
+> @@ -316,6 +368,7 @@ static ssize_t dsb_trig_ts_store(struct device *dev,
+>   static DEVICE_ATTR_RW(dsb_trig_ts);
+>   
+>   static struct attribute *tpdm_dsb_attrs[] = {
+> +	&dev_attr_dsb_mode.attr,
+>   	&dev_attr_dsb_trig_ts.attr,
+>   	&dev_attr_dsb_trig_type.attr,
+>   	NULL,
+> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
+> index f59e751..f57c9fe 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
+> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
+> @@ -15,11 +15,28 @@
+>   
+>   /* Enable bit for DSB subunit */
+>   #define TPDM_DSB_CR_ENA		BIT(0)
+> +/* Enable bit for DSB subunit perfmance mode */
+> +#define TPDM_DSB_CR_MODE		BIT(1)
+>   /* Enable bit for DSB subunit trigger type */
+>   #define TPDM_DSB_CR_TRIG_TYPE		BIT(12)
+> +/* Data bits for DSB high performace mode */
+> +#define TPDM_DSB_CR_HPSEL		GENMASK(6, 2)
+> +/* Data bits for DSB test mode */
+> +#define TPDM_DSB_CR_TEST_MODE		GENMASK(10, 9)
+> +
+>   /* Enable bit for DSB subunit trigger timestamp */
+>   #define TPDM_DSB_TIER_XTRIG_TSENAB		BIT(1)
+>   
+> +/* DSB programming modes */
+> +/* DSB mode bits mask */
+> +#define TPDM_DSB_MODE_MASK			GENMASK(8, 0)
+> +/* Test mode control bit*/
+> +#define TPDM_DSB_MODE_TEST(val)	(val & GENMASK(1, 0))
+> +/* Performance mode */
+> +#define TPDM_DSB_MODE_PERF		BIT(3)
+> +/* High performance mode */
+> +#define TPDM_DSB_MODE_HPBYTESEL(val)	(val & GENMASK(8, 4))
+> +
+>   /* TPDM integration test registers */
+>   #define TPDM_ITATBCNTRL		(0xEF0)
+>   #define TPDM_ITCNTRL		(0xF00)
+> @@ -48,10 +65,12 @@
+>   
+>   /**
+>    * struct dsb_dataset - specifics associated to dsb dataset
+> + * @mode:             DSB programming mode
+>    * @trig_ts:          Enable/Disable trigger timestamp.
+>    * @trig_type:        Enable/Disable trigger type.
+>    */
+>   struct dsb_dataset {
+> +	u32				mode;
+>   	bool			trig_ts;
+>   	bool			trig_type;
+>   };
 
->         switch (error) {
->         case ES58X_ERR_OK:      /* 0: No error */
-> --
-> 2.25.1
->
