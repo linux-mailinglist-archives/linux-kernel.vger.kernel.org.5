@@ -2,213 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF96078FC62
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E369D78FC65
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245401AbjIALkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53252 "EHLO
+        id S1349195AbjIALkk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Sep 2023 07:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229818AbjIALkW (ORCPT
+        with ESMTP id S1345319AbjIALki (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:40:22 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1435291;
-        Fri,  1 Sep 2023 04:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-        s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:
-        Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=Vaae9RzNE3FL4Gsrihk4ZQIvVZZIGT955vGaddnPSVA=; b=aW+Ice2MA86ZS0kuuTzrVkYBNc
-        EnEJswecLYgVUZ5K4+uqyyG8l3WahofIUPi2pTBMMdxRtFDK9p6HjfjVAMWtGiughQSkJzl6lDbm6
-        sRt9SJVjQI5dA0WCV/IpmehfFl1IMKidYdfvlDtGn3SK9u8M66x7rB0fXTG3KTttU+qWwfCQ2v4v8
-        nezWr4+lI0/9IWSxsXkI8axKJzM17RJnloZHufvWYTJt9CbtRZKZOBuDMvl70om147QP5XvQhKt21
-        q/Oq02b9SSxL+dqiRFDNYfhalphJSj9tIfo3JnYqGqm5xToV1DiubnUzl/k1oSJVuJP5ylHeuopIY
-        vAOLN/Zg==;
-Received: from 91-158-25-70.elisa-laajakaista.fi ([91.158.25.70] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1qc2Va-008s8J-0M;
-        Fri, 01 Sep 2023 14:40:14 +0300
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] gpu: host1x: Syncpoint interrupt sharding
-Date:   Fri,  1 Sep 2023 14:40:07 +0300
-Message-ID: <20230901114008.672433-1-cyndis@kapsi.fi>
-X-Mailer: git-send-email 2.41.0
+        Fri, 1 Sep 2023 07:40:38 -0400
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D7E10DE;
+        Fri,  1 Sep 2023 04:40:34 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-58fae4a5285so19795937b3.0;
+        Fri, 01 Sep 2023 04:40:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693568433; x=1694173233;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fkv0L31Q5D5FJO/hIrhq5apL36PuzcVnftNBKaUnVoc=;
+        b=U4FDhPlOivPVv7zWnXuskOee3wepPMe3LSEgGW4TuH0tUSD2wxHKve69XwbL8cCwq8
+         NJR1V1nd2l4enNzp5X8y58VW+gv7H2dnsg7GFEg5DsdCTVTbDsDvAaWGtOTxQB/qURX6
+         4Ie19uVwY/NtzhgZssxeSJOwEuy9pai9g6+mk9B0mhSbmbUqP2bX6coJurPlmwbS1UKK
+         UhKHkse6bbsvoioSxDokwjz1R9hfVnhu4ZMIR4EaT3PXgCjpSAfYML0Xq5ckxL7KAoTb
+         vfj9gwomQTXGgWotanGpwXYnmfZ4qFJgfwi4h3feOQAv/j5XSvwNqogPAVW7VGUZIDPw
+         2DOg==
+X-Gm-Message-State: AOJu0Yy2zpfX2lntjy1bUaaN0IygMTmvnEnwT8QZeogcnzHFEVzsoyEV
+        GMqG8AYjgAkcAa1YH8B8org2l+EqIAqMZg==
+X-Google-Smtp-Source: AGHT+IHOse64sEjbb4mUMY8VJu02Kksli2yqqHNCfrz0957YlkTL7YW0bgkorvUnABtoju+B/Uzm7A==
+X-Received: by 2002:a0d:d341:0:b0:58c:b8b4:2785 with SMTP id v62-20020a0dd341000000b0058cb8b42785mr2165278ywd.45.1693568432949;
+        Fri, 01 Sep 2023 04:40:32 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id z7-20020a816507000000b00592a065e2a3sm1010845ywb.87.2023.09.01.04.40.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 04:40:32 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d7e904674aeso221024276.3;
+        Fri, 01 Sep 2023 04:40:32 -0700 (PDT)
+X-Received: by 2002:a25:dcf:0:b0:d36:58a6:3281 with SMTP id
+ 198-20020a250dcf000000b00d3658a63281mr2321384ybn.39.1693568432089; Fri, 01
+ Sep 2023 04:40:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 91.158.25.70
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230901113703.314667-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20230901113703.314667-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Sep 2023 13:40:20 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVbR3mAgJ4UoeBSgesLPTuo-RVrRE_cLZZHwqJAhuVLFA@mail.gmail.com>
+Message-ID: <CAMuHMdVbR3mAgJ4UoeBSgesLPTuo-RVrRE_cLZZHwqJAhuVLFA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: host: Kconfig: Allow selecting MMC_SDHI_INTERNAL_DMAC
+ for RZ/Five SoC
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikko Perttunen <mperttunen@nvidia.com>
+Hi Prabhakar,
 
-Support sharded syncpoint interrupts on Tegra234+. This feature
-allows specifying one of eight interrupt lines for each syncpoint
-to lower processing latency of syncpoint threshold
-interrupts.
+On Fri, Sep 1, 2023 at 1:37 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Make MMC_SDHI_INTERNAL_DMAC visible for RISC-V architecture so that we can
+> select this config option for RZ/Five SoC which is based on RISC-V
+> architecture.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
----
- drivers/gpu/host1x/dev.c        | 28 +++++++++++++++++---
- drivers/gpu/host1x/dev.h        |  3 ++-
- drivers/gpu/host1x/hw/intr_hw.c | 46 ++++++++++++++++++++++++---------
- 3 files changed, 60 insertions(+), 17 deletions(-)
+Thanks for your patch!
 
-diff --git a/drivers/gpu/host1x/dev.c b/drivers/gpu/host1x/dev.c
-index 7c6699aed7d2..b22821c81394 100644
---- a/drivers/gpu/host1x/dev.c
-+++ b/drivers/gpu/host1x/dev.c
-@@ -488,7 +488,7 @@ static int host1x_get_resets(struct host1x *host)
- static int host1x_probe(struct platform_device *pdev)
- {
- 	struct host1x *host;
--	int err;
-+	int err, i;
- 
- 	host = devm_kzalloc(&pdev->dev, sizeof(*host), GFP_KERNEL);
- 	if (!host)
-@@ -516,9 +516,29 @@ static int host1x_probe(struct platform_device *pdev)
- 			return PTR_ERR(host->regs);
- 	}
- 
--	host->syncpt_irq = platform_get_irq(pdev, 0);
--	if (host->syncpt_irq < 0)
--		return host->syncpt_irq;
-+	for (i = 0; i < ARRAY_SIZE(host->syncpt_irqs); i++) {
-+		char irq_name[] = "syncptX";
-+		sprintf(irq_name, "syncpt%d", i);
-+
-+		err = platform_get_irq_byname_optional(pdev, irq_name);
-+		if (err == -ENXIO)
-+			break;
-+		if (err < 0)
-+			return err;
-+
-+		host->syncpt_irqs[i] = err;
-+	}
-+
-+	host->num_syncpt_irqs = i;
-+
-+	/* Device tree without irq names */
-+	if (i == 0) {
-+		host->syncpt_irqs[0] = platform_get_irq(pdev, 0);
-+		if (host->syncpt_irqs[0] < 0)
-+			return host->syncpt_irqs[0];
-+
-+		host->num_syncpt_irqs = 1;
-+	}
- 
- 	mutex_init(&host->devices_lock);
- 	INIT_LIST_HEAD(&host->devices);
-diff --git a/drivers/gpu/host1x/dev.h b/drivers/gpu/host1x/dev.h
-index 75de50fe03d0..c8e302de7625 100644
---- a/drivers/gpu/host1x/dev.h
-+++ b/drivers/gpu/host1x/dev.h
-@@ -124,7 +124,8 @@ struct host1x {
- 	void __iomem *regs;
- 	void __iomem *hv_regs; /* hypervisor region */
- 	void __iomem *common_regs;
--	int syncpt_irq;
-+	int syncpt_irqs[8];
-+	int num_syncpt_irqs;
- 	struct host1x_syncpt *syncpt;
- 	struct host1x_syncpt_base *bases;
- 	struct device *dev;
-diff --git a/drivers/gpu/host1x/hw/intr_hw.c b/drivers/gpu/host1x/hw/intr_hw.c
-index b915ef7d0348..9880e0c47235 100644
---- a/drivers/gpu/host1x/hw/intr_hw.c
-+++ b/drivers/gpu/host1x/hw/intr_hw.c
-@@ -13,13 +13,20 @@
- #include "../intr.h"
- #include "../dev.h"
- 
-+struct host1x_intr_irq_data {
-+	struct host1x *host;
-+	u32 offset;
-+};
-+
- static irqreturn_t syncpt_thresh_isr(int irq, void *dev_id)
- {
--	struct host1x *host = dev_id;
-+	struct host1x_intr_irq_data *irq_data = dev_id;
-+	struct host1x *host = irq_data->host;
- 	unsigned long reg;
- 	unsigned int i, id;
- 
--	for (i = 0; i < DIV_ROUND_UP(host->info->nb_pts, 32); i++) {
-+	for (i = irq_data->offset; i < DIV_ROUND_UP(host->info->nb_pts, 32);
-+	     i += host->num_syncpt_irqs) {
- 		reg = host1x_sync_readl(host,
- 			HOST1X_SYNC_SYNCPT_THRESH_CPU0_INT_STATUS(i));
- 
-@@ -67,26 +74,41 @@ static void intr_hw_init(struct host1x *host, u32 cpm)
- 
- 	/*
- 	 * Program threshold interrupt destination among 8 lines per VM,
--	 * per syncpoint. For now, just direct all to the first interrupt
--	 * line.
-+	 * per syncpoint. For each group of 32 syncpoints (corresponding to one
-+	 * interrupt status register), direct to one interrupt line, going
-+	 * around in a round robin fashion.
- 	 */
--	for (id = 0; id < host->info->nb_pts; id++)
--		host1x_sync_writel(host, 0, HOST1X_SYNC_SYNCPT_INTR_DEST(id));
-+	for (id = 0; id < host->info->nb_pts; id++) {
-+		u32 reg_offset = id / 32;
-+		u32 irq_index = reg_offset % host->num_syncpt_irqs;
-+
-+		host1x_sync_writel(host, irq_index, HOST1X_SYNC_SYNCPT_INTR_DEST(id));
-+	}
- #endif
- }
- 
- static int
- host1x_intr_init_host_sync(struct host1x *host, u32 cpm)
- {
--	int err;
-+	int err, i;
-+	struct host1x_intr_irq_data *irq_data;
-+
-+	irq_data = devm_kcalloc(host->dev, host->num_syncpt_irqs, sizeof(irq_data[0]), GFP_KERNEL);
-+	if (!irq_data)
-+		return -ENOMEM;
- 
- 	host1x_hw_intr_disable_all_syncpt_intrs(host);
- 
--	err = devm_request_irq(host->dev, host->syncpt_irq,
--			       syncpt_thresh_isr, IRQF_SHARED,
--			       "host1x_syncpt", host);
--	if (err < 0)
--		return err;
-+	for (i = 0; i < host->num_syncpt_irqs; i++) {
-+		irq_data[i].host = host;
-+		irq_data[i].offset = i;
-+
-+		err = devm_request_irq(host->dev, host->syncpt_irqs[i],
-+				       syncpt_thresh_isr, IRQF_SHARED,
-+				       "host1x_syncpt", &irq_data[i]);
-+		if (err < 0)
-+			return err;
-+	}
- 
- 	intr_hw_init(host, cpm);
- 
+> I was in two minds here whether I should instead add dependency for
+> ARCH_R9A07G043 instead of RISCV. But adding dependency for RISCV allows
+> us to get this config option freely for future coming RISC-V Renesas
+> SoCs.
+>
+> Cheers, Prabhakar
+> ---
+>  drivers/mmc/host/Kconfig | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+> index 554e67103c1a..5190881cb204 100644
+> --- a/drivers/mmc/host/Kconfig
+> +++ b/drivers/mmc/host/Kconfig
+> @@ -677,9 +677,9 @@ config MMC_SDHI_SYS_DMAC
+>
+>  config MMC_SDHI_INTERNAL_DMAC
+>         tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
+> -       depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || COMPILE_TEST
+> +       depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || RISCV || COMPILE_TEST
+>         depends on MMC_SDHI
+> -       default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470)
+> +       default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || RISCV)
+
+This would expose this option to a growing number of non-Renesas
+RISC-V platforms.  What about using ARCH_RENESAS || COMPILE_TEST
+instead?
+
+>         help
+>           This provides DMA support for SDHI SD/SDIO controllers
+>           using on-chip bus mastering. This supports the controllers
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.41.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
