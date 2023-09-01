@@ -2,118 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC0378FD5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E52F978FD53
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347262AbjIAMhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:37:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41412 "EHLO
+        id S1349477AbjIAMeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230344AbjIAMhW (ORCPT
+        with ESMTP id S238417AbjIAMeQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:37:22 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6EB5107
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:37:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693571839; x=1725107839;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=MbSejPpVcn39K0suwGrMS6r7UtjeFPJhMP61frqFDgI=;
-  b=a2h912M6eAo6I+4J2JWH0ukjGnpNzcBxfIckw1FICCnSoavHLu4ugtDM
-   Wrkw34Qz0K3tHYrEYFS6VUB7tM/4MntOWYIvG1YNLQZ221Oj5gS1DAjUn
-   DYn2+jAVyJ57tpZbleWpSTbwCAcEgNCtUKhs8Z+llaZzNXYs4G+gT6dN/
-   tD4+POD2F6gnsCmmCHcgEofiwlur2oaB9OMIYc5hgAoORvY9HL2KXNRIw
-   62t4OuN9U/4LtfABieEjvTgmq1BpkAPPLdrm00RQdivbLzUbdcBUr9i+x
-   8L+stuk7TtLoT529Q7Zo2pvTE0WzLyKcq9L1nUZDtYFKnZpzjShbF8xIS
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="375111162"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="375111162"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 05:37:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="689752177"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="689752177"
-Received: from eliteleevi.tm.intel.com ([10.237.54.20])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 05:37:14 -0700
-Date:   Fri, 1 Sep 2023 15:33:19 +0300 (EEST)
-From:   Kai Vehmanen <kai.vehmanen@linux.intel.com>
-X-X-Sender: kvehmane@eliteleevi.tm.intel.com
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
-cc:     Alsa-devel <alsa-devel@alsa-project.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
-        Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Daniel Baluta <daniel.baluta@nxp.com>,
-        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
-Subject: Re: [PATCH v4 10/11] ASoC: SOF: Intel: Move binding to display driver
- outside of deferred probe
-In-Reply-To: <20230830153652.217855-11-maarten.lankhorst@linux.intel.com>
-Message-ID: <alpine.DEB.2.22.394.2309011526300.3390143@eliteleevi.tm.intel.com>
-References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com> <20230830153652.217855-11-maarten.lankhorst@linux.intel.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7 02160 Espoo
+        Fri, 1 Sep 2023 08:34:16 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B67107;
+        Fri,  1 Sep 2023 05:34:13 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bee82fad0fso15136805ad.2;
+        Fri, 01 Sep 2023 05:34:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693571652; x=1694176452; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FKS56aNj/oeFJ6bZnMlQ2+jsvafiN0tr1LTFMkTVK/o=;
+        b=bHsQa1xjRfQVki4aQd9ZuexIG4nu//O6yp1Tl8LBQ62fhQiZHidCa570FSFleDbYZu
+         1Z0v+mwcl9qu9XUZaYoHws/XLs7zf1L43xjLzo2AdljfBnW20O2o8pDUs8vMxg2pDD8U
+         rNoKNCOzQkIJrNxoYsPzGcxdlzAz4H/d5Ai6idWX0micie1pHBmyI5Ixq6mX7ygYauVN
+         4GeQDmL0iFkCkcUHw7jQidtH9Amfz8H4StV3WoeiGc5Oci2T0n5y0NOoiVs/cQTBZ0hL
+         urXh3OViFW3KgIAaEG9Pqp16OUXq0Gb2cZUPq58uOK75RW1vKRGuNHLfp1qOeo0XDf4d
+         We3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693571652; x=1694176452;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FKS56aNj/oeFJ6bZnMlQ2+jsvafiN0tr1LTFMkTVK/o=;
+        b=fv76qhqawMwyfq2SN1xmXTn2IM01gZpowv0/PwsxF+kUgFxXa6CJK+NfGp529FG+rS
+         cF+Gc/dY7g0gM4omkgworyVguJ0zdzK17S/5ZZcDGhaSzb9monGs9XiTWiHdqBw4F0i0
+         YyT8HMQt7dnV+TPOqpLxuk48wKiT0+KLh5Lu1ktOPjpjxoja6crthWU1qTKVqT9+ogci
+         qeRITncK7o/rjTs0u+nm0+5WjfoSL+PRgqXc1VwtVv6owQYcpaObrFqLLtsCpXEnbcSa
+         t6mWmShR2Mx+9bxrD9hbJs/SUXjNbDlfKavMBM25UB09Is1q5YZtVEQYNo8NGrMxqxLC
+         /P/g==
+X-Gm-Message-State: AOJu0YxlG2ZGwTrryAoog4u0gfGV5jznVr1X659/NnejNYYGmlAHUQQK
+        GnHDxmpIc1O14MvJYI2ttjE=
+X-Google-Smtp-Source: AGHT+IGakq/z2ybFt6VKBYFE9cXXze6xF7ush+DUKu06qQzDjF341STBSR2N7SVW5dvAhAQ7BkBmIw==
+X-Received: by 2002:a17:902:e841:b0:1b9:e591:db38 with SMTP id t1-20020a170902e84100b001b9e591db38mr3216676plg.8.1693571652516;
+        Fri, 01 Sep 2023 05:34:12 -0700 (PDT)
+Received: from [192.168.0.105] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id g24-20020a170902fe1800b001b0358848b0sm2935191plj.161.2023.09.01.05.34.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 05:34:11 -0700 (PDT)
+Message-ID: <c0b931e2-ae3a-bd20-ca43-b931571602c1@gmail.com>
+Date:   Fri, 1 Sep 2023 19:34:07 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        llancelot7@gmail.com
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Input Devices <linux-input@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Betop Titanwolf Hotas Bundle missing axis and second Hat
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey,
+Hi,
 
-On Wed, 30 Aug 2023, Maarten Lankhorst wrote:
+I notice a bug report on Bugzilla [1]. Quoting from it:
 
-> Now that we can use -EPROBE_DEFER, it's no longer required to spin off
-> the snd_hdac_i915_init into a workqueue.
+> I has USB Flashfire Cobra V5 Hotas wich recognized as:
+>    11c0:5608 Betop Titanwolf Hotas Bundle
 > 
-> Use the -EPROBE_DEFER mechanism instead, which must be returned in the
-> probe function.
+> Problem is in that bundle missing Throttle axis and second Hat, because it's mapped to Sync.Report:
 > 
-> The previously added probe_no_wq can be used for this,
-> and we also use the newly added remove_no_wq for unbinding afterwards.
-[...]
-> @@ -1317,7 +1313,6 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
->  {
->  	struct sof_intel_hda_dev *hda = sdev->pdata->hw_pdata;
->  	const struct sof_intel_dsp_desc *chip = hda->desc;
-> -	struct hdac_bus *bus = sof_to_bus(sdev);
->  	struct pci_dev *pci = to_pci_dev(sdev->dev);
->  	struct nhlt_acpi_table *nhlt = hda->nhlt;
->  
-> @@ -1368,10 +1363,12 @@ int hda_dsp_remove(struct snd_sof_dev *sdev)
->  	if (!sdev->dspless_mode_selected)
->  		iounmap(sdev->bar[HDA_DSP_BAR]);
->  
-> -	iounmap(bus->remap_addr);
-> -
-> -	sof_hda_bus_exit(sdev);
-> +	return 0;
-> +}
->  
-> +int hda_dsp_remove_no_wq(struct snd_sof_dev *sdev)
-> +{
-> +	iounmap(sof_to_bus(sdev)->remap_addr);
->  	hda_codec_i915_exit(sdev);
+> GenericDesktop.X ---> Absolute.X
+> GenericDesktop.Y ---> Absolute.Y
+> GenericDesktop.Slider ---> Absolute.Throttle
+> Simulation.Rudder ---> Absolute.Rudder
+> GenericDesktop.HatSwitch ---> Absolute.Hat0X
+> GenericDesktop.HatSwitch ---> Sync.Report
+> GenericDesktop.Rx ---> Absolute.Rx
+> GenericDesktop.Ry ---> Absolute.Ry
+> Simulation.Throttle ---> Sync.Report
+> 
+> 
+> Kernel 6.4.10
+> 
+> P.S. is it needs special "driver"(quirk)? Or hid joy really can recognize more than 1 Hat, because I saw only `map_abs(ABS_HAT0X);` for `HID_GD_HATSWITCH` in hid-input.c
 
-I think here we drop the call to sof_hda_bus_exit() which should be done 
-in hda_dsp_remove_no_wq() to counter hda_init().
+See Bugzilla for the full thread and attached debug logs and a patch
+that fixes the report.
 
-Rest looks good to me, the "no_wq" variants do symmetric ops,
-so we can handle both wq an non-wq cases.
+Thanks.
 
-Br, Kai
+-- 
+An old man doll... just what I always wanted! - Clara
