@@ -2,52 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4B7078FA3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:51:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73DCD78FA49
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:55:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345982AbjIAIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:51:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44714 "EHLO
+        id S1344791AbjIAIzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:55:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347212AbjIAIvE (ORCPT
+        with ESMTP id S229452AbjIAIzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:51:04 -0400
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 682E010DE
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:51:00 -0700 (PDT)
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c07778146aso20453215ad.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 01:51:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693558260; x=1694163060;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1JPBrIi1YcL7e89Gl1EkswK53QZiuLZ5XXe0Xsa1kO4=;
-        b=SEOLo+4guZHPBNBbEQ3i9FTDqsV32uPILIwWM+Ui5IjqkarebrbG/n6Hd76TwOIpnk
-         twVjxmWcia5JV69XY9YAmD5YY5GLtmZqXj0svCrkQdGYsDJ72hEAFFDkQt7n5ytoJIF3
-         Z2GaVYbiymj3mlR/Gm6Z23y/WWNRnrQq85c0YWltwPmru3l+vE33b/wEnvgJ+oIe2Ypm
-         4cciQnMMJf9brJHM50sO7RnTmpyytRnD1Y/pIS1WQvkPAHGQXnH6l1otwuzzV5T5NsVv
-         +jR12MFKIGDEvWs2xiX/ujk8pzTGdC1ErmcfxA8rXWLq7CsF6fOrVml1f5Hn4CO7Ar73
-         +jDg==
-X-Gm-Message-State: AOJu0YxMwolcx2wIdlFBKRRF5yxRJ1CeHjGBlXu0zVeIwKbUj9exgTSC
-        eaMxOcqDadpQYmwBAE3si+njhvoSuL8WkGWxUKkMyz7qJI3t
-X-Google-Smtp-Source: AGHT+IGdMvUwSFkgk8ztcqPBglfZ1o2YcdWxhLDfDrX8aHtAkIJ0r/BBQ2jHGmSJQyONLVqUzaIwY9d05O5hFpXpEbRAURtzXVdx
+        Fri, 1 Sep 2023 04:55:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB5D10D2;
+        Fri,  1 Sep 2023 01:55:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693558517; x=1725094517;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EEPjv3QXGYpmNq8vsQeiDkLN0h3pB82Y9iSOqfnsMyU=;
+  b=gwVapUKZVdvtZwFowvVoIWNIiyhODANKbZcctr/ciQ955EVNyq5Jv6VN
+   kV984rkf6+49smgeMiTyvcA9YVGw8kXORMK6l8mYCXbOOJ1s66az2QW0y
+   0xtVM7rl99+l7oCBs77OusiJwwhuTUzppY8lTxLIZ5PDTox5LpgwC9zcH
+   9mgNz90DBNvOKl6Sq9UHiGjKMOl7E1MG6ez1FFN4E22WfDuVyTs9196hS
+   JVV6iouHodlIFpJm8GEds8cDxCVqg8/XY+o2RsAC8M0Q6WTqyRvOz2Gl8
+   hlhqsZPHvgCbE08V/uWDiF7YFjTUTL43wF1qiwjt/7aP+QT8iLhiKpDHD
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="356485296"
+X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
+   d="scan'208";a="356485296"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:55:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="810003054"
+X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
+   d="scan'208";a="810003054"
+Received: from akoczor-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.14.236])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:55:13 -0700
+From:   "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+To:     fenghua.yu@intel.com, reinette.chatre@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, corbet@lwn.net
+Cc:     x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, ilpo.jarvinen@linux.intel.com
+Subject: [PATCH 0/3] x86/resctrl: Non-contiguous bitmasks in Intel CAT
+Date:   Fri,  1 Sep 2023 10:53:28 +0200
+Message-ID: <cover.1693557919.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:dad2:b0:1c3:19d6:3585 with SMTP id
- q18-20020a170902dad200b001c319d63585mr214822plx.13.1693558259958; Fri, 01 Sep
- 2023 01:50:59 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 01:50:59 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007dc85106044842d8@google.com>
-Subject: [syzbot] Monthly bluetooth report (Sep 2023)
-From:   syzbot <syzbot+list89977501de2dccb36fe7@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,48 +62,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello bluetooth maintainers/developers,
+Until recently Intel CPUs didn't support using non-contiguous 1s
+in Cache Allocation Technology (CAT). Writing a bitmask with
+non-contiguous 1s to the resctrl schemata file would fail.
 
-This is a 31-day syzbot report for the bluetooth subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/bluetooth
+Intel CPUs that support non-contiguous 1s can be identified through a
+CPUID leaf mentioned in the "Intel® Architecture Instruction Set
+Extensions Programming Reference" document available at:
+https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
 
-During the period, 2 new issues were detected and 1 were fixed.
-In total, 20 issues are still open and 55 have been fixed so far.
+Add kernel support for detecting if non-contiguous 1s in Cache
+Allocation Technology (CAT) are supported by the hardware. Also add a
+new resctrl FS file to output this information to the userspace.
+Keep the hardcoded value for Haswell CPUs only since they do not have
+CPUID enumeration support for Cache allocation.
 
-Some of the still happening issues:
+Since the selftests/resctrl files are going through many rewrites and
+cleanups the appropriate selftest is still a work in progress. For
+basic selftesting capabilities use the bash script attached below this
+paragraph. It checks whether various bitmasks written into resctrl FS
+generate output consistent with reported feature support.
 
-Ref  Crashes Repro Title
-<1>  8940    Yes   possible deadlock in rfcomm_sk_state_change
-                   https://syzkaller.appspot.com/bug?extid=d7ce59b06b3eb14fd218
-<2>  4685    Yes   WARNING in hci_conn_timeout
-                   https://syzkaller.appspot.com/bug?extid=2446dd3cb07277388db6
-<3>  2847    Yes   possible deadlock in rfcomm_dlc_exists
-                   https://syzkaller.appspot.com/bug?extid=b69a625d06e8ece26415
-<4>  1418    Yes   BUG: sleeping function called from invalid context in hci_cmd_sync_submit
-                   https://syzkaller.appspot.com/bug?extid=e7be5be00de0c3c2d782
-<5>  1064    Yes   INFO: task can't die in __lock_sock
-                   https://syzkaller.appspot.com/bug?extid=7d51f807c81b190a127d
-<6>  224     Yes   WARNING in call_timer_fn
-                   https://syzkaller.appspot.com/bug?extid=6fb78d577e89e69602f9
-<7>  90      No    possible deadlock in hci_unregister_dev
-                   https://syzkaller.appspot.com/bug?extid=c933391d8e4089f1f53e
-<8>  65      Yes   KASAN: slab-use-after-free Read in hci_send_acl
-                   https://syzkaller.appspot.com/bug?extid=a0c80b06ae2cb8895bc4
-<9>  57      No    possible deadlock in discov_off
-                   https://syzkaller.appspot.com/bug?extid=f047480b1e906b46a3f4
-<10> 8       Yes   BUG: sleeping function called from invalid context in __hci_cmd_sync_sk
-                   https://syzkaller.appspot.com/bug?extid=c715e1bd8dfbcb1ab176
+#!/bin/bash
+# must be run as root, depends on a recent cpuid tool (20230406 or later)
+# variables
+RESCTRL_INFO="/sys/fs/resctrl/info"
+L3_NON_CONT_VAL="${RESCTRL_INFO}/L3/sparse_bitmaps"
+L2_NON_CONT_VAL="${RESCTRL_INFO}/L2/sparse_bitmaps"
+L3_NON_CONT_CBM="${RESCTRL_INFO}/L3/cbm_mask"
+L2_NON_CONT_CBM="${RESCTRL_INFO}/L2/cbm_mask"
+L3_CPUID_CMD="cpuid -1 -l 0x10 -s 0x01"
+L2_CPUID_CMD="cpuid -1 -l 0x10 -s 0x02"
+PASSED_TESTS=0
+L3_SUPPORT=0
+L2_SUPPORT=0
+TESTS=0
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+run_test() {
+        # L2 or L3
+        CACHE_LEVEL=$1
+        CACHE_LEVEL_SUPPORT="${CACHE_LEVEL}_SUPPORT"
+        echo "Checking ${RESCTRL_INFO}/${CACHE_LEVEL}..."
+        if [[ -d "${RESCTRL_INFO}/${CACHE_LEVEL}" ]]; then
+                eval "${CACHE_LEVEL_SUPPORT}=1"
+                echo "${CACHE_LEVEL} CAT Feature is supported"
+        else
+                echo "${CACHE_LEVEL} CAT Feature is not supported"
+        fi
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+        if [[ ${!CACHE_LEVEL_SUPPORT} -eq 1 ]]; then
+                echo " --- Running tests for ${CACHE_LEVEL} CAT ---"
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+                # read sysfs entries
+                # are non-contiguous cbm supported? (driver sysfs)
+                eval "NON_CONT_VAL=${CACHE_LEVEL}_NON_CONT_VAL"
+                eval "NON_CONT_FEAT=$( cat ${!NON_CONT_VAL} )"
 
-You may send multiple commands in a single email message.
+                # are non-contiguous cbm supported? (cpuid)
+                CACHE_CPUID_CMD="${CACHE_LEVEL}_CPUID_CMD"
+                NONCONT_CPUID=$(${!CACHE_CPUID_CMD} | grep non-contiguous | grep true)
+                NONCONT_CPUID_RET=$(( !$? ))
+
+                # what is the mask size?
+                eval "NON_CONT_CBM=${CACHE_LEVEL}_NON_CONT_CBM"
+                MAX_MASK=$(( 16#$( cat ${!NON_CONT_CBM} ) ))
+
+                # prepare contiguous and non-contiguous masks for tests
+                BC_STRING="l(${MAX_MASK})/l(2)"
+                MAX_MASK_BIT_COUNT=$(echo ${BC_STRING} | bc -l)
+                MAX_MASK_BIT_COUNT=$(printf "%.0f" "$MAX_MASK_BIT_COUNT")
+                BITSHIFT=$(( $MAX_MASK_BIT_COUNT/2 - ($MAX_MASK_BIT_COUNT/2 % 4) ))
+                CONT_MASK=$(( $MAX_MASK >> $BITSHIFT ))
+                NONCONT_MASK=$(( ~( $MAX_MASK & ( 15<<$BITSHIFT) ) ))
+                NONCONT_MASK=$(( $NONCONT_MASK & $MAX_MASK ))
+
+                # test if cpuid reported support matches the sysfs one
+                echo " * Testing if CPUID matches ${CACHE_LEVEL}/sparse_bitmaps..."
+                TESTS=$((TESTS + 1))
+                if [[ $NONCONT_CPUID_RET -eq $NON_CONT_FEAT ]]; then
+                        PASSED_TESTS=$((PASSED_TESTS + 1))
+                        echo "There is a match!"
+                else
+                        echo "Error - no match!"
+                fi
+
+                # test by writing CBMs to the schemata
+                printf " * Writing 0x%x mask to the schemata...\n" ${CONT_MASK}
+                TESTS=$((TESTS + 1))
+                SCHEMATA=$(printf "${CACHE_LEVEL}:0=%x" $CONT_MASK)
+                echo "$SCHEMATA" > /sys/fs/resctrl/schemata
+                if [[ $? -eq 0 ]]; then
+                        PASSED_TESTS=$((PASSED_TESTS + 1))
+                        echo "Contiguous ${CACHE_LEVEL} write correct!"
+                else
+                        echo "Contiguous ${CACHE_LEVEL} write ERROR!"
+                fi
+
+                printf " * Writing 0x%x mask to the schemata...\n" ${NONCONT_MASK}
+                TESTS=$((TESTS + 1))
+                SCHEMATA=$(printf "${CACHE_LEVEL}:0=%x" $NONCONT_MASK)
+                echo "$SCHEMATA" > /sys/fs/resctrl/schemata
+                if [[ (($? -eq 0) && ($NON_CONT_FEAT -eq 1)) || \
+                        (($? -ne 0) && ($NON_CONT_FEAT -eq 0)) ]]; then
+                        PASSED_TESTS=$((PASSED_TESTS + 1))
+                        echo "Non-contiguous ${CACHE_LEVEL} write correct!"
+                else
+                        echo "Non-contiguous ${CACHE_LEVEL} write ERROR!"
+                fi
+        fi
+}
+
+# mount resctrl
+mount -t resctrl resctrl /sys/fs/resctrl
+
+run_test L3
+run_test L2
+
+echo "TESTS PASSED / ALL TESTS : ${PASSED_TESTS} / ${TESTS}"
+
+# unmount resctrl
+umount /sys/fs/resctrl
+
+Fenghua Yu (2):
+  x86/resctrl: Add sparse_bitmaps file in info
+  Documentation/x86: Document resctrl's new sparse_bitmaps
+
+Wieczor-Retman, Maciej (1):
+  x86/resctrl: Enable non-contiguous bits in Intel CAT
+
+ Documentation/arch/x86/resctrl.rst        | 16 ++++++++++++----
+ arch/x86/kernel/cpu/resctrl/core.c        |  9 ++++++---
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 11 +++++++----
+ arch/x86/kernel/cpu/resctrl/internal.h    |  9 +++++++++
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 18 ++++++++++++++++++
+ 5 files changed, 52 insertions(+), 11 deletions(-)
+
+-- 
+2.42.0
+
