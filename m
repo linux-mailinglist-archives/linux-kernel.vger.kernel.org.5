@@ -2,197 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88BD578FA71
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF70F78FA76
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344642AbjIAJHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36746 "EHLO
+        id S1348713AbjIAJH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229906AbjIAJG7 (ORCPT
+        with ESMTP id S238270AbjIAJHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:06:59 -0400
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 044FD91
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:06:56 -0700 (PDT)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 38196QLq102794;
-        Fri, 1 Sep 2023 04:06:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1693559186;
-        bh=vef8NocFfCln69pFHvQilWwSx80bSqDHP8O6RbxNn9g=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=qE9V40uQdYPeZxv6T049Zd/wXhrKAmAoiXxUeW3HAv/z0P/BnESzpd/Th3sp9goqi
-         s+3hhRVpxEHeOpD2CPDdyDgetQid9BtTTbA5pxaoblnOXylVOZPlgqoeYwP4vvtiL4
-         /g4mszs4ntT5NEvWDfWInfZDFL5FXBXlIE5GiWQw=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 38196QMf081832
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 1 Sep 2023 04:06:26 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
- Sep 2023 04:06:26 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 1 Sep 2023 04:06:26 -0500
-Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 38196Pl7044561;
-        Fri, 1 Sep 2023 04:06:26 -0500
-Date:   Fri, 1 Sep 2023 14:36:27 +0530
-From:   Jai Luthra <j-luthra@ti.com>
-To:     Nishanth Menon <nm@ti.com>,
-        Helen Mae Koike Fornazier <helen.koike@collabora.com>
-CC:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Nicolas Belin <nbelin@baylibre.com>,
-        "Andy.Hsieh" <Andy.Hsieh@mediatek.com>,
-        Aradhya Bhatia <a-bhatia1@ti.com>, <devarsht@ti.com>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] drm: bridge: it66121: Fix invalid connector dereference
-Message-ID: <ljopjy4gjuduyjq6auhwi3jinblqagf6vghgvw3edfmj6tyerw@q2kglcng3glf>
-References: <20230825-it66121_edid-v1-1-3ab54923e472@ti.com>
- <6fd4-64ecbf00-7-213b7840@157890373>
- <20230831122531.smmqt7ycupvum3gg@stereo>
+        Fri, 1 Sep 2023 05:07:24 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC3B10D2;
+        Fri,  1 Sep 2023 02:07:17 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RcXF70gkKz6HJgB;
+        Fri,  1 Sep 2023 17:05:47 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 1 Sep
+ 2023 10:06:54 +0100
+Date:   Fri, 1 Sep 2023 10:06:54 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Robert Richter <rrichter@amd.com>
+CC:     Terry Bowman <terry.bowman@amd.com>, <alison.schofield@intel.com>,
+        <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
+        <bwidawsk@kernel.org>, <dan.j.williams@intel.com>,
+        <dave.jiang@intel.com>, <linux-cxl@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <bhelgaas@google.com>
+Subject: Re: [PATCH v9 01/15] cxl/port: Pre-initialize component register
+ mappings
+Message-ID: <20230901100654.00006799@Huawei.com>
+In-Reply-To: <ZPCGCwakf3BeV7gp@rric.localdomain>
+References: <20230825233211.3029825-1-terry.bowman@amd.com>
+        <20230825233211.3029825-2-terry.bowman@amd.com>
+        <20230829143851.00006467@Huawei.com>
+        <ZPCGCwakf3BeV7gp@rric.localdomain>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="mwneqtaejeqscvrn"
-Content-Disposition: inline
-In-Reply-To: <20230831122531.smmqt7ycupvum3gg@stereo>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---mwneqtaejeqscvrn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Thu, 31 Aug 2023 14:22:35 +0200
+Robert Richter <rrichter@amd.com> wrote:
 
-Hi Nishanth, Helen,
+> On 29.08.23 14:38:51, Jonathan Cameron wrote:
+> > On Fri, 25 Aug 2023 18:31:57 -0500
+> > Terry Bowman <terry.bowman@amd.com> wrote:
+> >   
+> > > From: Robert Richter <rrichter@amd.com>  
+> > 
+> > Hi Robert, Terry,
+> >   
+> > > 
+> > > The component registers of a component may not exist or are not
+> > > needed.  
+> > 
+> > How do we now it's not needed in this function?
+> > Perhaps "may not exist." is the bit that matters in this sentence.
+> >   
+> > > The setup may fail for that reason. In some cases the
+> > > initialization should continue anyway. Thus, always initialize struct
+> > > cxl_register_map with valid values. In case of errors, zero it, set a
+> > > value for @dev and make @resource a the valid value using  
+> > 
+> > make @resource CXL_RESOURCE_NONE.
+> > 
+> > (not "a the")
+> >   
+> > > CXL_RESOURCE_NONE.  
+> > 
+> > It might be worth making it clear that this will (I think) only matter
+> > for future usecases and isn't a fix for how this function is used today.  
+> 
+> I reworded the whole text:
+> 
+> """
+> The component registers of a component may not exist and
+> cxl_setup_comp_regs() will fail for that reason. In another case,
+> Software may not use and set those registers up. cxl_setup_comp_regs()
+> is then called with a base address of CXL_RESOURCE_NONE. Both are
+> valid cases, but the function returns without initializing the
+> register map.
+> 
+> Now, a missing component register block is not necessarily a reason to
+> fail (feature is optional or its existence checked later). Change
+> cxl_setup_comp_regs() to also use components with the component
+> register block missing. Thus, always initialize struct
+> cxl_register_map with valid values, set @dev and make @resource
+> CXL_RESOURCE_NONE.
+> 
+> The change is in preparation of follow-on patches.
+> """
 
-Thanks for the review.
+Looks good to me.
 
-On Aug 31, 2023 at 07:25:31 -0500, Nishanth Menon wrote:
-> On 16:35-20230828, Helen Mae Koike Fornazier wrote:
-> > On Friday, August 25, 2023 08:02 -03, Jai Luthra <j-luthra@ti.com> wrot=
-e:
-> >=20
-> > > Fix the NULL pointer dereference when no monitor is connected, and the
-> > > sound card is opened from userspace.
-> > >=20
-> > > Instead return an error as EDID information cannot be provided to
-> > > the sound framework if there is no connector attached.
-> > >=20
-> > > Fixes: e0fd83dbe924 ("drm: bridge: it66121: Add audio support")
-> > > Reported-by: Nishanth Menon <nm@ti.com>
-> > > Closes: https://lore.kernel.org/all/20230825105849.crhon42qndxqif4i@g=
-ondola/
-> > > Signed-off-by: Jai Luthra <j-luthra@ti.com>
-> >=20
-> > Reviewed-by: Helen Koike <helen.koike@collabora.com>
->=20
->=20
-> Occurs on today's master: v6.5-8894-gb97d64c72259
-> https://gist.github.com/nmenon/6c7166171729342ee0be7de90b65c5c6#file-v6-5=
--8894-gb97d64c72259-L821
->=20
-> My only complaint with the patch is - yes, it does'nt crash, but I see
-> this spam on my console:
-> https://gist.github.com/nmenon/6c7166171729342ee0be7de90b65c5c6#file-with=
--patch-on-top-L236
->=20
-
-Aradhya suggested an alternative approach [1] used by some bridges,=20
-where we return a buffer of 0s instead of an error here.
-
-That will fix the spam, but more importantly will also allow playback if=20
-the HDMI monitor is hot-plugged later (after probe). I will send a new=20
-revision of this patch that uses that approach.
-
-[1] https://lore.kernel.org/dri-devel/d2deac24-d5ab-e1c4-81c5-4874c2f5ea07@=
-ti.com/
-
->=20
-> >=20
+J
+> 
+> I hope that is better now.
+> 
+> >   
+> > > 
+> > > Signed-off-by: Robert Richter <rrichter@amd.com>
+> > > Signed-off-by: Terry Bowman <terry.bowman@amd.com>  
+> > Otherwise seems sensible to me with one comment below.
+> > 
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> >   
 > > > ---
-> > >  drivers/gpu/drm/bridge/ite-it66121.c | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > >=20
-> > > diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/b=
-ridge/ite-it66121.c
-> > > index 466641c77fe9..d6fa00dea464 100644
-> > > --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> > > +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> > > @@ -1446,6 +1446,11 @@ static int it66121_audio_get_eld(struct device=
- *dev, void *data,
+> > >  drivers/cxl/core/port.c | 11 ++++++-----
+> > >  1 file changed, 6 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+> > > index 724be8448eb4..2d22e7a5629b 100644
+> > > --- a/drivers/cxl/core/port.c
+> > > +++ b/drivers/cxl/core/port.c
+> > > @@ -693,16 +693,17 @@ static struct cxl_port *cxl_port_alloc(struct device *uport_dev,
+> > >  static int cxl_setup_comp_regs(struct device *dev, struct cxl_register_map *map,
+> > >  			       resource_size_t component_reg_phys)
 > > >  {
-> > >  	struct it66121_ctx *ctx =3D dev_get_drvdata(dev);
-> > > =20
-> > > +	if (!ctx->connector) {
-> > > +		dev_dbg(dev, "No connector present, cannot provide EDID data");
-> > > +		return -EINVAL;
-> > > +	}
+> > > -	if (component_reg_phys == CXL_RESOURCE_NONE)
+> > > -		return 0;
+> > > -
+> > >  	*map = (struct cxl_register_map) {
+> > >  		.dev = dev,
+> > > -		.reg_type = CXL_REGLOC_RBI_COMPONENT,  
+> > 
+> > Could set this explicitly to CXL_REGLOC_RBI_EMPTY
+> > which is what happens anyway, but it isn't obvious that
+> > 0 maps to something that indicates this doesn't exist.  
+> 
+> Will change that.
+> 
+> Thanks,
+> 
+> -Robert
+> 
+> 
+> >   
+> > >  		.resource = component_reg_phys,
+> > > -		.max_size = CXL_COMPONENT_REG_BLOCK_SIZE,
+> > >  	};
+> > >  
+> > > +	if (component_reg_phys == CXL_RESOURCE_NONE)
+> > > +		return 0;
 > > > +
-> > >  	mutex_lock(&ctx->lock);
-> > > =20
-> > >  	memcpy(buf, ctx->connector->eld,
-> > >=20
-> > > ---
-> > > base-commit: 6269320850097903b30be8f07a5c61d9f7592393
-> > > change-id: 20230825-it66121_edid-6ee98517808b
-> > >=20
-> > > Best regards,
-> > > --=20
-> > > Jai Luthra <j-luthra@ti.com>
-> > >
-> >=20
->=20
-> --=20
-> Regards,
-> Nishanth Menon
-> Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DD=
-B5 849D 1736 249D
+> > > +	map->reg_type = CXL_REGLOC_RBI_COMPONENT;
+> > > +	map->max_size = CXL_COMPONENT_REG_BLOCK_SIZE;
+> > > +
+> > >  	return cxl_setup_regs(map);
+> > >  }
+> > >    
+> >   
 
---=20
-Thanks,
-Jai
-
-GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
-
---mwneqtaejeqscvrn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmTxqZIACgkQQ96R+SSa
-cUVbVQ/+PB+GU8igW/uP5w5EkVy0jwtOUsWb6GtyGMzZDCrUr94MczlnDtMjSy1k
-f2mouYWWR4ZSUH7MBq4WvlQqmpAwqn0sPJCl2fH3wZSDI/YcYaqLYVoT1m2cqY+Y
-XmOSkq2xyfgwwD87lvlNEVDfgwp66S/H51fhl00eolGt65vniXloBNh3UlT8qbJb
-+n6suc32u71VnTzercwJl9adUazsKDqTnlOwx2fPLZ40r2+f9POHMQuzoORCB3AQ
-Ti7Y8EqOuJuc1zAWEfUATqp4+LHI9QV5PfSgydbvTzBhPjEIRXFSOS6yE3L5IPWl
-pRKte5mbp/Ooy/TThxEKvl7MFF397vW+EOxXbAsJDbcykb8COckNgS4orPNGVzp0
-ysmqWShhzFfSYkwnH5ZzWDm92B9oB3lcX6sjgTzn7ZPNYsxL3MzjN350ehRhttEi
-Ok8ggFCnXNugVCpQuKrJtQgDskJmloXJjt6dbKx37JRPDdSydIxSOnLbC6ZeakOw
-QiguTnA3K4NLhjaRiE6pfmog24CitectbRPIjeTtAnUqs6WEEd9hsVBwdVHEzLlr
-NOVWYWyQ19ImCVvXhWYdoOApND2UZb77VsX9JCNXzXTCmWimsOd2mzoQ+jh37efF
-ouSUvH0hcYnboZJdc7vpFjcu/vm8euxNgM+nMHosw1QxARCzhUY=
-=/IHg
------END PGP SIGNATURE-----
-
---mwneqtaejeqscvrn--
