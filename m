@@ -2,95 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B20B78FFB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:12:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECACD78FFC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350141AbjIAPMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 11:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39486 "EHLO
+        id S1346830AbjIAPRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 11:17:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350138AbjIAPMq (ORCPT
+        with ESMTP id S231857AbjIAPR3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 11:12:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE37D10F1
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 08:11:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693581068;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6plOE05wtAOE2J15C66Bubu1b7lLRziMMVbmgfVPQXg=;
-        b=EyR5Ll/Q5L+WwF5q6WKE0LO78Da02H7WoDAVGqmbspYrWM76oWCqissaEan2gQsLzYBIv0
-        fgNK4tfCZHFwsxcQKmh0R5VeyDG1io+uJIT0+i1Tkry/RIGFhsW/thNo0GUa3V4Bm1UEQD
-        UPML2/kbaekDEDufJIeEv5mnsU+SViY=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-475-BSsqkJlyMnaqU7tQ4Cxcdw-1; Fri, 01 Sep 2023 11:11:06 -0400
-X-MC-Unique: BSsqkJlyMnaqU7tQ4Cxcdw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7C716381CC0B;
-        Fri,  1 Sep 2023 15:11:05 +0000 (UTC)
-Received: from vschneid.remote.csb (unknown [10.39.193.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE7262012F37;
-        Fri,  1 Sep 2023 15:11:04 +0000 (UTC)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: [PATCH 4/4] tracing/filters: Fix coding style issues
-Date:   Fri,  1 Sep 2023 17:10:39 +0200
-Message-Id: <20230901151039.125186-5-vschneid@redhat.com>
-In-Reply-To: <20230901151039.125186-1-vschneid@redhat.com>
-References: <20230901151039.125186-1-vschneid@redhat.com>
+        Fri, 1 Sep 2023 11:17:29 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 873EE10CF;
+        Fri,  1 Sep 2023 08:17:24 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 381Ad8Te010808;
+        Fri, 1 Sep 2023 15:17:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=DS7hdx6E7VA2wQSfq1YDOlTUARyaDs3G14Q9M+H7yEc=;
+ b=Mp13jdESrnqf1Pl4XbrA0BgUiSR0tE2QO0D7zBpmr6aM8UQQ9P58RrRznBaMwcpEZsQk
+ NJwVWc+qcgdD3iTznKWEHTJJ+loHtbqndq3mw93YZ71/xKuqNj+W5uEYTHGo9/KojiSo
+ EigBaGlmP7xPH/Mi70wygSWY2NcO+BGIhpyVB4MP/3TQZHDIRC5nzutodE1aZVMvkVWe
+ 7uYjfTe05r6v+Aqvp/OC2J43aXOPabacoKOf5l0rDXHg7WhtwPhm3FgFR2hTKdi5aHIJ
+ oZEYLrTBAlqYTcJmkXR3LuNFGS2fRoBT+6WnvQSMZYH2GyQNUVwoiRuBfaBrEOkI/KjJ iQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suc9k12gt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 15:17:16 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 381FHEwo004407
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Sep 2023 15:17:14 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 1 Sep 2023 08:17:15 -0700
+Date:   Fri, 1 Sep 2023 08:17:13 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+CC:     <mani@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <quic_cang@quicinc.com>,
+        <quic_nguyenb@quicinc.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        "Naveen Kumar Goud Arepalli" <quic_narepall@quicinc.com>
+Subject: Re: [PATCH V6 1/6] scsi: ufs: qcom: Align mask for
+ core_clk_1us_cycles
+Message-ID: <20230901151713.GQ818859@hu-bjorande-lv.qualcomm.com>
+References: <20230901114336.31339-1-quic_nitirawa@quicinc.com>
+ <20230901114336.31339-2-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230901114336.31339-2-quic_nitirawa@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VyiaAMRnV7s9K8GcpnLmhOhppJ6sKyFv
+X-Proofpoint-ORIG-GUID: VyiaAMRnV7s9K8GcpnLmhOhppJ6sKyFv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_13,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ bulkscore=0 clxscore=1011 phishscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 mlxscore=0 spamscore=0 suspectscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309010143
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recent commits have introduced some coding style issues, fix those up.
+On Fri, Sep 01, 2023 at 05:13:31PM +0530, Nitin Rawat wrote:
+> Align core_clk_1us_cycles mask for Qualcomm UFS Controller V4.0.0
 
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
----
- kernel/trace/trace_events_filter.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+"Align clk mask for ... as per hardware specification."? Are you trying
+to say "The DME_VS_CORE_CLK_CTRL register has changed in v4 of the
+Qualcomm UFS controller, introduce support for the new register layout"?
 
-diff --git a/kernel/trace/trace_events_filter.c b/kernel/trace/trace_events_filter.c
-index 09b4733a2933d..33264e510d161 100644
---- a/kernel/trace/trace_events_filter.c
-+++ b/kernel/trace/trace_events_filter.c
-@@ -1360,7 +1360,7 @@ int filter_assign_type(const char *type)
- 			return FILTER_DYN_STRING;
- 		if (strstr(type, "cpumask_t"))
- 			return FILTER_CPUMASK;
--		}
-+	}
- 
- 	if (strstr(type, "__rel_loc") && strstr(type, "char"))
- 		return FILTER_RDYN_STRING;
-@@ -1731,7 +1731,9 @@ static int parse_pred(const char *str, void *data,
- 		maskstart = i;
- 
- 		/* Walk the cpulist until closing } */
--		for (; str[i] && str[i] != '}'; i++);
-+		for (; str[i] && str[i] != '}'; i++)
-+			;
-+
- 		if (str[i] != '}') {
- 			parse_error(pe, FILT_ERR_MISSING_BRACE_CLOSE, pos + i);
- 			goto err_free;
--- 
-2.31.1
+You're not aligning the code to match the hardware specification, you're
+fixing the code because the register has changed.
 
+> onwards as per Hardware Specification.
+> 
+> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 28 ++++++++++++++++++----------
+>  drivers/ufs/host/ufs-qcom.h |  5 +++--
+>  2 files changed, 21 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index f88febb23123..fe36003faaa8 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -1297,22 +1297,30 @@ static void ufs_qcom_exit(struct ufs_hba *hba)
+>  }
+> 
+>  static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
+> -						       u32 clk_cycles)
+> +						       u32 cycles_in_1us)
+
+This is a nice clarification, but changing the function prototype gives
+a sense that you changed the parameters - and that's not the case.
+
+So if you drop this rename, you make the purpose of the patch clearer.
+
+>  {
+> -	int err;
+> +	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+>  	u32 core_clk_ctrl_reg;
+> +	int ret;
+
+Renaming err to ret is unrelated and only unnecessary complexity to the
+patch.
+
+> 
+> -	if (clk_cycles > DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK)
+> -		return -EINVAL;
+> -
+> -	err = ufshcd_dme_get(hba,
+> +	ret = ufshcd_dme_get(hba,
+>  			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
+>  			    &core_clk_ctrl_reg);
+> -	if (err)
+> -		return err;
+> +	if (ret)
+> +		return ret;
+> 
+> -	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK;
+> -	core_clk_ctrl_reg |= clk_cycles;
+> +	/* Bit mask is different for UFS host controller V4.0.0 onwards */
+> +	if (host->hw_ver.major >= 4) {
+> +		if (!FIELD_FIT(CLK_1US_CYCLES_MASK_V4, cycles_in_1us))
+> +			return -ERANGE;
+> +		core_clk_ctrl_reg &= ~CLK_1US_CYCLES_MASK_V4;
+> +		core_clk_ctrl_reg |= FIELD_PREP(CLK_1US_CYCLES_MASK_V4, cycles_in_1us);
+> +	} else {
+> +		if (!FIELD_FIT(CLK_1US_CYCLES_MASK, cycles_in_1us))
+> +			return -ERANGE;
+> +		core_clk_ctrl_reg &= ~CLK_1US_CYCLES_MASK;
+> +		core_clk_ctrl_reg |= FIELD_PREP(CLK_1US_CYCLES_MASK, cycles_in_1us);
+> +	}
+> 
+>  	/* Clear CORE_CLK_DIV_EN */
+>  	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
+> diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+> index d6f8e74bd538..8a9d3dbec297 100644
+> --- a/drivers/ufs/host/ufs-qcom.h
+> +++ b/drivers/ufs/host/ufs-qcom.h
+> @@ -129,8 +129,9 @@ enum {
+>  #define PA_VS_CONFIG_REG1	0x9000
+>  #define DME_VS_CORE_CLK_CTRL	0xD002
+>  /* bit and mask definitions for DME_VS_CORE_CLK_CTRL attribute */
+> -#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
+> -#define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
+> +#define CLK_1US_CYCLES_MASK_V4				GENMASK(27, 16)
+> +#define CLK_1US_CYCLES_MASK				GENMASK(7, 0)
+> +#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT	BIT(8)
+
+Hard to say without applying the patch, please double check that the
+values here have matching indentation level.
+
+Thank you,
+Bjorn
+
+> 
+>  static inline void
+>  ufs_qcom_get_controller_revision(struct ufs_hba *hba,
+> --
+> 2.17.1
+> 
