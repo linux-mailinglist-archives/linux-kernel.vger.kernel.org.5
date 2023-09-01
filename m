@@ -2,150 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F4578F88C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:26:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7453678F897
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:32:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242093AbjIAG0h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 02:26:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
+        id S1346029AbjIAGci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 02:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237766AbjIAG0g (ORCPT
+        with ESMTP id S231181AbjIAGcg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 02:26:36 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3945510D2;
-        Thu, 31 Aug 2023 23:26:32 -0700 (PDT)
+        Fri, 1 Sep 2023 02:32:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DD09E;
+        Thu, 31 Aug 2023 23:32:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1693549592; x=1725085592;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693549953; x=1725085953;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=aAlPFkFFJ0tKP+R+0ojprm+uUm4swQJFKVrG7PiJNPU=;
-  b=IdBpHMulkSLlWtH/p3pi1F+a2QOkrBPRsMcw2KRMg69peDEWLblxeSDH
-   15Su+QNIAujCKQP6Wgv1mpiS1X5vQXB94z3ErPfABmtrIsXp46q9ajj3d
-   NA1994uexK9Yi8YpVvoL45bWVesrQVmuHrSXJSQ8l/Nj5Fpaw3GK0Ftge
-   Bv9idi+ky0e55v9p/lkK5abtjVKgraNRBQPQdMMQosyMjlh2u13PE+JPo
-   lq/ZsPKz8tTFBcR8fYmWGuqu8kzs/2jwNzFjdt5qtN7ZjNWTqygg4ornh
-   o0NeyeViB0G2OvKTesRRwqujpR2vIMRyD3Lu1boms0pSNrVKLgZZykyGY
-   g==;
+  bh=/pxsW55MVBsOzk6oCbE/5pKPjqBXhRXgd1iOPD4l0p0=;
+  b=XnqhoRt2YtfVmW8XewyCIr3wJfMGTpqbuColLDG9rR0RJT+/tTone6Ko
+   1/wJ/ofZzQgjSAGGNe+265tA4UuT3erkEDpxJfmNLsSktn2HY3Dw19B35
+   RvEILaYflE2uGSJ1qd9EDoI60jWGU2Gn/G4j9UUi5hK1TZqhX9joAK5Gg
+   gRmFTnZxCbDj17/vNwscHRyMFO7FJmkdAmBweazno2xGtwbxAKbQW8BER
+   PxcLYge5shgKQaoHGH8bVBaaL2o3715v5JOX4aSrNA9WY2tS4vgob3A3h
+   DKxzUZyRWpvHmwhTkwYJCKX/mM/yfOJDiO3hAtoY4JO6OZKGbpP/zX/Fq
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="440128573"
 X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
-   d="asc'?scan'208";a="2394248"
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 31 Aug 2023 23:26:32 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Thu, 31 Aug 2023 23:26:31 -0700
-Received: from wendy (10.10.85.11) by chn-vm-ex03.mchp-main.com (10.10.85.151)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
- Transport; Thu, 31 Aug 2023 23:26:29 -0700
-Date:   Fri, 1 Sep 2023 07:25:47 +0100
-From:   Conor Dooley <conor.dooley@microchip.com>
-To:     Alexandru Ardelean <alex@shruggie.ro>
-CC:     Andrei Coardos <aboutphysycs@gmail.com>,
-        <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <linux-riscv@lists.infradead.org>, <herbert@gondor.apana.org.au>,
-        <olivia@selenic.com>, <daire.mcnamara@microchip.com>
-Subject: Re: [PATCH] char: hw_random: mpfs-rng: removed unneeded call to
- platform_set_drvdata()
-Message-ID: <20230901-upper-reenter-9c2fa8bf7a47@wendy>
-References: <20230828101757.9724-1-aboutphysycs@gmail.com>
- <20230828-citable-superjet-d235f036be99@wendy>
- <CAH3L5QreWNPgwogL7bCYZgKSuz_HfZuKLtRVqz+UyRtJ1TB-SA@mail.gmail.com>
+   d="scan'208";a="440128573"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 23:32:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="689642590"
+X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
+   d="scan'208";a="689642590"
+Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 31 Aug 2023 23:32:28 -0700
+Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qbxhi-00010F-02;
+        Fri, 01 Sep 2023 06:32:26 +0000
+Date:   Fri, 1 Sep 2023 14:31:55 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Ekansh Gupta <quic_ekangupt@quicinc.com>,
+        ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
+Subject: Re: [PATCH v1 5/5] misc: fastrpc: Add support to allocate shared
+ context bank
+Message-ID: <202309011446.SVM4HbHv-lkp@intel.com>
+References: <1693499292-19083-6-git-send-email-quic_ekangupt@quicinc.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rbkSUiqy942IY70F"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAH3L5QreWNPgwogL7bCYZgKSuz_HfZuKLtRVqz+UyRtJ1TB-SA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <1693499292-19083-6-git-send-email-quic_ekangupt@quicinc.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---rbkSUiqy942IY70F
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi Ekansh,
 
-On Fri, Sep 01, 2023 at 09:07:56AM +0300, Alexandru Ardelean wrote:
-> On Mon, Aug 28, 2023 at 2:06=E2=80=AFPM Conor Dooley <conor.dooley@microc=
-hip.com> wrote:
-> >
-> > On Mon, Aug 28, 2023 at 01:17:57PM +0300, Andrei Coardos wrote:
-> > > This function call was found to be unnecessary as there is no equival=
-ent
-> > > platform_get_drvdata() call to access the private data of the driver.=
- Also,
-> > > the private data is defined in this driver, so there is no risk of it=
- being
-> > > accessed outside of this driver file.
-> >
-> > I think Greg previously pointed out to you that is it not sufficient to
-> > check for platform_get_drvdata() alone, because the information could be
-> > accessed without going through that helper. That's not the case here,
-> > but it could be true elsewhere.
-> >
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> >
-> > Thanks,
-> > Conor.
-> >
-> > >
-> > > Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> > > ---
-> > >  drivers/char/hw_random/mpfs-rng.c | 2 --
-> > >  1 file changed, 2 deletions(-)
-> > >
-> > > diff --git a/drivers/char/hw_random/mpfs-rng.c b/drivers/char/hw_rand=
-om/mpfs-rng.c
-> > > index c6972734ae62..0994024daa70 100644
-> > > --- a/drivers/char/hw_random/mpfs-rng.c
-> > > +++ b/drivers/char/hw_random/mpfs-rng.c
-> > > @@ -79,8 +79,6 @@ static int mpfs_rng_probe(struct platform_device *p=
-dev)
-> > >       rng_priv->rng.read =3D mpfs_rng_read;
-> > >       rng_priv->rng.name =3D pdev->name;
-> > >
-> > > -     platform_set_drvdata(pdev, rng_priv);
-> > > -
-> > >       ret =3D devm_hwrng_register(&pdev->dev, &rng_priv->rng);
->=20
-> A question would be if there is a desire to keep the prints below, or
-> would this be sufficient?
->=20
->           return devm_hwrng_register(&pdev->dev, &rng_priv->rng);
->=20
-> If there is the desire to keep the prints, then:
+kernel test robot noticed the following build warnings:
 
-Yeah, I'd like to keep a print in the failing case, thanks.
+[auto build test WARNING on char-misc/char-misc-testing]
+[also build test WARNING on char-misc/char-misc-next char-misc/char-misc-linus linus/master v6.5 next-20230831]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->=20
-> Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
->=20
-> > >       if (ret)
-> > >               return dev_err_probe(&pdev->dev, ret, "Failed to regist=
-er MPFS hwrng\n");
-> > > --
-> > > 2.34.1
-> > >
+url:    https://github.com/intel-lab-lkp/linux/commits/Ekansh-Gupta/misc-fastrpc-Add-fastrpc-multimode-invoke-request-support/20230901-002929
+base:   char-misc/char-misc-testing
+patch link:    https://lore.kernel.org/r/1693499292-19083-6-git-send-email-quic_ekangupt%40quicinc.com
+patch subject: [PATCH v1 5/5] misc: fastrpc: Add support to allocate shared context bank
+config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230901/202309011446.SVM4HbHv-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230901/202309011446.SVM4HbHv-lkp@intel.com/reproduce)
 
---rbkSUiqy942IY70F
-Content-Type: application/pgp-signature; name="signature.asc"
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309011446.SVM4HbHv-lkp@intel.com/
 
------BEGIN PGP SIGNATURE-----
+All warnings (new ones prefixed by >>):
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPGD6wAKCRB4tDGHoIJi
-0qUTAQD0ZDiVMxcLtPt0mgxplAh+moC7mid0YSGHBG9Ni1um5QEA/E2z+UWdQSGw
-Yw88TOcd4HWPZN8oMlkVEjAmi8MA4gs=
-=3NaB
------END PGP SIGNATURE-----
+   drivers/misc/fastrpc.c: In function 'fastrpc_context_alloc':
+   drivers/misc/fastrpc.c:674:29: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+     674 |                 ctx->args = (struct fastrpc_invoke_args *)invoke->inv.args;
+         |                             ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_init_create_static_process':
+   drivers/misc/fastrpc.c:1540:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    1540 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_init_create_process':
+   drivers/misc/fastrpc.c:1677:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    1677 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_release_current_dsp_process':
+   drivers/misc/fastrpc.c:1730:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    1730 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_device_release':
+   drivers/misc/fastrpc.c:1739:42: warning: unused variable 'n' [-Wunused-variable]
+    1739 |         struct fastrpc_invoke_ctx *ctx, *n;
+         |                                          ^
+   drivers/misc/fastrpc.c:1739:36: warning: unused variable 'ctx' [-Wunused-variable]
+    1739 |         struct fastrpc_invoke_ctx *ctx, *n;
+         |                                    ^~~
+   drivers/misc/fastrpc.c: In function 'fastrpc_init_attach':
+   drivers/misc/fastrpc.c:1871:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    1871 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_invoke':
+   drivers/misc/fastrpc.c:1902:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    1902 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_internal_control':
+   drivers/misc/fastrpc.c:1920:14: error: 'FASTRPC_CONTROL_SMMU' undeclared (first use in this function); did you mean 'FASTRPC_IOCTL_MMAP'?
+    1920 |         case FASTRPC_CONTROL_SMMU:
+         |              ^~~~~~~~~~~~~~~~~~~~
+         |              FASTRPC_IOCTL_MMAP
+   drivers/misc/fastrpc.c:1920:14: note: each undeclared identifier is reported only once for each function it appears in
+   drivers/misc/fastrpc.c:1920:9: error: case label not within a switch statement
+    1920 |         case FASTRPC_CONTROL_SMMU:
+         |         ^~~~
+   drivers/misc/fastrpc.c:1922:17: error: break statement not within loop or switch
+    1922 |                 break;
+         |                 ^~~~~
+   drivers/misc/fastrpc.c:1923:9: error: 'default' label not within a switch statement
+    1923 |         default:
+         |         ^~~~~~~
+   drivers/misc/fastrpc.c:1925:17: error: break statement not within loop or switch
+    1925 |                 break;
+         |                 ^~~~~
+>> drivers/misc/fastrpc.c:1913:13: warning: variable 'err' set but not used [-Wunused-but-set-variable]
+    1913 |         int err = 0;
+         |             ^~~
+   drivers/misc/fastrpc.c: At top level:
+   drivers/misc/fastrpc.c:1927:9: error: expected identifier or '(' before 'return'
+    1927 |         return err;
+         |         ^~~~~~
+   drivers/misc/fastrpc.c:1928:1: error: expected identifier or '(' before '}' token
+    1928 | }
+         | ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_multimode_invoke':
+   drivers/misc/fastrpc.c:1964:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    1964 |                 einv.inv.args = (__u64)args;
+         |                                 ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_get_info_from_dsp':
+   drivers/misc/fastrpc.c:2000:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    2000 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_req_munmap_impl':
+   drivers/misc/fastrpc.c:2103:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    2103 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_req_mmap':
+   drivers/misc/fastrpc.c:2201:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    2201 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_req_mem_unmap_impl':
+   drivers/misc/fastrpc.c:2282:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    2282 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_req_mem_map':
+   drivers/misc/fastrpc.c:2351:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
+    2351 |         ioctl.inv.args = (__u64)args;
+         |                          ^
+   drivers/misc/fastrpc.c: In function 'fastrpc_internal_control':
+   drivers/misc/fastrpc.c:1926:9: error: control reaches end of non-void function [-Werror=return-type]
+    1926 |         }
+         |         ^
+   cc1: some warnings being treated as errors
 
---rbkSUiqy942IY70F--
+
+vim +/err +1913 drivers/misc/fastrpc.c
+
+  1909	
+  1910	static int fastrpc_internal_control(struct fastrpc_user *fl,
+  1911						struct fastrpc_internal_control *cp)
+  1912	{
+> 1913		int err = 0;
+  1914	
+  1915		if (!fl)
+  1916			return -EBADF;
+  1917		if (!cp)
+  1918			return -EINVAL;
+  1919	
+  1920		case FASTRPC_CONTROL_SMMU:
+  1921			fl->sharedcb = cp->smmu.sharedcb;
+> 1922			break;
+  1923		default:
+  1924			err = -EBADRQC;
+  1925			break;
+  1926		}
+  1927		return err;
+  1928	}
+  1929	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
