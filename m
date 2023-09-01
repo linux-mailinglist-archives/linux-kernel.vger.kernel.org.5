@@ -2,115 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA7F78FDB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:49:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449C078FDBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242683AbjIAMt3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:49:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
+        id S240581AbjIAMtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240581AbjIAMt2 (ORCPT
+        with ESMTP id S243788AbjIAMtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:49:28 -0400
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CA61725;
-        Fri,  1 Sep 2023 05:48:58 -0700 (PDT)
-Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-986d8332f50so237004866b.0;
-        Fri, 01 Sep 2023 05:48:58 -0700 (PDT)
+        Fri, 1 Sep 2023 08:49:32 -0400
+Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32D531730
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:49:03 -0700 (PDT)
+Received: by mail-ua1-x935.google.com with SMTP id a1e0cc1a2514c-7a52db1e4bbso780923241.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:49:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693572521; x=1694177321; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G5bzuukzep2EFlINwyV0mtHmBBzRYX9Wyigjzt2ikDQ=;
-        b=Og7EXI98AjYOQKEZoRdO9VRQQDvoNfC5SirPPUh54UcOH8yH+8lLUmBaE7NnxOpw5L
-         jo2n6/gt2oLHHOc1pmrHbjtBwcoYth2JmmAAIcl+0pkYiiq4kB5qvngdDBU4b5AsRc3g
-         ZLa1PWk+afX7FwgO9q3F51i+E0RGEWxRFI9IVf/PjY55iSg07LwNNJDnA0eVb/q7aMyU
-         yO/ejMvl0Zo2LS85b9uWTZork6tEBRlTrr2rDMOZWcA+uILDjP0DeQhxcNb5p6lrNNPF
-         gN5nn1le2Ri48xcKVH4ncnWaN0ThorRaaUcyPdfqDAWASjvKbdcUWwOu5oCIaGBdY0RZ
-         4sig==
+        d=linaro.org; s=google; t=1693572541; x=1694177341; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eZAs7VhAqmwUCso6UvdFSw8g4rQU2c3GRkXTqdKEPuI=;
+        b=ytb7htLfrvWt41qfMkNUIZce3KVaGokwUd0FsIqIt5zwhUogAFDBrM3W2mceDiwbcx
+         SrauAwV64OW/i5a5YuiIRWgWX2xaS/n2Zo8sc9a8qKxwzdaFi334IpsltWrnlr3F5pAj
+         0TfILZIqGaA1wuGVS3kfHmy1QpTsuFmmLaWjY7+x/5KIQWfaiGywoRcR911t4X+/vfBP
+         s777e9PYzN1rbDH/BVs35CqSCtjB3NeDUB5woVFpa/dEnx4PrumNZkHKbqvOaFzSb5OG
+         WkoAQ1x49xirBQNjfMEEluhSIa8PGY70uG7GaHwKkQmQTp7fmiU3PsHHRX9hieOFki4R
+         0W2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693572521; x=1694177321;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G5bzuukzep2EFlINwyV0mtHmBBzRYX9Wyigjzt2ikDQ=;
-        b=YebR9dwLa+ogXJ6M//cHm/kZ3EuzqKx1l/xdiKYWWmVolsVFhzB119Kel6DJzR+1O7
-         HpOHmtM+E8JQRnZszxpAaIL3QcmRXzO0DFWTOIuPImiA2kQzXh7Wa0cmYse+EoN08IPN
-         2IOF3853g5JhiF3PpM3qNUfEPm0QcYbtxzyi5jgwhVbUJLebURff38kdSNcaMb2o8jym
-         7QuAt1CEoQowIlzqGk7SHbQFdk209cMIIsM0VS9SIyeey3HtvvYjOSYpNSolOYRPd4Aa
-         xHM1d6mVJ5c1vN/pJKCCZ+njSPzQw1SQqHHR+yTmHaQCdMPxcwk94xs6Qu84CfeEBCWE
-         APLg==
-X-Gm-Message-State: AOJu0YzqZt+L9SWro+opgcI+jKziXixQn4YZ9Fal34l0NaARl2djqNru
-        45/6PQUDcdxiFjR2Dzk6Btw=
-X-Google-Smtp-Source: AGHT+IEo10S1a4arg5ZoZ04rB3wvIuz+XnFrF9t9V3kas8AIcCHUPn7c3ke/iGmqfItRD9TLNkHqtA==
-X-Received: by 2002:a17:907:272a:b0:9a1:e1cf:6c6c with SMTP id d10-20020a170907272a00b009a1e1cf6c6cmr1688869ejl.30.1693572520645;
-        Fri, 01 Sep 2023 05:48:40 -0700 (PDT)
-Received: from ?IPV6:2a01:c22:72e7:e700:f12a:7a78:6447:9c5c? (dynamic-2a01-0c22-72e7-e700-f12a-7a78-6447-9c5c.c22.pool.telefonica.de. [2a01:c22:72e7:e700:f12a:7a78:6447:9c5c])
-        by smtp.googlemail.com with ESMTPSA id f25-20020a170906495900b0099bc038eb2bsm1921512ejt.58.2023.09.01.05.48.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Sep 2023 05:48:40 -0700 (PDT)
-Message-ID: <5caf123b-f626-fb68-476a-5b5cf9a7f31d@gmail.com>
-Date:   Fri, 1 Sep 2023 14:48:39 +0200
+        d=1e100.net; s=20221208; t=1693572541; x=1694177341;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eZAs7VhAqmwUCso6UvdFSw8g4rQU2c3GRkXTqdKEPuI=;
+        b=aSoY2cREhZPKfRcrZVD+BmH3dzA+Bso7xJstaVSeJlrSnv6ag0r9oKueJ4mtYj+Wly
+         bpTQ6SkUm2NZ9ddtuMi07uQ8QUOyxD6YC60BxzMUqQ1FfZAYy2XitSrj7687ICJh6/5N
+         K0ekHF9od8bssPMa9fawuaU1EHFg5GA6Ft1vMa2Z5kaFuH66zPEeXHrSFFTnH+P/XiIR
+         pdZGcbtwg+MNnhhlf2E2+i4C6P1IQfaznLCd64Dxm2+5ZMAzAr8egLxLJZdVg1xcap9A
+         FiUwIHQLW6csQkF0hfWPmxGSyK66f4WWOoy20Fx7cIq4MEm7JDTaWjYY7gBbt03nD2RV
+         BuMQ==
+X-Gm-Message-State: AOJu0YybloZZYw71GB940cgJKa7B9mvYpKW7yQ6QfDt9u7PqrOAbQhgL
+        NR71EgNVzmRVKg3e+vE/MaeseU5ZrgxPjoTd1LGVnS6XuhopeFan35U=
+X-Google-Smtp-Source: AGHT+IEB9jt0+K93uEZDGEfUQbqOftNhxXjcWPCxaJuZjUubR8A9yN+H/IaZ5UAnswWDbcYJp5W7kccv80ppkwSXq7A=
+X-Received: by 2002:a67:efc6:0:b0:44e:fc88:9cc5 with SMTP id
+ s6-20020a67efc6000000b0044efc889cc5mr2233124vsp.20.1693572540909; Fri, 01 Sep
+ 2023 05:49:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] r8169: Disable multicast filter for RTL_GIGA_MAC_VER_46
-Content-Language: en-US
-To:     Patrick Thompson <ptf@google.com>, Jakub Kicinski <kuba@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, Chun-Hao Lin <hau@realtek.com>
-References: <20230606140041.3244713-1-ptf@google.com>
- <CAJs+hrHAz17Kvr=9e2FR+R=qZK1TyhpMyHKzSKO9k8fidHhTsA@mail.gmail.com>
- <7aa7af7f-7d27-02bf-bfa8-3551d5551d61@gmail.com>
- <20230606142907.456eec7e@kernel.org>
- <CAJs+hrEO6nqRHPj4kUWRm3UsBiSOU128a4pLEp8p4pokP7MmEg@mail.gmail.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-In-Reply-To: <CAJs+hrEO6nqRHPj4kUWRm3UsBiSOU128a4pLEp8p4pokP7MmEg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230831110828.874071888@linuxfoundation.org>
+In-Reply-To: <20230831110828.874071888@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 1 Sep 2023 18:18:49 +0530
+Message-ID: <CA+G9fYtnmbgfVUNx8wOtysxsw71poVddfQt53=Dm6GTz+8v7Cg@mail.gmail.com>
+Subject: Re: [PATCH 5.4 0/3] 5.4.256-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.2023 14:28, Patrick Thompson wrote:
-> Hello,
-> 
-> I was wondering if this should be extended to all RTL_GIGA_MAC_VERs
-> greater than 35 as well.
-> 
-I *think* the mc filtering issue with version 35 is different from the
-one you're seeing. So not every chip version may be affected.
-As there's no public errata information let's wait for a statement
-from Realtek.
+On Thu, 31 Aug 2023 at 16:40, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.4.256 release.
+> There are 3 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.256-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> Realtek responded to me but I was slow to get them packet captures
-> that they needed. I am hoping to restart things and get back to this
-> over the finish line if it's a valid patch.
-> 
-> I will add the appropriate tags and annotations once I hear back.
-> 
-> On Tue, Jun 6, 2023 at 5:29 PM Jakub Kicinski <kuba@kernel.org> wrote:
->>
->> On Tue, 6 Jun 2023 17:11:27 +0200 Heiner Kallweit wrote:
->>> Thanks for the report and the patch. I just asked a contact in Realtek
->>> whether more chip versions may be affected. Then the patch should be
->>> extended accordingly. Let's wait few days for a response.
->>>
->>> I think we should make this a fix. Add the following as Fixes tag
->>> and annotate the patch as "net" (see netdev FAQ).
->>>
->>> 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
->>
->> Perhaps it's best if you repost with the Fixes tag included once
->> Realtek responded.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.4.256-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.4.y
+* git commit: dace6640c652718a3ef17226ac5cbe5a41040cf5
+* git describe: v5.4.255-4-gdace6640c652
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.2=
+55-4-gdace6640c652
+
+## Test Regressions (compared to v5.4.255)
+
+## Metric Regressions (compared to v5.4.255)
+
+## Test Fixes (compared to v5.4.255)
+
+## Metric Fixes (compared to v5.4.255)
+
+## Test result summary
+total: 100280, pass: 81623, fail: 2238, skip: 16367, xfail: 52
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 142 total, 142 passed, 0 failed
+* arm64: 45 total, 43 passed, 2 failed
+* i386: 29 total, 24 passed, 5 failed
+* mips: 30 total, 29 passed, 1 failed
+* parisc: 4 total, 0 passed, 4 failed
+* powerpc: 32 total, 31 passed, 1 failed
+* riscv: 15 total, 15 passed, 0 failed
+* s390: 8 total, 8 passed, 0 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 41 total, 41 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
