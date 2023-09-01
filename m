@@ -2,66 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C844378FEAA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A6078FEAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:00:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238678AbjIAN6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
+        id S1344182AbjIAOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 10:00:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbjIAN6O (ORCPT
+        with ESMTP id S230454AbjIAOAB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:58:14 -0400
-Received: from us-smtp-delivery-44.mimecast.com (unknown [207.211.30.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 779E210EC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:58:11 -0700 (PDT)
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-351-8dNE5ybnMmCyUz33TI3oRA-1; Fri, 01 Sep 2023 09:57:52 -0400
-X-MC-Unique: 8dNE5ybnMmCyUz33TI3oRA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 1 Sep 2023 10:00:01 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024DE10EC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:59:57 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 010F91817903;
-        Fri,  1 Sep 2023 13:57:47 +0000 (UTC)
-Received: from hog (unknown [10.45.224.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E15671460FF3;
-        Fri,  1 Sep 2023 13:57:43 +0000 (UTC)
-Date:   Fri, 1 Sep 2023 15:57:42 +0200
-From:   Sabrina Dubroca <sd@queasysnail.net>
-To:     "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
-Cc:     Radu Pirea <radu-nicolae.pirea@nxp.com>,
-        "atenart@kernel.org" <atenart@kernel.org>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sebastian Tobuschat <sebastian.tobuschat@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
- mdo_insert_tx_tag
-Message-ID: <ZPHt1vgPzayHfu-z@hog>
-References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
- <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
- <ZOx0L722xg5-J_he@hog>
- <5d42d6c9-2f0c-8913-49ec-50a25860c49f@oss.nxp.com>
- <ZO8pbtnlOVauabjC@hog>
- <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
- <ZPG35HfRseiv80Pb@hog>
- <831bc700-a9a2-7eda-e97b-e1d54dc806f9@oss.nxp.com>
+        by sin.source.kernel.org (Postfix) with ESMTPS id 23EA7CE23A0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 13:59:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5931C433CA;
+        Fri,  1 Sep 2023 13:59:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693576794;
+        bh=yAwUPzOrWH4shkflWMSqld45TrqZ1FzcaWesFYjjXnQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e/sGK5KomfdYJHa7siMkKhrPtuNkRH2/f0YhyeCK6a6xz49C5fJR1qfzFMDHS2WOG
+         tUCbN0EyT89U1z3ecSft1cQFZpEpOiW+3oZ+WRK9OehXa00zlkKJVbIWTfAnMaeHB/
+         qRRSQwgkrpU41mcz14rpG2u3qQTAeX4oFLDrfrzn0tMBs1PDe+0sFE1FPFp42mE2vL
+         4VMky/evuWA6pqNsFXnxZqKiBNoGSFz6MAlhR5HKijc5aaL14L+7x8/oUIb2VkA8qX
+         OWxc4YQuCoV+XroMTtmyutqsyzwQGTI2C2SmmUzLld12/2caF+Daw5h0lI9IGXI0Q7
+         lJa+OpgHI3XOQ==
+Date:   Fri, 1 Sep 2023 15:59:32 +0200
+From:   Simon Horman <horms@kernel.org>
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Yu Zhao <yuzhao@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Kuniyuki Iwashima <kuniyu@amazon.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        Breno Leitao <leitao@debian.org>,
+        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
+        David Howells <dhowells@redhat.com>,
+        Jason Xing <kernelxing@tencent.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
+Subject: Re: [RFC PATCH net-next 3/3] sock: Throttle pressure-aware sockets
+ under pressure
+Message-ID: <20230901135932.GH140739@kernel.org>
+References: <20230901062141.51972-1-wuyun.abel@bytedance.com>
+ <20230901062141.51972-4-wuyun.abel@bytedance.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <831bc700-a9a2-7eda-e97b-e1d54dc806f9@oss.nxp.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.7
-X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_VALIDITY_RPBL,RDNS_NONE,SPF_HELO_NONE,SPF_NONE autolearn=no
+In-Reply-To: <20230901062141.51972-4-wuyun.abel@bytedance.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,28 +78,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2023-09-01, 14:58:12 +0300, Radu Pirea (OSS) wrote:
-> On 01.09.2023 13:07, Sabrina Dubroca wrote:
-> > > (the interface was up before)
-> > > [root@alarm ~]# ip link add link end0 macsec0 type macsec encrypt on
-> > > offload phy
-> > > [root@alarm ~]# ip link set end0 down
-> > > [root@alarm ~]# ip macsec add macsec0 rx port 1 address
-> > > 00:01:be:be:ef:33
-> > > RTNETLINK answers: Operation not supported
-> > 
-> > Where does that EOPNOTSUPP come from? nxp_c45_mdo_add_rxsc from this
-> > version of the code can't return that, and macsec_add_rxsc also
-> > shouldn't at this point.
+On Fri, Sep 01, 2023 at 02:21:28PM +0800, Abel Wu wrote:
+> A socket is pressure-aware when its protocol has pressure defined, that
+> is sk_has_memory_pressure(sk) != NULL, e.g. TCP. These protocols might
+> want to limit the usage of socket memory depending on both the state of
+> global & memcg pressure through sk_under_memory_pressure(sk).
 > 
-> This is the source of -EOPNOTSUPP
-> https://elixir.bootlin.com/linux/latest/source/drivers/net/macsec.c#L1928
+> While for allocation, memcg pressure will be simply ignored when usage
+> is under global limit (sysctl_mem[0]). This behavior has different impacts
+> on different cgroup modes. In cgroupv2 socket and other purposes share a
+> same memory limit, thus allowing sockmem to burst under memcg reclaiming
+> pressure could lead to longer stall, sometimes even OOM. While cgroupv1
+> has no such worries.
+> 
+> As a cloud service provider, we encountered a problem in our production
+> environment during the transition from cgroup v1 to v2 (partly due to the
+> heavy taxes of accounting socket memory in v1). Say one workload behaves
+> fine in cgroupv1 with memcg limit configured to 10GB memory and another
+> 1GB tcpmem, but will suck (or even be OOM-killed) in v2 with 11GB memory
+> due to burst memory usage on socket, since there is no specific limit for
+> socket memory in cgroupv2 and relies largely on workloads doing traffic
+> control themselves.
+> 
+> It's rational for the workloads to build some traffic control to better
+> utilize the resources they bought, but from kernel's point of view it's
+> also reasonable to suppress the allocation of socket memory once there is
+> a shortage of free memory, given that performance degradation is better
+> than failure.
+> 
+> As per the above, this patch aims to be more conservative on allocation
+> for the pressure-aware sockets under global and/or memcg pressure. While
+> OTOH throttling on incoming traffic could hurt latency badly possibly
+> due to SACKed segs get dropped from the OFO queue. See a related commit
+> 720ca52bcef22 ("net-memcg: avoid stalls when under memory pressure").
+> This patch preserves this decision by throttling RX allocation only at
+> critical pressure level when it hardly makes sense to continue receive
+> data.
+> 
+> No functional change intended for pressure-unaware protocols.
+> 
+> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
 
-Could you check which part of macsec_get_ops is failing? Since
-macsec_newlink with "offload phy" worked, macsec_check_offload
-shouldn't fail, so why does macsec_get_ops return NULL?
-real_dev->phydev was NULL'ed?
+...
 
--- 
-Sabrina
+> @@ -3087,8 +3100,20 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
+>  	if (sk_has_memory_pressure(sk)) {
+>  		u64 alloc;
+>  
+> -		if (!sk_under_memory_pressure(sk))
+> +		/* Be more conservative if the socket's memcg (or its
+> +		 * parents) is under reclaim pressure, try to possibly
+> +		 * avoid further memstall.
+> +		 */
+> +		if (under_memcg_pressure)
+> +			goto suppress_allocation;
+> +
+> +		if (!sk_under_global_memory_pressure(sk))
+>  			return 1;
+> +
+> +		/* Trying to be fair among all the sockets of same
+> +		 * protocal under global memory pressure, by allowing
 
+nit: checkpatch.pl --codespell says, protocal -> protocol
+
+> +		 * the ones that under average usage to raise.
+> +		 */
+>  		alloc = sk_sockets_allocated_read_positive(sk);
+>  		if (sk_prot_mem_limits(sk, 2) > alloc *
+>  		    sk_mem_pages(sk->sk_wmem_queued +
+> -- 
+> 2.37.3
+> 
+> 
