@@ -2,141 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B197778F89A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63D378F8A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348292AbjIAGdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 02:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S244856AbjIAGeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 02:34:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjIAGdR (ORCPT
+        with ESMTP id S1348387AbjIAGeL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 02:33:17 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2104.outbound.protection.outlook.com [40.107.114.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 990FE9E
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 23:33:13 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TaKcyX9MCKNgF0f9upBYkFeYx7awZe+TxfQAgUVXnNJi9Vsu9kCy5zRL5n+wJ/rEDllXYia/yGaWQEdSP2LhH5SiXwxCw0AEY0KqBnsFLe5hRfUHfADY0SeNnzcVlWoW5k6Wnc6SmwPBzA2OqiwwKQQTDz0q8+zFwvXOVT4XpMsKRclseaS5W7diwwBOmBtoM/Lt9zsQ4tkwenqhiwbxkhglcABIKGr3LZx/Q+eb4HKQQA180bVrFTOzKXY8IlYRJZbt2RqawGIl7M73QRR58GAzfSN+t8LO7G+e/FWa1FavxlizOzaRYvUHoOb4SdUSWY2lUjJ05ahGtASzp5Kd4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+oM1zUPP0rYXSFVMXBdv/6VbXUP/gYj3+vjQZlOL86A=;
- b=fr8NgfGBytr6UMeUGujGJQTEW9Sj3cznV1IV6mq853GS6sArB0zCZtP15IcgUcqA+rDRSwK1n2gha/P5xT4sTlhD8wFATnkFdQ9JYJuctpzDyyEAHvPAWR6HxPgpYWahqpuTsAZlMnjnBoRzgy0V2a/rWdcCZ1ciDNkFPEXGfvyZtfbyLya0jy3BTgUHldx+9Z/miKRqI/ZkQND5VPom4sxYrUtdfcCHQz8dAhjfHz8ibFcgDqGE8ITzZaSQMh4jxNc/CWJ2QKFU1W/i6pQqDTREEA90dyCs708t7NOjarL+q/Axd+K11ggNoeoautrTp8Ej0serxTZ/25fBzw6sHw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+oM1zUPP0rYXSFVMXBdv/6VbXUP/gYj3+vjQZlOL86A=;
- b=QgWaawBOV/sdNlQEd3cEKAD2kmYzvPb98Ta8YkwOKoIQWzTul7Mu6TL4VsLX9cDOUtXMHrgTcIp8Glpmf2BPUyzpKe1uASz8/uB6iBIuJV1i6PAaJsIgCoEBrXBmRc6zH0O4AGAgG7x5dPE5Duyr98ZN5SFiJBlx6QjBsUwGU2s=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYYPR01MB7830.jpnprd01.prod.outlook.com (2603:1096:400:116::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Fri, 1 Sep
- 2023 06:33:09 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6745.023; Fri, 1 Sep 2023
- 06:33:08 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        =?iso-8859-1?Q?Uwe_Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "patches@opensource.cirrus.com" <patches@opensource.cirrus.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v3 2/2] ASoC: wm8580: Move OF table
-Thread-Topic: [PATCH v3 2/2] ASoC: wm8580: Move OF table
-Thread-Index: AQHZ3EfJrg0Q5YYr4U6Zfq5sOXPFybAFDSCAgAB2X7A=
-Date:   Fri, 1 Sep 2023 06:33:08 +0000
-Message-ID: <OS0PR01MB59225F3B6218648EE650606B86E4A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230831201429.94554-1-biju.das.jz@bp.renesas.com>
- <20230831201429.94554-3-biju.das.jz@bp.renesas.com>
- <ZPEiGxftpGsHrhdc@smile.fi.intel.com>
-In-Reply-To: <ZPEiGxftpGsHrhdc@smile.fi.intel.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYYPR01MB7830:EE_
-x-ms-office365-filtering-correlation-id: 5c6db76f-625d-4060-f1e3-08dbaab54ea7
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: v2QvQwpVDnGxXXL1hidg0pp+a1ZOyx3C7vEsfEEwXilVpAWXkg0WN7qaYd7QL5W6IvomLOdasZHqebYqKMAEAjlSUXc0TCJVUW6YtCDnWEeByn0ggWQGAe1xWLnLLqVfGyRqO7F1h2Q+JBvWdjo91TCQd2XBBdIkgfeh6BN/pzJavkTq/t7maRfBaFsxrZXYudGdDm3eY/+UndT7aHMMnPKuiRXySlIaPm0vBH3zMWfkk1X7NmIg9s1DOdtTTf4X/FB7GNJ8RtJgBQI05bHlCfSkVNAsGfK7o1rJxhR9UfbyRVkmsnSzCjawfAHo/0Zk+PIe20uwaXiKRONHoloOvACM7iU9yvopVkqixeOFWFAs8y5AiKSqAv9g1E728uDvo0EBt/HbGTqtpedsjoC43Nq93HOUA1fiCriAKU/FbDsN0gsQ890/rTba7nQVrWYD/lXfu7ul7bTn5Jyd87ZnjTSTrHgmdDU1lSfQCn7YRc9s9Weg1yOXcQzGXkdsHbw75U747a6djuuNrtCAfh9vo/9O8inmPuwsOJJIrgHmc7Mx8QL3xOB7UeWs/ya/Dtcj0prwjV9tgacitWYbf5VAkSEDhdnsaHykMDQWZBcuqrXTL7LoAsKZ/WFhaMs5Ta8y
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(346002)(396003)(136003)(366004)(451199024)(186009)(1800799009)(9686003)(122000001)(7696005)(6506007)(558084003)(33656002)(41300700001)(86362001)(4326008)(26005)(76116006)(5660300002)(6916009)(52536014)(316002)(38100700002)(64756008)(66476007)(66556008)(54906003)(55016003)(38070700005)(66946007)(66446008)(8676002)(8936002)(478600001)(2906002)(7416002)(71200400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?zIRqf0n2JRFSJAZXJ9138fMxIbPeyBdSgQID765papRyaQM7UmS61Zxz50?=
- =?iso-8859-1?Q?2PGWySsF4LaUcqpdhlgPcOns2FsFlkSVq9KO9vU7qqjmNeoEkSmuy+jtXb?=
- =?iso-8859-1?Q?r5ad7S8HX3e3TCm76BNi+rdlU+llX+p7Cj1CLsMdsPEQf9PlMvmHajXz8m?=
- =?iso-8859-1?Q?QXjRmzn9/kyLr4qT+8pvv1mL6vfEkMsZ3sMMG4fYqOCUma8Rgju/lHDUP6?=
- =?iso-8859-1?Q?JIIqNklFeoJJtEJKwPB0zDfh7cL8iHCynE35A9PkC9fFoeuWaRb2+8DkCb?=
- =?iso-8859-1?Q?aDKnZp4q5AgZxj3rcQ0LhDVS4tmPHFUj4Gz7F2z8ldgkrFbEqSO1/7l2ZC?=
- =?iso-8859-1?Q?50L8OtXj6bu+othaiDUkvTcrXrMoWj+mWFP2tO6d+eQ2M2IUKr6DF2g/6u?=
- =?iso-8859-1?Q?eEDFohsimYP/u6jYeB5OaHeyhKWNqfBbA/XxH9ziykTkl/BGySbsenMmGu?=
- =?iso-8859-1?Q?RMNQvZ1XRTe+kkcUH33rJPo/n3dxie8g56AMBzY6Vn/GcY6mSC0UVH7vYP?=
- =?iso-8859-1?Q?isvqc8zXnv+RQ3oDyjt+CV6fg+qZX+hiJAHVlzw7Hb7YNEsPIwKnUCHHUa?=
- =?iso-8859-1?Q?J9aPIEkrlh3UQqwwMr+LmG0xD0uO8y8UyCKzUy5DRU8DMPAYYaVdFzwNJT?=
- =?iso-8859-1?Q?ZlhzU+KBvaBXAhNgTMUbBqG1D5Gn74mUOoOQESoYPDUwlWxEZJu7DVwFCP?=
- =?iso-8859-1?Q?XThVahJSJeo5z7AQWoyU8lBw36IgGOp4j9GpEK9bmEV5S63eYpdRe5WOBl?=
- =?iso-8859-1?Q?T+9vHNOK3CpBuIVBXY3DByjHUIX+eISN69y1gxuwnnzeIyYYtB05EBdXnb?=
- =?iso-8859-1?Q?M+zikSST5uynMrUdsOXRz8luC/IfMx1KKUhJNjhNNTbENDy+/3u3uo78U8?=
- =?iso-8859-1?Q?MYYVr9Te373MPPhWlWfl4MMEFHd413rtbuCw8U0LpRSbJFr4CZ3RkZMRIe?=
- =?iso-8859-1?Q?RFGs3goEaTSBL4qQZTUichpXREkHyVKBVKnBGA/EdmQ+uWM95XOfnvdDiM?=
- =?iso-8859-1?Q?IhJ8m99PkYfW6ovR9NDFmpRyXlhWHxJD69jxxu21F/gFXbIiuIdgDKVs56?=
- =?iso-8859-1?Q?ME/QRhrZmWn1hppTIAJSxnNVajKe3Xl3Z7l/1ThpLjA8qmgQhqsVmbJviN?=
- =?iso-8859-1?Q?b98x9//o9ex2+m8TFAgjcgDqeIuG5Qttst7QE2uDNGYXfGypjwYPNy8UGp?=
- =?iso-8859-1?Q?/QPrwPbDE/6bz9FjUEAufMeuhDjVcTKASe0G1M0gFviohT/VozAjaoHQoN?=
- =?iso-8859-1?Q?p5d5sYzv6nFQInm0+XUCViOHnNZtzvQhCMDwZWSECR0Ux4fpPiaWrjmdDE?=
- =?iso-8859-1?Q?fBCQasExqKcxeWEYVrHoGjlB7/9nEPhsvbO40SijrnFsd5aEmjsmhEG+aJ?=
- =?iso-8859-1?Q?+f+7pc2ZYm/mMuRyH321CR1ypAEtqVg/rm4zzdisT6x/s8UFvWZ2439MyY?=
- =?iso-8859-1?Q?vJCprXVcOPYF5d9YUVs2WL8KjjJF9NADjlw0R6Jl/EtmHgyRkPS4Wx+0eX?=
- =?iso-8859-1?Q?5GRuxFnf8W6mtJCptTXNxFLdr8PAEy9LbSPqFNwxQBVutFbQLNwrdFWCxc?=
- =?iso-8859-1?Q?yiV0+PHzmm5p7pHsA+42SDO3+Fr1bWl2Ffn70xv2AC0zlXeJiAQiarS45v?=
- =?iso-8859-1?Q?stmSUw/3fhn/2lj2o85W3WkJHejIxlmDwSK53bQv/L+umDE9tjrGLWCA?=
- =?iso-8859-1?Q?=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 1 Sep 2023 02:34:11 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72AD9E;
+        Thu, 31 Aug 2023 23:34:07 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bd3f629c76so1865281fa.0;
+        Thu, 31 Aug 2023 23:34:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693550046; x=1694154846; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XdL7aZru6UQ1sfE0HKZDJ1DL8Cs+cqlVXGOmzcWh+GU=;
+        b=ZOlCzdO3E/e9zXNgPAmzOuxG75h99IJxO4JUop/fvHfA90HlzCu91RgSs4bkQVQMrD
+         iQzNG5DG9wqlSSPliu7kYGL9yXiHCCSZJKZgZ84dRPcCB2DeuccXbqnwchDIB2JLn4t2
+         /2cDT7nj3lCFoz7VXWAU1WlhXDR4UCpcNa8ryaMKHWZmIILDSPpTJLVxPFy36eKzaVHl
+         LkVXKl1m7xCkPi319vBG5aoVB4yiYCXb1RI8W4aEf5MY/AbBfMrm2TYO7cZF5yBO/uim
+         Tm5sNw/yXnxBScN88B95jkU09V2TogCgSeCojYwhBLeHiz0lslIYKlP5KZjRSLiMi2Hb
+         fRNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693550046; x=1694154846;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XdL7aZru6UQ1sfE0HKZDJ1DL8Cs+cqlVXGOmzcWh+GU=;
+        b=EBQqN+RJ6pTU0zbU9/2zsZ01zKWU0myRlw25so+Eh8OCoIWX2XeUj7krjFPI/Xscb1
+         ki6JJ0Q2f5Ufioq80e7O+HA4S3fiUnXSQj6rcTWjfYHCbsrlYHTZ6ZUoe+bjUBUjC1jz
+         jUJZ8ZpXmb3XQqWzo7snmqav6ZStTZmHEnnqrf0aYRrfqVGxlZO3sUPRrJFjPUR2dy2b
+         oUCijalU4ehq390wfltYudr3tpg8CZdyChUheqyRYFU1AmM3635D1LZgApuTJUZaJNkP
+         jYf6u3CRGwTn4u0DOfOpcI9sRzHjjZfCD77+jgQVnNI7GkngMQ0yrBvemKVHYG0dpcKt
+         rktw==
+X-Gm-Message-State: AOJu0YwlRNUB9a53rHbx0Oz3cTj7RtV5OD9YACe6Ipq1769uokFxq/k9
+        +WV2hAKkzhxWYoQTuY99pltUE4biTa+4BL9+Mss=
+X-Google-Smtp-Source: AGHT+IGqokjKDL/nG58CBTt47FAmp3Pe1+r/nMq1CRRpT1KVXvg4tCvb9xwUxz0K378Y+5K7aHzD0qYrmod91jHx/lg=
+X-Received: by 2002:a2e:8206:0:b0:2b9:4b2b:89d8 with SMTP id
+ w6-20020a2e8206000000b002b94b2b89d8mr776404ljg.35.1693550045852; Thu, 31 Aug
+ 2023 23:34:05 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c6db76f-625d-4060-f1e3-08dbaab54ea7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2023 06:33:08.8425
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pPvQYNoddU8KCM3eg7dTAm7kbXF0KHwmRoILZs0x9sVF/+A0cFwI9kNyUic47wJOGmUSyaIHdrlILsJFI4BDYCkAWlrUCu1jxv9AT6JmFXc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB7830
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230831160055.v3.1.I7ed1ca09797be2dd76ca914c57d88b32d24dac88@changeid>
+In-Reply-To: <20230831160055.v3.1.I7ed1ca09797be2dd76ca914c57d88b32d24dac88@changeid>
+From:   Lai Jason <jasonlai.genesyslogic@gmail.com>
+Date:   Fri, 1 Sep 2023 14:33:54 +0800
+Message-ID: <CAG0XXUE+stL_vZa4UBdm1wciWqLUfx4Yx3c7UchAB5i-SoYPFg@mail.gmail.com>
+Subject: Re: [PATCH v3] mmc: sdhci-pci-gli: fix LPM negotiation so x86/S0ix
+ SoCs can suspend
+To:     Sven van Ashbrook <svenva@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, ulf.hansson@linaro.org,
+        adrian.hunter@intel.com, ben.chuang@genesyslogic.com.tw,
+        jason.lai@genesyslogic.com.tw, skardach@google.com,
+        Renius Chen <reniuschengl@gmail.com>,
+        rafael.j.wysocki@intel.com, linux-mmc@vger.kernel.org,
+        stable@vger.kernel.org, SeanHY.chen@genesyslogic.com.tw,
+        victor.shih@genesyslogic.com.tw, greg.tu@genesyslogic.com.tw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+Hi,
 
-> Subject: Re: [PATCH v3 2/2] ASoC: wm8580: Move OF table
->=20
-> On Thu, Aug 31, 2023 at 09:14:29PM +0100, Biju Das wrote:
-> > Move OF table near to the user.
->=20
-> It does a bit more that that.
+On Fri, Sep 1, 2023 at 12:01=E2=80=AFAM Sven van Ashbrook <svenva@chromium.=
+org> wrote:
+>
+> To improve the r/w performance of GL9763E, the current driver inhibits LP=
+M
+> negotiation while the device is active.
+>
+> This prevents a large number of SoCs from suspending, notably x86 systems
+> which commonly use S0ix as the suspend mechanism - for example, Intel
+> Alder Lake and Raptor Lake processors.
+>
+> Failure description:
+> 1. Userspace initiates s2idle suspend (e.g. via writing to
+>    /sys/power/state)
+> 2. This switches the runtime_pm device state to active, which disables
+>    LPM negotiation, then calls the "regular" suspend callback
+> 3. With LPM negotiation disabled, the bus cannot enter low-power state
+> 4. On a large number of SoCs, if the bus not in a low-power state, S0ix
+>    cannot be entered, which in turn prevents the SoC from entering
+>    suspend.
+>
+> Fix by re-enabling LPM negotiation in the device's suspend callback.
+>
+> Suggested-by: Stanislaw Kardach <skardach@google.com>
+> Fixes: f9e5b33934ce ("mmc: host: Improve I/O read/write performance for G=
+L9763E")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sven van Ashbrook <svenva@chromium.org>
 
-OK I will send separate patch for removing trailing comma
-in terminator.
+LGTM.
+But I prefer Ben's opinion "I suppose cqhci_suspend() may need to be
+done first safely, then
+gl9763e_set_low_power_negotiation(slot, true)." because it can avoid
+GL9763E entering L1
+while cmdq engine processes I/O.
 
-Cheers,
-Biju
+Best regards,
+Jason Lai
+
+> ---
+>
+> Changes in v3:
+> - applied maintainer feedback from https://lore.kernel.org/lkml/CACT4zj-B=
+aX4tHji8B8gS5jiKkd-2BcwfzHM4fS-OUn0f8DSxcw@mail.gmail.com/T/#m7cea7b6b987d1=
+ab1ca95feedf2c6f9da5783da5c
+>
+> Changes in v2:
+> - improved symmetry and error path in s2idle suspend callback (internal r=
+eview)
+>
+>  drivers/mmc/host/sdhci-pci-gli.c | 104 ++++++++++++++++++++-----------
+>  1 file changed, 66 insertions(+), 38 deletions(-)
+>
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pc=
+i-gli.c
+> index 1792665c9494a..a4ccb6c3e27a6 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -745,42 +745,6 @@ static u32 sdhci_gl9750_readl(struct sdhci_host *hos=
+t, int reg)
+>         return value;
+>  }
+>
+> -#ifdef CONFIG_PM_SLEEP
+> -static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
+> -{
+> -       struct sdhci_pci_slot *slot =3D chip->slots[0];
+> -
+> -       pci_free_irq_vectors(slot->chip->pdev);
+> -       gli_pcie_enable_msi(slot);
+> -
+> -       return sdhci_pci_resume_host(chip);
+> -}
+> -
+> -static int sdhci_cqhci_gli_resume(struct sdhci_pci_chip *chip)
+> -{
+> -       struct sdhci_pci_slot *slot =3D chip->slots[0];
+> -       int ret;
+> -
+> -       ret =3D sdhci_pci_gli_resume(chip);
+> -       if (ret)
+> -               return ret;
+> -
+> -       return cqhci_resume(slot->host->mmc);
+> -}
+> -
+> -static int sdhci_cqhci_gli_suspend(struct sdhci_pci_chip *chip)
+> -{
+> -       struct sdhci_pci_slot *slot =3D chip->slots[0];
+> -       int ret;
+> -
+> -       ret =3D cqhci_suspend(slot->host->mmc);
+> -       if (ret)
+> -               return ret;
+> -
+> -       return sdhci_suspend_host(slot->host);
+> -}
+> -#endif
+> -
+>  static void gl9763e_hs400_enhanced_strobe(struct mmc_host *mmc,
+>                                           struct mmc_ios *ios)
+>  {
+> @@ -1029,6 +993,70 @@ static int gl9763e_runtime_resume(struct sdhci_pci_=
+chip *chip)
+>  }
+>  #endif
+>
+> +#ifdef CONFIG_PM_SLEEP
+> +static int sdhci_pci_gli_resume(struct sdhci_pci_chip *chip)
+> +{
+> +       struct sdhci_pci_slot *slot =3D chip->slots[0];
+> +
+> +       pci_free_irq_vectors(slot->chip->pdev);
+> +       gli_pcie_enable_msi(slot);
+> +
+> +       return sdhci_pci_resume_host(chip);
+> +}
+> +
+> +static int gl9763e_resume(struct sdhci_pci_chip *chip)
+> +{
+> +       struct sdhci_pci_slot *slot =3D chip->slots[0];
+> +       int ret;
+> +
+> +       ret =3D sdhci_pci_gli_resume(chip);
+> +       if (ret)
+> +               return ret;
+> +
+> +       ret =3D cqhci_resume(slot->host->mmc);
+> +       if (ret)
+> +               return ret;
+> +
+> +       /*
+> +        * Disable LPM negotiation to bring device back in sync
+> +        * with its runtime_pm state.
+> +        */
+> +       gl9763e_set_low_power_negotiation(slot, false);
+> +
+> +       return 0;
+> +}
+> +
+> +static int gl9763e_suspend(struct sdhci_pci_chip *chip)
+> +{
+> +       struct sdhci_pci_slot *slot =3D chip->slots[0];
+> +       int ret;
+> +
+> +       /*
+> +        * Certain SoCs can suspend only with the bus in low-
+> +        * power state, notably x86 SoCs when using S0ix.
+> +        * Re-enable LPM negotiation to allow entering L1 state
+> +        * and entering system suspend.
+> +        */
+> +       gl9763e_set_low_power_negotiation(slot, true);
+> +
+> +       ret =3D cqhci_suspend(slot->host->mmc);
+> +       if (ret)
+> +               goto err_suspend;
+> +
+> +       ret =3D sdhci_suspend_host(slot->host);
+> +       if (ret)
+> +               goto err_suspend_host;
+> +
+> +       return 0;
+> +
+> +err_suspend_host:
+> +       cqhci_resume(slot->host->mmc);
+> +err_suspend:
+> +       gl9763e_set_low_power_negotiation(slot, false);
+> +       return ret;
+> +}
+> +#endif
+> +
+>  static int gli_probe_slot_gl9763e(struct sdhci_pci_slot *slot)
+>  {
+>         struct pci_dev *pdev =3D slot->chip->pdev;
+> @@ -1113,8 +1141,8 @@ const struct sdhci_pci_fixes sdhci_gl9763e =3D {
+>         .probe_slot     =3D gli_probe_slot_gl9763e,
+>         .ops            =3D &sdhci_gl9763e_ops,
+>  #ifdef CONFIG_PM_SLEEP
+> -       .resume         =3D sdhci_cqhci_gli_resume,
+> -       .suspend        =3D sdhci_cqhci_gli_suspend,
+> +       .resume         =3D gl9763e_resume,
+> +       .suspend        =3D gl9763e_suspend,
+>  #endif
+>  #ifdef CONFIG_PM
+>         .runtime_suspend =3D gl9763e_runtime_suspend,
+> --
+> 2.42.0.283.g2d96d420d3-goog
+>
