@@ -2,78 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC7A78F9E2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:20:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FD7678F9EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245131AbjIAIUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:20:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S245323AbjIAIWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:22:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241886AbjIAIUf (ORCPT
+        with ESMTP id S233068AbjIAIWR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:20:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B3610DE;
-        Fri,  1 Sep 2023 01:20:32 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id B16B32185C;
-        Fri,  1 Sep 2023 08:20:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693556430; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=0WI96qvBSKjcD8skIYDzJyfhIXrX2VNlBg1bDAXSO7w=;
-        b=r4AvfguvEQvHBhS4L8lDsEaveieeJTkNCYi5f+9IRURkHs9QHXGXU55bgZKYP/UIN96eLm
-        Su7gVEZFmwF5EXNaNlCErp7Hgj8GQqdQewKT6RBq+dcvYVgxoLUZe9WovHMiX8iQwt+NsA
-        NGR32KTwfyM1j9J07mti1C+WlqZc3DM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693556430;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=0WI96qvBSKjcD8skIYDzJyfhIXrX2VNlBg1bDAXSO7w=;
-        b=LDBeIJn7DjHmpeWPe/JUiDen1A1u3hmJEXiXvjRyh5pbOBnd20g14NvrGZHMhmcFppSIaI
-        jb3axaR9hQtT2aCA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 27C7D1358B;
-        Fri,  1 Sep 2023 08:20:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id M/8FCc6e8WSYGwAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 01 Sep 2023 08:20:30 +0000
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     seanjc@google.com
-Cc:     ackerleytng@google.com, akpm@linux-foundation.org,
-        anup@brainfault.org, aou@eecs.berkeley.edu,
-        chao.p.peng@linux.intel.com, chenhuacai@kernel.org,
-        david@redhat.com, isaku.yamahata@gmail.com, jarkko@kernel.org,
-        jmorris@namei.org, kirill.shutemov@linux.intel.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, liam.merwick@oracle.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mail@maciej.szmigiero.name,
-        maz@kernel.org, michael.roth@amd.com, mpe@ellerman.id.au,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, paul@paul-moore.com, pbonzini@redhat.com,
-        qperret@google.com, serge@hallyn.com, tabba@google.com,
-        vannapurve@google.com, vbabka@suse.cz, wei.w.wang@intel.com,
-        willy@infradead.org, yu.c.zhang@linux.intel.com
-Subject: [PATCH gmem FIXUP] mm, compaction: make testing mapping_unmovable() safe
-Date:   Fri,  1 Sep 2023 10:20:26 +0200
-Message-ID: <20230901082025.20548-2-vbabka@suse.cz>
-X-Mailer: git-send-email 2.41.0
+        Fri, 1 Sep 2023 04:22:17 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EB20193;
+        Fri,  1 Sep 2023 01:22:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de;
+ s=s31663417; t=1693556526; x=1694161326; i=deller@gmx.de;
+ bh=MwQErYC2WyUnqBkZ1OHIzcRkFv5RC+6+03ppvFQMhrk=;
+ h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:In-Reply-To;
+ b=fTK56NUD7/nlYlhuGfkQIZVcV+rk8+mKAsIFZycbieI9mcTggQA4VfdacY3a9u8EFAOBpvH
+ hmZcSm5Tj/WFVhaoL98r4l0FXk5n+zYPw6AtvrcJjRdu5YBLm4iB62eAr/FfCTKhC/B07lDpx
+ bVkeNJmRNxnadgQWwUYs7BoQA0NzBmhgQN6IWt+EJ8hI71y7wSt3+M34dUabzFeoei/fgIPep
+ L68M/PJJgsTwiP2bT8CzWL9cNIU3M4lmDuMw+4CihV10gBi69jVV5iz72ABltWAnDN4lMH47h
+ /uBTAvCbTYwMHtv/OoqZYIN9ujctUV9wEwlgGNU2V7Sx1zhNPw6g==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.60] ([94.134.152.187]) by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MEFvj-1qU2mp25H3-00ACnX; Fri, 01
+ Sep 2023 10:22:06 +0200
+Message-ID: <bf8e8402-2def-a365-18be-3b426cb1830a@gmx.de>
+Date:   Fri, 1 Sep 2023 10:22:05 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5/7] fbdev/core: Build fb_logo iff CONFIG_LOGO has been
+ selected
+Content-Language: en-US
+To:     Thomas Zimmermann <tzimmermann@suse.de>, daniel@ffwll.ch,
+        javierm@redhat.com, sam@ravnborg.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20230829142109.4521-1-tzimmermann@suse.de>
+ <20230829142109.4521-6-tzimmermann@suse.de>
+From:   Helge Deller <deller@gmx.de>
+In-Reply-To: <20230829142109.4521-6-tzimmermann@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:vuU05QJT6IlWwo4Mi3+L1LzYABiF5ykbqlHFcYulGYtDh4+YQmD
+ NiJ41y51505V3tq6TsqpIMJVUdUzMflX32opvKoFSKfSb4llLjqi5VlheVhZXDOnaZJeIuG
+ U4DvyPxX6F9/UNCrvUSFj8J2ym+i/ODRz8+YUQj6lXqjeSxtfvYjPDyHzfeaKayJUVpUFX/
+ Y8wuqXjBOk5P/8g0tAxHQ==
+UI-OutboundReport: notjunk:1;M01:P0:LnujzmPgv/8=;1ax9GF5eQQESMwk4R/s5sXECxOf
+ ZYexDqZJ8RXgI6/CyF4ZLCXxn/QhXzVQhEy4EbnnSR3Bdoj2LIluW140fn0Uh3oQXAYrwukQP
+ JvMX38J0+oBkK0P3mJo7hag3tp/SphTkN3rzdnW7Mf1N5VEGTrfceXMWbJVAHou9H0FrovZVL
+ 8SngG9wzpZXJSuP/Y4kGPFyZhI5MHJOmuzcSnMYgOp7C02WBFW7p2oRxu08Ntwpj2Xpp6+mbW
+ ejI7cDZqpHhcou7ydwj00YRP2miOLDwY0BpbCAzCrWM/OWjtkOAnlb0flWgyfYzOQP/dqfkeb
+ eXz52q1JA2WQyLnFZ+0p5C8ySH7PMOPAGtkh51kJGctxthzkOuaAvWh8RP1WMMXVunbahcH8X
+ gB9GAD374qWiGGp14DZeejQoOf/mGul0McEHjS31csm2lXfLeQdYfTog13xa/rTBsENLtdu46
+ 54qJeLhhUpZdgJZk5IF9v1cxbY+/ZVywXf4NqlXkUgH307aXcPsXakL2Eibe0EQFUYaSrdvT/
+ 4dR7xcEerfQ4T6qAPtAPNedfD3Fk3LgBQFOJtbW58x44dNyScMMvuunax0v6ksE7MtKvgD4gS
+ FUnslvc8NeX3KBP0MasMtD/lPi23JTh7sYhy56lLs7lXoBG1G6GAHbQYTVfufBDYi7oG7A0hv
+ EYwmzkJ45Hpa2eIXy/HO2NuHSrHk+D1YyHr17CU6Xgv4xYe3qHVUQ/su9cS2vJNKZjk2oUaGW
+ KK74WwvNJyra98VQoMdCGJEspdXtHO9BUinHBK1GbEkyAMiEIQON7NaylFLyVBka2laf93+AY
+ J72Sr4pq/c5+I/EGMH+f1dK7s5nM8o5iQyVcLkGBmwUrH49HOemOeFLLHKNgHqJtGnl/Sqs+P
+ fh+0W2JbOa68g45aAqPa/NIySdkFjFmb+041DaeN+fRoBsBje4ph8RrudXVA/u9TP+zKqOsTI
+ fLnItZXdGrlgY6RUCx0WQ6jsZvA=
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,113 +75,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As Kirill pointed out, mapping can be removed under us due to
-truncation. Test it under folio lock as already done for the async
-compaction / dirty folio case. To prevent locking every folio with
-mapping to do the test, do it only for unevictable folios, as we can
-expect the unmovable mapping folios are also unevictable - it is the
-case for guest memfd folios.
+On 8/29/23 16:15, Thomas Zimmermann wrote:
+> Only build fb_logo.c if CONFIG_LOGO has been selected. Otherwise
+> provide empty implementations of the contained interfaces and avoid
+> using the exported variables.
+>
+> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+...
+> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core=
+/fbcon.c
+> index f157a5a1dffc..24b038510a71 100644
+> --- a/drivers/video/fbdev/core/fbcon.c
+> +++ b/drivers/video/fbdev/core/fbcon.c
+> @@ -474,15 +474,19 @@ static int __init fb_console_setup(char *this_opt)
+>
+>   		if (!strncmp(options, "logo-pos:", 9)) {
+>   			options +=3D 9;
+> +#ifdef CONFIG_LOGO
+>   			if (!strcmp(options, "center"))
+>   				fb_center_logo =3D true;
+> +#endif
 
-Also incorporate comment update suggested by Matthew.
+IMHO, *sometimes* it makes sense to not use #ifdef and code it instead lik=
+e this:
+   			if (IS_ENABLED(CONFIG_LOGO) &&
+			    !strcmp(options, "center"))
+...
+That way the compiler will optimize that code away as well, but in
+addition it will compile-check that you have correct coding independend
+if CONFIG_LOGO is set or not.
 
-Fixes: 3424873596ce ("mm: Add AS_UNMOVABLE to mark mapping as completely unmovable")
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
-Feel free to squash into 3424873596ce.
+>   			continue;
+>   		}
+>
+>   		if (!strncmp(options, "logo-count:", 11)) {
+>   			options +=3D 11;
+> +#ifdef CONFIG_LOGO
+>   			if (*options)
+>   				fb_logo_count =3D simple_strtol(options, &options, 0);
+> +#endif
 
- mm/compaction.c | 49 ++++++++++++++++++++++++++++++++-----------------
- 1 file changed, 32 insertions(+), 17 deletions(-)
+same here.
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index a3d2b132df52..e0e439b105b5 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -862,6 +862,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 
- 	/* Time to isolate some pages for migration */
- 	for (; low_pfn < end_pfn; low_pfn++) {
-+		bool is_dirty, is_unevictable;
- 
- 		if (skip_on_failure && low_pfn >= next_skip_pfn) {
- 			/*
-@@ -1047,10 +1048,6 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		if (!mapping && (folio_ref_count(folio) - 1) > folio_mapcount(folio))
- 			goto isolate_fail_put;
- 
--		/* The mapping truly isn't movable. */
--		if (mapping && mapping_unmovable(mapping))
--			goto isolate_fail_put;
--
- 		/*
- 		 * Only allow to migrate anonymous pages in GFP_NOFS context
- 		 * because those do not depend on fs locks.
-@@ -1062,8 +1059,10 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		if (!folio_test_lru(folio))
- 			goto isolate_fail_put;
- 
-+		is_unevictable = folio_test_unevictable(folio);
-+
- 		/* Compaction might skip unevictable pages but CMA takes them */
--		if (!(mode & ISOLATE_UNEVICTABLE) && folio_test_unevictable(folio))
-+		if (!(mode & ISOLATE_UNEVICTABLE) && is_unevictable)
- 			goto isolate_fail_put;
- 
- 		/*
-@@ -1075,26 +1074,42 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
- 		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_writeback(folio))
- 			goto isolate_fail_put;
- 
--		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_dirty(folio)) {
--			bool migrate_dirty;
-+		is_dirty = folio_test_dirty(folio);
-+
-+		if (((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty)
-+		    || (mapping && is_unevictable)) {
-+			bool migrate_dirty = true;
-+			bool is_unmovable;
- 
- 			/*
--			 * Only pages without mappings or that have a
--			 * ->migrate_folio callback are possible to migrate
--			 * without blocking. However, we can be racing with
--			 * truncation so it's necessary to lock the page
--			 * to stabilise the mapping as truncation holds
--			 * the page lock until after the page is removed
--			 * from the page cache.
-+			 * Only folios without mappings or that have
-+			 * a ->migrate_folio callback are possible to migrate
-+			 * without blocking.
-+			 *
-+			 * Folios from unmovable mappings are not migratable.
-+			 *
-+			 * However, we can be racing with truncation, which can
-+			 * free the mapping that we need to check. Truncation
-+			 * holds the folio lock until after the folio is removed
-+			 * from the page so holding it ourselves is sufficient.
-+			 *
-+			 * To avoid this folio locking to inspect every folio
-+			 * with mapping for being unmovable, we assume every
-+			 * such folio is also unevictable, which is a cheaper
-+			 * test. If our assumption goes wrong, it's not a bug,
-+			 * just potentially wasted cycles.
- 			 */
- 			if (!folio_trylock(folio))
- 				goto isolate_fail_put;
- 
- 			mapping = folio_mapping(folio);
--			migrate_dirty = !mapping ||
--					mapping->a_ops->migrate_folio;
-+			if ((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty) {
-+				migrate_dirty = !mapping ||
-+						mapping->a_ops->migrate_folio;
-+			}
-+			is_unmovable = mapping && mapping_unmovable(mapping);
- 			folio_unlock(folio);
--			if (!migrate_dirty)
-+			if (!migrate_dirty || is_unmovable)
- 				goto isolate_fail_put;
- 		}
- 
--- 
-2.41.0
-
+Helge
