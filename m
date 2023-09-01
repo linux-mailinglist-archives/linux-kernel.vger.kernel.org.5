@@ -2,152 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1038790190
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1303B790191
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:45:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350453AbjIARnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 13:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
+        id S243739AbjIARpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 13:45:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231772AbjIARnQ (ORCPT
+        with ESMTP id S231772AbjIARph (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 13:43:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 467C9CF3;
-        Fri,  1 Sep 2023 10:43:12 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 1 Sep 2023 13:45:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BD89CF3
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:45:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D001D61DD4;
-        Fri,  1 Sep 2023 17:43:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2AEAC433C7;
-        Fri,  1 Sep 2023 17:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693590191;
-        bh=dbHY4NbH/giNzi2oBHDT/tg4te/ZtoQps2IQIiB/Gww=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QRzNP25N4+w+sHpLXmmMpcBoqwFdfPW0ayH8hbGnliHWT3PJ8I46jCRqDEBnt8YXZ
-         NoPUYzW3QIp64SA/fuA/truy57OOddgUFM27GGii88cOYHIa3nA3+vXCPPfcfvOtct
-         u16dClrcXSNGNonWe6WtyF36HgSFLoMP+fGj0mpuMkLoCZRTPEvLDa/EYdaV8QS5iP
-         WAqKRf/ftPS9f8aRXyaP9aSGemk8kqxL7SiaglUFvSwFKwaqKvU+Vcsdh5naqTRq7E
-         dA2G4D3Uxc2aOB7Bwi4TGb2g6+sFWZNEYqb5W+sE+imqgsvBEVesu5wLST7uAdjiOq
-         ZxlOpYDgb27jA==
-Date:   Fri, 1 Sep 2023 18:43:05 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Jessica Clarke <jrtc27@jrtc27.com>
-Cc:     William Qiu <william.qiu@starfivetech.com>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-mmc@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
-Message-ID: <20230901-affected-wanting-ab517791a870@spud>
-References: <20230830031846.127957-1-william.qiu@starfivetech.com>
- <20230830031846.127957-2-william.qiu@starfivetech.com>
- <20230830-commence-trickery-40eaa193cb15@wendy>
- <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
- <20230830-procedure-frostbite-56c751f7c276@wendy>
- <efab6f52-4d7f-ea3c-0fc3-4e3ad03c14c7@starfivetech.com>
- <20230901-remold-sublease-a1ddb1fc6348@spud>
- <9EF26965-10E5-4BCA-AC5E-93C5AA55A0DF@jrtc27.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 98EEB21860;
+        Fri,  1 Sep 2023 17:45:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1693590332;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2WDV4cZI/jGkvW0HxPF8zZMCvY6ntoMZAhWO84hyr8Y=;
+        b=YJu8K2C7XqqD0qr1QQ8wVPUgIRKeZOKaV9uURNsWJhcaYMl/4jgMnH7TelwbjbPUANbeK8
+        QUn+koWGjrrUbe8bKbIq1SaBqRW/0TpVeIpFTBmW6/5Jq+Qe6fu3aMJYsHCoKrM9EBB/bl
+        X0l4a0XJ5f7Y5hcbBEbWJ30t0jpfWbM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1693590332;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2WDV4cZI/jGkvW0HxPF8zZMCvY6ntoMZAhWO84hyr8Y=;
+        b=W1NtcSpx1em5TyQsHqWeSQ1ELONwon02RO5/A3RYlDPt0JFM9W8PVpZ41KqdRf0JFx21yt
+        MxhnCvvgG3AnLjDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 777811358B;
+        Fri,  1 Sep 2023 17:45:31 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id /lnIGjsj8mQNPgAAMHmgww
+        (envelope-from <pvorel@suse.cz>); Fri, 01 Sep 2023 17:45:31 +0000
+Date:   Fri, 1 Sep 2023 19:45:29 +0200
+From:   Petr Vorel <pvorel@suse.cz>
+To:     Cyril Hrubis <chrubis@suse.cz>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, ltp@lists.linux.it
+Subject: Re: [LTP] [PATCH] sched/rt: Disallow writing invalid values to
+ sched_rt_period_us
+Message-ID: <20230901174529.GB364687@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
+References: <20230901154355.5351-1-chrubis@suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="VVkFRg4/+IISb4qT"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9EF26965-10E5-4BCA-AC5E-93C5AA55A0DF@jrtc27.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230901154355.5351-1-chrubis@suse.cz>
+X-Spam-Status: No, score=-3.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_SOFTFAIL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> The validation of the value written to sched_rt_period_us was broken
+> because:
 
---VVkFRg4/+IISb4qT
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> - the sysclt_sched_rt_period is declared as unsigned int
+> - parsed by proc_do_intvec()
+> - the range is asserted after the value parsed by proc_do_intvec()
 
-On Fri, Sep 01, 2023 at 06:20:38PM +0100, Jessica Clarke wrote:
-> On 1 Sep 2023, at 16:42, Conor Dooley <conor@kernel.org> wrote:
-> >=20
-> > On Fri, Sep 01, 2023 at 10:33:13AM +0800, William Qiu wrote:
-> >>=20
-> >>=20
-> >> On 2023/8/30 16:34, Conor Dooley wrote:
-> >>> On Wed, Aug 30, 2023 at 09:29:20AM +0200, Krzysztof Kozlowski wrote:
-> >>>> On 30/08/2023 08:50, Conor Dooley wrote:
-> >>>>> On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
-> >>>>>> Due to the change of tuning implementation, it's no longer necessa=
-ry to
-> >>>>>> use the "starfive,sysreg" property in dts, so drop the relevant
-> >>>>>> description in dt-bindings here.
-> >>>>>=20
-> >>>>> How does changing your software implantation invalidate a descripti=
-on of
-> >>>>> the hardware?
-> >>>>>=20
-> >>>>=20
-> >>>> Which is kind of proof that this syscon was just to substitute
-> >>>> incomplete hardware description (e.g. missing clocks and phys). We
-> >>>> should have rejected it. Just like we should reject them in the futu=
-re.
-> >>>=20
-> >>> :s I dunno what to do with this... I'm inclined to say not to remove =
-it
-> >>> from the binding or dts at all & only change the software.
-> >>>=20
-> >>>> There are just few cases where syscon is reasonable. All others is j=
-ust
-> >>>> laziness. It's not only starfivetech, of course. Several other
-> >>>> contributors do the same.
-> >>>=20
-> >>> I'm not sure if laziness is fair, lack of understanding is usually mo=
-re
-> >>> likely.
-> >>=20
-> >> For this, I tend to keep it in binding, but remove it from required. B=
-ecause
-> >> we only modify the tuning implementation, it doesn't mean that this pr=
-operty
-> >> need to be removed, it's just no longer be the required one.
-> >=20
-> > Please only remove it from required if the current driver doesn't break
-> > if the regmap is removed.
->=20
-> Either way please make sure the documentation clearly states =E2=80=9Cnev=
-er use
-> this, if you=E2=80=99re using it you=E2=80=99re doing it wrong, this only=
- exists
-> because it was wrongly used in the past=E2=80=9D. Otherwise people writing
-> drivers for other OSes will probably use it too thinking they need to.
+> Because of this negative values written to the file were written into a
+> unsigned integer that were later on interpreted as large positive
+> integers which did passed the check:
 
-Maybe we should just delete it if the impact is going to be negligible,
-sounds like you're not using it in FreeBSD, which was part of what I was
-worried about. Guess it depends on what Emil & the distro heads think.
+> if (sysclt_sched_rt_period <= 0)
+> 	return EINVAL;
 
---VVkFRg4/+IISb4qT
-Content-Type: application/pgp-signature; name="signature.asc"
+> This commit fixes the parsing by setting explicit range for both
+> perid_us and runtime_us into the sched_rt_sysctls table and processes
+> the values with proc_dointvec_minmax() instead.
 
------BEGIN PGP SIGNATURE-----
+> Alternatively if we wanted to use full range of unsigned int for the
+> period value we would have to split the proc_handler and use
+> proc_douintvec() for it however even the
+> Documentation/scheduller/sched-rt-group.rst describes the range as 1 to
+> INT_MAX.
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPIiqQAKCRB4tDGHoIJi
-0gykAPwMyjaH4QlvlKNp66b+AkhwtZYuHNp93F2DQ5zKpQdaNgEAuBss3Yag0o95
-9UvKadGCMRv9Wi5nr/an6EGVMLhKkAQ=
-=nFPr
------END PGP SIGNATURE-----
+> As far as I can tell the only problem this causes is that the sysctl
+> file allows writing negative values which when read back may confuse
+> userspace.
 
---VVkFRg4/+IISb4qT--
+> There is also a LTP test being submitted for these sysctl files at:
+
+> http://patchwork.ozlabs.org/project/ltp/patch/20230901144433.2526-1-chrubis@suse.cz/
+
+> Signed-off-by: Cyril Hrubis <chrubis@suse.cz>
+> ---
+>  kernel/sched/rt.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index 0597ba0f85ff..aed3d55de2dd 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -37,6 +37,8 @@ static struct ctl_table sched_rt_sysctls[] = {
+>  		.maxlen         = sizeof(unsigned int),
+>  		.mode           = 0644,
+>  		.proc_handler   = sched_rt_handler,
+> +		.extra1         = SYSCTL_ONE,
+> +		.extra2         = SYSCTL_INT_MAX,
+>  	},
+>  	{
+>  		.procname       = "sched_rt_runtime_us",
+> @@ -44,6 +46,8 @@ static struct ctl_table sched_rt_sysctls[] = {
+>  		.maxlen         = sizeof(int),
+>  		.mode           = 0644,
+>  		.proc_handler   = sched_rt_handler,
+> +		.extra1         = SYSCTL_NEG_ONE,
+> +		.extra2         = SYSCTL_INT_MAX,
+Documentation/scheduller/sched-rt-group.rst [1] specifies this as values from -1 to
+(INT_MAX - 1), I guess due int range. Looking into proc_dointvec_minmax() [2]
+even INT_MAX would pass the check. I suppose we can do nothing about that,
+because there is no value in sysctl_vals[] which would represent INT_MAX - 1.
+
+And you specify in LTP test range: from -1 to INT_MAX.
+
+But even much shorter value than INT_MAX fails:
+
+$ echo 1234567 > /proc/sys/kernel/sched_rt_runtime_us
+sh: echo: write error: Invalid argument
+
+Ranges in /proc/sys/kernel/sched_rt_period_us works as expected.
+
+[1] https://www.kernel.org/doc/html/latest/scheduler/sched-rt-group.html#system-wide-settings
+[2] https://elixir.bootlin.com/linux/latest/source/kernel/sysctl.c#L843
+
+>  	},
+>  	{
+>  		.procname       = "sched_rr_timeslice_ms",
+> @@ -2985,9 +2989,6 @@ static int sched_rt_global_constraints(void)
+>  #ifdef CONFIG_SYSCTL
+>  static int sched_rt_global_validate(void)
+>  {
+> -	if (sysctl_sched_rt_period <= 0)
+> -		return -EINVAL;
+> -
+>  	if ((sysctl_sched_rt_runtime != RUNTIME_INF) &&
+>  		((sysctl_sched_rt_runtime > sysctl_sched_rt_period) ||
+>  		 ((u64)sysctl_sched_rt_runtime *
+> @@ -3018,7 +3019,7 @@ static int sched_rt_handler(struct ctl_table *table, int write, void *buffer,
+>  	old_period = sysctl_sched_rt_period;
+>  	old_runtime = sysctl_sched_rt_runtime;
+
+> -	ret = proc_dointvec(table, write, buffer, lenp, ppos);
+> +	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+
+>  	if (!ret && write) {
+>  		ret = sched_rt_global_validate();
