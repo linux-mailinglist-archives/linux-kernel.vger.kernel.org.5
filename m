@@ -2,166 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6DA78FCA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:49:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84B178FCA4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:49:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242067AbjIALtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:49:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40600 "EHLO
+        id S1345593AbjIALtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349286AbjIALtP (ORCPT
+        with ESMTP id S237544AbjIALto (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:49:15 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2076D91;
-        Fri,  1 Sep 2023 04:49:13 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id e9e14a558f8ab-34df30f4658so6050155ab.1;
-        Fri, 01 Sep 2023 04:49:13 -0700 (PDT)
+        Fri, 1 Sep 2023 07:49:44 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65690E70
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:49:41 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a603159f33so215444966b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:49:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693568952; x=1694173752; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F+e/eAvMe+DVjABjXSXWrDGT+BGDnGMUtgt70zYUfYA=;
-        b=pouKShz+FcqKn7Id0ixs0JbrKiq9xlqXbhU8RzjSqP4r0x62L9MaiyHDG4Ax6oycDz
-         kZONT9AnT8e6rKkmB7hR9aL/3ImfUnwqbXVzCeioOAM8L0zhpt2PIHNJ/j4RGn5JZ6T4
-         SkVAQkPw0AXpG4Ek/xcu8j4ycar8mxtZ4bVhbEWYCtAEkXBytkRG689KDie6AMkuddlH
-         0yIi2+hrplhC2S/uCTvd9biePMnjwrg8kvDATjN8OBRvqqeLtOrtpf1xL/1GAee4JKGG
-         5JpnXo2pyJq/Z5tro7lAx8eWedNbXpvIyraJC7Z+/uBvTyqpFvUKCZtnU0wLs25wmZrU
-         jDzw==
+        d=sartura.hr; s=sartura; t=1693568980; x=1694173780; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v5KnEJ23wDQrBX+Q/skDfs7xsPcC6Ms54YtdId73k2g=;
+        b=f4MEw6E+M5s4FonzeXMjl61KauHY3kYciHCh9CX/iz9/dyKLevcqUNtA/EXO63lTc/
+         f+ywMXs31szftRJlHjxPYTG2RL9KipCIzvl0iRKaKcAUpmfHauFLZ/VxvEa/fov4hVWG
+         +TjR/egUaEI4tUD1ZVgzAnAZJ8qQG5Bo14MFNLx363ZQiUNaz+HQCwHmp7bT7vKPfohY
+         7tL/qyj3nu2/8FJ2PFww1nTpdeZ3X4tsBdkp6fOM2FuV8tGUeFbBY4Zq/w6zuhNajJa/
+         8Cds8UVmegkTap9DTFucZUEjpqv5NVipg+DHUqNa6wf0IjvzifJuDRkzw+QJ/JGE/9uz
+         84nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693568952; x=1694173752;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=F+e/eAvMe+DVjABjXSXWrDGT+BGDnGMUtgt70zYUfYA=;
-        b=Yw1Qmij3tUXhgtBPBMgUcgh/P++CRzN9miVfkU2jD/r9VO5oIXIYO03WCffO8SvVO1
-         8MrMaqMqf6qaZOg8CjCaRyXMBPH1ocfxHe422W4yS6ZCaH9W2r3xd5fpHCX5cIR1kWWm
-         5QGgZaX3GrE9Z5dBCZqJTnWGBA/1/ZsMZRqdR9oWgBtBdY03rXwd8mkjw3Fjb/dUZFNp
-         ogFxxHZnYXZXg/6uAAPMX4YHSZneA7fzvYlwopj3HhHCJxr85tUfqq4/n082nFduPcf2
-         SukOOZozYSwcLmaS+JNUan01MsMr6bJSQKXfU+n2pIXNPlYAtHIsCPCpQ8ijmc0eIMuN
-         yYyg==
-X-Gm-Message-State: AOJu0Yxv5kHLWQAbTV9l4c/1iX1BJf6AE/ZbFLeeCKYauUuLLqsrjwiI
-        DRHKlCV85QNiGYw27wrLrSyUKsp3FNlJENry4W4=
-X-Google-Smtp-Source: AGHT+IGNwT1Z1jiaZP8w6Rner6UNnFSZ/683YoXqGu4gF3yGLuui4YK31sogRBOGGFT7e6ixMY2yVrWwM8qRAKo1Wmk=
-X-Received: by 2002:a05:6e02:1053:b0:34c:fed8:8df1 with SMTP id
- p19-20020a056e02105300b0034cfed88df1mr2266190ilj.6.1693568952451; Fri, 01 Sep
- 2023 04:49:12 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693568980; x=1694173780;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v5KnEJ23wDQrBX+Q/skDfs7xsPcC6Ms54YtdId73k2g=;
+        b=R5SuKQSJfFccuQ+pkYrXMLlGQKl0RTUa341m1V0ozFejI9rGJxjnFHIn7oHzGcLDTp
+         7VWeNNuKsGI5OQ6IWumyvGECORBBzHwWCGGO+UzPbBESQmiGFpyRNv9xkXyMENDfpxPB
+         iyUw8G2AxP5jusztNBP3cgYvRCYpWypoNkZtTKonEu8o51MxjVrKLBiZ6dP/kZqUW2in
+         IQEFaUSHIac8zz6I7/XKgTV0FF6aBNQAO+tJxdvExKQ5G7CNf/YnoQtuRlaXe40zKcsS
+         AC0P2Dju0LWLWb+OilJszwFoM+BjJoN/N5qc0LqLyCHLX9/ZI53ZWMtvu5X2Db+Svx/x
+         kkSQ==
+X-Gm-Message-State: AOJu0YwuYC8K++mIDcQAYDLVj2QbQhejXJlaa2uKiz5FxC/XN2Dx6r/Z
+        nLx6tULtxfoDz6mCM2DqknaQ4u7iJ8bwqAS9n4o=
+X-Google-Smtp-Source: AGHT+IHE3WEUr/ANccr+3kWR4PwDspoJ96QfkrJTdqkphFLGy/AEzbxBa/deDGlCsnoMb3L65434NQ==
+X-Received: by 2002:a17:906:ef8b:b0:9a1:ddb9:6550 with SMTP id ze11-20020a170906ef8b00b009a1ddb96550mr1609104ejb.52.1693568979779;
+        Fri, 01 Sep 2023 04:49:39 -0700 (PDT)
+Received: from fedora.. (dh207-99-49.xnet.hr. [88.207.99.49])
+        by smtp.googlemail.com with ESMTPSA id a25-20020a1709064a5900b009a2202bfce5sm1869532ejv.118.2023.09.01.04.49.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 04:49:39 -0700 (PDT)
+From:   Robert Marko <robert.marko@sartura.hr>
+To:     wsa@kernel.org, codrin.ciubotariu@microchip.com,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     luka.perkov@sartura.hr, Robert Marko <robert.marko@sartura.hr>
+Subject: [RFC PATCH] i2c: core: dont change pinmux state to GPIO during recovery setup
+Date:   Fri,  1 Sep 2023 13:49:17 +0200
+Message-ID: <20230901114936.1319844-1-robert.marko@sartura.hr>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230901113703.314667-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVbR3mAgJ4UoeBSgesLPTuo-RVrRE_cLZZHwqJAhuVLFA@mail.gmail.com>
-In-Reply-To: <CAMuHMdVbR3mAgJ4UoeBSgesLPTuo-RVrRE_cLZZHwqJAhuVLFA@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 1 Sep 2023 12:48:20 +0100
-Message-ID: <CA+V-a8t348RAYu8ApmW-3WpPY_qmHKPX3=+Pc-y=n2nZ7DEocg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: host: Kconfig: Allow selecting MMC_SDHI_INTERNAL_DMAC
- for RZ/Five SoC
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+Ever since PXA I2C driver was moved to the generic I2C recovery, I2C has
+stopped working completely on Armada 3720 if the pins are specified in DTS.
 
-Thank you for the review.
+After a while it was traced down to the only difference being that PXA
+driver did not change the pinmux state to GPIO before trying to acquire the
+GPIO pins.
+And indeed as soon as this call is removed I2C starts working.
 
-On Fri, Sep 1, 2023 at 12:40=E2=80=AFPM Geert Uytterhoeven <geert@linux-m68=
-k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, Sep 1, 2023 at 1:37=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.=
-com> wrote:
-> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >
-> > Make MMC_SDHI_INTERNAL_DMAC visible for RISC-V architecture so that we =
-can
-> > select this config option for RZ/Five SoC which is based on RISC-V
-> > architecture.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > I was in two minds here whether I should instead add dependency for
-> > ARCH_R9A07G043 instead of RISCV. But adding dependency for RISCV allows
-> > us to get this config option freely for future coming RISC-V Renesas
-> > SoCs.
-> >
-> > Cheers, Prabhakar
-> > ---
-> >  drivers/mmc/host/Kconfig | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> > index 554e67103c1a..5190881cb204 100644
-> > --- a/drivers/mmc/host/Kconfig
-> > +++ b/drivers/mmc/host/Kconfig
-> > @@ -677,9 +677,9 @@ config MMC_SDHI_SYS_DMAC
-> >
-> >  config MMC_SDHI_INTERNAL_DMAC
-> >         tristate "DMA for SDHI SD/SDIO controllers using on-chip bus ma=
-stering"
-> > -       depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || COMPILE_TE=
-ST
-> > +       depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || RISCV || C=
-OMPILE_TEST
-> >         depends on MMC_SDHI
-> > -       default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470)
-> > +       default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || =
-RISCV)
->
-> This would expose this option to a growing number of non-Renesas
-> RISC-V platforms.  What about using ARCH_RENESAS || COMPILE_TEST
-> instead?
->
-Good point. I'll make the changes as per below:
+To me it seems that this call is not required at all as devm_gpiod_get()
+will result in the pinmux state being changed to GPIO via the pinmux
+set_mux() op.
 
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -677,9 +677,9 @@ config MMC_SDHI_SYS_DMAC
+Fixes: 0b01392c18b9 ("i2c: pxa: move to generic GPIO recovery")
+Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+---
+I am aware this probably isnt the correct fix, so I am sending it as RFC
+cause I have ran out of ideas.
 
- config MMC_SDHI_INTERNAL_DMAC
-        tristate "DMA for SDHI SD/SDIO controllers using on-chip bus master=
-ing"
--       depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || COMPILE_TEST
-+       depends on ARCH_RENESAS || COMPILE_TEST
-        depends on MMC_SDHI
--       default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470)
-+       default MMC_SDHI if ARCH_RENESAS
-        help
-          This provides DMA support for SDHI SD/SDIO controllers
-          using on-chip bus mastering. This supports the controllers
+ drivers/i2c/i2c-core-base.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
-Cheers,
-Prabhakar
+diff --git a/drivers/i2c/i2c-core-base.c b/drivers/i2c/i2c-core-base.c
+index 60746652fd52..b34d939078a1 100644
+--- a/drivers/i2c/i2c-core-base.c
++++ b/drivers/i2c/i2c-core-base.c
+@@ -359,13 +359,6 @@ static int i2c_gpio_init_generic_recovery(struct i2c_adapter *adap)
+ 	if (bri->recover_bus && bri->recover_bus != i2c_generic_scl_recovery)
+ 		return 0;
+ 
+-	/*
+-	 * pins might be taken as GPIO, so we should inform pinctrl about
+-	 * this and move the state to GPIO
+-	 */
+-	if (bri->pinctrl)
+-		pinctrl_select_state(bri->pinctrl, bri->pins_gpio);
+-
+ 	/*
+ 	 * if there is incomplete or no recovery information, see if generic
+ 	 * GPIO recovery is available
+-- 
+2.41.0
 
-> >         help
-> >           This provides DMA support for SDHI SD/SDIO controllers
-> >           using on-chip bus mastering. This supports the controllers
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m6=
-8k.org
->
-> In personal conversations with technical people, I call myself a hacker. =
-But
-> when I'm talking to journalists I just say "programmer" or something like=
- that.
->                                 -- Linus Torvalds
