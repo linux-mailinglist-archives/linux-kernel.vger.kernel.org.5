@@ -2,193 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EAD078FEC5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:11:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B93078FEC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349917AbjIAOLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 10:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43168 "EHLO
+        id S1349899AbjIAOLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 10:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349908AbjIAOLR (ORCPT
+        with ESMTP id S1344629AbjIAOLN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 10:11:17 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2100.outbound.protection.outlook.com [40.92.52.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5972F10EC;
-        Fri,  1 Sep 2023 07:11:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YVWudaxTg8fVpcvjr3+7qdrtjixA3sNzAVl1GegDOeTOBlL5JkgvhLyAjzoh04kwK5X2M7WemOSmhAdi1upezARv0oi5Al2NzMep3QEKsJuRp4inY2R66MfFeg3jQbiZUFntmgOyjD0X+DSCRnmb+0fI2zcEelhZhfg3ei4DSS0b5fvv2Jo8dN1jkQZQ4rvxjfeFkkOgD61hUCbVxWwYQFwWMH3KtnehbWE4sfIG0ZZaM55X6S5nsbzDmgdQgZwhtX7+pmmyTafcdk94vQcqqtodNvJxtPEESqrzVVTbg3D3HGJFuuXTF2AuV3eH7n3hiwtfo8/jU2vAVR2pbjcQpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SrxVFPxOA8rgOiYgHfxiRF0INYUWD8JjWn2H09fdRYM=;
- b=EotYZf8P85k1fJ8K6QfNkeLoF7TNVBq29EgPy0SK6SCF60jok9eR6dmlCzz+ISUh4q1mXpNw2t70WCB6hUkSoFp45HJyuHePJaUDx4kWivceedG7Pfs85SfkfLyD5xFDcc2gdblpnNV6dSCekuRkGrzJRa25yOXEPBw5G7wggLT71x8uwM5qrxzH0gYkeCFnNLWmLLnu6rIEp9TP3zrfgON0oe6Xlvat4n+X+U1Cg2YVUIPRan0dyMq30ZEAnPqxfVQEt2Otiahjam21gVtJyTZi098cpQ2DhQfODbjG0658S9uz8ZV6EaVA2kosIF+EXcHJywu1zkNI4Swd1F5HOA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SrxVFPxOA8rgOiYgHfxiRF0INYUWD8JjWn2H09fdRYM=;
- b=dU1e2OAMvl93OuqQLrN43RWsXFBls8vHuUE+D2v8rztL5Hq0vmtYDUEaYrtTVBfO0DB1EEHSduitKnWeeOpBsxeqffKX7cl4jGeoNcxSJcBHZZe+WgqsC9bgDvPETuXk/UO2bGiI4Q/6z42+38Krq9IcO7F+fSqhAV998vbw1T0XzWOqkAiZ96lOe3YAvCbgnljNeGT7i/OwmCffqjRCUi1vVXhjIUVdbY3ypRsKs+KJViG0UOXFNOmwpnzVlMIu+HNP92F5hDCS2hsGRkIFb04cqUKpdxhobeLEQEC9B6VT0SUpbgfC4y/hwfcZUQcSS3ANDncQDY4257a2IWwa2Q==
-Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- (2603:1096:400:363::9) by SG2PR01MB3708.apcprd01.prod.exchangelabs.com
- (2603:1096:0:e::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.27; Fri, 1 Sep
- 2023 14:11:08 +0000
-Received: from TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- ([fe80::a40d:d453:3c29:577c]) by TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- ([fe80::a40d:d453:3c29:577c%4]) with mapi id 15.20.6745.023; Fri, 1 Sep 2023
- 14:11:08 +0000
-From:   Ziyang Huang <hzyitc@outlook.com>
-To:     agross@kernel.org
-Cc:     andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        quic_gokulsri@quicinc.com, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ziyang Huang <hzyitc@outlook.com>
-Subject: [PATCH v3] arm64: dts: ipq5018: Correct uart1_pins pinconf
-Date:   Fri,  1 Sep 2023 22:10:42 +0800
-Message-ID: <TYZPR01MB5556D24A77DAFA013F93B551C9E4A@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-X-Mailer: git-send-email 2.40.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [goJzEa1HI8zmfnpTu+7hRD9f1kJuvQHTD+COuP4gzLCLngiBi+fUBw==]
-X-ClientProxiedBy: BYAPR06CA0001.namprd06.prod.outlook.com
- (2603:10b6:a03:d4::14) To TYZPR01MB5556.apcprd01.prod.exchangelabs.com
- (2603:1096:400:363::9)
-X-Microsoft-Original-Message-ID: <20230901141042.1333694-1-hzyitc@outlook.com>
+        Fri, 1 Sep 2023 10:11:13 -0400
+Received: from mail.8bytes.org (mail.8bytes.org [85.214.250.239])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E7CA010EC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 07:11:07 -0700 (PDT)
+Received: from 8bytes.org (pd9fe9d6f.dip0.t-ipconnect.de [217.254.157.111])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.8bytes.org (Postfix) with ESMTPSA id 66933269FFB;
+        Fri,  1 Sep 2023 16:11:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=8bytes.org;
+        s=default; t=1693577465;
+        bh=nSFtFeyXTuklogjUQuXzaAJdkKneyZ9AvBVAjwoFtOA=;
+        h=Date:From:To:Cc:Subject:From;
+        b=uvOzyfE2DUYVspUDvfPYOuDqaQrrPd5FO/ik5gGgBsiHA2J2Jy+z1eXS3x2ws9fy7
+         yyK9DP5H8bBUWhR1STNuSotsQ2Qj1Noftkq7NaOU6vf3H4JCzwdeGC+1jdZp12/grX
+         lKRi0cAOoPclVaOzyv0jDYL+Bg1+xNFLMg0JO5GHEdD+xUKsFSndObxVXyaVd1iwFA
+         3pdY2C3q7PzwPqxQW9FJktA4U6TMQ/OI4taixToGbYmIiO+341htRYHH+HIzHZpobt
+         MPk2y10aPadJe+Yjd3u1mxM1rA/ztHvNFUx9dKJHMvq8R/4XhNwMja/Yz1aU3tBbj4
+         NmKqLzO7BDFtw==
+Date:   Fri, 1 Sep 2023 16:11:04 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        iommu@lists.linux.dev
+Subject: [git pull] IOMMU Updates for Linux v6.6
+Message-ID: <ZPHw-MSyehz1wF7c@8bytes.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR01MB5556:EE_|SG2PR01MB3708:EE_
-X-MS-Office365-Filtering-Correlation-Id: f0786a0b-1577-47e7-4a11-08dbaaf5499d
-X-MS-Exchange-SLBlob-MailProps: AZnQBsB9XmoY4vkZoXkQjSGaegPD/PwJbO0RmtOC6dXHu8Lgs2e8ue3xdn/dkXKN6A81VQDacrsW2bxhWiWdrV9AM11xEHqFUSWUWeABGnhvPoWV1CQ6SqcqXCyVHtTeoXV9EHpTBaZJJnm+m5qSgT3OLNTJ8z37u7jm+tH+PqNj+7amFiMCzdJdGQPqTVoo9dV+NY5f1nL5mOTa5yP4AxQxXwsyWaobAyzes9Dsmd/GJrzoTQXBSmYAuN3CECP3R3rEe6o3TVsKiZvdUgokwh7xzote99ONvvVieKp7FdqGofRdfy4r7V5eM0YxhkzKdBJ65FxquSulHYdRmcI+XeoW/SiUV2HwXb67JgVFAawUyiAbLSrMXJbDJjE8M3mZtwtr8bsG0Ptc3kj5PfbT1ykt2Cs0MxEuwUnnOGMptbywKUd1qJsNxE2E6zSKEqpohGbRO/ctxjnP8pqSmhqzPuiF3Yt5TrS0aS7cy97YCk3zUl1khn/TJWLeFTrUFJwKd928BbHo9xUFz6ZPx7+Mg9IVkCUT+rxhuEkdAh6JZtqy5b6elf1Ly96pYpe3dSY6qPaWP+2TvhmNDE353+QtW4tCJo+i+lExQJAwAvo1rz0+8AEzQ0xux3vU3ZpgcIycV3VVAP8fFI9UHhkoBnuR7AjBi28sg8jrcxaWDLOAIs8I0mk87QaM8cRLDUXB3OmJSc82FCoD5Ju8k6REsywXT9DqkULmOYTtxYoSXfF/kXNTDWm+7Qe5K024AInpeeS59ZQ3OZ1WtRw=
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5zDOXpsaTJdI+NU/ptN+qJ1OZkel7Xr6Txj7kDeUCpHIX7yiESvzpTBmOgwyigSM6XTZYn1ozc0ODDqc2I8jC1lx6LijNXE0tsgiwYmvTrt10y7DGi57qIK2jbeLZUaesRqCnfoTqyS3ULSJsv0EbVOlI5ouf/Iw7N63k3QZDqBEBW/UdzX7sW/i3OUQTgldWXfOnIt0kH+nRvDUFe25iz+en0D/Kl4th83kaln98Oyrs5k0kvIUD5DHu+5UqKP0+GW307RrFTprsRlI1fwI0VlZLEvod1toAYpnKmsqN0xgbKnkb6AppdchAlD+XTEfyuwP91J5kjFwZY9szfLfyWsND3HnUsrBIT6WteIhWhomv9tn+rXxuiUMXWUlunMzQUNizSv3iFHooPvBOpC7MM5gRhMH3wqC0LEZv12txn3tjCQRa2cLj2COVWwRJom0biRsJn8uZiQxqk7NdLEJ1G+l6vZKWkjPKlYiw5y0h9V33OMrCTzcbwDAzRSkm93V/yfXA2gEW28u/XuTseAYaDY4M2UxW096LF/+YZvIQljdgyfSF1qCePi6Ho/P+INRZCi2b48H8VRDsUfJ7FlhR+3NZ4NvJcaE/jDOjlNhZ6Nt/ad/GkAWB1zaFgZ2LKj4
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UxGDfR305uixPTrWwBDuIKgJ/BSKVx8MycYdUgPYAiYJorxnkyhcQIOmJi1I?=
- =?us-ascii?Q?RvbTiN0cyzJqGcpRsxpdP3vxEzs1i9PnmUS1Phhyxqa3gwg+2Wg+P19+1ZI+?=
- =?us-ascii?Q?3ubu4RUonIVXEg6mJBiskrT6rwSotbV/gzCin9HumJ2PxlER9OJan3srwATh?=
- =?us-ascii?Q?QS6IVu5EOkRC1oxCUQML9+70gPbO7Ril82Lb4J9WvOWqF+r8BXi1E2bTx9OQ?=
- =?us-ascii?Q?F2zSwvL9kLBOEkMQZexhL1Q1qBhzfTJqOXFeKX0+AYakqUNhTdB3kdLxQFz1?=
- =?us-ascii?Q?EEatso3T6eorTyIsHTyK+RPmPVvHctPxFt8M7mJvKoCBdGuFjO1jX/4C4RRt?=
- =?us-ascii?Q?h9RuArD61dYVkHOriY4Tk6HMrbmgxpwlugijrQK1GGc9zNrMEoNARVsEXvT3?=
- =?us-ascii?Q?KIL7NFMRDeX7UGxxK+nhYj+DMS/wVAAVBrf6skqz9XuBxAcHAx5WCKR3/ez4?=
- =?us-ascii?Q?lg0U1IyOZpT5ftUC9DpqUzeykheG+qn59H0jpJaYJ9XIyWePFvd8daghoWfk?=
- =?us-ascii?Q?C/lc7pc5HPZqk8sGOmkpO0mqJ/znVHnG/DYF83jH2aXINtNNNXFSHgkqhRbN?=
- =?us-ascii?Q?zb4eJjbDRo/SXWTo8eL37Aw7nVa4kWQ/NvZIVk4nvGMN4/0XjALCLLM3jVIM?=
- =?us-ascii?Q?OFRVPWqudh5pI4D6BK16HIx9vVHFA/y6RvNb22fPF9uSwy8JhoBl3QwIR+LL?=
- =?us-ascii?Q?EGg3HqVWSlxO9hpk45CHd3ZCX91pJ2FrpkCHYBfosOSdYYrIk9XOECn2i9HS?=
- =?us-ascii?Q?BwpNcTCWhMSVgOTRJxfvPZqPgc2cij+2NCVuNO7aJ5hf3JaNMNoDJJbvELyd?=
- =?us-ascii?Q?+Z6hpFek0Eawd3zD6HnpeQtyl1SiFhUqxqh7kCnomkWxhYYE5zCpQ46uS3AZ?=
- =?us-ascii?Q?uC/v/ACguP0gg1cK59QTwo4MEM4+SApuLAIbHfiM/5MTQgO12xSH/jAzKowI?=
- =?us-ascii?Q?bPjJXP80RIt5B7TZ1A4mYyCuHm7kQ3VuZDbnTLQHTEjn7nTbE4/zhMb7XYTU?=
- =?us-ascii?Q?vt1lH2zHJHdMf31jbXhmnuOFr6vnkbeFhCgI0/54CybZBwkAUYR3A7oUfedA?=
- =?us-ascii?Q?AnJTHOTc4CB9+5Prulz6hrq0EnXplRs6/p6FiPBr75bUnq4O+brcEmoD70VR?=
- =?us-ascii?Q?srcs6qixsvNa+vsoHLGzixMQ6hhwKh6ki6Rb8byup4mYyNJXuRDDuipOnOt6?=
- =?us-ascii?Q?wF2XSHt30ekcSyJrq6Z9vSCANm8NxppvfuYzhqLtoDRzkkUIEYHmsSCAKmz3?=
- =?us-ascii?Q?mxLkICuLQ6AHbUqcXFAe?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f0786a0b-1577-47e7-4a11-08dbaaf5499d
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR01MB5556.apcprd01.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 14:11:08.5311
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SG2PR01MB3708
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="admroTXvaqUJoes2"
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In pinctrl, the pinconfigs for uart are named "blspX_uartY".
-  X is the UART ID. Starts from 1.
-    1-6 are in BLSP Block 1.
-    7-12 are in BLSP Block 2.
-  Y is the index of mux config. Starts from 0.
 
-In dts, the serials are also named "blspX_uartY", but with different logic.
-  X is the BLSP Block ID. Starts from 1.
-  Y is the uart id inside block.
-    In "ipq6018.dtsi" and "ipq8074.dtsi", it starts from 1.
-    But in "ipq5332.dtsi" and "ipq9574.dtsi", it starts from 0.
+--admroTXvaqUJoes2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-+-----------------+-----------------+-------------+-----------------+
-|     Block ID    | ID inside Block |  dts name   | pinconfig name  |
-| (Starts from 1) | (Starts from 1) |             |                 |
-+-----------------+-----------------+-------------+-----------------+
-|        1        |        1        | blsp1_uart1 |   blsp0_uartY   |
-|        1        |        2        | blsp1_uart2 |   blsp1_uartY   |
-|        1        |        6        | blsp1_uart6 |   blsp5_uartY   |
-|        2        |        1        | blsp2_uart1 |   blsp6_uartY   |
-|        2        |        6        | blsp2_uart6 |   blsp12_uartY  |
-+-----------------+-----------------+-------------+-----------------+
+Hi Linus,
 
-In "ipq5018.dts", "blsp1_uart1" (dts name) is the first serial (confimed
-by the address), So its pinconfig should be "blsp0_uart0" (pinconfig name,
-use GPIO 20 and 21) or "blsp0_uart1" (pinconfig name, use GPIO 28 and 29).
+Two things to notice on this PR:
 
-Fixes: 570006756a16 ("arm64: dts: Add ipq5018 SoC and rdp432-c2 board support")
-Signed-off-by: Ziyang Huang <hzyitc@outlook.com>
----
-Changes since v1:
-- Use corrent name in From
+	1. It includes another try of optimizing the IOVA allocation
+	   path for cases when the first 4GB begin to fill up. Previous
+	   tries to do so have caused issues and got reverted, so this
+	   time the optimization is explicitly disabled for PCI devices
+	   (which are the primary reason of this allocation strategy
+	    anyway). The change has been in linux-next for several weeks
+	   and no problems were reported. So I am confident that it is a
+	   real improvement this time and will not cause major issues.
 
-Changes since v2:
-- Define 2 pinconfs for uart1 in ipq5018.dtsi
-- rdp432-c2 use uart1_pins_a
+	2. Stephen reported merge conflicts with iommfd tree, but I
+	   couldn't reproduce them in my test-merge with your latest
+	   tree. This might be due to removal of some problematic
+	   patches from the IOMMU tree last week, as the iommufd tree
+	   updates seem to be merged already. Anyway, if you run into
+	   any problems please let me know.
 
- arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts |  2 +-
- arch/arm64/boot/dts/qcom/ipq5018.dtsi          | 15 +++++++++++----
- 2 files changed, 12 insertions(+), 5 deletions(-)
+With that said:
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-index e636a1cb9b77..e83d1863e89c 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-@@ -23,7 +23,7 @@ chosen {
- };
- 
- &blsp1_uart1 {
--	pinctrl-0 = <&uart1_pins>;
-+	pinctrl-0 = <&uart1_pins_a>;
- 	pinctrl-names = "default";
- 	status = "okay";
- };
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018.dtsi b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-index 9f13d2dcdfd5..50b4a2bd6fd3 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq5018.dtsi
-@@ -103,11 +103,18 @@ tlmm: pinctrl@1000000 {
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 
--			uart1_pins: uart1-state {
--				pins = "gpio31", "gpio32", "gpio33", "gpio34";
--				function = "blsp1_uart1";
-+			uart1_pins_a: uart1@0 {
-+				pins = "gpio20", "gpio21";
-+				function = "blsp0_uart0";
- 				drive-strength = <8>;
--				bias-pull-down;
-+				bias-disabled;
-+			};
-+
-+			uart1_pins_b: uart1@1 {
-+				pins = "gpio28", "gpio29";
-+				function = "blsp0_uart1";
-+				drive-strength = <8>;
-+				bias-disabled;
- 			};
- 		};
- 
--- 
-2.40.1
+The following changes since commit 706a741595047797872e669b3101429ab8d378ef:
 
+  Linux 6.5-rc7 (2023-08-20 15:02:52 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v6.6
+
+for you to fetch changes up to d8fe59f11096d6470b5f53739e49cdce67f3e127:
+
+  Merge branches 'apple/dart', 'arm/mediatek', 'arm/renesas', 'arm/rockchip', 'arm/smmu', 'unisoc', 'x86/vt-d', 'x86/amd' and 'core' into next (2023-08-21 14:18:43 +0200)
+
+----------------------------------------------------------------
+IOMMU Updates for Linux v6.6
+
+Including:
+
+	- Core changes:
+	  - Consolidate probe_device path
+	  - Make the PCI-SAC IOVA allocation trick PCI-only
+
+	- AMD IOMMU:
+	  - Consolidate PPR log handling
+	  - Interrupt handling improvements
+	  - Refcount fixes for amd_iommu_v2 driver
+
+	- Intel VT-d driver:
+	  - Enable idxd device DMA with pasid through iommu dma ops.
+	  - Lift RESV_DIRECT check from VT-d driver to core.
+	  - Miscellaneous cleanups and fixes.
+
+	- ARM-SMMU drivers:
+	  - Device-tree binding updates:
+	    - Add additional compatible strings for Qualcomm SoCs
+	    - Allow ASIDs to be configured in the DT to work around Qualcomm's
+	      broken hypervisor
+	    - Fix clocks for Qualcomm's MSM8998 SoC
+	  - SMMUv2:
+	    - Support for Qualcomm's legacy firmware implementation featured on
+	      at least MSM8956 and MSM8976.
+	    - Match compatible strings for Qualcomm SM6350 and SM6375 SoC variants
+	  - SMMUv3:
+	    - Use 'ida' instead of a bitmap for VMID allocation
+
+	  - Rockchip IOMMU:
+	    - Lift page-table allocation restrictions on newer hardware
+
+	  - Mediatek IOMMU:
+	    - Add MT8188 IOMMU Support
+
+	  - Renesas IOMMU:
+	    - Allow PCIe devices
+
+	- Usual set of cleanups an smaller fixes
+
+----------------------------------------------------------------
+AngeloGioacchino Del Regno (6):
+      dt-bindings: iommu: qcom,iommu: Add qcom,ctx-asid property
+      dt-bindings: iommu: qcom,iommu: Add QSMMUv2 and MSM8976 compatibles
+      iommu/qcom: Use the asid read from device-tree if specified
+      iommu/qcom: Disable and reset context bank before programming
+      iommu/qcom: Index contexts by asid number to allow asid 0
+      iommu/qcom: Add support for QSMMUv2 and QSMMU-500 secured contexts
+
+Chengci.Xu (5):
+      dt-bindings: mediatek: mt8188: Add binding for MM & INFRA IOMMU
+      iommu/mediatek: Fix two IOMMU share pagetable issue
+      iommu/mediatek: Adjust mtk_iommu_config flow
+      iommu/mediatek: Add enable IOMMU SMC command for INFRA masters
+      iommu/mediatek: Add MT8188 IOMMU Support
+
+Daniel Marcovitch (1):
+      iommu/amd/iommu_v2: Fix pasid_state refcount dec hit 0 warning on pasid unbind
+
+Dawei Li (1):
+      iommu/arm-smmu-v3: Change vmid alloc strategy from bitmap to ida
+
+Geert Uytterhoeven (1):
+      iommu/ipmmu-vmsa: Convert to read_poll_timeout_atomic()
+
+Jacob Pan (3):
+      iommu: Generalize PASID 0 for normal DMA w/o PASID
+      iommu: Move global PASID allocation from SVA to core
+      dmaengine/idxd: Re-enable kernel workqueue under DMA API
+
+Jason Gunthorpe (11):
+      iommu: Have __iommu_probe_device() check for already probed devices
+      iommu: Use iommu_group_ref_get/put() for dev->iommu_group
+      iommu: Inline iommu_group_get_for_dev() into __iommu_probe_device()
+      iommu: Simplify the __iommu_group_remove_device() flow
+      iommu: Add iommu_init/deinit_device() paired functions
+      iommu: Move the iommu driver sysfs setup into iommu_init/deinit_device()
+      iommu: Do not export iommu_device_link/unlink()
+      iommu: Always destroy the iommu_group during iommu_release_device()
+      iommu: Split iommu_group_add_device()
+      iommu: Avoid locking/unlocking for iommu_probe_device()
+      iommu/sprd: Add missing force_aperture
+
+Joerg Roedel (2):
+      Merge tag 'arm-smmu-updates' of git://git.kernel.org/pub/scm/linux/kernel/git/will/linux into arm/smmu
+      Merge branches 'apple/dart', 'arm/mediatek', 'arm/renesas', 'arm/rockchip', 'arm/smmu', 'unisoc', 'x86/vt-d', 'x86/amd' and 'core' into next
+
+Jonas Karlman (2):
+      iommu: rockchip: Fix directory table address encoding
+      iommu: rockchip: Allocate tables from all available memory for IOMMU v2
+
+Konrad Dybcio (5):
+      dt-bindings: arm-smmu: Fix MSM8998 clocks description
+      iommu/arm-smmu-qcom: Sort the compatible list alphabetically
+      iommu/arm-smmu-qcom: Add SM6375 DPU compatible
+      iommu/arm-smmu-qcom: Add SM6350 DPU compatible
+      iommu/arm-smmu-qcom: Add SM6375 SMMUv2
+
+Lu Baolu (7):
+      iommu/vt-d: Add domain_flush_pasid_iotlb()
+      iommu/vt-d: Remove pasid_mutex
+      iommu/vt-d: Make prq draining code generic
+      iommu/vt-d: Prepare for set_dev_pasid callback
+      iommu/vt-d: Add set_dev_pasid callback for dma domain
+      iommu: Prevent RESV_DIRECT devices from blocking domains
+      iommu/vt-d: Remove rmrr check in domain attaching device path
+
+Min-Hua Chen (1):
+      iommu/apple-dart: mark apple_dart_pm_ops static
+
+Rob Herring (1):
+      iommu: Explicitly include correct DT includes
+
+Robin Murphy (1):
+      iommu: Optimise PCI SAC address trick
+
+Vasant Hegde (9):
+      iommu/amd/iommu_v2: Clear pasid state in free path
+      iommu/amd: Generalize log overflow handling
+      iommu/amd: Handle PPR log overflow
+      iommu/amd: Refactor IOMMU interrupt handling logic for Event, PPR, and GA logs
+      iommu/amd: Enable separate interrupt for PPR and GA log
+      iommu/amd: Disable PPR log/interrupt in iommu_disable()
+      iommu/amd: Consolidate PPR log enablement
+      iommu/amd: Enable PPR/GA interrupt after interrupt handler setup
+      iommu/amd: Rearrange DTE bit definations
+
+Will Deacon (1):
+      Merge branch 'for-joerg/arm-smmu/bindings' into for-joerg/arm-smmu/updates
+
+Yanfei Xu (2):
+      iommu/vt-d: Fix to flush cache of PASID directory table
+      iommu/vt-d: Fix to convert mm pfn to dma pfn
+
+Yangtao Li (1):
+      iommu/arm-smmu: Clean up resource handling during Qualcomm context probe
+
+Yong Wu (2):
+      iommu/mediatek: mt8188: Add iova_region_larb_msk
+      MAINTAINERS: iommu/mediatek: Update the header file name
+
+Yoshihiro Shimoda (1):
+      iommu/ipmmu-vmsa: Allow PCIe devices
+
+Yue Haibing (1):
+      iommu/amd: Remove unused declarations
+
+YueHaibing (2):
+      iommu/amd: Remove unsued extern declaration amd_iommu_init_hardware()
+      iommu/vt-d: Remove unused extern declaration dmar_parse_dev_scope()
+
+Zhu Wang (1):
+      iommu: Remove kernel-doc warnings
+
+ .../devicetree/bindings/iommu/arm,smmu.yaml        |  41 ++
+ .../devicetree/bindings/iommu/mediatek,iommu.yaml  |  12 +-
+ .../devicetree/bindings/iommu/qcom,iommu.yaml      |  22 +-
+ MAINTAINERS                                        |   1 +
+ drivers/acpi/scan.c                                |   2 +-
+ drivers/dma/idxd/device.c                          |  39 +-
+ drivers/dma/idxd/dma.c                             |   5 +-
+ drivers/dma/idxd/idxd.h                            |   9 +
+ drivers/dma/idxd/init.c                            |  54 ++-
+ drivers/dma/idxd/sysfs.c                           |   7 -
+ drivers/iommu/amd/amd_iommu.h                      |   7 +-
+ drivers/iommu/amd/amd_iommu_types.h                |  22 +-
+ drivers/iommu/amd/init.c                           | 131 ++++--
+ drivers/iommu/amd/iommu.c                          |  86 ++--
+ drivers/iommu/amd/iommu_v2.c                       |   7 +-
+ drivers/iommu/apple-dart.c                         |   2 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c    |   2 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c        |  45 +-
+ drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h        |   2 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom-debug.c   |   2 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c         |   7 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.c              |   1 -
+ drivers/iommu/arm/arm-smmu/qcom_iommu.c            |  71 ++-
+ drivers/iommu/dma-iommu.c                          |  26 +-
+ drivers/iommu/dma-iommu.h                          |   8 +
+ drivers/iommu/intel/iommu.c                        | 244 ++++++----
+ drivers/iommu/intel/iommu.h                        |   9 +
+ drivers/iommu/intel/pasid.c                        |   4 +-
+ drivers/iommu/intel/pasid.h                        |   2 -
+ drivers/iommu/intel/svm.c                          |  62 +--
+ drivers/iommu/iommu-sva.c                          |  29 +-
+ drivers/iommu/iommu-sysfs.c                        |   8 -
+ drivers/iommu/iommu.c                              | 483 +++++++++++---------
+ drivers/iommu/ipmmu-vmsa.c                         |  21 +-
+ drivers/iommu/mtk_iommu.c                          | 151 +++++--
+ drivers/iommu/of_iommu.c                           |   2 +-
+ drivers/iommu/rockchip-iommu.c                     |  50 +--
+ drivers/iommu/sprd-iommu.c                         |   2 +
+ drivers/iommu/tegra-smmu.c                         |   2 +-
+ drivers/iommu/virtio-iommu.c                       |   2 +-
+ .../memory/mediatek,mt8188-memory-port.h           | 489 +++++++++++++++++++++
+ include/linux/amd-iommu.h                          |   1 -
+ include/linux/dmar.h                               |   2 -
+ include/linux/iommu.h                              |  15 +
+ include/soc/mediatek/smi.h                         |   1 +
+ 45 files changed, 1518 insertions(+), 672 deletions(-)
+ create mode 100644 include/dt-bindings/memory/mediatek,mt8188-memory-port.h
+
+Please pull.
+
+Thanks,
+
+	Joerg
+
+--admroTXvaqUJoes2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEr9jSbILcajRFYWYyK/BELZcBGuMFAmTx8PEACgkQK/BELZcB
+GuNYqBAAqYa4yaGWkTWhVALiy16JMJU2TaBtrQwA94wVrCYp6eHIqg+pn9bsKywj
+0TDWcUgDGMu928plR7KrAVHicSa8JMVp9oHx24VCcZbRL6R6BtV1CEyCiFIVPB2k
+F8JHHTRmVgOzyBROKi2e0qRzo+ajvrdnl+rGwmtGjYOkdzfs/WZtz37aTF945X2W
+RSsgHRdGz0+Vs0he18mT6PcZUyzM+Bvxng57V+yCTJyP5BKRmi8VEvYXFAWon9qZ
+CAYSoV10r8WsQ2200vY2hVSGee09alnQ14SnMVixmoEcrTPavGGyeR8Rc1a8hJ0n
+izp3ub1+GRGnXoaWa1f1l76IzWCCSpEqh4NDEMEePp8VO8/gRGa+k6i8Eo4iNaJ5
+a5M/NNtL9kv2vHnuNG+S8xbwt3DWJkYZ0zK9KFUgH9uhVWC2hl1P3Kq0+I3Fk/U4
+QOkcyZjErysSY34gtw8fZpGt5F9Sw7c8nyh6aMv0Lr0mGxfS21/Uq5fR3BWTInrb
+tqWrmxW5sg+23CZV2LxtsU7E/+FVx/JT5vbjLEdH/zMdalFDyj8ScTucKzQKF9Z+
+K6uwcbYJ8cAfaaoqFw3J0yfxP3RZO1UQjwB7kAND7JhWRCoQ3GOrMc9kWQhEW9Eo
+tpSA3m+MEb0P4D4DdnLcEAx+soR/3B9RxtII1BDn0AfPWw97qEo=
+=+gaV
+-----END PGP SIGNATURE-----
+
+--admroTXvaqUJoes2--
