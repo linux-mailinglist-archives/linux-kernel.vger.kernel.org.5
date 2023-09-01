@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE12278FD87
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:44:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE19C78FD84
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349554AbjIAMoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44600 "EHLO
+        id S1349597AbjIAMoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:44:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345967AbjIAMod (ORCPT
+        with ESMTP id S1349527AbjIAMoh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:44:33 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50AD10EB;
-        Fri,  1 Sep 2023 05:44:28 -0700 (PDT)
+        Fri, 1 Sep 2023 08:44:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F663E0;
+        Fri,  1 Sep 2023 05:44:31 -0700 (PDT)
 Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:4d01:31d2:de6b:d217])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1F85866072B7;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9F2DE66072B9;
         Fri,  1 Sep 2023 13:44:27 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693572267;
-        bh=swS7yYiqBxggjIra2XX2pXDY4PPq3f683TK0rKa6DhQ=;
+        s=mail; t=1693572268;
+        bh=gaDM0Ytn9pQussDWC2PqEbL+YnC+DHLH9QSJ8VT8PzU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XCA1Oaz5DjS6kBeRp5mhjD9JZ5zaUevWlkLivlCVo4hTv4mvRw4HQM46Ph0vN14jo
-         5LFBuHbl0vvg+WoFcs1iKwpdywnKoBTWrVsM5uFZtMfuypN9FduTJBKSnfQM5cxkTe
-         4mwQcJW95/ZIM/qP5NLqCQsej+xEfc/9P8v8cJ41Hlm0HH9HIWXDm67rfknoIC3cq/
-         8NzkJDiEj/jbTm5xxsOTyC9+UL1VejMyMLW67z76QUjT09zFdUGJmL2Q22xp0Z+trj
-         6PFgD1gcCyUvFyo3tg+Niy27rcZBvQdRdoDSUhZuTBEI9cD5yMsSEHJKyg1S2nmVpg
-         VDGga3RSJ+qIQ==
+        b=GlUwywWSAS+2i0Z3R8RUcFhxKolUiSEeWAzI6a3MGa73yZQKW665OxnMyoyeNbocp
+         LTDuuV/Hs6Az/0d3b5EnjVfx41aggoDQiQPLGAA8LOaLX+dWWiyBGT0FMZkp+91wWr
+         saAGmOGDIDveQEEURqVEdq3Eb1V0b1v2VB6axBlFy1OAkTeYZyLpSlDdKg6ogHi2YO
+         nsiDIJmv36vII8JOeZteEGEwMr8RZvGMm2T8L1ETyhy9zT/bGjULn1Scl6pgagkRHc
+         Fc9iTpIUS8RwCPam4VjtWnNdZd/8v+CmD6xTjMyl+BdJEt5i9EPUB5F1bVTp/hYzaN
+         VV9ZS5KjpM9hA==
 From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
 To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
         ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
@@ -43,9 +43,9 @@ Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
         kernel@collabora.com,
         Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v6 04/18] media: amphion: Use vb2_get_buffer() instead of directly access to buffers array
-Date:   Fri,  1 Sep 2023 14:44:00 +0200
-Message-Id: <20230901124414.48497-5-benjamin.gaignard@collabora.com>
+Subject: [PATCH v6 05/18] media: mediatek: jpeg: Use vb2_get_buffer() instead of directly access to buffers array
+Date:   Fri,  1 Sep 2023 14:44:01 +0200
+Message-Id: <20230901124414.48497-6-benjamin.gaignard@collabora.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
 References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
@@ -68,55 +68,26 @@ a valid pointer so check the return value of all of them.
 
 Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 ---
- drivers/media/platform/amphion/vpu_dbg.c | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/amphion/vpu_dbg.c b/drivers/media/platform/amphion/vpu_dbg.c
-index 982c2c777484..a462d6fe4ea9 100644
---- a/drivers/media/platform/amphion/vpu_dbg.c
-+++ b/drivers/media/platform/amphion/vpu_dbg.c
-@@ -140,11 +140,18 @@ static int vpu_dbg_instance(struct seq_file *s, void *data)
+diff --git a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
+index 621038aab116..62910a1b8a98 100644
+--- a/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
++++ b/drivers/media/platform/mediatek/jpeg/mtk_jpeg_core.c
+@@ -603,7 +603,11 @@ static int mtk_jpeg_qbuf(struct file *file, void *priv, struct v4l2_buffer *buf)
+ 		return -EINVAL;
+ 	}
  
- 	vq = v4l2_m2m_get_src_vq(inst->fh.m2m_ctx);
- 	for (i = 0; i < vq->num_buffers; i++) {
--		struct vb2_buffer *vb = vq->bufs[i];
--		struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-+		struct vb2_buffer *vb;
-+		struct vb2_v4l2_buffer *vbuf;
-+
-+		vb = vb2_get_buffer(vq, i);
-+		if (!vb)
-+			continue;
+-	vb = vq->bufs[buf->index];
++	vb = vb2_get_buffer(vq, buf->index);
++	if (!vb) {
++		dev_err(ctx->jpeg->dev, "buffer not found\n");
++		return -EINVAL;
++	}
+ 	jpeg_src_buf = mtk_jpeg_vb2_to_srcbuf(vb);
+ 	jpeg_src_buf->bs_size = buf->m.planes[0].bytesused;
  
- 		if (vb->state == VB2_BUF_STATE_DEQUEUED)
- 			continue;
-+
-+		vbuf = to_vb2_v4l2_buffer(vb);
-+
- 		num = scnprintf(str, sizeof(str),
- 				"output [%2d] state = %10s, %8s\n",
- 				i, vb2_stat_name[vb->state],
-@@ -155,11 +162,18 @@ static int vpu_dbg_instance(struct seq_file *s, void *data)
- 
- 	vq = v4l2_m2m_get_dst_vq(inst->fh.m2m_ctx);
- 	for (i = 0; i < vq->num_buffers; i++) {
--		struct vb2_buffer *vb = vq->bufs[i];
--		struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
-+		struct vb2_buffer *vb;
-+		struct vb2_v4l2_buffer *vbuf;
-+
-+		vb = vb2_get_buffer(vq, i);
-+		if (!vb)
-+			continue;
- 
- 		if (vb->state == VB2_BUF_STATE_DEQUEUED)
- 			continue;
-+
-+		vbuf = to_vb2_v4l2_buffer(vb);
-+
- 		num = scnprintf(str, sizeof(str),
- 				"capture[%2d] state = %10s, %8s\n",
- 				i, vb2_stat_name[vb->state],
 -- 
 2.39.2
 
