@@ -2,56 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A755978FBF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:55:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D339278FBFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:58:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349060AbjIAKzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
+        id S1349056AbjIAK6u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:58:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjIAKzM (ORCPT
+        with ESMTP id S244047AbjIAK6t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:55:12 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3752210CE;
-        Fri,  1 Sep 2023 03:55:09 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 777E4FEC;
-        Fri,  1 Sep 2023 03:55:47 -0700 (PDT)
-Received: from [10.57.91.85] (unknown [10.57.91.85])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DC11F3FBD2;
-        Fri,  1 Sep 2023 03:55:05 -0700 (PDT)
-Message-ID: <060108f8-1ef0-d616-12de-88b05a2e7df9@arm.com>
-Date:   Fri, 1 Sep 2023 11:55:04 +0100
+        Fri, 1 Sep 2023 06:58:49 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42BBC10D2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:58:23 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-56a55c0f8b1so1370695a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 03:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1693565903; x=1694170703; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0OJ2dXFmVQZDKYTCTqxGvL38WRbzk3NvjgnLsPgru5I=;
+        b=EtxRq+bws1ukhjD1v9GzF+IcNroQopyYXzau4FjoHvX8DFZoudX8lGLvgiMm9B2vG7
+         gkx4AijNpO86Z+xMf10vz5Wmavu58y63HKKeKRX8J8K7iIMzh35L4AEg5EGkWLC9SLlX
+         r5p3GMaQKcUPehw3v1FXZay5v7Q5xTseO2PAsQIYNw1C6bhZZz+jn0eAWoehW5ThpJIS
+         GVun8wDJ0HccKsTMpgKEbihI0iVNhX5p2ARfD2Oc2UVWvSgUWPK3F2Azhn/bqn8IgCHt
+         WyprfZVPXyjYisHfN0BAEgviMdGxSIo8mZyCyEgVCiNSuqYErs0TPfKwMSqKQMN+wD5c
+         Gsbg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693565903; x=1694170703;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=0OJ2dXFmVQZDKYTCTqxGvL38WRbzk3NvjgnLsPgru5I=;
+        b=ZLTYvMRp3Az0a8dk5lxwXSuwar9jsUlu4sheMXx/GMQKBAm0ylKeujkBbGphFYaZZF
+         yFJvz2w1c/ZKRw5eprU1R7+9RYRFGdSHdXSzkEun+SKH4OnGimBAhj8uCwQnuXiNR2Qk
+         si69JPG4PYwZoTLE6B1xXQjDknkucCzQ4wDxaQEfmqW45r/Cume0H8omrnzykvutCGxX
+         SuYUMs47wZBC3jBrtZtIkWdXn1RzWLiDVlTx7qXeuZ29dK8WQFE3N3zTN4Q6ly7m7n3W
+         E5y0rHhVhK/CUdYBQ2RMNd6c1w/bdW6K1Az92wdwkV5+WOp+H/GGC3LCb0OtdDBfK9lS
+         BWDw==
+X-Gm-Message-State: AOJu0Yz5p8yUK4LMvMDELMyhxV4yxhivGMWTGJA0iPYi0iP0yoNX69is
+        Q0D2pHCXViMDSawG3KfgrEeiQg==
+X-Google-Smtp-Source: AGHT+IFGbfzgdwxEt/HnFveYKKdr+aD0fnh004mDvQW3jFYTFzXeSmwTJL/T/b9JwunOBQtUQUpHqw==
+X-Received: by 2002:a17:90b:150:b0:263:43c6:69ac with SMTP id em16-20020a17090b015000b0026343c669acmr1761895pjb.44.1693565902618;
+        Fri, 01 Sep 2023 03:58:22 -0700 (PDT)
+Received: from [10.254.254.90] ([139.177.225.247])
+        by smtp.gmail.com with ESMTPSA id ck18-20020a17090afe1200b00262d662c9adsm4344759pjb.53.2023.09.01.03.58.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 03:58:22 -0700 (PDT)
+Message-ID: <0e9a87d9-410f-a906-e95c-976a141f24f0@bytedance.com>
+Date:   Fri, 1 Sep 2023 18:58:13 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
  Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH v8 08/13] coresight-tpdm: Add node to set dsb programming
- mode
-To:     Tao Zhang <quic_taozha@quicinc.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Konrad Dybcio <konradybcio@gmail.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Jinlong Mao <quic_jinlmao@quicinc.com>,
-        Leo Yan <leo.yan@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Tingwei Zhang <quic_tingweiz@quicinc.com>,
-        Yuanfang Zhang <quic_yuanfang@quicinc.com>,
-        Trilok Soni <quic_tsoni@quicinc.com>,
-        Hao Zhang <quic_hazha@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, andersson@kernel.org
-References: <1692681973-20764-1-git-send-email-quic_taozha@quicinc.com>
- <1692681973-20764-9-git-send-email-quic_taozha@quicinc.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <1692681973-20764-9-git-send-email-quic_taozha@quicinc.com>
+Subject: Re: [PATCH v2 5/6] maple_tree: Update check_forking() and
+ bench_forking()
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        maple-tree@lists.infradead.org, linux-mm@kvack.org,
+        Liam.Howlett@oracle.com, corbet@lwn.net, akpm@linux-foundation.org,
+        willy@infradead.org, brauner@kernel.org, surenb@google.com,
+        michael.christie@oracle.com, peterz@infradead.org,
+        mathieu.desnoyers@efficios.com, npiggin@gmail.com,
+        avagin@gmail.com, linux-doc@vger.kernel.org,
+        Peng Zhang <zhangpeng.00@bytedance.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <202308312115.cad34fed-oliver.sang@intel.com>
+From:   Peng Zhang <zhangpeng.00@bytedance.com>
+In-Reply-To: <202308312115.cad34fed-oliver.sang@intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,184 +82,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/08/2023 06:26, Tao Zhang wrote:
-> Add node to set and show programming mode for TPDM DSB subunit.
-> Once the DSB programming mode is set, it will be written to the
-> register DSB_CR.
+
+
+在 2023/8/31 21:40, kernel test robot 写道:
 > 
-> Signed-off-by: Tao Zhang <quic_taozha@quicinc.com>
-> ---
->   .../ABI/testing/sysfs-bus-coresight-devices-tpdm   | 14 ++++++
->   drivers/hwtracing/coresight/coresight-tpdm.c       | 53 ++++++++++++++++++++++
->   drivers/hwtracing/coresight/coresight-tpdm.h       | 19 ++++++++
->   3 files changed, 86 insertions(+)
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> index 9e26e30..e17d1b4 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> +++ b/Documentation/ABI/testing/sysfs-bus-coresight-devices-tpdm
-> @@ -43,3 +43,17 @@ Description:
->   		Accepts only one of the 2 values -  0 or 1.
->   		0 : Set the DSB trigger type to false
->   		1 : Set the DSB trigger type to true
-> +
-> +What:		/sys/bus/coresight/devices/<tpdm-name>/dsb_mode
-> +Date:		March 2023
-> +KernelVersion	6.5
-
-Please fix this to 6.7
-
-Rest looks fine to me
-
-Suzuki
-
-
-> +Contact:	Jinlong Mao (QUIC) <quic_jinlmao@quicinc.com>, Tao Zhang (QUIC) <quic_taozha@quicinc.com>
-> +Description:
-> +		(RW) Set/Get the programming mode of the DSB for tpdm.
-> +
-> +		Accepts the value needs to be greater than 0. What data
-> +		bits do is listed below.
-> +		Bit[0:1] : Test mode control bit for choosing the inputs.
-> +		Bit[3] : Set to 0 for low performance mode.
-> +				 Set to 1 for high performance mode.
-> +		Bit[4:8] : Select byte lane for high performance mode.
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
-> index 8e11c9b..2424eb7 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.c
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.c
-> @@ -4,6 +4,7 @@
->    */
->   
->   #include <linux/amba/bus.h>
-> +#include <linux/bitfield.h>
->   #include <linux/bitmap.h>
->   #include <linux/coresight.h>
->   #include <linux/coresight-pmu.h>
-> @@ -47,6 +48,27 @@ static void tpdm_reset_datasets(struct tpdm_drvdata *drvdata)
->   	}
->   }
->   
-> +static void set_dsb_mode(struct tpdm_drvdata *drvdata, u32 *val)
-> +{
-> +	u32 mode;
-> +
-> +	/* Set the test accurate mode */
-> +	mode = TPDM_DSB_MODE_TEST(drvdata->dsb->mode);
-> +	*val &= ~TPDM_DSB_CR_TEST_MODE;
-> +	*val |= FIELD_PREP(TPDM_DSB_CR_TEST_MODE, mode);
-> +
-> +	/* Set the byte lane for high-performance mode */
-> +	mode = TPDM_DSB_MODE_HPBYTESEL(drvdata->dsb->mode);
-> +	*val &= ~TPDM_DSB_CR_HPSEL;
-> +	*val |= FIELD_PREP(TPDM_DSB_CR_HPSEL, mode);
-> +
-> +	/* Set the performance mode */
-> +	if (drvdata->dsb->mode & TPDM_DSB_MODE_PERF)
-> +		*val |= TPDM_DSB_CR_MODE;
-> +	else
-> +		*val &= ~TPDM_DSB_CR_MODE;
-> +}
-> +
->   static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
->   {
->   	u32 val;
-> @@ -60,6 +82,8 @@ static void tpdm_enable_dsb(struct tpdm_drvdata *drvdata)
->   	writel_relaxed(val, drvdata->base + TPDM_DSB_TIER);
->   
->   	val = readl_relaxed(drvdata->base + TPDM_DSB_CR);
-> +	/* Set the mode of DSB dataset */
-> +	set_dsb_mode(drvdata, &val);
->   	/* Set trigger type */
->   	if (drvdata->dsb->trig_type)
->   		val |= TPDM_DSB_CR_TRIG_TYPE;
-> @@ -244,6 +268,34 @@ static struct attribute_group tpdm_attr_grp = {
->   	.attrs = tpdm_attrs,
->   };
->   
-> +static ssize_t dsb_mode_show(struct device *dev,
-> +				struct device_attribute *attr,
-> +				char *buf)
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +
-> +	return sysfs_emit(buf, "%x\n", drvdata->dsb->mode);
-> +}
-> +
-> +static ssize_t dsb_mode_store(struct device *dev,
-> +				struct device_attribute *attr,
-> +				const char *buf,
-> +				size_t size)
-> +{
-> +	struct tpdm_drvdata *drvdata = dev_get_drvdata(dev->parent);
-> +	unsigned long val;
-> +
-> +	if ((kstrtoul(buf, 0, &val)) || (val < 0) ||
-> +			(val & ~TPDM_DSB_MODE_MASK))
-> +		return -EINVAL;
-> +
-> +	spin_lock(&drvdata->spinlock);
-> +	drvdata->dsb->mode = val & TPDM_DSB_MODE_MASK;
-> +	spin_unlock(&drvdata->spinlock);
-> +	return size;
-> +}
-> +static DEVICE_ATTR_RW(dsb_mode);
-> +
->   static ssize_t dsb_trig_type_show(struct device *dev,
->   		  struct device_attribute *attr, char *buf)
->   {
-> @@ -316,6 +368,7 @@ static ssize_t dsb_trig_ts_store(struct device *dev,
->   static DEVICE_ATTR_RW(dsb_trig_ts);
->   
->   static struct attribute *tpdm_dsb_attrs[] = {
-> +	&dev_attr_dsb_mode.attr,
->   	&dev_attr_dsb_trig_ts.attr,
->   	&dev_attr_dsb_trig_type.attr,
->   	NULL,
-> diff --git a/drivers/hwtracing/coresight/coresight-tpdm.h b/drivers/hwtracing/coresight/coresight-tpdm.h
-> index f59e751..f57c9fe 100644
-> --- a/drivers/hwtracing/coresight/coresight-tpdm.h
-> +++ b/drivers/hwtracing/coresight/coresight-tpdm.h
-> @@ -15,11 +15,28 @@
->   
->   /* Enable bit for DSB subunit */
->   #define TPDM_DSB_CR_ENA		BIT(0)
-> +/* Enable bit for DSB subunit perfmance mode */
-> +#define TPDM_DSB_CR_MODE		BIT(1)
->   /* Enable bit for DSB subunit trigger type */
->   #define TPDM_DSB_CR_TRIG_TYPE		BIT(12)
-> +/* Data bits for DSB high performace mode */
-> +#define TPDM_DSB_CR_HPSEL		GENMASK(6, 2)
-> +/* Data bits for DSB test mode */
-> +#define TPDM_DSB_CR_TEST_MODE		GENMASK(10, 9)
-> +
->   /* Enable bit for DSB subunit trigger timestamp */
->   #define TPDM_DSB_TIER_XTRIG_TSENAB		BIT(1)
->   
-> +/* DSB programming modes */
-> +/* DSB mode bits mask */
-> +#define TPDM_DSB_MODE_MASK			GENMASK(8, 0)
-> +/* Test mode control bit*/
-> +#define TPDM_DSB_MODE_TEST(val)	(val & GENMASK(1, 0))
-> +/* Performance mode */
-> +#define TPDM_DSB_MODE_PERF		BIT(3)
-> +/* High performance mode */
-> +#define TPDM_DSB_MODE_HPBYTESEL(val)	(val & GENMASK(8, 4))
-> +
->   /* TPDM integration test registers */
->   #define TPDM_ITATBCNTRL		(0xEF0)
->   #define TPDM_ITCNTRL		(0xF00)
-> @@ -48,10 +65,12 @@
->   
->   /**
->    * struct dsb_dataset - specifics associated to dsb dataset
-> + * @mode:             DSB programming mode
->    * @trig_ts:          Enable/Disable trigger timestamp.
->    * @trig_type:        Enable/Disable trigger type.
->    */
->   struct dsb_dataset {
-> +	u32				mode;
->   	bool			trig_ts;
->   	bool			trig_type;
->   };
-
+> Hello,
+> 
+> kernel test robot noticed "WARNING:possible_recursive_locking_detected" on:
+> 
+> commit: 2730245bd6b13a94a67e84c10832a9f52fad0aa5 ("[PATCH v2 5/6] maple_tree: Update check_forking() and bench_forking()")
+> url: https://github.com/intel-lab-lkp/linux/commits/Peng-Zhang/maple_tree-Add-two-helpers/20230830-205847
+> base: https://git.kernel.org/cgit/linux/kernel/git/akpm/mm.git mm-everything
+> patch link: https://lore.kernel.org/all/20230830125654.21257-6-zhangpeng.00@bytedance.com/
+> patch subject: [PATCH v2 5/6] maple_tree: Update check_forking() and bench_forking()
+> 
+> in testcase: boot
+> 
+> compiler: clang-16
+> test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
+> 
+> (please refer to attached dmesg/kmsg for entire log/backtrace)
+> 
+> 
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <oliver.sang@intel.com>
+> | Closes: https://lore.kernel.org/oe-lkp/202308312115.cad34fed-oliver.sang@intel.com
+> 
+> 
+> [   25.146957][    T1] WARNING: possible recursive locking detected
+> [   25.147110][    T1] 6.5.0-rc4-00632-g2730245bd6b1 #1 Tainted: G                TN
+> [   25.147110][    T1] --------------------------------------------
+> [   25.147110][    T1] swapper/1 is trying to acquire lock:
+> [ 25.147110][ T1] ffffffff86485058 (&mt->ma_lock){+.+.}-{2:2}, at: check_forking (include/linux/spinlock.h:? lib/test_maple_tree.c:1854)
+> [   25.147110][    T1]
+> [   25.147110][    T1] but task is already holding lock:
+> [ 25.147110][ T1] ffff888110847a30 (&mt->ma_lock){+.+.}-{2:2}, at: check_forking (include/linux/spinlock.h:351 lib/test_maple_tree.c:1854)
+Thanks for the test. I checked that these are two different locks, why
+is this warning reported? Did I miss something?
+> [   25.147110][    T1]
+> [   25.147110][    T1] other info that might help us debug this:
+> [   25.147110][    T1]  Possible unsafe locking scenario:
+> [   25.147110][    T1]
+> [   25.147110][    T1]        CPU0
+> [   25.147110][    T1]        ----
+> [   25.147110][    T1]   lock(&mt->ma_lock);
+> [   25.147110][    T1]
+> [   25.147110][    T1]  *** DEADLOCK ***
+> [   25.147110][    T1]
+> [   25.147110][    T1]  May be due to missing lock nesting notation
+> [   25.147110][    T1]
+> [   25.147110][    T1] 1 lock held by swapper/1:
+> [ 25.147110][ T1] #0: ffff888110847a30 (&mt->ma_lock){+.+.}-{2:2}, at: check_forking (include/linux/spinlock.h:351 lib/test_maple_tree.c:1854)
+> [   25.147110][    T1]
+> [   25.147110][    T1] stack backtrace:
+> [   25.147110][    T1] CPU: 0 PID: 1 Comm: swapper Tainted: G                TN 6.5.0-rc4-00632-g2730245bd6b1 #1
+> [   25.147110][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [   25.147110][    T1] Call Trace:
+> [   25.147110][    T1]  <TASK>
+> [ 25.147110][ T1] dump_stack_lvl (lib/dump_stack.c:? lib/dump_stack.c:106)
+> [ 25.147110][ T1] validate_chain (kernel/locking/lockdep.c:?)
+> [ 25.147110][ T1] ? look_up_lock_class (kernel/locking/lockdep.c:926)
+> [ 25.147110][ T1] ? mark_lock (arch/x86/include/asm/bitops.h:228 arch/x86/include/asm/bitops.h:240 include/asm-generic/bitops/instrumented-non-atomic.h:142 kernel/locking/lockdep.c:228 kernel/locking/lockdep.c:4655)
+> [ 25.147110][ T1] __lock_acquire (kernel/locking/lockdep.c:?)
+> [ 25.147110][ T1] lock_acquire (kernel/locking/lockdep.c:5753)
+> [ 25.147110][ T1] ? check_forking (include/linux/spinlock.h:? lib/test_maple_tree.c:1854)
+> [ 25.147110][ T1] _raw_spin_lock (include/linux/spinlock_api_smp.h:133 kernel/locking/spinlock.c:154)
+> [ 25.147110][ T1] ? check_forking (include/linux/spinlock.h:? lib/test_maple_tree.c:1854)
+> [ 25.147110][ T1] check_forking (include/linux/spinlock.h:? lib/test_maple_tree.c:1854)
+> [ 25.147110][ T1] maple_tree_seed (lib/test_maple_tree.c:3583)
+> [ 25.147110][ T1] do_one_initcall (init/main.c:1232)
+> [ 25.147110][ T1] ? __cfi_maple_tree_seed (lib/test_maple_tree.c:3508)
+> [ 25.147110][ T1] do_initcall_level (init/main.c:1293)
+> [ 25.147110][ T1] do_initcalls (init/main.c:1307)
+> [ 25.147110][ T1] kernel_init_freeable (init/main.c:1550)
+> [ 25.147110][ T1] ? __cfi_kernel_init (init/main.c:1429)
+> [ 25.147110][ T1] kernel_init (init/main.c:1439)
+> [ 25.147110][ T1] ? __cfi_kernel_init (init/main.c:1429)
+> [ 25.147110][ T1] ret_from_fork (arch/x86/kernel/process.c:151)
+> [ 25.147110][ T1] ? __cfi_kernel_init (init/main.c:1429)
+> [ 25.147110][ T1] ret_from_fork_asm (arch/x86/entry/entry_64.S:312)
+> [   25.147110][    T1]  </TASK>
+> [   28.697241][   T32] clocksource_wdtest: --- Verify jiffies-like uncertainty margin.
+> [   28.698316][   T32] clocksource: wdtest-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 6370867519511994 ns
+> [   29.714980][   T32] clocksource_wdtest: --- Verify tsc-like uncertainty margin.
+> [   29.716387][   T32] clocksource: wdtest-ktime: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
+> [   29.721896][   T32] clocksource_wdtest: --- tsc-like times: 1693478138832947444 - 1693478138832945950 = 1494.
+> [   29.723570][   T32] clocksource_wdtest: --- Watchdog with 0x error injection, 2 retries.
+> [   31.898906][   T32] clocksource_wdtest: --- Watchdog with 1x error injection, 2 retries.
+> [   34.043415][   T32] clocksource_wdtest: --- Watchdog with 2x error injection, 2 retries, expect message.
+> [   34.512462][    C0] clocksource: timekeeping watchdog on CPU0: kvm-clock retried 2 times before success
+> [   36.169157][   T32] clocksource_wdtest: --- Watchdog with 3x error injection, 2 retries, expect clock skew.
+> [   36.513464][    C0] clocksource: timekeeping watchdog on CPU0: wd-wdtest-ktime-wd excessive read-back delay of 1000880ns vs. limit of 125000ns, wd-wd read-back delay only 46ns, attempt 3, marking wdtest-ktime unstable
+> [   36.516829][    C0] clocksource_wdtest: --- Marking wdtest-ktime unstable due to clocksource watchdog.
+> [   38.412889][   T32] clocksource: wdtest-ktime: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
+> [   38.421249][   T32] clocksource_wdtest: --- Watchdog clock-value-fuzz error injection, expect clock skew and per-CPU mismatches.
+> [   38.990462][    C0] clocksource: timekeeping watchdog on CPU0: Marking clocksource 'wdtest-ktime' as unstable because the skew is too large:
+> [   38.992698][    C0] clocksource:                       'kvm-clock' wd_nsec: 479996388 wd_now: 9454aecf2 wd_last: 928aec30e mask: ffffffffffffffff
+> [   38.994924][    C0] clocksource:                       'wdtest-ktime' cs_nsec: 679996638 cs_now: 17807167426ff864 cs_last: 1780716719e80b86 mask: ffffffffffffffff
+> [   38.997374][    C0] clocksource:                       Clocksource 'wdtest-ktime' skewed 200000250 ns (200 ms) over watchdog 'kvm-clock' interval of 479996388 ns (479 ms)
+> [   38.999919][    C0] clocksource:                       'kvm-clock' (not 'wdtest-ktime') is current clocksource.
+> [   39.001696][    C0] clocksource_wdtest: --- Marking wdtest-ktime unstable due to clocksource watchdog.
+> [   40.441815][   T32] clocksource: Not enough CPUs to check clocksource 'wdtest-ktime'.
+> [   40.443303][   T32] clocksource_wdtest: --- Done with test.
+> [  293.673815][    T1] swapper invoked oom-killer: gfp_mask=0xcc0(GFP_KERNEL), order=0, oom_score_adj=0
+> [  293.675628][    T1] CPU: 0 PID: 1 Comm: swapper Tainted: G                TN 6.5.0-rc4-00632-g2730245bd6b1 #1
+> [  293.677082][    T1] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> [  293.677082][    T1] Call Trace:
+> [  293.677082][    T1]  <TASK>
+> [ 293.677082][ T1] dump_stack_lvl (lib/dump_stack.c:107)
+> [ 293.677082][ T1] dump_header (mm/oom_kill.c:?)
+> [ 293.677082][ T1] out_of_memory (mm/oom_kill.c:1159)
+> [ 293.677082][ T1] __alloc_pages_slowpath (mm/page_alloc.c:3372 mm/page_alloc.c:4132)
+> [ 293.677082][ T1] __alloc_pages (mm/page_alloc.c:4469)
+> [ 293.677082][ T1] alloc_slab_page (mm/slub.c:1866)
+> [ 293.677082][ T1] new_slab (mm/slub.c:2017 mm/slub.c:2062)
+> [ 293.677082][ T1] ? mas_alloc_nodes (lib/maple_tree.c:1282)
+> [ 293.677082][ T1] ___slab_alloc (arch/x86/include/asm/preempt.h:80 mm/slub.c:3216)
+> [ 293.677082][ T1] ? mas_alloc_nodes (lib/maple_tree.c:1282)
+> [ 293.677082][ T1] kmem_cache_alloc_bulk (mm/slub.c:? mm/slub.c:4041)
+> [ 293.677082][ T1] mas_alloc_nodes (lib/maple_tree.c:1282)
+> [ 293.677082][ T1] mas_nomem (lib/maple_tree.c:?)
+> [ 293.677082][ T1] mtree_store_range (lib/maple_tree.c:6191)
+> [ 293.677082][ T1] check_dup_gaps (lib/test_maple_tree.c:2623)
+> [ 293.677082][ T1] check_dup (lib/test_maple_tree.c:2707)
+> [ 293.677082][ T1] maple_tree_seed (lib/test_maple_tree.c:3766)
+> [ 293.677082][ T1] do_one_initcall (init/main.c:1232)
+> [ 293.677082][ T1] ? __cfi_maple_tree_seed (lib/test_maple_tree.c:3508)
+> [ 293.677082][ T1] do_initcall_level (init/main.c:1293)
+> [ 293.677082][ T1] do_initcalls (init/main.c:1307)
+> [ 293.677082][ T1] kernel_init_freeable (init/main.c:1550)
+> [ 293.677082][ T1] ? __cfi_kernel_init (init/main.c:1429)
+> 
+> 
+> The kernel config and materials to reproduce are available at:
+> https://download.01.org/0day-ci/archive/20230831/202308312115.cad34fed-oliver.sang@intel.com
+> 
+> 
+> 
