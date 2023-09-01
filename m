@@ -2,148 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA3E790150
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19DE4790153
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348541AbjIARUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 13:20:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45484 "EHLO
+        id S1343512AbjIARUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 13:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348916AbjIARUX (ORCPT
+        with ESMTP id S244116AbjIARUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 13:20:23 -0400
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9B10F6;
-        Fri,  1 Sep 2023 10:20:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
- s=s31663417; t=1693588800; x=1694193600; i=j.neuschaefer@gmx.net;
- bh=ndEoFRJfDS9SCk3baTyeGk8tFTWpI9NpWJxPLC86/A4=;
- h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
- b=GphXPdnxQGN0zGSfiU5k22UwJdXDCMTLz1mjzzbHlHl3fHT5qnkB5+O9O8csD2BSDphzN/0
- NfFugNWTjhzI1Ih+XToJujAku08gGPTGGg8aXrsB08PPCS0C1yTqNOZ+a7uyJoyhhclsYWrRq
- O9atkYxJmKOsd2WLC1kGjbboIltQCLLl/YGe3TE8kLE53dxzsBbvFy8rI+dRpe9EmNouoa0vB
- GzP25oFTHpuIqwlnYuCUtImSHF86bZx6KyxXs5rO4XZXIoxZVAtdl6RwpmIhX5CeI1DhxITM+
- weSMWPvLzaio2bPuRYIXHMmom481HJ3aN498ssg3Wk8OHxNUHBxA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from probook ([87.154.222.166]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWzjt-1q9sV70xZJ-00XMOR; Fri, 01
- Sep 2023 19:20:00 +0200
-Date:   Fri, 1 Sep 2023 19:19:56 +0200
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Helge Deller <deller@gmx.de>
-Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-fbdev@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Jingoo Han <jg1.han@samsung.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fbdev: Update fbdev source file paths
-Message-ID: <ZPIdPOFbhLCpODIJ@probook>
-References: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
- <d9a02d20-8b59-cbdd-d054-eac14f9771d2@suse.de>
- <ZPA26xdbTRdfuveS@probook>
- <ZPBUdJwZzvYYrNei@phenom.ffwll.local>
- <d0646771-d426-45c6-e189-517b1e6e6248@gmx.de>
- <b8a04a40-a8ad-16ef-fdde-e56acb6845ca@gmx.de>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="S0SJhlmv8RAfrKFu"
-Content-Disposition: inline
-In-Reply-To: <b8a04a40-a8ad-16ef-fdde-e56acb6845ca@gmx.de>
-X-Provags-ID: V03:K1:2pZbCDNpIV3lYRKKD61SN6RHG6Iz4I+1MyrjhbZzrJFD1bAFayO
- Uj6AIBX/6j3ven3LBcVbkQhbRJ2758JxVIu+lEsWImKVMl4f+loJsx5WIhxZ078PscHammZ
- 1a9GYC9FvxMIxyCgXuf0lnGBy1ajnRNtImvbBdLZzuLjq9QUxZzeI7lu4BEa3FLmrGdrQNT
- P/2G4VqG4ZTPZsDApSjoA==
-UI-OutboundReport: notjunk:1;M01:P0:AbjHmf8c+1s=;m5T7KIgPfsxRuqwzjqQU8bfuxP3
- dqndZht2UDVYf/zrril8XGnsx0+O3zEhrXIxNL6+9sdxm6T2sPLkY+e5OTmd2tj/wvKHbKRjI
- Oum7LmUlrkz+Rvm3lTys0p1x/qO5YEcBik3bgv2MfV468wggL1Cadvuv8WG8HEAxEqa+CnFXq
- RPy3Dtv/C0ZZQq0IYD3xEu5wPTI3RbZMKeCU9WynXg4dlMwOVyYXXWoYHD6FUZ6TybTBaKyHd
- Ta9olmyc/lQOdal6k+zMWMw88QoKphzcOEBPw3aMHcXLNrR+aFM3Ch7kxOAhR6FX0KoogFPok
- xO60tDy2CGQt/gmNvMtYnlqw52Bqv1v/k8bl16KDPP3ImcsIAYHG6XaGhSTAINIgVjGmULuym
- BXmnhKaunQCOKLYheLg4ijY9DSSJHq5QyBht2ZhIHEfACcfouOxVeCGmOrNmox8ZGSnpghwHu
- jNlwd18tmnRpgC/LGcBH1bjqPQFKxsZLF3ZdsEqTolxL/zczP1qJAfyqZxUI0ArZCkKBmWhPL
- UPuLteBQoTVs+tK4s4QvsmY7IH8rMZJWU2sSeoRDzM2DPP4mYiX1uhCuqkdWPE8i4bGEVMthZ
- /VOvmiFIbyIRZiCaGr89u0+VFRC9iS14hs6WnniMOlyGoa9A6XKQdg63ZboTR46pmzxJq4Lph
- KXT0Eat6ocmvRAk0gfJKmhcTLH8r6N+F6s+dBb2rIzUMhjZ7o2C1MbuhwQXPqqmikrXJulkzo
- rLtxMc4oOmMG7wldzLFfB6vSN+HfRd5s86X2/CecLCLbDOAHFm2+uhCAFPCVG5LPME1QXCB3R
- gcvb2RV0OpSR8zY6zB6E8TQAdSPmh3cDWsLemauGdr2PP5SREcfMU/CG+gsTYO4V5J68PM0wP
- NauVmndkcP+M25ICaF3L8lsoN43dR57O9sZAtL+0FkFci7a3t8a6XviGdcXlyro9xF2rTf+yj
- dgkl6w==
+        Fri, 1 Sep 2023 13:20:54 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2553910EF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:20:51 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-401c90ed2ecso22999475e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 10:20:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jrtc27.com; s=gmail.jrtc27.user; t=1693588849; x=1694193649; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tDaCSxGqWC92if0Z6Klm60VC2KBJe3DiYPIYkSgGiOQ=;
+        b=LV9rplRo+fdO0GuXMn79uyEwjrwKLTOJdAsTbxSXeEujgg63A2oBpjWlrJEECgU+oX
+         poHoMqg6hR9pmPUhCrF0IUkLRMR1Q+LeW0t/xYPxI65nORoeYmqxdvQBkPb4QXazWFBY
+         EARRtPkLu3OYze1BuHHs/OlaAxKS/5HPOwLeDtcwfiUP8JRxa0Nh6Q6Oc39oLhG5ZZQd
+         9q3uMMmD0qUAYa4Buutmw/PBrUTuLi3chsKdsYTz5jvm/tc5GnXWdi90CHAjY0XzghU2
+         VTQIwgCKPcB2vtisthMYxG+1mol/KVAJ5fED4eloYHEqNblNUfQkI9bOyUQeArpYPoDk
+         8mnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693588849; x=1694193649;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tDaCSxGqWC92if0Z6Klm60VC2KBJe3DiYPIYkSgGiOQ=;
+        b=e8FLNA770XEFKj5wD7na0DjqaZtePL5oWue4oG+KrWPphzuWuXeBzcJgRL0I8g/1KD
+         luWxgUc4uixVNPgQ1W4jvtz1ntN2UEKX/4qkmoOgxaT26FIk779Lv6gYPZLGUnIccwGt
+         KXf2L3YtzI9rozGUtUNIXpOb48vfYfLSTaqb2nI3YtxK+OnH27d2658Nas/3aHf2JZ7c
+         TCG2rwOklGMeX1I+GWMTPtt+PqZnDlOz+hcuMup4+QNZNFLUoCkCQfuKdpaU/96252y5
+         A4RuoMWbgrZUm9ttFXmAf+3/PvTxj6kBDhI0swpIpA6YyoYq65FB0zgDoc1s40BudOq7
+         QBdA==
+X-Gm-Message-State: AOJu0Yz427hrzkR0zfsBQ4fi+9NOf2FmCyuDIQEHHDj6T1NuzrR3Ic/9
+        JpS/4YZ2/JGU9GEBoLBEdEjGwVzbuS/ByBHyaCoVLbYT
+X-Google-Smtp-Source: AGHT+IECMKtsA+xfilTzTOfsxwiwD+SvpSlL+xDbbYz66S7ZDqBzHrbSSow55DnE6Tmpy7BohAAzHQ==
+X-Received: by 2002:a5d:69c5:0:b0:317:e1a2:dccf with SMTP id s5-20020a5d69c5000000b00317e1a2dccfmr2843222wrw.62.1693588849653;
+        Fri, 01 Sep 2023 10:20:49 -0700 (PDT)
+Received: from smtpclient.apple ([131.111.5.246])
+        by smtp.gmail.com with ESMTPSA id m12-20020adff38c000000b0031ad5fb5a0fsm5780460wro.58.2023.09.01.10.20.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 01 Sep 2023 10:20:49 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.600.7\))
+Subject: Re: [PATCH v1 1/3] dt-bindings: mmc: Drop unused properties
+From:   Jessica Clarke <jrtc27@jrtc27.com>
+In-Reply-To: <20230901-remold-sublease-a1ddb1fc6348@spud>
+Date:   Fri, 1 Sep 2023 18:20:38 +0100
+Cc:     William Qiu <william.qiu@starfivetech.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-mmc@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
+        Rob Herring <robh+dt@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <9EF26965-10E5-4BCA-AC5E-93C5AA55A0DF@jrtc27.com>
+References: <20230830031846.127957-1-william.qiu@starfivetech.com>
+ <20230830031846.127957-2-william.qiu@starfivetech.com>
+ <20230830-commence-trickery-40eaa193cb15@wendy>
+ <b375b88c-0d9c-30a9-21f6-283083cf3880@linaro.org>
+ <20230830-procedure-frostbite-56c751f7c276@wendy>
+ <efab6f52-4d7f-ea3c-0fc3-4e3ad03c14c7@starfivetech.com>
+ <20230901-remold-sublease-a1ddb1fc6348@spud>
+To:     Conor Dooley <conor@kernel.org>
+X-Mailer: Apple Mail (2.3731.600.7)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---S0SJhlmv8RAfrKFu
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Aug 31, 2023 at 11:49:47PM +0200, Helge Deller wrote:
-> On 8/31/23 11:02, Helge Deller wrote:
-> > On 8/31/23 10:51, Daniel Vetter wrote:
-> > > On Thu, Aug 31, 2023 at 08:44:59AM +0200, Jonathan Neusch=C3=A4fer wr=
-ote:
-> > > > On Wed, Aug 30, 2023 at 09:10:26AM +0200, Thomas Zimmermann wrote:
-> > > > > Hi
-> > > > >=20
-> > > > > Am 29.08.23 um 22:02 schrieb Jonathan Neusch=C3=A4fer:
-> > > > > > The files fbmem.c, fb_defio.c, fbsysfs.c, fbmon.c, modedb.c, and
-> > > > > > fbcmap.c were moved to drivers/video/fbdev, and subsequently to
-> > > > > > drivers/video/fbdev/core, in the commits listed below.
-> > > > > >=20
-> > > > > > Reported by kalekale in #kernel (Libera IRC).
-> > > > > >=20
-> > > > > > Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
-> > > > > > Fixes: 19757fc8432a ("fbdev: move fbdev core files to separate =
-directory")
-> > > > > > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> > > > >=20
-> > > > > IMHO these comments might just be removed.
-> > > >=20
-> > > > I think it's nice to have some sort of visual separation between gr=
-oups
-> > > > of functions in fb.h, which these comments provide at the moment.
-> > > > Therefore I'm currently leaning towards my patch as it is, but I'm
-> > > > willing to have my mind changed and do a v2 which just removes the
-> > > > comments.
-> > >=20
-> > > Just the filename without the full path maybe?
-> >=20
-> > Yes, I'd prefer that as well.
+On 1 Sep 2023, at 16:42, Conor Dooley <conor@kernel.org> wrote:
 >=20
-> I've manually changed it and applied the patch to the fbdev git tree.
+> On Fri, Sep 01, 2023 at 10:33:13AM +0800, William Qiu wrote:
+>>=20
+>>=20
+>> On 2023/8/30 16:34, Conor Dooley wrote:
+>>> On Wed, Aug 30, 2023 at 09:29:20AM +0200, Krzysztof Kozlowski wrote:
+>>>> On 30/08/2023 08:50, Conor Dooley wrote:
+>>>>> On Wed, Aug 30, 2023 at 11:18:44AM +0800, William Qiu wrote:
+>>>>>> Due to the change of tuning implementation, it's no longer =
+necessary to
+>>>>>> use the "starfive,sysreg" property in dts, so drop the relevant
+>>>>>> description in dt-bindings here.
+>>>>>=20
+>>>>> How does changing your software implantation invalidate a =
+description of
+>>>>> the hardware?
+>>>>>=20
+>>>>=20
+>>>> Which is kind of proof that this syscon was just to substitute
+>>>> incomplete hardware description (e.g. missing clocks and phys). We
+>>>> should have rejected it. Just like we should reject them in the =
+future.
+>>>=20
+>>> :s I dunno what to do with this... I'm inclined to say not to remove =
+it
+>>> from the binding or dts at all & only change the software.
+>>>=20
+>>>> There are just few cases where syscon is reasonable. All others is =
+just
+>>>> laziness. It's not only starfivetech, of course. Several other
+>>>> contributors do the same.
+>>>=20
+>>> I'm not sure if laziness is fair, lack of understanding is usually =
+more
+>>> likely.
+>>=20
+>> For this, I tend to keep it in binding, but remove it from required. =
+Because
+>> we only modify the tuning implementation, it doesn't mean that this =
+property
+>> need to be removed, it's just no longer be the required one.
+>=20
+> Please only remove it from required if the current driver doesn't =
+break
+> if the regmap is removed.
 
-Thanks, everyone!
+Either way please make sure the documentation clearly states =E2=80=9Cneve=
+r use
+this, if you=E2=80=99re using it you=E2=80=99re doing it wrong, this =
+only exists
+because it was wrongly used in the past=E2=80=9D. Otherwise people =
+writing
+drivers for other OSes will probably use it too thinking they need to.
 
-Jonathan
+Jess
 
---S0SJhlmv8RAfrKFu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmTyHRwACgkQCDBEmo7z
-X9uvdA//YmdduRn9/SYErFaEN2UFGbboxV7N7YFTOx8/SNIX9lfrHqRGrgux0O7X
-FnmS+vetc6nWG/1GWn5y9NlZyMjl73JLcYpoWggLbFv+oNFMplEKSF2Q6E1f/lFl
-U5M8weWOIeF4UXciwvZCf13A9+zcm/0J2iCRjbm38Strvg0m1irRW4bvx1S9J5QT
-gYTpCx9ooJAln9Bb4zJcm6mpuFBJGYMkyf1zG9cP1MdciGeafmEYcWhXWCrVsyPi
-vcz8/V/YJ+8Oa1ERaoFCQM0VWXtTPjkLaib/6tiImW257jS/FYcIlQZxIWfL9ARR
-MLFm7IXtyzKy9kRpZTmjYZP9N4bq9NN/Mzn8NCFr/tmwPoLXwSCtgGetFVtAzB4B
-U/Wadkx5EewVzT1+Z2v+67QrsiW4uAPHfQ8AYU1cM1n23nfKrkQqlRcxVuGnsHGR
-7ztSq+BIUbBryDkseGCSoxMVe0YU5kwFKMZrDUBXy8FEsIRpZBy4U2Noc/vtixow
-OpAa4BlIW/G6K4cPJYJgrnBt50v6NwaagLOWT9OVGZLThRz7YCwi5kG0VoTPozFB
-4yje+8WkpQnvRuKbYrAUGkojrg34ZxJ7DeppJkkRfgxcUZexJaZDsMELNBKDaeOI
-YqbpKTJAFQzbdL9H9cmUR3VJHntvGznO+sGTI90ffK6owMFlQ4I=
-=811W
------END PGP SIGNATURE-----
-
---S0SJhlmv8RAfrKFu--
