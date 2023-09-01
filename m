@@ -2,100 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7FE78FABF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFB878FAC4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348802AbjIAJ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
+        id S1346274AbjIAJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:27:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348794AbjIAJ13 (ORCPT
+        with ESMTP id S234850AbjIAJ1d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:27:29 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B2DC0;
-        Fri,  1 Sep 2023 02:27:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=XIusW0m1E8VscwLTOTsY+xzTnz+U+iqdOkrObW70Mt0=; b=CwUh4HPSI5V8fX2wl9V7QYdslm
-        aUYA3b/XXt5Uk8ttQemTxsdN3q/ivypM4BhHwJcPBM/Pi0yP9gg7yKJRYl0/x/cJhEOyvqnomow7d
-        DoUXcs0sj91/q53LN/yUgNaI7fYqQMTPXKLAAjpqufyOW1Mw3FH7m3kGmguRS6ipHXKarO1xFX7I4
-        g66Wj5j14+BRMxZ1NUV+3uLq4tw/Gj/aSUESVK1d6D4PVNo7RDWmZvjxFeWobppFHLdeL+pKN5EuG
-        YwG1MzSyAFMlnzC477l94HTnDlZDQt3ym8IGzpyYnFJ78hm1FUNhK4+xSJRPV8Eys6nkhQk0XkJ4N
-        lduakg4g==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57120)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qc0Qt-0003rZ-1p;
-        Fri, 01 Sep 2023 10:27:15 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qc0Qs-0007iJ-IT; Fri, 01 Sep 2023 10:27:14 +0100
-Date:   Fri, 1 Sep 2023 10:27:14 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Radu Pirea <radu-nicolae.pirea@nxp.com>
-Cc:     "atenart@kernel.org" <atenart@kernel.org>,
-        "Radu-nicolae Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>,
-        "sd@queasysnail.net" <sd@queasysnail.net>,
-        "andrew@lunn.ch" <andrew@lunn.ch>,
-        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        Sebastian Tobuschat <sebastian.tobuschat@nxp.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "richardcochran@gmail.com" <richardcochran@gmail.com>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
- mdo_insert_tx_tag
-Message-ID: <ZPGuchwza3xr5SaF@shell.armlinux.org.uk>
-References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
- <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
- <ZOx0L722xg5-J_he@hog>
- <5d42d6c9-2f0c-8913-49ec-50a25860c49f@oss.nxp.com>
- <ZO8pbtnlOVauabjC@hog>
- <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
+        Fri, 1 Sep 2023 05:27:33 -0400
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4F710E7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:27:29 -0700 (PDT)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:3f:e471:aa00::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 66B40162;
+        Fri,  1 Sep 2023 02:27:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1693560449;
+        bh=lWtupZVh/hNglyvB+QPBKJ+SSe9s9P140z0bzxoSn8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PXraO4BC1W1WtEFsmxZfj9q1UpgMjhJonDA+Ln+bz2DXlE2MLIX6hAvFmqiyXLYNz
+         l7HsuCqEJNODFBHesM1dZCOpqzqazNJ9OPVzzV6iuJjg9ENYNOieytwjseO3ez2ZWU
+         HnBF5OkZ7C1uRP4q9ITOZqbSg1+a7j61Sq2EOp8E=
+Date:   Fri, 1 Sep 2023 02:27:28 -0700
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] regulator: userspace-consumer: Add regulator event
+ support
+Message-ID: <5000a233-e992-455a-bca3-79aaa8713ff4@hatter.bewilderbeest.net>
+References: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
+ <20230831121412.2359239-2-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230831121412.2359239-2-Naresh.Solanki@9elements.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 09:09:06AM +0000, Radu Pirea wrote:
-> On Wed, 2023-08-30 at 13:35 +0200, Sabrina Dubroca wrote:
-> ...
-> 
-> > And it's not restored when the link goes back up? That's inconvenient
-> > :/
-> > Do we end up with inconsistent state? ie driver and core believe
-> > everything is still offloaded, but HW lost all state? do we leak
-> > some resources allocated by the driver?
-> 
-> Yes. We end up with inconsistent state. The HW will lost all state when
-> the phy is reseted. No resource is leaked, everything is there, but the
-> configuration needs to be reapplied.
+On Thu, Aug 31, 2023 at 05:14:09AM PDT, Naresh Solanki wrote:
+>Add sysfs attribute to track regulator events received from regulator
+>notifier block handler.
+>
+>Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+>---
+> drivers/regulator/userspace-consumer.c | 54 +++++++++++++++++++++++++-
+> 1 file changed, 53 insertions(+), 1 deletion(-)
+>
+>diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
+>index 97f075ed68c9..a936661d99cd 100644
+>--- a/drivers/regulator/userspace-consumer.c
+>+++ b/drivers/regulator/userspace-consumer.c
+>@@ -29,6 +29,10 @@ struct userspace_consumer_data {
+>
+> 	int num_supplies;
+> 	struct regulator_bulk_data *supplies;
+>+
+>+	struct kobject *kobj;
+>+	struct notifier_block nb;
+>+	unsigned long events;
+> };
+>
+> static ssize_t name_show(struct device *dev,
+>@@ -89,12 +93,30 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
+> 	return count;
+> }
+>
+>+static DEFINE_SPINLOCK(events_lock);
+>+
+>+static ssize_t events_show(struct device *dev,
+>+			   struct device_attribute *attr, char *buf)
+>+{
+>+	struct userspace_consumer_data *data = dev_get_drvdata(dev);
+>+	unsigned long e;
+>+
+>+	spin_lock(&events_lock);
+>+	e = data->events;
+>+	data->events = 0;
 
-If it's happening because the PHY is being re-attached from the network
-driver, then wouldn't it be a good idea to synchronise the hardware
-state with the software configuration in the ->config_init function?
+I still don't think this is a good solution for the problem.
 
-Presumably the hardware state is also lost when resuming from suspend
-as well? If so, that'll also fix that issue as well.
+I for one frequently examine things in sysfs using shell commands like 
+'cat' and 'grep' and such, and I suspect I'm (very, very) far from alone 
+in that.  With this design a user doing that could cause a monitoring 
+daemon to miss events that it was expecting to receive via this file.  
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+I don't think we should be creating sysfs files that are secretly land 
+mines that allow a curious user innocently peeking around in sysfs doing 
+(they think) read-only operations to break things for other programs 
+using those files.
+
+
+Zev
+
