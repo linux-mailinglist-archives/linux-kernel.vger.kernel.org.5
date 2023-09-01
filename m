@@ -2,105 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E9AC78FFF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:30:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F9178FFF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348363AbjIAPaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 11:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
+        id S1350268AbjIAPax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 11:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235008AbjIAPaR (ORCPT
+        with ESMTP id S241125AbjIAPaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 11:30:17 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6267210CF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 08:30:14 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id ca18e2360f4ac-790b9d7d643so28064139f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 08:30:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1693582214; x=1694187014; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AiNqQgFbnxq6FrJH09GmzjeX1g4Nw3Ac0YdAkmhUigU=;
-        b=TPjKIxbyE8lXlUnJGVhrX9vYvXcUntwoAMtfulKdMfNujqGLCXA4Qnwi1YTA1kKz59
-         RHWpeWw9Ngc2lNS9i4iPNB4xhneyAM4Liox+NIl+4V41WeP44g7TL4rNBcQ8FDTdYCBR
-         l3pfW/dXbrOPcoPlg0ERMpd8B4D+AazPX2U/c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693582214; x=1694187014;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AiNqQgFbnxq6FrJH09GmzjeX1g4Nw3Ac0YdAkmhUigU=;
-        b=OgFZb+O7mCzwe4WY1lDGd1XV3vTodNcuIIopHICZifDa9NBNg3bDFXDnryz+ZQRlIi
-         hRz+vuZi1E/VRne+4q2XRV+y0FsW4n+FrVUI9WeTYmw+jvDEpIsvJ7DWzc3x8stCRcxV
-         7ifJOl41ku7mLnRJOhiEaCD7mq9eu3qJs15KfH2Dz1PcwTGMXDGbmIqXwgaZiZcd2meK
-         I8cs5+CEvIprp8ji/+JgayosZftmYjTC9Cp2YslWvCI9xT7HmUtb7xDIAWWdOXp8PIum
-         tnLNsVk8TwPClmi2TbEibGRE/k6H8bVZ1d4mbn0lANUXAn5lsAL1fr7j76Gxy5rroQ4Z
-         zxIA==
-X-Gm-Message-State: AOJu0Yz4upKljxG+t6CS70d0InqsoTHwfMwYtlZvE1nkWYqnIm/Zibo1
-        kXNc4AT5CLOkVbFn8md2f0h/2A==
-X-Google-Smtp-Source: AGHT+IG9M+xHgmCy5lDFf7tZbtMhIWUBTnKbt8HK9BHpFZRD0iyJvCFw9WD9Z63nDpdojJjkC/C8jA==
-X-Received: by 2002:a05:6602:4192:b0:792:8011:22f with SMTP id bx18-20020a056602419200b007928011022fmr2525210iob.0.1693582213821;
-        Fri, 01 Sep 2023 08:30:13 -0700 (PDT)
-Received: from [192.168.1.128] ([38.15.45.1])
-        by smtp.gmail.com with ESMTPSA id s10-20020a02cf2a000000b0042b320c13aasm1123350jar.89.2023.09.01.08.30.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Sep 2023 08:30:13 -0700 (PDT)
-Message-ID: <afedcfbd-1f77-230d-27c1-8019e658efa2@linuxfoundation.org>
-Date:   Fri, 1 Sep 2023 09:30:12 -0600
+        Fri, 1 Sep 2023 11:30:52 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F409E70;
+        Fri,  1 Sep 2023 08:30:49 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3818dgRF002034;
+        Fri, 1 Sep 2023 15:30:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=/z8h1E4pQ9UfDKMX4ShUPzXvFy/0qSADplfL8hfWhR8=;
+ b=g9YcYXlJvDoFa1IDKSwJ1OitQLKrZgq0mDHwgooVoaPTla8BP9POV4RR/FSG15Syfb9l
+ 8WIGCbKlojH0pOGAkc2xxWPGTRjeT8VH0dzRKElaSeXos3TKJdaZbpV6VBLw6ksoup7g
+ orsK2U2HXaeivS1XzCDeDN2+96zjVpdUHnSyhUHwhFkigy6zES2mD9khfBFCJUwdWC8U
+ QK16/1eaDklPJtimMRcY2S39RAH7Gxn9ujltnEw+K6y8xEBFEWb7d4UTrs5BAtdFBVtP
+ 0zfCRJwPjHDW1PXrQENIiTer3+b/jm5sOJPWGWADT5lr5QwEWrwr7MsM/R34O+EqqYyr lg== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3su89e9n8p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 15:30:37 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 381FUZWg009050
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Sep 2023 15:30:35 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 1 Sep 2023 08:30:35 -0700
+Date:   Fri, 1 Sep 2023 08:30:34 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>
+CC:     <mani@kernel.org>, <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>, <quic_cang@quicinc.com>,
+        <quic_nguyenb@quicinc.com>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        "Naveen Kumar Goud Arepalli" <quic_narepall@quicinc.com>
+Subject: Re: [PATCH V6 2/6] scsi: ufs: qcom: Configure
+ PA_VS_CORE_CLK_40NS_CYCLES
+Message-ID: <20230901153034.GS818859@hu-bjorande-lv.qualcomm.com>
+References: <20230901114336.31339-1-quic_nitirawa@quicinc.com>
+ <20230901114336.31339-3-quic_nitirawa@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 6.1 00/10] 6.1.51-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20230831110831.079963475@linuxfoundation.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20230831110831.079963475@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230901114336.31339-3-quic_nitirawa@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: hECzBEO5igY41-9RNHggE0ypivefuFpQ
+X-Proofpoint-GUID: hECzBEO5igY41-9RNHggE0ypivefuFpQ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_13,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ priorityscore=1501 adultscore=0 clxscore=1015 suspectscore=0
+ malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309010145
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/31/23 05:10, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.51 release.
-> There are 10 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Sep 01, 2023 at 05:13:32PM +0530, Nitin Rawat wrote:
+> Configure PA_VS_CORE_CLK_40NS_CYCLES with frequency of unipro core clk
+> for Qualcomm UFS controller V4.0 and onwards to align with the hardware
+> specification.
 > 
-> Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
-> Anything received after that time might be too late.
+> Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> ---
+>  drivers/ufs/host/ufs-qcom.c | 47 ++++++++++++++++++++++++++++---------
+>  drivers/ufs/host/ufs-qcom.h |  2 ++
+>  2 files changed, 38 insertions(+), 11 deletions(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.51-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
+> diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+> index fe36003faaa8..018e391c276e 100644
+> --- a/drivers/ufs/host/ufs-qcom.c
+> +++ b/drivers/ufs/host/ufs-qcom.c
+> @@ -93,8 +93,9 @@ static const struct __ufs_qcom_bw_table {
+>  static struct ufs_qcom_host *ufs_qcom_hosts[MAX_UFS_QCOM_HOSTS];
 > 
-> thanks,
+>  static void ufs_qcom_get_default_testbus_cfg(struct ufs_qcom_host *host);
+> -static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
+> -						       u32 clk_cycles);
+> +static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
+> +						       u32 clk_cycles,
+> +						       u32 clk_40ns_cycles);
 > 
-> greg k-h
-> 
+>  static struct ufs_qcom_host *rcdev_to_ufs_host(struct reset_controller_dev *rcd)
+>  {
+> @@ -690,8 +691,8 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
+>  			 * set unipro core clock cycles to 150 & clear clock
+>  			 * divider
+>  			 */
+> -			err = ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(hba,
+> -									  150);
+> +			err = ufs_qcom_set_core_clk_ctrl(hba,
+> +									  150, 6);
 
-Compiled and booted on my test system. No dmesg regressions.
+There's no reason to maintain the line wrap here, and the new
+indentation looks wrong.
 
-Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> 
+>  		/*
+>  		 * Some UFS devices (and may be host) have issues if LCC is
+> @@ -1295,12 +1296,12 @@ static void ufs_qcom_exit(struct ufs_hba *hba)
+>  	phy_power_off(host->generic_phy);
+>  	phy_exit(host->generic_phy);
+>  }
+> -
+> -static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
+> -						       u32 cycles_in_1us)
+> +static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba,
+> +					u32 cycles_in_1us,
 
-thanks,
--- Shuah
+Following my comment on this rename in the last commit, here you do
+change the prototype, so here you need the rename to clarify the intent,
+so make it here instead.
+
+> +					u32 cycles_in_40ns)
+>  {
+>  	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+> -	u32 core_clk_ctrl_reg;
+> +	u32 core_clk_ctrl_reg, reg;
+
+Please keep one variable declaration per line, in particular when using
+names like "core_clk_ctrl_reg" which looks much more like a type than a
+variable name...
+
+I would have preferred "reg" instead of core_clk_ctrl_reg" and you could
+have used that same variable for both sections.
+
+>  	int ret;
+> 
+>  	ret = ufshcd_dme_get(hba,
+> @@ -1325,9 +1326,33 @@ static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
+>  	/* Clear CORE_CLK_DIV_EN */
+>  	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
+> 
+> -	return ufshcd_dme_set(hba,
+> +	err = ufshcd_dme_set(hba,
+
+I might be confused, but didn't you remove "err" in patch 1? Does this
+patch compile?
+
+>  			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
+>  			    core_clk_ctrl_reg);
+> +	/*
+> +	 * UFS host controller V4.0.0 onwards needs to program
+> +	 * PA_VS_CORE_CLK_40NS_CYCLES attribute per programmed
+> +	 * frequency of unipro core clk of UFS host controller.
+> +	 */
+> +	if (!err && (host->hw_ver.major >= 4)) {
+
+Rather than if (previous-block-didn't-fail), add an explicit return if
+err is unfavourable. That will make it more obvious that this section
+relates to version >= 4 and nothing else.
+
+
+That said, you now have one function:
+
+core_clk_ctrl(int a, int b)
+{
+	do stuff based on a;
+
+	if (version > 4)
+		do stuff based on b;
+}
+
+It's pretty much one function for cycles_in_1us, with a separate
+function for cycles_in_40us bolted on at the end. How about just
+splitting it in two functions instead, and provide a small wrapper that
+calls one or both functions?
+
+> +		if (cycles_in_40ns > PA_VS_CORE_CLK_40NS_CYCLES_MASK)
+> +			return -EINVAL;
+> +
+> +		err = ufshcd_dme_get(hba,
+> +				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
+> +				     &reg);
+
+Leaving this line unwrapped seems to end up at 89 characters wide.
+Perfectly reasonable to do, in the name of readability.
+
+> +		if (err)
+> +			return err;
+> +
+> +		reg &= ~PA_VS_CORE_CLK_40NS_CYCLES_MASK;
+> +		reg |= cycles_in_40ns;
+> +
+> +		err = ufshcd_dme_set(hba,
+> +				     UIC_ARG_MIB(PA_VS_CORE_CLK_40NS_CYCLES),
+> +				     reg);
+
+Same as above.
+
+Regards,
+Bjorn
