@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 844B178FFFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1CE778FFFC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:34:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350275AbjIAPdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 11:33:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55962 "EHLO
+        id S241473AbjIAPex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 11:34:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241125AbjIAPdw (ORCPT
+        with ESMTP id S232818AbjIAPew (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 11:33:52 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819A010D2;
-        Fri,  1 Sep 2023 08:33:49 -0700 (PDT)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 381C2pZb024661;
-        Fri, 1 Sep 2023 17:33:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        message-id:date:mime-version:subject:to:cc:references:from
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        selector1; bh=bi3VYNViQtJCdjL7dyg53UF58C/uOQWQ7xolLTOM3Vc=; b=dy
-        na2h6N0tXT2dNWEVshdFvkivlGm5yguKrqAa/Wlione68+uhdIjBCIGadoHpSAiu
-        VO2jmtriOl70sTfaToMBUw1nWmalzq4HlIG0WtJt7XMcoNsJApu9tgAFhVJRTqzH
-        ELJU0Zda/5YHFsxoXi8mK6v4k4xHRnjMlclH+F342FHct2K9tpQtPEvQ6itB/PCt
-        91AhO/HqtQpmbhGju+IQnO1twFV7dBy0dVDSDAKQc3cbh6i+/dgct2/fMfegV0XL
-        f2nD1j0FX9Jwqs+E7Qjl/NH5IhHgSo3PgpcJvaKiKVDu7tHI5srrU5JEdqAXV4/x
-        amxE1E5R7+4pxpaZXfcQ==
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sq6h4kp3r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 17:33:08 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5B57A100056;
-        Fri,  1 Sep 2023 17:33:07 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 503C423D3F2;
-        Fri,  1 Sep 2023 17:33:07 +0200 (CEST)
-Received: from [10.201.20.125] (10.201.20.125) by SHFDAG1NODE2.st.com
- (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 1 Sep
- 2023 17:33:04 +0200
-Message-ID: <3eed1865-d70d-c89a-fcaf-7b0e2bb6da98@foss.st.com>
-Date:   Fri, 1 Sep 2023 17:33:03 +0200
+        Fri, 1 Sep 2023 11:34:52 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6369B10D2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 08:34:49 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-760dff4b701so19023139f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 08:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1693582489; x=1694187289; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vy/OYZjEThy9PnU+XOs2FP+vp54WWzeQiLbmJLp6KHo=;
+        b=WMM5Dm+dpqvkniH36mPBdC5cKYoQYOv5kqETdgLNo3TWgfDXy5heLNkb9nWDOcKISk
+         7jbCL9rHdODSXn59qT/013M3hg5LaAGhImFpRu0AfvlIkl9Hqjsx1OS5pMcsZVJAfbCE
+         EDO9AD25m68BIPES3gppr0wdgEPxLpt5j6q3uL20yhuGja2lsgyhhVltgNe/uiSfjROr
+         hg0TWvEMYjJ0aAHJ8+MQmW+dA5yPZkogcxLMZrHxjD8D3floAXp6OHCEjnBURLWbsfUF
+         PMe5m7lsA63Hkp/5OaA5ajNvgaaG9ujsM1C1z47YPrCbbuF8hcSOzFV0chKZYIaESl7S
+         FPdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693582489; x=1694187289;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vy/OYZjEThy9PnU+XOs2FP+vp54WWzeQiLbmJLp6KHo=;
+        b=gCDmLSkJ3w2ah+/MhxG8/WiBp2eEFTHjhXBWGCRKdAgr0kR0nhWkZGZMDzxPX/FwS5
+         ZzMuSqFvf6YFXNzS12dD8V9Rr+4bLh6PstMsC8xYRnSndQA0fsgic5wjaLMTCGPotb4O
+         FW4aOqzzbes0s6DgaiUpCQ9jn+gEKtY2UenguOrrVe84eUoycJgeRPX1GSaqT0ZKqSBm
+         yWlJMLDMx//9h1WfMYdKZL+i9Zvt1At8sERnvL3lScJ7kaV/2sDi82cnYXphKOLcyWg5
+         3AiUjQ2k9VQGPuFMYXr0H4qsb2xNvrKt1tP26h0hlHamL0NDQXz4X05+9HHLAISLPt3+
+         l97g==
+X-Gm-Message-State: AOJu0Yx7WhxRtt+YjY4nRPJxFHpzGnTF//n6+EdR4xquogxFBGmlltmd
+        TRzhe+YwHQ44ehi8RS7pFKtTHA==
+X-Google-Smtp-Source: AGHT+IE25sW9iNQNVMCxEyOy37iHO5xdtl+9ffputSUWi9pZwG7+OF/RT+RNDdNOXuIZcLLsJ4GQow==
+X-Received: by 2002:a6b:1495:0:b0:790:958e:a667 with SMTP id 143-20020a6b1495000000b00790958ea667mr2898469iou.2.1693582488777;
+        Fri, 01 Sep 2023 08:34:48 -0700 (PDT)
+Received: from [192.168.1.94] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id c16-20020a5ea910000000b0079263d9b6a8sm1113234iod.11.2023.09.01.08.34.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 08:34:48 -0700 (PDT)
+Message-ID: <3969ed5a-b422-4b27-bff4-1db38d9d238b@kernel.dk>
+Date:   Fri, 1 Sep 2023 09:34:47 -0600
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] mmc: mmci: stm32: add SDIO in-band interrupt mode
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Rob Herring <robh@kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230901120836.1057900-1-yann.gautier@foss.st.com>
- <CACRpkdacRe5cPoSFJyEdo6nZrtmUHTNqMxf55CntvsdpFqhhrQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V4] lib/group_cpus.c: avoid to acquire cpu hotplug lock in
+ group_cpus_evenly
 Content-Language: en-US
-From:   Yann Gautier <yann.gautier@foss.st.com>
-In-Reply-To: <CACRpkdacRe5cPoSFJyEdo6nZrtmUHTNqMxf55CntvsdpFqhhrQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.201.20.125]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-01_13,2023-08-31_01,2023-05-22_02
-X-Spam-Status: No, score=-5.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Ming Lei <ming.lei@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-kernel@vger.kernel.org, Keith Busch <kbusch@kernel.org>,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        Yi Zhang <yi.zhang@redhat.com>,
+        Guangwu Zhang <guazhang@redhat.com>,
+        Chengming Zhou <zhouchengming@bytedance.com>
+References: <20230831093754.2322955-1-ming.lei@redhat.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20230831093754.2322955-1-ming.lei@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/23 16:10, Linus Walleij wrote:
-> Hi Yann/Christophe,
+On 8/31/23 3:37 AM, Ming Lei wrote:
+> group_cpus_evenly() could be part of storage driver's error handler,
+> such as nvme driver, when may happen during CPU hotplug, in which
+> storage queue has to drain its pending IOs because all CPUs associated
+> with the queue are offline and the queue is becoming inactive. And
+> handling IO needs error handler to provide forward progress.
 > 
-> thanks for your patch!
+> Then dead lock is caused:
+> 
+> 1) inside CPU hotplug handler, CPU hotplug lock is held, and blk-mq's
+> handler is waiting for inflight IO
+> 
+> 2) error handler is waiting for CPU hotplug lock
+> 
+> 3) inflight IO can't be completed in blk-mq's CPU hotplug handler because
+> error handling can't provide forward progress.
+> 
+> Solve the deadlock by not holding CPU hotplug lock in group_cpus_evenly(),
+> in which two stage spreads are taken: 1) the 1st stage is over all present
+> CPUs; 2) the end stage is over all other CPUs.
+> 
+> Turns out the two stage spread just needs consistent 'cpu_present_mask', and
+> remove the CPU hotplug lock by storing it into one local cache. This way
+> doesn't change correctness, because all CPUs are still covered.
 
-Hi Linus
+Reviewed-by: Jens Axboe <axboe@kernel.dk>
 
-Thanks for the review, I agree with the proposed changes.
-I'll prepare a new version and send it next week!
-
-Best regards,
-Yann
-> 
-> On Fri, Sep 1, 2023 at 2:08 PM Yann Gautier <yann.gautier@foss.st.com> wrote:
-> 
->> From: Christophe Kerello <christophe.kerello@foss.st.com>
->>
->> Add the support of SDIO in-band interrupt mode for STM32 variant.
->> It allows the SD I/O card to interrupt the host on SDMMC_D1 data line.
->>
->> Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
->> Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
-> (...)
->> +++ b/drivers/mmc/host/mmci.h
->> @@ -332,6 +332,7 @@ enum mmci_busy_state {
->>    * @opendrain: bitmask identifying the OPENDRAIN bit inside MMCIPOWER register
->>    * @dma_lli: true if variant has dma link list feature.
->>    * @stm32_idmabsize_mask: stm32 sdmmc idma buffer size.
->> + * @use_sdio_irq: allow SD I/O card to interrupt the host
-> 
-> The documentation tag should be one line up (compare to the members...)
-> 
->> @@ -376,6 +377,7 @@ struct variant_data {
->>          u32                     start_err;
->>          u32                     opendrain;
->>          u8                      dma_lli:1;
->> +       u8                      use_sdio_irq:1;
-> 
-> 1. bool use_sdio_irq;
-> 
-> 2. supports_sdio_irq is more to the point don't you think?
->      Especially since it activates these two callbacks:
-> 
->> +       void (*enable_sdio_irq)(struct mmci_host *host, int enable);
->> +       void (*sdio_irq)(struct mmci_host *host, u32 status);
-> 
-> Further: all the Ux500 variants support this (bit 22) as well, so enable those
-> too in their vendor data. All I have is out-of-band signaling with an GPIO IRQ
-> on my Broadcom chips but I think it works (maybe Ulf has tested it in the
-> far past).
-> 
-> Yours,
-> Linus Walleij
+-- 
+Jens Axboe
 
