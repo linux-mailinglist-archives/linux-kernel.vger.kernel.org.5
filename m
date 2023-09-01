@@ -2,93 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B0C78F8F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:12:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4888378F8FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:16:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347283AbjIAHMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 03:12:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49992 "EHLO
+        id S1348469AbjIAHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 03:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234404AbjIAHMf (ORCPT
+        with ESMTP id S230103AbjIAHP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 03:12:35 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F51710D2;
-        Fri,  1 Sep 2023 00:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ZTZ8SXVcOjA8cytY7ZRFk3Xrk4Dudxy372U5a+JE25c=; b=sMgp6AqBZSshQJyphg9ApcEzJ8
-        g/5VIHJpEx5dLwTnt8X2oyNRtWxxgilmwzPQv1LEJmO+eKPfOm6had9N1LqWkBMeSyFL/kjVzoGUi
-        lCFnbCDQAejTN6yqNe12Sa/C8YUEMgNed8uM2CPnYAZHY+iGjvA6v0m+DJre1lWfdyl/Utv2T/Jmd
-        Gzup2j1bpKTqOe2Z3Y5VD9LH2srSWBm/PYs8LSmdKgynnFhx2dJMq1Qz/LfJHmgkcg8TY3AbIlaNQ
-        MFZk8yoZfnSFfBCw4yMNkLwvMa+uWzFortseyaAzdVFjUnMvXg/uFZuKje3Y5pOUmdcI1mBBvkDVj
-        0UED61cQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50582)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qbyKI-0003fG-1T;
-        Fri, 01 Sep 2023 08:12:18 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qbyKH-0007dU-16; Fri, 01 Sep 2023 08:12:17 +0100
-Date:   Fri, 1 Sep 2023 08:12:16 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Lukasz Majewski <lukma@denx.de>
-Subject: Re: [PATCH net v2 1/1] net: phy: micrel: Correct bit assignments for
- phy_device flags
-Message-ID: <ZPGO0GVyH0Gh4yrW@shell.armlinux.org.uk>
-References: <20230901045323.3907976-1-o.rempel@pengutronix.de>
+        Fri, 1 Sep 2023 03:15:57 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0004E49
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:15:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4B3A6B824D6
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 07:15:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B89BC433C8;
+        Fri,  1 Sep 2023 07:15:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1693552551;
+        bh=tJnRm69x1hlaJM3ZyngxZksf1Q6XBI2KYsWBU6ZDeLA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vXmhh0ipbaxFvTnGwWfXVW+6pffgEBMvQHOb5YYUpc12vj1n6rxOiGcTXSuLxr8Pp
+         qQrTPDm5FBFdOLP04ZwXtv6afBFX7KwUIi3/MgWXvgZjcsYOBPGPBFWsLaiPEg7ZLH
+         QKClhYzB80XyZuI925tZ2zcXDaAb5IlqbAEqEXcc=
+Date:   Fri, 1 Sep 2023 09:15:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
+        <nfraprado@collabora.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: Re: Stability guarantees on uevent variables?
+Message-ID: <2023090142-hurry-laundry-ad43@gregkh>
+References: <c0d32695-9e3e-4173-8448-7d123f38824e@notapiano>
+ <2023083110-delicacy-thinly-5af6@gregkh>
+ <d53d3200-fe59-4b69-893b-479b7402f572@notapiano>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230901045323.3907976-1-o.rempel@pengutronix.de>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d53d3200-fe59-4b69-893b-479b7402f572@notapiano>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 06:53:23AM +0200, Oleksij Rempel wrote:
-> Previously, the defines for phy_device flags in the Micrel driver were
-> ambiguous in their representation. They were intended to be bit masks
-> but were mistakenly defined as bit positions. This led to the following
-> issues:
+On Thu, Aug 31, 2023 at 05:58:36PM -0400, Nícolas F. R. A. Prado wrote:
+> On Thu, Aug 31, 2023 at 09:58:04AM +0200, Greg Kroah-Hartman wrote:
+> > On Thu, Aug 24, 2023 at 07:08:39PM -0400, Nícolas F. R. A. Prado wrote:
+> > > Hi,
+> > > 
+> > > my question boils down to the following:
+> > > 
+> > > Is there a stability guarantee on the format and content of the variables in
+> > > uevents produced by the kernel?
+> > 
+> > Only if the normal userspace tools that use those variables require it.
+> > 
+> > > I would assume so, given that uevents are explicitly produced for userspace, and
+> > > users will rely on them. However, looking through the ABI documentation I could
+> > > only find two instances of uevents being defined (testing/usb-uevent and
+> > > testing/usb-charger-uevent) and neither mention the variables added in the
+> > > KOBJ_ADD action. The document for the uevent file in sysfs,
+> > > testing/sysfs-uevent, only mentions writing synthetic uevents, rather than
+> > > reading existing ones. Is the documentation simply lacking or is it intentional
+> > > that uevent variables aren't covered?
+> > > 
+> > > I'm particularly interested in the format for the MODALIAS uevent variable. My
+> > > understanding is that its only use is to match against the modules' aliases in
+> > > the modules.alias file. For that reason I'm wondering whether for this variable,
+> > > the guarantee would only be that the format of the value will match the one in
+> > > modules.alias, but the precise format is not guaranteed (for example, a new
+> > > field could potentially be introduced in the future if added to both the device
+> > > uevent and module's alias). However, I do see a few ABI documentation pages for
+> > > the modalias file in sysfs (eg in testing/sysfs-bus-pci), which explicitly
+> > > describe the format, and that's supposed to be the same as the MODALIAS uevent,
+> > > so does that mean the format itself is stable?
+> > 
+> > No, modalias is not stable, it can change over time (add new fields), as
+> > it is just a userspace representation of how to call 'modprobe' and
+> > match up with the kernel-provided module alias fields.
+> > 
+> > So the value will always match the module alias fields, but userspace
+> > shouldn't be attempting to parse the thing at all, as that makes no
+> > sense (the kernel understands the format, userspace does not need to.)
 > 
-> - MICREL_KSZ8_P1_ERRATA, designated for KSZ88xx switches, overlapped
->   with MICREL_PHY_FXEN and MICREL_PHY_50MHZ_CLK.
-> - Due to this overlap, the code path for MICREL_PHY_FXEN, tailored for
->   the KSZ8041 PHY, was not executed for KSZ88xx PHYs.
-> - Similarly, the code associated with MICREL_PHY_50MHZ_CLK wasn't
->   triggered for KSZ88xx.
+> I see, that's what I suspected. In that case detailing the format of the
+> modalias files in the ABI documentation seems counter-productive. I'll send a
+> patch removing those format descriptions.
+
+We can document it, as long as the documentation stays up to date, it
+can't hurt, right?
+
+> > > I'll be happy to improve the ABI documentation based on the reply to these
+> > > questions.
+> > > 
+> > > As for the full context for these questions, as part of an effort to improve the
+> > > detection of regressions affecting device probe, I want to be able to check
+> > > whether devices under a discoverable bus (USB, PCI) were populated and probed by
+> > > a driver.
+> > 
+> > So you want to see if a driver is possible for this device, or if the
+> > driver failed to bind to the device?  Those are different things.
 > 
-> To rectify this, all three flags have now been explicitly converted to
-> use the `BIT()` macro, ensuring they are defined as bit masks and
-> preventing potential overlaps in the future.
+> In this instance, I only want to see if a driver failed to bind to the device.
+
+Then look at the driver sysfs entry to find out what devices it is bound
+to.
+
+> > > We currently do this by checking against driver and device names [1],
+> > > but as has been pointed out before, that's not stable ABI, and the test might
+> > > break if things get renamed or moved around.
+> > 
+> > Yes, driver names get changed all the time, and move around the kernel
+> > tree as well.  That's not going to stop, but it shouldn't affect
+> > testing, right?
 > 
-> Fixes: 49011e0c1555 ("net: phy: micrel: ksz886x/ksz8081: add cabletest support")
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Indeed, but if we can test just as well and only relying on stable ABIs, that's
+> less maintenance :) (as well as less false-positives reported to the mailing
+> lists if the reporting becomes automatic). Especially since we test not only
+> mainline but also stable kernels and currently end up having to special case the
+> tests based on kernel version.
 
-Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+I still don't understand what you are trying to test here.  You are
+thinking that devices remain with the same names over time (they don't),
+or drivers remain with the same names over time (they don't) or that
+device topologies stay the same over time (they don't).
 
-Thanks!
+All that matters is how userspace sees the _functionality_ of the system
+(i.e. if a mouse appears to userspace), not what the mouse driver was
+called, what mouse device was in the device topology, or what driver was
+bound to the mouse.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+So test system functionality please, that's what should always remain
+stable.  Not device names, locations, or driver names.
+
+Now if you want to write unit tests for specific drivers, that's a
+different story, but I don't think that's what you are attempting to do
+here.
+
+> So the approach I'm favoring is to keep having a per-platform list of devices
+> expected to be probed from USB and PCI, but instead of using driver and device
+> names, in order to make the tests use stable ABI, I was planning to use the
+> modalias for the device instead. But as that's not stable as well, I will look
+> into the other uevent variables.
+
+Everything is unstable here because the hardware platform itself is
+unstable and non-determinisitic.  Which is why we created the driver
+model and sysfs so that userspace can use hints to find the same device
+no matter where in the device tree it is, nor what it is called
+depending on an attribute that is unique for that device (look at
+/dev/disk/ for examples.)
+
+> I see there are a few for USB
+> (PRODUCT, TYPE, INTERFACE) and PCI (PCI_CLASS, PCI_ID, PCI_SUBSYS_ID,
+> PCI_SLOT_NAME). I'll try to find out who the normal userspace tools using these
+> are, to be able to say whether they can be documented as stable ABI or not.
+
+Some of those attributes come directly from the hardware itself, so as
+long as the hardware doesn't change, they should not.  Don't get the
+ones that can change (i.e. locations or bus numbers or the like)
+confused here.
+
+good luck!
+
+greg k-h
