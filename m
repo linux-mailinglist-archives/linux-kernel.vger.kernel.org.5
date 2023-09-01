@@ -2,117 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 179BA78FDE5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:58:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D46078FDF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347334AbjIAM6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        id S237605AbjIANDW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:03:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237256AbjIAM6F (ORCPT
+        with ESMTP id S231462AbjIANDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:58:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F955E0;
-        Fri,  1 Sep 2023 05:58:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E62DD61DA1;
-        Fri,  1 Sep 2023 12:58:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6023EC433C8;
-        Fri,  1 Sep 2023 12:57:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693573081;
-        bh=RdPb4XfmBoPdgLciBy81PFwX6kWRVtgJtGzMBl1kvPs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DsrpSTGw4elR2u8YKWrlE/1TN210UbEbk7Yaqz+qdUQpC7Q2T0RmJ94Y5tGZ/3r8Y
-         SribhQxamfqHE3sFtF/I0L7py5PjW0A55RQweqqWLNALnxQwDnVmm2YHQdleMRTTYX
-         cD3vyUJ777brbPwiB7hMvc+wNoLC/xexnQENCOxmqC0pXFxCRAedeLPGkmhIN+W4fQ
-         p7112RZRiUGd3VFe8wX3oSdNTnR3EQxq75XTEjy0dJYcSWJvVx7iOusVFOdN3mFVlB
-         VzkrO9y6LOBL2ZX+BZpmLgM2scISWTanBY0gd4M3ifvZxIODftSyOW21iwfuUbRwbO
-         8VJ3mzn/PExQg==
-Date:   Fri, 1 Sep 2023 13:57:54 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [RFT PATCH v2] spi: bcm2835: reduce the abuse of the GPIO API
-Message-ID: <d57a99ce-77eb-409f-8371-95f2658fa0c0@sirena.org.uk>
-References: <20230901111548.12733-1-brgl@bgdev.pl>
- <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
- <ba9803e9-3aff-42b9-87ad-4e6d75d36d87@sirena.org.uk>
- <CAMRc=MdX3jtssO_zWCp9g5r00esGgASNeN437aJheRobVyqZcQ@mail.gmail.com>
+        Fri, 1 Sep 2023 09:03:20 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0D9FE7E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:03:17 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31ad779e6b3so1653670f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 06:03:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693573396; x=1694178196; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=75a9HyrrjsY749mq1nl+lxvfuPogake/gzHsJRTckdM=;
+        b=qDJn9CcrxoEiTtWJQuWCa70ayJkoej6fWNI+sKOMoB5u2a3CHlhBGI7H0BttoSfE29
+         rKCMat1WKELUO22R+GH9nQPKK5HKAzwUcO6YfrUhF9b+8zqmZ9Djov1ekh5T+grjGNkf
+         Ul75/ADxOgw2rOFb2LbsVqzKwh11MRGsGRKDnrgriGT4gNb6q4gsclP+nILZB3oWIoeC
+         eanamQ99DeSxiT/80tfl7Pn/fSBi9IbKRNI/UArF/m32UwZWhqOrK+1edUkjZ3LSoF5f
+         n241Q8B9wqadTWLkn3/ICZrbKv8LvcJsUimBWcOipoeLjf8526qMhP72eVCz04Ud5lzW
+         YxHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693573396; x=1694178196;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=75a9HyrrjsY749mq1nl+lxvfuPogake/gzHsJRTckdM=;
+        b=FsRqmdxYjA+r4E7lIg0se/ZPxg+6uPhnbq/bUA3wxzU83cuGzdBMfEWQm6EI1Ygfl4
+         wQQJlCrONINz3dF19h5gu/JnQWuUQ6tTbusPOqrgdroTqHk/1K7ZKu+qhm354mlvAFYu
+         bJQ6KTKumJQBsVmmMQhloxDkHJ/KmAX3d0HF32Md24qgYE5eyTWM8WmoeSuyzrapyNoi
+         76v+PpUOrB+ws3r1bg8S5OeeIu6xeF5gYtloq79XXvfr0vPI9+pmI9vtUMioLUzOzZUr
+         F2gHdYlSvFbIWZzUmLOrUDTKYzwLAoXxoCdInSDBu81cidpLmrB6LoxHOy1CI1uBS5mf
+         ECzA==
+X-Gm-Message-State: AOJu0YyFUplLbNQi1i6cZZOv7IqlOfn7fN0EMw6tzZvsZiPyyYIDWD5O
+        wleOhL1welELGBY8IrR14GKLeQ==
+X-Google-Smtp-Source: AGHT+IHxmfvngPUK7Awew8G7DdP5NSFVpNGfgrE/M5Ydxk/eDsyeJJCfJ1+9HSWbnzqkm8MYrfOrQQ==
+X-Received: by 2002:a5d:500d:0:b0:31a:d90d:8d9f with SMTP id e13-20020a5d500d000000b0031ad90d8d9fmr2074597wrt.25.1693573395616;
+        Fri, 01 Sep 2023 06:03:15 -0700 (PDT)
+Received: from vingu-book.. ([2a01:e0a:f:6020:e9bd:add1:d9ac:7b3e])
+        by smtp.gmail.com with ESMTPSA id i14-20020adfdece000000b003142e438e8csm5167452wrn.26.2023.09.01.06.03.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 06:03:15 -0700 (PDT)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org
+Cc:     conor.dooley@microchip.com, suagrfillet@gmail.com,
+        ajones@ventanamicro.com, lftan@kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH 0/4] consolidate and cleanup CPU capacity
+Date:   Fri,  1 Sep 2023 15:03:08 +0200
+Message-Id: <20230901130312.247719-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UbHgzI4xkkVxHjkA"
-Content-Disposition: inline
-In-Reply-To: <CAMRc=MdX3jtssO_zWCp9g5r00esGgASNeN437aJheRobVyqZcQ@mail.gmail.com>
-X-Cookie: Dealer prices may vary.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is the 1st part of consolidating how the max compute capacity is
+used in the scheduler and how we calculate the frequency for a level of
+utilization.
 
---UbHgzI4xkkVxHjkA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fix some unconsistancy when computing frequency for an utilization. There
+can be a mismatch between energy model and schedutil.
 
-On Fri, Sep 01, 2023 at 02:33:03PM +0200, Bartosz Golaszewski wrote:
-> On Fri, Sep 1, 2023 at 2:31=E2=80=AFPM Mark Brown <broonie@kernel.org> wr=
-ote:
-> > On Fri, Sep 01, 2023 at 02:15:39PM +0200, Linus Walleij wrote:
-> > > On Fri, Sep 1, 2023 at 1:15=E2=80=AFPM Bartosz Golaszewski <brgl@bgde=
-v.pl> wrote:
+Next step will be to make a difference between the original
+max compute capacity of a CPU and what is currently available when
+there is a capping applying forever (i.e. seconds or more).
 
-> > > > +       struct gpiod_lookup_table *lookup __free(kfree) =3D NULL;
+Vincent Guittot (4):
+  sched: consolidate and cleanup access to CPU's max compute capacity
+  topology: add a new arch_scale_freq_reference
+  cpufreq/schedutil: use a fixed reference frequency
+  energy_model: use a fixed reference frequency
 
-> > > This is really neat.
-> > > As noted, it will confuse static checkers at no end, but they just ha=
-ve
-> > > to adopt. (CC to Dan C if he now runs into this.)
+ arch/arm/include/asm/topology.h   |  1 +
+ arch/arm64/include/asm/topology.h |  1 +
+ arch/riscv/include/asm/topology.h |  1 +
+ drivers/base/arch_topology.c      |  9 +++------
+ include/linux/arch_topology.h     |  7 +++++++
+ include/linux/energy_model.h      | 20 +++++++++++++++++---
+ kernel/sched/core.c               |  2 +-
+ kernel/sched/cpudeadline.c        |  2 +-
+ kernel/sched/cpufreq_schedutil.c  | 29 +++++++++++++++++++++++++++--
+ kernel/sched/deadline.c           |  4 ++--
+ kernel/sched/fair.c               | 18 ++++++++----------
+ kernel/sched/rt.c                 |  2 +-
+ kernel/sched/sched.h              |  6 ------
+ kernel/sched/topology.c           |  7 +++++--
+ 14 files changed, 75 insertions(+), 34 deletions(-)
 
-> > It also doesn't look amazing for humans, it's very not C like...
+-- 
+2.34.1
 
-> Once it's widely adopted, you'll see how much clearer and less prone
-> to bugs in error paths the code becomes with autopointers. It's 2023
-> dammit, if we can't have flying cars, let's at least get some RAII
-> into the kernel. :)
-
-I use RAII extensively with other languages, I also know that with C you
-have to be careful and look to make sure everything is freed.
-
---UbHgzI4xkkVxHjkA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTx39EACgkQJNaLcl1U
-h9DYSQf+Kt45phKyr2Mv/QTqMQDMfwNWLfKEDRASvlVuSaRZziL93qD2Z2RRYIuy
-fGq3od30msoIcAwrDwsjl6wRY2CaX+xHihrFwbcTVIDBbeTsAszXAfrTiC+WjGmg
-HvsgQ78GM1Q7My6TBtCKuQDu4BytC9TYSuqwFgPOfuVK/i56dbW4xcrfhU1Oj0QE
-/HmcWN+5AlCObF5jv/r0Oi2roWA6BReoFX8dodtiFTJGKFyS0sLsWeFQnHQst3oF
-Q4HnSdgGNzO04Nmqx/OCotlsP+bGo6uoM7gKAFBnZ9dJ9MGnFD0SrhDAiVSP6qn6
-4JKfMLyMbc5wQNYJdnaLG5CtAiqpBw==
-=Y5Dz
------END PGP SIGNATURE-----
-
---UbHgzI4xkkVxHjkA--
