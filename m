@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7368C79020F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:32:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C699C790211
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350595AbjIASct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 14:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S1350587AbjIASeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 14:34:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232743AbjIAScs (ORCPT
+        with ESMTP id S232743AbjIASeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 14:32:48 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E1CBCEB
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:32:44 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31dcf18f9e2so1988232f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 11:32:44 -0700 (PDT)
+        Fri, 1 Sep 2023 14:34:36 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB5A21A8
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:34:33 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bdca7cc28dso19030615ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 11:34:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693593163; x=1694197963; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OAz0KgVu87lEXbvrXDdrxHlFUVSjyb+PiIQULpTmeH4=;
-        b=s45mkDJZ25XKoOzJvussXOQ817w/NwJ0MuyWX5AHqs8+Fy27qGykdtT4maDsTZprdV
-         MjeQfqqMyS1FgtI2JUuKK3BfLftp4nz7f02Y+o9KOm3RGCGLA5kM7vKpvxVlZw73LcsM
-         aM8gAsZPR/xBs/SUSkU3Ew6rhuVAQ9/scJa6eSXpWn1CLFjr1lC0w/omCrS6qKt68kAD
-         EuUY7uceUV1+62aU+THgAKhtIp0gCWJpk4Ct0jCffydwnEqb29jheg6kO/sPLf84dxTb
-         jSo8Pl6qG0+qnYuFfPbdZM8TRmnaVctDBz50axPsYIy5HFBzUGo306QN3qC6fZMxZ1L1
-         rcmg==
+        d=chromium.org; s=google; t=1693593273; x=1694198073; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Tq1EURtK5iT/JOAA9Bn+fOSTaz8ZmzG3v1Z2miOriec=;
+        b=Sh07G1cA259YD6yFoXtHN42kG7guoGfOiTjjthwTEd+vzIV7SUtV6cSQgp1h6aVqGu
+         i+T4RJ6Q8j9knuxgV4ak3RlGOpQgmWDTT3FwbwFLgS33xkaec/t9fX3ETABJrUiUlQa6
+         gwM0vHf38liWh0kYbFyjFRtNHto8rH1bp9JtA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693593163; x=1694197963;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OAz0KgVu87lEXbvrXDdrxHlFUVSjyb+PiIQULpTmeH4=;
-        b=kkGPYbIuovc7ia/cU+dqD/OlddMjc9zF9/z/NvllJHqAOQwYOQkpZQ43xStfdNED78
-         hqSLfPgX5JHW5z9Gtj2uHKcCGWFiCu1t89tC+pUh/xwo13VrKTj7EhWuoIwfOSiV2n8w
-         uc38hkWu3zBAHTLY/XYokgIkfZRrfiSiC0Tma7i3E97mhvtCYkJ/7Tl9Azap6Qlfal+E
-         LxPdCQyFBFhgWWljGPjdFJEeLKT73ekORx2ucomdbpMRm9YekZbRupxyd52YIqrG12GT
-         s5ChPqj4VecMNtGIZXpq0zDx/VOjbj77CNIcqwT4nxkDBlCaZsJ4Qxy0sC4tEuDlzexk
-         q5pQ==
-X-Gm-Message-State: AOJu0YxM9BlVrtTkw9GXdKexeHtqOagMCnGCfvqQ3uLTRKotD+WCQzuc
-        GaoVYqdmW86Dgk/fFZrU/iBfgA==
-X-Google-Smtp-Source: AGHT+IHdcZv0aMC9hpKaw8d1Qby49feQRcpuBsplRoFoMasrDgWUCyPsOvbDhHM/3t7hALHQh4OU0w==
-X-Received: by 2002:a5d:4d49:0:b0:319:6ce2:e5a3 with SMTP id a9-20020a5d4d49000000b003196ce2e5a3mr2435096wru.26.1693593162956;
-        Fri, 01 Sep 2023 11:32:42 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e94b:1054:6760:aa27])
-        by smtp.gmail.com with ESMTPSA id bl1-20020adfe241000000b00317b5c8a4f1sm5972281wrb.60.2023.09.01.11.32.42
+        d=1e100.net; s=20221208; t=1693593273; x=1694198073;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tq1EURtK5iT/JOAA9Bn+fOSTaz8ZmzG3v1Z2miOriec=;
+        b=DxEHwa+lu5uGFrDXM0/fdpRS7dz0kaMcrFS8NbP8HNsBXE3t5hoYpm/yO2aymIihfm
+         NnoRAT7Z+Djhik2gD/gcW5VS1mXRFTi1a+Wp0WmrkC6EZg2Ls4093xF4BnXgCqbPea9E
+         7ItMS6g7MQ96KC9228biwjhVv2Wi6o7bhZaWdXKo56/g/FJr4PHmLpBxMFahkl1Y7ndN
+         8S9ibijfByQyNs/XVfYkWL/pe3Y5IpK8E23s9vp+zWgvGiEtr5JF9KudJBOAM3jMoWp8
+         bi7olzyRXoE1sdom39BlLdSZTv09Sa0Jlvz7yF5pFB9fXDgRlebGicf99YHzPU9CUYdR
+         PGKQ==
+X-Gm-Message-State: AOJu0YyWYRKlwfxhE/Vk0yX6FDvDzS0x9Kdrur9y2LMcEPUMGHmE6buA
+        V9Oafn2HJcTMDi/LNlDNUPiZEQ==
+X-Google-Smtp-Source: AGHT+IFryZGHKWCVOHEdkh98Zm1lPohKlq7V2+pyDpR6BzIqdx+03ZDWCYThp7Q1cOAgeQiMqcM8nA==
+X-Received: by 2002:a17:902:c1ca:b0:1b8:8223:8bdd with SMTP id c10-20020a170902c1ca00b001b882238bddmr3566419plc.59.1693593273272;
+        Fri, 01 Sep 2023 11:34:33 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 21-20020a170902c25500b001aaecc0b6ffsm3314254plg.160.2023.09.01.11.34.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 11:32:42 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] gpio: sim: don't fiddle with GPIOLIB private members
-Date:   Fri,  1 Sep 2023 20:32:40 +0200
-Message-Id: <20230901183240.102701-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Fri, 01 Sep 2023 11:34:32 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 11:34:32 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     =?utf-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>
+Cc:     Christian Brauner <brauner@kernel.org>,
+        Jeff Layton <jlayton@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jeff Xu <jeffxu@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 1/2] fcntl: add fcntl(F_CHECK_ORIGINAL_MEMFD)
+Message-ID: <202309011133.10D66D0785@keescook>
+References: <20230831203647.558079-1-mclapinski@google.com>
+ <20230831203647.558079-2-mclapinski@google.com>
+ <20230901-lockt-erbfolge-e1f9a26f0d63@brauner>
+ <CAAi7L5f1KYrAyCYLzUN0dSy6xuQCGcC7SQML4+KUdxnQ6RaFfg@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+In-Reply-To: <CAAi7L5f1KYrAyCYLzUN0dSy6xuQCGcC7SQML4+KUdxnQ6RaFfg@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,175 +82,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+On Fri, Sep 01, 2023 at 04:50:53PM +0200, Michał Cłapiński wrote:
+> On Fri, Sep 1, 2023 at 2:56 PM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Thu, Aug 31, 2023 at 10:36:46PM +0200, Michal Clapinski wrote:
+> > > Add a way to check if an fd points to the memfd's original open fd
+> > > (the one created by memfd_create).
+> > > Useful because only the original open fd can be both writable and
+> > > executable.
+> > >
+> > > Signed-off-by: Michal Clapinski <mclapinski@google.com>
+> > > ---
+> > >  fs/fcntl.c                 | 3 +++
+> > >  include/uapi/linux/fcntl.h | 9 +++++++++
+> > >  2 files changed, 12 insertions(+)
+> > >
+> > > diff --git a/fs/fcntl.c b/fs/fcntl.c
+> > > index e871009f6c88..301527e07a4d 100644
+> > > --- a/fs/fcntl.c
+> > > +++ b/fs/fcntl.c
+> > > @@ -419,6 +419,9 @@ static long do_fcntl(int fd, unsigned int cmd, unsigned long arg,
+> > >       case F_SET_RW_HINT:
+> > >               err = fcntl_rw_hint(filp, cmd, arg);
+> > >               break;
+> > > +     case F_CHECK_ORIGINAL_MEMFD:
+> > > +             err = !(filp->f_mode & FMODE_WRITER);
+> > > +             break;
+> >
+> > Honestly, make this an ioctl on memfds. This is so specific that it
+> > really doesn't belong into fcntl().
+> 
+> I've never touched ioctls but if I'm correct, I can't just add it to
+> memfd. I would have to add it to the underlying fs, so hugetlbfs and
+> shmem (which I think can be defined as ramfs so also there). File
+> sealing fcntl is already memfd specific. Are you sure ioctl will be a
+> better idea?
 
-We access internals of struct gpio_device and struct gpio_desc because
-it's easier but it can actually be avoided and we're working towards a
-better encapsulation of GPIO data structures across the kernel so let's
-start at home.
+Does this check "mean" anything for other files? Because if it's
+generically useful (and got renamed) it maybe would be right for
+fcntl...
 
-Instead of checking gpio_desc flags, let's just track the requests of
-GPIOs in the driver. We also already store the information about
-direction of simulated lines.
-
-For kobjects needed by sysfs callbacks: we can leverage the fact that
-once created for a software node, struct device is accessible from that
-fwnode_handle. We don't need to dereference gpio_device.
-
-While at it: fix one line break and remove the untrue part about
-configfs callbacks using dev_get_drvdata() from a comment.
-
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpio-sim.c | 49 +++++++++++++++++++++++++++--------------
- 1 file changed, 32 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-index 271db3639a78..5f52d77567a1 100644
---- a/drivers/gpio/gpio-sim.c
-+++ b/drivers/gpio/gpio-sim.c
-@@ -12,6 +12,7 @@
- #include <linux/completion.h>
- #include <linux/configfs.h>
- #include <linux/device.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/gpio/driver.h>
- #include <linux/gpio/machine.h>
- #include <linux/idr.h>
-@@ -30,8 +31,6 @@
- #include <linux/string_helpers.h>
- #include <linux/sysfs.h>
- 
--#include "gpiolib.h"
--
- #define GPIO_SIM_NGPIO_MAX	1024
- #define GPIO_SIM_PROP_MAX	4 /* Max 3 properties + sentinel. */
- #define GPIO_SIM_NUM_ATTRS	3 /* value, pull and sentinel */
-@@ -40,6 +39,8 @@ static DEFINE_IDA(gpio_sim_ida);
- 
- struct gpio_sim_chip {
- 	struct gpio_chip gc;
-+	struct fwnode_handle *swnode;
-+	unsigned long *request_map;
- 	unsigned long *direction_map;
- 	unsigned long *value_map;
- 	unsigned long *pull_map;
-@@ -63,16 +64,11 @@ static int gpio_sim_apply_pull(struct gpio_sim_chip *chip,
- 			       unsigned int offset, int value)
- {
- 	int irq, irq_type, ret;
--	struct gpio_desc *desc;
--	struct gpio_chip *gc;
--
--	gc = &chip->gc;
--	desc = &gc->gpiodev->descs[offset];
- 
- 	guard(mutex)(&chip->lock);
- 
--	if (test_bit(FLAG_REQUESTED, &desc->flags) &&
--	    !test_bit(FLAG_IS_OUT, &desc->flags)) {
-+	if (test_bit(offset, chip->request_map) &&
-+	    test_bit(offset, chip->direction_map)) {
- 		if (value == !!test_bit(offset, chip->value_map))
- 			goto set_pull;
- 
-@@ -99,8 +95,8 @@ static int gpio_sim_apply_pull(struct gpio_sim_chip *chip,
- 
- set_value:
- 	/* Change the value unless we're actively driving the line. */
--	if (!test_bit(FLAG_REQUESTED, &desc->flags) ||
--	    !test_bit(FLAG_IS_OUT, &desc->flags))
-+	if (!test_bit(offset, chip->request_map) ||
-+	    test_bit(offset, chip->direction_map))
- 		__assign_bit(offset, chip->value_map, value);
- 
- set_pull:
-@@ -181,7 +177,7 @@ static int gpio_sim_get_direction(struct gpio_chip *gc, unsigned int offset)
- }
- 
- static int gpio_sim_set_config(struct gpio_chip *gc,
--				  unsigned int offset, unsigned long config)
-+			       unsigned int offset, unsigned long config)
- {
- 	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
- 
-@@ -204,13 +200,25 @@ static int gpio_sim_to_irq(struct gpio_chip *gc, unsigned int offset)
- 	return irq_create_mapping(chip->irq_sim, offset);
- }
- 
--static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
-+static int gpio_sim_request(struct gpio_chip *gc, unsigned int offset)
- {
- 	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
- 
- 	scoped_guard(mutex, &chip->lock)
-+		__set_bit(offset, chip->request_map);
-+
-+	return 0;
-+}
-+
-+static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
-+{
-+	struct gpio_sim_chip *chip = gpiochip_get_data(gc);
-+
-+	scoped_guard(mutex, &chip->lock) {
- 		__assign_bit(offset, chip->value_map,
- 			     !!test_bit(offset, chip->pull_map));
-+		__clear_bit(offset, chip->request_map);
-+	}
- }
- 
- static ssize_t gpio_sim_sysfs_val_show(struct device *dev,
-@@ -295,7 +303,7 @@ static void gpio_sim_sysfs_remove(void *data)
- {
- 	struct gpio_sim_chip *chip = data;
- 
--	sysfs_remove_groups(&chip->gc.gpiodev->dev.kobj, chip->attr_groups);
-+	sysfs_remove_groups(&chip->swnode->dev->kobj, chip->attr_groups);
- }
- 
- static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
-@@ -352,7 +360,7 @@ static int gpio_sim_setup_sysfs(struct gpio_sim_chip *chip)
- 		chip->attr_groups[i] = attr_group;
- 	}
- 
--	ret = sysfs_create_groups(&chip->gc.gpiodev->dev.kobj,
-+	ret = sysfs_create_groups(&chip->swnode->dev->kobj,
- 				  chip->attr_groups);
- 	if (ret)
- 		return ret;
-@@ -387,6 +395,12 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
- 	if (!chip)
- 		return -ENOMEM;
- 
-+	chip->swnode = swnode;
-+
-+	chip->request_map = devm_bitmap_zalloc(dev, num_lines, GFP_KERNEL);
-+	if (!chip->request_map)
-+		return -ENOMEM;
-+
- 	chip->direction_map = devm_bitmap_alloc(dev, num_lines, GFP_KERNEL);
- 	if (!chip->direction_map)
- 		return -ENOMEM;
-@@ -432,6 +446,7 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
- 	gc->get_direction = gpio_sim_get_direction;
- 	gc->set_config = gpio_sim_set_config;
- 	gc->to_irq = gpio_sim_to_irq;
-+	gc->request = gpio_sim_request;
- 	gc->free = gpio_sim_free;
- 	gc->can_sleep = true;
- 
-@@ -439,8 +454,8 @@ static int gpio_sim_add_bank(struct fwnode_handle *swnode, struct device *dev)
- 	if (ret)
- 		return ret;
- 
--	/* Used by sysfs and configfs callbacks. */
--	dev_set_drvdata(&gc->gpiodev->dev, chip);
-+	/* Used by sysfs callbacks. */
-+	dev_set_drvdata(swnode->dev, chip);
- 
- 	return gpio_sim_setup_sysfs(chip);
- }
 -- 
-2.39.2
-
+Kees Cook
