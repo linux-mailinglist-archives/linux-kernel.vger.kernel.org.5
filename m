@@ -2,162 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9CA790149
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D1679014C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:20:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347218AbjIARTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 13:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
+        id S1347889AbjIART6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 13:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233399AbjIARTL (ORCPT
+        with ESMTP id S229927AbjIART4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 13:19:11 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FA010E4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:19:08 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26934bc3059so133669a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 10:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693588747; x=1694193547; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Hea19k3GFuKq8NOYx/3wJndHiFnItzIgt4fP75Ma0OQ=;
-        b=HY6klUdKClMi+bY7lp1RDQW9D9p2VRfJUcyr6vyVLehO9GTL65FKLYPAVq9ZM17WV5
-         9kbz6p59EL15lAG0fpLivJ0SoT26mur2TIABVmh0xkqaC5p6OL+kcQvphcG2829jsp8E
-         /EwOZUPG8QFRnMwkFpqDu2nzFQpoUXbhuwtNUtHqR3pNwv71ixVBS7mrihs9YRI8Fi0h
-         D9pHZXku9iWdax50ZCHsm5Grh2cum5h28P68dx+8upoxgptjf+aNJIKXOCkSiue2DlSh
-         C3wK4clTQcL+5weizGveIvXzPY+0B86p7T+g62s+M+hAIdHQTFX12qTHvqRoOY7fbxmi
-         pyNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693588747; x=1694193547;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Hea19k3GFuKq8NOYx/3wJndHiFnItzIgt4fP75Ma0OQ=;
-        b=Ak+4ocwH7rAzQP4nqvIhSjTHBnf41oNmGG4/JOEd6ON/7FpkkLZb/Ok44rJu2LhG5R
-         z1vEr9TIhe06NYwGTa0clEm9AAKVs0/JEx1i9BmpzuxvuqrMZQSQW3y/o/1DrkUsaFtv
-         zIW2tB1kwGhpLk1te0EzmEjvkE3hg0e9kqlGMRV5ZzSCR/zwbGrmeHcqRVMAKwdaPuuH
-         MHidZnBfFicWWbAJMmFa8KbSlZ/CQnrpzYLJmbJqA2O4JV2X11+YxvTXq21kf7g95TLJ
-         tDVdZsKnBssHCA/JMM7g06PTj39Ea0iXCXDykWvjKAmsbhTmVLAzaz50AXM3jHXieWo1
-         8K+A==
-X-Gm-Message-State: AOJu0YxnVaXSQsbnsnIggjRhHI/uBLmnQNqhFKkzwUpl8JouX7ZT6oy3
-        cufxAf5uMrC1TM2AZTshZwm0wbyKURCDVDrhP2o=
-X-Google-Smtp-Source: AGHT+IEyhIK9T670Wos2vQna/7YDyZjDCJIf+NcJ6MjZYWsb+MN7eQPk4O7PSGjoRYTt9FfUGNH/xmzElaBLpz+HBgU=
-X-Received: by 2002:a17:90b:1e4e:b0:26b:494f:ae5d with SMTP id
- pi14-20020a17090b1e4e00b0026b494fae5dmr4264120pjb.1.1693588747509; Fri, 01
- Sep 2023 10:19:07 -0700 (PDT)
+        Fri, 1 Sep 2023 13:19:56 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2012.outbound.protection.outlook.com [40.92.41.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C8610E4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:19:53 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XCDFvsB23UFQoUHUNl0yjZOI2SMO+FGK/IbMs1hj8+dDkIC1Zt5qvJs48oOPXFbhel8d4eV7JhA9mSMCcLCHE9J4Dp5QsxF6REPR62Bb5FbmVwG7jftw5+RSa30U6m3yNpN87oMTfzz43GOZtS9JCg32I33pPEcQtAB9oPxxZr8OMraYM43sew3wiziltehSih0BPQabv2QzM/o+7swdZaJAu85EKkqHpalQoJe/z0udkv5bYSkUJE6cE0LpYEpv2c6Pu/l6e8+m3BhFUtBLq98NZSUkcIj5m0kSWj/Fj+ndqJEhi+TACO1G3sqQXu1QOI6Un7937ycL9wsMLfcHTA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=9breyhrL75wDpZLbXVWtXdSvRbG6KendZ+1/6qc/P98=;
+ b=laEn0AETTwl0oMjhMSLdw03ptcSRmF1wZv1vUfTYq9C/gmZge2ez2HC/G0i9aFw1S7Q++ZojVBefrYfb57OWz0M4MfAn3VEORbzGopPz+XzowROyp+6kAqztIy9+YU3Ptukm+PZKDL+gOO0McWHaRLaRPNHcP74QgVRh8RGQ8k9JJ0Gpf4IgQBfS9PD/bKwfqm3lgnRaatb4NokF5ccaG/U25AZTkwSKYuwwvSl8SDKva6LmzvNvGkyPG5vEbkNSsTc88BnwAUqEbHkUsPbBaRJ/IkVAelTDvJEYDk6jxVnKPYPtrMW2fxMlSHioA5tdrWpo6xv2GO/lFoXh7cXj7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9breyhrL75wDpZLbXVWtXdSvRbG6KendZ+1/6qc/P98=;
+ b=aZFxO66DKR7/CLOdJkGMT+FtwPE6DIimG0Ak8JNeo3wW7Bh7VIGFxyVL4hEexGs8FcJZcVgSXQQaFcTHPPjVUSTgu0t2bYKWwrgd13n75Eo37Cyu6mSjoGcqa6adUzmmuILK0LuEOLrnWwKyGkeG72vsrzQhMxwSiL3JjJPjNawICg1P16y2HYHQGSyK01l1Xl0yz/wab1KKcThrpr/cGuc/4EbCH2vGL9jubg6tp1WmRxclN/LMnIvXL3gbHCayy+xGLC2ApT4EBp6vyuxbx/APX9YP+NTnLPeIzGLbtP+gdc8BJSahhfa5YnmwtqdYuEserEK34wllAOlF/l/EDg==
+Received: from CY5PR12MB6455.namprd12.prod.outlook.com (2603:10b6:930:35::10)
+ by CH3PR12MB8934.namprd12.prod.outlook.com (2603:10b6:610:17a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Fri, 1 Sep
+ 2023 17:19:52 +0000
+Received: from CY5PR12MB6455.namprd12.prod.outlook.com
+ ([fe80::912:a56e:f6d2:86fa]) by CY5PR12MB6455.namprd12.prod.outlook.com
+ ([fe80::912:a56e:f6d2:86fa%4]) with mapi id 15.20.6745.015; Fri, 1 Sep 2023
+ 17:19:52 +0000
+From:   mirimmad@outlook.com
+Cc:     gregkh@linuxfoundation.org, Immad Mir <mirimmad17@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND
+        64-BIT)), linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] powerpc/powernv: use appropiate error code
+Date:   Fri,  1 Sep 2023 22:49:12 +0530
+Message-ID: <CY5PR12MB64550ACC0B90FDD120D21E47C6E4A@CY5PR12MB6455.namprd12.prod.outlook.com>
+X-Mailer: git-send-email 2.40.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [qaoOnCIaci6F7glq4M9BFB6A5gam/uhi5iyllV7plUW1p5aKRYEjUHuFNuWmTMqZ]
+X-ClientProxiedBy: BMXP287CA0021.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:b00:2c::25) To CY5PR12MB6455.namprd12.prod.outlook.com
+ (2603:10b6:930:35::10)
+X-Microsoft-Original-Message-ID: <20230901171913.24677-1-mirimmad@outlook.com>
 MIME-Version: 1.0
-References: <20230810142942.3169679-1-ryan.roberts@arm.com>
- <20230810142942.3169679-4-ryan.roberts@arm.com> <87v8dg6lfu.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <5c9ba378-2920-4892-bdf0-174e47d528b7@arm.com> <87cyz43s63.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <4e14730b-4e4c-de30-04bb-9f3ec4a93754@redhat.com> <CAHbLzkog9B_NWhvYmb7=n3Fnb0oER-sXhE3=Nyx_8Kc3-dggcQ@mail.gmail.com>
- <ZPINmXyTgy2wqLqr@casper.infradead.org>
-In-Reply-To: <ZPINmXyTgy2wqLqr@casper.infradead.org>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 1 Sep 2023 10:18:54 -0700
-Message-ID: <CAHbLzkpQ-qzFpc0nntoodRMunTtgRKHQCfV8ubXwQQeVVNo+uw@mail.gmail.com>
-Subject: Re: [PATCH v5 3/5] mm: LARGE_ANON_FOLIO for improved performance
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Zi Yan <ziy@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6455:EE_|CH3PR12MB8934:EE_
+X-MS-Office365-Filtering-Correlation-Id: 34083b1d-c169-40b0-de9e-08dbab0fa6db
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +e93XboYK1MPesvocZmqXgCukVgaXEr+C/PMOQ+C0gqK8luYhlxWF62UOw5v9Esr5g8t8S7NUy/0xEPbZVgxH6PwgTRBVZAuDzSurJ9uQCcLKp32eByNhyzc3o7cvgbfAJGvAt25Hga0k9MWXupD8T2m8PwJrUkYJCCBi3vepAZtpcvYkTC78sFS20msOlTSKAqE0z4QeN2RCL8Fm949LsCp9FhLDolIcm/z6NqOUi9TuP7B+4nOgwJcFj2P+ZE5dP0Ae+txAeYrjUvEV7I+519CwFo1PoHNylgbm8S65hgn0zw+vcm16Ah6KiXS9cjamUEYaEZ9vnTx+DZTU4DE+RF8hszuU6KJ+OYgowUrE3xSaSNMIwxTb/HfP8BLvQTS7nqSwDLF8rk5vaELTM166jzSReFDVnV0/Nrd4roG/OUHELIdtfUVFrpF/3zeNOe3rJ7mFR7+uPjsdTndaniL1aaifEf1Y06Uzmtck3Hun8QboeuUhJvL9YukAQcv6vityQEpgvKxiDI6xR92R6lBogujptrX4mTKZk6PQcu01s/4aYPFH7agNNQm3x9ZggcA
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FfU8SiBREa3goMgyNnpSsu264lD8AGuUeoaFppgjLw3MfD+Zw066DsEVqeR3?=
+ =?us-ascii?Q?u4pl9wHzBggFFIWU8wlpJ7IFabevvg7Q4TpxK64RNpofoi7xtPlCQG1G+Un6?=
+ =?us-ascii?Q?Inod4FR5WNKBa+RMu/pPcU8yQNhhjc8o81X5pN5LT+wh7t9HWbbhCO0Waqsq?=
+ =?us-ascii?Q?krGt6ljtW10ICRbMxia1qRIFBC+XdXPFV/4JQRJAwO+xwHpabvZWySVBY9m0?=
+ =?us-ascii?Q?jd7fRb3ahyoU0aCF9BVhvjiJA2TcLTLoW81mVtEIyrUiEHELbcpuaUHuIND0?=
+ =?us-ascii?Q?mmRddYmdsyDpPAZj4bt4GXfmhH+FEuyQwxjvbsS+kgdsBLEkTpRbi0dSYeQc?=
+ =?us-ascii?Q?q86q74OMpHHn9kYrZQ11mKYDnrCkWc9mtMeZxD/voEK+r/Q2np0Hm/kMscC9?=
+ =?us-ascii?Q?DsnlgltCTE2hm8ElGbfMZ+yymtNHSbnSDFNX/qle1g4AXuwE8hnsDP2Z3YQz?=
+ =?us-ascii?Q?7baiBolkcqD/HSL6KJSq83+13kVr/LP/7BlsbNd7MbyrdEckQ8xdo0xusYFi?=
+ =?us-ascii?Q?Nz11023mjIaMSthtmSyZ+6wLHbSXgBgLfUVH2Ow34KuQovtVQ9+BB58UfsSd?=
+ =?us-ascii?Q?+QkuS/lU+9USYgVizui5Nz3cCc4fcgeBPLc0vFlQwqA4a99TxAYVvQgn5jv/?=
+ =?us-ascii?Q?GGyrMWbnye+tGJlOZ4sGcfxvdgTb2VnevbWJHQ/+YN6FuwAQZhuU+LBswzt1?=
+ =?us-ascii?Q?CUgtcNxIX1Hpkt69i4a6IQxRtNsqNgas268VNApuxYzVmgeFysiYIX349CHt?=
+ =?us-ascii?Q?RdywjMNjJ0drUSHI0k2bHHMZYvk0ZPqWjO1PBJUuVg1WRKJM6rlFnLMGAtbL?=
+ =?us-ascii?Q?q4Qb5fxtlevFU7qUqkVLLgGLgKzW7v6a9ELApYzadwWoSpx+qn82DTCNnRzw?=
+ =?us-ascii?Q?ZFb+TuuWDuKMbE5rLl4PxCN6lL9Ejtk0CT0fCExn/ctAPhYyCsrX3zgceLr8?=
+ =?us-ascii?Q?jdQgEc91Bbe01+/bimMQo06YyYjJaj9tAILhsvdEoQ5DSJXF3wnSt++WNsEo?=
+ =?us-ascii?Q?Oow7WZoCH2JU3gZuMAKkAwfjOtv9HuGat8v9Vmz4HGFGlJYMDtyXuPepz1+T?=
+ =?us-ascii?Q?3rbwHbmZQnsXBNkcZJRKmm4VL7g4dlPR57vG4DRzJfX7YDgSaBsbf+udXeg0?=
+ =?us-ascii?Q?aEo0jCTAcy9qMWi/DhIPBihFx1ZeTm7h0rg4hRx+ad0uevWKylW/en2oU4RT?=
+ =?us-ascii?Q?vRk0MhI+3f9jyxGXy/B2tnaBdORtkJ5z9pf0xvJe7hb+VhHVlfnKm48qTUFH?=
+ =?us-ascii?Q?4mI9PA7U+plwVyaJYc/zH17a2Hp3TpjrZsGyMJVKow=3D=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34083b1d-c169-40b0-de9e-08dbab0fa6db
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6455.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 17:19:52.0736
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8934
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 1, 2023 at 9:13=E2=80=AFAM Matthew Wilcox <willy@infradead.org>=
- wrote:
->
-> On Thu, Aug 31, 2023 at 10:15:09AM -0700, Yang Shi wrote:
-> > On Thu, Aug 31, 2023 at 12:57=E2=80=AFAM David Hildenbrand <david@redha=
-t.com> wrote:
-> > > Let's talk about that in a bi-weekly MM session. (I proposed it as a
-> > > topic for next week).
-> > >
-> > > As raised in another mail, we can then discuss
-> > > * how we want to call this feature (transparent large pages? there is
-> > >    the concern that "THP" might confuse users. Maybe we can consider
-> > >    "large" the more generic version and "huge" only PMD-size, TBD)
-> >
-> > I tend to agree. "Huge" means PMD-mappable (transparent or HugeTLB),
-> > "Large" means any order but less than PMD-mappable order, "Gigantic"
-> > means PUD mappable. This should incur the least confusion IMHO.
->
-> "Large" means any order > 0.  The limitation to <=3D PMD_ORDER is simply
-> because I don't want to go through the whole VM and fix all the places
-> that assume that pmd_page() returns a head page.  The benefit to doing so
-> is quite small, and the work to achieve it is quite large.  The amount of
-> work needed should decrease over time as we convert more code to folios,
-> so deferring it is the right decision today.
+From: Immad Mir <mirimmad17@gmail.com>
 
-Yeah, I agree. And we are on the same page.
+-1 is not a valid error code. This patch replaces it with -EPERM.
 
->
-> But nobody should have the impression that large folios are smaller
-> than PMD size, nor even less than or equal.  Just like they shouldn't
-> think that large folios depend on CONFIG_TRANSPARENT_HUGEPAGE.  They do
-> today, but that's purely an implementation detail that will be removed
-> eventually.
+Signed-off-by: Immad Mir <mirimmad17@gmail.com>
+---
+ arch/powerpc/platforms/powernv/opal-xscom.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yes, THP should be just a special case of large folio from page table
-point of view (for example, PMD-mappable vs non-PMD-mappable).
+diff --git a/arch/powerpc/platforms/powernv/opal-xscom.c b/arch/powerpc/platforms/powernv/opal-xscom.c
+index 262cd6fac..ce4b089dd 100644
+--- a/arch/powerpc/platforms/powernv/opal-xscom.c
++++ b/arch/powerpc/platforms/powernv/opal-xscom.c
+@@ -171,7 +171,7 @@ static int scom_debug_init_one(struct dentry *root, struct device_node *dn,
+ 	if (IS_ERR(dir)) {
+ 		kfree(ent->path.data);
+ 		kfree(ent);
+-		return -1;
++		return -EPERM;
+ 	}
 
->
-> > > I think there *really* has to be a way to disable it for a running
-> > > system, otherwise no distro will dare pulling it in, even after we
-> > > figured out the other stuff.
-> >
-> > TBH I really don't like to tie large folio to THP toggles. THP
-> > (PMD-mappable) is just a special case of LAF. The large folio should
-> > be tried whenever it is possible ideally. But I do agree we may not be
-> > able to achieve the ideal case at the time being, and also understand
-> > the concern about regression in early adoption, so a knob that can
-> > disable large folio may be needed for now. But it should be just a
-> > simple binary knob (on/off), and should not be a part of kernel ABI
-> > (temporary and debugging only) IMHO.
->
-> Best of luck trying to remove it after you've shipped it ... we've
-> never been able to remove any of the THP toggles, only make them more
-> complicated.
+ 	debugfs_create_blob("devspec", 0400, dir, &ent->path);
+@@ -191,7 +191,7 @@ static int scom_debug_init(void)
 
-Fingers crossed... and my point is we should try to avoid making
-things more complicated. It may be hard...
+ 	root = debugfs_create_dir("scom", arch_debugfs_dir);
+ 	if (IS_ERR(root))
+-		return -1;
++		return -EPERM;
 
->
-> > One more thing we may discuss is whether huge page madvise APIs should
-> > take effect for large folio or not.
->
-> They already do for file large folios; we listen to MADV_HUGEPAGE and
-> attempt to allocate PMD_ORDER folios for faults.
+ 	rc = 0;
+ 	for_each_node_with_property(dn, "scom-controller") {
+--
+2.40.0
 
-OK, file folio may be simpler than anonymous. For anonymous folio,
-there may be two potential cases depending on our choice:
-
-Tie large folio to THP knobs:
-MADV_HUGEPAGE - large folio if THP is on/no large folio if THP is off
-MADV_NOHUGEPAGE - no large folio
-
-Not tie large folio to THP knob:
-MADV_HUGEPAGE - always large folio
-MADV_NOHUGEPAGE - shall create large folio?
-
->
