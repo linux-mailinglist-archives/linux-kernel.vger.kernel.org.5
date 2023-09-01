@@ -2,94 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C93F978FE61
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2926478FE50
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:32:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349772AbjIANiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:38:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        id S1349748AbjIANcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:32:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233098AbjIANiT (ORCPT
+        with ESMTP id S232143AbjIANcl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:38:19 -0400
-X-Greylist: delayed 322 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Sep 2023 06:38:15 PDT
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFF5CC5;
-        Fri,  1 Sep 2023 06:38:15 -0700 (PDT)
-Received: from toolbox.int.toradex.com ([213.55.223.243]) by
- mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
- 0M6SuT-1pjA5T1zzf-00yNVJ; Fri, 01 Sep 2023 15:32:41 +0200
-From:   Marcel Ziswiler <marcel@ziswiler.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>,
-        Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Subject: [PATCH v1] arm64: dts: ti: verdin-am62: add iw416 based bluetooth
-Date:   Fri,  1 Sep 2023 15:32:32 +0200
-Message-Id: <20230901133233.105546-1-marcel@ziswiler.com>
-X-Mailer: git-send-email 2.36.1
+        Fri, 1 Sep 2023 09:32:41 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3F8CDD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:32:36 -0700 (PDT)
+Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rcf3v6z4Mz6J7tR;
+        Fri,  1 Sep 2023 21:28:11 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 1 Sep
+ 2023 14:32:34 +0100
+Date:   Fri, 1 Sep 2023 14:32:33 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Amit Singh Tomar <amitsinght@marvell.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <fenghua.yu@intel.com>,
+        <reinette.chatre@intel.com>, <james.morse@arm.com>,
+        <gcherian@marvell.com>, <robh@kernel.org>, <peternewman@google.com>
+Subject: Re: [RFC 11/12] arm_mpam: Fix Downstream priority mask
+Message-ID: <20230901143233.0000480e@Huawei.com>
+In-Reply-To: <20230815152712.1760046-12-amitsinght@marvell.com>
+References: <20230815152712.1760046-1-amitsinght@marvell.com>
+        <20230815152712.1760046-12-amitsinght@marvell.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:Y2b6Xok5Ab6kDR8NeHrJj30jRiKwp+d75tz42valdNq83GDoqqO
- TSyo4xfyK1JKB5YPkBkjepHa2Dz6yZEA9V4zt615SM1UGN09CaARAL5RlvqgxQFqOM3gDCs
- GB7bW8R7GwaHXCKtdQs7/XzT4x7Qb8G/gjp49dxlxcJxOgbq4jA7mjwMoaHfiYcIaixSbTi
- HV+IC/2ecMvEknEKV03pg==
-UI-OutboundReport: notjunk:1;M01:P0:ioNU7onBA9M=;1FXsYta/Ly5GTixTlhk5eWTwqN4
- n0TyLpsNkyE465WwrK6fCopeQ4CYgf54wUfhMMEtmFIxTH7LI1rLJsQWbmbfe1hKrcInpDUE7
- 2KC4oVcm8Rh/Vkytzd8oODhtSFWLALBbW8lVdvZnQoCCR2upY3clncPPqz2U+gNcEK2SmEmsZ
- GUKVre43AHq8zlwqxIknJsKvq6L4Vt+O/nIV4fGQ6O6fZi4E67H1OR0gBGXtey58Iz0eoyShV
- slNnM2lznLSBbpyr8VQaXppAug92vl4mBgbsngQMuFABb4FP1by0UcUnhZuQ3KvFPxTvBR5uo
- x7dQNwm6NriCtJS3VVAVSH9F3t5lPz1ZaOTtvHoMn1BV0vmHbhIr0utQJLJGIwbQMv6JB0EO0
- bvxDXlLoOdkgsz8Bq/edU6QzPKd6NugF9weiHg7wSKycHhsYl2USFAtxQpy4Asaj0F3m+N7ue
- g4Vgo9Ew43bEYmjzvTjvgODAtdbROztLQhPB0GQ+CN1x9ta4A9bgBygfZNtgqJHwIRZHjJzfj
- TYtEE4WHEesBQ69rxcQFBv9vB16zd4AM2MnIWCDCoU0iaLg66rAJBAvfOBL7lljAP2ysmX91n
- seMr/Xs7PTi1E/NjtJWgBXMrD4/osx6MD5TmkU4xooy2HkT/tAuZYxS+23XJbKHRElJrn9wR3
- r66ekNtXBkuRuhV0qmf5BGt4IeH74iZSdR7Z8Drl8KNBkHs/F71NqCjm9Qvj21dAIYhW0W/7E
- DgDmrR3Jjm2unwXZMzLwrIDqDI1jL9huHFMR4n0x9Ia+pUyreQbblwYd8pEjKt8e0HDrnKEtj
- M6PumVaVLFiNDQUtrfDHrlysWYnocmJJUY2lODiHzKcqbuwE+SDxdSOtwOVnY0Lk90R+mExev
- O2iIxmEfZvCz9gXvCwxayfyXqtLHvG46eXuE=
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.202.227.76]
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
+X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+On Tue, 15 Aug 2023 20:57:11 +0530
+Amit Singh Tomar <amitsinght@marvell.com> wrote:
 
-Add NXP IW416 based u-blox MAYA-W1 Bluetooth (using btnxpuart) as used
-on the V1.1 SoMs. Wi-Fi is and was already using mwifiex.
+> MPAMF_PRI_IDR_NS[DSPRI_WD] determines the number of implemented bits in
+> the downstream priority field (MPAMCFG_PRI_NS). For instance, if the value
+> of DSPRI_WD is 4, then the maximum value for dspri is 0xf, and mask should
+> be GENMASK(3,0).
+> 
+> But with current implementation, it turned out to be GENMASK(4,0) .i.e.
+> 0x1f instead of 0xf.
+> 
+> u16 dspri = GENMASK(rprops->dspri_wd, 0);
+> 
+> Let's fix it, by subtracting 1 from DSPRI_WD value.
+> 
+> Signed-off-by: Amit Singh Tomar <amitsinght@marvell.com>
 
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> ---
+>  drivers/platform/mpam/mpam_devices.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/mpam/mpam_devices.c b/drivers/platform/mpam/mpam_devices.c
+> index c0c83c04c77c..59022e42920c 100644
+> --- a/drivers/platform/mpam/mpam_devices.c
+> +++ b/drivers/platform/mpam/mpam_devices.c
+> @@ -1099,7 +1099,7 @@ static void mpam_reprogram_ris_partid(struct mpam_msc_ris *ris, u16 partid,
+>  	struct mpam_msc *msc = ris->msc;
+>  	u16 bwa_fract = MPAMCFG_MBW_MAX_MAX;
+>  	struct mpam_props *rprops = &ris->props;
+> -	u16 dspri = GENMASK(rprops->dspri_wd, 0);
+> +	u16 dspri = GENMASK((rprops->dspri_wd-1), 0);
 
----
+Spaces around the -
 
- arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+>  	u16 intpri = GENMASK(rprops->intpri_wd, 0);
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
-index 90ddc71bcd30..a6808b10c7b2 100644
---- a/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
-@@ -35,5 +35,11 @@ &sdhci2 {
- &main_uart5 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart5>;
-+	uart-has-rtscts;
- 	status = "okay";
-+
-+	bluetooth {
-+		compatible = "nxp,88w8987-bt";
-+		fw-init-baudrate = <3000000>;
-+	};
- };
--- 
-2.36.1
+Please fix intpri as well. Argument is the same.
+
+I'm assuming / hoping James will squash this into relevant patch in his tree.
+
+>  
+>  	lockdep_assert_held(&msc->lock);
 
