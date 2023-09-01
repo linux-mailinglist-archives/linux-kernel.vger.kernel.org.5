@@ -2,315 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD23B78FBCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:37:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3978678FBCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348945AbjIAKhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44432 "EHLO
+        id S1348958AbjIAKhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:37:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233166AbjIAKhL (ORCPT
+        with ESMTP id S233166AbjIAKhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:37:11 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC5610CC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:37:03 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso2280612a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 03:37:03 -0700 (PDT)
+        Fri, 1 Sep 2023 06:37:21 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE6B10CE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:37:17 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id ada2fe7eead31-44e86f3e4b6so716738137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 03:37:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693564622; x=1694169422; darn=vger.kernel.org;
-        h=in-reply-to:references:from:to:cc:subject:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1693564637; x=1694169437; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=H1ZtOmmUyUHsJfv4kZ2SxuGxZMcXZ7XGWuYUry0oDA0=;
-        b=uLOy3sYvM3XHwk8z4+ItlFe7gPB3ene2rd+FiMUDMponwPMNQwPvjw+aep3DbhPAEz
-         wguipI0aCL33kOEUsdln4Cu5Txw4B2vjeEdrl9P2QAXP+9WIhVaAUIponlmv4VOrhe03
-         KnstwsImzaAqFlIkXBHcdVEEgZU13NjpR6uIsmYlCfn7dyXOqHKRnjKXYou+Ac/pTT4o
-         ttm2nwmFz04YsarpvnW8pEWntMkRuVu8lFT1ZZ9Jc7icNmRUoYhJc12hH6xci4dzL6oe
-         x2rTHAH+JcGMvHuO6AFZragMK+UoK5MQ41W8v9bCNzJLe3DrlWp8W1ZOCTI9PNIJ8yY/
-         lICw==
+        bh=By22Tx+4MEV+7Of0ErWpRw96jGJ21LY7lv3lfDuB2xg=;
+        b=XWjPs8cioxVoc0+G/Y3ICaiP8Ed7b0x9jfR9F3gG//BnzbWJ592+W6jBKljBHFBZoe
+         w0700v7obPjc4gKQYDK3usdHzzHvUs9GXi32xkzkHeETZcw2wv5nrssWKxl/sEDfnYgi
+         7FXekxAv6ZI5mYvsiNUjvEpOkZfPtRZJcMSrS6uCl2fC+z7A6Z00PfBDCDF1MdbhReCu
+         jWSCwXiC6bdOnBKDsjyIpDY/eS5ne/YsvhGaDIleX6S/EC4GOa9T5LL1bylDNE67XQWq
+         h3/W4glwo1v6Kxv6do98T2lil/MTcnphfdLi56NzJP8uHHW5t0HlXMAOsMJjKSqYfbbv
+         x9mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693564622; x=1694169422;
-        h=in-reply-to:references:from:to:cc:subject:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=H1ZtOmmUyUHsJfv4kZ2SxuGxZMcXZ7XGWuYUry0oDA0=;
-        b=apGkzQ0SJiKaTwNyXJm61rCgKVhRaDka5/IycjuJEQXt4hYCPM4lLDtjaWyIn3WZ02
-         uj4rOGFClsykbbJVD8CNIosvZs7/0f/MFIdbrbG+ShQNs/VbiIaWC/PBEd2L8v1ST4NQ
-         ypzWy9RkA6WEoPNb/ydaGp/J873Gh0qBnHWi4JruYTn3xv9U1B5W3/zbqTtcx+aTQsoO
-         DaFoqQaxVZC5zPSYxoewRbm0PsgZ61K1Pbk7A+tFH0BrM60YthGGEeuc+Yz1vETh+7VH
-         sherZKpErXmftenPeMkGsNqvRwUInKGvM5VfrQPFcOVvkxSRNr/3ufhxP3OZCTQZCrl8
-         ILZQ==
-X-Gm-Message-State: AOJu0YyLetLfQoeXMbKVn8O6g+InzPBMJ8a5/mMdT5+jN8gGaHvPXhv4
-        Cb3WBbQhLUBrSaUizOKhllejTw==
-X-Google-Smtp-Source: AGHT+IFNlKnN7dJb+GuNlMKWA12egaLKprzsWCbsoyPebkYoiY/dym9gVNq/qV7dap3/RFa/GJqhKA==
-X-Received: by 2002:aa7:ccc2:0:b0:522:57d9:6553 with SMTP id y2-20020aa7ccc2000000b0052257d96553mr1706209edt.1.1693564622005;
-        Fri, 01 Sep 2023 03:37:02 -0700 (PDT)
-Received: from localhost (i53878940.versanet.de. [83.135.137.64])
-        by smtp.gmail.com with ESMTPSA id m7-20020aa7c2c7000000b00523a43f9b1dsm1904700edp.22.2023.09.01.03.37.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Sep 2023 03:37:01 -0700 (PDT)
-Mime-Version: 1.0
+        d=1e100.net; s=20221208; t=1693564637; x=1694169437;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=By22Tx+4MEV+7Of0ErWpRw96jGJ21LY7lv3lfDuB2xg=;
+        b=HInLWMzGGBESkTZkh3SqRqczJPhPDBouPUqXahxKEUwD7NEBTEehmeqTucqtauVFnK
+         dni3STn6WMd0tJkgkM48x85G1f0XMhwytUsUfGk5j5Gt4AoBoowlKHbAUxoc4+46iPkY
+         tiE0w2fz6s2IrZvM25MrjMDHcE0gVRiFeiR4U9cuMp8BHRLwb1xipqbGqe23Oizs7r7L
+         ZwSY1yQckKSQe7b0w6PbBJkzT5nGu7/vz+xxzMH8B/CzLJs8LpHK8dXL9QWkDSNdI7bb
+         qpckugQrsQGk7W4C0ZhmuLGzowG/CfabRnq78JwSzbd+9pcFXlLNqieGPAO1TlabxpR0
+         uYrQ==
+X-Gm-Message-State: AOJu0YwwD6HM+Gn+0ZY2GP+4YFzvpvsmfr/4haC8fszKFClvuPlLAbKk
+        KxcrfFY/bOM4yKqvr91fdn2p0+oJWk+rkxluxk81RQ==
+X-Google-Smtp-Source: AGHT+IE7lEyyDoV/RZpZXd6eJ+r8IZziAmZ+piOc6EX+epOQYcrFjKSeRhEc8lXGEEbQi5iPkRo0veUH97TDlLiO3qM=
+X-Received: by 2002:a67:ee17:0:b0:44e:9afe:c5b9 with SMTP id
+ f23-20020a67ee17000000b0044e9afec5b9mr1919784vsp.23.1693564636692; Fri, 01
+ Sep 2023 03:37:16 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230831111127.667900990@linuxfoundation.org>
+In-Reply-To: <20230831111127.667900990@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 1 Sep 2023 16:07:05 +0530
+Message-ID: <CA+G9fYu--P1R-NZuJY+eyTaZhNSbAPr=n_+XUuDBO+O5jqmeaA@mail.gmail.com>
+Subject: Re: [PATCH 6.4 0/9] 6.4.14-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 01 Sep 2023 12:37:00 +0200
-Message-Id: <CV7IJY36ZXDZ.250Z3B8VKN4Y5@ablu-work>
-Subject: Re: [BUG] virtio-fs: Corruption when running binaries from
- virtiofsd-backed fs
-Cc:     "Vivek Goyal" <vgoyal@redhat.com>,
-        "Stefan Hajnoczi" <stefanha@redhat.com>,
-        "Miklos Szeredi" <miklos@szeredi.hu>,
-        =?utf-8?q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
-        "Manos Pitsidianakis" <manos.pitsidianakis@linaro.org>,
-        "Viresh Kumar" <viresh.kumar@linaro.org>,
-        <linux-kernel@vger.kernel.org>
-To:     "Erik Schilling" <erik.schilling@linaro.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-fsdevel@vger.kernel.org>, <virtio-fs@redhat.com>
-From:   "Erik Schilling" <erik.schilling@linaro.org>
-X-Mailer: aerc 0.15.2
-References: <CV5Q388ZKSI3.2N5DT3BRV3RIM@fedora>
-In-Reply-To: <CV5Q388ZKSI3.2N5DT3BRV3RIM@fedora>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,WEIRD_PORT autolearn=ham autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Aug 30, 2023 at 10:20 AM CEST, Erik Schilling wrote:
-> Hi all!
+On Thu, 31 Aug 2023 at 16:42, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> Some days ago I posted to #virtiofs:matrix.org, describing that I am
-> observing what looks like a corruption when executing programs from a
-> virtiofs-based filesystem.
+> This is the start of the stable review cycle for the 6.4.14 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Over the last few days I spent more time drilling into the problem.
-> This is an attempt at summarizing my findings in order to see what other
-> people think about this.
+> Responses should be made by Sat, 02 Sep 2023 11:11:18 +0000.
+> Anything received after that time might be too late.
 >
-> When running binaries mounted from virtiofs they may either: fail with a
-> segfault, fail with badaddr, get stuck or - sometimes - succeed.
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.4.14-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.4.y
+> and the diffstat can be found below.
 >
-> Environment:
->   Host: Fedora 38 running 6.4.11-200.fc38.x86_64
->   Guest: Yocto-based image: 6.4.9-yocto-standard, aarch64
->   virtiofsd: latest main + some debug prints [1]
->   QEMU: built from recent git [2]
+> thanks,
 >
-> virtiofsd invocation:
->   RUST_LOG=3D"debug" ./virtiofsd --seccomp=3Dnone --sandbox=3Dnone \
->     --socket-path "fs.sock0" --shared-dir $PWD/share-dir/ --cache=3Dnever
->
-> QEMU invocation:
->   ~/projects/qemu/build/qemu-system-aarch64 -kernel Image -machine virt \
->     -cpu cortex-a57 \
->     -serial mon:stdio \
->     -device virtio-net-pci,netdev=3Dnet0 \
->     -netdev user,id=3Dnet0,hostfwd=3Dtcp::2223-:22 \
->     -display none -m 2048 -smp 4 \
->     -object memory-backend-memfd,id=3Dmem,size=3D2048M,share=3Don \
->     -numa node,memdev=3Dmem \
->     -hda trs-overlay-guest.qcow2 \
->     -chardev socket,id=3Dchar0,path=3D"fs.sock0" \
->     -device vhost-user-fs-pci,queue-size=3D1024,chardev=3Dchar0,tag=3D/de=
-v/root \
->     -append 'root=3D/dev/vda2 ro log_buf_len=3D8M'
->
-> I figured that launching virtiofsd with --cache=3Dalways masks the
-> problem. Therefore, I set --cache=3Dnever, but I think I observed no
-> difference compared to the default setting (auto).
->
-> Adding logging to virtiofsd and kernel _feeled_ like it made the problem
-> harder to reproduce - leaving me with the impression that some race is
-> happening on somewhere.
->
-> Trying to rule out that virtiofsd is returning corrupted data, I added
-> some logging and hashsum calculation hacks to it [1]. The hashes check
-> out across multiple accesses and the order and kind of queued messages
-> is exactly the same in both the error case and crash case. fio was also
-> unable to find any errors with a naive job description [3].
->
-> Next, I tried to capture info on the guest side. This became a bit
-> tricky since the crashes became pretty rare once I followed a fixed
-> pattern of starting log capture, running perf and trying to reproduce
-> the problem. Ultimately, I had the most consistent results with
-> immediately running a program twice:
->
->   /mnt/ld-linux-aarch64.so.1 /mnt/ls.coreutils /; \
->     /mnt/ld-linux-aarch64.so.1 /mnt/ls.coreutils /
->
->   (/mnt being the virtiofs mount)
->
-> For collecting logs, I made a hack to the guest kernel in order to dump
-> the page content after receiving the virtiofs responses [4]. Reproducing
-> the problem with this, leaves me with logs that seem to suggest that
-> virtiofsd is returning identical content, but the guest kernel seems to
-> receive differing pages:
->
-> good-kernel [5]:
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x312 nodeid=
- 0x1 in.len 56 out.len 104
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 1 unique 0x314 nodeid=
- 0x1 in.len 53 out.len 128
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x316 nodeid=
- 0x29 in.len 56 out.len 104
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 14 unique 0x318 nodei=
-d 0x29 in.len 48 out.len 16
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 15 unique 0x31a nodei=
-d 0x29 in.len 80 out.len 832
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs: page: 000000006996d520
->   kernel: virtio_fs: to: 00000000de590c14
->   kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  =
-................
->   kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  =
-................
->   kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  =
-................
->   kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  =
-................
->   [...]
->
-> bad-kernel [6]:
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x162 nodeid=
- 0x1 in.len 56 out.len 104
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 1 unique 0x164 nodeid=
- 0x1 in.len 53 out.len 128
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 3 unique 0x166 nodeid=
- 0x16 in.len 56 out.len 104
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 14 unique 0x168 nodei=
-d 0x16 in.len 48 out.len 16
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs_wake_pending_and_unlock: opcode 15 unique 0x16a nodei=
-d 0x16 in.len 80 out.len 832
->   kernel: virtiofs virtio1: virtio_fs_vq_done requests.0
->   kernel: virtio_fs: page: 000000006ce9a559
->   kernel: virtio_fs: to: 000000007ae8b946
->   kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  =
-................
->   kernel: virtio_fs rsp:00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  =
-................
->   kernel: virtio_fs rsp:80 40 de c8 ff ff 00 00 cc 2b 62 ae ff ff 00 00  =
-.@.......+b.....
->   kernel: virtio_fs rsp:02 4e de c8 ff ff 00 00 00 00 00 00 00 00 00 00  =
-.N..............
->   [...]
->
-> When looking at the corresponding output from virtiofsd, it claims to
-> have returned identical data:
->
-> good-virtiofsd [7]:
->   [DEBUG virtiofsd::server] Received request: opcode=3DRead (15), inode=
-=3D41, unique=3D794, pid=3D481
->   [src/server.rs:618] r.read_obj().map_err(Error::DecodeMessage)? =3D Rea=
-dIn {
->       fh: 31,
->       offset: 0,
->       size: 832,
->       read_flags: 2,
->       lock_owner: 6838554705639967244,
->       flags: 131072,
->       padding: 0,
->   }
->   [src/file_traits.rs:161] hash =3D 2308490450751364994
->   [DEBUG virtiofsd::server] Replying OK, header: OutHeader { len: 848, er=
-ror: 0, unique: 794 }
->
-> bad-virtiofsd [8]:
->   [DEBUG virtiofsd::server] Received request: opcode=3DRead (15), inode=
-=3D22, unique=3D362, pid=3D406
->   [src/server.rs:618] r.read_obj().map_err(Error::DecodeMessage)? =3D Rea=
-dIn {
->       fh: 12,
->       offset: 0,
->       size: 832,
->       read_flags: 2,
->       lock_owner: 6181120926258395554,
->       flags: 131072,
->       padding: 0,
->   }
->   [src/file_traits.rs:161] hash =3D 2308490450751364994
->   [DEBUG virtiofsd::server] Replying OK, header: OutHeader { len: 848, er=
-ror: 0, unique: 362 }
->
-> The "corruption" only seems to happen in this one page, all other pages
-> are identical between runs (except that the bad run terminates earlier).
->
-> What do the experts think here? To me it feels a bit like some kind of
-> corruption is going on. Or am I misinterpreting things here?
->
-> Which further analysis steps would you suggest?
->
->
-> Further notes:
->
-> After collecting the above results, I realized that running the guest
-> with -smp 1 makes the problems a lot worse. So maybe that is a better
-> choice when trying to reproduce it.
->
-> Repo with my scripts is available at:
-> https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-conf=
-ig/
->
-> The scripts are just quick and dirty implementations and are not
-> particulary portable.
-
-Summary of my testing during the last few days:
-
-Testing with KCSAN revealed a few cases that look like missing READ_ONCE
-annotations (will send patches separately). But nothing of that was
-related to the immediate problem. I tested instrument_read() and another
-round of logging with a delay to virtio_fs_request_complete. It looks
-like the buffer get corrupted before entering that function. KCSAN
-or manual sleeps + prints did not show any corruption while in that
-function.
-
-KASAN did not report any issues.
-
-Patching virtiofsd to do an additional copy and going through rust-vmm's
-.copy_to() function did not change the behaviour.
-
-I will mostly be off next week, will continue analysis afterwards. Happy
-to hear about suggestions of other things to try :).
-
-Good weekend,
-
-- Erik
+> greg k-h
 
 
->
-> - Erik
->
-> [1] https://gitlab.com/ablu/virtiofsd/-/commit/18fd0c1849e15bc55fbdd6e1f1=
-69801b2b03da1f
-> [2] https://gitlab.com/qemu-project/qemu/-/commit/50e7a40af372ee5931c99ef=
-7390f5d3d6fbf6ec4
-> [3] https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-=
-config/-/blob/397a6310dea35973025e3d61f46090bf0c092762/share-dir/write-and-=
-verify-mmap.fio
-> [4] https://github.com/Ablu/linux/commit/3880b9f8affb01aeabb0a04fe76ad770=
-1dc0bb95
-> [5] Line 12923: https://git.codelinaro.org/erik_schilling/jira-orko-65-bo=
-otstrap-k3s-config/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/goo=
-d-drop-bad-1.txt
-> [6] Line 12923: https://git.codelinaro.org/erik_schilling/jira-orko-65-bo=
-otstrap-k3s-config/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/goo=
-d-bad-1.txt
-> [7] https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-=
-config/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/virtiofsd.txt#L=
-2538-2549
-> [8] https://git.codelinaro.org/erik_schilling/jira-orko-65-bootstrap-k3s-=
-config/-/blob/main/logs/2023-08-29%2013%3A42%3A35%2B02%3A00/virtiofsd.txt#L=
-1052-1063
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+
+NOTE:
+Build warnings noticed from the previous round stabel rc review
+of selftests builds.
+
+selftest/mm/hmm-tests
+
+hmm-tests.c: In function 'hmm_dmirror_cmd':
+hmm-tests.c:187:20: warning: cast from pointer to integer of different
+size [-Wpointer-to-int-cast]
+  187 |         cmd.addr =3D (__u64)buffer->ptr;
+      |                    ^
+hmm-tests.c:188:19: warning: cast from pointer to integer of different
+size [-Wpointer-to-int-cast]
+  188 |         cmd.ptr =3D (__u64)buffer->mirror;
+      |                   ^
+
+gcc-13-lkftconfig-kselftest-warnings
+ - https://storage.tuxsuite.com/public/linaro/lkft/builds/2UkQQWqmFIIBO5L1w=
+qgonbqSDS0/
+
+## Build
+* kernel: 6.4.14-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.4.y
+* git commit: 499afdc4a89911a65f5710838c78fbc857919b7e
+* git describe: v6.4.13-10-g499afdc4a899
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.1=
+3-10-g499afdc4a899
+
+## Test Regressions (compared to v6.4.13)
+
+## Metric Regressions (compared to v6.4.13)
+
+## Test Fixes (compared to v6.4.13)
+
+## Metric Fixes (compared to v6.4.13)
+
+## Test result summary
+total: 138855, pass: 120145, fail: 1908, skip: 16631, xfail: 171
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 140 total, 138 passed, 2 failed
+* arm64: 52 total, 49 passed, 3 failed
+* i386: 39 total, 33 passed, 6 failed
+* mips: 29 total, 27 passed, 2 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 36 total, 34 passed, 2 failed
+* riscv: 24 total, 21 passed, 3 failed
+* s390: 16 total, 14 passed, 2 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 45 total, 40 passed, 5 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* libhugetlbfs
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
