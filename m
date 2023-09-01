@@ -2,50 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 338DC7900A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B907900B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345151AbjIAQYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 12:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43214 "EHLO
+        id S1346415AbjIAQZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 12:25:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230131AbjIAQYW (ORCPT
+        with ESMTP id S1345362AbjIAQZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 12:24:22 -0400
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429F010D4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-        s=default; t=1693585457;
-        bh=yPsU/zPFGjhm+BAPgqggM92cWvwSaqwkmftlEUdpQTI=;
-        h=Date:To:References:From:Cc:Subject:In-Reply-To;
-        b=JpFKBe7X7WmMjhiCxPoXNRWL+bf2/UZ52wfSl3VPDwBl+DNov5UvAuhSlN46Kzyk+
-         9UqNVRDTw2xsHtkrSESyXBzKm0pefVT1KyerAjd7bXzsoNUc6zC5wk/f/LwwLVaAcS
-         0P0Gcb3i2fYQou3M4V6WkFb8fUVPvDl7HU473QnN5MWyhFGy7x3ruC1wgHp/jtE8T+
-         Xh3E9A1SxpvKbhq09H0hRnmwLm2chWnMc0VnwMa/zjoXD2cyBjr3JZBAdBi43r7bo5
-         JSjaOnI5RS+Wyum3tjkW9JG7ZG6c2kyQ8KHbaThmvw21AbFqXX4PX7ooQ5UzzY4ZUF
-         WSy5ithOBmv4w==
-Received: from [10.20.0.2] (unknown [182.253.126.208])
-        by gnuweeb.org (Postfix) with ESMTPSA id 300E424B39E;
-        Fri,  1 Sep 2023 23:24:15 +0700 (WIB)
-Message-ID: <dbce949f-d8b5-fb88-af63-21a82e431aa3@gnuweeb.org>
-Date:   Fri, 1 Sep 2023 23:24:11 +0700
+        Fri, 1 Sep 2023 12:25:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E0D10D4;
+        Fri,  1 Sep 2023 09:25:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 39797B82519;
+        Fri,  1 Sep 2023 16:25:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B7CDFC43391;
+        Fri,  1 Sep 2023 16:25:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693585515;
+        bh=V8XH4cIvHWrSs/u5pfHFkWBm7960Sk/XsLtEUa1DSQA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=BzksYAGVttU96YQgR8k5uPURSLS9LxrDL3vCUmVWVd45VRtBL/9kKNPEEGelVZhxc
+         Oc/b4siJEVLM1MxOshBWjoNsfwpV/l5oYYAlrdYh8JJWyRWPW55lIZtKj1rUPixmP5
+         I3QIn7BAV56Jw4ujVvpUR+GqHQH9eU8LgHFpqAQaE1eK8kCFgQhtHk0hJH7B8A18Ci
+         GqfEXh5Qx6Iw6MmoeBeILSTb9jQuOVFf8FUDPolZBe9kvmn8N7D6b0q6Dtuj8cKbPS
+         GQIybfMcQcwTtqXXSwbdaiTR3re0BpZE9MKbAdCwWZeu5iafX9qtUdTXs61O4Md7MD
+         pMwVI/9NU8lZQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A1CF0E4509E;
+        Fri,  1 Sep 2023 16:25:15 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Content-Language: en-US
-To:     Joshua Hudson <joshudson@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <CA+jjjYQWeqDY3EFQWmVzV2pXyhfRaHm6s-XWYSXfe1CxvkeuEQ@mail.gmail.com>
-From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc:     x86-ml <x86@kernel.org>
-Subject: Re: System Call trashing registers
-In-Reply-To: <CA+jjjYQWeqDY3EFQWmVzV2pXyhfRaHm6s-XWYSXfe1CxvkeuEQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2 0/4] Add support for Allwinner D1 CAN controllers
+From:   patchwork-bot+linux-riscv@kernel.org
+Message-Id: <169358551565.8276.3801944999733958707.git-patchwork-notify@kernel.org>
+Date:   Fri, 01 Sep 2023 16:25:15 +0000
+References: <20230721221552.1973203-2-contact@jookia.org>
+In-Reply-To: <20230721221552.1973203-2-contact@jookia.org>
+To:     John Watts <contact@jookia.org>
+Cc:     linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
+        samuel@sholland.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,67 +65,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/24/23 11:15 PM, Joshua Hudson wrote:
-> 1) A lot of my old 32-bit programs don't work on x64 linux anymore
-> because int 80h now trashes ecx and edx. This hasn't been a serious
-> problem for me.
+Hello:
 
-Do you have a reproducer? It doesn't trash ecx and edx on my machine.
+This series was applied to riscv/linux.git (fixes)
+by Marc Kleine-Budde <mkl@pengutronix.de>:
 
-Linux 6.5.0-rc5-af-home-2023-08-08-gf01d31303231
-```
-#include <stdio.h>
-
-static void do_int80(void)
-{
-	int ecx = 0x11111;
-	int edx = 0x22222;
-	int eax = 158; // sched_yield
-
-	__asm__ volatile (
-		"int $0x80"
-		: "+a"(eax), "+c"(ecx), "+d"(edx)
-		:
-		: "memory"
-	);
-	printf("ecx = %#x\n", ecx);
-	printf("edx = %#x\n", edx);
-}
-
-int main(void)
-{
-	int i;
-
-	for (i = 0; i < 3; i++)
-		do_int80();
-
-	return 0;
-}
-```
-
-ammarfaizi2@integral2:/tmp$ gcc -Wall -Wextra -Os z.c -o z
-ammarfaizi2@integral2:/tmp$ ./z
-ecx = 0x11111
-edx = 0x22222
-ecx = 0x11111
-edx = 0x22222
-ecx = 0x11111
-edx = 0x22222
-
-
-> 2) syscall is documented to trash rcx and r11.
+On Sat, 22 Jul 2023 08:15:49 +1000 you wrote:
+> This patch series adds support for the Allwinner D1 CAN controllers.
+> It requires adding a new device tree compatible and driver support to
+> work around some hardware quirks.
 > 
-> What I don't understand is why this hasn't ever led to a security
-> issue due to leaking values from kernel space (in the trashed
-> registers) back to userspace.
+> This has been tested on the Mango Pi MQ Dual running a T113 and a Lichee
+> Panel 86 running a D1.
+> 
+> [...]
 
-That behavior is architectural. It's the 'syscall' instruction that
-clobbers %rcx and %r11. Not the kernel.
+Here is the summary with links:
+  - [v2,1/4] dt-bindings: net: can: Add support for Allwinner D1 CAN controller
+    (no matching commit)
+  - [v2,2/4] riscv: dts: allwinner: d1: Add CAN controller nodes
+    https://git.kernel.org/riscv/c/6ea1ad888f59
+  - [v2,3/4] can: sun4i_can: Add acceptance register quirk
+    (no matching commit)
+  - [v2,4/4] can: sun4i_can: Add support for the Allwinner D1
+    (no matching commit)
 
-The kernel's syscall entry point even saves %rcx and %r11, but at that
-point they've already been overwritten by the syscall instruction
-itself with the original %rip and %rflags values. So they contain
-userspace values. No internal kernel data is leaked in %rcx and %r11.
-
+You are awesome, thank you!
 -- 
-Ammar Faizi
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
