@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB3278FB87
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C5278FB89
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242729AbjIAJ73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:59:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52732 "EHLO
+        id S243330AbjIAJ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjIAJ72 (ORCPT
+        with ESMTP id S243065AbjIAJ7f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:59:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0120AE8
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:59:25 -0700 (PDT)
+        Fri, 1 Sep 2023 05:59:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEC7FC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:59:31 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 935D0626A8
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:59:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAD1DC433C8;
-        Fri,  1 Sep 2023 09:59:21 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id C6596B823C3
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:59:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A8ECC433CC;
+        Fri,  1 Sep 2023 09:59:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693562365;
-        bh=plaayqcwd0Pw1QVSUvWUHkum1RtiVPbMvX2UxvCAEBg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=fqo6BnowGrrTIQ/G74gBuald2l0dxpDLr0nl0puQP6QNdZH+Z2RW3YmtyTcZXlt+Z
-         tSq5cG2YmTa0MbYJi9hJap1fvbcdfgo2WaEksdNnocXSRUDrr9G41yQrTkm1aGiUDo
-         GtOWGih0DO0nZ3h0w3DebFG1HqCcpPtw7ifEXRh+rnZd0kFhvHx2EBbWle/SC7CMeX
-         4V2tKNMXkZd6IZboJ/c6HTGUq5iWlto1/E7l8JR/FxXKPWRCYH/89TDvGGhUBg7JBj
-         VRvkPZTvX0FFJ46Wus2YB0x+RbfGB50+gzTKW5pgQUJBPuNGK6/B0Ctd/vMacRL4Zu
-         L5uU0CiGhQgcQ==
+        s=k20201202; t=1693562368;
+        bh=MCxcvPe7knGMaYt1Jtizlmz+R6LJpOaJGjbJJhZK6bk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=GA1YwEU3VH5nYETgRRFa+H2KhzO/6AeBueaJNaFrLhNj4oYVUrFlG31/kmDpBLfRN
+         KdVdzl2z/1BnkOMivBAS/6T+XPYkzXOTvsxPcbU9MIIYd8aUuyjxmnemAWS+MU5o87
+         fcGo8kewyUkF4I7AwSdoDpAsP3/r/9nveK4GRIPBzah5737y3oGL7+eG4WTSqh8zqB
+         I85097wIdGopqxEzor65wgSNmlLfntteEIlwPilu7+Rl8dMm7SJpbO7aMeFFCDgSVi
+         bfMT1EVAaQiwlNfX43Y5NN2EFiE2jV0y66q8U8AtR+A1KBidHkIFVV3R4OcOPrWmfN
+         m3cHUMKH7EWsw==
 From:   Michael Walle <mwalle@kernel.org>
 To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
         <nfraprado@collabora.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
@@ -50,62 +50,135 @@ Cc:     "Nancy . Lin" <nancy.lin@mediatek.com>,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2 1/2] drm/mediatek: fix kernel oops if no crtc is found
-Date:   Fri,  1 Sep 2023 11:59:15 +0200
-Message-Id: <20230901095916.3599320-1-mwalle@kernel.org>
+Subject: [PATCH v2 2/2] drm/mediatek: dpi/dsi: fix possible_crtcs calculation
+Date:   Fri,  1 Sep 2023 11:59:16 +0200
+Message-Id: <20230901095916.3599320-2-mwalle@kernel.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230901095916.3599320-1-mwalle@kernel.org>
+References: <20230901095916.3599320-1-mwalle@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drm_crtc_from_index(0) might return NULL if there are no CRTCs
-registered at all which will lead to a kernel oops in
-mtk_drm_crtc_dma_dev_get(). Add the missing return value check.
+mtk_drm_find_possible_crtc_by_comp() assumed that the main path will
+always have the CRTC with id 0, the ext id 1 and the third id 2. This
+is only true if the paths are all available. But paths are optional (see
+also comment in mtk_drm_kms_init()), e.g. the main path might not be
+enabled or available at all. Then the CRTC IDs will shift one up, e.g.
+ext will be 1 and the third path will be 2.
 
-Fixes: 0d9eee9118b7 ("drm/mediatek: Add drm ovl_adaptor sub driver for MT8195")
+To fix that, dynamically calculate the IDs by the precence of the paths.
+
+Fixes: 5aa8e7647676 ("drm/mediatek: dpi/dsi: Change the getting possible_crtc way")
+Suggested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 Signed-off-by: Michael Walle <mwalle@kernel.org>
-Reviewed-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
 ---
 v2:
- - collected tags
- - fixed typos
+ - iterate over all_drm_private[] to get any vdosys
+ - new check if a path is available
 ---
- drivers/gpu/drm/mediatek/mtk_drm_drv.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 72 +++++++++++++++++----
+ 1 file changed, 58 insertions(+), 14 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-index 93552d76b6e7..2c582498817e 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
-@@ -420,6 +420,7 @@ static int mtk_drm_kms_init(struct drm_device *drm)
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+index 771f4e173353..9f0f12740fb0 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+@@ -507,6 +507,27 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
+ 	return false;
+ }
+ 
++static bool mtk_ddp_path_available(const unsigned int *path,
++				   unsigned int path_len,
++				   struct device_node **comp_node)
++{
++	unsigned int i;
++
++	if (!path)
++		return false;
++
++	for (i = 0U; i < path_len; i++) {
++		/* OVL_ADAPTOR doesn't have a device node */
++		if (path[i] == DDP_COMPONENT_DRM_OVL_ADAPTOR)
++			continue;
++
++		if (!comp_node[path[i]])
++			return false;
++	}
++
++	return true;
++}
++
+ int mtk_ddp_comp_get_id(struct device_node *node,
+ 			enum mtk_ddp_comp_type comp_type)
+ {
+@@ -526,21 +547,44 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+ 						struct device *dev)
+ {
  	struct mtk_drm_private *private = drm->dev_private;
- 	struct mtk_drm_private *priv_n;
- 	struct device *dma_dev = NULL;
-+	struct drm_crtc *crtc;
- 	int ret, i, j;
+-	unsigned int ret = 0;
+-
+-	if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path, private->data->main_len,
+-				     private->ddp_comp))
+-		ret = BIT(0);
+-	else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
+-					  private->data->ext_len, private->ddp_comp))
+-		ret = BIT(1);
+-	else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
+-					  private->data->third_len, private->ddp_comp))
+-		ret = BIT(2);
+-	else
+-		DRM_INFO("Failed to find comp in ddp table\n");
++	const struct mtk_mmsys_driver_data *data;
++	struct mtk_drm_private *priv_n;
++	int i = 0, j;
++
++	for (j = 0; j < private->data->mmsys_dev_num; j++) {
++		priv_n = private->all_drm_private[j];
++		data = priv_n->data;
++
++		if (mtk_ddp_path_available(data->main_path, data->main_len,
++					   priv_n->comp_node)) {
++			if (mtk_drm_find_comp_in_ddp(dev, priv_n->data->main_path,
++						     priv_n->data->main_len,
++						     priv_n->ddp_comp))
++				return BIT(i);
++			i++;
++		}
++
++		if (mtk_ddp_path_available(data->ext_path, data->ext_len,
++					   priv_n->comp_node)) {
++			if (mtk_drm_find_comp_in_ddp(dev, priv_n->data->ext_path,
++						     priv_n->data->ext_len,
++						     priv_n->ddp_comp))
++				return BIT(i);
++			i++;
++		}
++
++		if (mtk_ddp_path_available(data->third_path, data->third_len,
++					   priv_n->comp_node)) {
++			if (mtk_drm_find_comp_in_ddp(dev, priv_n->data->third_path,
++						     priv_n->data->third_len,
++						     priv_n->ddp_comp))
++				return BIT(i);
++			i++;
++		}
++	}
  
- 	if (drm_firmware_drivers_only())
-@@ -494,7 +495,9 @@ static int mtk_drm_kms_init(struct drm_device *drm)
- 	}
+-	return ret;
++	DRM_INFO("Failed to find comp in ddp table\n");
++	return 0;
+ }
  
- 	/* Use OVL device for all DMA memory allocations */
--	dma_dev = mtk_drm_crtc_dma_dev_get(drm_crtc_from_index(drm, 0));
-+	crtc = drm_crtc_from_index(drm, 0);
-+	if (crtc)
-+		dma_dev = mtk_drm_crtc_dma_dev_get(crtc);
- 	if (!dma_dev) {
- 		ret = -ENODEV;
- 		dev_err(drm->dev, "Need at least one OVL device\n");
+ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
 -- 
 2.39.2
 
