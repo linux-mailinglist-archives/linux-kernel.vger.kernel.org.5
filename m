@@ -2,94 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A9078FC56
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060B178FC5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349192AbjIALf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
+        id S240206AbjIALhp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349188AbjIALf1 (ORCPT
+        with ESMTP id S231160AbjIALho (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:35:27 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2CA910D3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:35:24 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-31ad9155414so1495030f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:35:24 -0700 (PDT)
+        Fri, 1 Sep 2023 07:37:44 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D840E70;
+        Fri,  1 Sep 2023 04:37:41 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-401c90ed2ecso19285805e9.0;
+        Fri, 01 Sep 2023 04:37:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693568123; x=1694172923; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693568259; x=1694173059; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=t18hQG54uxNXt/UqPwS8SvH0lWIXtL7YjsP7g7CB7ZY=;
-        b=LVYb2naVW5ChtuMMvV168AbEQQVfvTOCeEuZdaBs5oF6kyfM31eFXYDSuBbGxJ6jbq
-         ypoqsYehK6ogcBTLiSo3+nyQ04i4LQUqqIaP91Vin4qmXVBYzpp9qgoEmtHo12oZzKhH
-         BVU2PlXK7s2LsTtSt2Zph5vzfQkm/22TA0TbksYm1oXdw3ZOflghBiHwSe+bqP3FIplw
-         tVJHAh/j+E6oSurQE0wXt3t6EgmFwAUJCs6rgAwtzr/BRG3iOSPJr6vPMVzYl1Guk1nu
-         sww9quiAEwVACUfMRmxRkPz5b/4QaDaMZpkaGpkPgfF4KN4hI3QZXni98Beu12tJAvc/
-         kTWA==
+        bh=/gv9E+V/pkXlxJLESJTglwoTQDj1Z8lIRhsobuy1wv4=;
+        b=NM1KTdK6VGZjd9zEP89b5iZc5TyC5b4Q0S7bbRbLKhURt0haqyM3SrjgdcOEu4WKbx
+         XfaDiwzSnGa+yFVs6kD8r/bYVfJVVleV0iVXG9sZtOKZ0zeJs4O+bntWIbrvf8nwioyC
+         ya35MOGIXps9i6LqItkWT/hO+TKEqF1KAou/34dzKkU7CIY7xCR8xe0drtqYECOcWPJ4
+         PBlVBxzIDdtEfLowykSwsXXKX1QFTxPEZUtbBXRNCHIUW4GhVc/Ll8wzadFWufHoSDZe
+         fZoSGPcABd35NiyaumcG9i1Sap8oGq6mAA0q4E9gBUn8oFHb9gaNJclWfChSOqG/TZrY
+         3E+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693568123; x=1694172923;
+        d=1e100.net; s=20221208; t=1693568259; x=1694173059;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=t18hQG54uxNXt/UqPwS8SvH0lWIXtL7YjsP7g7CB7ZY=;
-        b=M/8SEPEa/2MBmbOnUcRezwomlXqVqwp7fsQL7gn4zp++i4aGhYH2L4MBm2OPGzAa1F
-         kLLRGUJVeLJFClR331ugKvo7tLdCejD9KCrJfE8xs4UDO09suYEmjwXWrLIhyt072CYP
-         CSDX6vHVVeonl7ncOXeCF8NwLsp6zldRgQSXn5fbXFc6UvLCCzmtBgSOLAAoQcxonDX5
-         VjgVhSxBHANFcV2TdL35upLKwd7iCMBRNBP/Ap+2zkRbpfY1wMDeywjGfW9Onf86HJcP
-         ht8bgq6V9AubYF5pHg5ZeMsWuoeLSrQwTaflrNsMs/xt09GiSEXiv3ZKkUmlrliPhvqh
-         O9wg==
-X-Gm-Message-State: AOJu0YxLjgZdyevwMyZ+23psAGglUKj+qTYFLWm/WRutc8q/3/opAgBi
-        c4lEYvoJQ2+HoZz6wZR1zJvqiw==
-X-Google-Smtp-Source: AGHT+IGnLv8hI55wMvsH7Av2hSWd6AFLA/Vz8mb0KZSnXfPP2Uj4hMrjrSe5g+8Efc3jep+DUz5Zkg==
-X-Received: by 2002:a5d:4408:0:b0:31a:d4a9:bdac with SMTP id z8-20020a5d4408000000b0031ad4a9bdacmr1815657wrq.11.1693568123087;
-        Fri, 01 Sep 2023 04:35:23 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e94b:1054:6760:aa27])
-        by smtp.gmail.com with ESMTPSA id l16-20020adfe9d0000000b00317e77106dbsm4955439wrn.48.2023.09.01.04.35.22
+        bh=/gv9E+V/pkXlxJLESJTglwoTQDj1Z8lIRhsobuy1wv4=;
+        b=XCcP8THDMc34exikGPumcEHj1nhzA3RBu8IcOoLY/39iQ6ueD7f1jv++X4frzyt2PY
+         7vaOBtlXXSLvO5Ha3AGuNwxX7eckMM9nKiJH/ICFXN/ZSldSNu3R+zb6W+ya0eo6XFSq
+         qjQlw1uXDkq6+/Doxy5I4c5W75YdYvmccxF5mEa/IoMjmDzduLoAwKpssiN8SRddeSKA
+         5MwBG1RDQpVSBxPz0ADg+JoKb9kQoLJrIwDo1IwedGEVvQ+5i/lJapmje7lcUiU3xvm8
+         amgmO46FnnJ0p6zDpRRjodEsROxk1eZUCUEmlsW5m8jQK1KLMK2VE9ACsRAQR7JOdPJy
+         vaiw==
+X-Gm-Message-State: AOJu0YwoBSV19XMowySZhFuzURaJmtG2HEHQKo4RTTvYxvIuEU6aEFs3
+        24R6+JoYJdznntC436u3NqbnS0280M6dDw==
+X-Google-Smtp-Source: AGHT+IFPvhfxa1RwEKpcQRgvzEpDUHB8SfaD/+P6uuIMlXH/kAbMnX5YYpLW21TqCltE4hHDtx8SBw==
+X-Received: by 2002:a5d:6b91:0:b0:31d:c36a:bdf9 with SMTP id n17-20020a5d6b91000000b0031dc36abdf9mr1547035wrx.67.1693568259243;
+        Fri, 01 Sep 2023 04:37:39 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2501:c701:64d6:8737:b80d:a298])
+        by smtp.gmail.com with ESMTPSA id s12-20020adfdb0c000000b00317a04131c5sm4972240wri.57.2023.09.01.04.37.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 04:35:22 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] gpiolib: remove stray newline in gpio/driver.h
-Date:   Fri,  1 Sep 2023 13:35:20 +0200
-Message-Id: <20230901113520.13352-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Fri, 01 Sep 2023 04:37:38 -0700 (PDT)
+From:   Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-renesas-soc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] mmc: host: Kconfig: Allow selecting MMC_SDHI_INTERNAL_DMAC for RZ/Five SoC
+Date:   Fri,  1 Sep 2023 12:37:03 +0100
+Message-Id: <20230901113703.314667-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Fix a double newline in the GPIO provider header.
+Make MMC_SDHI_INTERNAL_DMAC visible for RISC-V architecture so that we can
+select this config option for RZ/Five SoC which is based on RISC-V
+architecture.
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 ---
- include/linux/gpio/driver.h | 1 -
- 1 file changed, 1 deletion(-)
+Hi Geert/Ulf,
 
-diff --git a/include/linux/gpio/driver.h b/include/linux/gpio/driver.h
-index c312bf3e0369..8f0859ba7065 100644
---- a/include/linux/gpio/driver.h
-+++ b/include/linux/gpio/driver.h
-@@ -765,7 +765,6 @@ struct gpio_desc *gpiochip_get_desc(struct gpio_chip *gc, unsigned int hwnum);
- int gpiochip_lock_as_irq(struct gpio_chip *gc, unsigned int offset);
- void gpiochip_unlock_as_irq(struct gpio_chip *gc, unsigned int offset);
+I was in two minds here whether I should instead add dependency for
+ARCH_R9A07G043 instead of RISCV. But adding dependency for RISCV allows
+us to get this config option freely for future coming RISC-V Renesas
+SoCs.
+
+Cheers, Prabhakar
+---
+ drivers/mmc/host/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
+index 554e67103c1a..5190881cb204 100644
+--- a/drivers/mmc/host/Kconfig
++++ b/drivers/mmc/host/Kconfig
+@@ -677,9 +677,9 @@ config MMC_SDHI_SYS_DMAC
  
--
- struct gpio_chip *gpiod_to_chip(const struct gpio_desc *desc);
- 
- #else /* CONFIG_GPIOLIB */
+ config MMC_SDHI_INTERNAL_DMAC
+ 	tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
+-	depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || COMPILE_TEST
++	depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || RISCV || COMPILE_TEST
+ 	depends on MMC_SDHI
+-	default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470)
++	default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || RISCV)
+ 	help
+ 	  This provides DMA support for SDHI SD/SDIO controllers
+ 	  using on-chip bus mastering. This supports the controllers
 -- 
-2.39.2
+2.34.1
 
