@@ -2,245 +2,437 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1F678F65C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 02:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA45D78F663
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 02:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345909AbjIAAXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 20:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35152 "EHLO
+        id S1347918AbjIAAan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 20:30:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230082AbjIAAXi (ORCPT
+        with ESMTP id S1345909AbjIAAam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 20:23:38 -0400
-Received: from rcdn-iport-6.cisco.com (rcdn-iport-6.cisco.com [173.37.86.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A18FBF4
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 17:23:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1566; q=dns/txt; s=iport;
-  t=1693527815; x=1694737415;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=eavAh/9LviJ9yfN9+i5MTmA6UX9SLbRNrDAKHSOD6Wk=;
-  b=G7MnPy8dcPf9+BOoHlO4tnX8hec/4qQNyn0s9UnS1EsHH2/lfv2k6Gqs
-   35TcS38ditoupiBnFbWiokCW/ayCgTMjnqMMmLHOhbYPQ9996yVQiF5+Z
-   7VdQ0nhfe68VOC9nA85LBPYeacbPjf5vwpPZZFKZLTKgRWfpTuUA1oKNo
-   g=;
-X-IPAS-Result: =?us-ascii?q?A0ArAAAELvFkmJxdJa1aHAEBAQEBAQcBARIBAQQEAQFAJ?=
- =?us-ascii?q?YEWBwEBCwGBZFJ0AlkqEkeIHQOETl+IZ518gSUDVg8BAQENAQE5CwQBAYUGA?=
- =?us-ascii?q?oZrAiU0CQ4BAgICAQEBAQMCAwEBAQEBAQMBAQUBAQECAQcEFAEBAQEBAQEBH?=
- =?us-ascii?q?hkFDhAnhWgNhgQBAQEBAxIoBgEBLAsBCwQCAQgOAwQBAR8QMh0IAgQBDQUIG?=
- =?us-ascii?q?oJcAYJeAwEQnSABgUACiih4gTSBAYIJAQEGBAWybAMGgUQBiAcBhTKETScbg?=
- =?us-ascii?q?g2BWIJoPoJiAoFihBKCLolghUYHMoYIiRgqgQgIXoFqPQINVAsLY4EVgkcCA?=
- =?us-ascii?q?hE6E0pxGwMHA4ECECsHBDIbBwYJFy0lBlEELSQJExI+BIFxgVMKgQU/EQ4Rg?=
- =?us-ascii?q?kYrNjYZS4JmCRUMNE52ECsEFBiBFARsBRoVHjcREhkNAwh2HQIyPAMFAwQ2C?=
- =?us-ascii?q?hUNCyEFFEMDSAZMCwMCHAUDAwSBNwUPHwIQGgYOLQNEHUADC209NRQbBQRmW?=
- =?us-ascii?q?gWfXHCBaIIkgQUTlF+cUZRkCoQLi3+VOxeEAYxul2GBD5gsII1BlnODSAIEA?=
- =?us-ascii?q?gQFAg4BAQaBYzqBW3AVO4IzAQEBMVIZD44gGYNehRSKZXYCOQIHCwEBAwmLS?=
- =?us-ascii?q?AEB?=
-IronPort-PHdr: A9a23:uyEGDRIzArJqF79b6NmcuakyDhhOgF28FhQe5pxijKpBbeH6uZ/jJ
- 0fYo/5qiQyBUYba7qdcgvHN++D7WGMG6Iqcqn1KbpFWVhEEhMlX1wwtCcKIEwv6edbhbjcxG
- 4JJU1o2t2qjPx1tEd3lL0bXvmX06DcTHhvlMg8gJe3vBo/Whsef3OGp8JqVaAJN13KxZLpoJ
- 0CupB7K/okO1JJ/I7w4zAfIpHYAd+VNkGVvI1/S1xqp7car95kl+CNV088=
-IronPort-Data: A9a23:0EvMGa5uCAOaDCgfPH7cXwxRtC/HchMFZxGqfqrLsTDasY5as4F+v
- mIYDW2Bb67cM2KmKdt2O4i18ElXu5XVndFkTlZkpXgwZn8b8sCt6fZ1gavT04J+CuWZESqLO
- u1HMoGowPgcFyOa/lH3WlTYhSEUOZugHtIQM8aafHgrLeNYYH1500k7y7Vg2tUAbeWRWmthh
- /uj+6UzB3f9s9JEGjp8B3Wr8U4HUFza4Vv0j3RmDRx5lAa2e0o9UPrzEZqMw07QGeG4KAIVq
- 9Hrl9lV9kuBl/sk50jMfrzTKiXmSZaKVeSCZ+Y/t6WK2nB/SiIOPqkTLecgcF9MrCSwg8FNk
- tpdscLuVTsRF/iZ8Agde0Ew/yBWJ6ZK/vrMJmKy9JHVxEzdeHyqyPJrZK00FdRHoaAsXicfr
- rpBdW5lghOr34paxJq4Q/Nwh8AqL+HgPZgUvTdryjSx4fMOGMiSHP2Qvo8FtNs2rvxpBvDiR
- +gVUgBqN03yRzdpIlM7NLtryY9EgVGmI2EH9zp5v5Ef52nV0Rw01rX9LPLLddGQA8ZYhECVo
- iTB5WuRKhUbMsGPjDmI6HShgsfRki7hHoEfDru18rhtmlL7+4AIIAcdWV3+qv6jhwvjHdleM
- EcTvCEpqMDe6XBHUPHkQiGhuGWjrycASuYKHP0+tl+R9pL9tlPx6nc/chZNb9kvtckTTDMs1
- 0OUk96BOdCJmODJIZ563urKxQ5eKRT5PkdZOnBZFVptD83L5dBs3kiWH76PBYbs1oWtcQwc1
- Qxmu8TXuln+pdQA26P+9lfdjnfx4JPIVQUyoA7QWwpJDz+Vhqb7P+RECnCCvZ6sybp1qHHa4
- RDofODFvYgz4WmlznDlfQn0NOjBCwy5GDPdm0VzOJIq6i6g/XWuFagJvmAleR83bJpYJGK1C
- KM2he+3zMELVJdNRfEvC79d9+x2pUQdPY2/D6uNPoYmjmZZLVPep0mCmnJ8L0i0wBRzzsnTy
- L+QcN2nCj4BGL97wT+tL9rxIpd1rh3SMVj7HMihpzz+iOL2TCfMFd8tbgDUBshnt/zsnekg2
- 4sFXyd8408BALSWj+i+2dN7EG3m2lBhXsys+pEML7TeSuekcUl4Y8LsLXoaU9UNt4xel/zD+
- Te2XUow9bY1rSSvxdmiApy7VI7SYA==
-IronPort-HdrOrdr: A9a23:bab7I6sAmIM6R9qVcG5bdVmb7skCM4Aji2hC6mlwRA09TyXGrb
- HMoB1L73/JYWgqOU3IwerwSZVoIUmxyXZ0ibNhRItKLzOWyFdAS7sSo7cKogeQVBEWk9Qtt5
- uIHJIOdeEYYWIK6voSpTPIberIo+P3sZxA592us0uFJDsCA8oPnmIJbjpzUHcGOzWubqBJbK
- Z0k/A33QZIDk5nFfhTaEN1OdTrlpngrr6jSxgAABIs9QmJih2VyJOSKXKl9yZbeQlihZM5/0
- b4syGR3MieWveApSP05iv21dB7idHhwtxMCIinkc4OMAjhjQ6uecBIR6CClCpdmpDt1H8a1P
- 335zswNcV67H3cOkuvpwH25gXm2DEyr1f/1F6jh2f5q8CRfkN5NyMBv/MdTvLq0TtmgDhO6t
- MM44tfjesPMfr0plW42zEPbWAzqqP7mwt4rQdZtQ0tbWJXUs4ikWVYxjIULH/FdxiKtbzO14
- JVfZvhzecTflWAY3/DuG5zhNSqQ3QoBx+DBlMPo8qPzlFt7TpEJmYjtYQid007hdkAYogB4/
- 6BPrVjlblIQMNTZaVhBP0ZSc/yDmDWWxrDPG+bPFyiTcg8Sj7wgo+y5K9w6PCheZQOwpd3kJ
- PdUElAvWp3f071E8WB0JBC7xiISmSgWjbmzN1Y+vFCy/DBbauuNTfGREElksOmrflaCsrHW+
- yrMJYTGPPnJXuGI/cB4+Q/YeglFZAzarxjhj9gYSP6niviEPyfitDm
-X-Talos-CUID: 9a23:KkKPUWD4ti5WQt/6EzB6yFcMAec0S2HM8C3fM0vmV3pVcJTAHA==
-X-Talos-MUID: =?us-ascii?q?9a23=3A9WnmUgxKJF6zMNqr563rB3V5Ud6aqJiJE0Yxsbc?=
- =?us-ascii?q?KgPOBbnVCHx27lDCbfqZyfw=3D=3D?=
-X-IronPort-Anti-Spam-Filtered: true
-Received: from rcdn-core-5.cisco.com ([173.37.93.156])
-  by rcdn-iport-6.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 00:23:34 +0000
-Received: from rcdn-opgw-1.cisco.com (rcdn-opgw-1.cisco.com [72.163.7.162])
-        by rcdn-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 3810NYkl015032
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Sep 2023 00:23:34 GMT
-X-CSE-ConnectionGUID: tnkt1BSqTkqRCZTAN2/g0A==
-X-CSE-MsgGUID: XnG+WwkeTge1eTq/LK1Zjg==
-Authentication-Results: rcdn-opgw-1.cisco.com; dkim=pass (signature verified) header.i=@cisco.com; spf=Pass smtp.mailfrom=kartilak@cisco.com; dmarc=pass (p=quarantine dis=none) d=cisco.com
-X-IronPort-AV: E=Sophos;i="6.02,218,1688428800"; 
-   d="scan'208";a="1203741"
-Received: from mail-mw2nam10lp2104.outbound.protection.outlook.com (HELO NAM10-MW2-obe.outbound.protection.outlook.com) ([104.47.55.104])
-  by rcdn-opgw-1.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 00:23:33 +0000
+        Thu, 31 Aug 2023 20:30:42 -0400
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2080.outbound.protection.outlook.com [40.107.93.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918D6E4C;
+        Thu, 31 Aug 2023 17:30:38 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jTp5COoCBPr7OT0ChhsDrUmnExTm0xIBKa5kdqp+/c+V7J+JnYI2lw8VgwrQvE0xm4QuZ+opF3z0UAfUfBcMUMQor27ktzkw7zm+zMtAUdGyPlIE/srIM8gIkUHbo8lsa+vc0sXewCaThlLu+N5QQsQqPtgUUQSKhGnNMOEV0z7WVLHTF6b1g3qTTfnyOdV0uu7Fq/TGK6uPvKLNy9jN57Vk+b92FWFeEV/TdaEzrBB3WkHd2SVQzjGrnForeNPO12NgC6kcqibrIY+ygiT/N9vLyGk5CMOmYUQfGdHqG9t4ACnZmwTnoWXNwESG65hCEjsEbngPn9X0rYmpfJdDkQ==
+ b=Z6Y2IxjLHKKyKTV8V+f7ANYJMh9OfuEJcl7eS7cbCm3MaM31ApnRTfSmAbpiDSb/wqS1umD939amLKejE0+SpbA3NKs6qEedKWyIG3irIk7hqJI0KM4G+7HT5s+Ur4VLY0C2YQ7G+uK8qJZ8WeFL+7sQQTpFFxpTNPl1orVSwEXHX3ravHVnXazdPx5wDg1dHsh9WN+lNf49w2f7bj20RYx90KqQNKybmRf1P9k0yz9frkyV9KNYlZSfDvu1EfchPyEPBE5hqa9KtFXv4Y12m4vg22tIh1L81tBGu6fcVzw5yVWmZkMxYCt9hqUEvmCxQkrcN4DJSqdkk9a7h9C4Tg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7YQhrMlE7IVGqlUFfSjW7DxJmZEgR1ldDDw7nc0gCRE=;
- b=Za9eoIFJ/qxxA0qLAEA36Q15btxQcPejCXOQBAUbGYHhOAGT4kBfUQ8NB7LSzUB+2XxJ+TlqzWFZVAraPTnAfwQR/f/eAtNQ699W6rnPGGoIHuB8qRIUJmds8kLuvv+jW3EtM0TyFemCko1imu9dpg60QRVCjVsqZqY994vxgIoc5j7hrIJXkF/Bote0d4thZAvHHWR5NWrmkmbeARF53ugSj3Y0tQcZjaU5LRI6KKnPK6+f1oDC43PvK7UN6U20zRGI+zNNZ3T0TxCt+w9OPr7UXVFdSTDmB2lPMfGbUtuGSxriwtgWxraXpWJ5ZI37vUZpVG3Quso8p9LFi96pcg==
+ bh=6FO9CpddBM15U/jbJGO3B0nJk7+C8lb/K23sNjyojbE=;
+ b=aWNbfoUCighbIG0ktuTOWO+44G53lCia8X1/cffjmu1j1Q+bcdg9RAYE1nuf9PZUTAsyK5NYmj6CgBy9Z9rnqWbBPET4TZqTt3TPKCtP4JQwht1Z3rOGiOtlzA4lfTEVGx+6MpWHD9fqZ6UPyhl+kKdoTxAnSMuswDU2edeUsZM8tBBBA4n7cwzAVsCKm9vhsBehIAR89uFChapkH6IOBMfsQjv3Kh00WDsCztT8GNDmDx9BEIdlkOGx3ef8R9SVqXqSUBHobIitJM1LuxVWcTBuUYlCA/DY1TW3kojJt/yL2MgDLhR8hcHjIdJElCBKPBzP/s3HM9EBx/b5X1CxRQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.com;
- s=selector1;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7YQhrMlE7IVGqlUFfSjW7DxJmZEgR1ldDDw7nc0gCRE=;
- b=OB8uMrZgAZqSQCo5BnqT9NDnuz6L+575+yTQN8Xqqe8kzyrBGjoL6KV/6A4MgSzVk1n8vP+Zmh/ckKBs5RdlIKj6fanTYLMLjx95kw41wWfeTsV7SvbCk7+Y7sgPx16+fp2cBE8bzNgKayo1f0b1BmXIldjHhiwZYukL7h11Nqo=
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com (2603:10b6:a03:42c::19)
- by BN9PR11MB5322.namprd11.prod.outlook.com (2603:10b6:408:137::18) with
+ bh=6FO9CpddBM15U/jbJGO3B0nJk7+C8lb/K23sNjyojbE=;
+ b=gpJDCzJM+2H+qSrqic38lZF+GZ7/ZGgD2lhJfb0b3eJpvoT6Qi+l2kz1zEs5bKAprx+iSl3eEfvRCV9f9pB8h41/OalHlMOpC9DtwXscho+n5wKLDUKs1OlHUxPsv3oxBd0iFJBMU150/QYZW1VWA4MZLSlDVsx+8Tae35x1+rrU4joY3iMgMy8/7074eyGmaMXJzXbpk75ZNv8qbS/ri6J4sBEz5EY0AhhsTZ2KOe+9vxxW0IB4/lPxph4zXb3De0FKJIg6rKBRgNVMV1itLctWBsypQCMVdMKliCiuWC+WIT5Gq7FZTjV/VKpE7e3GP2eqe5iEhcAZd5IEHxsWNw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+ by CY8PR12MB7220.namprd12.prod.outlook.com (2603:10b6:930:58::8) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Fri, 1 Sep
- 2023 00:23:31 +0000
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::cdc6:d9b7:ff6e:bec5]) by SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::cdc6:d9b7:ff6e:bec5%4]) with mapi id 15.20.6745.021; Fri, 1 Sep 2023
- 00:23:31 +0000
-From:   "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: RE: linux-next: manual merge of the scsi-mkp tree with Linus' tree
-Thread-Topic: linux-next: manual merge of the scsi-mkp tree with Linus' tree
-Thread-Index: AQHZ2VwrqtyDy5cVYU6WgbTOst77QrAFIaxQ
-Date:   Fri, 1 Sep 2023 00:23:31 +0000
-Message-ID: <SJ0PR11MB58964806CF716BB19A8F1DD3C3E4A@SJ0PR11MB5896.namprd11.prod.outlook.com>
-References: <20230828130240.4814c106@canb.auug.org.au>
-In-Reply-To: <20230828130240.4814c106@canb.auug.org.au>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB5896:EE_|BN9PR11MB5322:EE_
-x-ms-office365-filtering-correlation-id: 81fd8560-fce5-4ac4-dd72-08dbaa81ac18
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: +Y3Hg5hrQ1iOM/WOuwtPlYvii9BbsAPf6Tp1cCchL56uhrGXEKezMo20WaddVx6If+5pTRWXLs8vUh9iVLyzHZK8QA6Nzl1jceHj/wJu1pN28s0Rh6lR32qOJVrzRgGmH8w7GzNXtf6oeAEIJyNuyZlThZUZE+I4S+A1eFIQ6cl1BIBHJ4HfOWAHCvZQJaEMPT/bkhGp6jSWPUr5ZpT6F+W0BSfGhd64XMUYA6XhOEyiy8UNd38UlZ3Z7iJudU/z/rHHaeI0XF2ZBOPyFQqGfLTn53CjowtHUTPnoVWu9rhSTGWhYmg282rkfXHUER334GcXRLjHAmO+JJLcljUCPT5vJjWqmGnGyqAomZk7JNnFZR6HY/twx4Xt2hO/u3NVaMeMnNUEeAvSvT3xlCiI99qk1Wf/0JKkfSfky4oscs0H7v5F1Esg5+/Yy5mkHwm/ZDBz06TB/VXIkJUDjqMzwlAvzhALJvO4mFLhSxkDCzPWEV6TQWe5RKC2zd8fdaoYhM6ONusNIOS66hVryLubCUtVC8p+fPoBe6ibZyuKlKhjQnjVZSPGmj/bc6er4562eOPfaIrR9Sl2AE37v6NZ+q9AWPMuVNPv0xNoN+v4EzM=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5896.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(39860400002)(346002)(366004)(1800799009)(451199024)(186009)(71200400001)(9686003)(6506007)(7696005)(55016003)(33656002)(122000001)(38070700005)(38100700002)(86362001)(2906002)(966005)(53546011)(83380400001)(478600001)(76116006)(52536014)(110136005)(4326008)(8936002)(8676002)(66946007)(54906003)(66556008)(5660300002)(41300700001)(64756008)(316002)(66476007)(66446008);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?bWrt2HHtd6zFOi30jB2XqnZ8db34GNkHqXWpBaUXL76FIfDCdJruVVk96xsC?=
- =?us-ascii?Q?7pcyeE54BZbSRZZrGjQeoJJQlL9tSZvUENKaPUdh0D4r4sAQuMJMNOCmdwZW?=
- =?us-ascii?Q?CX4pdJw0vIhps3Bv7NSNT+24fAcwcpXPKQu/AmPDhaZXiP+tIHtu77+AsLQk?=
- =?us-ascii?Q?eW1Qy36SGvuA10ydcH14sVfADaUM7xw1Zp62PnGTFSvDw1bZpNSe7ZbMzrQZ?=
- =?us-ascii?Q?T9jV17uR8U+we2pO3/4/97BLfWM5O24xLwnDGl+pSftV9JWUiib6VN1hJDVP?=
- =?us-ascii?Q?QWnapoxnOKRS7Ea/dw0aHswZkm1q/9JO5LGZ1Tk8GxE4pPu0KdftALnvnGPw?=
- =?us-ascii?Q?eZG4/6fLHaxzX/yO2S4mvUSY02FdiStWrBslNEuBnRVZG4tK7pVlO9oxjgAt?=
- =?us-ascii?Q?3IeJLeU8Y/V1+jPlmRpIrn5Eq/HGLrNXoXXp+/67mh5kABRsxeK8Fae+uliw?=
- =?us-ascii?Q?vHS2Bgbe4L1MqISjXzv4q4hTwDsGTJgXfZd1IZpfE8hoCZpiGE+3Sph4Nb6t?=
- =?us-ascii?Q?SZMqPm8Ir0o0I6xhaMv+cWuWlvaFvFxtd6jItDhd1Oky6KMBcVulTkupVzlP?=
- =?us-ascii?Q?2tPUzG+WFoKNsUaohAkvMsclvzXN5Xnofd/3BWerltjzbHCkVa1fHejByTfP?=
- =?us-ascii?Q?GUG8KR92mCgpuylqEydZR3HUpOyav2c9ZNnee5+TBfGxVZNm7pCiJJyYQnUP?=
- =?us-ascii?Q?4h0aUTYG08T//wEJuSga41yAftg34tj9da0RHES+DRTzE6+1jNi4cslpz5y8?=
- =?us-ascii?Q?KztdKGaBKCgr2e3JZHdfm9BV+Tlpb17mC8ZZKN+05pwrfCPHNlbckYkC6Upv?=
- =?us-ascii?Q?Vuv8Q0xNiYqVZGq3hQQphIKnw0Fd7FjK2rmlNL0y3XruNrraPhX5GoLezKuc?=
- =?us-ascii?Q?VXcGbX/gvGkqpXfCStWSKxEZTfGEo+1c4yxo/HoOK35eE47eXsPub99NtMys?=
- =?us-ascii?Q?j+jSzde3M9L/v2Y7IBavPTkItuDTPVYVZoCdiq0fGz9slQokgmDw62bUBXuz?=
- =?us-ascii?Q?iGfqylKv6aUVay5xhY/V4LDZvaWND+ie3H6CT+0ODngRGw1MxM5gnJqFFur7?=
- =?us-ascii?Q?j6htz8dUQeHeI1wJpzHGtVR74FWjo6i9lq1oCcOEybNt1mSBLHMpaNo3kTkG?=
- =?us-ascii?Q?Ta9XWX+JrRyZHfOxFotVVS91wXyyVKVAw2kwFoNW4WJoKmC7pgseyKz3yJmG?=
- =?us-ascii?Q?6nfXMHwpxkoZcm7MH1DPKg866YmXkx6crtJIAyHqBkE6g0qdqdRNTLfnrY4u?=
- =?us-ascii?Q?m6TuaSTjFgT9fxWjb+EentcoirEeqdYPMY930WgSHSPs9VtBe5MWmutOX7IT?=
- =?us-ascii?Q?OD1bISbYWrSJ3wSfiSXQorabwKX7AI38RMUPewRNQUOEQgMyt7nyPgWoI7YK?=
- =?us-ascii?Q?0eaXsNgg31V1vTbKCAUO9SUb1z85Wipm0k1Rec2lPyYzg8EgUQ4YhOkMMps1?=
- =?us-ascii?Q?/SJYrF8rPpR4PM7tvCP+CbBUrx/V4UXj8PQZw1NAPqPy6yQMb/Rnu68WfxiB?=
- =?us-ascii?Q?dNY7L+zuQWn6S8UoDho4hQNYSvgzrR+NIIjtWJTbvBSzjCSv44aiyOUc9iX9?=
- =?us-ascii?Q?exNVX1qDsPV7TPrnqxslQmssz2NmMf+VnnFc0M6FEWtDavBuc0+dENt0OZc6?=
- =?us-ascii?Q?wyFYcF5pH8LolwwDFMyPvzhUXl3b5C3vpFgSpKqPorj3?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Fri, 1 Sep
+ 2023 00:30:35 +0000
+Received: from LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1]) by LV2PR12MB5869.namprd12.prod.outlook.com
+ ([fe80::5111:16e8:5afe:1da1%6]) with mapi id 15.20.6745.020; Fri, 1 Sep 2023
+ 00:30:35 +0000
+Date:   Thu, 31 Aug 2023 21:30:31 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Leon Romanovsky <leonro@nvidia.com>
+Subject: [GIT PULL] Please pull RDMA subsystem changes
+Message-ID: <20230901003031.GA111366@nvidia.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="0gFKhkG7Qdxjxn3h"
+Content-Disposition: inline
+X-ClientProxiedBy: SJ0PR03CA0147.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::32) To LV2PR12MB5869.namprd12.prod.outlook.com
+ (2603:10b6:408:176::16)
 MIME-Version: 1.0
-X-OriginatorOrg: cisco.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CY8PR12MB7220:EE_
+X-MS-Office365-Filtering-Correlation-Id: 34a82fcc-9d82-4371-20f1-08dbaa82a843
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: prUg7Kg+KP2LC9U/6Zfy9OGVj2RSiE8hclizlrfrw5V4Amy4oPUjjVbRifvTWLxhAjRagHShS81f9XKigw24TvzZXTfEDLmAzG2AKcmIPc4/S4vEMKDxiP2LRCjkBtQCQ22dqQnyWi5PyWg9W0CkmTjiI0P982gbhEfsC/ADdddQmr/8JcIW1d0KxUCQw7UEUbRm8cjYMj27PeCO8lGvg9ZOy0JCZ/lK1Jx/PbS/mm6bn5/KVqwnjgAxWKN4A5DjR6Qa6JFSJa5oyEX4W/pY3guljWCyCaSh6Izrh0JQ9ABLycG7LqpnI2YBdGdHORiduZSln+40Qvghn5fXNqHY0rYoOqtESVjj6ebdMZo31UhqKm9mfp/UKHf6uYUNTrtoNR9ZGh4u22xogNK0h8bLAG2WWQ1CbI/cedd7vxB8xb6RDojKoMKmij7ntK7IkrdxjraBBcQeVqi1fZSqIretmtKYf0ueh/hQrIXgzyIhu4Tm9xWLShV9NzWwMzFgKDCw0JMXoRa/wtCwuYBS0GuKECPBtEZqlBx7omoFuYpmr3v0NdG2eXm31d7Wn1F3HsX3VVeHgmkqCfCW12d2CKOTgpEskKusTsPyk4VcSrwF9b/moOWzwMLBRqrPem4DjjHfKTjYdlqFkNVLqWLQV3LqIw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(376002)(396003)(366004)(451199024)(1800799009)(186009)(30864003)(6666004)(2906002)(5660300002)(86362001)(316002)(21480400003)(6916009)(478600001)(6506007)(2616005)(107886003)(4326008)(6486002)(8676002)(44144004)(6512007)(8936002)(33656002)(38100700002)(1076003)(26005)(41300700001)(66899024)(36756003)(83380400001)(66946007)(66556008)(66476007)(27376004)(2700100001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gDgmaNsCz+kme691UP/Z6oP7hHBBF5Qo9flswByuTgwVJTRkjfiG4SV7m6xd?=
+ =?us-ascii?Q?dYMFnoZ2RhNpZWBWvIn7YkWqgDcaFZl+RHTEMdsMD7e9Yijy67gEmDp4kqph?=
+ =?us-ascii?Q?OurmGS67RMG0Tp0x+DgBjhwCcmJr8ZeAeTZ6hAC7qaqauvBHQ2O+PoJdR99y?=
+ =?us-ascii?Q?eMCaWtmVdXgQgHf6+Yvjs2Bkyz25zaeUb4dFc2yqcogUXRDQKZfrYIR3jlwf?=
+ =?us-ascii?Q?6TOcPuMkkP57m4Uqdki7p1XLK4e4jKnEtjOM/WVzrOb+WfOzGnUQdeUVtqWy?=
+ =?us-ascii?Q?MJAvEg0PAgtjnYhbbP7xQZd2nbvr2EDtD6UUVVKhDFwOCaXvewOk+6QxaoVw?=
+ =?us-ascii?Q?uRqSMqBDzM+uzGiOoHyfUP/dP1AutKDFJcGO5Ouu/w883rMWT529r+nUNXxt?=
+ =?us-ascii?Q?C22IHcUyrilvB1+ZSGe0VUUbxii/B8qoBhj9KcQqwv7k8vBLRFoiUEOScaIq?=
+ =?us-ascii?Q?kMmkRoOJefgJszYl56MPWQxxijweYsPM3NPNr83qvD4/i6xZZ2Ml0Y3D465g?=
+ =?us-ascii?Q?aVlv3eso6umelXjlxSw/RbMcxif52qONKtndEJS3h41u9D/a0tsqiSetsWhS?=
+ =?us-ascii?Q?aPygzcBuuKeBdpS4/8aymitMt8XSHl+oK7EBNn+vHAfmhsFkSkrsxra432hF?=
+ =?us-ascii?Q?muUkA/OTzj+uBgoqcC9os9Gq05mh+WGQ+j4SSkCZi29f02kBltgWCeSJh01N?=
+ =?us-ascii?Q?+Qc5fCiSYULBhG6z8iah0CpSMJsd2rCIMaLUc3D4htXCdsk6JsM9ZvMltRLK?=
+ =?us-ascii?Q?zeAjSFxWcs5pozBPBkml4BRKzlflr/ykBMmQ+Fg1stW5M7wFC/zS3/WnYnyC?=
+ =?us-ascii?Q?S7sDwffKNF3UhD8eJMxdO1+4Fulsr09fMreQ7cPCy3YfA6QbtV8qWyTzQllZ?=
+ =?us-ascii?Q?WrLpA1uZBG5jb2VjzSPdZmfUv8nS5pqbzVCqVJiqiH5lijfVnuMcFj7RseGH?=
+ =?us-ascii?Q?pk9WUm2c83AVbYCDDYtHPjm/2j3XN33ISYQT1RY1DtrdYwzBsagQeD6MGMxb?=
+ =?us-ascii?Q?Y3PYQMssOV2ywie0uN5RhKM2jWo1mjs2m0bcEepr9lgu8HlefQdBKN+1K3Ub?=
+ =?us-ascii?Q?awTzVZzNUzSalmhsD0L/ys5/Deq1pzFqMKq3vrsaiUN2Y65+F4Ap984rJyWX?=
+ =?us-ascii?Q?FUkokuaCrngpMYPs8smQ/f6b8aY2TA4paA+LuASVfD4lN1wcif/d57QcnVxW?=
+ =?us-ascii?Q?quJiux4K8exOU9AGrKpHlBlxevfIeR9tVDVWd3YKkuv3hAtHZm0ddHb7W2XL?=
+ =?us-ascii?Q?pGthct7ORDv9NgCuiJLTYZ16Rl82H1vd5ydbmvOoRHzQRrEfW7aq/PPDLbNS?=
+ =?us-ascii?Q?1IeF/w9qqRu7W5ARlS2a5xxIK7OfOgoILEzHKF7VntAmeGr5kXJSThE3COAs?=
+ =?us-ascii?Q?ICkpWG9PEPH1TwgJRzOki6CwI73cw4MBCDymEHrkePKxu9a3PMyCJ3Vlw+4F?=
+ =?us-ascii?Q?cjPJuhVP5Bbcpc8Mk9eyAkYv77YYXuRueV83Z9Rr052rsm+gzWSeYkFruW1n?=
+ =?us-ascii?Q?3wj0keSk5tz36ajVt1TYAUWZLVmL++A1LvoldSrRuDvYVtoOGDUIQC5uOt3B?=
+ =?us-ascii?Q?8u1WQH9lxY+lk9pn1I6Jkw7Kba1wfXXSnKtSvYVq?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 34a82fcc-9d82-4371-20f1-08dbaa82a843
+X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5896.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 81fd8560-fce5-4ac4-dd72-08dbaa81ac18
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2023 00:23:31.7431
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 00:30:35.1706
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Te7pTc9mbiX0jErxxjVeOj3Cv0Ss+pE/8B2A1l7znX9NkRSQT2H4GptqDklLVcfd/T28yBwRxlw3+Yj8h8PMJg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5322
-X-Outbound-SMTP-Client: 72.163.7.162, rcdn-opgw-1.cisco.com
-X-Outbound-Node: rcdn-core-5.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,USER_IN_DEF_DKIM_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fBA1stTMIaNChYZlO1Q8Kb2fyNaTwewK37YptDnND6d3ss8Ylcx3Ad9hoMRsyIlP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7220
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+--0gFKhkG7Qdxjxn3h
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks for your help on this.
+Hi Linus,
 
-I cloned this repo, and checked out the master branch:
-
-git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t/
-git checkout master
-
-I don't see these two commits there yet.
-
-Are these commits scheduled to be merged sometime soon?
-Please advise.
+Not a big cylce this time, lots of scattered changes.
 
 Thanks,
-Karan
+Jason
 
------Original Message-----
-From: Stephen Rothwell <sfr@canb.auug.org.au>=20
-Sent: Sunday, August 27, 2023 8:03 PM
-To: Martin K. Petersen <martin.petersen@oracle.com>
-Cc: Karan Tilak Kumar (kartilak) <kartilak@cisco.com>; Linux Kernel Mailing=
- List <linux-kernel@vger.kernel.org>; Linux Next Mailing List <linux-next@v=
-ger.kernel.org>
-Subject: linux-next: manual merge of the scsi-mkp tree with Linus' tree
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
-Hi all,
+  Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-Today's linux-next merge of the scsi-mkp tree got a conflict in:
+are available in the Git repository at:
 
-  drivers/scsi/fnic/fnic.h
+  git://git.kernel.org/pub/scm/linux/kernel/git/rdma/rdma.git tags/for-linus
 
-between commit:
+for you to fetch changes up to f5acc36b0714b7b8510a8b436087d33a65cb05f4:
 
-  5a43b07a8783 ("scsi: fnic: Replace return codes in fnic_clean_pending_abo=
-rts()")
+  IB/hfi1: Reduce printing of errors during driver shut down (2023-08-22 17:31:45 +0300)
 
-from Linus' tree and commit:
+----------------------------------------------------------------
+v6.6 merge window RDMA pull request
 
-  15924b050363 ("scsi: fnic: Replace sgreset tag with max_tag_id")
+Many small changes across the subystem, some highlights:
 
-from the scsi-mkp tree.
+- Usual driver cleanups in qedr, siw, erdma, hfi1, mlx4/5, irdma, mthca,
+  hns, and bnxt_re
 
-I fixed it up (it was just the version number, so I used the latter) and
-can carry the fix as necessary. This is now fixed as far as linux-next
-is concerned, but any non trivial conflicts should be mentioned to your
-upstream maintainer when your tree is submitted for merging.  You may
-also want to consider cooperating with the maintainer of the conflicting
-tree to minimise any particularly complex conflicts.
+- siw now works over tunnel and other netdevs with a MAC address by
+  removing assumptions about a MAC/GID from the connection manager
 
---=20
-Cheers,
-Stephen Rothwell
+- "Doorbell Pacing" for bnxt_re - this is a best effort scheme to allow
+  userspace to slow down the doorbell rings if the HW gets full
+
+- irdma egress VLAN priority, better QP/WQ sizing
+
+- rxe bug fixes in queue draining and srq resizing
+
+- Support more ethernet speed options in the core layer
+
+- DMABUF support for bnxt_re
+
+- Multi-stage MTT support for erdma to allow much bigger MR registrations
+
+- A irdma fix with a CVE that came in too late to go to -rc, missing
+  bounds checking for 0 length MRs
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      RDMA/irdma: Fix building without IPv6
+
+Bernard Metzler (1):
+      RDMA/siw: Fix tx thread initialization.
+
+Bob Pearson (4):
+      RDMA/rxe: Move work queue code to subroutines
+      RDMA/rxe: Fix unsafe drain work queue code
+      RDMA/rxe: Fix rxe_modify_srq
+      RDMA/rxe: Fix incomplete state save in rxe_requester
+
+Brendan Cunningham (1):
+      RDMA/hfi1: Move user SDMA system memory pinning code to its own file
+
+Chandramohan Akula (11):
+      bnxt_en: Update HW interface headers
+      bnxt_en: Share the bar0 address with the RoCE driver
+      RDMA/bnxt_re: Initialize Doorbell pacing feature
+      RDMA/bnxt_re: Enable pacing support for the user apps
+      RDMA/bnxt_re: Update alloc_page uapi for pacing
+      RDMA/bnxt_re: Implement doorbell pacing algorithm
+      RDMA/bnxt_re: Add a new uapi for driver notification
+      bnxt_re: Reorganize the resource stats
+      bnxt_re: Update the hw counters for resource stats
+      bnxt_re: Expose the missing hw counters
+      bnxt_re: Update the debug counters for doorbell pacing
+
+Cheng Xu (3):
+      RDMA/erdma: Renaming variable names and field names of struct erdma_mem
+      RDMA/erdma: Refactor the storage structure of MTT entries
+      RDMA/erdma: Implement hierarchical MTT
+
+Chengchang Tang (4):
+      RDMA/hns: Fix port active speed
+      RDMA/hns: Fix CQ and QP cache affinity
+      RDMA/hns: Dump whole QP/CQ/MR resource in raw
+      RDMA/hns: Support hns HW stats
+
+Christophe JAILLET (1):
+      IB/hfi1: Use struct_size()
+
+Christopher Bednarz (1):
+      RDMA/irdma: Prevent zero-length STAG registration
+
+Chuck Lever (4):
+      RDMA/siw: Fabricate a GID on tun and loopback devices
+      RDMA/core: Set gid_attr.ndev for iWARP devices
+      RDMA/cma: Deduplicate error flow in cma_validate_port()
+      RDMA/cma: Avoid GID lookups on iWARP devices
+
+Douglas Miller (1):
+      IB/hfi1: Reduce printing of errors during driver shut down
+
+Guoqing Jiang (4):
+      RDMA/cxgb4: Set sq_sig_type correctly
+      RDMA/siw: Balance the reference of cep->kref in the error path
+      RDMA/siw: Correct wrong debug message
+      RDMA/siw: Call llist_reverse_order in siw_run_sq
+
+Gustavo A. R. Silva (2):
+      RDMA/irdma: Replace one-element array with flexible-array member
+      RDMA/mlx4: Copy union directly
+
+Haoyue Xu (1):
+      RDMA/core: Get IB width and speed from netdev
+
+Ivan Orlov (1):
+      RDMA: Make all 'class' structures const
+
+Jinjie Ruan (1):
+      RDMA/hfi1: Use list_for_each_entry() helper
+
+Julia Lawall (3):
+      RDMA/erdma: use vmalloc_array and vcalloc
+      RDMA/siw: use vmalloc_array and vcalloc
+      RDMA/bnxt_re: use vmalloc_array and vcalloc
+
+Junxian Huang (3):
+      RDMA/hns: Remove VF extend configuration
+      RDMA/hns: Fix incorrect post-send with direct wqe of wr-list
+      RDMA/hns: Fix inaccurate error label name in init instance
+
+Kalesh AP (6):
+      RDMA/bnxt_re: Fix max_qp count for virtual functions
+      RDMA/bnxt_re: Remove a redundant flag
+      RDMA/bnxt_re: Cleanup bnxt_re_process_raw_qp_pkt_rx() function
+      RDMA/bnxt_re: Avoid unnecessary memset
+      RDMA/bnxt_re: Remove unnecessary variable initializations
+      IB/core: Add more speed parsing in ib_get_width_and_speed()
+
+Kashyap Desai (1):
+      RDMA/bnxt_re: Initialize mutex dbq_lock
+
+Krzysztof Czurylo (1):
+      RDMA/irdma: Add table based lookup for CQ pointer during an event
+
+Leon Romanovsky (3):
+      RDMA/irdma: Add missing kernel-doc in irdma_setup_umode_qp()
+      RDMA/bnxt_re: Fix kernel doc errors
+      Revert "IB/isert: Fix incorrect release of isert connection"
+
+Luoyouming (1):
+      RDMA/hns: Support get XRCD number from firmware
+
+Michael Margolin (1):
+      RDMA/efa: Add RDMA write HW statistics counters
+
+Minjie Du (3):
+      RDMA/qedr: Remove a duplicate assignment in irdma_query_ah()
+      RDMA/qedr: Remove a duplicate assignment in qedr_create_gsi_qp()
+      RDMA/qedr: Remove duplicate assignments of va
+
+Mustafa Ismail (2):
+      RDMA/irdma: Implement egress VLAN priority
+      RDMA/irdma: Cleanup and rename irdma_netdev_vlan_ipv6()
+
+Rohit Chavan (2):
+      RDMA/rxe: Fix redundant break statement in switch-case.
+      RDMA/mlx5: Fix trailing */ formatting in block comment
+
+Ruan Jinjie (4):
+      RDMA/mlx: Remove unnecessary variable initializations
+      RDMA/mthca: Remove unnecessary NULL assignments
+      RDMA: Remove unnecessary ternary operators
+      RDMA: Remove unnecessary NULL values
+
+Saravanan Vajravel (1):
+      RDMA/bnxt_re: Add support for dmabuf pinned memory regions
+
+Selvin Xavier (2):
+      RDMA/bnxt_re: Fix the sideband buffer size handling for FW commands
+      RDMA/bnxt_re: Protect the PD table bitmap
+
+Shetu Ayalew (1):
+      IB/mlx5: Add HW counter called rx_dct_connect
+
+Shiraz Saleem (1):
+      RDMA/irdma: Drop unused kernel push code
+
+Sindhu Devale (4):
+      RDMA/irdma: Drop a local in irdma_sc_get_next_aeqe
+      RDMA/irdma: Refactor error handling in create CQP
+      RDMA/irdma: Allow accurate reporting on QP max send/recv WR
+      RDMA/irdma: Use HW specific minimum WQ size
+
+Xiang Yang (1):
+      IB/uverbs: Fix an potential error pointer dereference
+
+Yang Li (1):
+      RDMA/irdma: Fix one kernel-doc comment
+
+Yonatan Nachum (1):
+      RDMA/efa: Fix wrong resources deallocation order
+
+Yuanyuan Zhong (1):
+      RDMA/mlx5: align MR mem allocation size to power-of-two
+
+Yue Haibing (3):
+      RDMA/hns: Remove unused function declarations
+      RDMA/hns: Remove unused declaration hns_roce_modify_srq()
+      RDMA Remove unused function declarations
+
+ drivers/infiniband/core/cache.c                    |  11 +
+ drivers/infiniband/core/cma.c                      |  32 +-
+ drivers/infiniband/core/iwpm_util.c                |   2 +-
+ drivers/infiniband/core/netlink.c                  |   2 +-
+ drivers/infiniband/core/uverbs_main.c              |  35 +-
+ .../infiniband/core/uverbs_std_types_counters.c    |   2 +
+ drivers/infiniband/core/verbs.c                    | 109 ++++-
+ drivers/infiniband/hw/bnxt_re/bnxt_re.h            |  35 +-
+ drivers/infiniband/hw/bnxt_re/hw_counters.c        |  84 +++-
+ drivers/infiniband/hw/bnxt_re/hw_counters.h        |  55 +++
+ drivers/infiniband/hw/bnxt_re/ib_verbs.c           | 255 +++++++----
+ drivers/infiniband/hw/bnxt_re/ib_verbs.h           |   6 +
+ drivers/infiniband/hw/bnxt_re/main.c               | 277 ++++++++++--
+ drivers/infiniband/hw/bnxt_re/qplib_fp.c           |  47 +-
+ drivers/infiniband/hw/bnxt_re/qplib_rcfw.c         |  66 +--
+ drivers/infiniband/hw/bnxt_re/qplib_res.c          |  38 +-
+ drivers/infiniband/hw/bnxt_re/qplib_res.h          |  23 +-
+ drivers/infiniband/hw/bnxt_re/qplib_sp.c           |  85 ++--
+ drivers/infiniband/hw/bnxt_re/qplib_sp.h           |   2 +-
+ drivers/infiniband/hw/cxgb4/qp.c                   |   2 +-
+ drivers/infiniband/hw/efa/efa_admin_cmds_defs.h    |  13 +
+ drivers/infiniband/hw/efa/efa_com_cmd.c            |   8 +-
+ drivers/infiniband/hw/efa/efa_com_cmd.h            |  10 +-
+ drivers/infiniband/hw/efa/efa_verbs.c              |  24 +-
+ drivers/infiniband/hw/erdma/erdma_hw.h             |  18 +-
+ drivers/infiniband/hw/erdma/erdma_qp.c             |   2 +-
+ drivers/infiniband/hw/erdma/erdma_verbs.c          | 434 ++++++++++++++-----
+ drivers/infiniband/hw/erdma/erdma_verbs.h          |  36 +-
+ drivers/infiniband/hw/hfi1/Makefile                |   1 +
+ drivers/infiniband/hw/hfi1/affinity.c              |   4 +-
+ drivers/infiniband/hw/hfi1/chip.c                  |   8 +-
+ drivers/infiniband/hw/hfi1/device.c                |  72 ++--
+ drivers/infiniband/hw/hfi1/hfi.h                   |   4 +-
+ drivers/infiniband/hw/hfi1/pin_system.c            | 474 +++++++++++++++++++++
+ drivers/infiniband/hw/hfi1/pinning.h               |  20 +
+ drivers/infiniband/hw/hfi1/pio.c                   |   9 +-
+ drivers/infiniband/hw/hfi1/user_sdma.c             | 441 +------------------
+ drivers/infiniband/hw/hfi1/user_sdma.h             |  17 +-
+ drivers/infiniband/hw/hns/hns_roce_device.h        |  35 +-
+ drivers/infiniband/hw/hns/hns_roce_hem.c           |   2 +-
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.c         | 151 +++----
+ drivers/infiniband/hw/hns/hns_roce_hw_v2.h         |  14 +-
+ drivers/infiniband/hw/hns/hns_roce_main.c          |  86 +++-
+ drivers/infiniband/hw/hns/hns_roce_qp.c            |  28 +-
+ drivers/infiniband/hw/hns/hns_roce_restrack.c      |  75 +---
+ drivers/infiniband/hw/irdma/cm.c                   |  90 +++-
+ drivers/infiniband/hw/irdma/ctrl.c                 |  23 +-
+ drivers/infiniband/hw/irdma/hw.c                   |  63 ++-
+ drivers/infiniband/hw/irdma/i40iw_hw.c             |   1 +
+ drivers/infiniband/hw/irdma/i40iw_hw.h             |   2 +-
+ drivers/infiniband/hw/irdma/icrdma_hw.c            |   1 +
+ drivers/infiniband/hw/irdma/icrdma_hw.h            |   1 +
+ drivers/infiniband/hw/irdma/irdma.h                |   1 +
+ drivers/infiniband/hw/irdma/main.h                 |   8 +-
+ drivers/infiniband/hw/irdma/type.h                 |   3 +-
+ drivers/infiniband/hw/irdma/uk.c                   | 218 +++++-----
+ drivers/infiniband/hw/irdma/user.h                 |  19 +-
+ drivers/infiniband/hw/irdma/utils.c                |  25 ++
+ drivers/infiniband/hw/irdma/verbs.c                | 259 +++++++----
+ drivers/infiniband/hw/irdma/verbs.h                |   5 +-
+ drivers/infiniband/hw/mlx4/main.c                  |  47 +-
+ drivers/infiniband/hw/mlx5/counters.c              |   2 +
+ drivers/infiniband/hw/mlx5/mad.c                   |  40 +-
+ drivers/infiniband/hw/mlx5/mr.c                    |   8 +-
+ drivers/infiniband/hw/mthca/mthca_provider.c       |  20 +-
+ drivers/infiniband/hw/ocrdma/ocrdma_verbs.c        |   2 +-
+ drivers/infiniband/hw/qedr/qedr_roce_cm.c          |   1 -
+ drivers/infiniband/hw/qedr/verbs.c                 |   2 +-
+ drivers/infiniband/hw/qib/qib_file_ops.c           |  17 +-
+ drivers/infiniband/sw/rxe/rxe_comp.c               |   4 +
+ drivers/infiniband/sw/rxe/rxe_loc.h                |   6 -
+ drivers/infiniband/sw/rxe/rxe_qp.c                 | 159 ++++---
+ drivers/infiniband/sw/rxe/rxe_req.c                |  45 +-
+ drivers/infiniband/sw/rxe/rxe_resp.c               |   4 +
+ drivers/infiniband/sw/rxe/rxe_srq.c                |  60 +--
+ drivers/infiniband/sw/rxe/rxe_verbs.c              |   1 -
+ drivers/infiniband/sw/siw/siw.h                    |   4 +-
+ drivers/infiniband/sw/siw/siw_cm.c                 |   1 -
+ drivers/infiniband/sw/siw/siw_main.c               |  62 +--
+ drivers/infiniband/sw/siw/siw_qp.c                 |   4 +-
+ drivers/infiniband/sw/siw/siw_qp_tx.c              |  52 ++-
+ drivers/infiniband/sw/siw/siw_verbs.c              |  12 +-
+ drivers/infiniband/ulp/isert/ib_isert.c            |   2 +
+ drivers/infiniband/ulp/rtrs/rtrs-clt.c             |  19 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv-sysfs.c       |   2 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv.c             |  15 +-
+ drivers/infiniband/ulp/rtrs/rtrs-srv.h             |   2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_hsi.h      |  54 +++
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.c      |   2 +-
+ drivers/net/ethernet/broadcom/bnxt/bnxt_ulp.h      |   1 +
+ include/rdma/ib_verbs.h                            |   2 -
+ include/rdma/iw_cm.h                               |  21 -
+ include/uapi/rdma/bnxt_re-abi.h                    |   7 +
+ include/uapi/rdma/irdma-abi.h                      |   9 +
+ 94 files changed, 2892 insertions(+), 1670 deletions(-)
+ create mode 100644 drivers/infiniband/hw/hfi1/pin_system.c
+ create mode 100644 drivers/infiniband/hw/hfi1/pinning.h
+
+--0gFKhkG7Qdxjxn3h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRRRCHOFoQz/8F5bUaFwuHvBreFYQUCZPEwpgAKCRCFwuHvBreF
+YZDwAQDW39VIEWoIhAvQfl6N1+njPtwrUwOQTzuW+hC8ZTVpgwD/ZbG0EBzPpnPY
+AajyKafAPYkxn1er1ZQaN3KrHVUjOg8=
+=teFN
+-----END PGP SIGNATURE-----
+
+--0gFKhkG7Qdxjxn3h--
