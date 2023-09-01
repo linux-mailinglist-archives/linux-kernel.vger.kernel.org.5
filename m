@@ -2,138 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED90578F7D2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 07:10:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A8878F7E5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 07:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344928AbjIAFKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 01:10:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59124 "EHLO
+        id S1348219AbjIAFNt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 01:13:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237148AbjIAFKc (ORCPT
+        with ESMTP id S1345281AbjIAFNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 01:10:32 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2135.outbound.protection.outlook.com [40.107.255.135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7D61E7F;
-        Thu, 31 Aug 2023 22:10:24 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f/erDMKIe0619Y8pGLeK80XcNy9yFbxd9PvwyQdixyMhb4/ZeBUStI6095XjWZC9SbjWb8KxRUXkC16WZM52zsHzHLGGN2hiGJ4FXtBx5Swf9qHvSt6FwBs44U75TOWOAZ+Gczfwq1vE1kXSGQOOxJeJalHlpTrK7MCaCHIVGT8lAflMf2NOI8iNtpjXUVtqpP/JZnKHB2bxDWO3DBZcyZFu9lRUIV+qQ0HkVTKPiYpnrbljMDZ3IHn4N4BqHmaGvh1BhGY3zyD8IscmYLOYh2T1sjpXW+c82xkqpvcARLecQhRV0LNSu4adkulkaqP0Bpva2ERfxyx4vfPR7+8QJA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7cfl9oB2+6vtLScSg5hdcWc6Wq3UBKIjtdV86sdmo2s=;
- b=T/cVKaSX3YcEixYRzhP3B0P0U2+RRpYsauAT4r/uVAB0zDTnDxEhkAtDx8IqewJ0qNhPqMjUp1hnT4XsX4ufg8ft9x5B1iQakeAFtdEbTyutPl55JOqDmkIFVjj3OPsksbFrY80XDIRcKJfGCz31ivEGILsFVgkjTFW2e0m+k3XUqoyjay94AwDoPWcL/TlxmRKYBnnYjjZvMQ9ioIeF4fKmBYHyUQxxeytlweGztWS6uRf2vyxdSvupFbEnZe0pLC0soNDs5ZBYFlHzBYPLfl8Lzpn6PcZFxBVCfNgUU7CU0EVTeBjxtGdu1n0qpo0lxDhlGqcrniM+XtBlYLPkmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7cfl9oB2+6vtLScSg5hdcWc6Wq3UBKIjtdV86sdmo2s=;
- b=ebK/5R63+shiRTQQ8hGaQHeLOM/+7OBlGdo8K+UK30A/HgzRcFHdnuPvSUON8qtmxNYVH7XE+aCgKOrvEt8JKKjbGzTrytpNgZDx1k7JaletArb/JsboWYML2EjXTQlqJWdtlw9p508JhEEJ3lwT7kt1iKBXeb6unu/tvdfqYNOUL1nRobRym7FRPGOvemz5KSv26KfV9uFD0ZS5HV2WvWBIGnxx+x59ZIMkHR+30kmeQSLkcxnUkvn42HzxccfnfBMzzJ0LmLItcy3D+lWE7dMMqrm7tcWlyi3jeDgo+Ft05hJ07XefIv70UFCbmTDp3snG+ZBmTc58LIA7P7Myfw==
-Received: from SG2PR06MB3365.apcprd06.prod.outlook.com (2603:1096:4:69::12) by
- PSAPR06MB4456.apcprd06.prod.outlook.com (2603:1096:301:8e::5) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.23; Fri, 1 Sep 2023 05:10:20 +0000
-Received: from SG2PR06MB3365.apcprd06.prod.outlook.com
- ([fe80::791a:38e8:18cf:d205]) by SG2PR06MB3365.apcprd06.prod.outlook.com
- ([fe80::791a:38e8:18cf:d205%5]) with mapi id 15.20.6699.034; Fri, 1 Sep 2023
- 05:10:19 +0000
-From:   Billy Tsai <billy_tsai@aspeedtech.com>
-To:     Potin Lai <potin.lai.pt@gmail.com>
-CC:     "jdelvare@suse.com" <jdelvare@suse.com>,
-        "linux@roeck-us.net" <linux@roeck-us.net>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "naresh.solanki@9elements.com" <naresh.solanki@9elements.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        "patrick@stwcx.xyz" <patrick@stwcx.xyz>
-Subject: Re: [PATCH v8 3/3] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED
- g6 PWM/Fan tach
-Thread-Topic: [PATCH v8 3/3] hwmon: (aspeed-g6-pwm-tacho): Support for ASPEED
- g6 PWM/Fan tach
-Thread-Index: AQHZ2z4DZH/d3xLyZk2OcsZGe60xdrAFalCAgAAEPKE=
-Date:   Fri, 1 Sep 2023 05:10:19 +0000
-Message-ID: <SG2PR06MB336524E341C2B621D09C7BA98BE4A@SG2PR06MB3365.apcprd06.prod.outlook.com>
-References: <20230830123202.3408318-1-billy_tsai@aspeedtech.com>
- <20230830123202.3408318-4-billy_tsai@aspeedtech.com>
- <99ffd1fb-14ae-1c83-bc32-2d0aead4d696@gmail.com>
-In-Reply-To: <99ffd1fb-14ae-1c83-bc32-2d0aead4d696@gmail.com>
-Accept-Language: en-US, zh-TW
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SG2PR06MB3365:EE_|PSAPR06MB4456:EE_
-x-ms-office365-filtering-correlation-id: cbbe7e38-7b1d-4d21-a29b-08dbaaa9bcc4
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: eBCpPjCsnd8eqWuA5Mp9gmKO8iDLO4Bg7sZEwu2NG1XJMAgMp87x6JIEkEm7VLWpsttqiuetjeTj2S0yTHjKND0LKuuDcHQXclaM/XmO+GUYe8bzBqIW/CskTThNtSgB6dfFxq5XwO7K36X9jJOyot/4pB1Hcg0Ig7b/A/RlA0xRhJOyAD8KhEerV/DnFtjcawzSmI6XWLp0dib3Owchgiu6CGV/lHR3e/OTaTzNo39eWfal6ctguQ68KSgCOXqpGD6L1PI8rZtIh60dV6RH58LCIC03iIelCF5dsAblr6Vf6La/LNosr/QOSay+DK8oLjBb5d3mtzrajp1MlreRyW4Ld1LlK9jpZsrQtuoqoLGM16apTCPkvssXvPXNsHXNZz6Lsa1jzsilkbaN63N2IlDJlrHDrcMeqitG1Vl1kbhnUVJfi9vJFGrNT66NwZiTEgQUPYlauKAEoo4IiY1ZgFJSNLUd0WheqSU/l+YCdsIDqIH9X+/R9orymsii0ARuFmn/5g/9flY7GyeVK3hCoKLUU4vRi63/4i5cKnh/flmxdaXTbUsWCt7GXrOgcEyj143U9d2OIUE0BLZdrw+KSYNU7YHUI1TBwVIRlXU3QCvlPVnVEuyBoDPjbSJoZcpw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SG2PR06MB3365.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39840400004)(396003)(366004)(376002)(346002)(136003)(1800799009)(186009)(451199024)(7416002)(55016003)(2906002)(6916009)(316002)(41300700001)(5660300002)(8676002)(4326008)(52536014)(33656002)(8936002)(86362001)(71200400001)(122000001)(478600001)(83380400001)(26005)(55236004)(53546011)(7696005)(6506007)(9686003)(76116006)(66946007)(38070700005)(38100700002)(66556008)(91956017)(66446008)(64756008)(54906003)(66476007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?sjVUJwQOXaeE/jII/asmBkSzu5eG8hFZTy8e1Ehfi2vYbQw+OPvV+0QAN/?=
- =?iso-8859-1?Q?qfVgq16/Vks8r49MIE0I1tsbypUh1AcfqbUyWu3EELeSIzGT3x+M+EYkwb?=
- =?iso-8859-1?Q?TCWsADDZLLND3ASkKfgQ419IlHmnDyAxepCYy0U0QGAwKmcUJlOEw61LSn?=
- =?iso-8859-1?Q?DFA06WeVm5yDS9bJ+qif0Bu11y7spcZtVoDQkpBGKAyLCQBDSF64uNG5sl?=
- =?iso-8859-1?Q?t0vlgBz3TQ1HfrztEYnOwaHmU/c9rSoqsL3Lkk3Sz5oM3EG489hVT3iqXT?=
- =?iso-8859-1?Q?1yce3Cz5FVIC47ckl2Of3IypzaxQ6PLUGMqOKv8UR37wCuK328xj7UJjsp?=
- =?iso-8859-1?Q?MUN0RPQrHWzEqmKZ2GH20mxg07TUUktrrYbuOXCfXJcN4f/h362YyfXUaN?=
- =?iso-8859-1?Q?bZgjAFebw4f1E43yciud4GS9/6caukxlV04+yEhxvski1dGyKFUl1GD5O5?=
- =?iso-8859-1?Q?ju/SJ3aiNXo9uV2W6CHWbWDxl7U98Xc3h9rKixfxeiWKaaVcEHPxb0i+iL?=
- =?iso-8859-1?Q?o5t120Ga/+6o5oHtVZVKgwpEV7oE3ph86lvWZT+VQzMdeNZmFajE3dJwte?=
- =?iso-8859-1?Q?AMlWzXZp6j8Ifm/2CuY0Ze7KE7m7fhig62t4UiwRr8Y5Gmpt6BrOr7f0c4?=
- =?iso-8859-1?Q?48hcEFFPujzIjCsjkwUSP+b2EdwI9+iwhjwihI2MPrqfkWTD5RCUzJ9evI?=
- =?iso-8859-1?Q?lPop+HpUw7LymL8asvfOW9npxkp37/dW3Zq1LlwJg84lO53A9ot8k1et0/?=
- =?iso-8859-1?Q?GTbu8ZUj0o7R4aftLLLOuSWGMnsPBJ4nCSlvZDBUnFAaOZPfjMSn325nDm?=
- =?iso-8859-1?Q?qqNczy9VCdh9uHiFoI30GcjrTKO7abuV429+r0oGJ5H9EAu0fk4LHIbKJR?=
- =?iso-8859-1?Q?IqqGR7IgVLoal49ip42rPDT+Ol9C6qtW8vAS4Ftshny3TWRaRnFUGW9JV2?=
- =?iso-8859-1?Q?s3eaSrmc67/OzHdxc1LSwTYBxQ0JYVatvr/xzSy974Syhz5uSe/wQnw0tV?=
- =?iso-8859-1?Q?l+Dh0dyjE8MGaCdrw/KzAxK2wcZ1oikORtCI50Ldx90c/t4C8LB5XwBauH?=
- =?iso-8859-1?Q?g/oGmlDCSeCOTTVtt5OK4jRcFmbrWcSCc+k6dXRnju/vpWqTdTqjlq6jrJ?=
- =?iso-8859-1?Q?WBsRRtm2ZRk4fFuYfFwsI5QCg9y9JWHtoSpb2i/wZZAvHdla0a6Me3gmnb?=
- =?iso-8859-1?Q?GMVOWwmkJs39e+D7bbulczFkPz/H5Y+kml7arsaKNwZUy+Uqa2wzRyxHPV?=
- =?iso-8859-1?Q?CJPJLB2XZquykkpPhMMieWE8QQteoYnTVrebGaRCZipI4zC+/uPcHYCzMt?=
- =?iso-8859-1?Q?NrEe0Fkk13Mt/JftPox59mdXo3Ns31r2W3roBF0nn5j5RAjLiys0Ks1fH9?=
- =?iso-8859-1?Q?Qre1gg/FvM9wOb0aso2w+9GOP/A09QtxmMT9y5KOnbCGtu5Ka5le3SJyvr?=
- =?iso-8859-1?Q?+KbW9m7jcmSpQcBDo7jMMeBad9dOL0/Lu6iEprdz4FYcNnbTgSUDiZCieA?=
- =?iso-8859-1?Q?c+x++qBfolwZ/LZY2P1X2dvXiBtS2buM7IITGMe+L8YAFtRw1vHGjji9Xm?=
- =?iso-8859-1?Q?tTqz1Am1emHTgn43PRAz/Ya2sHpKyb/WNJO4iHEkzypBhvBcu3jtX8Hjpq?=
- =?iso-8859-1?Q?wtbW1Nf/LroxHE47fAUu6M3v3dmtHMZOdB?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 1 Sep 2023 01:13:46 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE16AE7E
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 22:13:39 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68becf931d0so1311390b3a.3
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 22:13:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693545219; x=1694150019; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OvHM+CKwnHbIeFvnDrCIt/qJ/JBJgavM5NTUs391Nig=;
+        b=mDGQ3/12SCviDXzULIUZMvEmLc240LAZHwZWaFcsHge6sWUFLoTSReXJG36whuioW5
+         JhAFp1JmRWVzMnqfiPBd0tKJqrIY8z5nHOrL7cmc53zwzxeCsUAeJGiylgaqsgkiQnLa
+         UQx7UM2VKVX/hAoe3CJvuYrPs9wC7sNN27Toc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693545219; x=1694150019;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OvHM+CKwnHbIeFvnDrCIt/qJ/JBJgavM5NTUs391Nig=;
+        b=Rbe7Il/5IVOpDH0zUmZQkjRiMHnOTDDqJuNnvbvqE3y44J5pAzUGuPOZuskhmc9CiW
+         cHm7fDUFULbNSKVLZhve9LTLudv52BBhhRixQYqiJgR8/3931dfWL8T2syCzl3URDQf/
+         lK/i2zX2PfC1HQbbKloHAodTHdAAQdYwjQaCKjSLWictge58YERQtmWDDUK9ZFawupmN
+         JrggGeRyMjOntIl4XQJcjFks5kjCVidfdG6dlDEIQ1QlAYz4Hwn3niGYwfbZ6uXVFucZ
+         BFO0CSp+ITOubZZ/mzQANRzbZaIzgL3JLNWtwXPZ1o0fSFF/1KqidATBiGHyO7l5IgXz
+         1eWg==
+X-Gm-Message-State: AOJu0YzJMwIscm57zfAgQGc+Ix0YjOPoDjl3d8FDLrKmF5D3XT7qZd2v
+        hfHzI0nN92QsqWd1ACUJbEiTpw==
+X-Google-Smtp-Source: AGHT+IFITxs6aV3JQqw4o1wVlbCxfK+CZykXNeOEcQS8LvbPIhxs0MnfxIp/m6ZPiS+ybe8xtLFa7A==
+X-Received: by 2002:a05:6a20:3a96:b0:11f:2714:f6f3 with SMTP id d22-20020a056a203a9600b0011f2714f6f3mr1535967pzh.11.1693545219119;
+        Thu, 31 Aug 2023 22:13:39 -0700 (PDT)
+Received: from google.com ([2401:fa00:1:10:1571:fd85:e25c:7145])
+        by smtp.gmail.com with ESMTPSA id x8-20020a170902ec8800b001bdb0483e65sm2047621plg.265.2023.08.31.22.13.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Aug 2023 22:13:38 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 13:13:36 +0800
+From:   Chen-Yu Tsai <wenst@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: make -jN modules_install breakage in next-20230831
+Message-ID: <20230901051336.GA2845123@google.com>
+References: <CAGXv+5EU-qvTee1f0kicZA-er2Li=EcV0zWdOGUPoqdOxi69vw@mail.gmail.com>
+ <CAK7LNAQ58pnnk-XThrnJEhL72HUEXo-CFScYdt+yx_PrWqcRTA@mail.gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SG2PR06MB3365.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbbe7e38-7b1d-4d21-a29b-08dbaaa9bcc4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2023 05:10:19.6199
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hI4L987ucs+StLYAD7Djl8Vlqsd2jeSzaECneS6Wkb3eMamDsejF408k8IcDsmQbY3/uMNGXfCeagHzeolRNeurzNyEwZBq5uY2QZqocWE0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PSAPR06MB4456
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAK7LNAQ58pnnk-XThrnJEhL72HUEXo-CFScYdt+yx_PrWqcRTA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -141,72 +73,1087 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/23 20:32, Billy Tsai wrote:=0A=
->> +static int aspeed_tach_hwmon_write(struct device *dev,=0A=
->> +                                enum hwmon_sensor_types type, u32 attr,=
-=0A=
->> +                                int channel, long val)=0A=
->> +{=0A=
->> +     struct aspeed_pwm_tach_data *priv =3D dev_get_drvdata(dev);=0A=
->> +     u32 reg_val;=0A=
->> +=0A=
->> +     switch (attr) {=0A=
->> +     case hwmon_fan_div:=0A=
->> +             if (!is_power_of_2(val) || (ilog2(val) % 2) ||=0A=
->> +                 DIV_TO_REG(val) > 0xb)=0A=
->> +                     return -EINVAL;=0A=
->> +             priv->tach_divisor =3D val;=0A=
->> +             reg_val =3D readl(priv->base + TACH_ASPEED_CTRL(channel));=
-=0A=
->> +             reg_val &=3D ~TACH_ASPEED_CLK_DIV_T_MASK;=0A=
->> +             reg_val |=3D FIELD_GET(TACH_ASPEED_CLK_DIV_T_MASK,=0A=
->> +                                  DIV_TO_REG(priv->tach_divisor));=0A=
-=0A=
-> Hi Billy,=0A=
-> I notice the fanX_div is always shows 1 after I set 1024.=0A=
-> I think FIELD_GET() needs to replaced with FIELD_PREP().=0A=
-=0A=
->> +             writel(reg_val, priv->base + TACH_ASPEED_CTRL(channel));=
-=0A=
->> +             break;=0A=
->> +     default:=0A=
->> +             return -EOPNOTSUPP;=0A=
->> +     }=0A=
->> +=0A=
->> +     return 0;=0A=
->> +}=0A=
-=0A=
-=0A=
->> +static void aspeed_present_fan_tach(struct aspeed_pwm_tach_data *priv, =
-u32 tach_ch)=0A=
->> +{=0A=
->> +     u32 val;=0A=
->> +=0A=
->> +     priv->tach_present[tach_ch] =3D true;=0A=
->> +     priv->tach_divisor =3D DEFAULT_TACH_DIV;=0A=
->> +=0A=
->> +     val =3D readl(priv->base + TACH_ASPEED_CTRL(tach_ch));=0A=
->> +     val &=3D ~(TACH_ASPEED_INVERS_LIMIT | TACH_ASPEED_DEBOUNCE_MASK |=
-=0A=
->> +              TACH_ASPEED_IO_EDGE_MASK | TACH_ASPEED_CLK_DIV_T_MASK |=
-=0A=
->> +              TACH_ASPEED_THRESHOLD_MASK);=0A=
->> +     val |=3D (DEBOUNCE_3_CLK << TACH_ASPEED_DEBOUNCE_BIT) | F2F_EDGES =
-|=0A=
->> +            FIELD_GET(TACH_ASPEED_CLK_DIV_T_MASK,=0A=
->> +                      DIV_TO_REG(priv->tach_divisor));=0A=
-=0A=
-> And here as well.=0A=
-=0A=
->> +     writel(val, priv->base + TACH_ASPEED_CTRL(tach_ch));=0A=
->> +=0A=
->> +     aspeed_tach_ch_enable(priv, tach_ch, true);=0A=
->> +}=0A=
->> +=0A=
->>=0A=
-=0A=
-Hi Potin,=0A=
-=0A=
-I will fix it in next verison of the patch.=0A=
-=0A=
-Thanks for reviewing.=
+On Thu, Aug 31, 2023 at 11:55:35PM +0900, Masahiro Yamada wrote:
+> On Thu, Aug 31, 2023 at 5:59=E2=80=AFPM Chen-Yu Tsai <wenst@chromium.org>=
+ wrote:
+> >
+> > Hi,
+> >
+> > I observed some breakage with `make -jN moudles_install`. The scripts p=
+roduce
+> > some bogus paths, which `cp` then complains it can't find.
+> >
+> > I run the following for my workflow.
+> >
+> >   $ nice -n 10 sh -c "make -j72 Image.lzma dtbs && ./pack-mod.sh && cb/=
+sign.sh"
+> >
+> > pack-mod.sh is what fails. It basically does:
+> >
+> >     make -j72 modules
+> >     make -j72 modules_install INSTALL_MOD_PATH=3D${TMPDIR}
+> >     depmod ...
+> >     tar ...
+> >     cleanup
+> >
+> > I get errors like the following:
+> >
+> >
+> >   CALL    scripts/checksyscalls.sh
+> >   CALL    scripts/checksyscalls.sh
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/arch/arm64/crypto/sha1-ce.ko
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/arch/arm64/crypto/chacha-neon.ko
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/arch/arm64/crypto/poly1305-neon.ko
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/kernel/time/test_udelay.ko
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/kernel/configs.ko
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/fs/nfs_common/grace.ko
+> > cp: cannot create regular file
+> > 'tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dir=
+ty/kernel/kernel/time/test_udelay.ko':
+> > No such file or directory
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/fs/nls/nls_cp437.ko
+> > make[2]: *** [scripts/Makefile.modinst:127:
+> > tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirt=
+y/kernel/kernel/time/test_udelay.ko]
+> > Error 1
+> > make[2]: *** Waiting for unfinished jobs....
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/fs/nls/nls_ascii.ko
+> > cp: cannot create regular file
+> > 'tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dir=
+ty/kernel/kernel/configs.ko':
+> > No such file or directory
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/fs/nls/nls_iso8859-1.ko
+> >   INSTALL tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd1=
+89478-dirty/kernel/fs/nls/nls_utf8.ko
+> > make[2]: *** [scripts/Makefile.modinst:128:
+> > tmp.7i3QCV3ac8/lib/modules/6.5.0-next-20230831-13697-g09d3bd189478-dirt=
+y/kernel/kernel/configs.ko]
+> > Error 1
+> > make[1]: *** [/usr/local/google/home/wenst/linux/mtk/Makefile:1822:
+> > modules_install] Error 2
+> > make: *** [Makefile:234: __sub-make] Error 2
+> >
+> >
+> > Note the duplicate "kernel/" in the path for test_udelay.ko and configs=
+=2Eko.
+>=20
+>=20
+>=20
+> The paths to test_udelay.ko and configs.ko look quite normal to me.
+>=20
+> "kernel/kernel/" is correct.
+>=20
+>=20
+> The first "kernel/" means in-tree modules.
+>=20
+> All in-tree modules are installed
+> under /lib/modules/<ver>/kernel/,
+> while external modules are installed
+> under /lib/modules/<ver>/updates/.
+>=20
+>=20
+> The second "kernel/" is the directory in the source tree.
+>=20
+>=20
+>=20
+> I cannot reproduce the error.
+>=20
+>=20
+>=20
+>=20
+> But, indeed. Your installation log looks weird overall.
+> No idea what is happening in your case.
+>=20
+>=20
+> If you add V=3D1, Kbuild will show more logs, and we may get more hints.
+>=20
+>   make V=3D1 -j72 modules_install INSTALL_MOD_PATH=3D${TMPDIR}
+
+Here's a cleaner repro on next-20230831:
+
+    $ export ARCH=3Darm64
+    $ export CROSS_COMPILE=3D"aarch64-linux-gnu-"
+    ### defconfig attached at the end
+    $ make olddefconfig
+    $ make -j72 Image.gz modules
+    $ make -j72 V=3D1 modules_install INSTALL_MOD_PATH=3Dtmp
+    make --no-print-directory -C /usr/local/google/home/wenst/linux/mtk \
+    -f /usr/local/google/home/wenst/linux/mtk/Makefile modules_install
+    make -f ./scripts/Makefile.modinst \
+    sign-only=3D
+    rm -fr tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel t=
+mp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/build
+    mkdir -p tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/ tmp/l=
+ib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/arch/arm64/crypto=
+/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/crypto/ tm=
+p/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/block/=
+zram/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/driver=
+s/bluetooth/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel=
+/drivers/cdrom/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/ker=
+nel/drivers/hid/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/ke=
+rnel/drivers/i2c/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/k=
+ernel/drivers/iio/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/=
+kernel/drivers/iio/common/cros_ec_sensors/ tmp/lib/modules/6.5.0-next-20230=
+831-13643-ga47fc304d2b6/kernel/drivers/iio/light/ tmp/lib/modules/6.5.0-nex=
+t-20230831-13643-ga47fc304d2b6/kernel/drivers/iio/pressure/ tmp/lib/modules=
+/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/iio/trigger/ tmp/li=
+b/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/input/ tmp=
+/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/input/j=
+oystick/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/dri=
+vers/input/joystick/iforce/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47f=
+c304d2b6/kernel/drivers/input/misc/ tmp/lib/modules/6.5.0-next-20230831-136=
+43-ga47fc304d2b6/kernel/drivers/input/rmi4/ tmp/lib/modules/6.5.0-next-2023=
+0831-13643-ga47fc304d2b6/kernel/drivers/input/serio/ tmp/lib/modules/6.5.0-=
+next-20230831-13643-ga47fc304d2b6/kernel/drivers/input/touchscreen/ tmp/lib=
+/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/media/commo=
+n/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/m=
+edia/common/v4l2-tpg/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2=
+b6/kernel/drivers/media/common/videobuf2/ tmp/lib/modules/6.5.0-next-202308=
+31-13643-ga47fc304d2b6/kernel/drivers/media/i2c/ tmp/lib/modules/6.5.0-next=
+-20230831-13643-ga47fc304d2b6/kernel/drivers/media/platform/mediatek/jpeg/ =
+tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/medi=
+a/platform/mediatek/mdp/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc30=
+4d2b6/kernel/drivers/media/platform/mediatek/vcodec/common/ tmp/lib/modules=
+/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/media/platform/medi=
+atek/vcodec/decoder/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b=
+6/kernel/drivers/media/platform/mediatek/vcodec/encoder/ tmp/lib/modules/6.=
+5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/media/platform/mediate=
+k/vpu/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drive=
+rs/media/test-drivers/visl/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47f=
+c304d2b6/kernel/drivers/media/usb/uvc/ tmp/lib/modules/6.5.0-next-20230831-=
+13643-ga47fc304d2b6/kernel/drivers/media/v4l2-core/ tmp/lib/modules/6.5.0-n=
+ext-20230831-13643-ga47fc304d2b6/kernel/drivers/mmc/core/ tmp/lib/modules/6=
+=2E5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/net/ tmp/lib/module=
+s/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/net/phy/ tmp/lib/m=
+odules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/net/usb/ tmp/=
+lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/net/wire=
+guard/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drive=
+rs/net/wireless/ath/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b=
+6/kernel/drivers/net/wireless/ath/ath10k/ tmp/lib/modules/6.5.0-next-202308=
+31-13643-ga47fc304d2b6/kernel/drivers/net/wireless/legacy/ tmp/lib/modules/=
+6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/net/wireless/marvell=
+/mwifiex/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/dr=
+ivers/net/wireless/mediatek/mt76/ tmp/lib/modules/6.5.0-next-20230831-13643=
+-ga47fc304d2b6/kernel/drivers/net/wireless/mediatek/mt76/mt7921/ tmp/lib/mo=
+dules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/net/wireless/m=
+ediatek/mt76/mt7996/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b=
+6/kernel/drivers/net/wireless/ralink/rt2x00/ tmp/lib/modules/6.5.0-next-202=
+30831-13643-ga47fc304d2b6/kernel/drivers/net/wireless/realtek/rtl8xxxu/ tmp=
+/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/net/wir=
+eless/realtek/rtw88/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b=
+6/kernel/drivers/net/wireless/realtek/rtw89/ tmp/lib/modules/6.5.0-next-202=
+30831-13643-ga47fc304d2b6/kernel/drivers/net/wireless/virtual/ tmp/lib/modu=
+les/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/platform/chrome/=
+ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/rem=
+oteproc/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/dri=
+vers/rpmsg/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/=
+drivers/scsi/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/drivers/usb/class/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b=
+6/kernel/drivers/usb/gadget/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47=
+fc304d2b6/kernel/drivers/usb/gadget/function/ tmp/lib/modules/6.5.0-next-20=
+230831-13643-ga47fc304d2b6/kernel/drivers/usb/misc/ tmp/lib/modules/6.5.0-n=
+ext-20230831-13643-ga47fc304d2b6/kernel/drivers/usb/serial/ tmp/lib/modules=
+/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/usb/usbip/ tmp/lib/=
+modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/vhost/ tmp/l=
+ib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/drivers/watchdog/=
+ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/fat/ tmp=
+/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/fuse/ tmp/li=
+b/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/hfsplus/ tmp/li=
+b/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/isofs/ tmp/lib/=
+modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/lockd/ tmp/lib/mo=
+dules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/nfs/ tmp/lib/module=
+s/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/nfs_common/ tmp/lib/mod=
+ules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/nls/ tmp/lib/modules=
+/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/fs/udf/ tmp/lib/modules/6.5=
+=2E0-next-20230831-13643-ga47fc304d2b6/kernel/kernel/ tmp/lib/modules/6.5.0=
+-next-20230831-13643-ga47fc304d2b6/kernel/kernel/time/ tmp/lib/modules/6.5.=
+0-next-20230831-13643-ga47fc304d2b6/kernel/lib/ tmp/lib/modules/6.5.0-next-=
+20230831-13643-ga47fc304d2b6/kernel/lib/crypto/ tmp/lib/modules/6.5.0-next-=
+20230831-13643-ga47fc304d2b6/kernel/net/802/ tmp/lib/modules/6.5.0-next-202=
+30831-13643-ga47fc304d2b6/kernel/net/8021q/ tmp/lib/modules/6.5.0-next-2023=
+0831-13643-ga47fc304d2b6/kernel/net/bluetooth/ tmp/lib/modules/6.5.0-next-2=
+0230831-13643-ga47fc304d2b6/kernel/net/bluetooth/hidp/ tmp/lib/modules/6.5.=
+0-next-20230831-13643-ga47fc304d2b6/kernel/net/bluetooth/rfcomm/ tmp/lib/mo=
+dules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/bridge/ tmp/lib/mo=
+dules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/dns_resolver/ tmp/=
+lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/ipv4/ tmp/li=
+b/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/ipv6/ tmp/lib/=
+modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/ipv6/netfilter/ =
+tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/llc/ tmp=
+/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/mac80211/ t=
+mp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/netfilter=
+/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/sched/=
+ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/sunrpc/=
+ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/net/sunrpc/=
+auth_gss/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/ne=
+t/vmw_vsock/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel=
+/net/wireless/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kern=
+el/sound/core/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kern=
+el/sound/core/seq/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/=
+kernel/sound/drivers/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2=
+b6/kernel/sound/soc/sof/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc30=
+4d2b6/kernel/sound/soc/sof/mediatek/ tmp/lib/modules/6.5.0-next-20230831-13=
+643-ga47fc304d2b6/kernel/sound/soc/sof/mediatek/mt8186/ tmp/lib/modules/6.5=
+=2E0-next-20230831-13643-ga47fc304d2b6/kernel/sound/soc/sof/mediatek/mt8195=
+/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/sound/soc/=
+sof/xtensa/ tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/=
+sound/usb/
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/arch/arm64/crypto/sha1-ce.ko
+      cp arch/arm64/crypto/sha1-ce.ko tmp/lib/modules/6.5.0-next-20230831-1=
+3643-ga47fc304d2b6/kernel/arch/arm64/crypto/sha1-ce.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/arch/arm64/crypto/chacha-neon.ko
+      cp arch/arm64/crypto/chacha-neon.ko tmp/lib/modules/6.5.0-next-202308=
+31-13643-ga47fc304d2b6/kernel/arch/arm64/crypto/chacha-neon.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/arch/arm64/crypto/poly1305-neon.ko
+      cp arch/arm64/crypto/poly1305-neon.ko tmp/lib/modules/6.5.0-next-2023=
+0831-13643-ga47fc304d2b6/kernel/arch/arm64/crypto/poly1305-neon.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/kernel/time/test_udelay.ko
+      cp kernel/time/test_udelay.ko tmp/lib/modules/6.5.0-next-20230831-136=
+43-ga47fc304d2b6/kernel/kernel/time/test_udelay.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/kernel/configs.ko
+      cp kernel/configs.ko tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc=
+304d2b6/kernel/kernel/configs.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/fs/nfs_common/grace.ko
+      cp fs/nfs_common/grace.ko tmp/lib/modules/6.5.0-next-20230831-13643-g=
+a47fc304d2b6/kernel/fs/nfs_common/grace.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/fs/nls/nls_cp437.ko
+      cp fs/nls/nls_cp437.ko tmp/lib/modules/6.5.0-next-20230831-13643-ga47=
+fc304d2b6/kernel/fs/nls/nls_cp437.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/fs/nls/nls_ascii.ko
+      cp fs/nls/nls_ascii.ko tmp/lib/modules/6.5.0-next-20230831-13643-ga47=
+fc304d2b6/kernel/fs/nls/nls_ascii.ko
+    cp: cannot create regular file 'tmp/lib/modules/6.5.0-next-20230831-136=
+43-ga47fc304d2b6/kernel/kernel/time/test_udelay.ko': No such file or direct=
+ory
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/fs/nls/nls_iso8859-1.ko
+      cp fs/nls/nls_iso8859-1.ko tmp/lib/modules/6.5.0-next-20230831-13643-=
+ga47fc304d2b6/kernel/fs/nls/nls_iso8859-1.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/fs/nls/nls_utf8.ko
+      cp fs/nls/nls_utf8.ko tmp/lib/modules/6.5.0-next-20230831-13643-ga47f=
+c304d2b6/kernel/fs/nls/nls_utf8.ko
+    # INSTALL tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kerne=
+l/fs/fat/fat.ko
+      cp fs/fat/fat.ko tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d=
+2b6/kernel/fs/fat/fat.ko
+    make[2]: *** [scripts/Makefile.modinst:128: tmp/lib/modules/6.5.0-next-=
+20230831-13643-ga47fc304d2b6/kernel/kernel/time/test_udelay.ko] Error 1
+    make[2]: *** Waiting for unfinished jobs....
+
+I suspect what is happening is that the prepare target (which does
+`mkdir`) is getting executed at the same time as all the install
+commands. This seems to only happen if module compression is enabled.
+
+If I dump the make database with `make -p`, I see rules like the following:
+
+    tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/kernel/t=
+ime/test_udelay.ko.xz: tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d=
+2b6/kernel/kernel/time/test_udelay.ko FORCE prepare
+    tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/kernel/t=
+ime/test_udelay.ko: kernel/time/test_udelay.ko FORCE
+
+which indicates that the dependency is off. If I turn off module compressio=
+n,
+i.e. CONFIG_MODULE_COMPRESS_NONE=3Dy, then the rules become:
+
+    tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6/kernel/kernel/t=
+ime/test_udelay.ko: kernel/time/test_udelay.ko FORCE prepare
+
+which works. If I apply the following change:
+
+diff --git a/scripts/Makefile.modinst b/scripts/Makefile.modinst
+index 459cb1fed223..91c13845cdb3 100644
+--- a/scripts/Makefile.modinst
++++ b/scripts/Makefile.modinst
+@@ -123,7 +123,7 @@ quiet_cmd_sign :=3D
+       cmd_sign :=3D :
+ endif
+=20
+-$(dst)/%.ko: $(extmod_prefix)%.ko FORCE
++$(dst)/%.ko: $(extmod_prefix)%.ko FORCE prepare
+ 	$(call cmd,install)
+ 	$(call cmd,strip)
+ 	$(call cmd,sign)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D
+
+then things work even if module compression is enabled. The database
+dump now shows the install rules have proper dependencies on the prepare
+target:
+
+    tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6-dirty/kernel/ke=
+rnel/time/test_udelay.ko.xz: tmp/lib/modules/6.5.0-next-20230831-13643-ga47=
+fc304d2b6-dirty/kernel/kernel/time/test_udelay.ko FORCE prepare
+    tmp/lib/modules/6.5.0-next-20230831-13643-ga47fc304d2b6-dirty/kernel/ke=
+rnel/time/test_udelay.ko: kernel/time/test_udelay.ko FORCE prepare
+
+Hope this helps.
+
+
+Regards
+ChenYu
+
+
+My defconfig:
+
+CONFIG_DEFAULT_HOSTNAME=3D"localhost"
+CONFIG_SYSVIPC=3Dy
+CONFIG_AUDIT=3Dy
+CONFIG_GENERIC_IRQ_DEBUGFS=3Dy
+CONFIG_NO_HZ=3Dy
+CONFIG_HIGH_RES_TIMERS=3Dy
+CONFIG_BPF_SYSCALL=3Dy
+CONFIG_BPF_JIT=3Dy
+CONFIG_BPF_JIT_ALWAYS_ON=3Dy
+CONFIG_PREEMPT=3Dy
+CONFIG_IRQ_TIME_ACCOUNTING=3Dy
+CONFIG_TASKSTATS=3Dy
+CONFIG_TASK_DELAY_ACCT=3Dy
+CONFIG_TASK_XACCT=3Dy
+CONFIG_TASK_IO_ACCOUNTING=3Dy
+CONFIG_PSI=3Dy
+CONFIG_IKCONFIG=3Dm
+CONFIG_IKCONFIG_PROC=3Dy
+CONFIG_LOG_BUF_SHIFT=3D18
+CONFIG_UCLAMP_TASK=3Dy
+CONFIG_CGROUPS=3Dy
+CONFIG_BLK_CGROUP=3Dy
+CONFIG_CGROUP_SCHED=3Dy
+CONFIG_CFS_BANDWIDTH=3Dy
+CONFIG_RT_GROUP_SCHED=3Dy
+CONFIG_UCLAMP_TASK_GROUP=3Dy
+CONFIG_CGROUP_FREEZER=3Dy
+CONFIG_CPUSETS=3Dy
+CONFIG_CGROUP_DEVICE=3Dy
+CONFIG_CGROUP_CPUACCT=3Dy
+CONFIG_CGROUP_BPF=3Dy
+CONFIG_NAMESPACES=3Dy
+CONFIG_USER_NS=3Dy
+# CONFIG_RD_BZIP2 is not set
+# CONFIG_RD_LZMA is not set
+# CONFIG_RD_LZO is not set
+CONFIG_EXPERT=3Dy
+# CONFIG_IO_URING is not set
+CONFIG_PROFILING=3Dy
+CONFIG_ARCH_MEDIATEK=3Dy
+# CONFIG_AMPERE_ERRATUM_AC03_CPU_38 is not set
+# CONFIG_CAVIUM_ERRATUM_27456 is not set
+CONFIG_SCHED_MC=3Dy
+CONFIG_NR_CPUS=3D8
+CONFIG_HZ_1000=3Dy
+CONFIG_ARM64_SW_TTBR0_PAN=3Dy
+CONFIG_COMPAT=3Dy
+CONFIG_ARMV8_DEPRECATED=3Dy
+CONFIG_SWP_EMULATION=3Dy
+CONFIG_CP15_BARRIER_EMULATION=3Dy
+CONFIG_SETEND_EMULATION=3Dy
+# CONFIG_ARM64_BTI is not set
+CONFIG_ARM64_PSEUDO_NMI=3Dy
+CONFIG_ARM64_DEBUG_PRIORITY_MASKING=3Dy
+CONFIG_RANDOMIZE_BASE=3Dy
+# CONFIG_EFI is not set
+CONFIG_PM_WAKELOCKS=3Dy
+CONFIG_PM_DEBUG=3Dy
+CONFIG_PM_ADVANCED_DEBUG=3Dy
+CONFIG_ENERGY_MODEL=3Dy
+CONFIG_CPU_IDLE=3Dy
+CONFIG_CPU_IDLE_GOV_LADDER=3Dy
+CONFIG_CPU_IDLE_GOV_MENU=3Dy
+CONFIG_CPU_IDLE_GOV_TEO=3Dy
+CONFIG_ARM_PSCI_CPUIDLE=3Dy
+CONFIG_CPU_FREQ=3Dy
+CONFIG_CPU_FREQ_STAT=3Dy
+CONFIG_CPU_FREQ_DEFAULT_GOV_PERFORMANCE=3Dy
+CONFIG_CPU_FREQ_GOV_POWERSAVE=3Dy
+CONFIG_CPU_FREQ_GOV_USERSPACE=3Dy
+CONFIG_CPU_FREQ_GOV_ONDEMAND=3Dy
+CONFIG_CPU_FREQ_GOV_CONSERVATIVE=3Dy
+CONFIG_CPU_FREQ_GOV_SCHEDUTIL=3Dy
+CONFIG_ARM_MEDIATEK_CPUFREQ=3Dy
+CONFIG_ARM_MEDIATEK_CPUFREQ_HW=3Dy
+CONFIG_VIRTUALIZATION=3Dy
+CONFIG_KVM=3Dy
+CONFIG_JUMP_LABEL=3Dy
+CONFIG_ARCH_MMAP_RND_BITS=3D24
+CONFIG_ARCH_MMAP_RND_COMPAT_BITS=3D16
+CONFIG_MODULES=3Dy
+CONFIG_MODULE_UNLOAD=3Dy
+CONFIG_MODULE_FORCE_UNLOAD=3Dy
+CONFIG_MODULE_COMPRESS_XZ=3Dy
+CONFIG_MODULE_DECOMPRESS=3Dy
+# CONFIG_BLOCK_LEGACY_AUTOLOAD is not set
+CONFIG_BLK_DEV_INTEGRITY=3Dy
+# CONFIG_BLK_DEBUG_FS is not set
+CONFIG_PARTITION_ADVANCED=3Dy
+CONFIG_MAC_PARTITION=3Dy
+CONFIG_BINFMT_MISC=3Dy
+CONFIG_ZSWAP=3Dy
+CONFIG_ZSMALLOC=3Dy
+CONFIG_SLAB_FREELIST_RANDOM=3Dy
+CONFIG_SLAB_FREELIST_HARDENED=3Dy
+# CONFIG_COMPAT_BRK is not set
+CONFIG_DEFAULT_MMAP_MIN_ADDR=3D32768
+CONFIG_TRANSPARENT_HUGEPAGE=3Dy
+CONFIG_TRANSPARENT_HUGEPAGE_MADVISE=3Dy
+CONFIG_USERFAULTFD=3Dy
+CONFIG_LRU_GEN=3Dy
+CONFIG_LRU_GEN_ENABLED=3Dy
+CONFIG_NET=3Dy
+CONFIG_PACKET=3Dy
+CONFIG_UNIX=3Dy
+CONFIG_XFRM_USER=3Dy
+CONFIG_NET_KEY=3Dy
+CONFIG_INET=3Dy
+CONFIG_IP_MULTICAST=3Dy
+CONFIG_IP_ADVANCED_ROUTER=3Dy
+CONFIG_IP_MULTIPLE_TABLES=3Dy
+CONFIG_IP_ROUTE_MULTIPATH=3Dy
+CONFIG_IP_ROUTE_VERBOSE=3Dy
+CONFIG_IP_MROUTE=3Dy
+CONFIG_IP_PIMSM_V1=3Dy
+CONFIG_IP_PIMSM_V2=3Dy
+CONFIG_SYN_COOKIES=3Dy
+CONFIG_INET_AH=3Dy
+CONFIG_INET_ESP=3Dy
+CONFIG_INET_IPCOMP=3Dy
+CONFIG_INET_UDP_DIAG=3Dy
+CONFIG_INET_DIAG_DESTROY=3Dy
+CONFIG_TCP_CONG_ADVANCED=3Dy
+# CONFIG_TCP_CONG_BIC is not set
+# CONFIG_TCP_CONG_WESTWOOD is not set
+# CONFIG_TCP_CONG_HTCP is not set
+CONFIG_TCP_CONG_LP=3Dm
+CONFIG_TCP_MD5SIG=3Dy
+CONFIG_IPV6_ROUTER_PREF=3Dy
+CONFIG_IPV6_ROUTE_INFO=3Dy
+CONFIG_INET6_AH=3Dm
+CONFIG_INET6_ESP=3Dm
+CONFIG_IPV6_SIT=3Dm
+CONFIG_IPV6_MULTIPLE_TABLES=3Dy
+CONFIG_NETWORK_SECMARK=3Dy
+CONFIG_NETFILTER=3Dy
+CONFIG_NF_CONNTRACK=3Dy
+CONFIG_NF_CONNTRACK_SECMARK=3Dy
+CONFIG_NF_CONNTRACK_PROCFS=3Dy
+CONFIG_NF_CONNTRACK_EVENTS=3Dy
+CONFIG_NF_CONNTRACK_TIMEOUT=3Dy
+# CONFIG_NF_CT_PROTO_DCCP is not set
+# CONFIG_NF_CT_PROTO_SCTP is not set
+# CONFIG_NF_CT_PROTO_UDPLITE is not set
+CONFIG_NF_CONNTRACK_FTP=3Dm
+CONFIG_NF_CONNTRACK_PPTP=3Dy
+CONFIG_NF_CONNTRACK_TFTP=3Dm
+CONFIG_NF_CT_NETLINK=3Dy
+CONFIG_NF_CT_NETLINK_TIMEOUT=3Dy
+CONFIG_NF_CT_NETLINK_HELPER=3Dy
+CONFIG_NETFILTER_NETLINK_GLUE_CT=3Dy
+CONFIG_NETFILTER_XTABLES_COMPAT=3Dy
+CONFIG_NETFILTER_XT_TARGET_CLASSIFY=3Dy
+CONFIG_NETFILTER_XT_TARGET_CONNMARK=3Dy
+CONFIG_NETFILTER_XT_TARGET_CONNSECMARK=3Dy
+CONFIG_NETFILTER_XT_TARGET_CT=3Dy
+CONFIG_NETFILTER_XT_TARGET_DSCP=3Dy
+CONFIG_NETFILTER_XT_TARGET_IDLETIMER=3Dy
+CONFIG_NETFILTER_XT_TARGET_MARK=3Dy
+CONFIG_NETFILTER_XT_TARGET_NFLOG=3Dy
+CONFIG_NETFILTER_XT_TARGET_NFQUEUE=3Dy
+CONFIG_NETFILTER_XT_TARGET_REDIRECT=3Dy
+CONFIG_NETFILTER_XT_TARGET_TPROXY=3Dy
+CONFIG_NETFILTER_XT_TARGET_TRACE=3Dy
+CONFIG_NETFILTER_XT_TARGET_SECMARK=3Dy
+CONFIG_NETFILTER_XT_TARGET_TCPMSS=3Dy
+CONFIG_NETFILTER_XT_MATCH_ADDRTYPE=3Dy
+CONFIG_NETFILTER_XT_MATCH_BPF=3Dy
+CONFIG_NETFILTER_XT_MATCH_CGROUP=3Dm
+CONFIG_NETFILTER_XT_MATCH_COMMENT=3Dy
+CONFIG_NETFILTER_XT_MATCH_CONNLIMIT=3Dy
+CONFIG_NETFILTER_XT_MATCH_CONNMARK=3Dy
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=3Dy
+CONFIG_NETFILTER_XT_MATCH_DSCP=3Dy
+CONFIG_NETFILTER_XT_MATCH_HASHLIMIT=3Dy
+CONFIG_NETFILTER_XT_MATCH_HELPER=3Dy
+CONFIG_NETFILTER_XT_MATCH_IPRANGE=3Dy
+CONFIG_NETFILTER_XT_MATCH_LENGTH=3Dy
+CONFIG_NETFILTER_XT_MATCH_LIMIT=3Dy
+CONFIG_NETFILTER_XT_MATCH_MAC=3Dy
+CONFIG_NETFILTER_XT_MATCH_MARK=3Dy
+CONFIG_NETFILTER_XT_MATCH_POLICY=3Dy
+CONFIG_NETFILTER_XT_MATCH_PKTTYPE=3Dy
+CONFIG_NETFILTER_XT_MATCH_QUOTA=3Dy
+CONFIG_NETFILTER_XT_MATCH_SOCKET=3Dy
+CONFIG_NETFILTER_XT_MATCH_STATE=3Dy
+CONFIG_NETFILTER_XT_MATCH_STATISTIC=3Dy
+CONFIG_NETFILTER_XT_MATCH_STRING=3Dy
+CONFIG_NETFILTER_XT_MATCH_TIME=3Dy
+CONFIG_NETFILTER_XT_MATCH_U32=3Dy
+CONFIG_IP_NF_IPTABLES=3Dy
+CONFIG_IP_NF_FILTER=3Dy
+CONFIG_IP_NF_TARGET_REJECT=3Dy
+CONFIG_IP_NF_NAT=3Dy
+CONFIG_IP_NF_TARGET_MASQUERADE=3Dm
+CONFIG_IP_NF_TARGET_REDIRECT=3Dm
+CONFIG_IP_NF_MANGLE=3Dy
+CONFIG_IP_NF_RAW=3Dy
+CONFIG_NF_REJECT_IPV6=3Dy
+CONFIG_IP6_NF_IPTABLES=3Dy
+CONFIG_IP6_NF_MATCH_IPV6HEADER=3Dm
+CONFIG_IP6_NF_MATCH_RPFILTER=3Dy
+CONFIG_IP6_NF_FILTER=3Dy
+CONFIG_IP6_NF_TARGET_REJECT=3Dm
+CONFIG_IP6_NF_MANGLE=3Dy
+CONFIG_IP6_NF_RAW=3Dy
+CONFIG_IP6_NF_NAT=3Dm
+CONFIG_IP6_NF_TARGET_MASQUERADE=3Dm
+CONFIG_BRIDGE=3Dm
+CONFIG_VLAN_8021Q=3Dm
+CONFIG_NET_SCHED=3Dy
+CONFIG_NET_SCH_HTB=3Dm
+CONFIG_NET_SCH_TBF=3Dm
+CONFIG_NET_SCH_NETEM=3Dm
+CONFIG_NET_SCH_CODEL=3Dm
+CONFIG_NET_SCH_FQ_CODEL=3Dm
+CONFIG_NET_SCH_INGRESS=3Dm
+CONFIG_NET_CLS_U32=3Dm
+CONFIG_CLS_U32_MARK=3Dy
+CONFIG_NET_CLS_ACT=3Dy
+CONFIG_NET_ACT_POLICE=3Dy
+CONFIG_NET_ACT_GACT=3Dy
+CONFIG_VSOCKETS=3Dm
+CONFIG_BT=3Dm
+CONFIG_BT_RFCOMM=3Dm
+CONFIG_BT_HIDP=3Dm
+CONFIG_BT_MSFTEXT=3Dy
+CONFIG_BT_FEATURE_DEBUG=3Dy
+CONFIG_BT_HCIBTUSB=3Dm
+CONFIG_BT_HCIBTUSB_AUTOSUSPEND=3Dy
+CONFIG_BT_HCIBTUSB_MTK=3Dy
+CONFIG_BT_HCIBTSDIO=3Dm
+CONFIG_BT_HCIUART=3Dm
+CONFIG_BT_HCIUART_RTL=3Dy
+CONFIG_BT_HCIUART_QCA=3Dy
+CONFIG_BT_HCIBFUSB=3Dm
+CONFIG_BT_HCIVHCI=3Dm
+CONFIG_BT_MTKSDIO=3Dm
+CONFIG_BT_MTKUART=3Dm
+CONFIG_CFG80211=3Dm
+CONFIG_NL80211_TESTMODE=3Dy
+CONFIG_CFG80211_CERTIFICATION_ONUS=3Dy
+# CONFIG_CFG80211_REQUIRE_SIGNED_REGDB is not set
+CONFIG_CFG80211_DEBUGFS=3Dy
+CONFIG_CFG80211_WEXT=3Dy
+CONFIG_MAC80211=3Dm
+CONFIG_MAC80211_LEDS=3Dy
+CONFIG_MAC80211_DEBUGFS=3Dy
+CONFIG_MAC80211_DEBUG_MENU=3Dy
+CONFIG_MAC80211_VERBOSE_DEBUG=3Dy
+CONFIG_RFKILL=3Dy
+CONFIG_PAGE_POOL_STATS=3Dy
+CONFIG_PCI=3Dy
+CONFIG_PCIEPORTBUS=3Dy
+CONFIG_PCIEAER=3Dy
+CONFIG_PCIEASPM_POWER_SUPERSAVE=3Dy
+CONFIG_PCIE_MEDIATEK_GEN3=3Dy
+CONFIG_DEVTMPFS=3Dy
+CONFIG_DEVTMPFS_MOUNT=3Dy
+CONFIG_CONNECTOR=3Dy
+CONFIG_MTK_ADSP_IPC=3Dy
+CONFIG_GOOGLE_FIRMWARE=3Dy
+CONFIG_GOOGLE_CBMEM=3Dy
+CONFIG_GOOGLE_COREBOOT_TABLE=3Dy
+CONFIG_GOOGLE_MEMCONSOLE_COREBOOT=3Dy
+CONFIG_GOOGLE_VPD=3Dy
+CONFIG_MTD=3Dy
+CONFIG_MTD_CMDLINE_PARTS=3Dy
+CONFIG_MTD_PARTITIONED_MASTER=3Dy
+CONFIG_MTD_SPI_NOR=3Dy
+CONFIG_PARPORT=3Dy
+CONFIG_ZRAM=3Dm
+CONFIG_BLK_DEV_LOOP=3Dy
+CONFIG_BLK_DEV_NVME=3Dy
+CONFIG_EEPROM_AT24=3Dy
+CONFIG_SCSI=3Dy
+CONFIG_BLK_DEV_SD=3Dy
+CONFIG_BLK_DEV_SR=3Dm
+CONFIG_SCSI_SCAN_ASYNC=3Dy
+CONFIG_SCSI_SPI_ATTRS=3Dy
+CONFIG_NETDEVICES=3Dy
+CONFIG_WIREGUARD=3Dm
+CONFIG_TUN=3Dm
+CONFIG_VETH=3Dm
+CONFIG_PHYLIB=3Dy
+CONFIG_PPP=3Dy
+CONFIG_PPP_MPPE=3Dy
+CONFIG_PPP_ASYNC=3Dy
+CONFIG_USB_PEGASUS=3Dm
+CONFIG_USB_RTL8150=3Dm
+CONFIG_USB_RTL8152=3Dm
+CONFIG_USB_NET_CDC_MBIM=3Dm
+CONFIG_USB_NET_DM9601=3Dm
+CONFIG_USB_NET_SMSC75XX=3Dm
+CONFIG_USB_NET_SMSC95XX=3Dm
+CONFIG_USB_NET_MCS7830=3Dm
+# CONFIG_USB_NET_CDC_SUBSET is not set
+# CONFIG_USB_NET_ZAURUS is not set
+CONFIG_USB_IPHETH=3Dm
+CONFIG_USB_NET_AQC111=3Dm
+CONFIG_ATH10K=3Dm
+CONFIG_ATH10K_SDIO=3Dm
+CONFIG_ATH10K_DEBUG=3Dy
+CONFIG_ATH10K_DEBUGFS=3Dy
+CONFIG_ATH10K_SPECTRAL=3Dy
+CONFIG_ATH10K_TRACING=3Dy
+CONFIG_ATH10K_DFS_CERTIFIED=3Dy
+CONFIG_MWIFIEX=3Dm
+CONFIG_MT7921E=3Dm
+CONFIG_MT7921S=3Dm
+CONFIG_MT7921U=3Dm
+CONFIG_MT7996E=3Dm
+CONFIG_RT2X00=3Dm
+CONFIG_RT2800USB=3Dm
+CONFIG_RT2800USB_RT3573=3Dy
+CONFIG_RT2800USB_RT53XX=3Dy
+CONFIG_RT2800USB_RT55XX=3Dy
+CONFIG_RT2800USB_UNKNOWN=3Dy
+# CONFIG_RTL_CARDS is not set
+CONFIG_RTL8XXXU=3Dm
+CONFIG_RTW88=3Dm
+CONFIG_RTW88_8822BE=3Dm
+CONFIG_RTW88_8822BS=3Dm
+CONFIG_RTW88_8822BU=3Dm
+CONFIG_RTW88_8822CE=3Dm
+CONFIG_RTW88_8822CS=3Dm
+CONFIG_RTW88_8822CU=3Dm
+CONFIG_RTW88_8723DE=3Dm
+CONFIG_RTW88_8723DU=3Dm
+CONFIG_RTW88_8821CE=3Dm
+CONFIG_RTW88_8821CS=3Dm
+CONFIG_RTW88_8821CU=3Dm
+CONFIG_RTW88_DEBUG=3Dy
+CONFIG_RTW88_DEBUGFS=3Dy
+CONFIG_RTW89=3Dm
+CONFIG_RTW89_8852AE=3Dm
+CONFIG_RTW89_8852BE=3Dm
+CONFIG_RTW89_8852CE=3Dm
+CONFIG_RTW89_DEBUGMSG=3Dy
+CONFIG_RTW89_DEBUGFS=3Dy
+CONFIG_USB_NET_RNDIS_WLAN=3Dm
+CONFIG_MAC80211_HWSIM=3Dm
+CONFIG_INPUT_FF_MEMLESS=3Dy
+CONFIG_INPUT_JOYDEV=3Dm
+CONFIG_INPUT_EVDEV=3Dy
+# CONFIG_KEYBOARD_ATKBD is not set
+CONFIG_KEYBOARD_GPIO=3Dy
+CONFIG_KEYBOARD_CROS_EC=3Dy
+# CONFIG_MOUSE_PS2 is not set
+CONFIG_MOUSE_CYAPA=3Dy
+CONFIG_MOUSE_ELAN_I2C=3Dy
+CONFIG_INPUT_JOYSTICK=3Dy
+CONFIG_JOYSTICK_IFORCE=3Dm
+CONFIG_JOYSTICK_IFORCE_USB=3Dm
+CONFIG_JOYSTICK_XPAD=3Dm
+CONFIG_JOYSTICK_XPAD_FF=3Dy
+CONFIG_JOYSTICK_XPAD_LEDS=3Dy
+CONFIG_INPUT_TABLET=3Dy
+CONFIG_INPUT_TOUCHSCREEN=3Dy
+CONFIG_TOUCHSCREEN_ATMEL_MXT=3Dy
+CONFIG_TOUCHSCREEN_ELAN=3Dy
+CONFIG_TOUCHSCREEN_USB_COMPOSITE=3Dm
+CONFIG_INPUT_MISC=3Dy
+CONFIG_INPUT_UINPUT=3Dm
+CONFIG_SERIO=3Dm
+# CONFIG_LEGACY_PTYS is not set
+CONFIG_SERIAL_8250=3Dy
+CONFIG_SERIAL_8250_CONSOLE=3Dy
+CONFIG_SERIAL_8250_PCI1XXXX=3Dy
+CONFIG_SERIAL_8250_DW=3Dy
+CONFIG_SERIAL_8250_MT6577=3Dy
+CONFIG_SERIAL_OF_PLATFORM=3Dy
+CONFIG_SERIAL_DEV_BUS=3Dy
+CONFIG_HW_RANDOM=3Dy
+# CONFIG_HW_RANDOM_CN10K is not set
+CONFIG_TCG_TPM=3Dy
+CONFIG_TCG_TIS_SPI=3Dy
+CONFIG_TCG_TIS_SPI_CR50=3Dy
+CONFIG_TCG_TIS_I2C=3Dy
+CONFIG_TCG_TIS_I2C_CR50=3Dy
+CONFIG_TCG_TIS_I2C_INFINEON=3Dy
+CONFIG_I2C_CHARDEV=3Dy
+CONFIG_I2C_MT65XX=3Dy
+CONFIG_I2C_CROS_EC_TUNNEL=3Dy
+CONFIG_I2C_STUB=3Dm
+CONFIG_SPI=3Dy
+CONFIG_SPI_GPIO=3Dy
+CONFIG_SPI_MT65XX=3Dy
+CONFIG_SPI_MTK_NOR=3Dy
+CONFIG_SPI_SPIDEV=3Dy
+CONFIG_SPMI=3Dy
+CONFIG_SPMI_MTK_PMIF=3Dy
+# CONFIG_PTP_1588_CLOCK is not set
+# CONFIG_PINCTRL_MT2712 is not set
+# CONFIG_PINCTRL_MT7622 is not set
+# CONFIG_PINCTRL_MT7981 is not set
+CONFIG_DEBUG_GPIO=3Dy
+CONFIG_GPIO_SYSFS=3Dy
+CONFIG_BATTERY_SBS=3Dy
+CONFIG_CHARGER_GPIO=3Dy
+CONFIG_CHARGER_MT6360=3Dy
+CONFIG_CHARGER_MT6370=3Dy
+CONFIG_CHARGER_CROS_USBPD=3Dy
+CONFIG_SENSORS_TMP401=3Dy
+CONFIG_THERMAL=3Dy
+CONFIG_THERMAL_WRITABLE_TRIPS=3Dy
+CONFIG_THERMAL_DEFAULT_GOV_POWER_ALLOCATOR=3Dy
+CONFIG_THERMAL_GOV_STEP_WISE=3Dy
+CONFIG_THERMAL_GOV_USER_SPACE=3Dy
+CONFIG_THERMAL_GOV_POWER_ALLOCATOR=3Dy
+CONFIG_CPU_THERMAL=3Dy
+CONFIG_DEVFREQ_THERMAL=3Dy
+CONFIG_MTK_THERMAL=3Dy
+CONFIG_MTK_SOC_THERMAL=3Dy
+CONFIG_MTK_LVTS_THERMAL=3Dy
+CONFIG_MTK_LVTS_THERMAL_DEBUGFS=3Dy
+CONFIG_GENERIC_ADC_THERMAL=3Dy
+CONFIG_WATCHDOG=3Dy
+CONFIG_SOFT_WATCHDOG=3Dm
+CONFIG_MFD_MT6360=3Dy
+CONFIG_MFD_MT6370=3Dy
+CONFIG_MFD_MT6397=3Dy
+CONFIG_REGULATOR_FIXED_VOLTAGE=3Dy
+CONFIG_REGULATOR_VIRTUAL_CONSUMER=3Dy
+CONFIG_REGULATOR_USERSPACE_CONSUMER=3Dy
+CONFIG_REGULATOR_CROS_EC=3Dy
+CONFIG_REGULATOR_GPIO=3Dy
+CONFIG_REGULATOR_MT6315=3Dy
+CONFIG_REGULATOR_MT6331=3Dy
+CONFIG_REGULATOR_MT6332=3Dy
+CONFIG_REGULATOR_MT6357=3Dy
+CONFIG_REGULATOR_MT6358=3Dy
+CONFIG_REGULATOR_MT6359=3Dy
+CONFIG_REGULATOR_MT6360=3Dy
+CONFIG_REGULATOR_MT6370=3Dy
+CONFIG_REGULATOR_MT6397=3Dy
+CONFIG_REGULATOR_PWM=3Dy
+CONFIG_MEDIA_CEC_SUPPORT=3Dy
+CONFIG_CEC_CROS_EC=3Dy
+CONFIG_MEDIA_SUPPORT=3Dy
+CONFIG_MEDIA_SUPPORT_FILTER=3Dy
+CONFIG_MEDIA_CAMERA_SUPPORT=3Dy
+CONFIG_MEDIA_PLATFORM_SUPPORT=3Dy
+CONFIG_MEDIA_TEST_SUPPORT=3Dy
+CONFIG_MEDIA_USB_SUPPORT=3Dy
+CONFIG_USB_VIDEO_CLASS=3Dm
+# CONFIG_USB_VIDEO_CLASS_INPUT_EVDEV is not set
+CONFIG_V4L_PLATFORM_DRIVERS=3Dy
+CONFIG_V4L_MEM2MEM_DRIVERS=3Dy
+CONFIG_VIDEO_MEDIATEK_JPEG=3Dm
+CONFIG_VIDEO_MEDIATEK_MDP=3Dm
+CONFIG_VIDEO_MEDIATEK_VCODEC=3Dm
+CONFIG_V4L_TEST_DRIVERS=3Dy
+CONFIG_VIDEO_VISL=3Dm
+CONFIG_VISL_DEBUGFS=3Dy
+CONFIG_VIDEO_OV02A10=3Dm
+CONFIG_VIDEO_OV5695=3Dm
+CONFIG_VIDEO_OV8856=3Dm
+CONFIG_VIDEO_DW9768=3Dm
+CONFIG_DRM=3Dy
+# CONFIG_DRM_DEBUG_MODESET_LOCK is not set
+CONFIG_DRM_DP_AUX_CHARDEV=3Dy
+CONFIG_DRM_DP_CEC=3Dy
+CONFIG_DRM_PANEL_BOE_TV101WUM_NL6=3Dy
+CONFIG_DRM_PANEL_SIMPLE=3Dy
+CONFIG_DRM_PANEL_EDP=3Dy
+CONFIG_DRM_PANEL_INNOLUX_P079ZCA=3Dy
+CONFIG_DRM_CROS_EC_ANX7688=3Dy
+CONFIG_DRM_ITE_IT6505=3Dy
+CONFIG_DRM_PARADE_PS8640=3Dy
+CONFIG_DRM_ANALOGIX_ANX7625=3Dy
+CONFIG_DRM_MEDIATEK=3Dy
+CONFIG_DRM_MEDIATEK_DP=3Dy
+CONFIG_DRM_MEDIATEK_HDMI=3Dy
+CONFIG_DRM_PANFROST=3Dy
+CONFIG_FB=3Dy
+CONFIG_FB_MODE_HELPERS=3Dy
+CONFIG_BACKLIGHT_CLASS_DEVICE=3Dy
+CONFIG_BACKLIGHT_PWM=3Dy
+CONFIG_BACKLIGHT_MT6370=3Dy
+CONFIG_FRAMEBUFFER_CONSOLE=3Dy
+CONFIG_FRAMEBUFFER_CONSOLE_LEGACY_ACCELERATION=3Dy
+CONFIG_SOUND=3Dy
+CONFIG_SND=3Dy
+CONFIG_SND_HRTIMER=3Dm
+CONFIG_SND_SEQUENCER=3Dm
+CONFIG_SND_SEQ_DUMMY=3Dm
+CONFIG_SND_ALOOP=3Dm
+# CONFIG_SND_SPI is not set
+CONFIG_SND_USB_AUDIO=3Dm
+CONFIG_SND_SOC=3Dy
+CONFIG_SND_SOC_MT8173=3Dy
+CONFIG_SND_SOC_MT8173_MAX98090=3Dy
+CONFIG_SND_SOC_MT8173_RT5650=3Dy
+CONFIG_SND_SOC_MT8173_RT5650_RT5514=3Dy
+CONFIG_SND_SOC_MT8173_RT5650_RT5676=3Dy
+CONFIG_SND_SOC_MT8183=3Dy
+CONFIG_SND_SOC_MT8183_MT6358_TS3A227E_MAX98357A=3Dy
+CONFIG_SND_SOC_MT8183_DA7219_MAX98357A=3Dy
+CONFIG_SND_SOC_MT8186=3Dy
+CONFIG_SND_SOC_MT8186_MT6366_DA7219_MAX98357=3Dy
+CONFIG_SND_SOC_MT8186_MT6366_RT1019_RT5682S=3Dy
+CONFIG_SND_SOC_MT8188=3Dy
+CONFIG_SND_SOC_MT8188_MT6359=3Dy
+CONFIG_SND_SOC_MT8192=3Dy
+CONFIG_SND_SOC_MT8192_MT6359_RT1015_RT5682=3Dy
+CONFIG_SND_SOC_MT8195=3Dy
+CONFIG_SND_SOC_MT8195_MT6359=3Dy
+CONFIG_SND_SOC_SOF_TOPLEVEL=3Dy
+CONFIG_SND_SOC_SOF_OF=3Dm
+CONFIG_SND_SOC_SOF_MTK_TOPLEVEL=3Dy
+CONFIG_SND_SOC_SOF_MT8186=3Dm
+CONFIG_SND_SOC_SOF_MT8195=3Dm
+CONFIG_SND_SIMPLE_CARD=3Dy
+CONFIG_HID_BATTERY_STRENGTH=3Dy
+CONFIG_HIDRAW=3Dy
+CONFIG_UHID=3Dy
+CONFIG_HID_CHERRY=3Dm
+CONFIG_HID_CHICONY=3Dm
+CONFIG_HID_GOOGLE_HAMMER=3Dm
+CONFIG_HID_VIVALDI=3Dm
+CONFIG_HID_LOGITECH=3Dm
+CONFIG_HID_LOGITECH_DJ=3Dm
+CONFIG_HID_MAGICMOUSE=3Dm
+CONFIG_HID_MICROSOFT=3Dm
+CONFIG_HID_MULTITOUCH=3Dy
+CONFIG_HID_PLANTRONICS=3Dm
+CONFIG_HID_PRIMAX=3Dm
+CONFIG_HID_SONY=3Dm
+CONFIG_HID_RMI=3Dm
+CONFIG_HID_THINGM=3Dm
+CONFIG_HID_WACOM=3Dm
+CONFIG_HID_WIIMOTE=3Dm
+CONFIG_USB_HIDDEV=3Dy
+CONFIG_I2C_HID_OF=3Dy
+CONFIG_I2C_HID_OF_ELAN=3Dy
+CONFIG_I2C_HID_OF_GOODIX=3Dy
+CONFIG_USB=3Dy
+CONFIG_USB_ANNOUNCE_NEW_DEVICES=3Dy
+# CONFIG_USB_DEFAULT_PERSIST is not set
+CONFIG_USB_MON=3Dy
+CONFIG_USB_XHCI_HCD=3Dy
+CONFIG_USB_EHCI_HCD=3Dy
+CONFIG_USB_EHCI_ROOT_HUB_TT=3Dy
+CONFIG_USB_EHCI_HCD_PLATFORM=3Dy
+CONFIG_USB_OHCI_HCD=3Dy
+CONFIG_USB_OHCI_HCD_PLATFORM=3Dy
+CONFIG_USB_ACM=3Dy
+CONFIG_USB_STORAGE=3Dy
+CONFIG_USB_UAS=3Dy
+CONFIG_USBIP_CORE=3Dm
+CONFIG_USBIP_VHCI_HCD=3Dm
+CONFIG_USB_MTU3=3Dy
+CONFIG_USB_MTU3_HOST=3Dy
+CONFIG_USB_DWC3=3Dy
+CONFIG_USB_SERIAL=3Dm
+CONFIG_USB_SERIAL_GENERIC=3Dy
+CONFIG_USB_SERIAL_SIMPLE=3Dm
+CONFIG_USB_SERIAL_CH341=3Dm
+CONFIG_USB_SERIAL_CP210X=3Dm
+CONFIG_USB_SERIAL_FTDI_SIO=3Dm
+CONFIG_USB_SERIAL_KEYSPAN=3Dm
+CONFIG_USB_SERIAL_PL2303=3Dm
+CONFIG_USB_SERIAL_OTI6858=3Dm
+CONFIG_USB_SERIAL_QUALCOMM=3Dm
+CONFIG_USB_SERIAL_SIERRAWIRELESS=3Dm
+CONFIG_USB_SERIAL_OPTION=3Dm
+CONFIG_USB_ONBOARD_HUB=3Dy
+CONFIG_USB_GADGET=3Dy
+CONFIG_USB_CONFIGFS=3Dm
+CONFIG_USB_CONFIGFS_F_FS=3Dy
+CONFIG_TYPEC=3Dy
+CONFIG_MMC=3Dy
+CONFIG_MMC_BLOCK_MINORS=3D16
+CONFIG_MMC_TEST=3Dm
+CONFIG_MMC_SDHCI=3Dy
+CONFIG_MMC_SDHCI_PLTFM=3Dy
+CONFIG_MMC_MTK=3Dy
+CONFIG_LEDS_CLASS=3Dy
+CONFIG_LEDS_GPIO=3Dy
+CONFIG_LEDS_PWM=3Dy
+CONFIG_RTC_CLASS=3Dy
+# CONFIG_RTC_SYSTOHC is not set
+CONFIG_RTC_DRV_CROS_EC=3Dy
+CONFIG_RTC_DRV_MT6397=3Dy
+CONFIG_DMADEVICES=3Dy
+CONFIG_PL330_DMA=3Dy
+CONFIG_SW_SYNC=3Dy
+CONFIG_UDMABUF=3Dy
+CONFIG_DMABUF_HEAPS=3Dy
+CONFIG_DMABUF_HEAPS_SYSTEM=3Dy
+CONFIG_VHOST_VSOCK=3Dm
+CONFIG_STAGING=3Dy
+CONFIG_STAGING_MEDIA=3Dy
+CONFIG_CHROME_PLATFORMS=3Dy
+CONFIG_CROS_EC=3Dy
+CONFIG_CROS_EC_RPMSG=3Dm
+CONFIG_CROS_EC_SPI=3Dy
+CONFIG_CROS_KBD_LED_BACKLIGHT=3Dy
+# CONFIG_CROS_EC_LIGHTBAR is not set
+CONFIG_CROS_EC_SENSORHUB=3Dm
+CONFIG_CROS_EC_TYPEC=3Dm
+CONFIG_CROS_HPS_I2C=3Dm
+# CONFIG_COMMON_CLK_MT6765 is not set
+# CONFIG_COMMON_CLK_MT6779 is not set
+# CONFIG_COMMON_CLK_MT6795 is not set
+# CONFIG_COMMON_CLK_MT6797 is not set
+# CONFIG_COMMON_CLK_MT7622 is not set
+# CONFIG_COMMON_CLK_MT7981 is not set
+# CONFIG_COMMON_CLK_MT7986 is not set
+# CONFIG_COMMON_CLK_MT8167 is not set
+# CONFIG_COMMON_CLK_MT8365 is not set
+# CONFIG_COMMON_CLK_MT8516 is not set
+CONFIG_MTK_ADSP_MBOX=3Dy
+CONFIG_IOMMU_DEBUGFS=3Dy
+CONFIG_MTK_IOMMU=3Dy
+CONFIG_REMOTEPROC=3Dy
+CONFIG_MTK_SCP=3Dm
+CONFIG_MTK_CMDQ=3Dy
+CONFIG_MTK_DEVAPC=3Dy
+CONFIG_MTK_PMIC_WRAP=3Dy
+CONFIG_MTK_SVS=3Dy
+CONFIG_DEVFREQ_GOV_PERFORMANCE=3Dy
+CONFIG_DEVFREQ_GOV_POWERSAVE=3Dy
+CONFIG_DEVFREQ_GOV_USERSPACE=3Dy
+CONFIG_ARM_MEDIATEK_CCI_DEVFREQ=3Dy
+CONFIG_EXTCON_USBC_CROS_EC=3Dy
+CONFIG_IIO=3Dy
+CONFIG_IIO_SW_TRIGGER=3Dm
+CONFIG_MEDIATEK_MT6360_ADC=3Dy
+CONFIG_MEDIATEK_MT6370_ADC=3Dy
+CONFIG_MEDIATEK_MT6577_AUXADC=3Dy
+CONFIG_IIO_CROS_EC_SENSORS_CORE=3Dm
+CONFIG_IIO_CROS_EC_SENSORS=3Dm
+CONFIG_IIO_CROS_EC_SENSORS_LID_ANGLE=3Dm
+CONFIG_IIO_CROS_EC_LIGHT_PROX=3Dm
+CONFIG_IIO_HRTIMER_TRIGGER=3Dm
+CONFIG_IIO_SYSFS_TRIGGER=3Dm
+CONFIG_IIO_CROS_EC_BARO=3Dm
+CONFIG_PWM=3Dy
+CONFIG_PWM_DEBUG=3Dy
+CONFIG_PWM_CROS_EC=3Dy
+CONFIG_PWM_MTK_DISP=3Dy
+CONFIG_RESET_SIMPLE=3Dy
+CONFIG_RESET_TI_SYSCON=3Dy
+CONFIG_PHY_MTK_PCIE=3Dy
+CONFIG_PHY_MTK_TPHY=3Dy
+CONFIG_DAX=3Dy
+CONFIG_NVMEM_MTK_EFUSE=3Dy
+CONFIG_EXT4_FS=3Dy
+CONFIG_EXT4_FS_POSIX_ACL=3Dy
+CONFIG_EXT4_FS_SECURITY=3Dy
+CONFIG_FS_ENCRYPTION=3Dy
+CONFIG_FS_VERITY=3Dy
+CONFIG_FS_VERITY_BUILTIN_SIGNATURES=3Dy
+# CONFIG_DNOTIFY is not set
+CONFIG_FANOTIFY=3Dy
+CONFIG_QUOTA=3Dy
+CONFIG_QFMT_V2=3Dy
+CONFIG_FUSE_FS=3Dm
+CONFIG_ISO9660_FS=3Dm
+CONFIG_JOLIET=3Dy
+CONFIG_ZISOFS=3Dy
+CONFIG_UDF_FS=3Dm
+CONFIG_VFAT_FS=3Dm
+CONFIG_PROC_CHILDREN=3Dy
+CONFIG_TMPFS=3Dy
+CONFIG_TMPFS_POSIX_ACL=3Dy
+CONFIG_CONFIGFS_FS=3Dy
+CONFIG_ECRYPT_FS=3Dy
+CONFIG_HFSPLUS_FS=3Dm
+CONFIG_SQUASHFS=3Dy
+CONFIG_SQUASHFS_FILE_DIRECT=3Dy
+CONFIG_SQUASHFS_XATTR=3Dy
+CONFIG_SQUASHFS_LZ4=3Dy
+CONFIG_SQUASHFS_LZO=3Dy
+CONFIG_SQUASHFS_ZSTD=3Dy
+CONFIG_SQUASHFS_4K_DEVBLK_SIZE=3Dy
+CONFIG_PSTORE=3Dy
+CONFIG_PSTORE_CONSOLE=3Dy
+CONFIG_PSTORE_PMSG=3Dy
+CONFIG_PSTORE_RAM=3Dy
+CONFIG_NFS_FS=3Dm
+CONFIG_NFS_V4=3Dm
+CONFIG_NLS_DEFAULT=3D"utf8"
+CONFIG_NLS_CODEPAGE_437=3Dm
+CONFIG_NLS_ASCII=3Dm
+CONFIG_NLS_ISO8859_1=3Dm
+# CONFIG_SECURITYFS is not set
+CONFIG_LSM=3D"lockdown,yama,loadpin,safesetid,integrity,chromiumos,selinux,=
+bpf"
+CONFIG_INIT_STACK_NONE=3Dy
+CONFIG_CRYPTO_CRYPTD=3Dy
+CONFIG_CRYPTO_DES=3Dy
+CONFIG_CRYPTO_ARC4=3Dy
+CONFIG_CRYPTO_ESSIV=3Dy
+CONFIG_CRYPTO_XXHASH=3Dm
+CONFIG_CRYPTO_USER_API_HASH=3Dm
+CONFIG_CRYPTO_USER_API_SKCIPHER=3Dm
+CONFIG_CRYPTO_GHASH_ARM64_CE=3Dy
+CONFIG_CRYPTO_SHA1_ARM64_CE=3Dm
+CONFIG_CRYPTO_SHA2_ARM64_CE=3Dy
+CONFIG_CRYPTO_AES_ARM64=3Dy
+CONFIG_CRYPTO_AES_ARM64_CE_BLK=3Dy
+CONFIG_CRYPTO_AES_ARM64_NEON_BLK=3Dy
+CONFIG_CRYPTO_AES_ARM64_CE_CCM=3Dy
+CONFIG_CRC7=3Dm
+CONFIG_LIBCRC32C=3Dy
+# CONFIG_XZ_DEC_X86 is not set
+# CONFIG_XZ_DEC_POWERPC is not set
+# CONFIG_XZ_DEC_IA64 is not set
+# CONFIG_XZ_DEC_ARM is not set
+# CONFIG_XZ_DEC_ARMTHUMB is not set
+# CONFIG_XZ_DEC_SPARC is not set
+CONFIG_DMA_RESTRICTED_POOL=3Dy
+CONFIG_PRINTK_TIME=3Dy
+CONFIG_STACKTRACE_BUILD_ID=3Dy
+CONFIG_DEBUG_INFO_DWARF4=3Dy
+CONFIG_MAGIC_SYSRQ=3Dy
+CONFIG_KASAN=3Dy
+CONFIG_KFENCE=3Dy
+CONFIG_KFENCE_SAMPLE_INTERVAL=3D500
+CONFIG_PANIC_ON_OOPS=3Dy
+CONFIG_PANIC_TIMEOUT=3D-1
+CONFIG_SOFTLOCKUP_DETECTOR=3Dy
+CONFIG_BOOTPARAM_SOFTLOCKUP_PANIC=3Dy
+CONFIG_BOOTPARAM_HUNG_TASK_PANIC=3Dy
+CONFIG_WQ_WATCHDOG=3Dy
+CONFIG_SCHEDSTATS=3Dy
+CONFIG_PROVE_LOCKING=3Dy
+CONFIG_DEBUG_ATOMIC_SLEEP=3Dy
+CONFIG_DEBUG_CREDENTIALS=3Dy
+CONFIG_RCU_EXP_CPU_STALL_TIMEOUT=3D20
+# CONFIG_RCU_TRACE is not set
+CONFIG_BOOTTIME_TRACING=3Dy
+CONFIG_FUNCTION_GRAPH_RETVAL=3Dy
+CONFIG_STACK_TRACER=3Dy
+CONFIG_TRACER_SNAPSHOT=3Dy
+CONFIG_BLK_DEV_IO_TRACE=3Dy
+CONFIG_LKDTM=3Dy
+CONFIG_TEST_LKM=3Dm
+CONFIG_TEST_FIRMWARE=3Dm
+CONFIG_TEST_UDELAY=3Dm
