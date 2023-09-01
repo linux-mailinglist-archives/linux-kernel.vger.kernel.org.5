@@ -2,142 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C207903E4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 01:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76907903D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 00:55:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230353AbjIAXAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 19:00:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S1351115AbjIAWzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 18:55:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239650AbjIAXAE (ORCPT
+        with ESMTP id S244369AbjIAWzE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 19:00:04 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B70D1722;
-        Fri,  1 Sep 2023 14:04:58 -0700 (PDT)
+        Fri, 1 Sep 2023 18:55:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 124B81730;
+        Fri,  1 Sep 2023 14:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693602304; x=1725138304;
+  t=1693602368; x=1725138368;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=1WIVQ4Z7LQCKejOg7pncS5p83NHp79nepmutiHbIxUc=;
-  b=ciF8QbS6qimjMkOpNaPiPDhTz+R6O2G2PXgWpMuVI5HIB4cVh1+zY+pG
-   hnZKpFmgMCbPWM8RbMZ51tqnFOGtGtPMtjOWGwPeEeWf0GCloA/Dvp1Xi
-   V48SGZSCsMBGNWhO3F9r83Q8tP37FgVDWjULgBtDaAaCdvLJcRUzNJoRB
-   Bh6xq6ERwEdjtPDk6FNiMRYbVOTLXvoQtCHTeEW5GP0PhiyMgl5xWmb1c
-   y3YNAVefF1/hz+H7IIOOwaJwStXLsp0qBIXkxAFsMXsfJBuFF6Xzjm82/
-   /ZXVaVMiOBYL4n+cADmMdaYm953T7cx7qJ29uNODMXY7Ewt76/GOEewTV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="366538558"
+  bh=XHxocslFLQU8xD6gE26XwrfQlSg9WQxfvtoRwUmoXd4=;
+  b=fs73fJm9bRJyKBZKwbD5mEgyXK9s/AowGNS+H0gXHA0EQQMa1nzj0JyO
+   4ivvodVmSEvCTmNx1xrrPG92m1n7/EkRzmofX9AcXraGnN9/xc4Xh6ZG3
+   r17c6FwtwVCMhafLGgi3Sd3anIHvouYoJWsbVtWB5atZgqa0tZ4kh6j80
+   EFKQ+sRpiruArmeWkbRk9jIoYa/6oLBssZoPneaIcO7Ca9aqEuR30pD4j
+   bKFwnbrDOw1uWI+bsld1+fUELpibsdIlhMv8O6msge/MjCVUs3juuNPv0
+   Bu48qxjBE2vnB0/wR3uxxdkcZAipPR81Pe31J6LaK0FJtf82Ckk21l7eo
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="379031042"
 X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="366538558"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 14:04:57 -0700
+   d="scan'208";a="379031042"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 14:06:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="810205534"
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="1070871974"
 X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="810205534"
-Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 01 Sep 2023 14:04:54 -0700
-Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qcBK0-0001dv-1g;
-        Fri, 01 Sep 2023 21:04:52 +0000
-Date:   Sat, 2 Sep 2023 05:04:11 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Naresh Solanki <naresh.solanki@9elements.com>, broonie@kernel.org,
-        zev@bewilderbeest.net, Liam Girdwood <lgirdwood@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v2] regulator (max5970): Add hwmon support
-Message-ID: <202309020434.x0wzOQpo-lkp@intel.com>
-References: <20230901093449.838414-1-Naresh.Solanki@9elements.com>
+   d="scan'208";a="1070871974"
+Received: from jroorda-mobl4.ger.corp.intel.com (HELO box.shutemov.name) ([10.252.32.118])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 14:05:58 -0700
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 94702104994; Sat,  2 Sep 2023 00:05:55 +0300 (+03)
+Date:   Sat, 2 Sep 2023 00:05:55 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     seanjc@google.com, ackerleytng@google.com,
+        akpm@linux-foundation.org, anup@brainfault.org,
+        aou@eecs.berkeley.edu, chao.p.peng@linux.intel.com,
+        chenhuacai@kernel.org, david@redhat.com, isaku.yamahata@gmail.com,
+        jarkko@kernel.org, jmorris@namei.org,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        kvmarm@lists.linux.dev, liam.merwick@oracle.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org,
+        linux-security-module@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, mail@maciej.szmigiero.name,
+        maz@kernel.org, michael.roth@amd.com, mpe@ellerman.id.au,
+        oliver.upton@linux.dev, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, paul@paul-moore.com, pbonzini@redhat.com,
+        qperret@google.com, serge@hallyn.com, tabba@google.com,
+        vannapurve@google.com, wei.w.wang@intel.com, willy@infradead.org,
+        yu.c.zhang@linux.intel.com
+Subject: Re: [PATCH gmem FIXUP] mm, compaction: make testing
+ mapping_unmovable() safe
+Message-ID: <20230901210555.j5d5a4azmkxzlnn2@box.shutemov.name>
+References: <20230901082025.20548-2-vbabka@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230901093449.838414-1-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230901082025.20548-2-vbabka@suse.cz>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Naresh,
+On Fri, Sep 01, 2023 at 10:20:26AM +0200, Vlastimil Babka wrote:
+> As Kirill pointed out, mapping can be removed under us due to
+> truncation. Test it under folio lock as already done for the async
+> compaction / dirty folio case. To prevent locking every folio with
+> mapping to do the test, do it only for unevictable folios, as we can
+> expect the unmovable mapping folios are also unevictable - it is the
+> case for guest memfd folios.
+> 
+> Also incorporate comment update suggested by Matthew.
+> 
+> Fixes: 3424873596ce ("mm: Add AS_UNMOVABLE to mark mapping as completely unmovable")
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on 35d0d2350d774fecf596cfb2fb050559fe5e1850]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Naresh-Solanki/regulator-max5970-Add-hwmon-support/20230901-173611
-base:   35d0d2350d774fecf596cfb2fb050559fe5e1850
-patch link:    https://lore.kernel.org/r/20230901093449.838414-1-Naresh.Solanki%409elements.com
-patch subject: [PATCH v2] regulator (max5970): Add hwmon support
-config: x86_64-randconfig-004-20230902 (https://download.01.org/0day-ci/archive/20230902/202309020434.x0wzOQpo-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230902/202309020434.x0wzOQpo-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309020434.x0wzOQpo-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/regulator/max5970-regulator.c:124:3: warning: unannotated fall-through between switch labels [-Wimplicit-fallthrough]
-                   default:
-                   ^
-   drivers/regulator/max5970-regulator.c:124:3: note: insert 'break;' to avoid fall-through
-                   default:
-                   ^
-                   break; 
-   1 warning generated.
-
-
-vim +124 drivers/regulator/max5970-regulator.c
-
-    99	
-   100	static umode_t max5970_is_visible(const void *data,
-   101					  enum hwmon_sensor_types type,
-   102					  u32 attr, int channel)
-   103	{
-   104		struct max5970_data *ddata = (struct max5970_data *)data;
-   105	
-   106		if (channel >= ddata->num_switches)
-   107			return 0;
-   108	
-   109		switch (type) {
-   110		case hwmon_in:
-   111			switch (attr) {
-   112			case hwmon_in_input:
-   113				return 0444;
-   114			default:
-   115				break;
-   116			}
-   117			break;
-   118		case hwmon_curr:
-   119			switch (attr) {
-   120			case hwmon_curr_input:
-   121				/* Current measurement requires knowledge of the shunt resistor value. */
-   122				if (ddata->shunt_micro_ohms[channel])
-   123					return 0444;
- > 124			default:
-   125				break;
-   126			}
-   127			break;
-   128		default:
-   129			break;
-   130		}
-   131		return 0;
-   132	}
-   133	
+Superficially looks good to me. But I don't really understand this
+code path to Ack.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+  Kiryl Shutsemau / Kirill A. Shutemov
