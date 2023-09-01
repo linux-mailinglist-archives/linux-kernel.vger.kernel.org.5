@@ -2,180 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E6D87902B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A9907902BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350664AbjIAUFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 16:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
+        id S1350685AbjIAUKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 16:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233308AbjIAUFq (ORCPT
+        with ESMTP id S233308AbjIAUJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 16:05:46 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BB810FB;
-        Fri,  1 Sep 2023 13:05:43 -0700 (PDT)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 381JasMx010636;
-        Fri, 1 Sep 2023 20:05:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=XkyM1HQkpUVlSXk7Gq95YDhU1bCyir2wQkYtrEf1+JM=;
- b=S1HnSm8milz3DfyV8tFwzFuE2EBdDxpALLIcQ/EDnoyvLVbSvY3LDjxujJfe/O5u4Shb
- pDxMlZrjyK0Bypu2zn5qaXwgnjijcz1ie8pBM60UJzlFRoXKyDzNPujgCD1mu+mM0kAF
- JYC9UbhZOcQ5CZW8ZrvcScbDkZtYK6lTS3rVI5QpguwlXGXhFgY75iszfOsmN+z5efdd
- zGGhOqrny6biTzmKCXkdaTi1wHuGRZIgQHeAxxLUAIBAJTmoD3co5lcSXbGiVTobmAKk
- srAKhpQy16Uxfthj6DA+y05SIL1YeCUm8ssGK4o0vf3PUdWp5tLm+D1z+/8bmtZPUMLW UA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sup2ugyh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 20:05:23 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 381K0PnA014872;
-        Fri, 1 Sep 2023 20:05:22 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sup2ugygm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 20:05:22 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 381Igmr5004911;
-        Fri, 1 Sep 2023 20:05:21 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3squqtfvb1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 20:05:21 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 381K5JRQ63766918
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Sep 2023 20:05:20 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDEA32004F;
-        Fri,  1 Sep 2023 20:05:19 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E56852004B;
-        Fri,  1 Sep 2023 20:05:18 +0000 (GMT)
-Received: from osiris (unknown [9.171.55.36])
-        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri,  1 Sep 2023 20:05:18 +0000 (GMT)
-Date:   Fri, 1 Sep 2023 22:05:17 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        David Ahern <dsahern@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Luca Boccassi <bluca@debian.org>, linux-arch@vger.kernel.org,
-        "Dmitry V. Levin" <ldv@strace.io>
-Subject: Re: [PATCH net-next v7 1/4] scm: add SO_PASSPIDFD and SCM_PIDFD
-Message-ID: <20230901200517.8742-A-hca@linux.ibm.com>
-References: <20230608202628.837772-1-aleksandr.mikhalitsyn@canonical.com>
- <20230608202628.837772-2-aleksandr.mikhalitsyn@canonical.com>
+        Fri, 1 Sep 2023 16:09:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2408910FB;
+        Fri,  1 Sep 2023 13:09:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693598996; x=1725134996;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=vOvv4kcnqTdtoCPK+gY/aJlakeUeKn0WaUK1Kp42IrU=;
+  b=cIcUF80qJNCtJSuUun1LyxjbrnHCkqsDifc9Lf5gk2n+GR84Q2AvXRtq
+   CDlt0cY/IwyqOxLpB7of+eBLwpkYIIGwsBnkWIWOTr4w18D1vM+AsT2bZ
+   dgAYiwQsj7xdpXo7wjy5XGCw1A+YQ9ZPgQkadQMwSqZd/xVjYk4qVC7Xu
+   iF6kxcsd8iWCttLqatuCpk+fUrM+MtR5FCQ78Y0Qs+qw0nORWCtJ21BnM
+   9yGUBAY+nvrR7AqqlJHtCEd1N4fDSPlT+zaVd9pRRjtQBY496gw/hryWX
+   NIhwLK//HHcmhubzGJtnJrNbpIa60VGtvCe7Xd47sdmbL5vjR75ru8L9h
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="366528884"
+X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
+   d="scan'208";a="366528884"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 13:09:55 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="913811051"
+X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
+   d="scan'208";a="913811051"
+Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 01 Sep 2023 13:09:52 -0700
+Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qcASk-0001bn-0D;
+        Fri, 01 Sep 2023 20:09:50 +0000
+Date:   Sat, 2 Sep 2023 04:09:40 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
+        daniel@ffwll.ch, javierm@redhat.com, sam@ravnborg.org,
+        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH 4/7] fbdev/core: Move logo functions into separate source
+ file
+Message-ID: <202309020305.jCImaNGf-lkp@intel.com>
+References: <20230829142109.4521-5-tzimmermann@suse.de>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230608202628.837772-2-aleksandr.mikhalitsyn@canonical.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 88DkXOkw5sUQvxaIYsQazRgmpzoByUCt
-X-Proofpoint-ORIG-GUID: oTBpevmAfRXlaY89-fC4VH12UFfCW9w6
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
-MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-01_16,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 malwarescore=0 bulkscore=0 suspectscore=0 phishscore=0
- mlxscore=0 clxscore=1011 adultscore=0 mlxlogscore=999 lowpriorityscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309010183
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230829142109.4521-5-tzimmermann@suse.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jun 08, 2023 at 10:26:25PM +0200, Alexander Mikhalitsyn wrote:
-> Implement SCM_PIDFD, a new type of CMSG type analogical to SCM_CREDENTIALS,
-> but it contains pidfd instead of plain pid, which allows programmers not
-> to care about PID reuse problem.
-> 
-> We mask SO_PASSPIDFD feature if CONFIG_UNIX is not builtin because
-> it depends on a pidfd_prepare() API which is not exported to the kernel
-> modules.
-> 
-> Idea comes from UAPI kernel group:
-> https://uapi-group.org/kernel-features/
-> 
-> Big thanks to Christian Brauner and Lennart Poettering for productive
-> discussions about this.
-> 
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: Leon Romanovsky <leon@kernel.org>
-> Cc: David Ahern <dsahern@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Kees Cook <keescook@chromium.org>
-> Cc: Christian Brauner <brauner@kernel.org>
-> Cc: Kuniyuki Iwashima <kuniyu@amazon.com>
-> Cc: Lennart Poettering <mzxreary@0pointer.de>
-> Cc: Luca Boccassi <bluca@debian.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Cc: linux-arch@vger.kernel.org
-> Tested-by: Luca Boccassi <bluca@debian.org>
-> Reviewed-by: Kuniyuki Iwashima <kuniyu@amazon.com>
-> Reviewed-by: Christian Brauner <brauner@kernel.org>
-> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-> ---
->  arch/alpha/include/uapi/asm/socket.h    |  2 ++
->  arch/mips/include/uapi/asm/socket.h     |  2 ++
->  arch/parisc/include/uapi/asm/socket.h   |  2 ++
->  arch/sparc/include/uapi/asm/socket.h    |  2 ++
->  include/linux/net.h                     |  1 +
->  include/linux/socket.h                  |  1 +
->  include/net/scm.h                       | 39 +++++++++++++++++++++++--
->  include/uapi/asm-generic/socket.h       |  2 ++
->  net/core/sock.c                         | 11 +++++++
->  net/mptcp/sockopt.c                     |  1 +
->  net/unix/af_unix.c                      | 18 ++++++++----
->  tools/include/uapi/asm-generic/socket.h |  2 ++
->  12 files changed, 76 insertions(+), 7 deletions(-)
-...
-> +static __inline__ void scm_pidfd_recv(struct msghdr *msg, struct scm_cookie *scm)
-> +{
-> +	struct file *pidfd_file = NULL;
-> +	int pidfd;
-> +
-> +	/*
-> +	 * put_cmsg() doesn't return an error if CMSG is truncated,
-> +	 * that's why we need to opencode these checks here.
-> +	 */
-> +	if ((msg->msg_controllen <= sizeof(struct cmsghdr)) ||
-> +	    (msg->msg_controllen - sizeof(struct cmsghdr)) < sizeof(int)) {
-> +		msg->msg_flags |= MSG_CTRUNC;
-> +		return;
-> +	}
+Hi Thomas,
 
-This does not work for compat tasks since the size of struct cmsghdr (aka
-struct compat_cmsghdr) is differently. If the check from put_cmsg() is
-open-coded here, then also a different check for compat tasks needs to be
-added.
+kernel test robot noticed the following build warnings:
 
-Discovered this because I was wondering why strace compat tests fail; it
-seems because of this.
+[auto build test WARNING on drm-misc/drm-misc-next]
+[also build test WARNING on linus/master next-20230831]
+[cannot apply to v6.5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-See https://github.com/strace/strace/blob/master/tests/scm_pidfd.c
+url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/fbdev-au1200fb-Do-not-display-boot-up-logo/20230829-222419
+base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
+patch link:    https://lore.kernel.org/r/20230829142109.4521-5-tzimmermann%40suse.de
+patch subject: [PATCH 4/7] fbdev/core: Move logo functions into separate source file
+config: mips-rs90_defconfig (https://download.01.org/0day-ci/archive/20230902/202309020305.jCImaNGf-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230902/202309020305.jCImaNGf-lkp@intel.com/reproduce)
 
-For compat tasks recvmsg() returns with msg_flags=MSG_CTRUNC since the
-above code expects a larger buffer than is necessary.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309020305.jCImaNGf-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/video/fbdev/core/fb_logo.c:433:5: warning: no previous prototype for function 'fb_prepare_logo' [-Wmissing-prototypes]
+     433 | int fb_prepare_logo(struct fb_info *info, int rotate)
+         |     ^
+   drivers/video/fbdev/core/fb_logo.c:433:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     433 | int fb_prepare_logo(struct fb_info *info, int rotate)
+         | ^
+         | static 
+>> drivers/video/fbdev/core/fb_logo.c:506:5: warning: no previous prototype for function 'fb_show_logo' [-Wmissing-prototypes]
+     506 | int fb_show_logo(struct fb_info *info, int rotate)
+         |     ^
+   drivers/video/fbdev/core/fb_logo.c:506:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+     506 | int fb_show_logo(struct fb_info *info, int rotate)
+         | ^
+         | static 
+   2 warnings generated.
+
+
+vim +/fb_prepare_logo +433 drivers/video/fbdev/core/fb_logo.c
+
+   432	
+ > 433	int fb_prepare_logo(struct fb_info *info, int rotate)
+   434	{
+   435		int depth = fb_get_color_depth(&info->var, &info->fix);
+   436		unsigned int yres;
+   437		int height;
+   438	
+   439		memset(&fb_logo, 0, sizeof(struct logo_data));
+   440	
+   441		if (info->flags & FBINFO_MISC_TILEBLITTING ||
+   442		    info->fbops->owner || !fb_logo_count)
+   443			return 0;
+   444	
+   445		if (info->fix.visual == FB_VISUAL_DIRECTCOLOR) {
+   446			depth = info->var.blue.length;
+   447			if (info->var.red.length < depth)
+   448				depth = info->var.red.length;
+   449			if (info->var.green.length < depth)
+   450				depth = info->var.green.length;
+   451		}
+   452	
+   453		if (info->fix.visual == FB_VISUAL_STATIC_PSEUDOCOLOR && depth > 4) {
+   454			/* assume console colormap */
+   455			depth = 4;
+   456		}
+   457	
+   458		/* Return if no suitable logo was found */
+   459		fb_logo.logo = fb_find_logo(depth);
+   460	
+   461		if (!fb_logo.logo)
+   462			return 0;
+   463	
+   464		if (rotate == FB_ROTATE_UR || rotate == FB_ROTATE_UD)
+   465			yres = info->var.yres;
+   466		else
+   467			yres = info->var.xres;
+   468	
+   469		if (fb_logo.logo->height > yres) {
+   470			fb_logo.logo = NULL;
+   471			return 0;
+   472		}
+   473	
+   474		/* What depth we asked for might be different from what we get */
+   475		if (fb_logo.logo->type == LINUX_LOGO_CLUT224)
+   476			fb_logo.depth = 8;
+   477		else if (fb_logo.logo->type == LINUX_LOGO_VGA16)
+   478			fb_logo.depth = 4;
+   479		else
+   480			fb_logo.depth = 1;
+   481	
+   482	
+   483		if (fb_logo.depth > 4 && depth > 4) {
+   484			switch (info->fix.visual) {
+   485			case FB_VISUAL_TRUECOLOR:
+   486				fb_logo.needs_truepalette = 1;
+   487				break;
+   488			case FB_VISUAL_DIRECTCOLOR:
+   489				fb_logo.needs_directpalette = 1;
+   490				fb_logo.needs_cmapreset = 1;
+   491				break;
+   492			case FB_VISUAL_PSEUDOCOLOR:
+   493				fb_logo.needs_cmapreset = 1;
+   494				break;
+   495			}
+   496		}
+   497	
+   498		height = fb_logo.logo->height;
+   499		if (fb_center_logo)
+   500			height += (yres - fb_logo.logo->height) / 2;
+   501	
+   502		return fb_prepare_extra_logos(info, height, yres);
+   503	}
+   504	EXPORT_SYMBOL(fb_prepare_logo);
+   505	
+ > 506	int fb_show_logo(struct fb_info *info, int rotate)
+   507	{
+   508		unsigned int count;
+   509		int y;
+   510	
+   511		if (!fb_logo_count)
+   512			return 0;
+   513	
+   514		count = fb_logo_count < 0 ? num_online_cpus() : fb_logo_count;
+   515		y = fb_show_logo_line(info, rotate, fb_logo.logo, 0, count);
+   516		y = fb_show_extra_logos(info, y, rotate);
+   517	
+   518		return y;
+   519	}
+   520	EXPORT_SYMBOL(fb_show_logo);
+   521	#else
+   522	int fb_prepare_logo(struct fb_info *info, int rotate)
+   523	{
+   524		return 0;
+   525	}
+   526	EXPORT_SYMBOL(fb_prepare_logo);
+   527	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
