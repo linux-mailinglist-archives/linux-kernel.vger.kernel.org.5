@@ -2,193 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43485790156
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:23:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA58E79016F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:27:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350352AbjIARXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 13:23:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40770 "EHLO
+        id S1350385AbjIAR1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 13:27:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346635AbjIARXE (ORCPT
+        with ESMTP id S229753AbjIAR1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 13:23:04 -0400
-Received: from mail-pj1-f80.google.com (mail-pj1-f80.google.com [209.85.216.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E73351B2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:23:00 -0700 (PDT)
-Received: by mail-pj1-f80.google.com with SMTP id 98e67ed59e1d1-26d68b5995dso2580778a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 10:23:00 -0700 (PDT)
+        Fri, 1 Sep 2023 13:27:32 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 091DBCDD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:27:29 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bf8e5ab39so284188866b.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 10:27:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693589247; x=1694194047; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ss+qLANCDr/E1E/sALCGcAu2OPaPDRXb4/ydOTBXzBQ=;
+        b=be1P/Setc7BYeSbX+uxLFsvKKJNY0V/zheELmkmFNL24uxotZMEMlPBlixUir1YTvg
+         CMhAtsaqX17lKeob3uIEIdnvaWCvte58c1PBWS0mF5bdMn1iokwX2fvaLq3Mx3RgAX1b
+         clhRIF9wRtslIctRiUlnuVROCU2rLfal2VU2MwQHHyIZaoVWKgQlrXvkVtOjy7EUXU18
+         jIg6/j4Hgqy7rb2xUbAqr4wxGtGie/pTlBBPLGVp77v9vHqpD1Wx0KLoLaB6nd5HXK2Q
+         1h2lTbU71ScMrCgHlFZXH7Dw9dnVu1KhHe78ZryopMSMWy6nsCwjxVH/nZmpZ3NQof9r
+         vmvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693588975; x=1694193775;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L1GA6UIkyb5UVHLOkCx2m8vhe4FTUtbJOdVN7nKc4qA=;
-        b=Ewp1VoDjvgXgWOneCylt0poyiprdfCjZ0UJdGfH863KGWKcti9HJUHh267hrQNYrKM
-         6RfxNnC8bUBEBD26PxP8ybUVuvRUx0hfS0exNSPiWPnXYR+VYn57xmS9BGQ+LTvMKd/u
-         aTAQcbHltDXdlJEXAJCRntOO7Bjs38mNP1iyCHfGZhz7CzwdEV3qWsq+VSdHfIRUvwk4
-         vUbazykeL1StpV+tjxjwziY2qVM6wpmpbUOPhOOYnQ9xBRN96EoBaBiREQA72jep/yxA
-         Vwjnv6+neco8Pm7B3uoVemwTHDcwNQILwfRuNrN69Pyw+zaJo5vgOAqkSFtfDX3o8/Aj
-         KeRQ==
-X-Gm-Message-State: AOJu0YwE5Cq90k+adcntUZL57HkSoMRRX1sfB3FN29DuWY/gsAj+q2KT
-        nbPEbX0JM6R6I/iFVUaiIn9DpEBQ+Te+6SfDJThLTEHFQuXz
-X-Google-Smtp-Source: AGHT+IFB0VKr/Pju9qY8XI6DVSbiKcPGK1ArxeP9yOUdvGF0IiEzaPvZsHYd9XcY1UD0Vfd0vpwOqWIgYgyQ3U3EcD3K1SUzepfN
+        d=1e100.net; s=20221208; t=1693589247; x=1694194047;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ss+qLANCDr/E1E/sALCGcAu2OPaPDRXb4/ydOTBXzBQ=;
+        b=WAPd20MHwyI+e+QecPSJElPwN7Ost8I+pNNcWp66Z92Ih81k52f4QQaOFLnjIqXYBM
+         hpgz6oVEnXNO2T996f54CDInCUU9EdVa1OoyL3FAnNQGzMAzrJF0eQuuwW3Sa8iqJfUI
+         KFARth3hll3yWESsUzMaV82rIDnnEo12jr8HvHZi6YZd0Kd1/LrvyZjap3e+a3TcpZJ4
+         z3eHFy2HFRG0mm9a5HArphuP1l9BX0wkh9XStNpP80uLpG80QmBs6twocW2aDirkJSFU
+         k5QRab2QRMcnafn+kUNVOhj0r3BkJa1jxhmRldm2NmJ6eceT4A0XFRRndYU6qiTBs3Hy
+         1nuw==
+X-Gm-Message-State: AOJu0YxUy2bWmCvpLEom9ssXmsY9pCq4EH4jUxtetLmuPhOAsjwp5p0H
+        RqaXa6RVuYVYyc4ocq8A56K+UQ==
+X-Google-Smtp-Source: AGHT+IFcGVffPeSk/gYy/neXvresZTi7Jf5x67zGvWyJZLah1F7/YCdkWQjFSzedTTHx9Sne0C2e9g==
+X-Received: by 2002:a17:906:8a70:b0:9a1:c00e:60cd with SMTP id hy16-20020a1709068a7000b009a1c00e60cdmr2312887ejc.15.1693589247510;
+        Fri, 01 Sep 2023 10:27:27 -0700 (PDT)
+Received: from linaro.org ([84.232.191.193])
+        by smtp.gmail.com with ESMTPSA id p20-20020a170906229400b0099bd1a78ef5sm2208075eja.74.2023.09.01.10.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 10:27:26 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 20:27:25 +0300
+From:   Abel Vesa <abel.vesa@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org
+Subject: Re: [PATCH 6/7] arm64: dts: qcom: sm8550: Add missing DWC3 quirks
+Message-ID: <ZPIe/W7Bbm9Lv2Zp@linaro.org>
+References: <20230830-topic-8550_dmac2-v1-0-49bb25239fb1@linaro.org>
+ <20230830-topic-8550_dmac2-v1-6-49bb25239fb1@linaro.org>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:8c91:b0:268:3469:d86e with SMTP id
- b17-20020a17090a8c9100b002683469d86emr757087pjo.1.1693588975412; Fri, 01 Sep
- 2023 10:22:55 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 10:22:55 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000466a6106044f6986@google.com>
-Subject: [syzbot] [io-uring?] general protection fault in io_uring_show_fdinfo
-From:   syzbot <syzbot+216e2ea6e0bf4a0acdd7@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830-topic-8550_dmac2-v1-6-49bb25239fb1@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 23-08-30 14:48:45, Konrad Dybcio wrote:
+> As expected, Qualcomm DWC3 implementation come with a sizable number
+> of quirks. Make sure to account for all of them.
+> 
+> Fixes: 7f7e5c1b037f ("arm64: dts: qcom: sm8550: Add USB PHYs and controller nodes")
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
 
-syzbot found the following issue on:
+That is a lot of quirks I missed :D.
 
-HEAD commit:    99d99825fc07 Merge tag 'nfs-for-6.6-1' of git://git.linux-..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12e9fc13a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cce54b04d9a3d05b
-dashboard link: https://syzkaller.appspot.com/bug?extid=216e2ea6e0bf4a0acdd7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1749fa10680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10211c10680000
+Reviewed-by: Abel Vesa <abel.vesa@linaro.org>
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/dc52c367d995/disk-99d99825.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4387aed6fe34/vmlinux-99d99825.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/653ab6d1ead8/bzImage-99d99825.xz
-
-The issue was bisected to:
-
-commit 2af89abda7d9c2aeb573677e2c498ddb09f8058a
-Author: Pavel Begunkov <asml.silence@gmail.com>
-Date:   Thu Aug 24 22:53:32 2023 +0000
-
-    io_uring: add option to remove SQ indirection
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1017518fa80000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=1217518fa80000
-console output: https://syzkaller.appspot.com/x/log.txt?x=1417518fa80000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+216e2ea6e0bf4a0acdd7@syzkaller.appspotmail.com
-Fixes: 2af89abda7d9 ("io_uring: add option to remove SQ indirection")
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 5026 Comm: syz-executor249 Not tainted 6.5.0-syzkaller-09276-g99d99825fc07 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:io_uring_show_fdinfo+0x391/0x1790 io_uring/fdinfo.c:96
-Code: 00 00 00 42 80 3c 28 00 74 0f 48 8b 7c 24 30 e8 d5 9d 22 f7 48 8b 4c 24 30 44 21 f3 48 c1 e3 02 48 03 19 48 89 d8 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 64 02 00 00 8b 1b 89 df 44 89 f6 e8 c7 c9
-RSP: 0018:ffffc900038ffc20 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880299e60d0
-RDX: ffff8880262f9dc0 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc900038ffd98 R08: ffffffff8ac4995f R09: 1ffff11004f01013
-R10: dffffc0000000000 R11: ffffed1004f01014 R12: ffff888021153de0
-R13: dffffc0000000000 R14: 0000000000003fff R15: 0000000000000001
-FS:  000055555700b480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6f2394f653 CR3: 0000000029588000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- seq_show+0x57d/0x6a0 fs/proc/fd.c:70
- traverse+0x1d5/0x530 fs/seq_file.c:111
- seq_lseek+0x129/0x240 fs/seq_file.c:323
- vfs_llseek fs/read_write.c:289 [inline]
- ksys_lseek fs/read_write.c:302 [inline]
- __do_sys_lseek fs/read_write.c:313 [inline]
- __se_sys_lseek fs/read_write.c:311 [inline]
- __x64_sys_lseek+0x14f/0x1d0 fs/read_write.c:311
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f6f238f2fe9
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc7fc29dc8 EFLAGS: 00000246 ORIG_RAX: 0000000000000008
-RAX: ffffffffffffffda RBX: 00007ffc7fc29de0 RCX: 00007f6f238f2fe9
-RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007ffc7fc2a048 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:io_uring_show_fdinfo+0x391/0x1790 io_uring/fdinfo.c:96
-Code: 00 00 00 42 80 3c 28 00 74 0f 48 8b 7c 24 30 e8 d5 9d 22 f7 48 8b 4c 24 30 44 21 f3 48 c1 e3 02 48 03 19 48 89 d8 48 c1 e8 03 <42> 8a 04 28 84 c0 0f 85 64 02 00 00 8b 1b 89 df 44 89 f6 e8 c7 c9
-RSP: 0018:ffffc900038ffc20 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880299e60d0
-RDX: ffff8880262f9dc0 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc900038ffd98 R08: ffffffff8ac4995f R09: 1ffff11004f01013
-R10: dffffc0000000000 R11: ffffed1004f01014 R12: ffff888021153de0
-R13: dffffc0000000000 R14: 0000000000003fff R15: 0000000000000001
-FS:  000055555700b480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f6f2394f653 CR3: 0000000029588000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	00 42 80             	add    %al,-0x80(%rdx)
-   5:	3c 28                	cmp    $0x28,%al
-   7:	00 74 0f 48          	add    %dh,0x48(%rdi,%rcx,1)
-   b:	8b 7c 24 30          	mov    0x30(%rsp),%edi
-   f:	e8 d5 9d 22 f7       	call   0xf7229de9
-  14:	48 8b 4c 24 30       	mov    0x30(%rsp),%rcx
-  19:	44 21 f3             	and    %r14d,%ebx
-  1c:	48 c1 e3 02          	shl    $0x2,%rbx
-  20:	48 03 19             	add    (%rcx),%rbx
-  23:	48 89 d8             	mov    %rbx,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 8a 04 28          	mov    (%rax,%r13,1),%al <-- trapping instruction
-  2e:	84 c0                	test   %al,%al
-  30:	0f 85 64 02 00 00    	jne    0x29a
-  36:	8b 1b                	mov    (%rbx),%ebx
-  38:	89 df                	mov    %ebx,%edi
-  3a:	44 89 f6             	mov    %r14d,%esi
-  3d:	e8                   	.byte 0xe8
-  3e:	c7                   	(bad)
-  3f:	c9                   	leave
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+>  arch/arm64/boot/dts/qcom/sm8550.dtsi | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/qcom/sm8550.dtsi b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> index 944b4b8c95f5..8ee61c9383ec 100644
+> --- a/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sm8550.dtsi
+> @@ -2930,12 +2930,20 @@ usb_1_dwc3: usb@a600000 {
+>  				reg = <0x0 0x0a600000 0x0 0xcd00>;
+>  				interrupts = <GIC_SPI 133 IRQ_TYPE_LEVEL_HIGH>;
+>  				iommus = <&apps_smmu 0x40 0x0>;
+> -				snps,dis_u2_susphy_quirk;
+> -				snps,dis_enblslpm_quirk;
+> -				snps,usb3_lpm_capable;
+>  				phys = <&usb_1_hsphy>,
+>  				       <&usb_dp_qmpphy QMP_USB43DP_USB3_PHY>;
+>  				phy-names = "usb2-phy", "usb3-phy";
+> +				snps,hird-threshold = /bits/ 8 <0x0>;
+> +				snps,usb2-gadget-lpm-disable;
+> +				snps,dis_u2_susphy_quirk;
+> +				snps,dis_enblslpm_quirk;
+> +				snps,dis-u1-entry-quirk;
+> +				snps,dis-u2-entry-quirk;
+> +				snps,is-utmi-l1-suspend;
+> +				snps,usb3_lpm_capable;
+> +				snps,usb2-lpm-disable;
+> +				snps,has-lpm-erratum;
+> +				tx-fifo-resize;
+>  
+>  				ports {
+>  					#address-cells = <1>;
+> 
+> -- 
+> 2.42.0
+> 
