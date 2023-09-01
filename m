@@ -2,126 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 316A278FAC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A7FE78FABF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348820AbjIAJ14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53308 "EHLO
+        id S1348802AbjIAJ1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234850AbjIAJ1y (ORCPT
+        with ESMTP id S1348794AbjIAJ13 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:27:54 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D845D1730;
-        Fri,  1 Sep 2023 02:27:37 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3818w5JD015622;
-        Fri, 1 Sep 2023 09:27:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=z9h5OietALUlWpPG+Jm+Q/uVhH0CTwsoV5KDaBuoAuo=;
- b=AneeKo+Y+Ybp/YYTpX2YzgiPSWsHyz//OVX7VdlRZuxF0GH2YLwjgogOTJhFMtbBvuSl
- OFeJh5XydRXI+TpJ1ZmJZh7X2kiPYJ+NQcX0bqvbsiuCoyyLJlBd+RgjEXQwvSuH+I2E
- AbT/YcQZUr1J0gNCsfx3gRZsPv+ljnJ1b/T+vPVnXLXs0oqS1FPXwEvTBgObZHhziBYt
- 4gwUmPDpFoBbF9FtAiqXNWqhnD+vhqROhe0xOZSdmMMiG9OTA4E2HnMhBDEZbIMGAkBK
- LHTKX2brapoQYTwF8mgjgrM190suz8ujgIZoYKATeIXxzI58AqI8fqjk04mpEtkwFunB 1A== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suc22g5fp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 09:27:30 +0000
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3819RThM013037
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 1 Sep 2023 09:27:29 GMT
-Received: from nsekar-linux.qualcomm.com (10.80.80.8) by
- nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.36; Fri, 1 Sep 2023 02:27:23 -0700
-From:   Nitheesh Sekar <quic_nsekar@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
-        <kishon@kernel.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <gregkh@linuxfoundation.org>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>, <quic_wcheng@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-usb@vger.kernel.org>
-CC:     Nitheesh Sekar <quic_nsekar@quicinc.com>,
-        Amandeep Singh <quic_amansing@quicinc.com>
-Subject: [PATCH V3 4/4] arm64: dts: qcom: ipq5018: Enable USB
-Date:   Fri, 1 Sep 2023 14:56:45 +0530
-Message-ID: <20230901092645.20522-5-quic_nsekar@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230901092645.20522-1-quic_nsekar@quicinc.com>
-References: <20230901092645.20522-1-quic_nsekar@quicinc.com>
+        Fri, 1 Sep 2023 05:27:29 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B2DC0;
+        Fri,  1 Sep 2023 02:27:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=XIusW0m1E8VscwLTOTsY+xzTnz+U+iqdOkrObW70Mt0=; b=CwUh4HPSI5V8fX2wl9V7QYdslm
+        aUYA3b/XXt5Uk8ttQemTxsdN3q/ivypM4BhHwJcPBM/Pi0yP9gg7yKJRYl0/x/cJhEOyvqnomow7d
+        DoUXcs0sj91/q53LN/yUgNaI7fYqQMTPXKLAAjpqufyOW1Mw3FH7m3kGmguRS6ipHXKarO1xFX7I4
+        g66Wj5j14+BRMxZ1NUV+3uLq4tw/Gj/aSUESVK1d6D4PVNo7RDWmZvjxFeWobppFHLdeL+pKN5EuG
+        YwG1MzSyAFMlnzC477l94HTnDlZDQt3ym8IGzpyYnFJ78hm1FUNhK4+xSJRPV8Eys6nkhQk0XkJ4N
+        lduakg4g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57120)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qc0Qt-0003rZ-1p;
+        Fri, 01 Sep 2023 10:27:15 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qc0Qs-0007iJ-IT; Fri, 01 Sep 2023 10:27:14 +0100
+Date:   Fri, 1 Sep 2023 10:27:14 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Radu Pirea <radu-nicolae.pirea@nxp.com>
+Cc:     "atenart@kernel.org" <atenart@kernel.org>,
+        "Radu-nicolae Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>,
+        "sd@queasysnail.net" <sd@queasysnail.net>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sebastian Tobuschat <sebastian.tobuschat@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
+ mdo_insert_tx_tag
+Message-ID: <ZPGuchwza3xr5SaF@shell.armlinux.org.uk>
+References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
+ <ZOx0L722xg5-J_he@hog>
+ <5d42d6c9-2f0c-8913-49ec-50a25860c49f@oss.nxp.com>
+ <ZO8pbtnlOVauabjC@hog>
+ <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 16vT5A4Uu2IxR5fXKMIUKp3rXCOwOfWJ
-X-Proofpoint-ORIG-GUID: 16vT5A4Uu2IxR5fXKMIUKp3rXCOwOfWJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-01_07,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
- clxscore=1015 mlxscore=0 impostorscore=0 suspectscore=0 malwarescore=0
- mlxlogscore=553 phishscore=0 lowpriorityscore=0 priorityscore=1501
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309010088
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable USB2 in host mode.
+On Fri, Sep 01, 2023 at 09:09:06AM +0000, Radu Pirea wrote:
+> On Wed, 2023-08-30 at 13:35 +0200, Sabrina Dubroca wrote:
+> ...
+> 
+> > And it's not restored when the link goes back up? That's inconvenient
+> > :/
+> > Do we end up with inconsistent state? ie driver and core believe
+> > everything is still offloaded, but HW lost all state? do we leak
+> > some resources allocated by the driver?
+> 
+> Yes. We end up with inconsistent state. The HW will lost all state when
+> the phy is reseted. No resource is leaked, everything is there, but the
+> configuration needs to be reapplied.
 
-Co-developed-by: Amandeep Singh <quic_amansing@quicinc.com>
-Signed-off-by: Amandeep Singh <quic_amansing@quicinc.com>
-Signed-off-by: Nitheesh Sekar <quic_nsekar@quicinc.com>
----
-V3:
-	Renamed usb2_0_dwc  to usb_dwc and sorted
-	the USB related nodes.
-V2:
-	Sort and reorder USB related nodes.
----
- arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+If it's happening because the PHY is being re-attached from the network
+driver, then wouldn't it be a good idea to synchronise the hardware
+state with the software configuration in the ->config_init function?
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-index e636a1cb9b77..8460b538eb6a 100644
---- a/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-+++ b/arch/arm64/boot/dts/qcom/ipq5018-rdp432-c2.dts
-@@ -67,6 +67,18 @@
- 	};
- };
- 
-+&usb {
-+	status = "okay";
-+};
-+
-+&usb_dwc {
-+	dr_mode = "host";
-+};
-+
-+&usbphy0 {
-+	status = "okay";
-+};
-+
- &xo_board_clk {
- 	clock-frequency = <24000000>;
- };
+Presumably the hardware state is also lost when resuming from suspend
+as well? If so, that'll also fix that issue as well.
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
