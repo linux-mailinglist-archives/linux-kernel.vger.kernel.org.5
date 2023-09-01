@@ -2,96 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C5D0790146
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9CA790149
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343898AbjIARSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 13:18:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
+        id S1347218AbjIARTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 13:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232606AbjIARSY (ORCPT
+        with ESMTP id S233399AbjIARTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 13:18:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90F7F10EF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:18:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693588701; x=1725124701;
-  h=message-id:date:mime-version:subject:to:references:from:
-   in-reply-to:content-transfer-encoding;
-  bh=naeX2Jibq59v8eiSFU2HPolvULX1+/NaGPMxwNE7s3k=;
-  b=UFAlvDeAVLROjClJrJl+O4uTYZ6tZZYOTtMe67nQ23mPFcYlMtG5BgoI
-   17rmqP8bGKeMQswmVsTBMAYrTN1aiJwjtzLSKw2XnKgLJCGcQcU4n0WmQ
-   XchLV3gSGmTbUx3LZO7Wu6EsAzeKLgTHJ6lvbW/SfsLin3o3uqMsTK73q
-   j5HruBHdQ0hEBYYqJmXZn1NRIQbvDERlsK+oxuNrfpwK6dvm2Gw7p+zuo
-   2hBHaLd82Zw4NFLYHLx6JyjK26xZPydl13Hn5MJjGyJc+ZS0rNxJKz6SJ
-   e5a4yqSsRyuGA9wUFmbU305RGfmF67foXz0Gkvqb9gXPZCyu3H40YDgb3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="440237999"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="440237999"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 10:18:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="769259566"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="769259566"
-Received: from dpiercy-mobl.amr.corp.intel.com (HELO [10.209.42.233]) ([10.209.42.233])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 10:18:20 -0700
-Message-ID: <ad1ff365-4160-87b9-4199-ace5ff1250e1@intel.com>
-Date:   Fri, 1 Sep 2023 10:18:20 -0700
+        Fri, 1 Sep 2023 13:19:11 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36FA010E4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:19:08 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-26934bc3059so133669a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 10:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693588747; x=1694193547; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Hea19k3GFuKq8NOYx/3wJndHiFnItzIgt4fP75Ma0OQ=;
+        b=HY6klUdKClMi+bY7lp1RDQW9D9p2VRfJUcyr6vyVLehO9GTL65FKLYPAVq9ZM17WV5
+         9kbz6p59EL15lAG0fpLivJ0SoT26mur2TIABVmh0xkqaC5p6OL+kcQvphcG2829jsp8E
+         /EwOZUPG8QFRnMwkFpqDu2nzFQpoUXbhuwtNUtHqR3pNwv71ixVBS7mrihs9YRI8Fi0h
+         D9pHZXku9iWdax50ZCHsm5Grh2cum5h28P68dx+8upoxgptjf+aNJIKXOCkSiue2DlSh
+         C3wK4clTQcL+5weizGveIvXzPY+0B86p7T+g62s+M+hAIdHQTFX12qTHvqRoOY7fbxmi
+         pyNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693588747; x=1694193547;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hea19k3GFuKq8NOYx/3wJndHiFnItzIgt4fP75Ma0OQ=;
+        b=Ak+4ocwH7rAzQP4nqvIhSjTHBnf41oNmGG4/JOEd6ON/7FpkkLZb/Ok44rJu2LhG5R
+         z1vEr9TIhe06NYwGTa0clEm9AAKVs0/JEx1i9BmpzuxvuqrMZQSQW3y/o/1DrkUsaFtv
+         zIW2tB1kwGhpLk1te0EzmEjvkE3hg0e9kqlGMRV5ZzSCR/zwbGrmeHcqRVMAKwdaPuuH
+         MHidZnBfFicWWbAJMmFa8KbSlZ/CQnrpzYLJmbJqA2O4JV2X11+YxvTXq21kf7g95TLJ
+         tDVdZsKnBssHCA/JMM7g06PTj39Ea0iXCXDykWvjKAmsbhTmVLAzaz50AXM3jHXieWo1
+         8K+A==
+X-Gm-Message-State: AOJu0YxnVaXSQsbnsnIggjRhHI/uBLmnQNqhFKkzwUpl8JouX7ZT6oy3
+        cufxAf5uMrC1TM2AZTshZwm0wbyKURCDVDrhP2o=
+X-Google-Smtp-Source: AGHT+IEyhIK9T670Wos2vQna/7YDyZjDCJIf+NcJ6MjZYWsb+MN7eQPk4O7PSGjoRYTt9FfUGNH/xmzElaBLpz+HBgU=
+X-Received: by 2002:a17:90b:1e4e:b0:26b:494f:ae5d with SMTP id
+ pi14-20020a17090b1e4e00b0026b494fae5dmr4264120pjb.1.1693588747509; Fri, 01
+ Sep 2023 10:19:07 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] x86/platform/uv: Use alternate source for socket to node
- data
-Content-Language: en-US
-To:     Steve Wahl <steve.wahl@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org
-References: <20230807141730.1117278-1-steve.wahl@hpe.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230807141730.1117278-1-steve.wahl@hpe.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230810142942.3169679-1-ryan.roberts@arm.com>
+ <20230810142942.3169679-4-ryan.roberts@arm.com> <87v8dg6lfu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <5c9ba378-2920-4892-bdf0-174e47d528b7@arm.com> <87cyz43s63.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <4e14730b-4e4c-de30-04bb-9f3ec4a93754@redhat.com> <CAHbLzkog9B_NWhvYmb7=n3Fnb0oER-sXhE3=Nyx_8Kc3-dggcQ@mail.gmail.com>
+ <ZPINmXyTgy2wqLqr@casper.infradead.org>
+In-Reply-To: <ZPINmXyTgy2wqLqr@casper.infradead.org>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 1 Sep 2023 10:18:54 -0700
+Message-ID: <CAHbLzkpQ-qzFpc0nntoodRMunTtgRKHQCfV8ubXwQQeVVNo+uw@mail.gmail.com>
+Subject: Re: [PATCH v5 3/5] mm: LARGE_ANON_FOLIO for improved performance
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Ryan Roberts <ryan.roberts@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yin Fengwei <fengwei.yin@intel.com>,
+        Yu Zhao <yuzhao@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Zi Yan <ziy@nvidia.com>, Luis Chamberlain <mcgrof@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/7/23 07:17, Steve Wahl wrote:
-> When nr_cpus is set to a smaller number than actually present, the
-> cpu_to_node() mapping information for unused CPUs is not available to
-> build_socket_tables().  This results in an incomplete table and will
-> later cause use of a -1 value for some array indexing, and eventual
-> kernel page faults.
-> 
-> Switch to using the __apicid_to_node array, which still contains all
-> the information mapping apicids to nodes, even for CPUs disabled with
-> a reduced nr_cpus setting.
+On Fri, Sep 1, 2023 at 9:13=E2=80=AFAM Matthew Wilcox <willy@infradead.org>=
+ wrote:
+>
+> On Thu, Aug 31, 2023 at 10:15:09AM -0700, Yang Shi wrote:
+> > On Thu, Aug 31, 2023 at 12:57=E2=80=AFAM David Hildenbrand <david@redha=
+t.com> wrote:
+> > > Let's talk about that in a bi-weekly MM session. (I proposed it as a
+> > > topic for next week).
+> > >
+> > > As raised in another mail, we can then discuss
+> > > * how we want to call this feature (transparent large pages? there is
+> > >    the concern that "THP" might confuse users. Maybe we can consider
+> > >    "large" the more generic version and "huge" only PMD-size, TBD)
+> >
+> > I tend to agree. "Huge" means PMD-mappable (transparent or HugeTLB),
+> > "Large" means any order but less than PMD-mappable order, "Gigantic"
+> > means PUD mappable. This should incur the least confusion IMHO.
+>
+> "Large" means any order > 0.  The limitation to <=3D PMD_ORDER is simply
+> because I don't want to go through the whole VM and fix all the places
+> that assume that pmd_page() returns a head page.  The benefit to doing so
+> is quite small, and the work to achieve it is quite large.  The amount of
+> work needed should decrease over time as we convert more code to folios,
+> so deferring it is the right decision today.
 
-Before, the lookup went:
+Yeah, I agree. And we are on the same page.
 
-	CPU => APICID => SOCKET
+>
+> But nobody should have the impression that large folios are smaller
+> than PMD size, nor even less than or equal.  Just like they shouldn't
+> think that large folios depend on CONFIG_TRANSPARENT_HUGEPAGE.  They do
+> today, but that's purely an implementation detail that will be removed
+> eventually.
 
-But when the CPU wasn't present, there wasn't a way to start this lookup.
+Yes, THP should be just a special case of large folio from page table
+point of view (for example, PMD-mappable vs non-PMD-mappable).
 
-So, instead of looping over all CPUs, looking up their APICIDs and
-mapping those to sockets, just take CPUs out of the equation entirely.
+>
+> > > I think there *really* has to be a way to disable it for a running
+> > > system, otherwise no distro will dare pulling it in, even after we
+> > > figured out the other stuff.
+> >
+> > TBH I really don't like to tie large folio to THP toggles. THP
+> > (PMD-mappable) is just a special case of LAF. The large folio should
+> > be tried whenever it is possible ideally. But I do agree we may not be
+> > able to achieve the ideal case at the time being, and also understand
+> > the concern about regression in early adoption, so a knob that can
+> > disable large folio may be needed for now. But it should be just a
+> > simple binary knob (on/off), and should not be a part of kernel ABI
+> > (temporary and debugging only) IMHO.
+>
+> Best of luck trying to remove it after you've shipped it ... we've
+> never been able to remove any of the THP toggles, only make them more
+> complicated.
 
-Loop over all APICIDs which are mapped to a valid NUMA node.  Then just
-extract the socket-id from the APICID.
+Fingers crossed... and my point is we should try to avoid making
+things more complicated. It may be hard...
 
-Right?
+>
+> > One more thing we may discuss is whether huge page madvise APIs should
+> > take effect for large folio or not.
+>
+> They already do for file large folios; we listen to MADV_HUGEPAGE and
+> attempt to allocate PMD_ORDER folios for faults.
 
-That seems sane enough.  It's also way less code than the previous approach.
+OK, file folio may be simpler than anonymous. For anonymous folio,
+there may be two potential cases depending on our choice:
+
+Tie large folio to THP knobs:
+MADV_HUGEPAGE - large folio if THP is on/no large folio if THP is off
+MADV_NOHUGEPAGE - no large folio
+
+Not tie large folio to THP knob:
+MADV_HUGEPAGE - always large folio
+MADV_NOHUGEPAGE - shall create large folio?
+
+>
