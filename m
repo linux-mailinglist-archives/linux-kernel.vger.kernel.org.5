@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB197901F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5777F7901F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:21:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244823AbjIASUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 14:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
+        id S1350541AbjIASVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 14:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbjIASUx (ORCPT
+        with ESMTP id S1347827AbjIASVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 14:20:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FB1F2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:20:51 -0700 (PDT)
+        Fri, 1 Sep 2023 14:21:13 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B28E72
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:21:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693592451; x=1725128451;
-  h=date:from:to:cc:subject:message-id;
-  bh=jY69ap5UiVcHdnECRGqbpWJ0KNXMVHbGfR6U+hN0FC0=;
-  b=ZL4IbXv9qeZnVBx2G0umd/mbKZZefilEhkwyCn7aOEYE0xx3Zl4uvPVl
-   qOBFEGZGd/yuaMeP/XPfWZmIU4VvG3GSaULAvTRxuz4KCymxsaZ50zNLX
-   3D1Yk4pWCqB+m9gjuzu6LGQt6SKCuEqZ5RpYyfWWigPbucpRU35QYt2/p
-   Q4nF9qpcaH8HAU97IjWkLqI2aKG0aWm05GoBz+AbLhl5EODys7ZNPkd+Z
-   wFF/AsQMCQ8PzdeYGwxhuc6ZZ7ZcmhD5vag552I36C71wUnu7+z7o+s/d
-   ASby8LgJgBPWNYK/k2+x0UiStjTkrJ4U3tymfDrP6CEQKAMXy1UgcFMyW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="361303656"
+  t=1693592467; x=1725128467;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ielWKvW2WTPc3ZESd7s3KQPjA5J0+kUTOO7KVSHO2yM=;
+  b=TSr7rI4oGWFPkbD78QnkTkor7ulMJ9cO9ZLDTcQu7ZtJD/CvU7FcxJ8+
+   hxdmOVAsfPO9jLb3mg9C9ZCNDMzpBwr50BhkmKB8e92mGwVPs6Uv9Dk+M
+   rdNbmywzgLvZMIh7TzEXQd15IUzEZARLx26xgnZmLX6BxQGmlNesVoU7F
+   y4wrFfPmHQxVu4egmgGmuxb2oxGj8g9RIkop30fRupp4Ewo6eQkz7dz9C
+   N7JLQsdhjksjhcDET+yNvT3kj0kLSFlA/ptLEaDnILRMfIy71A9h1aSxD
+   lJspMTFRxOcGxVYHzy+HQf8CmRQ/g5y1UTJQumOqZbjunraHB3gJvgdzH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="462643171"
 X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="361303656"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 11:20:50 -0700
+   d="scan'208";a="462643171"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 11:21:07 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="986772579"
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="1070826998"
 X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="986772579"
-Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 01 Sep 2023 11:20:49 -0700
-Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qc8lD-0001Xj-2f;
-        Fri, 01 Sep 2023 18:20:47 +0000
-Date:   Sat, 02 Sep 2023 02:19:56 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- 18032b47adf1db7b7f5fb2d1344e65aafe6417df
-Message-ID: <202309020254.gOHfwP2X-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+   d="scan'208";a="1070826998"
+Received: from viggo.jf.intel.com (HELO ray2.sr71.net) ([10.54.77.144])
+  by fmsmga005.fm.intel.com with ESMTP; 01 Sep 2023 11:21:06 -0700
+From:   Dave Hansen <dave.hansen@linux.intel.com>
+To:     torvalds@linux-foundation.org
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [GIT PULL] x86/urgent for 6.6-rc1
+Date:   Fri,  1 Sep 2023 11:20:54 -0700
+Message-Id: <20230901182054.110950-1-dave.hansen@linux.intel.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: 18032b47adf1db7b7f5fb2d1344e65aafe6417df  x86/fpu/xstate: Fix PKRU covert channel
+Hi Linus,
 
-elapsed time: 1246m
+Please pull some x86/urgent changes for 6.6-rc1.
 
-configs tested: 61
-configs skipped: 132
+The most important fix here adds a missing CPU model to the recent
+Gather Data Sampling (GDS) mitigation list to ensure that mitigations
+are available on that CPU.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+There are also a pair of warning fixes, and closure of a covert
+channel that pops up when protection keys are disabled.
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230901   clang
-i386         buildonly-randconfig-002-20230901   clang
-i386         buildonly-randconfig-003-20230901   clang
-i386         buildonly-randconfig-004-20230901   clang
-i386         buildonly-randconfig-005-20230901   clang
-i386         buildonly-randconfig-006-20230901   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230901   clang
-i386                  randconfig-002-20230901   clang
-i386                  randconfig-003-20230901   clang
-i386                  randconfig-004-20230901   clang
-i386                  randconfig-005-20230901   clang
-i386                  randconfig-006-20230901   clang
-i386                  randconfig-011-20230901   gcc  
-i386                  randconfig-012-20230901   gcc  
-i386                  randconfig-013-20230901   gcc  
-i386                  randconfig-014-20230901   gcc  
-i386                  randconfig-015-20230901   gcc  
-i386                  randconfig-016-20230901   gcc  
-i386                 randconfig-r011-20230901   gcc  
-loongarch             randconfig-001-20230902   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230901   clang
-x86_64       buildonly-randconfig-002-20230901   clang
-x86_64       buildonly-randconfig-003-20230901   clang
-x86_64       buildonly-randconfig-004-20230901   clang
-x86_64       buildonly-randconfig-005-20230901   clang
-x86_64       buildonly-randconfig-006-20230901   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230901   gcc  
-x86_64                randconfig-002-20230901   gcc  
-x86_64                randconfig-003-20230901   gcc  
-x86_64                randconfig-004-20230901   gcc  
-x86_64                randconfig-005-20230901   gcc  
-x86_64                randconfig-006-20230901   gcc  
-x86_64                randconfig-011-20230901   clang
-x86_64                randconfig-012-20230901   clang
-x86_64                randconfig-013-20230901   clang
-x86_64                randconfig-014-20230901   clang
-x86_64                randconfig-015-20230901   clang
-x86_64                randconfig-016-20230901   clang
-x86_64                randconfig-071-20230901   clang
-x86_64                randconfig-072-20230901   clang
-x86_64                randconfig-073-20230901   clang
-x86_64                randconfig-074-20230901   clang
-x86_64                randconfig-075-20230901   clang
-x86_64                randconfig-076-20230901   clang
-x86_64               randconfig-r013-20230901   gcc  
-x86_64               randconfig-r015-20230901   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
+--
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+The following changes since commit 2c66ca3949dc701da7f4c9407f2140ae425683a5:
+
+  x86/fpu: Set X86_FEATURE_OSXSAVE feature after enabling OSXSAVE in CR4 (2023-08-24 11:01:45 +0200)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86-urgent-2023-09-01
+
+for you to fetch changes up to 18032b47adf1db7b7f5fb2d1344e65aafe6417df:
+
+  x86/fpu/xstate: Fix PKRU covert channel (2023-08-31 23:29:49 +0200)
+
+----------------------------------------------------------------
+ * Mark all Skylake CPUs as vulnerable to GDS
+ * Fix PKRU covert channel
+ * Fix -Wmissing-variable-declarations warning for ia32_xyz_class
+ * Fix kernel-doc annotation warning
+
+----------------------------------------------------------------
+Dave Hansen (1):
+      x86/speculation: Mark all Skylake CPUs as vulnerable to GDS
+
+Jim Mattson (1):
+      x86/fpu/xstate: Fix PKRU covert channel
+
+Justin Stitt (1):
+      x86/audit: Fix -Wmissing-variable-declarations warning for ia32_xyz_class
+
+Vincenzo Palazzo (1):
+      x86/irq/i8259: Fix kernel-doc annotation warning
+
+ arch/x86/include/asm/audit.h | 7 +++++++
+ arch/x86/kernel/audit_64.c   | 5 -----
+ arch/x86/kernel/cpu/common.c | 8 ++++----
+ arch/x86/kernel/fpu/xstate.c | 2 +-
+ arch/x86/kernel/i8259.c      | 4 +---
+ 5 files changed, 13 insertions(+), 13 deletions(-)
