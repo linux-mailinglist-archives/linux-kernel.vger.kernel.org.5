@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F1778FFE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:23:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E739778FFE5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:23:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350265AbjIAPXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 11:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
+        id S1350247AbjIAPXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 11:23:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344743AbjIAPXx (ORCPT
+        with ESMTP id S1350234AbjIAPXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 11:23:53 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D1321989;
-        Fri,  1 Sep 2023 08:23:31 -0700 (PDT)
+        Fri, 1 Sep 2023 11:23:34 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC2E19B4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 08:23:11 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D567AB825B6;
-        Fri,  1 Sep 2023 15:23:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7DF19C433C8;
-        Fri,  1 Sep 2023 15:23:02 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id DAEC2CE23F6
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 15:23:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2D014C433C8;
+        Fri,  1 Sep 2023 15:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693581782;
-        bh=gGqbDIMBz9FbG0U2QaJi2tGmbVdi+w66WMgNKE0R8Tc=;
+        s=k20201202; t=1693581784;
+        bh=zsK3hxQv9IBEn48Em2SCl8YjvJHL4gPCyfQQqAB8FTg=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Tn6iuLmZYD+zdJJZwTZW2l1yTAw9rnjZ9Qo60EaTHd+lYybpxgdCEb6JvMhwjGrSl
-         CltSmdlymAcJUnqevyu7OSAueUfPhb4CRWAhK5sF5V0mYS1O8QWfVqgnHPdJPq4swe
-         k0LMjbRACw05fQ+pZMiETdqKEfJJTRhx57o4yF+X4HemvQULvxXYKlISX2NYsREKwA
-         pNiXglybrjsSDswfwynEmoZOm6zftZr4FBa8GDyjdoxVt5VP1qDYCc99O3BezHw3iz
-         dlAQSUgWGQylHsuP8/PI6qb8+ApRCmqOzExdNJQVldZOTO2Cklbu6tfOuJBo4stgT5
-         ospZaE1Ei0RrQ==
+        b=TD3TUbiKTnZ1N793pG6VvsEkPQQ4kw34bNpMVqr6bQ0JyPCZdtRDArJYd2LzzsrHS
+         bXSqbA4P4suxtMItZw4kZjESSnBkAmqjcDPBzdMDuMlgIi6+M12SzJHxCMtNvMLVDX
+         GwmVujd9ylkxtTaMhNsFll4kFx0rpKoYq+YKUqV8n2Zlopuqol1Kuopn0TRVzo4ajv
+         4E4LyTH3VrWOU+PymgppYukU/NKWrfH94Y40cWkX2B88SNFEBUr5iElVqfqASogpqQ
+         /zLFhfS4gnTHxQlxFMMlkKLeKh6KYANscg+yO7WZPfIcBsugThCE/C0KA36I9TWobt
+         x0eGgQ5InjHbA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6A759C64457;
-        Fri,  1 Sep 2023 15:23:02 +0000 (UTC)
-Subject: Re: [GIT PULL] csky 2nd changes for v6.6
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1B2D1C64457;
+        Fri,  1 Sep 2023 15:23:04 +0000 (UTC)
+Subject: Re: [GIT PULL] RISC-V Patches for the 6.6 Merge Window, Part 1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20230901014548.2885411-1-guoren@kernel.org>
-References: <20230901014548.2885411-1-guoren@kernel.org>
-X-PR-Tracked-List-Id: <linux-arch.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20230901014548.2885411-1-guoren@kernel.org>
-X-PR-Tracked-Remote: https://github.com/c-sky/csky-linux.git tags/csky-for-linus-6.6-2
-X-PR-Tracked-Commit-Id: 5195c35ac4f09bc45bde23b98d74c4f5d62bea65
+In-Reply-To: <mhng-d12081f2-1ff7-4f68-b320-f3aa5c458365@palmer-ri-x1c9>
+References: <mhng-d12081f2-1ff7-4f68-b320-f3aa5c458365@palmer-ri-x1c9>
+X-PR-Tracked-List-Id: <linux-riscv.lists.infradead.org>
+X-PR-Tracked-Message-Id: <mhng-d12081f2-1ff7-4f68-b320-f3aa5c458365@palmer-ri-x1c9>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-mw1
+X-PR-Tracked-Commit-Id: 89775a27ff6d0396b44de0d6f44dcbc25221fdda
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a031eba2956863457b2680453ca45515a1605a47
-Message-Id: <169358178242.20073.11700166183232359350.pr-tracker-bot@kernel.org>
-Date:   Fri, 01 Sep 2023 15:23:02 +0000
-To:     guoren@kernel.org
-Cc:     torvalds@linux-foundation.org, guoren@kernel.org,
-        sudipm.mukherjee@gmail.com, linux@roeck-us.net, arnd@arndb.de,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-csky@vger.kernel.org
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-PR-Merge-Commit-Id: e0152e7481c6c63764d6ea8ee41af5cf9dfac5e9
+Message-Id: <169358178410.20073.15929170829792331101.pr-tracker-bot@kernel.org>
+Date:   Fri, 01 Sep 2023 15:23:04 +0000
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 31 Aug 2023 21:45:48 -0400:
+The pull request you sent on Fri, 01 Sep 2023 07:41:21 -0700 (PDT):
 
-> https://github.com/c-sky/csky-linux.git tags/csky-for-linus-6.6-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-mw1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a031eba2956863457b2680453ca45515a1605a47
+https://git.kernel.org/torvalds/c/e0152e7481c6c63764d6ea8ee41af5cf9dfac5e9
 
 Thank you!
 
