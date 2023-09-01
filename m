@@ -2,247 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A794F78F8C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FAE78F8C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344660AbjIAGxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 02:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52710 "EHLO
+        id S1348417AbjIAGyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 02:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235095AbjIAGxd (ORCPT
+        with ESMTP id S1348418AbjIAGx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 02:53:33 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70F37E7E
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 23:53:30 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3816g97n010683;
-        Fri, 1 Sep 2023 06:53:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=EafCQTqY3WezbXUUrFm2KuST83wzeuP3LGWS+o7cBpE=;
- b=dSfAp072bJvDFysJE+iTgp29KwGQ1hS8IPGMnP0sC018TQM8C+jbexwC1TgxURjPWgUk
- bFSWP1r9eBFdDnneTDmXQr+BQ88kkh7Ij5usGX36IYetJnFStrQjMatPT2w91D6Qdv/M
- JOmkB3zdUvplH2GOVopfsuRYRLs/qacOfXnXceBzfBAlAUjexhuvzsWL8MPAzlGaV04z
- lc1cKIb9x5ch1zdy+MfXZBdq5rx9P3iP0a59J6OS1uWpqgFKkaBz5a9m222/wP73z9fB
- 3tYjTGR0BLNahQ9Jra1yJBGsNwn1IimhmTFCxfBwzL6WO5Gy2GYuA54tADI+3J0kFFXQ JA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3suawrr8we-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 06:53:10 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3816gngb014477;
-        Fri, 1 Sep 2023 06:53:10 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3suawrr8vw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 06:53:10 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3814RZKa014349;
-        Fri, 1 Sep 2023 06:53:08 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3sqvqntth0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 06:53:08 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3816r6FF25756308
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 1 Sep 2023 06:53:06 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 907632004E;
-        Fri,  1 Sep 2023 06:53:06 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72EC12004B;
-        Fri,  1 Sep 2023 06:53:03 +0000 (GMT)
-Received: from li-c1fdab4c-355a-11b2-a85c-ef242fe9efb4.ibm.com.com (unknown [9.171.58.3])
-        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Fri,  1 Sep 2023 06:53:03 +0000 (GMT)
-From:   Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-To:     mingo@redhat.com, peterz@infradead.org, vincent.guittot@linaro.org
-Cc:     sshegde@linux.vnet.ibm.com, dietmar.eggemann@arm.com,
-        vschneid@redhat.com, linux-kernel@vger.kernel.org,
-        ionela.voinescu@arm.com, quentin.perret@arm.com,
-        srikar@linux.vnet.ibm.com, mgorman@techsingularity.net,
-        mingo@kernel.org, yu.c.chen@intel.com
-Subject: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware depending on the architecture
-Date:   Fri,  1 Sep 2023 12:22:49 +0530
-Message-Id: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.39.3
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0pAaqv-iqTD8VHGHlNxI5-oyS7C5eZvB
-X-Proofpoint-ORIG-GUID: wvB6MieFTuoUpncEBQgAOZHQejM96xIx
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 1 Sep 2023 02:53:59 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94E2010DD
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 23:53:48 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C0B712186E;
+        Fri,  1 Sep 2023 06:53:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693551226; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RBVjlwChBQYkwFwrWCApBv07KJZnWy1YsOxlgIxl1O4=;
+        b=UW/ZX82pT5k54l+bH2LMhuAMh0pcblvCVuCTfCRYlqh/kGTHsoq7Gdz85sy7XIev4QCKAg
+        43jZLyfj3NVexe8C9Rblw9i9kl4EgYprALDZoVua2kfLY4wn/RbyVp14xg0ogAAqaRfzvc
+        tY1Jjk6pNPlYyTa6wQFaQuDQYs7xFCY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693551226;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RBVjlwChBQYkwFwrWCApBv07KJZnWy1YsOxlgIxl1O4=;
+        b=BlscsFvcT4tit/znNVdttgN3+NGyGZI8TSt+BE5ftt8N9NtleOOWDRHV+iYMq4Kw/K8xXB
+        e2D+GuOsxv1nS7BQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9E15F13582;
+        Fri,  1 Sep 2023 06:53:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id iCCLJXqK8WSjbQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 01 Sep 2023 06:53:46 +0000
+Message-ID: <6654778d-1f40-1775-c32c-ebf9728bc9a9@suse.de>
+Date:   Fri, 1 Sep 2023 08:53:45 +0200
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-01_04,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- priorityscore=1501 adultscore=0 mlxlogscore=999 phishscore=0 spamscore=0
- mlxscore=0 suspectscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309010061
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org
+References: <20230830062546.720679-1-javierm@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230830062546.720679-1-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------R0AekGP16RWm3i0PoTT6ngR4"
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
-some of the architectures. IIUC its meant to either force rebuild the
-perf domains or cleanup the perf domains by echoing 1 or 0 respectively.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------R0AekGP16RWm3i0PoTT6ngR4
+Content-Type: multipart/mixed; boundary="------------zMDjfCqoq2hDdLdfrYrBDP5h";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: Maxime Ripard <mripard@kernel.org>,
+ Geert Uytterhoeven <geert@linux-m68k.org>, dri-devel@lists.freedesktop.org
+Message-ID: <6654778d-1f40-1775-c32c-ebf9728bc9a9@suse.de>
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+References: <20230830062546.720679-1-javierm@redhat.com>
+In-Reply-To: <20230830062546.720679-1-javierm@redhat.com>
 
-perf domains are not built when there is SMT, or when there is no
-Asymmetric CPU topologies or when there is no frequency invariance.
-Since such cases EAS is not set and perf domains are not built. By
-changing the values of sysctl_sched_energy_aware, its not possible to
-force build the perf domains. Hence remove this sysctl on such platforms
-that dont support it. Some of the settings can be changed later
-such as smt_active by offlining the CPU's, In those cases if
-build_perf_domains returns true, re-enable the sysctl.
+--------------zMDjfCqoq2hDdLdfrYrBDP5h
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Anytime, when sysctl_sched_energy_aware is changed sched_energy_update
-is set when building the perf domains. Making use of that to find out if
-the change is happening by sysctl or dynamic system change.
+SGkgSmF2aWVyLA0KDQphbm90aGVyIGlkZWEgYWJvdXQgdGhpcyBwYXRjaDogd2h5IG5vdCBq
+dXN0IGtlZXAgdGhlIGFsbG9jYXRpb24gaW4gdGhlIA0KcGxhbmUncyBhdG9taWMgY2hlY2ss
+IGJ1dCBzdG9yZSB0aGUgdGVtcG9yYXJ5IGJ1ZmZlcnMgaW4gYSBwbGFuZSBzdHJ1Y3QuIA0K
+WW91J2Qgb25seSBncm93IHRoZSBhcnJheXMgbGVuZ3RoIGluIGF0b21pY19jaGVjayBhbmQg
+bGF0ZXIgZmV0Y2ggdGhlIA0KcG9pbnRlcnMgaW4gYXRvbWljX3VwZGF0ZS4gSXQgbmVlZHMg
+c29tZSBsb2NraW5nLCBidXQgbm90aGluZyBjb21wbGljYXRlZC4NCg0KQmVzdCByZWdhcmRz
+DQpUaG9tYXMNCg0KQW0gMzAuMDguMjMgdW0gMDg6MjUgc2NocmllYiBKYXZpZXIgTWFydGlu
+ZXogQ2FuaWxsYXM6DQo+IFRoZSBjb21taXQgNDViNTg2NjllNTMyICgiZHJtL3NzZDEzMHg6
+IEFsbG9jYXRlIGJ1ZmZlciBpbiB0aGUgcGxhbmUncw0KPiAuYXRvbWljX2NoZWNrKCkgY2Fs
+bGJhY2siKSBtb3ZlZCB0aGUgYWxsb2NhdGlvbiBvZiB0aGUgaW50ZXJtZWRpYXRlIGFuZA0K
+PiBIVyBidWZmZXJzIGZyb20gdGhlIGVuY29kZXIncyAuYXRvbWljX2VuYWJsZSBjYWxsYmFj
+ayB0byBwcmltYXJ5IHBsYW5lJ3MNCj4gLmF0b21pY19jaGVjayBjYWxsYmFjay4NCj4gDQo+
+IFRoaXMgd2FzIHN1Z2dlc3RlZCBieSBNYXhpbWUgUmlwYXJkIGJlY2F1c2UgZHJpdmVycyBh
+cmVuJ3QgYWxsb3dlZCB0byBmYWlsDQo+IGFmdGVyIGRybV9hdG9taWNfaGVscGVyX3N3YXBf
+c3RhdGUoKSBoYXMgYmVlbiBjYWxsZWQsIGFuZCB0aGUgZW5jb2RlcidzDQo+IC5hdG9taWNf
+ZW5hYmxlIGhhcHBlbnMgYWZ0ZXIgdGhlIG5ldyBhdG9taWMgc3RhdGUgaGFzIGJlZW4gc3dh
+cHBlZC4NCj4gDQo+IEJ1dCB0aGF0IGNoYW5nZSBjYXVzZWQgYSBwZXJmb3JtYW5jZSByZWdy
+ZXNzaW9uIGluIHZlcnkgc2xvdyBwbGF0Zm9ybXMsDQo+IHNpbmNlIG5vdyB0aGUgYWxsb2Nh
+dGlvbiBoYXBwZW5zIGZvciBldmVyeSBwbGFuZSdzIGF0b21pYyBzdGF0ZSBjb21taXQuDQo+
+IEZvciBleGFtcGxlLCBHZWVydCBVeXR0ZXJob2V2ZW4gcmVwb3J0cyB0aGF0IGlzIHRoZSBj
+YXNlIG9uIGEgVmV4UmlzY1YNCj4gc29mdGNvcmUgKFJJU0MtViBDUFUgaW1wbGVtZW50YXRp
+b24gb24gYW4gRlBHQSkuDQo+IA0KPiBUbyBwcmV2ZW50IHRoYXQsIG1vdmUgdGhlIG1vdmUg
+dGhlIGJ1ZmZlcnMnIGFsbG9jYXRpb24gYW5kIGZyZWUgdG8gdGhlDQo+IENSVEMncyAuYXRv
+bWljX2NoZWNrIGFuZCAuYXRvbWljX2Rlc3Ryb3lfc3RhdGUgY2FsbGJhY2tzLCBzbyB0aGF0
+IG9ubHkNCj4gaGFwcGVucyBvbiBhIG1vZGVzZXQuIFNpbmNlIHRoZSBpbnRlcm1lZGlhdGUg
+YnVmZmVyIGlzIG9ubHkgbmVlZGVkIHdoZW4NCj4gbm90IHVzaW5nIHRoZSBjb250cm9sbGVy
+IG5hdGl2ZSBmb3JtYXQgKFIxKSwgZG9pbmcgdGhlIGJ1ZmZlciBhbGxvY2F0aW9uDQo+IGF0
+IHRoYXQgQ1JUQydzIC5hdG9taWNfY2hlY2sgdGltZSB3b3VsZCBiZSBlbm91Z2guDQo+IA0K
+PiBGaXhlczogNDViNTg2NjllNTMyICgiZHJtL3NzZDEzMHg6IEFsbG9jYXRlIGJ1ZmZlciBp
+biB0aGUgcGxhbmUncyAuYXRvbWljX2NoZWNrKCkgY2FsbGJhY2siKQ0KPiBTdWdnZXN0ZWQt
+Ynk6IEdlZXJ0IFV5dHRlcmhvZXZlbiA8Z2VlcnRAbGludXgtbTY4ay5vcmc+DQo+IFNpZ25l
+ZC1vZmYtYnk6IEphdmllciBNYXJ0aW5leiBDYW5pbGxhcyA8amF2aWVybUByZWRoYXQuY29t
+Pg0KPiAtLS0NCj4gSGVsbG8sDQo+IA0KPiBUaGlzIGlzIGEgUkZDIGJlY2F1c2UgSSdtIG5v
+dCBzdXJlIGlmIHRoZXJlIGlzIGEgbmV0IGJlbmVmaXQgYWZ0ZXIgdGhpcw0KPiBjaGFuZ2Uu
+IEkgZmluZCB0aGUgY3VycmVjdCBjb2RlIG11Y2ggY2xlYW5lciBhbmQgbGVzcyBlcnJvciBw
+cm9uZSwgZXZlbg0KPiB3aGVuIEdlZXJ0IHJlcG9ydHMgdGhhdCBwZXJmb3JtcyB3b3JzZSBv
+biBoaXMgKHZlcnkgc2xvdykgcGxhdGZvcm0uDQo+IA0KPiBCdXQgSSdtIHN0aWxsIHBvc3Rp
+bmcgaXQgdG8gc2VlIHdoYXQgb3RoZXJzIHRoaW5rLiBJJ3ZlIHRlc3RlZCB0aGUgcGF0Y2gN
+Cj4gb24gYW4gSTJDIHNzZDEzMDYgT0xFRCBhbmQgZm91bmQgbm8gcmVncmVzc2lvbnMuDQo+
+IA0KPiBUaGUgcGF0Y2ggaXMgb24gdG9wIG9uIEdlZXJ0J3MgbGF0ZXN0IHBhdGNoLXNldCB0
+aGF0IGFkZHMgc3VwcG9ydCBmb3IgdGhlDQo+IERSTV9GT1JNQVRfUjEgdG8gdGhlIHNzZDEz
+MHggZHJpdmVyOg0KPiANCj4gaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvZHJpLWRldmVsL2Nv
+dmVyLjE2OTI4ODg3NDUuZ2l0LmdlZXJ0QGxpbnV4LW02OGsub3JnDQo+IA0KPiBCZXN0IHJl
+Z2FyZHMsDQo+IEphdmllcg0KPiANCj4gICBkcml2ZXJzL2dwdS9kcm0vc29sb21vbi9zc2Qx
+MzB4LmMgfCAxMDYgKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0tLS0tDQo+ICAgMSBmaWxl
+IGNoYW5nZWQsIDU2IGluc2VydGlvbnMoKyksIDUwIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlm
+ZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9zb2xvbW9uL3NzZDEzMHguYyBiL2RyaXZlcnMv
+Z3B1L2RybS9zb2xvbW9uL3NzZDEzMHguYw0KPiBpbmRleCAwZDJiMzZiYTQwMTEuLjYwNTM2
+Y2QwYzQyZCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9ncHUvZHJtL3NvbG9tb24vc3NkMTMw
+eC5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9zb2xvbW9uL3NzZDEzMHguYw0KPiBAQCAt
+NjUwLDQ2ICs2NTAsNiBAQCBzdGF0aWMgaW50IHNzZDEzMHhfZmJfYmxpdF9yZWN0KHN0cnVj
+dCBkcm1fcGxhbmVfc3RhdGUgKnN0YXRlLA0KPiAgIAlyZXR1cm4gcmV0Ow0KPiAgIH0NCj4g
+ICANCj4gLXN0YXRpYyBpbnQgc3NkMTMweF9wcmltYXJ5X3BsYW5lX2hlbHBlcl9hdG9taWNf
+Y2hlY2soc3RydWN0IGRybV9wbGFuZSAqcGxhbmUsDQo+IC0JCQkJCQkgICAgIHN0cnVjdCBk
+cm1fYXRvbWljX3N0YXRlICpzdGF0ZSkNCj4gLXsNCj4gLQlzdHJ1Y3QgZHJtX2RldmljZSAq
+ZHJtID0gcGxhbmUtPmRldjsNCj4gLQlzdHJ1Y3Qgc3NkMTMweF9kZXZpY2UgKnNzZDEzMHgg
+PSBkcm1fdG9fc3NkMTMweChkcm0pOw0KPiAtCXN0cnVjdCBkcm1fcGxhbmVfc3RhdGUgKnBs
+YW5lX3N0YXRlID0gZHJtX2F0b21pY19nZXRfbmV3X3BsYW5lX3N0YXRlKHN0YXRlLCBwbGFu
+ZSk7DQo+IC0Jc3RydWN0IHNzZDEzMHhfcGxhbmVfc3RhdGUgKnNzZDEzMHhfc3RhdGUgPSB0
+b19zc2QxMzB4X3BsYW5lX3N0YXRlKHBsYW5lX3N0YXRlKTsNCj4gLQl1bnNpZ25lZCBpbnQg
+cGFnZV9oZWlnaHQgPSBzc2QxMzB4LT5kZXZpY2VfaW5mby0+cGFnZV9oZWlnaHQ7DQo+IC0J
+dW5zaWduZWQgaW50IHBhZ2VzID0gRElWX1JPVU5EX1VQKHNzZDEzMHgtPmhlaWdodCwgcGFn
+ZV9oZWlnaHQpOw0KPiAtCWNvbnN0IHN0cnVjdCBkcm1fZm9ybWF0X2luZm8gKmZpOw0KPiAt
+CXVuc2lnbmVkIGludCBwaXRjaDsNCj4gLQlpbnQgcmV0Ow0KPiAtDQo+IC0JcmV0ID0gZHJt
+X3BsYW5lX2hlbHBlcl9hdG9taWNfY2hlY2socGxhbmUsIHN0YXRlKTsNCj4gLQlpZiAocmV0
+KQ0KPiAtCQlyZXR1cm4gcmV0Ow0KPiAtDQo+IC0Jc3NkMTMweF9zdGF0ZS0+ZGF0YV9hcnJh
+eSA9IGtjYWxsb2Moc3NkMTMweC0+d2lkdGgsIHBhZ2VzLCBHRlBfS0VSTkVMKTsNCj4gLQlp
+ZiAoIXNzZDEzMHhfc3RhdGUtPmRhdGFfYXJyYXkpDQo+IC0JCXJldHVybiAtRU5PTUVNOw0K
+PiAtDQo+IC0JaWYgKHBsYW5lX3N0YXRlLT5mYi0+Zm9ybWF0LT5mb3JtYXQgIT0gRFJNX0ZP
+Uk1BVF9SMSkgew0KPiAtCQlmaSA9IGRybV9mb3JtYXRfaW5mbyhEUk1fRk9STUFUX1IxKTsN
+Cj4gLQkJaWYgKCFmaSkNCj4gLQkJCXJldHVybiAtRUlOVkFMOw0KPiAtDQo+IC0JCXBpdGNo
+ID0gZHJtX2Zvcm1hdF9pbmZvX21pbl9waXRjaChmaSwgMCwgc3NkMTMweC0+d2lkdGgpOw0K
+PiAtDQo+IC0JCXNzZDEzMHhfc3RhdGUtPmJ1ZmZlciA9IGtjYWxsb2MocGl0Y2gsIHNzZDEz
+MHgtPmhlaWdodCwgR0ZQX0tFUk5FTCk7DQo+IC0JCWlmICghc3NkMTMweF9zdGF0ZS0+YnVm
+ZmVyKSB7DQo+IC0JCQlrZnJlZShzc2QxMzB4X3N0YXRlLT5kYXRhX2FycmF5KTsNCj4gLQkJ
+CS8qIFNldCB0byBwcmV2ZW50IGEgZG91YmxlIGZyZWUgaW4gLmF0b21pY19kZXN0cm95X3N0
+YXRlKCkgKi8NCj4gLQkJCXNzZDEzMHhfc3RhdGUtPmRhdGFfYXJyYXkgPSBOVUxMOw0KPiAt
+CQkJcmV0dXJuIC1FTk9NRU07DQo+IC0JCX0NCj4gLQl9DQo+IC0NCj4gLQlyZXR1cm4gMDsN
+Cj4gLX0NCj4gLQ0KPiAgIHN0YXRpYyB2b2lkIHNzZDEzMHhfcHJpbWFyeV9wbGFuZV9oZWxw
+ZXJfYXRvbWljX3VwZGF0ZShzdHJ1Y3QgZHJtX3BsYW5lICpwbGFuZSwNCj4gICAJCQkJCQkg
+ICAgICAgc3RydWN0IGRybV9hdG9taWNfc3RhdGUgKnN0YXRlKQ0KPiAgIHsNCj4gQEAgLTc2
+MiwxMCArNzIyLDYgQEAgc3RhdGljIHN0cnVjdCBkcm1fcGxhbmVfc3RhdGUgKnNzZDEzMHhf
+cHJpbWFyeV9wbGFuZV9kdXBsaWNhdGVfc3RhdGUoc3RydWN0IGRybV8NCj4gICAJaWYgKCFz
+c2QxMzB4X3N0YXRlKQ0KPiAgIAkJcmV0dXJuIE5VTEw7DQo+ICAgDQo+IC0JLyogVGhlIGJ1
+ZmZlcnMgYXJlIG5vdCBkdXBsaWNhdGVkIGFuZCBhcmUgYWxsb2NhdGVkIGluIC5hdG9taWNf
+Y2hlY2sgKi8NCj4gLQlzc2QxMzB4X3N0YXRlLT5idWZmZXIgPSBOVUxMOw0KPiAtCXNzZDEz
+MHhfc3RhdGUtPmRhdGFfYXJyYXkgPSBOVUxMOw0KPiAtDQo+ICAgCW5ld19zaGFkb3dfcGxh
+bmVfc3RhdGUgPSAmc3NkMTMweF9zdGF0ZS0+YmFzZTsNCj4gICANCj4gICAJX19kcm1fZ2Vt
+X2R1cGxpY2F0ZV9zaGFkb3dfcGxhbmVfc3RhdGUocGxhbmUsIG5ld19zaGFkb3dfcGxhbmVf
+c3RhdGUpOw0KPiBAQCAtNzc4LDkgKzczNCw2IEBAIHN0YXRpYyB2b2lkIHNzZDEzMHhfcHJp
+bWFyeV9wbGFuZV9kZXN0cm95X3N0YXRlKHN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lLA0KPiAg
+IHsNCj4gICAJc3RydWN0IHNzZDEzMHhfcGxhbmVfc3RhdGUgKnNzZDEzMHhfc3RhdGUgPSB0
+b19zc2QxMzB4X3BsYW5lX3N0YXRlKHN0YXRlKTsNCj4gICANCj4gLQlrZnJlZShzc2QxMzB4
+X3N0YXRlLT5kYXRhX2FycmF5KTsNCj4gLQlrZnJlZShzc2QxMzB4X3N0YXRlLT5idWZmZXIp
+Ow0KPiAtDQo+ICAgCV9fZHJtX2dlbV9kZXN0cm95X3NoYWRvd19wbGFuZV9zdGF0ZSgmc3Nk
+MTMweF9zdGF0ZS0+YmFzZSk7DQo+ICAgDQo+ICAgCWtmcmVlKHNzZDEzMHhfc3RhdGUpOw0K
+PiBAQCAtNzg4LDcgKzc0MSw3IEBAIHN0YXRpYyB2b2lkIHNzZDEzMHhfcHJpbWFyeV9wbGFu
+ZV9kZXN0cm95X3N0YXRlKHN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lLA0KPiAgIA0KPiAgIHN0
+YXRpYyBjb25zdCBzdHJ1Y3QgZHJtX3BsYW5lX2hlbHBlcl9mdW5jcyBzc2QxMzB4X3ByaW1h
+cnlfcGxhbmVfaGVscGVyX2Z1bmNzID0gew0KPiAgIAlEUk1fR0VNX1NIQURPV19QTEFORV9I
+RUxQRVJfRlVOQ1MsDQo+IC0JLmF0b21pY19jaGVjayA9IHNzZDEzMHhfcHJpbWFyeV9wbGFu
+ZV9oZWxwZXJfYXRvbWljX2NoZWNrLA0KPiArCS5hdG9taWNfY2hlY2sgPSBkcm1fcGxhbmVf
+aGVscGVyX2F0b21pY19jaGVjaywNCj4gICAJLmF0b21pY191cGRhdGUgPSBzc2QxMzB4X3By
+aW1hcnlfcGxhbmVfaGVscGVyX2F0b21pY191cGRhdGUsDQo+ICAgCS5hdG9taWNfZGlzYWJs
+ZSA9IHNzZDEzMHhfcHJpbWFyeV9wbGFuZV9oZWxwZXJfYXRvbWljX2Rpc2FibGUsDQo+ICAg
+fTsNCj4gQEAgLTgxOCw2ICs3NzEsNTkgQEAgc3RhdGljIGVudW0gZHJtX21vZGVfc3RhdHVz
+IHNzZDEzMHhfY3J0Y19oZWxwZXJfbW9kZV92YWxpZChzdHJ1Y3QgZHJtX2NydGMgKmNydGMN
+Cj4gICAJcmV0dXJuIE1PREVfT0s7DQo+ICAgfQ0KPiAgIA0KPiAraW50IHNzZDEzMHhfY3J0
+Y19oZWxwZXJfYXRvbWljX2NoZWNrKHN0cnVjdCBkcm1fY3J0YyAqY3J0Yywgc3RydWN0IGRy
+bV9hdG9taWNfc3RhdGUgKnN0YXRlKQ0KPiArew0KPiArCXN0cnVjdCBkcm1fZGV2aWNlICpk
+cm0gPSBjcnRjLT5kZXY7DQo+ICsJc3RydWN0IHNzZDEzMHhfZGV2aWNlICpzc2QxMzB4ID0g
+ZHJtX3RvX3NzZDEzMHgoZHJtKTsNCj4gKwlzdHJ1Y3QgZHJtX3BsYW5lICpwbGFuZSA9IGNy
+dGMtPnByaW1hcnk7DQo+ICsJc3RydWN0IGRybV9wbGFuZV9zdGF0ZSAqcGxhbmVfc3RhdGUg
+PSBkcm1fYXRvbWljX2dldF9uZXdfcGxhbmVfc3RhdGUoc3RhdGUsIHBsYW5lKTsNCj4gKwlz
+dHJ1Y3Qgc3NkMTMweF9wbGFuZV9zdGF0ZSAqc3NkMTMweF9zdGF0ZSA9IHRvX3NzZDEzMHhf
+cGxhbmVfc3RhdGUocGxhbmVfc3RhdGUpOw0KPiArCXVuc2lnbmVkIGludCBwYWdlX2hlaWdo
+dCA9IHNzZDEzMHgtPmRldmljZV9pbmZvLT5wYWdlX2hlaWdodDsNCj4gKwl1bnNpZ25lZCBp
+bnQgcGFnZXMgPSBESVZfUk9VTkRfVVAoc3NkMTMweC0+aGVpZ2h0LCBwYWdlX2hlaWdodCk7
+DQo+ICsJY29uc3Qgc3RydWN0IGRybV9mb3JtYXRfaW5mbyAqZmk7DQo+ICsJdW5zaWduZWQg
+aW50IHBpdGNoOw0KPiArCWludCByZXQ7DQo+ICsNCj4gKwlyZXQgPSBkcm1fY3J0Y19oZWxw
+ZXJfYXRvbWljX2NoZWNrKGNydGMsIHN0YXRlKTsNCj4gKwlpZiAocmV0KQ0KPiArCQlyZXR1
+cm4gcmV0Ow0KPiArDQo+ICsJc3NkMTMweF9zdGF0ZS0+ZGF0YV9hcnJheSA9IGtjYWxsb2Mo
+c3NkMTMweC0+d2lkdGgsIHBhZ2VzLCBHRlBfS0VSTkVMKTsNCj4gKwlpZiAoIXNzZDEzMHhf
+c3RhdGUtPmRhdGFfYXJyYXkpDQo+ICsJCXJldHVybiAtRU5PTUVNOw0KPiArDQo+ICsJaWYg
+KHBsYW5lX3N0YXRlLT5mYi0+Zm9ybWF0LT5mb3JtYXQgIT0gRFJNX0ZPUk1BVF9SMSkgew0K
+PiArCQlmaSA9IGRybV9mb3JtYXRfaW5mbyhEUk1fRk9STUFUX1IxKTsNCj4gKwkJaWYgKCFm
+aSkNCj4gKwkJCXJldHVybiAtRUlOVkFMOw0KPiArDQo+ICsJCXBpdGNoID0gZHJtX2Zvcm1h
+dF9pbmZvX21pbl9waXRjaChmaSwgMCwgc3NkMTMweC0+d2lkdGgpOw0KPiArDQo+ICsJCXNz
+ZDEzMHhfc3RhdGUtPmJ1ZmZlciA9IGtjYWxsb2MocGl0Y2gsIHNzZDEzMHgtPmhlaWdodCwg
+R0ZQX0tFUk5FTCk7DQo+ICsJCWlmICghc3NkMTMweF9zdGF0ZS0+YnVmZmVyKSB7DQo+ICsJ
+CQlrZnJlZShzc2QxMzB4X3N0YXRlLT5kYXRhX2FycmF5KTsNCj4gKwkJCS8qIFNldCB0byBw
+cmV2ZW50IGEgZG91YmxlIGZyZWUgaW4gLmF0b21pY19kZXN0cm95X3N0YXRlKCkgKi8NCj4g
+KwkJCXNzZDEzMHhfc3RhdGUtPmRhdGFfYXJyYXkgPSBOVUxMOw0KPiArCQkJcmV0dXJuIC1F
+Tk9NRU07DQo+ICsJCX0NCj4gKwl9DQo+ICsNCj4gKwlyZXR1cm4gMDsNCj4gK30NCj4gKw0K
+PiArc3RhdGljIHZvaWQgc3NkMTMweF9jcnRjX2Rlc3Ryb3lfc3RhdGUoc3RydWN0IGRybV9j
+cnRjICpjcnRjLA0KPiArCQkJCSAgICAgICBzdHJ1Y3QgZHJtX2NydGNfc3RhdGUgKnN0YXRl
+KQ0KPiArew0KPiArCXN0cnVjdCBkcm1fcGxhbmUgKnBsYW5lID0gY3J0Yy0+cHJpbWFyeTsN
+Cj4gKwlzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlICpwbGFuZV9zdGF0ZSA9IGRybV9hdG9taWNf
+Z2V0X25ld19wbGFuZV9zdGF0ZShzdGF0ZS0+c3RhdGUsIHBsYW5lKTsNCj4gKwlzdHJ1Y3Qg
+c3NkMTMweF9wbGFuZV9zdGF0ZSAqc3NkMTMweF9zdGF0ZSA9IHRvX3NzZDEzMHhfcGxhbmVf
+c3RhdGUocGxhbmVfc3RhdGUpOw0KPiArDQo+ICsJZHJtX2F0b21pY19oZWxwZXJfY3J0Y19k
+ZXN0cm95X3N0YXRlKGNydGMsIHN0YXRlKTsNCj4gKw0KPiArCWtmcmVlKHNzZDEzMHhfc3Rh
+dGUtPmRhdGFfYXJyYXkpOw0KPiArCWtmcmVlKHNzZDEzMHhfc3RhdGUtPmJ1ZmZlcik7DQo+
+ICt9DQo+ICsNCj4gICAvKg0KPiAgICAqIFRoZSBDUlRDIGlzIGFsd2F5cyBlbmFibGVkLiBT
+Y3JlZW4gdXBkYXRlcyBhcmUgcGVyZm9ybWVkIGJ5DQo+ICAgICogdGhlIHByaW1hcnkgcGxh
+bmUncyBhdG9taWNfdXBkYXRlIGZ1bmN0aW9uLiBEaXNhYmxpbmcgY2xlYXJzDQo+IEBAIC04
+MjUsNyArODMxLDcgQEAgc3RhdGljIGVudW0gZHJtX21vZGVfc3RhdHVzIHNzZDEzMHhfY3J0
+Y19oZWxwZXJfbW9kZV92YWxpZChzdHJ1Y3QgZHJtX2NydGMgKmNydGMNCj4gICAgKi8NCj4g
+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGRybV9jcnRjX2hlbHBlcl9mdW5jcyBzc2QxMzB4X2Ny
+dGNfaGVscGVyX2Z1bmNzID0gew0KPiAgIAkubW9kZV92YWxpZCA9IHNzZDEzMHhfY3J0Y19o
+ZWxwZXJfbW9kZV92YWxpZCwNCj4gLQkuYXRvbWljX2NoZWNrID0gZHJtX2NydGNfaGVscGVy
+X2F0b21pY19jaGVjaywNCj4gKwkuYXRvbWljX2NoZWNrID0gc3NkMTMweF9jcnRjX2hlbHBl
+cl9hdG9taWNfY2hlY2ssDQo+ICAgfTsNCj4gICANCj4gICBzdGF0aWMgY29uc3Qgc3RydWN0
+IGRybV9jcnRjX2Z1bmNzIHNzZDEzMHhfY3J0Y19mdW5jcyA9IHsNCj4gQEAgLTgzNCw3ICs4
+NDAsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGRybV9jcnRjX2Z1bmNzIHNzZDEzMHhfY3J0
+Y19mdW5jcyA9IHsNCj4gICAJLnNldF9jb25maWcgPSBkcm1fYXRvbWljX2hlbHBlcl9zZXRf
+Y29uZmlnLA0KPiAgIAkucGFnZV9mbGlwID0gZHJtX2F0b21pY19oZWxwZXJfcGFnZV9mbGlw
+LA0KPiAgIAkuYXRvbWljX2R1cGxpY2F0ZV9zdGF0ZSA9IGRybV9hdG9taWNfaGVscGVyX2Ny
+dGNfZHVwbGljYXRlX3N0YXRlLA0KPiAtCS5hdG9taWNfZGVzdHJveV9zdGF0ZSA9IGRybV9h
+dG9taWNfaGVscGVyX2NydGNfZGVzdHJveV9zdGF0ZSwNCj4gKwkuYXRvbWljX2Rlc3Ryb3lf
+c3RhdGUgPSBzc2QxMzB4X2NydGNfZGVzdHJveV9zdGF0ZSwNCj4gICB9Ow0KPiAgIA0KPiAg
+IHN0YXRpYyB2b2lkIHNzZDEzMHhfZW5jb2Rlcl9oZWxwZXJfYXRvbWljX2VuYWJsZShzdHJ1
+Y3QgZHJtX2VuY29kZXIgKmVuY29kZXIsDQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdy
+YXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1h
+bnkgR21iSA0KRnJhbmtlbnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkN
+CkdGOiBJdm8gVG90ZXYsIEFuZHJldyBNeWVycywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVu
+IE1vZXJtYW4NCkhSQiAzNjgwOSAoQUcgTnVlcm5iZXJnKQ0K
 
-Taking different cases:
-Case1. system while booting has EAS capability, sysctl will be set 1. Hence
-perf domains will be built if needed. On changing the sysctl to 0, since
-sched_energy_update is true, perf domains would be freed and sysctl will
-not be removed. later sysctl is changed to 1, enabling the perf domains
-rebuild again. Since sysctl is already there, it will skip register.
+--------------zMDjfCqoq2hDdLdfrYrBDP5h--
 
-Case2. System while booting doesn't have EAS Capability. Later after system
-change it becomes capable of EAS. sched_energy_update is false. Though
-sysctl is 0, will go ahead and try to enable eas. This is the current
-behaviour. if has_eas  is true, then sysctl will be registered. After
-that any sysctl change is same as Case1.
+--------------R0AekGP16RWm3i0PoTT6ngR4
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Case3. System becomes not capable of EAS due to system change. Here since
-sched_energy_update is false, build_perf_domains return has_eas as false
-due to one of the checks and Since this is dynamic change remove the sysctl.
-Any further change which enables EAS is Case2
+-----BEGIN PGP SIGNATURE-----
 
-Note: This hasn't been tested on platform which supports EAS. If the
-change can be verified on that it would really help. This has been
-tested on power10 which doesn't support EAS. sysctl_sched_energy_aware
-is removed with patch.
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmTxinkFAwAAAAAACgkQlh/E3EQov+Cc
+lA//QHHqe5Dfag+XrIuH5iOGmkbZglZoZsoVm/9iQ5kAd4DqDttU9hV2fkAAa+LE0dMvydZ1lIuT
+00xARtfDq+iKnI6NlPRr5xKbSGPJtm6TMb99qsxW7oPEys1+nTKn2XcjlaGUTEAblGMGKfcdTeqn
+RQCMuERIMsAPtFqcx6EV0Iekq2KXOXepdl9Wc4YqS3HWHPBHBQjLfDLWiSpDSVkFwrCDcPQdOEA+
+0cuLvfpU3h//oZWeUoLtqQalAW46Snlz9mxUSaK8lz17UKpnqmsJbL6zUG29jg3zQGOWXh38zwm1
+c4hHSc7/kwJpcKp6J1eAhSklzOvkF9fh3KWuhOAD7Vv361RXWS0FDgat3LW1O46ROlcB4beaiJmm
+JRW5qUyIGPgWP2v8CNXSIKJ6To649atc97N0C8m25rMZmxOGHQmaLG0kG39wXsF0jCAqT3bvRyWs
+ctvG2aw5d/Fo/9qDw8+FXXMpHu45VvVNu8Do7u33YqGAG0Vg6y2dsqglBZvE+wU61ye4sq2dvPdg
+pJGDbUEJ+qUnxy0SMpi7aY7Z29ik3ffH4RnCHnAL0eEXlIjcnXHKuRYp3V3T3AaSyWQMDp8mu/7/
+gVOEVH+YbeBh2sLlK0R/atnjlTQfKuoTyuwo1BMJlk3fZwJiwXAZiS9TqZM9NXcORcRmb6IOmKFE
+TdU=
+=mDQs
+-----END PGP SIGNATURE-----
 
-changes since v1:
-Chen Yu had pointed out that this will not destroy the perf domains on
-architectures where EAS is supported by changing the sysctl. This patch
-addresses that.
-[v1] Link: https://lore.kernel.org/lkml/20230829065040.920629-1-sshegde@linux.vnet.ibm.com/#t
-
-Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
----
- kernel/sched/topology.c | 45 +++++++++++++++++++++++++++++++++--------
- 1 file changed, 37 insertions(+), 8 deletions(-)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 05a5bc678c08..4d16269ac21a 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -208,7 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
-
- #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
- DEFINE_STATIC_KEY_FALSE(sched_energy_present);
--static unsigned int sysctl_sched_energy_aware = 1;
-+static unsigned int sysctl_sched_energy_aware;
-+static struct ctl_table_header *sysctl_eas_header;
- static DEFINE_MUTEX(sched_energy_mutex);
- static bool sched_energy_update;
-
-@@ -226,6 +227,7 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
- 		void *buffer, size_t *lenp, loff_t *ppos)
- {
- 	int ret, state;
-+	int prev_val = sysctl_sched_energy_aware;
-
- 	if (write && !capable(CAP_SYS_ADMIN))
- 		return -EPERM;
-@@ -233,8 +235,11 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
- 	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
- 	if (!ret && write) {
- 		state = static_branch_unlikely(&sched_energy_present);
--		if (state != sysctl_sched_energy_aware)
-+		if (state != sysctl_sched_energy_aware && prev_val != sysctl_sched_energy_aware) {
-+			if (sysctl_sched_energy_aware && !state)
-+				pr_warn("Attempt to build energy domains when EAS is disabled\n");
- 			rebuild_sched_domains_energy();
-+		}
- 	}
-
- 	return ret;
-@@ -255,7 +260,14 @@ static struct ctl_table sched_energy_aware_sysctls[] = {
-
- static int __init sched_energy_aware_sysctl_init(void)
- {
--	register_sysctl_init("kernel", sched_energy_aware_sysctls);
-+	int cpu = cpumask_first(cpu_active_mask);
-+
-+	if (sched_smt_active() || !per_cpu(sd_asym_cpucapacity, cpu) ||
-+	    !arch_scale_freq_invariant())
-+		return 0;
-+
-+	sysctl_eas_header = register_sysctl("kernel", sched_energy_aware_sysctls);
-+	sysctl_sched_energy_aware = 1;
- 	return 0;
- }
-
-@@ -336,10 +348,28 @@ static void sched_energy_set(bool has_eas)
- 		if (sched_debug())
- 			pr_info("%s: stopping EAS\n", __func__);
- 		static_branch_disable_cpuslocked(&sched_energy_present);
-+#ifdef CONFIG_PROC_SYSCTL
-+		/*
-+		 * if the architecture supports EAS and forcefully
-+		 * perf domains are destroyed, there should be a sysctl
-+		 * to enable it later. If this was due to dynamic system
-+		 * change such as SMT<->NON_SMT then remove sysctl.
-+		 */
-+		if (sysctl_eas_header && !sched_energy_update) {
-+			unregister_sysctl_table(sysctl_eas_header);
-+			sysctl_eas_header = NULL;
-+		}
-+#endif
-+		sysctl_sched_energy_aware = 0;
- 	} else if (has_eas && !static_branch_unlikely(&sched_energy_present)) {
- 		if (sched_debug())
- 			pr_info("%s: starting EAS\n", __func__);
- 		static_branch_enable_cpuslocked(&sched_energy_present);
-+#ifdef CONFIG_PROC_SYSCTL
-+		if (!sysctl_eas_header)
-+			sysctl_eas_header = register_sysctl("kernel", sched_energy_aware_sysctls);
-+#endif
-+		sysctl_sched_energy_aware = 1;
- 	}
- }
-
-@@ -380,15 +410,14 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
- 	struct cpufreq_policy *policy;
- 	struct cpufreq_governor *gov;
-
--	if (!sysctl_sched_energy_aware)
-+	if (!sysctl_sched_energy_aware && sched_energy_update)
- 		goto free;
-
- 	/* EAS is enabled for asymmetric CPU capacity topologies. */
- 	if (!per_cpu(sd_asym_cpucapacity, cpu)) {
--		if (sched_debug()) {
--			pr_info("rd %*pbl: CPUs do not have asymmetric capacities\n",
--					cpumask_pr_args(cpu_map));
--		}
-+		if (sched_debug())
-+			pr_info("rd %*pbl: Disabling EAS,  CPUs do not have asymmetric capacities\n",
-+				cpumask_pr_args(cpu_map));
- 		goto free;
- 	}
-
---
-2.31.1
-
+--------------R0AekGP16RWm3i0PoTT6ngR4--
