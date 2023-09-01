@@ -2,45 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECDBE78FA4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 742FB78FA5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348634AbjIAI4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:56:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
+        id S1344278AbjIAI7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:59:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjIAI4m (ORCPT
+        with ESMTP id S231297AbjIAI7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:56:42 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5EA1310DE
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:56:39 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 553F9FEC;
-        Fri,  1 Sep 2023 01:57:17 -0700 (PDT)
-Received: from [10.57.5.33] (unknown [10.57.5.33])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9FC83FBD2;
-        Fri,  1 Sep 2023 01:56:37 -0700 (PDT)
-Message-ID: <f3bec3b9-e938-bea4-f89f-b0b698c4e302@arm.com>
-Date:   Fri, 1 Sep 2023 09:56:32 +0100
+        Fri, 1 Sep 2023 04:59:00 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4478D10D4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:58:57 -0700 (PDT)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3818wUXb045711;
+        Fri, 1 Sep 2023 03:58:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693558710;
+        bh=XcSo3Spyd3peDcjzflCFCScb83JaVwSA5Q2X+aOS4Uk=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=QeQB1BKwA/AVw38gesLnwCoUATHjkn1SVN/ttukb8HRG4ib00oGitWHA7eTeXgiVD
+         w4YfQkHPu6saTb+NNMMgTUXG9TKywiuyVCp79WVVn8HNNy7SNro3Zap//ikA4TsY9a
+         tqSjl9BtDNl6sC1It8fXbpTt4+1HFQ6nudEV8c6g=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3818wUGt073983
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 1 Sep 2023 03:58:30 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
+ Sep 2023 03:58:29 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 1 Sep 2023 03:58:29 -0500
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3818wS4u057677;
+        Fri, 1 Sep 2023 03:58:29 -0500
+Date:   Fri, 1 Sep 2023 14:28:30 +0530
+From:   Jai Luthra <j-luthra@ti.com>
+To:     Aradhya Bhatia <a-bhatia1@ti.com>
+CC:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Nicolas Belin <nbelin@baylibre.com>,
+        "Andy.Hsieh" <Andy.Hsieh@mediatek.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devarsht@ti.com>,
+        <nm@ti.com>, Helen Mae Koike Fornazier <helen.koike@collabora.com>
+Subject: Re: [PATCH] drm: bridge: it66121: Fix invalid connector dereference
+Message-ID: <sfqdspjo5p4s3xpumgqqutgdcfyfwdtmvnrnfbft2d32mpqs7w@p2rs336yyfsj>
+References: <20230825-it66121_edid-v1-1-3ab54923e472@ti.com>
+ <d2deac24-d5ab-e1c4-81c5-4874c2f5ea07@ti.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] dma/pool: trivial: add semicolon after label
- attributes
-Content-Language: en-GB
-To:     Chunhui He <hchunhui@mail.ustc.edu.cn>
-Cc:     hch@lst.de, m.szyprowski@samsung.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-References: <6f936d6e-9f27-ba72-68de-0ed27c0dbbe1@arm.com>
- <20230829151216.GA4211@lst.de> <d5ef27f1-9e6d-5e3c-b7ea-4b0abca623ed@arm.com>
- <20230831.115937.924195103727242070.hchunhui@mail.ustc.edu.cn>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <20230831.115937.924195103727242070.hchunhui@mail.ustc.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="h4avs5zu4gsb4w7f"
+Content-Disposition: inline
+In-Reply-To: <d2deac24-d5ab-e1c4-81c5-4874c2f5ea07@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,67 +77,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-31 12:59, Chunhui He wrote:
-> 
-> On Tue, 29 Aug 2023 16:28:05 +0100, Robin Murphy <robin.murphy@arm.com> wrote:
->> On 29/08/2023 4:12 pm, Christoph Hellwig wrote:
->>> On Tue, Aug 29, 2023 at 03:22:22PM +0100, Robin Murphy wrote:
->>>> AFAICS, what that clearly says is that *C++* label attributes can be
->>>> ambiguous. This is not C++ code. Even in C11, declarations still
->>>> cannot be
->>>> labelled, so it should still be the case that, per the same GCC
->>>> documentation, "the ambiguity does not arise". And even if the
->>>> language did
->>>> allow it, an inline declaration at that point at the end of a function
->>>> would be downright weird and against the kernel coding style anyway.
->>>>
->>>> So, I don't really see what's "better" about cluttering up C code with
->>>> unnecessary C++isms; it's just weird noise to me. The only thing I
->>>> think it
->>>> *does* achieve is introduce the chance that the static checker brigade
->>>> eventually identifies a redundant semicolon and we get more patches to
->>>> remove it again.
-> 
-> Inline declaration is a GNU C extension, so the ambiguity may arise.
-> Adding ';' makes the compiler easier to parse correctly, so I say
-> "better". The commit 13a453c241b78934a945b1af572d0533612c9bd1
-> (sched/fair: Add ';' after label attributes) also says the same.
+--h4avs5zu4gsb4w7f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-And that commit was also wrong. Nobody suggested C11 doesn't support 
-inline declarations - it demonstrably does - the fact in question is 
-that *attributes* on declarations is a C++ thing and not valid in C:
+Hi Aradhya,
 
-~/src/linux$ git diff
-diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-index 1acec2e22827..e1354235cb9c 100644
---- a/kernel/dma/pool.c
-+++ b/kernel/dma/pool.c
-@@ -137,7 +137,8 @@ static int atomic_pool_expand(struct gen_pool *pool, 
-size_t pool_size,
-         dma_common_free_remap(addr, pool_size);
-  #endif
-  free_page: __maybe_unused
--       __free_pages(page, order);
-+       int x = order;
-+       __free_pages(page, x);
-  out:
-         return ret;
-  }
-~/src/linux$ make -j32
-   CALL    scripts/checksyscalls.sh
-   CC      kernel/dma/pool.o
-kernel/dma/pool.c: In function ‘atomic_pool_expand’:
-kernel/dma/pool.c:140:2: error: a label can only be part of a statement 
-and a declaration is not a statement
-   140 |  int x = order;
-       |  ^~~
-make[4]: *** [scripts/Makefile.build:243: kernel/dma/pool.o] Error 1
-make[3]: *** [scripts/Makefile.build:480: kernel/dma] Error 2
-make[2]: *** [scripts/Makefile.build:480: kernel] Error 2
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/home/robmur01/src/linux/Makefile:2032: .] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
+Thanks for the comments.
 
+On Aug 28, 2023 at 16:34:30 +0530, Aradhya Bhatia wrote:
+> Hi Jai,
+>=20
+> Thanks for debugging the issue.
+>=20
+> On 25-Aug-23 16:32, Jai Luthra wrote:
+> > Fix the NULL pointer dereference when no monitor is connected, and the
+> > sound card is opened from userspace.
+> >=20
+> > Instead return an error as EDID information cannot be provided to
+> > the sound framework if there is no connector attached.
+> >=20
+> > Fixes: e0fd83dbe924 ("drm: bridge: it66121: Add audio support")
+> > Reported-by: Nishanth Menon <nm@ti.com>
+> > Closes: https://lore.kernel.org/all/20230825105849.crhon42qndxqif4i@gon=
+dola/
+> > Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> > ---
+> >  drivers/gpu/drm/bridge/ite-it66121.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> >=20
+> > diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bri=
+dge/ite-it66121.c
+> > index 466641c77fe9..d6fa00dea464 100644
+> > --- a/drivers/gpu/drm/bridge/ite-it66121.c
+> > +++ b/drivers/gpu/drm/bridge/ite-it66121.c
+> > @@ -1446,6 +1446,11 @@ static int it66121_audio_get_eld(struct device *=
+dev, void *data,
+> >  {
+> >  	struct it66121_ctx *ctx =3D dev_get_drvdata(dev);
+> > =20
+> > +	if (!ctx->connector) {
+> > +		dev_dbg(dev, "No connector present, cannot provide EDID data");
+> > +		return -EINVAL;
+> > +	}
+> > +
+>=20
+> There are not many HDMI bridges that support codecs in the kernel, but
+> upon a quick look, bridge/analogix/anx7625.c and
+> bridge/synopsys/dw-hdmi* gracefully return a buffer of 0s when the
+> connector is unavailable.
 
+Interesting, that sounds cleaner to me.
+
+>=20
+> I am not sure why that is done, but I also don't see the hdmi-codec
+> driver handle the 0s situation properly. It is business as usual for the
+> hdmi-codec.
+
+Chasing this down through the hdmi-codec driver and sound framework, it=20
+will use sane defaults for supported channels and sample rates if the=20
+actual EDID struct we are passing is all 0s. I tested it out on the=20
+beagle play board and did not see any crashes.
+
+>=20
+> Did you come across some observation when you were testing?
+
+Yes, with the current state of the patch, if I plug-in a monitor after=20
+the soundcard is probed I cannot playback audio, because we returned an=20
+error initially.
+
+This issue goes away if we return a buffer of 0s like those other=20
+bridges. Overall I'm happy with this idea, so I will send a v2 fixing=20
+this.
+
+>=20
+> Regards
+> Aradhya
+>=20
+> >  	mutex_lock(&ctx->lock);
+> > =20
+> >  	memcpy(buf, ctx->connector->eld,
+> >=20
+> > ---
+> > base-commit: 6269320850097903b30be8f07a5c61d9f7592393
+> > change-id: 20230825-it66121_edid-6ee98517808b
+> >=20
+> > Best regards,
+>=20
+
+--=20
 Thanks,
-Robin.
+Jai
+
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
+
+--h4avs5zu4gsb4w7f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmTxp7MACgkQQ96R+SSa
+cUWB1BAA1POMzZ6VOKt9P5havK6UGc1Vh3QvEguAY6I2hvSKSdG6KpOGzGgDJpXS
+BE+imKr6mK4p6hwVbsLqiv1Ov1ZpthUfyY3Q4/Tq2A5HfleUAQlOsQe2Ug8Iqhab
+Y83Bi1qVZ7P+AWAmzWZemFphNy2Aurq5in0yUaks0H4uQu+A8PITsk8PAmY3Ryul
+POeTvXAsWaPvUkZY9TXJbp3T9DWWLoiHBuk+hiZKKOgXKjuCtR8m2x4zgqb13hMo
+L7cL7j0p1m5Eu83CGctvuMY+3hCxhB0eVS8UfbJ4D9GdQC7zpks0890ZUElwhQl0
+B4HpAvAwWbx01y9Tyydv3vzMwdcB1DVCY/UPpMIUSgBMHo4RJwbY5QRs+vqJ2JuS
+9KWkJyQZZ9uBRX5BeP6ZK0UcI/Lgx6fmnxcOAWdL9xCEUW5u1rKx/14y0vWmXb3R
++dagmYuPxGAxh49Sswfwv0W+kEf7d1vgJpNLVwzQmmcfuDmGCZCGJVOrleCjPkTE
+hgaTqOMOLlr5b8CyXw2IvCl3eRA1lOYu33xUs3Tg9iD/voy8d0QSb7Eih9VWXd+K
+wdnPXz0Z8ChK6PR4UZ07mni/BS9KisDRg3dbSrcDx3vhtD9pp+VmmyojLODhR2+5
+ougvzQssnbpKaBKm3KEkVPVbT3r0W4d/Y5z6/oiGN0bhXaqps1c=
+=CxMm
+-----END PGP SIGNATURE-----
+
+--h4avs5zu4gsb4w7f--
