@@ -2,113 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D5378FA2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7C578FA2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237387AbjIAIrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:47:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43272 "EHLO
+        id S241589AbjIAItF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:49:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230372AbjIAIrj (ORCPT
+        with ESMTP id S229768AbjIAItE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:47:39 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE55DE54;
-        Fri,  1 Sep 2023 01:47:36 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bdc19b782aso12714205ad.0;
-        Fri, 01 Sep 2023 01:47:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693558056; x=1694162856; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Bz9KhSLDYES3lHxf4Rv9YDVYI9ZYxEiIT0+MdSGQk8=;
-        b=k7K2pcI/cD8M44bNrPHSUzALEQUSNgxmlBYRYnJkBcID3jIjtZaPEYaJDuA44XE5Zr
-         ajTRL3HT+AEy4Lw803/GojlSOMExSyCNWbAt0Hm4mRQjH/howfYJPdFaBDsullvL0gIf
-         T1KDmhgZ4hzQmiENk/vye11cMAQ0y3GntlsZ7tR0mwF65dasGAti/dM6hNj8TFlJpsHW
-         dJivUqYIzhzgtvg2+p69tIjR943YkDhIWFEKJfNLwwrCP4i2S4sEUzVt6uhj0PgqAkv9
-         g/RYizbbwMO7odFZhZQIjt4iz2mNAiMPfp+EY733WI2YrSqBVOlIoLjmeH2yB+Vj7Nxc
-         b0mA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693558056; x=1694162856;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+Bz9KhSLDYES3lHxf4Rv9YDVYI9ZYxEiIT0+MdSGQk8=;
-        b=U1hXkhz+VHNE4bkh5Qs8Uf5DeGRt/AlQkGrhd7d5pCMHTSzQ0fPEb99u6P7l5f3L0F
-         HM7kAtCr1CTy/fWLoLCOmpj81yt9FyoPvIlrz5EF3RWq+be1NzOUud5ybPeh7rLtl5tX
-         KqDGln0yGTUWZ9nII4H1r1yn6ESa6A+bSGStPAReGQuctRy7kGBE6Gus3/ryvo1Bh+FT
-         NNaOQrEG9DIALc3hkPSAkzSrg7zjjqxQCl0iURTsLgN3W2EDIOlugKLVyzGVeRguvB7B
-         PtRjXshXkXEtv5bpHXvvXTLBmPXpgze4gq/bVU1z4FaP6OsP/MPRKDQpj453r0lO+mHl
-         TJNw==
-X-Gm-Message-State: AOJu0YxIyMYWgNseL21475BT41pOa4deGs3/envILmej4mMBWMWzDSaH
-        rUeiJCEGBhRgWPT+qZM335E=
-X-Google-Smtp-Source: AGHT+IEjqAYBqhW8Mr7ASWnCHFOpu3hTAsiUodZhqfPQeIEG/NEmy75N67CrcQ4donGK1J7bvXKMWQ==
-X-Received: by 2002:a17:903:446:b0:1bd:f378:b1a8 with SMTP id iw6-20020a170903044600b001bdf378b1a8mr1806392plb.11.1693558056119;
-        Fri, 01 Sep 2023 01:47:36 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id w5-20020a170902a70500b001bbb22652a4sm2473053plq.226.2023.09.01.01.47.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 01:47:35 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 7AE7F8088643; Fri,  1 Sep 2023 15:47:30 +0700 (WIB)
-Date:   Fri, 1 Sep 2023 15:47:30 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 00/10] 6.1.51-rc1 review
-Message-ID: <ZPGlItgI-l2ljpff@debian.me>
-References: <20230831110831.079963475@linuxfoundation.org>
+        Fri, 1 Sep 2023 04:49:04 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11F0510D2;
+        Fri,  1 Sep 2023 01:49:01 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3818QdxV020704;
+        Fri, 1 Sep 2023 03:48:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=sYsYQEqfCKypMDe
+        n35IJtnsfvBuwWP2nxKm1nldZM5A=; b=e1TqXSR2Guoazg0cdfvG9r5HPpq/PPg
+        SBnR/48eCqXq3B3Opq5i77+/4WUxmMXZZv4JvxEvWW2aqUEUqoWYC76yXuDzuX0l
+        G5yRg+P+DIfSYSGhKiltMqvOdSX6v8mFQfI1fjXu2GhVItBpay6T4CCehsNC43tQ
+        9nQy2lWAsiWe9dhEgX2n7gYvtBgRLwe2z7ze2zQ7gFcMEcjtPhMG82cMTUmpMSC1
+        8s4Dxl9YVZY+t30/Bx7KS/GRFxOnSjRdhCogDxoOpNMKs7JhQEIyCm8YNyPGbo+D
+        4lXnugwEDBXHo6zaTyrn23XyDQKIsUTos9cp9NO8PViXKI4ukpbbGkA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sqdtj6sas-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 03:48:45 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 1 Sep
+ 2023 09:48:43 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Fri, 1 Sep 2023 09:48:43 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 370973563;
+        Fri,  1 Sep 2023 08:48:43 +0000 (UTC)
+Date:   Fri, 1 Sep 2023 08:48:43 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+Subject: Re: [PATCH v3 1/4] ASoC: cs35l45: Checks index of cs35l45_irqs[]
+Message-ID: <20230901084843.GZ103419@ediswmail.ad.cirrus.com>
+References: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="t06PUDhssnELXJBU"
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230831110831.079963475@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: jK_lMOmIoE1BPfC20nxayRbUEbYKGqi9
+X-Proofpoint-GUID: jK_lMOmIoE1BPfC20nxayRbUEbYKGqi9
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 31, 2023 at 11:20:39AM -0500, Vlad Karpovich wrote:
+> From: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+> 
+> Checks the index computed by the virq offset before printing the
+> error condition in cs35l45_spk_safe_err() handler.
+> 
+> Signed-off-by: Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>
+> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+> ---
+>  sound/soc/codecs/cs35l45.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/codecs/cs35l45.c b/sound/soc/codecs/cs35l45.c
+> index 2ac4612402eb..02b1172d2647 100644
+> --- a/sound/soc/codecs/cs35l45.c
+> +++ b/sound/soc/codecs/cs35l45.c
+> @@ -1023,7 +1023,10 @@ static irqreturn_t cs35l45_spk_safe_err(int irq, void *data)
+>  
+>  	i = irq - regmap_irq_get_virq(cs35l45->irq_data, 0);
+>  
+> -	dev_err(cs35l45->dev, "%s condition detected!\n", cs35l45_irqs[i].name);
+> +	if (i < 0 || i >= ARRAY_SIZE(cs35l45_irqs))
 
---t06PUDhssnELXJBU
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am happy enough for this to be merged, since it clearly does
+no harm. So:
 
-On Thu, Aug 31, 2023 at 01:10:40PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.51 release.
-> There are 10 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+But I do still have a slight reservation of what is the point
+of this error check?  This handler is static and can only be
+called from within cs35l45.c and the only code that registers
+IRQs goes through the cs35l45_irqs array and registers IRQs
+from there, so how does this ever end up with i being out of
+bounds?
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+And whilst I would not add this to this patch. I do also think
+perhaps Ricardo had a point in his email, the IRQ handler
+should probably be renamed, since it handles more than just
+the spk_safe_err's, perhaps something like cs35l45_report_err.
+On why the watchdog and global error call this as well, that
+was a review comment on an earlier patch since the handlers for
+those errors only printed a message, they might as well be
+combined with the spk_safe error that also only printed a
+message. If at some point separate handling is added for them
+they can be split out.
 
---=20
-An old man doll... just what I always wanted! - Clara
-
---t06PUDhssnELXJBU
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZPGlHAAKCRD2uYlJVVFO
-o/FyAQCXZJ4Q/8tTXYsUP4MbS7KC0hEaigYtfyLzq2dA0cRXtwEA8YaAYPN3MSF7
-bmdjwsBCc8aBjaa5AMY8MNJ2Fq153gY=
-=PAcP
------END PGP SIGNATURE-----
-
---t06PUDhssnELXJBU--
+Thanks,
+Charles
