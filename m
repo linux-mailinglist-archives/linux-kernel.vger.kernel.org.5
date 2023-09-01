@@ -2,127 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CCC5E78FCBF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEBE278FCC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349291AbjIAL55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47554 "EHLO
+        id S1349302AbjIAL62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:58:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238296AbjIAL5y (ORCPT
+        with ESMTP id S238296AbjIAL61 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:57:54 -0400
-Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01on2111.outbound.protection.outlook.com [40.107.114.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1CC91;
-        Fri,  1 Sep 2023 04:57:49 -0700 (PDT)
+        Fri, 1 Sep 2023 07:58:27 -0400
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2089.outbound.protection.outlook.com [40.107.247.89])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F94610E0;
+        Fri,  1 Sep 2023 04:58:18 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WE4fD7vHbSQL9ZwMuwdGqaa5MY30dOPpkOH27EvTMgy5kLUFg/IULLnPfNOzZb248RtUFNnARWWA0XYGuhOSUDXDz1sdXNJDWO+M4tQiP0qj8dlhxuA6JzzdB0E2d4tB5tHgSXwunsjusL4tVDwkqaxzMHUtA9MTsOtM8u4K9kZ32JKZmmRNQpmOpsT4RegqMNcLigLT6kTbPjFQXFTxx4HqH8t0gAMOfu0JfZoYVGJEarTNy45pnUcexxfnBVCEq+39YdSqZUB+KJ+szv9xtAHfc+l4xIlNnqG/tyPcMSMBorGYXCIL4r8U4tRmUbmh+TVfJcpWLThqUpSd4KwGrw==
+ b=icVKT9T9cgkU8OGO9H+3GNb8mi4Oj2z0p5VnfSxfnop1F/X55aKBd8u43txgono4jS71JDhE2N4oEVioK3NBy+MfruPRvTrHLnOOS86rX1jjJLYFedPOxN0sUc/a8brbr3UIrDexiUGD6B/jgWk26gkL7eT5sv9GbqbxXfBIjDEcr6Sa9ZCw/adl+Ca+e80E0hYQEtAOP0enqXvAsT5HoXEqR7cfUySTfRb6sPyJF9In2BiUFzYp9BNaPqz+qPfpWb0fw1+ZoWnHBMsX83Nzwg7sbQGXPFQP2PbFJHZK9wuxp6ejypasXLbKcPKc8pVyXwKaBOMx9vn9bRqZDBjwwQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=muwIxUFWA1MYenLR1jNcllOVsMI8SQqyuOY0MmOhhbU=;
- b=cIOQCWxXH8IY3BI+Eg2zw7N5CBwHQIT+H6IGUI5aZkKQwC/gf1OtMrTbbwCfKBvQI/V0JGXYqTy7mDqqdyCGjY8qNQ0SzKd2VWArZGSLd+aheVh5H3KHExdReV9Hn0dW5MoS12MmQ5OZuPny5OmD15IAY1JAYfqWauF0N67KZbub/wRetEXuMxWSWK2OpebeZtFPESPiJJUk3y4aZXQVpgKRAqJYfRtn2B4lvNaxB07C+7wd6tgG4goR9OQ/fN1utxFHOppw50a6K3JBcjJ6RX9V/F7CdsZAohHyjk7Kd9wLiNsxGSFtNATBDsYNRYywPdmSk7WK/wqGUGygu6drwA==
+ bh=uFH2rC4jo3moEdUxywcQ87zA+pfKhLwSUC9hjOYrz5o=;
+ b=FKVuLGPNOCMho03l5ol0MhpZ2S2yECLuH+wASV7VeXe/4YrEcn6YYgeEKCEhgSdczjdbt9PPadL4I2qimZT/FtFlLswB3O1PH5mjMlEr8QSDG/fRuhtRFE3jHrLVyIYxx0Evc4jYjT/JN6QWsrme4rBWDok0r0FWNCIlZS5MyybEfsMJdAVX5FttvX5IcLBt8+lGzVuBsfA8UwasHU1vdQP2Mu/VmvU4PBzPf2kCYoDUNvRF7Si+txUHZ/tVDkoyu933u1L4RzIrBSW4Cd0+OeO4oTrMUSqgSSp6Y5sDDzqAJ8i+a1jc95Y0u7nxkm3PjNtVYvOdSEn3jYCDOjWsrw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=muwIxUFWA1MYenLR1jNcllOVsMI8SQqyuOY0MmOhhbU=;
- b=ub9k96GgRTOeymUGYTz7iTDHtodWtfcRAPesCtclPRBAgNjkypMi6BuQT+wtjoPM2WMuSmW8BoxyUwB5VsWlYIKOZjAbqUIIq6aenVjV4ZGstTDEhdF+8JGTVQKZdCJsK3E/su05+kYMrFLnkcWr8wy1qJu74/v4DwQUC3jfkAs=
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com (2603:1096:604:bb::5)
- by TYWPR01MB8917.jpnprd01.prod.outlook.com (2603:1096:400:16d::8) with
+ bh=uFH2rC4jo3moEdUxywcQ87zA+pfKhLwSUC9hjOYrz5o=;
+ b=Tf82E4RaesaE5oybn48MZKz1dxw13C06hwjpvLipCXFasN/6Qwa3KI3a7XoBtg1KanA3UE3mUqGjFRZ8rRmkpkl4pb1WbSqWNWFjwPzLEYCgm3DUYCq/B1anKC2U2iCeIIThwi8LzChJqd6HGbxMuabXs5T4CWV8ddOMciSFVnI=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com (2603:10a6:20b:409::7)
+ by DU2PR04MB8981.eurprd04.prod.outlook.com (2603:10a6:10:2e0::15) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Fri, 1 Sep
- 2023 11:57:45 +0000
-Received: from OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706]) by OS0PR01MB5922.jpnprd01.prod.outlook.com
- ([fe80::9d23:32f5:9325:3706%5]) with mapi id 15.20.6745.023; Fri, 1 Sep 2023
- 11:57:45 +0000
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-CC:     Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Helen Koike <helen.koike@collabora.com>
-Subject: RE: [PATCH v10 0/4] Add RZ/{G2L,G2LC} and RZ/V2L Display Unit support
-Thread-Topic: [PATCH v10 0/4] Add RZ/{G2L,G2LC} and RZ/V2L Display Unit
- support
-Thread-Index: AQHZrlaa38MndGA920+57Yp0DiWkBq/e7VYwgBfdjsCAD25foA==
-Date:   Fri, 1 Sep 2023 11:57:45 +0000
-Message-ID: <OS0PR01MB59228E0C6048204BD4B239F286E4A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-References: <20230704090447.27420-1-biju.das.jz@bp.renesas.com>
- <OS0PR01MB5922C1FDA4200E067957EBC0860CA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
- <OS0PR01MB59229075D5C1E201C210FF53861FA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-In-Reply-To: <OS0PR01MB59229075D5C1E201C210FF53861FA@OS0PR01MB5922.jpnprd01.prod.outlook.com>
-Accept-Language: en-GB, en-US
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.23; Fri, 1 Sep
+ 2023 11:58:14 +0000
+Received: from AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::2545:6d13:5905:bf50]) by AM9PR04MB8954.eurprd04.prod.outlook.com
+ ([fe80::2545:6d13:5905:bf50%5]) with mapi id 15.20.6745.021; Fri, 1 Sep 2023
+ 11:58:14 +0000
+Message-ID: <831bc700-a9a2-7eda-e97b-e1d54dc806f9@oss.nxp.com>
+Date:   Fri, 1 Sep 2023 14:58:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
+ mdo_insert_tx_tag
 Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=bp.renesas.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OS0PR01MB5922:EE_|TYWPR01MB8917:EE_
-x-ms-office365-filtering-correlation-id: 8a62297d-bd94-4af7-be54-08dbaae2a7bd
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: mZAedKeXMtA/nquv/VnzZFrtg0AtRFJnrZb9MzXtz20PFadwfaFa/FCrafp+fJgoCFGI3EHR6AWX2IcmokhoGLBRHTfxemnBI9gbN/hdOwpyS3L2r+gLG3sh57snGm8/fvzSonAeBhDhSQm/LlI+Yk4MPuhhH18f2vFB5aiSW3N0x5orxKeyEd9cCoQERbYF0QxAPgG5DOx4xI8vIzGJgUub5cOI0ZwVfXGgNqfaPQQcH+q03h/kTuuHAFMDklSJJDTMyi6GBHkbRsD1d5AItKxKV1nFEXMt7GsyCfOnjDDAzLWrNkgj/6cwlWJJKXCbrcRv93XZkWpUJIzpYax9vW7Yq+d7XNly2WUselWb2Kp9ztkhLf6YtxHZaVvBiks77S150PlpGnpCBwsyTci4mK5IZI/any+R85TEdN4jbTTy/PbFoaGBimKYs+VUsjt8PmBSwxJCcglfGEwSqwu1Ri7/CfTso/2YgfTZCEoDBS8A7BiVCcNH2S6AB/5ZYxmIQeZWeHiSU8hxhBH0P2U/zczD2f3+7N9eb4soHPfnQ2purzOacKja/P8sEHFUW2aQ28UA4Ofl+pp0Up9RhJECRh3Xs6pGNAhsQcQCSRfzr/U=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS0PR01MB5922.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(346002)(396003)(376002)(366004)(1800799009)(186009)(451199024)(9686003)(66556008)(41300700001)(86362001)(66946007)(66476007)(2906002)(76116006)(64756008)(54906003)(316002)(66446008)(33656002)(8936002)(4326008)(8676002)(52536014)(26005)(5660300002)(7416002)(55016003)(83380400001)(38100700002)(38070700005)(45080400002)(122000001)(71200400001)(966005)(478600001)(7696005)(6506007)(53546011)(110136005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?qcXotdTnlILx8imx0UDVBI7QkJs6inlr/KjwBjoUiBLLw49RzpwhsqezUqpC?=
- =?us-ascii?Q?H0O08KT53OHEpr6zbzN9YsqMsJjULmEyDRhUL6H3zkxc1wCBR3mPsAFtYU6M?=
- =?us-ascii?Q?NsM45m0qHcTzWzqBcy+4uknoQWnS/muQCSVrujHwnII2JFp5oDxJkXaa82yL?=
- =?us-ascii?Q?EDFhKAXpkbBEV+tn9Z2bl6jOVHi3vToIFSd/SyBbwKUW0Ijmbg+M7vgbCLe8?=
- =?us-ascii?Q?Z+wPQ82CXvf/YUPQha4bzVzUzfvurXvcxs8AnRZ5AKiEKhnIOoPtrUSttpvs?=
- =?us-ascii?Q?uSo+M8B2CQHjrio1rbNP6YP+ihsvVt2uOo3w4GneK9nRw47mCeII/irhTm4m?=
- =?us-ascii?Q?0R5inwhutf9aMJ8IAplWFOcIJ+URgadROfV/eLq/bpZXQHLfLtDJAKVAJZ75?=
- =?us-ascii?Q?lM6XWstuk/SVaRN4GXprjshnhCv6aZs5IZ3/Gpc+x6F39Y49+VahRNLw8w3F?=
- =?us-ascii?Q?m5jJ0ERdrTykxGRng0w1zj48RC2kl2Vh9Sx5AsRGHN3dDbHvb7s8PqnEnfYD?=
- =?us-ascii?Q?VKxv/uBS2Fz8oMbMdTV8gyHmSeLZnrwCODifWTNC7sKkf6NiloEyOgPK7qgE?=
- =?us-ascii?Q?ngwZYTNFLTYY51zfHi20h7ocsUnfIsCbWqi4HunizTDLS0FlHz4PwxKLgeRX?=
- =?us-ascii?Q?f9crRvbeuxuOYYU2DxDyXFr6uI5fQGXA1wyUE39uG/meNzYmycEaXDQcvTli?=
- =?us-ascii?Q?p8fkhNmhzNt8EMgHHElbdigN2r7U67IHu+iTDMxi6PNTLN8v7FdSLHeylXld?=
- =?us-ascii?Q?mdCMzihdM+zmQT4fn05uPbbsCwdtKTjRjyFodvTK0/fKh1HR5qVcSVVXDVYh?=
- =?us-ascii?Q?ShBr+UYnj5JG/ogbGT+i+APVrc7Fakf/lUDeu6s+JGEujV8J15IzL8Hhd1le?=
- =?us-ascii?Q?X0FKNmy7oW2+AH25EiyWR5/z9C53osFDu4BRx8Tik0+BiiaYG17k+1dd3Y1S?=
- =?us-ascii?Q?xezv6nvIBNZaaHC58eyDc9gPdzPyDm2K1YdFMyEXHndZDSbM7Bj46eFdfI/A?=
- =?us-ascii?Q?UPTEtCFToJYUvLwVTpTilCK3YxRTAtIu0SF7uvpH+lKrB7hwzTRguU0556Xf?=
- =?us-ascii?Q?oFc1a8LhNjPhT5V73LaDpkfFGRJCW3e9dvbygqNzk9qU2vmQoIEWQVLZ+JmE?=
- =?us-ascii?Q?aOOixS/DXzQrVpg8UKtH+ATbi07NQVd6OzkSAOei2rsWKaGCE0laU4nL+o43?=
- =?us-ascii?Q?MAUpt9osbU4yolgQlabOWBNbG3ePJJro94bkJ5XDjDrTkzc/YPBpODzgCO02?=
- =?us-ascii?Q?XO8OpVOV+yle/8/ppAI+rsyUwYrajoFMR3mjwSEFaf0bukIdvWeTXr4odqvw?=
- =?us-ascii?Q?AG7wQKDi7Vm4p88i4HRNgKJDqrlYgRtxGoHYu64s5yQdKlRuV21c6e9v0R/R?=
- =?us-ascii?Q?c31UpzY9R0WWPKDrqqbxc3wEXB6XdFI3vx3BQiZSbw/OJWQWxYscu+xzmFur?=
- =?us-ascii?Q?lFh6abBrd92v9v2Xu+V5+9VtSsTGbk+KI/OA3wDllGiuNAh9epCuRlSM1PPc?=
- =?us-ascii?Q?WcqmSkDxDW7weAI+G2nQYSPkL87iiyl3/NA+bxv4mPYNhj3UMCnbsj0ZHz3U?=
- =?us-ascii?Q?zgr31V3hUwaczysAumW0E8ZOBZB6jA+PJYmdRz5es8CKhx6uTXZHTP35W5vx?=
- =?us-ascii?Q?OA=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To:     Sabrina Dubroca <sd@queasysnail.net>,
+        Radu Pirea <radu-nicolae.pirea@nxp.com>
+Cc:     "atenart@kernel.org" <atenart@kernel.org>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sebastian Tobuschat <sebastian.tobuschat@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
+ <ZOx0L722xg5-J_he@hog> <5d42d6c9-2f0c-8913-49ec-50a25860c49f@oss.nxp.com>
+ <ZO8pbtnlOVauabjC@hog>
+ <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
+ <ZPG35HfRseiv80Pb@hog>
+From:   "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
+In-Reply-To: <ZPG35HfRseiv80Pb@hog>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: AS4PR09CA0006.eurprd09.prod.outlook.com
+ (2603:10a6:20b:5e0::16) To AM9PR04MB8954.eurprd04.prod.outlook.com
+ (2603:10a6:20b:409::7)
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM9PR04MB8954:EE_|DU2PR04MB8981:EE_
+X-MS-Office365-Filtering-Correlation-Id: d7a687fd-6f07-4a6f-900d-08dbaae2b8e6
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eo7jpL2QGQa0NaKh2cJgPGCtu7TG/kG0khH5M3bAQIOTI85+jOVkRJYLf8/OdInrjry3zpNDN/SfRzF5edp4xWimF4RGzMXk/JLoG/0JkdOOfjhDEbSi5PgTvP2zKwVjEQWWeK9aXKm/RLxKWJgjwgRzIuNJLn29IVLsxXNevrq0Lr5tEulkzliF+Qlt3imBFnRNoxfPYCt7fxzmD2L3pEP4j+KVyFa/AhJ6lHlYkBEy5kT+Gc1WTE4vriPGP4CmZfs+myCfbGzdMvwVyDt3yLosRKRgnHpJCQaE2srJ95bPosf4YC4AxAv7TYt6azO5LuVDPuaQjzY+NCn5AuiP+sL1nKgfjXEogpx/9GqfMwysDANv4oymySqbnziSkZCVcDnff/xnlFYk8EZuHWIYbugCe9XX5xuIG2K2p1HR3vkgyji4cCjdpGdF5VoNlZ75W6GCiiNH9DAeFPNs1g3kOHuVHlGpDb+eRY2ab2GAvPWa5mqehwyi9smd2p2ANwPkjVKdmU8vzemYjudyKxSRUTd3cFiH/+5bDTLrDlT4QfOpaXHWGp9zl9swHtJPSxhPqKCUcdpTK+1+f6/qO31hgvF8wwE83CqXNZRKxyre/jBeJp6ohflj0+WdCBJ+ASVVVngjLkPYvKh7ilhCf77C3Q==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB8954.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(376002)(346002)(136003)(366004)(396003)(451199024)(186009)(1800799009)(31686004)(6506007)(6512007)(6486002)(31696002)(86362001)(38100700002)(2616005)(2906002)(4744005)(26005)(966005)(53546011)(478600001)(110136005)(66946007)(8676002)(8936002)(4326008)(5660300002)(7416002)(41300700001)(316002)(66476007)(54906003)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MGhrSGd1a0JSTm9vM3EzQkphRm0rK21pclBTajdReFJRWmVzTG1HeHJpRXZ6?=
+ =?utf-8?B?Y3JaSlpvMjl2UEVkNG53WU1iWXFDVjZCOVMzdU9UdkJmczdsVGs5dVN3aFg3?=
+ =?utf-8?B?MlpXNTV4WnNXWHFaYjVkb0lpRmF4Ti8zQVE3ZFc3WWh3U3FWNW42S0pPVXJ1?=
+ =?utf-8?B?dFpYWWxjS2lsdzVCSjVYclFLdlFvNWk3cTVTVGxnSzBMZnRYVnZjVGJwalBN?=
+ =?utf-8?B?aDNyNTZRTWVlMmZobWU1NUUwSUdPYjFkL096NThRcFZRZmc2TU8vaXl4bDYr?=
+ =?utf-8?B?MFJBTDBXd2MrWXVBdzNRZGUrSHhqS2lsT3ZRUXdJaDFCbGRiRXZENU53RVBr?=
+ =?utf-8?B?OXZQbG9Sc1hHNkUzMzdUNUY1bjhMVmtaNSsyRENpbnlJNFNCNzZCUEY1dllG?=
+ =?utf-8?B?c216ejRsY1hUN29jS1lGWmNKaU9XWDZVWVJJYzJqdkFjVXhORTY0UnFtd3JF?=
+ =?utf-8?B?SVVhQU8rRGF0ZzNRT2Z5WDJ6dGJFeFdYUWNuUHNPRWlPWUJxcHFPeW5WTHk1?=
+ =?utf-8?B?RnFXMUpGUGlsN09Hbk5OV1VKZWl1UnpNTTdRN0UxL1lhcmFwTGlUejhPYUJl?=
+ =?utf-8?B?ZVFRd3I0USt3TkJxZ3pveWxKS2FURUkrNGJGNHN5U2c3MU01VkRRTEEvY3JS?=
+ =?utf-8?B?aERHY2U3U05laTdJRDFnQkRVRXduei9lcE93d0tsQ1BLVmRiNHZ1ZU1rdlhy?=
+ =?utf-8?B?dU1Kc0MwMmZ4ZlUzL3JXTnpWbkNQektQY0pYczVjalV0bVNWdng3d2RudGR1?=
+ =?utf-8?B?ZzM3RjFycjZlb1NpYWNmcjdyOHJDRnJvdXk0WU9aVWNvYWt3b0wyeXJtZERH?=
+ =?utf-8?B?eHVwNnFJaU9QdVRTMlEzNVozV1ZNZ1BKSXYvQ2dHTVZ5dllYajFVQW5nbzdk?=
+ =?utf-8?B?YmI1eHNoS1VzNWpiOVlRTGF1RElqbytPQ1o5SytxeVFXRy94cEFqbXVqS0lp?=
+ =?utf-8?B?ZHZzNVBmRWtIRjRZWVF1VVZyVGVTWkFNMUkrMnNNdCt5cjc5VHpiVDlqeDA3?=
+ =?utf-8?B?VVd6RHZVQ1dRdWIrNUNuSlBrVDJUOUp6Q3FHTFIrRUc0MXVKalQrWUZaaUIr?=
+ =?utf-8?B?anE4RTBtMXJQcUJDL2VMMG4rdTYwM09hNmVRcTJFT3FNYXVXOGYrK2VEbk8v?=
+ =?utf-8?B?bWRIWUdjYVNBOGNtUHNYRm52MVk1Z3JLUElPY2EzeTZQM1oyL20vcXUybzR6?=
+ =?utf-8?B?MlhGWlNzaU5sVXlmVlNGQllSdXdsTFVVdXZMclFkaWNpTmxqSWFKWTN3VUJr?=
+ =?utf-8?B?WkJWclNQRkVvdXhIa1pTRVdvYkRES1pBQ1dZTTE4anZ2bUpRVmQ2TWZDL1RH?=
+ =?utf-8?B?WEcwdWxYSGpuWjE0Q2RIcW16VjRHdGI5Wm5oS1hkaVBpMVFYcGh2SHhEeHlz?=
+ =?utf-8?B?QzRjeU9JK0Y2OStqdDhuQThpQjc5dGJOMjEzQndnZ1Z5NXFJVWhtNzJ5SW1L?=
+ =?utf-8?B?NVorZE1QdHg2TnpFbG0wd2FBOFZrenVPTE51YXdreUtkZXNYWkFMeUt3eW9z?=
+ =?utf-8?B?ZVZPZk1aOTBrdGh1WGFWK2h4NUpGeGdLYXdKdko0Smx2UXhTbFAvM25kMmd1?=
+ =?utf-8?B?V3dDa2xQV3RCU2daTUkzQ2dBU01TTk5WZkNuSlBHMTdteEkzQ2FFMndKeW8z?=
+ =?utf-8?B?STd6Y1pUK2JBejFJMkZwZHdqS01WOHJ2N1VwN3ZHRzhaSlJwcmx5Q3VLTmoy?=
+ =?utf-8?B?YUFkdlVGTFlWN3NId3NtVWxFd0xhT25LbXZVdWNJZnhwblE2ZUYwblA4T1E3?=
+ =?utf-8?B?ZmFyRndyTmZjMXp6dUs5b3pXMTkwNWZQRFZyQWVCbStFU21TR0VVc2p3elVB?=
+ =?utf-8?B?OTJnVnRNamhSRDJieHpTbkcrVWFnaUVKRXhtMzBOajdxRUR5ZEo1eVdKTVlE?=
+ =?utf-8?B?Z3gxVFIxRDBZWlcwYnlSV0F0WmkrakJzYldIckJDUnRReGp2WG8zS3dCVHdQ?=
+ =?utf-8?B?QUw1U0h3TldSZ0dhUTRLOWhweS9EMU5xTXlqelU3OTNTdUVWcHBYQTd5TkVN?=
+ =?utf-8?B?Vm9hOHNRSEJuTDk3MktSV3kzWkVSbGhKaHpzYnZ2ZDRVQVZ4UkhNczljNzlW?=
+ =?utf-8?B?TndLZDJyM2prNExoU2d3eGN3TjYrNjFZbjhaUXovZzI3bzB4dWRaSHkxaUZO?=
+ =?utf-8?B?Y2cwZ09SN0c4MVZaN0JweTRYNlEzaTRPUmpDVmxKTkRJdURzUWN4dnZkY0E0?=
+ =?utf-8?B?eWc9PQ==?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7a687fd-6f07-4a6f-900d-08dbaae2b8e6
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB8954.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OS0PR01MB5922.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8a62297d-bd94-4af7-be54-08dbaae2a7bd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2023 11:57:45.6552
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 11:58:14.7128
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GRF/9yFT1YSBWKosRuLqs1c5GNutIy3KfMj9L1dHCU+LJMJH5V2+ZIgaRuj2rHJ5gqQjPahqXhX9x0+dZsE9SX8txWCSmRwp95wXYhDkh7o=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB8917
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DKX+6UWmbWop4T+UVhFhRX7WbviSacEQO8pZ+ZWQCq+NsOwUR9V+z6o5B3IIiX5tSZ5hDY6U1PhZupc4840+FaY7/eLarA8Ad5i/EENTKHk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8981
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
         SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -130,240 +144,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+On 01.09.2023 13:07, Sabrina Dubroca wrote:
+...
+> 
+>>> And what happens in this case?
+>>>      ip link add link eth0 type macsec offload phy
+>>>      ip link set eth0 down
+>>>      ip macsec add macsec0 rx sci ...
+>>>      ip macsec add macsec0 tx sa 0 ...
+>>>      # etc
+>>>      ip link set eth0 up
+>>>
+>>> Will offload work with the current code?
+>>
+>> (the interface was up before)
+>> [root@alarm ~]# ip link add link end0 macsec0 type macsec encrypt on
+>> offload phy
+>> [root@alarm ~]# ip link set end0 down
+>> [root@alarm ~]# ip macsec add macsec0 rx port 1 address
+>> 00:01:be:be:ef:33
+>> RTNETLINK answers: Operation not supported
+> 
+> Where does that EOPNOTSUPP come from? nxp_c45_mdo_add_rxsc from this
+> version of the code can't return that, and macsec_add_rxsc also
+> shouldn't at this point.
 
-Gentle ping. This patch[1] is posted around 2 months now.
+This is the source of -EOPNOTSUPP
+https://elixir.bootlin.com/linux/latest/source/drivers/net/macsec.c#L1928
 
-Please let me know is there any dependency/blockers for
-accepting this patch series?
-
-https://lore.kernel.org/all/20230704090447.27420-1-biju.das.jz@bp.renesas.c=
-om/
-
-
-Cheers,
-Biju
-
-=20
-> -----Original Message-----
-> From: Biju Das
-> Sent: Tuesday, August 22, 2023 5:18 PM
-> Subject: RE: [PATCH v10 0/4] Add RZ/{G2L,G2LC} and RZ/V2L Display Unit
-> support
->=20
-> Hi Laurent and all,
->=20
-> Gentle ping. Are we happy with this patch series?
->=20
-> I will send follow up fixes if we find any issues later.
->=20
-> Cheers,
-> Biju
->=20
-> > Subject: RE: [PATCH v10 0/4] Add RZ/{G2L,G2LC} and RZ/V2L Display Unit
-> > support
-> >
-> > Hi Laurent and all,
-> >
-> > Gentle ping. Are we ok this patch series?
-> >
-> > Cheers,
-> > Biju
-> >
-> > > Subject: [PATCH v10 0/4] Add RZ/{G2L,G2LC} and RZ/V2L Display Unit
-> > > support
-> > >
-> > > This path series aims to add support for RZ/G2L DU DRM driver.
-> > >
-> > > RZ/G2L LCD controller composed of Frame compression
-> > > Processor(FCPVD), Video signal processor (VSPD) and Display
-> > > unit(DU). The output of LCDC is connected to Display parallel interfa=
-ce
-> and MIPI link video interface.
-> > >
-> > > The output from DSI is connected to ADV7535.
-> > >
-> > > Ref:
-> > >
-> > >
-> > >
-> > > This patch series is tested with [2] [2]
-> > >
-> > > v9->v10:
-> > >  * patch#1 is mainlined, so dropped from this series.
-> > >  * Added Rb tag from Laurent for the binding patch.
-> > >  * Updated the commit description.
-> > >  * Updated description of the port by dropping the text "specified in
-> > >    Documentation/devicetree/bindings/graph.txt."
-> > >  * Dropped empty endpoint from example.
-> > >  * Dropped ARM64 dependency from Kconfig.
-> > >  * Sorted the configs alphabetically in Kconfig.
-> > >  * Dropped DRM_RCAR_VSP config option and make DRM_RZG2L_DU depend on
-> > >    VIDEO_RENESAS_VSP1.
-> > >  * On rzg2l_du_crtc_set_display_timing() replaced the setting of pare=
-nt
-> > >    clk rate with dclk rate.
-> > >  * Added rzg2l_du_write() wrapper function.
-> > >  * Updated the comment atomic_begin->atomic_flush.
-> > >  * Dropped .atomic_check and .atomic_begin callback
-> > >  * Renamed __rzg2l_du_crtc_plane_atomic_check-
-> > >__rzg2l_du_vsp_plane_atomic
-> > >    _check and moved it to rzg2l_du_vsp.c
-> > >  * Added struct clk in rzg2l_du_crtc.h
-> > >  * Dropped the variables mmio_offset,index,vblank_lock,vblank_wait,
-> > >    vblank_count from struct rzg2l_du_crtc.
-> > >  * Replaced the macro to_rzg2l_crtc with static inline functions.
-> > >  * Dropped the unneeded header files clk.h, io.h, mm.h, pm.h, slab.h,
-> > >    wait.h and drm_managed.h from rzg2l_du_drv.c.
-> > >  * Replaced DRM_INFO->drm_info
-> > >  * Dropped the callbacks prime_handle_to_fd, prime_fd_to_handle and
-> > >    gem_prime_mmap.
-> > >  * Replaced the callback remove->remove_new.
-> > >  * Dropped header file wait.h and added forward declarations struct
-> > >clk and
-> > >    rzg2l_du_device from rzg2l_du_drv.h.
-> > >  * Dropped the dsi and dpad0_source variables from struct
-> > rzg2l_du_device.
-> > >  * Replaced the macro to_rzg2l_encoder with static inline functions.
-> > >  * Dropped header files dma-buf.h and wait.h from rzg2l_du_kms.c.
-> > >  * Dropped struct sg_table and added the scatterlist.h header file in
-> > >    rzg2l_du_vsp.h
-> > >  * Added container_of.h header file, forward declarations struct
-> > > device and
-> > >    struct rzg2l_du_device in rzg2l_du_vsp.h.
-> > > v8->v9:
-> > >  * Added Rb tag from Laurent and Acked-by tag from Kieran for patch#1=
-.
-> > >  * Added Rb tag from Laurent and Geert for patch#3.
-> > >  * Dropped reset_control_assert() from error patch for
-> > > rzg2l_du_crtc_get() as
-> > >    suggested by Philipp Zabel.
-> > >  * Added Rb tag from Laurent oatch#5.
-> > >  * Updated MAINTAINERS entries for common parts(Makefile and Kconfig)=
-.
-> > > v7->v8:
-> > >  * Moved rcar-du and shmobile DRM drivers to renesas specific vendor
-> > > directory.
-> > >  * Fixed the typo vsp2->du in RZ/V2L DU bindings patch.
-> > >  * Added Rb tag from Rob for RZ/V2L DU bindings patch.
-> > >  * Dropped RCar du lib and created RZ/G2L DU DRM driver by creating
-> > > rz_du folder.
-> > >  * Updated MAINTAINERS entries.
-> > > v6->v7:
-> > >  * Split DU lib and  RZ/G2L du driver as separate patch series as
-> > >    DU support added to more platforms based on RZ/G2L alike SoCs.
-> > >  * Rebased to latest drm-tip.
-> > >  * Added patch #2 for binding support for RZ/V2L DU
-> > >  * Added patch #4 for driver support for RZ/V2L DU
-> > >  * Added patch #5 for SoC DTSI support for RZ/G2L DU
-> > >  * Added patch #6 for SoC DTSI support for RZ/V2L DU
-> > >  * Added patch #7 for Enabling DU on SMARC EVK based on RZ/{G2L,V2L}
-> > SoCs.
-> > >  * Added patch #8 for Enabling DU on SMARC EVK based on RZ/G2LC SoC.
-> > > v5->v6:
-> > >  * Merged DU lib and RZ/G2L du driver in same patch series
-> > >  * Rebased to latest drm-misc.
-> > >  * Merged patch#1 to RZ/G2L Driver patch.
-> > >  * Updated KConfig dependency from ARCH_RENESAS->ARCH_RZG2L.
-> > >  * Optimized rzg2l_du_output_name() by removing unsupported outputs.
-> > >
-> > > v4->v5:
-> > >  * Added Rb tag from Rob for binding patch.
-> > >  * Started using RCar DU libs(kms, vsp and encoder)
-> > >  * Started using rcar_du_device, rcar_du_write, rcar_du_crtc,
-> > >    rcar_du_format_info and rcar_du_encoder.
-> > > v3->v4:
-> > >  * Changed compatible name from
-> > > renesas,du-r9a07g044->renesas,r9a07g044-du
-> > >  * started using same compatible for RZ/G2{L,LC}
-> > >  * Removed rzg2l_du_group.h and struct rzg2l_du_group
-> > >  * Renamed __rzg2l_du_group_start_stop->rzg2l_du_start_stop
-> > >  * Removed rzg2l_du_group_restart
-> > >  * Updated rzg2l_du_crtc_set_display_timing
-> > >  * Removed mode_valid callback.
-> > >  * Updated rzg2l_du_crtc_create() parameters
-> > >  * Updated compatible
-> > >  * Removed RZG2L_DU_MAX_GROUPS
-> > > V2->v3:
-> > >  * Added new bindings for RZ/G2L DU
-> > >  * Removed indirection and created new DRM driver based on R-Car DU
-> > > v1->v2:
-> > >  * Based on [1], all references to 'rzg2l_lcdc' replaced with
-> 'rzg2l_du'
-> > >  * Updated commit description for bindings
-> > >  * Removed LCDC references from bindings
-> > >  * Changed clock name from du.0->aclk from bindings
-> > >  * Changed reset name from du.0->du from bindings
-> > >  * Replaced crtc_helper_funcs->rcar_crtc_helper_funcs
-> > >  * Updated macro DRM_RZG2L_LCDC->DRM_RZG2L_DU
-> > >  * Replaced rzg2l-lcdc-drm->rzg2l-du-drm
-> > >  * Added forward declaration for struct reset_control
-> > >
-> > > [1]
-> > > https://jpn01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fp=
-a
-> > > tc
-> > > hwor
-> > > k.kernel.org%2Fproject%2Flinux-renesas-soc%2Fpatch%2F20220312084205.
-> > > 31
-> > > 462-
-> > > 2-
-> > > biju.das.jz%40bp.renesas.com%2F&data=3D05%7C01%7Cbiju.das.jz%40bp.ren=
-e
-> > > sa
-> > > s.co
-> > > m%7C8e48927180a7413aaa7308db7c6dbc04%7C53d82571da1947e49cb4625a166a4
-> > > a2
-> > > a%7C
-> > > 0%7C0%7C638240582971112471%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwM
-> > > DA
-> > > iLCJ
-> > > QIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&sdata=3DX=
-s
-> > > p0
-> > > khWV
-> > > DyFkR%2F5Ww4%2B9NlE0RWC5w%2B2tSWcPp8cpbEo%3D&reserved=3D0
-> > >
-> > > Biju Das (4):
-> > >   dt-bindings: display: Document Renesas RZ/G2L DU bindings
-> > >   dt-bindings: display: renesas,rzg2l-du: Document RZ/V2L DU bindings
-> > >   drm: renesas: Add RZ/G2L DU Support
-> > >   MAINTAINERS: Add maintainer for RZ DU drivers
-> > >
-> > >  .../bindings/display/renesas,rzg2l-du.yaml    | 126 +++
-> > >  MAINTAINERS                                   |  15 +-
-> > >  drivers/gpu/drm/renesas/Kconfig               |   1 +
-> > >  drivers/gpu/drm/renesas/Makefile              |   1 +
-> > >  drivers/gpu/drm/renesas/rz-du/Kconfig         |  12 +
-> > >  drivers/gpu/drm/renesas/rz-du/Makefile        |   8 +
-> > >  drivers/gpu/drm/renesas/rz-du/rzg2l_du_crtc.c | 599 ++++++++++++++
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_crtc.h |  92 +++
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.c  | 180 +++++
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.h  |  84
-> > > ++  .../gpu/drm/renesas/rz-du/rzg2l_du_encoder.c  | 109
-> > > +++  .../gpu/drm/renesas/rz-du/rzg2l_du_encoder.h  |  32 +
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_kms.c  | 741
-> > > ++++++++++++++++++ drivers/gpu/drm/renesas/rz-du/rzg2l_du_kms.h  |
-> > > 43 + drivers/gpu/drm/renesas/rz-du/rzg2l_du_regs.h |  67 ++
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c  | 469 +++++++++++
-> > > drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h  |  97 +++
-> > >  17 files changed, 2674 insertions(+), 2 deletions(-)  create mode
-> > > 100644
-> > > Documentation/devicetree/bindings/display/renesas,rzg2l-du.yaml
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/Kconfig
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/Makefile
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_crtc.c
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_crtc.h
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.c
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_drv.h
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_encoder.c
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_encoder.h
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_kms.c
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_kms.h
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_regs.h
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.c
-> > >  create mode 100644 drivers/gpu/drm/renesas/rz-du/rzg2l_du_vsp.h
-> > >
-> > > --
-> > > 2.25.1
-
+-- 
+Radu P.
