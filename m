@@ -2,145 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C728878F74F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 04:45:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FE478F751
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 04:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348180AbjIACpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 22:45:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
+        id S1348185AbjIACrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 22:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjIACpm (ORCPT
+        with ESMTP id S230052AbjIACrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 22:45:42 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAB5E72;
-        Thu, 31 Aug 2023 19:45:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693536339; x=1725072339;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=uC35v14xS4VivlbwjpIolk/yVRXfRHT/I6acO5aWil4=;
-  b=jrIS8uq2j0PYA7Kr/fi5CaxA8ObwBC9XxvalYgpfTXA3QUhNC4IAxZsx
-   +M6Y3OWE2ghHQZCnYU5Rrf6iuUsIBtVsVEa8+G1UX2fwNeVGY9XfLWEMi
-   xHFb+TrTEYhAkuktwxtsj7oc2AvPhBl+M1IQ7uYU7F341Y7SWYdEC4l+f
-   425QV5tYv5DYtM1VyQAt/HCnLRsYdNCoA9Or8xWS2fndpnzp4ilmMqiOE
-   CafAIhZxWO71KRHWLegi4zGVMCJvDWMVYpfxWKMhywtO91wMHolOErmS8
-   mp7js1enjQx1NkAOH8/8d92NLAgMpFy9w+drfEmHtYfMS/nu4pqY/dxDS
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="442516736"
-X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
-   d="scan'208";a="442516736"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 19:45:39 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="809900946"
-X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
-   d="scan'208";a="809900946"
-Received: from vraghuna-mobl.amr.corp.intel.com (HELO vcostago-mobl3) ([10.213.167.133])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 19:45:37 -0700
-From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
-To:     John Johansen <john.johansen@canonical.com>,
-        apparmor@lists.ubuntu.com
-Cc:     Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] RFC: apparmor: Optimize retrieving current task
- secid
-In-Reply-To: <0def2030-78f7-2213-dab6-408622cc25b2@canonical.com>
-References: <20230831232224.460363-1-vinicius.gomes@intel.com>
- <0def2030-78f7-2213-dab6-408622cc25b2@canonical.com>
-Date:   Thu, 31 Aug 2023 19:45:37 -0700
-Message-ID: <87zg26mx0u.fsf@intel.com>
+        Thu, 31 Aug 2023 22:47:46 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387C7E40
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 19:47:42 -0700 (PDT)
+Received: from 4d92782a4194.home.arpa (unknown [124.16.138.129])
+        by APP-05 (Coremail) with SMTP id zQCowAAHD1eoUPFkj_PaCA--.40644S2;
+        Fri, 01 Sep 2023 10:47:04 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     mturquette@baylibre.com, sboyd@kernel.org, matthias.bgg@gmail.com,
+        angelogioacchino.delregno@collabora.com, wenst@chromium.org,
+        msp@baylibre.com, frank.li@vivo.com, robh@kernel.org,
+        jamesjj.liao@mediatek.com, shunli.wang@mediatek.com,
+        erin.lo@mediatek.com
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] clk: mediatek: clk-mt2701: Add check for mtk_alloc_clk_data
+Date:   Fri,  1 Sep 2023 10:46:58 +0800
+Message-Id: <20230901024658.23405-1-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: zQCowAAHD1eoUPFkj_PaCA--.40644S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF1xXFW3Aw4kuw4kWr4rKrg_yoW8AF1kpr
+        WkKF1YyFyUGw17Grs5Jr4DC3W5Aw10ga4UtFy3Zw1rZr13KrWUAF1F9a4vk3Z2yrWv9FyU
+        X3WY9w409FWDuFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+        Y2ka0xkIwI1lc2xSY4AK67AK6r4UMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+        b7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+        vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbpwZ7UUUUU==
+X-Originating-IP: [124.16.138.129]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-John Johansen <john.johansen@canonical.com> writes:
+Add the check for the return value of mtk_alloc_clk_data() in order to
+avoid NULL pointer dereference.
 
-> On 8/31/23 16:22, Vinicius Costa Gomes wrote:
->> When running will-it-scale[1] open2_process testcase, in a system with a
->> large number of cores, a bottleneck in retrieving the current task
->> secid was detected:
->> 
->> 27.73% ima_file_check;do_open (inlined);path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_x64 (inlined);do_syscall_64;entry_SYSCALL_64_after_hwframe (inlined);__libc_open64 (inlined)
->>      27.72%     0.01%  [kernel.vmlinux]      [k] security_current_getsecid_subj             -      -
->> 27.71% security_current_getsecid_subj;ima_file_check;do_open (inlined);path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_x64 (inlined);do_syscall_64;entry_SYSCALL_64_after_hwframe (inlined);__libc_open64 (inlined)
->>      27.71%    27.68%  [kernel.vmlinux]      [k] apparmor_current_getsecid_subj             -      -
->> 19.94% __refcount_add (inlined);__refcount_inc (inlined);refcount_inc (inlined);kref_get (inlined);aa_get_label (inlined);aa_get_label (inlined);aa_get_current_label (inlined);apparmor_current_getsecid_subj;security_current_getsecid_subj;ima_file_check;do_open (inlined);path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_x64 (inlined);do_syscall_64;entry_SYSCALL_64_after_hwframe (inlined);__libc_open64 (inlined)
->> 7.72% __refcount_sub_and_test (inlined);__refcount_dec_and_test (inlined);refcount_dec_and_test (inlined);kref_put (inlined);aa_put_label (inlined);aa_put_label (inlined);apparmor_current_getsecid_subj;security_current_getsecid_subj;ima_file_check;do_open (inlined);path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_x64 (inlined);do_syscall_64;entry_SYSCALL_64_after_hwframe (inlined);__libc_open64 (inlined)
->> 
->> A large amount of time was spent in the refcount.
->> 
->> The most common case is that the current task label is available, and
->> no need to take references for that one. That is exactly what the
->> critical section helpers do, make use of them.
->> 
->> New perf output:
->> 
->> 39.12% vfs_open;path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_64;entry_SYSCALL_64_after_hwframe;__libc_open64 (inlined)
->>      39.07%     0.13%  [kernel.vmlinux]          [k] do_dentry_open                                                               -      -
->> 39.05% do_dentry_open;vfs_open;path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_64;entry_SYSCALL_64_after_hwframe;__libc_open64 (inlined)
->>      38.71%     0.01%  [kernel.vmlinux]          [k] security_file_open                                                           -      -
->> 38.70% security_file_open;do_dentry_open;vfs_open;path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_64;entry_SYSCALL_64_after_hwframe;__libc_open64 (inlined)
->>      38.65%    38.60%  [kernel.vmlinux]          [k] apparmor_file_open                                                           -      -
->> 38.65% apparmor_file_open;security_file_open;do_dentry_open;vfs_open;path_openat;do_filp_open;do_sys_openat2;__x64_sys_openat;do_syscall_64;entry_SYSCALL_64_after_hwframe;__libc_open64 (inlined)
->> 
->> The result is a throughput improvement of around 20% across the board
->> on the open2 testcase. On more realistic workloads the impact should
->> be much less.
->> hrmmm, interesting. its a nice improvement
->
->> [1] https://github.com/antonblanchard/will-it-scale
->> 
->> Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
->
-> Acked-by: John Johansen <john.johansen@canonical.com>
->
-> do you want me to pull this into apparmor-next or do you have another
-> tree in mind
->
+Fixes: e9862118272a ("clk: mediatek: Add MT2701 clock support")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/clk/mediatek/clk-mt2701.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
--next is fine.
-
->> ---
->> Sending as RFC because I am not sure there's anything I am missing. My
->> read of the code tells me it should be fine.
->
-> it is
->
-
-Great. Do you want me to send a non-RFC version?
-
->> 
->>   security/apparmor/lsm.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
->> 
->> diff --git a/security/apparmor/lsm.c b/security/apparmor/lsm.c
->> index 108eccc5ada5..98e65c44ddd5 100644
->> --- a/security/apparmor/lsm.c
->> +++ b/security/apparmor/lsm.c
->> @@ -766,9 +766,9 @@ static void apparmor_bprm_committed_creds(struct linux_binprm *bprm)
->>   
->>   static void apparmor_current_getsecid_subj(u32 *secid)
->>   {
->> -	struct aa_label *label = aa_get_current_label();
->> +	struct aa_label *label = __begin_current_label_crit_section();
->>   	*secid = label->secid;
->> -	aa_put_label(label);
->> +	__end_current_label_crit_section(label);
->>   }
->>   
->>   static void apparmor_task_getsecid_obj(struct task_struct *p, u32 *secid)
->
-
-Cheers,
+diff --git a/drivers/clk/mediatek/clk-mt2701.c b/drivers/clk/mediatek/clk-mt2701.c
+index c81f3e33ce56..12d9560eb4ba 100644
+--- a/drivers/clk/mediatek/clk-mt2701.c
++++ b/drivers/clk/mediatek/clk-mt2701.c
+@@ -667,6 +667,8 @@ static int mtk_topckgen_init(struct platform_device *pdev)
+ 		return PTR_ERR(base);
+ 
+ 	clk_data = mtk_alloc_clk_data(CLK_TOP_NR);
++	if (!clk_data)
++		return -ENOMEM;
+ 
+ 	mtk_clk_register_fixed_clks(top_fixed_clks, ARRAY_SIZE(top_fixed_clks),
+ 								clk_data);
+@@ -747,6 +749,8 @@ static void __init mtk_infrasys_init_early(struct device_node *node)
+ 
+ 	if (!infra_clk_data) {
+ 		infra_clk_data = mtk_alloc_clk_data(CLK_INFRA_NR);
++		if (!infra_clk_data)
++			return;
+ 
+ 		for (i = 0; i < CLK_INFRA_NR; i++)
+ 			infra_clk_data->hws[i] = ERR_PTR(-EPROBE_DEFER);
+@@ -774,6 +778,8 @@ static int mtk_infrasys_init(struct platform_device *pdev)
+ 
+ 	if (!infra_clk_data) {
+ 		infra_clk_data = mtk_alloc_clk_data(CLK_INFRA_NR);
++		if (!infra_clk_data)
++			return -ENOMEM;
+ 	} else {
+ 		for (i = 0; i < CLK_INFRA_NR; i++) {
+ 			if (infra_clk_data->hws[i] == ERR_PTR(-EPROBE_DEFER))
+@@ -890,6 +896,8 @@ static int mtk_pericfg_init(struct platform_device *pdev)
+ 		return PTR_ERR(base);
+ 
+ 	clk_data = mtk_alloc_clk_data(CLK_PERI_NR);
++	if (!clk_data)
++		return -ENOMEM;
+ 
+ 	mtk_clk_register_gates(&pdev->dev, node, peri_clks,
+ 			       ARRAY_SIZE(peri_clks), clk_data);
 -- 
-Vinicius
+2.25.1
+
