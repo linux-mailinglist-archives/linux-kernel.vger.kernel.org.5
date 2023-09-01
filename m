@@ -2,103 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA5C78FBEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E96C278FBED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349025AbjIAKuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:50:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56556 "EHLO
+        id S1349040AbjIAKwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:52:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232274AbjIAKuI (ORCPT
+        with ESMTP id S232274AbjIAKwF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:50:08 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D9E10CE;
-        Fri,  1 Sep 2023 03:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693565406; x=1725101406;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=L/uLuZeboGzKjlFIWvQqacqx9NwrlrJDn8jGpBy5COM=;
-  b=iSp5BsJEulw2dGCj4V0HRURg6u8FezkJcEi2WlVJPwb/z1yHjdKMDCPE
-   6qS4qJJ4oemEIRZEuDzNtZ4M7LXD1T6+HWc/ViTpE+rXyGPc+4ZMmF3Rj
-   OiNwSa9bHTFwSp25niY8RI0VrH46GFcbPfX+vQv/bN2Jv6BPkOgyHfeoP
-   AemRmfG2FCGKzOOEcUmtZ3pDil5VwhSf9YCH6NpVG/gd8jvKZCU28CkwI
-   4pSCuE6JwMtFfotGYYZQqfr4taDC9p4zU6VtSGKVE9nisI9h1V2nAgDuu
-   TznRVVsVgj0cn5jnOSUKt50VtjCiojtXodTaVUpQV60xZBtaNQIpq8k3r
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="366420794"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="366420794"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 03:50:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="1070705753"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="1070705753"
-Received: from pboudier-mobl.ger.corp.intel.com ([10.252.47.249])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 03:50:02 -0700
-Date:   Fri, 1 Sep 2023 13:50:00 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Shravan Kumar Ramani <shravankr@nvidia.com>
-cc:     Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <markgross@kernel.org>,
-        Vadim Pasternak <vadimp@nvidia.com>,
-        David Thompson <davthompson@nvidia.com>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 3/3] platform/mellanox: mlxbf-pmc: Add support for
- BlueField-3
-In-Reply-To: <94d48f57b3625ff7021e11ebdf9facf5cfec36cc.1693545970.git.shravankr@nvidia.com>
-Message-ID: <1cff33c7-176f-4da7-98cd-bacea1b09b@linux.intel.com>
-References: <cover.1693545970.git.shravankr@nvidia.com> <94d48f57b3625ff7021e11ebdf9facf5cfec36cc.1693545970.git.shravankr@nvidia.com>
+        Fri, 1 Sep 2023 06:52:05 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C6E10CC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:52:02 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcb50e194dso32305731fa.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 03:52:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693565521; x=1694170321; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Xmp9WqBbQgAo1cevlJdH0YFWuDdqUeSzKBH4Ev5l8s=;
+        b=L5ynpmZDh6C13olvawaeYSu2qC8FlV5QwPw4S61lz/NyC0n4usnGqI+8D2N3Qcn36/
+         QXN2KEBYW4ieh5RrU0/OJHCFC2SZJVGcq4AALd/4aYkOft0YOb9ukeD+qgfnTU/aG5sP
+         fgtJZPS3WQ16TwqsCZ8Ft+FVS0CxQgyRKYoqhTNszRQHnRhHVeiRmtH/bvb1mWfzs2DE
+         T66DNebWNyyrRCDuk+fuFL8EiTdb0hv0MlRMLr+BK5qVmUpCZrIXZGG46G0tOMOmLkZu
+         oGeHNCqfbtEDd/JTh6vz5/7rMzef2zYsPlhahZiaoVAH8im4kMc6OelBYvuHkBVa7TXZ
+         W3Tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693565521; x=1694170321;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3Xmp9WqBbQgAo1cevlJdH0YFWuDdqUeSzKBH4Ev5l8s=;
+        b=huZkSg4nfwnXM12MHH08aIqB+TVk0HT4b+dOkJE1J2YHYhRrYFGwjfcPEWj7OheKRF
+         oeLWeJFPKDXfyqGsnNBkRVLO6Ai/fGyLgqbm2VVXcoPN6SrcJ5LfR4X3/d8aicIYdM0+
+         mwTXOuh9pO655tL0UkQbVh7dihYG6G0a6+nVcEPTfPiD4BRyYVPSDoTqT3qbyKUqCNgL
+         TcMGLZQ5vHPNT6cOw9sw/uv69qyldsMqH4YzmFEu4/I+ene441XQOeIOMg5quDzGAzm0
+         lPnOZDyS0gDVjtCu1RaZ5Pj+fdAG6RMQO3dAhq3eocGVBFdgUYnGjtkk1KzaE/OcFzp0
+         kE8g==
+X-Gm-Message-State: AOJu0Yxg2/pCjLldtyLQSPN8m3mJYO/YX23uN8gu44bZtpXbr0eRagEu
+        iqd+/DOAXPK51WexMToUUBo=
+X-Google-Smtp-Source: AGHT+IGGkITGqugrHo6c9lWxjv069VV2n6HMgoHi23eIRSVL/TtfI5z/CRm5kFpMVR3m/saeOUWXIQ==
+X-Received: by 2002:a2e:7403:0:b0:2b6:cdfb:d06a with SMTP id p3-20020a2e7403000000b002b6cdfbd06amr1275906ljc.22.1693565520727;
+        Fri, 01 Sep 2023 03:52:00 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2501:c701:64d6:8737:b80d:a298])
+        by smtp.gmail.com with ESMTPSA id 16-20020a05600c025000b003fee7b67f67sm4497495wmj.31.2023.09.01.03.51.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 03:52:00 -0700 (PDT)
+From:   Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] riscv: Kconfig: Select DMA_DIRECT_REMAP only if MMU is enabled
+Date:   Fri,  1 Sep 2023 11:51:11 +0100
+Message-Id: <20230901105111.311200-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Sep 2023, Shravan Kumar Ramani wrote:
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-> Add new access mechanism and list of supported events to program
-> and read the counters in BlueField-3.
-> Performance counter blocks being added for BlueField-3 include:
->   - Memory Sub-system (mss) which has counters for monitoring
-> various DRAM and related skylib events
->   - Last level Tile, which has 2 sets of counters (llt, llt_miss)
-> for monitoring Tile and cache metrics
-> 
-> Signed-off-by: Shravan Kumar Ramani <shravankr@nvidia.com>
-> Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
-> Reviewed-by: David Thompson <davthompson@nvidia.com>
-> ---
->  drivers/platform/mellanox/mlxbf-pmc.c | 685 ++++++++++++++++++++++++--
->  1 file changed, 653 insertions(+), 32 deletions(-)
+kernel/dma/mapping.c has its use of pgprot_dmacoherent() inside
+an #ifdef CONFIG_MMU block. kernel/dma/pool.c has its use of
+pgprot_dmacoherent() inside an #ifdef CONFIG_DMA_DIRECT_REMAP block.
+So select DMA_DIRECT_REMAP only if MMU is enabled for RISCV_DMA_NONCOHERENT
+config.
 
-> -	ret = device_property_read_u32(dev, "tile_num", &pmc->tile_count);
-> -	if (ret)
-> -		return ret;
-> +	if (device_property_read_u32(dev, "tile_num", &pmc->tile_count)) {
-> +		if (device_property_read_u8(dev, "llt_enable",
-> +					    &pmc->llt_enable)) {
+This avoids users to explicitly select MMU.
 
-Just put this into a single line.
+Suggested-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ arch/riscv/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +			dev_err(dev, "Number of tiles/LLTs undefined\n");
-> +			return -EINVAL;
-> +		}
-> +		if (device_property_read_u8(dev, "mss_enable",
-> +					    &pmc->mss_enable)) {
-
-Ditto.
-
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 468063780a93..a065abdc80e3 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -273,7 +273,7 @@ config RISCV_DMA_NONCOHERENT
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+ 	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+ 	select DMA_BOUNCE_UNALIGNED_KMALLOC if SWIOTLB
+-	select DMA_DIRECT_REMAP
++	select DMA_DIRECT_REMAP if MMU
+ 
+ config RISCV_NONSTANDARD_CACHE_OPS
+ 	bool
 -- 
- i.
+2.34.1
 
