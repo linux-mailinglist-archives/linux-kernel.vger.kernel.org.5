@@ -2,58 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC0F78FC0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:04:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABCA878FC0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349072AbjIALEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:04:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        id S1345922AbjIALGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:06:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238117AbjIALEA (ORCPT
+        with ESMTP id S229763AbjIALGE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:04:00 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89562D7
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:03:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Fri, 1 Sep 2023 07:06:04 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AFAB10D2;
+        Fri,  1 Sep 2023 04:06:01 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 56A81B823FC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:03:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78B10C433C8;
-        Fri,  1 Sep 2023 11:03:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693566235;
-        bh=I2iaub0EMUJL2Csl2POps/A2Cg6Qycr9Mjw6FoE53Yo=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=J/iEKDs+QjF7IKgBXNVCVQgqUW8QNAKRuOH3NTCb7+7/cUcdo2nl8cg60JNHCFVvU
-         QImMLMDULNPtYXQJJpwF08Ws+sR0Dea7MvLmxrhFyvzmvYiF72j7khZ6ky5pJyzOE9
-         pqARkGIvugKX1kraKwTSaUVMbeNKvub7bonOFrlqSwn5FO+bXFXoua53kC+gXKTkXr
-         /sXu63zw14YDvVpRnkNEhSWZouAjuEj87qcp3r6ajesk06VJ8eljRxj9KfchOEQYwo
-         3UCNWKxWC/81xDI5rspn2ubSQFefu0uGpq1rTEOVN1TaQyJ6sBVAQowSE9kKPt5Lb7
-         A3Cj3ljJZYKpQ==
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0783F2185A;
+        Fri,  1 Sep 2023 11:06:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693566360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ddEY5hmSfZEknJMt5BoR/ARnTSJr3qAhZpAWd1WA6sQ=;
+        b=tujk+flZ+MtJfbZ24Hkdo/mLpNv2iBxplhrqI4DTvD6ardJEvbGN22FLMMCdL1JwkgG/+2
+        UtbMU0SLpsAzeGbt2SGkU+oRBWyJZMPKhiBXItouA8u5TvNXsAjaTVWGhDEKTmWJafBmr+
+        mvr9HU7Gna1Lx42+GAwrO4n0IKjZfYI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693566360;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ddEY5hmSfZEknJMt5BoR/ARnTSJr3qAhZpAWd1WA6sQ=;
+        b=1DPIkngrFTwgdEMkgQz8P5Y0/tY0WRXCjjRLeZLK4EnAC4eVNM1mjOjg5Xf9+aZecC2jQu
+        62xXsGSJRgmApRAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AAA8F13582;
+        Fri,  1 Sep 2023 11:05:59 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id ODsjJ5fF8WREdQAAMHmgww
+        (envelope-from <dkirjanov@suse.de>); Fri, 01 Sep 2023 11:05:59 +0000
+Message-ID: <7b8be7bd-baf2-15c0-2a0c-ddf64839a451@suse.de>
+Date:   Fri, 1 Sep 2023 14:05:59 +0300
 MIME-Version: 1.0
-Date:   Fri, 01 Sep 2023 13:03:51 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 06/41] mtd: spi-nor: default page_size to 256 bytes
-In-Reply-To: <f8fe1378-686f-5889-8f0f-e1cda237ee3f@linaro.org>
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-6-291a0f39f8d8@kernel.org>
- <f8fe1378-686f-5889-8f0f-e1cda237ee3f@linaro.org>
-Message-ID: <68f8c1224b5f5298ed423503f3580186@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3] fsl_ucc_hdlc: process the result of hold_open()
+Content-Language: en-US
+To:     =?UTF-8?B?0JDQu9C10LrRgdCw0L3QtNGA0LAg0JTRjtC/0LjQvdCw?= 
+        <adiupina@astralinux.ru>, Jakub Kicinski <kuba@kernel.org>,
+        Zhao Qiang <qiang.zhao@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+References: <896acfac-fadb-016b-20ff-a06e18edb4d9@csgroup.eu>
+ <20230828121235.13953-1-adiupina@astralinux.ru>
+ <20230828123849.69466f0a@kernel.org>
+ <977826f0-3289-53bd-b3f6-90977a4e0ca0@astralinux.ru>
+From:   Denis Kirjanov <dkirjanov@suse.de>
+In-Reply-To: <977826f0-3289-53bd-b3f6-90977a4e0ca0@astralinux.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,49 +82,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2023-08-24 10:36, schrieb Tudor Ambarus:
-> On 8/22/23 08:09, Michael Walle wrote:
->> The INFO() macro always set the page_size to 256 bytes. Make that an
->> optional parameter. This default is a sane one for all older flashes,
->> newer ones will set the page size by its SFDP tables anyway.
->> 
->> Signed-off-by: Michael Walle <mwalle@kernel.org>
->> Reviewed-by: Miquel Raynal <miquel.raynal@bootlin.com>
->> ---
->>  drivers/mtd/spi-nor/core.c | 7 +------
->>  drivers/mtd/spi-nor/core.h | 8 ++++++--
->>  2 files changed, 7 insertions(+), 8 deletions(-)
->> 
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index f4cc2eafcc5e..d27ad1295ee0 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -2018,11 +2018,6 @@ static const struct spi_nor_manufacturer 
->> *manufacturers[] = {
->>  static const struct flash_info spi_nor_generic_flash = {
->>  	.name = "spi-nor-generic",
->>  	.n_banks = 1,
->> -	/*
->> -	 * JESD216 rev A doesn't specify the page size, therefore we need a
->> -	 * sane default.
->> -	 */
->> -	.page_size = 256,
->>  	.parse_sfdp = true,
->>  };
->> 
->> @@ -3001,7 +2996,7 @@ static void spi_nor_init_default_params(struct 
->> spi_nor *nor)
->>  	params->writesize = 1;
->>  	params->size = info->size;
->>  	params->bank_size = params->size;
->> -	params->page_size = info->page_size;
->> +	params->page_size = info->page_size ?: SPI_NOR_DEFAULT_PAGE_SIZE;
+
+
+On 9/1/23 13:48, Александра Дюпина wrote:
+> Thanks for the review!
 > 
-> how about to get rid of info->page_size entirely and directly use the
-> default?
+> 28.08.2023 22:38, Jakub Kicinski пишет:
+>> Don't you have to undo all the things done prior to hdlc_open()?
+> Yes, it looks like I really need to undo everything that was done before hdlc_open().
+> But the question arose - would it be enough to call the uhdlc_close(dev) function?
 
-We'd first have to get rid of the Xilinx S3AN and the everspin stuff.
-They are still using a different page size. That being said, that's
-on my todo list.
+looks like it is.
 
--michael
+> In addition, it seems to me and my colleagues that a call to hdlc_close(dev) should be added to the uhdlc_close() function, similar to the 
+
+yes, take a look at the comment for hdlc_close()
+
+following functions:
+> 1. drivers/net/wan/n2.c (n2_close function)
+> 2. drivers/net/wan/pc300too.c (pc300_close function)
+> 3. drivers/net/wan/pci200syn.c (pci200_close function)
+> 4. drivers/net/wan/wanxl.c (wanxl_close function)
+> Tell me, please, are we wrong?
+> 
