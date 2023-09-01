@@ -2,144 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E4AD78FC12
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:07:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C0C78FC15
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:07:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349089AbjIALHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:07:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38832 "EHLO
+        id S1349100AbjIALHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:07:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242330AbjIALHN (ORCPT
+        with ESMTP id S233414AbjIALHk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:07:13 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B59410D2;
-        Fri,  1 Sep 2023 04:07:11 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26d1a17ce06so1306968a91.0;
-        Fri, 01 Sep 2023 04:07:11 -0700 (PDT)
+        Fri, 1 Sep 2023 07:07:40 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 973D210F0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:07:34 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-3fef2fafee2so49355e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:07:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693566430; x=1694171230; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1693566453; x=1694171253; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=bPUOMfLU4we4CjltUjwN44sx+Ez5EK03Lr9xq9NQohw=;
-        b=f8IA9xzGM7p+Fpyaa7UW7rwFtzfe7CvPyo+NlWXf2ChGZ2osL4bLeN/FHpbp0vqfns
-         d7jHgDg5SjCmWOkNGl8E6Dtaf3jW9tm6t66SXPq6UgG99hVv4PAzDZhklMCWUcYYnnrB
-         xvMQzKHTCt2Myy+s/SCEScrl3ggUU0OoHDp2xhPhUzX85fPYp1E4BbaHmf1N/OznhR58
-         ObN7rCTtMOEwCHdLlC8lM3ZjmCSwasMFWFS27WgLIf/NGkIqaIEdHDzTERovCMKViiwu
-         mVA05ydNMcNhuAv4AWzWsar0Bi51NfVR07aa5H2xeJ3zF5aYK2aBu/qXxlQrfaPugzdQ
-         DGKw==
+        bh=ZF7QmbvYJUWyLTiiJZH0vAH9wqTPWy/RK++Y8NS9peY=;
+        b=sY2Yso6INJTujb0ok9vq2vBaA7pLmnW9+8b3Oei5dSltHlsjjS6mDYjWhwsMzW7s66
+         4Oyz5SmkgM585vL7fDG9aSMUmDUiK/nuXQBbYahFB2lmDMpg9n4T11baKxFLSUFFboNd
+         tkliXVnB7gnCML8blEh7kr6X/HFyY1PacwjSVcoGhyEsLbHZSWr+EhHwCbyznwN2zLQd
+         eErwXa0VduwZ1pskP7ksBYrMrwEk8AzCn8vNU+HnqMRAx1U5uoS/XRE4/t1b68qjYIf+
+         ug9mfjDzsL8Ikfml477jSxcuEpWr4UbDwPvK8ZxvAdo9463XS0vxIZG2agl16orWj9hO
+         hmOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693566430; x=1694171230;
+        d=1e100.net; s=20221208; t=1693566453; x=1694171253;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bPUOMfLU4we4CjltUjwN44sx+Ez5EK03Lr9xq9NQohw=;
-        b=Dp4qzuhDxTLhWDz95vnoZPsoHGVSVMUr7ERGhrZeGq10KjXVRJwHT2j+a9Uqv+1Zll
-         /7534I+/TyWxFtWZkKYQv5rMV2yNPi35hKjI+N+NvmmXaYr3S2qsLpI5yAqlhC1YUWML
-         njiJYpq7610cVmEIoHql0I9RhZjesZqhlYONOQA8eVlwmIEbaf+FGgzPd8nl57GlosVm
-         Ac+hPGeCFgu2sdnhH98Oyq8qsdtTWF0febUmpneUR5TDCNOobQTJKopmhsNS/SSOZVHQ
-         qHbZjHpiVX7l4OXIyyNV+MCOnHzenO9rbybtJQhzgKnkVW7XO2eQ6CUvozWYI4tFxCSP
-         Ic0w==
-X-Gm-Message-State: AOJu0Yw0MrKirbnx8Jene1DzmiGo9S7zSFO6jV4gKzg/xmvr476P2c6B
-        zOcXO1Ujilh+t7/+o1kqdCDXSdqV96OOj3QfZsQ=
-X-Google-Smtp-Source: AGHT+IE2MCHN/JLIV3aZGEUAAMU6YT0YmbzRuP8i8CYwfT9g4LLvQK1VGtWvr2duPwboM58vGfo3BnTX2uUxdgkgWd0=
-X-Received: by 2002:a17:90a:5aa3:b0:26d:355a:47e3 with SMTP id
- n32-20020a17090a5aa300b0026d355a47e3mr1944668pji.38.1693566429840; Fri, 01
- Sep 2023 04:07:09 -0700 (PDT)
+        bh=ZF7QmbvYJUWyLTiiJZH0vAH9wqTPWy/RK++Y8NS9peY=;
+        b=ZzVqEtcgYq23bnGAKXz7ejAwfPRauDcVkHiMfsWGIKc7nPMp40Jc6aDxWA5MvYcjP/
+         zQabuLtoP1Ve/d6F4b87r+JvzBGYQExG8Dz4BnjmqqCi+iaGxIddNIlfCc/IcMNNK7LU
+         JunOqp6RRN1411Re+rQw4nP+UU5cMfrSxsi4AvO6u4dR7qI60VvPO7v0QO0a+fR0YY5p
+         C0v8w2rPd/MQ+f4kZIwpVDW5jPuXIReW71Sc6RGWOTpEDanex6nNXbVPzt9Mmv8NoWrW
+         1R2fRigLXXLhsZoPTXf/8ZP8o0gaoeHQH5JhOl5BdEH3LYXI3ROu9z+y/Zd8hbXuLG6Q
+         XpoA==
+X-Gm-Message-State: AOJu0YxgkrNqrRcayyoCi9fOWxi0OUohhoB0Z6uzaY0jLDwjzKGj948L
+        ygWgk3li5IRIanVX+eZxwTYzJl0lomvZO1CX7zkhH16yXRGLN5iCG6CMkA==
+X-Google-Smtp-Source: AGHT+IEko/ujs9GkS9oO5Tp3CX3QCsCTDzB1tdH/41M/YlHp6EdTK7Xx/Ixze8gzx9pu752jBCSd38w9DXkyTrS9n2U=
+X-Received: by 2002:a05:600c:4886:b0:3fe:cd3a:ef92 with SMTP id
+ j6-20020a05600c488600b003fecd3aef92mr123311wmp.6.1693566452937; Fri, 01 Sep
+ 2023 04:07:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230831044431.250338-1-aford173@gmail.com> <20230831044431.250338-2-aford173@gmail.com>
- <4d700304-3e10-a19b-d3f0-d0a1aec11580@denx.de>
-In-Reply-To: <4d700304-3e10-a19b-d3f0-d0a1aec11580@denx.de>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Fri, 1 Sep 2023 06:06:56 -0500
-Message-ID: <CAHCN7xJpug+ap4koX_3w_YTvHF9NC8-2S0f69SsDNY_6T+rcPQ@mail.gmail.com>
-Subject: Re: [PATCH V3 2/3] arm64: dts: imx8mp: Add micfil node
-To:     Marek Vasut <marex@denx.de>
-Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+References: <ZPCfeaBrzF433cWE@smile.fi.intel.com> <000000000000c5ab74060438a6f8@google.com>
+ <CANp29Y5GFuGe9=kBp-xmTb8tesLY4oAjewZ5c_31jmf8+AocBQ@mail.gmail.com>
+ <ZPC0GTe3yc9Kl8uh@smile.fi.intel.com> <CANp29Y62czRE-U=a0=ak0AkUv7vKZSECY9pnm74jEAuHRL1sxA@mail.gmail.com>
+ <ZPDA1Z8Hwq3jdvgh@smile.fi.intel.com>
+In-Reply-To: <ZPDA1Z8Hwq3jdvgh@smile.fi.intel.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Fri, 1 Sep 2023 13:07:20 +0200
+Message-ID: <CANp29Y5Bq1fo8pFWGxKT9NTNW_-C6vf=A_hUKG2BJey5JRrO1g@mail.gmail.com>
+Subject: Re: [syzbot] [kernel?] general protection fault in netdev_register_kobject
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     syzbot <syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com>,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        rafael@kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 4:53=E2=80=AFPM Marek Vasut <marex@denx.de> wrote:
+On Thu, Aug 31, 2023 at 6:33=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> On 8/31/23 06:44, Adam Ford wrote:
-> > The i.MX8MP has a micfil controller which is used for interfacing
-> > with a pulse density microphone. Add the node and mark it as
-> > disabled by default.
+> On Thu, Aug 31, 2023 at 05:53:29PM +0200, Aleksandr Nogikh wrote:
+> > On Thu, Aug 31, 2023 at 5:39=E2=80=AFPM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Thu, Aug 31, 2023 at 04:15:23PM +0200, Aleksandr Nogikh wrote:
+> > > > #syz dup: general protection fault in nfc_register_device
+> > >
+> > > Thanks!
+> > >
+> > > Maybe you can improve it to
+> > > 1) drop those prefixes by itself;
 > >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > ---
-> > V3:  The AUDIOMIX_PDM_ROOT doesn't exist and the real clock is
-> >       called IMX8MP_CLK_AUDIOMIX_PDM_SEL, so swap it out.
+> > Yeah, I've just thought about it too when I was correcting the command.
 > >
-> > V2:  No change
+> > > 2) explain better in the quick help below what "exact" means.
+> > >
+> > > Also is it possible to test just patches without repository?
+> > > Can you add this feature when you simply submit a message ID
+> > > to it and it uses lore.kernel.org for the patch or series?
 > >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boo=
-t/dts/freescale/imx8mp.dtsi
-> > index 3167706d81e1..341fd0369ce9 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
-> > @@ -1479,6 +1479,27 @@ easrc: easrc@30c90000 {
-> >                                       fsl,asrc-format =3D <2>;
-> >                                       status =3D "disabled";
-> >                               };
-> > +
-> > +                             micfil: audio-controller@30ca0000 {
-> > +                                     compatible =3D "fsl,imx8mp-micfil=
-";
-> > +                                     reg =3D <0x30ca0000 0x10000>;
-> > +                                     #sound-dai-cells =3D <0>;
-> > +                                     interrupts =3D <GIC_SPI 109 IRQ_T=
-YPE_LEVEL_HIGH>,
-> > +                                                  <GIC_SPI 110 IRQ_TYP=
-E_LEVEL_HIGH>,
-> > +                                                  <GIC_SPI 44 IRQ_TYPE=
-_LEVEL_HIGH>,
-> > +                                                  <GIC_SPI 45 IRQ_TYPE=
-_LEVEL_HIGH>;
-> > +                                     clocks =3D <&audio_blk_ctrl IMX8M=
-P_CLK_AUDIOMIX_PDM_IPG>,
-> > +                                              <&audio_blk_ctrl IMX8MP_=
-CLK_AUDIOMIX_PDM_SEL>,
-> > +                                              <&clk IMX8MP_AUDIO_PLL1_=
-OUT>,
-> > +                                              <&clk IMX8MP_AUDIO_PLL2_=
-OUT>,
-> > +                                              <&clk IMX8MP_CLK_EXT3>;
-> > +                                     clock-names =3D "ipg_clk", "ipg_c=
-lk_app",
-> > +                                                   "pll8k", "pll11k", =
-"clkext3";
-> > +                                     dmas =3D <&sdma2 24 25 0x80000000=
->;
-> > +                                     dma-names =3D "rx";
+> > Thanks, these are good suggestions!
+> > The first one is easy to do (we actually already support that
+> > internally, so only a small change is needed), the second one is a bit
+> > trickier, but I'll look into that.
+
+FTR I've just sent two PRs:
+1) Support `#syz test` without arguments -- in that case, syzbot
+checks out the latest commit on the fuzzed branch.
+2) Parse all kinds of email titles in `#syz dup`.
+
+I'll deploy them soon.
+
 >
-> Is dma-names really required if there is only a single DMA channel in DT =
-?
+> JFYI:
+> 20230828145824.3895288-1-andriy.shevchenko@linux.intel.com
+>
+> Can be used for testing.
+> So I like to write
+>
+> #syz test patch: 20230828145824.3895288-1-andriy.shevchenko@linux.intel.c=
+om
 
-I would normally agree with you, the DT binding file shows it's
-required, and the driver looks like it's searching for a channel name
-called 'rx'
+Thanks for the idea!
+I've filed https://github.com/google/syzkaller/issues/4182
 
-adam
+The biggest problem is to figure out the command syntax that'd also
+let us specify the tree on which to apply the patch. Or to restrict
+the patch testing to either apply the patch from lore on top of the
+fuzzed tree or to accept repo/branch/patch explicitly.
+
+>
+> The responses can be (among others?):
+> 1/ tested and test results;
+> 2/ not found.
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
