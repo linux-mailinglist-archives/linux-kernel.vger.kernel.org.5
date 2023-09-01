@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F01D78FE89
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7E578FE7E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349842AbjIANnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51310 "EHLO
+        id S232279AbjIANnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349866AbjIANn2 (ORCPT
+        with ESMTP id S229649AbjIANnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:43:28 -0400
+        Fri, 1 Sep 2023 09:43:13 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F611709
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:43:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E5A1712
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:42:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693575791; x=1725111791;
+  t=1693575758; x=1725111758;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=2IedCP0iUzia28wCwNPou4hz5kxeqqUDBtslkvZspeQ=;
-  b=lJxWN3yVa32nVL4C6oR1MstdudCoB5FcHM8CPgiKEBh8X6aovYyrrZ+v
-   CEXDIQi/7fWYXPk3BtIPxh48GO9AIZ1tpJ1W2KV9Jc6QLG6tvxnmpUEE8
-   vonNX8hxj6iFQHa3KtzsIr/JwSDZe8iyAawyJQTwRHquPIY7Lo47HwqOZ
-   nKaEPo/o1xIHKRUSzM+oh8g38OrrpjBdRCe7R2tGTFxufqmQpdlDwTauS
-   XkUvTBWw8przIU+fdhyTw1mxVOfmViyXD4kSj8TAQo8pEFLZwhwbkbHE7
-   sJoseJIA2So0LCbg+/JSMEjXdz9Bsjyl7Y5EvhENWOPuAcG34cM5pOc6w
+  bh=d0YrXbSatEME/b+INV4Zdy0fZgic8gHBbo7ZznXvK54=;
+  b=gy5QWmO67drrT87RitXpiPgcJca4q12A57q8hPDgjHSsB9OahHf6ZZLL
+   Df2ya13FTS+AeU4aoE4MgzPdx+cu7rHBqb1cWnlajrxoTBCsJr9PgkYfm
+   x/z7C7hFQWCn8joe/ei5EFuX3stgblzx1Zaf7nlm7mo5Sm9k4rQ0PryRw
+   cunyDisV5wvWYaySTApimB24/MnkF+rHUokjo0tjw0Ri7arNVI/CbLHmN
+   nr4D0a/TDG3K9H8P9Y5lWMNWCkURZy4nrXW1NNcVFrMAZmIUwrBFCKmXq
+   w+uw85ImkuXowJEVEq2Zlt2ri3IxTKEdt5cPvdfo04tNXWWZwtqtY81m7
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="361247238"
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="361247237"
 X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="361247238"
+   d="scan'208";a="361247237"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:42:21 -0700
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:42:20 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="805437331"
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="805437332"
 X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="805437331"
+   d="scan'208";a="805437332"
 Received: from black.fi.intel.com ([10.237.72.28])
   by fmsmga008.fm.intel.com with ESMTP; 01 Sep 2023 06:42:19 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id 9983571E; Fri,  1 Sep 2023 16:42:18 +0300 (EEST)
+        id A72F678D; Fri,  1 Sep 2023 16:42:18 +0300 (EEST)
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v1 2/3] resource: Unify next_resource() and next_resource_skip_children()
-Date:   Fri,  1 Sep 2023 16:42:16 +0300
-Message-Id: <20230901134217.1172891-2-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 3/3] resource: Constify resource crosscheck APIs
+Date:   Fri,  1 Sep 2023 16:42:17 +0300
+Message-Id: <20230901134217.1172891-3-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 In-Reply-To: <20230901134217.1172891-1-andriy.shevchenko@linux.intel.com>
 References: <20230901134217.1172891-1-andriy.shevchenko@linux.intel.com>
@@ -61,62 +61,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We have the next_resource() is used once and no user for the
-next_resource_skip_children() outside of the for_each_resource().
-
-Unify them by adding skip_children parameter to the next_resource().
+Constify APIs: _contains(), _overlaps(), _intersection(), _union().
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- kernel/resource.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ include/linux/ioport.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/kernel/resource.c b/kernel/resource.c
-index 86716cd566e9..866ef3663a0b 100644
---- a/kernel/resource.c
-+++ b/kernel/resource.c
-@@ -56,26 +56,17 @@ struct resource_constraint {
- 
- static DEFINE_RWLOCK(resource_lock);
- 
--static struct resource *next_resource(struct resource *p)
-+static struct resource *next_resource(struct resource *p, bool skip_children)
+diff --git a/include/linux/ioport.h b/include/linux/ioport.h
+index 25d768d48970..14f5cfabbbc8 100644
+--- a/include/linux/ioport.h
++++ b/include/linux/ioport.h
+@@ -229,7 +229,7 @@ static inline unsigned long resource_ext_type(const struct resource *res)
+ 	return res->flags & IORESOURCE_EXT_TYPE_BITS;
+ }
+ /* True iff r1 completely contains r2 */
+-static inline bool resource_contains(struct resource *r1, struct resource *r2)
++static inline bool resource_contains(const struct resource *r1, const struct resource *r2)
  {
--	if (p->child)
-+	if (!skip_children && p->child)
- 		return p->child;
- 	while (!p->sibling && p->parent)
- 		p = p->parent;
- 	return p->sibling;
+ 	if (resource_type(r1) != resource_type(r2))
+ 		return false;
+@@ -239,13 +239,13 @@ static inline bool resource_contains(struct resource *r1, struct resource *r2)
  }
  
--static struct resource *next_resource_skip_children(struct resource *p)
--{
--	while (!p->sibling && p->parent)
--		p = p->parent;
--	return p->sibling;
--}
--
- #define for_each_resource(_root, _p, _skip_children) \
--	for ((_p) = (_root)->child; (_p); \
--	     (_p) = (_skip_children) ? next_resource_skip_children(_p) : \
--				       next_resource(_p))
-+	for ((_p) = (_root)->child; (_p); (_p) = next_resource(_p, _skip_children))
- 
- #ifdef CONFIG_PROC_FS
- 
-@@ -100,8 +91,10 @@ static void *r_start(struct seq_file *m, loff_t *pos)
- static void *r_next(struct seq_file *m, void *v, loff_t *pos)
+ /* True if any part of r1 overlaps r2 */
+-static inline bool resource_overlaps(struct resource *r1, struct resource *r2)
++static inline bool resource_overlaps(const struct resource *r1, const struct resource *r2)
  {
- 	struct resource *p = v;
-+
- 	(*pos)++;
--	return (void *)next_resource(p);
-+
-+	return (void *)next_resource(p, false);
+        return r1->start <= r2->end && r1->end >= r2->start;
  }
  
- static void r_stop(struct seq_file *m, void *v)
+-static inline bool
+-resource_intersection(struct resource *r1, struct resource *r2, struct resource *r)
++static inline bool resource_intersection(const struct resource *r1, const struct resource *r2,
++					 struct resource *r)
+ {
+ 	if (!resource_overlaps(r1, r2))
+ 		return false;
+@@ -254,8 +254,8 @@ resource_intersection(struct resource *r1, struct resource *r2, struct resource
+ 	return true;
+ }
+ 
+-static inline bool
+-resource_union(struct resource *r1, struct resource *r2, struct resource *r)
++static inline bool resource_union(const struct resource *r1, const struct resource *r2,
++				  struct resource *r)
+ {
+ 	if (!resource_overlaps(r1, r2))
+ 		return false;
 -- 
 2.40.0.1.gaa8946217a0b
 
