@@ -2,179 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2351578F7E6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 07:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E63478F7F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 07:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348252AbjIAFN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 01:13:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36120 "EHLO
+        id S244448AbjIAFVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 01:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345281AbjIAFNz (ORCPT
+        with ESMTP id S229962AbjIAFVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 01:13:55 -0400
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D7E7F
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 22:13:50 -0700 (PDT)
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-4ff8cf11b90so2962886e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 22:13:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693545229; x=1694150029;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:reply-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=af/4U1Rpctq0xn22z8gnl3fN8uEEmTY03VxkSbZqf7w=;
-        b=XJTEPURD213Cwohx/jsfKNeXzYCeY8n2fT1nBXccb3w2X0ZvL+g25uMIoROUpDF56M
-         a6xbqFsOZ5kl/h5MKDhu15bePZuYwygOldNt0N+BQbLatuGAccEOaNIOufHO/HGH0gRD
-         QrreqNsDcacjhTUybq4thsKZ5IXVlheA/VuMiijqLyNuwZHMAdx6xeOpU0pAA5on9lSO
-         ssa8oAQCrcBJQ/H4Sn+19bmSbMkdkpZBhKKOSuUH3deUiLXFw8Asqpryu13GMF+vlHqm
-         knhKR7DNExc5xW1EoG0FyKWOKgMGB1jp78iEVnHdCypqlyxelUQbzF9qE0QsCGsh4Eog
-         hupA==
-X-Gm-Message-State: AOJu0YzjDO43cjW2xQooS1iHb1W+qrz1hkaN3wXaErF+FoTZHQPe+rOA
-        bSpMN7EbacHv/ohIZ+lJAaOb4MzK/olmu80REsI/3J3T
-X-Google-Smtp-Source: AGHT+IH6lMHGk3UIs0Aikzj/5UPchwNn22edRT/IVO/IuY1Z60LnUxSEWtAJ+o7L1HOvG/YdosozOA==
-X-Received: by 2002:a05:6512:2302:b0:4f9:cd02:4aec with SMTP id o2-20020a056512230200b004f9cd024aecmr1069353lfu.29.1693545228858;
-        Thu, 31 Aug 2023 22:13:48 -0700 (PDT)
-Received: from fedora.fritz.box (p549458cf.dip0.t-ipconnect.de. [84.148.88.207])
-        by smtp.gmail.com with ESMTPSA id lh7-20020a170906f8c700b0098e34446464sm1549982ejb.25.2023.08.31.22.13.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 31 Aug 2023 22:13:47 -0700 (PDT)
-Date:   Fri, 1 Sep 2023 07:13:45 +0200
-From:   Damian Tometzki <dtometzki@fedoraproject.org>
-To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Jeff Xu <jeffxu@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        stable@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] memfd: improve userspace warnings for missing
- exec-related flags
-Message-ID: <ZPFzCSIgZ4QuHsSC@fedora.fritz.box>
-Reply-To: Damian Tometzki <dtometzki@fedoraproject.org>
-Mail-Followup-To: Aleksa Sarai <cyphar@cyphar.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, Jeff Xu <jeffxu@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Dominique Martinet <asmadeus@codewreck.org>, stable@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
-References: <20230814-memfd-vm-noexec-uapi-fixes-v2-0-7ff9e3e10ba6@cyphar.com>
- <20230814-memfd-vm-noexec-uapi-fixes-v2-3-7ff9e3e10ba6@cyphar.com>
+        Fri, 1 Sep 2023 01:21:30 -0400
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1077E7E;
+        Thu, 31 Aug 2023 22:21:25 -0700 (PDT)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3815L8sO110355;
+        Fri, 1 Sep 2023 00:21:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693545668;
+        bh=J0hVox480wdeTLrybfvYeJEAE1VGg4oiahSoZh+Hb9U=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=hrRuoQZst2kYRNwCjN5sb5qw4DMiOSIrTraRLJz2CxQ09VrKV8uXChLNHuU6nESFR
+         7WNWIHBJP9SSgWwWv0tWZqgZDCgVJ1k3nQxFZbmM8Zvr6YLEPDWrC+vEIGTvB1pGRq
+         snrj9k7P3FBEMUkUT1cpp/ctGzEuOZqozt5ejpzE=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3815L8vX020444
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 1 Sep 2023 00:21:08 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 1
+ Sep 2023 00:21:08 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 1 Sep 2023 00:21:08 -0500
+Received: from [172.24.227.217] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3815L2Kl028289;
+        Fri, 1 Sep 2023 00:21:03 -0500
+Message-ID: <90669794-2fc1-bff1-104b-cf1daa2e9998@ti.com>
+Date:   Fri, 1 Sep 2023 10:51:02 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814-memfd-vm-noexec-uapi-fixes-v2-3-7ff9e3e10ba6@cyphar.com>
-User-Agent: Mutt
-X-Spam-Status: No, score=-1.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH net-next 1/2] dt-bindings: net: Add documentation for
+ Half duplex support.
+Content-Language: en-US
+To:     Rob Herring <robh@kernel.org>, MD Danish Anwar <danishanwar@ti.com>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Simon Horman <horms@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <srk@ti.com>, <r-gunasekaran@ti.com>
+References: <20230830113134.1226970-1-danishanwar@ti.com>
+ <20230830113134.1226970-2-danishanwar@ti.com>
+ <20230831181636.GA2484338-robh@kernel.org>
+From:   Md Danish Anwar <a0501179@ti.com>
+Organization: Texas Instruments
+In-Reply-To: <20230831181636.GA2484338-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14. Aug 18:40, Aleksa Sarai wrote:
-> In order to incentivise userspace to switch to passing MFD_EXEC and
-> MFD_NOEXEC_SEAL, we need to provide a warning on each attempt to call
-> memfd_create() without the new flags. pr_warn_once() is not useful
-> because on most systems the one warning is burned up during the boot
-> process (on my system, systemd does this within the first second of
-> boot) and thus userspace will in practice never see the warnings to push
-> them to switch to the new flags.
+Hi Rob,
+
+On 31/08/23 11:46 pm, Rob Herring wrote:
+> On Wed, Aug 30, 2023 at 05:01:33PM +0530, MD Danish Anwar wrote:
+>> In order to support half-duplex operation at 10M and 100M link speeds, the
+>> PHY collision detection signal (COL) should be routed to ICSSG
+>> GPIO pin (PRGx_PRU0/1_GPI10) so that firmware can detect collision signal
+>> and apply the CSMA/CD algorithm applicable for half duplex operation. A DT
+>> property, "ti,half-duplex-capable" is introduced for this purpose. If
+>> board has PHY COL pin conencted to PRGx_PRU1_GPIO10, this DT property can
+>> be added to eth node of ICSSG, MII port to support half duplex operation at
+>> that port.
 > 
-> The original patchset[1] used pr_warn_ratelimited(), however there were
-> concerns about the degree of spam in the kernel log[2,3]. The resulting
-> inability to detect every case was flagged as an issue at the time[4].
-> 
-> While we could come up with an alternative rate-limiting scheme such as
-> only outputting the message if vm.memfd_noexec has been modified, or
-> only outputting the message once for a given task, these alternatives
-> have downsides that don't make sense given how low-stakes a single
-> kernel warning message is. Switching to pr_info_ratelimited() instead
-> should be fine -- it's possible some monitoring tool will be unhappy
-> with a stream of warning-level messages but there's already plenty of
-> info-level message spam in dmesg.
-> 
-> [1]: https://lore.kernel.org/20221215001205.51969-4-jeffxu@google.com/
-> [2]: https://lore.kernel.org/202212161233.85C9783FB@keescook/
-> [3]: https://lore.kernel.org/Y5yS8wCnuYGLHMj4@x1n/
-> [4]: https://lore.kernel.org/f185bb42-b29c-977e-312e-3349eea15383@linuxfoundation.org/
-> 
-> Cc: stable@vger.kernel.org # v6.3+
-> Fixes: 105ff5339f49 ("mm/memfd: add MFD_NOEXEC_SEAL and MFD_EXEC")
-> Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
-> ---
->  mm/memfd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memfd.c b/mm/memfd.c
-> index d65485c762de..aa46521057ab 100644
-> --- a/mm/memfd.c
-> +++ b/mm/memfd.c
-> @@ -315,7 +315,7 @@ SYSCALL_DEFINE2(memfd_create,
->  		return -EINVAL;
+> I take it the GPIO here is not visble to the OS and that's why it's not 
+> described in DT?
 >  
->  	if (!(flags & (MFD_EXEC | MFD_NOEXEC_SEAL))) {
-> -		pr_warn_once(
-> +		pr_info_ratelimited(
->  			"%s[%d]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set\n",
->  			current->comm, task_pid_nr(current));
->  	}
+
+Yes the GPIO here is not visible in the OS and we need to indicate whether the
+PHY COL signal is routed to PRGx_PRU0/1_GPI10 pin or not by setting the
+property "ti,half-duplex-capable" as true.
+
+>>
+>> Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+>> ---
+>>  Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml | 7 +++++++
+>>  1 file changed, 7 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+>> index 13371159515a..59da9aeaee7e 100644
+>> --- a/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+>> +++ b/Documentation/devicetree/bindings/net/ti,icssg-prueth.yaml
+>> @@ -107,6 +107,13 @@ properties:
+>>                phandle to system controller node and register offset
+>>                to ICSSG control register for RGMII transmit delay
+>>  
+>> +          ti,half-duplex-capable:
 > 
-> -- 
-> 2.41.0
->
-Hello Sarai,
+> capable or...
+> 
+>> +            type: boolean
+>> +            description:
+>> +              Enable half duplex operation on ICSSG MII port. This requires
+> 
+> enable the mode?
+> 
 
-i got a lot of messages in dmesg with this. DMESG is unuseable with
-this. 
-[ 1390.349462] __do_sys_memfd_create: 5 callbacks suppressed
-[ 1390.349468] pipewire-pulse[2930]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.350106] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.350366] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.359390] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.359453] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.848813] pipewire-pulse[2930]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.849425] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.849673] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.857629] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1390.857674] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1404.819637] __do_sys_memfd_create: 105 callbacks suppressed
-[ 1404.819641] pipewire-pulse[2930]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1404.819950] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1404.820054] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1404.824240] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1404.824279] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.373186] pipewire-pulse[2930]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.373906] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.374131] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.382397] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.382485] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.499581] pipewire-pulse[2930]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.500077] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.500265] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.512772] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1430.512840] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.388519] __do_sys_memfd_create: 60 callbacks suppressed
-[ 1444.388525] pipewire-pulse[2930]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.389061] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.389335] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.397909] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.397965] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.503514] pipewire-pulse[2930]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.503658] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.503726] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.507841] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1444.507870] pipewire[2712]: memfd_create() called without MFD_EXEC or MFD_NOEXEC_SEAL set
-[ 1449.707966] __do_sys_memfd_create: 25 callbacks suppressed
+I think capable is good here. The property "ti,half-duplex-capable" indicates
+that the board is capable of half duplex operation. This doesn't necessarily
+means we have to enable the half duplex mode. The user can modify the duplex
+settings from ethtool and enable / disable is controlled by the user. This
+property basically let's the driver know that it can support half duplex
+operations and when user enables half duplex mode through ethtool, the driver
+can do the necessary configurations.
 
-Best regards
-Damian
- 
+When this property is false, half duplex is not supported. If user still wants
+to change the duplex mode, it will get an error saying half duplex is not
+supported.
+
+So the property "ti,half-duplex-capable" let's the driver know whether half
+duplex is supported or not. Enable / disable is controlled by user through ethtool.
+
+> Maybe too late if it's already been assumed not supported, but shouldn't 
+> supporting half duplex be the default? I guess half duplex isn't too 
+> common any more.
+> 
+
+Unfortunately ICSSG doesn't support half duplex by default. Routing the PHY COL
+signal is necessary.
+
+> Rob
+
+-- 
+Thanks and Regards,
+Danish.
