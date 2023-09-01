@@ -2,66 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0892A7900EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F300D7900EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:48:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235995AbjIAQsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 12:48:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33774 "EHLO
+        id S1348373AbjIAQsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 12:48:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245572AbjIAQsT (ORCPT
+        with ESMTP id S1347241AbjIAQsk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 12:48:19 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC33110EF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:48:15 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-57013c62b3dso2495892a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 09:48:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693586895; x=1694191695; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IIsKqJP4zzJnSyLtJubxxUR230WOWQDNF6SlEkb/jpc=;
-        b=s1EqejacUZZCmzLZim6NEbR+SnpW8IIv6hi0m/U53bdva5esdXoL3tVNTmr+EeYqzo
-         9jZPDE5ESP3WexfpVL4sqVpsq7AyxLbiYIaagA2fM+DHGQ6JAAuE9zPSgIls+8MyS6O9
-         7iTtKlIDd20WumFP98mwKmosU8xTHTsOIPRB8eBGhrINNr9EtiTgOhhBr4iisG/8QCxw
-         URX1W+nm6rPsBUMQUQ3iNNkIg2+LKB9JOIc/Xq1oo2LH4UdTccCdG0M6pZEcDONbxoA/
-         o9erhNv6N+mW9IP4sIt3GzBmo8+PPCi4n5idfUIzt66rivpEARqsK3exUGbKI4o0fiN1
-         ijhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693586895; x=1694191695;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IIsKqJP4zzJnSyLtJubxxUR230WOWQDNF6SlEkb/jpc=;
-        b=gRihBYgd2hvSN2B683esZaZJjqcA9/2msk9ETuFuxtUE9eUe99+izMsYtFByXxMGKv
-         MIaxjJAdlsf/wpVSq5WbC0VBretMAlxmJjSw+Yt8/ob/40/IfRKHQdqhOmniaJw0kFIV
-         UoEVHsc2zZVq6jZI10KtMLS//+I1cG8cJN3pkvk8Gvc05I3t8sQL2Q3HAHlfecuY5NIM
-         IlublvvbemJ6wV/RFhYNa0xObk0Jr7Z63w4QV0kEA5JHnPhx8ukaHczk+LUGBCvNkRYp
-         bdHKwV/00DgQhBV4iVtX3wbwaTwQr2zjALomJj1HgLIDHKzYMMME//xhz82mzlsnBnDs
-         7xoA==
-X-Gm-Message-State: AOJu0YylOZf5sTg9fQeT/0pw5YG+3gDVS39mMZpkAgQPviz/XS3+Tgz4
-        p7TL4hbfHtkx7gAnyzKh3reEfuBGfJI=
-X-Google-Smtp-Source: AGHT+IH0+/Ice7G2IFVCmnmdzDOJ1RDHe9ugKzbFkW4mWYvVU/kgmm5gEkk6OnoadSNh1wbQ63PF5BW3Yqk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:ee0f:0:b0:56c:2f67:7294 with SMTP id
- e15-20020a63ee0f000000b0056c2f677294mr538903pgi.5.1693586895252; Fri, 01 Sep
- 2023 09:48:15 -0700 (PDT)
-Date:   Fri, 1 Sep 2023 09:48:13 -0700
-In-Reply-To: <20230902175431.2925-1-zeming@nfschina.com>
-Mime-Version: 1.0
-References: <20230902175431.2925-1-zeming@nfschina.com>
-Message-ID: <ZPIVzccIAiQnG4IA@google.com>
-Subject: Re: [PATCH] x86/kvm/mmu: =?utf-8?Q?Remove_?= =?utf-8?B?dW5uZWNlc3Nhcnkg4oCYTlVMTOKAmQ==?=
- values from sptep
-From:   Sean Christopherson <seanjc@google.com>
-To:     Li zeming <zeming@nfschina.com>
-Cc:     pbonzini@redhat.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        Fri, 1 Sep 2023 12:48:40 -0400
+Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBF5910FD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:48:32 -0700 (PDT)
+Date:   Fri, 01 Sep 2023 16:48:21 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me;
+        s=protonmail3; t=1693586910; x=1693846110;
+        bh=WilzynXfIjeYBBxn3KF8I+zEPTz6CizTqABslRcHX3c=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=Q/KXRm4AvicJzFZb6NTLhCld+4w+WMopTVlJlWgUY91WYLgU6hGB5nBZi6xW8QUL+
+         eO7baepjx8AqaEJ8f0WHr3Ig0nHqh2eDgwiYfAgeNJ+vfYswwfNB/VR5i5uTzqzhL4
+         xzKlqrpvDFBO+i6SFcd6zi8v3Es2sFB3XHmTze2eiC4iEf6LkDWZADTWWO0WnWpa+B
+         YYNoNgexWlECbB+NEn5fVKLROL3qnIgZ032J66p/6CoDRVEYeh9HxlJC3ghOGrvlzJ
+         NipYHg1idDWzl4JL9PY7j0QDrqODnEDqZGLg+G6MmEldrjzmwkHknhq0oDUkuBoWg6
+         8CIkrjnNiuRdQ==
+To:     Stefan Binding <sbinding@opensource.cirrus.com>,
+        Takashi Iwai <tiwai@suse.de>
+From:   Waldek Andrukiewicz <waldek.social@pm.me>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v2 00/11] Fix support for System Suspend for CS35L41 HDA
+Message-ID: <03a70489-3a68-4c37-8f72-569bcd7463c4@pm.me>
+Feedback-ID: 6286898:user:proton
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,72 +49,136 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023, Li zeming wrote:
-> sptep is assigned first, so it does not need to initialize the assignment.
-> 
-> Signed-off-by: Li zeming <zeming@nfschina.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index ec169f5c7dce..95f745aec4aa 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3457,7 +3457,7 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
->  	struct kvm_mmu_page *sp;
->  	int ret = RET_PF_INVALID;
->  	u64 spte = 0ull;
-> -	u64 *sptep = NULL;
-> +	u64 *sptep;
->  	uint retry_count = 0;
->  
->  	if (!page_fault_can_be_fast(fault))
 
-Hmm, this is safe, but there's some ugliness lurking.  Theoretically, it's possible
-for spte to be left untouched by the walkers.  That _shouldn't_ happen, as it means
-there's a bug somewhere in KVM.  But if that did happen, on the second or later
-iteration, it's (again, theoretically) possible to consume a stale spte.
+On 28.07.23 15:55, Stefan Binding wrote:
+>
+> On 28/07/2023 12:10, Takashi Iwai wrote:
+>> On Mon, 24 Jul 2023 11:00:38 +0200,
+>> Takashi Iwai wrote:
+>>> On Fri, 21 Jul 2023 17:18:05 +0200,
+>>> Stefan Binding wrote:
+>>>> There have been a couple of customer reports of intermittant issues
+>>>> after
+>>>> system resume, where sometimes the DSP firmware stops responding.
+>>>> Investigations into this issue show that there is a race between
+>>>> receiving
+>>>> a prepare from the HDA core, and the firmware reload which is
+>>>> started by
+>>>> the system resume. This can causes the Global Enable on the CS35L41
+>>>> to be
+>>>> enabled during the firmware load, which can sometimes cause issues
+>>>> in the
+>>>> DSP.
+>>>>
+>>>> The existing system resume behaviour also did not resume the audio, if
+>>>> audio was previously playing when it was suspended.
+>>>> In addition, during investigation, it was found there were additional
+>>>> problems in the System Resume sequence, as well as the Playback
+>>>> sequence
+>>>> with External Boost, where the driver does not correctly follow its
+>>>> enable sequence for this mode. This can cause additional issues
+>>>> such as
+>>>> pops and clicks.
+>>>>
+>>>> This chain intends to correct the sequences for playback and system
+>>>> suspend/resume so that the driver: obeys the external boost enable
+>>>> sequence;
+>>>> resumes audio on system resume; and avoids the race condition on
+>>>> firmware
+>>>> load and playback during system resume.
+>>>>
+>>>> Changes since v1:
+>>>> - Split patch 1 into 2 separate patches
+>>>> - Combine Patches 6 and 9
+>>>>
+>>>> Stefan Binding (11):
+>>>> =C2=A0=C2=A0 ALSA: cs35l41: Use mbox command to enable speaker output =
+for
+>>>> external
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 boost
+>>>> =C2=A0=C2=A0 ALSA: cs35l41: Poll for Power Up/Down rather than waiting=
+ a fixed
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 delay
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Check mailbox status of pause command=
+ after
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 firmware load
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Ensure we correctly re-sync regmap be=
+fore
+>>>> system
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 suspending.
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Ensure we pass up any errors during s=
+ystem
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 suspend.
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Move Play and Pause into separate fun=
+ctions
+>>>> =C2=A0=C2=A0 ALSA: hda: hda_component: Add pre and post playback hooks=
+ to
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 hda_component
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Use pre and post playback hooks
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Rework System Suspend to ensure corre=
+ct call
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0 separation
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Add device_link between HDA and cs35l=
+41_hda
+>>>> =C2=A0=C2=A0 ALSA: hda: cs35l41: Ensure amp is only unmuted during pla=
+yback
+>>> Applied all patches now to for-next branch.
+>> It seems that this patch set causes occasional freeze at suspend:
+>> =C2=A0=C2=A0 https://bugzilla.suse.com/show_bug.cgi?id=3D1213745
+>>
+>> Could you take a look?
+>>
+>>
+>> thanks,
+>>
+>> Takashi
+>
+> Hi Takashi,
+>
+> The initial bug report shows one of the original issues that this patch
+> chain was trying to fix.
+> From what I can tell from the second issue, something has caused the
+> CS35L41 to stop responding,
+> which in turn caused the system suspend call to fail, and the error is
+> passed up. Since system suspend
+> failed, there was no corresponding system resume, which means the
+> CS35L41 was stuck broken.
+>
+> I'm not sure what was meant by "freeze" and "overheating" in the bug
+> report, since the log seems to
+> indicate the laptop is still responsive, even if audio is broken.
+>
+> There is some oddity in the log, since one of the errors that was
+> printed should only be printed when
+> the CS35L41 is using External Boost, but I think this laptop is supposed
+> to use Internal Boost.
+> We'll investigate further.
+>
+> Thanks,
+>
+> Stefan Binding
 
-		if (tdp_mmu_enabled)
-			sptep = kvm_tdp_mmu_fast_pf_get_last_sptep(vcpu, fault->addr, &spte);
-		else
-			sptep = fast_pf_get_last_sptep(vcpu, fault->addr, &spte);
 
-		if (!is_shadow_present_pte(spte)) <=== could consume stale data
-			break;
+Hello,
 
-If we're going to tidy up sptep, I think we should also give spte similar treatment
-and harden KVM in the process, e.g.
+I would like to inform you that (one of) those patches is probably
+breaking sound on Lenovo Legion 7 16ACHg6. They were applied in Manjaro
+Linux kernel here:
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6325bb3e8c2b..ae2f87bbbf0a 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3430,8 +3430,8 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
- {
-        struct kvm_mmu_page *sp;
-        int ret = RET_PF_INVALID;
--       u64 spte = 0ull;
--       u64 *sptep = NULL;
-+       u64 spte;
-+       u64 *sptep;
-        uint retry_count = 0;
- 
-        if (!page_fault_can_be_fast(fault))
-@@ -3447,6 +3447,14 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-                else
-                        sptep = fast_pf_get_last_sptep(vcpu, fault->addr, &spte);
- 
-+               /*
-+                * It's entirely possible for the mapping to have been zapped
-+                * by a different task, but the root page is should always be
-+                * available as the vCPU holds a reference to its root(s).
-+                */
-+               if (WARN_ON_ONCE(!sptep))
-+                       spte = REMOVED_SPTE;
-+
-                if (!is_shadow_present_pte(spte))
-                        break;
- 
+https://gitlab.manjaro.org/packages/core/linux64/-/commit/742e66f525170fe02=
+dec42e47aedf53d3dc85195
+
+and when I install this kernel, there is no sound anymore. There is
+nothing more than those patches in this commit. A kernel compiled from
+the previous commit works fine.
+
+Sound used to work fine from 5.17 if I remember correctly.
+
+I hope I replied correctly to this thread, if not, apologies.
+
+Best Regards,
+
+Waldek Andrukiewicz
+
+
 
