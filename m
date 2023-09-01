@@ -2,176 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4888378F8FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:16:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4903F78F8FE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348469AbjIAHP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 03:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54570 "EHLO
+        id S1348474AbjIAHRH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 03:17:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230103AbjIAHP5 (ORCPT
+        with ESMTP id S230103AbjIAHRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 03:15:57 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0004E49
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:15:53 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 4B3A6B824D6
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 07:15:52 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B89BC433C8;
-        Fri,  1 Sep 2023 07:15:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693552551;
-        bh=tJnRm69x1hlaJM3ZyngxZksf1Q6XBI2KYsWBU6ZDeLA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vXmhh0ipbaxFvTnGwWfXVW+6pffgEBMvQHOb5YYUpc12vj1n6rxOiGcTXSuLxr8Pp
-         qQrTPDm5FBFdOLP04ZwXtv6afBFX7KwUIi3/MgWXvgZjcsYOBPGPBFWsLaiPEg7ZLH
-         QKClhYzB80XyZuI925tZ2zcXDaAb5IlqbAEqEXcc=
-Date:   Fri, 1 Sep 2023 09:15:42 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     =?iso-8859-1?Q?N=EDcolas_F=2E_R=2E_A=2E?= Prado 
-        <nfraprado@collabora.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: Re: Stability guarantees on uevent variables?
-Message-ID: <2023090142-hurry-laundry-ad43@gregkh>
-References: <c0d32695-9e3e-4173-8448-7d123f38824e@notapiano>
- <2023083110-delicacy-thinly-5af6@gregkh>
- <d53d3200-fe59-4b69-893b-479b7402f572@notapiano>
+        Fri, 1 Sep 2023 03:17:06 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E5D6E7F
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:17:03 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31dca134c83so1383946f8f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 00:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1693552622; x=1694157422; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NwsUiHSBSvIQRknRmzUEvnXIncuNFizpbiIrIMgBrD4=;
+        b=EYODEFrEOIdUWOC7vix8OzyeOkPynFbuo1uNvVbhpYVV5cF8Gad3HcE2kCeP1ibLIV
+         Epx6+C/s6+ekDFKPJUazLsPzhTTSccBSY6ljHLcdQo3ZhfSBA4xHEYrrWqLfNcnRbvY7
+         ScqtftIXuaLr6B7m+VTmrBaEWwEo3N+2fb8QodC76y5DL8TJOMtYxlRn4DaG/AVB51VV
+         k9zT2vOcviT4S6o5lIDdRZRHNmjtSG1Q1XvR68soL2Mc55cxS7WVAuEIj2Uo4+xXDq+G
+         Q8VivMtWjlSbeZqH0drwy+fFSRA/x9AhjznGYGgCBq80b/5BjmIFX5CpwWOK6mx4tTLp
+         XIpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693552622; x=1694157422;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NwsUiHSBSvIQRknRmzUEvnXIncuNFizpbiIrIMgBrD4=;
+        b=Y6qrldlT8Q5rylZP7yr5vJ34cUOMW5396pkVDkSLa2IQpWSPTwsST1ZC4qMAY/JhZn
+         XBdsTRwCMLLt2N67CSwzVh42coAEl8aA2sdVE/ohmeksAfH1irbQ0O9X/JrYrO78ejn3
+         RCCS3Zhue6WZr0E5cvmNzhx3nL2X+XtRg4NNrCGDyDKWUTCmbHUwSNZK7PK7bTrPaqp3
+         Y6N1fLo2TToaMu+nShWMKoYikeWn5+EI+hIu2J9kEpaesLU1skpqufOgR4XFjwh9XEJO
+         oxy2N4NFmasr1MtXYEELCixqX8wRuEoUKH1U4/2COSUbPC/2PMNWaUT99aedSOMWSwVT
+         Micw==
+X-Gm-Message-State: AOJu0YwqfS2fYmkBxKjFeDsJkmeAd7/OT91XUIjhCrjQBSPp2PMt0syd
+        7PcHCie3pQO/DFitzRWKfIUMRLoDni2xvDvpZtjTVA==
+X-Google-Smtp-Source: AGHT+IGsHp15JavXEMV06Q0MxKz6Y7Z/ayog654/+XZZ2uCOs9hkOmfmxXwHyeBsCkrvABzY1qEDtAKPsVIHYQLZFZs=
+X-Received: by 2002:a5d:4089:0:b0:314:3bd7:6a0c with SMTP id
+ o9-20020a5d4089000000b003143bd76a0cmr1263055wrp.33.1693552621943; Fri, 01 Sep
+ 2023 00:17:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d53d3200-fe59-4b69-893b-479b7402f572@notapiano>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230818121504.60492-1-cuiyunhui@bytedance.com> <878ra8o4qa.fsf@all.your.base.are.belong.to.us>
+In-Reply-To: <878ra8o4qa.fsf@all.your.base.are.belong.to.us>
+From:   yunhui cui <cuiyunhui@bytedance.com>
+Date:   Fri, 1 Sep 2023 15:16:50 +0800
+Message-ID: <CAEEQ3wmL90oOZcmpv8G34u7kg44zGscpHJiiRHLi=_LAm=C1jg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v4] riscv: add userland instruction dump to
+ RISC-V splats
+To:     =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, guoren@kernel.org, bjorn@rivosinc.com,
+        conor.dooley@microchip.com, jszhang@kernel.org,
+        andy.chiu@sifive.com, dave.hansen@linux.intel.com,
+        elver@google.com, glider@google.com, cyphar@cyphar.com,
+        kirill.shutemov@linux.intel.com, keescook@chromium.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 05:58:36PM -0400, Nícolas F. R. A. Prado wrote:
-> On Thu, Aug 31, 2023 at 09:58:04AM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Aug 24, 2023 at 07:08:39PM -0400, Nícolas F. R. A. Prado wrote:
-> > > Hi,
-> > > 
-> > > my question boils down to the following:
-> > > 
-> > > Is there a stability guarantee on the format and content of the variables in
-> > > uevents produced by the kernel?
-> > 
-> > Only if the normal userspace tools that use those variables require it.
-> > 
-> > > I would assume so, given that uevents are explicitly produced for userspace, and
-> > > users will rely on them. However, looking through the ABI documentation I could
-> > > only find two instances of uevents being defined (testing/usb-uevent and
-> > > testing/usb-charger-uevent) and neither mention the variables added in the
-> > > KOBJ_ADD action. The document for the uevent file in sysfs,
-> > > testing/sysfs-uevent, only mentions writing synthetic uevents, rather than
-> > > reading existing ones. Is the documentation simply lacking or is it intentional
-> > > that uevent variables aren't covered?
-> > > 
-> > > I'm particularly interested in the format for the MODALIAS uevent variable. My
-> > > understanding is that its only use is to match against the modules' aliases in
-> > > the modules.alias file. For that reason I'm wondering whether for this variable,
-> > > the guarantee would only be that the format of the value will match the one in
-> > > modules.alias, but the precise format is not guaranteed (for example, a new
-> > > field could potentially be introduced in the future if added to both the device
-> > > uevent and module's alias). However, I do see a few ABI documentation pages for
-> > > the modalias file in sysfs (eg in testing/sysfs-bus-pci), which explicitly
-> > > describe the format, and that's supposed to be the same as the MODALIAS uevent,
-> > > so does that mean the format itself is stable?
-> > 
-> > No, modalias is not stable, it can change over time (add new fields), as
-> > it is just a userspace representation of how to call 'modprobe' and
-> > match up with the kernel-provided module alias fields.
-> > 
-> > So the value will always match the module alias fields, but userspace
-> > shouldn't be attempting to parse the thing at all, as that makes no
-> > sense (the kernel understands the format, userspace does not need to.)
-> 
-> I see, that's what I suspected. In that case detailing the format of the
-> modalias files in the ABI documentation seems counter-productive. I'll send a
-> patch removing those format descriptions.
+Hi Bj=C3=B6rn=EF=BC=8C
 
-We can document it, as long as the documentation stays up to date, it
-can't hurt, right?
+On Fri, Aug 18, 2023 at 9:33=E2=80=AFPM Bj=C3=B6rn T=C3=B6pel <bjorn@kernel=
+.org> wrote:
+>
+> Yunhui Cui <cuiyunhui@bytedance.com> writes:
+>
+> > Add userland instruction dump and rename dump_kernel_instr()
+> > to dump_instr().
+> >
+> > An example:
+> > [    0.822439] Freeing unused kernel image (initmem) memory: 6916K
+> > [    0.823817] Run /init as init process
+> > [    0.839411] init[1]: unhandled signal 4 code 0x1 at 0x000000000005be=
+18 in bb[10000+5fb000]
+> > [    0.840751] CPU: 0 PID: 1 Comm: init Not tainted 5.14.0-rc4-00049-gb=
+d644290aa72-dirty #187
+> > [    0.841373] Hardware name:  , BIOS
+> > [    0.841743] epc : 000000000005be18 ra : 0000000000079e74 sp : 000000=
+3fffcafda0
+> > [    0.842271]  gp : ffffffff816e9dc8 tp : 0000000000000000 t0 : 000000=
+0000000000
+> > [    0.842947]  t1 : 0000003fffc9fdf0 t2 : 0000000000000000 s0 : 000000=
+0000000000
+> > [    0.843434]  s1 : 0000000000000000 a0 : 0000003fffca0190 a1 : 000000=
+3fffcafe18
+> > [    0.843891]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 000000=
+0000000000
+> > [    0.844357]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 000000=
+0000000000
+> > [    0.844803]  s2 : 0000000000000000 s3 : 0000000000000000 s4 : 000000=
+0000000000
+> > [    0.845253]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 000000=
+0000000000
+> > [    0.845722]  s8 : 0000000000000000 s9 : 0000000000000000 s10: 000000=
+0000000000
+> > [    0.846180]  s11: 0000000000d144e0 t3 : 0000000000000000 t4 : 000000=
+0000000000
+> > [    0.846616]  t5 : 0000000000000000 t6 : 0000000000000000
+> > [    0.847204] status: 0000000200000020 badaddr: 00000000f0028053 cause=
+: 0000000000000002
+> > [    0.848219] Code: f06f ff5f 3823 fa11 0113 fb01 2e23 0201 0293 0000 =
+(8053) f002
+> > [    0.851016] Kernel panic - not syncing: Attempted to kill init! exit=
+code=3D0x00000004
+> >
+> > Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
+>
+> Nice!
+>
+> Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
 
-> > > I'll be happy to improve the ABI documentation based on the reply to these
-> > > questions.
-> > > 
-> > > As for the full context for these questions, as part of an effort to improve the
-> > > detection of regressions affecting device probe, I want to be able to check
-> > > whether devices under a discoverable bus (USB, PCI) were populated and probed by
-> > > a driver.
-> > 
-> > So you want to see if a driver is possible for this device, or if the
-> > driver failed to bind to the device?  Those are different things.
-> 
-> In this instance, I only want to see if a driver failed to bind to the device.
+When can this patch be applied to the linux-next branch?
 
-Then look at the driver sysfs entry to find out what devices it is bound
-to.
-
-> > > We currently do this by checking against driver and device names [1],
-> > > but as has been pointed out before, that's not stable ABI, and the test might
-> > > break if things get renamed or moved around.
-> > 
-> > Yes, driver names get changed all the time, and move around the kernel
-> > tree as well.  That's not going to stop, but it shouldn't affect
-> > testing, right?
-> 
-> Indeed, but if we can test just as well and only relying on stable ABIs, that's
-> less maintenance :) (as well as less false-positives reported to the mailing
-> lists if the reporting becomes automatic). Especially since we test not only
-> mainline but also stable kernels and currently end up having to special case the
-> tests based on kernel version.
-
-I still don't understand what you are trying to test here.  You are
-thinking that devices remain with the same names over time (they don't),
-or drivers remain with the same names over time (they don't) or that
-device topologies stay the same over time (they don't).
-
-All that matters is how userspace sees the _functionality_ of the system
-(i.e. if a mouse appears to userspace), not what the mouse driver was
-called, what mouse device was in the device topology, or what driver was
-bound to the mouse.
-
-So test system functionality please, that's what should always remain
-stable.  Not device names, locations, or driver names.
-
-Now if you want to write unit tests for specific drivers, that's a
-different story, but I don't think that's what you are attempting to do
-here.
-
-> So the approach I'm favoring is to keep having a per-platform list of devices
-> expected to be probed from USB and PCI, but instead of using driver and device
-> names, in order to make the tests use stable ABI, I was planning to use the
-> modalias for the device instead. But as that's not stable as well, I will look
-> into the other uevent variables.
-
-Everything is unstable here because the hardware platform itself is
-unstable and non-determinisitic.  Which is why we created the driver
-model and sysfs so that userspace can use hints to find the same device
-no matter where in the device tree it is, nor what it is called
-depending on an attribute that is unique for that device (look at
-/dev/disk/ for examples.)
-
-> I see there are a few for USB
-> (PRODUCT, TYPE, INTERFACE) and PCI (PCI_CLASS, PCI_ID, PCI_SUBSYS_ID,
-> PCI_SLOT_NAME). I'll try to find out who the normal userspace tools using these
-> are, to be able to say whether they can be documented as stable ABI or not.
-
-Some of those attributes come directly from the hardware itself, so as
-long as the hardware doesn't change, they should not.  Don't get the
-ones that can change (i.e. locations or bus numbers or the like)
-confused here.
-
-good luck!
-
-greg k-h
+Thanks,
+Yunhui
