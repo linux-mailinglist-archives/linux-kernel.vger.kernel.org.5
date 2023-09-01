@@ -2,129 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D3D78FD0C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E05E778FD10
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:20:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349379AbjIAMTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:19:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46204 "EHLO
+        id S1349387AbjIAMUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349318AbjIAMTx (ORCPT
+        with ESMTP id S238003AbjIAMUp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:19:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB11FE7E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:19:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693570747;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=b2lpmJI7A731cOdQ5saRDMek43VB/lINJ2WX/JY+s6Y=;
-        b=EhRm0UrNvnu0hrgy3FaPTHudqCgi5zzOEhfEYryEUs+2oxnLzXT8yPo9hZZQLFFMlOAk/8
-        cFMGIY+kZkbyYRYqb4OEmM+q1cbXq44DWWPCaUzjhibNMmPJqaaMPgtn3ZE7aFxdGcUH+t
-        LZ5o4RHRIEoTlXPU9kesY1czCr7nrc0=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-186-x0sOku65MqiWyjIb2P9y9A-1; Fri, 01 Sep 2023 08:19:05 -0400
-X-MC-Unique: x0sOku65MqiWyjIb2P9y9A-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-3fefea09bd0so12696915e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:19:05 -0700 (PDT)
+        Fri, 1 Sep 2023 08:20:45 -0400
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54E01E7E
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:20:42 -0700 (PDT)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bcc331f942so22353311fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:20:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693570840; x=1694175640; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=wRixf5Wln0+aq96AqT15WNRlI0DI7acs2jHkGoyqUC4=;
+        b=WJ2qRpi9cgKouMXABSj9ZSCukBo2/90W1bGsAjIYK6M6inoaHNxUDlTWuqGGnCkwlx
+         PRNDmkmsNTmQKc0O3h8y1ag94/2GQ8EldP3jt6oWM8ymoJFYf5tEMfovYC/zJ6V+/EXf
+         J5Zz1d9ZDsFnXSlABTE3FDvvXV5+UnZnAwvueAxMBFRH82SwL889itCbRXH8yoLac78r
+         0pm96l2q+i5hiMsL0D2enTjKJJQvGaYQS5BfS107t7Dktbu6gk9PPhpt+sve7edoK7LA
+         KuCx8no1pS4/bhBvZ4CLejyotf++fGRydED7XZULOOF/f3SSaj/RtIQqfga9qK4k1cV/
+         ATwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693570744; x=1694175544;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=b2lpmJI7A731cOdQ5saRDMek43VB/lINJ2WX/JY+s6Y=;
-        b=H9JM92MfvxPjEIFpD8Cvm7LgwTSIsPgm8DFsqyEeiAuzULuzjKAqom4mr9kXv5bkVS
-         mcwgunjYDRVV5bna3ZIscLEBvzIfkg1XHZFSMjicBo7oPLv8QILgLx6gI2GKUpFQotQu
-         3zbVfEbl88DWDA1mUaZpTvb6bdGOSa610LL/Wn0wfp0Z5TOOKBWF2lJ8QX1/DN0Zs+FY
-         WRHVmRj3Qu0qqbCpNouspR7i93//koo2G9np30UsOcTTImKTUK2HmFr+tegkAXmlHQ+H
-         4eskz4fF4qsur8GX7kRFWvSFwl2Bdkl8B2yW42YcryZr3l1BTVY/4GK3JYxazwvVzLWH
-         LdWg==
-X-Gm-Message-State: AOJu0YzmlqHcO8ryBDuxMAvEiH9v6hNFDp4F1sOyDbeCX6ab78q3tijd
-        +7E9zlbEB4SDH4iY7raHDzzgDFbqIUIidfRRuhuzVIGmYKdunA9abPh4VCWDf8tW6D6dAbGfQVz
-        oxzz+Bn5WyqeAJZF5BbSOnQIj
-X-Received: by 2002:a1c:771a:0:b0:3fe:e7b2:c97f with SMTP id t26-20020a1c771a000000b003fee7b2c97fmr1726423wmi.36.1693570744587;
-        Fri, 01 Sep 2023 05:19:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHtVbvk7FwnZkok7N7tIgQ0k0moP+HWkRwiU3fwK8zuPdH5820WOut3sSNhbou5ZBSU3FxpXw==
-X-Received: by 2002:a1c:771a:0:b0:3fe:e7b2:c97f with SMTP id t26-20020a1c771a000000b003fee7b2c97fmr1726410wmi.36.1693570744303;
-        Fri, 01 Sep 2023 05:19:04 -0700 (PDT)
-Received: from vschneid.remote.csb (anice-256-1-26-111.w86-203.abo.wanadoo.fr. [86.203.135.111])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05600c015100b00401d6c0505csm4693416wmm.47.2023.09.01.05.19.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 05:19:03 -0700 (PDT)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Eric Vaughn <ervaughn@linux.microsoft.com>,
-        Sishuai Gong <sishuai.system@gmail.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Yue Haibing <yuehaibing@huawei.com>,
-        Zhang Zekun <zhangzekun11@huawei.com>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: Re: [GIT PULL] tracing: Updates for 6.6
-In-Reply-To: <20230901074400.349d5c41@rorschach.local.home>
-References: <20230831115635.1bdea0d7@rorschach.local.home>
- <xhsmhr0nib674.mognet@vschneid.remote.csb>
- <20230901074400.349d5c41@rorschach.local.home>
-Date:   Fri, 01 Sep 2023 14:19:02 +0200
-Message-ID: <xhsmho7imaxxl.mognet@vschneid.remote.csb>
+        d=1e100.net; s=20221208; t=1693570840; x=1694175640;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wRixf5Wln0+aq96AqT15WNRlI0DI7acs2jHkGoyqUC4=;
+        b=AFXrPVhESMpzbCmGffVDiBCmZWASmKHoNkdt6zIwcUdpDvdsnClq4g6YT+E8zPBV5a
+         MD4TKFr8FCWgsNZH12tbH5ifw5O6nBeYINQgeqWLAwHGO7qzbwW20lBW4RIb6C7QCyXM
+         mDI9VT9TmF4k+oJKbtAUvh1H2y8l9rAaYKU/BCvU/b80klwD/ElhuKj+uJorSIJ5M5t2
+         gSuoK5e2bwQ3B/dfzntdQyMNuDGtNzADDzllAFHeUhqICynyF0YMVcqld0Jd8vurjsD6
+         7sY4cTUXoSbAWBthFY0zGqCgFuPpCmDXggntG8IqNK2UQk79mmGCQFIaJNp2aGKeuSeU
+         UuIA==
+X-Gm-Message-State: AOJu0YwdMzr2cjRx51zK8eDCzrm0Fk4KdO/eFAimeUUlRpeaMg1Xv46H
+        VVo6WvqWUSOKl0IgG41LT8KWig==
+X-Google-Smtp-Source: AGHT+IE4Z/ktQ6qMzlFSopP5r6fYP4i40xwCpIZt9FemIrY+cUooZOn6b31azRQy3vMZowlZJS3F8g==
+X-Received: by 2002:a05:651c:339:b0:2bc:fbc9:c0a2 with SMTP id b25-20020a05651c033900b002bcfbc9c0a2mr1879201ljp.16.1693570840584;
+        Fri, 01 Sep 2023 05:20:40 -0700 (PDT)
+Received: from [192.168.1.101] (abxh154.neoplus.adsl.tpnet.pl. [83.9.1.154])
+        by smtp.gmail.com with ESMTPSA id d25-20020a2eb059000000b002bcc4d64758sm733680ljl.103.2023.09.01.05.20.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 05:20:40 -0700 (PDT)
+Message-ID: <88964c63-950f-4d68-826b-f3b7243a2c5f@linaro.org>
+Date:   Fri, 1 Sep 2023 14:20:38 +0200
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V6 0/6] scsi: ufs: qcom: Align programming sequence as per
+ HW spec
+To:     Nitin Rawat <quic_nitirawa@quicinc.com>, mani@kernel.org,
+        agross@kernel.org, andersson@kernel.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230901114336.31339-1-quic_nitirawa@quicinc.com>
+Content-Language: en-US
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <20230901114336.31339-1-quic_nitirawa@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/23 07:44, Steven Rostedt wrote:
-> On Fri, 01 Sep 2023 11:20:31 +0200
-> Valentin Schneider <vschneid@redhat.com> wrote:
->> > Tracing updates for 6.6:
->> >
->> >  User visible changes:
->> >
->> >   - Added a way to easier filter with cpumasks:
->> >      # echo 'cpumask & CPUS{17-42}' > /sys/kernel/tracing/events/ipi_send_cpumask/filter
->> >
->>
->> It looks like the patches included are from v2 of [1], which still had some
->> (small) issues to fix. I have addressed these in [2], but I haven't sent
->> this out yet as I'm still working on the context_tracking/vmalloc part of
->> the series.
->>
->> I'm happy to send just the tracing bits, if that helps - or just send the
->> deltas as separate fixes, whatever makes it easier.
->
-> I put these patches into linux-next for a while, so I'm not going to
-> rebase them. Can you send delta patches on top of this. This shouldn't
-> stop this pull request.
->
+On 1.09.2023 13:43, Nitin Rawat wrote:
+> This patch aligns programming sequence as per Qualcomm UFS
+> hardware specification.
+> 
+> changes from v5:
+> - Addressed Mani comment to FIELD_PREP and FIELD_FIT.
+> - Optimised ufs_qcom_set_core_clk_ctrl API.
+> - Updated commit text for few patches to capture more details.
+> 
+Any reason I received this twice?
 
-Noted, I'll get on with this.
-
->>
->> Apologies for not bringing this up when the patches were picked up in [3],
->> I've only just come back from PTO/moving abroad and have started catching
->> up.
->
-> I'm still trying to get home from my PTO, which I spent in Tampa and
-> was suppose to fly home on Tuesday. But they closed the airport in
-> preparation for Idalia, which forced my wife and I to hunker down in a
-> hotel room for the last few days :-p (we are now in a to hotel room in
-> Syracuse, and are about to drive home).
->
-
-Sounds like you've had an "interesting" journey :)
-
-> -- Steve
-
+Konrad
