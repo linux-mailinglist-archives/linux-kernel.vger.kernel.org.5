@@ -2,60 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A2078FB6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C00CF78FB7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234761AbjIAJuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
+        id S235597AbjIAJx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbjIAJuS (ORCPT
+        with ESMTP id S229586AbjIAJx2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:50:18 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC0D01B1;
-        Fri,  1 Sep 2023 02:50:14 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68a41035828so1395727b3a.1;
-        Fri, 01 Sep 2023 02:50:14 -0700 (PDT)
+        Fri, 1 Sep 2023 05:53:28 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41DB3E8;
+        Fri,  1 Sep 2023 02:53:24 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68a520dba33so1546606b3a.0;
+        Fri, 01 Sep 2023 02:53:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693561813; x=1694166613; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693562004; x=1694166804; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O7o43Qz7LJJ756+VKqbyW6NSetMQmwP74t/a7gq66Aw=;
-        b=Sdf7oBT6bLst1lEns7gzB56T/wye5xBd4fxLQgvNwMVdIU2Y7uF16ZFCONHkHzXu85
-         kCuwQ7bpL7rgAuAvNIO2+MHfa5YbQWS5a0KPM7W+sE7eHsbN3ztAAKG5DxtnrK8sw8ux
-         Aryg4s4AIaUU2bTuWVLYvTDkt/7lTGEQ5Try9RvgrZb0iTDpKsvITpAqii/ob5OaNzyY
-         VIgMCZ0ZfNt7KVtGzCY66oiTjy3cDSdNanVwxH08bjQK657AtjJGgjk4Dio238SPeciU
-         45d3mrh9BPF1UzAieD/uTo5JY5U3IgnI8Wzp0Z5wZInOYqnxYmcZkl7HU2CbL8XPqzDf
-         A55g==
+        bh=yVmIC/TSva2BQpG1ymilUgrZHBLPn2XzYNzkcuE+VkA=;
+        b=mMGle+qlVzMJSxkG+ZPghNkFqLCTUrU22cC2w0+V58sv1j0G6/Xjf4FzSYhl+zVMVo
+         WEKkiGim5sdn6xk2K26PlTOcveZmC2N4Ao5edPzqCUW3aIahbIZJxlTfho+X7pAp0e6G
+         U3KwyfC/VBvkWIPEg7wCA/Z2eMNvb9T+6xlvBcl3YY/JIEU7c7Nd8lHBRIFwag5OFJFd
+         j4Co6jB7pzq4RNnK6qfQfOIWIqbQULRmG8ry4nCmSvqsau3jqkXGG7yKUuz7uA/1Q11S
+         fXL4TtqnsHsKqQ5UdCiPZrXc7m5Fdi3hn57VHZ2yTgR7qWX6II8RRou4inwzDHo+xxOm
+         8wfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693561813; x=1694166613;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=O7o43Qz7LJJ756+VKqbyW6NSetMQmwP74t/a7gq66Aw=;
-        b=H4GKkQ70QLoH9NDCmSkbaL7Ecepp2s1rKG6JJ470JxnVf8E4QCt+ieTjAlnxr36IxY
-         fm3qOqImEufT4Cq6QfjcU/IQB9ogIpIPB176xFWx3uCRienEjkYMtgu36NkkEcXg7OTc
-         fAghBjUZmQPMFmuwKX2ZG9FDrMX40BiwzNOgiLIwHEtht2BmGbttPcHRWHFYKugL4Kh5
-         z76Rqy2D2JtMuMS7shlHi3O+ONAdd4DQS/BQLrnpxvbzhqZ3+SWZ/mLglrTWVjtQX1um
-         U17xsShxPWN/RbS7iQMfJ2N30I8o/sVqXmlmDug2ypFGgZl/e4fFYtX5SP3eVHrNkRGZ
-         fhtA==
-X-Gm-Message-State: AOJu0Yy5/JoUrikKZeJuY7fHq0By6Z2VlWxXzMJE+EPbpzwfPsQT9zdO
-        /Ltv+NBkYnZyL5XYIcscl+O38Ia9zQY=
-X-Google-Smtp-Source: AGHT+IHWAvD4+3rKB+59s8mw5W51Zfs9Y0uCARVIn1OaSqXDpmsZkMMNUhW1O4l8TrwjSDJPEnDC1Q==
-X-Received: by 2002:a05:6a00:2493:b0:68a:3458:8e25 with SMTP id c19-20020a056a00249300b0068a34588e25mr2404279pfv.29.1693561813463;
-        Fri, 01 Sep 2023 02:50:13 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id r7-20020a62e407000000b006887be16682sm2587517pfh.53.2023.09.01.02.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:50:12 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 15:20:09 +0530
-Message-Id: <8734zy8bou.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 08/11] ext4: call ext4_mb_mark_context in ext4_group_add_blocks()
-In-Reply-To: <20230826155028.4019470-9-shikemeng@huaweicloud.com>
+        d=1e100.net; s=20221208; t=1693562004; x=1694166804;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yVmIC/TSva2BQpG1ymilUgrZHBLPn2XzYNzkcuE+VkA=;
+        b=M6JeUs6uSCeBJbCEePhpbf1Vr10FDN6bkKEO/2mUndozAbw9NaDwUi1qSD5DIT7QKq
+         hbblLyVhNpaXSPIvBygp/IlqwKhdfh14sSxGAXmae9ETTCubHN37kiD5/n8WvYk/eYrp
+         9EUA6CzDF0F8vdF/hkZY7O85ENl464Bbr3813REfw1YnLnpz8rHql+dvp1HlxXrDHykU
+         8j/ruIRS1f/gMwm/A59h8014mSNw40/eAYu/VIkcxq4fMuoV2V8AstFEfnfAUrWQk3Nl
+         7pabu3GBm5zSk90cl5X2/JijGM3o3MYfpUG/RykDU6j4xIsicnwYfRXwdmjiud9T2qz1
+         SvNg==
+X-Gm-Message-State: AOJu0Yzk7bxtUj/rFB4SA4onEvS59/TiaqHVNrMUNDlLTYKC5Y8SbzgM
+        aavzNymw2JE4RzZeZXeULY4=
+X-Google-Smtp-Source: AGHT+IH04Xqgdy+iVpdudRptAkZMoVyRlGpsdKljBL/aNZUf6YH08brsR289r+m531UrzzXYgojxug==
+X-Received: by 2002:a05:6a21:788e:b0:132:2f7d:29ca with SMTP id bf14-20020a056a21788e00b001322f7d29camr2634863pzc.24.1693562003644;
+        Fri, 01 Sep 2023 02:53:23 -0700 (PDT)
+Received: from [192.168.0.105] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id u18-20020aa78392000000b0068c6e666066sm2613068pfm.111.2023.09.01.02.53.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 02:53:23 -0700 (PDT)
+Message-ID: <705ce5be-93a7-d41c-a557-47090535f089@gmail.com>
+Date:   Fri, 1 Sep 2023 16:53:17 +0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Miklos Szeredi <mszeredi@redhat.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Ruiwen Zhao <ruiwen@google.com>
+Cc:     Linux unionfs/overlayfs <linux-unionfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: overlayfs: cannot rename symlink if lower filesystem is FUSE/NFS
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -66,158 +76,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+Hi,
 
-> Call ext4_mb_mark_context in ext4_group_add_blocks() to remove repeat code.
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 84 +++++++----------------------------------------
->  1 file changed, 12 insertions(+), 72 deletions(-)
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-I think same comments (like in patch-5 & patch-6) hold for this and the previous patch as well where
-we are seperating out bitmap free and buddy free from ext4_group_add_blocks. 
+> Hi, 
+> 
+> We recently found a regression on linux kernel: rename(2) on a symlink through an overlayfs fails with ENXIO, when the lowerdir is FUSE.
+> 
+> *What happened*
+> 
+> When running `mv` command on a symlink file through overlayfs, and the overlayfs's lowdir on FUSE or NFS, the command fails with "No such device or address". This issue happens on kernel 5.15 and 6.1, but not on 5.10. 
+> 
+> *How to reproduce*
+> Environment: Debian bookworm (kernel 6.1.0)
+> 
+> 1. To prepare the FUSE fs, create a file and a symlink under the VM's root dir:
+> 
+> ```
+> ruiwen@instance-1:/tmp$ ls / -l | grep foo
+> -rw-r--r--   1 root root     0 Aug 30 23:10 foo
+> lrwxrwxrwx   1 root root     3 Aug 30 23:12 foolink -> foo
+> ```
+> and then run libfuse's passthrough (https://github.com/libfuse/libfuse/blob/master/example/passthrough.c), which mounts a FUSE filesystem by mirroring the root dir:
+> 
+> ```
+> ruiwen@instance-1:~/fuse-3.16.1/build/example$ ./passthrough -o allow_other /tmp/fusemount
+> ruiwen@instance-1:~/fuse-3.16.1/build/example$ ls /tmp/fusemount/ -l | grep foo
+> -rw-r--r--   1 root root     0 Aug 30 23:10 foo
+> lrwxrwxrwx   1 root root     3 Aug 30 23:12 foolink -> foo
+> ```
+> 
+> 2. Create an overlayfs mount, with lower dir being the the mount point of FUSE filesystem.
+> ```
+> ruiwen@instance-1:/tmp$ mkdir -p fusemount upper work merged
+> ruiwen@instance-1:/tmp$ sudo mount -t overlay overlay -o lowerdir=fusemount,upperdir=upper,workdir=work merged
+> ruiwen@instance-1:/tmp$ ls -l merged/ | grep foo
+> -rw-r--r--   1 root root     0 Aug 30 23:10 foo
+> lrwxrwxrwx   1 root root     3 Aug 30 23:12 foolink -> foo
+> ```
+> 
+> 3. Try to move the symlink and see the failure:
+> ```
+> ruiwen@instance-1:/tmp$ mv merged/foolink merged/foolink2
+> mv: cannot move 'merged/foolink' to 'merged/foolink2': No such device or address
+> ```
+> 
+> 
+> *Some observations*
+> 
+> 1. Same bug has been reported at Debian Bug, where overlayfs is used with NFS: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1049885. This makes me think that the bug is more on overlayfs, but not on FUSE or NFS.
+> 
+> 2. This issue can be reproduced on kernel 5.15, 6.10, but CANNOT be reproduced on kernel 5.10. There is a noticeable change on 5.15 that is related to overlayfs: (https://github.com/torvalds/linux/commit/72db82115d2bdfbfba8b15a92d91872cfe1b40c6), which introduces copyup fileattr.
+> 
+> 3. When reproducing this bug, we found that the error ENXIO was actually from getting lower fileattr. In dmesg we see: "failed to retrieve lower fileattr (/link, err=-6)". So it seems that overlayfs for some reason fails to get the file attributes of the source file from the underlying filesystem.
 
--ritesh
+See Bugzilla for the full thread.
 
+Anyway, I'm adding it to regzbot:
 
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index bb08a71a6e61..fdffa3b40bcd 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6681,25 +6681,22 @@ void ext4_free_blocks(handle_t *handle, struct inode *inode,
->  int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
->  			 ext4_fsblk_t block, unsigned long count)
->  {
-> -	struct buffer_head *bitmap_bh = NULL;
-> -	struct buffer_head *gd_bh;
-> +	struct ext4_mark_context mc;
->  	ext4_group_t block_group;
->  	ext4_grpblk_t bit;
-> -	unsigned int i;
-> -	struct ext4_group_desc *desc;
->  	struct ext4_sb_info *sbi = EXT4_SB(sb);
->  	struct ext4_buddy e4b;
-> -	int err = 0, ret, free_clusters_count;
-> -	ext4_grpblk_t clusters_freed;
-> +	int err = 0;
->  	ext4_fsblk_t first_cluster = EXT4_B2C(sbi, block);
->  	ext4_fsblk_t last_cluster = EXT4_B2C(sbi, block + count - 1);
->  	unsigned long cluster_count = last_cluster - first_cluster + 1;
->  
->  	ext4_debug("Adding block(s) %llu-%llu\n", block, block + count - 1);
->  
-> -	if (count == 0)
-> +	if (cluster_count == 0)
->  		return 0;
->  
-> +	ext4_mb_prepare_mark_context(&mc, handle, sb, 0);
->  	ext4_get_group_no_and_offset(sb, block, &block_group, &bit);
->  	/*
->  	 * Check to see if we are freeing blocks across a group
-> @@ -6712,19 +6709,6 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
->  		goto error_return;
->  	}
->  
-> -	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
-> -	if (IS_ERR(bitmap_bh)) {
-> -		err = PTR_ERR(bitmap_bh);
-> -		bitmap_bh = NULL;
-> -		goto error_return;
-> -	}
-> -
-> -	desc = ext4_get_group_desc(sb, block_group, &gd_bh);
-> -	if (!desc) {
-> -		err = -EIO;
-> -		goto error_return;
-> -	}
-> -
->  	if (!ext4_sb_block_valid(sb, NULL, block, count)) {
->  		ext4_error(sb, "Adding blocks in system zones - "
->  			   "Block = %llu, count = %lu",
-> @@ -6733,74 +6717,30 @@ int ext4_group_add_blocks(handle_t *handle, struct super_block *sb,
->  		goto error_return;
->  	}
->  
-> -	BUFFER_TRACE(bitmap_bh, "getting write access");
-> -	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-> -					    EXT4_JTR_NONE);
-> +	err = ext4_mb_load_buddy(sb, block_group, &e4b);
->  	if (err)
->  		goto error_return;
->  
-> -	/*
-> -	 * We are about to modify some metadata.  Call the journal APIs
-> -	 * to unshare ->b_data if a currently-committing transaction is
-> -	 * using it
-> -	 */
-> -	BUFFER_TRACE(gd_bh, "get_write_access");
-> -	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
-> -	if (err)
-> +	err = ext4_mb_mark_context(&mc, block_group, bit, cluster_count,
-> +				   EXT4_MB_BITMAP_MARKED_CHECK);
-> +	if (err && mc.changed == 0) {
-> +		ext4_mb_unload_buddy(&e4b);
->  		goto error_return;
-> -
-> -	for (i = 0, clusters_freed = 0; i < cluster_count; i++) {
-> -		BUFFER_TRACE(bitmap_bh, "clear bit");
-> -		if (!mb_test_bit(bit + i, bitmap_bh->b_data)) {
-> -			ext4_error(sb, "bit already cleared for block %llu",
-> -				   (ext4_fsblk_t)(block + i));
-> -			BUFFER_TRACE(bitmap_bh, "bit already cleared");
-> -		} else {
-> -			clusters_freed++;
-> -		}
->  	}
->  
-> -	err = ext4_mb_load_buddy(sb, block_group, &e4b);
-> -	if (err)
-> -		goto error_return;
-> -
-> -	ext4_lock_group(sb, block_group);
-> -	mb_clear_bits(bitmap_bh->b_data, bit, cluster_count);
-> -	free_clusters_count = clusters_freed +
-> -		ext4_free_group_clusters(sb, desc);
-> -	ext4_free_group_clusters_set(sb, desc, free_clusters_count);
-> -	ext4_block_bitmap_csum_set(sb, desc, bitmap_bh);
-> -	ext4_group_desc_csum_set(sb, block_group, desc);
-> -	ext4_unlock_group(sb, block_group);
-> +	if (mc.changed != cluster_count)
-> +		ext4_error(sb, "bit already cleared in group %u", block_group);
->  
->  	ext4_lock_group(sb, block_group);
->  	mb_free_blocks(NULL, &e4b, bit, cluster_count);
->  	ext4_unlock_group(sb, block_group);
->  
->  	percpu_counter_add(&sbi->s_freeclusters_counter,
-> -			   clusters_freed);
-> -
-> -	if (sbi->s_log_groups_per_flex) {
-> -		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
-> -		atomic64_add(clusters_freed,
-> -			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-> -						  flex_group)->free_clusters);
-> -	}
-> +			   mc.changed);
->  
->  	ext4_mb_unload_buddy(&e4b);
->  
-> -	/* We dirtied the bitmap block */
-> -	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
-> -	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-> -
-> -	/* And the group descriptor block */
-> -	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
-> -	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
-> -	if (!err)
-> -		err = ret;
-> -
->  error_return:
-> -	brelse(bitmap_bh);
->  	ext4_std_error(sb, err);
->  	return err;
->  }
-> -- 
-> 2.30.0
+#regzbot introduced: v5.10..v6.1 https://bugzilla.kernel.org/show_bug.cgi?id=217850
+#regzbot link: https://bugzilla.kernel.org/show_bug.cgi?id=217850
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217850
+
+-- 
+An old man doll... just what I always wanted! - Clara
