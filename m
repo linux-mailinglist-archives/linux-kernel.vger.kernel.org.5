@@ -2,224 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2550378F9FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:30:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73FF378F9FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345204AbjIAIag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:30:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
+        id S1345275AbjIAIeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbjIAIaf (ORCPT
+        with ESMTP id S232145AbjIAIeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:30:35 -0400
-Received: from smtp-fw-9106.amazon.com (smtp-fw-9106.amazon.com [207.171.188.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22EE9E;
-        Fri,  1 Sep 2023 01:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1693557031; x=1725093031;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=Yn40/F52PrZNKOQZ2H5d9y5yfXuLciO6u8/X0LdsjxI=;
-  b=Pz9OMQLag54gQRrhFz0o9T4B8Hr1svJPi3GtWMjvlXwuaJgUXhrrtWKa
-   O8/kFYnP8zu9po0eXTOljZA6TuiBKETOJc98IEjVYq0sELXclzFeZueQn
-   tkOCehAmY1UT+wF5qHqhfrQtej3Vg2wtJrEiWcauw9zKQC3Yt7rpesdDn
-   E=;
-X-IronPort-AV: E=Sophos;i="6.02,219,1688428800"; 
-   d="scan'208";a="669111413"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9106.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 08:30:25 +0000
-Received: from EX19MTAUWB002.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2a-m6i4x-21d8d9f4.us-west-2.amazon.com (Postfix) with ESMTPS id C214F8042F;
-        Fri,  1 Sep 2023 08:30:14 +0000 (UTC)
-Received: from EX19D002ANA003.ant.amazon.com (10.37.240.141) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 1 Sep 2023 08:30:14 +0000
-Received: from b0f1d8753182.ant.amazon.com (10.106.83.26) by
- EX19D002ANA003.ant.amazon.com (10.37.240.141) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Fri, 1 Sep 2023 08:30:10 +0000
-From:   Takahiro Itazuri <itazur@amazon.com>
-To:     <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Takahiro Itazuri <zulinx86@gmail.com>,
-        Takahiro Itazuri <itazur@amazon.com>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
-Subject: [PATCH v3] docs/hw-vuln: Update desc of best effort mode
-Date:   Fri, 1 Sep 2023 09:29:59 +0100
-Message-ID: <20230901082959.28310-1-itazur@amazon.com>
-X-Mailer: git-send-email 2.38.0
-MIME-Version: 1.0
+        Fri, 1 Sep 2023 04:34:14 -0400
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01olkn2105.outbound.protection.outlook.com [40.92.98.105])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FC30E49;
+        Fri,  1 Sep 2023 01:34:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UdbKmTVvNn09S43yrY807h5l/wNPX835vpPEJXVAqDugjY2wWMgge1aJRduAVhF+E8GRr2Pbz76wxMvSkkpyyiIulLn+sO1Dd83Xj6nyY2bbGnIT4JZ/8iTV1uwIua2RyQ/rt1TTxZaKwkXKd/HfOpPWGrZqKJMdRhKkTCk56qhDZitymH04eRqRpkYBI9CFeNXqXJXacuJmRve4qPP8lWsRMvP9DuRc4kqm7DWQFsGz2jBmJ4PVJ1hspD9wjs2CDQsSpiJdY5YLhX9ytpu5MRlQnyfGRdc038PJ+MbWoz/C++o6x4KLoabTvlW8DK40/FyR5OhjRMFqZDtu3KtARw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1maS6Ie4blYrsUMWoXT0H9fmf9lpQ9Tur2lK0t5dStA=;
+ b=e8NXR1HEuAlLQgCUv3wWaIKp2009l3dQR6slhsm3pFUOSD8S52bT57jAiEXyf0rRpOZy1TquKV+OqtpN916mOzkC78tz/KgWHmR4GcaB0QjPMKAsUVzkpXLeUiUGQGV4PVfw0jq27O3yseSbLG9TveqLvHoKTypJ/caD87K64Y38UXNWnjFkjsnyhWSfD50rgg7eRmV0XSzWE/ajjaFUzrY8PL2LhX9+7y3Gt0ni+BGe50fyEcNCXTG7L7vX01AvzmYzqCtrIOiBP37wT5AA5qN+skEMYeDUQRO1WGmw6GZn2xEBOYSYAWtQlG/Gtbe8512ZRijZclS3alflRY915g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1maS6Ie4blYrsUMWoXT0H9fmf9lpQ9Tur2lK0t5dStA=;
+ b=cpRnHVFFjQpVi5zo1YwgvIggpQFYZqVjTawSct+ZhTRNyjDVEHEGcAY9fUl4f/7pEDE+RthvFLkiTdBxGDGr40DNeqIjTdQ6EsvoAT/Xvz0F32D6AkdeUjxZfPbcOAAmR4wm1SyTEbrltSOcIiYbRj/vliBs7G0V5d7TGalLDyLxYZGx+tuWj4XJAeXz+/4doKuNIrB5HYcw82sfkY1tp/jEnw1ko/38OG3DuHGJ1rhpimYvUlqciVzgnAHSVY0jPHatbxDVt1AZ5xxg9gl/DRwiRE9wCYJIFMxUgYZzRRERcEl06C0mqXEaE3AA75kntjD1TtUSZAEw6L3qs8n5NQ==
+Received: from TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:242::11)
+ by TY3P286MB2548.JPNP286.PROD.OUTLOOK.COM (2603:1096:400:22c::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.16; Fri, 1 Sep
+ 2023 08:34:07 +0000
+Received: from TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::320e:3328:32e4:a3ce]) by TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::320e:3328:32e4:a3ce%4]) with mapi id 15.20.6768.016; Fri, 1 Sep 2023
+ 08:34:06 +0000
+From:   Riwen Lu <luriwen@hotmail.com>
+To:     jikos@kernel.org, benjamin.tissoires@redhat.com,
+        dmitry.torokhov@gmail.com, linux@weissschuh.net,
+        hdegoede@redhat.com, rrangel@chromium.org,
+        u.kleine-koenig@pengutronix.de
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sergeantsagara@protonmail.com, Riwen Lu <luriwen@kylinos.cn>
+Subject: [PATCH v3] HID: i2c-hid: use print_hex_dump_debug to print report descriptor
+Date:   Fri,  1 Sep 2023 16:33:56 +0800
+Message-ID: <TYCP286MB26078CEC570EA9055D86D82DB1E4A@TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <87bketu33z.fsf@protonmail.com>
+References: <87bketu33z.fsf@protonmail.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [10.106.83.26]
-X-ClientProxiedBy: EX19D039UWB003.ant.amazon.com (10.13.138.93) To
- EX19D002ANA003.ant.amazon.com (10.37.240.141)
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
+X-TMN:  [JyIlt+0tQ3FtwKYnUJW6I6m1nq2zxbUl]
+X-ClientProxiedBy: TYCPR01CA0108.jpnprd01.prod.outlook.com
+ (2603:1096:405:4::24) To TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:400:242::11)
+X-Microsoft-Original-Message-ID: <20230901083356.626091-1-luriwen@hotmail.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYCP286MB2607:EE_|TY3P286MB2548:EE_
+X-MS-Office365-Filtering-Correlation-Id: 50e3074d-ad27-4700-b68b-08dbaac63483
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: MvdwPFuioOloAifuu7WL7uFjOjM7EICPFP/HAQzLY3qJlUdoDki6/4ZUaQ56TVsnDTpBxbVWxJa9l2K16Ios1IAjirjDUKQ+DTqQyxB0oG3UPvZRXA0KZPdx3VIQC7Auz91L+Kk5G3X+4sl7D2rNoo9Tim2YqSpqn7bkmDbRBALhxlhGAo/tYqzhpgbJeKduE7oYc/P7nR6L8+bkKz5nkQo2MDIMbevPfHVKdKtX8u3Sb6gsK0O2OOV+/QiRTeT09hkoF6EzicgEl1KxYVXuyOgafbZgUoyzJt2e6mxROufKtnEsloVG6tIsEEGI/sisSKpNMVoYOXsdw5vPK+i4lrTu33VSV3wrU/ymyYJlyrk2ey04MYvdZilQ25KfTdrJ06lmYxdr/TaVrIo0e1hj2H5vhKJhCdKQu8cElunX8GKtnntPd+uqIEPJiKcwBOcJi9tr0j2XEIwiXUDBkwLgK0O1iBVOVgszulAB3AaImo0iJMUeLr2nIDVdhGQITkXT6ornx/+3HWg1q1LdObqj5/SfbIFX9o9+AEJ2uyFPCNWCiP1sdTmcp4BvDsbQj9Fv
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?s3JYLtEjEBYen9AwnjTCBYS8bfkj+Qj2u4d2765UKIfy+tZyl+D9xY7D79Dt?=
+ =?us-ascii?Q?jsXDzgjVgljPeCQ+AFIvkxbOAxjykLvLX7HB4f2CJcJd3OHx7h8QvW6feEkn?=
+ =?us-ascii?Q?P+3sNQu9Jjnh8a6gZMFfU07xUVuYy8gsbsBu/oER8b8999DJZuCJFZ4s/VDP?=
+ =?us-ascii?Q?xkbFO4tIP4mor/SW9gSWo0kC9wLvOkjX0RoUS6N5atk8ucoxpVYThyt/UpF3?=
+ =?us-ascii?Q?J6BvHzpHvg2LeEfDdyD/2hHR3bAd3iWTqug2HsQe8zAUpVCuToRkb5NLoQS6?=
+ =?us-ascii?Q?PMPQ6WkAE5l7nPirpwkDSC9icz5xR1DDW844yaptbGwA2gc4pQWAiS/FnyM5?=
+ =?us-ascii?Q?Bv0U6BQmm8cjSgIx1uhUaqtaqhb8Cu7s1LTA1F2P4nvKOYo0m8+rFmDhBfS7?=
+ =?us-ascii?Q?JVSI1DMnS8RH9q6k5TpWdZe9pUg4JiLBQlIDfY4+LEMNt3b12Cfr0rn9INEn?=
+ =?us-ascii?Q?L1jo6+4EmIIIRNg1vcPqn+OS6MTUW12WBeQ8qqNisG/44Lb1fSuuqiVo1uqI?=
+ =?us-ascii?Q?ShurE4HcG9K4eOz+ejFl+qVwYIezK3w7ovJ7RA5kbS//Xt9jZfuagoRtsf8H?=
+ =?us-ascii?Q?faZdxSKng4sxWTM25dU0W8BVdfhBUHBM/YYJqp+O5lrSKR1LKnh3joaDfa0r?=
+ =?us-ascii?Q?up9C8cHIFZZPzMn1+STKmKtrXZlbBJS01YfJUWsqHxttdxJn3buCDoRGnmbw?=
+ =?us-ascii?Q?sGPIUkdbHj5juxAWAbG5v44HeCToxljbi+mc5CvdVFk8/OYI5Kc2cTbHqGS7?=
+ =?us-ascii?Q?e/1LURS3SwNaNO19X4xbiIEq3fMjfvf/wuCaX3r/o32p6Os6Yn46rq/L3PpE?=
+ =?us-ascii?Q?YBM8QtaVxwPWFcNlIFHf4DCjPbvm74TogmgB4TmOvSaGw4oGqJaj9iBVxxMo?=
+ =?us-ascii?Q?mGF1+tIHk2JFMs6e42sW1FrA641FHkq8b9nGWD35BIaNJ7H4TbMBTsnlLrU+?=
+ =?us-ascii?Q?6dCExmONv+rPRl1g83tVqUpiwtubusiCtVlA4dfAVN4o87vZDlsStmNdMPOq?=
+ =?us-ascii?Q?i68+LHEVAA9yde9YwuConHtFHFuq3uoBN61esHafqz4pSp/wx5RBMN0Aho3d?=
+ =?us-ascii?Q?cGsP2vM3LoqtKEG2UkWaCjM/sd6uX6xTPIi1LnQ1V8ajC7NkoJ2oYQp8a9Qe?=
+ =?us-ascii?Q?IwPTOXZPrSgFfq1rcP6/sX2xxCrWSh6Oq/hGmaFKQWEzj3ARiABrrafoDLoe?=
+ =?us-ascii?Q?3E6xzTGJQxSPOUJqLcvMCpHwHUiSSverJRM++Q=3D=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-05f45.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 50e3074d-ad27-4700-b68b-08dbaac63483
+X-MS-Exchange-CrossTenant-AuthSource: TYCP286MB2607.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 08:34:06.8624
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TY3P286MB2548
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moves the description of the best effort mitigation mode to the table of
-the possible values in the mds and tsx_async_abort docs, and adds the
-same one to the mmio_stale_data doc.
+From: Riwen Lu <luriwen@kylinos.cn>
 
-Signed-off-by: Takahiro Itazuri <itazur@amazon.com>
-Reviewed-by: Pawan Gupta <pawan.kumar.gupta@linux.intel.com>
----
+The format '%*ph' prints up to 64 bytes long as a hex string with ' '
+separator. Usually the size of report descriptor is larger than 64
+bytes, so consider using print_hex_dump_debug to print out all of it for
+better debugging.
 
-v2 -> v3: https://lore.kernel.org/all/20230831111847.71030-1-itazur@amazon.com/
-- Changed the subject prefix to "docs/hw-vuln".
-- Removed an extra newline left.
-
-v1 -> v2: https://lore.kernel.org/all/20230830144426.80258-1-itazur@amazon.com/
-- Moved the desc into the table of the possible values.
+Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
 
 ---
- Documentation/admin-guide/hw-vuln/mds.rst     | 34 +++++++------------
- .../hw-vuln/processor_mmio_stale_data.rst     | 13 ++++++-
- .../admin-guide/hw-vuln/tsx_async_abort.rst   | 33 +++++++-----------
- 3 files changed, 38 insertions(+), 42 deletions(-)
+v1->v2:
+ - Add a prefix for the hex dump.
 
-diff --git a/Documentation/admin-guide/hw-vuln/mds.rst b/Documentation/admin-guide/hw-vuln/mds.rst
-index 48ca0bd85..48c7b0b72 100644
---- a/Documentation/admin-guide/hw-vuln/mds.rst
-+++ b/Documentation/admin-guide/hw-vuln/mds.rst
-@@ -102,9 +102,19 @@ The possible values in this file are:
-      * - 'Vulnerable'
-        - The processor is vulnerable, but no mitigation enabled
-      * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
--       - The processor is vulnerable but microcode is not updated.
--
--         The mitigation is enabled on a best effort basis. See :ref:`vmwerv`
-+       - The processor is vulnerable but microcode is not updated. The
-+         mitigation is enabled on a best effort basis.
-+
-+         If the processor is vulnerable but the availability of the microcode
-+         based mitigation mechanism is not advertised via CPUID, the kernel
-+         selects a best effort mitigation mode. This mode invokes the mitigation
-+         instructions without a guarantee that they clear the CPU buffers.
-+
-+         This is done to address virtualization scenarios where the host has the
-+         microcode update applied, but the hypervisor is not yet updated to
-+         expose the CPUID to the guest. If the host has updated microcode the
-+         protection takes effect; otherwise a few CPU cycles are wasted
-+         pointlessly.
-      * - 'Mitigation: Clear CPU buffers'
-        - The processor is vulnerable and the CPU buffer clearing mitigation is
-          enabled.
-@@ -119,24 +129,6 @@ to the above information:
-     'SMT Host state unknown'  Kernel runs in a VM, Host SMT state unknown
-     ========================  ============================================
+v2->v3:
+ - Print the size of report descriptor.
+---
+ drivers/hid/i2c-hid/i2c-hid-core.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
+index efbba0465eef..dd69abdd1f0d 100644
+--- a/drivers/hid/i2c-hid/i2c-hid-core.c
++++ b/drivers/hid/i2c-hid/i2c-hid-core.c
+@@ -772,7 +772,9 @@ static int i2c_hid_parse(struct hid_device *hid)
+ 		}
+ 	}
  
--.. _vmwerv:
--
--Best effort mitigation mode
--^^^^^^^^^^^^^^^^^^^^^^^^^^^
--
--  If the processor is vulnerable, but the availability of the microcode based
--  mitigation mechanism is not advertised via CPUID the kernel selects a best
--  effort mitigation mode.  This mode invokes the mitigation instructions
--  without a guarantee that they clear the CPU buffers.
--
--  This is done to address virtualization scenarios where the host has the
--  microcode update applied, but the hypervisor is not yet updated to expose
--  the CPUID to the guest. If the host has updated microcode the protection
--  takes effect otherwise a few cpu cycles are wasted pointlessly.
--
--  The state in the mds sysfs file reflects this situation accordingly.
--
--
- Mitigation mechanism
- -------------------------
+-	i2c_hid_dbg(ihid, "Report Descriptor: %*ph\n", rsize, rdesc);
++	i2c_hid_dbg(ihid, "Report Descriptor size: %#x\n", rsize);
++	print_hex_dump_debug("Report Descriptor: ", DUMP_PREFIX_OFFSET, 16, 1,
++			rdesc, rsize, false);
  
-diff --git a/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst b/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
-index c98fd1190..1302fd1b5 100644
---- a/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
-+++ b/Documentation/admin-guide/hw-vuln/processor_mmio_stale_data.rst
-@@ -225,8 +225,19 @@ The possible values in this file are:
-      * - 'Vulnerable'
-        - The processor is vulnerable, but no mitigation enabled
-      * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
--       - The processor is vulnerable, but microcode is not updated. The
-+       - The processor is vulnerable but microcode is not updated. The
-          mitigation is enabled on a best effort basis.
-+
-+         If the processor is vulnerable but the availability of the microcode
-+         based mitigation mechanism is not advertised via CPUID, the kernel
-+         selects a best effort mitigation mode. This mode invokes the mitigation
-+         instructions without a guarantee that they clear the CPU buffers.
-+
-+         This is done to address virtualization scenarios where the host has the
-+         microcode update applied, but the hypervisor is not yet updated to
-+         expose the CPUID to the guest. If the host has updated microcode the
-+         protection takes effect; otherwise a few CPU cycles are wasted
-+         pointlessly.
-      * - 'Mitigation: Clear CPU buffers'
-        - The processor is vulnerable and the CPU buffer clearing mitigation is
-          enabled.
-diff --git a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-index 014167ef8..444f84e22 100644
---- a/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-+++ b/Documentation/admin-guide/hw-vuln/tsx_async_abort.rst
-@@ -98,7 +98,19 @@ The possible values in this file are:
-    * - 'Vulnerable'
-      - The CPU is affected by this vulnerability and the microcode and kernel mitigation are not applied.
-    * - 'Vulnerable: Clear CPU buffers attempted, no microcode'
--     - The system tries to clear the buffers but the microcode might not support the operation.
-+     - The processor is vulnerable but microcode is not updated. The
-+       mitigation is enabled on a best effort basis.
-+
-+       If the processor is vulnerable but the availability of the microcode
-+       based mitigation mechanism is not advertised via CPUID, the kernel
-+       selects a best effort mitigation mode. This mode invokes the mitigation
-+       instructions without a guarantee that they clear the CPU buffers.
-+
-+       This is done to address virtualization scenarios where the host has the
-+       microcode update applied, but the hypervisor is not yet updated to
-+       expose the CPUID to the guest. If the host has updated microcode the
-+       protection takes effect; otherwise a few CPU cycles are wasted
-+       pointlessly.
-    * - 'Mitigation: Clear CPU buffers'
-      - The microcode has been updated to clear the buffers. TSX is still enabled.
-    * - 'Mitigation: TSX disabled'
-@@ -106,25 +118,6 @@ The possible values in this file are:
-    * - 'Not affected'
-      - The CPU is not affected by this issue.
- 
--.. _ucode_needed:
--
--Best effort mitigation mode
--^^^^^^^^^^^^^^^^^^^^^^^^^^^
--
--If the processor is vulnerable, but the availability of the microcode-based
--mitigation mechanism is not advertised via CPUID the kernel selects a best
--effort mitigation mode.  This mode invokes the mitigation instructions
--without a guarantee that they clear the CPU buffers.
--
--This is done to address virtualization scenarios where the host has the
--microcode update applied, but the hypervisor is not yet updated to expose the
--CPUID to the guest. If the host has updated microcode the protection takes
--effect; otherwise a few CPU cycles are wasted pointlessly.
--
--The state in the tsx_async_abort sysfs file reflects this situation
--accordingly.
--
--
- Mitigation mechanism
- --------------------
- 
+ 	ret = hid_parse_report(hid, rdesc, rsize);
+ 	if (!use_override)
 -- 
-2.40.1
+2.25.1
 
