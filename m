@@ -2,61 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C8878FE41
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C7D78FE4D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349730AbjIANYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:24:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43086 "EHLO
+        id S1349745AbjIANay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:30:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349728AbjIANYb (ORCPT
+        with ESMTP id S233654AbjIANax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:24:31 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A6D510F0;
-        Fri,  1 Sep 2023 06:24:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693574667; x=1725110667;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=GuIA7jI9/L6dCcMzzDcAAcc7swNsWCXqvKsMfNlSRbQ=;
-  b=fFu4+xCbA2oxZ32WrWMAlhFiS4Pkde1zoJtiPV1uDJqnaDWVZNPrj+H8
-   kO1aIBhFJdREK5quldmbPTqLOlVVnWcO5GoahB5LiZx3vVr5WoSzIPwVt
-   LpLpGKtm269WE8RxKTcN4NkFXWQO0+kriWHBkAN/PVvzROnugTOvjpXbe
-   i4pN1Bu/gVktbcox7YhkoAo1Rfl3AfmScXau30pAqeTqBkvNy6Vaj+q5n
-   oZlAVZrli/K+XoyKq0deJdMOwSwLA2d2jQgO6mIRE4kd+T/xVXuxhzR2z
-   Q3xpJeM8kvUFI7PwB7dpRT4pk4t7qJogUqSsalJufTqtO6LIM+60zoaDL
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="442613474"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="442613474"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:24:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="883186973"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="883186973"
-Received: from rawskaal-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.0.136])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:24:26 -0700
-From:   Wieczor-Retman Maciej <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 2/2] selftests/resctrl: Move run_benchmark() to a more fitting file
-Date:   Fri,  1 Sep 2023 15:23:28 +0200
-Message-ID: <c26df24b7f4ecb47d79e032668e3c1739b6282d2.1693574285.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1693574285.git.maciej.wieczor-retman@intel.com>
-References: <cover.1693574285.git.maciej.wieczor-retman@intel.com>
+        Fri, 1 Sep 2023 09:30:53 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED17CDD;
+        Fri,  1 Sep 2023 06:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693575047;
+        bh=pkbbGagA3i0Bnj+ku0lHfhSJzOGz2/XYlf1w4l2JIXg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=C+m22130Lvzn8GrGf2sOmSHmowFiKfvj2xHtVhvj+F360XM5OiSSWolq8QmacTOmb
+         px8FcNRPIgEhiJpBA5iCTdIIiZ6Q7CqA6A4/JoCo812tJTE2f6QSzpsp2qtMiYgHF8
+         govH2PsztIGIcVW6WGrHb1N0HVleMndq+lH7X/NQArDU/VTmRCEmgL0mvmokLZOKmu
+         AkTbEJqqiCJi5t7Uvh89OUZnpKqffcm7NbzG4ozxSnPlPDFpeLfo2QlOkkumpRjHRw
+         TDufzeNKLVk1EuByVhgok6eLUitHOqj+iQftaw6Vm1NwnBtffHvP5+8TqWDe+R5yY2
+         1L7zjkYl+mwRA==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rcf6v1FR8z1Ml2;
+        Fri,  1 Sep 2023 09:30:47 -0400 (EDT)
+Message-ID: <d05deed9-637f-697c-5c2f-d6fede4c956d@efficios.com>
+Date:   Fri, 1 Sep 2023 09:31:58 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] srcu: The value may overflow
+Content-Language: en-US
+To:     Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
+        trufanov@swemel.ru, vfh@swemel.ru
+References: <20230901095341.55857-1-arefev@swemel.ru>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20230901095341.55857-1-arefev@swemel.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,169 +57,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-resctrlfs.c file contains mostly functions that interact in some way
-with resctrl FS entries while functions inside resctrl_val.c deal with
-measurements and benchmarking.
+On 9/1/23 05:53, Denis Arefev wrote:
+> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+> is subject to overflow due to a failure to cast operands to a larger
+> data type before performing arithmetic
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> ---
+>   kernel/rcu/srcutree.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 20d7a238d675..e14b74fb1ba0 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+>   				snp->grplo = cpu;
+>   			snp->grphi = cpu;
+>   		}
+> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
 
-run_benchmark() is located in resctrlfs.c file even though it's
-purpose is not interacting with the resctrl FS but to execute cache
-checking logic.
+What possible values of cpus supported by the Linux kernel and grplo can 
+cause this to overflow on 64-bit architectures ? I suspect the maximum 
+result of this subtraction is defined by the RCU_FANOUT or other srcu 
+level-spread values assigned by rcu_init_levelspread(), which can indeed 
+cause the signed 32-bit integer literal ("1") to overflow when shifted 
+by any value greater than 31. This analysis should be added to the 
+commit message so the impact of the issue can be understood.
 
-Move run_benchmark() to resctrl_val.c just before resctrl_val() that
-makes use of run_benchmark(). Make run_benchmark() static since it's
-not used between multiple files anymore.
+I also notice this in the same file:
 
-Remove return comment from kernel-doc since the function is type void.
+srcu_schedule_cbs_snp():
 
-Signed-off-by: Wieczor-Retman Maciej <maciej.wieczor-retman@intel.com>
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
----
-Changelog v3:
-- Make run_benchmark() static and remove it from the header. (Reinette)
-- Remove return void kernel-doc comment. (Ilpo)
-- Added Ilpo's reviewed-by tag.
+         for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+                 if (!(mask & (1 << (cpu - snp->grplo))))
+                         continue;
 
- tools/testing/selftests/resctrl/resctrl.h     |  1 -
- tools/testing/selftests/resctrl/resctrl_val.c | 50 ++++++++++++++++++
- tools/testing/selftests/resctrl/resctrlfs.c   | 52 -------------------
- 3 files changed, 50 insertions(+), 53 deletions(-)
+Which should be fixed at the same time.
 
-diff --git a/tools/testing/selftests/resctrl/resctrl.h b/tools/testing/selftests/resctrl/resctrl.h
-index 838d1a438f33..c6cca28810cd 100644
---- a/tools/testing/selftests/resctrl/resctrl.h
-+++ b/tools/testing/selftests/resctrl/resctrl.h
-@@ -89,7 +89,6 @@ int validate_bw_report_request(char *bw_report);
- bool validate_resctrl_feature_request(const char *resctrl_val);
- char *fgrep(FILE *inf, const char *str);
- int taskset_benchmark(pid_t bm_pid, int cpu_no);
--void run_benchmark(int signum, siginfo_t *info, void *ucontext);
- int write_schemata(char *ctrlgrp, char *schemata, int cpu_no,
- 		   char *resctrl_val);
- int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
-diff --git a/tools/testing/selftests/resctrl/resctrl_val.c b/tools/testing/selftests/resctrl/resctrl_val.c
-index f0f6c5f6e98b..764acf5efa14 100644
---- a/tools/testing/selftests/resctrl/resctrl_val.c
-+++ b/tools/testing/selftests/resctrl/resctrl_val.c
-@@ -621,6 +621,56 @@ measure_vals(struct resctrl_val_param *param, unsigned long *bw_resc_start)
- 	return 0;
- }
- 
-+/*
-+ * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-+ *		   in specified signal. Direct benchmark stdio to /dev/null.
-+ * @signum:	signal number
-+ * @info:	signal info
-+ * @ucontext:	user context in signal handling
-+ */
-+static void run_benchmark(int signum, siginfo_t *info, void *ucontext)
-+{
-+	int operation, ret, memflush;
-+	char **benchmark_cmd;
-+	size_t span;
-+	bool once;
-+	FILE *fp;
-+
-+	benchmark_cmd = info->si_ptr;
-+
-+	/*
-+	 * Direct stdio of child to /dev/null, so that only parent writes to
-+	 * stdio (console)
-+	 */
-+	fp = freopen("/dev/null", "w", stdout);
-+	if (!fp)
-+		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
-+
-+	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
-+		/* Execute default fill_buf benchmark */
-+		span = strtoul(benchmark_cmd[1], NULL, 10);
-+		memflush =  atoi(benchmark_cmd[2]);
-+		operation = atoi(benchmark_cmd[3]);
-+		if (!strcmp(benchmark_cmd[4], "true"))
-+			once = true;
-+		else if (!strcmp(benchmark_cmd[4], "false"))
-+			once = false;
-+		else
-+			PARENT_EXIT("Invalid once parameter");
-+
-+		if (run_fill_buf(span, memflush, operation, once))
-+			fprintf(stderr, "Error in running fill buffer\n");
-+	} else {
-+		/* Execute specified benchmark */
-+		ret = execvp(benchmark_cmd[0], benchmark_cmd);
-+		if (ret)
-+			perror("wrong\n");
-+	}
-+
-+	fclose(stdout);
-+	PARENT_EXIT("Unable to run specified benchmark");
-+}
-+
- /*
-  * resctrl_val:	execute benchmark and measure memory bandwidth on
-  *			the benchmark
-diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
-index b0b14a5bcbf5..2f1ca184ac40 100644
---- a/tools/testing/selftests/resctrl/resctrlfs.c
-+++ b/tools/testing/selftests/resctrl/resctrlfs.c
-@@ -291,58 +291,6 @@ int taskset_benchmark(pid_t bm_pid, int cpu_no)
- 	return 0;
- }
- 
--/*
-- * run_benchmark - Run a specified benchmark or fill_buf (default benchmark)
-- *		   in specified signal. Direct benchmark stdio to /dev/null.
-- * @signum:	signal number
-- * @info:	signal info
-- * @ucontext:	user context in signal handling
-- *
-- * Return: void
-- */
--void run_benchmark(int signum, siginfo_t *info, void *ucontext)
--{
--	int operation, ret, memflush;
--	char **benchmark_cmd;
--	size_t span;
--	bool once;
--	FILE *fp;
--
--	benchmark_cmd = info->si_ptr;
--
--	/*
--	 * Direct stdio of child to /dev/null, so that only parent writes to
--	 * stdio (console)
--	 */
--	fp = freopen("/dev/null", "w", stdout);
--	if (!fp)
--		PARENT_EXIT("Unable to direct benchmark status to /dev/null");
--
--	if (strcmp(benchmark_cmd[0], "fill_buf") == 0) {
--		/* Execute default fill_buf benchmark */
--		span = strtoul(benchmark_cmd[1], NULL, 10);
--		memflush =  atoi(benchmark_cmd[2]);
--		operation = atoi(benchmark_cmd[3]);
--		if (!strcmp(benchmark_cmd[4], "true"))
--			once = true;
--		else if (!strcmp(benchmark_cmd[4], "false"))
--			once = false;
--		else
--			PARENT_EXIT("Invalid once parameter");
--
--		if (run_fill_buf(span, memflush, operation, once))
--			fprintf(stderr, "Error in running fill buffer\n");
--	} else {
--		/* Execute specified benchmark */
--		ret = execvp(benchmark_cmd[0], benchmark_cmd);
--		if (ret)
--			perror("wrong\n");
--	}
--
--	fclose(stdout);
--	PARENT_EXIT("Unable to run specified benchmark");
--}
--
- /*
-  * create_grp - Create a group only if one doesn't exist
-  * @grp_name:	Name of the group
+Thanks,
+
+Mathieu
+
+>   	}
+>   	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+>   	return true;
+
 -- 
-2.42.0
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
