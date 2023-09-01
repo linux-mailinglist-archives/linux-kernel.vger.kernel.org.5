@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A19D978FAAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:22:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E390878FAB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243978AbjIAJWj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:22:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41022 "EHLO
+        id S233330AbjIAJXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:23:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236730AbjIAJWi (ORCPT
+        with ESMTP id S230288AbjIAJXD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:22:38 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66211731;
-        Fri,  1 Sep 2023 02:21:56 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3a9b41ffe12so1135904b6e.3;
-        Fri, 01 Sep 2023 02:21:56 -0700 (PDT)
+        Fri, 1 Sep 2023 05:23:03 -0400
+Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7221980
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:22:45 -0700 (PDT)
+Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48d10c504a8so673913e0c.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:22:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693560116; x=1694164916; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zGEwguk6bLI4TMWGrtViIzYLdjlDbX1BQNkbUmaUR94=;
-        b=V7grwrnZNnjrkHQ2z/OPmPuDQzFK/jkcvufY7XFMdWQRmTP0JYwZ4Cc0k4WqE9o3vT
-         2ht9Tet4UR+xJsRdr2CMl6oAIeSXN6eM+kexZfT0dAviexqGwz5AxY2+PJN83evjzhFe
-         rVeyLaIXdQcZVVrrwMr8WZK9VE1rhsACxtuquSn3aRvESY/0jyRQpxPI7Xt/W66Cr1yk
-         qyuudlN2eQuDXdYgkUqTqqqbmbyIHwA9Xg6tQxGFgZMgGFVuufiFc2yWTSnmEbW36/Lt
-         CRArMx7zuWsrHJ1SKzlyJHknCq/Mjjh77PKC/kWhK41WyDKA4gIyJX2a+6r+K+wo604d
-         h84w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693560116; x=1694164916;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1693560165; x=1694164965; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=zGEwguk6bLI4TMWGrtViIzYLdjlDbX1BQNkbUmaUR94=;
-        b=RdPuBLTIjHLRJuyp74VgU7NabpCzsdF17UMo481F8HNd3SOX94RB6rlSDwYt8uu3Xi
-         LMthWGCpHMM/hHZhe/EAT73j+UJo2ABj8eNr9nOYCRgHsLxxHydHGWTNysXi4rBh/mBc
-         QiFFGSud9/+ZCDVRFgiRxxoNcinCaS2L+tMeoo143of/9HEev9kYPG2rMMCymrJfkx0/
-         pjyPzwbXYgHOzopysVI53ya5GrFBbOcjfYnK5fGfH93M5oq1rapNjcPrp5SZrER1AtLz
-         9AlArdg4adbbN7+gSXlOyvvKVJMv6FbtCFVJyqUo4cn7exdaUdPZo8JJTOtcIbI54eN1
-         +qtQ==
-X-Gm-Message-State: AOJu0Yw1orWK4fesv66j49L6agBCtYrc+rMmRA3CNr6vOEOP9Nb219a5
-        BRcKiycj25fEQ+iniQNOYqQ=
-X-Google-Smtp-Source: AGHT+IEIUPD+Ar7lDbOhlDJNHJ/6ZyFcCKOajT3BO89IbRVcAGO6nunvAnPn+SfG56qrN7t/pXTymQ==
-X-Received: by 2002:a05:6808:1296:b0:3a7:2390:3583 with SMTP id a22-20020a056808129600b003a723903583mr2699702oiw.38.1693560116146;
-        Fri, 01 Sep 2023 02:21:56 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id i8-20020a639d08000000b0055c02b8688asm2422292pgd.20.2023.09.01.02.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:21:55 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id C31538088641; Fri,  1 Sep 2023 16:21:51 +0700 (WIB)
-Date:   Fri, 1 Sep 2023 16:21:51 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.5 0/8] 6.5.1-rc1 review
-Message-ID: <ZPGtL8DCiYafUQTt@debian.me>
-References: <20230831110830.817738361@linuxfoundation.org>
+        bh=qTzp72FaKt5+/KYDM8z5KPWPzrLcXSZRzOQh4gdj+Z4=;
+        b=DKP0jPhDppKBefv24NPt1TH7Bx/GTyNnCz/Lfa4qd3pbbb4ci7qa3vcBQmpOXj/qQs
+         jUJIJykTD5DBQyi71dyR6IacsV1HJdYlNC3+rcl5ycFP8O2SNQK/riQmA+xzIkSLtEiB
+         1MH57j9JO4+Y0RnOriTG9F+ZsVc3hFqixrHL5NYovhBNAqPaOVO174BXm85Rm8Pv8ChN
+         Vav0h3rvr2OvyhWeyYR1Y2CbPRstDbtPRi7BBwXCCezLApdShfZaT9Tf7rZ08tPK+auw
+         O8gaw/Hzu2krxkgBbgCaRKIzrNRyEwcW0mmeosBERobsV5EnYFIE9YjqfIdF3CbWyM1r
+         LpOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693560165; x=1694164965;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qTzp72FaKt5+/KYDM8z5KPWPzrLcXSZRzOQh4gdj+Z4=;
+        b=U//rlyc2Rmx/BC6rBgMSoTXPfa9RbW8JyU1PkYZQK5qBncpWV8JWRtVbZ8xUBMZqtP
+         c2HPoX2loU3b0cIRdqySOvaVkc+/a+FurCh9o1f9rlMwMYBTln72ImkPgelUHW7ne3I/
+         Vrgc5WT0mHmgN4R3bXqv/Kw+ydzI8NpD+taQ2gyWjy0m4gd99FryB6R5+mSImJXLcGXU
+         8mZ3Nm38CniuG2mLg5QZ7LbR5C6C61Y42pJeuCkySrNoFFDyBde8B0d1iExum8EUTnkV
+         kHje6ZCYKHGet3UZlNbEnKc5VwhrCqhdN2g8xsVosg6qfbMxHYIbCP8OHFzMML+EdEVh
+         Ye+A==
+X-Gm-Message-State: AOJu0Yzn28DU1CQpoEpYUvW8XX4Epdnv6ElP6wzU4iTlbP6Z01XBBXDn
+        zhycRDAj/szD6qZkVSOv8f6XozIjRmHjnoHiEbx2IA==
+X-Google-Smtp-Source: AGHT+IHgf/l7rJMgcfAQ+Vq3h78H7E8n/a6xIfzX4cXBx29aryy4DTZC33H/caPyyuOBKvHszof11uB8sFAE/YnDh9U=
+X-Received: by 2002:a1f:cac7:0:b0:48d:eaa:45cf with SMTP id
+ a190-20020a1fcac7000000b0048d0eaa45cfmr1973675vkg.1.1693560164877; Fri, 01
+ Sep 2023 02:22:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Pv+BAIQRhkySjQQZ"
-Content-Disposition: inline
-In-Reply-To: <20230831110830.817738361@linuxfoundation.org>
+References: <20230831194934.19628-1-brgl@bgdev.pl> <ZPEhS0uBWABpaE+/@smile.fi.intel.com>
+ <CAMRc=Md-6i+nqDtYiUUtZExA32c0nJxhevYsiZqmd1PP8aaMng@mail.gmail.com> <ZPGnFHgtK1wE6Ppf@smile.fi.intel.com>
+In-Reply-To: <ZPGnFHgtK1wE6Ppf@smile.fi.intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 1 Sep 2023 11:22:33 +0200
+Message-ID: <CACRpkdbGdCFb9a5bV_aBMd3eee3N5EdWy+Bkpct-YfHUgHysVw@mail.gmail.com>
+Subject: Re: [RFT PATCH] spi: bcm2835: reduce the abuse of the GPIO API
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Lukas Wunner <lukas@wunner.de>,
+        Mark Brown <broonie@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 1, 2023 at 10:55=E2=80=AFAM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 
---Pv+BAIQRhkySjQQZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> > I'm not sure this is a good candidate for the GPIOLIB quirks. This is
+> > the SPI setup callback (which makes me think - I should have used
+> > gpiod_get(), not devm_gpiod_get() and then put the descriptor in
+> > .cleanup()) and not probe. It would be great to get some background on
+> > why this is even needed in the first place. The only reason I see is
+> > booting the driver with an invalid device-tree that doesn't assign the
+> > GPIO to the SPI controller.
+>
+> Maybe Lukas knows more?
 
-On Thu, Aug 31, 2023 at 01:10:27PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.1 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+He does!
+The background can be found here:
+https://www.spinics.net/lists/linux-gpio/msg36218.html
+(hm this "spinics" archive should be imported to lore...)
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
-
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---Pv+BAIQRhkySjQQZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZPGtKAAKCRD2uYlJVVFO
-o2y7AQC9eJJo28wE2CAflX8IzbkSvMiatqIpPiGTR0rhnfYNywEAykf0dUUKdS9h
-CllKx1cOKa+xT9WwHmYj7NmNagE+8go=
-=EqcM
------END PGP SIGNATURE-----
-
---Pv+BAIQRhkySjQQZ--
+Yours,
+Linus Walleij
