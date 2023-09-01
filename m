@@ -2,107 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E52F978FD53
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:34:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD9A78FD58
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349477AbjIAMeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:34:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
+        id S1349485AbjIAMfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:35:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238417AbjIAMeQ (ORCPT
+        with ESMTP id S230358AbjIAMfD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:34:16 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36B67107;
-        Fri,  1 Sep 2023 05:34:13 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1bee82fad0fso15136805ad.2;
-        Fri, 01 Sep 2023 05:34:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693571652; x=1694176452; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FKS56aNj/oeFJ6bZnMlQ2+jsvafiN0tr1LTFMkTVK/o=;
-        b=bHsQa1xjRfQVki4aQd9ZuexIG4nu//O6yp1Tl8LBQ62fhQiZHidCa570FSFleDbYZu
-         1Z0v+mwcl9qu9XUZaYoHws/XLs7zf1L43xjLzo2AdljfBnW20O2o8pDUs8vMxg2pDD8U
-         rNoKNCOzQkIJrNxoYsPzGcxdlzAz4H/d5Ai6idWX0micie1pHBmyI5Ixq6mX7ygYauVN
-         4GeQDmL0iFkCkcUHw7jQidtH9Amfz8H4StV3WoeiGc5Oci2T0n5y0NOoiVs/cQTBZ0hL
-         urXh3OViFW3KgIAaEG9Pqp16OUXq0Gb2cZUPq58uOK75RW1vKRGuNHLfp1qOeo0XDf4d
-         We3Q==
+        Fri, 1 Sep 2023 08:35:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15ADC107
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:34:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693571654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=aNIJ/eGigZtGUYGZTGziEv0Hr86IZ6MX9zljYZmw98Q=;
+        b=dW71cnaqsMBubyvulZnP+cNA3c7u+JDEORkXzSESoNtOiMqluKcZ5vuebGHdn7iVw/i67h
+        1zgsJeoogWW/sOQrilF/vapsv06UEZnA8ioNtJVNDMlleiZYTRCX2wkQ1NRvJ3O8QmoN7O
+        nHoMv837Fo6suG6BuTgfwQ8iXkKtwRQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-501-vE-yqoqeNquotAp3jnszTA-1; Fri, 01 Sep 2023 08:34:13 -0400
+X-MC-Unique: vE-yqoqeNquotAp3jnszTA-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-94a348facbbso141460166b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:34:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20221208; t=1693571652; x=1694176452;
-        h=content-transfer-encoding:subject:from:cc:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=FKS56aNj/oeFJ6bZnMlQ2+jsvafiN0tr1LTFMkTVK/o=;
-        b=fv76qhqawMwyfq2SN1xmXTn2IM01gZpowv0/PwsxF+kUgFxXa6CJK+NfGp529FG+rS
-         cF+Gc/dY7g0gM4omkgworyVguJ0zdzK17S/5ZZcDGhaSzb9monGs9XiTWiHdqBw4F0i0
-         YyT8HMQt7dnV+TPOqpLxuk48wKiT0+KLh5Lu1ktOPjpjxoja6crthWU1qTKVqT9+ogci
-         qeRITncK7o/rjTs0u+nm0+5WjfoSL+PRgqXc1VwtVv6owQYcpaObrFqLLtsCpXEnbcSa
-         t6mWmShR2Mx+9bxrD9hbJs/SUXjNbDlfKavMBM25UB09Is1q5YZtVEQYNo8NGrMxqxLC
-         /P/g==
-X-Gm-Message-State: AOJu0YxlG2ZGwTrryAoog4u0gfGV5jznVr1X659/NnejNYYGmlAHUQQK
-        GnHDxmpIc1O14MvJYI2ttjE=
-X-Google-Smtp-Source: AGHT+IGakq/z2ybFt6VKBYFE9cXXze6xF7ush+DUKu06qQzDjF341STBSR2N7SVW5dvAhAQ7BkBmIw==
-X-Received: by 2002:a17:902:e841:b0:1b9:e591:db38 with SMTP id t1-20020a170902e84100b001b9e591db38mr3216676plg.8.1693571652516;
-        Fri, 01 Sep 2023 05:34:12 -0700 (PDT)
-Received: from [192.168.0.105] ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id g24-20020a170902fe1800b001b0358848b0sm2935191plj.161.2023.09.01.05.34.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aNIJ/eGigZtGUYGZTGziEv0Hr86IZ6MX9zljYZmw98Q=;
+        b=CwABUo3w4EANKP7RjBOEG3gdTwsBz0nLYWS4yHGKaq7tLbdsCxpr7iv5aZB0j91Pwd
+         acnkxrKIPTwp1l7/Ng70uwUw1lPd7R1BM6YLm2nm1gmELdzt2EKZNcKeQC6dzQsiXHAv
+         W8h31UZpMdDFmTlxkuo5zINHSMvIBO/o3M3DU9I7izcHTQnIe4S2RD2QjZCH1I2DX78n
+         C+OnmZFHW2WtWIGEEm4/uS0Fypnhg+hrXIgmrlK5r0UbAJ5mS5shK3R9d553W80cKVLI
+         xUQe7mgzTX9b6VGNoFBGTqDhiQ0gd1eGS6SXn2J//96fMn4ACDy4tPmwlwnvCyR5Lynu
+         ESDg==
+X-Gm-Message-State: AOJu0YzG6QpxHYJs/813OyrWQXMrHEUSoWlUbvxzmO17IHYTeWt6G4il
+        DqxZyCsmntXLD+lchpO1H563U2U0HuYh7IP9Kis0l8blRpTlRfEwswQt89ASaVMtkJuN50cRIQI
+        ksLAfTD1Ux8LYvFZgD4rnJtXJ
+X-Received: by 2002:a17:906:cc4b:b0:9a1:f521:c3ff with SMTP id mm11-20020a170906cc4b00b009a1f521c3ffmr1968917ejb.40.1693571651948;
         Fri, 01 Sep 2023 05:34:11 -0700 (PDT)
-Message-ID: <c0b931e2-ae3a-bd20-ca43-b931571602c1@gmail.com>
-Date:   Fri, 1 Sep 2023 19:34:07 +0700
+X-Google-Smtp-Source: AGHT+IFdwDTby/bdcndq6+v/2sv0Oadl3EG/Z9W3gE2sao7E3fQXKbNEUWMjvDkVCoig3fFvaMVq/Q==
+X-Received: by 2002:a17:906:cc4b:b0:9a1:f521:c3ff with SMTP id mm11-20020a170906cc4b00b009a1f521c3ffmr1968892ejb.40.1693571651661;
+        Fri, 01 Sep 2023 05:34:11 -0700 (PDT)
+Received: from sgarzare-redhat (host-82-57-51-114.retail.telecomitalia.it. [82.57.51.114])
+        by smtp.gmail.com with ESMTPSA id l13-20020a170906a40d00b0099bc0daf3d7sm1926076ejz.182.2023.09.01.05.34.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 05:34:11 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 14:34:08 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [PATCH net-next v7 1/4] vsock/virtio/vhost: read data from
+ non-linear skb
+Message-ID: <auffsp3vajtsh4gynsfusph74bdbghvhoalalgvcfqyvphj5vw@hgiwneiqcbrd>
+References: <20230827085436.941183-1-avkrasnov@salutedevices.com>
+ <20230827085436.941183-2-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Content-Language: en-US
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        llancelot7@gmail.com
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Input Devices <linux-input@vger.kernel.org>
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-Subject: Fwd: Betop Titanwolf Hotas Bundle missing axis and second Hat
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20230827085436.941183-2-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Aug 27, 2023 at 11:54:33AM +0300, Arseniy Krasnov wrote:
+>This is preparation patch for MSG_ZEROCOPY support. It adds handling of
+>non-linear skbs by replacing direct calls of 'memcpy_to_msg()' with
+>'skb_copy_datagram_iter()'. Main advantage of the second one is that it
+>can handle paged part of the skb by using 'kmap()' on each page, but if
+>there are no pages in the skb, it behaves like simple copying to iov
+>iterator. This patch also adds new field to the control block of skb -
+>this value shows current offset in the skb to read next portion of data
+>(it doesn't matter linear it or not). Idea behind this field is that
+>'skb_copy_datagram_iter()' handles both types of skb internally - it
+>just needs an offset from which to copy data from the given skb. This
+>offset is incremented on each read from skb. This approach allows to
+>simplify handling of both linear and non-linear skbs, because for
+>linear skb we need to call 'skb_pull()' after reading data from it,
+>while in non-linear case we need to update 'data_len'.
+>
+>Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>---
+> Changelog:
+> v5(big patchset) -> v1:
+>  * Merge 'virtio_transport_common.c' and 'vhost/vsock.c' patches into
+>    this single patch.
+>  * Commit message update: grammar fix and remark that this patch is
+>    MSG_ZEROCOPY preparation.
+>  * Use 'min_t()' instead of comparison using '<>' operators.
+> v1 -> v2:
+>  * R-b tag added.
+> v3 -> v4:
+>  * R-b tag removed due to rebase:
+>    * Part for 'virtio_transport_stream_do_peek()' is changed.
+>    * Part for 'virtio_transport_seqpacket_do_peek()' is added.
+>  * Comments about sleep in 'memcpy_to_msg()' now describe sleep in
+>    'skb_copy_datagram_iter()'.
+> v5 -> v6:
+>  * Commit message update.
+>  * Rename 'frag_off' to 'offset' in 'virtio_vsock_skb_cb'.
+>
+> drivers/vhost/vsock.c                   | 14 +++++++----
+> include/linux/virtio_vsock.h            |  1 +
+> net/vmw_vsock/virtio_transport_common.c | 32 +++++++++++++++----------
+> 3 files changed, 29 insertions(+), 18 deletions(-)
 
-I notice a bug report on Bugzilla [1]. Quoting from it:
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-> I has USB Flashfire Cobra V5 Hotas wich recognized as:
->    11c0:5608 Betop Titanwolf Hotas Bundle
-> 
-> Problem is in that bundle missing Throttle axis and second Hat, because it's mapped to Sync.Report:
-> 
-> GenericDesktop.X ---> Absolute.X
-> GenericDesktop.Y ---> Absolute.Y
-> GenericDesktop.Slider ---> Absolute.Throttle
-> Simulation.Rudder ---> Absolute.Rudder
-> GenericDesktop.HatSwitch ---> Absolute.Hat0X
-> GenericDesktop.HatSwitch ---> Sync.Report
-> GenericDesktop.Rx ---> Absolute.Rx
-> GenericDesktop.Ry ---> Absolute.Ry
-> Simulation.Throttle ---> Sync.Report
-> 
-> 
-> Kernel 6.4.10
-> 
-> P.S. is it needs special "driver"(quirk)? Or hid joy really can recognize more than 1 Hat, because I saw only `map_abs(ABS_HAT0X);` for `HID_GD_HATSWITCH` in hid-input.c
-
-See Bugzilla for the full thread and attached debug logs and a patch
-that fixes the report.
-
-Thanks.
-
--- 
-An old man doll... just what I always wanted! - Clara
