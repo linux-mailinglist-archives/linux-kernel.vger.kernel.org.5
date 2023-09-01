@@ -2,63 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2C5278FB89
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FA6C78FB8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:01:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243330AbjIAJ7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:59:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        id S239403AbjIAKA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:00:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243065AbjIAJ7f (ORCPT
+        with ESMTP id S229868AbjIAKA4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:59:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEC7FC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:59:31 -0700 (PDT)
+        Fri, 1 Sep 2023 06:00:56 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC200E8
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:00:52 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C6596B823C3
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:59:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A8ECC433CC;
-        Fri,  1 Sep 2023 09:59:25 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 8C37DCE226A
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:00:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F05C433C7;
+        Fri,  1 Sep 2023 10:00:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693562368;
-        bh=MCxcvPe7knGMaYt1Jtizlmz+R6LJpOaJGjbJJhZK6bk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GA1YwEU3VH5nYETgRRFa+H2KhzO/6AeBueaJNaFrLhNj4oYVUrFlG31/kmDpBLfRN
-         KdVdzl2z/1BnkOMivBAS/6T+XPYkzXOTvsxPcbU9MIIYd8aUuyjxmnemAWS+MU5o87
-         fcGo8kewyUkF4I7AwSdoDpAsP3/r/9nveK4GRIPBzah5737y3oGL7+eG4WTSqh8zqB
-         I85097wIdGopqxEzor65wgSNmlLfntteEIlwPilu7+Rl8dMm7SJpbO7aMeFFCDgSVi
-         bfMT1EVAaQiwlNfX43Y5NN2EFiE2jV0y66q8U8AtR+A1KBidHkIFVV3R4OcOPrWmfN
-         m3cHUMKH7EWsw==
-From:   Michael Walle <mwalle@kernel.org>
-To:     =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?= 
-        <nfraprado@collabora.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Stu Hsieh <stu.hsieh@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2 2/2] drm/mediatek: dpi/dsi: fix possible_crtcs calculation
-Date:   Fri,  1 Sep 2023 11:59:16 +0200
-Message-Id: <20230901095916.3599320-2-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230901095916.3599320-1-mwalle@kernel.org>
-References: <20230901095916.3599320-1-mwalle@kernel.org>
+        s=k20201202; t=1693562448;
+        bh=BTGDfJTyzKP6h40J0iVNdbrEIIzNDkliCuw7WPVkb5M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GjYcGy6rAAbtGbUDR7I52WYpGsvlouX3287Du4qRwGUtujJgItXyVUo03LxnQi5Fy
+         Hd2Y+78vjEwmV1kfQo4tbP/DEj+oFrfkM9Js/D/TKV/ezUgJt9x1ohGcEapPhhZVp5
+         ODKBGcYciLlfghU7NbDW7CAHkYWxuCf3pZNrp/aeuwQoUmcjtjLh8UY6SOhiEl7+ov
+         6dNuWjUyIhd2Mcu2Jl7e5We96gXmWiuO0lUKnuO3zoj240I7dAN/Z9WfbRGwrwFIbn
+         xgXP4Ga0NTOQtJngynxVK/rne/2C5StagKXXmHDvLURH0oC8VpzLZFi7t1rIfIKOj+
+         5/v5jlnl69P5A==
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date:   Fri, 01 Sep 2023 12:00:43 +0200
+From:   Michael Walle <mwalle@kernel.org>
+To:     Chen-Yu Tsai <wenst@chromium.org>
+Cc:     =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
+        <nfraprado@collabora.com>, angelogioacchino.delregno@collabora.com,
+        airlied@gmail.com, amergnat@baylibre.com, chunkuang.hu@kernel.org,
+        ck.hu@mediatek.com, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, ehristev@collabora.com,
+        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        matthias.bgg@gmail.com, p.zabel@pengutronix.de
+Subject: Re: [PATCH v7 09/11] drm/mediatek: dp: Add support for embedded
+ DisplayPort aux-bus
+In-Reply-To: <CAGXv+5E4nWSuZdHmRhgYDUG4WhYs5o+-ZQBh3pnd2T_fdf9Edg@mail.gmail.com>
+References: <20230725073234.55892-10-angelogioacchino.delregno@collabora.com>
+ <20230825120109.3132209-1-mwalle@kernel.org>
+ <5b438dba-9b85-4448-bc89-08a11ddb822a@notapiano>
+ <fc6c054941420ac2d016496ccbeecad4@kernel.org>
+ <00f65d49-497c-4ade-a2f3-7a5b7ad803b6@notapiano>
+ <18bfffdd7ce3bd7693c8362b28651b49@kernel.org>
+ <cce6f9c2-e0b6-47e4-ae1c-9a3d8a4e4b02@notapiano>
+ <7a3257dddac78c46408341253a3286f4@kernel.org>
+ <CAGXv+5E4nWSuZdHmRhgYDUG4WhYs5o+-ZQBh3pnd2T_fdf9Edg@mail.gmail.com>
+Message-ID: <d6031e00cda9ea1e30bb75b2ca97300f@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -68,117 +71,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtk_drm_find_possible_crtc_by_comp() assumed that the main path will
-always have the CRTC with id 0, the ext id 1 and the third id 2. This
-is only true if the paths are all available. But paths are optional (see
-also comment in mtk_drm_kms_init()), e.g. the main path might not be
-enabled or available at all. Then the CRTC IDs will shift one up, e.g.
-ext will be 1 and the third path will be 2.
+Hi,
 
-To fix that, dynamically calculate the IDs by the precence of the paths.
+>> I was just curious if you know of any development for that (or 
+>> similar)
+>> in the kernel.
+> 
+> This is probably because support for this SoC began with Chromebooks,
+> which have fixed and defined uses for the pipelines. I suspect that
+> what you are working on is much more flexible.
 
-Fixes: 5aa8e7647676 ("drm/mediatek: dpi/dsi: Change the getting possible_crtc way")
-Suggested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
-v2:
- - iterate over all_drm_private[] to get any vdosys
- - new check if a path is available
----
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 72 +++++++++++++++++----
- 1 file changed, 58 insertions(+), 14 deletions(-)
+Yes. that is correct.
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 771f4e173353..9f0f12740fb0 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -507,6 +507,27 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
- 	return false;
- }
- 
-+static bool mtk_ddp_path_available(const unsigned int *path,
-+				   unsigned int path_len,
-+				   struct device_node **comp_node)
-+{
-+	unsigned int i;
-+
-+	if (!path)
-+		return false;
-+
-+	for (i = 0U; i < path_len; i++) {
-+		/* OVL_ADAPTOR doesn't have a device node */
-+		if (path[i] == DDP_COMPONENT_DRM_OVL_ADAPTOR)
-+			continue;
-+
-+		if (!comp_node[path[i]])
-+			return false;
-+	}
-+
-+	return true;
-+}
-+
- int mtk_ddp_comp_get_id(struct device_node *node,
- 			enum mtk_ddp_comp_type comp_type)
- {
-@@ -526,21 +547,44 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
- 						struct device *dev)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
--	unsigned int ret = 0;
--
--	if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path, private->data->main_len,
--				     private->ddp_comp))
--		ret = BIT(0);
--	else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
--					  private->data->ext_len, private->ddp_comp))
--		ret = BIT(1);
--	else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
--					  private->data->third_len, private->ddp_comp))
--		ret = BIT(2);
--	else
--		DRM_INFO("Failed to find comp in ddp table\n");
-+	const struct mtk_mmsys_driver_data *data;
-+	struct mtk_drm_private *priv_n;
-+	int i = 0, j;
-+
-+	for (j = 0; j < private->data->mmsys_dev_num; j++) {
-+		priv_n = private->all_drm_private[j];
-+		data = priv_n->data;
-+
-+		if (mtk_ddp_path_available(data->main_path, data->main_len,
-+					   priv_n->comp_node)) {
-+			if (mtk_drm_find_comp_in_ddp(dev, priv_n->data->main_path,
-+						     priv_n->data->main_len,
-+						     priv_n->ddp_comp))
-+				return BIT(i);
-+			i++;
-+		}
-+
-+		if (mtk_ddp_path_available(data->ext_path, data->ext_len,
-+					   priv_n->comp_node)) {
-+			if (mtk_drm_find_comp_in_ddp(dev, priv_n->data->ext_path,
-+						     priv_n->data->ext_len,
-+						     priv_n->ddp_comp))
-+				return BIT(i);
-+			i++;
-+		}
-+
-+		if (mtk_ddp_path_available(data->third_path, data->third_len,
-+					   priv_n->comp_node)) {
-+			if (mtk_drm_find_comp_in_ddp(dev, priv_n->data->third_path,
-+						     priv_n->data->third_len,
-+						     priv_n->ddp_comp))
-+				return BIT(i);
-+			i++;
-+		}
-+	}
- 
--	return ret;
-+	DRM_INFO("Failed to find comp in ddp table\n");
-+	return 0;
- }
- 
- int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
--- 
-2.39.2
+> The driver should be made to allow dynamic selection of outputs, as
+> is commonly seen with other drivers, but I don't know if that's on
+> anyone's TODO list.
 
+Do you have any pointers where to look at?
+
+-michael
