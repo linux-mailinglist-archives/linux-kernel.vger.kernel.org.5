@@ -2,112 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49C7D78FE4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C93F978FE61
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349745AbjIANay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:30:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44154 "EHLO
+        id S1349772AbjIANiT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:38:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233654AbjIANax (ORCPT
+        with ESMTP id S233098AbjIANiT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:30:53 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED17CDD;
-        Fri,  1 Sep 2023 06:30:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1693575047;
-        bh=pkbbGagA3i0Bnj+ku0lHfhSJzOGz2/XYlf1w4l2JIXg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=C+m22130Lvzn8GrGf2sOmSHmowFiKfvj2xHtVhvj+F360XM5OiSSWolq8QmacTOmb
-         px8FcNRPIgEhiJpBA5iCTdIIiZ6Q7CqA6A4/JoCo812tJTE2f6QSzpsp2qtMiYgHF8
-         govH2PsztIGIcVW6WGrHb1N0HVleMndq+lH7X/NQArDU/VTmRCEmgL0mvmokLZOKmu
-         AkTbEJqqiCJi5t7Uvh89OUZnpKqffcm7NbzG4ozxSnPlPDFpeLfo2QlOkkumpRjHRw
-         TDufzeNKLVk1EuByVhgok6eLUitHOqj+iQftaw6Vm1NwnBtffHvP5+8TqWDe+R5yY2
-         1L7zjkYl+mwRA==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rcf6v1FR8z1Ml2;
-        Fri,  1 Sep 2023 09:30:47 -0400 (EDT)
-Message-ID: <d05deed9-637f-697c-5c2f-d6fede4c956d@efficios.com>
-Date:   Fri, 1 Sep 2023 09:31:58 -0400
+        Fri, 1 Sep 2023 09:38:19 -0400
+X-Greylist: delayed 322 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Sep 2023 06:38:15 PDT
+Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFF5CC5;
+        Fri,  1 Sep 2023 06:38:15 -0700 (PDT)
+Received: from toolbox.int.toradex.com ([213.55.223.243]) by
+ mrelay.perfora.net (mreueus002 [74.208.5.2]) with ESMTPSA (Nemesis) id
+ 0M6SuT-1pjA5T1zzf-00yNVJ; Fri, 01 Sep 2023 15:32:41 +0200
+From:   Marcel Ziswiler <marcel@ziswiler.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>,
+        Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Subject: [PATCH v1] arm64: dts: ti: verdin-am62: add iw416 based bluetooth
+Date:   Fri,  1 Sep 2023 15:32:32 +0200
+Message-Id: <20230901133233.105546-1-marcel@ziswiler.com>
+X-Mailer: git-send-email 2.36.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] srcu: The value may overflow
-Content-Language: en-US
-To:     Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
-        trufanov@swemel.ru, vfh@swemel.ru
-References: <20230901095341.55857-1-arefev@swemel.ru>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20230901095341.55857-1-arefev@swemel.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:Y2b6Xok5Ab6kDR8NeHrJj30jRiKwp+d75tz42valdNq83GDoqqO
+ TSyo4xfyK1JKB5YPkBkjepHa2Dz6yZEA9V4zt615SM1UGN09CaARAL5RlvqgxQFqOM3gDCs
+ GB7bW8R7GwaHXCKtdQs7/XzT4x7Qb8G/gjp49dxlxcJxOgbq4jA7mjwMoaHfiYcIaixSbTi
+ HV+IC/2ecMvEknEKV03pg==
+UI-OutboundReport: notjunk:1;M01:P0:ioNU7onBA9M=;1FXsYta/Ly5GTixTlhk5eWTwqN4
+ n0TyLpsNkyE465WwrK6fCopeQ4CYgf54wUfhMMEtmFIxTH7LI1rLJsQWbmbfe1hKrcInpDUE7
+ 2KC4oVcm8Rh/Vkytzd8oODhtSFWLALBbW8lVdvZnQoCCR2upY3clncPPqz2U+gNcEK2SmEmsZ
+ GUKVre43AHq8zlwqxIknJsKvq6L4Vt+O/nIV4fGQ6O6fZi4E67H1OR0gBGXtey58Iz0eoyShV
+ slNnM2lznLSBbpyr8VQaXppAug92vl4mBgbsngQMuFABb4FP1by0UcUnhZuQ3KvFPxTvBR5uo
+ x7dQNwm6NriCtJS3VVAVSH9F3t5lPz1ZaOTtvHoMn1BV0vmHbhIr0utQJLJGIwbQMv6JB0EO0
+ bvxDXlLoOdkgsz8Bq/edU6QzPKd6NugF9weiHg7wSKycHhsYl2USFAtxQpy4Asaj0F3m+N7ue
+ g4Vgo9Ew43bEYmjzvTjvgODAtdbROztLQhPB0GQ+CN1x9ta4A9bgBygfZNtgqJHwIRZHjJzfj
+ TYtEE4WHEesBQ69rxcQFBv9vB16zd4AM2MnIWCDCoU0iaLg66rAJBAvfOBL7lljAP2ysmX91n
+ seMr/Xs7PTi1E/NjtJWgBXMrD4/osx6MD5TmkU4xooy2HkT/tAuZYxS+23XJbKHRElJrn9wR3
+ r66ekNtXBkuRuhV0qmf5BGt4IeH74iZSdR7Z8Drl8KNBkHs/F71NqCjm9Qvj21dAIYhW0W/7E
+ DgDmrR3Jjm2unwXZMzLwrIDqDI1jL9huHFMR4n0x9Ia+pUyreQbblwYd8pEjKt8e0HDrnKEtj
+ M6PumVaVLFiNDQUtrfDHrlysWYnocmJJUY2lODiHzKcqbuwE+SDxdSOtwOVnY0Lk90R+mExev
+ O2iIxmEfZvCz9gXvCwxayfyXqtLHvG46eXuE=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/23 05:53, Denis Arefev wrote:
-> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
-> is subject to overflow due to a failure to cast operands to a larger
-> data type before performing arithmetic
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> ---
->   kernel/rcu/srcutree.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 20d7a238d675..e14b74fb1ba0 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
->   				snp->grplo = cpu;
->   			snp->grphi = cpu;
->   		}
-> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-What possible values of cpus supported by the Linux kernel and grplo can 
-cause this to overflow on 64-bit architectures ? I suspect the maximum 
-result of this subtraction is defined by the RCU_FANOUT or other srcu 
-level-spread values assigned by rcu_init_levelspread(), which can indeed 
-cause the signed 32-bit integer literal ("1") to overflow when shifted 
-by any value greater than 31. This analysis should be added to the 
-commit message so the impact of the issue can be understood.
+Add NXP IW416 based u-blox MAYA-W1 Bluetooth (using btnxpuart) as used
+on the V1.1 SoMs. Wi-Fi is and was already using mwifiex.
 
-I also notice this in the same file:
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 
-srcu_schedule_cbs_snp():
+---
 
-         for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-                 if (!(mask & (1 << (cpu - snp->grplo))))
-                         continue;
+ arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-Which should be fixed at the same time.
-
-Thanks,
-
-Mathieu
-
->   	}
->   	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
->   	return true;
-
+diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
+index 90ddc71bcd30..a6808b10c7b2 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
++++ b/arch/arm64/boot/dts/ti/k3-am62-verdin-wifi.dtsi
+@@ -35,5 +35,11 @@ &sdhci2 {
+ &main_uart5 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pinctrl_uart5>;
++	uart-has-rtscts;
+ 	status = "okay";
++
++	bluetooth {
++		compatible = "nxp,88w8987-bt";
++		fw-init-baudrate = <3000000>;
++	};
+ };
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.36.1
 
