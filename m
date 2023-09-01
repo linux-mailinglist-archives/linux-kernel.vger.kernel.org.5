@@ -2,226 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3C278FDD4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2903678FDDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:56:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348233AbjIAM4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43512 "EHLO
+        id S1348517AbjIAM4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346946AbjIAM4F (ORCPT
+        with ESMTP id S240835AbjIAM4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:56:05 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8335C10D5
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:56:00 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id a1e0cc1a2514c-7a02252eb5dso573152241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:56:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693572959; x=1694177759; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QvH35cfo8hbq7kkNMUx0gNbEXq2JOSFfFOtm9Y71cKU=;
-        b=rsTr5OA0VGQmGpe3CIUCnVHAFM9iMvUU8ZE/rkg8DeHL9SP98EvD2FuMzYviHXGCEm
-         Hrt6m0xnrDy2x778PDt4CKR2D8TWCaetB1/y0GMiGo9k5BEwR8J9Ox9rWSFcl9WyJRXc
-         E+rVumF5mIy1qt/dDgFum6CtGPAMySvSbSOuzADAmaTKpjhkOHLy3ckfQErg0Ki1M3sw
-         OBEwApUpqWZsVGfjJz+jGWPrbCUidfzsa60RmezyQfCMMWC46SccOH2R1TtQ8jnN4Es6
-         DeWEeJRPqVLugVLTRqF0DHqMvhhh56gNolwPxHHUv98Mq7CECbnOitVPwEAMu52gnwrb
-         ZlgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693572959; x=1694177759;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QvH35cfo8hbq7kkNMUx0gNbEXq2JOSFfFOtm9Y71cKU=;
-        b=JOJ2o0YQO+qJGrQx26SsOvr6YdA4iUEhADqVFphTpjOaEhhOx44/7RQ+TV1YfRuTxA
-         hTb4+w8NlTGO6AoihXgzdMdT0mu0IvXu77f6hLXALiTMJxkPMbmdvv7g0OMqQhgzjC5X
-         eytWvxGjMwsACONnYEl99lmcYKFzORANI/v+Ja1jp7T7IRHgyTqczljejB1PM7mk1fvW
-         Xe3VrJyPgEKiaara15lGUcgXkVMFDecvg8UZ2+v6jo3m8NAQQJW7bRoUXaXPhMh99YK2
-         o/SzzcAQjjmR4/mbMhltGBJ+dqJ971HUwr8gt3HJ1PFFgPFC+ekgJnOKSTx1gFgnmlt0
-         8nLA==
-X-Gm-Message-State: AOJu0YzVcGncNRUyUm+UHvwGhlz9GjS4TLIWUFHEFFeU5tXjMvmXsTdv
-        djpT7tSCb4vQL32VjlBMeOkSd83uDikTzO5kyDnpJA==
-X-Google-Smtp-Source: AGHT+IH6Cm2+42kWJhzcgE2fegmE9O6UDhVOlB3LtIZEaoHsDvBDJxBuyk88NAyOP2o56XB3/nKT50+OImD4rl6JMII=
-X-Received: by 2002:a67:ce0c:0:b0:44d:476b:3bbf with SMTP id
- s12-20020a67ce0c000000b0044d476b3bbfmr2326282vsl.33.1693572959425; Fri, 01
- Sep 2023 05:55:59 -0700 (PDT)
+        Fri, 1 Sep 2023 08:56:36 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9A7910FC;
+        Fri,  1 Sep 2023 05:56:21 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3817dnOv027910;
+        Fri, 1 Sep 2023 12:56:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : from : to : cc : references : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=iQDpE3oUzsQpFX7y4ICrAyxTrW4xNtItubvy27V7X6w=;
+ b=blc+JGa/O/6sU0yVVfkeB7lDoZemDsthXnhOPnR0q2Jg48MTQA1nn13MjIi6YhrAg6LW
+ 0lRK6PsDhcliQMnN6jL8HcgAYwdfdsZktw3BdmPHNN1dQ3sRG4QAArRv25YhBYs2nW/4
+ z1taGlcdSz26vQUDjlmrVMSh5n1GIkmaJDv8g+7e/mmmeJ6OKoRzcAz7gxrXMq6UHsKV
+ OSzF5SFS+OLmrKaCKwyfPnUF8IV/QHmixuuG6fY6qbS4IjNhxzJf+GmIAPsH+cinbhME
+ 0QzFo0BkBvR4d5pvH6C2o1c+hH+3siJ4/7AbU5i2crfdpXM0uwE7uROshVByTu/KT2MG 4A== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3sua0brv3p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 12:56:12 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 381CuBhX028522
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Sep 2023 12:56:11 GMT
+Received: from [10.216.45.103] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 1 Sep
+ 2023 05:56:06 -0700
+Message-ID: <3d09f47f-b0b8-4429-944a-df3de19c7a6c@quicinc.com>
+Date:   Fri, 1 Sep 2023 18:26:03 +0530
 MIME-Version: 1.0
-References: <20230831172214.759342877@linuxfoundation.org>
-In-Reply-To: <20230831172214.759342877@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 1 Sep 2023 18:25:48 +0530
-Message-ID: <CA+G9fYuKxuDKrWfjNya+12TUHrCMXqWx0o0RkuaYW4-ybSm7wA@mail.gmail.com>
-Subject: Re: [PATCH 4.19 0/2] 4.19.294-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/7] crypto: qcom-rng - Add support for trng
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230824-topic-sm8550-rng-v2-0-dfcafbb16a3e@linaro.org>
+ <20230824-topic-sm8550-rng-v2-4-dfcafbb16a3e@linaro.org>
+ <29fb1e51-1e18-4e45-be64-190df52e1156@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <29fb1e51-1e18-4e45-be64-190df52e1156@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: HiK5IzspJB4nPNxUEVUqaX2pFvvdu8Ws
+X-Proofpoint-GUID: HiK5IzspJB4nPNxUEVUqaX2pFvvdu8Ws
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_10,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=786
+ suspectscore=0 clxscore=1015 priorityscore=1501 impostorscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 phishscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309010120
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 23:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.294 release.
-> There are 2 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 02 Sep 2023 17:22:08 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.294-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+I missed to notice. Please correct "-" to ":" in subject line
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
-
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 4.19.294-rc2
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-4.19.y
-* git commit: cb2cdf2272086683c41f5bb61390600f01227b6e
-* git describe: v4.19.293-3-gcb2cdf227208
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.293-3-gcb2cdf227208
-
-## Test Regressions (compared to v4.19.293)
-
-## Metric Regressions (compared to v4.19.293)
-
-## Test Fixes (compared to v4.19.293)
-
-## Metric Fixes (compared to v4.19.293)
-
-## Test result summary
-total: 48932, pass: 41532, fail: 1475, skip: 5891, xfail: 34
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 108 total, 100 passed, 8 failed
-* arm64: 37 total, 32 passed, 5 failed
-* i386: 21 total, 18 passed, 3 failed
-* mips: 22 total, 22 passed, 0 failed
-* parisc: 3 total, 0 passed, 3 failed
-* powerpc: 24 total, 24 passed, 0 failed
-* s390: 6 total, 6 passed, 0 failed
-* sh: 11 total, 11 passed, 0 failed
-* sparc: 6 total, 6 passed, 0 failed
-* x86_64: 31 total, 26 passed, 5 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-user
-* kselftest-vm
-* kselftest-zram
-* kunit
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-crypto
-* ltp-cve
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
+On 8/28/2023 10:29 AM, Om Prakash Singh wrote:
+> 
+> 
+> On 8/24/2023 5:03 PM, Neil Armstrong wrote:
+>> The SM8450 & later SoCs RNG HW is now a True Random Number Generator
+>> and a new compatible has been introduced to handle the difference.
+>>
+>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+>> ---
+> Reviewed-by: Om Prakash Singh <quic_omprsing@quicinc.com>
