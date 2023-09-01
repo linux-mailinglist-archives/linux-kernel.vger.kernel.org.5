@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1950478FB9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E614478FBB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345815AbjIAKLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        id S1343548AbjIAKUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231719AbjIAKLY (ORCPT
+        with ESMTP id S235699AbjIAKUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:11:24 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82B31B2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:11:20 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RcYb42GCnz6FGVs;
-        Fri,  1 Sep 2023 18:06:24 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 1 Sep
- 2023 11:11:17 +0100
-Date:   Fri, 1 Sep 2023 11:11:16 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Jijie Shao <shaojijie@huawei.com>
-CC:     <will@kernel.org>, <mark.rutland@arm.com>,
-        <yangyicong@hisilicon.com>, <chenhao418@huawei.com>,
-        <shenjian15@huawei.com>, <wangjie125@huawei.com>,
-        <liuyonglong@huawei.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: fix set
- wrong filter mode for running events issue
-Message-ID: <20230901111116.00006468@Huawei.com>
-In-Reply-To: <20230901035027.3881389-1-shaojijie@huawei.com>
-References: <20230901035027.3881389-1-shaojijie@huawei.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 1 Sep 2023 06:20:46 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853A4CEB;
+        Fri,  1 Sep 2023 03:20:43 -0700 (PDT)
+Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3813sOTC017516;
+        Fri, 1 Sep 2023 10:20:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : subject
+ : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=iu/KISp09kiIoNcVq9gHvJxa/zUXV6Lpnj7rqa4qOxQ=;
+ b=oEDy0PZxpuXyf3L+OT00o7XsEWMf3cJUzKFE/cv4xxbqvs/2DBfI27nzxPwOenRZp/us
+ R8EFBOkau3MCGkROwcUZ0L2MsqxAMcua40Ev65Da5FsFhh+K4OE/KsgV8h3YVs28CE1X
+ 6AwKBAcD4/3fHCQVfJRg4lhibZqYsqxySQm//sdPrHTLBxFBFvVLnn55T33s1JbXWK9T
+ UbNm7MFwGL10TmyViYBTM/SsXTS58FTrEs2fewOcCht7+iazwtSWMwCiu64QhLRcLN1p
+ b0CJ4we6TPoaNTr31655gU2Nh7l6BsSfa26g/ByzaQwY9hnN7S/VAceTcaa90nYwBDux xA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3su89e8sb9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 10:20:34 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 381AKXLm026322
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Sep 2023 10:20:33 GMT
+Received: from srichara-linux.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 1 Sep 2023 03:20:30 -0700
+From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
+To:     <mani@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <quic_viswanat@quicinc.com>,
+        <quic_srichara@quicinc.com>
+Subject: [PATCH net-next 0/2] net: qrtr: Few qrtr fixes
+Date:   Fri, 1 Sep 2023 15:50:19 +0530
+Message-ID: <1693563621-1920-1-git-send-email-quic_srichara@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FSbyiQMfNKLBp1HBmG1AAR9E_cPhGjX5
+X-Proofpoint-GUID: FSbyiQMfNKLBp1HBmG1AAR9E_cPhGjX5
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_07,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ priorityscore=1501 adultscore=0 clxscore=1011 suspectscore=0
+ malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ mlxlogscore=443 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309010096
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Sep 2023 11:50:27 +0800
-Jijie Shao <shaojijie@huawei.com> wrote:
+Patch #1 fixes a race condition between qrtr driver and ns opening and
+sending data to a control port.
 
-> From: Hao Chen <chenhao418@huawei.com>
+Patch #2 address the issue with legacy targets sending the SSR
+notifications using DEL_PROC control message.
 
-Mention which hisi pmu this is in the patch description (hns)
+Sricharan Ramabadhran (1):
+  net: qrtr: Add support for processing DEL_PROC type control message
 
-> 
-> hns3_pmu_select_filter_mode() includes A series of mode judgments such
+Vignesh Viswanathan (1):
+  net: qrtr: Prevent stale ports from sending
 
-includes a series
+ include/uapi/linux/qrtr.h |  1 +
+ net/qrtr/af_qrtr.c        | 75 +++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 76 insertions(+)
 
-> as global mode ,function mode, function-queue mode, port mode, port-tc
-> mode.
-> 
-> For a special scenario:
-> command use parameter
-> perf stat -a -e hns3_pmu_sicl_0/bdf=0x3700,config=0x3,queue=0x0,
-> and hns3_pmu_is_enabled_func_mode() has a judgement as below:
-> if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_FUNC))
-> 
-> filter_support of event 0x3 hasn't set bit for func mode, so it can't
-> enter func-mode branch, and continue to func-queue mode judgement, port
-> judgement, port-tc mode, then enter port-tc mode.
-> 
-> It's not up to expectations, it shouldn't enter any modes but
-> return -ENOENT.
-> 
-> port-tc mode parameter show as below:
-> perf stat -a -e hns3_pmu_sicl_0/config=0x00001,port=0x0,tc=0x1
-> 
-> port-tc mode should use bdf parameter as 0, so, add judgement of
-> bdf parameter to fix it.
-
-I don't follow the description here.  As far as I can see from the code
-the change just checks that BDF is not set before allowing a port based
-filter.
-
-> 
-> Signed-off-by: Hao Chen <chenhao418@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
-> changeLog:
->   v2: add more details in log message suggested by Will
->   v1 link: https://lore.kernel.org/all/20230816094619.3563784-1-shaojijie@huawei.com/
-> ---
->  drivers/perf/hisilicon/hns3_pmu.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
-> index e0457d84af6b..2aa9cb045705 100644
-> --- a/drivers/perf/hisilicon/hns3_pmu.c
-> +++ b/drivers/perf/hisilicon/hns3_pmu.c
-> @@ -998,12 +998,13 @@ static bool
->  hns3_pmu_is_enabled_port_tc_mode(struct perf_event *event,
->  				 struct hns3_pmu_event_attr *pmu_event)
->  {
-> +	u16 bdf = hns3_pmu_get_bdf(event);
->  	u8 tc_id = hns3_pmu_get_tc(event);
->  
->  	if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_PORT_TC))
->  		return false;
->  
-> -	return tc_id != HNS3_PMU_FILTER_ALL_TC;
-> +	return (tc_id != HNS3_PMU_FILTER_ALL_TC) && (!bdf);
-
-No need for brackets on !bdf
-
->  }
->  
->  static bool
+-- 
+2.7.4
 
