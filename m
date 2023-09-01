@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DBB78FCD3
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A1178FCD7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243234AbjIAMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:01:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
+        id S1349330AbjIAMBM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:01:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239628AbjIAMBF (ORCPT
+        with ESMTP id S1349323AbjIAMBJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:01:05 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD77E7F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:01:01 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a5dff9d2d9so227127266b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:01:01 -0700 (PDT)
+        Fri, 1 Sep 2023 08:01:09 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1900C10E9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:01:03 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-986d8332f50so230862266b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:01:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693569660; x=1694174460; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vs/PRb2b7V6rR58f88F1xUyXEBig3vOWtcP0jsGuDGI=;
-        b=oMRBCeSDBsXI89x168ye82aAfo7KOm/WJVB1zF0W5myedlyoSR7uSw9sUknO7srDGX
-         Vdxg1FANQn5JJ7227oYZ1P90uMCfAvP0Qgzxs2sohpmPf4Z0QUOBZGmAEu/Ch3m07nM5
-         mCuudL8sQmqX12Nl0gnyNtiplrh3BK3i1kkJoXaZGwelRyOWefJ1S4wkXozEyZHYJNdH
-         0/NYg2yoRIyJJfkwC2cayr33h5teTn5mf6FsBi43AbGsSC1Bz5XjIiCc1EOJlU+GGQvK
-         QGw0iX45rquFCYAJuEEMIZmWcqk17iJACRBVTDnvtApaz9WZsC5A5NHzabTiZvL0rI0D
-         jwkQ==
+        d=linaro.org; s=google; t=1693569661; x=1694174461; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3Q8dcqWIi8qfe4rFjMBwnA3MXBS8IlDgEZlXPHxdDbc=;
+        b=f8Cn8PhEmbugxXX8cp1rtapLm/lwjUWOyM87Jft36Svsf+RM3R1a8pYFAziRaNv9nO
+         FtKbTm2RDVtBwUSc28HRCgn+DMOntkl2uJnIFb/FPDhgfqGgrwfFz8kgivSxuSr9cQRF
+         VrQEY4skRoTTtcstIHaAo6ynysdYbCljdgou9VR5CJbvgKEgnkuyhG4qhH3Y3JH6UR2y
+         4eGI2tOytw8bfwMQoKxfswDn+C8u49g7in/PakdtoNXsfbSMpGI/QStuXDrsGJeByL99
+         APCQDZ9s7zvhWrYUqLwJX337AXRaBTmwdvjDufLYMdj+yRdkwIB5UmlM/X8+ZnJhpPwS
+         KTBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693569660; x=1694174460;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vs/PRb2b7V6rR58f88F1xUyXEBig3vOWtcP0jsGuDGI=;
-        b=OFCB95C057F+Vg6Wips1oskD3bc1mKaMIdTHLjgIFmPXOUvGGvuDaLZcD8PCdkWCjd
-         1k8+RqHwKDkXhF9k2rIU5m/7pw3OFaOB/v/6/QaSUtc8IAJny+er+M4NzK+XTefX1/eI
-         PiKHD6YRPILLIh+KM1vdNhNtH5sRQ+PwB3TzcqDh77Fyir8rNlANBFwvQfZWtoci5/d8
-         MJv/GksuqYh9DJ7NR5vCAcBTKtArmDXdlfHFngoGZwDgF48HZvYBxg8Z9ZOww3wUuQr5
-         iXrOym/Ztg5OI1Ow00RjMClNwUzAuASwPh4E3hiYbowbbCCuc2ZFAAch+rz9iEdexCDs
-         agZA==
-X-Gm-Message-State: AOJu0Yz+cL2JGAG0vAUSLez5Luh/tbjc9iHQnqhkqVeiSdC1WQKN4OVz
-        kBeFTx7S1yrt+MppOvwAKKPvhg==
-X-Google-Smtp-Source: AGHT+IG3WoF6WkfiDpXFLy4paG6AbtYn6jxN1oPMmMoQbVt+83Mf/3i7rbvu6QvyebF/Iz2uTyzQwQ==
-X-Received: by 2002:a17:906:30d9:b0:9a1:f96c:4baf with SMTP id b25-20020a17090630d900b009a1f96c4bafmr1285349ejb.5.1693569660354;
-        Fri, 01 Sep 2023 05:01:00 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693569661; x=1694174461;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3Q8dcqWIi8qfe4rFjMBwnA3MXBS8IlDgEZlXPHxdDbc=;
+        b=Zi54AK/eP/S6y3WZl1B/DZCTA1pgDCKSxq7YWukbF4qt7qrY28PA3TDVXh+lE+m2os
+         G8FpTdOPBcS3wTqeUraaOsaYB/WgQhOF0F7ug18PD3LxXy+3C/Mpm3wnpUw4QCfc9x/b
+         8kefLsudIQdSXhZW/axh0dP4squ3WLYgmxYLWzVmAjNXrI+DLgFXebvAJ7sIp/nEb9oa
+         IplQOVxUK4rRLPqlk6i7BapAzvbmoydbsT93e24UWSG1CG+TjKqXYWd5Vy3NLpu8ZGj6
+         p9MqeiABWo0JArnmLnuRfa/YIgXEIB16BFab0E5VZmBJ9wgdFW4iswQ7Dqasjyxytn0Y
+         HvLg==
+X-Gm-Message-State: AOJu0YzS219t7yP4XyF05oaoeSo8s9oJGqYWVJxc2+7Vh9P48Ei7lyol
+        d6Z2HlnMr+FwJiZZhy52bsHrSw==
+X-Google-Smtp-Source: AGHT+IFO69PhfApiWoJ10ALX5LCVOgGWPETEhTDqrXyG9F36Yfc1fiNItFAnBKhYo0wBJNtMIHfaag==
+X-Received: by 2002:a17:907:7608:b0:99c:c50f:7fb4 with SMTP id jx8-20020a170907760800b0099cc50f7fb4mr1581342ejc.1.1693569661575;
+        Fri, 01 Sep 2023 05:01:01 -0700 (PDT)
 Received: from krzk-bin.. (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id kg12-20020a17090776ec00b00993928e4d1bsm1877343ejc.24.2023.09.01.05.00.59
+        by smtp.gmail.com with ESMTPSA id kg12-20020a17090776ec00b00993928e4d1bsm1877343ejc.24.2023.09.01.05.01.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 05:00:59 -0700 (PDT)
+        Fri, 01 Sep 2023 05:01:01 -0700 (PDT)
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To:     Sebastian Reichel <sre@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -56,10 +57,12 @@ To:     Sebastian Reichel <sre@kernel.org>,
         Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 1/3] dt-bindings: power: syscon-poweroff: get regmap from parent node
-Date:   Fri,  1 Sep 2023 14:00:55 +0200
-Message-Id: <20230901120057.47018-1-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 2/3] power: reset: syscon-poweroff: simplify pdev->dev usage
+Date:   Fri,  1 Sep 2023 14:00:56 +0200
+Message-Id: <20230901120057.47018-2-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230901120057.47018-1-krzysztof.kozlowski@linaro.org>
+References: <20230901120057.47018-1-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -72,63 +75,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just like syscon-reboot device, the syscon-poweroff is supposed to be a
-child of syscon node, thus we can take the same approach as
-syscon-poweroff: deprecate the 'regmap' field in favor of taking it from
-the parent's node.
+Make the probe() code a bit simpler and shorter by storing all the
+'&pdev->dev' as 'dev'.
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
 ---
+ drivers/power/reset/syscon-poweroff.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-See also syscon-regmap:
-https://lore.kernel.org/all/20200526135102.21236-1-Sergey.Semin@baikalelectronics.ru/
----
- .../bindings/power/reset/syscon-poweroff.yaml          | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml b/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml
-index 3412fe7e1e80..3c58f8251882 100644
---- a/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml
-+++ b/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml
-@@ -15,6 +15,9 @@ description: |+
-   defined by the register map pointed by syscon reference plus the offset
-   with the value and mask defined in the poweroff node.
-   Default will be little endian mode, 32 bit access only.
-+  The SYSCON registers map is normally retrieved from the parental dt-node. So
-+  the SYSCON poweroff node should be represented as a sub-node of a "syscon",
-+  "simple-mfd" node.
+diff --git a/drivers/power/reset/syscon-poweroff.c b/drivers/power/reset/syscon-poweroff.c
+index 430d440d55c6..11b955983279 100644
+--- a/drivers/power/reset/syscon-poweroff.c
++++ b/drivers/power/reset/syscon-poweroff.c
+@@ -32,23 +32,24 @@ static void syscon_poweroff(void)
  
- properties:
-   compatible:
-@@ -30,7 +33,10 @@ properties:
+ static int syscon_poweroff_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	int mask_err, value_err;
  
-   regmap:
-     $ref: /schemas/types.yaml#/definitions/phandle
--    description: Phandle to the register map node.
-+    deprecated: true
-+    description:
-+      Phandle to the register map node. This property is deprecated in favor of
-+      the syscon-poweroff node been a child of a system controller node.
+-	map = syscon_regmap_lookup_by_phandle(pdev->dev.of_node, "regmap");
++	map = syscon_regmap_lookup_by_phandle(dev->of_node, "regmap");
+ 	if (IS_ERR(map)) {
+-		dev_err(&pdev->dev, "unable to get syscon");
++		dev_err(dev, "unable to get syscon");
+ 		return PTR_ERR(map);
+ 	}
  
-   value:
-     $ref: /schemas/types.yaml#/definitions/uint32
-@@ -38,7 +44,6 @@ properties:
+-	if (of_property_read_u32(pdev->dev.of_node, "offset", &offset)) {
+-		dev_err(&pdev->dev, "unable to read 'offset'");
++	if (of_property_read_u32(dev->of_node, "offset", &offset)) {
++		dev_err(dev, "unable to read 'offset'");
+ 		return -EINVAL;
+ 	}
  
- required:
-   - compatible
--  - regmap
-   - offset
+-	value_err = of_property_read_u32(pdev->dev.of_node, "value", &value);
+-	mask_err = of_property_read_u32(pdev->dev.of_node, "mask", &mask);
++	value_err = of_property_read_u32(dev->of_node, "value", &value);
++	mask_err = of_property_read_u32(dev->of_node, "mask", &mask);
+ 	if (value_err && mask_err) {
+-		dev_err(&pdev->dev, "unable to read 'value' and 'mask'");
++		dev_err(dev, "unable to read 'value' and 'mask'");
+ 		return -EINVAL;
+ 	}
  
- additionalProperties: false
-@@ -56,7 +61,6 @@ examples:
-   - |
-     poweroff {
-         compatible = "syscon-poweroff";
--        regmap = <&regmapnode>;
-         offset = <0x0>;
-         mask = <0x7a>;
-     };
+@@ -62,7 +63,7 @@ static int syscon_poweroff_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (pm_power_off) {
+-		dev_err(&pdev->dev, "pm_power_off already claimed for %ps",
++		dev_err(dev, "pm_power_off already claimed for %ps",
+ 			pm_power_off);
+ 		return -EBUSY;
+ 	}
 -- 
 2.34.1
 
