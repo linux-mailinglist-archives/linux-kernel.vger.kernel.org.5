@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E390878FAB1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:23:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A521578FAB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:24:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233330AbjIAJXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48458 "EHLO
+        id S242128AbjIAJYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:24:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230288AbjIAJXD (ORCPT
+        with ESMTP id S230288AbjIAJYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:23:03 -0400
-Received: from mail-vk1-xa34.google.com (mail-vk1-xa34.google.com [IPv6:2607:f8b0:4864:20::a34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7221980
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:22:45 -0700 (PDT)
-Received: by mail-vk1-xa34.google.com with SMTP id 71dfb90a1353d-48d10c504a8so673913e0c.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:22:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693560165; x=1694164965; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qTzp72FaKt5+/KYDM8z5KPWPzrLcXSZRzOQh4gdj+Z4=;
-        b=DKP0jPhDppKBefv24NPt1TH7Bx/GTyNnCz/Lfa4qd3pbbb4ci7qa3vcBQmpOXj/qQs
-         jUJIJykTD5DBQyi71dyR6IacsV1HJdYlNC3+rcl5ycFP8O2SNQK/riQmA+xzIkSLtEiB
-         1MH57j9JO4+Y0RnOriTG9F+ZsVc3hFqixrHL5NYovhBNAqPaOVO174BXm85Rm8Pv8ChN
-         Vav0h3rvr2OvyhWeyYR1Y2CbPRstDbtPRi7BBwXCCezLApdShfZaT9Tf7rZ08tPK+auw
-         O8gaw/Hzu2krxkgBbgCaRKIzrNRyEwcW0mmeosBERobsV5EnYFIE9YjqfIdF3CbWyM1r
-         LpOw==
+        Fri, 1 Sep 2023 05:24:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BE710D7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:23:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693560197;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=3JiqN1iSPyqNyznyXLs6ZwGpCEi8bweMuS3U8aoR6Xg=;
+        b=WRlBLTIvGInmZst2vctVqQPG55lfvbD2fmy0iBzVwpBfe9KMoPCdlc5ksdODRlR9a/AuKB
+        NnCwjYu2fvwK48zyNZfh6SmHQiw6f6jXENYHE3JQtg9C7DlNEh8+zzTTzByoz435NkY+jC
+        uMFmegAcVeZDG1hq1wMKJ91L/eAm6AE=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-402-sQ8S_eVRPjGg7G9nxF9_Qg-1; Fri, 01 Sep 2023 05:23:16 -0400
+X-MC-Unique: sQ8S_eVRPjGg7G9nxF9_Qg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-31c554c8867so969765f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:23:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693560165; x=1694164965;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693560195; x=1694164995;
+        h=content-transfer-encoding:mime-version:message-id:date:references
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qTzp72FaKt5+/KYDM8z5KPWPzrLcXSZRzOQh4gdj+Z4=;
-        b=U//rlyc2Rmx/BC6rBgMSoTXPfa9RbW8JyU1PkYZQK5qBncpWV8JWRtVbZ8xUBMZqtP
-         c2HPoX2loU3b0cIRdqySOvaVkc+/a+FurCh9o1f9rlMwMYBTln72ImkPgelUHW7ne3I/
-         Vrgc5WT0mHmgN4R3bXqv/Kw+ydzI8NpD+taQ2gyWjy0m4gd99FryB6R5+mSImJXLcGXU
-         8mZ3Nm38CniuG2mLg5QZ7LbR5C6C61Y42pJeuCkySrNoFFDyBde8B0d1iExum8EUTnkV
-         kHje6ZCYKHGet3UZlNbEnKc5VwhrCqhdN2g8xsVosg6qfbMxHYIbCP8OHFzMML+EdEVh
-         Ye+A==
-X-Gm-Message-State: AOJu0Yzn28DU1CQpoEpYUvW8XX4Epdnv6ElP6wzU4iTlbP6Z01XBBXDn
-        zhycRDAj/szD6qZkVSOv8f6XozIjRmHjnoHiEbx2IA==
-X-Google-Smtp-Source: AGHT+IHgf/l7rJMgcfAQ+Vq3h78H7E8n/a6xIfzX4cXBx29aryy4DTZC33H/caPyyuOBKvHszof11uB8sFAE/YnDh9U=
-X-Received: by 2002:a1f:cac7:0:b0:48d:eaa:45cf with SMTP id
- a190-20020a1fcac7000000b0048d0eaa45cfmr1973675vkg.1.1693560164877; Fri, 01
- Sep 2023 02:22:44 -0700 (PDT)
+        bh=3JiqN1iSPyqNyznyXLs6ZwGpCEi8bweMuS3U8aoR6Xg=;
+        b=QkmYKjrq74UYQ4VfD9BgPePbD/tb8BAYT5fJhE/prBzm8wcyDS0IDeVqGX8e5BW5LQ
+         S7Z4ZSfqp8i29kgfrdrrmASqC0cIZJh48oOGytMlGmqysvi0XtVZHSE2hFF2hEsN5Nfq
+         SHppetL47NBcaCcTSo9W58kCC/6+tUer4aWytVOkzhUpoEaxe9lGPlX6NlhXI9aTsKqx
+         qyuB8X4goVsvWs1IYNUR5PkeV/nyy3oOycuPgjaB6lmwPU7Dmpv78KAM86Xycv5dFk0B
+         GBE66cToGaCOOgOfDISlskwUzQjVeYoi9PIlJ1ZkKW9x/hnKqSuV+0HlShgI0CJ+IOBy
+         hBnQ==
+X-Gm-Message-State: AOJu0YxOPIietqDvjWEWV54oXVs8opPwRBdUXs1w3sFnLR7KRZxumOsp
+        NnKdxje/tmznaSjOnHmQfAqbwVC85Rl6aAsqrHG298IQ/3sS04NCaQp4q2c5pzE1/3c1HM+MaUd
+        5N8nVmtlV/gSHR8vQpsEbMyBgtDfcErBS
+X-Received: by 2002:adf:e9cf:0:b0:31c:65aa:b15a with SMTP id l15-20020adfe9cf000000b0031c65aab15amr1248551wrn.65.1693560194868;
+        Fri, 01 Sep 2023 02:23:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFnVXywsk9L8AfytnZixOeQ8XSkN487jgB7u3LA7+rTXed2ndu9kqHa49rXP5sHOxvFdS+u9Q==
+X-Received: by 2002:adf:e9cf:0:b0:31c:65aa:b15a with SMTP id l15-20020adfe9cf000000b0031c65aab15amr1248534wrn.65.1693560194548;
+        Fri, 01 Sep 2023 02:23:14 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id m15-20020a056000180f00b003142ea7a661sm4629884wrh.21.2023.09.01.02.23.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 02:23:14 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Maxime Ripard <mripard@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+In-Reply-To: <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
+References: <20230830062546.720679-1-javierm@redhat.com>
+ <zitno3p7tbnld5auedkx5g4wey2csng4ncmtdhzinbuhblunyk@chnwsnsgq36v>
+ <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
+Date:   Fri, 01 Sep 2023 11:23:13 +0200
+Message-ID: <87h6oe5jsu.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-References: <20230831194934.19628-1-brgl@bgdev.pl> <ZPEhS0uBWABpaE+/@smile.fi.intel.com>
- <CAMRc=Md-6i+nqDtYiUUtZExA32c0nJxhevYsiZqmd1PP8aaMng@mail.gmail.com> <ZPGnFHgtK1wE6Ppf@smile.fi.intel.com>
-In-Reply-To: <ZPGnFHgtK1wE6Ppf@smile.fi.intel.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 1 Sep 2023 11:22:33 +0200
-Message-ID: <CACRpkdbGdCFb9a5bV_aBMd3eee3N5EdWy+Bkpct-YfHUgHysVw@mail.gmail.com>
-Subject: Re: [RFT PATCH] spi: bcm2835: reduce the abuse of the GPIO API
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Lukas Wunner <lukas@wunner.de>,
-        Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 1, 2023 at 10:55=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
+Geert Uytterhoeven <geert@linux-m68k.org> writes:
 
-> > I'm not sure this is a good candidate for the GPIOLIB quirks. This is
-> > the SPI setup callback (which makes me think - I should have used
-> > gpiod_get(), not devm_gpiod_get() and then put the descriptor in
-> > .cleanup()) and not probe. It would be great to get some background on
-> > why this is even needed in the first place. The only reason I see is
-> > booting the driver with an invalid device-tree that doesn't assign the
-> > GPIO to the SPI controller.
+> Hi Maxime,
 >
-> Maybe Lukas knows more?
+> On Fri, Sep 1, 2023 at 10:22=E2=80=AFAM Maxime Ripard <mripard@kernel.org=
+> wrote:
+>> On Wed, Aug 30, 2023 at 08:25:08AM +0200, Javier Martinez Canillas wrote:
+>> > The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
+>> > .atomic_check() callback") moved the allocation of the intermediate and
+>> > HW buffers from the encoder's .atomic_enable callback to primary plane=
+'s
+>> > .atomic_check callback.
+>> >
+>> > This was suggested by Maxime Ripard because drivers aren't allowed to =
+fail
+>> > after drm_atomic_helper_swap_state() has been called, and the encoder's
+>> > .atomic_enable happens after the new atomic state has been swapped.
+>> >
+>> > But that change caused a performance regression in very slow platforms,
+>> > since now the allocation happens for every plane's atomic state commit.
+>> > For example, Geert Uytterhoeven reports that is the case on a VexRiscV
+>> > softcore (RISC-V CPU implementation on an FPGA).
+>>
+>> I'd like to have numbers on that. It's a bit surprising to me that,
+>> given how many objects we already allocate during a commit, two small
+>> additional allocations affect performances so dramatically, even on a
+>> slow platform.
+>
+> To be fair, I didn't benchmark that.  Perhaps it's just too slow due to
+> all these other allocations (and whatever else happens).
+>
+> I just find it extremely silly to allocate a buffer over and over again,
+> while we know that buffer is needed for each and every display update.
+>
 
-He does!
-The background can be found here:
-https://www.spinics.net/lists/linux-gpio/msg36218.html
-(hm this "spinics" archive should be imported to lore...)
+Is not efficient that's true, but on the other hand we have other objects
+that are destroyed and created on each atomic update.
 
-Yours,
-Linus Walleij
+In the ssd1307fb driver, the buffer is allocated on ssd1307fb_update_rect()
+(by calling the ssd1307fb_alloc_array() function), so it also happens for
+every display update in the fbdev driver.
+
+> Gr{oetje,eeting}s,
+>
+
+--=20
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
+
