@@ -2,266 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49F8678F918
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4799E78F923
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:30:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346700AbjIAH3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 03:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
+        id S1344143AbjIAHa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 03:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232191AbjIAH3U (ORCPT
+        with ESMTP id S233090AbjIAHaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 03:29:20 -0400
-Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45F5F10D0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:29:17 -0700 (PDT)
-Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-58caaedb20bso18733017b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 00:29:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693553356; x=1694158156; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5LW3hHQLLB7chZFzQzoqJF0V/Isvx2JGSHv0+TQLQ+U=;
-        b=a0cQlyU+wy12nJq3e18eCAkkoq9QwDg92kplUTpKz/xu/IV3erV016s4cUZVzh0jqW
-         L9mib5gW2+S813XwWXya0hHKXfJJV++c1vc+Uz7Dn87hkJHfMN2ITUZpCGaZ8M8M4w9o
-         WnTG3jaUrZy0dSPZiMyZwx+JlJOZypMXOU31cZIesg4t5k2ilXDgCV51D3uHF33WsuLw
-         Tt2yZ0ZDtU3sw+c7Jp2JAxlF6QGN205qUGE9067B4XfS/+bQ3ldmslN8RJKtaqxtsHA9
-         d6TXvweWv6+Y9Mt919cXMHgqf3tIkON7mJ2JUqg0W3cTwH0HmFFB6FlMO/+eOkGE4hCn
-         O4yA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693553356; x=1694158156;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5LW3hHQLLB7chZFzQzoqJF0V/Isvx2JGSHv0+TQLQ+U=;
-        b=ixOC9L/e+8UZB2FlLnFk0wf8jtjnTKDMPJXmTr1QSOk8PHda0AhALqz5B284eQJ/Nj
-         hz5+DFtsBjclF37YOKe86R4LoX2UJ2IEOki9OMrf5D0ehkTo95gYIgheixm1hQUkEpfH
-         4Ty0hPf5KfNRismmL0/jOmMUk6BxWVa80tfAym2cOn+QfTbAnEm5k+UGpy5XmKlBxlBp
-         PG10Lvucvq7wg1Z3++Gil6qthZmCUCFOjAgstXDbGq+r8IPEgW2i1E9YUSehyOVTaBe/
-         qD9aax/WTYOAFchel38LTRgXntHCFogT9r+8a3LVCqD8c9Og6I+uwkHac5J3CKSyCcFr
-         tm/g==
-X-Gm-Message-State: AOJu0YwaIlh3rJwmg0l9Eu5A3Z7L0G+3OebAi11qROPYF7lEhUX3g4lJ
-        GPnqL5AulSQ+TmhVqYWkTeoP5g==
-X-Google-Smtp-Source: AGHT+IHYTT7ITidyIX5/cLirH9qENQ5ZkDTlXFDxmVfuerWktFS//V5VtHC8epHEM5ckxMnPsUOpQQ==
-X-Received: by 2002:a05:6902:188a:b0:ced:abcd:62e5 with SMTP id cj10-20020a056902188a00b00cedabcd62e5mr2432793ybb.7.1693553356372;
-        Fri, 01 Sep 2023 00:29:16 -0700 (PDT)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id v13-20020a25fc0d000000b00d6861b49f01sm767447ybd.65.2023.09.01.00.29.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 00:29:15 -0700 (PDT)
-Date:   Fri, 1 Sep 2023 00:29:07 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        regressions@lists.linux.dev
-Subject: Re: 6.6/regression/bisected - after commit a349d72fd9efc87c8fd1d16d3164752d84a7275b
- system stopped booting
-In-Reply-To: <CABXGCsNi8Tiv5zUPNXr6UJw6qV1VdaBEfGqEAMkkXE3QPvZuAQ@mail.gmail.com>
-Message-ID: <3548ca67-ce58-3bc6-fef5-348b98d7678b@google.com>
-References: <CABXGCsNi8Tiv5zUPNXr6UJw6qV1VdaBEfGqEAMkkXE3QPvZuAQ@mail.gmail.com>
+        Fri, 1 Sep 2023 03:30:55 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2041.outbound.protection.outlook.com [40.107.223.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14F2D10D2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:30:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=exEmLposdMJ//5G10mQAex4ul3GtJY8RFzGqz+1w/fKckcS3f73fqfK/w1GmFca0lNR5t3/6Q1osv8VksbIyQMNxnB7h8+NQCeLoIAOPGNIIctLe3bGluIuxyTaF86gn6QVg0zr6JD4/oY1uDyf/w4yEijBLKda64/KltB+k8IU7miZ4kOpubFenpy22oeZP9Sfo4G5n+FQi5Pwn6SQu2S+xvNl36eBlCGM7Q3wNTCezki47r3762w9uxI4EDY20t+NS+lzbd7RDrUY8NVLqCHDCSV0nNF4glTBSP6BPZwAEKsZlnEwWY/7atXa5Oe5BQLEJvvlX3++wJ6MNS0WWoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=RbOg+CIahOFgAaexmwhCs71vJUMfIU0180bF6FyI0IA=;
+ b=H/3QU33QYSDZFQfFxtCqx49Le2J8eGRz0B8kwyWbu9kxx2zCeJgaGF0rmFsyA2r/6k2Bd8plGyC4wiuLjGhLsCpHR1tcYix8QryVG9n0aIsxvLjuUhGbPY8jMl73WinfYQxp12hvnS7gCVJ6Y8b6rs+yivTfAK2ohIpY5Ykzhc1ls85b+B3vWvTxXmEb8v4b1iwPcLuctQEu6hqVa9Uw4Ilf17EPSFiHEiMb4jRyR6nCAYbKr84K91CYqfOP2vKu0b/kAuqdgqbbjrDkgFiHR4tIWX1cM2ICxtpqLyfCdj2BbwenPrVpXHWVPAdm1cKv+7rpvCE+sP+b7Capr66bJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=RbOg+CIahOFgAaexmwhCs71vJUMfIU0180bF6FyI0IA=;
+ b=rPb/1SC9sHPh3SNrPm6qifZhrm/y91oA1fuy0UTku6ZVM/07Ck8urknoRK1+f56o48WAZ1wh/Tmu2eQYBJiaPMuwEJEbl/pzHdxUs6J8yGRzy3C1rkNtrx7MJ1lT/8HGgI7gW1x/yzEgK4HK+mF+loJWtyrrajoZTq6cH+J1Mz8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by MN0PR12MB6198.namprd12.prod.outlook.com (2603:10b6:208:3c5::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.23; Fri, 1 Sep
+ 2023 07:30:46 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::3d:c14:667a:1c81%4]) with mapi id 15.20.6745.021; Fri, 1 Sep 2023
+ 07:30:46 +0000
+Message-ID: <a975bbdb-8cd9-35b2-ce98-f711439db3a5@amd.com>
+Date:   Fri, 1 Sep 2023 09:30:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] drm/amdgpu: clean up some inconsistent indenting
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+References: <20230901070240.31027-1-jiapeng.chong@linux.alibaba.com>
+Content-Language: en-US
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+In-Reply-To: <20230901070240.31027-1-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR2P281CA0022.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::9) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463760895-707783301-1693553355=:17635"
-X-Spam-Status: No, score=-15.9 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        URIBL_BLACK,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=no
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|MN0PR12MB6198:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9885ec11-6362-4a82-6d4a-08dbaabd5b20
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: tvwTgtuxuwOMah4Xa1WLR/LQrCEKVHzcg4twkZ+d+TRnV+NdMK3qSexVuoVHXmtcvZDn8R0vBTqG0rIphWnDcn8hr43ImGth2fmohdSxs3BnfRiZoOJX3AoCgYxtnhbGaKWACAF5V0DhVXP3drpsrFhhocowhlB+OfngRjPyIg6C1bKtoBPXZC1uIgt33FTx/D2/aJQgCbirBnEgdGrgyXhZWJCE2rwGMq45W7liuT6jdieBqN3+2z3sMnljI4ti6WacgMWYGLiYmEI73jhmsAA/JfEGvzLDivHaDCAqhy6aWA8HryZg1Pn6ztzfTEboOLR3aD12J2Yu1a/SotkYszUPXnzD7qd43cC0X5i6OwcJ8GSIKXuughhaPgwK84EZIojJB4my/h4nt5L/nFFQwx/sf3HZ8GVHp0HXYTHgsajdE6gCukacPkQbBCMKsCJ68B7ty8TPnWZW93jOw2b2iKwkcJny5O4BBQxkumJy3Gz9zIj/LW9k05YNGzGk4f3VsMUti51gbX0lyE0BHbQAzZNBcGvwn/RAnCFQEPtUQaugy01mhPsRKk1bQeoxivgUpbJRxTUrezUgTDbJvuV9b1GqZUGgU3geDDZUg4ubvSIVR34DIb8Qs3c4cal1mBVCwFAORvi0LW+aJzNvOCTRnA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(39860400002)(136003)(346002)(376002)(451199024)(186009)(1800799009)(6486002)(6506007)(6666004)(6512007)(966005)(478600001)(83380400001)(2616005)(26005)(2906002)(6916009)(66476007)(66556008)(316002)(41300700001)(66946007)(5660300002)(4326008)(8676002)(8936002)(36756003)(31696002)(86362001)(38100700002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Z3Q1NGVPenlTdDNwUFFGSS93Z25rRGxJd2RrWnNGMHNVSWU3QVljTmtYYkpx?=
+ =?utf-8?B?VS9zb2xhbDR5STFRbjNEN0pNVlZvd2tzOFl1ek1YMmM2TXYwcWxlTmxiSjho?=
+ =?utf-8?B?d3hCSUJuVnNBeWhjb0l5T0pObnVsWGxRclFiYWRScFhuUWFPVG1BSHZmTWla?=
+ =?utf-8?B?YXFzNDJ1NXVNMHMrVXdDWTdXVWsxMjcvbldSUmpoQzhTMDlNZmdXZVFuZWFl?=
+ =?utf-8?B?Ums5Vk0vWm5iRzdEVDljcHVSUnNjN3lNaGpySWhrRUZ4dExpcS9tdC9MdHM4?=
+ =?utf-8?B?YWtJZkYwck50a3NHaTNmeFNKSnRuNTQ5V3NKWVhVVXF5YXBaalZCeVAxK0pK?=
+ =?utf-8?B?WTc4WUhzN1FtQWdCSTdub0FqVVdqdDY3eWsvK0hIOE5HbkV6dWl1WGs0RHRT?=
+ =?utf-8?B?L1llQXEyVDY5MGEzT3NucjZNUHdjYVNTTzlNUno5eXhmVDl1SSt6c3ZLMFFQ?=
+ =?utf-8?B?eHFrRXRZSkg5WWRUOEhpR2FKY3VOa2pFYkVncTNyN1F5Wk5VcmpBUWg5cHZE?=
+ =?utf-8?B?M1hjdTA3S1VueW5MblpLV1Npc3k0UlR3d0VLS1hoMXJ5NytoQ1VmR1Bia0cx?=
+ =?utf-8?B?RXVMbWQwZ2hDTXMvZnVQYzVZVi9xZWhkY1NCSjNUUE51c0E3YnFZcjVjK0tS?=
+ =?utf-8?B?d1F3NVY5VkowZ2NyQmh4ZW1JWEtrQzB5VEYzQnBNYkF2K0RWUkJBQnliM2Rt?=
+ =?utf-8?B?bVBaR3dYa2lhVzk2bm12cFllMC9hS25SYXprRDZOYjhDNklLbWxFRWNvcW1i?=
+ =?utf-8?B?b051Q3d0MGxRbk5OMktxRHFySUExeldsK2xWT2NHZkpwS1g3czBXdGQ5N1VN?=
+ =?utf-8?B?YnB6RWtqd2lnRVp0TWd2dWVseVpkZ3Rpa2VMQm92SGZucXQvVTJNWklmaHRl?=
+ =?utf-8?B?ZVAwY2xOcS9uTjBKMEh6NkJlbDVKUjFLYUg4YkljYnFmcGJuUDNNcDJJMnNi?=
+ =?utf-8?B?T05TM3JtQU1GVWNva0w3TDUvckRRL3pmL21FWjhnemhpN3lSK1dFZHdCcVVO?=
+ =?utf-8?B?TXQweXlDcnQ0SkNDV2pmSklneHlRRVk2T0ZMSzBWM3d3dEdyc281cjRaelBs?=
+ =?utf-8?B?RzVFeGE5a0FCZlBZZFQzNEVZWVo5NWo5S0VVbW5HNGRuUFBVNVBVRDhQTkdC?=
+ =?utf-8?B?L2N6OGQ0cEptRWpEWXdrRUtTZ0tDU1M4MHNDcS8zSFlNN0pqZ0lQbTlMem1E?=
+ =?utf-8?B?L2JRNVJLaVBPWjB5UXRrN1c3U3F4TEpiVW9BWUFFVDNGdFB5aVhtZnY1N3Zk?=
+ =?utf-8?B?SjNGcTREQ3p4TS95T2lsU0Z2TXM5OGR2NkVDKzVLdUdLcjl0cVNPWWhsa3BT?=
+ =?utf-8?B?QzJOMGdEME1QOW9vRkJwcGlPOS9iTjVmS00yWWxjbnF6ZjFpem5rZGpNMHRa?=
+ =?utf-8?B?ZndoODZlNlo1b2JGZjZhOGlSQlhMUDVSM21yY0xjQ2Zrck9HdU9xK2VQZnBj?=
+ =?utf-8?B?Q0dzNFgzTnY5clJ3TkE2QXdZbitUbVdQNUlLTTV6anRqUGt2U2dkQVJVTXFO?=
+ =?utf-8?B?Smthc3pOeEhTeDVxc2p3LzhqUUVMMGhDQkRBZi9iTi9tWUtWYVgvYjNYZk5L?=
+ =?utf-8?B?eFBpZ3J1NENyazNwRWNBeElDYXFoOEpMQkNxY28wUWhQZy80TUJ2c3FGNkgz?=
+ =?utf-8?B?NkxyK01aSkI3elJQMXNDd3ZXcDFTNEtKaTRmNzA1ZFVBUzlLZmtSZ2tGSzhj?=
+ =?utf-8?B?R2MrUHBpZmFHc3VYVTVYeGx0NWpvVlJZTUFOVk8zSk5JSXdKQ0JoTTRHLzE1?=
+ =?utf-8?B?YlpPMHphUVJrc09yc1ZENnJpUWNEWlZNVmRIampPbE85QVVNKy96Tm1uQy9J?=
+ =?utf-8?B?R2RGK1VhTFE5RXBSWnUxeGIrVEs2eGdmdlVqODR6dER2TVIzdjYxZVlwM085?=
+ =?utf-8?B?RldKNXFkVzFwYUhXSVNqWTU2MkNkdmVDK1lySXdXaUxzNHdwUGo2Q0Ztb3J5?=
+ =?utf-8?B?U3hFU2pIbDh3NVRXSGdZN2VySkdLdzJBQlNyM0JpVWoxUmZQQkVzRHYvQVhM?=
+ =?utf-8?B?aGRHK0pXTTdidzFIa1B6Rkh6YzI3a3JTN3FXb3QwRDhBckM1RWpXanZ5Sll3?=
+ =?utf-8?B?UVlJRHZ2dDU1TEpnZTREOWtiS3U1cGwzVTFiNUxxSTNjZ2daUys5SXdaL3hR?=
+ =?utf-8?Q?bgR9dJz77UbvvgLbzUwX3bgPU?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9885ec11-6362-4a82-6d4a-08dbaabd5b20
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 07:30:46.0079
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 32WC0RBkC4KevIlb1Ps7wwPRWzboZO1WDad5ATGRVAv/Pkub1et7hdlT36n9LrAI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6198
+X-Spam-Status: No, score=-4.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Am 01.09.23 um 09:02 schrieb Jiapeng Chong:
+> No functional modification involved.
+>
+> drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c:34 nbio_v7_11_get_rev_id() warn: inconsistent indenting.
 
----1463760895-707783301-1693553355=:17635
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-On Fri, 1 Sep 2023, Mikhail Gavrilov wrote:
+We should probably not have a printk here in the first place.
 
-> Hi,
-> next release cycle, and another regression.
-> Yesterday after another kernel update in Fedora Rawhide system stopped bo=
-oting.
+Christian.
 
-Many thanks for reporting, Mike: I'm sorry that it never showed up
-while in linux-next, leaving you to be the one to hit it again.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6316
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c | 5 ++---
+>   1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c b/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c
+> index 7c08e5f95e97..76e21357dd4d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c
+> @@ -31,10 +31,9 @@
+>   static u32 nbio_v7_11_get_rev_id(struct amdgpu_device *adev)
+>   {
+>   	u32 tmp;
+> -         printk("%s, getid\n",__func__);
+> -
+> -		tmp = RREG32_SOC15(NBIO, 0, regRCC_STRAP1_RCC_DEV0_EPF0_STRAP0);
+>   
+> +	printk("%s, getid\n", __func__);
+> +	tmp = RREG32_SOC15(NBIO, 0, regRCC_STRAP1_RCC_DEV0_EPF0_STRAP0);
+>   	tmp &= RCC_STRAP0_RCC_DEV0_EPF0_STRAP0__STRAP_ATI_REV_ID_DEV0_F0_MASK;
+>   	tmp >>= RCC_STRAP0_RCC_DEV0_EPF0_STRAP0__STRAP_ATI_REV_ID_DEV0_F0__SHIFT;
+>   
 
-> Today thanks to git bisect, I found out that this is a commit:
->=20
-> =E2=9D=AF git bisect bad
-> a349d72fd9efc87c8fd1d16d3164752d84a7275b is the first bad commit
-> commit a349d72fd9efc87c8fd1d16d3164752d84a7275b
-> Author: Hugh Dickins <hughd@google.com>
-> Date:   Tue Jul 11 21:30:40 2023 -0700
->=20
->     mm/pgtable: add rcu_read_lock() and rcu_read_unlock()s
-=2E..
->     Before putting them to use (several commits later), add rcu_read_lock=
-() to
->     pte_offset_map(), and rcu_read_unlock() to pte_unmap().  Make this a
->     separate commit, since it risks exposing imbalances: prior commits ha=
-ve
->     fixed all the known imbalances, but we may find some have been missed=
-=2E
-
-I assume that it is such an imbalance - somewhere omitting to
-pte_unmap() after a pte_offset_map(); but I cannot see where.
-
-> It looks like the hang happens so early that when booting into a
-> working kernel and running "journalctl -b -1" I see in the console the
-> log of the previous kernel which was booted before the problematic
-> kernel.
-> Therefore, I apologize that I can't provide the kernel logs.
-> I can provides only photos when backtrace appears on my monitor:
-> Here we waiting: https://ibb.co/5xmm0BH
-> And then I see backtrace: https://ibb.co/TLLGFNP
->=20
-> Unfortunately I can't revert commit
-> a349d72fd9efc87c8fd1d16d3164752d84a7275b for testing more fresh builds
-> because of conflicts.
->=20
-> My hardware: https://linux-hardware.org/?probe=3Ddd5735f315
-> I also attached kernel build config and full bisect log.
-
-Thanks for all the info, which has helped in several ways.  The only
-thing I can do is to offer you a debug (and then keep running) patch -
-suitable for the config you showed there, not for anyone else's config.
-
-I've never used stackdepot before, but I've tried this out in good and
-bad cases, and expect it to work for you, shedding light on where is
-going wrong - machine should boot up fine, and in dmesg you'll find one
-stacktrace between "WARNING: pte_map..." and "End of pte_map..." lines.
-
-To apply on top of a349d72fd9ef ("mm/pgtable: add rcu_read_lock() and
-rcu_read_unlock()s"), the bad end point of your bisection; but if you
-prefer, I can provide a version to go on top of whatever later Linus
-commit suits you.
-
-Patch not for general consumption, just for Mike's debugging:
-please report back the stacktrace shown - thanks!
-
-Hugh
-
----
- include/linux/pgtable.h |  5 +----
- mm/memory.c             |  1 +
- mm/mremap.c             |  1 +
- mm/pgtable-generic.c    | 40 ++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 41 insertions(+), 6 deletions(-)
-
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 5134edcec668..131392f1c33e 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -106,10 +106,7 @@ static inline pte_t *__pte_map(pmd_t *pmd, unsigned lo=
-ng address)
- {
- =09return pte_offset_kernel(pmd, address);
- }
--static inline void pte_unmap(pte_t *pte)
--{
--=09rcu_read_unlock();
--}
-+void pte_unmap(pte_t *pte);
- #endif
-=20
- /* Find an entry in the second-level page table.. */
-diff --git a/mm/memory.c b/mm/memory.c
-index 44d11812a88f..b1ee8ab51978 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -1033,6 +1033,7 @@ copy_pte_range(struct vm_area_struct *dst_vma, struct=
- vm_area_struct *src_vma,
- =09=09ret =3D -ENOMEM;
- =09=09goto out;
- =09}
-+=09pte_unmap(NULL);=09/* avoid warning when knowingly nested */
- =09src_pte =3D pte_offset_map_nolock(src_mm, src_pmd, addr, &src_ptl);
- =09if (!src_pte) {
- =09=09pte_unmap_unlock(dst_pte, dst_ptl);
-diff --git a/mm/mremap.c b/mm/mremap.c
-index 11e06e4ab33b..56d981add487 100644
---- a/mm/mremap.c
-+++ b/mm/mremap.c
-@@ -175,6 +175,7 @@ static int move_ptes(struct vm_area_struct *vma, pmd_t =
-*old_pmd,
- =09=09err =3D -EAGAIN;
- =09=09goto out;
- =09}
-+=09pte_unmap(NULL);=09/* avoid warning when knowingly nested */
- =09new_pte =3D pte_offset_map_nolock(mm, new_pmd, new_addr, &new_ptl);
- =09if (!new_pte) {
- =09=09pte_unmap_unlock(old_pte, old_ptl);
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index 400e5a045848..87cbdc73beda 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -232,11 +232,47 @@ pmd_t pmdp_collapse_flush(struct vm_area_struct *vma,=
- unsigned long address,
- #endif
- #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-=20
-+#include <linux/stacktrace.h>
-+#include <linux/stackdepot.h>
-+#include <linux/timekeeping.h>
-+
-+static depot_stack_handle_t depot_stack;
-+
-+static void pte_map(void)
-+{
-+=09static bool done =3D false;
-+=09unsigned long entries[16];
-+=09unsigned int nr_entries;
-+
-+=09/* rcu_read_lock(); */
-+=09if (raw_smp_processor_id() !=3D 0 || done)
-+=09=09return;
-+=09if (depot_stack) {
-+=09=09pr_warn("WARNING: pte_map was not pte_unmapped:\n");
-+=09=09stack_depot_print(depot_stack);
-+=09=09pr_warn("End of pte_map warning.\n");
-+=09=09done =3D true;
-+=09=09return;
-+=09}
-+=09nr_entries =3D stack_trace_save(entries, ARRAY_SIZE(entries), 0);
-+=09depot_stack =3D stack_depot_save(entries, nr_entries, GFP_NOWAIT);
-+=09if (ktime_get_seconds() > 1800)=09/* give up after half an hour */
-+=09=09done =3D true;
-+}
-+
-+void pte_unmap(pte_t *pte)
-+{
-+=09/* rcu_read_unlock(); */
-+=09if (raw_smp_processor_id() !=3D 0)
-+=09=09return;
-+=09depot_stack =3D 0;
-+}
-+
- pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr, pmd_t *pmdvalp)
- {
- =09pmd_t pmdval;
-=20
--=09rcu_read_lock();
-+=09pte_map();
- =09pmdval =3D pmdp_get_lockless(pmd);
- =09if (pmdvalp)
- =09=09*pmdvalp =3D pmdval;
-@@ -250,7 +286,7 @@ pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr,=
- pmd_t *pmdvalp)
- =09}
- =09return __pte_map(&pmdval, addr);
- nomap:
--=09rcu_read_unlock();
-+=09pte_unmap(NULL);
- =09return NULL;
- }
-=20
---=20
-2.35.3
----1463760895-707783301-1693553355=:17635--
