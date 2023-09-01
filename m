@@ -2,107 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7BBE78F9F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 025D878FA02
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234201AbjIAIZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48676 "EHLO
+        id S1347284AbjIAIet (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:34:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233558AbjIAIZL (ORCPT
+        with ESMTP id S240472AbjIAIer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:25:11 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B81193
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:25:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 91D93CE2377
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 08:25:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81289C433C9;
-        Fri,  1 Sep 2023 08:25:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693556704;
-        bh=Ia2YKPpb8VGizArtf2/JksHQM98ix2QTPhtXfsg80Co=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=caGGvcqelZ3VTnyY9z2yJ3CzHd/XH2fxxlIn3275iN1nQT1xgnwuSg7KfsXUeMuCr
-         9NK8/E3ER268LCX/kp0j5OyE4s6vLCAhpTuxwNoAu7g1BDlpJabZftkrCXG5KKbr0k
-         ol3Zz7hyjLil4qeeZyz6zEt+PSe0d/l1oIeS1g7agRQ+jbYlfdLnOz38LmIYsMR8Fn
-         5coemk6qRWErF1vpgkUIGutxSJpGDECUudsKlSl6/BtK+Qnbsm8uNn/IQjifU/9G71
-         W4wjf+rNtMeQL9sv5XGqu0DrejL0mOKJL6gqsvvbnrwJ3Q0K69U2/Uk3a40up29oaH
-         Ol+XEshSYuHIA==
-Date:   Fri, 1 Sep 2023 10:25:02 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
- .atomic_check() callback
-Message-ID: <5dj43wxsszikpwbwzxx5v5h7jbx4vjjavnhzi26xgfcdp5wsws@t2hd3pawau4t>
-References: <20230830062546.720679-1-javierm@redhat.com>
- <6654778d-1f40-1775-c32c-ebf9728bc9a9@suse.de>
- <87ledqbah2.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 1 Sep 2023 04:34:47 -0400
+X-Greylist: delayed 386 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 01 Sep 2023 01:34:43 PDT
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CBC5E54;
+        Fri,  1 Sep 2023 01:34:43 -0700 (PDT)
+Received: from 4d92782a4194.home.arpa (unknown [124.16.138.129])
+        by APP-05 (Coremail) with SMTP id zQCowAD3EAiMoPFkMvj9CA--.33451S2;
+        Fri, 01 Sep 2023 16:27:56 +0800 (CST)
+From:   Jiasheng Jiang <jiasheng@iscas.ac.cn>
+To:     mailhol.vincent@wanadoo.fr, wg@grandegger.com, mkl@pengutronix.de,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, arunachalam.santhanam@in.bosch.com
+Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jiasheng Jiang <jiasheng@iscas.ac.cn>
+Subject: [PATCH] can: etas_es58x: Add check for alloc_can_err_skb
+Date:   Fri,  1 Sep 2023 16:27:55 +0800
+Message-Id: <20230901082755.27104-1-jiasheng@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qhw5hxui7uborewx"
-Content-Disposition: inline
-In-Reply-To: <87ledqbah2.fsf@minerva.mail-host-address-is-not-set>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: zQCowAD3EAiMoPFkMvj9CA--.33451S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xw1kZr4xtF48Cr1UJry3twb_yoWfJwb_C3
+        9avry7WF1UCryDK3WDuFnFqryYyr1DZrWxWwsYvFn8JrWUAr1xJr1jvFs3CrnrWFWS9FZ8
+        XwnFyFs8u3y09jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbsAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
+        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
+        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
+        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc2xSY4AK67AK6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+        z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+        UI43ZEXa7VUjNJ55UUUUU==
+X-Originating-IP: [124.16.138.129]
+X-CM-SenderInfo: pmld2xxhqjqxpvfd2hldfou0/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add check for the return value of alloc_can_err_skb in order to
+avoid NULL pointer dereference.
 
---qhw5hxui7uborewx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 8537257874e9 ("can: etas_es58x: add core support for ETAS ES58X CAN USB interfaces")
+Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
+---
+ drivers/net/can/usb/etas_es58x/es58x_core.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On Fri, Sep 01, 2023 at 09:48:09AM +0200, Javier Martinez Canillas wrote:
-> Thomas Zimmermann <tzimmermann@suse.de> writes:
->=20
-> > Hi Javier,
-> >
-> > another idea about this patch: why not just keep the allocation in the=
-=20
-> > plane's atomic check, but store the temporary buffers in a plane struct=
-=2E=20
-> > You'd only grow the arrays length in atomic_check and later fetch the=
-=20
-> > pointers in atomic_update. It needs some locking, but nothing complicat=
-ed.
-> >
->=20
-> Yes, that would work too. Another option is to just move the buffers to
-> struct ssd130x_device as it was before commit 45b58669e532 ("drm/ssd130x:
-> Allocate buffer in the plane's .atomic_check() callback") but just make
-> them fixed arrays with the size of the biggest format.
->=20
-> That will be some memory wasted but will prevent the problem of trying to
-> allocate buffers after drm_atomic_helper_swap_state() has been called.
+diff --git a/drivers/net/can/usb/etas_es58x/es58x_core.c b/drivers/net/can/usb/etas_es58x/es58x_core.c
+index 0c7f7505632c..d694cb22d9f4 100644
+--- a/drivers/net/can/usb/etas_es58x/es58x_core.c
++++ b/drivers/net/can/usb/etas_es58x/es58x_core.c
+@@ -680,6 +680,8 @@ int es58x_rx_err_msg(struct net_device *netdev, enum es58x_err error,
+ 	}
+ 
+ 	skb = alloc_can_err_skb(netdev, &cf);
++	if (!skb)
++		return -ENOMEM;
+ 
+ 	switch (error) {
+ 	case ES58X_ERR_OK:	/* 0: No error */
+-- 
+2.25.1
 
-If we want to go that road, we don't even need an extra allocation, it
-can be part of the state or object structure itself.
-
-Maxime
-
---qhw5hxui7uborewx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZPGf3gAKCRDj7w1vZxhR
-xbKvAQCMJzdResZ3bEsMgrE2V/6WGCsjUuFwfnYt7jg9AHOhYgD+Ku7NT7+Twn6Z
-4/7EztFhnNPN1pkQHVmljeupKsxrXQg=
-=4h8D
------END PGP SIGNATURE-----
-
---qhw5hxui7uborewx--
