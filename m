@@ -2,71 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F3A78FD2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B245978FD32
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:28:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349419AbjIAM1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48984 "EHLO
+        id S1349423AbjIAM25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:28:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242802AbjIAM1k (ORCPT
+        with ESMTP id S229932AbjIAM24 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:27:40 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB3FECF3;
-        Fri,  1 Sep 2023 05:27:37 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31f2f43d5a0so88806f8f.1;
-        Fri, 01 Sep 2023 05:27:37 -0700 (PDT)
+        Fri, 1 Sep 2023 08:28:56 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 915E110CA
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:28:52 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-51e24210395so8161a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:28:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693571256; x=1694176056; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W6Gi10IhnUKAHhj8YSjYz36uUnCbI9VLNqIYsOM0UXo=;
-        b=luWqthoahCErBFErph5qHvBZbPwNy5QNpluUVHp1pH2RP8Ylm5Ag8WXkts8TBBRf9N
-         4T/yktUTOCVmVwBViMIqeez2UyFXlPDX6fSyYMVHEcMrncwXvWXP8ejnSNmu5ZrNe78y
-         36IxqDGYJMi+QODLOwc4CrcdMJ3ngmHG+AIPxISRoEGeq+UTKDUZzekWIUtppMP6XADt
-         xodV0pwb58NdC2ZaJbTHAgr19Ioolt8oM+6aT5qAoQVeEoQqcJ4r1pjP8dNXsp2bGmwO
-         WtHKVuV9vGwC1zUSQa+Dyf23j90No83ELNaNCFJnkN/iltn92GNXzXx2y7KDdWNHYjiK
-         HAhA==
+        d=google.com; s=20221208; t=1693571331; x=1694176131; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=P1I6dpx5TUvkoEh56JEMyzHdi0osjSjPWIDUEWZsPuU=;
+        b=rvM0gAhDWAou9kQB1YjnLXb3i4me0qEkmyY8yuGiX7UUxl76FEMAYU12pr2KRAeG28
+         sw5v/dP8gZenp7RCpmI8EY6G2zY8mCBRl+x14yUsC+TOSULDeMfJ/Xev3Cj0ZsRjzr6X
+         76lTCBV7eilggzpMTpGVO1lK2aeImo10oaRA4JgE/bVVD/ZGpJiAQuPDGuLB2ldBQSne
+         bQEgbHlilc30OOSPKSkmqn73L1/HOnMm6HnJPEOYbisyOU1LZGI1kLgS3RgC5IIG4qbL
+         q9QxVTR2kS3uBtJdW0n34B45PBd7RvIZCGBSz6DfLeQgW1IfNW+9Lva42LVTC+3vbrOE
+         ml7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693571256; x=1694176056;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=W6Gi10IhnUKAHhj8YSjYz36uUnCbI9VLNqIYsOM0UXo=;
-        b=frc9PmuKSW3qlOkPFphkDjHu/ETPfzbZP/NWY14ZHadpSs0bINB19/5y72HcYemE+E
-         7sgpAXjlL7Lkc5QcbnGLQe1hRtKWs523ZZodtViLdhcGphkEl/ox1kdmIxrmXOLJIQib
-         m9QMNfplpHdyXJ4RuYTjJ+pNkRy1AEJ+l0QcumwRUl0D9zEFMYiMbnZSyT1aUZkaO350
-         sOUylrOLdH0O9AasYGftBmAXmIKRfOIQeFDTqTiR9AU691sWvjUbeDjqhr1hx2tlcrY/
-         hpLndAgurD8B+n50vRHlmj2Wuk2E50/uz5cecB0p1LeF1+V1lx3pn+Uwe/yeeJ+oaa9y
-         NdpA==
-X-Gm-Message-State: AOJu0YwTd7QbJ7To1l/DSGI3MY2E4FpUnd8MjOAglvOeqSgzSgXZl/Uo
-        YzpDjm9Kvqb4RFjAdB8Hr0aNFbgb90C++Q==
-X-Google-Smtp-Source: AGHT+IEqgWw+U/mlROcBLLUoZsyNQ4XPlHlezyJwxdiU4mOsv4oFBuMQPY6CveJBROa53on31tNPCQ==
-X-Received: by 2002:adf:fe92:0:b0:319:89ce:da0b with SMTP id l18-20020adffe92000000b0031989ceda0bmr1692269wrr.68.1693571255815;
-        Fri, 01 Sep 2023 05:27:35 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2501:c701:64d6:8737:b80d:a298])
-        by smtp.gmail.com with ESMTPSA id x9-20020adfdd89000000b003196b1bb528sm5131530wrl.64.2023.09.01.05.27.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 05:27:35 -0700 (PDT)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v2] mmc: host: Kconfig: Make MMC_SDHI_INTERNAL_DMAC config option dependant on ARCH_RENESAS
-Date:   Fri,  1 Sep 2023 13:27:01 +0100
-Message-Id: <20230901122701.318082-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20221208; t=1693571331; x=1694176131;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P1I6dpx5TUvkoEh56JEMyzHdi0osjSjPWIDUEWZsPuU=;
+        b=D4Egg/eH6Ins1gAwkjebStFajL1eEB4qRMAZ3Z3gK9vkqguf2Slp7LUdTOzAb/7XIq
+         1hmfen5uEtqeIOp8EUWcljtT5Y/AIWtdh21gEYkYwlH/hLiwB+ew8HgOfR+qNfs6j9KU
+         kv77P3QOceu+3VH1bhzLGAjkchgf2sFk9XAD4PxtijAOFCAeqBtPHY5iYTco76UO2bRf
+         erosMFFDv3AGaRDSvHe2cY69hL0CZv35aW08wLP7nV0qvEI+nedtWCnXS0IKQCwreUTj
+         xBsGCdmjcUJdPkT3y5phH3y5RxmSsYFZAoQQA78BO8iH3Zc1sI1jW2IlnfjHoTGY+Dhd
+         /m9g==
+X-Gm-Message-State: AOJu0YyphV6ByxO6MUwqRle+wLGmk8Cm7St4iUlawOpDI6w9dFov0s2n
+        cIGw+eIZr/cHLMDjNAcc32yo73VT+ADsdHVxpPxrZA==
+X-Google-Smtp-Source: AGHT+IFIBLQiVlMj8bo8BxSFikphD3uKWvzg1eE7vOLenZ7xS6hW5kH9XwxQdd6iZmktD/GoAJt1cIajikiHK/TkjDY=
+X-Received: by 2002:a50:9f84:0:b0:51a:1ffd:10e with SMTP id
+ c4-20020a509f84000000b0051a1ffd010emr96127edf.3.1693571330962; Fri, 01 Sep
+ 2023 05:28:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230606140041.3244713-1-ptf@google.com> <CAJs+hrHAz17Kvr=9e2FR+R=qZK1TyhpMyHKzSKO9k8fidHhTsA@mail.gmail.com>
+ <7aa7af7f-7d27-02bf-bfa8-3551d5551d61@gmail.com> <20230606142907.456eec7e@kernel.org>
+In-Reply-To: <20230606142907.456eec7e@kernel.org>
+From:   Patrick Thompson <ptf@google.com>
+Date:   Fri, 1 Sep 2023 08:28:39 -0400
+Message-ID: <CAJs+hrEO6nqRHPj4kUWRm3UsBiSOU128a4pLEp8p4pokP7MmEg@mail.gmail.com>
+Subject: Re: [PATCH] r8169: Disable multicast filter for RTL_GIGA_MAC_VER_46
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        nic_swsd@realtek.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,44 +75,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Hello,
 
-MMC_SDHI_INTERNAL_DMAC config option has dependency on ARM64 and
-R7S9210/R8A77470 this dependency will keep growing for future SoCs for
-varying architectures. So to simplify this configuration make
-MMC_SDHI_INTERNAL_DMAC solely depend on ARCH_RENESAS, as all Renesas
-SoCs inherently depend on the ARCH_RENESAS config option.
+I was wondering if this should be extended to all RTL_GIGA_MAC_VERs
+greater than 35 as well.
 
-This allows selecting MMC_SDHI_INTERNAL_DMAC config option for RZ/Five SoC
-which is based on RISC-V architecture.
+Realtek responded to me but I was slow to get them packet captures
+that they needed. I am hoping to restart things and get back to this
+over the finish line if it's a valid patch.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
-v1-v2
-* Add dependency on ARCH_RENESAS instead of RISCV
+I will add the appropriate tags and annotations once I hear back.
 
-v1:
-https://lore.kernel.org/linux-renesas-soc/20230901113703.314667-1-prabhakar.mahadev-lad.rj@bp.renesas.com/
----
- drivers/mmc/host/Kconfig | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-index 554e67103c1a..2e8476db2381 100644
---- a/drivers/mmc/host/Kconfig
-+++ b/drivers/mmc/host/Kconfig
-@@ -677,9 +677,9 @@ config MMC_SDHI_SYS_DMAC
- 
- config MMC_SDHI_INTERNAL_DMAC
- 	tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
--	depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || COMPILE_TEST
-+	depends on ARCH_RENESAS || COMPILE_TEST
- 	depends on MMC_SDHI
--	default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470)
-+	default MMC_SDHI if ARCH_RENESAS
- 	help
- 	  This provides DMA support for SDHI SD/SDIO controllers
- 	  using on-chip bus mastering. This supports the controllers
--- 
-2.34.1
-
+On Tue, Jun 6, 2023 at 5:29=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wro=
+te:
+>
+> On Tue, 6 Jun 2023 17:11:27 +0200 Heiner Kallweit wrote:
+> > Thanks for the report and the patch. I just asked a contact in Realtek
+> > whether more chip versions may be affected. Then the patch should be
+> > extended accordingly. Let's wait few days for a response.
+> >
+> > I think we should make this a fix. Add the following as Fixes tag
+> > and annotate the patch as "net" (see netdev FAQ).
+> >
+> > 6e1d0b898818 ("r8169:add support for RTL8168H and RTL8107E")
+>
+> Perhaps it's best if you repost with the Fixes tag included once
+> Realtek responded.
