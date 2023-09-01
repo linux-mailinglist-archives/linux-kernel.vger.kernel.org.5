@@ -2,127 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2107678FCCF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:00:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94DBB78FCD3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:01:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349312AbjIAMAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:00:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
+        id S243234AbjIAMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:01:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345197AbjIAMAn (ORCPT
+        with ESMTP id S239628AbjIAMBF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:00:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64A7D10D2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:00:37 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EDA4762CFA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 12:00:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0443EC433C8;
-        Fri,  1 Sep 2023 12:00:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693569636;
-        bh=lGxyMOQV4gjjzMVNKS8VEdXVaMYhitaRfjfztoeX44c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vr73YzHZ3TMILaS9tBiYclK/jMziRZh4FpshkG6coR/2I3qT64dYus+o75FOAyDiw
-         Nw17+4QFqxW0xKJf1LD655pBmBHxI1nXY9GsGCP0UyHiECx/dtYTnKnNOx9C+t9l8q
-         ofFAMqK0iLLbNqCNENapdWEueRWuvvU9MEdLOQ8NLk33BIvhZ5FZT3IJulurDWLz+E
-         DU3V195JkmkvO89w/7Wc0zQV8qCHZORHPt2jbUS9olmKTXmIGIFNURveWEisZ0oV4J
-         BWmCHGetvNZVdPlI62y5BKFcly31JTiGP1qM344+zmrHr6J0LbkfF7wjy668cBsjGw
-         kpzZiweAsIc1A==
-Date:   Fri, 1 Sep 2023 14:00:33 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
- .atomic_check() callback
-Message-ID: <4zfgmvfstyjfo5slggfmfuvnirrhrq773el52gkav2r6jxliub@7qjbyy7rkj3g>
-References: <20230830062546.720679-1-javierm@redhat.com>
- <zitno3p7tbnld5auedkx5g4wey2csng4ncmtdhzinbuhblunyk@chnwsnsgq36v>
- <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
+        Fri, 1 Sep 2023 08:01:05 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD77E7F
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:01:01 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a5dff9d2d9so227127266b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:01:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693569660; x=1694174460; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vs/PRb2b7V6rR58f88F1xUyXEBig3vOWtcP0jsGuDGI=;
+        b=oMRBCeSDBsXI89x168ye82aAfo7KOm/WJVB1zF0W5myedlyoSR7uSw9sUknO7srDGX
+         Vdxg1FANQn5JJ7227oYZ1P90uMCfAvP0Qgzxs2sohpmPf4Z0QUOBZGmAEu/Ch3m07nM5
+         mCuudL8sQmqX12Nl0gnyNtiplrh3BK3i1kkJoXaZGwelRyOWefJ1S4wkXozEyZHYJNdH
+         0/NYg2yoRIyJJfkwC2cayr33h5teTn5mf6FsBi43AbGsSC1Bz5XjIiCc1EOJlU+GGQvK
+         QGw0iX45rquFCYAJuEEMIZmWcqk17iJACRBVTDnvtApaz9WZsC5A5NHzabTiZvL0rI0D
+         jwkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693569660; x=1694174460;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Vs/PRb2b7V6rR58f88F1xUyXEBig3vOWtcP0jsGuDGI=;
+        b=OFCB95C057F+Vg6Wips1oskD3bc1mKaMIdTHLjgIFmPXOUvGGvuDaLZcD8PCdkWCjd
+         1k8+RqHwKDkXhF9k2rIU5m/7pw3OFaOB/v/6/QaSUtc8IAJny+er+M4NzK+XTefX1/eI
+         PiKHD6YRPILLIh+KM1vdNhNtH5sRQ+PwB3TzcqDh77Fyir8rNlANBFwvQfZWtoci5/d8
+         MJv/GksuqYh9DJ7NR5vCAcBTKtArmDXdlfHFngoGZwDgF48HZvYBxg8Z9ZOww3wUuQr5
+         iXrOym/Ztg5OI1Ow00RjMClNwUzAuASwPh4E3hiYbowbbCCuc2ZFAAch+rz9iEdexCDs
+         agZA==
+X-Gm-Message-State: AOJu0Yz+cL2JGAG0vAUSLez5Luh/tbjc9iHQnqhkqVeiSdC1WQKN4OVz
+        kBeFTx7S1yrt+MppOvwAKKPvhg==
+X-Google-Smtp-Source: AGHT+IG3WoF6WkfiDpXFLy4paG6AbtYn6jxN1oPMmMoQbVt+83Mf/3i7rbvu6QvyebF/Iz2uTyzQwQ==
+X-Received: by 2002:a17:906:30d9:b0:9a1:f96c:4baf with SMTP id b25-20020a17090630d900b009a1f96c4bafmr1285349ejb.5.1693569660354;
+        Fri, 01 Sep 2023 05:01:00 -0700 (PDT)
+Received: from krzk-bin.. (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id kg12-20020a17090776ec00b00993928e4d1bsm1877343ejc.24.2023.09.01.05.00.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 05:00:59 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 1/3] dt-bindings: power: syscon-poweroff: get regmap from parent node
+Date:   Fri,  1 Sep 2023 14:00:55 +0200
+Message-Id: <20230901120057.47018-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="byuybil6cm4awtis"
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Just like syscon-reboot device, the syscon-poweroff is supposed to be a
+child of syscon node, thus we can take the same approach as
+syscon-poweroff: deprecate the 'regmap' field in favor of taking it from
+the parent's node.
 
---byuybil6cm4awtis
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Fri, Sep 01, 2023 at 10:36:17AM +0200, Geert Uytterhoeven wrote:
-> Hi Maxime,
->=20
-> On Fri, Sep 1, 2023 at 10:22=E2=80=AFAM Maxime Ripard <mripard@kernel.org=
-> wrote:
-> > On Wed, Aug 30, 2023 at 08:25:08AM +0200, Javier Martinez Canillas wrot=
-e:
-> > > The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
-> > > .atomic_check() callback") moved the allocation of the intermediate a=
-nd
-> > > HW buffers from the encoder's .atomic_enable callback to primary plan=
-e's
-> > > .atomic_check callback.
-> > >
-> > > This was suggested by Maxime Ripard because drivers aren't allowed to=
- fail
-> > > after drm_atomic_helper_swap_state() has been called, and the encoder=
-'s
-> > > .atomic_enable happens after the new atomic state has been swapped.
-> > >
-> > > But that change caused a performance regression in very slow platform=
-s,
-> > > since now the allocation happens for every plane's atomic state commi=
-t.
-> > > For example, Geert Uytterhoeven reports that is the case on a VexRiscV
-> > > softcore (RISC-V CPU implementation on an FPGA).
-> >
-> > I'd like to have numbers on that. It's a bit surprising to me that,
-> > given how many objects we already allocate during a commit, two small
-> > additional allocations affect performances so dramatically, even on a
-> > slow platform.
->=20
-> To be fair, I didn't benchmark that.  Perhaps it's just too slow due to
-> all these other allocations (and whatever else happens).
->=20
-> I just find it extremely silly to allocate a buffer over and over again,
-> while we know that buffer is needed for each and every display update.
+---
 
-Maybe it's silly, but I guess it depends on what you want to optimize
-for. You won't know the size of that buffer before you're in
-atomic_check. So it's a different trade-off than you would like, but I
-wouldn't call it extremely silly.
+See also syscon-regmap:
+https://lore.kernel.org/all/20200526135102.21236-1-Sergey.Semin@baikalelectronics.ru/
+---
+ .../bindings/power/reset/syscon-poweroff.yaml          | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-Maxime
+diff --git a/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml b/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml
+index 3412fe7e1e80..3c58f8251882 100644
+--- a/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml
++++ b/Documentation/devicetree/bindings/power/reset/syscon-poweroff.yaml
+@@ -15,6 +15,9 @@ description: |+
+   defined by the register map pointed by syscon reference plus the offset
+   with the value and mask defined in the poweroff node.
+   Default will be little endian mode, 32 bit access only.
++  The SYSCON registers map is normally retrieved from the parental dt-node. So
++  the SYSCON poweroff node should be represented as a sub-node of a "syscon",
++  "simple-mfd" node.
+ 
+ properties:
+   compatible:
+@@ -30,7 +33,10 @@ properties:
+ 
+   regmap:
+     $ref: /schemas/types.yaml#/definitions/phandle
+-    description: Phandle to the register map node.
++    deprecated: true
++    description:
++      Phandle to the register map node. This property is deprecated in favor of
++      the syscon-poweroff node been a child of a system controller node.
+ 
+   value:
+     $ref: /schemas/types.yaml#/definitions/uint32
+@@ -38,7 +44,6 @@ properties:
+ 
+ required:
+   - compatible
+-  - regmap
+   - offset
+ 
+ additionalProperties: false
+@@ -56,7 +61,6 @@ examples:
+   - |
+     poweroff {
+         compatible = "syscon-poweroff";
+-        regmap = <&regmapnode>;
+         offset = <0x0>;
+         mask = <0x7a>;
+     };
+-- 
+2.34.1
 
---byuybil6cm4awtis
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZPHSYQAKCRDj7w1vZxhR
-xclHAQCxHO1n0wAUnVmlCnD4kzs+2tcRmYcbKobEUyGJbbRvHgD/ch90H2sQ7yZC
-M4BSAIwvg4c7OaOi0YX3nDHn7VWJrgM=
-=aV+3
------END PGP SIGNATURE-----
-
---byuybil6cm4awtis--
