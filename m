@@ -2,108 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AFB878FAC4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FFC78FAD0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346274AbjIAJ1e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:27:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54294 "EHLO
+        id S1348447AbjIAJ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:28:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234850AbjIAJ1d (ORCPT
+        with ESMTP id S238075AbjIAJ2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:27:33 -0400
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC4F710E7
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:27:29 -0700 (PDT)
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:3f:e471:aa00::2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: zev)
-        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 66B40162;
-        Fri,  1 Sep 2023 02:27:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-        s=thorn; t=1693560449;
-        bh=lWtupZVh/hNglyvB+QPBKJ+SSe9s9P140z0bzxoSn8Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PXraO4BC1W1WtEFsmxZfj9q1UpgMjhJonDA+Ln+bz2DXlE2MLIX6hAvFmqiyXLYNz
-         l7HsuCqEJNODFBHesM1dZCOpqzqazNJ9OPVzzV6iuJjg9ENYNOieytwjseO3ez2ZWU
-         HnBF5OkZ7C1uRP4q9ITOZqbSg1+a7j61Sq2EOp8E=
-Date:   Fri, 1 Sep 2023 02:27:28 -0700
-From:   Zev Weiss <zev@bewilderbeest.net>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     broonie@kernel.org, Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] regulator: userspace-consumer: Add regulator event
- support
-Message-ID: <5000a233-e992-455a-bca3-79aaa8713ff4@hatter.bewilderbeest.net>
-References: <20230831121412.2359239-1-Naresh.Solanki@9elements.com>
- <20230831121412.2359239-2-Naresh.Solanki@9elements.com>
+        Fri, 1 Sep 2023 05:28:49 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47EA510D7;
+        Fri,  1 Sep 2023 02:28:14 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401d2e11dacso18502305e9.0;
+        Fri, 01 Sep 2023 02:28:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693560492; x=1694165292; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=921PCazgPbPvMm6h5EIxZTtPV/S3F9LCWQZ9BR5vflQ=;
+        b=mMkJywTtrrdOzuM1XXcSFDh6ElIHYWiihSJoWAXfXfS7+o07NvqW7QfoNedtq3Mgg7
+         J5Dzp2JbzLnPqgUEKOPjrtjXlnYEQ9nUrpONXHnUOYWzyYo6MeEmpnSkH9N0yaG7Tx1a
+         bvT3PEtuGvhOE+CcOSUYXCJOJMd0x21i1mqjWKOtRywp3YyOS7LdLzaz20wKnlOl8eKL
+         OhWgyV06wEvn1jOm5biuDAN9PqbazQP5AOXNRtoXU6M/g9UrRKJ4zMiCSgwx+V4gunld
+         GIlYbodc82TFaMEgi8L9VHAudU6LP5qgjNpAEhKeLqwDS42V4gXJpFVL6RxKdOlYUjPG
+         GThA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693560492; x=1694165292;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=921PCazgPbPvMm6h5EIxZTtPV/S3F9LCWQZ9BR5vflQ=;
+        b=kZgemb2PutwLYDQN/7hc5gRTcxS3cK9cpjhcm4h9ZO3xqvDvnFkLHXgUZAMq4BYL4n
+         Tk5k32t/fg6W39fyqVd7zEuSLjyZmJM6LQajfupQR48nFn6s35hWJN9R+YOe9NBpugYV
+         72E6HMpuOh20alEE7DLDxD3TBwixFJDiANJA1UBut0SwQFjjtSeigwX3K0zNVDw9PYOe
+         QhyIa1jKXZTqNut6/XWiswnJ55CIH+4dpBbIuKG+PJmo837rqIW9OUe6MfYEBw/tfUsA
+         C9vkzddFDfh9RBCON1/3O9RMSAThu7xO33hgjrYUoXBujDIKBhxy9T0UcaUSM5C54dH8
+         F4Jg==
+X-Gm-Message-State: AOJu0YyzKIWNsqNyZLFsDC62qYGXqRxwPn5Wy4qPm/nVp8zEb+KFJXFL
+        uRGlxXsI6aVQ3OEQ7bff1f8=
+X-Google-Smtp-Source: AGHT+IEc6rJeSSYPDFUfT5rGECkv/1fyu+f2+VIOpvD+PXwRc7Z6zMw8NZ50pxUPaCFo3NWbJdWPhg==
+X-Received: by 2002:a05:600c:5109:b0:3fe:d589:ed78 with SMTP id o9-20020a05600c510900b003fed589ed78mr3278661wms.20.1693560491666;
+        Fri, 01 Sep 2023 02:28:11 -0700 (PDT)
+Received: from debian ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id k15-20020a05600c0b4f00b003fee6f027c7sm7369556wmr.19.2023.09.01.02.28.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 02:28:11 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 10:28:09 +0100
+From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
+        rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.10 00/11] 5.10.194-rc1 review
+Message-ID: <ZPGuqeR3zQqoQbyI@debian>
+References: <20230831110830.455765526@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230831121412.2359239-2-Naresh.Solanki@9elements.com>
+In-Reply-To: <20230831110830.455765526@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 05:14:09AM PDT, Naresh Solanki wrote:
->Add sysfs attribute to track regulator events received from regulator
->notifier block handler.
->
->Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
->---
-> drivers/regulator/userspace-consumer.c | 54 +++++++++++++++++++++++++-
-> 1 file changed, 53 insertions(+), 1 deletion(-)
->
->diff --git a/drivers/regulator/userspace-consumer.c b/drivers/regulator/userspace-consumer.c
->index 97f075ed68c9..a936661d99cd 100644
->--- a/drivers/regulator/userspace-consumer.c
->+++ b/drivers/regulator/userspace-consumer.c
->@@ -29,6 +29,10 @@ struct userspace_consumer_data {
->
-> 	int num_supplies;
-> 	struct regulator_bulk_data *supplies;
->+
->+	struct kobject *kobj;
->+	struct notifier_block nb;
->+	unsigned long events;
-> };
->
-> static ssize_t name_show(struct device *dev,
->@@ -89,12 +93,30 @@ static ssize_t state_store(struct device *dev, struct device_attribute *attr,
-> 	return count;
-> }
->
->+static DEFINE_SPINLOCK(events_lock);
->+
->+static ssize_t events_show(struct device *dev,
->+			   struct device_attribute *attr, char *buf)
->+{
->+	struct userspace_consumer_data *data = dev_get_drvdata(dev);
->+	unsigned long e;
->+
->+	spin_lock(&events_lock);
->+	e = data->events;
->+	data->events = 0;
+Hi Greg,
 
-I still don't think this is a good solution for the problem.
+On Thu, Aug 31, 2023 at 01:09:52PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.194 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
+> Anything received after that time might be too late.
 
-I for one frequently examine things in sysfs using shell commands like 
-'cat' and 'grep' and such, and I suspect I'm (very, very) far from alone 
-in that.  With this design a user doing that could cause a monitoring 
-daemon to miss events that it was expecting to receive via this file.  
+Build test (gcc version 11.4.1 20230829):
+mips: 63 configs -> no failure
+arm: 104 configs -> no failure
+arm64: 3 configs -> no failure
+x86_64: 4 configs -> no failure
+alpha allmodconfig -> no failure
+powerpc allmodconfig -> no failure
+riscv allmodconfig -> no failure
+s390 allmodconfig -> no failure
+xtensa allmodconfig -> no failure
 
-I don't think we should be creating sysfs files that are secretly land 
-mines that allow a curious user innocently peeking around in sysfs doing 
-(they think) read-only operations to break things for other programs 
-using those files.
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+arm64: Booted on rpi4b (4GB model). No regression. [2]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/4881
+[2]. https://openqa.qa.codethink.co.uk/tests/4902
 
 
-Zev
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
+-- 
+Regards
+Sudip
