@@ -2,74 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27A6078FEAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:00:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8C578FEB3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344182AbjIAOAC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 10:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42092 "EHLO
+        id S1349857AbjIAOCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 10:02:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbjIAOAB (ORCPT
+        with ESMTP id S230454AbjIAOCR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 10:00:01 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 024DE10EC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:59:57 -0700 (PDT)
+        Fri, 1 Sep 2023 10:02:17 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFF8710EC;
+        Fri,  1 Sep 2023 07:02:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 23EA7CE23A0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 13:59:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5931C433CA;
-        Fri,  1 Sep 2023 13:59:35 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id F03C7CE2399;
+        Fri,  1 Sep 2023 14:02:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 957D2C433C9;
+        Fri,  1 Sep 2023 14:02:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693576794;
-        bh=yAwUPzOrWH4shkflWMSqld45TrqZ1FzcaWesFYjjXnQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e/sGK5KomfdYJHa7siMkKhrPtuNkRH2/f0YhyeCK6a6xz49C5fJR1qfzFMDHS2WOG
-         tUCbN0EyT89U1z3ecSft1cQFZpEpOiW+3oZ+WRK9OehXa00zlkKJVbIWTfAnMaeHB/
-         qRRSQwgkrpU41mcz14rpG2u3qQTAeX4oFLDrfrzn0tMBs1PDe+0sFE1FPFp42mE2vL
-         4VMky/evuWA6pqNsFXnxZqKiBNoGSFz6MAlhR5HKijc5aaL14L+7x8/oUIb2VkA8qX
-         OWxc4YQuCoV+XroMTtmyutqsyzwQGTI2C2SmmUzLld12/2caF+Daw5h0lI9IGXI0Q7
-         lJa+OpgHI3XOQ==
-Date:   Fri, 1 Sep 2023 15:59:32 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Abel Wu <wuyun.abel@bytedance.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-Subject: Re: [RFC PATCH net-next 3/3] sock: Throttle pressure-aware sockets
- under pressure
-Message-ID: <20230901135932.GH140739@kernel.org>
-References: <20230901062141.51972-1-wuyun.abel@bytedance.com>
- <20230901062141.51972-4-wuyun.abel@bytedance.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230901062141.51972-4-wuyun.abel@bytedance.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        s=k20201202; t=1693576931;
+        bh=xzO5OH5Qe2Y2j815wjyuTSS67nTGI2J0u9LP7ckN3VI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=D/6GSgOgfF6CcOKgPU5RN5AWuG8ROJ0vKyJHcU2JIM3qiL6CYSAFAiRRK3ym59i3C
+         BXBN6JpNHZcbELGVnd4qXScx8fnfzWZEdfDrRhTdjm/sjJg9ThzbwUWPb1AvFwPpOL
+         TlN3INvMHrZX/8CmEpIOeMqrx0+I4EKAYU7fhDyaGvIYDfxVTZYfgN1IterV450nOZ
+         1zuHdwdVuPzaU3Fm4iBVU43fgt8J81o4d0BVbXEwVm7eU6autgjskuwZquJKu18m0U
+         23Wg2EjyaTqIqKXZbHkJiPHKFuPcJehoKloiB4QTrO7U9swoxgCbobxIi11WLwPTAa
+         HNEuBoGV8vT7A==
+Date:   Fri, 1 Sep 2023 23:02:06 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Chuang Wang <nashuiliang@gmail.com>
+Cc:     stable@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Zheng Yejian <zhengyejian1@huawei.com>,
+        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: Fix the unusable problem caused by non-empty
+ pipe_cpumask
+Message-Id: <20230901230206.9bf0250291acd7bfbde46b53@kernel.org>
+In-Reply-To: <20230901072626.278880-1-nashuiliang@gmail.com>
+References: <20230901072626.278880-1-nashuiliang@gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -78,75 +59,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 02:21:28PM +0800, Abel Wu wrote:
-> A socket is pressure-aware when its protocol has pressure defined, that
-> is sk_has_memory_pressure(sk) != NULL, e.g. TCP. These protocols might
-> want to limit the usage of socket memory depending on both the state of
-> global & memcg pressure through sk_under_memory_pressure(sk).
-> 
-> While for allocation, memcg pressure will be simply ignored when usage
-> is under global limit (sysctl_mem[0]). This behavior has different impacts
-> on different cgroup modes. In cgroupv2 socket and other purposes share a
-> same memory limit, thus allowing sockmem to burst under memcg reclaiming
-> pressure could lead to longer stall, sometimes even OOM. While cgroupv1
-> has no such worries.
-> 
-> As a cloud service provider, we encountered a problem in our production
-> environment during the transition from cgroup v1 to v2 (partly due to the
-> heavy taxes of accounting socket memory in v1). Say one workload behaves
-> fine in cgroupv1 with memcg limit configured to 10GB memory and another
-> 1GB tcpmem, but will suck (or even be OOM-killed) in v2 with 11GB memory
-> due to burst memory usage on socket, since there is no specific limit for
-> socket memory in cgroupv2 and relies largely on workloads doing traffic
-> control themselves.
-> 
-> It's rational for the workloads to build some traffic control to better
-> utilize the resources they bought, but from kernel's point of view it's
-> also reasonable to suppress the allocation of socket memory once there is
-> a shortage of free memory, given that performance degradation is better
-> than failure.
-> 
-> As per the above, this patch aims to be more conservative on allocation
-> for the pressure-aware sockets under global and/or memcg pressure. While
-> OTOH throttling on incoming traffic could hurt latency badly possibly
-> due to SACKed segs get dropped from the OFO queue. See a related commit
-> 720ca52bcef22 ("net-memcg: avoid stalls when under memory pressure").
-> This patch preserves this decision by throttling RX allocation only at
-> critical pressure level when it hardly makes sense to continue receive
-> data.
-> 
-> No functional change intended for pressure-unaware protocols.
-> 
-> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+On Fri,  1 Sep 2023 15:26:26 +0800
+Chuang Wang <nashuiliang@gmail.com> wrote:
 
-...
+> There is a problem in the linux-6.5 when I execute the following
+> command:
+> 
+>  $ perf ftrace -t irqsoff
+>  failed to open trace_pipe
+> 
+> At the same time, when I open this file, the same error occurs.
+> 
+> Therefore, after carefully looking at the code, the open function of
+> 'trace_pipe' returns -EBUSY in open_pipe_on_cpu() because no clearing
+> operation was performed when 'trace_array->pipe_cpumask' was allocated.
+> 
+> With this patch, Use zalloc_cpumask_var() to ensure that
+> 'trace_array->pipe_cpumask' is reset to 0 when allocated.
 
-> @@ -3087,8 +3100,20 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
->  	if (sk_has_memory_pressure(sk)) {
->  		u64 alloc;
+Good catch. This looks good to me.
+
+Reviewed-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: c2489bb7e6be ("tracing: Introduce pipe_cpumask to avoid race on trace_pipes")
+> Signed-off-by: Chuang Wang <nashuiliang@gmail.com>
+> ---
+>  kernel/trace/trace.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+> index d8233d34b5a0..c0b8a72f3466 100644
+> --- a/kernel/trace/trace.c
+> +++ b/kernel/trace/trace.c
+> @@ -9461,7 +9461,7 @@ static struct trace_array *trace_array_create(const char *name)
+>  	if (!alloc_cpumask_var(&tr->tracing_cpumask, GFP_KERNEL))
+>  		goto out_free_tr;
 >  
-> -		if (!sk_under_memory_pressure(sk))
-> +		/* Be more conservative if the socket's memcg (or its
-> +		 * parents) is under reclaim pressure, try to possibly
-> +		 * avoid further memstall.
-> +		 */
-> +		if (under_memcg_pressure)
-> +			goto suppress_allocation;
-> +
-> +		if (!sk_under_global_memory_pressure(sk))
->  			return 1;
-> +
-> +		/* Trying to be fair among all the sockets of same
-> +		 * protocal under global memory pressure, by allowing
-
-nit: checkpatch.pl --codespell says, protocal -> protocol
-
-> +		 * the ones that under average usage to raise.
-> +		 */
->  		alloc = sk_sockets_allocated_read_positive(sk);
->  		if (sk_prot_mem_limits(sk, 2) > alloc *
->  		    sk_mem_pages(sk->sk_wmem_queued +
+> -	if (!alloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
+> +	if (!zalloc_cpumask_var(&tr->pipe_cpumask, GFP_KERNEL))
+>  		goto out_free_tr;
+>  
+>  	tr->trace_flags = global_trace.trace_flags & ~ZEROED_TRACE_FLAGS;
+> @@ -10406,7 +10406,7 @@ __init static int tracer_alloc_buffers(void)
+>  	if (trace_create_savedcmd() < 0)
+>  		goto out_free_temp_buffer;
+>  
+> -	if (!alloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
+> +	if (!zalloc_cpumask_var(&global_trace.pipe_cpumask, GFP_KERNEL))
+>  		goto out_free_savedcmd;
+>  
+>  	/* TODO: make the number of buffers hot pluggable with CPUS */
 > -- 
-> 2.37.3
+> 2.39.2
 > 
-> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
