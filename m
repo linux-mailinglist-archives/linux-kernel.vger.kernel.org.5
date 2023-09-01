@@ -2,71 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D72F9790396
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 00:19:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3BFB790397
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 00:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345251AbjIAWTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 18:19:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35846 "EHLO
+        id S234695AbjIAWTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 18:19:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350784AbjIAWTW (ORCPT
+        with ESMTP id S1345158AbjIAWTf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 18:19:22 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34DDB3A97
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 15:19:15 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcc187e0b5so43590281fa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 15:19:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693606753; x=1694211553; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V73CygJUTsaH3Qg0PMg0RLn8AC4bljovOrUH8Gozo0s=;
-        b=JwiaKbYdjdS0E4d+sXwulYrrBjM8SIafkDW4T9LaYNxqlmR98DwdlLum8SPB7IR1ef
-         kZk6W1ax30FROir2o725vguM4UdkksibljHqHoFjL6WLM7IUoml/cxyAnBjFAm8gHn2q
-         rrUFPbKI5XrbYlPxwv6sYAK7VKfrZ7UGZ5her4Aio2IO4oasd/Qch2XSCW7gvBKqt1xh
-         q1uBg0/Au7ZK2WM0wz+iMj6HVfeLOPzpj+9ZkCGUzUZTHtf9l8UDeGkYK1E6snEyT5sk
-         D4q2enFKKjjZ3kmZqnhKevcvN7apQSBJwJXQq4rzmvLJwRG8mgyuTQvWxkBsbQe4nfqi
-         cwUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693606753; x=1694211553;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V73CygJUTsaH3Qg0PMg0RLn8AC4bljovOrUH8Gozo0s=;
-        b=EHGx6CEfBE5J6vmPBMfiD5G2cL+JFvG2cXcjVfnbO295tpSe1FB+Vb9axnFddAoYRw
-         X40qg1psGHT9cEw8kw0dMXCbiUU9oGPNw/yjgUwsIP9+y4xwDsKM++QjHmuUu42aM9t2
-         4AR0v31wNMj+tvbkRyVpExg61x8ifzddGpj0ehDrDB0SiuMf/BVkOeYqEHBgTX+2esXS
-         jLyK0KwC9ovhHf1utdWDkIaXZdS3e8GCnMwv17LOpQXxWoq9xdvZwBQKXucUVzGDT7wE
-         e7sqnCImH+KR7fUiQUMVYzNlWbDbpt4JdzwUd3Y+NzgoxoCKP49iz77eoMinSF7grZWi
-         k4Bg==
-X-Gm-Message-State: AOJu0Ywu5KvrSkjwgX4nW2du9J6yO+m7FKS/ypV01DfJ0mwsg99clIya
-        wrBan3XBWPiYUfokdZcWX2WUBIOVwWY=
-X-Google-Smtp-Source: AGHT+IG5PDFdK3BsX9onNRxvy0q/oioplcREolAiZdETZNeLTKgsDF8MGT/h4v07oaE8M2zYIZtqqg==
-X-Received: by 2002:a2e:7403:0:b0:2b6:cdfb:d06a with SMTP id p3-20020a2e7403000000b002b6cdfbd06amr2404099ljc.22.1693606753049;
-        Fri, 01 Sep 2023 15:19:13 -0700 (PDT)
-Received: from shift (p200300d5ff37af00aaa159fffeeb01f1.dip0.t-ipconnect.de. [2003:d5:ff37:af00:aaa1:59ff:feeb:1f1])
-        by smtp.gmail.com with ESMTPSA id j9-20020a170906410900b0099bd5b72d93sm2550690ejk.43.2023.09.01.15.19.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 15:19:12 -0700 (PDT)
-Received: from chuck by shift with local (Exim 4.96)
-        (envelope-from <chuck@shift.daheim>)
-        id 1qcCTw-001p5l-0C;
-        Sat, 02 Sep 2023 00:19:12 +0200
-From:   Christian Lamparter <chunkeey@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     x86@kernel.org, seanjc@google.com, klaus.espenlaub@oracle.com,
-        bp@alien8.de, glx@linutronix.de, mingo@redhat.com,
-        dave.hansen@linux.intel.com, hpa@zytor.com
-Subject: [PATCH  v1] x86/cpu/cacheinfo: fix panic on Ryzen Mobile 7x40 series in VBox VM
-Date:   Sat,  2 Sep 2023 00:19:11 +0200
-Message-Id: <652989ad8a7f110bad16cf1244c4c68a823f0afe.1693606609.git.chunkeey@gmail.com>
-X-Mailer: git-send-email 2.40.1
+        Fri, 1 Sep 2023 18:19:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321152D56
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 15:19:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693606763; x=1725142763;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=uElSkQ7N8wJ0oJHsz8dw73nC0kT6zihb0kzZaVLvV6I=;
+  b=IHNccJkxRYsQ9RMdM9fKFN1caA2eFQMnUqRKvH07pi9V7bPg3bwVPM3C
+   j7s72+5QIxOpsXYaqERafvvkcZcE/gf2M8Sy8yIO0gQrza4+mbkWfdvlh
+   LMxSSN6iwFjld8fJD/M0RnroAp915oz0Wap4drsAYtNxTjYRJn8QZao+N
+   eVQ8AEi5VMFAZk/ttaWW+l0mDZrcwJ/xy0o15wh/6P7LfxleaDTP4pcbt
+   tUTEDnxQwtj5N9coiy+yxumS/xCfKs8FWnZxx6kJX8WUtI8NPZFyKEOv8
+   WtLiTp61RtLbHD2jMu/67ehRut1wEqaeAAR7pgydpTKKSOmc544HLrJEG
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="462680333"
+X-IronPort-AV: E=Sophos;i="6.02,221,1688454000"; 
+   d="scan'208";a="462680333"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 15:19:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="1070891469"
+X-IronPort-AV: E=Sophos;i="6.02,221,1688454000"; 
+   d="scan'208";a="1070891469"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Sep 2023 15:19:22 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Fri, 1 Sep 2023 15:19:22 -0700
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Fri, 1 Sep 2023 15:19:22 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.173)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Fri, 1 Sep 2023 15:19:22 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NWrEFjtaNPHV4b0Zwgb0nLRl+aWCUtrzEQ5e2uh3i4Bje2G1AIPyFADAvaSusfu70VshegiDPj+Gi+WVlSuw1jpYjK+USTvJPjwkqbdbKCHviMAGyLrRkVVRWiSokend5ZGc/UZmBzm/iNmmFTOxu2f61Zeew4mO/DvSuz5819uq+pxqxtnCTueYp0PPYDRDfHUbULJU6fvpunJ42z9iZ/SfJULJQ+OzSpQi/16OKM3MA+5KM/Ojre/yu0CPjNyx2GAtshwrOS+7uxH0fJKRrwa64jR+QSOr4NJkuej62KdojiDT5d7wMTqr9x8URlimDXwGnkeekr2Z2tC4Tz4SHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=8ie7LBCuQPNF3lPA3oB2oEWAIbt7PClassvQaAfALTg=;
+ b=LFwRrwEkmNqnBXBf7N8EmeMxDlzAiAStn/djFEAC3mUnhCI3Sv+RZZqInn+D7g+N/wlV63aKGuWKnclVrzm1z9YgUGS02rGs/L3soyeAWSGPR7ZWj8CpfEmyNK3Ng5c2NcSu5o+oSptWc9NzRLUI/PHzy8sD668JqMMQE0xKUCCCIuy0xzQmAteZ44DSs+W5w0qeThsrnqQH3UgL7hNspdFBvOcUCrJrMgIKzCi0iBPmoI/ffAD+mXdTnQfB8o/eVu+e8eZR+VWq1sjXU0GrfEkJkTOu7/Xthu+IaMXfdkLKqJf31PuF29SdVFrM6X8ziOwQSSyLW3f8lC3DPLCMaA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
+ by DM4PR11MB7182.namprd11.prod.outlook.com (2603:10b6:8:112::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.23; Fri, 1 Sep
+ 2023 22:19:19 +0000
+Received: from BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::5e34:ee45:c5e8:59d0]) by BYAPR11MB3320.namprd11.prod.outlook.com
+ ([fe80::5e34:ee45:c5e8:59d0%7]) with mapi id 15.20.6745.020; Fri, 1 Sep 2023
+ 22:19:19 +0000
+Message-ID: <148522e4-a4ec-a35b-df25-e04eeb5f51c4@intel.com>
+Date:   Fri, 1 Sep 2023 15:19:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] selftests/x86: Update map_shadow_stack syscall nr
+Content-Language: en-US
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "broonie@kernel.org" <broonie@kernel.org>
+References: <20230901181652.2583861-1-rick.p.edgecombe@intel.com>
+ <e2ae1d89-9abf-338e-e56a-dc4be19b9bfc@intel.com>
+ <b92afa6dbd074409095e525204d538f451ee4823.camel@intel.com>
+From:   Sohil Mehta <sohil.mehta@intel.com>
+In-Reply-To: <b92afa6dbd074409095e525204d538f451ee4823.camel@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BY5PR16CA0021.namprd16.prod.outlook.com
+ (2603:10b6:a03:1a0::34) To BYAPR11MB3320.namprd11.prod.outlook.com
+ (2603:10b6:a03:18::25)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|DM4PR11MB7182:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7abcbfb2-990a-464a-eca1-08dbab397c6d
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0urtKpH7aNNnLKTbKRhVBzstF8letltNaaDTerJoSBjeFTUujWOgTymIA0otPlGCBNN3k6vYqbcUBolBm4WFig4k87AgWeFjQnNp9A9vDDlE8D3/qBKz+c24HJGxDQqKA1/oFznod3c28w8PcGz2ZZXH+Vhr/KEGL5bKyy+u5Wb8Mv2UTmxfHYqJiOrIcaZmWrQ1KfREWvawr2NCU3362BdPeCvLtfGAszQojmuSPWOCQiNddUoWVSpasRbiHrl92myLyA+gQobNxwqnkEOZscHPxzWC9lDJZWjSUqhZRfKMSRMFcylnOciHFs5mrugy5qoYvSLL6tYrhdAeukfNtP93EMRrTUPrtD0kX4Gh96JXHQkLUOrsChUAYUTR8+9NxNKM6qKjam0gAcGWkq2Z57/DEjeKIEyE77ZZycX4+AfwYgFiP+7b7EsuH8jYCxGuKQ7VeMB2gdAgWRHzdqwbjoyZxMVbMzKm595PCXUE5cz29xJifMSHQQZAKu2U0dvTslepdoEpyOvJ06/lRvVIX7QwbxMIw3Fs6i5YHHsGIwSMtQ2lgFMyIcB3K2mc/yRDoNqtOpmolInNoQZyrMApaxWPSzUMJUSC2DkeHgALGVsMD93ihrFNRwRCabira+lb+StdcsZAj5QanoBCFL/hbMqlDuVUopKipxa6IsMA1fY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(396003)(136003)(39860400002)(376002)(451199024)(1800799009)(186009)(31686004)(921005)(82960400001)(6506007)(6512007)(6486002)(86362001)(31696002)(36756003)(38100700002)(2616005)(26005)(15650500001)(2906002)(53546011)(83380400001)(478600001)(110136005)(66946007)(4326008)(8936002)(8676002)(5660300002)(44832011)(7416002)(41300700001)(66556008)(66476007)(316002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dXdJWEh4b0VaTmxhQmN6TDByaTZCMnJSbkFoQ0FKL1lwM3pzT0k5V1AzdmRn?=
+ =?utf-8?B?SjFnakhFMDRianlrOEZqT3hkWWxmcnN2UlBJY2FSblFoUGIrN1RpVFhuTUtQ?=
+ =?utf-8?B?c3dCQndxRDlZeFk4U2ZySjVQZWJCcXcxMzhCK0VSYmpWdlhGK2p5UGJSbHV5?=
+ =?utf-8?B?SFBRQ2pRSkhLUi9MdXMzYnYyVmV0SUpQZ1I0eVEzRUVtNGN5am9MQ3k0RVh4?=
+ =?utf-8?B?Rzg2K21RWFBxenlJNVpXQzVwanR0R1JFOHQ0VnhrZjBFS0dIOUgySTBYMTVQ?=
+ =?utf-8?B?eXJWNzc1NmdkUTA3aFgzT21nbHV5Q204eDJpaFFCYXpDZk5kNkQrM2t2WlY0?=
+ =?utf-8?B?NHg5RU5XZDdxOFc4cmo5MXdwL21CaWJrOU9jUWxTUTdCbjdTRkdiQnFrOHNh?=
+ =?utf-8?B?Z00wYjdpQTZVL1dEaS9JNURKeFkvb0RvK0ttdXZqWTZtTGd5RjZMdTJkVWtG?=
+ =?utf-8?B?ejZualB6cmlpejRDRENheTVxM0pNTHp0M2prQzdrcGErYmR6WmlHTEEzc05K?=
+ =?utf-8?B?bThyQnR2NHpNNGhHWGFJQlo3a3F2OTBnS3RNQUdSblZPQjhncmoxWHJGUFlI?=
+ =?utf-8?B?anpPSTJTcnVHS25iVnVLRk9URFJaTUFid0w3WEtwbzB4Z0E4N2JzWUxmRnhO?=
+ =?utf-8?B?Rnh1MTBPYUtxNXBqZDNmU1NRVm5LVE5WdVBjMXRCUXNCYlo0S0huSHVBbmt4?=
+ =?utf-8?B?K2FnZkhpSXpMdTBtOWN6K2tDeEpVTUdRcmplczJMSjlGVVAyOGxIVko2YWRT?=
+ =?utf-8?B?RVEwVGVFV1JkV2VDZnZpejhFeElubkFrMmN0ald4YmFVSU5ydXlDMFdleUtw?=
+ =?utf-8?B?azhoTmJNdFFWbyswN0Eyc0tUd1ZSTXZyU2gxbjNRL1poQVp6eTR3VzFMRHlP?=
+ =?utf-8?B?RTJhcUllOUhvUWUwdkxkUUNXSjJ0WWxodFhMU2tDdDgvQUZhSUJNdDUySEM2?=
+ =?utf-8?B?UWFWYzNFODhGMU4xWGd5UGFseisyY0lYRXp3dnZCSG9LSVh4SkdhTk9LTFcx?=
+ =?utf-8?B?QnpPNmY1Y3Fjb1JQTTNGZnB5K01VUkxaZnZ3YThSdFU2RVdVa0R3clcwemFK?=
+ =?utf-8?B?K0ZwK2VOVTBnN1FHTEJvazBtK0pJRFMxMjh1cUtHd2RuOFptc29yN09DbzFQ?=
+ =?utf-8?B?TVlLaUwvZVNoSTcwOFNSeVFlc1RJN2hmYno2aE40L0c0Yko5TXUya283emgz?=
+ =?utf-8?B?b096THpYelEwdnR2dDUySDhYeUlwNzlOaVhDTmJ0YmcwNnBUeEdNRHBtSGdG?=
+ =?utf-8?B?SGFmVmRPQUgyZGdqSUNrU1pSUEtSSVlZN3oyNXA1ODUyT1NpbjFRbUI0ZVFC?=
+ =?utf-8?B?eVQ2dWpPNkFocm1BcldSZTNZSXJrRkVKNWxaeVdjREt3aUY4UXpTR2VEeC9j?=
+ =?utf-8?B?WjNydjF3UmZCTFd0NUtyazMvck4reVc4YkttMDVvV3FYWHArTE04bkQ0QnJw?=
+ =?utf-8?B?VFZpY2xNRk9YQ3VUQWZwNm0yaE15Ym9FbDVyMlFMeGZpYkNtMS9FdHZMWWdQ?=
+ =?utf-8?B?TzZQQ2plOVJ5em1VdTBLaEZSVW92cmVNSm52Z0lvSzRabHVxZVZjOTQ1NzM1?=
+ =?utf-8?B?UHd4dmxVQm5YcnpRR0lMZjQ3eVVtdUIzL3hqUG1qVHM3VWRzVG54Ym9ZSTBY?=
+ =?utf-8?B?ZmowRUJDVHNoQWVpeUpPcHlQdFhYMEZvd1hzc3dINjZXdXJ5NEIxVGY4THpQ?=
+ =?utf-8?B?N1p4U1EwVStYRVJlbXNNa0hEZXNwTHAydVNvaFkvTEhBZDZybUdDVmdDMXV6?=
+ =?utf-8?B?WEUrNmtGUXJZYTdyVzFtK0w1R2p0alVvVG5uM1FyRXJLVUFuajlUbGJ4UDFy?=
+ =?utf-8?B?ZTR5MzQxM3BXN2JXQTdYaERnOVNYM3FGdmVCSUZRdTJEWStmdUM1UHliYW1v?=
+ =?utf-8?B?Zy80OEJzQkJwN1ZzRkZDdGJQeEJoYnJIWm9Jd1FhTU5hMllweEpxV0Q0UVdL?=
+ =?utf-8?B?YUZRci9xNEI4bTFXZkV1Q09YQ3F3blVmRVBnZDJJR09pZEZENGg2K216WHE2?=
+ =?utf-8?B?TnczdkYwQmZ4b0tpcXhFWmZ2SDFaZ0ZCQzlCbnFIYkFMeTNhMUU0eUVYOTlL?=
+ =?utf-8?B?M1dBNUg3bmR6MHpPdW16dmxTR1dMLzd1V1JXMi9aaFFaUkF0UERWVzFEbzI5?=
+ =?utf-8?Q?avu4uDjESO7UMt9B/ejUfZFg4?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7abcbfb2-990a-464a-eca1-08dbab397c6d
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 22:19:19.3456
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: kwWweHX6yC+mVI+z7sR4JXzM/weum5s059fadDPv0RnYlEn8pyrst0MWfZHfyAzva61QvuCkselxdDrlkMg9yA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7182
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,161 +166,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ryzen Mobile 7x40 chips experience an early kernel fault
-(division by zero) due to nonexistent input validation
-from CPUID data in amd_cpuid4().
+On 9/1/2023 1:35 PM, Edgecombe, Rick P wrote:
+> On Fri, 2023-09-01 at 12:33 -0700, Sohil Mehta wrote:
 
-This error was first reported on reddit [0] for a
-"AMD Ryzen 9 7940HS w/ Radeon 780M Graphics", but since then
-the bug has been reproduced on a "AMD Ryzen 7 7840HS" Laptop
-too.
+>> I am wondering why a definition for __NR_map_shadow_stack is
+>> missing in include/uapi/asm-generic/unistd.h?
+>> 
+>> Wouldn't this mean that even if someone were to install the
+>> headers they still wouldn't get the syscall number definition. Am I
+>> missing something?
+> 
+> There is some autogeneration that happens from the .tbl files.
 
-That user reported the following dump:
+Hmm.. I wasn't aware of this auto-generation. The last few system calls
+additions have all updated the unistd.h file manually to add the
+__NR_foo defines. So I assumed that's what gets included in the header
+packages and eventually gets used by userspace in some form. But maybe
+x86 headers might be built differently. I need to educate myself on this.
 
-| divide error: 0000 [#1] PREEMPT SMP NOPTI
-| CPU: 0 PID: 19 Comm: cpuhp/0 Not tainted 5.19.0-46-gen [...]
-| Hardware name: innotek GmbH VirtualBox/VirtualBox, [...]
-| RIP: 0010:amd_cpuid4+0x195/0x2f0
-| Code: c1 e0 0a 81 e3 ff 03 00 00 81 e2 ff 0f 00 00 [..]
-| RSP: 0018:ffffbb78800a3ce8 EFLAGS: 00010246
-| RAX: 0000000000000000 RBX: 00000000ffffffff RCX: 0000000000000000
-| RDX: 0000000000000000 RSI: 0000000000000400 RDI: ffffbb78800a3d60
-| RBP: ffffbb78800a3d48 R08: 0000000000000000 R09: 0000000000000000
-| R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000003
-| R13: ffffbb78800a3d08 R14: ffffbb78800a3d58 R15: ffffbb78800a3d5c
-| FS: 0000000000000000(0000) GS:ffffa05759a00000(0000) knlGS:0[...]
-| CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-| CR2: 00007f2946fc1e24 CR3: 0000000108010000 CR4: 00000000000506f0
-| Call Trace:
-|  <TASK>
-|  cpuid4_cache_lookup_regs+0x14d/0x160
-|  populate_cache_leaves+0x180/0x200
-|  cacheinfo_cpu_online+0xc1/0x1c0
-|[...]
+> But maybe also this whole duplicate defines thing is questionable.
+> 
 
-The error points to a divide by zero in amd_cpuid4() in this line:
+Yeah, having 2 defines is a bit annoying but as mentioned in the link it
+makes it easier for someone to run selftests so it's probably worth the
+effort. Also since syscall numbers typically never change it is just a
+one time thing and not a big maintenance burden :)
 
-|arch/x86/kernel/cpu/cacheinfo.c:
-| ecx->split.number_of_sets = (size_in_kb * 1024) / line_size /
-|		(ebx->split.ways_of_associativity + 1) - 1;
+FWIW, I see these syscall nr defines all across the selftests (io_uring,
+powerpc/pkeys, seccomp, etc).
 
-the culprit here is "line_size" (it's reading "0").
+> 
+>>
+>> Apart from this patch, I think we also need something like commit
+>> 78252deb023c ("arch: Register fchmodat2, usually as syscall 452") to
+>> reserve the 453 syscall number for the rest of the architectures.
+>>
+>> Should I send one out if you don't have something prepared already?
+> 
+> Originally there were no other shadow stack features, and so it was
+> maybe going to be an x86-only syscall. I followed in the footsteps of 
+> the secret mem syscall, but that one seems to have grown some similar
+> reservation comments since then. It probably makes more sense for that
+> one though, since it's sort of a generic functionality. An analogous
+> x86 specific syscall would maybe be modify_ldt, which doesn't really
+> have reservations.
+> 
+> But now we also have arm that plans to use it. So maybe it is worth
+> trying to match syscall numbers? I could imagine scenarios where it
+> could be useful. And I guess there is also the scenario where a generic
+> type syscall is added, but only implemented on non-shadow stack
+> architectures. So then when it makes it's way around, it can't match. I
+> hadn't thought about it before, so just thinking it through...
+> 
 
-The reason why this is happening is because the Ryzen CPU reports in its
-CPUID 80000006 edx register (which contains the L3 Cache Information)
-the value "00009000". This magic value means according to AMD's
-"AMD64 Architecture Programmer's Manual Volume 3" Table E-4.
-"L2/L3 Cache and TLB Associativity Field Encoding":
+My suggestion is originating from the belief that at somepoint the
+community decided that all *new* system call numbers would be the
+consistent across architectures (except alpha). So that would mean
+syscall number 453 has to be reserved on others even if it is an
+x86-only syscall.
 
-| Value for all fields should be determinded from Fn8000_001D.
+If we don't do this, and let say a generic sys_foo comes along which
+uses the next available syscall number 453 on other archs, it would lead
+to an inconsistency because 453 it is already used up on x86.
 
-(This means to look in cpuid(0x8000001D,...) instead.)
+My memory of this is a bit hazy from my implementation of User
+Interrupts more than a couple of years back. Also, I couldn't find any
+handy documentation to support my belief. I'll try to dig more.
 
-So, amd_cpuid4() is missing this special case. A case which has been
-present - according to this AMD Community post [1] - since
-Zen 2/Ryzen 3000 Series.
-
-But wait, why is this only happening with Linux' when running under
-VirtualBox with these Ryzen Mobile CPUs and not when running natively?
-
-Well VirtualBox should be able to sanitize the CPU Feature flags or
-even emulate another CPU, right?. So it does not set the
-X86_FEATURE_TOPOEXT feature and as a result, cpuid4_cache_lookup_regs()
-takes the fatal de-tour through amd_cpuid4():
-
-| arch/x86/kernel/cpu/cacheinfo.c:
-|	if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD) {
-|		if (boot_cpu_has(X86_FEATURE_TOPOEXT))
-|			cpuid_count(0x8000001d, index, &eax.full,
-|				    &ebx.full, &ecx.full, &edx);
-|		else
-|			amd_cpuid4(index, &eax, &ebx, &ecx);
-|		amd_init_l3_cache(this_leaf, index);
-|	} else if (boot_cpu_data.x86_vendor == X86_VENDOR_HYGON) {
-
-Now, from what I can tell the VirtualBox devs are already working on this.
-Kudos to Klaus! However, I think that amd_cpuid4() should not be crashing
-regardless.
-
-To this end, I propose the following change that amd_cpuid4() falls
-back to "what the doctor ordered" (i.e. get the cpuid(0x8000001D)
-values) rather than use bogus values or skip the detection.
-
-But this still leaves the code vulnerable to other cpuid values
-shenanigans... Is there already an consensus on how CPUID data should
-be check/sanitized? Because I bet more peculiarities could be found
-once syzbot learns to fuzz CPUID.
-
-[0] <https://www.reddit.com/r/linuxhardware/comments/161h0lc/issues_with_ubuntu_vm_on_virtualbox_7010_inside/>
-[1] <https://community.amd.com/t5/processors/ryzen-7-3700x-cpuid-function-id-0x80000006-returns-wrong-number/td-p/376937>
-
-Signed-off-by: Christian Lamparter <chunkeey@gmail.com>
----
-Previous thread: (layout/mail got butchered by my own stupidity)
-https://lore.kernel.org/lkml/89fad050-e074-463e-8c27-a72b89de620c@gmail.com/
-
-... I would of course welcome some discussion how to deal with cpuid.
-Sean Christopherson already brought the idea of zeroing out the bogus
-data on the table. And yes, I do think this would be working as well
-(since amd_cpuid4() already checks for that).
-
-But, how do >you< think this should be dealt with, or is it "don't care"?
-
-Finally: Are you a VirtualBox user with an Ryzen Zen 4 Mobile and
-are affected by this division by 0? Well try:
-
-vboxmanage setextradata $VM VBoxInternal/CPUM/HostCPUID/80000006/edx 0x02009140
-(Where $VM is the target VM. Then just start the VM again, it just
-should now run).
-
-(That 0x02009140 is what a Ryzen 9 7950X uses. While these values are
-somewhat bogus too, at least the VM should boot... And should be "fine"
-for the vast vast use-cases out there)
-
-Or do you want to test this patch and emulate the 7x40 Mobile misbehaving?
-You probably need an AMD CPU and just set this:
-
-vboxmanage setextradata $VM VBoxInternal/CPUM/HostCPUID/80000006/edx 0x00009000
-(This way you can see how this patch handles the situation and how kernel
-without the patch just crash.)
----
- arch/x86/kernel/cpu/cacheinfo.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-diff --git a/arch/x86/kernel/cpu/cacheinfo.c b/arch/x86/kernel/cpu/cacheinfo.c
-index 8f86eacf69f7..96b3fadc384b 100644
---- a/arch/x86/kernel/cpu/cacheinfo.c
-+++ b/arch/x86/kernel/cpu/cacheinfo.c
-@@ -284,6 +284,29 @@ amd_cpuid4(int leaf, union _cpuid4_leaf_eax *eax,
- 	case 3:
- 		if (!l3.val)
- 			return;
-+
-+		/*
-+		 * AMD's "AMD64 Architecture Programmer's Manual Volume 3" states in
-+		 * "Appendix E.4.5 Function 8000_0006h - L2 Cache and L3 Cache Information"
-+		 * under Table E-4 "L2/L3 Cache and TLB Associativity Field Encoding"
-+		 *
-+		 * that a magic value of "9" means:
-+		 * "Value for all fields should be determined from Fn8000_001D."
-+		 * (this means that the cpuid(0x8000001d) should be used instead).
-+		 */
-+		if (l3.assoc == 9) {
-+			/*
-+			 * As a result, stop any further processing since the values
-+			 * could be wrong/misleading/missing.
-+			 *
-+			 */
-+
-+			pr_warn("Falling back to recommended L3 Cache Information values.");
-+			cpuid_count(0x8000001d, leaf, &eax->full, &ebx->full, &ecx->full, &dummy);
-+
-+			return;
-+		}
-+
- 		assoc = assocs[l3.assoc];
- 		line_size = l3.line_size;
- 		lines_per_tag = l3.lines_per_tag;
--- 
-2.40.1
+Sohil
 
