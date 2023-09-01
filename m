@@ -2,67 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E369D78FC65
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 036D578FC69
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349195AbjIALkk convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Sep 2023 07:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
+        id S1349199AbjIALnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345319AbjIALki (ORCPT
+        with ESMTP id S231205AbjIALnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:40:38 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03D7E10DE;
-        Fri,  1 Sep 2023 04:40:34 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-58fae4a5285so19795937b3.0;
-        Fri, 01 Sep 2023 04:40:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693568433; x=1694173233;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fkv0L31Q5D5FJO/hIrhq5apL36PuzcVnftNBKaUnVoc=;
-        b=U4FDhPlOivPVv7zWnXuskOee3wepPMe3LSEgGW4TuH0tUSD2wxHKve69XwbL8cCwq8
-         NJR1V1nd2l4enNzp5X8y58VW+gv7H2dnsg7GFEg5DsdCTVTbDsDvAaWGtOTxQB/qURX6
-         4Ie19uVwY/NtzhgZssxeSJOwEuy9pai9g6+mk9B0mhSbmbUqP2bX6coJurPlmwbS1UKK
-         UhKHkse6bbsvoioSxDokwjz1R9hfVnhu4ZMIR4EaT3PXgCjpSAfYML0Xq5ckxL7KAoTb
-         vfj9gwomQTXGgWotanGpwXYnmfZ4qFJgfwi4h3feOQAv/j5XSvwNqogPAVW7VGUZIDPw
-         2DOg==
-X-Gm-Message-State: AOJu0Yy2zpfX2lntjy1bUaaN0IygMTmvnEnwT8QZeogcnzHFEVzsoyEV
-        GMqG8AYjgAkcAa1YH8B8org2l+EqIAqMZg==
-X-Google-Smtp-Source: AGHT+IHOse64sEjbb4mUMY8VJu02Kksli2yqqHNCfrz0957YlkTL7YW0bgkorvUnABtoju+B/Uzm7A==
-X-Received: by 2002:a0d:d341:0:b0:58c:b8b4:2785 with SMTP id v62-20020a0dd341000000b0058cb8b42785mr2165278ywd.45.1693568432949;
-        Fri, 01 Sep 2023 04:40:32 -0700 (PDT)
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
-        by smtp.gmail.com with ESMTPSA id z7-20020a816507000000b00592a065e2a3sm1010845ywb.87.2023.09.01.04.40.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Sep 2023 04:40:32 -0700 (PDT)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-d7e904674aeso221024276.3;
-        Fri, 01 Sep 2023 04:40:32 -0700 (PDT)
-X-Received: by 2002:a25:dcf:0:b0:d36:58a6:3281 with SMTP id
- 198-20020a250dcf000000b00d3658a63281mr2321384ybn.39.1693568432089; Fri, 01
- Sep 2023 04:40:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230901113703.314667-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20230901113703.314667-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 1 Sep 2023 13:40:20 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVbR3mAgJ4UoeBSgesLPTuo-RVrRE_cLZZHwqJAhuVLFA@mail.gmail.com>
-Message-ID: <CAMuHMdVbR3mAgJ4UoeBSgesLPTuo-RVrRE_cLZZHwqJAhuVLFA@mail.gmail.com>
-Subject: Re: [PATCH] mmc: host: Kconfig: Allow selecting MMC_SDHI_INTERNAL_DMAC
- for RZ/Five SoC
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        Fri, 1 Sep 2023 07:43:02 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D211B5;
+        Fri,  1 Sep 2023 04:42:59 -0700 (PDT)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 381AP0Ni014467;
+        Fri, 1 Sep 2023 11:42:52 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=hGIutL91aY9hwSH+dPE+AwLowgqEpYAT7pl1HJrZzqc=;
+ b=EcCAS+DWPQghb7BM4FSzBO37GzOllpgzHptdHYWn2vZFn1v0nSbnZMaosRikXhr7wVIe
+ sdBbXXeE9oIMFqXCwlqP21G2U/MOUeVlRj9/Kmiq3O6lUGNjnN+mf/Oa4axRQf12js8X
+ zjm5oaXz1YrZO33M/b4cUUsPcoVMvXPAimDgJdI1LGiKrgfu9xgr19jFQOxvoZgbhvVO
+ tTZ120C/LsKzADpb4W1Fa9dDf+T0AEjPRi45fPo7vM0nT6nS9+zhhCv6B7zDSCUl/vZA
+ DXkXNb9VbDox9WLJ+7nQqmosrhQMEjhrT54ke8xwYeF83hINu/6KNB3sF5fDWpCZCLva Wg== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stku2br46-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 11:42:52 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 381BgmjA013920;
+        Fri, 1 Sep 2023 11:42:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sqafmj03q-1;
+        Fri, 01 Sep 2023 11:42:48 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 381BglhD013913;
+        Fri, 1 Sep 2023 11:42:47 GMT
+Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 381BglS4013912;
+        Fri, 01 Sep 2023 11:42:47 +0000
+Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
+        id E8F735006A6; Fri,  1 Sep 2023 17:12:46 +0530 (+0530)
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+To:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
+        konrad.dybcio@linaro.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Nitin Rawat <quic_nitirawa@quicinc.com>
+Subject: [PATCH V6 0/6] scsi: ufs: qcom: Align programming sequence as per HW spec
+Date:   Fri,  1 Sep 2023 17:12:36 +0530
+Message-Id: <20230901114242.31219-1-quic_nitirawa@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: j5M9jHuAG9BFFt7Hgfx4NshadS9g6rwm
+X-Proofpoint-ORIG-GUID: j5M9jHuAG9BFFt7Hgfx4NshadS9g6rwm
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_09,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ lowpriorityscore=0 mlxscore=0 malwarescore=0 spamscore=0 phishscore=0
+ bulkscore=0 priorityscore=1501 adultscore=0 suspectscore=0 mlxlogscore=894
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309010109
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,58 +80,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+This patch aligns programming sequence as per Qualcomm UFS
+hardware specification.
 
-On Fri, Sep 1, 2023 at 1:37 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> Make MMC_SDHI_INTERNAL_DMAC visible for RISC-V architecture so that we can
-> select this config option for RZ/Five SoC which is based on RISC-V
-> architecture.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+changes from v5:
+- Addressed Mani comment to FIELD_PREP and FIELD_FIT.
+- Optimised ufs_qcom_set_core_clk_ctrl API.
+- Updated commit text for few patches to capture more details.
 
-Thanks for your patch!
+Changes from v4:
+- Addressed bjorn comment to split single patch to multiple patches.
 
-> I was in two minds here whether I should instead add dependency for
-> ARCH_R9A07G043 instead of RISCV. But adding dependency for RISCV allows
-> us to get this config option freely for future coming RISC-V Renesas
-> SoCs.
->
-> Cheers, Prabhakar
-> ---
->  drivers/mmc/host/Kconfig | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/mmc/host/Kconfig b/drivers/mmc/host/Kconfig
-> index 554e67103c1a..5190881cb204 100644
-> --- a/drivers/mmc/host/Kconfig
-> +++ b/drivers/mmc/host/Kconfig
-> @@ -677,9 +677,9 @@ config MMC_SDHI_SYS_DMAC
->
->  config MMC_SDHI_INTERNAL_DMAC
->         tristate "DMA for SDHI SD/SDIO controllers using on-chip bus mastering"
-> -       depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || COMPILE_TEST
-> +       depends on ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || RISCV || COMPILE_TEST
->         depends on MMC_SDHI
-> -       default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470)
-> +       default MMC_SDHI if (ARM64 || ARCH_R7S9210 || ARCH_R8A77470 || RISCV)
+Changes from v3:
+-Addressed bjorn comment to update commit msg to capture change details.
 
-This would expose this option to a growing number of non-Renesas
-RISC-V platforms.  What about using ARCH_RENESAS || COMPILE_TEST
-instead?
+Changes from v2:
+- Addressed bao comment, removed duplicate clock timer cfg API call
 
->         help
->           This provides DMA support for SDHI SD/SDIO controllers
->           using on-chip bus mastering. This supports the controllers
+Changes from v1:
+- Addressed bao comment, removed wrapper function
+- Tab alignment
 
-Gr{oetje,eeting}s,
+Nitin Rawat (6):
+  scsi: ufs: qcom: Align mask for core_clk_1us_cycles
+  scsi: ufs: qcom: Configure PA_VS_CORE_CLK_40NS_CYCLES
+  scsi: ufs: qcom: Add multiple frequency support for unipro clk
+    attributes
+  scsi: ufs: qcom: Align unipro clk attributes configuration as per HPG
+  scsi: ufs: qcom: Refactor ufs_qcom_cfg_timers function.
+  scsi: ufs: qcom: Configure clk HW division based on scaling
+    conditions.
 
-                        Geert
+ drivers/ufs/host/ufs-qcom.c | 240 ++++++++++++++++++++++++++----------
+ drivers/ufs/host/ufs-qcom.h |  17 ++-
+ 2 files changed, 193 insertions(+), 64 deletions(-)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+--
+2.17.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
