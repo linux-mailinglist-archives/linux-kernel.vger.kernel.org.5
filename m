@@ -2,72 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2016378FE7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383FA78FE84
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjIANnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52314 "EHLO
+        id S1349820AbjIANnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:43:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229907AbjIANnG (ORCPT
+        with ESMTP id S1349845AbjIANnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:43:06 -0400
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12831982
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:42:31 -0700 (PDT)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1c4d8eaa8ebso1221258fac.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 06:42:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1693575746; x=1694180546; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=605GXJuY9VF2iuE9QUTMQaSiwWf8mYV89VIA5q7Q680=;
-        b=CnmI8ssBCCoJ6N4763vS/gHLdE8kiq6w62FEtZF9mDsMVEozHa54YmaIoQY2XrknjM
-         hpFKKWv7kXLvCDnL18TwMfxPg4ZBuZx5DMoK3Jw8MHfD7fgkmXG4LMskYPLDBIx10Poh
-         gdUbwad6i/fS4eG/qRTIkLCUoSVwwieB6j6f0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693575746; x=1694180546;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=605GXJuY9VF2iuE9QUTMQaSiwWf8mYV89VIA5q7Q680=;
-        b=AjjDAecrBwBHCCLSW2PKwWl5qB3FKHtR2GhXmlMJh/IRWX0NmDGM+c+At06dLxHD5O
-         32uV0o7xwYUwNg3JSW6bPu9pX+3DnqIs3x58ilidxiDN5clSMhrtEbCw4H0AjG9tSNW2
-         xxOTy7V9ZYHxB+uyp6raThjNjBrXCyqu8fRVCOF97ES4hhafkvxMAfRZsGmm+ORFPKTS
-         SB8SbdXVoLfEE9gSKqdN1tWrgqd72EYFczPF8z1E/wA6SE4Pb8geYCYtuN2iSEI2mWPs
-         fsDCLc3y4HRdAINvVX9Wmnukv1Ik1e+FTt9rV1fqW/gXYcWJ9GDC/xZbY33keCQo9eBR
-         QUww==
-X-Gm-Message-State: AOJu0YwMt+fKLGzVjkPLjJxlEF2HjB0Jw6N8m1y2LNN8sXZQrHuVm+D+
-        wIl5bJ2agutKoei1d4gQmVq08A==
-X-Google-Smtp-Source: AGHT+IEnz/CwVS9UgmJ48qny79FGnNZJqSMHcHKkMABKmFxPd2rM5sdazTnUXn1t+J4QxMgAzqE44w==
-X-Received: by 2002:a05:6870:6312:b0:1bd:55be:5880 with SMTP id s18-20020a056870631200b001bd55be5880mr3066060oao.42.1693575746481;
-        Fri, 01 Sep 2023 06:42:26 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id t23-20020a9d7757000000b006b83a36c08bsm1792754otl.53.2023.09.01.06.42.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 06:42:25 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Fri, 1 Sep 2023 08:42:24 -0500
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.4 0/9] 6.4.14-rc1 review
-Message-ID: <ZPHqQGaILoFNy6tX@fedora64.linuxtx.org>
-References: <20230831111127.667900990@linuxfoundation.org>
+        Fri, 1 Sep 2023 09:43:23 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C042E1732;
+        Fri,  1 Sep 2023 06:43:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693575782; x=1725111782;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=EEReJSRlcv9+PTEBmSIxl61qsJVklng9DcbuIC4vK8M=;
+  b=m88ITuuRI9osZ9Ppodfs5SbqV2EyhzVQwW9yKSmzUsKy25Hj+eY+zrnG
+   7kYMUcSQfdwP5ityvDVhO3+Qq2t9xxtfnCPdgxpDnAWAn76m3iW3PIwk8
+   QpcACkzNwGSDwAGZXHtmd3UkuNPxtblZXkXCXWzMcTnitnYwzjuYqVM6F
+   VnSaJ6pbWjaJsijQ8SmQezi5qsEdtq5zYNLW8LTz2NKiEvIE64QOkU6GM
+   7pzZgpHseu8tkI11gkjXUAlzG4En8kYirmJopcguH47eljX0awpeECSbw
+   5zt2SQNPw6fah9r7bGjegOUb5wGOXxxN9AzoUBXEyQNmQGywyuN45fBD+
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="373618270"
+X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
+   d="scan'208";a="373618270"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:43:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="739936738"
+X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
+   d="scan'208";a="739936738"
+Received: from rawskaal-mobl.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.0.136])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:42:59 -0700
+From:   Wieczor-Retman Maciej <maciej.wieczor-retman@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Subject: [PATCH RESEND v3 1/2] selftests/resctrl: Fix schemata write error check
+Date:   Fri,  1 Sep 2023 15:42:33 +0200
+Message-ID: <960b5302cee8e5bb0e83dcf20cd2ef4d353b7b0b.1693575451.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1693575451.git.maciej.wieczor-retman@intel.com>
+References: <cover.1693575451.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230831111127.667900990@linuxfoundation.org>
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,26 +63,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 01:11:27PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.14 release.
-> There are 9 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 02 Sep 2023 11:11:18 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.14-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Writing bitmasks to the schemata can fail when the bitmask doesn't
+adhere to constraints defined by what a particular CPU supports.
+Some example of constraints are max length or having contiguous bits.
+The driver should properly return errors when any rule concerning
+bitmask format is broken.
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+Resctrl FS returns error codes from fprintf() only when fclose() is
+called. Current error checking scheme allows invalid bitmasks to be
+written into schemata file and the selftest doesn't notice because the
+fclose() error code isn't checked.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Substitute fopen(), flose() and fprintf() with open(), close() and
+write() to avoid error code buffering between fprintf() and fclose().
+
+Remove newline character from the schema string after writing it to
+the schemata file so it prints correctly before function return.
+
+Pass the string generated with strerror() to the "reason" buffer so
+the error message is more verbose. Extend "reason" buffer so it can hold
+longer messages.
+
+Signed-off-by: Wieczor-Retman Maciej <maciej.wieczor-retman@intel.com>
+---
+Changelog v3:
+- Rename fp to fd (Ilpo)
+- Remove strlen, strcspn and just use the snprintf value instead (Ilpo)
+
+Changelog v2:
+- Rewrite patch message.
+- Double "reason" buffer size to fit longer error explanation.
+- Redo file interactions with syscalls instead of stdio functions.
+
+ tools/testing/selftests/resctrl/resctrlfs.c | 26 +++++++++++----------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/tools/testing/selftests/resctrl/resctrlfs.c b/tools/testing/selftests/resctrl/resctrlfs.c
+index bd36ee206602..b0b14a5bcbf5 100644
+--- a/tools/testing/selftests/resctrl/resctrlfs.c
++++ b/tools/testing/selftests/resctrl/resctrlfs.c
+@@ -488,9 +488,8 @@ int write_bm_pid_to_resctrl(pid_t bm_pid, char *ctrlgrp, char *mongrp,
+  */
+ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ {
+-	char controlgroup[1024], schema[1024], reason[64];
+-	int resource_id, ret = 0;
+-	FILE *fp;
++	char controlgroup[1024], schema[1024], reason[128];
++	int resource_id, fd, schema_len = -1, ret = 0;
+ 
+ 	if (strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) &&
+ 	    strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)) &&
+@@ -518,27 +517,30 @@ int write_schemata(char *ctrlgrp, char *schemata, int cpu_no, char *resctrl_val)
+ 
+ 	if (!strncmp(resctrl_val, CAT_STR, sizeof(CAT_STR)) ||
+ 	    !strncmp(resctrl_val, CMT_STR, sizeof(CMT_STR)))
+-		sprintf(schema, "%s%d%c%s", "L3:", resource_id, '=', schemata);
++		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
++				      "L3:", resource_id, '=', schemata);
+ 	if (!strncmp(resctrl_val, MBA_STR, sizeof(MBA_STR)) ||
+ 	    !strncmp(resctrl_val, MBM_STR, sizeof(MBM_STR)))
+-		sprintf(schema, "%s%d%c%s", "MB:", resource_id, '=', schemata);
++		schema_len = snprintf(schema, sizeof(schema), "%s%d%c%s\n",
++				      "MB:", resource_id, '=', schemata);
+ 
+-	fp = fopen(controlgroup, "w");
+-	if (!fp) {
++	fd = open(controlgroup, O_WRONLY);
++	if (!fd) {
+ 		sprintf(reason, "Failed to open control group");
+ 		ret = -1;
+ 
+ 		goto out;
+ 	}
+-
+-	if (fprintf(fp, "%s\n", schema) < 0) {
+-		sprintf(reason, "Failed to write schemata in control group");
+-		fclose(fp);
++	if (write(fd, schema, schema_len) < 0) {
++		snprintf(reason, sizeof(reason),
++			 "write() failed : %s", strerror(errno));
++		close(fd);
+ 		ret = -1;
+ 
+ 		goto out;
+ 	}
+-	fclose(fp);
++	close(fd);
++	schema[schema_len - 1] = 0;
+ 
+ out:
+ 	ksft_print_msg("Write schema \"%s\" to resctrl FS%s%s\n",
+-- 
+2.42.0
+
