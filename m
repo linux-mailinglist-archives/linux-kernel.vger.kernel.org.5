@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F007902E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:43:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFA377902E4
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350764AbjIAUnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 16:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55984 "EHLO
+        id S1350758AbjIAUnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 16:43:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230018AbjIAUnn (ORCPT
+        with ESMTP id S1350747AbjIAUnm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 16:43:43 -0400
+        Fri, 1 Sep 2023 16:43:42 -0400
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5020010CF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4E15C1B1;
         Fri,  1 Sep 2023 13:43:39 -0700 (PDT)
 Received: from localhost.localdomain (unknown [4.155.48.116])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 93E49212A784;
+        by linux.microsoft.com (Postfix) with ESMTPSA id AFE95212A79D;
         Fri,  1 Sep 2023 13:43:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 93E49212A784
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com AFE95212A79D
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
         s=default; t=1693601018;
-        bh=9WF2llb3VqzKQ7G8ifFcjGtwVjENCP3yBl4NYTE80qk=;
+        bh=1YG8rYRy90yBzfjk0YrTjAqtyvOMIk+tMPk2iMh/bSY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cElSQ/68kkCBEHkiuelP17kyEinYxMw9AOowVZ/m+JIWRHlUT8Z/v8TvqEVgL3nFo
-         f5uLJinr1DR+XsJI+VhNjFfPfHmEZYsOoNi7w8zmlgmLcHGbbLO/ZGztzj0XgpP1Pm
-         qWQ1YAzrG/p2P5TI7L0w6cZIEwGb+KIVXTcJJRjM=
+        b=JNY55OwkyzJOC2gs8+rHWkVG1rEQ53WNbb3f+VEN8Bv/rye7/loCDwPiaFYByYWWu
+         TsHItk5wcBV3QWhFM0+DkRvTDAbiCQrj5AlcyLbhlwDnCEJWT7k2WTAb3qTmBot6KK
+         K5xyrYyODluD4LarEXgs6Dr5faB0Ja2aj+wCNsBw=
 From:   Beau Belgrave <beaub@linux.microsoft.com>
 To:     rostedt@goodmis.org, mhiramat@kernel.org
 Cc:     linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
         ast@kernel.org, dcook@linux.microsoft.com
-Subject: [PATCH 2/3] selftests/user_events: Test persist flag cases
-Date:   Fri,  1 Sep 2023 20:43:31 +0000
-Message-Id: <20230901204332.159-3-beaub@linux.microsoft.com>
+Subject: [PATCH 3/3] tracing/user_events: Document persist event flags
+Date:   Fri,  1 Sep 2023 20:43:32 +0000
+Message-Id: <20230901204332.159-4-beaub@linux.microsoft.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230901204332.159-1-beaub@linux.microsoft.com>
 References: <20230901204332.159-1-beaub@linux.microsoft.com>
@@ -48,195 +48,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now that we have exposed USER_EVENT_REG_PERSIST events can persist both
-via the ABI and in the /sys/kernel/tracing/dynamic_events file.
+Users need to know how to make events persist, now that we allow for
+that. We also now allow the dynamic_events file to create events by
+utilizing the persist flag during event register.
 
-Ensure both the ABI and DYN cases work by calling both during the parse
-tests. Add new flags test that ensures only USER_EVENT_REG_PERSIST is
-honored and any other flag is invalid.
+Add back in to documentation how /sys/kernel/tracing/dynamic_events can
+be used to create peristent user_events. Add a section under registering
+for the currently supported flags (USER_EVENT_REG_PERSIST) and the
+required permissions. Add a note under deleting that deleting a
+persistent event also requires sufficient permission.
 
 Signed-off-by: Beau Belgrave <beaub@linux.microsoft.com>
 ---
- .../testing/selftests/user_events/abi_test.c  | 55 ++++++++++++++++++-
- .../testing/selftests/user_events/dyn_test.c  | 54 +++++++++++++++++-
- 2 files changed, 107 insertions(+), 2 deletions(-)
+ Documentation/trace/user_events.rst | 21 ++++++++++++++++++---
+ 1 file changed, 18 insertions(+), 3 deletions(-)
 
-diff --git a/tools/testing/selftests/user_events/abi_test.c b/tools/testing/selftests/user_events/abi_test.c
-index 5125c42efe65..b95fc15496ba 100644
---- a/tools/testing/selftests/user_events/abi_test.c
-+++ b/tools/testing/selftests/user_events/abi_test.c
-@@ -23,6 +23,18 @@
- const char *data_file = "/sys/kernel/tracing/user_events_data";
- const char *enable_file = "/sys/kernel/tracing/events/user_events/__abi_event/enable";
+diff --git a/Documentation/trace/user_events.rst b/Documentation/trace/user_events.rst
+index e7b07313550a..c5388a47376f 100644
+--- a/Documentation/trace/user_events.rst
++++ b/Documentation/trace/user_events.rst
+@@ -14,6 +14,11 @@ Programs can view status of the events via
+ /sys/kernel/tracing/user_events_status and can both register and write
+ data out via /sys/kernel/tracing/user_events_data.
  
-+static bool event_exists(void)
-+{
-+	int fd = open(enable_file, O_RDWR);
++Programs can also use /sys/kernel/tracing/dynamic_events to register and
++delete user based events via the u: prefix. The format of the command to
++dynamic_events is the same as the ioctl with the u: prefix applied. This
++requires CAP_PERFMON due to the event persisting, otherwise -EPERM is returned.
 +
-+	if (fd < 0)
-+		return false;
-+
-+	close(fd);
-+
-+	return true;
-+}
-+
- static int change_event(bool enable)
- {
- 	int fd = open(enable_file, O_RDWR);
-@@ -46,7 +58,22 @@ static int change_event(bool enable)
- 	return ret;
- }
+ Typically programs will register a set of events that they wish to expose to
+ tools that can read trace_events (such as ftrace and perf). The registration
+ process tells the kernel which address and bit to reflect if any tool has
+@@ -45,7 +50,7 @@ This command takes a packed struct user_reg as an argument::
+         /* Input: Enable size in bytes at address */
+         __u8 enable_size;
  
--static int reg_enable(long *enable, int size, int bit)
-+static int event_delete(void)
-+{
-+	int fd = open(data_file, O_RDWR);
-+	int ret;
-+
-+	if (fd < 0)
-+		return -1;
-+
-+	ret = ioctl(fd, DIAG_IOCSDEL, "__abi_event");
-+
-+	close(fd);
-+
-+	return ret;
-+}
-+
-+static int reg_enable_flags(long *enable, int size, int bit, int flags)
- {
- 	struct user_reg reg = {0};
- 	int fd = open(data_file, O_RDWR);
-@@ -57,6 +84,7 @@ static int reg_enable(long *enable, int size, int bit)
+-        /* Input: Flags for future use, set to 0 */
++        /* Input: Flags to be used, if any */
+         __u16 flags;
  
- 	reg.size = sizeof(reg);
- 	reg.name_args = (__u64)"__abi_event";
-+	reg.flags = flags;
- 	reg.enable_bit = bit;
- 	reg.enable_addr = (__u64)enable;
- 	reg.enable_size = size;
-@@ -68,6 +96,11 @@ static int reg_enable(long *enable, int size, int bit)
- 	return ret;
- }
+         /* Input: Address to update when enabled */
+@@ -69,7 +74,7 @@ The struct user_reg requires all the above inputs to be set appropriately.
+   This must be 4 (32-bit) or 8 (64-bit). 64-bit values are only allowed to be
+   used on 64-bit kernels, however, 32-bit can be used on all kernels.
  
-+static int reg_enable(long *enable, int size, int bit)
-+{
-+	return reg_enable_flags(enable, size, bit, 0);
-+}
-+
- static int reg_disable(long *enable, int bit)
- {
- 	struct user_unreg reg = {0};
-@@ -121,6 +154,26 @@ TEST_F(user, enablement) {
- 	ASSERT_EQ(0, change_event(false));
- }
+-+ flags: The flags to use, if any. For the initial version this must be 0.
+++ flags: The flags to use, if any.
+   Callers should first attempt to use flags and retry without flags to ensure
+   support for lower versions of the kernel. If a flag is not supported -EINVAL
+   is returned.
+@@ -80,6 +85,13 @@ The struct user_reg requires all the above inputs to be set appropriately.
+ + name_args: The name and arguments to describe the event, see command format
+   for details.
  
-+TEST_F(user, flags) {
-+	/* USER_EVENT_REG_PERSIST is allowed */
-+	ASSERT_EQ(0, reg_enable_flags(&self->check, sizeof(int), 0,
-+				      USER_EVENT_REG_PERSIST));
-+	ASSERT_EQ(0, reg_disable(&self->check, 0));
++The following flags are currently supported.
 +
-+	/* Ensure it exists after close and disable */
-+	ASSERT_TRUE(event_exists());
+++ USER_EVENT_REG_PERSIST: The event will not delete upon the last reference
++  closing. Callers may use this if an event should exist even after the
++  process closes or unregisters the event. Requires CAP_PERFMON otherwise
++  -EPERM is returned.
 +
-+	/* Ensure we can delete it */
-+	ASSERT_EQ(0, event_delete());
-+
-+	/* USER_EVENT_REG_MAX or above is not allowed */
-+	ASSERT_EQ(-1, reg_enable_flags(&self->check, sizeof(int), 0,
-+				       USER_EVENT_REG_MAX));
-+
-+	/* Ensure it does not exist after invalid flags */
-+	ASSERT_FALSE(event_exists());
-+}
-+
- TEST_F(user, bit_sizes) {
- 	/* Allow 0-31 bits for 32-bit */
- 	ASSERT_EQ(0, reg_enable(&self->check, sizeof(int), 0));
-diff --git a/tools/testing/selftests/user_events/dyn_test.c b/tools/testing/selftests/user_events/dyn_test.c
-index 91a4444ad42b..f2a41bcb5ad8 100644
---- a/tools/testing/selftests/user_events/dyn_test.c
-+++ b/tools/testing/selftests/user_events/dyn_test.c
-@@ -16,9 +16,25 @@
+ Upon successful registration the following is set.
  
- #include "../kselftest_harness.h"
+ + write_index: The index to use for this file descriptor that represents this
+@@ -141,7 +153,10 @@ event (in both user and kernel space). User programs should use a separate file
+ to request deletes than the one used for registration due to this.
  
-+const char *dyn_file = "/sys/kernel/tracing/dynamic_events";
- const char *abi_file = "/sys/kernel/tracing/user_events_data";
- const char *enable_file = "/sys/kernel/tracing/events/user_events/__test_event/enable";
+ **NOTE:** By default events will auto-delete when there are no references left
+-to the event. Flags in the future may change this logic.
++to the event. If programs do not want auto-delete, they must use the
++USER_EVENT_REG_PERSIST flag when registering the event. Once that flag is used
++the event exists until DIAG_IOCSDEL is invoked. Both register and delete of an
++event that persists requires CAP_PERFMON, otherwise -EPERM is returned.
  
-+static int event_delete(void)
-+{
-+	int fd = open(abi_file, O_RDWR);
-+	int ret;
-+
-+	if (fd < 0)
-+		return -1;
-+
-+	ret = ioctl(fd, DIAG_IOCSDEL, "__test_event");
-+
-+	close(fd);
-+
-+	return ret;
-+}
-+
- static bool wait_for_delete(void)
- {
- 	int i;
-@@ -63,7 +79,31 @@ static int unreg_event(int fd, int *check, int bit)
- 	return ioctl(fd, DIAG_IOCSUNREG, &unreg);
- }
- 
--static int parse(int *check, const char *value)
-+static int parse_dyn(const char *value)
-+{
-+	int fd = open(dyn_file, O_RDWR | O_APPEND);
-+	int len = strlen(value);
-+	int ret;
-+
-+	if (fd == -1)
-+		return -1;
-+
-+	ret = write(fd, value, len);
-+
-+	if (ret == len)
-+		ret = 0;
-+	else
-+		ret = -1;
-+
-+	close(fd);
-+
-+	if (ret == 0)
-+		event_delete();
-+
-+	return ret;
-+}
-+
-+static int parse_abi(int *check, const char *value)
- {
- 	int fd = open(abi_file, O_RDWR);
- 	int ret;
-@@ -89,6 +129,18 @@ static int parse(int *check, const char *value)
- 	return ret;
- }
- 
-+static int parse(int *check, const char *value)
-+{
-+	int abi_ret = parse_abi(check, value);
-+	int dyn_ret = parse_dyn(value);
-+
-+	/* Ensure both ABI and DYN parse the same way */
-+	if (dyn_ret != abi_ret)
-+		return -1;
-+
-+	return dyn_ret;
-+}
-+
- static int check_match(int *check, const char *first, const char *second, bool *match)
- {
- 	int fd = open(abi_file, O_RDWR);
+ Unregistering
+ -------------
 -- 
 2.34.1
 
