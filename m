@@ -2,96 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F863790304
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:58:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B19A8790309
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:59:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350758AbjIAU6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 16:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60404 "EHLO
+        id S1350762AbjIAU7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 16:59:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350815AbjIAU6b (ORCPT
+        with ESMTP id S229866AbjIAU73 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 16:58:31 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74EA01B0;
-        Fri,  1 Sep 2023 13:57:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 1 Sep 2023 16:59:29 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CB3CC;
+        Fri,  1 Sep 2023 13:59:25 -0700 (PDT)
+Received: from [127.0.0.1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 9713DCE24C2;
-        Fri,  1 Sep 2023 20:57:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09643C433C8;
-        Fri,  1 Sep 2023 20:57:47 +0000 (UTC)
-Date:   Fri, 1 Sep 2023 16:57:57 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Beau Belgrave <beaub@linux.microsoft.com>
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org, ast@kernel.org,
-        dcook@linux.microsoft.com
-Subject: Re: [PATCH 0/3] tracing/user_events: Allow events to persist for
- perfmon_capable users
-Message-ID: <20230901165757.13eb2793@gandalf.local.home>
-In-Reply-To: <20230901204332.159-1-beaub@linux.microsoft.com>
-References: <20230901204332.159-1-beaub@linux.microsoft.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        (Authenticated sender: marex@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id E8E4A8657B;
+        Fri,  1 Sep 2023 22:59:21 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1693601962;
+        bh=9odOAZuqxqO3GhfS6yAgN5dZud26TQQRpQz8qJzUt3Q=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=I+ivvHeYkjFe1Kpu8pWMoIthhgR77ENC6LgA+fvAI2PslskRiSX6QdzjBygV0uXBG
+         nkKapZ7ZfetcqKv46aQ7mKPhn7Oo3BwlI0v7b/RGn0L7ez6qcFnsq0O2qsLh4XmL/Z
+         9QBwM3CnnPj86KskMIa64mgyMSNnYpbCWd97NVeYzEXejm37bBzo0SqRCALPHpdIM+
+         Q2pR2shH6Xnl73f//upYtJqfRSIiCIW/wjHJynIuCe3tj3ZuBhDDVwEhgQO0XfxA3s
+         CsIDA2CT5CZHouZU/WapAkdjuJ1pDC7uklVaulX3ZeHvCpBYXvXU4i3QhG1pBMzKvb
+         YtQgA2q/rvDrw==
+Message-ID: <2cbf879d-8052-29e4-5f2a-40a6562dc4b4@denx.de>
+Date:   Fri, 1 Sep 2023 22:59:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 2/3] watchdog: stm32_iwdg: Add pretimeout support
+Content-Language: en-US
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Antonio Borneo <antonio.borneo@foss.st.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-watchdog@vger.kernel.org
+References: <20230517194349.105745-1-marex@denx.de>
+ <20230517194349.105745-2-marex@denx.de>
+ <ba596dd5-e9b9-4972-a768-e42e69897fea@roeck-us.net>
+From:   Marek Vasut <marex@denx.de>
+In-Reply-To: <ba596dd5-e9b9-4972-a768-e42e69897fea@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 8/6/23 16:19, Guenter Roeck wrote:
+> On Wed, May 17, 2023 at 09:43:48PM +0200, Marek Vasut wrote:
+>> The STM32MP15xx IWDG adds registers which permit this IP to generate
+>> pretimeout interrupt. This interrupt can also be used to wake the CPU
+>> from suspend. Implement support for generating this interrupt and let
+>> userspace configure the pretimeout. In case the pretimeout is not
+>> configured by user, set pretimeout to half of the WDT timeout cycle.
 
-Hi Beau,
+[...]
 
-Just an FYI, except for fixes, it is never a good ideal to send out patches
-while the merge window is open. They will likely be ignored for the
-entirety of the merge window.
-
--- Steve
-
-
-On Fri,  1 Sep 2023 20:43:29 +0000
-Beau Belgrave <beaub@linux.microsoft.com> wrote:
-
-> There are several scenarios that have come up where having a user_event
-> persist even if the process that registered it exits. The main one is
-> having a daemon create events on bootup that shouldn't get deleted if
-> the daemon has to exit or reload. Another is within OpenTelemetry
-> exporters, they wish to potentially check if a user_event exists on the
-> system to determine if exporting the data out should occur. The
-> user_event in this case must exist even in the absence of the owning
-> process running (such as the above daemon case).
+>>   static int stm32_iwdg_probe(struct platform_device *pdev)
+>>   {
+>>   	struct device *dev = &pdev->dev;
+>> @@ -253,6 +340,11 @@ static int stm32_iwdg_probe(struct platform_device *pdev)
+>>   	wdd->max_hw_heartbeat_ms = ((RLR_MAX + 1) * wdt->data->max_prescaler *
+>>   				    1000) / wdt->rate;
+>>   
+>> +	/* Initialize IRQ, this might override wdd->info, hence it is here. */
+>> +	ret = stm32_iwdg_irq_init(pdev, wdt);
+>> +	if (ret)
+>> +		return ret;
+>> +
 > 
-> Since persistent events aren't automatically cleaned up, we want to ensure
-> only trusted users are allowed to do this. It seems reasonable to use
-> CAP_PERFMON as that boundary, since those users can already do many things
-> via perf_event_open without requiring full CAP_SYS_ADMIN.
-> 
-> This patchset brings back the ability to use /sys/kernel/tracing/dynamic_events
-> to create user_events, as persist is now back to being supported. Both the
-> register and delete of events that persist require CAP_PERFMON, which prevents
-> a non-perfmon user from making an event go away that a perfmon user decided
-> should persist.
-> 
-> Beau Belgrave (3):
->   tracing/user_events: Allow events to persist for perfmon_capable users
->   selftests/user_events: Test persist flag cases
->   tracing/user_events: Document persist event flags
-> 
->  Documentation/trace/user_events.rst           | 21 ++++++-
->  include/uapi/linux/user_events.h              | 11 +++-
->  kernel/trace/trace_events_user.c              | 28 +++++-----
->  .../testing/selftests/user_events/abi_test.c  | 55 ++++++++++++++++++-
->  .../testing/selftests/user_events/dyn_test.c  | 54 +++++++++++++++++-
->  5 files changed, 149 insertions(+), 20 deletions(-)
-> 
-> 
-> base-commit: f940e482b0f889e697372a22b6c15da87aa1f63a
+> What if the interrupt fires for whatever reason and the watchdog
+> isn't registered yet and the driver data is not set and the
+> watchdog core doesn't know about the watchdog ?
 
+That cannot happen since the pretimeout IRQ was not configured yet.
+That can only happen once the core is aware of the WDT and calls 
+set_pretimeout .
