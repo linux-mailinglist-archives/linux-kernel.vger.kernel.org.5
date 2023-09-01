@@ -2,60 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 193B778FB01
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D3678FB06
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:39:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348846AbjIAJiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:38:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45820 "EHLO
+        id S1344968AbjIAJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231394AbjIAJiJ (ORCPT
+        with ESMTP id S1348855AbjIAJjM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:38:09 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE4B8C5;
-        Fri,  1 Sep 2023 02:38:06 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id 46e09a7af769-6bdc27e00a1so1396960a34.3;
-        Fri, 01 Sep 2023 02:38:06 -0700 (PDT)
+        Fri, 1 Sep 2023 05:39:12 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C36C0;
+        Fri,  1 Sep 2023 02:39:07 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-401187f8071so10964985e9.0;
+        Fri, 01 Sep 2023 02:39:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693561085; x=1694165885; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=puujmwruwEPZwX3qru4Zjgz8R1GSDUuaeEptqL3yQAE=;
-        b=ONOiv8AsHMFB8ngaOkuFoqlfa1ifCHeu+MVzM5b/d44XW+L/CdNFLDMzpASE2Y003n
-         9Y3HdR5RgQ/s9dp/TYfZaaa3k9UiLudK6LnOVJ7vPAzVojD2CMubuwaXJthw9UNPvdYr
-         eRHEVX2vGdx8ldXZvwm5OewsiH+2qEXZRRGIH5ARIahtO6Vz7CJtQc/EXA8Ah3rheQbe
-         gWNMmaPJA06pIAUZeI7RwvhQbOm6MwnhT/UxciiZ4Uo0i7yGSJjABVkXcKrCWGhO2vzN
-         S+c7TvcNTP898C065d6lPygOS/Ve+3m3ulQCC7S4VEyIAu8kUNSouoiLGy3Ty7PGDHGT
-         Twsg==
+        d=gmail.com; s=20221208; t=1693561146; x=1694165946; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8xZ9ZbaoplgcAhTiVLC1bDr8uxnmA/nekFkByFy1DR4=;
+        b=si5BpWIf+qRWXuv8+SHW/zwPCkckNF0swgACWJLY+bFzr73QF/iWs1SMnJYimV4YX9
+         ghggc85S5DaZfpbp7yk1GfuCreqy8RTWaEd/LomlPxAaPMjeYLwPdsh2hbz6nIZL/uLr
+         NbhfYiJ4ZML19RMs7epQ1mDGd3U+tK49xjVMVa0FnMw3daxWKRrQF+ro0Lx+DghRiC8E
+         HzJSEzmzQKn3sv9Xj7gsYn1EAKg/tI+gv/7dq74lNcxANKuqoJbJocdAsUOT7NdYqZyt
+         mfKj/WIs2HMLbjNWKF8VSTS3LR+PySBgDgpXxLPv44een3y41lCNH8qUuswrmp0D+eiC
+         TyCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693561085; x=1694165885;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=puujmwruwEPZwX3qru4Zjgz8R1GSDUuaeEptqL3yQAE=;
-        b=aNjWjh5s80Rlzp8WmmuDYVUhmEBKG4L1sdwwieKPPmKqNJ3QdtW+nBJRxRvr1y1oHf
-         zl++dQ1UAM6OkGdvfe6ndmPWIrbtvAbH1tcZ4dSkxZ7k2xJj/hMfSVQhURhsUSe7zt8U
-         O46eo0cxRDRMo+xU1HZQgca4fe+DNgXr3VZGet7mzJiPnNEbPJNI3ayh2aQt3CwABcii
-         2St6VCzxWLZgOvVuQh+zw84ucryIXc0IjuR90Am6ccAKUR1uAC/1jQDVCOJViSyYGvwQ
-         ISNRp4fgPjGT5VpJIM1RPbOxAKc6rHcv6C1Fwi5XOO3BWI+RxACGMTwDcALkAxweUJW4
-         DOzw==
-X-Gm-Message-State: AOJu0Yz9ZNbEmdRMOBuDVCeyfH2F3KuUdeW7Lhsshdrj556DIUHnAQE6
-        WX/aZ9iTyc3P3Ji+c+gnxPNCMxvx5Jo=
-X-Google-Smtp-Source: AGHT+IEaqqAe9tFixyzFM80Ki6nnhy4ODrgqp6gr8xrlSVl0jvXR7+G7i7lSi44g6lkneSJYIu8Nmw==
-X-Received: by 2002:a05:6870:5488:b0:1bf:8df:2406 with SMTP id f8-20020a056870548800b001bf08df2406mr1792113oan.27.1693561085393;
-        Fri, 01 Sep 2023 02:38:05 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id u9-20020aa78389000000b0067f2f7eccdcsm2588921pfm.193.2023.09.01.02.38.03
+        d=1e100.net; s=20221208; t=1693561146; x=1694165946;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8xZ9ZbaoplgcAhTiVLC1bDr8uxnmA/nekFkByFy1DR4=;
+        b=adz9sgHBdKd7Gntpb10YcY2Ccathw6G4E7swwNufT5RFTg72drEw0y86NioNO4CeSt
+         70CvJqM7JQ3zucTCUjkRXfgEF4vZaby2MyxL1/Jbyp1JjAMGnGbiaHqjmHnQ2z2Lx7bW
+         akFynZ2wdDe9YVn1rZsWafWftm/ujQQM/TlzdKW0SgHweyQkqOPyp+v8rvgKLNQpekLr
+         fjN1sVo2jUufRkjcvZbDVDzh1+3T9GmQ6/G/Oa5alwn7yRfG+xzF+xpb0AKEE+5arbUS
+         0Rf/elQ+vVXqa6Jeym6f6YCi37PJc3pWGF8GMWiAdGb8OXe2L9dRgQdZsNW3xS5V64Dm
+         MaeQ==
+X-Gm-Message-State: AOJu0Yy2IAlSweBqk/VcGdT2gZW5z5YXBplXZrrZo3WHARqVAokJAuBd
+        ZyxZfV5QwhAWEwClJSluZ8Q=
+X-Google-Smtp-Source: AGHT+IFXtaTUGny1kxuRDcOK1Ut+jp4CLT1eqTNyu1lF+/eLom9GoaA5NXi2WQOesh/QlqYFXHLE2A==
+X-Received: by 2002:a05:600c:3591:b0:401:bc03:1aae with SMTP id p17-20020a05600c359100b00401bc031aaemr4051227wmq.12.1693561146124;
+        Fri, 01 Sep 2023 02:39:06 -0700 (PDT)
+Received: from debian ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id l7-20020a7bc447000000b003fe1fe56202sm4330877wmi.33.2023.09.01.02.39.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:38:04 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 15:08:01 +0530
-Message-Id: <875y4u8c92.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 06/11] ext4: call ext4_mb_mark_context in ext4_mb_clear_bb
-In-Reply-To: <20230826155028.4019470-7-shikemeng@huaweicloud.com>
+        Fri, 01 Sep 2023 02:39:05 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 10:39:04 +0100
+From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
+        rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.15 0/9] 5.15.130-rc1 review
+Message-ID: <ZPGxOEEJa0u8DgiA@debian>
+References: <20230831110830.039135096@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831110830.039135096@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -66,154 +75,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+Hi Greg,
 
-> Call ext4_mb_mark_context in ext4_mb_clear_bb to remove repeat code.
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 83 +++++++++++------------------------------------
->  1 file changed, 19 insertions(+), 64 deletions(-)
->
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 01ad36a1cc96..25265531cb6a 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6424,21 +6424,20 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  			       ext4_fsblk_t block, unsigned long count,
->  			       int flags)
->  {
-> -	struct buffer_head *bitmap_bh = NULL;
-> +	struct ext4_mark_context mc;
->  	struct super_block *sb = inode->i_sb;
-> -	struct ext4_group_desc *gdp;
->  	struct ext4_group_info *grp;
->  	unsigned int overflow;
->  	ext4_grpblk_t bit;
-> -	struct buffer_head *gd_bh;
->  	ext4_group_t block_group;
->  	struct ext4_sb_info *sbi;
->  	struct ext4_buddy e4b;
->  	unsigned int count_clusters;
->  	int err = 0;
-> -	int ret;
-> +	int mark_flags = 0;
->  
->  	sbi = EXT4_SB(sb);
-> +	ext4_mb_prepare_mark_context(&mc, handle, sb, 0);
->  
->  	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
->  	    !ext4_inode_block_valid(inode, block, count)) {
-> @@ -6468,18 +6467,6 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		/* The range changed so it's no longer validated */
->  		flags &= ~EXT4_FREE_BLOCKS_VALIDATED;
->  	}
-> -	count_clusters = EXT4_NUM_B2C(sbi, count);
-> -	bitmap_bh = ext4_read_block_bitmap(sb, block_group);
-> -	if (IS_ERR(bitmap_bh)) {
-> -		err = PTR_ERR(bitmap_bh);
-> -		bitmap_bh = NULL;
-> -		goto error_return;
-> -	}
-> -	gdp = ext4_get_group_desc(sb, block_group, &gd_bh);
-> -	if (!gdp) {
-> -		err = -EIO;
-> -		goto error_return;
-> -	}
->  
->  	if (!(flags & EXT4_FREE_BLOCKS_VALIDATED) &&
->  	    !ext4_inode_block_valid(inode, block, count)) {
-> @@ -6489,28 +6476,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		goto error_return;
->  	}
->  
-> -	BUFFER_TRACE(bitmap_bh, "getting write access");
-> -	err = ext4_journal_get_write_access(handle, sb, bitmap_bh,
-> -					    EXT4_JTR_NONE);
-> -	if (err)
-> -		goto error_return;
-> -
-> -	/*
-> -	 * We are about to modify some metadata.  Call the journal APIs
-> -	 * to unshare ->b_data if a currently-committing transaction is
-> -	 * using it
-> -	 */
-> -	BUFFER_TRACE(gd_bh, "get_write_access");
-> -	err = ext4_journal_get_write_access(handle, sb, gd_bh, EXT4_JTR_NONE);
-> -	if (err)
-> -		goto error_return;
-> -#ifdef AGGRESSIVE_CHECK
-> -	{
-> -		int i;
-> -		for (i = 0; i < count_clusters; i++)
-> -			BUG_ON(!mb_test_bit(bit + i, bitmap_bh->b_data));
-> -	}
-> -#endif
-> +	count_clusters = EXT4_NUM_B2C(sbi, count);
->  	trace_ext4_mballoc_free(sb, inode, block_group, bit, count_clusters);
->  
->  	/* __GFP_NOFAIL: retry infinitely, ignore TIF_MEMDIE and memcg limit. */
-> @@ -6519,13 +6485,21 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  	if (err)
->  		goto error_return;
->  
-> -	ext4_lock_group(sb, block_group);
-> -	mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
-> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
-> -	ext4_free_group_clusters_set(sb, gdp, ret);
-> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> -	ext4_group_desc_csum_set(sb, block_group, gdp);
-> -	ext4_unlock_group(sb, block_group);
-> +#ifdef AGGRESSIVE_CHECK
-> +	mark_flags |= EXT4_MB_BITMAP_MARKED_CHECK;
-> +#endif
-> +	err = ext4_mb_mark_context(&mc, block_group, bit, count_clusters,
-> +				   mark_flags);
-> +
-> +
-> +	if (err && mc.changed == 0) {
-> +		ext4_mb_unload_buddy(&e4b);
-> +		goto error_return;
-> +	}
-> +
-> +#ifdef AGGRESSIVE_CHECK
-> +	BUG_ON(mc.changed != count_clusters);
-> +#endif
->  
->  	/*
->  	 * We need to make sure we don't reuse the freed block until after the
-> @@ -6568,13 +6542,6 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  
->  	ext4_unlock_group(sb, block_group);
->  
-> -	if (sbi->s_log_groups_per_flex) {
-> -		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
-> -		atomic64_add(count_clusters,
-> -			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-> -						  flex_group)->free_clusters);
-> -	}
-> -
->  	/*
->  	 * on a bigalloc file system, defer the s_freeclusters_counter
->  	 * update to the caller (ext4_remove_space and friends) so they
-> @@ -6589,26 +6556,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  
->  	ext4_mb_unload_buddy(&e4b);
->  
-> -	/* We dirtied the bitmap block */
-> -	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
-> -	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-> -
-> -	/* And the group descriptor block */
-> -	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
-> -	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
-> -	if (!err)
-> -		err = ret;
-> -
+On Thu, Aug 31, 2023 at 01:10:08PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.130 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
+> Anything received after that time might be too late.
 
-As commented out in previous patch, it would be much simpler if we can
-move all the required peices for bitmap freeing logic at one place.
-So then this patch just becomes removing them all and using already
-created ext4_mb_mark_context() function.
+Build test (gcc version 12.3.1 20230829):
+mips: 62 configs -> no failure
+arm: 99 configs -> no failure
+arm64: 3 configs -> no failure
+x86_64: 4 configs -> no failure
+alpha allmodconfig -> no failure
+csky allmodconfig -> no failure
+powerpc allmodconfig -> no failure
+riscv allmodconfig -> no failure
+s390 allmodconfig -> no failure
+xtensa allmodconfig -> no failure
 
--ritesh
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+arm64: Booted on rpi4b (4GB model). No regression. [2]
+mips: Booted on ci20 board. No regression. [3]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/4885
+[2]. https://openqa.qa.codethink.co.uk/tests/4887
+[3]. https://openqa.qa.codethink.co.uk/tests/4886
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
+
+-- 
+Regards
+Sudip
