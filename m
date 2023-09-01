@@ -2,82 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD4D78FDFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:04:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F9A778FE01
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349672AbjIANEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40258 "EHLO
+        id S1349687AbjIANEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:04:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237214AbjIANEk (ORCPT
+        with ESMTP id S1349675AbjIANEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:04:40 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B539210F6;
-        Fri,  1 Sep 2023 06:04:26 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id EF7731866782;
-        Fri,  1 Sep 2023 16:04:22 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id dad7jqbU_Blo; Fri,  1 Sep 2023 16:04:22 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 9E92A1865E84;
-        Fri,  1 Sep 2023 16:04:22 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dpsgIrz02uZS; Fri,  1 Sep 2023 16:04:22 +0300 (MSK)
-Received: from rbta-msk-lt-106062.astralinux.ru (unknown [10.177.20.23])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id ADACD1866136;
-        Fri,  1 Sep 2023 16:04:21 +0300 (MSK)
-From:   Anastasia Belova <abelova@astralinux.ru>
-To:     Michael Turquette <mturquette@baylibre.com>
-Cc:     Anastasia Belova <abelova@astralinux.ru>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mike Looijmans <mike.looijmans@topic.nl>,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH] clk: cdce925: change condition in cdce925_clk_round_rate
-Date:   Fri,  1 Sep 2023 16:03:59 +0300
-Message-Id: <20230901130359.20561-1-abelova@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 1 Sep 2023 09:04:42 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252F410D7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:04:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 79A1ECE22C9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 13:04:34 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2463C433C8;
+        Fri,  1 Sep 2023 13:04:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693573472;
+        bh=ianlJYs3YdSH85UBoj+wspIhbGLauzc+UZvcFAKV3M0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=AuDK154A5mN38XmZcqBSsdt7b45OCeP/L7FMPgXrQ2FJr8v8DrDZ+wtPSDG0e/7mo
+         DHbexUmbSjjiD6EzwTJld7lOwk0OdS8oqtvH02Z9Ei9ydEMi1QaGGNr7dDR0FmLEb0
+         xwr3JwJjmOgbdryrcv5laspvHyIdVF++NqAKNCzOnq4CzgcT4oCrFOpduGVxCcZIiG
+         eXF4H/OshyOQoeClRFpE9Vm/GsrqVnwelPulZehbpXDwQ3eKF1Y8dzsnUnzxgZ+nXy
+         W0S2znRA9gAQn9rlR6kzbC7ak5ssSE8yIEqEL1rWP5AC9ETIN8qNVM5OzBnryiVO8p
+         Z+0gqfx1fKD3w==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qc3p8-009xKP-6M;
+        Fri, 01 Sep 2023 14:04:30 +0100
+Date:   Fri, 01 Sep 2023 14:04:29 +0100
+Message-ID: <86ttsedoyq.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Mostafa Saleh <smostafa@google.com>, justinstitt@google.com
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, oliver.upton@linux.dev,
+        kristina.martsenko@arm.com, broonie@kernel.org,
+        quic_pkondeti@quicinc.com
+Subject: Re: [PATCH] Revert "arm64/sysreg: refactor deprecated strncpy"
+In-Reply-To: <ZPHRlmBHZnFAeBeI@google.com>
+References: <20230831162227.2307863-1-smostafa@google.com>
+        <86v8cudtky.wl-maz@kernel.org>
+        <ZPHRlmBHZnFAeBeI@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: smostafa@google.com, justinstitt@google.com, catalin.marinas@arm.com, will@kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org, oliver.upton@linux.dev, kristina.martsenko@arm.com, broonie@kernel.org, quic_pkondeti@quicinc.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid division by zero add check if
-divider is zero.
+On Fri, 01 Sep 2023 12:57:10 +0100,
+Mostafa Saleh <smostafa@google.com> wrote:
+> 
+> Hi Marc,
+> 
+> On Fri, Sep 01, 2023 at 12:24:45PM +0100, Marc Zyngier wrote:
+> > Hi Mostafa,
+> > 
+> > On Thu, 31 Aug 2023 17:22:27 +0100,
+> > Mostafa Saleh <smostafa@google.com> wrote:
+> > > 
+> > > This reverts commit d232606773a0b09ec7f1ffc25f63abe801d011fd.
+> > > 
+> > > Using strscpy is not correct in this context and the commit
+> > > assumption is not right "strncpy is deprecated for use on
+> > > NUL-terminated destination strings".
+> > > 
+> > > strncpy is used here to copy parts of the string(cmdline) separated
+> > > by spaces into the buffer and not a NULL terminated string.
+> > > 
+> > > This breaks the arm options "kvm-arm.mode=protected, arm64.nobti ..."
+> > > 
+> > > Signed-off-by: Mostafa Saleh <smostafa@google.com>
+> > > ---
+> > >  arch/arm64/kernel/idreg-override.c | 6 +++---
+> > >  1 file changed, 3 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+> > > index aee12c75b738..2fe2491b692c 100644
+> > > --- a/arch/arm64/kernel/idreg-override.c
+> > > +++ b/arch/arm64/kernel/idreg-override.c
+> > > @@ -262,9 +262,9 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
+> > >  		if (!len)
+> > >  			return;
+> > >  
+> > > -		len = strscpy(buf, cmdline, ARRAY_SIZE(buf));
+> > > -		if (len == -E2BIG)
+> > > -			len = ARRAY_SIZE(buf) - 1;
+> > > +		len = min(len, ARRAY_SIZE(buf) - 1);
+> > > +		strncpy(buf, cmdline, len);
+> > > +		buf[len] = 0;
+> > >  
+> > >  		if (strcmp(buf, "--") == 0)
+> > >  			return;
+> > 
+> > Instead of completely reverting the patch, maybe something like the
+> > hack below (completely untested), so that we can still get rid of
+> > another instance of strncpy(), and yet bring back some sanity in the
+> > logic?
+> I was thinking of something similar, but I see we limit the len anyway
+> by the buffer size - 1 and force the NUL at the end so it should be
+> safe, unless the goal is to get rid of strncpy all the way, in this
+> case we can do it as you proposed.
+> 
+> There is also a V3 of the original patch which uses memcpy instead.
+> https://lore.kernel.org/all/20230831-strncpy-arch-arm64-v3-1-cdbb1e7ea5e1@google.com/
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Ah, that one would actually get my vote, because it does exactly what
+I actually intended this piece of code to do.
 
-Fixes: 19fbbbbcd3a3 ("Add TI CDCE925 I2C controlled clock synthesizer dri=
-ver")
-Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
----
- drivers/clk/clk-cdce925.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Justin, do you mind rebasing your v3 on top of to restore the
+currently broken functionality?
+>
+> > Thanks,
+> > 
+> > 	M.
+> > 
+> > diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+> > index aee12c75b738..be5c778a3f14 100644
+> > --- a/arch/arm64/kernel/idreg-override.c
+> > +++ b/arch/arm64/kernel/idreg-override.c
+> > @@ -262,9 +262,8 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
+> >  		if (!len)
+> >  			return;
+> >  
+> > -		len = strscpy(buf, cmdline, ARRAY_SIZE(buf));
+> > -		if (len == -E2BIG)
+> > -			len = ARRAY_SIZE(buf) - 1;
+> > +		len = min(len, ARRAY_SIZE(buf) - 1);
+> > +		strscpy(buf, cmdline, len);
+> >  
+> >  		if (strcmp(buf, "--") == 0)
+> >  			return;
+> > 
+> > 
+> > -- 
+> >
+> 
+> Tested-by: Mostafa Saleh <smostafa@google.com>
 
-diff --git a/drivers/clk/clk-cdce925.c b/drivers/clk/clk-cdce925.c
-index 96ac90364847..d903cdc3ad7d 100644
---- a/drivers/clk/clk-cdce925.c
-+++ b/drivers/clk/clk-cdce925.c
-@@ -441,7 +441,7 @@ static long cdce925_clk_round_rate(struct clk_hw *hw,=
- unsigned long rate,
- 	unsigned long l_parent_rate =3D *parent_rate;
- 	u16 divider =3D cdce925_calc_divider(rate, l_parent_rate);
-=20
--	if (l_parent_rate / divider !=3D rate) {
-+	if (divider && l_parent_rate / divider !=3D rate) {
- 		l_parent_rate =3D cdce925_clk_best_parent_rate(hw, rate);
- 		divider =3D cdce925_calc_divider(rate, l_parent_rate);
- 		*parent_rate =3D l_parent_rate;
---=20
-2.30.2
+Cheers Mostafa.
 
+You could also just pick it, and repost it as a v2 (I really don't
+mind). It should give Will and Catalin a choice of implementations
+(and an opportunity for some additional bike-shedding ;-)).
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
