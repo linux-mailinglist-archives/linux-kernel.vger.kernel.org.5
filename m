@@ -2,163 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50B5978FE5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:37:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6048378FE5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349768AbjIANhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:37:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
+        id S243999AbjIANhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233098AbjIANhR (ORCPT
+        with ESMTP id S233098AbjIANhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:37:17 -0400
-Received: from forward103b.mail.yandex.net (forward103b.mail.yandex.net [178.154.239.150])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C82CCDD
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:37:10 -0700 (PDT)
-Received: from mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:2e14:0:640:2cd1:0])
-        by forward103b.mail.yandex.net (Yandex) with ESMTP id BCE3E600C9;
-        Fri,  1 Sep 2023 16:37:03 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 1bTJsPiDbqM0-prEI6731;
-        Fri, 01 Sep 2023 16:37:03 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=itb.spb.ru; s=mail; t=1693575423;
-        bh=Ba8JWc3C9psCW/rmvc3IHsDGaZyabBvdUWtlCB4rRX8=;
-        h=Message-Id:Date:Cc:Subject:To:From;
-        b=UrNdCmqqSOogo/OavfhMWwDrPKx8G1SaWm5o2i6XE+DQ7WQ2rF5o2IEANWoxn3sWr
-         UIEqAIbCA5X6kvpeGf6E7Vmin6mLvsECllP4c4zRrqpBiwq1EOjNsR1SO/BK34+OkI
-         NfQheI5H1w347KexyNmJ8fMPItl9hA2MPcS/8M7o=
-Authentication-Results: mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net; dkim=pass header.i=@itb.spb.ru
-From:   Dembskiy Igor <dii@itb.spb.ru>
-To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc:     Dembskiy Igor <dii@itb.spb.ru>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Akinobu Mita <akinobu.mita@gmail.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH] mtd: tests: remove useless checks
-Date:   Fri,  1 Sep 2023 16:36:41 +0300
-Message-Id: <20230901133641.60817-1-dii@itb.spb.ru>
+        Fri, 1 Sep 2023 09:37:41 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5E5A6E77;
+        Fri,  1 Sep 2023 06:37:37 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 920D3FEC;
+        Fri,  1 Sep 2023 06:38:15 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id ABB273F844;
+        Fri,  1 Sep 2023 06:37:35 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     linux-perf-users@vger.kernel.org
+Cc:     James Clark <james.clark@arm.com>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] perf cs-etm: Bump minimum OpenCSD version to ensure a bugfix is present
+Date:   Fri,  1 Sep 2023 14:37:15 +0100
+Message-Id: <20230901133716.677499-1-james.clark@arm.com>
 X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return value of mtdtest_scan_for_bad_() is always 0. So it causes senseless
-checks in some functions such as mtd_subpagetest_init().
+Since commit d927ef5004ef ("perf cs-etm: Add exception level consistency
+check"), the exception that was added to Perf will be triggered unless
+the following bugfix from OpenCSD is present:
 
-Fixes: 084db4b020c7 ("mtd: tests: introduce helper functions")
-Signed-off-by: Dembskiy Igor <dii@itb.spb.ru>
+ - _Version 1.2.1_:
+  - __Bugfix__:
+    ETM4x / ETE - output of context elements to client can in some
+    circumstances be delayed until after subsequent atoms have been
+    processed leading to incorrect memory decode access via the client
+    callbacks. Fixed to flush context elements immediately they are
+    committed.
+
+Rather than remove the assert and silently fail, just increase the
+minimum version requirement to avoid hard to debug issues and
+regressions.
+
+Signed-off-by: James Clark <james.clark@arm.com>
 ---
- drivers/mtd/tests/oobtest.c     | 2 --
- drivers/mtd/tests/pagetest.c    | 2 --
- drivers/mtd/tests/readtest.c    | 2 --
- drivers/mtd/tests/speedtest.c   | 3 +--
- drivers/mtd/tests/stresstest.c  | 2 --
- drivers/mtd/tests/subpagetest.c | 2 --
- drivers/mtd/tests/torturetest.c | 2 --
- 7 files changed, 1 insertion(+), 14 deletions(-)
+ tools/build/feature/test-libopencsd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
-index 13fed398937e..976f40a5656e 100644
---- a/drivers/mtd/tests/oobtest.c
-+++ b/drivers/mtd/tests/oobtest.c
-@@ -399,8 +399,6 @@ static int __init mtd_oobtest_init(void)
- 	pr_info("test 1 of 5\n");
+diff --git a/tools/build/feature/test-libopencsd.c b/tools/build/feature/test-libopencsd.c
+index eb6303ff446e..4cfcef9da3e4 100644
+--- a/tools/build/feature/test-libopencsd.c
++++ b/tools/build/feature/test-libopencsd.c
+@@ -4,9 +4,9 @@
+ /*
+  * Check OpenCSD library version is sufficient to provide required features
+  */
+-#define OCSD_MIN_VER ((1 << 16) | (1 << 8) | (1))
++#define OCSD_MIN_VER ((1 << 16) | (2 << 8) | (1))
+ #if !defined(OCSD_VER_NUM) || (OCSD_VER_NUM < OCSD_MIN_VER)
+-#error "OpenCSD >= 1.1.1 is required"
++#error "OpenCSD >= 1.2.1 is required"
+ #endif
  
- 	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
--	if (err)
--		goto out;
- 
- 	prandom_seed_state(&rnd_state, 1);
- 	err = write_whole_device();
-diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
-index 8eb40b6e6dfa..a59ef88cdaf3 100644
---- a/drivers/mtd/tests/pagetest.c
-+++ b/drivers/mtd/tests/pagetest.c
-@@ -373,8 +373,6 @@ static int __init mtd_pagetest_init(void)
- 	if (!bbt)
- 		goto out;
- 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
--	if (err)
--		goto out;
- 
- 	/* Erase all eraseblocks */
- 	pr_info("erasing whole device\n");
-diff --git a/drivers/mtd/tests/readtest.c b/drivers/mtd/tests/readtest.c
-index 99670ef91f2b..8bc52aca1b2a 100644
---- a/drivers/mtd/tests/readtest.c
-+++ b/drivers/mtd/tests/readtest.c
-@@ -162,8 +162,6 @@ static int __init mtd_readtest_init(void)
- 	if (!bbt)
- 		goto out;
- 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
--	if (err)
--		goto out;
- 
- 	/* Read all eraseblocks 1 page at a time */
- 	pr_info("testing page read\n");
-diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
-index 075bce32caa5..978369f8d4c0 100644
---- a/drivers/mtd/tests/speedtest.c
-+++ b/drivers/mtd/tests/speedtest.c
-@@ -229,8 +229,7 @@ static int __init mtd_speedtest_init(void)
- 	if (!bbt)
- 		goto out;
- 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
--	if (err)
--		goto out;
-+
- 	for (i = 0; i < ebcnt; i++) {
- 		if (!bbt[i])
- 			goodebcnt++;
-diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
-index 8062098930d6..0a1fa8a2078e 100644
---- a/drivers/mtd/tests/stresstest.c
-+++ b/drivers/mtd/tests/stresstest.c
-@@ -189,8 +189,6 @@ static int __init mtd_stresstest_init(void)
- 	if (!bbt)
- 		goto out;
- 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
--	if (err)
--		goto out;
- 
- 	/* Do operations */
- 	pr_info("doing operations\n");
-diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
-index 05250a080139..5ca93e169a25 100644
---- a/drivers/mtd/tests/subpagetest.c
-+++ b/drivers/mtd/tests/subpagetest.c
-@@ -319,8 +319,6 @@ static int __init mtd_subpagetest_init(void)
- 		goto out;
- 
- 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
--	if (err)
--		goto out;
- 
- 	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
- 	if (err)
-diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
-index 841689b4d86d..46634198e19d 100644
---- a/drivers/mtd/tests/torturetest.c
-+++ b/drivers/mtd/tests/torturetest.c
-@@ -243,8 +243,6 @@ static int __init tort_init(void)
- 	}
- 
- 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bad_ebs, eb, ebcnt);
--	if (err)
--		goto out;
- 
- 	start_timing();
- 	while (1) {
+ int main(void)
 -- 
 2.34.1
 
