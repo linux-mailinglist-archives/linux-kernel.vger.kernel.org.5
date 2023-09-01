@@ -2,147 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C9478FA09
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1112D78FA05
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:36:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238512AbjIAIgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:36:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39636 "EHLO
+        id S1348602AbjIAIgd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Sep 2023 04:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233494AbjIAIgy (ORCPT
+        with ESMTP id S230120AbjIAIgc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:36:54 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D9810DE;
-        Fri,  1 Sep 2023 01:36:51 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1bf1935f6c2so11331305ad.1;
-        Fri, 01 Sep 2023 01:36:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693557410; x=1694162210; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=55BfpGuwLusivJNyI1HNMwBWqeaqctChQyzGU00DJsA=;
-        b=ovG+6kjhGPQb6+YTG8uRo7LFx2G0BbP8Gqm99OgnQlbU/5rESQF2HFjn88aSor2XmR
-         fDmYZUmF6sEAW4ybrfjFg/PvE+90kUNil6mg/ISwt6d+NMidHRqVJBEc2PS8jhQ0JYRq
-         PG2lQk7V+VybMDzTWFI3ChAS6FC5zMDWA7txQ7piHWHr2MEJsX70ANknce25F6ZEkWuc
-         r4u5XD+9kDO7BMz7arPAiwVQk6FftKba1vsSfZK+XSh9lJQcOYyduwoZFb1VblemHYZt
-         Gi+NQHEob+B1hlQeefmQZ25TUlp9/0UtJiayxk7ZQwYTvbbfrd5jkeMjwGAnRO6u+4y/
-         BnAg==
+        Fri, 1 Sep 2023 04:36:32 -0400
+Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com [209.85.217.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A81E54
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:36:30 -0700 (PDT)
+Received: by mail-vs1-f43.google.com with SMTP id ada2fe7eead31-44d4c3fa6a6so835604137.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 01:36:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693557410; x=1694162210;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=55BfpGuwLusivJNyI1HNMwBWqeaqctChQyzGU00DJsA=;
-        b=e3FK7htCummxWriOnMzEpc8NWSDvbYsWAlvt36HPc/ovBPEP1P6spk89ZCSGgnx8z5
-         9h1wi3ckxfBx8cBt2WycvsH4nxS1Mqjd74P5nXV/zy5P6+a2NlUjoOPvCeNbt1+y/P7A
-         1yd2qvI2HVMP6nZJGKAnQwRZJ3Hw/e/UE9hY1zuk2DAXnuBv/IuXPmjsk8StMX7dTPiM
-         zU/Fp8Ft3SqayRlO2cTfwhUbuFeZlhrGD+V0kZMNiSEKKqcMTt0a2W1z7qq5qFJckX3m
-         bT/+ArkyuwFrRLsz1YoOE4UpOaujg5ei+bwko2GlYNiTISsPLKY2JLXpDNizDbNFJvFQ
-         YstQ==
-X-Gm-Message-State: AOJu0YxxrwG02rAZLNlxw2ed0ujymHYvFqljw1J2VpcJUiPeojosscBZ
-        ROUV7J3TQibawQ0E3Sqhn3E=
-X-Google-Smtp-Source: AGHT+IHVEy1KUMGUAHI2M1xMPYpYaSCOYprCl6jmt9DoGlb3eSNpaEYVvTfP2tysSOGBzgZf0puP3g==
-X-Received: by 2002:a17:902:e5c5:b0:1bb:85cd:9190 with SMTP id u5-20020a170902e5c500b001bb85cd9190mr2980803plf.18.1693557410610;
-        Fri, 01 Sep 2023 01:36:50 -0700 (PDT)
-Received: from sw.. (220-128-98-63.hinet-ip.hinet.net. [220.128.98.63])
-        by smtp.gmail.com with ESMTPSA id iy22-20020a170903131600b001bf20c80684sm2502504plb.6.2023.09.01.01.36.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 01:36:50 -0700 (PDT)
-From:   Szuying Chen <chensiying21@gmail.com>
-X-Google-Original-From: Szuying Chen <Chloe_Chen@asmedia.com.tw>
-To:     Niklas.Cassel@wdc.com, dlemoal@kernel.org,
-        linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Jesse1_Chang@asmedia.com.tw, Richard_Hsu@asmedia.com.tw,
-        Chloe_Chen@asmedia.com.tw
-Subject: [PATCH v2] ahci: libahci: clear pending interrupt status
-Date:   Fri,  1 Sep 2023 16:36:13 +0800
-Message-Id: <20230901083613.5544-1-Chloe_Chen@asmedia.com.tw>
-X-Mailer: git-send-email 2.39.2
+        d=1e100.net; s=20221208; t=1693557389; x=1694162189;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9In4nrX/GR/RCCX5fOoCIkv3k2tP/MwKkhXoJjcyrpw=;
+        b=bN/s+UXRsId9yX9bGQJH6uRXtYKLSss20Su4sdWrUyajSAmPQqUVZKTgOvJ4DXF30p
+         6/JlMuus3RgXlJEvEEafxPgkFLeOz1nTDdoOe7hFST7utX7J1feKijAyah3vX/RhMQuW
+         W9Jup1EfaSQP/wcLT19EyrKjGMapsvrQISlHQYG8Bg7Cs2aeILj+IgNieQgzna2AaOxq
+         DSSSDrGy8nA7YNweUA0heNM+wQYTygS3mTwwXc+Z452j71KuwAjOZyFDo7viazq5Ljt/
+         gT1te7KXRXE/mA6u+gcqxzICKixgg0jEQ+CIrtIoC65xH6kKY4AVr3E68QqH8nS/LCeH
+         ET1Q==
+X-Gm-Message-State: AOJu0YyUnxyhiu0Y8ekjk2g3+iQUSwKjsZWO7yGidKM8gnHCgStWTJ5/
+        N4IzCk3XZjEoIZsOhi3nZKPGHBYn9S/nWA==
+X-Google-Smtp-Source: AGHT+IHNk8mPr7+JiuLOJLsK89RFCANlyk/VTAEbi7vEFAp/yWOdNgivRNjNtAcD+0XFjfi8AZ8QEg==
+X-Received: by 2002:a67:f807:0:b0:44d:6320:f0c8 with SMTP id l7-20020a67f807000000b0044d6320f0c8mr2422553vso.15.1693557389175;
+        Fri, 01 Sep 2023 01:36:29 -0700 (PDT)
+Received: from mail-vs1-f46.google.com (mail-vs1-f46.google.com. [209.85.217.46])
+        by smtp.gmail.com with ESMTPSA id n9-20020a67d609000000b0044d5a4890b6sm525516vsj.17.2023.09.01.01.36.28
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 01:36:29 -0700 (PDT)
+Received: by mail-vs1-f46.google.com with SMTP id ada2fe7eead31-44e2bd06230so826562137.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 01:36:28 -0700 (PDT)
+X-Received: by 2002:a67:e951:0:b0:44d:4aa1:9d3a with SMTP id
+ p17-20020a67e951000000b0044d4aa19d3amr2382924vso.32.1693557388788; Fri, 01
+ Sep 2023 01:36:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830062546.720679-1-javierm@redhat.com> <zitno3p7tbnld5auedkx5g4wey2csng4ncmtdhzinbuhblunyk@chnwsnsgq36v>
+In-Reply-To: <zitno3p7tbnld5auedkx5g4wey2csng4ncmtdhzinbuhblunyk@chnwsnsgq36v>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Sep 2023 10:36:17 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
+Message-ID: <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds the function to clear pending interrupt before COMRESET.
-It follows the  AHCI1.3.1 - section6.2.2.2 specification.
+Hi Maxime,
 
-Signed-off-by: Szuying Chen <Chloe_Chen@asmedia.com.tw>
----modify function name and substitution related behavior.
+On Fri, Sep 1, 2023 at 10:22 AM Maxime Ripard <mripard@kernel.org> wrote:
+> On Wed, Aug 30, 2023 at 08:25:08AM +0200, Javier Martinez Canillas wrote:
+> > The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the plane's
+> > .atomic_check() callback") moved the allocation of the intermediate and
+> > HW buffers from the encoder's .atomic_enable callback to primary plane's
+> > .atomic_check callback.
+> >
+> > This was suggested by Maxime Ripard because drivers aren't allowed to fail
+> > after drm_atomic_helper_swap_state() has been called, and the encoder's
+> > .atomic_enable happens after the new atomic state has been swapped.
+> >
+> > But that change caused a performance regression in very slow platforms,
+> > since now the allocation happens for every plane's atomic state commit.
+> > For example, Geert Uytterhoeven reports that is the case on a VexRiscV
+> > softcore (RISC-V CPU implementation on an FPGA).
+>
+> I'd like to have numbers on that. It's a bit surprising to me that,
+> given how many objects we already allocate during a commit, two small
+> additional allocations affect performances so dramatically, even on a
+> slow platform.
 
- drivers/ata/libahci.c | 38 ++++++++++++++++++++++++++------------
- 1 file changed, 26 insertions(+), 12 deletions(-)
+To be fair, I didn't benchmark that.  Perhaps it's just too slow due to
+all these other allocations (and whatever else happens).
 
-diff --git a/drivers/ata/libahci.c b/drivers/ata/libahci.c
-index 06aec35f88f2..f8ecd9956ea1 100644
---- a/drivers/ata/libahci.c
-+++ b/drivers/ata/libahci.c
-@@ -1256,6 +1256,27 @@ static ssize_t ahci_activity_show(struct ata_device *dev, char *buf)
- 	return sprintf(buf, "%d\n", emp->blink_policy);
- }
+I just find it extremely silly to allocate a buffer over and over again,
+while we know that buffer is needed for each and every display update.
 
-+static void ahci_port_clear_pending_irq(struct ata_port *ap)
-+{
-+	struct ahci_host_priv *hpriv = ap->host->private_data;
-+	void __iomem *port_mmio = ahci_port_base(ap);
-+	u32 tmp;
-+
-+	/* clear SError */
-+	tmp = readl(port_mmio + PORT_SCR_ERR);
-+	dev_dbg(ap->host->dev, "PORT_SCR_ERR 0x%x\n", tmp);
-+	writel(tmp, port_mmio + PORT_SCR_ERR);
-+
-+	/* clear port IRQ */
-+	tmp = readl(port_mmio + PORT_IRQ_STAT);
-+	dev_dbg(ap->host->dev, "PORT_IRQ_STAT 0x%x\n", tmp);
-+	if (tmp)
-+		writel(tmp, port_mmio + PORT_IRQ_STAT);
-+
-+	writel(1 << ap->port_no, hpriv->mmio + HOST_IRQ_STAT);
-+
-+}
-+
- static void ahci_port_init(struct device *dev, struct ata_port *ap,
- 			   int port_no, void __iomem *mmio,
- 			   void __iomem *port_mmio)
-@@ -1270,18 +1291,8 @@ static void ahci_port_init(struct device *dev, struct ata_port *ap,
- 	if (rc)
- 		dev_warn(dev, "%s (%d)\n", emsg, rc);
+Gr{oetje,eeting}s,
 
--	/* clear SError */
--	tmp = readl(port_mmio + PORT_SCR_ERR);
--	dev_dbg(dev, "PORT_SCR_ERR 0x%x\n", tmp);
--	writel(tmp, port_mmio + PORT_SCR_ERR);
--
--	/* clear port IRQ */
--	tmp = readl(port_mmio + PORT_IRQ_STAT);
--	dev_dbg(dev, "PORT_IRQ_STAT 0x%x\n", tmp);
--	if (tmp)
--		writel(tmp, port_mmio + PORT_IRQ_STAT);
--
--	writel(1 << port_no, mmio + HOST_IRQ_STAT);
-+	/* clear pending irq */
-+	ahci_port_clear_pending_irq(ap);
+                        Geert
 
- 	/* mark esata ports */
- 	tmp = readl(port_mmio + PORT_CMD);
-@@ -1602,6 +1613,9 @@ int ahci_do_hardreset(struct ata_link *link, unsigned int *class,
- 	tf.status = ATA_BUSY;
- 	ata_tf_to_fis(&tf, 0, 0, d2h_fis);
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-+	/* clear pending irq */
-+	ahci_port_clear_pending_irq(ap);
-+
- 	rc = sata_link_hardreset(link, timing, deadline, online,
- 				 ahci_check_ready);
-
---
-2.39.2
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
