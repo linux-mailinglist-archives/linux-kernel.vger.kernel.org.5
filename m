@@ -2,106 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4737F78FCDD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D1A78FD07
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237522AbjIAMDC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37072 "EHLO
+        id S1349095AbjIALEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:04:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjIAMDC (ORCPT
+        with ESMTP id S242270AbjIALEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:03:02 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00B291
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:02:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693569779; x=1725105779;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=HybZOJ8Ii22+kDRhOxxVJCBV6TlVqulUPHRZO5bqzc8=;
-  b=ac4vCMvS9Jwx/k5vy7I2tNjcbUYfZDsSxA/HPCpPG28ILqTKAqG3ae4l
-   px/HtR/IG6HmNUcyDk9vavNYTl4ml0H9wbfCva9HP7GTG82TzUJoiQOmz
-   Ut5J8e3cNt+MRtbjb6YZPKw8qOG5n5fDwSxUqxk6TU16SDeBilhSTfSfh
-   5PMgJphWb+KXyAXHAXb1cSC3s9GCS7fnB8iqS0Mygsayvr+UdvAuQREqR
-   YKsopF+WoXJ+MxPdUJh9bH7ezAtvwVJ/6KhQR6Ib9g1mGhqQauCM5tPlK
-   osF+Zag4f48T63EEPpTngrfCBKigiuhofWH5Yg8/VddGJchE5E95kKKCm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="378931562"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="378931562"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 05:02:46 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="830101970"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="830101970"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 05:02:43 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qc2rI-005fBZ-2V;
-        Fri, 01 Sep 2023 15:02:40 +0300
-Date:   Fri, 1 Sep 2023 15:02:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Aleksandr Nogikh <nogikh@google.com>
-Cc:     syzbot <syzbot+d2c31705e468a347e6db@syzkaller.appspotmail.com>,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rafael@kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [kernel?] general protection fault in
- netdev_register_kobject
-Message-ID: <ZPHS4Ps3dszk/5m0@smile.fi.intel.com>
-References: <ZPCfeaBrzF433cWE@smile.fi.intel.com>
- <000000000000c5ab74060438a6f8@google.com>
- <CANp29Y5GFuGe9=kBp-xmTb8tesLY4oAjewZ5c_31jmf8+AocBQ@mail.gmail.com>
- <ZPC0GTe3yc9Kl8uh@smile.fi.intel.com>
- <CANp29Y62czRE-U=a0=ak0AkUv7vKZSECY9pnm74jEAuHRL1sxA@mail.gmail.com>
- <ZPDA1Z8Hwq3jdvgh@smile.fi.intel.com>
- <CANp29Y5Bq1fo8pFWGxKT9NTNW_-C6vf=A_hUKG2BJey5JRrO1g@mail.gmail.com>
+        Fri, 1 Sep 2023 07:04:01 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9524F10E4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:03:57 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso31579641fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:03:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693566236; x=1694171036; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=duvwdvUou9ovP3x58ccTQUVl1jXo27Ajp0N7Ke2ouSU=;
+        b=D6eAgRLMQSM+8VbQP1n9HMRa011IuMoUmHHHlNFYmuP+Ta/cVRv21Nn/Xz0WxA8itH
+         no/6MyddrXNivZ++sr23BWFAv0HRD8fe4zSBIgzkEXnDOotIYt8J0Yd3zeal0I63Y29z
+         lVPo/8uKTtYAIYPWQgIwONNjIPqHR6EKS480N8cstaAeG3PKAcHwpBhjw9od1Ge6FnD3
+         OmahZf5dFCTVF7fRwaFh1kUehyysPfPDRUZtIwKU7CZhjfUwZJWErkOX4x6Lf8uqfjYF
+         GzhM+M8Qu8AlwEtog8cCCADEBv3wWzOqC01bX7AmMG1yvO3SiSHpS+qRak3IPqvBP5iq
+         aIbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693566236; x=1694171036;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=duvwdvUou9ovP3x58ccTQUVl1jXo27Ajp0N7Ke2ouSU=;
+        b=bmxRmQPHDCm464XbzH9TYLT6H1zPqkSEBf9r8UG0E5y0ZB6ApnGNtnapQI4/BBo1yM
+         ZNe3kDRG4FihGWGpOlKs69yp2spTuzvY6hvsFDfyO2ngOp9uTe7c8GO0OGgG3+fdYeTX
+         8hoaw1z63U0q13C0evtsfUUoxCysMMaL+za+yukVB+4Edtjuwc8sinnI/5buOW8OzxOg
+         6JPL3XTBaUq0uIsdU5J3NB/43AS4+Cvic84cPBABEO9HNUAD8Vkm/hp4WFx3KvDb3P8A
+         i9jKqdzDoKUkPrMXEwV8ebhKlFiqyZmcXkWBsTJLHF0FAngR8cRiy2NAWEtX0gDFQm/P
+         RM7w==
+X-Gm-Message-State: AOJu0YySucKQCNR+2BabNqjhuLxqgrv/1wbCSWB/H0ep/c4o8P2UgsYr
+        uLj8PNh5NEgpZEoCMRFt2Ik=
+X-Google-Smtp-Source: AGHT+IHt96lX9c0h5UQyEWxF/ahPrbLxtus8+mTps5mtTJvC+wZbk4BlT1Mxbxz0HUpBNBcdRAsH7g==
+X-Received: by 2002:a2e:9c06:0:b0:2bc:f739:2eda with SMTP id s6-20020a2e9c06000000b002bcf7392edamr1356891lji.5.1693566235704;
+        Fri, 01 Sep 2023 04:03:55 -0700 (PDT)
+Received: from prasmi.home ([2a00:23c8:2501:c701:64d6:8737:b80d:a298])
+        by smtp.gmail.com with ESMTPSA id 11-20020a05600c248b00b003fc01495383sm7667847wms.6.2023.09.01.04.03.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 04:03:55 -0700 (PDT)
+From:   Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] riscv: Kconfig.errata: Add dependency for RISCV_SBI in ERRATA_ANDES config
+Date:   Fri,  1 Sep 2023 12:03:20 +0100
+Message-Id: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANp29Y5Bq1fo8pFWGxKT9NTNW_-C6vf=A_hUKG2BJey5JRrO1g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 01:07:20PM +0200, Aleksandr Nogikh wrote:
-> On Thu, Aug 31, 2023 at 6:33 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Thu, Aug 31, 2023 at 05:53:29PM +0200, Aleksandr Nogikh wrote:
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-...
+Andes errata uses sbi_ecalll() which is only available if RISCV_SBI is
+enabled. So add an dependency for RISCV_SBI in ERRATA_ANDES config to
+avoid any build failures.
 
-> > JFYI:
-> > 20230828145824.3895288-1-andriy.shevchenko@linux.intel.com
-> >
-> > Can be used for testing.
-> > So I like to write
-> >
-> > #syz test patch: 20230828145824.3895288-1-andriy.shevchenko@linux.intel.com
-> 
-> Thanks for the idea!
-> I've filed https://github.com/google/syzkaller/issues/4182
-> 
-> The biggest problem is to figure out the command syntax that'd also
-> let us specify the tree on which to apply the patch. Or to restrict
-> the patch testing to either apply the patch from lore on top of the
-> fuzzed tree or to accept repo/branch/patch explicitly.
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp@intel.com/
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ arch/riscv/Kconfig.errata | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ah, that's easy to solve. I've commented there.
-
+diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
+index bee5d838763b..566bcefeab50 100644
+--- a/arch/riscv/Kconfig.errata
++++ b/arch/riscv/Kconfig.errata
+@@ -2,7 +2,7 @@ menu "CPU errata selection"
+ 
+ config ERRATA_ANDES
+ 	bool "Andes AX45MP errata"
+-	depends on RISCV_ALTERNATIVE
++	depends on RISCV_ALTERNATIVE && RISCV_SBI
+ 	help
+ 	  All Andes errata Kconfig depend on this Kconfig. Disabling
+ 	  this Kconfig will disable all Andes errata. Please say "Y"
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.34.1
 
