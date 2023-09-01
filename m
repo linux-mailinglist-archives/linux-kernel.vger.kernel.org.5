@@ -2,216 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA0B378FF6A
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C415078FF71
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343532AbjIAOpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 10:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37836 "EHLO
+        id S1350069AbjIAOqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 10:46:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233245AbjIAOpE (ORCPT
+        with ESMTP id S233245AbjIAOqx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 10:45:04 -0400
-Received: from BN3PR00CU001.outbound.protection.outlook.com (mail-eastus2azon11020027.outbound.protection.outlook.com [52.101.56.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65DC818C;
-        Fri,  1 Sep 2023 07:45:00 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kUMd4gUNHheq78HgaTbSThO7qaF5hRn2oscrmwnCmlq1tPKoJPUq0xKj8M8oF0iOEz1c1nHLK8wi2u4nTBfjsmO9quJyQyEgua3NO4oNYJJkg+rAW8zYrKKLmkm78lfaQ/++tw+zYKHlP3F6NHmadXMo+lgt4iunUOhqcLm2ZiD7wMnXm/Wtde19JAXNevwPbfQUu7rbkOseqUo7Htb7qQZZqxyYrWrq1e1kSc//B5j4Uuer3fHX/ocRr9LcDVHPlZQRd9AZEG/Hypugp3vFCt1/KhOXotOkXAhyR5H+qNG1/R1fbpBd/i5py4I1s6U725pd/oErDm4QyPGbm2KZFw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ss6NdFaMYMm1VV0V5TcuJRFO04Iv+uMZn7uHL02A1vM=;
- b=VK/n8pz7Vuy60oYb4oAW+3XMvUPru8oftFT5ORwsv5SzK4Aeu+4CUsBe8D1hK25IzhZ2sYg9UPV0Oj+OArvSY2gxq7LqflS6E78BJ6kCcd09PdXzW21ANow1Iu4fNwJHOmp9i0J8DpNzIn8K8Y7se6qv+/F8c4TTc82G3NGe01xmFKPnok5s7r/TQCcK1BZWx1PQFo+vBTIpWSa9pCbiWtlcPE7ZWZuEbF6FLyfbq1sQNOYzbS4qEDg5oJsZMBPxYloBGzbcOPG0sZ68DSHBYrDyShNR6VHdfGRjMnrPpwWy+9VbBI+n0H9F7MY1KbkPyokwZZOs5ftrTR4pUvaKGw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ss6NdFaMYMm1VV0V5TcuJRFO04Iv+uMZn7uHL02A1vM=;
- b=Uc8lUMoB1OPD0L8PonY3hLNpH1IJHkBI/IQbVXaGm+1ASUjbKUa2dMj/eanODXADhujDO2UZfZOU/3KD6XxjpJnfbpTwPbPjY49UxL9B52DAt6tICjavD1wLUkAA9UKkTIDciiSLsvfov58iFkOm+fZYRYbcWQfuKxVq61FaS6M=
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com (2603:10b6:a02:bf::26)
- by CD1PPFD714A2753.namprd21.prod.outlook.com (2603:10b6:340:1:0:2:0:16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6723.11; Fri, 1 Sep
- 2023 14:44:57 +0000
-Received: from BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::4cec:9321:1b73:6d5f]) by BYAPR21MB1688.namprd21.prod.outlook.com
- ([fe80::4cec:9321:1b73:6d5f%5]) with mapi id 15.20.6768.014; Fri, 1 Sep 2023
- 14:44:57 +0000
-From:   "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "sathyanarayanan.kuppuswamy@linux.intel.com" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: [RFC PATCH 1/1] x86/mm: Mark CoCo VM pages invalid while moving
- between private and shared
-Thread-Topic: [RFC PATCH 1/1] x86/mm: Mark CoCo VM pages invalid while moving
- between private and shared
-Thread-Index: AQHZsCj16DTf9qLclEez7by16vQ1nrAD1nIAgAEqqACAAV0hQA==
-Date:   Fri, 1 Sep 2023 14:44:57 +0000
-Message-ID: <BYAPR21MB16889C1EA1EFEF5F1F3306BBD7E4A@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <1688661719-60329-1-git-send-email-mikelley@microsoft.com>
-         <72def9c793a99bc9bc39fbc887fd72ded00e4910.camel@intel.com>
- <a2570676d1b06a0227e733ff09d408567d1d615d.camel@intel.com>
-In-Reply-To: <a2570676d1b06a0227e733ff09d408567d1d615d.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=b7e5c203-8d13-4275-bf9d-d6a51b7d4cb4;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-09-01T14:19:10Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BYAPR21MB1688:EE_|CD1PPFD714A2753:EE_
-x-ms-office365-filtering-correlation-id: f965b638-3a43-4541-d64b-08dbaafa0335
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: De+lFuBrYej2y94eJWsDHkx2LuEHFEvVfKEVvlBtzM1sm8k1DPb/v1/g733O9OxWb+ljVNJT8VkTWeIdT8xwRGe/4H9zya59B7QA7f0wqgeviCmRNdjiIl8bd9qHczWz+QMqLoMrlKxwC0AWnLOBCJckIXp1ErIOoflEiwBFavSlwJzxQt6jctvURv6dvYP3kWZsc26JdSbQ45509+lWgKur23GGDZ6ZWHKoSrsJ9QHoy2NxAsHDiNxH2vnECpTywXy9bIIdlpl/SB3q5fGI3gSqMsIxhy3tYtJXwypxrBsTerDPuh43/Veaxt0qPdSOF6YEesHslSkO6QZkYCZwz/I12/yh2q3270l7n7ygMUfZf9NasdaYw8vxYLpE7ANd1sI4lYJwz9GDO0PxaIOwvaXu0biUkheuB14uolBPDC1sAu8EwGX+GYlxtBW8ST+uSDsqtnnm1TDE4D25kwGA5OJVJoLMh5d/vDoHMv/UsJEWL/gHVmy6DENDSY8DaBdW6NcMNmdoPRK+voSCHDf9gszPFSjcxGxWVad7nFX2gb8lRWWcqJuUHkNIUxM/vMrX0yiqGMO5C2plD+qzwD4zY64D8CciOcigZ93zAc9d63WOK0YmWtCYqB5VFvjj7DaAFF4LBjrckeX73tYiG3AwbPmZNmM6asJt9D5Om8bThcQBDHZTt03SID1pqmZpJwnQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR21MB1688.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(6029001)(376002)(346002)(39860400002)(136003)(366004)(396003)(186009)(451199024)(1800799009)(83380400001)(66574015)(86362001)(82960400001)(122000001)(66899024)(66556008)(64756008)(2906002)(33656002)(66476007)(66946007)(10290500003)(41300700001)(921005)(110136005)(38070700005)(82950400001)(55016003)(316002)(66446008)(8936002)(8676002)(38100700002)(9686003)(71200400001)(7696005)(478600001)(5660300002)(7416002)(26005)(76116006)(6506007)(8990500004)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?bDhCVDJUdmdxRlpCUGszWEw3eWU3U1dtNSs0VnRzZ0E0RklZZHBScjUyYm9R?=
- =?utf-8?B?ZnppV0RUNkFjckJPeXlWdytiQ3ZpNGhUL2F3YjVwcVJJeVhnc2RpYXl2TG5S?=
- =?utf-8?B?WGxTSy9VSWlJdjFSUVF4NDZSUnJFbFFTSm83NW1obFlCV1RIbXVLdDV2SnFn?=
- =?utf-8?B?UkpXeFRNdE5VY0xLZ1NTV1Fyc0w1UjcvYzhXZ0hmOHBiSGY2OWtDS3FNck80?=
- =?utf-8?B?TE5leFYyMzFEaXVuUVdVQnp5UzdzTStCTHFPMVNWQUlDMThXei9qL2EyS2lH?=
- =?utf-8?B?SDhhZXhXOXlYNjVPVjZXcS92aVlnQlhTU0NqaVIvaUxJSGkxS3oybXMwN0t0?=
- =?utf-8?B?WDJXV1cvUGU2Y2R1NGlWL0ZMQmQ0NjNmNUEwczlXQVlpMjhWdDg0cUJWVnZG?=
- =?utf-8?B?MUhpK2Q1YXhyUlE5dnRiK3ZEUFZGekxjZXhPdWl2dXVabmFmZVMzR3hDam9p?=
- =?utf-8?B?S3crRHhKT2R6OVBQdjV2T0M1NEJXb3dZdktqU2dpT0NsNjVCV2JvK2hTaEZq?=
- =?utf-8?B?UkF6RGJMd2J4U25ndGRqWTg0ZWtTWnhjcm5xVE9Wc3NybDZ6WmF1VkVTZzcx?=
- =?utf-8?B?Yk5PSmV3MGxSVGI3Smt3UXJ6UlZLcXJlc2tSdUt5aDZxTVlJU1NPTDNLbkhw?=
- =?utf-8?B?SFkrVTJ5cVFPRFdSVTJsYTdTY3F3dEpsRDdXSVROcE53Ymo4UG54blJMVHlm?=
- =?utf-8?B?eVpVWDBUdVhDU3d1SWdGRnFLQUdZdzJPNlZxblhUVFB6Tnc4RjlFMVh2dzJL?=
- =?utf-8?B?bm9xQWx6VEdhVHo3Q3FUMCtQWkxRb1hOSktrVDFzMzdrZnUrbFU1bjVJRE5p?=
- =?utf-8?B?Z2RCQk5mVEdEbnVyNndRZENjVmJVQVMrb0xPamp2L1hiVWhQQ25sNk9BbjdB?=
- =?utf-8?B?T0VhQ2FOL0l1NzBKdkNLaWdIa1RxSmV2RkNDRDRDRXRpbUhoclhnMlNhcDRN?=
- =?utf-8?B?RldGUVIrUjVQNmZYa0JPaHdsK1JBMVc3S1lxVkVldHdYbU5Dc1I1SkhWN0ZD?=
- =?utf-8?B?SXU1ck0rZnRSeUVjTTUxRGRQN0hBRUt5OGg5cDBUN0tYN016cGdwRmcrYzdn?=
- =?utf-8?B?ZTJGaHNzcTgremQzWnlGcThMcmFJWUEvdGQxRUVoUWpwMjdWS3RzRkkzTjFh?=
- =?utf-8?B?MWJGVXY4NXFmKzUrOVRsSXIxWTJZSkFYK0EveEZqUnlXM21zTzV1cEw2d0NU?=
- =?utf-8?B?MHlQakN5UHRMMS9zdnFXTFlZQzBQMmtCRldaOXJjYkg2K2VaSFpQL0pCMkR6?=
- =?utf-8?B?N3BTcXZQdjQ5citxeHpUUXlhWWtoVGU5U0tUdFhZNmRubXI2L09XTGVjcDRy?=
- =?utf-8?B?eEFhb3BYNkswUnFBM1hVdEUyWjJXUmZqZUV3ZUNnbUNFVS9STEswaWZUejZJ?=
- =?utf-8?B?WWtYWFpKd1pHRFhlMmt1TVpiQjVvM3hmV2k0aC9SYWprTi9IZmlKb1FrVjcy?=
- =?utf-8?B?NXdaZ2RjdGRzd1Y5clBEcnJaTmhxWk1xNW9uY052Vzl1UDZ5eCtwTnhiTXZ0?=
- =?utf-8?B?OS90MU1IWnRZSVJYRFlQRCtDc3AvQkI1aFc2NEhlblIxRnEySXZTQjNLNWVC?=
- =?utf-8?B?MHFCd0NpOTcycDN0ditncU4rMTNZOGlFMTY0cEpqS3JiYWZCWWVZRWpZRGpK?=
- =?utf-8?B?QkpuUnJjQ1dVbGo1eHg3ais2NThzM2oxbGZzclNEOEsrY2l6YXB4REhCOGRY?=
- =?utf-8?B?T0NIbUYvTDB2VHZTd0xjRWwxTE42M1ROaHlNN3JEOVZEYk0rV0JGeEtzZzRn?=
- =?utf-8?B?cE9HSmoyQldRTThzallyNzBjL2xMUmJGSzF4dnJXSzcrMVR2RVdxNzF3NzFD?=
- =?utf-8?B?K3NWMnpEQ1IxNjlaOWlDNzRZMnVGaG1LeVJ6eHB4Y2hwSytPTzZxZ3FLWnBk?=
- =?utf-8?B?QWVnUFBGQy9DcGg2K28rMndoM3lnb1VQenBCWVpRQWd0OTZrdGMwMitscGFL?=
- =?utf-8?B?R1RCS0hvUU81VDZ3YzVaMW9yS1piR0JyM1dwVkkzeldXZUtRZ3lHMjRrRS9F?=
- =?utf-8?B?VWhlZk1IS25DdjdBTG4zSkhHMlk3T1V4eFBtbEdCODlFb2xHS1N5T21uaHRF?=
- =?utf-8?B?NW5vWnU1bnduaTFtUXNMUGgzOTI4Q0xGT3lPbVJpdDJTMVBXZ3JMeFNva2xV?=
- =?utf-8?B?R2U0Sk1GeCt0UTdBdEVSOGNySWxZRGx0cFZZVlFPOXNDV25aOUErT0V0bmpo?=
- =?utf-8?B?WVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Fri, 1 Sep 2023 10:46:53 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5DD18C;
+        Fri,  1 Sep 2023 07:46:50 -0700 (PDT)
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3818gA9L015675;
+        Fri, 1 Sep 2023 14:46:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=qcppdkim1; bh=8CMSyXIqwUux7ENV+aKP3a29scUhMnZjeYinx4695w8=;
+ b=fKGrmbmjZO2NIYIM3WPecGxQVEi+2cXFLfJp6+Z9hGY7FkFLFpCBV1WQOvojgT748pI+
+ 0dr0ahMFQBDI4qYdXfp0Yqx2SFU8i5G6AktkkY3jCa3dVn5AhGytP6gGWp1D6VEtXpTn
+ 9/RgHKzWzEOQafJl81jgYz9Lx0C3U8IPd+aLwXXYYAYbzVVz8xGshCI7HgZlnUFb3okG
+ 2a2d0CVSkapAWWQt/WyTuEpxcZnQDOMbtAGsZ8rjmNri1PyAxQYEwGAjn2nLcPzaZ7hN
+ vzK/Rj6Vru55X5k2lc+Gud1cIuNAXvTsDKYhTJjrEBTzTZC91YW7kXOk7QxjC0TkCJb5 2w== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stpy9c77q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 14:46:38 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 381Ekc93025232
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Sep 2023 14:46:38 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Fri, 1 Sep 2023 07:46:37 -0700
+Date:   Fri, 1 Sep 2023 07:46:36 -0700
+From:   Bjorn Andersson <quic_bjorande@quicinc.com>
+To:     Om Prakash Singh <quic_omprsing@quicinc.com>
+CC:     <neil.armstrong@linaro.org>, <konrad.dybcio@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>, <conor+dt@kernel.org>,
+        <davem@davemloft.net>, <devicetree@vger.kernel.org>,
+        <herbert@gondor.apana.org.au>, <krzysztof.kozlowski+dt@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <robh+dt@kernel.org>, <vkoul@kernel.org>
+Subject: Re: [PATCH] crypto: qcom-rng: Add hwrng support
+Message-ID: <20230901144636.GP818859@hu-bjorande-lv.qualcomm.com>
+References: <20230901131502.1549809-1-quic_omprsing@quicinc.com>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR21MB1688.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f965b638-3a43-4541-d64b-08dbaafa0335
-X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Sep 2023 14:44:57.5316
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: FyVn6H2T65VTWh0CnhJ099ERPp+glfbqVHmeildek+/ZzYU0smd8EzhqORL2f1bwwsZLIB9+/8kITiL5fCmgGvR9owUlUPfQHnE7uSAUWQY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CD1PPFD714A2753
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230901131502.1549809-1-quic_omprsing@quicinc.com>
+X-Originating-IP: [10.49.16.6]
+X-ClientProxiedBy: nalasex01b.na.qualcomm.com (10.47.209.197) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Q3YWOWJN2aImLyvOgDYGZM4s7Wx0vgvn
+X-Proofpoint-GUID: Q3YWOWJN2aImLyvOgDYGZM4s7Wx0vgvn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_12,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 spamscore=0 impostorscore=0 suspectscore=0 adultscore=0
+ mlxlogscore=999 clxscore=1011 malwarescore=0 phishscore=0 bulkscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309010138
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRWRnZWNvbWJlLCBSaWNrIFAgPHJpY2sucC5lZGdlY29tYmVAaW50ZWwuY29tPiBTZW50
-OiBUaHVyc2RheSwgQXVndXN0IDMxLCAyMDIzIDEwOjMwIEFNDQo+IA0KPiBPbiBXZWQsIDIwMjMt
-MDgtMzAgYXQgMTY6NDAgLTA3MDAsIFJpY2sgRWRnZWNvbWJlIHdyb3RlOg0KPiA+IFRoaXMgaXMg
-YSBiaXQgb2YgYW4gZXhpc3RpbmcgcHJvYmxlbSwgYnV0IHRoZSBmYWlsdXJlIGNhc2VzIG9mIHRo
-ZXNlDQo+ID4gc2V0X21lbW9yeV9lbi9kZWNyeXB0ZWQoKSBvcGVyYXRpb25zIGRvZXMgbm90IGxv
-b2sgdG8gYmUgaW4gZ3JlYXQNCj4gPiBzaGFwZS4gSXQgY291bGQgZmFpbCBoYWxmd2F5IHRocm91
-Z2ggaWYgaXQgbmVlZHMgdG8gc3BsaXQgdGhlIGRpcmVjdA0KPiA+IG1hcCB1bmRlciBtZW1vcnkg
-cHJlc3N1cmUsIGluIHdoaWNoIGNhc2Ugc29tZSBvZiB0aGUgY2FsbGVycyB3aWxsIHNlZQ0KPiA+
-IHRoZSBlcnJvciBhbmQgZnJlZSB0aGUgdW5tYXBwZWQgcGFnZXMgdG8gdGhlIGRpcmVjdCBtYXAu
-IChJIHdhcw0KPiA+IGxvb2tpbmcgYXQgZG1hX2RpcmVjdF9hbGxvYygpKSBPdGhlcidzIGp1c3Qg
-bGVhayB0aGUgcGFnZXMuDQoNClNlZSBmdXJ0aGVyIGNvbW1lbnRzIGJlbG93Lg0KDQo+ID4NCj4g
-PiBCdXQgdGhlIHNpdHVhdGlvbiBiZWZvcmUgdGhlIHBhdGNoIGlzIG5vdCBtdWNoIGJldHRlciwg
-c2luY2UgdGhlIGRpcmVjdA0KPiA+IG1hcCBjaGFuZ2Ugb3IgZW5jX3N0YXR1c19jaGFuZ2VfcHJl
-cGFyZS9maW5pc2goKSBjb3VsZCBmYWlsIGFuZCBsZWF2ZQ0KPiA+IHRoZSBwYWdlcyBpbiBhbiBp
-bmNvbnNpc3RlbnQgc3RhdGUsIGxpa2UgdGhpcyBwYXRjaCBpcyB0cnlpbmcgdG8gYWRkcmVzcy4N
-Cj4gPg0KPiA+IFRoaXMgbGFjayBvZiByb2xsYmFjayBvbiBmYWlsdXJlIGZvciBDUEEgY2FsbHMg
-bmVlZHMgcGFydGljdWxhciBvZGQNCj4gPiBoYW5kbGluZyBpbiBhbGwgdGhlIHNldF9tZW1vcnko
-KSBjYWxsZXJzLiBUaGUgd2F5IGlzIHRvIG1ha2UgYSBDUEEgY2FsbA0KPiA+IHRvIHJlc3RvcmUg
-aXQgdG8gdGhlIHByZXZpb3VzIHBlcm1pc3Npb24sIHJlZ2FyZGxlc3Mgb2YgdGhlIGVycm9yIGNv
-ZGUNCj4gPiByZXR1cm5lZCBpbiB0aGUgaW5pdGlhbCBjYWxsIHRoYXQgZmFpbGVkLiBUaGUgY2Fs
-bGVycyBkZXBlbmQgb24gYW55IFBURQ0KPiA+IGNoYW5nZSBzdWNjZXNzZnVsbHkgbWFkZSBoYXZp
-bmcgYW55IG5lZWRlZCBzcGxpdHMgYWxyZWFkeSBkb25lIGZvcg0KPiA+IHRob3NlIFBURXMsIHNv
-IHRoZSByZXN0b3JlIGNhbiBzdWNjZWVkIGF0IGxlYXN0IGFzIGZhciBhcyB0aGUgZmFpbGVkDQo+
-ID4gQ1BBIGNhbGwgZ290Lg0KPiANCj4gV2FpdCwgc2luY2UgdGhpcyBkb2VzIHNldF9tZW1vcnlf
-bnAoKSBhcyB0aGUgZmlyc3Qgc3RlcCBmb3IgYm90aA0KPiBzZXRfbWVtb3J5X2VuY3J5cHRlZCgp
-IGFuZCBzZXRfbWVtb3J5X2RlY3J5cHRlZCgpLCB0aGF0IHBhdHRlcm4gaW4gdGhlDQo+IGNhbGxl
-cnMgd291bGRuJ3Qgd29yay4gSSB3b25kZXIgaWYgaXQgc2hvdWxkIHRyeSB0byByb2xsYmFjayBp
-dHNlbGYgaWYNCj4gc2V0X21lbW9yeV9ucCgpIGZhaWxzIChjYWxsIHNldF9tZW1vcnlfcCgpIGJl
-Zm9yZSByZXR1cm5pbmcgdGhlIGVycm9yKS4NCj4gQXQgbGVhc3QgdGhhdCB3aWxsIGhhbmRsZSBm
-YWlsdXJlcyB0aGF0IGhhcHBlbiBvbiB0aGUgZ3Vlc3Qgc2lkZS4NCg0KWWVzLCBJIGFncmVlIHRo
-ZSBlcnJvciBoYW5kbGluZyBpcyB2ZXJ5IGxpbWl0ZWQuICBJJ2xsIHRyeSB0byBtYWtlIG15DQpw
-YXRjaCBjbGVhbnVwIHByb3Blcmx5IGlmIHNldF9tZW1vcnlfbnAoKSBmYWlscyBhcyBzdGVwIDEu
-ICBJbiBnZW5lcmFsLA0KY29tcGxldGUgZXJyb3IgY2xlYW51cCBvbiBwcml2YXRlIDwtPiBzaGFy
-ZWQgdHJhbnNpdGlvbnMgbG9va3MgdG8gYmUNCnByZXR0eSBoYXJkLCBhbmQgdGhlIG9yaWdpbmFs
-IGltcGxlbWVudGF0aW9uIG9idmlvdXNseSBkaWRuJ3QgZGVhbA0Kd2l0aCBpdC4gIEZvciBtb3N0
-IG9mIHRoZSBzdGVwcyBpbiB0aGUgc2VxdWVuY2UsIGEgZmFpbHVyZSBpbmRpY2F0ZXMNCnNvbWV0
-aGluZyBpcyBwcmV0dHkgc2VyaW91c2x5IGJyb2tlbiB3aXRoIHRoZSBDb0NvIGFzcGVjdHMgb2Yg
-dGhlDQpWTSwgYW5kIGl0J3Mgbm90IGNsZWFyIHRoYXQgdHJ5aW5nIHRvIGNsZWFuIHVwIGlzIGxp
-a2VseSB0byBzdWNjZWVkIG9yDQp3aWxsIG1ha2UgdGhpbmdzIGFueSBiZXR0ZXIuICANCg0KPiAN
-Cj4gPg0KPiA+IEluIHRoaXMgQ09DTyBjYXNlIGFwcGFyZW50bHkgdGhlIGVuY19zdGF0dXNfY2hh
-bmdlX3ByZXBhcmUvZmluaXNoKCkNCj4gPiBjb3VsZCBmYWlsIHRvbyAoYW5kIG1heWJlIG5vdCBo
-YXZlIHRoZSBzYW1lIGZvcndhcmQgcHJvZ3Jlc3MNCj4gPiBiZWhhdmlvcj8pLiBTbyBJJ20gbm90
-IHN1cmUgd2hhdCB5b3UgY2FuIGRvIGluIHRoYXQgY2FzZS4NCg0KRXhhY3RseS4NCg0KPiA+DQo+
-ID4gSSdtIGFsc28gbm90IHN1cmUgaG93IGJhZCBpdCBpcyB0byBmcmVlIGVuY3J5cHRpb24gbWlz
-bWF0Y2hlZCBwYWdlcy4gIElzDQo+ID4gaXQgdGhlIHNhbWUgYXMgZnJlZWluZyB1bm1hcHBlZCBw
-YWdlcz8gKGxpa2VseSBvb3BzIG9yIHBhbmljKQ0KDQpJdCdzIGJhZCB0byBmcmVlIG1pc21hdGNo
-ZWQgcGFnZXMuICBZb3UncmUganVzdCBzZXR0aW5nIGEgdGltZSBib21iDQpmb3Igc29tZSBvdGhl
-ciBjb2RlIHRvIGVuY291bnRlciBsYXRlci4gIEl0IHdpbGwgZWl0aGVyIGNhdXNlIGFuDQpvb3Bz
-L3BhbmljLCBvciB3aWxsIGFsbG93IHRoZSBWTSB0byB1bmtub3dpbmdseSBwdXQgZGF0YSBpbiBh
-IHBhZ2UNCnRoYXQgaXMgdmlzaWJsZSB0byB0aGUgaHlwZXJ2aXNvciBhbmQgdmlvbGF0ZSB0aGUg
-dGVuZXRzIG9mIGJlaW5nIGENCkNvQ28gVk0uICBJbiB0aGUgY29kZSBJJ3ZlIHdvcmtlZCB3aXRo
-LCB3ZSBkb24ndCBmcmVlIGFueSBtZW1vcnkNCndoZXJlIHNldF9tZW1vcnlfZW5jcnlwdGVkKCkg
-b3Igc2V0X21lbW9yeV9kZWNyeXB0ZWQoKSBoYXMgZmFpbGVkLg0KV2UgYXNzdW1lIHRoZXJlIGhh
-c24ndCBiZWVuIGEgY2xlYW51cCBhbmQgaGVuY2UgdGhlIHN0YXRlIGFuZA0KY29uc2lzdGVuY3kg
-b2YgdGhlIG1lbW9yeSBpcyB1bmtub3duLg0KDQpJIHRoaW5rIHRoZXJlJ3MgYSBkZWNlbnQgYXJn
-dW1lbnQgZm9yIG5vdCBpbnZlc3RpbmcgdG9vIG11Y2ggZWZmb3J0DQppbiB0aGUgY2xlYW51cCBw
-YXRocyBmb3IgcHJpdmF0ZSA8LT4gc2hhcmVkIHRyYW5zaXRpb25zLiAgQSBmYWlsdXJlDQppbmRp
-Y2F0ZXMgdGhhdCBzb21ldGhpbmcgaXMgc2VyaW91c2x5IHdyb25nLCBmcm9tIHdoaWNoIGZ1bGwg
-cmVjb3ZlcnkNCmlzIHVubGlrZWx5LiAgQ2FsbGVycyBvZiBzZXRfbWVtb3J5X2VuY3J5cHRlZCgp
-L2RlY3J5cHRlZCgpIHNob3VsZA0KYXNzdW1lIHRoYXQgYSBmYWlsdXJlIGxlYXZlcyB0aGUgbWVt
-b3J5IGluIGFuIGluY29uc2lzdGVudCBzdGF0ZSwNCmFuZCB0aGUgbWVtb3J5IHNob3VsZCBqdXN0
-IGJlIGxlYWtlZCB1bnRpbCB0aGUgVk0gY2FuIGJlIHNodXRkb3duLg0KU29tZSBzdHJvbmcgY29t
-bWVudHMgYWxvbmcgdGhlc2UgbGluZXMgY291bGQgYmUgYWRkZWQgdG8NCnNldF9tZW1vcnlfZW5j
-cnlwdGVkKCkvZGVjcnlwdGVkKCkuDQoNCkknbSBnb2luZyB0byBiZSBvdXQgb24gdmFjYXRpb24g
-dW50aWwgbWlkLVNlcHRlbWJlciwgc28gaXQgd2lsbCBiZQ0KYSBjb3VwbGUgb2Ygd2Vla3MgYmVm
-b3JlIEkgZ2V0IGJhY2sgdG8gZG9pbmcgYSBmdWxsIHBhdGNoIHNldCB0aGF0DQpyZXNwb25kcyB0
-byB0aGVzZSBhbmQgb3RoZXIgY29tbWVudHMuDQoNCk1pY2hhZWwNCg==
+On Fri, Sep 01, 2023 at 06:45:02PM +0530, Om Prakash Singh wrote:
+> This is follow patch on top of [1]
+
+This information does not add value to the git history, if you need to
+inform the maintainer that the patch should be applied after some
+in-flight dependency then state so after the "---" line below.
+
+But, this patch strictly conflicts with [1], so the statement won't make
+sense if this is merged.
+
+> to add hwrng support for newer platform with trng capability.
+
+Please rewrite this so that it's clear that the problem you're trying to
+solve with this patch (i.e. the problem description) is that newer
+platforms has trng. Describe how this relates to the existing driver
+(e.g. same/similar hardware interface). State that you purposefully kept
+the crypto interface in place for the new hardware as well (so that it's
+clear that this isn't an accident or oversight).
+
+> 
+> [1] https://lore.kernel.org/lkml/20230824-topic-sm8550-rng-v2-4-dfcafbb16a3e@linaro.org/
+> 
+> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> ---
+>  drivers/crypto/qcom-rng.c | 72 ++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 63 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/crypto/qcom-rng.c b/drivers/crypto/qcom-rng.c
+> index fb54b8cfc35f..f78ffdcc66ec 100644
+> --- a/drivers/crypto/qcom-rng.c
+> +++ b/drivers/crypto/qcom-rng.c
+> @@ -13,6 +13,7 @@
+>  #include <linux/module.h>
+>  #include <linux/of.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/hw_random.h>
+
+Please keep these sorted, alphabetically.
+
+>  
+>  /* Device specific register offsets */
+>  #define PRNG_DATA_OUT		0x0000
+> @@ -32,13 +33,18 @@ struct qcom_rng {
+>  	struct mutex lock;
+>  	void __iomem *base;
+>  	struct clk *clk;
+> -	unsigned int skip_init;
+> +	struct qcom_rng_of_data *of_data;
+>  };
+>  
+>  struct qcom_rng_ctx {
+>  	struct qcom_rng *rng;
+>  };
+>  
+> +struct qcom_rng_of_data {
+> +	bool skip_init;
+> +	bool hwrng_support;
+> +};
+> +
+>  static struct qcom_rng *qcom_rng_dev;
+>  
+>  static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+> @@ -70,7 +76,7 @@ static int qcom_rng_read(struct qcom_rng *rng, u8 *data, unsigned int max)
+>  		}
+>  	} while (currsize < max);
+>  
+> -	return 0;
+> +	return currsize;
+>  }
+>  
+>  static int qcom_rng_generate(struct crypto_rng *tfm,
+> @@ -79,7 +85,8 @@ static int qcom_rng_generate(struct crypto_rng *tfm,
+>  {
+>  	struct qcom_rng_ctx *ctx = crypto_rng_ctx(tfm);
+>  	struct qcom_rng *rng = ctx->rng;
+> -	int ret;
+> +	int ret = -EFAULT;
+
+This initialization is useless, the very first thing you do with ret is
+to overwrite it with the return value of clk_prepare_enable().
+
+> +	int read_size = 0;
+
+Similarly, the first use of this variable is an assignment. And "ret"
+was a good, short, variable name.
+
+>  
+>  	ret = clk_prepare_enable(rng->clk);
+>  	if (ret)
+> @@ -87,11 +94,14 @@ static int qcom_rng_generate(struct crypto_rng *tfm,
+>  
+>  	mutex_lock(&rng->lock);
+>  
+> -	ret = qcom_rng_read(rng, dstn, dlen);
+> +	read_size = qcom_rng_read(rng, dstn, dlen);
+>  
+>  	mutex_unlock(&rng->lock);
+>  	clk_disable_unprepare(rng->clk);
+>  
+> +	if (read_size == dlen)
+
+This function used to return < 0 if qcom_rng_read() returned an error,
+and 0 in all other cases.
+
+Now you will pass through negative values, you will return 0 if the loop
+in qcom_rng_read() reached "dlen" ("max)", and you will return some
+positive number if the break condition in the loop hit.
+
+In other words, this is wrong.
+
+> +		ret = 0;
+> +
+>  	return ret;
+>  }
+>  
+> @@ -101,6 +111,16 @@ static int qcom_rng_seed(struct crypto_rng *tfm, const u8 *seed,
+>  	return 0;
+>  }
+>  
+> +static int qcom_hwrng_read(struct hwrng *rng, void *data, size_t max, bool wait)
+> +{
+> +	int ret;
+> +	struct qcom_rng *qrng;
+> +
+> +	qrng = (struct qcom_rng *)rng->priv;
+> +	ret = qcom_rng_read(qrng, data, max);
+> +	return ret;
+
+Initialize qrng directly when you define it, drop ret and just return
+qcom_rng_read() directly.
+
+> +}
+> +
+>  static int qcom_rng_enable(struct qcom_rng *rng)
+>  {
+>  	u32 val;
+> @@ -136,7 +156,7 @@ static int qcom_rng_init(struct crypto_tfm *tfm)
+>  
+>  	ctx->rng = qcom_rng_dev;
+>  
+> -	if (!ctx->rng->skip_init)
+> +	if (!ctx->rng->of_data->skip_init)
+>  		return qcom_rng_enable(ctx->rng);
+>  
+>  	return 0;
+> @@ -157,9 +177,16 @@ static struct rng_alg qcom_rng_alg = {
+>  	}
+>  };
+>  
+> +static struct hwrng qcom_hwrng = {
+> +	.name = "qcom-hwrng",
+> +	.read = qcom_hwrng_read,
+> +	.quality = 1024,
+> +};
+> +
+>  static int qcom_rng_probe(struct platform_device *pdev)
+>  {
+>  	struct qcom_rng *rng;
+> +	const struct qcom_rng_of_data *data;
+
+Move this one line up, so we maintain the reverse xmas tree.
+
+>  	int ret;
+>  
+>  	rng = devm_kzalloc(&pdev->dev, sizeof(*rng), GFP_KERNEL);
+> @@ -177,7 +204,8 @@ static int qcom_rng_probe(struct platform_device *pdev)
+>  	if (IS_ERR(rng->clk))
+>  		return PTR_ERR(rng->clk);
+>  
+> -	rng->skip_init = (unsigned long)device_get_match_data(&pdev->dev);
+> +	data = of_device_get_match_data(&pdev->dev);
+> +	rng->of_data = (struct qcom_rng_of_data *)data;
+
+Why didn't you assign rng->of_data directly?
+
+Also, of_device_get_match_data() returns a void *, so you should have to
+explicitly cast this.
+
+>  
+>  	qcom_rng_dev = rng;
+>  	ret = crypto_register_rng(&qcom_rng_alg);
+> @@ -185,6 +213,14 @@ static int qcom_rng_probe(struct platform_device *pdev)
+>  		dev_err(&pdev->dev, "Register crypto rng failed: %d\n", ret);
+>  		qcom_rng_dev = NULL;
+>  	}
+
+Would be nice with a newline here, to get some separation between the
+"paragraphs".
+
+> +	if (rng->of_data->hwrng_support) {
+> +		qcom_hwrng.priv = (unsigned long)qcom_rng_dev;
+> +		ret = hwrng_register(&qcom_hwrng);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "Register hwrng failed: %d\n", ret);
+> +			qcom_rng_dev = NULL;
+
+You're leaving the rng registered with crypto here. Not sure if that
+will result in a use after free, or just a NULL pointer dereference -
+but it's not good either way.
+
+> +		}
+> +	}
+>  
+>  	return ret;
+>  }
+> @@ -193,11 +229,29 @@ static int qcom_rng_remove(struct platform_device *pdev)
+>  {
+>  	crypto_unregister_rng(&qcom_rng_alg);
+>  
+> +	if (qcom_rng_dev->of_data->hwrng_support)
+> +		hwrng_unregister(&qcom_hwrng);
+
+Why not use devm_hwrng_register() above instead? Then you wouldn't have
+to unregister it here.
+
+> +
+>  	qcom_rng_dev = NULL;
+>  
+>  	return 0;
+>  }
+>  
+> +struct qcom_rng_of_data qcom_prng_of_data = {
+> +	.skip_init = false,
+> +	.hwrng_support = false,
+> +};
+> +
+> +struct qcom_rng_of_data qcom_prng_ee_of_data = {
+> +	.skip_init = true,
+> +	.hwrng_support = false,
+> +};
+> +
+> +struct qcom_rng_of_data qcom_trng_of_data = {
+> +	.skip_init = true,
+
+Can you please confirm that it's appropriate to name this "trng" without
+the "-ee" suffix. Should all trng instances (v2 and v3) skip
+initialization?
+
+> +	.hwrng_support = true,
+> +};
+> +
+>  static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
+>  	{ .id = "QCOM8160", .driver_data = 1 },
+>  	{}
+> @@ -205,9 +259,9 @@ static const struct acpi_device_id __maybe_unused qcom_rng_acpi_match[] = {
+>  MODULE_DEVICE_TABLE(acpi, qcom_rng_acpi_match);
+>  
+>  static const struct of_device_id __maybe_unused qcom_rng_of_match[] = {
+> -	{ .compatible = "qcom,prng", .data = (void *)0},
+> -	{ .compatible = "qcom,prng-ee", .data = (void *)1},
+> -	{ .compatible = "qcom,trng", .data = (void *)1},
+> +	{ .compatible = "qcom,prng", .data = &qcom_prng_of_data },
+> +	{ .compatible = "qcom,prng-ee", .data = &qcom_prng_ee_of_data },
+> +	{ .compatible = "qcom,trng", .data = &qcom_trng_of_data },
+
+So, should this be qcom,trng or qcom,trng-ee?
+
+
+Where is your devicetree binding patch?
+
+Regards,
+Bjorn
