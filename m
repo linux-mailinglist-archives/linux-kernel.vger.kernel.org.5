@@ -2,86 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BAF578FC9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3403878FC9C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:48:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244791AbjIALrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:47:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46556 "EHLO
+        id S1344866AbjIALsC convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Sep 2023 07:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245343AbjIALru (ORCPT
+        with ESMTP id S1345137AbjIALsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:47:50 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 25D291994
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:47:26 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 381Bkiql019545;
-        Fri, 1 Sep 2023 13:46:44 +0200
-Date:   Fri, 1 Sep 2023 13:46:44 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     "'Ammar Faizi'" <ammarfaizi2@gnuweeb.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        Nicholas Rosenberg <inori@vnlx.org>,
-        Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
-        Michael William Jonathan <moe@gnuweeb.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v1 0/5] nolibc x86-64 string functions
-Message-ID: <ZPHPJDXIkFfP5Eux@1wt.eu>
-References: <20230830135726.1939997-1-ammarfaizi2@gnuweeb.org>
- <5a821292d96a4dbc84c96ccdc6b5b666@AcuMS.aculab.com>
+        Fri, 1 Sep 2023 07:48:01 -0400
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C36170A
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:47:44 -0700 (PDT)
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-58fc4eaa04fso20829317b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:47:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693568863; x=1694173663;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KlILCXxelUgpayFeYE8jsNyi3YxHuXk4RJqViDf9D+s=;
+        b=FkErsmcUmGWzjc1JCgoodMofA825lUs2xOzpfzLNBZx4UkDwsXSfMlNjPqKlN/Y6IB
+         aK5PHxxsQfsecIkQo99mFE7fkKePyznRAehyQYAVOXqLCVLqJ7J8cgHveUvvireErPrN
+         klnJpcbevYLYtPfrc3OyBHRa2gpGi6V9CmLGV67TaUQZItlAPRfoeTRVlLjpu0fDBEcw
+         SdC9NoSrmwgCSORHQM/7SLJHFNwCvN45bWin2GvMJ9iEVQ8geCtq5z3hAw63oUYdprFN
+         fiZySd9ygPFf2y8eUj49lX4EoYMIsM6fbEjeex3+UYm2tBojJYA7rkI77m8R0WklOebd
+         HLMQ==
+X-Gm-Message-State: AOJu0YwIb+6+dHG2wt3LH5WP4zZ2OiNlnsIh/0xAmSKkbEtFyt5+kGh9
+        h7MNk0fZlse38CnrzqnvZgQcRiyvoXyFOg==
+X-Google-Smtp-Source: AGHT+IETj7hA2o+4MA1gxXRPjJT+WB4d7Ajc9wdRCcQxgdWGo35FhdgWKnyROrEhMsPebK2Ryvitpg==
+X-Received: by 2002:a81:6241:0:b0:589:f2dd:44a0 with SMTP id w62-20020a816241000000b00589f2dd44a0mr2553853ywb.33.1693568863189;
+        Fri, 01 Sep 2023 04:47:43 -0700 (PDT)
+Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
+        by smtp.gmail.com with ESMTPSA id z19-20020a81a253000000b0054f50f71834sm992278ywg.124.2023.09.01.04.47.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 04:47:42 -0700 (PDT)
+Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-58fc4eaa04fso20829047b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:47:42 -0700 (PDT)
+X-Received: by 2002:a25:e0c3:0:b0:cec:81af:cf92 with SMTP id
+ x186-20020a25e0c3000000b00cec81afcf92mr2613450ybg.36.1693568862448; Fri, 01
+ Sep 2023 04:47:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a821292d96a4dbc84c96ccdc6b5b666@AcuMS.aculab.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Sep 2023 13:47:31 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUYQPRMBg05HDDQq5kZvbv2Tx_kjeri5GMANRXoxTJF=Q@mail.gmail.com>
+Message-ID: <CAMuHMdUYQPRMBg05HDDQq5kZvbv2Tx_kjeri5GMANRXoxTJF=Q@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Kconfig.errata: Add dependency for RISCV_SBI in
+ ERRATA_ANDES config
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 11:34:18AM +0000, David Laight wrote:
-> From: Ammar Faizi <ammarfaizi2@gnuweeb.org>
-> > Sent: 30 August 2023 14:57
-> > 
-> > This is an RFC patchset for nolibc x86-64 string functions. There are 5
-> > patches in this series.
-> > 
-> > ## Patch 1-3: Use `rep movsb`, `rep stosb`, and `rep cmpsb` for:
-> >     - memcpy() and memmove()
-> >     - memset()
-> >     - memcmp()
-> > respectively. They can simplify the generated ASM code.
-> > 
-> ...
-> > After this series:
-> > ```
-> >   000000000000140a <memmove>:
-> >     140a: 48 89 f8              mov    %rdi,%rax
-> >     140d: 48 89 d1              mov    %rdx,%rcx
-> >     1410: 48 8d 7c 0f ff        lea    -0x1(%rdi,%rcx,1),%rdi
-> >     1415: 48 8d 74 0e ff        lea    -0x1(%rsi,%rcx,1),%rsi
-> >     141a: fd                    std
-> >     141b: f3 a4                 rep movsb %ds:(%rsi),%es:(%rdi)
-> >     141d: fc                    cld
-> >     141e: c3                    ret
-> 
-> Isn't that completely broken?
-> 
-> You need to select between forwards and backwards moves.
-> Since forwards moves are preferred it is best to do
-> 	if (dst - src < len)
-> 		backards_copy()
-> 	else
-> 		formwards_copy()
-> 
-> 	David
+On Fri, Sep 1, 2023 at 1:03 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Andes errata uses sbi_ecalll() which is only available if RISCV_SBI is
+> enabled. So add an dependency for RISCV_SBI in ERRATA_ANDES config to
+> avoid any build failures.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp@intel.com/
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-You're completely right indeed, reminds me about the copy_up/copy_down
-that were not used anymore :-)
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Willy
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
