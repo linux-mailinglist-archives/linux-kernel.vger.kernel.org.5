@@ -2,59 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B907900B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64BC77900B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346415AbjIAQZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 12:25:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54136 "EHLO
+        id S1345897AbjIAQZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 12:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345362AbjIAQZW (ORCPT
+        with ESMTP id S229542AbjIAQZV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 12:25:22 -0400
+        Fri, 1 Sep 2023 12:25:21 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E0D10D4;
-        Fri,  1 Sep 2023 09:25:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83FDD10EF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 09:25:18 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 39797B82519;
-        Fri,  1 Sep 2023 16:25:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B7CDFC43391;
+        by ams.source.kernel.org (Postfix) with ESMTPS id F0455B8259C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 16:25:16 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B26F9C433CD;
         Fri,  1 Sep 2023 16:25:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693585515;
-        bh=V8XH4cIvHWrSs/u5pfHFkWBm7960Sk/XsLtEUa1DSQA=;
+        bh=xFHHICU0oX7e9xcoLMZr0SP3idCLvPufOEnHfkrVwLI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=BzksYAGVttU96YQgR8k5uPURSLS9LxrDL3vCUmVWVd45VRtBL/9kKNPEEGelVZhxc
-         Oc/b4siJEVLM1MxOshBWjoNsfwpV/l5oYYAlrdYh8JJWyRWPW55lIZtKj1rUPixmP5
-         I3QIn7BAV56Jw4ujVvpUR+GqHQH9eU8LgHFpqAQaE1eK8kCFgQhtHk0hJH7B8A18Ci
-         GqfEXh5Qx6Iw6MmoeBeILSTb9jQuOVFf8FUDPolZBe9kvmn8N7D6b0q6Dtuj8cKbPS
-         GQIybfMcQcwTtqXXSwbdaiTR3re0BpZE9MKbAdCwWZeu5iafX9qtUdTXs61O4Md7MD
-         pMwVI/9NU8lZQ==
+        b=nnN8Pm8CqO1rSwNEp4GVKpQXmbBdVNwgrpUE4BD7il58RtdAqAsCYBd9W5+3nwU58
+         oQRI2UNv2AXxzhJiyyFjFtBGnTANHXyZhkx1MmucPa5B1W76HRS6hvQNFGQEcjRPgc
+         ld0aBTSQ6I6Kuze9qH4KnS50uzxcJLEgIHrm5UjUaF+85H0z6Vs2OeQM5jmViXNgRT
+         FmGemGGavIQdqWQGn4+CxujbaEzV2AD0RSvdh30WZ/TLEeuc0yqb6tL7gs7YgOwmQs
+         xEDFohIXEURXICq2qtzJaUYxNclIVLqdUb//DWDPYjhclvC/vzQGa+gNGpAxOxQItN
+         SeGcK3+iH/1FA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A1CF0E4509E;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 999D8C64457;
         Fri,  1 Sep 2023 16:25:15 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v2 0/4] Add support for Allwinner D1 CAN controllers
+Subject: Re: [GIT PULL] RISC-V Patches for the 6.6 Merge Window, Part 1
 From:   patchwork-bot+linux-riscv@kernel.org
-Message-Id: <169358551565.8276.3801944999733958707.git-patchwork-notify@kernel.org>
+Message-Id: <169358551562.8276.3620661978678741860.git-patchwork-notify@kernel.org>
 Date:   Fri, 01 Sep 2023 16:25:15 +0000
-References: <20230721221552.1973203-2-contact@jookia.org>
-In-Reply-To: <20230721221552.1973203-2-contact@jookia.org>
-To:     John Watts <contact@jookia.org>
-Cc:     linux-riscv@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        wg@grandegger.com, mkl@pengutronix.de, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, wens@csie.org, jernej.skrabec@gmail.com,
-        samuel@sholland.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <mhng-d12081f2-1ff7-4f68-b320-f3aa5c458365@palmer-ri-x1c9>
+In-Reply-To: <mhng-d12081f2-1ff7-4f68-b320-f3aa5c458365@palmer-ri-x1c9>
+To:     Palmer Dabbelt <palmer@rivosinc.com>
+Cc:     linux-riscv@lists.infradead.org, torvalds@linux-foundation.org,
+        linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -67,28 +60,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This series was applied to riscv/linux.git (fixes)
-by Marc Kleine-Budde <mkl@pengutronix.de>:
+This pull request was applied to riscv/linux.git (fixes)
+by Linus Torvalds <torvalds@linux-foundation.org>:
 
-On Sat, 22 Jul 2023 08:15:49 +1000 you wrote:
-> This patch series adds support for the Allwinner D1 CAN controllers.
-> It requires adding a new device tree compatible and driver support to
-> work around some hardware quirks.
+On Fri, 01 Sep 2023 07:41:21 -0700 (PDT) you wrote:
+> The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 > 
-> This has been tested on the Mango Pi MQ Dual running a T113 and a Lichee
-> Panel 86 running a D1.
+>   Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
+> 
+> are available in the Git repository at:
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.6-mw1
 > 
 > [...]
 
 Here is the summary with links:
-  - [v2,1/4] dt-bindings: net: can: Add support for Allwinner D1 CAN controller
-    (no matching commit)
-  - [v2,2/4] riscv: dts: allwinner: d1: Add CAN controller nodes
-    https://git.kernel.org/riscv/c/6ea1ad888f59
-  - [v2,3/4] can: sun4i_can: Add acceptance register quirk
-    (no matching commit)
-  - [v2,4/4] can: sun4i_can: Add support for the Allwinner D1
-    (no matching commit)
+  - [GIT,PULL] RISC-V Patches for the 6.6 Merge Window, Part 1
+    https://git.kernel.org/riscv/c/e0152e7481c6
 
 You are awesome, thank you!
 -- 
