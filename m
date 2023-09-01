@@ -2,283 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AD1D78FCEF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE02178FCF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349344AbjIAMJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34976 "EHLO
+        id S1349353AbjIAMJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:09:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232105AbjIAMJM (ORCPT
+        with ESMTP id S232105AbjIAMJg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:09:12 -0400
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E22CED;
-        Fri,  1 Sep 2023 05:09:08 -0700 (PDT)
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 381Bq5ex019007;
-        Fri, 1 Sep 2023 14:08:45 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=AgPdwxl
-        fOYkddWeICfh2R/QYx7gBeJPsYy7S8++5P8c=; b=3w9zYjBNuZIbhCVscGU/hi0
-        bRf9MlZr7433vPpdtXDgAF89RqWpWbi+Hn//4y2c8vpvJpWUtwZvvcnebUnuPHOp
-        9EFiPbLWYNP4XXEknGM94he010dkMk0A53+Im8avcm4TjO1ttYux4IqGh04qrZxJ
-        hhzU9t8KTOuYweWZngp8gdwI8D7kkYag8bmQuk68UBy9NFFR00MVKqVdWoEsxiUX
-        ZywFa/3ltwtm2S9JG7YQWNeLl1keVO2S/rQ1H4CEJexvENlrgSU5zbMc7djX//3l
-        HTDaITEygKnW7OoamcOSmtVI7fqgoXlgOtnPNtOtMeDwi7D9itlldjFDCLZ1MSw=
-        =
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3sq89capmw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 01 Sep 2023 14:08:45 +0200 (MEST)
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id C0318100056;
-        Fri,  1 Sep 2023 14:08:43 +0200 (CEST)
-Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id DBAAF2291CF;
-        Fri,  1 Sep 2023 14:08:43 +0200 (CEST)
-Received: from localhost (10.201.20.125) by SHFDAG1NODE2.st.com (10.75.129.70)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Fri, 1 Sep
- 2023 14:08:42 +0200
-From:   Yann Gautier <yann.gautier@foss.st.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Russell King <linux@armlinux.org.uk>
-CC:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Christophe Kerello <christophe.kerello@foss.st.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Rob Herring <robh@kernel.org>, <linux-mmc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Yann Gautier <yann.gautier@foss.st.com>
-Subject: [PATCH] mmc: mmci: stm32: add SDIO in-band interrupt mode
-Date:   Fri, 1 Sep 2023 14:08:36 +0200
-Message-ID: <20230901120836.1057900-1-yann.gautier@foss.st.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 1 Sep 2023 08:09:36 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC1210D4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:09:26 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-4f14865fcc0so2142e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:09:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693570165; x=1694174965; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Bk0R5HmkInGGVBhixKSI0EHyOyIQVsim4IRVh14h/Ak=;
+        b=c7W56axAoVMPEMyWNLNsCz9qtogAjTYCrG9jgzR/Ig4c6+IDEYjox5uR5oe+SdnHv/
+         B9RLl7NnSgFIExNgVC5j2fKfEGJY+EFjuEKpuDoRT4oNc7mbUy+u4/pyw2AAgbVHNJkf
+         otD/UGCCyq/yfj0GhVNFkDMz3U0/U0qdFHVE3vekJy5ZHmMv9SDfDh+EiZZbTVjej7Zv
+         PbPu/lmU4FiTB0xgqfAmjgwPk4capZkDmt+4dimVkNu1hvJnKG8BYLJ5u8AHCcq0Kkrs
+         0r3pXPb0GVJlnaC7eiz0N4PtIKsw+cJl/EloC5uH9IrAfNdSC5Gul8abTEhE/9FHhyTH
+         Y3Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693570165; x=1694174965;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Bk0R5HmkInGGVBhixKSI0EHyOyIQVsim4IRVh14h/Ak=;
+        b=FIjiWGPt1BMIKwk1cZqD7n5E9xcGwoScKhhm3P4h6EsiUaoVI3kHgSFnBSr3+LX1ZO
+         9aP551vBz44eDR1GF9F4yT/NcBk6hqUlljbB1RDO/G4qhjEjEeS+Jl+8xa5s9yz1RCv9
+         AWL3SRxxoFuDo9o0azrUFt9w0erJ3J42ALIVK8zElEQ1/YFkuFqqYrcf2VT050Haivb8
+         lfRILA4EWIxs4N6yhf0+1VE/HWHsbYbHEfx7ejavcgYKjZlAB2h0Ey/RT3WTfdMkUPH6
+         5aTlQPJ2LF3Jce+77A0/+N0Jx6gL3kWC1BnI3BsA71TmTm2uzzqCWDQunaeORw/n5zc7
+         yjrQ==
+X-Gm-Message-State: AOJu0YwDGyrMiK4oD488k5muKwZD2+dSmV7PbQPbgamRe252LwK6qYZH
+        Pco6ARS9hnmKW1/CtSC00HrbQO9KIs7xcySGsw017w==
+X-Google-Smtp-Source: AGHT+IHyKH8gMHRqGy2CjmSPN/h9VmmoCG4dnvHumTIUR4FELciwbo+qucTHdn4HDTYm+hg6r/fSDA==
+X-Received: by 2002:ac2:5a0a:0:b0:4ff:d0c0:5d75 with SMTP id q10-20020ac25a0a000000b004ffd0c05d75mr93760lfn.0.1693570165014;
+        Fri, 01 Sep 2023 05:09:25 -0700 (PDT)
+Received: from google.com (44.232.78.34.bc.googleusercontent.com. [34.78.232.44])
+        by smtp.gmail.com with ESMTPSA id l16-20020a5d6690000000b0031c6dc684f8sm5006684wru.20.2023.09.01.05.09.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 05:09:24 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 12:09:19 +0000
+From:   Mostafa Saleh <smostafa@google.com>
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v3] arm64/sysreg: refactor deprecated strncpy
+Message-ID: <ZPHUb4svC//EhyqJ@google.com>
+References: <20230831-strncpy-arch-arm64-v3-1-cdbb1e7ea5e1@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.201.20.125]
-X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
- (10.75.129.70)
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-01_10,2023-08-31_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831-strncpy-arch-arm64-v3-1-cdbb1e7ea5e1@google.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Kerello <christophe.kerello@foss.st.com>
+Hi Justin,
 
-Add the support of SDIO in-band interrupt mode for STM32 variant.
-It allows the SD I/O card to interrupt the host on SDMMC_D1 data line.
+On Thu, Aug 31, 2023 at 10:55:59PM +0000, Justin Stitt wrote:
+> strncpy is deprecated [1] and should not be used if the src string is
+> not NUL-terminated.
+> 
+> When dealing with `cmdline` we are counting the number of characters
+> until a space then copying these over into `buf`. Let's not use any of
+> the str*() functions since the src string is not necessarily NUL-terminated.
+> 
+> Prefer `memcpy()` alongside a forced NUL-termination as it more
+> accurately describes what is going on within this function, i.e: copying
+> from non NUL-terminated buffer into a NUL-terminated buffer.
+> 
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90
+> Cc: linux-hardening@vger.kernel.org
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Here's a quick rundown on the history of this patch:
+> 1) v1 (changes requested)
+> 2) v2 (applied to arm64 (for-next/misc))
+> 3) v2 reverted (https://lore.kernel.org/all/20230831162227.2307863-1-smostafa@google.com/)
 
-Signed-off-by: Christophe Kerello <christophe.kerello@foss.st.com>
-Signed-off-by: Yann Gautier <yann.gautier@foss.st.com>
----
- drivers/mmc/host/mmci.c             | 61 +++++++++++++++++++++++++++++
- drivers/mmc/host/mmci.h             |  4 ++
- drivers/mmc/host/mmci_stm32_sdmmc.c | 21 ++++++++++
- 3 files changed, 86 insertions(+)
+This is just a patch, it is not reverted yet, also Marc replied with
+another proposal to use strscpy instead but with the correct length.
 
-diff --git a/drivers/mmc/host/mmci.c b/drivers/mmc/host/mmci.c
-index dda756a563793..c4d3ffc5340f7 100644
---- a/drivers/mmc/host/mmci.c
-+++ b/drivers/mmc/host/mmci.c
-@@ -272,6 +272,7 @@ static struct variant_data variant_stm32_sdmmc = {
- 	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
- 	.stm32_idmabsize_mask	= GENMASK(12, 5),
- 	.stm32_idmabsize_align	= BIT(5),
-+	.use_sdio_irq		= true,
- 	.busy_timeout		= true,
- 	.busy_detect		= true,
- 	.busy_detect_flag	= MCI_STM32_BUSYD0,
-@@ -299,6 +300,7 @@ static struct variant_data variant_stm32_sdmmcv2 = {
- 	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
- 	.stm32_idmabsize_mask	= GENMASK(16, 5),
- 	.stm32_idmabsize_align	= BIT(5),
-+	.use_sdio_irq		= true,
- 	.dma_lli		= true,
- 	.busy_timeout		= true,
- 	.busy_detect		= true,
-@@ -327,6 +329,7 @@ static struct variant_data variant_stm32_sdmmcv3 = {
- 	.datactrl_mask_sdio	= MCI_DPSM_ST_SDIOEN,
- 	.stm32_idmabsize_mask	= GENMASK(16, 6),
- 	.stm32_idmabsize_align	= BIT(6),
-+	.use_sdio_irq		= true,
- 	.dma_lli		= true,
- 	.busy_timeout		= true,
- 	.busy_detect		= true,
-@@ -423,6 +426,10 @@ static void mmci_write_datactrlreg(struct mmci_host *host, u32 datactrl)
- 	/* Keep busy mode in DPSM if enabled */
- 	datactrl |= host->datactrl_reg & host->variant->busy_dpsm_flag;
- 
-+	/* Keep SD I/O interrupt mode enabled */
-+	if (host->variant->use_sdio_irq && host->mmc->caps & MMC_CAP_SDIO_IRQ)
-+		datactrl |= host->variant->datactrl_mask_sdio;
-+
- 	if (host->datactrl_reg != datactrl) {
- 		host->datactrl_reg = datactrl;
- 		writel(datactrl, host->base + MMCIDATACTRL);
-@@ -1805,6 +1812,11 @@ static irqreturn_t mmci_irq(int irq, void *dev_id)
- 			mmci_data_irq(host, host->data, status);
- 		}
- 
-+		if (host->variant->use_sdio_irq &&
-+		    host->mmc->caps & MMC_CAP_SDIO_IRQ &&
-+		    host->ops && host->ops->sdio_irq)
-+			host->ops->sdio_irq(host, status);
-+
- 		/*
- 		 * Busy detection has been handled by mmci_cmd_irq() above.
- 		 * Clear the status bit to prevent polling in IRQ context.
-@@ -2041,6 +2053,45 @@ static int mmci_sig_volt_switch(struct mmc_host *mmc, struct mmc_ios *ios)
- 	return ret;
- }
- 
-+static void mmci_enable_sdio_irq(struct mmc_host *mmc, int enable)
-+{
-+	struct mmci_host *host = mmc_priv(mmc);
-+	unsigned long flags;
-+
-+	if (!host->variant->use_sdio_irq)
-+		return;
-+
-+	if (host->ops && host->ops->enable_sdio_irq) {
-+		if (enable)
-+			/* Keep device active while SDIO IRQ is enabled */
-+			pm_runtime_get_sync(mmc_dev(mmc));
-+
-+		spin_lock_irqsave(&host->lock, flags);
-+		host->ops->enable_sdio_irq(host, enable);
-+		spin_unlock_irqrestore(&host->lock, flags);
-+
-+		if (!enable) {
-+			pm_runtime_mark_last_busy(mmc_dev(mmc));
-+			pm_runtime_put_autosuspend(mmc_dev(mmc));
-+		}
-+	}
-+}
-+
-+static void mmci_ack_sdio_irq(struct mmc_host *mmc)
-+{
-+	struct mmci_host *host = mmc_priv(mmc);
-+	unsigned long flags;
-+
-+	if (!host->variant->use_sdio_irq)
-+		return;
-+
-+	if (host->ops && host->ops->enable_sdio_irq) {
-+		spin_lock_irqsave(&host->lock, flags);
-+		host->ops->enable_sdio_irq(host, 1);
-+		spin_unlock_irqrestore(&host->lock, flags);
-+	}
-+}
-+
- static struct mmc_host_ops mmci_ops = {
- 	.request	= mmci_request,
- 	.pre_req	= mmci_pre_request,
-@@ -2049,6 +2100,8 @@ static struct mmc_host_ops mmci_ops = {
- 	.get_ro		= mmc_gpio_get_ro,
- 	.get_cd		= mmci_get_cd,
- 	.start_signal_voltage_switch = mmci_sig_volt_switch,
-+	.enable_sdio_irq = mmci_enable_sdio_irq,
-+	.ack_sdio_irq	= mmci_ack_sdio_irq,
- };
- 
- static void mmci_probe_level_translator(struct mmc_host *mmc)
-@@ -2316,6 +2369,14 @@ static int mmci_probe(struct amba_device *dev,
- 		mmc->caps |= MMC_CAP_WAIT_WHILE_BUSY;
- 	}
- 
-+	if (variant->use_sdio_irq && host->mmc->caps & MMC_CAP_SDIO_IRQ) {
-+		mmc->caps2 |= MMC_CAP2_SDIO_IRQ_NOTHREAD;
-+
-+		if (variant->datactrl_mask_sdio)
-+			mmci_write_datactrlreg(host,
-+					       host->variant->datactrl_mask_sdio);
-+	}
-+
- 	/* Variants with mandatory busy timeout in HW needs R1B responses. */
- 	if (variant->busy_timeout)
- 		mmc->caps |= MMC_CAP_NEED_RSP_BUSY;
-diff --git a/drivers/mmc/host/mmci.h b/drivers/mmc/host/mmci.h
-index 253197f132fca..554473c01b8af 100644
---- a/drivers/mmc/host/mmci.h
-+++ b/drivers/mmc/host/mmci.h
-@@ -332,6 +332,7 @@ enum mmci_busy_state {
-  * @opendrain: bitmask identifying the OPENDRAIN bit inside MMCIPOWER register
-  * @dma_lli: true if variant has dma link list feature.
-  * @stm32_idmabsize_mask: stm32 sdmmc idma buffer size.
-+ * @use_sdio_irq: allow SD I/O card to interrupt the host
-  */
- struct variant_data {
- 	unsigned int		clkreg;
-@@ -376,6 +377,7 @@ struct variant_data {
- 	u32			start_err;
- 	u32			opendrain;
- 	u8			dma_lli:1;
-+	u8			use_sdio_irq:1;
- 	u32			stm32_idmabsize_mask;
- 	u32			stm32_idmabsize_align;
- 	void (*init)(struct mmci_host *host);
-@@ -400,6 +402,8 @@ struct mmci_host_ops {
- 	bool (*busy_complete)(struct mmci_host *host, struct mmc_command *cmd, u32 status, u32 err_msk);
- 	void (*pre_sig_volt_switch)(struct mmci_host *host);
- 	int (*post_sig_volt_switch)(struct mmci_host *host, struct mmc_ios *ios);
-+	void (*enable_sdio_irq)(struct mmci_host *host, int enable);
-+	void (*sdio_irq)(struct mmci_host *host, u32 status);
- };
- 
- struct mmci_host {
-diff --git a/drivers/mmc/host/mmci_stm32_sdmmc.c b/drivers/mmc/host/mmci_stm32_sdmmc.c
-index 35067e1e6cd80..d66871f1a57ed 100644
---- a/drivers/mmc/host/mmci_stm32_sdmmc.c
-+++ b/drivers/mmc/host/mmci_stm32_sdmmc.c
-@@ -668,6 +668,25 @@ static int sdmmc_post_sig_volt_switch(struct mmci_host *host,
- 	return ret;
- }
- 
-+static void sdmmc_enable_sdio_irq(struct mmci_host *host, int enable)
-+{
-+	void __iomem *base = host->base;
-+	u32 mask = readl_relaxed(base + MMCIMASK0);
-+
-+	if (enable)
-+		writel_relaxed(mask | MCI_ST_SDIOITMASK, base + MMCIMASK0);
-+	else
-+		writel_relaxed(mask & ~MCI_ST_SDIOITMASK, base + MMCIMASK0);
-+}
-+
-+static void sdmmc_sdio_irq(struct mmci_host *host, u32 status)
-+{
-+	if (status & MCI_ST_SDIOIT) {
-+		sdmmc_enable_sdio_irq(host, 0);
-+		sdio_signal_irq(host->mmc);
-+	}
-+}
-+
- static struct mmci_host_ops sdmmc_variant_ops = {
- 	.validate_data = sdmmc_idma_validate_data,
- 	.prep_data = sdmmc_idma_prep_data,
-@@ -681,6 +700,8 @@ static struct mmci_host_ops sdmmc_variant_ops = {
- 	.busy_complete = sdmmc_busy_complete,
- 	.pre_sig_volt_switch = sdmmc_pre_sig_volt_vswitch,
- 	.post_sig_volt_switch = sdmmc_post_sig_volt_switch,
-+	.enable_sdio_irq = sdmmc_enable_sdio_irq,
-+	.sdio_irq = sdmmc_sdio_irq,
- };
- 
- static struct sdmmc_tuning_ops dlyb_tuning_mp15_ops = {
--- 
-2.34.1
+> 4) v3 (fixes problems with both v1 and v2)
+> 
+> Changes in v3:
+> - Fix faulty logic and use memcpy over strscpy (thanks Mostafa and Kees)
+> - Use '\0' instead of 0 to make it abundantly clear that `buf` is a NUL-terminated string
+> - Link to v2: https://lore.kernel.org/r/20230811-strncpy-arch-arm64-v2-1-ba84eabffadb@google.com
+> 
+> Changes in v2:
+> - Utilize return value from strscpy and check for truncation (thanks Kees)
+> - Link to v1: https://lore.kernel.org/r/20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com
+> ---
+>  arch/arm64/kernel/idreg-override.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+> index 2fe2491b692c..3addc09f8746 100644
+> --- a/arch/arm64/kernel/idreg-override.c
+> +++ b/arch/arm64/kernel/idreg-override.c
+> @@ -263,8 +263,8 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
+>  			return;
+>  
+>  		len = min(len, ARRAY_SIZE(buf) - 1);
+> -		strncpy(buf, cmdline, len);
+> -		buf[len] = 0;
+> +		memcpy(buf, cmdline, len);
+> +		buf[len] = '\0';
+>  
+>  		if (strcmp(buf, "--") == 0)
+>  			return;
+> 
+> ---
+> base-commit: 706a741595047797872e669b3101429ab8d378ef
+> change-id: 20230810-strncpy-arch-arm64-1f3d328bd9b8
+
+Your patch will not apply on mainline but on the revert, otherwise
+
+Tested-by: Mostafa Saleh <smostafa@google.com>
+
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+
+Thanks,
+Mostafa
 
