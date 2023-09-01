@@ -2,52 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1967078FBE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:48:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9F3078FBE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:48:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345532AbjIAKsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41484 "EHLO
+        id S1349017AbjIAKs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244894AbjIAKs3 (ORCPT
+        with ESMTP id S232274AbjIAKs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:48:29 -0400
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02FF810CC
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:48:26 -0700 (PDT)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-570096f51acso1858869a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 03:48:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693565305; x=1694170105;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pHYLdruGmrZzAHV9UXtZPvW0MG9RYRUjj2cq17Sroho=;
-        b=M2cmS8oetuKtuCUfEEefpRcwkyvj5bVkWaYtnEYhq6qMi3VcbN3UopgBnht2nb0FeA
-         pQLBvd2KiuU25YdO79fqfwvFehyy5jvc9Z+NzlglLTTTgcaNi0rtJ9UMFOGP94zF2SGB
-         ctQr4iy0w0ZIKR7+zXs34dKcoZrbY6wMuTQNEwNealeycGhpQO7KHf09bnfSbH1U5lFO
-         Er2IF/wlc4KnZQiY6dUJeSt/RlBCnPXTLrwHQwR8m/XjLxC1Y6d0o3M9eTB5p8iFXTuo
-         T3GyAgUctZU6bBDW6jV9DFp4+6FzZTwJSOtehSGW6Myndafyz6lRXZNb0DPw0vp/IsAh
-         h/Jg==
-X-Gm-Message-State: AOJu0YwMek7UDfJobaq7yQ096kseWkYZbEVCHalXRbrgRRfuaBiddEzK
-        qO5J0pRR06oJwq5rwCRr6YyIpmWAXfE+5XhF2vs/U9sw7pL+
-X-Google-Smtp-Source: AGHT+IFw5MEJ5/kkcFIAQTU4b/bjQOooVbAxqK8C/v+qjJu+nRnZP8Cm84qcEi96Uguxt+oj58g90cQzirEF1f7EKF+PWO42vqP7
+        Fri, 1 Sep 2023 06:48:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11FC510FA;
+        Fri,  1 Sep 2023 03:48:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8709CB82455;
+        Fri,  1 Sep 2023 10:48:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 325FAC43397;
+        Fri,  1 Sep 2023 10:48:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693565321;
+        bh=aNKuBqzCPGhEHPydVh3QzcydeR2Zaxu8zUclUITlkPA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WXAI5gc33pyZwMVObbe1+ua7YYxHxo4ybg1culG+0Cgq2r4jJdQzx9MembEAfhMEi
+         4UhIKYYNnJs9pskmR/xU75DjsVa+NLSP9IMeJZ/bVWNB03JD/qvRPpzahMqi11sUvY
+         8mKqKlj0jyyalGnQMwRGaA8/GGcSLsv+lcUr0CRe0yZNQMRE6ldOQHfDM7XClzlTmX
+         5qOKJw+HUhoaz5Zo/kqgwVdfaq7pgqRxiB62YZhc0ZDHdA5BGvzg43wEgZMXTvw6Pp
+         5m6QL4bDqeEdC6IZJGu4npe2vufHqEg9BZtw44kBdzz608LunUS1QoGnqBtq7Fe77y
+         0rpNdVc5Q48jg==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2bc63e0d8cdso30104591fa.2;
+        Fri, 01 Sep 2023 03:48:41 -0700 (PDT)
+X-Gm-Message-State: AOJu0Yx+Si2pa0bJx1J1zRRIKrkChB5qIhhnSa2Oh2XfydU2zfQQ/sV5
+        JwGECT9lRdV2msYHfc5rvW/wxfygcTDxYTi8pIw=
+X-Google-Smtp-Source: AGHT+IErDs+4x3Xy0d+ehTAv3uXd2A7tWxqLdrSlgGsO/iVp4xmOcljKiiLmHIkraV0M1KgowvPV3eNmwBpqMdkhJ1w=
+X-Received: by 2002:a2e:8093:0:b0:2ba:8127:a2c3 with SMTP id
+ i19-20020a2e8093000000b002ba8127a2c3mr1418052ljg.34.1693565318998; Fri, 01
+ Sep 2023 03:48:38 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:153:b0:269:32cb:3321 with SMTP id
- em19-20020a17090b015300b0026932cb3321mr593381pjb.0.1693565305335; Fri, 01 Sep
- 2023 03:48:25 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 03:48:25 -0700
-In-Reply-To: <20230901092459.4893-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006db59d060449e626@google.com>
-Subject: Re: [syzbot] [kernel?] KASAN: slab-use-after-free Read in dev_uevent
-From:   syzbot <syzbot+5ee79919ffe91d629b96@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20230822203446.4111742-1-sjg@chromium.org> <ZOXKTrC_dzN_hUkY@FVFF77S0Q05N>
+ <CAMj1kXEHpRjk_YKOm4czCnnpjqgahj2jV8MMfGLx7b1RdnBnVw@mail.gmail.com>
+ <CAPnjgZ1S8G=7eCBF9PcDk4H5sk3AcxSSWXO575jK8SjA9dR8qw@mail.gmail.com>
+ <CAMj1kXH83_TB4S0PL3jswxjCP+907YpgS7FRuVTO3G62s7nn5w@mail.gmail.com>
+ <CAPnjgZ2kkUt1eOWX8K+EsbjcQZPefNvj5DSaFb9QrvRg0t2h7w@mail.gmail.com>
+ <CAMj1kXGe84uaJ9j9ic0V4HC43p7QBoKQ5ssTYd5DMBGtZ3++Jw@mail.gmail.com>
+ <CAPnjgZ3L-jGxoXNHnsXY0MXU=jTAN66KNAxSLHPVeHinHMjzkQ@mail.gmail.com>
+ <CAMj1kXGw6DGK=gVF3bMH5dp=LL89V9n1V1LMGKDn0CZWGHh8qg@mail.gmail.com>
+ <CAPnjgZ1fjee3rf91onPbuLpgqTHe3dZgz0WBSzoiKAabO+ETkQ@mail.gmail.com>
+ <CAMj1kXFvLGeXXmyK1wSXLk5yq42f2G3GvBGoN40JF=y4bvCo=Q@mail.gmail.com>
+ <CAPnjgZ25VqPCBSZ69fyb+G93=hzS-gX6zVa0J3vYyY49p0CZmw@mail.gmail.com>
+ <CAMj1kXGzPHFpjr4-Q5Vwe3TSZWdAumWVL7iYJR76VGQbZUSsEA@mail.gmail.com> <CAPnjgZ29DP_fwwV2bJiSP3zgpL2Q=CYHG1qjOiHyL4FUi895BA@mail.gmail.com>
+In-Reply-To: <CAPnjgZ29DP_fwwV2bJiSP3zgpL2Q=CYHG1qjOiHyL4FUi895BA@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 1 Sep 2023 12:48:27 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGk6cH_PeZz_1WbA4ztxF2QHXRvxbLQi4Eh0jW0atO5Ug@mail.gmail.com>
+Message-ID: <CAMj1kXGk6cH_PeZz_1WbA4ztxF2QHXRvxbLQi4Eh0jW0atO5Ug@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] schemas: Add a schema for memory map
+To:     Simon Glass <sjg@chromium.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        Rob Herring <robh@kernel.org>,
+        Chiu Chasel <chasel.chiu@intel.com>,
+        U-Boot Mailing List <u-boot@lists.denx.de>,
+        Gua Guo <gua.guo@intel.com>, linux-acpi@vger.kernel.org,
+        lkml <linux-kernel@vger.kernel.org>,
+        Yunhui Cui <cuiyunhui@bytedance.com>,
+        ron minnich <rminnich@gmail.com>,
+        Tom Rini <trini@konsulko.com>,
+        Lean Sheng Tan <sheng.tan@9elements.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,173 +82,278 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, 1 Sept 2023 at 03:12, Simon Glass <sjg@chromium.org> wrote:
+>
+> Hi Ard,
+>
+> On Thu, 31 Aug 2023 at 16:39, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Fri, 1 Sept 2023 at 00:17, Simon Glass <sjg@chromium.org> wrote:
+> > >
+> > > Hi Ard,
+> > >
+> > > On Thu, 31 Aug 2023 at 15:48, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > >
+> > > > On Thu, 31 Aug 2023 at 21:03, Simon Glass <sjg@chromium.org> wrote:
+> > > > >
+> > > > > Hi Ard,
+> > > > >
+> > > > > On Thu, 31 Aug 2023 at 06:28, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > > >
+> > > > > > On Wed, 30 Aug 2023 at 23:11, Simon Glass <sjg@chromium.org> wrote:
+> > > > > > >
+> > > > > > > Hi Ard,
+> > > > > > >
+> > > > > > > On Tue, 29 Aug 2023 at 15:32, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > > > > >
+> > > > > > > > On Tue, 29 Aug 2023 at 21:18, Simon Glass <sjg@chromium.org> wrote:
+> > > > > > > > >
+> > > > > > > > > Hi Ard,
+> > > > > > > > >
+> > > > > > > > > On Thu, 24 Aug 2023 at 03:10, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > > > > ...
+> > > > > > > > > > In summary, I don't see why a non-UEFI payload would care about UEFI
+> > > > > > > > > > semantics for pre-existing memory reservations, or vice versa. Note
+> > > > > > > > > > that EDK2 will manage its own memory map, and expose it via UEFI boot
+> > > > > > > > > > services and not via DT.
+> > > > > > > > >
+> > > > > > > > > Bear in mind that one or both sides of this interface may be UEFI.
+> > > > > > > > > There is no boot-services link between the two parts that I have
+> > > > > > > > > outlined.
+> > > > > > > > >
+> > > > > > > >
+> > > > > > > > I don't understand what this means.
+> > > > > > > >
+> > > > > > > > UEFI specifies how one component invokes another, and it is not based
+> > > > > > > > on a DT binding. If the second component calls UEFI boot or runtime
+> > > > > > > > services, it should be invoked in this manner. If it doesn't, then it
+> > > > > > > > doesn't care about these memory reservations (and the OS will not be
+> > > > > > > > booted via UEFI either)
+> > > > > > > >
+> > > > > > > > So I feel I am missing something here. Perhaps a practical example
+> > > > > > > > would be helpful?
+> > > > > > >
+> > > > > > > Let's say we want to support these combinations:
+> > > > > > >
+> > > > > > > Platform Init -> Payload
+> > > > > > > --------------------------------
+> > > > > > > U-Boot -> Tianocore
+> > > > > > > coreboot -> U-Boot
+> > > > > > > Tianocore -> U-Boot
+> > > > > > > Tianocore -> Tianocore
+> > > > > > > U-Boot -> U-Boot
+> > > > > > >
+> > > > > > > Some of the above things have UEFI interfaces, some don't. But in the
+> > > > > > > case of Tianocore -> Tianocore we want things to work as if it were
+> > > > > > > Tianocore -> (its own handoff mechanism) Tiancore.
+> > > > > > >
+> > > > > >
+> > > > > > If Tianocore is the payload, it is either implemented as a EFI app, in
+> > > > > > which case it has access to EFI services, or it is not, in which case
+> > > > > > it doesn't care about UEFI semantics of the existing reserved regions,
+> > > > > > and it only needs to know which regions exist and which of those are
+> > > > > > reserved.
+> > > > > >
+> > > > > > And I think the same applies to all other rows in your table: either
+> > > > > > the existence of UEFI needs to be carried forward, which needs to be
+> > > > > > done via EFI services, or it doesn't, in which case the UEFI specific
+> > > > > > reservations can be dropped, and only reserved and available memory is
+> > > > > > relevant.
+> > > > > >
+> > > > > > > Some Platform Init may create runtime code which needs to accessible later.
+> > > > > > >
+> > > > > >
+> > > > > > But not UEFI runtime code, right? If the payload is not UEFI based,
+> > > > > > the OS would never be able to call that runtime code unless it is
+> > > > > > described in a different, non-UEFI way. This is fine, but it is not
+> > > > > > UEFI so we shouldn't call it UEFI runtime memory.
+> > > > > >
+> > > > > > > The way I think of it is that we need to generalise the memory map a
+> > > > > > > bit. Saying that you must use UEFI boot services to discover it is too
+> > > > > > > UEFI-specific.
+> > > > > > >
+> > > > > >
+> > > > > > What I am questioning is why a memory map with UEFI semantics is even
+> > > > > > relevant when those boot services do not exist.
+> > > > > >
+> > > > > > Could you be more specific about why a payload would have to be aware
+> > > > > > of the existence of UEFI boot/runtime service regions if it does not
+> > > > > > consume the UEFI interfaces of the platform init? And if the payload
+> > > > > > exposes UEFI services to the OS, why would it consume a memory map
+> > > > > > with UEFI semantics rather than a simple list of memblocks and memory
+> > > > > > reservations?
+> > > > >
+> > > > > It seems like you are thinking of the Payload as grub, or something
+> > > > > like that? This is not about grub. If there are EFI boot services to
+> > > > > be provided, they are provided by the Payload, not Platform Init. I am
+> > > > > not that familiar with Tianocore, but if you are, perhaps think of it
+> > > > > as splitting Tianocore into two pieces, one of which inits the silicon
+> > > > > and the other which provides the EFI boot services.
+> > > > >
+> > > > > Again, if you are familiar with Tianocore, it can be built either as a
+> > > > > monolithic whole, or as a coreboot Payload. The Payload part of the
+> > > > > code is (roughly) the same in each case. But the Platform Init is
+> > > > > different[1]
+> > > > >
+> > > >
+> > > > I co-maintain OVMF [including the ARM port that I created from
+> > > > scratch] as well as the ARM architecture support in Tianocore, along
+> > > > with a couple of platform ports for ARM boards, some of which could by
+> > > > now be characterized as 'historical' (AMD Seattle, Socionext SynQuacer
+> > > > and Raspberry Pi 3/4). So I think I have a pretty good handle on how
+> > > > Tianocore based firmware is put together.
+> > > >
+> > > > Tianocore as a payload will expose boot services to the OS, and will
+> > > > provide the OS with a memory map using the UEFI APIs. But you still
+> > > > haven't explained why the memory description this Tianocore inherits
+> > > > from the Platform Init would include any UEFI boot or runtime service
+> > > > regions, or any of the other memory regions with UEFI semantics.
+> > > > TIanocore just needs to know a) where memory lives b) which parts of
+> > > > it are already in use (as far as the memory map is concerned), and the
+> > > > existing bindings suffice for this purpose.
+> > > >
+> > > > In short, the memory regions with UEFI semantics are created by the
+> > > > boot phase that actually exposes UEFI to the OS, in which case the
+> > > > boot services can be used to obtain the memory map. If the consumer is
+> > > > not UEFI based, there is no reason to bother it with descriptions of
+> > > > memory regions that have no significance to it.
+> > >
+> > > But aren't you assuming that the Payload knows how to handle the
+> > > hardware and can implement the runtime services? What if (for example)
+> > > powering off the device is hardware-specific and only Platform Init
+> > > knows how?
+> > >
+> >
+> > If the payload relies on the platform init for anything, it can use
+> > whichever interface those components manage to agree on.
+> >
+> > If this interface is UEFI, the payload can use UEFI to obtain the memory map.
+>
+> I think you are still getting mixed up with grub. Platform Init does
+> not necessarily provide EFI boot services, even for Tianocore. It is
+> the Payload which provides those services. In other words, the second
+> half of Tianocore does not use EFI boot services to talk to the first
+> half.
+>
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Read in dev_uevent
+I might be misunderstanding your examples, as they are somewhat vague
+and hypothetical.
 
-==================================================================
-BUG: KASAN: slab-use-after-free in string_nocheck lib/vsprintf.c:645 [inline]
-BUG: KASAN: slab-use-after-free in string+0x218/0x2b0 lib/vsprintf.c:727
-Read of size 1 at addr ffff8880156b6b80 by task udevd/4483
+Drawing from my experience working on Tianocore, allow me to give a
+few examples myself:
+- ArmVirtQemu (ARM port of OVMF) receives information about system RAM
+via memory nodes in the device tree, using device_type=memory, from
+QEMU, which fulfills the role of platform init in this case.
+ArmVirtQemu currently doesn't consume the /reserved-memory node as
+QEMU does not populate it, but that would be the appropriate place to
+document RAM regions that Tianocore must treat as reserved;
+- DeveloperBox [0] (based on Socionext SynQuacer) receives a platform
+specific struct with memory regions and reservations in a patch of
+SRAM that the early Tianocore code uses for stack and heap. Note that
+system RAM is not available yet at this point (as it is being
+discovered via this mechanism) and SRAM is quite tight, so DT is not
+an option here;
+- The Tianocore port for Raspberry Pi 4 [1] receives RAM information
+from the VideoCore firmware by calling the mailbox interface. This
+covers both available memory and reserved memory (for the GPU). The
+statically allocated TF-A code and data regions that reside in
+non-secure DRAM on this platform are reserved implicitly due to the
+fact that they are part of the same firmware image, which knows not to
+step on itself.
 
-CPU: 0 PID: 4483 Comm: udevd Not tainted 6.5.0-syzkaller-09276-g99d99825fc07-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x163/0x540 mm/kasan/report.c:475
- kasan_report+0x175/0x1b0 mm/kasan/report.c:588
- string_nocheck lib/vsprintf.c:645 [inline]
- string+0x218/0x2b0 lib/vsprintf.c:727
- vsnprintf+0x10fc/0x1d80 lib/vsprintf.c:2818
- add_uevent_var+0x1c4/0x440 lib/kobject_uevent.c:665
- dev_uevent+0x3ec/0x8f0 drivers/base/core.c:2575
- uevent_show+0x19a/0x310 drivers/base/core.c:2646
- dev_attr_show+0x54/0xc0 drivers/base/core.c:2349
- sysfs_kf_seq_show+0x331/0x4b0 fs/sysfs/file.c:59
- seq_read_iter+0x43e/0xd10 fs/seq_file.c:230
- call_read_iter include/linux/fs.h:1979 [inline]
- new_sync_read fs/read_write.c:389 [inline]
- vfs_read+0x795/0xb00 fs/read_write.c:470
- ksys_read+0x1a0/0x2c0 fs/read_write.c:613
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fd11cb16b6a
-Code: 00 3d 00 00 41 00 75 0d 50 48 8d 3d 2d 08 0a 00 e8 ea 7d 01 00 31 c0 e9 07 ff ff ff 64 8b 04 25 18 00 00 00 85 c0 75 1b 0f 05 <48> 3d 00 f0 ff ff 76 6c 48 8b 15 8f a2 0d 00 f7 d8 64 89 02 48 83
-RSP: 002b:00007ffea04bfe78 EFLAGS: 00000246 ORIG_RAX: 0000000000000000
-RAX: ffffffffffffffda RBX: 0000556f408ae0f0 RCX: 00007fd11cb16b6a
-RDX: 0000000000001000 RSI: 0000556f408d6790 RDI: 000000000000000c
-RBP: 0000556f408ae0f0 R08: 000000000000000c R09: 0000000000000200
-R10: 000000000000010f R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000003fff R14: 00007ffea04c0358 R15: 000000000000000a
- </TASK>
+In none of these cases, I see a need for the binding that you propose.
+Platfom Init -> Payload handover is highly platform specific, so
+adding another generic DT binding for an as yet unidentified use case
+seems seems premature at the very least.
 
-Allocated by task 14097:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:383
- kmalloc include/linux/slab.h:599 [inline]
- raw_ioctl_init drivers/usb/gadget/legacy/raw_gadget.c:458 [inline]
- raw_ioctl+0x1aad/0x3cd0 drivers/usb/gadget/legacy/raw_gadget.c:1248
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+[0] https://github.com/tianocore/edk2-platforms/tree/master/Platform/Socionext/DeveloperBox
+[1] https://github.com/tianocore/edk2-platforms/tree/master/Platform/RaspberryPi/RPi4
 
-Freed by task 14097:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4f/0x70 mm/kasan/common.c:52
- kasan_save_free_info+0x28/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free+0xd6/0x120 mm/kasan/common.c:236
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x25f/0x3b0 mm/slub.c:3822
- dev_free drivers/usb/gadget/legacy/raw_gadget.c:210 [inline]
- kref_put+0xb5/0x7c0 include/linux/kref.h:65
- raw_release+0xfb/0x1a0 drivers/usb/gadget/legacy/raw_gadget.c:422
- __fput+0x3f8/0x910 fs/file_table.c:384
- task_work_run+0x24a/0x300 kernel/task_work.c:179
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0x68f/0x2290 kernel/exit.c:874
- do_group_exit+0x206/0x2c0 kernel/exit.c:1024
- __do_sys_exit_group kernel/exit.c:1035 [inline]
- __se_sys_exit_group kernel/exit.c:1033 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1033
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+> >
+> > If this interface is not UEFI, the UEFI memory map is irrelevant, and
+> > existing DT bindings are available that can describe this information.
+>
+> Can you please point me to those?
+>
 
-The buggy address belongs to the object at ffff8880156b6b80
- which belongs to the cache kmalloc-32 of size 32
-The buggy address is located 0 bytes inside of
- freed 32-byte region [ffff8880156b6b80, ffff8880156b6ba0)
+The /memory node is documented in the DT specification. The
+/reserved-memory node is documented here:
 
-The buggy address belongs to the physical page:
-page:ffffea000055ad80 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x156b6
-flags: 0xfff00000000800(slab|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000800 ffff888012841500 dead000000000100 dead000000000122
-raw: 0000000000000000 0000000000400040 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x112cc0(GFP_USER|__GFP_NOWARN|__GFP_NORETRY), pid 5402, tgid 5402 (syz-executor.5), ts 82260246009, free_ts 82239822109
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1e6/0x210 mm/page_alloc.c:1536
- prep_new_page mm/page_alloc.c:1543 [inline]
- get_page_from_freelist+0x31ec/0x3370 mm/page_alloc.c:3183
- __alloc_pages+0x255/0x670 mm/page_alloc.c:4439
- alloc_slab_page+0x6a/0x160 mm/slub.c:1870
- allocate_slab mm/slub.c:2017 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2070
- ___slab_alloc+0xade/0x1100 mm/slub.c:3223
- __slab_alloc mm/slub.c:3322 [inline]
- __slab_alloc_node mm/slub.c:3375 [inline]
- slab_alloc_node mm/slub.c:3468 [inline]
- __kmem_cache_alloc_node+0x1af/0x270 mm/slub.c:3517
- kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1114
- kmalloc include/linux/slab.h:599 [inline]
- kzalloc include/linux/slab.h:720 [inline]
- ref_tracker_alloc+0x14b/0x480 lib/ref_tracker.c:203
- __netdev_tracker_alloc include/linux/netdevice.h:4056 [inline]
- netdev_tracker_alloc include/linux/netdevice.h:4068 [inline]
- netdev_get_by_index+0x7a/0xb0 net/core/dev.c:888
- fib6_nh_init+0x1da/0x2140 net/ipv6/route.c:3528
- ip6_route_info_create+0x95e/0x1220 net/ipv6/route.c:3796
- addrconf_f6i_alloc+0x3c2/0x7f0 net/ipv6/route.c:4569
- ipv6_add_addr+0x5a5/0x10c0 net/ipv6/addrconf.c:1114
- inet6_addr_add+0x55c/0xaf0 net/ipv6/addrconf.c:2997
- inet6_rtm_newaddr+0x89e/0xc80 net/ipv6/addrconf.c:4972
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1136 [inline]
- free_unref_page_prepare+0x8c3/0x9f0 mm/page_alloc.c:2312
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2405
- __slab_free+0x2f6/0x390 mm/slub.c:3715
- qlist_free_all+0x22/0x60 mm/kasan/quarantine.c:185
- kasan_quarantine_reduce+0x14b/0x160 mm/kasan/quarantine.c:292
- __kasan_slab_alloc+0x23/0x70 mm/kasan/common.c:305
- kasan_slab_alloc include/linux/kasan.h:186 [inline]
- slab_post_alloc_hook+0x6c/0x3b0 mm/slab.h:762
- slab_alloc_node mm/slub.c:3478 [inline]
- __kmem_cache_alloc_node+0x141/0x270 mm/slub.c:3517
- kmalloc_trace+0x2a/0xe0 mm/slab_common.c:1114
- kmalloc include/linux/slab.h:599 [inline]
- netdevice_queue_work drivers/infiniband/core/roce_gid_mgmt.c:643 [inline]
- netdevice_event+0x37d/0x950 drivers/infiniband/core/roce_gid_mgmt.c:802
- notifier_call_chain+0x18c/0x3a0 kernel/notifier.c:93
- __dev_notify_flags+0x359/0x650
- dev_change_flags+0xf0/0x1a0 net/core/dev.c:8674
- do_setlink+0xfb2/0x4340 net/core/rtnetlink.c:2880
- __rtnl_newlink net/core/rtnetlink.c:3671 [inline]
- rtnl_newlink+0x17f6/0x2070 net/core/rtnetlink.c:3718
- rtnetlink_rcv_msg+0x82b/0xf50 net/core/rtnetlink.c:6444
+Documentation/devicetree/bindings/reserved-memory/reserved-memory.yaml
 
-Memory state around the buggy address:
- ffff8880156b6a80: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
- ffff8880156b6b00: fa fb fb fb fc fc fc fc 00 00 00 00 fc fc fc fc
->ffff8880156b6b80: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-                   ^
- ffff8880156b6c00: 00 00 00 00 fc fc fc fc fa fb fb fb fc fc fc fc
- ffff8880156b6c80: fa fb fb fb fc fc fc fc fa fb fb fb fc fc fc fc
-==================================================================
+> >
+> > > On another track, would it help if we just dropped all mention of
+> > > UEFI? The binding does not mention it.
+> > >
+> >
+> > Your binding has
+> >
+> > +      usage:
+> > +        $ref: /schemas/types.yaml#/definitions/string
+> > +        description: |
+> > +          Describes the usage of the memory region, e.g.:
+> > +
+> > +            "acpi-reclaim", "acpi-nvs", "bootcode", "bootdata", "bootdata",
+> > +            "runtime-code", "runtime-data".
+> > +
+> > +            See enum EFI_MEMORY_TYPE in "Unified Extensible Firmware Interface
+> > +            (UEFI) Specification" for all the types. For now there are not
+> > +            listed here.
+> >
+> > Every type listed is derived from a definition in the UEFI spec, which
+> > is specifically mentioned as the source.
+>
+> Yes, but please see the v4 or v5 patch version, where that has
+> changed. I sent v4 two days ago. I am worried that you are still
+> responding to something that I revised in response to your original
+> comments?
+>
 
+No, I haven't looked at those yet. Maybe the uboot community is
+different, but in the Linux community, we tend to finish discussing vN
+of a series before sendindg out vN+1. This prevents the kind of
+parallel track discussions that seem to be taking place here. Also, it
+is highly appreciated when an author takes all feedback into account
+(or at least acknowledges it) in a vN+1 submission, which is difficult
+to do before the discussion around vN has concluded.
 
-Tested on:
+...
+> >
+> > But if the Platform Init wants to reserve some system RAM for runtime
+> > code (e.g., for its PSCI implementation on ARM), it can add it to the
+> > /reserved-memory node, where both the payload and the OS will be able
+> > to find it if needed.
+>
+> OK good. So with my binding that would be 'runtime-code@...'. I am
+> still not sure what the problem is here.
+>
 
-commit:         99d99825 Merge tag 'nfs-for-6.6-1' of git://git.linux-..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=150c6d87a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b8954a0dbb2cea01
-dashboard link: https://syzkaller.appspot.com/bug?extid=5ee79919ffe91d629b96
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=177a8fffa80000
+The problem is that you are not using /reserved-memory to describe a
+memory reservation but something new that all DT consumers need to be
+taught about, or they might step on memory that turns out to be
+reserved. The DT ecosystem is large and heterogeneous, and any tool or
+boot stage in existence is at the risk of stepping on this memory
+inadvertently, whereas /reserved-memory already provides the means to
+reserve it and document its nature.
 
+> >
+> > > I'm just not sure that Platform Init and Payload are as completely
+> > > independent as you seem to be suggesting. Once we get into the
+> > > Payload, the only things we know are what Platform Init told us.
+> > >
+> >
+> > They are not independent, and that is not at all what I am claiming.
+> >
+> > What I am objecting to is framing the platform init<->payload memory
+> > handover in terms of UEFI memory types, which may conflict with well
+> > established DT bindings that already serve the same purpose. The only
+> > difference between /reserved-memory and this binding seems to be the
+> > collection of UEFI memory types, which don't belong there in the first
+> > place.
+>
+> OK, so please help me get this resolved.
+>
+
+I have already indicated how this should be resolved in my opinion,
+which is by using the /reserved-memory node to describe memory
+reservations, and not this binding.
