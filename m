@@ -2,45 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D86C78FC05
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:01:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BCB78FC02
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349081AbjIALB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:01:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
+        id S1347207AbjIALA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbjIALBZ (ORCPT
+        with ESMTP id S1349073AbjIALAz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:01:25 -0400
-Received: from hust.edu.cn (unknown [202.114.0.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFF2E42;
-        Fri,  1 Sep 2023 04:01:22 -0700 (PDT)
-Received: from [IPV6:2001:250:4000:5113:6422:827f:d303:d108] ([172.16.0.254])
-        (user=dzm91@hust.edu.cn mech=PLAIN bits=0)
-        by mx1.hust.edu.cn  with ESMTP id 381Axifq011181-381Axifr011181
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Fri, 1 Sep 2023 18:59:44 +0800
-Message-ID: <317b9482-d750-9093-e891-21f73feeac0c@hust.edu.cn>
-Date:   Fri, 1 Sep 2023 18:59:44 +0800
+        Fri, 1 Sep 2023 07:00:55 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A9C10D2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:00:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3195EB821F9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:00:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88ECCC433C9;
+        Fri,  1 Sep 2023 11:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693566048;
+        bh=9wNybEkDrP39FqndXH3ASSh7pRWU+k5rHL6wMWLCDFc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fP0mXdEOAYpOrg8xqTiYbvflR22PvDvzVz+ZOHyEpuq2xJCyoJVpkQ6qAQ6MRe2Iq
+         N/VWigF8A7+cj5XRjcRWxY1QJN8N6XsRp06iyszs4G25WH6IR+eAXhJx3tve+pOIwQ
+         3xaQq7a/0MTvo2KrY2cems3s4wajqsMOqOvYuMoVMAgNhq1RFmaVhra8J57ghnM4YY
+         kHsNiyMqzjk3Zp2IJCmL9k5+aIAyQIf3ee8KJrFn/HrYX92iDJHipQnGne695xU/3E
+         7VfLkC/X8ZXdLto0pktDLqN+jk9Kh28R4MGxEoAYn0CsEgDaRnstXpglZGGJqdRiRl
+         mcn2l/IFP9P2A==
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH] ath9k: fix null-ptr-deref in ath_chanctx_event
-To:     =?UTF-8?Q?Toke_H=c3=b8iland-J=c3=b8rgensen?= <toke@toke.dk>,
-        Kalle Valo <kvalo@kernel.org>,
-        Sujith Manoharan <c_manoha@qca.qualcomm.com>,
-        "John W. Linville" <linville@tuxdriver.com>
-Cc:     hust-os-kernel-patches@googlegroups.com,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20230901080701.1705649-1-dzm91@hust.edu.cn>
- <87y1hqtbtu.fsf@toke.dk>
-From:   Dongliang Mu <dzm91@hust.edu.cn>
-In-Reply-To: <87y1hqtbtu.fsf@toke.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-FEAS-AUTH-USER: dzm91@hust.edu.cn
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+Date:   Fri, 01 Sep 2023 13:00:45 +0200
+From:   Michael Walle <mwalle@kernel.org>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>
+Cc:     Pratyush Yadav <pratyush@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH v2 05/41] mtd: spi-nor: convert .n_sectors to .size
+In-Reply-To: <3df0728d-60d8-1cff-a0d9-f3de505dfa17@linaro.org>
+References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
+ <20230807-mtd-flash-info-db-rework-v2-5-291a0f39f8d8@kernel.org>
+ <3df0728d-60d8-1cff-a0d9-f3de505dfa17@linaro.org>
+Message-ID: <d7985b397e19f66c0692369e20a4fba6@kernel.org>
+X-Sender: mwalle@kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,75 +62,132 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2023/9/1 18:41, 'Toke Høiland-Jørgensen' via HUST OS Kernel 
-Contribution wrote:
-> Dongliang Mu <dzm91@hust.edu.cn> writes:
->
->> Smatch reports:
->>
->> ath_chanctx_event() error: we previously assumed 'vif' could be null
->>
->> The function ath_chanctx_event can be called with vif argument as NULL.
->> If vif is NULL, ath_dbg can trigger a null pointer dereference.
->>
->> Fix this by adding a null pointer check.
->>
->> Fixes: 878066e745b5 ("ath9k: Add more debug statements for channel context")
->> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
+Am 2023-08-24 10:25, schrieb Tudor Ambarus:
+> On 8/22/23 08:09, Michael Walle wrote:
+>> .n_sectors is rarely used. In fact it is only used in swp.c and to
+>> calculate the flash size in the core. The use in swp.c might be
+>> converted to use the (largest) flash erase size. For now, we just
+>> locally calculate the sector size.
+>> 
+>> Simplify the flash_info database and set the size of the flash 
+>> directly.
+>> This also let us use the SZ_x macros.
+>> 
+>> Signed-off-by: Michael Walle <mwalle@kernel.org>
 >> ---
->>   drivers/net/wireless/ath/ath9k/channel.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/net/wireless/ath/ath9k/channel.c b/drivers/net/wireless/ath/ath9k/channel.c
->> index 571062f2e82a..e343c8962d14 100644
->> --- a/drivers/net/wireless/ath/ath9k/channel.c
->> +++ b/drivers/net/wireless/ath/ath9k/channel.c
->> @@ -576,7 +576,9 @@ void ath_chanctx_event(struct ath_softc *sc, struct ieee80211_vif *vif,
->>   		if (sc->sched.state != ATH_CHANCTX_STATE_WAIT_FOR_BEACON)
->>   			break;
->>   
->> -		ath_dbg(common, CHAN_CTX, "Preparing beacon for vif: %pM\n", vif->addr);
->> +		if (vif)
->> +			ath_dbg(common, CHAN_CTX,
->> +				"Preparing beacon for vif: %pM\n", vif->addr);
-> Please don't send patches for static checker errors without actually
-> checking if there is a valid bug. Which there isn't in this case.
+>>  drivers/mtd/spi-nor/core.c   | 2 +-
+>>  drivers/mtd/spi-nor/core.h   | 8 ++++----
+>>  drivers/mtd/spi-nor/swp.c    | 9 +++++----
+>>  drivers/mtd/spi-nor/xilinx.c | 4 ++--
+>>  4 files changed, 12 insertions(+), 11 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index 286155002cdc..f4cc2eafcc5e 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -2999,7 +2999,7 @@ static void spi_nor_init_default_params(struct 
+>> spi_nor *nor)
+>> 
+>>  	/* Set SPI NOR sizes. */
+>>  	params->writesize = 1;
+>> -	params->size = (u64)info->sector_size * info->n_sectors;
+>> +	params->size = info->size;
+> 
+> would be good to check the sanity of info->size to not be null and to 
+> be
+> divisible by sector_size.
 
-Before sending this patch, I searched in the code, there are many call 
-sites of ath_chanctx_event with argument vif as NULL.
+Have a look at the later patches, info->size can be zero, indicating
+that we need to parse SFDP for this flash.
 
-Functions calling this function: ath_chanctx_event
+I could validate that the size is a multiple of sector_size, but
+that one might also be zero. Of course you could solve this by
+additional logic. But I treated that one as a misconfiguration
+of the flash_info entry. It's nothing which can happen during
+runtime. Anyway, I have no strong opinion on the "is multiple
+of sector_size" check (for now, maybe there's something I didn't
+thought of now).
 
-   File      Function                   Line
-0 beacon.c  ath9k_beacon_tasklet        459 ath_chanctx_event(sc, vif, 
-ATH_CHANCTX_EVENT_BEACON_PREPARE);
-1 channel.c ath_chanctx_check_active    321 ath_chanctx_event(sc, NULL,
-2 channel.c ath_chanctx_beacon_sent_ev  781 ath_chanctx_event(sc, NULL, ev);
-3 channel.c ath_chanctx_beacon_recv_ev  787 ath_chanctx_event(sc, NULL, ev);
-4 channel.c ath_chanctx_timer          1054 ath_chanctx_event(sc, NULL, 
-ATH_CHANCTX_EVENT_TSF_TIMER);
-5 channel.c ath_chanctx_set_next       1321 ath_chanctx_event(sc, NULL, 
-ATH_CHANCTX_EVENT_SWITCH);
-6 channel.c ath9k_p2p_ps_timer         1566 ath_chanctx_event(sc, NULL, 
-ATH_CHANCTX_EVENT_TSF_TIMER);
-7 main.c    ath9k_sta_state            1671 ath_chanctx_event(sc, vif,
-8 main.c    ath9k_remove_chanctx       2577 ath_chanctx_event(sc, NULL, 
-ATH_CHANCTX_EVENT_UNASSIGN);
-9 xmit.c    ath_tx_edma_tasklet        2749 ath_chanctx_event(sc, NULL,
+> 
+>>  	params->bank_size = params->size;
+>>  	params->page_size = info->page_size;
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>> index dfc20a3296fb..12c35409493b 100644
+>> --- a/drivers/mtd/spi-nor/core.h
+>> +++ b/drivers/mtd/spi-nor/core.h
+>> @@ -443,9 +443,9 @@ struct spi_nor_fixups {
+>>   * @id:             the flash's ID bytes. The first three bytes are 
+>> the
+>>   *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly 
+>> older chips).
+>>   * @id_len:         the number of bytes of ID.
+>> + * @size:           the size of the flash in bytes.
+>>   * @sector_size:    the size listed here is what works with 
+>> SPINOR_OP_SE, which
+>>   *                  isn't necessarily called a "sector" by the 
+>> vendor.
+>> - * @n_sectors:      the number of sectors.
+>>   * @n_banks:        the number of banks.
+>>   * @page_size:      the flash's page size.
+>>   * @addr_nbytes:    number of address bytes to send.
+>> @@ -505,8 +505,8 @@ struct flash_info {
+>>  	char *name;
+>>  	u8 id[SPI_NOR_MAX_ID_LEN];
+>>  	u8 id_len;
+>> +	size_t size;
+>>  	unsigned sector_size;
+>> -	u16 n_sectors;
+>>  	u16 page_size;
+>>  	u8 n_banks;
+>>  	u8 addr_nbytes;
+>> @@ -556,8 +556,8 @@ struct flash_info {
+>>  	.id_len = 6
+>> 
+>>  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
+>> +	.size = (_sector_size) * (_n_sectors),				\
+>>  	.sector_size = (_sector_size),					\
+>> -	.n_sectors = (_n_sectors),					\
+>>  	.page_size = 256,						\
+>>  	.n_banks = (_n_banks)
+>> 
+>> @@ -575,8 +575,8 @@ struct flash_info {
+>>  	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
+>> 
+>>  #define CAT25_INFO(_sector_size, _n_sectors, _page_size, 
+>> _addr_nbytes)	\
+>> +		.size = (_sector_size) * (_n_sectors),			\
+>>  		.sector_size = (_sector_size),				\
+>> -		.n_sectors = (_n_sectors),				\
+>>  		.page_size = (_page_size),				\
+>>  		.n_banks = 1,						\
+>>  		.addr_nbytes = (_addr_nbytes),				\
+>> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
+>> index 5ab9d5324860..40bf52867095 100644
+>> --- a/drivers/mtd/spi-nor/swp.c
+>> +++ b/drivers/mtd/spi-nor/swp.c
+>> @@ -34,17 +34,18 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor 
+>> *nor)
+>>  static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
+>>  {
+>>  	unsigned int bp_slots, bp_slots_needed;
+>> +	unsigned int sector_size = nor->info->sector_size;
+>> +	u64 n_sectors = div_u64(nor->params->size, sector_size);
+> 
+> if params(info)->size is zero here, we get into trouble.
 
-This NULL parameters would cause some abnormal behaviors.
+Please note that this is not the info->size, params->size cannot
+be zero. If info->size was zero, we have to parse SFDP which hopefully
+will give us a sane size.
 
-> Specifically, that branch of the switch statement dereferences the avp
-> pointer, which will be NULL if 'vif' is. Meaning we will have crashed
-> way before reaching this statement if vif is indeed NULL.
-Yeah, you are right. However, no matter where or which variable causing 
-the null-ptr-def crash, the crash is there.
+And regarding the sector_size, which could be zero here. I want to
+replace that logic, so we don't rely on the flash_info sector size.
+ From a later patch:
 
-I think this is unexpected.
+         /*
+          * sector_size will eventually be replaced with the max erase 
+size of
+          * the flash. For now, we need to have that ugly default.
+          */
 
-Let me know if I make any mistakes
-
->
-> -Toke
->
+-michael
