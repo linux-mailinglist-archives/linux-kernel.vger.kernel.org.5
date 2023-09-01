@@ -2,55 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DFAA778FEA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:55:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3AD378FEA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:56:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345152AbjIANzy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:55:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36776 "EHLO
+        id S241363AbjIAN4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230454AbjIANzv (ORCPT
+        with ESMTP id S230454AbjIAN4i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:55:51 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6127F10EC;
-        Fri,  1 Sep 2023 06:55:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        Fri, 1 Sep 2023 09:56:38 -0400
+Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [205.139.111.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8B810EC
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:56:35 -0700 (PDT)
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-22-pkRJQVBBP3OykYT9LU4nRQ-1; Fri, 01 Sep 2023 09:56:31 -0400
+X-MC-Unique: pkRJQVBBP3OykYT9LU4nRQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id DDD6F60AFD;
-        Fri,  1 Sep 2023 13:55:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90DD4C433C7;
-        Fri,  1 Sep 2023 13:55:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693576548;
-        bh=+VvfZVPGs4uQ9zqARpEX9ACbrVsYYT1G2wpq8eWpZJo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RXayCCtUUumCsXNuP07jC5j+7VbZ1/+ZPxMMP8oSEPuWhNBaCklCmd7vDl2+RMyJY
-         YGac+HqLRIYrmG9PvVBJO83jZE85OWdpEyLSUuy/Yb/DQkxR+gD9fnTGVyF9tEOFqO
-         s49nOeh5uPNxxUQKnUO2x39CXz99bA0k699zxZ7BFzlzM+JqEcFCiK6GKYT9LDfHZW
-         s8uNyMoQI3SQC3PPnyuuECbdfAF9bBIXe3uePDJQyHKbF8EJOcYA4faYoupczScP4E
-         nJfkvCnMcq206fyeOZLlAM/XdjgsBU3RLZK25AwGdYL2BEOyDdr2cNBfXYhCcmyqB3
-         RXCA6H2cRJOGg==
-Date:   Fri, 1 Sep 2023 15:55:34 +0200
-From:   Simon Horman <horms@kernel.org>
-To:     Li kunyu <kunyu@nfschina.com>
-Cc:     idryomov@gmail.com, xiubli@redhat.com, jlayton@kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ceph-devel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ceph/decode: =?utf-8?Q?Remove_?=
- =?utf-8?B?dW5uZWNlc3Nhcnkg4oCYMOKAmQ==?= values from ret
-Message-ID: <20230901135534.GG140739@kernel.org>
-References: <20230902201112.4401-1-kunyu@nfschina.com>
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4DCB8920282;
+        Fri,  1 Sep 2023 13:56:25 +0000 (UTC)
+Received: from hog (unknown [10.45.224.12])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 3CFD821D4F3D;
+        Fri,  1 Sep 2023 13:56:22 +0000 (UTC)
+Date:   Fri, 1 Sep 2023 15:56:20 +0200
+From:   Sabrina Dubroca <sd@queasysnail.net>
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     Radu Pirea <radu-nicolae.pirea@nxp.com>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        "Radu-nicolae Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sebastian Tobuschat <sebastian.tobuschat@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
+ mdo_insert_tx_tag
+Message-ID: <ZPHthKXGKwcyBARo@hog>
+References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
+ <ZOx0L722xg5-J_he@hog>
+ <5d42d6c9-2f0c-8913-49ec-50a25860c49f@oss.nxp.com>
+ <ZO8pbtnlOVauabjC@hog>
+ <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
+ <ZPG35HfRseiv80Pb@hog>
+ <ZPG9s1LDbphnBHUE@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230902201112.4401-1-kunyu@nfschina.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <ZPG9s1LDbphnBHUE@shell.armlinux.org.uk>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,39 +69,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 04:11:12AM +0800, Li kunyu wrote:
-> ret is assigned first, so it does not need to initialize the
-> assignment.
-> Bad is not used and can be removed.
+2023-09-01, 11:32:19 +0100, Russell King (Oracle) wrote:
+> On Fri, Sep 01, 2023 at 12:07:32PM +0200, Sabrina Dubroca wrote:
+> > 2023-09-01, 09:09:06 +0000, Radu Pirea wrote:
+> > > We can do a flush very simple, but to restore the configuration maybe
+> > > we should to save the key in the macsec_key structure. I am not sure if
+> > > the key can be extracted from crypto_aead structure.
+> > 
+> > Either that or in the driver. I have a small preference for driver,
+> > because then cases that don't need this restore won't have to keep the
+> > key in memory, reducing the likelihood of accidentally sharing it.
+> > OTOH, if we centralize that code, it's easier to make sure everything
+> > is cleared from kernel memory when we delete the SA.
 > 
-> Signed-off-by: Li kunyu <kunyu@nfschina.com>
+> Maybe consider about doing it as a library function, so drivers that
+> need this don't have to reimplement the functionality in randomly
+> buggy ways?
 
-Hi Li Kunyu,
+But then the driver would depend on the macsec module, right? It's not
+a large module, but that seems a bit undesirable.
 
-A few things:
+I think I'd rather add the key to macsec_key, and only copy it there
+in case we're offloading (we currently don't allow enabling offloading
+after installing some SAs/keys so that would be fine). Maybe add a
+driver flag to request keeping the keys in memory (I don't know if all
+drivers will require that -- seems like all PHY drivers would, but what
+about the MAC ones?).
 
-* Your clock seems to be in the future.
+-- 
+Sabrina
 
-* I see you have posted similar similar changes to related code.
-  Please consider combining them into a single patch,
-  or a patch-set.
-
-* Please set the target tree, net-next
-
-  Subject: [PATCH net-next] ...
-
-* net-next is currently closed
-
-## Form letter - net-next-closed
-
-The merge window for v6.6 has begun and therefore net-next is closed
-for new drivers, features, code refactoring and optimizations.
-We are currently accepting bug fixes only.
-
-Please repost when net-next reopens after Sept 11th.
-
-RFC patches sent for review only are obviously welcome at any time.
-
-See: https://www.kernel.org/doc/html/next/process/maintainer-netdev.html#development-cycle
---
-pw-bot: defer
