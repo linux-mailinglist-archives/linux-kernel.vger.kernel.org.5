@@ -2,173 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD85578F950
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:45:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A667878F953
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:49:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235002AbjIAHpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 03:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59764 "EHLO
+        id S237120AbjIAHtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 03:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjIAHpg (ORCPT
+        with ESMTP id S230215AbjIAHtE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 03:45:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3ADE7F
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:45:32 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693554330;
+        Fri, 1 Sep 2023 03:49:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A276E10D5
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:48:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693554494;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=731aG89XBsqiLQAPbh3YxjNjhCdeTaBXPgPL1wszlac=;
-        b=4fGcIEvdPkyS+AiFMWYyw3+vVxn14wzPxEJtFs+WwI9sf3Iom7x3D1+TeCVY8ib8x9Beb4
-        KiQnTcaY5bV8XrAXZLkxPKgMXlT82/c0GM56ONn1H3HGDZFCBv8QZD9C1WPuK6UceFTDTr
-        KKAfPYpVRu+h7+kQYzyPbMdB2DrmAFewKaRZ1JnRLYnmwWEpnKFKY2GfoO4XV73lhL/YT1
-        714Sb68FMmFwK6Qegs+mWcvWrNI1EhghjOKu3OTBlDcKAGqlD4WqgMdcXKzqqmMbJ6p3+V
-        7q5ohuwhUaQdXFCW9bhViyYvWwBKVgxG1s4aPG77w7bsFXJvhxZERL4vYEhSUg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693554330;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=731aG89XBsqiLQAPbh3YxjNjhCdeTaBXPgPL1wszlac=;
-        b=E0bAMynasb1IYDa0YKOCgzFlbr/KE11LYItZ4SFVVrjVESeMCivBB71SzouHwREYEG5uxB
-        i03dv8CsBlfgvlCQ==
-To:     "Brown, Len" <len.brown@intel.com>,
-        "Zhang, Rui" <rui.zhang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     "Gross, Jurgen" <jgross@suse.com>,
-        "mikelley@microsoft.com" <mikelley@microsoft.com>,
-        "arjan@linux.intel.com" <arjan@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "ray.huang@amd.com" <ray.huang@amd.com>,
-        "andrew.cooper3@citrix.com" <andrew.cooper3@citrix.com>,
-        "Sivanich, Dimitri" <dimitri.sivanich@hpe.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>
-Subject: RE: [patch V3 27/40] x86/cpu: Provide a sane leaf 0xb/0x1f parser
-In-Reply-To: <MN0PR11MB6010E31577416B56B708A3AFE0E4A@MN0PR11MB6010.namprd11.prod.outlook.com>
-References: <20230802101635.459108805@linutronix.de>
- <20230802101934.258937135@linutronix.de>
- <8e5bbbc91ff9f74244efe916a4113999abc52213.camel@intel.com>
- <87350ogh7j.ffs@tglx> <87ttt3f0fu.ffs@tglx>
- <b8637c8c92751f791bf2eae7418977c0fd0c611d.camel@intel.com>
- <87il9hg67i.ffs@tglx>
- <MN0PR11MB6010CB72411BA723BEFC5565E017A@MN0PR11MB6010.namprd11.prod.outlook.com>
- <877cpxioua.ffs@tglx>
- <MN0PR11MB601007E7DAE4C5FC86E58DB0E014A@MN0PR11MB6010.namprd11.prod.outlook.com>
- <87fs4ighln.ffs@tglx>
- <MN0PR11MB6010D09FF7C20779B70A3B83E01BA@MN0PR11MB6010.namprd11.prod.outlook.com>
- <874jksher3.ffs@tglx>
- <MN0PR11MB6010F1D501B9A2C0B7B3D1F6E0E6A@MN0PR11MB6010.namprd11.prod.outlook.com>
- <87r0nk66xl.ffs@tglx>
- <MN0PR11MB6010E31577416B56B708A3AFE0E4A@MN0PR11MB6010.namprd11.prod.outlook.com>
-Date:   Fri, 01 Sep 2023 09:45:29 +0200
-Message-ID: <87ledq49ra.ffs@tglx>
+        bh=T97c3bZ8yb+eC9c+2FRwgNQ1FZhHS3MTO2NaIJuhVao=;
+        b=eRcXF3iDfcPZleDn91lgP2AxgrKBEZoIaSgwdmzWntUrEibDmYDDy/kUOY8K9csEK8B3WJ
+        vnxgRAVJJ7XVmsBhyNv2iItFJXavTUC2GWryNI3MlkxAz4XgAO9+W8JFm5ynqVM/eLgvQ8
+        lSlYnMvEtXbWHqnJ8e2c83Z4P+DvtxU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-26-O8I94vmVMNSV96Sqs-y7mg-1; Fri, 01 Sep 2023 03:48:11 -0400
+X-MC-Unique: O8I94vmVMNSV96Sqs-y7mg-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-31c5c47807aso893528f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 00:48:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693554490; x=1694159290;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=T97c3bZ8yb+eC9c+2FRwgNQ1FZhHS3MTO2NaIJuhVao=;
+        b=coM/y45w+w2XobLvq3I1yu2tktpBTCk4pU4ECpXrcq2rqJAjVEUMw2AZNxMcrIKbZX
+         LpPUUJerlO8zoFL8+qpEA6/uRhp8bhZFRhm2xsQSsjm8IH7oA0otbSrVrE7bp8ZSjyIU
+         rZCbJeS3duUCK9Z90gDQLGbCioZhPlaEAneFwxpq8k3uxUZUx7lBIs4Mkjacmef/4XnU
+         5qgsoPv9+Z7LoBDif9LSUJsjj3wixDO6Es+HSPjaRXHkj0iwxs1dHLLaMlaIpO/EqC3z
+         5VjRlSG+Z7tDq6Zmz7iaYD3D8uc2P99uBK65lqFYubP9xUpSXX7bqPuQPrTsAzgwl1oV
+         Q58g==
+X-Gm-Message-State: AOJu0Yz6QI2u2+pl3UJO6asXCWTH1b7lL4CU8448/vw2n5yOc8bwHFBT
+        7jVd5EZoJkrV5K68roKEpMiiq5TP1RMW81h5IsmGdVR7QFvg/9AKtkDwKw7z38hKbvEkPQfVtiC
+        VMugIJ4i5koMz8udz7KbE1oa4Ycr5sTxi
+X-Received: by 2002:a5d:4c84:0:b0:317:df82:2868 with SMTP id z4-20020a5d4c84000000b00317df822868mr1487332wrs.26.1693554490288;
+        Fri, 01 Sep 2023 00:48:10 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEW3eqNjK7xkdR2zFqkK1SPACYHfa9Yg5dPyFnPdq2CybRvXzbPspfdjI/oMUXKz80HfDldzA==
+X-Received: by 2002:a5d:4c84:0:b0:317:df82:2868 with SMTP id z4-20020a5d4c84000000b00317df822868mr1487323wrs.26.1693554490008;
+        Fri, 01 Sep 2023 00:48:10 -0700 (PDT)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id f7-20020adffcc7000000b0031c7682607asm4399804wrs.111.2023.09.01.00.48.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 00:48:09 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+In-Reply-To: <6654778d-1f40-1775-c32c-ebf9728bc9a9@suse.de>
+References: <20230830062546.720679-1-javierm@redhat.com>
+ <6654778d-1f40-1775-c32c-ebf9728bc9a9@suse.de>
+Date:   Fri, 01 Sep 2023 09:48:09 +0200
+Message-ID: <87ledqbah2.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Len!
+Thomas Zimmermann <tzimmermann@suse.de> writes:
 
-On Fri, Sep 01 2023 at 03:09, Len Brown wrote:
->> Conceptually _all_ levels exist, but the ones which occupy zero bits
->> have no meaning. Neither have the unknown levels if they should
->> surface at some point.
->>
->> So as they _all_ exist the logical consequence is that even those which occupy zero bits have an ID.
->>
->> Code which is interested in information which depends on the enumeration of the level must obviously do:
->>
->>    if (level_exists(X))
->>    	analyse_level(X)
->>
->> Whether you express that via an invalid level ID or via an explicit
->> check for the level is an implementation detail.
+> Hi Javier,
 >
-> Thank you for acknowledging that a level with a shift-width of 0 does
-> not exist, and thus an id for that level has no meaning.
-
-Even if the level is enumerated then there is no implicit meaning
-attached per se. It's only relevant when there is a documented
-relationship between the enumeration and secondary information attached
-to it. Making implicit general assumptions about the meaning of an
-enumeration is just not possible,
-
-> One could argue that except for package_id and core_id, which always
-> exist, maintainable code would *always* check that a level exists
-> before doing *anything* with its level_id.  Color me skeptical of an
-> implementation that does otherwise...
-
-We have that today, no?
-
-> So what are you proposing with the statement that "conceptually _all_
-> levels exist"?
-
-We need a consistent view on the topology and the only consistent view
-is mathematical. Which means that a shift 0 element obviously has size
-one because of size = 1 << SHIFT.
-
-As a consequence these non-enumerated levels have an ID too, which in
-turn makes the view on the topology consistent and independent of the
-actually enumerated levels.
-
->> The problem of the current implementation is not that the die ID is
->> automatically assigned. The problem is at the usage sites which
->> blindly assume that there must be a meaning. That's a completely
->> different issue and has absolutely nothing to do with purely
->> mathematical deduced ID information at any given level.
+> another idea about this patch: why not just keep the allocation in the 
+> plane's atomic check, but store the temporary buffers in a plane struct. 
+> You'd only grow the arrays length in atomic_check and later fetch the 
+> pointers in atomic_update. It needs some locking, but nothing complicated.
 >
-> I agree that the code that exports the die_id attributes in topology
-> sysfs should not do so when the die_id is meaningless.
 
-The problem is not the fact that die_id is exposed. The problem is that
-the meta information which allows to deduce meaning is not exposed along
-with it. The fact that the exposure was half thought out makes is
-slightly harder to correct that mistake, but I'm not yet convinced that
-non-exposure is the correct answer in general.
+Yes, that would work too. Another option is to just move the buffers to
+struct ssd130x_device as it was before commit 45b58669e532 ("drm/ssd130x:
+Allocate buffer in the plane's .atomic_check() callback") but just make
+them fixed arrays with the size of the biggest format.
 
-> Ps. It is a safe bet that new levels will "surface at some point".
-> For example, DieGrp surfaced this summer w/o any prior consultation
-> with the Linux team.  But even if they did consult us and gave us the
-> ideal 1-year before-hardware advance notice, and even if we
-> miraculously added support in 0 time, we would still be 2-years late
-> to prescriptively recognize this new level -- as our enterprise
-> customers routinely run 3-year-old kernels.
+That will be some memory wasted but will prevent the problem of trying to
+allocate buffers after drm_atomic_helper_swap_state() has been called.
 
-That's a strawman as the enterprise people backport the world and some
-more. So if there is timely upstream support then it will turn up in the
-frankenkernels in time too. Arguably we could even backport the new
-magic level ID to stable kernels as well as we do with other important
-hardware related minimal addons.
+> Best regards
+> Thomas
+>
+> Am 30.08.23 um 08:25 schrieb Javier Martinez Canillas:
 
-> This is why it is mandatory that our code be resilient to the
-> insertion of additional future levels.  I think it can be -- as long
-> as we continue to use globally unique id's for all levels (IIR, only
-> core_id is not globally unique today) and do _nothing_ with levels
-> that have a 0 shift-width.
+-- 
+Best regards,
 
-Die ID is relative too for no real good reason. Inside the kernel core
-ID is not really required to be relative either.
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
-Implementation wise it's just wrong to store this information in
-cpu_info instead of doing a runtime evaluation of the topology
-information, which allows to chose between global and relative IDs
-depending on the requirements of the particular usage site.
-
-The primary usage of these IDs is for initialization and everything
-which needs this for hotpath usage converts it into a use case specific
-cached representation anyway because accessing per cpu variables in a
-hotpath is suboptimal at best.
-
-Thanks,
-
-        tglx
