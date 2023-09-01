@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BBA78FAA4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:20:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 438EB78FAA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241473AbjIAJUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38656 "EHLO
+        id S1348787AbjIAJUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348789AbjIAJUb (ORCPT
+        with ESMTP id S1348786AbjIAJUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:20:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF7D10D7
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693559978;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TxaEqKAot2YDZpT3+Zb0cnetSMOO6oSzvZxYp8+PXg4=;
-        b=ROXRJnM4KhvyUO74+2PaesrfYo/U28VGDo9EeuQBdiUiURjhC0+EBLAFpOi1Tes6SJeF3L
-        aepljFZlkBMuP0RPFqJhbmgSwDiAUe6cMjMMQeoeRvQhymAcYfqN0DHN+chNu+4WVSXGcA
-        fPoFzDJj0X5QfGw7H4idEdN4d4ZxwbM=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-267-leakcTUGPLy8JcO3bNaRVA-1; Fri, 01 Sep 2023 05:19:37 -0400
-X-MC-Unique: leakcTUGPLy8JcO3bNaRVA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3ff00714328so11554875e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:19:37 -0700 (PDT)
+        Fri, 1 Sep 2023 05:20:36 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19E410F6;
+        Fri,  1 Sep 2023 02:20:20 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-401ec23be82so18094835e9.0;
+        Fri, 01 Sep 2023 02:20:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693560019; x=1694164819; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eoDPIMR93fFo73tpDzClv3W9lTUI4siMLDCC0A/zMFY=;
+        b=QI4Y5ylMipWUDJv6JolDHD4JlsmEfgOfCR8MS8ZvzmZnLcv2AYxfUeRykl9U1Ngl2/
+         q/Dr8Ur+WXFOey3JRiCjoZDqSaKzrnjv2/WUKvrDWGq7NL3ABibpg1bZIuaq+sT5tOWV
+         ptTmCJncXjgTSpP/QRUjeyrO7X+BUuPLGNA7jda9VxhepMw9f1hCMdfhEX8abZCfmvQC
+         HJ0HIh6L/O6Z41e2dhi7cQTli07ZIsf18rV7/czxBV3ytW9OhL+JQDAl5pTlDfbTMQE0
+         YeQTLQhzn799bWnPMaw5u5wd7XuAl5m2ZYUU2XjXSvaYQDcPFN+2apb3vJbepeFoxQa1
+         Tjaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693559976; x=1694164776;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TxaEqKAot2YDZpT3+Zb0cnetSMOO6oSzvZxYp8+PXg4=;
-        b=eS3b4bzo2jqjMX/jpJlcIAKJ0iT7GtPcR1lGhh7olvwoFLRlA46S3ahAruOISqjH8s
-         orNMnhuImdkxQQA+PtphNLLUl2rakq4cqpLYLsRgmt/ItgiMhwp/R80Tnxx+J1fWh/FD
-         AyexS9us8HIX330xS0VKk2sOQzg1vS+R9/2SLMCNlK7kn8LAgXD1TJ0ndqJRvEothLM0
-         Ltw/mhvUe3Cnezvr30uWCSkEc/XTi9taOkQK7LFAhiww4u/y0htKOPDNt0stFIVU3Cqh
-         2IWnBX4Yib2azavOzmqR+SOCw3IuuSRhn7Wfg2LCC126IEjC1oxu2T7nfVpzwy27dqDZ
-         /IwQ==
-X-Gm-Message-State: AOJu0YxKaxFXLtYutFpb58TPhBSq35ymePF8SSpC2htnXJeciKsRzz2V
-        v+d6cwP9MtXufA6LnsqDp8CS9K9a4f4ugFOwNy6bU/jsGPf4K4TiPTyfGxn1mmxjuRpYSHNE4cZ
-        9KCWJ6zteG+cdO8TblsuZrkwt
-X-Received: by 2002:a7b:cb8f:0:b0:3fc:60:7dbf with SMTP id m15-20020a7bcb8f000000b003fc00607dbfmr1356347wmi.41.1693559976150;
-        Fri, 01 Sep 2023 02:19:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFgjIakCnIx1uWe1+b9ac1FNvsq5Jem3l4B20yMKwOjlq6edPw92y2dWuFW/CnZb1Ngwyk3yQ==
-X-Received: by 2002:a7b:cb8f:0:b0:3fc:60:7dbf with SMTP id m15-20020a7bcb8f000000b003fc00607dbfmr1356336wmi.41.1693559975818;
-        Fri, 01 Sep 2023 02:19:35 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id l7-20020a7bc447000000b003fe1fe56202sm4283235wmi.33.2023.09.01.02.19.31
+        d=1e100.net; s=20221208; t=1693560019; x=1694164819;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eoDPIMR93fFo73tpDzClv3W9lTUI4siMLDCC0A/zMFY=;
+        b=MBC/YISVoSaMRFtOXvF/60KAUhDeqapsW5S+DXrnZ96kkQjfzcnCD1nT5az3v1V0Wg
+         whaleMBwyYrvzNrPLM09hy39Jd9IOe87g46Z2hfqcjATIT30H3z3yZjvR5GPcULE9mzD
+         CVLIw4zlluR0atXtkFQnxBU6siXyaiydxzXIKyZDa5n1J4cDkWHVYF8DlHiFt9iWpUS7
+         cLwrwi2e/h6i3zsv3CvljzDlFJqDQN3f2DLLMTe3CE1bsqNiPZ6B4GhDKhEK8SXrExVF
+         1tU1oW+K/51dD8ddKwmAswWBqbkJrDLzf0K1WIcVD2yVAmrFYnYJ9euN9USXnXGQfGR0
+         8SVA==
+X-Gm-Message-State: AOJu0YymXPWF0yuV9kU8n7gAfYtYA/gwQYxRRHBVEAb7AkvakVBV5P4b
+        aL4Ew/4XkiIUr2LzMg4u4CA=
+X-Google-Smtp-Source: AGHT+IG3EJppxHOF4LgW3ZbOskCfv+9wLDrY/GDjW65q0eRIvQfPRQOFxNnW7DdUGuzZ7P79x1ynXA==
+X-Received: by 2002:a05:600c:2283:b0:401:b705:ebe6 with SMTP id 3-20020a05600c228300b00401b705ebe6mr1326376wmf.32.1693560018868;
+        Fri, 01 Sep 2023 02:20:18 -0700 (PDT)
+Received: from debian ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id p3-20020a05600c1d8300b00401e32b25adsm4404674wms.4.2023.09.01.02.20.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:19:31 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
- .atomic_check() callback
-In-Reply-To: <5dj43wxsszikpwbwzxx5v5h7jbx4vjjavnhzi26xgfcdp5wsws@t2hd3pawau4t>
-References: <20230830062546.720679-1-javierm@redhat.com>
- <6654778d-1f40-1775-c32c-ebf9728bc9a9@suse.de>
- <87ledqbah2.fsf@minerva.mail-host-address-is-not-set>
- <5dj43wxsszikpwbwzxx5v5h7jbx4vjjavnhzi26xgfcdp5wsws@t2hd3pawau4t>
-Date:   Fri, 01 Sep 2023 11:19:30 +0200
-Message-ID: <87jzta5jz1.fsf@minerva.mail-host-address-is-not-set>
+        Fri, 01 Sep 2023 02:20:18 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 10:20:16 +0100
+From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
+        rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 5.4 0/3] 5.4.256-rc1 review
+Message-ID: <ZPGs0EX6i0+xc3DZ@debian>
+References: <20230831110828.874071888@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831110828.874071888@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxime Ripard <mripard@kernel.org> writes:
+Hi Greg,
 
-> On Fri, Sep 01, 2023 at 09:48:09AM +0200, Javier Martinez Canillas wrote:
->> Thomas Zimmermann <tzimmermann@suse.de> writes:
->> 
->> > Hi Javier,
->> >
->> > another idea about this patch: why not just keep the allocation in the 
->> > plane's atomic check, but store the temporary buffers in a plane struct. 
->> > You'd only grow the arrays length in atomic_check and later fetch the 
->> > pointers in atomic_update. It needs some locking, but nothing complicated.
->> >
->> 
->> Yes, that would work too. Another option is to just move the buffers to
->> struct ssd130x_device as it was before commit 45b58669e532 ("drm/ssd130x:
->> Allocate buffer in the plane's .atomic_check() callback") but just make
->> them fixed arrays with the size of the biggest format.
->> 
->> That will be some memory wasted but will prevent the problem of trying to
->> allocate buffers after drm_atomic_helper_swap_state() has been called.
->
-> If we want to go that road, we don't even need an extra allocation, it
-> can be part of the state or object structure itself.
->
+On Thu, Aug 31, 2023 at 01:09:54PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.256 release.
+> There are 3 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 02 Sep 2023 11:08:22 +0000.
+> Anything received after that time might be too late.
 
-Yes, I meant to have it as fixed-length arrays. But still the best option
-seems to be to allocate them but in the CRTC's .atomic_check() and store
-them in a CRTC private state as Thomas suggested.
+Build test (gcc version 11.4.1 20230829):
+mips: 65 configs -> no failure
+arm: 106 configs -> no failure
+arm64: 2 configs -> no failure
+x86_64: 4 configs -> no failure
+alpha allmodconfig -> no failure
+powerpc allmodconfig -> no failure
+riscv allmodconfig -> no failure
+s390 allmodconfig -> no failure
+xtensa allmodconfig -> no failure
 
-Geert will post a v2 of his R1 support patches, I'll wait for those and
-after that try to implement Thomas' suggestion.
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/4880
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Regards
+Sudip
