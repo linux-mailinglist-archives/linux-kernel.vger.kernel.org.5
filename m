@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB56C78FFED
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 086A678FFEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344743AbjIAP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 11:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
+        id S1346822AbjIAP3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 11:29:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjIAP2m (ORCPT
+        with ESMTP id S1345396AbjIAP3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 11:28:42 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218E0E70;
-        Fri,  1 Sep 2023 08:28:39 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-570e005c480so1284634eaf.0;
-        Fri, 01 Sep 2023 08:28:39 -0700 (PDT)
+        Fri, 1 Sep 2023 11:29:32 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DE710CF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 08:29:28 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bccda76fb1so37874461fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 08:29:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693582118; x=1694186918; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        d=linux-foundation.org; s=google; t=1693582167; x=1694186967; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OJ2Fg59GpO6ELXJepkz+Etiwl3az70VeBDwTtXPnp9U=;
-        b=egIlqfim/YXEVfELoqApCdZx08q1tjRVUyijDIoQH32jpIlpeeRz3kNpBLcpFNAxYr
-         x/uR3Blzk/b9I1bJaIStysVtFGVSDVNLptEep/0LrErkHOSLwU32IUGWq9dq3NihfsSH
-         mfswvldG3x+uQP57G/IKkDysuHI9guH6wzNEu/IjRZD0WDxVAKfNApj2iHIzxVPRYnvV
-         dyh8GKF1S/vY4TV/ZdXqB+CptAYcBb8gYarYetGcCNeFHEPA5JiseQHaguLWq2EmNFfJ
-         rr4I5XZ6wJOmh61jt9/NaTGzH+WC+sdOXukbEaK7RyUj1NDlu+RdI22tVcpUMvZsOwNs
-         sb+Q==
+        bh=5l3JwwWVrV2EjXXwh71SJgTd61hiM3tGe0OpAkkaoxA=;
+        b=X4aeixMxw+Q/trooiy3NK322zQHLI2R0UoxTdtC1g1TIe7MP7ccZC3fNwgNCkEAo2r
+         jx7LC6UQKndGLV9oii/BDYrbpwqL3Kn8MGQ/BwtQjJbdnRPfBdPnPYs0eGQCz/5DClt6
+         ySoGaa6EGUaxrm5f9JdV8tZ+qnqlTKOW8pQRg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693582118; x=1694186918;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
+        d=1e100.net; s=20221208; t=1693582167; x=1694186967;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=OJ2Fg59GpO6ELXJepkz+Etiwl3az70VeBDwTtXPnp9U=;
-        b=FNWAyJ7n9zXkdUIRhs4+GdTGGlii2r8sgD4qo/piXa/yfQRQOV3Xr8+Rhf14MPlbmH
-         XT1ezGujFcd0OM0Vv1EwR0Wur5CR4IHUC8WvuhmLiKHp8beFgXzu/rtAP4pGX76izXck
-         SMU92rWeK3E3szywo25YxKxDiGGcZCrNlQMGackjly8MEMm8MRPxPhwsE57hJ5MCjYsT
-         7vvBqt1MbUPuL5+VQz6J8lKUICnnvMbPImqgA2uYxDUJcP/Hcsu5daOdAqPA/qzyN20N
-         nBLswhZ+4ukz1cdbUFQUuTYL+CWmao/bEeHcdAoNPkUbnbudFZlSad1Il7C1CE/f3Bdm
-         BjlA==
-X-Gm-Message-State: AOJu0Yz6jdmUvZIVnVx+Br+1bDXtHejCncpKAb62RirbG2GidtigSqns
-        SiQwivtXyEawHQJXhnvAzc70cY/Nr0iSR9U5lMc=
-X-Google-Smtp-Source: AGHT+IHk85EsPgpHKvMzvFX6rQAqsjUGzExC1ZNbz5s8xuR24hREKmtSXe7pHJi9apHvD6j4stIqCJDSP4trQ0e4hSM=
-X-Received: by 2002:a4a:2a13:0:b0:573:b2a4:7a6e with SMTP id
- k19-20020a4a2a13000000b00573b2a47a6emr2850729oof.5.1693582118309; Fri, 01 Sep
- 2023 08:28:38 -0700 (PDT)
+        bh=5l3JwwWVrV2EjXXwh71SJgTd61hiM3tGe0OpAkkaoxA=;
+        b=ZEWQmInU8lN+h5B8BktuGsgvxdE5wHPUCBiLz65E12eJ7Bmr08PCO6rvSSHW338lEH
+         P2TdRfjBfJ0h0wGzfa+Ii5c5yye1ptZtfWF6MakuPTl1VwHZlQ3JZjBXFgpbQFgWKJVA
+         2neAwxvcOP/0g+HYJ+nubCVlnWQfcIN3K4CY+K6QFAPG+QSwm10TSPpW+0IFyXqg0Ots
+         6wNIh2W3AE7cYkbZv5N6ni5SsktrVm84oNfZUhTQxQ+eAkpAmRbRrhVkl+cYu79G/pX2
+         16GMCV7OKycbIZi1eBTyjLMRClQTOUZTWOruKTU8tcjRzfymdpQZUHQwKPip1EOko3Ae
+         F0Uw==
+X-Gm-Message-State: AOJu0YyVmHs16tsqdw+K6GO9PvXf5KDokGj4BwB0axOu1JAwILzjP1My
+        wFNEG2lQqjDXnU2WDAJXuHYdPnRDoqrDLqd9vrLxNbgE
+X-Google-Smtp-Source: AGHT+IHd5LYZSvvq4wW0QmBQcjnJMfCN1dqtABjQmQO6cSnpX9rdUI8qifJGg7aI3i8s+SjbyRD43g==
+X-Received: by 2002:a2e:90d4:0:b0:2bc:eaec:e23f with SMTP id o20-20020a2e90d4000000b002bceaece23fmr2185752ljg.43.1693582166633;
+        Fri, 01 Sep 2023 08:29:26 -0700 (PDT)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id n18-20020a170906119200b009a219ecbaf1sm2088722eja.85.2023.09.01.08.29.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 08:29:26 -0700 (PDT)
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-9a6190af24aso126441266b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 08:29:26 -0700 (PDT)
+X-Received: by 2002:a17:906:519d:b0:9a2:96d2:b1e8 with SMTP id
+ y29-20020a170906519d00b009a296d2b1e8mr2255791ejk.54.1693582165864; Fri, 01
+ Sep 2023 08:29:25 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:a8a:1141:0:b0:4f0:1250:dd51 with HTTP; Fri, 1 Sep 2023
- 08:28:37 -0700 (PDT)
-In-Reply-To: <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
-References: <20230830140315.2666490-1-mjguzik@gmail.com> <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Fri, 1 Sep 2023 17:28:37 +0200
-Message-ID: <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
+ <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
+In-Reply-To: <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 1 Sep 2023 08:29:09 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wg7MDktwhh9FPFRTEQOLEgFxNcNhm+znsMevSyY1+aLyw@mail.gmail.com>
+Message-ID: <CAHk-=wg7MDktwhh9FPFRTEQOLEgFxNcNhm+znsMevSyY1+aLyw@mail.gmail.com>
 Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
  without ERMS
-To:     David Laight <David.Laight@aculab.com>
-Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        bp@alien8.de
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,75 +76,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/23, David Laight <David.Laight@aculab.com> wrote:
-> From: Mateusz Guzik
->> Sent: 30 August 2023 15:03
-> ...
->> Hand-rolled mov loops executing in this case are quite pessimal compared
->> to rep movsq for bigger sizes. While the upper limit depends on uarch,
->> everyone is well south of 1KB AFAICS and sizes bigger than that are
->> common.
+On Fri, 1 Sept 2023 at 08:20, Mateusz Guzik <mjguzik@gmail.com> wrote:
 >
-> That unrolled loop is pretty pessimal and very much 1980s.
->
-> It should be pretty easy to write a code loop that runs
-> at one copy (8 bytes) per clock on modern desktop x86.
-> I think that matches 'rep movsq'.
-> (It will run slower on Atom based cpu.)
->
-> A very simple copy loop needs (using negative offsets
-> from the end of the buffer):
-> 	A memory read
-> 	A memory write
-> 	An increment
-> 	A jnz
-> Doing all of those every clock is well with the cpu's capabilities.
-> However I've never managed a 1 clock loop.
-> So you need to unroll once (and only once) to copy 8 bytes/clock.
->
+> cp_new_stat and the counterpart for statx can dodge this rep mov by
+> filling user memory directly.
 
-When I was playing with this stuff about 5 years ago I found 32-byte
-loops to be optimal for uarchs of the priod (Skylake, Broadwell,
-Haswell and so on), but only up to a point where rep wins.
+Yeah, they could be made to use the "unsafe_put_user()" machinery
+these days, and we could go back to the good old days of avoiding the
+extra temp buffer.
 
-> So for copies that are multiples of 16 bytes something like:
-> 	# dst in %rdi, src in %rsi, len in %rdx
-> 	add	%rdi, %rdx
-> 	add	%rsi, %rdx
-> 	neg	%rdx
-> 1:
-> 	mov	%rcx,0(%rsi, %rdx)
-> 	mov	0(%rdi, %rdx), %rcx
-> 	add	#16, %rdx
-> 	mov	%rcx, -8(%rsi, %rdx)
-> 	mov	-8(%rdi, %rdx), %rcx
-> 	jnz	1b
->
-> Is likely to execute an iteration every two clocks.
-> The memory read/write all get queued up and will happen at
-> some point - so memory latency doesn't matter at all.
->
-> For copies (over 16 bytes) that aren't multiples of
-> 16 it is probably just worth copying the first 16 bytes
-> and then doing 16 bytes copies that align with the end
-> of the buffer - copying some bytes twice.
-> (Or even copy the last 16 bytes first and copy aligned
-> with the start.)
->
+> I'm going to patch this, but first I want to address the bigger
+> problem of glibc implementing fstat as newfstatat, demolishing perf of
+> that op. In their defense currently they have no choice as this is the
+> only exporter of the "new" struct stat. I'll be sending a long email
+> to fsdevel soon(tm) with a proposed fix.
 
-It would definitely be beneficial to align the target buffer in this
-routine (as in, non-FSRM), but it is unclear to me if you are
-suggesting that for mov loops or rep.
+I wouldn't mind re-instating the "copy directly to user space rather
+than go through a temporary buffer", for the stat family of functions,
+so please do..
 
-I never tested regs for really big sizes and misaligned targets, for
-the sizes where hand-rolled movs used to win against rep spending time
-aligning was more expensive than suffering the misaligned (and
-possibly overlapped) stores.
+> So I was wondering if rep movsq is any worse than ERMS'ed rep movsb
+> when there is no tail to handle and the buffer is aligned to a page,
+> or more to the point if clear_page gets any benefit for going with
+> movsb.
 
-If anything I find it rather surprising how inconsistent the string
-ops are -- why is memcpy using overlapping stores, while memset does
-not? Someone(tm) should transplant it, along with slapping rep past a
-certain size on both.
+Hard to tell. 'movsq' is *historically* better, and likely on all
+current microarchitectures.
 
--- 
-Mateusz Guzik <mjguzik gmail.com>
+But 'movsb' is actually in many ways easier for the CPU to optimize,
+because there's no question of the sub-chunking if anything is not
+aligned just rught.
+
+             Linus
