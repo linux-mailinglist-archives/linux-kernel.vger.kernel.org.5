@@ -2,123 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E212778FA5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1534078FA60
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345276AbjIAI7b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:59:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39782 "EHLO
+        id S1348694AbjIAJCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:02:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231297AbjIAI7a (ORCPT
+        with ESMTP id S231297AbjIAJCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:59:30 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A98C210D4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:59:26 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 16CFCFEC;
-        Fri,  1 Sep 2023 02:00:05 -0700 (PDT)
-Received: from [10.57.5.33] (unknown [10.57.5.33])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9CA863FBD2;
-        Fri,  1 Sep 2023 01:59:25 -0700 (PDT)
-Message-ID: <195129eb-6bf1-3321-de62-2963765496f3@arm.com>
-Date:   Fri, 1 Sep 2023 09:59:20 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH 1/2] dma/pool: trivial: add semicolon after label
- attributes
-Content-Language: en-GB
-From:   Robin Murphy <robin.murphy@arm.com>
-To:     Chunhui He <hchunhui@mail.ustc.edu.cn>
-Cc:     hch@lst.de, m.szyprowski@samsung.com, iommu@lists.linux.dev,
+        Fri, 1 Sep 2023 05:02:35 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8938810D4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:02:32 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bbad32bc79so30119651fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:02:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693558951; x=1694163751; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rJHjmi+q0iHTFctNC9OhHyJLMwyd3fj+9iKID7Mfapw=;
+        b=ibIYZ5Z0wklSKq294ApYMKx8nVRmc1bhP5QZllP4m7cHrycXASvDr+VN2t+wXHFfpD
+         iFulvUM3brKe/7jK3RmeCM2FyMffYMtd8oBNlOcrBvH3JxHZy6mgwq3jVgvG83L6s488
+         f6oXtrwvwMRRM+qBbXlDDQNn88poHngKRIFKvJNkVTvyvGzCBSF9P5O/3niy9+LaNtvU
+         C9qxR110Kwjuok6znMhtqs6i3/Z6MhpJ1Vvj5jgYrSbBYq4ysgRy3QZ+DIEQz4PBBxqI
+         b5wpwe28vqpNOqLTcotkwIg9bonT0tybPtB3H9CCjqq8pcUQgg/iJYNK6w/AtUEkcofL
+         QpBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693558951; x=1694163751;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=rJHjmi+q0iHTFctNC9OhHyJLMwyd3fj+9iKID7Mfapw=;
+        b=ANmWHl/r4OVjEQ6yeseGiFK7lA6g3jq3zYFEFBHCs/Yqj8YBgiGup3X7NHsen4NuJB
+         eSTwYJ3bm1xaNRVyP7zxUV8vqNOYcq1UeF1+hgXgSCledL7IIuoUFsV/tJm9zfDDpj6R
+         OTeHx76yfXSVdd8FVE+43Nl9ldyl9oYuYAFjqVHrJCR/R/dBVz7jtqIMcJv/vojsPPvO
+         pDygCJjHCKXdyHLPU5ofUViDqEVPvBWYekHfGBH//3oOLQoi2vZhcZ2yYXmbJ6pn9eAn
+         oIGghq/QOWSawOsiUNyaS7gBegynVsesP8VFSW88Fbnq3+Gu5/nG+OOM8Yq1shwZgcEa
+         65rg==
+X-Gm-Message-State: AOJu0Yza4NM7qnivn9c6PQREvEceW+5S0qXgR4L05xMR6pfWUG9DCcOJ
+        U1P78Tv9hdo08BPpqgaeT8lzUw==
+X-Google-Smtp-Source: AGHT+IEctluZrnUiVfm5uSX+097BIOvQyHari7Np4dy4lrD+QbhThPEG3aORpmAqhBndRm1EyOhfwA==
+X-Received: by 2002:a2e:925a:0:b0:2b6:bb21:8d74 with SMTP id v26-20020a2e925a000000b002b6bb218d74mr1255364ljg.1.1693558950787;
+        Fri, 01 Sep 2023 02:02:30 -0700 (PDT)
+Received: from krzk-bin.. (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id ov22-20020a170906fc1600b00992c92af6f4sm1753687ejb.144.2023.09.01.02.02.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 02:02:30 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <6f936d6e-9f27-ba72-68de-0ed27c0dbbe1@arm.com>
- <20230829151216.GA4211@lst.de> <d5ef27f1-9e6d-5e3c-b7ea-4b0abca623ed@arm.com>
- <20230831.115937.924195103727242070.hchunhui@mail.ustc.edu.cn>
- <f3bec3b9-e938-bea4-f89f-b0b698c4e302@arm.com>
-In-Reply-To: <f3bec3b9-e938-bea4-f89f-b0b698c4e302@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 0/2] pinctrl: qcom: lpass-lpi: allow slew rate bit in main pin config register
+Date:   Fri,  1 Sep 2023 11:02:22 +0200
+Message-Id: <20230901090224.27770-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-01 09:56, Robin Murphy wrote:
-> On 2023-08-31 12:59, Chunhui He wrote:
->>
->> On Tue, 29 Aug 2023 16:28:05 +0100, Robin Murphy 
->> <robin.murphy@arm.com> wrote:
->>> On 29/08/2023 4:12 pm, Christoph Hellwig wrote:
->>>> On Tue, Aug 29, 2023 at 03:22:22PM +0100, Robin Murphy wrote:
->>>>> AFAICS, what that clearly says is that *C++* label attributes can be
->>>>> ambiguous. This is not C++ code. Even in C11, declarations still
->>>>> cannot be
->>>>> labelled, so it should still be the case that, per the same GCC
->>>>> documentation, "the ambiguity does not arise". And even if the
->>>>> language did
->>>>> allow it, an inline declaration at that point at the end of a function
->>>>> would be downright weird and against the kernel coding style anyway.
->>>>>
->>>>> So, I don't really see what's "better" about cluttering up C code with
->>>>> unnecessary C++isms; it's just weird noise to me. The only thing I
->>>>> think it
->>>>> *does* achieve is introduce the chance that the static checker brigade
->>>>> eventually identifies a redundant semicolon and we get more patches to
->>>>> remove it again.
->>
->> Inline declaration is a GNU C extension, so the ambiguity may arise.
->> Adding ';' makes the compiler easier to parse correctly, so I say
->> "better". The commit 13a453c241b78934a945b1af572d0533612c9bd1
->> (sched/fair: Add ';' after label attributes) also says the same.
-> 
-> And that commit was also wrong. Nobody suggested C11 doesn't support 
-> inline declarations - it demonstrably does - the fact in question is 
-> that *attributes* on declarations is a C++ thing and not valid in C:
+Hi,
 
-Argh, sorry, s/attributes/labels/
+Prepare LPASS (Low Power Audio SubSystem) pin controller for newer
+Qualcomm SoCs.  The patchset does not bring the newer SoCs yet, but only
+re-organizes the code for future changes.
 
-/me goes to make more coffee...
+I understand that patch #2 (adding flag) makes little sense without
+actual user of that flag, but such user I cannot post yet.
 
-Robin.
+Dependency
+==========
+Context depends on my previous fix:
+https://lore.kernel.org/linux-arm-msm/20230815110625.317971-1-krzysztof.kozlowski@linaro.org/
 
-> ~/src/linux$ git diff
-> diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
-> index 1acec2e22827..e1354235cb9c 100644
-> --- a/kernel/dma/pool.c
-> +++ b/kernel/dma/pool.c
-> @@ -137,7 +137,8 @@ static int atomic_pool_expand(struct gen_pool *pool, 
-> size_t pool_size,
->          dma_common_free_remap(addr, pool_size);
->   #endif
->   free_page: __maybe_unused
-> -       __free_pages(page, order);
-> +       int x = order;
-> +       __free_pages(page, x);
->   out:
->          return ret;
->   }
-> ~/src/linux$ make -j32
->    CALL    scripts/checksyscalls.sh
->    CC      kernel/dma/pool.o
-> kernel/dma/pool.c: In function ‘atomic_pool_expand’:
-> kernel/dma/pool.c:140:2: error: a label can only be part of a statement 
-> and a declaration is not a statement
->    140 |  int x = order;
->        |  ^~~
-> make[4]: *** [scripts/Makefile.build:243: kernel/dma/pool.o] Error 1
-> make[3]: *** [scripts/Makefile.build:480: kernel/dma] Error 2
-> make[2]: *** [scripts/Makefile.build:480: kernel] Error 2
-> make[2]: *** Waiting for unfinished jobs....
-> make[1]: *** [/home/robmur01/src/linux/Makefile:2032: .] Error 2
-> make: *** [Makefile:234: __sub-make] Error 2
-> 
-> 
-> Thanks,
-> Robin.
-> 
+Best regards,
+Krzysztof
+
+Krzysztof Kozlowski (2):
+  pinctrl: qcom: lpass-lpi: split slew rate set to separate function
+  pinctrl: qcom: lpass-lpi: allow slew rate bit in main pin config
+    register
+
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.c | 69 +++++++++++++++---------
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.h |  7 +++
+ 2 files changed, 52 insertions(+), 24 deletions(-)
+
+-- 
+2.34.1
+
