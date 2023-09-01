@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9736778FDCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20C578FDD3
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344971AbjIAMzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:55:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40808 "EHLO
+        id S1347767AbjIAM4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:56:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343583AbjIAMzI (ORCPT
+        with ESMTP id S1346028AbjIAM4E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:55:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2740E0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:55:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5BBAD62C5E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 12:55:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7066CC433C7;
-        Fri,  1 Sep 2023 12:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693572903;
-        bh=v+RCs19kOWar+rgrrH/bMdmvLgmSNZkRub0yArkOhOY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cRWn+AzlC+HmC2LzMsKkCwnThcoUn7iltXvxrz8+fwbcAAXD73Zib2dHP2cjtuJOt
-         Q21zPZt2FSbHgfJ06gx0z2Jpe92umZwjcB60tHAbT3FE1a4LAM7iPKwiHqk79CKsEy
-         mf09hddfOSMeSM0jL9l5dLel+l2z/t6eozXkrHbQTHfsq9KfHu/MYGoplUYMWFL0TR
-         TYncpOCvdgUdqWVavgK6QgAzvXo49+l9J2TiWvr52NfK2scelscRpN1gxnvh09V/vL
-         A2Mhy9CPYjN2LN5sd+MxY1Ubv8KRfNniU1n0hvPgeI7qengj54mZObQHfaHAX7Ri4Z
-         X2vY7mEv7P9yA==
-Date:   Fri, 1 Sep 2023 13:54:58 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, patches@opensource.cirrus.com,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.au@gmail.com>
-Subject: Re: [PATCH v4 2/3] ASoC: wm8580: Remove trailing comma in the
- terminator entry
-Message-ID: <baefefc8-55d7-430a-9ec5-2c17c4577d11@sirena.org.uk>
-References: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
- <20230901065952.18760-3-biju.das.jz@bp.renesas.com>
- <ZPGmiWDErxnjGlMR@smile.fi.intel.com>
+        Fri, 1 Sep 2023 08:56:04 -0400
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B48010CF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:56:00 -0700 (PDT)
+Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-79216d8e2cfso66437039f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:56:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693572959; x=1694177759; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Yp6kuqivZUwDBvAydSVxSfEt7o7hfm/DB8FgT+ioHzU=;
+        b=O6xJa/d6TVzMbkg89oJ1JpValU+j7sdGzmW1a+iqKKxCVdJ/gRvEgFBjH8sk8dfOzg
+         MpGztuiqMXWvDfRoyfS7EMmzDyNV0grfVicP+veADcNwlOJ5UlzK/zUYNmFZkTgMvI7R
+         IXK2uby5qGPWGnc18h3QCkc33NiAozzo93owqvwBkNj9M3cUx3JDqFBcnr18ipnxYUwd
+         1BdcLoHol5S63IRSJ1aBj+lR0aBrEeeiSyYzwfszVvTdaEXvSXy8O+FPGs0Eju1hxAyH
+         ROXnwWJlP5jI6T8YQplCyc1yuamsr7mJTkx7CzwRs9Z7csxdSkqX+MPaxYIeYw/49nXI
+         scQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693572959; x=1694177759;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Yp6kuqivZUwDBvAydSVxSfEt7o7hfm/DB8FgT+ioHzU=;
+        b=Lc3FSGeyIv+UTBdel0t8PKS9aLIt7YfhB/IfWHxdFG9ag14QqOyrYAaPdpdcYlTgtC
+         dE8mJDlZ0zEhoBVfDl+BNdKk1E0t+Os2rrnWzrTWjVCtG+2qTNTBq8Sv1ykrKnAriyv1
+         k01MsGIHpqMSJxBrTJPiIL0n7OGbfsuYSFShXp4ajzAEtZeIOlN533OUPkgqgHGhoyJ0
+         ZE0QPPqhXhCChEw23LGWF1SrcjtPw3+0Ryv/tMLAzSvAjUEJ7Saz932ZdrR3OLbBLvuD
+         vxMQqVkjUSrKzkkVZ9z6BC51JAJyLsHLXfbkley2K2NokHjzLVrmHaf471uwxyTGshVB
+         ZpEA==
+X-Gm-Message-State: AOJu0YyFwzj6s5ZgfXe7NQXmljrj6Ic43hueXNY6Jos0OgOiAMKCcGMd
+        kUgsmaov2zRiWVdT8cYE+g2p6LA9IeyicVWW5gHLdQ==
+X-Google-Smtp-Source: AGHT+IHpml0xIyAhuTM6WK2ZMvP39QviO5vePqECq+n308G/C9kRkss4Wd7em/CWZ4a3YguAYG1sVgTg8cbYOm2FnN4=
+X-Received: by 2002:a6b:5f17:0:b0:792:9a3e:2dd with SMTP id
+ t23-20020a6b5f17000000b007929a3e02ddmr2681740iob.3.1693572959540; Fri, 01 Sep
+ 2023 05:55:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NhC2TJUJTC94pOK8"
-Content-Disposition: inline
-In-Reply-To: <ZPGmiWDErxnjGlMR@smile.fi.intel.com>
-X-Cookie: Dealer prices may vary.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20230831105252.1385911-1-zhaoyang.huang@unisoc.com>
+ <ZPCEim0AZG5hTSYH@casper.infradead.org> <CAGWkznGAJVZtn49zNHsMAjRSfTRR707QXYY0m8Q+yABTsiig2Q@mail.gmail.com>
+In-Reply-To: <CAGWkznGAJVZtn49zNHsMAjRSfTRR707QXYY0m8Q+yABTsiig2Q@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Fri, 1 Sep 2023 14:55:17 +0200
+Message-ID: <CAG_fn=VJrO3e9q0M6KA9nopqyDuRO4g7SBak6YptiEvzdE+nkA@mail.gmail.com>
+Subject: Re: [PATCH] mm: make __GFP_SKIP_ZERO visible to skip zero operation
+To:     Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ke.wang@unisoc.com,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Mateusz Guzik <mjguzik@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,34 +82,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Sep 1, 2023 at 12:29=E2=80=AFPM Zhaoyang Huang <huangzhaoyang@gmail=
+.com> wrote:
+>
+> loop alex
 
---NhC2TJUJTC94pOK8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+(adding more people who took part in the previous discussions)
 
-On Fri, Sep 01, 2023 at 11:53:29AM +0300, Andy Shevchenko wrote:
-> On Fri, Sep 01, 2023 at 07:59:51AM +0100, Biju Das wrote:
+>
+> On Thu, Aug 31, 2023 at 8:16=E2=80=AFPM Matthew Wilcox <willy@infradead.o=
+rg> wrote:
+> >
+> > On Thu, Aug 31, 2023 at 06:52:52PM +0800, zhaoyang.huang wrote:
+> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> > >
+> > > There is no explicit gfp flags to let the allocation skip zero
+> > > operation when CONFIG_INIT_ON_ALLOC_DEFAULT_ON=3Dy. I would like to m=
+ake
+> > > __GFP_SKIP_ZERO be visible even if kasan is not configured.
 
-> > Remove trailing comma in the terminator entry for OF table.
+Hi all,
 
-> You are so fast :-)
-> This will produce an unneeded churn as you touch the same line twice in a row.
+This is a recurring question, as people keep encountering performance
+problems on systems with init_on_alloc=3D1
+(https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1862822 being
+one of the examples).
 
-So do reviews which focus on very pedantic issues like this one...
+Brad Spengler has also pointed out
+(https://twitter.com/spendergrsec/status/1296461651659694082) that
+there are cases where there is no security vs. performance tradeoff
+(e.g. kmemdup() and kstrdup()).
 
---NhC2TJUJTC94pOK8
-Content-Type: application/pgp-signature; name="signature.asc"
+An opt-out flag was included in the initial init_on_alloc series, but
+back then Michal Hocko has noted that it might easily get out of
+control: https://patchwork.kernel.org/project/linux-hardening/patch/2019041=
+8154208.131118-2-glider@google.com/#22600229.
 
------BEGIN PGP SIGNATURE-----
+Now that init_on_alloc is actually being used by people which may have
+different preferences wrt. security and performance (in the cases
+where this tradeoff exists), we must be very careful with the opt-out
+GFP flag. Not initializing a particular allocation site in the
+upstream kernel will affect every downstream user, and some may
+consider this a security regression.
+Another problematic case is an OS vendor mandating init_on_alloc
+everywhere, but a third party driver vendor doing kmalloc(...,
+__GFP_SKIP_ZERO) for their allocations.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTx3yEACgkQJNaLcl1U
-h9DZ1Af/XKzTgRf9dZvjRu0YrfdFEXCailhkaR0xnA2hJbJyVjTetgyEudatrdja
-+sGgS1I9EpzJ3cMyLZMDXJcXY00bQsQ1iXFei4UEscCZIWxYLtOt4dQkwp7S9M+p
-RbMQM3c19w+d5/3Hnv2wzCH6Lio8NRgfwBzckAQh4SEzx2Fid/WVb7mXJZnoZvRC
-u17iGZD1Akha1zMppU5xvXmhUOL9qsC+e7Eoi11nGUDZsgeg6TvjMViEdAPN6vEw
-YZO5EQHehyE2THEY+BpKeQf0nMjU8t7wcolkfRfBjNX+AA1VAUaBCWHbH7v/t0yC
-5H6ugtuqPsuRTBPD5bcOcodfC3i3dw==
-=mEvZ
------END PGP SIGNATURE-----
+So I think a working opt-out scheme for the heap initialization should
+be two-step:
+1. The code owner may decide that a particular allocation site needs
+an opt-out, and make the upstream code change;
+2. The OS vendor has the ability to override that decision for the
+kernel they ship without the need to patch the source.
 
---NhC2TJUJTC94pOK8--
+Let me quoute the idea briefly outlined at
+https://lore.kernel.org/lkml/CAG_fn=3DUQEuvJ9WXou_sW3moHcVQZJ9NvJ5McNcsYE8x=
+w_WEYGw@mail.gmail.com/
+(unfortunately the discussion got derailed a bit):
+
+"""
+1. Add a ___GFP_SKIP_ZERO flag that is not intended to be used
+explicitly (e.g. disallow passing it to kmalloc(), add a checkpatch.pl
+warning). Explicitly passing an opt-out flag to allocation functions
+was considered harmful previously:
+https://lore.kernel.org/kernel-hardening/20190423083148.GF25106@dhcp22.suse=
+.cz/
+
+2. Define new allocation API that will allow opt-out:
+  struct page *alloc_pages_uninit(gfp_t gfp, unsigned int order, const
+char *key);
+  void *kmalloc_uninit(size_t size, gfp_t flags, const char *key);
+  void *kmem_cache_alloc_uninit(struct kmem_cache *, gfp_t flags,
+const char *key);
+, where @key is an arbitrary string that identifies a single
+allocation or a group of allocations.
+
+3. Provide a boot-time flag that holds a comma-separated list of
+opt-out keys that actually take effect:
+  init_on_alloc.skip=3D"xyz-camera-driver,some_big_buffer".
+"""
+
+A draft implementation at
+https://github.com/ramosian-glider/linux/commit/00791be14eb1113eae615c74b65=
+2f94b5cc3c336
+(which probably does not apply anymore) may give some insight into how
+this is supposed to work.
+There's plenty of room for bikeshedding here (does the command-line
+flag opt-in or opt-out? should we use function names instead of some
+"keys"? can we allow overriding every allocation site without the need
+for alloc_pages_uninit()?), but if the overall scheme is viable I can
+probably proceed with an RFC.
+
+> >
+> > This bypasses a security feature so you're going to have to do a little
+> > better than "I want it".
+> Thanks for pointing this out. What I want to do is to give the user a
+> way to exempt some types of pages from being zeroed, which could help
+> on performance issues.  Could we have the most safety concern admin
+> use INIT_ON_FREE while the less concerned use INIT_ON_ALLOC &
+> __GFP_SKIP_ZERO as a light version method?
+
+init_on_free has a more significant performance impact, and might be
+more problematic for production use (even more opt-outs would've been
+needed).
+
+As a side note, I don't think we should repurpose the same
+__GFP_SKIP_ZERO flag used by KASAN, because the semantics of the flags
+may not match 1:1.
