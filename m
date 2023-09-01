@@ -2,205 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73AB87902C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:20:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AD437902CF
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350711AbjIAUU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 16:20:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
+        id S1350721AbjIAU1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 16:27:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229668AbjIAUU6 (ORCPT
+        with ESMTP id S244443AbjIAU1h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 16:20:58 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44691E65;
-        Fri,  1 Sep 2023 13:20:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693599655; x=1725135655;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=NsjR7KxMOb5iZXiBkPgMybuVtt5nRRRiYgj01lwdMoo=;
-  b=lgjbEU2ig6Dyxkczkrps/9K5KgWTsnQCnPxIhP9CZ+4RnLwtQSD0Qc/F
-   MVmfwhCbcBIjLkV4fzyDbwgynizRjIb0HeofGJNfOd2L/ayTuLedQ003X
-   Fu/jZQ1aajEV2dqKviZ6uXhgkrlcmp4jltQFmhYgeXorY+xtPo/bDOrph
-   pAhO85mQVm3ZZearaNo2gXWauWNFvtvs9Cp2gtcdyYfWOTzy4vADcK2r4
-   qp79brvfrHCUyt8wAUo6Q7GTMA5nIvVtexqpBlfJw9i4cSo9jgwK2dmRw
-   3DLjL3Em2td6NjCyQ8Y1z3sdLmd/5RONwlWLqutVBmCYrzW1N6+G6utxp
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="407296611"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="407296611"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 13:20:54 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="743240759"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="743240759"
-Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 01 Sep 2023 13:20:52 -0700
-Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qcAdO-0001c7-0i;
-        Fri, 01 Sep 2023 20:20:50 +0000
-Date:   Sat, 2 Sep 2023 04:20:03 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, deller@gmx.de,
-        daniel@ffwll.ch, javierm@redhat.com, sam@ravnborg.org,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 4/7] fbdev/core: Move logo functions into separate source
- file
-Message-ID: <202309020442.Ef28qbgO-lkp@intel.com>
-References: <20230829142109.4521-5-tzimmermann@suse.de>
+        Fri, 1 Sep 2023 16:27:37 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA1110CF
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 13:27:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=AJYUgvwHPfg5E8dhaC6Z51y0eMkAuL+wCW554+L9I60=; b=o+1Ap6YIeTPZcK16zb5pBLWmM8
+        86f1lVyMhxjLyr/BDdDIq9TdINP1bfko4hDxkn4U+3EZDqzEHI6OtP6s7R7vGwtownAnHoprZzwUC
+        pyreBsRS9gWY+f2qnVMDMnA01jOMJVXmMz9u9MnzHkoc7ExjS+W24OnVj7JVbeFTAqIYvFy50VeE8
+        7rHau0I+RqoDCoZzVw56TqbuiO3LZ7ESoT/BJOYsfcOwIoRmveKHLRoKQcidl5YKUv4wYr8cpOkzO
+        0DPpS73NhAjVBE2O1cbzDl0tGAHy8hlNXqaX/QiH8MN81Sgvc161P6rFGl0vx/rCzMMBrcJnfq2KO
+        2ZvNTaEg==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1qcAjj-000MYd-0W;
+        Fri, 01 Sep 2023 20:27:23 +0000
+Message-ID: <c9da6ffe-7a58-1efa-f625-41d73346d6a2@infradead.org>
+Date:   Fri, 1 Sep 2023 13:27:16 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829142109.4521-5-tzimmermann@suse.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] riscv: Kconfig.errata: Add dependency for RISCV_SBI in
+ ERRATA_ANDES config
+Content-Language: en-US
+To:     Prabhakar <prabhakar.csengg@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        kernel test robot <lkp@intel.com>
+References: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas,
+Hi,
 
-kernel test robot noticed the following build warnings:
-
-[auto build test WARNING on drm-misc/drm-misc-next]
-[also build test WARNING on linus/master next-20230831]
-[cannot apply to v6.5]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Thomas-Zimmermann/fbdev-au1200fb-Do-not-display-boot-up-logo/20230829-222419
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230829142109.4521-5-tzimmermann%40suse.de
-patch subject: [PATCH 4/7] fbdev/core: Move logo functions into separate source file
-config: x86_64-buildonly-randconfig-001-20230902 (https://download.01.org/0day-ci/archive/20230902/202309020442.Ef28qbgO-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230902/202309020442.Ef28qbgO-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309020442.Ef28qbgO-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/video/fbdev/core/fb_logo.c:433:5: warning: no previous declaration for 'fb_prepare_logo' [-Wmissing-declarations]
-    int fb_prepare_logo(struct fb_info *info, int rotate)
-        ^~~~~~~~~~~~~~~
->> drivers/video/fbdev/core/fb_logo.c:506:5: warning: no previous declaration for 'fb_show_logo' [-Wmissing-declarations]
-    int fb_show_logo(struct fb_info *info, int rotate)
-        ^~~~~~~~~~~~
+On 9/1/23 04:03, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> 
+> Andes errata uses sbi_ecalll() which is only available if RISCV_SBI is
+> enabled. So add an dependency for RISCV_SBI in ERRATA_ANDES config to
+> avoid any build failures.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp@intel.com/
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+>  arch/riscv/Kconfig.errata | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
+> index bee5d838763b..566bcefeab50 100644
+> --- a/arch/riscv/Kconfig.errata
+> +++ b/arch/riscv/Kconfig.errata
+> @@ -2,7 +2,7 @@ menu "CPU errata selection"
+>  
+>  config ERRATA_ANDES
+>  	bool "Andes AX45MP errata"
+> -	depends on RISCV_ALTERNATIVE
+> +	depends on RISCV_ALTERNATIVE && RISCV_SBI
+>  	help
+>  	  All Andes errata Kconfig depend on this Kconfig. Disabling
+>  	  this Kconfig will disable all Andes errata. Please say "Y"
 
 
-vim +/fb_prepare_logo +433 drivers/video/fbdev/core/fb_logo.c
+I'm still seeing build warnings/errors after applying all 3 RISC-V
+Kconfig patches from today (2023 SEP 01).
 
-   432	
- > 433	int fb_prepare_logo(struct fb_info *info, int rotate)
-   434	{
-   435		int depth = fb_get_color_depth(&info->var, &info->fix);
-   436		unsigned int yres;
-   437		int height;
-   438	
-   439		memset(&fb_logo, 0, sizeof(struct logo_data));
-   440	
-   441		if (info->flags & FBINFO_MISC_TILEBLITTING ||
-   442		    info->fbops->owner || !fb_logo_count)
-   443			return 0;
-   444	
-   445		if (info->fix.visual == FB_VISUAL_DIRECTCOLOR) {
-   446			depth = info->var.blue.length;
-   447			if (info->var.red.length < depth)
-   448				depth = info->var.red.length;
-   449			if (info->var.green.length < depth)
-   450				depth = info->var.green.length;
-   451		}
-   452	
-   453		if (info->fix.visual == FB_VISUAL_STATIC_PSEUDOCOLOR && depth > 4) {
-   454			/* assume console colormap */
-   455			depth = 4;
-   456		}
-   457	
-   458		/* Return if no suitable logo was found */
-   459		fb_logo.logo = fb_find_logo(depth);
-   460	
-   461		if (!fb_logo.logo)
-   462			return 0;
-   463	
-   464		if (rotate == FB_ROTATE_UR || rotate == FB_ROTATE_UD)
-   465			yres = info->var.yres;
-   466		else
-   467			yres = info->var.xres;
-   468	
-   469		if (fb_logo.logo->height > yres) {
-   470			fb_logo.logo = NULL;
-   471			return 0;
-   472		}
-   473	
-   474		/* What depth we asked for might be different from what we get */
-   475		if (fb_logo.logo->type == LINUX_LOGO_CLUT224)
-   476			fb_logo.depth = 8;
-   477		else if (fb_logo.logo->type == LINUX_LOGO_VGA16)
-   478			fb_logo.depth = 4;
-   479		else
-   480			fb_logo.depth = 1;
-   481	
-   482	
-   483		if (fb_logo.depth > 4 && depth > 4) {
-   484			switch (info->fix.visual) {
-   485			case FB_VISUAL_TRUECOLOR:
-   486				fb_logo.needs_truepalette = 1;
-   487				break;
-   488			case FB_VISUAL_DIRECTCOLOR:
-   489				fb_logo.needs_directpalette = 1;
-   490				fb_logo.needs_cmapreset = 1;
-   491				break;
-   492			case FB_VISUAL_PSEUDOCOLOR:
-   493				fb_logo.needs_cmapreset = 1;
-   494				break;
-   495			}
-   496		}
-   497	
-   498		height = fb_logo.logo->height;
-   499		if (fb_center_logo)
-   500			height += (yres - fb_logo.logo->height) / 2;
-   501	
-   502		return fb_prepare_extra_logos(info, height, yres);
-   503	}
-   504	EXPORT_SYMBOL(fb_prepare_logo);
-   505	
- > 506	int fb_show_logo(struct fb_info *info, int rotate)
-   507	{
-   508		unsigned int count;
-   509		int y;
-   510	
-   511		if (!fb_logo_count)
-   512			return 0;
-   513	
-   514		count = fb_logo_count < 0 ? num_online_cpus() : fb_logo_count;
-   515		y = fb_show_logo_line(info, rotate, fb_logo.logo, 0, count);
-   516		y = fb_show_extra_logos(info, y, rotate);
-   517	
-   518		return y;
-   519	}
-   520	EXPORT_SYMBOL(fb_show_logo);
-   521	#else
-   522	int fb_prepare_logo(struct fb_info *info, int rotate)
-   523	{
-   524		return 0;
-   525	}
-   526	EXPORT_SYMBOL(fb_prepare_logo);
-   527	
+WARNING: unmet direct dependencies detected for ERRATA_ANDES
+  Depends on [n]: RISCV_ALTERNATIVE [=y] && RISCV_SBI [=n]
+  Selected by [y]:
+  - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y]
+
+../arch/riscv/errata/andes/errata.c: In function 'ax45mp_iocp_sw_workaround':
+../arch/riscv/errata/andes/errata.c:29:23: error: storage size of 'ret' isn't known
+   29 |         struct sbiret ret;
+      |                       ^~~
+../arch/riscv/errata/andes/errata.c:35:15: error: implicit declaration of function 'sbi_ecall' [-Werror=implicit-function-declaration]
+   35 |         ret = sbi_ecall(ANDESTECH_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAROUND,
+      |               ^~~~~~~~~
+../arch/riscv/errata/andes/errata.c:29:23: warning: unused variable 'ret' [-Wunused-variable]
+   29 |         struct sbiret ret;
+      |                       ^~~
+
+ARCH_R9A07G043 in drivers/soc/renesas/Kconfig selects ERRATA_ANDES and
+ERRATA_ANDES_CMO even though RISCV_SBI is not set/enabled.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+~Randy
