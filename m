@@ -2,309 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68EA378FFEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB56C78FFED
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 17:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232306AbjIAPZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 11:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41422 "EHLO
+        id S1344743AbjIAP2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 11:28:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbjIAPZb (ORCPT
+        with ESMTP id S229849AbjIAP2m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 11:25:31 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D210994
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 08:25:27 -0700 (PDT)
-Received: from [192.168.2.39] (77-166-152-30.fixed.kpn.net [77.166.152.30])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DCC51212A79E;
-        Fri,  1 Sep 2023 08:25:24 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DCC51212A79E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1693581927;
-        bh=3U6deW3WmkYHw2SKJa5pZv80uKTtSTYWF2LN0Z1o9Gw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=GH4y+ldXLGqvCvUFGbRh8Fwd0Y9no0kf2KbdFCHsw6mtioKMCTcjDfgGK+iU8D+Cu
-         S7zJJq/FoKvWEJZ5BjnUkJb5Z8WXfTGVtiVeOXsdnuQSUC8ctmYWr82yQmaAMczTaK
-         TTIdljDnDThnsTB/IuD5VLx63ur6ZfoFbS5zbA2E=
-Message-ID: <4e4407b0-179d-4be4-bf0b-0d674103d4f6@linux.microsoft.com>
-Date:   Fri, 1 Sep 2023 17:25:23 +0200
+        Fri, 1 Sep 2023 11:28:42 -0400
+Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218E0E70;
+        Fri,  1 Sep 2023 08:28:39 -0700 (PDT)
+Received: by mail-oo1-xc29.google.com with SMTP id 006d021491bc7-570e005c480so1284634eaf.0;
+        Fri, 01 Sep 2023 08:28:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693582118; x=1694186918; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OJ2Fg59GpO6ELXJepkz+Etiwl3az70VeBDwTtXPnp9U=;
+        b=egIlqfim/YXEVfELoqApCdZx08q1tjRVUyijDIoQH32jpIlpeeRz3kNpBLcpFNAxYr
+         x/uR3Blzk/b9I1bJaIStysVtFGVSDVNLptEep/0LrErkHOSLwU32IUGWq9dq3NihfsSH
+         mfswvldG3x+uQP57G/IKkDysuHI9guH6wzNEu/IjRZD0WDxVAKfNApj2iHIzxVPRYnvV
+         dyh8GKF1S/vY4TV/ZdXqB+CptAYcBb8gYarYetGcCNeFHEPA5JiseQHaguLWq2EmNFfJ
+         rr4I5XZ6wJOmh61jt9/NaTGzH+WC+sdOXukbEaK7RyUj1NDlu+RdI22tVcpUMvZsOwNs
+         sb+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693582118; x=1694186918;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OJ2Fg59GpO6ELXJepkz+Etiwl3az70VeBDwTtXPnp9U=;
+        b=FNWAyJ7n9zXkdUIRhs4+GdTGGlii2r8sgD4qo/piXa/yfQRQOV3Xr8+Rhf14MPlbmH
+         XT1ezGujFcd0OM0Vv1EwR0Wur5CR4IHUC8WvuhmLiKHp8beFgXzu/rtAP4pGX76izXck
+         SMU92rWeK3E3szywo25YxKxDiGGcZCrNlQMGackjly8MEMm8MRPxPhwsE57hJ5MCjYsT
+         7vvBqt1MbUPuL5+VQz6J8lKUICnnvMbPImqgA2uYxDUJcP/Hcsu5daOdAqPA/qzyN20N
+         nBLswhZ+4ukz1cdbUFQUuTYL+CWmao/bEeHcdAoNPkUbnbudFZlSad1Il7C1CE/f3Bdm
+         BjlA==
+X-Gm-Message-State: AOJu0Yz6jdmUvZIVnVx+Br+1bDXtHejCncpKAb62RirbG2GidtigSqns
+        SiQwivtXyEawHQJXhnvAzc70cY/Nr0iSR9U5lMc=
+X-Google-Smtp-Source: AGHT+IHk85EsPgpHKvMzvFX6rQAqsjUGzExC1ZNbz5s8xuR24hREKmtSXe7pHJi9apHvD6j4stIqCJDSP4trQ0e4hSM=
+X-Received: by 2002:a4a:2a13:0:b0:573:b2a4:7a6e with SMTP id
+ k19-20020a4a2a13000000b00573b2a47a6emr2850729oof.5.1693582118309; Fri, 01 Sep
+ 2023 08:28:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] virt: sevguest: Add TSM_REPORTS support for
- SNP_{GET, GET_EXT}_REPORT
-To:     Dan Williams <dan.j.williams@intel.com>, linux-coco@lists.linux.dev
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Brijesh Singh <brijesh.singh@amd.com>, peterz@infradead.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
- <169342402274.3934343.11704206926819634506.stgit@dwillia2-xfh.jf.intel.com>
-Content-Language: en-US
-From:   Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <169342402274.3934343.11704206926819634506.stgit@dwillia2-xfh.jf.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a8a:1141:0:b0:4f0:1250:dd51 with HTTP; Fri, 1 Sep 2023
+ 08:28:37 -0700 (PDT)
+In-Reply-To: <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Fri, 1 Sep 2023 17:28:37 +0200
+Message-ID: <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/30/2023 9:33 PM, Dan Williams wrote:
-> The sevguest driver was a first mover in the confidential computing
-> space. As a first mover that afforded some leeway to build the driver
-> without concern for common infrastructure.
-> 
-> Now that sevguest is no longer a singleton [1] the common operation of
-> building and transmitting attestation report blobs can / should be made
-> common. In this model the so called "TSM-provider" implementations can
-> share a common envelope ABI even if the contents of that envelope remain
-> vendor-specific. When / if the industry agrees on an attestation record
-> format, that definition can also fit in the same ABI. In the meantime
-> the kernel's maintenance burden is reduced and collaboration on the
-> commons is increased.
-> 
-> Convert sevguest to use CONFIG_TSM_REPORTS to retrieve the blobs that
-> the SNP_{GET,GET_EXT}_REPORT ioctls produce. An example flow follows for
-> retrieving the SNP_GET_REPORT blob via the TSM interface utility,
-> assuming no nonce and VMPL==2:
-> 
->     report=/sys/kernel/config/tsm/report/report0
->     mkdir $report
->     echo 2 > $report/privlevel
->     dd if=/dev/urandom bs=64 count=1 > $report/inblob
->     hexdump -C $report/outblob
->     rmdir $report
-> 
-> ...while the SNP_GET_EXT_REPORT flow needs to additionally set the
-> format to "extended":
-> 
->     report=/sys/kernel/config/tsm/report/report1
->     mkdir $report
->     echo extended > $report/format
->     dd if=/dev/urandom bs=64 count=1 > $report/inblob
->     hexdump -C $report/outblob
->     rmdir $report
-> 
-> The old ioctls can be lazily deprecated, the main motivation of this
-> effort is to stop the proliferation of new ioctls, and to increase
-> cross-vendor collaboration.
-> 
-> Note, only compile-tested.
-> 
-> Link: http://lore.kernel.org/r/64961c3baf8ce_142af829436@dwillia2-xfh.jf.intel.com.notmuch [1]
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Dionna Glaze <dionnaglaze@google.com>
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-> ---
->  drivers/virt/coco/sev-guest/Kconfig     |    1 
->  drivers/virt/coco/sev-guest/sev-guest.c |   83 +++++++++++++++++++++++++++++++
->  2 files changed, 84 insertions(+)
-> 
-> diff --git a/drivers/virt/coco/sev-guest/Kconfig b/drivers/virt/coco/sev-guest/Kconfig
-> index da2d7ca531f0..1cffc72c41cb 100644
-> --- a/drivers/virt/coco/sev-guest/Kconfig
-> +++ b/drivers/virt/coco/sev-guest/Kconfig
-> @@ -5,6 +5,7 @@ config SEV_GUEST
->  	select CRYPTO
->  	select CRYPTO_AEAD2
->  	select CRYPTO_GCM
-> +	select TSM_REPORTS
->  	help
->  	  SEV-SNP firmware provides the guest a mechanism to communicate with
->  	  the PSP without risk from a malicious hypervisor who wishes to read,
-> diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-> index c3c9e9ea691f..c7bbb8f372a3 100644
-> --- a/drivers/virt/coco/sev-guest/sev-guest.c
-> +++ b/drivers/virt/coco/sev-guest/sev-guest.c
-> @@ -16,10 +16,12 @@
->  #include <linux/miscdevice.h>
->  #include <linux/set_memory.h>
->  #include <linux/fs.h>
-> +#include <linux/tsm.h>
->  #include <crypto/aead.h>
->  #include <linux/scatterlist.h>
->  #include <linux/psp-sev.h>
->  #include <linux/sockptr.h>
-> +#include <linux/cleanup.h>
->  #include <uapi/linux/sev-guest.h>
->  #include <uapi/linux/psp-sev.h>
->  
-> @@ -759,6 +761,79 @@ static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno
->  	return key;
->  }
->  
-> +static u8 *sev_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
-> +{
-> +	struct snp_guest_dev *snp_dev = data;
-> +	const int report_size = SZ_4K;
-> +	const int ext_size = SZ_16K;
-> +	int ret, size;
-> +
-> +	if (desc->inblob_len != 64)
-> +		return ERR_PTR(-EINVAL);
-> +
-> +	if (desc->outblob_format == TSM_FORMAT_EXTENDED)
-> +		size = report_size + ext_size;
-> +	else
-> +		size = report_size;
-> +
-> +	u8 *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
-> +
-> +	guard(mutex)(&snp_cmd_mutex);
-> +	if (desc->outblob_format == TSM_FORMAT_EXTENDED) {
-> +		struct snp_ext_report_req ext_req = {
-> +			.data = { .vmpl = desc->privlevel },
-> +			.certs_address = (__u64)buf + report_size,
-> +			.certs_len = ext_size,
-> +		};
-> +		memcpy(&ext_req.data.user_data, desc->inblob, desc->inblob_len);
-> +
-> +		struct snp_guest_request_ioctl input = {
-> +			.msg_version = 1,
-> +			.req_data = (__u64)&ext_req,
-> +			.resp_data = (__u64)buf,
-> +		};
-> +		struct snp_req_resp io = {
-> +			.req_data = KERNEL_SOCKPTR(&ext_req),
-> +			.resp_data = KERNEL_SOCKPTR(buf),
-> +		};
-> +
-> +		ret = get_ext_report(snp_dev, &input, &io);
-> +	} else {
-> +		struct snp_report_req req = {
-> +			.vmpl = desc->privlevel,
-> +		};
-> +		memcpy(&req.user_data, desc->inblob, desc->inblob_len);
-> +
-> +		struct snp_guest_request_ioctl input = {
-> +			.msg_version = 1,
-> +			.req_data = (__u64)&req,
-> +			.resp_data = (__u64)buf,
-> +		};
-> +		struct snp_req_resp io = {
-> +			.req_data = KERNEL_SOCKPTR(&req),
-> +			.resp_data = KERNEL_SOCKPTR(buf),
-> +		};
-> +
-> +		ret = get_report(snp_dev, &input, &io);
-> +	}
-> +
-> +	if (ret)
-> +		return ERR_PTR(ret);
-> +
-> +	*outblob_len = size;
-> +	return_ptr(buf);
-> +}
-> +
-> +static const struct tsm_ops sev_tsm_ops = {
-> +	.name = KBUILD_MODNAME,
-> +	.report_new = sev_report_new,
-> +};
-> +
-> +static void unregister_sev_tsm(void *data)
-> +{
-> +	unregister_tsm(&sev_tsm_ops);
-> +}
-> +
->  static int __init sev_guest_probe(struct platform_device *pdev)
->  {
->  	struct snp_secrets_page_layout *layout;
-> @@ -832,6 +907,14 @@ static int __init sev_guest_probe(struct platform_device *pdev)
->  	snp_dev->input.resp_gpa = __pa(snp_dev->response);
->  	snp_dev->input.data_gpa = __pa(snp_dev->certs_data);
->  
-> +	ret = register_tsm(&sev_tsm_ops, snp_dev, &tsm_report_ext_type);
-> +	if (ret)
-> +		goto e_free_cert_data;
-> +
-> +	ret = devm_add_action_or_reset(&pdev->dev, unregister_sev_tsm, NULL);
-> +	if (ret)
-> +		goto e_free_cert_data;
-> +
->  	ret =  misc_register(misc);
->  	if (ret)
->  		goto e_free_cert_data;
-> 
+On 9/1/23, David Laight <David.Laight@aculab.com> wrote:
+> From: Mateusz Guzik
+>> Sent: 30 August 2023 15:03
+> ...
+>> Hand-rolled mov loops executing in this case are quite pessimal compared
+>> to rep movsq for bigger sizes. While the upper limit depends on uarch,
+>> everyone is well south of 1KB AFAICS and sizes bigger than that are
+>> common.
+>
+> That unrolled loop is pretty pessimal and very much 1980s.
+>
+> It should be pretty easy to write a code loop that runs
+> at one copy (8 bytes) per clock on modern desktop x86.
+> I think that matches 'rep movsq'.
+> (It will run slower on Atom based cpu.)
+>
+> A very simple copy loop needs (using negative offsets
+> from the end of the buffer):
+> 	A memory read
+> 	A memory write
+> 	An increment
+> 	A jnz
+> Doing all of those every clock is well with the cpu's capabilities.
+> However I've never managed a 1 clock loop.
+> So you need to unroll once (and only once) to copy 8 bytes/clock.
+>
 
-I tried this with the non-extended request and realized it's a bit awkward from
-a uapi point of view. The returned outblob has a header prepended (table 23 in [1])
-and is arbitrarily sized at 4096. It would be more natural to only return the report
-field and the count bytes that the report actually has. I've attached a rough patch
-below to give you an idea of what I mean.
+When I was playing with this stuff about 5 years ago I found 32-byte
+loops to be optimal for uarchs of the priod (Skylake, Broadwell,
+Haswell and so on), but only up to a point where rep wins.
 
-The extended guest request is another topic, since userspace has to be aware of
-where the kernel choses to put the extended data, and fixup all the offsets in the
-table (section 4.1.8.1 in [2]). It would be better to return this data through a
-separate file.
+> So for copies that are multiples of 16 bytes something like:
+> 	# dst in %rdi, src in %rsi, len in %rdx
+> 	add	%rdi, %rdx
+> 	add	%rsi, %rdx
+> 	neg	%rdx
+> 1:
+> 	mov	%rcx,0(%rsi, %rdx)
+> 	mov	0(%rdi, %rdx), %rcx
+> 	add	#16, %rdx
+> 	mov	%rcx, -8(%rsi, %rdx)
+> 	mov	-8(%rdi, %rdx), %rcx
+> 	jnz	1b
+>
+> Is likely to execute an iteration every two clocks.
+> The memory read/write all get queued up and will happen at
+> some point - so memory latency doesn't matter at all.
+>
+> For copies (over 16 bytes) that aren't multiples of
+> 16 it is probably just worth copying the first 16 bytes
+> and then doing 16 bytes copies that align with the end
+> of the buffer - copying some bytes twice.
+> (Or even copy the last 16 bytes first and copy aligned
+> with the start.)
+>
 
-[1]: https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/56860.pdf
-[2]: https://www.amd.com/content/dam/amd/en/documents/epyc-technical-docs/specifications/56421-guest-hypervisor-communication-block-standardization.pdf
+It would definitely be beneficial to align the target buffer in this
+routine (as in, non-FSRM), but it is unclear to me if you are
+suggesting that for mov loops or rep.
 
-diff --git a/drivers/virt/coco/sev-guest/sev-guest.c b/drivers/virt/coco/sev-guest/sev-guest.c
-index c7bbb8f372a3..e92a82d9c53f 100644
---- a/drivers/virt/coco/sev-guest/sev-guest.c
-+++ b/drivers/virt/coco/sev-guest/sev-guest.c
-@@ -761,9 +761,18 @@ static u8 *get_vmpck(int id, struct snp_secrets_page_layout *layout, u32 **seqno
- 	return key;
- }
- 
-+struct snp_msg_report_resp_hdr {
-+	u32 status;
-+	u32 report_size;
-+	u8 rsvd[24];
-+};
-+#define SNP_REPORT_INVALID_PARAM 0x16
-+#define SNP_REPORT_INVALID_KEY_SEL 0x27
-+
- static u8 *sev_report_new(const struct tsm_desc *desc, void *data, size_t *outblob_len)
- {
- 	struct snp_guest_dev *snp_dev = data;
-+	struct snp_msg_report_resp_hdr hdr;
- 	const int report_size = SZ_4K;
- 	const int ext_size = SZ_16K;
- 	int ret, size;
-@@ -777,6 +786,8 @@ static u8 *sev_report_new(const struct tsm_desc *desc, void *data, size_t *outbl
- 		size = report_size;
- 
- 	u8 *buf __free(kvfree) = kvzalloc(size, GFP_KERNEL);
-+	if (!buf)
-+		return ERR_PTR(-ENOMEM);
- 
- 	guard(mutex)(&snp_cmd_mutex);
- 	if (desc->outblob_format == TSM_FORMAT_EXTENDED) {
-@@ -820,8 +831,24 @@ static u8 *sev_report_new(const struct tsm_desc *desc, void *data, size_t *outbl
- 	if (ret)
- 		return ERR_PTR(ret);
- 
--	*outblob_len = size;
--	return_ptr(buf);
-+	memcpy(&hdr, buf, sizeof(hdr));
-+	if (hdr.status == SNP_REPORT_INVALID_PARAM)
-+		return ERR_PTR(-EINVAL);
-+	if (hdr.status == SNP_REPORT_INVALID_KEY_SEL)
-+		return ERR_PTR(-ENOKEY);
-+	if (hdr.status)
-+		return ERR_PTR(-EPROTO);
-+	if ((hdr.report_size + sizeof(hdr)) > size)
-+		return ERR_PTR(-ENOSPC);
-+
-+	/* TODO: figure out how we want to handle extended report */
-+	u8 *buf2 = kvzalloc(hdr.report_size, GFP_KERNEL);
-+	if (!buf2)
-+		return ERR_PTR(-ENOMEM);
-+
-+	memcpy(buf2, buf + sizeof(hdr), hdr.report_size);
-+	*outblob_len = hdr.report_size;
-+	return buf2;
- }
- 
- static const struct tsm_ops sev_tsm_ops = {
+I never tested regs for really big sizes and misaligned targets, for
+the sizes where hand-rolled movs used to win against rep spending time
+aligning was more expensive than suffering the misaligned (and
+possibly overlapped) stores.
 
+If anything I find it rather surprising how inconsistent the string
+ops are -- why is memcpy using overlapping stores, while memset does
+not? Someone(tm) should transplant it, along with slapping rep past a
+certain size on both.
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
