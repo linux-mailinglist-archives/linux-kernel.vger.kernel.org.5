@@ -2,125 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D5878FA8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:18:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFAEE78FA8F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348747AbjIAJSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:18:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41338 "EHLO
+        id S1348757AbjIAJTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:19:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229650AbjIAJSp (ORCPT
+        with ESMTP id S229650AbjIAJTA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:18:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BD1010D7;
-        Fri,  1 Sep 2023 02:18:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693559922; x=1725095922;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=D8lDK6WlruDop02fINkrgVRK+gNN/TluMLV5jqq0e6E=;
-  b=buMV+nWijqNnk2ys+FRYpiETixcSXxLU489xmwZe9CwjCxqJ7EW/M5TF
-   MsNbngPBqhAmNuSYnPBEPK4TQ8WXKj1TVRSX5cC0UECdubrvSmUxl2HGH
-   hoQZEEhLWgm+c+Kwr7l1LMFdQZCsIkg1APE+6TnJrkd+si61j3+7f80pY
-   gARQay6nfnHsVq4p/u5mhjlxaZiP56wIf9XUO3hcSN9G5KK39KqDYanaZ
-   3Ik61uOuO+byY/BFOYhqhN1ushRzYRv0q0Dg2MC5lS0KpX+Em7n/zgvtN
-   bw43hnQMogxFodIKaxLEZj2vq69V7ooEfrdfwTkvVDBNJjzqc6wgnuBoB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="407169817"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="407169817"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 02:18:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="805378247"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="805378247"
-Received: from pboudier-mobl.ger.corp.intel.com ([10.252.47.249])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 02:18:39 -0700
-Date:   Fri, 1 Sep 2023 12:18:31 +0300 (EEST)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Reinette Chatre <reinette.chatre@intel.com>
-cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
-        Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>,
-        Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Babu Moger <babu.moger@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 1/8] selftests/resctrl: Ensure the benchmark commands
- fits to its array
-In-Reply-To: <da9c1d88-73ea-b169-909c-e6e59e87c474@intel.com>
-Message-ID: <cf3b8cb7-7d17-8d19-3fa1-f2a845ec946@linux.intel.com>
-References: <20230831110843.26719-1-ilpo.jarvinen@linux.intel.com> <20230831110843.26719-2-ilpo.jarvinen@linux.intel.com> <da9c1d88-73ea-b169-909c-e6e59e87c474@intel.com>
+        Fri, 1 Sep 2023 05:19:00 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6250410F0;
+        Fri,  1 Sep 2023 02:18:56 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bcb50e194dso30947651fa.3;
+        Fri, 01 Sep 2023 02:18:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693559934; x=1694164734; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6+njEKjcTP+ez0Q2gzhNZpFi7MIABKKwCebuyo0ubII=;
+        b=EerHLrWb8S/lDLorxTuK7eIAb98bkkkjlY2+7F7xQC8+vYFi8cFFHXRPWbVbQ8JU4I
+         bl0LVtaZOFCpLorD39Wk9cQxBOR9WM+zCKKh4otGRHiQgXolyqkCz8tEiKY7jinyCSKK
+         DYa8aMFMUvnuvPEgHULLlzNjgqqzs1QrWlUA59n1i3fiA/8BC0Zw0DKELDCBfJ7T4NVK
+         E1aZjyUGyUJlFd+4X8g3hdOxrJ/XbbnXIGPuhnxVERZpW8ohzH4rRi1ezFbHi2kBIxf+
+         9s8+mXhGe09t8s4PjH8Jvp9yFgvT/C0m75HLJ1oOSCFP9zHGqhvobCh4OI8L5ZyrTgN6
+         dtIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693559934; x=1694164734;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6+njEKjcTP+ez0Q2gzhNZpFi7MIABKKwCebuyo0ubII=;
+        b=kuRCbU2wGtikDRHC2sP4E8Gyf0OxtdSnNOaxEbrGWr/ncqBV+5vZwtihpf4Ij7owya
+         VvCeW4f3Oim3yOnooJEBM4PP719XFsYjoxLGU82ua+uWPgCqbz6TifwdGoNAsJHQhNQy
+         DIjlguhrDq5MjFFxaJmbWEmVUfOL5EX4ot5cboF9bmlI6X7ssDCKZviDRRIXNMOoSAPx
+         0WyHBM9mqopZQS0lF7srWZp8rcamCG5kFNFfm3Uzx6inqjQULonbT5KbOEh5P5x6ax7w
+         VwbiPvo60w4EKg4VIbGPxFMzmby8YKa0copU8/wHOB5ft28gReUeySpMi5l6lVSmnzob
+         mThw==
+X-Gm-Message-State: AOJu0Yw9QIPhwrdmkt36V9Aj/6F2EXcF4KEqk5pvZ44uQHVBgkbqtej9
+        Fc9H1Ast1TnE3+rK0yW57Q4=
+X-Google-Smtp-Source: AGHT+IEuuUVNlcvvZD9+UdKgZYWHNdlT09FhxxgTeD7XtEa6nwx5c8AdfbirneV7j47yNV+2pin8DQ==
+X-Received: by 2002:a2e:a0c3:0:b0:2b5:bc27:d6eb with SMTP id f3-20020a2ea0c3000000b002b5bc27d6ebmr1131010ljm.8.1693559933940;
+        Fri, 01 Sep 2023 02:18:53 -0700 (PDT)
+Received: from debian ([167.98.27.226])
+        by smtp.gmail.com with ESMTPSA id y11-20020a1c4b0b000000b003fe2b081661sm7368206wma.30.2023.09.01.02.18.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 02:18:53 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 10:18:51 +0100
+From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
+        rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 4.19 0/2] 4.19.294-rc2 review
+Message-ID: <ZPGse1U/KfXLI+q3@debian>
+References: <20230831172214.759342877@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2046450504-1693559921=:2036"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230831172214.759342877@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Greg,
 
---8323329-2046450504-1693559921=:2036
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-On Thu, 31 Aug 2023, Reinette Chatre wrote:
-
-> Hi Ilpo,
+On Thu, Aug 31, 2023 at 07:30:20PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.294 release.
+> There are 2 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> On 8/31/2023 4:08 AM, Ilpo Järvinen wrote:
-> > Benchmark command is copied into an array in the stack. The array is
-> > BENCHMARK_ARGS items long but the command line could try to provide a
-> > longer command. Argument size is also fixed by BENCHMARK_ARG_SIZE (63
-> > bytes of space after fitting the terminating \0 character) and user
-> > could have inputted argument longer than that.
-> > 
-> > Return error in case the benchmark command does not fit to the space
-> > allocated for it.
-> > 
-> > Fixes: ecdbb911f22d ("selftests/resctrl: Add MBM test")
-> > Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> > Tested-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-> > Reviewed-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
-> > ---
-> >  tools/testing/selftests/resctrl/resctrl_tests.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> > diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
-> > index d511daeb6851..a9331b31c32d 100644
-> > --- a/tools/testing/selftests/resctrl/resctrl_tests.c
-> > +++ b/tools/testing/selftests/resctrl/resctrl_tests.c
-> > @@ -255,9 +255,14 @@ int main(int argc, char **argv)
-> >  		return ksft_exit_skip("Not running as root. Skipping...\n");
-> >  
-> >  	if (has_ben) {
-> > +		if (argc - ben_ind >= BENCHMARK_ARGS)
-> > +			ksft_exit_fail_msg("Too long benchmark command.\n");
-> > +
-> >  		/* Extract benchmark command from command line. */
-> >  		for (i = ben_ind; i < argc; i++) {
-> >  			benchmark_cmd[i - ben_ind] = benchmark_cmd_area[i];
-> > +			if (strlen(argv[i]) >= BENCHMARK_ARG_SIZE - 1)
-> 
-> Should this perhaps be:
-> 	if (strlen(argv[i]) >= BENCHMARK_ARG_SIZE)
-> 
-> As you note in the longest string that can be fitted should be 63 to account for
-> the \0. If I understand correctly comparing with "BENCHMARK_ARG_SIZE - 1" would
-> would consider a 63 byte string as invalid.
+> Responses should be made by Sat, 02 Sep 2023 17:22:08 +0000.
+> Anything received after that time might be too late.
 
-Of course, I don't know why I added that - 1 there.
+Build test (gcc version 11.4.1 20230829):
+mips: 63 configs -> no  failure
+arm: 115 configs -> no failure
+arm64: 2 configs -> no failure
+x86_64: 4 configs -> no failure
+alpha allmodconfig -> no failure
+powerpc allmodconfig -> no failure
+riscv allmodconfig -> no failure
+s390 allmodconfig -> no failure
+xtensa allmodconfig -> no failure
+
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression. [1]
+
+[1]. https://openqa.qa.codethink.co.uk/tests/4879
+
+
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
 -- 
- i.
-
---8323329-2046450504-1693559921=:2036--
+Regards
+Sudip
