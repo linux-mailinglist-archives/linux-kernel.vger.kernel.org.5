@@ -2,59 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD437902CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:27:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A6F67902D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 22:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350721AbjIAU1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 16:27:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
+        id S1350729AbjIAU3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 16:29:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244443AbjIAU1h (ORCPT
+        with ESMTP id S242521AbjIAU3W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 16:27:37 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA1110CF
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 13:27:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-        bh=AJYUgvwHPfg5E8dhaC6Z51y0eMkAuL+wCW554+L9I60=; b=o+1Ap6YIeTPZcK16zb5pBLWmM8
-        86f1lVyMhxjLyr/BDdDIq9TdINP1bfko4hDxkn4U+3EZDqzEHI6OtP6s7R7vGwtownAnHoprZzwUC
-        pyreBsRS9gWY+f2qnVMDMnA01jOMJVXmMz9u9MnzHkoc7ExjS+W24OnVj7JVbeFTAqIYvFy50VeE8
-        7rHau0I+RqoDCoZzVw56TqbuiO3LZ7ESoT/BJOYsfcOwIoRmveKHLRoKQcidl5YKUv4wYr8cpOkzO
-        0DPpS73NhAjVBE2O1cbzDl0tGAHy8hlNXqaX/QiH8MN81Sgvc161P6rFGl0vx/rCzMMBrcJnfq2KO
-        2ZvNTaEg==;
-Received: from [2601:1c2:980:9ec0::2764]
-        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1qcAjj-000MYd-0W;
-        Fri, 01 Sep 2023 20:27:23 +0000
-Message-ID: <c9da6ffe-7a58-1efa-f625-41d73346d6a2@infradead.org>
-Date:   Fri, 1 Sep 2023 13:27:16 -0700
+        Fri, 1 Sep 2023 16:29:22 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FD4E7E;
+        Fri,  1 Sep 2023 13:29:19 -0700 (PDT)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 381ItjDG005899;
+        Fri, 1 Sep 2023 20:29:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=2FYXvMmpReuPlYSmTDcvNg1rIzAmGZtkeMDCuhzAtGw=;
+ b=RpGMbsimYgMc3eNR7ei7vHPVzYUwHYGYWfqvFd5Hm0dfsshzelWMpDIZ1rnuLnmPTBJW
+ QrE9r0G9055pwpCfvVOPDMYtRHxC1oQjdFF+Gqzr4/3Fj+LWLC7Ub9J9K4ZZKtKtFbum
+ sHYN6I0cLw7UKq0OoSob97cywjNlU+qDOZ1qNg1FPayvbNvP7zzH3hwGYkQ+kG9Bx9jv
+ pkoE04KD1f8QglapQUr69SaBGB43NBDRiCuHqw/3ZSvJVuKYp2UadZBnGPAgApX2FtyJ
+ dkQahInoVqPNSAkfaD2bOsDEwD7LSCXJ9CVg7yTTQ0XSZVrP7POVtWlVknMqnRdcBF39 TQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suc22hupp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 20:29:05 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 381KT4X3011614
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 1 Sep 2023 20:29:04 GMT
+Received: from [10.110.95.146] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Fri, 1 Sep
+ 2023 13:29:04 -0700
+Message-ID: <deeefaf8-2ac9-cee0-eed4-687e36ac6f10@quicinc.com>
+Date:   Fri, 1 Sep 2023 13:29:03 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH] riscv: Kconfig.errata: Add dependency for RISCV_SBI in
- ERRATA_ANDES config
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.0
+Subject: Re: [PATCH 02/11] nvmem: qfprom: Mark core clk as optional
 Content-Language: en-US
-To:     Prabhakar <prabhakar.csengg@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        kernel test robot <lkp@intel.com>
-References: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Doug Anderson <dianders@chromium.org>
+CC:     <cros-qcom-dts-watchers@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        <~postmarketos/upstreaming@lists.sr.ht>,
+        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <linux-pm@vger.kernel.org>
+References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
+ <20230830-fp5-initial-v1-2-5a954519bbad@fairphone.com>
+ <CAD=FV=WS2hgY=bQjLOs3Fdp8pbZyMsaS-0BpoxPq90Etfi+Xuw@mail.gmail.com>
+ <CV5YJVXIL8OT.1ZWW3KVCHPTA5@otso>
+From:   Trilok Soni <quic_tsoni@quicinc.com>
+In-Reply-To: <CV5YJVXIL8OT.1ZWW3KVCHPTA5@otso>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 9Ar9RfHXW3BZTXygIUaxyBxzbbtd8VRn
+X-Proofpoint-ORIG-GUID: 9Ar9RfHXW3BZTXygIUaxyBxzbbtd8VRn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-01_17,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 bulkscore=0
+ clxscore=1011 mlxscore=0 impostorscore=0 suspectscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 lowpriorityscore=0 priorityscore=1501
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309010192
 X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,58 +96,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 9/1/23 04:03, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 8/30/2023 7:43 AM, Luca Weiss wrote:
+> On Wed Aug 30, 2023 at 4:30 PM CEST, Doug Anderson wrote:
+>> Hi,
+>>
+>> On Wed, Aug 30, 2023 at 2:58 AM Luca Weiss <luca.weiss@fairphone.com> wrote:
+>>>
+>>> On some platforms like sc7280 on non-ChromeOS devices the core clock
+>>> cannot be touched by Linux so we cannot provide it. Mark it as optional
+>>> as accessing qfprom works without it.
+>>>
+>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>> ---
+>>>  drivers/nvmem/qfprom.c | 2 +-
+>>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> Are you actually testing burning fuses from the OS, or are you just
+>> using the nvmem in "read-only" mode? From comments in the bindings, if
+>> you're trying to burn the fuses then the clock is required. If things
+>> are in read-only mode then the clock isn't required.
 > 
-> Andes errata uses sbi_ecalll() which is only available if RISCV_SBI is
-> enabled. So add an dependency for RISCV_SBI in ERRATA_ANDES config to
-> avoid any build failures.
+> Hi Doug,
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp@intel.com/
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> ---
->  arch/riscv/Kconfig.errata | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I definitely don't plan on burning any fuses on this phone. Not even
+> sure that's allowed by the TZ / boot stack.
 > 
-> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-> index bee5d838763b..566bcefeab50 100644
-> --- a/arch/riscv/Kconfig.errata
-> +++ b/arch/riscv/Kconfig.errata
-> @@ -2,7 +2,7 @@ menu "CPU errata selection"
->  
->  config ERRATA_ANDES
->  	bool "Andes AX45MP errata"
-> -	depends on RISCV_ALTERNATIVE
-> +	depends on RISCV_ALTERNATIVE && RISCV_SBI
->  	help
->  	  All Andes errata Kconfig depend on this Kconfig. Disabling
->  	  this Kconfig will disable all Andes errata. Please say "Y"
+>>
+>> When I compare to the driver, it seems like the driver assumes that if
+>> more than one memory region is provided then you must be supporting
+>> burning fuses. The bindings agree that having 4 memory regions
+>> specified means that the nvmem supports burning and 1 memory region
+>> specified means read-only. The extra 3 memory regions in the nvmem are
+>> all about fuse burning, I believe.
+>>
+>> So maybe the right fix here is to just change your dts to specify one
+>> memory region?
+> 
+> I got feedback from Konrad that this here would be the preferred
+> approach compared to having a different dts for ChromeOS vs non-ChromeOS
+> devices. I don't feel strongly to either, for me it's also okay to
+> remove the extra memory regions and only have the main one used on
+> regular qcom devices.
+> 
+> Let me know what you think.
 
-
-I'm still seeing build warnings/errors after applying all 3 RISC-V
-Kconfig patches from today (2023 SEP 01).
-
-WARNING: unmet direct dependencies detected for ERRATA_ANDES
-  Depends on [n]: RISCV_ALTERNATIVE [=y] && RISCV_SBI [=n]
-  Selected by [y]:
-  - ARCH_R9A07G043 [=y] && SOC_RENESAS [=y] && RISCV [=y]
-
-../arch/riscv/errata/andes/errata.c: In function 'ax45mp_iocp_sw_workaround':
-../arch/riscv/errata/andes/errata.c:29:23: error: storage size of 'ret' isn't known
-   29 |         struct sbiret ret;
-      |                       ^~~
-../arch/riscv/errata/andes/errata.c:35:15: error: implicit declaration of function 'sbi_ecall' [-Werror=implicit-function-declaration]
-   35 |         ret = sbi_ecall(ANDESTECH_SBI_EXT_ANDES, ANDES_SBI_EXT_IOCP_SW_WORKAROUND,
-      |               ^~~~~~~~~
-../arch/riscv/errata/andes/errata.c:29:23: warning: unused variable 'ret' [-Wunused-variable]
-   29 |         struct sbiret ret;
-      |                       ^~~
-
-ARCH_R9A07G043 in drivers/soc/renesas/Kconfig selects ERRATA_ANDES and
-ERRATA_ANDES_CMO even though RISCV_SBI is not set/enabled.
+I would prefer to re-use the sc7280 DT as well. Thank you for your patches. We plan to use your patches for platform on the same part. 
 
 -- 
-~Randy
+---Trilok Soni
+
