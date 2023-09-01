@@ -2,190 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50AFF78FAE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:34:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D450478FAE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348824AbjIAJe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52024 "EHLO
+        id S1348836AbjIAJei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:34:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229783AbjIAJe2 (ORCPT
+        with ESMTP id S229783AbjIAJei (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:34:28 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57836C0;
-        Fri,  1 Sep 2023 02:34:24 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1bf11b1c7d0so19953915ad.0;
-        Fri, 01 Sep 2023 02:34:24 -0700 (PDT)
+        Fri, 1 Sep 2023 05:34:38 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD93410E9
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:34:34 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b95d5ee18dso32072841fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:34:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693560863; x=1694165663; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693560873; x=1694165673; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CO+uLLw2FHoLsIQUr29swe3Fix3Sx8cUyODUzWW8lnk=;
-        b=OxX2d4erYQY6wDRWmD0GGdNqIFIrwr5RrPRyK21oY6qbGrryP/GqxAy2YTz3EfY9kE
-         WGkf4cguJveb+0prVMtFwRs8yDb5Pvk6T92M3UG8xT65+9Vm6a9xTfUwKoZY03HxRrTb
-         7JuN1TcAXEwZ0lK3wixifiZDx5V6OlEkyu8nMGlL54wkZiwuc6bhP1wbrd0P8d1w/tUv
-         qvK13dVfr58+vkgAvY9z24o1yS95ZuCTcWimmeqOeDX/kxw/1J7KdVxifcbkWUMZbkNM
-         zv8QVHKfqvcnfJKVhK9lp7yA7TBX513rx2opr4RMnYLPc/AWECa0AQMIGKtUarP/doYY
-         sc6A==
+        bh=XirWmBwg/Ps6jm5whQ65EEWIWZF91+vzUx+/E2s51pQ=;
+        b=J23iZpJkES/VUJ7DNJV096hgvdn96ucer08ETRghheKoBcRJNVf2VzUPaXFPTsqG52
+         6uRZAqOQpI7OdFD/NN8XyhrtrTWSrVPfYU33KunwCKETuGrevhUkqHkYrXgw3zNtZqQe
+         WCXR0HncPdKbEfKLcMdwvUwVFaqj2XxWHY7jd1BEi8scUiTnHXy2oEwPcbC+wZC/SiU2
+         IWFVjmj+eRX1MDEC3+qUM/QHaXN2TtCJTUiyOw780MTrGUAilxaj3CUDO7Ba/EM7IeE6
+         Pf+0zkq7W65efB5QdeEs1w14tLGoe0kQLcMIebqUPaViSHNNwz8Tcfh9YJ2AuWs7oDGm
+         CGZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693560863; x=1694165663;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=CO+uLLw2FHoLsIQUr29swe3Fix3Sx8cUyODUzWW8lnk=;
-        b=DZ3wKNMAeXgnIOjPetJydtI/fOALJc56ggOdOD1jXEmJUDmzAKV0uO4TqXjJeX5Vbf
-         Ly20WE9MIf87U+L725aM/lLrPw7ftDHTZBDuMMSQEI9D5/3Kwnr4VfBibIBOWerp7oGL
-         uj2q17hAnjVYiSfWioMPtSMoKOm/mBJOdGiYFexPBzR8dhU0gbGfQs8mppw+XW4yXQgs
-         y4WBw5qeHAI6Sc5Wbp79Z+7RokLcpnumhbXvLfkkJGOdp8hpOXFR55b7ocghVHxuv215
-         FpRQBUjARoGBfquRyNE7judMHWqQ3y0wl2BgPHDkoGgYat5hlO7z9BwsbA9bgbeQhWpT
-         nGnQ==
-X-Gm-Message-State: AOJu0YzqaRnd/5b5+ELM1tXDGyT/v0NTigI5xlUim+cP8SnxWX6Etfqz
-        fKuujEIFJYCegoR0yAin2IZfBzAwoAg=
-X-Google-Smtp-Source: AGHT+IF7xj33exuGQhZV1p4yxb8iD7LQgCTYQUTIuaMZWe4KWtrPEZiPoiM1IKY0nrlK6MmU/9suwg==
-X-Received: by 2002:a17:90b:4a83:b0:26b:4e40:7be6 with SMTP id lp3-20020a17090b4a8300b0026b4e407be6mr2634951pjb.20.1693560863094;
-        Fri, 01 Sep 2023 02:34:23 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id a12-20020a17090a740c00b00262fc3d911esm4216239pjg.28.2023.09.01.02.34.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:34:22 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 15:04:18 +0530
-Message-Id: <878r9q8cf9.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 05/11] ext4: Separate block bitmap and buddy bitmap freeing in ext4_mb_clear_bb()
-In-Reply-To: <20230826155028.4019470-6-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693560873; x=1694165673;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XirWmBwg/Ps6jm5whQ65EEWIWZF91+vzUx+/E2s51pQ=;
+        b=P6/y9kWRjw9h/u00OffKGBNRRUbBxPtsuEQMQUmhWz0S1Ko5lPsPH013JhJB0FxzB2
+         qbtTZmwlR80I5ePVSRvrNPrznaLeqkrqXInFI9gOSDNpqTcoF5Puns/MtV6Pka8puyfR
+         8UOphtdFn6sUMfH3kAnNRnChRtafzjngCpT+kdsiJvmwrqoGeNEmZBrdjlulq4o1as/J
+         QUlfp7pl7h+C0yaO0UPssjqvVYFOmk7GlNzMwEJo1Om830sa2gAfmlcJ8+qNhQ4hytst
+         lweNmeDEWcqTP9BPOTau5u6n3/nekR9cMSOg+eu8ERRmU2rTLoAEolMgArIISuT+Ol6u
+         LhDg==
+X-Gm-Message-State: AOJu0YzJc/UOHRAWEVDLj5nH0NtN2m8ufCBd9pbLk2cCsY2jZZlxyR/X
+        yIfioWeOU+UR2BQrofK4Xq0eDZxB4Ra4/Ubpoq+LiQ==
+X-Google-Smtp-Source: AGHT+IFUWbRjlXU+fqBN7/hSZyksdmm1qMKqdHFpEmgoh4f1PYmGNp7sg7sgvJA3SvmREz9zF2NQrIifQ15n4XazxZI=
+X-Received: by 2002:a2e:9619:0:b0:2b9:ecab:d924 with SMTP id
+ v25-20020a2e9619000000b002b9ecabd924mr1338502ljh.18.1693560873039; Fri, 01
+ Sep 2023 02:34:33 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230831194934.19628-1-brgl@bgdev.pl> <ZPEhS0uBWABpaE+/@smile.fi.intel.com>
+ <CAMRc=Md-6i+nqDtYiUUtZExA32c0nJxhevYsiZqmd1PP8aaMng@mail.gmail.com>
+ <ZPGnFHgtK1wE6Ppf@smile.fi.intel.com> <CACRpkdbGdCFb9a5bV_aBMd3eee3N5EdWy+Bkpct-YfHUgHysVw@mail.gmail.com>
+In-Reply-To: <CACRpkdbGdCFb9a5bV_aBMd3eee3N5EdWy+Bkpct-YfHUgHysVw@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Fri, 1 Sep 2023 11:34:20 +0200
+Message-ID: <CAMRc=Mc4-TUOSJUguT0mPfoMHo3W8JHGscWGga1NwdoHPCdgeg@mail.gmail.com>
+Subject: Re: [RFT PATCH] spi: bcm2835: reduce the abuse of the GPIO API
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Mark Brown <broonie@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
-
-> This patch separates block bitmap and buddy bitmap freeing in order to
-> udpate block bitmap with ext4_mb_mark_context in following patch.
-^^^ update.
-
+On Fri, Sep 1, 2023 at 11:22=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
 >
-> Separated freeing is safe with concurrent allocation as long as:
-> 1. Firstly allocate block in buddy bitmap, and then in block bitmap.
-> 2. Firstly free block in block bitmap, and then buddy bitmap.
-> Then freed block will only be available to allocation when both buddy
-> bitmap and block bitmap are updated by freeing.
-> Allocation obeys rule 1 already, just do sperated freeing with rule 2.
-
-So we also don't need ext4_load_buddy_gfp() before freeing on-disk
-bitmap right. Continue below...
-
+> On Fri, Sep 1, 2023 at 10:55=E2=80=AFAM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 >
-> Separated freeing has no race with generate_buddy as:
-> Once ext4_mb_load_buddy_gfp is executed successfully, the update-to-date
-> buddy page can be found in sbi->s_buddy_cache and no more buddy
-> initialization of the buddy page will be executed concurrently until
-> buddy page is unloaded. As we always do free in "load buddy, free,
-> unload buddy" sequence, separated freeing has no race with generate_buddy.
+> > > I'm not sure this is a good candidate for the GPIOLIB quirks. This is
+> > > the SPI setup callback (which makes me think - I should have used
+> > > gpiod_get(), not devm_gpiod_get() and then put the descriptor in
+> > > .cleanup()) and not probe. It would be great to get some background o=
+n
+> > > why this is even needed in the first place. The only reason I see is
+> > > booting the driver with an invalid device-tree that doesn't assign th=
+e
+> > > GPIO to the SPI controller.
+> >
+> > Maybe Lukas knows more?
 >
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/mballoc.c | 18 ++++++++----------
->  1 file changed, 8 insertions(+), 10 deletions(-)
+> He does!
+> The background can be found here:
+> https://www.spinics.net/lists/linux-gpio/msg36218.html
+> (hm this "spinics" archive should be imported to lore...)
 >
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index e650eac22237..01ad36a1cc96 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6519,6 +6519,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  	if (err)
->  		goto error_return;
+> Yours,
+> Linus Walleij
 
+Thanks! I will fix the patch and add this link to the commit message.
 
-Let me add the a piece of code before the added changes and continue...
-
-	err = ext4_mb_load_buddy_gfp(sb, block_group, &e4b,
-				     GFP_NOFS|__GFP_NOFAIL);
-	if (err)
-		goto error_return;
->  
-> +	ext4_lock_group(sb, block_group);
-> +	mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
-> +	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
-> +	ext4_free_group_clusters_set(sb, gdp, ret);
-> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> +	ext4_group_desc_csum_set(sb, block_group, gdp);
-> +	ext4_unlock_group(sb, block_group);
-> +
-
-...Is it required for ext4_mb_load_buddy_gfp() to be called before
-freeing on-disk bitmap blocks? Can you explain why please?
-At least it is not very clear to me that why do we need
-ext4_mb_load_buddy_gfp() before clearing of bitmap blocks. If it's not
-needed then I think we should separate out bitmap freeing logic and
-buddy freeing logic even further.
-
-Thoughts?
-
->  	/*
->  	 * We need to make sure we don't reuse the freed block until after the
->  	 * transaction is committed. We make an exception if the inode is to be
-> @@ -6541,13 +6549,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		new_entry->efd_tid = handle->h_transaction->t_tid;
->  
->  		ext4_lock_group(sb, block_group);
-> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->  		ext4_mb_free_metadata(handle, &e4b, new_entry);
->  	} else {
-> -		/* need to update group_info->bb_free and bitmap
-> -		 * with group lock held. generate_buddy look at
-> -		 * them with group lock_held
-> -		 */
->  		if (test_opt(sb, DISCARD)) {
->  			err = ext4_issue_discard(sb, block_group, bit,
->  						 count_clusters, NULL);
-> @@ -6560,14 +6563,9 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
->  
->  		ext4_lock_group(sb, block_group);
-> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
->  		mb_free_blocks(inode, &e4b, bit, count_clusters);
->  	}
->  
-> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
-> -	ext4_free_group_clusters_set(sb, gdp, ret);
-> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
-> -	ext4_group_desc_csum_set(sb, block_group, gdp);
->  	ext4_unlock_group(sb, block_group);
->  
->  	if (sbi->s_log_groups_per_flex) {
-
-
-Adding piece of code here...
-
-	if (sbi->s_log_groups_per_flex) {
-		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
-		atomic64_add(count_clusters,
-			     &sbi_array_rcu_deref(sbi, s_flex_groups,
-						  flex_group)->free_clusters);
-	}
-
-<...>
-
-	/* We dirtied the bitmap block */
-	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
-	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-	/* And the group descriptor block */
-	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
-	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
-	if (!err)
-		err = ret;
-
-I was thinking even this can go around bitmap freeing logic above. So
-the next patch becomes very clear that all of the bitmap freeing logic
-is just simply moved into ext4_mb_mark_context() function.
-
--ritesh
+Bart
