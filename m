@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580E77900DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:42:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04B787900D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 18:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348058AbjIAQmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 12:42:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34726 "EHLO
+        id S243481AbjIAQls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 12:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348028AbjIAQmF (ORCPT
+        with ESMTP id S1347262AbjIAQlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 12:42:05 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2050.outbound.protection.outlook.com [40.107.220.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAACB1722;
-        Fri,  1 Sep 2023 09:41:50 -0700 (PDT)
+        Fri, 1 Sep 2023 12:41:46 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2049.outbound.protection.outlook.com [40.107.244.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C3110F3;
+        Fri,  1 Sep 2023 09:41:43 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=abTDcvFFk3mHAJUcRUAyuoJw9mKGTe73WJgYEgJtJnNFjlubgWmWc9tf+dWQ0p4J02MXTqRIEThO+cnmEMJyj14Wj4X+uG11ZdleyADmz4B55BDQoCDabpmq97gQ0IKaYNFpfQ6RRZeBLCgd96hTO2fVnJt7hciaSmHTkg3+3wIGChYIizglKOp/tUEk0OnpHxKd9dvQI4IktMz+FyS6fqiITSTAllEkJKEljSAu1rnH90ivRtSIYNbdM2qzdysQfSeZfet9ZNwG5sJrJ07XfORYV6CrkI8oimQbFNY5nw5vHiKXpAjVKbAsQPUIM1/d3AktvKHZZ+dwEi4rJsVjSw==
+ b=P3J+fB0nxhvp6nIUfF+TxeV1ArhH8IyN6vscbFmvbZt1SwImJy209+kcOhGC0678H9CcAhOhtEjx+4RnyLSNb3GGzXbN5bm1wsnZIhS4l5/mgiHxR5k074zchkFda/0g1L/gux0fz2Z8/r0PCIymchkMljBPEANuooV26pjHn0pSRHMnpZ7jIluDowz/c9dy8/zUkiNxCq+grL6pLmYrLyLRB61SIwD+h2zz+L5Dwhlt3kp4VO2jgQkGc0PdW4toL9j56Nt/ElK1oUnDh9AXZ0iIKcYZBFFbTZIHeFnntFpstZAf1fbiSZ8LxhXoP81Mu0+H7+Zf/3jQ/EyVYOFelg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=pIE/QiD/Y3t9g39o+y+qgmXG7yX4XpAu4qS8K1NrhoI=;
- b=jGCs/a8/mbRHSa8Ru7ff0BCNn5vLhrSwg9FpgnQ8DkE3Jj2OXOI3mZF6UF+yge9YawC0ucuRnUIHXOClnlWUaO1oM7dGiHjCoyG8OiGrbXCHqhgjXgN2NwYY/xI7UcMyg+v4Vb5MMcIz6JX7ONSsPiG0yKZgZ49ZxONXEmWNIuW1f9gOK09Py/T4sCnm32EmJld7i6wUV8yXfl7xWEYlpuvxF8z9Bnd6DH12zYr+cRrJezCZk98pRlubL3yrLHnP+a/7z2CVlpLNtimkJF5JqkRvfRxEXfvuxfZ5aM7RhGL+aXijCnHwRdwBxUy2Xbab2DBUjiRzMew6UWr//KooCA==
+ bh=rupWK1b7f+rbEZ4GlrZgsRsz6ZUjzaZ8g5pGaR+2Wew=;
+ b=Y+vidfM9JMGBWGOQwtZgALfAsxrykwTkp4cA3P41MQtFHGQSfa71a+ts4X0xMqJYhQm+grPY8yvoGZFwSsOdFk6J+Vs0lqYfxtBElAyJ1LqMdop+4AiFMqT8bnXNDK9RzdZEG3ZmlZsyDq3AVNWgwilTbmnyEk0DzOBTgaL6JXJt/IBoQERRwiPf2MUNYOgGCbN9hxYa/3hqES81Eb9RXjUSp3vdP7kfZ3q8o1Dt3cQwdZWpSyM1Y3OAyHdMYmxvOvA6kqqhr8M2zcJaCix/XXkcdblCPTR7+5ime8JBW1D6oKXw/Mcijrhelyh5JdjHDgLVyP8aJ1IxCZ5YSzLy+A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.232) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
+ 216.228.118.233) smtp.rcpttodomain=kernel.org smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pIE/QiD/Y3t9g39o+y+qgmXG7yX4XpAu4qS8K1NrhoI=;
- b=egOzEDsH/yu+AFqPpLnHJRxpPNvbZasj9zT01XDAXQbQuHjr+CNF670Xwx8dRyRCmUn2Kx44D+/mpGlYXG/gkZNsYiUaSi2iCWrIKYWexUN+hmuw5tiZDzCv0qPgTKimGHJiO6Ov53k57FpT0ZsEfV4RJubrEvMWWPX9FUlDgn4QJZW+ZCJ2HfZnHs9cJetS74hKMKtXfvyRwBa6qMLAVFR58GBLvSE1DdZGXBXOsBx2kqsaG+msgOsShwhL8DDKb7lKEDlUNGAaZlqeprZPJqXsB8CfAX0ykAETWdVa4TY1fz6ZEf/blJg0G7fRdVBr0t0IrM35F5iMfqWn6nVcWw==
-Received: from DS7PR03CA0328.namprd03.prod.outlook.com (2603:10b6:8:2b::30) by
- PH7PR12MB6666.namprd12.prod.outlook.com (2603:10b6:510:1a8::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6699.35; Fri, 1 Sep 2023 16:41:46 +0000
-Received: from DS2PEPF00003446.namprd04.prod.outlook.com
- (2603:10b6:8:2b:cafe::9f) by DS7PR03CA0328.outlook.office365.com
- (2603:10b6:8:2b::30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.26 via Frontend
- Transport; Fri, 1 Sep 2023 16:41:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ bh=rupWK1b7f+rbEZ4GlrZgsRsz6ZUjzaZ8g5pGaR+2Wew=;
+ b=bcvPMwg8q6yVM5w/Dqa+W2c6um7Wt0N60KWrEuHq/Gd0AUPzy0fbkwoauyq/8lKplaX1Xb8Eme1d3fWn45NxKCp0EBTFuntghPC0IvOwlFSDuYSf/vFFxE9U+x2q+LeZFEnJGt3392TFAhX9IZ2+WPWGvl9yu3vDLwzcrBVO8UyYQlFPPWo0rx4oQ5bGc818nyIubIQvEWCY2In6te3LvoHCji1IB3/IpaBnYLsLR4VnbFs/j30Dmd34lostu3YXdpzcx7qmz6s6qBHdsCDoBpFeJDAemlYqtbjyOvcV+h/NtBaGAgIf3+17qP9dWZ/GgFZQDyud32bujdjoz6IqWg==
+Received: from DS7PR03CA0262.namprd03.prod.outlook.com (2603:10b6:5:3b3::27)
+ by IA0PR12MB9045.namprd12.prod.outlook.com (2603:10b6:208:406::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.21; Fri, 1 Sep
+ 2023 16:41:39 +0000
+Received: from DS2PEPF0000343A.namprd02.prod.outlook.com
+ (2603:10b6:5:3b3:cafe::7f) by DS7PR03CA0262.outlook.office365.com
+ (2603:10b6:5:3b3::27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.27 via Frontend
+ Transport; Fri, 1 Sep 2023 16:41:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.232) by
- DS2PEPF00003446.mail.protection.outlook.com (10.167.17.73) with Microsoft
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ DS2PEPF0000343A.mail.protection.outlook.com (10.167.18.37) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.20 via Frontend Transport; Fri, 1 Sep 2023 16:41:46 +0000
+ 15.20.6745.20 via Frontend Transport; Fri, 1 Sep 2023 16:41:39 +0000
 Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Fri, 1 Sep 2023
- 09:41:33 -0700
+ 09:41:38 -0700
 Received: from drhqmail203.nvidia.com (10.126.190.182) by
  drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Fri, 1 Sep 2023 09:41:33 -0700
+ 15.2.986.37; Fri, 1 Sep 2023 09:41:38 -0700
 Received: from sumitg-l4t.nvidia.com (10.127.8.10) by mail.nvidia.com
  (10.126.190.182) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Fri, 1 Sep 2023 09:41:30 -0700
+ Transport; Fri, 1 Sep 2023 09:41:35 -0700
 From:   Sumit Gupta <sumitg@nvidia.com>
 To:     <rafael@kernel.org>, <viresh.kumar@linaro.org>,
         <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
 CC:     <treding@nvidia.com>, <jonathanh@nvidia.com>, <bbasu@nvidia.com>,
         <sumitg@nvidia.com>, <amiettinen@nvidia.com>
-Subject: [Patch v2 1/2] cpufreq: tegra194: save CPU data to avoid repeated SMP calls
-Date:   Fri, 1 Sep 2023 22:11:12 +0530
-Message-ID: <20230901164113.29139-2-sumitg@nvidia.com>
+Subject: [Patch v2 2/2] cpufreq: tegra194: use refclk delta based loop instead of udelay
+Date:   Fri, 1 Sep 2023 22:11:13 +0530
+Message-ID: <20230901164113.29139-3-sumitg@nvidia.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20230901164113.29139-1-sumitg@nvidia.com>
 References: <20230901164113.29139-1-sumitg@nvidia.com>
@@ -79,23 +80,23 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PEPF00003446:EE_|PH7PR12MB6666:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43ef6b7a-d7a2-4721-71bc-08dbab0a54c3
+X-MS-TrafficTypeDiagnostic: DS2PEPF0000343A:EE_|IA0PR12MB9045:EE_
+X-MS-Office365-Filtering-Correlation-Id: 20ee3459-dbdb-4eba-4193-08dbab0a50bd
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F3e+eqvGU/4V7juBzjs2tO8F1vb3zSrX36Ekn7CWIT9SBcREgF0P82ozHVextnjHnBsm2wC5qkopKmpKn8Y0FQHrLYTFCrW8L9/TWWkLKLZ6WEWkv7TjlKEvELLAVLswvLxZ8uLBP25YedmhlK9fwJxOGINtiPLXo9zeuSncgXtHWpamMT0M9FqIwU4xyxRSTLAX1diZWqUho/OlWZzqriX3TpJw/Rv1ajGJo7S/mTR+wI6shYEz6rAWtpeQLEs+cBnwskl7n0DHZgTXmjpR+yF+RhqVDEGe4ylvr4FSm/l8Xk62ur4LntQ1gVqDTkhxF+HM7ZDHlQeht4sUX2V2N0WbcNFt/WZamuPeMPASOKAwb7BToeOQz7tOaDIUZzh3RYNhOPd2Y0s3ioA+4P5i/2+iMWkd77mlcjSitB+6ATASKZU9VLhVDi0dAzV/2ZAXQO6RIMuVrFCJkpLnbSSd0NF9Sh6K/AYQg1iwAsmLZtRwHCrlaz/h3SU7sDXtjUSxVxhXGktQhaq0CVjF8AOCk7nIw6Vels1LY9zkSjLprKEo6Xoedl9+Nf19HT0KOBQj4kzzkcwoekAXzH9LbxSdTStyFY4mGSMMuQQZh7Ii8bigaMtlPyABcQB9eh50e5Qm9kChQAQhUiKhDZ7mfvr6rPmMuS9OeJWvOEIGd+x9oEhxbINlaBypLE/MIUbmtjwrbyMeY2jPYIJdMvWuaXdqTnKm03imuj1jZXKFePaLCu7/g53Un5LHxe/vKbZCPq3v
-X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(376002)(346002)(396003)(451199024)(1800799009)(186009)(82310400011)(40470700004)(36840700001)(46966006)(4326008)(7696005)(6666004)(83380400001)(110136005)(41300700001)(478600001)(1076003)(54906003)(26005)(336012)(8676002)(70206006)(2616005)(316002)(70586007)(5660300002)(36756003)(40460700003)(40480700001)(47076005)(7636003)(356005)(36860700001)(107886003)(2906002)(86362001)(426003)(8936002)(82740400003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: ySwqWDivpjmb8+IOdg1IzvlflM28TenexgBGBjKRQndiPhSlBgKtR/s83iKiimlLMYEFadTRSb6gSY3ZvzDJHV0sGRxkvQnwWvD+Ov0wHALi/+qurE4cw0gsQa2Tcvx0rS5WmVBFCLZgr/pEQVuaRpr364NqJ+WfZJe75ETzbVVplwqmHPu2ELXZEG7BFRQIKPDBLH6WvMj1b+ZvPg7caujQzIYbf3M/F5JMFGp6R5aAqOMZLsBXDffooXcMyiuTukpfJ0bj7aQBYUrHQR3uZuiw4W0HVIyLMibtFypo51cx8qNq4d9ehZT0KY9NeylM2WnwToi+zQYU6ol4TDgCpTzVfklsn6HEIt98wDyT/SU6Y5uQU5VS2/GZQxyaUBYERIdp5f4dQeWTavUB3ndHQDeAXxprvc786O9qBNPWjKIwM6f7lnY4RzVTMqLbOMxUp1yr9bavIJoZpazqcOW4IgmbliHYuerZDYm34QwJzDgHbMQgggUPcp05bj2BXT7Krk1TAuU0Aqcb5zpG0uF/dMtcRayy+rz6iS9PqACdUoYiNKdv6m4S8bizeCRiLKfTas+ZZ4n/qoB1YGYLIDDz6lc8StX65IAAF+303zn/EzHOgNWMvLS+VuzBiCJqPXcTSGARARXPvqLDhpbMcFEKQ3QokpMbxSyOyuKjrTvLqdUuopaos1jFXlps98TqypTY6lElSv/RtDjbwEhifGXEEtC02RbugK1fbfW5Rb8w94Z5KqS0TlqyYvhCGU1VkfnF
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(136003)(376002)(82310400011)(1800799009)(451199024)(186009)(46966006)(40470700004)(36840700001)(6666004)(7696005)(1076003)(478600001)(83380400001)(336012)(426003)(26005)(2906002)(2616005)(107886003)(41300700001)(110136005)(54906003)(70206006)(70586007)(8936002)(4326008)(5660300002)(8676002)(316002)(40460700003)(36756003)(47076005)(40480700001)(86362001)(36860700001)(356005)(82740400003)(7636003);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 16:41:46.1768
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 16:41:39.4253
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43ef6b7a-d7a2-4721-71bc-08dbab0a54c3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20ee3459-dbdb-4eba-4193-08dbab0a50bd
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF00003446.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: DS2PEPF0000343A.namprd02.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6666
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB9045
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -106,196 +107,190 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, we make SMP call on every frequency set request to get the
-physical 'CPU ID' and 'CLUSTER ID' for the target CPU. This change
-optimizes the repeated calls by storing the physical IDs and the per
-core frequency register offset for all CPUs during boot. Later this
-info is used directly when required to set the frequency or read it
-from ACTMON counters.
+Use reference clock count based loop instead of "udelay()" for
+sampling of counters to improve the accuracy of re-generated CPU
+frequency. "udelay()" internally calls "WFE" which stops the
+counters and results in bigger delta between the last set freq
+and the re-generated value from counters. The counter sampling
+window used in loop is the minimum number of reference clock
+cycles which is known to give a stable value of CPU frequency.
+The change also helps to reduce the sampling window from "500us"
+to "<50us".
 
+Suggested-by: Antti Miettinen <amiettinen@nvidia.com>
 Signed-off-by: Sumit Gupta <sumitg@nvidia.com>
 ---
- drivers/cpufreq/tegra194-cpufreq.c | 79 +++++++++++++++++++-----------
- 1 file changed, 51 insertions(+), 28 deletions(-)
+ drivers/cpufreq/tegra194-cpufreq.c | 72 +++++++++++++++++++++++-------
+ 1 file changed, 55 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/cpufreq/tegra194-cpufreq.c b/drivers/cpufreq/tegra194-cpufreq.c
-index 386aed3637b4..0d0893cf7f18 100644
+index 0d0893cf7f18..cc84c752fff8 100644
 --- a/drivers/cpufreq/tegra194-cpufreq.c
 +++ b/drivers/cpufreq/tegra194-cpufreq.c
-@@ -39,6 +39,12 @@
- /* cpufreq transisition latency */
- #define TEGRA_CPUFREQ_TRANSITION_LATENCY (300 * 1000) /* unit in nanoseconds */
+@@ -5,7 +5,6 @@
  
-+struct tegra_cpu_data {
-+	u32 cpuid;
-+	u32 clusterid;
-+	void __iomem *freq_core_reg;
-+};
+ #include <linux/cpu.h>
+ #include <linux/cpufreq.h>
+-#include <linux/delay.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+@@ -21,10 +20,11 @@
+ 
+ #define KHZ                     1000
+ #define REF_CLK_MHZ             408 /* 408 MHz */
+-#define US_DELAY                500
+ #define CPUFREQ_TBL_STEP_HZ     (50 * KHZ * KHZ)
+ #define MAX_CNT                 ~0U
+ 
++#define MAX_DELTA_KHZ          115200
 +
- struct tegra_cpu_ctr {
- 	u32 cpu;
- 	u32 coreclk_cnt, last_coreclk_cnt;
-@@ -69,6 +75,7 @@ struct tegra194_cpufreq_data {
- 	struct cpufreq_frequency_table **bpmp_luts;
- 	const struct tegra_cpufreq_soc *soc;
- 	bool icc_dram_bw_scaling;
-+	struct tegra_cpu_data *cpu_data;
+ #define NDIV_MASK              0x1FF
+ 
+ #define CORE_OFFSET(cpu)			(cpu * 8)
+@@ -68,6 +68,7 @@ struct tegra_cpufreq_soc {
+ 	int maxcpus_per_cluster;
+ 	unsigned int num_clusters;
+ 	phys_addr_t actmon_cntr_base;
++	u32 refclk_delta_min;
  };
  
- static struct workqueue_struct *read_counters_wq;
-@@ -116,14 +123,8 @@ static void tegra234_get_cpu_cluster_id(u32 cpu, u32 *cpuid, u32 *clusterid)
- static int tegra234_get_cpu_ndiv(u32 cpu, u32 cpuid, u32 clusterid, u64 *ndiv)
- {
- 	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
--	void __iomem *freq_core_reg;
--	u64 mpidr_id;
--
--	/* use physical id to get address of per core frequency register */
--	mpidr_id = (clusterid * data->soc->maxcpus_per_cluster) + cpuid;
--	freq_core_reg = SCRATCH_FREQ_CORE_REG(data, mpidr_id);
- 
--	*ndiv = readl(freq_core_reg) & NDIV_MASK;
-+	*ndiv = readl(data->cpu_data[cpu].freq_core_reg) & NDIV_MASK;
- 
- 	return 0;
- }
-@@ -131,19 +132,10 @@ static int tegra234_get_cpu_ndiv(u32 cpu, u32 cpuid, u32 clusterid, u64 *ndiv)
- static void tegra234_set_cpu_ndiv(struct cpufreq_policy *policy, u64 ndiv)
- {
- 	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
--	void __iomem *freq_core_reg;
--	u32 cpu, cpuid, clusterid;
--	u64 mpidr_id;
--
--	for_each_cpu_and(cpu, policy->cpus, cpu_online_mask) {
--		data->soc->ops->get_cpu_cluster_id(cpu, &cpuid, &clusterid);
--
--		/* use physical id to get address of per core frequency register */
--		mpidr_id = (clusterid * data->soc->maxcpus_per_cluster) + cpuid;
--		freq_core_reg = SCRATCH_FREQ_CORE_REG(data, mpidr_id);
-+	u32 cpu;
- 
--		writel(ndiv, freq_core_reg);
--	}
-+	for_each_cpu_and(cpu, policy->cpus, cpu_online_mask)
-+		writel(ndiv, data->cpu_data[cpu].freq_core_reg);
- }
- 
- /*
-@@ -157,11 +149,10 @@ static void tegra234_read_counters(struct tegra_cpu_ctr *c)
+ struct tegra194_cpufreq_data {
+@@ -149,6 +150,8 @@ static void tegra234_read_counters(struct tegra_cpu_ctr *c)
  {
  	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
  	void __iomem *actmon_reg;
--	u32 cpuid, clusterid;
++	u32 delta_refcnt;
++	int cnt = 0;
  	u64 val;
  
--	data->soc->ops->get_cpu_cluster_id(c->cpu, &cpuid, &clusterid);
--	actmon_reg = CORE_ACTMON_CNTR_REG(data, clusterid, cpuid);
-+	actmon_reg = CORE_ACTMON_CNTR_REG(data, data->cpu_data[c->cpu].clusterid,
-+					  data->cpu_data[c->cpu].cpuid);
- 
+ 	actmon_reg = CORE_ACTMON_CNTR_REG(data, data->cpu_data[c->cpu].clusterid,
+@@ -157,10 +160,25 @@ static void tegra234_read_counters(struct tegra_cpu_ctr *c)
  	val = readq(actmon_reg);
  	c->last_refclk_cnt = upper_32_bits(val);
-@@ -357,19 +348,17 @@ static void tegra194_set_cpu_ndiv(struct cpufreq_policy *policy, u64 ndiv)
- static unsigned int tegra194_get_speed(u32 cpu)
- {
- 	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
-+	u32 clusterid = data->cpu_data[cpu].clusterid;
- 	struct cpufreq_frequency_table *pos;
--	u32 cpuid, clusterid;
- 	unsigned int rate;
- 	u64 ndiv;
- 	int ret;
- 
--	data->soc->ops->get_cpu_cluster_id(cpu, &cpuid, &clusterid);
--
- 	/* reconstruct actual cpu freq using counters */
- 	rate = tegra194_calculate_speed(cpu);
- 
- 	/* get last written ndiv value */
--	ret = data->soc->ops->get_cpu_ndiv(cpu, cpuid, clusterid, &ndiv);
-+	ret = data->soc->ops->get_cpu_ndiv(cpu, data->cpu_data[cpu].cpuid, clusterid, &ndiv);
- 	if (WARN_ON_ONCE(ret))
- 		return rate;
- 
-@@ -475,13 +464,12 @@ static int tegra194_cpufreq_init(struct cpufreq_policy *policy)
- {
- 	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
- 	int maxcpus_per_cluster = data->soc->maxcpus_per_cluster;
-+	u32 clusterid = data->cpu_data[policy->cpu].clusterid;
- 	struct cpufreq_frequency_table *freq_table;
- 	struct cpufreq_frequency_table *bpmp_lut;
- 	u32 start_cpu, cpu;
--	u32 clusterid;
- 	int ret;
- 
--	data->soc->ops->get_cpu_cluster_id(policy->cpu, NULL, &clusterid);
- 	if (clusterid >= data->soc->num_clusters || !data->bpmp_luts[clusterid])
- 		return -EINVAL;
- 
-@@ -659,6 +647,28 @@ tegra_cpufreq_bpmp_read_lut(struct platform_device *pdev, struct tegra_bpmp *bpm
- 	return freq_table;
+ 	c->last_coreclk_cnt = lower_32_bits(val);
+-	udelay(US_DELAY);
+-	val = readq(actmon_reg);
+-	c->refclk_cnt = upper_32_bits(val);
+-	c->coreclk_cnt = lower_32_bits(val);
++
++	/*
++	 * The sampling window is based on the minimum number of reference
++	 * clock cycles which is known to give a stable value of CPU frequency.
++	 */
++	do {
++		val = readq(actmon_reg);
++		c->refclk_cnt = upper_32_bits(val);
++		c->coreclk_cnt = lower_32_bits(val);
++		if (c->refclk_cnt < c->last_refclk_cnt)
++			delta_refcnt = c->refclk_cnt + (MAX_CNT - c->last_refclk_cnt);
++		else
++			delta_refcnt = c->refclk_cnt - c->last_refclk_cnt;
++		if (++cnt >= 0xFFFF) {
++			pr_warn("cpufreq: problem with refclk on cpu:%d, delta_refcnt:%u, cnt:%d\n",
++				c->cpu, delta_refcnt, cnt);
++			break;
++		}
++	} while (delta_refcnt < data->soc->refclk_delta_min);
  }
  
-+static int tegra194_cpufreq_store_physids(unsigned int cpu, struct tegra194_cpufreq_data *data)
-+{
-+	int num_cpus = data->soc->maxcpus_per_cluster * data->soc->num_clusters;
-+	u32 cpuid, clusterid;
-+	u64 mpidr_id;
-+
-+	if (cpu > (num_cpus - 1)) {
-+		pr_err("cpufreq: wrong num of cpus or clusters in soc data\n");
-+		return -EINVAL;
-+	}
-+
-+	data->soc->ops->get_cpu_cluster_id(cpu, &cpuid, &clusterid);
-+
-+	mpidr_id = (clusterid * data->soc->maxcpus_per_cluster) + cpuid;
-+
-+	data->cpu_data[cpu].cpuid = cpuid;
-+	data->cpu_data[cpu].clusterid = clusterid;
-+	data->cpu_data[cpu].freq_core_reg = SCRATCH_FREQ_CORE_REG(data, mpidr_id);
-+
-+	return 0;
-+}
-+
- static int tegra194_cpufreq_probe(struct platform_device *pdev)
+ static struct tegra_cpufreq_ops tegra234_cpufreq_ops = {
+@@ -175,6 +193,7 @@ static const struct tegra_cpufreq_soc tegra234_cpufreq_soc = {
+ 	.actmon_cntr_base = 0x9000,
+ 	.maxcpus_per_cluster = 4,
+ 	.num_clusters = 3,
++	.refclk_delta_min = 16000,
+ };
+ 
+ static const struct tegra_cpufreq_soc tegra239_cpufreq_soc = {
+@@ -182,6 +201,7 @@ static const struct tegra_cpufreq_soc tegra239_cpufreq_soc = {
+ 	.actmon_cntr_base = 0x4000,
+ 	.maxcpus_per_cluster = 8,
+ 	.num_clusters = 1,
++	.refclk_delta_min = 16000,
+ };
+ 
+ static void tegra194_get_cpu_cluster_id(u32 cpu, u32 *cpuid, u32 *clusterid)
+@@ -222,15 +242,33 @@ static inline u32 map_ndiv_to_freq(struct mrq_cpu_ndiv_limits_response
+ 
+ static void tegra194_read_counters(struct tegra_cpu_ctr *c)
  {
- 	const struct tegra_cpufreq_soc *soc;
-@@ -666,6 +676,7 @@ static int tegra194_cpufreq_probe(struct platform_device *pdev)
- 	struct tegra_bpmp *bpmp;
- 	struct device *cpu_dev;
- 	int err, i;
-+	u32 cpu;
++	struct tegra194_cpufreq_data *data = cpufreq_get_driver_data();
++	u32 delta_refcnt;
++	int cnt = 0;
+ 	u64 val;
  
- 	data = devm_kzalloc(&pdev->dev, sizeof(*data), GFP_KERNEL);
- 	if (!data)
-@@ -692,6 +703,12 @@ static int tegra194_cpufreq_probe(struct platform_device *pdev)
- 			return PTR_ERR(data->regs);
- 	}
- 
-+	data->cpu_data = devm_kcalloc(&pdev->dev, data->soc->num_clusters *
-+				      data->soc->maxcpus_per_cluster,
-+				      sizeof(struct tegra_cpu_data), GFP_KERNEL);
-+	if (!data->cpu_data)
-+		return -ENOMEM;
+ 	val = read_freq_feedback();
+ 	c->last_refclk_cnt = lower_32_bits(val);
+ 	c->last_coreclk_cnt = upper_32_bits(val);
+-	udelay(US_DELAY);
+-	val = read_freq_feedback();
+-	c->refclk_cnt = lower_32_bits(val);
+-	c->coreclk_cnt = upper_32_bits(val);
 +
- 	platform_set_drvdata(pdev, data);
++	/*
++	 * The sampling window is based on the minimum number of reference
++	 * clock cycles which is known to give a stable value of CPU frequency.
++	 */
++	do {
++		val = read_freq_feedback();
++		c->refclk_cnt = lower_32_bits(val);
++		c->coreclk_cnt = upper_32_bits(val);
++		if (c->refclk_cnt < c->last_refclk_cnt)
++			delta_refcnt = c->refclk_cnt + (MAX_CNT - c->last_refclk_cnt);
++		else
++			delta_refcnt = c->refclk_cnt - c->last_refclk_cnt;
++		if (++cnt >= 0xFFFF) {
++			pr_warn("cpufreq: problem with refclk on cpu:%d, delta_refcnt:%u, cnt:%d\n",
++				c->cpu, delta_refcnt, cnt);
++			break;
++		}
++	} while (delta_refcnt < data->soc->refclk_delta_min);
+ }
  
- 	bpmp = tegra_bpmp_get(&pdev->dev);
-@@ -713,6 +730,12 @@ static int tegra194_cpufreq_probe(struct platform_device *pdev)
+ static void tegra_read_counters(struct work_struct *work)
+@@ -288,9 +326,8 @@ static unsigned int tegra194_calculate_speed(u32 cpu)
+ 	u32 rate_mhz;
+ 
+ 	/*
+-	 * udelay() is required to reconstruct cpu frequency over an
+-	 * observation window. Using workqueue to call udelay() with
+-	 * interrupts enabled.
++	 * Reconstruct cpu frequency over an observation/sampling window.
++	 * Using workqueue to keep interrupts enabled during the interval.
+ 	 */
+ 	read_counters_work.c.cpu = cpu;
+ 	INIT_WORK_ONSTACK(&read_counters_work.work, tegra_read_counters);
+@@ -372,9 +409,9 @@ static unsigned int tegra194_get_speed(u32 cpu)
+ 		if (pos->driver_data != ndiv)
+ 			continue;
+ 
+-		if (abs(pos->frequency - rate) > 115200) {
+-			pr_warn("cpufreq: cpu%d,cur:%u,set:%u,set ndiv:%llu\n",
+-				cpu, rate, pos->frequency, ndiv);
++		if (abs(pos->frequency - rate) > MAX_DELTA_KHZ) {
++			pr_warn("cpufreq: cpu%d,cur:%u,set:%u,delta:%d,set ndiv:%llu\n",
++				cpu, rate, pos->frequency, abs(rate - pos->frequency), ndiv);
+ 		} else {
+ 			rate = pos->frequency;
  		}
- 	}
+@@ -568,6 +605,7 @@ static const struct tegra_cpufreq_soc tegra194_cpufreq_soc = {
+ 	.ops = &tegra194_cpufreq_ops,
+ 	.maxcpus_per_cluster = 2,
+ 	.num_clusters = 4,
++	.refclk_delta_min = 16000,
+ };
  
-+	for_each_possible_cpu(cpu) {
-+		err = tegra194_cpufreq_store_physids(cpu, data);
-+		if (err)
-+			goto err_free_res;
-+	}
-+
- 	tegra194_cpufreq_driver.driver_data = data;
+ static void tegra194_cpufreq_free_resources(void)
+@@ -684,7 +722,7 @@ static int tegra194_cpufreq_probe(struct platform_device *pdev)
  
- 	/* Check for optional OPPv2 and interconnect paths on CPU0 to enable ICC scaling */
+ 	soc = of_device_get_match_data(&pdev->dev);
+ 
+-	if (soc->ops && soc->maxcpus_per_cluster && soc->num_clusters) {
++	if (soc->ops && soc->maxcpus_per_cluster && soc->num_clusters && soc->refclk_delta_min) {
+ 		data->soc = soc;
+ 	} else {
+ 		dev_err(&pdev->dev, "soc data missing\n");
 -- 
 2.17.1
 
