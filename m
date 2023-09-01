@@ -2,134 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1EE78FA31
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A98778FA36
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:50:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244599AbjIAIt0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:49:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
+        id S1345439AbjIAIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229768AbjIAItZ (ORCPT
+        with ESMTP id S229768AbjIAIuc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:49:25 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648C110DE;
-        Fri,  1 Sep 2023 01:49:22 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qbzqA-0000PU-MU; Fri, 01 Sep 2023 10:49:18 +0200
-Message-ID: <116dd56f-695f-4ecd-dace-805db83f5c3e@leemhuis.info>
-Date:   Fri, 1 Sep 2023 10:49:17 +0200
+        Fri, 1 Sep 2023 04:50:32 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230BF10D3;
+        Fri,  1 Sep 2023 01:50:30 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3814hqbh004037;
+        Fri, 1 Sep 2023 03:50:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=dfrKDxDDZZ2VDjG
+        lcPEe3RlSfsXnC0lxELdtB+CyKEY=; b=KYh5W0PwkRvIKS8Lc1SRMnX0SCN/kH3
+        AUPZbOt6L9Kb9jT6oqOO7428GsNq0xBaBiw1e+vIZYrCV+C6uSbXM4fz+V/2B/nT
+        KbtoqevfDThA2kB5gB/V3xAiaag9ojzDZpNr3Da9ALIELWW7Y/3FYrcEpga+RWkS
+        FpVwsGKcH83GaFDD6FqbT3pDkvuP4PL+ysuPI0rdmUhotpcWWy1vTth1ooUBqB47
+        prPRohw14J3gNE5L4R1YrkBxSeM1fPqwUTbVtyDKtT3oO2waSvy+4mCF0/WtoZsG
+        88YaWn0BgBzT/vOxSM7ooGoLCBPcfKiiz9q16Nns5k9E7bu8a3kqaUA==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sqesyg4mv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 03:50:13 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 1 Sep
+ 2023 09:50:10 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Fri, 1 Sep 2023 09:50:10 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id DE29EB06;
+        Fri,  1 Sep 2023 08:50:10 +0000 (UTC)
+Date:   Fri, 1 Sep 2023 08:50:10 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v3 2/4] ASoC: cs35l45: Analog PCM Volume and Amplifier
+ Mode controls
+Message-ID: <20230901085010.GA103419@ediswmail.ad.cirrus.com>
+References: <20230831162042.471801-1-vkarpovi@opensource.cirrus.com>
+ <20230831162042.471801-2-vkarpovi@opensource.cirrus.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] tpm: Enable hwrng only for Pluton on AMD CPUs
-Content-Language: en-US, de-DE
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-To:     Mario Limonciello <mario.limonciello@amd.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-integrity@vger.kernel.org,
-        Jerry Snitselaar <jsnitsel@redhat.com>, stable@vger.kernel.org,
-        Todd Brandt <todd.e.brandt@intel.com>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-kernel@vger.kernel.org,
-        Patrick Steinhardt <ps@pks.im>, Ronan Pigott <ronan@rjp.ie>,
-        Raymond Jay Golo <rjgolo@gmail.com>,
-        Linux kernel regressions list <regressions@lists.linux.dev>,
-        Dusty Mabe <dusty@dustymabe.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Jerry Snitselaar <jsnitsel@redhat.com>,
-        Paul Menzel <pmenzel@molgen.mpg.de>
-References: <20230822231510.2263255-1-jarkko@kernel.org>
- <705b9769-4132-450b-bd47-2423c419db2a@molgen.mpg.de>
- <CV03X3OEI7RE.3NI1QJ6MBJSHA@suppilovahvero>
- <1eeddbdc-c1f0-4499-b3d1-24c96f42a50b@amd.com>
- <CV3J3TCMB74C.1WA96NQ9J593U@suppilovahvero>
- <f6d75cac-2556-484e-8a2c-3531b24b1ca5@amd.com>
- <fcf2f600-d1f0-de14-956b-4d4f3f0cb3fa@leemhuis.info>
-In-Reply-To: <fcf2f600-d1f0-de14-956b-4d4f3f0cb3fa@leemhuis.info>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693558162;5082f08a;
-X-HE-SMSGID: 1qbzqA-0000PU-MU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230831162042.471801-2-vkarpovi@opensource.cirrus.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: V64ASNJaKUtF6pKuRxGirmonRv3-nXiw
+X-Proofpoint-GUID: V64ASNJaKUtF6pKuRxGirmonRv3-nXiw
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[CCing Linus, as this triggered my "this is moving to slowly" threshold,
-as (a) the initial report was two weeks ago by now (b) a fix seems
-within reach for nearly as long (c) the problem seems to annoy quite a
-few people, as the culprit of this regression made it into 6.5 and was
-picked up for 6.1.y and 6.4.y (rightfully so I'd say, as it fixes an
-earlier regression)]
+On Thu, Aug 31, 2023 at 11:20:40AM -0500, Vlad Karpovich wrote:
+> Adds "Analog PCM Volume" control with supported values
+> 0 = 10dB,1 = 13dB,2 = 16dB and 3 = 19dB.
+> The amplifier can operate either in Speaker Mode or Receiver Mode
+> as configured by the user. Speaker Mode has four gain options
+> to support maximum amplifier output amplitude for loud
+> speaker application. Receiver Mode has further optimized
+> noise performance while maintaining sufficient output to support
+> phone receiver application. While configured in Receiver Mode,
+> the analog PCM Volume control is disabled and
+> the analog gain is fixed to 1dB.
+> 
+> Signed-off-by: Vlad Karpovich <vkarpovi@opensource.cirrus.com>
+> ---
 
-On 29.08.23 10:38, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 28.08.23 02:35, Mario Limonciello wrote:
->> On 8/27/2023 13:12, Jarkko Sakkinen wrote:
->>> On Wed Aug 23, 2023 at 9:58 PM EEST, Mario Limonciello wrote:
->>>> On 8/23/2023 12:40, Jarkko Sakkinen wrote:
->>>>> On Wed Aug 23, 2023 at 11:23 AM EEST, Paul Menzel wrote:
->>>>>> Am 23.08.23 um 01:15 schrieb Jarkko Sakkinen:
->>>>>>> The vendor check introduced by commit 554b841d4703 ("tpm: Disable
->>>>>>> RNG for
->>>>>>> all AMD fTPMs") doesn't work properly on a number of Intel fTPMs. 
->>>>>>> On the
->>>>>>> reported systems the TPM doesn't reply at bootup and returns back the
->>>>>>> command code. This makes the TPM fail probe.
->>>>>>>
->>>>>>> Since only Microsoft Pluton is the only known combination of AMD
->>>>>>> CPU and
->>>>>>> fTPM from other vendor, disable hwrng otherwise. In order to make
->>>>>>> sysadmin
->>>>>>> aware of this, print also info message to the klog.
->>>>>>>
->>>>>>> Cc: stable@vger.kernel.org
->>>>>>> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
->>>>>>> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
->>>>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217804
->>>>>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
->>>>>>
->>>>>> Mario’s patch also had the three reporters below listed:
->>>>>>
->>>>>> Reported-by: Patrick Steinhardt <ps@pks.im>
->>>>>> Reported-by: Ronan Pigott <ronan@rjp.ie>
->>>>>> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
->
-> [...] this seems to become a regression
-> that is annoying quite a few people (in 6.5 and 6.4.y afaics), so it
-> would be good to get the fix merged to mainline rather sooner than
-> later. Are these warnings and the mentioning of affected machines in the
-> patch descriptions the only remaining problems, or is there anything
-> else that needs to be addressed?
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Hmmm. Quite a bit progress to fix the issue was made in the first week
-after Todd's report; Jarkko apparently even applied the earlier patch
-from Mario to his master branch:
-https://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git/commit/?id=b1a62d41bdc1d15b0641759717e8c3651f0a810c
-But since then (aka in the past week) there was not much progress.
-
-Wondering what's up here -- and if both patches are needed or just one
-of them (I suspect it's the latter).
-
-Checked lore and noticed that Jarkko was not much active in kernel land
-during the past few days; happens, *no worries at all*. But still would
-be good if this could be resolved rather sooner that later. Just not
-sure how to achieve that.
-
-Mario, could you maybe pick this up in case Jarkko doesn't show up soon
-soon? From an earlier message in the thread it sounded like all that was
-missing was a slightly improved patch description? Or am I missing
-something?
-
-Ciao, Thorsten (who feels bad that he's putting pressure on people;
-sorry for that, but that duty comes with the "regression tracker" hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
-
-#regzbot poke
+Thanks,
+Charles
