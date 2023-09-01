@@ -2,192 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BCB78FC02
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B445E78FC0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347207AbjIALA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55618 "EHLO
+        id S233496AbjIALCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:02:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349073AbjIALAz (ORCPT
+        with ESMTP id S231592AbjIALCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:00:55 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A9C10D2
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:00:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3195EB821F9
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:00:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88ECCC433C9;
-        Fri,  1 Sep 2023 11:00:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693566048;
-        bh=9wNybEkDrP39FqndXH3ASSh7pRWU+k5rHL6wMWLCDFc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fP0mXdEOAYpOrg8xqTiYbvflR22PvDvzVz+ZOHyEpuq2xJCyoJVpkQ6qAQ6MRe2Iq
-         N/VWigF8A7+cj5XRjcRWxY1QJN8N6XsRp06iyszs4G25WH6IR+eAXhJx3tve+pOIwQ
-         3xaQq7a/0MTvo2KrY2cems3s4wajqsMOqOvYuMoVMAgNhq1RFmaVhra8J57ghnM4YY
-         kHsNiyMqzjk3Zp2IJCmL9k5+aIAyQIf3ee8KJrFn/HrYX92iDJHipQnGne695xU/3E
-         7VfLkC/X8ZXdLto0pktDLqN+jk9Kh28R4MGxEoAYn0CsEgDaRnstXpglZGGJqdRiRl
-         mcn2l/IFP9P2A==
+        Fri, 1 Sep 2023 07:02:33 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C1AFE42;
+        Fri,  1 Sep 2023 04:02:31 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68becf931bfso1445126b3a.0;
+        Fri, 01 Sep 2023 04:02:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693566151; x=1694170951; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WaNPFWIWuliIYtcO+upyqNmV7l5WRS5CbnAo0TfGhaI=;
+        b=FSjL0unoYVO0a+g5BFTG6ioL2nBczPBj5unBqyJeLfer6kJMjDG8Qcfpz7ij8GmTNt
+         U9KhDLHRwiZGKmC/qJjfViPx7qt1aa9YNDcFWJgze8cebUCHaAEtQEG7la9Zzx741+Q8
+         pJFuyIcp35LIqx2xuZSSk1tfSFBx70HIS80vLwQL5x782X1iq6lh59C0drnkgwF64DT3
+         HVo744xStUFDtONi0FMlHViiw+WFqWvdOXh8NT2wd6oJ729M9+ij1nAJf2cYQLR2hWND
+         X7hctyviJJUDgO+wqCBcuhdwjWAf90POq4NpkIzXS3N7QMNSqyK5PqV0QguXhRnF6ZyQ
+         aWFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693566151; x=1694170951;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WaNPFWIWuliIYtcO+upyqNmV7l5WRS5CbnAo0TfGhaI=;
+        b=RXU15kNJ926wfwOwg5wT8357o6kl+NF2+DI3WxuVV7oKUxQPloA5rbahFHquBjoNIy
+         7dlamFUSR4Pbli0eEtxIgmHQa5tPmeL/sqxPTdSDFt/m24adt44VryAaXOnBCXdlWiNN
+         d1eGrkmVXvvpBVjuSL04Gudzsyc/ckg0MvpbZwO/eE3JDQA9ufIjwwT7ilpJHKFUTuH7
+         5kIxyZ4HJwCztFQe6JahcRuSc6WoBw96aWTsmkDccUItEUzLS6pZRQGrFfBQY9YeGdZe
+         2Ti065lVADvh9mx66AzMkOsFBWv5/hnd+zuNVRMXD4pEGR/whfHzBcgyftXZjp5NOKWY
+         lDuQ==
+X-Gm-Message-State: AOJu0YxpXhSyBsF3JF2V9RSZBQ2ZN2bz6fuaD0hvbg9+h55dpCdqVHxA
+        NMeic5/lHfrGCEmgKAmrU3MQoHUYkw6kNT2q7fs=
+X-Google-Smtp-Source: AGHT+IFR9WW+K2rsaZpP9M4Fkt6GT9Xl6X3fTDiodA1ldxcB7wireh9+kRbbrOLiSNS+b+bt4K8sr9Nau/KfboR+C8c=
+X-Received: by 2002:a17:90a:6096:b0:262:ceaa:1720 with SMTP id
+ z22-20020a17090a609600b00262ceaa1720mr1845394pji.5.1693566150530; Fri, 01 Sep
+ 2023 04:02:30 -0700 (PDT)
 MIME-Version: 1.0
-Date:   Fri, 01 Sep 2023 13:00:45 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     Tudor Ambarus <tudor.ambarus@linaro.org>
-Cc:     Pratyush Yadav <pratyush@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v2 05/41] mtd: spi-nor: convert .n_sectors to .size
-In-Reply-To: <3df0728d-60d8-1cff-a0d9-f3de505dfa17@linaro.org>
-References: <20230807-mtd-flash-info-db-rework-v2-0-291a0f39f8d8@kernel.org>
- <20230807-mtd-flash-info-db-rework-v2-5-291a0f39f8d8@kernel.org>
- <3df0728d-60d8-1cff-a0d9-f3de505dfa17@linaro.org>
-Message-ID: <d7985b397e19f66c0692369e20a4fba6@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230831044431.250338-1-aford173@gmail.com> <99204fbf-3246-6124-2e35-bdc353d7e7b6@denx.de>
+In-Reply-To: <99204fbf-3246-6124-2e35-bdc353d7e7b6@denx.de>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 1 Sep 2023 06:02:17 -0500
+Message-ID: <CAHCN7xJGGSaO949=u2W6jybdE5R1dE8ihdP9wSrCgk5+9=9H6g@mail.gmail.com>
+Subject: Re: [PATCH V3 1/3] arm64: dts: imx8mp: Add easrc node
+To:     Marek Vasut <marex@denx.de>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Abel Vesa <abelvesa@kernel.org>, Peng Fan <peng.fan@nxp.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2023-08-24 10:25, schrieb Tudor Ambarus:
-> On 8/22/23 08:09, Michael Walle wrote:
->> .n_sectors is rarely used. In fact it is only used in swp.c and to
->> calculate the flash size in the core. The use in swp.c might be
->> converted to use the (largest) flash erase size. For now, we just
->> locally calculate the sector size.
->> 
->> Simplify the flash_info database and set the size of the flash 
->> directly.
->> This also let us use the SZ_x macros.
->> 
->> Signed-off-by: Michael Walle <mwalle@kernel.org>
->> ---
->>  drivers/mtd/spi-nor/core.c   | 2 +-
->>  drivers/mtd/spi-nor/core.h   | 8 ++++----
->>  drivers/mtd/spi-nor/swp.c    | 9 +++++----
->>  drivers/mtd/spi-nor/xilinx.c | 4 ++--
->>  4 files changed, 12 insertions(+), 11 deletions(-)
->> 
->> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
->> index 286155002cdc..f4cc2eafcc5e 100644
->> --- a/drivers/mtd/spi-nor/core.c
->> +++ b/drivers/mtd/spi-nor/core.c
->> @@ -2999,7 +2999,7 @@ static void spi_nor_init_default_params(struct 
->> spi_nor *nor)
->> 
->>  	/* Set SPI NOR sizes. */
->>  	params->writesize = 1;
->> -	params->size = (u64)info->sector_size * info->n_sectors;
->> +	params->size = info->size;
-> 
-> would be good to check the sanity of info->size to not be null and to 
-> be
-> divisible by sector_size.
+On Thu, Aug 31, 2023 at 4:52=E2=80=AFPM Marek Vasut <marex@denx.de> wrote:
+>
+> On 8/31/23 06:44, Adam Ford wrote:
+> > The i.MX8MP has an asynchronous sample rate converter which seems
+> > to be the same as what is available on the i.MX8M Nano.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > ---
+> > V3:  No Change.  The dt-binding update was already accepted into the so=
+und tree, so that patch
+> >       was dropped from the series
+> >
+> > V2:  No Change.
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boo=
+t/dts/freescale/imx8mp.dtsi
+> > index 83d907294fbc..3167706d81e1 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+> > @@ -1459,6 +1459,26 @@ sai7: sai@30c80000 {
+> >                                       interrupts =3D <GIC_SPI 111 IRQ_T=
+YPE_LEVEL_HIGH>;
+> >                                       status =3D "disabled";
+> >                               };
+> > +
+> > +                             easrc: easrc@30c90000 {
+> > +                                     compatible =3D "fsl,imx8mp-easrc"=
+, "fsl,imx8mn-easrc";
+> > +                                     reg =3D <0x30c90000 0x10000>;
+> > +                                     interrupts =3D <GIC_SPI 122 IRQ_T=
+YPE_LEVEL_HIGH>;
+> > +                                     clocks =3D <&audio_blk_ctrl IMX8M=
+P_CLK_AUDIOMIX_ASRC_IPG>;
+> > +                                     clock-names =3D "mem";
+> > +                                     dmas =3D <&sdma2 16 23 0> , <&sdm=
+a2 17 23 0>,
+> > +                                            <&sdma2 18 23 0> , <&sdma2=
+ 19 23 0>,
+> > +                                            <&sdma2 20 23 0> , <&sdma2=
+ 21 23 0>,
+> > +                                            <&sdma2 22 23 0> , <&sdma2=
+ 23 23 0>;
+> > +                                     dma-names =3D "ctx0_rx", "ctx0_tx=
+",
+> > +                                                 "ctx1_rx", "ctx1_tx",
+> > +                                                 "ctx2_rx", "ctx2_tx",
+> > +                                                 "ctx3_rx", "ctx3_tx";
+> > +                                     firmware-name =3D "imx/easrc/easr=
+c-imx8mn.bin";
+>
+> Should the firmware name really be imx8mn or should it be imx8mp ?
 
-Have a look at the later patches, info->size can be zero, indicating
-that we need to parse SFDP for this flash.
+The firmware blobs provided by NXP only has easrc-imx8mn.bin and would
+be concerned that having a different name might confuse people if they
+try to go look for it and they only find easrc-imx8mn.bin.  To me,
+this is no different than the SDMA driver using firmware called
+sdma-imx7d.bin
 
-I could validate that the size is a multiple of sector_size, but
-that one might also be zero. Of course you could solve this by
-additional logic. But I treated that one as a misconfiguration
-of the flash_info entry. It's nothing which can happen during
-runtime. Anyway, I have no strong opinion on the "is multiple
-of sector_size" check (for now, maybe there's something I didn't
-thought of now).
-
-> 
->>  	params->bank_size = params->size;
->>  	params->page_size = info->page_size;
->> 
->> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
->> index dfc20a3296fb..12c35409493b 100644
->> --- a/drivers/mtd/spi-nor/core.h
->> +++ b/drivers/mtd/spi-nor/core.h
->> @@ -443,9 +443,9 @@ struct spi_nor_fixups {
->>   * @id:             the flash's ID bytes. The first three bytes are 
->> the
->>   *                  JEDIC ID. JEDEC ID zero means "no ID" (mostly 
->> older chips).
->>   * @id_len:         the number of bytes of ID.
->> + * @size:           the size of the flash in bytes.
->>   * @sector_size:    the size listed here is what works with 
->> SPINOR_OP_SE, which
->>   *                  isn't necessarily called a "sector" by the 
->> vendor.
->> - * @n_sectors:      the number of sectors.
->>   * @n_banks:        the number of banks.
->>   * @page_size:      the flash's page size.
->>   * @addr_nbytes:    number of address bytes to send.
->> @@ -505,8 +505,8 @@ struct flash_info {
->>  	char *name;
->>  	u8 id[SPI_NOR_MAX_ID_LEN];
->>  	u8 id_len;
->> +	size_t size;
->>  	unsigned sector_size;
->> -	u16 n_sectors;
->>  	u16 page_size;
->>  	u8 n_banks;
->>  	u8 addr_nbytes;
->> @@ -556,8 +556,8 @@ struct flash_info {
->>  	.id_len = 6
->> 
->>  #define SPI_NOR_GEOMETRY(_sector_size, _n_sectors, _n_banks)		\
->> +	.size = (_sector_size) * (_n_sectors),				\
->>  	.sector_size = (_sector_size),					\
->> -	.n_sectors = (_n_sectors),					\
->>  	.page_size = 256,						\
->>  	.n_banks = (_n_banks)
->> 
->> @@ -575,8 +575,8 @@ struct flash_info {
->>  	SPI_NOR_GEOMETRY((_sector_size), (_n_sectors), 1),
->> 
->>  #define CAT25_INFO(_sector_size, _n_sectors, _page_size, 
->> _addr_nbytes)	\
->> +		.size = (_sector_size) * (_n_sectors),			\
->>  		.sector_size = (_sector_size),				\
->> -		.n_sectors = (_n_sectors),				\
->>  		.page_size = (_page_size),				\
->>  		.n_banks = 1,						\
->>  		.addr_nbytes = (_addr_nbytes),				\
->> diff --git a/drivers/mtd/spi-nor/swp.c b/drivers/mtd/spi-nor/swp.c
->> index 5ab9d5324860..40bf52867095 100644
->> --- a/drivers/mtd/spi-nor/swp.c
->> +++ b/drivers/mtd/spi-nor/swp.c
->> @@ -34,17 +34,18 @@ static u8 spi_nor_get_sr_tb_mask(struct spi_nor 
->> *nor)
->>  static u64 spi_nor_get_min_prot_length_sr(struct spi_nor *nor)
->>  {
->>  	unsigned int bp_slots, bp_slots_needed;
->> +	unsigned int sector_size = nor->info->sector_size;
->> +	u64 n_sectors = div_u64(nor->params->size, sector_size);
-> 
-> if params(info)->size is zero here, we get into trouble.
-
-Please note that this is not the info->size, params->size cannot
-be zero. If info->size was zero, we have to parse SFDP which hopefully
-will give us a sane size.
-
-And regarding the sector_size, which could be zero here. I want to
-replace that logic, so we don't rely on the flash_info sector size.
- From a later patch:
-
-         /*
-          * sector_size will eventually be replaced with the max erase 
-size of
-          * the flash. For now, we need to have that ugly default.
-          */
-
--michael
+>
+> I think the later is better, you can always add a symlink for the
+> firmware name, and you can discern mx8mn/mp firmwares on the same rootfs
+> in case that was ever needed in the future.
