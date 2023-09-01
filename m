@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C4B78FE53
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:33:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCEDE78FE54
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349756AbjIANdO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Sep 2023 09:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
+        id S1349759AbjIANdx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:33:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349750AbjIANdN (ORCPT
+        with ESMTP id S232143AbjIANdw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:33:13 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EBEE7E
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:33:09 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-127-rzP1TfnNM9Kwg3WdJebEew-1; Fri, 01 Sep 2023 14:33:07 +0100
-X-MC-Unique: rzP1TfnNM9Kwg3WdJebEew-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Fri, 1 Sep
- 2023 14:33:03 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Fri, 1 Sep 2023 14:33:03 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mateusz Guzik' <mjguzik@gmail.com>,
-        "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>
-Subject: RE: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-Thread-Topic: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-Thread-Index: AQHZ23Vdq8Esj5k0zUGYupOb09r6RrAF7nHA
-Date:   Fri, 1 Sep 2023 13:33:03 +0000
-Message-ID: <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
-References: <20230830140315.2666490-1-mjguzik@gmail.com>
-In-Reply-To: <20230830140315.2666490-1-mjguzik@gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 1 Sep 2023 09:33:52 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D67E4CC5
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:33:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7549F621C7
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 13:33:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 098A9C433C8;
+        Fri,  1 Sep 2023 13:33:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693575228;
+        bh=53riXEAEWBAWwbcpkoj7HSeYZAeJjS2cmm5QdmWuqHQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tQUHjIH7xxLqDQtDrWnKbVZwBPduSgA+oBpsUMp4nKqE3sLvpg+vz1UhIV8CxGJxK
+         EtSSQPucmr6BOvc7DuY/jTH7mbZEWh9ZMddh6thfQ6l9zLczXHvkjZiuixtTCD67F1
+         hpey3bQYVLjFoWRs3xk3KCL769dTBbzgIFLjEGRYBBjxO+4vcZ9XS/YAyccV+//0Pw
+         hXO9mBSoa01sdNrOWoa085J7gAr909UMJx4lElTUrnuvYrj0pUFGd4ocAPhnmBaTrw
+         GEBh0bYqpINw67DuaI9Sr7bIT4obRLOpLsjMKynU5QYknov64d+R9uSC+bJTmdiSFW
+         1FjzVc1fyvXTA==
+Date:   Fri, 1 Sep 2023 14:33:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, patches@opensource.cirrus.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.au@gmail.com>
+Subject: Re: [PATCH v4 2/3] ASoC: wm8580: Remove trailing comma in the
+ terminator entry
+Message-ID: <c4c13a22-39c4-404a-8c53-c110e44a9b56@sirena.org.uk>
+References: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
+ <20230901065952.18760-3-biju.das.jz@bp.renesas.com>
+ <ZPGmiWDErxnjGlMR@smile.fi.intel.com>
+ <baefefc8-55d7-430a-9ec5-2c17c4577d11@sirena.org.uk>
+ <ZPHk9tSC64clliFc@smile.fi.intel.com>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,PDS_BAD_THREAD_QP_64,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="R5XR92iKDBMMA7+G"
+Content-Disposition: inline
+In-Reply-To: <ZPHk9tSC64clliFc@smile.fi.intel.com>
+X-Cookie: Dealer prices may vary.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Guzik
-> Sent: 30 August 2023 15:03
-...
-> Hand-rolled mov loops executing in this case are quite pessimal compared
-> to rep movsq for bigger sizes. While the upper limit depends on uarch,
-> everyone is well south of 1KB AFAICS and sizes bigger than that are
-> common.
 
-That unrolled loop is pretty pessimal and very much 1980s.
+--R5XR92iKDBMMA7+G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-It should be pretty easy to write a code loop that runs
-at one copy (8 bytes) per clock on modern desktop x86.
-I think that matches 'rep movsq'.
-(It will run slower on Atom based cpu.)
+On Fri, Sep 01, 2023 at 04:19:50PM +0300, Andy Shevchenko wrote:
+> On Fri, Sep 01, 2023 at 01:54:58PM +0100, Mark Brown wrote:
 
-A very simple copy loop needs (using negative offsets
-from the end of the buffer):
-	A memory read
-	A memory write
-	An increment
-	A jnz
-Doing all of those every clock is well with the cpu's capabilities.
-However I've never managed a 1 clock loop.
-So you need to unroll once (and only once) to copy 8 bytes/clock.
+> > So do reviews which focus on very pedantic issues like this one...
 
-So for copies that are multiples of 16 bytes something like:
-	# dst in %rdi, src in %rsi, len in %rdx
-	add	%rdi, %rdx
-	add	%rsi, %rdx
-	neg	%rdx
-1:
-	mov	%rcx,0(%rsi, %rdx)
-	mov	0(%rdi, %rdx), %rcx
-	add	#16, %rdx
-	mov	%rcx, -8(%rsi, %rdx)
-	mov	-8(%rdi, %rdx), %rcx
-	jnz	1b
+> If you fine with a series as is, take it!
 
-Is likely to execute an iteration every two clocks.
-The memory read/write all get queued up and will happen at
-some point - so memory latency doesn't matter at all.
+We are in the merge window right now so if I queue things I won't
+actually apply them until the merge window is closed, meaning I need to
+keep track of what's queued already when new versions come in or
+whatever.
 
-For copies (over 16 bytes) that aren't multiples of
-16 it is probably just worth copying the first 16 bytes
-and then doing 16 bytes copies that align with the end
-of the buffer - copying some bytes twice.
-(Or even copy the last 16 bytes first and copy aligned
-with the start.)
+> It's really nothing to bikeshed about.
 
-I'm also not at all sure how much it is worth optimising
-mis-aligned transfers.
-An IP-Checksum function (which only does reads) is only
-just measurable slower for mis-aligned buffers.
-Less than 1 clock per cache line.
+Well, quite.  What I do for these very minor issues if I do end up
+commenting on them is mention them but explicitly say that the comment
+is more for future reference and there's no need to resend.
 
-I think you can get an idea of what happens from looking
-at the PCIe TLP generated for misaligned transfers and
-assuming that memory requests get much the same treatment.
+--R5XR92iKDBMMA7+G
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Last time I checked (on an i7-7700) misaligned transfers
-were done in 8-byte chunks (SSE/AVX) and accesses that
-crossed cache-line boundaries split into two.
-Since the cpu can issue two reads/clock not all of the
-split reads (to cache) will take an extra clock.
-(which sort of matches what we see.)
-OTOH misaligned writes that cross a cache-line boundary
-probably always take a 1 clock penalty.
+-----BEGIN PGP SIGNATURE-----
 
-	David
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTx6DUACgkQJNaLcl1U
+h9B4tgf+PMzMgvBAKiUpSFPeQBFd8Wuv/pTMGwku/Pi+AExyReaSaaxXWEUdlQrp
+C1iGcgBCXhqJB4y8oUxoq2BecmIbdVdSS7Hb9gAnAI3Gg4cDcADuptzBNBckTmFK
+3y0ma+g2KvjtLtfoe9biMTyrR4sq2AWqYBzpacoesW6ybygk4kqDkvyKvd3yYaDW
+5BFwZBjKtrrPkvXvLO2ho+6u6cc9wMqAPKJyfksBBXPQQITzFYDpgMIH7LF4viQg
+JIhmzHobXVVYOKHc9Mchpwn/Z/WrAJ1AxDiuuxI7Epa5Eut1HJ2aPyhIALEZFbFN
+R4+DpGuSDF/Se5fH1vEj1vf0ic1sLA==
+=90P1
+-----END PGP SIGNATURE-----
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+--R5XR92iKDBMMA7+G--
