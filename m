@@ -2,107 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F32FF78F854
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9CDA78F858
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 08:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348338AbjIAGEh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 02:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37138 "EHLO
+        id S1348345AbjIAGFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 02:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236771AbjIAGEh (ORCPT
+        with ESMTP id S1348340AbjIAGE7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 02:04:37 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBD610CE
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 23:04:33 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2bd0bc8b429so29017371fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 23:04:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shruggie-ro.20230601.gappssmtp.com; s=20230601; t=1693548271; x=1694153071; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dfLv56JgUFCXsENsYPIP+yaAFrYcDTTvtusyzWqWSds=;
-        b=slRSakWcK1tP3bqgnANhP+oNGiq/OjkfKASuqdhlqUCMYawWKEtXr6Vf3IWT0SfBA9
-         DMqVUWZyGiUyHzkLCBp+M82gINN1PaQR3frjEdBz6Ew3kb3b+umV+X7zjWp+lHcqyS+S
-         EMuO8rCQtMyOqg87QskFjWpBJOFmN1LeQGWvlMY/eNS2HsH/b0/Gc5tDpV2gJ+SJcQ8+
-         dnPb08TnwowHilPdOYUW4lurWBKqRQIX1Pk82ou2CC2nY9WM5hdcTpGxMn7t/krxsmRI
-         7tYq9kDXf0DSCac4vi2ycfCnBnY4x6sVeQJrKeKXVrp99dt5sW38ti6EYfvsW73k2/Er
-         wheA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693548271; x=1694153071;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dfLv56JgUFCXsENsYPIP+yaAFrYcDTTvtusyzWqWSds=;
-        b=UfJu/56of2+3kRyBiuxs3NBrYnoQAC/qKnGgJQPBQPBNPuSwva/B2mOGaqDpr/pZOu
-         JYYs/PV/kVVrUJPUJEq7s03zrcMSmq5PDCUcnFJVHgH2KzXug/DrHnY7dC+GRjfVPDgv
-         muCRwQDDrgBBqzhy9vCTURdzd/LgtSZgYMytG7f0jCHyXt8dQdv7t+FOKtFUKJ8j2fAo
-         iWVFbjQllhxqBjXF0Tjo8tf7H0B85g420p309NTMtnerma4hjKlO/TDVEUxb1DWRXa60
-         H+iHXuqCuKc1EJ/Ksixw9IksiEX2vEWZMQLRhpJZgnGW4Z0GMjNelXWS32LWAHqspGpF
-         UsmA==
-X-Gm-Message-State: AOJu0YyaURQ3oDTndtLkDYeV9Cg0TwdDgpYHOTT1NhbeX/P7Zl5yLmWj
-        AwPDjNGXdgjJYZjZtUrDZ63+qRP/HyX6P76vKhWjIwvYVIIiiPmtLvc=
-X-Google-Smtp-Source: AGHT+IEgpZQHAs3z6DvwmuZq/nZwOKrD9UgveHCXGqSM66fzWyf44HcZP52Yc4CjR2E4YhagLQL2BpDMpT6jjAl33v8=
-X-Received: by 2002:a19:5e1a:0:b0:4fe:ca9:d9bd with SMTP id
- s26-20020a195e1a000000b004fe0ca9d9bdmr687655lfb.56.1693548271262; Thu, 31 Aug
- 2023 23:04:31 -0700 (PDT)
+        Fri, 1 Sep 2023 02:04:59 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6086910CC;
+        Thu, 31 Aug 2023 23:04:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693548295; x=1725084295;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Cft0NZX01jZWskmao0IZaX0TQTrymVnXyHFz/2cvU04=;
+  b=NuUtxirpwI4HnP+A55v6Tpk4Nw/gfdQihL5fv0by4XjgNrAs1xDWTfGH
+   aDebmMA1M/d3/pQHf3GdNzJ6MCTrPZ8MPzHD2SnNlUGPkAWLmrJKVeOB2
+   HzeOkazY4fsg+L4qdYcEoFt8t3K+PpUzJzotLjQF6uulIFjqa9w1hjmfM
+   fjCYPyS2I3DeK2Q/BMp3FkUniKTKfIjtEwA5mdagpbL56WvL1eB56Ythi
+   WBK4s/3eq0btKpbfzTECtncebtHWLysA3q2iJZFnIngp+WpiOZi2wF4I6
+   ektOl+IRBnxDFbkwKitx3cqMqueNBIM7msRdxwnBfLjXAti+4LREmIrlH
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="366372096"
+X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
+   d="scan'208";a="366372096"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 23:04:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="805310003"
+X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
+   d="scan'208";a="805310003"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga008.fm.intel.com with ESMTP; 31 Aug 2023 23:04:44 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 7DC2FDE; Fri,  1 Sep 2023 09:04:43 +0300 (EEST)
+Date:   Fri, 1 Sep 2023 09:04:43 +0300
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        platform-driver-x86@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Prashant Malani <pmalani@chromium.org>
+Subject: Re: [PATCH 2/3] platform/x86: intel_scu_ipc: Check status upon
+ timeout in ipc_wait_for_interrupt()
+Message-ID: <20230901060443.GU3465@black.fi.intel.com>
+References: <20230831011405.3246849-1-swboyd@chromium.org>
+ <20230831011405.3246849-3-swboyd@chromium.org>
 MIME-Version: 1.0
-References: <20230828102943.21097-1-aboutphysycs@gmail.com>
-In-Reply-To: <20230828102943.21097-1-aboutphysycs@gmail.com>
-From:   Alexandru Ardelean <alex@shruggie.ro>
-Date:   Fri, 1 Sep 2023 09:04:20 +0300
-Message-ID: <CAH3L5Qpg84+Dc0MzfEWtJmfZYsXwdNHD6OZ6bRTfyB8xcr5HdQ@mail.gmail.com>
-Subject: Re: [PATCH] char: hw_random: xiphera-trng: removed unnneded platform_set_drvdata()
-To:     Andrei Coardos <aboutphysycs@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, olivia@selenic.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230831011405.3246849-3-swboyd@chromium.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 1:29=E2=80=AFPM Andrei Coardos <aboutphysycs@gmail.=
-com> wrote:
->
-> This function call was found to be unnecessary as there is no equivalent
-> platform_get_drvdata() call to access the private data of the driver. Als=
-o,
-> the private data is defined in this driver, so there is no risk of it bei=
-ng
-> accessed outside of this driver file.
->
-> Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-> ---
->  drivers/char/hw_random/xiphera-trng.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/drivers/char/hw_random/xiphera-trng.c b/drivers/char/hw_rand=
-om/xiphera-trng.c
-> index 2a9fea72b2e0..1fa4b70246f0 100644
-> --- a/drivers/char/hw_random/xiphera-trng.c
-> +++ b/drivers/char/hw_random/xiphera-trng.c
-> @@ -122,8 +122,6 @@ static int xiphera_trng_probe(struct platform_device =
-*pdev)
->                 return ret;
->         }
->
-> -       platform_set_drvdata(pdev, trng);
-> -
->         return 0;
+On Wed, Aug 30, 2023 at 06:14:02PM -0700, Stephen Boyd wrote:
+> It's possible for the completion in ipc_wait_for_interrupt() to timeout,
+> simply because the interrupt was delayed in being processed. A timeout
+> in itself is not an error. This driver should check the status register
+> upon a timeout to ensure that scheduling or interrupt processing delays
+> don't affect the outcome of the IPC return value.
+> 
+>  CPU0                                                   SCU
+>  ----                                                   ---
+>  ipc_wait_for_interrupt()
+>   wait_for_completion_timeout(&scu->cmd_complete)
+>   [TIMEOUT]                                             status[IPC_BUSY]=0
+> 
+> Fix this problem by reading the status bit in all cases, regardless of
+> the timeout. If the completion times out, we'll assume the problem was
+> that the IPC_BUSY bit was still set, but if the status bit is cleared in
+> the meantime we know that we hit some scheduling delay and we should
+> just check the error bit.
+> 
+> Cc: Prashant Malani <pmalani@chromium.org>
+> Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-This entire block could become now:
-
-        return devm_hwrng_register(dev, &trng->rng);
-
->  }
->
-> --
-> 2.34.1
->
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
