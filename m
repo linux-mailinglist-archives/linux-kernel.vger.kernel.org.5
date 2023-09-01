@@ -2,88 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1AE478FED2
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:18:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D7078FEE0
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 16:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349933AbjIAOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 10:18:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37626 "EHLO
+        id S1349944AbjIAOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 10:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbjIAOSW (ORCPT
+        with ESMTP id S1349939AbjIAOTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 10:18:22 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA0C10EC;
-        Fri,  1 Sep 2023 07:18:19 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c0bae4da38so128835ad.0;
-        Fri, 01 Sep 2023 07:18:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693577898; x=1694182698; darn=vger.kernel.org;
-        h=in-reply-to:subject:to:from:message-id:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=M+k9jCdWH9ria3G+t4iPStww6Lw/Q+Bd+gGPJInKFFM=;
-        b=kN/mjRmO0Wjqt/fxLYMJD9mOuwCB9Uq0648ttgKR+pNRzjrtoipFfSHX1EGZfhORtE
-         zZRTmKJpgXGfx75LpeQwIgoqGj2fgWlE8XVZdJemfgzjEhpz4/scCJOX8fIZZRTGv/oe
-         IMwjPpmEc0at5LeUF+J9TzlNspDgHvH2ND+fr1jWDI/PEF6P4GIIZV0/18dhqrSebJsJ
-         obeOW8QxwECp3I5IyIL1tM2WeN/XWAxnxmk5FLVsARNR92PEpmXbfxYCam00StVtt3rk
-         +yb08TfZbJJ5WlRmwMmOVJVAfzbK9uT5ST9D9aj0iBULrU11yyMO8eMo1OsrvRknI8qC
-         sEzA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693577898; x=1694182698;
-        h=in-reply-to:subject:to:from:message-id:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=M+k9jCdWH9ria3G+t4iPStww6Lw/Q+Bd+gGPJInKFFM=;
-        b=UT9o1VbI5t7OQAgZ4ndOEFn9XuAd9lDYMeQI0zDHk31ULim74AHFdFFOolUq0PatAT
-         EW767Xf/k3dp27ViSfbaT4bwWoem8n06yZp19yknCdyRl4BNXwZM3gQHA44QnE00lRol
-         DtUv8XaDeRoIxY0NwF6gOajF+1raXtvNTi0jSDY/ctcyqA+FifZxHFn6t+RFfrIo0i1j
-         fstHad4DIXPW07Cx1gRmCz1Gl9MiSgoYwfRU/4ta1PtPM7MKew7B0WAVMExzmLWfcnb2
-         1jagB1ENUTcwdDxnyC6VBPCJpmWVa3yUL+GmlbN84pjsE57fCRZif1EP656iadRtNHCE
-         E+7w==
-X-Gm-Message-State: AOJu0YxvVEHzvXvpUalXCFB2oYFN7KVCOOTFtrmwBCEufi6zJMS2f3a0
-        tofO/DrszZt7Yt1pdE23CnB9mw+H7aA=
-X-Google-Smtp-Source: AGHT+IHx3F6UgKqGMpavylGAhJW9ecWS0bBoI58iu/P/TRFUmQI08o59pqi9G2WjsuDdefMvKGwAIA==
-X-Received: by 2002:a17:903:244d:b0:1b2:676d:1143 with SMTP id l13-20020a170903244d00b001b2676d1143mr3721428pls.15.1693577898096;
-        Fri, 01 Sep 2023 07:18:18 -0700 (PDT)
-Received: from dw-tp ([49.207.223.191])
-        by smtp.gmail.com with ESMTPSA id h14-20020a170902ac8e00b001c09d6feeb6sm3059168plr.165.2023.09.01.07.18.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 07:18:17 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 19:48:13 +0530
-Message-Id: <87zg266kpm.fsf@doe.com>
-From:   Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To:     Kemeng Shi <shikemeng@huaweicloud.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 09/11] ext4: add some kunit stub for mballoc kunit test
-In-Reply-To: <20230826155028.4019470-10-shikemeng@huaweicloud.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Fri, 1 Sep 2023 10:19:41 -0400
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C68110F0
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 07:19:35 -0700 (PDT)
+Received: by gofer.mess.org (Postfix, from userid 501)
+        id 37F211007FB; Fri,  1 Sep 2023 15:19:24 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1693577964; bh=Lbm8wzOKC2M9GeSPbw06e8KPiOFgpvPECNpJXbRnIo4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=OR/WtiAGuMKYxvf8uQg/v/LcwgzCqcfQeQwtjWN1P/XAXpiUqnVCw1bqZ1m46Z2pd
+         ZRfvNTR31CfeB3FWXaYYK8HSYRPj6GEZ7lSzdTvZcsLaoS5Zyx0Y9GQkpzLSWIR7Zr
+         Tjye0gETkda+BrjYmukIM/gFAxuIcMHJcNJKyB9zP7346F2u64M0hLibr4N4I1pyvA
+         ye2fPxbJZ1bLOwPi7yNyS4zcdkJPYkKUjI9RD5Gan/pi4Gxtoj8sAizvyB8xW09TZc
+         fYLBZze8QleCNfx2a/VKxk3agUvxYsGmaO/3BDsIg9EhFwjL/gEyITxK3kNb74xXbp
+         wLd7fBIPNP5Kw==
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
+Received: from localhost.localdomain (bigcore.mess.org [IPv6:2a02:8011:d000:212:44e0:1480:5a2d:d8ed])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by gofer.mess.org (Postfix) with ESMTPSA id CB23E1007F5;
+        Fri,  1 Sep 2023 15:19:22 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1693577962; bh=Lbm8wzOKC2M9GeSPbw06e8KPiOFgpvPECNpJXbRnIo4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=mTjVgXPwKuo4921vycPIOm2LJTc7VMoFgoMgAKciGPX9RJuSuxbA5qXdHuiBoie4m
+         +SLlaXXO/jTkWO1u+X4xKCcgMEIxG5SEfHOQ6i6kBIZOZDFQaGx+lDUnQwMl0uP9Mt
+         238pRWyiJAxl3zpG5ZEyV71jK9A0mdFe4gwcfkoEJiU46PjeVnvK2vS0Z0+B/0pdLk
+         EqqOfPxfW23k8KE+zx7xh3YGYJF4ZU3WGie6AXC/hNt1WXrhLfG2JL5s8CrsAukcfc
+         ka0hYlbrcATg3vXSbWQLEuN/QXzwyGFxXApwR0UYJVZsJhiuLi9ZrrBwERuf5kjZ5s
+         58oYuDkVQasoQ==
+From:   Sean Young <sean@mess.org>
+To:     linux-media@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 1/2] dt-bindings: media: remove nokia,n900-ir as pwm-ir-tx is compatible
+Date:   Fri,  1 Sep 2023 15:18:55 +0100
+Message-ID: <25e8f2626d15199a1bf727fee375b5b149004c8e.1693577725.git.sean@mess.org>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1693577725.git.sean@mess.org>
+References: <cover.1693577725.git.sean@mess.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kemeng Shi <shikemeng@huaweicloud.com> writes:
+The generic pwm-ir-tx driver works for the Nokia n900, so nokia,n900-ir
+can be removed.
 
-> Multiblocks allocation will read and write block bitmap and group
-> descriptor which reside on disk. Add kunit stub to function
-> ext4_get_group_desc, ext4_read_block_bitmap_nowait, ext4_wait_block_bitmap
-> and ext4_mb_mark_context to avoid real IO to disk.
->
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/balloc.c  | 10 ++++++++++
->  fs/ext4/mballoc.c |  4 ++++
->  2 files changed, 14 insertions(+)
+Signed-off-by: Sean Young <sean@mess.org>
+---
+ .../bindings/leds/irled/pwm-ir-tx.yaml        |  5 ++++-
+ .../devicetree/bindings/media/nokia,n900-ir   | 20 -------------------
+ 2 files changed, 4 insertions(+), 21 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/media/nokia,n900-ir
 
-The patch looks good to me. Nice work in identifying functions which are
-does I/O in mballoc context.
+diff --git a/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml b/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
+index f2a6fa140f38..7526e3149f72 100644
+--- a/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
++++ b/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
+@@ -15,7 +15,10 @@ description:
+ 
+ properties:
+   compatible:
+-    const: pwm-ir-tx
++    oneOf:
++      - const: pwm-ir-tx
++      - const: nokia,n900-ir
++        deprecated: true
+ 
+   pwms:
+     maxItems: 1
+diff --git a/Documentation/devicetree/bindings/media/nokia,n900-ir b/Documentation/devicetree/bindings/media/nokia,n900-ir
+deleted file mode 100644
+index 13a18ce37dd1..000000000000
+--- a/Documentation/devicetree/bindings/media/nokia,n900-ir
++++ /dev/null
+@@ -1,20 +0,0 @@
+-Device-Tree bindings for LIRC TX driver for Nokia N900(RX51)
+-
+-Required properties:
+-	- compatible: should be "nokia,n900-ir".
+-	- pwms: specifies PWM used for IR signal transmission.
+-
+-Example node:
+-
+-	pwm9: dmtimer-pwm@9 {
+-		compatible = "ti,omap-dmtimer-pwm";
+-		ti,timers = <&timer9>;
+-		ti,clock-source = <0x00>; /* timer_sys_ck */
+-		#pwm-cells = <3>;
+-	};
+-
+-	ir: n900-ir {
+-		compatible = "nokia,n900-ir";
+-
+-		pwms = <&pwm9 0 26316 0>; /* 38000 Hz */
+-	};
+-- 
+2.42.0
 
-Looks good to me. Feel free to add - 
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
--ritesh
