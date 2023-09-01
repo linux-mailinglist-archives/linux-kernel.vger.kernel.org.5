@@ -2,175 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7211278F9CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:18:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B81B78F9D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:20:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230126AbjIAIS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:18:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39482 "EHLO
+        id S242912AbjIAIUE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:20:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236268AbjIAISY (ORCPT
+        with ESMTP id S243208AbjIAIUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:18:24 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A069510E6
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:18:20 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-991c786369cso201174166b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 01:18:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693556299; x=1694161099; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rTKmHqxdbbgU1JE7lxhnJDHkPsC++RCUQ0vzQOeOdeM=;
-        b=bgznRccpBQwxz9X9mMtZPtpk7Bl6Qm7gH0OLkmY0JsAXuhU8gYFJ0hdXbYUpyODYqH
-         0eg/v1cedVhrH2OLD7e3QG81Vqa3OWvmp8puRFCUpaIWiJouamd7cYzlZYmELP1AgckG
-         lEoIKTQ2eKoqFbkpbp/WcVOkoZRXESjLHyHi2XXma7r9oMA62H0FMPY2Hu9VeT2e2Nbc
-         6q4X3mqSq+WxdI2HHL22zFsKomjoc6V908q2veIopff6u9+kj2Foc/KF4yck0Hsz4qwx
-         P01nh5h6f5wS+SfKlew5fV8w973dIJuRi73gmuK2Oqme9A+rzdbGfPzRm8G+Xi5fO3PE
-         17ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693556299; x=1694161099;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rTKmHqxdbbgU1JE7lxhnJDHkPsC++RCUQ0vzQOeOdeM=;
-        b=dv4qBVByN6R7HjPFSGD1USpbpIhV0sl/myJiZdm6DM/deWUNd+hYxSqxqn+YLUT1WY
-         qrIjMnMt3QhQzhbSveXza9b6tFcXKbfjaiMq1c3L3rxYaZEe45n3iwPlOBjJqEZotDGu
-         a3NBnhechQO9ohZRJ7Ctppl2Eggx2oGFLnG8K6c2PEBYa334+XQ16IMokTjg7vePjh7A
-         ID23bXx3Tc3QXSR7fw0vKEqoJMFff97EQcCCKir6riMHNQ79YFkvgAPe7d5dR4gYgP74
-         N/XkCAyty+ojqhX9jRW8LMKlUWp1LIDva6cAtFLWa6kHxij3hMDydPGcILB9L+YFhBa4
-         li1A==
-X-Gm-Message-State: AOJu0YwMqPEEgXsJKMSzgpdPirl3fZm0cTMd0r3iyHcrfkQEl3o3zwv1
-        a18Bzer8QwvFVYSDHtYY0S3NxA==
-X-Google-Smtp-Source: AGHT+IGqacyPL0i0XUZoFYuwR5IbzcWzdf6+ZY5GzbHzlOO0OAM1K6lJBQyJ1+shNoedmW5/V913tw==
-X-Received: by 2002:a17:906:dd:b0:99e:1358:ffdf with SMTP id 29-20020a17090600dd00b0099e1358ffdfmr1154688eji.72.1693556299149;
-        Fri, 01 Sep 2023 01:18:19 -0700 (PDT)
-Received: from krzk-bin.. (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170906d10600b009a57d30df89sm1676657ejz.132.2023.09.01.01.18.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 01:18:18 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        stable@vger.kernel.org
-Subject: [RFT PATCH 2/2] arm64: dts: qcom: msm8996-xiaomi: fix missing clock populate
-Date:   Fri,  1 Sep 2023 10:18:12 +0200
-Message-Id: <20230901081812.19121-2-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230901081812.19121-1-krzysztof.kozlowski@linaro.org>
-References: <20230901081812.19121-1-krzysztof.kozlowski@linaro.org>
+        Fri, 1 Sep 2023 04:20:02 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DB610DE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:19:57 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3817SpqE012068;
+        Fri, 1 Sep 2023 03:18:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=HmbQF+n1buq5au+
+        CxCfNxxyc+bpk4OqqY2opc+lz1jg=; b=XhyUziRrVvp871EY4H+x9n8Ogl7o0Hw
+        n/iea21iEyQontcNJaPscRg6bVR7G3XI8vK6bEN7DhIUiainzaMk+7OEOPo35xVR
+        P8ftfxEZ0T/M03wP4tfycHhBvspWctj9p3WHmLmjzljXKfwN6MhmxN49pQYmpOUL
+        Q69F9KuCAjwHY2U3r7CBXvb9ZHP28n3elHk79TwJzs3egkDRYkxdmmElTo3AHlzP
+        8g0EYYMOqiUpyy6tuR/ULZFHZnZx7wDQo8G9GL2HcxJvvtjSN8zJvbzz0a0vnY9j
+        QOLbWuNWFVn+lHEkxypr2r82EKHstDw5gijYeg+XhPUZaU906Jswf0A==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sqdtj6r9y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 01 Sep 2023 03:18:32 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Fri, 1 Sep
+ 2023 09:18:31 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Fri, 1 Sep 2023 09:18:31 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id EED473563;
+        Fri,  1 Sep 2023 08:18:30 +0000 (UTC)
+Date:   Fri, 1 Sep 2023 08:18:30 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "Andy Shevchenko" <andriy.shevchenko@linux.intel.com>,
+        <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, Biju Das <biju.das.au@gmail.com>
+Subject: Re: [PATCH v4 3/3] ASoC: wm8580: Move OF table
+Message-ID: <20230901081830.GY103419@ediswmail.ad.cirrus.com>
+References: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
+ <20230901065952.18760-4-biju.das.jz@bp.renesas.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230901065952.18760-4-biju.das.jz@bp.renesas.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: G9HaHnAHO6lgBOxV9ToKfuQHxAYLBjDj
+X-Proofpoint-GUID: G9HaHnAHO6lgBOxV9ToKfuQHxAYLBjDj
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 338958e30c68 ("arm64: dts: qcom: msm8996-xiaomi: drop simple-bus
-from clocks") removed "simple-bus" compatible from "clocks" node, but
-one of the clocks - divclk1 - is a gpio-gate-clock, which does not have
-CLK_OF_DECLARE.  This means it will not be instantiated if placed in
-some subnode.  Move the clocks to the root node, so regular devices will
-be populated.
+On Fri, Sep 01, 2023 at 07:59:52AM +0100, Biju Das wrote:
+> Move OF table near to the user.
+> 
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> ---
 
-Reported-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Closes: https://lore.kernel.org/all/CAA8EJprF==p87oN+RiwAiNeURF1JcHGfL2Ez5zxqYPRRbN-hhg@mail.gmail.com/
-Cc: <stable@vger.kernel.org>
-Fixes: 338958e30c68 ("arm64: dts: qcom: msm8996-xiaomi: drop simple-bus from clocks")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- .../boot/dts/qcom/msm8996-xiaomi-common.dtsi  | 32 +++++++++----------
- .../boot/dts/qcom/msm8996-xiaomi-gemini.dts   | 16 ++++------
- 2 files changed, 22 insertions(+), 26 deletions(-)
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-index bcd2397eb373..06f8ff624181 100644
---- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-+++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-common.dtsi
-@@ -11,26 +11,24 @@
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- 
- / {
--	clocks {
--		divclk1_cdc: divclk1 {
--			compatible = "gpio-gate-clock";
--			clocks = <&rpmcc RPM_SMD_DIV_CLK1>;
--			#clock-cells = <0>;
--			enable-gpios = <&pm8994_gpios 15 GPIO_ACTIVE_HIGH>;
-+	divclk1_cdc: divclk1 {
-+		compatible = "gpio-gate-clock";
-+		clocks = <&rpmcc RPM_SMD_DIV_CLK1>;
-+		#clock-cells = <0>;
-+		enable-gpios = <&pm8994_gpios 15 GPIO_ACTIVE_HIGH>;
- 
--			pinctrl-names = "default";
--			pinctrl-0 = <&divclk1_default>;
--		};
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&divclk1_default>;
-+	};
- 
--		divclk4: divclk4 {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <32768>;
--			clock-output-names = "divclk4";
-+	divclk4: divclk4 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		clock-output-names = "divclk4";
- 
--			pinctrl-names = "default";
--			pinctrl-0 = <&divclk4_pin_a>;
--		};
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&divclk4_pin_a>;
- 	};
- 
- 	gpio-keys {
-diff --git a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
-index d1066edaea47..f8e9d90afab0 100644
---- a/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8996-xiaomi-gemini.dts
-@@ -20,16 +20,14 @@ / {
- 	qcom,pmic-id = <0x20009 0x2000a 0x00 0x00>;
- 	qcom,board-id = <31 0>;
- 
--	clocks {
--		divclk2_haptics: divclk2 {
--			compatible = "fixed-clock";
--			#clock-cells = <0>;
--			clock-frequency = <32768>;
--			clock-output-names = "divclk2";
-+	divclk2_haptics: divclk2 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		clock-output-names = "divclk2";
- 
--			pinctrl-names = "default";
--			pinctrl-0 = <&divclk2_pin_a>;
--		};
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&divclk2_pin_a>;
- 	};
- };
- 
--- 
-2.34.1
-
+Thanks,
+Charles
