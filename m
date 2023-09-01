@@ -2,115 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75AF479032F
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 23:51:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 931FD790385
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 00:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229761AbjIAVts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 17:49:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        id S1345297AbjIAWDZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 18:03:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350801AbjIAVmu (ORCPT
+        with ESMTP id S1350863AbjIAVwT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 17:42:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673D32101;
-        Fri,  1 Sep 2023 14:39:37 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 21:39:34 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693604375;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r1rbe0+qLjSIdXob5RQEh6hDPQoTXLohm3YDfo90QS8=;
-        b=hJFaRRL2vfHw+TVmYRkeQXZcsI6a5HhWTuiQOAcLAnDYHqVaq2NFeZz35gqCZcCMadZNOD
-        aTrXIDOKzCyKjQqqLbu7DcO2tVLnvePEPx4SQ93tj1bI/ZNWr0cVTGbit8GfgvjYV0zceU
-        LQ7o1eTEfRUXN06dXukciSOo8ynUQ3l4dYlIFh4WliAZT/uJ8zo6bX/74KioeWafG6w5kA
-        q4UkA6fyK07NQN07Z1Dt9WQ6GbGHRlTahdP/ne6R/KrJRVy7GNxkt6WNbVStU7vG75MK+x
-        bRGIoYd3e8D5xRSZ6FBVQCJr3twIzNyIuVTafyRd1wsqdKI+wTSJmC8KyyA2FA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693604375;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=r1rbe0+qLjSIdXob5RQEh6hDPQoTXLohm3YDfo90QS8=;
-        b=e8PSjHwxEbW17Hb3oBKDdzO8090MMf3IGAyVmvKsDj/nGNzCrZnBQb2eX5o9O069dE2fVm
-        N/J7hSdeRVGMguCg==
-From:   "tip-bot2 for Rick Edgecombe" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] selftests/x86: Update map_shadow_stack syscall nr
-Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Sohil Mehta <sohil.mehta@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20230901181652.2583861-1-rick.p.edgecombe@intel.com>
-References: <20230901181652.2583861-1-rick.p.edgecombe@intel.com>
-MIME-Version: 1.0
-Message-ID: <169360437465.27769.16274321384160860209.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 1 Sep 2023 17:52:19 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BBAB1FFE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 14:49:50 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68a3ba17c7bso3135253b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 14:49:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693604990; x=1694209790; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IzrwaMmvE4QKswRKE7C/ju9oj59F13j6HsTSXcpNzv4=;
+        b=xDFjhuG41oQNfkoQJz+WpsEDMcKxlKAsgrAMezE76fYrGvDinrjN1A1fT+yvyaBibH
+         iqDBxnYR5PaXg3TRnzwoepPe7CVWV5oEwA6Bz5xisWALZnG6MzjLfObPAP7c9ru3vGpM
+         iAK7Olbs6SdQ4Yve1Oir8H6mkJwuQybvAHyENbm1PnJXnk43glwpV2PBPn4/r8AuA6UE
+         7hhAuLeYuBZfKxsX/c9e4cx8goy6+EpYUvlk/gZ+SwBlVMJqAfeAuQVY5Qv4FJGCrzod
+         rkc00z6Ii90jbhVSIQFybk0nfPyQnf5h8f8IUFcrMxYOzsW794PBG6FpABvrySDASvz2
+         HSNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693604990; x=1694209790;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IzrwaMmvE4QKswRKE7C/ju9oj59F13j6HsTSXcpNzv4=;
+        b=STL4ndHBPChBM2gnjME0WnjS3gzGiZrdEkzGVZVmbPl6KvaioTwbb/40W7/KbHH6OK
+         nwo1H8y67tcbZVgDBYhIQ6U70SG0Cgux5L3EANtF8HdN2UJEvYksMKinpLkQrfNTspKL
+         6xwe/GWFaLVz8MmyVmLMiUjFm+yJJj3haPQ8o3qHX6RavKQFhW6ukDRdewVdcwK3Em89
+         Wk8p0PIMoVWwIG98Eo9EUlhtblXRAPkQXwL122U39ONTyCLJlOrLfT4wF40bfa0+I6aJ
+         O7Fyvxl0zzL0q6gO0ZXBstiThL64ScDbU3TVLb9fdPgZrVNcSy5398bb3snIVehYxoVL
+         AOGQ==
+X-Gm-Message-State: AOJu0YyEScxK2ZLNG1Nxrh6mxlExWda3rBtF07EEX0UILrw8xTrvyFNr
+        SJ0AznuEoVMm5Vw+BdIpQ6CcIUdpX54=
+X-Google-Smtp-Source: AGHT+IFdj3bDDCq48M7KG/zNXYWh4//YuD/9E5uRPX4l3JXxwBRPDsy7dliE67P4sJX29bsQxAqExeHWqSg=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:24cd:b0:68b:dbad:7ae7 with SMTP id
+ d13-20020a056a0024cd00b0068bdbad7ae7mr1588120pfv.6.1693604989744; Fri, 01 Sep
+ 2023 14:49:49 -0700 (PDT)
+Date:   Fri, 1 Sep 2023 21:49:48 +0000
+In-Reply-To: <5e33618d-1c06-b42a-0755-bf8661895e9b@redhat.com>
+Mime-Version: 1.0
+References: <20230830000633.3158416-1-seanjc@google.com> <20230830000633.3158416-4-seanjc@google.com>
+ <ZPDNielH+HOYV89u@google.com> <CABgObfZoJjz1-CMGCQqNjA8i_DivgevEhw+EqfbD463JAMe_bA@mail.gmail.com>
+ <ZPIwtfkVAyFWy41I@google.com> <5e33618d-1c06-b42a-0755-bf8661895e9b@redhat.com>
+Message-ID: <ZPJcfAneye3S4fiR@google.com>
+Subject: Re: [GIT PULL] KVM: x86: MMU changes for 6.6
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Like Xu <like.xu.linux@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Fri, Sep 01, 2023, Paolo Bonzini wrote:
+> On 9/1/23 20:43, Sean Christopherson wrote:
+> > > Ok, I'll apply these by hand.
+> > In case you haven't taken care of this already, here's an "official" tested fix.
+> > 
+> > Like, if you can give your SoB, I'd rather give you full author credit and sub
+> > me out entirely.
+> 
+> I prefer to squash and possibly face Linus's wrath. :)
 
-Commit-ID:     6ea7bb00c1ba180f8bf8320b8d59b532501c5271
-Gitweb:        https://git.kernel.org/tip/6ea7bb00c1ba180f8bf8320b8d59b532501c5271
-Author:        Rick Edgecombe <rick.p.edgecombe@intel.com>
-AuthorDate:    Fri, 01 Sep 2023 11:16:52 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Fri, 01 Sep 2023 23:34:13 +02:00
-
-selftests/x86: Update map_shadow_stack syscall nr
-
-Shadow stack's selftest utilizes the map_shadow_stack syscall. The
-syscall is new with the feature, but the selftests cannot automatically
-find the headers for the kernel source tree they are located in. This
-resulted in the shadow stack test failing to build until the brand new
-headers were installed.
-
-To avoid this, a copy of the new uapi defines needed by the test were
-included in the selftest (see link for discussion). When shadow stack was
-merged the syscall number was changed, but the copy in the selftest was
-not updated.
-
-So update the copy of the syscall number define used when the required
-headers are not installed, to have the final syscall number from the
-merge.
-
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/lkml/Y%2FijdXoTAATt0+Ct@zn.tnic/
-Link: https://lore.kernel.org/r/20230901181652.2583861-1-rick.p.edgecombe@intel.com
-Reviewed-by: Sohil Mehta <sohil.mehta@intel.com>
-Fixes: df57721f9a63 ("Merge tag 'x86_shstk_for_6.6-rc1' of [...]")
----
- tools/testing/selftests/x86/test_shadow_stack.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/x86/test_shadow_stack.c b/tools/testing/selftests/x86/test_shadow_stack.c
-index 2188968..757e652 100644
---- a/tools/testing/selftests/x86/test_shadow_stack.c
-+++ b/tools/testing/selftests/x86/test_shadow_stack.c
-@@ -40,7 +40,7 @@
-  * without building the headers.
-  */
- #ifndef __NR_map_shadow_stack
--#define __NR_map_shadow_stack	452
-+#define __NR_map_shadow_stack	453
- 
- #define SHADOW_STACK_SET_TOKEN	(1ULL << 0)
- 
+LOL, works for me, as long as you're taking the bullets. ;-)
