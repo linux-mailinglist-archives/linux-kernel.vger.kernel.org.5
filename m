@@ -2,156 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B648A78FD49
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:31:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A4578FD48
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:31:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349461AbjIAMbW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:31:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
+        id S1349455AbjIAMbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:31:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349458AbjIAMbV (ORCPT
+        with ESMTP id S231134AbjIAMbG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:31:21 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2E910CA
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 05:30:55 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id d2e1a72fcca58-68bee12e842so1576738b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 05:30:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1693571455; x=1694176255; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=2OQC+A17dBwkV5biq6l7N28Il7bmSGqCXLaMTa2BoUI=;
-        b=dZmOC1UZNzlSB9nYMMB8IaztL6wLAR56nttBgh1Kc5yOFBB6+6O8Jkn3KgO43KLqWL
-         2Gg8V3rnzPrZMQ8Bh3HtZsyJrSypioQoEDGP6K4CS8dTSxiHn+z2RNOO0T4hoTUef+5k
-         lzcX4wIghN4rBnmIXahAXPH+d5TOFwbDPqt7p07z2s8YlMmQHoTZhX4PHFJIE4zKMu8r
-         5lMXetsNU7X4vJ3J+NxRS1oWLf+FSR5qB//rA1GLOkbeKCwoZHl71ORf1p0hwF3WxOGQ
-         i4zR/6I2+BoDJlHzpSWS07vJaKMAA/vAzZF6IXpYjQ6k7+3uQxWXbyPjKy0PofqviMbN
-         yqnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693571455; x=1694176255;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2OQC+A17dBwkV5biq6l7N28Il7bmSGqCXLaMTa2BoUI=;
-        b=fZ+PVvI2Dw6OMR77hSc/97QUvS0ZJY85I8vus3X9OzLetdQ2Z24zeRk3JvGYXCuSop
-         9eAvojxkBSDwj6CJcBrBxMuklVvNczFXyp8+/vlrcBR/Z8IFmEoR5fXHb+Dnel1grqr6
-         F3ehlbjT6XK1fX19GMEba9BzEkHQrAd0mcX0+mZOPkWkfqEO4UO3L12rXav4deD5Txbt
-         LM1WrUAMRVXhmveIinEPrZfxjJS02a3EQRyNzbEQC3/+V650jlmW5I+Ynxs3o6gwP70A
-         4wKFCggC31g4vF3/I3srsefVbRrQMFgGU5MXh8XyuPowApEO5BLz0KbbGeay07o6/8Dm
-         XNCQ==
-X-Gm-Message-State: AOJu0Yw/oYfUrHi3vvYzmU6vsqYQ8TSzg6jPIRz8bRzQWgUcSwtBSVEP
-        t7hYBQxl0posJjgf6uotMlweHQ==
-X-Google-Smtp-Source: AGHT+IFpH9TYzbvlVnhSRXGMUYD2omRkS3XxiP6OjYn9bZEgjSIYmWkrlFuNTdgydF6T77aIplkZIw==
-X-Received: by 2002:a05:6a21:3390:b0:147:fd40:2482 with SMTP id yy16-20020a056a21339000b00147fd402482mr2974232pzb.44.1693571454993;
-        Fri, 01 Sep 2023 05:30:54 -0700 (PDT)
-Received: from L6YN4KR4K9.bytedance.net ([139.177.225.249])
-        by smtp.gmail.com with ESMTPSA id s19-20020aa78293000000b006889081281bsm2861184pfm.138.2023.09.01.05.30.48
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Fri, 01 Sep 2023 05:30:53 -0700 (PDT)
-From:   Yunhui Cui <cuiyunhui@bytedance.com>
-To:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, guoren@kernel.org, bjorn@rivosinc.com,
-        conor.dooley@microchip.com, jszhang@kernel.org,
-        andy.chiu@sifive.com, cuiyunhui@bytedance.com,
-        dave.hansen@linux.intel.com, elver@google.com, glider@google.com,
-        cyphar@cyphar.com, kirill.shutemov@linux.intel.com,
-        keescook@chromium.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5] riscv: add userland instruction dump to RISC-V splats
-Date:   Fri,  1 Sep 2023 20:30:43 +0800
-Message-Id: <20230901123043.73700-1-cuiyunhui@bytedance.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
+        Fri, 1 Sep 2023 08:31:06 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 586DD10D4;
+        Fri,  1 Sep 2023 05:31:02 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 9654DCE2389;
+        Fri,  1 Sep 2023 12:31:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E376AC433CA;
+        Fri,  1 Sep 2023 12:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693571458;
+        bh=LccWUx7dWTdmftZs5xNwbt3DhF0oc/l/wJCxtvQ1bA0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FrCL3k6bT1B0OGj4V7PhfPPZ2UdLD93SJ85ELYzJLX67egguq+6UndzMqPuUuWcO6
+         HNRQI/dMl9BAWowNhlrn6bZcANf6nta0dmU4pHIGn+ec8AvmvmSqO7fP3Stw26EKtq
+         jhQ5w9/fOukiNZDPfhdanUnWd93hqIC4rIMtDRKUJFmZ4mk/9aAzDkiDZvxo7qO8dD
+         s92huNbfgqYLpJqKyhSOy/ZZPZ5u7AuRf5NDjQkdbxVUBODizRPK0hcQMqFlGjbvq6
+         qtOEOxNoxD/cCjUIfII43Eobuxr6SugSIWjbYjkdrpD6bRTu6cYYF+eGuIU84BpJIp
+         wxMtowBWiYflQ==
+Date:   Fri, 1 Sep 2023 13:30:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Subject: Re: [RFT PATCH v2] spi: bcm2835: reduce the abuse of the GPIO API
+Message-ID: <ba9803e9-3aff-42b9-87ad-4e6d75d36d87@sirena.org.uk>
+References: <20230901111548.12733-1-brgl@bgdev.pl>
+ <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="aRVg3yvkBIbYIC2W"
+Content-Disposition: inline
+In-Reply-To: <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
+X-Cookie: Dealer prices may vary.
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add userland instruction dump and rename dump_kernel_instr()
-to dump_instr().
 
-An example:
-[    0.822439] Freeing unused kernel image (initmem) memory: 6916K
-[    0.823817] Run /init as init process
-[    0.839411] init[1]: unhandled signal 4 code 0x1 at 0x000000000005be18 in bb[10000+5fb000]
-[    0.840751] CPU: 0 PID: 1 Comm: init Not tainted 5.14.0-rc4-00049-gbd644290aa72-dirty #187
-[    0.841373] Hardware name:  , BIOS
-[    0.841743] epc : 000000000005be18 ra : 0000000000079e74 sp : 0000003fffcafda0
-[    0.842271]  gp : ffffffff816e9dc8 tp : 0000000000000000 t0 : 0000000000000000
-[    0.842947]  t1 : 0000003fffc9fdf0 t2 : 0000000000000000 s0 : 0000000000000000
-[    0.843434]  s1 : 0000000000000000 a0 : 0000003fffca0190 a1 : 0000003fffcafe18
-[    0.843891]  a2 : 0000000000000000 a3 : 0000000000000000 a4 : 0000000000000000
-[    0.844357]  a5 : 0000000000000000 a6 : 0000000000000000 a7 : 0000000000000000
-[    0.844803]  s2 : 0000000000000000 s3 : 0000000000000000 s4 : 0000000000000000
-[    0.845253]  s5 : 0000000000000000 s6 : 0000000000000000 s7 : 0000000000000000
-[    0.845722]  s8 : 0000000000000000 s9 : 0000000000000000 s10: 0000000000000000
-[    0.846180]  s11: 0000000000d144e0 t3 : 0000000000000000 t4 : 0000000000000000
-[    0.846616]  t5 : 0000000000000000 t6 : 0000000000000000
-[    0.847204] status: 0000000200000020 badaddr: 00000000f0028053 cause: 0000000000000002
-[    0.848219] Code: f06f ff5f 3823 fa11 0113 fb01 2e23 0201 0293 0000 (8053) f002
-[    0.851016] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
+--aRVg3yvkBIbYIC2W
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Yunhui Cui <cuiyunhui@bytedance.com>
----
- arch/riscv/kernel/traps.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+On Fri, Sep 01, 2023 at 02:15:39PM +0200, Linus Walleij wrote:
+> On Fri, Sep 1, 2023 at 1:15=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
 
-diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-index f798c853bede..923b49c38985 100644
---- a/arch/riscv/kernel/traps.c
-+++ b/arch/riscv/kernel/traps.c
-@@ -33,7 +33,19 @@ int show_unhandled_signals = 1;
- 
- static DEFINE_SPINLOCK(die_lock);
- 
--static void dump_kernel_instr(const char *loglvl, struct pt_regs *regs)
-+static int copy_code(struct pt_regs *regs, u16 *val, const u16 *insns)
-+{
-+	if (!user_mode(regs))
-+		return get_kernel_nofault(*val, insns);
-+
-+	/* The user space code from other tasks cannot be accessed. */
-+	if (regs != task_pt_regs(current))
-+		return -EPERM;
-+
-+	return copy_from_user_nofault(val, insns, sizeof(*val));
-+}
-+
-+static void dump_instr(const char *loglvl, struct pt_regs *regs)
- {
- 	char str[sizeof("0000 ") * 12 + 2 + 1], *p = str;
- 	const u16 *insns = (u16 *)instruction_pointer(regs);
-@@ -42,7 +54,7 @@ static void dump_kernel_instr(const char *loglvl, struct pt_regs *regs)
- 	int i;
- 
- 	for (i = -10; i < 2; i++) {
--		bad = get_kernel_nofault(val, &insns[i]);
-+		bad = copy_code(regs, &val, &insns[i]);
- 		if (!bad) {
- 			p += sprintf(p, i == 0 ? "(%04hx) " : "%04hx ", val);
- 		} else {
-@@ -71,7 +83,7 @@ void die(struct pt_regs *regs, const char *str)
- 	print_modules();
- 	if (regs) {
- 		show_regs(regs);
--		dump_kernel_instr(KERN_EMERG, regs);
-+		dump_instr(KERN_EMERG, regs);
- 	}
- 
- 	cause = regs ? regs->cause : -1;
-@@ -104,6 +116,7 @@ void do_trap(struct pt_regs *regs, int signo, int code, unsigned long addr)
- 		print_vma_addr(KERN_CONT " in ", instruction_pointer(regs));
- 		pr_cont("\n");
- 		__show_regs(regs);
-+		dump_instr(KERN_EMERG, regs);
- 	}
- 
- 	force_sig_fault(signo, code, (void __user *)addr);
--- 
-2.20.1
+> > +       struct gpiod_lookup_table *lookup __free(kfree) =3D NULL;
 
+> Whoa!
+> This is really neat.
+> As noted, it will confuse static checkers at no end, but they just have
+> to adopt. (CC to Dan C if he now runs into this.)
+
+It also doesn't look amazing for humans, it's very not C like...
+
+--aRVg3yvkBIbYIC2W
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmTx2XsACgkQJNaLcl1U
+h9AQJAf/YLKDGyQrBl9ERMjPBP4tkmHABfNt31zSpEPCIs+RXikFEb96jh/70llV
+2PaiSl0Cf3OZedYetb90HM/aFjbtE/ilcdi+9WJYrnPnYmolrxlSWTFIKkUoTbbZ
+gTmTEoa3RVM7nZgg0RvtQFjDsmMOfZ2Nx10PalR0TaiYoNLz3O77h5559zyYIcVY
+9VFyVrSeWskb5S+pv+HVl1IbF05WNhBiuT0MDxc9zcMPP4SST0gDx4iee/2RED+v
+F+R+pg/DwJ/7vssymkEhmlZXNch2I3Rt70fOkUzMPx8qeCfK5AfLbnLHL/R2Fgn1
+AgGRppXXUacwqlYsUm0ju5fYWkjOzw==
+=xrpJ
+-----END PGP SIGNATURE-----
+
+--aRVg3yvkBIbYIC2W--
