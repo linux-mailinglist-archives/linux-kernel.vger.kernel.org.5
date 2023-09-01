@@ -2,59 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC82379043B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 01:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916CD790441
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 01:47:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351275AbjIAXnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 19:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39336 "EHLO
+        id S1351293AbjIAXn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 19:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351274AbjIAXnp (ORCPT
+        with ESMTP id S1351282AbjIAXnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 19:43:45 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63480E65
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 16:43:06 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a42d06d02so2152956b3a.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 16:43:06 -0700 (PDT)
+        Fri, 1 Sep 2023 19:43:50 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79EFD173B
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 16:43:09 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-68c0d886ea0so2220674b3a.2
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 16:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693611747; x=1694216547; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1693611750; x=1694216550; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BTyJ24tKFqLRbG9l9nWJNLGooQV8nSVkH6ez/jxbol4=;
-        b=hkWS55RtaRYoC++pEQHfK9W4knfRv2Ux2Si/fSXi4BYjJzjTcFtb0A22nPosUZoHBT
-         OzD44z2cyEIoXxfkpHIW5bok4R+AyvILSGnXsjX120WoKqxbjzoZ2IvUTkAg6ZJc5eo8
-         UzHvW9IbAEVCeZGpq9uHfil0keEhPn7zsS6lI=
+        bh=T/+h1ksZof8y/lEEP6nhkNB4pCHzfTPQtm4LO74Tft4=;
+        b=FdlQbxAP3ThBYl+AFQkfMCHFM3nQtldNjMXTWnQAwiu7CXblffV6hymNckLBhsNTR6
+         aFwhE8YlZv/XVxNxqVab6MMnHgPKStBs9VsB6l3WUmCKK/hF4xan4duzM2qvAYukP+Uk
+         dX6n8uDRZVh+g4BkRKQG5ybmlIULnv+G83Slw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693611747; x=1694216547;
+        d=1e100.net; s=20221208; t=1693611750; x=1694216550;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BTyJ24tKFqLRbG9l9nWJNLGooQV8nSVkH6ez/jxbol4=;
-        b=dLfE0JsxNe16F55OJq3cG3bv9zbjNRqaKO+WRx1Ib10bGYSVPnxP15ND1de0SQ9bLz
-         BbpCkScscWj9scKSrWe1VZRvyFGtNSp0ztWh4l4AHlrzRAqDevYoc9h1FZ1IioLhPiB+
-         iv+iesEfMlodhbaAXAVNGRPz2qIS3csyx0FEkVgpv164HSCOZSYkz5xqS7HuTAFNNU8h
-         K9FrI8MmtFzPT4A5qvbByhrSzKSyT+RS2P7UQfkk+mjuJaBwIZ329EUMJjAH/3Ax0CI6
-         /bjd91m3OErD/2mhUa5cgPpH0TW07POOl6dFtMsRIw9VbqqfuZcI76ffQmbce/fwjjPg
-         mjsw==
-X-Gm-Message-State: AOJu0YzZ5YZeQWmMIsDDsEyrKiC3YBjXDPGPiNZA8givIodrbiQz0ehA
-        PhNBHZj6gGBu6A3WfEC3FZEu9Q==
-X-Google-Smtp-Source: AGHT+IEdOoLZSYVgu/HM3/52v8vTtHyToRKvwsbcU9nHFrr/BHqKpV2ahyit9WDnLfZWVQbJOzkyGg==
-X-Received: by 2002:a05:6a20:191:b0:149:73f9:332f with SMTP id 17-20020a056a20019100b0014973f9332fmr3881021pzy.61.1693611746996;
-        Fri, 01 Sep 2023 16:42:26 -0700 (PDT)
+        bh=T/+h1ksZof8y/lEEP6nhkNB4pCHzfTPQtm4LO74Tft4=;
+        b=H+5SCy73w9IRoRAnFdwjX8YYsKswU6CesyuZW+Or7u8IngoFPkwGkREfifbJT/GHVu
+         hR/gc9ShjUM3S2jPLtiZRRfE3FZnuur55eKnwBheQAnk1hNdCroRxa1OktnHkePK0HH8
+         62F8JhpUfMXztp4/j6HRGDedmYAC/zutem5B40ALgjEgB0zdoKGwSnFasAazc26b1GbS
+         Z3wc+Z3uuEd2ytvqZHERT0ufOo3omrWeWpKU3oo8q+rWm6kjrZ2ahzwbOiwoxMwkIFnS
+         fq9w4IsJrv8eV0tZ9M3nZhIvUpDVmYP/uKusZ64U+9j+4HckaaHRrfAHvFubHLArIkkZ
+         p4aA==
+X-Gm-Message-State: AOJu0Yx98UIJHwGbtb6pdH/1i/ag+Ij+W6vbwvxAO9k8mKYFyENNqhKE
+        nBTOmyXK0TGpJgaEnTruBVbOKg==
+X-Google-Smtp-Source: AGHT+IEo8+vhlzHuiA7kt4gie7hkc/892ETxj7IzgIvbEImTbdys6UWMlOfB4tKXF+g1dIUU86Genw==
+X-Received: by 2002:a05:6a00:139c:b0:68a:5449:7436 with SMTP id t28-20020a056a00139c00b0068a54497436mr4995293pfg.32.1693611750394;
+        Fri, 01 Sep 2023 16:42:30 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:8d94:1fc5:803c:41cc])
-        by smtp.gmail.com with ESMTPSA id o9-20020a639a09000000b0056c3a4a3ca5sm3326390pge.36.2023.09.01.16.42.25
+        by smtp.gmail.com with ESMTPSA id o9-20020a639a09000000b0056c3a4a3ca5sm3326390pge.36.2023.09.01.16.42.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 16:42:26 -0700 (PDT)
+        Fri, 01 Sep 2023 16:42:28 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>, airlied@gmail.com,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux@armlinux.org.uk
-Subject: [RFT PATCH 01/15] drm/armada: Call drm_atomic_helper_shutdown() at shutdown time
-Date:   Fri,  1 Sep 2023 16:41:12 -0700
-Message-ID: <20230901164111.RFT.1.I3d5598bd73a59b5ded71430736c93f67dc5dea61@changeid>
+Cc:     Douglas Anderson <dianders@chromium.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>, airlied@gmail.com,
+        daniel@ffwll.ch, festevam@gmail.com, kernel@pengutronix.de,
+        l.stach@pengutronix.de, laurentiu.palcu@oss.nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, shawnguo@kernel.org
+Subject: [RFT PATCH 02/15] drm/imx/dcss: Call drm_atomic_helper_shutdown() at shutdown time
+Date:   Fri,  1 Sep 2023 16:41:13 -0700
+Message-ID: <20230901164111.RFT.2.I134336fce7eac5a63bdac46d57b0888858fc8081@changeid>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 In-Reply-To: <20230901234202.566951-1-dianders@chromium.org>
 References: <20230901234202.566951-1-dianders@chromium.org>
@@ -79,61 +82,69 @@ The fact that we should call drm_atomic_helper_shutdown() in the case
 of OS shutdown/restart comes straight out of the kernel doc "driver
 instance overview" in drm_drv.c.
 
-This driver was fairly easy to update. The drm_device is stored in the
-drvdata so we just have to make sure the drvdata is NULL whenever the
-device is not bound. To make things simpler,
-drm_atomic_helper_shutdown() has been modified to consider a NULL
-drm_device as a noop in the patch ("drm/atomic-helper:
-drm_atomic_helper_shutdown(NULL) should be a noop").
-
 Suggested-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 This commit is only compile-time tested.
 
- drivers/gpu/drm/armada/armada_drv.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/gpu/drm/imx/dcss/dcss-drv.c | 8 ++++++++
+ drivers/gpu/drm/imx/dcss/dcss-kms.c | 7 +++++++
+ drivers/gpu/drm/imx/dcss/dcss-kms.h | 1 +
+ 3 files changed, 16 insertions(+)
 
-diff --git a/drivers/gpu/drm/armada/armada_drv.c b/drivers/gpu/drm/armada/armada_drv.c
-index e8d2fe955909..fa1c67598706 100644
---- a/drivers/gpu/drm/armada/armada_drv.c
-+++ b/drivers/gpu/drm/armada/armada_drv.c
-@@ -148,6 +148,7 @@ static int armada_drm_bind(struct device *dev)
-  err_kms:
- 	drm_mode_config_cleanup(&priv->drm);
- 	drm_mm_takedown(&priv->linear);
-+	dev_set_drvdata(dev, NULL);
- 	return ret;
- }
- 
-@@ -166,6 +167,7 @@ static void armada_drm_unbind(struct device *dev)
- 
- 	drm_mode_config_cleanup(&priv->drm);
- 	drm_mm_takedown(&priv->linear);
-+	dev_set_drvdata(dev, NULL);
- }
- 
- static void armada_add_endpoints(struct device *dev,
-@@ -230,6 +232,11 @@ static int armada_drm_remove(struct platform_device *pdev)
+diff --git a/drivers/gpu/drm/imx/dcss/dcss-drv.c b/drivers/gpu/drm/imx/dcss/dcss-drv.c
+index c68b0d93ae9e..b61cec0cc79d 100644
+--- a/drivers/gpu/drm/imx/dcss/dcss-drv.c
++++ b/drivers/gpu/drm/imx/dcss/dcss-drv.c
+@@ -92,6 +92,13 @@ static int dcss_drv_platform_remove(struct platform_device *pdev)
  	return 0;
  }
  
-+static void armada_drm_shutdown(struct platform_device *pdev)
++static void dcss_drv_platform_shutdown(struct platform_device *pdev)
 +{
-+	drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
++	struct dcss_drv *mdrv = dev_get_drvdata(&pdev->dev);
++
++	dcss_kms_shutdown(mdrv->kms);
 +}
 +
- static const struct platform_device_id armada_drm_platform_ids[] = {
- 	{
- 		.name		= "armada-drm",
-@@ -243,6 +250,7 @@ MODULE_DEVICE_TABLE(platform, armada_drm_platform_ids);
- static struct platform_driver armada_drm_platform_driver = {
- 	.probe	= armada_drm_probe,
- 	.remove	= armada_drm_remove,
-+	.shutdown = armada_drm_shutdown,
+ static struct dcss_type_data dcss_types[] = {
+ 	[DCSS_IMX8MQ] = {
+ 		.name = "DCSS_IMX8MQ",
+@@ -114,6 +121,7 @@ MODULE_DEVICE_TABLE(of, dcss_of_match);
+ static struct platform_driver dcss_platform_driver = {
+ 	.probe	= dcss_drv_platform_probe,
+ 	.remove	= dcss_drv_platform_remove,
++	.shutdown = dcss_drv_platform_shutdown,
  	.driver	= {
- 		.name	= "armada-drm",
- 	},
+ 		.name = "imx-dcss",
+ 		.of_match_table	= dcss_of_match,
+diff --git a/drivers/gpu/drm/imx/dcss/dcss-kms.c b/drivers/gpu/drm/imx/dcss/dcss-kms.c
+index 896de946f8df..d0ea4e97cded 100644
+--- a/drivers/gpu/drm/imx/dcss/dcss-kms.c
++++ b/drivers/gpu/drm/imx/dcss/dcss-kms.c
+@@ -172,3 +172,10 @@ void dcss_kms_detach(struct dcss_kms_dev *kms)
+ 	dcss_crtc_deinit(&kms->crtc, drm);
+ 	drm->dev_private = NULL;
+ }
++
++void dcss_kms_shutdown(struct dcss_kms_dev *kms)
++{
++	struct drm_device *drm = &kms->base;
++
++	drm_atomic_helper_shutdown(drm);
++}
+diff --git a/drivers/gpu/drm/imx/dcss/dcss-kms.h b/drivers/gpu/drm/imx/dcss/dcss-kms.h
+index dfe5dd99eea3..62521c1fd6d2 100644
+--- a/drivers/gpu/drm/imx/dcss/dcss-kms.h
++++ b/drivers/gpu/drm/imx/dcss/dcss-kms.h
+@@ -34,6 +34,7 @@ struct dcss_kms_dev {
+ 
+ struct dcss_kms_dev *dcss_kms_attach(struct dcss_dev *dcss);
+ void dcss_kms_detach(struct dcss_kms_dev *kms);
++void dcss_kms_shutdown(struct dcss_kms_dev *kms);
+ int dcss_crtc_init(struct dcss_crtc *crtc, struct drm_device *drm);
+ void dcss_crtc_deinit(struct dcss_crtc *crtc, struct drm_device *drm);
+ struct dcss_plane *dcss_plane_init(struct drm_device *drm,
 -- 
 2.42.0.283.g2d96d420d3-goog
 
