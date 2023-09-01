@@ -2,145 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 219227901A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:57:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706E07901AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344695AbjIAR5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 13:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42380 "EHLO
+        id S1347318AbjIAR5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 13:57:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234661AbjIAR5H (ORCPT
+        with ESMTP id S240230AbjIAR5U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 13:57:07 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125A6E65;
-        Fri,  1 Sep 2023 10:57:03 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 7CA2F3200065;
-        Fri,  1 Sep 2023 13:57:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Fri, 01 Sep 2023 13:57:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1693591020; x=1693677420; bh=cHHcGgcRSztsLcKdVLA1/t+Wcf1p+fdmcFK
-        F30w4FHw=; b=WkMFzbfCBKMi76b8SEIwKANvAXwugqVzhESFCwfN4p45SaR8buG
-        iy6aIGfniEJFD6m+TqhFaiG1COGxOZbZNkuyL8pzEX6SBndWealx88Qfi3LThvmc
-        K0q6tphgLdh8ivNYlckAN6Asjlx5fSIfUDmU8U5Ntt1asn5pQDmqRCvCJCgnNpT3
-        z2luG6zx69JALD4No/NojkM4bzURC+gAWKnIMYVoQBFh9Rhik55DskbwDKZfy6TB
-        4qq15/lNhvtRx5A9NAB0o98VUezuvABPJZldYQyU5XejrSudzMtpPfHYYuKk40Au
-        7Y3e2ANtD0YdWPrVrwkqun6apdED8olGsng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1693591020; x=1693677420; bh=cHHcGgcRSztsLcKdVLA1/t+Wcf1p+fdmcFK
-        F30w4FHw=; b=mKQ1kCoTjWSCICgQN4Sh83zVi3O041wtWdZHNrrd/jJE0NM1hHX
-        hqY+gvC/BtaeMtnygewLZyFeTkoVY5c2W9EodgtJxFH7uQhXI6W38fw7XADbPkGK
-        Bd09tjBUKjHqCMAo/dpQ0y+VqymkNnFbNaFGSCqQW6KDOrIE7VFJD4NbBuVu81XQ
-        qOUU5t1kZU4d+eHO2t+qcrnIR781lBZu1f4mEn07Sp/K909vi6VZdXKX9OrAh/6O
-        zX8+i3SsiIi5tMxMVLBd0WmpA4p8u/HSSMBtSeVx0iMIZQj5zMbBq43RO5EDU7Yt
-        cT7JcCk9TSBlLttjXMuh/W7p/EzpELcpckQ==
-X-ME-Sender: <xms:6iXyZERM0uoO-rKI_yqeN3wideGxs_MMAas-qL313AkHcYYPKRPJGg>
-    <xme:6iXyZByttXoerOFKF0xUNZ88CtjFuPE3v1Sobcq4FQpnImQx0j4r71o1x9herpeeO
-    _zElQVHpFh4TnW6>
-X-ME-Received: <xmr:6iXyZB01Ek6RfUvwvC-NgsUv3vwTc9E-QkFp_X2HB2yCKe8wGi4wl0Oet6qJn1IYNg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudegvddguddukecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefkffggfgfuvfevfhfhjggtgfesthejredttdefjeenucfhrhhomhepuegv
-    rhhnugcuufgthhhusggvrhhtuceorggrkhgvfhesfhgrshhtmhgrihhlrdhfmheqnecugg
-    ftrfgrthhtvghrnhephfdvvdehjeduiefgheefheeikeehudejjeevvdfhtdfgveelleek
-    uedugedugeehnecuffhomhgrihhnpehgihhthhhusgdrtghomhenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrghkvghfsehfrghsthhmrghi
-    lhdrfhhm
-X-ME-Proxy: <xmx:6iXyZIAXGPsTpUd0KdDzP9lVPgtkAVdEeHRwruCc9bUXl8GuiPH3Sg>
-    <xmx:6iXyZNjFonQPh3OxU5M_RrH465skNO8Zn0SyQ51mhqWs3M1KZObYhw>
-    <xmx:6iXyZErpFBsPQsYKqCKKjZ7sad8gAIZYMemNoRXw92ERNQ2Kgk0e1Q>
-    <xmx:7CXyZNcp_ooZWrU7dV7qw4TxyfI3d0k1bRfKS8X88NHEMLBGOOKFPA>
-Feedback-ID: id8a84192:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 1 Sep 2023 13:56:57 -0400 (EDT)
-Message-ID: <523cad2b-5319-6aa9-65e2-80e91a0bb050@fastmail.fm>
-Date:   Fri, 1 Sep 2023 19:56:56 +0200
-MIME-Version: 1.0
+        Fri, 1 Sep 2023 13:57:20 -0400
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02olkn2032.outbound.protection.outlook.com [40.92.43.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128D2E72
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:57:17 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=niFZEkGwQ5sbmR/QStZi86x8723uO1MWLZfmgDmZBrOsFYg9UewvbOXel43OGY4klBEBawEGYrsDvUCAl/Xsa1FmqXNNNjZEOjkvFYQuq7nY9VA8fmznXGdVpa8vcke6J8KNbwXXNPbcpAbvP3qIW9EVHgECbuqjySzxVGu4hJgUtEsFENxAhJMmvjpaURPvhfvcxpiOYKEQ15LCW/Le20/43cSse+Qg8gcO7HxJkGsiyeq9dks/dli0Way8uSH9mItpncJVYDSS0WWq42SNMcwMVAsAsx6E7L+kkxlsmoGK2TBs5hbcKD/8t8oA/Kf91Dr6mtbgL66xrGyxuC4zww==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R1ZynWGcidKYiEJ/mWEkqJw4xggKHlyyM77AMgaki9Q=;
+ b=LNv2mQGVIQ6UWhANfVuQ2oMiUGRR6a/klP4B6v0F6GbMHKMca7AzwiJm4EjXRFFWIAvjmsx3BRCwxgWmYVmJRRrUtIs4fgynVwf3ViXXD3SggCgqZwKnlSyZQkn8XZVpUNOcgCqS0w8gFfzBW6HVQKDDoYc6pJXMIDjUPfi8YUmFXtRy1RuytW2bWImwS6hxH5lQCxIg+9fnEKTg0qc9XdJ+oAj5YlzJ6fyyVCAnBU5jJx77bmAmhMkNsXFJNXuoIHlZVjMbwTQYqyexJNVLYdS3t//KEmjJQ6dhmgGubeiFkL3N4jh9X9BhLlwIS4tL66ybZB5EBDD1YU3DhGPr1w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R1ZynWGcidKYiEJ/mWEkqJw4xggKHlyyM77AMgaki9Q=;
+ b=IYRpdxxavh8wvDirp5lP1QwRFVcVroAlJ/WdsQhLgOqUpM/lq2Mv+cXGcMbs3DNv6AV4/w4M+pyJyLqav+ZMiO9vJ59vf0qerd32mldm0um8/1VK+Sum2oGg0b5MLu987K3BFbCg6dnfx4l3JvLpnOFeGNFFKbLK8RJ7kfW5wbhXtWwxma6nqzWOMHsT5pvml0tck3ExTFSbULCkYQZ+6ezERvGnx9oijj8iI0zvPKIv1J/epoQoHxE4F8qPrZRUMyTZGKVFEXhM0R8naC6i6XKb4n+XNT0SiVbcn63VZUPwNEeANHcRu/mh/OBR6SIDH5fWYE3CRW4+YnYgdr/gHA==
+Received: from CY5PR12MB6455.namprd12.prod.outlook.com (2603:10b6:930:35::10)
+ by SA1PR12MB8859.namprd12.prod.outlook.com (2603:10b6:806:37c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.27; Fri, 1 Sep
+ 2023 17:57:15 +0000
+Received: from CY5PR12MB6455.namprd12.prod.outlook.com
+ ([fe80::912:a56e:f6d2:86fa]) by CY5PR12MB6455.namprd12.prod.outlook.com
+ ([fe80::912:a56e:f6d2:86fa%4]) with mapi id 15.20.6745.015; Fri, 1 Sep 2023
+ 17:57:15 +0000
+Message-ID: <CY5PR12MB6455C60885A4145B72B8613AC6E4A@CY5PR12MB6455.namprd12.prod.outlook.com>
+Date:   Fri, 1 Sep 2023 23:27:03 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v1] fs/fuse: Fix missing FOLL_PIN for direct-io
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] powerpc/powernv: use appropiate error code
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        Immad Mir <mirimmad17@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <CY5PR12MB64550ACC0B90FDD120D21E47C6E4A@CY5PR12MB6455.namprd12.prod.outlook.com>
+ <fdb8d83d-84ce-76d6-db9a-bb232492170c@csgroup.eu>
 Content-Language: en-US
-To:     Lei Huang <lei.huang@linux.intel.com>,
-        Bernd Schubert <bernd.schubert@fastmail.fm>,
-        linux-kernel@vger.kernel.org
-Cc:     miklos@szeredi.hu, linux-fsdevel@vger.kernel.org,
-        David Howells <dhowells@redhat.com>
-References: <1693334193-7733-1-git-send-email-lei.huang@linux.intel.com>
- <572dcce8-f70c-2d24-f844-a3e8abbd4bd8@fastmail.fm>
- <5eedd8a6-02d9-bc85-df43-6aa5f7497288@linux.intel.com>
-From:   Bernd Schubert <aakef@fastmail.fm>
-In-Reply-To: <5eedd8a6-02d9-bc85-df43-6aa5f7497288@linux.intel.com>
+From:   Immad Mir <mirimmad@outlook.com>
+In-Reply-To: <fdb8d83d-84ce-76d6-db9a-bb232492170c@csgroup.eu>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-TMN:  [Gti+oqXKvrt31T3Bqp3kOVROE7k6sY8oSIqyBfK6pPKVRy0jlUVxTlYj5M1wt6wD]
+X-ClientProxiedBy: PN2PR01CA0200.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:e9::11) To CY5PR12MB6455.namprd12.prod.outlook.com
+ (2603:10b6:930:35::10)
+X-Microsoft-Original-Message-ID: <57c58f03-6284-8ea9-c0e4-f3b0e0f947db@outlook.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6455:EE_|SA1PR12MB8859:EE_
+X-MS-Office365-Filtering-Correlation-Id: eedf422a-b644-4177-37ac-08dbab14e00c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: mnCl6Cv48/cgkiStoyOKrbJzxK8OyU8KaRDeyVmEitGRSXY/vWIXd6A+lnofMtEGj9FV5KOTC3zKJzbndwe+v8So6nle/QkUv7nKkVomqcsPGBTwrR9r+gcC/bd53tA8Fv3hIAKnbFCQSY5pDp6JmLMrbZpPFAXllDZOixkjbrZiMJxeIxOHZGTeDVf/Yd6G5DYqbbN4Bzjxqwg871WA55kQaagvNIQP+3JrO3cfLxolpRAQepMmKTocI1Hisq8x7sBu0eSc8nVOUyJF6K1hQgWn7DnlQt/18c56ym2rre62CQr6wU3Ui68wXYiI26GNFgLS+5MZaBG/ue9O77In6xlFPZrWUlDIGr5Wg2yqXGovq5sD6NUZF3U8IeVYTAQl23W2lL2Eg6+CKmAljt08ouWkRt5BP5Bw0v5NiUSOgEOiEYEE2PGN7+XrgXbIY/TFKWNaJfhe4aQbBQzFk1ut2AazB4p4NkCu2tH3r/i6T/9Swyvf9/7FRu2sAfRu4c6V8wcLRNRmjvv4agMKadTK49H6n2RbbSH/7QSQEHKipy4nRLVhL9s9mi4KZK9M6i5/
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Wkp0RHptZlU1TGloUmMyTHpxZTJDL1NUVEVmTVJTeXJiUWF0b21EZFNES2lh?=
+ =?utf-8?B?MTM1cXNvWHFFbXNnc3FBM3JoVE5YRXExbTF5R2tLTlc1dVg0QjlCdFRITWN4?=
+ =?utf-8?B?VloydFgyY3N4c1Bkb0NZekJWVFFlT0J1Y1YxNkZyN3BScklUZVBVSkFZdGZn?=
+ =?utf-8?B?azZqVWRENFdHMlF0bFJWZUg3L1RtbVRobUVDNDI2eGtEdzVVUFRGRi8wU05W?=
+ =?utf-8?B?a0U3OUJXQ2sxeTZkNm85OUpKa0RQbCtWaExoaGY2cGxuSE5sbDREOGtTMmxo?=
+ =?utf-8?B?a2s0VURJYWo5eE9RSW9FbkVYcklqdWxLL3BtYlVBb2JNYzdQZFB5R08wbWVt?=
+ =?utf-8?B?WTZVQy8xUEVGZ3FBS3U3MC9qdWJ4cmJFVVZsMllxaTk5YUtnSkRaVTlaeWox?=
+ =?utf-8?B?Ny9yNXNXUmtadDN5ZlZDdjZyUmpmZ2pDZnh6NnJRaFN5OUVJclhFb0FObjN5?=
+ =?utf-8?B?Z2lKZTlpTVZON2VYeVN4YlMrckxJREM0SFYvUWlWbzBNWHBaS1cxUGVXZVFz?=
+ =?utf-8?B?VWZraWhKd0dWaXhNN2xXcTN5ZDFZTVNBQisrNmJQUzQyQ3BlWGFVVnE3MXVF?=
+ =?utf-8?B?b21XaldURExHUDlPVGplTjVBcDIrbFRSOUR1cXpmL2dKUzZwbG1XU2FyOGhK?=
+ =?utf-8?B?RWpFSDdFZjVLUDRUWENsZjVyVWFYS2prTkt3bmppMXl1aVVGS2JjKzR4Y2x5?=
+ =?utf-8?B?QUpkVytmVk5iaGNLbHNSalZ2d1ROeWxybE1ETXRQYlFXMWpFd2phQkFJQmJr?=
+ =?utf-8?B?RXVWNEtNdzVxMmlhenZiYkdKNGloWkk4N05lcHNNMC9obXZZeThnU3FMUUlo?=
+ =?utf-8?B?Q1k2Wlg2RlkzWFljSXB0TEZYMjRjeUJubzE4ZUY0UHQ1VWw1WHl2K1gydWpn?=
+ =?utf-8?B?K3JjaER1d3RSNjJEUWU4djN1ZFJieUtBbkM1U0JSeVFMSm1OR3FqZjRMRWJo?=
+ =?utf-8?B?cDB3SllHS1JmbVpHL3I0MzhRcVRIcWZiWWxNbUxKSU5GNCtyUzVxc055OVhj?=
+ =?utf-8?B?Tmd1elBuOE5sSU9XVWpDSkNEMFVneVh0bmk0dzNnSUpzZDgxeHlUTWpDWnBl?=
+ =?utf-8?B?NTV6R09rS1FRZHVWTHRReTJiWFBidGw2Sk1sM3k2Mko0SlBBRUVVaDYvK2cx?=
+ =?utf-8?B?VUFHeG03TzBIU2pNdmVIN253cjdoTnkrb2dkNVFNdzJnWGFLUHcxVGx4YmtT?=
+ =?utf-8?B?LytqNElDLzVnSjU5M0JacDMvTHByUFI1MzFqak03QjNmQ1BGMlMrWVkwSlNu?=
+ =?utf-8?B?ZmRCaWd0SFF6dDliNGk3c1ZRemxFUGdYSFMvSDFuNkZiNWs2UkJGUTRON3Zo?=
+ =?utf-8?B?Yjc4NmpPRWpsSXNRTjR5b2svbVRLeW5oak9mTGllSTNFcDh2Z2MwSWdOSkd6?=
+ =?utf-8?B?elpzSm1xWndjb3RMQjB5dStqdnNnWkFRRmhoK3ZyRjgxUHY0Y0YyRTRCblJ1?=
+ =?utf-8?B?TU9GaUdqNm5iSFRqSWVSR24vajg4c2lBQ1hGbDRiZzlqaGIrTjFoRlQ3UUFj?=
+ =?utf-8?B?ZFZNS1owTXhqUHpNTHNVTERCeFJidFdkSmZ6VjE1cW5YTCtFNmJBMTJPRXZR?=
+ =?utf-8?B?M0RIUXJnR1Q3dXlJR0RIQWx4U3UxK3N3UWhqTmYzUWJaeEppdmJaL3o2ZUVL?=
+ =?utf-8?B?dWEvTkxRT2NiS3NGZ29xZmVpSko1NE5oL3lLeWVBdFUzQ0llbUtCWFRZNXIy?=
+ =?utf-8?B?Q1FqOTg3QUp5UnMxWVRBVzUyK1ZoY2NBQk92MkRDdnpVa2k0NDhmWE9RPT0=?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eedf422a-b644-4177-37ac-08dbab14e00c
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6455.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 17:57:15.2461
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB8859
+X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lei,
 
-On 8/30/23 03:03, Lei Huang wrote:
-> Hi Bernd,
-> 
-> Thank you very much for your reply!
-> 
->  > Hmm, iov_iter_extract_pages does not exists for a long time and the code
->  > in fuse_get_user_pages didn't change much. So if you are right, there
->  > would be a long term data corruption for page migrations? And a back
->  > port to old kernels would not be obvious?
-> 
-> Right. The issue has been reproduced under various versions of kernels, 
-> ranging from 3.10.0 to 6.3.6 in my tests. It would be different to make 
-> a patch under older kernels like 3.10.0. One way I tested, one can query
-> the physical pages associated with read buffer after data is ready 
-> (right before writing the data into read buffer). This seems resolving 
-> the issue in my tests.
-> 
-> 
->  > What confuses me further is that
->  > commit 85dd2c8ff368 does not mention migration or corruption, although
->  > lists several other advantages for iov_iter_extract_pages. Other commits
->  > using iov_iter_extract_pages point to fork - i.e. would your data
->  > corruption be possibly related that?
-> 
-> As I mentioned above, the issue seems resolved if we query the physical 
-> pages as late as right before writing data into read buffer. I think the 
-> root cause is page migration.
-> 
+On 01/09/23 11:10 pm, Christophe Leroy wrote:
+>
+> Le 01/09/2023 à 19:19, mirimmad@outlook.com a écrit :
+>> [Vous ne recevez pas souvent de courriers de mirimmad@outlook.com. Découvrez pourquoi ceci est important à https://aka.ms/LearnAboutSenderIdentification ]
+>>
+>> From: Immad Mir <mirimmad17@gmail.com>
+>>
+>> -1 is not a valid error code. This patch replaces it with -EPERM.
+> Can you explain how it will work ?
+> In scom_debug_init() rc is built by oring the value returned by
+> scom_debug_init_one().
+> What will be the result when oring some valid values with -EPERM ?
+> It was working well with -1 because when you or -1 with anything you get
+> -1 as result. But with your change I don't think it will work.
 
-out of interest, what is your exact reproducer and how much time does i 
-take? I'm just trying passthrough_hp(*) and ql-fstest (**) and don't get 
-and issue after about 1h run time. I let it continue over the weekend. 
-The system is an older dual socket xeon.
-
-(*) with slight modification for passthrough_hp to disable O_DIRECT for 
-the underlying file system. It is running on xfs on an nvme.
-
-(**) https://github.com/bsbernd/ql-fstest
+But Isn't EPERM defined to be 1.
 
 
-Pinning the pages is certainly a good idea, I would just like to 
-understand how severe the issue is. And would like to test 
-backports/different patch on older kernels.
+Immad.
 
-
-Thanks,
-Bernd
-
-
+>
+> Christophe
+>
+>> Signed-off-by: Immad Mir <mirimmad17@gmail.com>
+>> ---
+>>    arch/powerpc/platforms/powernv/opal-xscom.c | 4 ++--
+>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/arch/powerpc/platforms/powernv/opal-xscom.c b/arch/powerpc/platforms/powernv/opal-xscom.c
+>> index 262cd6fac..ce4b089dd 100644
+>> --- a/arch/powerpc/platforms/powernv/opal-xscom.c
+>> +++ b/arch/powerpc/platforms/powernv/opal-xscom.c
+>> @@ -171,7 +171,7 @@ static int scom_debug_init_one(struct dentry *root, struct device_node *dn,
+>>           if (IS_ERR(dir)) {
+>>                   kfree(ent->path.data);
+>>                   kfree(ent);
+>> -               return -1;
+>> +               return -EPERM;
+>>           }
+>>
+>>           debugfs_create_blob("devspec", 0400, dir, &ent->path);
+>> @@ -191,7 +191,7 @@ static int scom_debug_init(void)
+>>
+>>           root = debugfs_create_dir("scom", arch_debugfs_dir);
+>>           if (IS_ERR(root))
+>> -               return -1;
+>> +               return -EPERM;
+>>
+>>           rc = 0;
+>>           for_each_node_with_property(dn, "scom-controller") {
+>> --
+>> 2.40.0
+>>
