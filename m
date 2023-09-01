@@ -2,86 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 48F0378FC29
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01F978FC2C
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349133AbjIALPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:15:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46426 "EHLO
+        id S1343552AbjIALQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242207AbjIALPp (ORCPT
+        with ESMTP id S232235AbjIALQC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:15:45 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32B9E42;
-        Fri,  1 Sep 2023 04:15:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-        s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-        Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=cLUDx6R4lVjt6PQsec9JUvjLyFB0OdGh18Ty+QH+p7c=; b=oE6/n9h4Y2f6nT/sQF/PF+67Gx
-        mggDwXZ7xHa7KmPsWxsM6Oe/IAkzRi/iUY71pfj1YINAoGPKHH6BEbSXwIohM3uwy3KWPGNkmT4wz
-        gd7qnjMD/0V5mxJcrHT2d6Yc1i5/eqa7O1qJYDbEF/kexgdElTPDjz3G57dzAkE+hiXOjPy3QPxP2
-        ZPrF3JbxC5qbTtRtyJe8FHcmZjdCotc5GWwfgcVQFPnYGwqRNWyR+/muaG6pr1bidRXHnp61FjrsI
-        gG0VpErCmWBWWSFiFNCANYPkVgDIKh+GvRwqeWzAij6ny224rN2KyFVWy4IZ6YfMyZqNxxblnb4Tz
-        ATC2hxDw==;
-Received: from 91-158-25-70.elisa-laajakaista.fi ([91.158.25.70] helo=toshino.localdomain)
-        by mail.kapsi.fi with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <cyndis@kapsi.fi>)
-        id 1qc27l-008kr0-1p;
-        Fri, 01 Sep 2023 14:15:37 +0300
-From:   Mikko Perttunen <cyndis@kapsi.fi>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Mikko Perttunen <mperttunen@nvidia.com>,
-        dri-devel@lists.freedesktop.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] gpu: host1x: Enable system suspend callbacks
-Date:   Fri,  1 Sep 2023 14:15:09 +0300
-Message-ID: <20230901111510.663401-3-cyndis@kapsi.fi>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230901111510.663401-1-cyndis@kapsi.fi>
-References: <20230901111510.663401-1-cyndis@kapsi.fi>
+        Fri, 1 Sep 2023 07:16:02 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E3410EB
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:15:55 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31aeedbb264so1638037f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:15:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693566954; x=1694171754; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JXKeOLDoyy5/kC3fUdlXL9lLNwTUvGaVFBeNIEjZIMQ=;
+        b=wItsgk2lVTkrdudb0s+W0fc/IXvfIrdODovm3iV3yIeGU0B8aS0yVO5Y4gjKltEMOv
+         qfgdcFxiotpvjsTO/4XV9eBw18shHD0PVJSA81IbW8sH6zCh1mjYS7vm1E2/S2hNGHZt
+         UICi58i5uRzpMdxsS2lOSqOn2bRUfCo+YbI5Sq7fHBX+SZuTVrGRxhrKfMy1MTXsy7Ro
+         sxuth+yutzO9qGFh9nqrekTOJYbLXPhY8VfgCavJOVs+qmRxUt2LP6ht2GMaHWQmTnxP
+         lGIca916IXI9/pojYgdxDZvlOaKFCRJftjOBRb+T5TCHP1t5FCzQekLOUVCXDm8Dt6PL
+         KqaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693566954; x=1694171754;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JXKeOLDoyy5/kC3fUdlXL9lLNwTUvGaVFBeNIEjZIMQ=;
+        b=G1twgl2qzq77ngPpKSyJBaRaPzAykFCZAviQfD8uy8do5dwBIKKM5a1fHYRb272WYb
+         R/MhliB+SL9Kplg5PkjZRPElNoy/7tVozewm7U8Qq0QvTKaBSXHG1OH06OoxeXPanTj8
+         IU+wpjGJFKodwGOVOxfFIRE6znpYBOvtwknv4id4nLCxK+EPA60TbgcOAxaYye40+zz2
+         ZWIDhfGihHPq5VV14IVYwiQL8ukq0tlxCQsw1viax9tuFqi7qYIvXf70wSJ1BmmdmwB6
+         tdGnvBNjWKwRxPXEU50AJBBV698iVtCkQibKhIjPykJGOp7gqM0tHYwtXOe0cLiEkJ9Z
+         +gUg==
+X-Gm-Message-State: AOJu0YzA8IYCEbAoGt45L3DAJdstDLrdIIQPI4x1LKu2ItZ6MWMszYRC
+        w0AjDBc5qgqsJG64dZsMQYP5ug==
+X-Google-Smtp-Source: AGHT+IE+Q3n8iF3DTTB+G/JNTL/+AMsHyYDbREZ9/1BFcmOOL2dovB8KiBgpxGdxnlcSGkTBS0CL8g==
+X-Received: by 2002:a5d:4e0e:0:b0:316:fc86:28ae with SMTP id p14-20020a5d4e0e000000b00316fc8628aemr1394230wrt.15.1693566953774;
+        Fri, 01 Sep 2023 04:15:53 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e94b:1054:6760:aa27])
+        by smtp.gmail.com with ESMTPSA id s2-20020a5d4242000000b003197c2316ecsm4943457wrr.112.2023.09.01.04.15.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 04:15:53 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Mark Brown <broonie@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>
+Cc:     Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [RFT PATCH v2] spi: bcm2835: reduce the abuse of the GPIO API
+Date:   Fri,  1 Sep 2023 13:15:48 +0200
+Message-Id: <20230901111548.12733-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 91.158.25.70
-X-SA-Exim-Mail-From: cyndis@kapsi.fi
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikko Perttunen <mperttunen@nvidia.com>
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-With the previous CDMA stop fix, executing runtime PM ops around
-system suspend now makes channel submissions work after system
-suspend, so do that.
+Currently the bcm2835 SPI driver uses functions that are available
+exclusively to GPIO providers as a way to handle a platform quirk. Let's
+use a slightly better alternative that avoids poking around in GPIOLIB's
+internals and use GPIO lookup tables.
 
-Signed-off-by: Mikko Perttunen <mperttunen@nvidia.com>
+Link: https://www.spinics.net/lists/linux-gpio/msg36218.html
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/gpu/host1x/dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is only build-tested. It should work, but it would be great if
+someone from broadcom could test this.
 
-diff --git a/drivers/gpu/host1x/dev.c b/drivers/gpu/host1x/dev.c
-index 6501bee9e8c1..b8ac44e7d11a 100644
---- a/drivers/gpu/host1x/dev.c
-+++ b/drivers/gpu/host1x/dev.c
-@@ -720,7 +720,7 @@ static int __maybe_unused host1x_runtime_resume(struct device *dev)
- static const struct dev_pm_ops host1x_pm_ops = {
- 	SET_RUNTIME_PM_OPS(host1x_runtime_suspend, host1x_runtime_resume,
- 			   NULL)
--	/* TODO: add system suspend-resume once driver will be ready for that */
-+	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend, pm_runtime_force_resume)
- };
+v1 -> v2:
+- don't use devres for managing the GPIO but put it manually in .cleanup()
+- add a mailing list link explaining the background of the bug
+- fix kerneldoc
+
+ drivers/spi/spi-bcm2835.c | 59 +++++++++++++++++++++++----------------
+ 1 file changed, 35 insertions(+), 24 deletions(-)
+
+diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
+index e7bb2714678a..e06738705075 100644
+--- a/drivers/spi/spi-bcm2835.c
++++ b/drivers/spi/spi-bcm2835.c
+@@ -11,6 +11,7 @@
+  * spi-atmel.c, Copyright (C) 2006 Atmel Corporation
+  */
  
- static struct platform_driver tegra_host1x_driver = {
++#include <linux/cleanup.h>
+ #include <linux/clk.h>
+ #include <linux/completion.h>
+ #include <linux/debugfs.h>
+@@ -26,9 +27,10 @@
+ #include <linux/of_address.h>
+ #include <linux/platform_device.h>
+ #include <linux/gpio/consumer.h>
+-#include <linux/gpio/machine.h> /* FIXME: using chip internals */
+-#include <linux/gpio/driver.h> /* FIXME: using chip internals */
++#include <linux/gpio/machine.h> /* FIXME: using GPIO lookup tables */
+ #include <linux/of_irq.h>
++#include <linux/overflow.h>
++#include <linux/slab.h>
+ #include <linux/spi/spi.h>
+ 
+ /* SPI register offsets */
+@@ -83,6 +85,7 @@ MODULE_PARM_DESC(polling_limit_us,
+  * struct bcm2835_spi - BCM2835 SPI controller
+  * @regs: base address of register map
+  * @clk: core clock, divided to calculate serial clock
++ * @cs_gpio: chip-select GPIO descriptor
+  * @clk_hz: core clock cached speed
+  * @irq: interrupt, signals TX FIFO empty or RX FIFO ¾ full
+  * @tfr: SPI transfer currently processed
+@@ -117,6 +120,7 @@ MODULE_PARM_DESC(polling_limit_us,
+ struct bcm2835_spi {
+ 	void __iomem *regs;
+ 	struct clk *clk;
++	struct gpio_desc *cs_gpio;
+ 	unsigned long clk_hz;
+ 	int irq;
+ 	struct spi_transfer *tfr;
+@@ -1156,15 +1160,11 @@ static void bcm2835_spi_handle_err(struct spi_controller *ctlr,
+ 	bcm2835_spi_reset_hw(bs);
+ }
+ 
+-static int chip_match_name(struct gpio_chip *chip, void *data)
+-{
+-	return !strcmp(chip->label, data);
+-}
+-
+ static void bcm2835_spi_cleanup(struct spi_device *spi)
+ {
+ 	struct bcm2835_spidev *target = spi_get_ctldata(spi);
+ 	struct spi_controller *ctlr = spi->controller;
++	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
+ 
+ 	if (target->clear_rx_desc)
+ 		dmaengine_desc_free(target->clear_rx_desc);
+@@ -1175,6 +1175,9 @@ static void bcm2835_spi_cleanup(struct spi_device *spi)
+ 				 sizeof(u32),
+ 				 DMA_TO_DEVICE);
+ 
++	gpiod_put(bs->cs_gpio);
++	spi_set_csgpiod(spi, 0, NULL);
++
+ 	kfree(target);
+ }
+ 
+@@ -1221,7 +1224,7 @@ static int bcm2835_spi_setup(struct spi_device *spi)
+ 	struct spi_controller *ctlr = spi->controller;
+ 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
+ 	struct bcm2835_spidev *target = spi_get_ctldata(spi);
+-	struct gpio_chip *chip;
++	struct gpiod_lookup_table *lookup __free(kfree) = NULL;
+ 	int ret;
+ 	u32 cs;
+ 
+@@ -1288,29 +1291,37 @@ static int bcm2835_spi_setup(struct spi_device *spi)
+ 	}
+ 
+ 	/*
+-	 * Translate native CS to GPIO
++	 * TODO: The code below is a slightly better alternative to the utter
++	 * abuse of the GPIO API that I found here before. It creates a
++	 * temporary lookup table, assigns it to the SPI device, gets the GPIO
++	 * descriptor and then releases the lookup table.
+ 	 *
+-	 * FIXME: poking around in the gpiolib internals like this is
+-	 * not very good practice. Find a way to locate the real problem
+-	 * and fix it. Why is the GPIO descriptor in spi->cs_gpiod
+-	 * sometimes not assigned correctly? Erroneous device trees?
++	 * More on the problem that it addresses:
++	 *   https://www.spinics.net/lists/linux-gpio/msg36218.html
+ 	 */
++	lookup = kzalloc(struct_size(lookup, table, 1), GFP_KERNEL);
++	if (!lookup) {
++		ret = -ENOMEM;
++		goto err_cleanup;
++	}
+ 
+-	/* get the gpio chip for the base */
+-	chip = gpiochip_find("pinctrl-bcm2835", chip_match_name);
+-	if (!chip)
+-		return 0;
++	lookup->dev_id = dev_name(&spi->dev);
++	lookup->table[0].key = "pinctrl-bcm2835";
++	lookup->table[0].chip_hwnum = (8 - (spi_get_chipselect(spi, 0)));
++	lookup->table[0].con_id = "cs";
++	lookup->table[0].flags = GPIO_LOOKUP_FLAGS_DEFAULT;
+ 
+-	spi_set_csgpiod(spi, 0, gpiochip_request_own_desc(chip,
+-							  8 - (spi_get_chipselect(spi, 0)),
+-							  DRV_NAME,
+-							  GPIO_LOOKUP_FLAGS_DEFAULT,
+-							  GPIOD_OUT_LOW));
+-	if (IS_ERR(spi_get_csgpiod(spi, 0))) {
+-		ret = PTR_ERR(spi_get_csgpiod(spi, 0));
++	gpiod_add_lookup_table(lookup);
++
++	bs->cs_gpio = gpiod_get(&spi->dev, "cs", GPIOD_OUT_LOW);
++	gpiod_remove_lookup_table(lookup);
++	if (IS_ERR(bs->cs_gpio)) {
++		ret = PTR_ERR(bs->cs_gpio);
+ 		goto err_cleanup;
+ 	}
+ 
++	spi_set_csgpiod(spi, 0, bs->cs_gpio);
++
+ 	/* and set up the "mode" and level */
+ 	dev_info(&spi->dev, "setting up native-CS%i to use GPIO\n",
+ 		 spi_get_chipselect(spi, 0));
 -- 
-2.41.0
+2.39.2
 
