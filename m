@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 036D578FC69
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:43:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67BFF78FC76
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349199AbjIALnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:43:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
+        id S1349235AbjIALnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjIALnC (ORCPT
+        with ESMTP id S1349212AbjIALnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:43:02 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D211B5;
-        Fri,  1 Sep 2023 04:42:59 -0700 (PDT)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 381AP0Ni014467;
-        Fri, 1 Sep 2023 11:42:52 GMT
+        Fri, 1 Sep 2023 07:43:07 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B07410D5;
+        Fri,  1 Sep 2023 04:43:03 -0700 (PDT)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 381A0Cit009800;
+        Fri, 1 Sep 2023 11:42:53 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=hGIutL91aY9hwSH+dPE+AwLowgqEpYAT7pl1HJrZzqc=;
- b=EcCAS+DWPQghb7BM4FSzBO37GzOllpgzHptdHYWn2vZFn1v0nSbnZMaosRikXhr7wVIe
- sdBbXXeE9oIMFqXCwlqP21G2U/MOUeVlRj9/Kmiq3O6lUGNjnN+mf/Oa4axRQf12js8X
- zjm5oaXz1YrZO33M/b4cUUsPcoVMvXPAimDgJdI1LGiKrgfu9xgr19jFQOxvoZgbhvVO
- tTZ120C/LsKzADpb4W1Fa9dDf+T0AEjPRi45fPo7vM0nT6nS9+zhhCv6B7zDSCUl/vZA
- DXkXNb9VbDox9WLJ+7nQqmosrhQMEjhrT54ke8xwYeF83hINu/6KNB3sF5fDWpCZCLva Wg== 
+ subject : date : message-id : in-reply-to : references; s=qcppdkim1;
+ bh=IPdEplR1fA97t+2tm9I9JuniHz5TEiMiIVvWm/BaUPE=;
+ b=cn1fmYC0+lNylkMm0e7DU8aWWIue4JK6rqzQuM+hKlyNvsDFnRtQjOp9g+7x0TE/8SZu
+ 43Qx1+u3JgCrT8zG1763DjBBvrgFXfxuNJxz27oQalrT1NHB/efk+WBTIJotOQklaE6k
+ shPUi3Kj5GY/S1d8BNNMaiyap4Qusi40Mw++OFJiMnqZQWvBJHMryyElNVC9w3gC6K5e
+ ciloFCivNaUAgNfHEahblR6XznkXdBl6XmmHJLhTqSyVKerSAkcmTSK7cDEcdUbus2TG
+ +SaUwxYPRKibBLDfRykd4Aa5Y59eSWfEqi0RzU4ovzqVXzIzNZQsE/JFSoaLNJK5D3L4 Cg== 
 Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stku2br46-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3stub8b3a8-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Fri, 01 Sep 2023 11:42:52 +0000
 Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 381BgmjA013920;
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 381Bgm9H013931;
         Fri, 1 Sep 2023 11:42:48 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sqafmj03q-1;
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sqafmj03v-1;
         Fri, 01 Sep 2023 11:42:48 +0000
 Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 381BglhD013913;
-        Fri, 1 Sep 2023 11:42:47 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 381Bgmws013924;
+        Fri, 1 Sep 2023 11:42:48 GMT
 Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 381BglS4013912;
-        Fri, 01 Sep 2023 11:42:47 +0000
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 381BgmcW013923;
+        Fri, 01 Sep 2023 11:42:48 +0000
 Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id E8F735006A6; Fri,  1 Sep 2023 17:12:46 +0530 (+0530)
+        id DBD335006A8; Fri,  1 Sep 2023 17:12:47 +0530 (+0530)
 From:   Nitin Rawat <quic_nitirawa@quicinc.com>
 To:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
         konrad.dybcio@linaro.org, jejb@linux.ibm.com,
@@ -51,70 +51,110 @@ To:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
 Cc:     quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
         linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org,
-        Nitin Rawat <quic_nitirawa@quicinc.com>
-Subject: [PATCH V6 0/6] scsi: ufs: qcom: Align programming sequence as per HW spec
-Date:   Fri,  1 Sep 2023 17:12:36 +0530
-Message-Id: <20230901114242.31219-1-quic_nitirawa@quicinc.com>
+        Nitin Rawat <quic_nitirawa@quicinc.com>,
+        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Subject: [PATCH V6 1/6] scsi: ufs: qcom: Align mask for core_clk_1us_cycles
+Date:   Fri,  1 Sep 2023 17:12:37 +0530
+Message-Id: <20230901114242.31219-2-quic_nitirawa@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230901114242.31219-1-quic_nitirawa@quicinc.com>
+References: <20230901114242.31219-1-quic_nitirawa@quicinc.com>
 X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: j5M9jHuAG9BFFt7Hgfx4NshadS9g6rwm
-X-Proofpoint-ORIG-GUID: j5M9jHuAG9BFFt7Hgfx4NshadS9g6rwm
+X-Proofpoint-GUID: P5PS0SifPxXz9hF08BDiHQI1X225CNGx
+X-Proofpoint-ORIG-GUID: P5PS0SifPxXz9hF08BDiHQI1X225CNGx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-01_09,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- lowpriorityscore=0 mlxscore=0 malwarescore=0 spamscore=0 phishscore=0
- bulkscore=0 priorityscore=1501 adultscore=0 suspectscore=0 mlxlogscore=894
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309010109
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=979 phishscore=0
+ priorityscore=1501 adultscore=0 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 spamscore=0 bulkscore=0 impostorscore=0 suspectscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309010109
+X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch aligns programming sequence as per Qualcomm UFS
-hardware specification.
+Align core_clk_1us_cycles mask for Qualcomm UFS Controller V4.0.0
+onwards as per Hardware Specification.
 
-changes from v5:
-- Addressed Mani comment to FIELD_PREP and FIELD_FIT.
-- Optimised ufs_qcom_set_core_clk_ctrl API.
-- Updated commit text for few patches to capture more details.
+Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+---
+ drivers/ufs/host/ufs-qcom.c | 28 ++++++++++++++++++----------
+ drivers/ufs/host/ufs-qcom.h |  5 +++--
+ 2 files changed, 21 insertions(+), 12 deletions(-)
 
-Changes from v4:
-- Addressed bjorn comment to split single patch to multiple patches.
+diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+index f88febb23123..fe36003faaa8 100644
+--- a/drivers/ufs/host/ufs-qcom.c
++++ b/drivers/ufs/host/ufs-qcom.c
+@@ -1297,22 +1297,30 @@ static void ufs_qcom_exit(struct ufs_hba *hba)
+ }
 
-Changes from v3:
--Addressed bjorn comment to update commit msg to capture change details.
+ static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
+-						       u32 clk_cycles)
++						       u32 cycles_in_1us)
+ {
+-	int err;
++	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+ 	u32 core_clk_ctrl_reg;
++	int ret;
 
-Changes from v2:
-- Addressed bao comment, removed duplicate clock timer cfg API call
+-	if (clk_cycles > DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK)
+-		return -EINVAL;
+-
+-	err = ufshcd_dme_get(hba,
++	ret = ufshcd_dme_get(hba,
+ 			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
+ 			    &core_clk_ctrl_reg);
+-	if (err)
+-		return err;
++	if (ret)
++		return ret;
 
-Changes from v1:
-- Addressed bao comment, removed wrapper function
-- Tab alignment
+-	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK;
+-	core_clk_ctrl_reg |= clk_cycles;
++	/* Bit mask is different for UFS host controller V4.0.0 onwards */
++	if (host->hw_ver.major >= 4) {
++		if (!FIELD_FIT(CLK_1US_CYCLES_MASK_V4, cycles_in_1us))
++			return -ERANGE;
++		core_clk_ctrl_reg &= ~CLK_1US_CYCLES_MASK_V4;
++		core_clk_ctrl_reg |= FIELD_PREP(CLK_1US_CYCLES_MASK_V4, cycles_in_1us);
++	} else {
++		if (!FIELD_FIT(CLK_1US_CYCLES_MASK, cycles_in_1us))
++			return -ERANGE;
++		core_clk_ctrl_reg &= ~CLK_1US_CYCLES_MASK;
++		core_clk_ctrl_reg |= FIELD_PREP(CLK_1US_CYCLES_MASK, cycles_in_1us);
++	}
 
-Nitin Rawat (6):
-  scsi: ufs: qcom: Align mask for core_clk_1us_cycles
-  scsi: ufs: qcom: Configure PA_VS_CORE_CLK_40NS_CYCLES
-  scsi: ufs: qcom: Add multiple frequency support for unipro clk
-    attributes
-  scsi: ufs: qcom: Align unipro clk attributes configuration as per HPG
-  scsi: ufs: qcom: Refactor ufs_qcom_cfg_timers function.
-  scsi: ufs: qcom: Configure clk HW division based on scaling
-    conditions.
+ 	/* Clear CORE_CLK_DIV_EN */
+ 	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
+diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+index d6f8e74bd538..8a9d3dbec297 100644
+--- a/drivers/ufs/host/ufs-qcom.h
++++ b/drivers/ufs/host/ufs-qcom.h
+@@ -129,8 +129,9 @@ enum {
+ #define PA_VS_CONFIG_REG1	0x9000
+ #define DME_VS_CORE_CLK_CTRL	0xD002
+ /* bit and mask definitions for DME_VS_CORE_CLK_CTRL attribute */
+-#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
+-#define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
++#define CLK_1US_CYCLES_MASK_V4				GENMASK(27, 16)
++#define CLK_1US_CYCLES_MASK				GENMASK(7, 0)
++#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT	BIT(8)
 
- drivers/ufs/host/ufs-qcom.c | 240 ++++++++++++++++++++++++++----------
- drivers/ufs/host/ufs-qcom.h |  17 ++-
- 2 files changed, 193 insertions(+), 64 deletions(-)
-
+ static inline void
+ ufs_qcom_get_controller_revision(struct ufs_hba *hba,
 --
 2.17.1
 
