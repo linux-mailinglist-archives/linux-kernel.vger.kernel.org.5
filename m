@@ -2,142 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D1679014C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:20:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA3E790150
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 19:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347889AbjIART6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 13:19:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40272 "EHLO
+        id S1348541AbjIARUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 13:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229927AbjIART4 (ORCPT
+        with ESMTP id S1348916AbjIARUX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 13:19:56 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2012.outbound.protection.outlook.com [40.92.41.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0C8610E4
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:19:53 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XCDFvsB23UFQoUHUNl0yjZOI2SMO+FGK/IbMs1hj8+dDkIC1Zt5qvJs48oOPXFbhel8d4eV7JhA9mSMCcLCHE9J4Dp5QsxF6REPR62Bb5FbmVwG7jftw5+RSa30U6m3yNpN87oMTfzz43GOZtS9JCg32I33pPEcQtAB9oPxxZr8OMraYM43sew3wiziltehSih0BPQabv2QzM/o+7swdZaJAu85EKkqHpalQoJe/z0udkv5bYSkUJE6cE0LpYEpv2c6Pu/l6e8+m3BhFUtBLq98NZSUkcIj5m0kSWj/Fj+ndqJEhi+TACO1G3sqQXu1QOI6Un7937ycL9wsMLfcHTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9breyhrL75wDpZLbXVWtXdSvRbG6KendZ+1/6qc/P98=;
- b=laEn0AETTwl0oMjhMSLdw03ptcSRmF1wZv1vUfTYq9C/gmZge2ez2HC/G0i9aFw1S7Q++ZojVBefrYfb57OWz0M4MfAn3VEORbzGopPz+XzowROyp+6kAqztIy9+YU3Ptukm+PZKDL+gOO0McWHaRLaRPNHcP74QgVRh8RGQ8k9JJ0Gpf4IgQBfS9PD/bKwfqm3lgnRaatb4NokF5ccaG/U25AZTkwSKYuwwvSl8SDKva6LmzvNvGkyPG5vEbkNSsTc88BnwAUqEbHkUsPbBaRJ/IkVAelTDvJEYDk6jxVnKPYPtrMW2fxMlSHioA5tdrWpo6xv2GO/lFoXh7cXj7A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9breyhrL75wDpZLbXVWtXdSvRbG6KendZ+1/6qc/P98=;
- b=aZFxO66DKR7/CLOdJkGMT+FtwPE6DIimG0Ak8JNeo3wW7Bh7VIGFxyVL4hEexGs8FcJZcVgSXQQaFcTHPPjVUSTgu0t2bYKWwrgd13n75Eo37Cyu6mSjoGcqa6adUzmmuILK0LuEOLrnWwKyGkeG72vsrzQhMxwSiL3JjJPjNawICg1P16y2HYHQGSyK01l1Xl0yz/wab1KKcThrpr/cGuc/4EbCH2vGL9jubg6tp1WmRxclN/LMnIvXL3gbHCayy+xGLC2ApT4EBp6vyuxbx/APX9YP+NTnLPeIzGLbtP+gdc8BJSahhfa5YnmwtqdYuEserEK34wllAOlF/l/EDg==
-Received: from CY5PR12MB6455.namprd12.prod.outlook.com (2603:10b6:930:35::10)
- by CH3PR12MB8934.namprd12.prod.outlook.com (2603:10b6:610:17a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.22; Fri, 1 Sep
- 2023 17:19:52 +0000
-Received: from CY5PR12MB6455.namprd12.prod.outlook.com
- ([fe80::912:a56e:f6d2:86fa]) by CY5PR12MB6455.namprd12.prod.outlook.com
- ([fe80::912:a56e:f6d2:86fa%4]) with mapi id 15.20.6745.015; Fri, 1 Sep 2023
- 17:19:52 +0000
-From:   mirimmad@outlook.com
-Cc:     gregkh@linuxfoundation.org, Immad Mir <mirimmad17@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linuxppc-dev@lists.ozlabs.org (open list:LINUX FOR POWERPC (32-BIT AND
-        64-BIT)), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] powerpc/powernv: use appropiate error code
-Date:   Fri,  1 Sep 2023 22:49:12 +0530
-Message-ID: <CY5PR12MB64550ACC0B90FDD120D21E47C6E4A@CY5PR12MB6455.namprd12.prod.outlook.com>
-X-Mailer: git-send-email 2.40.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [qaoOnCIaci6F7glq4M9BFB6A5gam/uhi5iyllV7plUW1p5aKRYEjUHuFNuWmTMqZ]
-X-ClientProxiedBy: BMXP287CA0021.INDP287.PROD.OUTLOOK.COM
- (2603:1096:b00:2c::25) To CY5PR12MB6455.namprd12.prod.outlook.com
- (2603:10b6:930:35::10)
-X-Microsoft-Original-Message-ID: <20230901171913.24677-1-mirimmad@outlook.com>
+        Fri, 1 Sep 2023 13:20:23 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9B10F6;
+        Fri,  1 Sep 2023 10:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+ s=s31663417; t=1693588800; x=1694193600; i=j.neuschaefer@gmx.net;
+ bh=ndEoFRJfDS9SCk3baTyeGk8tFTWpI9NpWJxPLC86/A4=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=GphXPdnxQGN0zGSfiU5k22UwJdXDCMTLz1mjzzbHlHl3fHT5qnkB5+O9O8csD2BSDphzN/0
+ NfFugNWTjhzI1Ih+XToJujAku08gGPTGGg8aXrsB08PPCS0C1yTqNOZ+a7uyJoyhhclsYWrRq
+ O9atkYxJmKOsd2WLC1kGjbboIltQCLLl/YGe3TE8kLE53dxzsBbvFy8rI+dRpe9EmNouoa0vB
+ GzP25oFTHpuIqwlnYuCUtImSHF86bZx6KyxXs5rO4XZXIoxZVAtdl6RwpmIhX5CeI1DhxITM+
+ weSMWPvLzaio2bPuRYIXHMmom481HJ3aN498ssg3Wk8OHxNUHBxA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from probook ([87.154.222.166]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MWzjt-1q9sV70xZJ-00XMOR; Fri, 01
+ Sep 2023 19:20:00 +0200
+Date:   Fri, 1 Sep 2023 19:19:56 +0200
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     Helge Deller <deller@gmx.de>
+Cc:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-fbdev@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jingoo Han <jg1.han@samsung.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fbdev: Update fbdev source file paths
+Message-ID: <ZPIdPOFbhLCpODIJ@probook>
+References: <20230829200253.1473891-1-j.neuschaefer@gmx.net>
+ <d9a02d20-8b59-cbdd-d054-eac14f9771d2@suse.de>
+ <ZPA26xdbTRdfuveS@probook>
+ <ZPBUdJwZzvYYrNei@phenom.ffwll.local>
+ <d0646771-d426-45c6-e189-517b1e6e6248@gmx.de>
+ <b8a04a40-a8ad-16ef-fdde-e56acb6845ca@gmx.de>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6455:EE_|CH3PR12MB8934:EE_
-X-MS-Office365-Filtering-Correlation-Id: 34083b1d-c169-40b0-de9e-08dbab0fa6db
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +e93XboYK1MPesvocZmqXgCukVgaXEr+C/PMOQ+C0gqK8luYhlxWF62UOw5v9Esr5g8t8S7NUy/0xEPbZVgxH6PwgTRBVZAuDzSurJ9uQCcLKp32eByNhyzc3o7cvgbfAJGvAt25Hga0k9MWXupD8T2m8PwJrUkYJCCBi3vepAZtpcvYkTC78sFS20msOlTSKAqE0z4QeN2RCL8Fm949LsCp9FhLDolIcm/z6NqOUi9TuP7B+4nOgwJcFj2P+ZE5dP0Ae+txAeYrjUvEV7I+519CwFo1PoHNylgbm8S65hgn0zw+vcm16Ah6KiXS9cjamUEYaEZ9vnTx+DZTU4DE+RF8hszuU6KJ+OYgowUrE3xSaSNMIwxTb/HfP8BLvQTS7nqSwDLF8rk5vaELTM166jzSReFDVnV0/Nrd4roG/OUHELIdtfUVFrpF/3zeNOe3rJ7mFR7+uPjsdTndaniL1aaifEf1Y06Uzmtck3Hun8QboeuUhJvL9YukAQcv6vityQEpgvKxiDI6xR92R6lBogujptrX4mTKZk6PQcu01s/4aYPFH7agNNQm3x9ZggcA
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?FfU8SiBREa3goMgyNnpSsu264lD8AGuUeoaFppgjLw3MfD+Zw066DsEVqeR3?=
- =?us-ascii?Q?u4pl9wHzBggFFIWU8wlpJ7IFabevvg7Q4TpxK64RNpofoi7xtPlCQG1G+Un6?=
- =?us-ascii?Q?Inod4FR5WNKBa+RMu/pPcU8yQNhhjc8o81X5pN5LT+wh7t9HWbbhCO0Waqsq?=
- =?us-ascii?Q?krGt6ljtW10ICRbMxia1qRIFBC+XdXPFV/4JQRJAwO+xwHpabvZWySVBY9m0?=
- =?us-ascii?Q?jd7fRb3ahyoU0aCF9BVhvjiJA2TcLTLoW81mVtEIyrUiEHELbcpuaUHuIND0?=
- =?us-ascii?Q?mmRddYmdsyDpPAZj4bt4GXfmhH+FEuyQwxjvbsS+kgdsBLEkTpRbi0dSYeQc?=
- =?us-ascii?Q?q86q74OMpHHn9kYrZQ11mKYDnrCkWc9mtMeZxD/voEK+r/Q2np0Hm/kMscC9?=
- =?us-ascii?Q?DsnlgltCTE2hm8ElGbfMZ+yymtNHSbnSDFNX/qle1g4AXuwE8hnsDP2Z3YQz?=
- =?us-ascii?Q?7baiBolkcqD/HSL6KJSq83+13kVr/LP/7BlsbNd7MbyrdEckQ8xdo0xusYFi?=
- =?us-ascii?Q?Nz11023mjIaMSthtmSyZ+6wLHbSXgBgLfUVH2Ow34KuQovtVQ9+BB58UfsSd?=
- =?us-ascii?Q?+QkuS/lU+9USYgVizui5Nz3cCc4fcgeBPLc0vFlQwqA4a99TxAYVvQgn5jv/?=
- =?us-ascii?Q?GGyrMWbnye+tGJlOZ4sGcfxvdgTb2VnevbWJHQ/+YN6FuwAQZhuU+LBswzt1?=
- =?us-ascii?Q?CUgtcNxIX1Hpkt69i4a6IQxRtNsqNgas268VNApuxYzVmgeFysiYIX349CHt?=
- =?us-ascii?Q?RdywjMNjJ0drUSHI0k2bHHMZYvk0ZPqWjO1PBJUuVg1WRKJM6rlFnLMGAtbL?=
- =?us-ascii?Q?q4Qb5fxtlevFU7qUqkVLLgGLgKzW7v6a9ELApYzadwWoSpx+qn82DTCNnRzw?=
- =?us-ascii?Q?ZFb+TuuWDuKMbE5rLl4PxCN6lL9Ejtk0CT0fCExn/ctAPhYyCsrX3zgceLr8?=
- =?us-ascii?Q?jdQgEc91Bbe01+/bimMQo06YyYjJaj9tAILhsvdEoQ5DSJXF3wnSt++WNsEo?=
- =?us-ascii?Q?Oow7WZoCH2JU3gZuMAKkAwfjOtv9HuGat8v9Vmz4HGFGlJYMDtyXuPepz1+T?=
- =?us-ascii?Q?3rbwHbmZQnsXBNkcZJRKmm4VL7g4dlPR57vG4DRzJfX7YDgSaBsbf+udXeg0?=
- =?us-ascii?Q?aEo0jCTAcy9qMWi/DhIPBihFx1ZeTm7h0rg4hRx+ad0uevWKylW/en2oU4RT?=
- =?us-ascii?Q?vRk0MhI+3f9jyxGXy/B2tnaBdORtkJ5z9pf0xvJe7hb+VhHVlfnKm48qTUFH?=
- =?us-ascii?Q?4mI9PA7U+plwVyaJYc/zH17a2Hp3TpjrZsGyMJVKow=3D=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 34083b1d-c169-40b0-de9e-08dbab0fa6db
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6455.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Sep 2023 17:19:52.0736
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8934
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="S0SJhlmv8RAfrKFu"
+Content-Disposition: inline
+In-Reply-To: <b8a04a40-a8ad-16ef-fdde-e56acb6845ca@gmx.de>
+X-Provags-ID: V03:K1:2pZbCDNpIV3lYRKKD61SN6RHG6Iz4I+1MyrjhbZzrJFD1bAFayO
+ Uj6AIBX/6j3ven3LBcVbkQhbRJ2758JxVIu+lEsWImKVMl4f+loJsx5WIhxZ078PscHammZ
+ 1a9GYC9FvxMIxyCgXuf0lnGBy1ajnRNtImvbBdLZzuLjq9QUxZzeI7lu4BEa3FLmrGdrQNT
+ P/2G4VqG4ZTPZsDApSjoA==
+UI-OutboundReport: notjunk:1;M01:P0:AbjHmf8c+1s=;m5T7KIgPfsxRuqwzjqQU8bfuxP3
+ dqndZht2UDVYf/zrril8XGnsx0+O3zEhrXIxNL6+9sdxm6T2sPLkY+e5OTmd2tj/wvKHbKRjI
+ Oum7LmUlrkz+Rvm3lTys0p1x/qO5YEcBik3bgv2MfV468wggL1Cadvuv8WG8HEAxEqa+CnFXq
+ RPy3Dtv/C0ZZQq0IYD3xEu5wPTI3RbZMKeCU9WynXg4dlMwOVyYXXWoYHD6FUZ6TybTBaKyHd
+ Ta9olmyc/lQOdal6k+zMWMw88QoKphzcOEBPw3aMHcXLNrR+aFM3Ch7kxOAhR6FX0KoogFPok
+ xO60tDy2CGQt/gmNvMtYnlqw52Bqv1v/k8bl16KDPP3ImcsIAYHG6XaGhSTAINIgVjGmULuym
+ BXmnhKaunQCOKLYheLg4ijY9DSSJHq5QyBht2ZhIHEfACcfouOxVeCGmOrNmox8ZGSnpghwHu
+ jNlwd18tmnRpgC/LGcBH1bjqPQFKxsZLF3ZdsEqTolxL/zczP1qJAfyqZxUI0ArZCkKBmWhPL
+ UPuLteBQoTVs+tK4s4QvsmY7IH8rMZJWU2sSeoRDzM2DPP4mYiX1uhCuqkdWPE8i4bGEVMthZ
+ /VOvmiFIbyIRZiCaGr89u0+VFRC9iS14hs6WnniMOlyGoa9A6XKQdg63ZboTR46pmzxJq4Lph
+ KXT0Eat6ocmvRAk0gfJKmhcTLH8r6N+F6s+dBb2rIzUMhjZ7o2C1MbuhwQXPqqmikrXJulkzo
+ rLtxMc4oOmMG7wldzLFfB6vSN+HfRd5s86X2/CecLCLbDOAHFm2+uhCAFPCVG5LPME1QXCB3R
+ gcvb2RV0OpSR8zY6zB6E8TQAdSPmh3cDWsLemauGdr2PP5SREcfMU/CG+gsTYO4V5J68PM0wP
+ NauVmndkcP+M25ICaF3L8lsoN43dR57O9sZAtL+0FkFci7a3t8a6XviGdcXlyro9xF2rTf+yj
+ dgkl6w==
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Immad Mir <mirimmad17@gmail.com>
 
--1 is not a valid error code. This patch replaces it with -EPERM.
+--S0SJhlmv8RAfrKFu
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Immad Mir <mirimmad17@gmail.com>
----
- arch/powerpc/platforms/powernv/opal-xscom.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, Aug 31, 2023 at 11:49:47PM +0200, Helge Deller wrote:
+> On 8/31/23 11:02, Helge Deller wrote:
+> > On 8/31/23 10:51, Daniel Vetter wrote:
+> > > On Thu, Aug 31, 2023 at 08:44:59AM +0200, Jonathan Neusch=C3=A4fer wr=
+ote:
+> > > > On Wed, Aug 30, 2023 at 09:10:26AM +0200, Thomas Zimmermann wrote:
+> > > > > Hi
+> > > > >=20
+> > > > > Am 29.08.23 um 22:02 schrieb Jonathan Neusch=C3=A4fer:
+> > > > > > The files fbmem.c, fb_defio.c, fbsysfs.c, fbmon.c, modedb.c, and
+> > > > > > fbcmap.c were moved to drivers/video/fbdev, and subsequently to
+> > > > > > drivers/video/fbdev/core, in the commits listed below.
+> > > > > >=20
+> > > > > > Reported by kalekale in #kernel (Libera IRC).
+> > > > > >=20
+> > > > > > Fixes: f7018c213502 ("video: move fbdev to drivers/video/fbdev")
+> > > > > > Fixes: 19757fc8432a ("fbdev: move fbdev core files to separate =
+directory")
+> > > > > > Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+> > > > >=20
+> > > > > IMHO these comments might just be removed.
+> > > >=20
+> > > > I think it's nice to have some sort of visual separation between gr=
+oups
+> > > > of functions in fb.h, which these comments provide at the moment.
+> > > > Therefore I'm currently leaning towards my patch as it is, but I'm
+> > > > willing to have my mind changed and do a v2 which just removes the
+> > > > comments.
+> > >=20
+> > > Just the filename without the full path maybe?
+> >=20
+> > Yes, I'd prefer that as well.
+>=20
+> I've manually changed it and applied the patch to the fbdev git tree.
 
-diff --git a/arch/powerpc/platforms/powernv/opal-xscom.c b/arch/powerpc/platforms/powernv/opal-xscom.c
-index 262cd6fac..ce4b089dd 100644
---- a/arch/powerpc/platforms/powernv/opal-xscom.c
-+++ b/arch/powerpc/platforms/powernv/opal-xscom.c
-@@ -171,7 +171,7 @@ static int scom_debug_init_one(struct dentry *root, struct device_node *dn,
- 	if (IS_ERR(dir)) {
- 		kfree(ent->path.data);
- 		kfree(ent);
--		return -1;
-+		return -EPERM;
- 	}
+Thanks, everyone!
 
- 	debugfs_create_blob("devspec", 0400, dir, &ent->path);
-@@ -191,7 +191,7 @@ static int scom_debug_init(void)
+Jonathan
 
- 	root = debugfs_create_dir("scom", arch_debugfs_dir);
- 	if (IS_ERR(root))
--		return -1;
-+		return -EPERM;
+--S0SJhlmv8RAfrKFu
+Content-Type: application/pgp-signature; name="signature.asc"
 
- 	rc = 0;
- 	for_each_node_with_property(dn, "scom-controller") {
---
-2.40.0
+-----BEGIN PGP SIGNATURE-----
 
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmTyHRwACgkQCDBEmo7z
+X9uvdA//YmdduRn9/SYErFaEN2UFGbboxV7N7YFTOx8/SNIX9lfrHqRGrgux0O7X
+FnmS+vetc6nWG/1GWn5y9NlZyMjl73JLcYpoWggLbFv+oNFMplEKSF2Q6E1f/lFl
+U5M8weWOIeF4UXciwvZCf13A9+zcm/0J2iCRjbm38Strvg0m1irRW4bvx1S9J5QT
+gYTpCx9ooJAln9Bb4zJcm6mpuFBJGYMkyf1zG9cP1MdciGeafmEYcWhXWCrVsyPi
+vcz8/V/YJ+8Oa1ERaoFCQM0VWXtTPjkLaib/6tiImW257jS/FYcIlQZxIWfL9ARR
+MLFm7IXtyzKy9kRpZTmjYZP9N4bq9NN/Mzn8NCFr/tmwPoLXwSCtgGetFVtAzB4B
+U/Wadkx5EewVzT1+Z2v+67QrsiW4uAPHfQ8AYU1cM1n23nfKrkQqlRcxVuGnsHGR
+7ztSq+BIUbBryDkseGCSoxMVe0YU5kwFKMZrDUBXy8FEsIRpZBy4U2Noc/vtixow
+OpAa4BlIW/G6K4cPJYJgrnBt50v6NwaagLOWT9OVGZLThRz7YCwi5kG0VoTPozFB
+4yje+8WkpQnvRuKbYrAUGkojrg34ZxJ7DeppJkkRfgxcUZexJaZDsMELNBKDaeOI
+YqbpKTJAFQzbdL9H9cmUR3VJHntvGznO+sGTI90ffK6owMFlQ4I=
+=811W
+-----END PGP SIGNATURE-----
+
+--S0SJhlmv8RAfrKFu--
