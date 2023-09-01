@@ -2,380 +2,315 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0F878F6D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 03:50:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D866878F6DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 03:51:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348078AbjIABuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 31 Aug 2023 21:50:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46648 "EHLO
+        id S1348095AbjIABvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 31 Aug 2023 21:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbjIABuX (ORCPT
+        with ESMTP id S1348088AbjIABu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 31 Aug 2023 21:50:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7ACE6E;
-        Thu, 31 Aug 2023 18:50:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693533019; x=1725069019;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Z/IUJxs1mc3hfH7hCTKbpZvonJnzNoHHAzpaCom1+88=;
-  b=EKbgcUoN0VpEhPRCN8i7wMAVDAtpKllj7I4moASuL6w+qDN6ItRv1rX6
-   bApB+nNyhI/727FOgi9G2XSGpWcHkQqAV5Qk/KUd8308GVwU3g38LxQco
-   E3WDh1eH2EJKZOnkSGYYluGDUBwcMApdrN5VFbOHiqT/NOAtj8COu7hpQ
-   mCVBF6+SEEZ8TxWoocPfp2s5UBJ09hqa21dd8l4ZlL6Sjt7ppPOLCR/tt
-   DK+VhzT88j4Rjw65SU43WajXFBWXXEjGNe8H/WvJeNHHFzoprZdWYX39r
-   eV4Y50fEPtej5f3Wlp5+jt3x8Il9IfHOJFIGxinw2sfq+glmPes6Mq+/M
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="379898124"
-X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
-   d="scan'208";a="379898124"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 Aug 2023 18:50:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="809886470"
-X-IronPort-AV: E=Sophos;i="6.02,218,1688454000"; 
-   d="scan'208";a="809886470"
-Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 31 Aug 2023 18:50:15 -0700
-Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qbtIb-0000kd-2k;
-        Fri, 01 Sep 2023 01:50:13 +0000
-Date:   Fri, 1 Sep 2023 09:49:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        srinivas.kandagatla@linaro.org, linux-arm-msm@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Ekansh Gupta <quic_ekangupt@quicinc.com>,
-        ekangupt@qti.qualcomm.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, fastrpc.upstream@qti.qualcomm.com
-Subject: Re: [PATCH v1 4/5] misc: fastrpc: Add support to save and restore
- interrupted
-Message-ID: <202309010926.bLqVExVs-lkp@intel.com>
-References: <1693499292-19083-5-git-send-email-quic_ekangupt@quicinc.com>
+        Thu, 31 Aug 2023 21:50:59 -0400
+Received: from sonic307-8.consmr.mail.gq1.yahoo.com (sonic307-8.consmr.mail.gq1.yahoo.com [98.137.64.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E6DE70
+        for <linux-kernel@vger.kernel.org>; Thu, 31 Aug 2023 18:50:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1693533053; bh=fs6edp0Ql9dxe2UkRLiHciaEhPbe6s3IRV3VEcW9sCk=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject:Reply-To; b=fUpYZ6H8tzzP5PATU9v4wmIfiDnaZCRidIWPgepEA87XWR0QkpCUx08uBDDQGu3hx56LWZW+bChqrGCED4VpjzuFxR/5AdSvPqMhH5dgUhBZMlTW4zGb+gJD29w96EeIb/OcfPlI0yrOV1PVcw6urjdclYsdf2CLLEpDF9RfZD2254qgdVJDnD4KK9RRkxuiUGXH7Lo49nG+ABw1MbmcrSVr0dimjx157BsopJfqAvVoumY9VRiQQEc4zhkYIC1zs+K+J1+RFG5lfO2pLplNXhJHPZWSBAa9ZL580ztMGGT8qZJkJJEGUwKDhiVF9O2jwZuIGh6JNYx78IGcf61pSg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1693533053; bh=VLb0dD9PUbC6ExKTFE1w5tQN3z+T3xQkDGIZ7Lbxxc/=; h=X-Sonic-MF:From:To:Subject:Date:From:Subject; b=P2qjXG6gWd86TVsRMsRVq1W/VnfzhZD3IdWnn5eVd9RslLEQKtD5gRkzuZ0pUi3qtv65LiHCph0q+ZYrg+hrwo/ILcs7wwmt7WHv9IR3Yo4H04fPKdrkjXd6fhbFRWevr0XkPZccHadE+VcdbPS+PlSVBapnThzb3iXTjmd+SxKMSrHX2L/W9ScK7YTB+RMvuE5PbG1iowwl94QzvmtnUoFITx64FqbkaPQVRVcSyK7IXCvXCho3/JiTLAXXR55SmbP9ILetQ7w2hyITT95HNaS7cjPp6lW7CYQFjhLn4/99qKkCjmmEZhOWJ9VQEGqVDZ4FYLit9nFLL7667k/Law==
+X-YMail-OSG: 2UhxypAVM1mOfz0zB8YBWTOSMq3VqqQ_9J1tXZUVnNvwuitVIPKxdlJSr57EuNp
+ cwRsrL9bEbVcdGZdKOw376vwrDmSLgy5wIBpJhKAcuicbv61GrZ7qQtMYNi7EZs0oe1h0MX9IsNS
+ W4Td5Bg6Nm3NTKKtZdaZ.ycOR20ia_8nlTu___41IMXJlibVhCUHCvRKhLCG6cIEkC9.5hJJG4Gu
+ 3rlDc3cRxjN9dz1i0pXE39mUiulRJfSoeJDLe.i0C_0hPy7xuQxq6zfNWha9KfXZqnf.SHzOpJWu
+ 1qNuRDIp3qLr1nbIgImEEZVV8jQS7XATvjZZKovtBY2Rx5Ft3WtRzMfkcEhIqPCXS7IS3_mh2VCk
+ cCodLVkN00d1RPjE_tDJfwBxNpIJr4aK70Ki0LWvv3gVNdEVlJvu.eQEeKcik2GlaN.gFXdF4_oi
+ I4icZomovk3X3yN8Og_VTUvyRvRqS4tdyqoR9xuJekcz_c_vgHrmQAQisd8KaNtRYzxewJIEDARE
+ m3_m2XFM1u_CDtLvJroYbO6tkoTM_aWL66lTHZ6vYAc6BG_yoUqgM6YZV3OWhXZU84dA8NbD5pdO
+ Yp24nEueAoyhe5Yru6wvMKQ2RNZunZ5KT.OXD8YnTVSTTbbLrsLS2fwgFrlTXWGeO.o3T1jBAOqW
+ hKp4D3fx05oNiEwoJDOaPzfExzVbkNL31QzdCpXhazBI4ZmITuDzYuMkGLbhARbnhBgXrTVpkjj4
+ rM2lJHdhLqi2upSCtLWkTEMcPBVWvkZffcp_R0JtM7vDhiMzopv0l2dJbACxHSENmsALM6yp8hKX
+ PAWibOcjeoip8YujxMmwX.ZCRn_tDya_MBCCHVfSf2eoVQB03cZf1AjlCs00Lz7ZNLdsu5uiBGN2
+ B2k5QM5v4NZwxqxcrts9tJXI9kifd5ZbQit_fSiUUZjO90fcX2KrOnYnK2Dp8WWEHTuu7PG5hguP
+ 3FdVmbUQFdb9vcmATWfnh4S03MH1ChJANF7m0fO558c.sJ6FSlOLHJSqMqr1rfyYYap9xfrzlrF1
+ WJgd9s1lCbsSbHe60GphbHfFpSpSAuKFjOdnK6d92Z56FZGFqc4_YxKZVbntrbXJiEerWwQ1X9E7
+ lMMdBtttIkhb8dNpF5NmcVTKstcBxUG7sotkv_RwVef_i7pbGE4PtulyXY7O7hpOl.pXINt_qDw7
+ rxV1dp0ZFy9gKKqOQZpwF3to8VsRtwz14r1kzcQoqtg8LsvNjTosWl.fv6B12Xbk9jvqNMgnfDx8
+ wsf2FBQqGxISh36YyoFrxInffc5NubqguWQnuqe1q.7.qKd.uZM3mXA6NJL4PfF24l3kdsr7mZoS
+ QnH9ji2h5Hi3.ct5dvxHtDi5rmxHGhcNnvKHG8Pvk35yJzmB8OQGZnu.4Sa5ZuR.G4GCsqQsEJD1
+ l962Ow8bKzN3krHzxvrbg1qDbITxmaCTSNCHdjeHvjT2d7KoeFIajzE8IOROc1QAwvY0PwSS40uj
+ 5u.efKQ0WWG2qFkYh1ZtWVuq04JPMASTS2KFvZrUfxsKkwCKLsrcV0L.IC09sTHxxv1VvmfytJb6
+ PX9MbbQ6TLfq9qv2ZXToDIkdTZXuyKJGTu7HTpgu_uS0SkqNs34jdz7rx0Q95KYKeUdFh56uIARN
+ aZgMnNztbt7A5GieE8WL2pCzNqYpNXNP5.34lkJiiQOlq42SS9YQI0fC259nWoIeNTYmUBVuE4IN
+ q9rijJDqbCG4ZXlnoCysGjnoP3i3xFZnosXwP416dQmSsXRVZZKzK84hYTdzF4keEOJQe3DbTc9C
+ SrlEconE6vAMUWYOHuMhQNbKVYfKmYO_FdQgxkzFFnRAKMl11tnERRjeNNyQb56j35DUDQLk3cqJ
+ ofbDMNH094m4gt5BpABqg_342Qca0ANkSwS.dvYf1U4DskQxlU5zTenlkpdilfnE8sZXGc.MvBRq
+ syo7TqF.mFmrgHJ6KuWR9YznFDvXwhb0mRzjHCqjgM3WFXLZHq48KdpJigTM6iDbeojGZTkbLn.Q
+ WlmrsclFpyqFFDy9Lp_xYVvEuAhcI4mfnS4OdTlg03O9JTF1M6X8nB70R59ugvq73vR5Q6y7.y9C
+ DVuWPV0zlhct3bMYpkV4IiSa6SZTnopHuSKB.WLO_hNqzKO8hmnzTlUqIU41ES7lsVlI6qAgbLHL
+ ysCv_qfxslK1pxmiDinKxPFZ2CxxBvStcIwoO6bLFbABwwpVTFiN4rmFSJ0p_Ge.d.qQs.nbF.5q
+ ZKiMs5JONMsjYuhNFFETrm1cKsMlumLOci9fs_DYFz_Stp73l.TDnsvs76IIG2mit2GobW70U31A
+ Qyxwl14ok
+X-Sonic-MF: <earl.chew@yahoo.ca>
+X-Sonic-ID: 025e5646-6e0d-4d8f-a8a7-659d812a72ad
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.gq1.yahoo.com with HTTP; Fri, 1 Sep 2023 01:50:53 +0000
+Received: by hermes--production-ne1-7b767b77cc-84nnk (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 10ad77be201d39a9d7996c67b7a2e3e0;
+          Fri, 01 Sep 2023 01:50:48 +0000 (UTC)
+Received: from localhost.lan ([127.0.0.1]:51082 helo=localhost.localdomain)
+        by postbox.timberdragon.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.95.0)
+        (envelope-from <earl.chew@yahoo.ca>)
+        id 1qbtJ8-000Ozs-PG;
+        Thu, 31 Aug 2023 18:50:46 -0700
+From:   Earl Chew <earl.chew@yahoo.ca>
+To:     linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org
+Cc:     peter@hurleysoftware.com, earl.chew@yahoo.ca
+Subject: [PATCH 0/3] tty: Fix tiocspgrp() related races
+Date:   Thu, 31 Aug 2023 18:50:28 -0700
+Message-Id: <20230901015030.2469062-1-earl.chew@yahoo.ca>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230831143645.2298799-1-earl_chew@yahoo.com>
+References: <20230831143645.2298799-1-earl_chew@yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1693499292-19083-5-git-send-email-quic_ekangupt@quicinc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ekansh,
+[ Reposting to linux-kernel@vger.kernel.org ]
 
-kernel test robot noticed the following build warnings:
+This set of patches improves tiocspgrp() use cases, and was
+motivated by noticing rare job control SIGTTIN/SIGTTOU races.
+Over time, users probably have encountered these races during
+interactive use, but quite possibly have simply worked through
+them.
 
-[auto build test WARNING on char-misc/char-misc-testing]
-[also build test WARNING on char-misc/char-misc-next char-misc/char-misc-linus linus/master v6.5 next-20230831]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The first patch addresses a race that occurs when a job control
+shell runs a fg command to move a background job to the foreground.
+The shell issues tcsetpgrp() followed by killpg(SIGCONT). In
+rare cases this coincides with the new foreground job receiving
+a SIGTTIN which gives the appearance that fg stops the job.
+The first reproducer below can detect this case:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ekansh-Gupta/misc-fastrpc-Add-fastrpc-multimode-invoke-request-support/20230901-002929
-base:   char-misc/char-misc-testing
-patch link:    https://lore.kernel.org/r/1693499292-19083-5-git-send-email-quic_ekangupt%40quicinc.com
-patch subject: [PATCH v1 4/5] misc: fastrpc: Add support to save and restore interrupted
-config: m68k-allyesconfig (https://download.01.org/0day-ci/archive/20230901/202309010926.bLqVExVs-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230901/202309010926.bLqVExVs-lkp@intel.com/reproduce)
+    while ./first ; do : ; done
+    WIFSTOPPED 21
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309010926.bLqVExVs-lkp@intel.com/
+The second patch addresses a race that occurs when a job
+control application issues several tcsetpgrp() calls in
+parallel. In rare cases, the callers will only partially serialise.
+After the first successfully sets the foreground process group,
+the remaining should receive SIGTTOU because they are now
+background processes that are attempting to change the
+foreground process group. Instead, they successfully reconfigure
+the foreground process group of the controlling terminal.
+The second reproducer below can detect this case:
 
-All warnings (new ones prefixed by >>):
+    while ./second ; do : ; done
+    Died at line 86: Exited 2 Stopped 0
 
-   drivers/misc/fastrpc.c: In function 'fastrpc_context_alloc':
-   drivers/misc/fastrpc.c:663:29: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
-     663 |                 ctx->args = (struct fastrpc_invoke_args *)invoke->inv.args;
-         |                             ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_init_create_static_process':
-   drivers/misc/fastrpc.c:1494:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1494 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_init_create_process':
-   drivers/misc/fastrpc.c:1627:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1627 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_release_current_dsp_process':
-   drivers/misc/fastrpc.c:1710:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1710 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_device_release':
->> drivers/misc/fastrpc.c:1719:42: warning: unused variable 'n' [-Wunused-variable]
-    1719 |         struct fastrpc_invoke_ctx *ctx, *n;
-         |                                          ^
->> drivers/misc/fastrpc.c:1719:36: warning: unused variable 'ctx' [-Wunused-variable]
-    1719 |         struct fastrpc_invoke_ctx *ctx, *n;
-         |                                    ^~~
-   drivers/misc/fastrpc.c: In function 'fastrpc_init_attach':
-   drivers/misc/fastrpc.c:1856:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1856 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_invoke':
-   drivers/misc/fastrpc.c:1887:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1887 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_multimode_invoke':
-   drivers/misc/fastrpc.c:1928:33: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1928 |                 einv.inv.args = (__u64)args;
-         |                                 ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_get_info_from_dsp':
-   drivers/misc/fastrpc.c:1958:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    1958 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_req_munmap_impl':
-   drivers/misc/fastrpc.c:2061:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    2061 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_req_mmap':
-   drivers/misc/fastrpc.c:2159:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    2159 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_req_mem_unmap_impl':
-   drivers/misc/fastrpc.c:2240:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    2240 |         ioctl.inv.args = (__u64)args;
-         |                          ^
-   drivers/misc/fastrpc.c: In function 'fastrpc_req_mem_map':
-   drivers/misc/fastrpc.c:2309:26: warning: cast from pointer to integer of different size [-Wpointer-to-int-cast]
-    2309 |         ioctl.inv.args = (__u64)args;
-         |                          ^
+The third patch relocates the sampling of task_pgrp() in
+__tty_check_change_locked() to place it inside the locked
+region, immediately before the value is used. This improves
+the consistency of the sampled value, and follows the example
+set by __proc_set_tty().
 
+/* FIRST RACE */
+    #include <errno.h>
+    #include <fcntl.h>
+    #include <stdarg.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <signal.h>
+    #include <time.h>
+    #include <unistd.h>
 
-vim +/n +1719 drivers/misc/fastrpc.c
+    #include <sys/wait.h>
 
-0871561055e666 Abel Vesa                2022-11-25  1530  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1531  static int fastrpc_init_create_process(struct fastrpc_user *fl,
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1532  					char __user *argp)
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1533  {
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1534  	struct fastrpc_init_create init;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1535  	struct fastrpc_invoke_args *args;
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1536  	struct fastrpc_enhanced_invoke ioctl;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1537  	struct fastrpc_phy_page pages[1];
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1538  	struct fastrpc_map *map = NULL;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1539  	struct fastrpc_buf *imem = NULL;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1540  	int memlen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1541  	int err;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1542  	struct {
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1543  		int pgid;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1544  		u32 namelen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1545  		u32 filelen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1546  		u32 pageslen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1547  		u32 attrs;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1548  		u32 siglen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1549  	} inbuf;
-7f1f481263c3ce Jeya R                   2022-02-14  1550  	bool unsigned_module = false;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1551  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1552  	args = kcalloc(FASTRPC_CREATE_PROCESS_NARGS, sizeof(*args), GFP_KERNEL);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1553  	if (!args)
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1554  		return -ENOMEM;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1555  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1556  	if (copy_from_user(&init, argp, sizeof(init))) {
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1557  		err = -EFAULT;
-b49f6d83e290f1 Thierry Escande          2019-03-07  1558  		goto err;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1559  	}
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1560  
-7f1f481263c3ce Jeya R                   2022-02-14  1561  	if (init.attrs & FASTRPC_MODE_UNSIGNED_MODULE)
-7f1f481263c3ce Jeya R                   2022-02-14  1562  		unsigned_module = true;
-7f1f481263c3ce Jeya R                   2022-02-14  1563  
-7f1f481263c3ce Jeya R                   2022-02-14  1564  	if (is_session_rejected(fl, unsigned_module)) {
-7f1f481263c3ce Jeya R                   2022-02-14  1565  		err = -ECONNREFUSED;
-7f1f481263c3ce Jeya R                   2022-02-14  1566  		goto err;
-7f1f481263c3ce Jeya R                   2022-02-14  1567  	}
-7f1f481263c3ce Jeya R                   2022-02-14  1568  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1569  	if (init.filelen > INIT_FILELEN_MAX) {
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1570  		err = -EINVAL;
-b49f6d83e290f1 Thierry Escande          2019-03-07  1571  		goto err;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1572  	}
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1573  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1574  	inbuf.pgid = fl->tgid;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1575  	inbuf.namelen = strlen(current->comm) + 1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1576  	inbuf.filelen = init.filelen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1577  	inbuf.pageslen = 1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1578  	inbuf.attrs = init.attrs;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1579  	inbuf.siglen = init.siglen;
-84195d206e1fbd Jonathan Marek           2020-09-08  1580  	fl->pd = USER_PD;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1581  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1582  	if (init.filelen && init.filefd) {
-e90d911906196b Vamsi Krishna Gattupalli 2022-02-14  1583  		err = fastrpc_map_create(fl, init.filefd, init.filelen, 0, &map);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1584  		if (err)
-b49f6d83e290f1 Thierry Escande          2019-03-07  1585  			goto err;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1586  	}
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1587  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1588  	memlen = ALIGN(max(INIT_FILELEN_MAX, (int)init.filelen * 4),
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1589  		       1024 * 1024);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1590  	err = fastrpc_buf_alloc(fl, fl->sctx->dev, memlen,
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1591  				&imem);
-b49f6d83e290f1 Thierry Escande          2019-03-07  1592  	if (err)
-b49f6d83e290f1 Thierry Escande          2019-03-07  1593  		goto err_alloc;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1594  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1595  	fl->init_mem = imem;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1596  	args[0].ptr = (u64)(uintptr_t)&inbuf;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1597  	args[0].length = sizeof(inbuf);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1598  	args[0].fd = -1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1599  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1600  	args[1].ptr = (u64)(uintptr_t)current->comm;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1601  	args[1].length = inbuf.namelen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1602  	args[1].fd = -1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1603  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1604  	args[2].ptr = (u64) init.file;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1605  	args[2].length = inbuf.filelen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1606  	args[2].fd = init.filefd;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1607  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1608  	pages[0].addr = imem->phys;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1609  	pages[0].size = imem->size;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1610  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1611  	args[3].ptr = (u64)(uintptr_t) pages;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1612  	args[3].length = 1 * sizeof(*pages);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1613  	args[3].fd = -1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1614  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1615  	args[4].ptr = (u64)(uintptr_t)&inbuf.attrs;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1616  	args[4].length = sizeof(inbuf.attrs);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1617  	args[4].fd = -1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1618  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1619  	args[5].ptr = (u64)(uintptr_t) &inbuf.siglen;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1620  	args[5].length = sizeof(inbuf.siglen);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1621  	args[5].fd = -1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1622  
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1623  	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1624  	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE, 4, 0);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1625  	if (init.attrs)
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1626  		ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_CREATE_ATTR, 4, 0);
-db2e49fb9bf108 Ekansh Gupta             2023-08-31 @1627  	ioctl.inv.args = (__u64)args;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1628  
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1629  	err = fastrpc_internal_invoke(fl, true, &ioctl);
-b49f6d83e290f1 Thierry Escande          2019-03-07  1630  	if (err)
-b49f6d83e290f1 Thierry Escande          2019-03-07  1631  		goto err_invoke;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1632  
-b49f6d83e290f1 Thierry Escande          2019-03-07  1633  	kfree(args);
-b49f6d83e290f1 Thierry Escande          2019-03-07  1634  
-b49f6d83e290f1 Thierry Escande          2019-03-07  1635  	return 0;
-b49f6d83e290f1 Thierry Escande          2019-03-07  1636  
-b49f6d83e290f1 Thierry Escande          2019-03-07  1637  err_invoke:
-b49f6d83e290f1 Thierry Escande          2019-03-07  1638  	fl->init_mem = NULL;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1639  	fastrpc_buf_free(imem);
-b49f6d83e290f1 Thierry Escande          2019-03-07  1640  err_alloc:
-b49f6d83e290f1 Thierry Escande          2019-03-07  1641  	fastrpc_map_put(map);
-b49f6d83e290f1 Thierry Escande          2019-03-07  1642  err:
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1643  	kfree(args);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1644  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1645  	return err;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1646  }
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1647  
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1648  static struct fastrpc_session_ctx *fastrpc_session_alloc(
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1649  					struct fastrpc_channel_ctx *cctx)
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1650  {
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1651  	struct fastrpc_session_ctx *session = NULL;
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1652  	unsigned long flags;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1653  	int i;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1654  
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1655  	spin_lock_irqsave(&cctx->lock, flags);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1656  	for (i = 0; i < cctx->sesscount; i++) {
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1657  		if (!cctx->session[i].used && cctx->session[i].valid) {
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1658  			cctx->session[i].used = true;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1659  			session = &cctx->session[i];
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1660  			break;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1661  		}
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1662  	}
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1663  	spin_unlock_irqrestore(&cctx->lock, flags);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1664  
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1665  	return session;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1666  }
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1667  
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1668  static void fastrpc_session_free(struct fastrpc_channel_ctx *cctx,
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1669  				 struct fastrpc_session_ctx *session)
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1670  {
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1671  	unsigned long flags;
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1672  
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1673  	spin_lock_irqsave(&cctx->lock, flags);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1674  	session->used = false;
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1675  	spin_unlock_irqrestore(&cctx->lock, flags);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1676  }
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1677  
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1678  static void fastrpc_context_list_free(struct fastrpc_user *fl)
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1679  {
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1680  	struct fastrpc_invoke_ctx *ctx, *n;
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1681  
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1682  	list_for_each_entry_safe(ctx, n, &fl->interrupted, node) {
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1683  		spin_lock(&fl->lock);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1684  		list_del(&ctx->node);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1685  		spin_unlock(&fl->lock);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1686  		fastrpc_context_put(ctx);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1687  	}
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1688  
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1689  	list_for_each_entry_safe(ctx, n, &fl->pending, node) {
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1690  		spin_lock(&fl->lock);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1691  		list_del(&ctx->node);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1692  		spin_unlock(&fl->lock);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1693  		fastrpc_context_put(ctx);
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1694  	}
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1695  }
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1696  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1697  static int fastrpc_release_current_dsp_process(struct fastrpc_user *fl)
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1698  {
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1699  	struct fastrpc_invoke_args args[1];
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1700  	struct fastrpc_enhanced_invoke ioctl;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1701  	int tgid = 0;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1702  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1703  	tgid = fl->tgid;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1704  	args[0].ptr = (u64)(uintptr_t) &tgid;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1705  	args[0].length = sizeof(tgid);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1706  	args[0].fd = -1;
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1707  
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1708  	ioctl.inv.handle = FASTRPC_INIT_HANDLE;
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1709  	ioctl.inv.sc = FASTRPC_SCALARS(FASTRPC_RMID_INIT_RELEASE, 1, 0);
-db2e49fb9bf108 Ekansh Gupta             2023-08-31 @1710  	ioctl.inv.args = (__u64)args;
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1711  
-db2e49fb9bf108 Ekansh Gupta             2023-08-31  1712  	return fastrpc_internal_invoke(fl, true, &ioctl);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1713  }
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1714  
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1715  static int fastrpc_device_release(struct inode *inode, struct file *file)
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1716  {
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1717  	struct fastrpc_user *fl = (struct fastrpc_user *)file->private_data;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1718  	struct fastrpc_channel_ctx *cctx = fl->cctx;
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08 @1719  	struct fastrpc_invoke_ctx *ctx, *n;
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08  1720  	struct fastrpc_map *map, *m;
-2419e55e532de1 Jorge Ramirez-Ortiz      2019-10-09  1721  	struct fastrpc_buf *buf, *b;
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1722  	unsigned long flags;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1723  
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1724  	fastrpc_release_current_dsp_process(fl);
-d73f71c7c6ee15 Srinivas Kandagatla      2019-02-08  1725  
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1726  	spin_lock_irqsave(&cctx->lock, flags);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1727  	list_del(&fl->user);
-977e6c8d1d1806 Srinivas Kandagatla      2019-03-07  1728  	spin_unlock_irqrestore(&cctx->lock, flags);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1729  
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08  1730  	if (fl->init_mem)
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08  1731  		fastrpc_buf_free(fl->init_mem);
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08  1732  
-1d9e27a4779236 Ekansh Gupta             2023-08-31  1733  	fastrpc_context_list_free(fl);
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08  1734  
-5bb96c8f9268e2 Abel Vesa                2022-11-24  1735  	list_for_each_entry_safe(map, m, &fl->maps, node)
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08  1736  		fastrpc_map_put(map);
-c68cfb718c8f97 Srinivas Kandagatla      2019-02-08  1737  
-2419e55e532de1 Jorge Ramirez-Ortiz      2019-10-09  1738  	list_for_each_entry_safe(buf, b, &fl->mmaps, node) {
-2419e55e532de1 Jorge Ramirez-Ortiz      2019-10-09  1739  		list_del(&buf->node);
-2419e55e532de1 Jorge Ramirez-Ortiz      2019-10-09  1740  		fastrpc_buf_free(buf);
-2419e55e532de1 Jorge Ramirez-Ortiz      2019-10-09  1741  	}
-2419e55e532de1 Jorge Ramirez-Ortiz      2019-10-09  1742  
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1743  	fastrpc_session_free(cctx, fl->sctx);
-278d56f970ae6e Bjorn Andersson          2019-08-29  1744  	fastrpc_channel_ctx_put(cctx);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1745  
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1746  	mutex_destroy(&fl->mutex);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1747  	kfree(fl);
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1748  	file->private_data = NULL;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1749  
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1750  	return 0;
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1751  }
-f6f9279f2bf0e3 Srinivas Kandagatla      2019-02-08  1752  
+    #define DIE(...) die(__LINE__, __VA_ARGS__)
+
+    void die(unsigned lineno, const char *fmt, ...)
+    {
+        va_list argp;
+
+        va_start(argp, fmt);
+        vfprintf(stderr, fmt, argp);
+        fputc('\n', stderr);
+        exit(1);
+    }
+
+    void delay(unsigned range, unsigned scale)
+    {
+        unsigned rnd = random() % range;
+
+        struct timespec delay = {
+            .tv_nsec = rnd * scale
+        };
+
+        nanosleep(&delay, 0);
+    }
+
+    int main()
+    {
+        const char *ttyname = ctermid(0);
+        if (!ttyname) DIE("ctermid");
+
+        int ttyfd = open(ttyname, O_RDONLY | O_NONBLOCK);
+        if (-1 == ttyfd) DIE(ttyname);
+
+        typedef void (*sighandler_t)(int);
+
+        sighandler_t sighandler = signal(SIGINT, SIG_DFL);
+        if (SIG_ERR == sighandler) DIE("signal");
+
+        sigset_t sigmask;
+        if (sigprocmask(SIG_SETMASK, 0, &sigmask)) DIE("sigprocmask");
+        if (sigismember(&sigmask, SIGTTIN)) DIE("SIGTTIN");
+
+        pid_t child = fork();
+
+        if (!child) {
+
+            srandom(getpid());
+
+            if (setpgid(0, 0)) DIE("setpgid");
+
+            delay(10000, 1);
+
+            char buf[1];
+            int rd = read(ttyfd, buf, 0);
+            if (rd) DIE("read");
+
+        } else {
+
+            srandom(getpid());
+
+            if (setpgid(child, child)) DIE("setpgid");
+
+            delay(10000, 1);
+
+            if (tcsetpgrp(ttyfd, child)) DIE("tcsetpgrp");
+
+            if (killpg(child, SIGCONT)) DIE("killpg");
+
+            int status;
+            pid_t waited = waitpid(child, &status, WUNTRACED);
+            if (child != waited) DIE("waitpid");
+
+            kill(child, SIGKILL);
+
+            if (WIFSTOPPED(status)) DIE("WIFSTOPPED %d", WSTOPSIG(status));
+            if (!WIFEXITED(status)) DIE("WEXITED");
+            if (WEXITSTATUS(status)) DIE("WEXITSTATUS");
+        }
+
+        return 0;
+    }
+/* FIRST RACE */
+
+/* SECOND RACE */
+    #include <errno.h>
+    #include <fcntl.h>
+    #include <stdarg.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <signal.h>
+    #include <unistd.h>
+
+    #include <sys/wait.h>
+
+    #define DIE(...) die(__LINE__, __VA_ARGS__)
+
+    void die(unsigned lineno, const char *fmt, ...)
+    {
+        va_list argp;
+
+        fprintf(stderr, "Died at line %u", lineno);
+        if (fmt) {
+            fprintf(stderr, ": ");
+            va_start(argp, fmt);
+            vfprintf(stderr, fmt, argp);
+        }
+        fputc('\n', stderr);
+        exit(1);
+    }
+
+    int main()
+    {
+        const char *ttyname = ctermid(0);
+        if (!ttyname) DIE(0);
+
+        int ttyfd = open(ttyname, O_RDONLY | O_NONBLOCK);
+        if (-1 == ttyfd) DIE(ttyname);
+
+        sigset_t sigmask;
+        if (sigprocmask(SIG_SETMASK, 0, &sigmask)) DIE(0);
+        if (sigismember(&sigmask, SIGTTOU)) DIE(0);
+
+        pid_t parentPid = getpid();
+        pid_t pgid[2] = { };
+        pid_t child[2] = { };
+
+        for (int ix = 0; ix < 2; ++ix) {
+            pgid[ix] = fork();
+            if (!pgid[ix]) {
+                if (setpgid(0, 0)) DIE(0);
+                exit(0);
+            }
+            if (setpgid(pgid[ix], pgid[ix])) DIE(0);
+
+            child[ix] = fork();
+            if (!child[ix]) {
+                if (kill(getpid(), SIGSTOP)) DIE(0);
+                printf("Child %d foreground %d\n", getpid(), pgid[ix]);
+                if (tcsetpgrp(ttyfd, pgid[ix])) DIE(0);
+                exit(0);
+            }
+
+            if (-1 == child[ix]) DIE(0);
+            if (child[ix] != waitpid(child[ix], 0, WUNTRACED)) DIE(0);
+        }
+
+        if (SIG_ERR == signal(SIGTTOU, SIG_IGN)) DIE(0);
+        if (kill(-parentPid, SIGCONT)) DIE(0);
+
+        int status;
+        int stopped = 0;
+        int exited = 0;
+
+        for (int ix = 0; ix < 2; ++ix) {
+            pid_t waited = waitpid(child[ix], &status, WUNTRACED);
+            if (waited != child[ix]) DIE("Child %d", child[ix]);
+
+            if (WIFEXITED(status))
+                ++exited;
+            if (WIFSTOPPED(status))
+                ++stopped;
+        }
+
+        for (int ix = 0; ix < 2; ++ix) {
+            if (kill(pgid[ix], SIGKILL) && ESRCH != errno) DIE(0);
+            if (kill(child[ix], SIGKILL) && ESRCH != errno) DIE(0);
+        }
+
+        if (2 == exited)
+            DIE("Exited %d Stopped %d", exited, stopped);
+
+        return 0;
+    }
+/* SECOND RACE */
+
+Earl Chew (3):
+  tty: Fix __tty_check_change() and tiocspgrp() race
+  tty: Serialise racing tiocspgrp() callers
+  tty: Move task_pgrp() after tty->ctrl.lock for consistency
+
+ drivers/tty/tty_jobctrl.c | 44 ++++++++++++++++++++++++++++-----------
+ 1 file changed, 32 insertions(+), 12 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.1
