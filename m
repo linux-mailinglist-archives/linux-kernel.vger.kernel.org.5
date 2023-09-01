@@ -2,91 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA6C78FB8E
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAB378FB92
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 12:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239403AbjIAKA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 06:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34932 "EHLO
+        id S233409AbjIAKCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 06:02:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbjIAKA4 (ORCPT
+        with ESMTP id S229868AbjIAKCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 06:00:56 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC200E8
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:00:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 8C37DCE226A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 10:00:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F05C433C7;
-        Fri,  1 Sep 2023 10:00:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693562448;
-        bh=BTGDfJTyzKP6h40J0iVNdbrEIIzNDkliCuw7WPVkb5M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GjYcGy6rAAbtGbUDR7I52WYpGsvlouX3287Du4qRwGUtujJgItXyVUo03LxnQi5Fy
-         Hd2Y+78vjEwmV1kfQo4tbP/DEj+oFrfkM9Js/D/TKV/ezUgJt9x1ohGcEapPhhZVp5
-         ODKBGcYciLlfghU7NbDW7CAHkYWxuCf3pZNrp/aeuwQoUmcjtjLh8UY6SOhiEl7+ov
-         6dNuWjUyIhd2Mcu2Jl7e5We96gXmWiuO0lUKnuO3zoj240I7dAN/Z9WfbRGwrwFIbn
-         xgXP4Ga0NTOQtJngynxVK/rne/2C5StagKXXmHDvLURH0oC8VpzLZFi7t1rIfIKOj+
-         5/v5jlnl69P5A==
+        Fri, 1 Sep 2023 06:02:01 -0400
+Received: from outbound-smtp29.blacknight.com (outbound-smtp29.blacknight.com [81.17.249.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03735E8
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 03:01:53 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp29.blacknight.com (Postfix) with ESMTPS id 410DABEEFB
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:01:52 +0100 (IST)
+Received: (qmail 8760 invoked from network); 1 Sep 2023 10:01:52 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 1 Sep 2023 10:01:51 -0000
+Date:   Fri, 1 Sep 2023 11:01:49 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Kemeng Shi <shikemeng@huaweicloud.com>
+Cc:     akpm@linux-foundation.org, baolin.wang@linux.alibaba.com,
+        david@redhat.com, willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] mm/compaction: correctly return failure with
+ bogus compound_order in strict mode
+Message-ID: <20230901100149.ln2yhzj7jsag5gyu@techsingularity.net>
+References: <20230901155141.249860-1-shikemeng@huaweicloud.com>
+ <20230901155141.249860-4-shikemeng@huaweicloud.com>
+ <20230901091711.rpykbvfsnrcuwqhn@techsingularity.net>
+ <74851ecc-93ff-1ec3-1589-f13d66d4336d@huaweicloud.com>
 MIME-Version: 1.0
-Date:   Fri, 01 Sep 2023 12:00:43 +0200
-From:   Michael Walle <mwalle@kernel.org>
-To:     Chen-Yu Tsai <wenst@chromium.org>
-Cc:     =?UTF-8?Q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= 
-        <nfraprado@collabora.com>, angelogioacchino.delregno@collabora.com,
-        airlied@gmail.com, amergnat@baylibre.com, chunkuang.hu@kernel.org,
-        ck.hu@mediatek.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, ehristev@collabora.com,
-        kernel@collabora.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        matthias.bgg@gmail.com, p.zabel@pengutronix.de
-Subject: Re: [PATCH v7 09/11] drm/mediatek: dp: Add support for embedded
- DisplayPort aux-bus
-In-Reply-To: <CAGXv+5E4nWSuZdHmRhgYDUG4WhYs5o+-ZQBh3pnd2T_fdf9Edg@mail.gmail.com>
-References: <20230725073234.55892-10-angelogioacchino.delregno@collabora.com>
- <20230825120109.3132209-1-mwalle@kernel.org>
- <5b438dba-9b85-4448-bc89-08a11ddb822a@notapiano>
- <fc6c054941420ac2d016496ccbeecad4@kernel.org>
- <00f65d49-497c-4ade-a2f3-7a5b7ad803b6@notapiano>
- <18bfffdd7ce3bd7693c8362b28651b49@kernel.org>
- <cce6f9c2-e0b6-47e4-ae1c-9a3d8a4e4b02@notapiano>
- <7a3257dddac78c46408341253a3286f4@kernel.org>
- <CAGXv+5E4nWSuZdHmRhgYDUG4WhYs5o+-ZQBh3pnd2T_fdf9Edg@mail.gmail.com>
-Message-ID: <d6031e00cda9ea1e30bb75b2ca97300f@kernel.org>
-X-Sender: mwalle@kernel.org
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <74851ecc-93ff-1ec3-1589-f13d66d4336d@huaweicloud.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
->> I was just curious if you know of any development for that (or 
->> similar)
->> in the kernel.
+On Fri, Sep 01, 2023 at 05:32:49PM +0800, Kemeng Shi wrote:
 > 
-> This is probably because support for this SoC began with Chromebooks,
-> which have fixed and defined uses for the pipelines. I suspect that
-> what you are working on is much more flexible.
+> 
+> on 9/1/2023 5:17 PM, Mel Gorman wrote:
+> > On Fri, Sep 01, 2023 at 11:51:38PM +0800, Kemeng Shi wrote:
+> >> In strict mode, we should return 0 if there is any hole in pageblock. If
+> >> we successfully isolated pages at beginning at pageblock and then have a
+> >> bogus compound_order outside pageblock in next page. We will abort search
+> >> loop with blockpfn > end_pfn. Although we will limit blockpfn to end_pfn,
+> >> we will treat it as a successful isolation in strict mode as blockpfn is
+> >> not < end_pfn and return partial isolated pages. Then
+> >> isolate_freepages_range may success unexpectly with hole in isolated
+> >> range.
+> >>
+> >> Fixes: 9fcd6d2e052e ("mm, compaction: skip compound pages by order in free scanner")
+> >> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> >> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> >> ---
+> >>  mm/compaction.c | 6 +++---
+> >>  1 file changed, 3 insertions(+), 3 deletions(-)
+> >>
+> >> diff --git a/mm/compaction.c b/mm/compaction.c
+> >> index a40550a33aee..9ecbfbc695e5 100644
+> >> --- a/mm/compaction.c
+> >> +++ b/mm/compaction.c
+> >> @@ -626,11 +626,12 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
+> >>  		if (PageCompound(page)) {
+> >>  			const unsigned int order = compound_order(page);
+> >>  
+> >> -			if (likely(order <= MAX_ORDER)) {
+> >> +			if (blockpfn + (1UL << order) <= end_pfn) {
+> >>  				blockpfn += (1UL << order) - 1;
+> >>  				page += (1UL << order) - 1;
+> >>  				nr_scanned += (1UL << order) - 1;
+> >>  			}
+> >> +
+> >>  			goto isolate_fail;
+> >>  		}
+> >>  
+> >> @@ -678,8 +679,7 @@ static unsigned long isolate_freepages_block(struct compact_control *cc,
+> >>  		spin_unlock_irqrestore(&cc->zone->lock, flags);
+> >>  
+> >>  	/*
+> >> -	 * There is a tiny chance that we have read bogus compound_order(),
+> >> -	 * so be careful to not go outside of the pageblock.
+> >> +	 * Be careful to not go outside of the pageblock.
+> >>  	 */
+> >>  	if (unlikely(blockpfn > end_pfn))
+> >>  		blockpfn = end_pfn;
+> > 
+> > Is this check still necessary after the first hunk?
+> > 
+> Actually, I removed this check in the first version, but Baolin thought remove this check is not
+> cheap and not worth it. More discussion can be found in [1]. Thanks!
+> 
 
-Yes. that is correct.
+Ok, fair enough. While I think the check is redundant right now, it's a
+reasonable defensive check and this is not a fast path so
 
-> The driver should be made to allow dynamic selection of outputs, as
-> is commonly seen with other drivers, but I don't know if that's on
-> anyone's TODO list.
+Acked-by: Mel Gorman <mgorman@techsingularity.net>
 
-Do you have any pointers where to look at?
-
--michael
+-- 
+Mel Gorman
+SUSE Labs
