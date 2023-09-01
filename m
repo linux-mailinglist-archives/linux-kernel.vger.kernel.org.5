@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED6A7901F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D567901F1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 20:16:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242751AbjIASRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 14:17:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52370 "EHLO
+        id S241329AbjIASQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 14:16:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244823AbjIASRO (ORCPT
+        with ESMTP id S233132AbjIASQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 14:17:14 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 526CA1707
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:17:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693592227; x=1725128227;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=TbWSp+CQPKRZ1zYd1VCNuFvodX7IQ75yftc9mVnbeJQ=;
-  b=IqfOq0l4P1H2UYV0/04Sei8u0HscU3VZo/9TSbYDu/vqCUKavfkCX1cr
-   LHDzamG+e6HMonDKJ4317PJ+1dzqMTTSKTZTdQlpECjdf49ILhSDqeZgC
-   hTkgo/LP2mrN9NidFsTpS4c6IRpBTbZj47fRxumWSO5zmPcmiRo0+mlsX
-   QR+tpY9K9szbzr+pbecu+2/K+izH9PjJ/2uIxhgUnF4jNFs9Rk5Zg3yTN
-   R2SW7KStWI9pN2t+RJhUY5aqaG16BLFgBe7hwuQZ34mpIUJUepxG43YKQ
-   96BtssIWC9WwSBN5/KEDkSU7EI6lCT5Jrk8gHdnuJBkFQccqvwPZT5Myv
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="376208968"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="376208968"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 11:17:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="775084459"
-X-IronPort-AV: E=Sophos;i="6.02,220,1688454000"; 
-   d="scan'208";a="775084459"
-Received: from ylee37-mobl.amr.corp.intel.com (HELO rpedgeco-desk4.intel.com) ([10.209.18.85])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 11:17:06 -0700
-From:   Rick Edgecombe <rick.p.edgecombe@intel.com>
-To:     x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
+        Fri, 1 Sep 2023 14:16:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A10F2
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:16:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 93957211CE;
+        Fri,  1 Sep 2023 18:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1693592206; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SczNKaVL1iGLO0+CrAmVKlavPYKq/W/vUS1YtqrLUeA=;
+        b=NS3n//SRONg/+5qwYUhU4v7EUfrYcHS6eBYWOfvhso+oKNwFKksOfTgCDTeUIwMwHBARnp
+        h1kOIlxIZBBWNKUMr0xYYqdxJc0gMN5wN9x/5STfYZ9uxO/yoUn9xrkqTnz3rJBHn4KAsg
+        j+mh+pMUG2KR/j5O0vh0nWMcsmSYzwM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1693592206;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SczNKaVL1iGLO0+CrAmVKlavPYKq/W/vUS1YtqrLUeA=;
+        b=fMrgFtVvLdrPEqKIjJoDzcyLZuWrTbedHnbRrE/d58/WtNZWw5CYV+ftwQ2YFYm7xjUrAR
+        N+pdmTTHgDR6UnCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 77D1B13582;
+        Fri,  1 Sep 2023 18:16:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id +z3/G44q8mQ5SwAAMHmgww
+        (envelope-from <chrubis@suse.cz>); Fri, 01 Sep 2023 18:16:46 +0000
+Date:   Fri, 1 Sep 2023 20:17:22 +0200
+From:   Cyril Hrubis <chrubis@suse.cz>
+To:     Petr Vorel <pvorel@suse.cz>
+Cc:     Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Cc:     rick.p.edgecombe@intel.com
-Subject: [PATCH] selftests/x86: Update map_shadow_stack syscall nr
-Date:   Fri,  1 Sep 2023 11:16:52 -0700
-Message-Id: <20230901181652.2583861-1-rick.p.edgecombe@intel.com>
-X-Mailer: git-send-email 2.34.1
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org, ltp@lists.linux.it
+Subject: Re: [LTP] [PATCH] sched/rt: Disallow writing invalid values to
+ sched_rt_period_us
+Message-ID: <ZPIqsmTbJh7z-LcO@yuki>
+References: <20230901154355.5351-1-chrubis@suse.cz>
+ <20230901174529.GB364687@pevik>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230901174529.GB364687@pevik>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Shadow stack's selftest utilizes the map_shadow_stack syscall. The
-syscall is new with the feature, but the selftests cannot automatically
-find the headers for the kernel source tree they are located in. This
-resulted in the shadow stack test failing to build until the brand new
-headers were installed.
+Hi!
+> Documentation/scheduller/sched-rt-group.rst [1] specifies this as values from -1 to
+> (INT_MAX - 1), I guess due int range. Looking into proc_dointvec_minmax() [2]
+> even INT_MAX would pass the check. I suppose we can do nothing about that,
+> because there is no value in sysctl_vals[] which would represent INT_MAX - 1.
+> 
+> And you specify in LTP test range: from -1 to INT_MAX.
+> 
+> But even much shorter value than INT_MAX fails:
+> 
+> $ echo 1234567 > /proc/sys/kernel/sched_rt_runtime_us
+> sh: echo: write error: Invalid argument
 
-To avoid this, a copy of the new uapi defines needed by the test were
-included in the selftest (see link for discussion). When shadow stack was
-merged the syscall number was changed, but the copy in the selftest was
-not updated.
+That is because runtime_us must be < period_us by definition, since
+runtime_us defines how much time is allocated from the period_us. I
+guess that this is not described good enough in the kernel docs.
 
-So update the copy of the syscall number define used when the required
-headers are not installed, to have the final syscall number from the
-merge.
-
-Link: https://lore.kernel.org/lkml/Y%2FijdXoTAATt0+Ct@zn.tnic/
-Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
----
- tools/testing/selftests/x86/test_shadow_stack.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/x86/test_shadow_stack.c b/tools/testing/selftests/x86/test_shadow_stack.c
-index 2188968674cb..757e6527f67e 100644
---- a/tools/testing/selftests/x86/test_shadow_stack.c
-+++ b/tools/testing/selftests/x86/test_shadow_stack.c
-@@ -40,7 +40,7 @@
-  * without building the headers.
-  */
- #ifndef __NR_map_shadow_stack
--#define __NR_map_shadow_stack	452
-+#define __NR_map_shadow_stack	453
- 
- #define SHADOW_STACK_SET_TOKEN	(1ULL << 0)
- 
 -- 
-2.34.1
-
+Cyril Hrubis
+chrubis@suse.cz
