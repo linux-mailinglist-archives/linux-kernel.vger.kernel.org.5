@@ -2,70 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B293790285
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 21:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 586CE79028D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 21:49:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350676AbjIATiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 15:38:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40992 "EHLO
+        id S1350664AbjIATs7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 15:48:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350659AbjIATh7 (ORCPT
+        with ESMTP id S236606AbjIATs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 15:37:59 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF2E510E0
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 12:37:56 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9a21b6d105cso293496166b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 12:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693597075; x=1694201875; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=trT8rJs4itRMrUUN+r3Bs9PYSmOYVL0fzoG+3eNw/pM=;
-        b=V0vEQnsgM9WQjhD24ZSG0BqpV/I19eVgKhlvu0ocEAQR3LwUCNWaHk5N/rqN5ziDMI
-         P/z2KO+w53uioSze/wJvbf8KGlx03UWYJV4P6s9kyXLBQgryMdFD3tOHsNUtf1GPDvhu
-         AsDjkM/BqP+KXzWMrAFMcWjLBGICEBBZLqm10=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693597075; x=1694201875;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=trT8rJs4itRMrUUN+r3Bs9PYSmOYVL0fzoG+3eNw/pM=;
-        b=GE/pM0tg/gvQZwlaqBwNgfncD5EkpMGvmqIE5zGV5MEk4YAS/qlbRq3tYm+slqCKxO
-         AvCiqw2tl2F4cijRIb0HbinydB1Emc+Lvw9ryTrXJ3qR6zeMQuR9pAdo/jSi7jynRfdn
-         nGNGNrso9I8iPeJ6gWoGd8/6VTZX6fcAhNBhQe3CHJqjAsLcoWG3OPNF06PyyvmZwh/I
-         Yq9Quh9K1iG5LejvLINvQk2GOv5O+rCmRJ3IIcyHzWjE1F/9hsxDIbLBpmxhfTaX9WBg
-         ikH4Q8fNUl60uBRi2HUcBTHA8QqDs333kdDRybMsl42pCk3HdqlS3xp81itPbHtU8ZRq
-         f++Q==
-X-Gm-Message-State: AOJu0YzDjhDwnoxYayNXRv1uX6C6hYtQDUSMNQCUAh4+oXwLkPNsJfdL
-        8boc5UwfLxqSNcXQROSEt/p7bJcQe+LEc1+E7+51w9N+
-X-Google-Smtp-Source: AGHT+IF9Di4bCkSoKKvDzIDSYYB1wTIt0MFIOP1PsC1OcgI7q+m7JovWVbWvs/EitxwrawThZhfmUA==
-X-Received: by 2002:a17:906:73d2:b0:9a5:c9a4:ba19 with SMTP id n18-20020a17090673d200b009a5c9a4ba19mr2658791ejl.47.1693597075381;
-        Fri, 01 Sep 2023 12:37:55 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id a3-20020a17090680c300b009a19fa8d2e9sm2323243ejx.206.2023.09.01.12.37.54
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Sep 2023 12:37:54 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-99c1c66876aso294355166b.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 12:37:54 -0700 (PDT)
-X-Received: by 2002:a17:906:53cf:b0:9a2:ecd:d95d with SMTP id
- p15-20020a17090653cf00b009a20ecdd95dmr2244197ejo.68.1693597074340; Fri, 01
- Sep 2023 12:37:54 -0700 (PDT)
+        Fri, 1 Sep 2023 15:48:58 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA87010FB;
+        Fri,  1 Sep 2023 12:48:53 -0700 (PDT)
+X-QQ-mid: bizesmtp75t1693597700tvurg4sl
+Received: from linux-lab-host.localdomain ( [119.123.130.254])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Sat, 02 Sep 2023 03:48:19 +0800 (CST)
+X-QQ-SSF: 01200000000000E0Y000000A0000000
+X-QQ-FEAT: jXjag1m6xl7V8vq+Tnca4THfX4IQyAbZCcaSwMnXfVrKGFdfMm8RciDVjTSNF
+        VgfZCgWLj8yjvPbVPvfTsn6nfkMkU9QDJCj7YkAkF3wSIVT3sxcjo/9Q05Gc3g5Xrkg+Gab
+        W0SZSaWnA2CEsPIh2jmvwFeKLxEsWMBc9fqlbQAnF4751Rc8vSv1/NpnENhCzfIIBInSbw4
+        ZNEmUrRToyPHJomXLhIOr08WYSycawyiK45Le+wpYdvM/63yZBKYnmh2wsHjdEQ/FUnsPDq
+        Qv3pQzkHCo2gvi+M/AbB2ooucYerdqV3BpJvOSwIV0baCMQ6ufqMsbgyvsWwGkJ3pp1piDp
+        pohrZp6MLFgdwqc3UHv3snrtV1Lzyc3ITla+14qRsPb40JnEcAh9qIQqdNEfA==
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13888216478072652093
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     david.laight@aculab.com
+Cc:     ammarfaizi2@gnuweeb.org, arnd@arndb.de, falcon@tinylab.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        tanyuan@tinylab.org, thomas@t-8ch.de, w@1wt.eu
+Subject: RE: [RFC] tools/nolibc: replace duplicated -ENOSYS return with single -ENOSYS return
+Date:   Sat,  2 Sep 2023 03:48:18 +0800
+Message-Id: <20230901194818.6495-1-falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <f7f06eb4a5b44ce29718341e28c823f8@AcuMS.aculab.com>
+References: <f7f06eb4a5b44ce29718341e28c823f8@AcuMS.aculab.com>
 MIME-Version: 1.0
-References: <rbbohtzjjqpbh7w6nmkqqoi2ca5jfl62sxtjyv5go5dock32yr@vslcd4yadpdg>
-In-Reply-To: <rbbohtzjjqpbh7w6nmkqqoi2ca5jfl62sxtjyv5go5dock32yr@vslcd4yadpdg>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 1 Sep 2023 12:37:36 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whQveTsVOJX9TVTBCtKLMun6spgC-MrSjKeowufariHKw@mail.gmail.com>
-Message-ID: <CAHk-=whQveTsVOJX9TVTBCtKLMun6spgC-MrSjKeowufariHKw@mail.gmail.com>
-Subject: Re: [GIT PULL] HID for 6.6
-To:     Benjamin Tissoires <bentiss@kernel.org>
-Cc:     Jiri Kosina <jikos@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_VALIDITY_RPBL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,16 +52,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Aug 2023 at 07:37, Benjamin Tissoires <bentiss@kernel.org> wrote:
+Hi, David
+
+> ...
+> > We also need this style of checking for the delta logic in __atoi_add(). have
+> > randomly tried different clang and gcc versions, seems all of them work
+> > correctly, but the compiling speed is not that good if we want to support the
+> > worst cases like "((0x900000 + 0x0f0000) + 5)", the shorter one
+> > "((0x900000+0x0f0000)+5)" is used by ARM+OABI (not supported by nolibc
+> > currently), therefore, we can strip some tailing branches but it is either not
+> > that fast, of course, the other architectures/variants can use faster
+> > __atoi_add() versions with less branches and without hex detection, comparison
+> > and calculating.
+> 
+> If there are only a few prefix offsets then the code can be optimised
+> to explicitly detect them - rather than decoding arbitrary hex values.
+> After all it only needs to decode the values that actually appear.
+> 
+> The code also needs a compile-time assert that the result
+> is constant (__buitin_constant_p() will do the check.
+> But you can't use _Static_assert() to report the error
+> because that requires an 'integer constant expression'.
 >
-> - devm fixes that were now sending use after free in linux-next
 
-Please double-check your pull requests.
+Thanks a lot, your above suggestion inspired me a lot.
 
-I have no idea what that random set of words in a random order means.
-It's not a sentence, and none of it makes sense.
+I have explored ARM and MIPS again and found their __NR_* definitions
+have only a 'dynamic' part, that is the right part:
 
-I tried to make it a sentence based on the actual git commits I see,
-but please try to make your pull requests more sensible.
+    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_io_uring_register (__NR_Linux + 427)
+    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_open_tree (__NR_Linux + 428)
+    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_move_mount (__NR_Linux + 429)
+    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_fsopen (__NR_Linux + 430)
+    arch/mips/include/generated/uapi/asm/unistd_o32.h:#define __NR_fsconfig (__NR_Linux + 431)
 
-            Linus
+    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_io_uring_setup (__NR_SYSCALL_BASE + 425)
+    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_io_uring_enter (__NR_SYSCALL_BASE + 426)
+    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_io_uring_register (__NR_SYSCALL_BASE + 427)
+    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_open_tree (__NR_SYSCALL_BASE + 428)
+    arch/arm/include/generated/uapi/asm/unistd-eabi.h:#define __NR_move_mount (__NR_SYSCALL_BASE + 429)
+
+The left part: __NR_Linux and __NR_SYSCALL_BASE are always defined, so,
+we can get their values directly, without the need of stringify and
+unstringify, as a result, the delta addition work becomes:
+
+    base + __atoi_from(str, sizeof(#base) + 3)
+
+And we can simply convert our old __atoi() to __atoi_from(), change the
+fixed 0 'from' to a dynamic 'from'. and a simple __get_from() can help
+us to get the right offset for more complicated cases, such as:
+(__NR_Linux+1), (__NR_Linux + 1).
+
+So, the new __atoi_add() becomes:
+
+    __atoi_add(str, base):
+
+    --> __atoi_add(__stringify(__NR_open_tree), __NR_Linux)
+    --> __atoi_add("(4000 + 428)", 4000)
+    --> __atoi_from("(4000 + 428)", sizeof(#4000) + 3) + 4000
+    --> __atoi_from("(4000 + 428)", 8) + 4000
+                      ~~~~   ^     /    ~~~~
+		      base    \___/     base
+		              from
+    --> 428 + 4000
+    --> 4428
+
+It is very fast and the cost time is deterministic. It also works for
+the most complicated case we have mentioned:
+
+    __atoi_add("((0x900000+0x0f0000)+5)", (0x900000+0x0f0000))
+
+    --> __atoi_from("((0x900000+0x0f0000)+5)", sizeof(#(0x900000+0x0f0000)) + 1) + (0x900000+0x0f0000)
+                                          ^                   /
+					   \_________________/
+    --> ...
+    --> 5 + (0x900000+0x0f0000)
+
+So, the calculating of the most complicated part can be simply skipped,
+we only need to convert the minimal 'dynamic' part from string to
+integer and since the 'dynamic' part is not that big, most of them may
+be less than 1000 in the not long future, only 4 characters and
+therefore only 4-level depth branches for __atoi_from(), so, even with
+hex 'dynamic' part conversion (but we may don't need it any more), the
+compile speed is also very fast.
+
+A simple local test on most of the architectures shows, the compile
+speed is very near to the one with our old proposed NOLIBC__NR_* macros
+for every __NR_* (defined as (-1L) when __NR_* not defined) and their
+generated binary size is the same, so, we are near the ultimate solution,
+but still need more tests. Thanks again for your positive suggestion!
+
+Best regards,
+Zhangjin
+
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
