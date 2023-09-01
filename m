@@ -2,85 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B27678FE59
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50B5978FE5E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:37:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349762AbjIANfx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:35:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S1349768AbjIANhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:37:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243852AbjIANfw (ORCPT
+        with ESMTP id S233098AbjIANhR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:35:52 -0400
-Received: from smtp1.axis.com (smtp1.axis.com [195.60.68.17])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2994CDD
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:35:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=axis.com; q=dns/txt; s=axis-central1; t=1693575349;
-  x=1725111349;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:to:cc;
-  bh=N6etfJze35By8LfXFdbrd19JU35OJUDOzD8xl1EMvVU=;
-  b=g6J/z+eRoPn24Kcd48V58L2pgTYOz5TSCQPqEqab4msIinREYNZPlC2p
-   RuYMY84KZMWM5fOsVkSOZnDr1QB4nE6XnRIji0P6QbztNtBjupRF7X9Rh
-   qmd2dtC9ufDQqYvr9H4x2LTE4ZFxLVpPIkj++VbAGvkHU1X4OGqZwgwAJ
-   XpOq5d7v/IiVfDZvHlRBl2xJNrYLSWGQGtnk7gR5/4MO2FM8/n1QV0e/d
-   q1FoP3o1DQYSFjMucLEhlLp1foG1IEqJINyD7hC5X/vHHv0GmS7UJFsTI
-   R4XCwb4KmA54E7eWVmSNB+C9vyo4i0suyATDO5hlwxItzrsbfTug2MvNU
-   A==;
-From:   Vincent Whitchurch <vincent.whitchurch@axis.com>
-Date:   Fri, 1 Sep 2023 15:35:43 +0200
-Subject: [PATCH] um: virt-pci: fix platform map offset
+        Fri, 1 Sep 2023 09:37:17 -0400
+Received: from forward103b.mail.yandex.net (forward103b.mail.yandex.net [178.154.239.150])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C82CCDD
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:37:10 -0700 (PDT)
+Received: from mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net [IPv6:2a02:6b8:c08:2e14:0:640:2cd1:0])
+        by forward103b.mail.yandex.net (Yandex) with ESMTP id BCE3E600C9;
+        Fri,  1 Sep 2023 16:37:03 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 1bTJsPiDbqM0-prEI6731;
+        Fri, 01 Sep 2023 16:37:03 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=itb.spb.ru; s=mail; t=1693575423;
+        bh=Ba8JWc3C9psCW/rmvc3IHsDGaZyabBvdUWtlCB4rRX8=;
+        h=Message-Id:Date:Cc:Subject:To:From;
+        b=UrNdCmqqSOogo/OavfhMWwDrPKx8G1SaWm5o2i6XE+DQ7WQ2rF5o2IEANWoxn3sWr
+         UIEqAIbCA5X6kvpeGf6E7Vmin6mLvsECllP4c4zRrqpBiwq1EOjNsR1SO/BK34+OkI
+         NfQheI5H1w347KexyNmJ8fMPItl9hA2MPcS/8M7o=
+Authentication-Results: mail-nwsmtp-smtp-production-main-25.sas.yp-c.yandex.net; dkim=pass header.i=@itb.spb.ru
+From:   Dembskiy Igor <dii@itb.spb.ru>
+To:     Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc:     Dembskiy Igor <dii@itb.spb.ru>,
+        Boris Brezillon <bbrezillon@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Akinobu Mita <akinobu.mita@gmail.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        lvc-project@linuxtesting.org
+Subject: [PATCH] mtd: tests: remove useless checks
+Date:   Fri,  1 Sep 2023 16:36:41 +0300
+Message-Id: <20230901133641.60817-1-dii@itb.spb.ru>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20230901-uml-virt-offset-v1-1-5c1f320a037d@axis.com>
-X-B4-Tracking: v=1; b=H4sIAK7o8WQC/x3MSQqAMAxA0atI1gZaJ6hXERfSJhpwotUiFO9uc
- fkW/ycI5IUC9EUCT1GCHHuGLguwy7TPhOKyoVJVrYzSeG8rRvEXHsyBLnSm0Ww7tk3rIFenJ5b
- nPw7j+34PfYvcYQAAAA==
-To:     Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>
-CC:     <linux-um@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@axis.com>, Vincent Whitchurch <vincent.whitchurch@axis.com>
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The offset is currently always zero so the backend can't distinguish
-between accesses to different ioremapped areas.
+Return value of mtdtest_scan_for_bad_() is always 0. So it causes senseless
+checks in some functions such as mtd_subpagetest_init().
 
-Fixes: 522c532c4fe7 ("virt-pci: add platform bus support")
-Signed-off-by: Vincent Whitchurch <vincent.whitchurch@axis.com>
+Fixes: 084db4b020c7 ("mtd: tests: introduce helper functions")
+Signed-off-by: Dembskiy Igor <dii@itb.spb.ru>
 ---
- arch/um/drivers/virt-pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/mtd/tests/oobtest.c     | 2 --
+ drivers/mtd/tests/pagetest.c    | 2 --
+ drivers/mtd/tests/readtest.c    | 2 --
+ drivers/mtd/tests/speedtest.c   | 3 +--
+ drivers/mtd/tests/stresstest.c  | 2 --
+ drivers/mtd/tests/subpagetest.c | 2 --
+ drivers/mtd/tests/torturetest.c | 2 --
+ 7 files changed, 1 insertion(+), 14 deletions(-)
 
-diff --git a/arch/um/drivers/virt-pci.c b/arch/um/drivers/virt-pci.c
-index 7699ca5f35d4..2adcd14e1d74 100644
---- a/arch/um/drivers/virt-pci.c
-+++ b/arch/um/drivers/virt-pci.c
-@@ -969,7 +969,7 @@ static long um_pci_map_platform(unsigned long offset, size_t size,
- 	*ops = &um_pci_device_bar_ops;
- 	*priv = &um_pci_platform_device->resptr[0];
+diff --git a/drivers/mtd/tests/oobtest.c b/drivers/mtd/tests/oobtest.c
+index 13fed398937e..976f40a5656e 100644
+--- a/drivers/mtd/tests/oobtest.c
++++ b/drivers/mtd/tests/oobtest.c
+@@ -399,8 +399,6 @@ static int __init mtd_oobtest_init(void)
+ 	pr_info("test 1 of 5\n");
  
--	return 0;
-+	return offset;
- }
+ 	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
+-	if (err)
+-		goto out;
  
- static const struct logic_iomem_region_ops um_pci_platform_ops = {
-
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230901-uml-virt-offset-d941fc6fc45d
-
-Best regards,
+ 	prandom_seed_state(&rnd_state, 1);
+ 	err = write_whole_device();
+diff --git a/drivers/mtd/tests/pagetest.c b/drivers/mtd/tests/pagetest.c
+index 8eb40b6e6dfa..a59ef88cdaf3 100644
+--- a/drivers/mtd/tests/pagetest.c
++++ b/drivers/mtd/tests/pagetest.c
+@@ -373,8 +373,6 @@ static int __init mtd_pagetest_init(void)
+ 	if (!bbt)
+ 		goto out;
+ 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
+-	if (err)
+-		goto out;
+ 
+ 	/* Erase all eraseblocks */
+ 	pr_info("erasing whole device\n");
+diff --git a/drivers/mtd/tests/readtest.c b/drivers/mtd/tests/readtest.c
+index 99670ef91f2b..8bc52aca1b2a 100644
+--- a/drivers/mtd/tests/readtest.c
++++ b/drivers/mtd/tests/readtest.c
+@@ -162,8 +162,6 @@ static int __init mtd_readtest_init(void)
+ 	if (!bbt)
+ 		goto out;
+ 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
+-	if (err)
+-		goto out;
+ 
+ 	/* Read all eraseblocks 1 page at a time */
+ 	pr_info("testing page read\n");
+diff --git a/drivers/mtd/tests/speedtest.c b/drivers/mtd/tests/speedtest.c
+index 075bce32caa5..978369f8d4c0 100644
+--- a/drivers/mtd/tests/speedtest.c
++++ b/drivers/mtd/tests/speedtest.c
+@@ -229,8 +229,7 @@ static int __init mtd_speedtest_init(void)
+ 	if (!bbt)
+ 		goto out;
+ 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
+-	if (err)
+-		goto out;
++
+ 	for (i = 0; i < ebcnt; i++) {
+ 		if (!bbt[i])
+ 			goodebcnt++;
+diff --git a/drivers/mtd/tests/stresstest.c b/drivers/mtd/tests/stresstest.c
+index 8062098930d6..0a1fa8a2078e 100644
+--- a/drivers/mtd/tests/stresstest.c
++++ b/drivers/mtd/tests/stresstest.c
+@@ -189,8 +189,6 @@ static int __init mtd_stresstest_init(void)
+ 	if (!bbt)
+ 		goto out;
+ 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
+-	if (err)
+-		goto out;
+ 
+ 	/* Do operations */
+ 	pr_info("doing operations\n");
+diff --git a/drivers/mtd/tests/subpagetest.c b/drivers/mtd/tests/subpagetest.c
+index 05250a080139..5ca93e169a25 100644
+--- a/drivers/mtd/tests/subpagetest.c
++++ b/drivers/mtd/tests/subpagetest.c
+@@ -319,8 +319,6 @@ static int __init mtd_subpagetest_init(void)
+ 		goto out;
+ 
+ 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bbt, 0, ebcnt);
+-	if (err)
+-		goto out;
+ 
+ 	err = mtdtest_erase_good_eraseblocks(mtd, bbt, 0, ebcnt);
+ 	if (err)
+diff --git a/drivers/mtd/tests/torturetest.c b/drivers/mtd/tests/torturetest.c
+index 841689b4d86d..46634198e19d 100644
+--- a/drivers/mtd/tests/torturetest.c
++++ b/drivers/mtd/tests/torturetest.c
+@@ -243,8 +243,6 @@ static int __init tort_init(void)
+ 	}
+ 
+ 	err = mtdtest_scan_for_bad_eraseblocks(mtd, bad_ebs, eb, ebcnt);
+-	if (err)
+-		goto out;
+ 
+ 	start_timing();
+ 	while (1) {
 -- 
-Vincent Whitchurch <vincent.whitchurch@axis.com>
+2.34.1
 
