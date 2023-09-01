@@ -2,96 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D6DF78FA46
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DD2778FA4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346415AbjIAIye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:54:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54448 "EHLO
+        id S236873AbjIAI4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjIAIyd (ORCPT
+        with ESMTP id S229452AbjIAI4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:54:33 -0400
+        Fri, 1 Sep 2023 04:56:18 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CFE10D2;
-        Fri,  1 Sep 2023 01:54:30 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1672310D3
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:56:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693558470; x=1725094470;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2/bqX217T+NIJ6k+UnOTcD+QbA7ZngdBr03vA4SIUyg=;
-  b=c8OuS/+P8QWJN8QPiY9iu7JqnLWgNkHdDzwdHYFkHwC6BKZo/Dq6vsSl
-   ep+dkXk00GCgJqKMAHqqWfynzjPY5oYvbsXjGabRrti/mHEMqaBdq8SGg
-   Y9C/tFWT0ikH2e6bJcTOr7huWhojrbQvn4/7QTSfcRZQ3+E48C2NL+DXG
-   jqFe6wg6CGkMqDvqGEebKRaYDkmO1O0prAez0kyayAkSjQz4bgX7+OlnQ
-   6PvEB8rpUWr+Gse6sFvJ0Lmjxb5rj9uwe22QqPY1JYMWkx7hhRqj0MGLi
-   hY9UQ/mNVXbBzdv/evillEUpCXHM5v0uX0YksGMdxNbAXLo2S7Xi9oZYi
+  t=1693558574; x=1725094574;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=nDVQFhqTixCtGXwWXAstRFhOuFQ3MPyV5OjPTLkEWEQ=;
+  b=WT26XUG4/RvKE5CkgN4Md2wzaP0ctelYDAjJOEvTOr5rZ9capku3eHj5
+   l+rRolJ/9EjVHbcCZErtoyMNFjJcF6p5kEvK17+Ehvv+BfM6WH+WoEq0b
+   ICC7UUpjf4O+fZTqr3ZmsYUrGe+TWY7ckzxb6Xw0x1lxovpW8RTm2/JMr
+   MRQjd4RA82ae5Nl/P23E3P3DKc1frUxUa8egCqD/9EyAJrZT2oisMJfl5
+   QW1ZaHmR6PhAQazjJODln21CyC+YAdPwXHAnb3/s3Z8E25sbaLbHrQy/V
+   sBhw3rzq2Vc8yPFldFgK/5KfWElFYcWS//LtX3QVLcicLFKh3OS2475RD
    g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="440151313"
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="440151652"
 X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="440151313"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:54:30 -0700
+   d="scan'208";a="440151652"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:56:13 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="1070669202"
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="769133437"
 X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="1070669202"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:54:23 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qbzv1-005cqw-0F;
-        Fri, 01 Sep 2023 11:54:19 +0300
-Date:   Fri, 1 Sep 2023 11:54:18 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     yangxingui <yangxingui@huawei.com>
-Cc:     Luo Jiaxing <luojiaxing@huawei.com>, akpm@linux-foundation.org,
-        viro@zeniv.linux.org.uk, linux-kernel@vger.kernel.org,
-        martin.petersen@oracle.com, john.garry@huawei.com,
-        himanshu.madhani@cavium.com, felipe.balbi@linux.intel.com,
-        gregkh@linuxfoundation.org, uma.shankar@intel.com,
-        anshuman.gupta@intel.com, animesh.manna@intel.com,
-        linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linuxarm@huawei.com
-Subject: Re: [PATCH v4 0/5] Introduce a new helper macro
- DEFINE_SHOW_STORE_ATTRIBUTE at seq_file.c
-Message-ID: <ZPGmulPTWGa1W3OM@smile.fi.intel.com>
-References: <1605164864-58944-1-git-send-email-luojiaxing@huawei.com>
- <ZPDZtR8W1TLcOHW+@smile.fi.intel.com>
- <14010198-c128-4960-0d56-5ee28f4da53f@huawei.com>
+   d="scan'208";a="769133437"
+Received: from akoczor-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.14.236])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:56:09 -0700
+From:   "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+To:     Fenghua Yu <fenghua.yu@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] x86/resctrl: Enable non-contiguous bits in Intel CAT
+Date:   Fri,  1 Sep 2023 10:55:37 +0200
+Message-ID: <1bd3aab725a4e2948530095eb48b11bcc4028f8e.1693557919.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1693557919.git.maciej.wieczor-retman@intel.com>
+References: <cover.1693557919.git.maciej.wieczor-retman@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <14010198-c128-4960-0d56-5ee28f4da53f@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 03:11:38PM +0800, yangxingui wrote:
-> On 2023/9/1 2:19, Andy Shevchenko wrote:
-> > On Thu, Nov 12, 2020 at 03:07:38PM +0800, Luo Jiaxing wrote:
-> > > We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
-> > > for read-only file, but we found many of drivers also want a helper macro
-> > > for read-write file too.
-> > > 
-> > > So we add this macro to help decrease code duplication.
-> > 
-> > Are you going to pursue this one?
-> Hi Andy
-> 
-> Jiaxing has left his job, and his email is invalid.
+The setting for non-contiguous 1s support in Intel CAT is
+hardcoded to false. On these systems, writing non-contiguous
+1s into the schemata file will fail before resctrl passes
+the value to the hardware.
 
-OK! Anybody else to continue this to be finished?
+In Intel CAT CPUID.0x10.1:ECX[3] and CPUID.0x10.2:ECX[3] stopped
+being reserved and now carry information about non-contiguous 1s
+value support for L3 and L2 cache respectively. The CAT
+capacity bitmask (CBM) supports a non-contiguous 1s value if
+the bit is set.
 
+Replace the hardcoded non-contiguous support value with
+the support learned from the hardware. Add hardcoded non-contiguous
+support value to Haswell probe since it can't make use of CPUID for
+Cache allocation.
+
+Originally-by: Fenghua Yu <fenghua.yu@intel.com>
+Signed-off-by: Wieczor-Retman, Maciej <maciej.wieczor-retman@intel.com>
+---
+ arch/x86/kernel/cpu/resctrl/core.c        |  9 ++++++---
+ arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 11 +++++++----
+ arch/x86/kernel/cpu/resctrl/internal.h    |  9 +++++++++
+ 3 files changed, 22 insertions(+), 7 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
+index 030d3b409768..c783a873147c 100644
+--- a/arch/x86/kernel/cpu/resctrl/core.c
++++ b/arch/x86/kernel/cpu/resctrl/core.c
+@@ -152,6 +152,7 @@ static inline void cache_alloc_hsw_probe(void)
+ 	r->cache.cbm_len = 20;
+ 	r->cache.shareable_bits = 0xc0000;
+ 	r->cache.min_cbm_bits = 2;
++	r->cache.arch_has_sparse_bitmaps = false;
+ 	r->alloc_capable = true;
+ 
+ 	rdt_alloc_capable = true;
+@@ -267,15 +268,18 @@ static void rdt_get_cache_alloc_cfg(int idx, struct rdt_resource *r)
+ {
+ 	struct rdt_hw_resource *hw_res = resctrl_to_arch_res(r);
+ 	union cpuid_0x10_1_eax eax;
++	union cpuid_0x10_x_ecx ecx;
+ 	union cpuid_0x10_x_edx edx;
+-	u32 ebx, ecx;
++	u32 ebx;
+ 
+-	cpuid_count(0x00000010, idx, &eax.full, &ebx, &ecx, &edx.full);
++	cpuid_count(0x00000010, idx, &eax.full, &ebx, &ecx.full, &edx.full);
+ 	hw_res->num_closid = edx.split.cos_max + 1;
+ 	r->cache.cbm_len = eax.split.cbm_len + 1;
+ 	r->default_ctrl = BIT_MASK(eax.split.cbm_len + 1) - 1;
+ 	r->cache.shareable_bits = ebx & r->default_ctrl;
+ 	r->data_width = (r->cache.cbm_len + 3) / 4;
++	if (boot_cpu_data.x86_vendor == X86_VENDOR_INTEL)
++		r->cache.arch_has_sparse_bitmaps = ecx.split.noncont;
+ 	r->alloc_capable = true;
+ }
+ 
+@@ -872,7 +876,6 @@ static __init void rdt_init_res_defs_intel(void)
+ 
+ 		if (r->rid == RDT_RESOURCE_L3 ||
+ 		    r->rid == RDT_RESOURCE_L2) {
+-			r->cache.arch_has_sparse_bitmaps = false;
+ 			r->cache.arch_has_per_cpu_cfg = false;
+ 			r->cache.min_cbm_bits = 1;
+ 		} else if (r->rid == RDT_RESOURCE_MBA) {
+diff --git a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+index b44c487727d4..782e2700290b 100644
+--- a/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
++++ b/arch/x86/kernel/cpu/resctrl/ctrlmondata.c
+@@ -87,10 +87,13 @@ int parse_bw(struct rdt_parse_data *data, struct resctrl_schema *s,
+ 
+ /*
+  * Check whether a cache bit mask is valid.
+- * For Intel the SDM says:
+- *	Please note that all (and only) contiguous '1' combinations
+- *	are allowed (e.g. FFFFH, 0FF0H, 003CH, etc.).
+- * Additionally Haswell requires at least two bits set.
++ * On Intel CPUs, non-contiguous 1s value support is indicated by CPUID:
++ *   - CPUID.0x10.1:ECX[3]: L3 non-contiguous 1s value supported if 1
++ *   - CPUID.0x10.2:ECX[3]: L2 non-contiguous 1s value supported if 1
++ *
++ * Additionally Haswell requires at least two bits set. Since it does not
++ * have CPUID enumeration support for Cache allocation the non-contiguous 1s
++ * value support is disabled.
+  * AMD allows non-contiguous bitmasks.
+  */
+ static bool cbm_validate(char *buf, u32 *data, struct rdt_resource *r)
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index 85ceaf9a31ac..c47ef2f13e8e 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -492,6 +492,15 @@ union cpuid_0x10_3_eax {
+ 	unsigned int full;
+ };
+ 
++/* CPUID.(EAX=10H, ECX=ResID).ECX */
++union cpuid_0x10_x_ecx {
++	struct {
++		unsigned int reserved:3;
++		unsigned int noncont:1;
++	} split;
++	unsigned int full;
++};
++
+ /* CPUID.(EAX=10H, ECX=ResID).EDX */
+ union cpuid_0x10_x_edx {
+ 	struct {
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.42.0
 
