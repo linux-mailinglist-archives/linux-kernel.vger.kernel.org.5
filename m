@@ -2,120 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C05378FA4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:55:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECDBE78FA4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 10:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348577AbjIAI4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 04:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45560 "EHLO
+        id S1348634AbjIAI4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 04:56:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229452AbjIAIz7 (ORCPT
+        with ESMTP id S229452AbjIAI4m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 04:55:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72AF10DE;
-        Fri,  1 Sep 2023 01:55:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693558555; x=1725094555;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=piDcFnofZ/dBRLLeg12gMD809GNKD90RTH/xZXY/YsQ=;
-  b=QqBhCuy1fE5z3APx1gAgr3JvSVotzt0+0QqhV9CkoxPebainMYSrVDAi
-   R06bzkow+rQkVQ38h2IEUQxFfS70i1JyQYVfk/Y4O/GGQwrpNsyvOoypM
-   Vko8IsRMpSwTP6Q65HuQkUyZoxRKAIiaQN00GCBs/oSO6Mv+EEQ/w6sZJ
-   MznYNsyYNXYn0yeU8x2/hKB5x+flden7i3x1SZQq4qZr6J1bG23eS6qQm
-   hnTsjsnRoKjBu5GmJ0QPN0wJW3MGpEtXKXL4nxaal4bRfJwhwqpW5gEK3
-   IotXT1T97TbyifeZb5XxpELS99b9DTmfRllSQ7ewSYOXLZx5HIWWlQXRc
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="440151594"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="440151594"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:55:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="1070669637"
-X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
-   d="scan'208";a="1070669637"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 01:55:51 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qbzwS-005cse-36;
-        Fri, 01 Sep 2023 11:55:48 +0300
-Date:   Fri, 1 Sep 2023 11:55:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>, Lukas Wunner <lukas@wunner.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFT PATCH] spi: bcm2835: reduce the abuse of the GPIO API
-Message-ID: <ZPGnFHgtK1wE6Ppf@smile.fi.intel.com>
-References: <20230831194934.19628-1-brgl@bgdev.pl>
- <ZPEhS0uBWABpaE+/@smile.fi.intel.com>
- <CAMRc=Md-6i+nqDtYiUUtZExA32c0nJxhevYsiZqmd1PP8aaMng@mail.gmail.com>
+        Fri, 1 Sep 2023 04:56:42 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5EA1310DE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 01:56:39 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 553F9FEC;
+        Fri,  1 Sep 2023 01:57:17 -0700 (PDT)
+Received: from [10.57.5.33] (unknown [10.57.5.33])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D9FC83FBD2;
+        Fri,  1 Sep 2023 01:56:37 -0700 (PDT)
+Message-ID: <f3bec3b9-e938-bea4-f89f-b0b698c4e302@arm.com>
+Date:   Fri, 1 Sep 2023 09:56:32 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH 1/2] dma/pool: trivial: add semicolon after label
+ attributes
+Content-Language: en-GB
+To:     Chunhui He <hchunhui@mail.ustc.edu.cn>
+Cc:     hch@lst.de, m.szyprowski@samsung.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <6f936d6e-9f27-ba72-68de-0ed27c0dbbe1@arm.com>
+ <20230829151216.GA4211@lst.de> <d5ef27f1-9e6d-5e3c-b7ea-4b0abca623ed@arm.com>
+ <20230831.115937.924195103727242070.hchunhui@mail.ustc.edu.cn>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20230831.115937.924195103727242070.hchunhui@mail.ustc.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Md-6i+nqDtYiUUtZExA32c0nJxhevYsiZqmd1PP8aaMng@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 09:40:11AM +0200, Bartosz Golaszewski wrote:
-> On Fri, Sep 1, 2023 at 1:25 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Thu, Aug 31, 2023 at 09:49:34PM +0200, Bartosz Golaszewski wrote:
-> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > >
-> > > Currently the bcm2835 SPI driver uses functions meant for GPIO providers
-> > > exclusively to locate the GPIO chip it gets its CS pins from and request
-> > > the relevant pin. I don't know the background and what bug forced this.
-
-...
-
-> > >       /*
-> > > +      * TODO: The code below is a slightly better alternative to the utter
-> > > +      * abuse of the GPIO API that I found here before. It creates a
-> > > +      * temporary lookup table, assigns it to the SPI device, gets the GPIO
-> > > +      * descriptor and then releases the lookup table.
-> > >        *
-> > > +      * Still the real problem is unsolved. Looks like the cs_gpiods table
-> > > +      * is not assigned correctly from DT?
-> > >        */
-> >
-> > I'm not sure why this quirk is here. AFAIR the SPI CS quirks are located in
-> > gpiolib-of.c.
-> >
+On 2023-08-31 12:59, Chunhui He wrote:
 > 
-> I'm not sure this is a good candidate for the GPIOLIB quirks. This is
-> the SPI setup callback (which makes me think - I should have used
-> gpiod_get(), not devm_gpiod_get() and then put the descriptor in
-> .cleanup()) and not probe. It would be great to get some background on
-> why this is even needed in the first place. The only reason I see is
-> booting the driver with an invalid device-tree that doesn't assign the
-> GPIO to the SPI controller.
+> On Tue, 29 Aug 2023 16:28:05 +0100, Robin Murphy <robin.murphy@arm.com> wrote:
+>> On 29/08/2023 4:12 pm, Christoph Hellwig wrote:
+>>> On Tue, Aug 29, 2023 at 03:22:22PM +0100, Robin Murphy wrote:
+>>>> AFAICS, what that clearly says is that *C++* label attributes can be
+>>>> ambiguous. This is not C++ code. Even in C11, declarations still
+>>>> cannot be
+>>>> labelled, so it should still be the case that, per the same GCC
+>>>> documentation, "the ambiguity does not arise". And even if the
+>>>> language did
+>>>> allow it, an inline declaration at that point at the end of a function
+>>>> would be downright weird and against the kernel coding style anyway.
+>>>>
+>>>> So, I don't really see what's "better" about cluttering up C code with
+>>>> unnecessary C++isms; it's just weird noise to me. The only thing I
+>>>> think it
+>>>> *does* achieve is introduce the chance that the static checker brigade
+>>>> eventually identifies a redundant semicolon and we get more patches to
+>>>> remove it again.
+> 
+> Inline declaration is a GNU C extension, so the ambiguity may arise.
+> Adding ';' makes the compiler easier to parse correctly, so I say
+> "better". The commit 13a453c241b78934a945b1af572d0533612c9bd1
+> (sched/fair: Add ';' after label attributes) also says the same.
 
-Maybe Lukas knows more?
+And that commit was also wrong. Nobody suggested C11 doesn't support 
+inline declarations - it demonstrably does - the fact in question is 
+that *attributes* on declarations is a C++ thing and not valid in C:
 
--- 
-With Best Regards,
-Andy Shevchenko
+~/src/linux$ git diff
+diff --git a/kernel/dma/pool.c b/kernel/dma/pool.c
+index 1acec2e22827..e1354235cb9c 100644
+--- a/kernel/dma/pool.c
++++ b/kernel/dma/pool.c
+@@ -137,7 +137,8 @@ static int atomic_pool_expand(struct gen_pool *pool, 
+size_t pool_size,
+         dma_common_free_remap(addr, pool_size);
+  #endif
+  free_page: __maybe_unused
+-       __free_pages(page, order);
++       int x = order;
++       __free_pages(page, x);
+  out:
+         return ret;
+  }
+~/src/linux$ make -j32
+   CALL    scripts/checksyscalls.sh
+   CC      kernel/dma/pool.o
+kernel/dma/pool.c: In function ‘atomic_pool_expand’:
+kernel/dma/pool.c:140:2: error: a label can only be part of a statement 
+and a declaration is not a statement
+   140 |  int x = order;
+       |  ^~~
+make[4]: *** [scripts/Makefile.build:243: kernel/dma/pool.o] Error 1
+make[3]: *** [scripts/Makefile.build:480: kernel/dma] Error 2
+make[2]: *** [scripts/Makefile.build:480: kernel] Error 2
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/home/robmur01/src/linux/Makefile:2032: .] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
 
 
+Thanks,
+Robin.
