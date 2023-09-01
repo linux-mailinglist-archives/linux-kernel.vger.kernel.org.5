@@ -2,166 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95CED78FDA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC3A78FDB1
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 14:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349650AbjIAMpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 08:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44724 "EHLO
+        id S233650AbjIAMro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 08:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349546AbjIAMok (ORCPT
+        with ESMTP id S229666AbjIAMrl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 08:44:40 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21D4F10F3;
-        Fri,  1 Sep 2023 05:44:36 -0700 (PDT)
-Received: from benjamin-XPS-13-9310.. (unknown [IPv6:2a01:e0a:120:3210:4d01:31d2:de6b:d217])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: benjamin.gaignard)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 2D89666072F1;
-        Fri,  1 Sep 2023 13:44:34 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693572274;
-        bh=pnW19QGFHas/i7g4P9JRpTYH72fRU9HVTUZzFWqPek8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=C3mBe4suL5E0b2t25qMCZTdtcbaV5ROCXucMTvOFZ9vmdT6wqRSQi8CkH+AG6q79U
-         sz5u7q+fGzjrxvAclyQVp5xs6YTJ/uePiRNkH0mJJP+zZoL9hueKLf86+2R58n9zql
-         P8IlPcpKxmHketo7HLdPjDJXA1wg1xRdVu19Xt5lDnuri60medy7a4vmoW7VebNBdX
-         zTZlo+5unmlT+Z8WqEonAL+E4u4BoKkr/3wh13DcDGk1nk77lqaELohndEELtJIYmM
-         uBQrHgJICWH7WtREkkkzn9mapRRHb4rP/5ML67DxIkHeltlMWXvSYrz7MUtdBoq9vc
-         klVSUTvFOwXGA==
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v6 18/18] media: v4l2: Add mem2mem helpers for DELETE_BUFS ioctl
-Date:   Fri,  1 Sep 2023 14:44:14 +0200
-Message-Id: <20230901124414.48497-19-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
-References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+        Fri, 1 Sep 2023 08:47:41 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC9361712;
+        Fri,  1 Sep 2023 05:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=hBuX7nam5gAwvmnrcnEmb9akPHOPpfY13LdGw+HDNN4=; b=VS9CV/bnPTECa4kVBOglmidFnz
+        DZoU2xOv9m6v9xwyr03s63CnbrEebOlw0HhCxVIkktpuz1VoecbABL07nFYO/XgMbjcDFMOpmoWT/
+        WM0K/JQ85uw34SMTY56jBM58KJ1EERr5V2vOhxFSnEXAmSKv/wyhKHnWg0Sm3I8EQCYPCL/alRn1H
+        IE3xv/kreq3kgA6iMpZ4Cc5cd6GBUSgSgVXmT81zdF5OeK0BlPOzjN6PfWv/oXZFGGZlRG0AAmrfG
+        gf/Rn0oMnsR5kWFPpKOHSO9Qzo3igTW23eZlaiPolOld6zK58nMfFs1+j2g5fec7+Syn2aFWM9MUC
+        m7HzmWTg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35794)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qc3X1-00049k-0L;
+        Fri, 01 Sep 2023 13:45:47 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qc3Wy-0007qD-LR; Fri, 01 Sep 2023 13:45:44 +0100
+Date:   Fri, 1 Sep 2023 13:45:44 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     "Radu Pirea (OSS)" <radu-nicolae.pirea@oss.nxp.com>
+Cc:     Radu Pirea <radu-nicolae.pirea@nxp.com>,
+        "atenart@kernel.org" <atenart@kernel.org>,
+        "sd@queasysnail.net" <sd@queasysnail.net>,
+        "andrew@lunn.ch" <andrew@lunn.ch>,
+        "hkallweit1@gmail.com" <hkallweit1@gmail.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Sebastian Tobuschat <sebastian.tobuschat@nxp.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        "richardcochran@gmail.com" <richardcochran@gmail.com>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Subject: Re: [RFC net-next v2 5/5] net: phy: nxp-c45-tja11xx: implement
+ mdo_insert_tx_tag
+Message-ID: <ZPHc+Jr14WAMKXvX@shell.armlinux.org.uk>
+References: <20230824091615.191379-1-radu-nicolae.pirea@oss.nxp.com>
+ <20230824091615.191379-6-radu-nicolae.pirea@oss.nxp.com>
+ <ZOx0L722xg5-J_he@hog>
+ <5d42d6c9-2f0c-8913-49ec-50a25860c49f@oss.nxp.com>
+ <ZO8pbtnlOVauabjC@hog>
+ <518c11e9000f895fddb5b3dc4d5b2bf445cf320f.camel@nxp.com>
+ <ZPGuchwza3xr5SaF@shell.armlinux.org.uk>
+ <f094ff74-4ee8-e58e-a1f1-0be27cfe729a@oss.nxp.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f094ff74-4ee8-e58e-a1f1-0be27cfe729a@oss.nxp.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Create v4l2-mem2mem helpers for VIDIOC_DELETE_BUFS ioctl.
+On Fri, Sep 01, 2023 at 02:31:32PM +0300, Radu Pirea (OSS) wrote:
+> On 01.09.2023 12:27, Russell King (Oracle) wrote:
+> > On Fri, Sep 01, 2023 at 09:09:06AM +0000, Radu Pirea wrote:
+> > > On Wed, 2023-08-30 at 13:35 +0200, Sabrina Dubroca wrote:
+> > > ...
+> > > 
+> > > > And it's not restored when the link goes back up? That's inconvenient
+> > > > :/
+> > > > Do we end up with inconsistent state? ie driver and core believe
+> > > > everything is still offloaded, but HW lost all state? do we leak
+> > > > some resources allocated by the driver?
+> > > 
+> > > Yes. We end up with inconsistent state. The HW will lost all state when
+> > > the phy is reseted. No resource is leaked, everything is there, but the
+> > > configuration needs to be reapplied.
+> > 
+> > If it's happening because the PHY is being re-attached from the network
+> > driver, then wouldn't it be a good idea to synchronise the hardware > state with the software configuration in the ->config_init function?
+> 
+> .config_init might be an option, but keeping the keys in the driver might
+> not be a good idea.
+> 
+> > 
+> > Presumably the hardware state is also lost when resuming from suspend
+> > as well? If so, that'll also fix that issue as well.
+> soft_reset is called when resuming from suspend, so, in this case, the
+> MACsec configuration will be lost.
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
- .../media/platform/verisilicon/hantro_v4l2.c  |  1 +
- drivers/media/test-drivers/vim2m.c            |  1 +
- drivers/media/v4l2-core/v4l2-mem2mem.c        | 20 +++++++++++++++++++
- include/media/v4l2-mem2mem.h                  | 12 +++++++++++
- 4 files changed, 34 insertions(+)
+Depending on what loses power at suspend time, it could be that the PHY
+is powered down, and thus would lose all configuration. This is
+something that the MACSEC core _has_ to expect may happen, and there
+has to be some way to restore the configuration, including the
+keys!
 
-diff --git a/drivers/media/platform/verisilicon/hantro_v4l2.c b/drivers/media/platform/verisilicon/hantro_v4l2.c
-index 27a1e77cca38..0fd1c2fc78c8 100644
---- a/drivers/media/platform/verisilicon/hantro_v4l2.c
-+++ b/drivers/media/platform/verisilicon/hantro_v4l2.c
-@@ -756,6 +756,7 @@ const struct v4l2_ioctl_ops hantro_ioctl_ops = {
- 	.vidioc_dqbuf = v4l2_m2m_ioctl_dqbuf,
- 	.vidioc_prepare_buf = v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs = v4l2_m2m_ioctl_create_bufs,
-+	.vidioc_delete_bufs = v4l2_m2m_ioctl_delete_bufs,
- 	.vidioc_expbuf = v4l2_m2m_ioctl_expbuf,
- 
- 	.vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
-diff --git a/drivers/media/test-drivers/vim2m.c b/drivers/media/test-drivers/vim2m.c
-index 3e3b424b4860..10bd8c92e340 100644
---- a/drivers/media/test-drivers/vim2m.c
-+++ b/drivers/media/test-drivers/vim2m.c
-@@ -960,6 +960,7 @@ static const struct v4l2_ioctl_ops vim2m_ioctl_ops = {
- 	.vidioc_dqbuf		= v4l2_m2m_ioctl_dqbuf,
- 	.vidioc_prepare_buf	= v4l2_m2m_ioctl_prepare_buf,
- 	.vidioc_create_bufs	= v4l2_m2m_ioctl_create_bufs,
-+	.vidioc_delete_bufs	= v4l2_m2m_ioctl_delete_bufs,
- 	.vidioc_expbuf		= v4l2_m2m_ioctl_expbuf,
- 
- 	.vidioc_streamon	= v4l2_m2m_ioctl_streamon,
-diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index 0cc30397fbad..d1d59943680f 100644
---- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-+++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-@@ -831,6 +831,17 @@ int v4l2_m2m_prepare_buf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- }
- EXPORT_SYMBOL_GPL(v4l2_m2m_prepare_buf);
- 
-+int v4l2_m2m_delete_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-+			 struct v4l2_delete_buffers *d)
-+{
-+	struct vb2_queue *vq;
-+
-+	vq = v4l2_m2m_get_vq(m2m_ctx, d->type);
-+
-+	return vb2_delete_bufs(vq, d);
-+}
-+EXPORT_SYMBOL_GPL(v4l2_m2m_delete_bufs);
-+
- int v4l2_m2m_create_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- 			 struct v4l2_create_buffers *create)
- {
-@@ -1377,6 +1388,15 @@ int v4l2_m2m_ioctl_create_bufs(struct file *file, void *priv,
- }
- EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_create_bufs);
- 
-+int v4l2_m2m_ioctl_delete_bufs(struct file *file, void *priv,
-+			       struct v4l2_delete_buffers *d)
-+{
-+	struct v4l2_fh *fh = file->private_data;
-+
-+	return v4l2_m2m_delete_bufs(file, fh->m2m_ctx, d);
-+}
-+EXPORT_SYMBOL_GPL(v4l2_m2m_ioctl_delete_bufs);
-+
- int v4l2_m2m_ioctl_querybuf(struct file *file, void *priv,
- 				struct v4l2_buffer *buf)
- {
-diff --git a/include/media/v4l2-mem2mem.h b/include/media/v4l2-mem2mem.h
-index d6c8eb2b5201..161f85c42dc8 100644
---- a/include/media/v4l2-mem2mem.h
-+++ b/include/media/v4l2-mem2mem.h
-@@ -381,6 +381,16 @@ int v4l2_m2m_dqbuf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- int v4l2_m2m_prepare_buf(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- 			 struct v4l2_buffer *buf);
- 
-+/**
-+ * v4l2_m2m_delete_bufs() - delete buffers from the queue
-+ *
-+ * @file: pointer to struct &file
-+ * @m2m_ctx: m2m context assigned to the instance given by struct &v4l2_m2m_ctx
-+ * @d: pointer to struct &v4l2_delete_buffers
-+ */
-+int v4l2_m2m_delete_bufs(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
-+			 struct v4l2_delete_buffers *d);
-+
- /**
-  * v4l2_m2m_create_bufs() - create a source or destination buffer, depending
-  * on the type
-@@ -860,6 +870,8 @@ int v4l2_m2m_ioctl_reqbufs(struct file *file, void *priv,
- 				struct v4l2_requestbuffers *rb);
- int v4l2_m2m_ioctl_create_bufs(struct file *file, void *fh,
- 				struct v4l2_create_buffers *create);
-+int v4l2_m2m_ioctl_delete_bufs(struct file *file, void *priv,
-+			       struct v4l2_delete_buffers *d);
- int v4l2_m2m_ioctl_querybuf(struct file *file, void *fh,
- 				struct v4l2_buffer *buf);
- int v4l2_m2m_ioctl_expbuf(struct file *file, void *fh,
+One can't "write configuration to hardware and then forget" when the
+hardware may lose state, no matter what the configuration is.
+
+Take for example hibernation... where the system may be effectively
+powered off - maybe even if it's a piece of mains powered equipment,
+it may be unplugged from the mains. When the system resumes, shouldn't
+the configuration be completely restored, keys and all, so that it
+continues to function as it was before hibernation?
+
+The only possible alternative would be to have some kind of way for
+the driver to tell the core that state was lost, so the core can
+invalidate that state and inform userspace of that event, so userspace
+gets the opportunity itself to restore the lost state.
+
 -- 
-2.39.2
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
