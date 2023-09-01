@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C492978FB1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6E778FB1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:42:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348920AbjIAJmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:42:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55834 "EHLO
+        id S1348909AbjIAJmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348890AbjIAJmB (ORCPT
+        with ESMTP id S1348889AbjIAJmB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Sep 2023 05:42:01 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DE6810F0;
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB77610EC;
         Fri,  1 Sep 2023 02:41:55 -0700 (PDT)
-Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RcXyH0ncdzhZJG;
-        Fri,  1 Sep 2023 17:37:59 +0800 (CST)
+Received: from kwepemm600012.china.huawei.com (unknown [172.30.72.53])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4RcY0r4ZZJz1L8v0;
+        Fri,  1 Sep 2023 17:40:12 +0800 (CST)
 Received: from build.huawei.com (10.175.101.6) by
  kwepemm600012.china.huawei.com (7.193.23.74) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ To:     "James E . J . Bottomley" <jejb@linux.ibm.com>,
 CC:     Hannes Reinecke <hare@suse.de>, <linux-kernel@vger.kernel.org>,
         <louhongxiang@huawei.com>, <lixiaokeng@huawei.com>,
         Wenchao Hao <haowenchao2@huawei.com>
-Subject: [RFC PATCH v2 03/19] scsi: scsi_error: Check if to do reset in scsi_try_xxx_reset
-Date:   Fri, 1 Sep 2023 17:41:11 +0800
-Message-ID: <20230901094127.2010873-4-haowenchao2@huawei.com>
+Subject: [RFC PATCH v2 04/19] scsi: scsi_error: Add helper scsi_eh_sdev_stu to do START_UNIT
+Date:   Fri, 1 Sep 2023 17:41:12 +0800
+Message-ID: <20230901094127.2010873-5-haowenchao2@huawei.com>
 X-Mailer: git-send-email 2.32.0
 In-Reply-To: <20230901094127.2010873-1-haowenchao2@huawei.com>
 References: <20230901094127.2010873-1-haowenchao2@huawei.com>
@@ -42,125 +42,101 @@ X-Originating-IP: [10.175.101.6]
 X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemm600012.china.huawei.com (7.193.23.74)
 X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is preparation for a genernal LUN/target based error handle
-strategy, the strategy would reuse some error handler APIs,
-but some steps of these function should not be performed. For
-example, we should not perform target reset if we just stop IOs
-on one single LUN.
+Add helper function scsi_eh_sdev_stu() to perform START_UNIT and check
+if to finish some error commands.
 
-This change add checks in scsi_try_xxx_reset to make sure
-the reset operations would not be performed only if the condition
-is not satisfied.
+This is preparation for a genernal LUN/target based error handle
+strategy and did not change original logic.
 
 Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
 ---
- drivers/scsi/scsi_error.c | 37 +++++++++++++++++++++++++++++++------
- 1 file changed, 31 insertions(+), 6 deletions(-)
+ drivers/scsi/scsi_error.c | 50 +++++++++++++++++++++++----------------
+ 1 file changed, 29 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
-index 879fdd7c165b..48ed035d44ce 100644
+index 48ed035d44ce..64eb616261ec 100644
 --- a/drivers/scsi/scsi_error.c
 +++ b/drivers/scsi/scsi_error.c
-@@ -923,7 +923,7 @@ void scsi_eh_done(struct scsi_cmnd *scmd)
-  * scsi_try_host_reset - ask host adapter to reset itself
-  * @scmd:	SCSI cmd to send host reset.
-  */
--static enum scsi_disposition scsi_try_host_reset(struct scsi_cmnd *scmd)
-+static enum scsi_disposition __scsi_try_host_reset(struct scsi_cmnd *scmd)
- {
- 	unsigned long flags;
- 	enum scsi_disposition rtn;
-@@ -949,11 +949,19 @@ static enum scsi_disposition scsi_try_host_reset(struct scsi_cmnd *scmd)
- 	return rtn;
+@@ -1564,6 +1564,31 @@ static int scsi_eh_try_stu(struct scsi_cmnd *scmd)
+ 	return 1;
  }
  
-+static enum scsi_disposition scsi_try_host_reset(struct scsi_cmnd *scmd)
++static int scsi_eh_sdev_stu(struct scsi_cmnd *scmd,
++			      struct list_head *work_q,
++			      struct list_head *done_q)
 +{
-+	if (!scsi_host_in_recovery(scmd->device->host))
-+		return FAILED;
++	struct scsi_device *sdev = scmd->device;
++	struct scsi_cmnd *next;
 +
-+	return __scsi_try_host_reset(scmd);
++	SCSI_LOG_ERROR_RECOVERY(3, sdev_printk(KERN_INFO, sdev,
++				"%s: Sending START_UNIT\n", current->comm));
++
++	if (scsi_eh_try_stu(scmd)) {
++		SCSI_LOG_ERROR_RECOVERY(3, sdev_printk(KERN_INFO, sdev,
++				    "%s: START_UNIT failed\n", current->comm));
++		return 0;
++	}
++
++	if (!scsi_device_online(sdev) || !scsi_eh_tur(scmd))
++		list_for_each_entry_safe(scmd, next, work_q, eh_entry)
++			if (scmd->device == sdev &&
++			    scsi_eh_action(scmd, SUCCESS) == SUCCESS)
++				scsi_eh_finish_cmd(scmd, done_q);
++
++	return list_empty(work_q);
 +}
 +
- /**
-  * scsi_try_bus_reset - ask host to perform a bus reset
-  * @scmd:	SCSI cmd to send bus reset.
-  */
--static enum scsi_disposition scsi_try_bus_reset(struct scsi_cmnd *scmd)
-+static enum scsi_disposition __scsi_try_bus_reset(struct scsi_cmnd *scmd)
+  /**
+  * scsi_eh_stu - send START_UNIT if needed
+  * @shost:	&scsi host being recovered.
+@@ -1578,7 +1603,7 @@ static int scsi_eh_stu(struct Scsi_Host *shost,
+ 			      struct list_head *work_q,
+ 			      struct list_head *done_q)
  {
- 	unsigned long flags;
- 	enum scsi_disposition rtn;
-@@ -979,6 +987,14 @@ static enum scsi_disposition scsi_try_bus_reset(struct scsi_cmnd *scmd)
- 	return rtn;
- }
+-	struct scsi_cmnd *scmd, *stu_scmd, *next;
++	struct scsi_cmnd *scmd, *stu_scmd;
+ 	struct scsi_device *sdev;
  
-+static enum scsi_disposition scsi_try_bus_reset(struct scsi_cmnd *scmd)
-+{
-+	if (!scsi_host_in_recovery(scmd->device->host))
-+		return FAILED;
-+
-+	return __scsi_try_bus_reset(scmd);
-+}
-+
- static void __scsi_report_device_reset(struct scsi_device *sdev, void *data)
- {
- 	sdev->was_reset = 1;
-@@ -995,7 +1011,7 @@ static void __scsi_report_device_reset(struct scsi_device *sdev, void *data)
-  *    timer on it, and set the host back to a consistent state prior to
-  *    returning.
-  */
--static enum scsi_disposition scsi_try_target_reset(struct scsi_cmnd *scmd)
-+static enum scsi_disposition __scsi_try_target_reset(struct scsi_cmnd *scmd)
- {
- 	unsigned long flags;
- 	enum scsi_disposition rtn;
-@@ -1016,6 +1032,15 @@ static enum scsi_disposition scsi_try_target_reset(struct scsi_cmnd *scmd)
- 	return rtn;
- }
+ 	shost_for_each_device(sdev, shost) {
+@@ -1601,26 +1626,9 @@ static int scsi_eh_stu(struct Scsi_Host *shost,
+ 		if (!stu_scmd)
+ 			continue;
  
-+static enum scsi_disposition scsi_try_target_reset(struct scsi_cmnd *scmd)
-+{
-+	if (!(scsi_target_in_recovery(scsi_target(scmd->device)) ||
-+	      scsi_host_in_recovery(scmd->device->host)))
-+		return FAILED;
-+
-+	return __scsi_try_target_reset(scmd);
-+}
-+
- /**
-  * scsi_try_bus_device_reset - Ask host to perform a BDR on a dev
-  * @scmd:	SCSI cmd used to send BDR
-@@ -2534,17 +2559,17 @@ scsi_ioctl_reset(struct scsi_device *dev, int __user *arg)
- 			break;
- 		fallthrough;
- 	case SG_SCSI_RESET_TARGET:
--		rtn = scsi_try_target_reset(scmd);
-+		rtn = __scsi_try_target_reset(scmd);
- 		if (rtn == SUCCESS || (val & SG_SCSI_RESET_NO_ESCALATE))
- 			break;
- 		fallthrough;
- 	case SG_SCSI_RESET_BUS:
--		rtn = scsi_try_bus_reset(scmd);
-+		rtn = __scsi_try_bus_reset(scmd);
- 		if (rtn == SUCCESS || (val & SG_SCSI_RESET_NO_ESCALATE))
- 			break;
- 		fallthrough;
- 	case SG_SCSI_RESET_HOST:
--		rtn = scsi_try_host_reset(scmd);
-+		rtn = __scsi_try_host_reset(scmd);
- 		if (rtn == SUCCESS)
- 			break;
- 		fallthrough;
+-		SCSI_LOG_ERROR_RECOVERY(3,
+-			sdev_printk(KERN_INFO, sdev,
+-				     "%s: Sending START_UNIT\n",
+-				    current->comm));
+-
+-		if (!scsi_eh_try_stu(stu_scmd)) {
+-			if (!scsi_device_online(sdev) ||
+-			    !scsi_eh_tur(stu_scmd)) {
+-				list_for_each_entry_safe(scmd, next,
+-							  work_q, eh_entry) {
+-					if (scmd->device == sdev &&
+-					    scsi_eh_action(scmd, SUCCESS) == SUCCESS)
+-						scsi_eh_finish_cmd(scmd, done_q);
+-				}
+-			}
+-		} else {
+-			SCSI_LOG_ERROR_RECOVERY(3,
+-				sdev_printk(KERN_INFO, sdev,
+-					    "%s: START_UNIT failed\n",
+-					    current->comm));
++		if (scsi_eh_sdev_stu(stu_scmd, work_q, done_q)) {
++			scsi_device_put(sdev);
++			break;
+ 		}
+ 	}
+ 
 -- 
 2.35.3
 
