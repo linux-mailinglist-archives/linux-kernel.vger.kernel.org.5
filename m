@@ -2,74 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C69A478F8DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD53078F8DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 09:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345609AbjIAHC6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 03:02:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        id S1348446AbjIAHDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 03:03:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231418AbjIAHC5 (ORCPT
+        with ESMTP id S231418AbjIAHDC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 03:02:57 -0400
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45B82D7
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 00:02:54 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0Vr2KGap_1693551761;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0Vr2KGap_1693551761)
-          by smtp.aliyun-inc.com;
-          Fri, 01 Sep 2023 15:02:51 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     christian.koenig@amd.com
-Cc:     Xinhui.Pan@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] drm/amdgpu: clean up some inconsistent indenting
-Date:   Fri,  1 Sep 2023 15:02:40 +0800
-Message-Id: <20230901070240.31027-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+        Fri, 1 Sep 2023 03:03:02 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C78510D2;
+        Fri,  1 Sep 2023 00:03:00 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68c0cb00fb3so1418127b3a.2;
+        Fri, 01 Sep 2023 00:03:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693551779; x=1694156579; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=g8wr24to/gtJqJwr7CdrwRS9mfHBCNBSTGsrr1PkE30=;
+        b=Avh+46pFYIpSDZqKE9qT1yn/OoLmY6YVZRSi/1BoU+WLD/1kJOqcTzevLhy6Gkd9DT
+         UZ2dnT91L6/iMpnGw7CdOZhoR8jYxPZ1hUMi6fURRdBZZ9RVGOz6+u5arQpPj/3oP779
+         Zu0zga144I9t08se7ZGOsP+UPc51v4SPP54bn/LXAbWkA8a6ZiBC406RxH1qeLQj/BRS
+         fJZC3QcTKwx7OwxAUdnj9uYb66vLuyoTrOlWUhUVCAHO8hDQddlJC/DWRDBRV7I2AP/8
+         KLpssmMHcT2BK50DTYA7aJy7mJBmNary+WAVXbRg5LihzSC93siK+UEe73hfYiYoAsO5
+         Gu2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693551779; x=1694156579;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g8wr24to/gtJqJwr7CdrwRS9mfHBCNBSTGsrr1PkE30=;
+        b=HtXNilnkcaAjDCjUbOyIw9QHw8ZRVEAXIUkVsDDw1x23Qj0nILo3rNk0j2arYpVEDg
+         uOkbiVkXa45GtS8VJpIWYr9i/6EEjiW00Ym+lClBYaZSYWCzO3HJV0pavACXnQINZ1KT
+         BqSPpdyn0GvlW1NLyq5EFG2/jn5rzLdzPRJXDRHolfwl9SB/mShDL4ciuZUWRJHylh4B
+         hUDUeliUripqG/mbUcykJaZLciX1bQTucJIAotkhjvSduhIhAVjK6rD4PrpB8xJ69AI1
+         W9VGRPuChA59qRC/Iuhq0vHVwduVBaY75pDCuy8a1nqs0mqICpZdi2v2jlAezVZeIUGU
+         Obcw==
+X-Gm-Message-State: AOJu0YwJylGkwE8neW6EjtredgDN/OFtk/9RU9uAHnB8AR1i8nDZUFCk
+        oPHA+B1EdYlrohA7baAwY4I=
+X-Google-Smtp-Source: AGHT+IFH62BQFrdwj6BomF4htUKGs5yvT3G/DWOQ60wYI1H0qhLDmCweZYjyFwA9jl5MEse1SfZ63g==
+X-Received: by 2002:a05:6a00:189e:b0:68a:61a9:7e43 with SMTP id x30-20020a056a00189e00b0068a61a97e43mr2047516pfh.29.1693551779208;
+        Fri, 01 Sep 2023 00:02:59 -0700 (PDT)
+Received: from debian.me ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id c5-20020aa781c5000000b0068a3dd6c1dasm2378796pfn.142.2023.09.01.00.02.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 00:02:58 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id C2EF18F03D47; Fri,  1 Sep 2023 14:02:50 +0700 (WIB)
+Date:   Fri, 1 Sep 2023 14:02:50 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+Subject: Re: [PATCH 6.4 0/9] 6.4.14-rc1 review
+Message-ID: <ZPGMmjfiMKt1jMAL@debian.me>
+References: <20230831111127.667900990@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="L55yot6n5WpZHRsh"
+Content-Disposition: inline
+In-Reply-To: <20230831111127.667900990@linuxfoundation.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No functional modification involved.
 
-drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c:34 nbio_v7_11_get_rev_id() warn: inconsistent indenting.
+--L55yot6n5WpZHRsh
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=6316
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+On Thu, Aug 31, 2023 at 01:11:27PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.14 release.
+> There are 9 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c b/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c
-index 7c08e5f95e97..76e21357dd4d 100644
---- a/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c
-+++ b/drivers/gpu/drm/amd/amdgpu/nbio_v7_11.c
-@@ -31,10 +31,9 @@
- static u32 nbio_v7_11_get_rev_id(struct amdgpu_device *adev)
- {
- 	u32 tmp;
--         printk("%s, getid\n",__func__);
--
--		tmp = RREG32_SOC15(NBIO, 0, regRCC_STRAP1_RCC_DEV0_EPF0_STRAP0);
- 
-+	printk("%s, getid\n", __func__);
-+	tmp = RREG32_SOC15(NBIO, 0, regRCC_STRAP1_RCC_DEV0_EPF0_STRAP0);
- 	tmp &= RCC_STRAP0_RCC_DEV0_EPF0_STRAP0__STRAP_ATI_REV_ID_DEV0_F0_MASK;
- 	tmp >>= RCC_STRAP0_RCC_DEV0_EPF0_STRAP0__STRAP_ATI_REV_ID_DEV0_F0__SHIFT;
- 
--- 
-2.20.1.7.g153144c
+Successfully compiled and installed bindeb-pkgs on my computer (Acer
+Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
 
+Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--L55yot6n5WpZHRsh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZPGMlAAKCRD2uYlJVVFO
+o7nKAQDCT2WUu7n/CoP/jDSM6zFSNP5PklxV3TlWaCgqiYdftQD8CvqE67J686xO
+TKeWBGHuncY0L57Qi+O1X8LR73IUUgw=
+=7eRH
+-----END PGP SIGNATURE-----
+
+--L55yot6n5WpZHRsh--
