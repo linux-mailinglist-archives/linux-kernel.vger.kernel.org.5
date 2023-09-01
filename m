@@ -2,260 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E729078FAEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:35:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D57CE78FAF9
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 11:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348838AbjIAJfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 05:35:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54176 "EHLO
+        id S1344285AbjIAJg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 05:36:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245008AbjIAJfH (ORCPT
+        with ESMTP id S236077AbjIAJg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 05:35:07 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A4A10E5
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 02:35:03 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-401da71b85eso17522375e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 02:35:03 -0700 (PDT)
+        Fri, 1 Sep 2023 05:36:26 -0400
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5AAFC5;
+        Fri,  1 Sep 2023 02:36:22 -0700 (PDT)
+Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-4122e42a76aso11539091cf.1;
+        Fri, 01 Sep 2023 02:36:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1693560902; x=1694165702; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693560982; x=1694165782; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fuPQlScTuJqfDJqYPrpJqekrgXve8vQ/IZ3dM9TYMWI=;
-        b=LzGRZMqhOECtfxvVdiNTUhmTlvEebZeh5BnRRVuc9RsByLrAUdeviW76W/+RfoD7Hf
-         UoaMNMFbOo5HXA4r2hvM3IvePNIx49Tbb1wu0B1ymmRB7W2e3aARxDw8PhCLDJDs8jFv
-         6kUIQVpdNeUO3RblDwvnCV3PvbHvaT/RkZUSD8vJMlSTMYP2kVG3w9wvNpZrVBr4ZXr2
-         YME0FDdsYt/7Lcw183oJ4BPogwR3/Yck0FAD7+mKX2AKybhYJH9E8eQJ1bNfSLc5kejK
-         2u1qCwgg2xC10JCbWP9lg/M45hEabFrOS7pc2rqI8mAXTDNXxzUZGK/r8gXZRW22Yfa0
-         av6w==
+        bh=uTRQG1+/zAJ7lIWvTYtqhGkQhkus5847tvqfQhvtoOc=;
+        b=JFLUvFFvMI/5Zz9typC2aAuKpdxKQLrxvLDYF1vtukKUNnvMx6BOmmRSHqIRm+O0NR
+         M4B9MnlTkz8rvMgShv1/AYgEDw7r9hEzHJd0J9BzIwbXXOGElaG99xNkO+yOSaKMNjfb
+         nz3nTK6n8IDhwYxLacasMLrenSZXViwS1wXe3OQqwqXDJBUoTv4aeStDdG6POEEUB+Xt
+         aUNuJDLgHex+hApjD98G1pLTOqpVU0+ZnU/HW2bwXGMLnzj8KjUSzbCGSCwbDQ6fvRDw
+         xABxOroz7/DouLF9WVnjgzPL32lZ9hcD+Dm6FeIeempkqol0UQY7fWbdJZNL9td5tSVx
+         Ta5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693560902; x=1694165702;
+        d=1e100.net; s=20221208; t=1693560982; x=1694165782;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fuPQlScTuJqfDJqYPrpJqekrgXve8vQ/IZ3dM9TYMWI=;
-        b=C4cREuXHwRcDPwOKjvGAGvxfurUjZlGK+qB5+KjmYC/42dcQ2cBqwVoM+z5l++FgQU
-         S7KdN1hfuyXFT/FKd4qZKlsi/rMS4M0/zSxbJObaV/aQ0ZhwvpYBUfm7BBfNJKH91RhL
-         T3T/p+R9V3KEJLcFibH/Qcy5IuiteyY/sIZPn0OPsXCfsdTcYrZ4CU85TJHOZlhECzYv
-         NqMtjGQr+6sVXFScbFiG6NI7ftlYqxFnourGIZ7OuKmfbPRGd2XRZzLWAoJ4vMwcyNOY
-         BBXKidLy7jHm0iY9N3xeChXyDePoNrTzDwKaVOYf0Yk9Ct76Y9TTAb0OEViN3Uv+qbqS
-         VU1Q==
-X-Gm-Message-State: AOJu0YwhJd1FxXEH3MMojSEVt1GI7ovJZLzgGU5BjO5GrpCpSlXKMYgP
-        J6B8ZKUN2N4v1gbSRgoqKKqubg==
-X-Google-Smtp-Source: AGHT+IFz9Z+jV3l7pctsBjzHCKbmNCVxVTZggwdVbbAhjn1NAlkpcJ4NMfDZ492fbSnUtxd5+G5FZg==
-X-Received: by 2002:adf:e7cc:0:b0:30e:3caa:971b with SMTP id e12-20020adfe7cc000000b0030e3caa971bmr1453781wrn.51.1693560901984;
-        Fri, 01 Sep 2023 02:35:01 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id m12-20020adff38c000000b0031ad5fb5a0fsm4643331wro.58.2023.09.01.02.35.00
+        bh=uTRQG1+/zAJ7lIWvTYtqhGkQhkus5847tvqfQhvtoOc=;
+        b=DGPqWjrl9wNn0zAb9dBSBKQCwF6XqLmutdzvCzIVAqVTPfwqZfG1t2U8ugmtZNBpXA
+         2UkDAWgEH+j4qB4O4a4SR+JDNq+H5Ys837lLxzy30+hgS5AFrY1+5HSPO2tDX2mTcEZm
+         +EwNnSNDjQfRHGu03MFoS+rNIWBL3M1d2S/OfHBuBRrIjT1c9lTzNmu9vEc37/dCaz6E
+         YdTz/UXhl7PKdCz3HEmtRgvEUYKACVKAkPtSrEEJ6lLsN1qUF/V7jKCmCmesErJzlnJs
+         z00aUX27fCagq1mbtKh99vPd4gH0q6Z/1MtsHsHUMQYzSC3Szgbf1dQj8+hcLqkB8ugw
+         8ytw==
+X-Gm-Message-State: AOJu0Yxo1R9TTiUKXXEVQ4QNZ8vJydJe+H/yKUAGD26pBcjZdGsIhE+l
+        oE62fH2VqMi23vpg+iZsY2NPqiMqgWGKK9VF
+X-Google-Smtp-Source: AGHT+IHPr+svbcwGAypvvN3zhI371quMWxwVuAfORSKfJaLPlDOZDl0w724FzBstEnoD7p8ccsbhFw==
+X-Received: by 2002:ac8:7d16:0:b0:402:2e84:f06e with SMTP id g22-20020ac87d16000000b004022e84f06emr2451321qtb.27.1693560981816;
+        Fri, 01 Sep 2023 02:36:21 -0700 (PDT)
+Received: from ght-Latitude-7640.. ([149.28.230.27])
+        by smtp.gmail.com with ESMTPSA id r11-20020ac87eeb000000b00403c82c609asm1310270qtc.14.2023.09.01.02.36.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 02:35:01 -0700 (PDT)
-From:   Naresh Solanki <naresh.solanki@9elements.com>
-X-Google-Original-From: Naresh Solanki <Naresh.Solanki@9elements.com>
-To:     broonie@kernel.org, zev@bewilderbeest.net,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Naresh Solanki <Naresh.Solanki@9elements.com>,
-        linux-kernel@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: [PATCH v2] regulator (max5970): Add hwmon support
-Date:   Fri,  1 Sep 2023 11:34:48 +0200
-Message-ID: <20230901093449.838414-1-Naresh.Solanki@9elements.com>
-X-Mailer: git-send-email 2.41.0
+        Fri, 01 Sep 2023 02:36:21 -0700 (PDT)
+From:   Puliang Lu <530194200.fh@gmail.com>
+X-Google-Original-From: Puliang Lu <puliang.lu@fibocom.com>
+To:     johan@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Puliang Lu <puliang.lu@fibocom.com>
+Subject: [PATCH] USB: serial: option: add Fibocom to DELL custom modem FM101R-GL
+Date:   Fri,  1 Sep 2023 17:36:10 +0800
+Message-Id: <20230901093610.67438-1-puliang.lu@fibocom.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Utilize the integrated 10-bit ADC in Max5970/Max5978 to enable voltage
-and current monitoring. This feature is seamlessly integrated through
-the hwmon subsystem.
+Update the USB serial option driver support for the Fibocom
+FM101R-GL
+LTE modules as there are actually several different variants.
+- VID:PID 413C:8213, FM101R-GL are laptop M.2 cards (with
+MBIM interfaces for Linux)
+- VID:PID 413C:8215, FM101R-GL ESIM are laptop M.2 cards(with
+MBIM interface for Linux)
 
-Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+T:  Bus=04 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  2 Spd=5000 MxCh= 0
+D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
+P:  Vendor=413c ProdID=8213 Rev= 5.04
+S:  Manufacturer=Fibocom Wireless Inc.
+S:  Product=Fibocom FM101-GL Module
+S:  SerialNumber=a3b7cbf0
+C:* #Ifs= 3 Cfg#= 1 Atr=a0 MxPwr=896mA
+A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
+I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00 Driver=cdc_mbim
+E:  Ad=81(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
+I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=(none)
+E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+
+T:  Bus=04 Lev=01 Prnt=01 Port=01 Cnt=01 Dev#=  3 Spd=5000 MxCh= 0
+D:  Ver= 3.20 Cls=00(>ifc ) Sub=00 Prot=00 MxPS= 9 #Cfgs=  1
+P:  Vendor=413c ProdID=8215 Rev= 5.04
+S:  Manufacturer=Fibocom Wireless Inc.
+S:  Product=Fibocom FM101-GL Module
+S:  SerialNumber=a3b7cbf0
+C:* #Ifs= 3 Cfg#= 1 Atr=a0 MxPwr=896mA
+A:  FirstIf#= 0 IfCount= 2 Cls=02(comm.) Sub=0e Prot=00
+I:* If#= 0 Alt= 0 #EPs= 1 Cls=02(comm.) Sub=0e Prot=00 Driver=cdc_mbim
+E:  Ad=81(I) Atr=03(Int.) MxPS=  64 Ivl=32ms
+I:  If#= 1 Alt= 0 #EPs= 0 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+I:* If#= 1 Alt= 1 #EPs= 2 Cls=0a(data ) Sub=00 Prot=02 Driver=cdc_mbim
+E:  Ad=8e(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=0f(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+I:* If#= 2 Alt= 0 #EPs= 3 Cls=ff(vend.) Sub=00 Prot=40 Driver=(none)
+E:  Ad=83(I) Atr=03(Int.) MxPS=  10 Ivl=32ms
+E:  Ad=82(I) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+E:  Ad=01(O) Atr=02(Bulk) MxPS=1024 Ivl=0ms
+
+Signed-off-by: Puliang Lu <puliang.lu@fibocom.com>
 ---
-Changes in V2:
-- default case added for switch statement
-- Add dependency on HWMON
----
- drivers/regulator/Kconfig             |   1 +
- drivers/regulator/max5970-regulator.c | 123 ++++++++++++++++++++++++++
- 2 files changed, 124 insertions(+)
+ drivers/usb/serial/option.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/regulator/Kconfig b/drivers/regulator/Kconfig
-index 965d4f0c18a6..ab245893033d 100644
---- a/drivers/regulator/Kconfig
-+++ b/drivers/regulator/Kconfig
-@@ -559,6 +559,7 @@ config REGULATOR_MAX5970
- 	depends on I2C
- 	depends on OF
- 	depends on MFD_MAX5970
-+	depends on HWMON
- 	help
- 	  This driver controls a Maxim 5970/5978 switch via I2C bus.
- 	  The MAX5970/5978 is a smart switch with no output regulation, but
-diff --git a/drivers/regulator/max5970-regulator.c b/drivers/regulator/max5970-regulator.c
-index b56a174cde3d..c337044e1523 100644
---- a/drivers/regulator/max5970-regulator.c
-+++ b/drivers/regulator/max5970-regulator.c
-@@ -10,6 +10,7 @@
- #include <linux/bitops.h>
- #include <linux/device.h>
- #include <linux/err.h>
-+#include <linux/hwmon.h>
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/of.h>
-@@ -32,6 +33,120 @@ enum max597x_regulator_id {
- 	MAX597X_SW1,
- };
+diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
+index 8ac98e60fff5..1dcd1f068f23 100644
+--- a/drivers/usb/serial/option.c
++++ b/drivers/usb/serial/option.c
+@@ -203,6 +203,9 @@ static void option_instat_callback(struct urb *urb);
+ #define DELL_PRODUCT_5829E_ESIM			0x81e4
+ #define DELL_PRODUCT_5829E			0x81e6
  
-+static int max5970_read_adc(struct regmap *regmap, int reg, long *val)
-+{
-+	u8 reg_data[2];
-+	int ret;
++#define DELL_PRODUCT_FM101R			0x8213
++#define DELL_PRODUCT_FM101R_ESIM		0x8215
 +
-+	ret = regmap_bulk_read(regmap, reg, &reg_data[0], 2);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = (reg_data[0] << 2) | (reg_data[1] & 3);
-+
-+	return 0;
-+}
-+
-+static int max5970_read(struct device *dev, enum hwmon_sensor_types type,
-+			u32 attr, int channel, long *val)
-+{
-+	struct max5970_data *ddata = dev_get_drvdata(dev);
-+	struct regmap *regmap = dev_get_regmap(dev->parent, NULL);
-+	int ret;
-+
-+	switch (type) {
-+	case hwmon_curr:
-+		switch (attr) {
-+		case hwmon_curr_input:
-+			ret = max5970_read_adc(regmap, MAX5970_REG_CURRENT_H(channel), val);
-+			/*
-+			 * Calculate current from ADC value, IRNG range & shunt resistor value.
-+			 * ddata->irng holds the voltage corresponding to the maximum value the
-+			 * 10-bit ADC can measure.
-+			 * To obtain the output, multiply the ADC value by the IRNG range (in
-+			 * millivolts) and then divide it by the maximum value of the 10-bit ADC.
-+			 */
-+			*val = (*val * ddata->irng[channel]) >> 10;
-+			/* Convert the voltage meansurement across shunt resistor to current */
-+			*val = (*val * 1000) / ddata->shunt_micro_ohms[channel];
-+			return ret;
-+		default:
-+			return -EOPNOTSUPP;
-+		}
-+
-+	case hwmon_in:
-+		switch (attr) {
-+		case hwmon_in_input:
-+			ret = max5970_read_adc(regmap, MAX5970_REG_VOLTAGE_H(channel), val);
-+			/*
-+			 * Calculate voltage from ADC value and MON range.
-+			 * ddata->mon_rng holds the voltage corresponding to the maximum value the
-+			 * 10-bit ADC can measure.
-+			 * To obtain the output, multiply the ADC value by the MON range (in
-+			 * microvolts) and then divide it by the maximum value of the 10-bit ADC.
-+			 */
-+			*val = mul_u64_u32_shr(*val, ddata->mon_rng[channel], 10);
-+			/* uV to mV */
-+			*val = *val / 1000;
-+			return ret;
-+		default:
-+			return -EOPNOTSUPP;
-+		}
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static umode_t max5970_is_visible(const void *data,
-+				  enum hwmon_sensor_types type,
-+				  u32 attr, int channel)
-+{
-+	struct max5970_data *ddata = (struct max5970_data *)data;
-+
-+	if (channel >= ddata->num_switches)
-+		return 0;
-+
-+	switch (type) {
-+	case hwmon_in:
-+		switch (attr) {
-+		case hwmon_in_input:
-+			return 0444;
-+		default:
-+			break;
-+		}
-+		break;
-+	case hwmon_curr:
-+		switch (attr) {
-+		case hwmon_curr_input:
-+			/* Current measurement requires knowledge of the shunt resistor value. */
-+			if (ddata->shunt_micro_ohms[channel])
-+				return 0444;
-+		default:
-+			break;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static const struct hwmon_ops max5970_hwmon_ops = {
-+	.is_visible = max5970_is_visible,
-+	.read = max5970_read,
-+};
-+
-+static const struct hwmon_channel_info *max5970_info[] = {
-+	HWMON_CHANNEL_INFO(in, HWMON_I_INPUT, HWMON_I_INPUT),
-+	HWMON_CHANNEL_INFO(curr, HWMON_C_INPUT, HWMON_C_INPUT),
-+	NULL
-+};
-+
-+static const struct hwmon_chip_info max5970_chip_info = {
-+	.ops = &max5970_hwmon_ops,
-+	.info = max5970_info,
-+};
-+
- static int max597x_uvp_ovp_check_mode(struct regulator_dev *rdev, int severity)
- {
- 	int ret, reg;
-@@ -432,6 +547,7 @@ static int max597x_regulator_probe(struct platform_device *pdev)
- 	struct regulator_config config = { };
- 	struct regulator_dev *rdev;
- 	struct regulator_dev *rdevs[MAX5970_NUM_SWITCHES];
-+	struct device *hwmon_dev;
- 	int num_switches;
- 	int ret, i;
- 
-@@ -485,6 +601,13 @@ static int max597x_regulator_probe(struct platform_device *pdev)
- 		max597x->shunt_micro_ohms[i] = data->shunt_micro_ohms;
- 	}
- 
-+	hwmon_dev = devm_hwmon_device_register_with_info(&i2c->dev, "max5970_hwmon", max597x,
-+							 &max5970_chip_info, NULL);
-+	if (IS_ERR(hwmon_dev)) {
-+		return dev_err_probe(&i2c->dev, PTR_ERR(hwmon_dev), \
-+				     "Unable to register hwmon device\n");
-+	}
-+
- 	if (i2c->irq) {
- 		ret =
- 		    max597x_setup_irq(&i2c->dev, i2c->irq, rdevs, num_switches,
-
-base-commit: 35d0d2350d774fecf596cfb2fb050559fe5e1850
+ #define KYOCERA_VENDOR_ID			0x0c88
+ #define KYOCERA_PRODUCT_KPC650			0x17da
+ #define KYOCERA_PRODUCT_KPC680			0x180a
+@@ -1107,6 +1110,8 @@ static const struct usb_device_id option_ids[] = {
+ 	  .driver_info = RSVD(0) | RSVD(6) },
+ 	{ USB_DEVICE(DELL_VENDOR_ID, DELL_PRODUCT_5829E_ESIM),
+ 	  .driver_info = RSVD(0) | RSVD(6) },
++	{ USB_DEVICE_INTERFACE_CLASS(DELL_VENDOR_ID, DELL_PRODUCT_FM101R, 0xff) },
++	{ USB_DEVICE_INTERFACE_CLASS(DELL_VENDOR_ID, DELL_PRODUCT_FM101R_ESIM, 0xff) },
+ 	{ USB_DEVICE(ANYDATA_VENDOR_ID, ANYDATA_PRODUCT_ADU_E100A) },	/* ADU-E100, ADU-310 */
+ 	{ USB_DEVICE(ANYDATA_VENDOR_ID, ANYDATA_PRODUCT_ADU_500A) },
+ 	{ USB_DEVICE(ANYDATA_VENDOR_ID, ANYDATA_PRODUCT_ADU_620UW) },
 -- 
-2.41.0
+2.34.1
 
