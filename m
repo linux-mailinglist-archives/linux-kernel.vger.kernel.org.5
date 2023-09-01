@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF4E78FC94
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:45:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2573378FC95
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:45:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349281AbjIALpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:45:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59868 "EHLO
+        id S1349316AbjIALpM convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 1 Sep 2023 07:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349218AbjIALos (ORCPT
+        with ESMTP id S1349258AbjIALov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:44:48 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD991709
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:44:10 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 9E19FCE2261
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 11:44:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58DF6C433C8;
-        Fri,  1 Sep 2023 11:44:02 +0000 (UTC)
-Date:   Fri, 1 Sep 2023 07:44:00 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Ajay Kaher <akaher@vmware.com>,
-        Eric Vaughn <ervaughn@linux.microsoft.com>,
-        Sishuai Gong <sishuai.system@gmail.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Yue Haibing <yuehaibing@huawei.com>,
-        Zhang Zekun <zhangzekun11@huawei.com>,
-        Zheng Yejian <zhengyejian1@huawei.com>
-Subject: Re: [GIT PULL] tracing: Updates for 6.6
-Message-ID: <20230901074400.349d5c41@rorschach.local.home>
-In-Reply-To: <xhsmhr0nib674.mognet@vschneid.remote.csb>
-References: <20230831115635.1bdea0d7@rorschach.local.home>
-        <xhsmhr0nib674.mognet@vschneid.remote.csb>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Fri, 1 Sep 2023 07:44:51 -0400
+Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com [209.85.128.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 726B21710;
+        Fri,  1 Sep 2023 04:44:14 -0700 (PDT)
+Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-58d31f142eeso19862417b3.0;
+        Fri, 01 Sep 2023 04:44:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693568653; x=1694173453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=v35D4R/YcbC9ox5KrmWaaZLOPC4k8bfMeoxv1sATsyI=;
+        b=aVSJb/D7U2INKZzgOkSRGf31uI88OHwDvgmuMcWtCMcevDVskXlwjzdyWij95g61zK
+         /cfIeFGqVdvCIOh9wYynYEMmf7l4ngjMKvWZR+z+VmTdXTwZ9dht46TS13yqroYXAuZz
+         EPMjGDbnkBI7aShl9yZEPubw2i9mCNFA7zdUxTX3f/QEDFb2PWBvwhAVndpSUCAl9hGW
+         W6sKXkejfQZ7S/wir4rtoEtSumS5TiQCzEHuLXPm2nx2pjLAqsRWowiXmNoH86ZVwe3w
+         XeFZ/joXEMPSgfPO7hrjasSqHBYswM/LDvcxasxS/JS5QXs0tlsDPbfj+YtBwNMyGqr/
+         sJxA==
+X-Gm-Message-State: AOJu0Yy1V9V/Kf/rQ8LBvD8Bpka4kIq1AM8JGVe1qTsEcgz6a3bN9dmD
+        0LGrAJyyeogBeqe86xzo0zeEBVMd5yww/w==
+X-Google-Smtp-Source: AGHT+IH1Ncjju2N/+NTl/tPU19E794VFJcppizWENjnEAn4SmM8ZVVRLRsTcSgkuCUJoxzr4d0VgHQ==
+X-Received: by 2002:a0d:dd08:0:b0:58a:1326:cb85 with SMTP id g8-20020a0ddd08000000b0058a1326cb85mr2689584ywe.40.1693568653478;
+        Fri, 01 Sep 2023 04:44:13 -0700 (PDT)
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
+        by smtp.gmail.com with ESMTPSA id t76-20020a0dea4f000000b005922c29c025sm988585ywe.108.2023.09.01.04.44.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 04:44:13 -0700 (PDT)
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d7e6d9665bcso698871276.1;
+        Fri, 01 Sep 2023 04:44:13 -0700 (PDT)
+X-Received: by 2002:a25:a2d2:0:b0:d07:60bd:89f4 with SMTP id
+ c18-20020a25a2d2000000b00d0760bd89f4mr2418648ybn.37.1693568653078; Fri, 01
+ Sep 2023 04:44:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230901110936.313171-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20230901110936.313171-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 1 Sep 2023 13:44:01 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUyiWOdXtGR8o4kKOyYV8JwoPN-FvMBxYmcRoKLAdu3PQ@mail.gmail.com>
+Message-ID: <CAMuHMdUyiWOdXtGR8o4kKOyYV8JwoPN-FvMBxYmcRoKLAdu3PQ@mail.gmail.com>
+Subject: Re: [PATCH] soc: renesas: Kconfig: For ARCH_R9A07G043 select the
+ required configs if dependencies are met
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        linux-renesas-soc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 01 Sep 2023 11:20:31 +0200
-Valentin Schneider <vschneid@redhat.com> wrote:
-> > Tracing updates for 6.6:
-> >
-> >  User visible changes:
-> >
-> >   - Added a way to easier filter with cpumasks:
-> >      # echo 'cpumask & CPUS{17-42}' > /sys/kernel/tracing/events/ipi_send_cpumask/filter
-> >  
-> 
-> It looks like the patches included are from v2 of [1], which still had some
-> (small) issues to fix. I have addressed these in [2], but I haven't sent
-> this out yet as I'm still working on the context_tracking/vmalloc part of
-> the series.
-> 
-> I'm happy to send just the tracing bits, if that helps - or just send the
-> deltas as separate fixes, whatever makes it easier.
+Hi Prabhakar,
 
-I put these patches into linux-next for a while, so I'm not going to
-rebase them. Can you send delta patches on top of this. This shouldn't
-stop this pull request.
+On Fri, Sep 1, 2023 at 1:10 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> To prevent randconfig build issues when enabling the RZ/Five SoC, consider
+> selecting specific configurations only when their dependencies are
+> satisfied.
 
-> 
-> Apologies for not bringing this up when the patches were picked up in [3],
-> I've only just come back from PTO/moving abroad and have started catching
-> up.
+Thanks for your patch!
 
-I'm still trying to get home from my PTO, which I spent in Tampa and
-was suppose to fly home on Tuesday. But they closed the airport in
-preparation for Idalia, which forced my wife and I to hunker down in a
-hotel room for the last few days :-p (we are now in a to hotel room in
-Syracuse, and are about to drive home).
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp@intel.com/
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
--- Steve
+Fixes: ed1a8872ff839de0 ("soc: renesas: Kconfig: Select the required
+configs for RZ/Five SoC")
+
+> --- a/drivers/soc/renesas/Kconfig
+> +++ b/drivers/soc/renesas/Kconfig
+> @@ -334,10 +334,11 @@ if RISCV
+>  config ARCH_R9A07G043
+>         bool "RISC-V Platform support for RZ/Five"
+>         select ARCH_RZG2L
+> -       select AX45MP_L2_CACHE
+> +       select AX45MP_L2_CACHE if RISCV_DMA_NONCOHERENT
+>         select DMA_GLOBAL_POOL
+> -       select ERRATA_ANDES
+> -       select ERRATA_ANDES_CMO
+> +       select ERRATA_ANDES if RISCV_SBI
+> +       select ERRATA_ANDES_CMO if ERRATA_ANDES
+> +
+>         help
+>           This enables support for the Renesas RZ/Five SoC.
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+As the offending commit won't be in my tree until v6.6-rc1, I cannot
+take it now, and risc/for-next sounds like the best target.
+Acked-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
