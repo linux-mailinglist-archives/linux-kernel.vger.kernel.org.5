@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E365C79043F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 01:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88C5579044A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 01:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351379AbjIAXoS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 19:44:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39982 "EHLO
+        id S1351383AbjIAXoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 19:44:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351331AbjIAXoH (ORCPT
+        with ESMTP id S1351333AbjIAXoH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 1 Sep 2023 19:44:07 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D927C1710
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 16:43:31 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-34df502d238so8638525ab.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 16:43:31 -0700 (PDT)
+Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0D0C1717
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 16:43:33 -0700 (PDT)
+Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a751d2e6ecso1715923b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 16:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693611773; x=1694216573; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1693611775; x=1694216575; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pzZMfYrc4MS7Ddrskta252Gk/vbJZVRLTsLEIZtE5Vw=;
-        b=FN5js8Si5UfNhghP9yH/+SW5UzMm8bitbD1a4lDJppllxdRKO8GAmxnc7HpCMK25O1
-         7ltQ2vY056qt4ru2BRxicNzxJq4AQX0SXZELXgL6RfyqBx+t/zT6I2X8wykNX8LhzTTT
-         KwD4MLzAgaj5J7FnsR1OlERDj/rNH+4BcGIx8=
+        bh=KKiMaJ+cEDZwLLCxXqIHb+OBndFjgPpn6nuXSf4hrW0=;
+        b=Zw5/VdPLcVL4HDNW6p2TU8oTJNw2tLikGcVSVi1SiBG3kuQ9zzprA3WkeGmYfP1rrV
+         pOcfnse1mVsUygznmYDm/RnGo7BRq2sU4tFy15zP/l496u1DVBUjB1GjEuGdn4V3Ovxi
+         MA0AV8ohMiXdbLZ/4YyGfSBERHUBBVdHhVB08=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693611773; x=1694216573;
+        d=1e100.net; s=20221208; t=1693611775; x=1694216575;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pzZMfYrc4MS7Ddrskta252Gk/vbJZVRLTsLEIZtE5Vw=;
-        b=P3zVNp/DlHFwh3HlNIzyUPTfTdUrSm0aZ/4zXrlFFdLWKcJ1LC1O8KC+BV+GyS81aS
-         XRW0y0mIhMr0CF6rusLrszdV++ACRjxKPEhgixUgq4OtrpbQj5yi+jLZAGxQo8n17Bp+
-         +fL8Fi2AX98nSVI1v4lRaW++eQxmm8mNa9WFxLQ0cKwoQ7JYvh3ip5Axjqsg1/E1EQ0p
-         HrPOjSFixlU59iBVJcURGKlLzJqtvOlk4bBRID16b88nSIvWgRRNZAadz33dZLPIYsv5
-         +U1/JOo7REp5TaoPoVrD/Xu6SogGPTrYYdN4LFKIJ9HaY/WKwZ/8LagqOAdwIbFSkQJy
-         WS6g==
-X-Gm-Message-State: AOJu0YyWpKu3+5CotGmXCnbTC+ulmWIikNSydbKTBfbXtrpoVgJh/ZqD
-        EbmWrm9rRyzn6FekE6LdXKqX2w==
-X-Google-Smtp-Source: AGHT+IFvdRCJwMr99Yb1JrwpTHYD/RaTUnsuipwnbiYPCDCcEBVC17WQxgviFC4gHISPtQjZ2Wly3g==
-X-Received: by 2002:a05:6e02:1a21:b0:348:fe3b:c8b with SMTP id g1-20020a056e021a2100b00348fe3b0c8bmr5295836ile.1.1693611773002;
-        Fri, 01 Sep 2023 16:42:53 -0700 (PDT)
+        bh=KKiMaJ+cEDZwLLCxXqIHb+OBndFjgPpn6nuXSf4hrW0=;
+        b=ZeWu61zeElsVfuwbFZ3BpcIVByZl74tBGF6SetlLPr/V5kC3M6JXPf9J/bX+bSUOkn
+         luMXv20xdMuJ5d8zUd3C1VbXHnZbSx0bMadJuPzm9FvYEUsvrKsyIBn9h3w6pW0KXDx4
+         NjSyYzUsKNaV6qNwau05OFzQeyurSoCXWRG8/IK62qqF6qXI5vlFSgYK5zLYfoHt0yqc
+         z4IqYfnh9j0eqUyBzv9ZAyo2hVovOwP5jN5UQ8FWFJwHHrRh7bb2R3V3sUAuNR2evF6g
+         LvRzkZk/hOWS8Vu+4HMnfyxDiPJORDqiVKtfvVs1WTrldxBzzt1wAeLZLFCOdm9E+OzA
+         tM1w==
+X-Gm-Message-State: AOJu0YwSW+DysYgXuG7iQHP4hyNFqvjlPJvTmtqQuGZqmpdo3UiNHJV7
+        Zp5c7fVM23WN2DOkrGGx59FKBQ==
+X-Google-Smtp-Source: AGHT+IH3N6oAfydomdv+c+JnkApo3hK8ntxo9o07pRRK+2oRgBVZbVsjJxP7itMUHip6V7XJUK2i9g==
+X-Received: by 2002:a54:458e:0:b0:3a8:847e:c5b7 with SMTP id z14-20020a54458e000000b003a8847ec5b7mr4071404oib.31.1693611775021;
+        Fri, 01 Sep 2023 16:42:55 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:8d94:1fc5:803c:41cc])
-        by smtp.gmail.com with ESMTPSA id o9-20020a639a09000000b0056c3a4a3ca5sm3326390pge.36.2023.09.01.16.42.51
+        by smtp.gmail.com with ESMTPSA id o9-20020a639a09000000b0056c3a4a3ca5sm3326390pge.36.2023.09.01.16.42.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 16:42:52 -0700 (PDT)
+        Fri, 01 Sep 2023 16:42:54 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>, airlied@gmail.com,
-        daniel@ffwll.ch, festevam@gmail.com, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
-        shawnguo@kernel.org
-Subject: [RFT PATCH 13/15] drm/imx/ipuv3: Call drm_atomic_helper_shutdown() at shutdown/unbind time
-Date:   Fri,  1 Sep 2023 16:41:24 -0700
-Message-ID: <20230901164111.RFT.13.I0a9940ff6f387d6acf4e71d8c7dbaff8c42e3aaa@changeid>
+Cc:     Douglas Anderson <dianders@chromium.org>, Xinhui.Pan@amd.com,
+        airlied@gmail.com, alexander.deucher@amd.com,
+        amd-gfx@lists.freedesktop.org, christian.koenig@amd.com,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org
+Subject: [RFT PATCH 14/15] drm/radeon: Call drm_helper_force_disable_all() at shutdown/remove time
+Date:   Fri,  1 Sep 2023 16:41:25 -0700
+Message-ID: <20230901164111.RFT.14.I022cfc2dcd30e77d4f7005a2d912dd7ab76c0338@changeid>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
 In-Reply-To: <20230901234202.566951-1-dianders@chromium.org>
 References: <20230901234202.566951-1-dianders@chromium.org>
@@ -73,81 +71,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on grepping through the source code this driver appears to be
-missing a call to drm_atomic_helper_shutdown() at system shutdown time
-and at driver unbind time. Among other things, this means that if a
-panel is in use that it won't be cleanly powered off at system
-shutdown time.
+Based on grepping through the source code, this driver appears to be
+missing a call to drm_atomic_helper_shutdown(), or in this case the
+non-atomic equivalent drm_helper_force_disable_all(), at system
+shutdown time and at driver remove time. This is important because
+drm_helper_force_disable_all() will cause panels to get disabled
+cleanly which may be important for their power sequencing. Future
+changes will remove any custom powering off in individual panel
+drivers so the DRM drivers need to start getting this right.
 
-The fact that we should call drm_atomic_helper_shutdown() in the case
-of OS shutdown/restart and at driver remove (or unbind) time comes
-straight out of the kernel doc "driver instance overview" in
-drm_drv.c.
+The fact that we should call drm_atomic_helper_shutdown(), or in this
+case the non-atomic equivalent drm_helper_force_disable_all(), in the
+case of OS shutdown/restart comes straight out of the kernel doc
+"driver instance overview" in drm_drv.c.
 
-A few notes about this fix:
-- When adding drm_atomic_helper_shutdown() to the unbind path, I added
-  it after drm_kms_helper_poll_fini() since that's when other drivers
-  seemed to have it.
-- Technically with a previous patch, ("drm/atomic-helper:
-  drm_atomic_helper_shutdown(NULL) should be a noop"), we don't
-  actually need to check to see if our "drm" pointer is NULL before
-  calling drm_atomic_helper_shutdown(). We'll leave the "if" test in,
-  though, so that this patch can land without any dependencies. It
-  could potentially be removed later.
-- This patch also makes sure to set the drvdata to NULL in the case of
-  bind errors to make sure that shutdown can't access freed data.
+NOTE: in order to get things inserted in the right place, I had to
+replace the old/deprecated drm_put_dev() function with the equivalent
+new calls.
 
 Suggested-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
-This commit is only compile-time tested.
+I honestly have no idea if I got this patch right. The shutdown()
+function already had some special case logic for PPC, Loongson, and
+VMs and I don't 100% for sure know how this interacts with
+those. Everything here is just compile tested.
 
- drivers/gpu/drm/imx/ipuv3/imx-drm-core.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/gpu/drm/radeon/radeon_drv.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/imx/ipuv3/imx-drm-core.c b/drivers/gpu/drm/imx/ipuv3/imx-drm-core.c
-index 4a866ac60fff..4c8bc49758a7 100644
---- a/drivers/gpu/drm/imx/ipuv3/imx-drm-core.c
-+++ b/drivers/gpu/drm/imx/ipuv3/imx-drm-core.c
-@@ -257,6 +257,7 @@ static int imx_drm_bind(struct device *dev)
- 	drm_kms_helper_poll_fini(drm);
- 	component_unbind_all(drm->dev, drm);
- err_kms:
-+	dev_set_drvdata(dev, NULL);
- 	drm_dev_put(drm);
+diff --git a/drivers/gpu/drm/radeon/radeon_drv.c b/drivers/gpu/drm/radeon/radeon_drv.c
+index 39cdede460b5..67995ea24852 100644
+--- a/drivers/gpu/drm/radeon/radeon_drv.c
++++ b/drivers/gpu/drm/radeon/radeon_drv.c
+@@ -38,6 +38,7 @@
+ #include <linux/pci.h>
  
- 	return ret;
-@@ -269,6 +270,7 @@ static void imx_drm_unbind(struct device *dev)
- 	drm_dev_unregister(drm);
+ #include <drm/drm_aperture.h>
++#include <drm/drm_crtc_helper.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_file.h>
+ #include <drm/drm_gem.h>
+@@ -357,7 +358,9 @@ radeon_pci_remove(struct pci_dev *pdev)
+ {
+ 	struct drm_device *dev = pci_get_drvdata(pdev);
  
- 	drm_kms_helper_poll_fini(drm);
-+	drm_atomic_helper_shutdown(drm);
- 
- 	component_unbind_all(drm->dev, drm);
- 
-@@ -298,6 +300,14 @@ static int imx_drm_platform_remove(struct platform_device *pdev)
- 	return 0;
+-	drm_put_dev(dev);
++	drm_dev_unregister(dev);
++	drm_helper_force_disable_all(dev);
++	drm_dev_put(dev);
  }
  
-+static void imx_drm_platform_shutdown(struct platform_device *pdev)
-+{
-+	struct drm_device *drm = platform_get_drvdata(pdev);
-+
-+	if (drm)
-+		drm_atomic_helper_shutdown(platform_get_drvdata(pdev));
-+}
-+
- #ifdef CONFIG_PM_SLEEP
- static int imx_drm_suspend(struct device *dev)
- {
-@@ -325,6 +335,7 @@ MODULE_DEVICE_TABLE(of, imx_drm_dt_ids);
- static struct platform_driver imx_drm_pdrv = {
- 	.probe		= imx_drm_platform_probe,
- 	.remove		= imx_drm_platform_remove,
-+	.shutdown	= imx_drm_platform_shutdown,
- 	.driver		= {
- 		.name	= "imx-drm",
- 		.pm	= &imx_drm_pm_ops,
+ static void
+@@ -368,6 +371,8 @@ radeon_pci_shutdown(struct pci_dev *pdev)
+ 	 */
+ 	if (radeon_device_is_virtual())
+ 		radeon_pci_remove(pdev);
++	else
++		drm_helper_force_disable_all(pci_get_drvdata(pdev));
+ 
+ #if defined(CONFIG_PPC64) || defined(CONFIG_MACH_LOONGSON64)
+ 	/*
 -- 
 2.42.0.283.g2d96d420d3-goog
 
