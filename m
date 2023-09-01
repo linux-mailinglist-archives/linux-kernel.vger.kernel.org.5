@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0659A78FE34
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EEC678FE39
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 15:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349710AbjIANRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 09:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
+        id S1349721AbjIANUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 09:20:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233600AbjIANRj (ORCPT
+        with ESMTP id S233600AbjIANUL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 09:17:39 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451ED10E7
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:17:35 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rcdjy2yvdz6K627;
-        Fri,  1 Sep 2023 21:12:38 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Fri, 1 Sep
- 2023 14:17:32 +0100
-Date:   Fri, 1 Sep 2023 14:17:31 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Amit Singh Tomar <amitsinght@marvell.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <fenghua.yu@intel.com>,
-        <reinette.chatre@intel.com>, <james.morse@arm.com>,
-        <gcherian@marvell.com>, <robh@kernel.org>, <peternewman@google.com>
-Subject: Re: [RFC 12/12] arm_mpam: Program Downstream priority value
-Message-ID: <20230901141731.00006f46@Huawei.com>
-In-Reply-To: <20230815152712.1760046-13-amitsinght@marvell.com>
-References: <20230815152712.1760046-1-amitsinght@marvell.com>
-        <20230815152712.1760046-13-amitsinght@marvell.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Fri, 1 Sep 2023 09:20:11 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F0094
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 06:20:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693574408; x=1725110408;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bVS1ZI8wPeWDhI67JkVGmsuo/p94NgEEvHOQ73yeu8g=;
+  b=BXbS0LR8PIVYrfBxvUaWPqKlQGHmhMLL1a/2rieljgfXkH02ktribFH4
+   MTwGawzzOfigAQvn21kA3IKjbKA54hSbBOKUS3C8aBZG0MYzG5DvuC+U1
+   iD7oaBT6flC7pod7ddFtzuxgqSfgrohOsxat2nJerhKnym8HOmOSDgw2P
+   KprIkUvPGXerP3AhiAwkaNcSblYj32TblHdfEFy+dPnSugQmbE0AA2Jh8
+   mlpr7g8Te+hkL7VQ7nzKL3R0uBT/ku1fPntQReS24tF0Q2I3S08qyptMh
+   NvpjcqXWBf9cYLM85gT/hvmzWAyPD0IncKhIfDjSW3PMPVngkcEl/1pG7
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="380005964"
+X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
+   d="scan'208";a="380005964"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:19:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="986676875"
+X-IronPort-AV: E=Sophos;i="6.02,219,1688454000"; 
+   d="scan'208";a="986676875"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 06:19:54 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qc43y-005gKB-2p;
+        Fri, 01 Sep 2023 16:19:50 +0300
+Date:   Fri, 1 Sep 2023 16:19:50 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, patches@opensource.cirrus.com,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.au@gmail.com>
+Subject: Re: [PATCH v4 2/3] ASoC: wm8580: Remove trailing comma in the
+ terminator entry
+Message-ID: <ZPHk9tSC64clliFc@smile.fi.intel.com>
+References: <20230901065952.18760-1-biju.das.jz@bp.renesas.com>
+ <20230901065952.18760-3-biju.das.jz@bp.renesas.com>
+ <ZPGmiWDErxnjGlMR@smile.fi.intel.com>
+ <baefefc8-55d7-430a-9ec5-2c17c4577d11@sirena.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.202.227.76]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <baefefc8-55d7-430a-9ec5-2c17c4577d11@sirena.org.uk>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 15 Aug 2023 20:57:12 +0530
-Amit Singh Tomar <amitsinght@marvell.com> wrote:
-
-> Now that Downstream priorities values can be passed from resource control
-> schemata file, let's program it into memory mapped Priority Partition
-> Configuration Register.
+On Fri, Sep 01, 2023 at 01:54:58PM +0100, Mark Brown wrote:
+> On Fri, Sep 01, 2023 at 11:53:29AM +0300, Andy Shevchenko wrote:
+> > On Fri, Sep 01, 2023 at 07:59:51AM +0100, Biju Das wrote:
 > 
-> Signed-off-by: Amit Singh Tomar <amitsinght@marvell.com>
-> ---
-> TODO:
-> 	* Invert Priority value based on DSPRI_0_IS_LOW, suggested
->           by James. 
-
-Ah. In testing I just hit this as well as I was expecting the default
-to change depending on 0_IS_LOW.
-
-
-
-> ---
->  drivers/platform/mpam/mpam_devices.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> > > Remove trailing comma in the terminator entry for OF table.
 > 
-> diff --git a/drivers/platform/mpam/mpam_devices.c b/drivers/platform/mpam/mpam_devices.c
-> index 59022e42920c..8af6424bb27b 100644
-> --- a/drivers/platform/mpam/mpam_devices.c
-> +++ b/drivers/platform/mpam/mpam_devices.c
-> @@ -1153,8 +1153,12 @@ static void mpam_reprogram_ris_partid(struct mpam_msc_ris *ris, u16 partid,
->  
->  		if (mpam_has_feature(mpam_feat_intpri_part, rprops))
->  			pri_val |= FIELD_PREP(MPAMCFG_PRI_INTPRI, intpri);
-> -		if (mpam_has_feature(mpam_feat_dspri_part, rprops))
-> -			pri_val |= FIELD_PREP(MPAMCFG_PRI_DSPRI, dspri);
-> +		if (mpam_has_feature(mpam_feat_dspri_part, rprops)) {
-> +			if (mpam_has_feature(mpam_feat_dspri_part, cfg)) {
-> +				pri_val |= FIELD_PREP(MPAMCFG_PRI_DSPRI, cfg->dspri & dspri);
+> > You are so fast :-)
+> > This will produce an unneeded churn as you touch the same line twice in a row.
+> 
+> So do reviews which focus on very pedantic issues like this one...
 
-Note that it's not as simple as inverting the value for DSPRI_0_IS_LOW setting being the opposite
-as in that case dspri is st to 0 a few lines up... So this always ends up 0.
+If you fine with a series as is, take it!
+It's really nothing to bikeshed about.
 
-> +			} else
-> +				pri_val |= FIELD_PREP(MPAMCFG_PRI_DSPRI, dspri);
-> +		}
->  
->  		mpam_write_partsel_reg(msc, PRI, pri_val);
->  	}
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
