@@ -2,234 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01F978FC2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40F978FC2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  1 Sep 2023 13:16:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343552AbjIALQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 07:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38448 "EHLO
+        id S1349137AbjIALQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 07:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232235AbjIALQC (ORCPT
+        with ESMTP id S232235AbjIALQR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 07:16:02 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80E3410EB
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 04:15:55 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id ffacd0b85a97d-31aeedbb264so1638037f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 04:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693566954; x=1694171754; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JXKeOLDoyy5/kC3fUdlXL9lLNwTUvGaVFBeNIEjZIMQ=;
-        b=wItsgk2lVTkrdudb0s+W0fc/IXvfIrdODovm3iV3yIeGU0B8aS0yVO5Y4gjKltEMOv
-         qfgdcFxiotpvjsTO/4XV9eBw18shHD0PVJSA81IbW8sH6zCh1mjYS7vm1E2/S2hNGHZt
-         UICi58i5uRzpMdxsS2lOSqOn2bRUfCo+YbI5Sq7fHBX+SZuTVrGRxhrKfMy1MTXsy7Ro
-         sxuth+yutzO9qGFh9nqrekTOJYbLXPhY8VfgCavJOVs+qmRxUt2LP6ht2GMaHWQmTnxP
-         lGIca916IXI9/pojYgdxDZvlOaKFCRJftjOBRb+T5TCHP1t5FCzQekLOUVCXDm8Dt6PL
-         KqaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693566954; x=1694171754;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JXKeOLDoyy5/kC3fUdlXL9lLNwTUvGaVFBeNIEjZIMQ=;
-        b=G1twgl2qzq77ngPpKSyJBaRaPzAykFCZAviQfD8uy8do5dwBIKKM5a1fHYRb272WYb
-         R/MhliB+SL9Kplg5PkjZRPElNoy/7tVozewm7U8Qq0QvTKaBSXHG1OH06OoxeXPanTj8
-         IU+wpjGJFKodwGOVOxfFIRE6znpYBOvtwknv4id4nLCxK+EPA60TbgcOAxaYye40+zz2
-         ZWIDhfGihHPq5VV14IVYwiQL8ukq0tlxCQsw1viax9tuFqi7qYIvXf70wSJ1BmmdmwB6
-         tdGnvBNjWKwRxPXEU50AJBBV698iVtCkQibKhIjPykJGOp7gqM0tHYwtXOe0cLiEkJ9Z
-         +gUg==
-X-Gm-Message-State: AOJu0YzA8IYCEbAoGt45L3DAJdstDLrdIIQPI4x1LKu2ItZ6MWMszYRC
-        w0AjDBc5qgqsJG64dZsMQYP5ug==
-X-Google-Smtp-Source: AGHT+IE+Q3n8iF3DTTB+G/JNTL/+AMsHyYDbREZ9/1BFcmOOL2dovB8KiBgpxGdxnlcSGkTBS0CL8g==
-X-Received: by 2002:a5d:4e0e:0:b0:316:fc86:28ae with SMTP id p14-20020a5d4e0e000000b00316fc8628aemr1394230wrt.15.1693566953774;
-        Fri, 01 Sep 2023 04:15:53 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:e94b:1054:6760:aa27])
-        by smtp.gmail.com with ESMTPSA id s2-20020a5d4242000000b003197c2316ecsm4943457wrr.112.2023.09.01.04.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Sep 2023 04:15:53 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Cc:     Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [RFT PATCH v2] spi: bcm2835: reduce the abuse of the GPIO API
-Date:   Fri,  1 Sep 2023 13:15:48 +0200
-Message-Id: <20230901111548.12733-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.39.2
+        Fri, 1 Sep 2023 07:16:17 -0400
+Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DFF61712;
+        Fri,  1 Sep 2023 04:16:02 -0700 (PDT)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+        t=1693566960; bh=T+txIrUdis2VQuaKTmAsVCwl57HbeVvkrd6dlVMj4qI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=HCByNKMsWeM2A/2Usbc2IGbZp3Y9aE9cUk0ES3A7E4APbgcvj9fjMxfmTdx90Zxf/
+         Bon8Cx/94DgPLT7/MnhQeFqJ5eL42o5lZq4EjKF5B2gePjlkzoAXH84LPOPCsR9fZN
+         AonH1hSqOPviJn2hNsGSqZjgHeOoABx31xEcoV31IPgn/N6Ofr4I9i0yrMvZrGADYd
+         td6zM1eDTIEQj/swZ30+QYdJSORNE+zXy/f892BnQPahY1a2U6cbjUqOLlyTXV6bZJ
+         2qGSSAwR7IATcHBfA/jhkQXTi1ZTYAXi1Zpaf7JtETnB2GCqdndzAUULQ6RgsivMxO
+         vuIbkIaqW2lCg==
+To:     Dongliang Mu <dzm91@hust.edu.cn>, Kalle Valo <kvalo@kernel.org>,
+        Sujith Manoharan <c_manoha@qca.qualcomm.com>,
+        "John W. Linville" <linville@tuxdriver.com>
+Cc:     hust-os-kernel-patches@googlegroups.com,
+        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ath9k: fix null-ptr-deref in ath_chanctx_event
+In-Reply-To: <317b9482-d750-9093-e891-21f73feeac0c@hust.edu.cn>
+References: <20230901080701.1705649-1-dzm91@hust.edu.cn>
+ <87y1hqtbtu.fsf@toke.dk>
+ <317b9482-d750-9093-e891-21f73feeac0c@hust.edu.cn>
+Date:   Fri, 01 Sep 2023 13:16:00 +0200
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87il8uta8f.fsf@toke.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Dongliang Mu <dzm91@hust.edu.cn> writes:
 
-Currently the bcm2835 SPI driver uses functions that are available
-exclusively to GPIO providers as a way to handle a platform quirk. Let's
-use a slightly better alternative that avoids poking around in GPIOLIB's
-internals and use GPIO lookup tables.
+> On 2023/9/1 18:41, 'Toke H=C3=B8iland-J=C3=B8rgensen' via HUST OS Kernel=
+=20
+> Contribution wrote:
+>> Dongliang Mu <dzm91@hust.edu.cn> writes:
+>>
+>>> Smatch reports:
+>>>
+>>> ath_chanctx_event() error: we previously assumed 'vif' could be null
+>>>
+>>> The function ath_chanctx_event can be called with vif argument as NULL.
+>>> If vif is NULL, ath_dbg can trigger a null pointer dereference.
+>>>
+>>> Fix this by adding a null pointer check.
+>>>
+>>> Fixes: 878066e745b5 ("ath9k: Add more debug statements for channel cont=
+ext")
+>>> Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
+>>> ---
+>>>   drivers/net/wireless/ath/ath9k/channel.c | 4 +++-
+>>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/net/wireless/ath/ath9k/channel.c b/drivers/net/wir=
+eless/ath/ath9k/channel.c
+>>> index 571062f2e82a..e343c8962d14 100644
+>>> --- a/drivers/net/wireless/ath/ath9k/channel.c
+>>> +++ b/drivers/net/wireless/ath/ath9k/channel.c
+>>> @@ -576,7 +576,9 @@ void ath_chanctx_event(struct ath_softc *sc, struct=
+ ieee80211_vif *vif,
+>>>   		if (sc->sched.state !=3D ATH_CHANCTX_STATE_WAIT_FOR_BEACON)
+>>>   			break;
+>>>=20=20=20
+>>> -		ath_dbg(common, CHAN_CTX, "Preparing beacon for vif: %pM\n", vif->ad=
+dr);
+>>> +		if (vif)
+>>> +			ath_dbg(common, CHAN_CTX,
+>>> +				"Preparing beacon for vif: %pM\n", vif->addr);
+>> Please don't send patches for static checker errors without actually
+>> checking if there is a valid bug. Which there isn't in this case.
+>
+> Before sending this patch, I searched in the code, there are many call=20
+> sites of ath_chanctx_event with argument vif as NULL.
+>
+> Functions calling this function: ath_chanctx_event
+>
+>  =C2=A0 File=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Function=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 Line
+> 0 beacon.c=C2=A0 ath9k_beacon_tasklet=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 459 ath_chanctx_event(sc, vif,=20
+> ATH_CHANCTX_EVENT_BEACON_PREPARE);
 
-Link: https://www.spinics.net/lists/linux-gpio/msg36218.html
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
-This is only build-tested. It should work, but it would be great if
-someone from broadcom could test this.
+But only this one has ATH_CHANCTX_EVENT_BEACON_PREPARE as an argument,
+which is required to hit the code path you are changing.
 
-v1 -> v2:
-- don't use devres for managing the GPIO but put it manually in .cleanup()
-- add a mailing list link explaining the background of the bug
-- fix kerneldoc
+> 1 channel.c ath_chanctx_check_active=C2=A0=C2=A0=C2=A0 321 ath_chanctx_ev=
+ent(sc, NULL,
+> 2 channel.c ath_chanctx_beacon_sent_ev=C2=A0 781 ath_chanctx_event(sc, NU=
+LL, ev);
+> 3 channel.c ath_chanctx_beacon_recv_ev=C2=A0 787 ath_chanctx_event(sc, NU=
+LL, ev);
+> 4 channel.c ath_chanctx_timer=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 1054 ath_chanctx_event(sc, NULL,=20
+> ATH_CHANCTX_EVENT_TSF_TIMER);
+> 5 channel.c ath_chanctx_set_next=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1321=
+ ath_chanctx_event(sc, NULL,=20
+> ATH_CHANCTX_EVENT_SWITCH);
+> 6 channel.c ath9k_p2p_ps_timer=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 1566 ath_chanctx_event(sc, NULL,=20
+> ATH_CHANCTX_EVENT_TSF_TIMER);
+> 7 main.c=C2=A0=C2=A0=C2=A0 ath9k_sta_state=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 1671 ath_chanctx_event(sc, vif,
+> 8 main.c=C2=A0=C2=A0=C2=A0 ath9k_remove_chanctx=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 2577 ath_chanctx_event(sc, NULL,=20
+> ATH_CHANCTX_EVENT_UNASSIGN);
+> 9 xmit.c=C2=A0=C2=A0=C2=A0 ath_tx_edma_tasklet=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 2749 ath_chanctx_event(sc, NULL,
+>
+> This NULL parameters would cause some abnormal behaviors.
+>
+>> Specifically, that branch of the switch statement dereferences the avp
+>> pointer, which will be NULL if 'vif' is. Meaning we will have crashed
+>> way before reaching this statement if vif is indeed NULL.
+> Yeah, you are right. However, no matter where or which variable causing=20
+> the null-ptr-def crash, the crash is there.
 
- drivers/spi/spi-bcm2835.c | 59 +++++++++++++++++++++++----------------
- 1 file changed, 35 insertions(+), 24 deletions(-)
+There is no crash, see above.
 
-diff --git a/drivers/spi/spi-bcm2835.c b/drivers/spi/spi-bcm2835.c
-index e7bb2714678a..e06738705075 100644
---- a/drivers/spi/spi-bcm2835.c
-+++ b/drivers/spi/spi-bcm2835.c
-@@ -11,6 +11,7 @@
-  * spi-atmel.c, Copyright (C) 2006 Atmel Corporation
-  */
- 
-+#include <linux/cleanup.h>
- #include <linux/clk.h>
- #include <linux/completion.h>
- #include <linux/debugfs.h>
-@@ -26,9 +27,10 @@
- #include <linux/of_address.h>
- #include <linux/platform_device.h>
- #include <linux/gpio/consumer.h>
--#include <linux/gpio/machine.h> /* FIXME: using chip internals */
--#include <linux/gpio/driver.h> /* FIXME: using chip internals */
-+#include <linux/gpio/machine.h> /* FIXME: using GPIO lookup tables */
- #include <linux/of_irq.h>
-+#include <linux/overflow.h>
-+#include <linux/slab.h>
- #include <linux/spi/spi.h>
- 
- /* SPI register offsets */
-@@ -83,6 +85,7 @@ MODULE_PARM_DESC(polling_limit_us,
-  * struct bcm2835_spi - BCM2835 SPI controller
-  * @regs: base address of register map
-  * @clk: core clock, divided to calculate serial clock
-+ * @cs_gpio: chip-select GPIO descriptor
-  * @clk_hz: core clock cached speed
-  * @irq: interrupt, signals TX FIFO empty or RX FIFO ¾ full
-  * @tfr: SPI transfer currently processed
-@@ -117,6 +120,7 @@ MODULE_PARM_DESC(polling_limit_us,
- struct bcm2835_spi {
- 	void __iomem *regs;
- 	struct clk *clk;
-+	struct gpio_desc *cs_gpio;
- 	unsigned long clk_hz;
- 	int irq;
- 	struct spi_transfer *tfr;
-@@ -1156,15 +1160,11 @@ static void bcm2835_spi_handle_err(struct spi_controller *ctlr,
- 	bcm2835_spi_reset_hw(bs);
- }
- 
--static int chip_match_name(struct gpio_chip *chip, void *data)
--{
--	return !strcmp(chip->label, data);
--}
--
- static void bcm2835_spi_cleanup(struct spi_device *spi)
- {
- 	struct bcm2835_spidev *target = spi_get_ctldata(spi);
- 	struct spi_controller *ctlr = spi->controller;
-+	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
- 
- 	if (target->clear_rx_desc)
- 		dmaengine_desc_free(target->clear_rx_desc);
-@@ -1175,6 +1175,9 @@ static void bcm2835_spi_cleanup(struct spi_device *spi)
- 				 sizeof(u32),
- 				 DMA_TO_DEVICE);
- 
-+	gpiod_put(bs->cs_gpio);
-+	spi_set_csgpiod(spi, 0, NULL);
-+
- 	kfree(target);
- }
- 
-@@ -1221,7 +1224,7 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 	struct spi_controller *ctlr = spi->controller;
- 	struct bcm2835_spi *bs = spi_controller_get_devdata(ctlr);
- 	struct bcm2835_spidev *target = spi_get_ctldata(spi);
--	struct gpio_chip *chip;
-+	struct gpiod_lookup_table *lookup __free(kfree) = NULL;
- 	int ret;
- 	u32 cs;
- 
-@@ -1288,29 +1291,37 @@ static int bcm2835_spi_setup(struct spi_device *spi)
- 	}
- 
- 	/*
--	 * Translate native CS to GPIO
-+	 * TODO: The code below is a slightly better alternative to the utter
-+	 * abuse of the GPIO API that I found here before. It creates a
-+	 * temporary lookup table, assigns it to the SPI device, gets the GPIO
-+	 * descriptor and then releases the lookup table.
- 	 *
--	 * FIXME: poking around in the gpiolib internals like this is
--	 * not very good practice. Find a way to locate the real problem
--	 * and fix it. Why is the GPIO descriptor in spi->cs_gpiod
--	 * sometimes not assigned correctly? Erroneous device trees?
-+	 * More on the problem that it addresses:
-+	 *   https://www.spinics.net/lists/linux-gpio/msg36218.html
- 	 */
-+	lookup = kzalloc(struct_size(lookup, table, 1), GFP_KERNEL);
-+	if (!lookup) {
-+		ret = -ENOMEM;
-+		goto err_cleanup;
-+	}
- 
--	/* get the gpio chip for the base */
--	chip = gpiochip_find("pinctrl-bcm2835", chip_match_name);
--	if (!chip)
--		return 0;
-+	lookup->dev_id = dev_name(&spi->dev);
-+	lookup->table[0].key = "pinctrl-bcm2835";
-+	lookup->table[0].chip_hwnum = (8 - (spi_get_chipselect(spi, 0)));
-+	lookup->table[0].con_id = "cs";
-+	lookup->table[0].flags = GPIO_LOOKUP_FLAGS_DEFAULT;
- 
--	spi_set_csgpiod(spi, 0, gpiochip_request_own_desc(chip,
--							  8 - (spi_get_chipselect(spi, 0)),
--							  DRV_NAME,
--							  GPIO_LOOKUP_FLAGS_DEFAULT,
--							  GPIOD_OUT_LOW));
--	if (IS_ERR(spi_get_csgpiod(spi, 0))) {
--		ret = PTR_ERR(spi_get_csgpiod(spi, 0));
-+	gpiod_add_lookup_table(lookup);
-+
-+	bs->cs_gpio = gpiod_get(&spi->dev, "cs", GPIOD_OUT_LOW);
-+	gpiod_remove_lookup_table(lookup);
-+	if (IS_ERR(bs->cs_gpio)) {
-+		ret = PTR_ERR(bs->cs_gpio);
- 		goto err_cleanup;
- 	}
- 
-+	spi_set_csgpiod(spi, 0, bs->cs_gpio);
-+
- 	/* and set up the "mode" and level */
- 	dev_info(&spi->dev, "setting up native-CS%i to use GPIO\n",
- 		 spi_get_chipselect(spi, 0));
--- 
-2.39.2
-
+-Toke
