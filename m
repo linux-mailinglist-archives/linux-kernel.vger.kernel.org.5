@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D607909C8
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 23:21:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 950C17909D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 23:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234945AbjIBVV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 17:21:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43444 "EHLO
+        id S234980AbjIBVjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 17:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjIBVV5 (ORCPT
+        with ESMTP id S234956AbjIBVjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 17:21:57 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 910A418E;
-        Sat,  2 Sep 2023 14:21:54 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 30DE461049;
-        Sat,  2 Sep 2023 21:21:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30770C433C8;
-        Sat,  2 Sep 2023 21:21:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693689713;
-        bh=PRxo/tqFDNWIt6y7KPiZTn4Vl1jztIQ9xzPLMTJ3GiE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MHxlyCt4AoPSl6QFxJ5kA1677I4BV6nGboB3lLp6dbPCd9Gwh8J5kYYx0BRzjnLoa
-         kQgNrXSS3SVfJGHLT1DOLZzpCRCJYMMtk8mCLhRjwK/G2PSJb1IFIATNyQ4IN9FWkH
-         1owIN79kBffdtVHBkpZbC7OImPYOiM+Vm3L0kcbYFr8+WkGVK4vj0wO7A+0qIX/s1z
-         wTvgFHunezSsH1EZz+izVfe1B4aL8vdadK5NHhoXK2NebKdqcrq+8Wr33inA4lEdQn
-         OREGSI9UJz1yUZ4UpzDFI1XAxeR9PS+CECLFecVr+U03j19LINYCCkkUzpgsuNSTRY
-         2EMmtQkvoqFMQ==
-Date:   Sat, 2 Sep 2023 23:21:49 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH 8/8] i2c: sprd: Increase the waiting time for IIC
- transmission to avoid system crash issues
-Message-ID: <20230902212149.wsxawpvm66j7pukx@zenone.zhora.eu>
-References: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com>
- <20230817094520.21286-9-Huangzheng.Lai@unisoc.com>
+        Sat, 2 Sep 2023 17:39:39 -0400
+X-Greylist: delayed 1011 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 02 Sep 2023 14:39:36 PDT
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D17E9E54
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 14:39:36 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qcY4W-0006CP-Tu; Sat, 02 Sep 2023 23:22:24 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qcY4V-003V6R-2G; Sat, 02 Sep 2023 23:22:23 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qcY4U-000jBN-AY; Sat, 02 Sep 2023 23:22:22 +0200
+Date:   Sat, 2 Sep 2023 23:22:11 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     =?utf-8?B?QW5kcsOp?= Apitzsch <git@apitzsch.eu>
+Cc:     Pavel Machek <pavel@ucw.cz>, Lee Jones <lee@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v2 2/2] leds: add ktd202x driver
+Message-ID: <20230902212211.egbmusrbawkrrdlu@pengutronix.de>
+References: <20230901-ktd202x-v2-0-3cb8b0ca02ed@apitzsch.eu>
+ <20230901-ktd202x-v2-2-3cb8b0ca02ed@apitzsch.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3yy36qt3op6mlcma"
 Content-Disposition: inline
-In-Reply-To: <20230817094520.21286-9-Huangzheng.Lai@unisoc.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230901-ktd202x-v2-2-3cb8b0ca02ed@apitzsch.eu>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huangzheng,
 
-On Thu, Aug 17, 2023 at 05:45:20PM +0800, Huangzheng Lai wrote:
-> Due to the relatively low priority of the isr_thread, when the CPU
-> load is high, the execution of sprd_i2c_isr_thread will be delayed.
-> After the waiting time is exceeded, the IIC driver will perform
-> operations such as disabling the IIC controller. Later, when
-> sprd_i2c_isr_thread is called by the CPU, there will be kernel panic
-> caused by illegal access to the IIC register. After pressure testing,
-> we found that increasing the IIC waiting time to 10 seconds can
-> avoid this problem.
-> 
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+--3yy36qt3op6mlcma
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Is this a fix? Then please consider adding:
+Hello Andr=E9,
 
-0b884fe71f9e ("i2c: sprd: use a specific timeout to avoid system hang up issue")
-Cc: <stable@vger.kernel.org> # v5.11+
+On Fri, Sep 01, 2023 at 11:19:59PM +0200, Andr=E9 Apitzsch wrote:
+> +	.probe_new =3D ktd202x_probe,
 
-Andi
+probe_new is about to go away and since commit
+03c835f498b540087244a6757e87dfe7ef10999b you can just use .probe with
+the same prototype. So please use .probe here.
 
-> ---
->  drivers/i2c/busses/i2c-sprd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index 6f65f28ea69d..3c7af04fa177 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -76,7 +76,7 @@
->  /* timeout (ms) for pm runtime autosuspend */
->  #define SPRD_I2C_PM_TIMEOUT	1000
->  /* timeout (ms) for transfer message */
-> -#define I2C_XFER_TIMEOUT	1000
-> +#define I2C_XFER_TIMEOUT	10000
->  /* dynamic modify clk_freq flag  */
->  #define	I2C_3M4_FLAG		0x0100
->  #define	I2C_1M_FLAG		0x0080
-> -- 
-> 2.17.1
-> 
+(Disclaimer: This is the only thing I checked here.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--3yy36qt3op6mlcma
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmTzp4MACgkQj4D7WH0S
+/k6paggAr8GWkS0QCAUDHE36Yy80iYlPCMDhK+Buxs+2gjg2gfr3l+qI3D32cX37
+RsA3B94vmdZCx8Dkm1KPIwA3udb4/seZyzbwXO/9Qp5tt6J4K4OfD3sWeZKhQdgf
+BDH5xeKmnQZthacdfiEZs7h0Rjpm6nQrMuuYLKURhTb0yd9L7XZcdIig9jd45Cio
+BP2b+pNlSu2lP6mY5yZXmVVeApfx6uHRtRj9E4NJBz/SH/afu+MgUl+zs5MyHLoI
+r9Hp8JGT4TJ/DqsSr5zheOofJnNN5lSzaDNEZWpc/rbhhYHn7EEsZ+R4R67WNjX6
+kvLLcYguDddAChTqoOpJEsaprYHDOQ==
+=Puti
+-----END PGP SIGNATURE-----
+
+--3yy36qt3op6mlcma--
