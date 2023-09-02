@@ -2,79 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9172A7908A1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 18:13:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08CC27908A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 18:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234095AbjIBQN0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 12:13:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42806 "EHLO
+        id S234181AbjIBQOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 12:14:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234010AbjIBQNZ (ORCPT
+        with ESMTP id S234172AbjIBQOk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 12:13:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D32EE72
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 09:13:22 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sat, 2 Sep 2023 12:14:40 -0400
+Received: from vulcan.natalenko.name (vulcan.natalenko.name [IPv6:2001:19f0:6c00:8846:5400:ff:fe0c:dfa0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 321581702
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 09:14:31 -0700 (PDT)
+Received: from spock.localnet (unknown [94.142.239.106])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C790A602F3
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 16:13:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 39479C433CB;
-        Sat,  2 Sep 2023 16:13:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693671201;
-        bh=w9l+29EAlY5G9t8mknRVsSA342zXuViuIvYgQa2PX1E=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=WM2Lagk+zoj2qkGMWpoLDq4xSElipI2h9zLPAogHuRMtGHs3+7X7TPIpXS8/Ew6zX
-         ECW/yuD0dAlFTF5tRB+1F3p1fiVGw35n6xZs6jILP5kUtukupb7T3roFppV0GiWk+b
-         b0IIj5TxiZXi72lJVZ7h0bsAprOplFEcTbo0KsndPvo3NQ2HBU3p0PmYxz0I4QmxcU
-         L/3j0tDvy0XPi+LoyXuBNmMyShNUvGVgmaUIli8DLVYn+h785Vhca4+6divceMqjuR
-         fJ2FLioUmu+kwe2oQ+vjtkuGyX7waRU0mUBRHKeYXDpsmmbHaerA1UZerosukH36Fg
-         nKaNC9X8kIkvQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 24906C595D2;
-        Sat,  2 Sep 2023 16:13:21 +0000 (UTC)
-Subject: Re: [GIT PULL] x86 fix
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZPMNXtbIPMdjdn3o@gmail.com>
-References: <ZPMNXtbIPMdjdn3o@gmail.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZPMNXtbIPMdjdn3o@gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2023-09-02
-X-PR-Tracked-Commit-Id: 6ea7bb00c1ba180f8bf8320b8d59b532501c5271
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: fdde6187804782dce49c78d00e04bac6535628c7
-Message-Id: <169367120114.31473.13592544231829289350.pr-tracker-bot@kernel.org>
-Date:   Sat, 02 Sep 2023 16:13:21 +0000
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by vulcan.natalenko.name (Postfix) with ESMTPSA id 19BC814DCE08;
+        Sat,  2 Sep 2023 18:14:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+        s=dkim-20170712; t=1693671262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=6aoq5kOuumUNefWZYwWm0v4bD/rnwjQr+nyFobpfYeA=;
+        b=GPc1/eOybPkKhuH52tWwNEmDcQ2kDJ5vMwiVYUh46S4YrdmJvrfANoakMSYpEIzBG3APPr
+        U26ZA9tag5zrxAAdhjjFP5yChQt9xaBXKXCsC4p/dI95NmD3E/zBovOWwP5Rifo1dedPSo
+        WJbz7Xy3SDKqjbTuXSWA52a6/+jgY/Q=
+From:   Oleksandr Natalenko <oleksandr@natalenko.name>
+To:     linux-kernel@vger.kernel.org
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Matt Roper <matthew.d.roper@intel.com>,
+        Aravind Iddamsetty <aravind.iddamsetty@intel.com>,
+        Fei Yang <fei.yang@intel.com>,
+        Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>
+Subject: [REGRESSION] Panic in gen8_ggtt_insert_entries() with v6.5
+Date:   Sat, 02 Sep 2023 18:14:12 +0200
+Message-ID: <4857570.31r3eYUQgx@natalenko.name>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart4509088.LvFx2qVVIh";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HEXHASH_WORD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 2 Sep 2023 12:24:30 +0200:
+--nextPart4509088.LvFx2qVVIh
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: linux-kernel@vger.kernel.org
+Subject: [REGRESSION] Panic in gen8_ggtt_insert_entries() with v6.5
+Date: Sat, 02 Sep 2023 18:14:12 +0200
+Message-ID: <4857570.31r3eYUQgx@natalenko.name>
+MIME-Version: 1.0
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2023-09-02
+Hello.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/fdde6187804782dce49c78d00e04bac6535628c7
+Since v6.5 kernel the following HW:
 
-Thank you!
+* Lenovo T460s laptop with Skylake GT2 [HD Graphics 520] (rev 07)
+* Lenovo T490s laptop with WhiskeyLake-U GT2 [UHD Graphics 620] (rev 02)
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+is affected by the following crash once KDE on either X11 or Wayland is sta=
+rted:
+
+i915 0000:00:02.0: enabling device (0006 -> 0007)
+i915 0000:00:02.0: vgaarb: deactivate vga console
+i915 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=3Dio+mem,decodes=
+=3Dio+mem:owns=3Dmem
+i915 0000:00:02.0: [drm] Finished loading DMC firmware i915/skl_dmc_ver1_27=
+=2Ebin (v1.27)
+[drm] Initialized i915 1.6.0 20201103 for 0000:00:02.0 on minor 1
+fbcon: i915drmfb (fb0) is primary device
+i915 0000:00:02.0: [drm] fb0: i915drmfb frame buffer device
+=E2=80=A6
+memfd_create() without MFD_EXEC nor MFD_NOEXEC_SEAL, pid=3D674 'kwin_waylan=
+d'
+BUG: unable to handle page fault for address: ffffb422c2800000
+#PF: supervisor write access in kernel mode
+#PF: error_code(0x0002) - not-present page
+PGD 100000067 P4D 100000067 PUD 1001df067 PMD 10d1cf067 PTE 0
+Oops: 0002 [#1] PREEMPT SMP PTI
+CPU: 1 PID: 674 Comm: kwin_wayland Not tainted 6.5.0-pf1 #1 a6c58ff41a7b8bb=
+16a19f5af9e0e9bce20f9f38d
+Hardware name: LENOVO 20FAS2BM0F/20FAS2BM0F, BIOS N1CET90W (1.58 ) 11/15/20=
+22
+RIP: 0010:gen8_ggtt_insert_entries+0xc2/0x140 [i915]
+=E2=80=A6
+Call Trace:
+ <TASK>
+ intel_ggtt_bind_vma+0x3e/0x60 [i915 a83fdc6539431252dba13053979a8b680af868=
+36]
+ i915_vma_bind+0x216/0x4b0 [i915 a83fdc6539431252dba13053979a8b680af86836]
+ i915_vma_pin_ww+0x405/0xa80 [i915 a83fdc6539431252dba13053979a8b680af86836]
+ __i915_ggtt_pin+0x5a/0x130 [i915 a83fdc6539431252dba13053979a8b680af86836]
+ i915_ggtt_pin+0x78/0x1f0 [i915 a83fdc6539431252dba13053979a8b680af86836]
+ __intel_context_do_pin_ww+0x312/0x700 [i915 a83fdc6539431252dba13053979a8b=
+680af86836]
+ i915_gem_do_execbuffer+0xfc6/0x2720 [i915 a83fdc6539431252dba13053979a8b68=
+0af86836]
+ i915_gem_execbuffer2_ioctl+0x111/0x260 [i915 a83fdc6539431252dba13053979a8=
+b680af86836]
+ drm_ioctl_kernel+0xca/0x170
+ drm_ioctl+0x30f/0x580
+ __x64_sys_ioctl+0x94/0xd0
+ do_syscall_64+0x5d/0x90
+ entry_SYSCALL_64_after_hwframe+0x6e/0xd8
+=E2=80=A6
+note: kwin_wayland[674] exited with irqs disabled
+
+RIP seems to translate into this:
+
+$ scripts/faddr2line drivers/gpu/drm/i915/gt/intel_ggtt.o gen8_ggtt_insert_=
+entries+0xc2
+gen8_ggtt_insert_entries+0xc2/0x150:
+writeq at /home/pf/work/devel/own/pf-kernel/linux/./arch/x86/include/asm/io=
+=2Eh:99
+(inlined by) gen8_set_pte at /home/pf/work/devel/own/pf-kernel/linux/driver=
+s/gpu/drm/i915/gt/intel_ggtt.c:257
+(inlined by) gen8_ggtt_insert_entries at /home/pf/work/devel/own/pf-kernel/=
+linux/drivers/gpu/drm/i915/gt/intel_ggtt.c:300
+
+Probably, recent PTE-related changes are relevant:
+
+$ git log --oneline --no-merges v6.4..v6.5 -- drivers/gpu/drm/i915/gt/intel=
+_ggtt.c
+3532e75dfadcf drm/i915/uc: perma-pin firmwares
+4722e2ebe6f21 drm/i915/gt: Fix second parameter type of pre-gen8 pte_encode=
+ callbacks
+9275277d53248 drm/i915: use pat_index instead of cache_level
+5e352e32aec23 drm/i915: preparation for using PAT index
+341ad0e8e2542 drm/i915/mtl: Add PTE encode function
+
+Also note Lenovo T14s laptop with TigerLake-LP GT2 [Iris Xe Graphics] (rev =
+01) is not affected by this issue.
+
+=46ull dmesg with DRM debug enabled is available in the bugreport I've repo=
+rted earlier [1]. I'm sending this email to make the issue more visible.
+
+Please help.
+
+Thanks.
+
+[1] https://gitlab.freedesktop.org/drm/intel/-/issues/9256
+
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart4509088.LvFx2qVVIh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmTzX1QACgkQil/iNcg8
+M0vFXRAAwAHRXC8rN19Hemh9k7QDFYw0D6Tp6TJQ9n35nI65xPaRCZj8ISw8RQTY
+Z1V0QBvTKsDbf355IOn1ode7H9x3zsLBRTqU+lH4WO8BuXEKva1kDYHUCGVjzfXH
+aL0VEoBiuWr+u236AsDhkjQLC0LhFrfgaqixP92eyINQoBhSXD3LEbNdx0MhMTp6
+wT5C6T/9Wyz5vsZPjX8Wu9fCCdTM1UYrBCy0k6xNP899krYvpU61ENIa0pdGvo6K
+VCLGj+Yh9UyZ60Lxd8jUYjilclrUm3CpQBzDZdRqVjJX0BJG/M/sUccAofPh1GIH
+lKkMohhNftMacoVnhqMWmpIYLkAdGAONFieG3v3VgTBtpPPC/WmQMpjGgsHJFc+5
+cfL2LBMGD79xR7yhmgOKZleyLDBKmd7v5M+5vJievsN4p459BtLBBWECg1fXIg7X
+wNgCDL6gvYahbnV3iyOffHRsyDqBCEL/8zp9HDkGqhMrlZEgsMY/fl8H7nI+jn/A
+2d951wwoJ8YOY+8F61V18kE+9UQG7HQC9tqAeSiqnMneOGf++2SJ6K0vUUtys0x/
+Kucyj0DQ6s1VIY4am0lvfpS5bLrP1nKLyBWe7F5irghjd/PK+oZDjZFYhe5Q4KAB
+/BJ9zM8yYgfzLl8bX4VNdUlTOMGDNwJFJUGJSbri1vSkZHy9gII=
+=0iUR
+-----END PGP SIGNATURE-----
+
+--nextPart4509088.LvFx2qVVIh--
+
+
+
