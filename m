@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B2679045F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 02:01:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41495790461
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 02:01:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351463AbjIBABG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 20:01:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
+        id S1351416AbjIBABJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 20:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351440AbjIBAA7 (ORCPT
+        with ESMTP id S1351445AbjIBABA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 20:00:59 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A16B6E7F
+        Fri, 1 Sep 2023 20:01:00 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0A61A8
         for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 17:00:54 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 65B13B826B9
+        by sin.source.kernel.org (Postfix) with ESMTPS id 13E15CE2521
         for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 00:00:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 27D84C433CB;
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A2764C433C8;
         Sat,  2 Sep 2023 00:00:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693612852;
-        bh=j6368SGGCT5955CBrDnXY50NE0Ss5DNSuPNZM6Ponuo=;
+        bh=u0VZcwv7N8IYHKjVzAn9p+9vCffx/7wDUC9tF2A3JA0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=fvxzN/Rqdomc257zsXH0g2FIi2BqWmED/r+yz83/qWW19tnlqG2EkuNXmEnnCJTVF
-         7kI1S0vCvh9aZx4OqAOQ5XiN12KANvOGqqWTUmsTK15tUbb8nKXnPtQ0RUx2E9iYul
-         4eiQEUaZvQ43PnQ3m6sqtifAuw8EA/6ekf8A1vy9H0QViGoWetIoUBPuP2wvps0Vsb
-         5OAs1xc7l0mWx9AZGC4iJqyz2boK1iXqaGzZ/H2mM6Ic0lxIE77S4Yi7V1qdaiYjWY
-         l4KLFJNvnzzhb+WbVdTSjqIrWzzNC3hgGeUJElpqdwZXAdQ2CYO1GYmZO2zSqMcmPe
-         PxAf2OhdJSiwA==
+        b=E8L8CwNsy0GBwC0NREZSrG1Qz4y9iX2vzpXNx3OYUXwEO9PIo4F3IoHFm9tCTX1Vd
+         dbtEZO6TAIucwd4RjMipE0kz2NDxeKlMX2EXYoDNISiUsa40DdvNdE/2dHaFKTAefe
+         8rCUppzj4ERYS6Cct43Vg+luPWxQcsEiMuwBI5DcC5kM0RoETnKL6FkQV9TSvzx9FU
+         R8u3yGqHYFvUxdFMxCu2JIYf+OZ+dQJw/sGeDvXHsAor7tfp24PRKQ3af+hgWqB/Ah
+         Rpd+1UBPoKbEljJLCsyxebXoo5EjK9PFx3LQFdkRKXWhm2iwz1RmSOkhPmGnYBcQDj
+         U7yhSzHOpY1Yg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 16557E29F3C;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 8C823C64457;
         Sat,  2 Sep 2023 00:00:52 +0000 (UTC)
-Subject: Re: [git pull] IOMMU Updates for Linux v6.6
+Subject: Re: [GIT PULL] x86/urgent for 6.6-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZPHw-MSyehz1wF7c@8bytes.org>
-References: <ZPHw-MSyehz1wF7c@8bytes.org>
+In-Reply-To: <20230901182054.110950-1-dave.hansen@linux.intel.com>
+References: <20230901182054.110950-1-dave.hansen@linux.intel.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZPHw-MSyehz1wF7c@8bytes.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v6.6
-X-PR-Tracked-Commit-Id: d8fe59f11096d6470b5f53739e49cdce67f3e127
+X-PR-Tracked-Message-Id: <20230901182054.110950-1-dave.hansen@linux.intel.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86-urgent-2023-09-01
+X-PR-Tracked-Commit-Id: 18032b47adf1db7b7f5fb2d1344e65aafe6417df
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0468be89b3fa5b9249cee1097f1d50314950a2df
-Message-Id: <169361285208.26727.10463797394902478198.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 2fcbb03847d89155d7b33d75ffee3a6bc5c51c97
+Message-Id: <169361285257.26727.3608801685567681850.pr-tracker-bot@kernel.org>
 Date:   Sat, 02 Sep 2023 00:00:52 +0000
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
-        iommu@lists.linux.dev
+To:     Dave Hansen <dave.hansen@linux.intel.com>
+Cc:     torvalds@linux-foundation.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -62,12 +62,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 1 Sep 2023 16:11:04 +0200:
+The pull request you sent on Fri,  1 Sep 2023 11:20:54 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git tags/iommu-updates-v6.6
+> https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86-urgent-2023-09-01
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0468be89b3fa5b9249cee1097f1d50314950a2df
+https://git.kernel.org/torvalds/c/2fcbb03847d89155d7b33d75ffee3a6bc5c51c97
 
 Thank you!
 
