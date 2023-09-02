@@ -2,182 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE915790964
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 21:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 991B3790967
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 21:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233801AbjIBTnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 15:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
+        id S233841AbjIBTnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 15:43:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233785AbjIBTnQ (ORCPT
+        with ESMTP id S233785AbjIBTng (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 15:43:16 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D36ECF6
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 12:43:09 -0700 (PDT)
-Received: from [192.168.2.205] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 12AB46607285;
-        Sat,  2 Sep 2023 20:43:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693683786;
-        bh=jdxG2Yk0vUZNyoRBsEOYF91svxBT3sbchZ6QIhYutfw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZU/Jnz1jpqYrjYeKrIjkHM5aFa51/mk+Ua2WjxxeIFUY5veGvo0869p8VAq6vi+SM
-         WE/YSOiavu5e7B7CfYdU95kYgKsltmO87s3pyQgt4HT7QaiGiRS7QQCj263HHylL5F
-         2cudFrVU2WdPhBHQVM+x2f2AsALe573bNoBwnJFxX9Fl7aocWI2uc/TZhD/xyzaQEA
-         7OQYUWHuWU8tl95CrMLtvoc1GnWwepaZqRW5eyH/UkjdKCOtCjyZvq/xFItd4/dUoZ
-         MAG1SF3v9Bj4o2m13ioysVIcrIoiB+x4BXadvPQoAJ50TZbmwrSG+3vTZhdusRZhjr
-         0NSO+YDBXsgEg==
-Message-ID: <73dd54d3-cb36-cb21-6bbb-ff1dd89429a3@collabora.com>
-Date:   Sat, 2 Sep 2023 22:43:02 +0300
+        Sat, 2 Sep 2023 15:43:36 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B828EE6A;
+        Sat,  2 Sep 2023 12:43:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693683811; x=1725219811;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=+9vo+M2L7/MeOyDeQ/8iCmxYZrv+WsA2IvXTKmHiP14=;
+  b=jV7cTCYyXWXLfxAZVj2idhK8LrtZe/XYmMhFYr/tAL93k0a0pU6rAwD1
+   6Re1A/LWtXaaW9Qzc7/99CiGJObhW0NAgCXtthfmri1W+fs/RSL4H/PVQ
+   mibBikCrmEmWJFExAhGMLampOF8GZgg/wh0hdNH6had7hSFHvD6zUDMD0
+   02xhX+YCtHAq6GbUqZcWn/0N09E5qdDUGO6v9aI54u1OhkFZrKx+OX237
+   DOW2DqDAuHabpt82eEYKp0w3U1nppd55DIMLVVvMoFfiGotz6Z7W7m1Oh
+   bRVfF+7Vy3fREW2GQef5DjMFJXku85A+JyIMF/FPR3ukVORYubfZRSusV
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="462762161"
+X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
+   d="scan'208";a="462762161"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2023 12:43:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="863909206"
+X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
+   d="scan'208";a="863909206"
+Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
+  by orsmga004.jf.intel.com with ESMTP; 02 Sep 2023 12:43:28 -0700
+Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qcWWk-0002Yy-1d;
+        Sat, 02 Sep 2023 19:43:26 +0000
+Date:   Sun, 3 Sep 2023 03:43:12 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>,
+        "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, Miaohe Lin <linmiaohe@huawei.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, regressions@lists.linux.dev
+Subject: Re: [PATCH cgroup/for-6.6-fixes] cgroup: Put
+ cgroup_local_stat_show() inside CONFIG_CGROUP_SCHED
+Message-ID: <202309030303.qSTfRgZC-lkp@intel.com>
+References: <ZPNX-jZAZbebizXA@slm.duckdns.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v15 17/23] drm/shmem-helper: Add and use
- drm_gem_shmem_resv_assert_held() helper
-Content-Language: en-US
-To:     Boris Brezillon <boris.brezillon@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
- <20230827175449.1766701-18-dmitry.osipenko@collabora.com>
- <20230828121239.78a180e6@collabora.com>
- <01930e66-cba2-5d81-7f46-d46907bdd300@collabora.com>
- <20230829092950.3a9c40c1@collabora.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <20230829092950.3a9c40c1@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPNX-jZAZbebizXA@slm.duckdns.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/29/23 10:29, Boris Brezillon wrote:
-> On Tue, 29 Aug 2023 05:34:23 +0300
-> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> 
->> On 8/28/23 13:12, Boris Brezillon wrote:
->>> On Sun, 27 Aug 2023 20:54:43 +0300
->>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
->>>   
->>>> In a preparation of adding drm-shmem memory shrinker, move all reservation
->>>> locking lockdep checks to use new drm_gem_shmem_resv_assert_held() that
->>>> will resolve spurious lockdep warning about wrong locking order vs
->>>> fs_reclam code paths during freeing of shmem GEM, where lockdep isn't
->>>> aware that it's impossible to have locking contention with the fs_reclam
->>>> at this special time.
->>>>
->>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->>>> ---
->>>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 37 +++++++++++++++++---------
->>>>  1 file changed, 25 insertions(+), 12 deletions(-)
->>>>
->>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
->>>> index d96fee3d6166..ca5da976aafa 100644
->>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
->>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
->>>> @@ -128,6 +128,23 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
->>>>  }
->>>>  EXPORT_SYMBOL_GPL(drm_gem_shmem_create);
->>>>  
->>>> +static void drm_gem_shmem_resv_assert_held(struct drm_gem_shmem_object *shmem)
->>>> +{
->>>> +	/*
->>>> +	 * Destroying the object is a special case.. drm_gem_shmem_free()
->>>> +	 * calls many things that WARN_ON if the obj lock is not held.  But
->>>> +	 * acquiring the obj lock in drm_gem_shmem_free() can cause a locking
->>>> +	 * order inversion between reservation_ww_class_mutex and fs_reclaim.
->>>> +	 *
->>>> +	 * This deadlock is not actually possible, because no one should
->>>> +	 * be already holding the lock when drm_gem_shmem_free() is called.
->>>> +	 * Unfortunately lockdep is not aware of this detail.  So when the
->>>> +	 * refcount drops to zero, we pretend it is already locked.
->>>> +	 */
->>>> +	if (kref_read(&shmem->base.refcount))
->>>> +		drm_gem_shmem_resv_assert_held(shmem);
->>>> +}
->>>> +
->>>>  /**
->>>>   * drm_gem_shmem_free - Free resources associated with a shmem GEM object
->>>>   * @shmem: shmem GEM object to free
->>>> @@ -142,8 +159,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
->>>>  	if (obj->import_attach) {
->>>>  		drm_prime_gem_destroy(obj, shmem->sgt);
->>>>  	} else if (!shmem->imported_sgt) {
->>>> -		dma_resv_lock(shmem->base.resv, NULL);
->>>> -
->>>>  		drm_WARN_ON(obj->dev, kref_read(&shmem->vmap_use_count));
->>>>  
->>>>  		if (shmem->sgt) {
->>>> @@ -156,8 +171,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
->>>>  			drm_gem_shmem_put_pages_locked(shmem);  
->>>
->>> AFAICT, drm_gem_shmem_put_pages_locked() is the only function that's
->>> called in the free path and would complain about resv-lock not being
->>> held. I think I'd feel more comfortable if we were adding a
->>> drm_gem_shmem_free_pages() function that did everything
->>> drm_gem_shmem_put_pages_locked() does except for the lock_held() check
->>> and the refcount dec, and have it called here (and in
->>> drm_gem_shmem_put_pages_locked()). This way we can keep using
->>> dma_resv_assert_held() instead of having our own variant.  
->>
->> It's not only drm_gem_shmem_free_pages(), but any drm-shmem function
->> that drivers may use in the GEM's freeing callback.
->>
->> For example, panfrost_gem_free_object() may unpin shmem BO and then do
->> drm_gem_shmem_free().
-> 
-> Is this really a valid use case? If the GEM refcount dropped to zero,
-> we should certainly not have pages_pin_count > 0 (thinking of vmap-ed
-> buffers that might disappear while kernel still has a pointer to the
-> CPU-mapped area). The only reason we have this
-> drm_gem_shmem_put_pages_locked() in drm_gem_shmem_free() is because of
-> this implicit ref hold by the sgt, and IMHO, we should be stricter and
-> check that pages_use_count == 1 when sgt != NULL and pages_use_count ==
-> 0 otherwise.
-> 
-> I actually think it's a good thing to try and catch any attempt to call
-> functions trying lock the resv in a path they're not supposed to. At
-> least we can decide whether these actions are valid or not in this
-> context, and provide dedicated helpers for the free path if they are.
+Hi Tejun,
 
-To me it's a valid use-case. I was going to do it for the virtio-gpu
-driver for a specific BO type that should be permanently pinned in
-memory. So I made the BO pinned in the virto_gpu's bo_create() and
-unpinned it from the virtio-gpu's gem->free(), this is a perfectly valid
-case to me. Though, in the end I switched to another approach that
-doesn't require to do the pinning in the virtio-gpu driver.
+kernel test robot noticed the following build warnings:
 
-For now we can do it as you suggested, to use custom put_pages() in the
-shmem_free() since neither of drivers need that. Let's try that.
+[auto build test WARNING on next-20230831]
+[cannot apply to linus/master v6.5 v6.5-rc7 v6.5-rc6 v6.5]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Tejun-Heo/cgroup-Put-cgroup_local_stat_show-inside-CONFIG_CGROUP_SCHED/20230902-234358
+base:   next-20230831
+patch link:    https://lore.kernel.org/r/ZPNX-jZAZbebizXA%40slm.duckdns.org
+patch subject: [PATCH cgroup/for-6.6-fixes] cgroup: Put cgroup_local_stat_show() inside CONFIG_CGROUP_SCHED
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20230903/202309030303.qSTfRgZC-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230903/202309030303.qSTfRgZC-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309030303.qSTfRgZC-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> kernel/cgroup/cgroup.c:503:36: warning: 'cgroup_tryget_css' defined but not used [-Wunused-function]
+     503 | static struct cgroup_subsys_state *cgroup_tryget_css(struct cgroup *cgrp,
+         |                                    ^~~~~~~~~~~~~~~~~
+
+
+vim +/cgroup_tryget_css +503 kernel/cgroup/cgroup.c
+
+42809dd4225b2f kernel/cgroup.c        Tejun Heo 2012-11-19  494  
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  495  /**
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  496   * cgroup_tryget_css - try to get a cgroup's css for the specified subsystem
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  497   * @cgrp: the cgroup of interest
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  498   * @ss: the subsystem of interest
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  499   *
+08b2b6fdf6b260 kernel/cgroup/cgroup.c Zhen Lei  2021-05-24  500   * Find and get @cgrp's css associated with @ss.  If the css doesn't exist
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  501   * or is offline, %NULL is returned.
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  502   */
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23 @503  static struct cgroup_subsys_state *cgroup_tryget_css(struct cgroup *cgrp,
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  504  						     struct cgroup_subsys *ss)
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  505  {
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  506  	struct cgroup_subsys_state *css;
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  507  
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  508  	rcu_read_lock();
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  509  	css = cgroup_css(cgrp, ss);
+a581563f1bef03 kernel/cgroup/cgroup.c Peng Wang 2019-07-03  510  	if (css && !css_tryget_online(css))
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  511  		css = NULL;
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  512  	rcu_read_unlock();
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  513  
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  514  	return css;
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  515  }
+d41bf8c9deaed1 kernel/cgroup/cgroup.c Tejun Heo 2017-10-23  516  
 
 -- 
-Best regards,
-Dmitry
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
