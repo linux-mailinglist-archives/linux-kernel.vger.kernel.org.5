@@ -2,83 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC9D079053B
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 07:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE3379053F
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 07:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351539AbjIBFYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 01:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60724 "EHLO
+        id S1351547AbjIBFZ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 01:25:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229492AbjIBFYt (ORCPT
+        with ESMTP id S1351541AbjIBFZX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 01:24:49 -0400
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D291704;
-        Fri,  1 Sep 2023 22:24:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1693632283;
-        bh=f3BahJ0f5WwmfyARP2+MMnay33J1y6FDk8/4avkW738=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=wpF6JS6KXAIr8io0RvELG1G1Oys49Tc+uSHboZ5n8XMkp/wVMIGbetuMxq2LdXj0G
-         iaS0aAH7GXlKTa1Um8UByGQUUF53ler/u2lPAX0iQ5etjPKHqdxVwYN1aj+LZAzMJZ
-         MF2ExR5BD0MwLxXSmjCLMymfnscNceLUTxZ8MS5w=
-Received: from rtoax.lan ([120.245.114.63])
-        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
-        id 62613CE1; Sat, 02 Sep 2023 13:24:38 +0800
-X-QQ-mid: xmsmtpt1693632278tgbiug7q4
-Message-ID: <tencent_2B465711F30DC88514B2842F1D54005E8109@qq.com>
-X-QQ-XMAILINFO: NEq0i4SycP3b8o/n7e9Utp3j5PTmzMk0VaaageYuv1vGOoNomrBZd0QBV4XFjx
-         hZmvIstl+9IdjzOFT4q5vHpMJrX9JS537Q04Ru2XnY1ZESIh4KDAdN5ipHlYk6zUf4DTN4jd/5aE
-         SxZM2g651a3hquWEm0yolNVZazQ7iqYeHJ37R3RYnf+bH7UC85rfiwL8PeE5JHLG4vWBxWEn9pod
-         k/uFDmwX76qXG2ou4em1v3DimLFLEiMOA7Zlnr5XNowth1K1qhMF7gKiEP/XiObuQKL+MVTlDbTr
-         ovqa2+2epOh/DIK+2104M6LVjLe3Sur1OdCAuiv72JhfdfHqf4vKNdnxpJb6Ne++Z4Chv0gvZPBf
-         YKNwm1+xh8I9mO9VckOUYwrYBw9dol/c6AIMsP7gRAoJAsTEiUxPttpFv1QEGZahgSIheROKCHEV
-         dbl7kbYidkA8gg0lvKF7WmvTsnsJX7APcpJUTPP88TlItVyclRdoOnuy8nNqzQBDL50dD+Lv2hzj
-         rjcA/g/ZikILwca0zTXsrZoCsLDiNAtKmPCNllcc7plFyIJneeczG/aG5ql7MEqM+RCWTl66xqQ/
-         dvEluiKsFwhI9pS+LGURWJhRVCIJA3FAgiTiALJMm7ciDp2NUbIegWJo2OvuzClB5XdhjTbsFBAy
-         ThrPQGa1RMVFDg5KjNvuIn84rzeDYAz3gZB56bG+lMZdxkuZ2hZ/8YyaFkiHWSJKmH1q3/dlFJIy
-         AgpSvabryQ12+Bf9QF+COYu+d0uoGc/NNrQnyYOa441j3cOqW5zbLcxBgko64lgu3q8w7X6osuIv
-         /r45qkG8d7RAvaIr1JSsdxEnVZecMmb4URSZM4A8nHqYWdz7BdRPaKL6ILs9YuBwzsZ+thFB4uiZ
-         a2jQ/G+uH73hvo++OR4Eh86GfleNbiYBDTPYd+O17azxkFkLIEHxj4oF9+XESU5NLGh14r/7xVZy
-         8Ps1mJ0tn32SINEdEhVlyMtl6btS7casr1CoYrXwX2BHgovHfourZqD9zD7wibWg0yjQ1jsvOvnH
-         SAMByaP4ZDlyXzXqy8
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     rtoax@foxmail.com
-Cc:     alexandre.torgue@foss.st.com, andrii@kernel.org, ast@kernel.org,
-        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
-        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
-        laoar.shao@gmail.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com, martin.lau@linux.dev,
-        mcoquelin.stm32@gmail.com, mykolal@fb.com, olsajiri@gmail.com,
-        rongtao@cestc.cn, sdf@google.com, shuah@kernel.org,
-        song@kernel.org, yonghong.song@linux.dev
-Subject: Re: [PATCH bpf-next v10 0/2] selftests/bpf: Optimize kallsyms cache
-Date:   Sat,  2 Sep 2023 13:24:38 +0800
-X-OQ-MSGID: <20230902052438.139708-1-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <tencent_4F0CF08592B31A2E69546C5E174785109F09@qq.com>
-References: <tencent_4F0CF08592B31A2E69546C5E174785109F09@qq.com>
+        Sat, 2 Sep 2023 01:25:23 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA01C180;
+        Fri,  1 Sep 2023 22:25:19 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bca3311b4fso2195604a34.0;
+        Fri, 01 Sep 2023 22:25:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693632318; x=1694237118; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KFoQ1P3RZsvjJDmcT2AlLGhdYrSSPHfWfcPWm8WWHjY=;
+        b=gDNFPF3XRdnQ9avn1ZD9djp1JqXkQPTqtGnFrVx4O/ED+oPVLmNmyRM9Bq95/r6MpR
+         r30uFhcXkaztwGgZo8pP3xiAxt+nWVNwRrQU6NAa0PyrHfTeIPL/2rmt8mSTfu1u38rY
+         wDuN+WM831srxZDWpZ46ZWwPCkRPOsVwSAOFis3+98z9fxiAgnacbcE2OlOI7ppmCavc
+         SFYewUzpSaPHvzWiLAOe6uvbX5ZdbqsRRMcCGdGyFC9Vu26wWfQ3hh0bFjphulKMuNrD
+         yV6KoTLLysXqziyzjZP3ebN2ixlGL9LV/nRqvE4h9ontlaKmHxwsisjH6tSQi55M2bmk
+         s26w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693632318; x=1694237118;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KFoQ1P3RZsvjJDmcT2AlLGhdYrSSPHfWfcPWm8WWHjY=;
+        b=D4NLoj/6gagQiu4Wv5IFqN17rruDy8hzcbFV8XCp1En5S5ZAsiUYN7yBz3dB3KX8Me
+         wZu6HuDiM4TBhtgl4EJa8o7v1nprGG38difqqoVAKwy7xdyJ5wdUl60H5RbhHUiwc9cY
+         YoCYJSrF3oRzBvijSI7/V/qK6x6ZCNVY0KgXJuNvjwleW+eVf3vqQZT3rLvhe+unJng2
+         iycRPxXcpC7e/lBb70jLgMd7BvZqbW9zf04W3eYRdVRITgd3ij88/KfiE0KTK9n3dmRw
+         TsebTDAdCTEM06ghX8pfO7l69Rh/G+ycjWD9i9Nb4RihohoVpzi1tpF4YeC7kmMgwk9D
+         lO/A==
+X-Gm-Message-State: AOJu0Yzfzo5Bys4sycWWYXoEv5jkYxGDneUol2Ge0NDnYXjXJXjpOMrr
+        gaYbG3v9lYkeIhkdCFXADAc=
+X-Google-Smtp-Source: AGHT+IH4ibxeTyahNsmUPqIhANnp40SDRqfd2ny/Xu+BNV8kxI6K2s1sX0MKWZaDMxQjf7GJQpUb5w==
+X-Received: by 2002:a9d:7f83:0:b0:6bd:701:6928 with SMTP id t3-20020a9d7f83000000b006bd07016928mr4811445otp.3.1693632318465;
+        Fri, 01 Sep 2023 22:25:18 -0700 (PDT)
+Received: from ubuntu777.domain.name (36-228-78-250.dynamic-ip.hinet.net. [36.228.78.250])
+        by smtp.gmail.com with ESMTPSA id b15-20020a63714f000000b0056c24c2e23dsm3708320pgn.25.2023.09.01.22.25.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 22:25:17 -0700 (PDT)
+From:   Min-Hua Chen <minhuadotchen@gmail.com>
+To:     Hu Haowen <src.res@email.cn>, Jonathan Corbet <corbet@lwn.net>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Min-Hua Chen <minhuadotchen@gmail.com>
+Subject: [PATCH v3 0/3] convert TW translation sparse.txt to RST
+Date:   Sat,  2 Sep 2023 13:25:09 +0800
+Message-Id: <20230902052512.12184-1-minhuadotchen@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_NONE,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, every one.
+These patches move TW sparse.txt to TW dev-tools and
+convert TW sparse.txt to RST, based on [1].
+Add the RST to toctree [2].
 
-I'm so sorry, that i'm not familier with 'how to submit patch series',
-I just sent some emails repeatedly using the git send-email command,
-please ignore the error messages.
+Randy said [1]:
+"
+it would be good if someone would update/modify this
+sparse.txt file to be in Documentation/translation/zh_TW/dev-tools/
+and convert it to sparse.rst (IMO).
+"
 
-PS: How to send patch collections using git send-email?
+[1] https://lore.kernel.org/lkml/bfab7c5b-e4d3-d8d9-afab-f43c0cdf26cf@infradead.org/
+[2] https://lore.kernel.org/lkml/87a5uxxqf3.fsf@meer.lwn.net/
 
-Rong Tao
+
+
+Min-Hua Chen (3):
+  docs: sparse: move TW sparse.txt to TW dev-tools
+  docs: sparse: convert sparse.txt to RST
+  docs: sparse: add sparse.rst to toctree
+
+ .../translations/zh_TW/dev-tools/index.rst    | 40 +++++++++++++++++++
+ .../{sparse.txt => dev-tools/sparse.rst}      |  2 +-
+ Documentation/translations/zh_TW/index.rst    |  2 +-
+ 3 files changed, 42 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/translations/zh_TW/dev-tools/index.rst
+ rename Documentation/translations/zh_TW/{sparse.txt => dev-tools/sparse.rst} (99%)
+
+---
+
+Change since v1:
+1. change subject to convert sparse.txt to RST
+2. add Suggested-by tag to credit Randy
+
+Change since v2:
+rebase to next-20230831
+
+-- 
+2.34.1
 
