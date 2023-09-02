@@ -2,128 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF8B790A2F
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 00:30:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFED6790A30
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 00:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbjIBWaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 18:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34226 "EHLO
+        id S235062AbjIBWd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 18:33:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233768AbjIBWaC (ORCPT
+        with ESMTP id S229968AbjIBWd1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 18:30:02 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A112BCE0;
-        Sat,  2 Sep 2023 15:29:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1693693795;
-        bh=g0pI4BxffPv9M2w9bwb9TOe31J4wrhkQAy/5843gIp0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jUQSBbHGLxKN3lpbqvWLQmBxsAqdLbP62e9HSvR0dNLfYuvOzH4PSOfzIlGqHeR/i
-         FXPdM+/ogAaCklpf/4ZLO+dyjS9AzxxmTKFJQmr2z1fob2p7WwEAaIKPEcJInuA7BU
-         Yu4PI2QL+TBH1fJcvH42pqDgV1vfogEiSz83Kxto=
-Date:   Sun, 3 Sep 2023 00:29:55 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     dgilbert@interlog.com, jdelvare@suse.com,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, linux@roeck-us.net
-Subject: Re: [PATCH v4] hwmon: add POWER-Z driver
-Message-ID: <46d3194a-af79-4076-b0a2-561d713a406e@t-8ch.de>
-References: <20230902-powerz-v4-1-7ec2c1440687@weissschuh.net>
- <36a3daf7-d519-7669-13bf-4c59c11c2b97@wanadoo.fr>
+        Sat, 2 Sep 2023 18:33:27 -0400
+Received: from rere.qmqm.pl (rere.qmqm.pl [91.227.64.183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99769A0
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 15:33:24 -0700 (PDT)
+Received: from remote.user (localhost [127.0.0.1])
+        by rere.qmqm.pl (Postfix) with ESMTPSA id 4RdV6S1hBbz5l;
+        Sun,  3 Sep 2023 00:33:20 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
+        t=1693694003; bh=7D+aoU+FdF/EMLkEVgNbsPjrm4mQgvTumtZVofq213M=;
+        h=Date:Subject:From:To:Cc:From;
+        b=SgyUuJpldXXKphYq7W5gM5ryoe5q2GXJ7MSmLkNH848LOjZ4lfGplqMK4J1bV2Sfp
+         ji1iQd5xftlYKdZDU0LE50hMDSgq6BB46PqsUoO7fZh57hrtU6p1jMlKwnNgf1ldIT
+         26tMGjHt3l/kOog9cDBrnsDy//cEIUMpdgW/U7GsiyNN8e2PBNBMeVu7NRDgAKN6TC
+         a6vbqpTtnUgXjBMVFeIllvLFb/nsyvB5hMawlZq8A7T/ipjKhrffWLs+Wy5jWtmfO7
+         veSapJVEvoCOqkE4RJom9q4Lav8Bl6ERDvCIaZg19Ka2krOagkZLcllOGF0vtWf5OL
+         XN4vxIHUO0OOg==
+X-Virus-Status: Clean
+X-Virus-Scanned: clamav-milter 0.103.8 at mail
+Date:   Sun, 03 Sep 2023 00:33:19 +0200
+Message-Id: <49c7163433999cc1fc9367311fbe6c6d5fd9f251.1693693823.git.mirq-linux@rere.qmqm.pl>
+Subject: [PATCH v2] locking/mutex: remove redundant argument from
+ __mutex_lock_common()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <36a3daf7-d519-7669-13bf-4c59c11c2b97@wanadoo.fr>
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+use_ww_ctx is equivalent to ww_ctx != NULL. The one case where
+use_ww_ctx was true but ww_ctx == NULL leads to the same
+__mutex_add_waiter() call via __ww_mutex_add_waiter().
 
-On 2023-09-02 18:36:17+0200, Christophe JAILLET wrote:
-> Le 02/09/2023 à 09:47, Thomas Weißschuh a écrit :
-> > POWER-Z is a series of devices to monitor power characteristics of
-> > USB-C connections and display those on a on-device display.
-> > Some of the devices, notably KM002C and KM003C, contain an additional
-> > port which exposes the measurements via USB.
-> > 
-> > This is a driver for this monitor port.
-> > 
-> > It was developed and tested with the KM003C.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux-9XfqOkM5JgxKQ7RDE2T8Pw@public.gmane.org>
-> > ---
-> 
-> ...
-> 
-> > +static int powerz_probe(struct usb_interface *intf,
-> > +			const struct usb_device_id *id)
-> > +{
-> > +	struct powerz_priv *priv;
-> > +	struct device *hwmon_dev;
-> > +	struct device *parent;
-> > +
-> > +	parent = &intf->dev;
-> > +
-> > +	priv = devm_kzalloc(parent, sizeof(*priv), GFP_KERNEL);
-> > +	if (!priv)
-> > +		return -ENOMEM;
-> > +
-> > +	priv->urb = usb_alloc_urb(0, GFP_KERNEL);
-> > +	if (!priv->urb)
-> > +		return -ENOMEM;
-> > +	mutex_init(&priv->mutex);
-> > +	priv->status = -ETIMEDOUT;
-> > +	init_completion(&priv->completion);
-> > +
-> > +	hwmon_dev =
-> > +	    devm_hwmon_device_register_with_info(parent, DRIVER_NAME, priv,
-> > +						 &powerz_chip_info, NULL);
-> > +	usb_set_intfdata(intf, priv);
-> > +
-> > +	return PTR_ERR_OR_ZERO(hwmon_dev);
-> 
-> Hi,
-> 
-> If 'hwmon_dev' is an PTR_ERR, priv->urb leaks.
+Since now __ww_mutex_add_waiter() is called only with ww_ctx != NULL
+(from both regular and PREEMPT_RT implementations), remove the
+branch there.
 
-Good catch, thanks!
+Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
+---
+ v2: extended commit message to note that PREEMPT_RT does not call
+     __ww_mutex_add_waiter() with ww_ctx == NULL
+---
+ kernel/locking/mutex.c    | 16 ++++++----------
+ kernel/locking/ww_mutex.h |  5 -----
+ 2 files changed, 6 insertions(+), 15 deletions(-)
 
-
-Guenter,
-
-it seems the new hwmon-next with this driver has not yet been pushed to
-git.kernel.org, so I can't generate the Fixes tag.
-
-Can you modify the commit to also contain the changes below?
-Or let me know if you prefer something else.
-
-diff --git a/drivers/hwmon/powerz.c b/drivers/hwmon/powerz.c
-index 611d04fb28db..aad585306f80 100644
---- a/drivers/hwmon/powerz.c
-+++ b/drivers/hwmon/powerz.c
-@@ -233,9 +233,14 @@ static int powerz_probe(struct usb_interface *intf,
- 	hwmon_dev =
- 	    devm_hwmon_device_register_with_info(parent, DRIVER_NAME, priv,
- 						 &powerz_chip_info, NULL);
-+	if (IS_ERR(hwmon_dev)) {
-+		usb_free_urb(priv->urb);
-+		return PTR_ERR(hwmon_dev);
-+	}
-+
- 	usb_set_intfdata(intf, priv);
+diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
+index d973fe6041bf..2f0e318233f5 100644
+--- a/kernel/locking/mutex.c
++++ b/kernel/locking/mutex.c
+@@ -568,15 +568,12 @@ EXPORT_SYMBOL(ww_mutex_unlock);
+ static __always_inline int __sched
+ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclass,
+ 		    struct lockdep_map *nest_lock, unsigned long ip,
+-		    struct ww_acquire_ctx *ww_ctx, const bool use_ww_ctx)
++		    struct ww_acquire_ctx *ww_ctx)
+ {
+ 	struct mutex_waiter waiter;
+ 	struct ww_mutex *ww;
+ 	int ret;
  
--	return PTR_ERR_OR_ZERO(hwmon_dev);
-+	return 0;
+-	if (!use_ww_ctx)
+-		ww_ctx = NULL;
+-
+ 	might_sleep();
+ 
+ 	MUTEX_WARN_ON(lock->magic != lock);
+@@ -627,12 +624,11 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
+ 
+ 	debug_mutex_lock_common(lock, &waiter);
+ 	waiter.task = current;
+-	if (use_ww_ctx)
+-		waiter.ww_ctx = ww_ctx;
++	waiter.ww_ctx = ww_ctx;
+ 
+ 	lock_contended(&lock->dep_map, ip);
+ 
+-	if (!use_ww_ctx) {
++	if (!ww_ctx) {
+ 		/* add waiting tasks to the end of the waitqueue (FIFO): */
+ 		__mutex_add_waiter(lock, &waiter, &lock->wait_list);
+ 	} else {
+@@ -744,14 +740,14 @@ static int __sched
+ __mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
+ 	     struct lockdep_map *nest_lock, unsigned long ip)
+ {
+-	return __mutex_lock_common(lock, state, subclass, nest_lock, ip, NULL, false);
++	return __mutex_lock_common(lock, state, subclass, nest_lock, ip, NULL);
  }
  
- static void powerz_disconnect(struct usb_interface *intf)
+ static int __sched
+ __ww_mutex_lock(struct mutex *lock, unsigned int state, unsigned int subclass,
+ 		unsigned long ip, struct ww_acquire_ctx *ww_ctx)
+ {
+-	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx, true);
++	return __mutex_lock_common(lock, state, subclass, NULL, ip, ww_ctx);
+ }
+ 
+ /**
+@@ -831,7 +827,7 @@ mutex_lock_io_nested(struct mutex *lock, unsigned int subclass)
+ 
+ 	token = io_schedule_prepare();
+ 	__mutex_lock_common(lock, TASK_UNINTERRUPTIBLE,
+-			    subclass, NULL, _RET_IP_, NULL, 0);
++			    subclass, NULL, _RET_IP_, NULL);
+ 	io_schedule_finish(token);
+ }
+ EXPORT_SYMBOL_GPL(mutex_lock_io_nested);
+diff --git a/kernel/locking/ww_mutex.h b/kernel/locking/ww_mutex.h
+index 3ad2cc4823e5..11acb2efe976 100644
+--- a/kernel/locking/ww_mutex.h
++++ b/kernel/locking/ww_mutex.h
+@@ -493,11 +493,6 @@ __ww_mutex_add_waiter(struct MUTEX_WAITER *waiter,
+ 	struct MUTEX_WAITER *cur, *pos = NULL;
+ 	bool is_wait_die;
+ 
+-	if (!ww_ctx) {
+-		__ww_waiter_add(lock, waiter, NULL);
+-		return 0;
+-	}
+-
+ 	is_wait_die = ww_ctx->is_wait_die;
+ 
+ 	/*
+-- 
+2.39.2
+
