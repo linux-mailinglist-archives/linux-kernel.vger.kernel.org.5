@@ -2,143 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E941A7907CE
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 14:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B787907D0
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 14:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352130AbjIBMXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 08:23:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        id S1352137AbjIBM2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 08:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233448AbjIBMXD (ORCPT
+        with ESMTP id S233448AbjIBM2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 08:23:03 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 673AC10F5
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 05:22:57 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-4ff9b389677so4644312e87.3
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 05:22:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693657375; x=1694262175; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=inkHgVlv/XrMvFjg8YzebzCQsHBV+fhNXbfLxuaBdsc=;
-        b=EztvANhUDBwtoS26/ikGWtxMwVFhEsKZRftZPOFBVz+A6E2ZgfsEiuCrVVaMjVieNr
-         eUbr7PlTDAtydKpV1sLNAgaFyTCfsE2bmf9k+a9WXscgTN/i1ize/6QY/2Bdg/re0gxm
-         ZxAoTceJYYAJhViowiVcYbw+jdK8TndSrXQfYFDxNfFF0WmUQoKQzAAUatpgJKGPEN6W
-         L+ZmW7tOVv9m/sJ0cC3Fr3tFP0TRJwdWjU9M+rA22H83RpbLMOSvjM/qMKMRAsjkE+tX
-         p/kCcZFCHFwj/rhSNo/4JMNWzXKpOah4yaBaUi62yj+z05Szo/afXAZAo2QHlQkgK4Ii
-         TYsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693657375; x=1694262175;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=inkHgVlv/XrMvFjg8YzebzCQsHBV+fhNXbfLxuaBdsc=;
-        b=FR2OQ3WW/7ak5ZZotfM2cIbO8C3Kc6ZeZni8b59P652SOeApx8PfE0ZaQWzjBkavKi
-         rYb1qgZJ2ntRr1AgsEEu70JpGYHucjAsrFFQNKJ+KioycUsVa86/9N8urOGrLO5xxVaS
-         oABX7Y4zR85M6a/l3wLqWpap0BpgkzRChweZYPoJbzmBZshJ0lWUTzRCeopZIVhSNxDz
-         dVolMnnEA1s+lbzv1648jaG5BucP0SPgsNVFIfK+lHL7TXE4W3Zl9DH88cPpZh0F525Y
-         H12biWDyLJE99u3bdhglPVsM9azLqKc9005BP2qXxafAEZq32b9ZoMULqT9fCA7YH903
-         9n4w==
-X-Gm-Message-State: AOJu0YyEndxJmdZj6bFYbIzqRbWBIr+T/DSOfG+U22lORVTEmPaElmbE
-        ZMQZHGM3A44t3QQjrIjFjC7mZQ==
-X-Google-Smtp-Source: AGHT+IFstkLJDS/HETwMajNV3deWCdOK9KBKLsTmQVXdkjplL/Yy2wh4gmT+Mnvc6W55XwcgNKkBow==
-X-Received: by 2002:a05:6512:1103:b0:500:bb99:69a6 with SMTP id l3-20020a056512110300b00500bb9969a6mr4499765lfg.39.1693657375475;
-        Sat, 02 Sep 2023 05:22:55 -0700 (PDT)
-Received: from [192.168.1.101] (abxi170.neoplus.adsl.tpnet.pl. [83.9.2.170])
-        by smtp.gmail.com with ESMTPSA id a2-20020a056512020200b004ff89a88ef7sm975884lfo.14.2023.09.02.05.22.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Sep 2023 05:22:55 -0700 (PDT)
-Message-ID: <295f0c31-3612-428c-849b-9469a6136f47@linaro.org>
-Date:   Sat, 2 Sep 2023 14:22:53 +0200
+        Sat, 2 Sep 2023 08:28:35 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A1F10E0
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 05:28:28 -0700 (PDT)
+Received: from dggpemm500013.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RdDcj0cQvzQjL0;
+        Sat,  2 Sep 2023 20:25:09 +0800 (CST)
+Received: from [10.67.108.67] (10.67.108.67) by dggpemm500013.china.huawei.com
+ (7.185.36.172) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Sat, 2 Sep
+ 2023 20:28:24 +0800
+Message-ID: <0992af32-adc6-a1eb-1b15-d8880b79d61f@huawei.com>
+Date:   Sat, 2 Sep 2023 20:28:20 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] arm64: dts: ipq5018: Correct uart1_pins pinconf
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.0
 Content-Language: en-US
-To:     Ziyang Huang <hzyitc@outlook.com>, agross@kernel.org
-Cc:     andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        quic_gokulsri@quicinc.com, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <TYZPR01MB5556D24A77DAFA013F93B551C9E4A@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <TYZPR01MB5556D24A77DAFA013F93B551C9E4A@TYZPR01MB5556.apcprd01.prod.exchangelabs.com>
-Content-Type: text/plain; charset=UTF-8
+To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>
+CC:     <peterz@infradead.org>, <jpoimboe@kernel.org>
+From:   Chen Zhongjin <chenzhongjin@huawei.com>
+Subject: [BUG] x86/entry: ORC stack unwinding error on error_entry
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Originating-IP: [10.67.108.67]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500013.china.huawei.com (7.185.36.172)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1.09.2023 16:10, Ziyang Huang wrote:
-> In pinctrl, the pinconfigs for uart are named "blspX_uartY".
->   X is the UART ID. Starts from 1.
->     1-6 are in BLSP Block 1.
->     7-12 are in BLSP Block 2.
->   Y is the index of mux config. Starts from 0.
-> 
-> In dts, the serials are also named "blspX_uartY", but with different logic.
->   X is the BLSP Block ID. Starts from 1.
->   Y is the uart id inside block.
->     In "ipq6018.dtsi" and "ipq8074.dtsi", it starts from 1.
->     But in "ipq5332.dtsi" and "ipq9574.dtsi", it starts from 0.
-> 
-> +-----------------+-----------------+-------------+-----------------+
-> |     Block ID    | ID inside Block |  dts name   | pinconfig name  |
-> | (Starts from 1) | (Starts from 1) |             |                 |
-> +-----------------+-----------------+-------------+-----------------+
-> |        1        |        1        | blsp1_uart1 |   blsp0_uartY   |
-> |        1        |        2        | blsp1_uart2 |   blsp1_uartY   |
-> |        1        |        6        | blsp1_uart6 |   blsp5_uartY   |
-> |        2        |        1        | blsp2_uart1 |   blsp6_uartY   |
-> |        2        |        6        | blsp2_uart6 |   blsp12_uartY  |
-> +-----------------+-----------------+-------------+-----------------+
-> 
-> In "ipq5018.dts", "blsp1_uart1" (dts name) is the first serial (confimed
-> by the address), So its pinconfig should be "blsp0_uart0" (pinconfig name,
-> use GPIO 20 and 21) or "blsp0_uart1" (pinconfig name, use GPIO 28 and 29).
-Surely only one pair of wires is connected? Why is there an "OR"?
+My KASAN reported a stack-out-of-bounds BUG in unwind_next_frame
+I found there was a wrong stack unwinding on error_entry and the
+stack was like:
 
-Konrad
+<NMI>
+...
+exc_nmi
+end_repeat_nmi
+RIP: 0010:error_entry+0x17
+RSP: 0018:ffff88de81889928 EFLAGS: 00000082
+RAX: 0000000000000000 RBX: ffff88de81889a98 RCX: ffffffff9cec64a9
+RDX: dffffc0000000000 RSI: ffffffff9e400cfa RDI: ffffffff9e400d01
+RBP: 1ffff11bd031133c R08: ffffffff9cec6406 R09: ffff88de81889acc
+R10: fffffbfff40bb517 R11: 0000000000000001 R12: 0000000000000001
+R13: ffff88de81889ae0 R14: ffffffff9f2ee640 R15: 0000000000000000
+</NMI>
+<IRQ>
+asm_sysvec_apic_timer_interrupt+0x11
+RIP: 9e2d0a66:unwind_next_frame+0x0
+RSP: 81889ab8:ffff88de81889ab8 EFLAGS: ffff88b11727fd48 ORIG_RAX: 
+ffffffff9eecdff0
+RAX: ffff88b11727fd48 RBX: 0000000000000018 RCX: ffff88de81889acd
+RDX: ffffffff9e400d02 RSI: ffff88b11727fd40 RDI: 0000000041b58ab3
+RBP: ffff88de818899a0 R08: ffffffff9e400d02 R09: ffff88de81889ae8
+R10: ffff88de81889ad0 R11: ffffffff9cec64bf R12: 0000000000000282
+R13: 0000000000000010 R14: ffffffff9cec6150 R15: ffffffffffffffff
+(orc unwinding stopped here)
+
+It's because in error_entry the return address is changed. When 
+asm_sysvec_apic_timer_interrupt calls error_entry, the stack looks like:
+
+     asm_sysvec_apic_timer_interrupt+0xa
+     ffffffffffffffff
+     (IRET_REGS) <- idtentry unwind stack by IRET_REGS
+
+Then error_entry enters PUSH_AND_CLEAR_REGS save_ret=1, which will
+change the return address:
+
+     pushq	%rsi
+     movq	8(%rsp), %rsi
+     movq	%rdi, 8(%rsp)
+     (push other regs)
+     UNWIND_HINT_REGS
+
+And the stack is changed to:
+
+     (other regs)
+     %rsi
+     %rdi (asm_sysvec_apic_timer_interrupt+0x11, in this case)
+     ffffffffffffffff
+     (IRET_REGS)
+
+If there is a NMI happens before all regs are pushed and unwinding hint
+changed to UNWIND_HINT_REGS, the unwinding in error_entry is wrong.
+It find %rdi as the return address and search the next orc_entry,
+which makes unwinding fail.
+
+I guess this can be fixed if it keeps the pt_regs->di slot as return 
+address until all regs are pushed to stack and unwind hint changed to 
+UNWIND_HINT_REGS, then overwrite the return address to %rdi.
+
+     UNWIND_HINT_REGS
+
+     .if \save_ret
+     movq	0x70(%rsp), %rsi
+     movq	%rdi, 0x70(%rsp)
+     pushq	%rsi
+     .endif
+
+However I'm not sure if it works or there is any side affect (at lease 
+it looks not so graceful). Does anyone has some advise for this bug or 
+this fix?
+I'll test this after I can reproduce the bug stably.
+
+Thanks.
