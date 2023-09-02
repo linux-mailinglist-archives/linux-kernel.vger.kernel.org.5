@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D50C790818
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 15:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C01790819
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 15:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232468AbjIBNfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 09:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
+        id S232968AbjIBNf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 09:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32806 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbjIBNfX (ORCPT
+        with ESMTP id S232267AbjIBNf1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 09:35:23 -0400
+        Sat, 2 Sep 2023 09:35:27 -0400
 Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A84190
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 06:35:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CA3E72
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 06:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-        s=default; t=1693661720;
-        bh=BviSAhSuY5a+5JtffMjPSetuD8uWCAQ/gD+/+Xi1l/U=;
+        s=default; t=1693661724;
+        bh=00jMqkQPjVbfXwVpy1l1/4cyy6ihEZSgGusjZHhogmE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=cMrXc1AO2CB4xdzsDMw6I+Vjo1rrfWkzd+x8I+jxJLS2I+B7Nl/uPHEm8LBDLZqDt
-         eJz+FtfRWIReqM4vFUQS+yEyo4MMw3PwnpxOEbbqqzMpIyoeY+2gVKMjzCFgvP8yXS
-         QYlJRm/++RzTrvkiTOf3K0IVxNv1WHEQQZFEKfovKGcCUB2yKsm5gTdYtBTf2qOzC5
-         YH0mVCQWbSGxoOBfQeq0EMVmM2GZ0cp/3YRsClwfRniHW+ACpqXxFUAxjMLhobHK5y
-         rqGpNXgLwQKAgal2NDZw0ZVGp4pl0pcS2d8d7BvJTU4qL4RkM/AgkP3EXRG/M/LyTF
-         h7JjO5Oa2b5Gw==
+        b=ORCwGQ70JFG+0hymb+wmcplU32w2of0dyQ0Ejy0HHyLnwBqwW5Hv2GiXKke3IIooz
+         MOGTkzYigyNjxT/NoWJfntWqPHe5gBop5Mb8IBzloetvYg0euLoR1Xf6a6oh/hRL63
+         rNPA829EmusiIv94bbTPdeBgX4yjmOKO2+xDTskNPKVqoBIjeMNGreoVsBkcnsbeSO
+         GqRyj0YFfAN5qKPpDj72IemLvmAlockKSQwGmDwtyuVa1fz5gmdIJjkRrihEBXh5XQ
+         NGDT19vtkLXDkZiWGmLCB9MoLSkIZ0k8VhQfxX2FjTCsJm+18KUxJuPfzDMxRpPzBx
+         6xaUQDxwjHZnw==
 Received: from localhost.localdomain (unknown [182.253.126.208])
-        by gnuweeb.org (Postfix) with ESMTPSA id 9823A24B3D2;
-        Sat,  2 Sep 2023 20:35:16 +0700 (WIB)
+        by gnuweeb.org (Postfix) with ESMTPSA id DB48524B3D8;
+        Sat,  2 Sep 2023 20:35:20 +0700 (WIB)
 From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
 To:     Willy Tarreau <w@1wt.eu>,
         =?UTF-8?q?Thomas=20Wei=C3=9Fschuh?= <linux@weissschuh.net>
@@ -38,9 +38,9 @@ Cc:     Ammar Faizi <ammarfaizi2@gnuweeb.org>,
         Michael William Jonathan <moe@gnuweeb.org>,
         GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH v3 1/4] tools/nolibc: x86-64: Use `rep movsb` for `memcpy()` and `memmove()`
-Date:   Sat,  2 Sep 2023 20:35:02 +0700
-Message-Id: <20230902133505.2176434-2-ammarfaizi2@gnuweeb.org>
+Subject: [RFC PATCH v3 2/4] tools/nolibc: x86-64: Use `rep stosb` for `memset()`
+Date:   Sat,  2 Sep 2023 20:35:03 +0700
+Message-Id: <20230902133505.2176434-3-ammarfaizi2@gnuweeb.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230902133505.2176434-1-ammarfaizi2@gnuweeb.org>
 References: <20230902133505.2176434-1-ammarfaizi2@gnuweeb.org>
@@ -55,99 +55,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify memcpy() and memmove() on the x86-64 arch.
+Simplify memset() on the x86-64 arch.
 
-The x86-64 arch has a 'rep movsb' instruction, which can perform
-memcpy() using only a single instruction, given:
+The x86-64 arch has a 'rep stosb' instruction, which can perform
+memset() using only a single instruction, given:
 
+    %al  = value (just like the second argument of memset())
     %rdi = destination
-    %rsi = source
     %rcx = length
-
-Additionally, it can also handle the overlapping case by setting DF=1
-(backward copy), which can be used as the memmove() implementation.
 
 Before this patch:
 ```
-  00000000000010ab <memmove>:
-    10ab: 48 89 f8              mov    %rdi,%rax
-    10ae: 31 c9                 xor    %ecx,%ecx
-    10b0: 48 39 f7              cmp    %rsi,%rdi
-    10b3: 48 83 d1 ff           adc    $0xffffffffffffffff,%rcx
-    10b7: 48 85 d2              test   %rdx,%rdx
-    10ba: 74 25                 je     10e1 <memmove+0x36>
-    10bc: 48 83 c9 01           or     $0x1,%rcx
-    10c0: 48 39 f0              cmp    %rsi,%rax
-    10c3: 48 c7 c7 ff ff ff ff  mov    $0xffffffffffffffff,%rdi
-    10ca: 48 0f 43 fa           cmovae %rdx,%rdi
-    10ce: 48 01 cf              add    %rcx,%rdi
-    10d1: 44 8a 04 3e           mov    (%rsi,%rdi,1),%r8b
-    10d5: 44 88 04 38           mov    %r8b,(%rax,%rdi,1)
-    10d9: 48 01 cf              add    %rcx,%rdi
-    10dc: 48 ff ca              dec    %rdx
-    10df: 75 f0                 jne    10d1 <memmove+0x26>
-    10e1: c3                    ret
-
-  00000000000010e2 <memcpy>:
-    10e2: 48 89 f8              mov    %rdi,%rax
-    10e5: 48 85 d2              test   %rdx,%rdx
-    10e8: 74 12                 je     10fc <memcpy+0x1a>
-    10ea: 31 c9                 xor    %ecx,%ecx
-    10ec: 40 8a 3c 0e           mov    (%rsi,%rcx,1),%dil
-    10f0: 40 88 3c 08           mov    %dil,(%rax,%rcx,1)
-    10f4: 48 ff c1              inc    %rcx
-    10f7: 48 39 ca              cmp    %rcx,%rdx
-    10fa: 75 f0                 jne    10ec <memcpy+0xa>
-    10fc: c3                    ret
+  00000000000010c9 <memset>:
+    10c9: 48 89 f8              mov    %rdi,%rax
+    10cc: 48 85 d2              test   %rdx,%rdx
+    10cf: 74 0e                 je     10df <memset+0x16>
+    10d1: 31 c9                 xor    %ecx,%ecx
+    10d3: 40 88 34 08           mov    %sil,(%rax,%rcx,1)
+    10d7: 48 ff c1              inc    %rcx
+    10da: 48 39 ca              cmp    %rcx,%rdx
+    10dd: 75 f4                 jne    10d3 <memset+0xa>
+    10df: c3                    ret
 ```
 
 After this patch:
 ```
-  // memmove is an alias for memcpy
-  000000000040133b <memcpy>:
-    40133b: 48 89 d1              mov    %rdx,%rcx
-    40133e: 48 89 f8              mov    %rdi,%rax
-    401341: 48 89 fa              mov    %rdi,%rdx
-    401344: 48 29 f2              sub    %rsi,%rdx
-    401347: 48 39 ca              cmp    %rcx,%rdx
-    40134a: 72 03                 jb     40134f <memcpy+0x14>
-    40134c: f3 a4                 rep movsb %ds:(%rsi),%es:(%rdi)
-    40134e: c3                    ret
-    40134f: 48 8d 7c 0f ff        lea    -0x1(%rdi,%rcx,1),%rdi
-    401354: 48 8d 74 0e ff        lea    -0x1(%rsi,%rcx,1),%rsi
-    401359: fd                    std
-    40135a: f3 a4                 rep movsb %ds:(%rsi),%es:(%rdi)
-    40135c: fc                    cld
-    40135d: c3                    ret
+  0000000000001511 <memset>:
+    1511: 96                    xchg   %eax,%esi
+    1512: 48 89 d1              mov    %rdx,%rcx
+    1515: 57                    push   %rdi
+    1516: f3 aa                 rep stos %al,%es:(%rdi)
+    1518: 58                    pop    %rax
+    1519: c3                    ret
 ```
 
-v3:
-  - Make memmove as an alias for memcpy (Willy).
-  - Make the forward copy the likely case (Alviro).
-
 v2:
-  - Fix the broken memmove implementation (David).
+  - Use pushq %rdi / popq %rax (Alviro).
+  - Use xchg %eax, %esi (Willy).
 
-Link: https://lore.kernel.org/lkml/20230902062237.GA23141@1wt.eu
-Link: https://lore.kernel.org/lkml/5a821292d96a4dbc84c96ccdc6b5b666@AcuMS.aculab.com
-Suggested-by: David Laight <David.Laight@aculab.com>
+Link: https://lore.kernel.org/lkml/ZO9e6h2jjVIMpBJP@1wt.eu
+Suggested-by: Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>
+Suggested-by: Willy Tarreau <w@1wt.eu>
 Signed-off-by: Ammar Faizi <ammarfaizi2@gnuweeb.org>
 ---
- tools/include/nolibc/arch-x86_64.h | 29 +++++++++++++++++++++++++++++
- tools/include/nolibc/string.h      |  4 ++++
- 2 files changed, 33 insertions(+)
+ tools/include/nolibc/arch-x86_64.h | 13 +++++++++++++
+ tools/include/nolibc/string.h      |  2 ++
+ 2 files changed, 15 insertions(+)
 
 diff --git a/tools/include/nolibc/arch-x86_64.h b/tools/include/nolibc/arch-x86_64.h
-index e5ccb926c90306b6..aece7d8951535a36 100644
+index aece7d8951535a36..1502db5c58fc0c87 100644
 --- a/tools/include/nolibc/arch-x86_64.h
 +++ b/tools/include/nolibc/arch-x86_64.h
-@@ -156,21 +156,50 @@
- 
- /* startup code */
- /*
-  * x86-64 System V ABI mandates:
-  * 1) %rsp must be 16-byte aligned right before the function call.
-  * 2) The deepest stack frame should be zero (the %rbp).
+@@ -162,44 +162,57 @@
   *
   */
  void __attribute__((weak, noreturn, optimize("Os", "omit-frame-pointer"))) __no_stack_protector _start(void)
@@ -162,76 +121,54 @@ index e5ccb926c90306b6..aece7d8951535a36 100644
  	__builtin_unreachable();
  }
  
-+#define NOLIBC_ARCH_HAS_MEMMOVE
-+void *memmove(void *dst, const void *src, size_t len);
+ #define NOLIBC_ARCH_HAS_MEMMOVE
+ void *memmove(void *dst, const void *src, size_t len);
+ 
+ #define NOLIBC_ARCH_HAS_MEMCPY
+ void *memcpy(void *dst, const void *src, size_t len);
+ 
++#define NOLIBC_ARCH_HAS_MEMSET
++void *memset(void *dst, int c, size_t len);
 +
-+#define NOLIBC_ARCH_HAS_MEMCPY
-+void *memcpy(void *dst, const void *src, size_t len);
+ __asm__ (
+ ".section .text.nolibc_memmove_memcpy\n"
+ ".weak memmove\n"
+ ".weak memcpy\n"
+ "memmove:\n"
+ "memcpy:\n"
+ 	"movq %rdx, %rcx\n\t"
+ 	"movq %rdi, %rax\n\t"
+ 	"movq %rdi, %rdx\n\t"
+ 	"subq %rsi, %rdx\n\t"
+ 	"cmpq %rcx, %rdx\n\t"
+ 	"jb   .Lbackward_copy\n\t"
+ 	"rep movsb\n\t"
+ 	"retq\n"
+ ".Lbackward_copy:"
+ 	"leaq -1(%rdi, %rcx, 1), %rdi\n\t"
+ 	"leaq -1(%rsi, %rcx, 1), %rsi\n\t"
+ 	"std\n\t"
+ 	"rep movsb\n\t"
+ 	"cld\n\t"
+ 	"retq\n"
 +
-+__asm__ (
-+".section .text.nolibc_memmove_memcpy\n"
-+".weak memmove\n"
-+".weak memcpy\n"
-+"memmove:\n"
-+"memcpy:\n"
-+	"movq %rdx, %rcx\n\t"
-+	"movq %rdi, %rax\n\t"
-+	"movq %rdi, %rdx\n\t"
-+	"subq %rsi, %rdx\n\t"
-+	"cmpq %rcx, %rdx\n\t"
-+	"jb   .Lbackward_copy\n\t"
-+	"rep movsb\n\t"
++".section .text.nolibc_memset\n"
++".weak memset\n"
++"memset:\n"
++	"xchgl %eax, %esi\n"
++	"movq  %rdx, %rcx\n"
++	"pushq %rdi\n"
++	"rep stosb\n"
++	"popq  %rax\n"
 +	"retq\n"
-+".Lbackward_copy:"
-+	"leaq -1(%rdi, %rcx, 1), %rdi\n\t"
-+	"leaq -1(%rsi, %rcx, 1), %rsi\n\t"
-+	"std\n\t"
-+	"rep movsb\n\t"
-+	"cld\n\t"
-+	"retq\n"
-+);
-+
+ );
+ 
  #endif /* _NOLIBC_ARCH_X86_64_H */
 diff --git a/tools/include/nolibc/string.h b/tools/include/nolibc/string.h
-index 0c2e06c7c4772bc6..6eca267ec6fa7177 100644
+index 6eca267ec6fa7177..1bad6121ef8c4ab5 100644
 --- a/tools/include/nolibc/string.h
 +++ b/tools/include/nolibc/string.h
-@@ -32,70 +32,74 @@ void *_nolibc_memcpy_up(void *dst, const void *src, size_t len)
- {
- 	size_t pos = 0;
- 
- 	while (pos < len) {
- 		((char *)dst)[pos] = ((const char *)src)[pos];
- 		pos++;
- 	}
- 	return dst;
- }
- 
- static __attribute__((unused))
- void *_nolibc_memcpy_down(void *dst, const void *src, size_t len)
- {
- 	while (len) {
- 		len--;
- 		((char *)dst)[len] = ((const char *)src)[len];
- 	}
- 	return dst;
- }
- 
-+#ifndef NOLIBC_ARCH_HAS_MEMMOVE
- /* might be ignored by the compiler without -ffreestanding, then found as
-  * missing.
-  */
- __attribute__((weak,unused,section(".text.nolibc_memmove")))
- void *memmove(void *dst, const void *src, size_t len)
- {
- 	size_t dir, pos;
- 
- 	pos = len;
- 	dir = -1;
- 
- 	if (dst < src) {
- 		pos = -1;
- 		dir = 1;
+@@ -67,55 +67,57 @@ void *memmove(void *dst, const void *src, size_t len)
  	}
  
  	while (len) {
@@ -241,17 +178,18 @@ index 0c2e06c7c4772bc6..6eca267ec6fa7177 100644
  	}
  	return dst;
  }
-+#endif /* #ifndef NOLIBC_ARCH_HAS_MEMMOVE */
+ #endif /* #ifndef NOLIBC_ARCH_HAS_MEMMOVE */
  
-+#ifndef NOLIBC_ARCH_HAS_MEMCPY
+ #ifndef NOLIBC_ARCH_HAS_MEMCPY
  /* must be exported, as it's used by libgcc on ARM */
  __attribute__((weak,unused,section(".text.nolibc_memcpy")))
  void *memcpy(void *dst, const void *src, size_t len)
  {
  	return _nolibc_memcpy_up(dst, src, len);
  }
-+#endif /* #ifndef NOLIBC_ARCH_HAS_MEMCPY */
+ #endif /* #ifndef NOLIBC_ARCH_HAS_MEMCPY */
  
++#ifndef NOLIBC_ARCH_HAS_MEMSET
  /* might be ignored by the compiler without -ffreestanding, then found as
   * missing.
   */
@@ -267,10 +205,27 @@ index 0c2e06c7c4772bc6..6eca267ec6fa7177 100644
  	}
  	return dst;
  }
++#endif /* #ifndef NOLIBC_ARCH_HAS_MEMSET */
  
  static __attribute__((unused))
  char *strchr(const char *s, int c)
  {
+ 	while (*s) {
+ 		if (*s == (char)c)
+ 			return (char *)s;
+ 		s++;
+ 	}
+ 	return NULL;
+ }
+ 
+ static __attribute__((unused))
+ int strcmp(const char *a, const char *b)
+ {
+ 	unsigned int c;
+ 	int diff;
+ 
+ 	while (!(diff = (unsigned char)*a++ - (c = (unsigned char)*b++)) && c)
+ 		;
 -- 
 Ammar Faizi
 
