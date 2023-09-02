@@ -2,113 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E55C790961
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 21:43:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE915790964
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 21:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233756AbjIBTky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 15:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
+        id S233801AbjIBTnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 15:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbjIBTky (ORCPT
+        with ESMTP id S233785AbjIBTnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 15:40:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8D5136
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 12:40:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693683604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=SEzjv3MKP1srHHBtrlqUB+1MJdLIZhTw7IrWaVz9kCY=;
-        b=epnILi+tUJ3zji+mhjF3jRM3LXrlExmuphUptG4ZgPcaXbSlMHTkbUWpakaJmgDkyr3f3+
-        vGFH1ydXi+Cbyp1Ae31TzWOnjP/3xtK72THk18FsuwQeXsHwgK4mu4gAInk7xYXj8EJdFp
-        X2dremm2t/mMF2crThtRRmaDJ+v4Pcg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-296-7Yfzgwo_Pg2ljJJnrekMGQ-1; Sat, 02 Sep 2023 15:40:02 -0400
-X-MC-Unique: 7Yfzgwo_Pg2ljJJnrekMGQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sat, 2 Sep 2023 15:43:16 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D36ECF6
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 12:43:09 -0700 (PDT)
+Received: from [192.168.2.205] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 67C5E800193;
-        Sat,  2 Sep 2023 19:40:02 +0000 (UTC)
-Received: from [10.22.32.67] (unknown [10.22.32.67])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 158582012F37;
-        Sat,  2 Sep 2023 19:40:02 +0000 (UTC)
-Message-ID: <4fd976bf-2a09-ef08-e6f5-039bb20d998b@redhat.com>
-Date:   Sat, 2 Sep 2023 15:40:01 -0400
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 12AB46607285;
+        Sat,  2 Sep 2023 20:43:05 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693683786;
+        bh=jdxG2Yk0vUZNyoRBsEOYF91svxBT3sbchZ6QIhYutfw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=ZU/Jnz1jpqYrjYeKrIjkHM5aFa51/mk+Ua2WjxxeIFUY5veGvo0869p8VAq6vi+SM
+         WE/YSOiavu5e7B7CfYdU95kYgKsltmO87s3pyQgt4HT7QaiGiRS7QQCj263HHylL5F
+         2cudFrVU2WdPhBHQVM+x2f2AsALe573bNoBwnJFxX9Fl7aocWI2uc/TZhD/xyzaQEA
+         7OQYUWHuWU8tl95CrMLtvoc1GnWwepaZqRW5eyH/UkjdKCOtCjyZvq/xFItd4/dUoZ
+         MAG1SF3v9Bj4o2m13ioysVIcrIoiB+x4BXadvPQoAJ50TZbmwrSG+3vTZhdusRZhjr
+         0NSO+YDBXsgEg==
+Message-ID: <73dd54d3-cb36-cb21-6bbb-ff1dd89429a3@collabora.com>
+Date:   Sat, 2 Sep 2023 22:43:02 +0300
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH] locking/mutex: remove redundant argument from
- __mutex_lock_common()
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v15 17/23] drm/shmem-helper: Add and use
+ drm_gem_shmem_resv_assert_held() helper
 Content-Language: en-US
-To:     =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
-References: <76a1d64e683ee9a9f507114dfbc2d5121da8c3f3.1693433504.git.mirq-linux@rere.qmqm.pl>
- <cdb0df68-ed29-18d2-22af-12253a4ec659@redhat.com>
- <ZPNrqZokdzpuyAqR@qmqm.qmqm.pl>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <ZPNrqZokdzpuyAqR@qmqm.qmqm.pl>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        intel-gfx@lists.freedesktop.org
+References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
+ <20230827175449.1766701-18-dmitry.osipenko@collabora.com>
+ <20230828121239.78a180e6@collabora.com>
+ <01930e66-cba2-5d81-7f46-d46907bdd300@collabora.com>
+ <20230829092950.3a9c40c1@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230829092950.3a9c40c1@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/23 13:06, Michał Mirosław wrote:
-> On Wed, Aug 30, 2023 at 07:54:13PM -0400, Waiman Long wrote:
->> On 8/30/23 18:12, Michał Mirosław wrote:
->>> use_ww_ctx is equivalent to ww_ctx != NULL. The one case where
->>> use_ww_ctx was true but ww_ctx == NULL leads to the same
->>> __mutex_add_waiter() call via __ww_mutex_add_waiter().
->> I think ww_mutex_lock() can be called with a NULL ctx. Your patch will
->> effectively change those ww_mutex_lock() to be equivalent to mutex_lock().
->> So it is a behavioral change.
-> Isn't ww_mutex_lock() with ctx = NULL expected to behave like mutex_lock()?
->
->>> Since now __ww_mutex_add_waiter() is called only with ww_mutex != NULL,
->>> remove the branch there.
-> [...]
->>> @@ -627,12 +624,11 @@ __mutex_lock_common(struct mutex *lock, unsigned int state, unsigned int subclas
->>>    	debug_mutex_lock_common(lock, &waiter);
->>>    	waiter.task = current;
->>> -	if (use_ww_ctx)
->>> -		waiter.ww_ctx = ww_ctx;
->>> +	waiter.ww_ctx = ww_ctx;
->> This one is fine.
->>>    	lock_contended(&lock->dep_map, ip);
->>> -	if (!use_ww_ctx) {
->>> +	if (!ww_ctx) {
->> That change will break ww_mutex.
-> I see that there is the rt_mutex version that stubs out
-> __ww_mutex_add_waiter(), but its ww_mutex_lock() doesn't use
-> __mutex_lock_common() at all. With the RT version out of the picture, we
-> can see that __ww_mutex_add_waiter(), when passed ww_ctx == NULL, just
-> forwards the work to __ww_waiter_add() with the same arguments
-> and returns 0 -- making the path exactly as the !use_ww_ctx branch.
->
-> Note: There is a lot of templating-via-preprocessor code here and I
-> might have missed something. I'll appreciate hints here as maybe it
-> could be made simpler or better understood.
+On 8/29/23 10:29, Boris Brezillon wrote:
+> On Tue, 29 Aug 2023 05:34:23 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> On 8/28/23 13:12, Boris Brezillon wrote:
+>>> On Sun, 27 Aug 2023 20:54:43 +0300
+>>> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+>>>   
+>>>> In a preparation of adding drm-shmem memory shrinker, move all reservation
+>>>> locking lockdep checks to use new drm_gem_shmem_resv_assert_held() that
+>>>> will resolve spurious lockdep warning about wrong locking order vs
+>>>> fs_reclam code paths during freeing of shmem GEM, where lockdep isn't
+>>>> aware that it's impossible to have locking contention with the fs_reclam
+>>>> at this special time.
+>>>>
+>>>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>>>> ---
+>>>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 37 +++++++++++++++++---------
+>>>>  1 file changed, 25 insertions(+), 12 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>> index d96fee3d6166..ca5da976aafa 100644
+>>>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>>>> @@ -128,6 +128,23 @@ struct drm_gem_shmem_object *drm_gem_shmem_create(struct drm_device *dev, size_t
+>>>>  }
+>>>>  EXPORT_SYMBOL_GPL(drm_gem_shmem_create);
+>>>>  
+>>>> +static void drm_gem_shmem_resv_assert_held(struct drm_gem_shmem_object *shmem)
+>>>> +{
+>>>> +	/*
+>>>> +	 * Destroying the object is a special case.. drm_gem_shmem_free()
+>>>> +	 * calls many things that WARN_ON if the obj lock is not held.  But
+>>>> +	 * acquiring the obj lock in drm_gem_shmem_free() can cause a locking
+>>>> +	 * order inversion between reservation_ww_class_mutex and fs_reclaim.
+>>>> +	 *
+>>>> +	 * This deadlock is not actually possible, because no one should
+>>>> +	 * be already holding the lock when drm_gem_shmem_free() is called.
+>>>> +	 * Unfortunately lockdep is not aware of this detail.  So when the
+>>>> +	 * refcount drops to zero, we pretend it is already locked.
+>>>> +	 */
+>>>> +	if (kref_read(&shmem->base.refcount))
+>>>> +		drm_gem_shmem_resv_assert_held(shmem);
+>>>> +}
+>>>> +
+>>>>  /**
+>>>>   * drm_gem_shmem_free - Free resources associated with a shmem GEM object
+>>>>   * @shmem: shmem GEM object to free
+>>>> @@ -142,8 +159,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>>>>  	if (obj->import_attach) {
+>>>>  		drm_prime_gem_destroy(obj, shmem->sgt);
+>>>>  	} else if (!shmem->imported_sgt) {
+>>>> -		dma_resv_lock(shmem->base.resv, NULL);
+>>>> -
+>>>>  		drm_WARN_ON(obj->dev, kref_read(&shmem->vmap_use_count));
+>>>>  
+>>>>  		if (shmem->sgt) {
+>>>> @@ -156,8 +171,6 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>>>>  			drm_gem_shmem_put_pages_locked(shmem);  
+>>>
+>>> AFAICT, drm_gem_shmem_put_pages_locked() is the only function that's
+>>> called in the free path and would complain about resv-lock not being
+>>> held. I think I'd feel more comfortable if we were adding a
+>>> drm_gem_shmem_free_pages() function that did everything
+>>> drm_gem_shmem_put_pages_locked() does except for the lock_held() check
+>>> and the refcount dec, and have it called here (and in
+>>> drm_gem_shmem_put_pages_locked()). This way we can keep using
+>>> dma_resv_assert_held() instead of having our own variant.  
+>>
+>> It's not only drm_gem_shmem_free_pages(), but any drm-shmem function
+>> that drivers may use in the GEM's freeing callback.
+>>
+>> For example, panfrost_gem_free_object() may unpin shmem BO and then do
+>> drm_gem_shmem_free().
+> 
+> Is this really a valid use case? If the GEM refcount dropped to zero,
+> we should certainly not have pages_pin_count > 0 (thinking of vmap-ed
+> buffers that might disappear while kernel still has a pointer to the
+> CPU-mapped area). The only reason we have this
+> drm_gem_shmem_put_pages_locked() in drm_gem_shmem_free() is because of
+> this implicit ref hold by the sgt, and IMHO, we should be stricter and
+> check that pages_use_count == 1 when sgt != NULL and pages_use_count ==
+> 0 otherwise.
+> 
+> I actually think it's a good thing to try and catch any attempt to call
+> functions trying lock the resv in a path they're not supposed to. At
+> least we can decide whether these actions are valid or not in this
+> context, and provide dedicated helpers for the free path if they are.
 
-Yes, I have misread the code thinking that __ww_waiter_add() with a NULL 
-third argument is different from __mutex_add_waiter(). They the same in 
-this case for the non-PREEMPT_RT kernel. For the PREEMPT_RT kernel, 
-however, they are still different.
+To me it's a valid use-case. I was going to do it for the virtio-gpu
+driver for a specific BO type that should be permanently pinned in
+memory. So I made the BO pinned in the virto_gpu's bo_create() and
+unpinned it from the virtio-gpu's gem->free(), this is a perfectly valid
+case to me. Though, in the end I switched to another approach that
+doesn't require to do the pinning in the virtio-gpu driver.
 
-Cheers,
-Longman
+For now we can do it as you suggested, to use custom put_pages() in the
+shmem_free() since neither of drivers need that. Let's try that.
+
+-- 
+Best regards,
+Dmitry
 
