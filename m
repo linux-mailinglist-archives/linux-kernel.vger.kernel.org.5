@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E8F7908B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 18:41:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 417917908BA
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 18:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234590AbjIBQlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 12:41:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        id S234627AbjIBQnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 12:43:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232336AbjIBQlb (ORCPT
+        with ESMTP id S231881AbjIBQnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 12:41:31 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DF5DCDD;
-        Sat,  2 Sep 2023 09:41:28 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68a56ed12c0so31834b3a.0;
-        Sat, 02 Sep 2023 09:41:28 -0700 (PDT)
+        Sat, 2 Sep 2023 12:43:23 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E1CCE0
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 09:43:19 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id 3f1490d57ef6-d7d50ba994eso78525276.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 09:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693672888; x=1694277688; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=4Dai6Rn13iIFlOKODTu21yMH7mTPIAobImIUwb+rr64=;
-        b=k+OGeA+ziqa4YmrN9Kx8LhXlc95JmK88xVGME32wcPQHr/DCNmkHb4w53V6fJGrurZ
-         a3QEUPZ2aconp2fdjseOvd3FacdInxFcWJZS12SvWZYqhZZ0JBn+7tiyXRQgaTFIhmfL
-         Aff5qLLH4xzcj8ghjJMZ5k1DoupWqn7mb6m1dbfiT3Lrf3AYTeW/bvAlCZZQZXoDCPps
-         oLK1scNJ7X1tpvJij9iedSC5p/I9anHxVg6i+BGW0D7V1K8+ThoHRcUgFyUSrc76twYC
-         eUZbTRYtRtSpGih9AldKX8ISTAY3TWzlXPeO7oGMVNskQgo6sHyhEKKLR/mbLyiIelhg
-         LwGA==
+        d=linaro.org; s=google; t=1693672999; x=1694277799; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RUQI1IMPxq/0QcnuPOG+oY2Cvb8cpMwVnmqwILZAnjE=;
+        b=tupHNEMPOGzX2Ne/XK4qvMvTbXNd6vnZAqx2KMxCetrCff7eoBoZngvwdG55GYivps
+         mLEVsnwVeKzrAjdPTZmv0zigSbEOnucH9EMCBsKaoT6n+HjxHvIP4lisY0fQAh2CTRPm
+         lPA6XtXiG0XS0teXIwrrHWORTLdDSl1AAhk1YQS0CaQLpGIxykAdIbeDCxT+ZHAVqEvm
+         pXZVVmrE53rdfbRaUfNt0Vp93eiTszFMIdJZkDRT/HSinnX/MGzodk31kP+pg9mFdG4z
+         XB2K6OEGpzSZ1kUmn8RJwmCTo2yGBnhBRoTWtFrQlz0J8M6kAdusbUU0MQ1O+PxWiQJY
+         JLng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693672888; x=1694277688;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4Dai6Rn13iIFlOKODTu21yMH7mTPIAobImIUwb+rr64=;
-        b=QBFyzC0PSHMEJp+Hk2G/pLecFlFbD6romFCz3Fe/5XOv+xMnI4YPKFro4MSllyeE3p
-         C8HcCMvQ8HIOE7Z4G05/pVdgcp6v9PGJC7XSynwXyvHbE+qt1FcAAWMeZDC7QGjSM9+4
-         o4WCeyxVyFot0a8qieLr5wu3dWbF2mh7BeTBSMeMAPFYQdh0dkEMZ3kAbjmCMdVv24Xi
-         7A3QuoaFB7ArYwOZYlEqXHZj3zotP79DvDNiQImMHob8qzHO51y+NUcaflhcZHkIO6si
-         P4sO7wgvE/9JUd65LVwtzMsqJtJXg/i2obevATY6E1EiCQISA3qIkyUCOZyxMNOhRy+n
-         8Aew==
-X-Gm-Message-State: AOJu0YwKh8cNlgY8myM9TjJCEO5uGf0IuzMiAHe2XB0hL5FZ/MYGHE7j
-        Yg/C2ZJw3qVW+MFXPHJzW24=
-X-Google-Smtp-Source: AGHT+IHQencBwVyU06k7HcFKjui6Tn7z7XBah7CJH8uDoYk6g9lnMrVbn9Zvc3qPnc1WmZy1bCSbrw==
-X-Received: by 2002:a05:6a00:1d87:b0:68a:4bf9:3b21 with SMTP id z7-20020a056a001d8700b0068a4bf93b21mr6537476pfw.0.1693672887667;
-        Sat, 02 Sep 2023 09:41:27 -0700 (PDT)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id m19-20020aa78a13000000b0068a3e7634d0sm4744089pfa.129.2023.09.02.09.41.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 09:41:27 -0700 (PDT)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     axboe@kernel.dk
-Cc:     corbet@lwn.net, linux-block@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] docs: block: blk-mq.rst: correct places -> place
-Date:   Sun,  3 Sep 2023 00:41:21 +0800
-Message-Id: <20230902164121.2653109-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        d=1e100.net; s=20221208; t=1693672999; x=1694277799;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RUQI1IMPxq/0QcnuPOG+oY2Cvb8cpMwVnmqwILZAnjE=;
+        b=GF/c7k6mAoS56iDR8p1fTgG4VPOUE5Y3A9tUHuG4EREGHTnA4JJXgUI25uAYpEZnV/
+         KfX9r/NzTrWvm+Ys32ukkyqlkv4jKqfII6ipNjo0J1oyTDsUZgRZSp3BeRMkxeBvlR9f
+         4TT2wGwEUSAgc8SD7GxA6eE/OjteJ70JBviLsV2CnyjpQlCdh5ftkpoh/P1NvwNoeL/4
+         jYOY9HwsRL82ctBYRnkF/JLeIhV0Bv0ptWNVMs/1e6ADGWIWJwt6UvOVqQtvRF8J5ZLK
+         3pzKhI/ng4ExKAal2thp05eTD7lKiBlAJkCIV021COkMAHGlKOiV6vXcNWgaeD4lLly+
+         1rDQ==
+X-Gm-Message-State: AOJu0YzlCWNnTncNZ6xZBfZOfSScapCiTl2xcXwh40zH8Kv2zv8KMqKi
+        BuGbP3A08FNzeAFsto26pfSCsJkYUfEz3IFrBCBESA==
+X-Google-Smtp-Source: AGHT+IE/lyKUxC+R61qFXqvryIakPGcGdMcW/bi3SrxhNQy2coxvc4NC7uGhbA7OM2U7ZRuQsjY6HNyjJvBnSDvaMR4=
+X-Received: by 2002:a25:2495:0:b0:d78:1f87:d6f1 with SMTP id
+ k143-20020a252495000000b00d781f87d6f1mr5941437ybk.33.1693672998777; Sat, 02
+ Sep 2023 09:43:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20230901120836.1057900-1-yann.gautier@foss.st.com>
+In-Reply-To: <20230901120836.1057900-1-yann.gautier@foss.st.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 2 Sep 2023 18:43:07 +0200
+Message-ID: <CACRpkdaj6bEQTo6a5gOJQne-wKqBLvuxiOe9kE+q-nkYLOU7Pw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: mmci: stm32: add SDIO in-band interrupt mode
+To:     Yann Gautier <yann.gautier@foss.st.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Rob Herring <robh@kernel.org>, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Corrected a typo in the blk-mq.rst documentation where 'places' was
-incorrectly used instead of 'place'.
+Hi Yann/Christophe,
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- Documentation/block/blk-mq.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+just a quick note:
 
-diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
-index 31f52f326971..fc06761b6ea9 100644
---- a/Documentation/block/blk-mq.rst
-+++ b/Documentation/block/blk-mq.rst
-@@ -56,7 +56,7 @@ sent to the software queue.
- Then, after the requests are processed by software queues, they will be placed
- at the hardware queue, a second stage queue where the hardware has direct access
- to process those requests. However, if the hardware does not have enough
--resources to accept more requests, blk-mq will places requests on a temporary
-+resources to accept more requests, blk-mq will place requests on a temporary
- queue, to be sent in the future, when the hardware is able.
- 
- Software staging queues
--- 
-2.25.1
+On Fri, Sep 1, 2023 at 2:08=E2=80=AFPM Yann Gautier <yann.gautier@foss.st.c=
+om> wrote:
 
+> +static void sdmmc_enable_sdio_irq(struct mmci_host *host, int enable)
+> +{
+> +       void __iomem *base =3D host->base;
+> +       u32 mask =3D readl_relaxed(base + MMCIMASK0);
+> +
+> +       if (enable)
+> +               writel_relaxed(mask | MCI_ST_SDIOITMASK, base + MMCIMASK0=
+);
+> +       else
+> +               writel_relaxed(mask & ~MCI_ST_SDIOITMASK, base + MMCIMASK=
+0);
+> +}
+> +
+> +static void sdmmc_sdio_irq(struct mmci_host *host, u32 status)
+> +{
+> +       if (status & MCI_ST_SDIOIT) {
+> +               sdmmc_enable_sdio_irq(host, 0);
+> +               sdio_signal_irq(host->mmc);
+> +       }
+> +}
+
+You need to move these to mmci and rename them since Ux500 will use
+the same callbacks.
+
+>  static struct mmci_host_ops sdmmc_variant_ops =3D {
+>         .validate_data =3D sdmmc_idma_validate_data,
+(...)
+> +       .enable_sdio_irq =3D sdmmc_enable_sdio_irq,
+> +       .sdio_irq =3D sdmmc_sdio_irq,
+>  };
+
+What about dropping the per-variant callbacks and just inline
+this into mmci_enable_sdio_irq()/mmci_ack_sdio_irq() since
+so many variants have the same scheme? I haven't looked
+at the Qualcomm variant though, maybe it is completely
+different...
+
+Yours,
+Linus Walleij
