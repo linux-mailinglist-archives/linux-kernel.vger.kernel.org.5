@@ -2,135 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3B42790846
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:40:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5F1790848
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:40:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbjIBOed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 10:34:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
+        id S232183AbjIBOkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 10:40:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjIBOed (ORCPT
+        with ESMTP id S229977AbjIBOkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 10:34:33 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117D610EB;
-        Sat,  2 Sep 2023 07:34:26 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-313e742a787so2113f8f.1;
-        Sat, 02 Sep 2023 07:34:25 -0700 (PDT)
+        Sat, 2 Sep 2023 10:40:21 -0400
+Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00C610EB
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 07:40:17 -0700 (PDT)
+Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-44eb98a2da3so11132137.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 07:40:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693665264; x=1694270064; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0LEnYY2fstYIsmMY7pLao9nO8hPctUJEbYLViJghGc0=;
-        b=AlRdnb6hak2ke9J5+VveahbOAJS2TUdLUAxKKedX2oMMCRsTT3epy1jSdgPdi/7vi/
-         Cf9St3nB9VkyWx3TP12DAKzGHe/6Fkq8QItMDUY74RUvgx4ef5Dr+AbDIKBYH5OxhMd0
-         EWo5Jsz5UVjrY/ELZDv2K94tiRWQeO+ULkluh4Vd3YFp4tKpQTqcimVqB7bZ3dTftYmz
-         kIeieEE8xV5r1mQ4cWHBnG9pJFjmhWONJMEKnxo1QE8D48ncnaX7FFt11X+ZCB6OEFVF
-         py9TN/d7F8bMxg0UYbx5vKsSV+keSMyBqJ9bmtMLwWDxSbiS1k0WQF29P8HDuctsPoV4
-         TTJg==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693665617; x=1694270417; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rmvs943FMEQtbu1KacuFgagsI7Z/vptG6vhwuSDiOEg=;
+        b=UduDqpfQXcWy7bDhGA2q8bDFr/eE4cFiQjvxl2ZDTpRvWOXJOv8ydp2FjHQkvbyBZi
+         OGOwNp/bqW4OfrTPS2G82jOrXbu9RllJCHG7/zt0bp6lXHqB91Lfb9+oBeQM6DsmbwiF
+         xunRLASqWlGvy2xWyL3+6cim22o/XvhseOU3Cpuxeew7Szjscl8QrdFlnkTwfkuzXajW
+         Vh7wrYQbW2uRbKL3CdY1FFDibJO3o7tgCcrm8lOxc+EEvT3PGSxVYXyqSsFugYxfB3lO
+         TO3eAGWK5UOf3arOayZeA9ApPT8EKKMlSYtGSBCqO3XVBKBMZ4w6lyMifLa+sOSwlBm7
+         ZGRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693665264; x=1694270064;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0LEnYY2fstYIsmMY7pLao9nO8hPctUJEbYLViJghGc0=;
-        b=aW/NLoTDPIvO2v5e7yK0EB7Nq+svFAuyRWVqFyWJYcRR1AGSDPAQOzVnjp7QKkXT51
-         fsBkOv9oqulqB9QL1o0xu8etAWAwT5v3lzUg5I7geYYmY9nIXMBor9KO8bodaNGYAfES
-         uNTwQznio0pfdiAp7/CRcxXFIBMqVn99zWs+t+eXdQhI7uPQ/6EOlq5zYZcj9rBbTC3u
-         x2xjkuMfNRMPtudSsNiWAbK6NVVlqSZDI4w859SQtP73OAHmzx90IxLucx5HkE7sVPX5
-         vWIWCjPPvnqGxqtvEfUTL4n9zsIieN7LMQtViNlwD2kuCrCDPGHLC9i6KKgPQFkS1K/K
-         b/Yw==
-X-Gm-Message-State: AOJu0Yyhgo/5SoPiDZjylVYaRJ9u0MaOfmzsIkwHSenUFgRq53YtE5jR
-        jHvHq8s/r/yfoKgsnB/+whY=
-X-Google-Smtp-Source: AGHT+IE+L/AuvMNg3BeZbTTlyRe8GsYHB2IcJZPuf2AYkptiWp2rXAcyeMyAUqPj9pdVSJmI2EnL9Q==
-X-Received: by 2002:a05:6000:1291:b0:315:a235:8aa8 with SMTP id f17-20020a056000129100b00315a2358aa8mr6301607wrx.2.1693665264243;
-        Sat, 02 Sep 2023 07:34:24 -0700 (PDT)
-Received: from eldamar.lan (c-82-192-242-114.customer.ggaweb.ch. [82.192.242.114])
-        by smtp.gmail.com with ESMTPSA id l7-20020a7bc447000000b003fe1fe56202sm8143007wmi.33.2023.09.02.07.34.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 07:34:22 -0700 (PDT)
-Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
-Received: by eldamar.lan (Postfix, from userid 1000)
-        id 51D71BE2DE0; Sat,  2 Sep 2023 16:34:21 +0200 (CEST)
-Date:   Sat, 2 Sep 2023 16:34:21 +0200
-From:   Salvatore Bonaccorso <carnil@debian.org>
-To:     Zheng Hacker <hackerzheng666@gmail.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Zheng Wang <zyytlz.wz@163.com>, s.shtylyov@omp.ru,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, 1395428693sheep@gmail.com,
-        alex000young@gmail.com
-Subject: Re: [PATCH net] net: ravb: Fix possible UAF bug in ravb_remove
-Message-ID: <ZPNH7bdwe4Zir6EQ@eldamar.lan>
-References: <20230309100248.3831498-1-zyytlz.wz@163.com>
- <cca0b40b-d6f8-54c7-1e46-83cb62d0a2f1@huawei.com>
- <CAJedcCy2n9jHm+uS5RG1T7u8aK8RazrzrC-sQhxFQ_v_ZphjWA@mail.gmail.com>
+        d=1e100.net; s=20221208; t=1693665617; x=1694270417;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rmvs943FMEQtbu1KacuFgagsI7Z/vptG6vhwuSDiOEg=;
+        b=WUnyFE4jsvAQf8RHx8GpSbD1LnPFOu50IELSpTqmRb5WhsM5TPSaThpCHWSTw8spgI
+         cfW8VtGr/jQLHj+2Ncf156FPkTXGzD0sBGHiIn114eIudUCTrw1mO0sJTuqsoXM6pcfS
+         5upSl4I1JcusbpKH1iD4LRTB6PnZ4wDUP+YXgqtCpowd2K/n5r/qqGdYRXP+Zk9NwcZZ
+         /uCiQ8MldhqVQkj+psDPEwSWuVTrVz5QZmWrRN3RZ8ejN9KI1TD4IaTbJmkk8+O60RJN
+         Kz52eUBXgr6cGf8pgaSYPvll044CqmLZbf75zBxuZoPdMlbx9fKao1EYd/bwyJ2J9MtX
+         UbCg==
+X-Gm-Message-State: AOJu0YwkUjcpFanaGsEwjYSZ35dC48bbdP5FIG8HAxemY8gZY1npo4wb
+        1znp0s2sSpMK9l3pcDO9P1ekBcX4R/rtX4A+jxFEIIX/b0TcFazJCr8=
+X-Google-Smtp-Source: AGHT+IHg7L1xeU8puyvHGovJX7vzUppkLBpLLUZGgzFIfE3T3JWZWCJhoWmAGkh5G1ByHO4s1X/+AMgJRoQNNWrKAto=
+X-Received: by 2002:a67:f7cd:0:b0:44d:40b1:9277 with SMTP id
+ a13-20020a67f7cd000000b0044d40b19277mr5576233vsp.12.1693665616757; Sat, 02
+ Sep 2023 07:40:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJedcCy2n9jHm+uS5RG1T7u8aK8RazrzrC-sQhxFQ_v_ZphjWA@mail.gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <20230901183240.102701-1-brgl@bgdev.pl> <ZPJTT/l9fX1lhu6O@smile.fi.intel.com>
+In-Reply-To: <ZPJTT/l9fX1lhu6O@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Sat, 2 Sep 2023 16:40:05 +0200
+Message-ID: <CAMRc=Mekf9Rek3_G2ttQY+yBvWM3+P4RAWVOQH99eajn38F+og@mail.gmail.com>
+Subject: Re: [PATCH] gpio: sim: don't fiddle with GPIOLIB private members
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 1, 2023 at 11:10=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Fri, Sep 01, 2023 at 08:32:40PM +0200, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > We access internals of struct gpio_device and struct gpio_desc because
+> > it's easier but it can actually be avoided and we're working towards a
+> > better encapsulation of GPIO data structures across the kernel so let's
+> > start at home.
+> >
+> > Instead of checking gpio_desc flags, let's just track the requests of
+> > GPIOs in the driver. We also already store the information about
+> > direction of simulated lines.
+> >
+> > For kobjects needed by sysfs callbacks: we can leverage the fact that
+> > once created for a software node, struct device is accessible from that
+> > fwnode_handle. We don't need to dereference gpio_device.
+> >
+> > While at it: fix one line break and remove the untrue part about
+> > configfs callbacks using dev_get_drvdata() from a comment.
+>
+> ...
+>
+> > -static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
+>
+> Why is this?
+>
 
-On Sat, Mar 11, 2023 at 12:38:10AM +0800, Zheng Hacker wrote:
-> Yunsheng Lin <linyunsheng@huawei.com> 于2023年3月10日周五 09:12写道：
-> >
-> > On 2023/3/9 18:02, Zheng Wang wrote:
-> > > In ravb_probe, priv->work was bound with ravb_tx_timeout_work.
-> > > If timeout occurs, it will start the work. And if we call
-> > > ravb_remove without finishing the work, ther may be a use
-> >
-> > ther -> there
-> >
-> 
-> Sorry about the typo, will correct it in the next version.
-> 
-> > > after free bug on ndev.
-> > >
-> > > Fix it by finishing the job before cleanup in ravb_remove.
-> > >
-> > > Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> > > Signed-off-by: Zheng Wang <zyytlz.wz@163.com>
-> > > ---
-> > >  drivers/net/ethernet/renesas/ravb_main.c | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> > > index 0f54849a3823..07a08e72f440 100644
-> > > --- a/drivers/net/ethernet/renesas/ravb_main.c
-> > > +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> > > @@ -2892,6 +2892,7 @@ static int ravb_remove(struct platform_device *pdev)
-> > >       struct ravb_private *priv = netdev_priv(ndev);
-> > >       const struct ravb_hw_info *info = priv->info;
-> > >
-> > > +     cancel_work_sync(&priv->work);
-> >
-> > As your previous patch, I still do not see anything stopping
-> > dev_watchdog() from calling dev->netdev_ops->ndo_tx_timeout
-> > after cancel_work_sync(), maybe I missed something obvious
-> > here?
-> >
-> Yes, that's a keyed suggestion. I was hurry to report the issue today
-> so wrote with many mistakes.
-> Thanks agagin for the advice. I will review other patch carefully.
-> 
-> Best regards,
-> Zheng
+Dunno, some git shenanigans?
 
-Looking through some older reports and proposed patches, has this even
-been accepted later? Or did it felt trough the cracks?
+> > +static int gpio_sim_request(struct gpio_chip *gc, unsigned int offset)
+> >  {
+> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
+> >
+> >       scoped_guard(mutex, &chip->lock)
+> > +             __set_bit(offset, chip->request_map);
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
+> > +{
+> > +     struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
+> > +
+> > +     scoped_guard(mutex, &chip->lock) {
+> >               __assign_bit(offset, chip->value_map,
+> >                            !!test_bit(offset, chip->pull_map));
+> > +             __clear_bit(offset, chip->request_map);
+> > +     }
+> >  }
+>
+> Seems to me like you. shuffled the order of the two functions.
+> Can you leave _free() at the same location in the file?
+>
 
-Regards,
-Salvatore
+I didn't. Request comes before free but they're next to each other.
+
+> ...
+>
+> > -     /* Used by sysfs and configfs callbacks. */
+> > -     dev_set_drvdata(&gc->gpiodev->dev, chip);
+> > +     /* Used by sysfs callbacks. */
+> > +     dev_set_drvdata(swnode->dev, chip);
+>
+> dev pointer of firmware node is solely for dev links. Is it the case here=
+?
+> Seems to me you luckily abuse it.
+>
+
+I don't think so. If anything we have a helper in the form of
+get_dev_from_fwnode() but it takes reference to the device while we
+don't need it - we know it'll be there because we created it.
+
+This information (struct device of the GPIO device) can also be
+retrieved by iterating over the device children of the top platform
+device and comparing their fwnodes against the one we got passed down
+from probe() but it's just so many extra steps.
+
+Or we can have a getter in gpio/driver.h for that but I don't want to
+expose another interface is we can simply use the fwnode.
+
+Bart
+
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
