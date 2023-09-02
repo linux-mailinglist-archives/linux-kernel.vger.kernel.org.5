@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB2FF79094C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 21:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F361B79094D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 21:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232222AbjIBTIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 15:08:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52610 "EHLO
+        id S232340AbjIBTJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 15:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229805AbjIBTIt (ORCPT
+        with ESMTP id S229805AbjIBTJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 15:08:49 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A031B1
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 12:08:46 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso162925a12.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 12:08:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693681725; x=1694286525; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mMRyrKbAp4LZVuQSTEbdVAQvbekmFXrSYzVfEdiyF4s=;
-        b=IRn5VhmJInfK728yHiVkaYfbMMHaNh8ZCkuBFeASlG+uZ3dV430Zr4vKn30O60dr+J
-         K23HM7LnGpoZWVf2U4Fx5gSr2I5pgfC3TOqTn31UR3L6u1v7DD4Y9uGPf0pvpN5G7fiO
-         NVddr/ZG5yScD7aHsBo5upq2ZOoEwGlb15j8M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693681725; x=1694286525;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mMRyrKbAp4LZVuQSTEbdVAQvbekmFXrSYzVfEdiyF4s=;
-        b=PCQCSDmG7eyjwS+Hun0UOO8XOzakmyx8VKKFvWYn8iMO4I1NIFRmOoUkYmiG3+sXZO
-         Q8GmawdtkpizX7T/nhi499UeKPwr+k7VUvaBBTRyJwdq8JbG5h3TzSR2T4+9/fp+yx8p
-         Jd9uOGZSKwvz22/WLheDjyZet9dzbw2Fg0IbDKqg08/5kv44ITrMMAFuTIshyAzhnlut
-         cVSf4uK/9WFwzY0MPzyEIo76OgE2OEOtSNDhnCAcAlOI2kEcRyu4ebc7zK5CWu9FqFv2
-         iXCRxm/w66h/E8/e4MIVzOuCl6kh4ZMiFcDF7t7KODQpiVNtH675OoQxwcYBAg1X154r
-         GWUw==
-X-Gm-Message-State: AOJu0YwtG11+D0gjGDjKWZjuoG7EnSUfhGnA19tHs30zYtMogbLY3qth
-        krMztyyy5azNqL5m7rNj9NvShxQBXMEVr2BLThIx5l7k
-X-Google-Smtp-Source: AGHT+IFYCVgW24jhoeNCZXpnX8OGAfCFie0P25iHqkLsD600KLk1kqoj1udleeb+hIq7TSwoim9soA==
-X-Received: by 2002:a05:6402:17d7:b0:52c:84c4:a0bf with SMTP id s23-20020a05640217d700b0052c84c4a0bfmr1577966edy.30.1693681725068;
-        Sat, 02 Sep 2023 12:08:45 -0700 (PDT)
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com. [209.85.221.54])
-        by smtp.gmail.com with ESMTPSA id x2-20020aa7dac2000000b005272523b162sm3642410eds.69.2023.09.02.12.08.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Sep 2023 12:08:44 -0700 (PDT)
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-31c6d17aec4so96602f8f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 12:08:44 -0700 (PDT)
-X-Received: by 2002:a5d:6812:0:b0:317:df4f:4b97 with SMTP id
- w18-20020a5d6812000000b00317df4f4b97mr3843777wru.7.1693681724043; Sat, 02 Sep
- 2023 12:08:44 -0700 (PDT)
+        Sat, 2 Sep 2023 15:09:18 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C18A11B1
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 12:09:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693681755; x=1725217755;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fSjfGaXGlAsrjYrGOMD0sns6m9N6eH2bRsHVr4szo2Q=;
+  b=hzopoZSiuYoo+wKkTa49Zs4kgBtf41ldHcV1g0heMhBckYMc9CoQwOLf
+   yg69mRocW9X7/Ywn1EEls9cILiiSrgkMCKGb+DL1EMH66GVAArq70/rAd
+   eqKBVbWj8wC5rqviPak9ebKsmT9TkLozbqiWWzbGP0eypZPV+WrnweiHM
+   tveulHb6Qj42ITnU0f8/q8bciW8Qs3o5WkmgFSNAHVM9OwR++zW86Gae2
+   NJTtBp3OllUwZ40Fv3oyxiDRElqQzBmylrbB0xWUVsYqQ705KrD3RyJ3h
+   Spubzj39J3P1O84fE/28RcuGwEmk9rPvvY0DlhPgTaKtm6ycaPMRMyGKE
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="355888233"
+X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
+   d="scan'208";a="355888233"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2023 12:09:15 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="830476514"
+X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
+   d="scan'208";a="830476514"
+Received: from tassilo.jf.intel.com (HELO tassilo) ([10.54.38.190])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2023 12:09:14 -0700
+Date:   Sat, 2 Sep 2023 12:09:10 -0700
+From:   Andi Kleen <ak@linux.intel.com>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Yi Sun <yi.sun@intel.com>, dave.hansen@intel.com,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org, x86@kernel.org,
+        sohil.mehta@intel.com, ilpo.jarvinen@linux.intel.com,
+        heng.su@intel.com, tony.luck@intel.com,
+        dave.hansen@linux.intel.com, yi.sun@intel.intel.com
+Subject: Re: [PATCH v6 1/3] x86/fpu: Measure the Latency of XSAVES and XRSTORS
+Message-ID: <ZPOIVmC6aY9GBtdJ@tassilo>
+References: <20230901143414.1664368-1-yi.sun@intel.com>
+ <20230901143414.1664368-2-yi.sun@intel.com>
+ <ZPMTVNM2oBCdSYjJ@gmail.com>
 MIME-Version: 1.0
-References: <6908480e8808a2d025926f2ff1f9a2468d1b6bb9.camel@HansenPartnership.com>
-In-Reply-To: <6908480e8808a2d025926f2ff1f9a2468d1b6bb9.camel@HansenPartnership.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 2 Sep 2023 12:08:26 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgA6CBwnJ02H+vSgneKPcPRP0BWQ-Kx2Re1B56Y2hXkFQ@mail.gmail.com>
-Message-ID: <CAHk-=wgA6CBwnJ02H+vSgneKPcPRP0BWQ-Kx2Re1B56Y2hXkFQ@mail.gmail.com>
-Subject: Re: [GIT PULL] first round of SCSI updates for the 6.4+ merge window
-To:     James Bottomley <James.Bottomley@hansenpartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPMTVNM2oBCdSYjJ@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Sept 2023 at 00:39, James Bottomley
-<James.Bottomley@hansenpartnership.com> wrote:
->
-> Updates to the usual drivers (ufs, lpfc, qla2xxx, mpi3mr, libsas) and
-> the usual minor updates and bug fixes but no significant core changes.
+> Instead of adding overhead to the regular FPU context saving/restoring code 
+> paths, could you add a helper function that has tracing code included, but 
+> which isn't otherwise used - and leave the regular code with no tracing 
+> overhead?
+> 
+> This puts a bit of a long-term maintenance focus on making sure that the 
+> traced functionality won't bitrot, but I'd say that's preferable to adding 
+> tracing overhead.
 
-Removing 3000+ lines for UFS HPB support wasn't even worth mentioning?
+Or just use PT
 
-I am happy to see it gone, and maybe as a technology it was a failure
-not worth it, but as a "we gave up on it as being worthless" might
-still have been worth a word or two..
+% sudo perf record --kcore -e intel_pt/cyc=1,cyc_thresh=1/k --filter 'filter save_fpregs_to_fpstate' -a sleep 5
+% sudo perf script --insn-trace --xed -F -comm,-tid,-dso,-sym,-symoff,+ipc
+[000] 677203.751913565:  ffffffffa7046230               nopw  %ax, (%rax)
+[000] 677203.751913565:  ffffffffa7046234               nopl  %eax, (%rax,%rax,1)
+[000] 677203.751913565:  ffffffffa7046239               mov %rdi, %rcx
+[000] 677203.751913565:  ffffffffa704623c               nopl  %eax, (%rax,%rax,1)
+[000] 677203.751913565:  ffffffffa7046241               movq
+0x10(%rdi), %rsi
+[000] 677203.751913565:  ffffffffa7046245               movq  0x8(%rsi), %rax
+[000] 677203.751913565:  ffffffffa7046249               leaq 0x40(%rsi), %rdi
+[000] 677203.751913565:  ffffffffa704624d               mov %rax, %rdx
+[000] 677203.751913565:  ffffffffa7046250               shr $0x20, %rdx
+[000] 677203.751913565:  ffffffffa7046254               xsaves64 (%rdi)
+[000] 677203.751913565:  ffffffffa7046258               xor %edi, %edi
+[000] 677203.751913565:  ffffffffa704625a               movq 0x10(%rcx), %rax
+[000] 677203.751913565:  ffffffffa704625e               testb  $0xc0, 0x240(%rax)
+[000] 677203.751913636:  ffffffffa7046265               jz 0xffffffffa7046285    IPC: 0.16 (14/85)
+...
 
-Sadly, I see from the commit message that apparently the next stage is
-going to involve zoned storage. Now *there* is a technology that seems
-to be a complete failure, brought to us by the same kind of failed
-hardware people who tried to convince us that we should care about
-64kB pages in SSD's.
 
-Oh well. With enough thrust, even a pig will fly. I suspect that's the
-motivating factor behind all those zoned storage things too.
+So it took 85 cycles here.
 
-                Linus
+(it includes a few extra instructions, but I bet they're less than what
+ftrace adds. This example is for XSAVE, but can be similarly extended
+for XRSTOR)
+
+-Andi
