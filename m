@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8507F7909A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 23:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82E477909A8
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 23:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234546AbjIBVGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 17:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
+        id S234609AbjIBVGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 17:06:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjIBVGa (ORCPT
+        with ESMTP id S229590AbjIBVGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 17:06:30 -0400
+        Sat, 2 Sep 2023 17:06:33 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54C6AB
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 14:06:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2328AAB
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 14:06:30 -0700 (PDT)
 Received: from localhost (unknown [81.18.92.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: cristicc)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9EF9B6607285;
-        Sat,  2 Sep 2023 22:06:25 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id CDFEA66072B5;
+        Sat,  2 Sep 2023 22:06:28 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693688785;
-        bh=OwodNzQow81cioZ/x0NFsPD4e4UBN2L+BF3m/k/eTjY=;
-        h=From:To:Cc:Subject:Date:From;
-        b=IuNe7fdRvYqd600PCKP9mxCOAAYRUEXAC9kmN9WRd3HtS/cl/gi7nOaLX0tEgnjvi
-         V4b1wpNzZOKpHS3iMBK87N8LUFSObzRIh/LyAT3mHbYyy96jd4FDKZr5qSFMMbQP3n
-         gwyKEyxpiH6g/i/0dLvgui10KydGZOR2v7QIQXSMjHp+BB8guBkNMhkQi9PDKc1YF0
-         7P7ynyUi4Mun29FBQOv9KyPTPusDwD07eNMNGb6X70GqqziexbMGNtAniodCiZEk7A
-         uoGKYG8RjeMmsP9/2uoYxDxhVAvdpDnLr/W85TV/GKVO/3TEBJ0BEFqTJKEVDZnYYu
-         MLOB46NUBChvQ==
+        s=mail; t=1693688789;
+        bh=pfmTebOGpABzh4OF3FG1M+nz4wpY8/aJTMADovLWHU0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=C3wnYF8vYhZ2lV9m4HpScGFPalTHpVL0T11sUFCevzhvp0TikBFINuTA8pBFBwIWo
+         NyKHvUITLRPBU/VnT5/odRtdndVEcM8ik4brEHaqWYW1/obvPbq6uV21qWHMa+nz6d
+         UwlgH5xv7M+2F2MMpqnnWCoVl+JsLSpkx8oj9XEIObcAeL4advE2KUAFrhlbCBAZU5
+         EA9JW8VJVXget0vc4ZKWVtyiwry+O5dT+oydZ7AvXBRH/dqWJXyhUrH615BKO8UPnE
+         jYj5qWhbaQlfBW0J5iQ6DoeC2WKuuD0NNertddz1jM4f3DLTfTA8jdNJMClwKjVf9P
+         1B/5JTRr7iTnA==
 From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
 To:     James Schulman <james.schulman@cirrus.com>,
         David Rhodes <david.rhodes@cirrus.com>,
@@ -44,10 +44,12 @@ To:     James Schulman <james.schulman@cirrus.com>,
         Charles Keepax <ckeepax@opensource.cirrus.com>
 Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
         linux-kernel@vger.kernel.org, kernel@collabora.com
-Subject: [PATCH 0/9] Improve CS35l41 ALSA SoC audio driver
-Date:   Sun,  3 Sep 2023 00:06:12 +0300
-Message-ID: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+Subject: [PATCH 1/9] ASoC: cs35l41: Handle mdsync_down reg write errors
+Date:   Sun,  3 Sep 2023 00:06:13 +0300
+Message-ID: <20230902210621.1184693-2-cristian.ciocaltea@collabora.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -59,30 +61,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series contains several fixes and improvements to 
-the CS35l41 audio codec driver.
+The return code of regmap_multi_reg_write() call related to "MDSYNC
+down" sequence is shadowed by the subsequent
+wait_for_completion_timeout() invocation, which is expected to time
+timeout in case the write operation failed.
 
-It has been verified on Valve's Steam Deck.
+Let cs35l41_global_enable() return the correct error code instead of
+-ETIMEDOUT.
 
-Cristian Ciocaltea (9):
-  ASoC: cs35l41: Handle mdsync_down reg write errors
-  ASoC: cs35l41: Handle mdsync_up reg write errors
-  ASoC: cs35l41: Initialize completion object before requesting IRQ
-  ASoC: cs35l41: Fix broken shared boost activation
-  ASoC: cs35l41: Rename pll_lock to pll_lock_done
-  ASoC: cs35l41: Make use of dev_err_probe()
-  ASoC: cs35l41: Verify PM runtime resume errors in IRQ handler
-  ASoC: cs35l41: Use modern pm_ops
-  ASoC: cs35l41: Use devm_pm_runtime_enable()
+Fixes: f5030564938b ("ALSA: cs35l41: Add shared boost feature")
+Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+---
+ sound/soc/codecs/cs35l41-lib.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- include/sound/cs35l41.h        |   5 +-
- sound/soc/codecs/cs35l41-i2c.c |  11 ++-
- sound/soc/codecs/cs35l41-lib.c |  83 ++++++++++++++++------
- sound/soc/codecs/cs35l41-spi.c |  11 ++-
- sound/soc/codecs/cs35l41.c     | 121 ++++++++++++++++++++++-----------
- sound/soc/codecs/cs35l41.h     |   4 +-
- 6 files changed, 158 insertions(+), 77 deletions(-)
-
+diff --git a/sound/soc/codecs/cs35l41-lib.c b/sound/soc/codecs/cs35l41-lib.c
+index 4ec306cd2f47..a018f1d98428 100644
+--- a/sound/soc/codecs/cs35l41-lib.c
++++ b/sound/soc/codecs/cs35l41-lib.c
+@@ -1243,7 +1243,7 @@ int cs35l41_global_enable(struct device *dev, struct regmap *regmap, enum cs35l4
+ 		cs35l41_mdsync_down_seq[2].def = pwr_ctrl1;
+ 		ret = regmap_multi_reg_write(regmap, cs35l41_mdsync_down_seq,
+ 					     ARRAY_SIZE(cs35l41_mdsync_down_seq));
+-		if (!enable)
++		if (ret || !enable)
+ 			break;
+ 
+ 		if (!pll_lock)
 -- 
 2.41.0
 
