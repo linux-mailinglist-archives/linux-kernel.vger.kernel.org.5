@@ -2,106 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37353790902
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 19:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D94FB790915
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjIBRp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 13:45:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36024 "EHLO
+        id S230302AbjIBSPw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 14:15:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230206AbjIBRp6 (ORCPT
+        with ESMTP id S229482AbjIBSPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 13:45:58 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE39DB6;
-        Sat,  2 Sep 2023 10:45:53 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,222,1688396400"; 
-   d="scan'208";a="178508459"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 03 Sep 2023 02:45:52 +0900
-Received: from localhost.localdomain (unknown [10.226.92.16])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 41243403C476;
-        Sun,  3 Sep 2023 02:45:49 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH] eeprom: at24: Drop at24_get_chip_data()
-Date:   Sat,  2 Sep 2023 18:45:47 +0100
-Message-Id: <20230902174547.71316-1-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 2 Sep 2023 14:15:51 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E0BE42
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 11:15:46 -0700 (PDT)
+Received: from [192.168.2.205] (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id EC29C6607285;
+        Sat,  2 Sep 2023 19:15:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693678544;
+        bh=FyCtyr6Dwvn+sc0weVs44aNx+SOUMWKSFsC6ZkrwZvw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=i/sTohqUQLU0kuEePtR6JuLlMa0Hy6AMJMbLi94fbE8Y9J9Rqb7Bf/Fm/9sduYJwE
+         yFEikC6EgJiNDjK2AZavhcV+lN2yOJWOrrwrMjOxcYlimbFs84OLLAWXlJRRxUW516
+         KKvkFLWTzda0ojw2CT7AMqeUFI1e5ZXMXfK7srfyVDHMGu+1pWhUgWUdpJOCjeBU15
+         /34Mkv2C1BJEQsZE5dxDEHAgtITx5OZnIhgmYzSzaNPO53Yo2PpgFhkzFjks2aIpKx
+         T87ZjlZwKcv/3sSjF9r0vxh1xRTCohX1PjD0mrrIAN9/7pitpSbweCiq9F5hS8pVai
+         HcP9XPNwwdYWA==
+Message-ID: <a587b4db-c3a8-654b-a043-b698f1d98bf6@collabora.com>
+Date:   Sat, 2 Sep 2023 21:15:39 +0300
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v15 01/23] drm/shmem-helper: Fix UAF in error path when
+ freeing SGT of imported GEM
+Content-Language: en-US
+To:     Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org,
+        intel-gfx@lists.freedesktop.org
+References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
+ <20230827175449.1766701-2-dmitry.osipenko@collabora.com>
+ <20230828131647.18888896@collabora.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <20230828131647.18888896@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace at24_get_chip_data()->i2c_get_match_data() as it is
-redundant.
+On 8/28/23 14:16, Boris Brezillon wrote:
+> On Sun, 27 Aug 2023 20:54:27 +0300
+> Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+> 
+>> Freeing drm-shmem GEM right after creating it using
+>> drm_gem_shmem_prime_import_sg_table() frees SGT of the imported dma-buf
+>> and then dma-buf frees this SGT second time.
+>>
+>> The v3d_prime_import_sg_table() is example of a error code path where
+>> dma-buf's SGT is freed by drm-shmem and then it's freed second time by
+>> dma_buf_unmap_attachment() in drm_gem_prime_import_dev().
+>>
+>> Add drm-shmem GEM flag telling that this is imported SGT shall not be
+>> treated as own SGT, fixing the use-after-free bug.
+>>
+>> Cc: stable@vger.kernel.org
+>> Fixes: 2194a63a818d ("drm: Add library for shmem backed GEM objects")
+>> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+>> ---
+>>  drivers/gpu/drm/drm_gem_shmem_helper.c | 3 ++-
+>>  include/drm/drm_gem_shmem_helper.h     | 7 +++++++
+>>  2 files changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> index a783d2245599..78d9cf2355a5 100644
+>> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+>> @@ -141,7 +141,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>>  
+>>  	if (obj->import_attach) {
+>>  		drm_prime_gem_destroy(obj, shmem->sgt);
+>> -	} else {
+>> +	} else if (!shmem->imported_sgt) {
+>>  		dma_resv_lock(shmem->base.resv, NULL);
+>>  
+>>  		drm_WARN_ON(obj->dev, shmem->vmap_use_count);
+>> @@ -758,6 +758,7 @@ drm_gem_shmem_prime_import_sg_table(struct drm_device *dev,
+>>  		return ERR_CAST(shmem);
+>>  
+>>  	shmem->sgt = sgt;
+>> +	shmem->imported_sgt = true;
+> 
+> 
+> I feel like adding more fields that can be used to do the is_imported()
+> check is going to be even more confusing. Can we instead have
+> 
+> 	/* drm_gem_shmem_prime_import_sg_table() can be called from a
+> 	 * driver specific ->import_sg_table() implementations that
+> 	 * have extra failable initialization steps. Assign
+> 	 * drm_gem_object::import_attach here (even though it's
+> 	 * assigned in drm_gem_prime_import_dev()), so we don't end up
+> 	 * with driver error paths calling drm_gem_shmem_free() with an
+> 	 * imported sg_table assigned to drm_gem_shmem_object::sgt and
+> 	 * drm_gem_object::import_attach left uninitialized.
+> 	 */
+> 	shmem->base.import_attach = attach;
+> 
+> here?
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/misc/eeprom/at24.c | 32 +++-----------------------------
- 1 file changed, 3 insertions(+), 29 deletions(-)
+AFAICT, this is not going to work because obj->import_attach will be
+released by drm_prime core by the time drm_gem_shmem_free() is invoked
+and drm_gem_shmem_free() uses obj->import_attach as well. I'll keep this
+patch around unless there will be other suggestions. To me the flag is
+good enough, I'll add a clarifying comment to the code in v16.
 
-diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
-index dbbf7db4ff2f..af83aca452b7 100644
---- a/drivers/misc/eeprom/at24.c
-+++ b/drivers/misc/eeprom/at24.c
-@@ -509,32 +509,6 @@ static int at24_write(void *priv, unsigned int off, void *val, size_t count)
- 	return 0;
- }
- 
--static const struct at24_chip_data *at24_get_chip_data(struct device *dev)
--{
--	struct device_node *of_node = dev->of_node;
--	const struct at24_chip_data *cdata;
--	const struct i2c_device_id *id;
--
--	id = i2c_match_id(at24_ids, to_i2c_client(dev));
--
--	/*
--	 * The I2C core allows OF nodes compatibles to match against the
--	 * I2C device ID table as a fallback, so check not only if an OF
--	 * node is present but also if it matches an OF device ID entry.
--	 */
--	if (of_node && of_match_device(at24_of_match, dev))
--		cdata = of_device_get_match_data(dev);
--	else if (id)
--		cdata = (void *)id->driver_data;
--	else
--		cdata = acpi_device_get_match_data(dev);
--
--	if (!cdata)
--		return ERR_PTR(-ENODEV);
--
--	return cdata;
--}
--
- static int at24_make_dummy_client(struct at24_data *at24, unsigned int index,
- 				  struct i2c_client *base_client,
- 				  struct regmap_config *regmap_config)
-@@ -601,9 +575,9 @@ static int at24_probe(struct i2c_client *client)
- 	i2c_fn_block = i2c_check_functionality(client->adapter,
- 					       I2C_FUNC_SMBUS_WRITE_I2C_BLOCK);
- 
--	cdata = at24_get_chip_data(dev);
--	if (IS_ERR(cdata))
--		return PTR_ERR(cdata);
-+	cdata = i2c_get_match_data(client);
-+	if (!cdata)
-+		return -ENODEV;
- 
- 	err = device_property_read_u32(dev, "pagesize", &page_size);
- 	if (err)
 -- 
-2.25.1
+Best regards,
+Dmitry
 
