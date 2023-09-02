@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5B697908F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 19:33:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED8857908EA
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 19:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229865AbjIBRdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 13:33:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
+        id S229767AbjIBRcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 13:32:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjIBRdR (ORCPT
+        with ESMTP id S229436AbjIBRcq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 13:33:17 -0400
+        Sat, 2 Sep 2023 13:32:46 -0400
 Received: from mail.z3ntu.xyz (mail.z3ntu.xyz [128.199.32.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FD0130;
-        Sat,  2 Sep 2023 10:33:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D025A4;
+        Sat,  2 Sep 2023 10:32:42 -0700 (PDT)
 Received: from [192.168.178.23] (k10064.upc-k.chello.nl [62.108.10.64])
-        by mail.z3ntu.xyz (Postfix) with ESMTPSA id A1E1ED074A;
-        Sat,  2 Sep 2023 17:32:39 +0000 (UTC)
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 4073AD0764;
+        Sat,  2 Sep 2023 17:32:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=z3ntu.xyz; s=z3ntu;
-        t=1693675959; bh=MIfk0rla9KfQTZEjEKwE98+NrQUedgBa/nUkrZnJh1E=;
-        h=From:Subject:Date:To:Cc;
-        b=NmcejQ9HYgXVepN9sGzwVgKxPQgzvOenD1at0u6maZsjN9xfZy1FjZoVoipXdFgo/
-         OAzV6UnS1YpXrTns6uD7eqAk30Fz/0wkfe11RVLqYY0B038EE1vRKmirgf4PLvP22/
-         3kxkV5lv2uBH6WhZxYez0OfQiDKlFW/UizujxRr4=
+        t=1693675960; bh=29unbUdSjssR6lCbO5AvxRnTJpcHD6ixkyfP951p+1A=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc;
+        b=jniO2c/id9WRq0ST9jXwjuxGLn6z9r95u3jYdW40Uggp50sfJVDKyrQoos0Sc+wY1
+         z/fY3wllu6+KvUMfxEufOswPbkTv8NVNp1sqB2Dvnr8GSkVZPtvDgkI7pr5s3ztTaX
+         YjLueZebKmuXjRdY9L2vxd1dyub0Ul83ZA4zKQas=
 From:   Luca Weiss <luca@z3ntu.xyz>
-Subject: [PATCH 0/2] Add blsp1_i2c6 and blsp1_uart2 to MSM8226 SoC
-Date:   Sat, 02 Sep 2023 19:32:23 +0200
-Message-Id: <20230902-msm8226-i2c6-v1-0-9632b8916789@z3ntu.xyz>
+Date:   Sat, 02 Sep 2023 19:32:24 +0200
+Subject: [PATCH 1/2] pinctrl: qcom: msm8226: Add blsp_i2c6 function
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAKdx82QC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDI2MDSwMj3dziXAsjIzPdTKNkM12DNPMUc5OUxLREiyQloJaCotS0zAqwcdG
- xtbUANu7RHF4AAAA=
+Message-Id: <20230902-msm8226-i2c6-v1-1-9632b8916789@z3ntu.xyz>
+References: <20230902-msm8226-i2c6-v1-0-9632b8916789@z3ntu.xyz>
+In-Reply-To: <20230902-msm8226-i2c6-v1-0-9632b8916789@z3ntu.xyz>
 To:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
@@ -46,20 +45,20 @@ Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         Luca Weiss <luca@z3ntu.xyz>
 X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=669; i=luca@z3ntu.xyz;
- h=from:subject:message-id; bh=MIfk0rla9KfQTZEjEKwE98+NrQUedgBa/nUkrZnJh1E=;
- b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBk83GxgyY3Ma4897J4Cidfz0V3l6kb9UcChVj3k
- G313YhOKKeJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZPNxsQAKCRBy2EO4nU3X
- VohgEAC1SnpotLH+kqVNteXXhdKopKrL+aP54oMaNqapdrg9tPKco3VwAkElpp3y0aO4cJaqPd8
- sbrIPGVYxaCRsM48ip49yqhp9zgJOa0p2kGdnK2K5N8Js/+peJD3sJaqyG8h3RvodQDtFLzdlEP
- mj3cbSEkxGVNOP9o9qaFZ/JnXKUrmfLgXD6oxm6CJQiYul1fWPOclQrNEG+7digy0u8TraKAnsS
- Mb4OxD2xns2SravIumC5zU1YIYur+H7aUuJS7l+6hOJd4OrXaJpkSHmp2UIlrk/h5mTkCaUn9Rs
- 1z+TAxhbZuDoipnC8Kuq2hGJRHxsO3oWEN0RDOe4tuuBkPuqPl59DbQEBXN7kZLVO0XzsOdOzsF
- ncgP2qDK/yJ02FDnmrApgxiuLUWmMqjXG90wu/J0C8mV8do7SM4+M+Q9hO7bPF5m/szk7EL/bH5
- 34OZGHZ8qAxzyNVJhBU5GS4P9gJgg9Wwa/5o4rN2NPfVoWwgfLvKXTG50F4DZm+/xTEzRxrNaPx
- /KK78LaHoZB1biYkJ7RGjdpQMA+9Uw9y4ba/xIS2uknsqwHPU9f/TJy5PCEJp2/dUAO+ddRhbcK
- 1cZBN74X30J5zwR0B/fQxat5/se0qULW9LpXhvhQFB0nPJEkOM2fXsxulg79zzzUJcNC1SpCm0u
- hI6LwcyoR7YIOLw==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1885; i=luca@z3ntu.xyz;
+ h=from:subject:message-id; bh=29unbUdSjssR6lCbO5AvxRnTJpcHD6ixkyfP951p+1A=;
+ b=owEBbQKS/ZANAwAIAXLYQ7idTddWAcsmYgBk83G1izVHNETlovIhCBg9yuJuS/VWWe7y/qoD+
+ Y0bxBzruKWJAjMEAAEIAB0WIQQ5utIvCCzakboVj/py2EO4nU3XVgUCZPNxtQAKCRBy2EO4nU3X
+ Vq9cD/9W2tmntRL/M3zo7gNixWZzbIZqVRJibbPPBBmtJkAKx65I/EwqqgLwi2AE6FSVC5SC6IO
+ VGU93GmywZ8Dz+H34dFCicEWy9Xj/XP1pn4/+9JQFKIw42pcOG0DZlsQe+tVQGjywvUSgrK2u5a
+ r56FF2FJyWhrPfZMef2FBpSfTCdIi7mcFLxIRNA2wMflY3R7A5PPho6GLVoUuaqnNSijprcCl6R
+ ycl/r10Jw+gGOZc2hvZr7BRXEI2SgUpJikJdQ6KmDmeKLsysqBrTJj0bGupCNhRa+msWntqwtOS
+ w9NgthxkX52ezoLOPnSzewxe1V0NNBFvHb1fFw1/pZHJjLAar+WlZmyKkS+CO2FtZYLeUfZX3Aj
+ sSW1mbAl2t6o2fm3COSy3Y2Oa0yTcZpa/xGg/JEqt0eG2EDgakcAo6J9dcxRXZ84Qubc8mQw8eN
+ I9SU40mJv/TWoioiVFch2xSqjpd8CCoeZwo9vZeGhPzxTCAA9TLmJTXmFsssYo7xrwP8dTOevdA
+ GrQA7DtjqcabKBl1+7bNHPsZw+zJpSFWuheJilY26rK/MXjaYGRGgHlcH+7X9nuxSk+Ag1OgByL
+ hYGvhGngYraT4gRCV8GlBliLV9OTIyLzZYyzdDinOres5GPO4hI81BEUtoi3DcAXUSA6BXaOPLU
+ PeL7kfJzXbPEzVA==
 X-Developer-Key: i=luca@z3ntu.xyz; a=openpgp;
  fpr=BD04DA24C971B8D587B2B8D7FAF69CF6CD2D02CD
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -71,23 +70,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the I2C bus and UART interface found on the MSM8226. For the I2C bus
-we also first need to add the pinctrl function in the driver.
+On GPIO22 and GPIO23 there is another I2C bus. Add the function for it.
 
 Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 ---
-Luca Weiss (2):
-      pinctrl: qcom: msm8226: Add blsp_i2c6 function
-      ARM: dts: qcom: msm8226: Add blsp1_i2c6 and blsp1_uart2
+ drivers/pinctrl/qcom/pinctrl-msm8226.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
- arch/arm/boot/dts/qcom/qcom-msm8226.dtsi | 29 +++++++++++++++++++++++++++++
- drivers/pinctrl/qcom/pinctrl-msm8226.c   |  8 ++++++--
- 2 files changed, 35 insertions(+), 2 deletions(-)
----
-base-commit: 7c2878be573282a9961c359b806ccf70afe1a6b6
-change-id: 20230902-msm8226-i2c6-0f7d74dafa8b
+diff --git a/drivers/pinctrl/qcom/pinctrl-msm8226.c b/drivers/pinctrl/qcom/pinctrl-msm8226.c
+index 994619840a70..da964eebd313 100644
+--- a/drivers/pinctrl/qcom/pinctrl-msm8226.c
++++ b/drivers/pinctrl/qcom/pinctrl-msm8226.c
+@@ -336,6 +336,7 @@ enum msm8226_functions {
+ 	msm_mux_blsp_i2c3,
+ 	msm_mux_blsp_i2c4,
+ 	msm_mux_blsp_i2c5,
++	msm_mux_blsp_i2c6,
+ 	msm_mux_blsp_spi1,
+ 	msm_mux_blsp_spi2,
+ 	msm_mux_blsp_spi3,
+@@ -436,6 +437,8 @@ static const char * const blsp_spi5_groups[] = {
+ 	"gpio16", "gpio17", "gpio18", "gpio19"
+ };
+ 
++static const char * const blsp_i2c6_groups[] = { "gpio22", "gpio23" };
++
+ static const char * const cci_i2c0_groups[] = { "gpio29", "gpio30" };
+ 
+ static const char * const cam_mclk0_groups[] = { "gpio26" };
+@@ -459,6 +462,7 @@ static const struct pinfunction msm8226_functions[] = {
+ 	MSM_PIN_FUNCTION(blsp_i2c3),
+ 	MSM_PIN_FUNCTION(blsp_i2c4),
+ 	MSM_PIN_FUNCTION(blsp_i2c5),
++	MSM_PIN_FUNCTION(blsp_i2c6),
+ 	MSM_PIN_FUNCTION(blsp_spi1),
+ 	MSM_PIN_FUNCTION(blsp_spi2),
+ 	MSM_PIN_FUNCTION(blsp_spi3),
+@@ -507,8 +511,8 @@ static const struct msm_pingroup msm8226_groups[] = {
+ 	PINGROUP(19,  blsp_spi5, blsp_uart5, blsp_i2c5, NA, NA, NA, NA),
+ 	PINGROUP(20,  NA, NA, NA, NA, NA, NA, NA),
+ 	PINGROUP(21,  NA, NA, NA, NA, NA, NA, NA),
+-	PINGROUP(22,  NA, NA, NA, NA, NA, NA, NA),
+-	PINGROUP(23,  NA, NA, NA, NA, NA, NA, NA),
++	PINGROUP(22,  NA, NA, blsp_i2c6, NA, NA, NA, NA),
++	PINGROUP(23,  NA, NA, blsp_i2c6, NA, NA, NA, NA),
+ 	PINGROUP(24,  NA, NA, NA, NA, NA, NA, NA),
+ 	PINGROUP(25,  NA, NA, NA, NA, NA, NA, NA),
+ 	PINGROUP(26,  cam_mclk0, NA, NA, NA, NA, NA, NA),
 
-Best regards,
 -- 
-Luca Weiss <luca@z3ntu.xyz>
+2.42.0
 
