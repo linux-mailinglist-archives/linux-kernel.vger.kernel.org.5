@@ -2,179 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3842A7905CA
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 09:35:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 089C37905CC
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 09:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351730AbjIBHfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 03:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40798 "EHLO
+        id S1351735AbjIBHh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 03:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230513AbjIBHfU (ORCPT
+        with ESMTP id S240091AbjIBHh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 03:35:20 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25DF290;
-        Sat,  2 Sep 2023 00:35:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1693640115;
-        bh=9xMdGiESgscmhwAbix3Q4d0UwO37JeCDRpwrHEAP68I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PBIuehy0Z3tktPa/0j8H/2O2yz6nKtakM5Dyhswz5zdjBnQk4m5zpsz3QYD4DlAAZ
-         9NzZ9SECeclDoTpJ7Fe7LGNaDf/7LSVTpHKUizktyYqdDulZ5R9CBCYVDJQD3HgiSw
-         ycdJkAhkv9nZNqs9P5mrP2f8PhZn5BVtgjZvjUGk=
-Date:   Sat, 2 Sep 2023 09:35:14 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-usb@vger.kernel.org
-Subject: Re: [PATCH v3] hwmon: add POWER-Z driver
-Message-ID: <2bdf5aa0-9fe6-40b1-bec2-3dedc9094949@t-8ch.de>
-References: <20230902-powerz-v3-1-ed78d450c6c3@weissschuh.net>
- <61fae328-e56d-f999-1613-160987dcefa6@roeck-us.net>
+        Sat, 2 Sep 2023 03:37:28 -0400
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93C290
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 00:37:25 -0700 (PDT)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-414b802a399so6591cf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 00:37:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693640245; x=1694245045; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tGzJAOBv39wC+eBwHXRCdW6LDCDBMBeVwYp5p5ZAHp4=;
+        b=cHiAt8u0yxeVemDZcNHcIo1a1hbPymDF7Rklnp5uO0z0Ck7zAdHHX4Sl3QuQs9lo/a
+         C9zVBBth3J4oWj0i0xTkZGdxbSymV/q4ageQHqesI4wRWRsG9vaJPCZOp9sjz/5lWazP
+         hkQn9R6QG74xPyWXxXBROSG4qHbIxIYVWOqCgzAx919VHRKRHl+hJXgqzvQgr/+j2bqi
+         E25dsc9B3mEX+zWxjQ1IAj7Lnd1tpkUPrFpR0nKQBYE8lVZGXOmjow3SOUXhlvGnhQs2
+         0rEflR1vQzkckskdyJSGytDhroKM3Z1R0VvSKPft4AwCMxoQkjt4iMzBcQS9hD8GMVyT
+         t26A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693640245; x=1694245045;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tGzJAOBv39wC+eBwHXRCdW6LDCDBMBeVwYp5p5ZAHp4=;
+        b=Dyfq5JcQyAqYPoXYErzALKWukkm4TPloKJOnLEIrYgoG+iRkWcZeczz4QCvGxC0UTO
+         XIoe6FLrB8tuukt79yT+v4AzamAu1TciG0ApVoNCsCRWCvEn9ZSLHZYeMktKymdfk2Zg
+         p62TiD7YwoD16eAc1KVnFpBuE6IikG20EqrkRd5v2TIq64oPeDU6mP66GTU0Rx3cl2X/
+         KSBBCMK9fdWexxzgOzljgz90SxokxFhMI3WalMu8gh+nnjsbXRlFW2xpP0EXV7wQanPe
+         GbK87uygphcL39XcXXl9f6zp1/GGo104OL6t9UeJltpEuSb8V+ukpG6C69RbXRw4+NnU
+         9GSw==
+X-Gm-Message-State: AOJu0YxzRH2/g6Q2DZpkhkV6bY7ZU43Bf7wQk81aRLhTVMd4ktnSmJ45
+        OY+AUmLeLwMoybiKr5wMEfdsPs0rUfJFjWyFajPvxzWz2j1l5IB2kDs=
+X-Google-Smtp-Source: AGHT+IElCtXsEuqc1xIgnbAqRpIeaZJHksxJD/VhGd3OpQEYv8Tb+4JLhJvWWlP8G9VUHoqJzbp8NIqn7VYR3Qykng4=
+X-Received: by 2002:a05:622a:c6:b0:403:b1d0:2f0a with SMTP id
+ p6-20020a05622a00c600b00403b1d02f0amr142084qtw.28.1693640244542; Sat, 02 Sep
+ 2023 00:37:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <61fae328-e56d-f999-1613-160987dcefa6@roeck-us.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230902071631.204529-1-renmingshuai@huawei.com>
+In-Reply-To: <20230902071631.204529-1-renmingshuai@huawei.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Sat, 2 Sep 2023 09:37:13 +0200
+Message-ID: <CANn89iJ2aFYjQp639O6mDj7vhiNV5w_EVsMxM2jQGBHfHbOtOQ@mail.gmail.com>
+Subject: Re: net/sched: Discuss about adding a new kernel parameter to set the
+ default value of flow_limit
+To:     r30009329 <renmingshuai@huawei.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhs@mojatatu.com, xiyou.wangcong@gmail.com, davem@davemloft.net,
+        jiri@resnulli.us, yanan@huawei.com, liaichun@huawei.com,
+        chenzhen126@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-01 17:30:04-0700, Guenter Roeck wrote:
-> On 9/1/23 15:36, Thomas Weißschuh wrote:
-> [..]
+On Sat, Sep 2, 2023 at 9:16=E2=80=AFAM r30009329 <renmingshuai@huawei.com> =
+wrote:
+>
+> How about adding a new kernel parameter to set the default value of flow_=
+limit
+>  when the default qidsc is set to fq? Although We can use the tc to modif=
+y the
+>  default value of flow_limit, it is more convenient to use a kernel param=
+eter to
+>  set the default value, especially in scenarios where the tc command is
+>  inconvenient or cannot be used.
 
-> > diff --git a/drivers/hwmon/powerz.c b/drivers/hwmon/powerz.c
-> > new file mode 100644
-> > index 000000000000..6209339e5414
-> > --- /dev/null
-> > +++ b/drivers/hwmon/powerz.c
+Hmm, can you define 'inconvenient' ?
+It seems to be an issue with the tool or the toolchain ?
+The 'cannot be used' argument seems strange to me.
+If I understand correctly, you want a generic mechanism for all qdisc
+default parameters,
+in case the 'default qdisc' is XXX instead of pfifo_fast.
 
->[..]
+kernel parameters should be reserved to specific cases when
+programmers have no other way.
 
-> > +static int powerz_read_string(struct device *dev, enum hwmon_sensor_types type,
-> > +			      u32 attr, int channel, const char **str)
-> > +{
-> > +	if (type == hwmon_curr && attr == hwmon_curr_label) {
-> > +		*str = "IBUS";
-> > +	} else if (type == hwmon_in && attr == hwmon_in_label) {
-> > +		if (channel == 0)
-> > +			*str = "VBUS";
-> > +		else if (type == hwmon_in && attr == hwmon_in_label && channel == 1)
-> > +			*str = "VCC1";
-> > +		else if (type == hwmon_in && attr == hwmon_in_label && channel == 2)
-> > +			*str = "VCC2";
-> > +		else if (type == hwmon_in && attr == hwmon_in_label && channel == 3)
-> > +			*str = "VDP";
-> > +		else if (type == hwmon_in && attr == hwmon_in_label && channel == 4)
-> > +			*str = "VDM";
-> > +		else if (type == hwmon_in && attr == hwmon_in_label && channel == 5)
-> > +			*str = "VDD";
-> 
-> All those repeated "type == hwmon_in && attr == hwmon_in_label" checks are
-> unnecessary. Note that this could be much simpler written as
-> 
-> 	const char *in_labels[] = {
-> 		"VBUS", "VCC1", "VCC2", "VDP", "VDM", "VDD"
-> 	};
-> 	...
-> 	*str = in_labels[channel];
-> 
-> but I'll leave that up to you.
-
-I prefer the current style for consistency.
-But I dropped all the redundant comparisions of type and attr.
-
-> [..]
-
-> > +static int powerz_read(struct device *dev, enum hwmon_sensor_types type,
-> > +		       u32 attr, int channel, long *val)
-> > +{
-> > +	struct usb_interface *intf = to_usb_interface(dev->parent);
-> > +	struct usb_device *udev = interface_to_usbdev(intf);
-> > +	struct powerz_priv *priv = usb_get_intfdata(intf);
-> > +	struct powerz_sensor_data *data;
-> > +	int ret;
-> > +
-> > +	if (!priv)
-> > +		return -EIO; /* disconnected */
-> > +
-> > +	mutex_lock(&priv->mutex);
-> > +	ret = powerz_read_data(udev, priv);
-> > +	if (ret)
-> > +		goto out;
-> > +
-> > +	data = (struct powerz_sensor_data *)priv->transfer_buffer;
-> > +
-> > +	if (type == hwmon_curr) {
-> > +		if (attr == hwmon_curr_input)
-> > +			*val = ((s32)le32_to_cpu(data->I_bus)) / 1000;
-> > +		else if (attr == hwmon_curr_average)
-> > +			*val = ((s32)le32_to_cpu(data->I_bus_avg)) / 1000;
-> 
-> Just wondering ... does this device really report current in micro-amps ?
-
-Yes, the device has its own display and the values on the display and
-in hwmon match.
-
-> [..]
-
-> > +		else
-> > +			ret = -EOPNOTSUPP;
-> > +	} else if (type == hwmon_in) {
-> > +		if (attr == hwmon_in_input) {
-> > +			if (channel == 0)
-> > +				*val = le32_to_cpu(data->V_bus) / 1000;
-> 
-> and voltage in micro-volt ? Just asking, because I don't think I have
-> ever seen that.
-
-Yes, the same as for the current.
-
-> > +			else if (channel == 1)
-> > +				*val = le16_to_cpu(data->V_cc1) / 10;
-> > +			else if (channel == 2)
-> > +				*val = le16_to_cpu(data->V_cc2) / 10;
-> > +			else if (channel == 3)
-> > +				*val = le16_to_cpu(data->V_dp) / 10;
-> > +			else if (channel == 4)
-> > +				*val = le16_to_cpu(data->V_dm) / 10;
-> > +			else if (channel == 5)
-> > +				*val = le16_to_cpu(data->V_dd) / 10;
-> > +			else
-> > +				ret = -EOPNOTSUPP;
-> > +		} else if (attr == hwmon_in_average && channel == 0) {
-> > +			*val = le32_to_cpu(data->V_bus_avg) / 1000;
-> > +		} else if (attr == hwmon_in_min && channel == 0) {
-> > +			*val = -POWERZ_MAX_VOLTAGE;
-> > +		} else if (attr == hwmon_in_max && channel == 0) {
-> > +			*val = POWERZ_MAX_VOLTAGE;
-> > +		} else {
-> 
-> There are more repeated checks (for channel == 0) here. Not that it matters,
-> because the constants should not bre reported anyway. Also, I do wonder if
-> hwmon_in_min == -POWERZ_MAX_VOLTAGE is really correct.
-
-Current can flow in both directions through the device. The sign
-indicates the direction. I'll add a note for that to the documentation.
-
-> 
-> > +			ret = -EOPNOTSUPP;
-> > +		}
-> > +	} else if (type == hwmon_temp && attr == hwmon_temp_input) {
-> > +		*val =
-> > +		    ((long)data->temp[1]) * 2000 +
-> > +		    ((long)data->temp[0]) * 1000 / 128;
-> 
-> I guess this is really ((data->temp[1] << 8) + data->temp[0]) * 1000 / 128,
-> which might be easier to understand, but good enough. The typecasts are
-> unnecessary, though.
-
-No, it's really "* 2000".
-
-Dropped the casts.
+rtnetlink is the way to go really, sorry !
