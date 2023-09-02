@@ -2,106 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2427907C2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 14:05:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8C87907C1
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 14:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352100AbjIBMFA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 08:05:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
+        id S1352085AbjIBMDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 08:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230424AbjIBMFA (ORCPT
+        with ESMTP id S230424AbjIBMDr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 08:05:00 -0400
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2070EE40
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 05:04:54 -0700 (PDT)
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-        by localhost (Postfix) with ESMTP id 4RdD9J3WZ7z9vPg;
-        Sat,  2 Sep 2023 14:04:52 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 2o1jhLsrF7Vt; Sat,  2 Sep 2023 14:04:52 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4RdD9J2b5Sz9vPf;
-        Sat,  2 Sep 2023 14:04:52 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4BDFB8B76C;
-        Sat,  2 Sep 2023 14:04:52 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id WoRFulWQ2RFb; Sat,  2 Sep 2023 14:04:52 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (unknown [192.168.235.22])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id F0FB88B763;
-        Sat,  2 Sep 2023 14:04:51 +0200 (CEST)
-Received: from PO20335.IDSI0.si.c-s.fr (localhost [127.0.0.1])
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.16.1) with ESMTPS id 3828aUdQ2428775
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Sat, 2 Sep 2023 10:36:30 +0200
-Received: (from chleroy@localhost)
-        by PO20335.IDSI0.si.c-s.fr (8.17.1/8.17.1/Submit) id 3828aTJx2428773;
-        Sat, 2 Sep 2023 10:36:29 +0200
-X-Authentication-Warning: PO20335.IDSI0.si.c-s.fr: chleroy set sender to christophe.leroy@csgroup.eu using -f
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH] powerpc/64e: Fix wrong test in __ptep_test_and_clear_young()
-Date:   Sat,  2 Sep 2023 10:36:25 +0200
-Message-ID: <2daed51109cbd7e7fbd26fab4e77fc6a27dee63e.1693643773.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.41.0
+        Sat, 2 Sep 2023 08:03:47 -0400
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4810E40
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 05:03:43 -0700 (PDT)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5007f3d3235so4961674e87.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 05:03:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693656222; x=1694261022; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4BZRTMHkYnC7287M6y0rXIQh3JyEG2rci4b+jc/XG6M=;
+        b=S0UMjDIcmlhaeeMZMiXoJFhiH93rGzJfsGeIT0WoRZOi4jATmXgSMAQWmHZeTJbC+T
+         o+Ldyzwkms/JxTSLeKaPQcNsNA9Hj+ejzts5DkyGQqEA6wuznuGIpu/DU2eudTd/lsfp
+         yeSzaTIJelc5WVysKS+GPA2Ej64Ly8An+agNl4wdUOqoWk17OW50puWigPcY8AcWXnLT
+         5FJ0JBQAMzv1wjQabSQpe87mofNcvsg4Ma1vDoC5k6CmF5UkZHvzYCH14YRrX0O+s87R
+         pszh4GJG68AuxG1adRzM4moA8mb4TfBeMvmyuSsBdma1twVqtmjTUj+5cPHZf2nMtHvZ
+         0gKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693656222; x=1694261022;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4BZRTMHkYnC7287M6y0rXIQh3JyEG2rci4b+jc/XG6M=;
+        b=avUQgWJG5KjD3h0cFZ89hA8zeQDc/tdClTenKwx2GcxXXqNltMrZuPJnFKDBHP1Hvn
+         aMNBpygX775rwjgjPlahrVe3YetloAycd7v1qDZyM9jB/hRrGUsfAVFgemwrr05e7ucu
+         Vlk0wJsfSVK5FJM4T7cjvpSqpwk3SUjCVTXdwKD4TjV7alDKEPr8NshS4DHIsbof9Tye
+         TW1dOlXtntYb9a4Wwt2uLl0kAWi+nVJBEZ5YXA502uXJ9VgDhyOIdN+L7TuMdLwH3pgc
+         hYrnAyVJsb/LCA+bNPt1fCL+CG2QnAXgDaesS/SNB4eMbnCe8cNII9tw4710EqjWbnKD
+         1iyQ==
+X-Gm-Message-State: AOJu0YzP+w9ZFdi/iQ7Eakdt6ZOBK+EuOfef3k0lJCfcVnboYd/mxsWL
+        z5Usv57cbqMBp1GyXwCIWYcZ0A==
+X-Google-Smtp-Source: AGHT+IFtDsgiqMRY9d3RxzQmCat8gXZsAoMc2U/DRmGn3ronZCFEDl6PjuMXxHogftDtjYRspyUOcA==
+X-Received: by 2002:ac2:5190:0:b0:4f9:51ac:41eb with SMTP id u16-20020ac25190000000b004f951ac41ebmr2652036lfi.16.1693656221487;
+        Sat, 02 Sep 2023 05:03:41 -0700 (PDT)
+Received: from [192.168.1.101] (abxi170.neoplus.adsl.tpnet.pl. [83.9.2.170])
+        by smtp.gmail.com with ESMTPSA id y8-20020ac255a8000000b004fe3512e26dsm960079lfg.291.2023.09.02.05.03.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Sep 2023 05:03:41 -0700 (PDT)
+Message-ID: <8257f7b3-dfb8-4683-85de-600f3b1ed54b@linaro.org>
+Date:   Sat, 2 Sep 2023 14:03:38 +0200
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693643784; l=1101; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=haMtYnjtQxVqMvpY7oYaDEZ6lXZKfbxyxvv2KRJklvA=; b=SMOZnYSVdFWxyfkaytiI7/rsWvWbYxB8jB+29qOUFgJx/M7ggTQnryPciLxfYvnq7aLVMgDQQ sKr0eLfYZaUCEHbvWyRaS6DBkrtq24gnGVmvyqAdEDjgfqiBvCPRXqR
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SPF_HELO_TEMPERROR autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/6] clk: qcom: Use HW_CTRL_TRIGGER flag to switch
+ video GDSC to HW mode
+Content-Language: en-US
+To:     Jagadeesh Kona <quic_jkona@quicinc.com>,
+        Abel Vesa <abel.vesa@linaro.org>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Kevin Hilman <khilman@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Taniya Das <tdas@qti.qualcomm.com>, linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Ajit Pandey <quic_ajipan@quicinc.com>,
+        Imran Shaik <quic_imrashai@quicinc.com>
+References: <20230816145741.1472721-1-abel.vesa@linaro.org>
+ <20230816145741.1472721-5-abel.vesa@linaro.org>
+ <2fc0d771-cee2-4826-a62a-56ed4bfad3a2@linaro.org>
+ <ZOXiUzxfs1cj3SWT@linaro.org>
+ <07e93a9d-69ac-41b7-aa21-b855b97bf801@linaro.org>
+ <ef1439f8-4a9b-53b4-34be-1229b39d2310@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <ef1439f8-4a9b-53b4-34be-1229b39d2310@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 45201c879469 ("powerpc/nohash: Remove hash related code from
-nohash headers.") replaced:
+On 28.08.2023 08:48, Jagadeesh Kona wrote:
+> 
+> 
+> On 8/26/2023 4:17 PM, Konrad Dybcio wrote:
+>> On 23.08.2023 12:41, Abel Vesa wrote:
+>>> On 23-08-16 19:56:46, Konrad Dybcio wrote:
+>>>> On 16.08.2023 16:57, Abel Vesa wrote:
+>>>>> From: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>>>>
+>>>>> The current HW_CTRL flag switches the video GDSC to HW control mode as
+>>>>> part of GDSC enable itself, instead of that use HW_CTRL_TRIGGER flag to
+>>>>> give consumer drivers more control and switch the GDSC mode as and when
+>>>>> required.
+>>>>>
+>>>>> HW_CTRL_TRIGGER flag allows consumer drivers to switch the video GDSC to
+>>>>> HW/SW control modes at runtime using dev_pm_genpd_set_hwmode API.
+>>>>>
+>>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+>>>>> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
+>>>>> ---
+>>>> Do we have any use for the HW_CTRL flag?
+>>>>
+>>>> Perhaps it should be renamed to HW_CTRL_ALWAYS?
+>>>>
+>>>> Or even better, *if and only if* that is necessary, add a common
+>>>> property like "always_hw_managed" to the genpd code?
+>>>
+>>> The HW_CTRL flag is still needed for the consumers that expect the GDSC
+>>> to be have the HW control bit set right after it gets enabled.
+>> Guess the correct question here would be.. Are there any?
+>>
+> 
+> Yes, Display GDSC(mdss_gdsc) is required to be controlled always in HW control mode when it is enabled.
+Oh really?
 
-  if ((pte_val(*ptep) & (_PAGE_ACCESSED | _PAGE_HASHPTE)) == 0)
-	return 0;
+Looking at msm-5.10 techpack, only the SDE RSC driver seems to
+trigger regulator fast mode (so, enabling gdsc hw_ctrl on downstream).
 
-By:
-
-  if (pte_young(*ptep))
-	return 0;
-
-But it should be:
-
-  if (!pte_young(*ptep))
-	return 0;
-
-Fix it.
-
-Fixes: 45201c879469 ("powerpc/nohash: Remove hash related code from nohash headers.")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/nohash/64/pgtable.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/powerpc/include/asm/nohash/64/pgtable.h b/arch/powerpc/include/asm/nohash/64/pgtable.h
-index 4ff6aa66b29a..6114a17ed234 100644
---- a/arch/powerpc/include/asm/nohash/64/pgtable.h
-+++ b/arch/powerpc/include/asm/nohash/64/pgtable.h
-@@ -154,7 +154,7 @@ static inline int __ptep_test_and_clear_young(struct mm_struct *mm,
- {
- 	unsigned long old;
- 
--	if (pte_young(*ptep))
-+	if (!pte_young(*ptep))
- 		return 0;
- 	old = pte_update(mm, addr, ptep, _PAGE_ACCESSED, 0, 0);
- 	return (old & _PAGE_ACCESSED) != 0;
--- 
-2.41.0
-
+Konrad
