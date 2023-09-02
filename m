@@ -2,67 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D31F79060D
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 10:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A8879061D
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 10:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351821AbjIBIO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 04:14:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51810 "EHLO
+        id S1351832AbjIBIWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 04:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53114 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229496AbjIBIOz (ORCPT
+        with ESMTP id S229475AbjIBIWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 04:14:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0078010F6
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 01:14:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693642493; x=1725178493;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=0j1VkS4CMOs9wlRLInadKgPZrsA0NV4dlxpjSSZbcsA=;
-  b=dgbPLQQJLZ5zVNfdqi9FJrZTWEpIIM+c2ccDZc2wNTO73tKbnyGhY+xI
-   waONd0goIFqvel6GJjTxGLMFEDWk/bHV7z6cnjX4pNAo8E1Ia+FdbR/dj
-   voUee75Q7Ui0gFtyJnaq0/L20haTt5gwTpQ/T9EmBEXDWZZcBDKJ4ME3B
-   yGAOAW1bqlQld15BF1P1TyOip3f8z0ZDbFInpzpfLFYFcy4yxRm12N+pV
-   rJpK6G+sK4eL+JH5HWzsMrw++b+JYEsbjc12KBu83MoOEJqxAq1y/1W7O
-   MacMvc75zDY2Q1m7vvwZP8vUayLKZ1PugQL+kHY1ZEjQyhfxRJZGJ7Izm
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="366587241"
-X-IronPort-AV: E=Sophos;i="6.02,222,1688454000"; 
-   d="scan'208";a="366587241"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2023 01:14:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="810314863"
-X-IronPort-AV: E=Sophos;i="6.02,222,1688454000"; 
-   d="scan'208";a="810314863"
-Received: from adurango-mobl1.ger.corp.intel.com (HELO intel.com) ([10.249.43.44])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2023 01:14:48 -0700
-Date:   Sat, 2 Sep 2023 10:14:45 +0200
-From:   Andi Shyti <andi.shyti@linux.intel.com>
-To:     Arthur Grillo <arthurgrillo@riseup.net>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        tales.aparecida@gmail.com, andrealmeid@riseup.net,
-        mairacanal@riseup.net,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andi Shyti <andi.shyti@linux.intel.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] drm/debugfs: Add inline to drm_debugfs_dev_init() to
- suppres -Wunused-function
-Message-ID: <ZPLu9b4aL4+a5Scy@ashyti-mobl2.lan>
-References: <20230901-debugfs-fix-unused-function-warning-v1-1-161dd0902975@riseup.net>
+        Sat, 2 Sep 2023 04:22:35 -0400
+Received: from relmlie5.idc.renesas.com (relmlor1.renesas.com [210.160.252.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 94F5DCC;
+        Sat,  2 Sep 2023 01:22:32 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,222,1688396400"; 
+   d="scan'208";a="174781788"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 02 Sep 2023 17:22:31 +0900
+Received: from localhost.localdomain (unknown [10.226.92.16])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id 633964006186;
+        Sat,  2 Sep 2023 17:22:29 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH] pinctrl: cy8c95x0: Simplify probe()
+Date:   Sat,  2 Sep 2023 09:22:25 +0100
+Message-Id: <20230902082225.8777-1-biju.das.jz@bp.renesas.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230901-debugfs-fix-unused-function-warning-v1-1-161dd0902975@riseup.net>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,17 +43,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arthur,
+Simpilfy probe() by replacing device_get_match_data() and id lookup for
+retrieving match data by i2c_get_match_data().
 
-On Fri, Sep 01, 2023 at 03:05:50PM -0300, Arthur Grillo wrote:
-> When CONFIG_DEBUG_FS is not set -Wunused-function warnings appear,
-> make the static function inline to suppress that.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309012114.T8Vlfaf8-lkp@intel.com/
-> Closes: https://lore.kernel.org/oe-kbuild-all/202309012131.FeakBzEj-lkp@intel.com/
-> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+Note:
+ This patch is only compile tested.
+---
+ drivers/pinctrl/pinctrl-cy8c95x0.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com> 
+diff --git a/drivers/pinctrl/pinctrl-cy8c95x0.c b/drivers/pinctrl/pinctrl-cy8c95x0.c
+index 58ca6fac7849..fae80b52a6fc 100644
+--- a/drivers/pinctrl/pinctrl-cy8c95x0.c
++++ b/drivers/pinctrl/pinctrl-cy8c95x0.c
+@@ -1346,9 +1346,7 @@ static int cy8c95x0_probe(struct i2c_client *client)
+ 	chip->dev = &client->dev;
+ 
+ 	/* Set the device type */
+-	chip->driver_data = (unsigned long)device_get_match_data(&client->dev);
+-	if (!chip->driver_data)
+-		chip->driver_data = i2c_match_id(cy8c95x0_id, client)->driver_data;
++	chip->driver_data = (uintptr_t)i2c_get_match_data(client);
+ 	if (!chip->driver_data)
+ 		return -ENODEV;
+ 
+-- 
+2.25.1
 
-Andi
