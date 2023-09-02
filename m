@@ -2,179 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38701790469
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 02:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24EE5790475
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 02:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234584AbjIBAMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 1 Sep 2023 20:12:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35824 "EHLO
+        id S1348555AbjIBAVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 1 Sep 2023 20:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229515AbjIBAMP (ORCPT
+        with ESMTP id S229515AbjIBAVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 1 Sep 2023 20:12:15 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8991A8
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 17:12:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693613532; x=1725149532;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=gjTBAD4HjNzX0voJIaa7DiqV9gx1dTvio+8oArQXZlE=;
-  b=l2yHUsPZJvFRqfU9l8JwF98YwgC/BcPOiyYDR+4Ky9/NLublm0HCIASy
-   SaMxqFkbPWYnKVddecTLQ9o09nv5IgihUZgrkEuu9uJdlPhT74Y59+QgS
-   AabUJkkF1SNrUFRTLNzoygSPsPSGWJcFCQaC+vbn0X2H7fR9GXkg/dM9W
-   t9IKl1JjBDJa6UlZS9RCDg7qRgBA8nXlCHyR91n9rqBMTVwtyQf6Az79Q
-   So1o8+AuZLdnu9ANEfzFbQ/9Wv0WcOOEcexbWUi5VUZK1Le7KI6J8sNX8
-   hVTcKMV03NxIWpV4AsgvVbC09Sat7M13bqfkpvS9ht2dWOO2f0PAzYYC1
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="407328896"
-X-IronPort-AV: E=Sophos;i="6.02,221,1688454000"; 
-   d="scan'208";a="407328896"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Sep 2023 17:12:12 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10819"; a="733682123"
-X-IronPort-AV: E=Sophos;i="6.02,221,1688454000"; 
-   d="scan'208";a="733682123"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 01 Sep 2023 17:12:11 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 1 Sep 2023 17:12:11 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Fri, 1 Sep 2023 17:12:11 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Fri, 1 Sep 2023 17:12:11 -0700
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.46) by
- edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Fri, 1 Sep 2023 17:12:10 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P8oplCH8YA0Ism5VV4kun5L+9Eu06kuw1kHTza/C2ydpUeim0C3ImLbzuQ7gjvlo0lwnzyMiviriOThgSj9oB9oRBmxjm8oa+pkpy7HDdcauMK2PtmO6Rlr12qG0GC4pEXU5TZ0v33qB4YO7ymGTV8aga/QTsv10z84kBExPSg7nj3vyeM2Z8hSCcY2cHT9lns1mHaImpeOGjnbcU8QT7e1Lla7LM2Fu/DpfSnK5QgCdVmik8kcQHbojDvTzbm4mV0+r5nQ5U+120iyvvcmGK5LN9DSkm0inAVBERRvyI047+ASCquARFv2S3vrlYMXSH1VAQo+MnV+ZNCS3JYEsxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gjTBAD4HjNzX0voJIaa7DiqV9gx1dTvio+8oArQXZlE=;
- b=GkjYpdYdPAF1FOGJIhixqDn07efPyZPQ0TmKJMQLYYfS92rqWx8vwYsUwvAsGJc0CEfxlN8Q53i2yxeaExctBSEvlPPO0aA1a5r6Ki+W9/d4/H74B9Rxmx8LkowDCGi04xpgPNRX506xcYI7AhICPc5s4LJQa0MAucvTxVIrqeHjnT/qlyuNKMM6aVw6IaqDBvKiLgseZAVMMX3PttshYR6J3l+5fGy9iYnIptAvAd+VJeQdhSqNWYbL+XHXTAPbu261Y7Uz9Pu0IxcnZBjBfkkppYg1gNG/mS+/l2ufCFjpnBw/3XHHI5yJl7HqnCnI/dJH8DTDjfOSO+/Vgyl2sw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com (2603:10b6:a03:18::25)
- by PH7PR11MB7097.namprd11.prod.outlook.com (2603:10b6:510:20c::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.27; Sat, 2 Sep
- 2023 00:12:05 +0000
-Received: from BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::5e34:ee45:c5e8:59d0]) by BYAPR11MB3320.namprd11.prod.outlook.com
- ([fe80::5e34:ee45:c5e8:59d0%7]) with mapi id 15.20.6745.020; Sat, 2 Sep 2023
- 00:12:05 +0000
-Message-ID: <883c1f5a-723b-0010-0327-0c4240521abe@intel.com>
-Date:   Fri, 1 Sep 2023 17:12:03 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] selftests/x86: Update map_shadow_stack syscall nr
-Content-Language: en-US
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>, "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     "broonie@kernel.org" <broonie@kernel.org>
-References: <20230901181652.2583861-1-rick.p.edgecombe@intel.com>
- <e2ae1d89-9abf-338e-e56a-dc4be19b9bfc@intel.com>
- <b92afa6dbd074409095e525204d538f451ee4823.camel@intel.com>
- <148522e4-a4ec-a35b-df25-e04eeb5f51c4@intel.com>
- <339cd90a9b77706bd65b6d45f49edf009a9d46a0.camel@intel.com>
-From:   Sohil Mehta <sohil.mehta@intel.com>
-In-Reply-To: <339cd90a9b77706bd65b6d45f49edf009a9d46a0.camel@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BY5PR03CA0006.namprd03.prod.outlook.com
- (2603:10b6:a03:1e0::16) To BYAPR11MB3320.namprd11.prod.outlook.com
- (2603:10b6:a03:18::25)
+        Fri, 1 Sep 2023 20:21:08 -0400
+Received: from mail-oa1-x30.google.com (mail-oa1-x30.google.com [IPv6:2001:4860:4864:20::30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC866E5C
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 17:21:04 -0700 (PDT)
+Received: by mail-oa1-x30.google.com with SMTP id 586e51a60fabf-1c50438636fso1633072fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 17:21:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693614064; x=1694218864; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Psrz6OLugnAHI8N/ongnXW3Llo2Oy5igQZp0EV1W0To=;
+        b=KLSc690u+mpg7zidF8e9x2xuJBuNe6gDejZIAydc4N1nOKvezSXBfwPJTPsJpijzRl
+         8406u3QR9Fue+9GdX+l30LXG2RQPw33QiAO37FQB9c1Iv5ydKz9V0JV6EXkTHwWz0szZ
+         SeH2aYIF+sXZshe+K/vMYm8qqUz2yOYbYtAD9XKlCP+V8FbxqNc6lBkGTYuQt/sTQjp8
+         F38XstaB/yThQaMvkPJa6DQd2tknPrwWjGbfzrGC9xXDCpctkmoTytECfxczdA5LNXfa
+         Nu394pp9b0Oxx+ZNzMP0ZyNrjGkOnghlqAgs7XpJhDfOWdx4Snf7LuU96Ifkh3atLwgl
+         r0tw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693614064; x=1694218864;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Psrz6OLugnAHI8N/ongnXW3Llo2Oy5igQZp0EV1W0To=;
+        b=ZUrsZKobuLZ+NI5Xu0MVlwmYUaaePrTmlVX2qoUdwOF9Z6EyCyd5ZNTACM1nsTNVd8
+         x/tYMU3QlPuj03z3ljUAadj3dUsY0h5cIgiAhw3wii3X6SLgt3o/5vPBqTmRyGczaVr/
+         X/WmWPxKjbnS5xpMz6zGLmFywnDALHKuBxFHm7/RG8TxlBNqQMlGk0XLhfz0Ak6237gZ
+         UlQO5wa5R6VO/dwrO1DoF0DdtGXSv/1YinOVZJNDOkvmSKhG7hLPMtXCC8a4YLDPnI9N
+         pTn4PhcwP0ptZTHWK7+P4FiOAEsmQTFuJa9jxO1Z2K+mbVdRgzvbrcS1FoDSe0kUaFqG
+         rnbg==
+X-Gm-Message-State: AOJu0Yy0RzNDcnVJiWv7d/1tUuhgtr/loVu9fvxoacHk6asae44Ydiki
+        ryfeEIAGcgKrYCm3D8gwnuA=
+X-Google-Smtp-Source: AGHT+IFW9L2FLM8HcMkKhApzzFEzKsT9XZi/6S0+2uIs6H5Z0No5EZjuDhBc7GDMPQLEFnuqZxe4CA==
+X-Received: by 2002:a05:6870:561f:b0:1bf:2ad9:8dae with SMTP id m31-20020a056870561f00b001bf2ad98daemr4717892oao.45.1693614063761;
+        Fri, 01 Sep 2023 17:21:03 -0700 (PDT)
+Received: from [192.168.0.106] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id s7-20020a17090a5d0700b0026b12768e46sm3488542pji.42.2023.09.01.17.20.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 01 Sep 2023 17:21:03 -0700 (PDT)
+Message-ID: <0e6de51b-da1d-43f0-ffae-fb521febbe07@gmail.com>
+Date:   Sat, 2 Sep 2023 07:20:55 +0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BYAPR11MB3320:EE_|PH7PR11MB7097:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1451b9cd-6cea-441d-1b29-08dbab493d74
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5J/N+cka9BtF/t9kGz4+6afZ+GRNk6dfDtIe7LvBB6rue618YEyViHP8MLMAk9TZiAejrwpTlUZMcBrIJUluT9BQO6tu4JT9Dj8QhAYV+DFzYp2dHiF+pvF9wS4458o5MKvXpRWaEdikZyBhQktDCgTFXAbxbivTh82TRqMB7d/nTHcZv6de6TLGT5mnqsnZZqBSKYcptl7FgdsOVst77jWTa/B0hUX92kDLZBoQi993pqgBeG6RJrnf14o+EVihjTwD25UiBFxyfDLBEW7+oED4v3xyEACfHjXo2Z7uwtpzaxzYrlhROxMW4Amd27lY4zJrYA0xVGINdE9u8k1y/EHFh4yun5pMurcESNYQxFzcpzDtd6B5IDCn8FET//fK/wMcxCBDXcq8HHC5o2jdTB9rq8My9AwI/Szmexf3iQoECHQEEyqRBeha03z7tGPkTeONCXVoMCTaJgwHHtLyz4J5S5yUrIIf5+b0v1DtwFsBaiLkYdIYfZrGXgC+Rut4z2DfdgwGGJit/nwkvMBCxDvJZikdN+wQDdIc3Sx1Ux2/ktJOOx1qO0IOyYPxyKqNmlKqXA2sMk+MpcViMg2GRN7B9+HeEcPilY2kYxk69RMAFNhMCZVGD4Cg5u/yRcPF0gYLxw86TPIPRKle/NQZndUYWOwJmRa3CBHeM//A8PI=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3320.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(39860400002)(376002)(366004)(396003)(451199024)(1800799009)(186009)(31686004)(921005)(6506007)(6512007)(6486002)(36756003)(558084003)(31696002)(82960400001)(86362001)(38100700002)(2616005)(2906002)(26005)(53546011)(478600001)(110136005)(66946007)(8936002)(8676002)(5660300002)(4326008)(7416002)(44832011)(316002)(66556008)(66476007)(41300700001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QlBlVWZpaU5jR3loVWxJdW03WHhYM3oxZmpBbUFBUU5VcXE0anU5YXYxaFZZ?=
- =?utf-8?B?eXRia0tIaUVDNE1yT3dOR2lhM0pqSXd4TW5XcGZsS2xxdjhmazZ1NDM2MW9O?=
- =?utf-8?B?SG94REs5NDBMWEZyUlBscU9qVFYxQkZMb0tiV0VJbU9qUHBYMnhwZEtXN3l1?=
- =?utf-8?B?NWxaYTBaTkdFRnQwanFtNWV2VEl3OU9sVmlFeEg1Mk9lVm1RNDBpa1FWdWRp?=
- =?utf-8?B?VXVVU0dzYWthZm5mYVJaL2ZlMmpDS2JxOVhEWVpDc1hkYkI0S24xaDRZV0JM?=
- =?utf-8?B?bWxGaSs5UzFwcG5pazU0NVlmRWlNZldlYitHK21YZG9tSTVJeEY0NzhxUVNO?=
- =?utf-8?B?ekZmY0ozb203NTZaWjdwZ0RyWjltUjc5MWtod2t2b0dEUHdETVRYRFhzUG9j?=
- =?utf-8?B?M21xUDNFNUV5VndaVURaRDFsNzY4bW5RM3ZtakhpTHRiYkgwelhmYWNQZTly?=
- =?utf-8?B?bW8weDRMblFONDd5dXFzeGdCRzhISmw2MzNkSCt4RzZSUW9oNjE1NTlCaWg1?=
- =?utf-8?B?Z2hyZDJybVNCK3Zicm1tRUh6bHoyRmorRkV1OU5ORDQzZzFHbjJNLzJyRCs4?=
- =?utf-8?B?Y2VTcXVETEcyMmFPdjlGV0VvckRTbmVBSVJneFRMZUVYNUdKSEhCd3A5enZM?=
- =?utf-8?B?U2crOFRZWW05S21JMmJTR1VkU0tGaWJiQldFWkRHWUZQMWd1RWFQcVVFQktu?=
- =?utf-8?B?MDN2MWdjTERMWVh3Z0dBek16OVVXYUszTWpjY3E4TFhTUEhWcHdQb3pRbVhF?=
- =?utf-8?B?QXJ5K0dTQ1gzRUhjMlltd1pqOHFjSW44WkRENmhPNUlaZi8wT3Bhb2txZHhW?=
- =?utf-8?B?Wk15Ym9sdEpRakYzVnNoaFE0T3NLRml3bGhpajhNMGMvUEJiR1l6a2FOdEpw?=
- =?utf-8?B?ZnM0T05aQlZhdlNxdWVJZWs5dVpFcjVrLzlJOXFkbVBPVnBrNjFiQlI4VGo3?=
- =?utf-8?B?ckJVT2lpZnNBVkE2QTBVeVRxT0QzZFBiV0pKSVVDZkF6dUhmV0Jicm9KM1N3?=
- =?utf-8?B?bHNraVJpOElwUFVtdzJ5c1dCd3k3aVR3Wk83ZGRUMFJhSFBPZElTVTVlK0lV?=
- =?utf-8?B?Z0hlZCtzdXdVdzh0b2RmUHFYU1pTSXJhUHJqRWduL2lQbGVCTFZiS3ZsNWxi?=
- =?utf-8?B?TzJBTk82M3hQQWRJZXFkNlZRWUZ6d0NYYW5PR2orN3F6UVFNeTBHUjVhQkZO?=
- =?utf-8?B?Q2Y2aFZZYmtsNVJ2bXU3eEdMR3l6c016SjdocjNJNkoxdE1kV3ByVEp5a08z?=
- =?utf-8?B?Y1BBWGdBR2pWOFNuRitVdDlJYjJLN01VWTBLbFVjQzNvZncyRjd6M2Y1YlFz?=
- =?utf-8?B?NkVwL2VJRUhDQkRIM3FqYXhPL3VjSnF0bnN1RjZMUDFiRnFOSUlOMzliYkI1?=
- =?utf-8?B?dDUvc1k4Ylk4RjBISHZCNmU3aEc2MkdlRzRsbDVScFM4TVZ4Tnc5ZzlPY2Yr?=
- =?utf-8?B?ZWJPb0JTaHVyY3hTQlVkWUR0MFMrYTJYdHVTbUhaQjJLK3dkejM2YmtyUU51?=
- =?utf-8?B?ZWpKcnRoU01iVUt5SUVZUmZ3a3BiT3lDNDhGTW0vcEhaRXpWNTlSVW0vdGFF?=
- =?utf-8?B?d0ZLbm1hK080QVJxU2wxazhMV01MRFF0UmxFY2hpdWczNkRhVVJIdkRGOEFw?=
- =?utf-8?B?VTlkWFNscUFHcWxQN0ZyUDJQeU5aeDQvL25DZjNNT0lYWEhaOXNmdGNyS256?=
- =?utf-8?B?SjUvSlJlVUVVMDZ5R3ZqMFBhbURyYWQrQVF2Q3BxTEJDNXB1VXg4TzNaS0Z5?=
- =?utf-8?B?by9yRnE0T3hnMXdJRDZXSExoRVIvRXRmZDh4OU5USFdGVzZoVkk4Z3k2UUNF?=
- =?utf-8?B?cXAwQm9sVlJvRWx1VlFTL21JZEtKMDAzU0YxNjdnWWxnUFhoTFNpTUE2WUh3?=
- =?utf-8?B?UnZQZ3p4VjF3S3p1THgxb2c0OG1wZnQ3bkZiYXNiNktBM2pGMnpaSXFCQS9a?=
- =?utf-8?B?NE5PZWFqQThtWDNlUUJMMHVpNEc4Ym5veWtpK3lSMnV6SGhpUmRCSWFNbS9B?=
- =?utf-8?B?NkYxN1Rrcm9yTGFPdWsrRWJJVnc0Sk1HRFJ0UG5nUm5DeVNPcnZpVUJ1bTNq?=
- =?utf-8?B?eXo3OWNEUFV4czVtb041bkpkUEp3L2xzV1UrSlRqcTNhSDQ5SEs5aXlSU053?=
- =?utf-8?Q?41Ysrlu3wivio96wmntd8027z?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1451b9cd-6cea-441d-1b29-08dbab493d74
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3320.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Sep 2023 00:12:05.6310
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cvw6GDb4VNOhTKn7PFvtR4Apq38BJutmcoCAUrrmjBANiruFpHXMWiysWFG115sjaIgZglxdTKsMbdc6kGEsig==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB7097
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Janpieter Sollie <janpieter.sollie@edpnet.be>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Uhhuh. NMI received for unknown reason 3d/2d/ on CPU xx
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/2023 3:51 PM, Edgecombe, Rick P wrote:
-> Putting reservations in sounds like a good idea in any case. I take it
-> you would like to send the patch? Otherwise let me know.
+Hi,
 
-Sure, I'll spin something up and send it out next week after running it
-through 0day.
+I notice a regression report on Bugzilla [1]. Quoting from it:
+
+> seems to be a regression since 6.5 release:
+> the infamous error message from the kernel on this 32c/64t threadripper:
+>> [ 2046.269103] perf: interrupt took too long (3141 > 3138), lowering
+>> kernel.perf_event_max_sample_rate to 63600
+>> [ 2405.049567] Uhhuh. NMI received for unknown reason 2d on CPU 48.
+>> [ 2405.049571] Dazed and confused, but trying to continue
+>> [ 2406.902609] Uhhuh. NMI received for unknown reason 2d on CPU 33.
+>> [ 2406.902612] Dazed and confused, but trying to continue
+>> [ 2423.978918] Uhhuh. NMI received for unknown reason 2d on CPU 33.
+>> [ 2423.978921] Dazed and confused, but trying to continue
+>> [ 2429.995160] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2429.995163] Dazed and confused, but trying to continue
+>> [ 2431.233575] Uhhuh. NMI received for unknown reason 3d on CPU 36.
+>> [ 2431.233578] Dazed and confused, but trying to continue
+>> [ 2442.382252] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2442.382255] Dazed and confused, but trying to continue
+>> [ 2442.725076] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2442.725078] Dazed and confused, but trying to continue
+>> [ 2442.732025] Uhhuh. NMI received for unknown reason 2d on CPU 48.
+>> [ 2442.732027] Dazed and confused, but trying to continue
+>> [ 2443.666671] Uhhuh. NMI received for unknown reason 2d on CPU 48.
+>> [ 2443.666673] Dazed and confused, but trying to continue
+>> [ 2443.756776] Uhhuh. NMI received for unknown reason 3d on CPU 39.
+>> [ 2443.756779] Dazed and confused, but trying to continue
+>> [ 2443.907309] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2443.907311] Dazed and confused, but trying to continue
+>> [ 2444.004281] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2444.004283] Dazed and confused, but trying to continue
+>> [ 2444.207944] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2444.207945] Dazed and confused, but trying to continue
+>> [ 2444.517408] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2444.517410] Dazed and confused, but trying to continue
+>> [ 2444.946941] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2444.946943] Dazed and confused, but trying to continue
+>> [ 2445.573807] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2445.573809] Dazed and confused, but trying to continue
+>> [ 2445.776108] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2445.776110] Dazed and confused, but trying to continue
+>> [ 2445.969029] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2445.969031] Dazed and confused, but trying to continue
+>> [ 2446.977458] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2446.977460] Dazed and confused, but trying to continue
+>> [ 2447.044329] Uhhuh. NMI received for unknown reason 2d on CPU 46.
+>> [ 2447.044331] Dazed and confused, but trying to continue
+>> [ 2447.469269] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2447.469271] Dazed and confused, but trying to continue
+>> [ 2447.866530] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2447.866531] Dazed and confused, but trying to continue
+>> [ 2448.456615] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2448.456617] Dazed and confused, but trying to continue
+>> [ 2448.509614] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2448.509616] Dazed and confused, but trying to continue
+>> [ 2448.758005] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2448.758007] Dazed and confused, but trying to continue
+>> [ 2449.093565] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2449.093567] Dazed and confused, but trying to continue
+>> [ 2449.227344] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2449.227346] Dazed and confused, but trying to continue
+>> [ 2449.770534] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2449.770535] Dazed and confused, but trying to continue
+>> [ 2449.955594] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2449.955596] Dazed and confused, but trying to continue
+>> [ 2450.077872] Uhhuh. NMI received for unknown reason 2d on CPU 48.
+>> [ 2450.077874] Dazed and confused, but trying to continue
+>> [ 2450.190844] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2450.190846] Dazed and confused, but trying to continue
+>> [ 2450.561450] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2450.561452] Dazed and confused, but trying to continue
+>> [ 2450.604498] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2450.604500] Dazed and confused, but trying to continue
+>> [ 2450.814451] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2450.814453] Dazed and confused, but trying to continue
+>> [ 2450.923171] Uhhuh. NMI received for unknown reason 2d on CPU 49.
+>> [ 2450.923173] Dazed and confused, but trying to continue
+>> [ 2451.084612] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2451.084614] Dazed and confused, but trying to continue
+>> [ 2451.793342] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2451.793343] Dazed and confused, but trying to continue
+>> [ 2451.793662] Uhhuh. NMI received for unknown reason 2d on CPU 48.
+>> [ 2451.793664] Dazed and confused, but trying to continue
+>> [ 2451.926819] Uhhuh. NMI received for unknown reason 3d on CPU 48.
+>> [ 2451.926821] Dazed and confused, but trying to continue
+>> [ 2452.502583] Uhhuh. NMI received for unknown reason 3d on CPU 49.
+>> [ 2452.502585] Dazed and confused, but trying to continue
+>> [ 2452.675633] Uhhuh. NMI received for unknown reason 2d on CPU 61.
+>> [ 2452.675636] Dazed and confused, but trying to continue
+>> [ 2452.974655] Uhhuh. NMI received for unknown reason 2d on CPU 48.
+>> [ 2452.974657] Dazed and confused, but trying to continue
+>> [ 7065.904855] elogind-daemon[2461]: New session c2 of user janpieter.
+> 
+> according to dmesg, this happens without any special reason (I didn't even notice)
+> some googling points at a ACPI C state problem on AMD CPUs a few years ago
+> in 5.14 kernels, I didn't see it.
+
+See Bugzilla for the full thread.
+
+Anyway, I'm adding this regression to be tracked by regzbot:
+
+#regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217857
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217857
+
+-- 
+An old man doll... just what I always wanted! - Clara
