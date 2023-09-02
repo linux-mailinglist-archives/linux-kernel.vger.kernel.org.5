@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C77E790830
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2932F790833
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:13:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230527AbjIBOKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 10:10:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42762 "EHLO
+        id S231542AbjIBONk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 10:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbjIBOKa (ORCPT
+        with ESMTP id S229579AbjIBONj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 10:10:30 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B66C210EB;
-        Sat,  2 Sep 2023 07:10:27 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c1e780aa95so19585955ad.3;
-        Sat, 02 Sep 2023 07:10:27 -0700 (PDT)
+        Sat, 2 Sep 2023 10:13:39 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9569910EF;
+        Sat,  2 Sep 2023 07:13:36 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1c1f8aaab9aso23087795ad.1;
+        Sat, 02 Sep 2023 07:13:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693663827; x=1694268627; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uOjoPdlsy/hK3SkoijywSdUkPheBDdLNqjg4I33Inwg=;
-        b=Hk9X/ohbJxP0K573lIr6itXlDVGSb8wVOaECuL6FEFHf0i9HWYzgbWRPtbg79xS0DI
-         Cbx4Kti15FYXZpWBX1y/o6kM9pictcWgY9SpgY6eqTDA4U1SUW5JgdGph7YoJF9V9Q84
-         flnHHNCby+d2xloHe7X2WGXleT4hphLdbVtLXfcidlp9ePFZEYDSeWaT3DojarPdVxRK
-         0Hkw3q2SQINI0HXkUvt57SgbNSZGdxBNKQ40UxFcNhNEZ1Xqnrt/AktR1BNsLAx5LfR0
-         NopAT2uGNmHLJ3nYia4j3VUa2Rl7FRd41JmRf+yIVZaJY1K2P0j+B2H61OEq+/nRfLrZ
-         Dt3A==
+        d=gmail.com; s=20221208; t=1693664016; x=1694268816; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4MWR8yXXtpKuEsZy4kLJfJzxDixTk8R1fNTGvvoydOA=;
+        b=NUxsvkN4y8ZEFL6PPzw2g97Y/Z7hMezHV01CZjSAPr4FI9AMxcXbMaQAFXWiSQq6MZ
+         NBykmmq5w8J0HFHeZMqRvGnB5m6FZQ9Yq+n+8KJeB70njoP9bDpr9YFAgPZml9ZMkFKM
+         xmeuUobTFnoHKH+52og5iPAVoJfOOwmPnUDKkN4kVq81FRqKGya9Wh7OwuJ8mDwhZDQQ
+         Y8J9nc5+dbYMZUkSYvj3DFZDHnxchjzG1vUuhz1uztgDzJc8ZyyAdYi05mzjg7FJ1BD/
+         DeKTbHFicPpVrRjsHoGMGjWxCk/LVQgyH62qFRoJpuWvGwwiDlIIvDih3jeepjaVVk6D
+         UlVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693663827; x=1694268627;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uOjoPdlsy/hK3SkoijywSdUkPheBDdLNqjg4I33Inwg=;
-        b=RYhqPgpKMb09H2HTEJqrjFeB/dAMLW67OyHfvopTRUv5Kl/Z/yOwBsJoevBzfm48MS
-         ybhpuN9V5IRQF+Fxzqu1vZPTrQ3WWwisVgXL+SL+qgpIFVI82EZmZx154rJaC5Nku6f6
-         IhDBK1kQdljn5+rGBSwpmLC3YvP/rF8sdIwEcoNWFUNB8+CCjlpN9z6k/gi22OnEG2GI
-         K94YqlIyECMC5ELW9JSP5y91Ra1Ue3fzKp1qFajmSJS9wR61dh60lT/uTvWePlTA3crX
-         vIXJedSkIf64KXEDwAyWqZa//2p2ZuNYwEmSRwcC9mYlGq5M5a69r4t/xXjQfdI8+Sfi
-         qHcw==
-X-Gm-Message-State: AOJu0YzBdfsNMzDgzoUeiijhq1PvX3zEZyXDcxOZThufk66+tyihqcFe
-        t/xedciZt+jSI3tVFoUYWZWC2MKb59A=
-X-Google-Smtp-Source: AGHT+IFAeqKNzYGilZTwc9s6+cRhJTi6j1unopmzhK7PfotImS5CVF1oleQ+nqr2gFqxjV/FqDFbeA==
-X-Received: by 2002:a17:902:7044:b0:1bd:ca21:c83 with SMTP id h4-20020a170902704400b001bdca210c83mr4066532plt.68.1693663827041;
-        Sat, 02 Sep 2023 07:10:27 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693664016; x=1694268816;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4MWR8yXXtpKuEsZy4kLJfJzxDixTk8R1fNTGvvoydOA=;
+        b=D3jHWYjltVEXL1BM04GcH6MggxjYzBTiqz+QRiRjScmAQYEMiMVNBUaoHclkaqvC0v
+         DVbyzk1ANXbN0qGr2ZWaD4dXW5bKPicjQahROBzv2AHU7/fN5oRn2zIMSQuJ7MS7VaoY
+         uG1rjoY/e2bTbDnLcYWU+zwba+DDhp5BJ9XZPd8Zoxbkt4RQgMcTxUOHh/Q0SPw9V1pu
+         /XVgq1twYqx8p+/HMR2xk0fQ5vs9/OMpQGKv6fiy+lRb565548G4OP6eOlE8VLVRW19w
+         Y4yQKd49XkAu5UbvSqzzqnDt+g82hqndgRCaeXNIGK6XHDfXGBqIoE3O1v+legwQJGAK
+         oGRg==
+X-Gm-Message-State: AOJu0Yz1UojTp7kug5VeIUrSbuKHE46N6kz3URMCml7mGtvv0Dk+CZwY
+        Pnn2n4MnRZzhW7umtNDwXfdTeE/xCjg=
+X-Google-Smtp-Source: AGHT+IHS28RxmLeVYWgp0birWGyzLHWodWvMCn/ALR1BKINwmSQ3Q6NHk/b5UNIMlXzjIeM9ERfieA==
+X-Received: by 2002:a17:902:ff01:b0:1c1:fa12:5c1 with SMTP id f1-20020a170902ff0100b001c1fa1205c1mr5257396plj.55.1693664015974;
+        Sat, 02 Sep 2023 07:13:35 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z1-20020a170903018100b001bba373919bsm4649941plg.261.2023.09.02.07.10.25
+        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001bb9bc8d232sm4719774pli.61.2023.09.02.07.13.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 07:10:26 -0700 (PDT)
+        Sat, 02 Sep 2023 07:13:35 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 2 Sep 2023 07:10:24 -0700
+Date:   Sat, 2 Sep 2023 07:13:34 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-usb@vger.kernel.org,
-        Douglas Gilbert <dgilbert@interlog.com>
-Subject: Re: [PATCH v4] hwmon: add POWER-Z driver
-Message-ID: <56da4837-cfe3-4234-96f7-e7b67358dcdb@roeck-us.net>
-References: <20230902-powerz-v4-1-7ec2c1440687@weissschuh.net>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        krzysztof.kozlowski+dt@linaro.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] dt-bindings: hwmon: Add Infineon TDA38640
+Message-ID: <eaaf8f33-ecf6-4e02-9772-7c4a30eb8957@roeck-us.net>
+References: <20230831190731.265099-1-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230902-powerz-v4-1-7ec2c1440687@weissschuh.net>
+In-Reply-To: <20230831190731.265099-1-Naresh.Solanki@9elements.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -76,17 +80,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 02, 2023 at 09:47:01AM +0200, Thomas Weiﬂschuh wrote:
-> POWER-Z is a series of devices to monitor power characteristics of
-> USB-C connections and display those on a on-device display.
-> Some of the devices, notably KM002C and KM003C, contain an additional
-> port which exposes the measurements via USB.
+On Thu, Aug 31, 2023 at 09:07:27PM +0200, Naresh Solanki wrote:
+> From: Patrick Rudolph <patrick.rudolph@9elements.com>
 > 
-> This is a driver for this monitor port.
+> Add the DT property 'infineon,en-pin-fixed-level' to
+> indicated that the chip EN pin is at fixed level
+> or left unconnected(has internal pull-down).
 > 
-> It was developed and tested with the KM003C.
-> 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> ----
+> Changes in V5:
+> - Update pin name to align with datasheet
+> Changes in V4:
+> - Update property name & description.
+> - Update commit message.
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
 Applied to hwmon-next.
 
