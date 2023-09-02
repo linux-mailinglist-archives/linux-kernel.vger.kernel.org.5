@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F32E17906D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 11:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 405757906EC
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 11:18:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351933AbjIBJKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 05:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
+        id S1351938AbjIBJSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 05:18:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351902AbjIBJKg (ORCPT
+        with ESMTP id S231882AbjIBJSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 05:10:36 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC575172E
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 02:10:15 -0700 (PDT)
-Received: from nazgul.tnic (dynamic-046-114-142-117.46.114.pool.telefonica.de [46.114.142.117])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 24FB41EC0865;
-        Sat,  2 Sep 2023 11:10:13 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1693645813;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=IeAXA2DInhokU9eRZqPvxwd1VOJ4KTX+ZqS/K0m/I8E=;
-        b=MMmfhajZ1SNF3466DEVZbAsdLyDZq22TyirDEXvpboQmPnXaWceBmvgE8bxOwW3NqtZCqw
-        9SrXdKJKgyJBugJfViaQsf4tbSJkhvIkELre3+HiGZ0XA1I1nICAG27l+1zoqF/+36LRWh
-        nT+bM5/6QWiqjglpFAPz2p003e3gTxw=
-Date:   Sat, 2 Sep 2023 11:10:21 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Josh Poimboeuf <jpoimboe@kernel.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 18/23] x86/srso: Remove redundant X86_FEATURE_ENTRY_IBPB
- check
-Message-ID: <20230902091021.GBZPL7/UhPLiOmf2Fg@fat_crate.local>
-References: <cover.1692919072.git.jpoimboe@kernel.org>
- <9b671422643939792afe05c625e93ef40d9b57b5.1692919072.git.jpoimboe@kernel.org>
+        Sat, 2 Sep 2023 05:18:34 -0400
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792D812B
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 02:18:31 -0700 (PDT)
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-68a3ba17c7bso3477987b3a.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 02:18:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693646311; x=1694251111;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YY5WdLq26hZfmmxrZSw5pg7otXAjHaTxdoIMV1ei65Q=;
+        b=QioBejxPSn7c9N9f5sDvPYhldDdm0L6oQt5avWmS31hAIXwXScB8xuvj/+NdlhQboR
+         ziK/Ak/dL4Xy/zH2WYjPJ0+OtljGT0TUP6snrbCtTGU89ChQN7xffYX4Akx/M3VqQ6G6
+         QggPzGKd9jZZtAl0MykROj2gZVBLI/HMc11YDv2KE1JFlgOj0ilS/Hqmk6UUPdycWdaz
+         N2ci8R9S7WD6Wwoj5xPZ2e7I0SBQb6IzsQ8/uxlsGP4ZfR7nXUNnco4+UKsnjpphkme0
+         TL8ZE81yZx27QElmaKnULX/QLyxKyhwZX2dmM0zGdU5bmDzHCStkBS1NOlmKSVO+4WhK
+         Wfhg==
+X-Gm-Message-State: AOJu0YywyR2Z8LvMnQjO6xL5+zvOYbypOwLhYvb4JWcEW+4ZMzZNxW/Z
+        rcxXc7wqUpn5YO21y/zZUdmRolLNWeZS4YZMfjp+JWKRBoKa
+X-Google-Smtp-Source: AGHT+IG3WfkHlACddXZPlCJFF4WA9fXMlT/P1uz8uvuyXjlXG14isFMR/28jNDlKRZwqPVH0BAGxUUaisMOmCiqnk3COsIzjJIQi
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9b671422643939792afe05c625e93ef40d9b57b5.1692919072.git.jpoimboe@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a05:6a00:22c9:b0:68b:ee34:972f with SMTP id
+ f9-20020a056a0022c900b0068bee34972fmr1967948pfj.5.1693646311025; Sat, 02 Sep
+ 2023 02:18:31 -0700 (PDT)
+Date:   Sat, 02 Sep 2023 02:18:30 -0700
+In-Reply-To: <20230902084848.5181-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000be767106045cc22d@google.com>
+Subject: Re: [syzbot] [kernel?] KASAN: slab-use-after-free Read in dev_uevent
+From:   syzbot <syzbot+5ee79919ffe91d629b96@syzkaller.appspotmail.com>
+To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Aug 25, 2023 at 12:01:49AM -0700, Josh Poimboeuf wrote:
-> The X86_FEATURE_ENTRY_IBPB check is redundant here due to the above
-> RETBLEED_MITIGATION_IBPB check.  RETBLEED_MITIGATION_IBPB already
-> implies X86_FEATURE_ENTRY_IBPB.  So if we got here and 'has_microcode'
-> is true, it means X86_FEATURE_ENTRY_IBPB is not set.
-> 
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> ---
->  arch/x86/kernel/cpu/bugs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+Hello,
 
-I still don't like this one:
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-https://lore.kernel.org/r/20230825070936.GEZOhTsPiTLhY1i9xH@fat_crate.local
+Reported-and-tested-by: syzbot+5ee79919ffe91d629b96@syzkaller.appspotmail.com
 
--- 
-Regards/Gruss,
-    Boris.
+Tested on:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+commit:         0468be89 Merge tag 'iommu-updates-v6.6' of git://git.k..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=143d4f50680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c33cc29407ed9ff7
+dashboard link: https://syzkaller.appspot.com/bug?extid=5ee79919ffe91d629b96
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=13e9be77a80000
+
+Note: testing is done by a robot and is best-effort only.
