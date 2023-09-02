@@ -2,130 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C90E5790787
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 13:02:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C30479078C
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 13:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352004AbjIBLC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 07:02:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55256 "EHLO
+        id S1347885AbjIBLKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 07:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232958AbjIBLC0 (ORCPT
+        with ESMTP id S229479AbjIBLKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 07:02:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEE4112D
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 04:02:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8C0AFB826E6
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 11:02:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33C0FC433C7;
-        Sat,  2 Sep 2023 11:02:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693652541;
-        bh=nWRp3kNt0uCKDvR/efj7kKP5j/V5vGO+TJUPxq8elAs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UrjcyFPTU160rKO1Kt5+wuQbuw/7eRXtQtTi7/Swk7y6ewBq3wg0e0oStgpLsusQQ
-         zV/xmjisEPfLduUTVDQJ0W+n1JByouskEBEJDNX9dPdp1Poaizxr/P5KwUrTs2tiTa
-         f14Lgt4db+SU6JE3Z/m37wBPJX0H+Ni5UAV+ygFzNUVtpf5hpsb4OqrR2FoFGAC42R
-         5m5ATCxAsj54sobWtYs1nV7a/9p4smXKDq+absVI7AXIWxtcbA5LwKHYq1onnCybfS
-         g5rSLhmJoeWdhFkuwQhl9+NOXXSkno6+TUTcBeb6yM4uHsZBTdz+GKuwTiTSKG22xv
-         COIjyYMxH2Mzg==
-Date:   Sat, 2 Sep 2023 12:02:16 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] riscv: Kconfig.errata: Add dependency for RISCV_SBI in
- ERRATA_ANDES config
-Message-ID: <20230902-plexiglas-cannot-e4ca8494ef95@spud>
-References: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+        Sat, 2 Sep 2023 07:10:40 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD73E5B;
+        Sat,  2 Sep 2023 04:10:37 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcb0b973a5so47245681fa.3;
+        Sat, 02 Sep 2023 04:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693653035; x=1694257835; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sCWoWPe6h8Qmaq6PAfz3dXsnt+0ElN/TsBNKOj8iL1I=;
+        b=rDUrCWwtoEKkI6uMphA7bZtCx0ChO9rIqIDtcaMjHLhlYybsBP1qJ/6yPRI5pqHVOT
+         rrDiwCUQ1lekFd30nbYCjJnU0IqrJd56YkMjM/FbHSlKPG5vuvzIuXWKEi6fNFOuZpch
+         DefsK5T450is/YsJCPiwfRXKz+4Z2Gl94wZhSw3EqlTen074iDM4ukZ/2aCecrM2gVsy
+         RtYvhJiuMIjN76POTunQTyOXLBv3YFg1+HVa4Ug1ynFIa0h7vmqKxWUovc7HAgpyeZHs
+         +g6wIoh5HsuIVaCQscYZ99iX4VJ5ZZqfdBCnAqMFoywLR6CS+hTrldMzhef4vtD69/gz
+         p2Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693653035; x=1694257835;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sCWoWPe6h8Qmaq6PAfz3dXsnt+0ElN/TsBNKOj8iL1I=;
+        b=D5oJoNHlZAt8cl42vHu8S+/mVs5BPyN/MjeAslKhcG7JArP6tR0955zJ9X7zvrq/+V
+         1VJ6aC6PdvhY/c+CcS3Y3k7BpUq48Mr7pMynLS1Loz3Fo+ihYerUwr3TjiCr6hpMjhVj
+         giJhMdLT2bQAFAMbaBd0hJPFQ/LsloNGN/vxqukrPTLXoqsIrIGSnNjqXUUMdVNrrHz6
+         FlmYLz2gYMRrLqLumMiz85cQtR4vkKvWuPi5XFn0hjoK6uU/7LeJP/p3GK755Zkp1sPr
+         LDv9r2E09G60HWUSUvFynocClEe/NDgYbrlG9vii0wCAxnmP5v0q9YE+93TqToTVZvNY
+         an4w==
+X-Gm-Message-State: AOJu0Yy69njzpn1dnS+7sA6ZxFYWT5FYSgnB1wOtqOpp6jBb47MtfhLI
+        d/AnIIHj6DPL53zHApremBwNpE956+G4EX0yeSbi8+mq97k=
+X-Google-Smtp-Source: AGHT+IG/VqY3vkLqgYJkFoWyA3BAQzDL3TGfy+OM6GskqKn3cNhSQnpX1YM1Nnj35Q12kl0+w6BraWus5k49mAtQrh4=
+X-Received: by 2002:a05:6512:742:b0:500:7f51:d129 with SMTP id
+ c2-20020a056512074200b005007f51d129mr2639186lfs.34.1693653035278; Sat, 02 Sep
+ 2023 04:10:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ZRn/ZXZBHlvjdjg5"
-Content-Disposition: inline
-In-Reply-To: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <ZPDgdGBbxrTl+m2s@debian> <CAHk-=wg4vpuourbbUPn19yFx2cNj93O6t0PhiARLLL6z22yV4Q@mail.gmail.com>
+In-Reply-To: <CAHk-=wg4vpuourbbUPn19yFx2cNj93O6t0PhiARLLL6z22yV4Q@mail.gmail.com>
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Date:   Sat, 2 Sep 2023 12:09:59 +0100
+Message-ID: <CADVatmMF1QS235CD4KbDPy_w9hAi0rN1EJqAXtJok2Xg0iE-UA@mail.gmail.com>
+Subject: Re: mainline build failure due to 501126083855 ("fbdev/g364fb: Use
+ fbdev I/O helpers")
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Helge Deller <deller@gmx.de>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 31 Aug 2023 at 20:04, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Thu, 31 Aug 2023 at 11:48, Sudip Mukherjee (Codethink)
+> <sudipm.mukherjee@gmail.com> wrote:
+> > The latest mainline kernel branch fails to build mips jazz_defconfig with
+> > the error:
+> >
+> > drivers/video/fbdev/g364fb.c:115:9: error: 'FB_DEFAULT_IOMEM_HELPERS' undeclared here (not in a function); did you mean 'FB_DEFAULT_IOMEM_OPS'?
+> >   115 |         FB_DEFAULT_IOMEM_HELPERS,
+> >       |         ^~~~~~~~~~~~~~~~~~~~~~~~
+> >       |         FB_DEFAULT_IOMEM_OPS
+> >
+> >
+> > git bisect pointed to 501126083855 ("fbdev/g364fb: Use fbdev I/O helpers").
+> >
+> > Reverting the commit has fixed the build failure.
+> >
+> > I will be happy to test any patch or provide any extra log if needed.
+>
+> Would you mind testing the exact thing that the compiler suggested?
+>
+> So instead of the revert, just replace FB_DEFAULT_IOMEM_HELPERS with
+> FB_DEFAULT_IOMEM_OPS.
+>
+> I think it's just a typo / confusion with the config variable (which
+> is called FB_IOMEM_HELPERS).
 
---ZRn/ZXZBHlvjdjg5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yeah, you were right.
+Patch sent - https://lore.kernel.org/lkml/20230902095102.5908-1-sudip.mukherjee@codethink.co.uk/
 
-On Fri, Sep 01, 2023 at 12:03:20PM +0100, Prabhakar wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->=20
-> Andes errata uses sbi_ecalll() which is only available if RISCV_SBI is
-> enabled. So add an dependency for RISCV_SBI in ERRATA_ANDES config to
-> avoid any build failures.
->=20
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp@i=
-ntel.com/
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Replied here earlier, but pressed the wrong key & it only went to the
-list.
-I think this patch probably also needs to grow a Fixes tag, for
-commit f2863f30d1b0 ("riscv: errata: Add Andes alternative ports").
-
-The 4 Kconfig patches ideally would've been in a series, since 3 of the
-4 seem to be fixes & the 4th depends on one of the fixes being applied.
-
-Thaks,
-Conor.
-
-> ---
->  arch/riscv/Kconfig.errata | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-> index bee5d838763b..566bcefeab50 100644
-> --- a/arch/riscv/Kconfig.errata
-> +++ b/arch/riscv/Kconfig.errata
-> @@ -2,7 +2,7 @@ menu "CPU errata selection"
-> =20
->  config ERRATA_ANDES
->  	bool "Andes AX45MP errata"
-> -	depends on RISCV_ALTERNATIVE
-> +	depends on RISCV_ALTERNATIVE && RISCV_SBI
->  	help
->  	  All Andes errata Kconfig depend on this Kconfig. Disabling
->  	  this Kconfig will disable all Andes errata. Please say "Y"
-> --=20
-> 2.34.1
->=20
->=20
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
---ZRn/ZXZBHlvjdjg5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPMWOAAKCRB4tDGHoIJi
-0taDAQCl8QFGGuuCZWZwjq0NAg/MOvQ1IE3aTOyReSkf3CSWmgEAhGTMm/mRzXsS
-Y5+ZrqbMvP+CtswbvJi7NfMs8BhfPgw=
-=KonS
------END PGP SIGNATURE-----
-
---ZRn/ZXZBHlvjdjg5--
+-- 
+Regards
+Sudip
