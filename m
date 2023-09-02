@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5DA790580
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 08:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E7CC790582
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 08:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346348AbjIBGA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 02:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
+        id S1351585AbjIBGB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 02:01:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241791AbjIBGA0 (ORCPT
+        with ESMTP id S241791AbjIBGB6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 02:00:26 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A95710FE
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 23:00:18 -0700 (PDT)
+        Sat, 2 Sep 2023 02:01:58 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C59410F4
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 23:01:55 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3AC531F45E;
-        Sat,  2 Sep 2023 06:00:11 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 370A821860;
+        Sat,  2 Sep 2023 06:01:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693634411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1693634514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=UiJw0wZmYV8xH3B+NPa1TPI5Mn11gBz0SBgdVdGvyAI=;
-        b=hIkKKbKv08qFtCaP5D8arDHucS3JMv12FWNwuu6CKbOhnD/W3+liToOSWcK0W3XaBbpz79
-        f2cxmf93ddlujT7JIlHfTlxh9qwoM4HqhpgA1dMp58ONzoLInwG2KH4PqnlC6FTOLTdOy1
-        Ln9s7yS33OrbAX3i+NcTvMo7jf1/PeM=
+        bh=abAFWmqD3MSKZ2lEcxkJ4zagvS5AzWLDxL9nMbeEEVM=;
+        b=bCsAomZxexiMIDAgbzhi7er6Fl/kOOYr2on7G/uIk+h2lzY5vPVBhC0y1GJGR8G6r3HRTP
+        e0ARYO41sGBaHjNhGBjylrGdaTkUJulhzCoGeBWsyz7+nF10p54WPbD1cF0eOLyRBsJw2u
+        q7ubpb6w5ycNGLeDJMFNtXZEIozXZOI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693634411;
+        s=susede2_ed25519; t=1693634514;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=UiJw0wZmYV8xH3B+NPa1TPI5Mn11gBz0SBgdVdGvyAI=;
-        b=8vbCd2MKe43WIoDW2Uha+1Y/3FYvVtJrX5iHNJUg6MpOUSEqontYND2c3A5Y+djkBvjPfF
-        5p41zJyuEVneqXCA==
+        bh=abAFWmqD3MSKZ2lEcxkJ4zagvS5AzWLDxL9nMbeEEVM=;
+        b=m0S2p1u/z6dq50vH5Z0uB9fmtGMJUTt4AZ9a2I1av+QN0MxxIbTqriS+72pPUJuy6yaU4w
+        RN0EhtVlxB5KbEBA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A08E13440;
-        Sat,  2 Sep 2023 06:00:11 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0CEA213440;
+        Sat,  2 Sep 2023 06:01:54 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id lo2EBWvP8mSsTgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Sat, 02 Sep 2023 06:00:11 +0000
-Date:   Sat, 02 Sep 2023 08:00:10 +0200
-Message-ID: <87edjhm7x1.wl-tiwai@suse.de>
+        id pHCyAdLP8mRETwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sat, 02 Sep 2023 06:01:54 +0000
+Date:   Sat, 02 Sep 2023 08:01:53 +0200
+Message-ID: <87cyz1m7u6.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Al Viro <viro@zeniv.linux.org.uk>
 Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 02/25] ALSA: pcm: Add copy ops with iov_iter
-In-Reply-To: <20230902053044.GJ3390869@ZenIV>
+Subject: Re: [PATCH v2 06/25] ALSA: emu8000: Convert to generic PCM copy ops
+In-Reply-To: <20230902053646.GK3390869@ZenIV>
 References: <20230815190136.8987-1-tiwai@suse.de>
-        <20230815190136.8987-3-tiwai@suse.de>
-        <20230902053044.GJ3390869@ZenIV>
+        <20230815190136.8987-7-tiwai@suse.de>
+        <20230902053646.GK3390869@ZenIV>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -69,24 +69,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 02 Sep 2023 07:30:44 +0200,
+On Sat, 02 Sep 2023 07:36:46 +0200,
 Al Viro wrote:
 > 
-> On Tue, Aug 15, 2023 at 09:01:13PM +0200, Takashi Iwai wrote:
+> On Tue, Aug 15, 2023 at 09:01:17PM +0200, Takashi Iwai wrote:
+> > +		else if (copy_from_iter(&sval, 2, iter) != 2)		\
+> > +			return -EFAULT;					\
 > 
-> > -	if (copy_from_user(get_dma_ptr(substream->runtime, channel, hwoff),
-> > -			   (void __user *)buf, bytes))
-> > +	if (!copy_from_iter(get_dma_ptr(substream->runtime, channel, hwoff),
-> > +			    bytes, iter))
+> copy_from_iter_full()?
+
+It's a place in an internal copy to carry each 16bit word, so this is
+intentional.
+
+> > -static int emu8k_pcm_copy_kernel(struct snd_pcm_substream *subs,
+> > -				 int voice, unsigned long pos,
+> > -				 void *src, unsigned long count)
+> > -{
+> > -	struct snd_emu8k_pcm *rec = subs->runtime->private_data;
+> > -
+> > -	/* convert to word unit */
+> > -	pos = (pos << 1) + rec->loop_start[voice];
+> > -	count <<= 1;
+> > -	LOOP_WRITE(rec, pos, src, count, COPY_KERNEL);
+> > +	LOOP_WRITE(rec, pos, src, count);
+> >  	return 0;
+> >  }
+> >  
+> > @@ -483,16 +456,15 @@ static int emu8k_pcm_silence(struct snd_pcm_substream *subs,
+> >  	/* convert to word unit */
+> >  	pos = (pos << 1) + rec->loop_start[voice];
+> >  	count <<= 1;
+> > -	LOOP_WRITE(rec, pos, NULL, count, FILL_SILENCE);
+> > +	LOOP_WRITE(rec, pos, USER_SOCKPTR(NULL), count);
 > 
-> The former is "if not everything got copied", the latter - "if nothing got
-> copied"; the same goes for other places like that.
+> USER_SOCKPTR?
 
-Thanks, yes, this should be
-	if (copy_from_iter(...) != bytes)
-
-Other places have been already corrected in v2 patchset, but this
-place was overseen.  Will fix it.
+Oh, obviously a leftover :-<
+It's a code in #if-0 block, and compiler didn't catch it.
 
 
 Takashi
+
