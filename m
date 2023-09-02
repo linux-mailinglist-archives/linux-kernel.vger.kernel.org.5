@@ -2,159 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5BE7909A4
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 23:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8507F7909A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 23:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234527AbjIBVFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 17:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33502 "EHLO
+        id S234546AbjIBVGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 17:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229590AbjIBVFY (ORCPT
+        with ESMTP id S229590AbjIBVGa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 17:05:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB1C1AB;
-        Sat,  2 Sep 2023 14:05:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sat, 2 Sep 2023 17:06:30 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54C6AB
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 14:06:27 -0700 (PDT)
+Received: from localhost (unknown [81.18.92.207])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 9B719B80471;
-        Sat,  2 Sep 2023 21:05:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D6A4C433C7;
-        Sat,  2 Sep 2023 21:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693688718;
-        bh=rk6OUUF0lju8fTJCsQyrCMTMh23x8YQNCTK57B6EXQ8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uffgnftZcfh0vQobjrnOagHZJ/k2irGDSeKLePIBbkNANCFGzY7aKcCnPvG33gg2S
-         4qcQva1K+qp+6wu54OrL3C67oiQJKOrCDLdlagvWNg8M+RnpBe4epC2JoQ23LjUJgU
-         +zfh6HK1X+0a8amJJHUNxKwmL8wGaTF8yw+AjPkbBOwqQSGTHeH0nW4MIWaTwKpq7W
-         foIw++NlqbXjm5gdy3LlohxMsTYD1RNvFUldKyKtd7e/Jxl/ie1Qn21oDPdfA133YM
-         gCLy/9ka3zDmJ2NN4I5AXDnHMNV1fp0lGsx3z64JRVN3ukBYbOrJcZ8C4FCXawUrYd
-         dhG4o4E6wr5yQ==
-Date:   Sat, 2 Sep 2023 23:05:13 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huangzheng lai <laihuangzheng@gmail.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Subject: Re: [PATCH 3/8] i2c: sprd: Use global variables to record IIC
- ack/nack status instead of local variables
-Message-ID: <20230902210513.3xelrcdtynz45p4o@zenone.zhora.eu>
-References: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com>
- <20230817094520.21286-4-Huangzheng.Lai@unisoc.com>
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 9EF9B6607285;
+        Sat,  2 Sep 2023 22:06:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693688785;
+        bh=OwodNzQow81cioZ/x0NFsPD4e4UBN2L+BF3m/k/eTjY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=IuNe7fdRvYqd600PCKP9mxCOAAYRUEXAC9kmN9WRd3HtS/cl/gi7nOaLX0tEgnjvi
+         V4b1wpNzZOKpHS3iMBK87N8LUFSObzRIh/LyAT3mHbYyy96jd4FDKZr5qSFMMbQP3n
+         gwyKEyxpiH6g/i/0dLvgui10KydGZOR2v7QIQXSMjHp+BB8guBkNMhkQi9PDKc1YF0
+         7P7ynyUi4Mun29FBQOv9KyPTPusDwD07eNMNGb6X70GqqziexbMGNtAniodCiZEk7A
+         uoGKYG8RjeMmsP9/2uoYxDxhVAvdpDnLr/W85TV/GKVO/3TEBJ0BEFqTJKEVDZnYYu
+         MLOB46NUBChvQ==
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+Subject: [PATCH 0/9] Improve CS35l41 ALSA SoC audio driver
+Date:   Sun,  3 Sep 2023 00:06:12 +0300
+Message-ID: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230817094520.21286-4-Huangzheng.Lai@unisoc.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huangzheng,
+This patch series contains several fixes and improvements to 
+the CS35l41 audio codec driver.
 
-On Thu, Aug 17, 2023 at 05:45:15PM +0800, Huangzheng Lai wrote:
-> We found that when the interrupt bit of the IIC controller is cleared,
-> the ack/nack bit is also cleared at the same time. After clearing the
-> interrupt bit in sprd_i2c_isr(), incorrect ack/nack information will be
-> obtained in sprd_i2c_isr_thread(), resulting in incorrect communication
-> when nack cannot be recognized. To solve this problem, we used a global
-> variable to record ack/nack information before clearing the interrupt
-> bit instead of a local variable.
-> 
-> Signed-off-by: Huangzheng Lai <Huangzheng.Lai@unisoc.com>
+It has been verified on Valve's Steam Deck.
 
-Is this a fix? Then please consider adding
+Cristian Ciocaltea (9):
+  ASoC: cs35l41: Handle mdsync_down reg write errors
+  ASoC: cs35l41: Handle mdsync_up reg write errors
+  ASoC: cs35l41: Initialize completion object before requesting IRQ
+  ASoC: cs35l41: Fix broken shared boost activation
+  ASoC: cs35l41: Rename pll_lock to pll_lock_done
+  ASoC: cs35l41: Make use of dev_err_probe()
+  ASoC: cs35l41: Verify PM runtime resume errors in IRQ handler
+  ASoC: cs35l41: Use modern pm_ops
+  ASoC: cs35l41: Use devm_pm_runtime_enable()
 
-Fixes: 8b9ec0719834 ("i2c: Add Spreadtrum I2C controller driver")
-Cc: <stable@vger.kernel.org> # v4.14+
+ include/sound/cs35l41.h        |   5 +-
+ sound/soc/codecs/cs35l41-i2c.c |  11 ++-
+ sound/soc/codecs/cs35l41-lib.c |  83 ++++++++++++++++------
+ sound/soc/codecs/cs35l41-spi.c |  11 ++-
+ sound/soc/codecs/cs35l41.c     | 121 ++++++++++++++++++++++-----------
+ sound/soc/codecs/cs35l41.h     |   4 +-
+ 6 files changed, 158 insertions(+), 77 deletions(-)
 
-> ---
->  drivers/i2c/busses/i2c-sprd.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-sprd.c b/drivers/i2c/busses/i2c-sprd.c
-> index 066b3a9c30c8..549b60dd3273 100644
-> --- a/drivers/i2c/busses/i2c-sprd.c
-> +++ b/drivers/i2c/busses/i2c-sprd.c
-> @@ -85,6 +85,7 @@ struct sprd_i2c {
->  	struct clk *clk;
->  	u32 src_clk;
->  	u32 bus_freq;
-> +	bool ack_flag;
+-- 
+2.41.0
 
-smells a bit racy... however we are in the same interrupt cycle.
-
-Do you think we might need a spinlock around here?
-
->  	struct completion complete;
->  	struct reset_control *rst;
->  	u8 *buf;
-> @@ -384,7 +385,6 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->  {
->  	struct sprd_i2c *i2c_dev = dev_id;
->  	struct i2c_msg *msg = i2c_dev->msg;
-> -	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
->  	u32 i2c_tran;
->  
->  	if (msg->flags & I2C_M_RD)
-> @@ -400,7 +400,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->  	 * For reading data, ack is always true, if i2c_tran is not 0 which
->  	 * means we still need to contine to read data from slave.
->  	 */
-> -	if (i2c_tran && ack) {
-> +	if (i2c_tran && i2c_dev->ack_flag) {
->  		sprd_i2c_data_transfer(i2c_dev);
->  		return IRQ_HANDLED;
->  	}
-> @@ -411,7 +411,7 @@ static irqreturn_t sprd_i2c_isr_thread(int irq, void *dev_id)
->  	 * If we did not get one ACK from slave when writing data, we should
->  	 * return -EIO to notify users.
->  	 */
-> -	if (!ack)
-> +	if (!i2c_dev->ack_flag)
->  		i2c_dev->err = -EIO;
->  	else if (msg->flags & I2C_M_RD && i2c_dev->count)
->  		sprd_i2c_read_bytes(i2c_dev, i2c_dev->buf, i2c_dev->count);
-> @@ -428,7 +428,6 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
->  {
->  	struct sprd_i2c *i2c_dev = dev_id;
->  	struct i2c_msg *msg = i2c_dev->msg;
-> -	bool ack = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
->  	u32 i2c_tran;
->  
->  	if (msg->flags & I2C_M_RD)
-> @@ -447,7 +446,8 @@ static irqreturn_t sprd_i2c_isr(int irq, void *dev_id)
->  	 * means we can read all data in one time, then we can finish this
->  	 * transmission too.
->  	 */
-> -	if (!i2c_tran || !ack) {
-> +	i2c_dev->ack_flag = !(readl(i2c_dev->base + I2C_STATUS) & I2C_RX_ACK);
-
-there is a question from Chunyan here.
-
-I like more
-
-	val = readl(...);
-	i2c_dev->ack_flag = !(val & I2C_RX_ACK);
-
-a matter of taste, your choice.
-
-Andi
-
-> +	if (!i2c_tran || !i2c_dev->ack_flag) {
->  		sprd_i2c_clear_start(i2c_dev);
->  		sprd_i2c_clear_irq(i2c_dev);
->  	}
-> -- 
-> 2.17.1
-> 
