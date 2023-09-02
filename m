@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F98790942
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A56790943
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 21:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231958AbjIBS6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 14:58:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39358 "EHLO
+        id S231997AbjIBTAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 15:00:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbjIBS6i (ORCPT
+        with ESMTP id S229805AbjIBTAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 14:58:38 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34C0ED;
-        Sat,  2 Sep 2023 11:58:30 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c4923195dso27116066b.2;
-        Sat, 02 Sep 2023 11:58:30 -0700 (PDT)
+        Sat, 2 Sep 2023 15:00:19 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D1219E
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 12:00:15 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99c93638322so32153466b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 12:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693681109; x=1694285909; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gl4SU+iR0aYjorFAnHIvqmzFYuhuur+i3elwAKbseyI=;
-        b=JRVrF6I6Gqhv1eWDDaz7Ks3fBRLV4evdavSwovClwXF3zhzzBtn4oi2bTlx/uXcaML
-         rGQTA5hJ0wRX5BLuY8kkPdEkXKqNW40+hH8Dw213lkuBVmaIrJpEAD44AcC+s8aN2z4P
-         JGj+n3UCfJiID5Za82bQqMB8J1ULqDqVifioS15WoUbvMRISepPd8o+lKuZKuLxfmgt5
-         XFht2Uo2UjWBNCUR/3Om3BtGvHt7u2vhqWQPPbgrQyDSX1vGJTRwpw4gWz2X5vFiG/Ac
-         lURyzIhylCMP6hNleJQ+kEMY1gk9PgFBQ3/hwnmZouzIxkrNxQRS88EIqaIu2LLqFbAT
-         KNRQ==
+        d=linux-foundation.org; s=google; t=1693681214; x=1694286014; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GJG2v/tBrKXJAeh8f1wAGpImo/b6UiTOWlNfcbJr5Tk=;
+        b=NVTMsLY8bARqE1pKckxXL8jyXbsiAiJ2h/Qn95jw2BYWUc7vdx99j+ayD3rsbQyBRF
+         k/LrJXxiDc5a0QsExLRbJPlfwTWUXxr49HfP0NdvlwYQuqYF04BO0pdBmnQT9k108zal
+         s3uajlsxkSB/F/Tvml0ZV2m+S0Ly9ALTIDHsI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693681109; x=1694285909;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gl4SU+iR0aYjorFAnHIvqmzFYuhuur+i3elwAKbseyI=;
-        b=DTv5J/qXqRYaEmE6WO1pFg2YKbQU+QkO/PE6cM+u5oqTcZu3qjfbkbJy2fIn/JKFhk
-         EZi2qYG1aQy7LVaxhnymfyfY2pXsehc1SWi12QWfvemueffvBc2QAMj/Lb+/T/KXCQxu
-         ka5CoTMYbKLdU+XlCeoDesCX+quQrgLZfyRSMT/FX3Tv/QTTgXWhbZIXa++BeI1RSO3J
-         eVR6KkBIP/4RELv3uq/YzWE7icoygM9MbNFNTdHcOlDjP828SzriOGt5Wi5kaUpriVhG
-         mYeJS9+3AOlSTzBXDJyaVD1BPa+5IvHAlZbrx6u6XE0gMd3s7h3ih98IL2kg7Zb/GBeQ
-         M2sw==
-X-Gm-Message-State: AOJu0YwfQ4pJuQ/EovY5TrAkgHb1+7n15BcshOdfHabs+JoDAjzwntL/
-        snS6as9igQsOmyd44fz35H8=
-X-Google-Smtp-Source: AGHT+IFODLtoLsf48req917bK98NAE1I+S0Yvh0IcbImIFKunEHUw0bS/eMKsPkoBwjtjAKUsC9jbQ==
-X-Received: by 2002:a17:906:3291:b0:9a1:bd1d:61b2 with SMTP id 17-20020a170906329100b009a1bd1d61b2mr3846170ejw.56.1693681108930;
-        Sat, 02 Sep 2023 11:58:28 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id dt22-20020a170906b79600b0099d959f9536sm3809066ejb.12.2023.09.02.11.58.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 11:58:28 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 3262227C0054;
-        Sat,  2 Sep 2023 14:58:26 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sat, 02 Sep 2023 14:58:26 -0400
-X-ME-Sender: <xms:0YXzZKjOM7vXfm3HVkUDU0HZFNGkQUgqEExdD0KbIS6uXmG_kIdn7g>
-    <xme:0YXzZLAJkLst6hOrR-rTk-s7jVxV8KIIk2Qv2yn-PfjE46KhZt7LSuu5JRyrDauJ6
-    2X7bQ6K7CoGvb4V_A>
-X-ME-Received: <xmr:0YXzZCGYqMoJhEAtHxHkRKYJgir7PO31NRvXt0peBiDgs-ksSY9lKZNpLwAFDQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudeggedgudeffecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhq
-    uhhnucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrf
-    grthhtvghrnhepueeutdetheelkedvieekjeefveekjedufeefkeduueduffejueegfffh
-    hfffkefhnecuffhomhgrihhnpehruhhsthdqfhhorhdqlhhinhhugidrtghomhdpghhith
-    hhuhgsrdgtohhmpdiiuhhlihhptghhrghtrdgtohhmnecuvehluhhsthgvrhfuihiivgep
-    tdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgvshhmthhprghuthhhph
-    gvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehheehvddqsghoqhhunhdr
-    fhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
-X-ME-Proxy: <xmx:0YXzZDTYxeOmU8jO2ij9xWNjbmq99qNm1HytDpYGvMerrqxShTtQQA>
-    <xmx:0YXzZHyKr18TrP9pLU2296aXWyW1QYWcgnRGV2Gt3dYYR9Ovd5o5GQ>
-    <xmx:0YXzZB77Xyc7WAlj5_6vZAvBakPp3QpGhEAOUVBgKk4ehLBaI6j7Zg>
-    <xmx:0oXzZMqzPXuIdezaISsZkoUXCNcxUR0KUr4fJg13HQz5t57kHdgcmA>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 2 Sep 2023 14:58:25 -0400 (EDT)
-Date:   Sat, 2 Sep 2023 11:57:22 -0700
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Gary Guo <gary@garyguo.net>,
-        =?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        Andreas Hindborg <a.hindborg@samsung.com>,
-        Alice Ryhl <aliceryhl@google.com>,
-        rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH 1/2] MAINTAINERS: update Rust webpage
-Message-ID: <ZPOFkpue7MX28bE7@boqun-archlinux>
-References: <20230830165949.127475-1-ojeda@kernel.org>
+        d=1e100.net; s=20221208; t=1693681214; x=1694286014;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GJG2v/tBrKXJAeh8f1wAGpImo/b6UiTOWlNfcbJr5Tk=;
+        b=Oqf6hmoDSKQyS40lNadCAWV1QRLwl9HDVomDSjMzN9T573N3aH8NdpLTYI7RGT0weK
+         Z+8Lr7mFxO1ebGYb2fbYxyfKs87d+gZK2zJuJtVCHEUSPn47VHIlo4QNpPW2GsQEgvNV
+         Fa8331XTGq4s5lSvbFjjzVyjbCgu7Mp9Jb82MecszWV+aCbHEJ9Ef/RcJ0zEP+RaPdNM
+         z8ObjO8UcUZpZXtxEwBqVsaSzOWn9Jd7ZzRNs8pKjBVo4WL7RUGjHfoUsltAn6BHNaTP
+         KuacQJ9iEeD48RH4rvycNRQJlZ2lpkdwnIYnHkhbEjg+GKTPUihx7mJbT0JuxZUubJ58
+         UzMA==
+X-Gm-Message-State: AOJu0YwOfMYgYrn2gQL75pRhWPZlR159SaizBdB41zZKsyYNLZCTkF8h
+        21sBhj8nl5jRuqjGowgHsn2vJ9M6aYB6zLOayKX0QYUZ
+X-Google-Smtp-Source: AGHT+IHKRIcxsesgLfB+LjFWNp+Erf1/y+2xvJModQVqdphfZ3uB4/4KJOK3A9FmQ6Heto38k8NNUA==
+X-Received: by 2002:a17:906:10dc:b0:9a2:143e:a070 with SMTP id v28-20020a17090610dc00b009a2143ea070mr7065131ejv.20.1693681213853;
+        Sat, 02 Sep 2023 12:00:13 -0700 (PDT)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id gj17-20020a170906e11100b0098921e1b064sm3720921ejb.181.2023.09.02.12.00.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Sep 2023 12:00:13 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so318681a12.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 12:00:12 -0700 (PDT)
+X-Received: by 2002:a05:6402:34d0:b0:51d:b184:efd with SMTP id
+ w16-20020a05640234d000b0051db1840efdmr10020929edc.20.1693681212581; Sat, 02
+ Sep 2023 12:00:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830165949.127475-1-ojeda@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230901184136.73b2833e@xps-13>
+In-Reply-To: <20230901184136.73b2833e@xps-13>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 2 Sep 2023 11:59:55 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgUntc0u-6WQ9U3OmNHTqB=cZQoWcTOXaipB+gixV5NPA@mail.gmail.com>
+Message-ID: <CAHk-=wgUntc0u-6WQ9U3OmNHTqB=cZQoWcTOXaipB+gixV5NPA@mail.gmail.com>
+Subject: Re: [GIT PULL] mtd: Changes for v6.6-rc1
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+        Tudor Ambarus <Tudor.Ambarus@linaro.org>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>,
+        Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -106,47 +79,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 06:59:48PM +0200, Miguel Ojeda wrote:
-> A few months ago we started a webpage for the Rust subsystem and
-> the overall Rust for Linux project [1].
-> 
-> The current `W:` field of the Rust entry points to the GitHub
-> repository, since originally we kept information in a `README.md`
-> file that got rendered by GitHub when visiting that URL.
-> 
-> That information was moved into the webpage and got expanded.
-> The webpage is also nowadays the entry point to the project,
-> and we pointed the "Website" GitHub metadata field to it.
-> 
-> Thus update the `W:` field to point to the actual webpage.
-> 
-> Link: https://rust-for-linux.com [1]
-> Signed-off-by: Miguel Ojeda <ojeda@kernel.org>
+On Fri, 1 Sept 2023 at 09:42, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+>
+> Core MTD changes:
+> * Use refcount to prevent corruption
+> * Call external _get and _put in right order
+> * Fix use-after-free in mtd release
+> * Explicitly include correct DT includes
+> * Clean refcounting with MTD_PARTITIONED_MASTER
+> * mtdblock: make warning messages ratelimited
+> * dt-bindings: Add SEAMA partition bindings
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+Ok, so the above list isa fairly reasonable, but then:
 
-Regards,
-Boqun
+> MTD device driver changes:
+> * spear_smi: Use helper function devm_clk_get_enabled()
+> * maps: fix -Wvoid-pointer-to-enum-cast warning
+> * docg3: Remove unnecessary (void*) conversions
+> * physmap-core, spear_smi, st_spi_fsm, lpddr2_nvm, lantiq-flash, plat-ram:
+>   - Use devm_platform_get_and_ioremap_resource()
+[...]
 
-> ---
->  MAINTAINERS | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 12601a47c839..7c8088e9a11b 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -18558,7 +18558,7 @@ R:	Andreas Hindborg <a.hindborg@samsung.com>
->  R:	Alice Ryhl <aliceryhl@google.com>
->  L:	rust-for-linux@vger.kernel.org
->  S:	Supported
-> -W:	https://github.com/Rust-for-Linux/linux
-> +W:	https://rust-for-linux.com
->  B:	https://github.com/Rust-for-Linux/linux/issues
->  C:	zulip://rust-for-linux.zulipchat.com
->  T:	git https://github.com/Rust-for-Linux/linux.git rust-next
-> 
-> base-commit: 4af84c6a85c63bec24611e46bb3de2c0a6602a51
-> -- 
-> 2.42.0
-> 
+This is not a "summary of changes". The above is basically just a
+re-organized shortlog.
+
+What I want a merge message to be is to be an _overview_ of what the
+merge brings in, and it's why I ask peopel to summarize what they have
+worked on in the pull request.
+
+But when the "summary" is just a list of every single detail, it's no
+longer a summary. It doesn't give an overview of what has changed.
+It's not useful to an outsider as a way to see "this is what the merge
+brings in".
+
+End result: I might as well just use "git shortlog", and it would
+probably be about as readable as this is. In fact, I get the strong
+feeling that this was auto-generated from something very much akin to
+"git shortlog", just edited to combine multiple commits that just did
+the same thing to several drivers.
+
+Please - this is meant for *humans*. If it is just another form of
+"git shortlog", then the automated version is *better*, because I can
+use "git shortlog" to look at one particular driver (or a particular
+set of drivers), so having a static version of "git shortlog" that has
+been slightly munged to another format is actually _inferior_.
+
+No, what the merge message should be is a general overview of "this is
+the big picture". Not just a list of every single change, just by
+sub-area.
+
+For example, you list "Use devm_platform_get_and_ioremap_resource" not
+just for individual drivers (nobody cares!), you do it *twice*,
+because you've split up MTD drivers from raw NAND controller drivers.
+
+And then you separately list "Use helper function
+devm_clk_get_optional_enabled" from that list too, _and_ you then list
+"Use devm_platform_ioremap_resource_byname()" for the brcm nand
+driver.
+
+Not to mention individually lising "Fix alignment with open
+parenthesis" and "Fix the spacing" and "Fix wrong indentation" and
+"Fix a typo" for the Qcom driver.
+
+See why I'm frustrated? This has been going on for some time, but it's
+gett9ing *worse*. This is absolutely ridiculous. I could try to make a
+summary of it all, but honestly, now it feels like just complete
+wasted time.
+
+So I pulled this, looked at the "summary" in the fag, and decided that
+it's just not worth it, and unpulled it.
+
+Please give me a *summary* of what has changed. A list of *important&
+things. Not a list of pointless typo fixes.
+
+               Linus
