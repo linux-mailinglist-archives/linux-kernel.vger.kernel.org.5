@@ -2,112 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD71879084E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC23790856
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232495AbjIBOnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 10:43:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42336 "EHLO
+        id S232705AbjIBO7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 10:59:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjIBOni (ORCPT
+        with ESMTP id S232495AbjIBO7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 10:43:38 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DB9B10EB;
-        Sat,  2 Sep 2023 07:43:35 -0700 (PDT)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 382EhPRo007680;
-        Sat, 2 Sep 2023 14:43:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=UjNidh8ce6KQOxCJsuzKeLVYqu+hNoaa2Ob7Pv0Efv0=;
- b=cjEVpIA+dwykfDjlahTBaFRjcH4kA7RklWLPp3cU4YombI317JhpFUkTMQ3PZ5KL3piS
- MNF78hLv5TMM+MyFxAucMf4kfBri/Fhc2ghVdGuf7qNvFGs0sjNI5WIN8HL7LYTRIsIF
- b3ZmKHQPYduGY51HjE8OxvsBgBOucJ1Wohu0OcGx1WDSWhbltP0ULqSL2qSIXoRx99Do
- AUgm/Y1VkgFVdB7QnXnvki6IJixXMlV8wZvfZwffIOYm2sxHmr+8+ogdJ82/0yHPgKbJ
- f3m7I+n90E1wtOT5Rcqz5eOdu4HTD3NsZvN47tU5Peh/eH8UOfMmD3MbbGMGqKdK8cxa Ew== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suvn6gn5a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 02 Sep 2023 14:43:25 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 382EhOOe026924
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 2 Sep 2023 14:43:24 GMT
-Received: from [10.216.50.18] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sat, 2 Sep
- 2023 07:43:20 -0700
-Message-ID: <6f7e2b0a-5113-2526-bdfe-c9053c285d55@quicinc.com>
-Date:   Sat, 2 Sep 2023 20:13:14 +0530
+        Sat, 2 Sep 2023 10:59:17 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B723B10F9
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 07:58:52 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a3e943762so24489b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 07:58:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1693666732; x=1694271532; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JqqASAwLidLHNsbo1Ikd5zAnkh2n6j+4MeLGVjK9KeQ=;
+        b=DtTUrgGGYNoryzvQliqRAV0I0TqxgBLASK55Il6RmnPNjSEd1gk32t1ZFbF1xYDNQP
+         h60r0cicm1R1SiikgC3zKN3Up1dupiLZR/NxCP862eQsdP3+1VnQgqUCY+fuoPvKrpIG
+         xoZyTrG+6tCdr6Q9yrSK7kImMqYqTOT9Rlu7PXgaLFdFm7M9YYs0XkXX2SJoO9fDpJzm
+         jQONKlDwT5+bzE7MqCVrkOl4hAlca+uEquVvUOqyrjjFq9UGWofyTWnY9bK10RSGedyC
+         ZON/luEwINHq0hBeZk8YTLGLo3B868jC47BgEg1NGA3qfB4B5Jw6bmuC6CaLy6iCB+7x
+         v0RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693666732; x=1694271532;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JqqASAwLidLHNsbo1Ikd5zAnkh2n6j+4MeLGVjK9KeQ=;
+        b=lr63NOb6wKSlT3gLB3xXsLuZuD2Q+4mSxlsZa56GtTlM+I1qjOw5at1F3iNWlgTrq4
+         iqxZ9iF+jS6Vja2Mwrgw6NsvaiDFF24JgXgMU5ZNc9FjslTxKbLPGSQQF9kTpuFIn9tT
+         4PpGAyGCzro2o0JIyTMiInlPe9s+tPHpvLEA85hrqRGC6E5I9zc3fdDAe8Tak3FgL7KI
+         PQ+14pm678oFfXsuFF82LoeuLWXEhSviFPvVSBsy2egtmvd7UFpeKWbffn4QCS1rk1uM
+         2WzSV8Ol+1sZYWMJl1mSQAGzGyhkkZXneugai/auR/fi9wBwGb7tYecM34TbwS/NAIyW
+         joOw==
+X-Gm-Message-State: AOJu0YxPTKmYIeQPtCjOZeCTSz1ya+mtbAMmGWGLG57BvfL1ugSTydzc
+        2m1cP1CrkB7LdsgeV+FyGe3cOQ==
+X-Google-Smtp-Source: AGHT+IGd+LVDZeDr4jp9A7Kym84DV1Es5xjo7XwfHT7msRM8+isjvqbRTbPJRfVgoPjHXUck8disWg==
+X-Received: by 2002:a05:6a20:8421:b0:14d:446f:7212 with SMTP id c33-20020a056a20842100b0014d446f7212mr8222606pzd.46.1693666732204;
+        Sat, 02 Sep 2023 07:58:52 -0700 (PDT)
+Received: from [10.254.27.61] ([139.177.225.238])
+        by smtp.gmail.com with ESMTPSA id e14-20020a62aa0e000000b006873aa079aasm4864718pff.171.2023.09.02.07.58.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 02 Sep 2023 07:58:51 -0700 (PDT)
+Message-ID: <a84b5ccb-151a-2de1-c213-de68a6f81f29@bytedance.com>
+Date:   Sat, 2 Sep 2023 22:58:46 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.0
-Subject: Re: [PATCH 2/2] soc: qcom: socinfo: Add IDs for IPQ8174 family
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v3 0/6] blk-mq-tag: remove bt_for_each()
 Content-Language: en-US
-To:     Robert Marko <robimarko@gmail.com>, <agross@kernel.org>,
-        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20230901181041.1538999-1-robimarko@gmail.com>
- <20230901181041.1538999-2-robimarko@gmail.com>
-From:   Kathiravan T <quic_kathirav@quicinc.com>
-In-Reply-To: <20230901181041.1538999-2-robimarko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     chengming.zhou@linux.dev, axboe@kernel.dk, ming.lei@redhat.com,
+        bvanassche@acm.org, hch@lst.de
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230823151803.926382-1-chengming.zhou@linux.dev>
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+In-Reply-To: <20230823151803.926382-1-chengming.zhou@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: Ovs3Up_xvn6xoULmiaMcrK7oPMkOQR6X
-X-Proofpoint-GUID: Ovs3Up_xvn6xoULmiaMcrK7oPMkOQR6X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-02_10,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 impostorscore=0 adultscore=0 mlxscore=0
- malwarescore=0 clxscore=1015 mlxlogscore=947 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309020137
 X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2023/8/23 23:17, chengming.zhou@linux.dev wrote:
+> From: Chengming Zhou <zhouchengming@bytedance.com>
+> 
+> Changes in v3:
+>   - Document the argument 'q' in the patch which add it.
+>   - Add Fixes tag and Reviewed-by tags.
 
-On 9/1/2023 11:40 PM, Robert Marko wrote:
-> IPQ8174 (Oak) family is part of the IPQ8074 family, but the ID-s for it
-> are missing so lets add them.
->
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-> ---
->   drivers/soc/qcom/socinfo.c | 3 +++
->   1 file changed, 3 insertions(+)
+Hello, gentle ping.
 
+Thanks.
 
-Reviewed-by: Kathiravan T <quic_kathirav@quicinc.com>
-
-
->
-> diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
-> index 497cfb720fcb..345f0b002eb5 100644
-> --- a/drivers/soc/qcom/socinfo.c
-> +++ b/drivers/soc/qcom/socinfo.c
-> @@ -359,6 +359,9 @@ static const struct soc_id soc_id[] = {
->   	{ qcom_board_id(SM6125) },
->   	{ qcom_board_id(IPQ8070A) },
->   	{ qcom_board_id(IPQ8071A) },
-> +	{ qcom_board_id(IPQ8172) },
-> +	{ qcom_board_id(IPQ8173) },
-> +	{ qcom_board_id(IPQ8174) },
->   	{ qcom_board_id(IPQ6018) },
->   	{ qcom_board_id(IPQ6028) },
->   	{ qcom_board_id(SDM429W) },
+> 
+> Changes in v2:
+>   - Split by one change per patch and add Fixes tag.
+>   - Improve commit messages, suggested by Bart Van Assche.
+> 
+> There are two almost identical mechanisms in blk-mq-tag to iterate over
+> requests of one tags: bt_for_each() and the newer bt_tags_for_each().
+> 
+> This series aim to add support of queue filter in bt_tags_for_each()
+> then remove bt_for_each(). Fix and update documentation as we're here.
+> 
+> Thanks for review!
+> 
+> Chengming Zhou (6):
+>   blk-mq-tag: support queue filter in bt_tags_iter()
+>   blk-mq-tag: introduce __blk_mq_tagset_busy_iter()
+>   blk-mq-tag: remove bt_for_each()
+>   blk-mq: delete superfluous check in iterate callback
+>   blk-mq-tag: fix functions documentation
+>   blk-mq-tag: fix blk_mq_queue_tag_busy_iter() documentation
+> 
+>  block/blk-mq-tag.c | 176 ++++++++++++---------------------------------
+>  block/blk-mq.c     |  12 ++--
+>  2 files changed, 49 insertions(+), 139 deletions(-)
+> 
