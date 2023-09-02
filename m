@@ -2,107 +2,604 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1477905DC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 09:42:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B79D7905DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 09:43:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351783AbjIBHmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 03:42:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33456 "EHLO
+        id S1351785AbjIBHnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 03:43:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351758AbjIBHms (ORCPT
+        with ESMTP id S1351771AbjIBHm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 03:42:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECE01719;
-        Sat,  2 Sep 2023 00:42:43 -0700 (PDT)
+        Sat, 2 Sep 2023 03:42:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E52D1712;
+        Sat,  2 Sep 2023 00:42:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0DACA61776;
-        Sat,  2 Sep 2023 07:42:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22855C433C8;
-        Sat,  2 Sep 2023 07:42:41 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D931DB8275D;
+        Sat,  2 Sep 2023 07:42:46 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EEBBC433C8;
+        Sat,  2 Sep 2023 07:42:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693640562;
-        bh=PibSncufftCzamTsAcJwZAlD4xVyHUzymGj5RpyOx7w=;
-        h=From:To:Cc:Subject:Date:From;
-        b=RQW8Y5TdrObwKyRJqPJtI/7YOFUf123DRNcGdPsWWdtji6nssyuB9e6i1y1T4yfn4
-         5rBKxCq5jXJ89R6FWktczGEWxXwA/SGcIb6Gut+07/OnxPrRrfA8pV8Cp7ek2mK7It
-         cgIBVuYOqXe66AP6wpVMRuD62SirXI5xg2h2IAtQ=
+        s=korg; t=1693640565;
+        bh=X3edu+BvNBGX6w0dK05OGEoc+XO6V5E5Qdlk/oTIZMM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lhYWEATLE8JqLyIwyf83lExv+lLjytaIFCj2J1W6cS50kLHoqpnuLezWIY1nU21tA
+         Gap04Y715shKnn7iipOWtR2m6ANlznTHfl9tuy157Sw8hCaUJN3217E+J6q0S5Vhsg
+         TjSyiwq4eVXRz4hVjviPbfaqLWklkDxAd07g0Vq4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
         torvalds@linux-foundation.org, stable@vger.kernel.org
 Cc:     lwn@lwn.net, jslaby@suse.cz,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Linux 6.1.51
-Date:   Sat,  2 Sep 2023 09:42:32 +0200
-Message-ID: <2023090232-skilled-device-adb5@gregkh>
+Subject: Re: Linux 6.1.51
+Date:   Sat,  2 Sep 2023 09:42:33 +0200
+Message-ID: <2023090233-vaguely-brutishly-e602@gregkh>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <2023090232-skilled-device-adb5@gregkh>
+References: <2023090232-skilled-device-adb5@gregkh>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm announcing the release of the 6.1.51 kernel.
-
-All users of the 6.1 kernel series must upgrade.
-
-The updated 6.1.y git tree can be found at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.1.y
-and can be browsed at the normal kernel.org git web browser:
-	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
-
-thanks,
-
-greg k-h
-
-------------
-
- Documentation/admin-guide/kernel-parameters.txt |    4 
- Makefile                                        |    2 
- arch/arm/kernel/module-plts.c                   |    2 
- arch/arm64/kernel/module-plts.c                 |    3 
- arch/parisc/kernel/sys_parisc.c                 |  169 +++++++++---------------
- arch/x86/include/asm/sections.h                 |   18 --
- drivers/acpi/thermal.c                          |    6 
- drivers/thunderbolt/tmu.c                       |    1 
- include/linux/moduleloader.h                    |    5 
- io_uring/io_uring.c                             |   46 ++++++
- kernel/kallsyms.c                               |   17 --
- kernel/locking/lockdep.c                        |   36 +----
- kernel/module/main.c                            |    2 
- 13 files changed, 144 insertions(+), 167 deletions(-)
-
-Arnd Bergmann (1):
-      arm64: module-plts: inline linux/moduleloader.h
-
-Greg Kroah-Hartman (1):
-      Linux 6.1.51
-
-Helge Deller (3):
-      lockdep: fix static memory detection even more
-      parisc: sys_parisc: parisc_personality() is called from asm code
-      io_uring/parisc: Adjust pgoff in io_uring mmap() for parisc
-
-James Morse (3):
-      module: Expose module_init_layout_section()
-      arm64: module: Use module_init_layout_section() to spot init sections
-      ARM: module: Use module_init_layout_section() to spot init sections
-
-John David Anglin (1):
-      parisc: Cleanup mmap implementation regarding color alignment
-
-Mario Limonciello (2):
-      ACPI: thermal: Drop nocrt parameter
-      thunderbolt: Fix a backport error for display flickering issue
-
-Yonghong Song (1):
-      kallsyms: Fix kallsyms_selftest failure
-
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 882b6198dd0d..31af352b4762 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -6164,10 +6164,6 @@
+ 			-1: disable all critical trip points in all thermal zones
+ 			<degrees C>: override all critical trip points
+ 
+-	thermal.nocrt=	[HW,ACPI]
+-			Set to disable actions on ACPI thermal zone
+-			critical and hot trip points.
+-
+ 	thermal.off=	[HW,ACPI]
+ 			1: disable ACPI thermal control
+ 
+diff --git a/Makefile b/Makefile
+index e5e1fdeef8bf..e7c344d5af15 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,7 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ VERSION = 6
+ PATCHLEVEL = 1
+-SUBLEVEL = 50
++SUBLEVEL = 51
+ EXTRAVERSION =
+ NAME = Curry Ramen
+ 
+diff --git a/arch/arm/kernel/module-plts.c b/arch/arm/kernel/module-plts.c
+index 1fc309b41f94..8d809724cde5 100644
+--- a/arch/arm/kernel/module-plts.c
++++ b/arch/arm/kernel/module-plts.c
+@@ -256,7 +256,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
+ 		/* sort by type and symbol index */
+ 		sort(rels, numrels, sizeof(Elf32_Rel), cmp_rel, NULL);
+ 
+-		if (strncmp(secstrings + dstsec->sh_name, ".init", 5) != 0)
++		if (!module_init_layout_section(secstrings + dstsec->sh_name))
+ 			core_plts += count_plts(syms, dstsec->sh_addr, rels,
+ 						numrels, s->sh_info);
+ 		else
+diff --git a/arch/arm64/kernel/module-plts.c b/arch/arm64/kernel/module-plts.c
+index 5a0a8f552a61..c703b5db8eb1 100644
+--- a/arch/arm64/kernel/module-plts.c
++++ b/arch/arm64/kernel/module-plts.c
+@@ -7,6 +7,7 @@
+ #include <linux/ftrace.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
++#include <linux/moduleloader.h>
+ #include <linux/sort.h>
+ 
+ static struct plt_entry __get_adrp_add_pair(u64 dst, u64 pc,
+@@ -343,7 +344,7 @@ int module_frob_arch_sections(Elf_Ehdr *ehdr, Elf_Shdr *sechdrs,
+ 		if (nents)
+ 			sort(rels, nents, sizeof(Elf64_Rela), cmp_rela, NULL);
+ 
+-		if (!str_has_prefix(secstrings + dstsec->sh_name, ".init"))
++		if (!module_init_layout_section(secstrings + dstsec->sh_name))
+ 			core_plts += count_plts(syms, rels, numrels,
+ 						sechdrs[i].sh_info, dstsec);
+ 		else
+diff --git a/arch/parisc/kernel/sys_parisc.c b/arch/parisc/kernel/sys_parisc.c
+index 09a34b07f02e..9915062d5243 100644
+--- a/arch/parisc/kernel/sys_parisc.c
++++ b/arch/parisc/kernel/sys_parisc.c
+@@ -24,32 +24,28 @@
+ #include <linux/personality.h>
+ #include <linux/random.h>
+ #include <linux/compat.h>
++#include <linux/elf-randomize.h>
+ 
+-/* we construct an artificial offset for the mapping based on the physical
+- * address of the kernel mapping variable */
+-#define GET_LAST_MMAP(filp)		\
+-	(filp ? ((unsigned long) filp->f_mapping) >> 8 : 0UL)
+-#define SET_LAST_MMAP(filp, val)	\
+-	 { /* nothing */ }
+-
+-static int get_offset(unsigned int last_mmap)
+-{
+-	return (last_mmap & (SHM_COLOUR-1)) >> PAGE_SHIFT;
+-}
++/*
++ * Construct an artificial page offset for the mapping based on the physical
++ * address of the kernel file mapping variable.
++ */
++#define GET_FILP_PGOFF(filp)		\
++	(filp ? (((unsigned long) filp->f_mapping) >> 8)	\
++		 & ((SHM_COLOUR-1) >> PAGE_SHIFT) : 0UL)
+ 
+-static unsigned long shared_align_offset(unsigned int last_mmap,
++static unsigned long shared_align_offset(unsigned long filp_pgoff,
+ 					 unsigned long pgoff)
+ {
+-	return (get_offset(last_mmap) + pgoff) << PAGE_SHIFT;
++	return (filp_pgoff + pgoff) << PAGE_SHIFT;
+ }
+ 
+ static inline unsigned long COLOR_ALIGN(unsigned long addr,
+-			 unsigned int last_mmap, unsigned long pgoff)
++			 unsigned long filp_pgoff, unsigned long pgoff)
+ {
+ 	unsigned long base = (addr+SHM_COLOUR-1) & ~(SHM_COLOUR-1);
+ 	unsigned long off  = (SHM_COLOUR-1) &
+-		(shared_align_offset(last_mmap, pgoff) << PAGE_SHIFT);
+-
++		shared_align_offset(filp_pgoff, pgoff);
+ 	return base + off;
+ }
+ 
+@@ -98,126 +94,91 @@ static unsigned long mmap_upper_limit(struct rlimit *rlim_stack)
+ 	return PAGE_ALIGN(STACK_TOP - stack_base);
+ }
+ 
++enum mmap_allocation_direction {UP, DOWN};
+ 
+-unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
+-		unsigned long len, unsigned long pgoff, unsigned long flags)
++static unsigned long arch_get_unmapped_area_common(struct file *filp,
++	unsigned long addr, unsigned long len, unsigned long pgoff,
++	unsigned long flags, enum mmap_allocation_direction dir)
+ {
+ 	struct mm_struct *mm = current->mm;
+ 	struct vm_area_struct *vma, *prev;
+-	unsigned long task_size = TASK_SIZE;
+-	int do_color_align, last_mmap;
++	unsigned long filp_pgoff;
++	int do_color_align;
+ 	struct vm_unmapped_area_info info;
+ 
+-	if (len > task_size)
++	if (unlikely(len > TASK_SIZE))
+ 		return -ENOMEM;
+ 
+ 	do_color_align = 0;
+ 	if (filp || (flags & MAP_SHARED))
+ 		do_color_align = 1;
+-	last_mmap = GET_LAST_MMAP(filp);
++	filp_pgoff = GET_FILP_PGOFF(filp);
+ 
+ 	if (flags & MAP_FIXED) {
+-		if ((flags & MAP_SHARED) && last_mmap &&
+-		    (addr - shared_align_offset(last_mmap, pgoff))
++		/* Even MAP_FIXED mappings must reside within TASK_SIZE */
++		if (TASK_SIZE - len < addr)
++			return -EINVAL;
++
++		if ((flags & MAP_SHARED) && filp &&
++		    (addr - shared_align_offset(filp_pgoff, pgoff))
+ 				& (SHM_COLOUR - 1))
+ 			return -EINVAL;
+-		goto found_addr;
++		return addr;
+ 	}
+ 
+ 	if (addr) {
+-		if (do_color_align && last_mmap)
+-			addr = COLOR_ALIGN(addr, last_mmap, pgoff);
++		if (do_color_align)
++			addr = COLOR_ALIGN(addr, filp_pgoff, pgoff);
+ 		else
+ 			addr = PAGE_ALIGN(addr);
+ 
+ 		vma = find_vma_prev(mm, addr, &prev);
+-		if (task_size - len >= addr &&
++		if (TASK_SIZE - len >= addr &&
+ 		    (!vma || addr + len <= vm_start_gap(vma)) &&
+ 		    (!prev || addr >= vm_end_gap(prev)))
+-			goto found_addr;
++			return addr;
+ 	}
+ 
+-	info.flags = 0;
+ 	info.length = len;
++	info.align_mask = do_color_align ? (PAGE_MASK & (SHM_COLOUR - 1)) : 0;
++	info.align_offset = shared_align_offset(filp_pgoff, pgoff);
++
++	if (dir == DOWN) {
++		info.flags = VM_UNMAPPED_AREA_TOPDOWN;
++		info.low_limit = PAGE_SIZE;
++		info.high_limit = mm->mmap_base;
++		addr = vm_unmapped_area(&info);
++		if (!(addr & ~PAGE_MASK))
++			return addr;
++		VM_BUG_ON(addr != -ENOMEM);
++
++		/*
++		 * A failed mmap() very likely causes application failure,
++		 * so fall back to the bottom-up function here. This scenario
++		 * can happen with large stack limits and large mmap()
++		 * allocations.
++		 */
++	}
++
++	info.flags = 0;
+ 	info.low_limit = mm->mmap_legacy_base;
+ 	info.high_limit = mmap_upper_limit(NULL);
+-	info.align_mask = last_mmap ? (PAGE_MASK & (SHM_COLOUR - 1)) : 0;
+-	info.align_offset = shared_align_offset(last_mmap, pgoff);
+-	addr = vm_unmapped_area(&info);
+-
+-found_addr:
+-	if (do_color_align && !last_mmap && !(addr & ~PAGE_MASK))
+-		SET_LAST_MMAP(filp, addr - (pgoff << PAGE_SHIFT));
+-
+-	return addr;
++	return vm_unmapped_area(&info);
+ }
+ 
+-unsigned long
+-arch_get_unmapped_area_topdown(struct file *filp, const unsigned long addr0,
+-			  const unsigned long len, const unsigned long pgoff,
+-			  const unsigned long flags)
++unsigned long arch_get_unmapped_area(struct file *filp, unsigned long addr,
++	unsigned long len, unsigned long pgoff, unsigned long flags)
+ {
+-	struct vm_area_struct *vma, *prev;
+-	struct mm_struct *mm = current->mm;
+-	unsigned long addr = addr0;
+-	int do_color_align, last_mmap;
+-	struct vm_unmapped_area_info info;
+-
+-	/* requested length too big for entire address space */
+-	if (len > TASK_SIZE)
+-		return -ENOMEM;
+-
+-	do_color_align = 0;
+-	if (filp || (flags & MAP_SHARED))
+-		do_color_align = 1;
+-	last_mmap = GET_LAST_MMAP(filp);
+-
+-	if (flags & MAP_FIXED) {
+-		if ((flags & MAP_SHARED) && last_mmap &&
+-		    (addr - shared_align_offset(last_mmap, pgoff))
+-			& (SHM_COLOUR - 1))
+-			return -EINVAL;
+-		goto found_addr;
+-	}
+-
+-	/* requesting a specific address */
+-	if (addr) {
+-		if (do_color_align && last_mmap)
+-			addr = COLOR_ALIGN(addr, last_mmap, pgoff);
+-		else
+-			addr = PAGE_ALIGN(addr);
+-
+-		vma = find_vma_prev(mm, addr, &prev);
+-		if (TASK_SIZE - len >= addr &&
+-		    (!vma || addr + len <= vm_start_gap(vma)) &&
+-		    (!prev || addr >= vm_end_gap(prev)))
+-			goto found_addr;
+-	}
+-
+-	info.flags = VM_UNMAPPED_AREA_TOPDOWN;
+-	info.length = len;
+-	info.low_limit = PAGE_SIZE;
+-	info.high_limit = mm->mmap_base;
+-	info.align_mask = last_mmap ? (PAGE_MASK & (SHM_COLOUR - 1)) : 0;
+-	info.align_offset = shared_align_offset(last_mmap, pgoff);
+-	addr = vm_unmapped_area(&info);
+-	if (!(addr & ~PAGE_MASK))
+-		goto found_addr;
+-	VM_BUG_ON(addr != -ENOMEM);
+-
+-	/*
+-	 * A failed mmap() very likely causes application failure,
+-	 * so fall back to the bottom-up function here. This scenario
+-	 * can happen with large stack limits and large mmap()
+-	 * allocations.
+-	 */
+-	return arch_get_unmapped_area(filp, addr0, len, pgoff, flags);
+-
+-found_addr:
+-	if (do_color_align && !last_mmap && !(addr & ~PAGE_MASK))
+-		SET_LAST_MMAP(filp, addr - (pgoff << PAGE_SHIFT));
++	return arch_get_unmapped_area_common(filp,
++			addr, len, pgoff, flags, UP);
++}
+ 
+-	return addr;
++unsigned long arch_get_unmapped_area_topdown(struct file *filp,
++	unsigned long addr, unsigned long len, unsigned long pgoff,
++	unsigned long flags)
++{
++	return arch_get_unmapped_area_common(filp,
++			addr, len, pgoff, flags, DOWN);
+ }
+ 
+ static int mmap_is_legacy(void)
+@@ -379,7 +340,7 @@ asmlinkage long parisc_fallocate(int fd, int mode, u32 offhi, u32 offlo,
+ 			      ((u64)lenhi << 32) | lenlo);
+ }
+ 
+-long parisc_personality(unsigned long personality)
++asmlinkage long parisc_personality(unsigned long personality)
+ {
+ 	long err;
+ 
+diff --git a/arch/x86/include/asm/sections.h b/arch/x86/include/asm/sections.h
+index a6e8373a5170..3fa87e5e11ab 100644
+--- a/arch/x86/include/asm/sections.h
++++ b/arch/x86/include/asm/sections.h
+@@ -2,8 +2,6 @@
+ #ifndef _ASM_X86_SECTIONS_H
+ #define _ASM_X86_SECTIONS_H
+ 
+-#define arch_is_kernel_initmem_freed arch_is_kernel_initmem_freed
+-
+ #include <asm-generic/sections.h>
+ #include <asm/extable.h>
+ 
+@@ -18,20 +16,4 @@ extern char __end_of_kernel_reserve[];
+ 
+ extern unsigned long _brk_start, _brk_end;
+ 
+-static inline bool arch_is_kernel_initmem_freed(unsigned long addr)
+-{
+-	/*
+-	 * If _brk_start has not been cleared, brk allocation is incomplete,
+-	 * and we can not make assumptions about its use.
+-	 */
+-	if (_brk_start)
+-		return 0;
+-
+-	/*
+-	 * After brk allocation is complete, space between _brk_end and _end
+-	 * is available for allocation.
+-	 */
+-	return addr >= _brk_end && addr < (unsigned long)&_end;
+-}
+-
+ #endif	/* _ASM_X86_SECTIONS_H */
+diff --git a/drivers/acpi/thermal.c b/drivers/acpi/thermal.c
+index 40b07057983e..40ecb55b52f8 100644
+--- a/drivers/acpi/thermal.c
++++ b/drivers/acpi/thermal.c
+@@ -59,10 +59,6 @@ static int tzp;
+ module_param(tzp, int, 0444);
+ MODULE_PARM_DESC(tzp, "Thermal zone polling frequency, in 1/10 seconds.");
+ 
+-static int nocrt;
+-module_param(nocrt, int, 0);
+-MODULE_PARM_DESC(nocrt, "Set to take no action upon ACPI thermal zone critical trips points.");
+-
+ static int off;
+ module_param(off, int, 0);
+ MODULE_PARM_DESC(off, "Set to disable ACPI thermal support.");
+@@ -1128,7 +1124,7 @@ static int thermal_act(const struct dmi_system_id *d) {
+ static int thermal_nocrt(const struct dmi_system_id *d) {
+ 	pr_notice("%s detected: disabling all critical thermal trip point actions.\n",
+ 		  d->ident);
+-	nocrt = 1;
++	crt = -1;
+ 	return 0;
+ }
+ static int thermal_tzp(const struct dmi_system_id *d) {
+diff --git a/drivers/thunderbolt/tmu.c b/drivers/thunderbolt/tmu.c
+index d9544600b386..49146f97bb16 100644
+--- a/drivers/thunderbolt/tmu.c
++++ b/drivers/thunderbolt/tmu.c
+@@ -416,6 +416,7 @@ int tb_switch_tmu_disable(struct tb_switch *sw)
+ 		 * mode.
+ 		 */
+ 		ret = tb_switch_tmu_rate_write(sw, TB_SWITCH_TMU_RATE_OFF);
++		if (ret)
+ 			return ret;
+ 
+ 		tb_port_tmu_time_sync_disable(up);
+diff --git a/include/linux/moduleloader.h b/include/linux/moduleloader.h
+index 9e09d11ffe5b..1322652a9d0d 100644
+--- a/include/linux/moduleloader.h
++++ b/include/linux/moduleloader.h
+@@ -39,6 +39,11 @@ bool module_init_section(const char *name);
+  */
+ bool module_exit_section(const char *name);
+ 
++/* Describes whether within_module_init() will consider this an init section
++ * or not. This behaviour changes with CONFIG_MODULE_UNLOAD.
++ */
++bool module_init_layout_section(const char *sname);
++
+ /*
+  * Apply the given relocation to the (simplified) ELF.  Return -error
+  * or 0.
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index ed8e9deae284..b0e47fe1eb4b 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -72,6 +72,7 @@
+ #include <linux/io_uring.h>
+ #include <linux/audit.h>
+ #include <linux/security.h>
++#include <asm/shmparam.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/io_uring.h>
+@@ -3110,6 +3111,49 @@ static __cold int io_uring_mmap(struct file *file, struct vm_area_struct *vma)
+ 	return remap_pfn_range(vma, vma->vm_start, pfn, sz, vma->vm_page_prot);
+ }
+ 
++static unsigned long io_uring_mmu_get_unmapped_area(struct file *filp,
++			unsigned long addr, unsigned long len,
++			unsigned long pgoff, unsigned long flags)
++{
++	void *ptr;
++
++	/*
++	 * Do not allow to map to user-provided address to avoid breaking the
++	 * aliasing rules. Userspace is not able to guess the offset address of
++	 * kernel kmalloc()ed memory area.
++	 */
++	if (addr)
++		return -EINVAL;
++
++	ptr = io_uring_validate_mmap_request(filp, pgoff, len);
++	if (IS_ERR(ptr))
++		return -ENOMEM;
++
++	/*
++	 * Some architectures have strong cache aliasing requirements.
++	 * For such architectures we need a coherent mapping which aliases
++	 * kernel memory *and* userspace memory. To achieve that:
++	 * - use a NULL file pointer to reference physical memory, and
++	 * - use the kernel virtual address of the shared io_uring context
++	 *   (instead of the userspace-provided address, which has to be 0UL
++	 *   anyway).
++	 * - use the same pgoff which the get_unmapped_area() uses to
++	 *   calculate the page colouring.
++	 * For architectures without such aliasing requirements, the
++	 * architecture will return any suitable mapping because addr is 0.
++	 */
++	filp = NULL;
++	flags |= MAP_SHARED;
++	pgoff = 0;	/* has been translated to ptr above */
++#ifdef SHM_COLOUR
++	addr = (uintptr_t) ptr;
++	pgoff = addr >> PAGE_SHIFT;
++#else
++	addr = 0UL;
++#endif
++	return current->mm->get_unmapped_area(filp, addr, len, pgoff, flags);
++}
++
+ #else /* !CONFIG_MMU */
+ 
+ static int io_uring_mmap(struct file *file, struct vm_area_struct *vma)
+@@ -3324,6 +3368,8 @@ static const struct file_operations io_uring_fops = {
+ #ifndef CONFIG_MMU
+ 	.get_unmapped_area = io_uring_nommu_get_unmapped_area,
+ 	.mmap_capabilities = io_uring_nommu_mmap_capabilities,
++#else
++	.get_unmapped_area = io_uring_mmu_get_unmapped_area,
+ #endif
+ 	.poll		= io_uring_poll,
+ #ifdef CONFIG_PROC_FS
+diff --git a/kernel/kallsyms.c b/kernel/kallsyms.c
+index 676328a7c8c7..ad3cccb0970f 100644
+--- a/kernel/kallsyms.c
++++ b/kernel/kallsyms.c
+@@ -188,16 +188,13 @@ static bool cleanup_symbol_name(char *s)
+ 
+ static int compare_symbol_name(const char *name, char *namebuf)
+ {
+-	int ret;
+-
+-	ret = strcmp(name, namebuf);
+-	if (!ret)
+-		return ret;
+-
+-	if (cleanup_symbol_name(namebuf) && !strcmp(name, namebuf))
+-		return 0;
+-
+-	return ret;
++	/* The kallsyms_seqs_of_names is sorted based on names after
++	 * cleanup_symbol_name() (see scripts/kallsyms.c) if clang lto is enabled.
++	 * To ensure correct bisection in kallsyms_lookup_names(), do
++	 * cleanup_symbol_name(namebuf) before comparing name and namebuf.
++	 */
++	cleanup_symbol_name(namebuf);
++	return strcmp(name, namebuf);
+ }
+ 
+ static int kallsyms_lookup_names(const char *name,
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 50d4863974e7..0224b0329d01 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -817,34 +817,26 @@ static int very_verbose(struct lock_class *class)
+  * Is this the address of a static object:
+  */
+ #ifdef __KERNEL__
+-/*
+- * Check if an address is part of freed initmem. After initmem is freed,
+- * memory can be allocated from it, and such allocations would then have
+- * addresses within the range [_stext, _end].
+- */
+-#ifndef arch_is_kernel_initmem_freed
+-static int arch_is_kernel_initmem_freed(unsigned long addr)
+-{
+-	if (system_state < SYSTEM_FREEING_INITMEM)
+-		return 0;
+-
+-	return init_section_contains((void *)addr, 1);
+-}
+-#endif
+-
+ static int static_obj(const void *obj)
+ {
+-	unsigned long start = (unsigned long) &_stext,
+-		      end   = (unsigned long) &_end,
+-		      addr  = (unsigned long) obj;
++	unsigned long addr = (unsigned long) obj;
+ 
+-	if (arch_is_kernel_initmem_freed(addr))
+-		return 0;
++	if (is_kernel_core_data(addr))
++		return 1;
++
++	/*
++	 * keys are allowed in the __ro_after_init section.
++	 */
++	if (is_kernel_rodata(addr))
++		return 1;
+ 
+ 	/*
+-	 * static variable?
++	 * in initdata section and used during bootup only?
++	 * NOTE: On some platforms the initdata section is
++	 * outside of the _stext ... _end range.
+ 	 */
+-	if ((addr >= start) && (addr < end))
++	if (system_state < SYSTEM_FREEING_INITMEM &&
++		init_section_contains((void *)addr, 1))
+ 		return 1;
+ 
+ 	/*
+diff --git a/kernel/module/main.c b/kernel/module/main.c
+index 7a627345d4fd..7a6f43d2b775 100644
+--- a/kernel/module/main.c
++++ b/kernel/module/main.c
+@@ -1401,7 +1401,7 @@ long module_get_offset(struct module *mod, unsigned int *size,
+ 	return ret;
+ }
+ 
+-static bool module_init_layout_section(const char *sname)
++bool module_init_layout_section(const char *sname)
+ {
+ #ifndef CONFIG_MODULE_UNLOAD
+ 	if (module_exit_section(sname))
