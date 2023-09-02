@@ -2,108 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AC079075E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 12:41:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0BD3790763
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 12:45:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351989AbjIBKln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 06:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42834 "EHLO
+        id S1351997AbjIBKpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 06:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbjIBKlm (ORCPT
+        with ESMTP id S234809AbjIBKpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 06:41:42 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B099F3;
-        Sat,  2 Sep 2023 03:41:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C9BCC60AE2;
-        Sat,  2 Sep 2023 10:41:39 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13FD5C433C8;
-        Sat,  2 Sep 2023 10:41:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693651299;
-        bh=gRq6R3jUpO3Io5Z6IXbWwg+pnvCCLZXm9uKnO2EYqC0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nRgCgBpo83Ue3QaHVai+O8iHSWZotP8u3rY6LZM5UBibbFiJU9KpbOG2q26TD6TU7
-         r96wytMiMAg7uDCyIuzl0izRnQOTFZHkOeS05s3nFDirQ1pc1ro4kjDMuav6aKRLIF
-         OHp5uIImXFAGpCoKIAQC+X5AIfwZCG97NVq7akeyJfs9RRQNVfBfmg1gzxCs2pI1HG
-         Z9nP02QAwGHynWuMo45HtnXtnm+yDdBP/LonnuplMk4Kdf9Q3HWkTpIYsS5i/J+Q8Z
-         DrhvACL4jtTtCfGErDcE8YagbWTp8kiM7Ja4s8asuk/yQ/p+4YnzVLwDwHSDtMdUa2
-         Sh1Gp44o97Uug==
-Date:   Sat, 2 Sep 2023 11:41:34 +0100
-From:   Conor Dooley <conor@kernel.org>
-To:     Robert Marko <robimarko@gmail.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom,ids: Add IDs for IPQ8174
- family
-Message-ID: <20230902-e4a05a649a5f17b1e724cd21@fedora>
-References: <20230901181041.1538999-1-robimarko@gmail.com>
+        Sat, 2 Sep 2023 06:45:20 -0400
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC48CC;
+        Sat,  2 Sep 2023 03:45:17 -0700 (PDT)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 382Aiq0Q052850;
+        Sat, 2 Sep 2023 05:44:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1693651492;
+        bh=MTknmprLmnJQFCQzNZrSewxgOvvJ97mCk4oPPBtNwDw=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=dZniak8IzFjCeDlVFVk1v5VGKK7EfUikHGUm46hCdYjObmfF2789xJ08NHl/EtgIf
+         WkYapRH751NYiNgQv6idpB5SUsfSmEfrVxhjvYxfFYJOneqdfl7sy8+s4yhDlzWAGT
+         gQ0imQgr31/gr9PDv+8ZEdyNgmgXrxwUBmhJGNZE=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 382AiqMr004272
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 2 Sep 2023 05:44:52 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 2
+ Sep 2023 05:44:51 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Sat, 2 Sep 2023 05:44:51 -0500
+Received: from [10.249.48.175] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 382Aipkg000497;
+        Sat, 2 Sep 2023 05:44:51 -0500
+Message-ID: <10acb196-b7e4-1b19-6015-c44e72bea1cc@ti.com>
+Date:   Sat, 2 Sep 2023 05:44:51 -0500
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7qkghVqtuu6RtUx4"
-Content-Disposition: inline
-In-Reply-To: <20230901181041.1538999-1-robimarko@gmail.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v5 4/5] remoteproc: k3: Split out functions common with M4
+ driver
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     <andersson@kernel.org>, <p.zabel@pengutronix.de>,
+        <martyn.welch@collabora.com>, <nm@ti.com>, <vigneshr@ti.com>,
+        <kristo@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>
+References: <20230808044529.25925-1-hnagalla@ti.com>
+ <20230808044529.25925-5-hnagalla@ti.com> <ZO5LVy9bx7Q3iILi@p14s>
+Content-Language: en-US
+From:   Hari Nagalla <hnagalla@ti.com>
+In-Reply-To: <ZO5LVy9bx7Q3iILi@p14s>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mathieu,
 
---7qkghVqtuu6RtUx4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 8/29/23 14:47, Mathieu Poirier wrote:
+>> Signed-off-by: Martyn Welch<martyn.welch@collabora.com>
+>> Signed-off-by: Hari Nagalla<hnagalla@ti.com>
+>> ---
+>> Changes since v2:
+>>   - New patch (reordered refactored from v2)
+>>
+>> Changes since v3:
+>>   - Removed "ipc_only" element from k3_rproc structure
+>>   - Refactored to bring 3 more common functions
+>>   
+>> Changes since v4:
+>>   - None
+>>
+>>   drivers/remoteproc/Makefile               |   2 +-
+>>   drivers/remoteproc/ti_k3_common.c         | 513 +++++++++++++++++++
+>>   drivers/remoteproc/ti_k3_common.h         | 103 ++++
+>>   drivers/remoteproc/ti_k3_dsp_remoteproc.c | 598 ++--------------------
+>>   4 files changed, 646 insertions(+), 570 deletions(-)
+>>   create mode 100644 drivers/remoteproc/ti_k3_common.c
+>>   create mode 100644 drivers/remoteproc/ti_k3_common.h
+> This patch is hard to follow because of all the things it does.  Please do the
+> structures in one patch and the functions in another.
+> 
+I will re-structure the patches as you suggested for driver and also 
+separate the device tree node patches to avoid clutter.
 
-On Fri, Sep 01, 2023 at 08:10:04PM +0200, Robert Marko wrote:
-> IPQ8174 (Oak) family is part of the IPQ8074 family, but the ID-s for it
-> are missing so lets add them.
->=20
-> Signed-off-by: Robert Marko <robimarko@gmail.com>
-
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-> ---
->  include/dt-bindings/arm/qcom,ids.h | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm=
-/qcom,ids.h
-> index be12e1dd1f38..d2b84a308fde 100644
-> --- a/include/dt-bindings/arm/qcom,ids.h
-> +++ b/include/dt-bindings/arm/qcom,ids.h
-> @@ -203,6 +203,9 @@
->  #define QCOM_ID_SM6125			394
->  #define QCOM_ID_IPQ8070A		395
->  #define QCOM_ID_IPQ8071A		396
-> +#define QCOM_ID_IPQ8172			397
-> +#define QCOM_ID_IPQ8173			398
-> +#define QCOM_ID_IPQ8174			399
->  #define QCOM_ID_IPQ6018			402
->  #define QCOM_ID_IPQ6028			403
->  #define QCOM_ID_SDM429W			416
-> --=20
-> 2.41.0
->=20
-
---7qkghVqtuu6RtUx4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPMRWQAKCRB4tDGHoIJi
-0sS1AP943KUQuRoF4dTadpf4ZyyKp3fwVKeuD11TJLT/SopA/AD/WSCwrPLkOdvM
-hgMlhumClOW21VL9Jb3j9HY747jRTgg=
-=ug5+
------END PGP SIGNATURE-----
-
---7qkghVqtuu6RtUx4--
+Thanks
