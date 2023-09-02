@@ -2,73 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEC9790938
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC63E79093A
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231511AbjIBSjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 14:39:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
+        id S231535AbjIBSnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 14:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbjIBSjk (ORCPT
+        with ESMTP id S229513AbjIBSnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 14:39:40 -0400
-Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291F59B;
-        Sat,  2 Sep 2023 11:39:37 -0700 (PDT)
-Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bd045336c6so156832a34.2;
-        Sat, 02 Sep 2023 11:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693679976; x=1694284776; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I52uCB9WiHX/2+LVtJ9UgmcJ1WlYivqMlCC8cFuZ/n4=;
-        b=piYtB8+sUkTeNsNNb3t1Pdyg/vY3m30yIxwEES4dRFxgPUWbOyegwOsjYQMpjd5FqA
-         MtyPE8CRBkV1zq5XLTfMIVxcKe35aUZUvxRiujsByyMD3Eokiw8zV0oW4gotOeG9qKAF
-         Rfi4nsh17QtoyzdXTBMknDOB4VYjoB11/TEvS0fDEMG08e+Is6Eygt7AV8Rw4P/VdZoM
-         Hq9dWhvm2w9sejk/QPhWTifNv9BE4FX4kJcqT/avAnZCRyyoo//sa62xNr4jV08dkHnB
-         R7pQTxGpAHIWBwufC1xWubdtysi28LaAR/V23aQ3o5SmP7V9XRAWWK0A0vAkVJ7th0mb
-         XJyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693679976; x=1694284776;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I52uCB9WiHX/2+LVtJ9UgmcJ1WlYivqMlCC8cFuZ/n4=;
-        b=AvwHpypxsOb+Xgp6/qI/rm8695n223srmm1WeMBapwsKajQW0+uKo3SYxRfzBpSSEv
-         5ykniy7mn8FNdbSBnKGf0CnofSQ7OPIdamPAlW2Yx2+wtLZGSRY5AMSj+r6gmP43pAnd
-         6oqr3aCHA6GJrfy7JLT3IRbnldad5lozikbZG2CwtjKKa556FihGjPlZvpU1mKuVJqNg
-         4n0HAPspJI7U65/U0hO2ZcpOe6aETwyaB30Y8tlCKVEmcBQUdhdS6Z14XB9JZfrAUSYx
-         2vZtjdbtD5ctK9ZhgBYTMFxa90dGAuVDe9WY0GLiq1imj4XDKlwLLp2DlEYFo565VJN+
-         RL/A==
-X-Gm-Message-State: AOJu0YzecPJxlQLYdIuKc3RPUtknk0EcNX73QAS0kKJNwiFg9tAZ7KxZ
-        hm33V+7VF2AE0kPdCdRaNNpMTE1Dxkj9hsrlvV5gXcYkDak=
-X-Google-Smtp-Source: AGHT+IGr4jp8rgTpvWSb3ElxNgg3lbjfE5ajdAHvRNKdJBXrJ+9mqCu1lBd6DqHRIvCSvIKb6X5YHY5uoDcHMEb1Znc=
-X-Received: by 2002:a05:6870:4621:b0:1bf:77e2:95cc with SMTP id
- z33-20020a056870462100b001bf77e295ccmr6922972oao.17.1693679976380; Sat, 02
- Sep 2023 11:39:36 -0700 (PDT)
+        Sat, 2 Sep 2023 14:43:07 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F19AA7;
+        Sat,  2 Sep 2023 11:43:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0584DB808C3;
+        Sat,  2 Sep 2023 18:43:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E01E6C433C8;
+        Sat,  2 Sep 2023 18:42:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693680180;
+        bh=63LT2SePid2WbQx3HWwxI66tqL0YKl1hPL5zeGEanTI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=skyXmd629UJAc+VFGaSNUwSNpmDNXhCiacDz1kBMnXX43UeQYGxhPUwcWONS8KiIe
+         A0hfQxU0JdXGV8yY4EgS6A3Q+87w5yf0yRtcEs8IuSHwpWL6cI3eNbJbInqwbqirEf
+         BmqEqivoN996iZRbAa5DKF62g6SXlj+Tz+MiZ+qNRANrVN/XXM/3X4a8mVYrf0Fxy4
+         lMPHdL5NsDmhTo1YAK8A670ne4w+XPOG2VyntSWbLdavz7/8GlC39K9AotixmrPkOU
+         ATtKgStFOKii0wCD7Aphrab/PZdVPccZ3aadKbW70U/5qzGTSU2hkXsG3rH0t10hWX
+         KFf8Yxd9bnXCw==
+Date:   Sat, 2 Sep 2023 20:42:56 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Peter Rosin <peda@axentia.se>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] i2c: muxes: Enable features on MAX7357
+Message-ID: <20230902184256.6g2lfgqfaeanjtwz@zenone.zhora.eu>
+References: <20230830115744.4102929-1-Naresh.Solanki@9elements.com>
+ <20230830115744.4102929-2-Naresh.Solanki@9elements.com>
 MIME-Version: 1.0
-References: <acb58c1adc02d0b949d8371933b2afe3c056c33f.1693583786.git.sylv@sylv.io>
-In-Reply-To: <acb58c1adc02d0b949d8371933b2afe3c056c33f.1693583786.git.sylv@sylv.io>
-From:   Eyal Birger <eyal.birger@gmail.com>
-Date:   Sat, 2 Sep 2023 21:39:24 +0300
-Message-ID: <CAHsH6Gv7m2Q=3sPZsRSMfqasay0P7j9zZT=DDwwgv7TuPX5agg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] xfrm: Use skb_mac_header_was_set() to check for
- MAC header presence
-To:     Marcello Sylvester Bauer <email@web.codeaurora.org>
-Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Marcello Sylvester Bauer <sylv@sylv.io>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230830115744.4102929-2-Naresh.Solanki@9elements.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,63 +57,155 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marcello,
+Hi Naresh,
 
-On Fri, Sep 1, 2023 at 7:15=E2=80=AFPM Marcello Sylvester Bauer
-<email@web.codeaurora.org> wrote:
->
-> From: Marcello Sylvester Bauer <sylv@sylv.io>
->
-> Replace skb->mac_len with skb_mac_header_was_set() in
-> xfrm4_remove_tunnel_encap() and xfrm6_remove_tunnel_encap() to detect
-> the presence of a MAC header. This change prevents a kernel page fault
-> that could occur when a MAC address is added to an L3 interface using
-> xfrm.
->
-> Signed-off-by: Marcello Sylvester Bauer <sylv@sylv.io>
+On Wed, Aug 30, 2023 at 01:57:43PM +0200, Naresh Solanki wrote:
+> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> 
+> Detect that max7357 is being used and run custom init sequence.
+> 
+> By default MAX7357 disconnects all channels on a bus lock-up and
+> signals	this condition to the bus master using an interrupt.
+
+please replace this tab with a space.
+
+> Disable the interrupt as it's not useful within the kernel and
+> it might conflict with the reset functionality that shares the same
+> pin.
+> 
+> Use the introduced 'maxim,bus-lockup-fix' property to enable
+> faulty channel isolation and flush-out sequence generation.
+> 
+> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
 > ---
->  net/xfrm/xfrm_input.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/net/xfrm/xfrm_input.c b/net/xfrm/xfrm_input.c
-> index d5ee96789d4b..afa1f1052065 100644
-> --- a/net/xfrm/xfrm_input.c
-> +++ b/net/xfrm/xfrm_input.c
-> @@ -250,7 +250,7 @@ static int xfrm4_remove_tunnel_encap(struct xfrm_stat=
-e *x, struct sk_buff *skb)
->
->         skb_reset_network_header(skb);
->         skb_mac_header_rebuild(skb);
-> -       if (skb->mac_len)
-> +       if (skb_mac_header_was_set(skb))
->                 eth_hdr(skb)->h_proto =3D skb->protocol;
->
->         err =3D 0;
-> @@ -287,7 +287,7 @@ static int xfrm6_remove_tunnel_encap(struct xfrm_stat=
-e *x, struct sk_buff *skb)
->
->         skb_reset_network_header(skb);
->         skb_mac_header_rebuild(skb);
-> -       if (skb->mac_len)
-> +       if (skb_mac_header_was_set(skb))
->                 eth_hdr(skb)->h_proto =3D skb->protocol;
+>  drivers/i2c/muxes/i2c-mux-pca954x.c | 56 ++++++++++++++++++++++++++++-
+>  1 file changed, 55 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/muxes/i2c-mux-pca954x.c b/drivers/i2c/muxes/i2c-mux-pca954x.c
+> index 2219062104fb..0c1ff1438e7c 100644
+> --- a/drivers/i2c/muxes/i2c-mux-pca954x.c
+> +++ b/drivers/i2c/muxes/i2c-mux-pca954x.c
+> @@ -57,6 +57,21 @@
+>  
+>  #define PCA954X_IRQ_OFFSET 4
+>  
+> +/*
+> + * MAX7357 exposes 7 registers on POR which allow to configure additional
+> + * features. The configuration register holds the following settings:
+> + */
+> +#define MAX7357_CONF_INT_ENABLE			BIT(0)
+> +#define MAX7357_CONF_FLUSH_OUT			BIT(1)
+> +#define MAX7357_CONF_RELEASE_INT		BIT(2)
+> +#define MAX7357_CONF_LOCK_UP_CLEAR		BIT(3)
+> +#define MAX7357_CONF_DISCON_SINGLE_CHAN		BIT(4)
+> +#define MAX7357_CONF_BUS_LOCKUP_DETECT_DIS	BIT(5)
+> +#define MAX7357_CONF_ENABLE_BASIC_MODE		BIT(6)
+> +#define MAX7357_CONF_PRECONNECT_TEST		BIT(7)
 
-I checked xfrm tunnels over both GRE and IPIP, and in both cases when reach=
-ing
-this code the skb->mac_len was 0, whereas skb_mac_header_was_set()
-was 1.
+Not all these defines are are used, can we remove those that we
+don't need?
 
-So in both cases this suggested patch would make this condition true and
-write to an Ethernet header location on these L3 devices.
+> +#define MAX7357_POR_DEFAULT_CONF		BIT(0)
 
-Can you please share your reproduction scenario for this case?
+I think:
 
-Thanks,
-Eyal.
+   #define MAX7357_POR_DEFAULT_CONF	MAX7357_CONF_INT_ENABLE
 
->
->         err =3D 0;
-> --
-> 2.42.0
->
->
+has a better meaning... but overall, do we need it?
+
+> +
+>  enum pca_type {
+>  	max_7356,
+>  	max_7357,
+> @@ -477,6 +492,41 @@ static int pca954x_init(struct i2c_client *client, struct pca954x *data)
+>  	return ret;
+>  }
+>  
+> +static int max7357_init(struct i2c_client *client, struct pca954x *data)
+> +{
+> +	struct i2c_adapter *adap = client->adapter;
+> +	u8 conf = MAX7357_POR_DEFAULT_CONF;
+> +	int ret;
+> +
+> +	if (!i2c_check_functionality(adap, I2C_FUNC_SMBUS_WRITE_BYTE_DATA))
+> +		return pca954x_init(client, data);
+> +
+> +	if (data->idle_state >= 0)
+> +		data->last_chan = pca954x_regval(data, data->idle_state);
+> +	else
+> +		data->last_chan = 0; /* Disconnect multiplexer */
+> +
+> +	/*
+> +	 * The interrupt signals downstream channels that are stuck, but
+> +	 * there's nothing to do and it prevents using the shared pin as reset.
+> +	 */
+> +	conf &= MAX7357_CONF_INT_ENABLE;
+> +
+> +	/*
+> +	 * On bus lock-up isolate the failing channel and try to clear the
+> +	 * fault by sending the flush-out sequence.
+> +	 */
+> +	if (device_property_read_bool(&client->dev, "maxim,bus-lockup-fix"))
+> +		conf |= MAX7357_CONF_DISCON_SINGLE_CHAN |
+> +			MAX7357_CONF_FLUSH_OUT;
+
+this function is identical to pca954x_init() except for the
+conf.
+
+If you:
+
+	u8 conf = 0;
+
+	...
+
+	if (i2c_check_functionality(adap, I2C_FUNC_SMBUS_WRITE_BYTE_DATA)) {
+		conf &= MAX7357_CONF_INT_ENABLE;
+
+		if (device_property_read_bool(&client->dev,
+					      "maxim,bus-lockup-fix"))
+			conf |= MAX7357_CONF_DISCON_SINGLE_CHAN |
+				MAX7357_CONF_FLUSH_OUT;
+	}
+
+	ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
+	...
+
+
+You basically should obtain the same thing, I guess and we make
+things easier.
+
+
+> +	ret = i2c_smbus_write_byte_data(client, data->last_chan, conf);
+> +	if (ret < 0)
+> +		data->last_chan = 0;
+> +	return ret;
+> +}
+> +
+>  /*
+>   * I2C init/probing/exit functions
+>   */
+> @@ -560,7 +610,11 @@ static int pca954x_probe(struct i2c_client *client)
+>  	 * initializes the mux to a channel
+>  	 * or disconnected state.
+>  	 */
+> -	ret = pca954x_init(client, data);
+> +	if ((dev->of_node && of_device_is_compatible(dev->of_node, "maxim,max7357")) ||
+> +	    id->driver_data == max_7357)
+> +		ret = max7357_init(client, data);
+
+what happens if this is true and in max7357_init(); the i2c
+functionality check fails?
+
+Which of the two if's is redundant? Should they be merged?
+
+Andi
+
+> +	else
+> +		ret = pca954x_init(client, data);
+>  	if (ret < 0) {
+>  		dev_warn(dev, "probe failed\n");
+>  		ret = -ENODEV;
+> -- 
+> 2.41.0
+> 
