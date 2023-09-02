@@ -2,160 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B5F1790848
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192879084B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbjIBOkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 10:40:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46700 "EHLO
+        id S232412AbjIBOng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 10:43:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjIBOkV (ORCPT
+        with ESMTP id S229977AbjIBOnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 10:40:21 -0400
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A00C610EB
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 07:40:17 -0700 (PDT)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-44eb98a2da3so11132137.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 07:40:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693665617; x=1694270417; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=rmvs943FMEQtbu1KacuFgagsI7Z/vptG6vhwuSDiOEg=;
-        b=UduDqpfQXcWy7bDhGA2q8bDFr/eE4cFiQjvxl2ZDTpRvWOXJOv8ydp2FjHQkvbyBZi
-         OGOwNp/bqW4OfrTPS2G82jOrXbu9RllJCHG7/zt0bp6lXHqB91Lfb9+oBeQM6DsmbwiF
-         xunRLASqWlGvy2xWyL3+6cim22o/XvhseOU3Cpuxeew7Szjscl8QrdFlnkTwfkuzXajW
-         Vh7wrYQbW2uRbKL3CdY1FFDibJO3o7tgCcrm8lOxc+EEvT3PGSxVYXyqSsFugYxfB3lO
-         TO3eAGWK5UOf3arOayZeA9ApPT8EKKMlSYtGSBCqO3XVBKBMZ4w6lyMifLa+sOSwlBm7
-         ZGRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693665617; x=1694270417;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rmvs943FMEQtbu1KacuFgagsI7Z/vptG6vhwuSDiOEg=;
-        b=WUnyFE4jsvAQf8RHx8GpSbD1LnPFOu50IELSpTqmRb5WhsM5TPSaThpCHWSTw8spgI
-         cfW8VtGr/jQLHj+2Ncf156FPkTXGzD0sBGHiIn114eIudUCTrw1mO0sJTuqsoXM6pcfS
-         5upSl4I1JcusbpKH1iD4LRTB6PnZ4wDUP+YXgqtCpowd2K/n5r/qqGdYRXP+Zk9NwcZZ
-         /uCiQ8MldhqVQkj+psDPEwSWuVTrVz5QZmWrRN3RZ8ejN9KI1TD4IaTbJmkk8+O60RJN
-         Kz52eUBXgr6cGf8pgaSYPvll044CqmLZbf75zBxuZoPdMlbx9fKao1EYd/bwyJ2J9MtX
-         UbCg==
-X-Gm-Message-State: AOJu0YwkUjcpFanaGsEwjYSZ35dC48bbdP5FIG8HAxemY8gZY1npo4wb
-        1znp0s2sSpMK9l3pcDO9P1ekBcX4R/rtX4A+jxFEIIX/b0TcFazJCr8=
-X-Google-Smtp-Source: AGHT+IHg7L1xeU8puyvHGovJX7vzUppkLBpLLUZGgzFIfE3T3JWZWCJhoWmAGkh5G1ByHO4s1X/+AMgJRoQNNWrKAto=
-X-Received: by 2002:a67:f7cd:0:b0:44d:40b1:9277 with SMTP id
- a13-20020a67f7cd000000b0044d40b19277mr5576233vsp.12.1693665616757; Sat, 02
- Sep 2023 07:40:16 -0700 (PDT)
+        Sat, 2 Sep 2023 10:43:35 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E2A010EB;
+        Sat,  2 Sep 2023 07:43:32 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 382EUhmH016693;
+        Sat, 2 Sep 2023 14:43:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7IgLdeYroN9h8kUtLquNCkhdvV1TsayyKIMA2uBI1KI=;
+ b=infarNO153jGlQupJPgQuVkA1MOyiCcaCYMgnYHURV9AYjV3NmkUrM1XsVeqFcnnTh8R
+ m3w7CwJ3Kgxg6WucRzjK9L33HS8UbYzpe0F7I4H0bEWXSqcT8YNLlVHSTx1D/1Is9XBf
+ gX/JgXC5Xgui2UC2kAJpp0ffjrmgAnbckINkn5hDenoam7X54sI3ZSKFDT/JBDiyo89p
+ 8koUjUFF6OtBqsvgJQewl57ZJwuNa1uGmkQeqrNlpMx5yfWI6oYDb8ZPZCO4XjOUL+cX
+ XzTyfc8fpbzgjy9nJkAIaeda3LF2LWHp+G3gcfaCt0v3cRXSAltaGWLVsG/Kl7zL8CJx 1A== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suvcr8nrw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 02 Sep 2023 14:43:20 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 382EhJ9a008178
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 2 Sep 2023 14:43:19 GMT
+Received: from [10.216.50.18] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sat, 2 Sep
+ 2023 07:43:12 -0700
+Message-ID: <28b7934f-f041-ad7b-d44a-3bed70aaf100@quicinc.com>
+Date:   Sat, 2 Sep 2023 20:12:58 +0530
 MIME-Version: 1.0
-References: <20230901183240.102701-1-brgl@bgdev.pl> <ZPJTT/l9fX1lhu6O@smile.fi.intel.com>
-In-Reply-To: <ZPJTT/l9fX1lhu6O@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Sat, 2 Sep 2023 16:40:05 +0200
-Message-ID: <CAMRc=Mekf9Rek3_G2ttQY+yBvWM3+P4RAWVOQH99eajn38F+og@mail.gmail.com>
-Subject: Re: [PATCH] gpio: sim: don't fiddle with GPIOLIB private members
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.0
+Subject: Re: [PATCH 1/2] dt-bindings: arm: qcom,ids: Add IDs for IPQ8174
+ family
+To:     Robert Marko <robimarko@gmail.com>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <20230901181041.1538999-1-robimarko@gmail.com>
+Content-Language: en-US
+From:   Kathiravan T <quic_kathirav@quicinc.com>
+In-Reply-To: <20230901181041.1538999-1-robimarko@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: v91YVXAMLEqM4C0XzDp10JK0U7NqvPcr
+X-Proofpoint-ORIG-GUID: v91YVXAMLEqM4C0XzDp10JK0U7NqvPcr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-02_10,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=821 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 clxscore=1011 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309020137
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 1, 2023 at 11:10=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Fri, Sep 01, 2023 at 08:32:40PM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > We access internals of struct gpio_device and struct gpio_desc because
-> > it's easier but it can actually be avoided and we're working towards a
-> > better encapsulation of GPIO data structures across the kernel so let's
-> > start at home.
-> >
-> > Instead of checking gpio_desc flags, let's just track the requests of
-> > GPIOs in the driver. We also already store the information about
-> > direction of simulated lines.
-> >
-> > For kobjects needed by sysfs callbacks: we can leverage the fact that
-> > once created for a software node, struct device is accessible from that
-> > fwnode_handle. We don't need to dereference gpio_device.
-> >
-> > While at it: fix one line break and remove the untrue part about
-> > configfs callbacks using dev_get_drvdata() from a comment.
->
-> ...
->
-> > -static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
->
-> Why is this?
->
 
-Dunno, some git shenanigans?
-
-> > +static int gpio_sim_request(struct gpio_chip *gc, unsigned int offset)
-> >  {
-> >       struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
-> >
-> >       scoped_guard(mutex, &chip->lock)
-> > +             __set_bit(offset, chip->request_map);
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
-> > +{
-> > +     struct gpio_sim_chip *chip =3D gpiochip_get_data(gc);
-> > +
-> > +     scoped_guard(mutex, &chip->lock) {
-> >               __assign_bit(offset, chip->value_map,
-> >                            !!test_bit(offset, chip->pull_map));
-> > +             __clear_bit(offset, chip->request_map);
-> > +     }
-> >  }
+On 9/1/2023 11:40 PM, Robert Marko wrote:
+> IPQ8174 (Oak) family is part of the IPQ8074 family, but the ID-s for it
+> are missing so lets add them.
 >
-> Seems to me like you. shuffled the order of the two functions.
-> Can you leave _free() at the same location in the file?
+> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> ---
+>   include/dt-bindings/arm/qcom,ids.h | 3 +++
+>   1 file changed, 3 insertions(+)
+
+
+Reviewed-by: Kathiravan T <quic_kathirav@quicinc.com>
+
+
 >
-
-I didn't. Request comes before free but they're next to each other.
-
-> ...
->
-> > -     /* Used by sysfs and configfs callbacks. */
-> > -     dev_set_drvdata(&gc->gpiodev->dev, chip);
-> > +     /* Used by sysfs callbacks. */
-> > +     dev_set_drvdata(swnode->dev, chip);
->
-> dev pointer of firmware node is solely for dev links. Is it the case here=
-?
-> Seems to me you luckily abuse it.
->
-
-I don't think so. If anything we have a helper in the form of
-get_dev_from_fwnode() but it takes reference to the device while we
-don't need it - we know it'll be there because we created it.
-
-This information (struct device of the GPIO device) can also be
-retrieved by iterating over the device children of the top platform
-device and comparing their fwnodes against the one we got passed down
-from probe() but it's just so many extra steps.
-
-Or we can have a getter in gpio/driver.h for that but I don't want to
-expose another interface is we can simply use the fwnode.
-
-Bart
-
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+> diff --git a/include/dt-bindings/arm/qcom,ids.h b/include/dt-bindings/arm/qcom,ids.h
+> index be12e1dd1f38..d2b84a308fde 100644
+> --- a/include/dt-bindings/arm/qcom,ids.h
+> +++ b/include/dt-bindings/arm/qcom,ids.h
+> @@ -203,6 +203,9 @@
+>   #define QCOM_ID_SM6125			394
+>   #define QCOM_ID_IPQ8070A		395
+>   #define QCOM_ID_IPQ8071A		396
+> +#define QCOM_ID_IPQ8172			397
+> +#define QCOM_ID_IPQ8173			398
+> +#define QCOM_ID_IPQ8174			399
+>   #define QCOM_ID_IPQ6018			402
+>   #define QCOM_ID_IPQ6028			403
+>   #define QCOM_ID_SDM429W			416
