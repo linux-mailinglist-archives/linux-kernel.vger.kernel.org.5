@@ -2,75 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 163BE790838
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:16:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3CA790836
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 16:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231974AbjIBOQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 10:16:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34338 "EHLO
+        id S231895AbjIBOQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 10:16:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231965AbjIBOQ1 (ORCPT
+        with ESMTP id S229579AbjIBOQS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 10:16:27 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F047710F0;
-        Sat,  2 Sep 2023 07:16:23 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-564b6276941so2053098a12.3;
-        Sat, 02 Sep 2023 07:16:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693664183; x=1694268983; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ILnvJJT9+fmVmqH5xN+Xd9akiVGGKHTUTZaVtrSV1L0=;
-        b=XwFujQadO91dcKFkU+1DMhU+E23ZMgEwR6qen9OeNa4mh5Yq6LqLFN9s6SzL7GA7AN
-         fWkXVxHFji0NmTxeEygMk7tam/Qnf3bLhpMGfL8HGAhjXj0mIaYKOKPIk7E/r3kZTKE5
-         mQwLZAItkC7ZnSwzEdNyL7OP2GQ7fQ7CdS2KQgE6ITMZG+a+Te8D1I0AeeAqKaeRS/5R
-         96OVcBLqufhC7W3Lic1O9wzAkJH7GOsv+xchoC6Auu4YpUkjqyDjuON929TK9Ti+c0yh
-         8zYI8RYymkIEPvBwUQjsLJJeaL6PaDt0Wrf+T2BjqQDOJ4IsttSHe+rzGDI8XNwv1N2v
-         qc5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693664183; x=1694268983;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ILnvJJT9+fmVmqH5xN+Xd9akiVGGKHTUTZaVtrSV1L0=;
-        b=YIIEptqc3qZAFJWo9rl1t0iiUZ1YPTT84PurrhruvjLzHNLG7dBt/E7NYPJQp8Mo9x
-         m3sNJuE+DS2QomiqqwAPQIi+FHfAmVMB6BHYFo+0qj6WpLD10d5WH0tRxx3Hgtn9Z4JK
-         yDQXSBhjoAe15Ph3RGBxBSbpVGwpJG0NIuLctufG/j32XpzSgMsliiSyCo3/nbjHpLUv
-         r5o3I/70NDh6NWRoXI9EPehdvxQIccTxb7bAoQfMBydM9GlXcxY5GaUhMukEFiPURI/9
-         xnp7gWXMIZDA0bLDJJFdnuRjA5lQG8V2xT8qrVBsiASPfDlp3eeZxs41+8tGYIprbXHx
-         ei9g==
-X-Gm-Message-State: AOJu0Yy6ns6Cf6x/SFVfWLZBoAHwOFe31E8z6TnPoEFaWujxHI4mPb2B
-        9X4z3vMpj8/SJFbKsl9ZN/jZclzscKI=
-X-Google-Smtp-Source: AGHT+IHlQkZe04iRQtj1KxqZ1PSL3uHEtInXdNJanNVsUZMk/cDnFk0lrzBWAs50KwVWVqmR1g1/+A==
-X-Received: by 2002:a05:6a21:3d83:b0:14c:b58e:6d6 with SMTP id bj3-20020a056a213d8300b0014cb58e06d6mr5108196pzc.32.1693664183300;
-        Sat, 02 Sep 2023 07:16:23 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 4-20020aa79204000000b00687f845f41fsm4614853pfo.119.2023.09.02.07.16.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 07:16:22 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Sat, 2 Sep 2023 07:16:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Naresh Solanki <naresh.solanki@9elements.com>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        krzysztof.kozlowski+dt@linaro.org, linux-hwmon@vger.kernel.org,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 3/3] hwmon: (pmbus/tda38640) Add workaround for SVID
- mode
-Message-ID: <833a4908-6bc2-4b66-9ace-4beab186e634@roeck-us.net>
-References: <20230831190731.265099-1-Naresh.Solanki@9elements.com>
- <20230831190731.265099-3-Naresh.Solanki@9elements.com>
+        Sat, 2 Sep 2023 10:16:18 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9621F10EF;
+        Sat,  2 Sep 2023 07:16:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693664172;
+        bh=TGXmUPCCoEG3TlGu7NABqLBUVGiDUoT8wY2dGOK6k58=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=oodsLyTh7lgrDNwerOm0xdRHNYg5jTzAfUcvQ2BUoWyMz8pX/xPKSlEpj7DMPB7LF
+         sJ3heCNEXq8WqmyPZdtV3w96CYrg8XAKQ8h/gpxNyG/lg1+9UKGzyYx/RnMTrwNleS
+         TVi4nbbsCEc6vc3tZqtcqkEre15UgjsgsW5CmNfIdedqzIlbcJ+dVq6uAuaZxj5UUj
+         tPiaYeOuqudXpXWl+LLVDA98KXdqQ4RfSnP+lyHfz0R/e44gyq3H9BtJxcPyunI/De
+         xW7DMcg1g4EuvmcRyQ69UAFV1FqKEpPoOOHTbZ34zS3e/JwfGqXZ9GmrJeZUpzmPlR
+         dPaxZwVEmbnow==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RdH4r2649z1NCv;
+        Sat,  2 Sep 2023 10:16:12 -0400 (EDT)
+Message-ID: <c337cc2d-5ae6-5fcd-dce6-658613a4564d@efficios.com>
+Date:   Sat, 2 Sep 2023 10:17:24 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230831190731.265099-3-Naresh.Solanki@9elements.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH] srcu: The value may overflow
+Content-Language: en-US
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
+        trufanov@swemel.ru, vfh@swemel.ru
+References: <20230901095341.55857-1-arefev@swemel.ru>
+ <d05deed9-637f-697c-5c2f-d6fede4c956d@efficios.com>
+In-Reply-To: <d05deed9-637f-697c-5c2f-d6fede4c956d@efficios.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,37 +58,72 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 09:07:29PM +0200, Naresh Solanki wrote:
-> From: Patrick Rudolph <patrick.rudolph@9elements.com>
+On 9/1/23 09:31, Mathieu Desnoyers wrote:
+> On 9/1/23 05:53, Denis Arefev wrote:
+>> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+>> is subject to overflow due to a failure to cast operands to a larger
+>> data type before performing arithmetic
+>>
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>
+>> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+>> ---
+>>   kernel/rcu/srcutree.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>> index 20d7a238d675..e14b74fb1ba0 100644
+>> --- a/kernel/rcu/srcutree.c
+>> +++ b/kernel/rcu/srcutree.c
+>> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct 
+>> srcu_struct *ssp, gfp_t gfp_flags)
+>>                   snp->grplo = cpu;
+>>               snp->grphi = cpu;
+>>           }
+>> -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+>> +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
 > 
-> TDA38640 can operate in either PMBus mode or SVID mode.
-> 
-> In SVID mode, by design ENABLE pin is the only option for controlling
-> the output rail i.e., ENABLE pin is chained to power good of another
-> reglator & FPGA.
-> 
-> In cases where the chip is configured for SVID mode, and the ENABLE pin
-> is set at a fixed level or is left unconnected (with an internal
-> pull-down), while requiring software control, the following
-> workaround is necessary.
-> 
-> The workaround utilizes ENABLE pin polarity flipping to control
-> output rail.
-> 
-> If property 'infineon,en-pin-fixed-level' is specified then
-> determine if chip is in SVID mode by checking BIT15 of MTP memory offset
-> 0x44 as described in the datasheet.
-> 
-> If chip is in SVID mode then apply the workaround by
-> 1. Determine EN pin level
-> 2. Maps BIT7 of OPERATION(01h) to EN_PIN_POLARITY(BIT1) of
->    PB_ON_OFF_CONFIG.
-> 
-> Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-> Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
-> ----
+> What possible values of cpus supported by the Linux kernel and grplo can 
+> cause this to overflow on 64-bit architectures ? I suspect the maximum 
+> result of this subtraction is defined by the RCU_FANOUT or other srcu 
+> level-spread values assigned by rcu_init_levelspread(), which can indeed 
+> cause the signed 32-bit integer literal ("1") to overflow when shifted 
+> by any value greater than 31. This analysis should be added to the 
+> commit message so the impact of the issue can be understood.
 
-Applied to hwmon-next.
+Another effect that might be worth mentioning in the commit message is 
+what happens with the sign-carry for "1 << 31" when it is promoted from 
+signed 32-bit integer to unsigned long on a 64-bit kernel: it translates 
+to 0xffffffff80000000, which is certainly not what is expected here.
 
 Thanks,
-Guenter
+
+Mathieu
+
+
+> 
+> I also notice this in the same file:
+> 
+> srcu_schedule_cbs_snp():
+> 
+>          for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+>                  if (!(mask & (1 << (cpu - snp->grplo))))
+>                          continue;
+> 
+> Which should be fixed at the same time.
+> 
+> Thanks,
+> 
+> Mathieu
+> 
+>>       }
+>>       smp_store_release(&ssp->srcu_sup->srcu_size_state, 
+>> SRCU_SIZE_WAIT_BARRIER);
+>>       return true;
+> 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
