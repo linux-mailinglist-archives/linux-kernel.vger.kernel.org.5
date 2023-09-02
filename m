@@ -2,131 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34788790595
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 08:32:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FAD79059B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 08:36:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351649AbjIBGcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 02:32:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39466 "EHLO
+        id S1351671AbjIBGgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 02:36:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjIBGcr (ORCPT
+        with ESMTP id S231330AbjIBGgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 02:32:47 -0400
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F409D10FA;
-        Fri,  1 Sep 2023 23:32:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1693636364; x=1725172364;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=3bgN04HCBhGYUCnjps2teOWZvkuLkjNIxGd9f26pwBY=;
-  b=xsMNzJNsqkha67b+A1t4QGNDAbIqDpDIwTDBfRbQfe629fuuGxKNBMF6
-   +jLJYvkOy/hRETe79Gk3IvFTpaGEEdoLaOGoGxgK/5qb8XDeWMBkTlgZg
-   ljMkLY3/f45vt8EZs9PabwIrQ69JrAMAU9gJC2/V0GC4H0VstTXZo9tMX
-   E2YjGs1uVtjTjEAAU52MmQzbgSmFKq7xKaaO9W+OFXHyeXtfbn89LRBB8
-   AWFtACHY0lrh48X4zWkgcut3SCf03nOM5hVIpO/DNUtX4rzoq1jEC1ou1
-   2Rs2Ct8jTo1Qn2jEDDdr5u+e+X0vHqzxaw9/sLBOWgvPiDQoYlMlL40po
-   g==;
-X-IronPort-AV: E=Sophos;i="6.02,221,1688454000"; 
-   d="scan'208";a="2544931"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa3.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 01 Sep 2023 23:32:44 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.21; Fri, 1 Sep 2023 23:32:39 -0700
-Received: from che-lt-i63539.amer.actel.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.21 via Frontend Transport; Fri, 1 Sep 2023 23:32:35 -0700
-From:   Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-To:     <thierry.reding@gmail.com>, <u.kleine-koenig@pengutronix.de>,
-        <nicolas.ferre@microchip.com>, <alexandre.belloni@bootlin.com>,
-        <claudiu.beznea@tuxon.dev>
-CC:     <linux-pwm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
-Subject: [PATCH v2] pwm: atmel: add missing clk_disable_unprepare()
-Date:   Sat, 2 Sep 2023 12:02:32 +0530
-Message-ID: <20230902063232.22620-1-Hari.PrasathGE@microchip.com>
-X-Mailer: git-send-email 2.34.1
+        Sat, 2 Sep 2023 02:36:51 -0400
+Received: from smtp.gentoo.org (mail.gentoo.org [IPv6:2001:470:ea4a:1:5054:ff:fec7:86e4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9AC11702;
+        Fri,  1 Sep 2023 23:36:47 -0700 (PDT)
+References: <20230825050618.never.197-kees@kernel.org>
+User-agent: mu4e 1.10.6; emacs 30.0.50
+From:   Sam James <sam@gentoo.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Salvatore Mesoraca <s.mesoraca16@gmail.com>, x86@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, kernel@gentoo.org
+Subject: Re: [PATCH] hardening: Provide Kconfig fragments for basic options
+Date:   Sat, 02 Sep 2023 07:35:07 +0100
+Organization: Gentoo
+In-reply-to: <20230825050618.never.197-kees@kernel.org>
+Message-ID: <87ledpcc92.fsf@gentoo.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the below smatch warning:
 
-drivers/pwm/pwm-atmel-hlcdc.c:167 atmel_hlcdc_pwm_apply() warn: 'new_clk' from clk_prepare_enable() not released on lines: 112,137,142,149.
+Kees Cook <keescook@chromium.org> writes:
 
-'Fixes: 2b4984bef47a5 ("pwm: atmel-hlcdc: Convert to the atomic PWM API")'
+> Inspired by Salvatore Mesoraca's earlier[1] efforts to provide some
+> in-tree guidance for kernel hardening Kconfig options, add a new fragment
+> named "hardening-basic.config" (along with some arch-specific fragments)
+> that enable a basic set of kernel hardening options that have the least
+> (or no) performance impact and remove a reasonable set of legacy APIs.
+>
+> Using this fragment is as simple as running "make hardening.config".
+>
+> More extreme fragments can be added[2] in the future to cover all the
+> recognized hardening options, and more per-architecture files can be
+> added too.
+>
+> For now, document the fragments directly via comments. Perhaps .rst
+> documentation can be generated from them in the future (rather than the
+> other way around).
+>
 
-Signed-off-by: Hari Prasath Gujulan Elango <Hari.PrasathGE@microchip.com>
+This is likely to make life a bit easier for us downstream in Gentoo,
+where we currently supply a patch for KSPP:
+https://gitweb.gentoo.org/proj/linux-patches.git/tree/4567_distro-Gentoo-Kconfig.patch?h=6.4#n237.
 
-changelog of v2:
+> [1] https://lore.kernel.org/kernel-hardening/1536516257-30871-1-git-send-email-s.mesoraca16@gmail.com/
+> [2] https://github.com/KSPP/linux/issues/14
 
-         - moved the clk_disable_unprepare to single point of return.
-         - cur_clk set to NULL before return.
----
- drivers/pwm/pwm-atmel-hlcdc.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/pwm/pwm-atmel-hlcdc.c b/drivers/pwm/pwm-atmel-hlcdc.c
-index 96a709a9d49a..4d35b838203f 100644
---- a/drivers/pwm/pwm-atmel-hlcdc.c
-+++ b/drivers/pwm/pwm-atmel-hlcdc.c
-@@ -44,7 +44,7 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, struct pwm_device *pwm,
- 	struct atmel_hlcdc_pwm *chip = to_atmel_hlcdc_pwm(c);
- 	struct atmel_hlcdc *hlcdc = chip->hlcdc;
- 	unsigned int status;
--	int ret;
-+	int ret = 0;
- 
- 	if (state->enabled) {
- 		struct clk *new_clk = hlcdc->slow_clk;
-@@ -109,7 +109,7 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, struct pwm_device *pwm,
- 						 ATMEL_HLCDC_CLKPWMSEL,
- 						 gencfg);
- 			if (ret)
--				return ret;
-+				goto disable_new_clk;
- 		}
- 
- 		do_div(pwmcval, state->period);
-@@ -134,18 +134,20 @@ static int atmel_hlcdc_pwm_apply(struct pwm_chip *c, struct pwm_device *pwm,
- 					 ATMEL_HLCDC_PWMPOL,
- 					 pwmcfg);
- 		if (ret)
--			return ret;
-+			goto disable_new_clk;
- 
- 		ret = regmap_write(hlcdc->regmap, ATMEL_HLCDC_EN,
- 				   ATMEL_HLCDC_PWM);
- 		if (ret)
--			return ret;
-+			goto disable_new_clk;
- 
- 		ret = regmap_read_poll_timeout(hlcdc->regmap, ATMEL_HLCDC_SR,
- 					       status,
- 					       status & ATMEL_HLCDC_PWM,
- 					       10, 0);
--		if (ret)
-+disable_new_clk:
-+			clk_disable_unprepare(new_clk);
-+			chip->cur_clk = NULL;
- 			return ret;
- 	} else {
- 		ret = regmap_write(hlcdc->regmap, ATMEL_HLCDC_DIS,
--- 
-2.34.1
-
+best,
+sam
