@@ -2,129 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0A91790508
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 06:43:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 964EE790512
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 06:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351507AbjIBEma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 00:42:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        id S1351511AbjIBEwc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 00:52:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351477AbjIBEm3 (ORCPT
+        with ESMTP id S1348462AbjIBEwb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 00:42:29 -0400
-Received: from out203-205-251-59.mail.qq.com (out203-205-251-59.mail.qq.com [203.205.251.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C618C1707;
-        Fri,  1 Sep 2023 21:42:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1693629738;
-        bh=VDeJU94IWnvseyKaMxC4IUln27g8AmHmoNXDqEplCe8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=LkVhl7Tw1XoBWDKsxT8iWaFBUDhACP8sUZDECEndI52B3TwNCAPJCjTUf/zx26KWm
-         t3mWgxVqoaIAJ5LDF8fR/PBPVEsjrLzmZbcQO75Rd5HQpx6We366cUHdJJL/JBWicA
-         smn82tgqDCRcq6rGDdFCuq8+agLvcNe072FduVak=
-Received: from rtoax.lan ([120.245.114.63])
-        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
-        id A4223C8B; Sat, 02 Sep 2023 12:41:02 +0800
-X-QQ-mid: xmsmtpt1693629710t5d0r7m38
-Message-ID: <tencent_51C8597C97032AF5AFDAA30C887206014208@qq.com>
-X-QQ-XMAILINFO: OUUXHEo9i1ukFJYgSO1dj9mwONQKPyftWMC5kUq9pKAIUP2tf+OHYc6I9HtYAo
-         0f/3PO0B89VA74pYjo2DdVEIauYDaRoTfC/fxGDITJPujGHJDeyNGhoELfvoSafZFrz8N0I1Iwx/
-         b5wnVASGROPcyRToyEOmu4Rz028wqnA91sDkamJRvqvJvToBng6ow7WFal2FSRl+iz4DHAekn27S
-         Y+Aev9kKWjxfNh1atT9Io/mpSrNg/0kJt8jZxG1jFnLlMT13jT0/nfcJ9zlaSEHNsrYCdkmbfAjo
-         uBsgsbn/tv04U5TqmT0zGJBMvSLOgS6iEcbL42cKYqeEVieSCrkTYZgb9J1aw5ZgRrAUyC1mxpOR
-         qJs9KF8nyVoMOTq0Jd/MJNXQjmwqQPENuk3/oeVwcWsU79j0AhKwWnYdDbF1z6AIEHDQZwamJ3Ek
-         b6I7Qs891Z6CYjheDKyVdJBourSAfgfnaWgQ3W6TCPa7F2LJdvndwY1fxm1v9zrT+i24FnxsKijV
-         47P+BPxXknxt5RgTMvkfHeWAdPyKw1crODvsOsEGU19La88qzRmwO24wussXD982sNjJTgf11jGY
-         m6He9LF8i6XHshm80wZCvObkHjBdStTOBcs/4qYBLZf1Wshi6+uOKj2aPVzRC1c5qp5BwfEnB9dZ
-         awYQEjtmuLXBglrdOLZzBLnHlgVEmhe38VTjqVNA3LA4+Mp8jXpQuawh1zvvtLyLzAI15Oyomg/1
-         nWl9De49ikMIlgXQCobvBWVPATu3h0eCf4W89BVufWF0xl6OX0NMwAaU+DN7LdhbS7QfD/JBXEh9
-         qXyQI6uSl4rCI+i8lBE10blxb+5WFO/IsECuJQnc1d3vBo646W4+sspxPh7MHZlt9AszkWq01rZP
-         wg1yWqZ7AoUx+54hGZ61gWlbaj42ncOHAF+xl+duHm7YkKvgFZtL+Yy+Q2Dl98tK7d69w+sIv2DW
-         crF9/kDKBIcbyZGxJDCldrA6qnI/E0o9n2Uqj+X5BbpGES4l3JNp10kQFsdZTLTxTHJavji3zW1n
-         IPf1Xi53Pw+YzJ+55e
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
-        sdf@google.com
-Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32
-        ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32
-        ARCHITECTURE)
-Subject: [PATCH bpf-next v10 2/2] selftests/bpf: trace_helpers.c: Add a global ksyms initialization mutex
-Date:   Sat,  2 Sep 2023 12:40:19 +0800
-X-OQ-MSGID: <20230902044040.137804-3-rtoax@foxmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230902044040.137804-1-rtoax@foxmail.com>
-References: <20230902044040.137804-1-rtoax@foxmail.com>
+        Sat, 2 Sep 2023 00:52:31 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C1471706
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 21:52:26 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bf1935f6c2so4016445ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 21:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693630346; x=1694235146; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=ijD/QXgkfcmQQpjgZVWk02lSeb5Kah86yA9TYX6zx1I=;
+        b=eXUrCH/NCbPAQb8WecToMDsXyi4d0slJHEPIq4M03moU+H9GjFla31Rx76ELE9nJFU
+         WGHEJyAV/vv9n+TN9GIIa7tSv4hhJx5987N0o/xAo8YD4UNTphOfnq97meC8rNotAytC
+         ah5HZ4ySfYhpEsxMTCkprLItsE8AypZmyU4Y6WyWeHSxFwYpkQaFoWo8d1ecRdAVmgMA
+         1ZF82fYFluKN3AoKpkkxmPXhQPzPcDaezTRHtMXVjUDIj3bOqLl2gEM31QjpaFN0tW8N
+         yeIY8ZLcernOQ3pCzyCujYap/zLMnVo3BNe8DydiLTQPNmvdwqcL7nTBy6ZEvGjmNxck
+         W/7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693630346; x=1694235146;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ijD/QXgkfcmQQpjgZVWk02lSeb5Kah86yA9TYX6zx1I=;
+        b=HvRt+nTfAVXO+7ihoF11WrKaA8Syt0GKR0/cOxfsERPzIS8Uhi7rcOMiH81WiIRkzV
+         QwC6fwQriiCWEHBCe8sMFNXFbJsbETRiktpHQv0qZsvMbeek5Zqx6Xr0srksi/nNZJi1
+         XWFX9ElFLXKi4D42RJC9HaSSdfnuH39OGadnOYch7ye7GM8cRxtXWLz762FHdSqf6mUS
+         UXESvmV/IuPy10LZxjlykKyfNIIT7cuCJgjuH2k1IOJKFKtlSiQgmzmguzBuWEqy8pa3
+         nAN93fK9lFP2rKRFq/3OAy6GRB9LroyEgb7ztxyBhndTfI+gpBIUAjo8NJmy0q2lUo9C
+         Ullw==
+X-Gm-Message-State: AOJu0YzzKN5wUyDal0EQ3cOAmEUk0f1Ei8C5cuQCry+iyKvrvV77tu78
+        hGHBOgOYEtTNtNaICVF3OLWd
+X-Google-Smtp-Source: AGHT+IHn+lpzw9uFuVsUrK4hFksx30nUuJVmCY/9azhZGZuuOYfsE09NMsfHfbXcr11fLWIN9x+S/g==
+X-Received: by 2002:a17:902:ce83:b0:1bc:2fe1:1821 with SMTP id f3-20020a170902ce8300b001bc2fe11821mr6157887plg.17.1693630345688;
+        Fri, 01 Sep 2023 21:52:25 -0700 (PDT)
+Received: from thinkpad ([117.217.187.8])
+        by smtp.gmail.com with ESMTPSA id u10-20020a170902e80a00b001aadd0d7364sm3794308plg.83.2023.09.01.21.52.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Sep 2023 21:52:24 -0700 (PDT)
+Date:   Sat, 2 Sep 2023 10:22:14 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     tglx@linutronix.de, aisheng.dong@nxp.com, bhelgaas@google.com,
+        devicetree@vger.kernel.org, festevam@gmail.com,
+        imx@lists.linux.dev, jdmason@kudzu.us, kernel@pengutronix.de,
+        kishon@ti.com, krzysztof.kozlowski+dt@linaro.org, kw@linux.com,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, lpieralisi@kernel.org, maz@kernel.org,
+        ntb@lists.linux.dev, peng.fan@nxp.com, robh+dt@kernel.org,
+        s.hauer@pengutronix.de, shawnguo@kernel.org
+Subject: Re: [PATCH 1/3] PCI: endpoint: Add RC-to-EP doorbell support using
+ platform MSI controller
+Message-ID: <20230902045214.GA2913@thinkpad>
+References: <20230426203436.1277307-1-Frank.Li@nxp.com>
+ <20230426203436.1277307-2-Frank.Li@nxp.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230426203436.1277307-2-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On Wed, Apr 26, 2023 at 04:34:34PM -0400, Frank Li wrote:
+> This commit introduces a common method for sending messages from the Root Complex
+> (RC) to the Endpoint (EP) by utilizing the platform MSI interrupt controller,
+> such as ARM GIC, as an EP doorbell. Maps the memory assigned for the BAR region
+> by the PCI host to the message address of the platform MSI interrupt controller
+> in the PCI EP. As a result, when the PCI RC writes to the BAR region, it triggers
+> an IRQ at the EP. This implementation serves as a common method for all endpoint
+> function drivers.
+> 
+> However, it currently supports only one EP physical function due to limitations
+> in ARM MSI/IMS readiness.
+> 
 
-As Jirka said [0], we just need to make sure that global ksyms
-initialization won't race.
+I've provided generic comments below, but I will do one more thorough review
+after seeing epf-test driver patch.
 
-[0] https://lore.kernel.org/lkml/ZPCbAs3ItjRd8XVh@krava/
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  drivers/pci/endpoint/pci-epf-core.c | 109 ++++++++++++++++++++++++++++
+>  include/linux/pci-epf.h             |  16 ++++
+>  2 files changed, 125 insertions(+)
+> 
+> diff --git a/drivers/pci/endpoint/pci-epf-core.c b/drivers/pci/endpoint/pci-epf-core.c
+> index 355a6f56fcea..94ac82bf84c5 100644
+> --- a/drivers/pci/endpoint/pci-epf-core.c
+> +++ b/drivers/pci/endpoint/pci-epf-core.c
+> @@ -6,10 +6,12 @@
+>   * Author: Kishon Vijay Abraham I <kishon@ti.com>
+>   */
+>  
+> +#include <linux/irqreturn.h>
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/testing/selftests/bpf/trace_helpers.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Why is this needed?
 
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index d64c4ef336e1..500b60226e5e 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <poll.h>
-+#include <pthread.h>
- #include <unistd.h>
- #include <linux/perf_event.h>
- #include <sys/mman.h>
-@@ -26,6 +27,7 @@ struct ksyms {
- };
- 
- static struct ksyms *ksyms;
-+static pthread_mutex_t ksyms_mutex = PTHREAD_MUTEX_INITIALIZER;
- 
- static int ksyms__add_symbol(struct ksyms *ksyms, const char *name,
- 							 unsigned long addr)
-@@ -115,8 +117,10 @@ struct ksyms *load_kallsyms_local(void)
- 
- int load_kallsyms(void)
- {
-+	pthread_mutex_lock(&ksyms_mutex);
- 	if (!ksyms)
- 		ksyms = load_kallsyms_local();
-+	pthread_mutex_unlock(&ksyms_mutex);
- 	return ksyms ? 0 : 1;
- }
- 
+>  #include <linux/device.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/slab.h>
+>  #include <linux/module.h>
+> +#include <linux/msi.h>
+>  
+>  #include <linux/pci-epc.h>
+>  #include <linux/pci-epf.h>
+> @@ -300,6 +302,113 @@ void *pci_epf_alloc_space(struct pci_epf *epf, size_t size, enum pci_barno bar,
+>  }
+>  EXPORT_SYMBOL_GPL(pci_epf_alloc_space);
+>  
+> +static enum irqreturn pci_epf_interrupt_handler(int irq, void *data)
+
+static irqreturn_t
+
+s/pci_epf_interrupt_handler/pci_epf_doorbell_handler
+
+> +{
+> +	struct pci_epf *epf = data;
+> +
+> +	if (epf->event_ops && epf->event_ops->doorbell)
+> +		epf->event_ops->doorbell(epf, irq - epf->virq_base);
+> +
+> +	return IRQ_HANDLED;
+> +}
+> +
+> +static void pci_epf_write_msi_msg(struct msi_desc *desc, struct msi_msg *msg)
+> +{
+> +	struct pci_epc *epc = container_of(desc->dev, struct pci_epc, dev);
+> +	struct pci_epf *epf;
+> +
+> +	/* Todo: Need check correct epf if multi epf supported */
+> +	list_for_each_entry(epf, &epc->pci_epf, list) {
+> +		if (epf->msg && desc->msi_index < epf->num_msgs)
+> +			epf->msg[desc->msi_index] = *msg;
+> +	}
+> +}
+> +
+> +int pci_epf_alloc_doorbell(struct pci_epf *epf, u16 num_msgs)
+> +{
+> +	struct irq_domain *domain;
+> +	struct pci_epc *epc;
+> +	struct device *dev;
+> +	int virq;
+> +	int ret;
+> +	int i;
+> +
+> +	epc = epf->epc;
+> +	dev = &epc->dev;
+
+"epc_dev" to make it explicit
+
+> +
+> +	/*
+> +	 * Current only support 1 function.
+
+What does this mean exactly? Even a single EPC can support multiple EPFs
+
+> +	 * PCI IMS(interrupt message store) ARM support have not been
+> +	 * ready yet.
+
+No need to mention platform irq controller name.
+
+> +	 */
+> +	if (epc->function_num_map != 1)
+
+Why can't you use, epf->func_no?
+
+> +		return -EOPNOTSUPP;
+> +
+> +	domain = dev_get_msi_domain(dev->parent);
+> +	if (!domain)
+> +		return -EOPNTSUPP;
+
+Newline
+
+> +	dev_set_msi_domain(dev, domain);
+> +
+> +	/* use parent of_node to get device id information */
+> +	dev->of_node = dev->parent->of_node;
+> +
+
+Why do you need of_node assignment inside EPF core?
+
+> +	epf->msg = kcalloc(num_msgs, sizeof(struct msi_msg), GFP_KERNEL);
+> +	if (!epf->msg)
+> +		return -ENOMEM;
+> +
+> +	epf->num_msgs = num_msgs;
+> +
+
+Move this to the start of the function, after checks.
+
+> +	ret = platform_msi_domain_alloc_irqs(dev, num_msgs, pci_epf_write_msi_msg);
+> +	if (ret) {
+> +		dev_err(dev, "Can't allocate MSI from system MSI controller\n");
+
+"Failed to allocate MSI"
+
+> +		goto err_mem;
+
+err_free_mem
+
+> +	}
+> +
+> +	for (i = 0; i < num_msgs; i++) {
+> +		virq = msi_get_virq(dev, i);
+> +		if (i == 0)
+> +			epf->virq_base = virq;
+> +
+> +		ret = request_irq(virq, pci_epf_interrupt_handler, 0,
+> +				  "pci-epf-doorbell", epf);
+
+IRQ name should have an index, otherwise all of them will have the same name.
+
+> +
+> +		if (ret) {
+> +			dev_err(dev, "Failure request doorbell IRQ\n");
+
+"Failed to request doorbell"
+
+> +			goto err_irq;
+
+err_free_irq
+
+> +		}
+> +	}
+> +
+> +	epf->num_msgs = num_msgs;
+
+Newline
+
+> +	return ret;
+> +
+> +err_irq:
+> +	platform_msi_domain_free_irqs(dev);
+> +err_mem:
+> +	kfree(epf->msg);
+> +	epf->msg = NULL;
+> +	epf->num_msgs = 0;
+> +
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(pci_epf_alloc_doorbell);
+> +
+> +void pci_epf_free_doorbell(struct pci_epf *epf)
+> +{
+> +	struct pci_epc *epc;
+> +	int i;
+> +
+> +	epc = epf->epc;
+> +
+> +	for (i = 0; i < epf->num_msgs; i++)
+> +		free_irq(epf->virq_base + i, epf);
+> +
+> +	platform_msi_domain_free_irqs(&epc->dev);
+> +	kfree(epf->msg);
+> +	epf->msg = NULL;
+> +	epf->num_msgs = 0;
+> +}
+> +EXPORT_SYMBOL_GPL(pci_epf_free_doorbell);
+> +
+>  static void pci_epf_remove_cfs(struct pci_epf_driver *driver)
+>  {
+>  	struct config_group *group, *tmp;
+> diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> index b8441db2fa52..e187e3ee48d2 100644
+> --- a/include/linux/pci-epf.h
+> +++ b/include/linux/pci-epf.h
+> @@ -75,6 +75,7 @@ struct pci_epf_ops {
+>  struct pci_epc_event_ops {
+>  	int (*core_init)(struct pci_epf *epf);
+>  	int (*link_up)(struct pci_epf *epf);
+> +	int (*doorbell)(struct pci_epf *epf, int index);
+>  };
+>  
+>  /**
+> @@ -173,6 +174,9 @@ struct pci_epf {
+>  	unsigned long		vfunction_num_map;
+>  	struct list_head	pci_vepf;
+>  	const struct pci_epc_event_ops *event_ops;
+> +	struct msi_msg *msg;
+> +	u16 num_msgs;
+> +	int virq_base;
+>  };
+>  
+>  /**
+> @@ -216,4 +220,16 @@ int pci_epf_bind(struct pci_epf *epf);
+>  void pci_epf_unbind(struct pci_epf *epf);
+>  int pci_epf_add_vepf(struct pci_epf *epf_pf, struct pci_epf *epf_vf);
+>  void pci_epf_remove_vepf(struct pci_epf *epf_pf, struct pci_epf *epf_vf);
+> +int pci_epf_alloc_doorbell(struct pci_epf *epf, u16 nums);
+> +void pci_epf_free_doorbell(struct pci_epf *epf);
+> +
+> +static inline struct msi_msg *epf_get_msg(struct pci_epf *epf)
+> +{
+> +	return epf->msg;
+> +}
+> +
+> +static inline u16 epf_get_msg_num(struct pci_epf *epf)
+> +{
+> +	return epf->num_msgs;
+> +}
+
+I don't see a need for these two functions as they are doing just dereferences.
+
+- Mani
+
+>  #endif /* __LINUX_PCI_EPF_H */
+> -- 
+> 2.34.1
+> 
+
 -- 
-2.41.0
-
+மணிவண்ணன் சதாசிவம்
