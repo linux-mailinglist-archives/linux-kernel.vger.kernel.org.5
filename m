@@ -2,145 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A52779092C
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:29:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81615790927
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbjIBS3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 14:29:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46198 "EHLO
+        id S231124AbjIBS3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 14:29:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbjIBS3d (ORCPT
+        with ESMTP id S230505AbjIBS27 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 14:29:33 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD8FE54;
-        Sat,  2 Sep 2023 11:29:30 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1bdf4752c3cso650335ad.2;
-        Sat, 02 Sep 2023 11:29:30 -0700 (PDT)
+        Sat, 2 Sep 2023 14:28:59 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4CEE58
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 11:28:55 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b703a0453fso1476941fa.3
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 11:28:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693679370; x=1694284170; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=joelfernandes.org; s=google; t=1693679333; x=1694284133; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=BV45jbupLFx2TG+9F8H1M507c169iOaYL5EH+k/ISNQ=;
-        b=b57UZ3FlyFHEQLVUacAPzoi2SbGk7j0H39K2qdRqk2M6Ae03NSoanidOVapHAtc1xh
-         ywzpo/TpmdNpk2Mci+WqgbEA8JRtZ8X77do0LuxvYlY+vyFY7rVHjU8/VGbRK5sBVFPC
-         BhlSEH0jAezc1CbLb2Bww47CRyyFzQaq4EEtcxZMNKR/9cuxRaHD75fbWYyllQBx/Q+v
-         YWMu/V4Gq/C8w/RvB5rs0eAvKdiJtFyWX0uKd6VzZqZrEFUtBINpVgaF8/E6p8pzojbe
-         yJ0V5l/PZHKv+NxuLrqVaNdKKbgWhIt+rDoyKPIfEMlZ8y7O3+fjxsz+Dad04vwHG/gy
-         mynw==
+        bh=06p62t6o9hfHUen6wuw+drhS9gztrUu2prO6a60vonk=;
+        b=GIlaWzOp+WT00/AM/F2bAFNawLfA4aaQbaBfSoLLefcayuKRnG3P/RB8IPWIHrkB1a
+         QgfKAqEFzbu4qfiX9hqnEmQOER+N7kokD0eDZassYFpr0cQJXEmjQv+2Bl8VlbWt6TN1
+         NEQGxax/BATpPg3QAo4HQ85xuNOuGUZbqtxZQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693679370; x=1694284170;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693679333; x=1694284133;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BV45jbupLFx2TG+9F8H1M507c169iOaYL5EH+k/ISNQ=;
-        b=RXt8CYadxfMzKDCi6YEKvsNWqoyS7BL8/DG68kDJsxhDV28G3ksY7Ej/HEWEn7ny/k
-         qMCDQKIlbxessx/qGLtcolol11q+UhbGyrd5F0eSjG5IqWOo6iWsTEUuze8kLINcRfwV
-         cNswANMPXjTI+fQGEJoEIF9a91Xx+Fdr/2mR06FKv2dJZ/oAIcMKK/CEnHZBZmdZ7vbj
-         pTwACsidD8LMMPuPV6uEuCMuGpvjAAm6NqYAqAW2R6WUT+rRPLXJvbiupNguZJcf0urR
-         kljmaKeaPdOXu5+JlqZcG3TB6Wi/lIM2sk33d48jSTIso9PE2oRV3rUkORaeFtjgD9Dv
-         wB4w==
-X-Gm-Message-State: AOJu0Yx4IFWxM/XdR5YOwPhhO27T7fvneLe/2sfDY4l64biYsXi0tpfk
-        9FdfJmgedN0R1XDHUy3TtMk=
-X-Google-Smtp-Source: AGHT+IHPRUuIj1BKSj0LtnsNRNydQthbMqyTlX8mU4BFRpAG81lwjVcjG4Gude2PnINdpETkwpBLfg==
-X-Received: by 2002:a17:902:f54a:b0:1be:e851:c070 with SMTP id h10-20020a170902f54a00b001bee851c070mr6497245plf.22.1693679369900;
-        Sat, 02 Sep 2023 11:29:29 -0700 (PDT)
-Received: from toolbox.iitism.net ([103.15.228.93])
-        by smtp.gmail.com with ESMTPSA id i6-20020a170902eb4600b001bf846dd2d0sm4918970pli.13.2023.09.02.11.29.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 11:29:29 -0700 (PDT)
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-To:     greybus-dev@lists.linaro.org
-Cc:     Ayush Singh <ayushdevel1325@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        Vaishnav M A <vaishnav@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Nishanth Menon <nm@ti.com>
-Subject: [PATCH v4 1/3] dt-bindings: Add beaglecc1352
-Date:   Sat,  2 Sep 2023 23:58:41 +0530
-Message-ID: <20230902182845.1840620-2-ayushdevel1325@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
-References: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
+        bh=06p62t6o9hfHUen6wuw+drhS9gztrUu2prO6a60vonk=;
+        b=JhruxVuAQJ0xy4lCK0JMoJEOQoMa5Xy31bz/n3CDJyJBds2SyoJ7IDIaZy1nVQVszs
+         lF2E93BwUyPZSpgCFfEOtlTXZVbIbIiEN7bh+43P9xuGomhcRjVkV7RG7sFDJ0IJDdxF
+         T7aOvdHe8QY5XW6fnfGSIQpw3Xj+cd14fNq0EpoI9MUybyOdG6EjFd3XhctDuTG7yvNj
+         Lx0Sve2zeHZcB+BTSVCHCYpwJdtiVVCX2LgNsmxL7dj+XtIrjHNhf1FgPDOrwtEOTcha
+         ySSSXN3cR2eAYe5i7MsOOt5lG5QQHPo7djlevCIp8/Qg7ljCDS/ZGmmz04eT/Yr6C6b2
+         YQzw==
+X-Gm-Message-State: AOJu0YxCYQmAn9vnFtOGnlykPSNesy+jIewepGM+WgWZ+kBOmdatyT7S
+        bwE6oTbWE6PZVo2PRq/OeLK7jVDvRaRhDHhBANqdLw==
+X-Google-Smtp-Source: AGHT+IEgMf52dbVI4u5JSa+pu7/zksdzK14ddOYJl1O2eloPm60PB2BwX4QSCPm/t6xSIsggFRuXCsazD0/WVjjeIq4=
+X-Received: by 2002:a2e:7304:0:b0:2bc:d6a8:1efd with SMTP id
+ o4-20020a2e7304000000b002bcd6a81efdmr4170974ljc.39.1693679332575; Sat, 02 Sep
+ 2023 11:28:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230831012257.1189964-1-joel@joelfernandes.org>
+ <b292cca4-d451-4371-ae2e-9417e0079e84@paulmck-laptop> <CAEXW_YRa0Gd2Gt8LagAyOp_8VwT+ra3N4+DBquUNn_Xmo8o7eg@mail.gmail.com>
+ <7bd77573-ded1-432e-8008-4c1cbe1b9eb9@paulmck-laptop>
+In-Reply-To: <7bd77573-ded1-432e-8008-4c1cbe1b9eb9@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 2 Sep 2023 14:28:41 -0400
+Message-ID: <CAEXW_YTzP90zs8z4UFC52fd_KMkpBba6ujBNnDM5Z6exskJ6tg@mail.gmail.com>
+Subject: Re: [PATCH] rcu/torture: Improve badness extraction from console logs
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add DT bindings for BeagleCC1352 co-processor UART.
+On Sat, Sep 2, 2023 at 9:53=E2=80=AFAM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+> On Fri, Sep 01, 2023 at 02:04:24PM -0400, Joel Fernandes wrote:
+> > On Fri, Sep 1, 2023 at 10:49=E2=80=AFAM Paul E. McKenney <paulmck@kerne=
+l.org> wrote:
+> > >
+> > > On Thu, Aug 31, 2023 at 01:22:56AM +0000, Joel Fernandes (Google) wro=
+te:
+> > > > Currently console.log.diags contains an output like follows:
+> > > > [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 r=
+cu_tasks_trace_pregp_step+0x4a/0x50
+> > > > [ 2457.542385] Call Trace:
+> > > >
+> > > > This is not very useful and the Call trace is desired. Improve the
+> > > > script by Extracting more lines after each grep match.
+> > > >
+> > > > With this the above becomes:
+> > > >
+> > > > Issue 1:
+> > > > [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061 r=
+cu_tasks_trace_pregp_step+0x4a/0x50
+> > > > [ 2457.326661] Modules linked in:
+> > > > [ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.1=
+5.128+ #381
+> > > > [ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), =
+BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > > > [ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
+> > > > [ 2457.386691] Code: 48 63 c7 48 8b 0
+> > > > [ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
+> > > > [ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 000=
+0000000000003
+> > > > [ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 000=
+0000000000003
+> > > > [ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 000=
+0000000000001
+> > > > [ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: fff=
+f8db902d87f40
+> > > > [ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: fff=
+f8db9011a3200
+> > > > [ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000=
+) knlGS:0000000000000000
+> > > > [ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > [ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 000=
+00000000006e0
+> > > > [ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
+0000000000000
+> > > > [ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
+0000000000400
+> > > > [ 2457.542385] Call Trace:
+> > > > [ 2457.546756]  <TASK>
+> > > > [ 2457.550349]  ? __warn+0x7b/0x100
+> > > > [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> > > > -------------------------------------
+> > > > Issue 2:
+> > > > [ 2457.542385] Call Trace:
+> > > > [ 2457.546756]  <TASK>
+> > > > [ 2457.550349]  ? __warn+0x7b/0x100
+> > > > [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> > > > [ 2457.574948]  ? report_bug+0x99/0xc0
+> > > > [ 2457.593824]  ? handle_bug+0x3c/0x70
+> > > > [ 2457.599534]  ? exc_invalid_op+0x13/0x60
+> > > > [ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
+> > > > [ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> > > > [ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
+> > > > [ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
+> > > > [ 2457.705658]  rcu_tasks_kthread+0x114/0x200
+> > > > [ 2457.712450]  ? wait_woken+0x70/0x70
+> > > > [ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
+> > > > [ 2457.746221]  kthread+0x130/0x160
+> > > > [ 2457.751487]  ? set_kthread_struct+0x40/0x40
+> > > > [ 2457.758178]  ret_from_fork+0x22/0x30
+> > > > [ 2457.763909]  </TASK>
+> > > > [ 2457.767546] irq event stamp: 29544441
+> > > > [ 2457.773344] hardirqs last  enabled at (29544451): [<ffffffffaace=
+6cbd>] __up_console_sem+0x4d/0x60
+> > > > [ 2457.786967] hardirqs last disabled at (29544460): [<ffffffffaace=
+6ca2>] __up_console_sem+0x32/0x60
+> > > > -------------------------------------
+> > > >
+> > > > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> > >
+> > > Nice!!!
+> > >
+> > > One request, though.  If I am reading this correctly, if a console.lo=
+g
+> > > file is filled with splats, then console.log.diags will replicate mos=
+t
+> > > of console.log.  Could you please limit something, perhaps the number
+> > > of lines, the number of splats, or some such?
+> > >
+> > > Just for context, my use case for the current setup is to run
+> > > kvm-find-errors.sh, which puts each console.log.diags/console.log pai=
+r
+> > > into my editor.  I copy an appropriate string from the console.log.di=
+ags,
+> > > and then paste that string to search for it in the corresponding
+> > > console.log file, which is what is edited next.
+> >
+> > I could add a summary on the top for your usecase (which keeps the
+> > original output), and then the more detailed splats below it. Would
+> > that work?
+>
+> That summary would normally be at the top of the file anyway, right?
 
-The BeaglePlay has a CC1352 co-processor. This co-processor is connected
-to the main AM62 (running Linux) over UART. The CC1352 can run Zephyr
-and other embedded OS. This commit adds DT bindings for the BeagleCC1352
-UART, which will allow Linux platform drivers to identify and access this
-device.
+Not after this patch. I removed the summary in my patch from the
+console .diags in favor of the detailed ones. I can add it back.
 
-This commit adds serial/beaglecc1352 for identifying this UART. It is
-used by an upcoming gb-beagleplay greybus driver.
+> Either way, what I don't want is many megabytes of splats from console.lo=
+g
+> duplicated into console.log.diags, especially in those (admittedly sad)
+> cases where the console.log file is the largest file in the results
+> directory.  Are you really going to be reading carefully after (say)
+> the fifth splat?  ;-)
 
-Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
----
- .../bindings/serial/beaglecc1352.yaml         | 25 +++++++++++++++++++
- MAINTAINERS                                   |  6 +++++
- 2 files changed, 31 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/serial/beaglecc1352.yaml
+I could limit it to just the first 5, with the existing unlimited
+summary at the top.
 
-diff --git a/Documentation/devicetree/bindings/serial/beaglecc1352.yaml b/Documentation/devicetree/bindings/serial/beaglecc1352.yaml
-new file mode 100644
-index 000000000000..54db630a2a50
---- /dev/null
-+++ b/Documentation/devicetree/bindings/serial/beaglecc1352.yaml
-@@ -0,0 +1,25 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/serial/beaglecc1352.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: BeaglePlay CC1352 serial UART
-+
-+maintainers:
-+  - Ayush Singh <ayushdevel1325@gmail.com>
-+
-+properties:
-+  compatible:
-+    const: beagle,cc1352
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    beaglecc1352 {
-+      compatible = "beagle,cc1352";
-+    };
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 37b9626ee654..9d1b49a6dfad 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -8969,6 +8969,12 @@ F:	drivers/staging/greybus/sdio.c
- F:	drivers/staging/greybus/spi.c
- F:	drivers/staging/greybus/spilib.c
- 
-+GREYBUS BEAGLEPLAY DRIVERS
-+M:	Ayush Singh <ayushdevel1325@gmail.com>
-+L:	greybus-dev@lists.linaro.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/serial/beaglecc1352.yaml
-+
- GREYBUS SUBSYSTEM
- M:	Johan Hovold <johan@kernel.org>
- M:	Alex Elder <elder@kernel.org>
--- 
-2.41.0
+Let me know if that works or does not work for you. :-)
 
+thanks,
+
+ - Joel
+
+
+>
+>                                                         Thanx, Paul
+>
+> > So the whole file would look something like:
+> > =3D=3D=3D=3D=3Dx8=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Summary of console.log lines showing issues:
+> > Line 300: [ 2457.293734] WARNING: CPU: 2 PID: 13 at
+> > kernel/rcu/tasks.h:1061 rcu_tasks_trace_pregp_step+0x4a/0x50
+> > Line 400:[ 2457.542385] Call Trace:
+> >
+> > Detailed list of issues:
+> > 1. Issue on line 300:
+> > [ 2457.293734] WARNING: CPU: 2 PID: 13 at kernel/rcu/tasks.h:1061
+> > rcu_tasks_trace_pregp_step+0x4a/0x50
+> > [ 2457.326661] Modules linked in:
+> > [ 2457.334818] CPU: 2 PID: 13 Comm: rcu_tasks_trace Not tainted 5.15.12=
+8+ #381
+> > [ 2457.349782] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+> > BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+> > [ 2457.373309] RIP: 0010:rcu_tasks_trace_pregp_step+0x4a/0x50
+> > [ 2457.386691] Code: 48 63 c7 48 8b 0
+> > [ 2457.421803] RSP: 0018:ffffa80fc0073e40 EFLAGS: 00010202
+> > [ 2457.431940] RAX: ffff8db91f580000 RBX: 000000000001b900 RCX: 0000000=
+000000003
+> > [ 2457.443206] RDX: 0000000000000008 RSI: ffffffffac6bebd8 RDI: 0000000=
+000000003
+> > [ 2457.454428] RBP: 0000000000000004 R08: 0000000000000001 R09: 0000000=
+000000001
+> > [ 2457.465668] R10: 0000000000000000 R11: 00000000ffffffff R12: ffff8db=
+902d87f40
+> > [ 2457.476971] R13: ffffffffac556620 R14: ffffffffac556630 R15: ffff8db=
+9011a3200
+> > [ 2457.488251] FS:  0000000000000000(0000) GS:ffff8db91f500000(0000)
+> > knlGS:0000000000000000
+> > [ 2457.500834] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [ 2457.509602] CR2: 0000000000000000 CR3: 0000000002cbc000 CR4: 0000000=
+0000006e0
+> > [ 2457.520378] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000=
+000000000
+> > [ 2457.531440] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000=
+000000400
+> > [ 2457.542385] Call Trace:
+> > [ 2457.546756]  <TASK>
+> > [ 2457.550349]  ? __warn+0x7b/0x100
+> > [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> > -------------------------------------
+> > 2. Issue on Line 500:
+> > [ 2457.542385] Call Trace:
+> > [ 2457.546756]  <TASK>
+> > [ 2457.550349]  ? __warn+0x7b/0x100
+> > [ 2457.567214]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> > [ 2457.574948]  ? report_bug+0x99/0xc0
+> > [ 2457.593824]  ? handle_bug+0x3c/0x70
+> > [ 2457.599534]  ? exc_invalid_op+0x13/0x60
+> > [ 2457.625729]  ? asm_exc_invalid_op+0x16/0x20
+> > [ 2457.632249]  ? rcu_tasks_trace_pregp_step+0x4a/0x50
+> > [ 2457.660010]  rcu_tasks_wait_gp+0x54/0x360
+> > [ 2457.677761]  ? _raw_spin_unlock_irqrestore+0x2b/0x60
+> > [ 2457.705658]  rcu_tasks_kthread+0x114/0x200
+> > [ 2457.712450]  ? wait_woken+0x70/0x70
+> > [ 2457.727283]  ? synchronize_rcu_tasks_rude+0x10/0x10
+> > [ 2457.746221]  kthread+0x130/0x160
+> > [ 2457.751487]  ? set_kthread_struct+0x40/0x40
+> > [ 2457.758178]  ret_from_fork+0x22/0x30
+> > [ 2457.763909]  </TASK>
+> > [ 2457.767546] irq event stamp: 29544441
+> > [ 2457.773344] hardirqs last  enabled at (29544451):
+> > [<ffffffffaace6cbd>] __up_console_sem+0x4d/0x60
+> > [ 2457.786967] hardirqs last disabled at (29544460):
+> > [<ffffffffaace6ca2>] __up_console_sem+0x32/0x60
+> > -------------------------------------
+> > =3D=3D=3D=3D=3Dx8=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D>
