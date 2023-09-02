@@ -2,74 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0546D790858
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 17:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF2879085B
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 17:10:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbjIBPAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 11:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        id S232841AbjIBPIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 11:08:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjIBPAm (ORCPT
+        with ESMTP id S232503AbjIBPIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 11:00:42 -0400
+        Sat, 2 Sep 2023 11:08:31 -0400
 Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD60D116
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 08:00:39 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1c0bae4da38so165235ad.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 08:00:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A11F130
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 08:08:28 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bd9b4f8e0eso95965ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 08:08:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1693666839; x=1694271639; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=No82j0zelLGQZ1We1kpgGnX8WqgyXeJ+fKIBM7K2mfk=;
-        b=fThpd0KB93D0Z9q996gYT3PK8biCc9lKLl+87nPvfXy/r116B+6lBjKk4UEXQl6pmt
-         b+i/4rVEI15zSsCr43tCoDeSFbad3mZdbZVc06fuSmj1y8q5sUNRpogAu/ITHGrQ1ycs
-         /SSnCqGJ1ZW7Zglyny1PgqAjj5Tn5+m3Gv/Bz4xq3VJsKLt2+0cwW1hEDqq4Oeku8lF0
-         LXtWxdkEBwkXysBYdGeEbFHfHp+6XhADei7H5GzihhCbgjbFycFIq9BjjRLYPpAHODg7
-         uLyVCLxLSKK5w5HgMXWnP4SbL9RignY9TwmKOToVo+AB/QNy+thuF+E4ZlKkJ9i6EbMC
-         6lrA==
+        d=gmail.com; s=20221208; t=1693667308; x=1694272108; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=oihOd2gBCa1RX2c3YMiv0m+sHANy7GfRsmex7Iu3Xq4=;
+        b=N1OPnZV3r4Y2Moq6HH8UJ5zGhnbRCQCEd2mlTo49Ie8iZCUEKZmWxVxcZPoq5XR752
+         SEFdiEdqGEp7Nqe/wOt4LQ23lVnD3E8HlgyJU7Hsngc8vDj4m+EgfOamnhpqFTdh7NzD
+         Udti6oAfQy/lofGdcnGHnFcv/ok5QWel0vOZ/lInglIMsqhhrff24KhHNaAh0j6hwP73
+         +u8BGz+ibe8X+UgclmG3eOW6IBEJT1XgmImwIcrRRISPiipGj7bSgKJqhCfvSvlzphqV
+         MyefKHirEDFRbI0nIazeoORkUVtUpeInhtsjXNe5At2UkO/tShAEVbbSHMjluydRNFcL
+         pXVw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693666839; x=1694271639;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=No82j0zelLGQZ1We1kpgGnX8WqgyXeJ+fKIBM7K2mfk=;
-        b=XrM+grp7PuvCsqEfxiKpJlkq6SpJ7oJY9+sGdU+qPJifJR0/d6GEuBt+N9H4oqC3vD
-         jJGoSNAxsWNu6s2TeqSkmarhi1A7IxhFRRcAJsG0cAbSQiHCv0oBwHOOmzOJ+39o22gN
-         u3uxFb2cFG25JjfFZHPMsWMwhOQxYdfM/uebbtPDzSWyufPdOfLYU5qr7jTcwESG2Qiq
-         8LQbXL06Q9DwMqNTI3x0vlZS1tFlnmSk+3Sma5crvDkGAwbHUH+otawPxybB841dNWAE
-         B9BJ/P8TCPvh0ADvv81HXDxTbaKn/zH8czjhhCQHGim08A92tO1Gt9a5Y3h3EFqE3yqU
-         EHJw==
-X-Gm-Message-State: AOJu0YyGUnWoNP2a/TNetAS6x0RhrD6F+PycHmd5dM+rT8/xvIlzH6T3
-        eY0Nkz3318Tm5NCyLLx5pd/P2A==
-X-Google-Smtp-Source: AGHT+IG5aRowHJhHxeBK0pk6dfUKP7athUbLHijWDRdXGx1tdVm+r/1EhwdRBaCulNtmVhKHfiNyyQ==
-X-Received: by 2002:a17:902:a408:b0:1bd:dbec:8673 with SMTP id p8-20020a170902a40800b001bddbec8673mr5868810plq.11.1693666839179;
-        Sat, 02 Sep 2023 08:00:39 -0700 (PDT)
-Received: from [10.254.27.61] ([139.177.225.238])
-        by smtp.gmail.com with ESMTPSA id h2-20020a170902748200b001c3267ae317sm1343163pll.165.2023.09.02.08.00.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Sep 2023 08:00:38 -0700 (PDT)
-Message-ID: <fbe24ad1-0d76-0463-0d09-66404991d5b4@bytedance.com>
-Date:   Sat, 2 Sep 2023 23:00:32 +0800
+        d=1e100.net; s=20221208; t=1693667308; x=1694272108;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oihOd2gBCa1RX2c3YMiv0m+sHANy7GfRsmex7Iu3Xq4=;
+        b=DrDHhzNGxO2FZSg5Q7IHT8mY7YmNW6qAjpDqWzebg1zfz5UX7ubnCGA9NkFT/N6O2N
+         NSCtkISS46s/GE5q5zpgnN9u4cmbkWnOEDOcjGxuQhWXBRyTOxk/auAaoC/9eSRvfXTS
+         R0rBmn/dxAuszQTMXBdv59O/LO7+XkYDTxu7o7OE9VeY/GiRg4L341l0IU91T8YHjI+r
+         nv604hESfmX5yP8NQqhcv6vuvMs7Y9XiPieg0WVkiWoTuymUncoWqdyRQX1XGWXJnZd2
+         0dC/74ha42I6huuxZfzqdcTvaNdkMC7CmC1WcAub1/q3/CLoIR6SWGZcmj6gJOkGRS+O
+         FhBg==
+X-Gm-Message-State: AOJu0Yx2HTMO4uj/jFfyiC+JRUUpfFR1X3CBYDJGvAKnSm75WAHOxDHq
+        kFCnyfnvAGWULBHjlPz2N9gvFpAOuP3S2kzL
+X-Google-Smtp-Source: AGHT+IERQ00WE8oz6cvfQd3k8l6X70FT5h5iZzzmJDyy+VwqH7eZ3w1ho05x2raTeACzPZsJP84nng==
+X-Received: by 2002:a17:902:da86:b0:1c0:c7ae:a8a2 with SMTP id j6-20020a170902da8600b001c0c7aea8a2mr701251plx.35.1693667307788;
+        Sat, 02 Sep 2023 08:08:27 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:a40d:5ac2:6bab:c627:af57:9218])
+        by smtp.gmail.com with ESMTPSA id j2-20020a170902da8200b001b53c8659fesm4755896plx.30.2023.09.02.08.08.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Sep 2023 08:08:27 -0700 (PDT)
+From:   Shubh <shubhisroking@gmail.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, Shubh <shubhisroking@gmail.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ASoC: amd: yc: Add DMI entries to support Victus by HP Gaming Laptop 15-fb0xxx (8A3E)
+Date:   Sat,  2 Sep 2023 20:38:07 +0530
+Message-ID: <20230902150807.133523-1-shubhisroking@gmail.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH 0/6] blk-mq: optimize the queue_rqs() support
-Content-Language: en-US
-To:     chengming.zhou@linux.dev, axboe@kernel.dk, hch@lst.de,
-        ming.lei@redhat.com, bvanassche@acm.org, kbusch@kernel.org
-Cc:     mst@redhat.com, sagi@grimberg.me, damien.lemoal@opensource.wdc.com,
-        kch@nvidia.com, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20230824144403.2135739-1-chengming.zhou@linux.dev>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-In-Reply-To: <20230824144403.2135739-1-chengming.zhou@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,49 +70,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/8/24 22:43, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> The current queue_rqs() support has limitation that it can't work on
-> shared tags queue, which is resolved by patch 1-3. We move the account
-> of active requests to where we really allocate the driver tag.
-> 
-> This is clearer and matched with the unaccount side which now happen
-> when we put the driver tag. And we can remove RQF_MQ_INFLIGHT, which
-> was used to avoid double account problem of flush request.
-> 
-> Another problem is that the driver that support queue_rqs() has to
-> set inflight request table by itself, which is resolved in patch 4.
-> 
-> The patch 5 fixes a potential race problem which may cause false
-> timeout because of the reorder of rq->state and rq->deadline.
-> 
-> The patch 6 add support queue_rqs() for null_blk, which showed a
-> 3.6% IOPS improvement in fio/t/io_uring benchmark on my test VM.
-> And we also use it for testing queue_rqs() on shared tags queue.
+This model requires an additional detection quirk to
+enable the internal microphone.
 
-Hello, gentle ping.
+Signed-off-by: Shubh <shubhisroking@gmail.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Thanks.
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index b304b3562..f7ee792bd 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -325,6 +325,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "8A22"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "HP"),
++			DMI_MATCH(DMI_BOARD_NAME, "8A3E"),
++		}
++	},
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+-- 
+2.42.0
 
-> 
-> Thanks for review!
-> 
-> Chengming Zhou (6):
->   blk-mq: account active requests when get driver tag
->   blk-mq: remove RQF_MQ_INFLIGHT
->   blk-mq: support batched queue_rqs() on shared tags queue
->   blk-mq: update driver tags request table when start request
->   blk-mq: fix potential reorder of request state and deadline
->   block/null_blk: add queue_rqs() support
-> 
->  block/blk-flush.c             | 11 ++-----
->  block/blk-mq-debugfs.c        |  1 -
->  block/blk-mq.c                | 53 ++++++++++++++------------------
->  block/blk-mq.h                | 57 ++++++++++++++++++++++++-----------
->  drivers/block/null_blk/main.c | 20 ++++++++++++
->  drivers/block/virtio_blk.c    |  2 --
->  drivers/nvme/host/pci.c       |  1 -
->  include/linux/blk-mq.h        |  2 --
->  8 files changed, 84 insertions(+), 63 deletions(-)
-> 
