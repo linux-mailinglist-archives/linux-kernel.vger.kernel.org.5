@@ -2,186 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2072F7907A1
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 13:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2957907A3
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 13:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352060AbjIBLps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 07:45:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35050 "EHLO
+        id S1352059AbjIBLug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 07:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352049AbjIBLpo (ORCPT
+        with ESMTP id S231146AbjIBLuf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 07:45:44 -0400
-Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66F010F6
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 04:45:39 -0700 (PDT)
-Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bd0bc8b429so50156801fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 04:45:39 -0700 (PDT)
+        Sat, 2 Sep 2023 07:50:35 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259C8E6A
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 04:50:32 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id d2e1a72fcca58-68a56401b9aso2306471b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 04:50:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693655138; x=1694259938; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zorMJs2VMBIVf26DDqKbZ6mYOJqpHE4v3AzFjSkIo58=;
-        b=C0VvNqwy+HFtsTOr0QwqPfaErpnJ+j+gbK+OgW5cm8ltddV0QZzA7EHkoRC0OZf5SR
-         rNU8NR/WmaKCdy8A/hKkysdtTlVFdesRIBgA/UASNPamtiTP2KtDTRBMhlaeT8YLdehX
-         TX1gF2g7KRZBBSE4OfaWG35xZGNzWFX0+Vv1RcZgH7ONyqsKxeggXkb16H4iHsZgXTkv
-         d2xg8J2UXSSbA9DkSVIyE4lAE/EJq/bFI2B8e9bwML/vMg2+HQA8tm20C5TzFl6zYUUt
-         uxHkBwsSdws+/5gDBNvz+LqVZuU6KnrF3wOtnm0DRJmPtVkUKEOw3yxiJvmD6/xYGAki
-         zvTg==
+        d=gmail.com; s=20221208; t=1693655431; x=1694260231; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=btdwJhsI6UftkpBbIga5OM0XK3JpNEHNxR05ThjivyA=;
+        b=rZ8n1XS15n8EVg3euiE+d35Easc/9sB4VjcDEyuLCx7wxXmQOFItfZumPeOXjjAG4q
+         RH/hkkvKaW5ZXFxF6DepWmAF+QrvxPViWFYKQtHTsVBIbFNGksRIpKZdBciPzt11dBKo
+         dggDLWJqo3dzDXRaHZKLYR03cO+g3PK7PqVv07PK2PiS+hsnP/w29b6F8q5i+QV+QQGR
+         JRpvILWBTo0vNMC3e9OudnF8OM3ojLiOyWJRDkVdpX3ZWNG+XRceXtaxaPUlACLsI0dd
+         bNo25JrDmvEZSqHLNhH/3IfnnS9tEQScd8Q/PTGBPRkOgmmuDMTtsutrt/P3v9/h183V
+         67AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693655138; x=1694259938;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zorMJs2VMBIVf26DDqKbZ6mYOJqpHE4v3AzFjSkIo58=;
-        b=V9L+dASZ+X6IhKfd+ZzEfrYVTVz/+IkPlTwxv5lrXMg/ft7ISVSZbF2mt86/8XzIR0
-         1yVvNMwkWTIsBUP7V/tj4cbZ/LbPUI0NSgCy10o1vaxQfa1yhSa5Q3gda8zPsNvBIvk5
-         IgWFdWLzPJFrVB/wK2qB5AaD94XhFFOJNcU/VplfhFn1xbppOVoRgGO5yIb+6odB7O1b
-         CPE1N9G6DpNNndiKKVIcspPBjtw0R/1FuiPBgfmfQ9O+8WRXTmW6MlRo2pGGqs+QCTBX
-         B98iZFYx4cFoE6ABYwQtmfwG+ao1cOjkqDoS0/gYLzxBXexuGIENfLdnepWrl0rEFtmc
-         onfQ==
-X-Gm-Message-State: AOJu0Yyt+cgS22lIBXFV8oVD2QNVqDqo51YVr12D91UmzusJNokTe6Rd
-        6LN+4WC2vM7bVIZFDg6pAFwNww==
-X-Google-Smtp-Source: AGHT+IFqP05K7+DSnGRKSlA7ReM081tFrZrwpnWX1jlZNOk+CT3xMfqqzeSpSMMca0sSWBFoIRRtUQ==
-X-Received: by 2002:a2e:7d18:0:b0:2bc:e1a3:fbaa with SMTP id y24-20020a2e7d18000000b002bce1a3fbaamr3630421ljc.22.1693655137988;
-        Sat, 02 Sep 2023 04:45:37 -0700 (PDT)
-Received: from [192.168.1.101] (abxi170.neoplus.adsl.tpnet.pl. [83.9.2.170])
-        by smtp.gmail.com with ESMTPSA id v2-20020a2e9602000000b002b9fe77d00dsm1168719ljh.93.2023.09.02.04.45.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Sep 2023 04:45:37 -0700 (PDT)
-Message-ID: <5f05c76e-e74e-4954-a729-3ed2a1d33605@linaro.org>
-Date:   Sat, 2 Sep 2023 13:45:35 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 11/11] arm64: dts: qcom: qcm6490: Add device-tree for
- Fairphone 5
-Content-Language: en-US
-To:     Luca Weiss <luca.weiss@fairphone.com>,
-        cros-qcom-dts-watchers@chromium.org,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pm@vger.kernel.org
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-11-5a954519bbad@fairphone.com>
- <72c2fd33-613b-49be-b394-0663f459f0c5@linaro.org>
- <CV7NGPVH4U0W.PN2NOIO19Z7U@otso>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <CV7NGPVH4U0W.PN2NOIO19Z7U@otso>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        d=1e100.net; s=20221208; t=1693655431; x=1694260231;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=btdwJhsI6UftkpBbIga5OM0XK3JpNEHNxR05ThjivyA=;
+        b=lnH2tKy9LBV+jUPeUwXzFqyETW1g6msCytlvSVmDyD/uFT+lw48ciFAtzxfPmKLI/v
+         xTyarXaLEdcoy3J1vIIpL2fdTTPV1BT8ntqID0CVzFsoctVQHNEpGN36YKP5yg74B/Uu
+         S6Glh8eSMHNrT1SlbVT7yQIPyexqf7SialGdG4jzkuYhPewBKMEOyAQcWRWvUc2FxYJi
+         NKbAArGSaTzPPgEW73Igf3VvwuJA102+6vWByGL39pWHu15JbqINZQx0JIMQzSHgh9Dy
+         pyHSGrFXpcyrLa72w5zAKc+ZpdIFtgVKTMvpBKFKk4C9mj02VCB50BqzdSdVfeBfQvhS
+         A/iA==
+X-Gm-Message-State: AOJu0YwdZGtWlALM3lW1mxSUGA2I7++cMe2Y7sORu1wppOv3Kt/vNsFg
+        Rqix1rD3NzzLfvvbl8INBWoN4rwW8u8=
+X-Google-Smtp-Source: AGHT+IFG/hdtYmU3REWAIQL/gUqu0SAr+lyJ/DmGC/fPVND5sjG/9P3DJCCYJC6f3dKpJkFomiKHqQ==
+X-Received: by 2002:a05:6a00:a07:b0:68b:bd56:c783 with SMTP id p7-20020a056a000a0700b0068bbd56c783mr5909433pfh.22.1693655431487;
+        Sat, 02 Sep 2023 04:50:31 -0700 (PDT)
+Received: from MSCND1355B05.nio.com ([124.126.151.50])
+        by smtp.gmail.com with ESMTPSA id d15-20020aa78e4f000000b0068bade042besm4463337pfr.48.2023.09.02.04.50.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Sep 2023 04:50:31 -0700 (PDT)
+From:   Zqiang <qiang.zhang1211@gmail.com>
+To:     tj@kernel.org, jiangshanlai@gmail.com, qiang.zhang1211@gmail.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] workqueue: Fix UAF report by KASAN in pwq_release_workfn()
+Date:   Sat,  2 Sep 2023 19:50:26 +0800
+Message-Id: <20230902115026.13460-1-qiang.zhang1211@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1.09.2023 16:27, Luca Weiss wrote:
-> On Wed Aug 30, 2023 at 12:45 PM CEST, Konrad Dybcio wrote:
->> On 30.08.2023 11:58, Luca Weiss wrote:
->>> Add device tree for the Fairphone 5 smartphone which is based on
->>> the QCM6490 SoC.
->>>
->>> Supported features are, as of now:
->>> * Bluetooth
->>> * Debug UART
->>> * Display via simplefb
->>> * Flash/torch LED
->>> * Flip cover sensor
->>> * Power & volume buttons
->>> * RTC
->>> * SD card
->>> * USB
->>> * Various plumbing like regulators, i2c, spi, etc
->>>
->>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
->>> ---
-[...]
+Currently, for UNBOUND workqueue allocation failure, the
+apply_wqattr_cleanup() will be called and use the pwq_release_worker
+kthread to release resources asynchronously. however, the kfree(wq)
+is invoked directly in failure path of alloc_workqueue(), this leads
+to the following scenario:
 
->>> +	panel: panel {
->>> +		compatible = "boe,rm692e5";
->> Undocumented compatbile
-> 
-> Not quite sure how to document this properly. This dummy panel node is
-> used for the simplefb/simpledrm so that user space can get panel
-> dimensions already.
-> 
-> This approach of a separate panel node was apparently preferred when the
-> functionality was upstreamed but of course as can be seen this panel
-> node is very barebones where many properties are not present which would
-> be needed with the full panel driver (once it's working).
-> 
-> Also for example for the bindings I think width-mm and height-mm won't
-> be needed anymore since that information will be provided by the driver
-> then.
-> 
-> Please let me know how/where to document this.
-As discussed offline, the workflow here would be to oneOf: (wink)
+BUG: KASAN: slab-use-after-free in pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+Read of size 4 at addr ffff888027b831c0 by task pool_workqueue_/3
 
-- wait until there's a proper driver and create a binding based on
-  what you know (because you have a working driver and can test it)
-  is necessary for it to function
+CPU: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.5.0-rc7-next-20230825-syzkaller #0
+Hardware name: Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ pwq_release_workfn+0x339/0x380 kernel/workqueue.c:4124
+ kthread_worker_fn+0x2fc/0xa80 kernel/kthread.c:823
+ kthread+0x33a/0x430 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
 
-- create the binding for that display panel + driver ic combo in
-  advance and pray that whatever you put there will be enough when
-  you take upon yourself to write the driver
+Allocated by task 5054:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ ____kasan_kmalloc mm/kasan/common.c:374 [inline]
+ __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
+ kmalloc include/linux/slab.h:599 [inline]
+ kzalloc include/linux/slab.h:720 [inline]
+ alloc_workqueue+0x16f/0x1490 kernel/workqueue.c:4684
+ kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+ kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+ kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+ kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-I'd suggest dropping these properties (or keeping them downstream or
-something) for now, the display should not be terribly hard to bring
-up properly, let's hope that can be done soon!
+Freed by task 5054:
+ kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
+ kasan_set_track+0x25/0x30 mm/kasan/common.c:52
+ kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
+ ____kasan_slab_free mm/kasan/common.c:236 [inline]
+ ____kasan_slab_free+0x15b/0x1b0 mm/kasan/common.c:200
+ kasan_slab_free include/linux/kasan.h:164 [inline]
+ slab_free_hook mm/slub.c:1800 [inline]
+ slab_free_freelist_hook+0x114/0x1e0 mm/slub.c:1826
+ slab_free mm/slub.c:3809 [inline]
+ __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3822
+ alloc_workqueue+0xe76/0x1490 kernel/workqueue.c:4746
+ kvm_mmu_init_tdp_mmu+0x23/0x100 arch/x86/kvm/mmu/tdp_mmu.c:19
+ kvm_mmu_init_vm+0x248/0x2e0 arch/x86/kvm/mmu/mmu.c:6180
+ kvm_arch_init_vm+0x39/0x720 arch/x86/kvm/x86.c:12311
+ kvm_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:1222 [inline]
+ kvm_dev_ioctl_create_vm arch/x86/kvm/../../../virt/kvm/kvm_main.c:5089 [inline]
+ kvm_dev_ioctl+0xa31/0x1c20 arch/x86/kvm/../../../virt/kvm/kvm_main.c:5131
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:871 [inline]
+ __se_sys_ioctl fs/ioctl.c:857 [inline]
+ __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-> I'm aware, but will work on this later since it's not useful without
-> USB-C role switching and working audio.
-You can still peek at it in like sysfs or so, but up to you.
+This commit therefore only direct release resources when the
+!UNBOUND workqueue allocation failure.
 
+Reported-by: syzbot+60db9f652c92d5bacba4@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=60db9f652c92d5bacba4
+Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+---
+ kernel/workqueue.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-Konrad
+diff --git a/kernel/workqueue.c b/kernel/workqueue.c
+index c85825e17df8..f3f9c9222070 100644
+--- a/kernel/workqueue.c
++++ b/kernel/workqueue.c
+@@ -4609,6 +4609,10 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
+ 		free_percpu(wq->cpu_pwq);
+ 		wq->cpu_pwq = NULL;
+ 	}
++	wq_unregister_lockdep(wq);
++	wq_free_lockdep(wq);
++	free_workqueue_attrs(wq->unbound_attrs);
++	kfree(wq);
+ 	return -ENOMEM;
+ }
+ 
+@@ -4712,7 +4716,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 	INIT_LIST_HEAD(&wq->list);
+ 
+ 	if (alloc_and_link_pwqs(wq) < 0)
+-		goto err_unreg_lockdep;
++		return NULL;
+ 
+ 	if (wq_online && init_rescuer(wq) < 0)
+ 		goto err_destroy;
+@@ -4738,11 +4742,7 @@ struct workqueue_struct *alloc_workqueue(const char *fmt,
+ 
+ 	return wq;
+ 
+-err_unreg_lockdep:
+-	wq_unregister_lockdep(wq);
+-	wq_free_lockdep(wq);
+ err_free_wq:
+-	free_workqueue_attrs(wq->unbound_attrs);
+ 	kfree(wq);
+ 	return NULL;
+ err_destroy:
+-- 
+2.17.1
+
