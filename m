@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E127907AC
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 13:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24027907A7
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 13:51:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352114AbjIBLvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 07:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42964 "EHLO
+        id S1352090AbjIBLvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 07:51:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352079AbjIBLvO (ORCPT
+        with ESMTP id S231146AbjIBLvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 07:51:14 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED26710F6
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 04:51:10 -0700 (PDT)
+        Sat, 2 Sep 2023 07:51:13 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAF58E7E
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 04:51:09 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 25F8BCE25C7
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 11:51:09 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F195C4339A;
+        by ams.source.kernel.org (Postfix) with ESMTPS id B4DA0B826E7
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 11:51:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A80AC433AD;
         Sat,  2 Sep 2023 11:51:07 +0000 (UTC)
 Received: from rostedt by gandalf with local (Exim 4.96)
         (envelope-from <rostedt@goodmis.org>)
-        id 1qcP9r-000Jxm-0l;
+        id 1qcP9r-000JyL-1R;
         Sat, 02 Sep 2023 07:51:19 -0400
-Message-ID: <20230902115119.048419430@goodmis.org>
+Message-ID: <20230902115119.259781292@goodmis.org>
 User-Agent: quilt/0.66
-Date:   Sat, 02 Sep 2023 07:50:40 -0400
+Date:   Sat, 02 Sep 2023 07:50:41 -0400
 From:   Steven Rostedt <rostedt@goodmis.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Levi Yun <ppbuk5246@gmail.com>
-Subject: [for-linus][PATCH 05/11] ftrace: Use within_module to check rec->ip within specified module.
+        Ruan Jinjie <ruanjinjie@huawei.com>
+Subject: [for-linus][PATCH 06/11] ftrace: Use LIST_HEAD to initialize clear_hash
 References: <20230902115035.786076237@goodmis.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -49,45 +49,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Levi Yun <ppbuk5246@gmail.com>
+From: Ruan Jinjie <ruanjinjie@huawei.com>
 
-within_module_core && within_module_init condition is same to
-within module but it's more readable.
+Use LIST_HEAD() to initialize clear_hash instead of open-coding it.
 
-Use within_module instead of former condition to check rec->ip
-within specified module area or not.
+Link: https://lore.kernel.org/linux-trace-kernel/20230809071551.913041-1-ruanjinjie@huawei.com
 
-Link: https://lore.kernel.org/linux-trace-kernel/20230803205236.32201-1-ppbuk5246@gmail.com
-
-Signed-off-by: Levi Yun <ppbuk5246@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Signed-off-by: Ruan Jinjie <ruanjinjie@huawei.com>
 Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
 ---
- kernel/trace/ftrace.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ kernel/trace/ftrace.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
 diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 05c0024815bf..c46dd6d97afe 100644
+index c46dd6d97afe..8de8bec5f366 100644
 --- a/kernel/trace/ftrace.c
 +++ b/kernel/trace/ftrace.c
-@@ -6779,8 +6779,7 @@ void ftrace_release_mod(struct module *mod)
- 	last_pg = &ftrace_pages_start;
- 	for (pg = ftrace_pages_start; pg; pg = *last_pg) {
- 		rec = &pg->records[0];
--		if (within_module_core(rec->ip, mod) ||
--		    within_module_init(rec->ip, mod)) {
-+		if (within_module(rec->ip, mod)) {
- 			/*
- 			 * As core pages are first, the first
- 			 * page should never be a module page.
-@@ -6852,8 +6851,7 @@ void ftrace_module_enable(struct module *mod)
- 		 * not part of this module, then skip this pg,
- 		 * which the "break" will do.
- 		 */
--		if (!within_module_core(rec->ip, mod) &&
--		    !within_module_init(rec->ip, mod))
-+		if (!within_module(rec->ip, mod))
- 			break;
+@@ -7140,9 +7140,7 @@ void ftrace_free_mem(struct module *mod, void *start_ptr, void *end_ptr)
+ 	struct dyn_ftrace key;
+ 	struct ftrace_mod_map *mod_map = NULL;
+ 	struct ftrace_init_func *func, *func_next;
+-	struct list_head clear_hash;
+-
+-	INIT_LIST_HEAD(&clear_hash);
++	LIST_HEAD(clear_hash);
  
- 		/* Weak functions should still be ignored */
+ 	key.ip = start;
+ 	key.flags = end;	/* overload flags, as it is unsigned long */
 -- 
 2.40.1
