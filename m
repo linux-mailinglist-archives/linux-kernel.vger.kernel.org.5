@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B87F079055A
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 07:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5DA790580
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 08:00:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351614AbjIBFwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 01:52:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
+        id S1346348AbjIBGA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 02:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351582AbjIBFwO (ORCPT
+        with ESMTP id S241791AbjIBGA0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 01:52:14 -0400
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC33198A
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 22:51:43 -0700 (PDT)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-26b752bc74fso2948995a91.2
-        for <linux-kernel@vger.kernel.org>; Fri, 01 Sep 2023 22:51:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693633894; x=1694238694;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GVATVoBrfzdV7ijJq9TyC6Ht5BBCJVhtlVkBprhYRqw=;
-        b=eEUk4VNu+UCrS1UE6sIWy4DABhY0+2FF3egdaVJ1wnhB8Ls06fTaN3Vs9ElJ+ns2Hc
-         M2IygPWAZ3dygW4KYGHY3qU1hV4BGp3ul5aMSuhLiaJBbHRtmoQ1qb+sPOTzc+0+Ofbs
-         y+YTx9UEYVwk3LlhKrLaWTSy+6hmy7DCKGIdHQWcMMMAHu8uxRPNzfrkUjb9sf5gX1fX
-         Wbo2Td78maCO3DMdE4Yfv8mPEmea0gpArNy4jNRMO0xE0K5bU1X1HrE0QV9uhErJQ+eT
-         mVkiAG/V4GbMR3onLOM1cDqAnJnZH294Hv+rmbTOKZlTd3t8zJDuMCSPsYWzIUqTj5TY
-         bgdg==
-X-Gm-Message-State: AOJu0YxTiBhL+4cljEYmPTTHQQWUOxvcrLcr9OvWTFw8n+f0/+H2vPW5
-        PedwPISmN5V0CWJ0nFR20yd/vHXuOnxYYN8sLVdnKmylPydq
-X-Google-Smtp-Source: AGHT+IENaY8Bc1DczGIHHki5oiWTPbLY55ybIBjWXDUK2qeNrRw4LbjqLe6AFbzMumqm4Vd5WzRis9viga3Ra7wM6rlLZGGoFytl
-MIME-Version: 1.0
-X-Received: by 2002:a17:90a:9741:b0:26b:229d:6c8 with SMTP id
- i1-20020a17090a974100b0026b229d06c8mr1020905pjw.3.1693633894017; Fri, 01 Sep
- 2023 22:51:34 -0700 (PDT)
-Date:   Fri, 01 Sep 2023 22:51:33 -0700
-In-Reply-To: <20230902051306.5076-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a1ef37060459de79@google.com>
-Subject: Re: [syzbot] [kernel?] general protection fault in tty_register_device_attr
-From:   syzbot <syzbot+85792f3143e6271d2c97@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+        Sat, 2 Sep 2023 02:00:26 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A95710FE
+        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 23:00:18 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3AC531F45E;
+        Sat,  2 Sep 2023 06:00:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693634411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UiJw0wZmYV8xH3B+NPa1TPI5Mn11gBz0SBgdVdGvyAI=;
+        b=hIkKKbKv08qFtCaP5D8arDHucS3JMv12FWNwuu6CKbOhnD/W3+liToOSWcK0W3XaBbpz79
+        f2cxmf93ddlujT7JIlHfTlxh9qwoM4HqhpgA1dMp58ONzoLInwG2KH4PqnlC6FTOLTdOy1
+        Ln9s7yS33OrbAX3i+NcTvMo7jf1/PeM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693634411;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UiJw0wZmYV8xH3B+NPa1TPI5Mn11gBz0SBgdVdGvyAI=;
+        b=8vbCd2MKe43WIoDW2Uha+1Y/3FYvVtJrX5iHNJUg6MpOUSEqontYND2c3A5Y+djkBvjPfF
+        5p41zJyuEVneqXCA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A08E13440;
+        Sat,  2 Sep 2023 06:00:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id lo2EBWvP8mSsTgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sat, 02 Sep 2023 06:00:11 +0000
+Date:   Sat, 02 Sep 2023 08:00:10 +0200
+Message-ID: <87edjhm7x1.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 02/25] ALSA: pcm: Add copy ops with iov_iter
+In-Reply-To: <20230902053044.GJ3390869@ZenIV>
+References: <20230815190136.8987-1-tiwai@suse.de>
+        <20230815190136.8987-3-tiwai@suse.de>
+        <20230902053044.GJ3390869@ZenIV>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, 02 Sep 2023 07:30:44 +0200,
+Al Viro wrote:
+> 
+> On Tue, Aug 15, 2023 at 09:01:13PM +0200, Takashi Iwai wrote:
+> 
+> > -	if (copy_from_user(get_dma_ptr(substream->runtime, channel, hwoff),
+> > -			   (void __user *)buf, bytes))
+> > +	if (!copy_from_iter(get_dma_ptr(substream->runtime, channel, hwoff),
+> > +			    bytes, iter))
+> 
+> The former is "if not everything got copied", the latter - "if nothing got
+> copied"; the same goes for other places like that.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Thanks, yes, this should be
+	if (copy_from_iter(...) != bytes)
 
-Reported-and-tested-by: syzbot+85792f3143e6271d2c97@syzkaller.appspotmail.com
+Other places have been already corrected in v2 patchset, but this
+place was overseen.  Will fix it.
 
-Tested on:
 
-commit:         2ee82481 Add linux-next specific files for 20230828
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=159eb870680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e82a7781f9208c0d
-dashboard link: https://syzkaller.appspot.com/bug?extid=85792f3143e6271d2c97
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=10f39898680000
-
-Note: testing is done by a robot and is best-effort only.
+Takashi
