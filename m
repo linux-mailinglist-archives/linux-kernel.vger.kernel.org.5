@@ -2,46 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D190790592
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 08:22:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4833790597
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 08:34:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351654AbjIBGW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 02:22:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43076 "EHLO
+        id S1351662AbjIBGdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 02:33:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231330AbjIBGW4 (ORCPT
+        with ESMTP id S231330AbjIBGdX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 02:22:56 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8948B10F9
-        for <linux-kernel@vger.kernel.org>; Fri,  1 Sep 2023 23:22:52 -0700 (PDT)
-Received: (from willy@localhost)
-        by pcw.home.local (8.15.2/8.15.2/Submit) id 3826MbQZ023182;
-        Sat, 2 Sep 2023 08:22:37 +0200
-Date:   Sat, 2 Sep 2023 08:22:37 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc:     Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        David Laight <David.Laight@aculab.com>,
-        Nicholas Rosenberg <inori@vnlx.org>,
-        Michael William Jonathan <moe@gnuweeb.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2 1/4] tools/nolibc: x86-64: Use `rep movsb` for
- `memcpy()` and `memmove()`
-Message-ID: <20230902062237.GA23141@1wt.eu>
-References: <20230902055045.2138405-1-ammarfaizi2@gnuweeb.org>
- <20230902055045.2138405-2-ammarfaizi2@gnuweeb.org>
- <CAOG64qNw+ZovcC4+5Sqsvi-m=wyoe47eb5K4KAdbO5hcp8ipAA@mail.gmail.com>
- <ZPLR+mO/6/V7wjAJ@biznet-home.integral.gnuweeb.org>
+        Sat, 2 Sep 2023 02:33:23 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F125D10FB;
+        Fri,  1 Sep 2023 23:33:17 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.66])
+        by gateway (Coremail) with SMTP id _____8CxRugq1_JktvgdAA--.7874S3;
+        Sat, 02 Sep 2023 14:33:14 +0800 (CST)
+Received: from [10.20.42.66] (unknown [10.20.42.66])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxXSMp1_Jkrn9pAA--.39724S3;
+        Sat, 02 Sep 2023 14:33:13 +0800 (CST)
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+To:     Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
+ <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+ <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
+ <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+ <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
+ <a3e934eb-7517-f313-46d9-fd5335ce305e@flygoat.com>
+ <CAMpQs4L0DYxoqQbpi7WeNMBf9g+58L2=D6BXrKbSUqJQEEKZLQ@mail.gmail.com>
+From:   Jianmin Lv <lvjianmin@loongson.cn>
+Message-ID: <3ed7bddd-2c86-90e0-a8bf-0b322bb92bd9@loongson.cn>
+Date:   Sat, 2 Sep 2023 14:32:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPLR+mO/6/V7wjAJ@biznet-home.integral.gnuweeb.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+In-Reply-To: <CAMpQs4L0DYxoqQbpi7WeNMBf9g+58L2=D6BXrKbSUqJQEEKZLQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: AQAAf8BxXSMp1_Jkrn9pAA--.39724S3
+X-CM-SenderInfo: 5oymxthqpl0qxorr0wxvrqhubq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7Aw1rXFykuw13JFWkWFyrZrc_yoW8Xw1rpr
+        WrGas0kr4DZF4vv3WxX3yFkas0qr93ArZrKrn8G34DZan8CFyjqFs8Kr1rZrn8uw4xuw42
+        qFWvk3W8G3yrCFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU3529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
+        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
+        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIY
+        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
+        v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
+        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU2-VyUU
+        UUU
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -49,47 +87,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 02, 2023 at 01:11:06PM +0700, Ammar Faizi wrote:
-> On Sat, Sep 02, 2023 at 01:07:50PM +0700, Alviro Iskandar Setiawan wrote:
-> > Btw, sir, this can be simplified more by merging the forward copy
-> > path, only using two "rep movsb" for both memmove() and memcpy()
-> > should be enough?
-> > ```
-> > __asm__ (
-> > ".section .text.nolibc_memmove_memcpy\n"
-> > ".weak memmove\n"
-> > ".weak memcpy\n"
-> > "memmove:\n"
-> >         "movq %rdx, %rcx\n"
-> >         "movq %rdi, %rdx\n"
-> >         "movq %rdi, %rax\n"
-> >         "subq %rsi, %rdx\n"
-> >         "cmpq %rcx, %rdx\n"
-> >         "jnb __nolibc_forward_copy\n"
-> >         "leaq -1(%rdi, %rcx, 1), %rdi\n"
-> >         "leaq -1(%rsi, %rcx, 1), %rsi\n"
-> >         "std\n"
-> >         "rep movsb\n"
-> >         "cld\n"
-> >         "retq\n"
-> > 
-> > "memcpy:\n"
-> >         "movq %rdi, %rax\n"
-> >         "movq %rdx, %rcx\n"
-> > "__nolibc_forward_copy:\n"
-> >         "rep movsb\n"
-> >         "retq\n"
-> > );
-> > ```
-> 
-> Looks good. I'll apply that change.
+Each IRQ source of liointc may be routed to different IRQ source of 
+cpuintc, for implementing this, bit mapping between liointc and cpuintc 
+is required, and the mapping information is used for liointc IRQ routing 
+register setting. It seems that interrupt-map can not pass the mapping 
+to driver in current driver/of code,  so the mapping is used in a 
+non-standard way(of cause, underscore style may be changed in dts and 
+driver).
 
-Note that in this case we simply don't need a special
-version of memcpy(), memmove() is always OK for this,
-so you can simplify this further by starting with:
+IMO, hardcode routing completely in driver is not flexible and not 
+recommended, and if possible, keep current map unchanged please.
 
-  memcpy:
-  memmove:
-        ...
+Jianmin
 
-Willy
+Thanks.
+
+On 2023/8/31 上午9:47, Binbin Zhou wrote:
+> cc Jianmin Lv.
+>
+> Hi all:
+>
+> Jianmin knows Loongson interrupt controllers well, he may have other
+> suggestions.
+>
+> Thanks.
+> Binbin
+>
+> On Wed, Aug 30, 2023 at 11:31 PM Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>>
+>>
+>> 在 2023/8/30 22:35, Krzysztof Kozlowski 写道:
+>>>> What's the best way, in your opinion, to overhaul this property? As we don't
+>>>> really care backward compatibility of DTBs on those systems we can just
+>>>> redesign it.
+>>> Deprecate the property in the bindings, allow driver to work with or
+>>> without it and finally drop it entirely from DTS.
+>> I'd love to have such configuration flexibility so I'd be sad to see it go.
+>> + Huacai and Binbin, what's your opinion?
+>>
+>> If dropping such functionality in kernel is a must go, we can hardcode
+>> to route all downstream interrupt to the first pin that passed to DT.
+>>
+>> Thanks
+>> - Jiaxun
+>>> Best regards,
+>>> Krzysztof
+>>>
+
