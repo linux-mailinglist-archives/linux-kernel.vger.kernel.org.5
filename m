@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE3A790936
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:35:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AEC9790938
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 20:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbjIBSfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 14:35:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
+        id S231511AbjIBSjm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 14:39:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbjIBSfY (ORCPT
+        with ESMTP id S229513AbjIBSjk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 14:35:24 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C010B9B
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 11:35:20 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2b9338e4695so1425801fa.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 11:35:20 -0700 (PDT)
+        Sat, 2 Sep 2023 14:39:40 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 291F59B;
+        Sat,  2 Sep 2023 11:39:37 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id 46e09a7af769-6bd045336c6so156832a34.2;
+        Sat, 02 Sep 2023 11:39:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693679719; x=1694284519; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=J/s2SUIeu/g9knbkXuWUdnUEN4bDEYaWZmr3ygikOSs=;
-        b=N8tEI/5JyEVvBIfl7YYLCOSLU6Tuh9JaejWEnpruYb+JP+9aWTeSUxCRBBNAGPDs/+
-         42E0msCen9GGDKksBZjHXJuPudZOgZiH2MEM+/XWU75AkHG/Yv8QtWOaRUImCBvumj3y
-         AkZyKBwLWfXIRNzw4eoWAG5rx1mwmpZJfHPa4=
+        d=gmail.com; s=20221208; t=1693679976; x=1694284776; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=I52uCB9WiHX/2+LVtJ9UgmcJ1WlYivqMlCC8cFuZ/n4=;
+        b=piYtB8+sUkTeNsNNb3t1Pdyg/vY3m30yIxwEES4dRFxgPUWbOyegwOsjYQMpjd5FqA
+         MtyPE8CRBkV1zq5XLTfMIVxcKe35aUZUvxRiujsByyMD3Eokiw8zV0oW4gotOeG9qKAF
+         Rfi4nsh17QtoyzdXTBMknDOB4VYjoB11/TEvS0fDEMG08e+Is6Eygt7AV8Rw4P/VdZoM
+         Hq9dWhvm2w9sejk/QPhWTifNv9BE4FX4kJcqT/avAnZCRyyoo//sa62xNr4jV08dkHnB
+         R7pQTxGpAHIWBwufC1xWubdtysi28LaAR/V23aQ3o5SmP7V9XRAWWK0A0vAkVJ7th0mb
+         XJyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693679719; x=1694284519;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=J/s2SUIeu/g9knbkXuWUdnUEN4bDEYaWZmr3ygikOSs=;
-        b=TCXbzmDSSVjlqhRRhlp+6mPIlMcVKVxEXO19eYbDWaBPbgELDtOqoXLKPHTYT1BxJD
-         ryJK1VXwKvGgtCJsfAV6aPQ43C1GtNO76Fsg8I7LMD1j98Sy6Z5qw88JVj9Zx686W+45
-         x/u8jbUPUBkZIw/xcaVAvQn1FLq1yB/QrBJn7UC27wz65s98xk7reC6TobqB0BP8+Kqp
-         Ny+ZhO8+UQZIflVn2/v0rYrVgtGZLfJWMyQZ74IwmuHgEB+MbmZYJNL3ot0lTIrffHhM
-         L8g3OWCz4x4vnKIj9O8FAM2BTfPDTggYCwCXmx/0L9b1/Ld9/9q8RIArpp/SoS0h6Twk
-         LfyQ==
-X-Gm-Message-State: AOJu0YxuqF+z7cwPA7dc+6X+sT5+0fk3SWY8z3o7bTAYiNyCP1Kpykur
-        UpVY87wB/JOv8zECJG7liGGGTmNAt0WP8zIZ0NhzGwcw
-X-Google-Smtp-Source: AGHT+IEOm8zr6MK02k28uUz43EleVGjBMt+JMXiVFCC7SHK83Q0ndVYpGk/V5NJ61cW/Kshk2ZLF+Q==
-X-Received: by 2002:ac2:5bcf:0:b0:4f8:6abe:5249 with SMTP id u15-20020ac25bcf000000b004f86abe5249mr3609659lfn.3.1693679718626;
-        Sat, 02 Sep 2023 11:35:18 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id r7-20020a19ac47000000b00500cfb168a3sm1045421lfc.139.2023.09.02.11.35.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Sep 2023 11:35:17 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-500c63c9625so323670e87.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 11:35:17 -0700 (PDT)
-X-Received: by 2002:a05:6512:39d5:b0:4f8:5886:186d with SMTP id
- k21-20020a05651239d500b004f85886186dmr4181820lfu.9.1693679717140; Sat, 02 Sep
- 2023 11:35:17 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693679976; x=1694284776;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=I52uCB9WiHX/2+LVtJ9UgmcJ1WlYivqMlCC8cFuZ/n4=;
+        b=AvwHpypxsOb+Xgp6/qI/rm8695n223srmm1WeMBapwsKajQW0+uKo3SYxRfzBpSSEv
+         5ykniy7mn8FNdbSBnKGf0CnofSQ7OPIdamPAlW2Yx2+wtLZGSRY5AMSj+r6gmP43pAnd
+         6oqr3aCHA6GJrfy7JLT3IRbnldad5lozikbZG2CwtjKKa556FihGjPlZvpU1mKuVJqNg
+         4n0HAPspJI7U65/U0hO2ZcpOe6aETwyaB30Y8tlCKVEmcBQUdhdS6Z14XB9JZfrAUSYx
+         2vZtjdbtD5ctK9ZhgBYTMFxa90dGAuVDe9WY0GLiq1imj4XDKlwLLp2DlEYFo565VJN+
+         RL/A==
+X-Gm-Message-State: AOJu0YzecPJxlQLYdIuKc3RPUtknk0EcNX73QAS0kKJNwiFg9tAZ7KxZ
+        hm33V+7VF2AE0kPdCdRaNNpMTE1Dxkj9hsrlvV5gXcYkDak=
+X-Google-Smtp-Source: AGHT+IGr4jp8rgTpvWSb3ElxNgg3lbjfE5ajdAHvRNKdJBXrJ+9mqCu1lBd6DqHRIvCSvIKb6X5YHY5uoDcHMEb1Znc=
+X-Received: by 2002:a05:6870:4621:b0:1bf:77e2:95cc with SMTP id
+ z33-20020a056870462100b001bf77e295ccmr6922972oao.17.1693679976380; Sat, 02
+ Sep 2023 11:39:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230902101046.bfe957bc51ecd91781200708@kernel.org>
-In-Reply-To: <20230902101046.bfe957bc51ecd91781200708@kernel.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 2 Sep 2023 11:35:00 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjpVAW3iRq_bfKnVfs0ZtASh_aT67bQBG11b4W6niYVUw@mail.gmail.com>
-Message-ID: <CAHk-=wjpVAW3iRq_bfKnVfs0ZtASh_aT67bQBG11b4W6niYVUw@mail.gmail.com>
-Subject: Re: [GIT PULL] bootconfig: Updates for 6.6
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>
+References: <acb58c1adc02d0b949d8371933b2afe3c056c33f.1693583786.git.sylv@sylv.io>
+In-Reply-To: <acb58c1adc02d0b949d8371933b2afe3c056c33f.1693583786.git.sylv@sylv.io>
+From:   Eyal Birger <eyal.birger@gmail.com>
+Date:   Sat, 2 Sep 2023 21:39:24 +0300
+Message-ID: <CAHsH6Gv7m2Q=3sPZsRSMfqasay0P7j9zZT=DDwwgv7TuPX5agg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] xfrm: Use skb_mac_header_was_set() to check for
+ MAC header presence
+To:     Marcello Sylvester Bauer <email@web.codeaurora.org>
+Cc:     Steffen Klassert <steffen.klassert@secunet.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Marcello Sylvester Bauer <sylv@sylv.io>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,46 +76,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Sept 2023 at 18:10, Masami Hiramatsu <mhiramat@kernel.org> wrote:
+Hi Marcello,
+
+On Fri, Sep 1, 2023 at 7:15=E2=80=AFPM Marcello Sylvester Bauer
+<email@web.codeaurora.org> wrote:
 >
->  - fs/proc: Add /proc/raw_cmdline for boot loader arguments.
+> From: Marcello Sylvester Bauer <sylv@sylv.io>
+>
+> Replace skb->mac_len with skb_mac_header_was_set() in
+> xfrm4_remove_tunnel_encap() and xfrm6_remove_tunnel_encap() to detect
+> the presence of a MAC header. This change prevents a kernel page fault
+> that could occur when a MAC address is added to an L3 interface using
+> xfrm.
+>
+> Signed-off-by: Marcello Sylvester Bauer <sylv@sylv.io>
+> ---
+>  net/xfrm/xfrm_input.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/net/xfrm/xfrm_input.c b/net/xfrm/xfrm_input.c
+> index d5ee96789d4b..afa1f1052065 100644
+> --- a/net/xfrm/xfrm_input.c
+> +++ b/net/xfrm/xfrm_input.c
+> @@ -250,7 +250,7 @@ static int xfrm4_remove_tunnel_encap(struct xfrm_stat=
+e *x, struct sk_buff *skb)
+>
+>         skb_reset_network_header(skb);
+>         skb_mac_header_rebuild(skb);
+> -       if (skb->mac_len)
+> +       if (skb_mac_header_was_set(skb))
+>                 eth_hdr(skb)->h_proto =3D skb->protocol;
+>
+>         err =3D 0;
+> @@ -287,7 +287,7 @@ static int xfrm6_remove_tunnel_encap(struct xfrm_stat=
+e *x, struct sk_buff *skb)
+>
+>         skb_reset_network_header(skb);
+>         skb_mac_header_rebuild(skb);
+> -       if (skb->mac_len)
+> +       if (skb_mac_header_was_set(skb))
+>                 eth_hdr(skb)->h_proto =3D skb->protocol;
 
-Honestly, I pulled this, and then I unpulled again.
+I checked xfrm tunnels over both GRE and IPIP, and in both cases when reach=
+ing
+this code the skb->mac_len was 0, whereas skb_mac_header_was_set()
+was 1.
 
-This seems such a *silly* thing. It's also actively confusing, since
-this "raw" file internally in the kernel is called
-"boot_command_line", vs the "saved_command_line" of the regular one,
-and we also have 'extra_command_line' and 'static_command_line' etc,
-so where does this all end?
+So in both cases this suggested patch would make this condition true and
+write to an Ethernet header location on these L3 devices.
 
-So the name doesn't even make any sense. It's not "raw" in any sense
-of the word. It just happens to be the one that came from the boot
-side.
+Can you please share your reproduction scenario for this case?
 
-In other words, this smells like a complete hack to me. It makes no
-sense, and it should *not* be added to the top-level /proc filesystem
-as some kind of fundamental file.
+Thanks,
+Eyal.
 
-And not only is it a special case that isn't worthy of adding to the
-top-level /proc directory, it only has _one_ special case user that
-could possibly care.
-
-And this is all self-inflicted pain because the bootconfig code
-corrupted the original command line, and decided to expose that
-corrupted thing in /proc/cmdline.
-
-So because you made a mess of it originally, you're now making a
-*bigger* mess of this all.
-
-No, thank you. The way to fix a mess is not to make it worse. And this
-just makes things worse.
-
-I suspect the fix should always have been to make the extra stuff be
-somehow clear so that you can parse it. Not make another file that has
-the exact same contents for most people.
-
-Maybe a marker of "this is the end of the 'extra command line", the
-same way we have that "--" for "this is the end of the stuff the
-kernel should parse".
-
-           Linus
+>
+>         err =3D 0;
+> --
+> 2.42.0
+>
+>
