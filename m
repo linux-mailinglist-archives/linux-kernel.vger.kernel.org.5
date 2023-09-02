@@ -2,202 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AEBC7906CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 11:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F32E17906D2
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 11:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351926AbjIBJJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 05:09:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36484 "EHLO
+        id S1351933AbjIBJKh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 05:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351921AbjIBJJu (ORCPT
+        with ESMTP id S1351902AbjIBJKg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 05:09:50 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC88B1709;
-        Sat,  2 Sep 2023 02:09:46 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,222,1688396400"; 
-   d="scan'208";a="178490891"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie6.idc.renesas.com with ESMTP; 02 Sep 2023 18:09:46 +0900
-Received: from localhost.localdomain (unknown [10.226.92.16])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id BC8D84005B30;
-        Sat,  2 Sep 2023 18:09:44 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 2/2] pinctrl: mcp23s08: Simplify probe()
-Date:   Sat,  2 Sep 2023 10:09:37 +0100
-Message-Id: <20230902090937.32195-3-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230902090937.32195-1-biju.das.jz@bp.renesas.com>
-References: <20230902090937.32195-1-biju.das.jz@bp.renesas.com>
+        Sat, 2 Sep 2023 05:10:36 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC575172E
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 02:10:15 -0700 (PDT)
+Received: from nazgul.tnic (dynamic-046-114-142-117.46.114.pool.telefonica.de [46.114.142.117])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 24FB41EC0865;
+        Sat,  2 Sep 2023 11:10:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1693645813;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=IeAXA2DInhokU9eRZqPvxwd1VOJ4KTX+ZqS/K0m/I8E=;
+        b=MMmfhajZ1SNF3466DEVZbAsdLyDZq22TyirDEXvpboQmPnXaWceBmvgE8bxOwW3NqtZCqw
+        9SrXdKJKgyJBugJfViaQsf4tbSJkhvIkELre3+HiGZ0XA1I1nICAG27l+1zoqF/+36LRWh
+        nT+bM5/6QWiqjglpFAPz2p003e3gTxw=
+Date:   Sat, 2 Sep 2023 11:10:21 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 18/23] x86/srso: Remove redundant X86_FEATURE_ENTRY_IBPB
+ check
+Message-ID: <20230902091021.GBZPL7/UhPLiOmf2Fg@fat_crate.local>
+References: <cover.1692919072.git.jpoimboe@kernel.org>
+ <9b671422643939792afe05c625e93ef40d9b57b5.1692919072.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <9b671422643939792afe05c625e93ef40d9b57b5.1692919072.git.jpoimboe@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add struct mcp23s08_i2c_info and simplify probe() by replacing
-match data 'type' with 'struct mcp23s08_i2c_info'.
+On Fri, Aug 25, 2023 at 12:01:49AM -0700, Josh Poimboeuf wrote:
+> The X86_FEATURE_ENTRY_IBPB check is redundant here due to the above
+> RETBLEED_MITIGATION_IBPB check.  RETBLEED_MITIGATION_IBPB already
+> implies X86_FEATURE_ENTRY_IBPB.  So if we got here and 'has_microcode'
+> is true, it means X86_FEATURE_ENTRY_IBPB is not set.
+> 
+> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> ---
+>  arch/x86/kernel/cpu/bugs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-While at it, replace dev_err()->dev_err_probe().
+I still don't like this one:
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
- drivers/pinctrl/pinctrl-mcp23s08_i2c.c | 102 ++++++++++++-------------
- 1 file changed, 50 insertions(+), 52 deletions(-)
+https://lore.kernel.org/r/20230825070936.GEZOhTsPiTLhY1i9xH@fat_crate.local
 
-diff --git a/drivers/pinctrl/pinctrl-mcp23s08_i2c.c b/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-index 393d9b099cc5..61e92f68ec95 100644
---- a/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-+++ b/drivers/pinctrl/pinctrl-mcp23s08_i2c.c
-@@ -8,10 +8,18 @@
- 
- #include "pinctrl-mcp23s08.h"
- 
-+struct mcp23s08_i2c_info {
-+	const struct regmap_config *regmap;
-+	const char *label;
-+	unsigned int type;
-+	u16 ngpio;
-+	bool reg_shift;
-+};
-+
- static int mcp230xx_probe(struct i2c_client *client)
- {
-+	const struct mcp23s08_i2c_info *info;
- 	struct device *dev = &client->dev;
--	unsigned int type;
- 	struct mcp23s08 *mcp;
- 	int ret;
- 
-@@ -19,41 +27,22 @@ static int mcp230xx_probe(struct i2c_client *client)
- 	if (!mcp)
- 		return -ENOMEM;
- 
--	type = (uintptr_t)i2c_get_match_data(client);
--	switch (type) {
--	case MCP_TYPE_008:
--		mcp->regmap = devm_regmap_init_i2c(client, &mcp23x08_regmap);
--		mcp->reg_shift = 0;
--		mcp->chip.ngpio = 8;
--		mcp->chip.label = "mcp23008";
--		break;
--
--	case MCP_TYPE_017:
--		mcp->regmap = devm_regmap_init_i2c(client, &mcp23x17_regmap);
--		mcp->reg_shift = 1;
--		mcp->chip.ngpio = 16;
--		mcp->chip.label = "mcp23017";
--		break;
--
--	case MCP_TYPE_018:
--		mcp->regmap = devm_regmap_init_i2c(client, &mcp23x17_regmap);
--		mcp->reg_shift = 1;
--		mcp->chip.ngpio = 16;
--		mcp->chip.label = "mcp23018";
--		break;
--
--	default:
--		dev_err(dev, "invalid device type (%d)\n", type);
--		return -EINVAL;
--	}
-+	info = i2c_get_match_data(client);
-+	if (!info)
-+		return dev_err_probe(dev, -EINVAL, "invalid device type (%d)\n",
-+				     info->type);
- 
-+	mcp->reg_shift = info->reg_shift;
-+	mcp->chip.ngpio = info->ngpio;
-+	mcp->chip.label = info->label;
-+	mcp->regmap = devm_regmap_init_i2c(client, info->regmap);
- 	if (IS_ERR(mcp->regmap))
- 		return PTR_ERR(mcp->regmap);
- 
- 	mcp->irq = client->irq;
- 	mcp->pinctrl_desc.name = "mcp23xxx-pinctrl";
- 
--	ret = mcp23s08_probe_one(mcp, dev, client->addr, type, -1);
-+	ret = mcp23s08_probe_one(mcp, dev, client->addr, info->type, -1);
- 	if (ret)
- 		return ret;
- 
-@@ -62,36 +51,45 @@ static int mcp230xx_probe(struct i2c_client *client)
- 	return 0;
- }
- 
-+static const struct mcp23s08_i2c_info mcp23s08_i2c_0008 = {
-+	.regmap = &mcp23x08_regmap,
-+	.label = "mcp23008",
-+	.type = MCP_TYPE_008,
-+	.ngpio = 8,
-+	.reg_shift = 0,
-+};
-+
-+static const struct mcp23s08_i2c_info mcp23s08_i2c_0017 = {
-+	.regmap = &mcp23x17_regmap,
-+	.label = "mcp23017",
-+	.type = MCP_TYPE_017,
-+	.ngpio = 16,
-+	.reg_shift = 1,
-+};
-+
-+static const struct mcp23s08_i2c_info mcp23s08_i2c_0018 = {
-+	.regmap = &mcp23x17_regmap,
-+	.label = "mcp23018",
-+	.type = MCP_TYPE_018,
-+	.ngpio = 16,
-+	.reg_shift = 1,
-+};
-+
- static const struct i2c_device_id mcp230xx_id[] = {
--	{ "mcp23008", MCP_TYPE_008 },
--	{ "mcp23017", MCP_TYPE_017 },
--	{ "mcp23018", MCP_TYPE_018 },
-+	{ "mcp23008", (kernel_ulong_t)&mcp23s08_i2c_0008 },
-+	{ "mcp23017", (kernel_ulong_t)&mcp23s08_i2c_0017 },
-+	{ "mcp23018", (kernel_ulong_t)&mcp23s08_i2c_0018 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, mcp230xx_id);
- 
- static const struct of_device_id mcp23s08_i2c_of_match[] = {
--	{
--		.compatible = "microchip,mcp23008",
--		.data = (void *) MCP_TYPE_008,
--	},
--	{
--		.compatible = "microchip,mcp23017",
--		.data = (void *) MCP_TYPE_017,
--	},
--	{
--		.compatible = "microchip,mcp23018",
--		.data = (void *) MCP_TYPE_018,
--	},
-+	{ .compatible = "microchip,mcp23008", .data = &mcp23s08_i2c_0008 },
-+	{ .compatible = "microchip,mcp23017", .data = &mcp23s08_i2c_0017 },
-+	{ .compatible = "microchip,mcp23018", .data = &mcp23s08_i2c_0018 },
- /* NOTE: The use of the mcp prefix is deprecated and will be removed. */
--	{
--		.compatible = "mcp,mcp23008",
--		.data = (void *) MCP_TYPE_008,
--	},
--	{
--		.compatible = "mcp,mcp23017",
--		.data = (void *) MCP_TYPE_017,
--	},
-+	{ .compatible = "mcp,mcp23008", .data = &mcp23s08_i2c_0008 },
-+	{ .compatible = "mcp,mcp23017", .data = &mcp23s08_i2c_0017 },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, mcp23s08_i2c_of_match);
 -- 
-2.25.1
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
