@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3C6790A32
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 00:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0178790A35
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 00:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235146AbjIBWzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 18:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36324 "EHLO
+        id S235157AbjIBWzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 18:55:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230444AbjIBWzf (ORCPT
+        with ESMTP id S230444AbjIBWzw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 18:55:35 -0400
+        Sat, 2 Sep 2023 18:55:52 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D60ACF6;
-        Sat,  2 Sep 2023 15:55:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB224E5F
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 15:55:47 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D8CA860E93;
-        Sat,  2 Sep 2023 22:55:31 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E8BC433C8;
-        Sat,  2 Sep 2023 22:55:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1693695331;
-        bh=pihSQW8CJUH01a8SNi5TsadWucjrNQIZustgBgJrkgs=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lfA41V19zanFLGj5+kq10lX9sBYrQQBLdY6in/Pi4uc6pYiYSKbawjWmhpupgbIDc
-         6WZ4C9ec4kyLWYMHsKVmMKcJuocCP+nsJMJzf/sRjjPrb9Mz1aVJIRF/LQ3TdjGoXV
-         lgX4m6IwJJDEQlPGSTeNcYSWi9UffMnphQn1Jb7k=
-Date:   Sat, 2 Sep 2023 15:55:29 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Ze Zuo <zuoze1@huawei.com>
-Cc:     <minchan@kernel.org>, <senozhatsky@chromium.org>,
-        <axboe@kernel.dk>, <ying.huang@intel.com>,
-        <aneesh.kumar@linux.ibm.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH 1/2] zram: add a parameter "node_id" for zram
-Message-Id: <20230902155529.61384b25aae68abb9c262552@linux-foundation.org>
-In-Reply-To: <20230901071942.207010-2-zuoze1@huawei.com>
-References: <20230901071942.207010-1-zuoze1@huawei.com>
-        <20230901071942.207010-2-zuoze1@huawei.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5770D60DF9
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 22:55:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id BA3AEC433C7;
+        Sat,  2 Sep 2023 22:55:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693695346;
+        bh=w4RQ86thUvRYT0+27KBQvBs+IXLSffwIqALcZMH+WPg=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=sERHQE9fwTHtoXmL4KCRkVzXtKRsgYCE2UQwHCuaACgN4HcpImE5Xi+znKmeViY9x
+         gl8MnQ+8kjHnpdxLYZeyCxTbFOwWZ1QupfBFfwyvJHE72CAdL5N2VgR18aqH1SQEmi
+         uZg2m4c+cNCDIAarpwQPuzFC9vYiqC05RpcPFJcJqGyst4z+XKkn5qRbsUh/PZ5d7L
+         IE9ZNr778cmrHPbB0OGHul3Dn+JFTOKPTm37fbmNjpkMqA19n844mcv56nP2SsO9N5
+         8g91sKBrnPpZpOBK037Mv41kB5fs7+KRWkKAd65AyViwCot0+9+7U93UjacO9BaL5Q
+         INUIXQedFClAg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 9D982E26D49;
+        Sat,  2 Sep 2023 22:55:46 +0000 (UTC)
+Subject: Re: [GIT PULL] f2fs update for 6.6
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ZPJ7P1J+jbyL6Mve@google.com>
+References: <ZPJ7P1J+jbyL6Mve@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZPJ7P1J+jbyL6Mve@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-6-6-rc1
+X-PR-Tracked-Commit-Id: 3b7166121402a5062d18dcf4e3bce083fb9e4201
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 92901222f83d988617aee37680cb29e1a743b5e4
+Message-Id: <169369534657.28928.8759587724835660824.pr-tracker-bot@kernel.org>
+Date:   Sat, 02 Sep 2023 22:55:46 +0000
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux F2FS Dev Mailing List 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 1 Sep 2023 15:19:41 +0800 Ze Zuo <zuoze1@huawei.com> wrote:
+The pull request you sent on Fri, 1 Sep 2023 17:01:03 -0700:
 
-> Add a parameter "node_id" to zram to support storing pages on specific
-> node_id node memory.
+> git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-6-6-rc1
 
-Please document this in Documentation/admin-guide/blockdev/zram.rst
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/92901222f83d988617aee37680cb29e1a743b5e4
 
-Should it be a group of nodes rather than a single one?  If this
-feature is useful, people will want that.
+Thank you!
 
-> Now, zram memory allocation is random, however in some cases, specifying
-> specific nodes for memory allocation for zram may have good effects. In
-> addition, when memory tier is supported, demotion can be achieved not
-> only through page migration,  it is also possible to apply for memory by
-> specifying zram on low-speed device nodes, such as CXL memory devices,
-> and compressing pages to these devices through memory reclamation to
-> achieve similar effects to migration.
-
-Are any performance testing results available from using this feature?
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
