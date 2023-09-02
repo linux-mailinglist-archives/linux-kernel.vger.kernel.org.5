@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9648A7908C3
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 18:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2AE7908C9
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 19:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234736AbjIBQ5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 12:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53808 "EHLO
+        id S234844AbjIBREt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 13:04:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbjIBQ5H (ORCPT
+        with ESMTP id S230113AbjIBREs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 12:57:07 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04399E54
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 09:57:04 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d7830c5b20aso133296276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 09:57:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693673823; x=1694278623; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3Ys7Ptt3vouhvDmGvnohD/T/0YM16X316blFuKjq/vI=;
-        b=C/k5c70ewmnYtF7/qQCP6ju/TuKP8B2VTPg4PaCT2skLYzqZUKBrvN4Aty7vTnRR2e
-         d37UxbQv6RLqeiTC2Q1c7A+njNbIqrJxFxw0NEgHWKFJvb0+CemTihNPQqlcklCGgDtD
-         MFaHZLwVx8Ip9clEpbFBl1pxeW2oGTphpUHAMR1SO13FWgmuDCnoH9dPUrCtgup0b24j
-         9BtaW37CFBQEzwa96aKD1eneQ1l1Kn+Twuc7On8YV6zqsgi7AANcRIaF3IMQVNoRAhNy
-         ZflQPEvR7l5YqPBsrStp5VtXsDorM0HTfVKHRxrlNyArzTSPJZA1dEIiDT3byHSfIUby
-         6syA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693673823; x=1694278623;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3Ys7Ptt3vouhvDmGvnohD/T/0YM16X316blFuKjq/vI=;
-        b=lAgaesJIF1SoOqUPqGn4NYIXarBzGbkpwjV4XFcWqpr1Rn6Dx98pNYPdL7zmnGWtpc
-         VBk45rZz0hvNuf6P/vsaj8OfCpWYUylqOBGYdvBcOg7xQGTuvRhjNHop4EhFayva5VpK
-         AW6UWRY3lDwFthrN38CjMAWphaVjZkLVPEzLg6TmPAvhl58UkuXdQqEfGrtABYTxjaa6
-         zhONwVeHeEdPSuWCDAw8YTVDWgVhruQkvBaM+d0bSnYh5bjIoQKj/CcYPV0JY+q8qtGl
-         8dcjLB8/39eoR6UShUXSqd6zIwIajyVSpTRBRldxgHW+O18OXgSXHnZ7xmPk8McHJQ2X
-         Vk3Q==
-X-Gm-Message-State: AOJu0YxMrQjsuIRT4BUi0pYiSQha3ustueA17i94b/pG3yyTcroVncs/
-        FAA3IzWL1mQWnuf/YbdNKytBMQXENyb3nKmw3prMPg==
-X-Google-Smtp-Source: AGHT+IEuKfD5QlVNltjchmvAiVIFV8nY6p9/ilbXHrzqZdlWmHsDdcWuXvaClm9zyhkCdh/n1u3/aHgw85il/vwSGA0=
-X-Received: by 2002:a25:acc3:0:b0:d60:b5f2:9824 with SMTP id
- x3-20020a25acc3000000b00d60b5f29824mr6964370ybd.23.1693673823171; Sat, 02 Sep
- 2023 09:57:03 -0700 (PDT)
+        Sat, 2 Sep 2023 13:04:48 -0400
+Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F51CE42
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 10:04:44 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 62C8240E019F;
+        Sat,  2 Sep 2023 17:04:42 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Fdo6mSPMLQpN; Sat,  2 Sep 2023 17:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1693674279; bh=jYtFkfhGqhwzALUImcabSG2ADuFzFJKQRBvmYqOXSow=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=QyH/A8/PeuTRT1lUmVkJhbYzfDoUU/2eOCj+cwA9ijoropRI1g2RYJFQ9zzxc4U9A
+         81RkETJe4Ohe92RerKyMH2nx4+EOzs7/O86V42EcUB+3xxHAdcWK+qHv+f4bxq5inv
+         +vB/uRgHIaf9uBG2Uv/wQixaDls7dSj3SYZQu+imSWkQXo3iZ++vOEqereaEvFMfHZ
+         WpxrEdwBXwD4ua0Cjh0mLirhV0re2Z1epD28rQjlfcMwWURQIghwtNKFTh/n2nAbG6
+         eVcRCQpq2sikp6YW5w+1LtH4ZpVj2aHW9DML8WGMo/pkkDlVmE3UT7p4zyjK4KU6J8
+         TU5HoAkHMQMJ/LcI4HQYbC+/i5S++EtY0DvXlb8k9uFeBLZWgvL/HSOzOD8XWD+m5W
+         WSLu1J6mQRc65LkSUWckF8/HFiArwafb76PXMB5NvCRc6ZsRWLR2s+4aKQtd4JGJgz
+         3EtWhG2+v1C8zp7kuyf9S1NueIZB0TlQl5YTlAGauhWYYdfOc31Bdu6kD2LaH7m1x8
+         ymNaiZDQlQk7ElmAatztJ38VLOOVgtiDvpq7EU0aMt3YKDtwWgCx+29bV66pCCShE0
+         0MN8tHXBg5XaXRvkdXSIMcx1SeJOW+X2hzrxgG7SuGkiHhVLXvdBzkaWkIVlX/HB9b
+         40rLbpG9bPAXL8+mT0jBHgQg=
+Received: from [127.0.0.1] (unknown [46.114.142.117])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5606940E0198;
+        Sat,  2 Sep 2023 17:04:34 +0000 (UTC)
+Date:   Sat, 02 Sep 2023 20:04:07 +0300
+From:   Borislav Petkov <bp@alien8.de>
+To:     Ingo Molnar <mingo@kernel.org>
+CC:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        linux-tip-commits@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: =?US-ASCII?Q?Re=3A_=5Btip=3A_x86/bugs=5D_x86/srso=3A_Fix_vulne?= =?US-ASCII?Q?rability_reporting_for_missing_microcode?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZPMSbabIw5ZtTqbo@gmail.com>
+References: <65556eeb1bf7cb9bd7db8662ef115dd73191db84.1692919072.git.jpoimboe@kernel.org> <169295877252.27769.17888941552572030723.tip-bot2@tip-bot2> <20230901094053.GDZPGxpcG56GwE0LyG@fat_crate.local> <ZPMSbabIw5ZtTqbo@gmail.com>
+Message-ID: <5D92E1C0-EB00-4D24-AA4F-A616244C32D5@alien8.de>
 MIME-Version: 1.0
-References: <20230901111548.12733-1-brgl@bgdev.pl> <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
- <ba9803e9-3aff-42b9-87ad-4e6d75d36d87@sirena.org.uk>
-In-Reply-To: <ba9803e9-3aff-42b9-87ad-4e6d75d36d87@sirena.org.uk>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 2 Sep 2023 18:56:51 +0200
-Message-ID: <CACRpkdaDG30k_OM_xTCM6yOTB3rjzxrsbbrLZpvYCh7e66Zt7g@mail.gmail.com>
-Subject: Re: [RFT PATCH v2] spi: bcm2835: reduce the abuse of the GPIO API
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Dan Carpenter <dan.carpenter@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 1, 2023 at 2:31=E2=80=AFPM Mark Brown <broonie@kernel.org> wrot=
-e:
-
-> > > +       struct gpiod_lookup_table *lookup __free(kfree) =3D NULL;
+On September 2, 2023 1:46:05 PM GMT+03:00, Ingo Molnar <mingo@kernel=2Eorg>=
+ wrote:
+>Since these are fixes that are supposed to be fully correct,
+>I'd suggest we rebase it=2E
 >
-> > Whoa!
-> > This is really neat.
-> > As noted, it will confuse static checkers at no end, but they just have
-> > to adopt. (CC to Dan C if he now runs into this.)
+>Josh, mind sending a v3 SRSO series, as a replacement for x86/bugs,
+>with Boris's review & testing feedback addressed?
 >
-> It also doesn't look amazing for humans, it's very not C like...
+>[ Feel free to send it as a delta series against v2 in x86/bugs and I'll=
+=20
+>  backmerge it all=2E ]
 
-<linux/cleanup.h> and the __free() macro was introduced by Peter
-Z who also very famously suggested (OTOMH!) that instead of
-adopting Rust to the kernel it would be possible to bring the
-desired Rust features into C.
+Ok, sounds good=2E Give  me a while to go through the rest first=2E I'll l=
+et you guys know=2E Reviewing with a slow, ancient laptop is not the easies=
+t thing in the world=2E=2E=2E
 
-Which is what he does, well the feature has been there for a while
-but he identified it and made it easily accessible.
+Thx=2E
 
-Now if this path is desirable ... yeah. Maybe a matter of taste.
-
-Yours,
-Linus Walleij
+--=20
+Sent from a small device: formatting sucks and brevity is inevitable=2E 
