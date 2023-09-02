@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2D279098F
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 22:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 179C9790993
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 22:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbjIBU2T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 16:28:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
+        id S233986AbjIBUa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 16:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234223AbjIBU2S (ORCPT
+        with ESMTP id S233780AbjIBUa0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 16:28:18 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B52E54
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 13:28:14 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-5007abb15e9so428886e87.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 13:28:14 -0700 (PDT)
+        Sat, 2 Sep 2023 16:30:26 -0400
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20BA21A8
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 13:30:23 -0700 (PDT)
+Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcc846fed0so2353381fa.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 13:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693686493; x=1694291293; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=AqfoenQWKjB8osDxkwnJtLt7lDhWz7e/+s7umbsPwHw=;
-        b=swKso9zaMeE8R5oZjRS8ty0OwExYJa4ha1t8KJkRfTc791O0G2shPvtBU4uifG8jBs
-         AZD3uT1E9Q2MkDU1l9svrGjU+VVCzsXgqjwJjgIPzBhOP7/9fK4PF3R2Z6mciOT7hQB+
-         B0PkhdQFSxqzBm3oiJ8wSspp2ey/zWuEBSif5eVMj9ahqbf/W+9rKBERtRVtnVHDskdG
-         Ed9IWcMPaZEyGRrk0sAmA13nktmI206WuBkks27jZlUkGqycITAa4qsVPGnm9JA2CfVw
-         H2kov2FFhEK6M9Q5tb/0z2ifUjk5PXASAxK5nuKa7UJ7mgv+xzZ6jZLxFIW029UhicTV
-         8ccg==
+        d=linaro.org; s=google; t=1693686621; x=1694291421; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZMYwzCW8pcjdXL33e2tZEqZSaF+wjb9sldJxIrkyvSM=;
+        b=r+0R4CG00HcgVDY+YVBPvwa2nJ/Zg+0I9+S58PuCKVLUI7i4FvFEIEZBaG4NAoVd3t
+         kTvUyMXd3jlXWqwCTW+W/GYGWT+cOSPnZPOFM5YVY7OPkbK5aLALJ0LL9GyxIx+/60iM
+         Tr6G/s+G3Z7yi2N/awYWAHDHQUomwslJgNSXNW6q06/IvuG5J0KdU7u/trJg6Udevl/8
+         sxJ3hv1XVRs2g4N+XvdYuAvbLNd/a0kjSMQH5X3OKyxPaBVE1geD6QWY7J7hKi8CtuDo
+         kPvjOjGF0qtRl4THybC0yTRV/Jtwnbwnr/arbtFlTs/JkVnzgNb7fQbS2hQbF22segIl
+         2cfQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693686493; x=1694291293;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AqfoenQWKjB8osDxkwnJtLt7lDhWz7e/+s7umbsPwHw=;
-        b=ZRbZh6yBGrPL5gs3/VUJKa8xyy1uNSNhMPVMrroLuvLRYm8hk7s4slIrwgqh79Qube
-         RzDUEjIZvvGEQiZZzKOpVQt8k3NMeobI1ZAmvqEy7N62MPqQaYSukCF8u0eppeIA0Hfa
-         RggyuN+S8BkD/D28UrEKPjcrLlP2chcov1nYN9p9aLDXyEGvKvsEDarCDqwBegqEP7Xw
-         jB5wUXe/Mnk5p0Fm7DfOCAdn/v9E0PRYTtIj84oJeHig/2rYZpv7D5ypogPRhqzeHMPt
-         Lg5BluSSeZkuD74MNmXWcP+U7nxRMHa00OpfsU9CCMXNQvADXC4mC8gjQlsvhK2i6hFn
-         GmRg==
-X-Gm-Message-State: AOJu0YxLBBhd9LOVsUs4G+PCVIC0UgCgad5kI1EQ4Z5qQZs63ub3br74
-        yoBVADJI7CZKpyhNGzLHwTTHtg==
-X-Google-Smtp-Source: AGHT+IFKG4hNiSYylXmxPiCLbNRI/9QDxNUYdr8ha450JvMnEp+W79CNqzswJe03zTPMb/vPObWnrQ==
-X-Received: by 2002:a05:6512:742:b0:500:7f51:d129 with SMTP id c2-20020a056512074200b005007f51d129mr3115285lfs.34.1693686492622;
-        Sat, 02 Sep 2023 13:28:12 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693686621; x=1694291421;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZMYwzCW8pcjdXL33e2tZEqZSaF+wjb9sldJxIrkyvSM=;
+        b=liSuOD2gz2dIt5DYeN0fS5/RSJzfsxAs+WsOX/FcFZLb8WcgyWK2g2Zh4njZ6xI2bh
+         XaVcViybJJkP2TNroNAADoZ4rsyo/t2DQt5MNE0rnj6+ChV5z3nJPs8LaiTyPpN2cDWy
+         2OpIZuWCKaWLQFoLemNQO6u4fevJNp2DAuGrYkfK8BGJcXI9xPnXK6Uyn2Aai4rvCYPy
+         xW4aXXo4ACukgjg0aC3anp/sovOmZwSkmBLjtfGnFuJXZX4fQDuWymXedXFDYOvhqDX8
+         Ul7WiawDDL4mywJD1YVT3cROwehOFtnoiPBzaQs28rsFkp1PCUfeIqiGrP506IZfzK+J
+         S4+A==
+X-Gm-Message-State: AOJu0YyF0u8pEGKtCurIVpwIfKFYRddxxAANcAkmpQHH7kF9mcyZI6Jc
+        bZNLJomQGwVG+5+eP4bDcIb3Ng==
+X-Google-Smtp-Source: AGHT+IF8uVwtzRgCTp26MntN0aO1ligWKeFaBuz/fu6vt+LLd5ZzMsXpoBNsEvwIZOK2vfxFKAHPig==
+X-Received: by 2002:a2e:a17a:0:b0:2bb:a28b:58e1 with SMTP id u26-20020a2ea17a000000b002bba28b58e1mr4336005ljl.41.1693686621086;
+        Sat, 02 Sep 2023 13:30:21 -0700 (PDT)
 Received: from [192.168.1.101] (abxi170.neoplus.adsl.tpnet.pl. [83.9.2.170])
-        by smtp.gmail.com with ESMTPSA id g22-20020ac25396000000b00500829f7b2bsm1073827lfh.250.2023.09.02.13.28.10
+        by smtp.gmail.com with ESMTPSA id j20-20020a2e8514000000b002b6d7682050sm1296922lji.89.2023.09.02.13.30.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Sep 2023 13:28:12 -0700 (PDT)
-Message-ID: <091e4156-cdaa-4233-b7e5-69e3f8ee9a49@linaro.org>
-Date:   Sat, 2 Sep 2023 22:28:09 +0200
+        Sat, 02 Sep 2023 13:30:20 -0700 (PDT)
+Message-ID: <86312d2b-698a-4551-acd6-f947ebdb986a@linaro.org>
+Date:   Sat, 2 Sep 2023 22:30:19 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: qcom: mmcc-msm8974: remove ocmemcx_ahb_clk
+Subject: Re: [PATCH 1/2] pinctrl: qcom: msm8226: Add blsp_i2c6 function
+Content-Language: en-US
 To:     Luca Weiss <luca@z3ntu.xyz>, ~postmarketos/upstreaming@lists.sr.ht,
         phone-devel@vger.kernel.org, Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mike Turquette <mturquette@linaro.org>
-Cc:     Stephen Boyd <sboyd@codeaurora.org>, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-References: <20230902-msm8226-ocmemcx_ahb_clk-remove-v1-1-8124dbde83b9@z3ntu.xyz>
-Content-Language: en-US
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+References: <20230902-msm8226-i2c6-v1-0-9632b8916789@z3ntu.xyz>
+ <20230902-msm8226-i2c6-v1-1-9632b8916789@z3ntu.xyz>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -106,41 +103,23 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230902-msm8226-ocmemcx_ahb_clk-remove-v1-1-8124dbde83b9@z3ntu.xyz>
+In-Reply-To: <20230902-msm8226-i2c6-v1-1-9632b8916789@z3ntu.xyz>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2.09.2023 19:34, Luca Weiss wrote:
-> According to a commit in the 3.4 vendor kernel sources[0] the
-> ocmemcx_ahb_clk clock "is controlled by RPM and should not be touched by
-> APPS.".
+On 2.09.2023 19:32, Luca Weiss wrote:
+> On GPIO22 and GPIO23 there is another I2C bus. Add the function for it.
 > 
-> [0] https://git.codelinaro.org/clo/la/kernel/msm/-/commit/37df5f2d91b4d5768b37fcaacaeea958dd683ebc
-> 
-> And indeed, when using MDSS+GPU+OCMEM on MSM8226 and not using
-> clk_ignore_unused, when Linux tries to disable the clock the device
-> crashes and reboots.
-> 
-> And since there's also no evidence of this clock in msm8974 vendor
-> kernel sources, remove the clock for msm8226 and msm8974.
-Going over the downstream clock driver for 26 and 74 and comparing
-the registered clocks with mainline may be useful.
-
-Older clock drivers were likely written by hand and people doing
-that likely didn't have a great reference of which clocks should
-be skipped due to having been moved to firmware somewhere in the
-bringup process.
-
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+> ---
+Need to also update the bindings
 
 Konrad
-
