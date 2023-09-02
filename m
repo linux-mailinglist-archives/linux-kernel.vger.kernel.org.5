@@ -2,76 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4323579076E
-	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 12:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85EF2790772
+	for <lists+linux-kernel@lfdr.de>; Sat,  2 Sep 2023 12:50:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352019AbjIBKuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 06:50:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36690 "EHLO
+        id S1352013AbjIBKuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 06:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234809AbjIBKuF (ORCPT
+        with ESMTP id S1352022AbjIBKut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 06:50:05 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1C01704
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 03:50:00 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31aeef88a55so2319924f8f.2
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 03:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693651799; x=1694256599; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I7KPFwHs19Qi15qhrrII49ralT5uxL6ucFhXBjQigx8=;
-        b=rG1Vkgem8NRxD0B/Jp3SY8U0uVSllcUgZdj59npQcJJp20W0q5Bq/5WONTFwBqQy9A
-         KrWCO+rRFlLg3FSMqYkNxIMI0qwgOMpYO57BrHRb7fQ253bhr6hWQOp7qYLMNh+Jvv9S
-         mArxdercEc/blXFGawi9pNUIOmKx9wFCh3hJtuvg3pCQaMtxayc3WdtHUKEVVKvwQsm1
-         eftJLeFdjeA0i3Yr+u9aBMDZhg00okM3w72IJ+zlWOQ1ISS6RyQPnjT2QrOCmutUWhr9
-         kc/rM2P9SV/NpqcS0JeFzISbnAMWceTgyF2gVnFQO5jqf7yddy2qQJGI1wN0POBPzGH5
-         eCdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693651799; x=1694256599;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=I7KPFwHs19Qi15qhrrII49ralT5uxL6ucFhXBjQigx8=;
-        b=M05XXYgZcpXJjXWM6hHycohzwdZK+4buU1w1yYarScG9lQITMI/ETJHrMq0pMjGp64
-         +NT5w6v8UCVKB8spI3lxGJBa5GwsFUvILuwtOQmSgOgoBdXrNzJceYxjZH8dhu9Cap1A
-         fKYS8492rNRL5RRIi2Ws1T5V0Qmx0bG8eVE1QeBp/07bDTIdFLvT8Qac5IUoSTBjgczl
-         AIfNQCfn7NmfCEK2WsuLV1Qzvqr/b5AksTBsUnaJmCfDlKoTPUptPe0hDL30T7HrO1WA
-         YXq9ZLtlGEbByrzB95VlgGI/k9XFtnuruPs6Z2B520uxb+/08WEMVYwuJIJSZqiUKN8Z
-         yoWg==
-X-Gm-Message-State: AOJu0Yx4t+x3GEDKoUjRRpmcVjive9KGtGqcUxpKrLQ01RQMKVQnQaBo
-        wMw3w7y75YpYrDX1leNL+iZo74JbBak=
-X-Google-Smtp-Source: AGHT+IFSSk6zv9MOO9iGWa5NLU3ch/m8c4viVwQe1aQuu/DDquzMU3cI7YANoEsbWort3Rr0Q+n+Bw==
-X-Received: by 2002:a5d:474e:0:b0:319:790e:3bc5 with SMTP id o14-20020a5d474e000000b00319790e3bc5mr3610158wrs.41.1693651799187;
-        Sat, 02 Sep 2023 03:49:59 -0700 (PDT)
-Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
-        by smtp.gmail.com with ESMTPSA id r12-20020adfce8c000000b00317afc7949csm8066467wrn.50.2023.09.02.03.49.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 03:49:58 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Sat, 2 Sep 2023 12:49:56 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Yi Sun <yi.sun@intel.com>
-Cc:     dave.hansen@intel.com, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        sohil.mehta@intel.com, ak@linux.intel.com,
-        ilpo.jarvinen@linux.intel.com, heng.su@intel.com,
-        tony.luck@intel.com, dave.hansen@linux.intel.com,
-        yi.sun@intel.intel.com
-Subject: Re: [PATCH v6 1/3] x86/fpu: Measure the Latency of XSAVES and XRSTORS
-Message-ID: <ZPMTVNM2oBCdSYjJ@gmail.com>
-References: <20230901143414.1664368-1-yi.sun@intel.com>
- <20230901143414.1664368-2-yi.sun@intel.com>
+        Sat, 2 Sep 2023 06:50:49 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1B59172E;
+        Sat,  2 Sep 2023 03:50:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3206660C77;
+        Sat,  2 Sep 2023 10:50:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5C1E6C433C7;
+        Sat,  2 Sep 2023 10:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693651842;
+        bh=O3YmJo8FcapnhpQ93VprrOEBLBb9phS36hAcskcOmoM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=khN1kr2gOCIsvMFP2mxg2IHEPDDT6fvKBX+Rm6uDNLl9azTrewe35pRdgoFsWjCUN
+         ZJJbP9cwlemhFGdDCU/SCd+ZEzsTKHp24JXYj2IfMYF6p8nLPS9quaeOMixKap1vF3
+         7nlmw0W/RSNWKZWxDr3JbG0Venlvzn5SgpCntUlLNq+I6rQriVDEa6HZgjtw+phvES
+         2s2UXoRxY3aOo7BCKULrTbkuT5hXy8uQuEX5Rq0lJ6YEpNatAmjfknkysPDcdSCUzG
+         HPData92iKjfS4qn7IES7TWw3XHWNqu2lOCyn5Va/PeJeRtv9qp3i01O+CDSt669Ax
+         rsD8refe/o8dw==
+Date:   Sat, 2 Sep 2023 11:50:38 +0100
+From:   Conor Dooley <conor@kernel.org>
+To:     Sean Young <sean@mess.org>
+Cc:     linux-media@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/2] dt-bindings: media: remove nokia,n900-ir as
+ pwm-ir-tx is compatible
+Message-ID: <20230902-gender-sandstone-7da75af72f4f@spud>
+References: <cover.1693577725.git.sean@mess.org>
+ <25e8f2626d15199a1bf727fee375b5b149004c8e.1693577725.git.sean@mess.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2FKLhAY1Fc7AvUtp"
 Content-Disposition: inline
-In-Reply-To: <20230901143414.1664368-2-yi.sun@intel.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <25e8f2626d15199a1bf727fee375b5b149004c8e.1693577725.git.sean@mess.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,72 +63,85 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-* Yi Sun <yi.sun@intel.com> wrote:
+--2FKLhAY1Fc7AvUtp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +#define XSTATE_XSAVE(fps, lmask, hmask, err)				\
-> +	do {								\
-> +		struct fpstate *f = fps;				\
-> +		u64 tc = -1;						\
-> +		if (xsave_tracing_enabled())				\
-> +			tc = trace_clock();				\
-> +		__XSTATE_XSAVE(&f->regs.xsave, lmask, hmask, err);	\
-> +		if (xsave_tracing_enabled())				\
-> +			trace_x86_fpu_latency_xsave(f, trace_clock() - tc);\
-> +	} while (0)
-> +
->  /*
->   * Use XRSTORS to restore context if it is enabled. XRSTORS supports compact
->   * XSAVE area format.
->   */
-> -#define XSTATE_XRESTORE(st, lmask, hmask)				\
-> +#define __XSTATE_XRESTORE(st, lmask, hmask)				\
->  	asm volatile(ALTERNATIVE(XRSTOR,				\
->  				 XRSTORS, X86_FEATURE_XSAVES)		\
->  		     "\n"						\
-> @@ -140,6 +168,17 @@ static inline u64 xfeatures_mask_independent(void)
->  		     : "D" (st), "m" (*st), "a" (lmask), "d" (hmask)	\
->  		     : "memory")
->  
-> +#define XSTATE_XRESTORE(fps, lmask, hmask)				\
-> +	do {								\
-> +		struct fpstate *f = fps;				\
-> +		u64 tc = -1;						\
-> +		if (xrstor_tracing_enabled())				\
-> +			tc = trace_clock();				\
-> +		__XSTATE_XRESTORE(&f->regs.xsave, lmask, hmask);	\
-> +		if (xrstor_tracing_enabled())				\
-> +			trace_x86_fpu_latency_xrstor(f, trace_clock() - tc);\
-> +	} while (0)
-> +
->  #if defined(CONFIG_X86_64) && defined(CONFIG_X86_DEBUG_FPU)
->  extern void xfd_validate_state(struct fpstate *fpstate, u64 mask, bool rstor);
->  #else
-> @@ -184,7 +223,7 @@ static inline void os_xsave(struct fpstate *fpstate)
->  	WARN_ON_FPU(!alternatives_patched);
->  	xfd_validate_state(fpstate, mask, false);
->  
-> -	XSTATE_XSAVE(&fpstate->regs.xsave, lmask, hmask, err);
-> +	XSTATE_XSAVE(fpstate, lmask, hmask, err);
->  
->  	/* We should never fault when copying to a kernel buffer: */
->  	WARN_ON_FPU(err);
-> @@ -201,7 +240,7 @@ static inline void os_xrstor(struct fpstate *fpstate, u64 mask)
->  	u32 hmask = mask >> 32;
->  
->  	xfd_validate_state(fpstate, mask, true);
-> -	XSTATE_XRESTORE(&fpstate->regs.xsave, lmask, hmask);
-> +	XSTATE_XRESTORE(fpstate, lmask, hmask);
->  }
+On Fri, Sep 01, 2023 at 03:18:55PM +0100, Sean Young wrote:
+> The generic pwm-ir-tx driver works for the Nokia n900, so nokia,n900-ir
+> can be removed.
+>=20
+> Signed-off-by: Sean Young <sean@mess.org>
 
-Instead of adding overhead to the regular FPU context saving/restoring code 
-paths, could you add a helper function that has tracing code included, but 
-which isn't otherwise used - and leave the regular code with no tracing 
-overhead?
-
-This puts a bit of a long-term maintenance focus on making sure that the 
-traced functionality won't bitrot, but I'd say that's preferable to adding 
-tracing overhead.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
 Thanks,
+Conor.
 
-	Ingo
+> ---
+>  .../bindings/leds/irled/pwm-ir-tx.yaml        |  5 ++++-
+>  .../devicetree/bindings/media/nokia,n900-ir   | 20 -------------------
+>  2 files changed, 4 insertions(+), 21 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/media/nokia,n900-ir
+>=20
+> diff --git a/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml =
+b/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
+> index f2a6fa140f38..7526e3149f72 100644
+> --- a/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
+> +++ b/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
+> @@ -15,7 +15,10 @@ description:
+> =20
+>  properties:
+>    compatible:
+> -    const: pwm-ir-tx
+> +    oneOf:
+> +      - const: pwm-ir-tx
+> +      - const: nokia,n900-ir
+> +        deprecated: true
+> =20
+>    pwms:
+>      maxItems: 1
+> diff --git a/Documentation/devicetree/bindings/media/nokia,n900-ir b/Docu=
+mentation/devicetree/bindings/media/nokia,n900-ir
+> deleted file mode 100644
+> index 13a18ce37dd1..000000000000
+> --- a/Documentation/devicetree/bindings/media/nokia,n900-ir
+> +++ /dev/null
+> @@ -1,20 +0,0 @@
+> -Device-Tree bindings for LIRC TX driver for Nokia N900(RX51)
+> -
+> -Required properties:
+> -	- compatible: should be "nokia,n900-ir".
+> -	- pwms: specifies PWM used for IR signal transmission.
+> -
+> -Example node:
+> -
+> -	pwm9: dmtimer-pwm@9 {
+> -		compatible =3D "ti,omap-dmtimer-pwm";
+> -		ti,timers =3D <&timer9>;
+> -		ti,clock-source =3D <0x00>; /* timer_sys_ck */
+> -		#pwm-cells =3D <3>;
+> -	};
+> -
+> -	ir: n900-ir {
+> -		compatible =3D "nokia,n900-ir";
+> -
+> -		pwms =3D <&pwm9 0 26316 0>; /* 38000 Hz */
+> -	};
+> --=20
+> 2.42.0
+>=20
+
+--2FKLhAY1Fc7AvUtp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZPMTfQAKCRB4tDGHoIJi
+0p0/AP9ZzLB/zSJoS6xD2RkcZoRzaH8n6vM+cyacmCaUjNkrPQD/XKBiYxaVvTl7
+8g2/2pBmv90wG05kDRzPPMjKwq4B6ws=
+=DKqi
+-----END PGP SIGNATURE-----
+
+--2FKLhAY1Fc7AvUtp--
