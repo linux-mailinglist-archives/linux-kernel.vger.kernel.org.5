@@ -2,100 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B22AC790A7C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 03:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40421790A7F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 03:51:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235451AbjICBiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 21:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47446 "EHLO
+        id S235469AbjICBtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 21:49:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235422AbjICBiQ (ORCPT
+        with ESMTP id S232532AbjICBs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 21:38:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916E8120;
-        Sat,  2 Sep 2023 18:38:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 160326123A;
-        Sun,  3 Sep 2023 01:38:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BCB9C433C7;
-        Sun,  3 Sep 2023 01:38:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693705092;
-        bh=mLbeMsgnyDnGCgA/p6Hrb2VlLPgAqB23fcud/eP5FRk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=q52IxxWydRbFcqHTBG0PvLCV+xxuCfetlsz5GeaqNu9tIZU/4XTGLbyuIlYWrLaF6
-         40Q4/YC0qbuspqEQbC70HQeDttFXk4IdKfJLPyYML745aaNEqhOv0us4S7iOqssBIY
-         f3ecKWRWyOdzJqjLpMwo1egZZe+FKB81HEAFbqJgDx+OX+B4q167bF+rgLYoGXkC2C
-         1dlDoTuij1Jo1EIzF8J5QWV2vl34+BLbw+gmfMFEHCPLhdvq6LlShph/JG0Y2aQRFm
-         g/En9PiUywR1WDyF5gtpG3mgLgNph7q6yVx2hgAvaGYuQDZWwJynZ2LYQPyXjFGASu
-         LcCRA433jAkHw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0426CCE0567; Sat,  2 Sep 2023 18:38:12 -0700 (PDT)
-Date:   Sat, 2 Sep 2023 18:38:11 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] rcu/torture: Improve badness extraction from console logs
-Message-ID: <8f55aa64-dfea-4a1a-a7d4-a2335ec07150@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230831012257.1189964-1-joel@joelfernandes.org>
- <b292cca4-d451-4371-ae2e-9417e0079e84@paulmck-laptop>
- <CAEXW_YRa0Gd2Gt8LagAyOp_8VwT+ra3N4+DBquUNn_Xmo8o7eg@mail.gmail.com>
- <7bd77573-ded1-432e-8008-4c1cbe1b9eb9@paulmck-laptop>
- <CAEXW_YTzP90zs8z4UFC52fd_KMkpBba6ujBNnDM5Z6exskJ6tg@mail.gmail.com>
- <e0977773-de90-42bb-a67d-dc16d24764a3@paulmck-laptop>
- <CAEXW_YSukJ_SSvy731iF9WZ5N9cycHsfzdz+8MKA4Va+1+FW4A@mail.gmail.com>
+        Sat, 2 Sep 2023 21:48:59 -0400
+Received: from mail-pj1-f79.google.com (mail-pj1-f79.google.com [209.85.216.79])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51C8E131
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 18:48:56 -0700 (PDT)
+Received: by mail-pj1-f79.google.com with SMTP id 98e67ed59e1d1-26d52dc97e3so264779a91.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 18:48:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693705736; x=1694310536;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vJf/Eooxdqn3wqXqB/Vii7TxecGvCAC/nj0JGOKvT0c=;
+        b=Uj5QG8xu3Gz1Zw8w34fAxPQhoYgnAEpYRGcIX//aMZzXRF02+TCE3LISSlm49BAG9h
+         g9QjhVXyWPk+i7csNTYZNy1G1/4odqL9AJy0TGXOfkYLCw5FQB/KcLtoB8IRENiG7qTC
+         cs2d4zTSmk/J3u3hJwJBrgddiuGuaP3OrO/+XFcf5fKHHsiUw4tIP7V/78QoIEtLomR9
+         772c99fHHTg0zF4oQWKt2AcF/ZUhUCUKcMOVk+p89rnE0aIgBITTQvkJf36ghcNJ+iPg
+         Qjs55yPzDQS6Lz/8tScIu2VTzACRe1AQ80qplxbNRZ3xVAF3mrLfOKGa9p8bxt0iBmfN
+         Y1pg==
+X-Gm-Message-State: AOJu0YzKjlJpW4WS11WJyvk1E9CwgfMTKTopHglu8yd2WDCuRM2ckMDX
+        WNQ3ZITbP7rhrDO1vWw5WTVBiDO8I2KzfWG9FucHEIhxtYyi
+X-Google-Smtp-Source: AGHT+IEFEX6CFZNVFPeqX7v6f3QzzaPk9plI5xoyZwo92AT/6EpnmOualPivPJbgREY5sUP34UhQQQ2CeW9fEHhkVfvkuO0U+UYn
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEXW_YSukJ_SSvy731iF9WZ5N9cycHsfzdz+8MKA4Va+1+FW4A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:3d3:b0:26d:26eb:c577 with SMTP id
+ go19-20020a17090b03d300b0026d26ebc577mr1478202pjb.6.1693705735819; Sat, 02
+ Sep 2023 18:48:55 -0700 (PDT)
+Date:   Sat, 02 Sep 2023 18:48:55 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000bcd80b06046a98ac@google.com>
+Subject: [syzbot] [wireless?] WARNING in ieee80211_link_release_channel
+From:   syzbot <syzbot+9817a610349542589c42@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com,
+        johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, pabeni@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 02, 2023 at 08:10:13PM -0400, Joel Fernandes wrote:
-> On Sat, Sep 2, 2023 at 3:24 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> [...]
-> > > > Either way, what I don't want is many megabytes of splats from console.log
-> > > > duplicated into console.log.diags, especially in those (admittedly sad)
-> > > > cases where the console.log file is the largest file in the results
-> > > > directory.  Are you really going to be reading carefully after (say)
-> > > > the fifth splat?  ;-)
-> > >
-> > > I could limit it to just the first 5, with the existing unlimited
-> > > summary at the top.
-> >
-> > How about limiting the existing summary to (say) 10 lines?  I do not
-> > recall every caring about more than that.  The only reason that I did
-> > not ever limit it myself is that the summary is unlikely to be more than
-> > a few percent of the full console.log.
-> >
-> > > Let me know if that works or does not work for you. :-)
-> >
-> > I do believe that we might be converging.  ;-)
-> 
-> Ok, so 10 lines of summary (similar to existing), and 10 detailed
-> splats below that :-).  If that's not Ok, let me know. Otherwise I
-> will send the new patch soon. Thanks!
+Hello,
 
-That works!
+syzbot found the following issue on:
 
-						Thanx, Paul
+HEAD commit:    d68b4b6f307d Merge tag 'mm-nonmm-stable-2023-08-28-22-48' ..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=147267b7a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c45ae22e154d76fa
+dashboard link: https://syzkaller.appspot.com/bug?extid=9817a610349542589c42
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=128eab18680000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/eaa3c711dd68/disk-d68b4b6f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3ed6d023ff63/vmlinux-d68b4b6f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/cc05f8831f38/bzImage-d68b4b6f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9817a610349542589c42@syzkaller.appspotmail.com
+
+RBP: 00007f64c7d70120 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000006e R14: 00007f64c719c050 R15: 00007f64c72bfa48
+ </TASK>
+wlan1: failed to insert STA entry for the AP (error -12)
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 7597 at net/mac80211/chan.c:2021 ieee80211_link_release_channel+0x19f/0x200 net/mac80211/chan.c:2021
+Modules linked in:
+CPU: 0 PID: 7597 Comm: syz-executor.5 Not tainted 6.5.0-syzkaller-04592-gd68b4b6f307d #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:ieee80211_link_release_channel+0x19f/0x200 net/mac80211/chan.c:2021
+Code: ff ff ff ff 48 8d b8 f0 1c 00 00 e8 3b 33 79 00 31 ff 41 89 c5 89 c6 e8 cf 7e c7 f7 45 85 ed 0f 85 6d ff ff ff e8 51 83 c7 f7 <0f> 0b e9 61 ff ff ff 48 c7 c7 d0 28 ad 8e e8 6e 2f 1d f8 e9 3a ff
+RSP: 0018:ffffc9000a0d6b08 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffff88806730e3a8 RCX: 0000000000000000
+RDX: ffff8880271ebb80 RSI: ffffffff89c00a5f RDI: 0000000000000005
+RBP: ffff88806730cc80 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88806730d580
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+FS:  00007f64c7d706c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f5579f1bff8 CR3: 0000000075757000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ieee80211_prep_connection+0x62a/0x14f0 net/mac80211/mlme.c:7065
+ ieee80211_mgd_auth+0xa1a/0x1490 net/mac80211/mlme.c:7205
+ rdev_auth net/wireless/rdev-ops.h:481 [inline]
+ cfg80211_mlme_auth+0x551/0x910 net/wireless/mlme.c:289
+ cfg80211_conn_do_work+0x64e/0xfe0 net/wireless/sme.c:181
+ cfg80211_sme_connect net/wireless/sme.c:638 [inline]
+ cfg80211_connect+0xf07/0x20c0 net/wireless/sme.c:1528
+ nl80211_connect+0x13ef/0x1d50 net/wireless/nl80211.c:12018
+ genl_family_rcv_msg_doit+0x1fc/0x2e0 net/netlink/genetlink.c:971
+ genl_family_rcv_msg net/netlink/genetlink.c:1051 [inline]
+ genl_rcv_msg+0x55c/0x800 net/netlink/genetlink.c:1066
+ netlink_rcv_skb+0x16b/0x440 net/netlink/af_netlink.c:2545
+ genl_rcv+0x28/0x40 net/netlink/genetlink.c:1075
+ netlink_unicast_kernel net/netlink/af_netlink.c:1342 [inline]
+ netlink_unicast+0x536/0x810 net/netlink/af_netlink.c:1368
+ netlink_sendmsg+0x93c/0xe40 net/netlink/af_netlink.c:1910
+ sock_sendmsg_nosec net/socket.c:728 [inline]
+ sock_sendmsg+0xd9/0x180 net/socket.c:751
+ ____sys_sendmsg+0x6ac/0x940 net/socket.c:2538
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2592
+ __sys_sendmsg+0x117/0x1e0 net/socket.c:2621
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f64c707cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f64c7d700c8 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00007f64c719c050 RCX: 00007f64c707cae9
+RDX: 0000000000000000 RSI: 00000000200001c0 RDI: 0000000000000003
+RBP: 00007f64c7d70120 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
+R13: 000000000000006e R14: 00007f64c719c050 R15: 00007f64c72bfa48
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
