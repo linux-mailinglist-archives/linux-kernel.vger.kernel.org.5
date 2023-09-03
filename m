@@ -2,146 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5E2790EF9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 00:31:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67835790EFE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 00:34:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349120AbjICWbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 18:31:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        id S1347443AbjICWe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 18:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346377AbjICWbA (ORCPT
+        with ESMTP id S240826AbjICWey (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 18:31:00 -0400
-Received: from mail-oa1-x2d.google.com (mail-oa1-x2d.google.com [IPv6:2001:4860:4864:20::2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3574102
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 15:30:55 -0700 (PDT)
-Received: by mail-oa1-x2d.google.com with SMTP id 586e51a60fabf-1c4cf775a14so781420fac.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
+        Sun, 3 Sep 2023 18:34:54 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DADDA
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 15:34:50 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5007c8308c3so1343076e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:34:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693780255; x=1694385055; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
-        b=eLvFMZ6HweV3i75Mje3KyiQMHp72f3fVYJp4X8QBR1sUoWt5LbUe2oYe6gz7J03xSV
-         aHsv7iDil4KTnD32vRddboJhyW5dIQThpWZBfmdQlNdU/+SQKnZqTkI+8YNmhDFqSNM4
-         M/5uOEBZigGEpPC3vmfjiwnDFOd47IixsMl044OpUX7QG234XdFYwtba/jPyi6PCo/kZ
-         okP+nX6zzbLjyilv/Ocy1qCe5aC4gkdgDOfyh92JWGe8bVg+DmwjlPuuV3kM/V8mAkRG
-         YMrGVWwsvVs5uRT8A9BN8JD3DAOcyXyqtn49LxBGuGru+09OFjvSzk6tINPlQnplnbJD
-         r/Aw==
+        d=linux-foundation.org; s=google; t=1693780489; x=1694385289; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dIOhRbp78FSnOot0tcIQifKv7xD8tI587HuZagI+zEw=;
+        b=LhvuAtqIpB3LdbApLuASiRn+SSHgieWvuNe8wYLIbioMm5YlBC+u+jhk+F0fQwQk7i
+         V2sYxlAVl4m+BiDO0yG/Mk/YYo93hHRq4qaFXOCTcfoUuPJYigj26pe1ux5Mz5XZYGKg
+         SI3nq2N7gOHpUppmlPbqywWUgYrZxpiFlAE+A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693780255; x=1694385055;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Nv6YpToDNZJcA/Ccz8YHJKQ8zE37n7OYKvDh05ivZ8M=;
-        b=hLIf6t1ESqi7ItoHNJQ2wW5q+8C3/IUoOQ1dw7Zo9ag8IjtOOW5bOp32jaVokAgc0f
-         u5keNSxYEAXtd0wU/Ue7UB8Vo0gf/Qwn5La74TAyPQCGpgTKmvED3xY3JBVQ9RXkT8l4
-         oeiPVO4Moua8e/WShpNHhZdxwdcbkdSvjuvDyt+RUYxft7OCnF6He8uluV0f5lSnb9nw
-         im8eucQ/y4ConD/5sfwS+txotfrgunIwJn5zPUWF1RNkFAZQgYCIX98Dc8TM0girrr2J
-         lfMddwJoA837PE3owoY2hQll2mg6vyIMxBgz14RTvPzGwQvNkFlK6EQKjAx7zIFI+AKr
-         1h+w==
-X-Gm-Message-State: AOJu0YyqFK5IMseSYJb2e+eXQVSdCgmOeJRcSkYmN+z/9oMkVO1ncPdY
-        0m8fB67K81FU0JoTNi6TSG1/uQ==
-X-Google-Smtp-Source: AGHT+IGLu9Ypqvz2HQH6Ke2apJHDtGTD5ZHmV6+9u1MT+8XuCmbNG2jkA6AQg79Zc5mY+kWQOWShIA==
-X-Received: by 2002:a05:6870:568d:b0:1be:c8e2:3ec3 with SMTP id p13-20020a056870568d00b001bec8e23ec3mr11536784oao.14.1693780255066;
-        Sun, 03 Sep 2023 15:30:55 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id i15-20020a63bf4f000000b00565e96d9874sm5648132pgo.89.2023.09.03.15.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 15:30:54 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qcvcK-00ASFy-0F;
-        Mon, 04 Sep 2023 08:30:52 +1000
-Date:   Mon, 4 Sep 2023 08:30:52 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Hao Xu <hao.xu@linux.dev>
-Cc:     Matthew Wilcox <willy@infradead.org>, io-uring@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-Message-ID: <ZPUJHAKzxvXiEDYA@dread.disaster.area>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
- <ZOvA5DJDZN0FRymp@casper.infradead.org>
- <c728bf3f-d9db-4865-8473-058b26c11c06@linux.dev>
- <ZO3cI+DkotHQo3md@casper.infradead.org>
- <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
+        d=1e100.net; s=20221208; t=1693780489; x=1694385289;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dIOhRbp78FSnOot0tcIQifKv7xD8tI587HuZagI+zEw=;
+        b=d2P/uKr002YeIVEB4EuMmOyIqDyVaLtKcxpTeFGjZg2UW0nN0TktMky0Y27uI0ny9I
+         5DZdDgE71gLtU5abL7y5S4UB29K7Zz+Zw3qMCRLJLwywnxCbUk9dwmdYV0sKmvEN9ljf
+         sN+fXsPlSBlr2pMrOTYb5uLmFcXtD9/OdIARugh0HUxDDzYcBa6MwbXPZ/8enbFOU1nd
+         vI5UuL3ayWdRgnflaLJBVVgcmQbCoKm2pi48YhZ19t0jXEGkNbQgSfDtcu/F5BLCD49z
+         f/+twO+pCdGkcdyUc3KBMKHc5IgKff3PCh1JIY2Sdz0ZlB5ASlobaZ64bA3wGC/XHjqG
+         dYqg==
+X-Gm-Message-State: AOJu0YxU8bFOoMIdW+I6lexuoSIAuXD7W69kmPEeOabpsqMZ9ZBAHVcu
+        xLVosv2/CMKCi0yO540IACsXkOarXw+92Hrj4Gydrm49
+X-Google-Smtp-Source: AGHT+IHPPu585SgI0DbAiXN2uU9tRUNfQmfwDDGIyLfH/qmXqEiq5fCvZ7Hj6PxzwsRSfLDaVZwFfg==
+X-Received: by 2002:ac2:4f0a:0:b0:500:ca0f:605e with SMTP id k10-20020ac24f0a000000b00500ca0f605emr5999136lfr.6.1693780488775;
+        Sun, 03 Sep 2023 15:34:48 -0700 (PDT)
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05651211ef00b004fdd6b72bfdsm1406039lfs.117.2023.09.03.15.34.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Sep 2023 15:34:48 -0700 (PDT)
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2bbbda48904so13627031fa.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:34:47 -0700 (PDT)
+X-Received: by 2002:a05:6512:a88:b0:500:b53f:fbc2 with SMTP id
+ m8-20020a0565120a8800b00500b53ffbc2mr6365297lfu.26.1693780487492; Sun, 03 Sep
+ 2023 15:34:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <642de4e6-801d-fcad-a7ce-bfc6dec3b6e5@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
+ <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
+ <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
+ <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com>
+ <20230903204858.lv7i3kqvw6eamhgz@f> <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
+ <ZPT/LzkPR/jaiaDb@gmail.com>
+In-Reply-To: <ZPT/LzkPR/jaiaDb@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 3 Sep 2023 15:34:30 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
+Message-ID: <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Mateusz Guzik <mjguzik@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 02:11:31PM +0800, Hao Xu wrote:
-> On 8/29/23 19:53, Matthew Wilcox wrote:
-> > On Tue, Aug 29, 2023 at 03:46:13PM +0800, Hao Xu wrote:
-> > > On 8/28/23 05:32, Matthew Wilcox wrote:
-> > > > On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
-> > > > > From: Hao Xu <howeyxu@tencent.com>
-> > > > > 
-> > > > > Add a boolean parameter for file_accessed() to support nowait semantics.
-> > > > > Currently it is true only with io_uring as its initial caller.
-> > > > 
-> > > > So why do we need to do this as part of this series?  Apparently it
-> > > > hasn't caused any problems for filemap_read().
-> > > > 
-> > > 
-> > > We need this parameter to indicate if nowait semantics should be enforced in
-> > > touch_atime(), There are locks and maybe IOs in it.
-> > 
-> > That's not my point.  We currently call file_accessed() and
-> > touch_atime() for nowait reads and nowait writes.  You haven't done
-> > anything to fix those.
-> > 
-> > I suspect you can trim this patchset down significantly by avoiding
-> > fixing the file_accessed() problem.  And then come back with a later
-> > patchset that fixes it for all nowait i/o.  Or do a separate prep series
-> 
-> I'm ok to do that.
-> 
-> > first that fixes it for the existing nowait users, and then a second
-> > series to do all the directory stuff.
-> > 
-> > I'd do the first thing.  Just ignore the problem.  Directory atime
-> > updates cause I/O so rarely that you can afford to ignore it.  Almost
-> > everyone uses relatime or nodiratime.
-> 
-> Hi Matthew,
-> The previous discussion shows this does cause issues in real
-> producations: https://lore.kernel.org/io-uring/2785f009-2ebb-028d-8250-d5f3a30510f0@gmail.com/#:~:text=fwiw%2C%20we%27ve%20just%20recently%20had%20similar%20problems%20with%20io_uring%20read/write
-> 
+On Sun, 3 Sept 2023 at 14:48, Ingo Molnar <mingo@kernel.org> wrote:
+>
+> If measurements support it then this looks like a nice optimization.
 
-Then separate it out into it's own patch set so we can have a
-discussion on the merits of requiring using noatime, relatime or
-lazytime for really latency sensitive IO applications. Changing code
-is not always the right solution...
+Well, it seems to work, but when I profile it to see if the end result
+looks reasonable, the profile data is swamped by the return
+mispredicts from CPU errata workarounds, and to a smaller degree by
+the clac/stac overhead of SMAP.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+So it does seem to work - at least it boots here and everything looks
+normal - and it does seem to generate good code, but the profiles look
+kind of sad.
+
+I also note that we do a lot of stupid pointless 'statx' work that is
+then entirely thrown away for a regular stat() system call.
+
+Part of it is actual extra work to set the statx fields.
+
+But a lot of it is that even if we didn't do that, the 'statx' code
+has made 'struct kstat' much bigger, and made our code footprints much
+worse.
+
+Of course, even without the useless statx overhead, 'struct kstat'
+itself ends up having a lot of padding because of how 'struct
+timespec64' looks. It might actually be good to split it explicitly
+into seconds and nanoseconds just for padding.
+
+Because that all blows 'struct kstat' up to 160 bytes here.
+
+And to make it all worse, the statx code has caused all the
+filesystems to have their own 'getattr()' code just to fill in that
+worthless garbage, when it used to be that you could rely on
+'generic_fillattr()'.
+
+I'm looking at ext4_getattr(), for example, and I think *all* of it is
+due to statx - that to a close approximation nobody cares about, and
+is a specialty system call for a couple of users
+
+And again - the indirect branches have gone from being "a cycle or
+two" to being pipeline stalls and mispredicts. So not using just a
+plain 'generic_fillattr()' is *expensive*.
+
+Sad. Because the *normal* stat() family of system calls are some of
+the most important ones out there. Very much unlike statx().
+
+              Linus
