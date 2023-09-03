@@ -2,82 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F08D790E38
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD137790E45
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348882AbjICV3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 17:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        id S1348902AbjICVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 17:41:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348734AbjICV3r (ORCPT
+        with ESMTP id S1348545AbjICVl4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 17:29:47 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC1AA118
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:29:42 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-500c63c9625so1400282e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:29:42 -0700 (PDT)
+        Sun, 3 Sep 2023 17:41:56 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4C7CC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:41:52 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-500760b296aso1010956e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:41:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693776581; x=1694381381; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D5QQwEFqCct7BAxDxlOQzyh1UFNTPO5xvPloHLAel3c=;
-        b=bhqdKSGAszqeMRe9e1IFtBKgm5fxEVdjiR9uXlqGf1NCtWNW+rdz/D09zbsUy3ZBcM
-         VJoLeBt6yHZauCOxg3+ZusooBODWSW9Cae5vWUCoDIdvJWsJOrvRr0uBjEb+T5iDkBHF
-         GKkL6G7eqrjiiBU0DmYG2rM49W1CgcBuXShwsC5J+UG4yj5GdA4g1mN4wiKv8VrvHhe8
-         h+eb3CpT8s1TjGr/UTkNsQ/kdV6i0Vi7aOh7R+L1Fg8StGCuUT0CJ7MYuxqDTM7bReeU
-         O1kOT001/B/sreMX5c5oxU87okpG60eCwKRcxlQ1k4okr2Ep2RVetKftoPdWnB50DUuW
-         8W5Q==
+        d=linaro.org; s=google; t=1693777311; x=1694382111; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=V8+6hRoyuo0w27wr7qjZ8oFHPY2yc7kx8FAgPsdCc/g=;
+        b=bgdLT3RL/PMlpcAJWfPMgES7q8a9vMHTyWNLFVnLJl+4e/lH9W6yce7u3a0JnCqW6T
+         azCjfaNmXgpam0zH6DCqVi4Mv5xf7W6OEhWSvZ8i4qxl5cSJF1L7iuLhkEqNxB56YGkf
+         xKLzSio0Ote9+ZVg3I2VqVs9Q5L5auDt5DUdji/htfRVILW1kfZu22f/UKC4aD4OF+y6
+         lZ6vvqQoZRWK/mqfUgpNfJnwK4J6csWT/KEah1S1mpsyrlZf4Zv1GLiZBruPC6Y7m6N0
+         anLA8K7ajBT8RDhYraGdnkW4Tdzyxvqze/QxtFYbAZo+vzzrgS+nqOFLpHQAAvpLZJt0
+         /x6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693776581; x=1694381381;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D5QQwEFqCct7BAxDxlOQzyh1UFNTPO5xvPloHLAel3c=;
-        b=UmO4q/zEa937hTXCmyhlTfZGwFYt24KPXo+9rmX/+JK9KWQgDv10YyrFmURhSDakJy
-         AxTk/F2l7/mJ5AtBwIOitJuNjdf4MS1OfgtbhAhvesQfugEcPlszdQN7AjeQQcvb4SB9
-         QdcwzO4lvKWZOeAGPd+IkQ4jhKFXXTWJ3VuptZLMrUvtTpG8QmSdkwleytkkzA9t47ko
-         7xPrPlbftp75JAGYer29JdyTG+GXHmVB4t99rlf2vPabSWYHkjq2xMEvnxY/2Zg5WDBL
-         NzcuHHnI2il3XuMzmBFM2OacVlqmkw41aHgWJj8lx1NST7XfG/o4SGFl5ylmnSVhEM0w
-         TnOg==
-X-Gm-Message-State: AOJu0YyAt3DwuYMi0dIQ3WxIQV4vf72sLZID8mY4AXfwMLw42DvMoKGp
-        H9zkjsZH25UaPFRAOKJjKGFuxw==
-X-Google-Smtp-Source: AGHT+IFzGUwTyKGwD7PSfbMHsP+QYUbDM5UQr/fxVIRAAFQABie93pcvAKUcK3M3a83cjojEciNiLg==
-X-Received: by 2002:a05:6512:1316:b0:4fb:90c6:c31a with SMTP id x22-20020a056512131600b004fb90c6c31amr6277330lfu.14.1693776581063;
-        Sun, 03 Sep 2023 14:29:41 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693777311; x=1694382111;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=V8+6hRoyuo0w27wr7qjZ8oFHPY2yc7kx8FAgPsdCc/g=;
+        b=cCcOQWccCa485AwqPg7SX14JnW7GdkolHTomQnZIDn0wyK3ldVvmQHTUYPiM5IqLjQ
+         02Tkz5T8nDhhE0ykdm2JX3Gtdj9SpS7SLOC6KJnsR3Pk6sntFiR1UlcxuVCHx/4n/VzY
+         /r0YkqYZXzDwD+WWRvNhMhySbUZ3QUFnV+hSmSafgfzJN77U3tkYLe+00OP8UBX+GbWM
+         UI/WB6APfDTO0RFf/Aa/Zupni33OixEQ3zXRGdn6bFTATmaJPCsbYDPWnWzvtqADCjFV
+         gHYl4Mw61sQSB91G7xuZ1mVovxKVyThFN5cgJXX6pajtJdXSL6SFtIgIzRnUWWfB5mPi
+         gjLA==
+X-Gm-Message-State: AOJu0YzZMOjpKBqrTfyVmCQbfr2C27Ql5sgi7QHk7Ziw/gevHB9zzLIu
+        glzZ5NSXiweCiZJN2AM0AyXYFw==
+X-Google-Smtp-Source: AGHT+IGtFPj/i132V84gFgb+9UX2XVd1+6zrpeCc6Tu4V8tR6EXyMighkqxBy2CLmJBokzxnUP+RZQ==
+X-Received: by 2002:ac2:498d:0:b0:500:91f6:f129 with SMTP id f13-20020ac2498d000000b0050091f6f129mr2178545lfl.26.1693777311128;
+        Sun, 03 Sep 2023 14:41:51 -0700 (PDT)
 Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id eq11-20020a056512488b00b004ff8d9ed368sm1412352lfb.258.2023.09.03.14.29.40
+        by smtp.gmail.com with ESMTPSA id x17-20020ac25dd1000000b004f8555f7aa1sm1422506lfq.52.2023.09.03.14.41.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 14:29:40 -0700 (PDT)
+        Sun, 03 Sep 2023 14:41:50 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Janne Grunau <j@jannau.net>, Simon Ser <contact@emersion.fr>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Simon Ser <contact@emersion.fr>, Janne Grunau <j@jannau.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        intel-gfx@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: [PATCH v7 3/3] drm/bridge_connector: implement oob_hotplug_event
-Date:   Mon,  4 Sep 2023 00:29:37 +0300
-Message-Id: <20230903212937.2876815-4-dmitry.baryshkov@linaro.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        freedreno@lists.freedesktop.org
+Subject: [RFC PATCH v1 00/12] drm,usb/typec: uABI for USB-C DisplayPort connectors
+Date:   Mon,  4 Sep 2023 00:41:38 +0300
+Message-Id: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230903212937.2876815-1-dmitry.baryshkov@linaro.org>
-References: <20230903212937.2876815-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -89,93 +86,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement the oob_hotplug_event() callback. Translate it to the HPD
-notification sent to the HPD bridge in the chain.
+During the discussion regarding DisplayPort wrapped in the USB-C
+connectors (via the USB-C altmode) it was pointed out that currently
+there is no good way to let userspace know if the DRM connector in
+question is the 'native' DP connector or if it is the USB-C connector.
 
-Reviewed-by: Janne Grunau <j@jannau.net>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/gpu/drm/drm_bridge_connector.c | 31 +++++++++++++++++++++++---
- 1 file changed, 28 insertions(+), 3 deletions(-)
+An attempt to use DRM_MODE_CONNECTOR_USB for such connectors was
+declined, as existing DP drivers (i915, AMD) use
+DRM_MODE_CONNECTOR_DisplayPort. New drivers should behave in the same
+way.
 
-diff --git a/drivers/gpu/drm/drm_bridge_connector.c b/drivers/gpu/drm/drm_bridge_connector.c
-index 10b52224db37..bf73960c2c2a 100644
---- a/drivers/gpu/drm/drm_bridge_connector.c
-+++ b/drivers/gpu/drm/drm_bridge_connector.c
-@@ -5,6 +5,8 @@
- 
- #include <linux/kernel.h>
- #include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/property.h>
- #include <linux/slab.h>
- 
- #include <drm/drm_atomic_state_helper.h>
-@@ -107,10 +109,9 @@ static void drm_bridge_connector_hpd_notify(struct drm_connector *connector,
- 	}
- }
- 
--static void drm_bridge_connector_hpd_cb(void *cb_data,
--					enum drm_connector_status status)
-+static void drm_bridge_connector_handle_hpd(struct drm_bridge_connector *drm_bridge_connector,
-+					    enum drm_connector_status status)
- {
--	struct drm_bridge_connector *drm_bridge_connector = cb_data;
- 	struct drm_connector *connector = &drm_bridge_connector->base;
- 	struct drm_device *dev = connector->dev;
- 
-@@ -123,6 +124,21 @@ static void drm_bridge_connector_hpd_cb(void *cb_data,
- 	drm_kms_helper_connector_hotplug_event(connector);
- }
- 
-+static void drm_bridge_connector_hpd_cb(void *cb_data,
-+					enum drm_connector_status status)
-+{
-+	drm_bridge_connector_handle_hpd(cb_data, status);
-+}
-+
-+static void drm_bridge_connector_oob_hotplug_event(struct drm_connector *connector,
-+						   enum drm_connector_status status)
-+{
-+	struct drm_bridge_connector *bridge_connector =
-+		to_drm_bridge_connector(connector);
-+
-+	drm_bridge_connector_handle_hpd(bridge_connector, status);
-+}
-+
- static void drm_bridge_connector_enable_hpd(struct drm_connector *connector)
- {
- 	struct drm_bridge_connector *bridge_connector =
-@@ -191,6 +207,8 @@ static void drm_bridge_connector_destroy(struct drm_connector *connector)
- 	drm_connector_unregister(connector);
- 	drm_connector_cleanup(connector);
- 
-+	fwnode_handle_put(connector->fwnode);
-+
- 	kfree(bridge_connector);
- }
- 
-@@ -216,6 +234,7 @@ static const struct drm_connector_funcs drm_bridge_connector_funcs = {
- 	.atomic_duplicate_state = drm_atomic_helper_connector_duplicate_state,
- 	.atomic_destroy_state = drm_atomic_helper_connector_destroy_state,
- 	.debugfs_init = drm_bridge_connector_debugfs_init,
-+	.oob_hotplug_event = drm_bridge_connector_oob_hotplug_event,
- };
- 
- /* -----------------------------------------------------------------------------
-@@ -352,6 +371,12 @@ struct drm_connector *drm_bridge_connector_init(struct drm_device *drm,
- 		if (!drm_bridge_get_next_bridge(bridge))
- 			connector_type = bridge->type;
- 
-+#ifdef CONFIG_OF
-+		if (!drm_bridge_get_next_bridge(bridge) &&
-+		    bridge->of_node)
-+			connector->fwnode = fwnode_handle_get(of_fwnode_handle(bridge->of_node));
-+#endif
-+
- 		if (bridge->ddc)
- 			ddc = bridge->ddc;
- 
+An attempt to use subconnector property was also declined. It is defined
+to the type of the DP dongle connector rather than the host connector.
+
+This attempt targets reusing the connector's PATH property. Currently
+this property is only used for the DP MST connectors. This patchset
+reuses it to point out to the corresponding registered typec port
+device.
+
+Dmitry Baryshkov (12):
+  Revert "drm/sysfs: Link DRM connectors to corresponding Type-C
+    connectors"
+  drm/sysfs: link DRM connector device to the connector's fw nodes
+  drm/connector: extend PATH property to covert Type-C case
+  drm/bridge-connector: set the PATH property for the connector
+  drm/bridge: remove conditionals around devicetree pointers
+  soc: qcom: pmic_glink_altmode: fix DRM connector type
+  soc: qcom: pmic_glink_altmode: report that this is a Type-C connector
+  usb: typec: support generating Type-C port names for userspace
+  usb: typec: tcpm: support generating Type-C port names for userspace
+  usb: typec: qcom: implement proper error path in probe()
+  usb: typec: qcom: extract DRM bridge functionality to separate file
+  usb: typec: qcom: define the bridge's path
+
+ drivers/gpu/drm/bridge/panel.c                |  2 -
+ drivers/gpu/drm/drm_bridge_connector.c        | 14 ++++-
+ drivers/gpu/drm/drm_connector.c               | 10 +++-
+ drivers/gpu/drm/drm_sysfs.c                   | 42 +-------------
+ drivers/soc/qcom/pmic_glink_altmode.c         |  3 +-
+ drivers/usb/typec/class.c                     | 14 +++++
+ drivers/usb/typec/tcpm/qcom/Makefile          |  4 ++
+ drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 56 ++++++-------------
+ .../usb/typec/tcpm/qcom/qcom_pmic_typec_drm.c | 40 +++++++++++++
+ .../usb/typec/tcpm/qcom/qcom_pmic_typec_drm.h | 22 ++++++++
+ drivers/usb/typec/tcpm/tcpm.c                 | 14 +++++
+ include/drm/drm_bridge.h                      |  9 ++-
+ include/linux/usb/tcpm.h                      |  2 +
+ include/linux/usb/typec.h                     |  2 +
+ 14 files changed, 146 insertions(+), 88 deletions(-)
+ create mode 100644 drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.c
+ create mode 100644 drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.h
+
 -- 
 2.39.2
 
