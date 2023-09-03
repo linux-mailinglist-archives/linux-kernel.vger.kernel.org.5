@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 602FF790A54
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 02:07:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB373790A56
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 02:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235306AbjICAHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 20:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60838 "EHLO
+        id S235347AbjICAKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 20:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234426AbjICAHl (ORCPT
+        with ESMTP id S235314AbjICAKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 20:07:41 -0400
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com [209.85.216.70])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 785F6CDB
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 17:07:38 -0700 (PDT)
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-26f51ce1a11so263725a91.0
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 17:07:38 -0700 (PDT)
+        Sat, 2 Sep 2023 20:10:31 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD6CCDD
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 17:10:26 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so3819951fa.0
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 17:10:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693699825; x=1694304625; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yFEmQ5kXTPv/inXJCJuXQh0sse6fWjwxLcH/69wCU2A=;
+        b=IUHnMsKXpm4QaSfCpBNqbxRDoBTIMO97y6O1fzgbn/pVC2LZXHubpkm//jv/VNGAU5
+         YgypOa5B7JhnZZoaBjftg2WzNigsJgsqPrZ5CafQETTk2hP4JLASoK/02897aWNGk6L/
+         KyWIhbuzYdoLy0BZ4duXQ82Kq4L4XSikaWEpo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693699658; x=1694304458;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Eg6pqu++IxHzeRbjS3YG7DsJsM+IOEPhcargo+fZmXs=;
-        b=mEM1OrASQNglCIIWJhQjT975kbArkaKIbqOJWwIr3k5sf7Bvdkapa95GPkAj6IzN6i
-         SlUjdxMYUilvHxu1ywaZpnQSXhuGd12Vq5rV7bY8DntB2EHNDCrsFoB8JNxipOnh9a9F
-         T7vl4P1JeaSI1hbzoQRMedzSvu8k1krAwhkmY6qzwDBEN3aK7pKrJhjpubaiXHM7asZd
-         hUP/jFBV+w1btF4XlicC7tx/M+ghUUaxpb/GsTQ28FDGveyry5q5x55UyPhzBQkYG8vh
-         lXD9soKf/RDzlV8WHKEdKryrSDvX2kxeuBzH9kWEPB/R8lRcouGxiemxOy73Lxkf5iZb
-         V3tQ==
-X-Gm-Message-State: AOJu0YyZ61knBahylU6JpLOb8kE2VL/RMgLW8+8LbKeHV1753k0IoYwg
-        TEvzolPLg6sFc09prImEBDL+ISGwsTB4MLZ7kF4exycrTXL9
-X-Google-Smtp-Source: AGHT+IG5G/gy7FPq8z2yQ3mxRB49IuyO6/EAl5gAkXTkeB2b2rnQ1Q5GoLgo+el6LPTkV9OUFgyTk+sYi6q/PAqQGTKuxpqh4VN3
+        d=1e100.net; s=20221208; t=1693699825; x=1694304625;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yFEmQ5kXTPv/inXJCJuXQh0sse6fWjwxLcH/69wCU2A=;
+        b=iPuAgVN/cW2BsSld23Iff2jmTCUHlytNAb1gVyLw/ajkQLWkKhiEd9ykaNeFWEbgU1
+         tcxLoOPayHutf6VAEHzVJhkVJYBpTSLnl6owql+eg31C0ihyqOGojCjOhKRFqwqZahi/
+         Pyc9bwBZD+rSDnprKSAEMGjqjJmj1KkSiiLgL6no++aNoHFnfOBTeOpcyV8LnPeDd0oG
+         +b/pQQpcInfL8SnFPqoQlIChmyWknkC72GIaSN5JV1GsmBjFp+evoylJly1RObACS4fJ
+         d2DKGUiaePXv7Ta9f/Pnp83KwT6jgXlA83vK7mkkIJcLbZbcLUxlYuemPaQ3u0wDxKgU
+         4rZQ==
+X-Gm-Message-State: AOJu0Yy2pClQhVswEdz8LY7Tfy7w1nrdSsW4sr+gYWuqCzCU7xvoQ/ci
+        RbJ9pBBDQPqWvb0dwfi1b6e7A/ekJyrfXc5ZghWIbQ==
+X-Google-Smtp-Source: AGHT+IEOmuXCm8JpDX8x7VbtsPFVgZ7bN6WpGy/rT/Z2VfD1BjviniJqmhx1rCmQUt8GoNIA+FU0izXJWXZQzp2AfUs=
+X-Received: by 2002:a2e:95d7:0:b0:2bc:e330:660b with SMTP id
+ y23-20020a2e95d7000000b002bce330660bmr4401290ljh.9.1693699825007; Sat, 02 Sep
+ 2023 17:10:25 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:fd92:b0:262:f6f4:7173 with SMTP id
- cx18-20020a17090afd9200b00262f6f47173mr1569195pjb.5.1693699658062; Sat, 02
- Sep 2023 17:07:38 -0700 (PDT)
-Date:   Sat, 02 Sep 2023 17:07:37 -0700
-In-Reply-To: <20230902234444.5249-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000079a09a0604692e94@google.com>
-Subject: Re: [syzbot] [afs?] KASAN: slab-use-after-free Read in afs_dynroot_test_super
-From:   syzbot <syzbot+629c4f1a4cefe03f8985@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20230831012257.1189964-1-joel@joelfernandes.org>
+ <b292cca4-d451-4371-ae2e-9417e0079e84@paulmck-laptop> <CAEXW_YRa0Gd2Gt8LagAyOp_8VwT+ra3N4+DBquUNn_Xmo8o7eg@mail.gmail.com>
+ <7bd77573-ded1-432e-8008-4c1cbe1b9eb9@paulmck-laptop> <CAEXW_YTzP90zs8z4UFC52fd_KMkpBba6ujBNnDM5Z6exskJ6tg@mail.gmail.com>
+ <e0977773-de90-42bb-a67d-dc16d24764a3@paulmck-laptop>
+In-Reply-To: <e0977773-de90-42bb-a67d-dc16d24764a3@paulmck-laptop>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 2 Sep 2023 20:10:13 -0400
+Message-ID: <CAEXW_YSukJ_SSvy731iF9WZ5N9cycHsfzdz+8MKA4Va+1+FW4A@mail.gmail.com>
+Subject: Re: [PATCH] rcu/torture: Improve badness extraction from console logs
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>, rcu@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Sep 2, 2023 at 3:24=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
+> wrote:
+>
+[...]
+> > > Either way, what I don't want is many megabytes of splats from consol=
+e.log
+> > > duplicated into console.log.diags, especially in those (admittedly sa=
+d)
+> > > cases where the console.log file is the largest file in the results
+> > > directory.  Are you really going to be reading carefully after (say)
+> > > the fifth splat?  ;-)
+> >
+> > I could limit it to just the first 5, with the existing unlimited
+> > summary at the top.
+>
+> How about limiting the existing summary to (say) 10 lines?  I do not
+> recall every caring about more than that.  The only reason that I did
+> not ever limit it myself is that the summary is unlikely to be more than
+> a few percent of the full console.log.
+>
+> > Let me know if that works or does not work for you. :-)
+>
+> I do believe that we might be converging.  ;-)
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Ok, so 10 lines of summary (similar to existing), and 10 detailed
+splats below that :-).  If that's not Ok, let me know. Otherwise I
+will send the new patch soon. Thanks!
 
-Reported-and-tested-by: syzbot+629c4f1a4cefe03f8985@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         1c59d383 Merge tag 'linux-kselftest-nolibc-6.6-rc1' of..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1049eb67a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4940ad7c14cda5c7
-dashboard link: https://syzkaller.appspot.com/bug?extid=629c4f1a4cefe03f8985
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14e85198680000
-
-Note: testing is done by a robot and is best-effort only.
+ - Joel
