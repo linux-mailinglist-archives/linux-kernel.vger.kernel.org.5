@@ -2,57 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 676E8790CA2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE25790CA5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243127AbjICPIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 11:08:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
+        id S243006AbjICPIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 11:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243123AbjICPIb (ORCPT
+        with ESMTP id S243164AbjICPIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 11:08:31 -0400
-Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A5B116
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:08:24 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id coi3qCr0AbNd0coi4qbqwR; Sun, 03 Sep 2023 17:08:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693753703;
-        bh=3vbBQKPo4LJHiDDNu1Lpt1WO/D8AzSItjWjmWe5gbq8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=hpsDbBq0hKZCwQat/ZIqq9w4sx53uM36YjYqIk+2GzJJnrbYsApNAK6K376YZMh3Y
-         YridCz3gFWp99me5kiRpM16zf2tf34HZ36JkGtxfTHRa1D1vh2XMPJy5u8EtwO16gO
-         Yn2lXRujKdf5NwRv4+ELdOABRCwznCAfk+ClZB4b85aPxetGtTJdubXx/8D+lYVV50
-         5PNFxk55viO4pR6TjXvvEb2ortM6IId3uWUMgOKGho1dsj2uCVJ8OuafX4i0ouPeuZ
-         SrXDiuvpDBYtfW8jPB/SEOU7K/mRTYhhNHnLdqogvBwp3CraKUGNEFDuWNEn4vR+ma
-         VXSZagSubZefA==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 03 Sep 2023 17:08:23 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <6014901d-8fe6-9e80-171e-a1017cc9e0f9@wanadoo.fr>
-Date:   Sun, 3 Sep 2023 17:08:19 +0200
+        Sun, 3 Sep 2023 11:08:35 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CCA191;
+        Sun,  3 Sep 2023 08:08:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1693753706;
+        bh=RCuVmw2doT+mJqByggiPBISZb3OAuFmYisdF/qK8jOY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LlR04yTjfO6FVWRaZvHh83B68SSI1/VyjJhZg1md3eztAJUq4aMh8O6qqJAX+MTPb
+         2e1cMmtBxQAaTFm4+Kp5eYluelWO7ET7W3Oga67HPL1yq/3F02b+JLWBhkQmZ3+I+M
+         0gP3EZkQ28ZMqMbaNKAGrbwBxDAVzOQanUb5j6Qs=
+Date:   Sun, 3 Sep 2023 17:08:25 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     Douglas Gilbert <dgilbert@interlog.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+Subject: Re: [PATCH v4] hwmon: add POWER-Z driver
+Message-ID: <2743f7d5-9e8d-4a61-ba4a-d47bf26b6f62@t-8ch.de>
+References: <20230902-powerz-v4-1-7ec2c1440687@weissschuh.net>
+ <36a3daf7-d519-7669-13bf-4c59c11c2b97@wanadoo.fr>
+ <46d3194a-af79-4076-b0a2-561d713a406e@t-8ch.de>
+ <2776f856-94e4-1481-508a-db80db573be0@roeck-us.net>
+ <290ebce4-54f0-8ac1-2a13-cbc806d80d64@interlog.com>
+ <9151ab86-305e-9bb3-ee46-bfa8fd998c12@roeck-us.net>
+ <7910a5e5-04f3-f585-e42d-4a0d7aa45f9d@interlog.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ALSA: scarlett2: Fix a potential memory leak in
- scarlett2_init_notify()
-Content-Language: fr, en-US
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     "Geoffrey D. Bennett" <g@b4.vu>, Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
-References: <73aab53d53df156a5df2bc61314ff26448526749.1693744859.git.christophe.jaillet@wanadoo.fr>
- <87zg23l4bn.wl-tiwai@suse.de>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <87zg23l4bn.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+In-Reply-To: <7910a5e5-04f3-f585-e42d-4a0d7aa45f9d@interlog.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,53 +52,98 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/09/2023 à 16:27, Takashi Iwai a écrit :
-> On Sun, 03 Sep 2023 14:41:45 +0200,
-> Christophe JAILLET wrote:
->>
->> If kmalloc() fails, we should release 'mixer->urb'.
+On 2023-09-03 10:54:06-0400, Douglas Gilbert wrote:
+> On 2023-09-03 07:46, Guenter Roeck wrote:
+> > On 9/2/23 22:54, Douglas Gilbert wrote:
+> > > On 2023-09-02 18:56, Guenter Roeck wrote:
+> > > > On 9/2/23 15:29, Thomas Weißschuh wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > On 2023-09-02 18:36:17+0200, Christophe JAILLET wrote:
+> > > > > > Le 02/09/2023 à 09:47, Thomas Weißschuh a écrit :
+> > > > > > > POWER-Z is a series of devices to monitor power characteristics of
+> > > > > > > USB-C connections and display those on a on-device display.
+> > > > > > > Some of the devices, notably KM002C and KM003C, contain an additional
+> > > > > > > port which exposes the measurements via USB.
+> > > > > > > 
+> > > > > > > This is a driver for this monitor port.
+> > > > > > > 
+> > > > > > > It was developed and tested with the KM003C.
+> > > > > > > 
+> > > > > > > Signed-off-by: Thomas Weißschuh
+> > > > > > > <linux-9XfqOkM5JgxKQ7RDE2T8Pw@public.gmane.org>
+> > > > > > > ---
+> > > > > > 
+> > > > > > ...
+> > > > > > 
+> > > > > > > +static int powerz_probe(struct usb_interface *intf,
+> > > > > > > +            const struct usb_device_id *id)
+> > > > > > > +{
+> > > > > > > +    struct powerz_priv *priv;
+> > > > > > > +    struct device *hwmon_dev;
+> > > > > > > +    struct device *parent;
+> > > > > > > +
+> > > > > > > +    parent = &intf->dev;
+> > > > > > > +
+> > > > > > > +    priv = devm_kzalloc(parent, sizeof(*priv), GFP_KERNEL);
+> > > > > > > +    if (!priv)
+> > > > > > > +        return -ENOMEM;
+> > > > > > > +
+> > > > > > > +    priv->urb = usb_alloc_urb(0, GFP_KERNEL);
+> > > > > > > +    if (!priv->urb)
+> > > > > > > +        return -ENOMEM;
+> > > > > > > +    mutex_init(&priv->mutex);
+> > > > > > > +    priv->status = -ETIMEDOUT;
+> > > > > > > +    init_completion(&priv->completion);
+> > > > > > > +
+> > > > > > > +    hwmon_dev =
+> > > > > > > +        devm_hwmon_device_register_with_info(parent, DRIVER_NAME, priv,
+> > > > > > > +                         &powerz_chip_info, NULL);
+> > > > > > > +    usb_set_intfdata(intf, priv);
+> > > > > > > +
+> > > > > > > +    return PTR_ERR_OR_ZERO(hwmon_dev);
+> > > > > > 
+> > > > > > Hi,
+> > > > > > 
+> > > > > > If 'hwmon_dev' is an PTR_ERR, priv->urb leaks.
+> > > > > 
+> > > > > Good catch, thanks!
+> > > > > 
+> > > > > 
+> > > > > Guenter,
+> > > > > 
+> > > > > it seems the new hwmon-next with this driver has not yet been pushed to
+> > > > > git.kernel.org, so I can't generate the Fixes tag.
+> > > > > 
+> > > > 
+> > > > Rule is that I must not push anything into linux-next until
+> > > > after v6.6-rc1 has been released.
+> > > > 
+> > > > > Can you modify the commit to also contain the changes below?
+> > > > > Or let me know if you prefer something else.
+> > > > > 
+> > > > 
+> > > > I'll update the patch and make the change.
+> > > 
+> > > Hi,
+> > > While you are at it, you can make the driver detect the earlier model KM002C:
+> > > 
+> > 
+> > Please send a separate patch to do that.
 > 
-> This is released at the common error path in mixer.c,
-> snd_usb_mixer_free(), hence it's not needed.
+> That would be easier if I could see a git repository with the powerz driver
+> in it. Looking at:
+>    https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git/
+> 
+> or is there another url to use?
 
-Agreed, sorry for the noise.
+As mentioned by Guenter above this can only be pushed after 6.6-rc1 is
+released which should be next weekend.
 
-CJ
+So let's wait until then. If you want I can take care of submitting the
+KM002C patch when it's time.
 
-> 
-> And, even if freeing here, you must NULL-clear mixer->urb, too;
-> otherwise it'll lead to double-free.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
->>
->> Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   sound/usb/mixer_scarlett_gen2.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
->> index 9d11bb08667e..a439c7f64b2e 100644
->> --- a/sound/usb/mixer_scarlett_gen2.c
->> +++ b/sound/usb/mixer_scarlett_gen2.c
->> @@ -4060,8 +4060,10 @@ static int scarlett2_init_notify(struct usb_mixer_interface *mixer)
->>   		return -ENOMEM;
->>   
->>   	transfer_buffer = kmalloc(private->wMaxPacketSize, GFP_KERNEL);
->> -	if (!transfer_buffer)
->> +	if (!transfer_buffer) {
->> +		usb_free_urb(mixer->urb);
->>   		return -ENOMEM;
->> +	}
->>   
->>   	usb_fill_int_urb(mixer->urb, dev, pipe,
->>   			 transfer_buffer, private->wMaxPacketSize,
->> -- 
->> 2.34.1
->>
-> 
+Thanks for your testing!
 
+
+Thomas
