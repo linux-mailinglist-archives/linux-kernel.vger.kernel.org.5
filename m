@@ -2,103 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA1F790DED
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C855F790DFD
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235956AbjICUnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 16:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
+        id S1347982AbjICUxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 16:53:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbjICUnJ (ORCPT
+        with ESMTP id S232874AbjICUxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 16:43:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA39103
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 13:43:06 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-286-_YuK4C4IP2q1PYjAxiCTSA-1; Sun, 03 Sep 2023 21:43:03 +0100
-X-MC-Unique: _YuK4C4IP2q1PYjAxiCTSA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 3 Sep
- 2023 21:42:55 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Sun, 3 Sep 2023 21:42:55 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Mateusz Guzik' <mjguzik@gmail.com>
-CC:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>
-Subject: RE: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-Thread-Topic: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-Thread-Index: AQHZ23Vdq8Esj5k0zUGYupOb09r6RrAF7nHAgAAb1ICAABQQEA==
-Date:   Sun, 3 Sep 2023 20:42:55 +0000
-Message-ID: <9a5dd401bf154a0aace0e5f781a3580c@AcuMS.aculab.com>
-References: <20230830140315.2666490-1-mjguzik@gmail.com>
- <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
- <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
-In-Reply-To: <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 3 Sep 2023 16:53:15 -0400
+Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E63F106
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 13:53:12 -0700 (PDT)
+X-isilmar-external: YES
+X-isilmar-external: YES
+Received: from shine.dominikbrodowski.net (shine.brodo.linta [10.2.0.112])
+        by isilmar-4.linta.de (Postfix) with ESMTPSA id 4F1CB200053;
+        Sun,  3 Sep 2023 20:45:10 +0000 (UTC)
+Received: by shine.dominikbrodowski.net (Postfix, from userid 1000)
+        id 38DB9A008B; Sun,  3 Sep 2023 22:43:59 +0200 (CEST)
+Date:   Sun, 3 Sep 2023 22:43:59 +0200
+From:   Dominik Brodowski <linux@dominikbrodowski.net>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] pcmcia: ds: fix refcount leak in pcmcia_device_add()
+Message-ID: <ZPTwD3UX3I34VLbb@shine.dominikbrodowski.net>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221112092924.3608240-2-yangyingliang@huawei.com>
+ <20221112092924.3608240-1-yangyingliang@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li4uDQo+IFdoZW4gSSB3YXMgcGxheWluZyB3aXRoIHRoaXMgc3R1ZmYgYWJvdXQgNSB5ZWFycyBh
-Z28gSSBmb3VuZCAzMi1ieXRlDQo+IGxvb3BzIHRvIGJlIG9wdGltYWwgZm9yIHVhcmNocyBvZiB0
-aGUgcHJpb2QgKFNreWxha2UsIEJyb2Fkd2VsbCwNCj4gSGFzd2VsbCBhbmQgc28gb24pLCBidXQg
-b25seSB1cCB0byBhIHBvaW50IHdoZXJlIHJlcCB3aW5zLg0KDQpEb2VzIHRoZSAncmVwIG1vdnNx
-JyBldmVyIGFjdHVhbGx5IHdpbj8NCihVbmxlc3MgeW91IGZpbmQgb25lIG9mIHRoZSBFTVJTIChv
-ciBzaW1pbGFyKSB2ZXJzaW9ucy4pDQpJSVJDIGl0IG9ubHkgZXZlciBkb2VzIG9uZSBpdGVyYXRp
-b24gcGVyIGNsb2NrIC0gYW5kIHlvdQ0Kc2hvdWxkIGJlIGFibGUgdG8gbWF0Y2ggdGhhdCB3aXRo
-IGEgY2FyZWZ1bGx5IGNvbnN0cnVjdGVkIGxvb3AuDQoNCk1hbnkgeWVhcnMgYWdvIEkgZ290IG15
-IEF0aGxvbi03MDAgdG8gZXhlY3V0ZSBhIGNvcHkgbG9vcA0KYXMgZmFzdCBhcyAncmVwIG1vdnMn
-IC0gYnV0IHRoZSBzZXR1cCB0aW1lcyB3ZXJlIGxvbmdlci4NCg0KVGhlIGtpbGxlciBmb3IgJ3Jl
-cCBtb3ZzJyBzZXR1cCB3YXMgYWx3YXlzIFA0LW5ldGJ1cnN0IC0gb3ZlciA0MCBjbG9ja3MuDQpC
-dXQgSSB0aGluayBzb21lIG9mIHRoZSBtb3JlIHJlY2VudCBjcHUgYXJlIHN0aWxsIGluIGRvdWJs
-ZSBmaWd1cmVzDQooYXBhcnQgZnJvbSBzb21lIG9wdGltaXNlZCBjb3BpZXMpLg0KU28gSSdtIG5v
-dCBhY3R1YWxseSBzdXJlIHlvdSBzaG91bGQgZXZlciBuZWVkIHRvIHN3aXRjaA0KdG8gYSAncmVw
-IG1vdnNxJyBsb29wIC0gYnV0IEkndmUgbm90IHRyaWVkIHRvIHdyaXRlIGl0Lg0KDQpJIGRpZCBo
-YXZlIHRvIHVucm9sbCB0aGUgaXAtY2tzdW0gbG9vcCA0IHRpbWVzIChhcyk6DQorICAgICAgIGFz
-bSggICAgIiAgICAgICBidCAgICAkNCwgJVtsZW5dXG4iDQorICAgICAgICAgICAgICAgIiAgICAg
-ICBqbmMgICAxMGZcbiINCisgICAgICAgICAgICAgICAiICAgICAgIGFkZCAgICglW2J1ZmZdLCAl
-W2xlbl0pLCAlW3N1bV8wXVxuIg0KKyAgICAgICAgICAgICAgICIgICAgICAgYWRjICAgOCglW2J1
-ZmZdLCAlW2xlbl0pLCAlW3N1bV8xXVxuIg0KKyAgICAgICAgICAgICAgICIgICAgICAgbGVhICAg
-MTYoJVtsZW5dKSwgJVtsZW5dXG4iDQorICAgICAgICAgICAgICAgIjEwOiAgICBqZWN4eiAyMGZc
-biIgICAvLyAlW2xlbl0gaXMgJXJjeA0KKyAgICAgICAgICAgICAgICIgICAgICAgYWRjICAgKCVb
-YnVmZl0sICVbbGVuXSksICVbc3VtXzBdXG4iDQorICAgICAgICAgICAgICAgIiAgICAgICBhZGMg
-ICA4KCVbYnVmZl0sICVbbGVuXSksICVbc3VtXzFdXG4iDQorICAgICAgICAgICAgICAgIiAgICAg
-ICBsZWEgICAzMiglW2xlbl0pLCAlW2xlbl90bXBdXG4iDQorICAgICAgICAgICAgICAgIiAgICAg
-ICBhZGMgICAxNiglW2J1ZmZdLCAlW2xlbl0pLCAlW3N1bV8wXVxuIg0KKyAgICAgICAgICAgICAg
-ICIgICAgICAgYWRjICAgMjQoJVtidWZmXSwgJVtsZW5dKSwgJVtzdW1fMV1cbiINCisgICAgICAg
-ICAgICAgICAiICAgICAgIG1vdiAgICVbbGVuX3RtcF0sICVbbGVuXVxuIg0KKyAgICAgICAgICAg
-ICAgICIgICAgICAgam1wICAgMTBiXG4iDQorICAgICAgICAgICAgICAgIjIwOiAgICBhZGMgICAl
-W3N1bV8wXSwgJVtzdW1dXG4iDQorICAgICAgICAgICAgICAgIiAgICAgICBhZGMgICAlW3N1bV8x
-XSwgJVtzdW1dXG4iDQorICAgICAgICAgICAgICAgIiAgICAgICBhZGMgICAkMCwgJVtzdW1dXG4i
-DQpJbiBvcmRlciB0byBnZXQgb25lIGFkYyBldmVyeSBjbG9jay4NCkJ1dCBvbmx5IGJlY2F1c2Ug
-b2YgdGhlIHN0cmFuZ2UgbG9vcCByZXF1aXJlZCB0byAnbG9vcCBjYXJyeScgdGhlDQpjYXJyeSBm
-bGFnICh0aGUgJ2xvb3AnIGluc3RydWN0aW9uIGlzIE9LIG9uIEFNRCBjcHUsIGJ1dCBub3Qgb24g
-SW50ZWwuKQ0KQSBzaW1pbGFyIGxvb3AgdXNpbmcgYWRveCBhbmQgYWRjeCB3aWxsIGJlYXQgb25l
-IHJlYWQvY2xvY2sNCnByb3ZpZGVkIGl0IGlzIHVucm9sbGVkIGFnYWluLg0KKElJUkMgSSBnb3Qg
-dG8gYWJvdXQgMTIgYnl0ZXMvY2xvY2suKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
-ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
-MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Hi,
 
+Am Sat, Nov 12, 2022 at 05:29:23PM +0800 schrieb Yang Yingliang:
+> If device_register() returns error, the refcount of function_config
+> need be put.
+> 
+> Fixes: 360b65b95bae ("[PATCH] pcmcia: make config_t independent, add reference counting")
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+> ---
+>  drivers/pcmcia/ds.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pcmcia/ds.c b/drivers/pcmcia/ds.c
+> index ace133b9f7d4..7d3258a1f8f8 100644
+> --- a/drivers/pcmcia/ds.c
+> +++ b/drivers/pcmcia/ds.c
+> @@ -574,10 +574,12 @@ static struct pcmcia_device *pcmcia_device_add(struct pcmcia_socket *s,
+>  	pcmcia_device_query(p_dev);
+>  
+>  	if (device_register(&p_dev->dev))
+> -		goto err_unreg;
+> +		goto err_put_ref;
+>  
+>  	return p_dev;
+>  
+> + err_put_ref:
+> +	kref_put(&p_dev->function_config->ref, pcmcia_release_function);
+>   err_unreg:
+>  	mutex_lock(&s->ops_mutex);
+>  	list_del(&p_dev->socket_device_list);
+> -- 
+> 2.25.1
+> 
+
+Indeed, there's a reference leak here in this failure path. However, you
+rightly note in your subsequent patch:
+
+Am Sat, Nov 12, 2022 at 05:29:24PM +0800 schrieb Yang Yingliang:
+> As comment of device_register() says, it should use put_device() to
+> give up the reference in the error path, some resources is going to
+> freed in pcmcia_release_dev(), so don't use error label, just return
+> NULL after calling put_device().
+
+Therefore, I'd suggest to combine both things:
+
+
+From: Yang Yingliang <yangyingliang@huawei.com>
+Subject: [PATCH] pcmcia: ds: fix refcount leak in pcmcia_device_add()
+
+As the comment of device_register() says, it should use put_device()
+to give up the reference in the error path. Then, insofar resources
+will be freed in pcmcia_release_dev(), the error path is no longer
+needed. In particular, this means that the (previously missing) dropping
+of the reference to &p_dev->function_config->ref is now handled by
+pcmcia_release_dev().
+
+Fixes: 360b65b95bae ("[PATCH] pcmcia: make config_t independent, add reference counting")
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+[linux@dominikbrodowski.net: simplification, commit message rewrite]
+Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
+
+diff --git a/drivers/pcmcia/ds.c b/drivers/pcmcia/ds.c
+index d500e5dbbc3f..c90c68dee1e4 100644
+--- a/drivers/pcmcia/ds.c
++++ b/drivers/pcmcia/ds.c
+@@ -573,8 +573,14 @@ static struct pcmcia_device *pcmcia_device_add(struct pcmcia_socket *s,
+ 
+ 	pcmcia_device_query(p_dev);
+ 
+-	if (device_register(&p_dev->dev))
+-		goto err_unreg;
++	if (device_register(&p_dev->dev)) {
++		mutex_lock(&s->ops_mutex);
++		list_del(&p_dev->socket_device_list);
++		s->device_count--;
++		mutex_unlock(&s->ops_mutex);
++		put_device(&p_dev->dev);
++		return NULL;
++	}
+ 
+ 	return p_dev;
+ 
+
+
+
+What do you think?
+
+Best,
+	Dominik
