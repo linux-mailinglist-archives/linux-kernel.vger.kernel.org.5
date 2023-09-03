@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A90D790DE1
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D48D790DE6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:35:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347752AbjICUXp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 16:23:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
+        id S1346410AbjICUfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 16:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232437AbjICUXo (ORCPT
+        with ESMTP id S232437AbjICUfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 16:23:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6BBF7;
-        Sun,  3 Sep 2023 13:23:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8867460BEF;
-        Sun,  3 Sep 2023 20:23:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BCADC433C8;
-        Sun,  3 Sep 2023 20:23:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693772620;
-        bh=dGeWDYffGXpYdRIjbzwkZnHNen8yfRyoIpJPK7mrlhg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bmU7K7ryj4099spbk1nlKsJGrrwvu4a/0ZewREUVQM+JubSpMcHS0qUj1Nkm9HC5o
-         W2d7dRcCMOvZV5TTe4+AMNxD6aIgST2SUeFSq1Mt48Mv4/nEmsRJ6GBnRoJnAcomwj
-         ka8BAfJJf2I6CtiTRaZjNu2HeRZFt+H2G9ku7JfZ2E5+dgiLnmel0jxkzHHzCCVXcU
-         Xjm/jLj8YuB6wYcVW4B1sH0QSLoIyF+XKMzVmZW8bFATS5Ga3StVNrjz+3pXoiX9eo
-         m/blwEZR4ZCqVyPOWe8jIVZu9eVG7Dnqkczd+HSlcT8XmNpyEGaoeI61ne0w/S/zhq
-         vXpEBs1ErC1Iw==
-Date:   Sun, 3 Sep 2023 22:23:36 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Katya Orlova <e.orlova@ispras.ru>
-Cc:     Sylwester Nawrocki <sylvester.nawrocki@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] media: s3c-camif: Avoid inappropriate kfree()
-Message-ID: <20230903202336.qjdg6zw6otig2qdv@zenone.zhora.eu>
-References: <20230824090725.28148-1-e.orlova@ispras.ru>
+        Sun, 3 Sep 2023 16:35:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6930B7
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 13:35:19 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-78-CzOjeswJO8yAAEC46q-vxw-1; Sun, 03 Sep 2023 21:35:15 +0100
+X-MC-Unique: CzOjeswJO8yAAEC46q-vxw-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 3 Sep
+ 2023 21:35:07 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 3 Sep 2023 21:35:07 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Ammar Faizi' <ammarfaizi2@gnuweeb.org>,
+        Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>
+CC:     Willy Tarreau <w@1wt.eu>,
+        =?utf-8?B?VGhvbWFzIFdlacOfc2NodWg=?= <linux@weissschuh.net>,
+        Nicholas Rosenberg <inori@vnlx.org>,
+        "Michael William Jonathan" <moe@gnuweeb.org>,
+        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC PATCH v2 1/4] tools/nolibc: x86-64: Use `rep movsb` for
+ `memcpy()` and `memmove()`
+Thread-Topic: [RFC PATCH v2 1/4] tools/nolibc: x86-64: Use `rep movsb` for
+ `memcpy()` and `memmove()`
+Thread-Index: AQHZ3ZooSNK38KJqFk6RryGRuLBUqLAJj8Bw
+Date:   Sun, 3 Sep 2023 20:35:06 +0000
+Message-ID: <0f885fa14710453c9512315d6cfeee35@AcuMS.aculab.com>
+References: <20230902055045.2138405-1-ammarfaizi2@gnuweeb.org>
+ <20230902055045.2138405-2-ammarfaizi2@gnuweeb.org>
+ <CAOG64qNw+ZovcC4+5Sqsvi-m=wyoe47eb5K4KAdbO5hcp8ipAA@mail.gmail.com>
+ <ZPLR+mO/6/V7wjAJ@biznet-home.integral.gnuweeb.org>
+ <20230902062237.GA23141@1wt.eu>
+ <ZPLYRENvjAub3wq5@biznet-home.integral.gnuweeb.org>
+ <CAOG64qOuAfHREhcsC3THmhvH+NjhZRJtxp8gG39NosdhbZQvLA@mail.gmail.com>
+ <4459ed19-f603-b4f6-392e-4e1322e06d56@gnuweeb.org>
+In-Reply-To: <4459ed19-f603-b4f6-392e-4e1322e06d56@gnuweeb.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230824090725.28148-1-e.orlova@ispras.ru>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Katya,
+RnJvbTogQW1tYXIgRmFpemkNCj4gU2VudDogMDIgU2VwdGVtYmVyIDIwMjMgMTM6MzcNCj4gT24g
+MjAyMy8wOS8wMiDljYjlvow3OjI5LCBBbHZpcm8gSXNrYW5kYXIgU2V0aWF3YW4gd3JvdGU6DQo+
+ID4gT24gU2F0LCBTZXAgMiwgMjAyMyBhdCAxOjM44oCvUE0gQW1tYXIgRmFpemkgd3JvdGU6DQo+
+ID4+IE9rLCBJJ2xsIGRvIHRoYXQuDQo+ID4NCj4gPiBBbm90aGVyIG1pY3JvLW9wdGltaXphdGlv
+bi4gU2luY2UgdGhlIGxpa2VseSBjYXNlIGlzIHRoZSBmb3J3YXJkIGNvcHksDQo+ID4gbWFrZSBp
+dCB0aGUgY2FzZSB0aGF0IGRvZXNuJ3QgdGFrZSB0aGUganVtcC4NCj4gPg0KPiA+IFBzZXVkbyBD
+Og0KPiA+IGlmICh1bmxpa2VseShkc3QgLSBzcmMgPCBuKSkNCj4gPiAgICAgICAgICBiYWNrd2Fy
+ZF9jb3B5KCk7DQo+ID4gZWxzZQ0KPiA+ICAgICAgICAgIGZvcndhcmRfY29weSgpOw0KPiANCj4g
+UG9pbnQgdGFrZW4uDQoNCkkgYmVsaWV2ZSBpdCBtYWtlcyBhbG1vc3Qgbm8gZGlmZmVyZW5jZS4N
+CkknbSBzdXJlIEkgcmVhZCB0aGF0IG1vZGVybiAoSW50ZWwgYXQgbGVhc3QpIGNwdSBuZXZlciBk
+bw0Kc3RhdGljIGJyYW5jaCBwcmVkaWN0aW9uLg0KU28gJ2NvbGQgY2FjaGUnIHRoZXJlIGlzIDUw
+JSBjaGFuY2Ugb2YgdGhlIGJyYW5jaCBiZWluZyB0YWtlbi4NCk5vdGhpbmcgdGhlIGNvbXBpbGVy
+IGNhbiBkbyB3aWxsIGFmZmVjdCBpdC4NCk9UT0ggaGF2aW5nDQoJaWYgKGxpa2VseShkc3QgLSBz
+cmMgPj0gbikpDQoJCWZvcndhcmRzKCk7DQoJZWxzZQ0KCQliYWNrd2FyZHMoKTsNCihhbmQgaW4g
+dGhhdCBvcmRlcikgcHJvYmFibHkgbWFrZXMgdGhlIGNvZGUgYSBiaXQgZWFzaWVyIHRvIHJlYWQu
+DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9h
+ZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBO
+bzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-On Thu, Aug 24, 2023 at 12:07:25PM +0300, Katya Orlova wrote:
-> s3c_camif_register_video_node() works with video_device structure stored
-> as a field of camif_vp,
-> so it should not be kfreed. But there is video_device_release() on error
-> path that do it.
-
-that's correct, the video_device is allocated with the camif_dev
-allocation.
-
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: babde1c243b2 ("[media] V4L: Add driver for S3C24XX/S3C64XX SoC series camera interface")
-> Signed-off-by: Katya Orlova <e.orlova@ispras.ru>
-> ---
->  drivers/media/platform/samsung/s3c-camif/camif-capture.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/samsung/s3c-camif/camif-capture.c b/drivers/media/platform/samsung/s3c-camif/camif-capture.c
-> index 76634d242b10..79c8ee845c38 100644
-> --- a/drivers/media/platform/samsung/s3c-camif/camif-capture.c
-> +++ b/drivers/media/platform/samsung/s3c-camif/camif-capture.c
-> @@ -1172,7 +1172,6 @@ int s3c_camif_register_video_node(struct camif_dev *camif, int idx)
->  err_me_cleanup:
->  	media_entity_cleanup(&vfd->entity);
->  err_vd_rel:
-> -	video_device_release(vfd);
-
-The best fix, though, is to completely get rid of the
-"err_vd_rel" goto label. You mind doint that on a v2?
-
-Thanks,
-Andi
-
->  	return ret;
->  }
->  
-> -- 
-> 2.30.2
-> 
