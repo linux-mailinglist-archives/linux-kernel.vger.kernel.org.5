@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD137790E45
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710AF790E4B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:42:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348902AbjICVl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 17:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59254 "EHLO
+        id S1348965AbjICVl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 17:41:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348545AbjICVl4 (ORCPT
+        with ESMTP id S1348906AbjICVl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 17:41:56 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE4C7CC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:41:52 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-500760b296aso1010956e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:41:52 -0700 (PDT)
+        Sun, 3 Sep 2023 17:41:57 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C76FE5
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:41:53 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id 2adb3069b0e04-500bdef7167so2085888e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:41:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693777311; x=1694382111; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=V8+6hRoyuo0w27wr7qjZ8oFHPY2yc7kx8FAgPsdCc/g=;
-        b=bgdLT3RL/PMlpcAJWfPMgES7q8a9vMHTyWNLFVnLJl+4e/lH9W6yce7u3a0JnCqW6T
-         azCjfaNmXgpam0zH6DCqVi4Mv5xf7W6OEhWSvZ8i4qxl5cSJF1L7iuLhkEqNxB56YGkf
-         xKLzSio0Ote9+ZVg3I2VqVs9Q5L5auDt5DUdji/htfRVILW1kfZu22f/UKC4aD4OF+y6
-         lZ6vvqQoZRWK/mqfUgpNfJnwK4J6csWT/KEah1S1mpsyrlZf4Zv1GLiZBruPC6Y7m6N0
-         anLA8K7ajBT8RDhYraGdnkW4Tdzyxvqze/QxtFYbAZo+vzzrgS+nqOFLpHQAAvpLZJt0
-         /x6Q==
+        d=linaro.org; s=google; t=1693777312; x=1694382112; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GmanXIAkjDsl+T2r62TPHvRC1u8K+rB0oi8RTwEBesA=;
+        b=xJaeyPxHFUdk6qhXVl9pcYwGIj6ry212IshkgrOmUj8Bpt76gTqX0EVkMPzv92CxBS
+         /IhjvH5xnYEh/XXSKV58i57VQ5FmNCr3kkNkaJze34nn/Bzwwlgn2FaOYXzuZA/nZM1i
+         G5ntCFOlvmedXZ/pM5Zwdq9lKeImg+wpNUQrLDN/HQ8WBL9Q1quW+/3Uh6ldZFo7kQie
+         DhjPGSx0zL3hKimS08w0KfGPgdLvG6TbWS+f3oJz7BusF2FJq0UMNmYA98k6HMNe8MAl
+         J9b5wxVt7bccJM1U4RmlhuVPBvpTgujRq82kTQ7kXcykveAYquERpExSxMtiGOQNQTGX
+         mEsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693777311; x=1694382111;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V8+6hRoyuo0w27wr7qjZ8oFHPY2yc7kx8FAgPsdCc/g=;
-        b=cCcOQWccCa485AwqPg7SX14JnW7GdkolHTomQnZIDn0wyK3ldVvmQHTUYPiM5IqLjQ
-         02Tkz5T8nDhhE0ykdm2JX3Gtdj9SpS7SLOC6KJnsR3Pk6sntFiR1UlcxuVCHx/4n/VzY
-         /r0YkqYZXzDwD+WWRvNhMhySbUZ3QUFnV+hSmSafgfzJN77U3tkYLe+00OP8UBX+GbWM
-         UI/WB6APfDTO0RFf/Aa/Zupni33OixEQ3zXRGdn6bFTATmaJPCsbYDPWnWzvtqADCjFV
-         gHYl4Mw61sQSB91G7xuZ1mVovxKVyThFN5cgJXX6pajtJdXSL6SFtIgIzRnUWWfB5mPi
-         gjLA==
-X-Gm-Message-State: AOJu0YzZMOjpKBqrTfyVmCQbfr2C27Ql5sgi7QHk7Ziw/gevHB9zzLIu
-        glzZ5NSXiweCiZJN2AM0AyXYFw==
-X-Google-Smtp-Source: AGHT+IGtFPj/i132V84gFgb+9UX2XVd1+6zrpeCc6Tu4V8tR6EXyMighkqxBy2CLmJBokzxnUP+RZQ==
-X-Received: by 2002:ac2:498d:0:b0:500:91f6:f129 with SMTP id f13-20020ac2498d000000b0050091f6f129mr2178545lfl.26.1693777311128;
+        d=1e100.net; s=20221208; t=1693777312; x=1694382112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GmanXIAkjDsl+T2r62TPHvRC1u8K+rB0oi8RTwEBesA=;
+        b=hYJUULHLtsLw2dms3gWG4fPafjFC2FDU0uGKCk2paBXvB73dmFOcvySzrDedDhuHfj
+         k3w2KTMtUJN3MSFYsMa13N/BBko+E/8dD1dbDU/KaquBmyRITOSv4thrgabHl85qjGEF
+         /b24CIpgAZkiaYMidtoQaRipVEhKrI9DUufofUXChPxM3yGoB82LEh6vOPHJvdg6NIpY
+         XrZ03tTi7SMrQalRSmhSG2ra29WSKduAcJnt9j5LvI1LtxwSimCYjDzk8SJoJdSnDrC/
+         vsGze+BhT/JYs5rCtzn6r5T1WoKC7DEs8wNw81qtu1gDOqnNYE9gymEMGfwv3WVzvK2Z
+         a2vg==
+X-Gm-Message-State: AOJu0Yw1AcIntg9c5rYLJbgROOZaCNWZdzHsOZqa+ZqoHw7dlw0TL4rf
+        ZLiXf9L6YbMjZtn2vi0s+UBt+w==
+X-Google-Smtp-Source: AGHT+IEGo/yjWy7nXfptqRFFQBffjwaXXQ9l9Ri/i3/adG+D2/r7RCm9m7rFgxFD5xaJpRnQWqoXxw==
+X-Received: by 2002:a05:6512:2215:b0:500:bf44:b2b3 with SMTP id h21-20020a056512221500b00500bf44b2b3mr2690899lfu.21.1693777311904;
         Sun, 03 Sep 2023 14:41:51 -0700 (PDT)
 Received: from umbar.unikie.fi ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id x17-20020ac25dd1000000b004f8555f7aa1sm1422506lfq.52.2023.09.03.14.41.50
+        by smtp.gmail.com with ESMTPSA id x17-20020ac25dd1000000b004f8555f7aa1sm1422506lfq.52.2023.09.03.14.41.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 14:41:50 -0700 (PDT)
+        Sun, 03 Sep 2023 14:41:51 -0700 (PDT)
 From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
@@ -70,11 +71,13 @@ To:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
         linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        freedreno@lists.freedesktop.org
-Subject: [RFC PATCH v1 00/12] drm,usb/typec: uABI for USB-C DisplayPort connectors
-Date:   Mon,  4 Sep 2023 00:41:38 +0300
-Message-Id: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
+        freedreno@lists.freedesktop.org, Won Chung <wonchung@google.com>
+Subject: [RFC PATCH v1 01/12] Revert "drm/sysfs: Link DRM connectors to corresponding Type-C connectors"
+Date:   Mon,  4 Sep 2023 00:41:39 +0300
+Message-Id: <20230903214150.2877023-2-dmitry.baryshkov@linaro.org>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
+References: <20230903214150.2877023-1-dmitry.baryshkov@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -86,57 +89,183 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During the discussion regarding DisplayPort wrapped in the USB-C
-connectors (via the USB-C altmode) it was pointed out that currently
-there is no good way to let userspace know if the DRM connector in
-question is the 'native' DP connector or if it is the USB-C connector.
+The kdev->fwnode pointer is never set in drm_sysfs_connector_add(), so
+dev_fwnode() checks never succeed, making the respective commit NOP.
 
-An attempt to use DRM_MODE_CONNECTOR_USB for such connectors was
-declined, as existing DP drivers (i915, AMD) use
-DRM_MODE_CONNECTOR_DisplayPort. New drivers should behave in the same
-way.
+And if drm_sysfs_connector_add() is modified to set kdev->fwnode, it
+breaks drivers already using components (as it was pointed at [1]),
+resulting in a deadlock. Lockdep trace is provided below.
 
-An attempt to use subconnector property was also declined. It is defined
-to the type of the DP dongle connector rather than the host connector.
+Granted these two issues, it seems impractical to fix this commit in any
+sane way. Revert it instead.
 
-This attempt targets reusing the connector's PATH property. Currently
-this property is only used for the DP MST connectors. This patchset
-reuses it to point out to the corresponding registered typec port
-device.
+[1] https://lore.kernel.org/dri-devel/Y24bcYJKGy%2Fgd5fV@phenom.ffwll.local/
 
-Dmitry Baryshkov (12):
-  Revert "drm/sysfs: Link DRM connectors to corresponding Type-C
-    connectors"
-  drm/sysfs: link DRM connector device to the connector's fw nodes
-  drm/connector: extend PATH property to covert Type-C case
-  drm/bridge-connector: set the PATH property for the connector
-  drm/bridge: remove conditionals around devicetree pointers
-  soc: qcom: pmic_glink_altmode: fix DRM connector type
-  soc: qcom: pmic_glink_altmode: report that this is a Type-C connector
-  usb: typec: support generating Type-C port names for userspace
-  usb: typec: tcpm: support generating Type-C port names for userspace
-  usb: typec: qcom: implement proper error path in probe()
-  usb: typec: qcom: extract DRM bridge functionality to separate file
-  usb: typec: qcom: define the bridge's path
+============================================
+WARNING: possible recursive locking detected
+6.5.0-rc6-next-20230816-10542-g090e2ca9feae-dirty #713 Tainted: G        W
+--------------------------------------------
+kworker/u16:0/11 is trying to acquire lock:
+ffffce0f54bea490 (component_mutex){+.+.}-{3:3}, at: __component_add+0x64/0x170
 
- drivers/gpu/drm/bridge/panel.c                |  2 -
- drivers/gpu/drm/drm_bridge_connector.c        | 14 ++++-
- drivers/gpu/drm/drm_connector.c               | 10 +++-
- drivers/gpu/drm/drm_sysfs.c                   | 42 +-------------
- drivers/soc/qcom/pmic_glink_altmode.c         |  3 +-
- drivers/usb/typec/class.c                     | 14 +++++
- drivers/usb/typec/tcpm/qcom/Makefile          |  4 ++
- drivers/usb/typec/tcpm/qcom/qcom_pmic_typec.c | 56 ++++++-------------
- .../usb/typec/tcpm/qcom/qcom_pmic_typec_drm.c | 40 +++++++++++++
- .../usb/typec/tcpm/qcom/qcom_pmic_typec_drm.h | 22 ++++++++
- drivers/usb/typec/tcpm/tcpm.c                 | 14 +++++
- include/drm/drm_bridge.h                      |  9 ++-
- include/linux/usb/tcpm.h                      |  2 +
- include/linux/usb/typec.h                     |  2 +
- 14 files changed, 146 insertions(+), 88 deletions(-)
- create mode 100644 drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.c
- create mode 100644 drivers/usb/typec/tcpm/qcom/qcom_pmic_typec_drm.h
+but task is already holding lock:
+ffffce0f54bea490 (component_mutex){+.+.}-{3:3}, at: __component_add+0x64/0x170
 
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(component_mutex);
+  lock(component_mutex);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+6 locks held by kworker/u16:0/11:
+ #0: ffff5b7680008d38 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x14c/0x51c
+ #1: ffff8000800abde0 (deferred_probe_work){+.+.}-{0:0}, at: process_one_work+0x14c/0x51c
+ #2: ffff5b76837a2908 (&dev->mutex){....}-{3:3}, at: __device_attach+0x38/0x188
+ #3: ffffce0f54bea490 (component_mutex){+.+.}-{3:3}, at: __component_add+0x64/0x170
+ #4: ffffce0f54bdeb40 (drm_connector_list_iter){.+.+}-{0:0}, at: drm_modeset_register_all+0x80/0x9c
+ #5: ffff5b76866ad0d0 (&connector->mutex){+.+.}-{3:3}, at: drm_connector_register.part.0+0x28/0x104
+
+stack backtrace:
+CPU: 6 PID: 11 Comm: kworker/u16:0 Tainted: G        W          6.5.0-rc6-next-20230816-10542-g090e2ca9feae-dirty #713
+Hardware name: Qualcomm Technologies, Inc. Robotics RB5 (DT)
+Workqueue: events_unbound deferred_probe_work_func
+Call trace:
+ dump_backtrace+0x98/0xf0
+ show_stack+0x18/0x24
+ dump_stack_lvl+0x60/0xac
+ dump_stack+0x18/0x24
+ print_deadlock_bug+0x254/0x340
+ __lock_acquire+0x105c/0x1ebc
+ lock_acquire+0x1ec/0x314
+ __lock_acquire+0x105c/0x1ebc
+ lock_acquire+0x1ec/0x314
+ __mutex_lock+0xa0/0x77c
+ mutex_lock_nested+0x24/0x30
+ __component_add+0x64/0x170
+ component_add+0x14/0x20
+ drm_sysfs_connector_add+0x144/0x1a0
+ drm_connector_register.part.0+0x5c/0x104
+ drm_connector_register_all+0x84/0x160
+ drm_modeset_register_all+0x80/0x9c
+ drm_dev_register+0x120/0x238
+ msm_drm_bind+0x550/0x6e0
+ try_to_bring_up_aggregate_device+0x164/0x1d0
+ __component_add+0xa8/0x170
+ component_add+0x14/0x20
+ dsi_dev_attach+0x20/0x2c
+ dsi_host_attach+0x9c/0x144
+ devm_mipi_dsi_attach+0x34/0xb4
+ lt9611uxc_attach_dsi.isra.0+0x84/0xfc
+ lt9611uxc_probe+0x5ac/0x66c
+ i2c_device_probe+0x148/0x290
+ really_probe+0x148/0x2ac
+ __driver_probe_device+0x78/0x12c
+ driver_probe_device+0x3c/0x160
+ __device_attach_driver+0xb8/0x138
+ bus_for_each_drv+0x80/0xdc
+ __device_attach+0x9c/0x188
+ device_initial_probe+0x14/0x20
+ bus_probe_device+0xac/0xb0
+ deferred_probe_work_func+0x8c/0xc8
+ process_one_work+0x1ec/0x51c
+ worker_thread+0x1ec/0x3e4
+ kthread+0x120/0x124
+ ret_from_fork+0x10/0x20
+
+Fixes: c5c51b242062 ("drm/sysfs: Link DRM connectors to corresponding Type-C connectors")
+Cc: Won Chung <wonchung@google.com>
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+---
+ drivers/gpu/drm/drm_sysfs.c | 40 -------------------------------------
+ 1 file changed, 40 deletions(-)
+
+diff --git a/drivers/gpu/drm/drm_sysfs.c b/drivers/gpu/drm/drm_sysfs.c
+index b169b3e44a92..06662cc8d3f4 100644
+--- a/drivers/gpu/drm/drm_sysfs.c
++++ b/drivers/gpu/drm/drm_sysfs.c
+@@ -11,14 +11,12 @@
+  */
+ 
+ #include <linux/acpi.h>
+-#include <linux/component.h>
+ #include <linux/device.h>
+ #include <linux/err.h>
+ #include <linux/export.h>
+ #include <linux/gfp.h>
+ #include <linux/i2c.h>
+ #include <linux/kdev_t.h>
+-#include <linux/property.h>
+ #include <linux/slab.h>
+ 
+ #include <drm/drm_accel.h>
+@@ -98,34 +96,6 @@ static char *drm_devnode(const struct device *dev, umode_t *mode)
+ 	return kasprintf(GFP_KERNEL, "dri/%s", dev_name(dev));
+ }
+ 
+-static int typec_connector_bind(struct device *dev,
+-				struct device *typec_connector, void *data)
+-{
+-	int ret;
+-
+-	ret = sysfs_create_link(&dev->kobj, &typec_connector->kobj, "typec_connector");
+-	if (ret)
+-		return ret;
+-
+-	ret = sysfs_create_link(&typec_connector->kobj, &dev->kobj, "drm_connector");
+-	if (ret)
+-		sysfs_remove_link(&dev->kobj, "typec_connector");
+-
+-	return ret;
+-}
+-
+-static void typec_connector_unbind(struct device *dev,
+-				   struct device *typec_connector, void *data)
+-{
+-	sysfs_remove_link(&typec_connector->kobj, "drm_connector");
+-	sysfs_remove_link(&dev->kobj, "typec_connector");
+-}
+-
+-static const struct component_ops typec_connector_ops = {
+-	.bind = typec_connector_bind,
+-	.unbind = typec_connector_unbind,
+-};
+-
+ static CLASS_ATTR_STRING(version, S_IRUGO, "drm 1.1.0 20060810");
+ 
+ /**
+@@ -394,16 +364,9 @@ int drm_sysfs_connector_add(struct drm_connector *connector)
+ 
+ 	connector->kdev = kdev;
+ 
+-	if (dev_fwnode(kdev)) {
+-		r = component_add(kdev, &typec_connector_ops);
+-		if (r)
+-			drm_err(dev, "failed to add component to create link to typec connector\n");
+-	}
+-
+ 	if (connector->ddc)
+ 		return sysfs_create_link(&connector->kdev->kobj,
+ 				 &connector->ddc->dev.kobj, "ddc");
+-
+ 	return 0;
+ 
+ err_free:
+@@ -419,9 +382,6 @@ void drm_sysfs_connector_remove(struct drm_connector *connector)
+ 	if (connector->ddc)
+ 		sysfs_remove_link(&connector->kdev->kobj, "ddc");
+ 
+-	if (dev_fwnode(connector->kdev))
+-		component_del(connector->kdev, &typec_connector_ops);
+-
+ 	DRM_DEBUG("removing \"%s\" from sysfs\n",
+ 		  connector->name);
+ 
 -- 
 2.39.2
 
