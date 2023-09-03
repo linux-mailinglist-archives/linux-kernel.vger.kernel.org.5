@@ -2,80 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03ADE790B10
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 08:25:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D68E4790B25
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 09:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236000AbjICGZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 02:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39480 "EHLO
+        id S232605AbjICHlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 03:41:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235837AbjICGZa (ORCPT
+        with ESMTP id S231276AbjICHlu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 02:25:30 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 834BF1B8;
-        Sat,  2 Sep 2023 23:25:27 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qcgY2-0002sn-0k; Sun, 03 Sep 2023 08:25:26 +0200
-Message-ID: <862c9034-6e81-1780-31a3-3bee5f0d3dc7@leemhuis.info>
-Date:   Sun, 3 Sep 2023 08:25:25 +0200
+        Sun, 3 Sep 2023 03:41:50 -0400
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DA0124;
+        Sun,  3 Sep 2023 00:41:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1693726905;
+        bh=iv1pLLc+v8+kime8HKgyY+vHVntfdfZAs7FRY9OE20I=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=hBOHXo9TLbOATfk0TiEL83BU5xf4IrWX9OpF0NI8y57gn2kNZM/AkvHYI6yuKfWIu
+         hoYJWDlBCAf3+BTbvd6gYE6HXTO+ORtmUHGulDBzW7BojMD3WpPTWU+UzMhhMIqSfp
+         TozoRFHnsjS0juiZVaJiXr3RDwijnIUZTpbVkvzY=
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id BB5A9128178D;
+        Sun,  3 Sep 2023 03:41:45 -0400 (EDT)
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+ by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavis, port 10024)
+ with ESMTP id gnRfFe011lwK; Sun,  3 Sep 2023 03:41:45 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1693726905;
+        bh=iv1pLLc+v8+kime8HKgyY+vHVntfdfZAs7FRY9OE20I=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=hBOHXo9TLbOATfk0TiEL83BU5xf4IrWX9OpF0NI8y57gn2kNZM/AkvHYI6yuKfWIu
+         hoYJWDlBCAf3+BTbvd6gYE6HXTO+ORtmUHGulDBzW7BojMD3WpPTWU+UzMhhMIqSfp
+         TozoRFHnsjS0juiZVaJiXr3RDwijnIUZTpbVkvzY=
+Received: from [IPv6:2a00:23c8:1005:a801:e95:68ca:9caa:7c8c] (unknown [IPv6:2a00:23c8:1005:a801:e95:68ca:9caa:7c8c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 2D9811280E00;
+        Sun,  3 Sep 2023 03:41:43 -0400 (EDT)
+Message-ID: <2740c0e76e3feffbd43956d342c1805082396c99.camel@HansenPartnership.com>
+Subject: Re: [GIT PULL] first round of SCSI updates for the 6.4+ merge window
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sun, 03 Sep 2023 08:41:41 +0100
+In-Reply-To: <CAHk-=wgA6CBwnJ02H+vSgneKPcPRP0BWQ-Kx2Re1B56Y2hXkFQ@mail.gmail.com>
+References: <6908480e8808a2d025926f2ff1f9a2468d1b6bb9.camel@HansenPartnership.com>
+         <CAHk-=wgA6CBwnJ02H+vSgneKPcPRP0BWQ-Kx2Re1B56Y2hXkFQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: mainline build failure due to 501126083855 ("fbdev/g364fb: Use
- fbdev I/O helpers")
-Content-Language: en-US, de-DE
-To:     "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-Cc:     linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, regressions@lists.linux.dev
-References: <ZPDgdGBbxrTl+m2s@debian>
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <ZPDgdGBbxrTl+m2s@debian>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693722327;db72876b;
-X-HE-SMSGID: 1qcgY2-0002sn-0k
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux kernel regression
-tracking. See link in footer if these mails annoy you.]
+On Sat, 2023-09-02 at 12:08 -0700, Linus Torvalds wrote:
+> On Sat, 2 Sept 2023 at 00:39, James Bottomley
+> <James.Bottomley@hansenpartnership.com> wrote:
+> > 
+> > Updates to the usual drivers (ufs, lpfc, qla2xxx, mpi3mr, libsas)
+> > and the usual minor updates and bug fixes but no significant core
+> > changes.
+> 
+> Removing 3000+ lines for UFS HPB support wasn't even worth
+> mentioning?
 
-On 31.08.23 20:48, Sudip Mukherjee (Codethink) wrote:
-> Hi All,
-> 
-> The latest mainline kernel branch fails to build mips jazz_defconfig with
-> the error:
-> 
-> drivers/video/fbdev/g364fb.c:115:9: error: 'FB_DEFAULT_IOMEM_HELPERS' undeclared here (not in a function); did you mean 'FB_DEFAULT_IOMEM_OPS'?
->   115 |         FB_DEFAULT_IOMEM_HELPERS,
->       |         ^~~~~~~~~~~~~~~~~~~~~~~~
->       |         FB_DEFAULT_IOMEM_OPS
-> 
-> 
-> git bisect pointed to 501126083855 ("fbdev/g364fb: Use fbdev I/O helpers").
-> 
-> Reverting the commit has fixed the build failure.
-> 
-> I will be happy to test any patch or provide any extra log if needed.
-> 
-> #regzbot introduced: 5011260838551cefbf23d60b48c3243b6d5530a2
-> 
+Sorry, my bias is showing.  I always thought HPB was a useless
+marketing feature and was against including it, so removing it is just
+the world going back to being more correct.  To be honest, I also
+didn't think you cared at all about UFS ...
 
-#regzbot fix: 8df0f84c3bb921f5aa1036223dd932bbc7df6d
-#regzbot ignore-activity
+> I am happy to see it gone, and maybe as a technology it was a failure
+> not worth it, but as a "we gave up on it as being worthless" might
+> still have been worth a word or two..
+> 
+> Sadly, I see from the commit message that apparently the next stage
+> is going to involve zoned storage. Now *there* is a technology that
+> seems to be a complete failure, brought to us by the same kind of
+> failed hardware people who tried to convince us that we should care
+> about 64kB pages in SSD's.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Well, we put HPB in in spite of most of us thinking it was a bad idea
+because there was a tiny chance it might work and it could be yanked
+out if it didn't.  There's no reason not to extend the same courtesy to
+zoned storage.
+
+> Oh well. With enough thrust, even a pig will fly. I suspect that's
+> the motivating factor behind all those zoned storage things too.
+
+That's why RFC1925 exists, yes ...
+
+James
 
