@@ -2,177 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B60F790DD2
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:55:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3240790DD6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242482AbjICTzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 15:55:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60200 "EHLO
+        id S1346254AbjICUEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 16:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232584AbjICTzE (ORCPT
+        with ESMTP id S1345287AbjICUEL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 15:55:04 -0400
-Received: from mail-pf1-f208.google.com (mail-pf1-f208.google.com [209.85.210.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5662E6
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:55:00 -0700 (PDT)
-Received: by mail-pf1-f208.google.com with SMTP id d2e1a72fcca58-68bec4380edso888930b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 12:55:00 -0700 (PDT)
+        Sun, 3 Sep 2023 16:04:11 -0400
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3887BE6;
+        Sun,  3 Sep 2023 13:04:08 -0700 (PDT)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-5734f54dc44so486205eaf.2;
+        Sun, 03 Sep 2023 13:04:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693771447; x=1694376247; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zX3AzJic2Izz2acT/1bp9YSDponx6RBKZ/4ZjmOxVMs=;
+        b=mzPkYMLAHP34jtFFlzfqk2cUgsWkccgXJWp4y7KEBcoChdNkYYTN4wWR03Bp11ibCu
+         f0aYqbpPUSIWznWLb0+4ZrA1micEORx5XBMIh3/vtR1hFiLU4yuHIotpOitaxgF7Xy9S
+         oDJzoCF6oyxEth27K13XHWj784tEfYq3ICWRsB9hDAmybVpjmpkYpDJ9ljH+5JSYmce2
+         Pa8iVy2AhT8nyxm7WMbpsfQYbBMzhajkwR2i2g0nvy/EwZxK2vsAnj5IqJaHOuN+pUYn
+         6BHe9ATBKcKDBR+mKyEjwtXN4O+CuuzqrjAqtFwH4eVMt3yUFOfe7rLUZi9dYIBmnaHw
+         0pIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693770900; x=1694375700;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=uWa3iwwkzdPY4YildIzHGcIx9uOwREDiHAagNULjXhs=;
-        b=ZM0+ZDKkHgqYBHBk5X/zoeIe3m8VkY0PoaFIikPmbHjdjMHB0+ZjlKQ3Ib2fdJ/Abq
-         TUvcJE2dMznuXIIzbh+vErFFC1rSHTFnPXqEKqWoYkQmQ2W3/yCfWG2IEZnwpvhWDdJr
-         gVZkhyCSr57/K5eGyZ+p6Cp7GC+StFp+ocA1m/bTAaH2WP84vHU4sgXWNWlqJ9Kk0TMy
-         z9HAlWLFkWzPaDEy99NphQd/Fpn2dwHMUQOwqnsjti1wbDYAk1WNwutlcGqo6DeWhbE6
-         jVcEaao0EBPIzkR7SwXkLb5HkIAFVuANC04zcFokI6xgdZSlyC7yPmG9fA9nC0g8T+uI
-         Ovaw==
-X-Gm-Message-State: AOJu0YxxnncShLI1VHjpYS5CRjf/qmX6q2L+EXAw2mY8irum9Y65MBGC
-        UM+8hXQc+85auqTB8y/yeZfCHIaIy5z18jhKVJOKcJE4c4HL
-X-Google-Smtp-Source: AGHT+IEkIjg2R/lH3aIeSKcj8ZfWkzZLtK0sefjowJVjw++uev0i4Xd3oKIQOd84JTflLcP94YlaiBFNWxE7ewL0Qeag+qvpqhvf
+        d=1e100.net; s=20221208; t=1693771447; x=1694376247;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zX3AzJic2Izz2acT/1bp9YSDponx6RBKZ/4ZjmOxVMs=;
+        b=fdLrhMBUpzoCO7H86it1koWJgXXLCH7cyuWB+fJ9efO2QkyJhuQoxF7JTUYOcpOfRe
+         hbKanIkbrWoAzFpOi5ozRcMo1veNvJmKo0DM/bwj3e36JjdnkKiTQIjmoaWIBj5j8PNQ
+         /9YJwX8aHWDNugO5Q0S63S+byy50KNhHbZ/crGcyUtX1rAMQR8krxQyXTX4MPAUDxs4a
+         XoIPjta4wAUSv4IB2JOEbhKbxXXTfl4GysXk2LtkwPJU3N5II7ZLNHL/I7gRt8CZlfOt
+         5O2K1uxdvC+ybkx2/U2lnd/9rCE9RcxxT334EKMiLu53Bh2B/qtqWvh77kUozWEWe3ic
+         /m5A==
+X-Gm-Message-State: AOJu0Yw9hDZIh3c/dkQuQzIFSVodmRQ8PkRuLDsLzz/Ew4Vgcg3DlZKc
+        Naah0NHX0ZxZFZ5g6CyjFt2wRgVhNaDy79DZOik=
+X-Google-Smtp-Source: AGHT+IFY1pYAblEmbuDvdSbIK3zG0tGDYtFoM79VWvTFxb93OuwYyFQxoNod6QXj1VYkN5jfuhthzzvwV4nSrJuzGww=
+X-Received: by 2002:a05:6870:e2d4:b0:1c8:c313:3e0f with SMTP id
+ w20-20020a056870e2d400b001c8c3133e0fmr9152210oad.32.1693771447373; Sun, 03
+ Sep 2023 13:04:07 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:4c11:b0:68a:6787:8413 with SMTP id
- ea17-20020a056a004c1100b0068a67878413mr2744479pfb.3.1693770900403; Sun, 03
- Sep 2023 12:55:00 -0700 (PDT)
-Date:   Sun, 03 Sep 2023 12:55:00 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d97f3c060479c4f8@google.com>
-Subject: [syzbot] [bpf?] general protection fault in bpf_prog_offload_verifier_prep
-From:   syzbot <syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
-        daniel@iogearbox.net, davem@davemloft.net, haoluo@google.com,
-        hawk@kernel.org, john.fastabend@gmail.com, jolsa@kernel.org,
-        kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
-        song@kernel.org, syzkaller-bugs@googlegroups.com,
-        yonghong.song@linux.dev
+Received: by 2002:a8a:60c:0:b0:4f0:1250:dd51 with HTTP; Sun, 3 Sep 2023
+ 13:04:06 -0700 (PDT)
+In-Reply-To: <20230903195155.GM3390869@ZenIV>
+References: <000000000000e6432a06046c96a5@google.com> <ZPQYyMBFmqrfqafL@dread.disaster.area>
+ <20230903083357.75mq5l43gakuc2z7@f> <20230903180126.GL3390869@ZenIV>
+ <CAGudoHHjnRct1jEAjNSHmmPt9u_y+tYhrb56uRKXez8DKydNaQ@mail.gmail.com> <20230903195155.GM3390869@ZenIV>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Sun, 3 Sep 2023 22:04:06 +0200
+Message-ID: <CAGudoHGJsKqDWtp-7SmM9FRni+xBY98odAROxOifFR-4PpmJWQ@mail.gmail.com>
+Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
+To:     Al Viro <viro@zeniv.linux.org.uk>,
+        Aleksandr Nogikh <nogikh@google.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>,
+        brauner@kernel.org, djwong@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 9/3/23, Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Sun, Sep 03, 2023 at 08:57:23PM +0200, Mateusz Guzik wrote:
+>
+>> This does not dump backtraces, just a list of tasks + some stats.
+>>
+>> The closest to useful here I found are 'w' ("Dumps tasks that are in
+>> uninterruptable (blocked) state.") and 'l' ("Shows a stack backtrace
+>> for all active CPUs."), both of which can miss the task which matters
+>> (e.g., stuck in a very much *interruptible* state with f_pos_lock
+>> held).
+>>
+>> Unless someone can point at a way to get all these stacks, I'm going
+>> to hack something up in the upcoming week, if only for immediate
+>> syzbot usage.
+>
+> Huh?  Sample of output here:
+> 2023-09-03T15:34:36.271833-04:00 duke kernel: [87367.574459] task:ssh-agent
+>      state:S stack:0     pid:3949  ppid:3947   flags:0x
+> 00000002
+> 2023-09-03T15:34:36.284796-04:00 duke kernel: [87367.582848] Call Trace:
+> 2023-09-03T15:34:36.284797-04:00 duke kernel: [87367.585306]  <TASK>
+> 2023-09-03T15:34:36.284797-04:00 duke kernel: [87367.587423]
+> __schedule+0x222/0x630
+> 2023-09-03T15:34:36.291459-04:00 duke kernel: [87367.590932]
+> schedule+0x4b/0x90
+> 2023-09-03T15:34:36.291460-04:00 duke kernel: [87367.594086]
+> schedule_hrtimeout_range_clock+0xb1/0x110
+> 2023-09-03T15:34:36.300477-04:00 duke kernel: [87367.599245]  ?
+> __hrtimer_init+0xf0/0xf0
+> 2023-09-03T15:34:36.300477-04:00 duke kernel: [87367.603103]
+> do_sys_poll+0x489/0x580
+> 2023-09-03T15:34:36.308971-04:00 duke kernel: [87367.606702]  ?
+> _raw_spin_unlock_irqrestore+0x9/0x20
+> 2023-09-03T15:34:36.308972-04:00 duke kernel: [87367.611598]  ?
+> __alloc_pages+0x111/0x1a0
+> 2023-09-03T15:34:36.317380-04:00 duke kernel: [87367.615544]  ?
+> select_task_rq_fair+0x1c8/0xf70
+> 2023-09-03T15:34:36.317381-04:00 duke kernel: [87367.620006]  ?
+> _raw_spin_unlock+0x5/0x10
+> 2023-09-03T15:34:36.325273-04:00 duke kernel: [87367.623953]  ?
+> sched_clock_cpu+0x1c/0xd0
+> 2023-09-03T15:34:36.325274-04:00 duke kernel: [87367.627899]  ?
+> default_send_IPI_single_phys+0x21/0x30
+> 2023-09-03T15:34:36.334812-04:00 duke kernel: [87367.632977]  ?
+> ttwu_queue_wakelist+0x109/0x110
+> 2023-09-03T15:34:36.334813-04:00 duke kernel: [87367.637439]  ?
+> _raw_spin_unlock_irqrestore+0x9/0x20
+> 2023-09-03T15:34:36.343753-04:00 duke kernel: [87367.642344]  ?
+> try_to_wake_up+0x1eb/0x300
+> 2023-09-03T15:34:36.343754-04:00 duke kernel: [87367.646380]  ?
+> __pollwait+0x110/0x110
+> 2023-09-03T15:34:36.351376-04:00 duke kernel: [87367.650063]  ?
+> _raw_spin_unlock+0x5/0x10
+> 2023-09-03T15:34:36.351377-04:00 duke kernel: [87367.654001]  ?
+> unix_stream_read_generic+0x528/0xa90
+> 2023-09-03T15:34:36.361179-04:00 duke kernel: [87367.658906]  ?
+> _raw_spin_unlock_irqrestore+0x9/0x20
+> 2023-09-03T15:34:36.361180-04:00 duke kernel: [87367.663805]  ?
+> _raw_spin_unlock_irqrestore+0x9/0x20
+> 2023-09-03T15:34:36.370988-04:00 duke kernel: [87367.668708]  ?
+> __inode_wait_for_writeback+0x68/0xc0
+> 2023-09-03T15:34:36.370989-04:00 duke kernel: [87367.673614]  ?
+> fsnotify_grab_connector+0x49/0x90
+> 2023-09-03T15:34:36.380274-04:00 duke kernel: [87367.678258]  ?
+> fsnotify_destroy_marks+0x11/0x140
+> 2023-09-03T15:34:36.380275-04:00 duke kernel: [87367.682901]  ?
+> enqueue_task_fair+0x211/0x5f0
+> 2023-09-03T15:34:36.389726-04:00 duke kernel: [87367.687196]  ?
+> __rseq_handle_notify_resume+0x2b4/0x3a0
+> 2023-09-03T15:34:36.389728-04:00 duke kernel: [87367.692353]  ?
+> recalibrate_cpu_khz+0x10/0x10
+> 2023-09-03T15:34:36.397884-04:00 duke kernel: [87367.696651]  ?
+> ktime_get_ts64+0x47/0xe0
+> 2023-09-03T15:34:36.397885-04:00 duke kernel: [87367.700509]
+> __x64_sys_poll+0x93/0x120
+> 2023-09-03T15:34:36.405254-04:00 duke kernel: [87367.704282]
+> do_syscall_64+0x42/0x90
+> 2023-09-03T15:34:36.405255-04:00 duke kernel: [87367.707880]
+> entry_SYSCALL_64_after_hwframe+0x4b/0xb5
+> 2023-09-03T15:34:36.413922-04:00 duke kernel: [87367.712959] RIP:
+> 0033:0x7f451858f000
+> 2023-09-03T15:34:36.413923-04:00 duke kernel: [87367.716548] RSP:
+> 002b:00007ffd799cece8 EFLAGS: 00000202 ORIG_RAX: 0000000000000007
+> 2023-09-03T15:34:36.428692-04:00 duke kernel: [87367.724154] RAX:
+> ffffffffffffffda RBX: 00000000000001b0 RCX: 00007f451858f000
+> 2023-09-03T15:34:36.428692-04:00 duke kernel: [87367.731317] RDX:
+> 0000000000002710 RSI: 0000000000000001 RDI: 00005596fc603190
+> 2023-09-03T15:34:36.443022-04:00 duke kernel: [87367.738485] RBP:
+> 0000000000000001 R08: 0000000000000000 R09: 0000000000000000
+> 2023-09-03T15:34:36.443023-04:00 duke kernel: [87367.745649] R10:
+> 0000000000000000 R11: 0000000000000202 R12: 0000000000000000
+> 2023-09-03T15:34:36.457354-04:00 duke kernel: [87367.752818] R13:
+> 0000000000000001 R14: 000000000000000a R15: 00005596fc603190
+> 2023-09-03T15:34:36.457355-04:00 duke kernel: [87367.759981]  </TASK>
+>
+> Looks like a stack trace to me; seeing one of the callers of fdget_pos()
+> in that would tell you who's currently holding *some* ->f_pos_lock.
+>
+> That - on 6.1.42, with fairly bland .config (minimal debugging;
+> I need that box for fast builds, among other things).  Enable
+> lockdep and you'll get who's holding which logs in addition
+> to those stack traces...
+>
 
-syzbot found the following issue on:
+That's my bad, the only content which survived for me in terminal
+buffer was a spew for the scheduler and a ps-like task list.
+Stacktraces are indeed there. Sorry for the noise on this one. I
+verified stack dumps are not gated by any defines either btw, so it's
+all good on this front.
 
-HEAD commit:    fa09bc40b21a igb: disable virtualization features on 82580
-git tree:       net
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13382fa8680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
-dashboard link: https://syzkaller.appspot.com/bug?extid=291100dcb32190ec02a8
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1529c448680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15db0248680000
+All this brainos aside, I added Aleksandr Nogikh to To: in my previous
+e-mail. From short poking around I found he was responsive to some
+queries concerning Linux vs syzbot and I figured would a good person
+to ask.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7ab461d84992/disk-fa09bc40.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/3ac6d43ab2db/vmlinux-fa09bc40.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/778d096a134e/bzImage-fa09bc40.xz
+So, Aleksandr, tl;dr would it be a problem to add the 't' sysrq to
+syzbot in order to dump backtraces from all threads? Either break t
+over a serial port or t written to /proc/sysrq-trigger. Lack of this
+info blocks progress on the issue reported here
+(https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+291100dcb32190ec02a8@syzkaller.appspotmail.com
-
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 5055 Comm: syz-executor625 Not tainted 6.5.0-syzkaller-04012-gfa09bc40b21a #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:bpf_prog_offload_verifier_prep+0xaa/0x170 kernel/bpf/offload.c:295
-Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 10 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
-RSP: 0018:ffffc900039ff7f8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffc9000156e000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81a8cf76 RDI: ffff888021b25f10
-RBP: ffff888021b25f00 R08: 0000000000000001 R09: fffffbfff195203d
-R10: ffffffff8ca901ef R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000005 R14: 0000000000000003 R15: ffffc9000156e060
-FS:  0000555556071380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000100 CR3: 0000000022f6b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- bpf_check+0x52f3/0xabd0 kernel/bpf/verifier.c:19762
- bpf_prog_load+0x153a/0x2270 kernel/bpf/syscall.c:2708
- __sys_bpf+0xbb6/0x4e90 kernel/bpf/syscall.c:5335
- __do_sys_bpf kernel/bpf/syscall.c:5439 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5437 [inline]
- __x64_sys_bpf+0x78/0xc0 kernel/bpf/syscall.c:5437
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f7c0df78ea9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 d1 19 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffde3592128 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f7c0df78ea9
-RDX: 0000000000000090 RSI: 0000000020000940 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000100000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:bpf_prog_offload_verifier_prep+0xaa/0x170 kernel/bpf/offload.c:295
-Code: 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 0f 85 a1 00 00 00 48 b8 00 00 00 00 00 fc ff df 4c 8b 65 10 4c 89 e2 48 c1 ea 03 <80> 3c 02 00 0f 85 93 00 00 00 48 b8 00 00 00 00 00 fc ff df 4d 8b
-RSP: 0018:ffffc900039ff7f8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: ffffc9000156e000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff81a8cf76 RDI: ffff888021b25f10
-RBP: ffff888021b25f00 R08: 0000000000000001 R09: fffffbfff195203d
-R10: ffffffff8ca901ef R11: 0000000000000000 R12: 0000000000000000
-R13: 0000000000000005 R14: 0000000000000003 R15: ffffc9000156e060
-FS:  0000555556071380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000100 CR3: 0000000022f6b000 CR4: 00000000003506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 3 bytes skipped:
-   0:	df 48 89             	fisttps -0x77(%rax)
-   3:	fa                   	cli
-   4:	48 c1 ea 03          	shr    $0x3,%rdx
-   8:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1)
-   c:	0f 85 a1 00 00 00    	jne    0xb3
-  12:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  19:	fc ff df
-  1c:	4c 8b 65 10          	mov    0x10(%rbp),%r12
-  20:	4c 89 e2             	mov    %r12,%rdx
-  23:	48 c1 ea 03          	shr    $0x3,%rdx
-* 27:	80 3c 02 00          	cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
-  2b:	0f 85 93 00 00 00    	jne    0xc4
-  31:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
-  38:	fc ff df
-  3b:	4d                   	rex.WRB
-  3c:	8b                   	.byte 0x8b
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Mateusz Guzik <mjguzik gmail.com>
