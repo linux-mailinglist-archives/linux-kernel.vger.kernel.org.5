@@ -2,50 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A944F790C9A
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E9C790C98
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242540AbjICPFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 11:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
+        id S242351AbjICPFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 11:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242177AbjICPFu (ORCPT
+        with ESMTP id S229782AbjICPFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 3 Sep 2023 11:05:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5C111D
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50AF511A
         for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:05:46 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693753544;
+        s=2020; t=1693753545;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=icQ9wplwXFGcBRvKUju0jj68i6Bql/ieQaV0Jbrj9Aw=;
-        b=rDz/ZyLG5cuZRgBnFfp4ok3+sLA7tHvsEO3++amHYi1ZkPllPJeS6F7o9lZ344ihr8bGq9
-        +Uzg+iTGx0bAyIAqNWWnOjNl1yvLn1jMjg8ac37+zlJ1d3IT2SXVJtuxeJOF2Jxy/rbGCr
-        qVpRXVo55VKE5++5CDFiX6jlLYBqG0CSMm3exp72kgTINsLwje8n/YL/NllfGn5I38xLwj
-        Dk6969AdXCdFCcYsvhua7EI0hZHMakVrNOQTkauzzrVd+bj1/NMhC+Agss7ONvC4D6wzNc
-        S7NEe5/SgM5CkZLK5kQllkfCpKvJNKsri5C5PJqhN/UVfzyL7zNDPHzpePCofg==
+        bh=xBRaZ+TuG03wNRILh9l2iuLdaj2YHt+tf5m0T3yqwpg=;
+        b=uL1EPIudwHHMYR6/IwUw1jVHP8AbXR4ZxobZnvHPiaeReJXD5BY/3OR3btmg12mk3KzDYh
+        iaWWUJFCohHRPxSVNUy4qn5RgREaYGYnK9i5C9SFhRnhoSKrbrmVjFLzkOnyGhPV/CMLT/
+        QfBLEfZoWmPa786qsU1CJxFng1xV/1BjmxjDNKhL1Zm0pWNZGZ5vynNLK3J1JsV7yrCnWi
+        YYHBNIHJiiu5C2P9Ug57vk/nIImN5Q9+g/ocRBx9v+3IJMT3VUuN8x6jZ33p63ALqCpgWF
+        9xnX07CjIExP8SabH3MPQWDSrFr5gOU668IR5QaU+0NRYo2/+8ujSwDX2Q16pg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693753544;
+        s=2020e; t=1693753545;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=icQ9wplwXFGcBRvKUju0jj68i6Bql/ieQaV0Jbrj9Aw=;
-        b=4xZf9cJFX1wy5mUy4kzisBWPrbxWOW1geZt7cyNowlki24Tx+y2ksFKCltgwpyGhXQxgYg
-        h6vhAI7HicKHhFAw==
+        bh=xBRaZ+TuG03wNRILh9l2iuLdaj2YHt+tf5m0T3yqwpg=;
+        b=2E1+iy4RBqjks1KLzdHsfvia4Lv+hzW2kZ+A6Wt75UIby8ld9H0a2mnXwxWv+oa1MvLIIw
+        kkvXGyKPxTgIbMBw==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH printk v3 3/7] printk: nbcon: Add buffer management
-Date:   Sun,  3 Sep 2023 17:11:35 +0206
-Message-Id: <20230903150539.245076-4-john.ogness@linutronix.de>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH printk v3 4/7] printk: nbcon: Add ownership state functions
+Date:   Sun,  3 Sep 2023 17:11:36 +0206
+Message-Id: <20230903150539.245076-5-john.ogness@linutronix.de>
 In-Reply-To: <20230903150539.245076-1-john.ogness@linutronix.de>
 References: <20230903150539.245076-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -62,252 +61,161 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-In case of hostile takeovers it must be ensured that the previous
-owner cannot scribble over the output buffer of the emergency/panic
-context. This is achieved by:
+Provide functions that are related to the safe handover mechanism
+and allow console drivers to dynamically specify unsafe regions:
 
- - Adding a global output buffer instance for the panic context.
-   This is the only situation where hostile takeovers can occur and
-   there is always at most 1 panic context.
+ - nbcon_context_can_proceed()
 
- - Allocating an output buffer per console upon console
-   registration. This buffer is used by the console owner when not
-   in panic context.
+   Invoked by a console owner to check whether a handover request
+   is pending or whether the console has been taken over by another
+   context. If a handover request is pending, this function will
+   also perform the handover, thus cancelling its own ownership.
 
- - Choosing the appropriate buffer is handled in the acquire/release
-   functions.
+ - nbcon_context_update_unsafe()
+
+   Invoked by a console owner to denote that the driver is about
+   to enter or leave a critical region where a take over is unsafe.
+   This function is also a cancellation point where loss of
+   ownership can occur.
+
+   The unsafe state is stored in the console state and allows a
+   new context to make informed decisions whether to attempt a
+   takeover of such a console. The unsafe state is also available
+   to the driver so that it can make informed decisions about the
+   required actions and possibly take a special emergency path.
 
 Co-developed-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
 ---
- include/linux/console.h  |  7 +++++++
- kernel/printk/internal.h |  8 ++++++++
- kernel/printk/nbcon.c    | 44 ++++++++++++++++++++++++++++++++++++++--
- kernel/printk/printk.c   | 15 ++++++++------
- 4 files changed, 66 insertions(+), 8 deletions(-)
+ kernel/printk/nbcon.c | 107 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 106 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/console.h b/include/linux/console.h
-index 110e21cf7541..d0bf9abd76b8 100644
---- a/include/linux/console.h
-+++ b/include/linux/console.h
-@@ -237,6 +237,7 @@ enum nbcon_prio {
- };
- 
- struct console;
-+struct printk_buffers;
- 
- /**
-  * struct nbcon_context - Context for console acquire/release
-@@ -247,6 +248,7 @@ struct console;
-  *				be used only with NBCON_PRIO_PANIC @prio. It
-  *				might cause a system freeze when the console
-  *				is used later.
-+ * @pbufs:			Pointer to the text buffer for this context
-  */
- struct nbcon_context {
- 	/* members set by caller */
-@@ -254,6 +256,9 @@ struct nbcon_context {
- 	unsigned int		spinwait_max_us;
- 	enum nbcon_prio		prio;
- 	unsigned int		allow_unsafe_takeover	: 1;
-+
-+	/* members set by acquire */
-+	struct printk_buffers	*pbufs;
- };
- 
- /**
-@@ -277,6 +282,7 @@ struct nbcon_context {
-  * @node:		hlist node for the console list
-  *
-  * @nbcon_state:	State for nbcon consoles
-+ * @pbufs:		Pointer to nbcon private buffer
-  */
- struct console {
- 	char			name[16];
-@@ -299,6 +305,7 @@ struct console {
- 
- 	/* nbcon console specific members */
- 	atomic_t		__private nbcon_state;
-+	struct printk_buffers	*pbufs;
- };
- 
- #ifdef CONFIG_LOCKDEP
-diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
-index 2ca0ab78802c..cb4ea90f04a5 100644
---- a/kernel/printk/internal.h
-+++ b/kernel/printk/internal.h
-@@ -13,6 +13,12 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
- #define printk_sysctl_init() do { } while (0)
- #endif
- 
-+#define con_printk(lvl, con, fmt, ...)				\
-+	printk(lvl pr_fmt("%s%sconsole [%s%d] " fmt),		\
-+		(con->flags & CON_NBCON) ? "" : "legacy ",	\
-+		(con->flags & CON_BOOT) ? "boot" : "",		\
-+		con->name, con->index, ##__VA_ARGS__)
-+
- #ifdef CONFIG_PRINTK
- 
- #ifdef CONFIG_PRINTK_CALLER
-@@ -63,6 +69,7 @@ void defer_console_output(void);
- u16 printk_parse_prefix(const char *text, int *level,
- 			enum printk_info_flags *flags);
- 
-+bool nbcon_alloc(struct console *con);
- void nbcon_init(struct console *con);
- void nbcon_cleanup(struct console *con);
- 
-@@ -81,6 +88,7 @@ void nbcon_cleanup(struct console *con);
- #define printk_safe_exit_irqrestore(flags) local_irq_restore(flags)
- 
- static inline bool printk_percpu_data_ready(void) { return false; }
-+static inline bool nbcon_alloc(struct console *con) { return false; }
- static inline void nbcon_init(struct console *con) { }
- static inline void nbcon_cleanup(struct console *con) { }
- 
 diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index a80567134669..c148467b39b8 100644
+index c148467b39b8..76e39538bdec 100644
 --- a/kernel/printk/nbcon.c
 +++ b/kernel/printk/nbcon.c
-@@ -5,6 +5,7 @@
- #include <linux/kernel.h>
- #include <linux/console.h>
- #include <linux/delay.h>
-+#include <linux/slab.h>
- #include "internal.h"
- /*
-  * Printk console printing implementation for consoles that do not depend on
-@@ -20,6 +21,9 @@
-  * region and aborts the operation if it detects a takeover.
-  *
-  * In case of panic the nesting context can take over the console forcefully.
-+ * If the interrupted context touches the assigned record buffer after
-+ * takeover, it does not cause harm because the interrupting single panic
-+ * context is assigned its own panic record buffer.
-  *
-  * A concurrent writer on a different CPU with a higher priority can directly
-  * take over if the console is not in an unsafe state by carefully writing
-@@ -406,6 +410,8 @@ static void nbcon_context_acquire_hostile(struct nbcon_context *ctxt,
- 	cur->atom = new.atom;
- }
- 
-+static struct printk_buffers panic_nbcon_pbufs;
-+
- /**
-  * nbcon_context_try_acquire - Try to acquire nbcon console
-  * @ctxt:	The context of the caller
-@@ -420,7 +426,6 @@ static void nbcon_context_acquire_hostile(struct nbcon_context *ctxt,
- __maybe_unused
- static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
+@@ -490,7 +490,6 @@ static bool nbcon_owner_matches(struct nbcon_state *cur, int expected_cpu,
+  * nbcon_context_release - Release the console
+  * @ctxt:	The nbcon context from nbcon_context_try_acquire()
+  */
+-__maybe_unused
+ static void nbcon_context_release(struct nbcon_context *ctxt)
  {
--	__maybe_unused
  	unsigned int cpu = smp_processor_id();
- 	struct console *con = ctxt->console;
- 	struct nbcon_state cur;
-@@ -452,6 +457,12 @@ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
- 
- 	nbcon_context_acquire_hostile(ctxt, &cur);
- success:
-+	/* Assign the appropriate buffer for this context. */
-+	if (atomic_read(&panic_cpu) == cpu)
-+		ctxt->pbufs = &panic_nbcon_pbufs;
-+	else
-+		ctxt->pbufs = con->pbufs;
-+
- 	return true;
+@@ -518,6 +517,112 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
+ 	ctxt->pbufs = NULL;
  }
  
-@@ -491,7 +502,7 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
- 
- 	do {
- 		if (!nbcon_owner_matches(&cur, cpu, ctxt->prio))
--			return;
-+			break;
- 
- 		new.atom = cur.atom;
- 		new.prio = NBCON_PRIO_NONE;
-@@ -503,6 +514,30 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
- 		new.unsafe |= cur.unsafe_takeover;
- 
- 	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
++/**
++ * nbcon_context_can_proceed - Check whether ownership can proceed
++ * @ctxt:	The nbcon context from nbcon_context_try_acquire()
++ * @cur:	The current console state
++ *
++ * Return:	True if this context still owns the console. False if
++ *		ownership was handed over or taken.
++ *
++ * Must be invoked after the record was dumped into the assigned buffer
++ * and at appropriate safe places in the driver.
++ *
++ * When this function returns false then the calling context no longer owns
++ * the console and is no longer allowed to go forward. In this case it must
++ * back out immediately and carefully. The buffer content is also no longer
++ * trusted since it no longer belongs to the calling context.
++ */
++static bool nbcon_context_can_proceed(struct nbcon_context *ctxt, struct nbcon_state *cur)
++{
++	unsigned int cpu = smp_processor_id();
 +
-+	ctxt->pbufs = NULL;
++	/* Make sure this context still owns the console. */
++	if (!nbcon_owner_matches(cur, cpu, ctxt->prio))
++		return false;
++
++	/* The console owner can proceed if there is no waiter. */
++	if (cur->req_prio == NBCON_PRIO_NONE)
++		return true;
++
++	/*
++	 * A console owner within an unsafe region is always allowed to
++	 * proceed, even if there are waiters. It can perform a handover
++	 * when exiting the unsafe region. Otherwise the waiter will
++	 * need to perform an unsafe hostile takeover.
++	 */
++	if (cur->unsafe)
++		return true;
++
++	/* Waiters always have higher priorities than owners. */
++	WARN_ON_ONCE(cur->req_prio <= cur->prio);
++
++	/*
++	 * Having a safe point for take over and eventually a few
++	 * duplicated characters or a full line is way better than a
++	 * hostile takeover. Post processing can take care of the garbage.
++	 * Release and hand over.
++	 */
++	nbcon_context_release(ctxt);
++
++	/*
++	 * It is not known whether the handover succeeded. The outermost
++	 * callsite has to make the final decision whether printing
++	 * should proceed or not (via reacquire, possibly hostile). The
++	 * console is now unlocked so go back all the way instead of
++	 * trying to implement heuristics in tons of places.
++	 */
++	return false;
 +}
 +
 +/**
-+ * nbcon_alloc - Allocate buffers needed by the nbcon console
-+ * @con:	Console to initialize
++ * nbcon_context_update_unsafe - Update the unsafe bit in @con->nbcon_state
++ * @ctxt:	The nbcon context from nbcon_context_try_acquire()
++ * @unsafe:	The new value for the unsafe bit
 + *
-+ * Return:	True on success. False otherwise and the console cannot
-+ *		be used.
++ * Return:	True if the unsafe state was updated and this context still
++ *		owns the console. Otherwise false if ownership was handed
++ *		over or taken.
 + *
-+ * This is not part of nbcon_init() because buffer allocation must
-+ * be performed earlier in the console registration process.
++ * This function allows console owners to modify the unsafe status of the
++ * console.
++ *
++ * When this function returns false then the calling context no longer owns
++ * the console and is no longer allowed to go forward. In this case it must
++ * back out immediately and carefully. The buffer content is also no longer
++ * trusted since it no longer belongs to the calling context.
++ *
++ * Internal helper to avoid duplicated code.
 + */
-+bool nbcon_alloc(struct console *con)
++__maybe_unused
++static bool nbcon_context_update_unsafe(struct nbcon_context *ctxt, bool unsafe)
 +{
++	struct console *con = ctxt->console;
++	struct nbcon_state cur;
++	struct nbcon_state new;
 +
-+	con->pbufs = kmalloc(sizeof(*con->pbufs), GFP_KERNEL);
-+	if (!con->pbufs) {
-+		con_printk(KERN_ERR, con, "failed to allocate printing buffer\n");
-+		return false;
-+	}
++	nbcon_state_read(con, &cur);
 +
-+	return true;
- }
- 
- /**
-@@ -513,6 +548,9 @@ void nbcon_init(struct console *con)
- {
- 	struct nbcon_state state = { };
- 
-+	/* nbcon_alloc() must have been called and successful! */
-+	BUG_ON(!con->pbufs);
-+
- 	nbcon_state_set(con, &state);
- }
- 
-@@ -525,4 +563,6 @@ void nbcon_cleanup(struct console *con)
- 	struct nbcon_state state = { };
- 
- 	nbcon_state_set(con, &state);
-+	kfree(con->pbufs);
-+	con->pbufs = NULL;
- }
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index c0246093ea41..b340c5a36fe2 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -3324,12 +3324,6 @@ static void try_enable_default_console(struct console *newcon)
- 		newcon->flags |= CON_CONSDEV;
- }
- 
--#define con_printk(lvl, con, fmt, ...)				\
--	printk(lvl pr_fmt("%s%sconsole [%s%d] " fmt),		\
--	       (con->flags & CON_NBCON) ? "" : "legacy ",	\
--	       (con->flags & CON_BOOT) ? "boot" : "",		\
--	       con->name, con->index, ##__VA_ARGS__)
--
- static void console_init_seq(struct console *newcon, bool bootcon_registered)
- {
- 	struct console *con;
-@@ -3443,6 +3437,15 @@ void register_console(struct console *newcon)
- 		goto unlock;
- 	}
- 
-+	if (newcon->flags & CON_NBCON) {
++	do {
 +		/*
-+		 * Ensure the nbcon console buffers can be allocated
-+		 * before modifying any global data.
++		 * The unsafe bit must not be cleared if an
++		 * unsafe hostile takeover has occurred.
 +		 */
-+		if (!nbcon_alloc(newcon))
-+			goto unlock;
-+	}
++		if (!unsafe && cur.unsafe_takeover)
++			goto out;
 +
- 	/*
- 	 * See if we want to enable this console driver by default.
- 	 *
++		if (!nbcon_context_can_proceed(ctxt, &cur))
++			return false;
++
++		new.atom = cur.atom;
++		new.unsafe = unsafe;
++	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
++
++	cur.atom = new.atom;
++out:
++	return nbcon_context_can_proceed(ctxt, &cur);
++}
++
+ /**
+  * nbcon_alloc - Allocate buffers needed by the nbcon console
+  * @con:	Console to initialize
 -- 
 2.39.2
 
