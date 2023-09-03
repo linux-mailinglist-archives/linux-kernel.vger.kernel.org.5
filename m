@@ -2,138 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 192F4790AD7
+	by mail.lfdr.de (Postfix) with ESMTP id 6C85F790AD8
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 07:01:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235801AbjICEzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 00:55:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42500 "EHLO
+        id S235824AbjICFBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 01:01:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjICEzb (ORCPT
+        with ESMTP id S235809AbjICFBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 00:55:31 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D280CC5
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 21:55:05 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id d9443c01a7336-1c1f8aaab9aso3193235ad.1
-        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 21:55:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1693716904; x=1694321704; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v+U5CPjOKyPGHDpwnXP0B3NDICrZc2hSQHMD9gvWWzQ=;
-        b=KEpqyDuSD13aFfriIa6Gh0EZ18ZuWmrF41R2zOE8WBE+FTwcBfvFcb3FJQcm4wVknZ
-         KYuAvyedxxv1z8wIF8CjSB7GCMTCuT9JCp0DGb2sahR+4hVi3VHaAOKM+YJ7HE2VWLuQ
-         kp0yeab6pN8yej7irYjltklWWPRfKDWu7L2peIzP874AVo4+jxxsHL93wW1Z0A4+lJgi
-         1MssAmhjlzmq4ZCDOe5yxBXC0LWF/JtW5SA4TVo/DFisna7MKywq/qSnlnHs9X1x/iJ7
-         uh0gGJ9W2VpB+ZZnINIxSl5vdDHL4WQTXmNK74dtgy6IpipezGtbq00+zlV/3v9X1d4M
-         hhNg==
+        Sun, 3 Sep 2023 01:01:45 -0400
+Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05272116;
+        Sat,  2 Sep 2023 22:01:42 -0700 (PDT)
+Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-34e1c1405easo1725435ab.1;
+        Sat, 02 Sep 2023 22:01:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693716904; x=1694321704;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20221208; t=1693717301; x=1694322101;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v+U5CPjOKyPGHDpwnXP0B3NDICrZc2hSQHMD9gvWWzQ=;
-        b=aRnGOdRSy/e0GGrjBI20MDbS1F1xP2O/oqUqL1rq5mLb1cf69j5niyQzxWOL3DvqUC
-         pfYVDMnScxVlI5K5aK80K/b5GpztVsq1SnkNFy8JLNmn73R1384SblZOCXIJ+Qu2RQRF
-         mfcR4Nc3yU1MVcD9lnVOR4Qex+vpwfI1OJ83yFXhzNT3MWDD4Bxiiwi8DolV+vprf2rq
-         vu1owPxiq5B+sx6DbmDXZkh5/z4iohFSw2x20sFOEPVP93pNdYnVFUReTq7hmOSyKeCJ
-         bALkkca4IOVBTn9lJ4sn2j+56B+miT8LKGr8YjxUHPHTq5fYHJIXUleLQDBSrLvMzhyA
-         Oe1w==
-X-Gm-Message-State: AOJu0YzoYYlu6VGD/WvcIXpShpb5U1IpBRp63ZZNtZhovwCgFHtiv0u6
-        rpk3vfP0PE+XqAn/9hY/l2OAdQ==
-X-Google-Smtp-Source: AGHT+IEZm84G9mzAoT4L/Z2t61RZFgqR47NnzrcVfwzvXzIuo/vipgN26tmwI1A7WWb/kkbrm2Z/rg==
-X-Received: by 2002:a17:902:ef93:b0:1c1:dbd6:9bf6 with SMTP id iz19-20020a170902ef9300b001c1dbd69bf6mr5878849plb.41.1693716904671;
-        Sat, 02 Sep 2023 21:55:04 -0700 (PDT)
-Received: from [10.254.83.51] ([139.177.225.230])
-        by smtp.gmail.com with ESMTPSA id x2-20020a170902ea8200b001bc2831e1a9sm5301651plb.90.2023.09.02.21.54.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 02 Sep 2023 21:55:04 -0700 (PDT)
-Message-ID: <229c6f8d-b89b-1b85-8408-089c4cdf32a9@bytedance.com>
-Date:   Sun, 3 Sep 2023 12:54:52 +0800
+        bh=5CaVDN1nihPl3lV/HLl0YpBXy4Ok1xeBZKYUuheQAYI=;
+        b=J57BfiKhZ5omKuKMSgjCLX5oXKlmXIHaNpmq+PKa/qMetRoBn/hiwlL83ankQD7Yn8
+         in3MROYsPU5vFu4EHWqJ8B9kifaY4+QJZFmeoKOvZ15MDWLTXiHlUGDeewFS6QWenZr+
+         wzcSx9W6C+D2aaamcLZUNfqJ32/a67JTXpcqyoSAEDQtgWbdf3bJNWrG8yEx/jM3BrPv
+         s+n0QiAF7IVquqpkApUhCURGHaZ/TpHjfJU+iYEXS71YkJY5VXj+dsva1o2Rck/sDyue
+         Ha1xg5TsJYo0cb1PiDFzuGOJLz/LnElzcC+yJGPocVLOlU3vcMiUI8bIfiLYFi7gG2Pz
+         reFw==
+X-Gm-Message-State: AOJu0YwR/cjOjaowD9JTl5ldtKVeCbaKEI12wsfyVB41iuSgGY0wkMgA
+        b0A6K1pF2IU6F/YfjnON5UU=
+X-Google-Smtp-Source: AGHT+IFvWs2quJDRQGDGA4RuH5Ebl9T+mSdO8p3dS40ScCJgItVQl2248OPloWbbJn27q+Fh50SdOw==
+X-Received: by 2002:a92:cb4e:0:b0:34c:d86f:46e9 with SMTP id f14-20020a92cb4e000000b0034cd86f46e9mr7232010ilq.12.1693717301105;
+        Sat, 02 Sep 2023 22:01:41 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
+        by smtp.gmail.com with ESMTPSA id mn3-20020a17090b188300b0027360359b70sm2280043pjb.48.2023.09.02.22.01.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 02 Sep 2023 22:01:40 -0700 (PDT)
+Date:   Sun, 3 Sep 2023 05:01:11 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
+        Michael Kelley <mikelley@microsoft.com>
+Subject: [GIT PULL] Hyper-V commits for 6.6
+Message-ID: <ZPQTFyfzgvlp3QkW@liuwe-devbox-debian-v2>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: Re: [RFC PATCH net-next 3/3] sock: Throttle pressure-aware
- sockets under pressure
-To:     Simon Horman <horms@kernel.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Yu Zhao <yuzhao@google.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Kuniyuki Iwashima <kuniyu@amazon.com>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        Breno Leitao <leitao@debian.org>,
-        Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-        David Howells <dhowells@redhat.com>,
-        Jason Xing <kernelxing@tencent.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>
-References: <20230901062141.51972-1-wuyun.abel@bytedance.com>
- <20230901062141.51972-4-wuyun.abel@bytedance.com>
- <20230901135932.GH140739@kernel.org>
-Content-Language: en-US
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20230901135932.GH140739@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon, thanks for reviewing!
+Hi Linus
 
-On 9/1/23 9:59 PM, Simon Horman wrote:
-> On Fri, Sep 01, 2023 at 02:21:28PM +0800, Abel Wu wrote:
->> @@ -3087,8 +3100,20 @@ int __sk_mem_raise_allocated(struct sock *sk, int size, int amt, int kind)
->>   	if (sk_has_memory_pressure(sk)) {
->>   		u64 alloc;
->>   
->> -		if (!sk_under_memory_pressure(sk))
->> +		/* Be more conservative if the socket's memcg (or its
->> +		 * parents) is under reclaim pressure, try to possibly
->> +		 * avoid further memstall.
->> +		 */
->> +		if (under_memcg_pressure)
->> +			goto suppress_allocation;
->> +
->> +		if (!sk_under_global_memory_pressure(sk))
->>   			return 1;
->> +
->> +		/* Trying to be fair among all the sockets of same
->> +		 * protocal under global memory pressure, by allowing
-> 
-> nit: checkpatch.pl --codespell says, protocal -> protocol
+The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
 
-Will fix in next version.
+  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
 
-Thanks,
-	Abel
+are available in the Git repository at:
 
-> 
->> +		 * the ones that under average usage to raise.
->> +		 */
->>   		alloc = sk_sockets_allocated_read_positive(sk);
->>   		if (sk_prot_mem_limits(sk, 2) > alloc *
->>   		    sk_mem_pages(sk->sk_wmem_queued +
->> -- 
->> 2.37.3
->>
->>
+  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20230902
+
+for you to fetch changes up to 284930a0146ade1ce0250a1d3bae7a675af4bb3b:
+
+  x86/hyperv: Remove duplicate include (2023-08-25 00:05:45 +0000)
+
+----------------------------------------------------------------
+hyperv-next for v6.6
+ - Support for SEV-SNP guests on Hyper-V (Tianyu Lan)
+ - Support for TDX guests on Hyper-V (Dexuan Cui)
+ - Use SBRM API in Hyper-V balloon driver (Mitchell Levy)
+ - Avoid dereferencing ACPI root object handle in VMBus driver
+   (Maciej S. Szmigiero)
+ - A few misecllaneous fixes (Jiapeng Chong, Nathan Chancellor,
+   Saurabh Sengar)
+----------------------------------------------------------------
+Dexuan Cui (11):
+      x86/hyperv: Fix undefined reference to isolation_type_en_snp without CONFIG_HYPERV
+      x86/hyperv: Add hv_isolation_type_tdx() to detect TDX guests
+      x86/hyperv: Support hypercalls for fully enlightened TDX guests
+      Drivers: hv: vmbus: Support fully enlightened TDX guests
+      x86/hyperv: Fix serial console interrupts for fully enlightened TDX guests
+      Drivers: hv: vmbus: Support >64 VPs for a fully enlightened TDX/SNP VM
+      x86/hyperv: Introduce a global variable hyperv_paravisor_present
+      Drivers: hv: vmbus: Bring the post_msg_page back for TDX VMs with the paravisor
+      x86/hyperv: Use TDX GHCI to access some MSRs in a TDX VM with the paravisor
+      x86/hyperv: Remove hv_isolation_type_en_snp
+      x86/hyperv: Move the code in ivm.c around to avoid unnecessary ifdef's
+
+Jiapeng Chong (1):
+      x86/hyperv: Remove duplicate include
+
+Maciej S. Szmigiero (1):
+      Drivers: hv: vmbus: Don't dereference ACPI root object handle
+
+Mitchell Levy (1):
+      hv_balloon: Update the balloon driver to use the SBRM API
+
+Nathan Chancellor (1):
+      x86/hyperv: Add missing 'inline' to hv_snp_boot_ap() stub
+
+Saurabh Sengar (1):
+      hv: hyperv.h: Replace one-element array with flexible-array member
+
+Tianyu Lan (8):
+      x86/hyperv: Add sev-snp enlightened guest static key
+      x86/hyperv: Set Virtual Trust Level in VMBus init message
+      x86/hyperv: Mark Hyper-V vp assist page unencrypted in SEV-SNP enlightened guest
+      drivers: hv: Mark percpu hvcall input arg page unencrypted in SEV-SNP enlightened guest
+      x86/hyperv: Use vmmcall to implement Hyper-V hypercall in sev-snp enlightened guest
+      clocksource: hyper-v: Mark hyperv tsc page unencrypted in sev-snp enlightened guest
+      x86/hyperv: Add smp support for SEV-SNP guest
+      x86/hyperv: Add hyperv-specific handling for VMMCALL under SEV-ES
+
+ arch/x86/hyperv/hv_apic.c          |  15 ++-
+ arch/x86/hyperv/hv_init.c          | 105 +++++++++++++--
+ arch/x86/hyperv/ivm.c              | 263 +++++++++++++++++++++++++++++++++++--
+ arch/x86/include/asm/hyperv-tlfs.h |  10 +-
+ arch/x86/include/asm/mshyperv.h    |  71 ++++++++--
+ arch/x86/kernel/cpu/mshyperv.c     |  91 ++++++++++++-
+ drivers/clocksource/hyperv_timer.c |   2 +-
+ drivers/hv/connection.c            |  16 ++-
+ drivers/hv/hv.c                    | 131 ++++++++++++++++--
+ drivers/hv/hv_balloon.c            |  82 ++++++------
+ drivers/hv/hv_common.c             |  48 ++++++-
+ drivers/hv/hyperv_vmbus.h          |  11 ++
+ drivers/hv/vmbus_drv.c             |   3 +-
+ include/asm-generic/hyperv-tlfs.h  |   1 +
+ include/asm-generic/mshyperv.h     |  17 ++-
+ include/linux/hyperv.h             |   6 +-
+ 16 files changed, 759 insertions(+), 113 deletions(-)
