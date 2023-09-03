@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B501790DA3
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 168B2790DA5
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346254AbjICTOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 15:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50612 "EHLO
+        id S1346332AbjICTPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 15:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231200AbjICTOB (ORCPT
+        with ESMTP id S1346274AbjICTPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 15:14:01 -0400
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 313BAB7
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:13:57 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id A43AF623488E;
-        Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 4suBvoeprK1D; Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 35E52623488F;
-        Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from lithops.sigma-star.at ([127.0.0.1])
-        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ea5wIfuo781e; Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
-        by lithops.sigma-star.at (Postfix) with ESMTP id 175C0623488E;
-        Sun,  3 Sep 2023 21:13:54 +0200 (CEST)
-Date:   Sun, 3 Sep 2023 21:13:54 +0200 (CEST)
-From:   Richard Weinberger <richard@nod.at>
-To:     torvalds <torvalds@linux-foundation.org>
-Cc:     linux-um <linux-um@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Message-ID: <1189803925.12843.1693768434048.JavaMail.zimbra@nod.at>
-Subject: [GIT PULL] UML Changes for v6.6-rc1
+        Sun, 3 Sep 2023 15:15:12 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7624094
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:15:08 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id 4fb4d7f45d1cf-52a1ce52ef4so964307a12.2
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 12:15:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693768506; x=1694373306; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wcdyOmYjlq1qQSUduy29DqZHuKGmSdrVaWwcehhzxKg=;
+        b=NYN3Ltb0TvQ4v3jy0h1sy9bg4psCDtCCbEALOkvA9BcZVmbH/iDNMw4EeQ+ETBeMxF
+         OuCe8FSjDjaL/e7EylYfZiqnU1MiC3Pf+kBYPr1KnalOh/6Rm+4nMAjcoirnBuQ92wwi
+         OxBfc12+ai942Ot1g9IP8fpnq7pNL/7ie1Rd0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693768506; x=1694373306;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wcdyOmYjlq1qQSUduy29DqZHuKGmSdrVaWwcehhzxKg=;
+        b=NdVWpU3p7P6l4N74VtLEhBAC5QwSQYtYIM9hDGpcL2ZmSscvdLBZLwlZve/4vjSC5E
+         zUsm9WMgfFpabw0oTchv4WWwQl9Uzk6+sOtXElurPAx1U9+X0E4Fci369QujRf29zJiM
+         1oI0A8PRDu3pmev6HYllOHR8zT9jpgZEcSFoBzFSciclfIhC5ytIDkJKdc+LXjjXufrv
+         m6cQ8N+77h6Hl/BmptdVyziPbvsprexHxdJEiVDjJDpDOQHrcNdgCEoSm5j9zwedIn4r
+         LfzkHujjXdNqx1CCmL1sdwCQiQxEONoCNRzzWBAjGVVFpDrdrI4YjcHd1iU3G2dlbEDz
+         CoTA==
+X-Gm-Message-State: AOJu0YzmQuMJOBajm231u9zytPOlki/fkd9WWEF/+Yz0gU/jsZ5NmviZ
+        SJjU6EdPxXSRh49Pn6z32J3LSoxXEehLOgTDm2egxA==
+X-Google-Smtp-Source: AGHT+IH404tjULTg/mNM4tZuPxQ72PFsZYKyo2dm1URnOZnSLlFa9mHvf0kjhHGeTptqvLtGYTKP4Q==
+X-Received: by 2002:a17:907:75f4:b0:9a2:232f:6f85 with SMTP id jz20-20020a17090775f400b009a2232f6f85mr5639886ejc.52.1693768506565;
+        Sun, 03 Sep 2023 12:15:06 -0700 (PDT)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id z17-20020a170906241100b0099bd7b26639sm5136459eja.6.2023.09.03.12.15.04
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Sep 2023 12:15:04 -0700 (PDT)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so980122a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 12:15:04 -0700 (PDT)
+X-Received: by 2002:aa7:d3cc:0:b0:52b:d169:b37b with SMTP id
+ o12-20020aa7d3cc000000b0052bd169b37bmr5223697edr.35.1693768504178; Sun, 03
+ Sep 2023 12:15:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [195.201.40.130]
-X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF97 (Linux)/8.8.12_GA_3809)
-Thread-Index: ghDboZa1hFHmnDsq+KMITPB5MegcYA==
-Thread-Topic: UML Changes for v6.6-rc1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        T_SPF_PERMERROR autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
+ <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com> <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
+In-Reply-To: <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 3 Sep 2023 12:14:46 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjrvn+J=z0_schGSROK0HCK-xs4wgky6pRKy7kVLhDeLg@mail.gmail.com>
+Message-ID: <CAHk-=wjrvn+J=z0_schGSROK0HCK-xs4wgky6pRKy7kVLhDeLg@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Sun, 3 Sept 2023 at 11:49, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> Why _is_ glibc doing that thing?
 
-The following changes since commit 2ccdd1b13c591d306f0401d98dedc4bdcd02b421:
+Oh, I think I may see where the confusion may come from.
 
-  Linux 6.5-rc6 (2023-08-13 11:29:55 -0700)
+The glibc people found a "__NR_newfstatat", and thought it was a newer
+version of 'stat', and didn't find any new versions of the basic
+stat/fstat/lstat functions at all. So they thought that everything
+else was implemented using that 'newfstatat()' entrypoint.
 
-are available in the Git repository at:
+But on x86-64 (and most half-way newer architectures), the regular
+__NR_stat *is* that "new" stat.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/uml/linux.git tags/uml-for-linus-6.6-rc1
+After all, it was only "new" in 1992, long before x86-64 even existed.
 
-for you to fetch changes up to 974b808d85abbc03c3914af63d60d5816aabf2ca:
+So maybe somebody noticed that "__NR_newfstatat" is the only system
+call number that has that "new" in the stat name, and didn't realize
+that that was just an odd naming thing for strange historical reasons.
 
-  um: virt-pci: fix missing declaration warning (2023-08-26 22:49:49 +0200)
+The relevant system call numbers are
 
-----------------------------------------------------------------
-This pull request contains the following changes for UML:
+  #define __NR_stat 4
+  #define __NR_fstat 5
+  #define __NR_lstat 6
+  #define __NR_newfstatat 262
+  #define __NR_statx 332
 
-- Drop 32-bit checksum implementation and re-use it from arch/x86
-- String function cleanup
-- Fixes for -Wmissing-variable-declarations and -Wmissing-prototypes builds
+and the numbering very much is about when they were added.
 
-----------------------------------------------------------------
-Azeem Shaikh (1):
-      um: Remove strlcpy usage
+And yes, that "new" in "newfstatat" is misleading, it's the same
+'struct stat' as those stat/fstat/lstat system calls (but not the
+'statx' one, that has 'struct statx', of course).
 
-David Gow (2):
-      asm-generic: current: Don't include thread-info.h if building asm
-      um: Use the x86 checksum implementation on 32-bit
+On x86-32, which has that extra decade of history, you end up with
 
-Justin Stitt (2):
-      um: vector: refactor deprecated strncpy
-      um: Refactor deprecated strncpy to memcpy
+  #define __NR_oldstat 18
+  #define __NR_oldfstat 28
+  #define __NR_oldlstat 84
+  #define __NR_stat 106
+  #define __NR_lstat 107
+  #define __NR_fstat 108
+  #define __NR_stat64 195
+  #define __NR_lstat64 196
+  #define __NR_fstat64 197
+  #define __NR_fstatat64 300
+  #define __NR_statx 383
 
-Masahiro Yamada (2):
-      um: Hard-code the result of 'uname -s'
-      um: use obj-y to descend into arch/um/*/
+where 106-108 are those "new" stat calls.  And then the stat64 ones
+are the "new new" ones and the only version that was relevant by the
+time we got the 'at()' version.
 
-Nick Desaulniers (3):
-      uml: audio: fix -Wmissing-variable-declarations
-      um: port_kern: fix -Wmissing-variable-declarations
-      um: fix 3 instances of -Wmissing-prototypes
-
-Randy Dunlap (1):
-      um: Fix hostaudio build errors
-
-Vincent Whitchurch (1):
-      um: virt-pci: fix missing declaration warning
-
-YueHaibing (1):
-      um: Remove unsued extern declaration ldt_host_info()
-
- arch/um/Kbuild                    |   2 +
- arch/um/Makefile                  |   9 +-
- arch/um/configs/i386_defconfig    |   1 +
- arch/um/configs/x86_64_defconfig  |   1 +
- arch/um/drivers/Kconfig           |  16 +--
- arch/um/drivers/Makefile          |   2 +-
- arch/um/drivers/hostaudio_kern.c  |   2 +-
- arch/um/drivers/mconsole_kern.c   |   4 +-
- arch/um/drivers/port_kern.c       |   2 +-
- arch/um/drivers/slirp_kern.c      |   2 +-
- arch/um/drivers/vector_user.c     |   4 +-
- arch/um/drivers/virt-pci.c        |   2 +
- arch/um/drivers/xterm_kern.c      |   1 +
- arch/um/include/shared/irq_kern.h |   1 +
- arch/um/include/shared/user.h     |   1 -
- arch/um/kernel/irq.c              |   2 -
- arch/um/os-Linux/umid.c           |   6 +-
- arch/x86/um/Makefile              |   5 +-
- arch/x86/um/asm/mm_context.h      |   2 -
- arch/x86/um/checksum_32.S         | 214 --------------------------------------
- include/asm-generic/current.h     |   2 +
- sound/Kconfig                     |   2 +-
- 22 files changed, 30 insertions(+), 253 deletions(-)
- delete mode 100644 arch/x86/um/checksum_32.S
+              Linus
