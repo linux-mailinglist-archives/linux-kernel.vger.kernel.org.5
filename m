@@ -2,140 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C85F790AD8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 07:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8C1790AEF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 07:25:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235824AbjICFBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 01:01:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50154 "EHLO
+        id S235836AbjICFZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 01:25:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235809AbjICFBp (ORCPT
+        with ESMTP id S229586AbjICFZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 01:01:45 -0400
-Received: from mail-il1-f171.google.com (mail-il1-f171.google.com [209.85.166.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05272116;
-        Sat,  2 Sep 2023 22:01:42 -0700 (PDT)
-Received: by mail-il1-f171.google.com with SMTP id e9e14a558f8ab-34e1c1405easo1725435ab.1;
-        Sat, 02 Sep 2023 22:01:41 -0700 (PDT)
+        Sun, 3 Sep 2023 01:25:36 -0400
+Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283C81A5
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 22:25:33 -0700 (PDT)
+Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3a76d882080so372244b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 22:25:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693718732; x=1694323532; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j+Eh2A53idbaKGC4D48PHUvqh0huBtkkZ1MnEHrGGnU=;
+        b=k53OCDljq8CEDYEIqPT+yjaAypALkomF873o/7Oh7ZG1Lq0DI4C4Za0AFbp/WRJtpJ
+         26GzAhVCthjzamlHtmR7idga8OPCnNZ6lOVrxpdlWNsq4MribsUXswf3Xpa5iKnxc9bv
+         VGx1ZBqcI7ZHsITWTuDWEEeAHjHOf3XhJmVkyZrFoupcnwk0mD0thA/K5+UdsLP8bFzU
+         RbYhj2a25NvI/GdmRr9hxxVrmZ/YHJN8QoKugg5PkttUN6bsotPJkGhVBzDNSctY2K1H
+         2Mic0gS8GccvXsRUgUvoJmMq1o6yZZA1ltAt4ujnCErWue+k1pMvM6Nsde41ag8E/2rz
+         0NBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693717301; x=1694322101;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=5CaVDN1nihPl3lV/HLl0YpBXy4Ok1xeBZKYUuheQAYI=;
-        b=J57BfiKhZ5omKuKMSgjCLX5oXKlmXIHaNpmq+PKa/qMetRoBn/hiwlL83ankQD7Yn8
-         in3MROYsPU5vFu4EHWqJ8B9kifaY4+QJZFmeoKOvZ15MDWLTXiHlUGDeewFS6QWenZr+
-         wzcSx9W6C+D2aaamcLZUNfqJ32/a67JTXpcqyoSAEDQtgWbdf3bJNWrG8yEx/jM3BrPv
-         s+n0QiAF7IVquqpkApUhCURGHaZ/TpHjfJU+iYEXS71YkJY5VXj+dsva1o2Rck/sDyue
-         Ha1xg5TsJYo0cb1PiDFzuGOJLz/LnElzcC+yJGPocVLOlU3vcMiUI8bIfiLYFi7gG2Pz
-         reFw==
-X-Gm-Message-State: AOJu0YwR/cjOjaowD9JTl5ldtKVeCbaKEI12wsfyVB41iuSgGY0wkMgA
-        b0A6K1pF2IU6F/YfjnON5UU=
-X-Google-Smtp-Source: AGHT+IFvWs2quJDRQGDGA4RuH5Ebl9T+mSdO8p3dS40ScCJgItVQl2248OPloWbbJn27q+Fh50SdOw==
-X-Received: by 2002:a92:cb4e:0:b0:34c:d86f:46e9 with SMTP id f14-20020a92cb4e000000b0034cd86f46e9mr7232010ilq.12.1693717301105;
-        Sat, 02 Sep 2023 22:01:41 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id mn3-20020a17090b188300b0027360359b70sm2280043pjb.48.2023.09.02.22.01.40
+        d=1e100.net; s=20221208; t=1693718732; x=1694323532;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=j+Eh2A53idbaKGC4D48PHUvqh0huBtkkZ1MnEHrGGnU=;
+        b=USxC9O79AXU0/axpYYsE6m+aRPt+ertrwRvnteUG99v0o+IqDdtetLqAqeKyPsqUgC
+         67a/yN7Cb2xYTYdG1msVjFGpWt+txs6OJc07O95sTrxTG/6+dxGcwyKaNxzo0LpPBmra
+         7kka+U4dAEbrq717YazXbTfmuhvwetEYmjLE9cIHx/5gW0X87HCqchG/MlXDRhayi800
+         mIfR32MHqpDCr9+Ql5O63UEJdMbZgXkI6zzyfkhthPXzLxcfpu5I/zFtBco+HrbfkJrZ
+         vJTIPptLxgh9dLhQfXRqEZJzi5khxKIjJm9S6oJuuRYAJN8XLNrxCCwcLuHmTrn3AZoy
+         ldWA==
+X-Gm-Message-State: AOJu0YxxhfsWoP0WsiwkB/3bnZkRhHKQHkuejhtQt8k3Cq6pGyrbhN1O
+        ITi4GHQNYEmnqJ60H3a6R/mhVQ==
+X-Google-Smtp-Source: AGHT+IGNq/nmzcBfE8tNNcctP8MOqZWNtdKzxAcW4XkHpsLIVYvoFFHRLzprcuZfIYR0M4JgREsJXw==
+X-Received: by 2002:a05:6808:138d:b0:3a7:82e8:8fd1 with SMTP id c13-20020a056808138d00b003a782e88fd1mr8799733oiw.20.1693718732506;
+        Sat, 02 Sep 2023 22:25:32 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id 5-20020a170902c24500b001bbd1562e75sm5391337plg.55.2023.09.02.22.25.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 02 Sep 2023 22:01:40 -0700 (PDT)
-Date:   Sun, 3 Sep 2023 05:01:11 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        kys@microsoft.com, haiyangz@microsoft.com, decui@microsoft.com,
-        Michael Kelley <mikelley@microsoft.com>
-Subject: [GIT PULL] Hyper-V commits for 6.6
-Message-ID: <ZPQTFyfzgvlp3QkW@liuwe-devbox-debian-v2>
+        Sat, 02 Sep 2023 22:25:31 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qcfc0-00A8ep-2J;
+        Sun, 03 Sep 2023 15:25:28 +1000
+Date:   Sun, 3 Sep 2023 15:25:28 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>
+Cc:     brauner@kernel.org, djwong@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
+Message-ID: <ZPQYyMBFmqrfqafL@dread.disaster.area>
+References: <000000000000e6432a06046c96a5@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <000000000000e6432a06046c96a5@google.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus
+On Sat, Sep 02, 2023 at 09:11:34PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    b97d64c72259 Merge tag '6.6-rc-smb3-client-fixes-part1' of..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=14136d8fa80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=958c1fdc38118172
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
 
-The following changes since commit 5d0c230f1de8c7515b6567d9afba1f196fb4e2f4:
+Been happening for months, apparently, yet for some reason it now
+thinks a locking hang in __fdget_pos() is an XFS issue?
 
-  Linux 6.5-rc4 (2023-07-30 13:23:47 -0700)
+#syz set subsystems: fs
 
-are available in the Git repository at:
-
-  ssh://git@gitolite.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git tags/hyperv-next-signed-20230902
-
-for you to fetch changes up to 284930a0146ade1ce0250a1d3bae7a675af4bb3b:
-
-  x86/hyperv: Remove duplicate include (2023-08-25 00:05:45 +0000)
-
-----------------------------------------------------------------
-hyperv-next for v6.6
- - Support for SEV-SNP guests on Hyper-V (Tianyu Lan)
- - Support for TDX guests on Hyper-V (Dexuan Cui)
- - Use SBRM API in Hyper-V balloon driver (Mitchell Levy)
- - Avoid dereferencing ACPI root object handle in VMBus driver
-   (Maciej S. Szmigiero)
- - A few misecllaneous fixes (Jiapeng Chong, Nathan Chancellor,
-   Saurabh Sengar)
-----------------------------------------------------------------
-Dexuan Cui (11):
-      x86/hyperv: Fix undefined reference to isolation_type_en_snp without CONFIG_HYPERV
-      x86/hyperv: Add hv_isolation_type_tdx() to detect TDX guests
-      x86/hyperv: Support hypercalls for fully enlightened TDX guests
-      Drivers: hv: vmbus: Support fully enlightened TDX guests
-      x86/hyperv: Fix serial console interrupts for fully enlightened TDX guests
-      Drivers: hv: vmbus: Support >64 VPs for a fully enlightened TDX/SNP VM
-      x86/hyperv: Introduce a global variable hyperv_paravisor_present
-      Drivers: hv: vmbus: Bring the post_msg_page back for TDX VMs with the paravisor
-      x86/hyperv: Use TDX GHCI to access some MSRs in a TDX VM with the paravisor
-      x86/hyperv: Remove hv_isolation_type_en_snp
-      x86/hyperv: Move the code in ivm.c around to avoid unnecessary ifdef's
-
-Jiapeng Chong (1):
-      x86/hyperv: Remove duplicate include
-
-Maciej S. Szmigiero (1):
-      Drivers: hv: vmbus: Don't dereference ACPI root object handle
-
-Mitchell Levy (1):
-      hv_balloon: Update the balloon driver to use the SBRM API
-
-Nathan Chancellor (1):
-      x86/hyperv: Add missing 'inline' to hv_snp_boot_ap() stub
-
-Saurabh Sengar (1):
-      hv: hyperv.h: Replace one-element array with flexible-array member
-
-Tianyu Lan (8):
-      x86/hyperv: Add sev-snp enlightened guest static key
-      x86/hyperv: Set Virtual Trust Level in VMBus init message
-      x86/hyperv: Mark Hyper-V vp assist page unencrypted in SEV-SNP enlightened guest
-      drivers: hv: Mark percpu hvcall input arg page unencrypted in SEV-SNP enlightened guest
-      x86/hyperv: Use vmmcall to implement Hyper-V hypercall in sev-snp enlightened guest
-      clocksource: hyper-v: Mark hyperv tsc page unencrypted in sev-snp enlightened guest
-      x86/hyperv: Add smp support for SEV-SNP guest
-      x86/hyperv: Add hyperv-specific handling for VMMCALL under SEV-ES
-
- arch/x86/hyperv/hv_apic.c          |  15 ++-
- arch/x86/hyperv/hv_init.c          | 105 +++++++++++++--
- arch/x86/hyperv/ivm.c              | 263 +++++++++++++++++++++++++++++++++++--
- arch/x86/include/asm/hyperv-tlfs.h |  10 +-
- arch/x86/include/asm/mshyperv.h    |  71 ++++++++--
- arch/x86/kernel/cpu/mshyperv.c     |  91 ++++++++++++-
- drivers/clocksource/hyperv_timer.c |   2 +-
- drivers/hv/connection.c            |  16 ++-
- drivers/hv/hv.c                    | 131 ++++++++++++++++--
- drivers/hv/hv_balloon.c            |  82 ++++++------
- drivers/hv/hv_common.c             |  48 ++++++-
- drivers/hv/hyperv_vmbus.h          |  11 ++
- drivers/hv/vmbus_drv.c             |   3 +-
- include/asm-generic/hyperv-tlfs.h  |   1 +
- include/asm-generic/mshyperv.h     |  17 ++-
- include/linux/hyperv.h             |   6 +-
- 16 files changed, 759 insertions(+), 113 deletions(-)
+-- 
+Dave Chinner
+david@fromorbit.com
