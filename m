@@ -2,135 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBC0790E0C
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4742790E14
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:05:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348165AbjICU7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 16:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39938 "EHLO
+        id S1348159AbjICVF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 17:05:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231604AbjICU7B (ORCPT
+        with ESMTP id S229523AbjICVF6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 16:59:01 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76E30103;
-        Sun,  3 Sep 2023 13:58:56 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (213.211-177-91.adsl-dyn.isp.belgacom.be [91.177.211.213])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id CB1E1124F;
-        Sun,  3 Sep 2023 22:57:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1693774649;
-        bh=uWYgqjOYV1jmmpik9gU1rfKW/hbm/lrcAvIye6jA3P4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=W9SphoLq2P9byG248ZNwKzk8Do8nb+3E/ip/9SP6edc2sj70yVe/SKm8FU4oO/6FE
-         pMKaeNEEBEkGBuGUBwVbuYZO/T2GK2wYcOTK3eEn9gUIjGe4OinoPWmx7E2oxJOykY
-         UvCJo/Z5ufNfdxOmqW2f7HkNpubJJFGS5fXNCysk=
-Date:   Sun, 3 Sep 2023 23:59:06 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     fasih0001@gmail.com
-Cc:     mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] uvc_driver: Error Fix in the file
- drivers/media/usb/uvc/uvc_driver.c
-Message-ID: <20230903205906.GD13794@pendragon.ideasonboard.com>
-References: <20230903095431.28711-1-fasih0001@gmail.com>
+        Sun, 3 Sep 2023 17:05:58 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353EAB6
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:05:55 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-500cefc3644so1382414e87.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1693775153; x=1694379953; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=EHR5mCR9mOyqzmNVz+ud7DpNJ1Cvz9ROqmt0ghyIa7U=;
+        b=A7ldmkKCbr1ArTCw/QInAQN0g9ezmKQnUhl7fzlXm6oyIqD/kxQ9iLPb6YG4Zvs20q
+         JC6/a2AmeLnhsRqABlBJlH3Hssy2jT7ks9xhFVvSe9dKSV/t7GyQ4IZ+yi5bY3wmC8iN
+         /7pkYlZtTYK/rroKZSdsrNJXluRiisVlGD7K0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693775153; x=1694379953;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EHR5mCR9mOyqzmNVz+ud7DpNJ1Cvz9ROqmt0ghyIa7U=;
+        b=kt/v8T0GHAxireP2mWyFq1IACvqPy7YWV/oXQBf9PoVaPrTdjGKAKXCgTa5Wxf03C9
+         THcaGIbDSDD8UDW8Ry48HOwzoi3HV/s1+aUrdfnuQNgN0EkQlvSGAEAJJ9cSySTohxus
+         99eaObFw5sTIdDivXlBHLUgIYg1AzBOu4MMynkyX7ptuYVbWHUIym7JLqlwY33/XRbZt
+         ehFQzMNM4Uf0ipTzL73sQY1xDqUXM/71X9dPkwFX6Nwgh63JYAIixvVsGFoK8HFsEDAo
+         KwYCDQl1I6dDg7JEOAMGCsao4zkOPjJ3fJ3sJupHV7u7jegmS1vCCycLqvCpbJXxZ+Xh
+         6fOQ==
+X-Gm-Message-State: AOJu0YzIyFmf/7ffa1uXXmwkBcYbrzDjE/LswgILuUg6OHEFr+weEWrW
+        P7/7aft3KA0nOh/hIOpT4HimKY7CKpTUJZPUwhkFTukh
+X-Google-Smtp-Source: AGHT+IFo8LYu/TRRroLSigffGEHKOBjsi7NrrzkUKBb+U87vXNS2AwuueEqzsP+vRynKnxZ1tjvNow==
+X-Received: by 2002:a2e:9b94:0:b0:2b1:ed29:7c47 with SMTP id z20-20020a2e9b94000000b002b1ed297c47mr5557545lji.8.1693775153359;
+        Sun, 03 Sep 2023 14:05:53 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id o19-20020a2e90d3000000b002b6d781b60esm1731803ljg.82.2023.09.03.14.05.52
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Sep 2023 14:05:52 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-50078e52537so1384699e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:05:52 -0700 (PDT)
+X-Received: by 2002:a05:6512:3d9e:b0:500:c128:66d4 with SMTP id
+ k30-20020a0565123d9e00b00500c12866d4mr6837740lfv.67.1693775151524; Sun, 03
+ Sep 2023 14:05:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230903095431.28711-1-fasih0001@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
+ <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
+ <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
+ <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com> <20230903204858.lv7i3kqvw6eamhgz@f>
+In-Reply-To: <20230903204858.lv7i3kqvw6eamhgz@f>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 3 Sep 2023 14:05:34 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
+Message-ID: <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        bp@alien8.de
+Content-Type: multipart/mixed; boundary="0000000000003d367906047ac2bc"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--0000000000003d367906047ac2bc
+Content-Type: text/plain; charset="UTF-8"
 
-On Sun, Sep 03, 2023 at 02:54:31PM +0500, fasih0001@gmail.com wrote:
-> From: Fasih <fasih0001@gmail.com>
-> 
-> Error fix for the line 2429 and 2430, The error message indicated that "Macros with complex values should be enclosed in parentheses".
-> This typically means that the macro is defined in a way that involves complex expressions or compound literals,
-> and the preprocessor requires them to be enclosed in parentheses for clarity and proper evaluation.
-> To address this error and comply with the requirement to enclose complex values in parentheses,
-> you should wrap the entire expression inside an extra set of parentheses.
+On Sun, 3 Sept 2023 at 13:49, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>
+> "real fstat" is syscall(5, fd, &sb).
+>
+> Sapphire Rapids, will-it-scale, ops/s
+>
+> stock fstat     5088199
+> patched fstat   7625244 (+49%)
+> real fstat      8540383 (+67% / +12%)
+>
+> It dodges lockref et al, but it does not dodge SMAP which accounts for
+> the difference.
 
-Did you read Documentation/process/submitting-patches.rst ?
+Side note, since I was looking at this, I hacked up a quick way for
+architectures to do their own optimized cp_new_stat() that avoids the
+double-buffering.
 
-> Signed-off-by: Syed Muhammad Fasih Ul Hassan <fasih0001@gmail.com>
-> 
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2095,6 +2095,8 @@ static int uvc_probe(struct usb_interface *intf,
->         int function;
->         int ret;
-> 
-> +       pr_info("I changed uvcvideo driver in the Linux Kernel\n");
-> +
+Sadly it *is* architecture-specific due to padding and
+architecture-specific field sizes (and thus EOVERFLOW rules), but it
+is what it is.
 
-Have you read our patch before sending it out ?
+I don't know how much it matters, but it might make a difference. And
+'stat()' is most certainly worth optimizing for, even if glibc has
+made our life more difficult.
 
->         /* Allocate memory for the device and initialize it. */
->         dev = kzalloc(sizeof(*dev), GFP_KERNEL);
->         if (dev == NULL)
-> @@ -2417,9 +2419,9 @@ static const struct uvc_device_info uvc_quirk_force_y8 = {
->         .quirks = UVC_QUIRK_FORCE_Y8,
->  };
-> 
-> -#define UVC_INFO_QUIRK(q) (kernel_ulong_t)&(struct uvc_device_info){.quirks = q}
-> -#define UVC_INFO_META(m) (kernel_ulong_t)&(struct uvc_device_info) \
-> -       {.meta_format = m}
-> +#define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
-> +#define UVC_INFO_META(m) ((kernel_ulong_t)&(struct uvc_device_info) \
-> +       {.meta_format = m})
+Want to try out another entirely untested patch? Attached.
 
-Why do you think this is a good change ?
+                Linus
 
-> ---
->  drivers/media/usb/uvc/uvc_driver.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
+--0000000000003d367906047ac2bc
+Content-Type: text/x-patch; charset="US-ASCII"; name="patch.diff"
+Content-Disposition: attachment; filename="patch.diff"
+Content-Transfer-Encoding: base64
+Content-ID: <f_lm3xz9av0>
+X-Attachment-Id: f_lm3xz9av0
 
-Your patch seems corrupted.
-
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index 08fcd2ffa727..42d42b211094 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -2095,6 +2095,8 @@ static int uvc_probe(struct usb_interface *intf,
->  	int function;
->  	int ret;
->  
-> +	pr_info("I changed uvcvideo driver in the Linux Kernel\n");
-> +
->  	/* Allocate memory for the device and initialize it. */
->  	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
->  	if (dev == NULL)
-> @@ -2417,9 +2419,16 @@ static const struct uvc_device_info uvc_quirk_force_y8 = {
->  	.quirks = UVC_QUIRK_FORCE_Y8,
->  };
->  
-> -#define UVC_INFO_QUIRK(q) (kernel_ulong_t)&(struct uvc_device_info){.quirks = q}
-> -#define UVC_INFO_META(m) (kernel_ulong_t)&(struct uvc_device_info) \
-> -	{.meta_format = m}
-> +/* For line 2429 and 2430, The error message indicated that "Macros with complex values should be enclosed in parentheses".
-> + * This typically means that the macro is defined in a way that involves complex expressions or compound literals,
-> + * and the preprocessor requires them to be enclosed in parentheses for clarity and proper evaluation.
-> + * To address this error and comply with the requirement to enclose complex values in parentheses,
-> + * you should wrap the entire expression inside an extra set of parentheses like that:
-> + * #define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
-> + */
-> +#define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
-> +#define UVC_INFO_META(m) ((kernel_ulong_t)&(struct uvc_device_info) \
-> +	{.meta_format = m})
->  
->  /*
->   * The Logitech cameras listed below have their interface class set to
-
--- 
-Regards,
-
-Laurent Pinchart
+IGFyY2gveDg2L2tlcm5lbC9zeXNfeDg2XzY0LmMgfCA0NCArKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrKwogZnMvc3RhdC5jICAgICAgICAgICAgICAgICAgICB8ICAy
+ICstCiBpbmNsdWRlL2xpbnV4L3N0YXQuaCAgICAgICAgIHwgIDIgKysKIDMgZmlsZXMgY2hhbmdl
+ZCwgNDcgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL2FyY2gveDg2
+L2tlcm5lbC9zeXNfeDg2XzY0LmMgYi9hcmNoL3g4Ni9rZXJuZWwvc3lzX3g4Nl82NC5jCmluZGV4
+IGM3ODNhZWIzN2RjZS4uZmNhNjQ3ZjYxYmMxIDEwMDY0NAotLS0gYS9hcmNoL3g4Ni9rZXJuZWwv
+c3lzX3g4Nl82NC5jCisrKyBiL2FyY2gveDg2L2tlcm5lbC9zeXNfeDg2XzY0LmMKQEAgLTIyLDYg
+KzIyLDUwIEBACiAjaW5jbHVkZSA8YXNtL2VsZi5oPgogI2luY2x1ZGUgPGFzbS9pYTMyLmg+CiAK
+K2ludCBjcF9uZXdfc3RhdChzdHJ1Y3Qga3N0YXQgKnN0YXQsIHN0cnVjdCBzdGF0IF9fdXNlciAq
+dWJ1ZikKK3sKKwl0eXBlb2YodWJ1Zi0+c3RfdWlkKSB1aWQ7CisJdHlwZW9mKHVidWYtPnN0X2dp
+ZCkgZ2lkOworCXR5cGVvZih1YnVmLT5zdF9kZXYpIGRldiA9IG5ld19lbmNvZGVfZGV2KHN0YXQt
+PmRldik7CisJdHlwZW9mKHVidWYtPnN0X3JkZXYpIHJkZXYgPSBuZXdfZW5jb2RlX2RldihzdGF0
+LT5yZGV2KTsKKworCVNFVF9VSUQodWlkLCBmcm9tX2t1aWRfbXVuZ2VkKGN1cnJlbnRfdXNlcl9u
+cygpLCBzdGF0LT51aWQpKTsKKwlTRVRfR0lEKGdpZCwgZnJvbV9rZ2lkX211bmdlZChjdXJyZW50
+X3VzZXJfbnMoKSwgc3RhdC0+Z2lkKSk7CisKKwlpZiAoIXVzZXJfd3JpdGVfYWNjZXNzX2JlZ2lu
+KHVidWYsIHNpemVvZihzdHJ1Y3Qgc3RhdCkpKQorCQlyZXR1cm4gLUVGQVVMVDsKKworCXVuc2Fm
+ZV9wdXRfdXNlcihkZXYsCQkJJnVidWYtPnN0X2RldiwJCUVmYXVsdCk7CisJdW5zYWZlX3B1dF91
+c2VyKHN0YXQtPmlubywJCSZ1YnVmLT5zdF9pbm8sCQlFZmF1bHQpOworCXVuc2FmZV9wdXRfdXNl
+cihzdGF0LT5ubGluaywJCSZ1YnVmLT5zdF9ubGluaywJRWZhdWx0KTsKKworCXVuc2FmZV9wdXRf
+dXNlcihzdGF0LT5tb2RlLAkJJnVidWYtPnN0X21vZGUsCQlFZmF1bHQpOworCXVuc2FmZV9wdXRf
+dXNlcih1aWQsCQkJJnVidWYtPnN0X3VpZCwJCUVmYXVsdCk7CisJdW5zYWZlX3B1dF91c2VyKGdp
+ZCwJCQkmdWJ1Zi0+c3RfZ2lkLAkJRWZhdWx0KTsKKwl1bnNhZmVfcHV0X3VzZXIoMCwJCQkmdWJ1
+Zi0+X19wYWQwLAkJRWZhdWx0KTsKKwl1bnNhZmVfcHV0X3VzZXIocmRldiwJCQkmdWJ1Zi0+c3Rf
+cmRldiwJCUVmYXVsdCk7CisJdW5zYWZlX3B1dF91c2VyKHN0YXQtPnNpemUsCQkmdWJ1Zi0+c3Rf
+c2l6ZSwJCUVmYXVsdCk7CisJdW5zYWZlX3B1dF91c2VyKHN0YXQtPmJsa3NpemUsCQkmdWJ1Zi0+
+c3RfYmxrc2l6ZSwJRWZhdWx0KTsKKwl1bnNhZmVfcHV0X3VzZXIoc3RhdC0+YmxvY2tzLAkJJnVi
+dWYtPnN0X2Jsb2NrcywJRWZhdWx0KTsKKworCXVuc2FmZV9wdXRfdXNlcihzdGF0LT5hdGltZS50
+dl9zZWMsCSZ1YnVmLT5zdF9hdGltZSwJRWZhdWx0KTsKKwl1bnNhZmVfcHV0X3VzZXIoc3RhdC0+
+YXRpbWUudHZfbnNlYywJJnVidWYtPnN0X2F0aW1lX25zZWMsCUVmYXVsdCk7CisJdW5zYWZlX3B1
+dF91c2VyKHN0YXQtPm10aW1lLnR2X3NlYywJJnVidWYtPnN0X210aW1lLAlFZmF1bHQpOworCXVu
+c2FmZV9wdXRfdXNlcihzdGF0LT5tdGltZS50dl9uc2VjLAkmdWJ1Zi0+c3RfbXRpbWVfbnNlYywJ
+RWZhdWx0KTsKKwl1bnNhZmVfcHV0X3VzZXIoc3RhdC0+Y3RpbWUudHZfc2VjLAkmdWJ1Zi0+c3Rf
+Y3RpbWUsCUVmYXVsdCk7CisJdW5zYWZlX3B1dF91c2VyKHN0YXQtPmN0aW1lLnR2X25zZWMsCSZ1
+YnVmLT5zdF9jdGltZV9uc2VjLAlFZmF1bHQpOworCXVuc2FmZV9wdXRfdXNlcigwLAkJCSZ1YnVm
+LT5fX3VudXNlZFswXSwJRWZhdWx0KTsKKwl1bnNhZmVfcHV0X3VzZXIoMCwJCQkmdWJ1Zi0+X191
+bnVzZWRbMV0sCUVmYXVsdCk7CisJdW5zYWZlX3B1dF91c2VyKDAsCQkJJnVidWYtPl9fdW51c2Vk
+WzJdLAlFZmF1bHQpOworCisJdXNlcl93cml0ZV9hY2Nlc3NfZW5kKCk7CisJcmV0dXJuIDA7CisK
+K0VmYXVsdDoKKwl1c2VyX3dyaXRlX2FjY2Vzc19lbmQoKTsKKwlyZXR1cm4gLUVGQVVMVDsKK30K
+KwogLyoKICAqIEFsaWduIGEgdmlydHVhbCBhZGRyZXNzIHRvIGF2b2lkIGFsaWFzaW5nIGluIHRo
+ZSBJJCBvbiBBTUQgRjE1aC4KICAqLwpkaWZmIC0tZ2l0IGEvZnMvc3RhdC5jIGIvZnMvc3RhdC5j
+CmluZGV4IGUxODdkYzc5YTMxMy4uNzgyYWQ2NDZlZDI3IDEwMDY0NAotLS0gYS9mcy9zdGF0LmMK
+KysrIGIvZnMvc3RhdC5jCkBAIC00MTUsNyArNDE1LDcgQEAgU1lTQ0FMTF9ERUZJTkUyKGZzdGF0
+LCB1bnNpZ25lZCBpbnQsIGZkLCBzdHJ1Y3QgX19vbGRfa2VybmVsX3N0YXQgX191c2VyICosIHN0
+YXQKICMgIGRlZmluZSBJTklUX1NUUlVDVF9TVEFUX1BBRERJTkcoc3QpIG1lbXNldCgmc3QsIDAs
+IHNpemVvZihzdCkpCiAjZW5kaWYKIAotc3RhdGljIGludCBjcF9uZXdfc3RhdChzdHJ1Y3Qga3N0
+YXQgKnN0YXQsIHN0cnVjdCBzdGF0IF9fdXNlciAqc3RhdGJ1ZikKK2ludCBfX3dlYWsgY3BfbmV3
+X3N0YXQoc3RydWN0IGtzdGF0ICpzdGF0LCBzdHJ1Y3Qgc3RhdCBfX3VzZXIgKnN0YXRidWYpCiB7
+CiAJc3RydWN0IHN0YXQgdG1wOwogCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L3N0YXQuaCBi
+L2luY2x1ZGUvbGludXgvc3RhdC5oCmluZGV4IDUyMTUwNTcwZDM3YS4uZjYxOTlhYTNlMWNiIDEw
+MDY0NAotLS0gYS9pbmNsdWRlL2xpbnV4L3N0YXQuaAorKysgYi9pbmNsdWRlL2xpbnV4L3N0YXQu
+aApAQCAtNjMsNCArNjMsNiBAQCBzdHJ1Y3Qga3N0YXQgewogLyogZmlsZSBhdHRyaWJ1dGUgdmFs
+dWVzICovCiAjZGVmaW5lIFNUQVRYX0FUVFJfQ0hBTkdFX01PTk9UT05JQwkweDgwMDAwMDAwMDAw
+MDAwMDBVTEwgLyogdmVyc2lvbiBtb25vdG9uaWNhbGx5IGluY3JlYXNlcyAqLwogCitpbnQgY3Bf
+bmV3X3N0YXQoc3RydWN0IGtzdGF0ICpzdGF0LCBzdHJ1Y3Qgc3RhdCBfX3VzZXIgKnVidWYpOwor
+CiAjZW5kaWYK
+--0000000000003d367906047ac2bc--
