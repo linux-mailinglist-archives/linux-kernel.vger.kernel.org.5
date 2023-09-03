@@ -2,96 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C931790DEB
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA1F790DED
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 22:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347836AbjICUnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 16:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38400 "EHLO
+        id S235956AbjICUnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 16:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234197AbjICUnE (ORCPT
+        with ESMTP id S234197AbjICUnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 16:43:04 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92E9CB7
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 13:42:59 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-68a3d2ff211so269514b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 13:42:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693773779; x=1694378579; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=JXGibZhd0taTVixrbZSCfRr4hu2j540PY4zKf4Qgo58=;
-        b=qDuCFzRjUG/GedIupVDYshmSd+W54Ypz3JyEXJ2Iaw5BNV6vq4km287CKLJW5jtZ3Q
-         /7YfjEbhv0F7UE4XW8LW6hmOEebwf2urVfiXRWWgUrNeIiGOm8MFjy5NIsmqG6+Fb/iD
-         xUWKm0yQRt5h4VvcdU4o49Ll33QR7693CRtFXivfI83LSK7PraL+rsASpVEnRGXBlUCU
-         lIEdMTH6VS6kAQcLFvE3FritnRXPrhiF9OJ47NhHCcLdQ72g5qynUN3ZPltvlbzefXya
-         20nkXDCxyUY8vGBBq66pQH+vJYOOaG6bQ2GTqcw5HltVxsQn6LUnlHePL4boOQd86Yo9
-         9XHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693773779; x=1694378579;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JXGibZhd0taTVixrbZSCfRr4hu2j540PY4zKf4Qgo58=;
-        b=NIDPTdtWTP/fjg8TYDI4cnU4y1yGFA9g80TnUIGOTqEVoq663zhRPX6nq0dbRrPrOe
-         MthySUnqSbiHNqG2dUn9SjiZCZlVCzXiqcmzdcsmIk9Nnx2iL7Jhm8CbuZVyqOiTOexr
-         B8yYOB5kEeQnwIpl7g+uT/wti+3A0kJQ6r1FxC7kcNsMKC0Jq0VL5dYgc+NCkbcRmheH
-         dPN8Br7R7mv6FJJd/rYd4joXJchM7AXXxGmsazh5xHnvrcxpLNkMMI26+PA+jUFqfHPK
-         a8n+2krF+o0oYq0Mt3nPYthLitOhqQJH9rtsyvKaRDXdxEkWmAb1bl+6aZEg6BIdPVsr
-         08hQ==
-X-Gm-Message-State: AOJu0YyIQCHUrVSCxsUj7lTjgwkIOBKx4tCC/f/K546X974Tp2Xw5Xv9
-        bs41Ad6xDrA8dVDZMoQ1/GE=
-X-Google-Smtp-Source: AGHT+IEl/L3QwigXqov3uKrxBkYzCdkY4ftulgTGmAw6jpo6bKLg3RqHvGRD8LIvaAnuGh1aLipqNQ==
-X-Received: by 2002:a17:902:e745:b0:1b8:9fc4:2733 with SMTP id p5-20020a170902e74500b001b89fc42733mr10325866plf.3.1693773778714;
-        Sun, 03 Sep 2023 13:42:58 -0700 (PDT)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id 8-20020a17090a018800b002633fa95ac2sm8463749pjc.13.2023.09.03.13.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 13:42:58 -0700 (PDT)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     arve@android.com, tkjos@android.com, maco@android.com,
-        joel@joelfernandes.org, brauner@kernel.org, cmllamas@google.com,
-        surenb@google.com, linux-kernel@vger.kernel.org,
-        Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] binderfs: fix typo in binderfs.c
-Date:   Mon,  4 Sep 2023 04:42:50 +0800
-Message-Id: <20230903204250.2697370-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sun, 3 Sep 2023 16:43:09 -0400
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.85.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA39103
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 13:43:06 -0700 (PDT)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-286-_YuK4C4IP2q1PYjAxiCTSA-1; Sun, 03 Sep 2023 21:43:03 +0100
+X-MC-Unique: _YuK4C4IP2q1PYjAxiCTSA-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Sun, 3 Sep
+ 2023 21:42:55 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Sun, 3 Sep 2023 21:42:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Mateusz Guzik' <mjguzik@gmail.com>
+CC:     "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>
+Subject: RE: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+Thread-Topic: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+Thread-Index: AQHZ23Vdq8Esj5k0zUGYupOb09r6RrAF7nHAgAAb1ICAABQQEA==
+Date:   Sun, 3 Sep 2023 20:42:55 +0000
+Message-ID: <9a5dd401bf154a0aace0e5f781a3580c@AcuMS.aculab.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com>
+ <27ba3536633c4e43b65f1dcd0a82c0de@AcuMS.aculab.com>
+ <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
+In-Reply-To: <CAGudoHHUWZNz0OU5yCqOBkeifSYKhm4y6WO1x+q5pDPt1j3+GA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The word "wich"
-was corrected to "which" for spelling accuracy.
-
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
----
- drivers/android/binderfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
-index 81effec17b3d..ae2a8413ec12 100644
---- a/drivers/android/binderfs.c
-+++ b/drivers/android/binderfs.c
-@@ -93,7 +93,7 @@ bool is_binderfs_device(const struct inode *inode)
- /**
-  * binderfs_binder_device_create - allocate inode from super block of a
-  *                                 binderfs mount
-- * @ref_inode: inode from wich the super block will be taken
-+ * @ref_inode: inode from which the super block will be taken
-  * @userp:     buffer to copy information about new device for userspace to
-  * @req:       struct binderfs_device as copied from userspace
-  *
--- 
-2.25.1
+Li4uDQo+IFdoZW4gSSB3YXMgcGxheWluZyB3aXRoIHRoaXMgc3R1ZmYgYWJvdXQgNSB5ZWFycyBh
+Z28gSSBmb3VuZCAzMi1ieXRlDQo+IGxvb3BzIHRvIGJlIG9wdGltYWwgZm9yIHVhcmNocyBvZiB0
+aGUgcHJpb2QgKFNreWxha2UsIEJyb2Fkd2VsbCwNCj4gSGFzd2VsbCBhbmQgc28gb24pLCBidXQg
+b25seSB1cCB0byBhIHBvaW50IHdoZXJlIHJlcCB3aW5zLg0KDQpEb2VzIHRoZSAncmVwIG1vdnNx
+JyBldmVyIGFjdHVhbGx5IHdpbj8NCihVbmxlc3MgeW91IGZpbmQgb25lIG9mIHRoZSBFTVJTIChv
+ciBzaW1pbGFyKSB2ZXJzaW9ucy4pDQpJSVJDIGl0IG9ubHkgZXZlciBkb2VzIG9uZSBpdGVyYXRp
+b24gcGVyIGNsb2NrIC0gYW5kIHlvdQ0Kc2hvdWxkIGJlIGFibGUgdG8gbWF0Y2ggdGhhdCB3aXRo
+IGEgY2FyZWZ1bGx5IGNvbnN0cnVjdGVkIGxvb3AuDQoNCk1hbnkgeWVhcnMgYWdvIEkgZ290IG15
+IEF0aGxvbi03MDAgdG8gZXhlY3V0ZSBhIGNvcHkgbG9vcA0KYXMgZmFzdCBhcyAncmVwIG1vdnMn
+IC0gYnV0IHRoZSBzZXR1cCB0aW1lcyB3ZXJlIGxvbmdlci4NCg0KVGhlIGtpbGxlciBmb3IgJ3Jl
+cCBtb3ZzJyBzZXR1cCB3YXMgYWx3YXlzIFA0LW5ldGJ1cnN0IC0gb3ZlciA0MCBjbG9ja3MuDQpC
+dXQgSSB0aGluayBzb21lIG9mIHRoZSBtb3JlIHJlY2VudCBjcHUgYXJlIHN0aWxsIGluIGRvdWJs
+ZSBmaWd1cmVzDQooYXBhcnQgZnJvbSBzb21lIG9wdGltaXNlZCBjb3BpZXMpLg0KU28gSSdtIG5v
+dCBhY3R1YWxseSBzdXJlIHlvdSBzaG91bGQgZXZlciBuZWVkIHRvIHN3aXRjaA0KdG8gYSAncmVw
+IG1vdnNxJyBsb29wIC0gYnV0IEkndmUgbm90IHRyaWVkIHRvIHdyaXRlIGl0Lg0KDQpJIGRpZCBo
+YXZlIHRvIHVucm9sbCB0aGUgaXAtY2tzdW0gbG9vcCA0IHRpbWVzIChhcyk6DQorICAgICAgIGFz
+bSggICAgIiAgICAgICBidCAgICAkNCwgJVtsZW5dXG4iDQorICAgICAgICAgICAgICAgIiAgICAg
+ICBqbmMgICAxMGZcbiINCisgICAgICAgICAgICAgICAiICAgICAgIGFkZCAgICglW2J1ZmZdLCAl
+W2xlbl0pLCAlW3N1bV8wXVxuIg0KKyAgICAgICAgICAgICAgICIgICAgICAgYWRjICAgOCglW2J1
+ZmZdLCAlW2xlbl0pLCAlW3N1bV8xXVxuIg0KKyAgICAgICAgICAgICAgICIgICAgICAgbGVhICAg
+MTYoJVtsZW5dKSwgJVtsZW5dXG4iDQorICAgICAgICAgICAgICAgIjEwOiAgICBqZWN4eiAyMGZc
+biIgICAvLyAlW2xlbl0gaXMgJXJjeA0KKyAgICAgICAgICAgICAgICIgICAgICAgYWRjICAgKCVb
+YnVmZl0sICVbbGVuXSksICVbc3VtXzBdXG4iDQorICAgICAgICAgICAgICAgIiAgICAgICBhZGMg
+ICA4KCVbYnVmZl0sICVbbGVuXSksICVbc3VtXzFdXG4iDQorICAgICAgICAgICAgICAgIiAgICAg
+ICBsZWEgICAzMiglW2xlbl0pLCAlW2xlbl90bXBdXG4iDQorICAgICAgICAgICAgICAgIiAgICAg
+ICBhZGMgICAxNiglW2J1ZmZdLCAlW2xlbl0pLCAlW3N1bV8wXVxuIg0KKyAgICAgICAgICAgICAg
+ICIgICAgICAgYWRjICAgMjQoJVtidWZmXSwgJVtsZW5dKSwgJVtzdW1fMV1cbiINCisgICAgICAg
+ICAgICAgICAiICAgICAgIG1vdiAgICVbbGVuX3RtcF0sICVbbGVuXVxuIg0KKyAgICAgICAgICAg
+ICAgICIgICAgICAgam1wICAgMTBiXG4iDQorICAgICAgICAgICAgICAgIjIwOiAgICBhZGMgICAl
+W3N1bV8wXSwgJVtzdW1dXG4iDQorICAgICAgICAgICAgICAgIiAgICAgICBhZGMgICAlW3N1bV8x
+XSwgJVtzdW1dXG4iDQorICAgICAgICAgICAgICAgIiAgICAgICBhZGMgICAkMCwgJVtzdW1dXG4i
+DQpJbiBvcmRlciB0byBnZXQgb25lIGFkYyBldmVyeSBjbG9jay4NCkJ1dCBvbmx5IGJlY2F1c2Ug
+b2YgdGhlIHN0cmFuZ2UgbG9vcCByZXF1aXJlZCB0byAnbG9vcCBjYXJyeScgdGhlDQpjYXJyeSBm
+bGFnICh0aGUgJ2xvb3AnIGluc3RydWN0aW9uIGlzIE9LIG9uIEFNRCBjcHUsIGJ1dCBub3Qgb24g
+SW50ZWwuKQ0KQSBzaW1pbGFyIGxvb3AgdXNpbmcgYWRveCBhbmQgYWRjeCB3aWxsIGJlYXQgb25l
+IHJlYWQvY2xvY2sNCnByb3ZpZGVkIGl0IGlzIHVucm9sbGVkIGFnYWluLg0KKElJUkMgSSBnb3Qg
+dG8gYWJvdXQgMTIgYnl0ZXMvY2xvY2suKQ0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRy
+ZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1L
+MSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
