@@ -2,75 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0738B790B6D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 11:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B36F4790B70
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 12:11:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236348AbjICJzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 05:55:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34148 "EHLO
+        id S236388AbjICKL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 06:11:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbjICJzn (ORCPT
+        with ESMTP id S236377AbjICKL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 05:55:43 -0400
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9860C91
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 02:55:39 -0700 (PDT)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 3839tKMD028386;
-        Sun, 3 Sep 2023 11:55:20 +0200
-Date:   Sun, 3 Sep 2023 11:55:20 +0200
-From:   Willy Tarreau <w@1wt.eu>
-To:     Ammar Faizi <ammarfaizi2@gnuweeb.org>
-Cc:     Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
-        Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>,
-        David Laight <David.Laight@aculab.com>,
-        Nicholas Rosenberg <inori@vnlx.org>,
-        Michael William Jonathan <moe@gnuweeb.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v3 2/4] tools/nolibc: x86-64: Use `rep stosb` for
- `memset()`
-Message-ID: <ZPRYCERluK66jsLE@1wt.eu>
-References: <20230902133505.2176434-1-ammarfaizi2@gnuweeb.org>
- <20230902133505.2176434-3-ammarfaizi2@gnuweeb.org>
- <CAOG64qNB+aRU+8VCD5MkM4srQaUnTqzZ7rZ8USxVheDAYzgTsQ@mail.gmail.com>
- <ZPOOPjK+z847Ivq4@biznet-home.integral.gnuweeb.org>
- <ZPRBBT1ENJIB0cEp@1wt.eu>
- <a1cea8e2-610a-c17e-22df-b1a23a226f31@gnuweeb.org>
+        Sun, 3 Sep 2023 06:11:27 -0400
+Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DAF10C
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 03:11:23 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id ck4Sq0Dlhv5KTck4SqU8l5; Sun, 03 Sep 2023 12:11:16 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693735876;
+        bh=pYSxdLERm6FegRN8OPQImJFFHzRLF2IYwebwjAKvv44=;
+        h=From:To:Cc:Subject:Date;
+        b=lU56k2SraqBFtjnPVVg8n3TRO2AETyZ8PZ4ZsOtXQ9jlEQ7NzBjETYeyloHBTlseE
+         Kw1Q1aUFASROqv/CNJxZY4qi8A5BWp+GNcxWhqrNJXqLZASE1EfBe/7QSYUvaFVsz/
+         jpAsIzyUJyCjmHrTJPjkqKgtG6F/F2TylX+QybouB+H9eAn0aiP6PbzqcpLE7SFDB+
+         AgbHF0w9TmvoL3oEioO3Kaks6KPCK3Pjd/OEcmG82JMhxHo4zn1W5Qb2muC6FXOVQ9
+         3w/FZx2yotk3MON9BzBkmLucNWX2oO/+aqs0XoIDWv2mKix7Qcca2ATgO9rHC2KgrB
+         ueXdOyY9nKaYw==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 03 Sep 2023 12:11:16 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: [PATCH] phy: sun4i-usb: Fix a W=1 compilation failure
+Date:   Sun,  3 Sep 2023 12:11:06 +0200
+Message-Id: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1cea8e2-610a-c17e-22df-b1a23a226f31@gnuweeb.org>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 03:39:33PM +0700, Ammar Faizi wrote:
-> [ Resend, I sent it using the wrong From address. ]
-> 
-> On 2023/09/03 ??3:17, Willy Tarreau wrote:
-> > On Sun, Sep 03, 2023 at 02:34:22AM +0700, Ammar Faizi wrote:
-> > > On Sun, Sep 03, 2023 at 02:28:18AM +0700, Alviro Iskandar Setiawan wrote:
-> > > > nit: Be consistent. Use \n\t for the memset too.
-> > > 
-> > > Good catch, I'll fix that in v4 revision.
-> > 
-> > Ammar, I'm overall fine with your series. I can as well add the missing \t
-> > to your patch while merging it, or wait for your v4, just let me know.
-> 
-> I'm now traveling and will be available in Jakarta on Monday. Thus, I
-> actually planned to send the v4 revision on Monday.
-> 
-> However, since you don't have further objections to this series, I'll
-> leave the trivial missing bit to you. Please merge this series and I
-> will not send a v4 revision.
+With gcc 12.3.0, when this file is built, we get errors such as:
 
-OK now merged with the \t appended. No need to spend your time on a v4
-anymore.
+drivers/phy/allwinner/phy-sun4i-usb.c: In function ‘sun4i_usb_phy_probe’:
+drivers/phy/allwinner/phy-sun4i-usb.c:790:52: error: ‘_vbus’ directive output may be truncated writing 5 bytes into a region of size between 2 and 12 [-Werror=format-truncation=]
+  790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
+      |                                                    ^~~~~
+drivers/phy/allwinner/phy-sun4i-usb.c:790:17: note: ‘snprintf’ output between 10 and 20 bytes into a destination of size 16
+  790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Thanks!
-Willy
+Because of the possible value of 'i', this can't be an issue in real world
+application, but in order to have "make W=1" work correctly, give more
+space for 'name'.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/phy/allwinner/phy-sun4i-usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+index ec551464dd4f..e53a9a9317bc 100644
+--- a/drivers/phy/allwinner/phy-sun4i-usb.c
++++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+@@ -782,7 +782,7 @@ static int sun4i_usb_phy_probe(struct platform_device *pdev)
+ 
+ 	for (i = 0; i < data->cfg->num_phys; i++) {
+ 		struct sun4i_usb_phy *phy = data->phys + i;
+-		char name[16];
++		char name[32];
+ 
+ 		if (data->cfg->missing_phys & BIT(i))
+ 			continue;
+-- 
+2.34.1
+
