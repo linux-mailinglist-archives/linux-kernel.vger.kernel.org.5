@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F72C790C67
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 16:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F48A790C6B
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 16:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbjICOYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 10:24:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
+        id S236641AbjICO1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 10:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjICOX7 (ORCPT
+        with ESMTP id S229545AbjICO1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 10:23:59 -0400
+        Sun, 3 Sep 2023 10:27:45 -0400
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B67FA;
-        Sun,  3 Sep 2023 07:23:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A5197;
+        Sun,  3 Sep 2023 07:27:42 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id CCA1E216DA;
-        Sun,  3 Sep 2023 14:23:54 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id C804D216DA;
+        Sun,  3 Sep 2023 14:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693751034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1693751260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kXC+3FqTHA/mLgbq2RC3Hciy9DRGxqa82vRW3oFylp0=;
-        b=L4nm2hkUtYLnahhlzqi7c3QjOLM1gtjpY/Ilb/oP/21ePdfXlHLtBiPJbfMFSmJPQHbL/S
-        X1XNK/1FfTXKXzsdjC3sOkcor6z+3+F05SO/j3Sbc1MUdrBEL/R/ERMG4U12NsTOyN7Ujo
-        cy2ZKODj+oYhmVc2oGMdjKEJtWkJzGM=
+        bh=6qMJi4BKyutAvw/lZjnVaXoKuFbBrRnta8D0q30utTs=;
+        b=pH2g3p8N0X88xdBrpz7RJJ5StCgRDlSq6Fkiiu1N0I7mTLoQec0z4x+SbuN6Dgj3z9zEx7
+        b+J+iyzlWXPj+xcAFIzo7iBreNFUSYTfb9zwCsC0QdncI1gSXPoNKZ4UrAosmU+uT04uqM
+        Pb0IlbcT5uwKMOhK7BAAdUAOOvhM35A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693751034;
+        s=susede2_ed25519; t=1693751260;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=kXC+3FqTHA/mLgbq2RC3Hciy9DRGxqa82vRW3oFylp0=;
-        b=sNgjXc1hkIBDJQXwnhjfFDBR7ihql78Wt1v+14Lq/WKOPUVATyfqNxkU1r/yO2LrwOfG6/
-        60PQL6wk2mWtD7Dg==
+        bh=6qMJi4BKyutAvw/lZjnVaXoKuFbBrRnta8D0q30utTs=;
+        b=d6HvFViU48h3ICoKVzNxTgKiYrhiUeKXy665RwBz1a6nVXIQseUnKHJh4fJ/Yrwjlvatla
+        aj5Sr6wo6aJunrDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A244E13583;
-        Sun,  3 Sep 2023 14:23:54 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8D7A013583;
+        Sun,  3 Sep 2023 14:27:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id dXG0JvqW9GRIcgAAMHmgww
-        (envelope-from <tiwai@suse.de>); Sun, 03 Sep 2023 14:23:54 +0000
-Date:   Sun, 03 Sep 2023 16:23:54 +0200
-Message-ID: <871qffmj2d.wl-tiwai@suse.de>
+        id fG7JINyX9GR0cwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sun, 03 Sep 2023 14:27:40 +0000
+Date:   Sun, 03 Sep 2023 16:27:40 +0200
+Message-ID: <87zg23l4bn.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
 To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        alsa-devel@alsa-project.org
-Subject: Re: [PATCH] ALSA: usb-audio: Fix a potential memory leak in scarlett2_init_notify()
-In-Reply-To: <fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr>
-References: <fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr>
+Cc:     "Geoffrey D. Bennett" <g@b4.vu>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: scarlett2: Fix a potential memory leak in scarlett2_init_notify()
+In-Reply-To: <73aab53d53df156a5df2bc61314ff26448526749.1693744859.git.christophe.jaillet@wanadoo.fr>
+References: <73aab53d53df156a5df2bc61314ff26448526749.1693744859.git.christophe.jaillet@wanadoo.fr>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
@@ -69,13 +69,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 Sep 2023 15:06:00 +0200,
+On Sun, 03 Sep 2023 14:41:45 +0200,
 Christophe JAILLET wrote:
 > 
-> If usb_alloc_coherent() or usb_urb_ep_type_check() fail, we should release
-> the resources previously allocated.
+> If kmalloc() fails, we should release 'mixer->urb'.
 
-Those are freed in the caller side, start_input_streams() instead.
+This is released at the common error path in mixer.c,
+snd_usb_mixer_free(), hence it's not needed.
+
+And, even if freeing here, you must NULL-clear mixer->urb, too;
+otherwise it'll lead to double-free.
 
 
 thanks,
@@ -83,60 +86,28 @@ thanks,
 Takashi
 
 > 
-> Fixes: ff49d1df79ae ("ALSA: usb-audio: USB MIDI 2.0 UMP support")
+> Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
 > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  sound/usb/midi2.c | 17 ++++++++++++++---
->  1 file changed, 14 insertions(+), 3 deletions(-)
+>  sound/usb/mixer_scarlett_gen2.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
-> diff --git a/sound/usb/midi2.c b/sound/usb/midi2.c
-> index a27e244650c8..4109c82adff6 100644
-> --- a/sound/usb/midi2.c
-> +++ b/sound/usb/midi2.c
-> @@ -302,7 +302,8 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
->  		ctx->urb = usb_alloc_urb(0, GFP_KERNEL);
->  		if (!ctx->urb) {
->  			dev_err(&ep->dev->dev, "URB alloc failed\n");
-> -			return -ENOMEM;
-> +			err = -ENOMEM;
-> +			goto err_free_all;
->  		}
->  		ctx->ep = ep;
->  		buffer = usb_alloc_coherent(ep->dev, len, GFP_KERNEL,
-> @@ -310,7 +311,8 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
->  		if (!buffer) {
->  			dev_err(&ep->dev->dev,
->  				"URB buffer alloc failed (size %d)\n", len);
-> -			return -ENOMEM;
-> +			err = -ENOMEM;
-> +			goto err_free_cur_urb;
->  		}
->  		if (ep->interval)
->  			usb_fill_int_urb(ctx->urb, ep->dev, ep->pipe,
-> @@ -322,13 +324,22 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
->  		if (err < 0) {
->  			dev_err(&ep->dev->dev, "invalid MIDI EP %x\n",
->  				endpoint);
-> -			return err;
-> +			goto err_free_cur_dma;
->  		}
->  		ctx->urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
->  		ep->num_urbs++;
->  	}
->  	ep->urb_free = ep->urb_free_mask = GENMASK(ep->num_urbs - 1, 0);
->  	return 0;
-> +
-> +err_free_cur_dma:
-> +	usb_free_coherent(ep->dev, len, buffer, ctx->urb->transfer_dma);
-> +err_free_cur_urb:
-> +	usb_free_urb(ctx->urb);
-> +	ctx->urb = NULL;
-> +err_free_all:
-> +	free_midi_urbs(ep);
-> +	return err;
->  }
+> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+> index 9d11bb08667e..a439c7f64b2e 100644
+> --- a/sound/usb/mixer_scarlett_gen2.c
+> +++ b/sound/usb/mixer_scarlett_gen2.c
+> @@ -4060,8 +4060,10 @@ static int scarlett2_init_notify(struct usb_mixer_interface *mixer)
+>  		return -ENOMEM;
 >  
->  static struct snd_usb_midi2_endpoint *
+>  	transfer_buffer = kmalloc(private->wMaxPacketSize, GFP_KERNEL);
+> -	if (!transfer_buffer)
+> +	if (!transfer_buffer) {
+> +		usb_free_urb(mixer->urb);
+>  		return -ENOMEM;
+> +	}
+>  
+>  	usb_fill_int_urb(mixer->urb, dev, pipe,
+>  			 transfer_buffer, private->wMaxPacketSize,
 > -- 
 > 2.34.1
 > 
