@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0375C790D70
+	by mail.lfdr.de (Postfix) with ESMTP id 507F7790D71
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 20:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345004AbjICSqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 14:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47434 "EHLO
+        id S1345287AbjICSqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 14:46:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343686AbjICSqT (ORCPT
+        with ESMTP id S1345063AbjICSqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 14:46:19 -0400
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC4810C
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 11:46:15 -0700 (PDT)
-Received: by mail-il1-x12b.google.com with SMTP id e9e14a558f8ab-34dec9c77d4so3044325ab.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 11:46:15 -0700 (PDT)
+        Sun, 3 Sep 2023 14:46:22 -0400
+Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D41E106
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 11:46:19 -0700 (PDT)
+Received: by mail-il1-x12f.google.com with SMTP id e9e14a558f8ab-34e15f33a72so2712725ab.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 11:46:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693766774; x=1694371574; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693766778; x=1694371578; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7joZjSDNylfwIjlN/v1EJKsLNVMUogPTU5+zZ+4Y2sA=;
-        b=k3upxpdE+n3eEtG5UDvl1fWBr8ywOcY4pq6/5laEhs50V4wEVXZf6gkcWDJDOE7rXg
-         zywgJxOJUPwMJR0KlFA5xPcJqB+z8QYCJutV0QAdHs9Uu8ZjGFDEetrEm/wNms+pz8BN
-         ydGRb180fzgOJs1aVx40sHKXQliVREXC3oqyYN8z5uDdJc2VhJJMPLkaRKotamcRvy6k
-         JfEZIFPTZCQ4w/h4VURANPWuK5C68u1wmqYNHm9AkbIFwON8Hp7ONhhHpBoiKdo2Z3PP
-         XccF5RDpLkBCNPrfWWAWko3HNhQbu13/FtQYYKrRRW/oi7ZtwDX0CMh8OB5sRs+PuOPq
-         my4w==
+        bh=NxH9YviFYJ/sVQ921jdxmjDcbIQzwn47fQGdVFEkDL8=;
+        b=cq2HZh6b6GOnYbpYSHO1Dys1aYQihbKjqPAMpuzxFXKVDm/pdguK127Nq4DEJ5kens
+         T0Z+zVXFtWI2oHobxBnkAo9UvFlq37hB4lVoqx0LIOIAlDXfg9Wt4vi5c0i+7keC+FvH
+         AUv+ssSiLlSLmShjb5d7rn8V5jM56BooLPhSfIVfFxzk9JfDDk/0+HZAbbevd77S0Nej
+         UJ1mKR7R4iC0/DF5JNnPyE6/h5D8Y9dZi9Iiu5gKRBQyet+jTvkjIvW4PKWrE36SHhMv
+         038MijQHxUSv8e2/Eqqi9qY5/v9FK3uCuw12atSxnc3A5KMLwDysrTdnyNYdiJhw642o
+         Bp6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693766774; x=1694371574;
+        d=1e100.net; s=20221208; t=1693766778; x=1694371578;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7joZjSDNylfwIjlN/v1EJKsLNVMUogPTU5+zZ+4Y2sA=;
-        b=Q3yI9+QFuTAQjAIUmiJg56455KDoMhBUT5WS5KZE8xI6/Q5AmMoHlIN1Ic5SHMEJFX
-         54rz/Lhdc5XxatZaOWRcH5uicLrOXPJ6bMnFcrGMvilVH718manY9wgH4AwQxE9gHWMA
-         tlxA9bMcvHTWiHdwgMlqo7vztJaZ2fONFHmpbnRQT0Lb+f1L8GtiWaOYQB+epyrJLqxe
-         Nc0PMHvsux+lXN+i47IxDFGn51COPYeuH/dHboUxa6f31lyEDdIBiZU4L7Ha+19VEsKF
-         PEGXSeQ3MD86gVD4M1mR9j7Fu540MnkzzDI2evMgtGhc0P4rbkg3dEjSwlbsLRdgOkOQ
-         MUHw==
-X-Gm-Message-State: AOJu0Yw6xXUDvvV+3xAAp5+fDW/ouBddgQNtd5bSi/hmiy8wX3hwZgr9
-        eU/SJM7gHdv6YGb/YZ+lczRNad2L+QS0Hg==
-X-Google-Smtp-Source: AGHT+IHUzoCTyhxdX6icAGEBT8dXiH/ioOo1c7WiBYkDqk/qvBXBfPW/4NAojWOMT3RGaqLcGBJwug==
-X-Received: by 2002:a05:6e02:964:b0:34c:abcb:97e8 with SMTP id q4-20020a056e02096400b0034cabcb97e8mr7956738ilt.24.1693766774237;
-        Sun, 03 Sep 2023 11:46:14 -0700 (PDT)
+        bh=NxH9YviFYJ/sVQ921jdxmjDcbIQzwn47fQGdVFEkDL8=;
+        b=PbkR5aEeZBt4XFBir9R8UNk7K2Mcm1lEMNJL56ws8khrJ0/finOTPl+Oz8FqgwIQWi
+         2c+gePWOrp6Khb+5VG0kUAmRnBSW0tFdQY5beBWW/qd1u/hhQHuapZT2dZRh5OZrD1B0
+         jWIOShKipYZssDx+Tm9jL/cpdRB3SNYE4tEaXremtBtVyvPshjMk/hTSapsVKK4p4WZO
+         hvP6/49ab8Z3jg581/SHFddgDRZOfTsNxXir+Zf83cDQtlVNE7vfswq36kBra775URaG
+         y+2RcqpSFXCezKfhmGnWgDIFYH0GdTWozi+3vXsniuBe439hDPsPVN4QMtDxjTTbNaIt
+         EyaA==
+X-Gm-Message-State: AOJu0Yzbp3Ba/jSq9qam6HG6CpMRoFaaoS2g686Yo8D0BP+Rkkb/E+3H
+        FiVRf95eDY4ubhCcI1uQNxisGsiqvvdlQg==
+X-Google-Smtp-Source: AGHT+IFaoNhYGsbvB6jznT4bSDBnIoFY2jvJJdHmVHBwkTi3nPyjBv03yWffGFhGkV6csSuj+h269g==
+X-Received: by 2002:a92:dad2:0:b0:34d:e998:fb4f with SMTP id o18-20020a92dad2000000b0034de998fb4fmr7949087ilq.10.1693766778270;
+        Sun, 03 Sep 2023 11:46:18 -0700 (PDT)
 Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id u9-20020a02cb89000000b0042b37dda71asm2519968jap.136.2023.09.03.11.46.13
+        by smtp.googlemail.com with ESMTPSA id u9-20020a02cb89000000b0042b37dda71asm2519968jap.136.2023.09.03.11.46.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 11:46:13 -0700 (PDT)
+        Sun, 03 Sep 2023 11:46:17 -0700 (PDT)
 From:   Jim Cromie <jim.cromie@gmail.com>
 To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
@@ -57,12 +57,26 @@ To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
 Cc:     daniel.vetter@ffwll.ch, daniel@ffwll.ch, jani.nikula@intel.com,
         ville.syrjala@linux.intel.com, seanpaul@chromium.org,
         robdclark@gmail.com, Jim Cromie <jim.cromie@gmail.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Edmund Dea <edmund.j.dea@intel.com>,
-        David Airlie <airlied@gmail.com>
-Subject: [PATCH v2 2/6] drm_dbg: add trailing newlines to msgs
-Date:   Sun,  3 Sep 2023 12:45:59 -0600
-Message-ID: <20230903184607.272198-3-jim.cromie@gmail.com>
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Radhakrishna Sripada <radhakrishna.sripada@intel.com>,
+        Mika Kahola <mika.kahola@intel.com>,
+        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
+        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Andi Shyti <andi.shyti@linux.intel.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Fei Yang <fei.yang@intel.com>
+Subject: [PATCH v2 3/6] drm_dbg: add trailing newlines to msgs
+Date:   Sun,  3 Sep 2023 12:46:00 -0600
+Message-ID: <20230903184607.272198-4-jim.cromie@gmail.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230903184607.272198-1-jim.cromie@gmail.com>
 References: <20230903184607.272198-1-jim.cromie@gmail.com>
@@ -89,83 +103,45 @@ No functional changes.
 
 Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
 ---
- drivers/gpu/drm/kmb/kmb_crtc.c  | 10 +++++-----
- drivers/gpu/drm/kmb/kmb_plane.c |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/i915/display/intel_ddi.c       | 2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/kmb/kmb_crtc.c b/drivers/gpu/drm/kmb/kmb_crtc.c
-index 647872f65bff..a58baf25322d 100644
---- a/drivers/gpu/drm/kmb/kmb_crtc.c
-+++ b/drivers/gpu/drm/kmb/kmb_crtc.c
-@@ -94,7 +94,7 @@ static void kmb_crtc_set_mode(struct drm_crtc *crtc,
- 	vm.hback_porch = 0;
- 	vm.hsync_len = 28;
+diff --git a/drivers/gpu/drm/i915/display/intel_ddi.c b/drivers/gpu/drm/i915/display/intel_ddi.c
+index 090f242e610c..0a196348e2d1 100644
+--- a/drivers/gpu/drm/i915/display/intel_ddi.c
++++ b/drivers/gpu/drm/i915/display/intel_ddi.c
+@@ -4171,7 +4171,7 @@ static int intel_ddi_compute_config_late(struct intel_encoder *encoder,
+ 	struct drm_connector *connector = conn_state->connector;
+ 	u8 port_sync_transcoders = 0;
  
--	drm_dbg(dev, "%s : %dactive height= %d vbp=%d vfp=%d vsync-w=%d h-active=%d h-bp=%d h-fp=%d hsync-l=%d",
-+	drm_dbg(dev, "%s : %dactive height= %d vbp=%d vfp=%d vsync-w=%d h-active=%d h-bp=%d h-fp=%d hsync-l=%d\n",
- 		__func__, __LINE__,
- 			m->crtc_vdisplay, vm.vback_porch, vm.vfront_porch,
- 			vm.vsync_len, m->crtc_hdisplay, vm.hback_porch,
-@@ -194,24 +194,24 @@ static enum drm_mode_status
- 	int vfp = mode->vsync_start - mode->vdisplay;
+-	drm_dbg_kms(&i915->drm, "[ENCODER:%d:%s] [CRTC:%d:%s]",
++	drm_dbg_kms(&i915->drm, "[ENCODER:%d:%s] [CRTC:%d:%s]\n",
+ 		    encoder->base.base.id, encoder->base.name,
+ 		    crtc_state->uapi.crtc->base.id, crtc_state->uapi.crtc->name);
  
- 	if (mode->vdisplay < KMB_CRTC_MAX_HEIGHT) {
--		drm_dbg(dev, "height = %d less than %d",
-+		drm_dbg(dev, "height = %d less than %d\n",
- 			mode->vdisplay, KMB_CRTC_MAX_HEIGHT);
- 		return MODE_BAD_VVALUE;
- 	}
- 	if (mode->hdisplay < KMB_CRTC_MAX_WIDTH) {
--		drm_dbg(dev, "width = %d less than %d",
-+		drm_dbg(dev, "width = %d less than %d\n",
- 			mode->hdisplay, KMB_CRTC_MAX_WIDTH);
- 		return MODE_BAD_HVALUE;
- 	}
- 	refresh = drm_mode_vrefresh(mode);
- 	if (refresh < KMB_MIN_VREFRESH || refresh > KMB_MAX_VREFRESH) {
--		drm_dbg(dev, "refresh = %d less than %d or greater than %d",
-+		drm_dbg(dev, "refresh = %d less than %d or greater than %d\n",
- 			refresh, KMB_MIN_VREFRESH, KMB_MAX_VREFRESH);
- 		return MODE_BAD;
- 	}
- 
- 	if (vfp < KMB_CRTC_MIN_VFP) {
--		drm_dbg(dev, "vfp = %d less than %d", vfp, KMB_CRTC_MIN_VFP);
-+		drm_dbg(dev, "vfp = %d less than %d\n", vfp, KMB_CRTC_MIN_VFP);
- 		return MODE_BAD;
- 	}
- 
-diff --git a/drivers/gpu/drm/kmb/kmb_plane.c b/drivers/gpu/drm/kmb/kmb_plane.c
-index 9e0562aa2bcb..308bd1cb50c8 100644
---- a/drivers/gpu/drm/kmb/kmb_plane.c
-+++ b/drivers/gpu/drm/kmb/kmb_plane.c
-@@ -78,7 +78,7 @@ static unsigned int check_pixel_format(struct drm_plane *plane, u32 format)
- 	 * plane configuration is not supported.
- 	 */
- 	if (init_disp_cfg.format && init_disp_cfg.format != format) {
--		drm_dbg(&kmb->drm, "Cannot change format after initial plane configuration");
-+		drm_dbg(&kmb->drm, "Cannot change format after initial plane configuration\n");
- 		return -EINVAL;
- 	}
- 	for (i = 0; i < plane->format_count; i++) {
-@@ -124,7 +124,7 @@ static int kmb_plane_atomic_check(struct drm_plane *plane,
- 	if ((init_disp_cfg.width && init_disp_cfg.height) &&
- 	    (init_disp_cfg.width != fb->width ||
- 	    init_disp_cfg.height != fb->height)) {
--		drm_dbg(&kmb->drm, "Cannot change plane height or width after initial configuration");
-+		drm_dbg(&kmb->drm, "Cannot change plane height or width after initial configuration\n");
- 		return -EINVAL;
- 	}
- 	can_position = (plane->type == DRM_PLANE_TYPE_OVERLAY);
-@@ -375,7 +375,7 @@ static void kmb_plane_atomic_update(struct drm_plane *plane,
- 	spin_lock_irq(&kmb->irq_lock);
- 	if (kmb->kmb_under_flow || kmb->kmb_flush_done) {
- 		spin_unlock_irq(&kmb->irq_lock);
--		drm_dbg(&kmb->drm, "plane_update:underflow!!!! returning");
-+		drm_dbg(&kmb->drm, "plane_update:underflow!!!! returning\n");
- 		return;
- 	}
- 	spin_unlock_irq(&kmb->irq_lock);
+diff --git a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+index cfd7929587d8..29c40e8a7183 100644
+--- a/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
++++ b/drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c
+@@ -1436,7 +1436,7 @@ eb_relocate_entry(struct i915_execbuffer *eb,
+ 	if (unlikely(reloc->write_domain & (reloc->write_domain - 1))) {
+ 		drm_dbg(&i915->drm, "reloc with multiple write domains: "
+ 			  "target %d offset %d "
+-			  "read %08x write %08x",
++			  "read %08x write %08x\n",
+ 			  reloc->target_handle,
+ 			  (int) reloc->offset,
+ 			  reloc->read_domains,
+@@ -1447,7 +1447,7 @@ eb_relocate_entry(struct i915_execbuffer *eb,
+ 		     & ~I915_GEM_GPU_DOMAINS)) {
+ 		drm_dbg(&i915->drm, "reloc with read/write non-GPU domains: "
+ 			  "target %d offset %d "
+-			  "read %08x write %08x",
++			  "read %08x write %08x\n",
+ 			  reloc->target_handle,
+ 			  (int) reloc->offset,
+ 			  reloc->read_domains,
 -- 
 2.41.0
 
