@@ -2,66 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C06790CCB
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64999790CCD
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242540AbjICPhb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 11:37:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
+        id S243127AbjICPnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 11:43:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229970AbjICPha (ORCPT
+        with ESMTP id S229970AbjICPnH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 11:37:30 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40E6C7;
-        Sun,  3 Sep 2023 08:37:27 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c1e128135aso3073755ad.3;
-        Sun, 03 Sep 2023 08:37:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693755447; x=1694360247; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=5DfTZHovIdUMYDGPmEpLo2QSNP9WxkZc/VjLrGHKaVw=;
-        b=fwT3FSD7fTPx/j86WS7SFMxQ8HWf15qLapuHKDiqAgtDpA9r5cdjaM5oZOeWEPWzhi
-         aonSbKlsuQe1riNWFptTAw6hHrfG3d2UObfg2kw/y2dVV3QA8RRLk5MSUhrDIBRyrzdr
-         NqGTP852TV4MOdMa70o+86+OU9djIm71jxDW2JyFbZ7DxQpg5pjJsSxpy24H5AJ3xzig
-         6S18uNVKvvCfcbsrKvLkGCCKReaJkBSX0sR9aA1jDZWmmkxBbo4FFFEQ329nuv1ZL/2t
-         YoZZEsAalbhG8trLe8zz+UwaOA6zbTbdDS6pyCutEcS814WaBWDcOpAsSj8X9fvwgVW3
-         LOaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693755447; x=1694360247;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5DfTZHovIdUMYDGPmEpLo2QSNP9WxkZc/VjLrGHKaVw=;
-        b=BeMkJOEQOToSu8MRyMWP1lpkpi5ol7GAaIzpxDn9qqCuN+3lHMq/8qTIfMgL/ZWV3M
-         iOb+SkIMpqcUeHYO09kaqTD27iVNFOXm+dQSiBTkskBK2FKziKXgGQNYCLbR1F1WzfDk
-         wNr7lltY2vohoGCckfTAcIp+H6wWVxad+q/7uLjyaY7KEQSvXrRVNOj8NqSro/swRzkH
-         h5FKB9L2Gou5m/aTNBfQiZ4IuaGpkjphB67kbzP21B0MZeDGGOkpt5h0Vo/dmPVDqUtV
-         O6LQTDxRfxwPunygcOW1Vrz1DTZo6jHsM5vG5Y77GVXnVuiRBCmcXCVBZNhqi6CXImiR
-         C+Sg==
-X-Gm-Message-State: AOJu0YzHQ86XxddneW36zYDaR6QR0LOXHDZznGwAhBvwzLVuDlOWSNEF
-        riuQEU0jL1maAzS/GK8l4g4=
-X-Google-Smtp-Source: AGHT+IE5Z1iNZPydnLBYJhgD3sVTgJOvwuUpePMXEwNvGIyos7aJM3kzjjf4Kq9Pm6xgerSsySzi1w==
-X-Received: by 2002:a17:902:b490:b0:1b8:b3f9:58e5 with SMTP id y16-20020a170902b49000b001b8b3f958e5mr5831083plr.38.1693755446919;
-        Sun, 03 Sep 2023 08:37:26 -0700 (PDT)
-Received: from localhost.localdomain ([2409:40c2:1011:af96:d1f8:ecc9:8e40:2f2])
-        by smtp.gmail.com with ESMTPSA id 21-20020a170902ee5500b001b03cda6389sm6015697plo.10.2023.09.03.08.37.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 08:37:26 -0700 (PDT)
-From:   coolrrsh@gmail.com
-To:     broonie@kernel.org, linux-spi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        Rajeshwar R Shinde <coolrrsh@gmail.com>
-Subject: [PATCH v2] spi: spi-mpc512x-psc: Fix an unsigned comparison that can never be negative
-Date:   Sun,  3 Sep 2023 21:07:20 +0530
-Message-Id: <20230903153720.3801-1-coolrrsh@gmail.com>
+        Sun, 3 Sep 2023 11:43:07 -0400
+Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7BFC798
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:43:03 -0700 (PDT)
+X-IronPort-AV: E=Sophos;i="6.02,224,1688396400"; 
+   d="scan'208";a="178557873"
+Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
+  by relmlie6.idc.renesas.com with ESMTP; 04 Sep 2023 00:43:02 +0900
+Received: from localhost.localdomain (unknown [10.226.92.30])
+        by relmlir6.idc.renesas.com (Postfix) with ESMTP id A1B02400C0EB;
+        Mon,  4 Sep 2023 00:43:00 +0900 (JST)
+From:   Biju Das <biju.das.jz@bp.renesas.com>
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v2] regulator: max20086: Make similar OF and ID table
+Date:   Sun,  3 Sep 2023 16:42:57 +0100
+Message-Id: <20230903154257.70800-1-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+X-Spam-Status: No, score=-1.9 required=5.0 tests=AC_FROM_MANY_DOTS,BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,42 +44,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajeshwar R Shinde <coolrrsh@gmail.com>
+Make similar OF and ID table to extend support for ID match using
+i2c_match_data(). Currently it works only for OF match tables as the
+driver_data is wrong for ID match.
 
-In struct mpc512x_psc_spi, the variable 'irq' is declared as an
-unsigned int. The comparison of variable 'irq'  with signed int
-operand is incorrect. Also, the return value from the call to
-platform_get_irq(pdev,0) is int and it is assigned to an unsigned
-int variable 'irq', thus redeclaring the type of variable 'irq'
-to signed int.
+While at it, drop blank lines before MODULE_DEVICE_TABLE* and remove
+trailing comma in the terminator entry for OF/ID table.
 
-This fixes warning such as:
-drivers/spi/spi-mpc512x-psc.c:493:5-13:
-WARNING: Unsigned expression compared with zero: mps -> irq < 0
-
-Signed-off-by: Rajeshwar R Shinde <coolrrsh@gmail.com>
-
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
-v1->v2
-changed the commit message
+Note:
+ This patch is only compile tested.
 
+v1->v2:
+ * Removed trailing comma in the terminator entry for OF/ID table.
 ---
- drivers/spi/spi-mpc512x-psc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/regulator/max20086-regulator.c | 65 ++++++++++++--------------
+ 1 file changed, 31 insertions(+), 34 deletions(-)
 
-diff --git a/drivers/spi/spi-mpc512x-psc.c b/drivers/spi/spi-mpc512x-psc.c
-index 99aeef28a..5cecca1be 100644
---- a/drivers/spi/spi-mpc512x-psc.c
-+++ b/drivers/spi/spi-mpc512x-psc.c
-@@ -53,7 +53,7 @@ struct mpc512x_psc_spi {
- 	int type;
- 	void __iomem *psc;
- 	struct mpc512x_psc_fifo __iomem *fifo;
--	unsigned int irq;
-+	int irq;
- 	u8 bits_per_word;
- 	u32 mclk_rate;
+diff --git a/drivers/regulator/max20086-regulator.c b/drivers/regulator/max20086-regulator.c
+index 32f47b896fd1..59eb23d467ec 100644
+--- a/drivers/regulator/max20086-regulator.c
++++ b/drivers/regulator/max20086-regulator.c
+@@ -223,7 +223,7 @@ static int max20086_i2c_probe(struct i2c_client *i2c)
+ 		return -ENOMEM;
  
+ 	chip->dev = &i2c->dev;
+-	chip->info = device_get_match_data(chip->dev);
++	chip->info = i2c_get_match_data(i2c);
+ 
+ 	i2c_set_clientdata(i2c, chip);
+ 
+@@ -275,45 +275,42 @@ static int max20086_i2c_probe(struct i2c_client *i2c)
+ 	return 0;
+ }
+ 
+-static const struct i2c_device_id max20086_i2c_id[] = {
+-	{ "max20086" },
+-	{ "max20087" },
+-	{ "max20088" },
+-	{ "max20089" },
+-	{ /* Sentinel */ },
++static const struct max20086_chip_info max20086_chip_info = {
++	.id = MAX20086_DEVICE_ID_MAX20086,
++	.num_outputs = 4,
++};
++
++static const struct max20086_chip_info max20087_chip_info = {
++	.id = MAX20086_DEVICE_ID_MAX20087,
++	.num_outputs = 4,
++};
++
++static const struct max20086_chip_info max20088_chip_info = {
++	.id = MAX20086_DEVICE_ID_MAX20088,
++	.num_outputs = 2,
++};
++
++static const struct max20086_chip_info max20089_chip_info = {
++	.id = MAX20086_DEVICE_ID_MAX20089,
++	.num_outputs = 2,
+ };
+ 
++static const struct i2c_device_id max20086_i2c_id[] = {
++	{ "max20086", (kernel_ulong_t)&max20086_chip_info },
++	{ "max20087", (kernel_ulong_t)&max20087_chip_info },
++	{ "max20088", (kernel_ulong_t)&max20088_chip_info },
++	{ "max20089", (kernel_ulong_t)&max20089_chip_info },
++	{ /* Sentinel */ }
++};
+ MODULE_DEVICE_TABLE(i2c, max20086_i2c_id);
+ 
+ static const struct of_device_id max20086_dt_ids[] __maybe_unused = {
+-	{
+-		.compatible = "maxim,max20086",
+-		.data = &(const struct max20086_chip_info) {
+-			.id = MAX20086_DEVICE_ID_MAX20086,
+-			.num_outputs = 4,
+-		}
+-	}, {
+-		.compatible = "maxim,max20087",
+-		.data = &(const struct max20086_chip_info) {
+-			.id = MAX20086_DEVICE_ID_MAX20087,
+-			.num_outputs = 4,
+-		}
+-	}, {
+-		.compatible = "maxim,max20088",
+-		.data = &(const struct max20086_chip_info) {
+-			.id = MAX20086_DEVICE_ID_MAX20088,
+-			.num_outputs = 2,
+-		}
+-	}, {
+-		.compatible = "maxim,max20089",
+-		.data = &(const struct max20086_chip_info) {
+-			.id = MAX20086_DEVICE_ID_MAX20089,
+-			.num_outputs = 2,
+-		}
+-	},
+-	{ /* Sentinel */ },
++	{ .compatible = "maxim,max20086", .data = &max20086_chip_info },
++	{ .compatible = "maxim,max20087", .data = &max20087_chip_info },
++	{ .compatible = "maxim,max20088", .data = &max20088_chip_info },
++	{ .compatible = "maxim,max20089", .data = &max20089_chip_info },
++	{ /* Sentinel */ }
+ };
+-
+ MODULE_DEVICE_TABLE(of, max20086_dt_ids);
+ 
+ static struct i2c_driver max20086_regulator_driver = {
 -- 
 2.25.1
 
