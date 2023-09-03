@@ -2,127 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67835790EFE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 00:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CD1D790F01
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 00:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347443AbjICWe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 18:34:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37216 "EHLO
+        id S1348319AbjICWhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 18:37:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240826AbjICWey (ORCPT
+        with ESMTP id S240826AbjICWhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 18:34:54 -0400
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DADDA
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 15:34:50 -0700 (PDT)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-5007c8308c3so1343076e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:34:50 -0700 (PDT)
+        Sun, 3 Sep 2023 18:37:21 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB02C4
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 15:37:18 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4e6so1080446a12.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:37:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693780489; x=1694385289; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dIOhRbp78FSnOot0tcIQifKv7xD8tI587HuZagI+zEw=;
-        b=LhvuAtqIpB3LdbApLuASiRn+SSHgieWvuNe8wYLIbioMm5YlBC+u+jhk+F0fQwQk7i
-         V2sYxlAVl4m+BiDO0yG/Mk/YYo93hHRq4qaFXOCTcfoUuPJYigj26pe1ux5Mz5XZYGKg
-         SI3nq2N7gOHpUppmlPbqywWUgYrZxpiFlAE+A=
+        d=linaro.org; s=google; t=1693780636; x=1694385436; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JTU8KrO8RUU8FiWRZw+rl4K+4j0rOVVykAlc2x+Gur8=;
+        b=AOn5oJ9ZIVvioS8yTbQGiku19FjNeenzc/LaorIif6p3t0e3DReas4zzaogdK/CMNL
+         Fc5Kyp+Z84fJzM07c5EDOXLTeMqYUd0sZGe6uHVNdhIkJYt07mp3FQ76CjwDzsEpPeBB
+         UaE4FrB3ulzVcK2cS5HSOa6M+YkomCdcVyRiwEm900QqC8fCHDSUsZPqOj7gnI5qJNoc
+         8HOSZ4A0B6e0K9eA85LSHEZjE500aCgFpTQWQEArXLUKf70IMu4ODaRdljPpGFbpy2kp
+         dX0LjDUTVWhvNVtb7O6mBy5H6y/9v6/nA2MqoggM3GQow++Do6ufOlCxAtTHOqG5LELN
+         CV6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693780489; x=1694385289;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dIOhRbp78FSnOot0tcIQifKv7xD8tI587HuZagI+zEw=;
-        b=d2P/uKr002YeIVEB4EuMmOyIqDyVaLtKcxpTeFGjZg2UW0nN0TktMky0Y27uI0ny9I
-         5DZdDgE71gLtU5abL7y5S4UB29K7Zz+Zw3qMCRLJLwywnxCbUk9dwmdYV0sKmvEN9ljf
-         sN+fXsPlSBlr2pMrOTYb5uLmFcXtD9/OdIARugh0HUxDDzYcBa6MwbXPZ/8enbFOU1nd
-         vI5UuL3ayWdRgnflaLJBVVgcmQbCoKm2pi48YhZ19t0jXEGkNbQgSfDtcu/F5BLCD49z
-         f/+twO+pCdGkcdyUc3KBMKHc5IgKff3PCh1JIY2Sdz0ZlB5ASlobaZ64bA3wGC/XHjqG
-         dYqg==
-X-Gm-Message-State: AOJu0YxU8bFOoMIdW+I6lexuoSIAuXD7W69kmPEeOabpsqMZ9ZBAHVcu
-        xLVosv2/CMKCi0yO540IACsXkOarXw+92Hrj4Gydrm49
-X-Google-Smtp-Source: AGHT+IHPPu585SgI0DbAiXN2uU9tRUNfQmfwDDGIyLfH/qmXqEiq5fCvZ7Hj6PxzwsRSfLDaVZwFfg==
-X-Received: by 2002:ac2:4f0a:0:b0:500:ca0f:605e with SMTP id k10-20020ac24f0a000000b00500ca0f605emr5999136lfr.6.1693780488775;
-        Sun, 03 Sep 2023 15:34:48 -0700 (PDT)
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com. [209.85.208.172])
-        by smtp.gmail.com with ESMTPSA id p15-20020a05651211ef00b004fdd6b72bfdsm1406039lfs.117.2023.09.03.15.34.47
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1693780637; x=1694385437;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JTU8KrO8RUU8FiWRZw+rl4K+4j0rOVVykAlc2x+Gur8=;
+        b=ZZ3T9apUm+XR6ZI/ExxVUE6uUMITdXcpy8WPrSZ61fBbKghALaS0clOz96h2cCEDpp
+         IpOAuyVzry9YHoZT3u0kGuphZXT6GacjdfHFB32WQHJ4RkjeLxETpIUCNlCQGA1K2s+e
+         ERgnYJ+JyiC7HCeNvN0h1s1GT5rQ3Wp8A47F47HEC2TI8yBYrXMDDOw80I/jQupQdN9P
+         6bIiUnksIDFaOjXGogN/FWoDFIctKagSJG41H2pFlYhuYs9+BugRkdkqWM3u5WeuJZ9e
+         3GX5Qt3IJgo4hfp+KewyEgDQ2TtZk9kRtLhLrFH8sFlQ3tLxQbclQk0l/91h6+eIbT1l
+         z6nQ==
+X-Gm-Message-State: AOJu0Yy+78w8DsVAEsfHYIUthpGVx/LZSNZQfwLZC9SY74Uf6LppEBs4
+        xSOLg44TfqqD5AftqLS54yawbg==
+X-Google-Smtp-Source: AGHT+IH887EsApjxxqgeKDwZfphqZJP+92AGGLQhQH1W/cbewlBiwmTzV6SErfuj2s5lfRAgmYmXeg==
+X-Received: by 2002:a50:ec90:0:b0:523:3e90:68b0 with SMTP id e16-20020a50ec90000000b005233e9068b0mr5378864edr.21.1693780636732;
+        Sun, 03 Sep 2023 15:37:16 -0700 (PDT)
+Received: from [10.10.15.130] ([192.130.178.91])
+        by smtp.gmail.com with ESMTPSA id bo9-20020a0564020b2900b0052889d090bfsm4972604edb.79.2023.09.03.15.37.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Sep 2023 15:34:48 -0700 (PDT)
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2bbbda48904so13627031fa.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:34:47 -0700 (PDT)
-X-Received: by 2002:a05:6512:a88:b0:500:b53f:fbc2 with SMTP id
- m8-20020a0565120a8800b00500b53ffbc2mr6365297lfu.26.1693780487492; Sun, 03 Sep
- 2023 15:34:47 -0700 (PDT)
+        Sun, 03 Sep 2023 15:37:16 -0700 (PDT)
+Message-ID: <1c7b1397-de05-49f7-8e26-3244fbd1573f@linaro.org>
+Date:   Mon, 4 Sep 2023 01:37:15 +0300
 MIME-Version: 1.0
-References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
- <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
- <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
- <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com>
- <20230903204858.lv7i3kqvw6eamhgz@f> <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
- <ZPT/LzkPR/jaiaDb@gmail.com>
-In-Reply-To: <ZPT/LzkPR/jaiaDb@gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 3 Sep 2023 15:34:30 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
-Message-ID: <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
-Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     Mateusz Guzik <mjguzik@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/7] drm/msm/dp: Replace open-coded
+ drm_dp_read_dpcd_caps()
+Content-Language: en-GB
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Sean Paul <sean@poorly.run>, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>
+References: <20230829184735.2841739-1-swboyd@chromium.org>
+ <20230829184735.2841739-2-swboyd@chromium.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+In-Reply-To: <20230829184735.2841739-2-swboyd@chromium.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Sept 2023 at 14:48, Ingo Molnar <mingo@kernel.org> wrote:
->
-> If measurements support it then this looks like a nice optimization.
+On 29/08/2023 21:47, Stephen Boyd wrote:
+> This function duplicates the common function drm_dp_read_dpcd_caps().
+> The array of DPCD registers filled in is one size larger than the
+> function takes, but from what I can tell that extra byte was never used.
+> Resize the array and use the common function to reduce the code here.
+> 
+> Cc: Vinod Polimera <quic_vpolimer@quicinc.com>
+> Cc: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> ---
+>   drivers/gpu/drm/msm/dp/dp_panel.c | 42 ++++---------------------------
+>   drivers/gpu/drm/msm/dp/dp_panel.h |  4 +--
+>   2 files changed, 6 insertions(+), 40 deletions(-)
 
-Well, it seems to work, but when I profile it to see if the end result
-looks reasonable, the profile data is swamped by the return
-mispredicts from CPU errata workarounds, and to a smaller degree by
-the clac/stac overhead of SMAP.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-So it does seem to work - at least it boots here and everything looks
-normal - and it does seem to generate good code, but the profiles look
-kind of sad.
+-- 
+With best wishes
+Dmitry
 
-I also note that we do a lot of stupid pointless 'statx' work that is
-then entirely thrown away for a regular stat() system call.
-
-Part of it is actual extra work to set the statx fields.
-
-But a lot of it is that even if we didn't do that, the 'statx' code
-has made 'struct kstat' much bigger, and made our code footprints much
-worse.
-
-Of course, even without the useless statx overhead, 'struct kstat'
-itself ends up having a lot of padding because of how 'struct
-timespec64' looks. It might actually be good to split it explicitly
-into seconds and nanoseconds just for padding.
-
-Because that all blows 'struct kstat' up to 160 bytes here.
-
-And to make it all worse, the statx code has caused all the
-filesystems to have their own 'getattr()' code just to fill in that
-worthless garbage, when it used to be that you could rely on
-'generic_fillattr()'.
-
-I'm looking at ext4_getattr(), for example, and I think *all* of it is
-due to statx - that to a close approximation nobody cares about, and
-is a specialty system call for a couple of users
-
-And again - the indirect branches have gone from being "a cycle or
-two" to being pipeline stalls and mispredicts. So not using just a
-plain 'generic_fillattr()' is *expensive*.
-
-Sad. Because the *normal* stat() family of system calls are some of
-the most important ones out there. Very much unlike statx().
-
-              Linus
