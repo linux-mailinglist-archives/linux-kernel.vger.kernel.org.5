@@ -2,68 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FF5B790E21
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639EE790E23
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239820AbjICVSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 17:18:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
+        id S1348411AbjICVSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 17:18:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229523AbjICVSN (ORCPT
+        with ESMTP id S229523AbjICVSs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 17:18:13 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F975E5
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:18:10 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-79536bc6697so24650739f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:18:10 -0700 (PDT)
+        Sun, 3 Sep 2023 17:18:48 -0400
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 889EA103;
+        Sun,  3 Sep 2023 14:18:45 -0700 (PDT)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-573921661a6so550896eaf.1;
+        Sun, 03 Sep 2023 14:18:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693775889; x=1694380689; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Shuu74iNOrUzggTrIzmIdLUSQe5OqUirbEavz/33+0U=;
-        b=NL7FRqVgXo6AdNrQ0nfxD27le9WMEmqVknRZ5TVZg6nxmpopp+R6Ah6YNZTvH0fu5/
-         b/u4N1b7HTQkT0zrGk0NxCbhfhoDrMnHulriZ6WfMSf3iMYFRyOGJw1doVKYp4tKq3KS
-         ba2/Cao8Y27MEqHNoZfbsWif/szX02FnSwyVXfLhuiphL29kZTfRcbj7nAuZPOerGm1M
-         qK531eC2ZAGFVP0JU90mF5w3SioiCImHGFXXKLHqnvjHmQe2CqAQ+C5srG3WZ58VkrS3
-         hCJlpau1KU0WaaCmgU6KaOndvm48zFZO9jg4DeIKoR9lv8c6UCjAtg/ZIq3D9lvif7Pn
-         k+Bw==
+        d=gmail.com; s=20221208; t=1693775925; x=1694380725; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OjwRi8j33QFkaYf1YUSlqQ4jT9Yz3y1s6c8vlWxQhc8=;
+        b=Z1XTlOfj4Dl5I5Y+jBDeRyFNEl/VIRRLaHdhE4398+yqCUZLxgoLets68XxDQrR36y
+         zKMRg3o+jZKT66mdSrn/jBi5YAGMfVngiIinARwlBSeiopi4bBQ+qzj0c4z9Dwjmp/SY
+         T9rS7g+TiD7pZovP1tbsRkitVLKdUkPWZVCxsA761rLdkQ5tnKhvqurlP6fica1B08TM
+         yyA4OmmnNmv5pu1eF/+R/CDg4Is2H5rWnViba7Ydcyf9s9JS3DR8bgn/ocXqyNcW56UM
+         imOPuRNRECigYCnVtK/gtcbEEr4eB0lhGYjau67BXyTzEiQzNAkAAMoD/GyNTG5R/Yd+
+         h34A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693775889; x=1694380689;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Shuu74iNOrUzggTrIzmIdLUSQe5OqUirbEavz/33+0U=;
-        b=UjKB6TMZvoIr6wAJnyjXnTrqW3NBkllS0s1aU8QYSWfuCNswYYKrQ4mmuuoCH4CdI1
-         JMUES0xFAWDbll2CjUvIw2daQa9cK+jZOnAbk42udeejq7mHXCJDdgpMjyx98H/DNcnC
-         9JmJS8QaQwkIRCBa+3QOt4i32TSgDGPtGXwyWIudA04uLnLxwOk07vyBqY0raIoAr/PY
-         +w4qzL13DNOaP4fCox04HnRnnt60kspqfYg5Kc/SqOMwT9wg/IxNKQyYgVqZo6b5EgLh
-         RtSQTlmQw6QBwe2ZVpIezx54YSzp69W5oZoemjtjL0Z13NkEfrlTRNmlRREcB+n7CEQa
-         N3tQ==
-X-Gm-Message-State: AOJu0YxrJB9yyWbFbhsNkMNRw0Dm7kwGXxi8lnSY56zINEDo/8PTtoAZ
-        4Elqi0ZcXwPTStoo2zUsd4vo/UXCNpn6KA==
-X-Google-Smtp-Source: AGHT+IHbZ1DNN3aHF6w6TKIvUGJpirsrPKixGaSKPeJBfnxY6cqoU+Qt3L+vuZtgOs/ifOjDQTbVSg==
-X-Received: by 2002:a6b:7a03:0:b0:790:a010:4c42 with SMTP id h3-20020a6b7a03000000b00790a0104c42mr8838795iom.13.1693775889127;
-        Sun, 03 Sep 2023 14:18:09 -0700 (PDT)
-Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id y11-20020a5ec80b000000b00790a8cc4fb6sm2845017iol.10.2023.09.03.14.18.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 14:18:08 -0700 (PDT)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH v2 4/6] drm_dbg: add trailing newlines to msgs
-Date:   Sun,  3 Sep 2023 15:18:05 -0600
-Message-ID: <20230903211805.274507-1-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230903184607.272198-5-jim.cromie@gmail.com>
-References: <20230903184607.272198-5-jim.cromie@gmail.com>
+        d=1e100.net; s=20221208; t=1693775925; x=1694380725;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OjwRi8j33QFkaYf1YUSlqQ4jT9Yz3y1s6c8vlWxQhc8=;
+        b=WpUgQxnuSYiiCS3BygrYiWZGdHV6LNqRoXDwWG88GlI1D41lJLLEQRzALiaGkjCQ2y
+         /gVYsVb9yAAfQcMetlg74TRpE5dX3DWSjZzPaVHE88m0cj6NsXW2dQKLE67EKmmSXFHn
+         EsD5RdVvv2Q/FphhC0i3oNj1Evgvyxa69udlybtLo0FlIwjo6CoHnxKue6pma81JYGqs
+         TNaILbfhQfpkQfBFDt26WQvmfTYhkShh7psJUn/8ciqZ9su5PJ/OiXrenGMw9R01RHhN
+         u9WhNXvRdW9oUBF82cagRgtf+FdhTSx0/uvrDJPiyi30UHOlxbbWbPaJ/46jZw6iuA2a
+         iEBw==
+X-Gm-Message-State: AOJu0YxNJwYucGJi4N5VW7LUtRft0IT6FyRqq2YxmTjiZ61A7cjBP4OW
+        twR5X059IdTs5lvalJxo0HeLk3GNwm/0l4lHfx4=
+X-Google-Smtp-Source: AGHT+IHFxkh5Ff+S+BnhXd2iw3odzt8l7A8HmiqQIIoD3+DFfbivm34DFQw6Opjz6oVGPjcyqjj5Q1FfgsokHFDkT4g=
+X-Received: by 2002:a4a:2b42:0:b0:56c:7c3b:1c21 with SMTP id
+ y2-20020a4a2b42000000b0056c7c3b1c21mr6415239ooe.0.1693775924707; Sun, 03 Sep
+ 2023 14:18:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a8a:60c:0:b0:4f0:1250:dd51 with HTTP; Sun, 3 Sep 2023
+ 14:18:44 -0700 (PDT)
+In-Reply-To: <CAHk-=wiohUShtCtCxee5-SGvMetd6vgnWgboLNHq2m4cpyNUJQ@mail.gmail.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
+ <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
+ <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
+ <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com>
+ <20230903204858.lv7i3kqvw6eamhgz@f> <CAHk-=whHZ1KJGVKTaBOSr7KwYAqvrjD9bcoz-SKrsW3DdS9Eug@mail.gmail.com>
+ <CAGudoHH-KZcmTjPQihiZ3cAYQwyNhw4q2Yvdrxr-xKBp8nTwPw@mail.gmail.com> <CAHk-=wiohUShtCtCxee5-SGvMetd6vgnWgboLNHq2m4cpyNUJQ@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Sun, 3 Sep 2023 23:18:44 +0200
+Message-ID: <CAGudoHHOEMvz6=JZ2XZYKgKTqQ-FeCcXxVEvS2xBncn-ck5JXg@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,55 +75,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-By at least strong convention, a print-buffer's trailing newline says
-"message complete, send it".  The exception (no TNL, followed by a call
-to pr_cont) proves the general rule.
+On 9/3/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Sun, 3 Sept 2023 at 14:06, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>>
+>> I don't think it is *that* bad. I did a quick sanity check on that
+>> front by rolling with bpftrace on cases which pass AT_EMPTY_PATH *and*
+>> provide a path.
+>
+> I guess you are right - nobody sane would use AT_EMPTY_PATH except if
+> they don't have a path.
+>
+> Of course, the only reason we're discussing this in the first place is
+> because people are doing insane things, which makes _that_ particular
+> argument very weak indeed...
+>
 
-Most DRM.debug calls already comport with this: 207 DRM_DEV_DEBUG,
-1288 drm_dbg.  Clean up the remainders, in maintainer sized chunks.
+I put blame on whoever allowed non-NULL path and AT_EMPTY_PATH as a
+valid combination, forcing the user buf to be accessed no matter what.
+But I'm not going to go digging for names. ;)
 
-No functional changes.
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- drivers/gpu/drm/msm/msm_fb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_fb.c b/drivers/gpu/drm/msm/msm_fb.c
-index e3f61c39df69..88bb5fa23bb1 100644
---- a/drivers/gpu/drm/msm/msm_fb.c
-+++ b/drivers/gpu/drm/msm/msm_fb.c
-@@ -89,7 +89,7 @@ int msm_framebuffer_prepare(struct drm_framebuffer *fb,
- 
- 	for (i = 0; i < n; i++) {
- 		ret = msm_gem_get_and_pin_iova(fb->obj[i], aspace, &msm_fb->iova[i]);
--		drm_dbg_state(fb->dev, "FB[%u]: iova[%d]: %08llx (%d)",
-+		drm_dbg_state(fb->dev, "FB[%u]: iova[%d]: %08llx (%d)\n",
- 			      fb->base.id, i, msm_fb->iova[i], ret);
- 		if (ret)
- 			return ret;
-@@ -176,9 +176,9 @@ static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
- 	const struct msm_format *format;
- 	int ret, i, n;
- 
--	drm_dbg_state(dev, "create framebuffer: mode_cmd=%p (%dx%d@%4.4s)",
--			mode_cmd, mode_cmd->width, mode_cmd->height,
--			(char *)&mode_cmd->pixel_format);
-+	drm_dbg_state(dev, "create framebuffer: mode_cmd=%p (%dx%d@%4.4s)\n",
-+		      mode_cmd, mode_cmd->width, mode_cmd->height,
-+		      (char *)&mode_cmd->pixel_format);
- 
- 	n = info->num_planes;
- 	format = kms->funcs->get_format(kms, mode_cmd->pixel_format,
-@@ -232,7 +232,7 @@ static struct drm_framebuffer *msm_framebuffer_init(struct drm_device *dev,
- 
- 	refcount_set(&msm_fb->dirtyfb, 1);
- 
--	drm_dbg_state(dev, "create: FB ID: %d (%p)", fb->base.id, fb);
-+	drm_dbg_state(dev, "create: FB ID: %d (%p)\n", fb->base.id, fb);
- 
- 	return fb;
- 
 -- 
-2.41.0
-
+Mateusz Guzik <mjguzik gmail.com>
