@@ -2,65 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C0E790DCB
+	by mail.lfdr.de (Postfix) with ESMTP id 664B1790DCA
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:43:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347459AbjICTnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 15:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347405AbjICTnF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S232584AbjICTnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 3 Sep 2023 15:43:05 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DDB0DE
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:43:01 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26f3975ddd4so573805a91.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 12:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693770181; x=1694374981; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4ffpdWUDuUU8t1ryovFUN8LkKxzjq69DuqglQ3PmuD8=;
-        b=mJfHedL1QmS56RxRuLQ/aG9EAHSg2dJVntWBfjuPOoxREZOXnqIXgHL+vYeK+o7Onk
-         P7lSIjBmxouoSu4kUUDCWAjgk8QUw1q6sLcbUJThZm7j+wjeNcHd6cVAnXWxMnD09p64
-         Jgc9D1iNy34JXgU16GEuP9Vpu9Td6w4hAYh76cGowgvbccJ1B4vTp4KA0JSIVibDfebh
-         +SrXPeyehp9+a1gclzqHjbqvkzeutSir8NM71/MB12zp0E0qwDrZJ+aWhaLkc2tc95HH
-         1LkPdiPRl0fhZvmfusUsbibDOoqYl18t777q9pKnFBukzCaihFWkOyOx6bgjyD8YbT9W
-         8q2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693770181; x=1694374981;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4ffpdWUDuUU8t1ryovFUN8LkKxzjq69DuqglQ3PmuD8=;
-        b=DPYDEBFPzpcE4z/Rt9nlSxwhdAmo+aFjvuvDYJYLAIH5QgQJEQQ+Al4zcCeCwC7AIt
-         bA8lSUJIlci3mVR4e0Nx79kGtZ6GM+DOSq/3Iz88HkVfB8+034HgZKXuFE50TnoSeeBM
-         peLVFLwq51XTOU66II0lbhBaTN0OvG8/wGaNexbs7r/7WMMSPYXKrMz/oPkVq5xSqLtK
-         v+OVsDI+u+opCqX0CIFp9+YjShF+Y+XbMI5lqc8RgCsPh++h7dIgN0o++dzCLjBxvbBa
-         cMUe0SlCJne0mJq1s685FSx/mVJE8YlxXpvn/iCb6q4yrOMPSUPq8qJO6DPOt2S+KmWZ
-         WjAw==
-X-Gm-Message-State: AOJu0Yx5S0fEWz0U1nmxHhUL+4aW2Z/qTXhQPqQfkNhoQCgS1x9RbWS4
-        ek1BeamiBnUMbzlcdN+YB8Mvm6yGlEr3PClcwuA=
-X-Google-Smtp-Source: AGHT+IGXewbb/ITFSk2Puk8s63iULshNgzFvB6glZXwW3/cZbENKsNljjUMVecRB84dvPr7Gq29TOsEq6S1ykAV9e2I=
-X-Received: by 2002:a17:90a:fa86:b0:262:f99b:a530 with SMTP id
- cu6-20020a17090afa8600b00262f99ba530mr7494900pjb.34.1693770180885; Sun, 03
- Sep 2023 12:43:00 -0700 (PDT)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237896AbjICTnE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 3 Sep 2023 15:43:04 -0400
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AA38D3
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:43:00 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id csznqEPtQewmQcsznq9Uxm; Sun, 03 Sep 2023 21:42:58 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693770178;
+        bh=GE0Tfzjpz86rKqx1XQM/i0q6J5a2RTGmwR3F95mdOYI=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=IwniJbf3qMuGb2ARD6r1f7GT0OL6OG8OZ05zadRj8NGirUDd/LVZKeZaYIvY2ZyWn
+         G7ojOq6ps7KJuSVuuAt36R9tz1riTb4ICbEn06SjSRDsB7KgDETBOJUlqzffkWVgPn
+         28tsZdlhscrsWqNmRV83IRqjBCCgNdsqCYPnrrd3fLVZnkKm67qO6NYCpv2SJKdNyN
+         +gk1X8g/OTCsNvV5fOn3fPftCVAGAPnZhllEq9LWMmxLwScCLHtRA5HjtZJDJzjtUq
+         Z4nTBiLpIa4cqUQk9AjmRu253i7OJd4rtqunF5v0czGxh/LEiEFyZrsr/PaFGJFS0L
+         bekWIOkJ1FTBg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 03 Sep 2023 21:42:58 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <a0387d53-a08f-5e0c-c3a5-681ab5545150@wanadoo.fr>
+Date:   Sun, 3 Sep 2023 21:42:55 +0200
 MIME-Version: 1.0
-References: <20230903140617.567850-1-bergh.jonathan@gmail.com> <2023090301-emission-scarce-8272@gregkh>
-In-Reply-To: <2023090301-emission-scarce-8272@gregkh>
-From:   Jonathan Bergh <bergh.jonathan@gmail.com>
-Date:   Sun, 3 Sep 2023 21:42:49 +0200
-Message-ID: <CA+MPq=WaoLPdEOgKNLjSTwW=T4tL4vSDpWPU1cUxCU_A7a4aEg@mail.gmail.com>
-Subject: Re: [PATCH] staging: vme_user: Add missing '*' in multiline comments
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ALSA: usb-audio: Fix a potential memory leak in
+ scarlett2_init_notify()
+Content-Language: fr, en-US
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        alsa-devel@alsa-project.org
+References: <fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr>
+ <871qffmj2d.wl-tiwai@suse.de>
+ <8cde2320-517f-3a38-8c3f-f807791c6c52@wanadoo.fr>
+ <87sf7vkybk.wl-tiwai@suse.de>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <87sf7vkybk.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,38 +62,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes ... that would be better.
+Le 03/09/2023 à 18:37, Takashi Iwai a écrit :
+> On Sun, 03 Sep 2023 17:04:47 +0200,
+...
 
-On Sun, Sep 3, 2023 at 4:43=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org>=
- wrote:
->
-> On Sun, Sep 03, 2023 at 04:06:17PM +0200, Jonathan Bergh wrote:
-> > This patch resolves a warning reported by checkpatch where multiline
-> > block comments should use '*' on intermediate lines in order to adhere
-> > to the Linux kernel coding-style guidelines.
-> >
-> > Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
-> > ---
-> >  drivers/staging/vme_user/vme_fake.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_=
-user/vme_fake.c
-> > index 7c53a8a7b79b..90aaf650524d 100644
-> > --- a/drivers/staging/vme_user/vme_fake.c
-> > +++ b/drivers/staging/vme_user/vme_fake.c
-> > @@ -1010,8 +1010,8 @@ static void fake_free_consistent(struct device *p=
-arent, size_t size,
-> >  {
-> >       kfree(vaddr);
-> >  /*
-> > -     dma_free_coherent(parent, size, vaddr, dma);
-> > -*/
-> > + *   dma_free_coherent(parent, size, vaddr, dma);
-> > + */
->
-> As this code isn't being used, why not just delete it instead?
->
-> thanks,
->
-> greg k-h
+> Indeed.  The fix would be rather a oneliner like below, though:
+
+Looks much better than mine :)
+
+I let you send the patch, it is your solution.
+
+
+
+Just for my understanding, how is snd_ump_ops used, especially .open?
+I've not been able to figure out where it was called.
+
+In alloc_midi_urbs(), if usb_alloc_coherent() fails, then 
+ctx->urb->transfer_buffer could be anything because usb_fill_xxx_urb() 
+is not called.
+So there could be an edge case where your fix could still be incomplete.
+
+For the start_input_streams() caller, this is fine, because the 
+corresponding memory is kzalloc()'ed in start_input_streams() at some 
+point, but I've not been able to check for snd_usb_midi_v2_open().
+
+CJ
+
+> 
+> --- a/sound/usb/midi2.c
+> +++ b/sound/usb/midi2.c
+> @@ -265,7 +265,7 @@ static void free_midi_urbs(struct snd_usb_midi2_endpoint *ep)
+>   
+>   	if (!ep)
+>   		return;
+> -	for (i = 0; i < ep->num_urbs; ++i) {
+> +	for (i = 0; i < NUM_URBS; ++i) {
+>   		ctx = &ep->urbs[i];
+>   		if (!ctx->urb)
+>   			break;
+> 
+> That was the intended behavior of free_midi_urbs().
+> 
+> 
+> Takashi
+> 
+
