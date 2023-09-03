@@ -2,86 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08408790B42
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 10:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D670790B43
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 10:41:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236110AbjICIjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 04:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44638 "EHLO
+        id S236128AbjICIlL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 04:41:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbjICIjq (ORCPT
+        with ESMTP id S236047AbjICIlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 04:39:46 -0400
-Received: from gnuweeb.org (gnuweeb.org [51.81.211.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 654D8CD
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 01:39:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gnuweeb.org;
-        s=default; t=1693730382;
-        bh=yxkc19Yddxx2lm9hSObkxc16S8ET0C2EW0xu5EssMEM=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=FlzrZxbQ6JBLaz00gEXjXI50hWB7NUPkxoiuOxH98CecURVCxyz5lHje2uzTsL+vg
-         HPONEPB6ID7wTv++XVQV24VAnKxhEGi5RLz204E0onrAld7CoxmQ/iLLSoJX9UMqWv
-         F2ujWkfRCh6Ab6YNTkb/VWgb8J7qmsUV46uSKTY1C6w0Xb+KTCobd179qD2hUKSZ1b
-         StUcDdDGVLMyEZJL/p5r1mpKX2R1lQtnhfSuOgyu+PHLI6FDJd1I5l/Unz8L23dfPg
-         ECw/U7FHOeqD3pgiqlEk9xWPpjY9k/gMHy1d+y/LYtTyV6Wjf1lI8x1/qoX0nXdmr6
-         9xjntut/TxVKg==
-Received: from [10.20.0.2] (unknown [182.253.126.208])
-        by gnuweeb.org (Postfix) with ESMTPSA id 35E9024B3E1;
-        Sun,  3 Sep 2023 15:39:38 +0700 (WIB)
-Message-ID: <a1cea8e2-610a-c17e-22df-b1a23a226f31@gnuweeb.org>
-Date:   Sun, 3 Sep 2023 15:39:33 +0700
+        Sun, 3 Sep 2023 04:41:05 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D4CE91
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 01:41:02 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-402c46c49f4so4699845e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 01:41:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693730461; x=1694335261; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=a9NbmmPLRSRY6DMIqUwVh2a4ddDuws7H3iJDQPyNnGU=;
+        b=FsP7TV8feah8/h5IVkA58G5aExOqnt6vyv5IziAaYvgYR8A4+mATAfAmIxMXw4bJt5
+         xgWRewS3z+BG5mLC5zMLaiZWtgd/h6dXfrsPTFx1n84kbLixVDlGmzgJOE34tHyo+9b5
+         n8c2Ff6M+WEbVJmK1p6jXHBNvyhM/Fp6K9IKXbnjNLp3EqQnimIl4ckE2NNZYRRrBUDW
+         6F5Ffwor88m8HbYDolb2s6qnEQOkP0Iv4ehhQnuI4Jdhhbv9ynNZdQ1ZRCwt/8QQVI3l
+         72UcxEkF6vaYzZy247NI6JWvXUelYjCbl3YtzL7Z0c6oLEnSOPZv6iup4qk0kqCBN/Uq
+         sUBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693730461; x=1694335261;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=a9NbmmPLRSRY6DMIqUwVh2a4ddDuws7H3iJDQPyNnGU=;
+        b=L5S0PeSaNgrfksh+BjJOC5o3HP96d2Zp2agCasIgO8El5lkonnRkV03kssgp8pzEce
+         vTsBjHACLiJrOa7zBdU63RnnkdNiulAStES17NDdpRPP4BBd58GGYEGIafaSKDKNQKBP
+         /tJjgCqaSWPE+/f00cxSYj/RYc1G+8HtFfv84Vu0jMoUB49Ex3CkDOCW0fCLmpoeNyx5
+         Gxb0FfvzX0flVdPOWIa3orI7B6d4AhGmziVZC0CtorbHJpP4qj2vacHvuNE2gthn27V5
+         XVdsq4CGnurDlPuTlRgX7zvNtWxGsVuAKLBkTs08J+4ytiMfqsbsId7RQtESp9Uy5qZZ
+         y5vg==
+X-Gm-Message-State: AOJu0Yx9Fhy8XZpGucsTst8U73UV1oTDlZ9BbsIFCjvi1D4DfNOgzR67
+        acMQDXj066psDNmw/U9Buuc=
+X-Google-Smtp-Source: AGHT+IHDSlb9tPUncHMzGV+clFT/OwmInh9rwaV45NUgP5GJ4oK7yvQAUT2kPc43OSF0lSizvT1CUQ==
+X-Received: by 2002:a5d:4f01:0:b0:314:36c5:e4c0 with SMTP id c1-20020a5d4f01000000b0031436c5e4c0mr4379022wru.11.1693730460824;
+        Sun, 03 Sep 2023 01:41:00 -0700 (PDT)
+Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
+        by smtp.gmail.com with ESMTPSA id k8-20020a5d4288000000b003176aa612b1sm11089465wrq.38.2023.09.03.01.40.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 01:41:00 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Sun, 3 Sep 2023 10:40:58 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     kan.liang@linux.intel.com
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Yunying Sun <yunying.sun@intel.com>
+Subject: Re: [PATCH] perf/x86/uncore: Correct the number of CHAs on EMR
+Message-ID: <ZPRGmoXKvOCFrK26@gmail.com>
+References: <20230901142028.298051-1-kan.liang@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [RFC PATCH v3 2/4] tools/nolibc: x86-64: Use `rep stosb` for
- `memset()`
-Content-Language: en-US
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Alviro Iskandar Setiawan <alviro.iskandar@gnuweeb.org>,
-        =?UTF-8?Q?Thomas_Wei=c3=9fschuh?= <linux@weissschuh.net>,
-        David Laight <David.Laight@aculab.com>,
-        Nicholas Rosenberg <inori@vnlx.org>,
-        Michael William Jonathan <moe@gnuweeb.org>,
-        GNU/Weeb Mailing List <gwml@vger.gnuweeb.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20230902133505.2176434-1-ammarfaizi2@gnuweeb.org>
- <20230902133505.2176434-3-ammarfaizi2@gnuweeb.org>
- <CAOG64qNB+aRU+8VCD5MkM4srQaUnTqzZ7rZ8USxVheDAYzgTsQ@mail.gmail.com>
- <ZPOOPjK+z847Ivq4@biznet-home.integral.gnuweeb.org> <ZPRBBT1ENJIB0cEp@1wt.eu>
-From:   Ammar Faizi <ammarfaizi2@gnuweeb.org>
-In-Reply-To: <ZPRBBT1ENJIB0cEp@1wt.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230901142028.298051-1-kan.liang@linux.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ Resend, I sent it using the wrong From address. ]
 
-On 2023/09/03 午後3:17, Willy Tarreau wrote:
-> On Sun, Sep 03, 2023 at 02:34:22AM +0700, Ammar Faizi wrote:
->> On Sun, Sep 03, 2023 at 02:28:18AM +0700, Alviro Iskandar Setiawan wrote:
->>> nit: Be consistent. Use \n\t for the memset too.
->>
->> Good catch, I'll fix that in v4 revision.
+* kan.liang@linux.intel.com <kan.liang@linux.intel.com> wrote:
+
+> From: Kan Liang <kan.liang@linux.intel.com>
 > 
-> Ammar, I'm overall fine with your series. I can as well add the missing \t
-> to your patch while merging it, or wait for your v4, just let me know.
+> The MSR UNC_CBO_CONFIG, which was used to detect the number of CHAs on
+> SPR, is broken on EMR XCC. It always returns 0.
+> 
+> Roll back to the discovery method, which can give the correct number for
+> this case.
+> 
+> Fixes: 38776cc45eb7 ("perf/x86/uncore: Correct the number of CHAs on SPR")
+> Reported-by: Stephane Eranian <eranian@google.com>
+> Reported-by: Yunying Sun <yunying.sun@intel.com>
+> Tested-by: Yunying Sun <yunying.sun@intel.com>
+> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> ---
+>  arch/x86/events/intel/uncore_snbep.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+> index d49e90dc04a4..c41d7d46481c 100644
+> --- a/arch/x86/events/intel/uncore_snbep.c
+> +++ b/arch/x86/events/intel/uncore_snbep.c
+> @@ -6475,7 +6475,9 @@ void spr_uncore_cpu_init(void)
+>  	type = uncore_find_type_by_id(uncore_msr_uncores, UNCORE_SPR_CHA);
+>  	if (type) {
+>  		rdmsrl(SPR_MSR_UNC_CBO_CONFIG, num_cbo);
+> -		type->num_boxes = num_cbo;
+> +		/* The MSR doesn't work on the EMR XCC. Roll back to the discovery method. */
+> +		if (num_cbo)
+> +			type->num_boxes = num_cbo;
 
-I'm now traveling and will be available in Jakarta on Monday. Thus, I
-actually planned to send the v4 revision on Monday.
+So in the zero case we don't write type->num_boxes and leave it as-is.
 
-However, since you don't have further objections to this series, I'll
-leave the trivial missing bit to you. Please merge this series and I
-will not send a v4 revision.
+How does this fall back to the discovery method, is the existing (default?) 
+value of type->num_boxes some special value?
 
 Thanks,
--- 
-Ammar Faizi
 
+	Ingo
