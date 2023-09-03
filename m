@@ -2,53 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8432A790C25
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 15:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3C1E790C59
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 16:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238081AbjICNhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 09:37:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
+        id S233219AbjICOJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 10:09:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238032AbjICNhi (ORCPT
+        with ESMTP id S229545AbjICOJ1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 09:37:38 -0400
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA7FB;
-        Sun,  3 Sep 2023 06:37:35 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 248D41866A1A;
-        Sun,  3 Sep 2023 16:37:32 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id QQ9uYetXdeN2; Sun,  3 Sep 2023 16:37:31 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id C17561866B52;
-        Sun,  3 Sep 2023 16:37:31 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id K58ZH9uiW7iq; Sun,  3 Sep 2023 16:37:31 +0300 (MSK)
-Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.232.241])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id 5E6201866A1A;
-        Sun,  3 Sep 2023 16:37:30 +0300 (MSK)
-From:   Alexandra Diupina <adiupina@astralinux.ru>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tomi Valkeinen <tomi.valkeinen+renesas@ideasonboard.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        dri-devel@lists.freedesktop.org, linux-renesas-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH] drm/rcar-du: fix comment to rcar_du_group_get()
-Date:   Sun,  3 Sep 2023 16:37:09 +0300
-Message-Id: <20230903133709.8049-1-adiupina@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
+        Sun, 3 Sep 2023 10:09:27 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F647F2
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 07:09:23 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4ff9b389677so986560e87.3
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 07:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693750161; x=1694354961; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AALeIaiiugA/l8EFRK5HkASlp0QQvRxkOCyJ73bcZ4M=;
+        b=XdSTZcuVe3/CaxIbSEK3VGgUYUg+oP71QlGKBkNvhx0fFbK2U1fB1OXljjS3ICszRx
+         BXVKo0+k9pJZB746XIKyY62ZSrzGmB5aZ8wHes8dE/fW86U+9FxteimcZXldT/WCRXp9
+         RXsTVjm5gMSreuW9xBKja0oDPC5SHt2LRzSfgX1IE/A24EcgCcqX5JjCHDPB3j8s4HJe
+         9xUtUuoePTIFgkZGZi51W/wwliEyM98+e20c3IOyx6QtI6E0Dr9DvpxeHo9+NIlNa59N
+         9NQRmtGVvQyLFK8fmXHCdt1cXt14yea/idPYY7PWQJuSYZe1qNakXUNLkl6p/d2eRtDF
+         X6KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693750161; x=1694354961;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AALeIaiiugA/l8EFRK5HkASlp0QQvRxkOCyJ73bcZ4M=;
+        b=RoLXVPzDJZfnRvAqyC3m4iovF1uRAn2h6lmF4t1v5MTO33wx+Jiww3pXvJusZaS2Gq
+         a5xAayVov1deNHrKGiTJBkK399jRBaYrbFgelOpwHT+vCpZUa/pPFZ9SSsDiVVOA4YF9
+         bUXMoYM/jMsOAPe75DFDFvi9Twkwec9UfyJtvqqxUyomqzu9VGBNKBDri1hKYuUvLagJ
+         GUv043pCFD/BQfproTQxi+CEtMHs3mA6JNM03Y0i1scAEVDMcMJULIb3AlJkDNhSRUNs
+         HDDH+/dRJ93csWl/FlCoZM6whZi5Xyz8sd8kI5+lBNzkxDzC21VDqRxUtdX4f6VY5jtE
+         sI2Q==
+X-Gm-Message-State: AOJu0Yzls/d1RMvzQv301UHfrNcliAxL0EowFMyqzr+IlFiN2mJfXw7W
+        y5AaCxu0MG8ICVyNfIiQac0=
+X-Google-Smtp-Source: AGHT+IG3iDVr+bwDU+PL99hfbuiHt0zCiHIQWUcrjXsJ5KxrLrcR+/Y2Ex+c4EakkXcwlh8smdZPcA==
+X-Received: by 2002:a19:504e:0:b0:500:b7ed:105a with SMTP id z14-20020a19504e000000b00500b7ed105amr4902785lfj.29.1693750161061;
+        Sun, 03 Sep 2023 07:09:21 -0700 (PDT)
+Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
+        by smtp.googlemail.com with ESMTPSA id b25-20020a056512025900b004fbb69d8791sm1275305lfo.79.2023.09.03.07.09.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 07:09:20 -0700 (PDT)
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jonathan Bergh <bergh.jonathan@gmail.com>
+Subject: [PATCH] staging: vme_user: Add missing '*' in multiline comments
+Date:   Sun,  3 Sep 2023 16:06:17 +0200
+Message-Id: <20230903140617.567850-1-bergh.jonathan@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,31 +69,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-rcar_du_group_get() never returns a negative
-error code (always returns 0), so change
-the comment about returned value
+This patch resolves a warning reported by checkpatch where multiline
+block comments should use '*' on intermediate lines in order to adhere
+to the Linux kernel coding-style guidelines.
 
-Fixes: cb2025d2509f ("drm/rcar-du: Introduce CRTCs groups")
-Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
 ---
- drivers/gpu/drm/renesas/rcar-du/rcar_du_group.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/vme_user/vme_fake.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/renesas/rcar-du/rcar_du_group.c b/drivers/gp=
-u/drm/renesas/rcar-du/rcar_du_group.c
-index 2ccd2581f544..499d4e56c32d 100644
---- a/drivers/gpu/drm/renesas/rcar-du/rcar_du_group.c
-+++ b/drivers/gpu/drm/renesas/rcar-du/rcar_du_group.c
-@@ -200,7 +200,7 @@ static void rcar_du_group_setup(struct rcar_du_group =
-*rgrp)
-  *
-  * This function must be called with the DRM mode_config lock held.
-  *
-- * Return 0 in case of success or a negative error code otherwise.
-+ * Always return 0.
-  */
- int rcar_du_group_get(struct rcar_du_group *rgrp)
+diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
+index 7c53a8a7b79b..90aaf650524d 100644
+--- a/drivers/staging/vme_user/vme_fake.c
++++ b/drivers/staging/vme_user/vme_fake.c
+@@ -1010,8 +1010,8 @@ static void fake_free_consistent(struct device *parent, size_t size,
  {
---=20
-2.30.2
+ 	kfree(vaddr);
+ /*
+-	dma_free_coherent(parent, size, vaddr, dma);
+-*/
++ *	dma_free_coherent(parent, size, vaddr, dma);
++ */
+ }
+ 
+ /*
+-- 
+2.34.1
 
