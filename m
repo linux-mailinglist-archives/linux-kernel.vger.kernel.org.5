@@ -2,95 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B36F4790B70
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 12:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B2CF790B75
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 12:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236388AbjICKL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 06:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
+        id S236348AbjICKZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 06:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236377AbjICKL1 (ORCPT
+        with ESMTP id S235800AbjICKZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 06:11:27 -0400
-Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DAF10C
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 03:11:23 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id ck4Sq0Dlhv5KTck4SqU8l5; Sun, 03 Sep 2023 12:11:16 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693735876;
-        bh=pYSxdLERm6FegRN8OPQImJFFHzRLF2IYwebwjAKvv44=;
-        h=From:To:Cc:Subject:Date;
-        b=lU56k2SraqBFtjnPVVg8n3TRO2AETyZ8PZ4ZsOtXQ9jlEQ7NzBjETYeyloHBTlseE
-         Kw1Q1aUFASROqv/CNJxZY4qi8A5BWp+GNcxWhqrNJXqLZASE1EfBe/7QSYUvaFVsz/
-         jpAsIzyUJyCjmHrTJPjkqKgtG6F/F2TylX+QybouB+H9eAn0aiP6PbzqcpLE7SFDB+
-         AgbHF0w9TmvoL3oEioO3Kaks6KPCK3Pjd/OEcmG82JMhxHo4zn1W5Qb2muC6FXOVQ9
-         3w/FZx2yotk3MON9BzBkmLucNWX2oO/+aqs0XoIDWv2mKix7Qcca2ATgO9rHC2KgrB
-         ueXdOyY9nKaYw==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 03 Sep 2023 12:11:16 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: [PATCH] phy: sun4i-usb: Fix a W=1 compilation failure
-Date:   Sun,  3 Sep 2023 12:11:06 +0200
-Message-Id: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sun, 3 Sep 2023 06:25:17 -0400
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B801F110
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 03:25:11 -0700 (PDT)
+Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 383AP7EM066111;
+        Sun, 3 Sep 2023 19:25:07 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
+ Sun, 03 Sep 2023 19:25:07 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
+Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 383AP7NO066107
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Sun, 3 Sep 2023 19:25:07 +0900 (JST)
+        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <c4ed154e-ac0e-b002-4de3-c09f113a79fb@I-love.SAKURA.ne.jp>
+Date:   Sun, 3 Sep 2023 19:25:06 +0900
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [GIT PULL] tomoyo update for v6.6
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_PASS,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With gcc 12.3.0, when this file is built, we get errors such as:
+The following changes since commit 254a8ed6aab39c869d99da97f25035ed15756337:
 
-drivers/phy/allwinner/phy-sun4i-usb.c: In function ‘sun4i_usb_phy_probe’:
-drivers/phy/allwinner/phy-sun4i-usb.c:790:52: error: ‘_vbus’ directive output may be truncated writing 5 bytes into a region of size between 2 and 12 [-Werror=format-truncation=]
-  790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
-      |                                                    ^~~~~
-drivers/phy/allwinner/phy-sun4i-usb.c:790:17: note: ‘snprintf’ output between 10 and 20 bytes into a destination of size 16
-  790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  tomoyo: remove unused function declaration (2023-08-13 22:07:15 +0900)
 
-Because of the possible value of 'i', this can't be an issue in real world
-application, but in order to have "make W=1" work correctly, give more
-space for 'name'.
+are available in the git repository at:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/phy/allwinner/phy-sun4i-usb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+  git://git.osdn.net/gitroot/tomoyo/tomoyo-test1.git tags/tomoyo-pr-20230903
 
-diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-index ec551464dd4f..e53a9a9317bc 100644
---- a/drivers/phy/allwinner/phy-sun4i-usb.c
-+++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-@@ -782,7 +782,7 @@ static int sun4i_usb_phy_probe(struct platform_device *pdev)
- 
- 	for (i = 0; i < data->cfg->num_phys; i++) {
- 		struct sun4i_usb_phy *phy = data->phys + i;
--		char name[16];
-+		char name[32];
- 
- 		if (data->cfg->missing_phys & BIT(i))
- 			continue;
--- 
-2.34.1
+for you to fetch changes up to 254a8ed6aab39c869d99da97f25035ed15756337:
 
+  tomoyo: remove unused function declaration (2023-08-13 22:07:15 +0900)
+
+My gpg key's expiration date was extended by 10 years.
+Please fetch from https://I-love.SAKURA.ne.jp/kumaneko-key as needed.
+----------------------------------------------------------------
+Three cleanup patches, no behavior changes.
+
+tomoyo: remove unused function declaration
+tomoyo: refactor deprecated strncpy
+tomoyo: add format attributes to functions
+
+ security/tomoyo/common.c |    1 +
+ security/tomoyo/common.h |    6 ++----
+ security/tomoyo/domain.c |    5 ++---
+ 3 files changed, 5 insertions(+), 7 deletions(-)
+
+----------------------------------------------------------------
