@@ -2,149 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10827790B54
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 11:17:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF067790B55
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 11:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236192AbjICJRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 05:17:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46858 "EHLO
+        id S236235AbjICJR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 05:17:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235800AbjICJR3 (ORCPT
+        with ESMTP id S235800AbjICJR7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 05:17:29 -0400
-Received: from m13116.mail.163.com (m13116.mail.163.com [220.181.13.116])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 54EA3130;
-        Sun,  3 Sep 2023 02:17:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=TAQ9ab7/JzjoCuofku23C87drjGIJXzYsIWmCVjMcsM=; b=L
-        w/mbsMren9ZrlgJYV2OwgwnwwjW4YlOMMuIAlk1uUsj++doNsPvtKuKgNzJL34dm
-        zwpynRVLP/BrauZtpMMFvPkrjMOuRb94iPJQifHXhFucj1DQ/oK/KT579BBVk4mJ
-        OWFpNE+cN8N77eSSLRHO3V98wQ3OmeafH+uXY054xA=
-Received: from 18500469033$163.com ( [114.250.138.216] ) by
- ajax-webmail-wmsvr116 (Coremail) ; Sun, 3 Sep 2023 17:15:08 +0800 (CST)
-X-Originating-IP: [114.250.138.216]
-Date:   Sun, 3 Sep 2023 17:15:08 +0800 (CST)
-From:   "Dingyan Li" <18500469033@163.com>
-To:     "Thinh Nguyen" <Thinh.Nguyen@synopsys.com>
-Cc:     "stern@rowland.harvard.edu" <stern@rowland.harvard.edu>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mathias.nyman@intel.com" <mathias.nyman@intel.com>,
-        "pawell@cadence.com" <pawell@cadence.com>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "brcm80211-dev-list.pdl@broadcom.com" 
-        <brcm80211-dev-list.pdl@broadcom.com>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mina86@mina86.com" <mina86@mina86.com>,
-        "clemens@ladisch.de" <clemens@ladisch.de>,
-        "ruslan.bilovol@gmail.com" <ruslan.bilovol@gmail.com>,
-        "bigeasy@linutronix.de" <bigeasy@linutronix.de>,
-        "treding@nvidia.com" <treding@nvidia.com>,
-        "oneukum@suse.com" <oneukum@suse.com>,
-        "laurent.pinchart@ideasonboard.com" 
-        <laurent.pinchart@ideasonboard.com>,
-        "nic_swsd@realtek.com" <nic_swsd@realtek.com>,
-        "marcel@holtmann.org" <marcel@holtmann.org>
-Subject: Re:Re: [PATCH v3] USB: Extend usb_device_speed with new value
- USB_SPEED_SUPER_PLUS_BY2
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <20230901223316.vbnf3zfjsxoogenb@synopsys.com>
-References: <20230901160532.6313-1-18500469033@163.com>
- <20230901223316.vbnf3zfjsxoogenb@synopsys.com>
-X-NTES-SC: AL_QuySAfuYvU0r7iWZZekXkkYVgew6WsC4vf4k3IReOps0qivA9D4jUFJnPF/Q28ChDiaLnTWeUwNtwftUXpZRYrrq88G2fmxAXgwIEZrDPSBr
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        Sun, 3 Sep 2023 05:17:59 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEA3130
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 02:17:53 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1bf11b1c7d0so8016345ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 02:17:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693732673; x=1694337473; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fQUXQ3h5Sa/sHt8ymdUUprVawGnEspmXBM4PbTZeVpU=;
+        b=KALEd4F9XQA5qaZqQoSoMJq1lOzQy5cvD7l3j4i4Gs7euhUfKE3SvsfTUSH9Dq4Kry
+         phZ3+p040rcMkb2+U8H1FleRl2G2IZ5j1zTg9GBgpSNOrq6BVScJnqG59Z34egH5CWYc
+         dMnVqPC3e7x1LyG8PVR046bubHk3vGlbAZW5UZOoiywe0g9LBrkDfa5tEf0agIj1QrFF
+         w0WBE/M8VDinpiN2T89Yexd/035bWo1pweNSpryPGUfHjen1YKiGcD1dO6lycdNiJyZu
+         vurbqL0P9ZPYVLXkPkgjuodKvQijgHgNWn1aQ36wgdxLc9s1tV3C245ZTqzeAN8FFd6C
+         iVKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693732673; x=1694337473;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fQUXQ3h5Sa/sHt8ymdUUprVawGnEspmXBM4PbTZeVpU=;
+        b=H5fELR4t1cvWv7N4UGnyBjzxgvuQhZAEzzdbkhmTW/+BoPS+PzfcvVSw/NP4hWu8J7
+         +VQGSQVBwOtIEJ5enS3uUaIIQ8B868xnqtvNKWQWxYZiKHVv4FERZNL3KjpsbBUXM9kh
+         9b72BmhOvsXzvoO7qipCGv2GwFQ612xSSDJFaxav0bQbRybVR258Lieyfqci9uNz40dS
+         UOuEXovzD5EXp4oc6jIz5IEGrR+ghY35IiYlTLetwu8tYp9LUetDwphGBdxJ3gYEM1QY
+         GwaTRaVcnokUKJQrILhmkDXm7w+xmrUad1IC5rQpEWiiWQtEW+yi81G9G8baXrBa2kxK
+         cQhg==
+X-Gm-Message-State: AOJu0YwMPkdFFhx9ihHoFvCIbeB/vTEwnJomObeQhxH3QGuobQR1xwQr
+        VK2hGYv+XksmQNiIWNv7yvbXnC2GXN+4nlQijQ/svAxWDwn6bxlwRI5Lyg==
+X-Google-Smtp-Source: AGHT+IHr97HqeJDbbeJBaCRZdNphpW12CA1QWdDGLg+Xrwn8cCE4FwH0+Kpetb40l5HjETRe3flvy/ISr+SzuHRmSEU=
+X-Received: by 2002:a17:90b:1e4e:b0:26b:494f:ae5d with SMTP id
+ pi14-20020a17090b1e4e00b0026b494fae5dmr9389281pjb.1.1693732672667; Sun, 03
+ Sep 2023 02:17:52 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <58c0090e.160e.18a5a531364.Coremail.18500469033@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: dMGowACHpoKcTvRkSgANAA--.21129W
-X-CM-SenderInfo: jprykiiquwmiitt6il2tof0z/xtbB5xLdy2BHLfFV3wAasI
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20230903082253.562042-1-bergh.jonathan@gmail.com> <2023090324-recopy-unisexual-db41@gregkh>
+In-Reply-To: <2023090324-recopy-unisexual-db41@gregkh>
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+Date:   Sun, 3 Sep 2023 11:17:41 +0200
+Message-ID: <CA+MPq=VjvQSmY_coVxrmisXavgaZa78ram-SH2pHvOZ=AvaqRQ@mail.gmail.com>
+Subject: Re: [PATCH] Staging: Fixed some formatting warnings in the vme_user driver
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjMtMDktMDIgMDY6MzM6MzAsICJUaGluaCBOZ3V5ZW4iIDxUaGluaC5OZ3V5ZW5Ac3lu
-b3BzeXMuY29tPiB3cm90ZToKPkhpLAo+Cj5QbGVhc2UgQ2MgbWUgZm9yIGNoYW5nZXMgcmVsYXRl
-ZCB0byBkd2MzLgo+ClN1cmUsIHRoYW5rcyBmb3IgbGV0dGluZyBtZSBrbm93LgoKPk9uIFNhdCwg
-U2VwIDAyLCAyMDIzLCBEaW5neWFuIExpIHdyb3RlOgo+PiBDdXJyZW50bHkgdGhlcmUgYXJlIHRo
-ZXJlIG1ham9yIGdlbmVyYXRpb25zIHdoZW4gc3BlYWtpbmcgb2YKPj4gVVNCX1NQRUVEX1NVUEVS
-X1BMVVMgZGV2aWNlcy4gSG93ZXZlciwgdGhleSBhY3R1YWxseSBzdGFuZHMKPj4gZm9yIGRpZmZl
-cmVudCBwaHlzaWNhbCBzcGVlZHMuIEdFTl8yeDIgbWVhbnMgMjBHYnBzLCB3aGlsZQo+PiB0aGUg
-b3RoZXJzIG1lYW4gMTBHYnBzLiBTbyBpbiBvcmRlciB0byBjb25maXJtIDIwR2JwcywgYm90aAo+
-PiBzcGVlZCBhbmQgZ2VuZXJhdGlvbiBuZWVkIHRpIGJlIGNoZWNrZWQuIFRoaXMgY2F1c2VzIGEg
-dHJvdWJsZQo+PiBmb3IgaW9jdGwgVVNCREVWRlNfR0VUX1NQRUVEIHNpbmNlIGl0IGNhbiBvbmx5
-IHJldHVybiBzcGVlZAo+PiB2YWx1ZSB0byB1c2Vyc3BhY2UuCj4+IAo+PiBJbiBvcmRlciBub3Qg
-dG8gYWRkIGEgbmV3IGlvY3RsIHRvIGdldCBzc3AgZ2VuZXJhdGlvbiwgZXh0ZW5kaW5nCj4+IHVz
-Yl9kZXZpY2Vfc3BlZWQgaXMgYSBnb29kIG9wdGlvbi4gVGhlIHNpZGUgZWZmZWN0IGlzIHRoYXQK
-Pj4gVVNCX1NQRUVEX1NVUEVSX1BMVVMgaGFzIGJlZW4gdXNlZCBpbiBsb3RzIG9mIHBsYWNlcyBh
-bmQKPj4gaXQgYWxzbyB0YWtlcyBzb21lIGVmZm9ydCB0byBnbyB0aHJvdWdoIGFsbCBvZiB0aGVt
-IGFuZCBjaGVjawo+PiB3aGV0aGVyIHRoZSBuZXcgc3BlZWQgc2hvdWxkIGJlIHVzZWQgdG9vLgo+
-PiAKPj4gQmVzaWRlcywgYXMgc3VnZ2VzdGVkIGJ5IEFsZW4sIHNzcF9yYXRlIGlzIG5vdCBhIHBy
-b3BlciBuYW1lLAo+PiBjaGFuZ2UgaXQgdG8gc3NwX2dlbi4gQW5kIGNoYW5nZSBhbGwgZnVuY3Rp
-b25zL3N0cnVjdCBmaWxlZHMKPj4gZW5kZWQgd2l0aCBzc3BfcmF0ZSB0byBzc3BfZ2VuLiBBbmQg
-dGhlcmUgaXMgYWxzbyBzb21lIGNvZGUKPj4gcmVmYWN0b3IgdG8gcmVkdWNlIGR1cGxpY2F0ZSBk
-ZWZpbml0aW9uIG9mIHN0cmluZ3MgYW5kIGluY3JlYXNlCj4+IHRoZSB1dGlsaXphdGlvbiBvZiBj
-b21tb25seSBkZWZpbmVkIHV0aWxpdGllcy4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IERpbmd5YW4g
-TGkgPDE4NTAwNDY5MDMzQDE2My5jb20+Cj4+IC0tLQo+Cj5DYW4gd2Ugc3BlbGwgb3V0IHRoZSB3
-aG9sZSB0aGluZyBpbnN0ZWFkIG9mIFVTQl9TUEVFRF9TVVBFUl9QTFVTX0JZMgo+KGllLiBVU0Jf
-U1BFRURfU1VQRVJfUExVU19HRU5fMngyIGFzIHlvdSBpbnRlbmRlZCkgaW5zdGVhZCBvZiBqdXN0
-IHRoZQo+bGFuZSBjb3VudC4KPgpIZXJlIGlzIGEgbGl0dGxlIGJpdCBtb3JlIGNvbnRleHQgYXQK
-aHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGttbC8wN2M4MjFhZS0yMzkxLTQ3NGMtYWVjOS02NWY0
-N2QzZmVjZjJAcm93bGFuZC5oYXJ2YXJkLmVkdS8KV2hhdCBJJ20gdHJ5aW5nIHRvIGRvIGlzIHRo
-YXQgaW4gZW51bSB1c2JfZGV2aWNlX3NwZWVkLCB3ZSBvbmx5IGNhcmUgYWJvdXQKb3ZlcmFsbCBz
-cGVlZCBpbnN0ZWFkIG9mIHN0dWZmIGxpa2UgbGFuZXMuIEZvciBleGFtcGxlLCBHRU5fMXgyIGFu
-ZApHRU5fMlgxIGFyZSBib3RoIDEwR2Jwcywgc28gd2UgY2FuIHVzZSBVU0JfU1BFRURfU1VQRVJf
-UExVUwp0byByZXByZXNlbnQgMTBHYnBzLiBHRU5fMngyIHJlcHJlc2VudCAyMEdicHMsIHdlIGNh
-biB1c2UKVVNCX1NQRUVEX1NVUEVSX1BMVVNfQlkyLiBUaGVyZSBpcyBubyBuZWVkIHRvIGFwcGVu
-ZCBnZW5lcmF0aW9uCmFuZCBsYW5lIGluZm8gd2hlbiB3ZSBvbmx5IHdhbnQgdG8gdGFsayBhYm91
-dCBvdmVyYWxsIHNwZWVkLiBCeSB0aGUgd2F5LApBcHBsZSBhbHNvIHVzZXMgYSBzaW1pbGFyIHdh
-eSB0byBkZWNsYXJlIHNwZWVkIGVudW1zIGFuZCB0aGUgbmV3CnNwZWVkIG5hbWUgaXMga2luZCBv
-ZiBib3Jyb3dlZCBmcm9tIGl0LgoKPlRoZXJlIGFyZSBTdXBlclNwZWVkIFBsdXMgZ2VuZXJhdGlv
-biBfYW5kXyBsYW5lIGNvdW50LiBUaGF0J3Mgd2h5IEkKPmRpZG4ndCBuYW1lICJ1c2Jfc3NwX2dl
-biIgdGhhdCBvbmx5IHJlZmxlY3RzIHRoZSBnZW5lcmF0aW9uIGFuZCBub3QgdGhlCj4KU3RpbGws
-IEkgdGhpbmsgInVzYl9zc3BfZ2VuIiBpcyBzbGlnaHRseSBiZXR0ZXIgdGhhbiAidXNiX3NzcF9y
-YXRlIi4gQXMgZm9yCnRoZSBsYW5lcywgSSB0aGluayBpdCdzIE9LIHRvIG5vdCBtZW50aW9uIGl0
-IGluIHRoZSBuYW1lIHNpbmNlIHRoZXJlIGFyZQphbHJlYWR5IGNvbW1lbnRzIHRvIGV4cGxhaW4g
-d2hhdCB0aGlzIGVudW0gaXMgZm9yLiBCZXNpZGVzLCB0aGUgd29yZAoicmF0ZSIgaXMga2luZCBv
-ZiBsaWtlICJzcGVlZCIsIHdoaWNoIHNob3VsZCBiZSBjb3ZlcmVkIGJ5IHVzYl9kZXZpY2Vfc3Bl
-ZWQKaW5zdGVhZCBvZiBpbiB0aGUgZW51bSBmb3IgZ2VuZXJhdGlvbiBhbmQgbGFuZXMuCgo+bGFu
-ZSBjb3VudC4gQWxzbywgSSBkaWRuJ3QgZXh0ZW5kIHVzYl9kZXZpY2Vfc3BlZWQgYmVjYXVzZSBn
-ZW4gWHhZIGFyZQo+YWxsIGEgc2luZ2xlIHNwZWVkOiBTdXBlclNwZWVkIFBsdXMuCj4KQWdhaW4s
-IEkgdGhpbmsgaXQgZGVwZW5kcyBvbiB3aGF0IHdlIHJlYWxseSBtZWFuIHdoZW4gc3BlYWtpbmcg
-b2Ygc3BlZWQuCkNsZWFybHkgR0VOXzJ4MiBhbmQgR0VOXzJ4MSBoYXZlIGRpZmZlcmVudCBvdmVy
-YWxsIHNwZWVkLiBMZXQncyBub3QgaGlkZQp0aGUgZmFjdCB1bmRlciBTdXBlclNwZWVkIFBsdXMu
-Cgo+SWYgeW91J3JlIHBsYW5uaW5nIHRvIGRvIGl0IHRoaXMgd2F5LCB3aHkgbm90IGFkZCB0aGUg
-b3RoZXIgc3BlZWRzIChzdWNoCj5hcyBnZW4gMXgyKSB0byB1c2JfZGV2aWNlX3NwZWVkIGVudW0g
-dG9vPyBUaGVuIHdlIGNhbiBkcm9wIHRoZQo+Ckxpa2UgSSBzYWlkIGFib3ZlLCBpZiB3ZSBvbmx5
-IGNhcmUgYWJvdXQgdGhlIG92ZXJhbGwgc3BlZWQsIHRoZXJlIGlzIG5vIG5lZWQKdG8gdGVsbCBH
-RU5fMXgyIGZyb20gR0VOXzJ4MSBzaW5jZSBib3RoIGFyZSAxMEdicHMuIEJ1dCBsaWtlIGluIGR3
-YzMgY29kZSwKdGhlcmUgYXJlIHNvbWUgZGlmZmVyZW50IGJlaGF2aW9ycyBiYXNlZCBvbiBnZW5l
-cmF0aW9uIGFuZCBsYW5lcywgc28KdGhlIGVudW0gc3RpbGwgbmVlZHMgdG8gYmUga2VwdC4KCj51
-c2Jfc3NwX3JhdGUgZW51bS4gSWYgd2UncmUgZ29pbmcgdG8gY2hlY2sgbXVsdGlwbGUgZW51bSBm
-b3IgU3VwZXJTcGVlZAo+UGx1cywgd2UgcHJvYmFibHkgbmVlZCBhIHVzYl9kZXZpY2VfaXNfc3Vw
-ZXJzcGVlZF9wbHVzKCkgZnVuY3Rpb24uCj4KPk5vdyB3ZSBuZWVkIHRvIGF1ZGl0IGFsbCB0aGUg
-Z3JlYXRlci9sZXNzZXIgc3BlZWQgY2hlY2tzIHRoYXQgdXNlIDwgb3IgPgo+dG8gbWFrZSBzdXJl
-IHRoYXQgdGhleSBhcmUgdXNlZCBob3cgdGhleSB3ZXJlIGludGVuZGVkIHRvLgo+CkFmdGVyIGdv
-aW5nIHRocm91Z2ggYWxsIHBsYWNlcyB3aGVyZSBVU0JfU1BFRURfU1VQRVJfUExVUyBpcyB1c2Vk
-LApmb3Igc3dpdGNoIHN0YXRlbWVudHMsIEkgY2hvb3NlIHRvIGFkZCAgYW4gZXh0cmEgY2FzZS4g
-Rm9yIGlmIHN0YXRlbWVudCwKY2hhbmdlICI9PSIgdG8gIj49Ii4gQnV0IEknbSBub3QgY29tcGxl
-dGVseSBzdXJlIHRoZXkgYXJlIGFsbCBjb3JyZWN0LAp3aGljaCBuZWVkIHRvIGJlIGZ1cnRoZXIg
-Y2hlY2tlZCBieSBtYWludGFpbmVycy4KCj5TaW5jZSB0aGVzZSBjaGFuZ2VzIGFyZSBub3Qgc2lt
-cGxlIGFuZCB3aWxsIHRvdWNoIG9uIG11bHRpcGxlIHBsYWNlcywKPnBsZWFzZSBzcGxpdCB0aGlz
-IHBhdGNoIG91dC4KPgpPa2F5LCBJIGNhbiB0cnkgdG8gc3BsaXQgdGhlIHBhdGNoIG9uY2Ugd2Ug
-cmVhY2ggYW4gYWdyZWVtZW50IG9uCmhvdyB0byBoYW5kbGUgU1NQIHNwZWVkIGFuZCBnZW5lcmF0
-aW9uLiBCZXNpZGVzLCB0aGVyZSBpcyBhbG1vc3QKb25lIGZpbGUgZm9yIGVhY2ggZGlmZmVyZW50
-IG1vZHVsZSBhbmQgaXQncyBub3QgZ29vZCB0byBzZW5kIG9uZSBwYXRjaApmb3IgZWFjaCBvZiB0
-aGVtLCByaWdodD8gVGhlcmUgd291bGQgYmUgbWFueSBpbiB0aGlzIHdheS4KClJlZ2FyZHMsCkRp
-bmd5YW4K
+Hi Greg,
+I hope you are well. I got this response from your bot!
+I pretty much followed your FOSDEM instructions for *first kernel
+patches* so i thought I was doing it right.
+
+Based on the video of your talk, is more required in the SUBJECT and
+BODY for such a (basic) change? It seemed the above was pretty much
+inline with the terseness / examples you showed in your presentation.
+Hopefully thats the case.
+
+Anyway, best regards
+Jonathan
+
+
+On Sun, Sep 3, 2023 at 10:32=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org=
+> wrote:
+>
+> On Sun, Sep 03, 2023 at 10:22:53AM +0200, Jonathan Bergh wrote:
+> > Fixed a few style warnings.
+> >
+> > Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
+> > ---
+> >  drivers/staging/vme_user/vme_fake.c   |   4 +-
+> >  drivers/staging/vme_user/vme_tsi148.h | 140 +++++++++++++-------------
+> >  2 files changed, 72 insertions(+), 72 deletions(-)
+> >
+> > diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_=
+user/vme_fake.c
+> > index 7c53a8a7b79b..90aaf650524d 100644
+> > --- a/drivers/staging/vme_user/vme_fake.c
+> > +++ b/drivers/staging/vme_user/vme_fake.c
+> > @@ -1010,8 +1010,8 @@ static void fake_free_consistent(struct device *p=
+arent, size_t size,
+> >  {
+> >       kfree(vaddr);
+> >  /*
+> > -     dma_free_coherent(parent, size, vaddr, dma);
+> > -*/
+> > + *   dma_free_coherent(parent, size, vaddr, dma);
+> > + */
+> >  }
+> >
+> >  /*
+> > diff --git a/drivers/staging/vme_user/vme_tsi148.h b/drivers/staging/vm=
+e_user/vme_tsi148.h
+> > index 63f726e1811a..23969393b606 100644
+> > --- a/drivers/staging/vme_user/vme_tsi148.h
+> > +++ b/drivers/staging/vme_user/vme_tsi148.h
+> > @@ -255,28 +255,28 @@ static const int TSI148_LCSR_VIACK[8] =3D { 0, TS=
+I148_LCSR_VIACK1,
+> >   */
+> >  #define TSI148_LCSR_VMEFL    0x250
+> >
+> > -     /*
+> > -      * VME exception.
+> > -      * offset  260
+> > +/*
+> > + * VME exception.
+> > + * offset  260
+> >   */
+> >  #define TSI148_LCSR_VEAU     0x260
+> >  #define TSI148_LCSR_VEAL     0x264
+> >  #define TSI148_LCSR_VEAT     0x268
+> >
+> > -     /*
+> > -      * PCI error
+> > -      * offset  270
+> > -      */
+> > +/*
+> > + * PCI error
+> > + * offset  270
+> > + */
+> >  #define TSI148_LCSR_EDPAU    0x270
+> >  #define TSI148_LCSR_EDPAL    0x274
+> >  #define TSI148_LCSR_EDPXA    0x278
+> >  #define TSI148_LCSR_EDPXS    0x27C
+> >  #define TSI148_LCSR_EDPAT    0x280
+> >
+> > -     /*
+> > -      * Inbound Translations
+> > -      * offset  300
+> > -      */
+> > +/*
+> > + * Inbound Translations
+> > + * offset  300
+> > + */
+> >  #define TSI148_LCSR_IT0_ITSAU                0x300
+> >  #define TSI148_LCSR_IT0_ITSAL                0x304
+> >  #define TSI148_LCSR_IT0_ITEAU                0x308
+> > @@ -363,53 +363,53 @@ static const int TSI148_LCSR_IT[8] =3D { TSI148_L=
+CSR_IT0, TSI148_LCSR_IT1,
+> >  #define TSI148_LCSR_OFFSET_ITOFL     0x14
+> >  #define TSI148_LCSR_OFFSET_ITAT              0x18
+> >
+> > -     /*
+> > -      * Inbound Translation GCSR
+> > -      * offset  400
+> > -      */
+> > +/*
+> > + * Inbound Translation GCSR
+> > + * offset  400
+> > + */
+> >  #define TSI148_LCSR_GBAU     0x400
+> >  #define TSI148_LCSR_GBAL     0x404
+> >  #define TSI148_LCSR_GCSRAT   0x408
+> >
+> > -     /*
+> > -      * Inbound Translation CRG
+> > -      * offset  40C
+> > -      */
+> > +/*
+> > + * Inbound Translation CRG
+> > + * offset  40C
+> > + */
+> >  #define TSI148_LCSR_CBAU     0x40C
+> >  #define TSI148_LCSR_CBAL     0x410
+> >  #define TSI148_LCSR_CSRAT    0x414
+> >
+> > -     /*
+> > -      * Inbound Translation CR/CSR
+> > -      *         CRG
+> > -      * offset  418
+> > -      */
+> > +/*
+> > + * Inbound Translation CR/CSR
+> > + *         CRG
+> > + * offset  418
+> > + */
+> >  #define TSI148_LCSR_CROU     0x418
+> >  #define TSI148_LCSR_CROL     0x41C
+> >  #define TSI148_LCSR_CRAT     0x420
+> >
+> > -     /*
+> > -      * Inbound Translation Location Monitor
+> > -      * offset  424
+> > -      */
+> > +/*
+> > + * Inbound Translation Location Monitor
+> > + * offset  424
+> > + */
+> >  #define TSI148_LCSR_LMBAU    0x424
+> >  #define TSI148_LCSR_LMBAL    0x428
+> >  #define TSI148_LCSR_LMAT     0x42C
+> >
+> > -     /*
+> > -      * VMEbus Interrupt Control.
+> > -      * offset  430
+> > -      */
+> > +/*
+> > + * VMEbus Interrupt Control.
+> > + * offset  430
+> > + */
+> >  #define TSI148_LCSR_BCU              0x430
+> >  #define TSI148_LCSR_BCL              0x434
+> >  #define TSI148_LCSR_BPGTR    0x438
+> >  #define TSI148_LCSR_BPCTR    0x43C
+> >  #define TSI148_LCSR_VICR     0x440
+> >
+> > -     /*
+> > -      * Local Bus Interrupt Control.
+> > -      * offset  448
+> > -      */
+> > +/*
+> > + * Local Bus Interrupt Control.
+> > + * offset  448
+> > + */
+> >  #define TSI148_LCSR_INTEN    0x448
+> >  #define TSI148_LCSR_INTEO    0x44C
+> >  #define TSI148_LCSR_INTS     0x450
+> > @@ -417,10 +417,10 @@ static const int TSI148_LCSR_IT[8] =3D { TSI148_L=
+CSR_IT0, TSI148_LCSR_IT1,
+> >  #define TSI148_LCSR_INTM1    0x458
+> >  #define TSI148_LCSR_INTM2    0x45C
+> >
+> > -     /*
+> > -      * DMA Controllers
+> > -      * offset 500
+> > -      */
+> > +/*
+> > + * DMA Controllers
+> > + * offset 500
+> > + */
+> >  #define TSI148_LCSR_DCTL0    0x500
+> >  #define TSI148_LCSR_DSTA0    0x504
+> >  #define TSI148_LCSR_DCSAU0   0x508
+> > @@ -484,27 +484,27 @@ static const int TSI148_LCSR_DMA[TSI148_MAX_DMA] =
+=3D { TSI148_LCSR_DMA0,
+> >  #define TSI148_LCSR_OFFSET_DCNT              0x40
+> >  #define TSI148_LCSR_OFFSET_DDBS              0x44
+> >
+> > -     /*
+> > -      * GCSR Register Group
+> > -      */
+> > +/*
+> > + * GCSR Register Group
+> > + */
+> >
+> > -     /*
+> > -      *         GCSR    CRG
+> > -      * offset   00     600 - DEVI/VENI
+> > -      * offset   04     604 - CTRL/GA/REVID
+> > -      * offset   08     608 - Semaphore3/2/1/0
+> > -      * offset   0C     60C - Seamphore7/6/5/4
+> > -      */
+> > +/*
+> > + *         GCSR    CRG
+> > + * offset   00     600 - DEVI/VENI
+> > + * offset   04     604 - CTRL/GA/REVID
+> > + * offset   08     608 - Semaphore3/2/1/0
+> > + * offset   0C     60C - Seamphore7/6/5/4
+> > + */
+> >  #define TSI148_GCSR_ID               0x600
+> >  #define TSI148_GCSR_CSR              0x604
+> >  #define TSI148_GCSR_SEMA0    0x608
+> >  #define TSI148_GCSR_SEMA1    0x60C
+> >
+> > -     /*
+> > -      * Mail Box
+> > -      *         GCSR    CRG
+> > -      * offset   10     610 - Mailbox0
+> > -      */
+> > +/*
+> > + * Mail Box
+> > + *         GCSR    CRG
+> > + * offset   10     610 - Mailbox0
+> > + */
+> >  #define TSI148_GCSR_MBOX0    0x610
+> >  #define TSI148_GCSR_MBOX1    0x614
+> >  #define TSI148_GCSR_MBOX2    0x618
+> > @@ -515,27 +515,27 @@ static const int TSI148_GCSR_MBOX[4] =3D { TSI148=
+_GCSR_MBOX0,
+> >                                       TSI148_GCSR_MBOX2,
+> >                                       TSI148_GCSR_MBOX3 };
+> >
+> > -     /*
+> > -      * CR/CSR
+> > -      */
+> > +/*
+> > + * CR/CSR
+> > + */
+> >
+> > -     /*
+> > -      *        CR/CSR   CRG
+> > -      * offset  7FFF4   FF4 - CSRBCR
+> > -      * offset  7FFF8   FF8 - CSRBSR
+> > -      * offset  7FFFC   FFC - CBAR
+> > -      */
+> > +/*
+> > + *        CR/CSR   CRG
+> > + * offset  7FFF4   FF4 - CSRBCR
+> > + * offset  7FFF8   FF8 - CSRBSR
+> > + * offset  7FFFC   FFC - CBAR
+> > + */
+> >  #define TSI148_CSRBCR        0xFF4
+> >  #define TSI148_CSRBSR        0xFF8
+> >  #define TSI148_CBAR  0xFFC
+> >
+> > -     /*
+> > -      *  TSI148 Register Bit Definitions
+> > -      */
+> > +/*
+> > + *  TSI148 Register Bit Definitions
+> > + */
+> >
+> > -     /*
+> > -      *  PFCS Register Set
+> > -      */
+> > +/*
+> > + *  PFCS Register Set
+> > + */
+> >  #define TSI148_PCFS_CMMD_SERR          BIT(8)        /* SERR_L out pin=
+ ssys err */
+> >  #define TSI148_PCFS_CMMD_PERR          BIT(6)        /* PERR_L out pin=
+  parity */
+> >  #define TSI148_PCFS_CMMD_MSTR          BIT(2)        /* PCI bus master=
+ */
+> > --
+> > 2.34.1
+> >
+> >
+>
+> Hi,
+>
+> This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+> a patch that has triggered this response.  He used to manually respond
+> to these common problems, but in order to save his sanity (he kept
+> writing the same thing over and over, yet to different people), I was
+> created.  Hopefully you will not take offence and will fix the problem
+> in your patch and resubmit it so that it can be accepted into the Linux
+> kernel tree.
+>
+> You are receiving this message because of the following common error(s)
+> as indicated below:
+>
+> - You did not specify a description of why the patch is needed, or
+>   possibly, any description at all, in the email body.  Please read the
+>   section entitled "The canonical patch format" in the kernel file,
+>   Documentation/process/submitting-patches.rst for what is needed in
+>   order to properly describe the change.
+>
+> - You did not write a descriptive Subject: for the patch, allowing Greg,
+>   and everyone else, to know what this patch is all about.  Please read
+>   the section entitled "The canonical patch format" in the kernel file,
+>   Documentation/process/submitting-patches.rst for what a proper
+>   Subject: line should look like.
+>
+> If you wish to discuss this problem further, or you have questions about
+> how to resolve this issue, please feel free to respond to this email and
+> Greg will reply once he has dug out from the pending patches received
+> from other developers.
+>
+> thanks,
+>
+> greg k-h's patch email bot
