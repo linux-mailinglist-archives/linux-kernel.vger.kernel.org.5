@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A29B4790B03
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 08:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6881F790B0C
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 08:24:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235941AbjICGN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 02:13:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35108 "EHLO
+        id S235941AbjICGYb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 02:24:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235915AbjICGN2 (ORCPT
+        with ESMTP id S235801AbjICGYa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 02:13:28 -0400
-Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C48DD1B8
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 23:13:24 -0700 (PDT)
-Received: from pop-os.home ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id cgMMqubDxIQx7cgMMqJ4sJ; Sun, 03 Sep 2023 08:13:23 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693721603;
-        bh=Ah00WuGELkeIZdCrdZYVintNpevWzDVLlBUMTDJqm00=;
-        h=From:To:Cc:Subject:Date;
-        b=UQ+24zXdZjFIgmQh9kSHqzBbDISooD8Q1GyC3q15aAsy+Vmyr9vUZ2g20l6SdWdD/
-         vyqeQfp5WA5Zdq6EQ2ENVQ2fSZR1buRhi8Vu00iLaYhbcXcP+9F7iuqwd7izV6TRrz
-         yc+b+48EMD00XbtCtsqA4T1PiKVi5JxUXOG79b6qeqVCXn/poJvdJT3U0j/FWcX+4s
-         B01e9E9Ckw7m0g5Z+c7tjm6Fah86REgmjATlkN9Q5cqSBDyT93KDE9yr+0wxkW+A3p
-         g2/LrIVHN5ECGt+JeXp/p9PsfjQb7zFAL5gUcuQQGE87G0zrWHOa+S0HTHLSh/WpNq
-         wKODpgU9YNj4A==
-X-ME-Helo: pop-os.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 03 Sep 2023 08:13:23 +0200
-X-ME-IP: 86.243.2.178
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org,
-        galak@codeaurora.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] gpio: tb10x: Fix an error handling path in tb10x_gpio_probe()
-Date:   Sun,  3 Sep 2023 08:13:21 +0200
-Message-Id: <ceeda269bceee1c805f148bcbc628abc9d42601a.1693721348.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.34.1
+        Sun, 3 Sep 2023 02:24:30 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63331128;
+        Sat,  2 Sep 2023 23:24:27 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qcgX3-0002sn-Sq; Sun, 03 Sep 2023 08:24:25 +0200
+Message-ID: <1e546300-02e4-d861-b1f4-b1c73baea5a8@leemhuis.info>
+Date:   Sun, 3 Sep 2023 08:24:25 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: mainline build failure due to d1d4ff5d11a5 ("cgroup: put
+ cgroup_tryget_css() inside CONFIG_CGROUP_SCHED")
+Content-Language: en-US, de-DE
+To:     "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        regressions@lists.linux.dev
+References: <ZPMdTJ7zwrCkdMTu@debian>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <ZPMdTJ7zwrCkdMTu@debian>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693722267;0754130a;
+X-HE-SMSGID: 1qcgX3-0002sn-Sq
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If an error occurs after a successful irq_domain_add_linear() call, it
-should be undone by a corresponding irq_domain_remove(), as already done
-in the remove function.
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-Fixes: c6ce2b6bffe5 ("gpio: add TB10x GPIO driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/gpio/gpio-tb10x.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+On 02.09.23 13:32, Sudip Mukherjee (Codethink) wrote:
+> Hi All,
+> 
+> The latest mainline kernel branch fails to build mips sb1250_swarm_defconfig with
+> the error:
+> 
+> kernel/cgroup/cgroup.c: In function 'cgroup_local_stat_show':
+> kernel/cgroup/cgroup.c:3699:15: error: implicit declaration of function 'cgroup_tryget_css'; did you mean 'cgroup_tryget'? [-Werror=implicit-function-declaration]
+>  3699 |         css = cgroup_tryget_css(cgrp, ss);
+>       |               ^~~~~~~~~~~~~~~~~
+>       |               cgroup_tryget
+> kernel/cgroup/cgroup.c:3699:13: warning: assignment to 'struct cgroup_subsys_state *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+>  3699 |         css = cgroup_tryget_css(cgrp, ss);
+>       |             ^
+> 
+> 
+> git bisect pointed to d1d4ff5d11a5 ("cgroup: put cgroup_tryget_css() inside CONFIG_CGROUP_SCHED").
+> 
+> Reverting the commit has fixed the build failure.
+> 
+> I will be happy to test any patch or provide any extra log if needed.
+> 
+> #regzbot introduced: d1d4ff5d11a5887a9c4cfc00294bc68ba03e7c16
 
-diff --git a/drivers/gpio/gpio-tb10x.c b/drivers/gpio/gpio-tb10x.c
-index 78f8790168ae..f96d260a4a19 100644
---- a/drivers/gpio/gpio-tb10x.c
-+++ b/drivers/gpio/gpio-tb10x.c
-@@ -195,7 +195,7 @@ static int tb10x_gpio_probe(struct platform_device *pdev)
- 				handle_edge_irq, IRQ_NOREQUEST, IRQ_NOPROBE,
- 				IRQ_GC_INIT_MASK_CACHE);
- 		if (ret)
--			return ret;
-+			goto err_remove_domain;
- 
- 		gc = tb10x_gpio->domain->gc->gc[0];
- 		gc->reg_base                         = tb10x_gpio->base;
-@@ -209,6 +209,10 @@ static int tb10x_gpio_probe(struct platform_device *pdev)
- 	}
- 
- 	return 0;
-+
-+err_remove_domain:
-+	irq_domain_remove(tb10x_gpio->domain);
-+	return ret;
- }
- 
- static int tb10x_gpio_remove(struct platform_device *pdev)
--- 
-2.34.1
+#regzbot fix: 76be05d4fd6c91a3885298f1dc3efeef32846
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
+
+
+
 
