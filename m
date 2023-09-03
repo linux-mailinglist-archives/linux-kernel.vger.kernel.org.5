@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A70B790C2E
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 15:40:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB25E790C36
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 15:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbjICNkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 09:40:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
+        id S241479AbjICNkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 09:40:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240305AbjICNjx (ORCPT
+        with ESMTP id S233591AbjICNkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 09:39:53 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F26D1172D
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 06:39:38 -0700 (PDT)
+        Sun, 3 Sep 2023 09:40:09 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6312189
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 06:39:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CB8EC611B4
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 13:39:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4C5AC433AD;
-        Sun,  3 Sep 2023 13:39:15 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C3DF0611EC
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 13:39:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E681BC4339A;
+        Sun,  3 Sep 2023 13:39:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693748356;
+        s=korg; t=1693748357;
         bh=vFZrypYTdTZY4tH9j+WcacU5AKW83DdoognQj/JAc8k=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gCPkZvE7ldUL3WJIJmsPh+Tn+4v0Rc2sZ6UJZO9I+VaqmSOmQQ8O3znzFfBDFwAcP
-         Cm7ESrHhJtdBHRB7Pn+7Avfvnj0u7CTtm1FBXwJe6G46kpjQV539XBXcxqQdk5uHSG
-         1uGtxxX7fVRgaD2SPDTcgd5AqfQA2rRCvyxOH5EM=
+        b=mQ88GOhFYzwbxP6JdgxJupJpet+TuMAJCTyJXHBmFZHI99ZcNH0goMqXZ7VXAEjP9
+         91y8m+3Ib8aDpElZRVaLaPhXzR5IZfkyw8jsK6exHgd50PXG3Uj3jdDEfuWpcI2LV2
+         o2OsTeLlKZynolSkaEZJUVK323TDbI+Q5v+co9Ek=
 Date:   Sun, 3 Sep 2023 15:04:23 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     Zev Weiss <zev@bewilderbeest.net>
@@ -44,8 +44,8 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <90b1af83-cb03-476f-9147-eb06247bf09c@hatter.bewilderbeest.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
