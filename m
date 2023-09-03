@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80E8C790DB0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A014790DB6
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346943AbjICTX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 15:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53954 "EHLO
+        id S1347102AbjICT3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 15:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237670AbjICTX1 (ORCPT
+        with ESMTP id S230063AbjICT3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 15:23:27 -0400
+        Sun, 3 Sep 2023 15:29:49 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78807C0
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:23:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7565E94
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:29:46 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08A636121C
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 19:23:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5D460C433C7;
-        Sun,  3 Sep 2023 19:23:23 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F339D609EB
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 19:29:45 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 47253C433C8;
+        Sun,  3 Sep 2023 19:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693769003;
-        bh=Ui+RyGgc3ZP4WwB++wTdPi3Hn2/N80MIK57evN2LOb0=;
+        s=k20201202; t=1693769385;
+        bh=a70ajkxiUPkGjXKq1k6l58Y4DWuh5tusQ9IbQeiEdLo=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=jQFIIhIWTSfseYGkOtQXCGxLj+/amfb9/p6KFvClIUKvERLnv8rWnMBvSMEEDNDdm
-         lrKBycdJ4ooswtpDO+m7j38pBzPc/fdr2Gx0DfPzhXHHcJAqpabQe0St4Zq0GX3nDd
-         ULxJ8biL5aLuSyrniD6ws+boE4oAfo3QdC4sitJxS2skmeJyOIfNvU3QGvFX/42oJH
-         uKF4zfuKKjPTbCfP2zQkiiSXIgA/vxcZTzsFXntqKWBOfGbSu2a/4OcQfpBVPDA8z5
-         HLlZgui7Sdz5fHkGYcxsLF95Hb8taZoWPFgetsU48bhVIJdufirUkKPf7R28/Cg+Fd
-         6py7sMHF8q/Xw==
+        b=VcxyH2c0o7KEd2fNiy8n//DdtZ8RVAx8mJUbHkEvJBrg/3KnAmZ+80dCP0kzC+Ybw
+         0P0TrJbkeEHt/yRosZs+5YyUe9dK+CiOzT2gHQnQKLAP9S5FHyEzq9DcIe5/KMoi3s
+         q6T2zKcVIMrzZ/0Qk4SwTEza+tMWIiuNckSWIuVbiu1WUh+Ka1qzbw7BzmUFbEheRO
+         2C4Il1B78P/Cm7n480chcUWwqbQvaCFzhtZpCcLwfb8Zngv4E6uma1q6GGXG2HwzIM
+         BB1uU8nhZsSrdp/3CPNvSdy8JG5PtW6Jpq7BlJ8/k7dXM9YcHy69nOYkm8RgqdYu/d
+         PCjavKaaBfPHg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 13984C64458;
-        Sun,  3 Sep 2023 19:23:23 +0000 (UTC)
-Subject: Re: [GIT PULL]: Generic phy updates for v6.6
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1466EE29F3E;
+        Sun,  3 Sep 2023 19:29:45 +0000 (UTC)
+Subject: Re: [GIT PULL]: dmaengine updates for v6.6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <ZPTCrHYAUP/+wXJ8@matsya>
-References: <ZPTCrHYAUP/+wXJ8@matsya>
+In-Reply-To: <ZPTF4zXvA+SRQkkA@matsya>
+References: <ZPTF4zXvA+SRQkkA@matsya>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZPTCrHYAUP/+wXJ8@matsya>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-6.6
-X-PR-Tracked-Commit-Id: 691525074db97d9b684dd1457fd8dc9842a36615
+X-PR-Tracked-Message-Id: <ZPTF4zXvA+SRQkkA@matsya>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-6.6-rc1
+X-PR-Tracked-Commit-Id: 72f5801a4e2b7122ed8ff5672ea965a0b3458e6b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: db906f0ca6bb55b7237b880e06ec2fc95ab67e16
-Message-Id: <169376900286.29309.14069544814227721662.pr-tracker-bot@kernel.org>
-Date:   Sun, 03 Sep 2023 19:23:22 +0000
+X-PR-Merge-Commit-Id: 708283abf896dd4853e673cc8cba70acaf9bf4ea
+Message-Id: <169376938477.10760.3757276189370555265.pr-tracker-bot@kernel.org>
+Date:   Sun, 03 Sep 2023 19:29:44 +0000
 To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -62,12 +62,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 3 Sep 2023 23:00:20 +0530:
+The pull request you sent on Sun, 3 Sep 2023 23:14:03 +0530:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-for-6.6
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-6.6-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/db906f0ca6bb55b7237b880e06ec2fc95ab67e16
+https://git.kernel.org/torvalds/c/708283abf896dd4853e673cc8cba70acaf9bf4ea
 
 Thank you!
 
