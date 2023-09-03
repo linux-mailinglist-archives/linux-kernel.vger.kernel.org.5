@@ -2,105 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69F94790B3D
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 10:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E2BB790B3F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 10:36:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236080AbjICIeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 04:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60114 "EHLO
+        id S236095AbjICIgu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 04:36:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236047AbjICIeG (ORCPT
+        with ESMTP id S236047AbjICIgt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 04:34:06 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB853189;
-        Sun,  3 Sep 2023 01:34:02 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-99bf1f632b8so75709766b.1;
-        Sun, 03 Sep 2023 01:34:02 -0700 (PDT)
+        Sun, 3 Sep 2023 04:36:49 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1407CD
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 01:36:46 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id 5b1f17b1804b1-402cc6b8bedso917565e9.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 01:36:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693730041; x=1694334841; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bRudmkh8iHtCDXikKDGZnGkARDgSd/PV3cdSFjM4RgY=;
-        b=IPaxhmJx6JDAqesHN8IWaxBT+gqfr+/s9B9eexQNynGJN1jRAWoUNFEDwl/bQtFpFm
-         xpszhwjo/9EoT+uzZ3s3hVsVhkA64+w1pRNauFZZb+eiGkCN84kpCk6VyHAfK5w8WxIG
-         NZKzmzJyYgOfS9Uhnf8zBJHzq3lxcBFSzYm/IoKUgRH56aXF5vbtIEjQMskEnVZcGUML
-         gi8Lbb9gaz+rH7NGHBhr48pc/6Ry356bHmR+VOD761LoK0llmiq24UwMVyRw3alnyLt7
-         WiCqWsbjrzqYIVG740JJB+I7p0H+LI8N2iHnVBLDKUSBEB8ZMPzay+HOpLemQkiHqp5d
-         f+/Q==
+        d=gmail.com; s=20221208; t=1693730205; x=1694335005; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LQLO7aaH2b9rfQpQmLo19KMj34+AhfX1whSrT748ylE=;
+        b=UowASRcAwVXJABDTjtQ4aHZ5l56V660nZbmqRRyDx6kwkdDJ/BgyjsZTDHO1GvmbJA
+         zkVvv+I8WNKAlPCY7sbYNmwDVhLIQtFwqfmLSsohzU4dh88AXA8+AW91YnaSBsfmNauA
+         2JBMVIyR/lT2EF8vWlCGcaKfQwImHnDDq5kFDPvp0MyN9ELfSr2LJae6WiCzVAjQeV0s
+         CpwUcJFdla2P6AVD8nQBwGD0iKSulzE5rDo+oFVSgTi0iGR2mcKncxwoL3Yh/lhcOyEB
+         IlJnWgyUP0T3Oa4XfPhbxxd3IGWWiMVCB7+D5hrdJ1JyGPLFn+yY4iQns+eB/mSk0XpA
+         1UOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693730041; x=1694334841;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bRudmkh8iHtCDXikKDGZnGkARDgSd/PV3cdSFjM4RgY=;
-        b=llmyBYbKibTh+tFvvY0AhPPVkiMeOYrKogXxf6l72MRnR4zJMx0IVBuVta/A72+g0o
-         UFKrDkWouAj5HuiH2DCdZdle05vvBB2F4Evcwx7JVWmxPOy6ueIXjZfeyQABUAFRlIJp
-         uwrZMUe/01Hcvurhj+TASQ/N5kbVwYxH0bNcuDucjSrC35A00KeMITjo3hB5xcEpWlnu
-         yBnubXjd6J/9nKJkbPUjy1C+mhgf5CxEQEcsCAg/RzHqXhReuTvZZJIrvkzUbNANPT87
-         z7xWN28WXPHCTlJ0ilCrEfOqLf5BsoiEEQAXiL8N4hV3C8C9ymXX3pgO0z1uB7J8yFlZ
-         EE/A==
-X-Gm-Message-State: AOJu0YzxBEbVKN3xPz8mlPc5VDmr5pPL4nJ6u3sIaTh0a+ch+V3Fy9qb
-        e5aSp4ySLrW02Nusp7oIwB8=
-X-Google-Smtp-Source: AGHT+IFtmzLedMqLCZW5vLdu7ViMHcVf42AWHB002lZzxWPjY7i8+/989qug0MXV+5wiJ8JBGayUjw==
-X-Received: by 2002:a17:906:3147:b0:9a5:b876:b1e3 with SMTP id e7-20020a170906314700b009a5b876b1e3mr5300019eje.20.1693730041163;
-        Sun, 03 Sep 2023 01:34:01 -0700 (PDT)
-Received: from f (cst-prg-30-15.cust.vodafone.cz. [46.135.30.15])
-        by smtp.gmail.com with ESMTPSA id i2-20020a1709064ec200b0099bc8db97bcsm4509918ejv.131.2023.09.03.01.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 01:34:00 -0700 (PDT)
-Date:   Sun, 3 Sep 2023 10:33:57 +0200
-From:   Mateusz Guzik <mjguzik@gmail.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>,
-        brauner@kernel.org, djwong@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com, viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
-Message-ID: <20230903083357.75mq5l43gakuc2z7@f>
-References: <000000000000e6432a06046c96a5@google.com>
- <ZPQYyMBFmqrfqafL@dread.disaster.area>
+        d=1e100.net; s=20221208; t=1693730205; x=1694335005;
+        h=to:subject:message-id:date:from:reply-to:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LQLO7aaH2b9rfQpQmLo19KMj34+AhfX1whSrT748ylE=;
+        b=PjOo3a1PMxsw5dpvYON/CXl1KMOwqiAlDlW1jS/c4AOvhhNhp2klVWzNXU+LTpQDH3
+         0+5iKU5gDupu05rabg9vZ+uc3d3JHGwOWIIVyINjGgCVZ27gjtZVgO/FEt1l6/XXemn1
+         kO9ZIm8xhRB0MD5VDNs8Nf+np+ZsLINaeuSE9eAljRvrlW0CmvAbURRJRzkda35MsYXY
+         z40CEpaCxLx/3QSuKk/m2MpC6oTxb40+IgujwRW0CdrURjiRemM6XIQYGZbCD4kPWHhb
+         qSqQvxidoBXJuQi5BHTauAd6YZZCG5LrjohAI2C+gNJpmrnF8Ic8ezhE1veDa4jXPPIg
+         0qjA==
+X-Gm-Message-State: AOJu0Yz0FThZUnJOesgxLr243D2ypnXm5Cig6a4vzZ/3uoystDNNjuqx
+        kPVZl8vR8UEG8TfcQt/4tNW3EzH0s5InZat9Yg==
+X-Google-Smtp-Source: AGHT+IHzRF8Raaa027tGXfk7dO62krXvPlJbebmvN5pnVHSN+ne3qot7+U38N/3ykD6KPd+hyStm/4Hyv7yw+GiR8VI=
+X-Received: by 2002:a05:600c:205a:b0:401:264b:5df7 with SMTP id
+ p26-20020a05600c205a00b00401264b5df7mr4782063wmg.35.1693730204836; Sun, 03
+ Sep 2023 01:36:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZPQYyMBFmqrfqafL@dread.disaster.area>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Received: by 2002:a5d:6945:0:b0:319:652e:95f3 with HTTP; Sun, 3 Sep 2023
+ 01:36:43 -0700 (PDT)
+Reply-To: ran32ke@aol.com
+From:   Hussein Khalid <aymanabdulaal989@gmail.com>
+Date:   Sun, 3 Sep 2023 01:36:43 -0700
+Message-ID: <CA+NzZL9ZVC+faBxLavHgneCfUcOsiE+g+bCasNJEf5PScbtekA@mail.gmail.com>
+Subject: Loan For Business
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=4.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,FREEMAIL_REPLYTO,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,UNDISC_FREEM autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: ****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 03:25:28PM +1000, Dave Chinner wrote:
-> On Sat, Sep 02, 2023 at 09:11:34PM -0700, syzbot wrote:
-> > Hello,
-> > 
-> > syzbot found the following issue on:
-> > 
-> > HEAD commit:    b97d64c72259 Merge tag '6.6-rc-smb3-client-fixes-part1' of..
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=14136d8fa80000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=958c1fdc38118172
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > 
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Been happening for months, apparently, yet for some reason it now
-> thinks a locking hang in __fdget_pos() is an XFS issue?
-> 
-> #syz set subsystems: fs
-> 
+-- 
+Hello,
 
-The report does not have info necessary to figure this out -- no
-backtrace for whichever thread which holds f_pos_lock. I clicked on a
-bunch of other reports and it is the same story.
 
-Can the kernel be configured to dump backtraces from *all* threads?
+My client is seeking for someone who has a solid background and idea
+of making good profits in the above mentioned business or any other
+business in your region which involves co-operation of JV Partnership
+funding.
 
-If there is no feature like that I can hack it up.
+He is willing to provide funding or Loan for any viable and
+sustainable investment project.
+
+Let me hear from you
+
+
+Kind regards
+
+Hussein Khalid
