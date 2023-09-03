@@ -2,60 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 653F0790A95
+	by mail.lfdr.de (Postfix) with ESMTP id B1A02790A96
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 04:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235561AbjICCjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 22:39:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S235580AbjICCoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 22:44:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233880AbjICCjp (ORCPT
+        with ESMTP id S233880AbjICCob (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 22:39:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F091CCA
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 19:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693708781; x=1725244781;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=SWNrfbmSyetGOGOCGAak89UpOo8RCW54E69hKorpA48=;
-  b=cidXYCvYhE5mCzwMiJIHTCgubr6YEWbUG9fOttx7KrZ7iu6hTIprQksM
-   5tFJ/VrVeHbZaQOWvmFGK8MxACIXIpWyht3qrY1KlmxsA/TTAQgDZjY6y
-   ut0qkOkBXRrZeU693LnIVFL4udo+pp6+5OvxX5jhzGFLlrWKNqaCCTi01
-   b85k3cQQ7j2QTovpqX0PNXPCE5NqFfUEGxW1vzRmyw2MNUSCOAkgd2Ox3
-   it5ZhENn7GxN4j8pXiZarCfRK1l1Zzppt/exGT/XJOSX/eBtVLL6NaUwf
-   yFLs5UH7KoReRoPXZLOaS+k79ZswHOdLk3EnpyVyZsPi81REc5UvoNnae
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="442819268"
-X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
-   d="scan'208";a="442819268"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2023 19:39:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="733936999"
-X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
-   d="scan'208";a="733936999"
-Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 02 Sep 2023 19:39:39 -0700
-Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qcd1V-0002oh-0V;
-        Sun, 03 Sep 2023 02:39:37 +0000
-Date:   Sun, 3 Sep 2023 10:39:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     David Thompson <davthompson@nvidia.com>
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Shravan Kumar Ramani <shravankr@nvidia.com>
-Subject: ld.lld: error: undefined symbol: sysfs_format_mac
-Message-ID: <202309031058.JvwNDBKt-lkp@intel.com>
+        Sat, 2 Sep 2023 22:44:31 -0400
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B6512F;
+        Sat,  2 Sep 2023 19:44:27 -0700 (PDT)
+Received: by mail-qv1-xf2c.google.com with SMTP id 6a1803df08f44-64a5bc52b0aso2635326d6.3;
+        Sat, 02 Sep 2023 19:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693709066; x=1694313866; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t1GAPNmXBdNBOSiPidq4SuOnNGpXyf62DRjoqSlEOKo=;
+        b=N3EsxrN6RNGcIPDhcpHMh9mIxInJfKdN6iWkPBH828yhtVT3OqqV6SSeflQBGwOks0
+         VfGoaWfgiygvMpNqUPl57pIxo4d5A6L5CxoQLiS3sW8mOgoWG214ns4m6lhMfUvqcWWx
+         7eDAfC2vndGy1LJu5ARi0Xvi8iYZ67xCK+Klp9Pl7gCJVPESu1iPR9ushYnVeraDzFd4
+         CqXilWaq08FkJt4MFTqc3hjQILrW12BewbWdhH4m8uCS41ns6BC1ixFJgKDY2JaF3Dcf
+         txvEidYgsmfWlS3htEgC861O3N/rSwZNIQpwyM7oE4glV1+XEt4ENFjhIaLanGnqL6Um
+         K5zQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693709066; x=1694313866;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=t1GAPNmXBdNBOSiPidq4SuOnNGpXyf62DRjoqSlEOKo=;
+        b=dBK6opNvNViLB1mtj7NHKXE7qhQCTG98fLh5mU86zmmX5gmfroaKbkqgiIhKX1rYKe
+         aiHjL4J29tghrLGO8IQ6ZkcU9KzkanHw5H8KHOnWeOgIi6SZHa0Xckd+CuxkRkBT1xm5
+         EJ35vfjh9QnvdDc+/HLBwX2V7/kljZYeRT2ftwGA1jCWD71pBZ5jS9kd5SIS6ClKYOJI
+         lyBbcO3+ioATZNVokNmVqWIMyEq8Rrfx2Ud8iAJp73y+7wutX6ivDigYtdzNf8dJA44M
+         LSD2NvCuN+fm4GXk90M4A4clACw1quZEIW3r5u6R2aDoiI/KrC/kRwhn66NpM3w8Iy4e
+         fIAw==
+X-Gm-Message-State: AOJu0YysCvNpTwojC6AKkHpqO/r/D5xOu50IfjtzU337X+HrTu5AmR/X
+        8FSubYiBQWohrO3AFCQM3Gf2G60rYnRyVn3gnEc=
+X-Google-Smtp-Source: AGHT+IHbSGrDC3xasIMg2h9SHHXg5ol1Cyq5w/p/l2eUSGrtnMxS0UghYfA4zwp55tXGNfaK7lqcxQoRN5HcF/N9iTw=
+X-Received: by 2002:a0c:a9c8:0:b0:651:75a4:75b0 with SMTP id
+ c8-20020a0ca9c8000000b0065175a475b0mr7632518qvb.1.1693709066298; Sat, 02 Sep
+ 2023 19:44:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+References: <tencent_4F0CF08592B31A2E69546C5E174785109F09@qq.com> <tencent_2B465711F30DC88514B2842F1D54005E8109@qq.com>
+In-Reply-To: <tencent_2B465711F30DC88514B2842F1D54005E8109@qq.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sun, 3 Sep 2023 10:43:50 +0800
+Message-ID: <CALOAHbDvA8yG0=ep3e+MbsWu0oeHzoDUzWGf9mzApN_4za09LQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v10 0/2] selftests/bpf: Optimize kallsyms cache
+To:     Rong Tao <rtoax@foxmail.com>
+Cc:     alexandre.torgue@foss.st.com, andrii@kernel.org, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, haoluo@google.com,
+        john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com, martin.lau@linux.dev,
+        mcoquelin.stm32@gmail.com, mykolal@fb.com, olsajiri@gmail.com,
+        rongtao@cestc.cn, sdf@google.com, shuah@kernel.org,
+        song@kernel.org, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,25 +76,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   92901222f83d988617aee37680cb29e1a743b5e4
-commit: 7e38a7422f128e7d7ba24b444e957d585dbb272f mlxbf-bootctl: Support sysfs entries for MFG fields
-date:   10 days ago
-config: arm64-randconfig-r024-20230902 (https://download.01.org/0day-ci/archive/20230903/202309031058.JvwNDBKt-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230903/202309031058.JvwNDBKt-lkp@intel.com/reproduce)
+On Sat, Sep 2, 2023 at 1:24=E2=80=AFPM Rong Tao <rtoax@foxmail.com> wrote:
+>
+> Hi, every one.
+>
+> I'm so sorry, that i'm not familier with 'how to submit patch series',
+> I just sent some emails repeatedly using the git send-email command,
+> please ignore the error messages.
+>
+> PS: How to send patch collections using git send-email?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309031058.JvwNDBKt-lkp@intel.com/
+$ git send-email --to <outreachy mailing list if required> --cc
+<addresses from get_maintainer.pl output> /tmp/*.patch
 
-All errors (new ones prefixed by >>):
+See also the section "Using git format-patch to send patchsets" in
+https://kernelnewbies.org/FirstKernelPatch
 
->> ld.lld: error: undefined symbol: sysfs_format_mac
-   >>> referenced by xarray.c
-   >>>               vmlinux.o:(oob_mac_show)
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Regards
+Yafang
