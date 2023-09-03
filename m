@@ -2,73 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DABF3790BE6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 14:34:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A00A7790BE9
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 14:34:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237116AbjICMdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 08:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36686 "EHLO
+        id S237145AbjICMe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 08:34:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjICMdh (ORCPT
+        with ESMTP id S229943AbjICMe5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 08:33:37 -0400
-Received: from hust.edu.cn (mail.hust.edu.cn [202.114.0.240])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C220D126;
-        Sun,  3 Sep 2023 05:33:33 -0700 (PDT)
-Received: from localhost.localdomain ([172.16.0.254])
-        (user=dzm91@hust.edu.cn mech=LOGIN bits=0)
-        by mx1.hust.edu.cn  with ESMTP id 383CWVTj004330-383CWVTk004330
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Sun, 3 Sep 2023 20:32:36 +0800
-From:   Dongliang Mu <dzm91@hust.edu.cn>
-To:     =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>,
-        Kalle Valo <kvalo@kernel.org>
-Cc:     hust-os-kernel-patches@googlegroups.com,
-        Dongliang Mu <dzm91@hust.edu.cn>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ath9k: unify error handling code in ath9k_hif_usb_resume
-Date:   Sun,  3 Sep 2023 20:32:29 +0800
-Message-Id: <20230903123230.2116129-1-dzm91@hust.edu.cn>
-X-Mailer: git-send-email 2.25.1
+        Sun, 3 Sep 2023 08:34:57 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88023126;
+        Sun,  3 Sep 2023 05:34:54 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E13CACE0AAD;
+        Sun,  3 Sep 2023 12:34:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0AFFC433C8;
+        Sun,  3 Sep 2023 12:34:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693744491;
+        bh=UMR3ZO3Oyzaw2vPMohgPUvv7KmBJIsfQZe44eRmjYiM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jkv+aUejPpshdhukh1Q8Ar4VxhgnCN6FlK6b+LPmI0dK34acRB9u/VNUIvFFKHNii
+         hivdJtFJRW8mF3/pmy0MzyRZxOIf7nMX0DLEcfEZNHgwBKOE0MunBziXDWbZec0fVh
+         j5KfsGlYJjP9SHQfLvRwxUxlpWZE5mw+XZv0e884vuR6sklMfe/Rg/0RL9j8zlPd0N
+         Ym99VkR8g0QegVp1PjU8TjzUhw5bN/KRGNST3vcfZHKKwvFTALU1Agfd7WBdLI3pxC
+         YnKZ4TIEj72DWyboE/7uEHFc6hpRDfHHHYqu+5HfCEnwUzwilYs2O6/nvmu0NCF8ea
+         XV3ao+pp6H8Lg==
+Date:   Sun, 3 Sep 2023 14:34:46 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
+Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] i2c:octeon:Add block-mode r/w
+Message-ID: <20230903123446.vjgpplnogejbzneb@zenone.zhora.eu>
+References: <20230725223335.mzgdgr7qgeyc6hj7@intel.intel>
+ <20230816230708.2724780-2-aryan.srivastava@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-FEAS-AUTH-USER: dzm91@hust.edu.cn
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230816230708.2724780-2-aryan.srivastava@alliedtelesis.co.nz>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ath9k_hif_usb_resume, the error handling code calls
-ath9k_hif_usb_dealloc_urbs twice in different paths.
+Hi Aryan,
 
-To unify the error handling code, we replace one error handling path
-with a goto statement.
+[...]
 
-Note that this patch does not incur any functionability change.
+> I have re-ran the patch through checkpatch --strict and changed the
+> comments
 
-Signed-off-by: Dongliang Mu <dzm91@hust.edu.cn>
----
- drivers/net/wireless/ath/ath9k/hif_usb.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks!
 
-diff --git a/drivers/net/wireless/ath/ath9k/hif_usb.c b/drivers/net/wireless/ath/ath9k/hif_usb.c
-index e5414435b141..dcc01274b008 100644
---- a/drivers/net/wireless/ath/ath9k/hif_usb.c
-+++ b/drivers/net/wireless/ath/ath9k/hif_usb.c
-@@ -1502,8 +1502,8 @@ static int ath9k_hif_usb_resume(struct usb_interface *interface)
- 		if (ret)
- 			goto fail_resume;
- 	} else {
--		ath9k_hif_usb_dealloc_urbs(hif_dev);
--		return -EIO;
-+		ret = -EIO;
-+		goto fail_resume;
- 	}
- 
- 	mdelay(100);
--- 
-2.25.1
+[...]
 
+> +static void octeon_i2c_block_disable(struct octeon_i2c *i2c)
+> +{
+> +	if (!i2c->block_enabled || !TWSI_BLOCK_CTL(i2c))
+> +		return;
+> +
+> +	i2c->block_enabled = false;
+> +	octeon_i2c_writeq_flush(TWSI_MODE_STRETCH, i2c->twsi_base + TWSI_MODE(i2c));
+> +}
+
+can you leave a blank line here?
+
+>  /**
+>   * octeon_i2c_hlc_wait - wait for an HLC operation to complete
+>   * @i2c: The struct octeon_i2c
+> @@ -268,6 +286,7 @@ static int octeon_i2c_start(struct octeon_i2c *i2c)
+>  	u8 stat;
+>  
+>  	octeon_i2c_hlc_disable(i2c);
+> +	octeon_i2c_block_disable(i2c);
+>  
+>  	octeon_i2c_ctl_write(i2c, TWSI_CTL_ENAB | TWSI_CTL_STA);
+>  	ret = octeon_i2c_wait(i2c);
+> @@ -594,6 +613,128 @@ static int octeon_i2c_hlc_comp_write(struct octeon_i2c *i2c, struct i2c_msg *msg
+>  	return ret;
+>  }
+>  
+> +/* high-level-controller composite block write+read, m[0]len<=2, m[1]len<=1024 */
+
+can you please improve the comment?
+
+> +static int octeon_i2c_hlc_block_comp_read(struct octeon_i2c *i2c, struct i2c_msg *msgs)
+> +{
+> +	int i, j, len, ret = 0;
+> +	u64 cmd, rd;
+> +
+> +	octeon_i2c_hlc_enable(i2c);
+> +	octeon_i2c_block_enable(i2c);
+> +
+> +	len = msgs[1].len - 1;
+
+why -1?
+
+> +	/* Prepare core command */
+> +	cmd = SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
+
+cmd needs to be initialized to '0'.
+
+> +	/* SIZE */
+> +	octeon_i2c_writeq_flush((u64)(len), i2c->twsi_base + TWSI_BLOCK_CTL(i2c));
+> +	/* ADDR */
+> +	cmd |= (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
+
+can you please write some more meaningful comments?
+
+[...]
+
+> +	/* Wait for transaction to complete */
+> +	ret = octeon_i2c_hlc_wait(i2c);
+> +	if (ret)
+> +		goto err;
+
+just return err, no point having a goto label here.
+
+[...]
+
+> +err:
+> +	return ret;
+> +}
+> +
+> +/* high-level-controller composite block write+write, m[0]len<=2, m[1]len<=1024 */
+> +static int octeon_i2c_hlc_block_comp_write(struct octeon_i2c *i2c, struct i2c_msg *msgs)
+
+more or less same comments apply here as _comp_read()
+
+[...]
+
+> @@ -720,6 +869,7 @@ int octeon_i2c_init_lowlevel(struct octeon_i2c *i2c)
+>  	/* toggle twice to force both teardowns */
+>  	octeon_i2c_hlc_enable(i2c);
+>  	octeon_i2c_hlc_disable(i2c);
+> +
+
+this change does not belong here
+
+>  	return 0;
+>  }
+>  
+
+[...]
+
+>  #define TWSI_INT_SDA		BIT_ULL(10)
+>  #define TWSI_INT_SCL		BIT_ULL(11)
+>  
+> +#define TWSI_MODE_STRETCH			BIT_ULL(1)
+> +#define TWSI_MODE_BLOCK_MODE		BIT_ULL(2)
+> +
+> +#define TWSI_BLOCK_STS_RESET_PTR	BIT_ULL(0)
+> +#define TWSI_BLOCK_STS_BUSY			BIT_ULL(1)
+
+The alignment here is a bit off.
+
+Andi
+
+>  #define I2C_OCTEON_EVENT_WAIT 80 /* microseconds */
