@@ -2,98 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EF76790D62
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 20:01:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7A0790D6E
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 20:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244199AbjICSBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 14:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S1344740AbjICSqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 14:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjICSBg (ORCPT
+        with ESMTP id S229665AbjICSqS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 14:01:36 -0400
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [IPv6:2a03:a000:7:0:5054:ff:fe1c:15ff])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42346D9;
-        Sun,  3 Sep 2023 11:01:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=S9Vu6m4/BeTB9HCncSagEJ1QKniB6AXPYafpsvd+t/Y=; b=Hz8Rmv8O0J2BQeSNcabh+Masdo
-        83vXuhpL/rmZRAyGK/sdDLMDWcoPLWqjyjoTZVq2EK9MHu5USNzF07SWBN//D9CoRrK4EfXj6HiOu
-        rIbcpi8cYA6CCGFrzL8EkiILQfT9h/ix/FIKmyDT7SPteIyYOtNnPW48R6jEv10NLDQ4OYuW9KlVt
-        fPnTxHMbCgwiTmYAyCxgCjczVVZUBzuyWMwXAqh7vyvittDtBpTMBpsxXuHDMjItIU7/pPhIY5t+J
-        dmaUY/ekdwOg31wUNKABWQA8QzDpTJvjIlyALWnL3MpWLvJKPuilp2Lip1LFj3/N3jVAF6KaYecJs
-        MflbsOrw==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qcrPa-0037Rq-20;
-        Sun, 03 Sep 2023 18:01:26 +0000
-Date:   Sun, 3 Sep 2023 19:01:26 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>,
-        brauner@kernel.org, djwong@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com
-Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
-Message-ID: <20230903180126.GL3390869@ZenIV>
-References: <000000000000e6432a06046c96a5@google.com>
- <ZPQYyMBFmqrfqafL@dread.disaster.area>
- <20230903083357.75mq5l43gakuc2z7@f>
+        Sun, 3 Sep 2023 14:46:18 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFB8106
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 11:46:12 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id ca18e2360f4ac-79277cfc73bso35342039f.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 11:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693766772; x=1694371572; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pEXJ5N1twmgreqGXVpqoU0bzKcH7UckG6V7g/a9C+IE=;
+        b=do4NCFEQU3lCWuJWcPX0gxK1cZeSar2aTKCdeXtI3Vog2O9q0hTM8VqedAjGLr4Gdh
+         NQpzx6WlU78CEmo01Ad1zqqz+ZK0Viz1RGxBiskAY2tfHQdft0nOFFf8ij/5Sa5KwnUh
+         8Nm6xnqc937WZ2kmqX3W0zxUrB03Sq1K273P7KcZZd4KEq6l4DZkwbCr2uzvNb0Nv4G5
+         RnIGY12LsVCb2YNWIOQcliEDzeJW/jznzfWnVjP0LA9x/zhBXuhRY+li8JWqdLqjIcTc
+         gWM0Alz2JEGXNj/+Xs0QMMi+HRP/3EglSNE58jTQhbeg7QoG6co4WY0EZc1LbfzHFYqz
+         O7vA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693766772; x=1694371572;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pEXJ5N1twmgreqGXVpqoU0bzKcH7UckG6V7g/a9C+IE=;
+        b=H9cZNty3215BPJ+L+7RdY36PaQG/u7Hav77j5IVRuF9cYsgU9lWMV4ohnHKRlQ6+fy
+         UeRPOZ2tYodtkgSoP5sKdW3R0qF5OSW3XVw/+l7boHRYS94Ts3XbIkIHmG93wgfr0hJR
+         c8cbrj5LvzkNden7m3tHF+ZV0PLY4W08U3+uvXG5jwsCnzwbYVOPEHiVM4AC79OWxqxs
+         vbForf+sTXzFlA63wtbwWZ42oMACrDwLJiWmMzDinudn+IEXKBrCUPgKED6BBH1Eu4CP
+         1YCdDkLnv5C317qB64Xy7xFcrc2ikdkCgE8kpqH8L4+6g7TxX5Y1MRRPpt9XTj7W6zED
+         O01g==
+X-Gm-Message-State: AOJu0YxUccI9x+FtZrkR7D67ljx6pSY0164n5xT4fjjD6okNaYrM2Xx6
+        DnTMLEjPmT+R6utuzLwTWR8dq250FhI=
+X-Google-Smtp-Source: AGHT+IFiChi/4PzbAqpMAN3czSGm3lxzSyeCkbTKkttXeYEpPz3KZqOEBt/2qm3z8FebuiPCmvuINg==
+X-Received: by 2002:a05:6602:2252:b0:791:1e87:b47e with SMTP id o18-20020a056602225200b007911e87b47emr8505184ioo.15.1693766771898;
+        Sun, 03 Sep 2023 11:46:11 -0700 (PDT)
+Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
+        by smtp.googlemail.com with ESMTPSA id u9-20020a02cb89000000b0042b37dda71asm2519968jap.136.2023.09.03.11.46.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 11:46:11 -0700 (PDT)
+From:   Jim Cromie <jim.cromie@gmail.com>
+To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org
+Cc:     daniel.vetter@ffwll.ch, daniel@ffwll.ch, jani.nikula@intel.com,
+        ville.syrjala@linux.intel.com, seanpaul@chromium.org,
+        robdclark@gmail.com, Jim Cromie <jim.cromie@gmail.com>
+Subject: [PATCH v2 0/6] drm_dbg: add trailing newlines where missing
+Date:   Sun,  3 Sep 2023 12:45:57 -0600
+Message-ID: <20230903184607.272198-1-jim.cromie@gmail.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230903083357.75mq5l43gakuc2z7@f>
-Sender: Al Viro <viro@ftp.linux.org.uk>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 10:33:57AM +0200, Mateusz Guzik wrote:
-> On Sun, Sep 03, 2023 at 03:25:28PM +1000, Dave Chinner wrote:
-> > On Sat, Sep 02, 2023 at 09:11:34PM -0700, syzbot wrote:
-> > > Hello,
-> > > 
-> > > syzbot found the following issue on:
-> > > 
-> > > HEAD commit:    b97d64c72259 Merge tag '6.6-rc-smb3-client-fixes-part1' of..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=14136d8fa80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=958c1fdc38118172
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
-> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > > 
-> > > Unfortunately, I don't have any reproducer for this issue yet.
-> > 
-> > Been happening for months, apparently, yet for some reason it now
-> > thinks a locking hang in __fdget_pos() is an XFS issue?
-> > 
-> > #syz set subsystems: fs
-> > 
-> 
-> The report does not have info necessary to figure this out -- no
-> backtrace for whichever thread which holds f_pos_lock. I clicked on a
-> bunch of other reports and it is the same story.
-> 
-> Can the kernel be configured to dump backtraces from *all* threads?
-> 
-> If there is no feature like that I can hack it up.
+By at least strong convention, a print-buffer's trailing newline says
+"message complete, send it".  The exception (no TNL, followed by a call
+to pr_cont) proves the general rule.
 
-<break>t
+Most DRM.debug calls already comport with this rule/convention:
+207 DRM_DEV_DEBUG, 1288 drm_dbg.  Clean up the remainders, in
+maintainer sized chunks.
 
-over serial console, or echo t >/proc/sysrq-trigger would do it...
+V1 got Fi.CI.IGT failure, on 2 Possible regressions:
 
-"Locking hang in __fdget_pos()" would mean either something stuck inside
-->read/->write/->read_iter/->write_iter/->llseek instance, making
-any further syscalls in that bunch on the same open file to block,
-or a lost fdput_pos() somewhere; AFAICS, we don't have anything of
-the latter variety, but the former is too wide to tell anything
-useful.
+ igt@api_intel_bb@render@render-y-1024:
+  shard-snb: NOTRUN -> ABORT +1 similar issue
+
+ igt@sysfs_timeslice_duration@timeout@ccs0:
+  shard-dg2: PASS -> TIMEOUT
+
+Neither have any logs bearing anything connected with drm.debug output.
+
+V2 tries again.
+
+  and fixes checkpatch warnings, by reusing 1st commit-msg.
+
+  also fix a ccflags-y spelling error in drm Makefile.
+
+  commits upon
+  e2884fe84a83 (drm-misc/for-linux-next-fixes, drm-misc/drm-misc-fixes) drm/amd: \
+  	       Make fence wait in suballocator uninterruptible
+
+Jim Cromie (6):
+  drm_dbg: add trailing newlines to msgs
+  drm_dbg: add trailing newlines to msgs
+  drm_dbg: add trailing newlines to msgs
+  drm_dbg: add trailing newlines to msgs
+  drm_dbg: add trailing newlines to msgs
+  drm: use correct ccflags-y syntax
+
+ drivers/gpu/drm/Makefile                       |  3 ++-
+ drivers/gpu/drm/drm_connector.c                |  4 +++-
+ drivers/gpu/drm/i915/display/intel_ddi.c       |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_execbuffer.c |  4 ++--
+ drivers/gpu/drm/kmb/kmb_crtc.c                 | 10 +++++-----
+ drivers/gpu/drm/kmb/kmb_plane.c                |  6 +++---
+ drivers/gpu/drm/msm/msm_fb.c                   |  6 +++---
+ drivers/gpu/drm/vc4/vc4_crtc.c                 |  4 ++--
+ 8 files changed, 21 insertions(+), 18 deletions(-)
+
+-- 
+2.41.0
+
