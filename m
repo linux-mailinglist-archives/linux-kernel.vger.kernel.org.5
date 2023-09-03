@@ -2,587 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B5C790B36
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 10:19:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2C4D790B2F
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 10:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236009AbjICIT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 04:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
+        id S232909AbjICIOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 04:14:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233751AbjICIT4 (ORCPT
+        with ESMTP id S231276AbjICIOO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 04:19:56 -0400
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E89136;
-        Sun,  3 Sep 2023 01:19:50 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 06BB2120008;
-        Sun,  3 Sep 2023 11:19:47 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 06BB2120008
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1693729187;
-        bh=gxyYWe+SWULZioY/F1x1Tf9sMF16qbB9EkaAkSfmBos=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=hl6pdu8tgYltVrzZFHtnd4nho65we/mj4OO/4Z7/6+YkWcEbd+TyuNUBrdc0XqzEM
-         4/dOuMght6KB5SsrbVMb2pP3UmCnWrZ1DXT9Jo2FU27BegGJV0MXmpGkKFSNUJbphA
-         EVX8xvxXEJH0gSYboDQsaw/BaLY5R7xJfDOfJJG8SEI0SqpMmPPTfiHuDykpR4BR3c
-         LJ/yEAIBmW2kXWH/5b5Zs/OttHr2Q+Lk3I47W1z+vSY5aRiWsHRzfhv3LUhqw+Dmgx
-         3D1zvvCVcRgXIzWMeKPr3ndGvEsFMyqCWG+Y/z2bjTR4UyU79xf432zvVfzL6zuVi1
-         +Yyd5QwGzhAZQ==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Sun,  3 Sep 2023 11:19:46 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sun, 3 Sep 2023 11:19:28 +0300
-Message-ID: <0ab443b5-73a5-f092-44a3-52e26244c9a8@salutedevices.com>
-Date:   Sun, 3 Sep 2023 11:13:23 +0300
+        Sun, 3 Sep 2023 04:14:14 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF551136
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 01:14:10 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-986d8332f50so71454566b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 01:14:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693728849; x=1694333649; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PYVc0KQcxWsMhJQuzoDqTO76YRj2Zg1n9LjHELSZSO8=;
+        b=CZ/ybGS124dtM2SleM3PYnVaRG5nn7nMoQiFlaT7xXXZlVPNYD6x09XyugBySi/9CJ
+         au1AUbQw3GSiOzg43Qy+5nNUlvKy+96QVVtZJYm11YODm+tBO9UXByumjnvpMW8f/vV7
+         CoqL0SfZOkvzuD/P2OvNOU6BEbcPIKo+N+IJ3qUURMpq1p6UbWKYmaiFERh+2a0o8Uy0
+         FXaTnp5VGMC2kR48cUGwdSoZrELnvJumtMM10dwe7Yo+/esOiyMjrp3VGFzSjCiYlgye
+         ehiptc6zoVVfPI7Z+4iM8Oj4Szm85S7fm47nRiF6Wp6ILr6oM4BmujV+bnVT67ClBxJw
+         KlNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693728849; x=1694333649;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PYVc0KQcxWsMhJQuzoDqTO76YRj2Zg1n9LjHELSZSO8=;
+        b=Z341GxbmeoTxrVLXt3u2nNFp/9rzpEwQPKywLrGkREiA/0f0sTHtXPexOeEmyQJo+1
+         b5a0K1j3hKsL1qdD7/3rP+nrtHPjb0zDS0FN98I4M+AjNMwRn2wWpfcsZepmnkt5LsWp
+         ed+Y3wqMGCHVILgSouSg8ytxKaXuOg241dRTtH8KMzlbMG6nOJjWfUhpL0olCMY/7CDA
+         ChcYAqksj2x94gQMsHPcu9mtaRm+/6QQnIr6bzGEeXDkZgJWUYRQTFRbUD/oNq3C3FA2
+         g7WMRG/80vOSMRv9s+m6aa3r3cUwsInWcT7ApFghcRGc8Icv9Q5q7yp38+m5+IBbyseL
+         E1sw==
+X-Gm-Message-State: AOJu0YwSsPEs2biWUGfCVtQ9F0BAT5UhQLpIHDcEgUD8uOX9ceqVlJbG
+        Pmfc0KfebrH/Fc3EiRSJ8xr8H4Cb5GAedQ==
+X-Google-Smtp-Source: AGHT+IE0FajYit6cPw62SbBgy9GSo42JmyMb/0qdLMXz3mWBrjPvVa20O+5VpeVaOJJsFyh/niqCAg==
+X-Received: by 2002:a17:906:748f:b0:9a1:d67c:b4eb with SMTP id e15-20020a170906748f00b009a1d67cb4ebmr4806481ejl.48.1693728849066;
+        Sun, 03 Sep 2023 01:14:09 -0700 (PDT)
+Received: from f (cst-prg-30-15.cust.vodafone.cz. [46.135.30.15])
+        by smtp.gmail.com with ESMTPSA id g21-20020a170906349500b0098f33157e7dsm4478221ejb.82.2023.09.03.01.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 01:14:08 -0700 (PDT)
+Date:   Sun, 3 Sep 2023 10:14:04 +0200
+From:   Mateusz Guzik <mjguzik@gmail.com>
+To:     Ankur Arora <ankur.a.arora@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, peterz@infradead.org,
+        rostedt@goodmis.org, tglx@linutronix.de, jon.grimm@amd.com,
+        bharata@amd.com, raghavendra.kt@amd.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v2 0/9] x86/clear_huge_page: multi-page clearing
+Message-ID: <20230903081404.hmkhnrk243h2nuoa@f>
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH net-next v7 4/4] vsock/virtio: MSG_ZEROCOPY flag support
-Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20230827085436.941183-1-avkrasnov@salutedevices.com>
- <20230827085436.941183-5-avkrasnov@salutedevices.com>
- <p2u2irlju6yuy54w4tqstaijhpnbmqxwavsdumsmyskrjguwux@kmd7cbavhjbh>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <p2u2irlju6yuy54w4tqstaijhpnbmqxwavsdumsmyskrjguwux@kmd7cbavhjbh>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179602 [Sep 01 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/03 06:38:00 #21776367
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 01.09.2023 15:30, Stefano Garzarella wrote:
-> On Sun, Aug 27, 2023 at 11:54:36AM +0300, Arseniy Krasnov wrote:
->> This adds handling of MSG_ZEROCOPY flag on transmission path: if this
->> flag is set and zerocopy transmission is possible (enabled in socket
->> options and transport allows zerocopy), then non-linear skb will be
->> created and filled with the pages of user's buffer. Pages of user's
->> buffer are locked in memory by 'get_user_pages()'. Second thing that
->> this patch does is replace type of skb owning: instead of calling
->> 'skb_set_owner_sk_safe()' it calls 'skb_set_owner_w()'. Reason of this
->> change is that '__zerocopy_sg_from_iter()' increments 'sk_wmem_alloc'
->> of socket, so to decrease this field correctly proper skb destructor is
->> needed: 'sock_wfree()'. This destructor is set by 'skb_set_owner_w()'.
->>
->> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
->> ---
->> Changelog:
->> v5(big patchset) -> v1:
->>  * Refactorings of 'if' conditions.
->>  * Remove extra blank line.
->>  * Remove 'frag_off' field unneeded init.
->>  * Add function 'virtio_transport_fill_skb()' which fills both linear
->>    and non-linear skb with provided data.
->> v1 -> v2:
->>  * Use original order of last four arguments in 'virtio_transport_alloc_skb()'.
->> v2 -> v3:
->>  * Add new transport callback: 'msgzerocopy_check_iov'. It checks that
->>    provided 'iov_iter' with data could be sent in a zerocopy mode.
->>    If this callback is not set in transport - transport allows to send
->>    any 'iov_iter' in zerocopy mode. Otherwise - if callback returns 'true'
->>    then zerocopy is allowed. Reason of this callback is that in case of
->>    G2H transmission we insert whole skb to the tx virtio queue and such
->>    skb must fit to the size of the virtio queue to be sent in a single
->>    iteration (may be tx logic in 'virtio_transport.c' could be reworked
->>    as in vhost to support partial send of current skb). This callback
->>    will be enabled only for G2H path. For details pls see comment
->>    'Check that tx queue...' below.
->> v3 -> v4:
->>  * 'msgzerocopy_check_iov' moved from 'struct vsock_transport' to
->>    'struct virtio_transport' as it is virtio specific callback and
->>    never needed in other transports.
->> v4 -> v5:
->>  * 'msgzerocopy_check_iov' renamed to 'can_msgzerocopy' and now it
->>    uses number of buffers to send as input argument. I think there is
->>    no need to pass iov to this callback (at least today, it is used only
->>    by guest side of virtio transport), because the only thing that this
->>    callback does is comparison of number of buffers to be inserted to
->>    the tx queue and size of this queue.
->>  * Remove any checks for type of current 'iov_iter' with payload (is it
->>    'iovec' or 'ubuf'). These checks left from the earlier versions where I
->>    didn't use already implemented kernel API which handles every type of
->>    'iov_iter'.
->> v5 -> v6:
->>  * Refactor 'virtio_transport_fill_skb()'.
->>  * Add 'WARN_ON_ONCE()' and comment on invalid combination of destination
->>    socket and payload in 'virtio_transport_alloc_skb()'.
->>
->> include/linux/virtio_vsock.h            |   5 +
->> net/vmw_vsock/virtio_transport.c        |  33 ++++
->> net/vmw_vsock/virtio_transport_common.c | 250 ++++++++++++++++++------
->> 3 files changed, 231 insertions(+), 57 deletions(-)
->>
->> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
->> index a91fbdf233e4..56501cd9843f 100644
->> --- a/include/linux/virtio_vsock.h
->> +++ b/include/linux/virtio_vsock.h
->> @@ -160,6 +160,11 @@ struct virtio_transport {
->>
->>     /* Takes ownership of the packet */
->>     int (*send_pkt)(struct sk_buff *skb);
->> +
->> +    /* Used in MSG_ZEROCOPY mode. Checks that provided data
->> +     * could be transmitted with zerocopy mode.
->> +     */
->> +    bool (*can_msgzerocopy)(int bufs_num);
->> };
->>
->> ssize_t
->> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
->> index 8636477cf088..4ce44916e585 100644
->> --- a/net/vmw_vsock/virtio_transport.c
->> +++ b/net/vmw_vsock/virtio_transport.c
->> @@ -453,6 +453,38 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
->>     queue_work(virtio_vsock_workqueue, &vsock->rx_work);
->> }
->>
->> +static bool virtio_transport_can_msgzerocopy(int bufs_num)
->> +{
->> +    struct virtio_vsock *vsock;
->> +    bool res = false;
->> +
->> +    rcu_read_lock();
->> +
->> +    vsock = rcu_dereference(the_virtio_vsock);
->> +    if (vsock) {
->> +        struct virtqueue *vq = vsock->vqs[VSOCK_VQ_TX];
->> +
->> +        /* Check that tx queue is large enough to keep whole
->> +         * data to send. This is needed, because when there is
->> +         * not enough free space in the queue, current skb to
->> +         * send will be reinserted to the head of tx list of
->> +         * the socket to retry transmission later, so if skb
->> +         * is bigger than whole queue, it will be reinserted
->> +         * again and again, thus blocking other skbs to be sent.
->> +         * Each page of the user provided buffer will be added
->> +         * as a single buffer to the tx virtqueue, so compare
->> +         * number of pages against maximum capacity of the queue.
->> +         * +1 means buffer for the packet header.
->> +         */
->> +        if (bufs_num + 1 <= vq->num_max)
+On Wed, Aug 30, 2023 at 11:49:49AM -0700, Ankur Arora wrote:
+> This series adds a multi-page clearing primitive, clear_pages(),
+> which enables more effective use of x86 string instructions by
+> advertising the real region-size to be cleared. 
 > 
-> I'd move the + 1 in the caller.
+> Region-size can be used as a hint by uarchs to optimize the
+> clearing.
 > 
->> +            res = true;
->> +    }
->> +
->> +    rcu_read_unlock();
->> +
->> +    return res;
->> +}
->> +
->> static bool virtio_transport_seqpacket_allow(u32 remote_cid);
->>
->> static struct virtio_transport virtio_transport = {
->> @@ -502,6 +534,7 @@ static struct virtio_transport virtio_transport = {
->>     },
->>
->>     .send_pkt = virtio_transport_send_pkt,
->> +    .can_msgzerocopy = virtio_transport_can_msgzerocopy,
->> };
->>
->> static bool virtio_transport_seqpacket_allow(u32 remote_cid)
->> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
->> index 3a48e48a99ac..7f42ad131a69 100644
->> --- a/net/vmw_vsock/virtio_transport_common.c
->> +++ b/net/vmw_vsock/virtio_transport_common.c
->> @@ -37,27 +37,99 @@ virtio_transport_get_ops(struct vsock_sock *vsk)
->>     return container_of(t, struct virtio_transport, transport);
->> }
->>
->> -/* Returns a new packet on success, otherwise returns NULL.
->> - *
->> - * If NULL is returned, errp is set to a negative errno.
->> - */
->> -static struct sk_buff *
->> -virtio_transport_alloc_skb(struct virtio_vsock_pkt_info *info,
->> -               size_t len,
->> -               u32 src_cid,
->> -               u32 src_port,
->> -               u32 dst_cid,
->> -               u32 dst_port)
->> -{
->> -    const size_t skb_len = VIRTIO_VSOCK_SKB_HEADROOM + len;
->> -    struct virtio_vsock_hdr *hdr;
->> -    struct sk_buff *skb;
->> +static bool virtio_transport_can_zcopy(struct virtio_vsock_pkt_info *info,
->> +                       size_t max_to_send)
->                                               ^
-> I'd call it `pkt_len`, `max_to_send` is confusing IMHO. I didn't
-> initially if it was the number of buffers or bytes.
+> Also add allow_resched() which marks a code-section as allowing
+> rescheduling in the irqentry_exit path. This allows clear_pages()
+> to get by without having to call cond_sched() periodically.
+> (preempt_model_full() already handles this via
+> irqentry_exit_cond_resched(), so we handle this similarly for
+> preempt_model_none() and preempt_model_voluntary().)
 > 
->> +{
->> +    const struct virtio_transport *t_ops;
->> +    struct iov_iter *iov_iter;
->> +
->> +    if (!info->msg)
->> +        return false;
->> +
->> +    iov_iter = &info->msg->msg_iter;
->> +
->> +    if (iov_iter->iov_offset)
->> +        return false;
->> +
->> +    /* We can't send whole iov. */
->> +    if (iov_iter->count > max_to_send)
->> +        return false;
->> +
->> +    /* Check that transport can send data in zerocopy mode. */
->> +    t_ops = virtio_transport_get_ops(info->vsk);
->> +
->> +    if (t_ops->can_msgzerocopy) {
+> Performance
+> ==
 > 
-> So if `can_msgzerocopy` is not implemented, we always return true after
-> this point. Should we mention it in the .can_msgzerocopy documentation?
+> With this demand fault performance gets a decent increase:
+> 
+>   *Milan*     mm/clear_huge_page   x86/clear_huge_page   change    
+>                           (GB/s)                (GB/s)             
+>                                                                    
+>   pg-sz=2MB                14.55                 19.29    +32.5%
+>   pg-sz=1GB                19.34                 49.60   +156.4%  
+> 
+> Milan (and some other AMD Zen uarchs tested) take advantage of the
+> hint to elide cacheline allocation for pg-sz=1GB. The cut-off for
+> this optimization seems to be at around region-size > LLC-size so
+> the pg-sz=2MB load still allocates cachelines.
+> 
 
-Ops, this is my mistake, I must return 'false' in this case. Seems I didn't
-catch this problem with my tests, because there was no test case where
-zerocopy will fallback to copy!
+Have you benchmarked clzero? It is an AMD-specific instruction issuing
+non-temporal stores. It is definitely something to try out for 1G pages.
 
-I'll fix it and add new test!
+One would think rep stosq has to be at least not worse since the CPU is
+explicitly told what to do and is free to optimize it however it sees
+fit, but the rep prefix has a long history of underperforming.
+
+I'm not saying it is going to be better, but that this should be tested,
+albeit one can easily argue this can be done at a later date.
+
+I would do it myself but my access to AMD CPUs is limited.
 
 > 
-> Can we also mention in the commit description why this is need only for
-> virtio_tranport and not for vhost and loopback?
+>   *Icelakex*  mm/clear_huge_page   x86/clear_huge_page   change   
+>                           (GB/s)                (GB/s)            
+>                                                                   
+>   pg-sz=2MB                 9.19                 12.94   +40.8%  
+>   pg-sz=1GB                 9.36                 12.97   +38.5%  
 > 
->> +        int pages_in_iov = iov_iter_npages(iov_iter, MAX_SKB_FRAGS);
->> +        int pages_to_send = min(pages_in_iov, MAX_SKB_FRAGS);
->> +
->> +        return t_ops->can_msgzerocopy(pages_to_send);
->> +    }
->> +
->> +    return true;
->> +}
->> +
->> +static int virtio_transport_init_zcopy_skb(struct vsock_sock *vsk,
->> +                       struct sk_buff *skb,
->> +                       struct msghdr *msg,
->> +                       bool zerocopy)
->> +{
->> +    struct ubuf_info *uarg;
->> +
->> +    if (msg->msg_ubuf) {
->> +        uarg = msg->msg_ubuf;
->> +        net_zcopy_get(uarg);
->> +    } else {
->> +        struct iov_iter *iter = &msg->msg_iter;
->> +        struct ubuf_info_msgzc *uarg_zc;
->> +
->> +        uarg = msg_zerocopy_realloc(sk_vsock(vsk),
->> +                        iter->count,
->> +                        NULL);
->> +        if (!uarg)
->> +            return -1;
->> +
->> +        uarg_zc = uarg_to_msgzc(uarg);
->> +        uarg_zc->zerocopy = zerocopy ? 1 : 0;
->> +    }
->> +
->> +    skb_zcopy_init(skb, uarg);
->> +
->> +    return 0;
->> +}
->> +
->> +static int virtio_transport_fill_skb(struct sk_buff *skb,
->> +                     struct virtio_vsock_pkt_info *info,
->> +                     size_t len,
->> +                     bool zcopy)
->> +{
->>     void *payload;
->>     int err;
->>
->> -    skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
->> -    if (!skb)
->> -        return NULL;
->> +    if (zcopy)
->> +        return __zerocopy_sg_from_iter(info->msg, NULL, skb,
->> +                           &info->msg->msg_iter,
->> +                           len);
->> +
->> +    payload = skb_put(skb, len);
->> +    err = memcpy_from_msg(payload, info->msg, len);
->> +    if (err)
->> +        return -1;
->> +
->> +    if (msg_data_left(info->msg))
->> +        return 0;
->> +
->> +    return 0;
->> +}
->> +
->> +static void virtio_transport_init_hdr(struct sk_buff *skb,
->> +                      struct virtio_vsock_pkt_info *info,
->> +                      u32 src_cid,
->> +                      u32 src_port,
->> +                      u32 dst_cid,
->> +                      u32 dst_port,
->> +                      size_t len)
+> Icelakex sees a decent improvement in performance but for both
+> region-sizes does continue to allocate cachelines.
 > 
-> I'd move `len` after `info` like in virtio_transport_alloc_skb().
-> And maybe we can use the same name on both (`len` or `payload_len`).
 > 
->> +{
->> +    struct virtio_vsock_hdr *hdr;
->>
->>     hdr = virtio_vsock_hdr(skb);
->>     hdr->type    = cpu_to_le16(info->type);
->> @@ -68,42 +140,6 @@ virtio_transport_alloc_skb(struct virtio_vsock_pkt_info *info,
->>     hdr->dst_port    = cpu_to_le32(dst_port);
->>     hdr->flags    = cpu_to_le32(info->flags);
->>     hdr->len    = cpu_to_le32(len);
->> -
->> -    if (info->msg && len > 0) {
->> -        payload = skb_put(skb, len);
->> -        err = memcpy_from_msg(payload, info->msg, len);
->> -        if (err)
->> -            goto out;
->> -
->> -        if (msg_data_left(info->msg) == 0 &&
->> -            info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
->> -            hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->> -
->> -            if (info->msg->msg_flags & MSG_EOR)
->> -                hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->> -        }
->> -    }
->> -
->> -    if (info->reply)
->> -        virtio_vsock_skb_set_reply(skb);
->> -
->> -    trace_virtio_transport_alloc_pkt(src_cid, src_port,
->> -                     dst_cid, dst_port,
->> -                     len,
->> -                     info->type,
->> -                     info->op,
->> -                     info->flags);
->> -
->> -    if (info->vsk && !skb_set_owner_sk_safe(skb, sk_vsock(info->vsk))) {
->> -        WARN_ONCE(1, "failed to allocate skb on vsock socket with sk_refcnt == 0\n");
->> -        goto out;
->> -    }
->> -
->> -    return skb;
->> -
->> -out:
->> -    kfree_skb(skb);
->> -    return NULL;
->> }
->>
->> static void virtio_transport_copy_nonlinear_skb(const struct sk_buff *skb,
->> @@ -214,6 +250,78 @@ static u16 virtio_transport_get_type(struct sock *sk)
->>         return VIRTIO_VSOCK_TYPE_SEQPACKET;
->> }
->>
->> +static struct sk_buff *virtio_transport_alloc_skb(struct vsock_sock *vsk,
->> +                          struct virtio_vsock_pkt_info *info,
->> +                          size_t payload_len,
->> +                          bool zcopy,
->> +                          u32 src_cid,
->> +                          u32 src_port,
->> +                          u32 dst_cid,
->> +                          u32 dst_port)
->> +{
->> +    struct sk_buff *skb;
->> +    size_t skb_len;
->> +
->> +    skb_len = VIRTIO_VSOCK_SKB_HEADROOM;
->> +
->> +    if (!zcopy)
->> +        skb_len += payload_len;
->> +
->> +    skb = virtio_vsock_alloc_skb(skb_len, GFP_KERNEL);
->> +    if (!skb)
->> +        return NULL;
->> +
->> +    virtio_transport_init_hdr(skb, info, src_cid, src_port,
->> +                  dst_cid, dst_port,
->> +                  payload_len);
->> +
->> +    /* If 'vsk' != NULL then payload is always present, so we
->> +     * will never call '__zerocopy_sg_from_iter()' below without
->> +     * setting skb owner in 'skb_set_owner_w()'. The only case
->> +     * when 'vsk' == NULL is VIRTIO_VSOCK_OP_RST control message
->> +     * without payload.
->> +     */
->> +    WARN_ON_ONCE(!(vsk && (info->msg && payload_len)) && zcopy);
->> +
->> +    /* Set owner here, because '__zerocopy_sg_from_iter()' uses
->> +     * owner of skb without check to update 'sk_wmem_alloc'.
->> +     */
->> +    if (vsk)
->> +        skb_set_owner_w(skb, sk_vsock(vsk));
->> +
->> +    if (info->msg && payload_len > 0) {
->> +        int err;
->> +
->> +        err = virtio_transport_fill_skb(skb, info, payload_len, zcopy);
->> +        if (err)
->> +            goto out;
->> +
->> +        if (info->type == VIRTIO_VSOCK_TYPE_SEQPACKET) {
->> +            struct virtio_vsock_hdr *hdr = virtio_vsock_hdr(skb);
->> +
->> +            hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOM);
->> +
->> +            if (info->msg->msg_flags & MSG_EOR)
->> +                hdr->flags |= cpu_to_le32(VIRTIO_VSOCK_SEQ_EOR);
->> +        }
->> +    }
->> +
->> +    if (info->reply)
->> +        virtio_vsock_skb_set_reply(skb);
->> +
->> +    trace_virtio_transport_alloc_pkt(src_cid, src_port,
->> +                     dst_cid, dst_port,
->> +                     payload_len,
->> +                     info->type,
->> +                     info->op,
->> +                     info->flags);
->> +
->> +    return skb;
->> +out:
->> +    kfree_skb(skb);
->> +    return NULL;
->> +}
->> +
->> /* This function can only be used on connecting/connected sockets,
->>  * since a socket assigned to a transport is required.
->>  *
->> @@ -222,10 +330,12 @@ static u16 virtio_transport_get_type(struct sock *sk)
->> static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>                       struct virtio_vsock_pkt_info *info)
->> {
->> +    u32 max_skb_len = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
->>     u32 src_cid, src_port, dst_cid, dst_port;
->>     const struct virtio_transport *t_ops;
->>     struct virtio_vsock_sock *vvs;
->>     u32 pkt_len = info->pkt_len;
->> +    bool can_zcopy = false;
->>     u32 rest_len;
->>     int ret;
->>
->> @@ -254,15 +364,30 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>     if (pkt_len == 0 && info->op == VIRTIO_VSOCK_OP_RW)
->>         return pkt_len;
->>
->> +    if (info->msg) {
->> +        /* If zerocopy is not enabled by 'setsockopt()', we behave as
->> +         * there is no MSG_ZEROCOPY flag set.
->> +         */
->> +        if (!sock_flag(sk_vsock(vsk), SOCK_ZEROCOPY))
->> +            info->msg->msg_flags &= ~MSG_ZEROCOPY;
->> +
->> +        if (info->msg->msg_flags & MSG_ZEROCOPY)
->> +            can_zcopy = virtio_transport_can_zcopy(info, pkt_len);
->> +
->> +        if (can_zcopy)
->> +            max_skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE,
->> +                        (MAX_SKB_FRAGS * PAGE_SIZE));
->> +    }
->> +
->>     rest_len = pkt_len;
->>
->>     do {
->>         struct sk_buff *skb;
->>         size_t skb_len;
->>
->> -        skb_len = min_t(u32, VIRTIO_VSOCK_MAX_PKT_BUF_SIZE, rest_len);
->> +        skb_len = min(max_skb_len, rest_len);
->>
->> -        skb = virtio_transport_alloc_skb(info, skb_len,
->> +        skb = virtio_transport_alloc_skb(vsk, info, skb_len, can_zcopy,
->>                          src_cid, src_port,
->>                          dst_cid, dst_port);
->>         if (!skb) {
->> @@ -270,6 +395,17 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>             break;
->>         }
->>
->> +        /* This is last skb to send this portion of data. */
+> Negative: there is, a downside to clearing in larger chunks: the
+> current approach clears page-at-a-time, narrowing towards
+> the faulting subpage. This has better cache characteristics for
+> some sequential access workloads where subpages near the faulting
+> page have a greater likelihood of access.
 > 
-> Sorry I didn't get it :-(
+> I'm not sure if there are real cases which care about this workload
+> but one example is the vm-scalability/case-anon-w-seq-hugetlb test.
+> This test starts a process for each online CPU, with each process
+> writing sequentially to its set of hugepages.
 > 
-> Can you elaborate this a bit more?
-
-I mean that we iterate over user's buffer here, allocating skb on each
-iteration. And for last skb for this buffer we initialize completion
-for user (we need to allocate one completion for one syscall).
-
-Thanks for review, I'll fix all other comments and resend patchset when
-'net-next' will be opened again.
-
-Thanks, Arseniy
-
+> The bottleneck here is the memory pipe and so the improvement in
+> stime is limited, and because the clearing is less cache-optimal 
+> now, utime suffers from worse user cache misses.
 > 
-> Thanks,
-> Stefano
+>   *Icelakex*               mm/clear_huge_page  x86/clear_huge_page  change
+>   (tasks=128, mem=4GB/task)
 > 
->> +        if (info->msg && info->msg->msg_flags & MSG_ZEROCOPY &&
->> +            skb_len == rest_len && info->op == VIRTIO_VSOCK_OP_RW) {
->> +            if (virtio_transport_init_zcopy_skb(vsk, skb,
->> +                                info->msg,
->> +                                can_zcopy)) {
->> +                ret = -ENOMEM;
->> +                break;
->> +            }
->> +        }
->> +
->>         virtio_transport_inc_tx_pkt(vvs, skb);
->>
->>         ret = t_ops->send_pkt(skb);
->> @@ -985,7 +1121,7 @@ static int virtio_transport_reset_no_sock(const struct virtio_transport *t,
->>     if (!t)
->>         return -ENOTCONN;
->>
->> -    reply = virtio_transport_alloc_skb(&info, 0,
->> +    reply = virtio_transport_alloc_skb(NULL, &info, 0, false,
->>                        le64_to_cpu(hdr->dst_cid),
->>                        le32_to_cpu(hdr->dst_port),
->>                        le64_to_cpu(hdr->src_cid),
->> -- 
->> 2.25.1
->>
+>   stime                        286.8 +- 3.6%      243.9 +- 4.1%     -14.9%
+>   utime                        497.7 +- 4.1%      553.5 +- 2.0%     +11.2%
+>   wall-clock                     6.9 +- 2.8%        7.0 +- 1.4%     + 1.4%
+> 
+> 
+>   *Milan*                  mm/clear_huge_page  x86/clear_huge_page  change
+>   (mem=1GB/task, tasks=512)
+> 
+>   stime                        501.3 +- 1.4%      498.0 +- 0.9%      -0.5%
+>   utime                        298.7 +- 1.1%      335.0 +- 2.2%     +12.1%
+>   wall-clock                     3.5 +- 2.8%        3.8 +- 2.6%      +8.5%
+> 
+> The same test performs better if we have a smaller number of processes,
+> since there is more backend BW available, and thus the improved stime
+> compensates for the worse utime.
+> 
+> This could be improved by using more circuitous chunking (somewhat
+> like this:
+> https://lore.kernel.org/lkml/20220606203725.1313715-1-ankur.a.arora@oracle.com/).
+> But I'm not sure if it is worth doing. Opinions?
+> 
+> Patches
+> ==
+> 
+> Patch 1, 2, 3:
+>   "mm/clear_huge_page: allow arch override for clear_huge_page()",
+>   "mm/huge_page: separate clear_huge_page() and copy_huge_page()",
+>   "mm/huge_page: cleanup clear_/copy_subpage()"
+> are minor. The first one allows clear_huge_page() to have an
+> arch specific version and the other two are mechanical cleanup
+> patches.
+> 
+> Patches 3, 4, 5:
+>   "x86/clear_page: extend clear_page*() for multi-page clearing",
+>   "x86/clear_page: add clear_pages()",
+>   "x86/clear_huge_page: multi-page clearing"
+> define the x86 specific clear_pages() and clear_huge_pages().
+> 
+> Patches 6, 7, 8:
+>   "sched: define TIF_ALLOW_RESCHED"
+>   "irqentry: define irqentry_exit_allow_resched()"
+> which defines allow_resched() to demarcate preemptible sections.
+> 
+> This gets used in patch 9:
+>   "x86/clear_huge_page: make clear_contig_region() preemptible".
+> 
+> Changelog:
+> 
+> v2:
+>   - Addressed review comments from peterz, tglx.
+>   - Removed clear_user_pages(), and CONFIG_X86_32:clear_pages()
+>   - General code cleanup
+> 
+> Also at:
+>   github.com/terminus/linux clear-pages.v2
+> 
+> Comments appreciated!
+> 
+> Ankur Arora (9):
+>   mm/clear_huge_page: allow arch override for clear_huge_page()
+>   mm/huge_page: separate clear_huge_page() and copy_huge_page()
+>   mm/huge_page: cleanup clear_/copy_subpage()
+>   x86/clear_page: extend clear_page*() for multi-page clearing
+>   x86/clear_page: add clear_pages()
+>   x86/clear_huge_page: multi-page clearing
+>   sched: define TIF_ALLOW_RESCHED
+>   irqentry: define irqentry_exit_allow_resched()
+>   x86/clear_huge_page: make clear_contig_region() preemptible
+> 
+>  arch/x86/include/asm/page_64.h     |  27 +++--
+>  arch/x86/include/asm/thread_info.h |   2 +
+>  arch/x86/lib/clear_page_64.S       |  52 ++++++---
+>  arch/x86/mm/hugetlbpage.c          |  59 ++++++++++
+>  include/linux/entry-common.h       |  13 +++
+>  include/linux/sched.h              |  30 +++++
+>  kernel/entry/common.c              |  13 ++-
+>  kernel/sched/core.c                |  32 ++---
+>  mm/memory.c                        | 181 +++++++++++++++++------------
+>  9 files changed, 297 insertions(+), 112 deletions(-)
+> 
+> -- 
+> 2.31.1
+> 
 > 
