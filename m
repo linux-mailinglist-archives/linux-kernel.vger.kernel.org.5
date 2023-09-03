@@ -2,170 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E43790C95
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B044C790C96
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:05:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241959AbjICPE6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 11:04:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59732 "EHLO
+        id S242277AbjICPFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 11:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229782AbjICPE5 (ORCPT
+        with ESMTP id S241995AbjICPFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 11:04:57 -0400
-Received: from smtp.smtpout.orange.fr (smtp-13.smtpout.orange.fr [80.12.242.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91D45116
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:04:50 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id coedqFIfsPnvscoedq11w0; Sun, 03 Sep 2023 17:04:48 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693753488;
-        bh=jKoUYb09gGu7FzODWXf/YNYwwFG/WPF7F5CxMSBP/HI=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=XUSqYTLhGozU6PLT24lNsYtT/2KsRirBALIAlLT0ExJ0CwqoCZNtqftriK8hX7G6m
-         44k4wJcpKYnS/4JW/fYW+lhL3Kd+wO+G98jAvbZvbOmQBAr9xO3pHi+Uv2P/QQerNY
-         wMsqDcidCNnc2V/thuAdH37Q/p8/A2QJzPuAAjB6Bb4PJhATYKzY7Fh31LyYG10zcv
-         nzUg/algK73W7i2Y6UOAMu7zxcU2J98GslvvLtHohEeOGqwhYD66+YTUx8iRhtn6YC
-         fh2wj5Mr3hIG12wO6jpqYoynIx/OHiXs15LV7JNYsJ7zjmCe7zY0QxLaLlzSvPriQu
-         l32SvQ7+hUsNQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 03 Sep 2023 17:04:48 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <8cde2320-517f-3a38-8c3f-f807791c6c52@wanadoo.fr>
-Date:   Sun, 3 Sep 2023 17:04:47 +0200
+        Sun, 3 Sep 2023 11:05:49 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38DE5116
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:05:46 -0700 (PDT)
+From:   John Ogness <john.ogness@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693753543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MPEy6MGuHHt1rq0d7ZHWfZNeERTdYCqLHpMJrCD2RUQ=;
+        b=oXGDFjSfilcUvmYuK8bXE7w3FiYaTZQ+0thDQdVvAtmqRb4ncvMHGTzowqcvTEM+OIuct9
+        ZDUXAgCJWxoAvPhx1adVsUgxfKu0t6Ne+mBHvSg2ExqQSyRt699rKm75PZ2rSYYeV8c+qt
+        zvRXT1OIHkw/R0sr/cVZooBDM6IlvIzyQoWeTLn9oEoGmzM5DM6BwYrfc1It5fi8xcXoj1
+        UI6jc6elDA40mpJHK/kx17ZCsxRMFeY5MPlhDWuOALRNfd3bhN6FN0/hmRirI0xzEXsOmh
+        nTk77w7yizQXSKvlYRLMjD+LzsX5U6WMCC2tMh5oei/LpaudWWK/en+NV0cI1w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693753543;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=MPEy6MGuHHt1rq0d7ZHWfZNeERTdYCqLHpMJrCD2RUQ=;
+        b=+6EBv7eGCGBvArygDj8bQtq6KFZk326nDCRxM3wkppSW+TxmS8yOWysy/YRCZYZ3is1EFi
+        gImsdn4udyDgPvCQ==
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH printk v3 0/7] provide nbcon base
+Date:   Sun,  3 Sep 2023 17:11:32 +0206
+Message-Id: <20230903150539.245076-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ALSA: usb-audio: Fix a potential memory leak in
- scarlett2_init_notify()
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        alsa-devel@alsa-project.org
-References: <fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr>
- <871qffmj2d.wl-tiwai@suse.de>
-Content-Language: fr
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <871qffmj2d.wl-tiwai@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/09/2023 à 16:23, Takashi Iwai a écrit :
-> On Sun, 03 Sep 2023 15:06:00 +0200,
-> Christophe JAILLET wrote:
->>
->> If usb_alloc_coherent() or usb_urb_ep_type_check() fail, we should release
->> the resources previously allocated.
-> 
-> Those are freed in the caller side, start_input_streams() instead.
+Hi,
 
-Thanks for the fast review.
+This is v3 of a series to introduce the new non-BKL (nbcon)
+consoles. v2 is here [0]. For information about the motivation
+of the atomic consoles, please read the cover letter of v1 [1].
 
-Hmpm, If IIUC, resources allocated *before* the ending "ep->num_urbs++" 
-still need to be freed here, otherwise free_midi_urbs() in the caller 
-will not free them.
+This series focuses on providing the base functionality of the
+nbcon consoles. In particular, it implements the ownership and
+priority semantics for nbcon consoles. This series does _not_
+include threaded printing, atomic printing regions, or nbcon
+drivers. Those features will be added in separate follow-up
+series.
 
-Do you agree?
+The changes since v2:
 
-If yes, I can send v2 which would look like:
-	usb_alloc_urb()
-	if (err)
-		return -ENOMEM
+- rename nbcon_state::hostile_unsafe to
+  nbcon_state::unsafe_takeover
 
-	usb_alloc_coherent()
-	if (err) {
-		usb_free_urb()
-		urb = NULL
-		return -ENOMEM
-	}
-	
-	 usb_urb_ep_type_check()
-	if (err) {
-		usb_free_coherent()
-		usb_free_urb()
-		urb = NULL
-		return -err
-	}
+- add 2-bit nbcon_state::req_tag to help identify waiters
 
-Or, if yuo prefer, with an error handling path just like below, but 
-without the final free_midi_urbs() + a comment explaining that the 
-caller does this part of job instead.
+- remove nbcon_context::unsafe
 
-CJ
+- remove nbcon_context::hostile
 
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
->>
->> Fixes: ff49d1df79ae ("ALSA: usb-audio: USB MIDI 2.0 UMP support")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   sound/usb/midi2.c | 17 ++++++++++++++---
->>   1 file changed, 14 insertions(+), 3 deletions(-)
->>
->> diff --git a/sound/usb/midi2.c b/sound/usb/midi2.c
->> index a27e244650c8..4109c82adff6 100644
->> --- a/sound/usb/midi2.c
->> +++ b/sound/usb/midi2.c
->> @@ -302,7 +302,8 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
->>   		ctx->urb = usb_alloc_urb(0, GFP_KERNEL);
->>   		if (!ctx->urb) {
->>   			dev_err(&ep->dev->dev, "URB alloc failed\n");
->> -			return -ENOMEM;
->> +			err = -ENOMEM;
->> +			goto err_free_all;
->>   		}
->>   		ctx->ep = ep;
->>   		buffer = usb_alloc_coherent(ep->dev, len, GFP_KERNEL,
->> @@ -310,7 +311,8 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
->>   		if (!buffer) {
->>   			dev_err(&ep->dev->dev,
->>   				"URB buffer alloc failed (size %d)\n", len);
->> -			return -ENOMEM;
->> +			err = -ENOMEM;
->> +			goto err_free_cur_urb;
->>   		}
->>   		if (ep->interval)
->>   			usb_fill_int_urb(ctx->urb, ep->dev, ep->pipe,
->> @@ -322,13 +324,22 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
->>   		if (err < 0) {
->>   			dev_err(&ep->dev->dev, "invalid MIDI EP %x\n",
->>   				endpoint);
->> -			return err;
->> +			goto err_free_cur_dma;
->>   		}
->>   		ctx->urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
->>   		ep->num_urbs++;
->>   	}
->>   	ep->urb_free = ep->urb_free_mask = GENMASK(ep->num_urbs - 1, 0);
->>   	return 0;
->> +
->> +err_free_cur_dma:
->> +	usb_free_coherent(ep->dev, len, buffer, ctx->urb->transfer_dma);
->> +err_free_cur_urb:
->> +	usb_free_urb(ctx->urb);
->> +	ctx->urb = NULL;
->> +err_free_all:
->> +	free_midi_urbs(ep);
->> +	return err;
->>   }
->>   
->>   static struct snd_usb_midi2_endpoint *
->> -- 
->> 2.34.1
->>
-> 
+- rename nbcon_context::takeover_unsafe to
+  nbcon_context::allow_unsafe_takeover
+
+- callers must now check the current console state to see if it
+  acquired the console using the unsafe hostile takeover method
+
+- rename nbcon_write_context::hostile_unsafe to
+  nbcon_write_context::unsafe_takeover
+
+- allow direct takeover of owned consoles if higher priority
+  and safe
+
+- rename printk_nbcon.c to nbcon.c
+
+- remove most printk.c changes, to be added in a later series
+  once all the nbcon functionality is implemented (only init
+  and seq updates/checks are kept)
+
+- add nbcon_alloc() to be called early in register_console() to
+  allow for simple backout on failure (nbcon_init() changed to
+  return void)
+
+- remove my special debugging because it was annoying
+
+- rename __nbcon_seq_to_stored() to __seq_to_nbcon_seq()
+
+- rename __nbcon_seq_to_full() to __nbcon_seq_to_seq()
+
+- implement seq translation as suggested by pmladek
+
+- in nbcon_seq_try_update(), unconditionally attempt cmpxchg to
+  allow CONSOLE_REPLAY_ALL to work
+
+- change semantics of all acquire methods to simplify the model
+
+- add nbcon_waiter_matches() to check waiter based on prio and
+  req_tag
+
+- add nbcon_context_try_acquire_requested() to implement
+  handover part of acquiring after setting request
+
+- in nbcon_context_update_unsafe(), perform handover when
+  transitioning to !unsafe and there is a waiter
+
+- in nbcon_emit_next_record(), simplify initializing @wctxt
+
+- in nbcon_emit_next_record(), set the console state to unsafe
+  while updating @dropped and @nbcon_seq to avoid data race
+  when not in panic
+
+- cleanup comments as suggested by pmladek
+
+John Ogness
+
+[0] https://lore.kernel.org/lkml/20230728000233.50887-1-john.ogness@linutronix.de
+
+[1] https://lore.kernel.org/lkml/20230302195618.156940-6-john.ogness@linutronix.de
+
+Thomas Gleixner (7):
+  printk: Add non-BKL (nbcon) console basic infrastructure
+  printk: nbcon: Add acquire/release logic
+  printk: nbcon: Add buffer management
+  printk: nbcon: Add ownership state functions
+  printk: nbcon: Add sequence handling
+  printk: nbcon: Add emit function and callback function for atomic
+    printing
+  printk: nbcon: Add functions for drivers to mark unsafe regions
+
+ include/linux/console.h  | 135 ++++++
+ kernel/printk/Makefile   |   2 +-
+ kernel/printk/internal.h |  29 ++
+ kernel/printk/nbcon.c    | 945 +++++++++++++++++++++++++++++++++++++++
+ kernel/printk/printk.c   |  60 ++-
+ 5 files changed, 1152 insertions(+), 19 deletions(-)
+ create mode 100644 kernel/printk/nbcon.c
+
+
+base-commit: cb65d08d735e00cc55ad7700a82a453bb88c93a3
+-- 
+2.39.2
 
