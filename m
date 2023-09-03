@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AD1790B7B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 12:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2ED790B7D
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 12:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236465AbjICKp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 06:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47490 "EHLO
+        id S236481AbjICKqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 06:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235800AbjICKp4 (ORCPT
+        with ESMTP id S235800AbjICKqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 06:45:56 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5158F120;
-        Sun,  3 Sep 2023 03:45:52 -0700 (PDT)
+        Sun, 3 Sep 2023 06:46:37 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33617120;
+        Sun,  3 Sep 2023 03:46:34 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id A8D8ACE09B6;
-        Sun,  3 Sep 2023 10:45:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDA10C433C8;
-        Sun,  3 Sep 2023 10:45:48 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 76864B80B74;
+        Sun,  3 Sep 2023 10:46:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 501B8C433C8;
+        Sun,  3 Sep 2023 10:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693737948;
-        bh=FtW4elepbA3dl8TVrQJUZMvhrxmha+pYiCSF4zMey1s=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=EFATlrKLyAsiiuAuOzeNMPH1zcZQvILtwKIJGszRr0hM7i6glk0zBfBRnIKTCLM2n
-         /P0XK78fBmvRUdN5A5QorA+8xxjV2TYPwqM6sbiEG4PCfa7IHyaOlQYyipjrO2++TX
-         o8efnD+pj/W84tgKcnQ/gkwfrirzSVH/8RGRpG+9Q02H8s6y9BY3zyATWKTv788mpG
-         6Eooeo3xQF5MYKFsgl7gYQqOxA68ra+XYJ3Hlhu2lsQDxnxrmhE/8j2xqts+jn0IWp
-         jPyfXAsVsXB3SteVmoRKTHgP0nOUPZGf2r41haFmn6zru7DA9Q5aaAzxJ6l7f50ZPe
-         JuZrCNDBR+nKA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6DB44CE0C90; Sun,  3 Sep 2023 03:45:48 -0700 (PDT)
-Date:   Sun, 3 Sep 2023 03:45:48 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Ziwei Dai <ziwei.dai@unisoc.com>, Hugh Dickins <hughd@google.com>,
-        Marcus Seyfarth <m.seyfarth@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Linux RCU <rcu@vger.kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
-Message-ID: <bbbb0bdf-553e-4fde-90d6-446e920b357e@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
+        s=k20201202; t=1693737991;
+        bh=fHQHtVJU95tWVAt5a2wKC1eHKHzE83lNKBDz+6XcItw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XyjSGL5QrYBvk4SaMUkYXmRvBaPBe96WLfKrnbhgm/9xSQvBJKr2wqOXBnNEuyZ7f
+         y7cG3RtKZWEnuh0AOqID4q2GpMEbo6rFjA5otDnNYQW5LXFCICkjTzsIy/yDBXFppw
+         s1eVSd4EzsujDU99/1bhB/OXq/Pdky0CBw0lBNaOTkxGDAix5zHkfm4U+3w2/g3Znc
+         Ai/nRdnYKEwTAbZa58h/TaHR256ds+fEnM2Jp+Tw9ndYVTfw4uz1Gb5StEwl9K1GBt
+         cLxD+3nRPvNFAT29PzGiledmcM2TN5PLMYbTmh3poQuNMtJWfS1DBJpS3/s+hUBKBu
+         AeztbBn9Ivurg==
+Date:   Sun, 3 Sep 2023 11:46:58 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc:     Olivier MOYSAN <olivier.moysan@foss.st.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        Fabrice GASNIER <fabrice.gasnier@st.com>
+Subject: Re: [RFC v2 01/11] iio: introduce iio backend device
+Message-ID: <20230903114658.24eed6bd@jic23-huawei>
+In-Reply-To: <8b63cad8749ceca31d2f50ee36925ce18523620f.camel@gmail.com>
+References: <20230727150324.1157933-1-olivier.moysan@foss.st.com>
+        <20230727150324.1157933-2-olivier.moysan@foss.st.com>
+        <7ec3fe6183409c218b97a3359e951731b47fe16d.camel@gmail.com>
+        <095f9c64-bcac-e838-ba69-b5df623c444f@foss.st.com>
+        <8b63cad8749ceca31d2f50ee36925ce18523620f.camel@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -61,120 +61,206 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 08:34:44AM +0700, Bagas Sanjaya wrote:
-> Hi,
-> 
-> I notice a regression report on Bugzilla [1]. Quoting from it:
-> 
-> > I've just made the transition from 6.4.14 to 6.5.1 and my Haswell-EP X99 machine took way longer to boot (55 seconds instead of 16 seconds). The following trace was seen in dmesg which was also not present on 6.4.14 (and might be the cause for the long boot time); this is on bare metal.
-> > 
-> > [  +0,000021] CPU: 13 PID: 338 Comm: kworker/13:1 Not tainted 6.5.1-3.1-cachyos-lto #1 c414458bd5e5db6e6f9addca639c3a78811b24e7
+On Fri, 01 Sep 2023 10:01:19 +0200
+Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
 
-This looks like part of the splat was omitted.
+> Hi Olivier,
+>=20
+> On Thu, 2023-08-31 at 18:14 +0200, Olivier MOYSAN wrote:
+> > Hi Nuno,
+> >=20
+> > On 7/28/23 10:42, Nuno S=C3=A1 wrote: =20
+> > > Hi Olivier,
+> > >=20
+> > > On Thu, 2023-07-27 at 17:03 +0200, Olivier Moysan wrote: =20
+> > > > Add a new device type in IIO framework.
+> > > > This backend device does not compute channel attributes and does no=
+t expose
+> > > > them through sysfs, as done typically in iio-rescale frontend devic=
+e.
+> > > > Instead, it allows to report information applying to channel
+> > > > attributes through callbacks. These backend devices can be cascaded
+> > > > to represent chained components.
+> > > > An IIO device configured as a consumer of a backend device can comp=
+ute
+> > > > the channel attributes of the whole chain.
+> > > >=20
+> > > > Signed-off-by: Olivier Moysan <olivier.moysan@foss.st.com>
+> > > > ---
+> > > > =C2=A0=C2=A0drivers/iio/Makefile=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
+> > > > =C2=A0=C2=A0drivers/iio/industrialio-backend.c | 107 ++++++++++++++=
++++++++++++++++
+> > > > =C2=A0=C2=A0include/linux/iio/backend.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 |=C2=A0 56 +++++++++++++++
+> > > > =C2=A0=C2=A03 files changed, 164 insertions(+)
+> > > > =C2=A0=C2=A0create mode 100644 drivers/iio/industrialio-backend.c
+> > > > =C2=A0=C2=A0create mode 100644 include/linux/iio/backend.h
+> > > >=20
+> > > > diff --git a/drivers/iio/Makefile b/drivers/iio/Makefile
+> > > > index 9622347a1c1b..9b59c6ab1738 100644
+> > > > --- a/drivers/iio/Makefile
+> > > > +++ b/drivers/iio/Makefile
+> > > > @@ -5,6 +5,7 @@
+> > > > =C2=A0=20
+> > > > =C2=A0=C2=A0obj-$(CONFIG_IIO) +=3D industrialio.o
+> > > > =C2=A0=C2=A0industrialio-y :=3D industrialio-core.o industrialio-ev=
+ent.o inkern.o
+> > > > +industrialio-$(CONFIG_IIO_BACKEND) +=3D industrialio-backend.o
+> > > > =C2=A0=C2=A0industrialio-$(CONFIG_IIO_BUFFER) +=3D industrialio-buf=
+fer.o
+> > > > =C2=A0=C2=A0industrialio-$(CONFIG_IIO_TRIGGER) +=3D industrialio-tr=
+igger.o
+> > > > =C2=A0=20
+> > > > diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/indus=
+trialio-
+> > > > backend.c
+> > > > new file mode 100644
+> > > > index 000000000000..7d0625889873
+> > > > --- /dev/null
+> > > > +++ b/drivers/iio/industrialio-backend.c
+> > > > @@ -0,0 +1,107 @@
+> > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > +/* The industrial I/O core, backend handling functions
+> > > > + *
+> > > > + */
+> > > > +
+> > > > +#include <linux/kernel.h>
+> > > > +#include <linux/device.h>
+> > > > +#include <linux/property.h>
+> > > > +#include <linux/iio/iio.h>
+> > > > +#include <linux/iio/backend.h>
+> > > > +
+> > > > +static DEFINE_IDA(iio_backend_ida);
+> > > > +
+> > > > +#define to_iio_backend(_device) container_of((_device), struct iio=
+_backend,
+> > > > dev)
+> > > > +
+> > > > +static void iio_backend_release(struct device *device)
+> > > > +{
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct iio_backend *back=
+end =3D to_iio_backend(device);
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kfree(backend->name);
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kfree(backend);
+> > > > +}
+> > > > +
+> > > > +static const struct device_type iio_backend_type =3D {
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.release =3D iio_backend=
+_release,
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0.name =3D "iio_backend_d=
+evice",
+> > > > +};
+> > > > +
+> > > > +struct iio_backend *iio_backend_alloc(struct device *parent)
+> > > > +{
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0struct iio_backend *back=
+end;
+> > > > +
+> > > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0backend =3D devm_kzalloc=
+(parent, sizeof(*backend), GFP_KERNEL);
+> > > >  =20
+> > >=20
+> > > No error checking.
+> > >=20
+> > > I guess a lot of cleanings are still missing but the important thing =
+I wanted to
+> > > notice is that the above pattern is not ok.
+> > > Your 'struct iio_backend *backend'' embeds a 'stuct device' which is a
+> > > refcounted object. Nevertheless, you're binding the lifetime of your =
+object to
+> > > the parent device and that is wrong. The reason is that as soon as yo=
+ur parent
+> > > device get's released or just unbinded from it's driver, all the devr=
+es stuff
+> > > (including your 'struct iio_backend' object) will be released indepen=
+dentof
+> > > your 'struct device' refcount value...
+> > >=20
+> > > So, you might argue this won't ever be an issue in here but the patte=
+rn is still
+> > > wrong. There are some talks about this, the last one was given at the=
+ latest
+> > > EOSS:
+> > >=20
+> > > https://www.youtube.com/watch?v=3DHCiJL7djGw8&list=3DPLbzoR-pLrL6pY8a=
+8zSKRC6-AihFrruOkq&index=3D27&ab_channel=3DTheLinuxFoundation
+> > >  =20
+> >=20
+> > This is a good point. Thanks for pointing it out. Sure, there are still=
+=20
+> > many things to improve.
+> >=20
+> > I have seen the comment from Jonathan on your "Add converter framework"=
+=20
+> > serie. I had a quick look at the serie. It seems that we share the need=
+=20
+> > to aggregate some IIO devices. But I need to read it more carefully to=
+=20
+> > check if we can find some convergences here. =20
+>=20
+> Yeah, In my case, the backend devices are typically FPGA soft cores and t=
+he aggregate
+> device might connect to multiple of these backends. That was one of the r=
+eason why I
+> used the component API where the aggregate device is only configured when=
+ all the
+> devices are probed. Similarly, when one of them is unbind, the whole thin=
+g should be
+> torn down. Also, in my case, the frontend device needs to do a lot of set=
+up on the
+> backend device so the whole thing works (so I do have/need a lot more .op=
+s).
+>=20
+> Anyways, it does not matter much what the backend device is and from a fi=
+rst glance
+> and looking at the .ops you have, it seems that this could easily be supp=
+orted in the
+> framework I'm adding. The only things I'm seeing are:
+>=20
+> 1) You would need to use the component API if it's ok. Also not sure if t=
+he cascaded
+> usecase you mention would work with that API.
+>=20
+> 2) We would need to add the .read_raw() op. If you look at my RFC, I alre=
+ady have
+> some comments/concerns about having an option like that (see there).
+>=20
+> Having said that, none of the above are blockers as 1), I can ditch the c=
+omponent API
+> in favour of typical FW/OF lookup (even though the component API makes so=
+me things
+> easier to handle) and 2), adding a .read_raw() op is not a blocker for me.
+>=20
+> Alternatively, another (maybe crazy) idea would be to have this framework=
+ have the
+> really generic stuff (like lookup + generic ops) and build my iio-convert=
+er on top of
+> it (extending it). You know, some OO fun :). Maybe not worth the trouble =
+though.
+>=20
+> Let's if Jonathan has some suggestions on how to proceed...
 
-> > [  +0,000003] Hardware name: LENOVO GAMING TF/X99-TF Gaming, BIOS CX99DE26 10/10/2020
-> > [  +0,000002] Workqueue: events kfree_rcu_work
-> > [  +0,000004] RIP: 0010:kvfree_rcu_bulk+0x13b/0x160
-> > [  +0,000004] Code: 80 04 00 00 80 bf 89 04 00 00 00 75 24 85 c0 75 20 31 f6 ba 02 00 00 00 e8 72 50 bd ff 5b 41 5c 41 5e 41 5f 5d e9 05 df ba ff <0f> 0b e9 54 ff ff ff a9 ff ff ff 7f 74 e5 80 bf 88 04 00 00 >
-> > [  +0,000002] RSP: 0018:ffff8fe4611cbd90 EFLAGS: 00010206
-> > [  +0,000002] RAX: 0000000000000048 RBX: ffff8fe8e04f7000 RCX: fffffffffffffffc
-> > [  +0,000002] RDX: 0000000000000000 RSI: ffff8fe8e04f7000 RDI: ffff8fe9df95cac8
-> > [  +0,000001] RBP: ffff8fe4611cbe40 R08: 8080808080808080 R09: fefefefefefefeff
-> > [  +0,000002] R10: 000073746e657665 R11: 8080000000000000 R12: 0000000000000000
-> > [  +0,000001] R13: ffff8fe4611cbde0 R14: ffff8fe9df95cac8 R15: ffff8fe4611cbdd0
-> > [  +0,000001] FS:  0000000000000000(0000) GS:ffff8fe9df940000(0000) knlGS:0000000000000000
-> > [  +0,000002] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  +0,000002] CR2: 00007f8287bff008 CR3: 00000005e8f73001 CR4: 00000000001706e0
-> > [  +0,000001] Call Trace:
-> > [  +0,000003]  <TASK>
-> > [  +0,000001]  ? __warn+0x9e/0x160
-> > [  +0,000004]  ? kvfree_rcu_bulk+0x13b/0x160
-> > [  +0,000004]  ? report_bug+0x112/0x180
-> > [  +0,000003]  ? handle_bug+0x3d/0x80
-> > [  +0,000003]  ? exc_invalid_op+0x16/0x40
-> > [  +0,000003]  ? asm_exc_invalid_op+0x16/0x20
-> > [  +0,000005]  ? kvfree_rcu_bulk+0x13b/0x160
-> > [  +0,000003]  kfree_rcu_work+0xcd/0x200
-> > [  +0,000005]  process_one_work+0x21a/0x620
-> > [  +0,000004]  ? wake_up_process+0x1d3/0x1720
-> > [  +0,000004]  worker_thread+0x12b/0x4c0
-> > [  +0,000003]  ? compat_get_bitmap+0xa0/0xa0
-> > [  +0,000003]  kthread+0xf1/0x160
-> > [  +0,000004]  ? getreg32+0x1e0/0x1e0
-> > [  +0,000003]  ret_from_fork+0x30/0x40
-> > [  +0,000005]  ? getreg32+0x1e0/0x1e0
-> > [  +0,000003]  ret_from_fork_asm+0x11/0x20
-> > [  +0,000005]  </TASK>
-> > [  +0,000001] ---[ end trace 0000000000000000 ]---
-> 
-> Later, the reporter came up with another trace:
-> 
-> > I just saw a patch from Hugh Dickins on the LKML (https://www.spinics.net/lists/kernel/msg4919906.html) and indeed, with my self-compiled 6.5.1 Kernel, the trace is now downgraded to a warning (see below). However, the slow boot still remains and also my games won't load up due to missing a rendering device. But that might be a different issue.
-> > 
-> > 
-> > [  +0,000227] ------------[ cut here ]------------
-> > [  +0,000002] WARNING: CPU: 21 PID: 345 at kernel/rcu/tree.c:2952 kvfree_rcu_bulk+0x13b/0x160
+The two of you are definitely the most familiar with the code and the restr=
+ictions
+around it, so ideally I'd like you go figure out the path forwards and tell=
+ me :)
 
-In -stable v6.5.1, this line is the following:
+To me this is a non core extension of IIO so as long as we end up with some=
+thing
+maintainable that solves some (all?) of the ordering and dependency issues =
+I'll
+be happy.  I'd rather not have two solutions of course if there is not a go=
+od
+reason why they have to be different.  If we do end up with two solutions I
+want clear documentation for the restrictions of each so that we hopefully
+don't end up with a 3rd solution down the line.
 
-	rcu_lock_acquire(&rcu_callback_map);
+Jonathan
 
-None of the patches in the github URL listed in the full version of that
-bugzilla comment affect this file, but some of them could potentially
-produce a slowdown.
+>=20
+> - Nuno S=C3=A1
+> > >  =20
+>=20
 
-Nevertheless adding Uladzislau on CC for his thoughts.
-
-In the meantime, I echo Artem S. Tashkinov's suggestion of bisection.
-
-							Thanx, Paul
-
-> > [  +0,000011] Modules linked in: pkcs8_key_parser crypto_user fuse loop zram bpf_preload ip_tables x_tables ext4 crc32c_generic mbcache crc16 jbd2 usbhid amdgpu mfd_core drm_buddy drm_suballoc_helper crc32c_i>
-> > [  +0,000027] CPU: 21 PID: 345 Comm: kworker/21:1 Not tainted 6.5.1-3.1-cachyos-lto #1 de6495663682da00bbe0d80bdc163dd768b25681
-> > [  +0,000004] Hardware name: LENOVO GAMING TF/X99-TF Gaming, BIOS CX99DE26 10/10/2020
-> > [  +0,000002] Workqueue: events kfree_rcu_work
-> > [  +0,000006] RIP: 0010:kvfree_rcu_bulk+0x13b/0x160
-> > [  +0,000006] Code: 80 04 00 00 80 bf 89 04 00 00 00 75 24 85 c0 75 20 31 f6 ba 02 00 00 00 e8 52 50 bd ff 5b 41 5c 41 5e 41 5f 5d e9 e5 de ba ff <0f> 0b e9 54 ff ff ff a9 ff ff ff 7f 74 e5 80 bf 88 04 00 00 >
-> > [  +0,000003] RSP: 0018:ffff8df57a5ffd90 EFLAGS: 00010206
-> > [  +0,000003] RAX: 0000000000000020 RBX: ffff8df44cb40000 RCX: fffffffffffffffc
-> > [  +0,000003] RDX: 0000000000000000 RSI: ffff8df44cb40000 RDI: ffff8df91fb5cac8
-> > [  +0,000002] RBP: ffff8df57a5ffe40 R08: 8080808080808080 R09: fefefefefefefeff
-> > [  +0,000002] R10: 000073746e657665 R11: 8080000000000000 R12: 0000000000000000
-> > [  +0,000002] R13: ffff8df57a5ffde0 R14: ffff8df91fb5cac8 R15: ffff8df57a5ffdd0
-> > [  +0,000002] FS:  0000000000000000(0000) GS:ffff8df91fb40000(0000) knlGS:0000000000000000
-> > [  +0,000003] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  +0,000002] CR2: 000055fe51d3f700 CR3: 000000065de7d002 CR4: 00000000001706e0
-> > [  +0,000002] Call Trace:
-> > [  +0,000003]  <TASK>
-> > [  +0,000002]  ? __warn+0x9e/0x160
-> > [  +0,000006]  ? kvfree_rcu_bulk+0x13b/0x160
-> > [  +0,000005]  ? report_bug+0x112/0x180
-> > [  +0,000005]  ? handle_bug+0x3d/0x80
-> > [  +0,000005]  ? exc_invalid_op+0x16/0x40
-> > [  +0,000003]  ? asm_exc_invalid_op+0x16/0x20
-> > [  +0,000007]  ? kvfree_rcu_bulk+0x13b/0x160
-> > [  +0,000006]  kfree_rcu_work+0xcd/0x200
-> > [  +0,000006]  process_one_work+0x21a/0x620
-> > [  +0,000006]  ? wake_up_process+0x1d3/0x1720
-> > [  +0,000005]  worker_thread+0x12b/0x4c0
-> > [  +0,000005]  ? compat_get_bitmap+0xa0/0xa0
-> > [  +0,000004]  kthread+0xf1/0x160
-> > [  +0,000006]  ? getreg32+0x1e0/0x1e0
-> > [  +0,000004]  ret_from_fork+0x30/0x40
-> > [  +0,000007]  ? getreg32+0x1e0/0x1e0
-> > [  +0,000003]  ret_from_fork_asm+0x11/0x20
-> > [  +0,000009]  </TASK>
-> > [  +0,000001] ---[ end trace 0000000000000000 ]---
-> 
-> See Bugzilla for the full thread.
-> 
-> Anyway, I'm adding this regression to be tracked by regzbot:
-> 
-> #regzbot introduced: v6.4..v6.5 https://bugzilla.kernel.org/show_bug.cgi?id=217864
-> 
-> Thanks.
-> 
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217864
-> 
-> -- 
-> An old man doll... just what I always wanted! - Clara
