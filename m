@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A014790DB6
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9279790DBA
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 21:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347102AbjICT3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 15:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38610 "EHLO
+        id S1347261AbjICT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 15:29:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230063AbjICT3t (ORCPT
+        with ESMTP id S1347209AbjICT3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 15:29:49 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7565E94
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:29:46 -0700 (PDT)
+        Sun, 3 Sep 2023 15:29:51 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF6D94
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 12:29:48 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F339D609EB
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 19:29:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 47253C433C8;
+        by sin.source.kernel.org (Postfix) with ESMTPS id 2CD05CE0B0A
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 19:29:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 50215C433CC;
         Sun,  3 Sep 2023 19:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1693769385;
@@ -34,7 +34,7 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
          BB1uU8nhZsSrdp/3CPNvSdy8JG5PtW6Jpq7BlJ8/k7dXM9YcHy69nOYkm8RgqdYu/d
          PCjavKaaBfPHg==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1466EE29F3E;
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 104CCC64457;
         Sun,  3 Sep 2023 19:29:45 +0000 (UTC)
 Subject: Re: [GIT PULL]: dmaengine updates for v6.6
 From:   pr-tracker-bot@kernel.org
@@ -47,14 +47,14 @@ X-PR-Tracked-Commit-Id: 72f5801a4e2b7122ed8ff5672ea965a0b3458e6b
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
 X-PR-Merge-Commit-Id: 708283abf896dd4853e673cc8cba70acaf9bf4ea
-Message-Id: <169376938477.10760.3757276189370555265.pr-tracker-bot@kernel.org>
+Message-Id: <169376938473.29309.1115855308110662943.pr-tracker-bot@kernel.org>
 Date:   Sun, 03 Sep 2023 19:29:44 +0000
 To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         LKML <linux-kernel@vger.kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
