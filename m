@@ -2,96 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 36CA2790B91
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 13:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15F6790BA3
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 13:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236591AbjICLPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 07:15:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57980 "EHLO
+        id S236602AbjICLhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 07:37:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236578AbjICLPo (ORCPT
+        with ESMTP id S229599AbjICLhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 07:15:44 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B03128
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 04:15:40 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68a56401b9aso273192b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 04:15:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693739740; x=1694344540; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Rc553DPy4Af9gG2DZ8elTIxxu5HChknTvh6LevqA5wY=;
-        b=ZC83t5fq4IkNaWoLmc734P9LbxAEUQSbSqjGfyqtZetZQo3J9qZ3B3jUDokYHifGnV
-         hpP9QEFQXiwdXNueBNtmJDfcwTR9XBQr+xMWI13g+UmvRx84Aa1gFAZD2A87Hn3tQ1Me
-         0QS0JEuEHz0wgVpxIdKPW+FYlzFWtKF/mfsyM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693739740; x=1694344540;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rc553DPy4Af9gG2DZ8elTIxxu5HChknTvh6LevqA5wY=;
-        b=DvsEv7ptEgHZeicKNa9h8TpK3RyNRW2VKxaORft67TaytJqxn+2qpPLNH8UDNsUA8W
-         mHM0vVAcS9Ojs9+8GrCmLwwRHELaqs4nOUDco3QV3i4CQqNZGmGbmBybYKnicSio6V+F
-         pQM4NK5IO0okrenU0fEzbSu2KRN2rPSGNLKRklNqND+aDSQszBHTdz7rpC7T8F+1hIKM
-         zihsx0teIZOGhqlqAjqwM8V+MVVjlZzW8MH6AoP5SaIZhuhaN/9APj/cNjD0L+NHfhAV
-         DCYC4YWdQKDNf2sfLkPPV3GX+2RQR6SUdsqprQO7BacGKz5tFKL65BsypidRJplQ+OZ+
-         9QJA==
-X-Gm-Message-State: AOJu0YwEq58B4gtH1rXOYS9j2fTB5cRI3TLkepA7fhYBkJRZQwsUFfvW
-        3C+Vvx/DYhyOJyRRLUqfMPtleQ==
-X-Google-Smtp-Source: AGHT+IH280Ee0uGJE+Wfx6zorOK08XSHJvH3gTM5GBqMcabQhCpwuQw2bdoeS7vLBUTOtaDihxxjAg==
-X-Received: by 2002:a05:6a20:4303:b0:148:f16f:113f with SMTP id h3-20020a056a20430300b00148f16f113fmr6647172pzk.12.1693739740468;
-        Sun, 03 Sep 2023 04:15:40 -0700 (PDT)
-Received: from google.com (KD124209188001.ppp-bb.dion.ne.jp. [124.209.188.1])
-        by smtp.gmail.com with ESMTPSA id f4-20020aa782c4000000b0068be7119e55sm5650313pfn.122.2023.09.03.04.15.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 04:15:39 -0700 (PDT)
-Date:   Sun, 3 Sep 2023 20:15:35 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Tomasz Figa <tfiga@chromium.org>, linux-kbuild@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] kconfig: add warn-unknown-symbols sanity check
-Message-ID: <20230903111535.GH3913@google.com>
-References: <20230830004937.2938195-1-senozhatsky@chromium.org>
- <CAK7LNAQvFR0dQAFU2YiqxrXJTKcH0-=n0Fea1Q8pc7ZuHHf0zg@mail.gmail.com>
+        Sun, 3 Sep 2023 07:37:06 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55C6DF2;
+        Sun,  3 Sep 2023 04:37:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id DF319B80B74;
+        Sun,  3 Sep 2023 11:37:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CF3CC433C7;
+        Sun,  3 Sep 2023 11:36:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693741020;
+        bh=tuwGfP4B5oLh2LtVZlEqLCMMizDfQJW9MygJsSHWdRg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=pj6isdPfsn+2Z5P6wHJ19ywhDGShVDt6j+sL4gLmlOPP8NGnafK/uXEzVNMhWe01r
+         pb1F4ffRt/TM3lMc4VyprsRxhtr6yMWEFrX3X3MlEWuaqm+dh+aKJCulQWBrcPAXaW
+         IFjhJo6df+10NSNZUQL+FdqdgPdLyvPc6rej/hFp3EzJAxfa0JcDf3wCDYj3r4Ysqt
+         QfWW2ef8hwoNM4yLf9YYYWY2P0OfqV9TnqIN0ZUp9tIUdHOFNmojuCFaS5RbYDlYb3
+         DuHxahKCiFaqSjkPplOIfxrcXWi0UTdZDkxNuuUD3lxd7ktqmkmJ+FcEffGgs7pwji
+         PyfwIu1UZJXAQ==
+Date:   Sun, 3 Sep 2023 12:37:27 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
+Cc:     Antoniu Miclaus <antoniu.miclaus@analog.com>,
+        linus.walleij@linaro.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: addac: ad74413r: fix function prefix typo
+Message-ID: <20230903123727.62a18f24@jic23-huawei>
+In-Reply-To: <0527327b556aac4ce9b7e4db85aa831ca439e600.camel@gmail.com>
+References: <20230830094314.26353-1-antoniu.miclaus@analog.com>
+        <0527327b556aac4ce9b7e4db85aa831ca439e600.camel@gmail.com>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAK7LNAQvFR0dQAFU2YiqxrXJTKcH0-=n0Fea1Q8pc7ZuHHf0zg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (23/08/31 23:56), Masahiro Yamada wrote:
-> On Thu, Aug 31, 2023 at 11:15 PM Sergey Senozhatsky
-> <senozhatsky@chromium.org> wrote:
-> >
-> > Introduce KCONFIG_WARN_UNKNOWN_SYMBOLS environment variable,
-> > which makes Kconfig warn about unknown config symbols.
-> >
-> > This is especially useful for continuous kernel uprevs when
-> > some symbols can be either removed or renamed between kernel
-> > releases (which can go unnoticed otherwise).
-> >
-> > By default KCONFIG_WARN_UNKNOWN_SYMBOLS generates warnings,
-> > which are non-terminal. There is an additional environment
-> > variable KCONFIG_WERROR that overrides this behaviour and
-> > turns warnings into errors.
-> >
-> > Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-> 
-> 
-> Applied to linux-kbuild. Thanks.
+On Thu, 31 Aug 2023 09:48:19 +0200
+Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
 
-Thanks.
+> On Wed, 2023-08-30 at 12:43 +0300, Antoniu Miclaus wrote:
+> > Use complete device name prefix in the input current offset getter
+> > function.
+> >=20
+> > Fixes: fea251b6a5db ("iio: addac: add AD74413R driver")
+> > Signed-off-by: Antoniu Miclaus <antoniu.miclaus@analog.com>
+> > --- =20
+>=20
+> This a typo fix. So, I'm not so sure if a Fixes tag, backporting is reall=
+y needed...
+
+Agreed - I dropped the fixes tag whilst applying.
+
+> Anyways,
+>=20
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+>=20
+Applied to the togreg branch of iio.git which for now is only pushed out as
+testing because I want to rebase on rc1 once available.
+
+Thanks,
+
+Jonathan
+
+> >  =20
+
