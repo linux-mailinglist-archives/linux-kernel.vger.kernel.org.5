@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B0C0790E91
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF6D790EDB
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 00:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjICVvv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 17:51:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51664 "EHLO
+        id S240826AbjICV76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 17:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231953AbjICVvp (ORCPT
+        with ESMTP id S231953AbjICV75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 17:51:45 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A987EF2
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:51:42 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9a2a4a5472dso370697966b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 14:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693777901; x=1694382701; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dTOF9j4For5+IkQ27e09HtuZibYF6090duIvPCLqj1Q=;
-        b=DrP7f358Y4qa8KG3MnYEqwMHeYWtfpCgIN8i7YdEGQ0jBCe/jUH5f+qiNjH8VfrdTq
-         0sG7iKq4vFD74hREAfrEGjtBqWXtGBlEi72M3q8TIXEtYXZSs+iMODLTMAkJDby9lTB9
-         mPqxlIUp6Z11lEkwWkzGYndgsf2VOxnsI5dCqp8Q4huhL4UV1C47RiX9E5tCZg5ep5V3
-         aIARWttVfYWw6Dib2getMqhi5yqFAY9/lzQ2GOC0UTqdWLLR61V6jZR9esKfqd8iqx/5
-         8vk7dW4r1R+fqkZqLSCcQCf7wZmzfZCU1oaWASOQBIR6L7YuXk4L6olNqnJcyItrmZJl
-         vHrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693777901; x=1694382701;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dTOF9j4For5+IkQ27e09HtuZibYF6090duIvPCLqj1Q=;
-        b=ZK3WxcILAP3LDihZjFmY3i8r+MkzoSzZMpCTv/WthaMCjEMnBq6jUJol9aUYHCIJ2A
-         vYWu5YtfMywNX4Zzle9umIqAuOizUYAjH7nHLELY97bYUA4mc0Qr52sStURhCdN7UqOL
-         vREJttbTiEO3Y13T606lfu9Rf/rbMCGJV+ZJLiDi2JbZwn+e/P0N5kf17IqjRQ1Ph5tl
-         j3dE697vWoSTIFMoJEGjun+zG9o3ulw/BKzMhgtbpr7nBYq8T5zi/D9nhalvU6Bz84YL
-         YahGOqH1aiXooPeh+Z0ObbM4VEuRmENuXz7+bI2B0oF9ibnQhGdJw86aBCFIpXvYthsQ
-         9m0g==
-X-Gm-Message-State: AOJu0Yw+4pPbvCHCIw8jJFPWTZEekg9tj9Dq/ssOM4/Jy8u9WsX1x2gV
-        TuFIRLqUmjgYXWEB1T6jhiithA==
-X-Google-Smtp-Source: AGHT+IGowAV7YLEFVUh9WoNGqh2dZVwEtPGL9Ejeb0BlXBpT0gKXQdTAwPamljsIXC+jZmW3nDLZWQ==
-X-Received: by 2002:a17:907:7804:b0:99b:4210:cc76 with SMTP id la4-20020a170907780400b0099b4210cc76mr8743881ejc.28.1693777900332;
-        Sun, 03 Sep 2023 14:51:40 -0700 (PDT)
-Received: from [10.10.15.130] ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id jo26-20020a170906f6da00b0099ddc81903asm5256353ejb.221.2023.09.03.14.51.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Sep 2023 14:51:39 -0700 (PDT)
-Message-ID: <af6f9379-76f5-44ae-9869-86c63caf3ab6@linaro.org>
-Date:   Mon, 4 Sep 2023 00:51:38 +0300
+        Sun, 3 Sep 2023 17:59:57 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCB8AF2
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
+        s=mail; t=1693778390;
+        bh=iaEr2Ad1rh5CSPJ4/BZva+k0cXiqW1jY+j/CTCtNrWM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZD3lQPSGFYzUeY/cGmQldPyavmcw6zgKbFJt0VL9XqGerRnz5ttLAEerazscIP070
+         0qXvqAlrB74/lq28AYuIt6Sp1HVhJFQOok6B6ZJHPpSLAYB5EbOxDw6zUJq+dDHF9H
+         mr3pG8JiZFwy/pJ3Ym9+5COWFn0zvUH07tk90pjk=
+Date:   Sun, 3 Sep 2023 23:59:48 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
+To:     syzbot <syzbot+85792f3143e6271d2c97@syzkaller.appspotmail.com>
+Cc:     andriy.shevchenko@linux.intel.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, rafael@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [kernel?] general protection fault in
+ tty_register_device_attr
+Message-ID: <1527ac63-85a6-4813-94f2-bb76ed665236@t-8ch.de>
+References: <0000000000007b589e0604578e70@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] drm/msm/dp: do not reinitialize phy unless retry
- during link training
-Content-Language: en-GB
-To:     Kuogee Hsieh <quic_khsieh@quicinc.com>, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org, dianders@chromium.org,
-        vkoul@kernel.org, daniel@ffwll.ch, airlied@gmail.com,
-        agross@kernel.org, andersson@kernel.org,
-        marijn.suijten@somainline.org
-Cc:     quic_abhinavk@quicinc.com, quic_jesszhan@quicinc.com,
-        quic_sbillaka@quicinc.com, freedreno@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <1691533190-19335-1-git-send-email-quic_khsieh@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <1691533190-19335-1-git-send-email-quic_khsieh@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000007b589e0604578e70@google.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/08/2023 01:19, Kuogee Hsieh wrote:
-> DP PHY re-initialization done using dp_ctrl_reinitialize_mainlink() will
-> cause PLL unlocked initially and then PLL gets locked at the end of
-> initialization. PLL_UNLOCKED interrupt will fire during this time if the
-> interrupt mask is enabled.
-> However currently DP driver link training implementation incorrectly
-> re-initializes PHY unconditionally during link training as the PHY was
-> already configured in dp_ctrl_enable_mainlink_clocks().
-> 
-> Fix this by re-initializing the PHY only if the previous link training
-> failed.
-> 
-> [drm:dp_aux_isr] *ERROR* Unexpected DP AUX IRQ 0x01000000 when not busy
-> 
-> Fixes: c943b4948b58 ("drm/msm/dp: add displayPort driver support")
-> Closes: https://gitlab.freedesktop.org/drm/msm/-/issues/30
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> ---
->   drivers/gpu/drm/msm/dp/dp_ctrl.c | 13 ++++++-------
->   1 file changed, 6 insertions(+), 7 deletions(-)
+On 2023-09-01 20:05:59-0700, syzbot wrote:
+> [..]
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> CPU: 1 PID: 5046 Comm: syz-executor362 Not tainted 6.5.0-next-20230828-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+> RIP: 0010:strchr+0x1b/0xb0 lib/string.c:329
+> Code: a3 ac f7 48 8b 74 24 08 48 8b 14 24 eb 89 90 f3 0f 1e fa 48 b8 00 00 00 00 00 fc ff df 48 89 fa 55 48 c1 ea 03 53 48 83 ec 10 <0f> b6 04 02 48 89 fa 83 e2 07 38 d0 7f 04 84 c0 75 51 0f b6 07 89
+> RSP: 0018:ffffc90003a1f800 EFLAGS: 00010286
+> RAX: dffffc0000000000 RBX: 0000000000000000 RCX: 0000000000000000
+> RDX: 0000000000000000 RSI: 0000000000000025 RDI: 0000000000000000
+> RBP: ffffc90003a1f890 R08: 0000000000000001 R09: 0000000000000000
+> R10: 0000000000000001 R11: 0000000000000000 R12: ffffc90003a1f890
+> R13: 0000000000000cc0 R14: ffff888014a96000 R15: 0000000000000001
+> FS:  0000555556b43480(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00005584fe812978 CR3: 00000000729c5000 CR4: 00000000003506e0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  kvasprintf_const+0x25/0x190 lib/kasprintf.c:45
+>  kobject_set_name_vargs+0x5a/0x130 lib/kobject.c:272
+>  kobject_add_varg lib/kobject.c:366 [inline]
+>  kobject_add+0x12a/0x240 lib/kobject.c:424
+>  device_add+0x290/0x1ac0 drivers/base/core.c:3560
+>  tty_register_device_attr+0x38f/0x7b0 drivers/tty/tty_io.c:3248
+>  gsm_register_devices drivers/tty/n_gsm.c:654 [inline]
+>  gsm_activate_mux+0x157/0x2d0 drivers/tty/n_gsm.c:3138
+>  gsm_config drivers/tty/n_gsm.c:3383 [inline]
+>  gsmld_ioctl+0x8cc/0x1550 drivers/tty/n_gsm.c:3786
+>  tty_ioctl+0x706/0x1580 drivers/tty/tty_io.c:2785
+>  vfs_ioctl fs/ioctl.c:51 [inline]
+>  __do_sys_ioctl fs/ioctl.c:871 [inline]
+>  __se_sys_ioctl fs/ioctl.c:857 [inline]
+>  __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
+>  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+>  do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+>  entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
--- 
-With best wishes
-Dmitry
+> [..]
 
+#syz dup: general protection fault in netdev_register_kobject
+
+With patch from Andy:
+
+https://lore.kernel.org/all/20230828145824.3895288-1-andriy.shevchenko@linux.intel.com/
