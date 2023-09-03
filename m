@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49D3D790CA0
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 676E8790CA2
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242607AbjICPIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 11:08:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46796 "EHLO
+        id S243127AbjICPIf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 11:08:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237182AbjICPIQ (ORCPT
+        with ESMTP id S243123AbjICPIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 11:08:16 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE5BACCC
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:07:59 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id 38308e7fff4ca-2b962c226ceso10104491fa.3
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 08:07:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693753678; x=1694358478; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=csKX5A9kXXALBeT5X7dLtErmAX0Hy/N1x58zC4BBgNs=;
-        b=QNt3YYqZF9nlt0pVomMBOtGuTgz0HZgGzQIMaSMBNRbVWl/ubhFZsj4VYfQuDJmwP/
-         yOvfeZa26O/Xjo3ZltulWWQRzc45RKdRMFm3wSZK76x+2CZoKa6xf7uphNI7ZdS/xLOp
-         sqwoFSdku0v0A5xNFsmJkigqaeJyZDnUI2HM0nLX08LZb5t05rfpA8lDmfWoq84QrktR
-         3sL6Z0mcNw5JfEXcEqzjH3HuHm77j/p32i3JZvOJYkbiHOmGJ+Lmn6OOoS8V/pMNQSyy
-         y0Qjs4+DAp/zRIa69/aasLwgcfenAyALdVr7WEC88BUHlyw6hJMHy7T+SKeMx7xJ2UG3
-         G45w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693753678; x=1694358478;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=csKX5A9kXXALBeT5X7dLtErmAX0Hy/N1x58zC4BBgNs=;
-        b=IL8nx2ZjfdY36GM05IZDjyTXyItqUkKhcXsauPy7MkI5ZFH2hWQVyhPlI5yvYHyjvI
-         IGrHo79xZ9/nNzTKoB1GgGBARIROUE/VatqfdRG9cOtJAjleO4m++FdavpM32HIO0nrg
-         A2QYEPJe4vLRskHw+KEljDfuQSSSn33KX7SUTURwAeKFv4eBaP2GBCsPUH04JCPTm71y
-         ire42RWZeYEPkbnYSWs3+kw4RnPo79svvfWerRLVhRbeMLrY/7UKFgbP0P5psGTRY14y
-         G8oLZA3peBQc7aC3irifeh+IJRpaOVz1xPf6Nb1p5Hnz+doxuWLduaAsXx9bMAPhf1nC
-         kG3g==
-X-Gm-Message-State: AOJu0Yy0m3cM2CysSlP3QNW5XbnpRKVh1QtC5yhcSTNbTSs9GTFV50A/
-        udmDcvbDGOw/WrFHVMU+MbhCAePCmVPtLndHSoY=
-X-Google-Smtp-Source: AGHT+IFQwplZBOYCSQvP1lfdW5q3h0qUHtTwnFzNEd19JikuePPyjZpP4PkPsrL7CBP6VpdwJcDAfw==
-X-Received: by 2002:a2e:9d8d:0:b0:2bc:fd7b:8ded with SMTP id c13-20020a2e9d8d000000b002bcfd7b8dedmr5429229ljj.20.1693753677804;
-        Sun, 03 Sep 2023 08:07:57 -0700 (PDT)
-Received: from HP-ENVY-Notebook.lan (81-229-94-10-no68.tbcn.telia.com. [81.229.94.10])
-        by smtp.googlemail.com with ESMTPSA id b23-20020a2e8497000000b002bcdeeecd11sm1547944ljh.66.2023.09.03.08.07.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 08:07:57 -0700 (PDT)
-From:   Jonathan Bergh <bergh.jonathan@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jonathan Bergh <bergh.jonathan@gmail.com>
-Subject: [PATCH] staging: vme_user: Remove unused (commented) code causing unnecessary checkpatch warning
-Date:   Sun,  3 Sep 2023 17:06:23 +0200
-Message-Id: <20230903150623.571984-1-bergh.jonathan@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 3 Sep 2023 11:08:31 -0400
+Received: from smtp.smtpout.orange.fr (smtp-30.smtpout.orange.fr [80.12.242.30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08A5B116
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:08:24 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id coi3qCr0AbNd0coi4qbqwR; Sun, 03 Sep 2023 17:08:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693753703;
+        bh=3vbBQKPo4LJHiDDNu1Lpt1WO/D8AzSItjWjmWe5gbq8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=hpsDbBq0hKZCwQat/ZIqq9w4sx53uM36YjYqIk+2GzJJnrbYsApNAK6K376YZMh3Y
+         YridCz3gFWp99me5kiRpM16zf2tf34HZ36JkGtxfTHRa1D1vh2XMPJy5u8EtwO16gO
+         Yn2lXRujKdf5NwRv4+ELdOABRCwznCAfk+ClZB4b85aPxetGtTJdubXx/8D+lYVV50
+         5PNFxk55viO4pR6TjXvvEb2ortM6IId3uWUMgOKGho1dsj2uCVJ8OuafX4i0ouPeuZ
+         SrXDiuvpDBYtfW8jPB/SEOU7K/mRTYhhNHnLdqogvBwp3CraKUGNEFDuWNEn4vR+ma
+         VXSZagSubZefA==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 03 Sep 2023 17:08:23 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <6014901d-8fe6-9e80-171e-a1017cc9e0f9@wanadoo.fr>
+Date:   Sun, 3 Sep 2023 17:08:19 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ALSA: scarlett2: Fix a potential memory leak in
+ scarlett2_init_notify()
+Content-Language: fr, en-US
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     "Geoffrey D. Bennett" <g@b4.vu>, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org
+References: <73aab53d53df156a5df2bc61314ff26448526749.1693744859.git.christophe.jaillet@wanadoo.fr>
+ <87zg23l4bn.wl-tiwai@suse.de>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <87zg23l4bn.wl-tiwai@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Removed unused/commented code from vme_fake.c which was causing spurious
-checkpatch warnings.
+Le 03/09/2023 à 16:27, Takashi Iwai a écrit :
+> On Sun, 03 Sep 2023 14:41:45 +0200,
+> Christophe JAILLET wrote:
+>>
+>> If kmalloc() fails, we should release 'mixer->urb'.
+> 
+> This is released at the common error path in mixer.c,
+> snd_usb_mixer_free(), hence it's not needed.
 
-Signed-off-by: Jonathan Bergh <bergh.jonathan@gmail.com>
----
- drivers/staging/vme_user/vme_fake.c | 3 ---
- 1 file changed, 3 deletions(-)
+Agreed, sorry for the noise.
 
-diff --git a/drivers/staging/vme_user/vme_fake.c b/drivers/staging/vme_user/vme_fake.c
-index 7c53a8a7b79b..9bcb89a84d53 100644
---- a/drivers/staging/vme_user/vme_fake.c
-+++ b/drivers/staging/vme_user/vme_fake.c
-@@ -1009,9 +1009,6 @@ static void fake_free_consistent(struct device *parent, size_t size,
- 		void *vaddr, dma_addr_t dma)
- {
- 	kfree(vaddr);
--/*
--	dma_free_coherent(parent, size, vaddr, dma);
--*/
- }
- 
- /*
--- 
-2.34.1
+CJ
+
+> 
+> And, even if freeing here, you must NULL-clear mixer->urb, too;
+> otherwise it'll lead to double-free.
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+>>
+>> Fixes: 9e4d5c1be21f ("ALSA: usb-audio: Scarlett Gen 2 mixer interface")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   sound/usb/mixer_scarlett_gen2.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/sound/usb/mixer_scarlett_gen2.c b/sound/usb/mixer_scarlett_gen2.c
+>> index 9d11bb08667e..a439c7f64b2e 100644
+>> --- a/sound/usb/mixer_scarlett_gen2.c
+>> +++ b/sound/usb/mixer_scarlett_gen2.c
+>> @@ -4060,8 +4060,10 @@ static int scarlett2_init_notify(struct usb_mixer_interface *mixer)
+>>   		return -ENOMEM;
+>>   
+>>   	transfer_buffer = kmalloc(private->wMaxPacketSize, GFP_KERNEL);
+>> -	if (!transfer_buffer)
+>> +	if (!transfer_buffer) {
+>> +		usb_free_urb(mixer->urb);
+>>   		return -ENOMEM;
+>> +	}
+>>   
+>>   	usb_fill_int_urb(mixer->urb, dev, pipe,
+>>   			 transfer_buffer, private->wMaxPacketSize,
+>> -- 
+>> 2.34.1
+>>
+> 
 
