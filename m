@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C3CC790D05
+	by mail.lfdr.de (Postfix) with ESMTP id 87641790D06
 	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 19:08:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344740AbjICRIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 13:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53140 "EHLO
+        id S1344848AbjICRIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 13:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344501AbjICRIs (ORCPT
+        with ESMTP id S1344548AbjICRIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 13:08:48 -0400
+        Sun, 3 Sep 2023 13:08:50 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06BB410D
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 10:08:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B6D110
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 10:08:46 -0700 (PDT)
 Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 90A5966071EB;
-        Sun,  3 Sep 2023 18:08:42 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1F26C660729F;
+        Sun,  3 Sep 2023 18:08:44 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693760923;
-        bh=fRLodgl07tao4BtPSyoT/6xlg7PcCsmg2piBCDZKcAU=;
+        s=mail; t=1693760925;
+        bh=+AikQZciT7OSpx2D1soEKFZvpuAqTt4uGz0mu/TZmic=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QtGYq8O0g9C4ZYlxVdjzMixfcWByVNYNQUa22ApGRn5b8LkXa7O/c5kspKXsCBwSw
-         s9dk4e3ZDApNNLRCWfGPAwMivujnr0zAyDEpWJDMj/F5HQOE7RaBphONIASDTtcLq+
-         NpCM+TBVdp/ZSgJ0nxFEb4aRIEd7jikaRApz7yto3wqJsBjpjog7dmNg6EN395RUVS
-         Um1k9oAaosLcAaPbDrV2ZTv8tlDXBhTpOrCX+Xjpcw4TkJTOeeoogJ2x0IOj4DDRUP
-         OBDsuykbiQ+xItdm4k3THhDDQbiHkEp0qKPUU/y9u6aqgJaXqMtdln5WAd/QoG4vLZ
-         n1qj2VjrFXq/Q==
+        b=lKhnpdYjng/k1JWea/NPG2sjHP2rZ9h8RlXm09C/98a0X5pY3Qvj2UOyFCWhM2qWd
+         60Ui5Dzzn/0jfTQaSxPms97xG9KZ0yE7IhEW6uor+W8DfG9C0bI1bcYEW7W2ecq8qA
+         nXLE++xOzvKZc5iH1S6vwCn2lfSVE0ciMjqXjxhpteN9nIeaA0NifvFlzH1P9h27/G
+         EaTVOdfqFHyrn0+KKJbv/nNg+8Ayn9S0cR5VffGgAb2Go7L8x7e/9NFVoZUkPLmUv2
+         YRJB3BFQloXWOaD/py0NIHZ5fJsMMtRCKtkReDI3CIqEvZFHgu6SRzv8LZWImW+DWw
+         6TDDhBhV4xcGw==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@gmail.com>,
         Gerd Hoffmann <kraxel@redhat.com>,
@@ -47,9 +47,9 @@ To:     David Airlie <airlied@gmail.com>,
         Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v16 05/20] drm/v3d: Replace open-coded drm_gem_shmem_free() with drm_gem_object_put()
-Date:   Sun,  3 Sep 2023 20:07:21 +0300
-Message-ID: <20230903170736.513347-6-dmitry.osipenko@collabora.com>
+Subject: [PATCH v16 06/20] drm/virtio: Replace drm_gem_shmem_free() with drm_gem_object_put()
+Date:   Sun,  3 Sep 2023 20:07:22 +0300
+Message-ID: <20230903170736.513347-7-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
 References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
@@ -64,69 +64,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The drm_gem_shmem_free() doesn't put GEM's kref to zero, which becomes
-important with addition of the shrinker support to drm-shmem that will
-use kref=0 in order to prevent taking lock during special GEM-freeing
-time in order to avoid spurious lockdep warning about locking ordering
-vs fs_reclaim code paths.
-
-Replace open-coded drm_gem_shmem_free() with drm_gem_object_put() that
-drops kref to zero before freeing GEM.
+Prepare virtio_gpu_object_create() to addition of memory shrinker support
+by replacing open-coded drm_gem_shmem_free() with drm_gem_object_put() that
+decrements GEM refcount to 0, which becomes important for drm-shmem because
+it will start to use GEM's refcount during the shmem's BO freeing time in
+order to prevent spurious lockdep warning about resv lock ordering vs
+fs_reclaim code paths.
 
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/v3d/v3d_bo.c | 22 ++++++++++++----------
- 1 file changed, 12 insertions(+), 10 deletions(-)
+ drivers/gpu/drm/virtio/virtgpu_object.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/v3d/v3d_bo.c b/drivers/gpu/drm/v3d/v3d_bo.c
-index 8b3229a37c6d..70c1095d6eec 100644
---- a/drivers/gpu/drm/v3d/v3d_bo.c
-+++ b/drivers/gpu/drm/v3d/v3d_bo.c
-@@ -33,16 +33,18 @@ void v3d_free_object(struct drm_gem_object *obj)
- 	struct v3d_dev *v3d = to_v3d_dev(obj->dev);
- 	struct v3d_bo *bo = to_v3d_bo(obj);
- 
--	v3d_mmu_remove_ptes(bo);
-+	if (drm_mm_node_allocated(&bo->node)) {
-+		v3d_mmu_remove_ptes(bo);
- 
--	mutex_lock(&v3d->bo_lock);
--	v3d->bo_stats.num_allocated--;
--	v3d->bo_stats.pages_allocated -= obj->size >> PAGE_SHIFT;
--	mutex_unlock(&v3d->bo_lock);
-+		mutex_lock(&v3d->bo_lock);
-+		v3d->bo_stats.num_allocated--;
-+		v3d->bo_stats.pages_allocated -= obj->size >> PAGE_SHIFT;
-+		mutex_unlock(&v3d->bo_lock);
- 
--	spin_lock(&v3d->mm_lock);
--	drm_mm_remove_node(&bo->node);
--	spin_unlock(&v3d->mm_lock);
-+		spin_lock(&v3d->mm_lock);
-+		drm_mm_remove_node(&bo->node);
-+		spin_unlock(&v3d->mm_lock);
-+	}
- 
- 	/* GPU execution may have dirtied any pages in the BO. */
- 	bo->base.pages_mark_dirty_on_put = true;
-@@ -142,7 +144,7 @@ struct v3d_bo *v3d_bo_create(struct drm_device *dev, struct drm_file *file_priv,
- 	return bo;
- 
- free_obj:
+diff --git a/drivers/gpu/drm/virtio/virtgpu_object.c b/drivers/gpu/drm/virtio/virtgpu_object.c
+index c7e74cf13022..343b13428125 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_object.c
++++ b/drivers/gpu/drm/virtio/virtgpu_object.c
+@@ -244,6 +244,6 @@ int virtio_gpu_object_create(struct virtio_gpu_device *vgdev,
+ err_put_id:
+ 	virtio_gpu_resource_id_put(vgdev, bo->hw_res_handle);
+ err_free_gem:
 -	drm_gem_shmem_free(shmem_obj);
-+	drm_gem_object_put(&shmem_obj->base);
- 	return ERR_PTR(ret);
++	drm_gem_object_put(&bo->base.base);
+ 	return ret;
  }
- 
-@@ -160,7 +162,7 @@ v3d_prime_import_sg_table(struct drm_device *dev,
- 
- 	ret = v3d_bo_create_finish(obj);
- 	if (ret) {
--		drm_gem_shmem_free(&to_v3d_bo(obj)->base);
-+		drm_gem_object_put(obj);
- 		return ERR_PTR(ret);
- 	}
- 
 -- 
 2.41.0
 
