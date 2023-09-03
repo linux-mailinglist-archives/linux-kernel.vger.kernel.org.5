@@ -2,78 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B2CF790B75
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 12:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B7C790B76
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 12:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236348AbjICKZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 06:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
+        id S236418AbjICKfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 06:35:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235800AbjICKZR (ORCPT
+        with ESMTP id S235800AbjICKfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 06:25:17 -0400
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B801F110
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 03:25:11 -0700 (PDT)
-Received: from fsav314.sakura.ne.jp (fsav314.sakura.ne.jp [153.120.85.145])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 383AP7EM066111;
-        Sun, 3 Sep 2023 19:25:07 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav314.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp);
- Sun, 03 Sep 2023 19:25:07 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav314.sakura.ne.jp)
-Received: from [192.168.1.6] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 383AP7NO066107
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Sun, 3 Sep 2023 19:25:07 +0900 (JST)
-        (envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c4ed154e-ac0e-b002-4de3-c09f113a79fb@I-love.SAKURA.ne.jp>
-Date:   Sun, 3 Sep 2023 19:25:06 +0900
+        Sun, 3 Sep 2023 06:35:43 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8B011D;
+        Sun,  3 Sep 2023 03:35:38 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 83833CE0959;
+        Sun,  3 Sep 2023 10:35:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3430FC433C8;
+        Sun,  3 Sep 2023 10:35:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693737334;
+        bh=CYLpYPeGI0w2m5LfccnFlQeF/v6+pPHDIGG7jNrSsZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CI/mn7yWXPnP/4PvuIH1bU7XkTkW8LhN0omDP7SzOy/bjg/rweAwiVpsrZzlgK2j0
+         E8pi7cxgYE1dA3HQHOMa6vDX8yu9wyoRpVkP9y8p1e0VxZ+5edPc49Kqk49SGaS65x
+         CwKiHwtNtegMCCF8tRAyPys9TlqTQK6wvTQrcERIxKzydo6xdmiGWcoUTZsQN4aK+O
+         QrE9k2y0FXC7olLXJnxj7UIU0bgY3x+ZfyjiQjsD5ftzlT+fJYrK4HxRfAWPNbBemA
+         yX78sOv7qA6BkVPa+JQUKWkETB1M/JSUqLK7WMHsaynzF1ZCpflrFUJnR6iyOVqLnT
+         gz2IfX2s7eLXA==
+Date:   Sun, 3 Sep 2023 12:35:30 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Justin Stitt <justinstitt@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH] i2c: pxa: fix clang -Wvoid-pointer-to-enum-cast warning
+Message-ID: <20230903103530.cdg4ehf4fas4mjbf@zenone.zhora.eu>
+References: <20230816-void-drivers-i2c-busses-i2c-pxa-v1-1-931634b931ec@google.com>
+ <ZOkofUzv6t9lXyN+@shikoro>
+ <CAFhGd8qg5aeo34irrOQR7td1rjBVF2q4mDFV=Kbt=EmMUiTB_A@mail.gmail.com>
+ <ZOkyRoKmRTMHLm7b@shikoro>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Content-Language: en-US
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-From:   Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [GIT PULL] tomoyo update for v6.6
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZOkyRoKmRTMHLm7b@shikoro>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 254a8ed6aab39c869d99da97f25035ed15756337:
+Hi,
 
-  tomoyo: remove unused function declaration (2023-08-13 22:07:15 +0900)
+> > There was some discussion [1] wherein it was ultimately decided that
+> > this warning should probably be turned off (contrary to what the title
+> > of the GitHub issue says).
+> 
+> I totally agree with your last comment in [1]. So, I also vote for
+> disabling the warning. Thus, I will reject these patches, but still
+> thank you for looking into such issues and trying to solve them!
 
-are available in the git repository at:
+yes, unfortunately this is the trend and most of the patches
+follow this approach and they are getting merged.
 
-  git://git.osdn.net/gitroot/tomoyo/tomoyo-test1.git tags/tomoyo-pr-20230903
+I don't like pointers storing values and this fix whould be
+completely taken from another side. In any case, given the trend,
+I will not oppose.
 
-for you to fetch changes up to 254a8ed6aab39c869d99da97f25035ed15756337:
-
-  tomoyo: remove unused function declaration (2023-08-13 22:07:15 +0900)
-
-My gpg key's expiration date was extended by 10 years.
-Please fetch from https://I-love.SAKURA.ne.jp/kumaneko-key as needed.
-----------------------------------------------------------------
-Three cleanup patches, no behavior changes.
-
-tomoyo: remove unused function declaration
-tomoyo: refactor deprecated strncpy
-tomoyo: add format attributes to functions
-
- security/tomoyo/common.c |    1 +
- security/tomoyo/common.h |    6 ++----
- security/tomoyo/domain.c |    5 ++---
- 3 files changed, 5 insertions(+), 7 deletions(-)
-
-----------------------------------------------------------------
+Andi
