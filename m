@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CEA1790D02
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 19:08:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6EC790CFF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 19:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344034AbjICRIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 13:08:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
+        id S1344462AbjICRIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 13:08:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233425AbjICRIl (ORCPT
+        with ESMTP id S230313AbjICRIp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 13:08:41 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0CF2106
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 10:08:38 -0700 (PDT)
+        Sun, 3 Sep 2023 13:08:45 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D3AE106
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 10:08:42 -0700 (PDT)
 Received: from workpc.. (109-252-153-31.dynamic.spd-mgts.ru [109.252.153.31])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id F115A66071E6;
-        Sun,  3 Sep 2023 18:08:35 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id BAF8B66071F8;
+        Sun,  3 Sep 2023 18:08:37 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693760917;
-        bh=2QMQsm3VuaBAzd2hf1hxEcuNZ98u5n7d6ZnuVfXHKfQ=;
+        s=mail; t=1693760919;
+        bh=P7R5QSmRFRQLCbs8803cAJaEncR1mYKqji6ZAGoWj5Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RhhkhEvoJCogGkvyvWoHKhm+xTpekckfX0h1BUlFSzo2oC+wM13wVgjzpP0K4SZ43
-         36WLbDwz7rId3hVhXCJ/44Y09/VIgougM+g15V6Ogjh6fVZSfQtcxFco/S3iqTguJK
-         17bE4GUJGx4jvyKfDqk32xVt+DbRAeMA9jX9JFpGvcZTaMmRuqJlDbH1s+UGt+zgzF
-         z7pdyckT6jAm00almLgjV+Vp460nuoE1bdJvqcEJzIYauX8ZOLa9FOlgPYKLEDUq7f
-         +O+MICMUrNd2+KfEsaHKXV/O96oOPGbm2aP4SC3ZI8M7Kpf+MZOYLRCC0HMfDb4Cp9
-         rGJP9xyZtrpAA==
+        b=lkK0I9ocYRZBQDuh09NtCXaRVJrAvForIAafkU4qlgHjYVmitRxj92NQLBrDPFytT
+         Zb/vANNPODwCgMo6qfPDx88sKabt8oZnElTB/IPaf/eI237BJGD//JQ0KbMcBwv8Hj
+         EqDPvDNOZuZXj55e/dL+DFin7el6lBbcaBA4ffDBs9cmw2zHIOVeZp4E/gHzn9SuwA
+         b2C/XT/jXL3w/D3I+MtCuoJ8h1kiP6ZFcBXSn1Oh44aEl+jXgw9vJk3wm2sSBJdiYR
+         XIXgePBE4xCZj4ot6HH2SOQGIIokfRHpC7OhqZV/7FW+eCm8Mb8XTQx2ukr1EU6xbp
+         oKIXaC/bwoDXQ==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     David Airlie <airlied@gmail.com>,
         Gerd Hoffmann <kraxel@redhat.com>,
@@ -47,9 +47,9 @@ To:     David Airlie <airlied@gmail.com>,
         Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>
 Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: [PATCH v16 01/20] drm/shmem-helper: Fix UAF in error path when freeing SGT of imported GEM
-Date:   Sun,  3 Sep 2023 20:07:17 +0300
-Message-ID: <20230903170736.513347-2-dmitry.osipenko@collabora.com>
+Subject: [PATCH v16 02/20] drm/shmem-helper: Use flag for tracking page count bumped by get_pages_sgt()
+Date:   Sun,  3 Sep 2023 20:07:18 +0300
+Message-ID: <20230903170736.513347-3-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
 References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
@@ -64,58 +64,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Freeing drm-shmem GEM right after creating it using
-drm_gem_shmem_prime_import_sg_table() frees SGT of the imported dma-buf
-and then dma-buf frees this SGT second time.
+Use separate flag for tracking page count bumped by shmem->sgt to avoid
+imbalanced page counter during of drm_gem_shmem_free() time. It's fragile
+to assume that populated shmem->pages at a freeing time means that the
+count was bumped by drm_gem_shmem_get_pages_sgt(), using a flag removes
+the ambiguity.
 
-The v3d_prime_import_sg_table() is example of a error code path where
-dma-buf's SGT is freed by drm-shmem and then it's freed second time by
-dma_buf_unmap_attachment() in drm_gem_prime_import_dev().
-
-Add drm-shmem GEM flag telling that this is imported SGT shall not be
-treated as own SGT, fixing the use-after-free bug.
-
-Cc: stable@vger.kernel.org
-Fixes: 2194a63a818d ("drm: Add library for shmem backed GEM objects")
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/gpu/drm/drm_gem_shmem_helper.c | 13 ++++++++++++-
+ drivers/gpu/drm/drm_gem_shmem_helper.c | 11 ++++++++++-
+ drivers/gpu/drm/lima/lima_gem.c        |  1 +
  include/drm/drm_gem_shmem_helper.h     |  7 +++++++
- 2 files changed, 19 insertions(+), 1 deletion(-)
+ 3 files changed, 18 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-index e435f986cd13..6693d4061ca1 100644
+index 6693d4061ca1..848435e08eb2 100644
 --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
 +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-@@ -141,7 +141,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+@@ -152,8 +152,10 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+ 			sg_free_table(shmem->sgt);
+ 			kfree(shmem->sgt);
+ 		}
+-		if (shmem->pages)
++		if (shmem->pages) {
+ 			drm_gem_shmem_put_pages(shmem);
++			drm_WARN_ON(obj->dev, !shmem->got_pages_sgt);
++		}
  
- 	if (obj->import_attach) {
- 		drm_prime_gem_destroy(obj, shmem->sgt);
--	} else {
-+	} else if (!shmem->imported_sgt) {
- 		dma_resv_lock(shmem->base.resv, NULL);
+ 		drm_WARN_ON(obj->dev, shmem->pages_use_count);
  
- 		drm_WARN_ON(obj->dev, shmem->vmap_use_count);
-@@ -765,6 +765,17 @@ drm_gem_shmem_prime_import_sg_table(struct drm_device *dev,
- 
- 	shmem->sgt = sgt;
+@@ -693,6 +695,13 @@ static struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_
+ 	if (ret)
+ 		goto err_free_sgt;
  
 +	/*
-+	 * drm_gem_shmem_prime_import_sg_table() can be called from a
-+	 * driver specific ->import_sg_table() implementations that
-+	 * may fail, in that case drm_gem_shmem_free() will be invoked
-+	 * without assigned drm_gem_object::import_attach.
-+	 *
-+	 * This flag lets drm_gem_shmem_free() differentiate whether
-+	 * SGT belongs to dmabuf and shall not be freed by drm-shmem.
++	 * This flag prevents imbalanced pages_use_count during
++	 * drm_gem_shmem_free(), where pages_use_count=1 only if
++	 * drm_gem_shmem_get_pages_sgt() was used by a driver.
 +	 */
-+	shmem->imported_sgt = true;
++	shmem->got_pages_sgt = true;
 +
- 	drm_dbg_prime(dev, "size = %zu\n", size);
+ 	shmem->sgt = sgt;
  
- 	return &shmem->base;
+ 	return sgt;
+diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+index 4f9736e5f929..67c39b95e30e 100644
+--- a/drivers/gpu/drm/lima/lima_gem.c
++++ b/drivers/gpu/drm/lima/lima_gem.c
+@@ -48,6 +48,7 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+ 
+ 		bo->base.pages = pages;
+ 		bo->base.pages_use_count = 1;
++		bo->base.got_pages_sgt = true;
+ 
+ 		mapping_set_unevictable(mapping);
+ 	}
 diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-index bf0c31aa8fbe..ec70a98a8fe1 100644
+index ec70a98a8fe1..a53c0874b3c4 100644
 --- a/include/drm/drm_gem_shmem_helper.h
 +++ b/include/drm/drm_gem_shmem_helper.h
 @@ -73,6 +73,13 @@ struct drm_gem_shmem_object {
@@ -123,14 +128,14 @@ index bf0c31aa8fbe..ec70a98a8fe1 100644
  	unsigned int vmap_use_count;
  
 +	/**
-+	 * @imported_sgt:
++	 * @got_pages_sgt:
 +	 *
-+	 * True if SG table belongs to imported dma-buf.
++	 * True if SG table was retrieved using drm_gem_shmem_get_pages_sgt()
 +	 */
-+	bool imported_sgt : 1;
++	bool got_pages_sgt : 1;
 +
  	/**
- 	 * @pages_mark_dirty_on_put:
+ 	 * @imported_sgt:
  	 *
 -- 
 2.41.0
