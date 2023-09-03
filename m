@@ -2,120 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE06790BDC
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 14:19:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05488790BDF
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 14:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237047AbjICMTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 08:19:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33974 "EHLO
+        id S237061AbjICMW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 08:22:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229943AbjICMTf (ORCPT
+        with ESMTP id S229943AbjICMW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 08:19:35 -0400
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08AF116
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 05:19:30 -0700 (PDT)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5924093a9b2so5703777b3.2
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 05:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693743570; x=1694348370; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QL9imMV80v+Zfe3OIs9ZVWD3rABHoxSOtlkMQoYDT7M=;
-        b=S5ah337HP2f+KpBu/FOVyRpBxP6NckZp9HYnEMFR/wPDpjuhbT9tEWQfqc2JMzGrhA
-         r2ZTmv7/rLkSpKrcb5zXuajEc8a2/vCCLnYA3oTweCcAGz4rqOCwibgNmPLYi2KHx5Kn
-         59DqFAnxTfIyTzFV/K5JFpxZeKJzpSs3/8v2YZ4gZGf+KVwEgrvxcp4dzRnGn4/ifksS
-         dv6OH669aE19ktNTN7EEr1Ot8GbgXSQ5B4B+2DDBPdGaCKpwdl8bYQMSdFzbuwYxWg5c
-         Vv+CuBoe3IGVceojXP6e8uAe/gEFUKKZU2/Cr5DyA8w5dWw3jzFvrb4CZSv+Er4kmFoV
-         F5MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693743570; x=1694348370;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QL9imMV80v+Zfe3OIs9ZVWD3rABHoxSOtlkMQoYDT7M=;
-        b=NF3MTp3E5zgdGrkAZcHKTNM6HWOd204wWCic9JZTLKouE6m5hTWSkGfnPh7tMoMDa8
-         2TBAB5f1IKHjYR60dsKJwarh1U4WoZYPOV4MeIz7heU54Um7MYvNmngYsYBa6DF6dDay
-         rNlOgn2wCp5/KHbVrFy/QBIfLGjnl9NmG7CnuNIAYE+iXLEITLRJ2XfzQUU1PI2JOWa4
-         KNzDdM3C4hYdJNng/EICchB3iF0StG9jsEL0b9ui/PwRxgxV7ZM3mYFIShvmKefsX3Mt
-         uhSvsoXmNiggqURraROtk7GEkRHVIKS5XgC0ZPvolx0eD5cke55Als6W9XS/xxpXqKkW
-         67uQ==
-X-Gm-Message-State: AOJu0YxbhJSxAMcO/DsBBgdzpQ19wbSD8ymHtNOAdK2gHOlsq6VCFoME
-        Y1TQ1Pn+YwalWiVEr06bYJDkLmMamYo/z3d0EN7zckz8cag=
-X-Google-Smtp-Source: AGHT+IFwZ0wc9OOWav73KozOKIjxmA0YdMUVUttZhT+0UhydDhM/JgHCwiSKycmUdYrAx1pcGyT3bTHSNZ4DRgoKzgc=
-X-Received: by 2002:a05:690c:d0f:b0:599:8bd:5bdf with SMTP id
- cn15-20020a05690c0d0f00b0059908bd5bdfmr6108373ywb.50.1693743569290; Sun, 03
- Sep 2023 05:19:29 -0700 (PDT)
+        Sun, 3 Sep 2023 08:22:27 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F858126;
+        Sun,  3 Sep 2023 05:22:22 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 383CKBDO022398;
+        Sun, 3 Sep 2023 12:22:16 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=k0CKR7RTDRnQ7iIZKSJscEYlJcwa01uVpg94z0vnRBI=;
+ b=CmTVqNnp300JdXOZKKVokxmf7EpgbV1Fs7NU4cFUXGmzzr4jJPez+r99h/4WicD9Iq/x
+ bs5Yu0E3qhrl9GpuAdCEt2/IfxDqrtCjHl8yfMsL1r32ndcjrA3R5N8N5odk8cbcwOWs
+ ttmuv/IWX4Q9vvNgwCRdq4+/jBILEqHk902s/xAPYd+mMITQjtK8IfxmunJUoTju0XGE
+ w6uxpCrHVxwaEogANnaJnlB3SUFTim2jX8P1s0qtyN3iWu2QKMzshCooxzS1sPUkoEXM
+ 70zoKAafxkvPZ6Y7UMGZxzzFvLCBkIO7Zw5VUV30ClagSedTkZer2Lifq3SdbqkhZZoX rw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suw50sn7j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 03 Sep 2023 12:22:15 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 383CMEvF008699
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 3 Sep 2023 12:22:14 GMT
+Received: from [10.216.14.155] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 3 Sep
+ 2023 05:22:10 -0700
+Message-ID: <d7b7f611-e15b-e7a0-ce99-bd6c90027853@quicinc.com>
+Date:   Sun, 3 Sep 2023 17:52:07 +0530
 MIME-Version: 1.0
-From:   Kenta Sato <tosainu.maple@gmail.com>
-Date:   Sun, 3 Sep 2023 21:19:13 +0900
-Message-ID: <CAF1eZtsBzGb_UxOqZpNiEsk8Uk7DkqPh5AnYRRNc_kkr-tFasQ@mail.gmail.com>
-Subject: usb: dwc3: some USB devices not working after 6.4.8
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH net-next 1/2] net: qrtr: Prevent stale ports from sending
+Content-Language: en-US
+To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
+        <quic_clew@quicinc.com>
+CC:     <mani@kernel.org>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <quic_viswanat@quicinc.com>
+References: <1693563621-1920-1-git-send-email-quic_srichara@quicinc.com>
+ <1693563621-1920-2-git-send-email-quic_srichara@quicinc.com>
+ <20230901141128.GO818859@hu-bjorande-lv.qualcomm.com>
+From:   Sricharan Ramabadhran <quic_srichara@quicinc.com>
+In-Reply-To: <20230901141128.GO818859@hu-bjorande-lv.qualcomm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: K1vR0GmeFoPG5HBs8kCrMuVCjWkWWs7L
+X-Proofpoint-ORIG-GUID: K1vR0GmeFoPG5HBs8kCrMuVCjWkWWs7L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-03_09,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=999 clxscore=1015
+ spamscore=0 impostorscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309030115
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Bjorn,
 
-I am using the FriendlyElec NanoPi R4S board.
-When I update the kernel from 6.4.7 to 6.4.11, 6.4.13, and 6.5.1, it
-doesn't recognize some USB devices.
+On 9/1/2023 7:41 PM, Bjorn Andersson wrote:
+> On Fri, Sep 01, 2023 at 03:50:20PM +0530, Sricharan Ramabadhran wrote:
+>> From: Vignesh Viswanathan <quic_viswanat@quicinc.com>
+>>
+>> If qrtr and some other process try to bind to the QMI Control port at
+> 
+> It's unclear to me which "qrtr" is being referred here, could it be
+> "qrtr-ns", if so could we express that as "the name server".
+> 
 
-The board has two USB 3.0 ports. I connected 1) BUFFALO USB Flash Disk
-(high-speed) and 2) NETGEAR A6210 (SuperSpeed) to each port.
-1) is often not recognized. On the other hand, 2) was working while I
-was testing.
-Regardless of whether a USB device is connected, I could see the below
-message on dmesg:
+  yes, its name-space server. Will put it explicitly.
 
-[    0.740993] phy phy-ff7c0000.phy.8: phy poweron failed --> -110
-[    0.741585] dwc3 fe800000.usb: error -ETIMEDOUT: failed to initialize core
-[    0.742334] dwc3: probe of fe800000.usb failed with error -110
-[    0.751635] rockchip-usb2phy ff770000.syscon:usb2phy@e460:
-Requested PHY is disabled
+> We only allow one bind on the qrtr control port, so could it be that
+> "QMI Control port" refer to the control socket in the userspace QC[CS]I
+> libraries, if so that's just any random socket sending out a control
+> message.
+> 
+> Can we please rephrase this problem description to make the chain of
+> events clear?
+> 
 
-Is there any idea on this?
+   In this case we are talking about a client connecting/sending to QRTR
+   socket and the 'NS' doing a qrtr_bind during its init. There is
+   possibility that a client tries to send to the 'NS' before  processing
+   the ENETRESET. In the case of a NEW_SERVER control message will
+   reach the 'NS' and be forwarded to the firmware. The client will then
+   process the ENETRESET closing and re-opening the socket which triggers
+   a DEL_SERVER and then a second NEW_SERVER. This scenario will give an
+   unnecessary disconnect to the clients on the firmware who were able to
+   initialize on the first NEW_SERVER.
 
-The cause seems to be related to this commit. I tried reverting this
-change and the issue seemed to be solved.
+   Also about the patch #2, i guess QRTR_BYE/DEL_PROC should also be
+   broadcasted, right now we are only listening on DEL_PROC sent by
+   legacy kernels like SDX modems. Without that modem SSR feature is
+   broken on IPQ + SDX targets.
 
-From 317d6e4c12b46bde61248ea4ab5e19f68cbd1c57 Mon Sep 17 00:00:00 2001
-From: Jisheng Zhang <jszhang@kernel.org>
-Date: Wed, 28 Jun 2023 00:20:18 +0800
-Subject: usb: dwc3: don't reset device side if dwc3 was configured as
- host-only
+>> the same time, NEW_SERVER might come before ENETRESET is given to the
+>> socket. This might cause a socket down/up when ENETRESET is received as
+>> per the protocol and this triggers a DEL_SERVER and a second NEW_SERVER.
+>>
+>> In order to prevent such messages from stale sockets being sent, check
+>> if ENETRESET has been set on the socket and drop the packet.
+>>
+>> Signed-off-by: Chris Lew <quic_clew@quicinc.com>
+>> Signed-off-by: Vignesh Viswanathan <quic_viswanat@quicinc.com>
+> 
+> The first person to certify the patch's origin, must be the author, and
+> when you pick the patch to send it you need to add your s-o-b.
+> 
+> So please fix the author, and add your s-o-b.
+> 
 
-commit e835c0a4e23c38531dcee5ef77e8d1cf462658c7 upstream.
+  ok sure, will fix.
 
-Commit c4a5153e87fd ("usb: dwc3: core: Power-off core/PHYs on
-system_suspend in host mode") replaces check for HOST only dr_mode with
-current_dr_role. But during booting, the current_dr_role isn't
-initialized, thus the device side reset is always issued even if dwc3
-was configured as host-only. What's more, on some platforms with host
-only dwc3, aways issuing device side reset by accessing device register
-block can cause kernel panic.
+> 
+> Let's add Chris to the recipients list as well.
+> 
 
-Fixes: c4a5153e87fd ("usb: dwc3: core: Power-off core/PHYs on
-system_suspend in host mode")
-Cc: stable <stable@kernel.org>
-Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/20230627162018.739-1-jszhang@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/usb/dwc3/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+  ok.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=v6.4.8&id=317d6e4c12b46bde61248ea4ab5e19f68cbd1c57
+>> ---
+>>   net/qrtr/af_qrtr.c | 10 ++++++++++
+>>   1 file changed, 10 insertions(+)
+>>
+>> diff --git a/net/qrtr/af_qrtr.c b/net/qrtr/af_qrtr.c
+>> index 41ece61..26197a0 100644
+>> --- a/net/qrtr/af_qrtr.c
+>> +++ b/net/qrtr/af_qrtr.c
+>> @@ -851,6 +851,7 @@ static int qrtr_local_enqueue(struct qrtr_node *node, struct sk_buff *skb,
+>>   {
+>>   	struct qrtr_sock *ipc;
+>>   	struct qrtr_cb *cb;
+>> +	struct sock *sk = skb->sk;
+>>   
+>>   	ipc = qrtr_port_lookup(to->sq_port);
+>>   	if (!ipc || &ipc->sk == skb->sk) { /* do not send to self */
+>> @@ -860,6 +861,15 @@ static int qrtr_local_enqueue(struct qrtr_node *node, struct sk_buff *skb,
+>>   		return -ENODEV;
+>>   	}
+>>   
+>> +	/* Keep resetting NETRESET until socket is closed */
+>> +	if (sk && sk->sk_err == ENETRESET) {
+>> +		sk->sk_err = ENETRESET;
+> 
+> Isn't this line unnecessary?
+> 
 
-I will be happy to test any patch or provide any extra logs if needed.
-Thank you!
+  yup, will be removed in V2.
 
-Kenta Sato
+Regards,
+  Sricharan
