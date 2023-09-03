@@ -2,42 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CDB790CEF
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 18:48:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56978790CFC
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 19:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245705AbjICQsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 12:48:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35174 "EHLO
+        id S1343788AbjICRCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 13:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231963AbjICQsq (ORCPT
+        with ESMTP id S1343685AbjICRCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 12:48:46 -0400
-Received: from relmlie6.idc.renesas.com (relmlor2.renesas.com [210.160.252.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BA07294
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 09:48:42 -0700 (PDT)
-X-IronPort-AV: E=Sophos;i="6.02,224,1688396400"; 
-   d="scan'208";a="178560459"
-Received: from unknown (HELO relmlir6.idc.renesas.com) ([10.200.68.152])
-  by relmlie6.idc.renesas.com with ESMTP; 04 Sep 2023 01:48:42 +0900
-Received: from localhost.localdomain (unknown [10.226.92.30])
-        by relmlir6.idc.renesas.com (Postfix) with ESMTP id 89471402309A;
-        Mon,  4 Sep 2023 01:48:40 +0900 (JST)
-From:   Biju Das <biju.das.jz@bp.renesas.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Biju Das <biju.das.jz@bp.renesas.com>,
-        linux-kernel@vger.kernel.org, Biju Das <biju.das.au@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v3 2/2] regulator: pv880x0: Simplify probe()
-Date:   Sun,  3 Sep 2023 17:48:32 +0100
-Message-Id: <20230903164832.83077-3-biju.das.jz@bp.renesas.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230903164832.83077-1-biju.das.jz@bp.renesas.com>
-References: <20230903164832.83077-1-biju.das.jz@bp.renesas.com>
+        Sun, 3 Sep 2023 13:02:42 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64853106
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 10:02:37 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-44d38d91885so253217137.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 10:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693760556; x=1694365356; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ChF7THDjn6nGJerOJ4K0rQrL8YxuU1sfo/4nzZ83Szw=;
+        b=ssY9YCybjEOpEkxvjvrWW6Ej0D132JdC7acxvJXKoay6WGB5AkfIctL7Jq2UxzhB9o
+         e4f+LQWLnp7RsMDqVFl7fn1FX6PpN3+pIPF87w2BPZ4Gli2Jxknefk1I+mWl0Z7cPiRu
+         r0t2K452dxeR5eCHnH48qhCHZ6sSaZQUZLQkNkQdmzcZR6e0e4GIJKwi6FwvNcc0eSNK
+         s2qiUqqBlCbxtBWKfFKd/9l+vZyq85NFGDPKsZmzt6CJDLPH+fuUWrexYZWkWD838Cz+
+         Netv+F4Kz2uRlDFKaK1u0XdJUqZlgoszWjRahpxPlz6AtLkKcrXXYfOVOD/yeEetJ4vT
+         U0OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693760556; x=1694365356;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ChF7THDjn6nGJerOJ4K0rQrL8YxuU1sfo/4nzZ83Szw=;
+        b=O11398y7rCn2NdR2trKixiTD6QxrIvnSZJhpxTmsVz4dAsy03IthMUeW7bU7t13eq9
+         Bqbtfpjyfal7L7K2gHBZ9lyFkrzAm+Em3WCoK+AN5T+S1CDclx1cF8EmidhSDtbiwBRf
+         bEZQ1Ra2J2oRUqg+ukti/A10iitVoSYeuJGWteF1A+xU+qIatSSGnC0c9idA8jS7zeBO
+         c/bpQbr5N7Y0GcQeuA3vcEKqWnLRAqFP6GTvDwUyvrjtToKm6VRLd2aNwJfFCqmr1PeF
+         1qboo6ZHhUvSoMuIZUZfHbh3rsxqghzapqxmhD8VUDU9zDdJXVIkg+lUK5a19hKqrE4o
+         glmQ==
+X-Gm-Message-State: AOJu0Yy9kowACRZypBo7tK1XP2gppIMFgo+ucpXfMJCZpE40yvAdgkN/
+        RLPZJWSRvNRV8Cukwfsc4H8d94PDXepCd9RoVM0LqA==
+X-Google-Smtp-Source: AGHT+IEZlUODYcfxuB5DATMcYGe4rC7+/g+41ydAjEzwpiDUTh/zY/v3GObLUY/j9wJey+nCZLQpZAu91JPo0cwy8s0=
+X-Received: by 2002:a67:f5d8:0:b0:44d:63a3:4be4 with SMTP id
+ t24-20020a67f5d8000000b0044d63a34be4mr7751365vso.29.1693760556472; Sun, 03
+ Sep 2023 10:02:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <ceeda269bceee1c805f148bcbc628abc9d42601a.1693721348.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <ceeda269bceee1c805f148bcbc628abc9d42601a.1693721348.git.christophe.jaillet@wanadoo.fr>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Sun, 3 Sep 2023 19:02:25 +0200
+Message-ID: <CAMRc=Meq+1z50=tXXt3MFAexRCmfSQ5rs6hT7311KRGO=q2RHQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: tb10x: Fix an error handling path in tb10x_gpio_probe()
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linus.walleij@linaro.org, andy@kernel.org, galak@codeaurora.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,127 +69,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace pv88080_types->pv88080_compatible_regmap in OF/ID tables and
-simplify the probe() by replacing of_match_node() and ID lookup for
-retrieving match data by i2c_get_match_data(). After this there is
-no user of enum pv88080_types. So drop it.
+On Sun, Sep 3, 2023 at 8:13=E2=80=AFAM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> If an error occurs after a successful irq_domain_add_linear() call, it
+> should be undone by a corresponding irq_domain_remove(), as already done
+> in the remove function.
+>
+> Fixes: c6ce2b6bffe5 ("gpio: add TB10x GPIO driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  drivers/gpio/gpio-tb10x.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-tb10x.c b/drivers/gpio/gpio-tb10x.c
+> index 78f8790168ae..f96d260a4a19 100644
+> --- a/drivers/gpio/gpio-tb10x.c
+> +++ b/drivers/gpio/gpio-tb10x.c
+> @@ -195,7 +195,7 @@ static int tb10x_gpio_probe(struct platform_device *p=
+dev)
+>                                 handle_edge_irq, IRQ_NOREQUEST, IRQ_NOPRO=
+BE,
+>                                 IRQ_GC_INIT_MASK_CACHE);
+>                 if (ret)
+> -                       return ret;
+> +                       goto err_remove_domain;
+>
+>                 gc =3D tb10x_gpio->domain->gc->gc[0];
+>                 gc->reg_base                         =3D tb10x_gpio->base=
+;
+> @@ -209,6 +209,10 @@ static int tb10x_gpio_probe(struct platform_device *=
+pdev)
+>         }
+>
+>         return 0;
+> +
+> +err_remove_domain:
+> +       irq_domain_remove(tb10x_gpio->domain);
+> +       return ret;
+>  }
+>
+>  static int tb10x_gpio_remove(struct platform_device *pdev)
+> --
+> 2.34.1
+>
 
-While at it, move OF table near to the user.
+That's not enough, you also need to dispose of all remaining mappings.
+Please see drivers/gpio/gpiolib.c and how it handles the gpio_irq_chip
+domain.
 
-Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
----
-v2->v3:
- * Moved OF tables close to the user as patch#1 restored OF table
-   position.
- * Dropped extra space from OF table entry.
-v1->v2:
- * Moved OF/ID tables close to the user
- * Removed trailing comma in the terminator entry for OF/ID tables.
----
- drivers/regulator/pv88080-regulator.c | 51 ++++++++-------------------
- 1 file changed, 14 insertions(+), 37 deletions(-)
-
-diff --git a/drivers/regulator/pv88080-regulator.c b/drivers/regulator/pv88080-regulator.c
-index 1b2a8385e2e8..9fe539a34786 100644
---- a/drivers/regulator/pv88080-regulator.c
-+++ b/drivers/regulator/pv88080-regulator.c
-@@ -29,11 +29,6 @@ enum {
- 	PV88080_ID_HVBUCK,
- };
- 
--enum pv88080_types {
--	TYPE_PV88080_AA,
--	TYPE_PV88080_BA,
--};
--
- struct pv88080_regulator {
- 	struct regulator_desc desc;
- 	unsigned int mode_reg;
-@@ -197,14 +192,6 @@ static const struct pv88080_compatible_regmap pv88080_ba_regs = {
- 	.hvbuck_vsel_mask		  = PV88080_VHVBUCK_MASK,
- };
- 
--static const struct of_device_id pv88080_dt_ids[] = {
--	{ .compatible = "pvs,pv88080",    .data = (void *)TYPE_PV88080_AA },
--	{ .compatible = "pvs,pv88080-aa", .data = (void *)TYPE_PV88080_AA },
--	{ .compatible = "pvs,pv88080-ba", .data = (void *)TYPE_PV88080_BA },
--	{}
--};
--MODULE_DEVICE_TABLE(of, pv88080_dt_ids);
--
- static unsigned int pv88080_buck_get_mode(struct regulator_dev *rdev)
- {
- 	struct pv88080_regulator *info = rdev_get_drvdata(rdev);
-@@ -375,11 +362,9 @@ static irqreturn_t pv88080_irq_handler(int irq, void *data)
-  */
- static int pv88080_i2c_probe(struct i2c_client *i2c)
- {
--	const struct i2c_device_id *id = i2c_client_get_device_id(i2c);
- 	struct regulator_init_data *init_data = dev_get_platdata(&i2c->dev);
- 	struct pv88080 *chip;
- 	const struct pv88080_compatible_regmap *regmap_config;
--	const struct of_device_id *match;
- 	struct regulator_config config = { };
- 	int i, error, ret;
- 	unsigned int conf2, conf5;
-@@ -397,16 +382,9 @@ static int pv88080_i2c_probe(struct i2c_client *i2c)
- 		return error;
- 	}
- 
--	if (i2c->dev.of_node) {
--		match = of_match_node(pv88080_dt_ids, i2c->dev.of_node);
--		if (!match) {
--			dev_err(chip->dev, "Failed to get of_match_node\n");
--			return -EINVAL;
--		}
--		chip->type = (unsigned long)match->data;
--	} else {
--		chip->type = id->driver_data;
--	}
-+	chip->regmap_config = i2c_get_match_data(i2c);
-+	if (!chip->regmap_config)
-+		return -ENODEV;
- 
- 	i2c_set_clientdata(i2c, chip);
- 
-@@ -451,15 +429,6 @@ static int pv88080_i2c_probe(struct i2c_client *i2c)
- 		dev_warn(chip->dev, "No IRQ configured\n");
- 	}
- 
--	switch (chip->type) {
--	case TYPE_PV88080_AA:
--		chip->regmap_config = &pv88080_aa_regs;
--		break;
--	case TYPE_PV88080_BA:
--		chip->regmap_config = &pv88080_ba_regs;
--		break;
--	}
--
- 	regmap_config = chip->regmap_config;
- 	config.dev = chip->dev;
- 	config.regmap = chip->regmap;
-@@ -545,10 +514,18 @@ static int pv88080_i2c_probe(struct i2c_client *i2c)
- 	return 0;
- }
- 
-+static const struct of_device_id pv88080_dt_ids[] = {
-+	{ .compatible = "pvs,pv88080",    .data = &pv88080_aa_regs },
-+	{ .compatible = "pvs,pv88080-aa", .data = &pv88080_aa_regs },
-+	{ .compatible = "pvs,pv88080-ba", .data = &pv88080_ba_regs },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, pv88080_dt_ids);
-+
- static const struct i2c_device_id pv88080_i2c_id[] = {
--	{ "pv88080",    TYPE_PV88080_AA },
--	{ "pv88080-aa", TYPE_PV88080_AA },
--	{ "pv88080-ba", TYPE_PV88080_BA },
-+	{ "pv88080",    (kernel_ulong_t)&pv88080_aa_regs },
-+	{ "pv88080-aa", (kernel_ulong_t)&pv88080_aa_regs },
-+	{ "pv88080-ba", (kernel_ulong_t)&pv88080_ba_regs },
- 	{}
- };
- MODULE_DEVICE_TABLE(i2c, pv88080_i2c_id);
--- 
-2.25.1
-
+Bartosz
