@@ -2,56 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A151790C5B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 16:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F72C790C67
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 16:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbjICOP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 10:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
+        id S236004AbjICOYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 10:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229545AbjICOP2 (ORCPT
+        with ESMTP id S229545AbjICOX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 10:15:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E7BF3;
-        Sun,  3 Sep 2023 07:15:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Sun, 3 Sep 2023 10:23:59 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28B67FA;
+        Sun,  3 Sep 2023 07:23:56 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 108FA60B78;
-        Sun,  3 Sep 2023 14:15:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11E50C433C7;
-        Sun,  3 Sep 2023 14:15:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693750523;
-        bh=3nZq1Ove0wV3ykT1sVJXUlFB1AvqBRnX4RP6rs0xc4k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tEz2weD72worS/M8SYQYbBJCDkfZrREEpt67vzuoa13bU7fT0e74NZaa/++wvhaO+
-         Ij9OdWJPgVsSJaHfMmcwSqGlx7+/z4UMGup3LEhGb6SUBBuyWpaJu3x7GjugjT1KPt
-         /CnMLe4xA1zVYzUcaCSykh/KqlLFlkjGxh2BhvQ8eOhKd5kyiIdg0igEIgNMySZuoP
-         2nlBnnwlTykMnnsohP7OFZ3u6/Gz7VjVoVvdZVe5Cz2iomBlUKtNU22lzTs8lCLyj2
-         iRnnqhszacXctgM5qS0iYrfBvq0olRxUwFLw6HjKHHqgipI2kxPiMp2zglORz1reVk
-         5RQdfdTkfTymQ==
-Date:   Sun, 3 Sep 2023 16:15:19 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Tommy Huang <tommy_huang@aspeedtech.com>
-Cc:     brendan.higgins@linux.dev, p.zabel@pengutronix.de,
-        linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
-        benh@kernel.crashing.org, joel@jms.id.au, andrew@aj.id.au,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        BMC-SW@aspeedtech.com, Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-Subject: Re: [PATCH] drivers:i2c:add controller reset when the timeout
- occurred
-Message-ID: <20230903141519.ha6aakgkrq6ohy5s@zenone.zhora.eu>
-References: <20230814111534.2771900-1-tommy_huang@aspeedtech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814111534.2771900-1-tommy_huang@aspeedtech.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        by smtp-out1.suse.de (Postfix) with ESMTPS id CCA1E216DA;
+        Sun,  3 Sep 2023 14:23:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693751034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kXC+3FqTHA/mLgbq2RC3Hciy9DRGxqa82vRW3oFylp0=;
+        b=L4nm2hkUtYLnahhlzqi7c3QjOLM1gtjpY/Ilb/oP/21ePdfXlHLtBiPJbfMFSmJPQHbL/S
+        X1XNK/1FfTXKXzsdjC3sOkcor6z+3+F05SO/j3Sbc1MUdrBEL/R/ERMG4U12NsTOyN7Ujo
+        cy2ZKODj+oYhmVc2oGMdjKEJtWkJzGM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693751034;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kXC+3FqTHA/mLgbq2RC3Hciy9DRGxqa82vRW3oFylp0=;
+        b=sNgjXc1hkIBDJQXwnhjfFDBR7ihql78Wt1v+14Lq/WKOPUVATyfqNxkU1r/yO2LrwOfG6/
+        60PQL6wk2mWtD7Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A244E13583;
+        Sun,  3 Sep 2023 14:23:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id dXG0JvqW9GRIcgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sun, 03 Sep 2023 14:23:54 +0000
+Date:   Sun, 03 Sep 2023 16:23:54 +0200
+Message-ID: <871qffmj2d.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: usb-audio: Fix a potential memory leak in scarlett2_init_notify()
+In-Reply-To: <fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr>
+References: <fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,70 +69,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tommy,
+On Sun, 03 Sep 2023 15:06:00 +0200,
+Christophe JAILLET wrote:
+> 
+> If usb_alloc_coherent() or usb_urb_ep_type_check() fail, we should release
+> the resources previously allocated.
 
-Please fix the title of the patch from:
+Those are freed in the caller side, start_input_streams() instead.
 
-   drivers:i2c:add controller reset when the timeout occurred
 
-to something like:
+thanks,
 
-   i2c: aspeed: Reset the controller when timeout occurs
+Takashi
 
-Note:
-
- - leave a space after the ':'
- - start with a capital letter after the last ':'
-
-On Mon, Aug 14, 2023 at 07:15:34PM +0800, Tommy Huang wrote:
-> 1.Call i2c controller reset when the i2c transfer timeout occurred.
-> The rest of interrupts and device should be reset avoid unperdicted
-> controller behavior occurred.
-
-Please remove the '1.' and please rewrite this sentence in order
-to be grammatically correct, something like:
-
-"Call the i2c controller reset when an i2c transfer timeout
-occurs. The remaining interrupts and the device should be reset
-to avoid unpredictable controller behavior."
-
-> Signed-off-by: Tommy Huang <tommy_huang@aspeedtech.com>
-
-Is this a fix? If so please add:
-
-Fixes: 2e57b7cebb98 ("i2c: aspeed: Add multi-master use case support")
-Cc: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-Cc: <stable@vger.kernel.org> # v5.1+
-
-Jae Hyun is the author of the line you are changing therefore he
-needs to be Cc'ed
-
-[...]
-
->  		/*
->  		 * If timed out and bus is still busy in a multi master
-> -		 * environment, attempt recovery at here.
-> +		 * environment, attempt recovery at here. Even the bus is
-> +		 * idle, we still need reset i2c controller avoid rest of
-> +		 * interrupts.
-
-Please fix the grammar here, as well
-
-   In a multi-master setup, if a timeout occurs, attempt
-   recovery.  But if the bus is idle, we still need to reset the
-   i2c controller to clear the remaining interrupts.
-
-We take this chance to improve the previous comment, as well.
-
->  		 */
->  		if (bus->multi_master &&
->  		    (readl(bus->base + ASPEED_I2C_CMD_REG) &
->  		     ASPEED_I2CD_BUS_BUSY_STS))
->  			aspeed_i2c_recover_bus(bus);
-> +		else
-> +			aspeed_i2c_reset(bus);
-
-I'd like also someone from Jae Hyun, Brendan, Benjamin or Joel to
-take a look here, as well. Thanks!
-
-Andi
+> 
+> Fixes: ff49d1df79ae ("ALSA: usb-audio: USB MIDI 2.0 UMP support")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>  sound/usb/midi2.c | 17 ++++++++++++++---
+>  1 file changed, 14 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/usb/midi2.c b/sound/usb/midi2.c
+> index a27e244650c8..4109c82adff6 100644
+> --- a/sound/usb/midi2.c
+> +++ b/sound/usb/midi2.c
+> @@ -302,7 +302,8 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
+>  		ctx->urb = usb_alloc_urb(0, GFP_KERNEL);
+>  		if (!ctx->urb) {
+>  			dev_err(&ep->dev->dev, "URB alloc failed\n");
+> -			return -ENOMEM;
+> +			err = -ENOMEM;
+> +			goto err_free_all;
+>  		}
+>  		ctx->ep = ep;
+>  		buffer = usb_alloc_coherent(ep->dev, len, GFP_KERNEL,
+> @@ -310,7 +311,8 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
+>  		if (!buffer) {
+>  			dev_err(&ep->dev->dev,
+>  				"URB buffer alloc failed (size %d)\n", len);
+> -			return -ENOMEM;
+> +			err = -ENOMEM;
+> +			goto err_free_cur_urb;
+>  		}
+>  		if (ep->interval)
+>  			usb_fill_int_urb(ctx->urb, ep->dev, ep->pipe,
+> @@ -322,13 +324,22 @@ static int alloc_midi_urbs(struct snd_usb_midi2_endpoint *ep)
+>  		if (err < 0) {
+>  			dev_err(&ep->dev->dev, "invalid MIDI EP %x\n",
+>  				endpoint);
+> -			return err;
+> +			goto err_free_cur_dma;
+>  		}
+>  		ctx->urb->transfer_flags = URB_NO_TRANSFER_DMA_MAP;
+>  		ep->num_urbs++;
+>  	}
+>  	ep->urb_free = ep->urb_free_mask = GENMASK(ep->num_urbs - 1, 0);
+>  	return 0;
+> +
+> +err_free_cur_dma:
+> +	usb_free_coherent(ep->dev, len, buffer, ctx->urb->transfer_dma);
+> +err_free_cur_urb:
+> +	usb_free_urb(ctx->urb);
+> +	ctx->urb = NULL;
+> +err_free_all:
+> +	free_midi_urbs(ep);
+> +	return err;
+>  }
+>  
+>  static struct snd_usb_midi2_endpoint *
+> -- 
+> 2.34.1
+> 
