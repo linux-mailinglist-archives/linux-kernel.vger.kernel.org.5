@@ -2,18 +2,18 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE3EF790C9B
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:05:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A944F790C9A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 17:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242716AbjICPF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 11:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        id S242540AbjICPFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 11:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242312AbjICPFv (ORCPT
+        with ESMTP id S242177AbjICPFu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 11:05:51 -0400
+        Sun, 3 Sep 2023 11:05:50 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C61A123
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C5C111D
         for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 08:05:46 -0700 (PDT)
 From:   John Ogness <john.ogness@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
@@ -22,30 +22,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JaMdritGFet8uawJDIc28YHdKpgV0HwPxUjXjqSqxjk=;
-        b=qGqIpfR6arWvsuB3U+5kXdXdGE8lNBB9rUK1eVUx0T93ZOz3YqAFwKUyEuE+OQbbmb+DF8
-        jI+lxU6vqtuQMMgpq401KV+sUonCm8sC83h3sCAWUeQTu8w3VRwJrFZm+sbW3xZY73VDDo
-        kJEPk066KYPK4gDAk4EIyPwNO4BERSkCAYzn6zQzKtNs06F46QRyXi5uEx1DyD3Nnr6uZO
-        xLzeflBz0Lp6FAV4m5oLxkoqyxocVKp0PsD472YcQYFZVjwBt0RSWNTaTGZ0mDYjkQ4i+b
-        K4z9fxC8f6wBp0lKPK0lRRrSfVTWloDiviv+eFyUTLPoMErha8ZxMlrNWYmCEg==
+        bh=icQ9wplwXFGcBRvKUju0jj68i6Bql/ieQaV0Jbrj9Aw=;
+        b=rDz/ZyLG5cuZRgBnFfp4ok3+sLA7tHvsEO3++amHYi1ZkPllPJeS6F7o9lZ344ihr8bGq9
+        +Uzg+iTGx0bAyIAqNWWnOjNl1yvLn1jMjg8ac37+zlJ1d3IT2SXVJtuxeJOF2Jxy/rbGCr
+        qVpRXVo55VKE5++5CDFiX6jlLYBqG0CSMm3exp72kgTINsLwje8n/YL/NllfGn5I38xLwj
+        Dk6969AdXCdFCcYsvhua7EI0hZHMakVrNOQTkauzzrVd+bj1/NMhC+Agss7ONvC4D6wzNc
+        S7NEe5/SgM5CkZLK5kQllkfCpKvJNKsri5C5PJqhN/UVfzyL7zNDPHzpePCofg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1693753544;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=JaMdritGFet8uawJDIc28YHdKpgV0HwPxUjXjqSqxjk=;
-        b=NpWD80oPzu2RWi0rEUqXYEWQajbadTNoz/mb7UII0JEeUb8IPpaNjVo8arSXsE/TPtms5b
-        uEry7/9eqVcZOpCA==
+        bh=icQ9wplwXFGcBRvKUju0jj68i6Bql/ieQaV0Jbrj9Aw=;
+        b=4xZf9cJFX1wy5mUy4kzisBWPrbxWOW1geZt7cyNowlki24Tx+y2ksFKCltgwpyGhXQxgYg
+        h6vhAI7HicKHhFAw==
 To:     Petr Mladek <pmladek@suse.com>
 Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
         Steven Rostedt <rostedt@goodmis.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH printk v3 2/7] printk: nbcon: Add acquire/release logic
-Date:   Sun,  3 Sep 2023 17:11:34 +0206
-Message-Id: <20230903150539.245076-3-john.ogness@linutronix.de>
+Subject: [PATCH printk v3 3/7] printk: nbcon: Add buffer management
+Date:   Sun,  3 Sep 2023 17:11:35 +0206
+Message-Id: <20230903150539.245076-4-john.ogness@linutronix.de>
 In-Reply-To: <20230903150539.245076-1-john.ogness@linutronix.de>
 References: <20230903150539.245076-1-john.ogness@linutronix.de>
 MIME-Version: 1.0
@@ -62,655 +62,252 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Add per console acquire/release functionality. The console 'locked'
-state is a combination of multiple state fields:
+In case of hostile takeovers it must be ensured that the previous
+owner cannot scribble over the output buffer of the emergency/panic
+context. This is achieved by:
 
-  - The 'prio' field contains the priority of the context that owns
-    the console. This field is used for decisions whether to attempt
-    friendly handovers and also prevents takeovers from a less
-    severe context, e.g. to protect the panic CPU. A value of 0
-    (NBCON_PRIO_NONE) means the console is not locked.
+ - Adding a global output buffer instance for the panic context.
+   This is the only situation where hostile takeovers can occur and
+   there is always at most 1 panic context.
 
-  - The 'cpu' field denotes on which CPU the console is locked.
+ - Allocating an output buffer per console upon console
+   registration. This buffer is used by the console owner when not
+   in panic context.
 
-The acquire mechanism comes with several flavours:
-
-  - Direct acquire when the console is not owned or is owned by a
-    lower priority context and the console is in a safe state.
-
-  - Friendly handover mechanism based on a request/grant handshake.
-    The requesting context must have a higher priority than the
-    current owner.
-
-    The requesting context:
-
-      1) Sets its priority into the 'req_prio' field.
-
-      2) Waits (with a timeout) for the owning context to unlock the
-         console.
-
-      3) Sets the 'prio' field and clears the 'req_prio' field.
-
-    The owning context:
-
-      1) Observes the 'req_prio' field set.
-
-      2) Gives up console ownership by clearing the 'prio' field.
-
-  - Unsafe hostile takeover
-
-      The new owner takes the console over without 'req_prio'
-      handshake. The new owner must have a higher priority than
-      the previous owner.
-
-      This is required when friendly handovers are not possible,
-      i.e. the higher priority context interrupted the owning
-      context on the same CPU or the owning context is not able
-      to make progress on a remote CPU.
-
-The release is the counterpart that either releases the console
-directly or yields it gracefully over to a requester.
-
-All operations on @console::nbcon_state are atomic cmpxchg based
-to handle concurrency.
-
-The acquire/release functions implement only minimal policies:
-
-  - Preference for higher priority contexts.
-  - Protection of the panic CPU.
-
-All other policy decisions have to be made at the call sites:
-
-  - What is marked as an unsafe section.
-  - Whether to spin-wait if there is already an owner and the
-    console is in an unsafe state.
-  - Whether to attempt an unsafe hostile takeover.
-
-The design allows to implement the well known:
-
-    acquire()
-    output_one_line()
-    release()
-
-algorithm, but also allows to avoid the per line acquire/release for
-e.g. panic situations by doing the acquire once and then relying on
-the panic CPU protection for the rest.
+ - Choosing the appropriate buffer is handled in the acquire/release
+   functions.
 
 Co-developed-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
 ---
- include/linux/console.h |  62 ++++++
- kernel/printk/nbcon.c   | 458 ++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 520 insertions(+)
+ include/linux/console.h  |  7 +++++++
+ kernel/printk/internal.h |  8 ++++++++
+ kernel/printk/nbcon.c    | 44 ++++++++++++++++++++++++++++++++++++++--
+ kernel/printk/printk.c   | 15 ++++++++------
+ 4 files changed, 66 insertions(+), 8 deletions(-)
 
 diff --git a/include/linux/console.h b/include/linux/console.h
-index a2d37a7a98a8..110e21cf7541 100644
+index 110e21cf7541..d0bf9abd76b8 100644
 --- a/include/linux/console.h
 +++ b/include/linux/console.h
-@@ -175,13 +175,32 @@ enum cons_flags {
-  * struct nbcon_state - console state for nbcon consoles
-  * @atom:	Compound of the state fields for atomic operations
-  *
-+ * @req_prio:		The priority of a handover request
-+ * @req_tag:		Tagged bits to help identify different requesters
-+ *			using the same priority
-+ * @prio:		The priority of the current owner
-+ * @unsafe:		Console is busy in a non takeover region
-+ * @unsafe_takeover:	A hostile takeover in an unsafe state happened in the
-+ *			past. The console cannot be safe until re-initialized.
-+ * @cpu:		The CPU on which the owner runs
-+ *
-  * To be used for reading and preparing of the value stored in the nbcon
-  * state variable @console::nbcon_state.
-+ *
-+ * The @prio and @req_prio fields are particularly important to allow
-+ * spin-waiting to timeout and give up without the risk of a waiter being
-+ * assigned the lock after giving up.
-  */
- struct nbcon_state {
- 	union {
- 		unsigned int	atom;
- 		struct {
-+			unsigned int prio		:  2;
-+			unsigned int req_prio		:  2;
-+			unsigned int req_tag		:  2;
-+			unsigned int unsafe		:  1;
-+			unsigned int unsafe_takeover	:  1;
-+			unsigned int cpu		: 24;
- 		};
- 	};
+@@ -237,6 +237,7 @@ enum nbcon_prio {
  };
-@@ -194,6 +213,49 @@ struct nbcon_state {
-  */
- static_assert(sizeof(struct nbcon_state) <= sizeof(int));
  
-+/**
-+ * nbcon_prio - console owner priority for nbcon consoles
-+ * @NBCON_PRIO_NONE:		Unused
-+ * @NBCON_PRIO_NORMAL:		Normal (non-emergency) usage
-+ * @NBCON_PRIO_EMERGENCY:	Emergency output (WARN/OOPS...)
-+ * @NBCON_PRIO_PANIC:		Panic output
-+ * @NBCON_PRIO_MAX:		The number of priority levels
-+ *
-+ * A context wanting to produce emergency output can carefully takeover the
-+ * console, even without consent of the owner. Ideally such a takeover is only
-+ * when @nbcon_state::unsafe is not set. However, a context wanting to produce
-+ * panic output can ignore the unsafe flag as a last resort. If panic output
-+ * is active, no takeover is possible until the panic output releases the
-+ * console.
-+ */
-+enum nbcon_prio {
-+	NBCON_PRIO_NONE = 0,
-+	NBCON_PRIO_NORMAL,
-+	NBCON_PRIO_EMERGENCY,
-+	NBCON_PRIO_PANIC,
-+	NBCON_PRIO_MAX,
-+};
-+
-+struct console;
-+
-+/**
-+ * struct nbcon_context - Context for console acquire/release
-+ * @console:			The associated console
-+ * @spinwait_max_us:		Limit for spin-wait acquire
-+ * @prio:			Priority of the context
-+ * @allow_unsafe_takeover:	Allow performing takeover even if unsafe. Can
-+ *				be used only with NBCON_PRIO_PANIC @prio. It
-+ *				might cause a system freeze when the console
-+ *				is used later.
-+ */
-+struct nbcon_context {
-+	/* members set by caller */
-+	struct console		*console;
-+	unsigned int		spinwait_max_us;
-+	enum nbcon_prio		prio;
-+	unsigned int		allow_unsafe_takeover	: 1;
-+};
-+
+ struct console;
++struct printk_buffers;
+ 
  /**
-  * struct console - The console descriptor structure
-  * @name:		The name of the console driver
+  * struct nbcon_context - Context for console acquire/release
+@@ -247,6 +248,7 @@ struct console;
+  *				be used only with NBCON_PRIO_PANIC @prio. It
+  *				might cause a system freeze when the console
+  *				is used later.
++ * @pbufs:			Pointer to the text buffer for this context
+  */
+ struct nbcon_context {
+ 	/* members set by caller */
+@@ -254,6 +256,9 @@ struct nbcon_context {
+ 	unsigned int		spinwait_max_us;
+ 	enum nbcon_prio		prio;
+ 	unsigned int		allow_unsafe_takeover	: 1;
++
++	/* members set by acquire */
++	struct printk_buffers	*pbufs;
+ };
+ 
+ /**
+@@ -277,6 +282,7 @@ struct nbcon_context {
+  * @node:		hlist node for the console list
+  *
+  * @nbcon_state:	State for nbcon consoles
++ * @pbufs:		Pointer to nbcon private buffer
+  */
+ struct console {
+ 	char			name[16];
+@@ -299,6 +305,7 @@ struct console {
+ 
+ 	/* nbcon console specific members */
+ 	atomic_t		__private nbcon_state;
++	struct printk_buffers	*pbufs;
+ };
+ 
+ #ifdef CONFIG_LOCKDEP
+diff --git a/kernel/printk/internal.h b/kernel/printk/internal.h
+index 2ca0ab78802c..cb4ea90f04a5 100644
+--- a/kernel/printk/internal.h
++++ b/kernel/printk/internal.h
+@@ -13,6 +13,12 @@ int devkmsg_sysctl_set_loglvl(struct ctl_table *table, int write,
+ #define printk_sysctl_init() do { } while (0)
+ #endif
+ 
++#define con_printk(lvl, con, fmt, ...)				\
++	printk(lvl pr_fmt("%s%sconsole [%s%d] " fmt),		\
++		(con->flags & CON_NBCON) ? "" : "legacy ",	\
++		(con->flags & CON_BOOT) ? "boot" : "",		\
++		con->name, con->index, ##__VA_ARGS__)
++
+ #ifdef CONFIG_PRINTK
+ 
+ #ifdef CONFIG_PRINTK_CALLER
+@@ -63,6 +69,7 @@ void defer_console_output(void);
+ u16 printk_parse_prefix(const char *text, int *level,
+ 			enum printk_info_flags *flags);
+ 
++bool nbcon_alloc(struct console *con);
+ void nbcon_init(struct console *con);
+ void nbcon_cleanup(struct console *con);
+ 
+@@ -81,6 +88,7 @@ void nbcon_cleanup(struct console *con);
+ #define printk_safe_exit_irqrestore(flags) local_irq_restore(flags)
+ 
+ static inline bool printk_percpu_data_ready(void) { return false; }
++static inline bool nbcon_alloc(struct console *con) { return false; }
+ static inline void nbcon_init(struct console *con) { }
+ static inline void nbcon_cleanup(struct console *con) { }
+ 
 diff --git a/kernel/printk/nbcon.c b/kernel/printk/nbcon.c
-index 10266d3e7883..a80567134669 100644
+index a80567134669..c148467b39b8 100644
 --- a/kernel/printk/nbcon.c
 +++ b/kernel/printk/nbcon.c
-@@ -4,10 +4,43 @@
- 
+@@ -5,6 +5,7 @@
  #include <linux/kernel.h>
  #include <linux/console.h>
-+#include <linux/delay.h>
+ #include <linux/delay.h>
++#include <linux/slab.h>
  #include "internal.h"
  /*
   * Printk console printing implementation for consoles that do not depend on
-  * the legacy style console_lock mechanism.
-+ *
-+ * Console is locked on a CPU when @nbcon_state::prio is set and
-+ * @nbcon_state:cpu == current CPU. This is valid for the current execution
-+ * context.
-+ *
-+ * Nesting execution contexts on the same CPU can carefully take over if
-+ * the driver allows reentrancy via @nbcon_state::unsafe = false. When the
-+ * interrupted context resumes it checks the state before entering an unsafe
-+ * region and aborts the operation if it detects a takeover.
-+ *
-+ * In case of panic the nesting context can take over the console forcefully.
-+ *
-+ * A concurrent writer on a different CPU with a higher priority can directly
-+ * take over if the console is not in an unsafe state by carefully writing
-+ * its priority into @nbcon_state::prio.
-+ *
-+ * If the console is in an unsafe state, the concurrent writer with a higher
-+ * priority can request to take over the console by:
-+ *
-+ *	1) Carefully writing the desired priority into @nbcon_state::req_prio
-+ *	   if there is no higher priority request pending.
-+ *
-+ *	2) Carefully spin on @nbcon_state::prio until it is no longer locked.
-+ *
-+ *	3) Attempt to lock the console by carefully writing the desired
-+ *	   priority to @nbcon_state::prio and carefully removing the desired
-+ *	   priority from @nbcon_state::req_prio.
-+ *
-+ * In case the owner does not react on the request and does not make
-+ * observable progress, the waiter will timeout and can then decide to do
-+ * an unsafe hostile takeover. Upon unsafe hostile takeover, the console
-+ * is kept permanently in the unsafe state.
-  */
- 
- /**
-@@ -47,6 +80,431 @@ static inline bool nbcon_state_try_cmpxchg(struct console *con, struct nbcon_sta
- 	return atomic_try_cmpxchg(&ACCESS_PRIVATE(con, nbcon_state), &cur->atom, new->atom);
+@@ -20,6 +21,9 @@
+  * region and aborts the operation if it detects a takeover.
+  *
+  * In case of panic the nesting context can take over the console forcefully.
++ * If the interrupted context touches the assigned record buffer after
++ * takeover, it does not cause harm because the interrupting single panic
++ * context is assigned its own panic record buffer.
+  *
+  * A concurrent writer on a different CPU with a higher priority can directly
+  * take over if the console is not in an unsafe state by carefully writing
+@@ -406,6 +410,8 @@ static void nbcon_context_acquire_hostile(struct nbcon_context *ctxt,
+ 	cur->atom = new.atom;
  }
  
-+/**
-+ * nbcon_context_try_acquire_direct - Try to acquire directly
-+ * @ctxt:	The context of the caller
-+ * @cur:	The current console state
-+ *
-+ * Return:	0 on success and @cur is updated to the new console state.
-+ *		Otherwise an error code on failure.
-+ *
-+ * Errors:
-+ *
-+ *	-EPERM:		A panic is in progress and this is not the panic CPU
-+ *			or this context does not have a priority above the
-+ *			current owner or waiter. No acquire method can be
-+ *			successful for this context.
-+ *
-+ *	-EBUSY:		The console is in an unsafe state. The caller should
-+ *			try using the handover acquire method.
-+ *
-+ * The general procedure is to change @nbcon_state::prio from unowned to
-+ * owned. Or, if the console is not in the unsafe state, to change
-+ * @nbcon_state::prio to a higher priority owner.
-+ */
-+static int nbcon_context_try_acquire_direct(struct nbcon_context *ctxt,
-+					    struct nbcon_state *cur)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	struct console *con = ctxt->console;
-+	struct nbcon_state new;
-+
-+	do {
-+		if (other_cpu_in_panic())
-+			return -EPERM;
-+
-+		if (ctxt->prio <= cur->prio || ctxt->prio <= cur->req_prio)
-+			return -EPERM;
-+
-+		if (cur->unsafe)
-+			return -EBUSY;
-+
-+		/*
-+		 * Direct acquires should never be attempted if
-+		 * an unsafe hostile takeover has ever happened.
-+		 */
-+		WARN_ON_ONCE(cur->unsafe_takeover);
-+
-+		new.atom = cur->atom;
-+		new.prio	= ctxt->prio;
-+		new.req_prio	= NBCON_PRIO_NONE;
-+		new.unsafe	= cur->unsafe_takeover;
-+		new.cpu		= cpu;
-+
-+	} while (!nbcon_state_try_cmpxchg(con, cur, &new));
-+
-+	cur->atom = new.atom;
-+
-+	return 0;
-+}
-+
-+static bool nbcon_waiter_matches(struct nbcon_state *cur, int expected_tag,
-+				int expected_prio)
-+{
-+	/*
-+	 * Since consoles can only be acquired by higher priorities,
-+	 * waiting contexts are uniquely identified by @prio. However,
-+	 * since owners and waiters can unexpectedly change, it is
-+	 * possible that later another waiter appears with the same
-+	 * priority. For this reason @req_tag is also needed.
-+	 *
-+	 * Using the waiting CPU would be better, but there are not enough
-+	 * bits in the state variable for this. Since unexpected waiter
-+	 * changes are rare and them going unnoticed does not cause fatal
-+	 * problems, the tagged bits should be sufficient.
-+	 */
-+
-+	if (cur->req_prio != expected_prio)
-+		return false;
-+
-+	if (cur->req_tag != expected_tag)
-+		return false;
-+
-+	return true;
-+}
-+
-+/**
-+ * nbcon_context_try_acquire_requested - Try to acquire after having
-+ *					 requested a handover
-+ * @ctxt:	The context of the caller
-+ * @cur:	The current console state
-+ * @req_tag:	The tagged bits used to identify this waiting context
-+ *
-+ * Return:	0 on success and @cur is updated to the new console state.
-+ *		Otherwise an error code on failure.
-+ *
-+ * Errors:
-+ *
-+ *	-EPERM:		A panic is in progress and this is not the panic CPU
-+ *			or this context is no longer the waiter. For the
-+ *			former case, the caller must carefully remove the
-+ *			request before aborting the acquire.
-+ *
-+ *	-EBUSY:		The console is still locked. The caller should
-+ *			continue waiting.
-+ *
-+ * This is a helper function for nbcon_context_try_acquire_handover().
-+ *
-+ * The use of tagged bits is to partially deal with the situation that while
-+ * this waiting context is in udelay(1):
-+ *
-+ *   1. another context with higher priority directly takes ownership
-+ *   2. the higher priority context releases ownership
-+ *   3. a lower priority context takes ownership
-+ *   4. a context with the same priority as this context requests ownership
-+ *   5. this waiting context finishes udelay(1) and thinks it is the waiter
-+ *
-+ * To address this rare situation, tagged bits are used so that the waiter
-+ * can better identify if it is really the waiter. In the above  example, the
-+ * original waiter would use a @req_tag value of 1, whereas the follow-up
-+ * waiter would use a @req_tag value of 2. This allows the original waiter to
-+ * identify in step 5 that it has been replaced by another waiter.
-+ */
-+static int nbcon_context_try_acquire_requested(struct nbcon_context *ctxt,
-+					       struct nbcon_state *cur,
-+					       char req_tag)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	struct console *con = ctxt->console;
-+	struct nbcon_state new;
-+
-+	do {
-+		/*
-+		 * Note: If the acquire is aborted due to a panic CPU,
-+		 * the caller must still remove the request!
-+		 */
-+		if (other_cpu_in_panic())
-+			return -EPERM;
-+
-+		/*
-+		 * If an unsafe hostile takeover has occurred, a handover
-+		 * is no longer possible.
-+		 */
-+		if (cur->unsafe_takeover)
-+			return -EPERM;
-+
-+		/* Is this context still the requester? */
-+		if (!nbcon_waiter_matches(cur, req_tag, ctxt->prio))
-+			return -EPERM;
-+
-+		/* If still locked, caller should continue waiting. */
-+		if (cur->prio != NBCON_PRIO_NONE)
-+			return -EBUSY;
-+
-+		/* Handover acquires should never be attempted if unsafe. */
-+		WARN_ON_ONCE(cur->unsafe);
-+
-+		new.atom = cur->atom;
-+		new.prio	= ctxt->prio;
-+		new.req_prio	= NBCON_PRIO_NONE;
-+		new.unsafe	= cur->unsafe_takeover;
-+		new.cpu		= cpu;
-+
-+	} while (!nbcon_state_try_cmpxchg(con, cur, &new));
-+
-+	/* Handover success. This context now owns the console. */
-+
-+	cur->atom = new.atom;
-+
-+	return 0;
-+}
-+
-+/**
-+ * nbcon_context_try_acquire_handover - Try to acquire via handover
-+ * @ctxt:	The context of the caller
-+ * @cur:	The current console state
-+ *
-+ * Return:	0 on success and @cur is updated to the new console state.
-+ *		Otherwise an error code on failure.
-+ *
-+ * Errors:
-+ *
-+ *	-EPERM:		This context is on the same CPU as the current owner
-+ *			or the console is permanently in an unsafe state or
-+ *			this context is unwilling to wait or a panic is in
-+ *			progress and this is not the panic CPU. This is not
-+ *			the panic context, so no acquire method can be
-+ *			successful for this context.
-+ *
-+ *	-EBUSY:		The current owner or waiter is such that this context
-+ *			is not able to execute a handover. The caller can use
-+ *			an unsafe hostile takeover to acquire.
-+ *
-+ *	-EAGAIN:	@cur is not the current console state. @cur has been
-+ *			updated. The caller should retry with direct acquire.
-+ *
-+ * The general procedure is to set @req_prio and wait until unowned. Then
-+ * set @prio (claiming ownership) and clearing @req_prio.
-+ *
-+ * Note that it is expected that the caller tried
-+ * nbcon_context_try_acquire_direct() with @cur before calling this function.
-+ */
-+static int nbcon_context_try_acquire_handover(struct nbcon_context *ctxt,
-+					      struct nbcon_state *cur)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	struct console *con = ctxt->console;
-+	struct nbcon_state new;
-+	int timeout;
-+	int req_tag;
-+	int err = 0;
-+
-+	/*
-+	 * Handovers are not possible on the same CPU or when the console
-+	 * is permanently in an unsafe state or if the caller is unwilling
-+	 * to wait.
-+	 */
-+	if (cur->cpu == cpu ||
-+	    cur->unsafe_takeover ||
-+	    ctxt->spinwait_max_us == 0) {
-+		goto fail_handover;
-+	}
-+
-+	/*
-+	 * Setup a request for handover.
-+	 *
-+	 * @nbcon_state::req_tag is modified for each handover request. See
-+	 * the function description of nbcon_context_try_acquire_requested()
-+	 * for details about how @req_tag is used.
-+	 */
-+	new.atom = cur->atom;
-+	new.req_prio = ctxt->prio;
-+	new.req_tag++;
-+	req_tag = new.req_tag;
-+	if (!nbcon_state_try_cmpxchg(con, cur, &new))
-+		return -EAGAIN;
-+
-+	cur->atom = new.atom;
-+
-+	/* Wait until there is no owner and then acquire directly. */
-+	for (timeout = ctxt->spinwait_max_us; timeout >= 0; timeout--) {
-+		/* On successful acquire, this request is cleared. */
-+		err = nbcon_context_try_acquire_requested(ctxt, cur, req_tag);
-+		if (!err)
-+			return 0;
-+
-+		/*
-+		 * If the acquire should be aborted, it must be ensured
-+		 * that the request is removed before returning to caller.
-+		 */
-+		if (err == -EPERM)
-+			break;
-+
-+		udelay(1);
-+
-+		/* Re-read the state because some time has passed. */
-+		nbcon_state_read(con, cur);
-+	}
-+
-+	/* Timed out or should abort. Carefully remove handover request. */
-+	do {
-+		/* No need to remove request if there is a new waiter. */
-+		if (!nbcon_waiter_matches(cur, req_tag, ctxt->prio))
-+			goto fail_handover;
-+
-+		/* Unset request for handover. */
-+		new.atom = cur->atom;
-+		new.req_prio = NBCON_PRIO_NONE;
-+		if (nbcon_state_try_cmpxchg(con, cur, &new)) {
-+			/*
-+			 * Request successfully unset. Report failure of
-+			 * acquiring via handover.
-+			 */
-+			cur->atom = new.atom;
-+			goto fail_handover;
-+		}
-+
-+		/*
-+		 * Unable to remove request. Try to acquire in case
-+		 * the owner has released the lock.
-+		 */
-+	} while (nbcon_context_try_acquire_requested(ctxt, cur, req_tag));
-+
-+	/* Acquire at timeout succeeded! */
-+	return 0;
-+
-+fail_handover:
-+	/*
-+	 * If this is the panic context, the caller can try to acquire using
-+	 * the unsafe hostile takeover method.
-+	 */
-+	if (ctxt->prio == NBCON_PRIO_PANIC &&
-+	    ctxt->prio > cur->prio &&
-+	    ctxt->prio > cur->req_prio &&
-+	    !other_cpu_in_panic()) {
-+		return -EBUSY;
-+	}
-+	return -EPERM;
-+}
-+
-+/**
-+ * nbcon_context_try_acquire_hostile - Acquire via unsafe hostile takeover
-+ * @ctxt:	The context of the caller
-+ * @cur:	The current console state
-+ *
-+ * @cur is updated to the new console state.
-+ *
-+ * The general procedure is to set @prio (forcing ownership). This method
-+ * must only be used as a final attempt during panic.
-+ */
-+static void nbcon_context_acquire_hostile(struct nbcon_context *ctxt,
-+					  struct nbcon_state *cur)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	struct console *con = ctxt->console;
-+	struct nbcon_state new;
-+
-+	do {
-+		new.atom = cur->atom;
-+		new.cpu			= cpu;
-+		new.prio		= ctxt->prio;
-+		new.unsafe		|= cur->unsafe_takeover;
-+		new.unsafe_takeover	|= cur->unsafe;
-+
-+	} while (!nbcon_state_try_cmpxchg(con, cur, &new));
-+
-+	cur->atom = new.atom;
-+}
-+
-+/**
-+ * nbcon_context_try_acquire - Try to acquire nbcon console
-+ * @ctxt:	The context of the caller
-+ *
-+ * Return:	True if the console was acquired. False otherwise.
-+ *
-+ * If the caller allowed an unsafe hostile takeover, on success the
-+ * caller should check the current console state to see if it is
-+ * in an unsafe state. Otherwise, on success the caller may assume
-+ * the console is not in an unsafe state.
-+ */
-+__maybe_unused
-+static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
-+{
-+	__maybe_unused
-+	unsigned int cpu = smp_processor_id();
-+	struct console *con = ctxt->console;
-+	struct nbcon_state cur;
-+	int err;
-+
-+	/* unsafe hostile takeovers are only allowed for panic */
-+	WARN_ON_ONCE(ctxt->allow_unsafe_takeover && (ctxt->prio != NBCON_PRIO_PANIC));
-+
-+	nbcon_state_read(con, &cur);
-+
-+	do {
-+		err = nbcon_context_try_acquire_direct(ctxt, &cur);
-+		if (!err)
-+			goto success;
-+		else if (err == -EPERM)
-+			return false;
-+
-+		err = nbcon_context_try_acquire_handover(ctxt, &cur);
-+		if (!err)
-+			goto success;
-+		else if (err == -EPERM)
-+			return false;
-+
-+	} while (err == -EAGAIN);
-+
-+	/* Only attempt unsafe hostile takeover if explicitly requested. */
-+	if (!ctxt->allow_unsafe_takeover)
-+		return false;
-+
-+	nbcon_context_acquire_hostile(ctxt, &cur);
-+success:
-+	return true;
-+}
-+
-+static bool nbcon_owner_matches(struct nbcon_state *cur, int expected_cpu,
-+				int expected_prio)
-+{
-+	/*
-+	 * Since consoles can only be acquired by higher priorities,
-+	 * owning contexts are uniquely identified by @prio. However,
-+	 * since contexts can unexpectedly lose ownership, it is
-+	 * possible that later another owner appears with the same
-+	 * priority. For this reason @cpu is also needed.
-+	 */
-+
-+	if (cur->prio != expected_prio)
-+		return false;
-+
-+	if (cur->cpu != expected_cpu)
-+		return false;
-+
-+	return true;
-+}
-+
-+/**
-+ * nbcon_context_release - Release the console
-+ * @ctxt:	The nbcon context from nbcon_context_try_acquire()
-+ */
-+__maybe_unused
-+static void nbcon_context_release(struct nbcon_context *ctxt)
-+{
-+	unsigned int cpu = smp_processor_id();
-+	struct console *con = ctxt->console;
-+	struct nbcon_state cur;
-+	struct nbcon_state new;
-+
-+	nbcon_state_read(con, &cur);
-+
-+	do {
-+		if (!nbcon_owner_matches(&cur, cpu, ctxt->prio))
-+			return;
-+
-+		new.atom = cur.atom;
-+		new.prio = NBCON_PRIO_NONE;
-+
-+		/*
-+		 * If @unsafe_takeover is set, it is kept set so that
-+		 * the state remains permanently unsafe.
-+		 */
-+		new.unsafe |= cur.unsafe_takeover;
-+
-+	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
-+}
++static struct printk_buffers panic_nbcon_pbufs;
 +
  /**
-  * nbcon_init - Initialize the nbcon console specific data
-  * @con:	Console to initialize
+  * nbcon_context_try_acquire - Try to acquire nbcon console
+  * @ctxt:	The context of the caller
+@@ -420,7 +426,6 @@ static void nbcon_context_acquire_hostile(struct nbcon_context *ctxt,
+ __maybe_unused
+ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
+ {
+-	__maybe_unused
+ 	unsigned int cpu = smp_processor_id();
+ 	struct console *con = ctxt->console;
+ 	struct nbcon_state cur;
+@@ -452,6 +457,12 @@ static bool nbcon_context_try_acquire(struct nbcon_context *ctxt)
+ 
+ 	nbcon_context_acquire_hostile(ctxt, &cur);
+ success:
++	/* Assign the appropriate buffer for this context. */
++	if (atomic_read(&panic_cpu) == cpu)
++		ctxt->pbufs = &panic_nbcon_pbufs;
++	else
++		ctxt->pbufs = con->pbufs;
++
+ 	return true;
+ }
+ 
+@@ -491,7 +502,7 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
+ 
+ 	do {
+ 		if (!nbcon_owner_matches(&cur, cpu, ctxt->prio))
+-			return;
++			break;
+ 
+ 		new.atom = cur.atom;
+ 		new.prio = NBCON_PRIO_NONE;
+@@ -503,6 +514,30 @@ static void nbcon_context_release(struct nbcon_context *ctxt)
+ 		new.unsafe |= cur.unsafe_takeover;
+ 
+ 	} while (!nbcon_state_try_cmpxchg(con, &cur, &new));
++
++	ctxt->pbufs = NULL;
++}
++
++/**
++ * nbcon_alloc - Allocate buffers needed by the nbcon console
++ * @con:	Console to initialize
++ *
++ * Return:	True on success. False otherwise and the console cannot
++ *		be used.
++ *
++ * This is not part of nbcon_init() because buffer allocation must
++ * be performed earlier in the console registration process.
++ */
++bool nbcon_alloc(struct console *con)
++{
++
++	con->pbufs = kmalloc(sizeof(*con->pbufs), GFP_KERNEL);
++	if (!con->pbufs) {
++		con_printk(KERN_ERR, con, "failed to allocate printing buffer\n");
++		return false;
++	}
++
++	return true;
+ }
+ 
+ /**
+@@ -513,6 +548,9 @@ void nbcon_init(struct console *con)
+ {
+ 	struct nbcon_state state = { };
+ 
++	/* nbcon_alloc() must have been called and successful! */
++	BUG_ON(!con->pbufs);
++
+ 	nbcon_state_set(con, &state);
+ }
+ 
+@@ -525,4 +563,6 @@ void nbcon_cleanup(struct console *con)
+ 	struct nbcon_state state = { };
+ 
+ 	nbcon_state_set(con, &state);
++	kfree(con->pbufs);
++	con->pbufs = NULL;
+ }
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index c0246093ea41..b340c5a36fe2 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -3324,12 +3324,6 @@ static void try_enable_default_console(struct console *newcon)
+ 		newcon->flags |= CON_CONSDEV;
+ }
+ 
+-#define con_printk(lvl, con, fmt, ...)				\
+-	printk(lvl pr_fmt("%s%sconsole [%s%d] " fmt),		\
+-	       (con->flags & CON_NBCON) ? "" : "legacy ",	\
+-	       (con->flags & CON_BOOT) ? "boot" : "",		\
+-	       con->name, con->index, ##__VA_ARGS__)
+-
+ static void console_init_seq(struct console *newcon, bool bootcon_registered)
+ {
+ 	struct console *con;
+@@ -3443,6 +3437,15 @@ void register_console(struct console *newcon)
+ 		goto unlock;
+ 	}
+ 
++	if (newcon->flags & CON_NBCON) {
++		/*
++		 * Ensure the nbcon console buffers can be allocated
++		 * before modifying any global data.
++		 */
++		if (!nbcon_alloc(newcon))
++			goto unlock;
++	}
++
+ 	/*
+ 	 * See if we want to enable this console driver by default.
+ 	 *
 -- 
 2.39.2
 
