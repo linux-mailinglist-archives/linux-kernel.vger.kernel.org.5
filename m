@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E069790B68
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 11:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E38B790B6A
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 11:54:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236281AbjICJvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 05:51:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        id S236312AbjICJyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 05:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229785AbjICJvN (ORCPT
+        with ESMTP id S229785AbjICJyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 05:51:13 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CF9F1;
-        Sun,  3 Sep 2023 02:51:08 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c0a4333e03so1934585ad.0;
-        Sun, 03 Sep 2023 02:51:08 -0700 (PDT)
+        Sun, 3 Sep 2023 05:54:40 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CDA5F1;
+        Sun,  3 Sep 2023 02:54:37 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-31aec0a1a8bso274591f8f.0;
+        Sun, 03 Sep 2023 02:54:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693734667; x=1694339467; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8FXjdDVO9yS7Gvo/LvVBPcgy31BVypQ/0qEk2ktmX8=;
-        b=MPcp2kSZuDinWjxYIQ309QGvhjSSWQ2TGDwWyFDfqzpgBI/blFkY5I+E+1VYJR+wAX
-         UXxnscTxHHAttDW0Yx7t8A9wVCMMz+NXF7y+c3iFFORDt9ZwEqlPpIzsK9vzuNUHOfKC
-         2wWr+y8dp6jgRDZg36GMIiSB43Ni4Qpusoh2O4+j1HLdC7nDc43daZ1xSq0Z47RpdmuM
-         eixPyEO9UMgeyC3TxpJr0UdP4230XLNegPaE2hdMA8Foxl2O2vaWupBq8XLIQzOGYCIB
-         pAuT+lWeePqHIUFuFfFkMkHNazRR6igHAYNPXAy7ZtC7h4ei1ehz2KQpsTILH64vPKVB
-         gvdQ==
+        d=gmail.com; s=20221208; t=1693734876; x=1694339676; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gchhapWHDBqd6QMRFxPcPK/oyG75NIUSsqZ/Cg1KbbA=;
+        b=VMvOCV+Fh7n4NxrTzZ1tsYxK/MxMGsl7znA/pOocaUZHHTethbtcAuJhREq2pSHeAI
+         sgqW/aCy2BHhCy5uytLJ4+PIjKqYFtM2+VCZf/jEc3mElX2eNWBC1p4KRXX8+ncRJzIP
+         w+/+IZJXvFpWMRxULD9ImTf0J5MiRvQ4YSnSjznazDl2MvSA/4gdTFfLeFscPlduTUbw
+         YsvfihjNSY/3UnoSXS2Y2g7N9Rj9YTIuHARhx6p53V+KJr5u1HTSKvwxNW+ePWkKA5en
+         fIshGn+Z73lh/Q/X/7l9QnjwvwOiTfjz2YjRW31Sw8K9qZ8lu2oxL/2YdGEKDFc95I3G
+         MgkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693734667; x=1694339467;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T8FXjdDVO9yS7Gvo/LvVBPcgy31BVypQ/0qEk2ktmX8=;
-        b=VvLs6pnEU6o66pXWsETSAmQjL/PMdZsYqdH6AQ8MyTnQiezy0Ppyc2gFwYH/6FKLZA
-         olNVtfA/6UNj/BDyPmH37btyjpH6CZeaXJP1h0BXgGdcRhzxeABBphC2IIuAIXaTbkTz
-         oGMgGdjnDO+uTBSW4iR38zAeD/CQhJ4Knlp+WlLqyRnLrqNU2Qavano9Maw4PZXYeAZJ
-         zxcyZ4RxnW980Fh3OpBauJH3TgmQ7ba3dQ03sIlG9zIVoNQRcz8OLxK+plafT/CTa8qO
-         hAcLqn52UiE5GUQ64tYoRj8OWbdNF4qIUg74/3wdzEoUXScEm1eM22Urlcr0yaf29t03
-         bVng==
-X-Gm-Message-State: AOJu0Yxzor82Hl99mLTtUEk4WYi9xjhjtvjo1cWtfz/gTJw9Q97Pqb42
-        YhbEsX6833/F/Gd1WG3SGLxHWMQTdDfqVg==
-X-Google-Smtp-Source: AGHT+IFN9+sx646tl37aTaBaSI7gBk72g024qTzkkcg/lU+pc/I/5jpRDPMI5BE8VY5roiJ21d9tWw==
-X-Received: by 2002:a05:6a20:442a:b0:13e:1d49:723c with SMTP id ce42-20020a056a20442a00b0013e1d49723cmr10323540pzb.2.1693734667488;
-        Sun, 03 Sep 2023 02:51:07 -0700 (PDT)
-Received: from localhost.localdomain ([140.116.154.65])
-        by smtp.gmail.com with ESMTPSA id x14-20020a63aa4e000000b0056c5454105csm5550873pgo.93.2023.09.03.02.51.05
+        d=1e100.net; s=20221208; t=1693734876; x=1694339676;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gchhapWHDBqd6QMRFxPcPK/oyG75NIUSsqZ/Cg1KbbA=;
+        b=b4kBhZXa59VSEQ8U+rIEWdDwzj0PgddT2i1a0zMksmh6Rltr6dggJBgFasirIUoxy2
+         sgDAXtRQDzZPFhG6RcUt4EJGmtvZTE82gC3s5cyxQpEcd+MBqB/POytpfHg4/scx9jzO
+         UxVD4X9+SG7IDtkaP6lPVi4d5lo63cap7X525X80iYFpvsxV/8kavdfk1WTQg57qVdEt
+         en37IT6Whp9H6wDEv383zT6hiw3Oay+cUDxHOAolDAeFu7b3vv9z0dbVEeziw1F5yv6o
+         g15nOH3S2TtBhE0CvVMq+Oyxsu6OVkRSy/bfUYDZxOoTy6ii/EwG4DEt4pEtEb6LULVf
+         IfWw==
+X-Gm-Message-State: AOJu0YzxD6kj8cVcR+13DAZBK+Qyp5Qv9Xg0g5tMCzYRtRfx40JVwXlQ
+        GEeHUpV1z/Yq74mrtXRXByi2o3fIjAA9PgSE
+X-Google-Smtp-Source: AGHT+IELsiCnevuE+RQMgYYDfYMoHSRRZ038CeNJy/2AcfK8VYpPlLaHAkAY/Lp8S/3ZsORaLuT0Wg==
+X-Received: by 2002:a5d:5182:0:b0:319:7b59:8d09 with SMTP id k2-20020a5d5182000000b003197b598d09mr7586523wrv.25.1693734875613;
+        Sun, 03 Sep 2023 02:54:35 -0700 (PDT)
+Received: from localhost.localdomain ([113.203.244.138])
+        by smtp.gmail.com with ESMTPSA id v12-20020a05600c214c00b003fbe791a0e8sm10646715wml.0.2023.09.03.02.54.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 02:51:07 -0700 (PDT)
-From:   Kuan-Wei Chiu <visitorckw@gmail.com>
-To:     song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH] md/raid5: eliminate if-statements in cmp_stripe()
-Date:   Sun,  3 Sep 2023 17:50:59 +0800
-Message-Id: <20230903095059.2683850-1-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Sun, 03 Sep 2023 02:54:35 -0700 (PDT)
+From:   fasih0001@gmail.com
+To:     laurent.pinchart@ideasonboard.com, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fasih <fasih0001@gmail.com>
+Subject: [PATCH] uvc_driver: Error Fix in the file drivers/media/usb/uvc/uvc_driver.c
+Date:   Sun,  3 Sep 2023 14:54:31 +0500
+Message-Id: <20230903095431.28711-1-fasih0001@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace the conditional statements in the cmp_stripe() function with a
-branchless version to improve code readability and potentially enhance
-performance. The new code calculates the result using a subtraction of
-comparison results, making it more concise and avoiding conditional
-branches. This change does not alter the functionality of the code.
+From: Fasih <fasih0001@gmail.com>
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+Error fix for the line 2429 and 2430, The error message indicated that "Macros with complex values should be enclosed in parentheses".
+This typically means that the macro is defined in a way that involves complex expressions or compound literals,
+and the preprocessor requires them to be enclosed in parentheses for clarity and proper evaluation.
+To address this error and comply with the requirement to enclose complex values in parentheses,
+you should wrap the entire expression inside an extra set of parentheses.
+
+Signed-off-by: Syed Muhammad Fasih Ul Hassan <fasih0001@gmail.com>
+
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2095,6 +2095,8 @@ static int uvc_probe(struct usb_interface *intf,
+        int function;
+        int ret;
+
++       pr_info("I changed uvcvideo driver in the Linux Kernel\n");
++
+        /* Allocate memory for the device and initialize it. */
+        dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+        if (dev == NULL)
+@@ -2417,9 +2419,9 @@ static const struct uvc_device_info uvc_quirk_force_y8 = {
+        .quirks = UVC_QUIRK_FORCE_Y8,
+ };
+
+-#define UVC_INFO_QUIRK(q) (kernel_ulong_t)&(struct uvc_device_info){.quirks = q}
+-#define UVC_INFO_META(m) (kernel_ulong_t)&(struct uvc_device_info) \
+-       {.meta_format = m}
++#define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
++#define UVC_INFO_META(m) ((kernel_ulong_t)&(struct uvc_device_info) \
++       {.meta_format = m})
 ---
- drivers/md/raid5.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/media/usb/uvc/uvc_driver.c | 15 ++++++++++++---
+ 1 file changed, 12 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
-index 4cb9c608ee19..b14d7ba38f0f 100644
---- a/drivers/md/raid5.c
-+++ b/drivers/md/raid5.c
-@@ -1035,11 +1035,7 @@ static int cmp_stripe(void *priv, const struct list_head *a,
- 				struct r5pending_data, sibling);
- 	const struct r5pending_data *db = list_entry(b,
- 				struct r5pending_data, sibling);
--	if (da->sector > db->sector)
--		return 1;
--	if (da->sector < db->sector)
--		return -1;
--	return 0;
-+	return (da->sector > db->sector) - (da->sector < db->sector);
- }
+diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
+index 08fcd2ffa727..42d42b211094 100644
+--- a/drivers/media/usb/uvc/uvc_driver.c
++++ b/drivers/media/usb/uvc/uvc_driver.c
+@@ -2095,6 +2095,8 @@ static int uvc_probe(struct usb_interface *intf,
+ 	int function;
+ 	int ret;
  
- static void dispatch_defer_bios(struct r5conf *conf, int target,
++	pr_info("I changed uvcvideo driver in the Linux Kernel\n");
++
+ 	/* Allocate memory for the device and initialize it. */
+ 	dev = kzalloc(sizeof(*dev), GFP_KERNEL);
+ 	if (dev == NULL)
+@@ -2417,9 +2419,16 @@ static const struct uvc_device_info uvc_quirk_force_y8 = {
+ 	.quirks = UVC_QUIRK_FORCE_Y8,
+ };
+ 
+-#define UVC_INFO_QUIRK(q) (kernel_ulong_t)&(struct uvc_device_info){.quirks = q}
+-#define UVC_INFO_META(m) (kernel_ulong_t)&(struct uvc_device_info) \
+-	{.meta_format = m}
++/* For line 2429 and 2430, The error message indicated that "Macros with complex values should be enclosed in parentheses".
++ * This typically means that the macro is defined in a way that involves complex expressions or compound literals,
++ * and the preprocessor requires them to be enclosed in parentheses for clarity and proper evaluation.
++ * To address this error and comply with the requirement to enclose complex values in parentheses,
++ * you should wrap the entire expression inside an extra set of parentheses like that:
++ * #define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
++ */
++#define UVC_INFO_QUIRK(q) ((kernel_ulong_t)&(struct uvc_device_info){.quirks = q})
++#define UVC_INFO_META(m) ((kernel_ulong_t)&(struct uvc_device_info) \
++	{.meta_format = m})
+ 
+ /*
+  * The Logitech cameras listed below have their interface class set to
 -- 
-2.25.1
+2.17.1
 
