@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEBE790EE0
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 00:15:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70825790EE8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 00:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231715AbjICWOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 18:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
+        id S243867AbjICW1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 18:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjICWOg (ORCPT
+        with ESMTP id S236441AbjICW1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 18:14:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50A92F3
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 15:13:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693779226;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=VjL9JGcLByfgPaZswLky26tlQQfEuGeRmQ8TWkF1Et8=;
-        b=HbDxDHKD1MmabWjRGAoJpB15cqrCRVg6fNJChly9hPLTdLhcF6DTnHJZsrKY2HRu3j3FGl
-        CaY6UJICcaAXDJ2WBiJ0Ec+VguPPPM4K6l7/fvAyl793UaOPyfZb/ZWQhPS4Vdc7zDCaN9
-        jX7v/P88pUAwbixXGeDOAYBPhlHocns=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-606-dtn9Z9SiN3i_fXvUfunWng-1; Sun, 03 Sep 2023 18:13:45 -0400
-X-MC-Unique: dtn9Z9SiN3i_fXvUfunWng-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2bd1687c5d2so7750381fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:13:44 -0700 (PDT)
+        Sun, 3 Sep 2023 18:27:23 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A17DE
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 15:27:19 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-56f84de64b9so439784a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 15:27:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693780039; x=1694384839; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uey9X37TsXxaxDDta+GmGK9zdrWEFlBTA4HM9sllgko=;
+        b=aFcW5hhFseVJYvY9BxkVUGdq94OzhJT+piPShTn7nfOvOqUIAbtvyW6pEs7Y5AszBo
+         iWDtNnMZCtAlW7+p0HLHWbaSGMMLbNDURG9IT+WAldCcrTaFHwbwT7Dx/diDOf4lQlJY
+         6R8KK0OgpgRCqAM9PY7WLMAuvaLp/HcrE/qv+CrBQQZp8QV4dBd4GpggNanfFa707RJU
+         cBumvp0S6srNTFZ1wM/rPnYIQ48zm/ZbT39aeE+R4mflHAQriKOlszZTvYgc2DzoX0lx
+         IttOIZ7Me4UdAI3Vflqk+fMvvoJ1lRrTPU3SSzDtUc0bK+lCEN50YMeadQ37y7ZCwPz+
+         8UJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693779223; x=1694384023;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VjL9JGcLByfgPaZswLky26tlQQfEuGeRmQ8TWkF1Et8=;
-        b=lE+T2VLlHIqCgV9iwDRXdjbN32Rwmmfynw5N5oPpI35ATRA0MEH9wlOxJJrT8cUTvd
-         a4QQCuaTCHH0lPq2lulIBHWnK8wB9kb2WL3mSpdhoFGfx5h7uNPhKhI/swKOkgMI6IiW
-         5NM0Y5Y9zMq7EklXNw6saVtDvBOy9nC8KZAJKOXR4mYogvRo465/0SCdAXz/GMG9Sl3e
-         Gw9gkjRTlJpErnGq4JcsGrsBL7XMHRHb+0NkjU7XlYOvkGZCmHiZIyKjNYl3G8pfuWG9
-         1BWH+XQU9rexkTFZw0D2UJvvz39eDk2b6FLsTM5EPzslEJxs6Iq5JpzsJOKjlFROijuA
-         c0HA==
-X-Gm-Message-State: AOJu0Yx29VWarP+N8gwwhZDs60LiE5gTRG1gIf/BVRF+YkxvGKGvhO7Q
-        K8ea4rNzRU4DOmHcUZS3dExDWvIJB032EMKFPgaUFJrH3YW835uPlyDaJ59kGJestpUnHmseeV2
-        Tew5zC7ANfW62mHjbLyMuyHSj
-X-Received: by 2002:a2e:b70d:0:b0:2bd:133c:58ff with SMTP id j13-20020a2eb70d000000b002bd133c58ffmr5371566ljo.48.1693779223760;
-        Sun, 03 Sep 2023 15:13:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFt5eq/oqAhbyqYfgrqKLbNZZyl3X0ZXzNnLt/MouQMoz3QQr7CiE/cjPIeQZ0ta3ELUrf4kA==
-X-Received: by 2002:a2e:b70d:0:b0:2bd:133c:58ff with SMTP id j13-20020a2eb70d000000b002bd133c58ffmr5371549ljo.48.1693779223406;
-        Sun, 03 Sep 2023 15:13:43 -0700 (PDT)
-Received: from redhat.com ([2.52.1.236])
-        by smtp.gmail.com with ESMTPSA id gf20-20020a170906e21400b0099ce23c57e6sm5257536ejb.224.2023.09.03.15.13.40
+        d=1e100.net; s=20221208; t=1693780039; x=1694384839;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uey9X37TsXxaxDDta+GmGK9zdrWEFlBTA4HM9sllgko=;
+        b=YbedTx68MPHEdZ7ltYPpWnDt030H5C1CZV2j2P9ReLhOSsYK0eYfqvZybl1fYlGgcY
+         f85wY7losKEmpaEkQC+E5rvdRIF0nLA6v9jynZrRjSK1Uh6P3OhgJA9JpIXlry4M5YUv
+         qP2ccZ7mJGyQ63cBeYdo/mVpWiZzw2FJB/ZfRRVmyBAgnH0ViROY8lUhHrCh5/LxzKkk
+         1PzuyAgz6WwsXkkkFOtn1c1UmvZMSWGE8bw/XTQ2+nKmlLk5d1t2lkEfOiiA4TEkg0/6
+         gbCDPXBlLRnIlv4yqMjdO3Ya7mA5oHb4qAa7YuboBHGKewDEuCjt5qtZ4fTSgKwDeoIj
+         vudw==
+X-Gm-Message-State: AOJu0YwLRmPOSO2SK1LXliGZZE8tnMuqBCS0HakQjnv7vnT0hrxIIbNP
+        eChmYrG/UHJCwoYhOmMYAlAaOg==
+X-Google-Smtp-Source: AGHT+IGeAVpJ32MwLia9j7b+fincRrOYrEYNNZjKkEpbapJ86ueujIl+j6DWTleN+nP733gdLcwaIQ==
+X-Received: by 2002:a17:90b:d94:b0:267:f8f4:73ab with SMTP id bg20-20020a17090b0d9400b00267f8f473abmr11150197pjb.16.1693780039113;
+        Sun, 03 Sep 2023 15:27:19 -0700 (PDT)
+Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
+        by smtp.gmail.com with ESMTPSA id gb16-20020a17090b061000b00263f446d432sm7845229pjb.43.2023.09.03.15.27.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 15:13:42 -0700 (PDT)
-Date:   Sun, 3 Sep 2023 18:13:38 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        eperezma@redhat.com, jasowang@redhat.com, mst@redhat.com,
-        shannon.nelson@amd.com, xuanzhuo@linux.alibaba.com,
-        yuanyaogoog@chromium.org, yuehaibing@huawei.com
-Subject: [GIT PULL] virtio: features
-Message-ID: <20230903181338-mutt-send-email-mst@kernel.org>
+        Sun, 03 Sep 2023 15:27:18 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+        (envelope-from <david@fromorbit.com>)
+        id 1qcvYp-00ASAZ-2e;
+        Mon, 04 Sep 2023 08:27:15 +1000
+Date:   Mon, 4 Sep 2023 08:27:15 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Mateusz Guzik <mjguzik@gmail.com>
+Cc:     syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>,
+        brauner@kernel.org, djwong@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
+Message-ID: <ZPUIQzsCSNlnBFHB@dread.disaster.area>
+References: <000000000000e6432a06046c96a5@google.com>
+ <ZPQYyMBFmqrfqafL@dread.disaster.area>
+ <20230903083357.75mq5l43gakuc2z7@f>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-Mutt-Fcc: =sent
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230903083357.75mq5l43gakuc2z7@f>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 2dde18cd1d8fac735875f2e4987f11817cc0bc2c:
+On Sun, Sep 03, 2023 at 10:33:57AM +0200, Mateusz Guzik wrote:
+> On Sun, Sep 03, 2023 at 03:25:28PM +1000, Dave Chinner wrote:
+> > On Sat, Sep 02, 2023 at 09:11:34PM -0700, syzbot wrote:
+> > > Hello,
+> > > 
+> > > syzbot found the following issue on:
+> > > 
+> > > HEAD commit:    b97d64c72259 Merge tag '6.6-rc-smb3-client-fixes-part1' of..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=14136d8fa80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=958c1fdc38118172
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
+> > > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > > 
+> > > Unfortunately, I don't have any reproducer for this issue yet.
+> > 
+> > Been happening for months, apparently, yet for some reason it now
+> > thinks a locking hang in __fdget_pos() is an XFS issue?
+> > 
+> > #syz set subsystems: fs
+> > 
+> 
+> The report does not have info necessary to figure this out -- no
+> backtrace for whichever thread which holds f_pos_lock. I clicked on a
+> bunch of other reports and it is the same story.
 
-  Linux 6.5 (2023-08-27 14:49:51 -0700)
+That's true, but there's nothing that points at XFS in *any* of the
+bug reports. Indeed, log from the most recent report doesn't have
+any of the output from the time stuff hung. i.e. the log starts
+at kernel time 669.487771 seconds, and the hung task report is at:
 
-are available in the Git repository at:
+684.588608][   T28] INFO: task syz-executor.0:19830 blocked for more than 143 seconds
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+About 25 seconds later. So the hung tasks were running at about
+540s, and that's just not in the logs.
 
-for you to fetch changes up to 1acfe2c1225899eab5ab724c91b7e1eb2881b9ab:
+Every report has a different combination of filesystems being
+exercised, and a couple of them didn't even have XFS in them.
 
-  virtio_ring: fix avail_wrap_counter in virtqueue_add_packed (2023-09-03 18:10:24 -0400)
+So at this point, there is no single filesystem that the reports
+actually indicate is the cause, the reports don't contain the actual
+operations that hung, and there's basically nothing to go on so far.
+Hence putting it in the "fs" bucket (which encompasses all things
+filesystems!) is the rigth thing to do.
 
-----------------------------------------------------------------
-virtio: features
+The only commonality I kinda see is that secondary processes that
+are hung seem mostly to be in directory operations waiting on inode
+locks - either lookup or readdir, so it's entirely possible that a
+filesystem has screwed up ->iterate_shared locking in some way...
 
-a small pull request this time around, mostly because the
-vduse network got postponed to next relase so we can be sure
-we got the security store right.
+> Can the kernel be configured to dump backtraces from *all* threads?
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+It already is (sysrq-t), but I'm not sure that will help - if it is
+a leaked unlock then nothing will show up at all.
 
-----------------------------------------------------------------
-Eugenio Pérez (4):
-      vdpa: add VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK flag
-      vdpa: accept VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK backend feature
-      vdpa: add get_backend_features vdpa operation
-      vdpa_sim: offer VHOST_BACKEND_F_ENABLE_AFTER_DRIVER_OK
-
-Jason Wang (1):
-      virtio_vdpa: build affinity masks conditionally
-
-Xuan Zhuo (12):
-      virtio_ring: check use_dma_api before unmap desc for indirect
-      virtio_ring: put mapping error check in vring_map_one_sg
-      virtio_ring: introduce virtqueue_set_dma_premapped()
-      virtio_ring: support add premapped buf
-      virtio_ring: introduce virtqueue_dma_dev()
-      virtio_ring: skip unmap for premapped
-      virtio_ring: correct the expression of the description of virtqueue_resize()
-      virtio_ring: separate the logic of reset/enable from virtqueue_resize
-      virtio_ring: introduce virtqueue_reset()
-      virtio_ring: introduce dma map api for virtqueue
-      virtio_ring: introduce dma sync api for virtqueue
-      virtio_net: merge dma operations when filling mergeable buffers
-
-Yuan Yao (1):
-      virtio_ring: fix avail_wrap_counter in virtqueue_add_packed
-
-Yue Haibing (1):
-      vdpa/mlx5: Remove unused function declarations
-
- drivers/net/virtio_net.c           | 230 ++++++++++++++++++---
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |   3 -
- drivers/vdpa/vdpa_sim/vdpa_sim.c   |   8 +
- drivers/vhost/vdpa.c               |  15 +-
- drivers/virtio/virtio_ring.c       | 412 ++++++++++++++++++++++++++++++++-----
- drivers/virtio/virtio_vdpa.c       |  17 +-
- include/linux/vdpa.h               |   4 +
- include/linux/virtio.h             |  22 ++
- include/uapi/linux/vhost_types.h   |   4 +
- 9 files changed, 625 insertions(+), 90 deletions(-)
-
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
