@@ -2,219 +2,2352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96759790E89
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:46:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5279A790E87
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 23:46:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345818AbjICVqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 17:46:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
+        id S1343815AbjICVqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 17:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234657AbjICVqx (ORCPT
+        with ESMTP id S235149AbjICVqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 17:46:53 -0400
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A51021A5
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 14:46:27 -0700 (PDT)
-Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 383KMNSY006065;
-        Sun, 3 Sep 2023 21:45:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-03-30;
- bh=TfUX5x2DNLsi0eTc/a1ZXc8BiDFqUB0fsnHL2Iu/VIs=;
- b=FPlKpBDbzj7rqBI7AnTcel//DfOgKQIEbKe+HHcWio581IPBx5mknFQS79vzWFs/W0ko
- Ua5l07KTckFuvT0vzyBi5SvhsGzxdbF/Kj4hnRHsP7mMiecdO4Z5KYx7WA5/f4YVBUcS
- 0ESRBHyOYJHNAkkrafzZdCNgyZt/740K6uWyViM5ao7eIsgAZMaHVB8Kj9ClxyStIipK
- xX3h3/vowReTgAcqTFxQp+/GxMGkfBQ4rG9jP8TbOj8U3KPag6fh0rvIHl7liSNM9hvL
- Usj/GYi9i3Rl2E6zMTl3h9BGRfluuvyhW18pAARwpnB9JmPVqEbt1rgQlAE3i5pSLjrE Pw== 
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3suw3csxjn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 03 Sep 2023 21:45:46 +0000
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 383JYAsw016311;
-        Sun, 3 Sep 2023 21:45:45 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2176.outbound.protection.outlook.com [104.47.55.176])
-        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3suug30hbj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 03 Sep 2023 21:45:45 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=crVW0Zp3bO2+1dAAxCiuEgN+ZW0+zDKiCsZO++7feftuMOEQwKs7nS9QhX5h9/K1SMUgG6dNKMAS3RrrJu0/e9yMlVqvtfssiKCEbnc7UEOiDi8vsobOXfSEs2nyCt7HG3yR2gSY3H0UOz5KazBoFh6jynaLWKlkcR5ZkPNb7Vw0I+0YPE5khGJ7Ut/mEuByipMfFHIooFwk1s+Jin4odO9edD/CMCuyAleyNEZ5i3xaDQDGAS4v4omgeTNbX+z4iLfc9VUNa6QZFYS6lhh55KmqAlcYCEe7f+nCpr+QJZDMbX/pBqTM10H7kFgjik1lq/RkFfxiS7ekPUr23DkKaw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TfUX5x2DNLsi0eTc/a1ZXc8BiDFqUB0fsnHL2Iu/VIs=;
- b=WRjLOu4YQEbnZNjZhPkcFiw/SDH5fuaSu8DPefWbHQCZrMhVRszeFwM41Pekmz4D7HxrkwtqzS3p6rfXpTErY02D2BngXE4qzyHeMvFRY4MFqzW8FRigDujkITNx//FS+/SrfqDphPf2yN9CDQI4O9xEuDliOy62J3Fe+s42yqQodu+oK2PWcR/XqFoiLJu6KCUNgFki9GYDiB3wOWDdHGVHAEBupq55bfkgnbEkdiGZPt2kzT3+OrCyNEza8BekXpBn4OXyhPrS7LB9BwU0RJ7Z8oYbesrZIc626yHwOPKnkkRCinhASND0P1L5KgXnxemJem4dovqRDulxtfDXXA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TfUX5x2DNLsi0eTc/a1ZXc8BiDFqUB0fsnHL2Iu/VIs=;
- b=r62+QgwHjv19q8jvvwhU/jtlZ8pv0BnT7BaBx66aIt+PSavvcY0/xmazJXyTTxhS92JFTEWR/rqQJ5NTUVz3SKpuQyGulfxpsfLv+Hw7X4SEzmSzkHp6x2lK8sxQWJXItEx1dt4aqxnkBz0ATd6VzUAfHQBL1TCvf3KZYxUj7eU=
-Received: from MW5PR10MB5738.namprd10.prod.outlook.com (2603:10b6:303:19b::14)
- by DS7PR10MB7346.namprd10.prod.outlook.com (2603:10b6:8:eb::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Sun, 3 Sep
- 2023 21:45:42 +0000
-Received: from MW5PR10MB5738.namprd10.prod.outlook.com
- ([fe80::5943:cf66:5683:21be]) by MW5PR10MB5738.namprd10.prod.outlook.com
- ([fe80::5943:cf66:5683:21be%4]) with mapi id 15.20.6745.026; Sun, 3 Sep 2023
- 21:45:42 +0000
-Message-ID: <82009ea8-ad86-4829-b0a7-7dacda762aad@oracle.com>
-Date:   Sun, 3 Sep 2023 16:45:39 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] jfs: fix array-index-out-of-bounds in dbFindLeaf
-Content-Language: en-US
-To:     Manas Ghandat <ghandatmanas@gmail.com>, shaggy@kernel.org,
-        liushixin2@huawei.com
-Cc:     linux-kernel@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-        Linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+aea1ad91e854d0a83e04@syzkaller.appspotmail.com
-References: <20230829165244.460154-1-ghandatmanas@gmail.com>
- <e62dbf53-9d74-45e5-b44e-53140672b8b5@oracle.com>
- <ae6ce935-96eb-3d40-f252-54fff7eb0ea9@gmail.com>
- <f9475918-2186-49b8-b801-6f0f9e75f4fa@oracle.com>
- <5dd9b332-49e3-877d-125b-1de5b46af4d5@gmail.com>
-From:   Dave Kleikamp <dave.kleikamp@oracle.com>
-In-Reply-To: <5dd9b332-49e3-877d-125b-1de5b46af4d5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: CH0PR03CA0420.namprd03.prod.outlook.com
- (2603:10b6:610:11b::25) To MW5PR10MB5738.namprd10.prod.outlook.com
- (2603:10b6:303:19b::14)
+        Sun, 3 Sep 2023 17:46:11 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 590C6E5;
+        Sun,  3 Sep 2023 14:45:40 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (213.211-177-91.adsl-dyn.isp.belgacom.be [91.177.211.213])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1E3F416C6;
+        Sun,  3 Sep 2023 23:44:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693777448;
+        bh=ud+G/ri5A4NxftyQoCFw3uCXtH2wlnCwKkPNzcJXyfg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uMgD+sdI+nIXq5o0ev8/uZi8jPg0/jNF3NfKo7zvU1DQu0x0veiayODWfK0TUO6y9
+         kP76cuNuTz5GQGrMQOJAmw5jMmN3zNvBn7LGTum+yWJWGR5g6Se1ntFVGLCYiHqIWJ
+         rg5ZejCxHD0Q9Jy4TDmHV3G4qp/lzfza0TuhuRY8=
+Date:   Mon, 4 Sep 2023 00:45:44 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Umang Jain <umang.jain@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lee Jackson <lee.jackson@arducam.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Nicholas Roth <nicholas@rothemail.net>,
+        Mikhail Rudenko <mike.rudenko@gmail.com>,
+        kieran.bingham@ideasonboard.com,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        jacopo.mondi@ideasonboard.com
+Subject: Re: [PATCH 2/2] media: i2c: imx519: Support for the Sony IMX519
+ sensor
+Message-ID: <20230903214544.GH13794@pendragon.ideasonboard.com>
+References: <20230727154108.308320-1-umang.jain@ideasonboard.com>
+ <20230727154108.308320-3-umang.jain@ideasonboard.com>
+ <ZPMxVDKcOMIimQ/6@valkosipuli.retiisi.eu>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW5PR10MB5738:EE_|DS7PR10MB7346:EE_
-X-MS-Office365-Filtering-Correlation-Id: 6acffbc6-c155-44d9-6bf4-08dbacc71f18
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: N2ogqO6SixulE9vl6z0WA9lBfRVlFxdfa9g+FP8rqBDpoQLL7QzqmyhXz43KIdviTebbSkTF+Zfp9T/uQAeSW1Eg8HsePN3Y9acR+mFn81j0G35KUGuI/NtsckWwofe4Jb8ZupmVVid8TEvpcrDS3+lXCfyGJ/Yp3q8MFmaO+f92WkTtrDISBMcO+z1QdaxNEB29DhjLUFWUsE+OXxr2eNLmlGZzQovBvCGyP/jOhL6MskGuan5EmplUa5/nwAO3Xd92fShAGYyHRQv5MVdc2P/5gV68jY4GpNJMZAD/RfEOQ9Dt6/r2GK8L5/GA1gvq4E0CmasXoJp36LS+CM9Qnicd6070yuuKE9n36+NzQxSqMldpNEZ/wJjOJ+jftl9yXBlfFt0P29f++KjgRVIR7UMad0O0eVOdsbbhIuEya3PHvO3NGJ4d4QgGqxkD0U6Uf3IgghzF19P1VbGP912trpspPn71/YbuG5NTij4fcVbTAn+MJcPmaF0WvJ+RCzU+jIX19/nUBSmMadbVA44x778YRDzgBx4S8UXdP1h7QZHQiTb6LHIuIk1k2DpN5gGVFwefOaahngMP0aXXT9dnwCXKhIBcULFvTS94ieSopot+q4BRXE4+aZWjAyPELBtuoynJOCUsn6fXwxbYRlhgug==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR10MB5738.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(366004)(396003)(39860400002)(451199024)(186009)(1800799009)(31686004)(26005)(44832011)(8936002)(6666004)(4326008)(8676002)(2616005)(5660300002)(6512007)(53546011)(6486002)(6506007)(41300700001)(478600001)(66946007)(66476007)(66556008)(86362001)(31696002)(316002)(38100700002)(36756003)(2906002)(966005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eUpYcWxDTkNPY2xkTGVGd0JrRFpGbyswRHZlNVVqNTFraXRHdXZnU1FIVkoz?=
- =?utf-8?B?VjFiWGtJbnRIelVDbzF1RXlPV090M0ZsL1h2eUdIa1NFTUtKNjc1YndYZUxP?=
- =?utf-8?B?eTVnbGIycEM5V0dRWE1rcXkzcTBFUGNSbE5CcVFzQkZ4ZXhXYkVER3JtOGhl?=
- =?utf-8?B?SE1XVzRrbmpnQWhjNndHVFZETXpTTTdQVWNkSmY5UFVQSmdtUHpQamN0WmNY?=
- =?utf-8?B?NElqWjlZblZreTg1RjB2VmlYanB5N0t6eWpNSEIxbUFBR1NPdHdtMzNOcDQ1?=
- =?utf-8?B?eHZ3eTdNQlFCOG15OWxGRHFFeDZFZ0o4OU4yRFZEQzRhUVpRVVBGMTJZd2Ir?=
- =?utf-8?B?Y3UvK0MxU2tyMUJJNzZnbXN2MlRFV29iZ1FwRVFtNThDL0FHR0R5VDFSM3Jq?=
- =?utf-8?B?Vks2M3ZzWHI1ckJrbVRaVGpGYm5EOXBhd04zaTdBcmF0MkZKOS9SSXZ4WVJT?=
- =?utf-8?B?c2JEWW5MSERLQmZvTHVQR0IvTWNtbWZhNXBPWW9PMkNyV3h5Tm1ZMER5bFg2?=
- =?utf-8?B?b20wbVdkSWYraDVERENRcnIzUGs2VFdmdFNnWjZtTUU0TTF0bHlnNnlPbEhU?=
- =?utf-8?B?Z25ZcEZOanFXMnp6M0dsa2Y2OFQvT1BEMCt6d2k3OUxxRHNOL25TaFZCVzZ6?=
- =?utf-8?B?Y2lOK084cFlGK1B4cUw0S2FaTEdQblM5a05PT2twSkxRRWN1TGtEbXQ3MWV1?=
- =?utf-8?B?NnlJZVVsb3JlOW5WTmZZbk5iYjJaNXNEWmtBY0g3TDJjVFl6M1hJeitqYk42?=
- =?utf-8?B?NW5GZkR4T2lBWHdDMlp6SU5VSlJDOGhuYTRIUytJRDRmSWR5d0hoQTFpdzFv?=
- =?utf-8?B?NWhBNmxjZUVuazQ2Zk5QenpHaUw0QnJTakJzNnQvZ3pzMDE5a0xNL1g3T3po?=
- =?utf-8?B?a0ZGTktySTFXUWM5ejQ5ckRNbEd3TjV4c29FblFyV1V2QzdHT3RMU2JwWVhD?=
- =?utf-8?B?TEt1MHozNUZoNkJqaUZhemZLU2ZaeVFYU1pvR093QXdxbmw5a1RCd0VETnBi?=
- =?utf-8?B?QlM1QUR6M1puTlI5S3laSGxxZDgwRXJVUndhWkoyR3RHOFFLdnBiaUUvV2xk?=
- =?utf-8?B?RU5xQ1g3N0tnMFJWQUFFYzR2Wm1wNkpJMGJJckY4VkFCa0d0dmJ2cU1NNUJj?=
- =?utf-8?B?VDRvVHY3ZXFVbGNORjBZYXBSS3lBYkdsR3NoS1I4MUxTbDlXSDhBZVJxMGpB?=
- =?utf-8?B?czN0K2tZQzd5VjlOUTRkbkhWZE40bkZWNDd1aU1GYzZGTCtjMGF2Vk1sT3d0?=
- =?utf-8?B?SjQ4ZFVzMHcyL0d0Ni9leVdBa05aVXRJbDFYa2NJS2NNYXZlVkJQV2ZXQ1p0?=
- =?utf-8?B?aTIwdGZXdnZrenptRUtPSVNVQ3pMWWVKclN1UU0vc3VWdFE4WE1LWXVrb2JO?=
- =?utf-8?B?V0dBRnpRdEg0SHZLb1BqYmJwbFZiMXd2SmVoSURES0o1Z1hpSmNhWXFza3ZW?=
- =?utf-8?B?YVlNRDA4USsyU1Z1ZVgyd0JPR09MZUYzckxIQkkzcTRBYi9rNlA5U2FTYnkr?=
- =?utf-8?B?TG1HaHFxT2EzVG5SaXM5SCtIbE1zbzlFa1ZqZ01OZHcvMXA1LzVvTWJ2Q2ox?=
- =?utf-8?B?dmNpS3F5TCtraU9CMU5oV1NVVkRyR2wwTXFlMm9tSzg3U0tja24vekxZSlcw?=
- =?utf-8?B?ak8vNG9HNkpybndzRUdpZ0lMQnhQdnU5NUxYVFdjbE9Eb05manJoUVBMdU1W?=
- =?utf-8?B?ejA5MjJyTWRQUnpIOEJHT2dZZ2hHNTQ5QXU5cWk3NEViV25MaHZuZG5YR242?=
- =?utf-8?B?aWJ1bVZpMVV6YkdUV2dsZ3dqWm5lTEV6QTM4UFAwN0lZS2o5ODhYSGNoVFdC?=
- =?utf-8?B?ZUZhWVVPdEV2MzlncmdsNHovTmNBOG5PeEtUUitleG4xUFNPSi9UNEE1SDRT?=
- =?utf-8?B?NnZpNUlEOFNjOThQbDkxTVU0bVA1VWxkdXF1MVh3Ni9nVWsvYlJaeHhXdS9Q?=
- =?utf-8?B?UUZrZkttd2RYWmtIVmFxQU54c0FNWGtENGhrUzZZQUkyV3g1QURmblJtNFlr?=
- =?utf-8?B?bVZiNkcrSzNUSjYzaHhkQzNXUW9EN3Y4UFFwbkdtSWxoRHNSOU14dUUrN0JR?=
- =?utf-8?B?N3hydU9HSDBNSzRjYmM3ZG4yK0NScGZUUlEwaEwrYmNQdEtMOFFuMkRqUU1y?=
- =?utf-8?B?cEZwM29NMDBHeHViOUovQTRQR05VUUlxa3JObm5uOEtiV0R6eW1YdTdBaWtt?=
- =?utf-8?B?Q0E9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?utf-8?B?T3h5WG01ek5pRG5Rd0lLT1lOVlBvVTZkcTVWS2k0aFlBbDdabTRqRys1OHJm?=
- =?utf-8?B?SHVLL1FiRWdMV3FvdE54cU9WWnZIc2JCUXkxQXYyeVZKZHl1TFQ5QXJ1Rkpu?=
- =?utf-8?B?VEU1bWw0R3pGZHFrYTUwM3AvRkdZS1NjWlBVQTdzZUxETm45a29zbDhwMEpu?=
- =?utf-8?B?N20wOWhMR1E5NDA0Y0hjS290eGRwaGNTS2pmUVNIZ2JRSmtlc01LWElUVnBw?=
- =?utf-8?B?QVczQmRZNU1uemFIcUtMeURidE5oTVJ3ekt4TEJnaXlJWkxBN0Z0YVlrQzBp?=
- =?utf-8?B?bndGM01qUnVQMWFKTzE4Z0oveUxUZzFFMThSSmk5c2s1dmFwQ2hVa1J2cjZk?=
- =?utf-8?B?VTZqWTlraXFjakVMdkZvQ2h3Z1VUZ0N0eG9MTG5XazVINjhkWVhuaUY3aHIw?=
- =?utf-8?B?ay9VczVJUXd0MVNUOWNCUkRlTzFyTU5QbFlHWmx3VVZMZE9kbjZNemwwcTlm?=
- =?utf-8?B?K1lIZ29qRWRqd0FneE9nZ2JiNDN6aGZIVDhpcTZ4WmtuU0x4YVNIRm5ST0FE?=
- =?utf-8?B?MC8wUmJhTnZaQ3p6YjdmRmlPRVpXSC80MmEvUm5mZGt6ek1YaVFnYjlueEx5?=
- =?utf-8?B?Z0pwUW5QMnRKaFo0S21ORnVpV0xoeGc3cThUWU9Tbyt5cFJSL2ZvK1hNWll5?=
- =?utf-8?B?eFFYNmhJRUNWUlp4TStSVGVqYkJCQmd2Ry9HTk9YdXllUVZGbDU2WjRIb2M5?=
- =?utf-8?B?SGh0SkVObFFicjUzWlRrQzA4ZEZ0M2Z1bWRXMDhlTXhLcW1TcVFQQWZhZFh6?=
- =?utf-8?B?V3I3eHlLZmpyQkZ4Z3NyYUVsYS9BR2dPMGlyN2ZFTVd4Y0MxOWd4QTkvRGd6?=
- =?utf-8?B?VEJHTDMvZzRwMUNES01KNFBrUisrSkt2QTF2OFdqL3ZyLzQzYldkNDc5MDF0?=
- =?utf-8?B?cHdMUVFJVWdyMmY3K2hGMXMvMTNwVWg2OHdMRFZBUWFpMHpQRk11c3pSSXJP?=
- =?utf-8?B?TWVpSko1SkZEWXpsbWFyaFk0OXRqU2hRNWpqK3hPRmpaWjJ4VmF5SDBrR0Fz?=
- =?utf-8?B?bEhNTjFxU1lMRGFkcVFNS2lEV1FMcnlFV1BVM0RlKzhCOHRWQ29hOUhISG14?=
- =?utf-8?B?bGN6UDNOdld4bU1JazFrVHA5dGc3SnNmQUh1cDNDejduUmk2MDIvL09Mdk5C?=
- =?utf-8?B?MUtLQUFVTkV0SkxJS3VYYmRtdUZ0M3hUNllWbWpPZ2VHTkVIQWs0MXlKVGlV?=
- =?utf-8?B?YjFUdTQ5MVJ6aTFoeG1LaGdLOEdrV0lMM0dJYjVzTW5tY3JaUU5iYk43dnhV?=
- =?utf-8?B?cytzb01JQmRMRU5QR1BCZUJGZEVkQjdVdFZsUHR0Ti9qc3Vzd2Z1WFhMbVhs?=
- =?utf-8?B?TUJhMkZrZzZJaU1qNXpCTUxkZnYyMlFZc3BYWWFQRW11azVyOHBaZWxMRFUw?=
- =?utf-8?Q?IabFx9p+mbKR/aVIEUpV/XAnVmWLSo2g=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6acffbc6-c155-44d9-6bf4-08dbacc71f18
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR10MB5738.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Sep 2023 21:45:42.5406
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: JELznN4F6MC2hRUQ99OMg28XE/sbOlX+ZNVccJ3MXRiBriN/0aiSDG8GwE+1gX4ZGHTGUomJ4m+eJ+Uk9ow108I34RAsX0GzStC0JO+EeK4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB7346
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-03_19,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
- bulkscore=0 mlxlogscore=909 malwarescore=0 phishscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309030205
-X-Proofpoint-GUID: lMaP8cd0dNPDju2fpv_aF2rxigCcXw27
-X-Proofpoint-ORIG-GUID: lMaP8cd0dNPDju2fpv_aF2rxigCcXw27
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZPMxVDKcOMIimQ/6@valkosipuli.retiisi.eu>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,PDS_OTHER_BAD_TLD,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/2/23 12:45PM, Manas Ghandat wrote:
-> Actually I was talking about the stree attribute of dmtree which is 
-> present in both dmaptree and dmapctl.
-> 
-> Link : 
-> https://elixir.bootlin.com/linux/v6.5.1/source/fs/jfs/jfs_dmap.h#L168
-> 
-> Since it is an array we can add a check for the size of array like the 
-> code below.
-> 
-> 
-> +            if (x + n > (sizeof(tp->dmt_stree)/sizeof(s8)))
-> +                 return -ENOSPC;
+On Sat, Sep 02, 2023 at 12:57:56PM +0000, Sakari Ailus wrote:
+> On Thu, Jul 27, 2023 at 09:11:08PM +0530, Umang Jain wrote:
+> > From: Lee Jackson <lee.jackson@arducam.com>
+> > 
+> > Adds a driver for the 16MPix IMX519 CSI2 sensor.
 
-That will always evaluate to the same thing (the size of stree in 
-dmapctl). It would be valid, since that is the larger number, but it 
-wouldn't catch all overflows of dmaptree's stree.
+Commit messages must be written in the imperative mood, so s/Adds/Add/
 
+> > Whilst the sensor supports 2 or 4 CSI2 data lanes, this driver
+> > currently only supports 2 lanes. The driver also supports
+> > Phase Detection Auto Focus (PDAF).
+> > 
+> > The following Bayer modes are currently available:
+> > 
+> > 4656x3496 10-bit @ 10fps
+> > 3840x2160 10-bit (cropped) @ 21fps
+> > 2328x1748 10-bit (binned) @ 30fps
+> > 1920x1080 10-bit (cropped/binned) @ 60fps
+> > 1280x720 10-bit (cropped/binned) @ 120fps
+> > 
+> > The imx519 driver to adverise support for embedded data streams.
 
+Spelling mistakes.
+
+> > The imx519 sensor subdevice overloads the media pad to differentiate
+> > between image stream (pad 0) and embedded data stream (pad 1) when
+> > performing the v4l2_subdev_pad_ops functions.
+
+This needs to be changed to use the streams API.
+
+> > Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> > Tested-by: Umang Jain <umang.jain@ideasonboard.com>
+
+Also, the driver must be tested against the upstream kernel.
+
+> > ---
+> >  MAINTAINERS                |    8 +
+> >  drivers/media/i2c/Kconfig  |   11 +
+> >  drivers/media/i2c/Makefile |    1 +
+> >  drivers/media/i2c/imx519.c | 2134 ++++++++++++++++++++++++++++++++++++
+> >  4 files changed, 2154 insertions(+)
+> >  create mode 100644 drivers/media/i2c/imx519.c
+> > 
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 63c7ce10a4ba..e5a33733f928 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -19747,6 +19747,14 @@ T:	git git://linuxtv.org/media_tree.git
+> >  F:	Documentation/devicetree/bindings/media/i2c/sony,imx415.yaml
+> >  F:	drivers/media/i2c/imx415.c
+> >  
+> > +SONY IMX519 SENSOR DRIVER
+> > +M:	Lee Jackson <lee.jackson@arducam.com>
+> > +L:	linux-media@vger.kernel.org
+> > +S:	Maintained
+> > +T:	git git://linuxtv.org/media_tree.git
+> > +F:	Documentation/devicetree/bindings/media/i2c/sony,imx519.yaml
+> > +F:	drivers/media/i2c/imx519.c
+> > +
+> >  SONY MEMORYSTICK SUBSYSTEM
+> >  M:	Maxim Levitsky <maximlevitsky@gmail.com>
+> >  M:	Alex Dubov <oakad@yahoo.com>
+> > diff --git a/drivers/media/i2c/Kconfig b/drivers/media/i2c/Kconfig
+> > index 256d55bb2b1d..ebc2c7c42c53 100644
+> > --- a/drivers/media/i2c/Kconfig
+> > +++ b/drivers/media/i2c/Kconfig
+> > @@ -255,6 +255,17 @@ config VIDEO_IMX415
+> >  	  To compile this driver as a module, choose M here: the
+> >  	  module will be called imx415.
+> >  
+> > +config VIDEO_IMX519
+> > +	tristate "Arducam IMX519 sensor support"
+
+Why is this Arducam-specific ?
+
+> > +	depends on I2C && VIDEO_DEV
+> > +	select VIDEO_V4L2_SUBDEV_API
+> > +	help
+> > +	  This is a Video4Linux2 sensor driver for the Arducam
+> > +	  IMX519 camera.
+> > +
+> > +	  To compile this driver as a module, choose M here: the
+> > +	  module will be called IMX519.
+
+Not quite right.
+
+> > +
+> >  config VIDEO_MAX9271_LIB
+> >  	tristate
+> >  
+> > diff --git a/drivers/media/i2c/Makefile b/drivers/media/i2c/Makefile
+> > index b44dacf935f4..872b98e5443f 100644
+> > --- a/drivers/media/i2c/Makefile
+> > +++ b/drivers/media/i2c/Makefile
+> > @@ -49,6 +49,7 @@ obj-$(CONFIG_VIDEO_IMX335) += imx335.o
+> >  obj-$(CONFIG_VIDEO_IMX355) += imx355.o
+> >  obj-$(CONFIG_VIDEO_IMX412) += imx412.o
+> >  obj-$(CONFIG_VIDEO_IMX415) += imx415.o
+> > +obj-$(CONFIG_VIDEO_IMX519) += imx519.o
+> >  obj-$(CONFIG_VIDEO_IR_I2C) += ir-kbd-i2c.o
+> >  obj-$(CONFIG_VIDEO_ISL7998X) += isl7998x.o
+> >  obj-$(CONFIG_VIDEO_KS0127) += ks0127.o
+> > diff --git a/drivers/media/i2c/imx519.c b/drivers/media/i2c/imx519.c
+> > new file mode 100644
+> > index 000000000000..54420b7738f1
+> > --- /dev/null
+> > +++ b/drivers/media/i2c/imx519.c
+> > @@ -0,0 +1,2134 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * A V4L2 driver for Sony IMX519 cameras.
+> > + * Copyright (C) 2023 Arducam Technology co., Ltd.
+> > + *
+> > + */
+> > +#include <asm/unaligned.h>
+> > +#include <linux/clk.h>
+> > +#include <linux/delay.h>
+> > +#include <linux/gpio/consumer.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/module.h>
+> > +#include <linux/of_device.h>
+> > +#include <linux/pm_runtime.h>
+> > +#include <linux/regulator/consumer.h>
+> > +#include <media/v4l2-ctrls.h>
+> > +#include <media/v4l2-device.h>
+> > +#include <media/v4l2-event.h>
+> > +#include <media/v4l2-fwnode.h>
+> > +#include <media/v4l2-mediabus.h>
+> > +
+> > +#define IMX519_REG_VALUE_08BIT		1
+> > +#define IMX519_REG_VALUE_16BIT		2
+> > +
+> > +/* Chip ID */
+> > +#define IMX519_REG_CHIP_ID		0x0016
+> > +#define IMX519_CHIP_ID			0x0519
+> > +
+> > +#define IMX519_REG_MODE_SELECT		0x0100
+> > +#define IMX519_MODE_STANDBY		0x00
+> > +#define IMX519_MODE_STREAMING		0x01
+> > +
+> > +#define IMX519_REG_ORIENTATION		0x101
+> > +
+> > +#define IMX519_XCLK_FREQ		24000000
+> > +
+> > +#define IMX519_DEFAULT_LINK_FREQ	408000000
+> > +
+> > +/* Pixel rate is fixed at 426MHz for all the modes */
+> > +#define IMX519_PIXEL_RATE		426666667
+> > +
+> > +/* V_TIMING internal */
+> > +#define IMX519_REG_FRAME_LENGTH		0x0340
+> > +#define IMX519_FRAME_LENGTH_MAX		0xffdc
+> > +
+> > +/* Long exposure multiplier */
+> > +#define IMX519_LONG_EXP_SHIFT_MAX	7
+> > +#define IMX519_LONG_EXP_SHIFT_REG	0x3100
+> > +
+> > +/* Exposure control */
+> > +#define IMX519_REG_EXPOSURE		0x0202
+> > +#define IMX519_EXPOSURE_OFFSET		32
+> > +#define IMX519_EXPOSURE_MIN		20
+> > +#define IMX519_EXPOSURE_STEP		1
+> > +#define IMX519_EXPOSURE_DEFAULT		0x3e8
+> > +#define IMX519_EXPOSURE_MAX		(IMX519_FRAME_LENGTH_MAX - \
+> > +					 IMX519_EXPOSURE_OFFSET)
+> > +
+> > +/* Analog gain control */
+> > +#define IMX519_REG_ANALOG_GAIN		0x0204
+> > +#define IMX519_ANA_GAIN_MIN		0
+> > +#define IMX519_ANA_GAIN_MAX		960
+> > +#define IMX519_ANA_GAIN_STEP		1
+> > +#define IMX519_ANA_GAIN_DEFAULT		0x0
+> > +
+> > +/* Digital gain control */
+> > +#define IMX519_REG_DIGITAL_GAIN		0x020e
+> > +#define IMX519_DGTL_GAIN_MIN		0x0100
+> > +#define IMX519_DGTL_GAIN_MAX		0xffff
+> > +#define IMX519_DGTL_GAIN_DEFAULT	0x0100
+> > +#define IMX519_DGTL_GAIN_STEP		1
+> > +
+> > +/* Test Pattern Control */
+> > +#define IMX519_REG_TEST_PATTERN		0x0600
+> > +#define IMX519_TEST_PATTERN_DISABLE	0
+> > +#define IMX519_TEST_PATTERN_SOLID_COLOR	1
+> > +#define IMX519_TEST_PATTERN_COLOR_BARS	2
+> > +#define IMX519_TEST_PATTERN_GREY_COLOR	3
+> > +#define IMX519_TEST_PATTERN_PN9		4
+> > +
+> > +/* Test pattern colour components */
+> > +#define IMX519_REG_TEST_PATTERN_R	0x0602
+> > +#define IMX519_REG_TEST_PATTERN_GR	0x0604
+> > +#define IMX519_REG_TEST_PATTERN_B	0x0606
+> > +#define IMX519_REG_TEST_PATTERN_GB	0x0608
+> > +#define IMX519_TEST_PATTERN_COLOUR_MIN	0
+> > +#define IMX519_TEST_PATTERN_COLOUR_MAX	0x0fff
+> > +#define IMX519_TEST_PATTERN_COLOUR_STEP	1
+> > +#define IMX519_TEST_PATTERN_R_DEFAULT	IMX519_TEST_PATTERN_COLOUR_MAX
+> > +#define IMX519_TEST_PATTERN_GR_DEFAULT	0
+> > +#define IMX519_TEST_PATTERN_B_DEFAULT	0
+> > +#define IMX519_TEST_PATTERN_GB_DEFAULT	0
+> > +
+> > +/* Embedded metadata stream structure */
+> > +#define IMX519_EMBEDDED_LINE_WIDTH	(5820 * 3)
+> > +#define IMX519_NUM_EMBEDDED_LINES	1
+> > +
+> > +/* IMX519 native and active pixel array size. */
+> > +#define IMX519_NATIVE_WIDTH		4672U
+> > +#define IMX519_NATIVE_HEIGHT		3648U
+> > +#define IMX519_PIXEL_ARRAY_LEFT		8U
+> > +#define IMX519_PIXEL_ARRAY_TOP		48U
+> > +#define IMX519_PIXEL_ARRAY_WIDTH	4656U
+> > +#define IMX519_PIXEL_ARRAY_HEIGHT	3496U
+> > +
+> > +enum pad_types {
+> > +	IMAGE_PAD,
+> > +	METADATA_PAD,
 > 
-> On 01/09/23 22:38, Dave Kleikamp wrote:
->> On 8/31/23 10:19AM, Manas Ghandat wrote:
->>> I was wondering if we could implement a get_tree_size macro wherein 
->>> we could find the tree size so that we can do the comparison. SInce 
->>> the tp->dmt_stree is an array we can get its size and fix the out of 
->>> bounds. Would this thing work?
->>
->> dmtree_t is a union of two nearly identical structures that both 
->> contain an stree. The only real difference in the structures is the 
->> size of the stree, so dbFindLeaf doesn't really know which is being 
->> used by the caller.
->>
+> With streams, you only need one pad. (See that imx390 driver for an
+> example (below).)
+> 
+> > +	NUM_PADS
+> > +};
+> > +
+> > +struct imx519_reg {
+> > +	u16 address;
+> > +	u8 val;
+> > +};
+> > +
+> > +struct imx519_reg_list {
+> > +	unsigned int num_of_regs;
+> > +	const struct imx519_reg *regs;
+> > +};
+> > +
+> > +/* Mode : resolution and related config&values */
+> > +struct imx519_mode {
+> > +	/* Frame width */
+> > +	unsigned int width;
+> > +
+> > +	/* Frame height */
+> > +	unsigned int height;
+> > +
+> > +	/* H-timing in pixels */
+> > +	unsigned int line_length_pix;
+> > +
+> > +	/* Analog crop rectangle. */
+> > +	struct v4l2_rect crop;
+> > +
+> > +	/* Highest possible framerate. */
+> > +	struct v4l2_fract timeperframe_min;
+> > +
+> > +	/* Default framerate. */
+> > +	struct v4l2_fract timeperframe_default;
+> > +
+> > +	/* Default register values */
+> > +	struct imx519_reg_list reg_list;
+> > +};
+> > +
+> > +static const struct imx519_reg mode_common_regs[] = {
+> > +	{0x0100, 0x00},
+> > +	{0x0136, 0x18},
+> > +	{0x0137, 0x00},
+> > +	{0x3c7e, 0x01},
+> > +	{0x3c7f, 0x07},
+> > +	{0x3020, 0x00},
+> > +	{0x3e35, 0x01},
+> > +	{0x3f7f, 0x01},
+> > +	{0x5609, 0x57},
+> > +	{0x5613, 0x51},
+> > +	{0x561f, 0x5e},
+> > +	{0x5623, 0xd2},
+> > +	{0x5637, 0x11},
+> > +	{0x5657, 0x11},
+> > +	{0x5659, 0x12},
+> > +	{0x5733, 0x60},
+> > +	{0x5905, 0x57},
+> > +	{0x590f, 0x51},
+> > +	{0x591b, 0x5e},
+> > +	{0x591f, 0xd2},
+> > +	{0x5933, 0x11},
+> > +	{0x5953, 0x11},
+> > +	{0x5955, 0x12},
+> > +	{0x5a2f, 0x60},
+> > +	{0x5a85, 0x57},
+> > +	{0x5a8f, 0x51},
+> > +	{0x5a9b, 0x5e},
+> > +	{0x5a9f, 0xd2},
+> > +	{0x5ab3, 0x11},
+> > +	{0x5ad3, 0x11},
+> > +	{0x5ad5, 0x12},
+> > +	{0x5baf, 0x60},
+> > +	{0x5c15, 0x2a},
+> > +	{0x5c17, 0x80},
+> > +	{0x5c19, 0x31},
+> > +	{0x5c1b, 0x87},
+> > +	{0x5c25, 0x25},
+> > +	{0x5c27, 0x7b},
+> > +	{0x5c29, 0x2a},
+> > +	{0x5c2b, 0x80},
+> > +	{0x5c2d, 0x31},
+> > +	{0x5c2f, 0x87},
+> > +	{0x5c35, 0x2b},
+> > +	{0x5c37, 0x81},
+> > +	{0x5c39, 0x31},
+> > +	{0x5c3b, 0x87},
+> > +	{0x5c45, 0x25},
+> > +	{0x5c47, 0x7b},
+> > +	{0x5c49, 0x2a},
+> > +	{0x5c4b, 0x80},
+> > +	{0x5c4d, 0x31},
+> > +	{0x5c4f, 0x87},
+> > +	{0x5c55, 0x2d},
+> > +	{0x5c57, 0x83},
+> > +	{0x5c59, 0x32},
+> > +	{0x5c5b, 0x88},
+> > +	{0x5c65, 0x29},
+> > +	{0x5c67, 0x7f},
+> > +	{0x5c69, 0x2e},
+> > +	{0x5c6b, 0x84},
+> > +	{0x5c6d, 0x32},
+> > +	{0x5c6f, 0x88},
+> > +	{0x5e69, 0x04},
+> > +	{0x5e9d, 0x00},
+> > +	{0x5f18, 0x10},
+> > +	{0x5f1a, 0x0e},
+> > +	{0x5f20, 0x12},
+> > +	{0x5f22, 0x10},
+> > +	{0x5f24, 0x0e},
+> > +	{0x5f28, 0x10},
+> > +	{0x5f2a, 0x0e},
+> > +	{0x5f30, 0x12},
+> > +	{0x5f32, 0x10},
+> > +	{0x5f34, 0x0e},
+> > +	{0x5f38, 0x0f},
+> > +	{0x5f39, 0x0d},
+> > +	{0x5f3c, 0x11},
+> > +	{0x5f3d, 0x0f},
+> > +	{0x5f3e, 0x0d},
+> > +	{0x5f61, 0x07},
+> > +	{0x5f64, 0x05},
+> > +	{0x5f67, 0x03},
+> > +	{0x5f6a, 0x03},
+> > +	{0x5f6d, 0x07},
+> > +	{0x5f70, 0x07},
+> > +	{0x5f73, 0x05},
+> > +	{0x5f76, 0x02},
+> > +	{0x5f79, 0x07},
+> > +	{0x5f7c, 0x07},
+> > +	{0x5f7f, 0x07},
+> > +	{0x5f82, 0x07},
+> > +	{0x5f85, 0x03},
+> > +	{0x5f88, 0x02},
+> > +	{0x5f8b, 0x01},
+> > +	{0x5f8e, 0x01},
+> > +	{0x5f91, 0x04},
+> > +	{0x5f94, 0x05},
+> > +	{0x5f97, 0x02},
+> > +	{0x5f9d, 0x07},
+> > +	{0x5fa0, 0x07},
+> > +	{0x5fa3, 0x07},
+> > +	{0x5fa6, 0x07},
+> > +	{0x5fa9, 0x03},
+> > +	{0x5fac, 0x01},
+> > +	{0x5faf, 0x01},
+> > +	{0x5fb5, 0x03},
+> > +	{0x5fb8, 0x02},
+> > +	{0x5fbb, 0x01},
+> > +	{0x5fc1, 0x07},
+> > +	{0x5fc4, 0x07},
+> > +	{0x5fc7, 0x07},
+> > +	{0x5fd1, 0x00},
+> > +	{0x6302, 0x79},
+> > +	{0x6305, 0x78},
+> > +	{0x6306, 0xa5},
+> > +	{0x6308, 0x03},
+> > +	{0x6309, 0x20},
+> > +	{0x630b, 0x0a},
+> > +	{0x630d, 0x48},
+> > +	{0x630f, 0x06},
+> > +	{0x6311, 0xa4},
+> > +	{0x6313, 0x03},
+> > +	{0x6314, 0x20},
+> > +	{0x6316, 0x0a},
+> > +	{0x6317, 0x31},
+> > +	{0x6318, 0x4a},
+> > +	{0x631a, 0x06},
+> > +	{0x631b, 0x40},
+> > +	{0x631c, 0xa4},
+> > +	{0x631e, 0x03},
+> > +	{0x631f, 0x20},
+> > +	{0x6321, 0x0a},
+> > +	{0x6323, 0x4a},
+> > +	{0x6328, 0x80},
+> > +	{0x6329, 0x01},
+> > +	{0x632a, 0x30},
+> > +	{0x632b, 0x02},
+> > +	{0x632c, 0x20},
+> > +	{0x632d, 0x02},
+> > +	{0x632e, 0x30},
+> > +	{0x6330, 0x60},
+> > +	{0x6332, 0x90},
+> > +	{0x6333, 0x01},
+> > +	{0x6334, 0x30},
+> > +	{0x6335, 0x02},
+> > +	{0x6336, 0x20},
+> > +	{0x6338, 0x80},
+> > +	{0x633a, 0xa0},
+> > +	{0x633b, 0x01},
+> > +	{0x633c, 0x60},
+> > +	{0x633d, 0x02},
+> > +	{0x633e, 0x60},
+> > +	{0x633f, 0x01},
+> > +	{0x6340, 0x30},
+> > +	{0x6341, 0x02},
+> > +	{0x6342, 0x20},
+> > +	{0x6343, 0x03},
+> > +	{0x6344, 0x80},
+> > +	{0x6345, 0x03},
+> > +	{0x6346, 0x90},
+> > +	{0x6348, 0xf0},
+> > +	{0x6349, 0x01},
+> > +	{0x634a, 0x20},
+> > +	{0x634b, 0x02},
+> > +	{0x634c, 0x10},
+> > +	{0x634d, 0x03},
+> > +	{0x634e, 0x60},
+> > +	{0x6350, 0xa0},
+> > +	{0x6351, 0x01},
+> > +	{0x6352, 0x60},
+> > +	{0x6353, 0x02},
+> > +	{0x6354, 0x50},
+> > +	{0x6355, 0x02},
+> > +	{0x6356, 0x60},
+> > +	{0x6357, 0x01},
+> > +	{0x6358, 0x30},
+> > +	{0x6359, 0x02},
+> > +	{0x635a, 0x30},
+> > +	{0x635b, 0x03},
+> > +	{0x635c, 0x90},
+> > +	{0x635f, 0x01},
+> > +	{0x6360, 0x10},
+> > +	{0x6361, 0x01},
+> > +	{0x6362, 0x40},
+> > +	{0x6363, 0x02},
+> > +	{0x6364, 0x50},
+> > +	{0x6368, 0x70},
+> > +	{0x636a, 0xa0},
+> > +	{0x636b, 0x01},
+> > +	{0x636c, 0x50},
+> > +	{0x637d, 0xe4},
+> > +	{0x637e, 0xb4},
+> > +	{0x638c, 0x8e},
+> > +	{0x638d, 0x38},
+> > +	{0x638e, 0xe3},
+> > +	{0x638f, 0x4c},
+> > +	{0x6390, 0x30},
+> > +	{0x6391, 0xc3},
+> > +	{0x6392, 0xae},
+> > +	{0x6393, 0xba},
+> > +	{0x6394, 0xeb},
+> > +	{0x6395, 0x6e},
+> > +	{0x6396, 0x34},
+> > +	{0x6397, 0xe3},
+> > +	{0x6398, 0xcf},
+> > +	{0x6399, 0x3c},
+> > +	{0x639a, 0xf3},
+> > +	{0x639b, 0x0c},
+> > +	{0x639c, 0x30},
+> > +	{0x639d, 0xc1},
+> > +	{0x63b9, 0xa3},
+> > +	{0x63ba, 0xfe},
+> > +	{0x7600, 0x01},
+> > +	{0x79a0, 0x01},
+> > +	{0x79a1, 0x01},
+> > +	{0x79a2, 0x01},
+> > +	{0x79a3, 0x01},
+> > +	{0x79a4, 0x01},
+> > +	{0x79a5, 0x20},
+> > +	{0x79a9, 0x00},
+> > +	{0x79aa, 0x01},
+> > +	{0x79ad, 0x00},
+> > +	{0x79af, 0x00},
+> > +	{0x8173, 0x01},
+> > +	{0x835c, 0x01},
+> > +	{0x8a74, 0x01},
+> > +	{0x8c1f, 0x00},
+> > +	{0x8c27, 0x00},
+> > +	{0x8c3b, 0x03},
+> > +	{0x9004, 0x0b},
+> > +	{0x920c, 0x6a},
+> > +	{0x920d, 0x22},
+> > +	{0x920e, 0x6a},
+> > +	{0x920f, 0x23},
+> > +	{0x9214, 0x6a},
+> > +	{0x9215, 0x20},
+> > +	{0x9216, 0x6a},
+> > +	{0x9217, 0x21},
+> > +	{0x9385, 0x3e},
+> > +	{0x9387, 0x1b},
+> > +	{0x938d, 0x4d},
+> > +	{0x938f, 0x43},
+> > +	{0x9391, 0x1b},
+> > +	{0x9395, 0x4d},
+> > +	{0x9397, 0x43},
+> > +	{0x9399, 0x1b},
+> > +	{0x939d, 0x3e},
+> > +	{0x939f, 0x2f},
+> > +	{0x93a5, 0x43},
+> > +	{0x93a7, 0x2f},
+> > +	{0x93a9, 0x2f},
+> > +	{0x93ad, 0x34},
+> > +	{0x93af, 0x2f},
+> > +	{0x93b5, 0x3e},
+> > +	{0x93b7, 0x2f},
+> > +	{0x93bd, 0x4d},
+> > +	{0x93bf, 0x43},
+> > +	{0x93c1, 0x2f},
+> > +	{0x93c5, 0x4d},
+> > +	{0x93c7, 0x43},
+> > +	{0x93c9, 0x2f},
+> > +	{0x974b, 0x02},
+> > +	{0x995c, 0x8c},
+> > +	{0x995d, 0x00},
+> > +	{0x995e, 0x00},
+> > +	{0x9963, 0x64},
+> > +	{0x9964, 0x50},
+> > +	{0xaa0a, 0x26},
+> > +	{0xae03, 0x04},
+> > +	{0xae04, 0x03},
+> > +	{0xae05, 0x03},
+> > +	{0xbc1c, 0x08},
+> > +	{0xbcf1, 0x02},
+> > +	{0x38a3, 0x00},
+> > +};
+> > +
+> > +/* 16 mpix 10fps */
+> > +static const struct imx519_reg mode_4656x3496_regs[] = {
+> > +	{0x0111, 0x02},
+> > +	{0x0112, 0x0a},
+> > +	{0x0113, 0x0a},
+> > +	{0x0114, 0x01},
+> > +	{0x0342, 0x31},
+> > +	{0x0343, 0x6a},
+> > +	{0x0340, 0x0d},
+> > +	{0x0341, 0xf4},
+> > +	{0x0344, 0x00},
+> > +	{0x0345, 0x00},
+> > +	{0x0346, 0x00},
+> > +	{0x0347, 0x00},
+> > +	{0x0348, 0x12},
+> > +	{0x0349, 0x2f},
+> > +	{0x034a, 0x0d},
+> > +	{0x034b, 0xa7},
+> > +	{0x0220, 0x00},
+> > +	{0x0221, 0x11},
+> > +	{0x0222, 0x01},
+> > +	{0x0900, 0x00},
+> > +	{0x0901, 0x11},
+> > +	{0x0902, 0x0a},
+> > +	{0x3f4c, 0x01},
+> > +	{0x3f4d, 0x01},
+> > +	{0x4254, 0x7f},
+> > +	{0x0401, 0x00},
+> > +	{0x0404, 0x00},
+> > +	{0x0405, 0x10},
+> > +	{0x0408, 0x00},
+> > +	{0x0409, 0x00},
+> > +	{0x040a, 0x00},
+> > +	{0x040b, 0x00},
+> > +	{0x040c, 0x12},
+> > +	{0x040d, 0x30},
+> > +	{0x040e, 0x0d},
+> > +	{0x040f, 0xa8},
+> > +	{0x034c, 0x12},
+> > +	{0x034d, 0x30},
+> > +	{0x034e, 0x0d},
+> > +	{0x034f, 0xa8},
+> > +	{0x0301, 0x06},
+> > +	{0x0303, 0x04},
+> > +	{0x0305, 0x06},
+> > +	{0x0306, 0x01},
+> > +	{0x0307, 0x40},
+> > +	{0x0309, 0x0a},
+> > +	{0x030b, 0x02},
+> > +	{0x030d, 0x04},
+> > +	{0x030e, 0x01},
+> > +	{0x030f, 0x10},
+> > +	{0x0310, 0x01},
+> > +	{0x0820, 0x0a},
+> > +	{0x0821, 0x20},
+> > +	{0x0822, 0x00},
+> > +	{0x0823, 0x00},
+> > +	{0x3e20, 0x01},
+> > +	{0x3e37, 0x01},
+> > +	{0x3e3b, 0x00},
+> > +	{0x38a4, 0x00},
+> > +	{0x38a5, 0x00},
+> > +	{0x38a6, 0x00},
+> > +	{0x38a7, 0x00},
+> > +	{0x38a8, 0x01},
+> > +	{0x38a9, 0x23},
+> > +	{0x38aa, 0x01},
+> > +	{0x38ab, 0x23},
+> > +	{0x0106, 0x00},
+> > +	{0x0b00, 0x00},
+> > +	{0x3230, 0x00},
+> > +	{0x3f14, 0x01},
+> > +	{0x3f3c, 0x01},
+> > +	{0x3f0d, 0x0a},
+> > +	{0x3fbc, 0x00},
+> > +	{0x3c06, 0x00},
+> > +	{0x3c07, 0x48},
+> > +	{0x3c0a, 0x00},
+> > +	{0x3c0b, 0x00},
+> > +	{0x3f78, 0x00},
+> > +	{0x3f79, 0x40},
+> > +	{0x3f7c, 0x00},
+> > +	{0x3f7d, 0x00},
+> > +};
+> > +
+> > +/* 4k 21fps mode */
+> > +static const struct imx519_reg mode_3840x2160_regs[] = {
+> > +	{0x0111, 0x02},
+> > +	{0x0112, 0x0a},
+> > +	{0x0113, 0x0a},
+> > +	{0x0114, 0x01},
+> > +	{0x0342, 0x28},
+> > +	{0x0343, 0xf6},
+> > +	{0x0340, 0x08},
+> > +	{0x0341, 0xd4},
+> > +	{0x0344, 0x01},
+> > +	{0x0345, 0x98},
+> > +	{0x0346, 0x02},
+> > +	{0x0347, 0xa0},
+> > +	{0x0348, 0x10},
+> > +	{0x0349, 0x97},
+> > +	{0x034a, 0x0b},
+> > +	{0x034b, 0x17},
+> > +	{0x0220, 0x00},
+> > +	{0x0221, 0x11},
+> > +	{0x0222, 0x01},
+> > +	{0x0900, 0x00},
+> > +	{0x0901, 0x11},
+> > +	{0x0902, 0x0a},
+> > +	{0x3f4c, 0x01},
+> > +	{0x3f4d, 0x01},
+> > +	{0x4254, 0x7f},
+> > +	{0x0401, 0x00},
+> > +	{0x0404, 0x00},
+> > +	{0x0405, 0x10},
+> > +	{0x0408, 0x00},
+> > +	{0x0409, 0x00},
+> > +	{0x040a, 0x00},
+> > +	{0x040b, 0x00},
+> > +	{0x040c, 0x0f},
+> > +	{0x040d, 0x00},
+> > +	{0x040e, 0x08},
+> > +	{0x040f, 0x70},
+> > +	{0x034c, 0x0f},
+> > +	{0x034d, 0x00},
+> > +	{0x034e, 0x08},
+> > +	{0x034f, 0x70},
+> > +	{0x0301, 0x06},
+> > +	{0x0303, 0x04},
+> > +	{0x0305, 0x06},
+> > +	{0x0306, 0x01},
+> > +	{0x0307, 0x40},
+> > +	{0x0309, 0x0a},
+> > +	{0x030b, 0x02},
+> > +	{0x030d, 0x04},
+> > +	{0x030e, 0x01},
+> > +	{0x030f, 0x10},
+> > +	{0x0310, 0x01},
+> > +	{0x0820, 0x0a},
+> > +	{0x0821, 0x20},
+> > +	{0x0822, 0x00},
+> > +	{0x0823, 0x00},
+> > +	{0x3e20, 0x01},
+> > +	{0x3e37, 0x01},
+> > +	{0x3e3b, 0x00},
+> > +	{0x38a4, 0x00},
+> > +	{0x38a5, 0x00},
+> > +	{0x38a6, 0x00},
+> > +	{0x38a7, 0x00},
+> > +	{0x38a8, 0x00},
+> > +	{0x38a9, 0xf0},
+> > +	{0x38aa, 0x00},
+> > +	{0x38ab, 0xb4},
+> > +	{0x0106, 0x00},
+> > +	{0x0b00, 0x00},
+> > +	{0x3230, 0x00},
+> > +	{0x3f14, 0x01},
+> > +	{0x3f3c, 0x01},
+> > +	{0x3f0d, 0x0a},
+> > +	{0x3fbc, 0x00},
+> > +	{0x3c06, 0x00},
+> > +	{0x3c07, 0x48},
+> > +	{0x3c0a, 0x00},
+> > +	{0x3c0b, 0x00},
+> > +	{0x3f78, 0x00},
+> > +	{0x3f79, 0x40},
+> > +	{0x3f7c, 0x00},
+> > +	{0x3f7d, 0x00},
+> > +};
+> > +
+> > +/* 2x2 binned 30fps mode */
+> > +static const struct imx519_reg mode_2328x1748_regs[] = {
+> > +	{0x0111, 0x02},
+> > +	{0x0112, 0x0a},
+> > +	{0x0113, 0x0a},
+> > +	{0x0114, 0x01},
+> > +	{0x0342, 0x19},
+> > +	{0x0343, 0x70},
+> > +	{0x0340, 0x08},
+> > +	{0x0341, 0x88},
+> > +	{0x0344, 0x00},
+> > +	{0x0345, 0x00},
+> > +	{0x0346, 0x00},
+> > +	{0x0347, 0x00},
+> > +	{0x0348, 0x12},
+> > +	{0x0349, 0x2f},
+> > +	{0x034a, 0x0d},
+> > +	{0x034b, 0xa7},
+> > +	{0x0220, 0x00},
+> > +	{0x0221, 0x11},
+> > +	{0x0222, 0x01},
+> > +	{0x0900, 0x01},
+> > +	{0x0901, 0x22},
+> > +	{0x0902, 0x0a},
+> > +	{0x3f4c, 0x05},
+> > +	{0x3f4d, 0x03},
+> > +	{0x4254, 0x7f},
+> > +	{0x0401, 0x00},
+> > +	{0x0404, 0x00},
+> > +	{0x0405, 0x10},
+> > +	{0x0408, 0x00},
+> > +	{0x0409, 0x00},
+> > +	{0x040a, 0x00},
+> > +	{0x040b, 0x00},
+> > +	{0x040c, 0x09},
+> > +	{0x040d, 0x18},
+> > +	{0x040e, 0x06},
+> > +	{0x040f, 0xd4},
+> > +	{0x034c, 0x09},
+> > +	{0x034d, 0x18},
+> > +	{0x034e, 0x06},
+> > +	{0x034f, 0xd4},
+> > +	{0x0301, 0x06},
+> > +	{0x0303, 0x04},
+> > +	{0x0305, 0x06},
+> > +	{0x0306, 0x01},
+> > +	{0x0307, 0x40},
+> > +	{0x0309, 0x0a},
+> > +	{0x030b, 0x02},
+> > +	{0x030d, 0x04},
+> > +	{0x030e, 0x01},
+> > +	{0x030f, 0x10},
+> > +	{0x0310, 0x01},
+> > +	{0x0820, 0x0a},
+> > +	{0x0821, 0x20},
+> > +	{0x0822, 0x00},
+> > +	{0x0823, 0x00},
+> > +	{0x3e20, 0x01},
+> > +	{0x3e37, 0x01},
+> > +	{0x3e3b, 0x00},
+> > +	{0x38a4, 0x00},
+> > +	{0x38a5, 0x00},
+> > +	{0x38a6, 0x00},
+> > +	{0x38a7, 0x00},
+> > +	{0x38a8, 0x00},
+> > +	{0x38a9, 0x91},
+> > +	{0x38aa, 0x00},
+> > +	{0x38ab, 0x91},
+> > +	{0x0106, 0x00},
+> > +	{0x0b00, 0x00},
+> > +	{0x3230, 0x00},
+> > +	{0x3f14, 0x01},
+> > +	{0x3f3c, 0x01},
+> > +	{0x3f0d, 0x0a},
+> > +	{0x3fbc, 0x00},
+> > +	{0x3c06, 0x00},
+> > +	{0x3c07, 0x48},
+> > +	{0x3c0a, 0x00},
+> > +	{0x3c0b, 0x00},
+> > +	{0x3f78, 0x00},
+> > +	{0x3f79, 0x40},
+> > +	{0x3f7c, 0x00},
+> > +	{0x3f7d, 0x00},
+> > +};
+> > +
+> > +/* 1080p 60fps mode */
+> > +static const struct imx519_reg mode_1920x1080_regs[] = {
+> > +	{0x0111, 0x02},
+> > +	{0x0112, 0x0a},
+> > +	{0x0113, 0x0a},
+> > +	{0x0114, 0x01},
+> > +	{0x0342, 0x17},
+> > +	{0x0343, 0x8b},
+> > +	{0x0340, 0x04},
+> > +	{0x0341, 0x9c},
+> > +	{0x0344, 0x01},
+> > +	{0x0345, 0x98},
+> > +	{0x0346, 0x02},
+> > +	{0x0347, 0xa2},
+> > +	{0x0348, 0x10},
+> > +	{0x0349, 0x97},
+> > +	{0x034a, 0x0b},
+> > +	{0x034b, 0x15},
+> > +	{0x0220, 0x00},
+> > +	{0x0221, 0x11},
+> > +	{0x0222, 0x01},
+> > +	{0x0900, 0x01},
+> > +	{0x0901, 0x22},
+> > +	{0x0902, 0x0a},
+> > +	{0x3f4c, 0x05},
+> > +	{0x3f4d, 0x03},
+> > +	{0x4254, 0x7f},
+> > +	{0x0401, 0x00},
+> > +	{0x0404, 0x00},
+> > +	{0x0405, 0x10},
+> > +	{0x0408, 0x00},
+> > +	{0x0409, 0x00},
+> > +	{0x040a, 0x00},
+> > +	{0x040b, 0x00},
+> > +	{0x040c, 0x07},
+> > +	{0x040d, 0x80},
+> > +	{0x040e, 0x04},
+> > +	{0x040f, 0x38},
+> > +	{0x034c, 0x07},
+> > +	{0x034d, 0x80},
+> > +	{0x034e, 0x04},
+> > +	{0x034f, 0x38},
+> > +	{0x0301, 0x06},
+> > +	{0x0303, 0x04},
+> > +	{0x0305, 0x06},
+> > +	{0x0306, 0x01},
+> > +	{0x0307, 0x40},
+> > +	{0x0309, 0x0a},
+> > +	{0x030b, 0x02},
+> > +	{0x030d, 0x04},
+> > +	{0x030e, 0x01},
+> > +	{0x030f, 0x10},
+> > +	{0x0310, 0x01},
+> > +	{0x0820, 0x0a},
+> > +	{0x0821, 0x20},
+> > +	{0x0822, 0x00},
+> > +	{0x0823, 0x00},
+> > +	{0x3e20, 0x01},
+> > +	{0x3e37, 0x01},
+> > +	{0x3e3b, 0x00},
+> > +	{0x38a4, 0x00},
+> > +	{0x38a5, 0x00},
+> > +	{0x38a6, 0x00},
+> > +	{0x38a7, 0x00},
+> > +	{0x38a8, 0x00},
+> > +	{0x38a9, 0x78},
+> > +	{0x38aa, 0x00},
+> > +	{0x38ab, 0x5a},
+> > +	{0x0106, 0x00},
+> > +	{0x0b00, 0x00},
+> > +	{0x3230, 0x00},
+> > +	{0x3f14, 0x01},
+> > +	{0x3f3c, 0x01},
+> > +	{0x3f0d, 0x0a},
+> > +	{0x3fbc, 0x00},
+> > +	{0x3c06, 0x00},
+> > +	{0x3c07, 0x48},
+> > +	{0x3c0a, 0x00},
+> > +	{0x3c0b, 0x00},
+> > +	{0x3f78, 0x00},
+> > +	{0x3f79, 0x40},
+> > +	{0x3f7c, 0x00},
+> > +	{0x3f7d, 0x00},
+> > +};
+> > +
+> > +/* 720p 120fps mode */
+> > +static const struct imx519_reg mode_1280x720_regs[] = {
+> > +	{0x0111, 0x02},
+> > +	{0x0112, 0x0a},
+> > +	{0x0113, 0x0a},
+> > +	{0x0114, 0x01},
+> > +	{0x0342, 0x18},
+> > +	{0x0343, 0x00},
+> > +	{0x0340, 0x03},
+> > +	{0x0341, 0x34},
+> > +	{0x0344, 0x04},
+> > +	{0x0345, 0x18},
+> > +	{0x0346, 0x04},
+> > +	{0x0347, 0x12},
+> > +	{0x0348, 0x0e},
+> > +	{0x0349, 0x17},
+> > +	{0x034a, 0x09},
+> > +	{0x034b, 0xb6},
+> > +	{0x0220, 0x00},
+> > +	{0x0221, 0x11},
+> > +	{0x0222, 0x01},
+> > +	{0x0900, 0x01},
+> > +	{0x0901, 0x22},
+> > +	{0x0902, 0x0a},
+> > +	{0x3f4c, 0x05},
+> > +	{0x3f4d, 0x03},
+> > +	{0x4254, 0x7f},
+> > +	{0x0401, 0x00},
+> > +	{0x0404, 0x00},
+> > +	{0x0405, 0x10},
+> > +	{0x0408, 0x00},
+> > +	{0x0409, 0x00},
+> > +	{0x040a, 0x00},
+> > +	{0x040b, 0x00},
+> > +	{0x040c, 0x05},
+> > +	{0x040d, 0x00},
+> > +	{0x040e, 0x02},
+> > +	{0x040f, 0xd0},
+> > +	{0x034c, 0x05},
+> > +	{0x034d, 0x00},
+> > +	{0x034e, 0x02},
+> > +	{0x034f, 0xd0},
+> > +	{0x0301, 0x06},
+> > +	{0x0303, 0x04},
+> > +	{0x0305, 0x06},
+> > +	{0x0306, 0x01},
+> > +	{0x0307, 0x40},
+> > +	{0x0309, 0x0a},
+> > +	{0x030b, 0x02},
+> > +	{0x030d, 0x04},
+> > +	{0x030e, 0x01},
+> > +	{0x030f, 0x10},
+> > +	{0x0310, 0x01},
+> > +	{0x0820, 0x0a},
+> > +	{0x0821, 0x20},
+> > +	{0x0822, 0x00},
+> > +	{0x0823, 0x00},
+> > +	{0x3e20, 0x01},
+> > +	{0x3e37, 0x01},
+> > +	{0x3e3b, 0x00},
+> > +	{0x38a4, 0x00},
+> > +	{0x38a5, 0x00},
+> > +	{0x38a6, 0x00},
+> > +	{0x38a7, 0x00},
+> > +	{0x38a8, 0x00},
+> > +	{0x38a9, 0x50},
+> > +	{0x38aa, 0x00},
+> > +	{0x38ab, 0x3c},
+> > +	{0x0106, 0x00},
+> > +	{0x0b00, 0x00},
+> > +	{0x3230, 0x00},
+> > +	{0x3f14, 0x01},
+> > +	{0x3f3c, 0x01},
+> > +	{0x3f0d, 0x0a},
+> > +	{0x3fbc, 0x00},
+> > +	{0x3c06, 0x00},
+> > +	{0x3c07, 0x48},
+> > +	{0x3c0a, 0x00},
+> > +	{0x3c0b, 0x00},
+> > +	{0x3f78, 0x00},
+> > +	{0x3f79, 0x40},
+> > +	{0x3f7c, 0x00},
+> > +	{0x3f7d, 0x00},
+> > +};
+> > +
+> > +/* Mode configs */
+> > +static const struct imx519_mode supported_modes_10bit[] = {
+> > +	{
+> > +		.width = 4656,
+> > +		.height = 3496,
+> > +		.line_length_pix = 0x316a,
+> > +		.crop = {
+> > +			.left = IMX519_PIXEL_ARRAY_LEFT,
+> > +			.top = IMX519_PIXEL_ARRAY_TOP,
+> > +			.width = 4656,
+> > +			.height = 3496,
+> > +		},
+> > +		.timeperframe_min = {
+> > +			.numerator = 100,
+> > +			.denominator = 900
+> > +		},
+> > +		.timeperframe_default = {
+> > +			.numerator = 100,
+> > +			.denominator = 900
+> > +		},
+> > +		.reg_list = {
+> > +			.num_of_regs = ARRAY_SIZE(mode_4656x3496_regs),
+> > +			.regs = mode_4656x3496_regs,
+> > +		}
+> > +	},
+> > +	{
+> > +		.width = 3840,
+> > +		.height = 2160,
+> > +		.line_length_pix = 0x28f6,
+> > +		.crop = {
+> > +			.left = IMX519_PIXEL_ARRAY_LEFT + 408,
+> > +			.top = IMX519_PIXEL_ARRAY_TOP + 672,
+> > +			.width = 3840,
+> > +			.height = 2160,
+> > +		},
+> > +		.timeperframe_min = {
+> > +			.numerator = 100,
+> > +			.denominator = 1800
+> > +		},
+> > +		.timeperframe_default = {
+> > +			.numerator = 100,
+> > +			.denominator = 1800
+> > +		},
+> > +		.reg_list = {
+> > +			.num_of_regs = ARRAY_SIZE(mode_3840x2160_regs),
+> > +			.regs = mode_3840x2160_regs,
+> > +		}
+> > +	},
+> > +	{
+> > +		.width = 2328,
+> > +		.height = 1748,
+> > +		.line_length_pix = 0x1970,
+> > +		.crop = {
+> > +			.left = IMX519_PIXEL_ARRAY_LEFT,
+> > +			.top = IMX519_PIXEL_ARRAY_TOP,
+> > +			.width = 4656,
+> > +			.height = 3496,
+> > +		},
+> > +		.timeperframe_min = {
+> > +			.numerator = 100,
+> > +			.denominator = 3000
+> > +		},
+> > +		.timeperframe_default = {
+> > +			.numerator = 100,
+> > +			.denominator = 3000
+> > +		},
+> > +		.reg_list = {
+> > +			.num_of_regs = ARRAY_SIZE(mode_2328x1748_regs),
+> > +			.regs = mode_2328x1748_regs,
+> > +		}
+> > +	},
+> > +	{
+> > +		.width = 1920,
+> > +		.height = 1080,
+> > +		.line_length_pix = 0x178b,
+> > +		.crop = {
+> > +			.left = IMX519_PIXEL_ARRAY_LEFT + 408,
+> > +			.top = IMX519_PIXEL_ARRAY_TOP + 674,
+> > +			.width = 3840,
+> > +			.height = 2160,
+> > +		},
+> > +		.timeperframe_min = {
+> > +			.numerator = 100,
+> > +			.denominator = 6000
+> > +		},
+> > +		.timeperframe_default = {
+> > +			.numerator = 100,
+> > +			.denominator = 6000
+> > +		},
+> > +		.reg_list = {
+> > +			.num_of_regs = ARRAY_SIZE(mode_1920x1080_regs),
+> > +			.regs = mode_1920x1080_regs,
+> > +		}
+> > +	},
+> > +	{
+> > +		.width = 1280,
+> > +		.height = 720,
+> > +		.line_length_pix = 0x1800,
+> > +		.crop = {
+> > +			.left = IMX519_PIXEL_ARRAY_LEFT + 1048,
+> > +			.top = IMX519_PIXEL_ARRAY_TOP + 1042,
+> > +			.width = 2560,
+> > +			.height = 1440,
+> > +		},
+> > +		.timeperframe_min = {
+> > +			.numerator = 100,
+> > +			.denominator = 8000
+> > +		},
+> > +		.timeperframe_default = {
+> > +			.numerator = 100,
+> > +			.denominator = 8000
+> > +		},
+> > +		.reg_list = {
+> > +			.num_of_regs = ARRAY_SIZE(mode_1280x720_regs),
+> > +			.regs = mode_1280x720_regs,
+> > +		}
+> > +	}
+> > +};
+> > +
+> > +/*
+> > + * The supported formats.
+> > + * This table MUST contain 4 entries per format, to cover the various flip
+> > + * combinations in the order
+> > + * - no flip
+> > + * - h flip
+> > + * - v flip
+> > + * - h&v flips
+> > + */
+> > +static const u32 codes[] = {
+> > +	/* 10-bit modes. */
+> > +	MEDIA_BUS_FMT_SRGGB10_1X10,
+> > +	MEDIA_BUS_FMT_SGRBG10_1X10,
+> > +	MEDIA_BUS_FMT_SGBRG10_1X10,
+> > +	MEDIA_BUS_FMT_SBGGR10_1X10,
+> > +};
+> > +
+> > +static const char * const imx519_test_pattern_menu[] = {
+> > +	"Disabled",
+> > +	"Color Bars",
+> > +	"Solid Color",
+> > +	"Grey Color Bars",
+> > +	"PN9"
+> > +};
+> > +
+> > +static const int imx519_test_pattern_val[] = {
+> > +	IMX519_TEST_PATTERN_DISABLE,
+> > +	IMX519_TEST_PATTERN_COLOR_BARS,
+> > +	IMX519_TEST_PATTERN_SOLID_COLOR,
+> > +	IMX519_TEST_PATTERN_GREY_COLOR,
+> > +	IMX519_TEST_PATTERN_PN9,
+> > +};
+> > +
+> > +/* regulator supplies */
+> > +static const char * const imx519_supply_name[] = {
+> > +	/* Supplies can be enabled in any order */
+> > +	"VANA",  /* Analog (2.8V) supply */
+> > +	"VDIG",  /* Digital Core (1.05V) supply */
+> > +	"VDDL",  /* IF (1.8V) supply */
+> > +};
+> > +
+> > +#define IMX519_NUM_SUPPLIES ARRAY_SIZE(imx519_supply_name)
+> 
+> Please use ARRAY_SIZE() directly instead.
+> 
+> > +
+> > +/*
+> > + * Initialisation delay between XCLR low->high and the moment when the sensor
+> > + * can start capture (i.e. can leave software standby), given by T7 in the
+> > + * datasheet is 8ms.  This does include I2C setup time as well.
+> > + *
+> > + * Note, that delay between XCLR low->high and reading the CCI ID register (T6
+> > + * in the datasheet) is much smaller - 600us.
+> > + */
+> > +#define IMX519_XCLR_MIN_DELAY_US	8000
+> > +#define IMX519_XCLR_DELAY_RANGE_US	1000
+> > +
+> > +struct imx519 {
+> > +	struct v4l2_subdev sd;
+> > +	struct media_pad pad[NUM_PADS];
+> > +
+> > +	unsigned int fmt_code;
+> > +
+> > +	struct clk *xclk;
+> > +
+> > +	struct gpio_desc *reset_gpio;
+> > +	struct regulator_bulk_data supplies[IMX519_NUM_SUPPLIES];
+> > +
+> > +	struct v4l2_ctrl_handler ctrl_handler;
+> > +	/* V4L2 Controls */
+> > +	struct v4l2_ctrl *pixel_rate;
+> > +	struct v4l2_ctrl *exposure;
+> > +	struct v4l2_ctrl *vflip;
+> > +	struct v4l2_ctrl *hflip;
+> > +	struct v4l2_ctrl *vblank;
+> > +	struct v4l2_ctrl *hblank;
+> > +
+> > +	/* Current mode */
+> > +	const struct imx519_mode *mode;
+> > +
+> > +	/*
+> > +	 * Mutex for serialized access:
+> > +	 * Protect sensor module set pad format and start/stop streaming safely.
+> > +	 */
+> > +	struct mutex mutex;
+> > +
+> > +	/* Streaming on/off */
+> > +	bool streaming;
+> > +
+> > +	/* Rewrite common registers on stream on? */
+> > +	bool common_regs_written;
+> > +
+> > +	/* Current long exposure factor in use. Set through V4L2_CID_VBLANK */
+> > +	unsigned int long_exp_shift;
+> > +};
+> > +
+> > +static inline struct imx519 *to_imx519(struct v4l2_subdev *_sd)
+> 
+> You could call the argument "sd" as well. Up to you.
+> 
+> > +{
+> > +	return container_of(_sd, struct imx519, sd);
+> > +}
+> > +
+> > +/* Read registers up to 2 at a time */
+> > +static int imx519_read_reg(struct imx519 *imx519, u16 reg, u32 len, u32 *val)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	struct i2c_msg msgs[2];
+> > +	u8 addr_buf[2] = { reg >> 8, reg & 0xff };
+> > +	u8 data_buf[4] = { 0, };
+> > +	int ret;
+> > +
+> > +	if (len > 4)
+> > +		return -EINVAL;
+> > +
+> > +	/* Write register address */
+> > +	msgs[0].addr = client->addr;
+> > +	msgs[0].flags = 0;
+> > +	msgs[0].len = ARRAY_SIZE(addr_buf);
+> > +	msgs[0].buf = addr_buf;
+> > +
+> > +	/* Read data from register */
+> > +	msgs[1].addr = client->addr;
+> > +	msgs[1].flags = I2C_M_RD;
+> > +	msgs[1].len = len;
+> > +	msgs[1].buf = &data_buf[4 - len];
+> > +
+> > +	ret = i2c_transfer(client->adapter, msgs, ARRAY_SIZE(msgs));
+> > +	if (ret != ARRAY_SIZE(msgs))
+> > +		return -EIO;
+> > +
+> > +	*val = get_unaligned_be32(data_buf);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/* Write registers up to 2 at a time */
+> > +static int imx519_write_reg(struct imx519 *imx519, u16 reg, u32 len, u32 val)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	u8 buf[6];
+> > +
+> > +	if (len > 4)
+> > +		return -EINVAL;
+> > +
+> > +	put_unaligned_be16(reg, buf);
+> > +	put_unaligned_be32(val << (8 * (4 - len)), buf + 2);
+> > +	if (i2c_master_send(client, buf, len + 2) != len + 2)
+> > +		return -EIO;
+> > +
+> > +	return 0;
+> > +}
+> 
+> We have V4L2 CCI helpers, please switch. (See
+> drivers/media/v4l2-core/v4l2-cci.c .)
+> 
+> > +
+> > +/* Write a list of registers */
+> > +static int imx519_write_regs(struct imx519 *imx519,
+> > +			     const struct imx519_reg *regs, u32 len)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	unsigned int i;
+> > +	int ret;
+> > +
+> > +	for (i = 0; i < len; i++) {
+> > +		ret = imx519_write_reg(imx519, regs[i].address, 1, regs[i].val);
+> > +		if (ret) {
+> > +			dev_err_ratelimited(&client->dev,
+> > +					    "Failed to write reg 0x%4.4x. error = %d\n",
+> > +					    regs[i].address, ret);
+> > +
+> > +			return ret;
+> > +		}
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +/* Get bayer order based on flip setting. */
+> > +static u32 imx519_get_format_code(struct imx519 *imx519)
+> > +{
+> > +	unsigned int i;
+> > +
+> > +	lockdep_assert_held(&imx519->mutex);
+> > +
+> > +	i = (imx519->vflip->val ? 2 : 0) |
+> > +	    (imx519->hflip->val ? 1 : 0);
+> > +
+> > +	return codes[i];
+> > +}
+> > +
+> > +static int imx519_open(struct v4l2_subdev *sd, struct v4l2_subdev_fh *fh)
+> > +{
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +	struct v4l2_mbus_framefmt *try_fmt_img =
+> > +		v4l2_subdev_get_try_format(sd, fh->state, IMAGE_PAD);
+> > +	struct v4l2_mbus_framefmt *try_fmt_meta =
+> > +		v4l2_subdev_get_try_format(sd, fh->state, METADATA_PAD);
+> > +	struct v4l2_rect *try_crop;
+> > +
+> > +	mutex_lock(&imx519->mutex);
+> > +
+> > +	/* Initialize try_fmt for the image pad */
+> > +	try_fmt_img->width = supported_modes_10bit[0].width;
+> > +	try_fmt_img->height = supported_modes_10bit[0].height;
+> > +	try_fmt_img->code = imx519_get_format_code(imx519);
+> > +	try_fmt_img->field = V4L2_FIELD_NONE;
+> > +
+> > +	/* Initialize try_fmt for the embedded metadata pad */
+> > +	try_fmt_meta->width = IMX519_EMBEDDED_LINE_WIDTH;
+> > +	try_fmt_meta->height = IMX519_NUM_EMBEDDED_LINES;
+> > +	try_fmt_meta->code = MEDIA_BUS_FMT_SENSOR_DATA;
+> > +	try_fmt_meta->field = V4L2_FIELD_NONE;
+> > +
+> > +	/* Initialize try_crop */
+> > +	try_crop = v4l2_subdev_get_try_crop(sd, fh->state, IMAGE_PAD);
+> > +	try_crop->left = IMX519_PIXEL_ARRAY_LEFT;
+> > +	try_crop->top = IMX519_PIXEL_ARRAY_TOP;
+> > +	try_crop->width = IMX519_PIXEL_ARRAY_WIDTH;
+> > +	try_crop->height = IMX519_PIXEL_ARRAY_HEIGHT;
+> > +
+> > +	mutex_unlock(&imx519->mutex);
+> 
+> It'd be nicer to do this in the init_cfg callback.
+> 
+> In general, also switching to subdev state API would be nice. An example,
+
+Agreed. All new sensor drivers should use the subdev active state API.
+
+> possibly somewhat unpolished, can be found here:
+> <URL:https://git.kernel.org/pub/scm/linux/kernel/git/tomba/linux.git/commit/?h=streams/work&id=d865071782564f1f118d7ad5d4b6813f47d908b5>.
+
+The imx219 driver, with the patches I've recently posted, should be a
+good example.
+
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void imx519_adjust_exposure_range(struct imx519 *imx519)
+> > +{
+> > +	int exposure_max, exposure_def;
+> > +
+> > +	/* Honour the VBLANK limits when setting exposure. */
+> > +	exposure_max = imx519->mode->height + imx519->vblank->val -
+> > +		       IMX519_EXPOSURE_OFFSET;
+> > +	exposure_def = min(exposure_max, imx519->exposure->val);
+> > +	__v4l2_ctrl_modify_range(imx519->exposure, imx519->exposure->minimum,
+> > +				 exposure_max, imx519->exposure->step,
+> > +				 exposure_def);
+> > +}
+> > +
+> > +static int imx519_set_frame_length(struct imx519 *imx519, unsigned int val)
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	imx519->long_exp_shift = 0;
+> > +
+> > +	while (val > IMX519_FRAME_LENGTH_MAX) {
+> > +		imx519->long_exp_shift++;
+> > +		val >>= 1;
+> > +	}
+> > +
+> > +	ret = imx519_write_reg(imx519, IMX519_REG_FRAME_LENGTH,
+> > +			       IMX519_REG_VALUE_16BIT, val);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return imx519_write_reg(imx519, IMX519_LONG_EXP_SHIFT_REG,
+> > +				IMX519_REG_VALUE_08BIT, imx519->long_exp_shift);
+> > +}
+> > +
+> > +static int imx519_set_ctrl(struct v4l2_ctrl *ctrl)
+> > +{
+> > +	struct imx519 *imx519 =
+> > +		container_of(ctrl->handler, struct imx519, ctrl_handler);
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	int ret = 0;
+> > +
+> > +	/*
+> > +	 * The VBLANK control may change the limits of usable exposure, so check
+> > +	 * and adjust if necessary.
+> > +	 */
+> > +	if (ctrl->id == V4L2_CID_VBLANK)
+> > +		imx519_adjust_exposure_range(imx519);
+> > +
+> > +	/*
+> > +	 * Applying V4L2 control value only happens
+> > +	 * when power is up for streaming
+> > +	 */
+> > +	if (pm_runtime_get_if_in_use(&client->dev) == 0)
+> > +		return 0;
+> > +
+> > +	switch (ctrl->id) {
+> > +	case V4L2_CID_ANALOGUE_GAIN:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_ANALOG_GAIN,
+> > +				       IMX519_REG_VALUE_16BIT, ctrl->val);
+> > +		break;
+> > +	case V4L2_CID_EXPOSURE:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_EXPOSURE,
+> > +				       IMX519_REG_VALUE_16BIT, ctrl->val >>
+> > +							imx519->long_exp_shift);
+> > +		break;
+> > +	case V4L2_CID_DIGITAL_GAIN:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_DIGITAL_GAIN,
+> > +				       IMX519_REG_VALUE_16BIT, ctrl->val);
+> > +		break;
+> > +	case V4L2_CID_TEST_PATTERN:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_TEST_PATTERN,
+> > +				       IMX519_REG_VALUE_16BIT,
+> > +				       imx519_test_pattern_val[ctrl->val]);
+> > +		break;
+> > +	case V4L2_CID_TEST_PATTERN_RED:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_TEST_PATTERN_R,
+> > +				       IMX519_REG_VALUE_16BIT, ctrl->val);
+> > +		break;
+> > +	case V4L2_CID_TEST_PATTERN_GREENR:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_TEST_PATTERN_GR,
+> > +				       IMX519_REG_VALUE_16BIT, ctrl->val);
+> > +		break;
+> > +	case V4L2_CID_TEST_PATTERN_BLUE:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_TEST_PATTERN_B,
+> > +				       IMX519_REG_VALUE_16BIT, ctrl->val);
+> > +		break;
+> > +	case V4L2_CID_TEST_PATTERN_GREENB:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_TEST_PATTERN_GB,
+> > +				       IMX519_REG_VALUE_16BIT, ctrl->val);
+> > +		break;
+> > +	case V4L2_CID_HFLIP:
+> > +	case V4L2_CID_VFLIP:
+> > +		ret = imx519_write_reg(imx519, IMX519_REG_ORIENTATION, 1,
+> > +				       imx519->hflip->val |
+> > +				       imx519->vflip->val << 1);
+> > +		break;
+> > +	case V4L2_CID_VBLANK:
+> > +		ret = imx519_set_frame_length(imx519,
+> > +					      imx519->mode->height + ctrl->val);
+> > +		break;
+> > +	default:
+> > +		dev_info(&client->dev,
+> > +			 "ctrl(id:0x%x,val:0x%x) is not handled\n",
+> > +			 ctrl->id, ctrl->val);
+> > +		ret = -EINVAL;
+> > +		break;
+> > +	}
+> > +
+> > +	pm_runtime_put(&client->dev);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static const struct v4l2_ctrl_ops imx519_ctrl_ops = {
+> > +	.s_ctrl = imx519_set_ctrl,
+> > +};
+> > +
+> > +static int imx519_enum_mbus_code(struct v4l2_subdev *sd,
+> > +				 struct v4l2_subdev_state *sd_state,
+> > +				 struct v4l2_subdev_mbus_code_enum *code)
+> > +{
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +	if (code->pad >= NUM_PADS)
+> > +		return -EINVAL;
+> 
+> The caller will have checked for this already, same for other callbacks.
+> 
+> > +
+> > +	if (code->pad == IMAGE_PAD) {
+> > +		if (code->index > 0)
+> > +			return -EINVAL;
+> > +
+> > +		code->code = imx519_get_format_code(imx519);
+> > +	} else {
+> > +		if (code->index > 0)
+> > +			return -EINVAL;
+> > +
+> > +		code->code = MEDIA_BUS_FMT_SENSOR_DATA;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int imx519_enum_frame_size(struct v4l2_subdev *sd,
+> > +				  struct v4l2_subdev_state *sd_state,
+> > +				  struct v4l2_subdev_frame_size_enum *fse)
+> > +{
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +	if (fse->pad >= NUM_PADS)
+> > +		return -EINVAL;
+> > +
+> > +	if (fse->pad == IMAGE_PAD) {
+> > +		if (fse->index >= ARRAY_SIZE(supported_modes_10bit))
+> > +			return -EINVAL;
+> > +
+> > +		if (fse->code != imx519_get_format_code(imx519))
+> > +			return -EINVAL;
+> > +
+> > +		fse->min_width = supported_modes_10bit[fse->index].width;
+> > +		fse->max_width = fse->min_width;
+> > +		fse->min_height = supported_modes_10bit[fse->index].height;
+> > +		fse->max_height = fse->min_height;
+> > +	} else {
+> > +		if (fse->code != MEDIA_BUS_FMT_SENSOR_DATA || fse->index > 0)
+> > +			return -EINVAL;
+> > +
+> > +		fse->min_width = IMX519_EMBEDDED_LINE_WIDTH;
+> > +		fse->max_width = fse->min_width;
+> > +		fse->min_height = IMX519_NUM_EMBEDDED_LINES;
+> > +		fse->max_height = fse->min_height;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void imx519_reset_colorspace(struct v4l2_mbus_framefmt *fmt)
+> > +{
+> > +	fmt->colorspace = V4L2_COLORSPACE_RAW;
+> > +	fmt->ycbcr_enc = V4L2_MAP_YCBCR_ENC_DEFAULT(fmt->colorspace);
+> > +	fmt->quantization = V4L2_MAP_QUANTIZATION_DEFAULT(true,
+> > +							  fmt->colorspace,
+> > +							  fmt->ycbcr_enc);
+> > +	fmt->xfer_func = V4L2_MAP_XFER_FUNC_DEFAULT(fmt->colorspace);
+> > +}
+> > +
+> > +static void imx519_update_image_pad_format(struct imx519 *imx519,
+> > +					   const struct imx519_mode *mode,
+> > +					   struct v4l2_subdev_format *fmt)
+> > +{
+> > +	fmt->format.width = mode->width;
+> > +	fmt->format.height = mode->height;
+> > +	fmt->format.field = V4L2_FIELD_NONE;
+> > +	imx519_reset_colorspace(&fmt->format);
+> > +}
+> > +
+> > +static void imx519_update_metadata_pad_format(struct v4l2_subdev_format *fmt)
+> > +{
+> > +	fmt->format.width = IMX519_EMBEDDED_LINE_WIDTH;
+> > +	fmt->format.height = IMX519_NUM_EMBEDDED_LINES;
+> > +	fmt->format.code = MEDIA_BUS_FMT_SENSOR_DATA;
+> > +	fmt->format.field = V4L2_FIELD_NONE;
+> > +}
+> > +
+> > +static int imx519_get_pad_format(struct v4l2_subdev *sd,
+> > +				 struct v4l2_subdev_state *sd_state,
+> > +				 struct v4l2_subdev_format *fmt)
+> > +{
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +	if (fmt->pad >= NUM_PADS)
+> > +		return -EINVAL;
+> > +
+> > +	mutex_lock(&imx519->mutex);
+> > +
+> > +	if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
+> > +		struct v4l2_mbus_framefmt *try_fmt =
+> > +			v4l2_subdev_get_try_format(&imx519->sd, sd_state,
+> > +						   fmt->pad);
+> > +		/* update the code which could change due to vflip or hflip: */
+> > +		try_fmt->code = fmt->pad == IMAGE_PAD ?
+> > +				imx519_get_format_code(imx519) :
+> > +				MEDIA_BUS_FMT_SENSOR_DATA;
+> > +		fmt->format = *try_fmt;
+> > +	} else {
+> > +		if (fmt->pad == IMAGE_PAD) {
+> > +			imx519_update_image_pad_format(imx519, imx519->mode,
+> > +						       fmt);
+> > +			fmt->format.code =
+> > +			       imx519_get_format_code(imx519);
+> > +		} else {
+> > +			imx519_update_metadata_pad_format(fmt);
+> > +		}
+> > +	}
+> > +
+> > +	mutex_unlock(&imx519->mutex);
+> > +	return 0;
+> > +}
+> > +
+> > +static
+> > +unsigned int imx519_get_frame_length(const struct imx519_mode *mode,
+> > +				     const struct v4l2_fract *timeperframe)
+> > +{
+> > +	u64 frame_length;
+> > +
+> > +	frame_length = (u64)timeperframe->numerator * IMX519_PIXEL_RATE;
+> > +	do_div(frame_length,
+> > +	       (u64)timeperframe->denominator * mode->line_length_pix);
+> > +
+> > +	if (WARN_ON(frame_length > IMX519_FRAME_LENGTH_MAX))
+> > +		frame_length = IMX519_FRAME_LENGTH_MAX;
+> > +
+> > +	return max_t(unsigned int, frame_length, mode->height);
+> > +}
+> > +
+> > +static void imx519_set_framing_limits(struct imx519 *imx519)
+> > +{
+> > +	unsigned int frm_length_min, frm_length_default, hblank;
+> > +	const struct imx519_mode *mode = imx519->mode;
+> > +
+> > +	frm_length_min = imx519_get_frame_length(mode, &mode->timeperframe_min);
+> > +	frm_length_default =
+> > +		     imx519_get_frame_length(mode, &mode->timeperframe_default);
+> > +
+> > +	/* Default to no long exposure multiplier. */
+> > +	imx519->long_exp_shift = 0;
+> > +
+> > +	/* Update limits and set FPS to default */
+> > +	__v4l2_ctrl_modify_range(imx519->vblank, frm_length_min - mode->height,
+> > +				 ((1 << IMX519_LONG_EXP_SHIFT_MAX) *
+> > +					IMX519_FRAME_LENGTH_MAX) - mode->height,
+> > +				 1, frm_length_default - mode->height);
+> > +
+> > +	/* Setting this will adjust the exposure limits as well. */
+> > +	__v4l2_ctrl_s_ctrl(imx519->vblank, frm_length_default - mode->height);
+> > +
+> > +	/*
+> > +	 * Currently PPL is fixed to the mode specified value, so hblank
+> > +	 * depends on mode->width only, and is not changeable in any
+> > +	 * way other than changing the mode.
+> > +	 */
+> > +	hblank = mode->line_length_pix - mode->width;
+> > +	__v4l2_ctrl_modify_range(imx519->hblank, hblank, hblank, 1, hblank);
+> > +}
+> > +
+> > +static int imx519_set_pad_format(struct v4l2_subdev *sd,
+> > +				 struct v4l2_subdev_state *sd_state,
+> > +				 struct v4l2_subdev_format *fmt)
+> > +{
+> > +	struct v4l2_mbus_framefmt *framefmt;
+> > +	const struct imx519_mode *mode;
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +	if (fmt->pad >= NUM_PADS)
+> > +		return -EINVAL;
+> > +
+> > +	mutex_lock(&imx519->mutex);
+> > +
+> > +	if (fmt->pad == IMAGE_PAD) {
+> > +		/* Bayer order varies with flips */
+> > +		fmt->format.code = imx519_get_format_code(imx519);
+> > +
+> > +		mode = v4l2_find_nearest_size(supported_modes_10bit,
+> > +					      ARRAY_SIZE(supported_modes_10bit),
+> > +					      width, height,
+> > +					      fmt->format.width,
+> > +					      fmt->format.height);
+> > +		imx519_update_image_pad_format(imx519, mode, fmt);
+> > +		if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
+> > +			framefmt = v4l2_subdev_get_try_format(sd, sd_state,
+> > +							      fmt->pad);
+> > +			*framefmt = fmt->format;
+> > +		} else {
+> > +			imx519->mode = mode;
+> > +			imx519->fmt_code = fmt->format.code;
+> > +			imx519_set_framing_limits(imx519);
+> > +		}
+> > +	} else {
+> > +		if (fmt->which == V4L2_SUBDEV_FORMAT_TRY) {
+> > +			framefmt = v4l2_subdev_get_try_format(sd, sd_state,
+> > +							      fmt->pad);
+> > +			*framefmt = fmt->format;
+> > +		} else {
+> > +			/* Only one embedded data mode is supported */
+> > +			imx519_update_metadata_pad_format(fmt);
+> > +		}
+> > +	}
+> > +
+> > +	mutex_unlock(&imx519->mutex);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static const struct v4l2_rect *
+> > +__imx519_get_pad_crop(struct imx519 *imx519, struct v4l2_subdev_state *sd_state,
+> > +		      unsigned int pad, enum v4l2_subdev_format_whence which)
+> > +{
+> > +	switch (which) {
+> > +	case V4L2_SUBDEV_FORMAT_TRY:
+> > +		return v4l2_subdev_get_try_crop(&imx519->sd, sd_state, pad);
+> > +	case V4L2_SUBDEV_FORMAT_ACTIVE:
+> > +		return &imx519->mode->crop;
+> > +	}
+> > +
+> > +	return NULL;
+> > +}
+> > +
+> > +static int imx519_get_selection(struct v4l2_subdev *sd,
+> > +				struct v4l2_subdev_state *sd_state,
+> > +				struct v4l2_subdev_selection *sel)
+> > +{
+> > +	switch (sel->target) {
+> > +	case V4L2_SEL_TGT_CROP: {
+> > +		struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +		mutex_lock(&imx519->mutex);
+> > +		sel->r = *__imx519_get_pad_crop(imx519, sd_state, sel->pad,
+> > +						sel->which);
+> > +		mutex_unlock(&imx519->mutex);
+> > +
+> > +		return 0;
+> > +	}
+> > +
+> > +	case V4L2_SEL_TGT_NATIVE_SIZE:
+> > +		sel->r.left = 0;
+> > +		sel->r.top = 0;
+> > +		sel->r.width = IMX519_NATIVE_WIDTH;
+> > +		sel->r.height = IMX519_NATIVE_HEIGHT;
+> > +
+> > +		return 0;
+> > +
+> > +	case V4L2_SEL_TGT_CROP_DEFAULT:
+> > +	case V4L2_SEL_TGT_CROP_BOUNDS:
+> > +		sel->r.left = IMX519_PIXEL_ARRAY_LEFT;
+> > +		sel->r.top = IMX519_PIXEL_ARRAY_TOP;
+> > +		sel->r.width = IMX519_PIXEL_ARRAY_WIDTH;
+> > +		sel->r.height = IMX519_PIXEL_ARRAY_HEIGHT;
+> > +
+> > +		return 0;
+> > +	}
+> > +
+> > +	return -EINVAL;
+> > +}
+> > +
+> > +/* Start streaming */
+> > +static int imx519_start_streaming(struct imx519 *imx519)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	const struct imx519_reg_list *reg_list;
+> > +	int ret;
+> > +
+> > +	if (!imx519->common_regs_written) {
+> > +		ret = imx519_write_regs(imx519, mode_common_regs,
+> > +					ARRAY_SIZE(mode_common_regs));
+> > +
+> > +		if (ret) {
+> > +			dev_err(&client->dev, "%s failed to set common settings\n",
+> > +				__func__);
+> > +			return ret;
+> > +		}
+> > +		imx519->common_regs_written = true;
+> > +	}
+> > +
+> > +	/* Apply default values of current mode */
+> > +	reg_list = &imx519->mode->reg_list;
+> > +	ret = imx519_write_regs(imx519, reg_list->regs, reg_list->num_of_regs);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "%s failed to set mode\n", __func__);
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* Apply customized values from user */
+> > +	ret =  __v4l2_ctrl_handler_setup(imx519->sd.ctrl_handler);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	/* set stream on register */
+> > +	return imx519_write_reg(imx519, IMX519_REG_MODE_SELECT,
+> > +				IMX519_REG_VALUE_08BIT, IMX519_MODE_STREAMING);
+> > +}
+> > +
+> > +/* Stop streaming */
+> > +static void imx519_stop_streaming(struct imx519 *imx519)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	int ret;
+> > +
+> > +	/* set stream off register */
+> > +	ret = imx519_write_reg(imx519, IMX519_REG_MODE_SELECT,
+> > +			       IMX519_REG_VALUE_08BIT, IMX519_MODE_STANDBY);
+> > +	if (ret)
+> > +		dev_err(&client->dev, "%s failed to set stream\n", __func__);
+> > +
+> > +	__v4l2_ctrl_grab(imx519->vflip, false);
+> > +	__v4l2_ctrl_grab(imx519->hflip, false);
+> > +}
+> > +
+> > +static int imx519_set_stream(struct v4l2_subdev *sd, int enable)
+> > +{
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +	struct i2c_client *client = v4l2_get_subdevdata(sd);
+> > +	int ret = 0;
+> > +
+> > +	mutex_lock(&imx519->mutex);
+> > +	if (imx519->streaming == enable) {
+> > +		mutex_unlock(&imx519->mutex);
+> > +		return 0;
+> > +	}
+> > +
+> > +	if (enable) {
+> > +		ret = pm_runtime_get_sync(&client->dev);
+> > +		if (ret < 0) {
+> > +			pm_runtime_put_noidle(&client->dev);
+> > +			goto err_unlock;
+> > +		}
+> > +
+> > +		/*
+> > +		 * Apply default & customized values
+> > +		 * and then start streaming.
+> > +		 */
+> > +		ret = imx519_start_streaming(imx519);
+> > +		if (ret)
+> > +			goto err_rpm_put;
+> > +	} else {
+> > +		imx519_stop_streaming(imx519);
+> > +		pm_runtime_put(&client->dev);
+> > +	}
+> > +
+> > +	imx519->streaming = enable;
+> > +
+> > +	/* vflip and hflip cannot change during streaming */
+> > +	__v4l2_ctrl_grab(imx519->vflip, enable);
+> > +	__v4l2_ctrl_grab(imx519->hflip, enable);
+> > +
+> > +	mutex_unlock(&imx519->mutex);
+> > +
+> > +	return ret;
+> > +
+> > +err_rpm_put:
+> > +	pm_runtime_put(&client->dev);
+> > +err_unlock:
+> > +	mutex_unlock(&imx519->mutex);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +/* Power/clock management functions */
+> > +static int imx519_power_on(struct device *dev)
+> > +{
+> > +	struct i2c_client *client = to_i2c_client(dev);
+> > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +	int ret;
+> > +
+> > +	ret = regulator_bulk_enable(IMX519_NUM_SUPPLIES,
+> > +				    imx519->supplies);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "%s: failed to enable regulators\n",
+> > +			__func__);
+> > +		return ret;
+> > +	}
+> > +
+> > +	ret = clk_prepare_enable(imx519->xclk);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "%s: failed to enable clock\n",
+> > +			__func__);
+> > +		goto reg_off;
+> > +	}
+> > +
+> > +	gpiod_set_value_cansleep(imx519->reset_gpio, 1);
+> > +	usleep_range(IMX519_XCLR_MIN_DELAY_US,
+> > +		     IMX519_XCLR_MIN_DELAY_US + IMX519_XCLR_DELAY_RANGE_US);
+> > +
+> > +	return 0;
+> > +
+> > +reg_off:
+> > +	regulator_bulk_disable(IMX519_NUM_SUPPLIES, imx519->supplies);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static int imx519_power_off(struct device *dev)
+> > +{
+> > +	struct i2c_client *client = to_i2c_client(dev);
+> > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +	gpiod_set_value_cansleep(imx519->reset_gpio, 0);
+> > +	regulator_bulk_disable(IMX519_NUM_SUPPLIES, imx519->supplies);
+> > +	clk_disable_unprepare(imx519->xclk);
+> > +
+> > +	/* Force reprogramming of the common registers when powered up again. */
+> > +	imx519->common_regs_written = false;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __maybe_unused imx519_suspend(struct device *dev)
+> > +{
+> > +	struct i2c_client *client = to_i2c_client(dev);
+> > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +	if (imx519->streaming)
+> > +		imx519_stop_streaming(imx519);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static int __maybe_unused imx519_resume(struct device *dev)
+> > +{
+> > +	struct i2c_client *client = to_i2c_client(dev);
+> > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +	int ret;
+> > +
+> > +	if (imx519->streaming) {
+> > +		ret = imx519_start_streaming(imx519);
+> > +		if (ret)
+> > +			goto error;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +error:
+> > +	imx519_stop_streaming(imx519);
+> > +	imx519->streaming = 0;
+> > +	return ret;
+> > +}
+
+No need for system suspend/resume handlers. You can drop the streaming
+field too.
+
+> > +
+> > +static int imx519_get_regulators(struct imx519 *imx519)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	unsigned int i;
+> > +
+> > +	for (i = 0; i < IMX519_NUM_SUPPLIES; i++)
+> > +		imx519->supplies[i].supply = imx519_supply_name[i];
+> > +
+> > +	return devm_regulator_bulk_get(&client->dev,
+> > +				       IMX519_NUM_SUPPLIES,
+> > +				       imx519->supplies);
+> > +}
+> > +
+> > +/* Verify chip ID */
+> > +static int imx519_identify_module(struct imx519 *imx519, u32 expected_id)
+> > +{
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	int ret;
+> > +	u32 val;
+> > +
+> > +	ret = imx519_read_reg(imx519, IMX519_REG_CHIP_ID,
+> > +			      IMX519_REG_VALUE_16BIT, &val);
+> > +	if (ret) {
+> > +		dev_err(&client->dev, "failed to read chip id %x, with error %d\n",
+> > +			expected_id, ret);
+> > +		return ret;
+> > +	}
+> > +
+> > +	if (val != expected_id) {
+> > +		dev_err(&client->dev, "chip id mismatch: %x!=%x\n",
+> > +			expected_id, val);
+> > +		return -EIO;
+> > +	}
+> > +
+> > +	dev_info(&client->dev, "Device found is imx%x\n", val);
+> > +
+> > +	return 0;
+> > +}
+
+Move these two functions after the subdev ops.
+
+> > +
+> > +static const struct v4l2_subdev_core_ops imx519_core_ops = {
+> > +	.subscribe_event = v4l2_ctrl_subdev_subscribe_event,
+> > +	.unsubscribe_event = v4l2_event_subdev_unsubscribe,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_video_ops imx519_video_ops = {
+> > +	.s_stream = imx519_set_stream,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_pad_ops imx519_pad_ops = {
+> > +	.enum_mbus_code = imx519_enum_mbus_code,
+> > +	.get_fmt = imx519_get_pad_format,
+> > +	.set_fmt = imx519_set_pad_format,
+> > +	.get_selection = imx519_get_selection,
+> > +	.enum_frame_size = imx519_enum_frame_size,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_ops imx519_subdev_ops = {
+> > +	.core = &imx519_core_ops,
+> > +	.video = &imx519_video_ops,
+> > +	.pad = &imx519_pad_ops,
+> > +};
+> > +
+> > +static const struct v4l2_subdev_internal_ops imx519_internal_ops = {
+> > +	.open = imx519_open,
+> > +};
+> > +
+> > +/* Initialize control handlers */
+> > +static int imx519_init_controls(struct imx519 *imx519)
+> > +{
+> > +	struct v4l2_ctrl_handler *ctrl_hdlr;
+> > +	struct i2c_client *client = v4l2_get_subdevdata(&imx519->sd);
+> > +	struct v4l2_fwnode_device_properties props;
+> > +	unsigned int i;
+> > +	int ret;
+> > +
+> > +	ctrl_hdlr = &imx519->ctrl_handler;
+> > +	ret = v4l2_ctrl_handler_init(ctrl_hdlr, 16);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	mutex_init(&imx519->mutex);
+> > +	ctrl_hdlr->lock = &imx519->mutex;
+> > +
+> > +	/* By default, PIXEL_RATE is read only */
+> > +	imx519->pixel_rate = v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops,
+> > +					       V4L2_CID_PIXEL_RATE,
+> > +					       IMX519_PIXEL_RATE,
+> > +					       IMX519_PIXEL_RATE, 1,
+> > +					       IMX519_PIXEL_RATE);
+> > +
+> > +	/*
+> > +	 * Create the controls here, but mode specific limits are setup
+> > +	 * in the imx519_set_framing_limits() call below.
+> > +	 */
+> > +	imx519->vblank = v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops,
+> > +					   V4L2_CID_VBLANK, 0, 0xffff, 1, 0);
+> > +	imx519->hblank = v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops,
+> > +					   V4L2_CID_HBLANK, 0, 0xffff, 1, 0);
+> > +
+> > +	/* HBLANK is read-only for now, but does change with mode. */
+> > +	if (imx519->hblank)
+> > +		imx519->hblank->flags |= V4L2_CTRL_FLAG_READ_ONLY;
+> > +
+> > +	imx519->exposure = v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops,
+> > +					     V4L2_CID_EXPOSURE,
+> > +					     IMX519_EXPOSURE_MIN,
+> > +					     IMX519_EXPOSURE_MAX,
+> > +					     IMX519_EXPOSURE_STEP,
+> > +					     IMX519_EXPOSURE_DEFAULT);
+> > +
+> > +	v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops, V4L2_CID_ANALOGUE_GAIN,
+> > +			  IMX519_ANA_GAIN_MIN, IMX519_ANA_GAIN_MAX,
+> > +			  IMX519_ANA_GAIN_STEP, IMX519_ANA_GAIN_DEFAULT);
+> > +
+> > +	v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops, V4L2_CID_DIGITAL_GAIN,
+> > +			  IMX519_DGTL_GAIN_MIN, IMX519_DGTL_GAIN_MAX,
+> > +			  IMX519_DGTL_GAIN_STEP, IMX519_DGTL_GAIN_DEFAULT);
+> > +
+> > +	imx519->hflip = v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops,
+> > +					  V4L2_CID_HFLIP, 0, 1, 1, 0);
+> > +	if (imx519->hflip)
+> > +		imx519->hflip->flags |= V4L2_CTRL_FLAG_MODIFY_LAYOUT;
+> > +
+> > +	imx519->vflip = v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops,
+> > +					  V4L2_CID_VFLIP, 0, 1, 1, 0);
+> > +	if (imx519->vflip)
+> > +		imx519->vflip->flags |= V4L2_CTRL_FLAG_MODIFY_LAYOUT;
+> > +
+> > +	v4l2_ctrl_new_std_menu_items(ctrl_hdlr, &imx519_ctrl_ops,
+> > +				     V4L2_CID_TEST_PATTERN,
+> > +				     ARRAY_SIZE(imx519_test_pattern_menu) - 1,
+> > +				     0, 0, imx519_test_pattern_menu);
+> > +	for (i = 0; i < 4; i++) {
+> > +		/*
+> > +		 * The assumption is that
+> > +		 * V4L2_CID_TEST_PATTERN_GREENR == V4L2_CID_TEST_PATTERN_RED + 1
+> > +		 * V4L2_CID_TEST_PATTERN_BLUE   == V4L2_CID_TEST_PATTERN_RED + 2
+> > +		 * V4L2_CID_TEST_PATTERN_GREENB == V4L2_CID_TEST_PATTERN_RED + 3
+> > +		 */
+> > +		v4l2_ctrl_new_std(ctrl_hdlr, &imx519_ctrl_ops,
+> > +				  V4L2_CID_TEST_PATTERN_RED + i,
+> > +				  IMX519_TEST_PATTERN_COLOUR_MIN,
+> > +				  IMX519_TEST_PATTERN_COLOUR_MAX,
+> > +				  IMX519_TEST_PATTERN_COLOUR_STEP,
+> > +				  IMX519_TEST_PATTERN_COLOUR_MAX);
+> > +		/* The "Solid color" pattern is white by default */
+> > +	}
+> > +
+> > +	if (ctrl_hdlr->error) {
+> > +		ret = ctrl_hdlr->error;
+> > +		dev_err(&client->dev, "%s control init failed (%d)\n",
+> > +			__func__, ret);
+> > +		goto error;
+> > +	}
+> > +
+> > +	ret = v4l2_fwnode_device_parse(&client->dev, &props);
+> > +	if (ret)
+> > +		goto error;
+> > +
+> > +	ret = v4l2_ctrl_new_fwnode_properties(ctrl_hdlr, &imx519_ctrl_ops,
+> > +					      &props);
+> > +	if (ret)
+> > +		goto error;
+> > +
+> > +	imx519->sd.ctrl_handler = ctrl_hdlr;
+> > +
+> > +	/* Setup exposure and frame/line length limits. */
+> > +	imx519_set_framing_limits(imx519);
+> > +
+> > +	return 0;
+> > +
+> > +error:
+> > +	v4l2_ctrl_handler_free(ctrl_hdlr);
+> > +	mutex_destroy(&imx519->mutex);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static void imx519_free_controls(struct imx519 *imx519)
+> > +{
+> > +	v4l2_ctrl_handler_free(imx519->sd.ctrl_handler);
+> > +	mutex_destroy(&imx519->mutex);
+> > +}
+> > +
+> > +static int imx519_check_hwcfg(struct device *dev)
+> > +{
+> > +	struct fwnode_handle *endpoint;
+> > +	struct v4l2_fwnode_endpoint ep_cfg = {
+> > +		.bus_type = V4L2_MBUS_CSI2_DPHY
+> > +	};
+> > +	int ret = -EINVAL;
+> > +
+> > +	endpoint = fwnode_graph_get_next_endpoint(dev_fwnode(dev), NULL);
+> > +	if (!endpoint) {
+> > +		dev_err(dev, "endpoint node not found\n");
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	if (v4l2_fwnode_endpoint_alloc_parse(endpoint, &ep_cfg)) {
+> > +		dev_err(dev, "could not parse endpoint\n");
+> > +		goto error_out;
+> > +	}
+> > +
+> > +	/* Check the number of MIPI CSI2 data lanes */
+> > +	if (ep_cfg.bus.mipi_csi2.num_data_lanes != 2) {
+> > +		dev_err(dev, "only 2 data lanes are currently supported\n");
+> > +		goto error_out;
+> > +	}
+> > +
+> > +	/* Check the link frequency set in device tree */
+> > +	if (!ep_cfg.nr_of_link_frequencies) {
+> > +		dev_err(dev, "link-frequency property not found in DT\n");
+> > +		goto error_out;
+> > +	}
+> > +
+> > +	if (ep_cfg.nr_of_link_frequencies != 1 ||
+> > +	    ep_cfg.link_frequencies[0] != IMX519_DEFAULT_LINK_FREQ) {
+> > +		dev_err(dev, "Link frequency not supported: %lld\n",
+> > +			ep_cfg.link_frequencies[0]);
+> > +		goto error_out;
+> > +	}
+> > +
+> > +	ret = 0;
+> > +
+> > +error_out:
+> > +	v4l2_fwnode_endpoint_free(&ep_cfg);
+> > +	fwnode_handle_put(endpoint);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static const struct of_device_id imx519_dt_ids[] = {
+> > +	{ .compatible = "sony,imx519"},
+
+Missing space.
+
+> > +	{ /* sentinel */ }
+> > +};
+> > +
+> > +static int imx519_probe(struct i2c_client *client)
+> > +{
+> > +	struct device *dev = &client->dev;
+> > +	struct imx519 *imx519;
+> > +	const struct of_device_id *match;
+> > +	u32 xclk_freq;
+> > +	int ret;
+> > +
+> > +	imx519 = devm_kzalloc(&client->dev, sizeof(*imx519), GFP_KERNEL);
+> > +	if (!imx519)
+> > +		return -ENOMEM;
+> > +
+> > +	v4l2_i2c_subdev_init(&imx519->sd, client, &imx519_subdev_ops);
+> > +
+> > +	match = of_match_device(imx519_dt_ids, dev);
+> > +	if (!match)
+> > +		return -ENODEV;
+> 
+> You only handle a single device, do you need this?
+> 
+> > +
+> > +	/* Check the hardware configuration in device tree */
+> > +	if (imx519_check_hwcfg(dev))
+> > +		return -EINVAL;
+> > +
+> > +	/* Get system clock (xclk) */
+> > +	imx519->xclk = devm_clk_get(dev, NULL);
+> > +	if (IS_ERR(imx519->xclk)) {
+> > +		dev_err(dev, "failed to get xclk\n");
+> > +		return PTR_ERR(imx519->xclk);
+> > +	}
+> > +
+> > +	xclk_freq = clk_get_rate(imx519->xclk);
+> > +	if (xclk_freq != IMX519_XCLK_FREQ) {
+> > +		dev_err(dev, "xclk frequency not supported: %d Hz\n",
+> > +			xclk_freq);
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	ret = imx519_get_regulators(imx519);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to get regulators\n");
+> > +		return ret;
+> > +	}
+> > +
+> > +	/* Request optional enable pin */
+> > +	imx519->reset_gpio = devm_gpiod_get_optional(dev, "reset",
+> > +						     GPIOD_OUT_HIGH);
+> > +
+> > +	/*
+> > +	 * The sensor must be powered for imx519_identify_module()
+> > +	 * to be able to read the CHIP_ID register
+> > +	 */
+> > +	ret = imx519_power_on(dev);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ret = imx519_identify_module(imx519, IMX519_CHIP_ID);
+> > +	if (ret)
+> > +		goto error_power_off;
+> > +
+> > +	/* Set default mode to max resolution */
+> > +	imx519->mode = &supported_modes_10bit[0];
+> > +	imx519->fmt_code = MEDIA_BUS_FMT_SRGGB10_1X10;
+> > +
+> > +	/* Enable runtime PM and turn off the device */
+> > +	pm_runtime_set_active(dev);
+> > +	pm_runtime_enable(dev);
+> > +	pm_runtime_idle(dev);
+> > +
+> > +	/* This needs the pm runtime to be registered. */
+> > +	ret = imx519_init_controls(imx519);
+> > +	if (ret)
+> > +		goto error_power_off;
+> > +
+> > +	/* Initialize subdev */
+> > +	imx519->sd.internal_ops = &imx519_internal_ops;
+> > +	imx519->sd.flags |= V4L2_SUBDEV_FL_HAS_DEVNODE |
+> > +			    V4L2_SUBDEV_FL_HAS_EVENTS;
+> > +	imx519->sd.entity.function = MEDIA_ENT_F_CAM_SENSOR;
+> > +
+> > +	/* Initialize source pads */
+> > +	imx519->pad[IMAGE_PAD].flags = MEDIA_PAD_FL_SOURCE;
+> > +	imx519->pad[METADATA_PAD].flags = MEDIA_PAD_FL_SOURCE;
+> > +
+> > +	ret = media_entity_pads_init(&imx519->sd.entity, NUM_PADS, imx519->pad);
+> > +	if (ret) {
+> > +		dev_err(dev, "failed to init entity pads: %d\n", ret);
+> > +		goto error_handler_free;
+> > +	}
+> > +
+> > +	ret = v4l2_async_register_subdev_sensor(&imx519->sd);
+> > +	if (ret < 0) {
+> > +		dev_err(dev, "failed to register sensor sub-device: %d\n", ret);
+> > +		goto error_media_entity;
+> > +	}
+> > +
+> > +	return 0;
+> > +
+> > +error_media_entity:
+> > +	media_entity_cleanup(&imx519->sd.entity);
+> > +
+> > +error_handler_free:
+> > +	imx519_free_controls(imx519);
+> > +
+> > +error_power_off:
+> > +	pm_runtime_disable(&client->dev);
+> > +	pm_runtime_set_suspended(&client->dev);
+> > +	imx519_power_off(&client->dev);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static void imx519_remove(struct i2c_client *client)
+> > +{
+> > +	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+> > +	struct imx519 *imx519 = to_imx519(sd);
+> > +
+> > +	v4l2_async_unregister_subdev(sd);
+> > +	media_entity_cleanup(&sd->entity);
+> > +	imx519_free_controls(imx519);
+> > +
+> > +	pm_runtime_disable(&client->dev);
+> > +	if (!pm_runtime_status_suspended(&client->dev))
+> > +		imx519_power_off(&client->dev);
+> > +	pm_runtime_set_suspended(&client->dev);
+> > +}
+> > +
+> > +MODULE_DEVICE_TABLE(of, imx519_dt_ids);
+> > +
+> > +static const struct dev_pm_ops imx519_pm_ops = {
+> > +	SET_SYSTEM_SLEEP_PM_OPS(imx519_suspend, imx519_resume)
+> > +	SET_RUNTIME_PM_OPS(imx519_power_off, imx519_power_on, NULL)
+> > +};
+> > +
+> > +static struct i2c_driver imx519_i2c_driver = {
+> > +	.driver = {
+> > +		.name = "imx519",
+> > +		.of_match_table	= imx519_dt_ids,
+> > +		.pm = &imx519_pm_ops,
+> > +	},
+> > +	.probe_new = imx519_probe,
+> > +	.remove = imx519_remove,
+> > +};
+> > +
+> > +module_i2c_driver(imx519_i2c_driver);
+> > +
+> > +MODULE_AUTHOR("Lee Jackson <lee.jackson@arducam.com>");
+> > +MODULE_DESCRIPTION("Sony IMX519 sensor driver");
+> > +MODULE_LICENSE("GPL v2");
+
+-- 
+Regards,
+
+Laurent Pinchart
