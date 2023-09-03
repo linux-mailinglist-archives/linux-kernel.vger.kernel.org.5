@@ -2,132 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC56790A83
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 03:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0F0790A88
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 04:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235492AbjICB5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 2 Sep 2023 21:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40458 "EHLO
+        id S235507AbjICCDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 2 Sep 2023 22:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235405AbjICB5p (ORCPT
+        with ESMTP id S229810AbjICCDo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 2 Sep 2023 21:57:45 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91199131
-        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 18:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693706261; x=1725242261;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=w7kAA0dDhx3JMWGLOZ3PRy9gzEcEaBz2rEhs9OuIcYs=;
-  b=eIA8vaILgdW4iWVo1gnc9A5y47WXsXRpunv3uvlF/1n3MnvX+FHqMu+J
-   bkmZa2S/8RbYSVwOtGFBI6hQadRNct+vpO7DK+6rZW3CuoG3xdK5nY/I/
-   bQwh/lvSIXPfRPFvn5jSuKB9jMvGaXhM1D4+tzNRSlfEeM3jArHUHwJKO
-   3uvsizWnwlN2knmf6xwg6sn0hAZ+/TstXJudVXQtA2Frb4ZPPYcQU78tg
-   Y3C9glar0MepMtdWh884NLGPtBWGEHV3xlkWWerbiHu7TWEhr39F7tTBe
-   dCzP2fw6mLrDtJLcvbgWAlR7JXXX2zBl5hLZ+8ATAaKV+91R0r9x4CrDV
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="380203285"
-X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
-   d="scan'208";a="380203285"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Sep 2023 18:57:41 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10821"; a="855164368"
-X-IronPort-AV: E=Sophos;i="6.02,223,1688454000"; 
-   d="scan'208";a="855164368"
-Received: from lkp-server01.sh.intel.com (HELO 5d8055a4f6aa) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 02 Sep 2023 18:57:38 -0700
-Received: from kbuild by 5d8055a4f6aa with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qccMq-0002nH-0t;
-        Sun, 03 Sep 2023 01:57:36 +0000
-Date:   Sun, 3 Sep 2023 09:56:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, pierre-eric.pelloux-prayer@amd.com,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-        'Marek =?utf-8?B?T2zFocOhayc=?= <maraeo@gmail.com>,
-        kernel-dev@igalia.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com
-Subject: Re: [PATCH 1/2] drm/amdgpu: Merge debug module parameters
-Message-ID: <202309030946.q2LgJYO7-lkp@intel.com>
-References: <20230824162505.173399-2-andrealmeid@igalia.com>
+        Sat, 2 Sep 2023 22:03:44 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCE5138
+        for <linux-kernel@vger.kernel.org>; Sat,  2 Sep 2023 19:03:41 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-31c3df710bdso225897f8f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 02 Sep 2023 19:03:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1693706619; x=1694311419; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aGDSQJiXQuoyWps/ytd/2WoWtJYP1mDXQdaj2jxTaeg=;
+        b=dLMQrH/8OwZlxhwU1EibFBg03eD6pe2Z3+LrC41KcQwMmaAdAdPSe7dhgaNDQvT7Mv
+         jyP6FrqV78hYpHUtlwU1mC4E7FgdMRRW1rRbT1qUyuhllzlK1Rj5YOhGnCjptHHA6sJz
+         /hZwfF4haFBCtkLeSAVAhGXIFM1sjf0XquByk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693706619; x=1694311419;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aGDSQJiXQuoyWps/ytd/2WoWtJYP1mDXQdaj2jxTaeg=;
+        b=dSK1t1o+v6POZTz8uC8UiMDsjzOsqxCHrk/cr7m6tRAsrIi9QdjSIwDQZwXHgUVJ9z
+         OmM5TYJuXWAmsuEBAYLDK61X2lK0cREaCcNbr3J/zFbM2b8o0gNLa2gt6IaaHOT0LAZb
+         wifeO1V4mrVgFAfSHR2HBfHOSV7TQ76VLbKl9PxeF+xYHUU819AIntg/6uDLfj6UBkmR
+         Ejik0jbPJG7fVA9ffSV+OANgTTbAwi6JkRWaLE33bZgm3Elpftt/FjmJ6wj/ZKb7wGq7
+         vZogE6wEphWvZ+Eh2iRq5r+GUDhlszKatyykn9bbpCYnKnO51mZee8lLLOdhtPq3k5BL
+         FyZw==
+X-Gm-Message-State: AOJu0Yx1SOfCfLtNdKL4gs7Sq7bOOtq9U/4nnijdhFqjw2MA6hJ3Nvda
+        yeOtgTTMnynGDqWs+aGYWd1FrX53p+5+B4PT0pHpnw==
+X-Google-Smtp-Source: AGHT+IGQsIsQewNGMCxECvHe8qzSJVIhzfT9nCmpKPZkBWgm+NlAYIiR8ejmECFslO7nvNY8+QSayp+yc9vuJD8tiT4=
+X-Received: by 2002:adf:ebcd:0:b0:313:eaf5:515 with SMTP id
+ v13-20020adfebcd000000b00313eaf50515mr4322055wrn.6.1693706619010; Sat, 02 Sep
+ 2023 19:03:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230824162505.173399-2-andrealmeid@igalia.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230830110402.386898-1-joel@joelfernandes.org>
+ <20230830110402.386898-2-joel@joelfernandes.org> <20230902182828.e42c6ec7b4a7beb1e4b2b042@linux-foundation.org>
+In-Reply-To: <20230902182828.e42c6ec7b4a7beb1e4b2b042@linux-foundation.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Sat, 2 Sep 2023 22:03:28 -0400
+Message-ID: <CAEXW_YQB4qahh4FZrtw3AOsxwRw7-Bd1YXULCBOE2K9j81Oqag@mail.gmail.com>
+Subject: Re: [PATCH 2/2] rcu: Dump vmalloc memory info safely
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        linux-mm@kvack.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi André,
+On Sat, Sep 2, 2023 at 9:28=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
+.org> wrote:
+>
+> On Wed, 30 Aug 2023 11:04:00 +0000 "Joel Fernandes (Google)" <joel@joelfe=
+rnandes.org> wrote:
+>
+> > Currently, for double invoke call_rcu(), will dump rcu_head objects
+> > memory info, if the objects is not allocated from the slab allocator,
+> > the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
+> > need to be held, since the call_rcu() can be invoked in interrupt conte=
+xt,
+> > therefore, there is a possibility of spinlock deadlock scenarios.
+> >
+> > And in Preempt-RT kernel, the rcutorture test also trigger the followin=
+g
+> > lockdep warning:
+>
+> "possibility of deadlock" sounds like something -stable kernels would
+> like to have fixed.
+>
+> Did you consider the desirability of a -stable backport?
+>
+> If so, are we able to identify a suitable Fixes: target?
 
-kernel test robot noticed the following build errors:
+Good point, it should be:
+Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
 
-[auto build test ERROR on drm-misc/drm-misc-next]
-[also build test ERROR on drm/drm-next drm-exynos/exynos-drm-next drm-intel/for-linux-next drm-intel/for-linux-next-fixes drm-tip/drm-tip linus/master v6.5 next-20230831]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+I am currently reworking the patch as Vlad was also concerned about
+(the existing) issue of accessing vm_struct fields without holding the
+lock [1].
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andr-Almeida/drm-amdgpu-Merge-debug-module-parameters/20230825-002641
-base:   git://anongit.freedesktop.org/drm/drm-misc drm-misc-next
-patch link:    https://lore.kernel.org/r/20230824162505.173399-2-andrealmeid%40igalia.com
-patch subject: [PATCH 1/2] drm/amdgpu: Merge debug module parameters
-config: i386-allyesconfig (https://download.01.org/0day-ci/archive/20230903/202309030946.q2LgJYO7-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230903/202309030946.q2LgJYO7-lkp@intel.com/reproduce)
+I will add this fixes tag to both patches for the v3 on the respin.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309030946.q2LgJYO7-lkp@intel.com/
+Thanks!
 
-All errors (new ones prefixed by >>):
-
-   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c: In function 'amdgpu_init_debug_options':
->> drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c:2923:33: error: assignment of read-only variable 'debug_evictions'
-    2923 |                 debug_evictions = true;
-         |                                 ^
->> drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c:2933:17: error: 'debug_largebar' undeclared (first use in this function)
-    2933 |                 debug_largebar = true;
-         |                 ^~~~~~~~~~~~~~
-   drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c:2933:17: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +/debug_evictions +2923 drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c
-
-  2918	
-  2919	static void amdgpu_init_debug_options(void)
-  2920	{
-  2921		if (amdgpu_debug_mask & DEBUG_VERBOSE_EVICTIONS) {
-  2922			pr_info("debug: eviction debug messages enabled\n");
-> 2923			debug_evictions = true;
-  2924		}
-  2925	
-  2926		if (amdgpu_debug_mask & DEBUG_VM) {
-  2927			pr_info("debug: VM handling debug enabled\n");
-  2928			amdgpu_vm_debug = true;
-  2929		}
-  2930	
-  2931		if (amdgpu_debug_mask & DEBUG_LARGEBAR) {
-  2932			pr_info("debug: enabled simulating large-bar capability on non-large bar system\n");
-> 2933			debug_largebar = true;
-  2934		}
-  2935	}
-  2936	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+ - Joel
