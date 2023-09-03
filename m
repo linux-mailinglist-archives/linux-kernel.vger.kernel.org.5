@@ -2,70 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1F4790CE8
-	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 18:37:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1292B790CEA
+	for <lists+linux-kernel@lfdr.de>; Sun,  3 Sep 2023 18:37:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245005AbjICQdl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 12:33:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46502 "EHLO
+        id S245272AbjICQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 12:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237525AbjICQdk (ORCPT
+        with ESMTP id S237443AbjICQhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 12:33:40 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3AF106
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 09:33:37 -0700 (PDT)
+        Sun, 3 Sep 2023 12:37:25 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E01E10A;
+        Sun,  3 Sep 2023 09:37:21 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id BC7781F460;
-        Sun,  3 Sep 2023 16:33:35 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 4376921836;
+        Sun,  3 Sep 2023 16:37:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693758815; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1693759040; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xp8Sb/watMz7Zi6Q0dpAgx4sfErZ6UCjyhXrUUImxQI=;
-        b=0T658nTztdR9ro4nQ3ldvbvr+5Icla6FqyP6kXZX1X1qWq9fztqQLpKHid40GsuFJRUYGG
-        epOuKTaYtWKyi7rqiw9RN/oSnM/b/q138tC1wwn1hnhkxEwh0gvwvWcGhUg676onCLjhX5
-        RyzD72hPS8SzrYoYicUaCLsCy/af0Q4=
+        bh=/Tie4rZws0/0HD6H9qhOXBjJ2HEonf2KMH2jm7Fi++g=;
+        b=q3vnijbhPaSwaTR5mKAKd3j5wpKcP49odGDIcRnFqL2zSWDldQM5ihv1xAgYOxbYRzV8cU
+        q1Pbve9Drud98LGeIUYE4lXiQO4s+QNQqmGbh/TmQYBsEwR2RevfB5B20r39Usai4xoo2b
+        U49ISQd9jnSlYBw05EvfUZGCdRC6qfs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693758815;
+        s=susede2_ed25519; t=1693759040;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xp8Sb/watMz7Zi6Q0dpAgx4sfErZ6UCjyhXrUUImxQI=;
-        b=s4ZAbqWYqjz3lZWsmSL2GyWhjTCSkGIR8Vg2JmF/9Q9WRi7IWz2aO3W9kRV77mwlahpJqE
-        y6Em5Vw3S7V3hJDA==
+        bh=/Tie4rZws0/0HD6H9qhOXBjJ2HEonf2KMH2jm7Fi++g=;
+        b=zrck84tJVC8XVTiDHSDVIjXjXdrX3F+vS1vhyqeiyfkNvpbLo7mV+1bfL9+bM1PpCK/i0m
+        tJuT5BMikzXBNXDg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 35C6B13583;
-        Sun,  3 Sep 2023 16:33:35 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 16A0B13583;
+        Sun,  3 Sep 2023 16:37:20 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id ftsaDF+19GQvHwAAMHmgww
-        (envelope-from <tiwai@suse.de>); Sun, 03 Sep 2023 16:33:35 +0000
-Date:   Sun, 03 Sep 2023 18:33:34 +0200
-Message-ID: <87ttsbkyht.wl-tiwai@suse.de>
+        id 4SylBEC29GSNIAAAMHmgww
+        (envelope-from <tiwai@suse.de>); Sun, 03 Sep 2023 16:37:20 +0000
+Date:   Sun, 03 Sep 2023 18:37:19 +0200
+Message-ID: <87sf7vkybk.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Shenghao Ding <shenghao-ding@ti.com>
-Cc:     <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <lgirdwood@gmail.com>, <perex@perex.cz>,
-        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <mengdong.lin@intel.com>, <baojun.xu@ti.com>,
-        <thomas.gfeller@q-drop.com>, <peeyush@ti.com>, <navada@ti.com>,
-        <broonie@kernel.org>, <gentuser@gmail.com>
-Subject: Re: [PATCH v1 2/2] ALSA: hda/tas2781: Update tas2781 HDA driver
-In-Reply-To: <20230903143759.92-2-shenghao-ding@ti.com>
-References: <20230903143759.92-1-shenghao-ding@ti.com>
-        <20230903143759.92-2-shenghao-ding@ti.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH] ALSA: usb-audio: Fix a potential memory leak in scarlett2_init_notify()
+In-Reply-To: <8cde2320-517f-3a38-8c3f-f807791c6c52@wanadoo.fr>
+References: <fc275ed315b9157952dcf2744ee7bdb78defdb5f.1693746347.git.christophe.jaillet@wanadoo.fr>
+        <871qffmj2d.wl-tiwai@suse.de>
+        <8cde2320-517f-3a38-8c3f-f807791c6c52@wanadoo.fr>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
         SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -75,97 +74,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 03 Sep 2023 16:37:58 +0200,
-Shenghao Ding wrote:
+On Sun, 03 Sep 2023 17:04:47 +0200,
+Christophe JAILLET wrote:
 > 
-> Support ACPI_ID both TXNW2781 and TIAS2781, update dsp/bypass mode
-> switching in tasdevice_program_put.
+> Le 03/09/2023 à 16:23, Takashi Iwai a écrit :
+> > On Sun, 03 Sep 2023 15:06:00 +0200,
+> > Christophe JAILLET wrote:
+> >> 
+> >> If usb_alloc_coherent() or usb_urb_ep_type_check() fail, we should release
+> >> the resources previously allocated.
+> > 
+> > Those are freed in the caller side, start_input_streams() instead.
+> 
+> Thanks for the fast review.
+> 
+> Hmpm, If IIUC, resources allocated *before* the ending
+> "ep->num_urbs++" still need to be freed here, otherwise
+> free_midi_urbs() in the caller will not free them.
+> 
+> Do you agree?
+> 
+> If yes, I can send v2 which would look like:
+> 	usb_alloc_urb()
+> 	if (err)
+> 		return -ENOMEM
+> 
+> 	usb_alloc_coherent()
+> 	if (err) {
+> 		usb_free_urb()
+> 		urb = NULL
+> 		return -ENOMEM
+> 	}
+> 	
+> 	 usb_urb_ep_type_check()
+> 	if (err) {
+> 		usb_free_coherent()
+> 		usb_free_urb()
+> 		urb = NULL
+> 		return -err
+> 	}
+> 
+> Or, if yuo prefer, with an error handling path just like below, but
+> without the final free_midi_urbs() + a comment explaining that the
+> caller does this part of job instead.
 
-Again, if you change multiple things, split to individual patches.
+Indeed.  The fix would be rather a oneliner like below, though:
 
+--- a/sound/usb/midi2.c
++++ b/sound/usb/midi2.c
+@@ -265,7 +265,7 @@ static void free_midi_urbs(struct snd_usb_midi2_endpoint *ep)
+ 
+ 	if (!ep)
+ 		return;
+-	for (i = 0; i < ep->num_urbs; ++i) {
++	for (i = 0; i < NUM_URBS; ++i) {
+ 		ctx = &ep->urbs[i];
+ 		if (!ctx->urb)
+ 			break;
 
-thanks,
+That was the intended behavior of free_midi_urbs().
+
 
 Takashi
-
-
-> 
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
-> 
-> ---
-> Changes in v1:
->  - Add comment on dsp/bypass mode in tasdevice_program_put and
->    tasdevice_info_programs
->  - TIAS2781 has been used by our customers, see following dstd.dsl. We
->    have discussed this with them, they requested TIAS2781 must be
->    supported for the laptops already released to market, their new laptop
->    can switch to TXNW2781
->    Name (_HID, "TIAS2781")  // _HID: Hardware ID
->    Name (_UID, Zero)  // _UID: Unique ID
->    Method (_SUB, 0, NotSerialized)  // _SUB: Subsystem ID
->    {
->        If ((SPID == Zero))
->        {
->           Return ("17AA3886")
->        }
-> 
->        If ((SPID == One))
->        {
->            Return ("17AA3884")
->        }
->    }
-> ---
->  sound/pci/hda/tas2781_hda_i2c.c | 15 ++++++++++++---
->  1 file changed, 12 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-> index fb80280293..5250d300a2 100644
-> --- a/sound/pci/hda/tas2781_hda_i2c.c
-> +++ b/sound/pci/hda/tas2781_hda_i2c.c
-> @@ -199,8 +199,11 @@ static int tasdevice_info_programs(struct snd_kcontrol *kcontrol,
->  
->  	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
->  	uinfo->count = 1;
-> +	/* 0:			dsp mode
-> +	 * non-zero:	bypass mode
-> +	 */
->  	uinfo->value.integer.min = 0;
-> -	uinfo->value.integer.max = tas_fw->nr_programs - 1;
-> +	uinfo->value.integer.max = tas_fw->nr_programs;
->  
->  	return 0;
->  }
-> @@ -238,7 +241,10 @@ static int tasdevice_program_put(struct snd_kcontrol *kcontrol,
->  	int max = tas_fw->nr_programs - 1;
->  	int val, ret = 0;
->  
-> -	val = clamp(nr_program, 0, max);
-> +	/* 0:			dsp mode
-> +	 * non-zero:	bypass mode
-> +	 */
-> +	val = (nr_program) ? max : 0;
->  
->  	if (tas_priv->cur_prog != val) {
->  		tas_priv->cur_prog = val;
-> @@ -647,7 +653,9 @@ static int tas2781_hda_i2c_probe(struct i2c_client *clt)
->  	const char *device_name;
->  	int ret;
->  
-> -	if (strstr(dev_name(&clt->dev), "TIAS2781"))
-> +	if (strstr(dev_name(&clt->dev), "TXNW2781"))
-> +		device_name = "TXNW2781";
-> +	else if (strstr(dev_name(&clt->dev), "TIAS2781"))
->  		device_name = "TIAS2781";
->  	else
->  		return -ENODEV;
-> @@ -824,6 +832,7 @@ static const struct i2c_device_id tas2781_hda_i2c_id[] = {
->  
->  static const struct acpi_device_id tas2781_acpi_hda_match[] = {
->  	{"TIAS2781", 0 },
-> +	{"TXNW2781", 1 },
->  	{}
->  };
->  MODULE_DEVICE_TABLE(acpi, tas2781_acpi_hda_match);
-> -- 
-> 2.34.1
-> 
