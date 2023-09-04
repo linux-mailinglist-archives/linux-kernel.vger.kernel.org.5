@@ -2,133 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 813C37919AA
+	by mail.lfdr.de (Postfix) with ESMTP id D6BB67919AB
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229889AbjIDO2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:28:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41108 "EHLO
+        id S1353146AbjIDO2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:28:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345104AbjIDO2r (ORCPT
+        with ESMTP id S1350965AbjIDO2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Sep 2023 10:28:47 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59899CE5;
-        Mon,  4 Sep 2023 07:28:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 4D834CE0ED3;
-        Mon,  4 Sep 2023 14:28:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56398C433C7;
-        Mon,  4 Sep 2023 14:28:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693837718;
-        bh=Up07sfErFvj6d+ATkEHYNBDmwHdFvbMBAGVYWlJsRWo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Wcr5RIvKGmcsqGx7hxbCl+2tlzvjsDIh8LjcB2+BcpPBVo2/RCSrbH7KPlgJw04oM
-         9JBD/OA3g89RWKKGo6lNP3gjqgLxlcsWYkrbH/7GiWojDqKVXCzd9ZyTwoDvQ6hRKh
-         a/PREKMgMzt8YTmlXyGqesMNThjqiW3ngRnXjH0dL07EXQpe+UuXdeuB8oCEFr0b8+
-         Q9m8hwJ05cYczviRgmTuOFK9t1sVzDPy2hr5lVTcAxcM5UqMuNE/wnGvrbebXkslSu
-         vQWpKiUjgtfLTyvb7go7fugVVaR54abRRzEpxFmGyajsJmHwgux8ZlusCUhGNTLDHf
-         WCZ87NW5zC2BA==
-Date:   Mon, 4 Sep 2023 15:28:33 +0100
-From:   Lee Jones <lee@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Sean Young <sean@mess.org>, linux-media@vger.kernel.org,
-        Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: media: remove nokia,n900-ir as
- pwm-ir-tx is compatible
-Message-ID: <20230904142833.GE13143@google.com>
-References: <cover.1693577725.git.sean@mess.org>
- <25e8f2626d15199a1bf727fee375b5b149004c8e.1693577725.git.sean@mess.org>
- <20230902-gender-sandstone-7da75af72f4f@spud>
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7772CFB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:28:42 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52a39a1c4d5so2042040a12.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 07:28:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693837721; x=1694442521; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8iuZC33D0pi0SebavXErWmT+pulYIQNcxBHdRQcQik8=;
+        b=i+NrAXlD4u8Ng1VlPXus3DUIWmOtAqb2VmhucPV+g77Tay/c1zJ9yS4cUkxasvsB5m
+         2GIsDJV0hczfbL/H4dJdeYX8txCVPtug3RXXpGq7KUw04cEC9cTB2fsMf82ODkCHfOMy
+         PIlUlDeFeElL2g771ZAstt3XFWQvUyPR4pAKSi/QZ2UPaqHQYuEZzfL4rP3yx7IzzG73
+         YCqPywnmxDr6DZfOn7L5Rl4DuoXE/Kak2HeK080utwKT2p++qVyYc5+QYJozI9jN3HKN
+         Xx5B5QnnhVsYSRlN2heUmArF3aTYY+FbuIoYg4BPZjcp3FvEOmE2XXxBxbByzpXC/tbX
+         8+gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693837721; x=1694442521;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8iuZC33D0pi0SebavXErWmT+pulYIQNcxBHdRQcQik8=;
+        b=g2g222x38vnV4thR5lAcFMN3c+yNsP6M9WQCr1ISUSFwb6oyYtII5ybkSlWpE0Fpkn
+         NE4hJBboLpZf0OwVUfosVAQzS4nz2ud0SGePBeWVUQDWPjQHSqRu3TZmvE4JOB1l2eUo
+         x+2O2UuAzj9wslZSFGFZomcN3F0BfRdvdgVnkqUi45P3+7BdLmZA/YlTXd2sKAFamWm3
+         L7w251IuKZfFarOs2SwlK0vlLrgn9mJ7lvGkaM0acdCrp1uc8pEbHw/ilxr2GuV7Cf+p
+         7QCWmyqsUcZMWZo2m0whL+EudTtIrQHTFd57z0PiYM010Lr14GNOuxWVupMj0T1NxH51
+         6Wgg==
+X-Gm-Message-State: AOJu0YxjwHFQSfDsSUbDcvCAVVeDAkuLuhy2WXLMqLTpdHbJEoGFpgOp
+        UNNMvBLBq7A37GHWj8Oq398=
+X-Google-Smtp-Source: AGHT+IFskoTClGeTBvqu3n1vQK3DtrW+gFUuQJHiyBXfyIZHMy7jeXQO/PenDGkfjW4bANcjhDq1CQ==
+X-Received: by 2002:aa7:d407:0:b0:52a:3ee9:a786 with SMTP id z7-20020aa7d407000000b0052a3ee9a786mr6642621edq.26.1693837720880;
+        Mon, 04 Sep 2023 07:28:40 -0700 (PDT)
+Received: from ?IPV6:2a02:908:8b3:1840:e0a4:c719:5e8d:3b55? ([2a02:908:8b3:1840:e0a4:c719:5e8d:3b55])
+        by smtp.gmail.com with ESMTPSA id e11-20020a056402148b00b00529fa63ef6fsm5930777edv.57.2023.09.04.07.28.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 07:28:40 -0700 (PDT)
+Message-ID: <53ee3d14-05f4-981f-26d2-ef9ef6b3a61b@gmail.com>
+Date:   Mon, 4 Sep 2023 16:28:37 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230902-gender-sandstone-7da75af72f4f@spud>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5/5] drm/bridge: samsung-dsim: calculate porches in Hz
+To:     Michael Tretter <m.tretter@pengutronix.de>
+Cc:     kernel@pengutronix.de, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Inki Dae <inki.dae@samsung.com>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
+ <20230818-samsung-dsim-v1-5-b39716db6b7a@pengutronix.de>
+Content-Language: en-US
+From:   Maxim Schwalm <maxim.schwalm@gmail.com>
+In-Reply-To: <20230818-samsung-dsim-v1-5-b39716db6b7a@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 02 Sep 2023, Conor Dooley wrote:
+Hi,
 
-> On Fri, Sep 01, 2023 at 03:18:55PM +0100, Sean Young wrote:
-> > The generic pwm-ir-tx driver works for the Nokia n900, so nokia,n900-ir
-> > can be removed.
-> > 
-> > Signed-off-by: Sean Young <sean@mess.org>
+On 28.08.23 17:59, Michael Tretter wrote:
+> Calculating the byte_clk in kHz is imprecise for a hs_clock of 55687500
+> Hz, which may be used with a pixel clock of 74.25 MHz with mode
+> 1920x1080-30.
 > 
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+> Fix the calculation by using HZ instead of kHZ.
+> 
+> This requires to change the type to u64 to prevent overflows of the
+> integer type.
+> 
+> Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+> ---
+>  drivers/gpu/drm/bridge/samsung-dsim.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+> index 459be953be55..eb7aca2b9ab7 100644
+> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> @@ -973,10 +973,12 @@ static void samsung_dsim_set_display_mode(struct samsung_dsim *dsi)
+>  	u32 reg;
+>  
+>  	if (dsi->mode_flags & MIPI_DSI_MODE_VIDEO) {
+> -		int byte_clk_khz = dsi->hs_clock / 1000 / 8;
+> -		int hfp = DIV_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk_khz, m->clock);
+> -		int hbp = DIV_ROUND_UP((m->htotal - m->hsync_end) * byte_clk_khz, m->clock);
+> -		int hsa = DIV_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk_khz, m->clock);
+> +		u64 byte_clk = dsi->hs_clock / 8;
+> +		u64 pix_clk = m->clock * 1000;
+> +
+> +		int hfp = DIV64_U64_ROUND_UP((m->hsync_start - m->hdisplay) * byte_clk, pix_clk);
+> +		int hbp = DIV64_U64_ROUND_UP((m->htotal - m->hsync_end) * byte_clk, pix_clk);
+> +		int hsa = DIV64_U64_ROUND_UP((m->hsync_end - m->hsync_start) * byte_clk, pix_clk);
 
-> > ---
-> >  .../bindings/leds/irled/pwm-ir-tx.yaml        |  5 ++++-
+Wouldn't it make sense to use the videomode structure here?
 
-Acked-by: Lee Jones <lee@kernel.org>
+>  
+>  		/* remove packet overhead when possible */
+>  		hfp = max(hfp - 6, 0);
+> 
 
-> >  .../devicetree/bindings/media/nokia,n900-ir   | 20 -------------------
-> >  2 files changed, 4 insertions(+), 21 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/media/nokia,n900-ir
-> > 
-> > diff --git a/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml b/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
-> > index f2a6fa140f38..7526e3149f72 100644
-> > --- a/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
-> > +++ b/Documentation/devicetree/bindings/leds/irled/pwm-ir-tx.yaml
-> > @@ -15,7 +15,10 @@ description:
-> >  
-> >  properties:
-> >    compatible:
-> > -    const: pwm-ir-tx
-> > +    oneOf:
-> > +      - const: pwm-ir-tx
-> > +      - const: nokia,n900-ir
-> > +        deprecated: true
-> >  
-> >    pwms:
-> >      maxItems: 1
-> > diff --git a/Documentation/devicetree/bindings/media/nokia,n900-ir b/Documentation/devicetree/bindings/media/nokia,n900-ir
-> > deleted file mode 100644
-> > index 13a18ce37dd1..000000000000
-> > --- a/Documentation/devicetree/bindings/media/nokia,n900-ir
-> > +++ /dev/null
-> > @@ -1,20 +0,0 @@
-> > -Device-Tree bindings for LIRC TX driver for Nokia N900(RX51)
-> > -
-> > -Required properties:
-> > -	- compatible: should be "nokia,n900-ir".
-> > -	- pwms: specifies PWM used for IR signal transmission.
-> > -
-> > -Example node:
-> > -
-> > -	pwm9: dmtimer-pwm@9 {
-> > -		compatible = "ti,omap-dmtimer-pwm";
-> > -		ti,timers = <&timer9>;
-> > -		ti,clock-source = <0x00>; /* timer_sys_ck */
-> > -		#pwm-cells = <3>;
-> > -	};
-> > -
-> > -	ir: n900-ir {
-> > -		compatible = "nokia,n900-ir";
-> > -
-> > -		pwms = <&pwm9 0 26316 0>; /* 38000 Hz */
-> > -	};
-> > -- 
-> > 2.42.0
-> > 
-
-
-
--- 
-Lee Jones [李琼斯]
+Best regards,
+Maxim
