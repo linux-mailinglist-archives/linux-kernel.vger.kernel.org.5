@@ -2,61 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F09B379102F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 04:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D30FA791033
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 04:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351177AbjIDCv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 22:51:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
+        id S245335AbjIDCyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 22:54:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244594AbjIDCv1 (ORCPT
+        with ESMTP id S233760AbjIDCyk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 22:51:27 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C52210A;
-        Sun,  3 Sep 2023 19:51:24 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.153])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RfCnh0R4tz4f3lVv;
-        Mon,  4 Sep 2023 10:51:20 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-        by APP3 (Coremail) with SMTP id _Ch0CgD3ErspRvVkHDq0CA--.42671S2;
-        Mon, 04 Sep 2023 10:51:21 +0800 (CST)
-Subject: Re: [PATCH v6 02/11] ext4: call ext4_mb_mark_context in
- ext4_free_blocks_simple
-To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <87jztb8f1k.fsf@doe.com>
-From:   Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <fda8fc5b-f205-1557-4456-027ba6e02b1d@huaweicloud.com>
-Date:   Mon, 4 Sep 2023 10:51:20 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+        Sun, 3 Sep 2023 22:54:40 -0400
+Received: from mx2.zhaoxin.com (mx2.zhaoxin.com [203.110.167.99])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FAAA10E
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 19:54:36 -0700 (PDT)
+X-ASG-Debug-ID: 1693796073-1eb14e751210fa0001-xx1T2L
+Received: from ZXSHMBX3.zhaoxin.com (ZXSHMBX3.zhaoxin.com [10.28.252.165]) by mx2.zhaoxin.com with ESMTP id Hq3BSYmG5uhRk7Ev (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO); Mon, 04 Sep 2023 10:54:33 +0800 (CST)
+X-Barracuda-Envelope-From: TonyWWang-oc@zhaoxin.com
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHMBX3.zhaoxin.com
+ (10.28.252.165) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 4 Sep
+ 2023 10:54:32 +0800
+Received: from [10.32.65.158] (10.32.65.158) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Mon, 4 Sep
+ 2023 10:54:31 +0800
+X-Barracuda-RBL-Trusted-Forwarder: 10.28.252.165
+Message-ID: <ee57634a-3e57-724d-857d-7486f6bc3fe8@zhaoxin.com>
+X-Barracuda-RBL-Trusted-Forwarder: 10.32.65.158
+Date:   Mon, 4 Sep 2023 10:54:38 +0800
 MIME-Version: 1.0
-In-Reply-To: <87jztb8f1k.fsf@doe.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: _Ch0CgD3ErspRvVkHDq0CA--.42671S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF1kCF45AF47GrW7Jw1fZwb_yoW5Gw1xpr
-        ZxAF17Cr4rJF1Dur47Zw1jq3W0gw18W3WUGrW3W34rCFnFyr93KF4xKF1F9F9IkFZrWFn3
-        ZF1Y9Fs7Cw13WrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-        6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-        xK8VAvwI8IcIk0rVW8JVW3JwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-        7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UWHqcUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+X-ASG-Orig-Subj: Re: [PATCH v2] cpufreq: ACPI: add ITMT support when CPPC enabled
+CC:     <viresh.kumar@linaro.org>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <CobeChen@zhaoxin.com>,
+        <TimGuo@zhaoxin.com>, <LeoLiu-oc@zhaoxin.com>,
+        <LindaChai@zhaoxin.com>
+References: <20230808111325.8600-1-TonyWWang-oc@zhaoxin.com>
+ <CAJZ5v0h8M-hNJfRTSxtVmfmpF09h9zmNmG-e=iMemzPwsK50Zg@mail.gmail.com>
+ <e9b4de96-624e-96a5-0a41-93de36719340@zhaoxin.com>
+ <CAJZ5v0j7c2aO7=AQrjnF9_DGLjdqibDdm72Y9BLzFxWEvQhnvw@mail.gmail.com>
+Content-Language: en-US
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+In-Reply-To: <CAJZ5v0j7c2aO7=AQrjnF9_DGLjdqibDdm72Y9BLzFxWEvQhnvw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.32.65.158]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
+X-Barracuda-Connect: ZXSHMBX3.zhaoxin.com[10.28.252.165]
+X-Barracuda-Start-Time: 1693796073
+X-Barracuda-Encrypted: ECDHE-RSA-AES128-GCM-SHA256
+X-Barracuda-URL: https://10.28.252.36:4443/cgi-mod/mark.cgi
+X-Virus-Scanned: by bsmtpd at zhaoxin.com
+X-Barracuda-Scan-Msg-Size: 6420
+X-Barracuda-BRTS-Status: 1
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -2.02
+X-Barracuda-Spam-Status: No, SCORE=-2.02 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=9.0 tests=
+X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.113635
+        Rule breakdown below
+         pts rule name              description
+        ---- ---------------------- --------------------------------------------------
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -65,85 +78,184 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-on 8/31/2023 10:25 PM, Ritesh Harjani wrote:
-> Kemeng Shi <shikemeng@huaweicloud.com> writes:
-> 
->> call ext4_mb_mark_context in ext4_free_blocks_simple to:
->> 1. remove repeat code
->> 2. pair update of free_clusters in ext4_mb_new_blocks_simple.
->> 3. add missing ext4_lock_group/ext4_unlock_group protection.
+On 8/31/23 21:03, Rafael J. Wysocki wrote:
+> On Thu, Aug 31, 2023 at 12:19 PM Tony W Wang-oc
+> <TonyWWang-oc@zhaoxin.com> wrote:
 >>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/ext4/mballoc.c | 35 +++--------------------------------
->>  1 file changed, 3 insertions(+), 32 deletions(-)
-> 
-> Looks good to me. Please feel free to add - 
-> 
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> 
-> (One small comment below for previous patch)
-> 
 >>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index e2be572deb75..c803f74aaf63 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -6414,43 +6414,14 @@ ext4_mb_free_metadata(handle_t *handle, struct ext4_buddy *e4b,
->>  static void ext4_free_blocks_simple(struct inode *inode, ext4_fsblk_t block,
->>  					unsigned long count)
->>  {
->> -	struct buffer_head *bitmap_bh;
->> +	struct ext4_mark_context mc;
->>  	struct super_block *sb = inode->i_sb;
->> -	struct ext4_group_desc *gdp;
->> -	struct buffer_head *gdp_bh;
->>  	ext4_group_t group;
->>  	ext4_grpblk_t blkoff;
->> -	int already_freed = 0, err, i;
->>  
->> +	ext4_mb_prepare_mark_context(&mc, sb, 0);
+>> On 8/23/23 04:01, Rafael J. Wysocki wrote:
+>>> On Tue, Aug 8, 2023 at 1:13 PM Tony W Wang-oc <TonyWWang-oc@zhaoxin.com> wrote:
+>>>>
+>>>> The _CPC method can get per-core highest frequency.
+>>>
+>>> Well, not exactly.  A more precise way to say this would be "The
+>>> per-core highest frequency can be obtained via CPPC."
+>>>
+>>
+>> Thanks for your reply, will rewrite the commit in next version.
+>>
+>>>> The highest frequency may varies between cores which mean cores can
+>>>
+>>> "may vary" and "which means"
+>>>
+>>>> running at different max frequency, so can use it as a core priority
+>>>
+>>> "can run", but it would be better to say "may run".
+>>>
+>>>> and give a hint to scheduler in order to put critical task to the
+>>>> higher priority core.
+>>>
+>>> Well, roughly speaking ...
+>>>
+>>> You should really talk about ITMT and how it can be hooked up to this.
+>>>
+>>
+>> Ok, Got it.
+>>
+>>>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+>>>> ---
+>>>> v1->v2: Fix build errors reported by kernel test robot
+>>>>
+>>>>  arch/x86/kernel/itmt.c         |  2 ++
+>>>>  drivers/cpufreq/acpi-cpufreq.c | 59 ++++++++++++++++++++++++++++++----
+>>>>  2 files changed, 54 insertions(+), 7 deletions(-)
+>>>>
+>>>> diff --git a/arch/x86/kernel/itmt.c b/arch/x86/kernel/itmt.c
+>>>> index ee4fe8cdb857..b49ac8ecbbd6 100644
+>>>> --- a/arch/x86/kernel/itmt.c
+>>>> +++ b/arch/x86/kernel/itmt.c
+>>>> @@ -122,6 +122,7 @@ int sched_set_itmt_support(void)
+>>>>
+>>>>         return 0;
+>>>>  }
+>>>> +EXPORT_SYMBOL_GPL(sched_set_itmt_support);
+>>>
+>>> This requires an ACK from the x86 maintainers.
+>>>
+>>>>
+>>>>  /**
+>>>>   * sched_clear_itmt_support() - Revoke platform's support of ITMT
+>>>> @@ -181,3 +182,4 @@ void sched_set_itmt_core_prio(int prio, int cpu)
+>>>>  {
+>>>>         per_cpu(sched_core_priority, cpu) = prio;
+>>>>  }
+>>>> +EXPORT_SYMBOL_GPL(sched_set_itmt_core_prio);
+>>>
+>>> And same here.
+>>>
+>>>> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+>>>> index b2f05d27167e..5733323e04ac 100644
+>>>> --- a/drivers/cpufreq/acpi-cpufreq.c
+>>>> +++ b/drivers/cpufreq/acpi-cpufreq.c
+>>>> @@ -628,28 +628,35 @@ static int acpi_cpufreq_blacklist(struct cpuinfo_x86 *c)
+>>>>  #endif
+>>>>
+>>>>  #ifdef CONFIG_ACPI_CPPC_LIB
+>>>> -static u64 get_max_boost_ratio(unsigned int cpu)
+>>>> +static void cpufreq_get_core_perf(int cpu, u64 *highest_perf, u64 *nominal_perf)
+>>>
+>>> This is not a cpufreq core function, so please use a different prefix
+>>> in its name.
+>>>
+>>
+>> Ok. Will remove the prefix of "cpufreq_".
+>>
+>>>>  {
+>>>>         struct cppc_perf_caps perf_caps;
+>>>> -       u64 highest_perf, nominal_perf;
+>>>>         int ret;
+>>>>
+>>>>         if (acpi_pstate_strict)
+>>>> -               return 0;
+>>>> +               return;
+>>>>
+>>>>         ret = cppc_get_perf_caps(cpu, &perf_caps);
+>>>>         if (ret) {
+>>>>                 pr_debug("CPU%d: Unable to get performance capabilities (%d)\n",
+>>>>                          cpu, ret);
+>>>> -               return 0;
+>>>> +               return;
+>>>>         }
+>>>>
+>>>>         if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD)
+>>>> -               highest_perf = amd_get_highest_perf();
+>>>> +               *highest_perf = amd_get_highest_perf();
+>>>>         else
+>>>> -               highest_perf = perf_caps.highest_perf;
+>>>> +               *highest_perf = perf_caps.highest_perf;
+>>>> +
+>>>> +       *nominal_perf = perf_caps.nominal_perf;
+>>>> +       return;
+>>>> +}
+>>>>
+>>>> -       nominal_perf = perf_caps.nominal_perf;
+>>>> +static u64 get_max_boost_ratio(unsigned int cpu)
+>>>> +{
+>>>> +       u64 highest_perf, nominal_perf;
+>>>> +
+>>>> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
+>>>>
+>>>>         if (!highest_perf || !nominal_perf) {
+>>>>                 pr_debug("CPU%d: highest or nominal performance missing\n", cpu);
+>>>> @@ -663,8 +670,44 @@ static u64 get_max_boost_ratio(unsigned int cpu)
+>>>>
+>>>>         return div_u64(highest_perf << SCHED_CAPACITY_SHIFT, nominal_perf);
+>>>>  }
+>>>> +
+>>>> +static void cpufreq_sched_itmt_work_fn(struct work_struct *work)
+>>>
+>>> A similar comment applies here.
+>>>
+>>>> +{
+>>>> +       sched_set_itmt_support();
+>>>> +}
+>>>> +
+>>>> +static DECLARE_WORK(sched_itmt_work, cpufreq_sched_itmt_work_fn);
+>>>> +
+>>>> +static void cpufreq_set_itmt_prio(int cpu)
+>>>> +{
+>>>> +       u64 highest_perf, nominal_perf;
+>>>> +       static u32 max_highest_perf = 0, min_highest_perf = U32_MAX;
+>>>> +
+>>>> +       cpufreq_get_core_perf(cpu, &highest_perf, &nominal_perf);
+>>>> +
+>>>> +       sched_set_itmt_core_prio(highest_perf, cpu);
+>>>> +
+>>>> +       if (max_highest_perf <= min_highest_perf) {
+>>>> +               if (highest_perf > max_highest_perf)
+>>>> +                       max_highest_perf = highest_perf;
+>>>> +
+>>>> +               if (highest_perf < min_highest_perf)
+>>>> +                       min_highest_perf = highest_perf;
+>>>> +
+>>>> +               if (max_highest_perf > min_highest_perf) {
+>>>> +                       /*
+>>>> +                        * This code can be run during CPU online under the
+>>>> +                        * CPU hotplug locks, so sched_set_itmt_support()
+>>>> +                        * cannot be called from here.  Queue up a work item
+>>>> +                        * to invoke it.
+>>>> +                        */
+>>>> +                       schedule_work(&sched_itmt_work);
+>>>> +               }
+>>>
+>>> This potentially runs before ITMT priorities are set for all CPUs.
+>>> Isn't it a problem?
+>>>
+>>
+>> Yes, you are right.
+>> Will use schedule_delayed_work(&sched_itmt_work, msecs_to_jiffies(500))
+>> to fix this.
 > 
-> It looks like we always use 0 or 1 as the state for struct
-> ext4_mark_context. In that case we can keep state member of this struct
-> as bool instead of int. 
-Get it. Thanks for pointing it out!
+> If the ordering matters, it is better to enforce it directly (through
+> an explicit code dependency, for example) than to rely on the timing
+> to do the right thing.
 > 
-> 
->>  	ext4_get_group_no_and_offset(sb, block, &group, &blkoff);
->> -	bitmap_bh = ext4_read_block_bitmap(sb, group);
->> -	if (IS_ERR(bitmap_bh)) {
->> -		pr_warn("Failed to read block bitmap\n");
->> -		return;
->> -	}
->> -	gdp = ext4_get_group_desc(sb, group, &gdp_bh);
->> -	if (!gdp)
->> -		goto err_out;
->> -
->> -	for (i = 0; i < count; i++) {
->> -		if (!mb_test_bit(blkoff + i, bitmap_bh->b_data))
->> -			already_freed++;
->> -	}
->> -	mb_clear_bits(bitmap_bh->b_data, blkoff, count);
->> -	err = ext4_handle_dirty_metadata(NULL, NULL, bitmap_bh);
->> -	if (err)
->> -		goto err_out;
->> -	ext4_free_group_clusters_set(
->> -		sb, gdp, ext4_free_group_clusters(sb, gdp) +
->> -		count - already_freed);
->> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
->> -	ext4_group_desc_csum_set(sb, group, gdp);
->> -	ext4_handle_dirty_metadata(NULL, NULL, gdp_bh);
->> -	sync_dirty_buffer(bitmap_bh);
->> -	sync_dirty_buffer(gdp_bh);
->> -
->> -err_out:
->> -	brelse(bitmap_bh);
->> +	ext4_mb_mark_context(&mc, group, blkoff, count);
->>  }
->>  
->>  /**
->> -- 
->> 2.30.0
-> 
+> If you do the above, then it will not be clear why it is done (a
+> comment may help to address that, though) and why the delay is 500 us
+> in particular.
 
+Yes, you are right. Rely on the timing is not exactly.
+Will find the other way to enforce the order.
+
+Sincerely
+TonyWWang-oc
