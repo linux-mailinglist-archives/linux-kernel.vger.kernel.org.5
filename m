@@ -2,139 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC87790F5A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:29:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F5AF790F5E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236512AbjIDA3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 20:29:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
+        id S243935AbjIDAfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 20:35:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjIDA3b (ORCPT
+        with ESMTP id S231361AbjIDAfa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 20:29:31 -0400
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E91CFB;
-        Sun,  3 Sep 2023 17:29:28 -0700 (PDT)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1d4db7959f6so350520fac.0;
-        Sun, 03 Sep 2023 17:29:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693787367; x=1694392167; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gy5Sjqdfk2V0r51PCTu3C9haVoBFcraAmneb4UVU19U=;
-        b=U2HgYdZ92FaSWhJWYup3XY7Dr3uZ8GLsGiq2+pnX4m0cAVoWtVusgRTp04SD0MzD6j
-         xjARBm4YwA7C9GatwHz52TBjmREPhI44obDeT+YIxqLWjG4K3gbxdVwEj1u/U9CzOBTn
-         2lU6w437kxjowR82iCZLI6nDxyx4KJDQDmAugLpmZv4CRbhmyWtBZ2kkPUtAxwTKuHxs
-         q6V1SS9dwtbERMoDbR0wcneC3pm2vOfEqAf5w2N9RVdNhXAg3c8Xb6vlCfsWjrVNElF5
-         K2PDyTaJPDL9lEw4Sd3qgnMOGmxIAmPJIw0DS06kfuImYD5NQt7CXDMuATTc6ZP9qAK4
-         C2EA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693787367; x=1694392167;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gy5Sjqdfk2V0r51PCTu3C9haVoBFcraAmneb4UVU19U=;
-        b=OKMNVbRI2KsUdqLlzSsaAfPz4BXOyNxgTnfgTP4m7knS6KADPCufd+OpJuMjQOMp/X
-         Dq5zL8MsbwrU41aDFnoqpuKGmertMJT4THE4bzW8MzLZsQV4OFvITJVuxwaUgx67DRuB
-         jNJgxUdjPDHQ6jzG/SQ01NwXy5iUCnVN+anxjJpBTEq8Ph6uKPOoxPfmGkrHIfb1DqtY
-         mKdQofvCazX2ulIi3CisMMzxb4a7qDrPD036PSWiZK5XvmIZhWENnBYhNoBNMrpgXFTI
-         YvcK/8sKBu4OEWErfZLrb2/lAhhPyHMLsqGCL5Wrvva1NZa1wFCdhJaz+/xzh1VkZtJ3
-         nejw==
-X-Gm-Message-State: AOJu0YymmeAhmNcAgSeBZ+1LbqfWlqmIwvz40QmEwcVjYJhlTUPwTNVO
-        ccvLVfjMcinYYnD6844CvZ4=
-X-Google-Smtp-Source: AGHT+IGCDuOU6ZKDHAMJN3qwCQh0SSLDaW3mcfd+gdvDCLJaKZCieOBaxDqBhoVMKwSfvXgOteXNeQ==
-X-Received: by 2002:a05:6871:720:b0:1b3:9e41:de07 with SMTP id f32-20020a056871072000b001b39e41de07mr11773582oap.36.1693787367366;
-        Sun, 03 Sep 2023 17:29:27 -0700 (PDT)
-Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id eb49-20020a056870a8b100b001c4d922b4fasm4860255oab.8.2023.09.03.17.29.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Sep 2023 17:29:26 -0700 (PDT)
-Message-ID: <8de45c09-cb53-4a18-a6f3-56a16553ae32@gmail.com>
-Date:   Sun, 3 Sep 2023 21:29:21 -0300
+        Sun, 3 Sep 2023 20:35:30 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED20D3;
+        Sun,  3 Sep 2023 17:35:26 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 74784CE0B16;
+        Mon,  4 Sep 2023 00:35:24 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E755C433C9;
+        Mon,  4 Sep 2023 00:35:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693787722;
+        bh=/cIwbQMTHa0igq1vsxu9HcKVqol1E1FbJz1i7NYrN28=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ltgr0YlotgjzCa9NiUFmk2cieTstmOULPvts3cbtsuAY7hWkp7/CP88OyNHPoktTB
+         rqcXXGXLdhDahucuhmJNTJsQJ9+ajijNYbxFb1axAfSDMLkHZOSH/c71BDNUuKGfLZ
+         VoHDk8CBbD7BQijhd05ie07AeiIBMA0WqhVnqQMdOyeN+Gdft4oVPXg7Oj79Fm9DH6
+         ExEN5e2s6kFucn0sjaehvaKoXVEwIbb1vm8BI/fJKuFQTfhJveP1MNDUm3CpejYxRC
+         BMskvOd4gd4s8WFHxjGxYtTl2PbJr3DnDBzCp+zDiv5EHIYjykMtS1lslWEIqwIWIx
+         50kvXCPjY6THg==
+Date:   Sun, 3 Sep 2023 20:35:21 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Bharath SM <bharathsm@microsoft.com>,
+        Steve French <stfrench@microsoft.com>, pc@cjr.nz,
+        lsahlber@redhat.com, pc@manguebit.com, vl@samba.org,
+        ematsumiya@suse.de
+Subject: Re: [PATCH AUTOSEL 5.10 5/7] cifs: add a warning when the in-flight
+ count goes negative
+Message-ID: <ZPUmSbkrb4sYcrpq@sashalap>
+References: <20230829133336.520573-1-sashal@kernel.org>
+ <20230829133336.520573-5-sashal@kernel.org>
+ <2023082936-reborn-overjoyed-b3bc@gregkh>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/7] rust: workqueue: add helper for defining
- work_struct fields
-To:     Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Miguel Ojeda <ojeda@kernel.org>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        Wedson Almeida Filho <wedsonaf@gmail.com>,
-        Alex Gaynor <alex.gaynor@gmail.com>,
-        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
-        Benno Lossin <benno.lossin@proton.me>,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev
-References: <20230828104807.1581592-1-aliceryhl@google.com>
- <20230828104807.1581592-5-aliceryhl@google.com>
-Content-Language: en-US
-From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <20230828104807.1581592-5-aliceryhl@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <2023082936-reborn-overjoyed-b3bc@gregkh>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 8/28/23 07:48, Alice Ryhl wrote:
-> The main challenge with defining `work_struct` fields is making sure
-> that the function pointer stored in the `work_struct` is appropriate for
-> the work item type it is embedded in. It needs to know the offset of the
-> `work_struct` field being used (even if there are several!) so that it
-> can do a `container_of`, and it needs to know the type of the work item
-> so that it can call into the right user-provided code. All of this needs
-> to happen in a way that provides a safe API to the user, so that users
-> of the workqueue cannot mix up the function pointers.
-> 
-> There are three important pieces that are relevant when doing this:
-> 
->   * The pointer type.
->   * The work item struct. This is what the pointer points at.
->   * The `work_struct` field. This is a field of the work item struct.
-> 
-> This patch introduces a separate trait for each piece. The pointer type
-> is given a `WorkItemPointer` trait, which pointer types need to
-> implement to be usable with the workqueue. This trait will be
-> implemented for `Arc` and `Box` in a later patch in this patchset.
-> Implementing this trait is unsafe because this is where the
-> `container_of` operation happens, but user-code will not need to
-> implement it themselves.
-> 
-> The work item struct should then implement the `WorkItem` trait. This
-> trait is where user-code specifies what they want to happen when a work
-> item is executed. It also specifies what the correct pointer type is.
-> 
-> Finally, to make the work item struct know the offset of its
-> `work_struct` field, we use a trait called `HasWork<T, ID>`. If a type
-> implements this trait, then the type declares that, at the given offset,
-> there is a field of type `Work<T, ID>`. The trait is marked unsafe
-> because the OFFSET constant must be correct, but we provide an
-> `impl_has_work!` macro that can safely implement `HasWork<T>` on a type.
-> The macro expands to something that only compiles if the specified field
-> really has the type `Work<T>`. It is used like this:
-> 
-> ```
-> struct MyWorkItem {
->      work_field: Work<MyWorkItem, 1>,
-> }
-> 
-> impl_has_work! {
->      impl HasWork<MyWorkItem, 1> for MyWorkItem { self.work_field }
-> }
-> ```
-> 
-> Note that since the `Work` type is annotated with an id, you can have
-> several `work_struct` fields by using a different id for each one.
-> 
-> Co-developed-by: Gary Guo <gary@garyguo.net>
-> Signed-off-by: Gary Guo <gary@garyguo.net>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
-> ---
-> [...]
-Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+On Tue, Aug 29, 2023 at 03:47:28PM +0200, Greg KH wrote:
+>On Tue, Aug 29, 2023 at 09:33:34AM -0400, Sasha Levin wrote:
+>> From: Shyam Prasad N <sprasad@microsoft.com>
+>>
+>> [ Upstream commit e4645cc2f1e2d6f268bb8dcfac40997c52432aed ]
+>>
+>> We've seen the in-flight count go into negative with some
+>> internal stress testing in Microsoft.
+>>
+>> Adding a WARN when this happens, in hope of understanding
+>> why this happens when it happens.
+>>
+>> Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
+>> Reviewed-by: Bharath SM <bharathsm@microsoft.com>
+>> Signed-off-by: Steve French <stfrench@microsoft.com>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  fs/cifs/smb2ops.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
+>> index 015b7b37edee5..7ed6c2d4c549a 100644
+>> --- a/fs/cifs/smb2ops.c
+>> +++ b/fs/cifs/smb2ops.c
+>> @@ -82,6 +82,7 @@ smb2_add_credits(struct TCP_Server_Info *server,
+>>  		*val = 65000; /* Don't get near 64K credits, avoid srv bugs */
+>>  		pr_warn_once("server overflowed SMB3 credits\n");
+>>  	}
+>> +	WARN_ON_ONCE(server->in_flight == 0);
+>>  	server->in_flight--;
+>>  	if (server->in_flight == 0 && (optype & CIFS_OP_MASK) != CIFS_NEG_OP)
+>>  		rc = change_conf(server);
+>> --
+>> 2.40.1
+>>
+>
+>Please drop this from all queues, it's debugging code for the CIFS
+>developers, and they can debug it in Linus's tree, not in the stable
+>trees where something like this is going to cause systems to reboot.
+
+Dropped, thanks!
+
+-- 
+Thanks,
+Sasha
