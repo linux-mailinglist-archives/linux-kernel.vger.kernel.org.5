@@ -2,82 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61A5F791E0C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 22:01:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45C73791E10
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 22:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235967AbjIDUBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 16:01:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35712 "EHLO
+        id S234382AbjIDUEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 16:04:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232875AbjIDUB1 (ORCPT
+        with ESMTP id S237518AbjIDUEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 16:01:27 -0400
-Received: from isilmar-4.linta.de (isilmar-4.linta.de [136.243.71.142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC0EECFB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 13:01:15 -0700 (PDT)
-X-isilmar-external: YES
-X-isilmar-external: YES
-Received: from light.dominikbrodowski.net (brodo.linta [10.2.0.102])
-        by isilmar-4.linta.de (Postfix) with ESMTPSA id 4EB5F200053;
-        Mon,  4 Sep 2023 20:01:14 +0000 (UTC)
-Received: by light.dominikbrodowski.net (Postfix, from userid 1000)
-        id B898021DC8; Mon,  4 Sep 2023 21:59:48 +0200 (CEST)
-Date:   Mon, 4 Sep 2023 21:59:48 +0200
-From:   Dominik Brodowski <linux@dominikbrodowski.net>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] pcmcia: cs: fix possible hung task and memory leak
- pccardd()
-Message-ID: <ZPY3NGjRVECc2AOZ@light.dominikbrodowski.net>
-References: <20221112092541.3605038-1-yangyingliang@huawei.com>
+        Mon, 4 Sep 2023 16:04:14 -0400
+Received: from smtp.smtpout.orange.fr (smtp-22.smtpout.orange.fr [80.12.242.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1559BD
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 13:04:10 -0700 (PDT)
+Received: from pop-os.home ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id dFnsqeWR37HAOdFnsqxQGU; Mon, 04 Sep 2023 22:04:09 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693857849;
+        bh=p/ePUhbEsRogcdOokxHPN81xEb+34R42Kt7trfh06kc=;
+        h=From:To:Cc:Subject:Date;
+        b=q55uE2v83Tm0Ytfab1UpSOVaNxjLh2LMFpphVfzgxA1fGQRdV4ReZ4gqEczUc+OKG
+         0NFm0fWvSTkPWE4SoNN/LedDe4mVGrwlX/W+2rg+MTs/BSmV28vuw1URR7PsYYzuXk
+         pbCWkovv2ZQ3mRAaUBqBBSre2CLg78EX4ZK/CLVzrCCB8tCI60yGYaPxNsjgMHbZld
+         bAlbDn3Lcy2eeYB+pMMnTk1jK5D/4DagGocCmha1UPWV6qfflJZpQQgWzUDkh+UE1q
+         a7VOjR36sXcVOc8Ih1A3aJQlGd2t8eZPvHSaloy/Wuuuurg8MzSFTe6rfQiOJ9rNeh
+         evtZCsiE1r1YQ==
+X-ME-Helo: pop-os.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 04 Sep 2023 22:04:09 +0200
+X-ME-IP: 86.243.2.178
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Dimitris Papastamos <dp@opensource.wolfsonmicro.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Mark Brown <broonie@opensource.wolfsonmicro.com>
+Subject: [PATCH] regmap: debugfs: Fix a erroneous check after snprintf()
+Date:   Mon,  4 Sep 2023 22:04:06 +0200
+Message-Id: <8595de2462c490561f70020a6d11f4d6b652b468.1693857825.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221112092541.3605038-1-yangyingliang@huawei.com>
-X-TUID: VshhPLds3Pal
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Sat, Nov 12, 2022 at 05:25:41PM +0800 schrieb Yang Yingliang:
-> If device_register() returns error in pccardd(), it leads two issues:
-> 
-> 1. The socket_released has never been completed, it will block
->    pcmcia_unregister_socket(), because of waiting for completion
->    of socket_released.
-> 2. The device name allocated by dev_set_name() is leaked.
-> 
-> Fix this two issues by calling put_device() when device_register() fails.
-> socket_released can be completed in pcmcia_release_socket(), the name can
-> be freed in kobject_cleanup().
-> 
-> Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/pcmcia/cs.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/pcmcia/cs.c b/drivers/pcmcia/cs.c
-> index f70197154a36..820cce7c8b40 100644
-> --- a/drivers/pcmcia/cs.c
-> +++ b/drivers/pcmcia/cs.c
-> @@ -605,6 +605,7 @@ static int pccardd(void *__skt)
->  		dev_warn(&skt->dev, "PCMCIA: unable to register socket\n");
->  		skt->thread = NULL;
->  		complete(&skt->thread_done);
-> +		put_device(&skt->dev);
->  		return 0;
->  	}
->  	ret = pccard_sysfs_add_socket(&skt->dev);
-> -- 
-> 2.25.1
-> 
+This error handling looks really strange.
+Check if the string has been truncated instead.
 
-Applied to pcmcia-next, thanks!
+Fixes: f0c2319f9f19 ("regmap: Expose the driver name in debugfs")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+ drivers/base/regmap/regmap-debugfs.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	Dominik
+diff --git a/drivers/base/regmap/regmap-debugfs.c b/drivers/base/regmap/regmap-debugfs.c
+index f36027591e1a..bdd80b73c3e6 100644
+--- a/drivers/base/regmap/regmap-debugfs.c
++++ b/drivers/base/regmap/regmap-debugfs.c
+@@ -48,7 +48,7 @@ static ssize_t regmap_name_read_file(struct file *file,
+ 		name = map->dev->driver->name;
+ 
+ 	ret = snprintf(buf, PAGE_SIZE, "%s\n", name);
+-	if (ret < 0) {
++	if (ret >= PAGE_SIZE) {
+ 		kfree(buf);
+ 		return ret;
+ 	}
+-- 
+2.34.1
+
