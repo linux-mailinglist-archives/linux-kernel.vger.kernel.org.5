@@ -2,94 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 73798791598
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:17:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5F8B7915A3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347351AbjIDKRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:17:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
+        id S1350082AbjIDKT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbjIDKRi (ORCPT
+        with ESMTP id S229460AbjIDKT1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:17:38 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFB1B6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 03:17:33 -0700 (PDT)
+        Mon, 4 Sep 2023 06:19:27 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E677F1B6;
+        Mon,  4 Sep 2023 03:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693822653; x=1725358653;
+  t=1693822762; x=1725358762;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=C1sxTWSukD5VjbJkhBh/4XO0u1A8SVO5BB9Wv/rZVKs=;
-  b=J1yhT/VmPYAjUfvOdRl0ogjjsv+rBsttLmxJqqWrKzOhBquQrx38eAyo
-   uwcva7ObwfTkXnZowiuUgJRdWK6M/tBmooPIdkTdkqmUYTx+u1olPYUrD
-   zHADhTGY2FJtoPgxGR20aP8zjeNZ/N2kC4Zg6ubk0DhxVG9xXlezI+J9M
-   8h5trSDdjMPlzwSQcgtPMZW57J2j5gLUNSthssflRW44/FxlnWD6A11Di
-   uacrL9lKwnOs+8fydOCl6FqWHsVmt3Uu5yaPolEAMYUvUM44cY6vJmOnl
-   zDaJOEMk8cs4mv42aFx7JsxF0xJujpeVf9bldjENcJc6fy/5ucBQyN0i9
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="462934038"
+  bh=x9gwmSu7l1tKKTY4O9ewxpOuxFGgmB7wkxku8KGG2AU=;
+  b=BveA4ZBse5Y1xv4WP3GyPvVs48hqH7r+KvaDyZktRKrdDkL5FD9yE6hq
+   ZNml2T8NQ5UjilW3YXjyOm6r67yJYDELVO4O/3Cpfje7mu1DxfwBCxAWv
+   7BcXHqUdQsVvKccUovjExU57vTfwUds61IAbCWWpxqe5QCZtQwL843IWD
+   +Ih5X54Kepm0hP3cudjYmdYqZSDZpR5AMUPy5acg+hkq1EJcdvhLxpOV0
+   wqStBHJsZaPryIIG6Fa48+s1i1fBGkCgJoToC0KI1LnbKsz78T60k7+Fr
+   a/DFMm8XzBsXyRr6cggo4z4Apg7FbOD/5acXwmSmAQKCfkd98v306Tgat
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="361589627"
 X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="462934038"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:17:32 -0700
+   d="scan'208";a="361589627"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:19:22 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="810868946"
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="883987539"
 X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="810868946"
+   d="scan'208";a="883987539"
 Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:17:28 -0700
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:19:14 -0700
 Received: from andy by smile.fi.intel.com with local (Exim 4.96)
         (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qd6e4-006OhD-0P;
-        Mon, 04 Sep 2023 13:17:24 +0300
-Date:   Mon, 4 Sep 2023 13:17:23 +0300
+        id 1qd6ft-006Oim-1R;
+        Mon, 04 Sep 2023 13:19:17 +0300
+Date:   Mon, 4 Sep 2023 13:19:17 +0300
 From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Shenghao Ding <shenghao-ding@ti.com>
-Cc:     tiwai@suse.de, robh+dt@kernel.org, lgirdwood@gmail.com,
-        perex@perex.cz, pierre-louis.bossart@linux.intel.com,
-        kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
-        mengdong.lin@intel.com, baojun.xu@ti.com,
-        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
-        broonie@kernel.org, gentuser@gmail.com
-Subject: Re: [PATCH v1 1/2] ALSA: hda/tas2781: Update tas2781 HDA driver
-Message-ID: <ZPWus9/OCJ/DJHQq@smile.fi.intel.com>
-References: <20230903143759.92-1-shenghao-ding@ti.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] gpiolib: unexport gpiod_set_transitory()
+Message-ID: <ZPWvJc90rmIAPR+r@smile.fi.intel.com>
+References: <20230903190657.12393-1-brgl@bgdev.pl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230903143759.92-1-shenghao-ding@ti.com>
+In-Reply-To: <20230903190657.12393-1-brgl@bgdev.pl>
 Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 10:37:57PM +0800, Shenghao Ding wrote:
-> Support ACPI_ID both TXNW2781 and TIAS2781, and revert structure
-> cs35l41_dev_name.
+On Sun, Sep 03, 2023 at 09:06:57PM +0200, Bartosz Golaszewski wrote:
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> There are no and never have been any users of gpiod_set_transitory()
+> outside the core GPIOLIB code. Make it private.
 
-...
+And rename to be gpio_desc_...()?
 
-> +	/* exactly match either TXNW2781 or TIAS2781 */
-> +	/* the rest must be exact matching */
-> +	snprintf(tmp, sizeof(tmp), "-%s:00", "TXNW2781");
-> +
-> +	if (!strcmp(d + n, tmp))
-> +		return 1;
-> +
->  	/* the rest must be exact matching */
-> -	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
-> +	snprintf(tmp, sizeof(tmp), "-%s:00", "TIAS2781");
+With this done,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Basically this should use acpi_dev_match infra like Intel drivers do.
-But I haven't read code deeply to understand if it's the case here or
-not.
+The rationale has been explained in the other threads with renaming matters.
 
 -- 
 With Best Regards,
