@@ -2,105 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 22107791AA6
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30697791AAC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345263AbjIDP3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:29:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37646 "EHLO
+        id S245058AbjIDPdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:33:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236904AbjIDP3V (ORCPT
+        with ESMTP id S231127AbjIDPdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:29:21 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84516199;
-        Mon,  4 Sep 2023 08:29:17 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        Mon, 4 Sep 2023 11:33:13 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906B3CC3
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:33:09 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 45CBB1F74D;
-        Mon,  4 Sep 2023 15:29:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693841356; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=dJLufghybCMa24PDpvfycL/ikAXyEs0VewOCLgkv2eg=;
-        b=j299Sc/TsT+nZFscMydQEj2Gnb7vTxcXBX03rHpI6p62mNFZ0JNS37/wHT+lxSh8I4HRio
-        T7WshfgDW2/PHpCAFYArzL5GQ/X6MIYbfmkqyng04a5RByI7GD2aQt+OrG4IbPK7KD9Wl4
-        qrNllUW9brGOnw5F/f9Q580XqOYnNUk=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0D10013585;
-        Mon,  4 Sep 2023 15:29:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id CCljAsz39WTNTgAAMHmgww
-        (envelope-from <mkoutny@suse.com>); Mon, 04 Sep 2023 15:29:16 +0000
-Date:   Mon, 4 Sep 2023 17:29:14 +0200
-From:   Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 3/4] mm: memcg: let non-unified root stats flushes
- help unified flushes
-Message-ID: <6tne52ip62ucev7nmnim3m7fhcydnwcytyxynrlxxgaf4cbqea@r4hec425izap>
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-4-yosryahmed@google.com>
- <ZPXupwjewuLgksAI@dhcp22.suse.cz>
+        by ams.source.kernel.org (Postfix) with ESMTPS id 25C9CB80E70
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 15:33:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930FEC433C8;
+        Mon,  4 Sep 2023 15:33:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693841586;
+        bh=UeKK5EZJuIgCkUx5xqRn3CgwQq16K8S9woQmQDDN6JE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hqc96kthJhcdhdl1Rlk0yY3dQ/CFCUPeOHYx4AbJFcC7PnFUzBNnneQRtC7angbjy
+         hJGxyIO2mGHRrfE06mEn86+a6xnB3yfJvZ0PnYD7ZVsr09GZaqxFa4xWBcw7QlSgkx
+         hwyn81J2jeRSRsQ0LGG7K2eHNULCtT3FTpLqj08H94AJjb+5PmfNjcj0qjUHnFzKTF
+         tn3r7Y/MYD8CZu+2tWHhGgVMAWlrWVk05k82P0g168zcfbAf6KwtXS2NJCEHI/7VIz
+         a8kdhPr2AebRaLXr8yC5srMFnOBncil5ozqq77Frwd4WGIZdSXt5P9Wz67VVILRBwe
+         cF9xW2KNlKgBA==
+Date:   Mon, 4 Sep 2023 17:33:03 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     dri-devel@lists.freedesktop.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
+Message-ID: <nahwibpea2akyg7swbdb3f6xyv7fqs35v5spqbjfzfchxnoqqz@glgg5core75d>
+References: <bphkopaq76imqzut7xrx7aprqybhx3veajdympqhig2wqlix6c@64ck23rc5cv7>
+ <CAD=FV=XiVkoCsjin4R74nkcd8vzOq9uPq+o5cRjd=YOoPXuQkg@mail.gmail.com>
+ <lhd6ai7d6swlxhisjhikytguor7pptrymo3bmfwej4k7zqrnv4@hp2gvhw7mh3m>
+ <CAD=FV=XUhzguFCC=aKzHFMV0bBnZzkHXP_tx+P=PNkVr=8SnTA@mail.gmail.com>
+ <mumiep5q7x7qj7k64h3cyodxrgk737iy5rum5keguquwymf2gy@3qruwfrqjgy7>
+ <CAD=FV=VEene+nr1us87iA+bomxzQ039r-E+wqvizvFGbxXjDvA@mail.gmail.com>
+ <wwzbd7dt5qyimshnd7sbgkf5gxk7tq5dxtrerz76uw5p6s7tzt@cbiezkfeuqqn>
+ <CAD=FV=XcUVvg5Om__dD=i9zu7ZtQmvWicms9yN7w0c2nWGhqYg@mail.gmail.com>
+ <p7okuysh442hulqls3ekbaar2bguqv67fum3gsb2cj75kjvdpx@uebwlgvf46sy>
+ <CAD=FV=Xr4nZUeHY-FdiedcV=BuP5szNBEHPKjdRnA7c+3MADqg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="syrk2v4vngqj4sdi"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZPXupwjewuLgksAI@dhcp22.suse.cz>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAD=FV=Xr4nZUeHY-FdiedcV=BuP5szNBEHPKjdRnA7c+3MADqg@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---syrk2v4vngqj4sdi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Fri, Sep 01, 2023 at 06:42:42AM -0700, Doug Anderson wrote:
+> On Fri, Sep 1, 2023 at 1:15=E2=80=AFAM Maxime Ripard <mripard@kernel.org>=
+ wrote:
+> > On Thu, Aug 31, 2023 at 11:18:49AM -0700, Doug Anderson wrote:
+> > > Today this is explicitly _not_ refcounting, right? It is simply
+> > > treating double-enables as no-ops and double-disables as no-ops. With
+> > > our current understanding, the only thing we actually need to guard
+> > > against is double-disable but at the moment we do guard against both.
+> > > Specifically we believe the cases that are issues:
+> > >
+> > > a) At shutdown/remove time we want to disable the panel, but only if
+> > > it was enabled (we wouldn't want to call disable if the panel was
+> > > already off because userspace turned it off).
+> >
+> > Yeah, and that's doable with refcounting too.
+>=20
+> I don't understand the benefit of switching to refcounting, though. We
+> don't ever expect the "prepare" or "enable" function to be called more
+> than once and all we're guarding against is a double-unprepare and a
+> double-enable. Switching this to refcounting would make the reader
+> think that there was a legitimate case for things to be prepared or
+> enabled twice. As far as I know, there isn't.
 
-Hello.
+Sure, eventually we'll want to remove it.
 
-On Mon, Sep 04, 2023 at 04:50:15PM +0200, Michal Hocko <mhocko@suse.com> wrote:
-> I have hard time to follow why we really want/need this. Does this cause
-> any observable changes to the behavior?
+I even said it as such here:
+https://lore.kernel.org/dri-devel/wwzbd7dt5qyimshnd7sbgkf5gxk7tq5dxtrerz76u=
+w5p6s7tzt@cbiezkfeuqqn/
 
-Behavior change depends on how much userspace triggers the root memcg
-flush, from nothing to effectively offloading flushing to userspace tasks.
-(Theory^^^)
+However, we have a number of panels following various anti-patterns
+where disable and unprepare would be called multiple times. A boolean
+would just ignore the second, refcounting would warn over it, and that's
+what we want.
 
-It keeps stats_flush_threshold up to date representing global error
-estimate so that error-tolerant readers may save their time and it keeps
-the reasoning about the stats_flush_threshold effect simple.
+And that's exactly because there isn't a legitimate case for things to
+be disabled or unprepared twice, but yet many panel driver do it anyway.
 
-Michal
+> In any case, I don't think there's any need to switch this to
+> refcounting as part of this effort. Someone could, in theory, do it as
+> a separate patch series.
 
---syrk2v4vngqj4sdi
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm sorry, but I'll insist on getting a solution that will warn panels
+that call drm_atomic_helper_shutdown or drm_panel_disable/unprepare by
+hand. It doesn't have to be refcounting though if you have a better idea
+in mind.
 
------BEGIN PGP SIGNATURE-----
+> > > The above solves the problem with panels wanting to power sequence
+> > > themselves at remove() time, but not at shutdown() time. Thus we'd
+> > > still have a dependency on having all drivers use
+> > > drm_atomic_helper_shutdown() so that work becomes a dependency.
+> >
+> > Does it? I think it can be done in parallel?
+>=20
+> I don't think it can be in parallel. While it makes sense for panels
+> to call drm_panel_remove() at remove time, it doesn't make sense for
+> them to call it at shutdown time. That means that the trick of having
+> the panel get powered off in drm_panel_remove() won't help for
+> shutdown. For shutdown, which IMO is the more important case, we need
+> to wait until all drm drivers call drm_atomic_helper_shutdown()
+> properly.
 
-iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZPX3wwAKCRAGvrMr/1gc
-jrH9AQDraTQKzMHznCeTIWsFz0m6SziVQ0WMnHb90hQ5OGjzQQD/dPHTWpaxgO+S
-ff5xBhybWn1PrJqNeXXnqzuYpF1d/gA=
-=ACcJ
------END PGP SIGNATURE-----
+Right, my point was more that drivers that already don't disable the
+panel in their shutdown implementation will still not do it. And drivers
+that do will still do it, so there's no regression.
 
---syrk2v4vngqj4sdi--
+We obviously want to tend to having all drivers call
+drm_atomic_helper_shutdown(), but not having it will not introduce any
+regression.
+
+Maxime
