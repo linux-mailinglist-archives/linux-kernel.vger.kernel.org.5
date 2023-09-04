@@ -2,391 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E455791A20
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:56:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2094791A29
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348268AbjIDO4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:56:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
+        id S1345004AbjIDO5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:57:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234695AbjIDO4q (ORCPT
+        with ESMTP id S229745AbjIDO5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:56:46 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40051A5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:56:38 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-414b35e686cso387031cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 07:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693839398; x=1694444198; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=B8dnXbe6GgMXG/QAPAnuqzyd8DFJuI3wGF/AqzBGZE0=;
-        b=s6X7ErhMRXTxoRPswpczGG9BLMbuT0YcrHfTJ3G0tQyLyV6kCdFCaACG3qGqmKF4Jj
-         NFvNDnr569GPJ5Ex+lJb5T2L4VtXcH7OiJUBeKFsE2qD1IBZaf6rnS85R6lEs/YaMMtf
-         wLcpyQ+LEn6R3X6juCzqz4KBDDXS8aITdMsOW9ZdwxIM/Q916SYcztZw6xEQdxTCv2g0
-         bmJUZ5lIbxwOo+OdG3OOSNnPhtWRU4W2OE6xwOOxjSIkNLuv4OETadq+KDGH3XzxyshE
-         Cyl4VuhgoysYa+18+dZhp+uaLbn3LWWYoOimKuFh0IF1STmtg4PqIWv2yiIFtRj3HVN4
-         StRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693839398; x=1694444198;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=B8dnXbe6GgMXG/QAPAnuqzyd8DFJuI3wGF/AqzBGZE0=;
-        b=jioxzN2qxfpPE/ScCa48JghgmabE+isq/4R0F0zCariQwjjUbL6GkqFbpzcLj9LGW7
-         KZb8YPf0Z24vLa+/PzePOtk8+ibu5uDKuE1XJk/TT2McC6iHQc76ohz3X8IJGSWIJ0RC
-         kJgPNbs37tB1gqPj56p3qfHgLmpt0Kq2ASlilLczATHr6HdUsXP//UW0gUKQQcwIxP7+
-         dokKt1JBbCZOOvngntOlI9FpK4GXPdRNXbvaYF5O2EIEayf0obUwGCxeX2OFpt14FAgJ
-         Ntw5jS08BckiaRQMgOt3N1ERyBU0OlL9/5pI8LXKF0h7I6ulYKVhH/bUU58gzNKWMXIH
-         OXCw==
-X-Gm-Message-State: AOJu0Yzl+iO7XbD/hPJnXIZ3Bfi33F7eojU+KKa5oNc3yYqVAxz8EjZI
-        a/S5M6GRQZpr4FAjsq09FdKWFlT5WTNHZAcIZrjqag==
-X-Google-Smtp-Source: AGHT+IFpe3Dvh7nmW/wCBzxTCHHMjcosW4dHk2wlflmIKdWhbxuKM+OmTZAODzw5dGa6Jt+tJikYPOCFPIxRkzy2Ck8=
-X-Received: by 2002:a05:622a:1d0:b0:410:8ba3:21c7 with SMTP id
- t16-20020a05622a01d000b004108ba321c7mr368058qtw.18.1693839397645; Mon, 04 Sep
- 2023 07:56:37 -0700 (PDT)
+        Mon, 4 Sep 2023 10:57:40 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B9C6CC3;
+        Mon,  4 Sep 2023 07:57:37 -0700 (PDT)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 384Edo9R020123;
+        Mon, 4 Sep 2023 14:57:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=2QLlz+ibPLtisaeOAIEGvPuiElCxJ7taiSVtcQ5RIU8=;
+ b=QplOTN7Z7rG4AkUPN4nQBvq8H3Usgci1UqGFEyvpic2ktrPMlgclIywCPYpqmrtY/AwO
+ bLNKLcvuSwzyhztoVR9EsnWso3lVf44lrwfaUMqevd2jrhMQUKw3peSQqMEJqNAfk9fs
+ eEAQe567jGjLyrj3NDYsWOfTveP8Mc7dQa+VylpxovuP57pCnWvRk8Mc6yMRuz9P2wU4
+ GVRtYFA3KHzTGR59ELc2SwIGUipdOg0Ner2cb6+H0UCl6gl5+7nEjFR/MiOL6VFowcuY
+ ZTBUlFJEPKXFZBJrciIOc0rTIGtTeW75EBwZ5GWjyaYMKJEU7RnnY6z3zeVGxLqMXlEc sQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suvn6knd7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 14:57:29 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 384EvShN006956
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Sep 2023 14:57:28 GMT
+Received: from [10.216.2.19] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Mon, 4 Sep
+ 2023 07:57:22 -0700
+Message-ID: <c029093b-7e94-4e65-9e4c-a5d0aae1f4f1@quicinc.com>
+Date:   Mon, 4 Sep 2023 20:27:18 +0530
 MIME-Version: 1.0
-References: <20230728001212.457900-1-irogers@google.com> <20230728001212.457900-3-irogers@google.com>
- <77361428-5970-5031-e204-7aefcd9cbebc@arm.com>
-In-Reply-To: <77361428-5970-5031-e204-7aefcd9cbebc@arm.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 4 Sep 2023 07:56:25 -0700
-Message-ID: <CAP-5=fVATGaoeaSEk5jjoGDY=pJkFThU2t2sixfwjouxisor=w@mail.gmail.com>
-Subject: Re: [PATCH v1 2/3] perf tools: Revert enable indices setting syntax
- for BPF map
-To:     James Clark <james.clark@arm.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Rob Herring <robh@kernel.org>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bpf@vger.kernel.org, Wang Nan <wangnan0@huawei.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        He Kuang <hekuang@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/7] crypto: qcom-rng - Add support for trng
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20230824-topic-sm8550-rng-v2-0-dfcafbb16a3e@linaro.org>
+ <20230824-topic-sm8550-rng-v2-4-dfcafbb16a3e@linaro.org>
+ <29fb1e51-1e18-4e45-be64-190df52e1156@quicinc.com>
+ <3d09f47f-b0b8-4429-944a-df3de19c7a6c@quicinc.com>
+ <100bc802-b706-e923-463a-705522650ecb@linaro.org>
+Content-Language: en-US
+From:   Om Prakash Singh <quic_omprsing@quicinc.com>
+In-Reply-To: <100bc802-b706-e923-463a-705522650ecb@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: gL4slR-pROzm0K_obZLf3_MmrTFm8969
+X-Proofpoint-GUID: gL4slR-pROzm0K_obZLf3_MmrTFm8969
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-04_07,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 impostorscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 clxscore=1015 mlxlogscore=617 phishscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309040133
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 4, 2023 at 4:02=E2=80=AFAM James Clark <james.clark@arm.com> wr=
-ote:
->
->
->
-> On 28/07/2023 01:12, Ian Rogers wrote:
-> > This reverts commit e571e029bdbf ("perf tools: Enable indices setting
-> > syntax for BPF map").
-> >
-> > The reverted commit added a notion of arrays that could be set as
-> > event terms for BPF events. The parsing hasn't worked over multiple
-> > Linux releases. Given the broken nature of the parsing it appears the
-> > code isn't in use, nor could I find a way for it to be used to add a
-> > test.
-> >
-> > The original commit contains a test in the commit message,
-> > however, running it yields:
-> > ```
-> > $ perf record -e './test_bpf_map_3.c/map:channel.value[0,1,2,3...5]=3D1=
-01/' usleep 2
-> > event syntax error: '..pf_map_3.c/map:channel.value[0,1,2,3...5]=3D101/=
-'
-> >                                   \___ parser error
-> > Run 'perf list' for a list of valid events
-> >
-> >  Usage: perf record [<options>] [<command>]
-> >     or: perf record [<options>] -- <command> [<options>]
-> >
-> >     -e, --event <event>   event selector. use 'perf list' to list avail=
-able events
-> > ```
-> >
-> > Given the code can't be used this commit reverts and removes it.
-> >
->
-> Hi Ian,
->
-> Unfortunately this revert breaks Coresight sink argument parsing.
->
-> Before:
->
->   $ perf record -e cs_etm/@tmc_etr0/ -- true
->   [ perf record: Woken up 1 times to write data ]
->   [ perf record: Captured and wrote 4.008 MB perf.data ]
->
-> After:
->
->   $ perf record -e cs_etm/@tmc_etr0/ -- true
->   event syntax error: 'cs_etm/@tmc_etr0/'
->                            \___ parser error
->
-> I can't really see how it's related to the array syntax that the commit
-> messages mention, but it could either be that the revert wasn't applied
-> cleanly or just some unintended side effect.
->
-> We should probably add a cross platform parsing test for Coresight
-> arguments, but I don't know whether we should just blindly revert the
-> revert for now, or work on a new change that explicitly fixes the
-> Coresight case.
 
-Agreed, I'll take a look. Any chance you could post the full error
-message? I suspect there's a first error hiding in there too.
 
-Thanks,
-Ian
+On 9/3/2023 11:03 PM, Krzysztof Kozlowski wrote:
+> On 01/09/2023 14:56, Om Prakash Singh wrote:
+>> I missed to notice. Please correct "-" to ":" in subject line
+> 
+> Hm? What do you want to correct? The subject prefix is correct, why do
+> you ask to change it?
+Previous applied patch using different subject line format-
 
-> Thanks
-> James
->
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/parse-events.c |   8 +--
-> >  tools/perf/util/parse-events.l |  11 ---
-> >  tools/perf/util/parse-events.y | 122 ---------------------------------
-> >  3 files changed, 1 insertion(+), 140 deletions(-)
-> >
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-eve=
-nts.c
-> > index 02647313c918..0e2004511cf5 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -800,13 +800,7 @@ parse_events_config_bpf(struct parse_events_state =
-*parse_state,
-> >
-> >                       parse_events_error__handle(parse_state->error, id=
-x,
-> >                                               strdup(errbuf),
-> > -                                             strdup(
-> > -"Hint:\tValid config terms:\n"
-> > -"     \tmap:[<arraymap>].value<indices>=3D[value]\n"
-> > -"     \tmap:[<eventmap>].event<indices>=3D[event]\n"
-> > -"\n"
-> > -"     \twhere <indices> is something like [0,3...5] or [all]\n"
-> > -"     \t(add -v to see detail)"));
-> > +                                             NULL);
-> >                       return err;
-> >               }
-> >       }
-> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-eve=
-nts.l
-> > index 99335ec586ae..d7d084cc4140 100644
-> > --- a/tools/perf/util/parse-events.l
-> > +++ b/tools/perf/util/parse-events.l
-> > @@ -175,7 +175,6 @@ do {                                               =
-       \
-> >  %x mem
-> >  %s config
-> >  %x event
-> > -%x array
-> >
-> >  group                [^,{}/]*[{][^}]*[}][^,{}/]*
-> >  event_pmu    [^,{}/]+[/][^/]*[/][^,{}/]*
-> > @@ -251,14 +250,6 @@ non_digit        [^0-9]
-> >               }
-> >  }
-> >
-> > -<array>{
-> > -"]"                  { BEGIN(config); return ']'; }
-> > -{num_dec}            { return value(yyscanner, 10); }
-> > -{num_hex}            { return value(yyscanner, 16); }
-> > -,                    { return ','; }
-> > -"\.\.\."             { return PE_ARRAY_RANGE; }
-> > -}
-> > -
-> >  <config>{
-> >       /*
-> >        * Please update config_term_names when new static term is added.
-> > @@ -302,8 +293,6 @@ r0x{num_raw_hex}  { return str(yyscanner, PE_RAW); =
-}
-> >  {lc_type}-{lc_op_result}     { return lc_str(yyscanner, _parse_state);=
- }
-> >  {lc_type}-{lc_op_result}-{lc_op_result}      { return lc_str(yyscanner=
-, _parse_state); }
-> >  {name_minus}         { return str(yyscanner, PE_NAME); }
-> > -\[all\]                      { return PE_ARRAY_ALL; }
-> > -"["                  { BEGIN(array); return '['; }
-> >  @{drv_cfg_term}              { return drv_str(yyscanner, PE_DRV_CFG_TE=
-RM); }
-> >  }
-> >
-> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-eve=
-nts.y
-> > index 454577f7aff6..5a90e7874c59 100644
-> > --- a/tools/perf/util/parse-events.y
-> > +++ b/tools/perf/util/parse-events.y
-> > @@ -64,7 +64,6 @@ static void free_list_evsel(struct list_head* list_ev=
-sel)
-> >  %token PE_LEGACY_CACHE
-> >  %token PE_PREFIX_MEM
-> >  %token PE_ERROR
-> > -%token PE_ARRAY_ALL PE_ARRAY_RANGE
-> >  %token PE_DRV_CFG_TERM
-> >  %token PE_TERM_HW
-> >  %type <num> PE_VALUE
-> > @@ -108,11 +107,6 @@ static void free_list_evsel(struct list_head* list=
-_evsel)
-> >  %type <list_evsel> groups
-> >  %destructor { free_list_evsel ($$); } <list_evsel>
-> >  %type <tracepoint_name> tracepoint_name
-> > -%destructor { free ($$.sys); free ($$.event); } <tracepoint_name>
-> > -%type <array> array
-> > -%type <array> array_term
-> > -%type <array> array_terms
-> > -%destructor { free ($$.ranges); } <array>
-> >  %type <hardware_term> PE_TERM_HW
-> >  %destructor { free ($$.str); } <hardware_term>
-> >
-> > @@ -127,7 +121,6 @@ static void free_list_evsel(struct list_head* list_=
-evsel)
-> >               char *sys;
-> >               char *event;
-> >       } tracepoint_name;
-> > -     struct parse_events_array array;
-> >       struct hardware_term {
-> >               char *str;
-> >               u64 num;
-> > @@ -878,121 +871,6 @@ PE_TERM
-> >
-> >       $$ =3D term;
-> >  }
-> > -|
-> > -name_or_raw array '=3D' name_or_legacy
-> > -{
-> > -     struct parse_events_term *term;
-> > -     int err =3D parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE=
-_USER, $1, $4, &@1, &@4);
-> > -
-> > -     if (err) {
-> > -             free($1);
-> > -             free($4);
-> > -             free($2.ranges);
-> > -             PE_ABORT(err);
-> > -     }
-> > -     term->array =3D $2;
-> > -     $$ =3D term;
-> > -}
-> > -|
-> > -name_or_raw array '=3D' PE_VALUE
-> > -{
-> > -     struct parse_events_term *term;
-> > -     int err =3D parse_events_term__num(&term, PARSE_EVENTS__TERM_TYPE=
-_USER, $1, $4, false, &@1, &@4);
-> > -
-> > -     if (err) {
-> > -             free($1);
-> > -             free($2.ranges);
-> > -             PE_ABORT(err);
-> > -     }
-> > -     term->array =3D $2;
-> > -     $$ =3D term;
-> > -}
-> > -|
-> > -PE_DRV_CFG_TERM
-> > -{
-> > -     struct parse_events_term *term;
-> > -     char *config =3D strdup($1);
-> > -     int err;
-> > -
-> > -     if (!config)
-> > -             YYNOMEM;
-> > -     err =3D parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV=
-_CFG, config, $1, &@1, NULL);
-> > -     if (err) {
-> > -             free($1);
-> > -             free(config);
-> > -             PE_ABORT(err);
-> > -     }
-> > -     $$ =3D term;
-> > -}
-> > -
-> > -array:
-> > -'[' array_terms ']'
-> > -{
-> > -     $$ =3D $2;
-> > -}
-> > -|
-> > -PE_ARRAY_ALL
-> > -{
-> > -     $$.nr_ranges =3D 0;
-> > -     $$.ranges =3D NULL;
-> > -}
-> > -
-> > -array_terms:
-> > -array_terms ',' array_term
-> > -{
-> > -     struct parse_events_array new_array;
-> > -
-> > -     new_array.nr_ranges =3D $1.nr_ranges + $3.nr_ranges;
-> > -     new_array.ranges =3D realloc($1.ranges,
-> > -                             sizeof(new_array.ranges[0]) *
-> > -                             new_array.nr_ranges);
-> > -     if (!new_array.ranges)
-> > -             YYNOMEM;
-> > -     memcpy(&new_array.ranges[$1.nr_ranges], $3.ranges,
-> > -            $3.nr_ranges * sizeof(new_array.ranges[0]));
-> > -     free($3.ranges);
-> > -     $$ =3D new_array;
-> > -}
-> > -|
-> > -array_term
-> > -
-> > -array_term:
-> > -PE_VALUE
-> > -{
-> > -     struct parse_events_array array;
-> > -
-> > -     array.nr_ranges =3D 1;
-> > -     array.ranges =3D malloc(sizeof(array.ranges[0]));
-> > -     if (!array.ranges)
-> > -             YYNOMEM;
-> > -     array.ranges[0].start =3D $1;
-> > -     array.ranges[0].length =3D 1;
-> > -     $$ =3D array;
-> > -}
-> > -|
-> > -PE_VALUE PE_ARRAY_RANGE PE_VALUE
-> > -{
-> > -     struct parse_events_array array;
-> > -
-> > -     if ($3 < $1) {
-> > -             struct parse_events_state *parse_state =3D _parse_state;
-> > -             struct parse_events_error *error =3D parse_state->error;
-> > -             char *err_str;
-> > -
-> > -             if (asprintf(&err_str, "Expected '%ld' to be less-than '%=
-ld'", $3, $1) < 0)
-> > -                     err_str =3D NULL;
-> > -
-> > -             parse_events_error__handle(error, @1.first_column, err_st=
-r, NULL);
-> > -             YYABORT;
-> > -     }
-> > -     array.nr_ranges =3D 1;
-> > -     array.ranges =3D malloc(sizeof(array.ranges[0]));
-> > -     if (!array.ranges)
-> > -             YYNOMEM;
-> > -     array.ranges[0].start =3D $1;
-> > -     array.ranges[0].length =3D $3 - $1 + 1;
-> > -     $$ =3D array;
-> > -}
-> >
-> >  sep_dc: ':' |
-> >
+"crypto: qcom-rng: Make the core clock optional regardless of ACPI presence"
+
+But looks like What Neil is using is the right way, looking at change 
+log for the file.
+
+> 
+> Best regards,
+> Krzysztof
+> 
