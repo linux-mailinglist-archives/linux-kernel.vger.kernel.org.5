@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0AA791264
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5834791267
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352462AbjIDHk0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 03:40:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44258 "EHLO
+        id S237730AbjIDHl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 03:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235695AbjIDHkY (ORCPT
+        with ESMTP id S234092AbjIDHlY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 03:40:24 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF9C4138
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 00:40:18 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-522bd411679so1483947a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 00:40:18 -0700 (PDT)
+        Mon, 4 Sep 2023 03:41:24 -0400
+Received: from mail-vk1-xa2b.google.com (mail-vk1-xa2b.google.com [IPv6:2607:f8b0:4864:20::a2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2988E1
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 00:41:20 -0700 (PDT)
+Received: by mail-vk1-xa2b.google.com with SMTP id 71dfb90a1353d-48d167f6cffso193571e0c.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 00:41:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693813217; x=1694418017; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jQjKqdQjnv3PMe5OqcJ+jHGfcq2cLTpjtNSkHV3ltZw=;
-        b=biBzFW+p66RCE+Y/ldLax4Ll4FzdOsd8Sm4WLlPZiYCrkvPR6Y9OMgrsf7lj1VtcBf
-         ynF3bcQUaCOsSgNWyb571R7DQC/Wcrf0fqGeqiYjX9jkua7TBAeESlZYPZXLjUQxsahH
-         LOKyOJxCuDFFzth9u8YUsI6OgXUyrZYFP+2xRC/ixDidZYppJJX4zLy4QkVFtxNP1OBE
-         2qPNCIgFP0mSz/35Wpfg9zJFexlZeCaWdk2NXJkSS1PR38M1GYk2KOs+Dh1sntxb9aPd
-         7DS66xFEkd0lH0GsqEwcP9lrjq3DKEK5y2IgeFsGpCMdKS8xKv8AQm0/3TDrOevrpPdj
-         9YNg==
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693813280; x=1694418080; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XBWs5YzX8VVJrC+PXflF69xIax+rUZX/BM+Y4AzGNmU=;
+        b=hPI9VSnGLNpq50YJy4tIh1KhWdv6f3k3A0yN2Cx0nld5gqQYYbQ6uiAJFVjwdNVCdV
+         oQyXwFP22Kua2vgOvMilE7knNxEA+re32LlH7p0QOC3/+CZK5EhZfzz6qB96G5/Cp1f5
+         ZnhaIA4VAd3DsJFED3AokQIIk/RmgfvSGziPUrm2ZHlkOHQBEO7NeX8vKBC41A9hVVDM
+         ctker3aPvG8T5CceZZIuZLkYLCLjIlIFzbX9A8A5khOvfhYHXX+binsCAa9G6wxJJh5q
+         ZbAPV3rJdZPLzvvYV+cqO1z7r0Bt/wMCJPtrFm3o4Nrtn25Dlhcj7jgDztaUuxn6+2yl
+         VL5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693813217; x=1694418017;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jQjKqdQjnv3PMe5OqcJ+jHGfcq2cLTpjtNSkHV3ltZw=;
-        b=A2NUjjs+Ssf7hLaQKZ4z4eCgb6HVNCbOUyQ1i2GPJKnfhF2k2r2Kxo3UF66cve3HBy
-         h5dIczx8U0ghXtM7OtDbXKT9Bzg9utOtYtNDTHYRqoB4gQwqFZSqYM4bOuPRC8b7+ccl
-         rKRCi5YumXQOec8NGyiSIYlGbWt0URuS8ZjCOv7IGV5tYpH65b2iOTOu0jP2n3FV/Y2T
-         nG4N03AvPwyu8FqxQb17VPUXUXBlGHWnjVIe6DvO/nAYC13cTHaYCePPtnRebWV9z03W
-         CcDyRnIPb9zJlhjrLMz9xtyywtLO3dZzT/CFbw1AYu0ZNPSUY2JDBMklySZ+0NQ5l8Rr
-         /jtA==
-X-Gm-Message-State: AOJu0Yy+AfFtn3iIbroUIzGV08Fs6hpasrakN8MIEEQR9COWxFeo2N7I
-        TQb8QiPqw4b3WOjXFXvCHQ5E4A==
-X-Google-Smtp-Source: AGHT+IF+iT/dkRg4acU9/UI6JfKKp3ZeC5AsmWMXEg5lVCySIqfHTR3Hxy8Ffc+kE8/6092Ro6zdzg==
-X-Received: by 2002:a05:6402:124b:b0:523:100b:462b with SMTP id l11-20020a056402124b00b00523100b462bmr7068044edw.5.1693813217425;
-        Mon, 04 Sep 2023 00:40:17 -0700 (PDT)
-Received: from [192.168.69.115] ([176.187.209.227])
-        by smtp.gmail.com with ESMTPSA id d3-20020a056402516300b005256771db39sm5480392ede.58.2023.09.04.00.40.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 00:40:16 -0700 (PDT)
-Message-ID: <915a9e2d-36ea-4a74-7b1b-9688f215b6f1@linaro.org>
-Date:   Mon, 4 Sep 2023 09:40:14 +0200
+        d=1e100.net; s=20221208; t=1693813280; x=1694418080;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XBWs5YzX8VVJrC+PXflF69xIax+rUZX/BM+Y4AzGNmU=;
+        b=Npn0zLtSOQ7wXF4Mx1d+wGc7tg9QNITiSWq2RdWfUzZIIUwrDNfXAz+DIbWaHZcW39
+         5LHVST3uJDTvQvRlDfCzXiISFiOe8AO4xgCIfTGxhCoWF83yyOtXVuiH2R2DhPz+VQpW
+         HrnTs/rzF5Idvz2Wt9+lPYUbMKAb0YPkBZyBN+H8t7sirgMzn33KTMnIEvg1v2+M78+z
+         r1ZYTnU4QCysjuOtfxrVGm2JfBJNWTUJzOZdc7/WEY9Jc1BPXWVjL5sKjPNvWNLw8vJ8
+         ckddLOrEqae0zBn51niMY1IAnZyS6alsTMBzxn4Invn4pMQNl/Fa+H4EHInYxckMI8zZ
+         WnsA==
+X-Gm-Message-State: AOJu0YzINqpuPRZfoAqaJrPOZv4hEwn7jMZBIQMxbIUS7AeJ4tQaPNWD
+        tM8y8SX8X2R2dm07kaBmmnqrydxF/rrbcMzoiminmA==
+X-Google-Smtp-Source: AGHT+IH+JoKCZ5WR4l3LQeiirN0/VmedEawwtvGNnmhIhapvRAKwYsIlo2FphkVlCYMPWJdeKFSSfEnYEJOtdBABqaU=
+X-Received: by 2002:a1f:c887:0:b0:490:1ad3:d645 with SMTP id
+ y129-20020a1fc887000000b004901ad3d645mr6866914vkf.11.1693813279892; Mon, 04
+ Sep 2023 00:41:19 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v2 1/3] kconfig: add dependencies of POWER_RESET for mips
- malta
-Content-Language: en-US
-To:     Yuan Tan <tanyuan@tinylab.org>, mpe@ellerman.id.au,
-        christophe.leroy@csgroup.eu, tglx@linutronix.de, mingo@redhat.com,
-        tsbogend@alpha.franken.de, hdegoede@redhat.com
-Cc:     linux@weissschuh.net, w@1wt.eu, falcon@tinylab.org,
-        linux-mips@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <cover.1693535514.git.tanyuan@tinylab.org>
- <1c17f017d6c837ef887d08bd2f85102df3fbc17c.1693535514.git.tanyuan@tinylab.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <1c17f017d6c837ef887d08bd2f85102df3fbc17c.1693535514.git.tanyuan@tinylab.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230901134041.1165562-1-andriy.shevchenko@linux.intel.com> <20230901134041.1165562-9-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20230901134041.1165562-9-andriy.shevchenko@linux.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Mon, 4 Sep 2023 09:41:09 +0200
+Message-ID: <CAMRc=Md0K2MxLKtJ2c1JB4GF-2L7THCN-maCqFVFGZ+qYM1Uaw@mail.gmail.com>
+Subject: Re: [PATCH v1 09/10] gpio: pca953x: Get rid of useless goto label
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,32 +69,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Sep 1, 2023 at 3:40=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> In a few functions goto label is useless as there are no locking,
+> no nothing that may justify its usage. Get rid of it.
+>
 
-On 1/9/23 04:42, Yuan Tan wrote:
-> MIPS Malta's power off depends on PCI, PCI_QUIRKS, and
-> POWER_RESET_PIIX4_POWEROFF to work. Enable them when POWER_RESET is set
-> for convenience.
-> 
-> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
-> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+I guess it was supposed to be "so nothing" but I'll fix it when applying.
+
+Bart
+
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > ---
->   arch/mips/Kconfig | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index bc8421859006..13bacbd05125 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -547,6 +547,9 @@ config MIPS_MALTA
->   	select MIPS_L1_CACHE_SHIFT_6
->   	select MIPS_MSC
->   	select PCI_GT64XXX_PCI0
-> +	select PCI if POWER_RESET
-> +	select PCI_QUIRKS if POWER_RESET
-> +	select POWER_RESET_PIIX4_POWEROFF if POWER_RESET
->   	select SMP_UP if SMP
->   	select SWAP_IO_SPACE
->   	select SYS_HAS_CPU_MIPS32_R1
-
-Shouldn't we also update the _defconfig files?
+>  drivers/gpio/gpio-pca953x.c | 24 +++++++-----------------
+>  1 file changed, 7 insertions(+), 17 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-pca953x.c b/drivers/gpio/gpio-pca953x.c
+> index bf27e2d920f7..16f5e3043bf0 100644
+> --- a/drivers/gpio/gpio-pca953x.c
+> +++ b/drivers/gpio/gpio-pca953x.c
+> @@ -988,20 +988,18 @@ static int device_pca95xx_init(struct pca953x_chip =
+*chip)
+>         ret =3D regcache_sync_region(chip->regmap, regaddr,
+>                                    regaddr + NBANK(chip) - 1);
+>         if (ret)
+> -               goto out;
+> +               return ret;
+>
+>         regaddr =3D chip->recalc_addr(chip, chip->regs->direction, 0);
+>         ret =3D regcache_sync_region(chip->regmap, regaddr,
+>                                    regaddr + NBANK(chip) - 1);
+>         if (ret)
+> -               goto out;
+> +               return ret;
+>
+>         /* clear polarity inversion */
+>         bitmap_zero(val, MAX_LINE);
+>
+> -       ret =3D pca953x_write_regs(chip, chip->regs->invert, val);
+> -out:
+> -       return ret;
+> +       return pca953x_write_regs(chip, chip->regs->invert, val);
+>  }
+>
+>  static int device_pca957x_init(struct pca953x_chip *chip)
+> @@ -1012,19 +1010,13 @@ static int device_pca957x_init(struct pca953x_chi=
+p *chip)
+>
+>         ret =3D device_pca95xx_init(chip);
+>         if (ret)
+> -               goto out;
+> +               return ret;
+>
+>         /* To enable register 6, 7 to control pull up and pull down */
+>         for (i =3D 0; i < NBANK(chip); i++)
+>                 bitmap_set_value8(val, 0x02, i * BANK_SZ);
+>
+> -       ret =3D pca953x_write_regs(chip, PCA957X_BKEN, val);
+> -       if (ret)
+> -               goto out;
+> -
+> -       return 0;
+> -out:
+> -       return ret;
+> +       return pca953x_write_regs(chip, PCA957X_BKEN, val);
+>  }
+>
+>  static void pca953x_disable_regulator(void *reg)
+> @@ -1262,12 +1254,10 @@ static int pca953x_resume(struct device *dev)
+>         }
+>
+>         ret =3D pca953x_restore_context(chip);
+> -       if (ret) {
+> +       if (ret)
+>                 dev_err(dev, "Failed to restore register map: %d\n", ret)=
+;
+> -               return ret;
+> -       }
+>
+> -       return 0;
+> +       return ret;
+>  }
+>
+>  static DEFINE_SIMPLE_DEV_PM_OPS(pca953x_pm_ops, pca953x_suspend, pca953x=
+_resume);
+> --
+> 2.40.0.1.gaa8946217a0b
+>
