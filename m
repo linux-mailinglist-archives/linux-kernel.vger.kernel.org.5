@@ -2,162 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9BE5791C3F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:57:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D5D791C41
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:57:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353367AbjIDR5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 13:57:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35780 "EHLO
+        id S233583AbjIDR5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 13:57:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353363AbjIDR5U (ORCPT
+        with ESMTP id S1353371AbjIDR5u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 13:57:20 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B06132
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 10:57:15 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bd04558784so1393203a34.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 10:57:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693850235; x=1694455035; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=swkHmiUb0yhEMZkQvxpItqW1CYY4TW8bZX8jwtRrDks=;
-        b=cb9tkM/iL4YSN4kL6EYaiuoh7iZHtH84Z8AbWBxKP/TM5mPZwhbu7wT60gMNRFJTFQ
-         TLuzLbQUlwbkRCBvMRvDvPITSRO11TREHU54Xpw2o9pbCIH3JGVjFdu975rV1Razk7Zp
-         k6Gaszje7/gmjZ/lQ4ZTgR681nWSbeekR/HhUuX1xCuhpmnm4E70hboPgkP8D/7WPHPI
-         ia0qEytaAqL9NEU7lmhH5xk65gtnoMi2roa7HJ506sEebh1YtubFVIxjF+f6j0THst00
-         qiAe3BN41iv1ZL94XdLlZGqCJqFWVk0vougJMxzAi31JPB92NQMebi+gd7t6PU2c8F4/
-         DI5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693850235; x=1694455035;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=swkHmiUb0yhEMZkQvxpItqW1CYY4TW8bZX8jwtRrDks=;
-        b=fwtMn7SyMqnMDKBAN8tc3X4+4V73N/J2uXih72UgzXtP2nZ/4ZMLNi8te9Qk0zL/fw
-         assG4/CFeIJ+wrE4tK5Zcsq3rzlKtDdVjqUtSlSlt9QLQ5IHd1PQB/HcjGoH0wHVv9bP
-         6tJ424t/9WTGZBwnjzQV0z9nzOekGzosXy0P1T5ZeSCpPOMAdQ+YPlB63vsSO0bevWEE
-         tz/PxS0X+TIj6rXlcU07UpIpwoOJZhh6BK3GAlwzonUOBpd/vQeyabbuSbr9uTHXIGaF
-         jQv8EfNw/KVEe8wt0OJAwntNNL/+ANRDbyMw7j0Cr8kpUAnP4DXmt4D8aWDTykIHUCxI
-         ZCqQ==
-X-Gm-Message-State: AOJu0Yyq4BPbO09s90OPtle0yoYzq0FNlYesUjcwcvp4G8zL5/qlDh3K
-        EvvqOF0XgWbqLGh7vXcT6P8/N2zNGU6XtXIODTbiRw==
-X-Google-Smtp-Source: AGHT+IHdOus5yMZIdY0V3oMaSqxbqstcsrA7CWMqnWsmMfZIlWsMuFuSAUCbK7FfY1M3ethbVj2G2I2D++Y+esaXCnE=
-X-Received: by 2002:a05:6358:7e53:b0:139:b4c0:93c with SMTP id
- p19-20020a0563587e5300b00139b4c0093cmr13972089rwm.5.1693850234778; Mon, 04
- Sep 2023 10:57:14 -0700 (PDT)
+        Mon, 4 Sep 2023 13:57:50 -0400
+Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BA11709
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 10:57:39 -0700 (PDT)
+Received: from [192.168.1.18] ([86.243.2.178])
+        by smtp.orange.fr with ESMTPA
+        id dDpNqLclXewmQdDpNqCbJ0; Mon, 04 Sep 2023 19:57:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+        s=t20230301; t=1693850257;
+        bh=nR71hbq/PjoQgx6c1QsB9ddoM6wjPhcwxem+IF/5MAs=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=DAmM/NUC9xDbqtOy08KIXOcL8tmmpXv9w0aLhvdPCW/b3pVhHp9s92Gs39idwsLOO
+         uUgQN9V6cvYbGFBLFo6PaXwsP00xKZF4t5QmeRhjGoDPX6dGmUOOKeiuNYI2jOxUOK
+         wTiKH4H4u25rVSTHmdJQjIS0EnRDs6dqOklCrfNIQr50dp8JRVcYmbvu7dNhZh9N/0
+         qzxO81ISdmp2bUVqs7gie3KaoNksdre5yy5anbMFHWB1nFVQaM38ZDT0xiIkuCq9gn
+         TBUJGCnGh2i2fKUgx/Hlmc++hm5Nly5Wzr38Ua4mGwpGus3VaAGQw+vOuAvK+x+z64
+         wfek9dll6yFog==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 04 Sep 2023 19:57:37 +0200
+X-ME-IP: 86.243.2.178
+Message-ID: <858ca657-3845-f65e-b9d8-9d7700e4a069@wanadoo.fr>
+Date:   Mon, 4 Sep 2023 19:57:33 +0200
 MIME-Version: 1.0
-References: <20230831203647.558079-1-mclapinski@google.com>
- <20230831203647.558079-2-mclapinski@google.com> <20230901-lockt-erbfolge-e1f9a26f0d63@brauner>
- <CAAi7L5f1KYrAyCYLzUN0dSy6xuQCGcC7SQML4+KUdxnQ6RaFfg@mail.gmail.com>
- <202309011133.10D66D0785@keescook> <20230904-meistens-umeinander-3366194553a1@brauner>
-In-Reply-To: <20230904-meistens-umeinander-3366194553a1@brauner>
-From:   =?UTF-8?B?TWljaGHFgiBDxYJhcGnFhHNraQ==?= <mclapinski@google.com>
-Date:   Mon, 4 Sep 2023 19:57:03 +0200
-Message-ID: <CAAi7L5eW1ZOfwvFz4b9As7-MkKyCgCQcG-41VMv6vfYpyRW_eA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] fcntl: add fcntl(F_CHECK_ORIGINAL_MEMFD)
-To:     Christian Brauner <brauner@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jeff Layton <jlayton@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jeff Xu <jeffxu@google.com>, Aleksa Sarai <cyphar@cyphar.com>,
-        Daniel Verkamp <dverkamp@chromium.org>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] phy: sun4i-usb: Fix a W=1 compilation failure
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+References: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
+ <20230904005855.658819b3@slackpad.lan>
+Content-Language: fr, en-GB
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20230904005855.658819b3@slackpad.lan>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 4, 2023 at 9:29=E2=80=AFAM Christian Brauner <brauner@kernel.or=
-g> wrote:
->
-> On Fri, Sep 01, 2023 at 11:34:32AM -0700, Kees Cook wrote:
-> > On Fri, Sep 01, 2023 at 04:50:53PM +0200, Micha=C5=82 C=C5=82api=C5=84s=
-ki wrote:
-> > > On Fri, Sep 1, 2023 at 2:56=E2=80=AFPM Christian Brauner <brauner@ker=
-nel.org> wrote:
-> > > >
-> > > > On Thu, Aug 31, 2023 at 10:36:46PM +0200, Michal Clapinski wrote:
-> > > > > Add a way to check if an fd points to the memfd's original open f=
-d
-> > > > > (the one created by memfd_create).
-> > > > > Useful because only the original open fd can be both writable and
-> > > > > executable.
-> > > > >
-> > > > > Signed-off-by: Michal Clapinski <mclapinski@google.com>
-> > > > > ---
-> > > > >  fs/fcntl.c                 | 3 +++
-> > > > >  include/uapi/linux/fcntl.h | 9 +++++++++
-> > > > >  2 files changed, 12 insertions(+)
-> > > > >
-> > > > > diff --git a/fs/fcntl.c b/fs/fcntl.c
-> > > > > index e871009f6c88..301527e07a4d 100644
-> > > > > --- a/fs/fcntl.c
-> > > > > +++ b/fs/fcntl.c
-> > > > > @@ -419,6 +419,9 @@ static long do_fcntl(int fd, unsigned int cmd=
-, unsigned long arg,
-> > > > >       case F_SET_RW_HINT:
-> > > > >               err =3D fcntl_rw_hint(filp, cmd, arg);
-> > > > >               break;
-> > > > > +     case F_CHECK_ORIGINAL_MEMFD:
-> > > > > +             err =3D !(filp->f_mode & FMODE_WRITER);
-> > > > > +             break;
-> > > >
-> > > > Honestly, make this an ioctl on memfds. This is so specific that it
-> > > > really doesn't belong into fcntl().
-> > >
-> > > I've never touched ioctls but if I'm correct, I can't just add it to
-> > > memfd. I would have to add it to the underlying fs, so hugetlbfs and
-> > > shmem (which I think can be defined as ramfs so also there). File
-> > > sealing fcntl is already memfd specific. Are you sure ioctl will be a
-> > > better idea?
->
-> fcntl() should be generic. Frankly, the sealing stuff should've gone
-> into an ioctl as well and only upgraded to a fcntl() once multiple fd
-> types support it.
->
+Le 04/09/2023 à 01:58, Andre Przywara a écrit :
+> On Sun,  3 Sep 2023 12:11:06 +0200
+> Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+> 
+>> With gcc 12.3.0, when this file is built, we get errors such as:
+>>
+>> drivers/phy/allwinner/phy-sun4i-usb.c: In function ‘sun4i_usb_phy_probe’:
+>> drivers/phy/allwinner/phy-sun4i-usb.c:790:52: error: ‘_vbus’ directive output may be truncated writing 5 bytes into a region of size between 2 and 12 [-Werror=format-truncation=]
+>>    790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
+>>        |                                                    ^~~~~
+>> drivers/phy/allwinner/phy-sun4i-usb.c:790:17: note: ‘snprintf’ output between 10 and 20 bytes into a destination of size 16
+>>    790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
+>>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>>
+>> Because of the possible value of 'i', this can't be an issue in real world
+> 
+> Would using "u8 i;" help? After all currently there are only 4 PHYs
+> max, and in general this isn't expected to be more than a "handful", so
+> 8 bits should be plenty. An unsigned is better anyway.
+> It leaves a bit of a bitter taste, though, as we shouldn't do this kind
+> type tweaking, especially not to work around the compiler trying to be
+> clever, but then not seeing the whole picture (that "i" is bounded by
+> compile time constants not exceeding "4").
 
-But ioctl is good for stuff related to the underlying fs, which this
-isn't. I'm worried if I rewrite it as an ioctl and put it in 3
-different places, the maintainers of shmem, hugetlbfs and ramfs will
-tell me to rewrite it as an fcntl. If a new filesystem pops up that
-can be used as the backend for memfd, the ioctl will also have to be
-added there.
+data->cfg->num_phys is also an int, and having 'i' as an char is really 
+unusual.
 
-> >
-> > Does this check "mean" anything for other files? Because if it's
-> > generically useful (and got renamed) it maybe would be right for
-> > fcntl...
->
-> For regular files it just means that the file has gotten write access to
-> the underlying fs and we use this flag to release the necessary
-> refcounts/protections once the file is closed.
->
-> If this check has any meaning beyond that than it only has meaning for
-> memfd. I'm also not sure why this checks FMODE_WRITER and not
-> FMODE_WRITE as FMODE_WRITER is almost an entirely internal thing that
-> only very specific codepaths need to know about.
+So, if changing the size of name (only to waste some stack in order to 
+silence a compiler warning) is not acceptable, I think that the best is 
+to leave things as-is.
 
-If you reopen the memfd via /proc/<pid>/fd/ with O_RDWR, both file
-objects (the original and the reopened one) have FMODE_WRITE, so
-knowing if the flag is set gives me nothing. FMODE_WRITER is the only
-difference between the original fd and the reopened one. This flag
-also dictates whether `inode->i_writecount` will be decremented on
-close (in `put_file_access`) which influences exec()ability of the
-other fd. It surprised me too that this flag theoretically means
-"write access to underlying fs" but it's used to determine whether to
-decrement i_writecount.
+CJ
+
+
+> 
+> Cheers,
+> Andre
+> 
+>> application, but in order to have "make W=1" work correctly, give more
+>> space for 'name'.
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/phy/allwinner/phy-sun4i-usb.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+>> index ec551464dd4f..e53a9a9317bc 100644
+>> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
+>> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+>> @@ -782,7 +782,7 @@ static int sun4i_usb_phy_probe(struct platform_device *pdev)
+>>   
+>>   	for (i = 0; i < data->cfg->num_phys; i++) {
+>>   		struct sun4i_usb_phy *phy = data->phys + i;
+>> -		char name[16];
+>> +		char name[32];
+>>   
+>>   		if (data->cfg->missing_phys & BIT(i))
+>>   			continue;
+> 
+> 
+
