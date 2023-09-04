@@ -2,52 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EB37791A65
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED271791A68
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343757AbjIDPRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33096 "EHLO
+        id S1349845AbjIDPR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:17:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229854AbjIDPRv (ORCPT
+        with ESMTP id S229854AbjIDPR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:17:51 -0400
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78663AF;
-        Mon,  4 Sep 2023 08:17:47 -0700 (PDT)
-Received: from lhrpeml500005.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4RfXLr5FRLz6K6Yj;
-        Mon,  4 Sep 2023 23:17:40 +0800 (CST)
-Received: from localhost (10.48.153.57) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 4 Sep
- 2023 16:17:44 +0100
-Date:   Mon, 4 Sep 2023 16:17:43 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Alistair Francis <alistair23@gmail.com>
-CC:     <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <lukas@wunner.de>, <alex.williamson@redhat.com>,
-        <christian.koenig@amd.com>, <kch@nvidia.com>,
-        <gregkh@linuxfoundation.org>, <logang@deltatee.com>,
-        <linux-kernel@vger.kernel.org>, <chaitanyak@nvidia.com>,
-        <rdunlap@infradead.org>,
-        Alistair Francis <alistair.francis@wdc.com>
-Subject: Re: [PATCH v7 2/3] PCI/DOE: Expose the DOE features via sysfs
-Message-ID: <20230904161743.00000df2@Huawei.com>
-In-Reply-To: <20230904054329.865151-2-alistair.francis@wdc.com>
-References: <20230904054329.865151-1-alistair.francis@wdc.com>
-        <20230904054329.865151-2-alistair.francis@wdc.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+        Mon, 4 Sep 2023 11:17:57 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32387CD4;
+        Mon,  4 Sep 2023 08:17:53 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B8FFE61843;
+        Mon,  4 Sep 2023 15:17:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E9A2C433C7;
+        Mon,  4 Sep 2023 15:17:49 +0000 (UTC)
+Message-ID: <a9e1f059-4727-fa65-693e-c384890c3f97@xs4all.nl>
+Date:   Mon, 4 Sep 2023 17:17:47 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v6 02/18] media: videobuf2: Stop spamming kernel log with
+ all queue counter
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+ <20230901124414.48497-3-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230901124414.48497-3-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.48.153.57]
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_HI,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,293 +56,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon,  4 Sep 2023 15:43:28 +1000
-Alistair Francis <alistair23@gmail.com> wrote:
-
-> The PCIe 6 specification added support for the Data Object Exchange (DOE).
-> When DOE is supported the Discovery Data Object Protocol must be
-> implemented. The protocol allows a requester to obtain information about
-> the other DOE features supported by the device.
+On 01/09/2023 14:43, Benjamin Gaignard wrote:
+> Only report unbalanced queue counters do avoid spamming kernel log
+> with useless information.
 > 
-> The kernel is already querying the DOE features supported and cacheing
-> the values. This patch exposes the values via sysfs. This will allow
-> userspace to determine which DOE features are supported by the PCIe
-> device.
-> 
-> By exposing the information to userspace tools like lspci can relay the
-> information to users. By listing all of the supported features we can
-> allow userspace to parse and support the list, which might include
-> vendor specific features as well as yet to be supported features.
-> 
-> Signed-off-by: Alistair Francis <alistair.francis@wdc.com>
-Hi Alistair
-
-A few minor things inline.
-
-Thanks,
-
-Jonathan
-
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
 > ---
-> v7:
->  - Fixup the #ifdefs to keep the test robot happy
-> v6:
->  - Use "feature" instead of protocol
->  - Don't use any devm_* functions
->  - Add two more patches to the series
-> v5:
->  - Return the file name as the file contents
->  - Code cleanups and simplifications
-> v4:
->  - Fixup typos in the documentation
->  - Make it clear that the file names contain the information
->  - Small code cleanups
->  - Remove most #ifdefs
->  - Remove extra NULL assignment
-> v3:
->  - Expose each DOE feature as a separate file
-> v2:
->  - Add documentation
->  - Code cleanups
+>  .../media/common/videobuf2/videobuf2-core.c   | 69 +++++++++++--------
+>  1 file changed, 41 insertions(+), 28 deletions(-)
 > 
-> This patch will create a doe_features directory for all
-> PCIe devies. This should be fixed by a pending sysfs fixup
-> patch.
-> 
->  Documentation/ABI/testing/sysfs-bus-pci |  12 +++
->  drivers/pci/doe.c                       | 111 ++++++++++++++++++++++++
->  drivers/pci/pci-sysfs.c                 |  10 +++
->  drivers/pci/pci.h                       |   3 +
->  include/linux/pci-doe.h                 |   1 +
->  5 files changed, 137 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> index ecf47559f495..e999e78cc2d5 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-pci
-> +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> @@ -500,3 +500,15 @@ Description:
->  		console drivers from the device.  Raw users of pci-sysfs
->  		resourceN attributes must be terminated prior to resizing.
->  		Success of the resizing operation is not guaranteed.
-> +
-> +What:		/sys/bus/pci/devices/.../doe_features
-> +Date:		August 2023
-> +Contact:	Linux PCI developers <linux-pci@vger.kernel.org>
-> +Description:
-> +		This directory contains a list of the supported
-> +		Data Object Exchange (DOE) features. The feature values are in
-> +		the file name. The contents of each file are the same as the
-> +		name.
-> +		The value comes from the device and specifies the vendor and
-> +		data object type supported. The lower byte is the data object
-> +		type and the next two bytes are the vendor ID.
-
-Given we already have a few defined, maybe an example would be useful here
-or a statement of the format
-
-
-> diff --git a/drivers/pci/doe.c b/drivers/pci/doe.c
-> index 047be8c9d191..69cd391dd120 100644
-> --- a/drivers/pci/doe.c
-> +++ b/drivers/pci/doe.c
-> @@ -47,6 +47,7 @@
->   * @wq: Wait queue for work item
->   * @work_queue: Queue of pci_doe_work items
->   * @flags: Bit array of PCI_DOE_FLAG_* flags
-> + * @sysfs_attrs: Array of sysfs device attributes
->   */
->  struct pci_doe_mb {
->  	struct pci_dev *pdev;
-> @@ -56,6 +57,10 @@ struct pci_doe_mb {
->  	wait_queue_head_t wq;
->  	struct workqueue_struct *work_queue;
->  	unsigned long flags;
-> +
-> +#ifdef CONFIG_SYSFS
-> +	struct device_attribute *sysfs_attrs;
-> +#endif
->  };
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index cf3b9f5b69b7..85e561e46899 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -537,16 +537,18 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+>  				  q->cnt_prepare_streaming != q->cnt_unprepare_streaming ||
+>  				  q->cnt_wait_prepare != q->cnt_wait_finish;
 >  
->  struct pci_doe_feature {
-> @@ -92,6 +97,112 @@ struct pci_doe_task {
->  	struct pci_doe_mb *doe_mb;
->  };
->  
-> +#ifdef CONFIG_SYSFS
-> +static umode_t pci_doe_sysfs_attr_is_visible(struct kobject *kobj,
-> +					     struct attribute *a, int n)
-> +{
-> +	struct pci_dev *pdev = to_pci_dev(kobj_to_dev(kobj));
-> +	struct pci_doe_mb *doe_mb;
-> +	unsigned long index, j;
-> +	void *entry;
-> +
-> +	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
-> +		xa_for_each(&doe_mb->prots, j, entry)
-> +			return a->mode;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static struct attribute *pci_dev_doe_feature_attrs[] = {
-> +	NULL,
-> +};
-> +
-> +const struct attribute_group pci_dev_doe_feature_group = {
-> +	.name	= "doe_features",
-> +	.attrs	= pci_dev_doe_feature_attrs,
-> +	.is_visible = pci_doe_sysfs_attr_is_visible,
-> +};
-> +
-> +static ssize_t pci_doe_sysfs_feature_show(struct device *dev,
-> +					  struct device_attribute *attr,
-> +					  char *buf)
-> +{
-> +	return sysfs_emit(buf, "%s\n", attr->attr.name);
-> +}
-> +
-> +static int pci_doe_sysfs_feature_supports(struct pci_dev *pdev,
-> +					  struct pci_doe_mb *doe_mb)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct device_attribute *attrs;
-> +	unsigned long num_features = 0;
-> +	unsigned long vid, type;
-> +	unsigned long i;
-> +	void *entry;
-> +	int ret;
-> +
-> +	xa_for_each(&doe_mb->prots, i, entry)
-> +		num_features++;
-> +
-> +	attrs = kcalloc(num_features, sizeof(*attrs), GFP_KERNEL);
-> +	if (!attrs)
-> +		return -ENOMEM;
-> +
-> +	doe_mb->sysfs_attrs = attrs;
-> +	xa_for_each(&doe_mb->prots, i, entry) {
-> +		sysfs_attr_init(&attrs[i].attr);
-> +		vid = xa_to_value(entry) >> 8;
-> +		type = xa_to_value(entry) & 0xFF;
-> +		attrs[i].attr.name = kasprintf(GFP_KERNEL,
-> +					       "0x%04lX:%02lX", vid, type);
-> +		if (!attrs[i].attr.name) {
-> +			ret = -ENOMEM;
-> +			goto fail;
-> +		}
-> +
-> +		attrs[i].attr.mode = 0444;
-> +		attrs[i].show = pci_doe_sysfs_feature_show;
-> +
-> +		ret = sysfs_add_file_to_group(&dev->kobj, &attrs[i].attr,
-> +					      pci_dev_doe_feature_group.name);
-> +		if (ret)
-If we get an error here...
-> +			goto fail;
-> +	}
-> +
-> +	return 0;
-> +
-> +fail:
-> +	doe_mb->sysfs_attrs = NULL;
-> +	xa_for_each(&doe_mb->prots, i, entry) {
-> +		if (attrs[i].show)
+> -		if (unbalanced || debug) {
+> -			pr_info("counters for queue %p:%s\n", q,
+> -				unbalanced ? " UNBALANCED!" : "");
+> -			pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
+> -				q->cnt_queue_setup, q->cnt_start_streaming,
+> -				q->cnt_stop_streaming);
+> -			pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
+> -				q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
+> -			pr_info("     wait_prepare: %u wait_finish: %u\n",
+> -				q->cnt_wait_prepare, q->cnt_wait_finish);
+> +		if (unbalanced) {
+> +			pr_info("unbalanced counters for queue %p\n", q);
 
-.. show is set so I think we end up trying to remove a file that was never successfully
-added.
+End the pr_info with ':' (i.e. "unbalanced counters for queue %p:\n")
 
-> +			sysfs_remove_file_from_group(&dev->kobj, &attrs[i].attr,
-> +						     pci_dev_doe_feature_group.name);
-> +		kfree(attrs[i].attr.name);
-> +	}
-> +
-> +	kfree(attrs);
-> +
-> +	return ret;
-> +}
-> +
-> +int doe_sysfs_init(struct pci_dev *pdev)
-> +{
-> +	struct pci_doe_mb *doe_mb;
-> +	unsigned long index;
-> +	int ret;
-> +
-> +	xa_for_each(&pdev->doe_mbs, index, doe_mb) {
-> +		ret = pci_doe_sysfs_feature_supports(pdev, doe_mb);
-> +
+> +			if (q->cnt_start_streaming != q->cnt_stop_streaming)
+> +				pr_info("     setup: %u start_streaming: %u stop_streaming: %u\n",
+> +					q->cnt_queue_setup, q->cnt_start_streaming,
+> +					q->cnt_stop_streaming);
+> +			if (q->cnt_prepare_streaming != q->cnt_unprepare_streaming)
+> +				pr_info("     prepare_streaming: %u unprepare_streaming: %u\n",
+> +					q->cnt_prepare_streaming, q->cnt_unprepare_streaming);
+> +			if (q->cnt_wait_prepare != q->cnt_wait_finish)
+> +				pr_info("     wait_prepare: %u wait_finish: %u\n",
+> +					q->cnt_wait_prepare, q->cnt_wait_finish);
+>  		}
+>  		q->cnt_queue_setup = 0;
+>  		q->cnt_wait_prepare = 0;
+> @@ -567,24 +569,35 @@ static void __vb2_queue_free(struct vb2_queue *q, unsigned int buffers)
+>  				  vb->cnt_buf_prepare != vb->cnt_buf_finish ||
+>  				  vb->cnt_buf_init != vb->cnt_buf_cleanup;
+>  
+> -		if (unbalanced || debug) {
+> -			pr_info("   counters for queue %p, buffer %d:%s\n",
+> -				q, buffer, unbalanced ? " UNBALANCED!" : "");
+> -			pr_info("     buf_init: %u buf_cleanup: %u buf_prepare: %u buf_finish: %u\n",
+> -				vb->cnt_buf_init, vb->cnt_buf_cleanup,
+> -				vb->cnt_buf_prepare, vb->cnt_buf_finish);
+> -			pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
+> -				vb->cnt_buf_out_validate, vb->cnt_buf_queue,
+> -				vb->cnt_buf_done, vb->cnt_buf_request_complete);
+> -			pr_info("     alloc: %u put: %u prepare: %u finish: %u mmap: %u\n",
+> -				vb->cnt_mem_alloc, vb->cnt_mem_put,
+> -				vb->cnt_mem_prepare, vb->cnt_mem_finish,
+> -				vb->cnt_mem_mmap);
+> -			pr_info("     get_userptr: %u put_userptr: %u\n",
+> -				vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
+> -			pr_info("     attach_dmabuf: %u detach_dmabuf: %u map_dmabuf: %u unmap_dmabuf: %u\n",
+> -				vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf,
+> -				vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
+> +		if (unbalanced) {
+> +			pr_info("unbalanced counters for queue %p, buffer %d\n",
 
-Blank line seems pointless as good to group the error handling
-with statement that reported the error.
+End with : here as well.
 
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +#endif
-> +
->  static int pci_doe_wait(struct pci_doe_mb *doe_mb, unsigned long timeout)
->  {
->  	if (wait_event_timeout(doe_mb->wq,
-> diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-> index d9eede2dbc0e..01bbd1f1cb9b 100644
-> --- a/drivers/pci/pci-sysfs.c
-> +++ b/drivers/pci/pci-sysfs.c
-> @@ -16,6 +16,7 @@
->  #include <linux/kernel.h>
->  #include <linux/sched.h>
->  #include <linux/pci.h>
-> +#include <linux/pci-doe.h>
->  #include <linux/stat.h>
->  #include <linux/export.h>
->  #include <linux/topology.h>
-> @@ -1230,6 +1231,12 @@ static int pci_create_resource_files(struct pci_dev *pdev)
->  	int i;
->  	int retval;
->  
-> +	if (IS_ENABLED(CONFIG_PCI_DOE)) {
-> +		retval = doe_sysfs_init(pdev);
-> +		if (retval)
-> +			return retval;
-> +	}
-> +
->  	/* Expose the PCI resources from this device as files */
->  	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
->  
-> @@ -1655,6 +1662,9 @@ static const struct attribute_group *pci_dev_attr_groups[] = {
->  #endif
->  #ifdef CONFIG_PCIEASPM
->  	&aspm_ctrl_attr_group,
-> +#endif
-> +#ifdef CONFIG_PCI_DOE
-> +	&pci_dev_doe_feature_group,
->  #endif
->  	NULL,
->  };
-> diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-> index 39a8932dc340..b85dd83ddfcb 100644
-> --- a/drivers/pci/pci.h
-> +++ b/drivers/pci/pci.h
-> @@ -186,6 +186,9 @@ extern const struct attribute_group *pci_dev_groups[];
->  extern const struct attribute_group *pcibus_groups[];
->  extern const struct device_type pci_dev_type;
->  extern const struct attribute_group *pci_bus_groups[];
-> +#ifdef CONFIG_SYSFS
-> +extern const struct attribute_group pci_dev_doe_feature_group;
-> +#endif
->  
->  extern unsigned long pci_hotplug_io_size;
->  extern unsigned long pci_hotplug_mmio_size;
-> diff --git a/include/linux/pci-doe.h b/include/linux/pci-doe.h
-> index 1f14aed4354b..4cc13d9ccb50 100644
-> --- a/include/linux/pci-doe.h
-> +++ b/include/linux/pci-doe.h
-> @@ -22,4 +22,5 @@ int pci_doe(struct pci_doe_mb *doe_mb, u16 vendor, u8 type,
->  	    const void *request, size_t request_sz,
->  	    void *response, size_t response_sz);
->  
-> +int doe_sysfs_init(struct pci_dev *pci_dev);
->  #endif
+> +				q, buffer);
+> +			if (vb->cnt_buf_init != vb->cnt_buf_cleanup)
+> +				pr_info("     buf_init: %u buf_cleanup: %u\n",
+> +					vb->cnt_buf_init, vb->cnt_buf_cleanup);
+> +			if (vb->cnt_buf_prepare != vb->cnt_buf_finish)
+> +				pr_info("     buf_prepare: %u buf_finish: %u\n",
+> +					vb->cnt_buf_prepare, vb->cnt_buf_finish);
+> +			if (vb->cnt_buf_queue != vb->cnt_buf_done)
+> +				pr_info("     buf_out_validate: %u buf_queue: %u buf_done: %u buf_request_complete: %u\n",
+> +					vb->cnt_buf_out_validate, vb->cnt_buf_queue,
+> +					vb->cnt_buf_done, vb->cnt_buf_request_complete);
+> +			if (vb->cnt_mem_alloc != vb->cnt_mem_put)
+> +				pr_info("     alloc: %u put: %u\n",
+> +					vb->cnt_mem_alloc, vb->cnt_mem_put);
+> +			if (vb->cnt_mem_prepare != vb->cnt_mem_finish)
+> +				pr_info("     prepare: %u finish: %u\n",
+> +					vb->cnt_mem_prepare, vb->cnt_mem_finish);
+> +			pr_info("     mmap: %u\n", vb->cnt_mem_mmap);
 
+Drop this, and also drop the cnt_mem_mmap field. I don't think this is
+interesting.
+
+> +			if (vb->cnt_mem_get_userptr != vb->cnt_mem_put_userptr)
+> +				pr_info("     get_userptr: %u put_userptr: %u\n",
+> +					vb->cnt_mem_get_userptr, vb->cnt_mem_put_userptr);
+> +			if (vb->cnt_mem_attach_dmabuf != vb->cnt_mem_detach_dmabuf)
+> +				pr_info("     attach_dmabuf: %u detach_dmabuf: %u\n",
+> +					vb->cnt_mem_attach_dmabuf, vb->cnt_mem_detach_dmabuf);
+> +			if (vb->cnt_mem_map_dmabuf != vb->cnt_mem_unmap_dmabuf)
+> +				pr_info("     map_dmabuf: %u unmap_dmabuf: %u\n",
+> +					vb->cnt_mem_map_dmabuf, vb->cnt_mem_unmap_dmabuf);
+>  			pr_info("     get_dmabuf: %u num_users: %u vaddr: %u cookie: %u\n",
+>  				vb->cnt_mem_get_dmabuf,
+>  				vb->cnt_mem_num_users,
+
+Same for cnt_mem_vaddr and cnt_mem_cookie. It's not interesting. But let's keep get_dmabuf and num_users
+for now.
+
+Regards,
+
+	Hans
