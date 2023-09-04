@@ -2,128 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8270790F55
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC87790F5A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:29:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349813AbjIDAOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 20:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
+        id S236512AbjIDA3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 20:29:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjIDAOn (ORCPT
+        with ESMTP id S231361AbjIDA3b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 20:14:43 -0400
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2104.outbound.protection.outlook.com [40.107.255.104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C090FB;
-        Sun,  3 Sep 2023 17:14:38 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IfX0uJQrTvH10CVBebjwJyKPVSVKxneEQULd3l2NIRRLpdnD2QSe9AaVDLkdauJD/9yv5EUiIixR+lokpg8m+DpSpqL2/STyNUJC3I/PRTHb27qhlGz7khc5y6Us1fxsO1K7aKz+L/QsFj5HaB5XNssk6TQc+h9UKG31rwztrx2RFjt1axk457GbeANxLYGY9QLkGR1CoyVcxzopnkxD3TdHonvXeQAq5AEGYxFzWU8JyK2hKkpz3JkO+gfPcrxWjON7u8IFBEe5qeqrJAPgLeI6oEJYqIHEOq5+kh6zUhff11akg31WELBf6M/T/Lj6ngcF9hrrd/umqVSILqv1RA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PO6lW+XtJuVzRU5T0o9DqdXZDtfJ661DFWc7vL9swN0=;
- b=VNx+ZRFTSX8J+dkj78HXu2gI3DQENEuvD1v+qVR74nMTzhPHslJiCpxPIRG3ZuRzJ75IT68+V3sD8Qaql4AJzgaBypgZqpLxUiwOQNVSibGs5sass03jTfr7qCghjjp8IvRAMEfriPHQHf+LmWgKdEPieRamnAAKRRrbdmYSJmz4o7UMbBsUHlGea41Za2OqzjENbEBnNvKdUY7ipkfssrG4tUD4hMR4PA4s6tlauagSuWqeMybOJqWhSDEelb/9RfKwFUBlUYM1rtH2qKm+LTEU+8K9FtO6AbHlB3DLdtoVwg/3lWIwVn0TMM0GRtElAzomv+Bl2be/toUa2hZpgw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PO6lW+XtJuVzRU5T0o9DqdXZDtfJ661DFWc7vL9swN0=;
- b=HQ/Gnc2Qha8AVVfz0cmJTgEuppTVU+PDcksSw0bC8gSMyd0NBMYOhABHJulp/HPBu28KJd7JYwGkJ6qv2lVD08TgwNEvQKX5ZgdAYQGy+boEdaqsuppzoMQQP7y0Aoo+b60O+oIKZNjyPRyndAiYgabKwAqxJDDptfkebSfiS0ZnNdZRcjlhXoHIcEE4egMfh+Pfz8opJ61R38eGgtAKzS8aL32itFsWZG8+cx9rE/j0MCK8JWGOz0tB9rtZbMHuQ2AJMdLOH9/xe6Tt5spIDtmnaFA9Rb+oRbsRCx2ZooNIjK9DZGck+LL4L1GDdNn0gASpZzFFuH5OLLTtndQC+A==
-Received: from KL1PR0601MB5614.apcprd06.prod.outlook.com (2603:1096:820:9b::8)
- by SEYPR06MB6203.apcprd06.prod.outlook.com (2603:1096:101:c4::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Mon, 4 Sep
- 2023 00:14:32 +0000
-Received: from KL1PR0601MB5614.apcprd06.prod.outlook.com
- ([fe80::8d9e:8356:2b79:5276]) by KL1PR0601MB5614.apcprd06.prod.outlook.com
- ([fe80::8d9e:8356:2b79:5276%5]) with mapi id 15.20.6745.023; Mon, 4 Sep 2023
- 00:14:31 +0000
-From:   Tommy Huang <tommy_huang@aspeedtech.com>
-To:     Andi Shyti <andi.shyti@kernel.org>
-CC:     "brendan.higgins@linux.dev" <brendan.higgins@linux.dev>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>,
-        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-Subject: RE: [PATCH] drivers:i2c:add controller reset when the timeout
- occurred
-Thread-Topic: [PATCH] drivers:i2c:add controller reset when the timeout
- occurred
-Thread-Index: AQHZzqCpMZ9pcTUF9k2wXdoSoXmt/bAJROGAgACm+eA=
-Date:   Mon, 4 Sep 2023 00:14:31 +0000
-Message-ID: <KL1PR0601MB5614646277B7E656535799B2E1E9A@KL1PR0601MB5614.apcprd06.prod.outlook.com>
-References: <20230814111534.2771900-1-tommy_huang@aspeedtech.com>
- <20230903141519.ha6aakgkrq6ohy5s@zenone.zhora.eu>
-In-Reply-To: <20230903141519.ha6aakgkrq6ohy5s@zenone.zhora.eu>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=aspeedtech.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: KL1PR0601MB5614:EE_|SEYPR06MB6203:EE_
-x-ms-office365-filtering-correlation-id: 8adcd1b5-da7f-421d-cf0d-08dbacdbe94c
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: HeFMgd90CFmmQ4FLLS0N/WiSNMS5Q41wmhhhoL5kwpOj5SOydFXJYNqSKTHEihSuebjyOqXeAcTDapOVmRuBH8YWoZ1dsWcgw8cR3ZhFZa7/pBtSAHBobZjqKM/Eerfkrok80LYAcAndPEcY272MORI2Q70Ex1omds98hdNvtiv+cvbH4Ijm4UVk3AXyC2Ksi6TMmT8/2Q3NSrWBd06GIT8FtHoSLSX9Y2d21ZbiI2kDjWvYw3hMLCNPkURDO/4Ycfk6efF4lHox3vSuKQi5XfY8+kIN+jDlTTLNme1ZQ65yx0jNAZkUyR9AhfKpnxI9USzo1p3654j3IrWzRnp0xNWVB7bjFaH9ey/hqt776HusHRABXE4ZN8yf/ZD1zIGAM+xmma9WR28ZMYkaTNwXUGIuwHTolaEzRL5NCaS2O8wJWQyDw7tbFw+lhrY71r7Y+jDgbDlxfOBKhzgt4+wgGMQArp76HWLwYcOJv9K7whh54EYML3GIG1JBjWfzjVnfBNGXXk5HeE7kWF8sXetIq6hJmL6fogBnx1xNTs+cAHFFp8it0p+9YQ3jGaf9rJhEmtamRCua3ZLPAOb8E7r8s2b4zbNfHr61p6lRw9Ut46iBAKXM2EG6ByAwqgbS0xb4
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB5614.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(136003)(366004)(396003)(346002)(376002)(1800799009)(451199024)(186009)(8936002)(8676002)(5660300002)(316002)(6916009)(64756008)(66476007)(66446008)(66946007)(54906003)(2906002)(66556008)(76116006)(4326008)(52536014)(7416002)(41300700001)(6506007)(7696005)(53546011)(26005)(9686003)(55016003)(38100700002)(38070700005)(122000001)(71200400001)(478600001)(83380400001)(33656002)(86362001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?yx/1Tuce5lor2sUNTN2kk6QIS89WiCp6123R4SpSHjzfCjgRCSU9CE/OB42T?=
- =?us-ascii?Q?+kHduAufiUgTpEN6tnRMHI3K1lDFF6RafOsvM5SMgr4+kA8+x3kmPleuhMCr?=
- =?us-ascii?Q?k+kYXEql00YicTIC+fjb+2x3Vs797kYcDLUk6VPmgOGtfLLekQuCfePodeac?=
- =?us-ascii?Q?OsRmgDTkA04jB+OzvjeeB7eArhjYSuexEpgvmN8OwPMi6u01pyiNSo85mFiR?=
- =?us-ascii?Q?3ZOB6RCOigKyPPit5lgrIALGn1UvgfFkyKv34kt+rYumawMstCHDUsT4V/Ex?=
- =?us-ascii?Q?uq9h8BM3QTjT49RqSUIuEf+p1htS3ErhKKQSsM/0cc8uSE9d2ctZZuzxuXhF?=
- =?us-ascii?Q?6JZqzndTY2Djc6uIuWM399vit9rISLquYo4iMGbciJYLl0VSwKPYyqKxsmC9?=
- =?us-ascii?Q?KGS8HgbaXstmZ3ojt5mnld+GNJU7c6/3UsCTSG11pT+8jAXBTXq0BMpQTbHx?=
- =?us-ascii?Q?sWDn4U+hiKTCSDjvUFaMRLDYDaVbb74V1QTzStdYbyVj7Qk/eBazUeusM0Ro?=
- =?us-ascii?Q?2YYQ+KsumnJ+uWn7f25XNlrSB+WNPMjT5HDqnHlxoR4CS/7G+9aSVimGzzRQ?=
- =?us-ascii?Q?WrI+u/T35wMVsazby8CNxGx4KjDb4rRB1ydjYr+GZSIz72J+14kYT4XX5FFL?=
- =?us-ascii?Q?dCB/KIpEaeP2J8NHGOL8kGwLIWthE00Un23ky1qzQrtaBSiQPeKZ8IZlkTSz?=
- =?us-ascii?Q?uqX+z9h7YERKjUPpRw0jr8sarwX39cEovRsyhF9JTxqtC0gelk6EwvTqmrr6?=
- =?us-ascii?Q?CTpvG8vuuvYZc1AOlpqqRzUYj+FFMpY7jC4sjPqcqUV4yhNTFqNZnEEn5L5T?=
- =?us-ascii?Q?zMDX+vqQuiAePMb++f/pmiBbKPGwpqgp4I1boJjSOEy99WUjokhBFi1NOxEp?=
- =?us-ascii?Q?838cNCKefumVwYNEcd40L33B8Lf4GinDzPRV3fW4a3r5Yp1oC2UkN8GTmlwv?=
- =?us-ascii?Q?gdv2sOvlWnubZ+hkZP3Yhvv620f9Mz3A1FmNioC05DUwN31EwIACZX0qnuj1?=
- =?us-ascii?Q?e4/IX0nVpa1kdD7s4SSI9FFDHqGyJfzPN2t2PiLwgebnVbv3d7tt/v+5yzO4?=
- =?us-ascii?Q?yKTGHbY2EEDqrSseMgbFluq7wisOb/zfNae55SCyQUzyRAH8NvCjyPyJbGWu?=
- =?us-ascii?Q?70SeTLZzH/flxZRDND7fQRm/Ce1gAGUtqi5VABfGjETcnJgwWEXIFd33Ilz5?=
- =?us-ascii?Q?UMJ/dF40fHKCAYlOGyd9dNQlIF8L0YCcY3+ndoBT9osPIEhlTgatUgSzknUt?=
- =?us-ascii?Q?sdWqbxby8DXAxDur3vRjUN7s8x+Fuwj5GglJYgtxtgbttOSR0xxZjk9DhLcr?=
- =?us-ascii?Q?NiiP4Q0jACTTb6fR/wvy1WG+XTB11rRKea1SlQOy6IRIG0+8mx5VCdatdV8J?=
- =?us-ascii?Q?z1su3HHZNhy1DYtK1UR8Ax+MQ0SfuMRIsDx62AJoAxxpKGan1BNeMdiaWY1G?=
- =?us-ascii?Q?xz3PmGEqYFHPtxIdvU1F3GYgBa5ceTpzDHBAYUCKlbhYqwkhSbJ3YSPvQnwp?=
- =?us-ascii?Q?/Szp+Tx2iXCjvPRnm/vW0zn6yt9l0CwMEWE/GTGSYsT90NSKBP71dxcpIxrn?=
- =?us-ascii?Q?isZ/TH0OKd9QMeBCRyX5wdfMcDtPcJxj1fLKQHVV1wNbSxQzA6s9h+7bP1Vf?=
- =?us-ascii?Q?Xg=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 3 Sep 2023 20:29:31 -0400
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E91CFB;
+        Sun,  3 Sep 2023 17:29:28 -0700 (PDT)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1d4db7959f6so350520fac.0;
+        Sun, 03 Sep 2023 17:29:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693787367; x=1694392167; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gy5Sjqdfk2V0r51PCTu3C9haVoBFcraAmneb4UVU19U=;
+        b=U2HgYdZ92FaSWhJWYup3XY7Dr3uZ8GLsGiq2+pnX4m0cAVoWtVusgRTp04SD0MzD6j
+         xjARBm4YwA7C9GatwHz52TBjmREPhI44obDeT+YIxqLWjG4K3gbxdVwEj1u/U9CzOBTn
+         2lU6w437kxjowR82iCZLI6nDxyx4KJDQDmAugLpmZv4CRbhmyWtBZ2kkPUtAxwTKuHxs
+         q6V1SS9dwtbERMoDbR0wcneC3pm2vOfEqAf5w2N9RVdNhXAg3c8Xb6vlCfsWjrVNElF5
+         K2PDyTaJPDL9lEw4Sd3qgnMOGmxIAmPJIw0DS06kfuImYD5NQt7CXDMuATTc6ZP9qAK4
+         C2EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693787367; x=1694392167;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gy5Sjqdfk2V0r51PCTu3C9haVoBFcraAmneb4UVU19U=;
+        b=OKMNVbRI2KsUdqLlzSsaAfPz4BXOyNxgTnfgTP4m7knS6KADPCufd+OpJuMjQOMp/X
+         Dq5zL8MsbwrU41aDFnoqpuKGmertMJT4THE4bzW8MzLZsQV4OFvITJVuxwaUgx67DRuB
+         jNJgxUdjPDHQ6jzG/SQ01NwXy5iUCnVN+anxjJpBTEq8Ph6uKPOoxPfmGkrHIfb1DqtY
+         mKdQofvCazX2ulIi3CisMMzxb4a7qDrPD036PSWiZK5XvmIZhWENnBYhNoBNMrpgXFTI
+         YvcK/8sKBu4OEWErfZLrb2/lAhhPyHMLsqGCL5Wrvva1NZa1wFCdhJaz+/xzh1VkZtJ3
+         nejw==
+X-Gm-Message-State: AOJu0YymmeAhmNcAgSeBZ+1LbqfWlqmIwvz40QmEwcVjYJhlTUPwTNVO
+        ccvLVfjMcinYYnD6844CvZ4=
+X-Google-Smtp-Source: AGHT+IGCDuOU6ZKDHAMJN3qwCQh0SSLDaW3mcfd+gdvDCLJaKZCieOBaxDqBhoVMKwSfvXgOteXNeQ==
+X-Received: by 2002:a05:6871:720:b0:1b3:9e41:de07 with SMTP id f32-20020a056871072000b001b39e41de07mr11773582oap.36.1693787367366;
+        Sun, 03 Sep 2023 17:29:27 -0700 (PDT)
+Received: from [192.168.54.90] (static.220.238.itcsa.net. [190.15.220.238])
+        by smtp.gmail.com with ESMTPSA id eb49-20020a056870a8b100b001c4d922b4fasm4860255oab.8.2023.09.03.17.29.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 03 Sep 2023 17:29:26 -0700 (PDT)
+Message-ID: <8de45c09-cb53-4a18-a6f3-56a16553ae32@gmail.com>
+Date:   Sun, 3 Sep 2023 21:29:21 -0300
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB5614.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8adcd1b5-da7f-421d-cf0d-08dbacdbe94c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Sep 2023 00:14:31.4947
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: C9uZ9kx8swpYINP4qRVmkYPsmZEH9ARNiZhbAtjZhxxSnnmibpO97W9JrDy9Hh1o2N7oWYVWA1C/GFQjuSxakPTlXghg6e4DKYbCB8WTJCg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6203
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/7] rust: workqueue: add helper for defining
+ work_struct fields
+To:     Alice Ryhl <aliceryhl@google.com>, rust-for-linux@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Miguel Ojeda <ojeda@kernel.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        Wedson Almeida Filho <wedsonaf@gmail.com>,
+        Alex Gaynor <alex.gaynor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+        =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
+        Benno Lossin <benno.lossin@proton.me>,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev
+References: <20230828104807.1581592-1-aliceryhl@google.com>
+ <20230828104807.1581592-5-aliceryhl@google.com>
+Content-Language: en-US
+From:   Martin Rodriguez Reboredo <yakoyoku@gmail.com>
+In-Reply-To: <20230828104807.1581592-5-aliceryhl@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -131,95 +82,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andi,
-
-	Thanks for your review.
-	I will fix the patch with your comment and resend it.
-
-	BR,
-
-	by Tommy
-
-> -----Original Message-----
-> From: Andi Shyti <andi.shyti@kernel.org>
-> Sent: Sunday, September 3, 2023 10:15 PM
-> To: Tommy Huang <tommy_huang@aspeedtech.com>
-> Cc: brendan.higgins@linux.dev; p.zabel@pengutronix.de;
-> linux-i2c@vger.kernel.org; openbmc@lists.ozlabs.org;
-> benh@kernel.crashing.org; joel@jms.id.au; andrew@aj.id.au;
-> linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org;
-> linux-kernel@vger.kernel.org; BMC-SW <BMC-SW@aspeedtech.com>; Jae
-> Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-> Subject: Re: [PATCH] drivers:i2c:add controller reset when the timeout
-> occurred
->=20
-> Hi Tommy,
->=20
-> Please fix the title of the patch from:
->=20
->    drivers:i2c:add controller reset when the timeout occurred
->=20
-> to something like:
->=20
->    i2c: aspeed: Reset the controller when timeout occurs
->=20
-> Note:
->=20
->  - leave a space after the ':'
->  - start with a capital letter after the last ':'
->=20
-> On Mon, Aug 14, 2023 at 07:15:34PM +0800, Tommy Huang wrote:
-> > 1.Call i2c controller reset when the i2c transfer timeout occurred.
-> > The rest of interrupts and device should be reset avoid unperdicted
-> > controller behavior occurred.
->=20
-> Please remove the '1.' and please rewrite this sentence in order to be
-> grammatically correct, something like:
->=20
-> "Call the i2c controller reset when an i2c transfer timeout occurs. The
-> remaining interrupts and the device should be reset to avoid unpredictabl=
-e
-> controller behavior."
->=20
-> > Signed-off-by: Tommy Huang <tommy_huang@aspeedtech.com>
->=20
-> Is this a fix? If so please add:
->=20
-> Fixes: 2e57b7cebb98 ("i2c: aspeed: Add multi-master use case support")
-> Cc: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
-> Cc: <stable@vger.kernel.org> # v5.1+
->=20
-> Jae Hyun is the author of the line you are changing therefore he needs to=
- be
-> Cc'ed
->=20
+On 8/28/23 07:48, Alice Ryhl wrote:
+> The main challenge with defining `work_struct` fields is making sure
+> that the function pointer stored in the `work_struct` is appropriate for
+> the work item type it is embedded in. It needs to know the offset of the
+> `work_struct` field being used (even if there are several!) so that it
+> can do a `container_of`, and it needs to know the type of the work item
+> so that it can call into the right user-provided code. All of this needs
+> to happen in a way that provides a safe API to the user, so that users
+> of the workqueue cannot mix up the function pointers.
+> 
+> There are three important pieces that are relevant when doing this:
+> 
+>   * The pointer type.
+>   * The work item struct. This is what the pointer points at.
+>   * The `work_struct` field. This is a field of the work item struct.
+> 
+> This patch introduces a separate trait for each piece. The pointer type
+> is given a `WorkItemPointer` trait, which pointer types need to
+> implement to be usable with the workqueue. This trait will be
+> implemented for `Arc` and `Box` in a later patch in this patchset.
+> Implementing this trait is unsafe because this is where the
+> `container_of` operation happens, but user-code will not need to
+> implement it themselves.
+> 
+> The work item struct should then implement the `WorkItem` trait. This
+> trait is where user-code specifies what they want to happen when a work
+> item is executed. It also specifies what the correct pointer type is.
+> 
+> Finally, to make the work item struct know the offset of its
+> `work_struct` field, we use a trait called `HasWork<T, ID>`. If a type
+> implements this trait, then the type declares that, at the given offset,
+> there is a field of type `Work<T, ID>`. The trait is marked unsafe
+> because the OFFSET constant must be correct, but we provide an
+> `impl_has_work!` macro that can safely implement `HasWork<T>` on a type.
+> The macro expands to something that only compiles if the specified field
+> really has the type `Work<T>`. It is used like this:
+> 
+> ```
+> struct MyWorkItem {
+>      work_field: Work<MyWorkItem, 1>,
+> }
+> 
+> impl_has_work! {
+>      impl HasWork<MyWorkItem, 1> for MyWorkItem { self.work_field }
+> }
+> ```
+> 
+> Note that since the `Work` type is annotated with an id, you can have
+> several `work_struct` fields by using a different id for each one.
+> 
+> Co-developed-by: Gary Guo <gary@garyguo.net>
+> Signed-off-by: Gary Guo <gary@garyguo.net>
+> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+> ---
 > [...]
->=20
-> >  		/*
-> >  		 * If timed out and bus is still busy in a multi master
-> > -		 * environment, attempt recovery at here.
-> > +		 * environment, attempt recovery at here. Even the bus is
-> > +		 * idle, we still need reset i2c controller avoid rest of
-> > +		 * interrupts.
->=20
-> Please fix the grammar here, as well
->=20
->    In a multi-master setup, if a timeout occurs, attempt
->    recovery.  But if the bus is idle, we still need to reset the
->    i2c controller to clear the remaining interrupts.
->=20
-> We take this chance to improve the previous comment, as well.
->=20
-> >  		 */
-> >  		if (bus->multi_master &&
-> >  		    (readl(bus->base + ASPEED_I2C_CMD_REG) &
-> >  		     ASPEED_I2CD_BUS_BUSY_STS))
-> >  			aspeed_i2c_recover_bus(bus);
-> > +		else
-> > +			aspeed_i2c_reset(bus);
->=20
-> I'd like also someone from Jae Hyun, Brendan, Benjamin or Joel to take a =
-look
-> here, as well. Thanks!
->=20
-> Andi
+Reviewed-by: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
