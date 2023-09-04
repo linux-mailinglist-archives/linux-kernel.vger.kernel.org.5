@@ -2,106 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5508C7914C3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 702447914C8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242167AbjIDJbU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 05:31:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
+        id S1345919AbjIDJdF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 05:33:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234385AbjIDJbT (ORCPT
+        with ESMTP id S229522AbjIDJdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 05:31:19 -0400
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C60DD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 02:31:15 -0700 (PDT)
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5738949f62cso758716eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 02:31:15 -0700 (PDT)
+        Mon, 4 Sep 2023 05:33:04 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADAD2B6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 02:33:00 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-51a52a7d859so4482508a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 02:33:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693819979; x=1694424779; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=D6lF0yLij+X6WG+JF5oJhpFpGYbg0jGTt46XFYaBxW8=;
+        b=miYKQxxiRTzlomOErBbMlnIaZ1nhTCrhc+YcYAP7I++MBEVoRNFpAndULlEFfJepa9
+         9JWtoIBTMpjMBannBauiakeRFIW8L8rm+LbKeYSNtSRBFeh73Co+fAOpVhSh4Vrg3Tib
+         NFEDYXt8s9qcPdEmfPr6W9hB8+IhIRS93uUjDBmy1UU747y8UqpvdYNrjL2kKvvwm3LQ
+         G/i7OWTTy8zKsWCxu4zZKmhnZSiqsoovt0G7xdZncQK3R1gQOsuE0HRYhfdYpQPu5XDM
+         R0LZtTnO7Yf5ho75/28YtZpdrDhnpy7x1DtXxFh0EI1XtCz4+aoBuRFs9jD26fsEibQS
+         92Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693819875; x=1694424675;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TG988PTwvScD3wLbWtRomruo1Gx7FVCGpITmTrjaWCc=;
-        b=Mw6hJr5x1L0i1BuBfcDN47rSM8sDPpMb/mskKbLMUoOVDGE/eIkdJDZlb5ss4yv8La
-         zj4RcGNYzZs8ttjfCIVUayRsXFB6oY01Wh+/Za7rSQzoXpKz+jXonR94L00iKBtgVjJI
-         34GzMrU2ERc4o/+lFPVHLqS54Az8E9Bu6LVx+wMsrhBjqbyipuTq7lRXABLhsWGuMiNr
-         IK+t8icrA+FJRjBCESIKqUx7RnUmIg58Wdcg9tRm0ZEle0LZB3fWNj4cZEVYBmbd/YRT
-         32O/PBKnhFyHEO5/NxOG4yM1XspmL5QnRmKrOa3K0fjp2FgobSfsshy+LxnZJEBjX9JH
-         6J4Q==
-X-Gm-Message-State: AOJu0YxKQYFuQtnezmEe4R6/97f0vbsPQI/Y3rBlJN+xc44rzjEbMxh3
-        39FdE2R4mga1ZGl3QylH4femFcSx0K85Uw==
-X-Google-Smtp-Source: AGHT+IG5860/PzNUBsX2dSCwjdHcmO1SKTiwzyGU0beaGWbEtQAzTRNL8F/GQhyr3UPyPpewPMv4PA==
-X-Received: by 2002:a05:6820:284:b0:56d:c55b:4792 with SMTP id q4-20020a056820028400b0056dc55b4792mr7778586ood.6.1693819874826;
-        Mon, 04 Sep 2023 02:31:14 -0700 (PDT)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com. [209.85.161.50])
-        by smtp.gmail.com with ESMTPSA id 62-20020a4a1a41000000b00573a0631d98sm4718016oof.34.2023.09.04.02.31.14
-        for <linux-kernel@vger.kernel.org>
+        d=1e100.net; s=20221208; t=1693819979; x=1694424779;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D6lF0yLij+X6WG+JF5oJhpFpGYbg0jGTt46XFYaBxW8=;
+        b=Jb4L1B1P1mxE2f+hkwEpYOPi9aGQh6ZRVWdG3zkX2q8olRzmC62JkiHxQ/ypOvRuoN
+         V/+Bz7bYecIjLK1YBzsYyPWx+zfAUhds0wHuNUh7O6FRqU41J74O7dCMqhNOTN4YTGQw
+         6jLFnLtkUUNBedNQ7pnGeQdWCFmZ79i9RWsQW3CdNXjqEbKb0konKyiL6d8l26YGSms/
+         CTtCFLAFvEuHPaVwWSFYRoPFioRrQWaswWDL5QcP2Rz0ofHvYW11E1bTGIBE6UZbLxmy
+         j3DPNWMs2dr5YrmaTtkXALYJ86p0O36LuHBDcu32Q8DcE6aGPvmmzLUVsyS3nH2B2Ruj
+         K2VA==
+X-Gm-Message-State: AOJu0YwNV7RdpPKnzoes30SVYn6aorl5eGbk9bm13hngUKUwAYGFMaP5
+        JmFZrm0YgJb6CzHU4YLqLIlJaw==
+X-Google-Smtp-Source: AGHT+IG2UiuAQfd9LsYfk4KhK5NrnZMH7uuYN45A4Nx09ClzsdyQVmSs6ZHB918+eFkJOiNJb43vWA==
+X-Received: by 2002:a17:906:7395:b0:9a1:f1b2:9f2e with SMTP id f21-20020a170906739500b009a1f1b29f2emr9371713ejl.2.1693819979089;
+        Mon, 04 Sep 2023 02:32:59 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id gh4-20020a170906e08400b009a1e73f2b4bsm5838482ejb.48.2023.09.04.02.32.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 02:31:14 -0700 (PDT)
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5738949f62cso758700eaf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 02:31:14 -0700 (PDT)
-X-Received: by 2002:a05:6358:2812:b0:133:595:1c with SMTP id
- k18-20020a056358281200b001330595001cmr9719035rwb.31.1693819874112; Mon, 04
- Sep 2023 02:31:14 -0700 (PDT)
+        Mon, 04 Sep 2023 02:32:58 -0700 (PDT)
+Message-ID: <fbfc6e8d-dd6a-ee1d-a62a-d076470db18b@linaro.org>
+Date:   Mon, 4 Sep 2023 11:32:57 +0200
 MIME-Version: 1.0
-References: <20230831121623.36293-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20230831121623.36293-1-andriy.shevchenko@linux.intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Sep 2023 11:31:03 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVoDDV-VgPJL75u_t3KeAPhb1xEFX2VigVC3oS51pG6wA@mail.gmail.com>
-Message-ID: <CAMuHMdVoDDV-VgPJL75u_t3KeAPhb1xEFX2VigVC3oS51pG6wA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] zorro: Use helpers from ioport.h
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] dt-bindings: firmware: Add documentation for
+ qcom,platform-parts-info
+Content-Language: en-US
+To:     Naman Jain <quic_namajain@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_pkondeti@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_rohiagar@quicinc.com,
+        kernel@quicinc.com
+References: <20230901060223.19575-1-quic_namajain@quicinc.com>
+ <f340f731-8471-39be-c7b2-7d930916e3b1@linaro.org>
+ <359ba91d-866b-45e4-83fe-598ed791f877@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <359ba91d-866b-45e4-83fe-598ed791f877@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On 04/09/2023 10:38, Naman Jain wrote:
+> 
+> On 9/1/2023 12:52 PM, Krzysztof Kozlowski wrote:
+>> On 01/09/2023 08:02, Naman Jain wrote:
+>>> Add documentation to describe device tree bindings for QCOM's
+>>> platform-parts-info node. Firmware populates these nodes to pass the
+>>> information to kernel regarding the subset of hardware blocks
+>>> and features like Camera, Modem, Display present in a product.
+>>>
+>>> This is to support that the same software image runs seamlessly on
+>>> different platforms where one or more HW blocks are not supported or
+>>> if some sub parts for a particular block are not supported.
+>>>
+>>> Purpose of these definitions is to allow clients to know about this,
+>>> and thus, handle these cases gracefully.
+>> Whether camera is or is not supported, is defined by presence of camera
+>> node or by its status field.
+>>
+>> Existing firmware (e.g. U-Boot) is also doing this - patching DTS when
+>> needed.
+>>
+>> I do not think introducing some parallel way makes any sense, so no,
+>> that's not the way to do it.
+>>
+>> Best regards,
+>> Krzysztof
+> 
+> 
+> Thanks Krzysztof for reviewing the patch. I think for telling whether 
+> the Camera HW block is not
+> supported / not present, firmware can either remove the device tree 
+> node, or change its status
+> to disabled, so that is fine.
+> With this patch, I was trying to address the use case, where Camera is 
+> supported but certain features
+> of that particular Camera are not supported, due to dependent HW blocks 
+> not present, or due to
+> product decision to not support it. We wanted to avoid the firmware to 
+> have this overhead of knowing
+> what these individual bits mean and thus, disable few of the HW blocks 
+> that are supposed to be
+> disabled. And this is applicable for each of these HW blocks.
 
-On Thu, Aug 31, 2023 at 2:16 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
-> We can use the DEFINE_RES_MEM_NAMED() macro and resource_contains() helper
-> instead of reimplementing them in the code. No functional change intended.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+What is and what is not supported by camera, is obvious from the
+compatible and you do not need this patch.
 
-Thanks for your patch!
+> 
+> For example, we can know from 32 bits provided for modem, if 3G/4G/5G is 
+> supported or not on a
+> platform.
 
-> --- a/drivers/zorro/zorro.c
-> +++ b/drivers/zorro/zorro.c
-> @@ -117,17 +117,13 @@ static struct resource __init *zorro_find_parent_resource(
->         int i;
->
->         for (i = 0; i < bridge->num_resources; i++) {
-> -               struct resource *r = &bridge->resource[i];
-> -
-> -               if (zorro_resource_start(z) >= r->start &&
-> -                   zorro_resource_end(z) <= r->end)
-> -                       return r;
-> +               if (resource_contains(&bridge->resource[i], &z->resource)
+Again, compatible-dependent.
 
-Missing closing parenthesis. What happened to your cross-compiler?
+> That is decided based on presence/absence of certain HW 
+> blocks, but it may or may not be as
+> simple as disabling a particular DT node.
+> Basically we wanted to defer it to the subsystem drivers, to do whatever 
+> they like with this
+> information on sub-parts that are available.
+> 
+> Will rephrase my commit message to make it clearer, but would like to 
+> hear your thoughts on this first.
 
-Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-i.e. will queue in the m68k for-v6.7 branch, with the above fixed.
+Sorry, no, such node is not the solution.
 
-Gr{oetje,eeting}s,
+Best regards,
+Krzysztof
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
