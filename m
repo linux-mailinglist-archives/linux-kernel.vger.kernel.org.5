@@ -2,106 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DE828791D79
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:08:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A658791D7B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:08:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239825AbjIDTIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 15:08:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
+        id S239733AbjIDTIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 15:08:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234366AbjIDTIO (ORCPT
+        with ESMTP id S232484AbjIDTIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 15:08:14 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 256DACC8
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:08:10 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so18026055e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:08:10 -0700 (PDT)
+        Mon, 4 Sep 2023 15:08:54 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2612D191
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:08:50 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so2324184a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:08:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693854488; x=1694459288; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=linaro.org; s=google; t=1693854528; x=1694459328; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=2ZYSHviYpzCs6UjibmT2X1y7LXAJYkLI7ZZRbnsdbz0=;
-        b=MTRkYVVlo6a+8Jw9nFqs2nejnsdRtdN0APVU7vyaw+IGv7zKEZMtjtxzygkjQYqR1L
-         wMu+4e6VVfM8hjRvgfUOW/R3ygiE6tU46xZMKYeqMJ3Ri654N6A3lNQ4L/E9EZ8qDqLq
-         TvHjVx6PPpyL/5aoWC3m2QRtQQZ9szjJFgX74V3XC47ezds+fuuf3ai00Ja1q5TJ9tBs
-         upaMhuE5aYohrSPMTL8hcZh+EIBenliMG/Fa/yNxKyBZ+iST4oJvmxlG54lZA9Ji3KOx
-         0ZWdAoH+6/ygHg+NpbVu5A++DeopCTLwSxwZzFxoAQiZkBTVRJiDteC8b/d/5zrMifkj
-         Klrg==
+        bh=d0CIESG2SuiZV7cHhLHCsdILQZtP8suwtO95xIEc+T0=;
+        b=aeJBnmY2IGaUM+BPEGqk6yiQFw3rxMCIYWu/m0CRZhkiWB93DFKCxTicQFYAq24NOm
+         sEXyRLF4SpVq9gZFtg84FeqAQPbMVlbAcdtbqOgx141sigSr0yjVkL8arkwFjFjdKqqB
+         XH/P/rpQxGGVWqfzBBR/jYZejOZ3kua5bEt0h8wuI9lRxv5XZe4oSEwBQmY6VXo4m2r9
+         xj1DgQ6V6WE0zEovsAQpzghURg3bBSjzNFcmWvHno4nouj/MWhUsfIy7eTnHDgpAbslw
+         ttZoIfxBMXjO5c5/fZX8NSIX85qio0BcRjy8FDYNTJB3dXH/3kIUM2UC0AnNYjnBUf01
+         WvwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693854488; x=1694459288;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
+        d=1e100.net; s=20221208; t=1693854528; x=1694459328;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2ZYSHviYpzCs6UjibmT2X1y7LXAJYkLI7ZZRbnsdbz0=;
-        b=CxlSW4PYbQb06/rUumrizTsod3FXTeDPZ6x2POda81F1R+jTOkNfTFLmuPf4aF8Y0C
-         KRdv9VH+1lxSsPfq6cJ4/eo9b5007Rs1HJCGkFhIT0tbZOKX9Q+/anTYrCkCte+MRSjl
-         JFwrWZZYozo3Y0+XVTBpWJ5mNY1ojaraVMV22WNuVJF43H1Gb0kc+VzA3dTHhcK1Went
-         tEwL5bGsVuKUAMrwuk9Q18mfWU9Ob5MYs1krjjoetbP0B8oyrPuJCxQNcuXDbRwgx3HC
-         ZVEc8+I7UCkee92iS2YfbGLZ4tqg5sfO1kfcWKzuJEaiP8W+HWfD2Ncc5FuwjheNeXaC
-         y2cA==
-X-Gm-Message-State: AOJu0YwxGv5KNv7Ru9mTjXVwTaUyPuXF1dtZgAFbUreFGKa6gyxp3aU2
-        1wVXaudWMSmb1SM4UHHXrAHvVAGtklQ=
-X-Google-Smtp-Source: AGHT+IEApWArVfqoG+K1hcNFwRs2sUG5V2Io247JvFa9nppI0eAo+BlzDplrE98u/anVGovU2j6Y6w==
-X-Received: by 2002:a05:600c:2308:b0:401:73b2:f03d with SMTP id 8-20020a05600c230800b0040173b2f03dmr7588885wmo.0.1693854488203;
-        Mon, 04 Sep 2023 12:08:08 -0700 (PDT)
-Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
-        by smtp.gmail.com with ESMTPSA id w17-20020a05600c015100b00401d6c0505csm14749969wmm.47.2023.09.04.12.08.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 12:08:07 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 4 Sep 2023 21:08:05 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] locking/mutex: remove redundant argument from
- __mutex_lock_common()
-Message-ID: <ZPYrFeAzWjESRiJD@gmail.com>
-References: <49c7163433999cc1fc9367311fbe6c6d5fd9f251.1693693823.git.mirq-linux@rere.qmqm.pl>
- <20230904131853.GA12042@noisy.programming.kicks-ass.net>
+        bh=d0CIESG2SuiZV7cHhLHCsdILQZtP8suwtO95xIEc+T0=;
+        b=Pr3kMavbRj3hEEnZNSpcuHK9A4R/c9AX6F2TaLk6B8vRW/YfAyldCZnBXNLdYzc/rd
+         pcqk9uRja15DqILECeL7RFLgdjbieuX6IN5sj+gukCdmk+6S8xigZFZF+480SStfTZkl
+         fK/gvp3zpbRhFvjB0HaPYLYe3RC73kVIJcErVFLAGVo0v79jxVTwBlBlw2xxQjxpIpfB
+         BJtbv5hHt7CV2dbogAEZ1Sc6zrCVkLuiwk3b10fL26yoKRPvuSBA88E19keo83N1hz8q
+         jH7wvG67u2aUbkESAhA9XoI6IjZPsp2QFIy9HMaX+yNGMoCvJCx5JlKR+KtCzZlkaYRl
+         MHxA==
+X-Gm-Message-State: AOJu0YzGp4kSi68CFdSQwatMhFlPXxgXoxLU6L37TNhjdiEXF/vgn03E
+        FxhkfZEwiTF89pDam9zKLfCF+A==
+X-Google-Smtp-Source: AGHT+IH0wh3Lx48yFyOqTEgnOEZkTX4ZndMzuwd1BqySt5vm/255sDxk6mqMYYjnwmcqT5deG8ldDw==
+X-Received: by 2002:aa7:d64a:0:b0:527:3a95:3fa4 with SMTP id v10-20020aa7d64a000000b005273a953fa4mr7912602edr.20.1693854528590;
+        Mon, 04 Sep 2023 12:08:48 -0700 (PDT)
+Received: from [192.168.69.115] ([176.187.209.227])
+        by smtp.gmail.com with ESMTPSA id j16-20020aa7ca50000000b0052a3ad836basm6153607edt.41.2023.09.04.12.08.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 12:08:47 -0700 (PDT)
+Message-ID: <2841ec8c-f07b-307e-de03-6e8a4dd88775@linaro.org>
+Date:   Mon, 4 Sep 2023 21:08:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.0
+Subject: Re: [PATCH v2 1/3] kconfig: add dependencies of POWER_RESET for mips
+ malta
+Content-Language: en-US
+To:     Yuan Tan <tanyuan@tinylab.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>
+Cc:     "linux@weissschuh.net" <linux@weissschuh.net>,
+        "w@1wt.eu" <w@1wt.eu>, "falcon@tinylab.org" <falcon@tinylab.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <cover.1693535514.git.tanyuan@tinylab.org>
+ <1c17f017d6c837ef887d08bd2f85102df3fbc17c.1693535514.git.tanyuan@tinylab.org>
+ <915a9e2d-36ea-4a74-7b1b-9688f215b6f1@linaro.org>
+ <55C9BDEDAB4E0B76+838dbd4f-425d-4f2e-94ee-f2bc3092ae13@tinylab.org>
+ <c001c34b-e20c-f32e-f247-722d34a8db3d@linaro.org>
+ <54da2376-dc65-0a96-55df-7a5acfbb9bff@csgroup.eu>
+ <8464A5F00EFC8C59+502c989a-3814-4686-8c6f-0a8f814e1c39@tinylab.org>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <8464A5F00EFC8C59+502c989a-3814-4686-8c6f-0a8f814e1c39@tinylab.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230904131853.GA12042@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Sun, Sep 03, 2023 at 12:33:19AM +0200, Michał Mirosław wrote:
-> > use_ww_ctx is equivalent to ww_ctx != NULL. The one case where
-> > use_ww_ctx was true but ww_ctx == NULL leads to the same
-> > __mutex_add_waiter() call via __ww_mutex_add_waiter().
-> > 
-> > Since now __ww_mutex_add_waiter() is called only with ww_ctx != NULL
-> > (from both regular and PREEMPT_RT implementations), remove the
-> > branch there.
-> > 
+On 4/9/23 19:40, Yuan Tan wrote:
 > 
-> There were compilers that failed to constant propagate the ww_ctx==NULL 
-> thing properly and generated crap code, the use_ww_ctx thing fixed that.
+> On 9/4/2023 6:58 PM, Christophe Leroy wrote:
+>>
+>> Le 04/09/2023 à 12:51, Philippe Mathieu-Daudé a écrit :
+>>> On 4/9/23 11:24, Yuan Tan wrote:
+>>>> Hi,
+>>>>
+>>>> On 9/4/2023 3:40 PM, Philippe Mathieu-Daudé wrote:
+>>>>> Hi,
+>>>>>
+>>>>> On 1/9/23 04:42, Yuan Tan wrote:
+>>>>>> MIPS Malta's power off depends on PCI, PCI_QUIRKS, and
+>>>>>> POWER_RESET_PIIX4_POWEROFF to work. Enable them when POWER_RESET 
+>>>>>> is set
+>>>>>> for convenience.
+>>>>>>
+>>>>>> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
+>>>>>> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+>>>>>> ---
+>>>>>>    arch/mips/Kconfig | 3 +++
+>>>>>>    1 file changed, 3 insertions(+)
+>>>>>>
+>>>>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+>>>>>> index bc8421859006..13bacbd05125 100644
+>>>>>> --- a/arch/mips/Kconfig
+>>>>>> +++ b/arch/mips/Kconfig
+>>>>>> @@ -547,6 +547,9 @@ config MIPS_MALTA
+>>>>>>        select MIPS_L1_CACHE_SHIFT_6
+>>>>>>        select MIPS_MSC
+>>>>>>        select PCI_GT64XXX_PCI0
+>>>>>> +    select PCI if POWER_RESET
+>>>>>> +    select PCI_QUIRKS if POWER_RESET
+>>>>>> +    select POWER_RESET_PIIX4_POWEROFF if POWER_RESET
+>>>>>>        select SMP_UP if SMP
+>>>>>>        select SWAP_IO_SPACE
+>>>>>>        select SYS_HAS_CPU_MIPS32_R1
+>>>>> Shouldn't we also update the _defconfig files?
+>>>>>
+>>>> Sorry, in my last email, I forgot to reply to all. So I am now
+>>>> resending this email.
+>>>>
+>>>> In malta_defconfig, PCI and POWER_RESET_PIIX4_POWEROFF have already
+>>>> been set and PCI_QUIRKS is also selected by FSL_PCI [=n].
+>>>>
+>>>> So shutdown and reboot with malta_defconfig is working and there is no
+>>>> need to update the malta_defconfig 🙂
+>>> Since the dependency is now enforced by Kconfig, the defconfig can
+>>> be simplified:
+>>>
+>>> --- a/arch/mips/configs/malta_defconfig
+>>> +++ b/arch/mips/configs/malta_defconfig
+>>> @@ -306,3 +306,2 @@ CONFIG_SERIAL_8250_CONSOLE=y
+>>>    CONFIG_POWER_RESET=y
+>>> -CONFIG_POWER_RESET_PIIX4_POWEROFF=y
+>>>    CONFIG_POWER_RESET_SYSCON=y
+>>>
+>>> But maybe we don't care, I don't know.
+>> I understand from what you say that you update malta_defconfig manually ?
+>>
+>> defconfigs shouldn't be updated manually.
+>>
+>> Once you have the new .config you should use "make savedefconfig" then
+>> replace your file by the newly generated defconfig file.
+>>
+>> Christophe
 > 
-> I can't remember which compilers that were (my brain is saying <gcc-6 or 
-> something, but I could be totally wrong) and if we still care about 
-> people using them (probably not).
+> To do so, I just unset CONFIG_POWER_RESET and set it again in 
+> menuconfig, then "make savedefconfig". The POWER_RESET part is simplified.
+> 
+>   CONFIG_POWER_RESET=y
+> -CONFIG_POWER_RESET_PIIX4_POWEROFF=y
+> -CONFIG_POWER_RESET_SYSCON=y
+> 
+>   However, I found that there's other changes in this new 
+> malta_defconfig, for example
+> 
+> CONFIG_NLS_KOI8_U=m CONFIG_CRYPTO_CRYPTD=m -CONFIG_CRYPTO_LRW=m 
+> -CONFIG_CRYPTO_PCBC=m -CONFIG_CRYPTO_HMAC=y -CONFIG_CRYPTO_XCBC=m 
+> -CONFIG_CRYPTO_MD4=m -CONFIG_CRYPTO_SHA512=m -CONFIG_CRYPTO_WP512=m 
+> -CONFIG_CRYPTO_ANUBIS=m CONFIG_CRYPTO_BLOWFISH=m CONFIG_CRYPTO_CAMELLIA=m
+> 
+> Should I import all these changes in a commit? Or only POWER_RESET part.
 
-The changelog of the patch should probably include before/after generated 
-code comparison & analysis - or at minimum a '/bin/size' comparison to 
-quantify the changes to generated code.
+I'd first update the defconfigs with mainline (as a cleanup)
+then apply your series on top, re-running 'make savedefconfig'
+you should get only the changes relevant to your work.
 
-Thanks,
-
-	Ingo
