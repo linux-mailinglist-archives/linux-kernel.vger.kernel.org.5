@@ -2,65 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6D7791EEF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 23:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9253791EF7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 23:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240310AbjIDVLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 17:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48622 "EHLO
+        id S240388AbjIDVNm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 17:13:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbjIDVLn (ORCPT
+        with ESMTP id S230474AbjIDVNk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 17:11:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F2B4AB;
-        Mon,  4 Sep 2023 14:11:40 -0700 (PDT)
+        Mon, 4 Sep 2023 17:13:40 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC62FAB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 14:13:37 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 2C8E4616B9;
-        Mon,  4 Sep 2023 21:11:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1AA8C433C8;
-        Mon,  4 Sep 2023 21:11:34 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 6562FB80D71
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 21:13:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 09F6EC433C8;
+        Mon,  4 Sep 2023 21:13:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693861899;
-        bh=VzvHqwUb07vEXlaVops1vdy2zPHGYNdkCkt5uHSloaA=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=ddz547fbWNEZYh4XmkCjutITZI2zx5CPl24OevlCHTj4CuIMwtObSYLKM6j8qxyA1
-         jEjlOJlUX5qAWm4zkJMYLWAV1yxnuDX500KQCuXmKctIm1ZLfs60tyTAKdIJwcWv44
-         ZPyViGDT/eyWRGhW2H8V6eprLryI67b1bC+1mNJxeA22qt2Z3zTMEOizqysx/W0xg7
-         KtwYBpNGTYD8ISv5tT03A1n6NMoJ4qSxkTM6MN+XfNbJkKJqc3+0VfyKgfCHDlfD3J
-         1xAXa4qV9OIHk6PdWe2fQCRylnvUZoVTCH8Uym3KGfOiu0IR/cIITMOU8WzrYtA4O8
-         li6a38VP1qeRw==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 05 Sep 2023 00:11:32 +0300
-Message-Id: <CVAFXF2BQ14B.19BO7F9P62WGT@suppilovahvero>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-nfs@vger.kernel.org>, <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <keyrings@vger.kernel.org>, <selinux@vger.kernel.org>,
-        "Roberto Sassu" <roberto.sassu@huawei.com>,
-        "Stefan Berger" <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v2 13/25] security: Introduce inode_post_removexattr
- hook
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Roberto Sassu" <roberto.sassu@huaweicloud.com>,
-        <viro@zeniv.linux.org.uk>, <brauner@kernel.org>,
-        <chuck.lever@oracle.com>, <jlayton@kernel.org>, <neilb@suse.de>,
-        <kolga@netapp.com>, <Dai.Ngo@oracle.com>, <tom@talpey.com>,
-        <zohar@linux.ibm.com>, <dmitry.kasatkin@gmail.com>,
-        <paul@paul-moore.com>, <jmorris@namei.org>, <serge@hallyn.com>,
-        <dhowells@redhat.com>, <stephen.smalley.work@gmail.com>,
-        <eparis@parisplace.org>, <casey@schaufler-ca.com>
-X-Mailer: aerc 0.14.0
-References: <20230831104136.903180-1-roberto.sassu@huaweicloud.com>
- <20230831104136.903180-14-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20230831104136.903180-14-roberto.sassu@huaweicloud.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        s=k20201202; t=1693862015;
+        bh=0QhkyxDJz9hefQzkd7ZcX5u+JbvRr5w0wLDCwOCtQAw=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=ecj4m0cw3ZeE3tMUAqbB5ACu5jrY16UhvkcN22mHbs+zXteVM6AcrIsv53C0JviKM
+         yDKIzVwvUOqEHl2WSObOYCpwJ1hiottPw7D1hXZxz1A3fboR8n9oTEDinpcQ5oaVop
+         KeGc09RAwutXsLU5/MM8DSEVLv4Y6fHic+N6T+PCPhjcvxtkEnVCaXSP/nSrSrDguM
+         mHBOeAsbN0TzEartoVDWWlH0Z4ReQNfQVzjCF+royYMPY0IXf5s+IlslHrZsAM5yYk
+         q9tMwD/fRAhTgVNxxL+qaL2/BpuVRUKk9b9MdZqN6/kOZdbaGGZVsQGr+d6jBi1Gwa
+         L+YYWKbz7mldg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D2F9DC0C3FD;
+        Mon,  4 Sep 2023 21:13:34 +0000 (UTC)
+Subject: Re: [GIT pull] timers/core for v6.6-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <169381359147.1522629.3831235635630258619.tglx@xen13>
+References: <169381359147.1522629.3831235635630258619.tglx@xen13>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <169381359147.1522629.3831235635630258619.tglx@xen13>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-core-2023-09-04-v2
+X-PR-Tracked-Commit-Id: 5146e1f589ccb04cf987b45296aa27f90a2407dc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4accdb9895349026d85e526036ff28c07921d7cf
+Message-Id: <169386201476.29740.4371275643738099146.pr-tracker-bot@kernel.org>
+Date:   Mon, 04 Sep 2023 21:13:34 +0000
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,129 +61,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Aug 31, 2023 at 1:41 PM EEST, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduc=
-e
-> the inode_post_removexattr hook.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  fs/xattr.c                    |  9 +++++----
->  include/linux/lsm_hook_defs.h |  2 ++
->  include/linux/security.h      |  5 +++++
->  security/security.c           | 14 ++++++++++++++
->  4 files changed, 26 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index e7bbb7f57557..4a0280295686 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -552,11 +552,12 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
->  		goto out;
-> =20
->  	error =3D __vfs_removexattr(idmap, dentry, name);
-> +	if (error)
-> +		goto out;
-> =20
-> -	if (!error) {
-> -		fsnotify_xattr(dentry);
-> -		evm_inode_post_removexattr(dentry, name);
-> -	}
-> +	fsnotify_xattr(dentry);
-> +	security_inode_post_removexattr(dentry, name);
-> +	evm_inode_post_removexattr(dentry, name);
-> =20
->  out:
->  	return error;
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.=
-h
-> index 995d30336cfa..1153e7163b8b 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -148,6 +148,8 @@ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentr=
-y, const char *name)
->  LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
->  LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
->  	 struct dentry *dentry, const char *name)
-> +LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dent=
-ry,
-> +	 const char *name)
->  LSM_HOOK(int, 0, inode_set_acl, struct mnt_idmap *idmap,
->  	 struct dentry *dentry, const char *acl_name, struct posix_acl *kacl)
->  LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 820899db5276..665bba3e0081 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -374,6 +374,7 @@ int security_inode_getxattr(struct dentry *dentry, co=
-nst char *name);
->  int security_inode_listxattr(struct dentry *dentry);
->  int security_inode_removexattr(struct mnt_idmap *idmap,
->  			       struct dentry *dentry, const char *name);
-> +void security_inode_post_removexattr(struct dentry *dentry, const char *=
-name);
->  int security_inode_need_killpriv(struct dentry *dentry);
->  int security_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dent=
-ry);
->  int security_inode_getsecurity(struct mnt_idmap *idmap,
-> @@ -919,6 +920,10 @@ static inline int security_inode_removexattr(struct =
-mnt_idmap *idmap,
->  	return cap_inode_removexattr(idmap, dentry, name);
->  }
-> =20
-> +static inline void security_inode_post_removexattr(struct dentry *dentry=
-,
-> +						   const char *name)
-> +{ }
+The pull request you sent on Mon,  4 Sep 2023 09:46:50 +0200 (CEST):
 
-static inline void security_inode_post_removexattr(struct dentry *dentry, c=
-onst char *name)
-{
-}
+> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-core-2023-09-04-v2
 
-> +
->  static inline int security_inode_need_killpriv(struct dentry *dentry)
->  {
->  	return cap_inode_need_killpriv(dentry);
-> diff --git a/security/security.c b/security/security.c
-> index 764a6f28b3b9..3947159ba5e9 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2354,6 +2354,20 @@ int security_inode_removexattr(struct mnt_idmap *i=
-dmap,
->  	return evm_inode_removexattr(idmap, dentry, name);
->  }
-> =20
-> +/**
-> + * security_inode_post_removexattr() - Update the inode after a removexa=
-ttr op
-> + * @dentry: file
-> + * @name: xattr name
-> + *
-> + * Update the inode after a successful removexattr operation.
-> + */
-> +void security_inode_post_removexattr(struct dentry *dentry, const char *=
-name)
-> +{
-> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +		return;
-> +	call_void_hook(inode_post_removexattr, dentry, name);
-> +}
-> +
->  /**
->   * security_inode_need_killpriv() - Check if security_inode_killpriv() r=
-equired
->   * @dentry: associated dentry
-> --=20
-> 2.34.1
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4accdb9895349026d85e526036ff28c07921d7cf
 
+Thank you!
 
-These odd splits are everywhere in the patch set. Just (nit)picking some.
-
-It is huge patch set so I don't really get for addign extra lines for no
-good reason.
-
-BR, Jarkko
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
