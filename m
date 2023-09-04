@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20326791A91
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:23:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30ACE791A93
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232638AbjIDPX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
+        id S236904AbjIDPZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:25:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbjIDPX6 (ORCPT
+        with ESMTP id S229801AbjIDPZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:23:58 -0400
+        Mon, 4 Sep 2023 11:25:44 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E91AB10F2;
-        Mon,  4 Sep 2023 08:23:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5D6F2132;
+        Mon,  4 Sep 2023 08:25:40 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6F25143D;
-        Mon,  4 Sep 2023 08:24:22 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1D5B6143D;
+        Mon,  4 Sep 2023 08:26:18 -0700 (PDT)
 Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85D903F738;
-        Mon,  4 Sep 2023 08:23:42 -0700 (PDT)
-Message-ID: <8eb9b2c0-1dbb-8a93-fc4e-463a6daadb9c@arm.com>
-Date:   Mon, 4 Sep 2023 16:23:43 +0100
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D99AD3F738;
+        Mon,  4 Sep 2023 08:25:37 -0700 (PDT)
+Message-ID: <2a7f6d40-6502-d389-f691-488e3d9b9005@arm.com>
+Date:   Mon, 4 Sep 2023 16:25:38 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.0
-Subject: Re: [PATCH v1 1/2] perf cs-etm: Validate timestamp tracing in
- per-thread mode
+Subject: Re: [PATCH v1 2/2] perf cs-etm: Respect timestamp option
 Content-Language: en-US
 To:     Leo Yan <leo.yan@linaro.org>
 References: <20230827133557.112494-1-leo.yan@linaro.org>
- <20230827133557.112494-2-leo.yan@linaro.org>
-From:   James Clark <james.clark@arm.com>
+ <20230827133557.112494-3-leo.yan@linaro.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Mike Leach <mike.leach@linaro.org>,
@@ -48,7 +46,8 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
         coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
         linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20230827133557.112494-2-leo.yan@linaro.org>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20230827133557.112494-3-leo.yan@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
@@ -63,59 +62,63 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 On 27/08/2023 14:35, Leo Yan wrote:
-> So far, it's impossible to validate timestamp trace in Arm CoreSight when
-> the perf is in the per-thread mode.  E.g. for the command:
+> When users pass the option '--timestamp' or '-T' in the record command,
+> all events will set the PERF_SAMPLE_TIME bit in the attribution.  In
+> this case, the AUX event will record the kernel timestamp, but it
+> doesn't mean Arm CoreSight enables timestamp packets in its hardware
+> tracing.
 > 
->   perf record -e cs_etm/timestamp/ --per-thread -- ls
+> If the option '--timestamp' or '-T' is set, this patch always enables
+> Arm CoreSight timestamp, as a result, the bit 28 in event's config is to
+> be set.
 > 
-> The command enables config 'timestamp' for 'cs_etm' event in the
-> per-thread mode.  In this case, the function cs_etm_validate_config()
-> directly bails out and skips validation.
+> Before:
 > 
-> Given profiled process can be scheduled on any CPUs in the per-thread
-> mode, this patch validates timestamp tracing for all CPUs when detect
-> the CPU map is empty.
-
-There is an edge case where the profiled process is known by the user to
-be pinned to a specific CPU, rather than possibly running on all CPUs,
-so this isn't always true.
-
-But I think that can be worked around by changing it to a per-cpu
-session to get around the new error. Given that this validation was only
-supposed to be best effort information and not get in the way you could
-say to not make it more restrictive.
-
-But it's quite a small edge case so either way:
+>   # perf record -e cs_etm// --per-thread --timestamp -- ls
+>   # perf script --header-only
+>   ...
+>   # event : name = cs_etm//, , id = { 69 }, type = 12, size = 136,
+>   config = 0, { sample_period, sample_freq } = 1,
+>   sample_type = IP|TID|TIME|CPU|IDENTIFIER, read_format = ID|LOST,
+>   disabled = 1, enable_on_exec = 1, sample_id_all = 1, exclude_guest = 1
+>   ...
+> 
+> After:
+> 
+>   # perf record -e cs_etm// --per-thread --timestamp -- ls
+>   # perf script --header-only
+>   ...
+>   # event : name = cs_etm//, , id = { 49 }, type = 12, size = 136,
+>   config = 0x10000000, { sample_period, sample_freq } = 1,
+>   sample_type = IP|TID|TIME|CPU|IDENTIFIER, read_format = ID|LOST,
+>   disabled = 1, enable_on_exec = 1, sample_id_all = 1, exclude_guest = 1
+>   ...
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 
 Reviewed-by: James Clark <james.clark@arm.com>
 
-> 
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
->  tools/perf/arch/arm/util/cs-etm.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
+>  tools/perf/arch/arm/util/cs-etm.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
 > 
 > diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-> index b8d6a953fd74..cf9ef9ba800b 100644
+> index cf9ef9ba800b..58c506e9788d 100644
 > --- a/tools/perf/arch/arm/util/cs-etm.c
 > +++ b/tools/perf/arch/arm/util/cs-etm.c
-> @@ -205,8 +205,17 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
->  	for (i = 0; i < cpu__max_cpu().cpu; i++) {
->  		struct perf_cpu cpu = { .cpu = i, };
+> @@ -442,6 +442,15 @@ static int cs_etm_recording_options(struct auxtrace_record *itr,
+>  					   "contextid", 1);
+>  	}
 >  
-> -		if (!perf_cpu_map__has(event_cpus, cpu) ||
-> -		    !perf_cpu_map__has(online_cpus, cpu))
-> +		/*
-> +		 * In per-cpu case, do the validation for CPUs to work with.
-> +		 * In per-thread case, the CPU map is empty.  Since the traced
-> +		 * program can run on any CPUs in this case, thus don't skip
-> +		 * validation.
-> +		 */
-> +		if (!perf_cpu_map__empty(event_cpus) &&
-> +		    !perf_cpu_map__has(event_cpus, cpu))
-> +			continue;
+> +	/*
+> +	 * When the option '--timestamp' or '-T' is enabled, the PERF_SAMPLE_TIME
+> +	 * bit is set for all events.  In this case, always enable Arm CoreSight
+> +	 * timestamp tracing.
+> +	 */
+> +	if (opts->sample_time_set)
+> +		evsel__set_config_if_unset(cs_etm_pmu, cs_etm_evsel,
+> +					   "timestamp", 1);
 > +
-> +		if (!perf_cpu_map__has(online_cpus, cpu))
->  			continue;
->  
->  		err = cs_etm_validate_context_id(itr, evsel, i);
+>  	/* Add dummy event to keep tracking */
+>  	err = parse_event(evlist, "dummy:u");
+>  	if (err)
