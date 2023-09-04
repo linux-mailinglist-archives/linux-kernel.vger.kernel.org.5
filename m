@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F5E7915DB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:49:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A7FA7915DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351940AbjIDKtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:49:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46762 "EHLO
+        id S1348164AbjIDKu0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:50:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbjIDKtQ (ORCPT
+        with ESMTP id S230431AbjIDKuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:49:16 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 655ED19B;
-        Mon,  4 Sep 2023 03:49:12 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qd78a-0000sx-EP; Mon, 04 Sep 2023 12:48:56 +0200
-Date:   Mon, 4 Sep 2023 12:48:56 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     David Wang <00107082@163.com>
-Cc:     fw@strlen.de, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] samples/bpf: Add sample usage for BPF_PROG_TYPE_NETFILTER
-Message-ID: <20230904104856.GE11802@breakpoint.cc>
-References: <20230904102128.11476-1-00107082@163.com>
+        Mon, 4 Sep 2023 06:50:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C99EDD;
+        Mon,  4 Sep 2023 03:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693824621; x=1725360621;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WBXVQvn4cAjmdr8D6OmweKSu5H2pPRHiyJxB1xRH74o=;
+  b=FnJVBIp4Gx8+F0dm3eu8cGTaZqasDgStsFNaTUJbPBRvA+m3/CAeICWv
+   19q5pOCxaKRZNaR6fOip48kcPCoVRWiV+3aOxIeHl7JMjZH24ZOqo9Uvp
+   rflkpztK8mduZ3DMy5Kr3JACNR1IL4s73lHkT/rSJBCRsSMMhhXw9eMO4
+   bYZuzzZXryT61fDJaae+s3npO4AEKTB7eRFQGojCCX8wfxcwOOXws+c9c
+   hzscy0garb9ADJxQ7Qi/ivjpAZNHUeYfkn+YzCpIBG8BpTCgPzDBRW5FR
+   tIQylHBhY+ay377ToDXNHvJtVUesxhiuLo8VbSB1Hl9m8AxMgmc52TE10
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="380372456"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="380372456"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:50:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="883992451"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="883992451"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 04 Sep 2023 03:50:11 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 04 Sep 2023 13:50:15 +0300
+Date:   Mon, 4 Sep 2023 13:50:15 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Saravana Kannan <saravanak@google.com>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/1] device property: Clarify usage scope of some
+ struct fwnode_handle members
+Message-ID: <ZPW2Z7lRZTOhTU/m@kuha.fi.intel.com>
+References: <20230904104046.1682875-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904102128.11476-1-00107082@163.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230904104046.1682875-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Wang <00107082@163.com> wrote:
-> This sample code implements a simple ipv4
-> blacklist via the new bpf type BPF_PROG_TYPE_NETFILTER,
-> which was introduced in 6.4.
+On Mon, Sep 04, 2023 at 01:40:46PM +0300, Andy Shevchenko wrote:
+> Most of the struct fwnode_handle members are for exclusive use with
+> device links framework. Clarify this by adding a respective comment.
 > 
-> The bpf program drops package if destination ip address
-> hits a match in the map of type BPF_MAP_TYPE_LPM_TRIE,
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
+Yes, this is important clarification.
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  include/linux/fwnode.h | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> The userspace code would load the bpf program,
-> attach it to netfilter's FORWARD/OUTPUT hook,
-> and then write ip patterns into the bpf map.
-
-Thanks, I think its good to have this.
-
-> diff --git a/samples/bpf/netfilter_ip4_blacklist.bpf.c b/samples/bpf/netfilter_ip4_blacklist.bpf.c
-> new file mode 100644
-> index 000000000000..d315d64fda7f
-> --- /dev/null
-> +++ b/samples/bpf/netfilter_ip4_blacklist.bpf.c
-> @@ -0,0 +1,62 @@
-> +// SPDX-License-Identifier: GPL-2.0
+> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> index 5700451b300f..2a72f55d26eb 100644
+> --- a/include/linux/fwnode.h
+> +++ b/include/linux/fwnode.h
+> @@ -41,6 +41,8 @@ struct device;
+>  struct fwnode_handle {
+>  	struct fwnode_handle *secondary;
+>  	const struct fwnode_operations *ops;
 > +
-> +#include "vmlinux.h"
-> +#include <bpf/bpf_helpers.h>
-> +
-> +
-> +#define NF_DROP 0
-> +#define NF_ACCEPT 1
+> +	/* The below is used solely by device links, don't use otherwise */
+>  	struct device *dev;
+>  	struct list_head suppliers;
+>  	struct list_head consumers;
+> -- 
+> 2.40.0.1.gaa8946217a0b
 
-If you are interested, you could send a patch for nf-next that
-makes the uapi headers expose this as enum, AFAIU that would make
-the verdict nanes available via vmlinux.h.
-
-> +	/* search p->daddr in trie */
-> +	key.prefixlen = 32;
-> +	key.data = p->daddr;
-> +	pvalue = bpf_map_lookup_elem(&ipv4_lpm_map, &key);
-> +	if (pvalue) {
-> +		/* cat /sys/kernel/debug/tracing/trace_pipe */
-> +		bpf_printk("rule matched with %d...\n", *pvalue);
-
-If you are interested you could send a patch that adds a kfunc to
-nf_bpf_link that exposes nf_log_packet() to bpf.
-
-nf_log_packet has a terrible api, I suggest to have the kfunc take
-'struct nf_hook_state *' instead of 6+ members of that struct as
-argument.
-
-Thanks for the example.
+-- 
+heikki
