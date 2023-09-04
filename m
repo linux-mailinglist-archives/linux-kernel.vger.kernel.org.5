@@ -2,183 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C244B791A90
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20326791A91
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:23:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241437AbjIDPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:23:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
+        id S232638AbjIDPX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:23:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbjIDPXd (ORCPT
+        with ESMTP id S229801AbjIDPX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:23:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7001BCD4;
-        Mon,  4 Sep 2023 08:23:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0197261870;
-        Mon,  4 Sep 2023 15:23:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A9E3C433BA;
-        Mon,  4 Sep 2023 15:23:19 +0000 (UTC)
-Message-ID: <1f45225f-95ec-626d-3bb5-bf9eafd11e19@xs4all.nl>
-Date:   Mon, 4 Sep 2023 17:23:17 +0200
+        Mon, 4 Sep 2023 11:23:58 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E91AB10F2;
+        Mon,  4 Sep 2023 08:23:44 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6F25143D;
+        Mon,  4 Sep 2023 08:24:22 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 85D903F738;
+        Mon,  4 Sep 2023 08:23:42 -0700 (PDT)
+Message-ID: <8eb9b2c0-1dbb-8a93-fc4e-463a6daadb9c@arm.com>
+Date:   Mon, 4 Sep 2023 16:23:43 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v6 00/18] Add DELETE_BUF ioctl
-Content-Language: en-US, nl
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
-        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        nicolas.dufresne@collabora.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
-        kernel@collabora.com
-References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-In-Reply-To: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v1 1/2] perf cs-etm: Validate timestamp tracing in
+ per-thread mode
+Content-Language: en-US
+To:     Leo Yan <leo.yan@linaro.org>
+References: <20230827133557.112494-1-leo.yan@linaro.org>
+ <20230827133557.112494-2-leo.yan@linaro.org>
+From:   James Clark <james.clark@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        John Garry <john.g.garry@oracle.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20230827133557.112494-2-leo.yan@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/09/2023 14:43, Benjamin Gaignard wrote:
-> Unlike when resolution change on keyframes, dynamic resolution change
-> on inter frames doesn't allow to do a stream off/on sequence because
-> it is need to keep all previous references alive to decode inter frames.
-> This constraint have two main problems:
-> - more memory consumption.
-> - more buffers in use.
-> To solve these issue this series introduce DELETE_BUFS ioctl and remove
-> the 32 buffers limit per queue.
-> 
-> VP9 conformance tests using fluster give a score of 210/305.
-> The 24 resize inter tests (vp90-2-21-resize_inter_* files) are ok
-> but require to use postprocessor.
-> 
-> Kernel branch is available here:
-> https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/commits/remove_vb2_queue_limit_v6
-> 
-> GStreamer branch to use DELETE_BUF ioctl and testing dynamic resolution
-> change is here:
-> https://gitlab.freedesktop.org/benjamin.gaignard1/gstreamer/-/commits/VP9_drc
 
-FYI: I still need to review and test patches 17 and 18. Either tomorrow or Wednesday.
 
-Regards,
+On 27/08/2023 14:35, Leo Yan wrote:
+> So far, it's impossible to validate timestamp trace in Arm CoreSight when
+> the perf is in the per-thread mode.  E.g. for the command:
+> 
+>   perf record -e cs_etm/timestamp/ --per-thread -- ls
+> 
+> The command enables config 'timestamp' for 'cs_etm' event in the
+> per-thread mode.  In this case, the function cs_etm_validate_config()
+> directly bails out and skips validation.
+> 
+> Given profiled process can be scheduled on any CPUs in the per-thread
+> mode, this patch validates timestamp tracing for all CPUs when detect
+> the CPU map is empty.
 
-	Hans
+There is an edge case where the profiled process is known by the user to
+be pinned to a specific CPU, rather than possibly running on all CPUs,
+so this isn't always true.
+
+But I think that can be worked around by changing it to a per-cpu
+session to get around the new error. Given that this validation was only
+supposed to be best effort information and not get in the way you could
+say to not make it more restrictive.
+
+But it's quite a small edge case so either way:
+
+Reviewed-by: James Clark <james.clark@arm.com>
 
 > 
-> changes in version 6:
-> - Get a patch per driver to use vb2_get_buffer() instead of directly access
->   to queue buffers array.
-> - Add lock in vb2_core_delete_buf()
-> - Use vb2_buffer instead of index
-> - Fix various comments
-> - Change buffer index name to BUFFER_INDEX_MASK
-> - Stop spamming kernel log with unbalanced counters
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  tools/perf/arch/arm/util/cs-etm.c | 13 +++++++++++--
+>  1 file changed, 11 insertions(+), 2 deletions(-)
 > 
-> changes in version 5:
-> - Rework offset cookie encoding pattern is n ow the first patch of the
->   serie.
-> - Use static array instead of allocated one for postprocessor buffers.
-> 
-> changes in version 4:
-> - Stop using Xarray, instead let queues decide about their own maximum
->   number of buffer and allocate bufs array given that value.
-> - Rework offset cookie encoding pattern.
-> - Change DELETE_BUF to DELETE_BUFS because it now usable for
->   range of buffer to be symetrical of CREATE_BUFS.
-> - Add fixes tags on couple of Verisilicon related patches.
-> - Be smarter in Verisilicon postprocessor buffers management.
-> - Rebase on top of v6.4
-> 
-> changes in version 3:
-> - Use Xarray API to store allocated video buffers.
-> - No module parameter to limit the number of buffer per queue.
-> - Use Xarray inside Verisilicon driver to store postprocessor buffers
->   and remove VB2_MAX_FRAME limit.
-> - Allow Versilicon driver to change of resolution while streaming
-> - Various fixes the Verisilicon VP9 code to improve fluster score.
+> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+> index b8d6a953fd74..cf9ef9ba800b 100644
+> --- a/tools/perf/arch/arm/util/cs-etm.c
+> +++ b/tools/perf/arch/arm/util/cs-etm.c
+> @@ -205,8 +205,17 @@ static int cs_etm_validate_config(struct auxtrace_record *itr,
+>  	for (i = 0; i < cpu__max_cpu().cpu; i++) {
+>  		struct perf_cpu cpu = { .cpu = i, };
 >  
-> changes in version 2:
-> - Use a dynamic array and not a list to keep trace of allocated buffers.
->   Not use IDR interface because it is marked as deprecated in kernel
->   documentation.
-> - Add a module parameter to limit the number of buffer per queue.
-> - Add DELETE_BUF ioctl and m2m helpers.
-> 
-> Regards,
-> Benjamin
+> -		if (!perf_cpu_map__has(event_cpus, cpu) ||
+> -		    !perf_cpu_map__has(online_cpus, cpu))
+> +		/*
+> +		 * In per-cpu case, do the validation for CPUs to work with.
+> +		 * In per-thread case, the CPU map is empty.  Since the traced
+> +		 * program can run on any CPUs in this case, thus don't skip
+> +		 * validation.
+> +		 */
+> +		if (!perf_cpu_map__empty(event_cpus) &&
+> +		    !perf_cpu_map__has(event_cpus, cpu))
+> +			continue;
+> +
+> +		if (!perf_cpu_map__has(online_cpus, cpu))
+>  			continue;
 >  
-> Benjamin Gaignard (18):
->   media: videobuf2: Rework offset 'cookie' encoding pattern
->   media: videobuf2: Stop spamming kernel log with all queue counter
->   media: videobuf2: Use vb2_buffer instead of index
->   media: amphion: Use vb2_get_buffer() instead of directly access to
->     buffers array
->   media: mediatek: jpeg: Use vb2_get_buffer() instead of directly access
->     to buffers array
->   media: mediatek: vdec: Use vb2_get_buffer() instead of directly access
->     to buffers array
->   media: sti: hva: Use vb2_get_buffer() instead of directly access to
->     buffers array
->   media: visl: Use vb2_get_buffer() instead of directly access to
->     buffers array
->   media: atomisp: Use vb2_get_buffer() instead of directly access to
->     buffers array
->   media: videobuf2: Access vb2_queue bufs array through helper functions
->   media: videobuf2: Be more flexible on the number of queue stored
->     buffers
->   media: verisilicon: Refactor postprocessor to store more buffers
->   media: verisilicon: Store chroma and motion vectors offset
->   media: verisilicon: vp9: Use destination buffer height to compute
->     chroma offset
->   media: verisilicon: postproc: Fix down scale test
->   media: verisilicon: vp9: Allow to change resolution while streaming
->   media: v4l2: Add DELETE_BUFS ioctl
->   media: v4l2: Add mem2mem helpers for DELETE_BUFS ioctl
-> 
->  .../userspace-api/media/v4l/user-func.rst     |   1 +
->  .../media/v4l/vidioc-delete-bufs.rst          |  73 ++++
->  .../media/common/videobuf2/videobuf2-core.c   | 379 ++++++++++++------
->  .../media/common/videobuf2/videobuf2-v4l2.c   |  99 ++++-
->  drivers/media/dvb-core/dvb_vb2.c              |   6 +-
->  drivers/media/platform/amphion/vpu_dbg.c      |  22 +-
->  .../platform/mediatek/jpeg/mtk_jpeg_core.c    |   6 +-
->  .../vcodec/decoder/vdec/vdec_vp9_req_lat_if.c |   2 +-
->  drivers/media/platform/st/sti/hva/hva-v4l2.c  |   4 +
->  drivers/media/platform/verisilicon/hantro.h   |   9 +-
->  .../media/platform/verisilicon/hantro_drv.c   |   4 +-
->  .../platform/verisilicon/hantro_g2_vp9_dec.c  |  10 +-
->  .../media/platform/verisilicon/hantro_hw.h    |   4 +-
->  .../platform/verisilicon/hantro_postproc.c    |  95 ++++-
->  .../media/platform/verisilicon/hantro_v4l2.c  |  27 +-
->  drivers/media/test-drivers/vim2m.c            |   1 +
->  drivers/media/test-drivers/visl/visl-dec.c    |  28 +-
->  drivers/media/v4l2-core/v4l2-dev.c            |   1 +
->  drivers/media/v4l2-core/v4l2-ioctl.c          |  17 +
->  drivers/media/v4l2-core/v4l2-mem2mem.c        |  20 +
->  .../staging/media/atomisp/pci/atomisp_ioctl.c |   2 +-
->  include/media/v4l2-ioctl.h                    |   4 +
->  include/media/v4l2-mem2mem.h                  |  12 +
->  include/media/videobuf2-core.h                |  29 +-
->  include/media/videobuf2-v4l2.h                |  11 +
->  include/uapi/linux/videodev2.h                |  16 +
->  26 files changed, 664 insertions(+), 218 deletions(-)
->  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
-> 
-
+>  		err = cs_etm_validate_context_id(itr, evsel, i);
