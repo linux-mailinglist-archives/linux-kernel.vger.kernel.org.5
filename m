@@ -2,77 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 869AE791A1D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E455791A20
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:56:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353175AbjIDO4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38684 "EHLO
+        id S1348268AbjIDO4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:56:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349143AbjIDO4C (ORCPT
+        with ESMTP id S234695AbjIDO4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:56:02 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1A39173F
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:55:43 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2b9c907bc68so23247021fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 07:55:43 -0700 (PDT)
+        Mon, 4 Sep 2023 10:56:46 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B40051A5
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:56:38 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-414b35e686cso387031cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 07:56:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693839342; x=1694444142; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qMYqlhxNIvQnoz2i2gTHdbFl4bwBHBPtaOUi7bDs8bs=;
-        b=T7GqJxF5yio/YB9TYslaaZTFOLomvcYjV2pALXir6t4Jna7NjLrijHRDeFFwBGd3v4
-         AdlawfKg9nKnRq/abKVFyEbVZiHeuUBRaDkARfcYnkR0gaC9/AEpNCpLGU6kOHjxRUxh
-         5hpdQKgHQk23Tg7a12pU6FWu9Muv6tmBQI2/Z90DTeZG1IzZryTzKVzD5rYGl/CpOOIW
-         uLwmeR+fh8Y6ITwnZ9XmBCj8zwRV9sSSNq69gJ1NQAQVez/MkWQLNdiWeF+PHD0viYcM
-         oXJCEJFScm8dyQwPOXdpxRU/02xJ2mb2M6nEGZgcyCxADAr0AIFP/1uOsItXgn8Uz4mk
-         S7Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693839342; x=1694444142;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1693839398; x=1694444198; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qMYqlhxNIvQnoz2i2gTHdbFl4bwBHBPtaOUi7bDs8bs=;
-        b=gvzKWhdL/Bho2XC0eehiL5RIZZcfhNmD+JXlJgHLWmrC3qlQzADIpED0YeV3qLHxUJ
-         t0tJZioe16cdd3gGjlzbi4N37EBXkbZb9R2bzw8XLg6z4dJ/y9Q6vIE+NM50juXdoO0H
-         RpLejL0EXdiziIcJl+mJmFpCaWrIde3Iv0HH4VgRTklMVXvewDiWpY5gXzdFvOY6X6/X
-         fA+CZsFFP4GvUOGF/pqt4oHr7WbiOazjCdPecGds5h0S/nhR6Fo7RBXXLmn8ggYiWheY
-         D5lLheI75rSzco1Zr4gTYOHmCTc/QQrYw415lMBvddy6xeJCs33v8QbzfHWhxcrg7ja2
-         PQgg==
-X-Gm-Message-State: AOJu0Yw5kcFqzcAjQutwumiEu+HrREKMYI1jA3xwOHcS57BWbcA+KmKZ
-        KvPvlF6TD8yBSYjz/KioP6U=
-X-Google-Smtp-Source: AGHT+IHYMVpp2doc7lurqwDdugR0o+F59rLyi+qulPer88rRAn8DqEoDwXp+MwCCiJ6Zf5JxUpI46Q==
-X-Received: by 2002:a05:651c:158:b0:2bd:1732:c10b with SMTP id c24-20020a05651c015800b002bd1732c10bmr7333565ljd.34.1693839341809;
-        Mon, 04 Sep 2023 07:55:41 -0700 (PDT)
-Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
-        by smtp.gmail.com with ESMTPSA id w20-20020a2e3014000000b002bcb89e92dcsm2178791ljw.6.2023.09.04.07.55.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 07:55:41 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 4 Sep 2023 16:55:38 +0200
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>, Baoquan He <bhe@redhat.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Liam R . Howlett" <Liam.Howlett@oracle.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sony.com>
-Subject: Re: [PATCH v2 0/9] Mitigate a vmap lock contention v2
-Message-ID: <ZPXv6o3a43xisdmc@pc636>
-References: <20230829081142.3619-1-urezki@gmail.com>
+        bh=B8dnXbe6GgMXG/QAPAnuqzyd8DFJuI3wGF/AqzBGZE0=;
+        b=s6X7ErhMRXTxoRPswpczGG9BLMbuT0YcrHfTJ3G0tQyLyV6kCdFCaACG3qGqmKF4Jj
+         NFvNDnr569GPJ5Ex+lJb5T2L4VtXcH7OiJUBeKFsE2qD1IBZaf6rnS85R6lEs/YaMMtf
+         wLcpyQ+LEn6R3X6juCzqz4KBDDXS8aITdMsOW9ZdwxIM/Q916SYcztZw6xEQdxTCv2g0
+         bmJUZ5lIbxwOo+OdG3OOSNnPhtWRU4W2OE6xwOOxjSIkNLuv4OETadq+KDGH3XzxyshE
+         Cyl4VuhgoysYa+18+dZhp+uaLbn3LWWYoOimKuFh0IF1STmtg4PqIWv2yiIFtRj3HVN4
+         StRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693839398; x=1694444198;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=B8dnXbe6GgMXG/QAPAnuqzyd8DFJuI3wGF/AqzBGZE0=;
+        b=jioxzN2qxfpPE/ScCa48JghgmabE+isq/4R0F0zCariQwjjUbL6GkqFbpzcLj9LGW7
+         KZb8YPf0Z24vLa+/PzePOtk8+ibu5uDKuE1XJk/TT2McC6iHQc76ohz3X8IJGSWIJ0RC
+         kJgPNbs37tB1gqPj56p3qfHgLmpt0Kq2ASlilLczATHr6HdUsXP//UW0gUKQQcwIxP7+
+         dokKt1JBbCZOOvngntOlI9FpK4GXPdRNXbvaYF5O2EIEayf0obUwGCxeX2OFpt14FAgJ
+         Ntw5jS08BckiaRQMgOt3N1ERyBU0OlL9/5pI8LXKF0h7I6ulYKVhH/bUU58gzNKWMXIH
+         OXCw==
+X-Gm-Message-State: AOJu0Yzl+iO7XbD/hPJnXIZ3Bfi33F7eojU+KKa5oNc3yYqVAxz8EjZI
+        a/S5M6GRQZpr4FAjsq09FdKWFlT5WTNHZAcIZrjqag==
+X-Google-Smtp-Source: AGHT+IFpe3Dvh7nmW/wCBzxTCHHMjcosW4dHk2wlflmIKdWhbxuKM+OmTZAODzw5dGa6Jt+tJikYPOCFPIxRkzy2Ck8=
+X-Received: by 2002:a05:622a:1d0:b0:410:8ba3:21c7 with SMTP id
+ t16-20020a05622a01d000b004108ba321c7mr368058qtw.18.1693839397645; Mon, 04 Sep
+ 2023 07:56:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230829081142.3619-1-urezki@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230728001212.457900-1-irogers@google.com> <20230728001212.457900-3-irogers@google.com>
+ <77361428-5970-5031-e204-7aefcd9cbebc@arm.com>
+In-Reply-To: <77361428-5970-5031-e204-7aefcd9cbebc@arm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Mon, 4 Sep 2023 07:56:25 -0700
+Message-ID: <CAP-5=fVATGaoeaSEk5jjoGDY=pJkFThU2t2sixfwjouxisor=w@mail.gmail.com>
+Subject: Re: [PATCH v1 2/3] perf tools: Revert enable indices setting syntax
+ for BPF map
+To:     James Clark <james.clark@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        "coresight@lists.linaro.org" <coresight@lists.linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Eduard Zingerman <eddyz87@gmail.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Rob Herring <robh@kernel.org>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org, Wang Nan <wangnan0@huawei.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        He Kuang <hekuang@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,121 +87,306 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Andrew!
+On Mon, Sep 4, 2023 at 4:02=E2=80=AFAM James Clark <james.clark@arm.com> wr=
+ote:
+>
+>
+>
+> On 28/07/2023 01:12, Ian Rogers wrote:
+> > This reverts commit e571e029bdbf ("perf tools: Enable indices setting
+> > syntax for BPF map").
+> >
+> > The reverted commit added a notion of arrays that could be set as
+> > event terms for BPF events. The parsing hasn't worked over multiple
+> > Linux releases. Given the broken nature of the parsing it appears the
+> > code isn't in use, nor could I find a way for it to be used to add a
+> > test.
+> >
+> > The original commit contains a test in the commit message,
+> > however, running it yields:
+> > ```
+> > $ perf record -e './test_bpf_map_3.c/map:channel.value[0,1,2,3...5]=3D1=
+01/' usleep 2
+> > event syntax error: '..pf_map_3.c/map:channel.value[0,1,2,3...5]=3D101/=
+'
+> >                                   \___ parser error
+> > Run 'perf list' for a list of valid events
+> >
+> >  Usage: perf record [<options>] [<command>]
+> >     or: perf record [<options>] -- <command> [<options>]
+> >
+> >     -e, --event <event>   event selector. use 'perf list' to list avail=
+able events
+> > ```
+> >
+> > Given the code can't be used this commit reverts and removes it.
+> >
+>
+> Hi Ian,
+>
+> Unfortunately this revert breaks Coresight sink argument parsing.
+>
+> Before:
+>
+>   $ perf record -e cs_etm/@tmc_etr0/ -- true
+>   [ perf record: Woken up 1 times to write data ]
+>   [ perf record: Captured and wrote 4.008 MB perf.data ]
+>
+> After:
+>
+>   $ perf record -e cs_etm/@tmc_etr0/ -- true
+>   event syntax error: 'cs_etm/@tmc_etr0/'
+>                            \___ parser error
+>
+> I can't really see how it's related to the array syntax that the commit
+> messages mention, but it could either be that the revert wasn't applied
+> cleanly or just some unintended side effect.
+>
+> We should probably add a cross platform parsing test for Coresight
+> arguments, but I don't know whether we should just blindly revert the
+> revert for now, or work on a new change that explicitly fixes the
+> Coresight case.
 
-> Hello, folk!
-> 
-> This is the v2, the series which tends to minimize the vmap
-> lock contention. It is based on the tag: v6.5-rc6. Here you
-> can find a documentation about it:
-> 
-> wget ftp://vps418301.ovh.net/incoming/Fix_a_vmalloc_lock_contention_in_SMP_env_v2.pdf
-> 
-> even though it is a bit outdated(it follows v1), it still gives a
-> good overview on the problem and how it can be solved. On demand
-> and by request i can update it.
-> 
-> The v1 is here: https://lore.kernel.org/linux-mm/ZIAqojPKjChJTssg@pc636/T/
-> 
-> Delta v1 -> v2:
->   - open coded locking;
->   - switch to array of nodes instead of per-cpu definition;
->   - density is 2 cores per one node(not equal to number of CPUs);
->   - VAs first go back(free path) to an owner node and later to
->     a global heap if a block is fully freed, nid is saved in va->flags;
->   - add helpers to drain lazily-freed areas faster, if high pressure;
->   - picked al Reviewed-by.
-> 
-> Test on AMD Ryzen Threadripper 3970X 32-Core Processor:
-> sudo ./test_vmalloc.sh run_test_mask=127 nr_threads=64
-> 
-> <v6.5-rc6 perf>
->   94.17%     0.90%  [kernel]    [k] _raw_spin_lock
->   93.27%    93.05%  [kernel]    [k] native_queued_spin_lock_slowpath
->   74.69%     0.25%  [kernel]    [k] __vmalloc_node_range
->   72.64%     0.01%  [kernel]    [k] __get_vm_area_node
->   72.04%     0.89%  [kernel]    [k] alloc_vmap_area
->   42.17%     0.00%  [kernel]    [k] vmalloc
->   32.53%     0.00%  [kernel]    [k] __vmalloc_node
->   24.91%     0.25%  [kernel]    [k] vfree
->   24.32%     0.01%  [kernel]    [k] remove_vm_area
->   22.63%     0.21%  [kernel]    [k] find_unlink_vmap_area
->   15.51%     0.00%  [unknown]   [k] 0xffffffffc09a74ac
->   14.35%     0.00%  [kernel]    [k] ret_from_fork_asm
->   14.35%     0.00%  [kernel]    [k] ret_from_fork
->   14.35%     0.00%  [kernel]    [k] kthread
-> <v6.5-rc6 perf>
->    vs
-> <v6.5-rc6+v2 perf>
->   74.32%     2.42%  [kernel]    [k] __vmalloc_node_range
->   69.58%     0.01%  [kernel]    [k] vmalloc
->   54.21%     1.17%  [kernel]    [k] __alloc_pages_bulk
->   48.13%    47.91%  [kernel]    [k] clear_page_orig
->   43.60%     0.01%  [unknown]   [k] 0xffffffffc082f16f
->   32.06%     0.00%  [kernel]    [k] ret_from_fork_asm
->   32.06%     0.00%  [kernel]    [k] ret_from_fork
->   32.06%     0.00%  [kernel]    [k] kthread
->   31.30%     0.00%  [unknown]   [k] 0xffffffffc082f889
->   22.98%     4.16%  [kernel]    [k] vfree
->   14.36%     0.28%  [kernel]    [k] __get_vm_area_node
->   13.43%     3.35%  [kernel]    [k] alloc_vmap_area
->   10.86%     0.04%  [kernel]    [k] remove_vm_area
->    8.89%     2.75%  [kernel]    [k] _raw_spin_lock
->    7.19%     0.00%  [unknown]   [k] 0xffffffffc082fba3
->    6.65%     1.37%  [kernel]    [k] free_unref_page
->    6.13%     6.11%  [kernel]    [k] native_queued_spin_lock_slowpath
-> <v6.5-rc6+v2 perf>
-> 
-> On smaller systems, for example, 8xCPU Hikey960 board the
-> contention is not that high and is approximately ~16 percent.
-> 
-> Uladzislau Rezki (Sony) (9):
->   mm: vmalloc: Add va_alloc() helper
->   mm: vmalloc: Rename adjust_va_to_fit_type() function
->   mm: vmalloc: Move vmap_init_free_space() down in vmalloc.c
->   mm: vmalloc: Remove global vmap_area_root rb-tree
->   mm: vmalloc: Remove global purge_vmap_area_root rb-tree
->   mm: vmalloc: Offload free_vmap_area_lock lock
->   mm: vmalloc: Support multiple nodes in vread_iter
->   mm: vmalloc: Support multiple nodes in vmallocinfo
->   mm: vmalloc: Set nr_nodes/node_size based on CPU-cores
-> 
->  mm/vmalloc.c | 929 +++++++++++++++++++++++++++++++++++++--------------
->  1 file changed, 683 insertions(+), 246 deletions(-)
-> 
-> -- 
-> 2.30.2
-> 
-It would be good if this series somehow could be tested having some runtime
-from the people. So far there was a warning from the test robot:
+Agreed, I'll take a look. Any chance you could post the full error
+message? I suspect there's a first error hiding in there too.
 
-https://lore.kernel.org/lkml/202308292228.RRrGUYyB-lkp@intel.com/T/#m397b3834cb3b7a0a53b8dffb3624384c8e278007
+Thanks,
+Ian
 
-<snip>
-urezki@pc638:~/data/raid0/coding/linux.git$ git diff
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 08990f630c21..7105d7bcd37e 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -4778,7 +4778,7 @@ static void vmap_init_free_space(void)
-         *  |<--------------------------------->|
-         */
-        for (busy = vmlist; busy; busy = busy->next) {
--               if (busy->addr - vmap_start > 0) {
-+               if ((unsigned long) busy->addr - vmap_start > 0) {
-                        free = kmem_cache_zalloc(vmap_area_cachep, GFP_NOWAIT);
-                        if (!WARN_ON_ONCE(!free)) {
-                                free->va_start = vmap_start;
-urezki@pc638:~/data/raid0/coding/linux.git$
-<snip>
-
-This extra patch has to be applied to fix the warning. 
-
-From my side i have tested it as much as i can. Can it be plugged
-into linux-next to get some runtime? Or is there any other way you
-prefer to go?
-
-Thank you in advance!
-
---
-Uladzislau Rezki
+> Thanks
+> James
+>
+> > Signed-off-by: Ian Rogers <irogers@google.com>
+> > ---
+> >  tools/perf/util/parse-events.c |   8 +--
+> >  tools/perf/util/parse-events.l |  11 ---
+> >  tools/perf/util/parse-events.y | 122 ---------------------------------
+> >  3 files changed, 1 insertion(+), 140 deletions(-)
+> >
+> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-eve=
+nts.c
+> > index 02647313c918..0e2004511cf5 100644
+> > --- a/tools/perf/util/parse-events.c
+> > +++ b/tools/perf/util/parse-events.c
+> > @@ -800,13 +800,7 @@ parse_events_config_bpf(struct parse_events_state =
+*parse_state,
+> >
+> >                       parse_events_error__handle(parse_state->error, id=
+x,
+> >                                               strdup(errbuf),
+> > -                                             strdup(
+> > -"Hint:\tValid config terms:\n"
+> > -"     \tmap:[<arraymap>].value<indices>=3D[value]\n"
+> > -"     \tmap:[<eventmap>].event<indices>=3D[event]\n"
+> > -"\n"
+> > -"     \twhere <indices> is something like [0,3...5] or [all]\n"
+> > -"     \t(add -v to see detail)"));
+> > +                                             NULL);
+> >                       return err;
+> >               }
+> >       }
+> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-eve=
+nts.l
+> > index 99335ec586ae..d7d084cc4140 100644
+> > --- a/tools/perf/util/parse-events.l
+> > +++ b/tools/perf/util/parse-events.l
+> > @@ -175,7 +175,6 @@ do {                                               =
+       \
+> >  %x mem
+> >  %s config
+> >  %x event
+> > -%x array
+> >
+> >  group                [^,{}/]*[{][^}]*[}][^,{}/]*
+> >  event_pmu    [^,{}/]+[/][^/]*[/][^,{}/]*
+> > @@ -251,14 +250,6 @@ non_digit        [^0-9]
+> >               }
+> >  }
+> >
+> > -<array>{
+> > -"]"                  { BEGIN(config); return ']'; }
+> > -{num_dec}            { return value(yyscanner, 10); }
+> > -{num_hex}            { return value(yyscanner, 16); }
+> > -,                    { return ','; }
+> > -"\.\.\."             { return PE_ARRAY_RANGE; }
+> > -}
+> > -
+> >  <config>{
+> >       /*
+> >        * Please update config_term_names when new static term is added.
+> > @@ -302,8 +293,6 @@ r0x{num_raw_hex}  { return str(yyscanner, PE_RAW); =
+}
+> >  {lc_type}-{lc_op_result}     { return lc_str(yyscanner, _parse_state);=
+ }
+> >  {lc_type}-{lc_op_result}-{lc_op_result}      { return lc_str(yyscanner=
+, _parse_state); }
+> >  {name_minus}         { return str(yyscanner, PE_NAME); }
+> > -\[all\]                      { return PE_ARRAY_ALL; }
+> > -"["                  { BEGIN(array); return '['; }
+> >  @{drv_cfg_term}              { return drv_str(yyscanner, PE_DRV_CFG_TE=
+RM); }
+> >  }
+> >
+> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-eve=
+nts.y
+> > index 454577f7aff6..5a90e7874c59 100644
+> > --- a/tools/perf/util/parse-events.y
+> > +++ b/tools/perf/util/parse-events.y
+> > @@ -64,7 +64,6 @@ static void free_list_evsel(struct list_head* list_ev=
+sel)
+> >  %token PE_LEGACY_CACHE
+> >  %token PE_PREFIX_MEM
+> >  %token PE_ERROR
+> > -%token PE_ARRAY_ALL PE_ARRAY_RANGE
+> >  %token PE_DRV_CFG_TERM
+> >  %token PE_TERM_HW
+> >  %type <num> PE_VALUE
+> > @@ -108,11 +107,6 @@ static void free_list_evsel(struct list_head* list=
+_evsel)
+> >  %type <list_evsel> groups
+> >  %destructor { free_list_evsel ($$); } <list_evsel>
+> >  %type <tracepoint_name> tracepoint_name
+> > -%destructor { free ($$.sys); free ($$.event); } <tracepoint_name>
+> > -%type <array> array
+> > -%type <array> array_term
+> > -%type <array> array_terms
+> > -%destructor { free ($$.ranges); } <array>
+> >  %type <hardware_term> PE_TERM_HW
+> >  %destructor { free ($$.str); } <hardware_term>
+> >
+> > @@ -127,7 +121,6 @@ static void free_list_evsel(struct list_head* list_=
+evsel)
+> >               char *sys;
+> >               char *event;
+> >       } tracepoint_name;
+> > -     struct parse_events_array array;
+> >       struct hardware_term {
+> >               char *str;
+> >               u64 num;
+> > @@ -878,121 +871,6 @@ PE_TERM
+> >
+> >       $$ =3D term;
+> >  }
+> > -|
+> > -name_or_raw array '=3D' name_or_legacy
+> > -{
+> > -     struct parse_events_term *term;
+> > -     int err =3D parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE=
+_USER, $1, $4, &@1, &@4);
+> > -
+> > -     if (err) {
+> > -             free($1);
+> > -             free($4);
+> > -             free($2.ranges);
+> > -             PE_ABORT(err);
+> > -     }
+> > -     term->array =3D $2;
+> > -     $$ =3D term;
+> > -}
+> > -|
+> > -name_or_raw array '=3D' PE_VALUE
+> > -{
+> > -     struct parse_events_term *term;
+> > -     int err =3D parse_events_term__num(&term, PARSE_EVENTS__TERM_TYPE=
+_USER, $1, $4, false, &@1, &@4);
+> > -
+> > -     if (err) {
+> > -             free($1);
+> > -             free($2.ranges);
+> > -             PE_ABORT(err);
+> > -     }
+> > -     term->array =3D $2;
+> > -     $$ =3D term;
+> > -}
+> > -|
+> > -PE_DRV_CFG_TERM
+> > -{
+> > -     struct parse_events_term *term;
+> > -     char *config =3D strdup($1);
+> > -     int err;
+> > -
+> > -     if (!config)
+> > -             YYNOMEM;
+> > -     err =3D parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV=
+_CFG, config, $1, &@1, NULL);
+> > -     if (err) {
+> > -             free($1);
+> > -             free(config);
+> > -             PE_ABORT(err);
+> > -     }
+> > -     $$ =3D term;
+> > -}
+> > -
+> > -array:
+> > -'[' array_terms ']'
+> > -{
+> > -     $$ =3D $2;
+> > -}
+> > -|
+> > -PE_ARRAY_ALL
+> > -{
+> > -     $$.nr_ranges =3D 0;
+> > -     $$.ranges =3D NULL;
+> > -}
+> > -
+> > -array_terms:
+> > -array_terms ',' array_term
+> > -{
+> > -     struct parse_events_array new_array;
+> > -
+> > -     new_array.nr_ranges =3D $1.nr_ranges + $3.nr_ranges;
+> > -     new_array.ranges =3D realloc($1.ranges,
+> > -                             sizeof(new_array.ranges[0]) *
+> > -                             new_array.nr_ranges);
+> > -     if (!new_array.ranges)
+> > -             YYNOMEM;
+> > -     memcpy(&new_array.ranges[$1.nr_ranges], $3.ranges,
+> > -            $3.nr_ranges * sizeof(new_array.ranges[0]));
+> > -     free($3.ranges);
+> > -     $$ =3D new_array;
+> > -}
+> > -|
+> > -array_term
+> > -
+> > -array_term:
+> > -PE_VALUE
+> > -{
+> > -     struct parse_events_array array;
+> > -
+> > -     array.nr_ranges =3D 1;
+> > -     array.ranges =3D malloc(sizeof(array.ranges[0]));
+> > -     if (!array.ranges)
+> > -             YYNOMEM;
+> > -     array.ranges[0].start =3D $1;
+> > -     array.ranges[0].length =3D 1;
+> > -     $$ =3D array;
+> > -}
+> > -|
+> > -PE_VALUE PE_ARRAY_RANGE PE_VALUE
+> > -{
+> > -     struct parse_events_array array;
+> > -
+> > -     if ($3 < $1) {
+> > -             struct parse_events_state *parse_state =3D _parse_state;
+> > -             struct parse_events_error *error =3D parse_state->error;
+> > -             char *err_str;
+> > -
+> > -             if (asprintf(&err_str, "Expected '%ld' to be less-than '%=
+ld'", $3, $1) < 0)
+> > -                     err_str =3D NULL;
+> > -
+> > -             parse_events_error__handle(error, @1.first_column, err_st=
+r, NULL);
+> > -             YYABORT;
+> > -     }
+> > -     array.nr_ranges =3D 1;
+> > -     array.ranges =3D malloc(sizeof(array.ranges[0]));
+> > -     if (!array.ranges)
+> > -             YYNOMEM;
+> > -     array.ranges[0].start =3D $1;
+> > -     array.ranges[0].length =3D $3 - $1 + 1;
+> > -     $$ =3D array;
+> > -}
+> >
+> >  sep_dc: ':' |
+> >
