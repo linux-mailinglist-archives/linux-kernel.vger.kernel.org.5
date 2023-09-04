@@ -2,144 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 26AC2793946
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 12:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7653E793BDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 13:55:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235988AbjIFKCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Sep 2023 06:02:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
+        id S239631AbjIFLzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Sep 2023 07:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234340AbjIFKCh (ORCPT
+        with ESMTP id S231449AbjIFLza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Sep 2023 06:02:37 -0400
-Received: from smtp-fw-9105.amazon.com (smtp-fw-9105.amazon.com [207.171.188.204])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFF7D10C6;
-        Wed,  6 Sep 2023 03:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1693994552; x=1725530552;
-  h=date:from:to:subject:message-id:references:mime-version:
-   in-reply-to;
-  bh=SvyNfD68Y16T72HXr/DBzEfCJwP0KoIHuliGPwsla28=;
-  b=oDSuhuAb5O2LhbeaIMEAFzDb9LcPJm7sNN0qdeTV3H0ITX2BhFdmqT+2
-   WwI+kvG5xmJXn8Ks/6ouaMfRMdszI7oDf2efmP5f72tlCrzmrGLnHnxb/
-   cWndlbxffb1nwVS3+R8KZLTSUcXY5tNEpAibX069fFxHUDGzK9HZmHzcD
-   Q=;
-X-IronPort-AV: E=Sophos;i="6.02,231,1688428800"; 
-   d="scan'208";a="670626137"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-iad-1d-m6i4x-d8e96288.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9105.sea19.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Sep 2023 10:02:24 +0000
-Received: from EX19MTAUWB002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-iad-1d-m6i4x-d8e96288.us-east-1.amazon.com (Postfix) with ESMTPS id 70D1180FEB;
-        Wed,  6 Sep 2023 10:02:21 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com (10.250.64.145) by
- EX19MTAUWB002.ant.amazon.com (10.250.64.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Wed, 6 Sep 2023 10:02:20 +0000
-Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
- by mail-relay.amazon.com (10.250.64.145) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Wed, 6 Sep 2023 10:02:20 +0000
-Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
-        id 4AA5081E; Wed,  6 Sep 2023 10:02:20 +0000 (UTC)
-Date:   Wed, 6 Sep 2023 10:02:20 +0000
-From:   Maximilian Heyne <mheyne@amazon.de>
-To:     <stable@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] virtio-mmio: fix memory leak of vm_dev
-Message-ID: <20230906100220.GA31628@dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com>
-References: <20230905094228.97125-1-mheyne@amazon.de>
+        Wed, 6 Sep 2023 07:55:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE544BF
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Sep 2023 04:55:26 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 457DFC433C7;
+        Wed,  6 Sep 2023 11:55:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1694001326;
+        bh=Lr1hk8T14jyQD38Co71l4i6tLkHZSpTmtLre5Xwotpw=;
+        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+        b=F1TQMwP7zK7EbTFHLI/A+Q9F0qlDYSwYUD6m0/owxKcqalTaALjoE1bG5L9g3HXdC
+         k5NHYRX5MyPfxpODxMasofmqxRhUUR3xbGmCoJXyq0G5hmal6Wh0fv1eh9A3BpNXn2
+         Ar/U5uEuA6fmtbqkRirgjcEvZ01sOTphBx6/ywhYzbPVTFZLyCF1/noLsuGwmGzzbO
+         U2GHwtvWXkgNbo0HO9DP394lgBIZsQaZPMmB0DHPTVZ073VA8/hVCJiaAmhEbJN4sj
+         /KFuzhZR6qP5Wsl4aeImzGwoYQNSaO9xEEnK66HlLw365VUEwvB5vUg+sCVXTC76Sk
+         9Kqn4oeuFmWvQ==
+Date:   Mon, 4 Sep 2023 10:04:29 +0200
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [RFC PATCH] drm/ssd130x: Allocate buffer in the CRTC's
+ .atomic_check() callback
+Message-ID: <yvxmbpbeuis7zjqyg6yrpdfyr3oa2xstcoeb2prqvznczzhj5k@7i37gxyyqfn3>
+From:   Maxime Ripard <mripard@kernel.org>
+References: <20230830062546.720679-1-javierm@redhat.com>
+ <zitno3p7tbnld5auedkx5g4wey2csng4ncmtdhzinbuhblunyk@chnwsnsgq36v>
+ <CAMuHMdWv_QSatDgihr8=2SXHhvp=icNxumZcZOPwT9Q_QiogNQ@mail.gmail.com>
+ <4zfgmvfstyjfo5slggfmfuvnirrhrq773el52gkav2r6jxliub@7qjbyy7rkj3g>
+ <CAMuHMdV_775mPbTgWmzCo4mKCd3kqL=vfVFrt2W=bR3uveNW_Q@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230905094228.97125-1-mheyne@amazon.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAMuHMdV_775mPbTgWmzCo4mKCd3kqL=vfVFrt2W=bR3uveNW_Q@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,T_SPF_PERMERROR autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 09:42:28AM +0000, Maximilian Heyne wrote:
-> With the recent removal of vm_dev from devres its memory is only freed
-> via the callback virtio_mmio_release_dev. However, this only takes
-> effect after device_add is called by register_virtio_device. Until then
-> it's an unmanaged resource and must be explicitly freed on error exit.
-> 
-> This bug was discovered and resolved using Coverity Static Analysis
-> Security Testing (SAST) by Synopsys, Inc.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 55c91fedd03d ("virtio-mmio: don't break lifecycle of vm_dev")
-> Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
-> ---
-> Please note that I have only compile tested this code.
-> 
->  drivers/virtio/virtio_mmio.c | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-> index 97760f611295..b2a48d07e973 100644
-> --- a/drivers/virtio/virtio_mmio.c
-> +++ b/drivers/virtio/virtio_mmio.c
-> @@ -631,13 +631,16 @@ static int virtio_mmio_probe(struct platform_device *pdev)
->  	spin_lock_init(&vm_dev->lock);
->  
->  	vm_dev->base = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(vm_dev->base))
-> +	if (IS_ERR(vm_dev->base)) {
-> +		kfree(vm_dev);
->  		return PTR_ERR(vm_dev->base);
+On Fri, Sep 01, 2023 at 02:08:11PM +0200, Geert Uytterhoeven wrote:
+> Hi Maxime,
+>=20
+> On Fri, Sep 1, 2023 at 2:00=E2=80=AFPM Maxime Ripard <mripard@kernel.org>=
+ wrote:
+> > On Fri, Sep 01, 2023 at 10:36:17AM +0200, Geert Uytterhoeven wrote:
+> > > On Fri, Sep 1, 2023 at 10:22=E2=80=AFAM Maxime Ripard <mripard@kernel=
+=2Eorg> wrote:
+> > > > On Wed, Aug 30, 2023 at 08:25:08AM +0200, Javier Martinez Canillas =
+wrote:
+> > > > > The commit 45b58669e532 ("drm/ssd130x: Allocate buffer in the pla=
+ne's
+> > > > > .atomic_check() callback") moved the allocation of the intermedia=
+te and
+> > > > > HW buffers from the encoder's .atomic_enable callback to primary =
+plane's
+> > > > > .atomic_check callback.
+> > > > >
+> > > > > This was suggested by Maxime Ripard because drivers aren't allowe=
+d to fail
+> > > > > after drm_atomic_helper_swap_state() has been called, and the enc=
+oder's
+> > > > > .atomic_enable happens after the new atomic state has been swappe=
+d.
+> > > > >
+> > > > > But that change caused a performance regression in very slow plat=
+forms,
+> > > > > since now the allocation happens for every plane's atomic state c=
+ommit.
+> > > > > For example, Geert Uytterhoeven reports that is the case on a Vex=
+RiscV
+> > > > > softcore (RISC-V CPU implementation on an FPGA).
+> > > >
+> > > > I'd like to have numbers on that. It's a bit surprising to me that,
+> > > > given how many objects we already allocate during a commit, two sma=
+ll
+> > > > additional allocations affect performances so dramatically, even on=
+ a
+> > > > slow platform.
+> > >
+> > > To be fair, I didn't benchmark that.  Perhaps it's just too slow due =
+to
+> > > all these other allocations (and whatever else happens).
+> > >
+> > > I just find it extremely silly to allocate a buffer over and over aga=
+in,
+> > > while we know that buffer is needed for each and every display update.
+> >
+> > Maybe it's silly, but I guess it depends on what you want to optimize
+> > for. You won't know the size of that buffer before you're in
+> > atomic_check. So it's a different trade-off than you would like, but I
+> > wouldn't call it extremely silly.
+>=20
+> The size of ssd130x_plane_state.data_array[] is fixed, and depends
+> on the actual display connected.
 
-I have a use-after-free here. Will send a v2 where this is fixed.
+That one can be tied to the CRTC state if needed. It would only be
+allocated on each modeset, so probably once for that kind of device.
 
-> +	}
->  
->  	/* Check magic value */
->  	magic = readl(vm_dev->base + VIRTIO_MMIO_MAGIC_VALUE);
->  	if (magic != ('v' | 'i' << 8 | 'r' << 16 | 't' << 24)) {
->  		dev_warn(&pdev->dev, "Wrong magic value 0x%08lx!\n", magic);
-> +		kfree(vm_dev);
->  		return -ENODEV;
->  	}
->  
-> @@ -646,6 +649,7 @@ static int virtio_mmio_probe(struct platform_device *pdev)
->  	if (vm_dev->version < 1 || vm_dev->version > 2) {
->  		dev_err(&pdev->dev, "Version %ld not supported!\n",
->  				vm_dev->version);
-> +		kfree(vm_dev);
->  		return -ENXIO;
->  	}
->  
-> @@ -655,6 +659,7 @@ static int virtio_mmio_probe(struct platform_device *pdev)
->  		 * virtio-mmio device with an ID 0 is a (dummy) placeholder
->  		 * with no function. End probing now with no error reported.
->  		 */
-> +		kfree(vm_dev);
->  		return -ENODEV;
->  	}
->  	vm_dev->vdev.id.vendor = readl(vm_dev->base + VIRTIO_MMIO_VENDOR_ID);
-> -- 
-> 2.40.1
-> 
+> The size of ssd130x_plane_state.buffer[]  is also fixed, and depends
+> on the plane's size (which is currently fixed to the display size).
 
+Doesn't it depend on the format as well?
 
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
-
+Maxime
