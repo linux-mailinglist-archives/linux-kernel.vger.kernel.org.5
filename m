@@ -2,123 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBAA7919B1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:32:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 383477919B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:37:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240439AbjIDOcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:32:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34554 "EHLO
+        id S241768AbjIDOh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:37:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjIDOcE (ORCPT
+        with ESMTP id S229770AbjIDOh2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:32:04 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2806194
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:31:59 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 2082060004;
-        Mon,  4 Sep 2023 14:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1693837918;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W3BueW+5ouWvJdqGn30lncsv3tQGn2v6ujqAYNE8/yQ=;
-        b=B8zsWGfaRq+NOXojK+ZQW9UC5UkQP+7AMKTkP44ekYibvMe8O0rKxFED0FyK0QngteUilU
-        M1L/aPpI2YzaxJVrTJx4qog1Li4fyXycnvBg1ky9JL8pBJUuamU0ySrWuR37Wjt4kne19F
-        XHqC6Y1aXFPMlauWCFk8Y71VhAd11FuIP0ULlX/D47pTkaiTeZ48UBNdf5gKfBL+6a+x2p
-        OM3M7S9rPrGvTXiuwKJCVCmvafJK+WM+isK3sBN6XGMdfZKEcCZ0tbICwWLHhpDVFIf33s
-        MevfU36nI3nbJWLBnHbHVjeRPtmhapP8mUrPwZOtSlJ876DORsFVWRcr6/DB1g==
-Date:   Mon, 4 Sep 2023 16:31:56 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Martin Kurbanov <mmkurbanov@sberdevices.ru>
-Cc:     Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <kernel@sberdevices.ru>
-Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
-Message-ID: <20230904163156.4bdb8c06@xps-13>
-In-Reply-To: <90a53eda-bbeb-dffa-0f90-6fd229f555e6@sberdevices.ru>
-References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
-        <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
-        <20230822153556.630e65b9@xps-13>
-        <01925ff8-1d19-a729-429a-89866fad319f@sberdevices.ru>
-        <20230823104143.760cc5bc@xps-13>
-        <f873d775-cda9-302d-a651-0113c7c7dc84@sberdevices.ru>
-        <20230823133956.0a505a20@xps-13>
-        <ccf3099f-0e10-a87c-be83-4a414f01dca7@sberdevices.ru>
-        <90a53eda-bbeb-dffa-0f90-6fd229f555e6@sberdevices.ru>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 4 Sep 2023 10:37:28 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A307FCE0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:37:25 -0700 (PDT)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 384E6meZ006297;
+        Mon, 4 Sep 2023 14:36:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=mbwLhV2NYtXQOdQV1fKkqCEuFE3DjJZqNv6HLQL5yuQ=;
+ b=NZvp+LA7wou5W/q740r+0PvnXwxzxXNmfTmUydxSo4uUDPcMoE8POOFlbXEjDrpZZm/E
+ gtrC13k4GdontN+oKUO+q/obAemrJh06zWyN4K/r06o75/Rz/URWDIsvapdUIhA7QdDI
+ Zam4ZPLvrOgbUsD0exAwc4GI+J3aUQFS10bWioJ5BEV3N+iL0I6iJQe2YDVU0K4trE1+
+ 1QHkFCe5p4cPaWrK1Q3qAv4vMcg7KZWijYhYWSYcld2EadDTzyUzUQW4zf+/+IWo1xBd
+ bBco996MZVGgoPmvwpdpvdK/eEfHnP6kmJz2qOd5/kUv1I9YeGUSEZSIIV3gGZADd1hK xQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sw80jdr50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 14:36:06 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 384E6wXj007713;
+        Mon, 4 Sep 2023 14:34:51 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sw80jdpcj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 14:34:51 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 384E0A8C001624;
+        Mon, 4 Sep 2023 14:34:13 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svfcsbpcf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 14:34:13 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 384EYA2334472528
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Sep 2023 14:34:10 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id BAD4F20049;
+        Mon,  4 Sep 2023 14:34:10 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2DCE020040;
+        Mon,  4 Sep 2023 14:34:09 +0000 (GMT)
+Received: from [9.43.27.211] (unknown [9.43.27.211])
+        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Sep 2023 14:34:08 +0000 (GMT)
+Message-ID: <8fcd7ba7-0f27-7bbc-676f-7e13c8bf00d7@linux.ibm.com>
+Date:   Mon, 4 Sep 2023 20:04:08 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] vmcore: allow alternate dump capturing methods to
+ export vmcore without is_kdump_kernel()
+Content-Language: en-US
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Kexec-ml <kexec@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Sourabh Jain <sourabhjain@linux.ibm.com>,
+        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
+        Dave Young <dyoung@redhat.com>
+References: <20230901190438.375678-1-hbathini@linux.ibm.com>
+ <ZPP/UeP1zUbGPzrt@MiWiFi-R3L-srv>
+From:   Hari Bathini <hbathini@linux.ibm.com>
+In-Reply-To: <ZPP/UeP1zUbGPzrt@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: y6cJGnzQveuKjsB-D8l-jwH2wOhgoTRc
+X-Proofpoint-ORIG-GUID: rYr90DU-mk0NiOVoDnuGwmqdNDa4Y-s7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-04_07,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
+ mlxlogscore=473 suspectscore=0 spamscore=0 mlxscore=0 impostorscore=0
+ priorityscore=1501 adultscore=0 clxscore=1015 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309040130
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
+Hi Baoquan,
 
-mmkurbanov@sberdevices.ru wrote on Mon, 4 Sep 2023 17:20:59 +0300:
+Thanks for the review...
 
-> Hi Miquel,
->=20
-> On 24.08.2023 12:35, Martin Kurbanov wrote:
-> >=20
-> >=20
-> > On 23.08.2023 14:39, Miquel Raynal wrote:
-> >> Hi Martin,
-> >>
-> >> mmkurbanov@sberdevices.ru wrote on Wed, 23 Aug 2023 14:33:57 +0300:
-> >>
-> >>> Hi Miquel,
-> >>>
-> >>> On 23.08.2023 11:41, Miquel Raynal wrote:
-> >>>> Hi Martin,
-> >>>>
-> >>>> I don't think the four bytes have any "bad block specific" meaning. =
-In
-> >>>> practice, the datasheet states:
-> >>>>
-> >>>> 	Value programmed for bad block at the first byte of spare
-> >>>> 	area: 00h
-> >>>>
-> >>>> So only the first byte is used to mark the block bad, the rest is
-> >>>> probably marked "reserved" for simplicity. I believe we should keep =
-the
-> >>>> current layout because it would otherwise break users for no real
-> >>>> reason. =20
-> >>>
-> >>> I agree with you that this can break the work of users who use OOB.
-> >>> However, I believe it would be more appropriate to use an offset of 4,
-> >>> as the micron chip can use all 4 bytes for additional data about the
-> >>> bad block. So, there is a non-zero probability of losing OOB data in
-> >>> the reserved area (2 bytes) when the hardware chip attempts to mark
-> >>> the block as bad.
-> >>
-> >> Is this really a process the chip can do? Aren't bad blocks factory
-> >> marked only?
-> >=20
-> > Actually, there is my understanding, I=E2=80=99m not sure exactly.
->=20
-> I tested with an offset of 2, no read/write errors were detected
-> (including read/write to OOB). But I don't have a flash chip with
-> factory bad blocks yet, when I find such a flash, I will report the
-> results.
+On 03/09/23 9:06 am, Baoquan He wrote:
+> Hi Hari,
+> 
+> On 09/02/23 at 12:34am, Hari Bathini wrote:
+>> Currently, is_kdump_kernel() returns true when elfcorehdr_addr is set.
+>> While elfcorehdr_addr is set for kexec based kernel dump mechanism,
+>> alternate dump capturing methods like fadump [1] also set it to export
+>> the vmcore. is_kdump_kernel() is used to restrict resources in crash
+>> dump capture kernel but such restrictions may not be desirable for
+>> fadump. Allow is_kdump_kernel() to be defined differently for such
+>> scenarios. With this, is_kdump_kernel() could be false while vmcore
+>> is usable. So, introduce is_crashdump_kernel() to return true when
+>> elfcorehdr_addr is set and use it for vmcore related checks.
+> 
+> I got what is done in these two patches, but didn't get why they need be
+> done. vmcore_unusable()/is_vmcore_usable() are only unitilized in ia64.
+> Why do you care if it's is_crashdump_kernel() or is_kdump_kernel()?
+> If you want to override the generic is_kdump_kernel() with powerpc's own
+> is_kdump_kernel(), your below change is enough to allow you to do that.
+> I can't see why is_crashdump_kernel() is needed. Could you explain that
+> specifically?
 
-Ok.
+You mean to just remove is_kdump_kernel() check in is_vmcore_usable() &
+vmcore_unusable() functions? Replaced generic is_crashdump_kernel()
+function instead, that returns true for any dump capturing method,
+irrespective of whether is_kdump_kernel() returns true or false.
+For fadump case, is_kdump_kernel() will return false after patch 2/2.
 
-> Do I need to send the v3 of the patch with only first commit ("correct
-> bitmask for ecc status")?
-
-Yes please, with Frieder's comments fixed.
-
-Thanks,
-Miqu=C3=A8l
+Thanks
+Hari
