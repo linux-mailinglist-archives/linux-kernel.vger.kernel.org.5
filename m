@@ -2,111 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18D1791044
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 05:07:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF1A791046
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 05:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350961AbjIDDHr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 23:07:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39512 "EHLO
+        id S1347105AbjIDDKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 23:10:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229609AbjIDDHp (ORCPT
+        with ESMTP id S229609AbjIDDKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 23:07:45 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A096810E
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 20:07:41 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50078e52537so1614878e87.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 20:07:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693796860; x=1694401660; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=t9x9/Aqy0Q3Hq7H8kkvHt4T4iDLN9ojDkJfODIFW/SI=;
-        b=QXGVpq3FHJzYEmkPBLzwuZzv5jW2osH5HBsGPvmCByl7SUBGvR56n9mUN1wDAcfvSI
-         vwc9zVfOdBly9J8n0mEq+Oob8LUSizsLw/sTtfBK4BjEaMgwSZmt0BJC2NlTn2XtfRyC
-         hwrISoCMHcOZ5svdprzICFFjcWh8OR6RQmRWQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693796860; x=1694401660;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=t9x9/Aqy0Q3Hq7H8kkvHt4T4iDLN9ojDkJfODIFW/SI=;
-        b=jq45QcNJGwh2j9V5PoieL9b7bKhI8rYGV51qLqoUpKJF1Ku0jN2wLs2TofX5OazD+C
-         37+4XAZFKYkgRh2YSK9BcSPMRqVuFo8s1q7SAP3rHMxsQujmOGM1tGqylHZauEjUOWQQ
-         3KjRAIGOzrCyk7sXcLYpXfnzVpQfqbeJePCc4ukNuNfV62eXymdIIzjCHzYMiVuQUBFA
-         HutFpgEgfhCk4UHywENaoGyBjS8L+PxMTpl7JzJsn0gAv2fnqwZBelT7b7Z7LwCNmWCH
-         4cVC0TlYSvnUxIXIRF5m6cF5gTBHcAUa0zSnZufn0B8OvFNWoQC5AnkipAvx5sxyLBnL
-         Tn/A==
-X-Gm-Message-State: AOJu0YxQV6QKnFxSIZnSaqB3EvT1JD1CusBuBf4eKDzyyIvI2O3b9Meb
-        x3RBJuhZXsROIqZjBC1pBL4c3eR9LdzJT26FZqIxFV/T
-X-Google-Smtp-Source: AGHT+IHUEY1ZYCUsHkBdluoL72zlCZFTBv/haQnz2KMJ1gHkb7eKlOciznmHU038hHQJchlH0b4H+w==
-X-Received: by 2002:a19:2d17:0:b0:500:9a45:636 with SMTP id k23-20020a192d17000000b005009a450636mr4947382lfj.13.1693796859834;
-        Sun, 03 Sep 2023 20:07:39 -0700 (PDT)
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
-        by smtp.gmail.com with ESMTPSA id q1-20020ac25141000000b004ff9f88b86esm1508404lfd.308.2023.09.03.20.07.38
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Sep 2023 20:07:38 -0700 (PDT)
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2bd0a5a5abbso14168501fa.0
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 20:07:38 -0700 (PDT)
-X-Received: by 2002:ac2:5499:0:b0:4fb:91c5:fd38 with SMTP id
- t25-20020ac25499000000b004fb91c5fd38mr5699314lfk.0.1693796858205; Sun, 03 Sep
- 2023 20:07:38 -0700 (PDT)
+        Sun, 3 Sep 2023 23:10:11 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D84E9AF
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 20:10:05 -0700 (PDT)
+Received: from kwepemi500004.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RfD6k6tM6ztS8N;
+        Mon,  4 Sep 2023 11:06:06 +0800 (CST)
+Received: from [10.67.121.37] (10.67.121.37) by kwepemi500004.china.huawei.com
+ (7.221.188.17) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Mon, 4 Sep
+ 2023 11:10:03 +0800
+Subject: Re: [PATCH V2 drivers/perf: hisi:] drivers/perf: hisi: fix set wrong
+ filter mode for running events issue
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Jijie Shao <shaojijie@huawei.com>
+References: <20230901035027.3881389-1-shaojijie@huawei.com>
+ <20230901111116.00006468@Huawei.com>
+CC:     <will@kernel.org>, <mark.rutland@arm.com>,
+        <yangyicong@hisilicon.com>, <shenjian15@huawei.com>,
+        <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>
+From:   "chenhao (EZ)" <chenhao418@huawei.com>
+Message-ID: <84eacd1e-f259-4428-f722-f61695ede3ee@huawei.com>
+Date:   Mon, 4 Sep 2023 11:10:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
- <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
- <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
- <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com>
- <20230903204858.lv7i3kqvw6eamhgz@f> <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
- <ZPT/LzkPR/jaiaDb@gmail.com> <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
- <CAGudoHG1_r1B0pz6-HUqb6AfbAgWHxBy+TnimvQtwLLqkKtchA@mail.gmail.com>
-In-Reply-To: <CAGudoHG1_r1B0pz6-HUqb6AfbAgWHxBy+TnimvQtwLLqkKtchA@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 3 Sep 2023 20:07:21 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjM6KwAvC9+sCAm9BgBSspZm60VBLzHcuonGcHrPKJrbw@mail.gmail.com>
-Message-ID: <CAHk-=wjM6KwAvC9+sCAm9BgBSspZm60VBLzHcuonGcHrPKJrbw@mail.gmail.com>
-Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230901111116.00006468@Huawei.com>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.121.37]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemi500004.china.huawei.com (7.221.188.17)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Sept 2023 at 16:15, Mateusz Guzik <mjguzik@gmail.com> wrote:
->
-> bad news: virtually no difference for stat(2) (aka newfstatat)
-> before:  3898139
-> after: 3922714 (+0%)
 
-Yeah, the path lookup is way more expensive than a slight win in a L1
-copy, and the pathname lookup will also have gone much deeper on the
-stack.
 
-> ok news: a modest win for the actual fstat system call (aka newfstat,
-> *not* the libc wrapper calling newfstatat)
-> before: 8511283
-> after: 8746829 (+2%)
+On 2023/9/1 18:11, Jonathan Cameron wrote:
+> On Fri, 1 Sep 2023 11:50:27 +0800
+> Jijie Shao <shaojijie@huawei.com> wrote:
+> 
+>> From: Hao Chen <chenhao418@huawei.com>
+> 
+> Mention which hisi pmu this is in the patch description (hns)
+> 
+>>
+>> hns3_pmu_select_filter_mode() includes A series of mode judgments such
+> 
+> includes a series
+> 
+>> as global mode ,function mode, function-queue mode, port mode, port-tc
+>> mode.
+>>
+>> For a special scenario:
+>> command use parameter
+>> perf stat -a -e hns3_pmu_sicl_0/bdf=0x3700,config=0x3,queue=0x0,
+>> and hns3_pmu_is_enabled_func_mode() has a judgement as below:
+>> if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_FUNC))
+>>
+>> filter_support of event 0x3 hasn't set bit for func mode, so it can't
+>> enter func-mode branch, and continue to func-queue mode judgement, port
+>> judgement, port-tc mode, then enter port-tc mode.
+>>
+>> It's not up to expectations, it shouldn't enter any modes but
+>> return -ENOENT.
+>>
+>> port-tc mode parameter show as below:
+>> perf stat -a -e hns3_pmu_sicl_0/config=0x00001,port=0x0,tc=0x1
+>>
+>> port-tc mode should use bdf parameter as 0, so, add judgement of
+>> bdf parameter to fix it.
+> 
+> I don't follow the description here.  As far as I can see from the code
+> the change just checks that BDF is not set before allowing a port based
+> filter.
 
-We might end up with slightly less deep stack, so potentially a
-smaller cache footprint, and there is much less other stuff going on..
+Thanks for review.
 
-> The patch as proposed is kind of crap -- moving all that handling out
-> of fs/stat.c is quite weird and trivially avoidable, with a way to do
-> it already present in the file.
+Maybe I don't think about it completely.
 
-So you say. I claim that you're full of crap.
+For this patch, I only consider this scenario mentioned in patch and exactly filter out
+port based mode, then enter port-tc based mode.
 
-Try it and you'll see it is not even *remotely* as easy as you claim.
-Not when you have to deal with random sizes and padding of 20+
-different architectures.
+Actually port based mode also need this change for other scenarios, do you agree with it?
 
-             Linus
+> 
+>>
+>> Signed-off-by: Hao Chen <chenhao418@huawei.com>
+>> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+>> ---
+>> changeLog:
+>>   v2: add more details in log message suggested by Will
+>>   v1 link: https://lore.kernel.org/all/20230816094619.3563784-1-shaojijie@huawei.com/
+>> ---
+>>  drivers/perf/hisilicon/hns3_pmu.c | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/perf/hisilicon/hns3_pmu.c b/drivers/perf/hisilicon/hns3_pmu.c
+>> index e0457d84af6b..2aa9cb045705 100644
+>> --- a/drivers/perf/hisilicon/hns3_pmu.c
+>> +++ b/drivers/perf/hisilicon/hns3_pmu.c
+>> @@ -998,12 +998,13 @@ static bool
+>>  hns3_pmu_is_enabled_port_tc_mode(struct perf_event *event,
+>>  				 struct hns3_pmu_event_attr *pmu_event)
+>>  {
+>> +	u16 bdf = hns3_pmu_get_bdf(event);
+>>  	u8 tc_id = hns3_pmu_get_tc(event);
+>>  
+>>  	if (!(pmu_event->filter_support & HNS3_PMU_FILTER_SUPPORT_PORT_TC))
+>>  		return false;
+>>  
+>> -	return tc_id != HNS3_PMU_FILTER_ALL_TC;
+>> +	return (tc_id != HNS3_PMU_FILTER_ALL_TC) && (!bdf);
+> 
+> No need for brackets on !bdf
+> 
+>>  }
+>>  
+>>  static bool
+> 
+> .
+> 
