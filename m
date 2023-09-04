@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA72C791A10
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBB2D791A41
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349143AbjIDOxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38118 "EHLO
+        id S1348440AbjIDPF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbjIDOxY (ORCPT
+        with ESMTP id S236448AbjIDPFT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:53:24 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE31ACC5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:53:20 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qdAwc-0007kU-4G; Mon, 04 Sep 2023 16:52:50 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
+        Mon, 4 Sep 2023 11:05:19 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B1AE1B7;
+        Mon,  4 Sep 2023 08:05:12 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 4D3C92186D5;
-        Mon,  4 Sep 2023 14:52:48 +0000 (UTC)
-Date:   Mon, 4 Sep 2023 16:52:47 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Srinivas Goud <srinivas.goud@amd.com>
-Cc:     wg@grandegger.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        p.zabel@pengutronix.de, git@amd.com, michal.simek@amd.com,
-        linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, appana.durga.rao@xilinx.com,
-        naga.sureshkumar.relli@xilinx.com
-Subject: Re: [PATCH v4 1/3] dt-bindings: can: xilinx_can: Add ECC property
- 'xlnx,has-ecc'
-Message-ID: <20230904-crystal-jokester-a76c1506c442-mkl@pengutronix.de>
-References: <1693557645-2728466-1-git-send-email-srinivas.goud@amd.com>
- <1693557645-2728466-2-git-send-email-srinivas.goud@amd.com>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id D7025CE0EE7;
+        Mon,  4 Sep 2023 15:05:10 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A43C433C7;
+        Mon,  4 Sep 2023 15:05:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693839909;
+        bh=ljgv0MpAqVctGjtWZkElSITFiR5RbtuGf5naRqQkjmM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nAV2mP/F3umwbP/x9qYaYUwoCW4umGg9SjIkHMlYrX3gj1pusAzsFssWINlJbwWrl
+         +16uJGWL7QhZzx1rQADqchCCyimOAUnlTrwv/60stjJncUQCtWtgGBTcgGpcYjxPAX
+         m8/5kaXOWk/dVC9V2uxhMpN/wb/TF0Bvr/tLM6zo9trsbYnBWqObit/yKIIg9X2Cpj
+         AyfpZ2XAmtMtgmE4jhGGU2Y8MR5SxCd36KJFvcs9NXecwm8ru9GLqWo6YQDi9bwrhn
+         l1Z7YyCRlJLj3uL8B21bpAC9/kZtMSG5PvO2Mjjb35os2yk9q/w9ELLo/coCeLMlfz
+         4o5BEbobV8CJA==
+Date:   Mon, 4 Sep 2023 22:53:11 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     Jiexun Wang <wangjiexun@tinylab.org>, adrian.hunter@intel.com,
+        aou@eecs.berkeley.edu, conor+dt@kernel.org, conor@kernel.org,
+        devicetree@vger.kernel.org, guoren@kernel.org,
+        jkridner@beagleboard.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, robertcnelson@beagleboard.org,
+        robh+dt@kernel.org, ulf.hansson@linaro.org, wefu@redhat.com
+Subject: Re: [PATCH RFC v2 0/4] RISC-V: Add basic eMMC support for BeagleV
+ Ahead
+Message-ID: <ZPXvV/1dbUf7g+0a@xhacker>
+References: <ZOy3v+YgZgU1NrWx@xhacker>
+ <20230829015647.115757-1-wangjiexun@tinylab.org>
+ <ZO4MmdNRqrye/x2b@x1>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="nin2tevzwjvssdyh"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1693557645-2728466-2-git-send-email-srinivas.goud@amd.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+In-Reply-To: <ZO4MmdNRqrye/x2b@x1>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,73 +64,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Aug 29, 2023 at 08:19:53AM -0700, Drew Fustini wrote:
+> On Tue, Aug 29, 2023 at 09:56:47AM +0800, Jiexun Wang wrote:
+> > Date: Mon, 28 Aug 2023 23:05:35 +0800, Jisheng Zhang wrote:
+> > >On Mon, Aug 28, 2023 at 12:40:16PM +0800, Jiexun Wang wrote:
+> > >> Hello,
+> > >> I tested the patch on my LicheePi 4A board.
+> > >> It can successfully boot with eMMC, but when I use the eMMC more frequently - for instance:
+> > >> 
+> > >> $ while true; do /bin/dd if=/dev/zero of=bigfile bs=1024000 count=1024; done &
+> > >> 
+> > >> I encounter the following error:
+> > >> 
+> > >> sbi_trap_error: hart1: illegal instruction handler failed (error -2)
+> > >
+> > >> sbi_trap_error: hart1: mcause=0x0000000000000002 mtval=0x0000000060e2de4f
+> > >> sbi_trap_error: hart1: mepc=0x000000000001897c mstatus=0x0000000a00001820
+> > >> sbi_trap_error: hart1: ra=0x00000000000170f8 sp=0x000000000004adc8
+> > >> sbi_trap_error: hart1: gp=0xffffffff8136ea90 tp=0xffffffd900228000
+> > >> sbi_trap_error: hart1: s0=0x0000000000000000 s1=0x000000000004ae08
+> > >> sbi_trap_error: hart1: a0=0x000000003f9aa9bc a1=0x0000000000000004
+> > >> sbi_trap_error: hart1: a2=0x0000000000000000 a3=0x0000000000000000
+> > >> sbi_trap_error: hart1: a4=0x0000000000042248 a5=0x00000000000170e5
+> > >> sbi_trap_error: hart1: a6=0x0000000000000000 a7=0x0000000054494d45
+> > >> sbi_trap_error: hart1: s2=0x000000000004aee8 s3=0x0000000000000000
+> > >> sbi_trap_error: hart1: s4=0x000000000004ae08 s5=0x0000000000000000
+> > >> sbi_trap_error: hart1: s6=0xffffffff813aa240 s7=0x0000000000000080
+> > >> sbi_trap_error: hart1: s8=0xffffffff80a1b5f0 s9=0x0000000000000000
+> > >> sbi_trap_error: hart1: s10=0xffffffd9fef5d380 s11=0xffffffff81290a80
+> > >> sbi_trap_error: hart1: t0=0x0000000a00000820 t1=0x0000000000000000
+> > >> sbi_trap_error: hart1: t2=0xffffffff80c00318 t3=0x0000000000000001
+> > >> sbi_trap_error: hart1: t4=0x0000000000000330 t5=0x0000000000000001
+> > >> sbi_trap_error: hart1: t6=0x0000000000040000
+> > >> 
+> > >> My kernel version is v6.5-rc3.
+> > >> My OpenSBI version is 1.3.
+> > >> I tried to use other versions of OpenSBI, yet the problem persists. 
+> > >> Is there a possibility of any underlying bug? Your insights into this would be greatly appreciated.
+> > >
+> > >
+> > >Can you plz try below opensbi?
+> > 
+> > I tried the OpenSBI you provided and the issue didn't recur.
+> > I conducted stress test about 30 minutes and the system appears to be functioning very well.
+> > Thank you so much for helping me resolve this problem.
+> 
+> That's great!
+> 
+> Jisheng - are these the commits that fix the error?
+> 
+> d98da90a19b5 ("lib: sbi_illegal_insn: Fix FENCE.TSO emulation infinite trap loop")
+> 39d1e698c975 ("lib: sbi_illegal_insn: Add emulation for fence.tso")
+> 
 
---nin2tevzwjvssdyh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On 01.09.2023 14:10:43, Srinivas Goud wrote:
-> ECC feature added to Tx and Rx FIFOs for Xilinx AXI CAN Controller.
-> Part of this feature configuration and counter registers added in
-> IP for 1bit/2bit ECC errors.
->=20
-> xlnx,has-ecc is optional property and added to Xilinx AXI CAN Controller
-> node if ECC block enabled in the HW
->=20
-> Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
-> ---
-> Changes in v4:
-> Fix binding check warning
-> Update property description=20
->=20
-> Changes in v3:
-> Update commit description
->=20
-> Changes in v2:
-> None
->=20
->  Documentation/devicetree/bindings/net/can/xilinx,can.yaml | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml b/=
-Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> index 64d57c3..50a2671 100644
-> --- a/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/xilinx,can.yaml
-> @@ -49,6 +49,10 @@ properties:
->    resets:
->      maxItems: 1
-> =20
-> +  xlnx,has-ecc:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: CAN Tx and Rx fifo has ECC (AXI CAN)
-
-Are there 2 FIFOs? If so I'd phrase it this way:
-"CAN TX and RX FIFOs have ECC support (AXI CAN)" - or -
-"CAN TX and RX FIFOs support ECC"
-
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---nin2tevzwjvssdyh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmT17z0ACgkQvlAcSiqK
-BOgWQQf+My4CPC2KjO558oJv4n5uvbTZcmM8qAT2RFDMOB+Kny4bi4yvygdF6ysD
-sBj/FRevD9HgawxAHO7f99cCSdwg+DLex4Ya9wJ4Lu/SnebAP9WQxCx6esvnYdEa
-tsGQqEQqBPn6RsuK9fcmeiIX9kNg9EWstA5e6LclXusSrkdpYGMiF1seeUEzxDK7
-IBxfHm6I9n/HqOg92PJrhtOo4DFMAC0FXm35yqxTXidRW91CdpbECLJcRcnxhc2x
-jco+vaxeVylUUkzLhxcfX5+7dcOAQ8bwQeWYg0tREThMxrUbfeMvOxgCJ802pHZK
-XZroGNCv/NZ2s30019lKTfyPyalaRA==
-=NA90
------END PGP SIGNATURE-----
-
---nin2tevzwjvssdyh--
+These two commits have been in upstream OpenSBI, so there
+must be something to be patched/fixed in the upstream OpenSBI, but I have not
+yet bisected the upstream OpenSBI to find the root cause.
+This issue is on my TODO list.
