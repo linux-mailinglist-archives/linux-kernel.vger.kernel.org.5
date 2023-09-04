@@ -2,89 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 757FB790F7F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 03:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B8B790F8B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 03:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350240AbjIDBC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 21:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
+        id S1348431AbjIDBFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 21:05:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350244AbjIDBC4 (ORCPT
+        with ESMTP id S231588AbjIDBFi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 21:02:56 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6707132
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 18:02:36 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1c09673b006so1999015ad.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 18:02:36 -0700 (PDT)
+        Sun, 3 Sep 2023 21:05:38 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEFDBB
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 18:05:34 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso1121818a12.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 18:05:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1693789356; x=1694394156; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7SkjlWpTOnFF4QpgAAxUR7lqv3IHtXsX9Ov+YWVrmXw=;
-        b=qC164uBpiTqMDgXCvRgiQKt4Gh699N5mZOL/vYt7en0Jbwz76nMzEY83UKBVSQIW6l
-         aeb79T1fQrqEYwAnWqEg0BUEVogsLmyDn7Er7QB5MMmb3evyGFkJ31LnyaFbCd66DWcw
-         2rEqHGNd94yLw2873vPlsxfffzMVRPFxi+gQvuhDp/nt+kHeFVOC7RU50NpTqz237x8d
-         0EgVDl7W9L5GKWAUtPLGkVf3nghZNwTKtocs80JusMNZMyy2xNrwPVPtVOWAc9Ov7Ec+
-         l+Jy4wlPaRYKxlaBf+eoyU6yz7sgMqtArlqAkIUtWnDR1tDFWMVYywwL0pwAGBUewBHm
-         OWuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693789356; x=1694394156;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1693789533; x=1694394333; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7SkjlWpTOnFF4QpgAAxUR7lqv3IHtXsX9Ov+YWVrmXw=;
-        b=ircs0Q1ZC1jPSwKKo7tAPpYlE+Ae7IhALoVI0WGWZTQEhFnZOMkFFnXnGEkrr7aiBt
-         F3aBHdorC5GwVabJM6QqtHPoeFZ9Mz0v34P7nG4HFKMaK6BBGLsmjLI5aJrC2UcUwtvG
-         Nnnn22W0ceuQQu1nag5RJWwiek7mp9WBtWVpgYXp2ghmXtr3FPM/Y/Rpiv6PlyPpBxtO
-         sNSljv62BMpN9jdJXAo4Cte40oYKYGuEZLTRWrJDa9XsX/bmPr4vHf9KVK+k6Q5GBfx4
-         W1yCGM0HqIgCWfT7fuDDo6IsaS1bKNvEaX9i4Mrb94G0JWgCKn7XFkWlwENpXdAiOtFs
-         Qv/g==
-X-Gm-Message-State: AOJu0YwU5wR7FiGPZpp9JQlFRNZX+CbMCSY+24ae4Io8bQaDOjY1vg3p
-        UOKZGyG0kRYUaW7yWWmYZ8txMg==
-X-Google-Smtp-Source: AGHT+IGGrky2P+bBuH4AKgWBeYdqXOP6u+qaOJyeKMBTbWb7BRdsdnk0jjxmGVwySX0sZe8eaRNDcw==
-X-Received: by 2002:a17:902:ecc8:b0:1c1:fe97:bf34 with SMTP id a8-20020a170902ecc800b001c1fe97bf34mr8040994plh.24.1693789355853;
-        Sun, 03 Sep 2023 18:02:35 -0700 (PDT)
-Received: from dread.disaster.area (pa49-195-66-88.pa.nsw.optusnet.com.au. [49.195.66.88])
-        by smtp.gmail.com with ESMTPSA id d4-20020a170902c18400b001bdcafcf8d3sm6351806pld.69.2023.09.03.18.02.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Sep 2023 18:02:35 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-        (envelope-from <david@fromorbit.com>)
-        id 1qcxz6-00AVA9-2L;
-        Mon, 04 Sep 2023 11:02:32 +1000
-Date:   Mon, 4 Sep 2023 11:02:32 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Hao Xu <hao.xu@linux.dev>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 02/11] xfs: add NOWAIT semantics for readdir
-Message-ID: <ZPUsqGfeUwupdlLE@dread.disaster.area>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-3-hao.xu@linux.dev>
+        bh=NbVUwcw2PJC4RfyAHaiAoxmA0J3kEw6h6OC2FpKWQRY=;
+        b=FuoDAc0CROG5x8mY7sIuAC2YSkD7+NVArWj2x8d+U+VfD8aj/D4mHWjCyJDERFxx2M
+         IQYN4mwr3BU+Z8A4d1a9U9dEbC1UxajGlgd6g+wMQ4FFdi+AQ9Q16uYzoAUacivDW/br
+         CmVfAf5vYwMjAbCBTViiCs3WVuPEwr+qEBif0VPB9fkzYD+WoDD7dqbVyFAf+tjGrAB8
+         P48MFWir2lSQuiQa18WR2nmA1zGaylsTEg3kB72XmyYNLOUeZHyD+AfDv7KM8GvlEk0w
+         XkNwe26WORwuA7SMNLhv3oWRT4OxbGVimhu57hkxOQmwBPx9vjIttJju/8hkJxqdnxVv
+         uwQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693789533; x=1694394333;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NbVUwcw2PJC4RfyAHaiAoxmA0J3kEw6h6OC2FpKWQRY=;
+        b=c+rv5roFK5Fy1UP+uS9vLanhoF+/So4oCealKI10Z3/tfrc3FIm8NxOwix7nx3JIVC
+         6VEHnNGVUAKqiR5MpVTKs4R90yML+BmWmcRE+RsrPUIkQUwvtL7xhjoFgw092NXEVWom
+         DWwU9TLmjHx1sgN4i7Lk+dOdBIk0N2Jrg58iFchVuPHzLNwH+05eW3TsJfCZjWPogYxp
+         VQ+uOHc9w8q5h1qrpmZwp+fJCr+WfvHZ7XJi7Vp2lHZZWI2spJoLuDO74jukUpYPmV+I
+         FqviYEUQxutnsG8PWpZwiySdeG63VIJbyJ9gTNN8xeDo4WmwFHcNfcv0h7NxOKSEvpcW
+         /Pzg==
+X-Gm-Message-State: AOJu0Yxg5dDGRaau9hKRGoR4jWXN7Qniz6e348Wnnbd7Ypp9IGmmRLyD
+        1cbUM35W4HGtig4kkOBH8kXAJYZrnOBtxNQJruA=
+X-Google-Smtp-Source: AGHT+IGoOCM67CfAPti9p9KNf+sBBUTpbJt4yh8hMpYKIFaqa7GfnKeqIe49SGBnSowjTgY1/YMIZJCkjd4ei3FUKP4=
+X-Received: by 2002:aa7:ca51:0:b0:523:4996:a4f9 with SMTP id
+ j17-20020aa7ca51000000b005234996a4f9mr7087154edt.34.1693789533077; Sun, 03
+ Sep 2023 18:05:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230827132835.1373581-3-hao.xu@linux.dev>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
+ <20230818-samsung-dsim-v1-1-b39716db6b7a@pengutronix.de> <CAHCN7x+J_umWCBvivuZsrHTvjw=4CvBqOSeO-j_+fTMm=DdAOg@mail.gmail.com>
+In-Reply-To: <CAHCN7x+J_umWCBvivuZsrHTvjw=4CvBqOSeO-j_+fTMm=DdAOg@mail.gmail.com>
+From:   Inki Dae <daeinki@gmail.com>
+Date:   Mon, 4 Sep 2023 10:04:55 +0900
+Message-ID: <CAAQKjZM9UGgzAgfg-Rt92BNdvLuUJ90=QRUrd=FnDFwGvoC-zA@mail.gmail.com>
+Subject: Re: [PATCH 1/5] drm/bridge: samsung-dsim: add more mipi-dsi device
+ debug information
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Michael Tretter <m.tretter@pengutronix.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>, kernel@pengutronix.de,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,301 +81,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 09:28:26PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> Implement NOWAIT semantics for readdir. Return EAGAIN error to the
-> caller if it would block, like failing to get locks, or going to
-> do IO.
-> 
-> Co-developed-by: Dave Chinner <dchinner@redhat.com>
+2023=EB=85=84 8=EC=9B=94 29=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 7:38, A=
+dam Ford <aford173@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Mon, Aug 28, 2023 at 10:59=E2=80=AFAM Michael Tretter
+> <m.tretter@pengutronix.de> wrote:
+> >
+> > From: Marco Felsch <m.felsch@pengutronix.de>
+> >
+> > Since the MIPI configuration can be changed on demand it is very useful
+> > to print more MIPI settings during the MIPI device attach step.
+> >
+> > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+>
+> Reviewed-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
+> Tested-by: Adam Ford <aford173@gmail.com>  #imx8mm-beacon
 
-Not really.
+Reviewed-by: Inki Dae <inki.dae@samsung.com>
+Acked-by: Inki Dae <inki.dae@samsung.com>
 
-"Co-developed" implies equal development input between all the
-parties, which is not the case here - this patch is based on
-prototype I wrote, whilst you're doing the refining, testing and
-correctness work.
-
-In these cases with XFS code, we add a line in the commit message to
-say:
-
-"This is based on a patch originally written by Dave Chinner."
-
-
-> Signed-off-by: Dave Chinner <dchinner@redhat.com>
-> Signed-off-by: Hao Xu <howeyxu@tencent.com>
-> [fixes deadlock issue, tweak code style]
-
-With a signoff chain like you already have.
-
-In the end you'll also get a RVB from me, which seems rather wrong
-to me if I've apparently been "co-developing" the code....
-
-....
-
-> @@ -156,7 +157,9 @@ xfs_dir2_block_getdents(
->  	if (xfs_dir2_dataptr_to_db(geo, ctx->pos) > geo->datablk)
->  		return 0;
->  
-> -	error = xfs_dir3_block_read(args->trans, dp, &bp);
-> +	if (ctx->flags & DIR_CONTEXT_F_NOWAIT)
-> +		flags |= XFS_DABUF_NOWAIT;
-> +	error = xfs_dir3_block_read(args->trans, dp, flags, &bp);
->  	if (error)
->  		return error;
->  
-
-Given we do this same check in both block and leaf formats to set
-XFS_DABUF_NOWAIT, and we do the DIR_CONTEXT_F_NOWAIT check in
-xfs_readdir() as well, we should probably do this check once at the
-higher level and pass flags down from there with XFS_DABUF_NOWAIT
-already set.
-
-> @@ -240,6 +243,7 @@ xfs_dir2_block_getdents(
->  STATIC int
->  xfs_dir2_leaf_readbuf(
->  	struct xfs_da_args	*args,
-> +	struct dir_context	*ctx,
->  	size_t			bufsize,
->  	xfs_dir2_off_t		*cur_off,
->  	xfs_dablk_t		*ra_blk,
-> @@ -258,10 +262,15 @@ xfs_dir2_leaf_readbuf(
->  	struct xfs_iext_cursor	icur;
->  	int			ra_want;
->  	int			error = 0;
-> -
-> -	error = xfs_iread_extents(args->trans, dp, XFS_DATA_FORK);
-> -	if (error)
-> -		goto out;
-> +	unsigned int		flags = 0;
-> +
-> +	if (ctx->flags & DIR_CONTEXT_F_NOWAIT) {
-> +		flags |= XFS_DABUF_NOWAIT;
-> +	} else {
-> +		error = xfs_iread_extents(args->trans, dp, XFS_DATA_FORK);
-> +		if (error)
-> +			goto out;
-> +	}
-
-Especially as, in hindsight, this doesn't make a whole lot of sense.
-If XFS_DABUF_NOWAIT is set, we keep going until
-xfs_ilock_data_map_shared_nowait() where we call
-xfs_need_iread_extents() to see if we need to read the extents in
-and abort at that point.
-
-So, really, we shouldn't get this far with nowait semantics if
-we haven't read the extents in yet - we're supposed to already have
-the inode locked here and so we should have already checked this
-condition before we bother locking the inode...
-
-i.e. all we should be doing here is this:
-
-	if (!(flags & XFS_DABUF_NOWAIT)) {
-		error = xfs_iread_extents(args->trans, dp, XFS_DATA_FORK);
-		if (error)
-			goto out;
-	}
-
-And then we don't need to pass the VFS dir_context down into low
-level XFS functions unnecessarily.
-
-
->  
->  	/*
->  	 * Look for mapped directory blocks at or above the current offset.
-> @@ -280,7 +289,7 @@ xfs_dir2_leaf_readbuf(
->  	new_off = xfs_dir2_da_to_byte(geo, map.br_startoff);
->  	if (new_off > *cur_off)
->  		*cur_off = new_off;
-> -	error = xfs_dir3_data_read(args->trans, dp, map.br_startoff, 0, &bp);
-> +	error = xfs_dir3_data_read(args->trans, dp, map.br_startoff, flags, &bp);
->  	if (error)
->  		goto out;
->  
-> @@ -360,6 +369,7 @@ xfs_dir2_leaf_getdents(
->  	int			byteoff;	/* offset in current block */
->  	unsigned int		offset = 0;
->  	int			error = 0;	/* error return value */
-> +	int			written = 0;
->  
->  	/*
->  	 * If the offset is at or past the largest allowed value,
-> @@ -391,10 +401,17 @@ xfs_dir2_leaf_getdents(
->  				bp = NULL;
->  			}
->  
-> -			if (*lock_mode == 0)
-> -				*lock_mode = xfs_ilock_data_map_shared(dp);
-> -			error = xfs_dir2_leaf_readbuf(args, bufsize, &curoff,
-> -					&rablk, &bp);
-> +			if (*lock_mode == 0) {
-> +				*lock_mode =
-> +					xfs_ilock_data_map_shared_generic(dp,
-> +					ctx->flags & DIR_CONTEXT_F_NOWAIT);
-> +				if (!*lock_mode) {
-> +					error = -EAGAIN;
-> +					break;
-> +				}
-> +			}
-> +			error = xfs_dir2_leaf_readbuf(args, ctx, bufsize,
-> +					&curoff, &rablk, &bp);
-
-int
-xfs_ilock_readdir(
-	struct xfs_inode	*ip,
-	int			flags)
-{
-	if (flags & XFS_DABUF_NOWAIT) {
-		if (!xfs_ilock_nowait(dp, XFS_ILOCK_SHARED))
-			return -EAGAIN;
-		return XFS_ILOCK_SHARED;
-	}
-	return xfs_ilock_data_map_shared(dp);
-}
-
-And then this code simply becomes:
-
-			if (*lock_mode == 0)
-				*lock_mode = xfs_ilock_readdir(ip, flags);
-
-
->  			if (error || !bp)
->  				break;
->  
-> @@ -479,6 +496,7 @@ xfs_dir2_leaf_getdents(
->  		 */
->  		offset += length;
->  		curoff += length;
-> +		written += length;
->  		/* bufsize may have just been a guess; don't go negative */
->  		bufsize = bufsize > length ? bufsize - length : 0;
->  	}
-> @@ -492,6 +510,8 @@ xfs_dir2_leaf_getdents(
->  		ctx->pos = xfs_dir2_byte_to_dataptr(curoff) & 0x7fffffff;
->  	if (bp)
->  		xfs_trans_brelse(args->trans, bp);
-> +	if (error == -EAGAIN && written > 0)
-> +		error = 0;
->  	return error;
->  }
->  
-> @@ -514,6 +534,7 @@ xfs_readdir(
->  	unsigned int		lock_mode;
->  	bool			isblock;
->  	int			error;
-> +	bool			nowait;
->  
->  	trace_xfs_readdir(dp);
->  
-> @@ -531,7 +552,11 @@ xfs_readdir(
->  	if (dp->i_df.if_format == XFS_DINODE_FMT_LOCAL)
->  		return xfs_dir2_sf_getdents(&args, ctx);
->  
-> -	lock_mode = xfs_ilock_data_map_shared(dp);
-> +	nowait = ctx->flags & DIR_CONTEXT_F_NOWAIT;
-> +	lock_mode = xfs_ilock_data_map_shared_generic(dp, nowait);
-> +	if (!lock_mode)
-> +		return -EAGAIN;
-> +
-
-Given what I said above:
-
-	if (ctx->flags & DIR_CONTEXT_F_NOWAIT) {
-		/*
-		 * If we need to read extents, then we must do IO
-		 * and we must use exclusive locking. We don't want
-		 * to do either of those things, so just bail if we
-		 * have to read extents. Doing this check explicitly
-		 * here means we don't have to do it anywhere else
-		 * in the XFS_DABUF_NOWAIT path.
-		 */
-		if (xfs_need_iread_extents(&ip->i_df))
-			return -EAGAIN;
-		flags |= XFS_DABUF_NOWAIT;
-	}
-	lock_mode = xfs_ilock_readdir(dp, flags);
-
-And with this change, we probably should be marking the entire
-operation as having nowait semantics. i.e. using args->op_flags here
-and only use XFS_DABUF_NOWAIT for the actual IO. ie.
-
-		args->op_flags |= XFS_DA_OP_NOWAIT;
-
-This makes it clear that the entire directory op should run under
-NOWAIT constraints, and it avoids needing to pass an extra flag
-through the stack.  That then makes the readdir locking function
-look like this:
-
-/*
- * When we are locking an inode for readdir, we need to ensure that
- * the extents have been read in first. This requires the inode to
- * be locked exclusively across the extent read, but otherwise we
- * want to use shared locking.
- *
- * For XFS_DA_OP_NOWAIT operations, we do an up-front check to see
- * if the extents have been read in, so all we need to do in this
- * case is a shared try-lock as we never need exclusive locking in
- * this path.
- */
-static int
-xfs_ilock_readdir(
-	struct xfs_da_args	*args)
-{
-	if (args->op_flags & XFS_DA_OP_NOWAIT) {
-		if (!xfs_ilock_nowait(args->dp, XFS_ILOCK_SHARED))
-			return -EAGAIN;
-		return XFS_ILOCK_SHARED;
-	}
-	return xfs_ilock_data_map_shared(args->dp);
-}
-
-> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> index 9e62cc500140..d088f7d0c23a 100644
-> --- a/fs/xfs/xfs_inode.c
-> +++ b/fs/xfs/xfs_inode.c
-> @@ -120,6 +120,33 @@ xfs_ilock_data_map_shared(
->  	return lock_mode;
->  }
->  
-> +/*
-> + * Similar to xfs_ilock_data_map_shared(), except that it will only try to lock
-> + * the inode in shared mode if the extents are already in memory. If it fails to
-> + * get the lock or has to do IO to read the extent list, fail the operation by
-> + * returning 0 as the lock mode.
-> + */
-> +uint
-> +xfs_ilock_data_map_shared_nowait(
-> +	struct xfs_inode	*ip)
-> +{
-> +	if (xfs_need_iread_extents(&ip->i_df))
-> +		return 0;
-> +	if (!xfs_ilock_nowait(ip, XFS_ILOCK_SHARED))
-> +		return 0;
-> +	return XFS_ILOCK_SHARED;
-> +}
-> +
-> +int
-> +xfs_ilock_data_map_shared_generic(
-> +	struct xfs_inode	*dp,
-> +	bool			nowait)
-> +{
-> +	if (nowait)
-> +		return xfs_ilock_data_map_shared_nowait(dp);
-> +	return xfs_ilock_data_map_shared(dp);
-> +}
-
-And all this "generic" locking stuff goes away.
-
-FWIW, IMO, "generic" is a poor name for an XFS function as there's
-nothing "generic" in XFS.  We tend name the functions after what
-they do, not some abstract concept. Leave "generic" as a keyword for
-widely used core infrastructure functions, not niche, one-off use
-cases like this.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+>
+> > ---
+> >  drivers/gpu/drm/bridge/samsung-dsim.c | 5 ++++-
+> >  1 file changed, 4 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/br=
+idge/samsung-dsim.c
+> > index 73ec60757dbc..6778f1751faa 100644
+> > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > @@ -1711,7 +1711,10 @@ static int samsung_dsim_host_attach(struct mipi_=
+dsi_host *host,
+> >                 return ret;
+> >         }
+> >
+> > -       DRM_DEV_INFO(dev, "Attached %s device\n", device->name);
+> > +       DRM_DEV_INFO(dev, "Attached %s device (lanes:%d bpp:%d mode-fla=
+gs:0x%lx)\n",
+> > +                    device->name, device->lanes,
+> > +                    mipi_dsi_pixel_format_to_bpp(device->format),
+> > +                    device->mode_flags);
+> >
+> >         drm_bridge_add(&dsi->bridge);
+> >
+> >
+> > --
+> > 2.39.2
+> >
