@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE74791064
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 05:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19618791068
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 05:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344950AbjIDD11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 23:27:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
+        id S1351040AbjIDD1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 23:27:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbjIDD1Z (ORCPT
+        with ESMTP id S1350986AbjIDD1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 23:27:25 -0400
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C1AC1
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 20:27:22 -0700 (PDT)
-Received: from cwcc.thunk.org (pool-173-48-116-73.bstnma.fios.verizon.net [173.48.116.73])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3843QwSA015276
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 3 Sep 2023 23:26:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-        t=1693798021; bh=rkbpgkYC4jb0fCkXOsy0wxyXQNhK/Ytcz9Jdb2AKGa4=;
-        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-        b=m5/geuHtX6zIYvlw4QQeq3Hwr3/5EQEjCeLuobQX/JLKigD7+gU4k/ENkKy+P0G4u
-         dvsi0mXvo6yAEMm9g1WO9D/huSK5TnY2eAkapw9OfYiFj49Gxev2c+A6Da6+e/Z31Q
-         AkDSqA4WsTziMNG2VuuxMAR8k5cwlFGnO3TxODyTDqoO1AM/ky0GLIgw5lWU+YsZax
-         9wOgUYzGcEW8dvy4KKpR3WKEFmtFEvQdxX/DjxyAOdPQEFdQwNf7vIWFHKw2NHV7PK
-         UyIuGe5GnLbAIAgM3NkFmNhG0oFzJQJg2Eh5cLmIWtucbFMgLYA8Dlo2w6mug03yIf
-         trVKcU6ObmdMg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 4A22215C023F; Sun,  3 Sep 2023 23:26:58 -0400 (EDT)
-Date:   Sun, 3 Sep 2023 23:26:58 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Mateusz Guzik <mjguzik@gmail.com>,
-        syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>,
-        brauner@kernel.org, djwong@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com
-Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
-Message-ID: <20230904032658.GA701295@mit.edu>
-References: <000000000000e6432a06046c96a5@google.com>
- <ZPQYyMBFmqrfqafL@dread.disaster.area>
- <20230903083357.75mq5l43gakuc2z7@f>
- <ZPUIQzsCSNlnBFHB@dread.disaster.area>
- <20230903231338.GN3390869@ZenIV>
- <ZPU2n48GoSRMBc7j@dread.disaster.area>
+        Sun, 3 Sep 2023 23:27:48 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AF88110;
+        Sun,  3 Sep 2023 20:27:40 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-50078e52537so1626559e87.1;
+        Sun, 03 Sep 2023 20:27:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693798059; x=1694402859; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OiLgCSQBEnRaQPC2k/p+Y2L6jBO8LUB5T0bZ5tLFi9s=;
+        b=kbfmh4aQjpfiIo21MSpgCiHiycF+KZUyiOsNIvqyx6KvZBbU0dUAAE62fPf9/nJRpG
+         IZP0e2wNOIzxCAFGRK/2kXClLNg57fQ72m0bRZ7BVa4a+5Dkm7BFlpt8ddz5YYH3hvXh
+         z37C3SJIVVO5Ojm3JJEwJSu7AXzNzzXmdNF4nHKOCsnnKFTrFEqWi86Dyy+tFkh9nsuo
+         RgT1sJGuGyFxh5I1pQpQuHPC6MU4k3br/fK1cXZ+LWmjY39jEh7TKWJEAIhrZs79b/hd
+         R5olzvyEa/aXfcFNl6LPcMX0n6o5kpBxhGwyytxAFl5iq2Kyh+2jw0z9X7Q87Hm49dDK
+         56kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693798059; x=1694402859;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OiLgCSQBEnRaQPC2k/p+Y2L6jBO8LUB5T0bZ5tLFi9s=;
+        b=Nw+I6h/INSc9pgIgss1oCW9hLOPG+EpQfU4KhBPmnowsqtuQx8IjPIU7U9AXUhacFU
+         6pzSq7hq97fe7OSYUpETMROw2XYPxeVHEfERR43qSnn8c5197Ks9HOLjnTOywltT1zRV
+         j8NOIgsPEtPkOIyrHWfCbbUBaRTgVrCnXEiOwAeNSzSyTNX6j/BzZTmNvrGNE8YLpZsu
+         aFa3oYWEGCugZ33BMlV5a1zKly8C7adOx3qbUdSeuw8oUGVg3VIdQ6n92vtgoHhFpy/k
+         bauFm4nErWZgy8bR+8EFgrpX0wm6Fa47jBKPtOkFeDa+6/f27XY5f/0dj75umFwoB/jY
+         Mqpg==
+X-Gm-Message-State: AOJu0Yy62K8eyxxSpAjnsKUn229dcNJLVxV6BQ6wBxaE6eMubGZAcsLf
+        ZFOkl60VzbSlz1tL20XylXcJRg+uIJG4P/oEX2PpQqKk2h0=
+X-Google-Smtp-Source: AGHT+IF88sgWR0wYZU0stUn0NwSueEyT4U2LOfVriwMD2KGhqxs7W6wKckeOWV7hbYTQ5A1HmDgB5X014PBQEWpcETk=
+X-Received: by 2002:a05:6512:214d:b0:4fb:740a:81ae with SMTP id
+ s13-20020a056512214d00b004fb740a81aemr5173476lfr.16.1693798058819; Sun, 03
+ Sep 2023 20:27:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPU2n48GoSRMBc7j@dread.disaster.area>
+References: <20230817094520.21286-1-Huangzheng.Lai@unisoc.com>
+ <20230817094520.21286-5-Huangzheng.Lai@unisoc.com> <CAAfSe-vGXco2PaLEdb8cTAEkX4db3o6v++hz-vL3o00i=7_wgw@mail.gmail.com>
+ <20230902210827.7vey3qehpb6gn4m5@zenone.zhora.eu>
+In-Reply-To: <20230902210827.7vey3qehpb6gn4m5@zenone.zhora.eu>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Mon, 4 Sep 2023 11:27:01 +0800
+Message-ID: <CAAfSe-sEhqggJPhmOmUfLHJ3OCik5fB-qP1+sn66KNLWxOPV_Q@mail.gmail.com>
+Subject: Re: [PATCH 4/8] i2c: sprd: Add IIC controller driver to support
+ dynamic switching of 400K/1M/3.4M frequency
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     Huangzheng Lai <Huangzheng.Lai@unisoc.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huangzheng lai <laihuangzheng@gmail.com>,
+        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 11:45:03AM +1000, Dave Chinner wrote:
-> Entirely possible - this is syzbot we are talking about here.
-> Especially if reiser or ntfs has been tested back before the logs we
-> have start, as both are known to corrupt memory and/or leak locks
-> when trying to parse corrupt filesystem images that syzbot feeds
-> them.  That's why we largely ignore syzbot reports that involve
-> those filesystems...
-> 
-> Unfortunately, the logs from what was being done around when the
-> tasks actually hung are long gone (seems like only the last 20-30s
-> of log activity is reported) so when the hung task timer goes off
-> at 143s, there is nothing left to tell us what might have caused it.
-> 
-> IOWs, it's entirely possible that it is a memory corruption that
-> has resulted in a leaked lock somewhere...
+Hi Andi,
 
-... and this is why I ignore any syzbot report that doesn't have a C
-reproducer.  Life is too short to waste time with what is very likely
-syzbot noise....  And I'd much rather opt out of the gamification of
-syzbot dashboards designed to use dark patterns to guilt developers to
-work on "issues" that very likely have no real impact on real life
-actual user impact, if it might cause developers and maintainers to
-burn out and quit.
+On Sun, 3 Sept 2023 at 05:08, Andi Shyti <andi.shyti@kernel.org> wrote:
+>
+> Hi Chunyan,
+>
+> [...]
+>
+> > > When IIC-slaves supporting different frequencies use the same IIC
+> >
+> > %s/I2C/IIC
 
-Basically, if syzbot won't prioritize things for us, it's encumbent on
-us to prioritize things for our own mental health.  And so syzbot
-issues without a real reproducer are very low on my priority list; I
-have things I can work on that are much more likely to make real world
-impact.  Even ones that have a real reproducer, there are certain
-classes of bugs (e.g., "locking bugs" that require a badly corrupted
-file system, or things that are just denial of service attacks if
-you're too stupid to insert a USB thumb drive found in a parking lock
---- made worse by GNOME who has decided to default mount any random
-USB thumb drive inserted into a system, even a server system that has
-GNOME installed, thanks to some idiotic decision made by some random
-Red Hat product manager), that I just ignore because I don't have
-infinite amounts of time to coddle stupid Red Hat distro tricks.
+I just noticed that this was the reverse, I meant "%s/IIC/I2C" :)
+That's saying we should use I2C in the whole driver.
 
-						- Ted
+> [...]
+>
+> > >  #define SPRD_I2C_PM_TIMEOUT    1000
+> > >  /* timeout (ms) for transfer message */
+> > >  #define I2C_XFER_TIMEOUT       1000
+> > > -
+> > > +/* dynamic modify clk_freq flag  */
+> > > +#define        I2C_3M4_FLAG            0x0100
+> >
+> > #define <space> I2C_3M4_FLAG <tab> 0x0100
+> >
+> > > +#define        I2C_1M_FLAG             0x0080
+> > > +#define        I2C_400K_FLAG           0x0040
+> > > +
+> > > +#define        I2C_FREQ_400K           400000
+> > > +#define        I2C_FREQ_1M             1000000
+> > > +#define        I2C_FREQ_3_4M           3400000
+> >
+> > ditto
+
+I meant "#define <space> I2C_FREQ_3_4M <tab> 3400000"
+
+>
+> why should he use IIC instead of I2C. The file's defines start
+> with I2C, for consistency he should use the same prefix.
+>
+
+Yes, I agree.
+
+Thanks,
+Chunyan
