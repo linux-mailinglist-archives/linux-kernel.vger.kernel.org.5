@@ -2,107 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C8D9791D82
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA35F791D84
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241277AbjIDTLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 15:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43634 "EHLO
+        id S241495AbjIDTL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 15:11:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233255AbjIDTLn (ORCPT
+        with ESMTP id S240889AbjIDTL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 15:11:43 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F6AE1707
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:11:36 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-40037db2fe7so18049405e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:11:35 -0700 (PDT)
+        Mon, 4 Sep 2023 15:11:56 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B0EACDB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:11:50 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-317c3ac7339so1542928f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:11:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693854694; x=1694459494; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=N4f6P28VPyXCYBikWvlnwCAAUPktzMnywAo5GqC9gYk=;
-        b=ggGMbjTBCT99RhrkHVkqJWYgLBVgAayemTAVhTCeQHHPl/gqib9nKFjduvpXyUnRzR
-         Vm/Bhl6RARHGQEtuZa0UxtTCVNhQJtSbs9/uA4+0EvUIOmpWANKwY2MeRo6gADQCtvNr
-         R7PjjS+ozKvRlZuVoPCU+OvmVgOxFSyuG3zTkLT779zwVtlmfLnGyzYe8tRqxl0J4tMp
-         BLCEnHvnl2mrJC5f4oZwKyJvFPnrnhnt3+gR1Eqx6XnnGCcMhjv1q63gqm0WM3BJbkbi
-         GbxdV9gKkAJa5ZSSjGiea+FShd1GRncTD2zf3KVbvmSzxEnf15jV6eUAacaG+XcW6SkF
-         ppmw==
+        d=linaro.org; s=google; t=1693854708; x=1694459508; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8pEgA4HrkB9TGKJAWAP66UjBiQGMt4beUYVFuVhy4jg=;
+        b=QJRE+B+/RlcvdOa4osdwyHIWZuLvVIoa23mvYTIjN+1pInHzLJmRJ9GnKoIr6StHT+
+         2Z94cO0f2Z92LyplvrNR/4hMmeTW4ZFTTgqfpfQQBbM1/gy0+dZgvPNhyqviHjdoy92h
+         BFMzmI+Iw01MTn5GCVCdN5Ytr/XLl5K0nfPSSL3UuxRnHpKKemQAmtvErWC7t/YqY4B0
+         DrGWwyOsDnhplNBqnm37UsC/dhzBFTet32Eq+l/JAFkafCTNugxtID3KlaSnHWTfuJsE
+         2RZLYPJRrpqTpXjo1sEoUuLKHK+ha7iamTr/+UzVRak4s7WrUGQWS69S/jRRoTyIM3fn
+         x2/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693854694; x=1694459494;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N4f6P28VPyXCYBikWvlnwCAAUPktzMnywAo5GqC9gYk=;
-        b=hfHjiAKmEcOzmEfK1ezRw0b4paA1jf8WUK3a2eP8dZXOHaXddIBklANdXrlSkkr7T9
-         C+x9Eirrl7dyk+nSHc1v2py0jW0vR/Ly99Rfg1KxRPcbob7e2ac5wGfej93RnHSz7zeK
-         O8nlIKV8It1D7K16dbRJydy3wfNWXc5iFYm5NcShIfpE+04o2W/onX15svX0DyUzd5RC
-         ilIYNkGEd/RUT0UPlqsS2g6motCeDEXHfqU2bK44J+NGqrUL6ij6Jm0mM38+P57Q6Xox
-         Qf2k9ptwoxhjfjemihZFaLC5WT3vGFpn5tVTfP0fA6xId8Lu5M09dsfhSDOgeJ2Ajg/K
-         rl1A==
-X-Gm-Message-State: AOJu0YwvDex5W+Wsym0YuthyFvZBAgzQS7V1zLtwfsuGtc5sqMJnv0+e
-        L6bBw8/Ej5mtwQp0mD1p0Yk=
-X-Google-Smtp-Source: AGHT+IGf7CWEVAyMN78Enrsi6jocXZ2nX2wgaHVClC5M6lxqpSPdyOyE6kV0KAKOXi3GZmpf4uQEVg==
-X-Received: by 2002:a5d:6142:0:b0:317:6cd2:b90c with SMTP id y2-20020a5d6142000000b003176cd2b90cmr8808958wrt.13.1693854694332;
-        Mon, 04 Sep 2023 12:11:34 -0700 (PDT)
-Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
-        by smtp.gmail.com with ESMTPSA id l10-20020a5d4bca000000b003180155493esm15228687wrt.67.2023.09.04.12.11.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 12:11:33 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Mon, 4 Sep 2023 21:11:31 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Bongkyu Kim <bongkyu7.kim@samsung.com>, mingo@redhat.com,
-        will@kernel.org, longman@redhat.com, boqun.feng@gmail.com,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 1/2] Revert "locking/rwsem: Remove reader optimistic
- spinning"
-Message-ID: <ZPYr4z/h2lZLtqoZ@gmail.com>
-References: <20230901010704.18493-1-bongkyu7.kim@samsung.com>
- <CGME20230901010734epcas2p1a0d3698e76590637f9175fca40ad9eaf@epcas2p1.samsung.com>
- <20230901010704.18493-2-bongkyu7.kim@samsung.com>
- <20230904151008.GA25717@noisy.programming.kicks-ass.net>
+        d=1e100.net; s=20221208; t=1693854708; x=1694459508;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8pEgA4HrkB9TGKJAWAP66UjBiQGMt4beUYVFuVhy4jg=;
+        b=D6dRlVXtPnhZNF8OWtD414QEUwA/pQIYrmDoDInmquQ/afgTvVxgHBFMxxXv3PA/p3
+         qBObi0p4/GvLJcAe9T9Vn88wYBYDcYsFEttqV3bNNlJS30q6isyQof+Ebo6fL19oh1kg
+         mMZKee3nLYsm0OL5XjqAtMQR/ZGahdUetfrPnKmYk1ML3KQImbCVK1P/AFqXh7x4m08V
+         HgoSyFHBB0XeDQpLU9yUxd6pGoKHUVbtGr1CNnA5jY5toDMj4qhwSVxGferBZCbgrd1r
+         G46WwPTXeecxoIEXq4XKfC5tIMjkhaLt+5/6T0T+iImIvLiglpVOdF2TuiyCHw2s3Bem
+         YdVg==
+X-Gm-Message-State: AOJu0YwZdGkessjilReD/T5/WXg1LW8iaGY5B+NFZCsqte76/LaAYq41
+        OsA/8YdkoFxyTX1SuIG7WehldQ==
+X-Google-Smtp-Source: AGHT+IHrmHb5QcFVu/TCsq1UWFkimGdZCJ405IMLyXpUMzoL97twMhbB9End6fI+HCUXW7G+Vm1LIA==
+X-Received: by 2002:adf:f0c5:0:b0:319:743f:c695 with SMTP id x5-20020adff0c5000000b00319743fc695mr8060063wro.12.1693854708310;
+        Mon, 04 Sep 2023 12:11:48 -0700 (PDT)
+Received: from [192.168.0.162] (188-141-3-169.dynamic.upc.ie. [188.141.3.169])
+        by smtp.gmail.com with ESMTPSA id c17-20020adfe711000000b0031773a8e5c4sm15173256wrm.37.2023.09.04.12.11.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 12:11:47 -0700 (PDT)
+Message-ID: <3b3682be-5dbd-5e2d-a6c1-7bdf6d3ff8cd@linaro.org>
+Date:   Mon, 4 Sep 2023 20:11:46 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904151008.GA25717@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v3 12/15] media: qcom: camss: Fix support for setting
+ CSIPHY clock name csiphyX
+Content-Language: en-US
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, rfoss@kernel.org,
+        todor.too@gmail.com, agross@kernel.org, andersson@kernel.org,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl,
+        laurent.pinchart@ideasonboard.com, sakari.ailus@linux.intel.com,
+        andrey.konovalov@linaro.org
+Cc:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230823104444.1954663-1-bryan.odonoghue@linaro.org>
+ <20230823104444.1954663-13-bryan.odonoghue@linaro.org>
+ <6f381a9e-9aac-4a3a-814e-26a230026d66@linaro.org>
+ <5714055d-84b9-f60b-ed58-77d86722d71e@linaro.org>
+ <e51e0d29-f455-463f-9324-6ee0459df067@linaro.org>
+From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+In-Reply-To: <e51e0d29-f455-463f-9324-6ee0459df067@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-* Peter Zijlstra <peterz@infradead.org> wrote:
-
-> On Fri, Sep 01, 2023 at 10:07:03AM +0900, Bongkyu Kim wrote:
-> > This reverts commit 617f3ef95177840c77f59c2aec1029d27d5547d6.
-> > 
-> > In mobile environment, reader optimistic spinning is still useful
-> > because there're not many readers. In my test result at android device,
-> > it improves application startup time about 3.8%
-> > App startup time is most important factor for android user expriences.
-> > So, re-enable reader optimistic spinning by this commit. And,
-> > the later patch will make it optional feature by cmdline.
+On 26/08/2023 13:12, Konrad Dybcio wrote:
+>> I really don't understand your point. Could you please restate it ?
+> If we categorized the clocks at probe time (these ones go to csiphy, these
+> ones go to vfe or whatever), name matching like this could be avoided
 > 
-> I'm not seeing any mention on how this interacts with all the rwsem work
-> that has been done since that commit, like the handoff rework.
-> 
-> Why is a straight revert a sane thing at this point?
+> Konrad
 
-Yeah, so this should probably be titled:
+Yes, I like this idea.
 
-   locking/rwsem: Reintroduce reader optimistic spinning
+I'd like to make that into a separate series. So I'd like to address 
+your concern on the size of the string in the lookup and then punt the 
+clock story over to another series since it will involved churning 
+though a fair chunk of code, yaml and dtsi.
 
-... instead of the double-negative 'remove removal' thing that is indeed 
-confusing.
-
-Thanks,
-
-	Ingo
+---
+bod
