@@ -2,185 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1ED77917A5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810147917A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351276AbjIDM4t convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 08:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
+        id S1352980AbjIDM5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 08:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238314AbjIDM4s (ORCPT
+        with ESMTP id S229788AbjIDM5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 08:56:48 -0400
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3683189;
-        Mon,  4 Sep 2023 05:56:44 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-56cae50792fso93892eaf.1;
-        Mon, 04 Sep 2023 05:56:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693832204; x=1694437004;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nwUNZ8XDJgKW0fZT9OLuV5qQA3P+QbavqZqYpV+ByCE=;
-        b=YIJn3FaIk95P9OYzmhmd5n0zafiKLjZp5OTzjPtpNipgQpmREQUKGnHjWMwmAznwE3
-         3FbTBt4Ut456kQvdJ5BPbLPexsE/Hw/5CHixJP/sYWmUi+IyC7gtRQJUkxk9sqT6WWlR
-         jCE+k0m0PAWxhAh3T8tC7IqJPEmv+XomE3CnVg1SDx3RdmOvX8sA+7deMvv+Ir7Ikx0g
-         hYIX8ZimcTZoRyAzaICWdvwuyG1dSx8DztGOqdCyn7aYl0u8yKhQmFeiSm9hAbYX6Ff4
-         qKZ0wxGrC0Gqi+gg/2gGLrFX+2RQob/KlMzmJ24ooibAMbrWFu99f10djvSCcBN+TRQ3
-         mfwg==
-X-Gm-Message-State: AOJu0Yy8A8zq6OSZvnsTZGCDukW74uoTqig1qTcHyMQQ5gxHSqKGR//D
-        yW0/vs0KHpXctL2zClNxobVKFhjqddAev2i6X6Q=
-X-Google-Smtp-Source: AGHT+IFcx7uOzoUx0fgNk7l/l3nThQI9qNWuhiaDPOyqHVx3f3WoRSPr0B7twGtcmzQQGk5MeIAFd9IufqngKNXKgT0=
-X-Received: by 2002:a4a:d508:0:b0:56e:6532:467a with SMTP id
- m8-20020a4ad508000000b0056e6532467amr7723021oos.1.1693832204003; Mon, 04 Sep
- 2023 05:56:44 -0700 (PDT)
+        Mon, 4 Sep 2023 08:57:37 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4C19133;
+        Mon,  4 Sep 2023 05:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693832253;
+        bh=bRUFW1g/1Azskommok7qV2fv/XfzfAIWR8+N+fSYWSI=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=ufbLnGW6knPsxyPkd05SYSmAtFqPc9BB+EmV6+oaQ1ko2YGk6TsPBN52H2TKad+os
+         u0Ji4QvAM4K5lrNghxpApzI6npa25jex0uXPSI/XT3OLa4yP0jbN+bujXJoNHyPQ5H
+         h9Kx59AU4euCdxBzI5Odo004N5yGRGKsbsW9v49VYbKMOSkAzUwoG1OudS/Uu3v+qT
+         cynHT0FzYzuy3cZHyED4xHE+ADvp5QtZSapYGZG1kPtTEi5CzaoDziOGIhUzwYjgC1
+         NRGQ53RE9HvtF+aimhD8CBGMxzuA0MWus/zJQKGQn1fR0JSZRLCb1hdBIncL0pHF43
+         SW41aiRn9Z1sA==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RfTF90QfLz1NM8;
+        Mon,  4 Sep 2023 08:57:33 -0400 (EDT)
+Message-ID: <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
+Date:   Mon, 4 Sep 2023 08:58:48 -0400
 MIME-Version: 1.0
-References: <1870450.tdWV9SEqCh@kreacher> <8272147.T7Z3S40VBb@kreacher>
-In-Reply-To: <8272147.T7Z3S40VBb@kreacher>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 4 Sep 2023 14:56:33 +0200
-Message-ID: <CAJZ5v0h_0xe6L_ASBfcxktXbHD_0HWAVyAWKfgQ2nTkzsRzapA@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] thermal: Use thermal_tripless_zone_device_register()
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Sebastian Reichel <sre@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
+ systems
+Content-Language: en-US
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
+        trufanov@swemel.ru, vfh@swemel.ru,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20230904122114.66757-1-arefev@swemel.ru>
+ <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
+In-Reply-To: <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 8:36 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> All of the remaining callers of thermal_zone_device_register()
-> can use thermal_tripless_zone_device_register(), so make them
-> do so in order to allow the former to be dropped.
->
-> No intentional functional impact.
->
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On 9/4/23 08:42, Mathieu Desnoyers wrote:
+> On 9/4/23 08:21, Denis Arefev wrote:
+>> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+>> is subject to overflow due to a failure to cast operands to a larger
+>> data type before performing arithmetic.
+>>
+>> The maximum result of this subtraction is defined by the RCU_FANOUT
+>> or other srcu level-spread values assigned by rcu_init_levelspread(),
+>> which can indeed cause the signed 32-bit integer literal ("1") to 
+>> overflow
+>> when shifted by any value greater than 31.
+> 
+> We could expand on this:
+> 
+> The maximum result of this subtraction is defined by the RCU_FANOUT
+> or other srcu level-spread values assigned by rcu_init_levelspread(),
+> which can indeed cause the signed 32-bit integer literal ("1") to overflow
+> when shifted by any value greater than 31 on a 64-bit system.
+> 
+> Moreover, when the subtraction value is 31, the 1 << 31 expression results
+> in 0xffffffff80000000 when the signed integer is promoted to unsigned long
+> on 64-bit systems due to type promotion rules, which is certainly not the
+> intended result.
+> 
+>>
+>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> With the commit message updated with my comment above, please also add:
+> 
+> Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures 
+> containing callbacks")
+> Cc: <stable@vger.kernel.org> # v4.11
 
-Due to the lack of negative feedback, I'm going to assume that this
-patch in particular and the entire series in general is fine with
-everyone in the CC.
+Sorry, the line above should read:
 
-> ---
->  drivers/power/supply/power_supply_core.c                |    4 ++--
->  drivers/thermal/armada_thermal.c                        |    5 +++--
->  drivers/thermal/dove_thermal.c                          |    4 ++--
->  drivers/thermal/intel/int340x_thermal/int3400_thermal.c |    6 +++---
->  drivers/thermal/kirkwood_thermal.c                      |    4 ++--
->  drivers/thermal/spear_thermal.c                         |    4 ++--
->  6 files changed, 14 insertions(+), 13 deletions(-)
->
-> Index: linux-pm/drivers/power/supply/power_supply_core.c
-> ===================================================================
-> --- linux-pm.orig/drivers/power/supply/power_supply_core.c
-> +++ linux-pm/drivers/power/supply/power_supply_core.c
-> @@ -1305,8 +1305,8 @@ static int psy_register_thermal(struct p
->
->         /* Register battery zone device psy reports temperature */
->         if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_TEMP)) {
-> -               psy->tzd = thermal_zone_device_register(psy->desc->name,
-> -                               0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
-> +               psy->tzd = thermal_tripless_zone_device_register(psy->desc->name,
-> +                               psy, &psy_tzd_ops, NULL);
->                 if (IS_ERR(psy->tzd))
->                         return PTR_ERR(psy->tzd);
->                 ret = thermal_zone_device_enable(psy->tzd);
-> Index: linux-pm/drivers/thermal/armada_thermal.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/armada_thermal.c
-> +++ linux-pm/drivers/thermal/armada_thermal.c
-> @@ -876,8 +876,9 @@ static int armada_thermal_probe(struct p
->                 /* Wait the sensors to be valid */
->                 armada_wait_sensor_validity(priv);
->
-> -               tz = thermal_zone_device_register(priv->zone_name, 0, 0, priv,
-> -                                                 &legacy_ops, NULL, 0, 0);
-> +               tz = thermal_tripless_zone_device_register(priv->zone_name,
-> +                                                          priv, &legacy_ops,
-> +                                                          NULL);
->                 if (IS_ERR(tz)) {
->                         dev_err(&pdev->dev,
->                                 "Failed to register thermal zone device\n");
-> Index: linux-pm/drivers/thermal/dove_thermal.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/dove_thermal.c
-> +++ linux-pm/drivers/thermal/dove_thermal.c
-> @@ -139,8 +139,8 @@ static int dove_thermal_probe(struct pla
->                 return ret;
->         }
->
-> -       thermal = thermal_zone_device_register("dove_thermal", 0, 0,
-> -                                              priv, &ops, NULL, 0, 0);
-> +       thermal = thermal_tripless_zone_device_register("dove_thermal", priv,
-> +                                                       &ops, NULL);
->         if (IS_ERR(thermal)) {
->                 dev_err(&pdev->dev,
->                         "Failed to register thermal zone device\n");
-> Index: linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> +++ linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
-> @@ -609,9 +609,9 @@ static int int3400_thermal_probe(struct
->
->         evaluate_odvp(priv);
->
-> -       priv->thermal = thermal_zone_device_register("INT3400 Thermal", 0, 0,
-> -                                               priv, &int3400_thermal_ops,
-> -                                               &int3400_thermal_params, 0, 0);
-> +       priv->thermal = thermal_tripless_zone_device_register("INT3400 Thermal", priv,
-> +                                                             &int3400_thermal_ops,
-> +                                                             &int3400_thermal_params);
->         if (IS_ERR(priv->thermal)) {
->                 result = PTR_ERR(priv->thermal);
->                 goto free_art_trt;
-> Index: linux-pm/drivers/thermal/kirkwood_thermal.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/kirkwood_thermal.c
-> +++ linux-pm/drivers/thermal/kirkwood_thermal.c
-> @@ -71,8 +71,8 @@ static int kirkwood_thermal_probe(struct
->         if (IS_ERR(priv->sensor))
->                 return PTR_ERR(priv->sensor);
->
-> -       thermal = thermal_zone_device_register("kirkwood_thermal", 0, 0,
-> -                                              priv, &ops, NULL, 0, 0);
-> +       thermal = thermal_tripless_zone_device_register("kirkwood_thermal",
-> +                                                       priv, &ops, NULL);
->         if (IS_ERR(thermal)) {
->                 dev_err(&pdev->dev,
->                         "Failed to register thermal zone device\n");
-> Index: linux-pm/drivers/thermal/spear_thermal.c
-> ===================================================================
-> --- linux-pm.orig/drivers/thermal/spear_thermal.c
-> +++ linux-pm/drivers/thermal/spear_thermal.c
-> @@ -122,8 +122,8 @@ static int spear_thermal_probe(struct pl
->         stdev->flags = val;
->         writel_relaxed(stdev->flags, stdev->thermal_base);
->
-> -       spear_thermal = thermal_zone_device_register("spear_thermal", 0, 0,
-> -                               stdev, &ops, NULL, 0, 0);
-> +       spear_thermal = thermal_tripless_zone_device_register("spear_thermal",
-> +                                                             stdev, &ops, NULL);
->         if (IS_ERR(spear_thermal)) {
->                 dev_err(&pdev->dev, "thermal zone device is NULL\n");
->                 ret = PTR_ERR(spear_thermal);
->
->
->
+Cc: <stable@vger.kernel.org> # v4.11+
+
+Thanks,
+
+Mathieu
+
+> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> 
+> Thanks!
+> 
+> Mathieu
+> 
+>>
+>> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+>> ---
+>> v3: Changed the name of the patch, as suggested by
+>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>   kernel/rcu/srcutree.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>> index 20d7a238d675..6c18e6005ae1 100644
+>> --- a/kernel/rcu/srcutree.c
+>> +++ b/kernel/rcu/srcutree.c
+>> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct 
+>> srcu_struct *ssp, gfp_t gfp_flags)
+>>                   snp->grplo = cpu;
+>>               snp->grphi = cpu;
+>>           }
+>> -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+>> +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+>>       }
+>>       smp_store_release(&ssp->srcu_sup->srcu_size_state, 
+>> SRCU_SIZE_WAIT_BARRIER);
+>>       return true;
+>> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct 
+>> srcu_struct *ssp, struct srcu_node *snp
+>>       int cpu;
+>>       for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+>> -        if (!(mask & (1 << (cpu - snp->grplo))))
+>> +        if (!(mask & (1UL << (cpu - snp->grplo))))
+>>               continue;
+>>           srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+>>       }
+> 
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
