@@ -2,126 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD6A7916E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40E077916F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350566AbjIDMLx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 08:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
+        id S1348712AbjIDMRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 08:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbjIDMLw (ORCPT
+        with ESMTP id S229660AbjIDMRB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 08:11:52 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7865F1B8
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 05:11:48 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-523100882f2so1891022a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 05:11:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693829507; x=1694434307; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xyfz+f7VyGeUd0ysOTxZ3d34KQmY46MduGm04AnUCII=;
-        b=rYM381EFgBFi8E/Iyo6FVn5MYSQPJcqKqJ+ITf7UM8UIWTZHGOffztPVRCup+wrzov
-         wKgha5Di6MyJRqhJWB6XdUXcl5w2JUu/5PrZ4/NgflKz0sfwhDJI56kQagDaGLjZ7Y/W
-         YDOjCQf17SqyVGK6OjjOpS2W9xnBaGZmYPZ4NdQ6dE3sIT1i+uQmSleJ074I2VNK51AC
-         LbYOng7JcQnVLBnx5RKQzsJlx52A6h2imBGaU2slAhlh3hbWXfUk3tuTQbFxgS1HezxT
-         d3EgljWn7CM844/+EaXnIHDN0InNLJfYf93wDnTYz1xJ2U3b8nSoeRAHV31Cwd2IwXvp
-         6pew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693829507; x=1694434307;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xyfz+f7VyGeUd0ysOTxZ3d34KQmY46MduGm04AnUCII=;
-        b=RyJ2Rc4cWKD3t2Lr0TyeQqGcqo4dJlG6LNe/fjRXcj4Axw+nA4muw1Jm45BOpfEoBZ
-         eTlNwm8+SOedEg+HAsPBXKKSUX94WF4FW05GSGk6OxkmwpE7aSYhDlAMSH/mGOQC2kXE
-         jTL9UMNZcdStxnR8SUVVADWGzE4N6gkQk7eayo8hf/nTKh8bjDC87h2Xg/Xa54pAQ1hX
-         E2GayK9xGD6ZjHfPOPT8C4QhwjYmeVLdgDpDTvh6okC1UvIQ+ExYmSQrBMpaF7Z8pwFp
-         XsTzcYU0S91XQ+PGdwIbD+eluhFAmMu/IdMoWvdFScS1VTt6okRn3VWH1p++kbkST1vL
-         fiRg==
-X-Gm-Message-State: AOJu0YwerjeuEopkSwkQ96gxA8inWNHE9QYGIrdamN8TlBA/NATIwq8C
-        Dh1Wq0f/Wez3HhDN+BEqUWINSQ==
-X-Google-Smtp-Source: AGHT+IFB2Jh7XUiVV5an3Jp+fAAPvez8NEAQzLDG1i59tLqMZgGpLkp9bUYtaUJ+4kgbsc/ATfvo6g==
-X-Received: by 2002:a05:6402:120b:b0:51e:2e39:9003 with SMTP id c11-20020a056402120b00b0051e2e399003mr6398291edw.40.1693829506925;
-        Mon, 04 Sep 2023 05:11:46 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id i19-20020a056402055300b005233609e39dsm5821877edx.30.2023.09.04.05.11.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 05:11:46 -0700 (PDT)
-Message-ID: <97b82a16-8710-9430-35c8-673381aaa417@linaro.org>
-Date:   Mon, 4 Sep 2023 14:11:44 +0200
+        Mon, 4 Sep 2023 08:17:01 -0400
+X-Greylist: delayed 158 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Sep 2023 05:16:54 PDT
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8EF31B7
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 05:16:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1693829634; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=bTgf2n1VCtl3BLE/yWNc0X3TX33ry6pCiep9Oo1qfp22tLLQi5dywyBelpvhJgkxLZ
+    yKuAoBjbgZat99wUEeu5GSKn0zZquBIFrm8f0osOB8Cl89Lng1A4fSKuOrDfyeqRiRC1
+    0D8xac/YgsqRtSpOROjwKTfydp9gtbh2LUUdvgESFuIjxuWIwKbR4hWyKGsmYyxkC/RZ
+    A54PAM9uH7Sjz8jDJpTvZMYOQKkouv/li0/keAImz1Sz3XQ5rkNOsGcBoigZ+KsV3N2B
+    JAOAekccfiympXEhaq5LiNePewmyYTsjbkI1PfAVblTs+DugNA0zxPiEdLlIKWefrWzm
+    +j+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1693829634;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=0xfmDclHXl8EADHN1AY4A5Wn7lVSKuYJQwOtTZAxW1s=;
+    b=hchpbVpu1vTobwXA/O+WyWvnpp82JeCoKQL6qCZB3ytp1/kuQkYSFeLs5ObKRqO6Ib
+    /ylrDFGrq9oEfQOrkNKRofnbVvAd6iMi+3h87/6sdfCJSZTS3mJuCPFCUU3oy7wcWPk9
+    ePo8tplFjx9RjqFKVI36fZc4VFQlRHQErKkFHviziGFQOS32jF3cC8pmlJejDJude0nQ
+    0IR6w64FIslX+NU1zHrv4UEd6KUsxDsKNK0cWaq9dKxfYtU7iPImTqiNlg8vA7b1FjAY
+    BPQftp7IzV2iCd4lp+sL1KRX+h9Kwd1tdoT8/ATpIb/64K130LKOvdTaIxPAousxa1xc
+    y44A==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1693829634;
+    s=strato-dkim-0002; d=aepfle.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=0xfmDclHXl8EADHN1AY4A5Wn7lVSKuYJQwOtTZAxW1s=;
+    b=QLAZgtWrftCQJi1fpbuLm0EakdK4gzNSoKd3OYWSJ/fLWhBiVn1AoL5LnxVjqIuRyv
+    8vhIYRPyk0M6rP3Mmdq6Pn1NxOHh0+dlIk+j6uBa7uNESu6sLscDbk/o6kU/lwKYFkmg
+    pCw7uImjE1IlOMvg+rbhEC95Mts8TtZoDu9nuewk3Ngqryb7VCT8s0ICGq2duHfzZuqo
+    apaQIex6oPCVyKF0tcCJfdKwvRBAqvuAy4kOqeQVZsL2iSsExxjKkI47xW8hIcfhvl32
+    Q6wmCbsEPzPm175Gh6BxAwLXrwcrCbzo6PbIPGpj4Hd16CVGTCQBIpE726zBoMhKwMYV
+    Me6w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1693829634;
+    s=strato-dkim-0003; d=aepfle.de;
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=0xfmDclHXl8EADHN1AY4A5Wn7lVSKuYJQwOtTZAxW1s=;
+    b=y6FqxRaeq7hfO7rBRv8oRDcGfFpGpB1lG7Ufrh/O0iEuU2RPTjhQD0+cM0GATYTb/l
+    kjirpZPQZD96RZA4H4Cg==
+X-RZG-AUTH: ":P2EQZWCpfu+qG7CngxMFH1J+3q8wa/QXkBR9MXjAuzpIG0mv9coXAg4xrVn7F5otYd+QgnvMgMBBq+8hhN3EzOMmjnoZDw=="
+Received: from sender
+    by smtp.strato.de (RZmta 49.8.2 AUTH)
+    with ESMTPSA id C03bb5z84CDqJqw
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Mon, 4 Sep 2023 14:13:52 +0200 (CEST)
+From:   Olaf Hering <olaf@aepfle.de>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH v1] cpu/hotplug: remove unused cpuhp_state CPUHP_AP_X86_VDSO_VMA_ONLINE
+Date:   Mon,  4 Sep 2023 14:13:50 +0200
+Message-Id: <20230904121350.18055-1-olaf@aepfle.de>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: arm64: dts: mediatek: Add mt8395-evk
- board
-Content-Language: en-US
-To:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
- <e2e35d4d-7853-fccc-28c2-b8ecf309d6ec@linaro.org>
- <00f0a1cf-6246-92e9-13b0-cf31bb292a94@mediatek.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <00f0a1cf-6246-92e9-13b0-cf31bb292a94@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/09/2023 11:50, Macpaul Lin wrote:
-> 
-> 
-> On 9/4/23 17:33, Krzysztof Kozlowski wrote:
->> 	
->>
->> External email : Please do not click links or open attachments until you 
->> have verified the sender or the content.
->>
->> On 04/09/2023 11:20, Macpaul Lin wrote:
->>> Add bindings for the MediaTek mt8395-evk board.
->>> The mt8359-evk board is also named as "Genio 1200-EVK".
->>> MT8195 and MT8395 are the same family series SoC could share
->>
->> How can be the same and have different numbers? You sill need dedicated
->> compatible.
->>
-> 
-> The SoCs mt8195 and mt8395 are designed for different market application 
-> and physical characteristics, using different efuse values for 
-> distinction. The booting flow and configurations are controllered by the 
-> boot loaders, firmware, and TF-A. Therefore, the part numbers and 
-> procurement channels are different. The detail information of these 
-> efuse values is proprietary, so I cant disclose it futher. Hence the 
-> most of peripheral drivers and base address are almost the same.
+Commit b2e2ba578e01 ("x86/vdso: Initialize the CPU/node NR segment
+descriptor earlier") removed the single user of this constant.
 
-1. Drivers? So we talk about compatibility, not the same.
-2. "almost the same" is not the same. Follow the guidelines for writing
-bindings.
+Remove it to reduce the size of cpuhp_hp_states[].
 
+Signed-off-by: Olaf Hering <olaf@aepfle.de>
+---
+ include/linux/cpuhotplug.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Best regards,
-Krzysztof
-
+diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+index 25b6e6e6ba6b..6e18bb63b98d 100644
+--- a/include/linux/cpuhotplug.h
++++ b/include/linux/cpuhotplug.h
+@@ -205,7 +205,6 @@ enum cpuhp_state {
+ 	CPUHP_AP_KVM_ONLINE,
+ 	CPUHP_AP_SCHED_WAIT_EMPTY,
+ 	CPUHP_AP_SMPBOOT_THREADS,
+-	CPUHP_AP_X86_VDSO_VMA_ONLINE,
+ 	CPUHP_AP_IRQ_AFFINITY_ONLINE,
+ 	CPUHP_AP_BLK_MQ_ONLINE,
+ 	CPUHP_AP_ARM_MVEBU_SYNC_CLOCKS,
