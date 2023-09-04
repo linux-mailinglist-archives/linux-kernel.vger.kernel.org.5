@@ -2,112 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0868B79152F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:55:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B7FA79154B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:57:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241190AbjIDJyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 05:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
+        id S245107AbjIDJ5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 05:57:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232545AbjIDJyk (ORCPT
+        with ESMTP id S243886AbjIDJ5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 05:54:40 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C6E10EF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 02:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693821262; x=1725357262;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=lku24LhtQTBzblJkGEguDMUBTScmcHBrbWYLmqavMRQ=;
-  b=kH7xmdR+CoetbYy0zvxmEI6YI1RbUzAKozJeHnrCK9j/qaIc6NMDfla2
-   RupolZWjdLfX1luYUdWJOxmDtYNi4FjAulriNBAL0lwsmLw2EDw9+9RPL
-   iIq2S+quV5+OJt+W/q+K1FQFhHelNB62daapxcKlu4WdxNMyXWFqqI/F6
-   5QP1ZPTp/M8gonRvSKEx911PqUhdbQDR0GJE5SoevEot7j1Isz/q2cs0n
-   RPN+NVTD5vC2G3da3qjx5JE7e0VZCNJWDvyXIlm4Rc52v2YiR7f4bPKgH
-   cwF4NHfy0nlRxho3JMZ2PoYbRkxscUOhNUHyKJUn7G+ALhWJ6t8evWL1L
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="356060030"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="356060030"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 02:54:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="743878457"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="743878457"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga007.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 02:54:20 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qd6Hi-006ONY-0O;
-        Mon, 04 Sep 2023 12:54:18 +0300
-Date:   Mon, 4 Sep 2023 12:54:17 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] zorro: Use helpers from ioport.h
-Message-ID: <ZPWpSSvOlcroyRWi@smile.fi.intel.com>
-References: <20230831121623.36293-1-andriy.shevchenko@linux.intel.com>
- <CAMuHMdVoDDV-VgPJL75u_t3KeAPhb1xEFX2VigVC3oS51pG6wA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdVoDDV-VgPJL75u_t3KeAPhb1xEFX2VigVC3oS51pG6wA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Sep 2023 05:57:44 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 741C5E3;
+        Mon,  4 Sep 2023 02:57:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B720BB80DE3;
+        Mon,  4 Sep 2023 09:57:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F895C433C8;
+        Mon,  4 Sep 2023 09:57:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693821448;
+        bh=KCgrMSpReKkomAvjrgAyI+M74AruhN3j2aeC3Jx7Y+g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MpQRi+AyB0glohPHvUIs5L0PJBy56ywLS/W3DOBlGZczOTro6uLRuZXW19unGTcYD
+         Tp4cFFCkpNKYDGLzLltFyVr2zlrSidWZKX6Jqo5OA9+0G9uNbKE8HTBm7V4QF+XZAZ
+         FsQmWEAin7RKf/Se/pjD6v3Dj17PeDCTchxVwQaYjPJE6j4y+W+K1oM8xFi6VZQjT9
+         Qg4mHRo6TW7ULwrjc7A5lLZ+H3Q2BIdodMI++Tv30dspoBcLn03g9iKl+gQsYoPU2p
+         Iju5S1r3VUsVfsYFQY/8rv22rkS4a4ekB77raDYFciJl30Rh3Ca2KZOEHJ1umIhBvF
+         w+VvKYzOmRa4Q==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qd6Kj-00ANAe-VB;
+        Mon, 04 Sep 2023 10:57:26 +0100
+Date:   Mon, 04 Sep 2023 10:57:24 +0100
+Message-ID: <86o7iidzwb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Xu Zhao <zhaoxu.35@bytedance.com>
+Cc:     oliver.upton@linux.dev, james.morse@arm.com,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [RFC v2] KVM: arm/arm64: optimize vSGI injection performance
+In-Reply-To: <20230825015811.5292-1-zhaoxu.35@bytedance.com>
+References: <20230825015811.5292-1-zhaoxu.35@bytedance.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: zhaoxu.35@bytedance.com, oliver.upton@linux.dev, james.morse@arm.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 11:31:03AM +0200, Geert Uytterhoeven wrote:
-> Hi Andy,
+On Fri, 25 Aug 2023 02:58:11 +0100,
+Xu Zhao <zhaoxu.35@bytedance.com> wrote:
 > 
-> On Thu, Aug 31, 2023 at 2:16 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > We can use the DEFINE_RES_MEM_NAMED() macro and resource_contains() helper
-> > instead of reimplementing them in the code. No functional change intended.
-> >
-> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> In a VM with more than 16 vCPUs (with multiple aff0 groups), if the target 
+> vCPU of a vSGI exceeds 16th vCPU, kvm needs to iterate from vCPU0 until 
+> the target vCPU is found. However, affinity routing information is provided 
+> by the ICC_SGI* register, which allows kvm to bypass other aff0 groups, 
+> iterating only on the aff0 group that the target vCPU located. It reduces 
+> the maximum iteration times from the total number of vCPUs to 16, or even 
+> 8 times.
 > 
-> Thanks for your patch!
-> 
-> > --- a/drivers/zorro/zorro.c
-> > +++ b/drivers/zorro/zorro.c
-> > @@ -117,17 +117,13 @@ static struct resource __init *zorro_find_parent_resource(
-> >         int i;
-> >
-> >         for (i = 0; i < bridge->num_resources; i++) {
-> > -               struct resource *r = &bridge->resource[i];
-> > -
-> > -               if (zorro_resource_start(z) >= r->start &&
-> > -                   zorro_resource_end(z) <= r->end)
-> > -                       return r;
-> > +               if (resource_contains(&bridge->resource[i], &z->resource)
-> 
-> Missing closing parenthesis. What happened to your cross-compiler?
-> 
-> Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> i.e. will queue in the m68k for-v6.7 branch, with the above fixed.
+> This patch aims to optimize the vSGI injecting performance of injecting 
+> target exceeds 16th vCPU in vm with more than 16 vCPUs.
 
-I have usually three problems with it:
-1) wrong branch to test;
-2) no proper config is enabled;
-3) other things due to my stupidity.
+The problem is that you optimise it for the default case, and break it
+for *everything* else.
 
-Choose one for this on your taste :-)
+[...]
 
-AFAIU you fixed that locally and applied (or going to). Thank you!
-Otherwise tell me if I need to resend.
+> The performance of VM witch 32 cores improvement can be observed. When
+> injecting SGI into the first vCPU of the first aff0 group, the performance 
+> remains the same as before (because the number of iteration is also 1), 
+> but there is an improvement in performance when injecting interrupts into 
+> the last vCPU. When injecting vSGI into the first and last vCPU of the 
+> second aff0 group, the performance improvement is significant because 
+> compared to the original algorithm, it skipped iterates the first aff0 
+> group.
+> 
+> BTW, performance improvement can also be observed by microbench in 
+> kvm-unit-test with little modification :add 32 cores initialization, 
+> then change IPI target CPU in function ipi_exec.
+> 
+> The more vcpu a VM has, the greater the performance improvement of injecting 
+> vSGI into the vCPU in the last aff0 group.
+> 
+> Signed-off-by: Xu Zhao <zhaoxu.35@bytedance.com>
+> ---
+>  arch/arm64/kvm/vgic/vgic-mmio-v3.c | 152 ++++++++++++++---------------
+>  include/linux/kvm_host.h           |   5 +
+>  2 files changed, 78 insertions(+), 79 deletions(-)
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio-v3.c b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> index 188d2187eede..af8f2d6b18c3 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio-v3.c
+> @@ -1013,44 +1013,64 @@ int vgic_v3_has_attr_regs(struct kvm_device *dev, struct kvm_device_attr *attr)
+>  
+>  	return 0;
+>  }
+> +
+>  /*
+> - * Compare a given affinity (level 1-3 and a level 0 mask, from the SGI
+> - * generation register ICC_SGI1R_EL1) with a given VCPU.
+> - * If the VCPU's MPIDR matches, return the level0 affinity, otherwise
+> - * return -1.
+> + * Get affinity routing index from ICC_SGI_* register
+> + * format:
+> + *     aff3       aff2       aff1	aff0
+> + * |- 8 bits -|- 8 bits -|- 8 bits -|- 4 bits -|
+>   */
+> -static int match_mpidr(u64 sgi_aff, u16 sgi_cpu_mask, struct kvm_vcpu *vcpu)
+> +static unsigned long sgi_to_affinity(unsigned long reg)
+>  {
+> -	unsigned long affinity;
+> -	int level0;
+> +	u64 aff;
+>  
+> -	/*
+> -	 * Split the current VCPU's MPIDR into affinity level 0 and the
+> -	 * rest as this is what we have to compare against.
+> -	 */
+> -	affinity = kvm_vcpu_get_mpidr_aff(vcpu);
+> -	level0 = MPIDR_AFFINITY_LEVEL(affinity, 0);
+> -	affinity &= ~MPIDR_LEVEL_MASK;
+> +	/* aff3 - aff1 */
+> +	aff = (((reg) & ICC_SGI1R_AFFINITY_3_MASK) >> ICC_SGI1R_AFFINITY_3_SHIFT) << 16 |
+> +		(((reg) & ICC_SGI1R_AFFINITY_2_MASK) >> ICC_SGI1R_AFFINITY_2_SHIFT) << 8 |
+> +		(((reg) & ICC_SGI1R_AFFINITY_1_MASK) >> ICC_SGI1R_AFFINITY_1_SHIFT);
+
+Here, you assume that you can directly map a vcpu index to an
+affinity. It would be awesome if that was the case. However, this is
+only valid at reset time, and userspace is perfectly allowed to change
+this mapping by writing to the vcpu's MPIDR_EL1.
+
+So this won't work at all if userspace wants to set its own specific
+CPU numbering.
+
+	M.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Without deviation from the norm, progress is not possible.
