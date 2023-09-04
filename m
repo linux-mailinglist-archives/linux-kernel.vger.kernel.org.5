@@ -2,105 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2D079142E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:58:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DF58791438
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237807AbjIDI6g convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 04:58:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S1346667AbjIDI7H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 04:59:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241290AbjIDI6c (ORCPT
+        with ESMTP id S236003AbjIDI7F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 04:58:32 -0400
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC70D133;
-        Mon,  4 Sep 2023 01:58:16 -0700 (PDT)
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7a25184a648so363167241.2;
-        Mon, 04 Sep 2023 01:58:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693817896; x=1694422696;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MNvuvCQg6I1mCa+hfsjZ+j7ixM+pQZ/tdnNCPg/yYZg=;
-        b=FW3DX8YYVLZLBvlC2d7+oa8VRVxwX+GL55XHEvQGB+Vp0QTO5jWy0nRTsMUcMiNV2V
-         MIfo6Sy0RvE/BwFSdKQk3oyukH2BkALHLzLtuJdjYAHhlTdOznCSmnNQ3cxX8HXPSbqO
-         esZZYylvjPr8xsBi3XP9jhQt7g+RJaAA89iln9PmA7l9oT1Nw2wd8v1+CNvDWU5sMbqE
-         uGccQjaz/Y7Eu2bNkMOL05SlSCMiZGOluWKJkKcl/OpbteUn8dkZnOEvhOU8lPkSyQb7
-         oaZ7VoxEwkH1eq3JvzkPxb6nkd8Ccn3YwyA+5SHxzjvINH/ngd0KrD/CwPGqQ87RMNpj
-         uGnw==
-X-Gm-Message-State: AOJu0YxAG1RBQc8kI0c3+yozJ2YdGokdKGxBEMdWAcedsCRr8SfPxstA
-        RENB7sXHINNagHwCfZnFbQJmMEwpfiileQ==
-X-Google-Smtp-Source: AGHT+IH4xr2wYFy824wDQk808v1cROTJdpkukX2nqlA8IqligBAtZCTaK5ES9hqwPvbVkLn6XbvdsQ==
-X-Received: by 2002:a05:6102:1354:b0:44d:476b:3bc0 with SMTP id j20-20020a056102135400b0044d476b3bc0mr8094372vsl.28.1693817895777;
-        Mon, 04 Sep 2023 01:58:15 -0700 (PDT)
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com. [209.85.221.169])
-        by smtp.gmail.com with ESMTPSA id p9-20020a67e1c9000000b0044d4acde4bcsm1765168vsl.32.2023.09.04.01.58.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 01:58:15 -0700 (PDT)
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-48d0bfd352eso467154e0c.2;
-        Mon, 04 Sep 2023 01:58:15 -0700 (PDT)
-X-Received: by 2002:a1f:cd85:0:b0:48d:149e:1a41 with SMTP id
- d127-20020a1fcd85000000b0048d149e1a41mr7462346vkg.8.1693817895390; Mon, 04
- Sep 2023 01:58:15 -0700 (PDT)
+        Mon, 4 Sep 2023 04:59:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157D518C;
+        Mon,  4 Sep 2023 01:58:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693817939; x=1725353939;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=W7fo/oErm2qTTpiwFnbFqLwIaJ6SfixvCi/d8bot2KQ=;
+  b=XDLgGvSKKjNIurgWbOILdcDGKzWRemOp83ASvunv5S2qnpBgWm7th1im
+   8z0AW8gQlusLWmr/BfDlkFQRP/WP7b69GOhip1XKVAaVM+AHQ8rB/f6La
+   RkNNrnCNsxKFOXc2teGzVudoYSFBMPLqlwjTy735FU0T3Tm8L9NSKWBOo
+   g1RU8AP1QdVDyEu/y08jAgcRmeawGoNMYj/Z8NWMZ+waxIXNIfxZbKQQm
+   i+q9SPemd3Y8HQR+vRi9mSupgmxZrgcFbMGwlOF1h9JaurrMQX/bamzjn
+   RDUW3YAqYKRvE7MgtXsTya/8QnjtSamMDmHcrtZov1rkf+y/uQSnb58Ja
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="379269245"
+X-IronPort-AV: E=Sophos;i="6.02,225,1688454000"; 
+   d="scan'208";a="379269245"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 01:58:58 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="740679273"
+X-IronPort-AV: E=Sophos;i="6.02,225,1688454000"; 
+   d="scan'208";a="740679273"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga002.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 01:58:55 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qd5Q4-006NZP-2P;
+        Mon, 04 Sep 2023 11:58:52 +0300
+Date:   Mon, 4 Sep 2023 11:58:52 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] gpio: sim: don't fiddle with GPIOLIB private members
+Message-ID: <ZPWcTMPiu4MSq+F7@smile.fi.intel.com>
+References: <20230901183240.102701-1-brgl@bgdev.pl>
+ <ZPJTT/l9fX1lhu6O@smile.fi.intel.com>
+ <CAMRc=Mekf9Rek3_G2ttQY+yBvWM3+P4RAWVOQH99eajn38F+og@mail.gmail.com>
 MIME-Version: 1.0
-References: <a03a6e1d-e99c-40a3-bdac-0075b5339beb@gmail.com>
-In-Reply-To: <a03a6e1d-e99c-40a3-bdac-0075b5339beb@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 4 Sep 2023 10:58:03 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVTQdj5OUHX7em3Zhiy1n935DVJBb0LKk1+_azmzQNxxg@mail.gmail.com>
-Message-ID: <CAMuHMdVTQdj5OUHX7em3Zhiy1n935DVJBb0LKk1+_azmzQNxxg@mail.gmail.com>
-Subject: Re: ARM BCM53573 SoC hangs/lockups caused by locks/clock/random changes
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Waiman Long <longman@redhat.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openwrt-devel@lists.openwrt.org,
-        bcm-kernel-feedback-list@broadcom.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Mekf9Rek3_G2ttQY+yBvWM3+P4RAWVOQH99eajn38F+og@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafał,
+On Sat, Sep 02, 2023 at 04:40:05PM +0200, Bartosz Golaszewski wrote:
+> On Fri, Sep 1, 2023 at 11:10 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Fri, Sep 01, 2023 at 08:32:40PM +0200, Bartosz Golaszewski wrote:
 
-On Mon, Sep 4, 2023 at 10:35 AM Rafał Miłecki <zajec5@gmail.com> wrote:
-> 2. Clock (arm,armv7-timer)
->
-> While comparing main clock in Broadcom's SDK with upstream one I noticed
-> a tiny difference: mask value. I don't know it it makes any sense but
-> switching from CLOCKSOURCE_MASK(56) to CLOCKSOURCE_MASK(64) in
-> arm_arch_timer.c (to match SDK) increases average uptime (time before a
-> hang/lockup happens) from 4 minutes to 36 minutes.
+...
 
-That code path is used only for type != ARCH_TIMER_TYPE_CP15,
-but your kernel log
+> > > -static void gpio_sim_free(struct gpio_chip *gc, unsigned int offset)
+> >
+> > Why is this?
+> 
+> Dunno, some git shenanigans?
 
-    arch_timer: cp15 timer(s) running at 0.03MHz (virt).
+Time to use --patience then?
 
-suggest that type == ARCH_TIMER_TYPE_CP15?!?
+...
 
-Gr{oetje,eeting}s,
+> > > -     /* Used by sysfs and configfs callbacks. */
+> > > -     dev_set_drvdata(&gc->gpiodev->dev, chip);
+> > > +     /* Used by sysfs callbacks. */
+> > > +     dev_set_drvdata(swnode->dev, chip);
+> >
+> > dev pointer of firmware node is solely for dev links. Is it the case here?
+> > Seems to me you luckily abuse it.
+> 
+> I don't think so. If anything we have a helper in the form of
+> get_dev_from_fwnode() but it takes reference to the device while we
+> don't need it - we know it'll be there because we created it.
+> 
+> This information (struct device of the GPIO device) can also be
+> retrieved by iterating over the device children of the top platform
+> device and comparing their fwnodes against the one we got passed down
+> from probe() but it's just so many extra steps.
+> 
+> Or we can have a getter in gpio/driver.h for that but I don't want to
+> expose another interface is we can simply use the fwnode.
 
-                        Geert
+dev pointer in the fwnode strictly speaking is optional. No-one, except
+its solely user, should rely on it (its presence and lifetime).
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+With Best Regards,
+Andy Shevchenko
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+
