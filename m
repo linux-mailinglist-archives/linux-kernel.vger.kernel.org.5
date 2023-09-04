@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2486791625
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:18:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E815679160C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242581AbjIDLSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 07:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S1343785AbjIDLIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 07:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjIDLSC (ORCPT
+        with ESMTP id S237479AbjIDLIE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 07:18:02 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15801E3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 04:17:59 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1qd7Nu-0007D3-GP; Mon, 04 Sep 2023 13:04:46 +0200
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1qd7Ns-003rVV-AK; Mon, 04 Sep 2023 13:04:44 +0200
-Received: from mtr by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <mtr@pengutronix.de>)
-        id 1qd7Nr-00110g-Um; Mon, 04 Sep 2023 13:04:43 +0200
-Date:   Mon, 4 Sep 2023 13:04:43 +0200
-From:   Michael Tretter <m.tretter@pengutronix.de>
-To:     Inki Dae <daeinki@gmail.com>
-Cc:     Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 2/5] drm/bridge: samsung-dsim: reread ref clock before
- configuring PLL
-Message-ID: <20230904110443.GB224131@pengutronix.de>
-References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
- <20230818-samsung-dsim-v1-2-b39716db6b7a@pengutronix.de>
- <CAAQKjZOuRVsF7vE6ghBG7KH_QkE-5_UXjXMY080ynzZLpDjs7w@mail.gmail.com>
+        Mon, 4 Sep 2023 07:08:04 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBD61A8;
+        Mon,  4 Sep 2023 04:08:01 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68a3ced3ec6so1080098b3a.1;
+        Mon, 04 Sep 2023 04:08:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693825681; x=1694430481; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vGFV9RdXIBN+D6ZdfrgNJVd3fOxwTgeaUelyWOQ2VLY=;
+        b=P4HHYwe/lGYUHUcIo7rzodEvZICEtwk+0Ph1c3fzHY6TvTHOnYGsM4D9sFYlGXCjua
+         uXqHkP5jUzYtwQguzt+e31tuIxxYv9PuHByLWjhMdbKYn6p/oblIqvz0r/ssttMLRyzB
+         vhePK8UYSLgk1K6XzkbcL0ZVRKEqAo+k4hWwjmY1eRI2210xtOPDEEBEfPx57/t9lmTg
+         aTzGrVAqu4xhN0w4DogwiDoRir2VPiZK2RJHwBlgE/IJ7t9WG4tmf8Y+nNdVkck8br+U
+         1+XJHveDhjh44PmPJsv4US2NeMQp/jWowTdFdUbp6KvJiJeCx7NXrwB3KmlqKDVaM1Kf
+         Dypg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693825681; x=1694430481;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vGFV9RdXIBN+D6ZdfrgNJVd3fOxwTgeaUelyWOQ2VLY=;
+        b=if3Sz0dsPhb+drOBxpX/TNPbawx61BIRNZ4hK2A8AEhcsp5cIHRvGdu+wTA8ecsjDE
+         CrXpfM81Ko9/ALvVuymf+nAfCBxkUW8Aei+RxDpmYC9m6TXQ9ulmTUZt2A96VzT/DFpr
+         zzqebWzN0i6onEFBMV1TKmXc0c813WKQRTE8JS2iqwZqgNM6p/1zWxmgD6yOnNkzvxri
+         Buc0h60oyA0ZMio07rFjpgiZ8zPDpIH+mzsa9LHzkhb35eo/uNgU918Slsy+1gg8H6Xc
+         pOZsuqR7eCrspPcOb88VX8gbHQCaHvZvvdA/uFMiLBEK0I+0TBLsMzfZ2haYF/Msw7xV
+         wVrA==
+X-Gm-Message-State: AOJu0Yy+UCAC4egg8Uvahbp7JiLlNhsIDXCR7UGtLLZeQCERRu3/sgAW
+        hTH+StuhBkKpqyQUbghsPAk=
+X-Google-Smtp-Source: AGHT+IGSm6XZ2nlG25arT69VYYhZ7sC3wwO1vhYk8pWlyzLHNDl72ZVoXTbaPcZuHWIZviCz6S9daQ==
+X-Received: by 2002:a05:6a00:1585:b0:68c:3ef6:2170 with SMTP id u5-20020a056a00158500b0068c3ef62170mr12481566pfk.34.1693825680516;
+        Mon, 04 Sep 2023 04:08:00 -0700 (PDT)
+Received: from [192.168.0.106] ([103.124.138.83])
+        by smtp.gmail.com with ESMTPSA id p22-20020a62ab16000000b006870721fcc5sm7396453pff.175.2023.09.04.04.07.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 04:07:59 -0700 (PDT)
+Message-ID: <8af186ba-5f64-2102-8f9c-3969b0906893@gmail.com>
+Date:   Mon, 4 Sep 2023 18:07:54 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAQKjZOuRVsF7vE6ghBG7KH_QkE-5_UXjXMY080ynzZLpDjs7w@mail.gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mtr@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Claudio Sampaio <patola@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Linux NVMe <linux-nvme@lists.infradead.org>,
+        Linux Stable <stable@vger.kernel.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: Fwd: Lexar NM790 SSDs are not recognized anymore after 6.1.50 LTS
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,117 +78,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Sep 2023 13:38:33 +0900, Inki Dae wrote:
-> 2023년 8월 29일 (화) 오전 12:59, Michael Tretter <m.tretter@pengutronix.de>님이 작성:
-> 
-> >
-> > The PLL reference clock may change at runtime. Thus, reading the clock
-> > rate during probe is not sufficient to correctly configure the PLL for
-> > the expected hs clock.
-> >
-> > Read the actual rate of the reference clock before calculating the PLL
-> > configuration parameters.
-> >
-> > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
-> > ---
-> >  drivers/gpu/drm/bridge/samsung-dsim.c | 16 +++++++++-------
-> >  include/drm/bridge/samsung-dsim.h     |  1 +
-> >  2 files changed, 10 insertions(+), 7 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
-> > index 6778f1751faa..da90c2038042 100644
-> > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> > @@ -611,7 +611,12 @@ static unsigned long samsung_dsim_set_pll(struct samsung_dsim *dsi,
-> >         u16 m;
-> >         u32 reg;
-> >
-> > -       fin = dsi->pll_clk_rate;
-> > +       if (dsi->pll_clk)
-> > +               fin = clk_get_rate(dsi->pll_clk);
-> > +       else
-> > +               fin = dsi->pll_clk_rate;
-> > +       dev_dbg(dsi->dev, "PLL ref clock freq %lu\n", fin);
-> > +
-> 
-> Could you share us the actual use case that in runtime the pll
-> reference clock can be changed?
+Hi,
 
-On i.MX8M Nano, the VIDEO_PLL_CLK drives the DISPLAY_PIXEL_CLK_ROOT, which is
-used as pixel clock by the LCDIF. Changes to the pixel clock propagate to the
-VIDEO_PLL_CLK and may reconfigure the VIDEO_PLL_CLK. This is done to reduce
-the error on the pixel clock.
+I notice a regression report on Bugzilla [1]. Quoting from it:
 
-As the ADV3575 as MIPI-DSI device reconstructs the pixel clock, it is
-necessary to keep the pixel clock and MIDI-DSI reference clock in
-sync. This can be done by using the VIDEO_PLL_CLK to drive the PLL reference
-clock (MIPI_DSI_CORE_CLK_ROOT). Without this, a connected HDMI Monitor will
-occasionally loose sync.
+> I bought a new 4 TB Lexar NM790 and I was using kernel 6.3.13 at the time. It wasn't recognized, with these messages in dmesg:
+> 
+> [ 358.950147] nvme nvme0: pci function 0000:06:00.0
+> [ 358.958327] nvme nvme0: Device not ready; aborting initialisation, CSTS=0x0
+> 
+> My other NVMe appears correctly in the nvme list though.
+> 
+> 
+> So I tried using other kernels I had installed at the time: 6.3.7, 6.4.10, 6.5.0rc6, 6.5.0, 6.5.1 and none of these recognized the disk.
+> I installed the 6.1.50 lts kernel from arch repositories (I can compile my own too if this would be an issue) and then the device was correctly recognized:
+> 
+> [    4.654613] nvme 0000:06:00.0: platform quirk: setting simple suspend
+> [    4.654632] nvme nvme0: pci function 0000:06:00.0
+> [    4.667290] nvme nvme0: allocated 40 MiB host memory buffer.
+> [    4.709473] nvme nvme0: 16/0/0 default/read/poll queues
+> 
+> And then it appears alongside the other nvme:
+> [15:58] [6836] [patola@risadinha patola]% sudo nvme list
+> Node                  Generic               SN                   Model                                    Namespace  Usage                      Format           FW Rev  
+> --------------------- --------------------- -------------------- ---------------------------------------- ---------- -------------------------- ---------------- --------
+> /dev/nvme1n1          /dev/ng1n1            2K36292CEKD9         XPG GAMMIX S11 Pro                       0x1          1.39  TB /   2.05  TB    512   B +  0 B   42B4S9NA
+> /dev/nvme0n1          /dev/ng0n1            NF9755R000057P2202   Lexar SSD NM790 4TB                      0x1          4.10  TB /   4.10  TB    512   B +  0 B   12237   
+> 
+> And I was able to read and write from it, pvcreate and so on, so it's working. But I can't use a higher kernel version so apparently this is a regression.
+> 
+> There are other people with the same NVMe model (although different capacities) reporting the same issue on this reddit thread: https://www.reddit.com/r/archlinux/comments/15xbxeo/nvme_device_not_ready_aborting_initialisation/
+> 
+> I am not sure but I think this issue might've been introducted after this patch: https://bugzilla.kernel.org/show_bug.cgi?id=215742
 
-In this setup, a mode change that changes the pixel clock may change the
-VIDEO_PLL, which will change the PLL reference clock.
+See Bugzilla for the full thread and proposed quirk fix.
 
-> 
-> This patch is trying to change clock binding behavior which is
-> described in dt binding[1]
-> [1] Documentation/devicetree/bindings/display/bridge/samsung,mipi-dsim.yaml
-> 
-> It says,
-> "DISM oscillator clock frequency. If absent, the clock frequency of
-> sclk_mipi will be used instead."
-> 
-> However, this patch makes the sclk_mipi to be used first.
+Anyway, I'm adding this regression to be tracked by regzbot:
 
-No, the behavior, as described in the dt binding, is preserved by the hunk
-below. dsi->pll_clk is only set, if the samsung,pll-clock-frequency property
-is absent. If the dt property exists, dsi->pll_clk will be NULL and
-dsi->pll_clk_rate will be used here.
+#regzbot introduced: v6.1.50..v6.3.13 https://bugzilla.kernel.org/show_bug.cgi?id=217863
+#regzbot link: https://www.reddit.com/r/archlinux/comments/15xbxeo/nvme_device_not_ready_aborting_initialisation/
 
-Michael
+Thanks.
 
-> 
-> Thanks,
-> Inki Dae
-> 
-> >         fout = samsung_dsim_pll_find_pms(dsi, fin, freq, &p, &m, &s);
-> >         if (!fout) {
-> >                 dev_err(dsi->dev,
-> > @@ -1821,18 +1826,15 @@ static int samsung_dsim_parse_dt(struct samsung_dsim *dsi)
-> >         u32 lane_polarities[5] = { 0 };
-> >         struct device_node *endpoint;
-> >         int i, nr_lanes, ret;
-> > -       struct clk *pll_clk;
-> >
-> >         ret = samsung_dsim_of_read_u32(node, "samsung,pll-clock-frequency",
-> >                                        &dsi->pll_clk_rate, 1);
-> >         /* If it doesn't exist, read it from the clock instead of failing */
-> >         if (ret < 0) {
-> >                 dev_dbg(dev, "Using sclk_mipi for pll clock frequency\n");
-> > -               pll_clk = devm_clk_get(dev, "sclk_mipi");
-> > -               if (!IS_ERR(pll_clk))
-> > -                       dsi->pll_clk_rate = clk_get_rate(pll_clk);
-> > -               else
-> > -                       return PTR_ERR(pll_clk);
-> > +               dsi->pll_clk = devm_clk_get(dev, "sclk_mipi");
-> > +               if (IS_ERR(dsi->pll_clk))
-> > +                       return PTR_ERR(dsi->pll_clk);
-> >         }
-> >
-> >         /* If it doesn't exist, use pixel clock instead of failing */
-> > diff --git a/include/drm/bridge/samsung-dsim.h b/include/drm/bridge/samsung-dsim.h
-> > index 05100e91ecb9..31ff88f152fb 100644
-> > --- a/include/drm/bridge/samsung-dsim.h
-> > +++ b/include/drm/bridge/samsung-dsim.h
-> > @@ -87,6 +87,7 @@ struct samsung_dsim {
-> >         void __iomem *reg_base;
-> >         struct phy *phy;
-> >         struct clk **clks;
-> > +       struct clk *pll_clk;
-> >         struct regulator_bulk_data supplies[2];
-> >         int irq;
-> >         struct gpio_desc *te_gpio;
-> >
-> > --
-> > 2.39.2
-> >
-> 
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=217863
+
+-- 
+An old man doll... just what I always wanted! - Clara
