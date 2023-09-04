@@ -2,60 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D4D0A79191B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E5179191D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351664AbjIDNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51812 "EHLO
+        id S1351102AbjIDNsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:48:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347747AbjIDNs3 (ORCPT
+        with ESMTP id S1350983AbjIDNsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:48:29 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F04E170D;
-        Mon,  4 Sep 2023 06:48:23 -0700 (PDT)
-Date:   Mon, 04 Sep 2023 13:48:20 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693835301;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=otnQIUtjVCVy162nyXJjyBsoULeNjLd2WaaoV4qD1E4=;
-        b=E/4wsoDLUQYfn94n5PU5r7MC4TzqOekYuRFjJc2yvBMn+upA9Qi6tYGA++E4Rv37K1yt5x
-        Z1Sxe/4zKTLEyhiOS6RQd23ghSAWh1V2sGo8aV20613EcYlSUEXdaiFcC0t3sBLVwLggTh
-        rB253pDoKxQgB824MXWvk/SinLJ4BB48Hxbin+dwhr1jh1b+mqyMo+ADgrgyrNo3sYrdS1
-        yrpF/jDN5rVggCyv96yfR2QXp0QPlwJvqLmUjS3JompVkQepYbcvMW/YJjd9A24NSvJo1W
-        E/vUGTYzqUrNUeYvVIsQd7tTdYaqbYj5TWs4kyZJu8eRK0Huo6qcgPzxF4CVXw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693835301;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=otnQIUtjVCVy162nyXJjyBsoULeNjLd2WaaoV4qD1E4=;
-        b=mUC3z74yTsE1qrM/ICGdAcB953ORs0A2xYbuau9qAMTciFHmhR+Rg3bCnOHsO8beYvr2LO
-        irbhi167ZedvipCA==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/smp: Don't send INIT to non-present and non-booted CPUs
-Cc:     Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasant Hegde <vasant.hegde@amd.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <87cyzwjbff.ffs@tglx>
-References: <87cyzwjbff.ffs@tglx>
+        Mon, 4 Sep 2023 09:48:30 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFC301711
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 06:48:23 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9a5be3166a2so204140266b.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 06:48:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1693835302; x=1694440102; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h3fvlfFXn3XSbLUjhzD0K7O7WyFDtRiY642hHRw1Uek=;
+        b=XVJ61loohnlCQppZrhwndbL54iwlD/8QOhM6wmWdcBvTspmbye0CLST7U7jAScrOMc
+         7ihwNbvTWteWCXJB/6aT9yaZZiGrcFZ3PhVtd/xw62S6Q1nZoC2nXzqsFXArw1l489wR
+         B/+YDR/53KDwYxyIebSnFmvvukpK/8hbm+OVBMWZSgEj89jU9jbIXWmsGWpdg/WrdrP3
+         yC5FjnLos2TWnpFpPX4MiC1kJfbxU4D1H0hKVufQqa+aCV4h5OllYme5DCQnx7Lwoe/r
+         0knHcaD0zfZQGSPeHw7PrUMJIusBy/vkYtjjz1cxGWc/RgxqTs4ab/at/Kay8GicCFFf
+         AdZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693835302; x=1694440102;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h3fvlfFXn3XSbLUjhzD0K7O7WyFDtRiY642hHRw1Uek=;
+        b=TU3CSGoY+Pw6j/waH/H/iHt4Oj0PggzLfhecb39xy8CNFWUtwItkBrUxhBEGgFBIj1
+         1BUF3m+QSBaYwfjPdpPclEUE3lJBkFiIxiyU6oBQMSzjneSIk4pcQ+iPjuMLJfB3LeiD
+         PqKmWf0A2oIdFmSrMwwjICRL6KvjqH9kN7dwprieTOy7riMtJCqOiRsUEmbuSJaGtVS9
+         Rg7IIFRbkzsaaj/R7OMvF8PHH/+1ec5vQVvAMydttr+XdFQyUBhinByX801Y+rTSE1DV
+         Z4LkRg/9WtWJGl5TXHHRIYk5gnMwhqH7Hfp+4ORlIb/dFIXF7s0sNYvYlscnfV3Gecrh
+         uKpg==
+X-Gm-Message-State: AOJu0YyvnrLytBaCjUQk7m2PSVfiwe8t5aMRn2bSUPReCHfPCw0yU6ne
+        sprQfFMmBuNRdEJrloSl3oO3qg==
+X-Google-Smtp-Source: AGHT+IEdmuQ6wKTsIKPR4BXTBtwQWbUG0Viumxey9/oZVxntWMhJSLmNtJQgpZUnWcUIixf4ahyhVQ==
+X-Received: by 2002:a17:907:2e19:b0:9a1:ce57:8e47 with SMTP id ig25-20020a1709072e1900b009a1ce578e47mr7114400ejc.68.1693835302263;
+        Mon, 04 Sep 2023 06:48:22 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id h26-20020a1709062dda00b009a1fef32ce6sm6233554eji.177.2023.09.04.06.48.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 06:48:21 -0700 (PDT)
+Date:   Mon, 4 Sep 2023 15:48:21 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     Haibo Xu <haibo1.xu@intel.com>
+Cc:     xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Guo Ren <guoren@kernel.org>,
+        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Aaron Lewis <aaronlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Lei Wang <lei4.wang@intel.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        Like Xu <likexu@tencent.com>, Peter Gonda <pgonda@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Thomas Huth <thuth@redhat.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Michal Luczaj <mhal@rbox.co>, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvm-riscv@lists.infradead.org
+Subject: Re: [PATCH v2 6/8] KVM: riscv: selftests: Add guest helper to get
+ vcpu id
+Message-ID: <20230904-db7e8ba933a271ef6aafa4b3@orel>
+References: <cover.1693659382.git.haibo1.xu@intel.com>
+ <23d13f60b5a2fd31b87ae78458507f46442fac3a.1693659382.git.haibo1.xu@intel.com>
 MIME-Version: 1.0
-Message-ID: <169383530091.27769.15770168191921146668.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <23d13f60b5a2fd31b87ae78458507f46442fac3a.1693659382.git.haibo1.xu@intel.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,47 +104,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Sat, Sep 02, 2023 at 08:59:28PM +0800, Haibo Xu wrote:
+> Add guest_get_vcpuid() helper to simplify accessing to per-cpu
+> private data. The sscratch CSR was used to store the vcpu id.
+> 
+> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
+> ---
+>  tools/testing/selftests/kvm/include/aarch64/processor.h | 4 ----
+>  tools/testing/selftests/kvm/include/kvm_util_base.h     | 2 ++
+>  tools/testing/selftests/kvm/lib/riscv/processor.c       | 8 ++++++++
+>  3 files changed, 10 insertions(+), 4 deletions(-)
+>
 
-Commit-ID:     3f874c9b2aae8e30463efc1872bea4baa9ed25dc
-Gitweb:        https://git.kernel.org/tip/3f874c9b2aae8e30463efc1872bea4baa9ed25dc
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Wed, 09 Aug 2023 20:52:20 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 04 Sep 2023 15:41:42 +02:00
-
-x86/smp: Don't send INIT to non-present and non-booted CPUs
-
-Vasant reported that kexec() can hang or reset the machine when it tries to
-park CPUs via INIT. This happens when the kernel is using extended APIC,
-but the present mask has APIC IDs >= 0x100 enumerated.
-
-As extended APIC can only handle 8 bit of APIC ID sending INIT to APIC ID
-0x100 sends INIT to APIC ID 0x0. That's the boot CPU which is special on
-x86 and INIT causes the system to hang or resets the machine.
-
-Prevent this by sending INIT only to those CPUs which have been booted
-once.
-
-Fixes: 45e34c8af58f ("x86/smp: Put CPUs into INIT on shutdown if possible")
-Reported-by: Dheeraj Kumar Srivastava <dheerajkumar.srivastava@amd.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Vasant Hegde <vasant.hegde@amd.com>
-Link: https://lore.kernel.org/r/87cyzwjbff.ffs@tglx
----
- arch/x86/kernel/smpboot.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index d7667a2..4e45ff4 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1250,7 +1250,7 @@ bool smp_park_other_cpus_in_init(void)
- 	if (this_cpu)
- 		return false;
- 
--	for_each_present_cpu(cpu) {
-+	for_each_cpu_and(cpu, &cpus_booted_once_mask, cpu_present_mask) {
- 		if (cpu == this_cpu)
- 			continue;
- 		apicid = apic->cpu_present_to_apicid(cpu);
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
