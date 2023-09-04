@@ -2,149 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E59ED791BE9
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:16:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB540791BED
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:17:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348530AbjIDRQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 13:16:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43880 "EHLO
+        id S1349125AbjIDRR4 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 13:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbjIDRQh (ORCPT
+        with ESMTP id S233853AbjIDRRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 13:16:37 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE60BCDB;
-        Mon,  4 Sep 2023 10:16:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 42EC8CE0D97;
-        Mon,  4 Sep 2023 17:16:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A17A7C433C7;
-        Mon,  4 Sep 2023 17:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693847790;
-        bh=z4DqNpdUXkSKlQCerbH71YbBffTnlz8ppckUvbWEgAQ=;
-        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
-        b=md5B188Jx02TkRvw+Bm3W0gIyIOB9yoLiHlUfYrh2D49+oWLDh0LuF+zWS2FE3PCi
-         MtnHlqvA2nWmJuAEMD9O+PUPe1BcqOp62MEmDm0Z6F3q6WRSt6vcJOXqcupdFvz2IH
-         qo6riPdThjGHj38cBjFRaJDu4gRAnYHq/v5rg0OhBc7PLMDw/fGB+FB81WW+GJq8OP
-         Gj1h9vqa0gVZ0+BFGYtAsp8TlljaLh+y/Uy1xKDhyuGbJ5csPlZg2+xvxMK9gbzVYl
-         HuWjua9bBdeqoAs0xFhmoAESHvYmT26al8kvEWI8Y00Ql6+CiB+QOtGVQlDOD3jMsF
-         4s+6BFW0zCc0w==
-Content-Type: text/plain; charset="utf-8"
+        Mon, 4 Sep 2023 13:17:55 -0400
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0822CDB;
+        Mon,  4 Sep 2023 10:17:51 -0700 (PDT)
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1c134602a55so390357fac.1;
+        Mon, 04 Sep 2023 10:17:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693847871; x=1694452671;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8k0ChYUiH1C/yKr25inV4dt0+WLlcX9Vgm2MaZ38ABQ=;
+        b=BGAFknwiphQdMSP/tx7yWaHA5XoF0/kPBJ7AYRDyETh+8os07YnK7E4TUVYXH7x9Fz
+         +HtED1dDAhb+pP38w84gxsRZJb7dk/v1rKm6wXfv4Z9lj80icns7/RgIiopQyfLnsN0I
+         dW3F8/oBtPrPJ+aqsvm/z4e0aGX/r0TWjx46vQjbUONHTLJ+JfEFGH/D9J9xlsN3wqpw
+         9pEEhuluGHJszWfp5SQ/caT/9K4L2g/ozMciNTtXB35MwR1Z5MMZkBX/IB6tY1VoyrQG
+         eKhuA/gs4GblfZlJ/8TJgZS8SfZEBOEB6BQ/8bAPcw/C6pe93WWp4DPWd8SN1r/QhUAG
+         2YPQ==
+X-Gm-Message-State: AOJu0YzD+2Ih07n70T0LvlLkvqz+h36PGgLiRZ8/aMI1gSZO+FfjoS6D
+        l5o2yqgx6ld7c7b5sgzawmOa96J47SUlq06XEdE=
+X-Google-Smtp-Source: AGHT+IF/FrH15T3TcgVVDQM/HgBHTYL0uKRLYlu4zAVKHcaZ+3itB33hR3wkfKx7nA9AF614kjJfVrhiiVMMfuHcPOA=
+X-Received: by 2002:a4a:764d:0:b0:573:55af:777c with SMTP id
+ w13-20020a4a764d000000b0057355af777cmr9524198ooe.0.1693847870994; Mon, 04 Sep
+ 2023 10:17:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v2 1/3] wifi: mwifiex: Fix tlv_buf_left calculation
-From:   Kalle Valo <kvalo@kernel.org>
-In-Reply-To: <06668edd68e7a26bbfeebd1201ae077a2a7a8bce.1692931954.git.gustavoars@kernel.org>
-References: <06668edd68e7a26bbfeebd1201ae077a2a7a8bce.1692931954.git.gustavoars@kernel.org>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Brian Norris <briannorris@chromium.org>,
-        Amitkumar Karwar <akarwar@marvell.com>,
-        Xinming Hu <huxm@marvell.com>, Dan Williams <dcbw@redhat.com>,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
-Message-ID: <169384778670.3420994.16227760665746324390.kvalo@kernel.org>
-Date:   Mon,  4 Sep 2023 17:16:28 +0000 (UTC)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 4 Sep 2023 19:17:40 +0200
+Message-ID: <CAJZ5v0i5XLwN8vpR+MdECHVusMBowtWfDb-fQZDjip+hcoagMA@mail.gmail.com>
+Subject: [GIT PULL] More thermal control updates for v6.6-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Gustavo A. R. Silva" <gustavoars@kernel.org> wrote:
+Hi Linus,
 
-> In a TLV encoding scheme, the Length part represents the length after
-> the header containing the values for type and length. In this case,
-> `tlv_len` should be:
-> 
-> tlv_len == (sizeof(*tlv_rxba) - 1) - sizeof(tlv_rxba->header) + tlv_bitmap_len
-> 
-> Notice that the `- 1` accounts for the one-element array `bitmap`, which
-> 1-byte size is already included in `sizeof(*tlv_rxba)`.
-> 
-> So, if the above is correct, there is a double-counting of some members
-> in `struct mwifiex_ie_types_rxba_sync`, when `tlv_buf_left` and `tmp`
-> are calculated:
-> 
-> 968                 tlv_buf_left -= (sizeof(*tlv_rxba) + tlv_len);
-> 969                 tmp = (u8 *)tlv_rxba + tlv_len + sizeof(*tlv_rxba);
-> 
-> in specific, members:
-> 
-> drivers/net/wireless/marvell/mwifiex/fw.h:777
->  777         u8 mac[ETH_ALEN];
->  778         u8 tid;
->  779         u8 reserved;
->  780         __le16 seq_num;
->  781         __le16 bitmap_len;
-> 
-> This is clearly wrong, and affects the subsequent decoding of data in
-> `event_buf` through `tlv_rxba`:
-> 
-> 970                 tlv_rxba = (struct mwifiex_ie_types_rxba_sync *)tmp;
-> 
-> Fix this by using `sizeof(tlv_rxba->header)` instead of `sizeof(*tlv_rxba)`
-> in the calculation of `tlv_buf_left` and `tmp`.
-> 
-> This results in the following binary differences before/after changes:
-> 
-> | drivers/net/wireless/marvell/mwifiex/11n_rxreorder.o
-> | @@ -4698,11 +4698,11 @@
-> |  drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:968
-> |                 tlv_buf_left -= (sizeof(tlv_rxba->header) + tlv_len);
-> | -    1da7:      lea    -0x11(%rbx),%edx
-> | +    1da7:      lea    -0x4(%rbx),%edx
-> |      1daa:      movzwl %bp,%eax
-> |  drivers/net/wireless/marvell/mwifiex/11n_rxreorder.c:969
-> |                 tmp = (u8 *)tlv_rxba  + sizeof(tlv_rxba->header) + tlv_len;
-> | -    1dad:      lea    0x11(%r15,%rbp,1),%r15
-> | +    1dad:      lea    0x4(%r15,%rbp,1),%r15
-> 
-> The above reflects the desired change: avoid counting 13 too many bytes;
-> which is the total size of the double-counted members in
-> `struct mwifiex_ie_types_rxba_sync`:
-> 
-> $ pahole -C mwifiex_ie_types_rxba_sync drivers/net/wireless/marvell/mwifiex/11n_rxreorder.o
-> struct mwifiex_ie_types_rxba_sync {
-> 	struct mwifiex_ie_types_header header;           /*     0     4 */
-> 
->      |-----------------------------------------------------------------------
->      |  u8                         mac[6];               /*     4     6 */  |
->      |	u8                         tid;                  /*    10     1 */  |
->      |  u8                         reserved;             /*    11     1 */  |
->      | 	__le16                     seq_num;              /*    12     2 */  |
->      | 	__le16                     bitmap_len;           /*    14     2 */  |
->      |  u8                         bitmap[1];            /*    16     1 */  |
->      |----------------------------------------------------------------------|
-> 								  | 13 bytes|
-> 								  -----------
-> 
-> 	/* size: 17, cachelines: 1, members: 7 */
-> 	/* last cacheline: 17 bytes */
-> } __attribute__((__packed__));
-> 
-> Fixes: 99ffe72cdae4 ("mwifiex: process rxba_sync event")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> Reviewed-by: Kees Cook <keescook@chromium.org>
+Please pull from the tag
 
-3 patches applied to wireless.git, thanks.
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ thermal-6.6-rc1-2
 
-eec679e4ac5f wifi: mwifiex: Fix tlv_buf_left calculation
-c7847241de28 wifi: mwifiex: Replace one-element array with flexible-array member in struct mwifiex_ie_types_rxba_sync
-d5a93b7d2877 wifi: mwifiex: Sanity check tlv_len and tlv_bitmap_len
+with top-most commit 8289d810ea85755a9d22f75785806cb34eecd5e5
 
--- 
-https://patchwork.kernel.org/project/linux-wireless/patch/06668edd68e7a26bbfeebd1201ae077a2a7a8bce.1692931954.git.gustavoars@kernel.org/
+ thermal: core: Rework .get_trend() thermal zone callback
 
-https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
+on top of commit 36534782b584389afd281f326421a35dcecde1ec
 
+ Merge tag 'thermal-6.6-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more thermal control updates for 6.6-rc1.
+
+These are mostly updates of thermal control drivers for ARM platforms,
+new thermal control support for Loongson-2 and a couple of core cleanups
+made possible by recent changes merged previously.
+
+Specifics:
+
+  - Check if the Tegra BPMP supports the trip points in order to set the
+    .set_trips callback (Mikko Perttunen).
+
+  - Add new Loongson-2 thermal sensor along with the DT bindings (Yinbo
+    Zhu).
+
+  - Use IS_ERR_OR_NULL() helper to replace a double test on the TI
+    bandgap sensor (Li Zetao).
+
+  - Remove redundant platform_set_drvdata() calls, as there are no
+    corresponding calls to platform_get_drvdata(), from a bunch of
+    drivers (Andrei Coardos).
+
+  - Switch the Mediatek LVTS mode to filtered in order to enable
+    interrupts (Nícolas F. R. A. Prado).
+
+  - Fix Wvoid-pointer-to-enum-cast warning on the Exynos TMU (Krzysztof
+    Kozlowski).
+
+  - Remove redundant dev_err_probe(), because the underlying function
+    already called it, from the Mediatek sensor (Chen Jiahao).
+
+   - Free calibration nvmem after reading it on sun8i (Mark Brown).
+
+   - Remove useless comment from the sun8i driver (Yangtao Li).
+
+   - Make tsens_xxxx_nvmem static to fix a sparse warning on QCom
+     tsens (Min-Hua Chen).
+
+   - Remove error message at probe deferral on imx8mm (Ahmad Fatoum).
+
+   - Fix parameter check in lvts_debugfs_init() with IS_ERR() on
+     Mediatek LVTS (Minjie Du).
+
+   - Fix interrupt routine and configuration for Mediatek LVTS (Nícolas
+     F. R. A. Prado).
+
+   - Drop unused .get_trip_type(), .get_trip_temp() and .get_trip_hyst()
+     thermal zone callbacks from the core and rework the .get_trend()
+     one to take a trip point pointer as an argument (Rafael Wysocki).
+
+Thanks!
+
+
+---------------
+
+Ahmad Fatoum (1):
+      thermal/drivers/imx8mm: Suppress log message on probe deferral
+
+Andrei Coardos (8):
+      thermal/drivers/broadcom/sr-thermal: Removed call to
+platform_set_drvdata()
+      thermal/drivers/k3_j72xx_bandgap: Removed unneeded call to
+platform_set_drvdata()
+      thermal/drivers/k3_bandgap: Remove unneeded call to platform_set_drvdata()
+      thermal/drivers/broadcom/brcstb_thermal: Removed unneeded
+platform_set_drvdata()
+      thermal/drivers/sun8i_thermal: Remove unneeded call to
+platform_set_drvdata()
+      thermal/drivers/mediatek/auxadc_thermal: Removed call to
+platform_set_drvdata()
+      thermal/drivers/max77620_thermal: Removed unneeded call to
+platform_set_drvdata()
+      thermal/drivers/generic-adc: Removed unneeded call to
+platform_set_drvdata()
+
+Chen Jiahao (1):
+      thermal/drivers/mediatek: Clean up redundant dev_err_probe()
+
+Krzysztof Kozlowski (1):
+      thermal/drivers/samsung: Fix Wvoid-pointer-to-enum-cast warning
+
+Li Zetao (1):
+      thermal/drivers/ti-soc-thermal: Use helper function IS_ERR_OR_NULL()
+
+Mark Brown (1):
+      thermal/drivers/sun8i: Free calibration nvmem after reading it
+
+Mikko Perttunen (1):
+      thermal/drivers/tegra-bpmp: Check if BPMP supports trip points
+
+Min-Hua Chen (1):
+      thermal/drivers/tsens: Make tsens_xxxx_nvmem static
+
+Minjie Du (1):
+      thermal/drivers/mediatek/lvts: Fix parameter check in lvts_debugfs_init()
+
+Nícolas F. R. A. Prado (7):
+      thermal/drivers/mediatek/lvts_thermal: Handle IRQ on all controllers
+      thermal/drivers/mediatek/lvts_thermal: Honor sensors in immediate mode
+      thermal/drivers/mediatek/lvts_thermal: Use offset threshold for IRQ
+      thermal/drivers/mediatek/lvts_thermal: Disable undesired interrupts
+      thermal/drivers/mediatek/lvts_thermal: Don't leave threshold zeroed
+      thermal/drivers/mediatek/lvts_thermal: Manage threshold between sensors
+      thermal/drivers/mediatek/lvts_thermal: Make readings valid in
+filtered mode
+
+Rafael J. Wysocki (2):
+      thermal: core: Drop unused .get_trip_*() callbacks
+      thermal: core: Rework .get_trend() thermal zone callback
+
+Ruan Jinjie (1):
+      thermal/drivers/db8500: Remove redundant of_match_ptr()
+
+Yangtao Li (1):
+      thermal/drivers/sun8i: Remove unneeded comments
+
+Yinbo Zhu (2):
+      thermal/drivers/loongson-2: Add thermal management support
+      thermal: dt-bindings: add loongson-2 thermal
+
+---------------
+
+ .../bindings/thermal/loongson,ls2k-thermal.yaml    |  44 ++++++
+ MAINTAINERS                                        |   8 +
+ drivers/acpi/thermal.c                             |  41 +++--
+ drivers/thermal/Kconfig                            |  12 ++
+ drivers/thermal/Makefile                           |   1 +
+ drivers/thermal/broadcom/brcmstb_thermal.c         |   1 -
+ drivers/thermal/broadcom/sr-thermal.c              |   1 -
+ drivers/thermal/db8500_thermal.c                   |   2 +-
+ drivers/thermal/imx8mm_thermal.c                   |   6 +-
+ drivers/thermal/k3_bandgap.c                       |   1 -
+ drivers/thermal/k3_j72xx_bandgap.c                 |   2 -
+ drivers/thermal/loongson2_thermal.c                | 169 ++++++++++++++++++++
+ drivers/thermal/max77620_thermal.c                 |   2 -
+ drivers/thermal/mediatek/auxadc_thermal.c          |   2 -
+ drivers/thermal/mediatek/lvts_thermal.c            | 175 +++++++++++++++------
+ drivers/thermal/qcom/tsens-v0_1.c                  |   6 +-
+ drivers/thermal/qcom/tsens-v1.c                    |   2 +-
+ drivers/thermal/samsung/exynos_tmu.c               |   2 +-
+ drivers/thermal/sun8i_thermal.c                    |   8 +-
+ drivers/thermal/tegra/tegra-bpmp-thermal.c         |  52 +++++-
+ drivers/thermal/thermal-generic-adc.c              |   1 -
+ drivers/thermal/thermal_core.c                     |   2 +-
+ drivers/thermal/thermal_core.h                     |   2 +-
+ drivers/thermal/thermal_helpers.c                  |   3 +-
+ drivers/thermal/thermal_trip.c                     |  24 +--
+ drivers/thermal/ti-soc-thermal/ti-bandgap.c        |   2 +-
+ drivers/thermal/ti-soc-thermal/ti-thermal-common.c |   3 +-
+ include/linux/thermal.h                            |  34 ++--
+ 28 files changed, 468 insertions(+), 140 deletions(-)
