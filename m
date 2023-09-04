@@ -2,206 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCD379198A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682EC79198E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237249AbjIDOTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:19:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46106 "EHLO
+        id S1344672AbjIDOVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:21:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbjIDOTb (ORCPT
+        with ESMTP id S230410AbjIDOVH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:19:31 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7521F9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:19:27 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        Mon, 4 Sep 2023 10:21:07 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3879CC8
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:21:02 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id E4924100006;
+        Mon,  4 Sep 2023 17:21:00 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E4924100006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1693837260;
+        bh=K5PBNaEmVwQgh+6nGxCDIICD8oocRdp+hUWhXTnxwNc=;
+        h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type:From;
+        b=WFvefeOXqRQ1KVlw/NKqBA5QtXZ8OJWV0iXBX+N6MJgdiIhYS62bo8C4j8ALDzkiv
+         +1gvdehgu5frKMYrEUr+/1i2B1iQvR3DHehb9B7/s1FWzspU4jTKfLrBpinsap8m3f
+         jPKnGvTafSfb7Vmh2Fw/YYUtN/oyTCljJbA/fhCx9oFfKnvK/n8ntZj/VETE9GMA1r
+         s5Q3gfoDhZK3DQV6n8EOPrrLHp9R26u7S+VfhAi75JZzCYEUZjcuaVyXAVZv73A4cG
+         JcrLgEGmlT4zMzFd4vbgjpR5r+Jlqm35ndSx3cS6UlWB2bvbZYtMj0LK3qimaffSvD
+         AXNeBo6YuhCJg==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 6877E1F74B;
-        Mon,  4 Sep 2023 14:19:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693837166; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZyvTQgedaKJiXqYqHMHvZpVK9xDlcrEcgSXeNgH5y7s=;
-        b=ze/PHRCf0o+oQqa2PSxUBd/KNP88WPgMgvbSYok7YpnohHajGoxM3Oi4xL3cRirh3WcF49
-        XdXsCVkDitUuJNgKdfqf+RWgQeSbYAlU5ZzuBq7hyhhDR6WsLHZ9saVhIQ67Pwt9TjzSex
-        S/8lXQOSWdrL3k/4eNxQiJ1DCUh4e/Y=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693837166;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZyvTQgedaKJiXqYqHMHvZpVK9xDlcrEcgSXeNgH5y7s=;
-        b=EAvTdHE/Fypb+E6WbzgejmmnOZgcep1aME65uCh0FdmSKEYKpdp+TeUsnKQlIkv6S9N7pe
-        CcxT81tZ6BZBRhBQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0B11613425;
-        Mon,  4 Sep 2023 14:19:26 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id hCGzAW7n9WRhKQAAMHmgww
-        (envelope-from <tiwai@suse.de>); Mon, 04 Sep 2023 14:19:26 +0000
-Date:   Mon, 04 Sep 2023 16:19:25 +0200
-Message-ID: <87il8qja1e.wl-tiwai@suse.de>
-From:   Takashi Iwai <tiwai@suse.de>
-To:     Shenghao Ding <shenghao-ding@ti.com>
-Cc:     <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
-        <lgirdwood@gmail.com>, <perex@perex.cz>,
-        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <mengdong.lin@intel.com>, <baojun.xu@ti.com>,
-        <thomas.gfeller@q-drop.com>, <peeyush@ti.com>, <navada@ti.com>,
-        <broonie@kernel.org>, <gentuser@gmail.com>
-Subject: Re: [PATCH v2] ALSA: hda/tas2781: Revert structure name back to cs35l41_dev_name
-In-Reply-To: <20230904140140.1253-1-shenghao-ding@ti.com>
-References: <20230904140140.1253-1-shenghao-ding@ti.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Mon,  4 Sep 2023 17:21:00 +0300 (MSK)
+Received: from [192.168.1.146] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Mon, 4 Sep 2023 17:20:59 +0300
+Message-ID: <90a53eda-bbeb-dffa-0f90-6fd229f555e6@sberdevices.ru>
+Date:   Mon, 4 Sep 2023 17:20:59 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2 2/2] mtd: spinand: micron: fixing the offset for OOB
+From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+CC:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>
+References: <20230822122534.872646-1-mmkurbanov@sberdevices.ru>
+ <20230822122534.872646-3-mmkurbanov@sberdevices.ru>
+ <20230822153556.630e65b9@xps-13>
+ <01925ff8-1d19-a729-429a-89866fad319f@sberdevices.ru>
+ <20230823104143.760cc5bc@xps-13>
+ <f873d775-cda9-302d-a651-0113c7c7dc84@sberdevices.ru>
+ <20230823133956.0a505a20@xps-13>
+ <ccf3099f-0e10-a87c-be83-4a414f01dca7@sberdevices.ru>
+Content-Language: en-US
+In-Reply-To: <ccf3099f-0e10-a87c-be83-4a414f01dca7@sberdevices.ru>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179629 [Sep 04 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2;sberdevices.ru:5.0.1,7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/04 08:01:00 #21789634
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-3.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 04 Sep 2023 16:01:40 +0200,
-Shenghao Ding wrote:
-> 
-> Revert structure name back to cs35l41_dev_name and redefine
-> tas2781_generic_fixup.
+Hi Miquel,
 
-Again, please describe *why* you need to do this.
-That's the most important part.  And, if you write the reason for the
-change, you can re-evaluate whether it really makes sense in that
-regard.
-
-
-thanks,
-
-Takashi
-
+On 24.08.2023 12:35, Martin Kurbanov wrote:
 > 
-> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 > 
-> ---
-> Changes in v2:
->  - Add more description on why revert structure name back to
->    cs35l41_dev_name
->  - Redefine tas2781_generic_fixup, remove hid argument, and do not use
->    structure scodec_dev_name any more in tas2781_generic_fixup.
->  - remove cs35l41_dev_name from comp_match_tas2781_dev_name, which is
->    useless. bus name is passed by tas2781_generic_fixup, hid is actually
->    "TIAS2781", can be hardcode and unneeded argument passed from
->    tas2781_generic_fixup.
->    Index is a redundant member, and never used in tas2781 hda driver.
->  - revert from scodec_dev_name back to cs35l41_dev_name, tas2781 pass only
->    bus name instead of cs35l41_dev_name, so it seemed unnecessary for
->    tas2781.
-> ---
->  sound/pci/hda/patch_realtek.c | 27 ++++++++++-----------------
->  1 file changed, 10 insertions(+), 17 deletions(-)
+> On 23.08.2023 14:39, Miquel Raynal wrote:
+>> Hi Martin,
+>>
+>> mmkurbanov@sberdevices.ru wrote on Wed, 23 Aug 2023 14:33:57 +0300:
+>>
+>>> Hi Miquel,
+>>>
+>>> On 23.08.2023 11:41, Miquel Raynal wrote:
+>>>> Hi Martin,
+>>>>
+>>>> I don't think the four bytes have any "bad block specific" meaning. In
+>>>> practice, the datasheet states:
+>>>>
+>>>> 	Value programmed for bad block at the first byte of spare
+>>>> 	area: 00h
+>>>>
+>>>> So only the first byte is used to mark the block bad, the rest is
+>>>> probably marked "reserved" for simplicity. I believe we should keep the
+>>>> current layout because it would otherwise break users for no real
+>>>> reason.  
+>>>
+>>> I agree with you that this can break the work of users who use OOB.
+>>> However, I believe it would be more appropriate to use an offset of 4,
+>>> as the micron chip can use all 4 bytes for additional data about the
+>>> bad block. So, there is a non-zero probability of losing OOB data in
+>>> the reserved area (2 bytes) when the hardware chip attempts to mark
+>>> the block as bad.
+>>
+>> Is this really a process the chip can do? Aren't bad blocks factory
+>> marked only?
 > 
-> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-> index a07df6f929..c3e410152b 100644
-> --- a/sound/pci/hda/patch_realtek.c
-> +++ b/sound/pci/hda/patch_realtek.c
-> @@ -6745,7 +6745,7 @@ static void comp_generic_playback_hook(struct hda_pcm_stream *hinfo, struct hda_
->  	}
->  }
->  
-> -struct scodec_dev_name {
-> +struct cs35l41_dev_name {
->  	const char *bus;
->  	const char *hid;
->  	int index;
-> @@ -6754,7 +6754,7 @@ struct scodec_dev_name {
->  /* match the device name in a slightly relaxed manner */
->  static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
->  {
-> -	struct scodec_dev_name *p = data;
-> +	struct cs35l41_dev_name *p = data;
->  	const char *d = dev_name(dev);
->  	int n = strlen(p->bus);
->  	char tmp[32];
-> @@ -6773,19 +6773,19 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
->  static int comp_match_tas2781_dev_name(struct device *dev,
->  	void *data)
->  {
-> -	struct scodec_dev_name *p = data;
-> +	const char *bus = data;
->  	const char *d = dev_name(dev);
-> -	int n = strlen(p->bus);
-> +	int n = strlen(bus);
->  	char tmp[32];
->  
->  	/* check the bus name */
-> -	if (strncmp(d, p->bus, n))
-> +	if (strncmp(d, bus, n))
->  		return 0;
->  	/* skip the bus number */
->  	if (isdigit(d[n]))
->  		n++;
->  	/* the rest must be exact matching */
-> -	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
-> +	snprintf(tmp, sizeof(tmp), "-%s:00", "TIAS2781");
->  
->  	return !strcmp(d + n, tmp);
->  }
-> @@ -6795,7 +6795,7 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
->  {
->  	struct device *dev = hda_codec_dev(cdc);
->  	struct alc_spec *spec = cdc->spec;
-> -	struct scodec_dev_name *rec;
-> +	struct cs35l41_dev_name *rec;
->  	int ret, i;
->  
->  	switch (action) {
-> @@ -6824,24 +6824,17 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
->  }
->  
->  static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
-> -	const char *bus, const char *hid)
-> +	const char *bus)
->  {
->  	struct device *dev = hda_codec_dev(cdc);
->  	struct alc_spec *spec = cdc->spec;
-> -	struct scodec_dev_name *rec;
->  	int ret;
->  
->  	switch (action) {
->  	case HDA_FIXUP_ACT_PRE_PROBE:
-> -		rec = devm_kmalloc(dev, sizeof(*rec), GFP_KERNEL);
-> -		if (!rec)
-> -			return;
-> -		rec->bus = bus;
-> -		rec->hid = hid;
-> -		rec->index = 0;
->  		spec->comps[0].codec = cdc;
->  		component_match_add(dev, &spec->match,
-> -			comp_match_tas2781_dev_name, rec);
-> +			comp_match_tas2781_dev_name, (void *)bus);
->  		ret = component_master_add_with_match(dev, &comp_master_ops,
->  			spec->match);
->  		if (ret)
-> @@ -6888,7 +6881,7 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
->  static void tas2781_fixup_i2c(struct hda_codec *cdc,
->  	const struct hda_fixup *fix, int action)
->  {
-> -	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
-> +	 tas2781_generic_fixup(cdc, action, "i2c");
->  }
->  
->  /* for alc295_fixup_hp_top_speakers */
-> -- 
-> 2.34.1
-> 
+> Actually, there is my understanding, I’m not sure exactly.
+
+I tested with an offset of 2, no read/write errors were detected
+(including read/write to OOB). But I don't have a flash chip with
+factory bad blocks yet, when I find such a flash, I will report the
+results.
+Do I need to send the v3 of the patch with only first commit ("correct
+bitmask for ecc status")?
+
+-- 
+Best Regards,
+Martin Kurbanov
