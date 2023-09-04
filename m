@@ -2,290 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DF87917CE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C60377917D8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344478AbjIDNJ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:09:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40448 "EHLO
+        id S1349514AbjIDNL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230468AbjIDNJW (ORCPT
+        with ESMTP id S239603AbjIDNL6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:09:22 -0400
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9D501AD;
-        Mon,  4 Sep 2023 06:09:18 -0700 (PDT)
-Received: from pwmachine.localnet (85-170-34-233.rev.numericable.fr [85.170.34.233])
-        by linux.microsoft.com (Postfix) with ESMTPSA id EF88E212B16B;
-        Mon,  4 Sep 2023 06:09:14 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EF88E212B16B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1693832958;
-        bh=LtAw+jVuIucYv5hspY/X06k4jJZyLR+Pai5EJWTJy8o=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Dy1rkeKHWA6nJgdJ6sf04+PJ9ExqJ5t3hL1YuoKT960ZsBq4jlkw4nhX380lmimqW
-         C9Ruzvcc/UXrYKL6lCh51w7mQsxHiEMTEpeQDiNWFZfhbftnC2EPoJpX5bJeVQtA36
-         73B7EfcJoD2YGG4/jdJo2eDhUOcc5HBpfPt0oByU=
-From:   Francis Laniel <flaniel@linux.microsoft.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Alessandro Carminati <alessandro.carminati@gmail.com>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Daniel Bristot de Oliveira <bristot@kernel.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        Alexander Lobakin <aleksander.lobakin@intel.com>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Kris Van Hees <kris.van.hees@oracle.com>,
-        Eugene Loh <eugene.loh@oracle.com>,
-        Viktor Malik <vmalik@redhat.com>, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        live-patching@vger.kernel.org
-Subject: Re: [PATCH v3] scripts/link-vmlinux.sh: Add alias to duplicate symbols for kallsyms
-Date:   Mon, 04 Sep 2023 15:09:12 +0200
-Message-ID: <12278120.O9o76ZdvQC@pwmachine>
-In-Reply-To: <CAPp5cGTngA6_zhPpgMGsvp8T49LZEohzyRtedGSo8hkEJFRkiA@mail.gmail.com>
-References: <20230828080423.3539686-1-alessandro.carminati@gmail.com> <CAK7LNATf5zQH=qOX3HCcAoaccK1KTjoGNuXc-d2-FM-japABoQ@mail.gmail.com> <CAPp5cGTngA6_zhPpgMGsvp8T49LZEohzyRtedGSo8hkEJFRkiA@mail.gmail.com>
+        Mon, 4 Sep 2023 09:11:58 -0400
+Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC264B6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 06:11:51 -0700 (PDT)
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20230904131148euoutp016a3fc43fe6982bd289757fe1d388c90a~BtDzKdcev0547605476euoutp01y;
+        Mon,  4 Sep 2023 13:11:48 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20230904131148euoutp016a3fc43fe6982bd289757fe1d388c90a~BtDzKdcev0547605476euoutp01y
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1693833108;
+        bh=iMpaxlraNrwSut3kI6JQUwwpWA322KAAE7VPI1Trx8c=;
+        h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+        b=jIg6GMEznXyk+SxfOo1URpADehrc7IAjm9f9kKWz47rbq884vVKSe7q6Uw0hMAZ0j
+         D4Rq2nxBsV2ciLS0yg18kpw6JstjI+4Zyi/jkrpsT5Osp58D7G0+lghLgCfsl+Oyyg
+         fgpaelPI7xczTqVri/bpn4JNPiYW4G3smW0jIcc4=
+Received: from eusmges3new.samsung.com (unknown [203.254.199.245]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20230904131147eucas1p27e15573ea6c7f6df02a3b8c881542b0a~BtDy62XMo3070330703eucas1p2W;
+        Mon,  4 Sep 2023 13:11:47 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges3new.samsung.com (EUCPMTA) with SMTP id C3.C1.37758.397D5F46; Mon,  4
+        Sep 2023 14:11:47 +0100 (BST)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20230904131147eucas1p29cb4fd0a357def778c8ab237ae037736~BtDyhTTlE2643026430eucas1p2j;
+        Mon,  4 Sep 2023 13:11:47 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230904131147eusmtrp11634adf12b38ba47a2b3f4972aa31df0~BtDygtzk91193711937eusmtrp1Z;
+        Mon,  4 Sep 2023 13:11:47 +0000 (GMT)
+X-AuditID: cbfec7f5-815ff7000002937e-73-64f5d79317a7
+Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 67.42.10549.397D5F46; Mon,  4
+        Sep 2023 14:11:47 +0100 (BST)
+Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
+        eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20230904131147eusmtip2a048a4df2ef548af41ef2d8b0b34e679~BtDyVrKgx2031720317eusmtip2X;
+        Mon,  4 Sep 2023 13:11:47 +0000 (GMT)
+Received: from localhost (106.110.32.133) by CAMSVWEXC02.scsc.local
+        (2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
+        Mon, 4 Sep 2023 14:11:46 +0100
+Date:   Mon, 4 Sep 2023 15:11:45 +0200
+From:   Joel Granados <j.granados@samsung.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     Luis Chamberlain <mcgrof@kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Subject: Re: [PATCH v1 1/3] parport: Use kasprintf() instead of fixed buffer
+ formatting
+Message-ID: <20230904131145.tp4umorb3t25tmsq@localhost>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg="pgp-sha512";
+        protocol="application/pgp-signature"; boundary="c5hkprao7t3bkepg"
+Content-Disposition: inline
+In-Reply-To: <20230901134250.1172990-1-andriy.shevchenko@linux.intel.com>
+X-Originating-IP: [106.110.32.133]
+X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
+        CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrEKsWRmVeSWpSXmKPExsWy7djP87qTr39NMVj1Td2it2k6k8XlXXPY
+        LG5MeMpoceD0FGYHFo+ds+6ye2xa1cnmMe9koMfnTXIBLFFcNimpOZllqUX6dglcGc2f9rEU
+        rLarOHm5n6WBcaJJFyMHh4SAicTN765djFwcQgIrGCVedBxi6WLkBHK+MEpM+28EkfjMKPFj
+        +xSwBEjDudVfWSASyxklVn2fwApX1ffmOStE+2Yg55oDiM0ioCLx8fs8ZhCbTUBH4vybO2C2
+        iIC5xLpJi9hAbGaBCon+A9PBeoUFIiX+LtzLBGLzAtX8OvmPDcIWlDg58wkLTP3MdfeZQF5g
+        FpCWWP6PAyTMKeApsbppFzvEoUoSX9/0skLYtRKnttxiArlTQmA6p8SafdeZIRIuEktWbWaD
+        sIUlXh3fAtUsI3F6cg8LRMNkRon9/z6wQzirGSWWNX5lgqiylmi58gSqw1Gia/F3dkig8knc
+        eCsIcSifxKRt05khwrwSHW1CENVqEqvvvWGZwKg8C8lrs5C8NgvhNYiwlcSsxsUsGMI6Egt2
+        f2LDENaWWLbwNTOErSvRdewA1HBLiUf/r7BgqrGVWLfuPcsCRp5VjOKppcW56anFxnmp5XrF
+        ibnFpXnpesn5uZsYgUnx9L/jX3cwrnj1Ue8QIxMH4yFGFaDmRxtWX2CUYsnLz0tVEuGV0/6U
+        IsSbklhZlVqUH19UmpNafIhRmoNFSZxX2/ZkspBAemJJanZqakFqEUyWiYNTqoGJ+5Th9VAL
+        11vHFXZss+qobRT55TvnbYy2/qE7pd/uPI8qUReeulktbm/4BaF6wS8eWp5H5+5tuVgpIpUf
+        l7bBI6HI5+/0mJdBga+fWluxbfLN0E9KtMw4ebP29IOzosI/F3Zwx3+JZzj6883Syj1uK7OW
+        z2IL8XC584v55t28s/u+xvVytU+/vinoe3/V0juMZ4LiBOpOia8/HGXv7rriFouOQ+T8jEhN
+        L00Dh7l89n6+Pjf+hHToWKjK8RwP7W1X/VKgt3Vy+L+F7C2f53Ae2njtuVpOIOP3bu2dmV8X
+        1a3f8yzg0Nf0ojOPzR6HnrNW6km7+fCl4tukloJ9Uzi/7J16VDWq8o5Y+aX21sNKLMUZiYZa
+        zEXFiQAneCPZBQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupnleLIzCtJLcpLzFFi42I5/e/4Pd3J17+mGMxbIWjR2zSdyeLyrjls
+        FjcmPGW0OHB6CrMDi8fOWXfZPTat6mTzmHcy0OPzJrkAlig9m6L80pJUhYz84hJbpWhDCyM9
+        Q0sLPSMTSz1DY/NYKyNTJX07m5TUnMyy1CJ9uwS9jFeT/jAWrLSrmDZrN3MDY69JFyMnh4SA
+        icS51V9Zuhi5OIQEljJKHHy/lA0iISOx8ctVVghbWOLPtS42iKKPjBITdt6AcjYzSuzt/McO
+        UsUioCLx8fs8ZhCbTUBH4vybO2C2iIC5xLpJi8CmMgtUSPQfmA42VVggUuLvwr1MIDYvUM2v
+        k/+ghs5hlJg2Yz0zREJQ4uTMJ0D3cQA1l0ms6ZGGMKUllv/jAKngFPCUWN20ix3iUCWJr296
+        oY6ulfj89xnjBEbhWUgGzUIYNAth0Cyw26wkZjUuZsEQ1pK48e8lE4awtsSyha+ZYeyHE6cy
+        QdiWEo/+X2HBVGMrsW7de5YFjDyrGEVSS4tz03OLDfWKE3OLS/PS9ZLzczcxAlPDtmM/N+9g
+        nPfqo94hRiYOxkOMKkCdjzasvsAoxZKXn5eqJMIrp/0pRYg3JbGyKrUoP76oNCe1+BCjKTD4
+        JzJLiSbnA5NWXkm8oZmBqaGJmaWBqaWZsZI4r2dBR6KQQHpiSWp2ampBahFMHxMHp1QD06ol
+        1rlNYZuPZhbwL64+seA9p2au/Z1F+x+vuasWu9ROSkTQ9WPQqjjeQ7cfvf9TqzqnquH4x1yJ
+        5JTt0tJrDnkvtu1+cf/7/U+Sq76mH502t2mOnFxhb/qFF7lrbObY3rSzv73ZSrnzVaXG3Jv/
+        VjLvKn1Z/87/1Q6BtVx1O9yllHLEnpXyL8gumsfdcERs+TaFhokL77Crz57nVKi1MW6XrvH7
+        Tb9VI2Tf/jzP8MMyR01TUE9oR/rjjTpXnNT/37j4WmmfoONEoeqodTf7f894fO683JW62Ve9
+        t2/k1z7zb+30+asXyBiXesaqP5myLvx1cwxvGrc610E9tjkzFZ0O3Nttk/GsmtF3Oa8je78S
+        S3FGoqEWc1FxIgBOsYa3ogMAAA==
+X-CMS-MailID: 20230904131147eucas1p29cb4fd0a357def778c8ab237ae037736
+X-Msg-Generator: CA
+X-RootMTR: 20230901134310eucas1p1d9be610c894d46f19bb6c12576aef94b
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20230901134310eucas1p1d9be610c894d46f19bb6c12576aef94b
+References: <CGME20230901134310eucas1p1d9be610c894d46f19bb6c12576aef94b@eucas1p1.samsung.com>
+        <20230901134250.1172990-1-andriy.shevchenko@linux.intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi.
+--c5hkprao7t3bkepg
+Content-Type: multipart/mixed; boundary="gcfvjs5in7dsexwz"
+Content-Disposition: inline
 
-Le samedi 2 septembre 2023, 09:40:46 CEST Alessandro Carminati a =C3=A9crit=
- :
-> Il giorno sab 2 set 2023 alle ore 08:36 Masahiro Yamada
->=20
-> <masahiroy@kernel.org> ha scritto:
-> > On Mon, Aug 28, 2023 at 8:45=E2=80=AFPM Alessandro Carminati (Red Hat)
-> >=20
-> > <alessandro.carminati@gmail.com> wrote:
-> > > From: Alessandro Carminati <alessandro.carminati@gmail.com>
-> > >=20
-> > > It is not uncommon for drivers or modules related to similar peripher=
-als
-> > > to have symbols with the exact same name.
-> > > While this is not a problem for the kernel's binary itself, it becomes
-> > > an
-> > > issue when attempting to trace or probe specific functions using
-> > > infrastructure like ftrace or kprobe.
-> > >=20
-> > > The tracing subsystem relies on the `nm -n vmlinux` output, which
-> > > provides
-> > > symbol information from the kernel's ELF binary. However, when multip=
-le
-> > > symbols share the same name, the standard nm output does not
-> > > differentiate
-> > > between them. This can lead to confusion and difficulty when trying to
-> > > probe the intended symbol.
-> > >=20
-> > >  ~ # cat /proc/kallsyms | grep " name_show"
-> > >  ffffffff8c4f76d0 t name_show
-> > >  ffffffff8c9cccb0 t name_show
-> > >  ffffffff8cb0ac20 t name_show
-> > >  ffffffff8cc728c0 t name_show
-> > >  ffffffff8ce0efd0 t name_show
-> > >  ffffffff8ce126c0 t name_show
-> > >  ffffffff8ce1dd20 t name_show
-> > >  ffffffff8ce24e70 t name_show
-> > >  ffffffff8d1104c0 t name_show
-> > >  ffffffff8d1fe480 t name_show
-> > >=20
-> > > **kas_alias** addresses this challenge by extending the symbol names
-> > > with
-> > > unique suffixes during the kernel build process.
-> > > The newly created aliases for these duplicated symbols are unique nam=
-es
-> > > that can be fed to the ftracefs interface. By doing so, it enables
-> > > previously unreachable symbols to be probed.
-> > >=20
-> > >  ~ # cat /proc/kallsyms | grep " name_show"
-> > >  ffffffff974f76d0 t name_show
-> > >  ffffffff974f76d0 t name_show__alias__6340
-> > >  ffffffff979cccb0 t name_show
-> > >  ffffffff979cccb0 t name_show__alias__6341
-> > >  ffffffff97b0ac20 t name_show
-> > >  ffffffff97b0ac20 t name_show__alias__6342
-> > >  ffffffff97c728c0 t name_show
-> > >  ffffffff97c728c0 t name_show__alias__6343
-> > >  ffffffff97e0efd0 t name_show
-> > >  ffffffff97e0efd0 t name_show__alias__6344
-> > >  ffffffff97e126c0 t name_show
-> > >  ffffffff97e126c0 t name_show__alias__6345
-> > >  ffffffff97e1dd20 t name_show
-> > >  ffffffff97e1dd20 t name_show__alias__6346
-> > >  ffffffff97e24e70 t name_show
-> > >  ffffffff97e24e70 t name_show__alias__6347
-> > >  ffffffff981104c0 t name_show
-> > >  ffffffff981104c0 t name_show__alias__6348
-> > >  ffffffff981fe480 t name_show
-> > >  ffffffff981fe480 t name_show__alias__6349
-> > >  ~ # echo "p:kprobes/evnt1 name_show__alias__6349" \
-> > > =20
-> > >  > >/sys/kernel/tracing/kprobe_events
-> > > =20
-> > >  ~ # cat /sys/kernel/tracing/kprobe_events
-> > >  p:kprobes/evnt1 name_show__alias__6349
-> > >=20
-> > > Changes from v1:
-> > > - Integrated changes requested by Masami to exclude symbols with
-> > > prefixes
-> > >=20
-> > >   "_cfi" and "_pfx".
-> > >=20
-> > > - Introduced a small framework to handle patterns that need to be
-> > > excluded
-> > >=20
-> > >   from the alias production.
-> > >=20
-> > > - Excluded other symbols using the framework.
-> > > - Introduced the ability to discriminate between text and data symbol=
-s.
-> > > - Added two new config symbols in this version:
-> > > CONFIG_KALLSYMS_ALIAS_DATA,
-> > >=20
-> > >   which allows data for data, and CONFIG_KALLSYMS_ALIAS_DATA_ALL, whi=
-ch
-> > >   excludes all filters and provides an alias for each duplicated symb=
-ol.
-> > >=20
-> > > https://lore.kernel.org/all/20230711151925.1092080-1-alessandro.carmi=
-nat
-> > > i@gmail.com/
-> > >=20
-> > > Changes from v2:
-> > > - Alias tags are created by querying DWARF information from the vmlin=
-ux.
-> > > - The filename + line number is normalized and appended to the origin=
-al
-> > > name. - The tag begins with '@' to indicate the symbol source.
-> > > - Not a change, but worth mentioning, since the alias is added to the
-> > > existing> >=20
-> > >   list, the old duplicated name is preserved, and the livepatch way of
-> > >   dealing with duplicates is maintained.
-> > >=20
-> > > - Acknowledging the existence of scenarios where inlined functions
-> > > declared in> >=20
-> > >   header files may result in multiple copies due to compiler behavior,
-> > >   though
-> > >  =20
-> > >    it is not actionable as it does not pose an operational issue.
-> > >=20
-> > > - Highlighting a single exception where the same name refers to
-> > > different
-> > >=20
-> > >   functions: the case of "compat_binfmt_elf.c," which directly includ=
-es
-> > >   "binfmt_elf.c" producing identical function copies in two separate
-> > >   modules.
-> > >=20
-> > > sample from new v3
-> > >=20
-> > >  ~ # cat /proc/kallsyms | grep gic_mask_irq
-> > >  ffffd0b03c04dae4 t gic_mask_irq
-> > >  ffffd0b03c04dae4 t gic_mask_irq@_drivers_irqchip_irq-gic_c_167
-> > >  ffffd0b03c050960 t gic_mask_irq
-> > >  ffffd0b03c050960 t gic_mask_irq@_drivers_irqchip_irq-gic-v3_c_404
-> > >  ~ #
-> > >=20
-> > > https://lore.kernel.org/all/20230714150326.1152359-1-alessandro.carmi=
-nat
-> > > i@gmail.com/
-> > >=20
-> > > Signed-off-by: Alessandro Carminati (Red Hat)
-> > > <alessandro.carminati@gmail.com> ---
-> > >=20
-> > >  init/Kconfig                        |  36 ++++
-> > >  scripts/Makefile                    |   4 +
-> > >  scripts/kas_alias/Makefile          |   4 +
-> > >  scripts/kas_alias/a2l.c             | 268 ++++++++++++++++++++++++++=
-++
-> > >  scripts/kas_alias/a2l.h             |  32 ++++
-> > >  scripts/kas_alias/duplicates_list.c |  70 ++++++++
-> > >  scripts/kas_alias/duplicates_list.h |  15 ++
-> > >  scripts/kas_alias/item_list.c       | 230 ++++++++++++++++++++++++
-> > >  scripts/kas_alias/item_list.h       |  26 +++
-> > >  scripts/kas_alias/kas_alias.c       | 217 ++++++++++++++++++++++
-> > >  scripts/link-vmlinux.sh             |  11 +-
-> > >  11 files changed, 910 insertions(+), 3 deletions(-)
-> >=20
-> > I added some review comments in another thread, but
-> > one of the biggest concerns might be "910 insertions".
->=20
-> Based on the feedback I received in the reviews, I need to overhaul the
-> code, potentially reducing its size. What would be a reasonable number
-> of lines for this feature?
->=20
-> > What this program does is quite simple,
-> > "find duplicated names, and call addr2line".
-> >=20
-> > You wrote a lot of code to self-implement these:
-> >  - sort function
-> >  - parse PATH env variable to find addr2line
-> >  - fork addr2line to establish pipe communications
->=20
-> Some of these functions might become obsolete in the upcoming v4, which
-> will certainly reduce the line count.
->=20
-> > Have you considered writing the code in Python (or Perl)?
-> > Is it too slow?
-> >
-> >From my perspective, there is a concern that using Python or Perl might
->=20
-> result in slower performance. My proficiency in Python and Perl is
-> limited, so I did not initially consider them as viable options for
-> implementing this solution.
->=20
-> > Most of the functions you implemented are already
-> > available in script languages.
-> >=20
-> >=20
-> >=20
-> > I am not sure if "@<file-path>" is a good solution,
-> > but the amount of the added code looks too much to me.
->=20
-> I had reservations about using the '@' symbol to decorate the alias becau=
-se
-> it's not a character commonly found in the kallsyms output. However, after
-> careful consideration, I arrived at the conclusion that it was suitable f=
-or
-> the task because it would make the alias stand-out and be easily
-> identifiable.
-> I'm open to any suggestions or alternative approaches you may have on this
-> matter.
+--gcfvjs5in7dsexwz
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I am maybe over-engineering the thing, but maybe we can have a=20
-CONFIG_KALLSYMS_ALIAS_FORMAT which users would set to indicate how to=20
-differentiate between two symbols?
-=46or example, CONFIG_KALLSYMS_ALIAS_FORMAT=3D@file-lineno would lead to wh=
-at we=20
-have currently.
-If you switch to using a higher level language, you can maybe focus more on=
+On Fri, Sep 01, 2023 at 04:42:48PM +0300, Andy Shevchenko wrote:
+> Improve readability and maintainability by replacing a hardcoded string
+> allocation and formatting by the use of the kasprintf() helper.
+>=20
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> ---
+>  drivers/parport/procfs.c | 53 +++++++---------------------------------
+>  drivers/parport/share.c  | 15 +++++-------
+>  include/linux/parport.h  |  2 --
+>  3 files changed, 15 insertions(+), 55 deletions(-)
+>=20
+> diff --git a/drivers/parport/procfs.c b/drivers/parport/procfs.c
+> index 4e5b972c3e26..7aa99c65b934 100644
+> --- a/drivers/parport/procfs.c
+> +++ b/drivers/parport/procfs.c
+> @@ -32,13 +32,6 @@
+>  #define PARPORT_MAX_TIMESLICE_VALUE ((unsigned long) HZ)
+>  #define PARPORT_MIN_SPINTIME_VALUE 1
+>  #define PARPORT_MAX_SPINTIME_VALUE 1000
+> -/*
+> - * PARPORT_BASE_* is the size of the known parts of the sysctl path
+> - * in dev/partport/%s/devices/%s. "dev/parport/"(12), "/devices/"(9
+> - * and null char(1).
+> - */
+> -#define PARPORT_BASE_PATH_SIZE 13
+> -#define PARPORT_BASE_DEVICES_PATH_SIZE 22
+> =20
+>  static int do_active_device(struct ctl_table *table, int write,
+>  		      void *result, size_t *lenp, loff_t *ppos)
+> @@ -431,8 +424,7 @@ int parport_proc_register(struct parport *port)
+>  {
+>  	struct parport_sysctl_table *t;
+>  	char *tmp_dir_path;
+> -	size_t tmp_path_len, port_name_len;
+> -	int bytes_written, i, err =3D 0;
+> +	int i, err =3D 0;
+> =20
+>  	t =3D kmemdup(&parport_sysctl_template, sizeof(*t), GFP_KERNEL);
+>  	if (t =3D=3D NULL)
+> @@ -446,35 +438,23 @@ int parport_proc_register(struct parport *port)
+For this function I would even go a step further and start with the two
+kasprintf calls so we can then free them in the reverse order. And then
+leave the rest as it is. I attached an untested diff that applies on
+top of your changes to show you what I mean.
+
+>  		t->vars[5 + i].extra2 =3D &port->probe_info[i];
+>  	}
+> =20
+> -	port_name_len =3D strnlen(port->name, PARPORT_NAME_MAX_LEN);
+> -	/*
+> -	 * Allocate a buffer for two paths: dev/parport/PORT and dev/parport/PO=
+RT/devices.
+> -	 * We calculate for the second as that will give us enough for the firs=
+t.
+> -	 */
+> -	tmp_path_len =3D PARPORT_BASE_DEVICES_PATH_SIZE + port_name_len;
+> -	tmp_dir_path =3D kzalloc(tmp_path_len, GFP_KERNEL);
+> +	tmp_dir_path =3D kasprintf(GFP_KERNEL, "dev/parport/%s/devices", port->=
+name);
+>  	if (!tmp_dir_path) {
+>  		err =3D -ENOMEM;
+>  		goto exit_free_t;
+>  	}
+> =20
+> -	bytes_written =3D snprintf(tmp_dir_path, tmp_path_len,
+> -				 "dev/parport/%s/devices", port->name);
+> -	if (tmp_path_len <=3D bytes_written) {
+> -		err =3D -ENOENT;
+> -		goto exit_free_tmp_dir_path;
+> -	}
+>  	t->devices_header =3D register_sysctl(tmp_dir_path, t->device_dir);
+>  	if (t->devices_header =3D=3D NULL) {
+>  		err =3D -ENOENT;
+>  		goto  exit_free_tmp_dir_path;
+>  	}
+> =20
+> -	tmp_path_len =3D PARPORT_BASE_PATH_SIZE + port_name_len;
+> -	bytes_written =3D snprintf(tmp_dir_path, tmp_path_len,
+> -				 "dev/parport/%s", port->name);
+> -	if (tmp_path_len <=3D bytes_written) {
+> -		err =3D -ENOENT;
+> +	kfree(tmp_dir_path);
+> +
+> +	tmp_dir_path =3D kasprintf(GFP_KERNEL, "dev/parport/%s", port->name);
+> +	if (!tmp_dir_path) {
+> +		err =3D -ENOMEM;
+>  		goto unregister_devices_h;
+>  	}
+> =20
+> @@ -514,34 +494,22 @@ int parport_proc_unregister(struct parport *port)
+> =20
+>  int parport_device_proc_register(struct pardevice *device)
+>  {
+> -	int bytes_written, err =3D 0;
+>  	struct parport_device_sysctl_table *t;
+>  	struct parport * port =3D device->port;
+> -	size_t port_name_len, device_name_len, tmp_dir_path_len;
+>  	char *tmp_dir_path;
+
+=2E..
+
+> diff --git a/include/linux/parport.h b/include/linux/parport.h
+> index 999eddd619b7..fff39bc30629 100644
+> --- a/include/linux/parport.h
+> +++ b/include/linux/parport.h
+> @@ -180,8 +180,6 @@ struct ieee1284_info {
+>  	struct semaphore irq;
+>  };
+> =20
+> -#define PARPORT_NAME_MAX_LEN 15
+This variable protected against port->name not ending in '\0'. Anyone
+worried that kasprintf could be unbounded?
+
+> -
+>  /* A parallel port */
+>  struct parport {
+>  	unsigned long base;	/* base address */
+> --=20
+> 2.40.0.1.gaa8946217a0b
+>=20
+
+--=20
+
+Joel Granados
+
+--gcfvjs5in7dsexwz
+Content-Type: text/x-diff; charset="us-ascii"
+Content-Disposition: attachment; filename="parport.patch"
+Content-Transfer-Encoding: quoted-printable
+
+diff --git i/drivers/parport/procfs.c w/drivers/parport/procfs.c
+index 7aa99c65b934..0e3b01368aec 100644
+--- i/drivers/parport/procfs.c
++++ w/drivers/parport/procfs.c
+@@ -423,12 +423,24 @@ parport_default_sysctl_table =3D {
+ int parport_proc_register(struct parport *port)
+ {
+ 	struct parport_sysctl_table *t;
+-	char *tmp_dir_path;
++	char *parport_name_devices, *parport_name;
+ 	int i, err =3D 0;
 =20
-this.
-Anyway, I personally like what this contribution offers currently as it per=
-mits=20
-to distinguish between same symbols.
-I will take a look at v4! Thank you again for working on this.
++	parport_name_devices =3D kasprintf(GFP_KERNEL, "dev/parport/%s/devices", =
+port->name);
++	if (!parport_name_devices)
++		return -ENOMEM;
++
++	parport_name =3D kasprintf(GFP_KERNEL, "dev/parport/%s", port->name);
++	if (!parport_name) {
++		err =3D -ENOMEM;
++		goto exit_partport_name_devices;
++	}
++
+ 	t =3D kmemdup(&parport_sysctl_template, sizeof(*t), GFP_KERNEL);
+-	if (t =3D=3D NULL)
+-		return -ENOMEM;
++	if (t =3D=3D NULL) {
++		err =3D -ENOMEM;
++		goto exit_parport_name;
++	}
+=20
+ 	t->device_dir[0].extra1 =3D port;
+=20
+@@ -438,27 +450,13 @@ int parport_proc_register(struct parport *port)
+ 		t->vars[5 + i].extra2 =3D &port->probe_info[i];
+ 	}
+=20
+-	tmp_dir_path =3D kasprintf(GFP_KERNEL, "dev/parport/%s/devices", port->na=
+me);
+-	if (!tmp_dir_path) {
+-		err =3D -ENOMEM;
+-		goto exit_free_t;
+-	}
+-
+-	t->devices_header =3D register_sysctl(tmp_dir_path, t->device_dir);
++	t->devices_header =3D register_sysctl(parport_name_devices, t->device_dir=
+);
+ 	if (t->devices_header =3D=3D NULL) {
+ 		err =3D -ENOENT;
+-		goto  exit_free_tmp_dir_path;
++		goto exit_free_t;
+ 	}
+=20
+-	kfree(tmp_dir_path);
+-
+-	tmp_dir_path =3D kasprintf(GFP_KERNEL, "dev/parport/%s", port->name);
+-	if (!tmp_dir_path) {
+-		err =3D -ENOMEM;
+-		goto unregister_devices_h;
+-	}
+-
+-	t->port_header =3D register_sysctl(tmp_dir_path, t->vars);
++	t->port_header =3D register_sysctl(parport_name, t->vars);
+ 	if (t->port_header =3D=3D NULL) {
+ 		err =3D -ENOENT;
+ 		goto unregister_devices_h;
+@@ -466,17 +464,19 @@ int parport_proc_register(struct parport *port)
+=20
+ 	port->sysctl_table =3D t;
+=20
+-	kfree(tmp_dir_path);
+-	return 0;
++	goto exit_parport_name;
+=20
+ unregister_devices_h:
+ 	unregister_sysctl_table(t->devices_header);
+=20
+-exit_free_tmp_dir_path:
+-	kfree(tmp_dir_path);
+-
+ exit_free_t:
+ 	kfree(t);
++
++exit_parport_name:
++	kfree(parport_name);
++
++exit_partport_name_devices:
++	kfree(parport_name_devices);
+ 	return err;
+ }
+=20
 
-> > --
-> > Best Regards
-> > Masahiro Yamada
->=20
-> Thank you
+--gcfvjs5in7dsexwz--
 
-Best regards.
+--c5hkprao7t3bkepg
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmT113wACgkQupfNUreW
+QU9s2wv+M4/gR2ggBzJQcRG2gwOrNhZSNWpY5cw9mNhH8eUNbrY3M+wTlXyJ+ywc
+SXKzrf2doVS4OjUnBi3gstugGI+A7cIxqX5iBk0YyHqU92hTqi/bEcKMRV7KjA+k
+d1v1+jEUEqw6pJ4t0hXAY2EH9eCIHnCzrOr0qcyr9V6HrhhbXGsO+Mcwr65oIkxp
+j4TwmSUrAlqDrXOOeKhA22gXj1op/cssKCP2x/ftMsCctlBo6w4zuXVXerPevINy
+Kyfbf1BuWkU/jtdv1Z7WRj4DiuFppxN2xXgP2l/6IyfyFxdh/wB6sq81zFtBs4ls
+RQcI8Y3PQ+mBpcezumQidlOSZ4otCRpQF+L4EcAcK7w3A7foOpisLlYP2j+/t9lv
+f1ObDnHENmQFQQiQbu8vu33MkufNIWtXEx3/LvH/2tG2aPe8gGFbcDQfmpTWNNQm
+7+16AhB7WOnv//2TtAYw268X7Mq6c5Rsj0oTtqV7y3TnpkQXY5PJeg6OQB72FvJj
+k6O4rH+m
+=/4Of
+-----END PGP SIGNATURE-----
+
+--c5hkprao7t3bkepg--
