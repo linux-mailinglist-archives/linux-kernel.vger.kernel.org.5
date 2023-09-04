@@ -2,222 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0363F791D33
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:36:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F279791CF4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348880AbjIDSgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 14:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
+        id S236407AbjIDSd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 14:33:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347179AbjIDSgL (ORCPT
+        with ESMTP id S245410AbjIDSdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 14:36:11 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEC97CFE;
-        Mon,  4 Sep 2023 11:36:04 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B606613F9;
-        Mon,  4 Sep 2023 18:36:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52731C433C7;
-        Mon,  4 Sep 2023 18:36:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693852563;
-        bh=l/KPecKtauHEtBB6qvvKiBE03LXGlPDHRMq4eTWol3M=;
-        h=From:To:Cc:Subject:Date:From;
-        b=hNY916sdcJqNXNLz1iDSXZwPTirnLVyOA8qZUf1R5Ou3KorgXmrvhxasoLKaVe6zQ
-         YEMLkWFka/8xJg7tvQnvbfhagpr2pOlKPDGYBv76ih0cfHXjVFCc6i1JbFyTg0wx6U
-         7q1E7UyRh23CdpyLlyaT74hbaFVLeBuKSj8bknHE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: [PATCH 5.15 00/28] 5.15.131-rc1 review
-Date:   Mon,  4 Sep 2023 19:30:31 +0100
-Message-ID: <20230904182945.178705038@linuxfoundation.org>
-X-Mailer: git-send-email 2.42.0
+        Mon, 4 Sep 2023 14:33:25 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD2BCC8;
+        Mon,  4 Sep 2023 11:33:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=public-files.de;
+ s=s31663417; t=1693852391; x=1694457191; i=frank-w@public-files.de;
+ bh=J4q/9pAlgV6We5hShQiWw26tQ8kQmBIIDgIC0hj0mzE=;
+ h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+ b=nZaAyflbLKUXcADeSwNdcb+fcWdFxwPpzH4UK8D/Wctv04aABK6AZU5x3mbQhPx1tOpHmX0
+ G9br4PQg7j3C11ygqVqDiD81qexmOt3wjOESVeYsnuSFpjfiP4JpkHAdEvpO1ECHlXiZ0Qa1T
+ piY6YlvweAoyAPPqbbE9U7jeKv/vCIVTFwHK6BNAEAYj6BvDptOUHc+WhXTko/TV3QTrSe5eH
+ OwQ14naqpgT50+Elt7mHTQLqXpiTnJahRzZBx+U0jNemaE281NAGQYZ0LL9NWzj0uJD7nHIkf
+ SL9fzSR4gRJCVTWePpplTRaMlGXl26A73HUNIWg6vE7J4h/doEnA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [217.61.145.232] ([217.61.145.232]) by web-mail.gmx.net
+ (3c-app-gmx-bs26.server.lan [172.19.170.78]) (via HTTP); Mon, 4 Sep 2023
+ 20:33:11 +0200
 MIME-Version: 1.0
-User-Agent: quilt/0.67
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.131-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.15.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.15.131-rc1
-X-KernelTest-Deadline: 2023-09-06T18:29+00:00
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Message-ID: <trinity-387c30fb-f681-4886-a86c-3f66c77bd5f5-1693852391761@3c-app-gmx-bs26>
+From:   Frank Wunderlich <frank-w@public-files.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Aw: Re: RecursionError when try to check bindings (ubuntu 22.04 /
+ Python3.10)
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 4 Sep 2023 20:33:11 +0200
+Importance: normal
+Sensitivity: Normal
+In-Reply-To: <fe976c19-0f40-5e35-6704-6d014eccd376@linaro.org>
+References: <trinity-cb228db4-32f9-4606-b733-2d148073de5d-1693739337284@3c-app-gmx-bap43>
+ <fe976c19-0f40-5e35-6704-6d014eccd376@linaro.org>
+X-UI-Message-Type: mail
+X-Priority: 3
+X-Provags-ID: V03:K1:gy+LzjGy5IPY1LMJgvN5KRy93EOom/sU4y2CmCKMtaHLzXjnRdyWrt3uliMO0SuTj8G1g
+ F4EI4Q+rjbNM3VNKLdf7KbePdvFu64mtPfWJesCydcewThJpTlDQ2bmoFpHjbBlD2K+yCIYZBRki
+ LbnckxpVqVDApJQoY2xuUe1JOugWOHl0w4or4nRc7/yhy0d1OgSYe7KyUAshGnFSyDJVclZi0CsY
+ S4Wm53BUCSaSMa4cNy0NiZCsjUXWN0lsKEmjiR4fPAtW9lvI7QCzJOWAPOLOEH6MkQXixXVVaHHk
+ rw=
+UI-OutboundReport: notjunk:1;M01:P0:tIe/Q5z1JfM=;XIaPYgaCBeW6+lc8EcoK4TdJ0Yy
+ PuCl1h9k08kW3mR8AFTFHT1ky1yIm+E6KArX9fa98jqtwOgfxB11Hdsp4M9jodLKARSiuSrdU
+ zR41rUUDziWYakteuqfbp7Icf7cYZ+CtOqif4ys1CF8YXFwHo0HVgqdLgF8bXTZimQVL69Y/H
+ WWt9Z5qEBvTLcVFXib0z6DzqYdM8J8tXK2XSBbpTsokyphf/J1rQ+N4EJi82E4fX0ympqts5x
+ bN6Bsl6lww8436eXgiP7IF9b/5oy6vpEJPMzRp8TGOWRALaibOTLwJqgPc5kpq8uiFcJjdTbO
+ /MHqBLIdmA3xsC5QMoAptRIjN6KAQ5wpOJ2DTdIM1uvwQuqLdntORtbT3dmXVyNirC+/RkSqN
+ e5s2NOeg2wGA6a4H0EMwSl/G956AkuJoP+hfNbOwNsImBC6Wcm0m71nujxHj1PtPKlxDKTO/Z
+ hkfHtGrVDaJKWj+DsnwzgVKwxuEivLQhKJM27cjK96Qli7bND0wns+U/2FQUFxje1W8SeLwRg
+ VLqZppouM7KDVYZIGroFH6zwjPY2NnXcNYWs2tiG9wo5ZVme8q3jbqQiv/7Kx4C7E3zeVJZ2E
+ I0xyLpEtRX99ABs9DJWbjUUSu8/2ciOcSmpPNtc4SwDmegKvHxRdplSbIVaVvcyDFZFAXaSB1
+ 0fWvQTgOGJSle+/HPIM1a/3hhI4c7MWBlnxYxJ7qTjtCxWC+hFVhYy156cbyJZTGLeAE1NtE+
+ f7pE0LqHdDAogjYGDGBNQIU/xgPXj+H+GpnO4Fx67VJvVNf6x5l71FgOc+rUBrHrltOm3Qrv6
+ 19N1YbMwLIjhGRQaSmV3nVMw==
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.15.131 release.
-There are 28 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+Hi
 
-Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-Anything received after that time might be too late.
+> Gesendet: Montag, 04. September 2023 um 20:18 Uhr
+> Von: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+> An: "Frank Wunderlich" <frank-w@public-files.de>, "Rob Herring" <robh+dt=
+@kernel.org>, "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>
+> Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+> Betreff: Re: RecursionError when try to check bindings (ubuntu 22.04 / P=
+ython3.10)
+>
+> On 03/09/2023 13:08, Frank Wunderlich wrote:
+> > Hi,
+> >
+> > i tried to check a binding-file with 6.5 kernelsource and get this err=
+or
+> >
+> >   LINT    Documentation/devicetree/bindings
+> >   CHKDT   Documentation/devicetree/bindings/processed-schema.json
+> >   SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+> > Traceback (most recent call last):
+> >   File "/home/frank/.local/bin/dt-mk-schema", line 38, in <module>
+> >     schemas =3D dtschema.DTValidator(args.schemas).schemas
+> >   File "/home/frank/.local/lib/python3.10/site-packages/dtschema/valid=
+ator.py", line 354, in __init__
+> >     self.schemas =3D process_schemas(schema_files)
+> >   File "/home/frank/.local/lib/python3.10/site-packages/dtschema/valid=
+ator.py", line 271, in process_schemas
+> >     sch =3D process_schema(os.path.abspath(filename))
+> >   File "/home/frank/.local/lib/python3.10/site-packages/dtschema/valid=
+ator.py", line 248, in process_schema
+> >     dtsch.is_valid()
+> >   File "/home/frank/.local/lib/python3.10/site-packages/dtschema/schem=
+a.py", line 145, in is_valid
+> >     for error in self.DtValidator(self.DtValidator.META_SCHEMA).iter_e=
+rrors(self):
+> >   File "/home/frank/.local/lib/python3.10/site-packages/jsonschema/val=
+idators.py", line 242, in iter_errors
+> >     for error in errors:
+> >   File "/home/frank/.local/lib/python3.10/site-packages/jsonschema/_va=
+lidators.py", line 362, in allOf
+> >     yield from validator.descend(instance, subschema, schema_path=3Din=
+dex)
+> >   File "/home/frank/.local/lib/python3.10/site-packages/jsonschema/val=
+idators.py", line 258, in descend
+> >     for error in self.evolve(schema=3Dschema).iter_errors(instance):
+> >
+> > block from line 242-258 repeats many times (~2000 lines in log)
+> >
+> >   File "/home/frank/.local/lib/python3.10/site-packages/jsonschema/val=
+idators.py", line 242, in iter_errors
+> >     for error in errors:
+> >   File "/home/frank/.local/lib/python3.10/site-packages/jsonschema/_le=
+gacy_validators.py", line 216, in recursiveRef
+> >     lookup_url, next_target =3D validator.resolver.resolve(each)
+> >   File "/home/frank/.local/lib/python3.10/site-packages/jsonschema/val=
+idators.py", line 835, in resolve
+> >     url =3D self._urljoin_cache(self.resolution_scope, ref).rstrip("/"=
+)
+> > RecursionError: maximum recursion depth exceeded in comparison
+> >
+> > make[2]: *** [Documentation/devicetree/bindings/Makefile:68: Documenta=
+tion/devicetree/bindings/processed-schema.json] Error 1
+> > make[2]: *** Deleting file 'Documentation/devicetree/bindings/processe=
+d-schema.json'
+> > make[1]: *** [/media/data_nvme/git/kernel/BPI-R2-4.14/Makefile:1516: d=
+t_binding_check] Error 2
+> > make: *** [Makefile:234: __sub-make] Error 2
+> >
+> > my command is (after importing defconfig, also tried a clean before):
+> >
+> > ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- make dt_binding_check
+> >
+> > already did an update of dtschema with "pip3 install dtschema --upgrad=
+e" and also an uninstall/install of this python-package
+> >
+> > $ pip3 show dtschema
+> > Name: dtschema
+> > Version: 2023.7
+> > Summary: DeviceTree validation schema and tools
+> > Home-page: https://github.com/devicetree-org/dt-schema
+> > Author: Rob Herring
+> > Author-email: robh@kernel.org
+> > License: BSD
+> > Location: /home/frank/.local/lib/python3.10/site-packages
+> > Requires: jsonschema, pylibfdt, rfc3987, ruamel.yaml
+> > Required-by:
+> >
+> > any idea what can be the cause?
+>
+> Can you share the reproduction steps? This probably is some error in
+> schema which is then not nicely handled by dtschema.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.131-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-and the diffstat can be found below.
+there is not much more than i already told...
 
-thanks,
+git checkout v6.5 #to have clean mainline version
+ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- make defconfig #use mainli=
+ne default config
+ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu- make dt_binding_check
 
-greg k-h
+it does not tell me a special binding file which is broken...it seems it h=
+as a problem with the self generated processed-schema.json, but it deletes=
+ the file.
 
--------------
-Pseudo-Shortlog of commits:
+maybe there is a way to skip this removal to analyse this file...have look=
+ed into my site-packages, but have not found the position of file deletion
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.15.131-rc1
+btw. i get the same error also if i do not pass a file to dt-validate comm=
+and...
 
-Marco Felsch <m.felsch@pengutronix.de>
-    usb: typec: tcpci: clear the fault status bit
+$ which dt-validate
+/home/frank/.local/bin/dt-validate
 
-Xin Ji <xji@analogixsemi.com>
-    usb: typec: tcpci: move tcpci.h to include/linux/usb/
+this is also a python-file which is installed outside of the site-packages=
+, but i don't know why
 
-Mario Limonciello <mario.limonciello@amd.com>
-    pinctrl: amd: Don't show `Invalid config param` errors
-
-Ryusuke Konishi <konishi.ryusuke@gmail.com>
-    nilfs2: fix WARNING in mark_buffer_dirty due to discarded buffer reuse
-
-Ryusuke Konishi <konishi.ryusuke@gmail.com>
-    nilfs2: fix general protection fault in nilfs_lookup_dirty_data_buffers()
-
-Badhri Jagan Sridharan <badhri@google.com>
-    tcpm: Avoid soft reset when partner does not support get_status
-
-Juerg Haefliger <juerg.haefliger@canonical.com>
-    fsi: master-ast-cf: Add MODULE_FIRMWARE macro
-
-Wang Ming <machel@vivo.com>
-    firmware: stratix10-svc: Fix an NULL vs IS_ERR() bug in probe
-
-Hugo Villeneuve <hvilleneuve@dimonoff.com>
-    serial: sc16is7xx: fix bug when first setting GPIO direction
-
-Hugo Villeneuve <hvilleneuve@dimonoff.com>
-    serial: sc16is7xx: fix broken port 0 uart init
-
-Johan Hovold <johan+linaro@kernel.org>
-    serial: qcom-geni: fix opp vote on shutdown
-
-Deren Wu <deren.wu@mediatek.com>
-    wifi: mt76: mt7921: do not support one stream on secondary antenna only
-
-Zheng Wang <zyytlz.wz@163.com>
-    Bluetooth: btsdio: fix use after free bug in btsdio_remove due to race condition
-
-Nam Cao <namcaov@gmail.com>
-    staging: rtl8712: fix race condition
-
-Aaron Armstrong Skomra <aaron.skomra@wacom.com>
-    HID: wacom: remove the battery when the EKR is off
-
-Xu Yang <xu.yang_2@nxp.com>
-    usb: chipidea: imx: improve logic if samsung,picophy-* parameter is 0
-
-Luke Lu <luke.lu@libre.computer>
-    usb: dwc3: meson-g12a: do post init to fix broken usb after resumption
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: usb-audio: Fix init call orders for UAC1
-
-Slark Xiao <slark_xiao@163.com>
-    USB: serial: option: add FOXCONN T99W368/T99W373 product
-
-Martin Kohn <m.kohn@welotec.com>
-    USB: serial: option: add Quectel EM05G variant (0x030e)
-
-Christoph Hellwig <hch@lst.de>
-    modules: only allow symbol_get of EXPORT_SYMBOL_GPL modules
-
-Christoph Hellwig <hch@lst.de>
-    rtc: ds1685: use EXPORT_SYMBOL_GPL for ds1685_rtc_poweroff
-
-Christoph Hellwig <hch@lst.de>
-    net: enetc: use EXPORT_SYMBOL_GPL for enetc_phc_index
-
-Christoph Hellwig <hch@lst.de>
-    mmc: au1xmmc: force non-modular build and remove symbol_get usage
-
-Arnd Bergmann <arnd@arndb.de>
-    ARM: pxa: remove use of symbol_get()
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: replace one-element array with flex-array member in struct smb2_ea_info
-
-Namjae Jeon <linkinjeon@kernel.org>
-    ksmbd: fix wrong DataOffset validation of create context
-
-Gao Xiang <hsiangkao@linux.alibaba.com>
-    erofs: ensure that the post-EOF tails are all zeroed
-
-
--------------
-
-Diffstat:
-
- Makefile                                           |  4 ++--
- arch/arm/mach-pxa/sharpsl_pm.c                     |  2 --
- arch/arm/mach-pxa/spitz.c                          | 14 +-----------
- arch/mips/alchemy/devboards/db1000.c               |  8 +------
- arch/mips/alchemy/devboards/db1200.c               | 19 ++--------------
- arch/mips/alchemy/devboards/db1300.c               | 10 +--------
- drivers/bluetooth/btsdio.c                         |  1 +
- drivers/firmware/stratix10-svc.c                   |  2 +-
- drivers/fsi/fsi-master-ast-cf.c                    |  1 +
- drivers/hid/wacom.h                                |  1 +
- drivers/hid/wacom_sys.c                            | 25 ++++++++++++++++++----
- drivers/hid/wacom_wac.c                            |  1 +
- drivers/hid/wacom_wac.h                            |  1 +
- drivers/mmc/host/Kconfig                           |  5 +++--
- drivers/net/ethernet/freescale/enetc/enetc_ptp.c   |  2 +-
- drivers/net/wireless/mediatek/mt76/mt7921/main.c   |  2 +-
- drivers/pinctrl/pinctrl-amd.c                      |  4 ++--
- drivers/rtc/rtc-ds1685.c                           |  2 +-
- drivers/staging/rtl8712/os_intfs.c                 |  1 +
- drivers/staging/rtl8712/usb_intf.c                 |  1 -
- drivers/tty/serial/qcom_geni_serial.c              |  5 +++++
- drivers/tty/serial/sc16is7xx.c                     | 17 ++++++++++++++-
- drivers/usb/chipidea/ci_hdrc_imx.c                 | 10 +++++----
- drivers/usb/chipidea/usbmisc_imx.c                 |  6 ++++--
- drivers/usb/dwc3/dwc3-meson-g12a.c                 |  6 ++++++
- drivers/usb/serial/option.c                        |  7 ++++++
- drivers/usb/typec/tcpm/tcpci.c                     |  7 ++++--
- drivers/usb/typec/tcpm/tcpci_maxim.c               |  3 +--
- drivers/usb/typec/tcpm/tcpci_mt6360.c              |  3 +--
- drivers/usb/typec/tcpm/tcpci_rt1711h.c             |  2 +-
- drivers/usb/typec/tcpm/tcpm.c                      |  7 ++++++
- fs/erofs/zdata.c                                   |  2 ++
- fs/ksmbd/oplock.c                                  |  2 +-
- fs/ksmbd/smb2pdu.c                                 |  2 +-
- fs/ksmbd/smb2pdu.h                                 |  2 +-
- fs/nilfs2/alloc.c                                  |  3 ++-
- fs/nilfs2/inode.c                                  |  7 ++++--
- fs/nilfs2/segment.c                                |  5 +++++
- .../usb/typec/tcpm => include/linux/usb}/tcpci.h   |  2 ++
- kernel/module.c                                    | 14 +++++++++---
- sound/usb/stream.c                                 | 11 +++++++++-
- 41 files changed, 142 insertions(+), 87 deletions(-)
-
-
+> Best regards,
+> Krzysztof
+>
+>
