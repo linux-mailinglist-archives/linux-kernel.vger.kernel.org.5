@@ -2,132 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E0679174A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35A2E79175F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:44:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351906AbjIDMlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 08:41:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50006 "EHLO
+        id S1352953AbjIDMoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 08:44:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbjIDMlq (ORCPT
+        with ESMTP id S1352920AbjIDMof (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 08:41:46 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D105EEC;
-        Mon,  4 Sep 2023 05:41:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1693831299;
-        bh=/dE3ky6X9Lqj+ivhwmVls4BhitsFtdKNWMXYtinGEUg=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BkhUEVHanVywyz+zebtKGkpF215y1bX8y0GSA8OUsTD36R0EmlktYKtbbwx5KasgZ
-         2Y/DEHAKO+iiAoyBnk8sZJ3TkN7RCritvve8j7c8o255HaLH2BqBBvrV/+MMzAhO5K
-         OStyRB1Ku905SbYvw/msLXDx0mz9BS8343Ur0YpL57l4MHrYFYJyiv4PIWgiYYv1c7
-         XjWoIJxMevzEL7bGBkakwVY3ER/ruoubo4akIfc4+AgkMG6erDcKUe83B+o91BQRrD
-         xeIXdq3zOf7LLNxkyj8gT54EoxFyQzVgnzRwV3bPg92Knr/IPdrLl/0fcpQeWiKVCy
-         /MnzJvECn32GQ==
-Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RfStq4G3Xz1NXL;
-        Mon,  4 Sep 2023 08:41:39 -0400 (EDT)
-Message-ID: <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
-Date:   Mon, 4 Sep 2023 08:42:53 -0400
+        Mon, 4 Sep 2023 08:44:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86151CCC;
+        Mon,  4 Sep 2023 05:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693831467; x=1725367467;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=7OC8ieWLUaMKSqNXbWK6Ilf12UrX6NTH6dUWJKnSfd8=;
+  b=RepF1Ou/L+jXxWYBuLl8nxm5Zv+juInH45iYr3aNwQJOHx7fz+kH5Zin
+   f4l0XvLBt/pI3lQlLmWp9rZXc7s/LnOxu/9TiFJwYcaijcjTscEy44zTo
+   nV0kB17b81stlRqWNNeL3aLtAQC4xw1UMA/txGEMhR88VF5I8lvQYFS4/
+   sQ2h+fpIA38V66XBfMse4/aoNp2bAvwZB8i8LOnZRwUY439W2Rw6qEEzg
+   D2vtomriH9xpo4NVz4Xs4ALTYHogMHnMelKqxkTNENuYfH1VT5MTU27oX
+   UIRiVBNDS9OWB6aSsy0ZTNp4kGb/kiCH+b7QxwXBq8SkQN2+v09Z2yUTO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="462958523"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="462958523"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 05:44:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="810888530"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="810888530"
+Received: from mfederki-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.15.69])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 05:44:22 -0700
+From:   Wieczor-Retman Maciej <maciej.wieczor-retman@intel.com>
+To:     akpm@linux-foundation.org, christian@kellner.me,
+        fenghua.yu@intel.com, keescook@chromium.org,
+        ndesaulniers@google.com, coltonlewis@google.com,
+        dmatlack@google.com, vipinsh@google.com, seanjc@google.com,
+        brauner@kernel.org, pbonzini@redhat.com, shuah@kernel.org,
+        hannes@cmpxchg.org, nphamcs@gmail.com, reinette.chatre@intel.com
+Cc:     ilpo.jarvinen@linux.intel.com, linux-kselftest@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH v2 0/8] Add printf attribute to kselftest functions
+Date:   Mon,  4 Sep 2023 14:43:14 +0200
+Message-ID: <cover.1693829810.git.maciej.wieczor-retman@intel.com>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
- systems
-Content-Language: en-US
-To:     Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
-        trufanov@swemel.ru, vfh@swemel.ru,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-References: <20230904122114.66757-1-arefev@swemel.ru>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <20230904122114.66757-1-arefev@swemel.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/23 08:21, Denis Arefev wrote:
-> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
-> is subject to overflow due to a failure to cast operands to a larger
-> data type before performing arithmetic.
-> 
-> The maximum result of this subtraction is defined by the RCU_FANOUT
-> or other srcu level-spread values assigned by rcu_init_levelspread(),
-> which can indeed cause the signed 32-bit integer literal ("1") to overflow
-> when shifted by any value greater than 31.
+Kselftest.h declares many variadic functions that can print some
+formatted message while also executing selftest logic. These
+declarations don't have any compiler mechanism to verify if passed
+arguments are valid in comparison with format specifiers used in
+printf() calls.
 
-We could expand on this:
+Attribute addition can make debugging easier, the code more consistent
+and prevent mismatched or missing variables.
 
-The maximum result of this subtraction is defined by the RCU_FANOUT
-or other srcu level-spread values assigned by rcu_init_levelspread(),
-which can indeed cause the signed 32-bit integer literal ("1") to overflow
-when shifted by any value greater than 31 on a 64-bit system.
+Add a __printf() macro that validates types of variables passed to the
+format string. The macro is similarly used in other tools in the kernel.
 
-Moreover, when the subtraction value is 31, the 1 << 31 expression results
-in 0xffffffff80000000 when the signed integer is promoted to unsigned long
-on 64-bit systems due to type promotion rules, which is certainly not the
-intended result.
+Add __printf() attributes to function definitions inside kselftest.h that
+use printing.
 
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Adding the __printf() macro exposes some mismatches in format strings
+across different selftests.
 
-With the commit message updated with my comment above, please also add:
+Fix the mismatched format specifiers in multiple tests.
 
-Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures containing callbacks")
-Cc: <stable@vger.kernel.org> # v4.11
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Changelog v2:
+- Add review and fixes tags to patches.
+- Add two patches with mismatch fixes.
+- Fix missed attribute in selftests/kvm. (Andrew)
+- Fix previously missed issues in selftests/mm (Ilpo)
 
-Thanks!
+Wieczor-Retman Maciej (8):
+  selftests: Add printf attribute to ksefltest prints
+  selftests/cachestat: Fix print_cachestat format
+  selftests/openat2: Fix wrong format specifier
+  selftests/pidfd: Fix ksft print formats
+  selftests/sigaltstack: Fix wrong format specifier
+  selftests/kvm: Replace attribute with macro
+  selftests/mm: Substitute attribute with a macro
+  selftests/resctrl: Fix wrong format specifier
 
-Mathieu
+ .../selftests/cachestat/test_cachestat.c       |  2 +-
+ tools/testing/selftests/kselftest.h            | 18 ++++++++++--------
+ .../testing/selftests/kvm/include/test_util.h  |  8 ++++----
+ tools/testing/selftests/mm/mremap_test.c       |  2 +-
+ tools/testing/selftests/mm/pkey-helpers.h      |  2 +-
+ tools/testing/selftests/openat2/openat2_test.c |  2 +-
+ .../selftests/pidfd/pidfd_fdinfo_test.c        |  2 +-
+ tools/testing/selftests/pidfd/pidfd_test.c     | 12 ++++++------
+ tools/testing/selftests/resctrl/cache.c        |  2 +-
+ tools/testing/selftests/sigaltstack/sas.c      |  2 +-
+ 10 files changed, 27 insertions(+), 25 deletions(-)
 
-> 
-> Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> ---
-> v3: Changed the name of the patch, as suggested by
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
-> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->   kernel/rcu/srcutree.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 20d7a238d675..6c18e6005ae1 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
->   				snp->grplo = cpu;
->   			snp->grphi = cpu;
->   		}
-> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
->   	}
->   	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
->   	return true;
-> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
->   	int cpu;
->   
->   	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> -		if (!(mask & (1 << (cpu - snp->grplo))))
-> +		if (!(mask & (1UL << (cpu - snp->grplo))))
->   			continue;
->   		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
->   	}
 
+base-commit: 9b1db732866bee060b9bca9493e5ebf5e8874c48
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+2.42.0
 
