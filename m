@@ -2,70 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B00F7919A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54DED7919A4
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349538AbjIDO2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:28:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56720 "EHLO
+        id S1351106AbjIDO2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:28:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233205AbjIDO2L (ORCPT
+        with ESMTP id S233205AbjIDO2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:28:11 -0400
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651F9CC8
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:28:08 -0700 (PDT)
-Received: by mail-pf1-x435.google.com with SMTP id d2e1a72fcca58-68a3cae6d94so1289665b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 07:28:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693837688; x=1694442488; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:reply-to:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZOtQAgfRN5wcVtshz5ZvILTFmUrWKvgNVBGb1V8AVvY=;
-        b=aXqwHoy64rYqjlW7ZbtMLS99ejKPDb3laR/RiqDEMGsv6AYx7MVdPM8eTijshzNZY2
-         hLIAO2QPlsEi9psWCCqkDFldF0ehhzdk2an3gbZBsQYNRXf+F8u3u2nnJzRTTcxx2lkM
-         /jDFrpZNEjY621kUStKInerKUCmXYNGN2l7/em9VxaNOXJZL4ojNliDLom3BurczMeLJ
-         JDlMsyfFaXvp5lE6S8uwc0LNUkOHLQG+JnC5Mx0+/inEFBFnHOoc4kl3bbdElvqISpq9
-         w8noZGYWDO81tFYWmtoM+bi27nm8mGJ+ldgXPCYzpJJup0xbXocy5RRlnmOrnMLCVQIP
-         FmmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693837688; x=1694442488;
-        h=to:subject:message-id:date:from:reply-to:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZOtQAgfRN5wcVtshz5ZvILTFmUrWKvgNVBGb1V8AVvY=;
-        b=ACGYodSB2XiYJCTdb4D8WfTg/Qu+RMya9DDgwEVi2Xx+RuNOEzKUxpPDoCgcFj871H
-         ybqS0C4vigfNEuuCkAMpuWb9rr0eOfc38YgW93VGRYtoMU38v6n3CAbyXl0P4gw+uwvr
-         G+7MphUQcaJr2zl6Yq4+Ed98CRjvud38gDCzMmlsNmyLqzsscs58Obg3/osiZcejK3iR
-         atr5oQEypP68tvSw3DIWDNziNtN5rwhAmjOKF/5rxzFYNsf9n9aIJoSSz7EqlrhHqfPJ
-         XHRZ+RrjfvakD8UsTWIy06uCILdza8PizUnBpRGPWx+fmKbr869TQ2NOlRx9FmYvnuXR
-         r1Mw==
-X-Gm-Message-State: AOJu0Yz1kEQpnsyB1yYBBXKizvLk3znhVX6bDRs6J6sYpx+9lP3QEFd5
-        roL04LfEceC9/ww9vy5dM0vU4gpUkhZOAK4k0Y4=
-X-Google-Smtp-Source: AGHT+IHXtnKpsw5NSxE9qXWfSUUI6wiMEDjmxdFzNnZH80aZCyOSiTYs0/XPotWPmJdNo+bh4mtRAaQhSTGUyg49z+Q=
-X-Received: by 2002:a05:6a00:1ac7:b0:68b:bd56:c78b with SMTP id
- f7-20020a056a001ac700b0068bbd56c78bmr12466552pfv.10.1693837687773; Mon, 04
- Sep 2023 07:28:07 -0700 (PDT)
+        Mon, 4 Sep 2023 10:28:35 -0400
+Received: from smtp66.ord1d.emailsrvr.com (smtp66.ord1d.emailsrvr.com [184.106.54.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF3DCE5
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:28:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
+        s=20221208-6x11dpa4; t=1693837711;
+        bh=XJpws83PAeltUvDGI90D5dKMClclXtIXCy296ciNP6Q=;
+        h=Date:From:Subject:To:From;
+        b=lCcK27klLgm9Obrnk9gQsfj1fiaqG9UUFhg68/rhTpFA/XUwUoyB70BqA7618SI0o
+         iluFnSqJnCAJmzHk8g8oMmib62orTjakmXGuB9pgfhnN2WU9gy4GpRM2cuSyZ7KL2H
+         KlyRCSZfuR/W2vkvidE3wE/CfKz9WEhCUjXVApVM=
+X-Auth-ID: abbotti@mev.co.uk
+Received: by smtp9.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 3BFF8C00EE;
+        Mon,  4 Sep 2023 10:28:30 -0400 (EDT)
+Message-ID: <aaf05569-1564-43de-8706-d604e583bf42@mev.co.uk>
+Date:   Mon, 4 Sep 2023 15:28:29 +0100
 MIME-Version: 1.0
-Received: by 2002:a05:7022:440e:b0:64:64bd:54e4 with HTTP; Mon, 4 Sep 2023
- 07:28:07 -0700 (PDT)
-Reply-To: n.rbaker001@gmail.com
-From:   "Noel R. Baker" <demirkol.chambers01@gmail.com>
-Date:   Mon, 4 Sep 2023 07:28:07 -0700
-Message-ID: <CAPyJ9=4bJuQjSQiaRo-8wEkB_Ctns9=yNKfpQOb0ERL_Yh2KwQ@mail.gmail.com>
-Subject: Looking forward to connecting with you please. Thank you.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=4.7 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,FREEMAIL_REPLYTO,FREEMAIL_REPLYTO_END_DIGIT,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNDISC_FREEM autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: ****
+User-Agent: Mozilla Thunderbird
+Content-Language: en-GB
+From:   Ian Abbott <abbotti@mev.co.uk>
+Subject: [REGRESSION] comedi: add HAS_IOPORT dependencies
+Organization: MEV Ltd.
+To:     Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux Regressions <regressions@lists.linux.dev>,
+        Linux Stable <stable@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Classification-ID: 61c97e35-feac-47a7-8abd-1087e1289693-1-1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello. I mailed you earlier without a response, please confirm
-validity of your email and respond back to me. Thank you.
+Hi,
+
+Commit b5c75b68b7de ("comedi: add HAS_IOPORT dependencies") in v6.5-rc1 
+onwards makes it impossible to select some comedi configuration options 
+that were previously selectable.  In addition to adding 'depends on 
+HAS_IOPORT' directives (which is OK for most of the options), it also 
+changes 'select COMEDI_8254', 'select COMEDI_DAS08', 'select 
+COMEDI_NI_LABPC', and 'select COMEDI_AMPLC_DIO200' directives to 
+'depends on' directives.  Since there is no other way to select those 
+options it renders the options that depend on them permanently disabled.
+It also adds a dependency on HAS_IOPORT to COMEDI_PCI_DRIVERS even 
+though several configuration options that depend on COMEDI_PCI_DRIVERS 
+are for drivers that neither use I/O ports nor depend on modules that 
+call the I/O port functions (inb()/outb() and friends).
+
+Arnd Bergmann recommends[1] reverting the patch and following up with a 
+fixed version.  I intend to do that.  Niklas Schnelle confirms[2] that 
+it will not break anything.
+
+[1] Link: 
+https://lore.kernel.org/all/33c2292b-08cb-44c7-9438-07d4060976ab@app.fastmail.com
+
+[2] Link: 
+https://lore.kernel.org/all/65d620b2644e2d60b041815fa4bb544a818ae55a.camel@linux.ibm.com
+
+#regzbot introduced: b5c75b68b7de
+
+-- 
+-=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
+-=( registered in England & Wales.  Regd. number: 02862268.  )=-
+-=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
+-=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
