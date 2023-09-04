@@ -2,123 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CE4DF791D74
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20574791DC0
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:40:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237208AbjIDS7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 14:59:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
+        id S234569AbjIDTka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 15:40:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236481AbjIDS7c (ORCPT
+        with ESMTP id S234647AbjIDTkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 14:59:32 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86981109
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:59:28 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so16732745e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:59:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693853967; x=1694458767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GDbiLlEqmBfltBmTsCoRx2b9yjBtdlH6iWz3M1Lt5wc=;
-        b=UsacGrYwpzfvG2zkN3iCDcReyHgmqZk0Xa6lI75Ewve+G/UCWqNdfr7vyCKIA6N3pL
-         3xKwfnIniiKHYvxUTPX2K2n0WjnM3skwcd16WASci6Mqcnd/kZqRjSb/wRfGTKh95eA8
-         621Y31CKPG0s8190HKIAa/B3NIUqkAtwXlCxJgMjG9FxQqJOncJ7O8QctflmRTQ5Ceom
-         ejfzdtT9ZVPqSeABsqDqObvemAjegw+CCp07DJFs87Yx+8LD2MrcNPTDtwyYQNsvnOe2
-         TiVIDzXAE+tF9MEkAShk+BL8xnbjdRpeB8xPzdg8cWqgupnTA2ZjvrypqmB2X0stCo0Z
-         UYrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693853967; x=1694458767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GDbiLlEqmBfltBmTsCoRx2b9yjBtdlH6iWz3M1Lt5wc=;
-        b=YBKgP7R9zBGt2afZXFmjzBgTbtHCKEYtbN2hlf7f6+eaoMDilLvnKHzFD1d4BhHgeQ
-         eKcCJVTYuizFOzs7HPOVP9pMDiEAhOtosk6/HOCXHL5Nz+gkNJbYMBE+47RDkEjKRsBu
-         GYSnlcBkTkiISEpUGcRQPd6Rur4rVIOV055+lxjSE4n5WvXxJDbxE6IPvMqjmRQzX+UC
-         eGKljcTkT1hip8FDoH6ecsNEG49yytgBqt0nHyKJmL9iHNDtkDAfVnAv3otfkFQkmnr9
-         mBQEFKYQxJvsyZoMNxxIxXVTBly1E8RHR7AYZUm+RtIqrn3kUOlbUjs80EvbqPmxpSNj
-         caJQ==
-X-Gm-Message-State: AOJu0YzJc7xPPOnWIRIXXxwRs7LZTOxceJiWvX/nomokPsl0fb1Ed5RK
-        pc44P8leuEP6GrqxDLUTUvlJz9aUf+QR0t6WCC011g==
-X-Google-Smtp-Source: AGHT+IHOsC3Af4FNjKO9QGMexCyA+QCLKl7uog8SZuiwiBIkzWUkqdvWTyJBAuXaxokuy1BJ3nGY6bHsOOQBsnoybKI=
-X-Received: by 2002:a7b:ce18:0:b0:3fb:f0ef:4669 with SMTP id
- m24-20020a7bce18000000b003fbf0ef4669mr8247988wmc.17.1693853966862; Mon, 04
- Sep 2023 11:59:26 -0700 (PDT)
+        Mon, 4 Sep 2023 15:40:18 -0400
+X-Greylist: delayed 1201 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Sep 2023 12:40:15 PDT
+Received: from relay.yourmailgateway.de (relay.yourmailgateway.de [194.59.206.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE9CA9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:40:15 -0700 (PDT)
+Received: from relay02-mors.netcup.net (localhost [127.0.0.1])
+        by relay02-mors.netcup.net (Postfix) with ESMTPS id 4RfdM63RVMz42k1;
+        Mon,  4 Sep 2023 21:03:14 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zint.sh; s=key2;
+        t=1693854194; bh=BbASmV7iHDzDwWM4ZCX9A6TApXnhwrnZfdldZ29Hg9I=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=NPTaBg11cl0BMV7WefbxHIDN5LodwCO5W8ZVs1iUHUL1usi/Kqv466Mlbdi3qklIr
+         nVUsw06OMOS/90qztFLh6tI8CZ/1Rm2dA87sngYGAvhd8L31Jl6nAfhJQQYJpNZAVE
+         E0uuUepiGuhmOKjwZ1NV9ilvq/M0llarSTXk/RnJMMovEvgLr/Ho2T/4R0MGLC81T7
+         SAzOz5qqcJ/mZNtHCIl4X1qIl/IZ3w9JS0jlsdprylqLJzUYaDyqnSoB1xzaJLvWlR
+         WpF7XTu7h47VMvenlRJNs4lpiAticym5nLKHr9pxas9iqvOJS+KHn3eKxcBlPnoAye
+         xb7G3kilLLzXw==
+Received: from policy02-mors.netcup.net (unknown [46.38.225.35])
+        by relay02-mors.netcup.net (Postfix) with ESMTPS id 4RfdM631P9z7vrQ;
+        Mon,  4 Sep 2023 21:03:14 +0200 (CEST)
+Received: from mxe217.netcup.net (unknown [10.243.12.53])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by policy02-mors.netcup.net (Postfix) with ESMTPS id 4RfdM55j20z8scg;
+        Mon,  4 Sep 2023 21:03:13 +0200 (CEST)
+Received: from thinkpad (p5dcce04c.dip0.t-ipconnect.de [93.204.224.76])
+        by mxe217.netcup.net (Postfix) with ESMTPSA id 4B8C981B5D;
+        Mon,  4 Sep 2023 21:02:58 +0200 (CEST)
+Date:   Mon, 4 Sep 2023 21:02:48 +0200 (CEST)
+From:   Julius Zint <julius@zint.sh>
+To:     =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <thomas@t-8ch.de>
+cc:     Hans de Goede <hdegoede@redhat.com>, Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] backlight: hid_bl: Add VESA VCP HID backlight
+ driver
+In-Reply-To: <f2e1ab9e-e691-42e1-a600-42744f692922@t-8ch.de>
+Message-ID: <9a5364de-28e1-1d4a-1d3a-d6dcedb7e659@zint.sh>
+References: <20230820094118.20521-1-julius@zint.sh> <20230820094118.20521-2-julius@zint.sh> <f2e1ab9e-e691-42e1-a600-42744f692922@t-8ch.de>
 MIME-Version: 1.0
-References: <cover.1693328501.git.andreyknvl@google.com> <f7ab7ad4013669f25808bb0e39b3613b98189063.1693328501.git.andreyknvl@google.com>
- <ZO8OACjoGtRuy1Rm@elver.google.com> <CA+fCnZcAuipLKDiNY6LJAs6ODaOG9i6goVLQSdbALrzUDsnv5w@mail.gmail.com>
-In-Reply-To: <CA+fCnZcAuipLKDiNY6LJAs6ODaOG9i6goVLQSdbALrzUDsnv5w@mail.gmail.com>
-From:   Marco Elver <elver@google.com>
-Date:   Mon, 4 Sep 2023 20:58:50 +0200
-Message-ID: <CANpmjNPVu10Y+gO=r3eaU9GP8VL_dqmch3QQXYX8g9D-+HjVPg@mail.gmail.com>
-Subject: Re: [PATCH 15/15] kasan: use stack_depot_evict for tag-based modes
-To:     Andrey Konovalov <andreyknvl@gmail.com>
-Cc:     andrey.konovalov@linux.dev,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
-        Evgenii Stepanov <eugenis@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="-1463804383-9626853-1693854189=:10594"
+X-Rspamd-Queue-Id: 4B8C981B5D
+X-Rspamd-Server: rspamd-worker-8404
+X-NC-CID: prvbUe2NsAhsD+ReD9rNjQ8eYmwNmXCCvvNJk7i7
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Sept 2023 at 20:48, Andrey Konovalov <andreyknvl@gmail.com> wrote=
-:
->
-> On Wed, Aug 30, 2023 at 11:38=E2=80=AFAM Marco Elver <elver@google.com> w=
-rote:
-> >
-> > > --- a/mm/kasan/tags.c
-> > > +++ b/mm/kasan/tags.c
-> > > @@ -96,7 +96,7 @@ static void save_stack_info(struct kmem_cache *cach=
-e, void *object,
-> > >                       gfp_t gfp_flags, bool is_free)
-> > >  {
-> > >       unsigned long flags;
-> > > -     depot_stack_handle_t stack;
-> > > +     depot_stack_handle_t stack, old_stack;
-> > >       u64 pos;
-> > >       struct kasan_stack_ring_entry *entry;
-> > >       void *old_ptr;
-> > > @@ -120,6 +120,8 @@ static void save_stack_info(struct kmem_cache *ca=
-che, void *object,
-> > >       if (!try_cmpxchg(&entry->ptr, &old_ptr, STACK_RING_BUSY_PTR))
-> > >               goto next; /* Busy slot. */
-> > >
-> > > +     old_stack =3D READ_ONCE(entry->stack);
-> >
-> > Why READ_ONCE? Is it possible that there is a concurrent writer once th=
-e
-> > slot has been "locked" with STACK_RING_BUSY_PTR?
-> >
-> > If there is no concurrency, it would be clearer to leave it unmarked an=
-d
-> > add a comment to that effect. (I also think a comment would be good to
-> > say what the WRITE_ONCE below pair with, because at this point I've
-> > forgotten.)
->
-> Hm, I actually suspect we don't need these READ/WRITE_ONCE to entry
-> fields at all. This seems to be a leftover from the initial series
-> when I didn't yet have the rwlock. The rwlock prevents the entries
-> from being read (in kasan_complete_mode_report_info) while being
-> written and the try_cmpxchg prevents the same entry from being
-> rewritten (in the unlikely case of wrapping during writing).
->
-> Marco, do you think we can drop these READ/WRITE_ONCE?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Yes, I think they can be dropped.
+---1463804383-9626853-1693854189=:10594
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8BIT
+
+
+
+On Mon, 4 Sep 2023, Thomas Weißschuh wrote:
+
+> +Cc Hans who ins involved with the backlight subsystem
+>
+> Hi Julius,
+>
+> today I stumbled upon a mail from Hans [0], which explains that the
+> backlight subsystem is not actually a good fit (yet?) for external
+> displays.
+>
+> It seems a new API is in the works that would better fit, but I'm not
+> sure about the state of this API. Maybe Hans can clarify.
+>
+> This also ties back to my review question how userspace can figure out
+> to which display a backlight devices applies. So far it can not.
+>
+> [0] https://lore.kernel.org/lkml/7f2d88de-60c5-e2ff-9b22-acba35cfdfb6@redhat.com/
+>
+
+Hi Thomas,
+
+thanks for the hint. I will make sure to give this a proper read and
+see, if it fits my use case better then the current backlight subsystem.
+
+Especially since I wasnt able to properly address your other review
+comments for now. You are right that the name should align better with
+the kernel module and also, that it is possible for multiple displays to
+be attached.
+
+In its current state, this would mean that you could only control the
+backlight for the first HID device (enough for me :-).
+
+The systemd-backlight@.service uses not only the file name, but also the
+full bus path for storing/restoring backlights. I did not yet get around
+to see how the desktops handle brightness control, but since the
+systemd-backlight@.service already uses the name, its important to stay
+the same over multiple boots.
+
+I would be able to get a handle on the underlying USB device and use the
+serial to uniquely (and persistently) name the backlight. But it does
+feel hacky doing it this way.
+
+Anyways, this is where am at. Thanks again for the support and I will
+try my best to come up with something better.
+
+Julius
+---1463804383-9626853-1693854189=:10594--
