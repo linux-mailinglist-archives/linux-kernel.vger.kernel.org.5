@@ -2,127 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D5D791C41
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A1F791C45
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233583AbjIDR5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 13:57:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54714 "EHLO
+        id S1344811AbjIDSBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 14:01:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353371AbjIDR5u (ORCPT
+        with ESMTP id S231892AbjIDSBK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 13:57:50 -0400
-Received: from smtp.smtpout.orange.fr (smtp-19.smtpout.orange.fr [80.12.242.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1BA11709
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 10:57:39 -0700 (PDT)
-Received: from [192.168.1.18] ([86.243.2.178])
-        by smtp.orange.fr with ESMTPA
-        id dDpNqLclXewmQdDpNqCbJ0; Mon, 04 Sep 2023 19:57:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-        s=t20230301; t=1693850257;
-        bh=nR71hbq/PjoQgx6c1QsB9ddoM6wjPhcwxem+IF/5MAs=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=DAmM/NUC9xDbqtOy08KIXOcL8tmmpXv9w0aLhvdPCW/b3pVhHp9s92Gs39idwsLOO
-         uUgQN9V6cvYbGFBLFo6PaXwsP00xKZF4t5QmeRhjGoDPX6dGmUOOKeiuNYI2jOxUOK
-         wTiKH4H4u25rVSTHmdJQjIS0EnRDs6dqOklCrfNIQr50dp8JRVcYmbvu7dNhZh9N/0
-         qzxO81ISdmp2bUVqs7gie3KaoNksdre5yy5anbMFHWB1nFVQaM38ZDT0xiIkuCq9gn
-         TBUJGCnGh2i2fKUgx/Hlmc++hm5Nly5Wzr38Ua4mGwpGus3VaAGQw+vOuAvK+x+z64
-         wfek9dll6yFog==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Mon, 04 Sep 2023 19:57:37 +0200
-X-ME-IP: 86.243.2.178
-Message-ID: <858ca657-3845-f65e-b9d8-9d7700e4a069@wanadoo.fr>
-Date:   Mon, 4 Sep 2023 19:57:33 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] phy: sun4i-usb: Fix a W=1 compilation failure
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-References: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
- <20230904005855.658819b3@slackpad.lan>
-Content-Language: fr, en-GB
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20230904005855.658819b3@slackpad.lan>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Sep 2023 14:01:10 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16DFEDD;
+        Mon,  4 Sep 2023 11:01:07 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 337D6B80ED9;
+        Mon,  4 Sep 2023 18:01:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9B4DC433C8;
+        Mon,  4 Sep 2023 18:01:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693850463;
+        bh=ZO4d1HawvJ//3ptwuwm7onPYcLR7YnU0KtC0ZhmK0kQ=;
+        h=Date:To:Cc:Subject:From:References:In-Reply-To:From;
+        b=euqAD0ji2Pw8IAPMadKYJapR9GhENHWAyoLQTeF5iaEwYKY4v7adIY/4UD+yqj8q2
+         Gcy/9FXv5lBDSdvGJDaFqHF9o56D/f4wNnJka314gE+CVU+5zXCvSwfC4vMN7J7kcb
+         xlYuPfy6WImRtm+H4u+YoprHwtFiwsJYmHeAUhnA8lmmsvE7S5uaRPzeGPfYfYC206
+         eLFgCtFTJ2qxMWq4C5TOlVCDppfIwzI7i1vt7x+cGXDr7pauvcyO60EHFkBTI0iRIi
+         NpsR3VvfIXzW4y9AdNjFDOdgMf7JILKh9LNmcywhgS5lM2UrUwQYU7M/djc1VxJhhJ
+         LOEk2lReGNnBw==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Mon, 04 Sep 2023 21:00:59 +0300
+Message-Id: <CVABVIQB3858.CWOHMN527J67@suppilovahvero>
+To:     "Mario Limonciello" <mario.limonciello@amd.com>,
+        "Paul Menzel" <pmenzel@molgen.mpg.de>
+Cc:     <linux-integrity@vger.kernel.org>,
+        "Jerry Snitselaar" <jsnitsel@redhat.com>, <stable@vger.kernel.org>,
+        "Todd Brandt" <todd.e.brandt@intel.com>,
+        "Peter Huewe" <peterhuewe@gmx.de>,
+        "Jason Gunthorpe" <jgg@ziepe.ca>, <linux-kernel@vger.kernel.org>,
+        "Patrick Steinhardt" <ps@pks.im>, "Ronan Pigott" <ronan@rjp.ie>,
+        "Raymond Jay Golo" <rjgolo@gmail.com>
+Subject: Re: [PATCH v3] tpm: Enable hwrng only for Pluton on AMD CPUs
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+X-Mailer: aerc 0.14.0
+References: <20230822231510.2263255-1-jarkko@kernel.org>
+ <705b9769-4132-450b-bd47-2423c419db2a@molgen.mpg.de>
+ <CV03X3OEI7RE.3NI1QJ6MBJSHA@suppilovahvero>
+ <1eeddbdc-c1f0-4499-b3d1-24c96f42a50b@amd.com>
+ <CV3J3TCMB74C.1WA96NQ9J593U@suppilovahvero>
+ <f6d75cac-2556-484e-8a2c-3531b24b1ca5@amd.com>
+In-Reply-To: <f6d75cac-2556-484e-8a2c-3531b24b1ca5@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 04/09/2023 à 01:58, Andre Przywara a écrit :
-> On Sun,  3 Sep 2023 12:11:06 +0200
-> Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
-> 
->> With gcc 12.3.0, when this file is built, we get errors such as:
->>
->> drivers/phy/allwinner/phy-sun4i-usb.c: In function ‘sun4i_usb_phy_probe’:
->> drivers/phy/allwinner/phy-sun4i-usb.c:790:52: error: ‘_vbus’ directive output may be truncated writing 5 bytes into a region of size between 2 and 12 [-Werror=format-truncation=]
->>    790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
->>        |                                                    ^~~~~
->> drivers/phy/allwinner/phy-sun4i-usb.c:790:17: note: ‘snprintf’ output between 10 and 20 bytes into a destination of size 16
->>    790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
->>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Because of the possible value of 'i', this can't be an issue in real world
-> 
-> Would using "u8 i;" help? After all currently there are only 4 PHYs
-> max, and in general this isn't expected to be more than a "handful", so
-> 8 bits should be plenty. An unsigned is better anyway.
-> It leaves a bit of a bitter taste, though, as we shouldn't do this kind
-> type tweaking, especially not to work around the compiler trying to be
-> clever, but then not seeing the whole picture (that "i" is bounded by
-> compile time constants not exceeding "4").
+On Mon Aug 28, 2023 at 3:35 AM EEST, Mario Limonciello wrote:
+> On 8/27/2023 13:12, Jarkko Sakkinen wrote:
+> > On Wed Aug 23, 2023 at 9:58 PM EEST, Mario Limonciello wrote:
+> >> On 8/23/2023 12:40, Jarkko Sakkinen wrote:
+> >>> On Wed Aug 23, 2023 at 11:23 AM EEST, Paul Menzel wrote:
+> >>>> Dear Jarkko,
+> >>>>
+> >>>>
+> >>>> Thank you for your patch.
+> >>>>
+> >>>>
+> >>>> Am 23.08.23 um 01:15 schrieb Jarkko Sakkinen:
+> >>>>> The vendor check introduced by commit 554b841d4703 ("tpm: Disable R=
+NG for
+> >>>>> all AMD fTPMs") doesn't work properly on a number of Intel fTPMs.  =
+On the
+> >>>>> reported systems the TPM doesn't reply at bootup and returns back t=
+he
+> >>>>> command code. This makes the TPM fail probe.
+> >>>>>
+> >>>>> Since only Microsoft Pluton is the only known combination of AMD CP=
+U and
+> >>>>> fTPM from other vendor, disable hwrng otherwise. In order to make s=
+ysadmin
+> >>>>> aware of this, print also info message to the klog.
+> >>>>>
+> >>>>> Cc: stable@vger.kernel.org
+> >>>>> Fixes: 554b841d4703 ("tpm: Disable RNG for all AMD fTPMs")
+> >>>>> Reported-by: Todd Brandt <todd.e.brandt@intel.com>
+> >>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D217804
+> >>>>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> >>>>
+> >>>> Mario=E2=80=99s patch also had the three reporters below listed:
+> >>>>
+> >>>> Reported-by: Patrick Steinhardt <ps@pks.im>
+> >>>> Reported-by: Ronan Pigott <ronan@rjp.ie>
+> >>>> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> >>>
+> >>> The problem here is that checkpatch throws three warnings:
+> >>>
+> >>> WARNING: Reported-by: should be immediately followed by Closes: with =
+a URL to the report
+> >>> #19:
+> >>> Reported-by: Patrick Steinhardt <ps@pks.im>
+> >>> Reported-by: Ronan Pigott <ronan@rjp.ie>
+> >>>
+> >>> WARNING: Reported-by: should be immediately followed by Closes: with =
+a URL to the report
+> >>> #20:
+> >>> Reported-by: Ronan Pigott <ronan@rjp.ie>
+> >>> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> >>>
+> >>> WARNING: Reported-by: should be immediately followed by Closes: with =
+a URL to the report
+> >>> #21:
+> >>> Reported-by: Raymond Jay Golo <rjgolo@gmail.com>
+> >>> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> >>>
+> >>
+> >> FWIW I observed the same checkpatch warning when I submitted my versio=
+n
+> >> of the patch.  I figured it's better to ignore the warning and attribu=
+te
+> >> everyone who reported the issue affected them.
+> >=20
+> > OK so:
+> >=20
+> > 1. checkpatch.pl is part of the kernel process.
+> > 2. Bugzilla is not part of the kernel process.
+> >=20
+> > Why emphasis on 1?
+> >=20
+> > BR, Jarkko
+>
+> The reason I submitted it this way is because of this quote from the=20
+> documentation [1].
+>
+> "Check your patches with the patch style checker prior to submission=20
+> (scripts/checkpatch.pl). Note, though, that the style checker should be=
+=20
+> viewed as a guide, not as a replacement for human judgment. If your code=
+=20
+> looks better with a violation then its probably best left alone."
+>
+> I wanted the patch to capture and attribute all those that reported it=20
+> not just the "first one".  Like I said previously, it's better to have a=
+=20
+> collection of people to ping to notify if something needs to be reverted.
+>
+> [1]=20
+> https://www.kernel.org/doc/html/latest/process/submitting-patches.html#st=
+yle-check-your-changes
 
-data->cfg->num_phys is also an int, and having 'i' as an char is really 
-unusual.
+Please denote also that kernel bugzilla is not mentioned in the page
+that you put as a reference, and only reporter in the LKML has been
+Todd.
 
-So, if changing the size of name (only to waste some stack in order to 
-silence a compiler warning) is not acceptable, I think that the best is 
-to leave things as-is.
-
-CJ
-
-
-> 
-> Cheers,
-> Andre
-> 
->> application, but in order to have "make W=1" work correctly, give more
->> space for 'name'.
->>
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/phy/allwinner/phy-sun4i-usb.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
->> index ec551464dd4f..e53a9a9317bc 100644
->> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
->> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
->> @@ -782,7 +782,7 @@ static int sun4i_usb_phy_probe(struct platform_device *pdev)
->>   
->>   	for (i = 0; i < data->cfg->num_phys; i++) {
->>   		struct sun4i_usb_phy *phy = data->phys + i;
->> -		char name[16];
->> +		char name[32];
->>   
->>   		if (data->cfg->missing_phys & BIT(i))
->>   			continue;
-> 
-> 
-
+BR, Jarkko
