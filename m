@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 396EA791CBB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2F0791CBC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238956AbjIDSWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 14:22:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S241647AbjIDSWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 14:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjIDSWh (ORCPT
+        with ESMTP id S236547AbjIDSWo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 14:22:37 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 913111B6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:22:29 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bd0bc8b429so28489001fa.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:22:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693851747; x=1694456547; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nIQO7Ie9VkKzrMM5Wfe6jISQfV4/UOvfmz+1/s96Bf4=;
-        b=UeVXo14kKHrWXwFORCAfjJAyw5tbtLRCLqzcxWFQKY8NUEci8vTj9CqOwkk6wWS3AM
-         z9dN/Hyg8/r1uO8MxIdywXM/roJPk6rJkcL5FFAx29gmtaJAixLnryvp8F0T4UxSWnTc
-         KHWZMZIbTFjqlFntgDczuqePJo/7OuMJgsqJs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693851747; x=1694456547;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nIQO7Ie9VkKzrMM5Wfe6jISQfV4/UOvfmz+1/s96Bf4=;
-        b=hmg0u9DTcgvwpmpHVZMpRoa8aV3RBH0BEqDZLUhVIYUayeQVoEKOx6ED3YP0i6JZNT
-         a/QfXiuuPZY+QR/rGuKw4c5ArFiT/Wroe9i3NKbHQhwk9qtvFSq+5XXxcVKgzpl043dl
-         9Mun6DEZTWz9DvMstjMS6Ibf/gkRx12iq1TIRwnscUN/CgyYhCL00143xSCQ5O+jGK0D
-         6GQFi+o6w2jljm3vdiUDL53Rj9aUwSDcEvSvTzWUUVXi0kgDKc4uiv9Dv8F2Qbb0GT0q
-         P8dCoRfpGfl4QMrA7Sc9ESZUvgtcsblX5oyf5UIwEv0GgJTrArITPOhHNceGC33BAVMK
-         8HGw==
-X-Gm-Message-State: AOJu0YxOQt9yKDaK5dWqNxwGEY+YLeXxIsJGWudO6gQVuKR6jQF0UD7V
-        rKl7xcZvapl7ouZBwAeeCn7A7zmj+ngV+ZIby2vNcxkq
-X-Google-Smtp-Source: AGHT+IG63UEV9xCZUe1obGvy6RlgdGgKZ1MFIM7ZEQD+wlgHKGpZgzUimmM679+NO2gSp8fNhe+LCg==
-X-Received: by 2002:a19:5054:0:b0:500:a2d0:51b6 with SMTP id z20-20020a195054000000b00500a2d051b6mr6117586lfj.37.1693851747435;
-        Mon, 04 Sep 2023 11:22:27 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id l3-20020ac24303000000b0050097974ee0sm1851436lfh.224.2023.09.04.11.22.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 11:22:26 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-5009969be25so2675005e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:22:26 -0700 (PDT)
-X-Received: by 2002:a05:6512:488c:b0:501:b8dc:6c45 with SMTP id
- eq12-20020a056512488c00b00501b8dc6c45mr980028lfb.18.1693851746170; Mon, 04
- Sep 2023 11:22:26 -0700 (PDT)
+        Mon, 4 Sep 2023 14:22:44 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166A213E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:22:40 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E2604CE0E30
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 18:22:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A23D0C433C7;
+        Mon,  4 Sep 2023 18:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693851756;
+        bh=plSadGikF5SVB6fcGNEoFCniaaqZVESV2r2w8EO8OLY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AS8b2VTuL1498D+vCpK6FGEStRPcO0ZZGAldikbShf2FjQodPosI8qTcReUdxEqo9
+         vpnBmg1fcoKlXEjpNhe+lKB0Y7XISjNs0vd+I7UWq4WgOUdvIVg7WqKFC4E0llbCso
+         v26MxNCM+R/WC0VxyiAxOyMsmAbaZAJYG0zFGoL6B5GvTgybZ26fPQabTbplckcpVs
+         mC7IOobtcb1u0jbZZulbQqU5evOVbl2x+VBsaMhioEH7gAuqmt0NqS+aJg2JjyRzwe
+         h3jg5neiEN3VVWh6V87hYYdnN1nguT/cJPed0O0U5WFXQouFhsSSCg1XSkMysGQV33
+         4M9X0m/xSsF1g==
+Date:   Mon, 4 Sep 2023 11:22:34 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Alexander Potapenko <glider@google.com>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, ke.wang@unisoc.com,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Mateusz Guzik <mjguzik@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH] mm: make __GFP_SKIP_ZERO visible to skip zero operation
+Message-ID: <20230904182234.GB30774@sol.localdomain>
+References: <20230831105252.1385911-1-zhaoyang.huang@unisoc.com>
+ <ZPCEim0AZG5hTSYH@casper.infradead.org>
+ <CAGWkznGAJVZtn49zNHsMAjRSfTRR707QXYY0m8Q+yABTsiig2Q@mail.gmail.com>
+ <CAG_fn=VJrO3e9q0M6KA9nopqyDuRO4g7SBak6YptiEvzdE+nkA@mail.gmail.com>
+ <ZPWNTiAxZZh/kzew@dhcp22.suse.cz>
+ <CAHk-=wh2s26=Hj03cJXBWELmgCY=z5=mhTTDNVVKDAbda8g7Xw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20230901184136.73b2833e@xps-13> <CAHk-=wgUntc0u-6WQ9U3OmNHTqB=cZQoWcTOXaipB+gixV5NPA@mail.gmail.com>
- <20230904102819.54d95098@xps-13>
-In-Reply-To: <20230904102819.54d95098@xps-13>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 4 Sep 2023 11:22:08 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wj44eeYipM1Qjvena4ZG66-a04AE8H_zMtv6V1WFXYZcQ@mail.gmail.com>
-Message-ID: <CAHk-=wj44eeYipM1Qjvena4ZG66-a04AE8H_zMtv6V1WFXYZcQ@mail.gmail.com>
-Subject: Re: [GIT PULL] mtd: Changes for v6.6-rc1
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Michael Walle <michael@walle.cc>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh2s26=Hj03cJXBWELmgCY=z5=mhTTDNVVKDAbda8g7Xw@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,145 +71,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Sept 2023 at 01:28, Miquel Raynal <miquel.raynal@bootlin.com> wrote:
->
-> Back in 2020, you complained about one of my pull requests with:
->
-> > You didn't even mention the stm32 controller change, which seems to be
-> > the biggest individual thing in here..
->
-> And indeed that was a mistake on my side, but I received that comment
-> as a request for a more detailed list of what had been touched. That's
-> likely an over interpretation, but it lead me to be more exhaustive so
-> the "you did not mention <this>" would no longer happen.
+On Mon, Sep 04, 2023 at 10:34:25AM -0700, Linus Torvalds wrote:
+> On Mon, 4 Sept 2023 at 00:55, Michal Hocko <mhocko@suse.com> wrote:
+> >
+> >       Sooner or later this will become an
+> > unreviewable mess so the value of init_on_alloc will become very
+> > dubious.
+> 
+> The value of init_on_alloc is *already* very dubious.
+> 
+> Exactly because people will turn it off, because it hurts performance
+> so much - and in pointless ways.
+> 
+> You do realize that distributions - well, at least Fedora - simply
+> don't turn INIT_ON_ALLOC_DEFAULT_ON on at all?
+> 
+> So the current state of init_on_alloc is that nobody sane uses it. You
+> have to think you're special to enable it, because it is *so* bad.
+> 
+> Security people need to realize that the primary point of computing is
+> NEVER EVER security. Security is entirely pointless without a usable
+> system.
+> 
+> Unless security people realize that they are always secondary, they
+> aren't security people, they are just random wankers.
+> 
+> And people who state this truism had better not get shamed for
+> standing up to stupidity.
+> 
 
-You went from one extreme to another, and what I really would want is
-a nice middle ground: mention the important things, summarize the
-rest, and if something is subtle, please explain it.
+Android and Ubuntu both set CONFIG_INIT_ON_ALLOC_DEFAULT_ON.  I think this makes
+it clear that the init-on-alloc feature is useful for a substantial amount of
+users even in its current form.
 
-Now, that "something is subtle" may not even happen most of the time -
-particularly in drivers - so that is probably almost never an issue.
+I would caution against checking the kernel config for the distro you happen to
+be using and extrapolating that to all Linux systems.
 
-> About your request today, I totally get why you would like something
-> more meaningful, but I don't know how to do it. Sometimes I get series
-> which have a goal and I could definitely try to capture that goal in
-> the summary rather than listing the patches.
+Regardless, I'm in favor of a per allocation opt-out flag like GFP_SKIP_ZERO.
+There are clear cases where it makes sense, for example some places in the VFS
+where the performance impact is large and the code has been carefully reviewed.
 
-Exactly. If you have a series with a goal, please mention / explain
-the goal - not the details of the series.
+I don't really like the idea
+(https://lore.kernel.org/lkml/CAG_fn=UQEuvJ9WXou_sW3moHcVQZJ9NvJ5McNcsYE8xw_WEYGw@mail.gmail.com/)
+of making the system administrator have to opt out allocation sites individually
+via a kernel command-line parameter.  Yes, it makes the opt out less likely to
+be abused as two parties (developer and system administrator) have to consent to
+each individual opt out.  So it theory it sounds good.  But I feel that doesn't
+outweigh the fact that it would be complicated and hard to use.  How about just
+having two options: one to always honor GFP_SKIP_ZERO in the code and one to
+always ignore it.
 
-But, as you say:
-
-> But then, what about the
-> endless list of miscellaneous patches to fix the style, the W=1
-> warnings, various robot complains...
-
-Absolutely. That's generally the bulk of any subsystem, and then all
-you need to do is mention it as a kind of "this is what happened".
-
-When I complained back in 2020, it was bvecause you didn't mention
-even the big changes. Although quite often "big" changes can also just
-be "a lot of cleanup", so mentioning it as such is also fine.
-
->  Because this is what I mostly get
-> currently, and I believe there is no way you'll prefer something like
-> this:
-> * Fix misc typos
-> * Fix misc style fixes
-> * Update to newer API's
-> Or maybe it is as long as the patches are trivial?
-
-Absolutely. That's _exactly_ what I want for trivial patches
-(including if it's a series of 15 trivial patches that all do the same
-thing to 15 different drivers).
-
-Instead of mentioning the individual patches, just say exactly the
-above kind of "Update to new helper APIs", or "Fix warnings reported
-by syzbot".
-
-Honestly, for pure "endpoint" drivers, that's kind of the expected
-explanation. Drivers themselves seldom have any conceptually big
-changes, and so the above kind of things is normal and expected.  So
-then you have exactly that kind of  "Fix W=1 warnings" comment without
-any more specificity.
-
-Then, occasionally you have one driver that gets a lot of work because
-somebody goes in and cleans up that driver in _particular_, and so if
-one particular driver stands out because a vendor (or an individual)
-just decided to do a lot of spring cleaning, then you might have a
-much more specific "Lots of work on cleaning up the XYZ driver"
-mention.
-
-Just as an example, let's look at some of the recent driver merges I
-did, and take something like SCSI where not a lot of interesting stuff
-happened. The mention was just
-
-     "Updates to the usual drivers (ufs, lpfc, qla2xxx, mpi3mr, libsas) and
-      the usual minor updates and bug fixes but no significant core changes"
-
-and that's ok. It was a lot of small patches that didn't do anything
-that you'd really care about unless you had some specific interest in
-a driver.
-
-But I mention that merge message because it is worth noting that I
-actually complained a bit to James about it, because that pull also
-did end up having one thing that stood out if you looked at the
-diffstat: it removed the UFS HPB support entirely. Nobody *really*
-cares about it (because it was never used), which was James' argument
-for not mentioning it, but it's the kind of thing that *does* stand
-out and might be worth mentioning even if it's just a curiosity. It's
-a _conceptually_ interesting part of the pull, even if it doesn't
-actually matter in the real world.
-
-So I give that merge message as an example of both a perfectly fine
-thing in general, but also as an example of "yeah, it could certainly
-have been better". Just to give you kind of an idea what I'm looking
-for.
-
-And don't get me wrong: sometimes I really appreciate - and want - a
-lot more. *IF* there are major ABI changes, I not only want them
-mentioned, I really want them explained.
-
-They *probably* don't actually happen for the MTD subsystem very much,
-if at all, but to give an example of somebody who does do that kind of
-"ABI changes that can affect a lot of other maintainers", we have
-things like the VFS layer that then affects multiple different
-filesystems, and then that shows up in the merge messages as big
-explanations. Or new system calls, or things like that, which affect
-not only the internal kernel ABI, but that actually exposes new
-user-space ABI. Then the explanations can be tens of lines of "this is
-what's going on".
-
-So examples from the VFS layer on *those* kinds of changes:
-
-    git show 475d4df82719
-    git show c0a572d9d32f
-
-and no, I do not expect the MTD drivers to ever do that.
-
-But to give a recent example of a nice middle road from a merge I did
-yesterday, look at the phy pull from yesterday, or the HID updates
-from Friday. They have slightly different approaches to the summary,
-but both of those make me feel like they are explaining what went on
-in some simple summary without bogging down in excessive detail:"
-
-    git show db906f0ca6bb
-    git show 29aa98d0fe01
-
-Anyway, all those examples are meant as just that - *examples*. It
-obviously depends entirely on what has been going on, and different
-subsystems can have very different rules. And often "core changes" to
-the subsystem are much more worthy of mention than some cleanup of
-individual drivers.
-
-A merge message of just a single line of "Trivial cleanups to drivers"
-can be entirely acceptable. But then I do expect to just see pretty
-much completely mindless one- or few-liners.
-
-Or a merge message might be 30+ lines of explanation, but then I do
-expect it to be some major new feature or re-organization that will
-affect end-users or other subsystems.
-
-So there is no one single "correct" thing.
-
-                  Linus
+- Eric
