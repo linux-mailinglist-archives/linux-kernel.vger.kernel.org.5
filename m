@@ -2,133 +2,417 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC3AB791B00
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:58:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90469791B08
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244109AbjIDP6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40030 "EHLO
+        id S241529AbjIDP76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:59:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231676AbjIDP6j (ORCPT
+        with ESMTP id S238137AbjIDP75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:58:39 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ED70E5C
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:58:10 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id 38308e7fff4ca-2bcb89b476bso24364721fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 08:58:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693843087; x=1694447887; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ZUHwKLnbFXm7KLRQcxSJtkjW8XETj6X7RNn1FYYUf0Q=;
-        b=JtV3S2MbAePyqIXhTSWzsBL5GG+Y/kv7+sWkj7+R25NggqXL09VIa7/ABeNx+AT8IN
-         W2v5UXEMhiHDcMKpajOk1l90n9Ssvd4bNzec2BKL7dgi95zh78ZxYNRTmYo89xg2sl4K
-         r/znH3IeDcmXGBHhuC/wQX9wCcli1+9ccpFhPd3Ss+DXekqQx9LBUZyAFZi8/Tb9HjT5
-         AWzRoEZH4rn/s3VnXi/OLIN+mxF6weiQQaM+/H73X3QSYqwpdBpKhtPD+ZsVM3vpiXCz
-         a03WzbOutje4o8Aqyz22fghjJkCp4wYvUbba3fHdpXeEcnr/JRemRjVBtQXiEyy9EUau
-         eGxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693843087; x=1694447887;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZUHwKLnbFXm7KLRQcxSJtkjW8XETj6X7RNn1FYYUf0Q=;
-        b=AWJY1j3QQk3p9mbV2PCulNaOqU0EPi8c2v+U/7xT+zJixqL84B9FstefVNtOBdd9uo
-         MUhGsTQvOfpaqqTHtikn/9L9aVeDszTQSP3fiZmZP3jVVpDrJQ1tUuhT8V9nX/6AIVjk
-         WreI8RbAUzEbqSeVpLaFJdVpdJOYJq1+FGBpZZ0yJSPlQTJ5ppy8XQB+rFhMHR9Wf0CN
-         ei3rY/nr7fddW3PVLyvg9Nqit/yf3ut/F12n+JrSyfFVgbLBQgsPLDKOEeC0a3QveQE3
-         +HbxwwUsy5GYDoTAOCyMfC3cILn/x+IkQbHTxT3JpwPj3erh4xX/Q2nMfnM/7dDS4ZSF
-         YCew==
-X-Gm-Message-State: AOJu0Yy+/BlnJZBwAVt1riiimKsaJmCStNq5cwMe9kDcZ9WPQOEGZ4aI
-        WTm0CM+XGdY8pPe5AnF4UFK0tw==
-X-Google-Smtp-Source: AGHT+IG1PG1HQBGY/9Uip6GHEELtcEOKs21LhuZthksMhsuW/ax+AaFG+MVw04dTmJ1G98sQFym4kg==
-X-Received: by 2002:a2e:918b:0:b0:2b7:33b9:8809 with SMTP id f11-20020a2e918b000000b002b733b98809mr7120141ljg.16.1693843087517;
-        Mon, 04 Sep 2023 08:58:07 -0700 (PDT)
-Received: from [192.168.1.101] (abxj43.neoplus.adsl.tpnet.pl. [83.9.3.43])
-        by smtp.gmail.com with ESMTPSA id w23-20020a2e8217000000b002b6e099c481sm2213693ljg.51.2023.09.04.08.58.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 08:58:07 -0700 (PDT)
-Message-ID: <9492bc16-2d8f-44a1-b2d6-d5f8353f30fa@linaro.org>
-Date:   Mon, 4 Sep 2023 17:58:06 +0200
+        Mon, 4 Sep 2023 11:59:57 -0400
+Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39B0CDA;
+        Mon,  4 Sep 2023 08:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
+        t=1693843190; bh=6xQ8ZzLA186xYSB1p50dCg8bI/xUN5UKZ4e4DN5dY4Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JbEcKK6AlWE4egRXfy61j4FO6+MWz00uDfvuC32Z8D1FjmOkA58fhIsMMBa3ngg/n
+         WwF0wzIOQbwLKwFniOMKBDDVVTl4ep/Av9SvOK0TVpf0nGV1CWMHFr+MzQYTqy39Ku
+         JtybnDyMdsKr9/jvkP3Ov9Pw6es8f3ebi5SUMiaU=
+Date:   Mon, 4 Sep 2023 17:59:45 +0200
+From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
+To:     Julius Zint <julius@zint.sh>, Hans de Goede <hdegoede@redhat.com>
+Cc:     Lee Jones <lee@kernel.org>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH v3 1/1] backlight: hid_bl: Add VESA VCP HID backlight
+ driver
+Message-ID: <f2e1ab9e-e691-42e1-a600-42744f692922@t-8ch.de>
+References: <20230820094118.20521-1-julius@zint.sh>
+ <20230820094118.20521-2-julius@zint.sh>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] Fix tcsr_mutex register for IPQ6018
-Content-Language: en-US
-To:     Vignesh Viswanathan <quic_viswanat@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ohad@wizery.com,
-        baolin.wang@linux.alibaba.com, linux-remoteproc@vger.kernel.org
-Cc:     quic_kathirav@quicinc.com, quic_anusha@quicinc.com,
-        quic_sjaganat@quicinc.com, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com
-References: <20230904055010.4118982-1-quic_viswanat@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230904055010.4118982-1-quic_viswanat@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230820094118.20521-2-julius@zint.sh>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.09.2023 07:50, Vignesh Viswanathan wrote:
-> IPQ6018 has 32 tcsr_mutext hwlock registers of 0x1000 size each.
-> The compatible string qcom,ipq6018-tcsr-mutex is mapped to
-> of_msm8226_tcsr_mutex which has 32 locks configured with stride of 0x80
-> and doesn't match the HW present in IPQ6018.
-> 
-> This series fixes the following:
-> 1. Fix the tcsr_mutex hwlock register size to 0x20000 in ipq6018.dtsi.
-> 2. Remove qcom,ipq6018-tcsr-mutex compatible string for tcsr_mutex in
-> ipq6018.dtsi.
-> 3. Drop unused qcom,ipq6018-tcsr-mutex compatible string from
-> qcom_hwspinlock driver and dt-bindings.
-> 
-Sounds like 20230904063344.4144086-1-quic_viswanat@quicinc.com can't
-go in without this then?
++Cc Hans who ins involved with the backlight subsystem
 
-Konrad
+Hi Julius,
+
+today I stumbled upon a mail from Hans [0], which explains that the
+backlight subsystem is not actually a good fit (yet?) for external
+displays.
+
+It seems a new API is in the works that would better fit, but I'm not
+sure about the state of this API. Maybe Hans can clarify.
+
+This also ties back to my review question how userspace can figure out
+to which display a backlight devices applies. So far it can not.
+
+[0] https://lore.kernel.org/lkml/7f2d88de-60c5-e2ff-9b22-acba35cfdfb6@redhat.com/
+
+Below the original PATCH for Hans' reference.
+
+On 2023-08-20 11:41:18+0200, Julius Zint wrote:
+> The HID spec defines the following Usage IDs (p. 345 ff):
+> 
+> - Monitor Page (0x80) -> Monitor Control (0x01)
+> - VESA Virtual Controls Page (0x82) -> Brightness (0x10)
+> 
+> Apple made use of them in their Apple Studio Display and most likely on
+> other external displays (LG UltraFine 5k, Pro Display XDR).
+> 
+> The driver will work for any HID device with a report, where the
+> application matches the Monitor Control Usage ID and:
+> 
+> 1. An Input field in this report with the Brightness Usage ID (to get
+>    the current brightness)
+> 2. A Feature field in this report with the Brightness Usage ID (to
+>    set the current brightness)
+> 
+> This driver has been developed and tested with the Apple Studio Display.
+> Here is a small excerpt from the decoded HID descriptor showing the
+> feature field for setting the brightness:
+> 
+>   Usage Page (Monitor VESA VCP),  ; Monitor VESA VPC (82h, monitor page)
+>   Usage (10h, Brightness),
+>   Logical Minimum (400),
+>   Logical Maximum (60000),
+>   Unit (Centimeter^-2 * Candela),
+>   Unit Exponent (14),
+>   Report Size (32),
+>   Report Count (1),
+>   Feature (Variable, Null State),
+> 
+> The full HID descriptor dump is available as a comment in the source
+> code.
+> 
+> Signed-off-by: Julius Zint <julius@zint.sh>
+> ---
+>  drivers/video/backlight/Kconfig  |   8 +
+>  drivers/video/backlight/Makefile |   1 +
+>  drivers/video/backlight/hid_bl.c | 269 +++++++++++++++++++++++++++++++
+>  3 files changed, 278 insertions(+)
+>  create mode 100644 drivers/video/backlight/hid_bl.c
+> 
+> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
+> index 51387b1ef012..b964a820956d 100644
+> --- a/drivers/video/backlight/Kconfig
+> +++ b/drivers/video/backlight/Kconfig
+> @@ -472,6 +472,14 @@ config BACKLIGHT_LED
+>  	  If you have a LCD backlight adjustable by LED class driver, say Y
+>  	  to enable this driver.
+>  
+> +config BACKLIGHT_HID
+> +	tristate "VESA VCP HID Backlight Driver"
+> +	depends on HID
+> +	help
+> +	  If you have an external display with VESA compliant HID brightness
+> +	  controls then say Y to enable this backlight driver. Currently the
+> +	  only supported device is the Apple Studio Display.
+> +
+>  endif # BACKLIGHT_CLASS_DEVICE
+>  
+>  endmenu
+> diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
+> index f72e1c3c59e9..835f9b8772c7 100644
+> --- a/drivers/video/backlight/Makefile
+> +++ b/drivers/video/backlight/Makefile
+> @@ -58,3 +58,4 @@ obj-$(CONFIG_BACKLIGHT_WM831X)		+= wm831x_bl.o
+>  obj-$(CONFIG_BACKLIGHT_ARCXCNN) 	+= arcxcnn_bl.o
+>  obj-$(CONFIG_BACKLIGHT_RAVE_SP)		+= rave-sp-backlight.o
+>  obj-$(CONFIG_BACKLIGHT_LED)		+= led_bl.o
+> +obj-$(CONFIG_BACKLIGHT_HID)		+= hid_bl.o
+> diff --git a/drivers/video/backlight/hid_bl.c b/drivers/video/backlight/hid_bl.c
+> new file mode 100644
+> index 000000000000..b40f8f412ee2
+> --- /dev/null
+> +++ b/drivers/video/backlight/hid_bl.c
+> @@ -0,0 +1,269 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/device.h>
+> +#include <linux/hid.h>
+> +#include <linux/module.h>
+> +#include <linux/backlight.h>
+> +
+> +#define APPLE_STUDIO_DISPLAY_VENDOR_ID  0x05ac
+> +#define APPLE_STUDIO_DISPLAY_PRODUCT_ID 0x1114
+> +
+> +#define HID_USAGE_MONITOR_CTRL			0x800001
+> +#define HID_USAGE_VESA_VCP_BRIGHTNESS		0x820010
+> +
+> +/*
+> + * Apple Studio Display HID report descriptor
+> + *
+> + * Usage Page (Monitor),               ; USB monitor (80h, monitor page)
+> + * Usage (01h),
+> + * Collection (Application),
+> + *     Report ID (1),
+> + *
+> + *     Usage Page (Monitor VESA VCP),  ; Monitor VESA virtual control panel (82h, monitor page)
+> + *     Usage (10h, Brightness),
+> + *     Logical Minimum (400),
+> + *     Logical Maximum (60000),
+> + *     Unit (Centimeter^-2 * Candela),
+> + *     Unit Exponent (14),
+> + *     Report Size (32),
+> + *     Report Count (1),
+> + *     Feature (Variable, Null State),
+> + *
+> + *     Usage Page (PID),               ; Physical interface device (0Fh)
+> + *     Usage (50h),
+> + *     Logical Minimum (0),
+> + *     Logical Maximum (20000),
+> + *     Unit (1001h),
+> + *     Unit Exponent (13),
+> + *     Report Size (16),
+> + *     Feature (Variable, Null State),
+> + *
+> + *     Usage Page (Monitor VESA VCP),  ; Monitor VESA virtual control panel (82h, monitor page)
+> + *     Usage (10h, Brightness),
+> + *     Logical Minimum (400),
+> + *     Logical Maximum (60000),
+> + *     Unit (Centimeter^-2 * Candela),
+> + *     Unit Exponent (14),
+> + *     Report Size (32),
+> + *     Report Count (1),
+> + *     Input (Variable),
+> + * End Collection
+> + */
+> +
+> +struct hid_bl_data {
+> +	struct hid_device *hdev;
+> +	unsigned int min_brightness;
+> +	unsigned int max_brightness;
+> +	struct hid_field *input_field;
+> +	struct hid_field *feature_field;
+> +};
+> +
+> +static struct hid_field *hid_get_usage_field(struct hid_device *hdev,
+> +					     unsigned int report_type,
+> +					     unsigned int application, unsigned int usage)
+> +{
+> +	struct hid_report_enum *re = &hdev->report_enum[report_type];
+> +	struct hid_report *report;
+> +	int i, j;
+> +
+> +	list_for_each_entry(report, &re->report_list, list) {
+> +		if (report->application != application)
+> +			continue;
+> +
+> +		for (i = 0; i < report->maxfield; i++) {
+> +			struct hid_field *field = report->field[i];
+> +
+> +			for (j = 0; j < field->maxusage; j++)
+> +				if (field->usage[j].hid == usage)
+> +					return field;
+> +		}
+> +	}
+> +	return NULL;
+> +}
+> +
+> +static void hid_bl_remove(struct hid_device *hdev)
+> +{
+> +	struct backlight_device *bl;
+> +	struct hid_bl_data *data;
+> +
+> +	hid_dbg(hdev, "remove\n");
+> +	bl = hid_get_drvdata(hdev);
+> +	data = bl_get_data(bl);
+> +
+> +	devm_backlight_device_unregister(&hdev->dev, bl);
+> +	hid_hw_close(hdev);
+> +	hid_hw_stop(hdev);
+> +	hid_set_drvdata(hdev, NULL);
+> +	devm_kfree(&hdev->dev, data);
+> +}
+> +
+> +static int hid_bl_get_brightness_raw(struct hid_bl_data *data)
+> +{
+> +	struct hid_field *field;
+> +	int result;
+> +
+> +	field = data->input_field;
+> +	hid_hw_request(data->hdev, field->report, HID_REQ_GET_REPORT);
+> +	hid_hw_wait(data->hdev);
+> +	result = *field->new_value;
+> +	hid_dbg(data->hdev, "get brightness: %d\n", result);
+> +
+> +	return result;
+> +}
+> +
+> +static int hid_bl_get_brightness(struct backlight_device *bl)
+> +{
+> +	struct hid_bl_data *data;
+> +	int brightness;
+> +
+> +	data = bl_get_data(bl);
+> +	brightness = hid_bl_get_brightness_raw(data);
+> +	return brightness - data->min_brightness;
+> +}
+> +
+> +static void hid_bl_set_brightness_raw(struct hid_bl_data *data, int brightness)
+> +{
+> +	struct hid_field *field;
+> +
+> +	field = data->feature_field;
+> +	*field->value = brightness;
+> +	hid_hw_request(data->hdev, field->report, HID_REQ_SET_REPORT);
+> +	hid_hw_wait(data->hdev);
+> +	hid_dbg(data->hdev, "set brightness: %d\n", brightness);
+> +}
+> +
+> +static int hid_bl_update_status(struct backlight_device *bl)
+> +{
+> +	struct hid_bl_data *data;
+> +	int brightness;
+> +
+> +	data = bl_get_data(bl);
+> +	brightness = backlight_get_brightness(bl);
+> +	brightness += data->min_brightness;
+> +	hid_bl_set_brightness_raw(data, brightness);
+> +	return 0;
+> +}
+> +
+> +static const struct backlight_ops hid_bl_ops = {
+> +	.update_status  = hid_bl_update_status,
+> +	.get_brightness = hid_bl_get_brightness,
+> +};
+> +
+> +static int hid_bl_probe(struct hid_device *hdev, const struct hid_device_id *id)
+> +{
+> +	int ret;
+> +	struct hid_field *input_field;
+> +	struct hid_field *feature_field;
+> +	struct hid_bl_data *data;
+> +	struct backlight_properties props;
+> +	struct backlight_device *bl;
+> +
+> +	hid_dbg(hdev, "probe\n");
+> +
+> +	ret = hid_parse(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "parse failed: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	ret = hid_hw_start(hdev, HID_CONNECT_DRIVER);
+> +	if (ret) {
+> +		hid_err(hdev, "hw start failed: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	input_field = hid_get_usage_field(hdev, HID_INPUT_REPORT,
+> +					  HID_USAGE_MONITOR_CTRL,
+> +					  HID_USAGE_VESA_VCP_BRIGHTNESS);
+> +	if (input_field == NULL) {
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	feature_field = hid_get_usage_field(hdev, HID_FEATURE_REPORT,
+> +					    HID_USAGE_MONITOR_CTRL,
+> +					    HID_USAGE_VESA_VCP_BRIGHTNESS);
+> +	if (feature_field == NULL) {
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	if (input_field->logical_minimum != feature_field->logical_minimum) {
+> +		hid_warn(hdev, "minimums do not match: %d / %d\n",
+> +			 input_field->logical_minimum,
+> +			 feature_field->logical_minimum);
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	if (input_field->logical_maximum != feature_field->logical_maximum) {
+> +		hid_warn(hdev, "maximums do not match: %d / %d\n",
+> +			 input_field->logical_maximum,
+> +			 feature_field->logical_maximum);
+> +		ret = -ENODEV;
+> +		goto exit_stop;
+> +	}
+> +
+> +	hid_dbg(hdev, "Monitor VESA VCP with brightness control\n");
+> +
+> +	ret = hid_hw_open(hdev);
+> +	if (ret) {
+> +		hid_err(hdev, "hw open failed: %d\n", ret);
+> +		goto exit_stop;
+> +	}
+> +
+> +	data = devm_kzalloc(&hdev->dev, sizeof(*data), GFP_KERNEL);
+> +	if (data == NULL) {
+> +		ret = -ENOMEM;
+> +		goto exit_stop;
+> +	}
+> +	data->hdev = hdev;
+> +	data->min_brightness = input_field->logical_minimum;
+> +	data->max_brightness = input_field->logical_maximum;
+> +	data->input_field = input_field;
+> +	data->feature_field = feature_field;
+> +
+> +	memset(&props, 0, sizeof(props));
+> +	props.type = BACKLIGHT_RAW;
+> +	props.max_brightness = data->max_brightness - data->min_brightness;
+> +
+> +	bl = devm_backlight_device_register(&hdev->dev, "vesa_vcp",
+> +					    &hdev->dev, data,
+> +					    &hid_bl_ops,
+> +					    &props);
+> +	if (IS_ERR(bl)) {
+> +		ret = PTR_ERR(bl);
+> +		hid_err(hdev, "failed to register backlight: %d\n", ret);
+> +		goto exit_free;
+> +	}
+> +
+> +	hid_set_drvdata(hdev, bl);
+> +
+> +	return 0;
+> +
+> +exit_free:
+> +	hid_hw_close(hdev);
+> +	devm_kfree(&hdev->dev, data);
+> +
+> +exit_stop:
+> +	hid_hw_stop(hdev);
+> +	return ret;
+> +}
+> +
+> +static const struct hid_device_id hid_bl_devices[] = {
+> +	{ HID_USB_DEVICE(APPLE_STUDIO_DISPLAY_VENDOR_ID,
+> +			 APPLE_STUDIO_DISPLAY_PRODUCT_ID) },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(hid, hid_bl_devices);
+> +
+> +static struct hid_driver hid_bl_driver = {
+> +	.name = "hid_backlight",
+> +	.id_table = hid_bl_devices,
+> +	.probe = hid_bl_probe,
+> +	.remove = hid_bl_remove,
+> +};
+> +module_hid_driver(hid_bl_driver);
+> +
+> +MODULE_AUTHOR("Julius Zint <julius@zint.sh>");
+> +MODULE_LICENSE("GPL");
+> +MODULE_DESCRIPTION("Backlight driver for HID devices");
+> -- 
+> 2.41.0
+> 
