@@ -2,101 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 141B37915E7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77CAF7915E5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352691AbjIDKx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:53:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57630 "EHLO
+        id S237620AbjIDKxv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:53:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348666AbjIDKxx (ORCPT
+        with ESMTP id S230431AbjIDKxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:53:53 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6663A13E;
-        Mon,  4 Sep 2023 03:53:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693824830; x=1725360830;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=4KxRMBRIV9+UB0WisLQgpxuAFxB3nVSMwhSdnQ1sLp0=;
-  b=i0ew9g/9w31t8+n8BCAAy3ygedFfT/woWaRuIdk8Zwa4I8sn1p/G8flS
-   G1u8evpufkPs+wJ/6wgskeOEFc4+DDyt7zPi7GQ8cIQjVeiGmaYsvsmXR
-   8WC0RkZxBZKSEMTMOjBphIjVOSXg5VhlXfK4nVT2K3VebTkDAPuaK67oL
-   kg/M198TFF5yakeBgPMZ+Rn+npJIPhsn9j6Wo0FLtPaAl/PXgtEkSbej0
-   LSiQ8LauUl8zDUBOvipbq3hRWfYQBbxFECOBHDrS3GJgghMHD2uDd59eg
-   Y5adH5SuxE+RL2Fxtaiixc71IgdBkoi+cqOnakx5KAXb4mM/ztEGU0bcN
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="440540407"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="440540407"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:53:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="806229194"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="806229194"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:53:44 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qd7DB-006P8K-0c;
-        Mon, 04 Sep 2023 13:53:41 +0300
-Date:   Mon, 4 Sep 2023 13:53:40 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Xingui Yang <yangxingui@huawei.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        john.g.garry@oracle.com, damien.lemoal@opensource.wdc.com,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        himanshu.madhani@cavium.com, felipe.balbi@linux.intel.com,
-        gregkh@linuxfoundation.org, uma.shankar@intel.com,
-        anshuman.gupta@intel.com, animesh.manna@intel.com,
-        linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        prime.zeng@hisilicon.com, kangfenglong@huawei.com,
-        chenxiang66@hisilicon.com
-Subject: Re: [PATCH v5 1/3] seq_file: Add helper macro to define attribute
- for rw file
-Message-ID: <ZPW3NFT9av+AYwnL@smile.fi.intel.com>
-References: <20230904084804.39564-1-yangxingui@huawei.com>
- <20230904084804.39564-2-yangxingui@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904084804.39564-2-yangxingui@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Sep 2023 06:53:50 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE60191
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 03:53:47 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F238421873;
+        Mon,  4 Sep 2023 10:53:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693824826; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=luYzUuND6zRfBDmugd0IpMFt5CWQHdLUcptbb5gOu0M=;
+        b=HDhOcosLyuEOZJVR2Q+Uz58zr9fVyFvdC5yz7IZAHoL5I7PjYSxlJXu2gF9GpbjCHM5tPP
+        aER00oJZy7Ua1jZxOgwAX7HeLJ/fk8JdTDVXx8b3ohlQeXbDuW3XNZmePzM92bgDC/PZ5j
+        b8Ah+Fnpvzz6h5IIBivO6k1nUW15sAU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693824826;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=luYzUuND6zRfBDmugd0IpMFt5CWQHdLUcptbb5gOu0M=;
+        b=BlRkBGEU01gpXWEKSHaxIpYTlf50VZNSClaXRMt+M8qUYjCU0UgNB7y8psLhuawlzxhokV
+        dMvvBN6c/vioFODQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9709F13585;
+        Mon,  4 Sep 2023 10:53:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id u0L8Izm39WTFLgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 04 Sep 2023 10:53:45 +0000
+Date:   Mon, 04 Sep 2023 12:53:45 +0200
+Message-ID: <87bkeiky4m.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Shenghao Ding <shenghao-ding@ti.com>
+Cc:     <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <mengdong.lin@intel.com>, <baojun.xu@ti.com>,
+        <thomas.gfeller@q-drop.com>, <peeyush@ti.com>, <navada@ti.com>,
+        <broonie@kernel.org>, <gentuser@gmail.com>
+Subject: Re: [PATCH v1] ALSA: hda/tas2781: Update tas2781 HDA driver
+In-Reply-To: <20230904090725.1388-1-shenghao-ding@ti.com>
+References: <20230904090725.1388-1-shenghao-ding@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 08:48:02AM +0000, Xingui Yang wrote:
-> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
-> for read-only file, but many of drivers want a helper macro for read-write
-> file too.
+On Mon, 04 Sep 2023 11:07:24 +0200,
+Shenghao Ding wrote:
 > 
-> So we add DEFINE_SHOW_STORE_ATTRIBUTE helper to reduce duplicated code.
+> Revert structure cs35l41_dev_name and redefine tas2781_generic_fixup.
+>
+> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+
+Now the patches are better split.  But, a few fundamental things are
+still missing:
+
+- Please describe the reason why this is needed;
+  it's often more important than describing the change itself.
+
+- Give more proper subject for each patch;
+  "Update tas2781 HDA driver" tells nothing really what and why.
+
+
+thanks,
+
+Takashi
+
+> ---
+> Changes in v1:
+>  - Redefine tas2781_generic_fixup, remove hid param
+>  - revert from scodec_dev_name back to cs35l41_dev_name, it is unnecessary
+>    for tas2781
+> ---
+>  sound/pci/hda/patch_realtek.c | 27 ++++++++++-----------------
+>  1 file changed, 10 insertions(+), 17 deletions(-)
 > 
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-
-I believe you need to preserve Luo's authorship.
-
-Perhaps,
-Co-developed-by: Xingui ...
-(depending if you really do some job in the certain patch(es) or not).
-
-> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
-
-Code wise LGTM, FWIW,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index a07df6f929..c3e410152b 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -6745,7 +6745,7 @@ static void comp_generic_playback_hook(struct hda_pcm_stream *hinfo, struct hda_
+>  	}
+>  }
+>  
+> -struct scodec_dev_name {
+> +struct cs35l41_dev_name {
+>  	const char *bus;
+>  	const char *hid;
+>  	int index;
+> @@ -6754,7 +6754,7 @@ struct scodec_dev_name {
+>  /* match the device name in a slightly relaxed manner */
+>  static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+>  {
+> -	struct scodec_dev_name *p = data;
+> +	struct cs35l41_dev_name *p = data;
+>  	const char *d = dev_name(dev);
+>  	int n = strlen(p->bus);
+>  	char tmp[32];
+> @@ -6773,19 +6773,19 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+>  static int comp_match_tas2781_dev_name(struct device *dev,
+>  	void *data)
+>  {
+> -	struct scodec_dev_name *p = data;
+> +	const char *bus = data;
+>  	const char *d = dev_name(dev);
+> -	int n = strlen(p->bus);
+> +	int n = strlen(bus);
+>  	char tmp[32];
+>  
+>  	/* check the bus name */
+> -	if (strncmp(d, p->bus, n))
+> +	if (strncmp(d, bus, n))
+>  		return 0;
+>  	/* skip the bus number */
+>  	if (isdigit(d[n]))
+>  		n++;
+>  	/* the rest must be exact matching */
+> -	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
+> +	snprintf(tmp, sizeof(tmp), "-%s:00", "TIAS2781");
+>  
+>  	return !strcmp(d + n, tmp);
+>  }
+> @@ -6795,7 +6795,7 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
+>  {
+>  	struct device *dev = hda_codec_dev(cdc);
+>  	struct alc_spec *spec = cdc->spec;
+> -	struct scodec_dev_name *rec;
+> +	struct cs35l41_dev_name *rec;
+>  	int ret, i;
+>  
+>  	switch (action) {
+> @@ -6824,24 +6824,17 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
+>  }
+>  
+>  static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
+> -	const char *bus, const char *hid)
+> +	const char *bus)
+>  {
+>  	struct device *dev = hda_codec_dev(cdc);
+>  	struct alc_spec *spec = cdc->spec;
+> -	struct scodec_dev_name *rec;
+>  	int ret;
+>  
+>  	switch (action) {
+>  	case HDA_FIXUP_ACT_PRE_PROBE:
+> -		rec = devm_kmalloc(dev, sizeof(*rec), GFP_KERNEL);
+> -		if (!rec)
+> -			return;
+> -		rec->bus = bus;
+> -		rec->hid = hid;
+> -		rec->index = 0;
+>  		spec->comps[0].codec = cdc;
+>  		component_match_add(dev, &spec->match,
+> -			comp_match_tas2781_dev_name, rec);
+> +			comp_match_tas2781_dev_name, (void *)bus);
+>  		ret = component_master_add_with_match(dev, &comp_master_ops,
+>  			spec->match);
+>  		if (ret)
+> @@ -6888,7 +6881,7 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
+>  static void tas2781_fixup_i2c(struct hda_codec *cdc,
+>  	const struct hda_fixup *fix, int action)
+>  {
+> -	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
+> +	 tas2781_generic_fixup(cdc, action, "i2c");
+>  }
+>  
+>  /* for alc295_fixup_hp_top_speakers */
+> -- 
+> 2.34.1
+> 
