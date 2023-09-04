@@ -2,75 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D77791B1C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 737BF791B23
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:09:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352344AbjIDQEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 12:04:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
+        id S1345103AbjIDQJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 12:09:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240075AbjIDQEm (ORCPT
+        with ESMTP id S233751AbjIDQJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 12:04:42 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599F7CCC
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 09:04:36 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5009969be25so2503057e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 09:04:36 -0700 (PDT)
+        Mon, 4 Sep 2023 12:09:37 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C386CD7
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 09:09:33 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bd6611873aso24283681fa.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 09:09:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693843474; x=1694448274; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693843771; x=1694448571; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pTzXd+O1B3yH/seobxQV5EVMcTd2XaoEQoDnA1Tg8Gk=;
-        b=K+MoEB31GfpDYnZAqTJsx1E1KWSfkSm3e+UglnId5ZQ6pw+yOJdI+moxlm1QUKCAem
-         JauIahaWmdJf6QYg8lhAZ86l5+du+OHdzD93lHKnlqDByJPVNk9kseonLqAHfNqB6IBZ
-         Hf2evEvlkaXDeSMhl9pO6KFCJcwWdqG8f4jOFp7MCAMo6CJY1OyS1xGKwB+MRTEHwvA2
-         /nIUIs+Zxl6XDfeIP1woGg52XSdkYvtwKPP4dVONE+a1i9KtvC9xD/kQrriC0UVrQdCv
-         ChIFxaHmqBCMYXiKllngUN9ePiFOMTs+vnbqx7DNepCi/Okx3fZKHO6ikn2NE5eF7XsR
-         oGOQ==
+        bh=MS9NE2CNJ35SnPex0XMzCBjM3M/pOjkRvvlo6ye2ZQE=;
+        b=RgPAArrErPvimG7axl/IhYGn6HbA6AxKemSAS5W4PD7OqgI7gL47DRq+vujSvTku6U
+         p+Ja8kD83EzjwQdjfCj8Vzbil5+KPOJfhsyOmJ7a0VXEK+GWZ44ArOD8TZJnSayT5ejd
+         41u+Ug09ZpPpYofiZQWZm0eNtGbgH8KfKtBAb6f1ZP028Hk3Tfq7ADCkLxdectmYzJN2
+         FM7Vl+aapRX7xxrt2tnYUKgMlNRi2Zloym1whCwGNXv/RgqeGfEYloxuOxHBBAe5K0v9
+         GLa/XYZrKF+lpQYQS2FQ+EsX1ERZsMTe8U99xYIg156knIawwsywkI2stz2joFCZJkpZ
+         Y4nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693843474; x=1694448274;
+        d=1e100.net; s=20221208; t=1693843771; x=1694448571;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pTzXd+O1B3yH/seobxQV5EVMcTd2XaoEQoDnA1Tg8Gk=;
-        b=ViPiodWuRgyO8X8W0tyddL6+e6775xYBFaDKpE4fGKu7roieGM+XOfTG6d6zVDVB2C
-         jALG6fxpGfrGw3HKfdidoAPCFvAx8NAmvoQsYs/RDV4fld8BBq7LsCCpuk3EGbRBFevr
-         t4aVLp5PRrUAOe+ZiLClvjzWP1B6ITXVthGtLxLCSdoaMnVeISii3Y+6VGMcDqsRlLwu
-         7vPXm5gQprPQ47QkN7ypBhUQWQfmVvCIUNUHpAz4QSycxvI8glkJ76BklTGXfvHpXafb
-         /9SYbD642XxZCvuUkn0J3t8qtSAlxhVlJ0fBVaHGU/CETpRkBcNwhRYH+74t8RF+bYJA
-         mXCQ==
-X-Gm-Message-State: AOJu0YxZ2QEEnm5BsSHZ8bvu44ghktAsHF894znEkQFYza2V3mbAqCT+
-        CfKxb2jJXRVHI7vmQqbYli4H6w==
-X-Google-Smtp-Source: AGHT+IFr0XYxT9znxwfZ+8KPYVO0/pY/WbaPz8gNplqIVaKIQvbpT5Hlqpd+WNeTjvqL/hRcQczMpw==
-X-Received: by 2002:a05:6512:340c:b0:500:9d4a:89f8 with SMTP id i12-20020a056512340c00b005009d4a89f8mr7404816lfr.28.1693843474641;
-        Mon, 04 Sep 2023 09:04:34 -0700 (PDT)
+        bh=MS9NE2CNJ35SnPex0XMzCBjM3M/pOjkRvvlo6ye2ZQE=;
+        b=k/IrjUA4Hzx04SBKMa6H7Nzqym6U/l10fWxD8yjSfXaIJEXpm1EKXrU+fqQcYAKzyO
+         anf/qxMjAoC3SEE7BmbL2YeE58+F2gEpqv6RdTETCGVhNCbCB2OyUoBOGP6Yrsm7fa0L
+         hC2uIuqGvyMWvlX5kUYMQZ8At1HMAqDpYRdb8yW0WyyjxMllp+qKp7iff7yO6msZQIrp
+         8pGwJvhF+BfilJqMxwn2sgcgeCgTaEUWzmFlIZe09shncDll8hBVWIzc84PnVjQaFVSw
+         bxhgqI6J2DTUUZcEGIp0mQ2rzL/jBnq7bEmrYATtB+Wis12JqjogfJvSrG1QD61ESUUp
+         MYXg==
+X-Gm-Message-State: AOJu0YwV8WkTZ28eyowAOvtUqS7LcZt2Xd6p9oviiwLqtkaDSEctHGlJ
+        dO/nIYrrlUESjpeWXplgigWwmQ==
+X-Google-Smtp-Source: AGHT+IF8gHeYqYu3zEoRQDtidaBPWhbjm2fTKB8jASr7Phrtjhk8pkWTjrblay+eDVhMQk2dtHo9DA==
+X-Received: by 2002:a2e:98c9:0:b0:2bc:d33f:3e8f with SMTP id s9-20020a2e98c9000000b002bcd33f3e8fmr7292563ljj.53.1693843771469;
+        Mon, 04 Sep 2023 09:09:31 -0700 (PDT)
 Received: from [192.168.1.101] (abxj43.neoplus.adsl.tpnet.pl. [83.9.3.43])
-        by smtp.gmail.com with ESMTPSA id o26-20020ac2495a000000b004ff9ab6463fsm1805408lfi.87.2023.09.04.09.04.33
+        by smtp.gmail.com with ESMTPSA id v2-20020a2e9602000000b002b9fe77d00dsm2226210ljh.93.2023.09.04.09.09.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 09:04:34 -0700 (PDT)
-Message-ID: <bfd34bb8-0fb1-4984-8af5-3651b4a1a74c@linaro.org>
-Date:   Mon, 4 Sep 2023 18:04:32 +0200
+        Mon, 04 Sep 2023 09:09:31 -0700 (PDT)
+Message-ID: <d84bbada-cff6-4752-90e9-cff39e32b92d@linaro.org>
+Date:   Mon, 4 Sep 2023 18:09:29 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: firmware: Add documentation for
- qcom,platform-parts-info
+Subject: Re: [PATCH] arm64: dts: qcom: msm8916-samsung-j5-common: Add
+ accelerometer
 Content-Language: en-US
-To:     Naman Jain <quic_namajain@quicinc.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
+To:     "Lin, Meng-Bo" <linmengbo0689@protonmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_pkondeti@quicinc.com,
-        quic_kaushalk@quicinc.com, quic_rohiagar@quicinc.com,
-        kernel@quicinc.com
-References: <20230901060223.19575-1-quic_namajain@quicinc.com>
- <f340f731-8471-39be-c7b2-7d930916e3b1@linaro.org>
- <359ba91d-866b-45e4-83fe-598ed791f877@quicinc.com>
+        Conor Dooley <conor+dt@kernel.org>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        Markuss Broks <markuss.broks@gmail.com>
+References: <20230904123123.2593-1-linmengbo0689@protonmail.com>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -107,51 +105,31 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <359ba91d-866b-45e4-83fe-598ed791f877@quicinc.com>
+In-Reply-To: <20230904123123.2593-1-linmengbo0689@protonmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4.09.2023 10:38, Naman Jain wrote:
+On 4.09.2023 14:35, Lin, Meng-Bo wrote:
+> From: Markuss Broks <markuss.broks@gmail.com>
 > 
-> On 9/1/2023 12:52 PM, Krzysztof Kozlowski wrote:
->> On 01/09/2023 08:02, Naman Jain wrote:
->>> Add documentation to describe device tree bindings for QCOM's
->>> platform-parts-info node. Firmware populates these nodes to pass the
->>> information to kernel regarding the subset of hardware blocks
->>> and features like Camera, Modem, Display present in a product.
->>>
->>> This is to support that the same software image runs seamlessly on
->>> different platforms where one or more HW blocks are not supported or
->>> if some sub parts for a particular block are not supported.
->>>
->>> Purpose of these definitions is to allow clients to know about this,
->>> and thus, handle these cases gracefully.
->> Whether camera is or is not supported, is defined by presence of camera
->> node or by its status field.
->>
->> Existing firmware (e.g. U-Boot) is also doing this - patching DTS when
->> needed.
->>
->> I do not think introducing some parallel way makes any sense, so no,
->> that's not the way to do it.
->>
->> Best regards,
->> Krzysztof
+> J5 and J5X have ST LIS2HH12 accelerometer.
+> Add support for it.
 > 
-> 
-> Thanks Krzysztof for reviewing the patch. I think for telling whether the Camera HW block is not
-> supported / not present, firmware can either remove the device tree node, or change its status
-> to disabled, so that is fine.
-Messing with the device tree for no reason (e.g. filling in
-/memory@something/reg is expected) or without user intervention
-(e.g. static DTBO flashed by the user) is not favored.
+> Signed-off-by: Markuss Broks <markuss.broks@gmail.com>
+> Co-developed-by: Stephan Gerhold <stephan@gerhold.net>
+> Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+> Co-developed-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
+> Signed-off-by: Lin, Meng-Bo <linmengbo0689@protonmail.com>
+> ---
+Why is i2c-gpio used? Is it normally accessed through ADSP?
 
 Konrad
