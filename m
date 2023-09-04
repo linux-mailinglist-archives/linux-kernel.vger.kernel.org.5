@@ -2,92 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED73791780
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0563B79177E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:46:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353012AbjIDMqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 08:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46098 "EHLO
+        id S1352980AbjIDMqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 08:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345281AbjIDMp4 (ORCPT
+        with ESMTP id S235031AbjIDMp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 08:45:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53725CE2;
-        Mon,  4 Sep 2023 05:45:52 -0700 (PDT)
+        Mon, 4 Sep 2023 08:45:57 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AD1ACD5;
+        Mon,  4 Sep 2023 05:45:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693831552; x=1725367552;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=MHP/tyZYUAXuReqVf8J+AcZrD7lYWnZcCDK9Q2cSu4Y=;
-  b=FcsRw9aWgZ04rnL52sIAkNR5XMhgVqYWyIYbCaWwDCz9hgZ0M/misGUq
-   kqQXCq/bvWXUjqVyilhEkQttyQ9ezyzJTXxyHKHdZrOcqpy6S92xfINx4
-   2OtzbKCm50dLw+B2Qe0TVZKcu5ubJlTAp7xtXcpwtB1q43kH2ssCoaebr
-   WgYnqBu0enhnK7mR+lNQY8QmT1NLKAx6zGRFjhFlPmzBWe9STfFoEHk6g
-   7opkr5blF9LrJHsdD+fiWFliNX2TqKv8HgNZ9Rpry3JuCIUPhWMgxT5wW
-   8IXcwCM+QwjxoeWKNSS7LaO6cOaKIjizK8/Gf1YMecJRy6SNbVcybq5KS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="440555438"
+  t=1693831553; x=1725367553;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=Wa35J9ZX/nel6BiikunBPw+XkZUx/f4ld1V2g3fh7Q0=;
+  b=j9nsnUmGoxmRJ4UVyJmMH2wnX1LdzPp39Ew0nQVO8yG7viDQqLtaDjjs
+   ScnSzpPyUokyOcgOq6rnPYqPAfaWRDaLw83vqhyK9Y8VIF/B0+YHc6dua
+   3lQcweXx1gmzP5x7EptrgiQYzBo2q9Q7DYEKkQTCZeCdjydlzJL3+ue2w
+   zbGPH6mrfuIrVJe2Y5p3yEe1ch13sCR8jKtqcgrKG0F3XBX48KIWFgnz8
+   a4Vhf51k8sxssFNiCMA8CS87VqGI2niYbm+1cz7O6awt3MaqCmcGFin23
+   SOxseavOGXtSy+TzGXWvtFn8D9KY+jRQG5xDggKIDKwQbTi9O5bgRQs84
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="407589426"
 X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="440555438"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 05:45:39 -0700
+   d="scan'208";a="407589426"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 05:45:52 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="914497878"
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="806251547"
 X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="914497878"
-Received: from mfederki-mobl1.ger.corp.intel.com (HELO wieczorr-mobl1.intel.com) ([10.213.15.69])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 05:45:37 -0700
-From:   Wieczor-Retman Maciej <maciej.wieczor-retman@intel.com>
-To:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 8/8] selftests/resctrl: Fix wrong format specifier
-Date:   Mon,  4 Sep 2023 14:44:31 +0200
-Message-ID: <a10dfa9cbfec05e8056744bc5e3ac0697a4fbd9b.1693829810.git.maciej.wieczor-retman@intel.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <cover.1693829810.git.maciej.wieczor-retman@intel.com>
-References: <cover.1693829810.git.maciej.wieczor-retman@intel.com>
+   d="scan'208";a="806251547"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 05:45:50 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qd8xf-006QSG-2q;
+        Mon, 04 Sep 2023 15:45:47 +0300
+Date:   Mon, 4 Sep 2023 15:45:47 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [PATCH] gpiolib: unexport gpiod_set_transitory()
+Message-ID: <ZPXRexqFQx9Q2BiR@smile.fi.intel.com>
+References: <20230903190657.12393-1-brgl@bgdev.pl>
+ <ZPWvJc90rmIAPR+r@smile.fi.intel.com>
+ <CAMRc=MdMiMPFvvpAg7DqStSb07Z8L5p0RAmcTimHN8YkcLPV=A@mail.gmail.com>
+ <ZPW9JuahVYSP1I6m@smile.fi.intel.com>
+ <CAMRc=MdzfvnYJt-SkMzYEwp4rKsaJLN_uoBNQ0seuai+im_b=Q@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAMRc=MdzfvnYJt-SkMzYEwp4rKsaJLN_uoBNQ0seuai+im_b=Q@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A long unsigned int variable is passed to the ksft_print_msg() and the
-format specifier used expects a variable of type int.
+On Mon, Sep 04, 2023 at 01:32:38PM +0200, Bartosz Golaszewski wrote:
+> On Mon, Sep 4, 2023 at 1:19 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 
-Change the format specifier to match the passed variable.
+...
 
-Signed-off-by: Wieczor-Retman Maciej <maciej.wieczor-retman@intel.com>
----
-Changelog v2:
-- Added this patch to the series.
+> This is still inconsistent with the rest of the public symbols -
+> especially those in gpio/driver.h. My long-term plan - before making
+> locking great again - is to limit the usage of any gpiochip_ symbols
+> to GPIO providers (as the chip is not guaranteed to be valid, unlike
+> gpio_device) and provide a bunch of gpio_device_ or gpiodev_
+> interfaces for use by those who *really* need it. Now am I going to
+> make up two distinct prefixes for public and non-public APIs? That
+> will be even more confusing IMO.
+> 
+> Just like in C++ you don't make up special names for public vs private
+> methods except for some deranged coding styles that also require you
+> to name arguments like "in_foo" and "out_bar".
 
- tools/testing/selftests/resctrl/cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, I understand your point of view on this, but as I said
+"disagree and commit" (used to be corporate value at some point :-).
 
-diff --git a/tools/testing/selftests/resctrl/cache.c b/tools/testing/selftests/resctrl/cache.c
-index d3cbb829ff6a..a5d082cd2d53 100644
---- a/tools/testing/selftests/resctrl/cache.c
-+++ b/tools/testing/selftests/resctrl/cache.c
-@@ -294,7 +294,7 @@ int show_cache_info(unsigned long sum_llc_val, int no_of_bits,
- 	ret = platform && abs((int)diff_percent) > max_diff_percent &&
- 	      (cmt ? (abs(avg_diff) > max_diff) : true);
- 
--	ksft_print_msg("%s Check cache miss rate within %d%%\n",
-+	ksft_print_msg("%s Check cache miss rate within %lu%%\n",
- 		       ret ? "Fail:" : "Pass:", max_diff_percent);
- 
- 	ksft_print_msg("Percent diff=%d\n", abs((int)diff_percent));
+On my side I criticized and proposed... It's your turn what to do
+with that, I'm not insisting on my way, I'm just telling I don't like
+yours, but I will survive, no hard feelings :-)
+
 -- 
-2.42.0
+With Best Regards,
+Andy Shevchenko
+
 
