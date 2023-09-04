@@ -2,128 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F88F791168
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:33:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E38B179116B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238018AbjIDGdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 02:33:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46558 "EHLO
+        id S243981AbjIDGeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 02:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230333AbjIDGdR (ORCPT
+        with ESMTP id S230333AbjIDGeO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 02:33:17 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C80510D;
-        Sun,  3 Sep 2023 23:33:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693809189; x=1725345189;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Hm87bvsrPQVAZfKF5UL9l3c0p/ekBlKRwg6W7XwU9Mk=;
-  b=BE7cYLIED+1eQoY5FQbvabpJVPaipG4KKubU1l8s88M9YpsvFTIjHgQo
-   f/33MPx0zw6QcQ1tyxxJw441ZUIuDsc98bpGLPflVJzUSWMPuLEmZquXP
-   OyiO7n+5GVyvpbKzUfhQ3ysj55kAYa2shqPwc2e2NGMaRva0iND5oF6P+
-   VzC+BXrlrjJwb/jaZzV7unoQ84sFij+NKJKVv7AI9CsmppfxfeJrg2v9B
-   6G5mxuD1xmKHS0uwPj3wUe7rBhSYvCHaNgPpX7zzpieEEC3pc/wG6Xifj
-   yBYHSRefBryxaXYBo1x7vIffjrLPzADDlqmlxLvhYOxHb5ttC10OF1Eq4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="462893867"
-X-IronPort-AV: E=Sophos;i="6.02,225,1688454000"; 
-   d="scan'208";a="462893867"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2023 23:33:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="806134594"
-X-IronPort-AV: E=Sophos;i="6.02,225,1688454000"; 
-   d="scan'208";a="806134594"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2023 23:33:05 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 724C511F9DF;
-        Mon,  4 Sep 2023 09:33:02 +0300 (EEST)
-Date:   Mon, 4 Sep 2023 06:33:02 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Umang Jain <umang.jain@ideasonboard.com>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        oe-kbuild-all@lists.linux.dev,
-        Lee Jackson <lee.jackson@arducam.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Shawn Tu <shawnx.tu@intel.com>,
-        Nicholas Roth <nicholas@rothemail.net>,
-        Mikhail Rudenko <mike.rudenko@gmail.com>,
-        kieran.bingham@ideasonboard.com,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        jacopo.mondi@ideasonboard.com
-Subject: Re: [PATCH 2/2] media: i2c: imx519: Support for the Sony IMX519
- sensor
-Message-ID: <ZPV6HnHj8TkEL1Nb@kekkonen.localdomain>
-References: <20230727154108.308320-3-umang.jain@ideasonboard.com>
- <202307281538.bqZ5kcV9-lkp@intel.com>
- <1070170e-830c-4752-bad5-8f653ebd80a4@ideasonboard.com>
- <20230903212158.GF13794@pendragon.ideasonboard.com>
+        Mon, 4 Sep 2023 02:34:14 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D7C5D9;
+        Sun,  3 Sep 2023 23:34:11 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38465Y9R018216;
+        Mon, 4 Sep 2023 06:34:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=g6wkZSNAbGBjCa0kaAdsIOCd+bmMgIoZIsKc3n+3+ao=;
+ b=WzhjHOQ+0O9j36BJLQcostXixtNw9ga6Au0diIvunbC7tBtiUfnxDKEwsUb7NpVTWal3
+ 7o0NBnK4P3VRuXVg3xUyUkO7iUfRX1UUT3F2gUXlhLe1VHx+xnDUmpOg3U7aKhN+02aq
+ V89xjSi6V++mVzj/kUawd5Ql36mHNRCzqVg1U6XuOS0/Exvs0aEFvh0EazyEmQaUW1D2
+ 1rWiH+QiL0hBp0g/tkYseq2W0mVmj3XW4bI2377BMqc6RxOPuvFYlEO45UfvU/j9Nu+y
+ pGQlkWbF9+hJ/t5KPXJpC0dDX8NoS7HFpDt9wcNgsjM2W9Eylm60TKYDrUCP9opymKXz 8g== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suw50tnw1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 06:34:06 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3846Y52X029419
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Sep 2023 06:34:05 GMT
+Received: from hu-viswanat-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sun, 3 Sep 2023 23:34:00 -0700
+From:   Vignesh Viswanathan <quic_viswanat@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
+        <quic_sjaganat@quicinc.com>, <quic_srichara@quicinc.com>,
+        <quic_varada@quicinc.com>,
+        Vignesh Viswanathan <quic_viswanat@quicinc.com>
+Subject: [PATCH] arm64: dts: qcom: Fix hwlock index for SMEM for IPQ platforms
+Date:   Mon, 4 Sep 2023 12:03:44 +0530
+Message-ID: <20230904063344.4144086-1-quic_viswanat@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230903212158.GF13794@pendragon.ideasonboard.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: uYqHkj6N2qBA8-7Ke17q1RwPALIJG2tj
+X-Proofpoint-ORIG-GUID: uYqHkj6N2qBA8-7Ke17q1RwPALIJG2tj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-04_03,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=625 clxscore=1015
+ spamscore=0 impostorscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309040058
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Umang, Laurent,
+SMEM uses lock index 3 of the TCSR Mutex hwlock for allocations
+in SMEM region shared by the Host and FW.
 
-On Mon, Sep 04, 2023 at 12:21:58AM +0300, Laurent Pinchart wrote:
-> Hi Umang,
-> 
-> On Fri, Jul 28, 2023 at 01:47:36PM +0530, Umang Jain wrote:
-> > On 7/28/23 12:56 PM, kernel test robot wrote:
-> > > Hi Umang,
-> > >
-> > > kernel test robot noticed the following build errors:
-> > >
-> > > [auto build test ERROR on media-tree/master]
-> > > [also build test ERROR on soc/for-next linus/master v6.5-rc3 next-20230727]
-> > > [cannot apply to sailus-media-tree/streams]
-> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > And when submitting patch, we suggest to use '--base' as documented in
-> > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > >
-> > > url:    https://github.com/intel-lab-lkp/linux/commits/Umang-Jain/media-dt-bindings-imx519-Add-IMX519-DT-bindings/20230727-234440
-> > > base:   git://linuxtv.org/media_tree.git master
-> > > patch link:    https://lore.kernel.org/r/20230727154108.308320-3-umang.jain%40ideasonboard.com
-> > > patch subject: [PATCH 2/2] media: i2c: imx519: Support for the Sony IMX519 sensor
-> > > config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20230728/202307281538.bqZ5kcV9-lkp@intel.com/config)
-> > > compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-> > > reproduce: (https://download.01.org/0day-ci/archive/20230728/202307281538.bqZ5kcV9-lkp@intel.com/reproduce)
-> > >
-> > > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > > the same patch/commit), kindly add following tags
-> > > | Reported-by: kernel test robot <lkp@intel.com>
-> > > | Closes: https://lore.kernel.org/oe-kbuild-all/202307281538.bqZ5kcV9-lkp@intel.com/
-> > >
-> > > All errors (new ones prefixed by >>):
-> > >
-> > >     drivers/media/i2c/imx519.c: In function 'imx519_open':
-> > >>> drivers/media/i2c/imx519.c:1170:30: error: 'MEDIA_BUS_FMT_SENSOR_DATA' undeclared (first use in this function)
-> > 
-> > This comes from the bcm2835-unicam for Rpi's that's being worked upon. 
-> > And I was testing this driver on top of it.
-> 
-> Please base the next version on top of Sakari's metadata series, provide
-> a branch with your patches and all dependencies in the cover letter, and
-> use the --base argument to git-format-patch to indicate the base
-> clearly.
+Fix the SMEM hwlock index to 3 for IPQ5332, IPQ6018, IPQ8074 and IPQ9574.
 
-I've pushed my latest development series to
-<URL:https://git.linuxtv.org/sailus/media_tree.git/log/?h=metadata>.
+Signed-off-by: Vignesh Viswanathan <quic_viswanat@quicinc.com>
+---
+ arch/arm64/boot/dts/qcom/ipq5332.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/ipq8074.dtsi | 2 +-
+ arch/arm64/boot/dts/qcom/ipq9574.dtsi | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/qcom/ipq5332.dtsi b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+index 1abc992ede31..a47c79c3d5f0 100644
+--- a/arch/arm64/boot/dts/qcom/ipq5332.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq5332.dtsi
+@@ -135,7 +135,7 @@ smem@4a800000 {
+ 			reg = <0x0 0x4a800000 0x0 0x100000>;
+ 			no-map;
+ 
+-			hwlocks = <&tcsr_mutex 0>;
++			hwlocks = <&tcsr_mutex 3>;
+ 		};
+ 
+ 		q6_region: wcnss@4a900000 {
+diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+index 56537cf8243f..9577341592c3 100644
+--- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+@@ -211,7 +211,7 @@ q6_region: memory@4ab00000 {
+ 	smem {
+ 		compatible = "qcom,smem";
+ 		memory-region = <&smem_region>;
+-		hwlocks = <&tcsr_mutex 0>;
++		hwlocks = <&tcsr_mutex 3>;
+ 	};
+ 
+ 	soc: soc@0 {
+diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+index 00ed71936b47..92fd924bbdbe 100644
+--- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
+@@ -101,7 +101,7 @@ smem@4ab00000 {
+ 			reg = <0x0 0x4ab00000 0x0 0x100000>;
+ 			no-map;
+ 
+-			hwlocks = <&tcsr_mutex 0>;
++			hwlocks = <&tcsr_mutex 3>;
+ 		};
+ 
+ 		memory@4ac00000 {
+diff --git a/arch/arm64/boot/dts/qcom/ipq9574.dtsi b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+index f22f7e78850d..cc0e4a2b67d2 100644
+--- a/arch/arm64/boot/dts/qcom/ipq9574.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq9574.dtsi
+@@ -195,7 +195,7 @@ tz_region: tz@4a600000 {
+ 		smem@4aa00000 {
+ 			compatible = "qcom,smem";
+ 			reg = <0x0 0x4aa00000 0x0 0x100000>;
+-			hwlocks = <&tcsr_mutex 0>;
++			hwlocks = <&tcsr_mutex 3>;
+ 			no-map;
+ 		};
+ 
 -- 
-Sakari Ailus
+2.41.0
+
