@@ -2,82 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F4779162C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29E379162F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:23:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352780AbjIDLX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 07:23:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56802 "EHLO
+        id S1352789AbjIDLXz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 07:23:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230398AbjIDLX2 (ORCPT
+        with ESMTP id S230398AbjIDLXy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 07:23:28 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C53E3;
-        Mon,  4 Sep 2023 04:23:24 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id 38308e7fff4ca-2bcbfb3705dso20015221fa.1;
-        Mon, 04 Sep 2023 04:23:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693826603; x=1694431403; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Liz9t2y8kMyac8WrHU0EbvT2SNGaI14ZySkV/W8tHOo=;
-        b=JFgdyKOZWxsHIN5VfKUhogqYUYBhvIp08DH09uwit9Ke09JXkHjgYBp6CGTHrriTsy
-         Duf9PkrhDvVpl/p0R9NBXCiLFrzCBudYjsrVYbBlSk6XjLXWg3iKXjcQuds0I/WlMJ48
-         YjsnaJEpWDhXGyz7B5BJ15horcJDYSKYawyE7gWPV8eYIbMcPsbpfQhrsK/1ZytmSE1e
-         by+XWdoyMF+GA+W3heXUYgoDBeDXLBO03EUHAwdG1B2Vp2PgdYCnkBZgFrdrs3FlwYQD
-         niwABj4Hw3mppMLYR1LTIFp5PfguSfW1KGYIGs9Y0unRfpY05yPCHNrvWNF+ZFY3ZTJo
-         NIHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693826603; x=1694431403;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Liz9t2y8kMyac8WrHU0EbvT2SNGaI14ZySkV/W8tHOo=;
-        b=X/cXvVrG31vir5MB8aX3uAPwLid7kGuLtCVSFgxTLE3c/eav1Y48q8oFeYd1HNbwPH
-         G+fPh16lcRfplWtP6GouU1hC7b5DkzXq1h4Ns6xebDxvwYSgPhKeyhggfEL8alr2mY+E
-         bwLhWcmZuCIkzWxK7zld7XzWnka1Le8k+FwcFycNRKOKSdRcXja8xPcyXkqIqHQ6nkDX
-         XmVq3AlC4PtQJLXPCH5cQE92PmBKMku3emrRZuKhAvg+WrTYizaDrQqm6oIfX+e3j1aT
-         virCbcvP8dUhOKXbLgBvYc28oqeN2wwUlRteIYgfpUAMnarxPUO1bC/2hxJRlgN8DnAo
-         bdhQ==
-X-Gm-Message-State: AOJu0Yz96p9kI+CLVdd/Ol6dXTXVzbq9DRYrhWU9fe0P99oPD8kVZePp
-        3Zjhpfp61mse3NFVDrsPZqI=
-X-Google-Smtp-Source: AGHT+IGz6u/80HiJAHtUXSIYqaI6QzU9P/sYCWl5cB7NCsiUJMXTwclIa4re1KmwRi18FBaWaw09gw==
-X-Received: by 2002:a2e:9646:0:b0:2bc:e856:6208 with SMTP id z6-20020a2e9646000000b002bce8566208mr6577764ljh.33.1693826602799;
-        Mon, 04 Sep 2023 04:23:22 -0700 (PDT)
-Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
-        by smtp.gmail.com with ESMTPSA id a30-20020a05651c211e00b002b9ead74535sm2065747ljq.15.2023.09.04.04.23.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 04:23:22 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 4 Sep 2023 13:23:20 +0200
-To:     Marcus Seyfarth <m.seyfarth@gmail.com>
-Cc:     paulmck@kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: Fwd: [6.5.1] Slow boot and opening files (RIP: kvfree_rcu_bulk)
-Message-ID: <ZPW+KJCIAvFzZHl8@pc636>
-References: <0e6fc43f-3078-911a-e63d-290c3e6d7b91@gmail.com>
- <bbbb0bdf-553e-4fde-90d6-446e920b357e@paulmck-laptop>
- <CA+FbhJOSfqcb3=ecL-y=13j81b1Ts13wHpzBSURyCRQUvd2NWQ@mail.gmail.com>
- <c054b588-b029-4380-9ec5-4ae50ee37d08@paulmck-laptop>
- <CA+FbhJO1FbOvP=GmUse-r8Yma1tSv6iqppDhz9Ut1JKpjN49qQ@mail.gmail.com>
- <CA+FbhJPOkV4Xa7ZJ4QF2y_-5i24F+TkhByr=LzMPt9iy9EshSQ@mail.gmail.com>
- <4009a6e0-198c-4f25-8e34-4774dcd8c537@paulmck-laptop>
- <CA+FbhJPxU+QKf1tTBd8XcKcSsTeRmJ=ji_L4QYiad--hGqRB5w@mail.gmail.com>
- <bb603efb-654f-4686-bad9-0bb5379745c0@paulmck-laptop>
- <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
+        Mon, 4 Sep 2023 07:23:54 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC45AEC;
+        Mon,  4 Sep 2023 04:23:50 -0700 (PDT)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 384B76C7032618;
+        Mon, 4 Sep 2023 11:23:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=18hcT6yXJn2tFaqyvC/NxnGagB5rLNOvWBdaP7t7Fdc=;
+ b=tWS5Xyp6hQnyXkU1B455CswOUMY5EHzKNxMv4JgOvbFP1tlA9wS9neu4NoauOnggSF2Q
+ xlMaStXInkr1BcrQV6z3790qmQ+PIoI4jMM6EmQKenzee89h4d9OVpTle2Y/U6gUmt2P
+ hcAigASh6RPcBFFA/xHyDZaRTdTVzAx+G7aEojBrRDFG2Weyg+ZtMxRbSz8ErW/6uQcb
+ egFnlTx7doeui7tv7H0nGQqgPaITNWpAR0wptLcHO/LIua3I3N4VoiEBpjoBvmfDvCta
+ fYnUSKEsUIJif8h+ylGGnRAjbBvlzTZW3+6LsUR2raOnuMtOxZyoPFKt5UwEtZ/dXoiC 0g== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sw83113vx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 11:23:40 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3849EoVt001598;
+        Mon, 4 Sep 2023 11:23:39 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svfcsafky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 11:23:39 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 384BNbRW61211096
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 4 Sep 2023 11:23:37 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8224B20043;
+        Mon,  4 Sep 2023 11:23:37 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1545520040;
+        Mon,  4 Sep 2023 11:23:37 +0000 (GMT)
+Received: from [9.179.17.91] (unknown [9.179.17.91])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Mon,  4 Sep 2023 11:23:36 +0000 (GMT)
+Message-ID: <65d620b2644e2d60b041815fa4bb544a818ae55a.camel@linux.ibm.com>
+Subject: Re: [PATCH] comedi: Fix driver module dependencies since HAS_IOPORT
+ changes
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Ian Abbott <abbotti@mev.co.uk>, Arnd Bergmann <arnd@kernel.org>,
+        linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        stable@vger.kernel.org
+Date:   Mon, 04 Sep 2023 13:23:36 +0200
+In-Reply-To: <f0e88ae3-d38e-40d1-900c-395ddc9c8231@mev.co.uk>
+References: <20230901192615.89591-1-abbotti@mev.co.uk>
+         <33c2292b-08cb-44c7-9438-07d4060976ab@app.fastmail.com>
+         <f0e88ae3-d38e-40d1-900c-395ddc9c8231@mev.co.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+FbhJPtmFG2vKNXWr67Tuh-4HUi8n81PmKxwftv9iK1a3On-A@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: _mnbov4EJe3ozMh6ASmD9jofbOaqFz07
+X-Proofpoint-ORIG-GUID: _mnbov4EJe3ozMh6ASmD9jofbOaqFz07
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-04_07,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 adultscore=0 mlxlogscore=509 clxscore=1011 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309040099
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,43 +90,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Marcus.
+On Mon, 2023-09-04 at 11:10 +0100, Ian Abbott wrote:
+> On 03/09/2023 16:49, Arnd Bergmann wrote:
+> > On Fri, Sep 1, 2023, at 15:26, Ian Abbott wrote:
+> > > Commit b5c75b68b7de ("comedi: add HAS_IOPORT dependencies") changed t=
+he
+> > > "select" directives to "depend on" directives for several config
+> > > stanzas, but the options they depended on could not be selected,
+> > > breaking previously selected options.
+> >=20
+---8<---
+> > > @@ -735,8 +738,8 @@ config COMEDI_ADL_PCI9111
+> > >=20
+> > >   config COMEDI_ADL_PCI9118
+> > >   	tristate "ADLink PCI-9118DG, PCI-9118HG, PCI-9118HR support"
+> > > +	depends on HAS_IOPORT
+> > >   	depends on HAS_DMA
+> > > -	depends on COMEDI_8254
+> > >   	help
+> > >   	  Enable support for ADlink PCI-9118DG, PCI-9118HG, PCI-9118HR car=
+ds
+> >=20
+> > I don't see why you'd remove the 'depends on COMEDI_8254' here
+> > rather than turning it back into 'select' as it was originally.
+>=20
+> Oops!  That's an error on my part.  Thanks for catching it!
+>=20
+> >=20
+> > It might be easier to revert the original patch, and then follow
+> > up with a fixed version.
+>=20
+> Will any random config builds break in 6.5 stable if the original patch=
+=20
+> is reverted, or is the 'HAS_IOPORT' stuff still in preparation for=20
+> future use?
+>=20
 
-> 
->     Apologies.
-> 
->     I want you to follow the advice I gave you in my earlier email, the one
->     with Message-ID c054b588-b029-4380-9ec5-4ae50ee37d08@paulmck-laptop.
->     I would give you a URL, but you seem to have dropped the public email
->     lists.  I have added them back.
-> 
-> 
-> Sorry, I've overlooked that previous mail. I've now tried CONFIG_RCU_LAZY=n and
-> also reduced the amount of extra-patches and extra-flags to a bare minimum. It
-> didn't help though. The slow boot is still there and shutdown/reboot also
-> didn't seem to work again (while the trace went away by overwriting /kernel/rcu
-> /tree.c with the file from 6.4.14). I am also not subscribed to the LKML, so my
-> E-Mails won't reach the list anyway. Unfortunately Zhang Qiang doesn't seem to
-> work for Intel any longer as my previous mail did not reach him either. I hope
-> the reported issues will be fixed eventually, I'll stay away from 6.5 for some
-> time.
-> 
-Could you please clarify some items:
+The patch that finally compile-time disables I/O port accesses as well
+as a few others are still not merged. I was away for a few weeks and
+also still have a few todos. I also and found a few things needed for
+new changes. So no a revert will not break compiles or anything like
+that.
 
-1.
-<snip>
-if (!WARN_ON_ONCE(!poll_state_synchronize_rcu_full(&bnode->gp_snap))) {
-	debug_rcu_bhead_unqueue(bnode);
-	rcu_lock_acquire(&rcu_callback_map);
-<snip>
+Thanks,
+Niklas
 
-Do you see this warning? I mean the one that is in the if()?
-
-2. Please provide a full .config file.
-3. Could you please also to be more specific how to reproduce a boot delay and the warning you see?
-4. Please provide your full dmesg.
-
-Thank you in advance!
-
---
-Uladzislau Rezki
