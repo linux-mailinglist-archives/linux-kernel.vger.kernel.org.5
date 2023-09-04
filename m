@@ -2,198 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E02F7917B3
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:00:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DECA7917BC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:05:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347881AbjIDNAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:00:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59754 "EHLO
+        id S1351906AbjIDNFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:05:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235732AbjIDNAT (ORCPT
+        with ESMTP id S231233AbjIDNFL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:00:19 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A63B90;
-        Mon,  4 Sep 2023 06:00:15 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RfTJB5BzZz4f3l7y;
-        Mon,  4 Sep 2023 21:00:10 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-        by APP4 (Coremail) with SMTP id gCh0CgCXc6bX1PVkZC5lCQ--.16578S3;
-        Mon, 04 Sep 2023 21:00:11 +0800 (CST)
-Message-ID: <033cb727-35b5-3845-64b1-e698891d70b1@huaweicloud.com>
-Date:   Mon, 4 Sep 2023 21:00:07 +0800
+        Mon, 4 Sep 2023 09:05:11 -0400
+Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 60D35F9;
+        Mon,  4 Sep 2023 06:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=6LzN0
+        UAzG8+m6OJmo1SPcFqvwr26rP6o6hRn4fJfRcE=; b=NpELvzQhnCb13V2aXZBMv
+        vu5J4x4IMD6m0XZuY5pK3qOMpxcoT/xhVu5tAODQ7wjtcd1jCnrWdXrawV1TZ3jN
+        1GZ7NRQTf1ioZRgni8MNMfBpAIcvNYhhe+E5ocDl8neRk0uROpZh2qK4vCJyYILR
+        WAkTdnZqkDsPYENwT2cc/w=
+Received: from localhost.localdomain (unknown [111.35.184.199])
+        by zwqz-smtp-mta-g1-1 (Coremail) with SMTP id _____wAna3zK1fVk4xioBA--.12532S4;
+        Mon, 04 Sep 2023 21:04:29 +0800 (CST)
+From:   David Wang <00107082@163.com>
+Cc:     David Wang <00107082@163.com>,
+        Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
+        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
+Subject: [PATCH] uapi/netfilter: Change netfilter hook verdict code definition from macro to enum
+Date:   Mon,  4 Sep 2023 21:02:02 +0800
+Message-Id: <20230904130201.14632-1-00107082@163.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] scsi: ata: Fix a race condition between scsi error
- handler and ahci interrupt
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc:     "dlemoal@kernel.org" <dlemoal@kernel.org>,
-        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yukuai3@huawei.com" <yukuai3@huawei.com>,
-        "yi.zhang@huawei.com" <yi.zhang@huawei.com>,
-        "houtao1@huawei.com" <houtao1@huawei.com>,
-        "yangerkun@huawei.com" <yangerkun@huawei.com>
-References: <20230810014848.2148316-1-linan666@huaweicloud.com>
- <ZONr0f26IT/QKsSu@x1-carbon>
- <f33816ef-ce26-1501-99b6-c75f91c6d8f5@huaweicloud.com>
- <ZOSONbLwc6RtQnS0@x1-carbon>
- <5d37add3-41ce-e2af-b45a-d701eaf36a6c@huaweicloud.com>
- <ZPXGM0YUPP4+n0Rz@x1-carbon>
-From:   Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <ZPXGM0YUPP4+n0Rz@x1-carbon>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgCXc6bX1PVkZC5lCQ--.16578S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXFyUKr1rKrWkWw43ZrW3GFg_yoWrJFyrpF
-        WUJa1qkr1DXrW8tr4qqa1F9F1Fqan7Kry7ZryDJ3s7Zr1qq34rtr1DCFZ8WFn29wn7Gw1I
-        vw4jgr9rAFWUXrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
-        5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
-        AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07Al
-        zVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-        VOJ7UUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-CM-TRANSID: _____wAna3zK1fVk4xioBA--.12532S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7tF1rXw4ktFW5Zry3KFW5GFg_yoW8WrWUpF
+        9xCasIyr18WFW3C34vyw1S9F13Jws3AF17ury29ryUWF1rJw4vg3yY9r45t3Z3WrZ2yayj
+        qF1jqw1UC34DZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pi1xRfUUUUU=
+X-Originating-IP: [111.35.184.199]
+X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiOwHgqmC5nH6kMwAAsc
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
+        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As BPF_PROG_TYPE_NETFILTER was added in 6.4, a netfilter
+bpf program can attach to netfilter hooks, process package
+and return verdict back to netfilter. But those verdict
+codes are defined as macro, which could not be compiled
+into BTF with btf.c. libbpf, and maybe other bpf tools,
+would extract information from BTF and generate a
+common header "vmlinux.h". With macro definition, netfilter
+bpf program would have to redefine those macro again,
+besides including "vmlinux.h".
 
+This code change netfilter hook verdict code definition to
+enum, this way,  make it into BTF.
 
-在 2023/9/4 19:57, Niklas Cassel 写道:
-> On Mon, Sep 04, 2023 at 07:45:51PM +0800, Li Nan wrote:
->>
->>
->> 在 2023/8/22 18:30, Niklas Cassel 写道:
->>> On Tue, Aug 22, 2023 at 05:20:33PM +0800, Li Nan wrote:
->>>> Thanks for your reply, Niklas.
->>>>
->>>> 在 2023/8/21 21:51, Niklas Cassel 写道:
->>>>> On Thu, Aug 10, 2023 at 09:48:48AM +0800, linan666@huaweicloud.com wrote:
->>>>
->>>> [snip]
->>>>
->>>>>
->>>>> Hello Li Nan,
->>>>>
->>>>> I do not understand why the code in:
->>>>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L722-L731
->>>>>
->>>>> does not kick in, and repeats EH.
->>>>>
->>>>>
->>>>> EH_PENDING is cleared before ->error_handler() is called:
->>>>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L697
->>>>>
->>>>> So ahci_error_intr() from the second error interrupt, which is called after
->>>>> thawing the port, should have called ata_std_sched_eh(), which calls
->>>>> ata_eh_set_pending(), which should have set EH_PENDING:
->>>>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L884
->>>>>
->>>>>
->>>>>
->>>>> My only guess is that after thawing the port:
->>>>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L2807
->>>>>
->>>>> The second error irq comes, and sets EH_PENDING,
->>>>> but then this silly code might clear it:
->>>>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L2825-L2837
->>>>>
->>>>
->>>> Yeah, I think so.
->>>>
->>>>> I think the best way would be if we could improve this "spurious error
->>>>> condition check"... because if this is indeed the code that clears EH_PENDING
->>>>> for you, then this code basically makes the "goto repeat" code in
->>>>> ata_scsi_port_error_handler() useless...
->>>>>
->>>>>
->>>>> An alternative to improving the "spurious error condition check" might be for
->>>>> you to try something like:
->>>>>
->>>>
->>>> We have used this solution before, but it will case WARN_ON in
->>>> ata_eh_finish() as below:
->>>>
->>>>     WARNING: CPU: 1 PID: 118 at ../drivers/ata/libata-eh.c:4016
->>>> ata_eh_finish+0x15a/0x170
->>>
->>> Ok.
->>>
->>> How about if you simply move the WARN_ON to ata_scsi_port_error_handler()
->>> as well:
->>>
->>> diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
->>> index 35e03679b0bf..5be2fc651131 100644
->>> --- a/drivers/ata/libata-eh.c
->>> +++ b/drivers/ata/libata-eh.c
->>> @@ -741,6 +741,12 @@ void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap)
->>>                    */
->>>                   ap->ops->end_eh(ap);
->>> +               if (!ap->scsi_host->host_eh_scheduled) {
->>> +                       /* make sure nr_active_links is zero after EH */
->>> +                       WARN_ON(ap->nr_active_links);
->>> +                       ap->nr_active_links = 0;
->>> +               }
->>> +
->>>                   spin_unlock_irqrestore(ap->lock, flags);
->>>                   ata_eh_release(ap);
->>>           } else {
->>> @@ -962,7 +968,7 @@ void ata_std_end_eh(struct ata_port *ap)
->>>    {
->>>           struct Scsi_Host *host = ap->scsi_host;
->>> -       host->host_eh_scheduled = 0;
->>> +       host->host_eh_scheduled--;
->>>    }
->>>    EXPORT_SYMBOL(ata_std_end_eh);
->>> @@ -3948,10 +3954,6 @@ void ata_eh_finish(struct ata_port *ap)
->>>                           }
->>>                   }
->>>           }
->>> -
->>> -       /* make sure nr_active_links is zero after EH */
->>> -       WARN_ON(ap->nr_active_links);
->>> -       ap->nr_active_links = 0;
->>>    }
->>>    /**
->>>
->>>
->>>
->>> Kind regards,
->>> Niklas
->>
->> We have tested this patch and it can fix the bug. Thank you so much. :)
-> 
-> Awesome! :)
-> 
-> Please send out a real patch, so that it is easier for the maintainer to
-> apply.
-> 
-> No need to give any credit to me.
-> 
-> 
-> Kind regards,
-> Niklas
+Signed-off-by: David Wang <00107082@163.com>
+---
+ include/uapi/linux/netfilter.h | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-It is my pleasure. I will send v2 later.
-
+diff --git a/include/uapi/linux/netfilter.h b/include/uapi/linux/netfilter.h
+index 5a79ccb76701..d2f5dfab20dc 100644
+--- a/include/uapi/linux/netfilter.h
++++ b/include/uapi/linux/netfilter.h
+@@ -8,13 +8,15 @@
+ #include <linux/in6.h>
+ 
+ /* Responses from hook functions. */
+-#define NF_DROP 0
+-#define NF_ACCEPT 1
+-#define NF_STOLEN 2
+-#define NF_QUEUE 3
+-#define NF_REPEAT 4
+-#define NF_STOP 5	/* Deprecated, for userspace nf_queue compatibility. */
+-#define NF_MAX_VERDICT NF_STOP
++enum {
++	NF_DROP        = 0,
++	NF_ACCEPT      = 1,
++	NF_STOLEN      = 2,
++	NF_QUEUE       = 3,
++	NF_REPEAT      = 4,
++	NF_STOP        = 5,	/* Deprecated, for userspace nf_queue compatibility. */
++	NF_MAX_VERDICT = NF_STOP,
++};
+ 
+ /* we overload the higher bits for encoding auxiliary data such as the queue
+  * number or errno values. Not nice, but better than additional function
 -- 
-Thanks,
-Nan
+2.20.1
 
