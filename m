@@ -2,107 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8521791A9B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32E2A791A97
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:26:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345263AbjIDP0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:26:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32912 "EHLO
+        id S241437AbjIDP0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:26:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244844AbjIDP0t (ORCPT
+        with ESMTP id S229801AbjIDP0c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:26:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D73DDCC3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:26:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693841164;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Qn0Q7H7evoRHH4Nj4axR0mmpgO4f23pEiMyC9/o6s5w=;
-        b=LTgJglC/pyWbGwJ6PtSS2wt2F+21Ao0ASTr0UdHTZoQfpnqm/Z3DMbyr0Tgrqk7zIf6YLt
-        oywln2AdIkl5jANF4Q1CQeAwvGvMTRFDrb6/irP7fNCT1pF/c0nlpksxeFHuan2FwC/mkY
-        BVA41NRrIpFGQkJw47prnRNPmsMqwQY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-38-9jhrxafXNFKPiZSlWo4y5A-1; Mon, 04 Sep 2023 11:25:59 -0400
-X-MC-Unique: 9jhrxafXNFKPiZSlWo4y5A-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EDDCA868012;
-        Mon,  4 Sep 2023 15:25:58 +0000 (UTC)
-Received: from [10.22.8.119] (unknown [10.22.8.119])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 28049200A86A;
-        Mon,  4 Sep 2023 15:25:58 +0000 (UTC)
-Message-ID: <c98e6c5b-d334-075f-71b8-1c2a3b73b205@redhat.com>
-Date:   Mon, 4 Sep 2023 11:25:57 -0400
+        Mon, 4 Sep 2023 11:26:32 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B624CC4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:26:29 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401d10e3e54so16004085e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 08:26:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693841187; x=1694445987; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fDf3q7+EQu7w2zbw3JsPePbQVuqHBAlzwY6aMD3wySI=;
+        b=LstVGvZIfgllAPp1vUZpzde0qoJeHYpyzOi7DVb7HxkLNHtfDsM7tigqBQIXcH7/ts
+         XenFCp1ugiQKWnUBrdV7X7e1ieNZakX4XZlE7mXKRtqbrup+cZk2wVy8tkcLOiTl2Dhr
+         OMi+AslicQNgIYeeiOqXtz1TwXjemtug2AJNvYpXbcFbOrrSQKFaNAXHLzrEyiKD5LD9
+         NWXgG+/ip5bOJfwcaT094SRtGkRwd8abJ0DtxNK/5V27rvxEI+voa28Me1v+4iHikRN0
+         YfqFD87obsdUnWP+tiaYVHQgor+F0+B8VscbxKsadFhk6VEGC+e9nlqbCTPsA0R9q7By
+         ymzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693841187; x=1694445987;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fDf3q7+EQu7w2zbw3JsPePbQVuqHBAlzwY6aMD3wySI=;
+        b=UX33KHkk0MgDhPqKbraQ8PbeKVukoC3riv94aAoHyx5WZb9hIYl2UErlmW9y+u02cH
+         jQN0RckK4Jvfpll93EkEl1of0pecFDUr6a0TQtqFVWCxO3eNDwSn5GyNj68Bs5HjZHbl
+         e5PTfht+JYZQZJ/c7wUQNjN+mg56aHsr+QPU18HPXM5QyuzwAjK3OaIC9tMa+XLVk+rG
+         YTRLRiyIyXytUFVs4P2BiITT0i/xVCw+uGiI99qdsY7dULW9btrJApz0ufmL2+Tfxobg
+         tyHYrCjsvlmxlUufKxzakSEmiKIFphS/8ZabliqJ6B9A5ntlBqCkYdvEre5/j4ih9ror
+         VaoA==
+X-Gm-Message-State: AOJu0YzT94MzsSxtOHvQeNmynvjLv7xOuFRGM1J73uFOqWHCZfeNuy2g
+        QUp8iTn6SOKVUD/pCMTSfLxJHg==
+X-Google-Smtp-Source: AGHT+IHWxHR1EFAYshcTB7RB95vh4F3SsbWMVSXXFSxXBH5grbtimj3wW7/bF5tK15QkRFCPr/KWYg==
+X-Received: by 2002:a5d:66ce:0:b0:317:d048:8d87 with SMTP id k14-20020a5d66ce000000b00317d0488d87mr6659141wrw.61.1693841187508;
+        Mon, 04 Sep 2023 08:26:27 -0700 (PDT)
+Received: from myrica ([2.220.83.24])
+        by smtp.gmail.com with ESMTPSA id z23-20020a1c4c17000000b00401d8181f8bsm17377650wmf.25.2023.09.04.08.26.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 08:26:27 -0700 (PDT)
+Date:   Mon, 4 Sep 2023 16:26:32 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] iommu/virtio: Make use of ops->iotlb_sync_map
+Message-ID: <20230904152632.GA815284@myrica>
+References: <20230825-viommu-sync-map-v1-0-56bdcfaa29ec@linux.ibm.com>
+ <20230825-viommu-sync-map-v1-1-56bdcfaa29ec@linux.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: ARM BCM53573 SoC hangs/lockups caused by locks/clock/random
- changes
-To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     openwrt-devel@lists.openwrt.org,
-        bcm-kernel-feedback-list@broadcom.com
-References: <a03a6e1d-e99c-40a3-bdac-0075b5339beb@gmail.com>
-Content-Language: en-US
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <a03a6e1d-e99c-40a3-bdac-0075b5339beb@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230825-viommu-sync-map-v1-1-56bdcfaa29ec@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Niklas,
 
-On 9/4/23 04:33, Rafał Miłecki wrote:
-> As those hangs/lockups are related to so many different changes it's
-> really hard to debug them.
->
-> This bug seems to be specific to the slow arch clock that affects
-> stability only when kernel locking code and symbols layout trigger some
-> very specific timing.
->
-> Enabling CONFIG_PROVE_LOCKING seems to make issue go away but it affects
-> so much code it's hard to tell why it actually matters.
->
-> Same for disabling CONFIG_SMP. I noticed Broadcom's SDK keeps it
-> disabled. I tried it and it improves stability (I had 3 devices with 6
-> days of uptime and counting) indeed. Again it affects a lot of kernel
-> parts so it's hard to tell why it helps.
->
-> Unless someone comes up with some magic solution I'll probably try
-> building BCM53573 images without CONFIG_SMP for my personal needs.
+Thanks for following up with these patches
 
-All the locking operations rely on the fact that the instruction to 
-acquire or release a lock is atomic. Is it possible that it may not be 
-the case under certain circumstances for this ARM BCM53573 SoC? Or maybe 
-some Kconfig options are not set correctly like missing some errata that 
-are needed.
+On Fri, Aug 25, 2023 at 05:21:25PM +0200, Niklas Schnelle wrote:
+> Pull out the sync operation from viommu_map_pages() by implementing
+> ops->iotlb_sync_map. This allows the common IOMMU code to map multiple
+> elements of an sg with a single sync (see iommu_map_sg()). Furthermore,
+> it is also a requirement for IOMMU_CAP_DEFERRED_FLUSH.
+> 
+> Link: https://lore.kernel.org/lkml/20230726111433.1105665-1-schnelle@linux.ibm.com/
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+>  drivers/iommu/virtio-iommu.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index 3551ed057774..fb73dec5b953 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -843,7 +843,7 @@ static int viommu_map_pages(struct iommu_domain *domain, unsigned long iova,
+>  			.flags		= cpu_to_le32(flags),
+>  		};
+>  
+> -		ret = viommu_send_req_sync(vdomain->viommu, &map, sizeof(map));
+> +		ret = viommu_add_req(vdomain->viommu, &map, sizeof(map));
+>  		if (ret) {
+>  			viommu_del_mappings(vdomain, iova, end);
+>  			return ret;
+> @@ -909,9 +909,21 @@ static void viommu_iotlb_sync(struct iommu_domain *domain,
+>  {
+>  	struct viommu_domain *vdomain = to_viommu_domain(domain);
+>  
+> +	if (!vdomain->nr_endpoints)
+> +		return;
 
-I don't know enough about the 32-bit arm architecture to say whether 
-this is the case or not, but that is my best guess.
+I was wondering about these nr_endpoints checks, which seemed unnecessary:
+if map()/unmap() were called with no attached endpoints, then no requests
+were added to the queue, and viommu_sync_req() below is a nop.
 
-Cheers,
-Longman
+But at least viommu_iotlb_sync_map() and viommu_flush_iotlb_all() need to
+handle being called before the domain is finalized (for example by
+iommu_create_device_direct_mappings()). In that case vdomain->viommu is
+NULL so if you add a NULL check in viommu_sync_req() then you should be
+able to drop the nr_endpoints checks in both patches.
 
+Thanks,
+Jean
+
+>  	viommu_sync_req(vdomain->viommu);
+>  }
+>  
+> +static int viommu_iotlb_sync_map(struct iommu_domain *domain,
+> +				 unsigned long iova, size_t size)
+> +{
+> +	struct viommu_domain *vdomain = to_viommu_domain(domain);
+> +
+> +	if (!vdomain->nr_endpoints)
+> +		return 0;
+> +	return viommu_sync_req(vdomain->viommu);
+> +}
+> +
+>  static void viommu_get_resv_regions(struct device *dev, struct list_head *head)
+>  {
+>  	struct iommu_resv_region *entry, *new_entry, *msi = NULL;
+> @@ -1058,6 +1070,7 @@ static struct iommu_ops viommu_ops = {
+>  		.unmap_pages		= viommu_unmap_pages,
+>  		.iova_to_phys		= viommu_iova_to_phys,
+>  		.iotlb_sync		= viommu_iotlb_sync,
+> +		.iotlb_sync_map		= viommu_iotlb_sync_map,
+>  		.free			= viommu_domain_free,
+>  	}
+>  };
+> 
+> -- 
+> 2.39.2
+> 
