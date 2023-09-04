@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3453C791091
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 06:26:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2A2791090
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 06:26:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351694AbjIDE0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 00:26:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59108 "EHLO
+        id S1351677AbjIDE0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 00:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjIDE0M (ORCPT
+        with ESMTP id S240303AbjIDE0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 00:26:12 -0400
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A6910F
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 21:26:08 -0700 (PDT)
+        Mon, 4 Sep 2023 00:26:11 -0400
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4187103
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 21:26:07 -0700 (PDT)
 Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20230904042606epoutp0355e448212c1ffb93f646f7a74068e43f~Bl4zYKmPr3054530545epoutp03d
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20230904042606epoutp01158e1af6b3f939b7cef43179c36f221c~Bl4zjm-QK2501725017epoutp01n
         for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 04:26:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20230904042606epoutp0355e448212c1ffb93f646f7a74068e43f~Bl4zYKmPr3054530545epoutp03d
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20230904042606epoutp01158e1af6b3f939b7cef43179c36f221c~Bl4zjm-QK2501725017epoutp01n
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
         s=mail20170921; t=1693801566;
-        bh=mmg8oLshxsrQdYCnlidyh+NTlXcuOiwPxXyFC6ElhqU=;
+        bh=F0Cw2/eIVKvUe9Ad3kDZbvYRFetszRqIT02C8jm0Ihc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rURroMtgX50oUCXNUesga54s9Igo7WJiGoMPI2Du4/AoOlOKVQenhJHSme6iI32Un
-         eex2qYRlnc+b4hnyz3rIjUg0i5OKiDYlVwSryAWyb5YsxVjaJ7l98NZNNwghZfl9EL
-         4ozmO0ecQJioKKE7bpB/rSey29ItG4AQ2BKwT9AE=
+        b=vfjfoOzR59kOatlizBYeVUYzM/G7l1Kw/qXf2PZqmi2HiPI6GFkR9DCoB29HvSyTr
+         3yqBfe6U6Dm29hva0IpLVw1WBf6OhW5Mu7haxZ0BbL3QthqoITYpWok4bV7x5s/Bne
+         xTMU/D/dnijDqD7fBDAARwP4WGLGhbFWQWWY50HI=
 Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20230904042605epcas1p4d7153219063c82dcb8c966b945367045~Bl4yuYe1o0894808948epcas1p4H;
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20230904042605epcas1p13e75eb52c8cef4bd57e8e556bdb6d119~Bl4yzpxWN3248132481epcas1p1g;
         Mon,  4 Sep 2023 04:26:05 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.36.136]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4RfFv03CB2z4x9Px; Mon,  4 Sep
+Received: from epsmgec1p1-new.samsung.com (unknown [182.195.38.232]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4RfFv02xxqz4x9Q1; Mon,  4 Sep
         2023 04:26:04 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        07.34.09646.C5C55F46; Mon,  4 Sep 2023 13:26:04 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
-        20230904042603epcas1p2ae04f309c60dde70a0b254287f61dfb1~Bl4xYoBCf1830118301epcas1p2p;
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmgec1p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        0C.8B.18968.C5C55F46; Mon,  4 Sep 2023 13:26:04 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20230904042603epcas1p47c4e858d65f2618d747bdc214d350cf7~Bl4xbOmDK0894808948epcas1p46;
         Mon,  4 Sep 2023 04:26:03 +0000 (GMT)
 Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20230904042603epsmtrp24e110468c9bf53abe831621452a64519~Bl4xXrCP50179101791epsmtrp2I;
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20230904042603epsmtrp18accbbeb8bdfa7bc1a73b0833efad0e2~Bl4xaYGUI0102601026epsmtrp14;
         Mon,  4 Sep 2023 04:26:03 +0000 (GMT)
-X-AuditID: b6c32a37-39cc9a80000025ae-77-64f55c5c5f1d
+X-AuditID: b6c32a4c-34c49a8000004a18-e3-64f55c5cf3a8
 Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
         epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        37.1A.08742.B5C55F46; Mon,  4 Sep 2023 13:26:03 +0900 (KST)
+        28.1A.08742.B5C55F46; Mon,  4 Sep 2023 13:26:03 +0900 (KST)
 Received: from mediaserver.. (unknown [10.113.111.131]) by
         epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20230904042603epsmtip175f6ce79549cbc599c80236f3c6b86c5~Bl4xEnndG1856018560epsmtip1f;
+        20230904042603epsmtip10f0955ba6b9506551bf7511184e42159~Bl4xNs_XB1398813988epsmtip1i;
         Mon,  4 Sep 2023 04:26:03 +0000 (GMT)
 From:   Kwanghoon Son <k.son@samsung.com>
 To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
@@ -60,57 +60,57 @@ To:     p.zabel@pengutronix.de, robh+dt@kernel.org,
         aou@eecs.berkeley.edu, inki.dae@samsung.com
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [RFC PATCH 2/3] reset: Add th1520 reset driver support
-Date:   Mon,  4 Sep 2023 04:25:58 +0000
-Message-Id: <20230904042559.2322997-3-k.son@samsung.com>
+Subject: [RFC PATCH 3/3] riscv: dts: Add th1520 reset device tree
+Date:   Mon,  4 Sep 2023 04:25:59 +0000
+Message-Id: <20230904042559.2322997-4-k.son@samsung.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230904042559.2322997-1-k.son@samsung.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMJsWRmVeSWpSXmKPExsWy7bCmrm5MzNcUgyNtYhZbf89it1iz9xyT
-        xfwj51gtXuxtZLGYdH8Ci0XzsfVsFn0vHjJbXN41h81i2+cWNou7906wWLy83MNs0TaL36J1
-        7xF2i5b9U1gc+DzevHzJ4nG44wu7x6ZVnWwed67tYfPYvKTeo/+vgcf7fVfZPPq2rGL0uNR8
-        nd3j8ya5AK6obJuM1MSU1CKF1Lzk/JTMvHRbJe/geOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBd
-        t8wcoPuVFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnFJbZKqQUpOQWmBXrFibnFpXnpenmpJVaG
-        BgZGpkCFCdkZbW/iC85qVdw7Wt7AeFG5i5GTQ0LARGLRqessXYxcHEICOxglDvavYoNwPjFK
-        bLq3kwnC+cYosfnfWTaYlhfL1rOA2EICexklnqyAan/DKHG1Zw9YEZuAusSStrXsIAkRgf+M
-        Em/+tDKBJJgF4iVOXDvHDGILC9hLXLrxih3EZhFQBbI3MYLYvAIWEqfPb2KH2CYvsf/gWbB6
-        TgFLiQ8PD0LVCEqcnPmEBWKmvETz1tnMIMskBPZwSDyY9Ayq2UXi/bVtULawxKvjW6BsKYnP
-        7/ZCvZMtcfQjjF0icX3WIlYI21hi/9LJQEdzAC3QlFi/Sx8irCix8/dcRoi9fBLvvvawgpRI
-        CPBKdLQJQZjyErc6yyGqRSXOPP0INdxD4vixdcyQsOphlHjVuZNlAqPCLCTfzELyzSyExQsY
-        mVcxiqUWFOempxYbFhjD4zc5P3cTIzg1a5nvYJz29oPeIUYmDsZDjBIczEoivHLan1KEeFMS
-        K6tSi/Lji0pzUosPMZoCw3ois5Rocj4wO+SVxBuaWBqYmBkZm1gYmhkqifPeetabIiSQnliS
-        mp2aWpBaBNPHxMEp1cD00P5f4B5HhUXKrZ83PxDrP2rwsM7V79KMY7W2UU3z1xm9XCe8MIKh
-        1i47QzCET0N3Mt+qzP33Zxy5YXq6YK7R0X2ehgViryb9XaEtmH1Ec55/7mvhvpY/B47umqO1
-        8uFxMz6dr/NLPH5UrrcPe/rPMuod8+UpR1ME9Ljuem3OTNq3m+MGr+hqgURnns2fiv0Z0g9O
-        ddtbvSZy3us2YdONISckPvn0bdjBrR/CJbD8fcjhkwIxqXydZuaGZ9iYrqcHnfwgmWW8aXGS
-        BdsMA9YNK3xeFjDuMLmdVfpypmndwcs/3AuNT7il7Zz9zUda9Ex/2+od11w+vHb32JrAtGeG
-        icHappzXen3LtW7ZnP6pxFKckWioxVxUnAgA3uRjNVYEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLLMWRmVeSWpSXmKPExsWy7bCSnG50zNcUg6ML9Cy2/p7FbrFm7zkm
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrJJsWRmVeSWpSXmKPExsWy7bCmvm5MzNcUg1t/RSy2/p7FbrFm7zkm
         i/lHzrFavNjbyGIx6f4EFovmY+vZLPpePGS2uLxrDpvFts8tbBZ3751gsXh5uYfZom0Wv0Xr
         3iPsFi37p7A48Hm8efmSxeNwxxd2j02rOtk87lzbw+axeUm9R/9fA4/3+66yefRtWcXocan5
-        OrvH501yAVxRXDYpqTmZZalF+nYJXBltb+ILzmpV3Dta3sB4UbmLkZNDQsBE4sWy9SxdjFwc
-        QgK7GSU2rDjGCJEQlei43AhkcwDZwhKHDxeDhIUEXjFK/GnnArHZBNQllrStZQfpFRHoZZL4
-        8HEJE0iCWSBRYsvX18wgtrCAvcSlG6/YQWwWAVUgexPYfF4BC4nT5zexQ+ySl9h/8CxYPaeA
-        pcSHhwcZIZZZSGz49YoFol5Q4uTMJywQ8+UlmrfOZp7AKDALSWoWktQCRqZVjJKpBcW56bnF
-        hgWGeanlesWJucWleel6yfm5mxjBMaSluYNx+6oPeocYmTgYDzFKcDArifDKaX9KEeJNSays
-        Si3Kjy8qzUktPsQozcGiJM4r/qI3RUggPbEkNTs1tSC1CCbLxMEp1cA0N3Fr1YklW7zDn786
-        /T3JToApwZVnz7/WgNeT/MNYysy8H8/arfHqPlsQ08QlH2Tfb7+zOzV8ng3Ddft7n2stHkrM
-        WZ9yV3N5/IYJbuqOXZYd83KmV8Y9utu05vbpG3vkZ/lXMFRvCN9w/pD33suGR09bND44ERR3
-        +qacwNvKAwdSPTlv9Ak5HhI5fKjdi0moeuHyVEYtB3PN07/5Ew8qb/fOmRUvMVspxVVM+sSc
-        1j+fjZP+7LecpPpktUNcJoPPqfYkpbkiNf+iXUyvTHCcnxOmI7+gjF/L5Gm6Qryy0Z470i26
-        D7jSo78c3MtQMGf18mD1r64G1gcPRn5rlt9RWHng1TvNig1mNdbHbzxXYinOSDTUYi4qTgQA
-        UyobFxADAAA=
-X-CMS-MailID: 20230904042603epcas1p2ae04f309c60dde70a0b254287f61dfb1
+        OrvH501yAVxR2TYZqYkpqUUKqXnJ+SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6
+        bpk5QPcrKZQl5pQChQISi4uV9O1sivJLS1IVMvKLS2yVUgtScgpMC/SKE3OLS/PS9fJSS6wM
+        DQyMTIEKE7IzXv/fxFjwmKvi2ck9LA2M3zm6GDk5JARMJG42v2ftYuTiEBLYwyix594UJgjn
+        E6PEyssHGSGcb4wSHd9+MMK09M59zQ6R2MsoMfv4V6j+N4wS257/YAapYhNQl1jSthasSkTg
+        P6PEmz+tTCAJZoF4iRPXzoEVCQs4Sqx4/YIVxGYRUJVoXLINqIaDg1fAQuLoJWOIbfIS+w+e
+        BSvnFLCU+PDwINgVvAKCEidnPmGBGCkv0bx1NjPILgmBPRwSu78dZoNodpFoafjKCmELS7w6
+        voUdwpaSeNnfBmVnSxz9uBeqvkTi+qxFUPXGEvuXTga7h1lAU2L9Ln2IsKLEzt9zGSH28km8
+        +9rDClIiIcAr0dEmBGHKS9zqLIeoFpU48/Qj1HAPiU+T26Hh1sMosfblVKYJjAqzkHwzC8k3
+        sxAWL2BkXsUolVpQnJuemmxYYKibl1oOj+Xk/NxNjOA0reWzg/H7+r96hxiZOBgPMUpwMCuJ
+        8Mppf0oR4k1JrKxKLcqPLyrNSS0+xGgKDO6JzFKiyfnATJFXEm9oYmlgYmZkbGJhaGaoJM4b
+        86k9RUggPbEkNTs1tSC1CKaPiYNTqoFp2mcxzuOHTfLLd//fyuZbrXp9fht7bJ7G9QcXJ/4y
+        C7+dZnm6cCdP7t+l2j92TlB6XaIt4zMh8HFlPX+QCKf+pA+3hC8E8Mef3menUhx+wnu269Gs
+        hpS6A+1c02pOyjtdEdp0K8ji2YuDcUcPrfEorJ5xQ7EpjOHLzwdVLoePb47f2bvw5v2bzrOq
+        bLfxBjhHq/IkBius3z77Z7L7gWOHrTUmqfGkzi1d0F10l4knRFXt3MW7cW0erLMi9/8MUgjq
+        0F79yGd6CePs94IR6asKfu679+XEyVCjh0sNHr0NVp97PsF5+g1O5q/SPUyR6/r/s/048uPZ
+        LLlvb9qUTJSMuH5MXXzev3AeR8mxkmkJSizFGYmGWsxFxYkAvZLQQFwEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrLLMWRmVeSWpSXmKPExsWy7bCSnG50zNcUg7YDZhZbf89it1iz9xyT
+        xfwj51gtXuxtZLGYdH8Ci0XzsfVsFn0vHjJbXN41h81i2+cWNou7906wWLy83MNs0TaL36J1
+        7xF2i5b9U1gc+DzevHzJ4nG44wu7x6ZVnWwed67tYfPYvKTeo/+vgcf7fVfZPPq2rGL0uNR8
+        nd3j8ya5AK4oLpuU1JzMstQifbsErozX/zcxFjzmqnh2cg9LA+N3ji5GTg4JAROJ3rmv2UFs
+        IYHdjBKzz1ZCxEUlOi43MnYxcgDZwhKHDxdDlLxilFi4LQHEZhNQl1jSthaolYtDRKCXSeLD
+        xyVMIAlmgUSJLV9fM4PYwgKOEitev2AFsVkEVCUal2xjApnJK2AhcfSSMcQqeYn9B8+ClXMK
+        WEp8eHiQEWKXhcSGX69YQGxeAUGJkzOfsECMl5do3jqbeQKjwCwkqVlIUgsYmVYxSqYWFOem
+        5xYbFhjmpZbrFSfmFpfmpesl5+duYgTHkJbmDsbtqz7oHWJk4mA8xCjBwawkwiun/SlFiDcl
+        sbIqtSg/vqg0J7X4EKM0B4uSOK/4i94UIYH0xJLU7NTUgtQimCwTB6dUA5PPG6Ooc7G2L0Vq
+        WW23+Mw0LbvS1NVY6HuD1+nZvwWiZ6erTZHMDDKUs7qbIBddlL9Bm/d8oIbO1JJVaRkMX9+s
+        u+SsUn5QfmXKPFnuKS0vd/eqlf3Mn3bTLMQxp1nGtdcvWtWcR4ntbFWi2JU39Wsr8+fPluI6
+        4r+t23e3gsEtJ79//xsO2344vTRV+Cv7Hrs9R9V+GtrqCMqdzt6nrL9toe2CmPK8E2Ki/PMf
+        RuxMVDG4nL+14HPh72iezefKDuwtV1ASWuUtXFKnMi2qbD7z1q7W3PqDLvprvtz/cGbC6SmH
+        5131/PH+kqvayX33g8K2H9E7lBUsbyK47LrH/dBjXovD1q3a/ptddJGMhxJLcUaioRZzUXEi
+        ACRhl6sQAwAA
+X-CMS-MailID: 20230904042603epcas1p47c4e858d65f2618d747bdc214d350cf7
 X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
 X-Sendblock-Type: SVC_REQ_APPROVE
 CMS-TYPE: 101P
 DLP-Filter: Pass
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230904042603epcas1p2ae04f309c60dde70a0b254287f61dfb1
+X-CMS-RootMailID: 20230904042603epcas1p47c4e858d65f2618d747bdc214d350cf7
 References: <20230904042559.2322997-1-k.son@samsung.com>
-        <CGME20230904042603epcas1p2ae04f309c60dde70a0b254287f61dfb1@epcas1p2.samsung.com>
+        <CGME20230904042603epcas1p47c4e858d65f2618d747bdc214d350cf7@epcas1p4.samsung.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
@@ -121,181 +121,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver supports th1520 T-HEAD SoC reset platform device.
+Add reset device tree for th1520 SoC
 
 Signed-off-by: Kwanghoon Son <k.son@samsung.com>
 ---
- drivers/reset/Kconfig                    |  10 +++
- drivers/reset/Makefile                   |   1 +
- drivers/reset/reset-th1520.c             | 109 +++++++++++++++++++++++
- include/dt-bindings/reset/th1520-reset.h |   9 ++
- 4 files changed, 129 insertions(+)
- create mode 100644 drivers/reset/reset-th1520.c
- create mode 100644 include/dt-bindings/reset/th1520-reset.h
+ arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi | 4 ++++
+ arch/riscv/boot/dts/thead/th1520.dtsi                  | 8 ++++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index ccd59ddd7610..ec69e6bbba6e 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -253,6 +253,16 @@ config RESET_SUNXI
- 	help
- 	  This enables the reset driver for Allwinner SoCs.
+diff --git a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+index a802ab110429..b689cc049ad8 100644
+--- a/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
++++ b/arch/riscv/boot/dts/thead/th1520-lichee-module-4a.dtsi
+@@ -36,3 +36,7 @@ &uart_sclk {
+ &dmac0 {
+ 	status = "okay";
+ };
++
++&rst {
++	status = "okay";
++};
+diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
+index ce708183b6f6..1cacfa386d19 100644
+--- a/arch/riscv/boot/dts/thead/th1520.dtsi
++++ b/arch/riscv/boot/dts/thead/th1520.dtsi
+@@ -5,6 +5,7 @@
+  */
  
-+config RESET_TH1520
-+	bool "TH1520 Reset Driver"
-+	depends on (ARCH_THEAD || COMPILE_TEST) && OF
-+	select MFD_SYSCON
-+	default ARCH_THEAD
-+	help
-+	  Support for the T-HEAD 1520 RISC-V SoC reset controller.
-+	  Say Y if you want to control reset signals provided by this
-+	  controller.
-+
- config RESET_TI_SCI
- 	tristate "TI System Control Interface (TI-SCI) reset driver"
- 	depends on TI_SCI_PROTOCOL || (COMPILE_TEST && TI_SCI_PROTOCOL=n)
-diff --git a/drivers/reset/Makefile b/drivers/reset/Makefile
-index 8270da8a4baa..5c858e62241a 100644
---- a/drivers/reset/Makefile
-+++ b/drivers/reset/Makefile
-@@ -33,6 +33,7 @@ obj-$(CONFIG_RESET_SIMPLE) += reset-simple.o
- obj-$(CONFIG_RESET_SOCFPGA) += reset-socfpga.o
- obj-$(CONFIG_RESET_SUNPLUS) += reset-sunplus.o
- obj-$(CONFIG_RESET_SUNXI) += reset-sunxi.o
-+obj-$(CONFIG_RESET_TH1520) += reset-th1520.o
- obj-$(CONFIG_RESET_TI_SCI) += reset-ti-sci.o
- obj-$(CONFIG_RESET_TI_SYSCON) += reset-ti-syscon.o
- obj-$(CONFIG_RESET_TI_TPS380X) += reset-tps380x.o
-diff --git a/drivers/reset/reset-th1520.c b/drivers/reset/reset-th1520.c
-new file mode 100644
-index 000000000000..4c781377ac23
---- /dev/null
-+++ b/drivers/reset/reset-th1520.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+
-+#include <linux/mfd/syscon.h>
-+#include <linux/of_device.h>
-+#include <linux/platform_device.h>
-+#include <linux/reset-controller.h>
-+#include <linux/regmap.h>
+ #include <dt-bindings/interrupt-controller/irq.h>
 +#include <dt-bindings/reset/th1520-reset.h>
+ 
+ / {
+ 	compatible = "thead,th1520";
+@@ -418,5 +419,12 @@ portf: gpio-controller@0 {
+ 				interrupts = <55 IRQ_TYPE_LEVEL_HIGH>;
+ 			};
+ 		};
 +
-+struct th1520_rst_signal {
-+	unsigned int offset, bit;
-+};
-+
-+struct th1520_rst {
-+	struct reset_controller_dev rcdev;
-+	struct regmap *regmap;
-+	const struct th1520_rst_signal *signals;
-+};
-+
-+enum th1520_rst_registers {
-+	RST_WDT0 = 0x0034,
-+	RST_WDT1 = 0x0038,
-+};
-+
-+static int th1520_reset_update(struct th1520_rst *rst, unsigned long id,
-+			       unsigned int value)
-+{
-+	const struct th1520_rst_signal *signal = &rst->signals[id];
-+
-+	return regmap_update_bits(rst->regmap, signal->offset, signal->bit,
-+				  value);
-+}
-+
-+static const struct th1520_rst_signal th1520_rst_signals[] = {
-+	[TH1520_RESET_WDT0] = { RST_WDT0, BIT(0) },
-+	[TH1520_RESET_WDT1] = { RST_WDT1, BIT(0) },
-+};
-+
-+static struct th1520_rst *to_th1520_rst(struct reset_controller_dev *rcdev)
-+{
-+	return container_of(rcdev, struct th1520_rst, rcdev);
-+}
-+
-+static int th1520_reset_set(struct reset_controller_dev *rcdev,
-+			    unsigned long id, bool assert)
-+{
-+	struct th1520_rst *rst = to_th1520_rst(rcdev);
-+	const unsigned int bit = rst->signals[id].bit;
-+	unsigned int value = assert ? bit : 0;
-+
-+	return th1520_reset_update(rst, id, value);
-+}
-+
-+static int th1520_reset_assert(struct reset_controller_dev *rcdev,
-+			       unsigned long id)
-+{
-+	return th1520_reset_set(rcdev, id, false);
-+}
-+
-+static int th1520_reset_deassert(struct reset_controller_dev *rcdev,
-+				 unsigned long id)
-+{
-+	return th1520_reset_set(rcdev, id, true);
-+}
-+
-+static const struct reset_control_ops th1520_rst_ops = {
-+	.assert = th1520_reset_assert,
-+	.deassert = th1520_reset_deassert,
-+};
-+
-+static int th1520_reset_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct th1520_rst *rst;
-+	struct regmap_config config = { .name = "rst" };
-+
-+	rst = devm_kzalloc(dev, sizeof(*rst), GFP_KERNEL);
-+	if (!rst)
-+		return -ENOMEM;
-+
-+	rst->signals = th1520_rst_signals;
-+	rst->regmap = syscon_node_to_regmap(dev->of_node);
-+	if (IS_ERR(rst->regmap))
-+		return PTR_ERR(rst->regmap);
-+
-+	regmap_attach_dev(dev, rst->regmap, &config);
-+
-+	rst->rcdev.owner = THIS_MODULE;
-+	rst->rcdev.dev = dev;
-+	rst->rcdev.of_node = dev->of_node;
-+	rst->rcdev.ops = &th1520_rst_ops;
-+	rst->rcdev.nr_resets = ARRAY_SIZE(th1520_rst_signals);
-+
-+	return devm_reset_controller_register(dev, &rst->rcdev);
-+}
-+
-+static const struct of_device_id th1520_reset_dt_ids[] = {
-+	{ .compatible = "thead,th1520-reset" },
-+	{ /* sentinel */ },
-+};
-+
-+static struct platform_driver th1520_reset_driver = {
-+	.probe	= th1520_reset_probe,
-+	.driver = {
-+		.name		= "th1520-reset",
-+		.of_match_table	= th1520_reset_dt_ids,
-+	},
-+};
-+builtin_platform_driver(th1520_reset_driver);
-diff --git a/include/dt-bindings/reset/th1520-reset.h b/include/dt-bindings/reset/th1520-reset.h
-new file mode 100644
-index 000000000000..ec10751814e5
---- /dev/null
-+++ b/include/dt-bindings/reset/th1520-reset.h
-@@ -0,0 +1,9 @@
-+/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
-+
-+#ifndef DT_BINDING_RESET_TH1520_H
-+#define DT_BINDING_RESET_TH1520_H
-+
-+#define TH1520_RESET_WDT0 0
-+#define TH1520_RESET_WDT1 1
-+
-+#endif
++		rst: reset-controller@ffef014000 {
++			compatible = "thead,th1520-reset", "syscon";
++			reg = <0xff 0xef014000 0x0 0x1000>;
++			#reset-cells = <1>;
++			status = "disabled";
++		};
+ 	};
+ };
 -- 
 2.34.1
 
