@@ -2,129 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8388E7915AB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:24:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 693FC7915AC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350221AbjIDKY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:24:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49822 "EHLO
+        id S237678AbjIDKZA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:25:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352745AbjIDJyK (ORCPT
+        with ESMTP id S1352743AbjIDJyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 4 Sep 2023 05:54:10 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24C57CC5;
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CB93CE1;
         Mon,  4 Sep 2023 02:53:56 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DC4A3143D;
-        Mon,  4 Sep 2023 02:54:33 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 76E9D3F793;
-        Mon,  4 Sep 2023 02:53:52 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     linux-perf-users@vger.kernel.org, irogers@google.com
-Cc:     James Clark <james.clark@arm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Chen Zhongjin <chenzhongjin@huawei.com>,
-        Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 7/7] perf pmu: Remove unused function
-Date:   Mon,  4 Sep 2023 10:50:49 +0100
-Message-Id: <20230904095104.1162928-8-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230904095104.1162928-1-james.clark@arm.com>
-References: <20230904095104.1162928-1-james.clark@arm.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693821236; x=1725357236;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8sQ3qCqDltmKmKXyDYt3/9gs19z0E3/d+pnpfc744Eg=;
+  b=afOF8N6K1irEG5LoF5dBUCSknO7F7LDUPQ4CDRfjaMZzhGEOL2WY/nRF
+   XWFACxDzfuJ4thCabk8dpqSlioQCiyi6zAQRXdD/HAMRtbiaTBTRYw/6p
+   4F+dWlexZRjElvKqLoq+CYXmzLlry5NmF9QbpIqXwWzTWnYbu1mbWslrH
+   xmI8ztd0nG/oBddQsNPRP3SkqTSV7+zDJS+ROCeQ4zRLNPCMc2CmLIdOy
+   nB8bvwxrDfYdp3KK0hzowcyCeNxcttzubHzDgDpEIX5YKCWRJrVYBtjik
+   Jyr1bu72a94kZRDmW9SSkif4Y1uk6BI0QUALPsLheks72ft87ndsL76kk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="356880629"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="356880629"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 02:53:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="740700618"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="740700618"
+Received: from okozlyk-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.249.44.17])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 02:53:52 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+Cc:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v5 0/8] selftests/resctrl: Rework benchmark command handling
+Date:   Mon,  4 Sep 2023 12:53:31 +0300
+Message-Id: <20230904095339.11321-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-pmu_events_table__find() is no longer used so remove it and its Arm
-specific version.
+The benchmark command handling (-b) in resctrl selftests is overly
+complicated code. This series turns the benchmark command immutable to
+preserve it for all selftests and improves benchmark command related
+error handling.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: James Clark <james.clark@arm.com>
----
- tools/perf/arch/arm64/util/pmu.c | 10 ----------
- tools/perf/util/pmu.c            |  5 -----
- tools/perf/util/pmu.h            |  1 -
- 3 files changed, 16 deletions(-)
+This series also ends up removing the strcpy() calls which were pointed
+out earlier.
 
-diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
-index 3099f5f448ba..2a4eab2d160e 100644
---- a/tools/perf/arch/arm64/util/pmu.c
-+++ b/tools/perf/arch/arm64/util/pmu.c
-@@ -24,16 +24,6 @@ const struct pmu_metrics_table *pmu_metrics_table__find(void)
- 	return NULL;
- }
- 
--const struct pmu_events_table *pmu_events_table__find(void)
--{
--	struct perf_pmu *pmu = perf_pmus__find_core_pmu();
--
--	if (pmu)
--		return perf_pmu__find_events_table(pmu);
--
--	return NULL;
--}
--
- double perf_pmu__cpu_slots_per_cycle(void)
- {
- 	char path[PATH_MAX];
-diff --git a/tools/perf/util/pmu.c b/tools/perf/util/pmu.c
-index 0a4080ca7949..311195e9688a 100644
---- a/tools/perf/util/pmu.c
-+++ b/tools/perf/util/pmu.c
-@@ -775,11 +775,6 @@ char *perf_pmu__getcpuid(struct perf_pmu *pmu)
- 	return cpuid;
- }
- 
--__weak const struct pmu_events_table *pmu_events_table__find(void)
--{
--	return perf_pmu__find_events_table(NULL);
--}
--
- __weak const struct pmu_metrics_table *pmu_metrics_table__find(void)
- {
- 	return perf_pmu__find_metrics_table(NULL);
-diff --git a/tools/perf/util/pmu.h b/tools/perf/util/pmu.h
-index 45079f26abf6..4b9386534d2a 100644
---- a/tools/perf/util/pmu.h
-+++ b/tools/perf/util/pmu.h
-@@ -238,7 +238,6 @@ void pmu_add_cpu_aliases_table(struct perf_pmu *pmu,
- 			       const struct pmu_events_table *table);
- 
- char *perf_pmu__getcpuid(struct perf_pmu *pmu);
--const struct pmu_events_table *pmu_events_table__find(void);
- const struct pmu_metrics_table *pmu_metrics_table__find(void);
- 
- int perf_pmu__convert_scale(const char *scale, char **end, double *sval);
+v5:
+- Fix another off-by-one error
+- Reorder local var declarations in main() to follow rev. xmas tree
+
+v4:
+- Correct off-by-one error in -b processing
+- Reordered code in main() to make freeing span_str simpler (in new patch)
+- Use consistent style for const char * const *
+
+v3:
+- Removed DEFAULT_SPAN_STR for real and the duplicated copy of defines
+  that made to v2 likely due to my incorrect conflict resolutions
+
+v2:
+- Added argument length check into patch 1/7
+- Updated also -b line in help message.
+- Document -b argument related "algorithm"
+- Use asprintf() to convert defined constant int to string
+- Improved changelog texts
+- Added \n to ksft_exit_fail_msg() call messages.
+- Print DEFAULT_SPAN with %u instead of %zu to avoid need to cast it
+
+Ilpo Järvinen (8):
+  selftests/resctrl: Ensure the benchmark commands fits to its array
+  selftests/resctrl: Correct benchmark command help
+  selftests/resctrl: Remove bw_report and bm_type from main()
+  selftests/resctrl: Simplify span lifetime
+  selftests/resctrl: Reorder resctrl FS prep code and benchmark_cmd init
+  selftests/resctrl: Make benchmark command const and build it with
+    pointers
+  selftests/resctrl: Remove ben_count variable
+  selftests/resctrl: Cleanup benchmark argument parsing
+
+ tools/testing/selftests/resctrl/cache.c       |   5 +-
+ tools/testing/selftests/resctrl/cat_test.c    |  13 +--
+ tools/testing/selftests/resctrl/cmt_test.c    |  34 ++++--
+ tools/testing/selftests/resctrl/mba_test.c    |   4 +-
+ tools/testing/selftests/resctrl/mbm_test.c    |   7 +-
+ tools/testing/selftests/resctrl/resctrl.h     |  16 +--
+ .../testing/selftests/resctrl/resctrl_tests.c | 100 ++++++++----------
+ tools/testing/selftests/resctrl/resctrl_val.c |  10 +-
+ 8 files changed, 104 insertions(+), 85 deletions(-)
+
 -- 
-2.34.1
+2.30.2
 
