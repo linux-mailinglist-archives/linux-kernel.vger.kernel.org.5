@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A94DA791E34
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 22:26:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73CE7791E36
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 22:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237757AbjIDU0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 16:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
+        id S237909AbjIDU05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 16:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbjIDU0M (ORCPT
+        with ESMTP id S229942AbjIDU0x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 16:26:12 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFA2180;
-        Mon,  4 Sep 2023 13:26:08 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52c88a03f99so2244889a12.2;
-        Mon, 04 Sep 2023 13:26:08 -0700 (PDT)
+        Mon, 4 Sep 2023 16:26:53 -0400
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C6CD180
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 13:26:50 -0700 (PDT)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-59231a1ca9eso17195257b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 13:26:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693859167; x=1694463967; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=lXnvIlMPp5u/cZPb67xk/RAZDHLqGyudVRdveB/ZbLY=;
-        b=Jigp5HdRo5+dvn+3nrGbwpV9iJemIs+qY9eznh8FztFQUQRCBWOkhguUSUVKyeLzpq
-         zlTV1SgTLi7vHpn+mVHvm/AUPCIf2YGJrl5522epfg9noakMNR/IlRP+KF0IYiscv/FG
-         sZ6U0UENtgfvnrFyD3ggg7WK3dll1+KYeDSJhEsr/yelWv4UUItmzyC0pmckrwKDT2VE
-         Yomq/dEGL4q6dFo+leG1tqSysRgoVS/SP9mUHP0ZzyO3GduhPUX6U429tAVLOH0osFS0
-         IuB7ElyV7t7DGMUbf45nFUWtMYSYUXLzy5bnTWHyNXbF6f2QwApbic8yW5EkLbAmcQYL
-         CZ6Q==
+        d=linaro.org; s=google; t=1693859209; x=1694464009; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zOPCv2NI+axDv4gb4abMd4AMNhAMpkyYYjA0xE2SSU0=;
+        b=DQtAgI9LUBkGSB34l/x/5tq0yeU19UmqOjF8QJ0Mc/XD3KBqRTBy/EHl44jjHfrIWm
+         ynOLQWBLj8B9LB3qVXdSDw6EYECAc/0KD/HjyUqP+qcrOJMZpSjqgov9U0jMyxlGe1uW
+         2MtMeCCX5K1DlMo9Vicx1eeqJ5moWdIooo1rjrmUi8zr1WNG+pzUPYtjJk/4U2hzz5E+
+         f3usUBIUGUvE9fBu4lGu60dDE+sIkCmsW7+AM9l0qmnWCC/KayqwxdTmW5O5tMuJ9cZ6
+         JOmZ8jz95U32Vmrj/P550LybSuEj+O29wTi1XQexKjsm+j8pGq20ksBIThCG9YLndkd8
+         QSxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693859167; x=1694463967;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lXnvIlMPp5u/cZPb67xk/RAZDHLqGyudVRdveB/ZbLY=;
-        b=KW2KKc/ADath6/N2qZZRwrFM2PLiJGJR0kKZHAqIHAfnhb7Mz73NrnwaUJvUStXHmc
-         6/HehYDhjGtk+DIrdnkBoXsPnYb77AZfs05wn5EwfqDj9/mKEvwXHo1iyxCeXSnEkeNs
-         ySSFADlqhDF5XHYSe4Zj0jw1Tua32wSFnsT+kS9H+0nuZlc7BM//0s2PXs5aW+jQuKA5
-         RGLy4fUpUVg+cTxlqh/WoQrcHfOVxtnedLEPOd6/ffQRdIrsLs9h13PNHBJ8j6L3Pbto
-         W9iaEo5bQNHzcEYyJVRmTeCrDtfEQvuTuUh+NKF0jfGaJXDLOrWi63AtQYjMghUJ58ZP
-         fNEw==
-X-Gm-Message-State: AOJu0Yxjd6sjHK951X448HgdkPAi0SMw22Bonj3Bu+0DpbixsIgjrLIm
-        POf0Qjm1j9J1AmbkTAwcwgoX931E29JvjWzK8TTQZEEtZEY=
-X-Google-Smtp-Source: AGHT+IG24dlXnnwhnhpbMLq5+johSI+3gKyPXR6QUWW8K2AHBtDt2PqcyJvBc46enRBKemtJkuc0SY2C/ykw4EP+1YE=
-X-Received: by 2002:a05:6402:5159:b0:52a:943:9ab5 with SMTP id
- n25-20020a056402515900b0052a09439ab5mr8010894edd.31.1693859166815; Mon, 04
- Sep 2023 13:26:06 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693859209; x=1694464009;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zOPCv2NI+axDv4gb4abMd4AMNhAMpkyYYjA0xE2SSU0=;
+        b=LW9RwbMZxptKAI/iBBwvGMtencX1JXGUdd+ANdjR/ezgR2pXohF3iY8bPAy03OCdoS
+         3uE6WPPraand4lJvCIOPM0HJOTRyw08CDCd2GuASFHMfRoZkl828dKEEos4mK6hFBISL
+         ZLdthUIn10bMpDCxAnrs8TLYq6ajuIad2LYZ+5F0UgVaPcO4gN0/NF9Ji5iLpXkIz2a5
+         5bUmg3jlqMMRATHgRw/QUxLxqjAQBF2shFJWJUD/+v9l8t1WcJphcGsrEKaAWCrQO0Tu
+         8+M9sa9DV1InEjotrAfZfAkqSekF+HNVDnpkZYH3AFsZVzy/PhPlb8u13TegBhq0v4Fw
+         +4iQ==
+X-Gm-Message-State: AOJu0YxMrl2eGcIXmsPfZf7mGGqwUBK+FH6RDAptmXvzNBLo92/KBvGA
+        wDcsYwAY0S/HlITnKiS5AJq5KW/aSJCVF9UvxSrSxw==
+X-Google-Smtp-Source: AGHT+IGYxkclG89PUKOkDm67cPaVgl3DF1XdYgrU2viuEanv3N60lpWFmpZI/6uf+KY5yjj97vqPkmRPUzx+tp+//GE=
+X-Received: by 2002:a25:40d:0:b0:d78:4638:d52c with SMTP id
+ 13-20020a25040d000000b00d784638d52cmr10982720ybe.34.1693859209653; Mon, 04
+ Sep 2023 13:26:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <88ffb216-96f9-f232-7fe5-48bf82e6aa70@gmail.com>
-In-Reply-To: <88ffb216-96f9-f232-7fe5-48bf82e6aa70@gmail.com>
-From:   brett hassall <brett.hassall@gmail.com>
-Date:   Tue, 5 Sep 2023 06:25:55 +1000
-Message-ID: <CANiJ1U9-2zfc5aJJUaYnTBTg+2vMjcfgsuxcFFnn+CjVQ1fCoA@mail.gmail.com>
-Subject: Re: upstream linux cannot achieve package C8 power saving
-To:     Bagas Sanjaya <bagasdotme@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ajay Agarwal <ajayagarwal@google.com>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Vidya Sagar <vidyas@nvidia.com>,
-        Michael Bottini <michael.a.bottini@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Linux Power Management <linux-pm@vger.kernel.org>
+References: <20230904114621.4457-1-wangweidong.a@awinic.com>
+ <20230904114621.4457-4-wangweidong.a@awinic.com> <5ea76d3f-c9dd-10f5-4f9a-7b32b535ab5c@linaro.org>
+ <598febde-429e-4319-98d4-4306a7f8bfe8@sirena.org.uk> <0360d279-b535-f3f2-9651-07dff2df2e37@linaro.org>
+In-Reply-To: <0360d279-b535-f3f2-9651-07dff2df2e37@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Mon, 4 Sep 2023 22:26:38 +0200
+Message-ID: <CACRpkdbWE3enEjweZZQSQpdUDvCPXxQZfzOReS9YvZ2mxmevAg@mail.gmail.com>
+Subject: Re: [PATCH V1 3/3] ASoC: codecs: Add aw87390 amplifier driver
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Mark Brown <broonie@kernel.org>, wangweidong.a@awinic.com,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
+        herve.codina@bootlin.com, shumingf@realtek.com,
+        rdunlap@infradead.org, 13916275206@139.com, ryans.lee@analog.com,
+        ckeepax@opensource.cirrus.com, yijiangtao@awinic.com,
+        liweilei@awinic.com, colin.i.king@gmail.com, trix@redhat.com,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zhangjianming@awinic.com
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-I contacted the Ubuntu developers to see if they were ok with using
-their patches.
-
-They advised the patches were outdated and further development was
-under discussion.
-
-The current patches work and would benefit Linux users until something
-better comes along.
-
-Would you like me to proceed with the formal patch still ?
-
-Thanks
-Brett
-
-
-On Wed, 30 Aug 2023 at 11:11, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->
-> Hi,
->
-> I notice a bug report on Bugzilla [1]. Quoting from it:
->
-> > v6.5 (and at least v5.15, v5.19 and v6.4 as well) will not go to a higher power saving level than package C3.
+On Mon, Sep 4, 2023 at 3:02=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+> On 04/09/2023 14:30, Mark Brown wrote:
+> > On Mon, Sep 04, 2023 at 02:17:43PM +0200, Krzysztof Kozlowski wrote:
+> >> On 04/09/2023 13:46, wangweidong.a@awinic.com wrote:
 > >
-> > With the inclusion of a patch that combines 3 Ubuntu commits related to VMD ASPM & LTR, package C8 is used.
+> >>> +   ret =3D regmap_read(regmap, AW87390_ID_REG, &chip_id);
+> >>> +   if (ret) {
+> >>> +           dev_err(&i2c->dev, "%s read chipid error. ret =3D %d\n", =
+__func__, ret);
+> >>> +           return ret;
+> >>> +   }
+> >
+> >>> +   if (chip_id !=3D AW87390_CHIP_ID) {
+> >>> +           dev_err(&i2c->dev, "unsupported device\n");
+> >
+> >> Why? The compatible tells it cannot be anything else.
+> >
+> > This is very common good practice, as well as validating communication
 >
-> See Bugzilla for the full thread.
+> No, it is neither common nor good. The kernel's job is not to verify the
+> supplied DTS. Rob also made here a point:
 >
-> FYI, the attached proposed fix is the same as Brett's another BZ report [2].
-> I include it for upstreaming.
->
-> To Brett: Would you like to submit the proper, formal patch (see
-> Documentation/process/submitting-patches.rst for details)?
->
-> Thanks.
->
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217841
-> [2]: https://bugzilla.kernel.org/show_bug.cgi?id=217828
->
-> --
-> An old man doll... just what I always wanted! - Clara
+> https://lore.kernel.org/all/CAL_Jsq+wcrOjh7+0c=3Dmrg+Qz6dbhOUE-VEeQ4FoWC3=
+Y7ENoyfQ@mail.gmail.com/
+
+I disagree, if a vendor one day decides to mount a new version of a
+component without notifying the community or users this is really
+helpful.
+
+The function is named "probe()" for a reason, as in "inspect
+the hardware and see what we find" this has always been the case
+I think.
+
+Yours,
+Linus Walleij
