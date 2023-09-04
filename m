@@ -2,134 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E978A79113E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB693791145
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351864AbjIDGJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 02:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33562 "EHLO
+        id S1352310AbjIDGO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 02:14:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232856AbjIDGJJ (ORCPT
+        with ESMTP id S232856AbjIDGO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 02:09:09 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CB6DE;
-        Sun,  3 Sep 2023 23:09:05 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-573675e6b43so827189eaf.0;
-        Sun, 03 Sep 2023 23:09:05 -0700 (PDT)
+        Mon, 4 Sep 2023 02:14:58 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2DCE6
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 23:14:33 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-68bed286169so917291b3a.1
+        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 23:14:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693807745; x=1694412545; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ow7q3YrPUF4rmCouRThEW+Kvbo87wf7uRShpFG7WQ+4=;
-        b=FTZZzQ1hkqNqlxHjwmumOCgG1LSPjmRGg1sCovIgjoBwBBISpkW8gcxD+6GvcoAGlC
-         BgYhLrGHrAnVrHDWvoXN7QpFfL3nqPhUAtVJNQLaqZXBrV7WwIqJasgwDdxrvWVxw5vV
-         V29D709GadLFeZIkZZkdO71uGsUSTqjw4t+vZVb50qlUrDFz69OaHsPdU+iiTOflQ4av
-         3Gg6k2clDbTr5YDTXeZ7WWkKTZZ0jgxnO5sRbiTGu7UChWZ3TIuQ/ZljGX0MuwVzcPB9
-         3tfDmv4mfHyGmsK+XVMjqPbfGfWYBjHTHuauZrZnWzY7rYPmPO1dIT+nhfnatyUBTxSI
-         r7tA==
+        d=bytedance.com; s=google; t=1693808072; x=1694412872; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0Ypb7k0otVq6eC7pO2i8Tc3phnCnFLJFKEC4oYPS6f4=;
+        b=aU9O6akGj0opOUTWEd+bjgBO1naPwY+pZ9oJMGndA9/FUTOshu3h6k8aH1iAGcpODh
+         /WIWevO4Lz2gTcIXHtnXcvrU3Bd+kWwSFB5jwXWhMV4ilXr649G9lMuDFBGbRqoke5lp
+         qrcPJ4PENTYNP920wMq/Rbyk9SBbkETCtwETod/7NNRRQxPfjLUvCJg7nsZTAps1jkfI
+         TIhoSEzeVTlrJK7OXFBfNRV5u7Kce7TVITNgiqhpZzrGZOtIz6beVP5C/lVN7l3JMbbu
+         irS8GyizEmpc/XC3uk2syscrthJQJyZF6F0IvKcduwU+rG/nCnHyGS+dEE0uC2QKlmuj
+         gHGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693807745; x=1694412545;
-        h=cc:to:subject:message-id:date:from:references:in-reply-to
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20221208; t=1693808072; x=1694412872;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Ow7q3YrPUF4rmCouRThEW+Kvbo87wf7uRShpFG7WQ+4=;
-        b=Et25eOHzcZNJ+/S8BzPJ90I+dycnRpx7b+m1mpRxenVd2Dyl2tA3mzZk6sxgmuBZSM
-         bImYqCnp3Jirl2DE8x3JkbwyqQYw0cfGVQttGvMKaA4u39OUtrEafbYdWQ91R64BRcEP
-         xqx4jG93eKr3yG1+Ic1t6DaYESwIkgqLo6lkQHrMIKlGWGGweLV1pVHY4BGbKfS7972F
-         LZ/t7dukjW5enCAW/DNOtNyiDIrlWb6gghD1KUw6PWXdRsZn+3cAF3FvKLiDAL4Rt098
-         /ZJ4cXHJHJUmnhzVYmv86Sagpwpx603We/9UY5nLO64hUpZn45DsMp2AgO3aQsdT8s6l
-         nuig==
-X-Gm-Message-State: AOJu0YxAJXHePUmtuI62yIQq0E3Xomw9j/6vPuObOiqgDx7V3KIORktj
-        D8KWY26TmqFCsgqqGfURfz4HRxJPDHCLEnwp73o=
-X-Google-Smtp-Source: AGHT+IG3nFFAktlP9gmDSjBy/AiFL1SeCq2TBV9/SIjBnmsOMwtrgoMqg4CTLO3DAnZc3DUpprjq7FXCKzDH/DjnUXw=
-X-Received: by 2002:a4a:8089:0:b0:56e:466c:7393 with SMTP id
- z9-20020a4a8089000000b0056e466c7393mr7339052oof.5.1693807745127; Sun, 03 Sep
- 2023 23:09:05 -0700 (PDT)
+        bh=0Ypb7k0otVq6eC7pO2i8Tc3phnCnFLJFKEC4oYPS6f4=;
+        b=JlqtuPgvbPWVlix6dONm50JQkizizqnN8PZHobmFAbKUAsvGsmKbh+GnqL2gf9kt9T
+         nDHsBj3x/pV0EK9ehZN4mpGmVyEaT5EN9gbgWNC3L2nUSIiYu9MsHSwVOtjy46taJpW7
+         pdOU6+sDhXP6nY7XES3kA7djiY3HcRS3h8RDYo682JUifpxw4Z9wAYYZMsqlSFc2AJj4
+         lvvmR8f5s1xSFL338ZFhEZWnk1AnF4NHZ3YM8FqZbFe/LhemGDCBAz7GZZ3I1Bbv5mj6
+         4b+9xJkM0DGLlhW0IL6Fx2yVGa36BOQXz09z0NZQlEa472tNnsr+eLuHKjAXgPgtrDI2
+         vn/g==
+X-Gm-Message-State: AOJu0YzO+8PPaOr572DQxzr9HuU5B93VDr436Acxa5LaAkWYZ7U5UCXg
+        mPe1QgE0Jp+kTviv6EeG7j1xCw==
+X-Google-Smtp-Source: AGHT+IFnnyXtaTN3uKtZijN84zL4eh2k0aLZkCYLJYhH1so77+cHFDePDfPC0UKfIzFEmDTPSxa/Hg==
+X-Received: by 2002:a05:6a21:3299:b0:138:2fb8:6b42 with SMTP id yt25-20020a056a21329900b001382fb86b42mr13014430pzb.14.1693808072551;
+        Sun, 03 Sep 2023 23:14:32 -0700 (PDT)
+Received: from always-x1.bytedance.net ([61.213.176.10])
+        by smtp.gmail.com with ESMTPSA id x52-20020a056a000bf400b006889348ba6esm6573542pfu.127.2023.09.03.23.14.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 03 Sep 2023 23:14:31 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     mst@redhat.com, jasowang@redhat.com, axboe@kernel.dk
+Cc:     xuanzhuo@linux.alibaba.com,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, zhenwei pi <pizhenwei@bytedance.com>
+Subject: [PATCH] virtio-blk: fix implicit overflow on virtio_max_dma_size
+Date:   Mon,  4 Sep 2023 14:10:45 +0800
+Message-Id: <20230904061045.510460-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Received: by 2002:a8a:60c:0:b0:4f0:1250:dd51 with HTTP; Sun, 3 Sep 2023
- 23:09:04 -0700 (PDT)
-In-Reply-To: <20230904032658.GA701295@mit.edu>
-References: <000000000000e6432a06046c96a5@google.com> <ZPQYyMBFmqrfqafL@dread.disaster.area>
- <20230903083357.75mq5l43gakuc2z7@f> <ZPUIQzsCSNlnBFHB@dread.disaster.area>
- <20230903231338.GN3390869@ZenIV> <ZPU2n48GoSRMBc7j@dread.disaster.area> <20230904032658.GA701295@mit.edu>
-From:   Mateusz Guzik <mjguzik@gmail.com>
-Date:   Mon, 4 Sep 2023 08:09:04 +0200
-Message-ID: <CAGudoHGtPOj-HpA25nAkQFmth0F=6WpMFbaqSuu+b34vd243SQ@mail.gmail.com>
-Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>,
-        brauner@kernel.org, djwong@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
-        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
-        trix@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/23, Theodore Ts'o <tytso@mit.edu> wrote:
-> On Mon, Sep 04, 2023 at 11:45:03AM +1000, Dave Chinner wrote:
->> Entirely possible - this is syzbot we are talking about here.
->> Especially if reiser or ntfs has been tested back before the logs we
->> have start, as both are known to corrupt memory and/or leak locks
->> when trying to parse corrupt filesystem images that syzbot feeds
->> them.  That's why we largely ignore syzbot reports that involve
->> those filesystems...
->>
->> Unfortunately, the logs from what was being done around when the
->> tasks actually hung are long gone (seems like only the last 20-30s
->> of log activity is reported) so when the hung task timer goes off
->> at 143s, there is nothing left to tell us what might have caused it.
->>
->> IOWs, it's entirely possible that it is a memory corruption that
->> has resulted in a leaked lock somewhere...
->
-> ... and this is why I ignore any syzbot report that doesn't have a C
-> reproducer.  Life is too short to waste time with what is very likely
-> syzbot noise....  And I'd much rather opt out of the gamification of
-> syzbot dashboards designed to use dark patterns to guilt developers to
-> work on "issues" that very likely have no real impact on real life
-> actual user impact, if it might cause developers and maintainers to
-> burn out and quit.
->
-> Basically, if syzbot won't prioritize things for us, it's encumbent on
-> us to prioritize things for our own mental health.  And so syzbot
-> issues without a real reproducer are very low on my priority list; I
-> have things I can work on that are much more likely to make real world
-> impact.  Even ones that have a real reproducer, there are certain
-> classes of bugs (e.g., "locking bugs" that require a badly corrupted
-> file system, or things that are just denial of service attacks if
-> you're too stupid to insert a USB thumb drive found in a parking lock
-> --- made worse by GNOME who has decided to default mount any random
-> USB thumb drive inserted into a system, even a server system that has
-> GNOME installed, thanks to some idiotic decision made by some random
-> Red Hat product manager), that I just ignore because I don't have
-> infinite amounts of time to coddle stupid Red Hat distro tricks.
->
+The following codes have an implicit conversion from size_t to u32:
+(u32)max_size = (size_t)virtio_max_dma_size(vdev);
 
-Hello everyone.
+This may lead overflow, Ex (size_t)4G -> (u32)0. Once
+virtio_max_dma_size() has a larger size than U32_MAX, use U32_MAX
+instead.
 
-When I first stumbled upon this report I was almost completely
-oblivious to syzbot vs fsdevel -- I only knew you guys are not fond of
-ntfs reports, which made sense but was not indicating there are much
-bigger issues.
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+---
+ drivers/block/virtio_blk.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Given this and other responses I poked around the history and that
-made it apparent there are long-standing non-technical problems going
-here, none of which I intend to deal with.
-
-That is to say I'm bailing from this thread.
-
-Cheers and sorry for poking the nest,
+diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+index 1fe011676d07..4a4b9bad551e 100644
+--- a/drivers/block/virtio_blk.c
++++ b/drivers/block/virtio_blk.c
+@@ -1313,6 +1313,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	u16 min_io_size;
+ 	u8 physical_block_exp, alignment_offset;
+ 	unsigned int queue_depth;
++	size_t max_dma_size;
+ 
+ 	if (!vdev->config->get) {
+ 		dev_err(&vdev->dev, "%s failure: config access disabled\n",
+@@ -1411,7 +1412,8 @@ static int virtblk_probe(struct virtio_device *vdev)
+ 	/* No real sector limit. */
+ 	blk_queue_max_hw_sectors(q, UINT_MAX);
+ 
+-	max_size = virtio_max_dma_size(vdev);
++	max_dma_size = virtio_max_dma_size(vdev);
++	max_size = max_dma_size > U32_MAX ? U32_MAX : max_dma_size;
+ 
+ 	/* Host can optionally specify maximum segment size and number of
+ 	 * segments. */
 -- 
-Mateusz Guzik <mjguzik gmail.com>
+2.34.1
+
