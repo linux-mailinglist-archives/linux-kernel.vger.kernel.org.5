@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6F17917B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645B57917C1
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:05:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351276AbjIDNCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60736 "EHLO
+        id S1352994AbjIDNFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:05:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56028 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231233AbjIDNCi (ORCPT
+        with ESMTP id S231233AbjIDNFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:02:38 -0400
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3012890
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 06:02:35 -0700 (PDT)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so2000847a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 06:02:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693832553; x=1694437353; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sP6V8ajHXT6yKSyr1cE3yHGsY7qGhYago0ofT+AYzCU=;
-        b=oIPBCOkpynMe4LI3jrgaBTVWEUniZCs3hag/J8B24KzWxfknrl9FCot0wHBkR3C75c
-         wXkZBNIW5t44y/61RIZHi0BQFo0GFdLbIKfzOZVSkgR+hnw3ooWceobVq/LQJadHM1q0
-         1aMo5tpRJO9M5hXgd6J8UTAjdB+VuCboWFGsRLr91t5ovVWwWkChvNGVQpu2qbiAqSBV
-         B3kuoPg08+WCydeUo8zE6tyeOC7xqWnhrgVsH0MC4LO1sLPQpCchyYxV20APAni5qhDx
-         fj+X1V46P47WtnBbpnwz/UhvXwJCfs+eSr5FzWYmjN8ZxFGDfeHmBQ7J2pP833nSPAAC
-         2PSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693832553; x=1694437353;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sP6V8ajHXT6yKSyr1cE3yHGsY7qGhYago0ofT+AYzCU=;
-        b=bLPY2mM1w1IisSEiA4iJWDMcOcI4t7eSOVrr65fGIn4o/KvtoB1M33Gj0/5HPQdU+0
-         fSssT/Jg3lg5NhvqRj9sChUnq7f3DCJZ5oeQg8oDeSH8LG1nAYvJyquTj14+Xzttl+ni
-         9JxcMkJ6RkZSAa2iFNM00c/bP7CFP0wC7dl/GJ+mDuspzUx6cHajK1LsWHHnW7ndALCy
-         SGzdXrsXunOrOhdG8pN1yADm0rlbwy7add1fuDJwQGJkW67kOC0E7oBfOMT4GWKjYnUS
-         A/QhaJvF0OUbOYEuYLn+mjOPFHmyEJwfxCD7aToeERSyfiM2xePAyGhSRg5OdSEbsgFQ
-         7Z3Q==
-X-Gm-Message-State: AOJu0Yx+t1B/8IcwadjffwEJ/l4LBFCRkhFBUXOd409m+uVzIYHELQcp
-        91SfuvKTka+5dquIjrK/cetDjg==
-X-Google-Smtp-Source: AGHT+IEJBeHsLqYueJWcEkffCP4VVC/CZWWv9130Yc9xYYY+tD0WJm6tOAoS2L8e8K1eUs77UXHirg==
-X-Received: by 2002:a05:6402:b30:b0:523:4057:fa6e with SMTP id bo16-20020a0564020b3000b005234057fa6emr5866008edb.42.1693832553657;
-        Mon, 04 Sep 2023 06:02:33 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id x26-20020aa7d39a000000b005257f2c057fsm5839006edq.33.2023.09.04.06.02.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 06:02:32 -0700 (PDT)
-Message-ID: <0360d279-b535-f3f2-9651-07dff2df2e37@linaro.org>
-Date:   Mon, 4 Sep 2023 15:02:31 +0200
+        Mon, 4 Sep 2023 09:05:36 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762FD136;
+        Mon,  4 Sep 2023 06:05:32 -0700 (PDT)
+Received: from dggpemm500012.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RfTLX0QnDz1DDZr;
+        Mon,  4 Sep 2023 21:02:12 +0800 (CST)
+Received: from [10.67.120.108] (10.67.120.108) by
+ dggpemm500012.china.huawei.com (7.185.36.89) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 4 Sep 2023 21:05:29 +0800
+Message-ID: <6408e1c5-df6a-e257-26c8-2d100be6db97@huawei.com>
+Date:   Mon, 4 Sep 2023 21:05:29 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH V1 3/3] ASoC: codecs: Add aw87390 amplifier driver
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>
-Cc:     wangweidong.a@awinic.com, lgirdwood@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        perex@perex.cz, tiwai@suse.com, rf@opensource.cirrus.com,
-        herve.codina@bootlin.com, shumingf@realtek.com,
-        rdunlap@infradead.org, 13916275206@139.com, ryans.lee@analog.com,
-        linus.walleij@linaro.org, ckeepax@opensource.cirrus.com,
-        yijiangtao@awinic.com, liweilei@awinic.com, colin.i.king@gmail.com,
-        trix@redhat.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhangjianming@awinic.com
-References: <20230904114621.4457-1-wangweidong.a@awinic.com>
- <20230904114621.4457-4-wangweidong.a@awinic.com>
- <5ea76d3f-c9dd-10f5-4f9a-7b32b535ab5c@linaro.org>
- <598febde-429e-4319-98d4-4306a7f8bfe8@sirena.org.uk>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <598febde-429e-4319-98d4-4306a7f8bfe8@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.1
+Subject: Re: [PATCH v5 3/3] scsi: qla2xxx: Use DEFINE_SHOW_STORE_ATTRIBUTE
+ helper for debugfs
+Content-Language: en-CA
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+CC:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
+        <john.g.garry@oracle.com>, <damien.lemoal@opensource.wdc.com>,
+        <akpm@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
+        <himanshu.madhani@cavium.com>, <felipe.balbi@linux.intel.com>,
+        <gregkh@linuxfoundation.org>, <uma.shankar@intel.com>,
+        <anshuman.gupta@intel.com>, <animesh.manna@intel.com>,
+        <linux-usb@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <prime.zeng@hisilicon.com>, <kangfenglong@huawei.com>,
+        <chenxiang66@hisilicon.com>
+References: <20230904084804.39564-1-yangxingui@huawei.com>
+ <20230904084804.39564-4-yangxingui@huawei.com>
+ <ZPW39NRmd0Z0WRwW@smile.fi.intel.com>
+From:   yangxingui <yangxingui@huawei.com>
+In-Reply-To: <ZPW39NRmd0Z0WRwW@smile.fi.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.67.120.108]
+X-ClientProxiedBy: dggpemm500022.china.huawei.com (7.185.36.162) To
+ dggpemm500012.china.huawei.com (7.185.36.89)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/09/2023 14:30, Mark Brown wrote:
-> On Mon, Sep 04, 2023 at 02:17:43PM +0200, Krzysztof Kozlowski wrote:
->> On 04/09/2023 13:46, wangweidong.a@awinic.com wrote:
+
+
+On 2023/9/4 18:56, Andy Shevchenko wrote:
+> On Mon, Sep 04, 2023 at 08:48:04AM +0000, Xingui Yang wrote:
+>> Use DEFINE_SHOW_STORE_ATTRIBUTE helper for read-write file to reduce some
+>> duplicated code and delete unused macros.
 > 
->>> +	ret = regmap_read(regmap, AW87390_ID_REG, &chip_id);
->>> +	if (ret) {
->>> +		dev_err(&i2c->dev, "%s read chipid error. ret = %d\n", __func__, ret);
->>> +		return ret;
->>> +	}
+>> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+>> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
 > 
->>> +	if (chip_id != AW87390_CHIP_ID) {
->>> +		dev_err(&i2c->dev, "unsupported device\n");
+> Same comments as per previous patch.
 > 
->> Why? The compatible tells it cannot be anything else.
+> ...
 > 
-> This is very common good practice, as well as validating communication
+>> -/*
+>> - * Helper macros for setting up debugfs entries.
+>> - * _name: The name of the debugfs entry
+>> - * _ctx_struct: The context that was passed when creating the debugfs file
+>> - *
+>> - * QLA_DFS_SETUP_RD could be used when there is only a show function.
+>> - * - show function take the name qla_dfs_<sysfs-name>_show
+>> - *
+>> - * QLA_DFS_SETUP_RW could be used when there are both show and write functions.
+>> - * - show function take the name  qla_dfs_<sysfs-name>_show
+>> - * - write function take the name qla_dfs_<sysfs-name>_write
+>> - *
+>> - * To have a new debugfs entry, do:
+>> - * 1. Create a "struct dentry *" in the appropriate structure in the format
+>> - * dfs_<sysfs-name>
+>> - * 2. Setup debugfs entries using QLA_DFS_SETUP_RD / QLA_DFS_SETUP_RW
+>> - * 3. Create debugfs file in qla2x00_dfs_setup() using QLA_DFS_CREATE_FILE
+>> - * or QLA_DFS_ROOT_CREATE_FILE
+>> - * 4. Remove debugfs file in qla2x00_dfs_remove() using QLA_DFS_REMOVE_FILE
+>> - * or QLA_DFS_ROOT_REMOVE_FILE
+>> - *
+>> - * Example for creating "TEST" sysfs file:
+>> - * 1. struct qla_hw_data { ... struct dentry *dfs_TEST; }
+>> - * 2. QLA_DFS_SETUP_RD(TEST, scsi_qla_host_t);
+>> - * 3. In qla2x00_dfs_setup():
+>> - * QLA_DFS_CREATE_FILE(ha, TEST, 0600, ha->dfs_dir, vha);
+>> - * 4. In qla2x00_dfs_remove():
+>> - * QLA_DFS_REMOVE_FILE(ha, TEST);
+>> - */
+> 
+> I believe this comment (in some form) has to be preserved.
+> Try to rewrite it using reference to the new macro.
+Thanks for your reply, I checked and these macros aren't being called 
+anywhere else, so I decided to delete them all. Of course, maybe this 
+macro will be used in the future, and I can resubmit another version 
+based on your suggestion.
 
-No, it is neither common nor good. The kernel's job is not to verify the
-supplied DTS. Rob also made here a point:
-
-https://lore.kernel.org/all/CAL_Jsq+wcrOjh7+0c=mrg+Qz6dbhOUE-VEeQ4FoWC3Y7ENoyfQ@mail.gmail.com/
-
-> with the device it verifies that the device descrbied in the DT is the
-> one that is actually present in the system.  This might create hassle
-> down the line if there is a backwards compatible upgrade but that's much
-> rarer for this class of hardware than cut'n'pasting of device trees.
-
-Best regards,
-Krzysztof
-
+Thanks.
+Xingui
+> 
+> Otherwise looks good to me.
+> 
