@@ -2,54 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728F3791E30
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 22:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94DA791E34
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 22:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237612AbjIDUZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 16:25:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        id S237757AbjIDU0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 16:26:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229942AbjIDUZ0 (ORCPT
+        with ESMTP id S229942AbjIDU0M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 16:25:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7887D180;
-        Mon,  4 Sep 2023 13:25:23 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1FC36B80EF3;
-        Mon,  4 Sep 2023 20:25:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44BF1C433C7;
-        Mon,  4 Sep 2023 20:25:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693859120;
-        bh=FggEjww8QLUdp3IBCOYDhk1zkN5RqlHJMWAdvJShDWU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=nwRBsmkdIJ43xdekdMc+FujCPaOJ7nqYNk80tqvl8+gXsgUekwBvvk+pOXoGPnXZz
-         Oscw8NHbpYfzJlkMeGLkMCyMovS+BlYYHCaSS0CkdN3dY3zUVbrqbcMrvApPfceRbs
-         s2Kckcz2VMHzDOd1wQzMoBXwH9sl+AyVgoJ2jednZEs+NsV4D7ybPu6Xjl3GXNcCsy
-         Mo2T2HCAbesC6/3UIHQ7FfuUOt8XORL/NjVvOmE7YyayOFEvoWup17iTkwkxABWxnR
-         zEP6KYUxDzeERlcD9X+kFtHooMOtwXPkd2lpqcBbWFzoSlyJjUNi/BbRMaXfr/SuZG
-         zoXQT9kbXNAZA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jarkko Sakkinen <jarkko@kernel.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        David Howells <dhowells@redhat.com>,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: [GIT PULL] tpmdd changes for v6.6-rc1
-Date:   Mon,  4 Sep 2023 23:25:12 +0300
-Message-Id: <20230904202512.29825-1-jarkko@kernel.org>
-X-Mailer: git-send-email 2.39.2
+        Mon, 4 Sep 2023 16:26:12 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFA2180;
+        Mon,  4 Sep 2023 13:26:08 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52c88a03f99so2244889a12.2;
+        Mon, 04 Sep 2023 13:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693859167; x=1694463967; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lXnvIlMPp5u/cZPb67xk/RAZDHLqGyudVRdveB/ZbLY=;
+        b=Jigp5HdRo5+dvn+3nrGbwpV9iJemIs+qY9eznh8FztFQUQRCBWOkhguUSUVKyeLzpq
+         zlTV1SgTLi7vHpn+mVHvm/AUPCIf2YGJrl5522epfg9noakMNR/IlRP+KF0IYiscv/FG
+         sZ6U0UENtgfvnrFyD3ggg7WK3dll1+KYeDSJhEsr/yelWv4UUItmzyC0pmckrwKDT2VE
+         Yomq/dEGL4q6dFo+leG1tqSysRgoVS/SP9mUHP0ZzyO3GduhPUX6U429tAVLOH0osFS0
+         IuB7ElyV7t7DGMUbf45nFUWtMYSYUXLzy5bnTWHyNXbF6f2QwApbic8yW5EkLbAmcQYL
+         CZ6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693859167; x=1694463967;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lXnvIlMPp5u/cZPb67xk/RAZDHLqGyudVRdveB/ZbLY=;
+        b=KW2KKc/ADath6/N2qZZRwrFM2PLiJGJR0kKZHAqIHAfnhb7Mz73NrnwaUJvUStXHmc
+         6/HehYDhjGtk+DIrdnkBoXsPnYb77AZfs05wn5EwfqDj9/mKEvwXHo1iyxCeXSnEkeNs
+         ySSFADlqhDF5XHYSe4Zj0jw1Tua32wSFnsT+kS9H+0nuZlc7BM//0s2PXs5aW+jQuKA5
+         RGLy4fUpUVg+cTxlqh/WoQrcHfOVxtnedLEPOd6/ffQRdIrsLs9h13PNHBJ8j6L3Pbto
+         W9iaEo5bQNHzcEYyJVRmTeCrDtfEQvuTuUh+NKF0jfGaJXDLOrWi63AtQYjMghUJ58ZP
+         fNEw==
+X-Gm-Message-State: AOJu0Yxjd6sjHK951X448HgdkPAi0SMw22Bonj3Bu+0DpbixsIgjrLIm
+        POf0Qjm1j9J1AmbkTAwcwgoX931E29JvjWzK8TTQZEEtZEY=
+X-Google-Smtp-Source: AGHT+IG24dlXnnwhnhpbMLq5+johSI+3gKyPXR6QUWW8K2AHBtDt2PqcyJvBc46enRBKemtJkuc0SY2C/ykw4EP+1YE=
+X-Received: by 2002:a05:6402:5159:b0:52a:943:9ab5 with SMTP id
+ n25-20020a056402515900b0052a09439ab5mr8010894edd.31.1693859166815; Mon, 04
+ Sep 2023 13:26:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <88ffb216-96f9-f232-7fe5-48bf82e6aa70@gmail.com>
+In-Reply-To: <88ffb216-96f9-f232-7fe5-48bf82e6aa70@gmail.com>
+From:   brett hassall <brett.hassall@gmail.com>
+Date:   Tue, 5 Sep 2023 06:25:55 +1000
+Message-ID: <CANiJ1U9-2zfc5aJJUaYnTBTg+2vMjcfgsuxcFFnn+CjVQ1fCoA@mail.gmail.com>
+Subject: Re: upstream linux cannot achieve package C8 power saving
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Ajay Agarwal <ajayagarwal@google.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Vidya Sagar <vidyas@nvidia.com>,
+        Michael Bottini <michael.a.bottini@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Linux Power Management <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,31 +77,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  Merge tag 'dmaengine-6.6-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine (2023-09-03 10:49:42 -0700)
+Hi
 
-are available in the Git repository at:
+I contacted the Ubuntu developers to see if they were ok with using
+their patches.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git tags/tpmdd-v6.6-rc1
+They advised the patches were outdated and further development was
+under discussion.
 
-for you to fetch changes up to 8f7f35e5aa6f2182eabcfa3abef4d898a48e9aa8:
+The current patches work and would benefit Linux users until something
+better comes along.
 
-  tpm: Enable hwrng only for Pluton on AMD CPUs (2023-09-04 21:57:59 +0300)
+Would you like me to proceed with the formal patch still ?
 
-----------------------------------------------------------------
-Hi,
+Thanks
+Brett
 
-This pull request contains two more bug fixes for tpm_crb, in other
-words categorically disabling rng for AMD CPU's in the tpm_crb driver,
-discarding the earlier probing approach.
 
-BR, Jarkko
-
-----------------------------------------------------------------
-Christophe JAILLET (1):
-      tpm_crb: Fix an error handling path in crb_acpi_add()
-
-Jarkko Sakkinen (1):
-      tpm: Enable hwrng only for Pluton on AMD CPUs
-
- drivers/char/tpm/tpm_crb.c | 38 +++++++++++---------------------------
- 1 file changed, 11 insertions(+), 27 deletions(-)
+On Wed, 30 Aug 2023 at 11:11, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>
+> Hi,
+>
+> I notice a bug report on Bugzilla [1]. Quoting from it:
+>
+> > v6.5 (and at least v5.15, v5.19 and v6.4 as well) will not go to a higher power saving level than package C3.
+> >
+> > With the inclusion of a patch that combines 3 Ubuntu commits related to VMD ASPM & LTR, package C8 is used.
+>
+> See Bugzilla for the full thread.
+>
+> FYI, the attached proposed fix is the same as Brett's another BZ report [2].
+> I include it for upstreaming.
+>
+> To Brett: Would you like to submit the proper, formal patch (see
+> Documentation/process/submitting-patches.rst for details)?
+>
+> Thanks.
+>
+> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=217841
+> [2]: https://bugzilla.kernel.org/show_bug.cgi?id=217828
+>
+> --
+> An old man doll... just what I always wanted! - Clara
