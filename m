@@ -2,86 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18A187911D5
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E99F47911D7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352324AbjIDHNA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 03:13:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49966 "EHLO
+        id S1346308AbjIDHOd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 03:14:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjIDHM6 (ORCPT
+        with ESMTP id S230299AbjIDHOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 03:12:58 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39A55A0;
-        Mon,  4 Sep 2023 00:12:55 -0700 (PDT)
-Received: from dggpemm500012.china.huawei.com (unknown [172.30.72.53])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RfKXW4dffzTlT1;
-        Mon,  4 Sep 2023 15:10:19 +0800 (CST)
-Received: from [10.67.120.108] (10.67.120.108) by
- dggpemm500012.china.huawei.com (7.185.36.89) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 4 Sep 2023 15:12:53 +0800
-Message-ID: <8b8f4005-3058-d41b-2f40-18584c69e2fd@huawei.com>
-Date:   Mon, 4 Sep 2023 15:12:53 +0800
+        Mon, 4 Sep 2023 03:14:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D23099;
+        Mon,  4 Sep 2023 00:14:28 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CDCA461167;
+        Mon,  4 Sep 2023 07:14:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DC38C433C7;
+        Mon,  4 Sep 2023 07:14:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693811667;
+        bh=pV1JdXN/UN77OWQbJvFR9ti4vvNAc9hx/NUH52oHLt0=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AVOcTiHwyZqMP2aTXOddUPAwDbp3O8j1KJZLVJkAnKglOcW0IS/dwQsRrF72znNce
+         UkOauOKNAnO9oQsJKQJHnN6ELB7rrg4BaqO0bnvaTknB4E3wEAJTnFWAP5TLE1Cj82
+         KNGLPIrc1Zvyd+8fgmrsa0y2NkGnbL0PoCFUYq78r9eyCaZGDQXeB43FEqI/Yfhdpw
+         +kA5WaSVAXQMtoOsxyRtMxjyY16rXiU5NnXEOlpCvcJR+YQt3b9ZN1j4BkgI7qv8iC
+         Tjlp+zi+HHYa9tuGhU972gCZdAsAkLN0q6sgGRM2//eRJh2MQJme5IVIpSdJfEjhDS
+         zfoyX+9BDJrMw==
+Message-ID: <937ea540-09e1-65f2-7165-662bbee2542b@kernel.org>
+Date:   Mon, 4 Sep 2023 09:14:22 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v4 0/5] Introduce a new helper macro
- DEFINE_SHOW_STORE_ATTRIBUTE at seq_file.c
-Content-Language: en-CA
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     Luo Jiaxing <luojiaxing@huawei.com>, <akpm@linux-foundation.org>,
-        <viro@zeniv.linux.org.uk>, <linux-kernel@vger.kernel.org>,
-        <martin.petersen@oracle.com>, <john.garry@huawei.com>,
-        <himanshu.madhani@cavium.com>, <felipe.balbi@linux.intel.com>,
-        <gregkh@linuxfoundation.org>, <uma.shankar@intel.com>,
-        <anshuman.gupta@intel.com>, <animesh.manna@intel.com>,
-        <linux-usb@vger.kernel.org>, <linux-scsi@vger.kernel.org>,
-        <linuxarm@huawei.com>
-References: <1605164864-58944-1-git-send-email-luojiaxing@huawei.com>
- <ZPDZtR8W1TLcOHW+@smile.fi.intel.com>
- <14010198-c128-4960-0d56-5ee28f4da53f@huawei.com>
- <ZPGmulPTWGa1W3OM@smile.fi.intel.com>
-From:   yangxingui <yangxingui@huawei.com>
-In-Reply-To: <ZPGmulPTWGa1W3OM@smile.fi.intel.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 1/3] dt-bindings: Add beaglecc1352
+Content-Language: en-US
+To:     Ayush Singh <ayushdevel1325@gmail.com>,
+        greybus-dev@lists.linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org,
+        Vaishnav M A <vaishnav@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Nishanth Menon <nm@ti.com>
+References: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
+ <20230902182845.1840620-2-ayushdevel1325@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230902182845.1840620-2-ayushdevel1325@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.120.108]
-X-ClientProxiedBy: dggpemm500006.china.huawei.com (7.185.36.236) To
- dggpemm500012.china.huawei.com (7.185.36.89)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 02/09/2023 20:28, Ayush Singh wrote:
+> Add DT bindings for BeagleCC1352 co-processor UART.
 
+This does not look like UART controller.
 
-On 2023/9/1 16:54, Andy Shevchenko wrote:
-> On Fri, Sep 01, 2023 at 03:11:38PM +0800, yangxingui wrote:
->> On 2023/9/1 2:19, Andy Shevchenko wrote:
->>> On Thu, Nov 12, 2020 at 03:07:38PM +0800, Luo Jiaxing wrote:
->>>> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
->>>> for read-only file, but we found many of drivers also want a helper macro
->>>> for read-write file too.
->>>>
->>>> So we add this macro to help decrease code duplication.
->>>
->>> Are you going to pursue this one?
->> Hi Andy
->>
->> Jiaxing has left his job, and his email is invalid.
 > 
-> OK! Anybody else to continue this to be finished?
-I'll continue to do this for him. Thank you for your attention and 
-advice. We'll apply it only to the scsi subsystem first.
+> The BeaglePlay has a CC1352 co-processor. This co-processor is connected
+> to the main AM62 (running Linux) over UART. The CC1352 can run Zephyr
+> and other embedded OS. This commit adds DT bindings for the BeagleCC1352
 
-Thanks.
+Please do not use "This commit/patch", but imperative mood. See longer
+explanation here:
+https://elixir.bootlin.com/linux/v5.17.1/source/Documentation/process/submitting-patches.rst#L95
 
-Xingui
+> UART, which will allow Linux platform drivers to identify and access this
+> device.
 > 
+> This commit adds serial/beaglecc1352 for identifying this UART. It is
+> used by an upcoming gb-beagleplay greybus driver.
+
+Please use scripts/get_maintainers.pl to get a list of necessary people
+and lists to CC (and consider --no-git-fallback argument). It might
+happen, that command when run on an older kernel, gives you outdated
+entries. Therefore please be sure you base your patches on recent Linux
+kernel.
+
+> 
+> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+> ---
+>  .../bindings/serial/beaglecc1352.yaml         | 25 +++++++++++++++++++
+
+It's not a serial driver. Don't put it in unrelated directory.
+
+>  MAINTAINERS                                   |  6 +++++
+>  2 files changed, 31 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/serial/beaglecc1352.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/serial/beaglecc1352.yaml b/Documentation/devicetree/bindings/serial/beaglecc1352.yaml
+> new file mode 100644
+> index 000000000000..54db630a2a50
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/serial/beaglecc1352.yaml
+
+Missing vendor prefix. Filename should match compatible. Compatible is
+not "beaglecc1352"
+
+
+> @@ -0,0 +1,25 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/serial/beaglecc1352.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: BeaglePlay CC1352 serial UART
+
+How is this serial UART? Of what? The SoC? Do not describe interface but
+the device.
+
+> +
+> +maintainers:
+> +  - Ayush Singh <ayushdevel1325@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: beagle,cc1352
+
+No resources? This does not seem useful... Put it then only in trivial
+devices if your hardware - hardware, not driver - does not have any
+pins, interrupts or other resources.
+
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    beaglecc1352 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+Best regards,
+Krzysztof
+
