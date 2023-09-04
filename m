@@ -2,320 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 620497919EB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8112C7919F2
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238663AbjIDOot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44558 "EHLO
+        id S1353101AbjIDOp0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:45:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350471AbjIDOoq (ORCPT
+        with ESMTP id S238456AbjIDOpY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:44:46 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F983CFD;
-        Mon,  4 Sep 2023 07:44:38 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3F2381F38C;
-        Mon,  4 Sep 2023 14:44:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693838677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yRti4eS6h3ds+ua4XRbdy3or4N8UEPxmGmuDg2l8Yqs=;
-        b=j0jISTWt6fizUTKOBtBbCi4m8tJcXc72iVoZJm1xtKrmtOXmTlGdcDd9MoBsrbZ5zVJ2yI
-        Vlh01lE14lO8K3wlUMXaaot0mgdoZY2KbCgLOCWY21Vd8ev5rtFwMMiPyKJm0c1Q9gXBwO
-        G7DtLDSVeRSiFnR3HbAN4UuIEHn20Cg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1320A13425;
-        Mon,  4 Sep 2023 14:44:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id NYzuAVXt9WQINwAAMHmgww
-        (envelope-from <mhocko@suse.com>); Mon, 04 Sep 2023 14:44:37 +0000
-Date:   Mon, 4 Sep 2023 16:44:36 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] mm: memcg: properly name and document unified
- stats flushing
-Message-ID: <ZPXtVLNIXk8trj2k@dhcp22.suse.cz>
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-2-yosryahmed@google.com>
+        Mon, 4 Sep 2023 10:45:24 -0400
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 847F4CFB;
+        Mon,  4 Sep 2023 07:45:19 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id B71963200913;
+        Mon,  4 Sep 2023 10:45:16 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 04 Sep 2023 10:45:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1693838716; x=1693925116; bh=UXbFDq1oZDIMG9Mkcwavte+MHov3QwCgv8a
+        c7QV3jZM=; b=OROO0sbUJhxt7X9b456JaNaDhJX4Jc3bQLBw6dYNnv61IC3nRNZ
+        VY+I4UqWTQOfpj5gJASRJCoiF6NoN6LegZxZvXVIS19BI6vlEqFpiDDxjMxBuk8E
+        HiBfJ5NZUdso695NoN4gA5Xq6TdnJGgpyDMGYkLPnfGQMcaL7F2hmoi2EbvOViWU
+        EUuzXgTr+2ur59mMo9z4VR9TT1l9Mt+zuAhLDZHr5ZehiNWkUfj2LgWM+dWvzZn/
+        YPx/6GfYkaeeOzi8o0xYteLt5MScfI1DWQMy/LoZHzW4WY2uFmAzWmf1OAsQoBgE
+        M0ortEhcRo4gu7VHjgsstqL2y1UCgH3WKgQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693838716; x=1693925116; bh=UXbFDq1oZDIMG9Mkcwavte+MHov3QwCgv8a
+        c7QV3jZM=; b=rjZlC68E5wZiLPToh9DU61asKPr6I4EuL6FRGw7z6Uoqw1Ucg6c
+        W7VMWXabKysxOWBoR9L8DEA0Kn83vhJixJa6IyqXWH6QCcFlCiccCpQ4wRmOS1Ac
+        0xIQS4FSpw2rVl0VlufH2yzhrv4vrQ/SNSwP10halPnVby56r+/hXTxIsHReAwMc
+        wOKXnfwjuIUFkYhXbyG7fx/EQS5I3DUvLI37SAcvrpWRqRG9wHyXY3j447a2HbkI
+        G+AG8a88H8FLV3MXwcvOfYUz1LocYN4Z1+b3oGQLnAs47azmLJqn3xcXjAd1hjsP
+        fcnyZTt4zHBov5toiSjni/vD2J9Jj9WqdWg==
+X-ME-Sender: <xms:fO31ZFgmdwfxaPK-Tu-hYbwb6kh7LmUd5nj6kSHDlWrpE-WXq3Tqqg>
+    <xme:fO31ZKB_RCsS0GK_4506__73IwNG8S2jLDFWv0wktphS1Yo4HAoV6f2_UpwaztW2u
+    UaZLba0vcDf5Wbg>
+X-ME-Received: <xmr:fO31ZFFvtFVJiWcyPEsyh58fiozf-kArB_MzdzkFCSvVE46WuK3enrsGUrObwNwvRr2puzwpNlBBaPdB3nURh7aynh-4gSgk6Uo_qvsVV9CXMEk3ETbN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudegkedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpeeuvghr
+    nhguucfutghhuhgsvghrthcuoegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrih
+    hlrdhfmheqnecuggftrfgrthhtvghrnhepfffhtddvveeivdduuedujeetffekkeelgfdv
+    fefgueffieefjefgjeffhedttdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilhdr
+    fhhm
+X-ME-Proxy: <xmx:fO31ZKSXZbvdY0WEvmjEBGxd0Ezh4BmYN5wXXaOanGSCA6ZeZBGxFA>
+    <xmx:fO31ZCyt8k_aryUfIZJ51NiD_Wz4D9bHqlPwEbUW4eqk015T1EZmhg>
+    <xmx:fO31ZA7gX18624EIFkUQRFd5tI7SenWnGv1shNNFijFPrJeEuDTNyQ>
+    <xmx:fO31ZJq3Hm_PbQxiZn0_miQf3LZS1fYJoIOAe4cGE_wPtYF2UjzhKA>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 4 Sep 2023 10:45:15 -0400 (EDT)
+Message-ID: <5d7b63eb-d2be-d089-48eb-ac2f3d698f8d@fastmail.fm>
+Date:   Mon, 4 Sep 2023 16:45:13 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230831165611.2610118-2-yosryahmed@google.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RESEND PATCH] Revert "fuse: Apply flags2 only when userspace set
+ the FUSE_INIT_EXT"
+To:     =?UTF-8?Q?Andr=c3=a9_Draszik?= <andre.draszik@linaro.org>,
+        Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Bernd Schubert <bschubert@ddn.com>,
+        Miklos Szeredi <mszeredi@redhat.com>, stable@vger.kernel.org
+References: <20230904133321.104584-1-git@andred.net>
+ <CAJfpegtSEjO9yi6ccG1KNi+C73xFuECnpo1DQsD9E5QhttwoRA@mail.gmail.com>
+ <10e2fc00466d3e5fc8142139ee979a71872292e6.camel@linaro.org>
+Content-Language: en-US, de-DE
+From:   Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <10e2fc00466d3e5fc8142139ee979a71872292e6.camel@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 31-08-23 16:56:08, Yosry Ahmed wrote:
-> Most contexts that flush memcg stats use "unified" flushing, where
-> basically all flushers attempt to flush the entire hierarchy, but only
-> one flusher is allowed at a time, others skip flushing.
-> 
-> This is needed because we need to flush the stats from paths such as
-> reclaim or refaults, which may have high concurrency, especially on
-> large systems. Serializing such performance-sensitive paths can
-> introduce regressions, hence, unified flushing offers a tradeoff between
-> stats staleness and the performance impact of flushing stats.
-> 
-> Document this properly and explicitly by renaming the common flushing
-> helper from do_flush_stats() to do_unified_stats_flush(), and adding
-> documentation to describe unified flushing. Additionally, rename
-> flushing APIs to add "try" in the name, which implies that flushing will
-> not always happen. Also add proper documentation.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 
-No objections to renaming but it would be really nice to simplify this.
-It is just "funny" to see 4 different flushing methods (flush from
-userspace, flush, try_flush_with_ratelimit_1 and try_flush_with_ratelimit_2).
-This is all internal so I am not all that worried that this would get
-confused but it surely is rather convoluted.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-> ---
->  include/linux/memcontrol.h |  8 ++---
->  mm/memcontrol.c            | 61 +++++++++++++++++++++++++-------------
->  mm/vmscan.c                |  2 +-
->  mm/workingset.c            |  4 +--
->  4 files changed, 47 insertions(+), 28 deletions(-)
+On 9/4/23 16:21, André Draszik wrote:
+> On Mon, 2023-09-04 at 15:41 +0200, Miklos Szeredi wrote:
+>> On Mon, 4 Sept 2023 at 15:34, André Draszik <git@andred.net> wrote:
+>>>
+>>> From: André Draszik <andre.draszik@linaro.org>
+>>>
+>>> This reverts commit 3066ff93476c35679cb07a97cce37d9bb07632ff.
+>>>
+>>> This patch breaks all existing userspace by requiring updates as
+>>> mentioned in the commit message, which is not allowed.
+>>
+>> It might break something, but you need to tell us what that is, please.
 > 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 11810a2cfd2d..d517b0cc5221 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1034,8 +1034,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
->  	return x;
->  }
->  
-> -void mem_cgroup_flush_stats(void);
-> -void mem_cgroup_flush_stats_ratelimited(void);
-> +void mem_cgroup_try_flush_stats(void);
-> +void mem_cgroup_try_flush_stats_ratelimited(void);
->  
->  void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
->  			      int val);
-> @@ -1519,11 +1519,11 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
->  	return node_page_state(lruvec_pgdat(lruvec), idx);
->  }
->  
-> -static inline void mem_cgroup_flush_stats(void)
-> +static inline void mem_cgroup_try_flush_stats(void)
->  {
->  }
->  
-> -static inline void mem_cgroup_flush_stats_ratelimited(void)
-> +static inline void mem_cgroup_try_flush_stats_ratelimited(void)
->  {
->  }
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index cf57fe9318d5..2d0ec828a1c4 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -588,7 +588,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
->  static void flush_memcg_stats_dwork(struct work_struct *w);
->  static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
->  static DEFINE_PER_CPU(unsigned int, stats_updates);
-> -static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
-> +static atomic_t stats_unified_flush_ongoing = ATOMIC_INIT(0);
->  static atomic_t stats_flush_threshold = ATOMIC_INIT(0);
->  static u64 flush_next_time;
->  
-> @@ -630,7 +630,7 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  		/*
->  		 * If stats_flush_threshold exceeds the threshold
->  		 * (>num_online_cpus()), cgroup stats update will be triggered
-> -		 * in __mem_cgroup_flush_stats(). Increasing this var further
-> +		 * in mem_cgroup_try_flush_stats(). Increasing this var further
->  		 * is redundant and simply adds overhead in atomic update.
->  		 */
->  		if (atomic_read(&stats_flush_threshold) <= num_online_cpus())
-> @@ -639,15 +639,19 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
->  	}
->  }
->  
-> -static void do_flush_stats(void)
-> +/*
-> + * do_unified_stats_flush - do a unified flush of memory cgroup statistics
-> + *
-> + * A unified flush tries to flush the entire hierarchy, but skips if there is
-> + * another ongoing flush. This is meant for flushers that may have a lot of
-> + * concurrency (e.g. reclaim, refault, etc), and should not be serialized to
-> + * avoid slowing down performance-sensitive paths. A unified flush may skip, and
-> + * hence may yield stale stats.
-> + */
-> +static void do_unified_stats_flush(void)
->  {
-> -	/*
-> -	 * We always flush the entire tree, so concurrent flushers can just
-> -	 * skip. This avoids a thundering herd problem on the rstat global lock
-> -	 * from memcg flushers (e.g. reclaim, refault, etc).
-> -	 */
-> -	if (atomic_read(&stats_flush_ongoing) ||
-> -	    atomic_xchg(&stats_flush_ongoing, 1))
-> +	if (atomic_read(&stats_unified_flush_ongoing) ||
-> +	    atomic_xchg(&stats_unified_flush_ongoing, 1))
->  		return;
->  
->  	WRITE_ONCE(flush_next_time, jiffies_64 + 2*FLUSH_TIME);
-> @@ -655,19 +659,34 @@ static void do_flush_stats(void)
->  	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
->  
->  	atomic_set(&stats_flush_threshold, 0);
-> -	atomic_set(&stats_flush_ongoing, 0);
-> +	atomic_set(&stats_unified_flush_ongoing, 0);
->  }
->  
-> -void mem_cgroup_flush_stats(void)
-> +/*
-> + * mem_cgroup_try_flush_stats - try to flush memory cgroup statistics
-> + *
-> + * Try to flush the stats of all memcgs that have stat updates since the last
-> + * flush. We do not flush the stats if:
-> + * - The magnitude of the pending updates is below a certain threshold.
-> + * - There is another ongoing unified flush (see do_unified_stats_flush()).
-> + *
-> + * Hence, the stats may be stale, but ideally by less than FLUSH_TIME due to
-> + * periodic flushing.
-> + */
-> +void mem_cgroup_try_flush_stats(void)
->  {
->  	if (atomic_read(&stats_flush_threshold) > num_online_cpus())
-> -		do_flush_stats();
-> +		do_unified_stats_flush();
->  }
->  
-> -void mem_cgroup_flush_stats_ratelimited(void)
-> +/*
-> + * Like mem_cgroup_try_flush_stats(), but only flushes if the periodic flusher
-> + * is late.
-> + */
-> +void mem_cgroup_try_flush_stats_ratelimited(void)
->  {
->  	if (time_after64(jiffies_64, READ_ONCE(flush_next_time)))
-> -		mem_cgroup_flush_stats();
-> +		mem_cgroup_try_flush_stats();
->  }
->  
->  static void flush_memcg_stats_dwork(struct work_struct *w)
-> @@ -676,7 +695,7 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
->  	 * Always flush here so that flushing in latency-sensitive paths is
->  	 * as cheap as possible.
->  	 */
-> -	do_flush_stats();
-> +	do_unified_stats_flush();
->  	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
->  }
->  
-> @@ -1576,7 +1595,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
->  	 *
->  	 * Current memory state:
->  	 */
-> -	mem_cgroup_flush_stats();
-> +	mem_cgroup_try_flush_stats();
->  
->  	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
->  		u64 size;
-> @@ -4018,7 +4037,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
->  	int nid;
->  	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
->  
-> -	mem_cgroup_flush_stats();
-> +	mem_cgroup_try_flush_stats();
->  
->  	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
->  		seq_printf(m, "%s=%lu", stat->name,
-> @@ -4093,7 +4112,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
->  
->  	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
->  
-> -	mem_cgroup_flush_stats();
-> +	mem_cgroup_try_flush_stats();
->  
->  	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
->  		unsigned long nr;
-> @@ -4595,7 +4614,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
->  	struct mem_cgroup *parent;
->  
-> -	mem_cgroup_flush_stats();
-> +	mem_cgroup_try_flush_stats();
->  
->  	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
->  	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
-> @@ -6610,7 +6629,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
->  	int i;
->  	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
->  
-> -	mem_cgroup_flush_stats();
-> +	mem_cgroup_try_flush_stats();
->  
->  	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
->  		int nid;
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index c7c149cb8d66..457a18921fda 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2923,7 +2923,7 @@ static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
->  	 * Flush the memory cgroup stats, so that we read accurate per-memcg
->  	 * lruvec stats for heuristics.
->  	 */
-> -	mem_cgroup_flush_stats();
-> +	mem_cgroup_try_flush_stats();
->  
->  	/*
->  	 * Determine the scan balance between anon and file LRUs.
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index da58a26d0d4d..affb8699e58d 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -520,7 +520,7 @@ void workingset_refault(struct folio *folio, void *shadow)
->  	}
->  
->  	/* Flush stats (and potentially sleep) before holding RCU read lock */
-> -	mem_cgroup_flush_stats_ratelimited();
-> +	mem_cgroup_try_flush_stats_ratelimited();
->  
->  	rcu_read_lock();
->  
-> @@ -664,7 +664,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
->  		struct lruvec *lruvec;
->  		int i;
->  
-> -		mem_cgroup_flush_stats();
-> +		mem_cgroup_try_flush_stats();
->  		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
->  		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
->  			pages += lruvec_page_state_local(lruvec,
-> -- 
-> 2.42.0.rc2.253.gd59a3bf2b4-goog
+> In my case, it's Android.
+> 
+> More generally this breaks all user-spaces that haven't been updated. Not
+> breaking user-space is one of the top rules the kernel has, if not the topmost.
 
--- 
-Michal Hocko
-SUSE Labs
+
+Hmm, I guess Android is using one of the extended flags in the mean time.
+Do you have more data what exactly fails? I had posted this patch last year,
+when it was still rather early introduction of FUSE_INIT_EXT, hoping there was
+nothing in production yet using these flags. But virtiofsd was already using it,
+so the patch got delayed (I had actually assumed it would just get dropped).
+
+
+Sorry for the trouble!
+
+
+Bernd
