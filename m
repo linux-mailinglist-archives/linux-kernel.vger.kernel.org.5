@@ -2,104 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A46F17915EC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE9A7915F3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:57:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232892AbjIDKzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:55:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
+        id S1348039AbjIDK5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:57:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233259AbjIDKzr (ORCPT
+        with ESMTP id S236333AbjIDK5G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:55:47 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1320099;
-        Mon,  4 Sep 2023 03:55:43 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qd7F6-0006Xs-JL; Mon, 04 Sep 2023 12:55:40 +0200
-Message-ID: <fec02836-b3d4-6ec3-d0a5-cc5172095837@leemhuis.info>
-Date:   Mon, 4 Sep 2023 12:55:39 +0200
+        Mon, 4 Sep 2023 06:57:06 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42A899;
+        Mon,  4 Sep 2023 03:57:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693825022; x=1725361022;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=F6bMJv0iuSajV+sMvvlKQf/YvMy2t++WwT6Fl2VIPlI=;
+  b=PzU0HXmmMSuonm1Z6It4cFhLOeuKRCa6sUNA+RTBRj4ew2AGGgRyqaZg
+   8ZHOOMXVx4fWy7L4EcG26SQuXJFDOj+esEB2rzT2TyfWP9bwfN9PKozYv
+   Lnzw4QMK5+bLBLZ5HM53cUdrkm9VyA/HwVaxuc7klZgWWmvByImmIstzM
+   VINgFGMuQ4VDP9tJsn4drY+n2MnetMVhgyZLZKPcEIeZCfbvqnAMvInma
+   7WXbBHe0qk8+6nxJlOKU9RV/r/KU4JQ2eFTVc1XyR5BOeG8yBfTLf2quT
+   6p/4OEn+HoCSOjm2tX4GVO1DB+kVx/mpKeCqu39W/5uDcOF+Pszs3sUrh
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="361598974"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="361598974"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:57:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="734279861"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="734279861"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:56:56 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qd7GH-006PAi-0I;
+        Mon, 04 Sep 2023 13:56:53 +0300
+Date:   Mon, 4 Sep 2023 13:56:52 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Xingui Yang <yangxingui@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        john.g.garry@oracle.com, damien.lemoal@opensource.wdc.com,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        himanshu.madhani@cavium.com, felipe.balbi@linux.intel.com,
+        gregkh@linuxfoundation.org, uma.shankar@intel.com,
+        anshuman.gupta@intel.com, animesh.manna@intel.com,
+        linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        prime.zeng@hisilicon.com, kangfenglong@huawei.com,
+        chenxiang66@hisilicon.com
+Subject: Re: [PATCH v5 3/3] scsi: qla2xxx: Use DEFINE_SHOW_STORE_ATTRIBUTE
+ helper for debugfs
+Message-ID: <ZPW39NRmd0Z0WRwW@smile.fi.intel.com>
+References: <20230904084804.39564-1-yangxingui@huawei.com>
+ <20230904084804.39564-4-yangxingui@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [V2] ata: libata: add workaround to flip LPM during
- suspend/resume
-Content-Language: en-US, de-DE
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>,
-        Koba Ko <koba.ko@canonical.com>
-Cc:     Damien Le Moal <dlemoal@kernel.org>,
-        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux kernel regressions list <regressions@lists.linux.dev>
-References: <20230901023457.8655-1-koba.ko@canonical.com>
- <ZPJGGlAQYSXguJEk@x1-carbon>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <ZPJGGlAQYSXguJEk@x1-carbon>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693824943;54886c2f;
-X-HE-SMSGID: 1qd7F6-0006Xs-JL
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230904084804.39564-4-yangxingui@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01.09.23 22:14, Niklas Cassel wrote:
-> On Fri, Sep 01, 2023 at 10:34:57AM +0800, Koba Ko wrote:
->> Due to TigerLake/Adler Lake AHCI controller's LPM regression,
->> can't apply LPM on TigerLake/AdlerLake AHCI controller.
->>
->> Add a workaround to flip LPM during suspend/resume.
->> When suspneding,
+On Mon, Sep 04, 2023 at 08:48:04AM +0000, Xingui Yang wrote:
+> Use DEFINE_SHOW_STORE_ATTRIBUTE helper for read-write file to reduce some
+> duplicated code and delete unused macros.
 
-Side note: s/suspneding/suspending/
+> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
 
->> apply LPM on TigerLake/AdlerLake AHCI.
->> Restore it to target_lpm_policy after resuming.
->>
->> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217775
->> Signed-off-by: Koba Ko <koba.ko@canonical.com>
->> ---
-> 
-> I understand that it is very frustrating to not be able to go to the
-> deepest C-state.
-> 
-> If you want LPM, we should add the PCI device and vendor id as a
-> board_ahci_low_power entry.
-> 
-> I am awake that a lot of people reported regressions when that entry was
-> added, and that is was thus reverted.
-> [...]
-> If you do own one of those systems, isn't it better if we instead:
-> 1) re-introduce the TigerLake AHCI board_ahci_low_power entry
-> 2) debug and fix the root cause of the regressions on TigerLake laptops
+Same comments as per previous patch.
 
-Three stupid questions from the cheap seats, as I'm not involved in this
-at all (the questions thus might not help at all or even confuse things;
-so feel free to ignore or tell me). But it's one of those tricky
-situations I more than once encountered as regression tracker, so maybe
-sharing a few thoughts from my point might help to lessen the problem
-for some users:
+...
 
-- Was something done so to free ourselves from this tricky situation in
-the future? E.g. something like "for any future Intel controllers,
-enable LPM by default (as then it's not a regression if things don't
-work, which might be a better base to get down to the root of the problem)"
+> -/*
+> - * Helper macros for setting up debugfs entries.
+> - * _name: The name of the debugfs entry
+> - * _ctx_struct: The context that was passed when creating the debugfs file
+> - *
+> - * QLA_DFS_SETUP_RD could be used when there is only a show function.
+> - * - show function take the name qla_dfs_<sysfs-name>_show
+> - *
+> - * QLA_DFS_SETUP_RW could be used when there are both show and write functions.
+> - * - show function take the name  qla_dfs_<sysfs-name>_show
+> - * - write function take the name qla_dfs_<sysfs-name>_write
+> - *
+> - * To have a new debugfs entry, do:
+> - * 1. Create a "struct dentry *" in the appropriate structure in the format
+> - * dfs_<sysfs-name>
+> - * 2. Setup debugfs entries using QLA_DFS_SETUP_RD / QLA_DFS_SETUP_RW
+> - * 3. Create debugfs file in qla2x00_dfs_setup() using QLA_DFS_CREATE_FILE
+> - * or QLA_DFS_ROOT_CREATE_FILE
+> - * 4. Remove debugfs file in qla2x00_dfs_remove() using QLA_DFS_REMOVE_FILE
+> - * or QLA_DFS_ROOT_REMOVE_FILE
+> - *
+> - * Example for creating "TEST" sysfs file:
+> - * 1. struct qla_hw_data { ... struct dentry *dfs_TEST; }
+> - * 2. QLA_DFS_SETUP_RD(TEST, scsi_qla_host_t);
+> - * 3. In qla2x00_dfs_setup():
+> - * QLA_DFS_CREATE_FILE(ha, TEST, 0600, ha->dfs_dir, vha);
+> - * 4. In qla2x00_dfs_remove():
+> - * QLA_DFS_REMOVE_FILE(ha, TEST);
+> - */
 
-- is the LPM working fine on the Laptops affected by
-https://bugzilla.kernel.org/show_bug.cgi?id=217114 with the
-pre-installed OS (e.g. Windows)
+I believe this comment (in some form) has to be preserved.
+Try to rewrite it using reference to the new macro.
 
-- is switching to LPM maybe safe when there is nothing connected to that
-controller (which I guess might be the case on some of those Laptops?)
-In that case we might be able to improve the sitaution for some users.
+Otherwise looks good to me.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
