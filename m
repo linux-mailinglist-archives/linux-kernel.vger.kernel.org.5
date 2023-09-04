@@ -2,56 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F5AF790F5E
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9FB790F60
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243935AbjIDAfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 20:35:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58684 "EHLO
+        id S1349864AbjIDAgM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 20:36:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjIDAfa (ORCPT
+        with ESMTP id S231361AbjIDAgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 20:35:30 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED20D3;
-        Sun,  3 Sep 2023 17:35:26 -0700 (PDT)
+        Sun, 3 Sep 2023 20:36:09 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9438FD;
+        Sun,  3 Sep 2023 17:36:06 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 74784CE0B16;
-        Mon,  4 Sep 2023 00:35:24 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E755C433C9;
-        Mon,  4 Sep 2023 00:35:22 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 713F3B80D3C;
+        Mon,  4 Sep 2023 00:36:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2A3EC433CA;
+        Mon,  4 Sep 2023 00:36:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693787722;
-        bh=/cIwbQMTHa0igq1vsxu9HcKVqol1E1FbJz1i7NYrN28=;
+        s=k20201202; t=1693787764;
+        bh=l/ZbviUAxVSkzWPyEeIQ9Fs+OkgtA7pgZqstVlvtbQQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ltgr0YlotgjzCa9NiUFmk2cieTstmOULPvts3cbtsuAY7hWkp7/CP88OyNHPoktTB
-         rqcXXGXLdhDahucuhmJNTJsQJ9+ajijNYbxFb1axAfSDMLkHZOSH/c71BDNUuKGfLZ
-         VoHDk8CBbD7BQijhd05ie07AeiIBMA0WqhVnqQMdOyeN+Gdft4oVPXg7Oj79Fm9DH6
-         ExEN5e2s6kFucn0sjaehvaKoXVEwIbb1vm8BI/fJKuFQTfhJveP1MNDUm3CpejYxRC
-         BMskvOd4gd4s8WFHxjGxYtTl2PbJr3DnDBzCp+zDiv5EHIYjykMtS1lslWEIqwIWIx
-         50kvXCPjY6THg==
-Date:   Sun, 3 Sep 2023 20:35:21 -0400
+        b=evXDeLHRwiT4KgwYnIN2i5lcQIUcFDaUGlfkVPVf+PtZYoGITJ2Volm+tErbbpK10
+         WweMowunRx81+JswUwcqQPA2jAYr7jslTPKkKcB2FY2S1LoKBKPXt37SUJlJKqmav7
+         Qy+lNtKGClbdkFVJY+9yTY37Tkcuz0OXraOVJPZgPNnve6ho6odmEnZpcwfzC6NTmT
+         TG0DJwCDaAxg+wdhgo2Lw16ebN2y8yLvX8LX96X9Tv9efh/aETy2PHWjexn3bxf/qW
+         y3Xm82oFazw2fFIyrY50SeGEYi28Z0JvwQHN3n4SMpTDS6fPHZJEmYGtsGmsazWoqN
+         6NSxAcr9wl+rg==
+Date:   Sun, 3 Sep 2023 20:36:02 -0400
 From:   Sasha Levin <sashal@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Shyam Prasad N <sprasad@microsoft.com>,
-        Bharath SM <bharathsm@microsoft.com>,
-        Steve French <stfrench@microsoft.com>, pc@cjr.nz,
-        lsahlber@redhat.com, pc@manguebit.com, vl@samba.org,
-        ematsumiya@suse.de
-Subject: Re: [PATCH AUTOSEL 5.10 5/7] cifs: add a warning when the in-flight
- count goes negative
-Message-ID: <ZPUmSbkrb4sYcrpq@sashalap>
-References: <20230829133336.520573-1-sashal@kernel.org>
- <20230829133336.520573-5-sashal@kernel.org>
- <2023082936-reborn-overjoyed-b3bc@gregkh>
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        Mike Lothian <mike@fireburn.co.uk>,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH AUTOSEL 6.1 08/10] drm/amdkfd: ignore crat by default
+Message-ID: <ZPUmcjPuyUj2qqN+@sashalap>
+References: <20230822113628.3551393-1-sashal@kernel.org>
+ <20230822113628.3551393-8-sashal@kernel.org>
+ <BN9PR12MB5146E3C94A2A6CB87138B2BCF71FA@BN9PR12MB5146.namprd12.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <2023082936-reborn-overjoyed-b3bc@gregkh>
+In-Reply-To: <BN9PR12MB5146E3C94A2A6CB87138B2BCF71FA@BN9PR12MB5146.namprd12.prod.outlook.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -61,47 +64,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Aug 29, 2023 at 03:47:28PM +0200, Greg KH wrote:
->On Tue, Aug 29, 2023 at 09:33:34AM -0400, Sasha Levin wrote:
->> From: Shyam Prasad N <sprasad@microsoft.com>
->>
->> [ Upstream commit e4645cc2f1e2d6f268bb8dcfac40997c52432aed ]
->>
->> We've seen the in-flight count go into negative with some
->> internal stress testing in Microsoft.
->>
->> Adding a WARN when this happens, in hope of understanding
->> why this happens when it happens.
->>
->> Signed-off-by: Shyam Prasad N <sprasad@microsoft.com>
->> Reviewed-by: Bharath SM <bharathsm@microsoft.com>
->> Signed-off-by: Steve French <stfrench@microsoft.com>
->> Signed-off-by: Sasha Levin <sashal@kernel.org>
->> ---
->>  fs/cifs/smb2ops.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/fs/cifs/smb2ops.c b/fs/cifs/smb2ops.c
->> index 015b7b37edee5..7ed6c2d4c549a 100644
->> --- a/fs/cifs/smb2ops.c
->> +++ b/fs/cifs/smb2ops.c
->> @@ -82,6 +82,7 @@ smb2_add_credits(struct TCP_Server_Info *server,
->>  		*val = 65000; /* Don't get near 64K credits, avoid srv bugs */
->>  		pr_warn_once("server overflowed SMB3 credits\n");
->>  	}
->> +	WARN_ON_ONCE(server->in_flight == 0);
->>  	server->in_flight--;
->>  	if (server->in_flight == 0 && (optype & CIFS_OP_MASK) != CIFS_NEG_OP)
->>  		rc = change_conf(server);
->> --
->> 2.40.1
->>
+On Tue, Aug 22, 2023 at 03:41:18PM +0000, Deucher, Alexander wrote:
+>[Public]
 >
->Please drop this from all queues, it's debugging code for the CIFS
->developers, and they can debug it in Linus's tree, not in the stable
->trees where something like this is going to cause systems to reboot.
+>> -----Original Message-----
+>> From: Sasha Levin <sashal@kernel.org>
+>> Sent: Tuesday, August 22, 2023 7:36 AM
+>> To: linux-kernel@vger.kernel.org; stable@vger.kernel.org
+>> Cc: Deucher, Alexander <Alexander.Deucher@amd.com>; Kuehling, Felix
+>> <Felix.Kuehling@amd.com>; Koenig, Christian <Christian.Koenig@amd.com>;
+>> Mike Lothian <mike@fireburn.co.uk>; Sasha Levin <sashal@kernel.org>; Pan,
+>> Xinhui <Xinhui.Pan@amd.com>; airlied@gmail.com; daniel@ffwll.ch; amd-
+>> gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org
+>> Subject: [PATCH AUTOSEL 6.1 08/10] drm/amdkfd: ignore crat by default
+>>
+>> From: Alex Deucher <alexander.deucher@amd.com>
+>>
+>> [ Upstream commit a6dea2d64ff92851e68cd4e20a35f6534286e016 ]
+>>
+>> We are dropping the IOMMUv2 path, so no need to enable this.
+>> It's often buggy on consumer platforms anyway.
+>
+>
+>This is not needed for stable.
 
-Dropped, thanks!
+Dropped this and the other ones you've pointed out, thanks!
 
 -- 
 Thanks,
