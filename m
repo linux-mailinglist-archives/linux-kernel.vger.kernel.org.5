@@ -2,65 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9A87911DD
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C8A7911DE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:15:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352357AbjIDHPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 03:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
+        id S1352401AbjIDHPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 03:15:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbjIDHPA (ORCPT
+        with ESMTP id S1352387AbjIDHPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 03:15:00 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6613399;
-        Mon,  4 Sep 2023 00:14:57 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id 3f1490d57ef6-d71dd633f33so951546276.2;
-        Mon, 04 Sep 2023 00:14:57 -0700 (PDT)
+        Mon, 4 Sep 2023 03:15:04 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A6312E;
+        Mon,  4 Sep 2023 00:14:59 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d7eed15ad69so953299276.1;
+        Mon, 04 Sep 2023 00:14:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693811696; x=1694416496; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8iBmqK88tNHvKxoyD/68KKJGPMcQoSmzChGypgNtlxI=;
-        b=V1pfnAAQZ1hbaAfFWGAqWF13gi72E8HRMaFqG7brVCgzfjl/UTsfj5oK/ksl11JxMt
-         bqL7L8lPDVbEKvalOqwmLN04c/pnOwvtsGBcihtckGHw/bXB/L5Yr5E+HELAKgHV3PXx
-         h3IRM8wETr/n4XcXgiAN2Z6Vfg3I+MhTxGDgjhlx2jGQwH7WU6YkNFU5Imq+E0k6+efy
-         Y0YnPGY5sxhdUBO3cUYt+g/nM+O/EEtZaHgusmXIkA3+zZ3vAifoFehUC4HaS4GpxGj9
-         vusa5s/QRkmvyOfSAAb6LkxOWOi8nyUbQ9jkavuyNqEvZ4v9jwPovwNWtc1d/AOdNTpB
-         dAyQ==
+        d=gmail.com; s=20221208; t=1693811698; x=1694416498; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=asIRh9YewMccFyepghcfx0oKFSEdE7jjQF3+1szicrk=;
+        b=XJL9GAJdw0GeEh+M5mdA3J2Z9y6j3fnDsdM69Uvc6N23fcYUDMRNwVlPcCaVWfe6aU
+         HvRq3GnUcU89qV/Sn4P2bg5BIJ1ttUSKMe12fxziHPYx4nh2HUdJCUzKBVOdXlH1xu/4
+         BFmZcnIhdU4doOw8jG0lbqSEmHDtrEGc9XjB+9sXer8/2fnuTFkBPpUXn08tso4po9xt
+         S6qhM30FjYCnI6JFgZNRPjkJ5TIFquXJpKeMVdSO7x2uiPtcNh3QEg1VX6Kgowdkeg2T
+         pEe8rt1hWEvhpsfEMoVNuhHZ/ufOW5eJB6h1btqG3cwdw6tl9ApfbFTgL9XUiIWUphDE
+         M7KQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693811696; x=1694416496;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8iBmqK88tNHvKxoyD/68KKJGPMcQoSmzChGypgNtlxI=;
-        b=g3QAcX5C+Zbx4vh+AtclbVxFRWJwlieQzDXcZy2wKocXI/y+K3g/RukGc1BYUxdhSV
-         H85gdyxLQK3QG0V9VMD+bbR2zZXra9NjMoXThSedJcF3EOAo6DgGsOd4v9bFYDJpsF7X
-         gopc4mbh+tJXiCwNXLwStQpWpUZDiEL/2fsfjMFVDVdEOQ3VU0kkN3maLjMVNCQQzg78
-         b6uCadC988KIW9j1/ZeVURzNRFQrlGa3G3z9Yq6v95UBmGfgL47zmizsiyqhDJUNLef2
-         9RHU6MuY6ZGZvb7/ZHdOLR6amkJPDzyfEnXGo1ti5ygqd7HUSz2ekLa6cfzqtP+noamW
-         xTZw==
-X-Gm-Message-State: AOJu0YyoUzDvH4iadZQSR7bUyAuwHavlG1XGV0397W4bUyxFexbsi/ct
-        hW5CSReEUe4kgfJLuqIHDGy8hRcM41V8oA==
-X-Google-Smtp-Source: AGHT+IF5Bh45ZgxD2YqR02X1d6V6cMGzgk4tl+8ldECKWKtSpddCNFT7fX/8l5G9un3fuJfT1d/TvA==
-X-Received: by 2002:a25:cad0:0:b0:d77:c0b9:b182 with SMTP id a199-20020a25cad0000000b00d77c0b9b182mr9360458ybg.46.1693811696532;
-        Mon, 04 Sep 2023 00:14:56 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693811698; x=1694416498;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=asIRh9YewMccFyepghcfx0oKFSEdE7jjQF3+1szicrk=;
+        b=NtZKfSvDl5CgEdmN8Y1j394HKMpohyX5tq2aQHQMUngEWJmRS3bTntQuRHGcLdIUDo
+         MjVRwpb3vlbgz0Nzb/ET0mnLQSirEBV3KfjVp4tHbNMVjg1TFVtb06zgwZQAJEPsnNz1
+         pNp2rQW5S4/G8Ubuc5P1rFm7QJQQ81swAAI394OhPDCCpnVg3Yy89a21XhRszaQOUND7
+         O3PXurZBpeDSaq0hqPCFnrs4avbvjYDzz9FM+bWdNIhW5CU4KfYNWSp5uLNA6yp49nvi
+         zBOceaxtL3ItVbNeJcsyGLex95XwBILRHyyXNP5QxHk4WclCm+gMyE1GMO1LuwbmFmdL
+         gsOQ==
+X-Gm-Message-State: AOJu0YyrFc5YYNRAT9NGGbQ6FmpyZKfcQtEll44aWE3dF8WwnWqjob+P
+        s1rZkJi9AjbYHCoHhxAoLUcSnN90sWZpXw==
+X-Google-Smtp-Source: AGHT+IEHXRYa+aKRNqfEoyrjE5xNeCre35og6i/DAu09DwlkGOEbJYhYwr+bPi6bXOYddUN4g4+NdA==
+X-Received: by 2002:a25:d481:0:b0:d1a:65c9:d98f with SMTP id m123-20020a25d481000000b00d1a65c9d98fmr10888578ybf.56.1693811698529;
+        Mon, 04 Sep 2023 00:14:58 -0700 (PDT)
 Received: from PLK-D0032.dom2.local ([157.25.98.166])
-        by smtp.gmail.com with ESMTPSA id 82-20020a251955000000b00d74b144004bsm2207565ybz.12.2023.09.04.00.14.54
+        by smtp.gmail.com with ESMTPSA id 82-20020a251955000000b00d74b144004bsm2207565ybz.12.2023.09.04.00.14.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 00:14:56 -0700 (PDT)
+        Mon, 04 Sep 2023 00:14:58 -0700 (PDT)
 From:   Tomasz Rostanski <tomasz.rostanski@gmail.com>
 X-Google-Original-From: Tomasz Rostanski <tomasz.rostanski@thalesgroup.com>
-Cc:     stable@vger.kernel.org, Balaji Prakash J <bjagadee@codeaurora.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Rob Herring <robh@kernel.org>,
+Cc:     stable@vger.kernel.org, Sean Anderson <sean.anderson@seco.com>,
+        Robert Hancock <robert.hancock@calian.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/5] usb: dwc3: reference clock period configuration
-Date:   Mon,  4 Sep 2023 09:14:22 +0200
-Message-ID: <20230904071432.32309-1-tomasz.rostanski@thalesgroup.com>
+        Felipe Balbi <balbi@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 2/5] usb: dwc3: Get clocks individually
+Date:   Mon,  4 Sep 2023 09:14:23 +0200
+Message-ID: <20230904071432.32309-2-tomasz.rostanski@thalesgroup.com>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230904071432.32309-1-tomasz.rostanski@thalesgroup.com>
+References: <20230904071432.32309-1-tomasz.rostanski@thalesgroup.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -74,124 +76,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Balaji Prakash J <bjagadee@codeaurora.org>
+From: Sean Anderson <sean.anderson@seco.com>
 
-Set reference clock period when it differs from dwc3 default hardware
-set.
+Instead of grabbing all clocks in bulk, grab them individually. This will
+allow us to get the frequency or otherwise deal with discrete clocks. This
+may break some platforms if they use a clock which doesn't use one of the
+documented names.
 
-We could calculate clock period based on reference clock frequency. But
-this information is not always available. This is the case of PCI bus
-attached USB host. For that reason we use a custom property.
-
-Tested (USB2 only) on IPQ6010 SoC based board with 24 MHz reference
-clock while hardware default is 19.2 MHz.
-
-[ baruch: rewrite commit message; drop GFLADJ code; remove 'quirk-' from
-  property name; mention tested hardware ]
-
-Acked-by: Felipe Balbi <balbi@kernel.org>
-Signed-off-by: Balaji Prakash J <bjagadee@codeaurora.org>
-Signed-off-by: Baruch Siach <baruch@tkos.co.il>
-Nacked-by: Rob Herring <robh@kernel.org>
-Link: https://lore.kernel.org/r/9f399bdf1ff752e31ab7497e3d5ce19bbb3ff247.1630389452.git.baruch@tkos.co.il
+Reviewed-by: Robert Hancock <robert.hancock@calian.com>
+Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+Link: https://lore.kernel.org/r/20220127200636.1456175-3-sean.anderson@seco.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/dwc3/core.c | 29 +++++++++++++++++++++++++++++
- drivers/usb/dwc3/core.h |  6 ++++++
- 2 files changed, 35 insertions(+)
+ drivers/usb/dwc3/core.c | 64 ++++++++++++++++++++++++++++++++---------
+ drivers/usb/dwc3/core.h | 10 ++++---
+ 2 files changed, 57 insertions(+), 17 deletions(-)
 
 diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
-index 6377b9cf81a5..7908c151b95d 100644
+index 7908c151b95d..9635c915e2f7 100644
 --- a/drivers/usb/dwc3/core.c
 +++ b/drivers/usb/dwc3/core.c
-@@ -26,6 +26,7 @@
- #include <linux/acpi.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/reset.h>
-+#include <linux/bitfield.h>
- 
- #include <linux/usb/ch9.h>
- #include <linux/usb/gadget.h>
-@@ -343,6 +344,29 @@ static void dwc3_frame_length_adjustment(struct dwc3 *dwc)
- 	}
+@@ -753,6 +753,38 @@ static int dwc3_phy_setup(struct dwc3 *dwc)
+ 	return 0;
  }
  
-+/**
-+ * dwc3_ref_clk_period - Reference clock period configuration
-+ *		Default reference clock period depends on hardware
-+ *		configuration. For systems with reference clock that differs
-+ *		from the default, this will set clock period in DWC3_GUCTL
-+ *		register.
-+ * @dwc: Pointer to our controller context structure
-+ * @ref_clk_per: reference clock period in ns
-+ */
-+static void dwc3_ref_clk_period(struct dwc3 *dwc)
++static int dwc3_clk_enable(struct dwc3 *dwc)
 +{
-+	u32 reg;
++	int ret;
 +
-+	if (dwc->ref_clk_per == 0)
-+		return;
++	ret = clk_prepare_enable(dwc->bus_clk);
++	if (ret)
++		return ret;
 +
-+	reg = dwc3_readl(dwc->regs, DWC3_GUCTL);
-+	reg &= ~DWC3_GUCTL_REFCLKPER_MASK;
-+	reg |=  FIELD_PREP(DWC3_GUCTL_REFCLKPER_MASK, dwc->ref_clk_per);
-+	dwc3_writel(dwc->regs, DWC3_GUCTL, reg);
++	ret = clk_prepare_enable(dwc->ref_clk);
++	if (ret)
++		goto disable_bus_clk;
++
++	ret = clk_prepare_enable(dwc->susp_clk);
++	if (ret)
++		goto disable_ref_clk;
++
++	return 0;
++
++disable_ref_clk:
++	clk_disable_unprepare(dwc->ref_clk);
++disable_bus_clk:
++	clk_disable_unprepare(dwc->bus_clk);
++	return ret;
 +}
 +
++static void dwc3_clk_disable(struct dwc3 *dwc)
++{
++	clk_disable_unprepare(dwc->susp_clk);
++	clk_disable_unprepare(dwc->ref_clk);
++	clk_disable_unprepare(dwc->bus_clk);
++}
 +
- /**
-  * dwc3_free_one_event_buffer - Frees one event buffer
-  * @dwc: Pointer to our controller context structure
-@@ -1021,6 +1045,9 @@ static int dwc3_core_init(struct dwc3 *dwc)
- 	/* Adjust Frame Length */
- 	dwc3_frame_length_adjustment(dwc);
+ static void dwc3_core_exit(struct dwc3 *dwc)
+ {
+ 	dwc3_event_buffers_cleanup(dwc);
+@@ -767,7 +799,7 @@ static void dwc3_core_exit(struct dwc3 *dwc)
+ 	phy_exit(dwc->usb2_generic_phy);
+ 	phy_exit(dwc->usb3_generic_phy);
  
-+	/* Adjust Reference Clock Period */
-+	dwc3_ref_clk_period(dwc);
+-	clk_bulk_disable_unprepare(dwc->num_clks, dwc->clks);
++	dwc3_clk_disable(dwc);
+ 	reset_control_assert(dwc->reset);
+ }
+ 
+@@ -1614,25 +1646,31 @@ static int dwc3_probe(struct platform_device *pdev)
+ 		return PTR_ERR(dwc->reset);
+ 
+ 	if (dev->of_node) {
+-		ret = devm_clk_bulk_get_all(dev, &dwc->clks);
+-		if (ret == -EPROBE_DEFER)
+-			return ret;
+ 		/*
+ 		 * Clocks are optional, but new DT platforms should support all
+ 		 * clocks as required by the DT-binding.
+ 		 */
+-		if (ret < 0)
+-			dwc->num_clks = 0;
+-		else
+-			dwc->num_clks = ret;
+-
++		dwc->bus_clk = devm_clk_get_optional(dev, "bus_early");
++		if (IS_ERR(dwc->bus_clk))
++			return dev_err_probe(dev, PTR_ERR(dwc->bus_clk),
++					     "could not get bus clock\n");
 +
- 	dwc3_set_incr_burst_type(dwc);
++		dwc->ref_clk = devm_clk_get_optional(dev, "ref");
++		if (IS_ERR(dwc->ref_clk))
++			return dev_err_probe(dev, PTR_ERR(dwc->ref_clk),
++					     "could not get ref clock\n");
++
++		dwc->susp_clk = devm_clk_get_optional(dev, "suspend");
++		if (IS_ERR(dwc->susp_clk))
++			return dev_err_probe(dev, PTR_ERR(dwc->susp_clk),
++					     "could not get suspend clock\n");
+ 	}
  
- 	usb_phy_set_suspend(dwc->usb2_phy, 0);
-@@ -1404,6 +1431,8 @@ static void dwc3_get_properties(struct dwc3 *dwc)
- 				    &dwc->hsphy_interface);
- 	device_property_read_u32(dev, "snps,quirk-frame-length-adjustment",
- 				 &dwc->fladj);
-+	device_property_read_u32(dev, "snps,ref-clock-period-ns",
-+				 &dwc->ref_clk_per);
+ 	ret = reset_control_deassert(dwc->reset);
+ 	if (ret)
+ 		return ret;
  
- 	dwc->dis_metastability_quirk = device_property_read_bool(dev,
- 				"snps,dis_metastability_quirk");
+-	ret = clk_bulk_prepare_enable(dwc->num_clks, dwc->clks);
++	ret = dwc3_clk_enable(dwc);
+ 	if (ret)
+ 		goto assert_reset;
+ 
+@@ -1723,7 +1761,7 @@ static int dwc3_probe(struct platform_device *pdev)
+ 	pm_runtime_set_suspended(dev);
+ 	pm_runtime_put_noidle(dev);
+ disable_clks:
+-	clk_bulk_disable_unprepare(dwc->num_clks, dwc->clks);
++	dwc3_clk_disable(dwc->num_clks, dwc->clks);
+ assert_reset:
+ 	reset_control_assert(dwc->reset);
+ 
+@@ -1773,7 +1811,7 @@ static int dwc3_core_init_for_resume(struct dwc3 *dwc)
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = clk_bulk_prepare_enable(dwc->num_clks, dwc->clks);
++	ret = dwc3_clk_enable(dwc);
+ 	if (ret)
+ 		goto assert_reset;
+ 
+@@ -1784,7 +1822,7 @@ static int dwc3_core_init_for_resume(struct dwc3 *dwc)
+ 	return 0;
+ 
+ disable_clks:
+-	clk_bulk_disable_unprepare(dwc->num_clks, dwc->clks);
++	dwc3_clk_disable(dwc);
+ assert_reset:
+ 	reset_control_assert(dwc->reset);
+ 
 diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-index 3dcb5b744f7c..968608bd98e3 100644
+index 968608bd98e3..1e5ef1c512fb 100644
 --- a/drivers/usb/dwc3/core.h
 +++ b/drivers/usb/dwc3/core.h
-@@ -385,6 +385,10 @@
- #define DWC3_GFLADJ_30MHZ_SDBND_SEL		BIT(7)
- #define DWC3_GFLADJ_30MHZ_MASK			0x3f
- 
-+/* Global User Control Register*/
-+#define DWC3_GUCTL_REFCLKPER_MASK		0xffc00000
-+#define DWC3_GUCTL_REFCLKPER_SEL		22
-+
- /* Global User Control Register 2 */
- #define DWC3_GUCTL2_RST_ACTBITLATER		BIT(14)
- 
-@@ -969,6 +973,7 @@ struct dwc3_scratchpad_array {
+@@ -967,8 +967,9 @@ struct dwc3_scratchpad_array {
+  * @eps: endpoint array
+  * @gadget: device side representation of the peripheral controller
+  * @gadget_driver: pointer to the gadget driver
+- * @clks: array of clocks
+- * @num_clks: number of clocks
++ * @bus_clk: clock for accessing the registers
++ * @ref_clk: reference clock
++ * @susp_clk: clock used when the SS phy is in low power (S3) state
+  * @reset: reset control
   * @regs: base address for our registers
   * @regs_size: address space size
-  * @fladj: frame length adjustment
-+ * @ref_clk_per: reference clock period configuration
-  * @irq_gadget: peripheral controller's IRQ number
-  * @otg_irq: IRQ number for OTG IRQs
-  * @current_otg_role: current role of operation while using the OTG block
-@@ -1153,6 +1158,7 @@ struct dwc3 {
- 	struct power_supply	*usb_psy;
+@@ -1127,8 +1128,9 @@ struct dwc3 {
+ 	struct usb_gadget	*gadget;
+ 	struct usb_gadget_driver *gadget_driver;
  
- 	u32			fladj;
-+	u32			ref_clk_per;
- 	u32			irq_gadget;
- 	u32			otg_irq;
- 	u32			current_otg_role;
+-	struct clk_bulk_data	*clks;
+-	int			num_clks;
++	struct clk		*bus_clk;
++	struct clk		*ref_clk;
++	struct clk		*susp_clk;
+ 
+ 	struct reset_control	*reset;
+ 
 -- 
 2.41.0
 
