@@ -2,75 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31280791036
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 04:57:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E88D779103A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 05:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346643AbjIDC55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 22:57:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43606 "EHLO
+        id S1351197AbjIDDAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 23:00:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233760AbjIDC54 (ORCPT
+        with ESMTP id S230300AbjIDDAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 22:57:56 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E70A4
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 19:57:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693796273; x=1725332273;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=O+WEzCnElmDAjJDEVfEFV2BresTNtqQ2X1bd4c5PmcI=;
-  b=ieFMKzxV0+W3NrDZXI6BIhIqK87jmF9ntAXDbE7v2R/Bc+x06JBBvKaM
-   99octSFiAcCLPTybcgRObAWuf9/0DAozft4Vhy3OABedvGF5tFIxfn07N
-   /GoP09oG8xZ6VdHnqVUSEa0ntS6EsHzqTUH6zwCFlDnnr68Q9JLTyB9AJ
-   phptluoFmIk/pcOFjc+PTjbZ80Ck58bwhNUVqBXz5VcWlLrGk9iiva6Ep
-   PZthRZeKTcUc3CWyPujVTz9xBkqe0w5siTwDHUaX/ZO+rZa5F/xY+UsaT
-   6VP0hhyqFEXFWNEuPjyuge7vCG3IGjNGAn/tzirZyyxDjUotS8ugQekXf
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="380298075"
-X-IronPort-AV: E=Sophos;i="6.02,225,1688454000"; 
-   d="scan'208";a="380298075"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2023 19:57:53 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="883880778"
-X-IronPort-AV: E=Sophos;i="6.02,225,1688454000"; 
-   d="scan'208";a="883880778"
-Received: from younghwa-mobl3.amr.corp.intel.com (HELO [10.212.224.212]) ([10.212.224.212])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Sep 2023 19:57:48 -0700
-Message-ID: <f859d123-6c85-4bc4-8ac9-8761f1f3f602@linux.intel.com>
-Date:   Sun, 3 Sep 2023 19:57:52 -0700
+        Sun, 3 Sep 2023 23:00:30 -0400
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4879310A;
+        Sun,  3 Sep 2023 20:00:26 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.153])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RfD055dVqz4f3kk3;
+        Mon,  4 Sep 2023 11:00:21 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+        by APP3 (Coremail) with SMTP id _Ch0CgDH5LxFSPVkbLS0CA--.44142S2;
+        Mon, 04 Sep 2023 11:00:22 +0800 (CST)
+Subject: Re: [PATCH v6 05/11] ext4: Separate block bitmap and buddy bitmap
+ freeing in ext4_mb_clear_bb()
+To:     Ritesh Harjani <ritesh.list@gmail.com>, tytso@mit.edu,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <878r9q8cf9.fsf@doe.com>
+From:   Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <656f0cf0-1092-84eb-e934-534102c2fa54@huaweicloud.com>
+Date:   Mon, 4 Sep 2023 11:00:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/5] virt: sevguest: Add TSM_REPORTS support for
- SNP_{GET, GET_EXT}_REPORT
-Content-Language: en-US
-To:     "Huang, Kai" <kai.huang@intel.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "linux-coco@lists.linux.dev" <linux-coco@lists.linux.dev>,
-        "jpiotrowski@linux.microsoft.com" <jpiotrowski@linux.microsoft.com>
-Cc:     "bp@alien8.de" <bp@alien8.de>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "thomas.lendacky@amd.com" <thomas.lendacky@amd.com>,
-        "dionnaglaze@google.com" <dionnaglaze@google.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "brijesh.singh@amd.com" <brijesh.singh@amd.com>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>
-References: <169342399185.3934343.3035845348326944519.stgit@dwillia2-xfh.jf.intel.com>
- <169342402274.3934343.11704206926819634506.stgit@dwillia2-xfh.jf.intel.com>
- <4e4407b0-179d-4be4-bf0b-0d674103d4f6@linux.microsoft.com>
- <64f2137362305_4c1f3294f4@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <4ff19f7c31b13a63756f40de69fbf8a24fe3bb08.camel@intel.com>
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <4ff19f7c31b13a63756f40de69fbf8a24fe3bb08.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <878r9q8cf9.fsf@doe.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: _Ch0CgDH5LxFSPVkbLS0CA--.44142S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3XF47Zr1xtr13Gr4UAw47urg_yoW7GF4fpr
+        9Fk3WUCrnxGFnF9r1xu34jq3WxKw48WF4UGrW3u34rCFy2qF93KF97KFy3A3ZFyFs7X3Wv
+        qw4Y9rWkCrs2va7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+        6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+        Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwmhFDUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
+        NICE_REPLY_A,SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -79,42 +65,132 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/3/2023 7:14 PM, Huang, Kai wrote:
-> On Fri, 2023-09-01 at 09:38 -0700, Dan Williams wrote:
->>> The extended guest request is another topic, since userspace has to be aware of
->>> where the kernel choses to put the extended data, and fixup all the offsets in the
->>> table (section 4.1.8.1 in [2]). It would be better to return this data through a
->>> separate file.
+on 9/1/2023 5:34 PM, Ritesh Harjani wrote:
+> Kemeng Shi <shikemeng@huaweicloud.com> writes:
+> 
+>> This patch separates block bitmap and buddy bitmap freeing in order to
+>> udpate block bitmap with ext4_mb_mark_context in following patch.
+> ^^^ update.
+> 
 >>
->> I notice that the TDX report also includes a certificate blob, so if
->> that is a common concept then yes, it makes sense to have a separate
->> file for that.
+>> Separated freeing is safe with concurrent allocation as long as:
+>> 1. Firstly allocate block in buddy bitmap, and then in block bitmap.
+>> 2. Firstly free block in block bitmap, and then buddy bitmap.
+>> Then freed block will only be available to allocation when both buddy
+>> bitmap and block bitmap are updated by freeing.
+>> Allocation obeys rule 1 already, just do sperated freeing with rule 2.
 > 
-> + Sathy and Isaku.
+> So we also don't need ext4_load_buddy_gfp() before freeing on-disk
+> bitmap right. Continue below...
 > 
-> It is a common concept from the perspective of "concept", because we need
-> certificates to verify the attestation blob anyway.  But in implementation,
-> unlike to SEV, TDX doesn't have a command to return certificates separately or
-> independently [1] -- they are embed to the Quote itself, or theoretically can be
-> fetched from Intel.  
+>>
+>> Separated freeing has no race with generate_buddy as:
+>> Once ext4_mb_load_buddy_gfp is executed successfully, the update-to-date
+>> buddy page can be found in sbi->s_buddy_cache and no more buddy
+>> initialization of the buddy page will be executed concurrently until
+>> buddy page is unloaded. As we always do free in "load buddy, free,
+>> unload buddy" sequence, separated freeing has no race with generate_buddy.
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+>>  fs/ext4/mballoc.c | 18 ++++++++----------
+>>  1 file changed, 8 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index e650eac22237..01ad36a1cc96 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -6519,6 +6519,14 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>  	if (err)
+>>  		goto error_return;
 > 
-> More, for TDX (SGX based attestation) certificates blob itself isn't mandatory
-> to be part of the Quote.  Instead, TDX Quote can choose to include some more
-> basic platform identification which can in turn be used to get those
-> certificates from Intel's provisioning certificate service [2].
 > 
-> [1] I am not sure whether we can add one or already have one in the latest TDX
-> development.  Maybe Sathy or Isaku can help to confirm.
+> Let me add the a piece of code before the added changes and continue...
 > 
-> [2]: Table 9: QE Certification Data
-> https://download.01.org/intel-sgx/dcap-1.0.1/docs/Intel_SGX_ECDSA_QuoteGenReference_DCAP_API_Linux_1.0.1.pdf
+> 	err = ext4_mb_load_buddy_gfp(sb, block_group, &e4b,
+> 				     GFP_NOFS|__GFP_NOFAIL);
+> 	if (err)
+> 		goto error_return;
+>>  
+>> +	ext4_lock_group(sb, block_group);
+>> +	mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+>> +	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+>> +	ext4_free_group_clusters_set(sb, gdp, ret);
+>> +	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+>> +	ext4_group_desc_csum_set(sb, block_group, gdp);
+>> +	ext4_unlock_group(sb, block_group);
+>> +
+> 
+> ...Is it required for ext4_mb_load_buddy_gfp() to be called before
+> freeing on-disk bitmap blocks? Can you explain why please?
+> At least it is not very clear to me that why do we need
+> ext4_mb_load_buddy_gfp() before clearing of bitmap blocks. If it's not
+> needed then I think we should separate out bitmap freeing logic and
+> buddy freeing logic even further.
+Yes, ext4_mb_load_buddy_gfp is no needed for clearing of bitmap, put
+it before bit clearing for catching error and aborting mark early
+to reduce functional change.
+> 
+> Thoughts?
+> 
+>>  	/*
+>>  	 * We need to make sure we don't reuse the freed block until after the
+>>  	 * transaction is committed. We make an exception if the inode is to be
+>> @@ -6541,13 +6549,8 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>  		new_entry->efd_tid = handle->h_transaction->t_tid;
+>>  
+>>  		ext4_lock_group(sb, block_group);
+>> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+>>  		ext4_mb_free_metadata(handle, &e4b, new_entry);
+>>  	} else {
+>> -		/* need to update group_info->bb_free and bitmap
+>> -		 * with group lock held. generate_buddy look at
+>> -		 * them with group lock_held
+>> -		 */
+>>  		if (test_opt(sb, DISCARD)) {
+>>  			err = ext4_issue_discard(sb, block_group, bit,
+>>  						 count_clusters, NULL);
+>> @@ -6560,14 +6563,9 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+>>  			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
+>>  
+>>  		ext4_lock_group(sb, block_group);
+>> -		mb_clear_bits(bitmap_bh->b_data, bit, count_clusters);
+>>  		mb_free_blocks(inode, &e4b, bit, count_clusters);
+>>  	}
+>>  
+>> -	ret = ext4_free_group_clusters(sb, gdp) + count_clusters;
+>> -	ext4_free_group_clusters_set(sb, gdp, ret);
+>> -	ext4_block_bitmap_csum_set(sb, gdp, bitmap_bh);
+>> -	ext4_group_desc_csum_set(sb, block_group, gdp);
+>>  	ext4_unlock_group(sb, block_group);
+>>  
+>>  	if (sbi->s_log_groups_per_flex) {
+> 
+> 
+> Adding piece of code here...
+> 
+> 	if (sbi->s_log_groups_per_flex) {
+> 		ext4_group_t flex_group = ext4_flex_group(sbi, block_group);
+> 		atomic64_add(count_clusters,
+> 			     &sbi_array_rcu_deref(sbi, s_flex_groups,
+> 						  flex_group)->free_clusters);
+> 	}
+> 
+> <...>
+> 
+> 	/* We dirtied the bitmap block */
+> 	BUFFER_TRACE(bitmap_bh, "dirtied bitmap block");
+> 	err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
+> 	/* And the group descriptor block */
+> 	BUFFER_TRACE(gd_bh, "dirtied group descriptor block");
+> 	ret = ext4_handle_dirty_metadata(handle, NULL, gd_bh);
+> 	if (!err)
+> 		err = ret;
+> 
+> I was thinking even this can go around bitmap freeing logic above. So
+> the next patch becomes very clear that all of the bitmap freeing logic
+> is just simply moved into ext4_mb_mark_context() function.
+> 
+> -ritesh
+> 
 
-Yes. TDX does not have any special command to fetch the certificate blob
-separately. Currently, it is fetched as part of Quote data. But, since the
-certificate blob is fixed per boot (unlike Quote data), I think it makes
-sense to add a separate command for it.
-
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
