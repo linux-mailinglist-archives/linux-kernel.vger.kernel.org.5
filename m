@@ -2,417 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90469791B08
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5919F791B0B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241529AbjIDP76 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:59:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
+        id S1352179AbjIDQAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 12:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238137AbjIDP75 (ORCPT
+        with ESMTP id S241905AbjIDQAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:59:57 -0400
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A39B0CDA;
-        Mon,  4 Sep 2023 08:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1693843190; bh=6xQ8ZzLA186xYSB1p50dCg8bI/xUN5UKZ4e4DN5dY4Q=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JbEcKK6AlWE4egRXfy61j4FO6+MWz00uDfvuC32Z8D1FjmOkA58fhIsMMBa3ngg/n
-         WwF0wzIOQbwLKwFniOMKBDDVVTl4ep/Av9SvOK0TVpf0nGV1CWMHFr+MzQYTqy39Ku
-         JtybnDyMdsKr9/jvkP3Ov9Pw6es8f3ebi5SUMiaU=
-Date:   Mon, 4 Sep 2023 17:59:45 +0200
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Julius Zint <julius@zint.sh>, Hans de Goede <hdegoede@redhat.com>
-Cc:     Lee Jones <lee@kernel.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Helge Deller <deller@gmx.de>, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-input@vger.kernel.org,
-        linux-fbdev@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] backlight: hid_bl: Add VESA VCP HID backlight
- driver
-Message-ID: <f2e1ab9e-e691-42e1-a600-42744f692922@t-8ch.de>
-References: <20230820094118.20521-1-julius@zint.sh>
- <20230820094118.20521-2-julius@zint.sh>
+        Mon, 4 Sep 2023 12:00:09 -0400
+Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EB71BE
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 09:00:03 -0700 (PDT)
+Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1c093862623so22038375ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 09:00:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693843203; x=1694448003;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+O3G+dlqCRtnovR02+v2yf1Tamh83CEJZbdexepJT5w=;
+        b=Ne8ohRib9asTS2T78Y8REsjAvhwxIrMNn2JSWS6l/JTIf/lLVvBKjts4prUZ/5hLRF
+         3bRutqz8utoIQtNbAlNTPVls02vao1IO5PL114/nuyNzfutWZxrmgY7QR7xJPY70pi0J
+         TVYiwXQb0A2bcWjGqGBXqzRfCsRBDMK6a/QwPmUo5WfTbgEnuQOnAsd6OUP4HHexMU2h
+         FfXArgg5N/CGpZvbvadJLqZw+2CfIZiM9OHX4uBCDVjZxQgVo6jyVjKpMUIYWGm68hBP
+         Poi9AJR5r8CvRltoZ5paKw+6Kl1tQpNAKOeenvTWxowJeNn+RnWuMvjPjzbbdocjUHLj
+         CHqQ==
+X-Gm-Message-State: AOJu0YxVWSJ8pAapODE9WkxkmMs5z+6WUO8CgEj7r3nGjd0AvfSP7gfE
+        0LT5A8LRrSwnobQHBtHBMCzu9vGF4PvRyLq9xTUc3zDWHpU/
+X-Google-Smtp-Source: AGHT+IE4hY1cOldP6E1tE8K6v9oucZ0pUa4JKR7Q8el9qijGMkJhK8JTHvG0bVYm6TQgfeBmuBxCgssMGLGtlQSDM4LK1AE6mRQC
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230820094118.20521-2-julius@zint.sh>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:903:5c5:b0:1ba:a36d:f82c with SMTP id
+ kf5-20020a17090305c500b001baa36df82cmr2950872plb.7.1693843203111; Mon, 04 Sep
+ 2023 09:00:03 -0700 (PDT)
+Date:   Mon, 04 Sep 2023 09:00:02 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006d415806048a9aee@google.com>
+Subject: [syzbot] [mm?] BUG: unable to handle kernel paging request in list_lru_add
+From:   syzbot <syzbot+2403e3909382fbdeaf6c@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc Hans who ins involved with the backlight subsystem
+Hello,
 
-Hi Julius,
+syzbot found the following issue on:
 
-today I stumbled upon a mail from Hans [0], which explains that the
-backlight subsystem is not actually a good fit (yet?) for external
-displays.
+HEAD commit:    708283abf896 Merge tag 'dmaengine-6.6-rc1' of git://git.ke..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=17424cd0680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=15f37e053f1602f8
+dashboard link: https://syzkaller.appspot.com/bug?extid=2403e3909382fbdeaf6c
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-It seems a new API is in the works that would better fit, but I'm not
-sure about the state of this API. Maybe Hans can clarify.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-This also ties back to my review question how userspace can figure out
-to which display a backlight devices applies. So far it can not.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-708283ab.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ae645c88b07f/vmlinux-708283ab.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/32d5997bb055/Image-708283ab.gz.xz
 
-[0] https://lore.kernel.org/lkml/7f2d88de-60c5-e2ff-9b22-acba35cfdfb6@redhat.com/
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2403e3909382fbdeaf6c@syzkaller.appspotmail.com
 
-Below the original PATCH for Hans' reference.
+Unable to handle kernel paging request at virtual address dfff800000000001
+KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
+Mem abort info:
+  ESR = 0x0000000096000005
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x05: level 1 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[dfff800000000001] address between user and kernel address ranges
+Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 1 PID: 2922 Comm: udevd Not tainted 6.5.0-syzkaller-11329-g708283abf896 #0
+Hardware name: linux,dummy-virt (DT)
+pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : list_add_tail include/linux/list.h:183 [inline]
+pc : list_lru_add+0x174/0x464 mm/list_lru.c:129
+lr : list_lru_from_memcg_idx mm/list_lru.c:56 [inline]
+lr : list_lru_from_memcg_idx mm/list_lru.c:53 [inline]
+lr : list_lru_from_kmem mm/list_lru.c:78 [inline]
+lr : list_lru_add+0x354/0x464 mm/list_lru.c:128
+sp : ffff80008dd57520
+x29: ffff80008dd57520 x28: 0000000000000008 x27: ffff0000378c4000
+x26: 0000000000000001 x25: 0000000000000000 x24: 0000000000000000
+x23: 1fffe0000293550a x22: 0000000000000000 x21: ffff000012d1c7a0
+x20: ffff0000149aa850 x19: ffff0000146f7a00 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: ffff800080915234
+x14: ffff800080914c58 x13: ffff800080914c58 x12: 000000000000f1f1
+x11: dfff800000000000 x10: 00000000f3000000 x9 : 00000000f3f3f3f3
+x8 : ffff700011baae76 x7 : 00000000f1f1f1f1 x6 : dfff800000000000
+x5 : ffff700011baae7a x4 : 00000000f204f1f1 x3 : 1fffe0000d51ff28
+x2 : 0000000000000000 x1 : 0000000000000000 x0 : dfff800000000000
+Call trace:
+ list_add_tail include/linux/list.h:183 [inline]
+ list_lru_add+0x174/0x464 mm/list_lru.c:129
+ d_lru_add+0x180/0x31c fs/dcache.c:431
+ retain_dentry fs/dcache.c:685 [inline]
+ dput+0x4ac/0x96c fs/dcache.c:908
+ handle_mounts fs/namei.c:1554 [inline]
+ step_into+0xc18/0x16c4 fs/namei.c:1839
+ walk_component+0xa8/0x484 fs/namei.c:2007
+ link_path_walk.part.0.constprop.0+0x4cc/0x970 fs/namei.c:2328
+ link_path_walk fs/namei.c:2253 [inline]
+ path_openat+0x1bc/0x2058 fs/namei.c:3792
+ do_filp_open+0x16c/0x330 fs/namei.c:3823
+ do_sys_openat2+0x12c/0x160 fs/open.c:1422
+ do_sys_open fs/open.c:1437 [inline]
+ __do_sys_openat fs/open.c:1453 [inline]
+ __se_sys_openat fs/open.c:1448 [inline]
+ __arm64_sys_openat+0x12c/0x1b8 fs/open.c:1448
+ __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+ invoke_syscall+0x6c/0x258 arch/arm64/kernel/syscall.c:51
+ el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:136
+ do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:155
+ el0_svc+0x58/0x140 arch/arm64/kernel/entry-common.c:678
+ el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
+Code: 9100231c d2d00000 f2fbffe0 d343ff9a (38e06b40) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	9100231c 	add	x28, x24, #0x8
+   4:	d2d00000 	mov	x0, #0x800000000000        	// #140737488355328
+   8:	f2fbffe0 	movk	x0, #0xdfff, lsl #48
+   c:	d343ff9a 	lsr	x26, x28, #3
+* 10:	38e06b40 	ldrsb	w0, [x26, x0] <-- trapping instruction
 
-On 2023-08-20 11:41:18+0200, Julius Zint wrote:
-> The HID spec defines the following Usage IDs (p. 345 ff):
-> 
-> - Monitor Page (0x80) -> Monitor Control (0x01)
-> - VESA Virtual Controls Page (0x82) -> Brightness (0x10)
-> 
-> Apple made use of them in their Apple Studio Display and most likely on
-> other external displays (LG UltraFine 5k, Pro Display XDR).
-> 
-> The driver will work for any HID device with a report, where the
-> application matches the Monitor Control Usage ID and:
-> 
-> 1. An Input field in this report with the Brightness Usage ID (to get
->    the current brightness)
-> 2. A Feature field in this report with the Brightness Usage ID (to
->    set the current brightness)
-> 
-> This driver has been developed and tested with the Apple Studio Display.
-> Here is a small excerpt from the decoded HID descriptor showing the
-> feature field for setting the brightness:
-> 
->   Usage Page (Monitor VESA VCP),  ; Monitor VESA VPC (82h, monitor page)
->   Usage (10h, Brightness),
->   Logical Minimum (400),
->   Logical Maximum (60000),
->   Unit (Centimeter^-2 * Candela),
->   Unit Exponent (14),
->   Report Size (32),
->   Report Count (1),
->   Feature (Variable, Null State),
-> 
-> The full HID descriptor dump is available as a comment in the source
-> code.
-> 
-> Signed-off-by: Julius Zint <julius@zint.sh>
-> ---
->  drivers/video/backlight/Kconfig  |   8 +
->  drivers/video/backlight/Makefile |   1 +
->  drivers/video/backlight/hid_bl.c | 269 +++++++++++++++++++++++++++++++
->  3 files changed, 278 insertions(+)
->  create mode 100644 drivers/video/backlight/hid_bl.c
-> 
-> diff --git a/drivers/video/backlight/Kconfig b/drivers/video/backlight/Kconfig
-> index 51387b1ef012..b964a820956d 100644
-> --- a/drivers/video/backlight/Kconfig
-> +++ b/drivers/video/backlight/Kconfig
-> @@ -472,6 +472,14 @@ config BACKLIGHT_LED
->  	  If you have a LCD backlight adjustable by LED class driver, say Y
->  	  to enable this driver.
->  
-> +config BACKLIGHT_HID
-> +	tristate "VESA VCP HID Backlight Driver"
-> +	depends on HID
-> +	help
-> +	  If you have an external display with VESA compliant HID brightness
-> +	  controls then say Y to enable this backlight driver. Currently the
-> +	  only supported device is the Apple Studio Display.
-> +
->  endif # BACKLIGHT_CLASS_DEVICE
->  
->  endmenu
-> diff --git a/drivers/video/backlight/Makefile b/drivers/video/backlight/Makefile
-> index f72e1c3c59e9..835f9b8772c7 100644
-> --- a/drivers/video/backlight/Makefile
-> +++ b/drivers/video/backlight/Makefile
-> @@ -58,3 +58,4 @@ obj-$(CONFIG_BACKLIGHT_WM831X)		+= wm831x_bl.o
->  obj-$(CONFIG_BACKLIGHT_ARCXCNN) 	+= arcxcnn_bl.o
->  obj-$(CONFIG_BACKLIGHT_RAVE_SP)		+= rave-sp-backlight.o
->  obj-$(CONFIG_BACKLIGHT_LED)		+= led_bl.o
-> +obj-$(CONFIG_BACKLIGHT_HID)		+= hid_bl.o
-> diff --git a/drivers/video/backlight/hid_bl.c b/drivers/video/backlight/hid_bl.c
-> new file mode 100644
-> index 000000000000..b40f8f412ee2
-> --- /dev/null
-> +++ b/drivers/video/backlight/hid_bl.c
-> @@ -0,0 +1,269 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/device.h>
-> +#include <linux/hid.h>
-> +#include <linux/module.h>
-> +#include <linux/backlight.h>
-> +
-> +#define APPLE_STUDIO_DISPLAY_VENDOR_ID  0x05ac
-> +#define APPLE_STUDIO_DISPLAY_PRODUCT_ID 0x1114
-> +
-> +#define HID_USAGE_MONITOR_CTRL			0x800001
-> +#define HID_USAGE_VESA_VCP_BRIGHTNESS		0x820010
-> +
-> +/*
-> + * Apple Studio Display HID report descriptor
-> + *
-> + * Usage Page (Monitor),               ; USB monitor (80h, monitor page)
-> + * Usage (01h),
-> + * Collection (Application),
-> + *     Report ID (1),
-> + *
-> + *     Usage Page (Monitor VESA VCP),  ; Monitor VESA virtual control panel (82h, monitor page)
-> + *     Usage (10h, Brightness),
-> + *     Logical Minimum (400),
-> + *     Logical Maximum (60000),
-> + *     Unit (Centimeter^-2 * Candela),
-> + *     Unit Exponent (14),
-> + *     Report Size (32),
-> + *     Report Count (1),
-> + *     Feature (Variable, Null State),
-> + *
-> + *     Usage Page (PID),               ; Physical interface device (0Fh)
-> + *     Usage (50h),
-> + *     Logical Minimum (0),
-> + *     Logical Maximum (20000),
-> + *     Unit (1001h),
-> + *     Unit Exponent (13),
-> + *     Report Size (16),
-> + *     Feature (Variable, Null State),
-> + *
-> + *     Usage Page (Monitor VESA VCP),  ; Monitor VESA virtual control panel (82h, monitor page)
-> + *     Usage (10h, Brightness),
-> + *     Logical Minimum (400),
-> + *     Logical Maximum (60000),
-> + *     Unit (Centimeter^-2 * Candela),
-> + *     Unit Exponent (14),
-> + *     Report Size (32),
-> + *     Report Count (1),
-> + *     Input (Variable),
-> + * End Collection
-> + */
-> +
-> +struct hid_bl_data {
-> +	struct hid_device *hdev;
-> +	unsigned int min_brightness;
-> +	unsigned int max_brightness;
-> +	struct hid_field *input_field;
-> +	struct hid_field *feature_field;
-> +};
-> +
-> +static struct hid_field *hid_get_usage_field(struct hid_device *hdev,
-> +					     unsigned int report_type,
-> +					     unsigned int application, unsigned int usage)
-> +{
-> +	struct hid_report_enum *re = &hdev->report_enum[report_type];
-> +	struct hid_report *report;
-> +	int i, j;
-> +
-> +	list_for_each_entry(report, &re->report_list, list) {
-> +		if (report->application != application)
-> +			continue;
-> +
-> +		for (i = 0; i < report->maxfield; i++) {
-> +			struct hid_field *field = report->field[i];
-> +
-> +			for (j = 0; j < field->maxusage; j++)
-> +				if (field->usage[j].hid == usage)
-> +					return field;
-> +		}
-> +	}
-> +	return NULL;
-> +}
-> +
-> +static void hid_bl_remove(struct hid_device *hdev)
-> +{
-> +	struct backlight_device *bl;
-> +	struct hid_bl_data *data;
-> +
-> +	hid_dbg(hdev, "remove\n");
-> +	bl = hid_get_drvdata(hdev);
-> +	data = bl_get_data(bl);
-> +
-> +	devm_backlight_device_unregister(&hdev->dev, bl);
-> +	hid_hw_close(hdev);
-> +	hid_hw_stop(hdev);
-> +	hid_set_drvdata(hdev, NULL);
-> +	devm_kfree(&hdev->dev, data);
-> +}
-> +
-> +static int hid_bl_get_brightness_raw(struct hid_bl_data *data)
-> +{
-> +	struct hid_field *field;
-> +	int result;
-> +
-> +	field = data->input_field;
-> +	hid_hw_request(data->hdev, field->report, HID_REQ_GET_REPORT);
-> +	hid_hw_wait(data->hdev);
-> +	result = *field->new_value;
-> +	hid_dbg(data->hdev, "get brightness: %d\n", result);
-> +
-> +	return result;
-> +}
-> +
-> +static int hid_bl_get_brightness(struct backlight_device *bl)
-> +{
-> +	struct hid_bl_data *data;
-> +	int brightness;
-> +
-> +	data = bl_get_data(bl);
-> +	brightness = hid_bl_get_brightness_raw(data);
-> +	return brightness - data->min_brightness;
-> +}
-> +
-> +static void hid_bl_set_brightness_raw(struct hid_bl_data *data, int brightness)
-> +{
-> +	struct hid_field *field;
-> +
-> +	field = data->feature_field;
-> +	*field->value = brightness;
-> +	hid_hw_request(data->hdev, field->report, HID_REQ_SET_REPORT);
-> +	hid_hw_wait(data->hdev);
-> +	hid_dbg(data->hdev, "set brightness: %d\n", brightness);
-> +}
-> +
-> +static int hid_bl_update_status(struct backlight_device *bl)
-> +{
-> +	struct hid_bl_data *data;
-> +	int brightness;
-> +
-> +	data = bl_get_data(bl);
-> +	brightness = backlight_get_brightness(bl);
-> +	brightness += data->min_brightness;
-> +	hid_bl_set_brightness_raw(data, brightness);
-> +	return 0;
-> +}
-> +
-> +static const struct backlight_ops hid_bl_ops = {
-> +	.update_status  = hid_bl_update_status,
-> +	.get_brightness = hid_bl_get_brightness,
-> +};
-> +
-> +static int hid_bl_probe(struct hid_device *hdev, const struct hid_device_id *id)
-> +{
-> +	int ret;
-> +	struct hid_field *input_field;
-> +	struct hid_field *feature_field;
-> +	struct hid_bl_data *data;
-> +	struct backlight_properties props;
-> +	struct backlight_device *bl;
-> +
-> +	hid_dbg(hdev, "probe\n");
-> +
-> +	ret = hid_parse(hdev);
-> +	if (ret) {
-> +		hid_err(hdev, "parse failed: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = hid_hw_start(hdev, HID_CONNECT_DRIVER);
-> +	if (ret) {
-> +		hid_err(hdev, "hw start failed: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	input_field = hid_get_usage_field(hdev, HID_INPUT_REPORT,
-> +					  HID_USAGE_MONITOR_CTRL,
-> +					  HID_USAGE_VESA_VCP_BRIGHTNESS);
-> +	if (input_field == NULL) {
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	feature_field = hid_get_usage_field(hdev, HID_FEATURE_REPORT,
-> +					    HID_USAGE_MONITOR_CTRL,
-> +					    HID_USAGE_VESA_VCP_BRIGHTNESS);
-> +	if (feature_field == NULL) {
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	if (input_field->logical_minimum != feature_field->logical_minimum) {
-> +		hid_warn(hdev, "minimums do not match: %d / %d\n",
-> +			 input_field->logical_minimum,
-> +			 feature_field->logical_minimum);
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	if (input_field->logical_maximum != feature_field->logical_maximum) {
-> +		hid_warn(hdev, "maximums do not match: %d / %d\n",
-> +			 input_field->logical_maximum,
-> +			 feature_field->logical_maximum);
-> +		ret = -ENODEV;
-> +		goto exit_stop;
-> +	}
-> +
-> +	hid_dbg(hdev, "Monitor VESA VCP with brightness control\n");
-> +
-> +	ret = hid_hw_open(hdev);
-> +	if (ret) {
-> +		hid_err(hdev, "hw open failed: %d\n", ret);
-> +		goto exit_stop;
-> +	}
-> +
-> +	data = devm_kzalloc(&hdev->dev, sizeof(*data), GFP_KERNEL);
-> +	if (data == NULL) {
-> +		ret = -ENOMEM;
-> +		goto exit_stop;
-> +	}
-> +	data->hdev = hdev;
-> +	data->min_brightness = input_field->logical_minimum;
-> +	data->max_brightness = input_field->logical_maximum;
-> +	data->input_field = input_field;
-> +	data->feature_field = feature_field;
-> +
-> +	memset(&props, 0, sizeof(props));
-> +	props.type = BACKLIGHT_RAW;
-> +	props.max_brightness = data->max_brightness - data->min_brightness;
-> +
-> +	bl = devm_backlight_device_register(&hdev->dev, "vesa_vcp",
-> +					    &hdev->dev, data,
-> +					    &hid_bl_ops,
-> +					    &props);
-> +	if (IS_ERR(bl)) {
-> +		ret = PTR_ERR(bl);
-> +		hid_err(hdev, "failed to register backlight: %d\n", ret);
-> +		goto exit_free;
-> +	}
-> +
-> +	hid_set_drvdata(hdev, bl);
-> +
-> +	return 0;
-> +
-> +exit_free:
-> +	hid_hw_close(hdev);
-> +	devm_kfree(&hdev->dev, data);
-> +
-> +exit_stop:
-> +	hid_hw_stop(hdev);
-> +	return ret;
-> +}
-> +
-> +static const struct hid_device_id hid_bl_devices[] = {
-> +	{ HID_USB_DEVICE(APPLE_STUDIO_DISPLAY_VENDOR_ID,
-> +			 APPLE_STUDIO_DISPLAY_PRODUCT_ID) },
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(hid, hid_bl_devices);
-> +
-> +static struct hid_driver hid_bl_driver = {
-> +	.name = "hid_backlight",
-> +	.id_table = hid_bl_devices,
-> +	.probe = hid_bl_probe,
-> +	.remove = hid_bl_remove,
-> +};
-> +module_hid_driver(hid_bl_driver);
-> +
-> +MODULE_AUTHOR("Julius Zint <julius@zint.sh>");
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("Backlight driver for HID devices");
-> -- 
-> 2.41.0
-> 
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
