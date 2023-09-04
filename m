@@ -2,65 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 346787919E2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69C647919E3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237610AbjIDOoD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:44:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35684 "EHLO
+        id S243489AbjIDOo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjIDOn5 (ORCPT
+        with ESMTP id S238076AbjIDOoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:43:57 -0400
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FE41CFB;
-        Mon,  4 Sep 2023 07:43:53 -0700 (PDT)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 384AhChY001821;
-        Mon, 4 Sep 2023 07:43:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=pfpt0220; bh=af+8YGkglH8w4EbypmhBL4+TD5KHgfrltyX7odw8BMU=;
- b=Wcl5NkCvTjOwYc3i3mDg5xncEnXYrMzQJXWUG9XUEJGnjhIaq/t2l3Nf8vg+O+I5Mo6K
- z3qsaK6yTLjE94yoVJy3R0CnjH76fgmwvXaLb0kdqxfvhR9P7j0ayJ38AB9bVXljBGhZ
- okN2EGy2S1U6RZ/VByGIu8oAzrykWK8Uk5Ni+I98/9iNvhQ1sUVi19ppMV1hOBndcb8q
- 4MFPVznzAWhxH8RzL1a1gchxl8vqkLDLJPg/WdGHYYFRKcKQYpRTLRUNmvL1CiGrxsaC
- fTW4Lv+7jrJJs2x19S8ulAuNWNjKdRq7q0ulMtEAb2TS5R0QVVW082bYGPlCPfvL2yyz Pw== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3swdqygpk1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Mon, 04 Sep 2023 07:43:12 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Mon, 4 Sep
- 2023 07:43:10 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Mon, 4 Sep 2023 07:43:10 -0700
-Received: from marvell-OptiPlex-7090.marvell.com (unknown [10.28.36.165])
-        by maili.marvell.com (Postfix) with ESMTP id 47ECE3F7062;
-        Mon,  4 Sep 2023 07:43:06 -0700 (PDT)
-From:   Ratheesh Kannoth <rkannoth@marvell.com>
-To:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <rkannoth@marvell.com>, <hawk@kernel.org>,
-        <alexander.duyck@gmail.com>, <ilias.apalodimas@linaro.org>,
-        <linyunsheng@huawei.com>, <bigeasy@linutronix.de>
-Subject: [PATCH net] octeontx2-pf: Fix page pool cache index corruption.
-Date:   Mon, 4 Sep 2023 20:13:04 +0530
-Message-ID: <20230904144304.3280804-1-rkannoth@marvell.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 4 Sep 2023 10:44:25 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F63FE6A
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:44:21 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3846MTj3025299;
+        Mon, 4 Sep 2023 09:44:05 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=UquMUAA6smkOt0v8FpZnQ4IfGYYJgpzl8t5NK4xEi/g=; b=
+        Qj5oPuJB/mOANTibVFgpNara92UszKTCKmn8Uj5sLU+X11bukj4hE9SjhvuL9Mqz
+        69D8Xrexe2KaUegLtO+vDthiVc8iDhcVhXlM0niKj3i3SXmGo+iaAIxXR3dVPBWj
+        +zPowyyComL+Z98W2KsCRSdwXg1hhM7dIzuxYwP+4m8q/buc+RRLXnv2GvSUE/Hv
+        TaBl7LOGp3OoJ5KX68L955eCPZ34fSz8FsE1PuVP8CLXOf7iZroO//9y/lfPj/lW
+        Rtha240t1PIs32i/b9VSiqSHNuPD48OqvMg5+yoMv5v4ON52fUntCTEbfNGhjb5l
+        T8kMCBcBerawJSWV6ATchw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex2ek2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 09:44:05 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 4 Sep
+ 2023 15:44:03 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Mon, 4 Sep 2023 15:44:03 +0100
+Received: from [198.61.65.243] (LONN2DGDQ73.ad.cirrus.com [198.61.65.243])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id CE2ECB06;
+        Mon,  4 Sep 2023 14:44:02 +0000 (UTC)
+Message-ID: <34c0e515-bc69-0d67-eac5-581875179ce6@opensource.cirrus.com>
+Date:   Mon, 4 Sep 2023 15:44:02 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: Dnju9oP474xHhMz6Q0WrL0eIO5YANR_b
-X-Proofpoint-ORIG-GUID: Dnju9oP474xHhMz6Q0WrL0eIO5YANR_b
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-04_07,2023-08-31_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1] ALSA: hda: cs35l41: Support mute notifications for
+ CS35L41 HDA
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+References: <20230825120525.1337417-1-sbinding@opensource.cirrus.com>
+ <87edjr7218.wl-tiwai@suse.de>
+ <32a62c2f-5000-132c-255c-8ccd135ba60f@opensource.cirrus.com>
+ <87h6oisz9c.wl-tiwai@suse.de>
+ <71808adb-bf54-a34b-5a63-70d454e3d426@opensource.cirrus.com>
+ <87zg22jf53.wl-tiwai@suse.de>
+ <0dc89771-07d5-6a3a-3ca6-7b99cf53ab98@opensource.cirrus.com>
+ <87o7iijb4r.wl-tiwai@suse.de>
+ <6f75a424-2c0c-be95-fad3-0da8b3ac3477@opensource.cirrus.com>
+ <87jzt6ja5s.wl-tiwai@suse.de>
+From:   Stefan Binding <sbinding@opensource.cirrus.com>
+In-Reply-To: <87jzt6ja5s.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: _aZ_TdcframtlzB68DJayYg6O2KAz4WH
+X-Proofpoint-GUID: _aZ_TdcframtlzB68DJayYg6O2KAz4WH
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,298 +80,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The access to page pool `cache' array and the `count' variable
-is not locked. Page pool cache access is fine as long as there
-is only one consumer per pool.
 
-octeontx2 driver fills in rx buffers from page pool in NAPI context.
-If system is stressed and could not allocate buffers, refiiling work
-will be delegated to a delayed workqueue. This means that there are
-two cosumers to the page pool cache.
+On 04/09/2023 15:16, Takashi Iwai wrote:
+> On Mon, 04 Sep 2023 16:05:59 +0200,
+> Stefan Binding wrote:
+>>
+>> On 04/09/2023 14:55, Takashi Iwai wrote:
+>>> On Mon, 04 Sep 2023 15:47:49 +0200,
+>>> Stefan Binding wrote:
+>>>> On 04/09/2023 13:29, Takashi Iwai wrote:
+>>>>> On Mon, 04 Sep 2023 14:00:20 +0200,
+>>>>> Stefan Binding wrote:
+>>>>>> On 29/08/2023 15:23, Takashi Iwai wrote:
+>>>>>>> On Tue, 29 Aug 2023 16:18:12 +0200,
+>>>>>>> Stefan Binding wrote:
+>>>>>>>> On 25/08/2023 13:13, Takashi Iwai wrote:
+>>>>>>>>> On Fri, 25 Aug 2023 14:05:25 +0200,
+>>>>>>>>> Stefan Binding wrote:
+>>>>>>>>>> From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+>>>>>>>>>>
+>>>>>>>>>> Some laptops require a hardware based mute system, where when a hotkey
+>>>>>>>>>> is pressed, it forces the amp to be muted.
+>>>>>>>>>>
+>>>>>>>>>> For CS35L41, when the hotkey is pressed, an acpi notification is sent
+>>>>>>>>>> to the CS35L41 Device Node. The driver needs to handle this notification
+>>>>>>>>>> and call a _DSM function to retrieve the mute state.
+>>>>>>>>>>
+>>>>>>>>>> Since the amp is only muted during playback, the driver will only mute
+>>>>>>>>>> or unmute if playback is occurring, otherwise it will save the mute
+>>>>>>>>>> state for when playback starts.
+>>>>>>>>>>
+>>>>>>>>>> Only one handler can be registered for the acpi notification, but all
+>>>>>>>>>> amps need to receive that notification, we can register a single handler
+>>>>>>>>>> inside the Realtek HDA driver, so that it can then notify through the
+>>>>>>>>>> component framework.
+>>>>>>>>>>
+>>>>>>>>>> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+>>>>>>>>>> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+>>>>>>>>> We don't do normally in this way.  The ACPI hot key handling is done
+>>>>>>>>> via user-space, and user-space daemon triggers the mute of the
+>>>>>>>>> system.
+>>>>>>>>>
+>>>>>>>>> Can't the ACPI notify the key event on those machines?
+>>>>>>>> This feature is not the "normal" mute button on a keyboard, it is a
+>>>>>>>> custom request
+>>>>>>>> from a manufacturer which only mutes the audio on the speakers.
+>>>>>>>> On previous generations, this was achieved using a GPIO controlled by
+>>>>>>>> the BIOS/EC.
+>>>>>>>> However, since CS35L41 does not have such GPIO, we must control it by
+>>>>>>>> other means.
+>>>>>>>>
+>>>>>>>> Our solution, which we have to share with the Windows driver, it to use ACPI
+>>>>>>>> notifications to tell the driver to mute the amps when the shortcut is
+>>>>>>>> pressed.
+>>>>>>>>
+>>>>>>>> Does this seem like a valid exception to the typical approach?
+>>>>>>> It's still the question whether we have to do this inevitably in the
+>>>>>>> kernel in a way like that.  It sounds quite unusual.  Why this must be
+>>>>>>> handled directly?  IOW, what's the difference from the "normal" mute
+>>>>>>> button?
+>>>>>>>
+>>>>>>> And, even if we take this approach, it leaves the device muted without
+>>>>>>> exposing it to user-space.  Then user wouldn't know what happens.
+>>>>>>>
+>>>>>>>
+>>>>>>> thanks,
+>>>>>>>
+>>>>>>> Takashi
+>>>>>> We spoke to the ODM for this system to get a more detailed explanation
+>>>>>> of this feature.
+>>>>>> The keyboard shortcut enables something called "Unobtrusive
+>>>>>> Mode". According to their explanation:
+>>>>>>
+>>>>>> - Unobtrusive mode is distinct to normal mute, as it only mutes the speakers
+>>>>>> - There is no requirement to update the volume controls, as the screen
+>>>>>> backlight will be off anyway in this mode
+>>>>>> - All other unobtrusive mode functions are enabled without user-space
+>>>>>> dependencies, and they would prefer not to make speaker mute an
+>>>>>> exception
+>>>>> Thanks, it gives a bit better clue.
+>>>>> The remaining question is rather the exact behavior of this
+>>>>> "unobtrusive mode".  How is it triggered, and what's the exact
+>>>>> expectation?  e.g. It must secretly mute the speaker?  That is, it
+>>>>> must not  expose the mixer state change to user-space?  Or is it tied
+>>>>> with the normal mixer state and user may unmute again?
+>>>>>
+>>>>>
+>>>>> Takashi
+>>>>   From what we understand, unobtrusive mode, which is activated by a
+>>>> keyboard shortcut (not a single key), performs several operations,
+>>>> such as:
+>>>> - muting the speaker (headphones remain unmuted)
+>>>> - dimming/shutting down the LCD backlight
+>>>> - turning off keyboard backlight and any keyboard LEDs
+>>>> Apart from muting the speaker, all of these operations are done in
+>>>> hardware, as the keyboard shortcut still works in the BIOS.
+>>>> Previous laptops with this feature appear to use a GPIO to mute the
+>>>> speaker, and we are informed that on those laptops userspace was not
+>>>> informed of the mute.
+>>>> Since CS35L41 does not have a GPIO mute, we had to use a different
+>>>> solution, involving ACPI notifications, which request the driver to
+>>>> mute.
+>>>> The same mechanism is used in Windows.
+>>>> Our understanding is that it is not intended for the mute to be
+>>>> overridden by userspace.
+>>>> Similarly, on previous laptops, userspace could not override this
+>>>> mute, since it was not informed of it.
+>>> OK, thanks for explanation.
+>>>
+>>> I still don't like the idea to hide this completely, though.  The mode
+>>> should be somehow exposed even if the mute isn't controllable via
+>>> mixer, but currently there is no indication at all.
+>>>
+>>>
+>>> Takashi
+>> We could create and expose a read-only ALSA control which would
+>> display the mute status of the amp.
+>> This way its possible to see the status of the amp, without breaking
+>> the mechanism.
+>> Would this be acceptable?
+> Yeah, that's a compromise.
+>
+> BTW, the acpi notification handling is enabled for all devices?  I
+> don't see the conditional enablement.
+>
+>
+> thanks,
+>
+> Takashi
 
-Either workqueue or IRQ/NAPI can be run on other CPU. This will lead
-to lock less access, hence corruption of cache pool indexes.
+Thanks, I re-do this patch and add the ALSA control.
+Whilst I dont think having the notification handler installed for all 
+devices causes any issues, it is unneccesary for most models, so I'll 
+add a conditional check for this.
 
-To fix this issue, worqueue is removed. If refilling fails in NAPI
-context, same NAPI is rescheduled with a delay to redo the filling
-of rx buffers.
+Thanks,
 
-Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
-Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
----
- .../ethernet/marvell/octeontx2/nic/cn10k.c    |  5 +-
- .../ethernet/marvell/octeontx2/nic/cn10k.h    |  2 +-
- .../marvell/octeontx2/nic/otx2_common.c       | 59 -------------------
- .../marvell/octeontx2/nic/otx2_common.h       |  3 +-
- .../ethernet/marvell/octeontx2/nic/otx2_pf.c  |  5 +-
- .../marvell/octeontx2/nic/otx2_txrx.c         | 23 ++++++--
- .../marvell/octeontx2/nic/otx2_txrx.h         |  5 +-
- 7 files changed, 27 insertions(+), 75 deletions(-)
-
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-index 826f691de259..026698a78f77 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.c
-@@ -107,12 +107,13 @@ int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura)
- }
- 
- #define NPA_MAX_BURST 16
--void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
-+int cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- {
- 	struct otx2_nic *pfvf = dev;
- 	u64 ptrs[NPA_MAX_BURST];
- 	int num_ptrs = 1;
- 	dma_addr_t bufptr;
-+	int cnt = cq->pool_ptrs;
- 
- 	/* Refill pool with new buffers */
- 	while (cq->pool_ptrs) {
-@@ -131,6 +132,8 @@ void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- 			num_ptrs = 1;
- 		}
- 	}
-+
-+	return cnt - cq->pool_ptrs;
- }
- 
- void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq, int size, int qidx)
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
-index 8ae96815865e..c1861f7de254 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/cn10k.h
-@@ -24,7 +24,7 @@ static inline int mtu_to_dwrr_weight(struct otx2_nic *pfvf, int mtu)
- 	return weight;
- }
- 
--void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
-+int cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
- void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq, int size, int qidx);
- int cn10k_sq_aq_init(void *dev, u16 qidx, u16 sqb_aura);
- int cn10k_lmtst_init(struct otx2_nic *pfvf);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-index 8511906cb4e2..d44f88ece544 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.c
-@@ -575,17 +575,6 @@ int otx2_alloc_buffer(struct otx2_nic *pfvf, struct otx2_cq_queue *cq,
- 		      dma_addr_t *dma)
- {
- 	if (unlikely(__otx2_alloc_rbuf(pfvf, cq->rbpool, dma))) {
--		struct refill_work *work;
--		struct delayed_work *dwork;
--
--		work = &pfvf->refill_wrk[cq->cq_idx];
--		dwork = &work->pool_refill_work;
--		/* Schedule a task if no other task is running */
--		if (!cq->refill_task_sched) {
--			cq->refill_task_sched = true;
--			schedule_delayed_work(dwork,
--					      msecs_to_jiffies(100));
--		}
- 		return -ENOMEM;
- 	}
- 	return 0;
-@@ -1037,7 +1026,6 @@ static int otx2_cq_init(struct otx2_nic *pfvf, u16 qidx)
- 	pool_id = ((cq->cq_type == CQ_RX) &&
- 		   (pfvf->hw.rqpool_cnt != pfvf->hw.rx_queues)) ? 0 : qidx;
- 	cq->rbpool = &qset->pool[pool_id];
--	cq->refill_task_sched = false;
- 
- 	/* Get memory to put this msg */
- 	aq = otx2_mbox_alloc_msg_nix_aq_enq(&pfvf->mbox);
-@@ -1079,43 +1067,6 @@ static int otx2_cq_init(struct otx2_nic *pfvf, u16 qidx)
- 	return otx2_sync_mbox_msg(&pfvf->mbox);
- }
- 
--static void otx2_pool_refill_task(struct work_struct *work)
--{
--	struct otx2_cq_queue *cq;
--	struct otx2_pool *rbpool;
--	struct refill_work *wrk;
--	int qidx, free_ptrs = 0;
--	struct otx2_nic *pfvf;
--	dma_addr_t bufptr;
--
--	wrk = container_of(work, struct refill_work, pool_refill_work.work);
--	pfvf = wrk->pf;
--	qidx = wrk - pfvf->refill_wrk;
--	cq = &pfvf->qset.cq[qidx];
--	rbpool = cq->rbpool;
--	free_ptrs = cq->pool_ptrs;
--
--	while (cq->pool_ptrs) {
--		if (otx2_alloc_rbuf(pfvf, rbpool, &bufptr)) {
--			/* Schedule a WQ if we fails to free atleast half of the
--			 * pointers else enable napi for this RQ.
--			 */
--			if (!((free_ptrs - cq->pool_ptrs) > free_ptrs / 2)) {
--				struct delayed_work *dwork;
--
--				dwork = &wrk->pool_refill_work;
--				schedule_delayed_work(dwork,
--						      msecs_to_jiffies(100));
--			} else {
--				cq->refill_task_sched = false;
--			}
--			return;
--		}
--		pfvf->hw_ops->aura_freeptr(pfvf, qidx, bufptr + OTX2_HEAD_ROOM);
--		cq->pool_ptrs--;
--	}
--	cq->refill_task_sched = false;
--}
- 
- int otx2_config_nix_queues(struct otx2_nic *pfvf)
- {
-@@ -1149,17 +1100,7 @@ int otx2_config_nix_queues(struct otx2_nic *pfvf)
- 	pfvf->cq_op_addr = (__force u64 *)otx2_get_regaddr(pfvf,
- 							   NIX_LF_CQ_OP_STATUS);
- 
--	/* Initialize work queue for receive buffer refill */
--	pfvf->refill_wrk = devm_kcalloc(pfvf->dev, pfvf->qset.cq_cnt,
--					sizeof(struct refill_work), GFP_KERNEL);
--	if (!pfvf->refill_wrk)
--		return -ENOMEM;
- 
--	for (qidx = 0; qidx < pfvf->qset.cq_cnt; qidx++) {
--		pfvf->refill_wrk[qidx].pf = pfvf;
--		INIT_DELAYED_WORK(&pfvf->refill_wrk[qidx].pool_refill_work,
--				  otx2_pool_refill_task);
--	}
- 	return 0;
- }
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-index 4c6032ee7800..01e2d35ce1e0 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_common.h
-@@ -370,7 +370,7 @@ struct dev_hw_ops {
- 	int	(*sq_aq_init)(void *dev, u16 qidx, u16 sqb_aura);
- 	void	(*sqe_flush)(void *dev, struct otx2_snd_queue *sq,
- 			     int size, int qidx);
--	void	(*refill_pool_ptrs)(void *dev, struct otx2_cq_queue *cq);
-+	int	(*refill_pool_ptrs)(void *dev, struct otx2_cq_queue *cq);
- 	void	(*aura_freeptr)(void *dev, int aura, u64 buf);
- };
- 
-@@ -493,7 +493,6 @@ struct otx2_nic {
- 	struct work_struct	reset_task;
- 	struct workqueue_struct	*flr_wq;
- 	struct flr_work		*flr_wrk;
--	struct refill_work	*refill_wrk;
- 	struct workqueue_struct	*otx2_wq;
- 	struct work_struct	rx_mode_work;
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-index 70b9065f7d10..c5a6d0e4e157 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
-@@ -1902,7 +1902,7 @@ int otx2_stop(struct net_device *netdev)
- 	struct otx2_cq_poll *cq_poll = NULL;
- 	struct otx2_qset *qset = &pf->qset;
- 	struct otx2_rss_info *rss;
--	int qidx, vec, wrk;
-+	int qidx, vec;
- 
- 	/* If the DOWN flag is set resources are already freed */
- 	if (pf->flags & OTX2_FLAG_INTF_DOWN)
-@@ -1950,9 +1950,6 @@ int otx2_stop(struct net_device *netdev)
- 	for (qidx = 0; qidx < netdev->num_tx_queues; qidx++)
- 		netdev_tx_reset_queue(netdev_get_tx_queue(netdev, qidx));
- 
--	for (wrk = 0; wrk < pf->qset.cq_cnt; wrk++)
--		cancel_delayed_work_sync(&pf->refill_wrk[wrk].pool_refill_work);
--	devm_kfree(pf->dev, pf->refill_wrk);
- 
- 	kfree(qset->sq);
- 	kfree(qset->cq);
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-index e369baf11530..cf2e631af58b 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-@@ -424,10 +424,11 @@ static int otx2_rx_napi_handler(struct otx2_nic *pfvf,
- 	return processed_cqe;
- }
- 
--void otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
-+int otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- {
- 	struct otx2_nic *pfvf = dev;
- 	dma_addr_t bufptr;
-+	int cnt = cq->pool_ptrs;
- 
- 	while (cq->pool_ptrs) {
- 		if (otx2_alloc_buffer(pfvf, cq, &bufptr))
-@@ -435,6 +436,8 @@ void otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq)
- 		otx2_aura_freeptr(pfvf, cq->cq_idx, bufptr + OTX2_HEAD_ROOM);
- 		cq->pool_ptrs--;
- 	}
-+
-+	return cnt - cq->pool_ptrs;
- }
- 
- static int otx2_tx_napi_handler(struct otx2_nic *pfvf,
-@@ -521,6 +524,7 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
- 	struct otx2_cq_queue *cq;
- 	struct otx2_qset *qset;
- 	struct otx2_nic *pfvf;
-+	int filled_cnt = -1;
- 
- 	cq_poll = container_of(napi, struct otx2_cq_poll, napi);
- 	pfvf = (struct otx2_nic *)cq_poll->dev;
-@@ -541,7 +545,8 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
- 	}
- 
- 	if (rx_cq && rx_cq->pool_ptrs)
--		pfvf->hw_ops->refill_pool_ptrs(pfvf, rx_cq);
-+		filled_cnt = pfvf->hw_ops->refill_pool_ptrs(pfvf, rx_cq);
-+
- 	/* Clear the IRQ */
- 	otx2_write64(pfvf, NIX_LF_CINTX_INT(cq_poll->cint_idx), BIT_ULL(0));
- 
-@@ -561,10 +566,18 @@ int otx2_napi_handler(struct napi_struct *napi, int budget)
- 				otx2_config_irq_coalescing(pfvf, i);
- 		}
- 
--		/* Re-enable interrupts */
--		otx2_write64(pfvf, NIX_LF_CINTX_ENA_W1S(cq_poll->cint_idx),
--			     BIT_ULL(0));
-+		/* Schedule NAPI again to refill rx buffers */
-+		if (unlikely(!filled_cnt)) {
-+			udelay(1000);
-+			napi_schedule(napi);
-+		} else {
-+			/* Re-enable interrupts */
-+			otx2_write64(pfvf,
-+				     NIX_LF_CINTX_ENA_W1S(cq_poll->cint_idx),
-+				     BIT_ULL(0));
-+		}
- 	}
-+
- 	return workdone;
- }
- 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-index 9e3bfbe5c480..bb718c7ad8f3 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.h
-@@ -128,7 +128,6 @@ struct otx2_cq_queue {
- 	u8			cq_idx;
- 	u8			cq_type;
- 	u8			cint_idx; /* CQ interrupt id */
--	u8			refill_task_sched;
- 	u16			cqe_size;
- 	u16			pool_ptrs;
- 	u32			cqe_cnt;
-@@ -170,6 +169,6 @@ void cn10k_sqe_flush(void *dev, struct otx2_snd_queue *sq,
- 		     int size, int qidx);
- void otx2_sqe_flush(void *dev, struct otx2_snd_queue *sq,
- 		    int size, int qidx);
--void otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
--void cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
-+int otx2_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
-+int cn10k_refill_pool_ptrs(void *dev, struct otx2_cq_queue *cq);
- #endif /* OTX2_TXRX_H */
--- 
-2.25.1
+Stefan
 
