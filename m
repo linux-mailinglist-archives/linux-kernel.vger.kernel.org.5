@@ -2,69 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DA179165F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:46:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1924B791660
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352082AbjIDLqD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 07:46:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
+        id S1352847AbjIDLqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 07:46:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232492AbjIDLqC (ORCPT
+        with ESMTP id S1352841AbjIDLqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 07:46:02 -0400
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7836F1AB;
-        Mon,  4 Sep 2023 04:45:58 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4RfRfT6zsNz4f3n5t;
-        Mon,  4 Sep 2023 19:45:53 +0800 (CST)
-Received: from [10.174.179.247] (unknown [10.174.179.247])
-        by APP4 (Coremail) with SMTP id gCh0CgA3x6lvw_VkE_JgCQ--.36724S3;
-        Mon, 04 Sep 2023 19:45:55 +0800 (CST)
-Message-ID: <5d37add3-41ce-e2af-b45a-d701eaf36a6c@huaweicloud.com>
-Date:   Mon, 4 Sep 2023 19:45:51 +0800
+        Mon, 4 Sep 2023 07:46:09 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9E3CC6;
+        Mon,  4 Sep 2023 04:46:05 -0700 (PDT)
+Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.56])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4RfRZs5m1Hz1DDXx;
+        Mon,  4 Sep 2023 19:42:45 +0800 (CST)
+Received: from [10.67.111.205] (10.67.111.205) by
+ kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Mon, 4 Sep 2023 19:46:03 +0800
+Subject: Re: [RFC v1 05/16] perf kwork: Overwrite original atom in the list
+ when a new atom is pushed.
+To:     Ian Rogers <irogers@google.com>
+CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
+        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
+        <jolsa@kernel.org>, <namhyung@kernel.org>,
+        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
+        <sandipan.das@amd.com>, <ravi.bangoria@amd.com>,
+        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
+References: <20230812084917.169338-1-yangjihong1@huawei.com>
+ <20230812084917.169338-6-yangjihong1@huawei.com>
+ <CAP-5=fWLmRWPdnxSG1AcyxzaupUAn9sX0M-dtDB1dd7-FCEhrw@mail.gmail.com>
+From:   Yang Jihong <yangjihong1@huawei.com>
+Message-ID: <91cb7bea-3bec-b40c-24a2-be9052a30937@huawei.com>
+Date:   Mon, 4 Sep 2023 19:46:02 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH] scsi: ata: Fix a race condition between scsi error
- handler and ahci interrupt
-To:     Niklas Cassel <Niklas.Cassel@wdc.com>
-Cc:     "dlemoal@kernel.org" <dlemoal@kernel.org>,
-        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "yukuai3@huawei.com" <yukuai3@huawei.com>,
-        "yi.zhang@huawei.com" <yi.zhang@huawei.com>,
-        "houtao1@huawei.com" <houtao1@huawei.com>,
-        "yangerkun@huawei.com" <yangerkun@huawei.com>
-References: <20230810014848.2148316-1-linan666@huaweicloud.com>
- <ZONr0f26IT/QKsSu@x1-carbon>
- <f33816ef-ce26-1501-99b6-c75f91c6d8f5@huaweicloud.com>
- <ZOSONbLwc6RtQnS0@x1-carbon>
-From:   Li Nan <linan666@huaweicloud.com>
-In-Reply-To: <ZOSONbLwc6RtQnS0@x1-carbon>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <CAP-5=fWLmRWPdnxSG1AcyxzaupUAn9sX0M-dtDB1dd7-FCEhrw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgA3x6lvw_VkE_JgCQ--.36724S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJFWfKryUJr4UJry5Kr45Jrb_yoW5ZFW5pF
-        WkJayqkr1DXr40yr4vqa1Fva4Fqan7Kry7ZryDW3s7ZF1qg34rtr4kCFZ8WFnagw1kGw4a
-        vw4jgr9rAF4UXrUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l
-        5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67
-        AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07Al
-        zVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUFf
-        HjUUUUU
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-Originating-IP: [10.67.111.205]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm600003.china.huawei.com (7.193.23.202)
 X-CFilter-Loop: Reflected
 X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,117 +57,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+On 2023/9/4 12:13, Ian Rogers wrote:
+> On Sat, Aug 12, 2023 at 1:52 AM Yang Jihong <yangjihong1@huawei.com> wrote:
+>>
+>> work_push_atom() supports nesting. Currently, all supported kworks are not
+>> nested. A `overwrite` parameter is added to overwrite the original atom in
+>> the list.
+>>
+>> Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
+>> ---
+>>   tools/perf/builtin-kwork.c | 24 ++++++++++++++++++------
+>>   1 file changed, 18 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/tools/perf/builtin-kwork.c b/tools/perf/builtin-kwork.c
+>> index 42ea59a957ae..f620911a26a2 100644
+>> --- a/tools/perf/builtin-kwork.c
+>> +++ b/tools/perf/builtin-kwork.c
+>> @@ -392,9 +392,10 @@ static int work_push_atom(struct perf_kwork *kwork,
+>>                            struct evsel *evsel,
+>>                            struct perf_sample *sample,
+>>                            struct machine *machine,
+>> -                         struct kwork_work **ret_work)
+>> +                         struct kwork_work **ret_work,
+>> +                         bool overwrite)
+> 
+> kerneldoc would be useful. Pushing something seems self-evident but
+> what does overwrite mean without reading the code?
 
-在 2023/8/22 18:30, Niklas Cassel 写道:
-> On Tue, Aug 22, 2023 at 05:20:33PM +0800, Li Nan wrote:
->> Thanks for your reply, Niklas.
->>
->> 在 2023/8/21 21:51, Niklas Cassel 写道:
->>> On Thu, Aug 10, 2023 at 09:48:48AM +0800, linan666@huaweicloud.com wrote:
->>
->> [snip]
->>
->>>
->>> Hello Li Nan,
->>>
->>> I do not understand why the code in:
->>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L722-L731
->>>
->>> does not kick in, and repeats EH.
->>>
->>>
->>> EH_PENDING is cleared before ->error_handler() is called:
->>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L697
->>>
->>> So ahci_error_intr() from the second error interrupt, which is called after
->>> thawing the port, should have called ata_std_sched_eh(), which calls
->>> ata_eh_set_pending(), which should have set EH_PENDING:
->>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L884
->>>
->>>
->>>
->>> My only guess is that after thawing the port:
->>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L2807
->>>
->>> The second error irq comes, and sets EH_PENDING,
->>> but then this silly code might clear it:
->>> https://github.com/torvalds/linux/blob/v6.5-rc7/drivers/ata/libata-eh.c#L2825-L2837
->>>
->>
->> Yeah, I think so.
->>
->>> I think the best way would be if we could improve this "spurious error
->>> condition check"... because if this is indeed the code that clears EH_PENDING
->>> for you, then this code basically makes the "goto repeat" code in
->>> ata_scsi_port_error_handler() useless...
->>>
->>>
->>> An alternative to improving the "spurious error condition check" might be for
->>> you to try something like:
->>>
->>
->> We have used this solution before, but it will case WARN_ON in
->> ata_eh_finish() as below:
->>
->>    WARNING: CPU: 1 PID: 118 at ../drivers/ata/libata-eh.c:4016
->> ata_eh_finish+0x15a/0x170
-> 
-> Ok.
-> 
-> How about if you simply move the WARN_ON to ata_scsi_port_error_handler()
-> as well:
-> 
-> diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
-> index 35e03679b0bf..5be2fc651131 100644
-> --- a/drivers/ata/libata-eh.c
-> +++ b/drivers/ata/libata-eh.c
-> @@ -741,6 +741,12 @@ void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap)
->                   */
->                  ap->ops->end_eh(ap);
->   
-> +               if (!ap->scsi_host->host_eh_scheduled) {
-> +                       /* make sure nr_active_links is zero after EH */
-> +                       WARN_ON(ap->nr_active_links);
-> +                       ap->nr_active_links = 0;
-> +               }
-> +
->                  spin_unlock_irqrestore(ap->lock, flags);
->                  ata_eh_release(ap);
->          } else {
-> @@ -962,7 +968,7 @@ void ata_std_end_eh(struct ata_port *ap)
->   {
->          struct Scsi_Host *host = ap->scsi_host;
->   
-> -       host->host_eh_scheduled = 0;
-> +       host->host_eh_scheduled--;
->   }
->   EXPORT_SYMBOL(ata_std_end_eh);
->   
-> @@ -3948,10 +3954,6 @@ void ata_eh_finish(struct ata_port *ap)
->                          }
->                  }
->          }
-> -
-> -       /* make sure nr_active_links is zero after EH */
-> -       WARN_ON(ap->nr_active_links);
-> -       ap->nr_active_links = 0;
->   }
->   
->   /**
-> 
-> 
-> 
-> Kind regards,
-> Niklas
+Okay, I'll add comments.
 
-We have tested this patch and it can fix the bug. Thank you so much. :)
+> 
+>>   {
+>> -       struct kwork_atom *atom, *dst_atom;
+>> +       struct kwork_atom *atom, *dst_atom, *last_atom;
+>>          struct kwork_work *work, key;
+>>
+>>          BUG_ON(class->work_init == NULL);
+>> @@ -427,6 +428,17 @@ static int work_push_atom(struct perf_kwork *kwork,
+>>          if (ret_work != NULL)
+>>                  *ret_work = work;
+>>
+>> +       if (overwrite) {
+>> +               last_atom = list_last_entry_or_null(&work->atom_list[src_type],
+>> +                                                   struct kwork_atom, list);
+>> +               if (last_atom) {
+>> +                       atom_del(last_atom);
+>> +
+>> +                       kwork->nr_skipped_events[src_type]++;
+>> +                       kwork->nr_skipped_events[KWORK_TRACE_MAX]++;
+>> +               }
+>> +       }
+>> +
+>>          list_add_tail(&atom->list, &work->atom_list[src_type]);
+>>
+>>          return 0;
+>> @@ -502,7 +514,7 @@ static int report_entry_event(struct perf_kwork *kwork,
+>>   {
+>>          return work_push_atom(kwork, class, KWORK_TRACE_ENTRY,
+>>                                KWORK_TRACE_MAX, evsel, sample,
+>> -                             machine, NULL);
+>> +                             machine, NULL, true);
+> 
+> nit: for constant arguments it can be useful to add parameter names
+> which can enable checks like clang-tidy's bugprone argument:
+> https://clang.llvm.org/extra/clang-tidy/checks/bugprone/argument-comment.html
+> This would make this:
+>          return work_push_atom(kwork, class, KWORK_TRACE_ENTRY,
+>                                KWORK_TRACE_MAX, evsel, sample,
+>                                machine, /*ret_work=*/NULL, /*overwite=*/true);
+> 
+Thanks for your advice, will add parameter names later.
 
-Feel free to add:
-
-Tested-by: Li Nan <linan122@huawei.com>
-
--- 
 Thanks,
-Nan
-
+Yang
