@@ -2,158 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABB98791DBC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:38:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B0A791DBF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:38:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbjIDThu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 15:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44688 "EHLO
+        id S234382AbjIDTin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 15:38:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233645AbjIDThi (ORCPT
+        with ESMTP id S231760AbjIDTim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 15:37:38 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 800701A7;
-        Mon,  4 Sep 2023 12:37:35 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id ca18e2360f4ac-792623074edso52369139f.1;
-        Mon, 04 Sep 2023 12:37:35 -0700 (PDT)
+        Mon, 4 Sep 2023 15:38:42 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A32CC8
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:38:37 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id 5b1f17b1804b1-401d24f1f27so17430795e9.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:38:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693856255; x=1694461055; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7crZJwRytTyyIdDEoCObBVMoTgADDmg//xC0edSFAc=;
-        b=DP3qzS0uU5murYOGJ06S73WezdI3YkqOavc5wSfAfZzPE3HKpX126k9YpPU+eEz68X
-         Eqkake3Joz/TTjdhlnlW5a6U6nUcfJgaHk9gSi/1UqzHQeJRu2DhVWciJkfFh4hTBb6Q
-         QihWPVdkNHmGHCrV0TQsavXzG1d5l9biS1t8OKWd24mALK8crbYj3cUdU0vbOYBiFSA4
-         WTl7HlOTgJM9WgaQ+1x0NCqLfgTGSieSqQVkxj9YFVl/r/6cWIDf6IPiosQewC98bUOV
-         SF1sEuL2biPJl3nprHI22cWic/l/sZN/z0smxkLTB59yMmqCYM9xdx7bKeShdKjzlGk2
-         HdKQ==
+        d=layalina-io.20230601.gappssmtp.com; s=20230601; t=1693856315; x=1694461115; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=t4eCv8xune3wHHGKyjVY37Ks2yzh1o2qfNwmTMs6GJM=;
+        b=yUNrPvR1yHYAUVTLNTfYdz11uPHc7omOA/CfyCGnrR+TU8fEGqnhFykSejlVj4xdgj
+         Wosh3MnWocoYGM578bpMAa6krEroTXLjp2ZmLEPW2ln6dlZKY5k+lsyMUFW/J1IBZvy6
+         k9hiY1FoQtCAzDJqT2iMZ8STsvlC3Cp5rweXR1Gerd5TFn4tyCgg6ljs9KPf5JJpKbam
+         WJRcc5tJm1JfDow+IRcOxAHCgwoKHyuxE4VqIMkF2epS4H86avpX01MRN3ke++IJ9qxH
+         v8U3TK6hT5VXXWH+omjKLAjaB1cLGOYih5StvE+zoFcUisxgkdIOry7AnBwrk84xBiPP
+         VSJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693856255; x=1694461055;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Q7crZJwRytTyyIdDEoCObBVMoTgADDmg//xC0edSFAc=;
-        b=KbgBwZDg78xmo3zOOV6OJkipMjmUnh8JbIXle6fsNiohaoApVjN35PTss8cvC8sLT9
-         rN9F19pHNvXZGmDi18a7UkRvEO/EDc/P1wLTG72u8NIL6GBgVXxwO0a9/adCZ3Qd00G5
-         3aTxPRqm5tEZWcXYv+lJ664C6gCkPozwUZIBxShO0JuGNLGkOv+hsGGeEfDqqqY/EJlm
-         ByGErmhq/ToLR5sKcbkkN+Jy87rcjTUin9QfNrAB4k0WVtJq22UHSzglpt4DaxiPUV9W
-         iKTuA3p8qzZYDRr8UdyGdeNZsLPPbQm4cXUuiXdX8o1EDc126CYYPF+QRKkwdPmg1NCa
-         iYtA==
-X-Gm-Message-State: AOJu0YyiaUcxAiwrSj6rFAcgs0IMyjADvgFOgb35uPoE6cD+g6Y4h873
-        X+gJBAZ+8OStuaBwdgNWPaw=
-X-Google-Smtp-Source: AGHT+IFDurXHV+YzkGcDx9hZwXp6jjNXSTz4+sen5na4mkdEAIh/GoEp5EEWbtX+xgRfL4fx0ca7MA==
-X-Received: by 2002:a05:6e02:1568:b0:346:15f5:2667 with SMTP id k8-20020a056e02156800b0034615f52667mr13409607ilu.4.1693856254831;
-        Mon, 04 Sep 2023 12:37:34 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id gg18-20020a056638691200b0042b57bbbaf2sm3604214jab.26.2023.09.04.12.37.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 12:37:34 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <5a85bd1e-18b1-080f-922c-b14372093035@roeck-us.net>
-Date:   Mon, 4 Sep 2023 12:37:31 -0700
+        d=1e100.net; s=20221208; t=1693856315; x=1694461115;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=t4eCv8xune3wHHGKyjVY37Ks2yzh1o2qfNwmTMs6GJM=;
+        b=RsWGjVPuYpGQ6K9qa6KfNdVW+17zguFPFLwNOGwnt1RyKItAKG7yVzZAolvTelajDC
+         CEgz3lPkLV+W6RSAWtTDznX4FZv3PDjj+idEFIcPTZl9R4LUHvCIFF1GNDeNB6tN0uAw
+         ZXptm19MAD/wj7515lZlltHY3gcvc1s0jstNYuIBAUetT+amjBUzxFPdwoFLE4sJaXnP
+         g8f5C+gaHp/zD0yc9QlPBDrvUwWrK7o2xhqmDej+Cj4ApJEEjTXM2BcUtP58cS5fTfsF
+         V+GQKwh9MEpCiDOqH9m2a+L8+m0EwSo2mc3eb8aD8UIWe7sqXP7ZASK4tX+7KqS8c2/n
+         PkLw==
+X-Gm-Message-State: AOJu0Yxj+OV2f2NxUwIPQHH6Ezrb4bvZU0SkpBwvHInfdPQPMtjQ8C6n
+        f3/6cijnJU11+NQoMAV932Jkz5uFBAz1AuClDWQ=
+X-Google-Smtp-Source: AGHT+IGKfNSdK1PNv5vpfA5L9Rh6PKc8Ossvh0UjHY3rAr+6B97KVB84/F/ErR5ndE3BwPwg+OKdbQ==
+X-Received: by 2002:a1c:720c:0:b0:3fe:25b3:951d with SMTP id n12-20020a1c720c000000b003fe25b3951dmr7155613wmc.5.1693856315332;
+        Mon, 04 Sep 2023 12:38:35 -0700 (PDT)
+Received: from airbuntu (host109-151-228-137.range109-151.btcentralplus.com. [109.151.228.137])
+        by smtp.gmail.com with ESMTPSA id 16-20020a05600c025000b003fee7b67f67sm14836856wmj.31.2023.09.04.12.38.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 12:38:34 -0700 (PDT)
+Date:   Mon, 4 Sep 2023 20:38:33 +0100
+From:   Qais Yousef <qyousef@layalina.io>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Qais Yousef <qais.yousef@arm.com>
+Subject: Re: [PATCH] sched/fair: Check a task has a fitting cpu when updating
+ misfit
+Message-ID: <20230904193833.vv35wbxk65svefpo@airbuntu>
+References: <20230820203429.568884-1-qyousef@layalina.io>
+ <CAKfTPtCq+-U34WSUHjs3CkqQM769_Q+FN-5Y+uK=AzdB0YNiLQ@mail.gmail.com>
+ <20230829153524.iswwflqd3iw3uybx@airbuntu>
+ <2562890e-e824-7721-8dbe-8c5ae6ac42a9@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v6 26/38] sparc64: Implement the new page table range API
-Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
-References: <20230802151406.3735276-1-willy@infradead.org>
- <20230802151406.3735276-27-willy@infradead.org>
- <2513a500-920d-4e32-8231-f428175c7182@roeck-us.net>
- <20230904174350.GF3223@kernel.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20230904174350.GF3223@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <2562890e-e824-7721-8dbe-8c5ae6ac42a9@arm.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/23 10:43, Mike Rapoport wrote:
-> On Mon, Sep 04, 2023 at 08:36:44AM -0700, Guenter Roeck wrote:
->> Hi,
->>
->> On Wed, Aug 02, 2023 at 04:13:54PM +0100, Matthew Wilcox (Oracle) wrote:
->>> Add set_ptes(), update_mmu_cache_range(), flush_dcache_folio() and
->>> flush_icache_pages().  Convert the PG_dcache_dirty flag from being
->>> per-page to per-folio.
->>>
->>> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
->>> Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
->>> Cc: "David S. Miller" <davem@davemloft.net>
->>> Cc: sparclinux@vger.kernel.org
->>
->> This patch causes all my sparc64 qemu boot tests to crash.
->>
->> [    4.890744] Unable to handle kernel NULL pointer dereference
->> [    4.891273] tsk->{mm,active_mm}->context = 0000000000000001
->> [    4.891475] tsk->{mm,active_mm}->pgd = fffff80005452000
->> [    4.891660]               \|/ ____ \|/
->> [    4.891660]               "@'/ .. \`@"
->> [    4.891660]               /_| \__/ |_\
->> [    4.891660]                  \__U_/
->> [    4.892116] modprobe(45): Oops [#1]
->> [    4.892555] CPU: 0 PID: 45 Comm: modprobe Tainted: G                 N 6.5.0+ #1
->> [    4.892949] TSTATE: 0000004411001601 TPC: 00000000004565d8 TNPC: 00000000004565dc Y: 00000008    Tainted: G                 N
+On 09/04/23 15:18, Dietmar Eggemann wrote:
+> On 29/08/2023 17:35, Qais Yousef wrote:
+> > On 08/29/23 16:10, Vincent Guittot wrote:
+> >> On Sun, 20 Aug 2023 at 22:34, Qais Yousef <qyousef@layalina.io> wrote:
 > 
-> ...
+> [...]
 > 
->> [    4.901535] note: modprobe[45] exited with preempt_count 2
+> >>>  kernel/sched/fair.c | 50 ++++++++++++++++++++++++++++++++++++++-------
+> >>>  1 file changed, 43 insertions(+), 7 deletions(-)
+> >>>
+> >>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> >>> index 0b7445cd5af9..f08c5f3bf895 100644
+> >>> --- a/kernel/sched/fair.c
+> >>> +++ b/kernel/sched/fair.c
+> >>> @@ -4853,17 +4853,50 @@ static inline int task_fits_cpu(struct task_struct *p, int cpu)
+> >>>
+> >>>  static inline void update_misfit_status(struct task_struct *p, struct rq *rq)
+> >>>  {
+> >>> +       unsigned long uclamp_min, uclamp_max;
+> >>> +       unsigned long util, cap_level;
+> >>> +       bool has_fitting_cpu = false;
+> >>> +       int cpu = cpu_of(rq);
+> >>> +
+> >>>         if (!sched_asym_cpucap_active())
+> >>>                 return;
+> >>>
+> >>> -       if (!p || p->nr_cpus_allowed == 1) {
+> >>> -               rq->misfit_task_load = 0;
+> >>> -               return;
+> >>> -       }
+> >>> +       if (!p || p->nr_cpus_allowed == 1)
+> >>> +               goto out;
+> >>>
+> >>> -       if (task_fits_cpu(p, cpu_of(rq))) {
+> >>> -               rq->misfit_task_load = 0;
+> >>> -               return;
+> >>> +       uclamp_min = uclamp_eff_value(p, UCLAMP_MIN);
+> >>> +       uclamp_max = uclamp_eff_value(p, UCLAMP_MAX);
+> >>> +       util = task_util_est(p);
+> >>> +
+> >>> +       if (util_fits_cpu(util, uclamp_min, uclamp_max, cpu) > 0)
+> >>> +               goto out;
 > 
-> This should fix it:
-> 
->>From 8181d1f582a309b51fe4cb02a783628257b91c86 Mon Sep 17 00:00:00 2001
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> Date: Mon, 4 Sep 2023 20:37:59 +0300
-> Subject: [PATCH] sparc64: add missing initialization of folio in
->   tlb_batch_add()
-> 
-> Commit 1a10a44dfc1d ("sparc64: implement the new page table range API")
-> missed initialization of folio variable in tlb_batch_add() which causes
-> boot tests to crash.
-> 
-> Add missing initialization.
-> 
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Fixes: 1a10a44dfc1d ("sparc64: implement the new page table range API")
-> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> util_fits_cpu() checks fits_capacity(util, capacity_of(cpu)) but the
+> capacity pressure could change between update_misfit_status() and CFS lb?
 
-Yes, it does.
+Do we need to be precise here? I think the race is not a problem as long as
+we're not reading garbage values, which I don't think we do.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+FWIW, task_fits_cpu() also used util_fits_cpu(), so if this is a problem it's
+not something introduced by this patch at least.
 
-Thanks,
-Guenter
+The trade-off is to be lockless but live with potentially slightly outdated
+value, or be precise and hold some locks to force serialization.
 
-> ---
->   arch/sparc/mm/tlb.c | 1 +
->   1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/sparc/mm/tlb.c b/arch/sparc/mm/tlb.c
-> index 0d41c94ec3ac..b44d79d778c7 100644
-> --- a/arch/sparc/mm/tlb.c
-> +++ b/arch/sparc/mm/tlb.c
-> @@ -128,6 +128,7 @@ void tlb_batch_add(struct mm_struct *mm, unsigned long vaddr,
->   			goto no_cache_flush;
->   
->   		/* A real file page? */
-> +		folio = page_folio(page);
->   		mapping = folio_flush_mapping(folio);
->   		if (!mapping)
->   			goto no_cache_flush;
+> >>> +
+> >>> +       cap_level = capacity_orig_of(cpu);
+> >>> +
+> >>> +       /* If we can't fit the biggest CPU, that's the best we can ever get. */
+> >>> +       if (cap_level == SCHED_CAPACITY_SCALE)
+> >>> +               goto out;
+> >>> +
+> >>> +       /*
+> >>> +        * If the task affinity is not set to default, make sure it is not
+> >>> +        * restricted to a subset where no CPU can ever fit it. Triggering
+> >>> +        * misfit in this case is pointless as it has no where better to move
+> >>> +        * to. And it can lead to balance_interval to grow too high as we'll
+> >>> +        * continuously fail to move it anywhere.
+> >>> +        */
+> >>> +       if (!cpumask_equal(p->cpus_ptr, cpu_possible_mask)) {
+> >>> +               for_each_cpu(cpu, p->cpus_ptr) {
+> >>
+> >> I haven't looked at the problem in detail and at other possibilities
+> >> so far but for_each_cpu doesn't scale and update_misfit_status() being
+> >> called in pick_next_task_fair() so you must find another way to detect
+> >> this
+> > 
+> > Okay, will do.
+> 
+> We have LIST_HEAD(asym_cap_list) (list of cpumasks according to
+> cpu_capacity_orig CPU groups) in kernel/sched/topology.c to set
+> SD_ASYM_CPUCAPACITY{,_FULL} for asymmetric CPU capacity systems.
+> Maybe this could be made usable in fair.c as well?
 
+Yeah it could help to implement for_each_cap_level() iterator that can be
+safely used from anywhere.
+
+I remember looking at topology code in the past but the issue I think I found
+then is that I must make sure we have something that is RCU protected to truly
+allow it to be used concurrently without overhead (like we do for pd). So a bit
+of rework is required.
+
+> 
+> But checking via util_fits_cpu() wouldn't work then since it's per-CPU.
+> The check of p's CPU affinity, its uclamped util_avg value and the
+> cpu_capacity_orig is sufficient here. Then using those cpumasks could work.
+
+Thanks for the suggestions. Yes we can skip util_fits_cpu() and just compare
+against capacity_orig directly as this is only what we truly care about here.
+
+
+Thanks!
+
+--
+Qais Yousef
