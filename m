@@ -2,222 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 06379791153
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:25:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201A2791155
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:27:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352334AbjIDGZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 02:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46294 "EHLO
+        id S1350208AbjIDG1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 02:27:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236592AbjIDGZM (ORCPT
+        with ESMTP id S233151AbjIDG1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 02:25:12 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CCA1D9;
-        Sun,  3 Sep 2023 23:25:08 -0700 (PDT)
-Received: from localhost (89-26-75-29.dyn.cablelink.at [89.26.75.29])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sebastianfricke)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B6E33660716C;
-        Mon,  4 Sep 2023 07:25:05 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693808705;
-        bh=mXRRDOmNtrA4MRanC4rykngazFEjqU3XBXr0ln7fHAQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Zn6IPdlA1hgFcTNo0i3RL27CAhcehH/UCdsqyxxZzY513Q74Y03zzQw4eykSBYnNh
-         jP5atZCjymGqthSEVPAaFX/YAKeX3gbUeBob9xRMLqkE38JZyT1gfc5ZXVzkYEqMGq
-         Wb0RtkziY7wHI2fMkhx5CHRY5r944jE/NnyuXyRSDCYpYAfF4mz0QvRosvtBdcifzW
-         hia6C3k5mwPcOUN9cMW6Az0J4mbi6v6Kl30urGtkHTsdbEw+jxXq6RUVpVejhuMe8S
-         dkoMbtdO1Ky8xL9qf0YocqwbjoRi6fiNNQLT3Tv/DgDnBFZtAYNusT7KumTgBKcYE7
-         Dyq64ueQkRKuQ==
-Date:   Mon, 4 Sep 2023 08:25:02 +0200
-From:   Sebastian Fricke <sebastian.fricke@collabora.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     linux-media@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        kernel@collabora.com, bob.beckett@collabora.com,
-        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com,
-        nas.chung@chipsnmedia.com, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v11 5/6] dt-bindings: media: wave5: add yaml devicetree
- bindings
-Message-ID: <20230904062502.qtajep4zyslnouxv@basti-XPS-13-9310>
-References: <20221207121350.66217-1-sebastian.fricke@collabora.com>
- <20221207121350.66217-6-sebastian.fricke@collabora.com>
- <48d60bd0-4de1-4a5e-eca1-1f8a9303cce0@linaro.org>
+        Mon, 4 Sep 2023 02:27:23 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73E8CD9;
+        Sun,  3 Sep 2023 23:27:20 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38465Tbm015376;
+        Mon, 4 Sep 2023 06:27:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=TcGh+Lhn98VQXuDAoukbvJGKrYGtJI1AhwTAqTtLlNU=;
+ b=Csac/OXw/VoF7ZxwHdNV9b1URYfGuXwxuFfg45umW7a2n4nMoawaduwk2ddijNuWnjrU
+ 0jwxNhCUXyvrEDjPIfJdVYp8uxMzk4RpyprwTFt0rDVN3G1uL7dv2zH3IOoWt03cT0o9
+ GZEaUsi7TeSZLgcTgqlJKDgNtJMXuiUTWgENjg3tt3+Mj81lYA7ZJ1aHTvs4LhgX1Pis
+ 2tolQQ0YvlY7ykvFZxYnFSY8tXI9vSd8h8h1BkfuREtlB43kzJ1VQt0e0Ud96n4ChqO4
+ hoL6a4KM9+zMJmQ33cWrF2rE2QBrhqfFskjtXIsXeGJyYQEkg7wHss3R4fz4fPlYe/pd BA== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suvcrapbd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 06:27:07 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3846R6NP028687
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Sep 2023 06:27:06 GMT
+Received: from [10.216.27.210] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Sun, 3 Sep
+ 2023 23:27:02 -0700
+Message-ID: <fa5a20d0-77db-58bd-3956-ac664dffa587@quicinc.com>
+Date:   Mon, 4 Sep 2023 11:56:58 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <48d60bd0-4de1-4a5e-eca1-1f8a9303cce0@linaro.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH 00/10] Add PCIe Bandwidth Controller
+Content-Language: en-US
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        <linux-pci@vger.kernel.org>, Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+References: <20230817121708.53213-1-ilpo.jarvinen@linux.intel.com>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20230817121708.53213-1-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: HoBSEGKeJMUGimqfBjvLmF_3PS2UBD-Y
+X-Proofpoint-ORIG-GUID: HoBSEGKeJMUGimqfBjvLmF_3PS2UBD-Y
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-04_03,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=801 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 clxscore=1011 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309040057
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hey Krzysztof,
 
-sorry for digging this mail out of the tombs.
-We have worked for quite a while on a new version of the driver and we
-are currently finishing it up. I have a few questions before I can
-finish the patchset.
+On 8/17/2023 5:46 PM, Ilpo Järvinen wrote:
+> Hi all,
+>
+> This series adds PCIe bandwidth controller (bwctrl) and associated PCIe
+> cooling driver to the thermal core side for limiting PCIe link speed
+> due to thermal reasons. PCIe bandwidth controller is a PCI express bus
+> port service driver. A cooling device is created for each port the
+> service driver finds if they support changing speeds.
 
-Please see below...
+I see we had support for only link speed changes here but we need to add 
+support for
 
-On 07.12.2022 13:31, Krzysztof Kozlowski wrote:
->On 07/12/2022 13:13, Sebastian Fricke wrote:
->> From: Robert Beckett <bob.beckett@collabora.com>
->>
->> Add bindings for the wave5 chips&media codec driver
->>
->> Signed-off-by: Robert Beckett <bob.beckett@collabora.com>
->> Signed-off-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
->> Signed-off-by: Sebastian Fricke <sebastian.fricke@collabora.com>
->
->What's happening with this patch? Where is the changelog? Why it is v11
->and first time I see it? And why it is v11 with basic mistakes and lack
->of testing?!? I would assume that v11 was already seen and tested...
->
->
->> ---
->>  .../devicetree/bindings/cnm,wave5.yml         | 72 +++++++++++++++++++
->>  1 file changed, 72 insertions(+)
->>  create mode 100644 Documentation/devicetree/bindings/cnm,wave5.yml
->
->Wrong directory. It wasn't here at all before, so I am really confused
->how this could happen.
->
->Subject: drop redundant pieces: yaml, devicetree and bindings.
->
->
->>
->> diff --git a/Documentation/devicetree/bindings/cnm,wave5.yml b/Documentation/devicetree/bindings/cnm,wave5.yml
->> new file mode 100644
->> index 000000000000..01dddebb162e
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/cnm,wave5.yml
->> @@ -0,0 +1,72 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/media/wave5.yaml#
->
->You clearly did not test them before sending.
->
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Chips&Media Wave 5 Series multi-standard codec IP
->> +
->> +maintainers:
->> +  - Nas Chung <nas.chung@chipsnmedia.com>
->> +  - Robert Beckett <bob.beckett@collabora.com>
->> +  - Sebastian Fricke <sebastian.fricke@collabora.com>
->> +
->> +description: |-
->> +  The Chips&Media WAVE codec IP is a multi format video encoder/decoder
->> +
->> +properties:
->> +  compatible:
->> +    anyOf:
->
->Please start from example-schema or other recently approved bindings. No
->anyOf.
->
->> +      - items:
->
->No items...
->
->> +        - enum:
->> +            - cnm,cm511-vpu
->> +            - cnm,cm517-vpu
->> +            - cnm,cm521-vpu
->> +            - cnm,cm521c-vpu
->> +            - cnm,cm521c-dual-vpu
->
->What's the difference between this and one above?
->
->> +            - cnm,cm521e1-vpu
->> +            - cnm,cm537-vpu
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    minItems: 1
->> +    maxItems: 4
->
->This has to be specific.
->
->> +
->> +  clock-names:
->> +    minItems: 1
->> +    maxItems: 4
->
->You need to list the names.
->
->> +
->> +  interrupts:
->> +    maxItems: 1
->> +
->> +  power-domains:
->> +    maxItems: 1
->> +
->> +  resets:
->> +    maxItems: 1
->> +
->> +  sram:
->
->Missing vendor prefix.
+link width change also as bandwidth notification from PCIe supports both 
+link speed and link width.
 
-After some discussion with the the manufacturer of this CODEC chip, the SRAM
-is not fixed to the CODEC chip but instead part of the SoC, thus the
-vendor can vary. It sounds like the policy is to use the vendor prefix
-of the SoC, that was used for upstreaming. But that policy sounds a bit
-like a potential for future confusion to me, so I wanted to ask what you
-would like to see. The SoC we develop on is from TI and the CODEC chip is from
-C&M, so I could either call it: `ti,sram` or `cnm,sram`
+- KC
 
 >
->> +    $ref: /schemas/types.yaml#/definitions/phandle
->> +    description: phandle pointing to the SRAM device node
+> bwctrl now is built on top of BW notifications revert. I'm just not
+> sure what is the best practice when re-adding some old functionality in
+> a modified form so please let me know if I need to somehow alter that
+> patch.
 >
->And what is it for? Why do you need SRAM?
-
-I would write the following here:
-The VPU uses the SRAM to store some of the reference data instead of storing it on DMA memory. It is mainly used for the purpose of reducing bandwidth.
-
-Sincerely,
-Sebastian
-
+> The series is based on top of the RMW changes in pci/pcie-rmw.
 >
->> +    maxItems: 1
+> Ilpo Järvinen (10):
+>    PCI: Protect Link Control 2 Register with RMW locking
+>    drm/radeon: Use RMW accessors for changing LNKCTL2
+>    drm/amdgpu: Use RMW accessors for changing LNKCTL2
+>    drm/IB/hfi1: Use RMW accessors for changing LNKCTL2
+>    PCI: Store all PCIe Supported Link Speeds
+>    PCI: Cache PCIe device's Supported Speed Vector
+>    PCI/LINK: Re-add BW notification portdrv as PCIe BW controller
+>    PCI/bwctrl: Add "controller" part into PCIe bwctrl
+>    thermal: Add PCIe cooling driver
+>    selftests/pcie_bwctrl: Create selftests
 >
->Drop
->
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - interrupts
->> +  - clocks
->> +  - clock-names
->> +
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    vpu: video-codec@12345678 {
->> +        compatible = "cnm,cm521-vpu";
->> +        reg = <0x12345678 0x1000>;
->> +        interrupts = <42>;
->> +        clocks = <&clks 42>;
->> +        clock-names = "vcodec";
->> +        sram = <&sram>;
->> +    };
->
->Best regards,
->Krzysztof
+>   MAINTAINERS                                   |   8 +
+>   drivers/gpu/drm/amd/amdgpu/cik.c              |  41 +--
+>   drivers/gpu/drm/amd/amdgpu/si.c               |  41 +--
+>   drivers/gpu/drm/radeon/cik.c                  |  40 +--
+>   drivers/gpu/drm/radeon/si.c                   |  40 +--
+>   drivers/infiniband/hw/hfi1/pcie.c             |  30 +-
+>   drivers/pci/pcie/Kconfig                      |   9 +
+>   drivers/pci/pcie/Makefile                     |   1 +
+>   drivers/pci/pcie/bwctrl.c                     | 309 ++++++++++++++++++
+>   drivers/pci/pcie/portdrv.c                    |   9 +-
+>   drivers/pci/pcie/portdrv.h                    |  10 +-
+>   drivers/pci/probe.c                           |  38 ++-
+>   drivers/pci/remove.c                          |   2 +
+>   drivers/thermal/Kconfig                       |  10 +
+>   drivers/thermal/Makefile                      |   2 +
+>   drivers/thermal/pcie_cooling.c                | 107 ++++++
+>   include/linux/pci-bwctrl.h                    |  33 ++
+>   include/linux/pci.h                           |   3 +
+>   include/uapi/linux/pci_regs.h                 |   1 +
+>   tools/testing/selftests/Makefile              |   1 +
+>   tools/testing/selftests/pcie_bwctrl/Makefile  |   2 +
+>   .../pcie_bwctrl/set_pcie_cooling_state.sh     | 122 +++++++
+>   .../selftests/pcie_bwctrl/set_pcie_speed.sh   |  67 ++++
+>   23 files changed, 795 insertions(+), 131 deletions(-)
+>   create mode 100644 drivers/pci/pcie/bwctrl.c
+>   create mode 100644 drivers/thermal/pcie_cooling.c
+>   create mode 100644 include/linux/pci-bwctrl.h
+>   create mode 100644 tools/testing/selftests/pcie_bwctrl/Makefile
+>   create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
+>   create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
 >
