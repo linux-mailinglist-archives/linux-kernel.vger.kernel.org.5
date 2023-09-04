@@ -2,157 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7116179161F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABD4791621
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232568AbjIDLQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 07:16:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55926 "EHLO
+        id S1352774AbjIDLQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 07:16:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231262AbjIDLQL (ORCPT
+        with ESMTP id S230398AbjIDLQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 07:16:11 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905CCCD9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 04:16:02 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id ffacd0b85a97d-31c6cd238e0so1331281f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 04:16:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1693826161; x=1694430961; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=I9GCAlEvdvaQhIuQIQlH6uZieVhDq0JG0Q/Lab40q3Y=;
-        b=CMqTvcfoarfIJSBd1JiDV22ESK/qNv7BI6cjJt3jShl1fQWkZU4snlpjUii5z9aKcD
-         zOdcc0Zg6VUrg/fjmFMi6BVuyiZjRq8yMPLCu4Hfq3Cp/MUdAJrr6E2SVfXK8smgGQ7s
-         G/DzOW2/pkwvk0GRWunoFFSMMY9RyJyVRru3ZT0bTlTOHoCmr8ZSL1i0jEqduUOHSySW
-         icXJ+n0bTTn0pQvvd6wUN8SGWcjZ16Ero9htZTbqIBnAYOf/iU5kYE1W4se65SknXzw/
-         IXvMDdgxXlHmx5OYzRF1MJxhWJ2B6ZQdoELVSsMaBeSnUvuKUTGFdfavrZ4RB5EgSnrT
-         psMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693826161; x=1694430961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=I9GCAlEvdvaQhIuQIQlH6uZieVhDq0JG0Q/Lab40q3Y=;
-        b=Do9yrBBtLaRH/VcaFDst0XLNvUb9H7MW+Im+5ntary6FIl63DSFdO4K3tfVEXewURv
-         quxNfhTVMCEF7uarIwixAefb46hILcyo8f7FUOzR3L9k0PZKjD8q1YabL+NgAtBXgdYD
-         Xd6Nj83RmM2F7iTmfzNnflHoWamfh16BA9k+pf/T6jz1mEVWEckMJN7setfUhrVym37/
-         e9Gi3n0kwbu6ERT3ZVF63BfA4pDCgTQsQcUHsaheuMlvSsQCCOSmDvHOUOoJaOa2JRej
-         7HVD3FPalWo5zcFh/fLEUuU5PwzafgmWEDyV5T/nuO2fxisocXlTJuKHAt2yoTm2+ghw
-         kz3A==
-X-Gm-Message-State: AOJu0YzCpe4TKvOOzQ4Qz2G55oWlMZ+LCH2768IG18QSfS3XiSnNuckx
-        cK3xThc2cQG6nebs4Y0CZE5pzg==
-X-Google-Smtp-Source: AGHT+IHR3qJF/WADy7jFXe6yIqtW0lGNRVyiw5VlYSS4H2pPf8Rp4EorJnHY9mZBl7rKv7MV9xXpWQ==
-X-Received: by 2002:adf:ee90:0:b0:319:6b56:94d9 with SMTP id b16-20020adfee90000000b003196b5694d9mr8511545wro.2.1693826161050;
-        Mon, 04 Sep 2023 04:16:01 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id x18-20020adfec12000000b0031989784d96sm14281097wrn.76.2023.09.04.04.15.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 04:15:59 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 13:15:56 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <haibo1.xu@intel.com>
-Cc:     xiaobo55x@gmail.com, Sean Christopherson <seanjc@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        wchen <waylingii@gmail.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Lei Wang <lei4.wang@intel.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Like Xu <likexu@tencent.com>, Peter Gonda <pgonda@google.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 1/8] KVM: selftests: Unify the codes for guest
- exception handling
-Message-ID: <20230904-ba5051a5bf17d17f2711d7dc@orel>
-References: <cover.1693659382.git.haibo1.xu@intel.com>
- <7affb0387d7272573f7093de7887872e1fb5979b.1693659382.git.haibo1.xu@intel.com>
+        Mon, 4 Sep 2023 07:16:20 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6257ACCC;
+        Mon,  4 Sep 2023 04:16:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693826177; x=1725362177;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=xkahQRlb+qqO8DI8MibV257P8p0Bcb75uJfNntA0nb4=;
+  b=Z1hR9teG57Iv9oKhNP3RMkTX9p9c6v+ogVM7IdbRvsuSxWlf5ZdAzHeN
+   2ZrmcVaj29be02spgXGh45ov7AgTJW8QUY3HV/QODPky53NE1/63aH03J
+   1lkYEux0YBm3pzEbMKhqO2EWII6OSpSe3Jskk2xdeDtjgM++8HmhGNOiu
+   KUXvzc9yFh3KEZovWYWFy1Y0BD7Gq7FQ9cwDYFUqDp+GC2Oh5WGFkgopp
+   cwEZJbAigoS3ahaT9Tel/9FoRUb1Qw2YinYxR6v5Fa1rt/Qhp+jfKmk3m
+   XXfKQ7ELFUU1nqjDG4/WvcHQpzjYMymnaItBh7aRnsufJgRnH1cB0P8aX
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="442976688"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="442976688"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 04:16:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="769958337"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="769958337"
+Received: from okozlyk-mobl.ger.corp.intel.com ([10.249.44.17])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 04:16:13 -0700
+Date:   Mon, 4 Sep 2023 14:16:07 +0300 (EEST)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+cc:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        =?ISO-8859-2?Q?Krzysztof_Wilczy=F1ski?= <kw@linux.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Alexandru Gagniuc <mr.nuke.me@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [PATCH 00/10] Add PCIe Bandwidth Controller
+In-Reply-To: <fa5a20d0-77db-58bd-3956-ac664dffa587@quicinc.com>
+Message-ID: <21b95d9-86a5-dcb0-9dda-3f1cdd426b9e@linux.intel.com>
+References: <20230817121708.53213-1-ilpo.jarvinen@linux.intel.com> <fa5a20d0-77db-58bd-3956-ac664dffa587@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7affb0387d7272573f7093de7887872e1fb5979b.1693659382.git.haibo1.xu@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1050272405-1693826176=:1759"
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 02, 2023 at 08:59:23PM +0800, Haibo Xu wrote:
-> Rename the vm_init_descriptor_tables() and vcpu_init_vector_tables()
-                                             ^ vcpu_init_descriptor_tables()
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> prototypes to vm_init_vector_tables() and vcpu_init_vector_tables()
-> respectively, so that we can use common names for the architectures
-> (x86/aarch64/riscv) and then put them in a common header.
-> 
-> By the way, vm_install_exception_handler() prototype were also moved to
-> the common header since they are commonly used across the architectures.
-> 
-> The patch is a preparation to share the guest exception handling codes
-> in riscv.
-> 
-> Suggested-by: Andrew Jones <ajones@ventanamicro.com>
-> Suggested-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
->  tools/testing/selftests/kvm/aarch64/arch_timer.c          | 4 ++--
->  tools/testing/selftests/kvm/aarch64/debug-exceptions.c    | 4 ++--
->  tools/testing/selftests/kvm/aarch64/page_fault_test.c     | 4 ++--
->  tools/testing/selftests/kvm/aarch64/vgic_irq.c            | 4 ++--
->  tools/testing/selftests/kvm/include/aarch64/processor.h   | 8 +-------
->  tools/testing/selftests/kvm/include/kvm_util_base.h       | 7 +++++++
->  tools/testing/selftests/kvm/include/x86_64/processor.h    | 5 -----
->  tools/testing/selftests/kvm/lib/aarch64/processor.c       | 6 +++---
->  tools/testing/selftests/kvm/lib/x86_64/processor.c        | 4 ++--
->  tools/testing/selftests/kvm/x86_64/amx_test.c             | 4 ++--
->  tools/testing/selftests/kvm/x86_64/fix_hypercall_test.c   | 4 ++--
->  tools/testing/selftests/kvm/x86_64/hyperv_evmcs.c         | 4 ++--
->  tools/testing/selftests/kvm/x86_64/hyperv_features.c      | 8 ++++----
->  tools/testing/selftests/kvm/x86_64/hyperv_ipi.c           | 6 +++---
->  tools/testing/selftests/kvm/x86_64/kvm_pv_test.c          | 4 ++--
->  tools/testing/selftests/kvm/x86_64/monitor_mwait_test.c   | 4 ++--
->  .../testing/selftests/kvm/x86_64/pmu_event_filter_test.c  | 8 ++++----
->  .../kvm/x86_64/smaller_maxphyaddr_emulation_test.c        | 4 ++--
->  tools/testing/selftests/kvm/x86_64/svm_int_ctl_test.c     | 4 ++--
->  .../selftests/kvm/x86_64/svm_nested_shutdown_test.c       | 4 ++--
->  .../selftests/kvm/x86_64/svm_nested_soft_inject_test.c    | 4 ++--
->  tools/testing/selftests/kvm/x86_64/ucna_injection_test.c  | 8 ++++----
->  .../selftests/kvm/x86_64/userspace_msr_exit_test.c        | 4 ++--
->  .../kvm/x86_64/vmx_exception_with_invalid_guest_state.c   | 4 ++--
->  tools/testing/selftests/kvm/x86_64/vmx_pmu_caps_test.c    | 4 ++--
->  tools/testing/selftests/kvm/x86_64/xapic_ipi_test.c       | 4 ++--
->  tools/testing/selftests/kvm/x86_64/xcr0_cpuid_test.c      | 4 ++--
->  tools/testing/selftests/kvm/x86_64/xen_shinfo_test.c      | 4 ++--
->  28 files changed, 66 insertions(+), 70 deletions(-)
->
+--8323329-1050272405-1693826176=:1759
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+On Mon, 4 Sep 2023, Krishna Chaitanya Chundru wrote:
+
+> 
+> On 8/17/2023 5:46 PM, Ilpo Järvinen wrote:
+> > Hi all,
+> > 
+> > This series adds PCIe bandwidth controller (bwctrl) and associated PCIe
+> > cooling driver to the thermal core side for limiting PCIe link speed
+> > due to thermal reasons. PCIe bandwidth controller is a PCI express bus
+> > port service driver. A cooling device is created for each port the
+> > service driver finds if they support changing speeds.
+> 
+> I see we had support for only link speed changes here but we need to add
+> support for
+> 
+> link width change also as bandwidth notification from PCIe supports both link
+> speed and link width.
+
+Hi,
+
+Thanks for the comment. In case you mean that the changes in Link Width 
+should be reported correctly, they already are since the sysfs interface 
+reads them directly from LNKSTA register.
+
+Or did you perhaps mean that Bandwidth Controller should support also 
+changing Link Width? If this is the case I don't know how it can be 
+realized so a pointer on how it can be achieved would be appreciated.
+
+-- 
+ i.
+
+> > bwctrl now is built on top of BW notifications revert. I'm just not
+> > sure what is the best practice when re-adding some old functionality in
+> > a modified form so please let me know if I need to somehow alter that
+> > patch.
+> > 
+> > The series is based on top of the RMW changes in pci/pcie-rmw.
+> > 
+> > Ilpo Järvinen (10):
+> >    PCI: Protect Link Control 2 Register with RMW locking
+> >    drm/radeon: Use RMW accessors for changing LNKCTL2
+> >    drm/amdgpu: Use RMW accessors for changing LNKCTL2
+> >    drm/IB/hfi1: Use RMW accessors for changing LNKCTL2
+> >    PCI: Store all PCIe Supported Link Speeds
+> >    PCI: Cache PCIe device's Supported Speed Vector
+> >    PCI/LINK: Re-add BW notification portdrv as PCIe BW controller
+> >    PCI/bwctrl: Add "controller" part into PCIe bwctrl
+> >    thermal: Add PCIe cooling driver
+> >    selftests/pcie_bwctrl: Create selftests
+> > 
+> >   MAINTAINERS                                   |   8 +
+> >   drivers/gpu/drm/amd/amdgpu/cik.c              |  41 +--
+> >   drivers/gpu/drm/amd/amdgpu/si.c               |  41 +--
+> >   drivers/gpu/drm/radeon/cik.c                  |  40 +--
+> >   drivers/gpu/drm/radeon/si.c                   |  40 +--
+> >   drivers/infiniband/hw/hfi1/pcie.c             |  30 +-
+> >   drivers/pci/pcie/Kconfig                      |   9 +
+> >   drivers/pci/pcie/Makefile                     |   1 +
+> >   drivers/pci/pcie/bwctrl.c                     | 309 ++++++++++++++++++
+> >   drivers/pci/pcie/portdrv.c                    |   9 +-
+> >   drivers/pci/pcie/portdrv.h                    |  10 +-
+> >   drivers/pci/probe.c                           |  38 ++-
+> >   drivers/pci/remove.c                          |   2 +
+> >   drivers/thermal/Kconfig                       |  10 +
+> >   drivers/thermal/Makefile                      |   2 +
+> >   drivers/thermal/pcie_cooling.c                | 107 ++++++
+> >   include/linux/pci-bwctrl.h                    |  33 ++
+> >   include/linux/pci.h                           |   3 +
+> >   include/uapi/linux/pci_regs.h                 |   1 +
+> >   tools/testing/selftests/Makefile              |   1 +
+> >   tools/testing/selftests/pcie_bwctrl/Makefile  |   2 +
+> >   .../pcie_bwctrl/set_pcie_cooling_state.sh     | 122 +++++++
+> >   .../selftests/pcie_bwctrl/set_pcie_speed.sh   |  67 ++++
+> >   23 files changed, 795 insertions(+), 131 deletions(-)
+> >   create mode 100644 drivers/pci/pcie/bwctrl.c
+> >   create mode 100644 drivers/thermal/pcie_cooling.c
+> >   create mode 100644 include/linux/pci-bwctrl.h
+> >   create mode 100644 tools/testing/selftests/pcie_bwctrl/Makefile
+> >   create mode 100755
+> > tools/testing/selftests/pcie_bwctrl/set_pcie_cooling_state.sh
+> >   create mode 100755 tools/testing/selftests/pcie_bwctrl/set_pcie_speed.sh
+> > 
+> 
+--8323329-1050272405-1693826176=:1759--
