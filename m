@@ -2,71 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C9B9791F8D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 00:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE907791F90
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 00:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241475AbjIDWh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 18:37:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57458 "EHLO
+        id S241525AbjIDWir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 18:38:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235084AbjIDWhz (ORCPT
+        with ESMTP id S230449AbjIDWiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 18:37:55 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E89CDB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 15:37:51 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9a5dff9d2d9so276715566b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 15:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693867070; x=1694471870; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8qca5uXQ/xF+tdAyo92FlBltmSbX5l/XJqzvbOU7OH0=;
-        b=f1lSYIFW23sFdesDoqVyYdff2pko5C0ql+kWIC9K/Wt7uMWAlmdHJxB7I8OQXXWKXU
-         IgFjM2FD7agDRMJmo3isBlWIs3zmrPuFpz5cySzpmKRT7s6lwF5LAn5791iZzgKlCNWl
-         H62vjHpF1JX3hzsJ8NgGjyDET4P+Jda5lHjdI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693867070; x=1694471870;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8qca5uXQ/xF+tdAyo92FlBltmSbX5l/XJqzvbOU7OH0=;
-        b=DObRiC8fmvvIOAgYUf6oo/eiAj/9pFT1yah2VAbxcVhtsIxXKkCpkraacf3CIVSx7d
-         zskCBi1hDTe3b1wHESJ/ZFpK/Q11sQsbmBRPFYEnmeCxSuMBNosiMWvyhpXpl7ZMOobB
-         5XKSyebJ27TZputgvg0S7dMsYx5gKLxyYBC+3fvhuL2hiUhR+939cx0jbiv4aI8zol1x
-         9iWu54RJmy4R6PZzdDV+YhBYnKDYDulcn47xcwKCQK31kGKwBOnAq4tw4y1Bs7cBlJuI
-         2Xhl3S087YCk4T/UXEjVgLaj0zZmoY/MzEORmSXtJaz8h8ycpGgSqAOkysRkSwkTrVJG
-         PEVw==
-X-Gm-Message-State: AOJu0YwIKsgEBtsmo646pgVxA/yiR9LvzRyWiA3cvsxr4S+yrddl/Fpp
-        aJXrCG+qoEdaoH2ZvlZ6xH7xZxn9nVHsDWgAPji+U0Rt
-X-Google-Smtp-Source: AGHT+IFuetOHWpc3kcM6IKrJyAeKFD3Zzy6stvrMgYhxOtY6I1iikz31zBV7IFnC/w8KWK7EJXVUBg==
-X-Received: by 2002:a17:906:212:b0:9a6:3d19:df7 with SMTP id 18-20020a170906021200b009a63d190df7mr4516605ejd.17.1693867069852;
-        Mon, 04 Sep 2023 15:37:49 -0700 (PDT)
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com. [209.85.221.51])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170906a40d00b0099bc0daf3d7sm6790278ejz.182.2023.09.04.15.37.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 15:37:49 -0700 (PDT)
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-31f4a286ae1so918234f8f.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 15:37:48 -0700 (PDT)
-X-Received: by 2002:a5d:538b:0:b0:31a:d8be:d6f4 with SMTP id
- d11-20020a5d538b000000b0031ad8bed6f4mr7686624wrv.10.1693867068514; Mon, 04
- Sep 2023 15:37:48 -0700 (PDT)
+        Mon, 4 Sep 2023 18:38:46 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320769D;
+        Mon,  4 Sep 2023 15:38:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1693867121;
+        bh=VsZaKdjiLp2o8KkwlQhb7LU1MNTcWZyPAyFueTEa8Tg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=bgFE0eW9582N8MjKtPAK5Vqwvu4CkfhRNFypb3Vxtc2Xxj+jvLXBF4fdXmMzpAkwT
+         aIrTsUnRJkYi6nsu2mY/BFrKk8JUHJOcsD47JQ1bFmsq25OE3dPThzkj6vwyQ4JeQX
+         aBubE7LS05SqjrDBW/9fVzIIgM9XFrWEW9gekuy0CxDS6QxvAz3SD8VjZHPxHCmz9L
+         wCb8ikVkPMlOa3GqXO0qGLD7NkTPKxFLUO6rR1K8JtNaw4Bx8ZCkjYYfMsq+OKqUIR
+         ZrRS11C+3aojhSi+D7BRnX/xyOidGQ96t3Yblqsr+7cFddJxUgCtJIxnE7VSblks2R
+         vSaGqZ0GHNJgw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Rfk7j5mzkz4wb1;
+        Tue,  5 Sep 2023 08:38:41 +1000 (AEST)
+Date:   Tue, 5 Sep 2023 08:38:40 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: duplicate patches in the mm tree
+Message-ID: <20230905083840.3048899b@canb.auug.org.au>
 MIME-Version: 1.0
-References: <ZPYuGlUw9K2PcShj@antec>
-In-Reply-To: <ZPYuGlUw9K2PcShj@antec>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 4 Sep 2023 15:37:31 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgbKyC6DTA7OyrtbtuDELaxyJSatkKF75FGWJQGKqXWZA@mail.gmail.com>
-Message-ID: <CAHk-=wgbKyC6DTA7OyrtbtuDELaxyJSatkKF75FGWJQGKqXWZA@mail.gmail.com>
-Subject: Re: [GIT PULL] OpenRISC updates for 6.6
-To:     Stafford Horne <shorne@gmail.com>
-Cc:     Linux OpenRISC <linux-openrisc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+Content-Type: multipart/signed; boundary="Sig_/r3PJ2XOhMitY7dTSUd2v.9f";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,10 +50,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Sept 2023 at 12:21, Stafford Horne <shorne@gmail.com> wrote:
->
->   https://github.com/openrisc/linux.git tags/for-linus
+--Sig_/r3PJ2XOhMitY7dTSUd2v.9f
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Nothing new there. Forgot to push?
+Hi all,
 
-                Linus
+The following commits are also in the mm-stable tree as different
+commits (but the same patches):
+
+  b93868dbf9bc ("mm/kmemleak: move up cond_resched() call in page scanning =
+loop")
+  a9bfaccff9ea ("mm: page_alloc: remove stale CMA guard code")
+  3b92a75cc2cb ("MAINTAINERS: add rmap.h to mm entry")
+  5a0afb5af594 ("rmap: remove anon_vma_link() nommu stub")
+  44265c75a6ca ("mm/hwpoison: rename hwp_walk* to hwpoison_walk*")
+  490933119a41 ("mm: memory-failure: add PageOffline() check")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/r3PJ2XOhMitY7dTSUd2v.9f
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmT2XHAACgkQAVBC80lX
+0Gxt6gf/SUbLDv5aULzZyJsc0D3DEL8aAXKtVaZqqVn+PBTxmoXnTdM4xcKlrXgL
++YOf51Qp5o2mesRZW2xQdfpvg7EL44BZlUA9wjs2MjNAtw3EcnVwdX4UeWsL41MA
+sK63AukyYsARdC9x6dqeh+UA8W1XH8D2Eg+fK2fr1rTEGMr3x1wSHilGx8lQ1kCa
+jNZ81yShFXh8K/+VZBjvecnJcuu3pUpgO2Zq2oIcbr1Wfs6M8wU7LDM0N8d8qM4m
+HNpn4k8i61Nq+xfVoCQNbS8eUBq7wvp2xNo+8A5MLUlg24gZAMYia5FNdEmost/I
+s4DxZsCXWYmc2HxCkJ3VIjzevcOYdA==
+=cccH
+-----END PGP SIGNATURE-----
+
+--Sig_/r3PJ2XOhMitY7dTSUd2v.9f--
