@@ -2,118 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0546791595
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:17:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73798791598
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344311AbjIDKRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        id S1347351AbjIDKRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:17:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232168AbjIDKRE (ORCPT
+        with ESMTP id S232168AbjIDKRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:17:04 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 553DDBD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 03:16:59 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 101E22187A;
-        Mon,  4 Sep 2023 10:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1693822618; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=ZsZRyBjVizCOdKCfDWvQMmj22cAUPrXD2YvcD1ag+uA=;
-        b=N7QCb8vgjAiex3KMYK5mXG4EtB+b8GQiviNQaFP6nd5MN2x5IWiRPvCwkd4i+kUfBPZm6G
-        xPvJD3EcObRFYMvbn20w6m0cidhW25+S5rwkmHNtRJim6T/ndKFUPpWqqy5rILGilBTGPb
-        CCp6x8hg3xC7ZmUbiShN/b5F+ZV58I0=
-Received: from suse.cz (pmladek.udp.ovpn2.prg.suse.de [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id 9F7E82C142;
-        Mon,  4 Sep 2023 10:16:57 +0000 (UTC)
-Date:   Mon, 4 Sep 2023 12:16:57 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>, Jan Kara <jack@suse.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] printk for 6.6
-Message-ID: <ZPWumSQVlzdYkSJJ@alley>
+        Mon, 4 Sep 2023 06:17:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7FFB1B6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 03:17:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693822653; x=1725358653;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=C1sxTWSukD5VjbJkhBh/4XO0u1A8SVO5BB9Wv/rZVKs=;
+  b=J1yhT/VmPYAjUfvOdRl0ogjjsv+rBsttLmxJqqWrKzOhBquQrx38eAyo
+   uwcva7ObwfTkXnZowiuUgJRdWK6M/tBmooPIdkTdkqmUYTx+u1olPYUrD
+   zHADhTGY2FJtoPgxGR20aP8zjeNZ/N2kC4Zg6ubk0DhxVG9xXlezI+J9M
+   8h5trSDdjMPlzwSQcgtPMZW57J2j5gLUNSthssflRW44/FxlnWD6A11Di
+   uacrL9lKwnOs+8fydOCl6FqWHsVmt3Uu5yaPolEAMYUvUM44cY6vJmOnl
+   zDaJOEMk8cs4mv42aFx7JsxF0xJujpeVf9bldjENcJc6fy/5ucBQyN0i9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="462934038"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="462934038"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:17:32 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="810868946"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="810868946"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga004.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:17:28 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qd6e4-006OhD-0P;
+        Mon, 04 Sep 2023 13:17:24 +0300
+Date:   Mon, 4 Sep 2023 13:17:23 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Shenghao Ding <shenghao-ding@ti.com>
+Cc:     tiwai@suse.de, robh+dt@kernel.org, lgirdwood@gmail.com,
+        perex@perex.cz, pierre-louis.bossart@linux.intel.com,
+        kevin-lu@ti.com, 13916275206@139.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+        mengdong.lin@intel.com, baojun.xu@ti.com,
+        thomas.gfeller@q-drop.com, peeyush@ti.com, navada@ti.com,
+        broonie@kernel.org, gentuser@gmail.com
+Subject: Re: [PATCH v1 1/2] ALSA: hda/tas2781: Update tas2781 HDA driver
+Message-ID: <ZPWus9/OCJ/DJHQq@smile.fi.intel.com>
+References: <20230903143759.92-1-shenghao-ding@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230903143759.92-1-shenghao-ding@ti.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Sun, Sep 03, 2023 at 10:37:57PM +0800, Shenghao Ding wrote:
+> Support ACPI_ID both TXNW2781 and TIAS2781, and revert structure
+> cs35l41_dev_name.
 
-please pull the latest printk changes from
+...
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux.git tags/printk-for-6.6
+> +	/* exactly match either TXNW2781 or TIAS2781 */
+> +	/* the rest must be exact matching */
+> +	snprintf(tmp, sizeof(tmp), "-%s:00", "TXNW2781");
+> +
+> +	if (!strcmp(d + n, tmp))
+> +		return 1;
+> +
+>  	/* the rest must be exact matching */
+> -	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
+> +	snprintf(tmp, sizeof(tmp), "-%s:00", "TIAS2781");
 
-=================================
+Basically this should use acpi_dev_match infra like Intel drivers do.
+But I haven't read code deeply to understand if it's the case here or
+not.
 
-- Do not try to get the console lock when it is not need or useful
-  in panic().
+-- 
+With Best Regards,
+Andy Shevchenko
 
-- Replace the global console_suspended state by a per-console flag.
 
-- Export symbols needed for dumping the raw printk buffer in panic().
-
-- Fix documentation of printf formats for integer types.
-
-- Moved Sergey Senozhatsky to the reviewer role.
-
-- Misc cleanups.
-
-----------------------------------------------------------------
-Andy Shevchenko (2):
-      docs: printk-formats: Fix hex printing of signed values
-      docs: printk-formats: Treat char as always unsigned
-
-Enlin Mu (1):
-      printk: export symbols for debug modules
-
-John Ogness (7):
-      kdb: Do not assume write() callback available
-      printk: Reduce console_unblank() usage in unsafe scenarios
-      printk: Keep non-panic-CPUs out of console lock
-      printk: Do not take console lock for console_flush_on_panic()
-      printk: Consolidate console deferred printing
-      printk: Add per-console suspended state
-      printk: Rename abandon_console_lock_in_panic() to other_cpu_in_panic()
-
-Kees Cook (1):
-      printk: ringbuffer: Fix truncating buffer size min_t cast
-
-Nathan Chancellor (1):
-      lib: test_scanf: Add explicit type cast to result initialization in test_number_prefix()
-
-Petr Mladek (2):
-      Merge branch 'for-6.6-vsprintf-doc' into for-linus
-      Merge branch 'rework/misc-cleanups' into for-linus
-
-Sergey Senozhatsky (1):
-      MAINTAINERS: adjust printk/vsprintf entries
-
- Documentation/core-api/printk-formats.rst |   9 +-
- MAINTAINERS                               |   4 +-
- include/linux/console.h                   |   3 +
- kernel/debug/kdb/kdb_io.c                 |   2 +
- kernel/printk/internal.h                  |   2 +
- kernel/printk/printk.c                    | 215 +++++++++++++++++++++---------
- kernel/printk/printk_ringbuffer.c         |   2 +-
- kernel/printk/printk_safe.c               |   9 +-
- lib/test_scanf.c                          |   2 +-
- 9 files changed, 167 insertions(+), 81 deletions(-)
