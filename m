@@ -2,68 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F22DC79197D
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAE6791981
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:16:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231614AbjIDOMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:12:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59012 "EHLO
+        id S234090AbjIDOQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238655AbjIDOMn (ORCPT
+        with ESMTP id S235930AbjIDOQw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:12:43 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD50CE2;
-        Mon,  4 Sep 2023 07:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=lgPjbtnuzducq8zBXNSn4l70tO9BNMjCDOC/x9Nr+h8=; b=4wUfhyChb/eyD7WmNhXDJo0PNo
-        EZxfBAPRWs6rnCeqwVORkMXjpr3YwTMjKDGW//NBM9E8DGAo+OnqVT0HF520wX+9cJkfMxfN9lPGA
-        GnQ44kebuvcEmMA/lkcVbMLZPZnrWz16c5MhIhvtVUJL5BshKHjj/MGDrp6T6F+pTIaQ=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qdAJa-005kFt-4n; Mon, 04 Sep 2023 16:12:30 +0200
-Date:   Mon, 4 Sep 2023 16:12:30 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     MD Danish Anwar <danishanwar@ti.com>
-Cc:     Simon Horman <horms@kernel.org>, Roger Quadros <rogerq@kernel.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Richard Cochran <richardcochran@gmail.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org, srk@ti.com,
-        r-gunasekaran@ti.com
-Subject: Re: [RFC PATCH net-next 4/4] net: ti: icssg_prueth: add TAPRIO
- offload support
-Message-ID: <cc1fcb9a-7337-4e78-bef7-c46c9bd383c4@lunn.ch>
-References: <20230830110847.1219515-1-danishanwar@ti.com>
- <20230830110847.1219515-5-danishanwar@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230830110847.1219515-5-danishanwar@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Sep 2023 10:16:52 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D70BCDF
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:16:49 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E25791F74D;
+        Mon,  4 Sep 2023 14:16:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693837007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yEZ8h5RKVkZ5GMWrOTMkGhGici2eVvsuoRrsxnDtWn0=;
+        b=KvFHAzhKXyYkma3yTjsBG0pADjX8+N0XpoIgYdGqG8wUALMfWMWfYVDZoWYxCF2thtrY2i
+        i+bCtFqcAXvozqnYzOcEcQQZrfcgQWHqN1R3h6Lb+e9aEwKmC5rnc0PcWmy+A58WznWr2t
+        hxZPT7dZIlTpV4yLqFyLu7gbkZUXQh4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693837007;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yEZ8h5RKVkZ5GMWrOTMkGhGici2eVvsuoRrsxnDtWn0=;
+        b=bzwJWhwpyjZnCyKhbX498fyQvKxuSjbH/aH43HsGSKXelnUa3X2AO0iLnYDr/Ct6phqL3M
+        yXz/UO86XyNfsmCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AC97F13425;
+        Mon,  4 Sep 2023 14:16:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id XXULKc/m9WTkJwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Mon, 04 Sep 2023 14:16:47 +0000
+Date:   Mon, 04 Sep 2023 16:16:47 +0200
+Message-ID: <87jzt6ja5s.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Stefan Binding <sbinding@opensource.cirrus.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: Re: [PATCH v1] ALSA: hda: cs35l41: Support mute notifications for CS35L41 HDA
+In-Reply-To: <6f75a424-2c0c-be95-fad3-0da8b3ac3477@opensource.cirrus.com>
+References: <20230825120525.1337417-1-sbinding@opensource.cirrus.com>
+        <87edjr7218.wl-tiwai@suse.de>
+        <32a62c2f-5000-132c-255c-8ccd135ba60f@opensource.cirrus.com>
+        <87h6oisz9c.wl-tiwai@suse.de>
+        <71808adb-bf54-a34b-5a63-70d454e3d426@opensource.cirrus.com>
+        <87zg22jf53.wl-tiwai@suse.de>
+        <0dc89771-07d5-6a3a-3ca6-7b99cf53ab98@opensource.cirrus.com>
+        <87o7iijb4r.wl-tiwai@suse.de>
+        <6f75a424-2c0c-be95-fad3-0da8b3ac3477@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +void icssg_qos_init(struct net_device *ndev)
-> +{
-> +	icssg_qos_tas_init(ndev);
-> +
-> +	/* IET init goes here */
-> +}
+On Mon, 04 Sep 2023 16:05:59 +0200,
+Stefan Binding wrote:
+> 
+> 
+> On 04/09/2023 14:55, Takashi Iwai wrote:
+> > On Mon, 04 Sep 2023 15:47:49 +0200,
+> > Stefan Binding wrote:
+> >> 
+> >> On 04/09/2023 13:29, Takashi Iwai wrote:
+> >>> On Mon, 04 Sep 2023 14:00:20 +0200,
+> >>> Stefan Binding wrote:
+> >>>> On 29/08/2023 15:23, Takashi Iwai wrote:
+> >>>>> On Tue, 29 Aug 2023 16:18:12 +0200,
+> >>>>> Stefan Binding wrote:
+> >>>>>> On 25/08/2023 13:13, Takashi Iwai wrote:
+> >>>>>>> On Fri, 25 Aug 2023 14:05:25 +0200,
+> >>>>>>> Stefan Binding wrote:
+> >>>>>>>> From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> >>>>>>>> 
+> >>>>>>>> Some laptops require a hardware based mute system, where when a hotkey
+> >>>>>>>> is pressed, it forces the amp to be muted.
+> >>>>>>>> 
+> >>>>>>>> For CS35L41, when the hotkey is pressed, an acpi notification is sent
+> >>>>>>>> to the CS35L41 Device Node. The driver needs to handle this notification
+> >>>>>>>> and call a _DSM function to retrieve the mute state.
+> >>>>>>>> 
+> >>>>>>>> Since the amp is only muted during playback, the driver will only mute
+> >>>>>>>> or unmute if playback is occurring, otherwise it will save the mute
+> >>>>>>>> state for when playback starts.
+> >>>>>>>> 
+> >>>>>>>> Only one handler can be registered for the acpi notification, but all
+> >>>>>>>> amps need to receive that notification, we can register a single handler
+> >>>>>>>> inside the Realtek HDA driver, so that it can then notify through the
+> >>>>>>>> component framework.
+> >>>>>>>> 
+> >>>>>>>> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+> >>>>>>>> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+> >>>>>>> We don't do normally in this way.  The ACPI hot key handling is done
+> >>>>>>> via user-space, and user-space daemon triggers the mute of the
+> >>>>>>> system.
+> >>>>>>> 
+> >>>>>>> Can't the ACPI notify the key event on those machines?
+> >>>>>> This feature is not the "normal" mute button on a keyboard, it is a
+> >>>>>> custom request
+> >>>>>> from a manufacturer which only mutes the audio on the speakers.
+> >>>>>> On previous generations, this was achieved using a GPIO controlled by
+> >>>>>> the BIOS/EC.
+> >>>>>> However, since CS35L41 does not have such GPIO, we must control it by
+> >>>>>> other means.
+> >>>>>> 
+> >>>>>> Our solution, which we have to share with the Windows driver, it to use ACPI
+> >>>>>> notifications to tell the driver to mute the amps when the shortcut is
+> >>>>>> pressed.
+> >>>>>> 
+> >>>>>> Does this seem like a valid exception to the typical approach?
+> >>>>> It's still the question whether we have to do this inevitably in the
+> >>>>> kernel in a way like that.  It sounds quite unusual.  Why this must be
+> >>>>> handled directly?  IOW, what's the difference from the "normal" mute
+> >>>>> button?
+> >>>>> 
+> >>>>> And, even if we take this approach, it leaves the device muted without
+> >>>>> exposing it to user-space.  Then user wouldn't know what happens.
+> >>>>> 
+> >>>>> 
+> >>>>> thanks,
+> >>>>> 
+> >>>>> Takashi
+> >>>> We spoke to the ODM for this system to get a more detailed explanation
+> >>>> of this feature.
+> >>>> The keyboard shortcut enables something called "Unobtrusive
+> >>>> Mode". According to their explanation:
+> >>>> 
+> >>>> - Unobtrusive mode is distinct to normal mute, as it only mutes the speakers
+> >>>> - There is no requirement to update the volume controls, as the screen
+> >>>> backlight will be off anyway in this mode
+> >>>> - All other unobtrusive mode functions are enabled without user-space
+> >>>> dependencies, and they would prefer not to make speaker mute an
+> >>>> exception
+> >>> Thanks, it gives a bit better clue.
+> >>> The remaining question is rather the exact behavior of this
+> >>> "unobtrusive mode".  How is it triggered, and what's the exact
+> >>> expectation?  e.g. It must secretly mute the speaker?  That is, it
+> >>> must not  expose the mixer state change to user-space?  Or is it tied
+> >>> with the normal mixer state and user may unmute again?
+> >>> 
+> >>> 
+> >>> Takashi
+> >>  From what we understand, unobtrusive mode, which is activated by a
+> >> keyboard shortcut (not a single key), performs several operations,
+> >> such as:
+> >> - muting the speaker (headphones remain unmuted)
+> >> - dimming/shutting down the LCD backlight
+> >> - turning off keyboard backlight and any keyboard LEDs
+> >> Apart from muting the speaker, all of these operations are done in
+> >> hardware, as the keyboard shortcut still works in the BIOS.
+> >> Previous laptops with this feature appear to use a GPIO to mute the
+> >> speaker, and we are informed that on those laptops userspace was not
+> >> informed of the mute.
+> >> Since CS35L41 does not have a GPIO mute, we had to use a different
+> >> solution, involving ACPI notifications, which request the driver to
+> >> mute.
+> >> The same mechanism is used in Windows.
+> >> Our understanding is that it is not intended for the mute to be
+> >> overridden by userspace.
+> >> Similarly, on previous laptops, userspace could not override this
+> >> mute, since it was not informed of it.
+> > OK, thanks for explanation.
+> > 
+> > I still don't like the idea to hide this completely, though.  The mode
+> > should be somehow exposed even if the mute isn't controllable via
+> > mixer, but currently there is no indication at all.
+> > 
+> > 
+> > Takashi
+> 
+> We could create and expose a read-only ALSA control which would
+> display the mute status of the amp.
+> This way its possible to see the status of the amp, without breaking
+> the mechanism.
+> Would this be acceptable?
 
-This sees like a TODO?
+Yeah, that's a compromise.
 
-     Andrew
+BTW, the acpi notification handling is enabled for all devices?  I
+don't see the conditional enablement.
+
+
+thanks,
+
+Takashi
