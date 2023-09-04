@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0099479190A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:45:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95BDA79190F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:46:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240162AbjIDNpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36554 "EHLO
+        id S238668AbjIDNqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:46:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbjIDNpa (ORCPT
+        with ESMTP id S231881AbjIDNqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:45:30 -0400
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30B50CCC;
-        Mon,  4 Sep 2023 06:45:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.es; i=@amazon.es; q=dns/txt; s=amazon201209;
-  t=1693835107; x=1725371107;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=G+iX3JsAkHreJdbYVOvBTtFDWtAvDZ2THRhTmaGM4t8=;
-  b=qY7l/EX37IPIUpLwWjMXuxQbzDLMLxagcTxx8PLV0rret3vrWanenSE9
-   ehsX8xDZZPgbY8VEJDYKBA1mDxT/mkp3TlnNqaItMYAvu48dUwn85uOgB
-   /WGu5dM168dNOvwP+boOZT43KGNxu0mTyYaZjLipFUQduiBtDV+MDCgk6
-   g=;
-X-IronPort-AV: E=Sophos;i="6.02,226,1688428800"; 
-   d="scan'208";a="349297432"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-iad-1e-m6i4x-6e7a78d7.us-east-1.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 13:45:04 +0000
-Received: from EX19D016EUA002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-iad-1e-m6i4x-6e7a78d7.us-east-1.amazon.com (Postfix) with ESMTPS id 2AD89808FC;
-        Mon,  4 Sep 2023 13:45:00 +0000 (UTC)
-Received: from EX19D037EUB003.ant.amazon.com (10.252.61.119) by
- EX19D016EUA002.ant.amazon.com (10.252.50.57) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Mon, 4 Sep 2023 13:44:58 +0000
-Received: from [192.168.6.232] (10.1.213.8) by EX19D037EUB003.ant.amazon.com
- (10.252.61.119) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 4 Sep
- 2023 13:44:52 +0000
-Message-ID: <32756034-2fd4-4246-830e-c1a0eeab0a55@amazon.es>
-Date:   Mon, 4 Sep 2023 15:44:48 +0200
+        Mon, 4 Sep 2023 09:46:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D074CD7;
+        Mon,  4 Sep 2023 06:46:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693835173; x=1725371173;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Je0PTQIr7elkbrBKVWrn47OMjVkBHZODPGlR145fXzs=;
+  b=FkKx0c6jWTY8aV8VUV91BBJMx0Mm7GvVk/gEm70uRFgfrtz+DszQs0qT
+   T2/xGlAty00Eo0ijWNRbDUpqt7JGwxxFSAQseKh0VA2XuxP/G8QYVj7YV
+   rZG4IYpq0G9csEY57Hd5oAQMixG70iIEtuEDabNCGkN6Giku2gSsyP+Lv
+   T3Ga02UkCxGgvvPSVOb94EI1MfUToYCRtB3ApcmLR5YJj1YdHkZ877XvW
+   EvWAZ54pg0j+0TuBahmY2IyrfKHIgCngzerf26GobSGArkY5Ap8o7rCYv
+   ajSaFnyJVb48FERNBkUcfT1IrdAZdQIqd5YuwSbPHFZYa8rxX+r/iMuWx
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="380397734"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="380397734"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 06:46:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="1071621238"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="1071621238"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 06:45:57 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1qd9tp-006Rbm-3A;
+        Mon, 04 Sep 2023 16:45:53 +0300
+Date:   Mon, 4 Sep 2023 16:45:53 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     yangxingui <yangxingui@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        john.g.garry@oracle.com, damien.lemoal@opensource.wdc.com,
+        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
+        himanshu.madhani@cavium.com, felipe.balbi@linux.intel.com,
+        gregkh@linuxfoundation.org, uma.shankar@intel.com,
+        anshuman.gupta@intel.com, animesh.manna@intel.com,
+        linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        prime.zeng@hisilicon.com, kangfenglong@huawei.com,
+        chenxiang66@hisilicon.com
+Subject: Re: [PATCH v5 3/3] scsi: qla2xxx: Use DEFINE_SHOW_STORE_ATTRIBUTE
+ helper for debugfs
+Message-ID: <ZPXfkV7DYsxx179W@smile.fi.intel.com>
+References: <20230904084804.39564-1-yangxingui@huawei.com>
+ <20230904084804.39564-4-yangxingui@huawei.com>
+ <ZPW39NRmd0Z0WRwW@smile.fi.intel.com>
+ <6408e1c5-df6a-e257-26c8-2d100be6db97@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Propagating reseed notifications to user space
-Content-Language: en-US
-To:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "Jason Wang" <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>
-CC:     <graf@amazon.de>, <xmarcalx@amazon.co.uk>, <aams@amazon.de>,
-        <dwmw@amazon.co.uk>, <gregkh@linuxfoundation.org>,
-        <bchalios@amazon.es>
-References: <20230823090107.65749-1-bchalios@amazon.es>
-From:   Babis Chalios <bchalios@amazon.es>
-Autocrypt: addr=bchalios@amazon.es; keydata=
- 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
-In-Reply-To: <20230823090107.65749-1-bchalios@amazon.es>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.1.213.8]
-X-ClientProxiedBy: EX19D041UWA002.ant.amazon.com (10.13.139.121) To
- EX19D037EUB003.ant.amazon.com (10.252.61.119)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SPF_PERMERROR
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6408e1c5-df6a-e257-26c8-2d100be6db97@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello all,
+On Mon, Sep 04, 2023 at 09:05:29PM +0800, yangxingui wrote:
+> On 2023/9/4 18:56, Andy Shevchenko wrote:
+> > On Mon, Sep 04, 2023 at 08:48:04AM +0000, Xingui Yang wrote:
 
-On 23/8/23 11:01, Babis Chalios wrote:
-> This is an RFC, so that we can discuss whether the proposed ABI works.
-> Also, I'd like to hear people's opinion on the internal registration
-> API, 8/24 split etc. If we decide that this approach works, I 'm happy
-> to add documentation for it, with examples on how user space can make
-> use of it.
+...
 
-Some time has passed since I sent this and I haven't received any 
-comments, so I assume people
-are happy with the proposed API. I will work on adding documentation and 
-examples on how
-user space can use this and send a v1.
+> > > -/*
+> > > - * Helper macros for setting up debugfs entries.
+> > > - * _name: The name of the debugfs entry
+> > > - * _ctx_struct: The context that was passed when creating the debugfs file
+> > > - *
+> > > - * QLA_DFS_SETUP_RD could be used when there is only a show function.
+> > > - * - show function take the name qla_dfs_<sysfs-name>_show
+> > > - *
+> > > - * QLA_DFS_SETUP_RW could be used when there are both show and write functions.
+> > > - * - show function take the name  qla_dfs_<sysfs-name>_show
+> > > - * - write function take the name qla_dfs_<sysfs-name>_write
+> > > - *
+> > > - * To have a new debugfs entry, do:
+> > > - * 1. Create a "struct dentry *" in the appropriate structure in the format
+> > > - * dfs_<sysfs-name>
+> > > - * 2. Setup debugfs entries using QLA_DFS_SETUP_RD / QLA_DFS_SETUP_RW
+> > > - * 3. Create debugfs file in qla2x00_dfs_setup() using QLA_DFS_CREATE_FILE
+> > > - * or QLA_DFS_ROOT_CREATE_FILE
+> > > - * 4. Remove debugfs file in qla2x00_dfs_remove() using QLA_DFS_REMOVE_FILE
+> > > - * or QLA_DFS_ROOT_REMOVE_FILE
+> > > - *
+> > > - * Example for creating "TEST" sysfs file:
+> > > - * 1. struct qla_hw_data { ... struct dentry *dfs_TEST; }
+> > > - * 2. QLA_DFS_SETUP_RD(TEST, scsi_qla_host_t);
+> > > - * 3. In qla2x00_dfs_setup():
+> > > - * QLA_DFS_CREATE_FILE(ha, TEST, 0600, ha->dfs_dir, vha);
+> > > - * 4. In qla2x00_dfs_remove():
+> > > - * QLA_DFS_REMOVE_FILE(ha, TEST);
+> > > - */
+> > 
+> > I believe this comment (in some form) has to be preserved.
+> > Try to rewrite it using reference to the new macro.
+> Thanks for your reply, I checked and these macros aren't being called
+> anywhere else, so I decided to delete them all. Of course, maybe this macro
+> will be used in the future, and I can resubmit another version based on your
+> suggestion.
 
-Cheers,
-Babis
+Of course you need to rewrite it to use new approach.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
