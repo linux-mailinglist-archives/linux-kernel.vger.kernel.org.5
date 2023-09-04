@@ -2,66 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30697791AAC
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C2BA791AAF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:34:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245058AbjIDPdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60868 "EHLO
+        id S1346426AbjIDPeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbjIDPdN (ORCPT
+        with ESMTP id S231127AbjIDPeE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:33:13 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906B3CC3
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:33:09 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 25C9CB80E70
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 15:33:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 930FEC433C8;
-        Mon,  4 Sep 2023 15:33:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693841586;
-        bh=UeKK5EZJuIgCkUx5xqRn3CgwQq16K8S9woQmQDDN6JE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hqc96kthJhcdhdl1Rlk0yY3dQ/CFCUPeOHYx4AbJFcC7PnFUzBNnneQRtC7angbjy
-         hJGxyIO2mGHRrfE06mEn86+a6xnB3yfJvZ0PnYD7ZVsr09GZaqxFa4xWBcw7QlSgkx
-         hwyn81J2jeRSRsQ0LGG7K2eHNULCtT3FTpLqj08H94AJjb+5PmfNjcj0qjUHnFzKTF
-         tn3r7Y/MYD8CZu+2tWHhGgVMAWlrWVk05k82P0g168zcfbAf6KwtXS2NJCEHI/7VIz
-         a8kdhPr2AebRaLXr8yC5srMFnOBncil5ozqq77Frwd4WGIZdSXt5P9Wz67VVILRBwe
-         cF9xW2KNlKgBA==
-Date:   Mon, 4 Sep 2023 17:33:03 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
+        Mon, 4 Sep 2023 11:34:04 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34F08CC4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:34:00 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-401c90ed2ecso16995205e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 08:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693841638; x=1694446438; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8mKB1k2ZE2G/ciLlCDtCzQ5wGQ8xRQbZHnxa2+q17Z8=;
+        b=e3bUSFwg6DSPbEBA8Y5Wc7SQsIUgL+iu6iK1XKxG2+vTQPodz6PmwfJY/WomkE2eNl
+         obhhZEfR6g8cE9IL0gU7SYBQUuA+nsVSl12a1grYQC72PDk4iWZKW5iT4ARkVFvff4Zd
+         dcFn/zyntmlmd/u4yXGnsnNy6tcuCNMXXb0PQwMdYpHlmGm4aSdR7Kh9pA6MRFMojHcw
+         WVgLwwrK2FcgHiXcEunE/l53zlz3Br8LQPTTf7MPsmh7aMkJa9gPDcvN98yML9j3L6qL
+         JvF8oX4M5nIN3jRVr7kMMpgflibjhJqtAcP+SeAx8gWqd6TmG2Sk4qcLNqWIqb0qFub2
+         fdhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693841638; x=1694446438;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8mKB1k2ZE2G/ciLlCDtCzQ5wGQ8xRQbZHnxa2+q17Z8=;
+        b=egYMkhnFcVIg6zJT4QCDbFZ8mUpZMgdZoTS9pVxAvSS7W6CKtJSjlAehqo9+Ub6+53
+         Ns/75AekaEXOw7FzbwTJdO0+Whoni7+eMLreQlF6CBFIs6ZVl9aSIOQn9pt4nwfu/JP9
+         dzyiYSbdYumHVp8dOu9EWgB9cmZL+yCyG7ScY4h3YUq1gc74vztY0nlcGnwWHCwai/Vi
+         QmQu5823P/jrkD+6tlgvViq+qd9r/nfKHHaYOhiX1ph/hsI7Itc2O/I1hHb615fVh2Ta
+         USURKoZ1LJed48pvdA/6xSBzy/Ise2gbL4ITCg8aD2KwFp//oO5ZMrAZRGn5pUvNOrq5
+         64Qw==
+X-Gm-Message-State: AOJu0Yx0Hf2BXaQqkoN6OHeBFwFmA5LGCUA8yk2BgAADBJ/Fokjqu1pj
+        ztFp3w8LisP2Lw5ZIODs0fHXIA==
+X-Google-Smtp-Source: AGHT+IGhYh7h7UosmsP+axnCskrqTn/m5wl+B+KT+YE2nQBzRYMTV/Fur6gSkA0GnBJj6rv+rEUuzA==
+X-Received: by 2002:a05:600c:2945:b0:3fe:89be:cd3 with SMTP id n5-20020a05600c294500b003fe89be0cd3mr7728851wmd.22.1693841638575;
+        Mon, 04 Sep 2023 08:33:58 -0700 (PDT)
+Received: from myrica ([2.220.83.24])
+        by smtp.gmail.com with ESMTPSA id o24-20020a05600c379800b003fed70fb09dsm14379467wmr.26.2023.09.04.08.33.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 08:33:58 -0700 (PDT)
+Date:   Mon, 4 Sep 2023 16:34:03 +0100
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        virtualization@lists.linux-foundation.org, iommu@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
-Message-ID: <nahwibpea2akyg7swbdb3f6xyv7fqs35v5spqbjfzfchxnoqqz@glgg5core75d>
-References: <bphkopaq76imqzut7xrx7aprqybhx3veajdympqhig2wqlix6c@64ck23rc5cv7>
- <CAD=FV=XiVkoCsjin4R74nkcd8vzOq9uPq+o5cRjd=YOoPXuQkg@mail.gmail.com>
- <lhd6ai7d6swlxhisjhikytguor7pptrymo3bmfwej4k7zqrnv4@hp2gvhw7mh3m>
- <CAD=FV=XUhzguFCC=aKzHFMV0bBnZzkHXP_tx+P=PNkVr=8SnTA@mail.gmail.com>
- <mumiep5q7x7qj7k64h3cyodxrgk737iy5rum5keguquwymf2gy@3qruwfrqjgy7>
- <CAD=FV=VEene+nr1us87iA+bomxzQ039r-E+wqvizvFGbxXjDvA@mail.gmail.com>
- <wwzbd7dt5qyimshnd7sbgkf5gxk7tq5dxtrerz76uw5p6s7tzt@cbiezkfeuqqn>
- <CAD=FV=XcUVvg5Om__dD=i9zu7ZtQmvWicms9yN7w0c2nWGhqYg@mail.gmail.com>
- <p7okuysh442hulqls3ekbaar2bguqv67fum3gsb2cj75kjvdpx@uebwlgvf46sy>
- <CAD=FV=Xr4nZUeHY-FdiedcV=BuP5szNBEHPKjdRnA7c+3MADqg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] iommu/virtio: Add ops->flush_iotlb_all and enable
+ deferred flush
+Message-ID: <20230904153403.GB815284@myrica>
+References: <20230825-viommu-sync-map-v1-0-56bdcfaa29ec@linux.ibm.com>
+ <20230825-viommu-sync-map-v1-2-56bdcfaa29ec@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAD=FV=Xr4nZUeHY-FdiedcV=BuP5szNBEHPKjdRnA7c+3MADqg@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <20230825-viommu-sync-map-v1-2-56bdcfaa29ec@linux.ibm.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,75 +74,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, Aug 25, 2023 at 05:21:26PM +0200, Niklas Schnelle wrote:
+> Add ops->flush_iotlb_all operation to enable virtio-iommu for the
+> dma-iommu deferred flush scheme. This results inn a significant increase
 
-On Fri, Sep 01, 2023 at 06:42:42AM -0700, Doug Anderson wrote:
-> On Fri, Sep 1, 2023 at 1:15=E2=80=AFAM Maxime Ripard <mripard@kernel.org>=
- wrote:
-> > On Thu, Aug 31, 2023 at 11:18:49AM -0700, Doug Anderson wrote:
-> > > Today this is explicitly _not_ refcounting, right? It is simply
-> > > treating double-enables as no-ops and double-disables as no-ops. With
-> > > our current understanding, the only thing we actually need to guard
-> > > against is double-disable but at the moment we do guard against both.
-> > > Specifically we believe the cases that are issues:
-> > >
-> > > a) At shutdown/remove time we want to disable the panel, but only if
-> > > it was enabled (we wouldn't want to call disable if the panel was
-> > > already off because userspace turned it off).
-> >
-> > Yeah, and that's doable with refcounting too.
->=20
-> I don't understand the benefit of switching to refcounting, though. We
-> don't ever expect the "prepare" or "enable" function to be called more
-> than once and all we're guarding against is a double-unprepare and a
-> double-enable. Switching this to refcounting would make the reader
-> think that there was a legitimate case for things to be prepared or
-> enabled twice. As far as I know, there isn't.
+in
 
-Sure, eventually we'll want to remove it.
+> in performance in exchange for a window in which devices can still
+> access previously IOMMU mapped memory. To get back to the prior behavior
+> iommu.strict=1 may be set on the kernel command line.
 
-I even said it as such here:
-https://lore.kernel.org/dri-devel/wwzbd7dt5qyimshnd7sbgkf5gxk7tq5dxtrerz76u=
-w5p6s7tzt@cbiezkfeuqqn/
+Maybe add that it depends on CONFIG_IOMMU_DEFAULT_DMA_{LAZY,STRICT} as
+well, because I've seen kernel configs that enable either.
 
-However, we have a number of panels following various anti-patterns
-where disable and unprepare would be called multiple times. A boolean
-would just ignore the second, refcounting would warn over it, and that's
-what we want.
+> 
+> Link: https://lore.kernel.org/lkml/20230802123612.GA6142@myrica/
+> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
+> ---
+>  drivers/iommu/virtio-iommu.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/iommu/virtio-iommu.c b/drivers/iommu/virtio-iommu.c
+> index fb73dec5b953..1b7526494490 100644
+> --- a/drivers/iommu/virtio-iommu.c
+> +++ b/drivers/iommu/virtio-iommu.c
+> @@ -924,6 +924,15 @@ static int viommu_iotlb_sync_map(struct iommu_domain *domain,
+>  	return viommu_sync_req(vdomain->viommu);
+>  }
+>  
+> +static void viommu_flush_iotlb_all(struct iommu_domain *domain)
+> +{
+> +	struct viommu_domain *vdomain = to_viommu_domain(domain);
+> +
+> +	if (!vdomain->nr_endpoints)
+> +		return;
 
-And that's exactly because there isn't a legitimate case for things to
-be disabled or unprepared twice, but yet many panel driver do it anyway.
+As for patch 1, a NULL check in viommu_sync_req() would allow dropping
+this one
 
-> In any case, I don't think there's any need to switch this to
-> refcounting as part of this effort. Someone could, in theory, do it as
-> a separate patch series.
+Thanks,
+Jean
 
-I'm sorry, but I'll insist on getting a solution that will warn panels
-that call drm_atomic_helper_shutdown or drm_panel_disable/unprepare by
-hand. It doesn't have to be refcounting though if you have a better idea
-in mind.
-
-> > > The above solves the problem with panels wanting to power sequence
-> > > themselves at remove() time, but not at shutdown() time. Thus we'd
-> > > still have a dependency on having all drivers use
-> > > drm_atomic_helper_shutdown() so that work becomes a dependency.
-> >
-> > Does it? I think it can be done in parallel?
->=20
-> I don't think it can be in parallel. While it makes sense for panels
-> to call drm_panel_remove() at remove time, it doesn't make sense for
-> them to call it at shutdown time. That means that the trick of having
-> the panel get powered off in drm_panel_remove() won't help for
-> shutdown. For shutdown, which IMO is the more important case, we need
-> to wait until all drm drivers call drm_atomic_helper_shutdown()
-> properly.
-
-Right, my point was more that drivers that already don't disable the
-panel in their shutdown implementation will still not do it. And drivers
-that do will still do it, so there's no regression.
-
-We obviously want to tend to having all drivers call
-drm_atomic_helper_shutdown(), but not having it will not introduce any
-regression.
-
-Maxime
+> +	viommu_sync_req(vdomain->viommu);
+> +}
+> +
+>  static void viommu_get_resv_regions(struct device *dev, struct list_head *head)
+>  {
+>  	struct iommu_resv_region *entry, *new_entry, *msi = NULL;
+> @@ -1049,6 +1058,8 @@ static bool viommu_capable(struct device *dev, enum iommu_cap cap)
+>  	switch (cap) {
+>  	case IOMMU_CAP_CACHE_COHERENCY:
+>  		return true;
+> +	case IOMMU_CAP_DEFERRED_FLUSH:
+> +		return true;
+>  	default:
+>  		return false;
+>  	}
+> @@ -1069,6 +1080,7 @@ static struct iommu_ops viommu_ops = {
+>  		.map_pages		= viommu_map_pages,
+>  		.unmap_pages		= viommu_unmap_pages,
+>  		.iova_to_phys		= viommu_iova_to_phys,
+> +		.flush_iotlb_all	= viommu_flush_iotlb_all,
+>  		.iotlb_sync		= viommu_iotlb_sync,
+>  		.iotlb_sync_map		= viommu_iotlb_sync_map,
+>  		.free			= viommu_domain_free,
+> 
+> -- 
+> 2.39.2
+> 
