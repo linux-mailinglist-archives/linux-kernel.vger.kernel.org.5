@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA1679150F
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BFF791524
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351352AbjIDJv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 05:51:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
+        id S1352701AbjIDJyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 05:54:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231742AbjIDJv4 (ORCPT
+        with ESMTP id S1348055AbjIDJyQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 05:51:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E5C11D;
-        Mon,  4 Sep 2023 02:51:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 57F31B80DDF;
-        Mon,  4 Sep 2023 09:51:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B855FC433C8;
-        Mon,  4 Sep 2023 09:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693821110;
-        bh=u+xgETcg23UcZvAsSNoTKQTpoQDzWhh5CjfKLhaLfCA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=GrBGNC0GUAEP92SVXDSYgvIeyQhEWu5ohv1UZxcq2j4jmPnZMVKVXd7PcLbrec+YC
-         YwtxwrDnv2HUbxAauD5LP+iZpv1hgd3J7v5N5AFier00fzuLYjkXSyalNCln662qcL
-         MOkKZFmfbFH61oxgNm/1PDUalOPIF/dG8en4lktLAOJKNet2WlaOi4SDB1WMRo8c1E
-         Fx1ryvNUFvNi9qlIPKbaeTXq/1cJbp6vtXGsOglG9wRy2wFIevByTxjIps/B3VRZZs
-         ZTGcqJO6bRRRPVV2zC3wt54/lylE+o7sVECKL3QKI1/oWONjJaYkFRkcM0vOKzehKT
-         ynVVLBmYA4BCQ==
-Date:   Mon, 4 Sep 2023 11:51:40 +0200
-From:   Christian Brauner <brauner@kernel.org>
-To:     Hao Xu <hao.xu@linux.dev>
-Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Pavel Begunkov <asml.silence@gmail.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
-        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
-        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
-        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
-Message-ID: <20230904-trennen-gewettert-0b2dc5ba60bc@brauner>
-References: <20230827132835.1373581-1-hao.xu@linux.dev>
- <20230827132835.1373581-8-hao.xu@linux.dev>
+        Mon, 4 Sep 2023 05:54:16 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AC8E54;
+        Mon,  4 Sep 2023 02:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693821241; x=1725357241;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=QIhDNZOjoBuIRTtsqyOS8+9qZ2I1zQKVMs1FA+2oWcw=;
+  b=PKpggrYg8UqPkykYrXjeMy97P4RaTvj57EyiL3aRara33dxc1Wue9ISA
+   6xb8EDy3+u8+9mLG9V8mBIFUO+uGDN2em4/VTWEbQXgm3AqY1Py0rg+DB
+   oN+vWHKImcd1B/vxi82g3cvgvH5MFSZ+YJOIUq6IHGDV3DXKpwz7+mskb
+   5MBtjuXO8vb8P7sU5uYPVEukDTxsARCdgoZ0lKvLGs0q5ChbNpBPN3Bu0
+   m2Z3EZYsNUtKyT2BqaUIP+qZwiKZQlbvMiXXrqb6ABnlXHS/39evCjdMR
+   AGCA41xgleLSSYrm2ax1Rrmxp01Am/vKuSR6lKhgFY4InAdYq/KwSLNx1
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="356880655"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="356880655"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 02:54:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="740700632"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="740700632"
+Received: from okozlyk-mobl.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.249.44.17])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 02:53:57 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Reinette Chatre <reinette.chatre@intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kselftest@vger.kernel.org, Shuah Khan <shuah@kernel.org>,
+        =?UTF-8?q?Maciej=20Wiecz=C3=B3r-Retman?= 
+        <maciej.wieczor-retman@intel.com>
+Cc:     Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Babu Moger <babu.moger@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v5 1/8] selftests/resctrl: Ensure the benchmark commands fits to its array
+Date:   Mon,  4 Sep 2023 12:53:32 +0300
+Message-Id: <20230904095339.11321-2-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230904095339.11321-1-ilpo.jarvinen@linux.intel.com>
+References: <20230904095339.11321-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230827132835.1373581-8-hao.xu@linux.dev>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
-> From: Hao Xu <howeyxu@tencent.com>
-> 
-> Add a boolean parameter for file_accessed() to support nowait semantics.
-> Currently it is true only with io_uring as its initial caller.
-> 
-> Signed-off-by: Hao Xu <howeyxu@tencent.com>
-> ---
->  arch/s390/hypfs/inode.c | 2 +-
->  block/fops.c            | 2 +-
->  fs/btrfs/file.c         | 2 +-
->  fs/btrfs/inode.c        | 2 +-
->  fs/coda/dir.c           | 4 ++--
->  fs/ext2/file.c          | 4 ++--
->  fs/ext4/file.c          | 6 +++---
->  fs/f2fs/file.c          | 4 ++--
->  fs/fuse/dax.c           | 2 +-
->  fs/fuse/file.c          | 4 ++--
->  fs/gfs2/file.c          | 2 +-
->  fs/hugetlbfs/inode.c    | 2 +-
->  fs/nilfs2/file.c        | 2 +-
->  fs/orangefs/file.c      | 2 +-
->  fs/orangefs/inode.c     | 2 +-
->  fs/pipe.c               | 2 +-
->  fs/ramfs/file-nommu.c   | 2 +-
->  fs/readdir.c            | 2 +-
->  fs/smb/client/cifsfs.c  | 2 +-
->  fs/splice.c             | 2 +-
->  fs/ubifs/file.c         | 2 +-
->  fs/udf/file.c           | 2 +-
->  fs/xfs/xfs_file.c       | 6 +++---
->  fs/zonefs/file.c        | 4 ++--
->  include/linux/fs.h      | 5 +++--
->  mm/filemap.c            | 8 ++++----
->  mm/shmem.c              | 6 +++---
->  27 files changed, 43 insertions(+), 42 deletions(-)
-> 
-> diff --git a/arch/s390/hypfs/inode.c b/arch/s390/hypfs/inode.c
-> index ee919bfc8186..55f562027c4f 100644
-> --- a/arch/s390/hypfs/inode.c
-> +++ b/arch/s390/hypfs/inode.c
-> @@ -157,7 +157,7 @@ static ssize_t hypfs_read_iter(struct kiocb *iocb, struct iov_iter *to)
->  	if (!count)
->  		return -EFAULT;
->  	iocb->ki_pos = pos + count;
-> -	file_accessed(file);
-> +	file_accessed(file, false);
+Benchmark command is copied into an array in the stack. The array is
+BENCHMARK_ARGS items long but the command line could try to provide a
+longer command. Argument size is also fixed by BENCHMARK_ARG_SIZE (63
+bytes of space after fitting the terminating \0 character) and user
+could have inputted argument longer than that.
 
-Why? If all you do is skip atime update anyway then just add something
-like:
+Return error in case the benchmark command does not fit to the space
+allocated for it.
 
-bool file_needs_atime(struct file *file)
-{
-       return !(file->f_flags & O_NOATIME) &&
-              atime_needs_update(&file->f_path, d_inode(path->dentry));
-}
+Fixes: ecdbb911f22d ("selftests/resctrl: Add MBM test")
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+Tested-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+Reviewed-by: Shaopeng Tan <tan.shaopeng@jp.fujitsu.com>
+Reviewed-by: "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>
+---
+ tools/testing/selftests/resctrl/resctrl_tests.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-and then
+diff --git a/tools/testing/selftests/resctrl/resctrl_tests.c b/tools/testing/selftests/resctrl/resctrl_tests.c
+index d511daeb6851..9e2bc8ba95f1 100644
+--- a/tools/testing/selftests/resctrl/resctrl_tests.c
++++ b/tools/testing/selftests/resctrl/resctrl_tests.c
+@@ -255,9 +255,14 @@ int main(int argc, char **argv)
+ 		return ksft_exit_skip("Not running as root. Skipping...\n");
+ 
+ 	if (has_ben) {
++		if (argc - ben_ind >= BENCHMARK_ARGS)
++			ksft_exit_fail_msg("Too long benchmark command.\n");
++
+ 		/* Extract benchmark command from command line. */
+ 		for (i = ben_ind; i < argc; i++) {
+ 			benchmark_cmd[i - ben_ind] = benchmark_cmd_area[i];
++			if (strlen(argv[i]) >= BENCHMARK_ARG_SIZE)
++				ksft_exit_fail_msg("Too long benchmark command argument.\n");
+ 			sprintf(benchmark_cmd[i - ben_ind], "%s", argv[i]);
+ 		}
+ 		benchmark_cmd[ben_count] = NULL;
+-- 
+2.30.2
 
-if (file_needs_atime(file) && IOURING_WANTS_ASYNC)
-	return -EAGAIN;
-
-instead of touching all this code.
