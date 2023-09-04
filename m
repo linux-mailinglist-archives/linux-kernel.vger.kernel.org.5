@@ -2,56 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 410EC7913DE
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D18791375
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238143AbjIDItX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 04:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35242 "EHLO
+        id S1347403AbjIDIb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 04:31:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjIDItW (ORCPT
+        with ESMTP id S241070AbjIDIbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 04:49:22 -0400
-X-Greylist: delayed 1107 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 04 Sep 2023 01:49:18 PDT
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8F4128
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 01:49:18 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qd4yl-0000TY-S1; Mon, 04 Sep 2023 10:30:39 +0200
-Received: from [2a0a:edc0:0:900:1d::4e] (helo=lupine)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qd4yk-003plv-G3; Mon, 04 Sep 2023 10:30:38 +0200
-Received: from pza by lupine with local (Exim 4.96)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1qd4yk-0005BW-0h;
-        Mon, 04 Sep 2023 10:30:38 +0200
-Message-ID: <32186b941d6228a102b5e799aadf34206b58ac15.camel@pengutronix.de>
-Subject: Re: [RFT PATCH 13/15] drm/imx/ipuv3: Call
- drm_atomic_helper_shutdown() at shutdown/unbind time
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Douglas Anderson <dianders@chromium.org>,
-        dri-devel@lists.freedesktop.org, Maxime Ripard <mripard@kernel.org>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, airlied@gmail.com,
-        daniel@ffwll.ch, festevam@gmail.com, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
-        linux-kernel@vger.kernel.org, shawnguo@kernel.org
-Date:   Mon, 04 Sep 2023 10:30:38 +0200
-In-Reply-To: <20230901164111.RFT.13.I0a9940ff6f387d6acf4e71d8c7dbaff8c42e3aaa@changeid>
-References: <20230901234202.566951-1-dianders@chromium.org>
-         <20230901164111.RFT.13.I0a9940ff6f387d6acf4e71d8c7dbaff8c42e3aaa@changeid>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.46.4-2 
+        Mon, 4 Sep 2023 04:31:55 -0400
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com [209.85.214.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322A6127
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 01:31:51 -0700 (PDT)
+Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1c0d58f127fso18035205ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 01:31:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693816310; x=1694421110;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=u2OmTOCFNK30sKwAH23PKfFifyHLUed/0eso+ICjivA=;
+        b=IeWwrm6DtZRIEG0GIdQpcqbpq8VGzogRXPaCnifzOho+W7uSNQ8LdoPE+b2IqE4li+
+         Cz6Rv6pam94ZFCkBciFHLGALnnN7AHUW/02dqvDthXrA/4SLAAYiB5f2Ycjy6/TEZ4hk
+         08O7l2XiD2Z0wjTT/4aPAN1BqQAOaVF8163zTs+ZvddCuj16zywfS2ySsV4Mm/pudnlr
+         6hKsHFqgH4t+gGqCpNxGXxPsDkpXIiJkhbkiN5BatKaEH95YvLGSEeXObYsxJXhouLxo
+         kY/mAMvBIyTL1BhAXmlT5YTKxQiNoS+vs1s6Wz1UcWwqpx92I3D7M8AkHLCbm2eSQ3Id
+         g8YQ==
+X-Gm-Message-State: AOJu0YwyldVTdWkGT6ecsc0ax1ZLoZvGWiBywB5Rfp/0Bw+DpJ3l8gpk
+        I0pOC8030NaK8Bm1wBpkoEAsC3yFaI3vEtokl5Mtim8nwkv3
+X-Google-Smtp-Source: AGHT+IGpt2ftf95l/L/nnDQ6ee2mdYHv2fp0o/2P7wmxTTVnU3kxj0nn6GNWriZkj427vEzU0WNk8O3FJ074X+K9J6bLpneNwz1b
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Received: by 2002:a17:902:da86:b0:1c3:2af5:19e5 with SMTP id
+ j6-20020a170902da8600b001c32af519e5mr1985746plx.4.1693816310722; Mon, 04 Sep
+ 2023 01:31:50 -0700 (PDT)
+Date:   Mon, 04 Sep 2023 01:31:50 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000083fba206048457b2@google.com>
+Subject: [syzbot] Monthly ntfs report (Sep 2023)
+From:   syzbot <syzbot+liste99d2b62937cf3368a1d@syzkaller.appspotmail.com>
+To:     anton@tuxera.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-ntfs-dev@lists.sourceforge.net,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,36 +55,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fr, 2023-09-01 at 16:41 -0700, Douglas Anderson wrote:
-> Based on grepping through the source code this driver appears to be
-> missing a call to drm_atomic_helper_shutdown() at system shutdown time
-> and at driver unbind time. Among other things, this means that if a
-> panel is in use that it won't be cleanly powered off at system
-> shutdown time.
-> 
-> The fact that we should call drm_atomic_helper_shutdown() in the case
-> of OS shutdown/restart and at driver remove (or unbind) time comes
-> straight out of the kernel doc "driver instance overview" in
-> drm_drv.c.
-> 
-> A few notes about this fix:
-> - When adding drm_atomic_helper_shutdown() to the unbind path, I added
->   it after drm_kms_helper_poll_fini() since that's when other drivers
->   seemed to have it.
-> - Technically with a previous patch, ("drm/atomic-helper:
->   drm_atomic_helper_shutdown(NULL) should be a noop"), we don't
->   actually need to check to see if our "drm" pointer is NULL before
->   calling drm_atomic_helper_shutdown(). We'll leave the "if" test in,
->   though, so that this patch can land without any dependencies. It
->   could potentially be removed later.
-> - This patch also makes sure to set the drvdata to NULL in the case of
->   bind errors to make sure that shutdown can't access freed data.
-> 
-> Suggested-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+Hello ntfs maintainers/developers,
 
-Thank you,
-Tested-by: Philipp Zabel <p.zabel@pengutronix.de>
+This is a 31-day syzbot report for the ntfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ntfs
 
-regards
-Philipp
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 25 issues are still open and 7 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  3784    Yes   possible deadlock in ntfs_read_folio
+                   https://syzkaller.appspot.com/bug?extid=8ef76b0b1f86c382ad37
+<2>  3075    Yes   kernel BUG at fs/ntfs/aops.c:LINE!
+                   https://syzkaller.appspot.com/bug?extid=6a5a7672f663cce8b156
+<3>  1303    Yes   kernel BUG in __ntfs_grab_cache_pages
+                   https://syzkaller.appspot.com/bug?extid=01b3ade7c86f7dd584d7
+<4>  604     Yes   possible deadlock in map_mft_record
+                   https://syzkaller.appspot.com/bug?extid=cb1fdea540b46f0ce394
+<5>  388     Yes   KASAN: slab-out-of-bounds Read in ntfs_readdir
+                   https://syzkaller.appspot.com/bug?extid=d36761079ac1b585a6df
+<6>  297     No    KASAN: use-after-free Read in ntfs_test_inode
+                   https://syzkaller.appspot.com/bug?extid=2751da923b5eb8307b0b
+<7>  211     No    possible deadlock in __ntfs_clear_inode
+                   https://syzkaller.appspot.com/bug?extid=5ebb8d0e9b8c47867596
+<8>  33      Yes   kernel BUG in ntfs_lookup_inode_by_name
+                   https://syzkaller.appspot.com/bug?extid=d532380eef771ac0034b
+<9>  28      Yes   kernel BUG in ntfs_iget
+                   https://syzkaller.appspot.com/bug?extid=d62e6bd2a2d05103d105
+<10> 12      Yes   KASAN: use-after-free Read in ntfs_lookup_inode_by_name
+                   https://syzkaller.appspot.com/bug?extid=3625b78845a725e80f61
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
