@@ -2,203 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8051E791A8C
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:23:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C244B791A90
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 17:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238082AbjIDPXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 11:23:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
+        id S241437AbjIDPXe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 11:23:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244726AbjIDPXS (ORCPT
+        with ESMTP id S231171AbjIDPXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 11:23:18 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6406610F2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:23:11 -0700 (PDT)
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1qdBPB-00058K-P3; Mon, 04 Sep 2023 17:22:21 +0200
-Received: from pengutronix.de (unknown [172.20.34.65])
+        Mon, 4 Sep 2023 11:23:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7001BCD4;
+        Mon,  4 Sep 2023 08:23:23 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 97AFF218726;
-        Mon,  4 Sep 2023 15:22:20 +0000 (UTC)
-Date:   Mon, 4 Sep 2023 17:22:20 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Srinivas Goud <srinivas.goud@amd.com>
-Cc:     wg@grandegger.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        p.zabel@pengutronix.de, git@amd.com, michal.simek@amd.com,
-        linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, appana.durga.rao@xilinx.com,
-        naga.sureshkumar.relli@xilinx.com
-Subject: Re: [PATCH v4 3/3] can: xilinx_can: Add ethtool stats interface for
- ECC errors
-Message-ID: <20230904-unbiased-putt-a1a2919b02c7-mkl@pengutronix.de>
-References: <1693557645-2728466-1-git-send-email-srinivas.goud@amd.com>
- <1693557645-2728466-4-git-send-email-srinivas.goud@amd.com>
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0197261870;
+        Mon,  4 Sep 2023 15:23:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A9E3C433BA;
+        Mon,  4 Sep 2023 15:23:19 +0000 (UTC)
+Message-ID: <1f45225f-95ec-626d-3bb5-bf9eafd11e19@xs4all.nl>
+Date:   Mon, 4 Sep 2023 17:23:17 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="f5dk3iq2kvsfzpmv"
-Content-Disposition: inline
-In-Reply-To: <1693557645-2728466-4-git-send-email-srinivas.goud@amd.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:b01:1d::7b
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v6 00/18] Add DELETE_BUF ioctl
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 01/09/2023 14:43, Benjamin Gaignard wrote:
+> Unlike when resolution change on keyframes, dynamic resolution change
+> on inter frames doesn't allow to do a stream off/on sequence because
+> it is need to keep all previous references alive to decode inter frames.
+> This constraint have two main problems:
+> - more memory consumption.
+> - more buffers in use.
+> To solve these issue this series introduce DELETE_BUFS ioctl and remove
+> the 32 buffers limit per queue.
+> 
+> VP9 conformance tests using fluster give a score of 210/305.
+> The 24 resize inter tests (vp90-2-21-resize_inter_* files) are ok
+> but require to use postprocessor.
+> 
+> Kernel branch is available here:
+> https://gitlab.collabora.com/benjamin.gaignard/for-upstream/-/commits/remove_vb2_queue_limit_v6
+> 
+> GStreamer branch to use DELETE_BUF ioctl and testing dynamic resolution
+> change is here:
+> https://gitlab.freedesktop.org/benjamin.gaignard1/gstreamer/-/commits/VP9_drc
 
---f5dk3iq2kvsfzpmv
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+FYI: I still need to review and test patches 17 and 18. Either tomorrow or Wednesday.
 
-On 01.09.2023 14:10:45, Srinivas Goud wrote:
-> Add ethtool stats interface for reading FIFO 1bit/2bit
-> ECC errors information.
->=20
-> Signed-off-by: Srinivas Goud <srinivas.goud@amd.com>
-> ---
-> Changes in v4:
-> None
->=20
-> Changes in v3:
-> None
->=20
-> Changes in v2:
-> Add ethtool stats interface
->=20
->  drivers/net/can/xilinx_can.c | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->=20
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> index 798b32b..50e0c9d 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -219,6 +219,7 @@ struct xcan_devtype_data {
->   * @transceiver:		Optional pointer to associated CAN transceiver
->   * @rstc:			Pointer to reset control
->   * @ecc_enable:			ECC enable flag
-> + * @stats_lock:			Lock for synchronizing hardware stats
+Regards,
 
-To be precise: The lock is about the access of the 64 bit variables not
-about the hardware access:
-"Lock for accessing the "ecc_*bit_*fifo_cnt" stats"
+	Hans
 
->   * @ecc_2bit_rxfifo_cnt:	RXFIFO 2bit ECC count
->   * @ecc_1bit_rxfifo_cnt:	RXFIFO 1bit ECC count
->   * @ecc_2bit_txolfifo_cnt:	TXOLFIFO 2bit ECC count
-> @@ -245,6 +246,7 @@ struct xcan_priv {
->  	struct phy *transceiver;
->  	struct reset_control *rstc;
->  	bool ecc_enable;
-> +	spinlock_t stats_lock; /* Lock for synchronizing hardware stats */
->  	u64 ecc_2bit_rxfifo_cnt;
->  	u64 ecc_1bit_rxfifo_cnt;
->  	u64 ecc_2bit_txolfifo_cnt;
-> @@ -1164,6 +1166,9 @@ static void xcan_err_interrupt(struct net_device *n=
-dev, u32 isr)
-> =20
->  	if (priv->ecc_enable) {
->  		u32 reg_ecc;
-> +		unsigned long flags;
+> 
+> changes in version 6:
+> - Get a patch per driver to use vb2_get_buffer() instead of directly access
+>   to queue buffers array.
+> - Add lock in vb2_core_delete_buf()
+> - Use vb2_buffer instead of index
+> - Fix various comments
+> - Change buffer index name to BUFFER_INDEX_MASK
+> - Stop spamming kernel log with unbalanced counters
+> 
+> changes in version 5:
+> - Rework offset cookie encoding pattern is n ow the first patch of the
+>   serie.
+> - Use static array instead of allocated one for postprocessor buffers.
+> 
+> changes in version 4:
+> - Stop using Xarray, instead let queues decide about their own maximum
+>   number of buffer and allocate bufs array given that value.
+> - Rework offset cookie encoding pattern.
+> - Change DELETE_BUF to DELETE_BUFS because it now usable for
+>   range of buffer to be symetrical of CREATE_BUFS.
+> - Add fixes tags on couple of Verisilicon related patches.
+> - Be smarter in Verisilicon postprocessor buffers management.
+> - Rebase on top of v6.4
+> 
+> changes in version 3:
+> - Use Xarray API to store allocated video buffers.
+> - No module parameter to limit the number of buffer per queue.
+> - Use Xarray inside Verisilicon driver to store postprocessor buffers
+>   and remove VB2_MAX_FRAME limit.
+> - Allow Versilicon driver to change of resolution while streaming
+> - Various fixes the Verisilicon VP9 code to improve fluster score.
+>  
+> changes in version 2:
+> - Use a dynamic array and not a list to keep trace of allocated buffers.
+>   Not use IDR interface because it is marked as deprecated in kernel
+>   documentation.
+> - Add a module parameter to limit the number of buffer per queue.
+> - Add DELETE_BUF ioctl and m2m helpers.
+> 
+> Regards,
+> Benjamin
+>  
+> Benjamin Gaignard (18):
+>   media: videobuf2: Rework offset 'cookie' encoding pattern
+>   media: videobuf2: Stop spamming kernel log with all queue counter
+>   media: videobuf2: Use vb2_buffer instead of index
+>   media: amphion: Use vb2_get_buffer() instead of directly access to
+>     buffers array
+>   media: mediatek: jpeg: Use vb2_get_buffer() instead of directly access
+>     to buffers array
+>   media: mediatek: vdec: Use vb2_get_buffer() instead of directly access
+>     to buffers array
+>   media: sti: hva: Use vb2_get_buffer() instead of directly access to
+>     buffers array
+>   media: visl: Use vb2_get_buffer() instead of directly access to
+>     buffers array
+>   media: atomisp: Use vb2_get_buffer() instead of directly access to
+>     buffers array
+>   media: videobuf2: Access vb2_queue bufs array through helper functions
+>   media: videobuf2: Be more flexible on the number of queue stored
+>     buffers
+>   media: verisilicon: Refactor postprocessor to store more buffers
+>   media: verisilicon: Store chroma and motion vectors offset
+>   media: verisilicon: vp9: Use destination buffer height to compute
+>     chroma offset
+>   media: verisilicon: postproc: Fix down scale test
+>   media: verisilicon: vp9: Allow to change resolution while streaming
+>   media: v4l2: Add DELETE_BUFS ioctl
+>   media: v4l2: Add mem2mem helpers for DELETE_BUFS ioctl
+> 
+>  .../userspace-api/media/v4l/user-func.rst     |   1 +
+>  .../media/v4l/vidioc-delete-bufs.rst          |  73 ++++
+>  .../media/common/videobuf2/videobuf2-core.c   | 379 ++++++++++++------
+>  .../media/common/videobuf2/videobuf2-v4l2.c   |  99 ++++-
+>  drivers/media/dvb-core/dvb_vb2.c              |   6 +-
+>  drivers/media/platform/amphion/vpu_dbg.c      |  22 +-
+>  .../platform/mediatek/jpeg/mtk_jpeg_core.c    |   6 +-
+>  .../vcodec/decoder/vdec/vdec_vp9_req_lat_if.c |   2 +-
+>  drivers/media/platform/st/sti/hva/hva-v4l2.c  |   4 +
+>  drivers/media/platform/verisilicon/hantro.h   |   9 +-
+>  .../media/platform/verisilicon/hantro_drv.c   |   4 +-
+>  .../platform/verisilicon/hantro_g2_vp9_dec.c  |  10 +-
+>  .../media/platform/verisilicon/hantro_hw.h    |   4 +-
+>  .../platform/verisilicon/hantro_postproc.c    |  95 ++++-
+>  .../media/platform/verisilicon/hantro_v4l2.c  |  27 +-
+>  drivers/media/test-drivers/vim2m.c            |   1 +
+>  drivers/media/test-drivers/visl/visl-dec.c    |  28 +-
+>  drivers/media/v4l2-core/v4l2-dev.c            |   1 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c          |  17 +
+>  drivers/media/v4l2-core/v4l2-mem2mem.c        |  20 +
+>  .../staging/media/atomisp/pci/atomisp_ioctl.c |   2 +-
+>  include/media/v4l2-ioctl.h                    |   4 +
+>  include/media/v4l2-mem2mem.h                  |  12 +
+>  include/media/videobuf2-core.h                |  29 +-
+>  include/media/videobuf2-v4l2.h                |  11 +
+>  include/uapi/linux/videodev2.h                |  16 +
+>  26 files changed, 664 insertions(+), 218 deletions(-)
+>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+> 
 
-nitpick: move the flags before the reg_ecc.
-
-> +
-> +		spin_lock_irqsave(&priv->stats_lock, flags);
-> =20
->  		reg_ecc =3D priv->read_reg(priv, XCAN_RXFIFO_ECC_OFFSET);
->  		if (isr & XCAN_IXR_E2BERX_MASK) {
-> @@ -1212,6 +1217,8 @@ static void xcan_err_interrupt(struct net_device *n=
-dev, u32 isr)
->  		 */
->  		priv->write_reg(priv, XCAN_ECC_CFG_OFFSET, XCAN_ECC_CFG_REECRX_MASK |
->  				XCAN_ECC_CFG_REECTXOL_MASK | XCAN_ECC_CFG_REECTXTL_MASK);
-> +
-> +		spin_unlock_irqrestore(&priv->stats_lock, flags);
->  	}
-> =20
->  	if (cf.can_id) {
-> @@ -1639,6 +1646,23 @@ static int xcan_get_auto_tdcv(const struct net_dev=
-ice *ndev, u32 *tdcv)
->  	return 0;
->  }
-> =20
-> +static void ethtool_get_ethtool_stats(struct net_device *ndev,
-> +				      struct ethtool_stats *stats, u64 *data)
-> +{
-> +	struct xcan_priv *priv =3D netdev_priv(ndev);
-> +	unsigned long flags;
-> +	int i =3D 0;
-> +
-> +	spin_lock_irqsave(&priv->stats_lock, flags);
-> +	data[i++] =3D priv->ecc_2bit_rxfifo_cnt;
-> +	data[i++] =3D priv->ecc_1bit_rxfifo_cnt;
-> +	data[i++] =3D priv->ecc_2bit_txolfifo_cnt;
-> +	data[i++] =3D priv->ecc_1bit_txolfifo_cnt;
-> +	data[i++] =3D priv->ecc_2bit_txtlfifo_cnt;
-> +	data[i++] =3D priv->ecc_1bit_txtlfifo_cnt;
-> +	spin_unlock_irqrestore(&priv->stats_lock, flags);
-> +}
-> +
->  static const struct net_device_ops xcan_netdev_ops =3D {
->  	.ndo_open	=3D xcan_open,
->  	.ndo_stop	=3D xcan_close,
-> @@ -1648,6 +1672,7 @@ static const struct net_device_ops xcan_netdev_ops =
-=3D {
-> =20
->  static const struct ethtool_ops xcan_ethtool_ops =3D {
->  	.get_ts_info =3D ethtool_op_get_ts_info,
-> +	.get_ethtool_stats =3D ethtool_get_ethtool_stats,
-
-You also should implement .get_strings and .get_sset_count. Have you
-tested your patch with "ethtool -S can0"?
-
->  };
-> =20
->  /**
-> --=20
-> 2.1.1
->=20
->=20
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---f5dk3iq2kvsfzpmv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmT19ikACgkQvlAcSiqK
-BOjKKwf/XqBeS89ieZVoVrZnmkm/eKWi/h6aE4Oueilc6bRGc0NImrOHvmfFNfad
-ZZ/uNxK8Na5EafNjeI/Blh4H1Pk1KsxuK3wrb8YmrrajrZZwbIhQF+/wRMHW+ops
-CY34A+HZN/dsMseSLORDKTrvexxI0iKqbdLfnBwvVh0gAfEIxsUPzqWp+/Qz9DeW
-b2CHj8te4m7Ovk/KMjlJuipZWwkgjSL6d5D++Z8uTjQWHm0yNvCeCA6CpRTDdkwY
-Ckbb6qDi1I5h37X9JCtOOOgl1TQBaDZeGl6eBGuJDtIUNawL5naLDcPe4BoKyul1
-Xu4th/hAOGXGYrhclCMIjjT4rUAwfg==
-=FRQF
------END PGP SIGNATURE-----
-
---f5dk3iq2kvsfzpmv--
