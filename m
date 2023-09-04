@@ -2,55 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB540791BED
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:17:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC654791BEF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349125AbjIDRR4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 13:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45918 "EHLO
+        id S1349713AbjIDRTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 13:19:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233853AbjIDRRz (ORCPT
+        with ESMTP id S233853AbjIDRTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 13:17:55 -0400
-Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0822CDB;
-        Mon,  4 Sep 2023 10:17:51 -0700 (PDT)
-Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1c134602a55so390357fac.1;
-        Mon, 04 Sep 2023 10:17:51 -0700 (PDT)
+        Mon, 4 Sep 2023 13:19:20 -0400
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92709CF6;
+        Mon,  4 Sep 2023 10:19:17 -0700 (PDT)
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-56e280cc606so291533eaf.1;
+        Mon, 04 Sep 2023 10:19:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693847871; x=1694452671;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8k0ChYUiH1C/yKr25inV4dt0+WLlcX9Vgm2MaZ38ABQ=;
-        b=BGAFknwiphQdMSP/tx7yWaHA5XoF0/kPBJ7AYRDyETh+8os07YnK7E4TUVYXH7x9Fz
-         +HtED1dDAhb+pP38w84gxsRZJb7dk/v1rKm6wXfv4Z9lj80icns7/RgIiopQyfLnsN0I
-         dW3F8/oBtPrPJ+aqsvm/z4e0aGX/r0TWjx46vQjbUONHTLJ+JfEFGH/D9J9xlsN3wqpw
-         9pEEhuluGHJszWfp5SQ/caT/9K4L2g/ozMciNTtXB35MwR1Z5MMZkBX/IB6tY1VoyrQG
-         eKhuA/gs4GblfZlJ/8TJgZS8SfZEBOEB6BQ/8bAPcw/C6pe93WWp4DPWd8SN1r/QhUAG
-         2YPQ==
-X-Gm-Message-State: AOJu0YzD+2Ih07n70T0LvlLkvqz+h36PGgLiRZ8/aMI1gSZO+FfjoS6D
-        l5o2yqgx6ld7c7b5sgzawmOa96J47SUlq06XEdE=
-X-Google-Smtp-Source: AGHT+IF/FrH15T3TcgVVDQM/HgBHTYL0uKRLYlu4zAVKHcaZ+3itB33hR3wkfKx7nA9AF614kjJfVrhiiVMMfuHcPOA=
-X-Received: by 2002:a4a:764d:0:b0:573:55af:777c with SMTP id
- w13-20020a4a764d000000b0057355af777cmr9524198ooe.0.1693847870994; Mon, 04 Sep
- 2023 10:17:50 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693847957; x=1694452757;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=24pYO6KCUTITZlOhkZXcimEpdDIN9QLHkCC8dT6sds0=;
+        b=PFEx5iFdfYZextQsXqk274SS4fQJHVOU/+g2QW4+F579twItYGQ1ASdpyc418BJIvT
+         U+Pgnf9DojcZbJVYhTx6/r2qSVZG/DAgwsvbU6RjWTKqKvGsnFxQeVYTfSkwy3V6Lr08
+         NkNCBvr645hsYD5LtD9HMFbC0cd47Ql8UgbtbGuFlI9aX5HLMjskgUPVSF9u+aPfRWaE
+         2b6euL2Kt4gNVQSp/+eLDz1PI6Ej1tU21g+Jq5zMV+SYAWVxHdkEAmVIQC72cnU/4atm
+         OrrZ1fwNhgkKXKYOj1bFWMP1IrCgKqmI+ml19HMTccpGaP+kmZcQy5qDJAX12jx9/n/h
+         Lniw==
+X-Gm-Message-State: AOJu0YyoyOtPjReHvIY6xJf6W4hSqC9xIyM9LZSR7QEld2VOtTnspNBg
+        aMEmTk/CaYbN2mgnTWjAs0Jn9hmR8FfhWQgdMlIlT2+UgpQ=
+X-Google-Smtp-Source: AGHT+IEUKgxekH7MUxvV0cDre0uaeqK3LTCcjRT2xFhtfeNjwOBg2+IiU85t1MzRADtxRbacBA9mzDij+xUIQ0iq6OU=
+X-Received: by 2002:a4a:db89:0:b0:573:764b:3b8d with SMTP id
+ s9-20020a4adb89000000b00573764b3b8dmr8723990oou.0.1693847956804; Mon, 04 Sep
+ 2023 10:19:16 -0700 (PDT)
 MIME-Version: 1.0
 From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Mon, 4 Sep 2023 19:17:40 +0200
-Message-ID: <CAJZ5v0i5XLwN8vpR+MdECHVusMBowtWfDb-fQZDjip+hcoagMA@mail.gmail.com>
-Subject: [GIT PULL] More thermal control updates for v6.6-rc1
+Date:   Mon, 4 Sep 2023 19:19:06 +0200
+Message-ID: <CAJZ5v0jd9Htp-6duGjtZUsBDFkm26ndmTD9cSG6s_fcF22sP=g@mail.gmail.com>
+Subject: [GIT PULL] More power management updates for v6.6-rc1
 To:     Linus Torvalds <torvalds@linux-foundation.org>
 Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -62,164 +58,56 @@ Hi Linus,
 Please pull from the tag
 
  git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- thermal-6.6-rc1-2
+ pm-6.6-rc1-2
 
-with top-most commit 8289d810ea85755a9d22f75785806cb34eecd5e5
+with top-most commit 19a56a6b747716118539398739b021535eaa8cbe
 
- thermal: core: Rework .get_trend() thermal zone callback
+ Merge branch 'pm-cpufreq'
 
-on top of commit 36534782b584389afd281f326421a35dcecde1ec
+on top of commit ccc5e9817719f59b3dea7b7a168861b4bf0b4ff4
 
- Merge tag 'thermal-6.6-rc1' of
+ Merge tag 'pm-6.6-rc1' of
 git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
 
-to receive more thermal control updates for 6.6-rc1.
+to receive more power management updates for 6.6-rc1.
 
-These are mostly updates of thermal control drivers for ARM platforms,
-new thermal control support for Loongson-2 and a couple of core cleanups
-made possible by recent changes merged previously.
+These fix cpufreq core and the pcc cpufreq driver, add per-policy
+boost support to cpufreq and add Georgian translation Makefile
+LANGUAGES in cpupower.
 
 Specifics:
 
-  - Check if the Tegra BPMP supports the trip points in order to set the
-    .set_trips callback (Mikko Perttunen).
+ - Add Georgian translation to Makefile LANGUAGES in cpupower (Shuah
+   Khan).
 
-  - Add new Loongson-2 thermal sensor along with the DT bindings (Yinbo
-    Zhu).
+ - Add support for per-policy performance boost to cpufreq (Jie Zhan).
 
-  - Use IS_ERR_OR_NULL() helper to replace a double test on the TI
-    bandgap sensor (Li Zetao).
-
-  - Remove redundant platform_set_drvdata() calls, as there are no
-    corresponding calls to platform_get_drvdata(), from a bunch of
-    drivers (Andrei Coardos).
-
-  - Switch the Mediatek LVTS mode to filtered in order to enable
-    interrupts (Nícolas F. R. A. Prado).
-
-  - Fix Wvoid-pointer-to-enum-cast warning on the Exynos TMU (Krzysztof
-    Kozlowski).
-
-  - Remove redundant dev_err_probe(), because the underlying function
-    already called it, from the Mediatek sensor (Chen Jiahao).
-
-   - Free calibration nvmem after reading it on sun8i (Mark Brown).
-
-   - Remove useless comment from the sun8i driver (Yangtao Li).
-
-   - Make tsens_xxxx_nvmem static to fix a sparse warning on QCom
-     tsens (Min-Hua Chen).
-
-   - Remove error message at probe deferral on imx8mm (Ahmad Fatoum).
-
-   - Fix parameter check in lvts_debugfs_init() with IS_ERR() on
-     Mediatek LVTS (Minjie Du).
-
-   - Fix interrupt routine and configuration for Mediatek LVTS (Nícolas
-     F. R. A. Prado).
-
-   - Drop unused .get_trip_type(), .get_trip_temp() and .get_trip_hyst()
-     thermal zone callbacks from the core and rework the .get_trend()
-     one to take a trip point pointer as an argument (Rafael Wysocki).
+ - Fix assorted issues in the cpufreq core, common governor code and in
+   the pcc cpufreq driver (Liao Chang).
 
 Thanks!
 
 
 ---------------
 
-Ahmad Fatoum (1):
-      thermal/drivers/imx8mm: Suppress log message on probe deferral
+Jie Zhan (1):
+      cpufreq: Support per-policy performance boost
 
-Andrei Coardos (8):
-      thermal/drivers/broadcom/sr-thermal: Removed call to
-platform_set_drvdata()
-      thermal/drivers/k3_j72xx_bandgap: Removed unneeded call to
-platform_set_drvdata()
-      thermal/drivers/k3_bandgap: Remove unneeded call to platform_set_drvdata()
-      thermal/drivers/broadcom/brcstb_thermal: Removed unneeded
-platform_set_drvdata()
-      thermal/drivers/sun8i_thermal: Remove unneeded call to
-platform_set_drvdata()
-      thermal/drivers/mediatek/auxadc_thermal: Removed call to
-platform_set_drvdata()
-      thermal/drivers/max77620_thermal: Removed unneeded call to
-platform_set_drvdata()
-      thermal/drivers/generic-adc: Removed unneeded call to
-platform_set_drvdata()
+Liao Chang (4):
+      cpufreq: Avoid printing kernel addresses in cpufreq_resume()
+      cpufreq: Fix the race condition while updating the
+transition_task of policy
+      cpufreq: governor: Free dbs_data directly when gov->init() fails
+      cpufreq: pcc: Fix the potentinal scheduling delays in target_index()
 
-Chen Jiahao (1):
-      thermal/drivers/mediatek: Clean up redundant dev_err_probe()
-
-Krzysztof Kozlowski (1):
-      thermal/drivers/samsung: Fix Wvoid-pointer-to-enum-cast warning
-
-Li Zetao (1):
-      thermal/drivers/ti-soc-thermal: Use helper function IS_ERR_OR_NULL()
-
-Mark Brown (1):
-      thermal/drivers/sun8i: Free calibration nvmem after reading it
-
-Mikko Perttunen (1):
-      thermal/drivers/tegra-bpmp: Check if BPMP supports trip points
-
-Min-Hua Chen (1):
-      thermal/drivers/tsens: Make tsens_xxxx_nvmem static
-
-Minjie Du (1):
-      thermal/drivers/mediatek/lvts: Fix parameter check in lvts_debugfs_init()
-
-Nícolas F. R. A. Prado (7):
-      thermal/drivers/mediatek/lvts_thermal: Handle IRQ on all controllers
-      thermal/drivers/mediatek/lvts_thermal: Honor sensors in immediate mode
-      thermal/drivers/mediatek/lvts_thermal: Use offset threshold for IRQ
-      thermal/drivers/mediatek/lvts_thermal: Disable undesired interrupts
-      thermal/drivers/mediatek/lvts_thermal: Don't leave threshold zeroed
-      thermal/drivers/mediatek/lvts_thermal: Manage threshold between sensors
-      thermal/drivers/mediatek/lvts_thermal: Make readings valid in
-filtered mode
-
-Rafael J. Wysocki (2):
-      thermal: core: Drop unused .get_trip_*() callbacks
-      thermal: core: Rework .get_trend() thermal zone callback
-
-Ruan Jinjie (1):
-      thermal/drivers/db8500: Remove redundant of_match_ptr()
-
-Yangtao Li (1):
-      thermal/drivers/sun8i: Remove unneeded comments
-
-Yinbo Zhu (2):
-      thermal/drivers/loongson-2: Add thermal management support
-      thermal: dt-bindings: add loongson-2 thermal
+Shuah Khan (1):
+      cpupower: Add Georgian translation to Makefile LANGUAGES
 
 ---------------
 
- .../bindings/thermal/loongson,ls2k-thermal.yaml    |  44 ++++++
- MAINTAINERS                                        |   8 +
- drivers/acpi/thermal.c                             |  41 +++--
- drivers/thermal/Kconfig                            |  12 ++
- drivers/thermal/Makefile                           |   1 +
- drivers/thermal/broadcom/brcmstb_thermal.c         |   1 -
- drivers/thermal/broadcom/sr-thermal.c              |   1 -
- drivers/thermal/db8500_thermal.c                   |   2 +-
- drivers/thermal/imx8mm_thermal.c                   |   6 +-
- drivers/thermal/k3_bandgap.c                       |   1 -
- drivers/thermal/k3_j72xx_bandgap.c                 |   2 -
- drivers/thermal/loongson2_thermal.c                | 169 ++++++++++++++++++++
- drivers/thermal/max77620_thermal.c                 |   2 -
- drivers/thermal/mediatek/auxadc_thermal.c          |   2 -
- drivers/thermal/mediatek/lvts_thermal.c            | 175 +++++++++++++++------
- drivers/thermal/qcom/tsens-v0_1.c                  |   6 +-
- drivers/thermal/qcom/tsens-v1.c                    |   2 +-
- drivers/thermal/samsung/exynos_tmu.c               |   2 +-
- drivers/thermal/sun8i_thermal.c                    |   8 +-
- drivers/thermal/tegra/tegra-bpmp-thermal.c         |  52 +++++-
- drivers/thermal/thermal-generic-adc.c              |   1 -
- drivers/thermal/thermal_core.c                     |   2 +-
- drivers/thermal/thermal_core.h                     |   2 +-
- drivers/thermal/thermal_helpers.c                  |   3 +-
- drivers/thermal/thermal_trip.c                     |  24 +--
- drivers/thermal/ti-soc-thermal/ti-bandgap.c        |   2 +-
- drivers/thermal/ti-soc-thermal/ti-thermal-common.c |   3 +-
- include/linux/thermal.h                            |  34 ++--
- 28 files changed, 468 insertions(+), 140 deletions(-)
+ drivers/cpufreq/cpufreq.c          | 53 +++++++++++++++++++++++++++++++++++---
+ drivers/cpufreq/cpufreq_governor.c |  4 ++-
+ drivers/cpufreq/pcc-cpufreq.c      |  2 +-
+ include/linux/cpufreq.h            |  3 +++
+ tools/power/cpupower/Makefile      |  2 +-
+ 5 files changed, 57 insertions(+), 7 deletions(-)
