@@ -2,128 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40EAC791119
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 07:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B202279111D
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 07:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352274AbjIDFqj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 01:46:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45004 "EHLO
+        id S1347292AbjIDFut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 01:50:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344916AbjIDFqh (ORCPT
+        with ESMTP id S231600AbjIDFus (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 01:46:37 -0400
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BF312A;
-        Sun,  3 Sep 2023 22:46:31 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so15329101fa.0;
-        Sun, 03 Sep 2023 22:46:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693806389; x=1694411189;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jSlS5Nn7/93tzc5hw6/561afVbIZPCAbfsDHLo7s/EE=;
-        b=RcZMqD8sKtOg9Mfd6amPe5flFr5kTg1xGvu3PemSXBiFJswAbynp/4NnmMlVdY+PiH
-         hMW+WCoRzY+ryilRYszd5jrx+BgWVXQ58IesZM2P7gYi0GmHgcjpBANSX6S9BshAoYQw
-         wtLAThYE+VQSAeNGqr+mbPZEynkAFhX2LMFRGYChGm0lp+3DT4aHl9cnsWE7hGmCAVov
-         +0NtAJ370acNSXqw7N9BdOUfLIMz9CLjnXNPn+8dAqbP4+9E988z2ezyIn/Zbdy2HNbA
-         Y/NhbyDOTxjU5Jwwh6iMBgYQpOLrGR37PlmJC23R3N4I8qZHzh+BxulecfXg8qWIllq9
-         +k0g==
-X-Gm-Message-State: AOJu0Yy3nvTQZLK0sGi5fmY1zUwsJVcsLT1UKcj/x3Z2I03pgq1j0jlP
-        aOBYiX1apDK61/0Kgzpv7GQxLRjewTQIww==
-X-Google-Smtp-Source: AGHT+IE9iJJbg5uLyZxRNWRUHSN5BFgHrWRP3x3jjRncvTvZAFh8yQgeXqXp3SYAmKCoho2RuyIUJw==
-X-Received: by 2002:a2e:7207:0:b0:2b6:9fdf:d8f4 with SMTP id n7-20020a2e7207000000b002b69fdfd8f4mr6262540ljc.29.1693806389317;
-        Sun, 03 Sep 2023 22:46:29 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id m19-20020a2eb6d3000000b002bcda31af0fsm1869948ljo.74.2023.09.03.22.46.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Sep 2023 22:46:29 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5008d16cc36so1741854e87.2;
-        Sun, 03 Sep 2023 22:46:29 -0700 (PDT)
-X-Received: by 2002:a19:500f:0:b0:500:b553:c09e with SMTP id
- e15-20020a19500f000000b00500b553c09emr5025415lfb.32.1693806388886; Sun, 03
- Sep 2023 22:46:28 -0700 (PDT)
+        Mon, 4 Sep 2023 01:50:48 -0400
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2D499;
+        Sun,  3 Sep 2023 22:50:45 -0700 (PDT)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3845TTiZ010255;
+        Mon, 4 Sep 2023 05:50:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding :
+ content-type; s=qcppdkim1;
+ bh=zjhRpNgu0vjVHDIbTfFwDEG4kQusBq6+Tajn6DV6nzQ=;
+ b=TjGM8iZjqFiVdPEaDxrEJvaOUBEoIkZr4bAw7c4KDcI6jXvQPaUr3ASw962wULKvjpLS
+ lLg5CI9+/DDkRwtPQ73swXIChTFH9oGK9kqipauxoFxybNgXyWxvYLwNTCNsOSQyPqqc
+ d2VTxeNxxmVSh76+8D8pNOwDy0h3SA7+LOOUKuWaZGsz3f7LHYrLebKF74fAVaXI2uo2
+ yi+OuG3s6/ndey54xUuC/Re+k7BWF6+kH3J7czBJNUowNcD+DBeKQcew10NGFm6/d18d
+ m/qGSa3yBfNEqnATi9jy3A60x8ki+Hb6x2cWaHrwLo8k2VCuEGKEYfRRkxAWig6RrgcM uw== 
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suw99avsq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 05:50:31 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3845oUaM025844
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Sep 2023 05:50:30 GMT
+Received: from hu-viswanat-blr.qualcomm.com (10.80.80.8) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Sun, 3 Sep 2023 22:50:25 -0700
+From:   Vignesh Viswanathan <quic_viswanat@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ohad@wizery.com>,
+        <baolin.wang@linux.alibaba.com>, <linux-remoteproc@vger.kernel.org>
+CC:     <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
+        <quic_sjaganat@quicinc.com>, <quic_srichara@quicinc.com>,
+        <quic_varada@quicinc.com>,
+        Vignesh Viswanathan <quic_viswanat@quicinc.com>
+Subject: [PATCH 0/3] Fix tcsr_mutex register for IPQ6018
+Date:   Mon, 4 Sep 2023 11:20:07 +0530
+Message-ID: <20230904055010.4118982-1-quic_viswanat@quicinc.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20230828170013.75820-1-povik+lin@cutebit.org>
-In-Reply-To: <20230828170013.75820-1-povik+lin@cutebit.org>
-From:   Neal Gompa <neal@gompa.dev>
-Date:   Mon, 4 Sep 2023 01:45:52 -0400
-X-Gmail-Original-Message-ID: <CAEg-Je8_f_hZ3VyBg+8tK8uobWNaEqCwp==2JhV6jVpPYXj_Pg@mail.gmail.com>
-Message-ID: <CAEg-Je8_f_hZ3VyBg+8tK8uobWNaEqCwp==2JhV6jVpPYXj_Pg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/2] Apple SIO driver
-To:     =?UTF-8?Q?Martin_Povi=C5=A1er?= <povik+lin@cutebit.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, asahi@lists.linux.dev,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 6G8jbNg9Oe83jDuWS11Bq6eLQQ6RIIMH
+X-Proofpoint-ORIG-GUID: 6G8jbNg9Oe83jDuWS11Bq6eLQQ6RIIMH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-04_03,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 mlxlogscore=552 lowpriorityscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309040052
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 28, 2023 at 1:00 PM Martin Povišer <povik+lin@cutebit.org> wrote:
->
-> Hi all,
->
-> see attached a driver for the SIO coprocessor found on recent Apple
-> SoCs. This coprocessor provides general DMA services, it can feed
-> many peripherals but so far it seems it will only be useful for
-> audio output over HDMI/DisplayPort. So the driver here only supports
-> the DMA_CYCLIC mode of transactions with the focus being on audio.
-> There's a downstream prototype ALSA driver the DMA driver is being
-> tested against.
->
-> Some of the boilerplate code in implementing the dmaengine interface
-> was lifted from apple-admac.c. Among other things these two drivers
-> have in common that they implement the DMA_CYCLIC regime on top of
-> hardware/coprocessor layer supporting linear transactions only.
->
-> The binding schema saw two RFC rounds before and has a reviewed-by
-> from Rob.
-> https://lore.kernel.org/asahi/167693643966.613996.10372170526471864080.robh@kernel.org
->
-> Best regards,
-> Martin
->
-> --
->
-> Changes since v1:
-> https://lore.kernel.org/asahi/20230712133806.4450-1-povik+lin@cutebit.org/T/#t
->  - move to using virt-dma
->  - drop redundant cookie field from `sio_tx`
->  - use DECLARE_BITMAP for `allocated` in sio_tagdata
->
-> Martin Povišer (2):
->   dt-bindings: dma: apple,sio: Add schema
->   dmaengine: apple-sio: Add Apple SIO driver
->
->  .../devicetree/bindings/dma/apple,sio.yaml    | 111 +++
->  MAINTAINERS                                   |   2 +
->  drivers/dma/Kconfig                           |  11 +
->  drivers/dma/Makefile                          |   1 +
->  drivers/dma/apple-sio.c                       | 868 ++++++++++++++++++
->  5 files changed, 993 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/dma/apple,sio.yaml
->  create mode 100644 drivers/dma/apple-sio.c
->
-> --
-> 2.38.3
->
->
+IPQ6018 has 32 tcsr_mutext hwlock registers of 0x1000 size each.
+The compatible string qcom,ipq6018-tcsr-mutex is mapped to
+of_msm8226_tcsr_mutex which has 32 locks configured with stride of 0x80
+and doesn't match the HW present in IPQ6018.
 
-Series looks reasonable to me, though this is something I'm more new
-at looking at...
+This series fixes the following:
+1. Fix the tcsr_mutex hwlock register size to 0x20000 in ipq6018.dtsi.
+2. Remove qcom,ipq6018-tcsr-mutex compatible string for tcsr_mutex in
+ipq6018.dtsi.
+3. Drop unused qcom,ipq6018-tcsr-mutex compatible string from
+qcom_hwspinlock driver and dt-bindings.
 
-Acked-by: Neal Gompa <neal@gompa.dev>
+Vignesh Viswanathan (3):
+  arm64: dts: qcom: ipq6018: Fix tcsr_mutex register size
+  hwspinlock: qcom: Drop unused qcom,ipq6018-tcsr-mutex
+  dt-bindings: hwlock: Drop unused qcom,ipq6018-tcsr-mutex
 
+ Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml | 1 -
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi                         | 4 ++--
+ drivers/hwspinlock/qcom_hwspinlock.c                          | 1 -
+ 3 files changed, 2 insertions(+), 4 deletions(-)
 
 -- 
-真実はいつも一つ！/ Always, there's only one truth!
+2.41.0
+
