@@ -2,47 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF86F790F50
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:00:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8270790F55
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 02:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348800AbjIDAAL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 3 Sep 2023 20:00:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43758 "EHLO
+        id S1349813AbjIDAOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 20:14:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231361AbjIDAAJ (ORCPT
+        with ESMTP id S231361AbjIDAOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 20:00:09 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B4B21C4;
-        Sun,  3 Sep 2023 17:00:05 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AF8CE165C;
-        Sun,  3 Sep 2023 17:00:43 -0700 (PDT)
-Received: from slackpad.lan (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 072F13F766;
-        Sun,  3 Sep 2023 17:00:03 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 00:58:55 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-phy@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH] phy: sun4i-usb: Fix a W=1 compilation failure
-Message-ID: <20230904005855.658819b3@slackpad.lan>
-In-Reply-To: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
-References: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.31; x86_64-slackware-linux-gnu)
+        Sun, 3 Sep 2023 20:14:43 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2104.outbound.protection.outlook.com [40.107.255.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C090FB;
+        Sun,  3 Sep 2023 17:14:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IfX0uJQrTvH10CVBebjwJyKPVSVKxneEQULd3l2NIRRLpdnD2QSe9AaVDLkdauJD/9yv5EUiIixR+lokpg8m+DpSpqL2/STyNUJC3I/PRTHb27qhlGz7khc5y6Us1fxsO1K7aKz+L/QsFj5HaB5XNssk6TQc+h9UKG31rwztrx2RFjt1axk457GbeANxLYGY9QLkGR1CoyVcxzopnkxD3TdHonvXeQAq5AEGYxFzWU8JyK2hKkpz3JkO+gfPcrxWjON7u8IFBEe5qeqrJAPgLeI6oEJYqIHEOq5+kh6zUhff11akg31WELBf6M/T/Lj6ngcF9hrrd/umqVSILqv1RA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PO6lW+XtJuVzRU5T0o9DqdXZDtfJ661DFWc7vL9swN0=;
+ b=VNx+ZRFTSX8J+dkj78HXu2gI3DQENEuvD1v+qVR74nMTzhPHslJiCpxPIRG3ZuRzJ75IT68+V3sD8Qaql4AJzgaBypgZqpLxUiwOQNVSibGs5sass03jTfr7qCghjjp8IvRAMEfriPHQHf+LmWgKdEPieRamnAAKRRrbdmYSJmz4o7UMbBsUHlGea41Za2OqzjENbEBnNvKdUY7ipkfssrG4tUD4hMR4PA4s6tlauagSuWqeMybOJqWhSDEelb/9RfKwFUBlUYM1rtH2qKm+LTEU+8K9FtO6AbHlB3DLdtoVwg/3lWIwVn0TMM0GRtElAzomv+Bl2be/toUa2hZpgw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PO6lW+XtJuVzRU5T0o9DqdXZDtfJ661DFWc7vL9swN0=;
+ b=HQ/Gnc2Qha8AVVfz0cmJTgEuppTVU+PDcksSw0bC8gSMyd0NBMYOhABHJulp/HPBu28KJd7JYwGkJ6qv2lVD08TgwNEvQKX5ZgdAYQGy+boEdaqsuppzoMQQP7y0Aoo+b60O+oIKZNjyPRyndAiYgabKwAqxJDDptfkebSfiS0ZnNdZRcjlhXoHIcEE4egMfh+Pfz8opJ61R38eGgtAKzS8aL32itFsWZG8+cx9rE/j0MCK8JWGOz0tB9rtZbMHuQ2AJMdLOH9/xe6Tt5spIDtmnaFA9Rb+oRbsRCx2ZooNIjK9DZGck+LL4L1GDdNn0gASpZzFFuH5OLLTtndQC+A==
+Received: from KL1PR0601MB5614.apcprd06.prod.outlook.com (2603:1096:820:9b::8)
+ by SEYPR06MB6203.apcprd06.prod.outlook.com (2603:1096:101:c4::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Mon, 4 Sep
+ 2023 00:14:32 +0000
+Received: from KL1PR0601MB5614.apcprd06.prod.outlook.com
+ ([fe80::8d9e:8356:2b79:5276]) by KL1PR0601MB5614.apcprd06.prod.outlook.com
+ ([fe80::8d9e:8356:2b79:5276%5]) with mapi id 15.20.6745.023; Mon, 4 Sep 2023
+ 00:14:31 +0000
+From:   Tommy Huang <tommy_huang@aspeedtech.com>
+To:     Andi Shyti <andi.shyti@kernel.org>
+CC:     "brendan.higgins@linux.dev" <brendan.higgins@linux.dev>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>,
+        Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+Subject: RE: [PATCH] drivers:i2c:add controller reset when the timeout
+ occurred
+Thread-Topic: [PATCH] drivers:i2c:add controller reset when the timeout
+ occurred
+Thread-Index: AQHZzqCpMZ9pcTUF9k2wXdoSoXmt/bAJROGAgACm+eA=
+Date:   Mon, 4 Sep 2023 00:14:31 +0000
+Message-ID: <KL1PR0601MB5614646277B7E656535799B2E1E9A@KL1PR0601MB5614.apcprd06.prod.outlook.com>
+References: <20230814111534.2771900-1-tommy_huang@aspeedtech.com>
+ <20230903141519.ha6aakgkrq6ohy5s@zenone.zhora.eu>
+In-Reply-To: <20230903141519.ha6aakgkrq6ohy5s@zenone.zhora.eu>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=aspeedtech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: KL1PR0601MB5614:EE_|SEYPR06MB6203:EE_
+x-ms-office365-filtering-correlation-id: 8adcd1b5-da7f-421d-cf0d-08dbacdbe94c
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HeFMgd90CFmmQ4FLLS0N/WiSNMS5Q41wmhhhoL5kwpOj5SOydFXJYNqSKTHEihSuebjyOqXeAcTDapOVmRuBH8YWoZ1dsWcgw8cR3ZhFZa7/pBtSAHBobZjqKM/Eerfkrok80LYAcAndPEcY272MORI2Q70Ex1omds98hdNvtiv+cvbH4Ijm4UVk3AXyC2Ksi6TMmT8/2Q3NSrWBd06GIT8FtHoSLSX9Y2d21ZbiI2kDjWvYw3hMLCNPkURDO/4Ycfk6efF4lHox3vSuKQi5XfY8+kIN+jDlTTLNme1ZQ65yx0jNAZkUyR9AhfKpnxI9USzo1p3654j3IrWzRnp0xNWVB7bjFaH9ey/hqt776HusHRABXE4ZN8yf/ZD1zIGAM+xmma9WR28ZMYkaTNwXUGIuwHTolaEzRL5NCaS2O8wJWQyDw7tbFw+lhrY71r7Y+jDgbDlxfOBKhzgt4+wgGMQArp76HWLwYcOJv9K7whh54EYML3GIG1JBjWfzjVnfBNGXXk5HeE7kWF8sXetIq6hJmL6fogBnx1xNTs+cAHFFp8it0p+9YQ3jGaf9rJhEmtamRCua3ZLPAOb8E7r8s2b4zbNfHr61p6lRw9Ut46iBAKXM2EG6ByAwqgbS0xb4
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:KL1PR0601MB5614.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39830400003)(136003)(366004)(396003)(346002)(376002)(1800799009)(451199024)(186009)(8936002)(8676002)(5660300002)(316002)(6916009)(64756008)(66476007)(66446008)(66946007)(54906003)(2906002)(66556008)(76116006)(4326008)(52536014)(7416002)(41300700001)(6506007)(7696005)(53546011)(26005)(9686003)(55016003)(38100700002)(38070700005)(122000001)(71200400001)(478600001)(83380400001)(33656002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?yx/1Tuce5lor2sUNTN2kk6QIS89WiCp6123R4SpSHjzfCjgRCSU9CE/OB42T?=
+ =?us-ascii?Q?+kHduAufiUgTpEN6tnRMHI3K1lDFF6RafOsvM5SMgr4+kA8+x3kmPleuhMCr?=
+ =?us-ascii?Q?k+kYXEql00YicTIC+fjb+2x3Vs797kYcDLUk6VPmgOGtfLLekQuCfePodeac?=
+ =?us-ascii?Q?OsRmgDTkA04jB+OzvjeeB7eArhjYSuexEpgvmN8OwPMi6u01pyiNSo85mFiR?=
+ =?us-ascii?Q?3ZOB6RCOigKyPPit5lgrIALGn1UvgfFkyKv34kt+rYumawMstCHDUsT4V/Ex?=
+ =?us-ascii?Q?uq9h8BM3QTjT49RqSUIuEf+p1htS3ErhKKQSsM/0cc8uSE9d2ctZZuzxuXhF?=
+ =?us-ascii?Q?6JZqzndTY2Djc6uIuWM399vit9rISLquYo4iMGbciJYLl0VSwKPYyqKxsmC9?=
+ =?us-ascii?Q?KGS8HgbaXstmZ3ojt5mnld+GNJU7c6/3UsCTSG11pT+8jAXBTXq0BMpQTbHx?=
+ =?us-ascii?Q?sWDn4U+hiKTCSDjvUFaMRLDYDaVbb74V1QTzStdYbyVj7Qk/eBazUeusM0Ro?=
+ =?us-ascii?Q?2YYQ+KsumnJ+uWn7f25XNlrSB+WNPMjT5HDqnHlxoR4CS/7G+9aSVimGzzRQ?=
+ =?us-ascii?Q?WrI+u/T35wMVsazby8CNxGx4KjDb4rRB1ydjYr+GZSIz72J+14kYT4XX5FFL?=
+ =?us-ascii?Q?dCB/KIpEaeP2J8NHGOL8kGwLIWthE00Un23ky1qzQrtaBSiQPeKZ8IZlkTSz?=
+ =?us-ascii?Q?uqX+z9h7YERKjUPpRw0jr8sarwX39cEovRsyhF9JTxqtC0gelk6EwvTqmrr6?=
+ =?us-ascii?Q?CTpvG8vuuvYZc1AOlpqqRzUYj+FFMpY7jC4sjPqcqUV4yhNTFqNZnEEn5L5T?=
+ =?us-ascii?Q?zMDX+vqQuiAePMb++f/pmiBbKPGwpqgp4I1boJjSOEy99WUjokhBFi1NOxEp?=
+ =?us-ascii?Q?838cNCKefumVwYNEcd40L33B8Lf4GinDzPRV3fW4a3r5Yp1oC2UkN8GTmlwv?=
+ =?us-ascii?Q?gdv2sOvlWnubZ+hkZP3Yhvv620f9Mz3A1FmNioC05DUwN31EwIACZX0qnuj1?=
+ =?us-ascii?Q?e4/IX0nVpa1kdD7s4SSI9FFDHqGyJfzPN2t2PiLwgebnVbv3d7tt/v+5yzO4?=
+ =?us-ascii?Q?yKTGHbY2EEDqrSseMgbFluq7wisOb/zfNae55SCyQUzyRAH8NvCjyPyJbGWu?=
+ =?us-ascii?Q?70SeTLZzH/flxZRDND7fQRm/Ce1gAGUtqi5VABfGjETcnJgwWEXIFd33Ilz5?=
+ =?us-ascii?Q?UMJ/dF40fHKCAYlOGyd9dNQlIF8L0YCcY3+ndoBT9osPIEhlTgatUgSzknUt?=
+ =?us-ascii?Q?sdWqbxby8DXAxDur3vRjUN7s8x+Fuwj5GglJYgtxtgbttOSR0xxZjk9DhLcr?=
+ =?us-ascii?Q?NiiP4Q0jACTTb6fR/wvy1WG+XTB11rRKea1SlQOy6IRIG0+8mx5VCdatdV8J?=
+ =?us-ascii?Q?z1su3HHZNhy1DYtK1UR8Ax+MQ0SfuMRIsDx62AJoAxxpKGan1BNeMdiaWY1G?=
+ =?us-ascii?Q?xz3PmGEqYFHPtxIdvU1F3GYgBa5ceTpzDHBAYUCKlbhYqwkhSbJ3YSPvQnwp?=
+ =?us-ascii?Q?/Szp+Tx2iXCjvPRnm/vW0zn6yt9l0CwMEWE/GTGSYsT90NSKBP71dxcpIxrn?=
+ =?us-ascii?Q?isZ/TH0OKd9QMeBCRyX5wdfMcDtPcJxj1fLKQHVV1wNbSxQzA6s9h+7bP1Vf?=
+ =?us-ascii?Q?Xg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: KL1PR0601MB5614.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8adcd1b5-da7f-421d-cf0d-08dbacdbe94c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Sep 2023 00:14:31.4947
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: C9uZ9kx8swpYINP4qRVmkYPsmZEH9ARNiZhbAtjZhxxSnnmibpO97W9JrDy9Hh1o2N7oWYVWA1C/GFQjuSxakPTlXghg6e4DKYbCB8WTJCg=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEYPR06MB6203
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,51 +131,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  3 Sep 2023 12:11:06 +0200
-Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+Hi Andi,
 
-> With gcc 12.3.0, when this file is built, we get errors such as:
-> 
-> drivers/phy/allwinner/phy-sun4i-usb.c: In function ‘sun4i_usb_phy_probe’:
-> drivers/phy/allwinner/phy-sun4i-usb.c:790:52: error: ‘_vbus’ directive output may be truncated writing 5 bytes into a region of size between 2 and 12 [-Werror=format-truncation=]
->   790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
->       |                                                    ^~~~~
-> drivers/phy/allwinner/phy-sun4i-usb.c:790:17: note: ‘snprintf’ output between 10 and 20 bytes into a destination of size 16
->   790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
->       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Because of the possible value of 'i', this can't be an issue in real world
+	Thanks for your review.
+	I will fix the patch with your comment and resend it.
 
-Would using "u8 i;" help? After all currently there are only 4 PHYs
-max, and in general this isn't expected to be more than a "handful", so
-8 bits should be plenty. An unsigned is better anyway.
-It leaves a bit of a bitter taste, though, as we shouldn't do this kind
-type tweaking, especially not to work around the compiler trying to be
-clever, but then not seeing the whole picture (that "i" is bounded by
-compile time constants not exceeding "4").
+	BR,
 
-Cheers,
-Andre
+	by Tommy
 
-> application, but in order to have "make W=1" work correctly, give more
-> space for 'name'.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/phy/allwinner/phy-sun4i-usb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
-> index ec551464dd4f..e53a9a9317bc 100644
-> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
-> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
-> @@ -782,7 +782,7 @@ static int sun4i_usb_phy_probe(struct platform_device *pdev)
->  
->  	for (i = 0; i < data->cfg->num_phys; i++) {
->  		struct sun4i_usb_phy *phy = data->phys + i;
-> -		char name[16];
-> +		char name[32];
->  
->  		if (data->cfg->missing_phys & BIT(i))
->  			continue;
-
+> -----Original Message-----
+> From: Andi Shyti <andi.shyti@kernel.org>
+> Sent: Sunday, September 3, 2023 10:15 PM
+> To: Tommy Huang <tommy_huang@aspeedtech.com>
+> Cc: brendan.higgins@linux.dev; p.zabel@pengutronix.de;
+> linux-i2c@vger.kernel.org; openbmc@lists.ozlabs.org;
+> benh@kernel.crashing.org; joel@jms.id.au; andrew@aj.id.au;
+> linux-arm-kernel@lists.infradead.org; linux-aspeed@lists.ozlabs.org;
+> linux-kernel@vger.kernel.org; BMC-SW <BMC-SW@aspeedtech.com>; Jae
+> Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+> Subject: Re: [PATCH] drivers:i2c:add controller reset when the timeout
+> occurred
+>=20
+> Hi Tommy,
+>=20
+> Please fix the title of the patch from:
+>=20
+>    drivers:i2c:add controller reset when the timeout occurred
+>=20
+> to something like:
+>=20
+>    i2c: aspeed: Reset the controller when timeout occurs
+>=20
+> Note:
+>=20
+>  - leave a space after the ':'
+>  - start with a capital letter after the last ':'
+>=20
+> On Mon, Aug 14, 2023 at 07:15:34PM +0800, Tommy Huang wrote:
+> > 1.Call i2c controller reset when the i2c transfer timeout occurred.
+> > The rest of interrupts and device should be reset avoid unperdicted
+> > controller behavior occurred.
+>=20
+> Please remove the '1.' and please rewrite this sentence in order to be
+> grammatically correct, something like:
+>=20
+> "Call the i2c controller reset when an i2c transfer timeout occurs. The
+> remaining interrupts and the device should be reset to avoid unpredictabl=
+e
+> controller behavior."
+>=20
+> > Signed-off-by: Tommy Huang <tommy_huang@aspeedtech.com>
+>=20
+> Is this a fix? If so please add:
+>=20
+> Fixes: 2e57b7cebb98 ("i2c: aspeed: Add multi-master use case support")
+> Cc: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+> Cc: <stable@vger.kernel.org> # v5.1+
+>=20
+> Jae Hyun is the author of the line you are changing therefore he needs to=
+ be
+> Cc'ed
+>=20
+> [...]
+>=20
+> >  		/*
+> >  		 * If timed out and bus is still busy in a multi master
+> > -		 * environment, attempt recovery at here.
+> > +		 * environment, attempt recovery at here. Even the bus is
+> > +		 * idle, we still need reset i2c controller avoid rest of
+> > +		 * interrupts.
+>=20
+> Please fix the grammar here, as well
+>=20
+>    In a multi-master setup, if a timeout occurs, attempt
+>    recovery.  But if the bus is idle, we still need to reset the
+>    i2c controller to clear the remaining interrupts.
+>=20
+> We take this chance to improve the previous comment, as well.
+>=20
+> >  		 */
+> >  		if (bus->multi_master &&
+> >  		    (readl(bus->base + ASPEED_I2C_CMD_REG) &
+> >  		     ASPEED_I2CD_BUS_BUSY_STS))
+> >  			aspeed_i2c_recover_bus(bus);
+> > +		else
+> > +			aspeed_i2c_reset(bus);
+>=20
+> I'd like also someone from Jae Hyun, Brendan, Benjamin or Joel to take a =
+look
+> here, as well. Thanks!
+>=20
+> Andi
