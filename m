@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E6EE791023
+	by mail.lfdr.de (Postfix) with ESMTP id A7B51791024
 	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 04:37:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351030AbjIDChA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 22:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60450 "EHLO
+        id S1351040AbjIDChB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 22:37:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241802AbjIDCg4 (ORCPT
+        with ESMTP id S1350938AbjIDCg4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 3 Sep 2023 22:36:56 -0400
 Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B05F3FC;
-        Sun,  3 Sep 2023 19:36:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0BB10A;
+        Sun,  3 Sep 2023 19:36:53 -0700 (PDT)
 Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RfCQx4STWzrRvr;
-        Mon,  4 Sep 2023 10:35:05 +0800 (CST)
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RfCNQ5RbTztS56;
+        Mon,  4 Sep 2023 10:32:54 +0800 (CST)
 Received: from localhost.localdomain (10.67.174.95) by
  kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -31,9 +31,9 @@ To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
         <ak@linux.intel.com>, <anshuman.khandual@arm.com>,
         <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
 CC:     <yangjihong1@huawei.com>
-Subject: [PATCH v8 5/6] perf test: Add test case for record sideband events
-Date:   Mon, 4 Sep 2023 02:33:39 +0000
-Message-ID: <20230904023340.12707-6-yangjihong1@huawei.com>
+Subject: [PATCH v8 6/6] perf test: Add perf_event_attr test for record dummy event
+Date:   Mon, 4 Sep 2023 02:33:40 +0000
+Message-ID: <20230904023340.12707-7-yangjihong1@huawei.com>
 X-Mailer: git-send-email 2.30.GIT
 In-Reply-To: <20230904023340.12707-1-yangjihong1@huawei.com>
 References: <20230904023340.12707-1-yangjihong1@huawei.com>
@@ -53,86 +53,91 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new test case to record sideband events for all CPUs when tracing
-selected CPUs
+If only dummy event is recorded, tracking event is not needed.
+Add this test scenario.
 
 Test result:
 
-  # ./perf test list 2>&1 | grep 'perf record sideband tests'
-   95: perf record sideband tests
-  # ./perf test 95
-   95: perf record sideband tests                                      : Ok
+  # ./perf test list 2>&1 | grep 'Setup struct perf_event_attr'
+   17: Setup struct perf_event_attr
+  # ./perf test 17 -v
+   17: Setup struct perf_event_attr                                    :
+  --- start ---
+  test child forked, pid 720198
+  <SNIP>
+  running './tests/attr/test-record-dummy-C0'
+  <SNIP>
+  test child finished with 0
+  ---- end ----
+  Setup struct perf_event_attr: Ok
 
 Signed-off-by: Yang Jihong <yangjihong1@huawei.com>
 ---
- tools/perf/tests/shell/record_sideband.sh | 58 +++++++++++++++++++++++
- 1 file changed, 58 insertions(+)
- create mode 100755 tools/perf/tests/shell/record_sideband.sh
+ tools/perf/tests/attr/test-record-dummy-C0 | 55 ++++++++++++++++++++++
+ 1 file changed, 55 insertions(+)
+ create mode 100644 tools/perf/tests/attr/test-record-dummy-C0
 
-diff --git a/tools/perf/tests/shell/record_sideband.sh b/tools/perf/tests/shell/record_sideband.sh
-new file mode 100755
-index 000000000000..5024a7ce0c51
+diff --git a/tools/perf/tests/attr/test-record-dummy-C0 b/tools/perf/tests/attr/test-record-dummy-C0
+new file mode 100644
+index 000000000000..83ca4e373acd
 --- /dev/null
-+++ b/tools/perf/tests/shell/record_sideband.sh
-@@ -0,0 +1,58 @@
-+#!/bin/sh
-+# perf record sideband tests
-+# SPDX-License-Identifier: GPL-2.0
++++ b/tools/perf/tests/attr/test-record-dummy-C0
+@@ -0,0 +1,55 @@
++[config]
++command = record
++args    = --no-bpf-event -e dummy -C 0 kill >/dev/null 2>&1
++ret     = 1
 +
-+set -e
-+
-+err=0
-+perfdata=$(mktemp /tmp/__perf_test.perf.data.XXXXX)
-+
-+cleanup()
-+{
-+    rm -rf ${perfdata}
-+    trap - EXIT TERM INT
-+}
-+
-+trap_cleanup()
-+{
-+    cleanup
-+    exit 1
-+}
-+trap trap_cleanup EXIT TERM INT
-+
-+can_cpu_wide()
-+{
-+    if ! perf record -o ${perfdata} -BN --no-bpf-event -C $1 true 2>&1 >/dev/null
-+    then
-+        echo "record sideband test [Skipped cannot record cpu$1]"
-+        err=2
-+    fi
-+
-+    rm -f ${perfdata}
-+    return $err
-+}
-+
-+test_system_wide_tracking()
-+{
-+    # Need CPU 0 and CPU 1
-+    can_cpu_wide 0 || return 0
-+    can_cpu_wide 1 || return 0
-+
-+    # Record on CPU 0 a task running on CPU 1
-+    perf record -BN --no-bpf-event -o ${perfdata} -C 0 -- taskset --cpu-list 1 true
-+
-+    # Should get MMAP events from CPU 1
-+    mmap_cnt=`perf script -i ${perfdata} --show-mmap-events -C 1 2>/dev/null | grep MMAP | wc -l`
-+
-+    if [ ${mmap_cnt} -gt 0 ] ; then
-+        return 0
-+    fi
-+
-+    echo "Failed to record MMAP events on CPU 1 when tracing CPU 0"
-+    return 1
-+}
-+
-+test_system_wide_tracking
-+
-+cleanup
-+exit $err
++[event]
++fd=1
++group_fd=-1
++cpu=0
++pid=-1
++flags=8
++type=1
++size=136
++config=9
++sample_period=4000
++# PERF_SAMPLE_IP | PERF_SAMPLE_TID | PERF_SAMPLE_TIME |
++# PERF_SAMPLE_PERIOD
++# + PERF_SAMPLE_CPU added by -C 0
++sample_type=391
++read_format=4
++disabled=0
++inherit=1
++pinned=0
++exclusive=0
++exclude_user=0
++exclude_kernel=0
++exclude_hv=0
++exclude_idle=0
++mmap=1
++comm=1
++freq=1
++inherit_stat=0
++enable_on_exec=0
++task=1
++watermark=0
++precise_ip=0
++mmap_data=0
++sample_id_all=1
++exclude_host=0
++exclude_guest=1
++exclude_callchain_kernel=0
++exclude_callchain_user=0
++mmap2=1
++comm_exec=1
++context_switch=0
++write_backward=0
++namespaces=0
++use_clockid=0
++wakeup_events=0
++bp_type=0
++config1=0
++config2=0
++branch_sample_type=0
++sample_regs_user=0
++sample_stack_user=0
 -- 
 2.30.GIT
 
