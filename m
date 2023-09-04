@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C393B791B50
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 302E6791B54
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:17:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243712AbjIDQQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 12:16:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        id S1353318AbjIDQRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 12:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347051AbjIDQQ5 (ORCPT
+        with ESMTP id S231846AbjIDQRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 12:16:57 -0400
+        Mon, 4 Sep 2023 12:17:05 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD9BA9D;
-        Mon,  4 Sep 2023 09:16:34 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E614A19AC;
+        Mon,  4 Sep 2023 09:16:39 -0700 (PDT)
 Received: from localhost.localdomain (unknown [171.76.82.102])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: vignesh)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id E7DE466072BA;
-        Mon,  4 Sep 2023 17:16:28 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 086CF66072B3;
+        Mon,  4 Sep 2023 17:16:33 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693844193;
-        bh=sLkmIO8lMBzqmT0rb01FcG0pHWafR6A2drXY2Umo+KA=;
+        s=mail; t=1693844198;
+        bh=fYCD0l63OJFR9vxiJyOd4usa4j02uxLYzWRUvFdejtU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g8G9bhr7Itw2yiIOZ6jhP+q0eWOXiZbHttQe7VB/vCthFkLlofgQagKOCmLFTwv0U
-         SOm6eOBi0ox8nPbW+GoeePvOt9ZXfYxeX8CyMVwZXQ2MU+bWuExFYqwDkEyhQeF1IG
-         AHYwa7shv23XMgX34ddkH6W2chOhPEu9Kp2NpB0FTLm9MH2cbU0M1ItwrK/b1V2L1b
-         UqZfPblbfwASbmaroPkehJykqxMnaUkr2O01kXP/ZUx8rUBTReiwAJxKfFzYHvv+8S
-         YqLFM5KgmFGNGZDbIHunCsve+uJsAR+j/e3J1S1imR2bz6ZGs8FoOW93/TVQpU3XaX
-         RcCB5F2+VayBA==
+        b=gZ1T2Qw3fuSEz5xxDru/jyuRzA3DIUoPyXpq+CLaOhYIeD5fCL2Gyclaq3e3KuUlU
+         wBZYjJC/Zkerrmfd1asDpSIWAdPHOSLMR4Uot9gHDosKj5uyfAd+/cQF0xjBoirG26
+         fJPDPS2xkieYAmCHibwwcFx2aXZaG/TghaThQ8rovRUSzeYiuGQ77thOVzv5Xr/JG0
+         NVABBMPCpM5EP+UY61nR2oHXBt6/dLjjH9YQNWelQDyjriUpd+lM1oYAYiNxJh2iGK
+         qVX5sn3Hr2tLH/OL0+MOqINg+bUnMurJ3kAmph1KIURnsKJMsqWaK+otNa3rISoyD0
+         y6nGFEPWUYa7A==
 From:   Vignesh Raman <vignesh.raman@collabora.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     helen.koike@collabora.com, guilherme.gallo@collabora.com,
@@ -43,9 +43,9 @@ Cc:     helen.koike@collabora.com, guilherme.gallo@collabora.com,
         linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
         virtualization@lists.linux-foundation.org,
         linux-arm-msm@vger.kernel.org
-Subject: [PATCH v2 6/7] drm: ci: Enable new jobs
-Date:   Mon,  4 Sep 2023 21:45:15 +0530
-Message-Id: <20230904161516.66751-7-vignesh.raman@collabora.com>
+Subject: [PATCH v2 7/7] drm: ci: Use scripts/config to enable/disable configs
+Date:   Mon,  4 Sep 2023 21:45:16 +0530
+Message-Id: <20230904161516.66751-8-vignesh.raman@collabora.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20230904161516.66751-1-vignesh.raman@collabora.com>
 References: <20230904161516.66751-1-vignesh.raman@collabora.com>
@@ -62,73 +62,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the following jobs, as the issues noted in the
-TODO comments have been resolved. This will ensure that these jobs
-are now included and executed as part of the CI/CD pipeline.
-
-msm:apq8016:
-TODO: current issue: it is not fiding the NFS root. Fix and remove this rule.
-
-mediatek:mt8173:
-TODO: current issue: device is hanging. Fix and remove this rule.
-
-virtio_gpu:none:
-TODO: current issue: malloc(): corrupted top size. Fix and remove this rule.
+Instead of modifying files in git to enable/disable
+configs, use scripts/config on the .config file which
+will be used for building the kernel.
 
 Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
 ---
 
 v2:
-  - Reworded the commit message
+  - Added a new patch in the series to use scripts/config to enable/disable configs
   
 ---
- drivers/gpu/drm/ci/gitlab-ci.yml | 2 +-
- drivers/gpu/drm/ci/test.yml      | 9 ---------
- 2 files changed, 1 insertion(+), 10 deletions(-)
+ drivers/gpu/drm/ci/build.sh | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/ci/gitlab-ci.yml b/drivers/gpu/drm/ci/gitlab-ci.yml
-index 2c4df53f5dfe..d2aac4404914 100644
---- a/drivers/gpu/drm/ci/gitlab-ci.yml
-+++ b/drivers/gpu/drm/ci/gitlab-ci.yml
-@@ -248,4 +248,4 @@ sanity:
+diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+index 92ffd98cd09e..c95f4daac221 100644
+--- a/drivers/gpu/drm/ci/build.sh
++++ b/drivers/gpu/drm/ci/build.sh
+@@ -70,19 +70,19 @@ if [ -z "$CI_MERGE_REQUEST_PROJECT_PATH" ]; then
+     fi
+ fi
  
- # Jobs that need to pass before spending hardware resources on further testing
- .required-for-hardware-jobs:
--  needs: []
-\ No newline at end of file
-+  needs: []
-diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
-index d85add39f425..1771af21e2d9 100644
---- a/drivers/gpu/drm/ci/test.yml
-+++ b/drivers/gpu/drm/ci/test.yml
-@@ -108,9 +108,6 @@ msm:apq8016:
-     RUNNER_TAG: google-freedreno-db410c
-   script:
-     - ./install/bare-metal/fastboot.sh
--  rules:
--    # TODO: current issue: it is not fiding the NFS root. Fix and remove this rule.
--    - when: never
+-for opt in $ENABLE_KCONFIGS; do
+-  echo CONFIG_$opt=y >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
+-done
+-for opt in $DISABLE_KCONFIGS; do
+-  echo CONFIG_$opt=n >> drivers/gpu/drm/ci/${KERNEL_ARCH}.config
+-done
+-
+ if [[ -n "${MERGE_FRAGMENT}" ]]; then
+     ./scripts/kconfig/merge_config.sh ${DEFCONFIG} drivers/gpu/drm/ci/${MERGE_FRAGMENT}
+ else
+     make `basename ${DEFCONFIG}`
+ fi
  
- msm:apq8096:
-   extends:
-@@ -273,9 +270,6 @@ mediatek:mt8173:
-     DEVICE_TYPE: mt8173-elm-hana
-     GPU_VERSION: mt8173
-     RUNNER_TAG: mesa-ci-x86-64-lava-mt8173-elm-hana
--  rules:
--    # TODO: current issue: device is hanging. Fix and remove this rule.
--    - when: never
++for opt in $ENABLE_KCONFIGS; do
++    ./scripts/config --enable CONFIG_$opt
++done
++for opt in $DISABLE_KCONFIGS; do
++    ./scripts/config --disable CONFIG_$opt
++done
++
+ make ${KERNEL_IMAGE_NAME}
  
- mediatek:mt8183:
-   extends:
-@@ -333,6 +327,3 @@ virtio_gpu:none:
-     - debian/x86_64_test-gl
-     - testing:x86_64
-     - igt:x86_64
--  rules:
--    # TODO: current issue: malloc(): corrupted top size. Fix and remove this rule.
--    - when: never
-\ No newline at end of file
+ mkdir -p /lava-files/
 -- 
 2.40.1
 
