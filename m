@@ -2,112 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 308D9791B19
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59D77791B1C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:04:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237680AbjIDQDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 12:03:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
+        id S1352344AbjIDQEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 12:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbjIDQDw (ORCPT
+        with ESMTP id S240075AbjIDQEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 12:03:52 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0181E1B9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 09:03:48 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 5BAB6CE0E24
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 16:03:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0E58C433CB;
-        Mon,  4 Sep 2023 16:03:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693843425;
-        bh=FSkoRscREztpVl8dG4jfCaISWyFn1m6DwZlTvCVuoXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sh9RmTJWClbiRlhHJ6BqmF9gj6tmLdk5AB2so/mf1PhJLSGtn0OMG7UTLRJkwOP2E
-         fY9Z8XcAS5uhIBcieeOhLJXvNODh6bWSgjdT/k8zRXT1wiFzpHwxszAIDHbKdaFig7
-         LA3RjwaxocAo0dxr5t6hBCPDCR0x+t7BlwIn20fBNxjCDKnTa7CZsG4fEg0jPDnYCY
-         +5T6me8hrVEZXzGJ1eAV2kQJVVLIzduc4qxbVeOX7CdXwtcUVUUAFvcpOKBFHQTISm
-         oKW0tsBpx1N3/jYy7jdU+GcQ/U8qmPTgz/obyqwOj0zOHuJ7+3u4CjVtNinvIQFggJ
-         ejlKZskT6velw==
-Date:   Mon, 4 Sep 2023 17:03:38 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, maz@kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        James Morse <james.morse@arm.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] arm64/sysreg: Move TRFCR definitions to sysreg
-Message-ID: <9fab3e6a-b6b5-4376-8af9-0bbfcd98bbe9@sirena.org.uk>
-References: <20230904140705.1620708-1-james.clark@arm.com>
- <20230904140705.1620708-2-james.clark@arm.com>
+        Mon, 4 Sep 2023 12:04:42 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 599F7CCC
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 09:04:36 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5009969be25so2503057e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 09:04:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693843474; x=1694448274; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pTzXd+O1B3yH/seobxQV5EVMcTd2XaoEQoDnA1Tg8Gk=;
+        b=K+MoEB31GfpDYnZAqTJsx1E1KWSfkSm3e+UglnId5ZQ6pw+yOJdI+moxlm1QUKCAem
+         JauIahaWmdJf6QYg8lhAZ86l5+du+OHdzD93lHKnlqDByJPVNk9kseonLqAHfNqB6IBZ
+         Hf2evEvlkaXDeSMhl9pO6KFCJcwWdqG8f4jOFp7MCAMo6CJY1OyS1xGKwB+MRTEHwvA2
+         /nIUIs+Zxl6XDfeIP1woGg52XSdkYvtwKPP4dVONE+a1i9KtvC9xD/kQrriC0UVrQdCv
+         ChIFxaHmqBCMYXiKllngUN9ePiFOMTs+vnbqx7DNepCi/Okx3fZKHO6ikn2NE5eF7XsR
+         oGOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693843474; x=1694448274;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pTzXd+O1B3yH/seobxQV5EVMcTd2XaoEQoDnA1Tg8Gk=;
+        b=ViPiodWuRgyO8X8W0tyddL6+e6775xYBFaDKpE4fGKu7roieGM+XOfTG6d6zVDVB2C
+         jALG6fxpGfrGw3HKfdidoAPCFvAx8NAmvoQsYs/RDV4fld8BBq7LsCCpuk3EGbRBFevr
+         t4aVLp5PRrUAOe+ZiLClvjzWP1B6ITXVthGtLxLCSdoaMnVeISii3Y+6VGMcDqsRlLwu
+         7vPXm5gQprPQ47QkN7ypBhUQWQfmVvCIUNUHpAz4QSycxvI8glkJ76BklTGXfvHpXafb
+         /9SYbD642XxZCvuUkn0J3t8qtSAlxhVlJ0fBVaHGU/CETpRkBcNwhRYH+74t8RF+bYJA
+         mXCQ==
+X-Gm-Message-State: AOJu0YxZ2QEEnm5BsSHZ8bvu44ghktAsHF894znEkQFYza2V3mbAqCT+
+        CfKxb2jJXRVHI7vmQqbYli4H6w==
+X-Google-Smtp-Source: AGHT+IFr0XYxT9znxwfZ+8KPYVO0/pY/WbaPz8gNplqIVaKIQvbpT5Hlqpd+WNeTjvqL/hRcQczMpw==
+X-Received: by 2002:a05:6512:340c:b0:500:9d4a:89f8 with SMTP id i12-20020a056512340c00b005009d4a89f8mr7404816lfr.28.1693843474641;
+        Mon, 04 Sep 2023 09:04:34 -0700 (PDT)
+Received: from [192.168.1.101] (abxj43.neoplus.adsl.tpnet.pl. [83.9.3.43])
+        by smtp.gmail.com with ESMTPSA id o26-20020ac2495a000000b004ff9ab6463fsm1805408lfi.87.2023.09.04.09.04.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 09:04:34 -0700 (PDT)
+Message-ID: <bfd34bb8-0fb1-4984-8af5-3651b4a1a74c@linaro.org>
+Date:   Mon, 4 Sep 2023 18:04:32 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="r2mWafTzFFcOIUyk"
-Content-Disposition: inline
-In-Reply-To: <20230904140705.1620708-2-james.clark@arm.com>
-X-Cookie: Immanuel doesn't pun, he Kant.
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: firmware: Add documentation for
+ qcom,platform-parts-info
+Content-Language: en-US
+To:     Naman Jain <quic_namajain@quicinc.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_pkondeti@quicinc.com,
+        quic_kaushalk@quicinc.com, quic_rohiagar@quicinc.com,
+        kernel@quicinc.com
+References: <20230901060223.19575-1-quic_namajain@quicinc.com>
+ <f340f731-8471-39be-c7b2-7d930916e3b1@linaro.org>
+ <359ba91d-866b-45e4-83fe-598ed791f877@quicinc.com>
+From:   Konrad Dybcio <konrad.dybcio@linaro.org>
+Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
+ 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
+ izWDgYvmBE8=
+In-Reply-To: <359ba91d-866b-45e4-83fe-598ed791f877@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 4.09.2023 10:38, Naman Jain wrote:
+> 
+> On 9/1/2023 12:52 PM, Krzysztof Kozlowski wrote:
+>> On 01/09/2023 08:02, Naman Jain wrote:
+>>> Add documentation to describe device tree bindings for QCOM's
+>>> platform-parts-info node. Firmware populates these nodes to pass the
+>>> information to kernel regarding the subset of hardware blocks
+>>> and features like Camera, Modem, Display present in a product.
+>>>
+>>> This is to support that the same software image runs seamlessly on
+>>> different platforms where one or more HW blocks are not supported or
+>>> if some sub parts for a particular block are not supported.
+>>>
+>>> Purpose of these definitions is to allow clients to know about this,
+>>> and thus, handle these cases gracefully.
+>> Whether camera is or is not supported, is defined by presence of camera
+>> node or by its status field.
+>>
+>> Existing firmware (e.g. U-Boot) is also doing this - patching DTS when
+>> needed.
+>>
+>> I do not think introducing some parallel way makes any sense, so no,
+>> that's not the way to do it.
+>>
+>> Best regards,
+>> Krzysztof
+> 
+> 
+> Thanks Krzysztof for reviewing the patch. I think for telling whether the Camera HW block is not
+> supported / not present, firmware can either remove the device tree node, or change its status
+> to disabled, so that is fine.
+Messing with the device tree for no reason (e.g. filling in
+/memory@something/reg is expected) or without user intervention
+(e.g. static DTBO flashed by the user) is not favored.
 
---r2mWafTzFFcOIUyk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, Sep 04, 2023 at 03:07:02PM +0100, James Clark wrote:
-
-> +SysregFields TRFCR_EL2
-> +Res0	63:7
-> +UnsignedEnum	6:5	TS
-> +	0b0001	VIRTUAL
-> +	0b0010	GUEST_PHYSICAL
-> +	0b0011	PHYSICAL
-> +EndEnum
-
-DDO0601 2023-06 also defines the value 0b0000 as "Timestamp controlled
-by TRFCR_EL1.TS or TRFCR.TS". =20
-
-> +Field	0	E0TRE
-
-DDO0601 2023-06 calls this bit EH0HTRE.
-
-Otherwise this looks good.
-
---r2mWafTzFFcOIUyk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmT1/9kACgkQJNaLcl1U
-h9AufQf9H8NV67Tub8va+pIcI4JrHGdresAShHQawd4nzCgGbpObcY3XP+SI8lqP
-Z91W7pKj6C8gIfeaah7pYiyIBfAzGoeTYkz6Xsn1WOcRltFl54eSg2970PjsbMDB
-a5oAujtQqnZ7Hlb/X4NDcXs9IQKlKZfRW/5T3W8ChwxLkfWn34fFX0oEk3+08AQj
-MBnYycNzeklPkqEv/Y51HZratasdaJv/nDIRv6F8bF1Xw9h/Z8E3tyhZO1QTWuCi
-/+fJx1HarwIKHsOSfzvLGDIjpFeBad0qfyOSaIIgpNkvGXVZOVhScNV9gC0K84zB
-Yp7f+iqDwzwI+ZUEEPZRl7e8TvWp1w==
-=RTKP
------END PGP SIGNATURE-----
-
---r2mWafTzFFcOIUyk--
+Konrad
