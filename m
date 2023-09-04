@@ -2,180 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A658791D7B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:08:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 548AE791D7F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239733AbjIDTIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 15:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41974 "EHLO
+        id S239666AbjIDTKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 15:10:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232484AbjIDTIy (ORCPT
+        with ESMTP id S233255AbjIDTKN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 15:08:54 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2612D191
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:08:50 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so2324184a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:08:50 -0700 (PDT)
+        Mon, 4 Sep 2023 15:10:13 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5658F18C
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:10:10 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id ffacd0b85a97d-31f2f43d5a0so1544161f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:10:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693854528; x=1694459328; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d0CIESG2SuiZV7cHhLHCsdILQZtP8suwtO95xIEc+T0=;
-        b=aeJBnmY2IGaUM+BPEGqk6yiQFw3rxMCIYWu/m0CRZhkiWB93DFKCxTicQFYAq24NOm
-         sEXyRLF4SpVq9gZFtg84FeqAQPbMVlbAcdtbqOgx141sigSr0yjVkL8arkwFjFjdKqqB
-         XH/P/rpQxGGVWqfzBBR/jYZejOZ3kua5bEt0h8wuI9lRxv5XZe4oSEwBQmY6VXo4m2r9
-         xj1DgQ6V6WE0zEovsAQpzghURg3bBSjzNFcmWvHno4nouj/MWhUsfIy7eTnHDgpAbslw
-         ttZoIfxBMXjO5c5/fZX8NSIX85qio0BcRjy8FDYNTJB3dXH/3kIUM2UC0AnNYjnBUf01
-         WvwQ==
+        d=gmail.com; s=20221208; t=1693854609; x=1694459409; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yyyFOHB3gzzI5iGWS70prFSR7TfLwPyZra1eFxtvst8=;
+        b=dZnCwb0ejH4Q8OYcaDAilX4g1D7WM/Fw+x+AoCqr/GKmUqxsiUAY03xkf8mv74ySZZ
+         HXlIZVPxdb0BUo+V6pasOJk4HmQk6iOFohPhrhBd87kpcH4z1W5EtPrRwSRF8wXYZsab
+         ZbrcSTUWS3mTnZ19P2HSdsXrE9rhhYHMiqCBkttrak131lCSrbo3kj37xdZoS8Ca9/Y9
+         BTi+gRjRezJdCUobCyVN/YqRdEtkRCCEnqTl1X53Qj3DzYkKMbcfMuraFSeIBNBuQJhf
+         M0iIrfoeBXEBkXHNU5Xh2AE9wczkWwznlN9dlKFc20J3Sl2ta82It4o4WrxnX64N4UKr
+         u/Fw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693854528; x=1694459328;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=d0CIESG2SuiZV7cHhLHCsdILQZtP8suwtO95xIEc+T0=;
-        b=Pr3kMavbRj3hEEnZNSpcuHK9A4R/c9AX6F2TaLk6B8vRW/YfAyldCZnBXNLdYzc/rd
-         pcqk9uRja15DqILECeL7RFLgdjbieuX6IN5sj+gukCdmk+6S8xigZFZF+480SStfTZkl
-         fK/gvp3zpbRhFvjB0HaPYLYe3RC73kVIJcErVFLAGVo0v79jxVTwBlBlw2xxQjxpIpfB
-         BJtbv5hHt7CV2dbogAEZ1Sc6zrCVkLuiwk3b10fL26yoKRPvuSBA88E19keo83N1hz8q
-         jH7wvG67u2aUbkESAhA9XoI6IjZPsp2QFIy9HMaX+yNGMoCvJCx5JlKR+KtCzZlkaYRl
-         MHxA==
-X-Gm-Message-State: AOJu0YzGp4kSi68CFdSQwatMhFlPXxgXoxLU6L37TNhjdiEXF/vgn03E
-        FxhkfZEwiTF89pDam9zKLfCF+A==
-X-Google-Smtp-Source: AGHT+IH0wh3Lx48yFyOqTEgnOEZkTX4ZndMzuwd1BqySt5vm/255sDxk6mqMYYjnwmcqT5deG8ldDw==
-X-Received: by 2002:aa7:d64a:0:b0:527:3a95:3fa4 with SMTP id v10-20020aa7d64a000000b005273a953fa4mr7912602edr.20.1693854528590;
-        Mon, 04 Sep 2023 12:08:48 -0700 (PDT)
-Received: from [192.168.69.115] ([176.187.209.227])
-        by smtp.gmail.com with ESMTPSA id j16-20020aa7ca50000000b0052a3ad836basm6153607edt.41.2023.09.04.12.08.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 12:08:47 -0700 (PDT)
-Message-ID: <2841ec8c-f07b-307e-de03-6e8a4dd88775@linaro.org>
-Date:   Mon, 4 Sep 2023 21:08:45 +0200
+        d=1e100.net; s=20221208; t=1693854609; x=1694459409;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yyyFOHB3gzzI5iGWS70prFSR7TfLwPyZra1eFxtvst8=;
+        b=V743qe0Qbna9nIq0oh6hdjt7JlL8OSo3fhHiITUhGGADwWv5yw2vO/AEe6DzwO0HB5
+         0jtZKIfiriq0SZU+/ciqBzGJPD648vJdfD+n7ejPZnCCQdAffho3QX4OC43ZnKPS7dRf
+         4xlj/U5v/4+MOiHHzrnWyQWCNXjTM2rxjcA8NZ/CPGkTuY7yRpcJzjpXTnVtVG5JuRrU
+         fUFvElXGrFRCGg6M00HKH+ZQDZg4UmptxouU0zKDzVWgrokJbbzZQvUJ7SG4eWhVYKCa
+         CIGRWtRtXq7MhJJIi+F/htzyk/YowqPBmOPJ8PBwGD+2x56IbXyh9i2vQuWW86+dQO+1
+         x9cw==
+X-Gm-Message-State: AOJu0Ywks8CeKKRolvPuX92kLvWJgT9orjXyieMu7PuRDlXdY/7B81B1
+        gtgDkW8cUz2RUgD8grH2eFo=
+X-Google-Smtp-Source: AGHT+IFWecIpohLfvib2V0BAGdVW0Wa1vNzp2vQ7s9VGWZda5HFAINa0LxdNbsf2UPR51idK8wOaqg==
+X-Received: by 2002:a5d:58f1:0:b0:319:6e43:7f6a with SMTP id f17-20020a5d58f1000000b003196e437f6amr8138427wrd.30.1693854608537;
+        Mon, 04 Sep 2023 12:10:08 -0700 (PDT)
+Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
+        by smtp.gmail.com with ESMTPSA id f3-20020a5d6643000000b00318147fd2d3sm15254412wrw.41.2023.09.04.12.10.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 12:10:07 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date:   Mon, 4 Sep 2023 21:10:05 +0200
+From:   Ingo Molnar <mingo@kernel.org>
+To:     "Liang, Kan" <kan.liang@linux.intel.com>
+Cc:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org,
+        Stephane Eranian <eranian@google.com>,
+        Yunying Sun <yunying.sun@intel.com>
+Subject: Re: [PATCH] perf/x86/uncore: Correct the number of CHAs on EMR
+Message-ID: <ZPYrjW9+hIOJODHY@gmail.com>
+References: <20230901142028.298051-1-kan.liang@linux.intel.com>
+ <ZPRGmoXKvOCFrK26@gmail.com>
+ <37afe50a-44f1-7fb1-c4c0-1e45c38c9a6d@linux.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.0
-Subject: Re: [PATCH v2 1/3] kconfig: add dependencies of POWER_RESET for mips
- malta
-Content-Language: en-US
-To:     Yuan Tan <tanyuan@tinylab.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>
-Cc:     "linux@weissschuh.net" <linux@weissschuh.net>,
-        "w@1wt.eu" <w@1wt.eu>, "falcon@tinylab.org" <falcon@tinylab.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <cover.1693535514.git.tanyuan@tinylab.org>
- <1c17f017d6c837ef887d08bd2f85102df3fbc17c.1693535514.git.tanyuan@tinylab.org>
- <915a9e2d-36ea-4a74-7b1b-9688f215b6f1@linaro.org>
- <55C9BDEDAB4E0B76+838dbd4f-425d-4f2e-94ee-f2bc3092ae13@tinylab.org>
- <c001c34b-e20c-f32e-f247-722d34a8db3d@linaro.org>
- <54da2376-dc65-0a96-55df-7a5acfbb9bff@csgroup.eu>
- <8464A5F00EFC8C59+502c989a-3814-4686-8c6f-0a8f814e1c39@tinylab.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <8464A5F00EFC8C59+502c989a-3814-4686-8c6f-0a8f814e1c39@tinylab.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <37afe50a-44f1-7fb1-c4c0-1e45c38c9a6d@linux.intel.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/9/23 19:40, Yuan Tan wrote:
-> 
-> On 9/4/2023 6:58 PM, Christophe Leroy wrote:
->>
->> Le 04/09/2023 à 12:51, Philippe Mathieu-Daudé a écrit :
->>> On 4/9/23 11:24, Yuan Tan wrote:
->>>> Hi,
->>>>
->>>> On 9/4/2023 3:40 PM, Philippe Mathieu-Daudé wrote:
->>>>> Hi,
->>>>>
->>>>> On 1/9/23 04:42, Yuan Tan wrote:
->>>>>> MIPS Malta's power off depends on PCI, PCI_QUIRKS, and
->>>>>> POWER_RESET_PIIX4_POWEROFF to work. Enable them when POWER_RESET 
->>>>>> is set
->>>>>> for convenience.
->>>>>>
->>>>>> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
->>>>>> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
->>>>>> ---
->>>>>>    arch/mips/Kconfig | 3 +++
->>>>>>    1 file changed, 3 insertions(+)
->>>>>>
->>>>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->>>>>> index bc8421859006..13bacbd05125 100644
->>>>>> --- a/arch/mips/Kconfig
->>>>>> +++ b/arch/mips/Kconfig
->>>>>> @@ -547,6 +547,9 @@ config MIPS_MALTA
->>>>>>        select MIPS_L1_CACHE_SHIFT_6
->>>>>>        select MIPS_MSC
->>>>>>        select PCI_GT64XXX_PCI0
->>>>>> +    select PCI if POWER_RESET
->>>>>> +    select PCI_QUIRKS if POWER_RESET
->>>>>> +    select POWER_RESET_PIIX4_POWEROFF if POWER_RESET
->>>>>>        select SMP_UP if SMP
->>>>>>        select SWAP_IO_SPACE
->>>>>>        select SYS_HAS_CPU_MIPS32_R1
->>>>> Shouldn't we also update the _defconfig files?
->>>>>
->>>> Sorry, in my last email, I forgot to reply to all. So I am now
->>>> resending this email.
->>>>
->>>> In malta_defconfig, PCI and POWER_RESET_PIIX4_POWEROFF have already
->>>> been set and PCI_QUIRKS is also selected by FSL_PCI [=n].
->>>>
->>>> So shutdown and reboot with malta_defconfig is working and there is no
->>>> need to update the malta_defconfig 🙂
->>> Since the dependency is now enforced by Kconfig, the defconfig can
->>> be simplified:
->>>
->>> --- a/arch/mips/configs/malta_defconfig
->>> +++ b/arch/mips/configs/malta_defconfig
->>> @@ -306,3 +306,2 @@ CONFIG_SERIAL_8250_CONSOLE=y
->>>    CONFIG_POWER_RESET=y
->>> -CONFIG_POWER_RESET_PIIX4_POWEROFF=y
->>>    CONFIG_POWER_RESET_SYSCON=y
->>>
->>> But maybe we don't care, I don't know.
->> I understand from what you say that you update malta_defconfig manually ?
->>
->> defconfigs shouldn't be updated manually.
->>
->> Once you have the new .config you should use "make savedefconfig" then
->> replace your file by the newly generated defconfig file.
->>
->> Christophe
-> 
-> To do so, I just unset CONFIG_POWER_RESET and set it again in 
-> menuconfig, then "make savedefconfig". The POWER_RESET part is simplified.
-> 
->   CONFIG_POWER_RESET=y
-> -CONFIG_POWER_RESET_PIIX4_POWEROFF=y
-> -CONFIG_POWER_RESET_SYSCON=y
-> 
->   However, I found that there's other changes in this new 
-> malta_defconfig, for example
-> 
-> CONFIG_NLS_KOI8_U=m CONFIG_CRYPTO_CRYPTD=m -CONFIG_CRYPTO_LRW=m 
-> -CONFIG_CRYPTO_PCBC=m -CONFIG_CRYPTO_HMAC=y -CONFIG_CRYPTO_XCBC=m 
-> -CONFIG_CRYPTO_MD4=m -CONFIG_CRYPTO_SHA512=m -CONFIG_CRYPTO_WP512=m 
-> -CONFIG_CRYPTO_ANUBIS=m CONFIG_CRYPTO_BLOWFISH=m CONFIG_CRYPTO_CAMELLIA=m
-> 
-> Should I import all these changes in a commit? Or only POWER_RESET part.
 
-I'd first update the defconfigs with mainline (as a cleanup)
-then apply your series on top, re-running 'make savedefconfig'
-you should get only the changes relevant to your work.
+* Liang, Kan <kan.liang@linux.intel.com> wrote:
 
+> 
+> 
+> On 2023-09-03 4:40 a.m., Ingo Molnar wrote:
+> > 
+> > * kan.liang@linux.intel.com <kan.liang@linux.intel.com> wrote:
+> > 
+> >> From: Kan Liang <kan.liang@linux.intel.com>
+> >>
+> >> The MSR UNC_CBO_CONFIG, which was used to detect the number of CHAs on
+> >> SPR, is broken on EMR XCC. It always returns 0.
+> >>
+> >> Roll back to the discovery method, which can give the correct number for
+> >> this case.
+> >>
+> >> Fixes: 38776cc45eb7 ("perf/x86/uncore: Correct the number of CHAs on SPR")
+> >> Reported-by: Stephane Eranian <eranian@google.com>
+> >> Reported-by: Yunying Sun <yunying.sun@intel.com>
+> >> Tested-by: Yunying Sun <yunying.sun@intel.com>
+> >> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+> >> ---
+> >>  arch/x86/events/intel/uncore_snbep.c | 4 +++-
+> >>  1 file changed, 3 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
+> >> index d49e90dc04a4..c41d7d46481c 100644
+> >> --- a/arch/x86/events/intel/uncore_snbep.c
+> >> +++ b/arch/x86/events/intel/uncore_snbep.c
+> >> @@ -6475,7 +6475,9 @@ void spr_uncore_cpu_init(void)
+> >>  	type = uncore_find_type_by_id(uncore_msr_uncores, UNCORE_SPR_CHA);
+> >>  	if (type) {
+> >>  		rdmsrl(SPR_MSR_UNC_CBO_CONFIG, num_cbo);
+> >> -		type->num_boxes = num_cbo;
+> >> +		/* The MSR doesn't work on the EMR XCC. Roll back to the discovery method. */
+> >> +		if (num_cbo)
+> >> +			type->num_boxes = num_cbo;
+> > 
+> > So in the zero case we don't write type->num_boxes and leave it as-is.
+> > 
+> > How does this fall back to the discovery method, is the existing (default?) 
+> > value of type->num_boxes some special value?
+> > 
+> 
+> Starts from SPR, the basic uncore PMON information are retrieved from
+> the discovery table (resides in an MMIO space populated by BIOS.). It is
+> called the discovery method. The existing value of the type->num_boxes
+> is from the discovery table.
+> 
+> On some SPR variants, there is a firmware bug. So the value from the
+> discovery table is incorrect. We use the value from
+> SPR_MSR_UNC_CBO_CONFIG to replace the one from the discovery table.
+> 38776cc45eb7 ("perf/x86/uncore: Correct the number of CHAs on SPR")
+> 
+> Unfortunately, the SPR_MSR_UNC_CBO_CONFIG isn't available for the EMR
+> XCC (It works well for other EMR variants). But the above firmware bug
+> doesn't impact the EMR XCC. So this patch NOT lets the value from the
+> SPR_MSR_UNC_CBO_CONFIG replace the existing value from the discovery table.
+
+Thanks - the comment & changelog should probably reflect this background.
+
+	Ingo
