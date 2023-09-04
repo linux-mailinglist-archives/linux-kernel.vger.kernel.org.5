@@ -2,72 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18E29791F99
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 00:50:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 151A7791FA0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 00:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238805AbjIDWuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 18:50:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50878 "EHLO
+        id S242469AbjIDWuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 18:50:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237853AbjIDWuO (ORCPT
+        with ESMTP id S237853AbjIDWur (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 18:50:14 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46A9DCA;
-        Mon,  4 Sep 2023 15:50:11 -0700 (PDT)
+        Mon, 4 Sep 2023 18:50:47 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479E2E56;
+        Mon,  4 Sep 2023 15:50:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D4C8D601D6;
-        Mon,  4 Sep 2023 22:50:10 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 40DCEC433C7;
-        Mon,  4 Sep 2023 22:50:10 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id A2217CE0F08;
+        Mon,  4 Sep 2023 22:50:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id ED997C433C7;
+        Mon,  4 Sep 2023 22:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693867810;
-        bh=tFlKtuZW8VVGc62Acwwye+3FJhhdq4a8hrpBkw2BSUI=;
+        s=k20201202; t=1693867826;
+        bh=bul7XTQH+Odep7p/owSDkFaCfYCDCqsUnX0WOMdnahk=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=Iq6JiecmZkQ0jMCeQb2sa63RRHkjx6OowtiBf2jKfTIHV7f/BhIaC1rIK+pSs9bVc
-         kttfaA3o6vA06YS5+ZtvFFODZ9G3TUC6Wfhx641uhdbm3WlaVi8xJ2GdYg18Evh8t+
-         72BX3InDfR5/XpEffWvfRRyj7uOOhSGUzcNsIMH5LUDBq7vUOT/qwpa2lgFQs9PSZh
-         uY4o21F+jgiHgG0DfyXcFnEWAnAhU3xdOHYHISTxhi/GuhbTvWH1BR3FVXsy2zvKST
-         IUlXD3bbpPgKPWmgfpkgFthMqLCJwW9VCmFd7knmW2jZEQKln7ewjxs4b4oyfZ+Mtu
-         zdg9LCfZZ82ug==
+        b=Dvavh2ChjX2jFdMvxdcayHuqIXqa1dppJPI/UBJlpn4tvaITrmwdMeLJ95212QSMp
+         /rFfXJdsxoaPPae+6p1WQng6SztHCl4y89NmwfUNne5CnVoy1mTpKvFI+W83zmsJDw
+         DYYoiAZfdR9X+DhsdaV9hPykgrTgLNMCMQu9dfiL6rh0ILv6WMjXc4v8WsNYhusmOg
+         6gd3WswraWy/afHiQ5naNFuvCUMY3/JoBL5wwDUzhtnkFtl6unMDb9aXG/chN9FDUC
+         WIsSmAyU8QNlC6lkQ7Pfpxwet1hEAzxCEgRoyedU/zZkzlc8C2Hdw1K+hhMoWcLMl3
+         Ysi6iafDbK94g==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 26017C0C3FD;
-        Mon,  4 Sep 2023 22:50:10 +0000 (UTC)
-Subject: Re: [GIT PULL] More power management updates for v6.6-rc1
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D79F1C0C3FD;
+        Mon,  4 Sep 2023 22:50:25 +0000 (UTC)
+Subject: Re: [GIT PULL] hwspinlock updates for v6.6
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0jd9Htp-6duGjtZUsBDFkm26ndmTD9cSG6s_fcF22sP=g@mail.gmail.com>
-References: <CAJZ5v0jd9Htp-6duGjtZUsBDFkm26ndmTD9cSG6s_fcF22sP=g@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0jd9Htp-6duGjtZUsBDFkm26ndmTD9cSG6s_fcF22sP=g@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-6.6-rc1-2
-X-PR-Tracked-Commit-Id: 19a56a6b747716118539398739b021535eaa8cbe
+In-Reply-To: <20230904155508.2950832-1-andersson@kernel.org>
+References: <20230904155508.2950832-1-andersson@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20230904155508.2950832-1-andersson@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/hwlock-v6.6
+X-PR-Tracked-Commit-Id: 23316be8a9d450f33a21f1efe7d89570becbec58
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ea4f9c37f75271d8256a326c938c95733e1fec35
-Message-Id: <169386781014.10061.944542098423843971.pr-tracker-bot@kernel.org>
-Date:   Mon, 04 Sep 2023 22:50:10 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
+X-PR-Merge-Commit-Id: e3a6fa001dbbf36833159baffc584d1aaa4b11e3
+Message-Id: <169386782587.10061.11044927776636844963.pr-tracker-bot@kernel.org>
+Date:   Mon, 04 Sep 2023 22:50:25 +0000
+To:     Bjorn Andersson <andersson@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Christian Marangi <ansuelsmth@gmail.com>,
+        Kang Chen <void0red@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 4 Sep 2023 19:19:06 +0200:
+The pull request you sent on Mon,  4 Sep 2023 08:55:06 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-6.6-rc1-2
+> https://git.kernel.org/pub/scm/linux/kernel/git/remoteproc/linux.git tags/hwlock-v6.6
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ea4f9c37f75271d8256a326c938c95733e1fec35
+https://git.kernel.org/torvalds/c/e3a6fa001dbbf36833159baffc584d1aaa4b11e3
 
 Thank you!
 
