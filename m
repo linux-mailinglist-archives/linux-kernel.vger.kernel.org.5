@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A77791ECF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 23:08:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98EC7791ED3
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 23:08:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbjIDVIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 17:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
+        id S234684AbjIDVIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 17:08:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229481AbjIDVIY (ORCPT
+        with ESMTP id S229481AbjIDVIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 17:08:24 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3301AB;
-        Mon,  4 Sep 2023 14:08:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Mon, 4 Sep 2023 17:08:50 -0400
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D139AB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 14:08:47 -0700 (PDT)
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9193860B42;
-        Mon,  4 Sep 2023 21:08:20 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C72F8C433C8;
-        Mon,  4 Sep 2023 21:08:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1693861700;
-        bh=cdgfiBNEn9HoKjZTlY823JkzNVlwsy/UoHPnZDeIZnY=;
-        h=Date:From:To:Cc:Subject:From;
-        b=h65czxsX8xTPS8zeDvROjj1f0F7nBX0j/QQ6dkmOhLLq4Qaq21Iknvs4mKLMY3w/v
-         +PmzM9sSP3pV1Fb65e1oWrkFFAaiFC535MhnMdIgWtL+IVChqqZA2plHMOCpP8LBjo
-         k2qTPCmCRXiT27yzlWOE6z2sAFGKdE6gQftoHGXc=
-Date:   Mon, 4 Sep 2023 14:08:19 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mm@kvack.org, mm-commits@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] remaining MM updates for 6.6-rc1
-Message-Id: <20230904140819.b49a4ff6366047ddcb2d9b1f@linux-foundation.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        by mx1.riseup.net (Postfix) with ESMTPS id 4Rfh7y53N8zDqnK;
+        Mon,  4 Sep 2023 21:08:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1693861727; bh=l6N4aUdByo/ydpXoUZvRzNAbkHtfaYZwsdwourwBiUE=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=i//apoZQ7jmtwQ/4mFjPR2a3bcWZLP222XpedgP4aylUJrMUWyFD432z/X7iayhza
+         sSWwiKyrAltgty7WAcKdUvQMNruRNAq/U1JZeJMKwuf3SoHzfHjxKap3oTRSlOCgAr
+         eKXLqhKRNBg24rTYHfPWuCZGnwXTIgBR/bmXu3qc=
+X-Riseup-User-ID: 65149FB4D97B6E6C1AFF089612C6658141E4DA461C49025C4E63A9E68DF0415E
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4Rfh7v4WYWzFq9t;
+        Mon,  4 Sep 2023 21:08:43 +0000 (UTC)
+Message-ID: <d1ca5034-2e13-0df8-1e42-16e7e284e998@riseup.net>
+Date:   Mon, 4 Sep 2023 18:08:42 -0300
+MIME-Version: 1.0
+Subject: Re: [PATCH] drm/tests: Zero initialize fourccs_out
+Content-Language: en-US
+To:     Arthur Grillo <arthurgrillo@riseup.net>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20230901-zero-init-fourcc-list-test-v1-1-68bc4cc738c8@riseup.net>
+From:   Maira Canal <mairacanal@riseup.net>
+In-Reply-To: <20230901-zero-init-fourcc-list-test-v1-1-68bc4cc738c8@riseup.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/1/23 15:52, Arthur Grillo wrote:
+> fourccs_out array is not initialized. As the
+> drm_fb_build_fourcc_list() doesn't necessarily change all the array,
+> and the test compares all of it, the comparison could fail if the
+> array is not initialized. Zero initialize the array to fix this.
+> 
+> Fixes: 371e0b186a13 ("drm/tests: Add KUnit tests for drm_fb_build_fourcc_list()")
+> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
 
-Linus, please merge this small batch of MM updates for this -rc cycle,
-thanks.
+Reviewed-by: Maíra Canal <mairacanal@riseup.net>
 
-The following changes since commit 52ae298e3e5c9be5bb95e1c6d9199e5210f2a156:
+Best Regards,
+- Maíra
 
-  maple_tree: shrink struct maple_tree (2023-08-24 16:20:32 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-stable-2023-09-04-14-00
-
-for you to fetch changes up to e68d343d2720779362cb7160cb7f4bd24979b2b4:
-
-  mm/kmemleak: move up cond_resched() call in page scanning loop (2023-09-02 15:17:34 -0700)
-
-----------------------------------------------------------------
-- Stefan Roesch has added ksm statistics to /proc/pid/smaps
-
-- Also a number of singleton patches, mainly cleanups and leftovers.
-
-----------------------------------------------------------------
-Baruch Siach (2):
-      rmap: remove anon_vma_link() nommu stub
-      MAINTAINERS: add rmap.h to mm entry
-
-Jiaqi Yan (1):
-      mm/hwpoison: rename hwp_walk* to hwpoison_walk*
-
-Johannes Weiner (1):
-      mm: page_alloc: remove stale CMA guard code
-
-Miaohe Lin (1):
-      mm: memory-failure: add PageOffline() check
-
-Stefan Roesch (1):
-      proc/ksm: add ksm stats to /proc/pid/smaps
-
-Waiman Long (1):
-      mm/kmemleak: move up cond_resched() call in page scanning loop
-
- Documentation/filesystems/proc.rst |  4 ++++
- MAINTAINERS                        |  1 +
- fs/proc/task_mmu.c                 |  6 ++++++
- include/linux/rmap.h               |  1 -
- mm/kmemleak.c                      |  5 +++--
- mm/memory-failure.c                | 21 +++++++++++----------
- mm/page_alloc.c                    | 21 ++++-----------------
- 7 files changed, 29 insertions(+), 30 deletions(-)
-
+> ---
+>   drivers/gpu/drm/tests/drm_format_helper_test.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/tests/drm_format_helper_test.c b/drivers/gpu/drm/tests/drm_format_helper_test.c
+> index 79bc9d4bbd71..1a6bd291345d 100644
+> --- a/drivers/gpu/drm/tests/drm_format_helper_test.c
+> +++ b/drivers/gpu/drm/tests/drm_format_helper_test.c
+> @@ -1165,7 +1165,7 @@ KUNIT_ARRAY_PARAM(fb_build_fourcc_list, fb_build_fourcc_list_cases, fb_build_fou
+>   static void drm_test_fb_build_fourcc_list(struct kunit *test)
+>   {
+>   	const struct fb_build_fourcc_list_case *params = test->param_value;
+> -	u32 fourccs_out[TEST_BUF_SIZE];
+> +	u32 fourccs_out[TEST_BUF_SIZE] = {0};
+>   	size_t nfourccs_out;
+>   	struct drm_device *drm;
+>   	struct device *dev;
+> 
+> ---
+> base-commit: 8e455145d8f163aefa6b9cc29478e0a9f82276e6
+> change-id: 20230901-zero-init-fourcc-list-test-2c934b6b7eb8
+> 
+> Best regards,
