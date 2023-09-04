@@ -2,98 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21C9F79104B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 05:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAE74791064
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 05:27:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351348AbjIDDSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 3 Sep 2023 23:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36278 "EHLO
+        id S1344950AbjIDD11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 3 Sep 2023 23:27:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230464AbjIDDSR (ORCPT
+        with ESMTP id S231244AbjIDD1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 3 Sep 2023 23:18:17 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8E5E10E
-        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 20:18:13 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99c93638322so207601666b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 20:18:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693797492; x=1694402292; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZRiIbAFg9Tz0ie5BKjJ3bgiyNx9YoHAeVLR3Pw+mO9w=;
-        b=dIPlkmCz0F5zNX/tRpeEC/4t7L2pfB2AnErHazb63A5trEhd1OluiwyXjG3dx+xZ0N
-         hhasWg0Gzky7//3OJGIZRj/fgJpxlMhjwktmV540sA73n1zS2AFKK1gEqXDTx0LH3/qT
-         0/k8bI6/mMgPOQ9kUS9kiWxYsVZBSDXqh0QtA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693797492; x=1694402292;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZRiIbAFg9Tz0ie5BKjJ3bgiyNx9YoHAeVLR3Pw+mO9w=;
-        b=g//y3AhIo05liTQhJf3HtncMSZ6npowTBzMYgWxjQo5vVhqpv3uYGOQV/gqY/OQsKh
-         Nl/ENz8cA37XpivcCKhPBq2eQ76cEhvzNpAmvltdxhCGcPoRs12D8BfbkG1Nzb0rFVlR
-         3Ke2IcMfjK3vlRou1p++lE61ZPKPaCiDy2c63zinDn/ULLgVEW7zMR6nxA9u3hEqinHZ
-         WVRUWh6ZTPuJ1VPEFVbO9ozRQsxKjayDqvRrFWue5L8/ii2YRsXO/B3rZ7LlPMgpLlum
-         hURgiCHU20oDa9AOHdMZowyOK6elAydDWtxXROBPdc2bAVblrtRl2OO/2Z7CnaXIj13l
-         wkJQ==
-X-Gm-Message-State: AOJu0YxA+q0KiK1wOpJFVBIgA9itsKE8hCLSU7JNsEaVBAgEApejT8X3
-        3VsJqfAAGnaeL5fhE8tNf02ItojbPWP0MZb8LhLpKeSx
-X-Google-Smtp-Source: AGHT+IGYGGrs2m7kZFxp+8u/fW2LrEyEv7fpX4VsmQj34rWngr4Lpa/fI4NvYLSyZXVJPUNEeljtQA==
-X-Received: by 2002:a17:907:1def:b0:9a5:d2f5:c76 with SMTP id og47-20020a1709071def00b009a5d2f50c76mr9587783ejc.5.1693797492268;
-        Sun, 03 Sep 2023 20:18:12 -0700 (PDT)
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com. [209.85.218.47])
-        by smtp.gmail.com with ESMTPSA id i4-20020a170906264400b0099bcd1fa5b0sm5535787ejc.192.2023.09.03.20.18.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 03 Sep 2023 20:18:11 -0700 (PDT)
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-99c93638322so207599166b.1
-        for <linux-kernel@vger.kernel.org>; Sun, 03 Sep 2023 20:18:10 -0700 (PDT)
-X-Received: by 2002:a17:906:5d0f:b0:9a5:a7cd:1f02 with SMTP id
- g15-20020a1709065d0f00b009a5a7cd1f02mr13692231ejt.13.1693797490682; Sun, 03
- Sep 2023 20:18:10 -0700 (PDT)
+        Sun, 3 Sep 2023 23:27:25 -0400
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5C1AC1
+        for <linux-kernel@vger.kernel.org>; Sun,  3 Sep 2023 20:27:22 -0700 (PDT)
+Received: from cwcc.thunk.org (pool-173-48-116-73.bstnma.fios.verizon.net [173.48.116.73])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3843QwSA015276
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 3 Sep 2023 23:26:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+        t=1693798021; bh=rkbpgkYC4jb0fCkXOsy0wxyXQNhK/Ytcz9Jdb2AKGa4=;
+        h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+        b=m5/geuHtX6zIYvlw4QQeq3Hwr3/5EQEjCeLuobQX/JLKigD7+gU4k/ENkKy+P0G4u
+         dvsi0mXvo6yAEMm9g1WO9D/huSK5TnY2eAkapw9OfYiFj49Gxev2c+A6Da6+e/Z31Q
+         AkDSqA4WsTziMNG2VuuxMAR8k5cwlFGnO3TxODyTDqoO1AM/ky0GLIgw5lWU+YsZax
+         9wOgUYzGcEW8dvy4KKpR3WKEFmtFEvQdxX/DjxyAOdPQEFdQwNf7vIWFHKw2NHV7PK
+         UyIuGe5GnLbAIAgM3NkFmNhG0oFzJQJg2Eh5cLmIWtucbFMgLYA8Dlo2w6mug03yIf
+         trVKcU6ObmdMg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 4A22215C023F; Sun,  3 Sep 2023 23:26:58 -0400 (EDT)
+Date:   Sun, 3 Sep 2023 23:26:58 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Mateusz Guzik <mjguzik@gmail.com>,
+        syzbot <syzbot+e245f0516ee625aaa412@syzkaller.appspotmail.com>,
+        brauner@kernel.org, djwong@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-xfs@vger.kernel.org, llvm@lists.linux.dev, nathan@kernel.org,
+        ndesaulniers@google.com, syzkaller-bugs@googlegroups.com,
+        trix@redhat.com
+Subject: Re: [syzbot] [xfs?] INFO: task hung in __fdget_pos (4)
+Message-ID: <20230904032658.GA701295@mit.edu>
+References: <000000000000e6432a06046c96a5@google.com>
+ <ZPQYyMBFmqrfqafL@dread.disaster.area>
+ <20230903083357.75mq5l43gakuc2z7@f>
+ <ZPUIQzsCSNlnBFHB@dread.disaster.area>
+ <20230903231338.GN3390869@ZenIV>
+ <ZPU2n48GoSRMBc7j@dread.disaster.area>
 MIME-Version: 1.0
-References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
- <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
- <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
- <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com>
- <20230903204858.lv7i3kqvw6eamhgz@f> <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
- <ZPT/LzkPR/jaiaDb@gmail.com> <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
- <CAGudoHG1_r1B0pz6-HUqb6AfbAgWHxBy+TnimvQtwLLqkKtchA@mail.gmail.com> <CAHk-=wjM6KwAvC9+sCAm9BgBSspZm60VBLzHcuonGcHrPKJrbw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjM6KwAvC9+sCAm9BgBSspZm60VBLzHcuonGcHrPKJrbw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 3 Sep 2023 20:17:53 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whnEF7-+DL+71wVgnJG1xjeHAQjzqMAULgQq_uhWfP0ZA@mail.gmail.com>
-Message-ID: <CAHk-=whnEF7-+DL+71wVgnJG1xjeHAQjzqMAULgQq_uhWfP0ZA@mail.gmail.com>
-Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
- without ERMS
-To:     Mateusz Guzik <mjguzik@gmail.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, bp@alien8.de
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPU2n48GoSRMBc7j@dread.disaster.area>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Sept 2023 at 20:07, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Try it and you'll see it is not even *remotely* as easy as you claim.
-> Not when you have to deal with random sizes and padding of 20+
-> different architectures.
+On Mon, Sep 04, 2023 at 11:45:03AM +1000, Dave Chinner wrote:
+> Entirely possible - this is syzbot we are talking about here.
+> Especially if reiser or ntfs has been tested back before the logs we
+> have start, as both are known to corrupt memory and/or leak locks
+> when trying to parse corrupt filesystem images that syzbot feeds
+> them.  That's why we largely ignore syzbot reports that involve
+> those filesystems...
+> 
+> Unfortunately, the logs from what was being done around when the
+> tasks actually hung are long gone (seems like only the last 20-30s
+> of log activity is reported) so when the hung task timer goes off
+> at 143s, there is nothing left to tell us what might have caused it.
+> 
+> IOWs, it's entirely possible that it is a memory corruption that
+> has resulted in a leaked lock somewhere...
 
-Perhaps more importantly, nobody actually seems to have the energy to care.
+... and this is why I ignore any syzbot report that doesn't have a C
+reproducer.  Life is too short to waste time with what is very likely
+syzbot noise....  And I'd much rather opt out of the gamification of
+syzbot dashboards designed to use dark patterns to guilt developers to
+work on "issues" that very likely have no real impact on real life
+actual user impact, if it might cause developers and maintainers to
+burn out and quit.
 
-As shown by the fact that even the current really simple "just define
-INIT_STRUCT_STAT_PADDING to avoid a pointless memset in a hot path"
-has been taken up by exactly zero other architectures than x86.
+Basically, if syzbot won't prioritize things for us, it's encumbent on
+us to prioritize things for our own mental health.  And so syzbot
+issues without a real reproducer are very low on my priority list; I
+have things I can work on that are much more likely to make real world
+impact.  Even ones that have a real reproducer, there are certain
+classes of bugs (e.g., "locking bugs" that require a badly corrupted
+file system, or things that are just denial of service attacks if
+you're too stupid to insert a USB thumb drive found in a parking lock
+--- made worse by GNOME who has decided to default mount any random
+USB thumb drive inserted into a system, even a server system that has
+GNOME installed, thanks to some idiotic decision made by some random
+Red Hat product manager), that I just ignore because I don't have
+infinite amounts of time to coddle stupid Red Hat distro tricks.
 
-I wasn't going to fight that kind of history of apathy.
-
-              Linus
+						- Ted
