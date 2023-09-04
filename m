@@ -2,135 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 383477919B7
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 137CD7919FA
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 16:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241768AbjIDOh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 10:37:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53138 "EHLO
+        id S235028AbjIDOrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 10:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjIDOh2 (ORCPT
+        with ESMTP id S230477AbjIDOrW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 10:37:28 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A307FCE0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:37:25 -0700 (PDT)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 384E6meZ006297;
-        Mon, 4 Sep 2023 14:36:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=mbwLhV2NYtXQOdQV1fKkqCEuFE3DjJZqNv6HLQL5yuQ=;
- b=NZvp+LA7wou5W/q740r+0PvnXwxzxXNmfTmUydxSo4uUDPcMoE8POOFlbXEjDrpZZm/E
- gtrC13k4GdontN+oKUO+q/obAemrJh06zWyN4K/r06o75/Rz/URWDIsvapdUIhA7QdDI
- Zam4ZPLvrOgbUsD0exAwc4GI+J3aUQFS10bWioJ5BEV3N+iL0I6iJQe2YDVU0K4trE1+
- 1QHkFCe5p4cPaWrK1Q3qAv4vMcg7KZWijYhYWSYcld2EadDTzyUzUQW4zf+/+IWo1xBd
- bBco996MZVGgoPmvwpdpvdK/eEfHnP6kmJz2qOd5/kUv1I9YeGUSEZSIIV3gGZADd1hK xQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sw80jdr50-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Sep 2023 14:36:06 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 384E6wXj007713;
-        Mon, 4 Sep 2023 14:34:51 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sw80jdpcj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Sep 2023 14:34:51 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 384E0A8C001624;
-        Mon, 4 Sep 2023 14:34:13 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svfcsbpcf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Sep 2023 14:34:13 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 384EYA2334472528
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Sep 2023 14:34:10 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id BAD4F20049;
-        Mon,  4 Sep 2023 14:34:10 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2DCE020040;
-        Mon,  4 Sep 2023 14:34:09 +0000 (GMT)
-Received: from [9.43.27.211] (unknown [9.43.27.211])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Sep 2023 14:34:08 +0000 (GMT)
-Message-ID: <8fcd7ba7-0f27-7bbc-676f-7e13c8bf00d7@linux.ibm.com>
-Date:   Mon, 4 Sep 2023 20:04:08 +0530
+        Mon, 4 Sep 2023 10:47:22 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318531B9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 07:47:19 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id D467CB80DB8
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 14:47:17 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B920C433C8;
+        Mon,  4 Sep 2023 14:47:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693838836;
+        bh=00vX/S/bZEFxcOzXRYU8XSPRx2QXSBBtaI9lexJnG8Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rzISwFr28zXS9GvtLthacWON48kxuF1gVv0qUb8O9mRw+CPTXyQm+U7jSnVvgQSO/
+         g6XtOJFAx7LUOgzA6cHHyGtu6Azy9nGtmynBO3lq7bkThEHBsSDxgyw6BIKE1B8Ho5
+         mNIYF+tf7p9Uu2F6//TKq//qvhjL80NS79etcOBAQUXW8e4FIJXdK1Noy8RECblL0J
+         Oj0fMPf5y7lU8iAsAuBBjYC5MmhKytLgCySG7qXaaugOQCVeRbipSsKBADv2zolRsB
+         gKAct38ncmcG+/QZdyqBLSeGHoy0qH0d3GZ1H0qbHlRZ9fHj6qo8Pj0cgJT229bnIc
+         ZAgFEcxDJ5Vjw==
+Date:   Mon, 4 Sep 2023 22:35:23 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Xiao Wang <xiao.w.wang@intel.com>
+Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] riscv: alternative: remove alternative boundary symbols
+ in vdso
+Message-ID: <ZPXrKz1jhqz5g3nF@xhacker>
+References: <20230902022510.818602-1-xiao.w.wang@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 1/2] vmcore: allow alternate dump capturing methods to
- export vmcore without is_kdump_kernel()
-Content-Language: en-US
-To:     Baoquan He <bhe@redhat.com>
-Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Kexec-ml <kexec@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Sourabh Jain <sourabhjain@linux.ibm.com>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>,
-        Dave Young <dyoung@redhat.com>
-References: <20230901190438.375678-1-hbathini@linux.ibm.com>
- <ZPP/UeP1zUbGPzrt@MiWiFi-R3L-srv>
-From:   Hari Bathini <hbathini@linux.ibm.com>
-In-Reply-To: <ZPP/UeP1zUbGPzrt@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: y6cJGnzQveuKjsB-D8l-jwH2wOhgoTRc
-X-Proofpoint-ORIG-GUID: rYr90DU-mk0NiOVoDnuGwmqdNDa4Y-s7
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-04_07,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 bulkscore=0
- mlxlogscore=473 suspectscore=0 spamscore=0 mlxscore=0 impostorscore=0
- priorityscore=1501 adultscore=0 clxscore=1015 malwarescore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309040130
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230902022510.818602-1-xiao.w.wang@intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Baoquan,
+On Sat, Sep 02, 2023 at 10:25:10AM +0800, Xiao Wang wrote:
+> Instruction patching for vdso is based on elf header parsing to get the
+> beginning and ending of .alternative section, the __alt_start and __alt_end
+> symbols defined in vdso linker script are not used, so this patch removes
+> them.
 
-Thanks for the review...
+The same patch has been in mailist since July:
 
-On 03/09/23 9:06 am, Baoquan He wrote:
-> Hi Hari,
-> 
-> On 09/02/23 at 12:34am, Hari Bathini wrote:
->> Currently, is_kdump_kernel() returns true when elfcorehdr_addr is set.
->> While elfcorehdr_addr is set for kexec based kernel dump mechanism,
->> alternate dump capturing methods like fadump [1] also set it to export
->> the vmcore. is_kdump_kernel() is used to restrict resources in crash
->> dump capture kernel but such restrictions may not be desirable for
->> fadump. Allow is_kdump_kernel() to be defined differently for such
->> scenarios. With this, is_kdump_kernel() could be false while vmcore
->> is usable. So, introduce is_crashdump_kernel() to return true when
->> elfcorehdr_addr is set and use it for vmcore related checks.
-> 
-> I got what is done in these two patches, but didn't get why they need be
-> done. vmcore_unusable()/is_vmcore_usable() are only unitilized in ia64.
-> Why do you care if it's is_crashdump_kernel() or is_kdump_kernel()?
-> If you want to override the generic is_kdump_kernel() with powerpc's own
-> is_kdump_kernel(), your below change is enough to allow you to do that.
-> I can't see why is_crashdump_kernel() is needed. Could you explain that
-> specifically?
-
-You mean to just remove is_kdump_kernel() check in is_vmcore_usable() &
-vmcore_unusable() functions? Replaced generic is_crashdump_kernel()
-function instead, that returns true for any dump capturing method,
-irrespective of whether is_kdump_kernel() returns true or false.
-For fadump case, is_kdump_kernel() will return false after patch 2/2.
+https://lore.kernel.org/linux-riscv/20230726173024.3684-2-jszhang@kernel.org/
 
 Thanks
-Hari
+> 
+> Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+> ---
+>  arch/riscv/kernel/vdso/vdso.lds.S | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/arch/riscv/kernel/vdso/vdso.lds.S b/arch/riscv/kernel/vdso/vdso.lds.S
+> index 82ce64900f3d..d43fd7c7dd11 100644
+> --- a/arch/riscv/kernel/vdso/vdso.lds.S
+> +++ b/arch/riscv/kernel/vdso/vdso.lds.S
+> @@ -42,9 +42,7 @@ SECTIONS
+>  
+>  	. = ALIGN(4);
+>  	.alternative : {
+> -		__alt_start = .;
+>  		*(.alternative)
+> -		__alt_end = .;
+>  	}
+>  
+>  	.data		: {
+> -- 
+> 2.25.1
+> 
