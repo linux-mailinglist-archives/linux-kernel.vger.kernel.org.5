@@ -2,90 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 672CB7911F4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92B9E7911F6
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237921AbjIDHU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 03:20:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41380 "EHLO
+        id S241683AbjIDHUg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 03:20:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbjIDHU2 (ORCPT
+        with ESMTP id S238160AbjIDHUf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 03:20:28 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9D89A7;
-        Mon,  4 Sep 2023 00:20:25 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38478w2u020418;
-        Mon, 4 Sep 2023 07:20:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=mime-version : date :
- from : to : cc : subject : reply-to : in-reply-to : references :
- message-id : content-type : content-transfer-encoding; s=pp1;
- bh=bKDUBlQ5AuwRYstkWVVn9yuvQNAJeOOL4UrmQDWu3Jc=;
- b=qP73+7GYPw1RbFwjpNVa9j9xLW6NQX+BEXB0o+82D7MRgJ9XYs2pzcPw2QeiTN8MGxLd
- 6Ru7D4RYFAoTJ6hPXvUYArByc0at14qPoC79TAcRmiJxY5zgHugRz3W5VpV24vGSYdNf
- YlsXGb7MqbVQRmUqKknMy1Y7Dfe3WGC57kD6Mmf8uv8LTmqrLrcVi9DQoL2wOYg4mAeK
- Lh+Ta0DbGY0csNHYY0siAnLiUrS5SAEWVAyeM3RaXrenn7+5BAhPSAkMLeG1YVl5gKcL
- cBC7Rhtcw+6xnFYOpl4yv2ye8vxQekfppGPbHliyx7o5khd0COHDncjwt+ppGV1Gjupb eA== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sw84euscs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Sep 2023 07:20:24 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38479ZCt021441;
-        Mon, 4 Sep 2023 07:20:23 GMT
-Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfry0v5a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Sep 2023 07:20:23 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3847KM5J60424452
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 4 Sep 2023 07:20:22 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92CE05805A;
-        Mon,  4 Sep 2023 07:20:22 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3747758052;
-        Mon,  4 Sep 2023 07:20:22 +0000 (GMT)
-Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
-        by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Mon,  4 Sep 2023 07:20:22 +0000 (GMT)
+        Mon, 4 Sep 2023 03:20:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9523E129;
+        Mon,  4 Sep 2023 00:20:31 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3CDFFB80DB5;
+        Mon,  4 Sep 2023 07:20:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05E62C433C8;
+        Mon,  4 Sep 2023 07:20:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693812028;
+        bh=LvTb4kJl3GXs12/BrT1PJX0uNGbEH7dpzz3v5s4wpE4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Pzh9eUzDM0Qduf59lq/gg9D16GlVEyPrWTiHiBtBMoYaRlOPKZqb0lqWWZp/iRin6
+         xc9D0wzFppz70QK9s8Sh4y8sy5B2tQZHx2+kSVh4CGOfWQQLetU0Hn9fhJgLEMelQk
+         i57TkArDlqOGidGICqFT/syXGIduBK5pWU3KbztuORQgNq58HTwlQp9NEsTfqkMG0K
+         Y3KxlMQCg8zbEc7Peyn2Eff0z2OCpsnmH3qpVnqwNe90txuXVcOnxJpdv/l5OtcGXU
+         vxmbULCEhLgL4WtoMgqX97VDt+I4Uowm2b/gtaYctwiLb7v+IoMNhP0oVHfdAREUIp
+         4YIeaRHgJhvNQ==
+Message-ID: <03aab2bc-5fd2-956b-23ef-3359ed92db88@kernel.org>
+Date:   Mon, 4 Sep 2023 09:20:24 +0200
 MIME-Version: 1.0
-Date:   Mon, 04 Sep 2023 09:20:22 +0200
-From:   Harald Freudenberger <freude@linux.ibm.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH v1 1/2] s390/zcrtpt: Don't leak memory if dev_set_name()
- fails
-Reply-To: freude@linux.ibm.com
-Mail-Reply-To: freude@linux.ibm.com
-In-Reply-To: <20230831110000.24279-1-andriy.shevchenko@linux.intel.com>
-References: <20230831110000.24279-1-andriy.shevchenko@linux.intel.com>
-Message-ID: <d8c5522ddfe034e839cc93e8b4ef36fb@linux.ibm.com>
-X-Sender: freude@linux.ibm.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 3/3] dts: ti: k3-am625-beagleplay: Add beaglecc1352
+Content-Language: en-US
+To:     Ayush Singh <ayushdevel1325@gmail.com>,
+        greybus-dev@lists.linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org,
+        Vaishnav M A <vaishnav@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        Nishanth Menon <nm@ti.com>
+References: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
+ <20230902182845.1840620-4-ayushdevel1325@gmail.com>
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+In-Reply-To: <20230902182845.1840620-4-ayushdevel1325@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XHW5zy7UYRUzK6NFX2ztxwyeSpWIcSm1
-X-Proofpoint-GUID: XHW5zy7UYRUzK6NFX2ztxwyeSpWIcSm1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-04_04,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
- malwarescore=0 clxscore=1011 impostorscore=0 bulkscore=0
- priorityscore=1501 spamscore=0 suspectscore=0 lowpriorityscore=0
- adultscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309040063
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -93,30 +63,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-08-31 12:59, Andy Shevchenko wrote:
-> When dev_set_name() fails, the zcdn_create() doesn't free
-> the newly allocated resources. Do it.
+On 02/09/2023 20:28, Ayush Singh wrote:
+> The BeaglePlay board by BeagleBoard.org has a CC1352 co-processor. This
+> co-processor is connected to the main AM62 (running Linux) over UART. The
+> CC1352 can run Zephyr and other embedded OS. This commit adds support for
+> the CC1352 in the Linux kernel DTS. This allows Linux platform drivers to
+> identify the device and communicate with it.
 > 
-> Fixes: 00fab2350e6b ("s390/zcrypt: multiple zcrypt device nodes 
-> support")
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> This UART is used by gb-beagleplay, an upcoming Greybus driver for
+> BeaglePlay.
+
+upcoming? So not present in this patchset?
+
+> 
+> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
 > ---
->  drivers/s390/crypto/zcrypt_api.c | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/s390/crypto/zcrypt_api.c 
-> b/drivers/s390/crypto/zcrypt_api.c
-> index 4b23c9f7f3e5..6b99f7dd0643 100644
-> --- a/drivers/s390/crypto/zcrypt_api.c
-> +++ b/drivers/s390/crypto/zcrypt_api.c
-> @@ -413,6 +413,7 @@ static int zcdn_create(const char *name)
->  			 ZCRYPT_NAME "_%d", (int)MINOR(devt));
->  	nodename[sizeof(nodename) - 1] = '\0';
->  	if (dev_set_name(&zcdndev->device, nodename)) {
-> +		kfree(zcdndev);
->  		rc = -EINVAL;
->  		goto unlockout;
->  	}
-Thanks Andy, I picked this patch and forwarded it into the s390 
-subsystem.
-This will be visible in Linus' kernel tree with the next merge.
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> index 7cfdf562b53b..10abbb8feda5 100644
+> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+> @@ -870,6 +870,10 @@ &main_uart6 {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&wifi_debug_uart_pins_default>;
+>  	status = "okay";
+> +
+> +	beaglecc1352 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+It does not look like you tested the DTS against bindings. Please run
+`make dtbs_check W=1` (see
+Documentation/devicetree/bindings/writing-schema.rst or
+https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+for instructions).
+
+Best regards,
+Krzysztof
+
