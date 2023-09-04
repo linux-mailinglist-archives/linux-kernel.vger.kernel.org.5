@@ -2,97 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DB4E77915EF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46F17915EC
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:55:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352739AbjIDKz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:55:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        id S232892AbjIDKzt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:55:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351821AbjIDKz5 (ORCPT
+        with ESMTP id S233259AbjIDKzr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:55:57 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62102191;
-        Mon,  4 Sep 2023 03:55:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693824950; x=1725360950;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=sqs2mJi4XhUaL58AyKzjuKO8eS4mzUoGVNQWwx6UuGw=;
-  b=QzuTP70qui4I/vOzj2vZSSCkV337eQQR9glz74VJcUcOBxnNl1m953no
-   HRJUrd5zFizdKWFXCFyPDGqEQ19dTSlgXtKP6uPEJC1vfHngjeKa+HmvN
-   V23ScifTzD4FSez+kB2dnwPNROPJYUzg2NQCmv318vZrK+ShecEp7QXTV
-   NemgZaFCf2ZvRqPJlcclpQZHQqbTGUl4ab2FlSG6GPpAc4L4PHQSHh0BZ
-   l8A4VYgiDMlkAY7kYNeJah85Fl27OPgXo9ylN5mpdI96KC5XHSMqtlfrr
-   prZubuWxMDwlY4SSGh/e4t+ClHHnU54L3+xID9kOOCykhMJ18bCqPXVo5
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="442973764"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="442973764"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:55:49 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="769952856"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="769952856"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga008.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:55:44 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qd7Es-006P9i-2Q;
-        Mon, 04 Sep 2023 13:55:26 +0300
-Date:   Mon, 4 Sep 2023 13:55:26 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Xingui Yang <yangxingui@huawei.com>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        john.g.garry@oracle.com, damien.lemoal@opensource.wdc.com,
-        akpm@linux-foundation.org, viro@zeniv.linux.org.uk,
-        himanshu.madhani@cavium.com, felipe.balbi@linux.intel.com,
-        gregkh@linuxfoundation.org, uma.shankar@intel.com,
-        anshuman.gupta@intel.com, animesh.manna@intel.com,
-        linux-usb@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        prime.zeng@hisilicon.com, kangfenglong@huawei.com,
-        chenxiang66@hisilicon.com
-Subject: Re: [PATCH v5 2/3] scsi: hisi_sas: Use DEFINE_SHOW_STORE_ATTRIBUTE
- helper for debugfs
-Message-ID: <ZPW3nqllvv7JjYmi@smile.fi.intel.com>
-References: <20230904084804.39564-1-yangxingui@huawei.com>
- <20230904084804.39564-3-yangxingui@huawei.com>
+        Mon, 4 Sep 2023 06:55:47 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1320099;
+        Mon,  4 Sep 2023 03:55:43 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qd7F6-0006Xs-JL; Mon, 04 Sep 2023 12:55:40 +0200
+Message-ID: <fec02836-b3d4-6ec3-d0a5-cc5172095837@leemhuis.info>
+Date:   Mon, 4 Sep 2023 12:55:39 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904084804.39564-3-yangxingui@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] [V2] ata: libata: add workaround to flip LPM during
+ suspend/resume
+Content-Language: en-US, de-DE
+To:     Niklas Cassel <Niklas.Cassel@wdc.com>,
+        Koba Ko <koba.ko@canonical.com>
+Cc:     Damien Le Moal <dlemoal@kernel.org>,
+        "linux-ide@vger.kernel.org" <linux-ide@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux kernel regressions list <regressions@lists.linux.dev>
+References: <20230901023457.8655-1-koba.ko@canonical.com>
+ <ZPJGGlAQYSXguJEk@x1-carbon>
+From:   Thorsten Leemhuis <regressions@leemhuis.info>
+In-Reply-To: <ZPJGGlAQYSXguJEk@x1-carbon>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693824943;54886c2f;
+X-HE-SMSGID: 1qd7F6-0006Xs-JL
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 08:48:03AM +0000, Xingui Yang wrote:
-> Use DEFINE_SHOW_STORE_ATTRIBUTE helper for read-write file to reduce some
+On 01.09.23 22:14, Niklas Cassel wrote:
+> On Fri, Sep 01, 2023 at 10:34:57AM +0800, Koba Ko wrote:
+>> Due to TigerLake/Adler Lake AHCI controller's LPM regression,
+>> can't apply LPM on TigerLake/AdlerLake AHCI controller.
+>>
+>> Add a workaround to flip LPM during suspend/resume.
+>> When suspneding,
 
-DEFINE_SHOW_STORE_ATTRIBUTE()
+Side note: s/suspneding/suspending/
 
-> duplicated code.
+>> apply LPM on TigerLake/AdlerLake AHCI.
+>> Restore it to target_lpm_policy after resuming.
+>>
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217775
+>> Signed-off-by: Koba Ko <koba.ko@canonical.com>
+>> ---
 > 
-> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
-> Signed-off-by: Xingui Yang <yangxingui@huawei.com>
+> I understand that it is very frustrating to not be able to go to the
+> deepest C-state.
+> 
+> If you want LPM, we should add the PCI device and vendor id as a
+> board_ahci_low_power entry.
+> 
+> I am awake that a lot of people reported regressions when that entry was
+> added, and that is was thus reverted.
+> [...]
+> If you do own one of those systems, isn't it better if we instead:
+> 1) re-introduce the TigerLake AHCI board_ahci_low_power entry
+> 2) debug and fix the root cause of the regressions on TigerLake laptops
 
-Same comments about tags as in previous patch.
+Three stupid questions from the cheap seats, as I'm not involved in this
+at all (the questions thus might not help at all or even confuse things;
+so feel free to ignore or tell me). But it's one of those tricky
+situations I more than once encountered as regression tracker, so maybe
+sharing a few thoughts from my point might help to lessen the problem
+for some users:
 
-Code wise LGTM, FWIW,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+- Was something done so to free ourselves from this tricky situation in
+the future? E.g. something like "for any future Intel controllers,
+enable LPM by default (as then it's not a regression if things don't
+work, which might be a better base to get down to the root of the problem)"
 
+- is the LPM working fine on the Laptops affected by
+https://bugzilla.kernel.org/show_bug.cgi?id=217114 with the
+pre-installed OS (e.g. Windows)
 
--- 
-With Best Regards,
-Andy Shevchenko
+- is switching to LPM maybe safe when there is nothing connected to that
+controller (which I guess might be the case on some of those Laptops?)
+In that case we might be able to improve the sitaution for some users.
 
-
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
