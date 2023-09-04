@@ -2,205 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D2B791341
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E06479133B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352543AbjIDIWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 04:22:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60778 "EHLO
+        id S242948AbjIDIWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 04:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352540AbjIDIWw (ORCPT
+        with ESMTP id S230273AbjIDIWs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 04:22:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F08C98
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 01:22:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693815720;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=58CDt7MpBY+8uswKMe/+/g7ssjQGWAe8uPZZeAFNnOg=;
-        b=SsfIrUOnlrLnRFjr8ajIJWc2EBBIl8yKu6pA1Qaxbt8V6MSiMbqZkKxOk7QZr9ygNm0DEP
-        437yitdRjI6N+n4+OFJR9FwHZLZrHkjlZv3OTO9MfJhi5VtjrGShYNAp2VGb03eBcRV9PD
-        n+XHItEd7sftkiiTtMsFc5YBDaA2IWw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-209-HX-zCprvO9W5phpmNRco3A-1; Mon, 04 Sep 2023 04:21:58 -0400
-X-MC-Unique: HX-zCprvO9W5phpmNRco3A-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-31ad77537ebso592676f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 01:21:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693815718; x=1694420518;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=58CDt7MpBY+8uswKMe/+/g7ssjQGWAe8uPZZeAFNnOg=;
-        b=lYNNsNITKVKueH78KBARiovbRYFSsoiOu2PT6MjOrcobFvWN7PWrXFE681GNQwETwi
-         8lKSY/Il+x614k3DZJbqbOLrqwninyVQMo/P4frG/7CPgMzypSGU8iDCzIJFyBIMSW6N
-         foRGUjtZwZm0hSuMcxbiZNb88RvwQcWX2WV3i7hkcxQgpPIFLLqteLHgcL2VP5TGC74p
-         fwgfC7wtfHDl03S/+ctfQ5Igyskgwrag/44cFm+opbmfzslA0XxVKrkAnQMQZOXNmLxp
-         /t+HeZm/PsbqcDu9H8q/yviWVUnP1GgW295orJzx86rvnEGhDp6Q80sU/5YnEHT5P0BK
-         XKYA==
-X-Gm-Message-State: AOJu0Yzxxyc7mGdWmZgv/rtObEi+tjig0AyBkN5kVb7pP0MWMYqlwVDT
-        TMxl6oJwKr8m+nWit5KItQHF3b7RoSKXoZthdySe6gmta5xSrp2LYb7tnYx26O+Cn/fGKmcX6vL
-        HAZsrqHxplSF9LEGcmUD2rCl4
-X-Received: by 2002:adf:f0ca:0:b0:31c:804b:5ec3 with SMTP id x10-20020adff0ca000000b0031c804b5ec3mr6824542wro.67.1693815717775;
-        Mon, 04 Sep 2023 01:21:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHtvlQmvpxtAtQ0RXZWHxi9cuCDi1ONniVj1m3Lt/gu3c78Hd/LstB4eBmnfMtLXc/X7qNKFg==
-X-Received: by 2002:adf:f0ca:0:b0:31c:804b:5ec3 with SMTP id x10-20020adff0ca000000b0031c804b5ec3mr6824530wro.67.1693815717437;
-        Mon, 04 Sep 2023 01:21:57 -0700 (PDT)
-Received: from sgarzare-redhat ([46.222.123.165])
-        by smtp.gmail.com with ESMTPSA id k1-20020adff5c1000000b0031ad5a54bedsm13851459wrp.9.2023.09.04.01.21.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 01:21:56 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 10:21:51 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@sberdevices.ru, oxffffaa@gmail.com
-Subject: Re: [PATCH net-next v7 4/4] vsock/virtio: MSG_ZEROCOPY flag support
-Message-ID: <h63t6heovmyafu2lo6x6rzsbdbrhqhlbuol774ngbgshbycgdu@fgynzbmj5zn7>
-References: <20230827085436.941183-1-avkrasnov@salutedevices.com>
- <20230827085436.941183-5-avkrasnov@salutedevices.com>
- <p2u2irlju6yuy54w4tqstaijhpnbmqxwavsdumsmyskrjguwux@kmd7cbavhjbh>
- <0ab443b5-73a5-f092-44a3-52e26244c9a8@salutedevices.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0ab443b5-73a5-f092-44a3-52e26244c9a8@salutedevices.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 4 Sep 2023 04:22:48 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FCBD8
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 01:22:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 09C2BB80D71
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 08:22:43 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98D54C433C8;
+        Mon,  4 Sep 2023 08:22:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693815761;
+        bh=qpTR8GoovWVs6vxn0nzjtFQ/7M8GgNNwJuKLMA9YxMw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RdR6gkhf2DtNpB6y+kSaCM1auxaM6jjvz/Ue9NFLbuFbxmXGNBt/fQBFcjpPdmG7Z
+         RajasLjTrDYmDJ8GpOQ8yo4en9ggYdIpA4bSpvvwcZjmf6K9txHwiXc46eUZExI8bd
+         sQNRlsDTUTi2vnjWuGMEziiUqXy3u56eCvDW9axQVqw3DDXpkuRmxuJsFT8HLaaBjw
+         ZhFZUDomwFzumJTEBTsTPILVJH/NmClYgGM10n7amkBtPn1TkTuKsBK/HAW7uNex6B
+         ObFQOe+Pck6JG4yCnXydjeyN5XE4KjHPMaNVps0q2qTlQjYLnCDcBNz8FbPGj6nB0F
+         AOaCwhThX8FtQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qd4r1-00ALii-0J;
+        Mon, 04 Sep 2023 09:22:39 +0100
+Date:   Mon, 04 Sep 2023 09:22:38 +0100
+Message-ID: <86r0nee4a9.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
+        oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org, qperret@google.com,
+        ricarkol@google.com, tabba@google.com, bgardon@google.com,
+        zhenyzha@redhat.com, yihyu@redhat.com, shan.gavin@gmail.com
+Subject: Re: [PATCH] KVM: arm64: Fix soft-lockup on relaxing PTE permission
+In-Reply-To: <20230904072826.1468907-1-gshan@redhat.com>
+References: <20230904072826.1468907-1-gshan@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: gshan@redhat.com, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, qperret@google.com, ricarkol@google.com, tabba@google.com, bgardon@google.com, zhenyzha@redhat.com, yihyu@redhat.com, shan.gavin@gmail.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 11:13:23AM +0300, Arseniy Krasnov wrote:
->
->
->On 01.09.2023 15:30, Stefano Garzarella wrote:
->> On Sun, Aug 27, 2023 at 11:54:36AM +0300, Arseniy Krasnov wrote:
->>> This adds handling of MSG_ZEROCOPY flag on transmission path: if this
->>> flag is set and zerocopy transmission is possible (enabled in socket
->>> options and transport allows zerocopy), then non-linear skb will be
->>> created and filled with the pages of user's buffer. Pages of user's
->>> buffer are locked in memory by 'get_user_pages()'. Second thing that
->>> this patch does is replace type of skb owning: instead of calling
->>> 'skb_set_owner_sk_safe()' it calls 'skb_set_owner_w()'. Reason of this
->>> change is that '__zerocopy_sg_from_iter()' increments 'sk_wmem_alloc'
->>> of socket, so to decrease this field correctly proper skb destructor is
->>> needed: 'sock_wfree()'. This destructor is set by 'skb_set_owner_w()'.
->>>
->>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+Hi Gavin,
 
-[...]
+On Mon, 04 Sep 2023 08:28:26 +0100,
+Gavin Shan <gshan@redhat.com> wrote:
+> 
+> We observed soft-lockup on the host in a specific scenario where
+> the host on Ampere's Altra Max CPU has 64KB base page size and the
+> guest has 4KB base page size, 64 vCPUs and 13GB memory. The guest's
+> memory is backed by 512MB huge pages via hugetlbfs. All the 64 vCPUs
+> are simultaneously trapped into the host due to permission page faults,
+> to request adding the execution permission to the corresponding PMD
+> entry, before the soft-lockup is raised on the host. On handling the
+> parallel requests, the instruction cache for the 512MB huge page is
+> invalidated by mm_ops->icache_inval_pou() in stage2_attr_walker() on
+> 64 hardware CPUs. Unfortunately, the instruction cache invalidation
+> on one CPU interfere with that on another CPU in the hardware level.
+> It takes 37 seconds for mm_ops->icache_inval_pou() to finish in the
+> worst case.
 
->>>
->>> -/* Returns a new packet on success, otherwise returns NULL.
->>> - *
->>> - * If NULL is returned, errp is set to a negative errno.
->>> - */
->>> -static struct sk_buff *
->>> -virtio_transport_alloc_skb(struct virtio_vsock_pkt_info *info,
->>> -               size_t len,
->>> -               u32 src_cid,
->>> -               u32 src_port,
->>> -               u32 dst_cid,
->>> -               u32 dst_port)
->>> -{
->>> -    const size_t skb_len = VIRTIO_VSOCK_SKB_HEADROOM + len;
->>> -    struct virtio_vsock_hdr *hdr;
->>> -    struct sk_buff *skb;
->>> +static bool virtio_transport_can_zcopy(struct virtio_vsock_pkt_info *info,
->>> +                       size_t max_to_send)
->>                                               ^
->> I'd call it `pkt_len`, `max_to_send` is confusing IMHO. I didn't
->> initially if it was the number of buffers or bytes.
->>
->>> +{
->>> +    const struct virtio_transport *t_ops;
->>> +    struct iov_iter *iov_iter;
->>> +
->>> +    if (!info->msg)
->>> +        return false;
->>> +
->>> +    iov_iter = &info->msg->msg_iter;
->>> +
->>> +    if (iov_iter->iov_offset)
->>> +        return false;
->>> +
->>> +    /* We can't send whole iov. */
->>> +    if (iov_iter->count > max_to_send)
->>> +        return false;
->>> +
->>> +    /* Check that transport can send data in zerocopy mode. */
->>> +    t_ops = virtio_transport_get_ops(info->vsk);
->>> +
->>> +    if (t_ops->can_msgzerocopy) {
->>
->> So if `can_msgzerocopy` is not implemented, we always return true after
->> this point. Should we mention it in the .can_msgzerocopy documentation?
->
->Ops, this is my mistake, I must return 'false' in this case. Seems I didn't
->catch this problem with my tests, because there was no test case where
->zerocopy will fallback to copy!
->
->I'll fix it and add new test!
+What really annoys me is that we keep piling all sort of hacks just to
+paper over the fact that this HW is absolutely terrible (cue Russell's
+text replication patches). Why stick so many CPUs in a single system
+if the interconnect is unable to scale?
 
-yep, I agree!
+We already have added non-shareable invalidation to cope with similar
+issues, and this is only adding insult to injury. What does Ampere
+say about this?
 
->
->>
->> Can we also mention in the commit description why this is need only for
->> virtio_tranport and not for vhost and loopback?
->>
->>> +        int pages_in_iov = iov_iter_npages(iov_iter, MAX_SKB_FRAGS);
->>> +        int pages_to_send = min(pages_in_iov, MAX_SKB_FRAGS);
->>> +
->>> +        return t_ops->can_msgzerocopy(pages_to_send);
->>> +    }
->>> +
->>> +    return true;
->>> +}
->>> +
+> 
+> So we can't scale out to handle the permission faults at will.
 
-[...]
+The *HW* cannot scale. Bad HW.
 
->>> @@ -270,6 +395,17 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
->>>             break;
->>>         }
->>>
->>> +        /* This is last skb to send this portion of data. */
->>
->> Sorry I didn't get it :-(
->>
->> Can you elaborate this a bit more?
->
->I mean that we iterate over user's buffer here, allocating skb on each
->iteration. And for last skb for this buffer we initialize completion
->for user (we need to allocate one completion for one syscall).
+> They
+> need to be serialized to some extent with the help of a interval tree,
+> to track IPA ranges, currently under service. For the incoming permission
+> faults, the vCPU is asked to bail for a retry if its IPA range is being
+> served since the vCPU can't proceed its execution.
+> 
+> Fixes: 1577cb5823ce ("KVM: arm64: Handle stage-2 faults in parallel")
+> Cc: stable@vger.kernel.org # v6.2+
 
-Okay, so maybe we should explain better also in the code comment.
->
->Thanks for review, I'll fix all other comments and resend patchset when
->'net-next' will be opened again.
+Please drop these two tags. There is no correctness problem in what
+you describe, only HW that does not scale.
 
-Cool, thanks!
-Stefano
+> Reported-by: Yihuang Yu <yihyu@redhat.com>
+> Reported-by: Zhenyu Zhang <zhenyzha@redhat.com>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
+> ---
+>  arch/arm64/include/asm/kvm_host.h     |  4 ++
+>  arch/arm64/include/asm/kvm_pgtable.h  |  3 +-
+>  arch/arm64/kvm/hyp/nvhe/mem_protect.c |  4 +-
+>  arch/arm64/kvm/hyp/pgtable.c          | 25 +++++++++---
+>  arch/arm64/kvm/mmu.c                  | 55 ++++++++++++++++++++++++++-
+>  5 files changed, 83 insertions(+), 8 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index d3dd05bbfe23..a457720b5caf 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -175,6 +175,10 @@ struct kvm_s2_mmu {
+>  	struct kvm_mmu_memory_cache split_page_cache;
+>  	uint64_t split_page_chunk_size;
+>  
+> +	/* Page fault ranges */
+> +	struct mutex		fault_ranges_mutex;
+> +	struct rb_root_cached	fault_ranges;
+> +
 
+How is that going to work for NV, where we have multiple concurrent
+IPA spaces for the same VM, each with its own stage-2?
+
+And this begs another question: what happens when *another* VM does
+the same thing? If the HW gets wedged by concurrent vcpus in the same
+VM, it may get just as wedged by a concurrent VM...
+
+What happens if the vcpus perform icache invalidation *in the guest*?
+
+>  	struct kvm_arch *arch;
+>  };
+>  
+> diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+> index 929d355eae0a..dca0bf81616f 100644
+> --- a/arch/arm64/include/asm/kvm_pgtable.h
+> +++ b/arch/arm64/include/asm/kvm_pgtable.h
+> @@ -149,7 +149,8 @@ struct kvm_pgtable_mm_ops {
+>  	void*		(*phys_to_virt)(phys_addr_t phys);
+>  	phys_addr_t	(*virt_to_phys)(void *addr);
+>  	void		(*dcache_clean_inval_poc)(void *addr, size_t size);
+> -	void		(*icache_inval_pou)(void *addr, size_t size);
+> +	int		(*icache_inval_pou)(struct kvm_s2_mmu *mmu,
+> +					    void *addr, u64 ipa, size_t size);
+>  };
+>  
+>  /**
+> diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> index 9d703441278b..9bbe7c641770 100644
+> --- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> +++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+> @@ -223,10 +223,12 @@ static void clean_dcache_guest_page(void *va, size_t size)
+>  	hyp_fixmap_unmap();
+>  }
+>  
+> -static void invalidate_icache_guest_page(void *va, size_t size)
+> +static int invalidate_icache_guest_page(struct kvm_s2_mmu *mmu,
+> +					void *va, u64 ipa, size_t size)
+>  {
+>  	__invalidate_icache_guest_page(hyp_fixmap_map(__hyp_pa(va)), size);
+>  	hyp_fixmap_unmap();
+> +	return 0;
+>  }
+>  
+>  int kvm_guest_prepare_stage2(struct pkvm_hyp_vm *vm, void *pgd)
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index f7a93ef29250..fabfdb4d1e00 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -875,6 +875,7 @@ static int stage2_map_walker_try_leaf(const struct kvm_pgtable_visit_ctx *ctx,
+>  	u64 granule = kvm_granule_size(ctx->level);
+>  	struct kvm_pgtable *pgt = data->mmu->pgt;
+>  	struct kvm_pgtable_mm_ops *mm_ops = ctx->mm_ops;
+> +	int ret;
+>  
+>  	if (!stage2_leaf_mapping_allowed(ctx, data))
+>  		return -E2BIG;
+> @@ -903,8 +904,14 @@ static int stage2_map_walker_try_leaf(const struct kvm_pgtable_visit_ctx *ctx,
+>  					       granule);
+>  
+>  	if (!kvm_pgtable_walk_skip_cmo(ctx) && mm_ops->icache_inval_pou &&
+> -	    stage2_pte_executable(new))
+> -		mm_ops->icache_inval_pou(kvm_pte_follow(new, mm_ops), granule);
+> +	    stage2_pte_executable(new)) {
+> +		ret = mm_ops->icache_inval_pou(data->mmu,
+> +					       kvm_pte_follow(new, mm_ops),
+> +					       ALIGN_DOWN(ctx->addr, granule),
+> +					       granule);
+> +		if (ret)
+> +			return ret;
+> +	}
+>  
+>  	stage2_make_pte(ctx, new);
+>  
+> @@ -1101,6 +1108,7 @@ int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size)
+>  }
+>  
+>  struct stage2_attr_data {
+> +	struct kvm_s2_mmu		*mmu;
+>  	kvm_pte_t			attr_set;
+>  	kvm_pte_t			attr_clr;
+>  	kvm_pte_t			pte;
+> @@ -1113,6 +1121,8 @@ static int stage2_attr_walker(const struct kvm_pgtable_visit_ctx *ctx,
+>  	kvm_pte_t pte = ctx->old;
+>  	struct stage2_attr_data *data = ctx->arg;
+>  	struct kvm_pgtable_mm_ops *mm_ops = ctx->mm_ops;
+> +	u64 granule = kvm_granule_size(ctx->level);
+> +	int ret;
+>  
+>  	if (!kvm_pte_valid(ctx->old))
+>  		return -EAGAIN;
+> @@ -1133,9 +1143,13 @@ static int stage2_attr_walker(const struct kvm_pgtable_visit_ctx *ctx,
+>  		 * stage-2 PTE if we are going to add executable permission.
+>  		 */
+>  		if (mm_ops->icache_inval_pou &&
+> -		    stage2_pte_executable(pte) && !stage2_pte_executable(ctx->old))
+> -			mm_ops->icache_inval_pou(kvm_pte_follow(pte, mm_ops),
+> -						  kvm_granule_size(ctx->level));
+> +		    stage2_pte_executable(pte) && !stage2_pte_executable(ctx->old)) {
+> +			ret = mm_ops->icache_inval_pou(data->mmu,
+> +					kvm_pte_follow(pte, mm_ops),
+> +					ALIGN_DOWN(ctx->addr, granule), granule);
+> +			if (ret)
+> +				return ret;
+> +		}
+>  
+>  		if (!stage2_try_set_pte(ctx, pte))
+>  			return -EAGAIN;
+> @@ -1152,6 +1166,7 @@ static int stage2_update_leaf_attrs(struct kvm_pgtable *pgt, u64 addr,
+>  	int ret;
+>  	kvm_pte_t attr_mask = KVM_PTE_LEAF_ATTR_LO | KVM_PTE_LEAF_ATTR_HI;
+>  	struct stage2_attr_data data = {
+> +		.mmu		= pgt->mmu,
+>  		.attr_set	= attr_set & attr_mask,
+>  		.attr_clr	= attr_clr & attr_mask,
+>  	};
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index d3b4feed460c..a778f48beb56 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -267,9 +267,58 @@ static void clean_dcache_guest_page(void *va, size_t size)
+>  	__clean_dcache_guest_page(va, size);
+>  }
+>  
+> -static void invalidate_icache_guest_page(void *va, size_t size)
+> +static struct interval_tree_node *add_fault_range(struct kvm_s2_mmu *mmu,
+> +						  u64 ipa, size_t size)
+>  {
+> +	struct interval_tree_node *node;
+> +	unsigned long start = ipa, end = start + size - 1; /* inclusive */
+
+Maybe just rename 'ipa' to 'start'?
+
+> +
+> +	mutex_lock(&mmu->fault_ranges_mutex);
+
+Don't we hold the rwlock at this at this stage, which actively
+prevents things like taking a mutex? Have you tested this with
+lockdep?
+
+> +
+> +	node = interval_tree_iter_first(&mmu->fault_ranges, start, end);
+> +	if (node) {
+> +		node = NULL;
+> +		goto unlock;
+> +	}
+> +
+> +	node = kzalloc(sizeof(*node), GFP_KERNEL_ACCOUNT);
+> +	if (!node)
+> +		goto unlock;
+
+That's not going to work -- why do you think we avoid all dynamic
+allocation on this path?
+
+> +
+> +	node->start = start;
+> +	node->last = end;
+> +	interval_tree_insert(node, &mmu->fault_ranges);
+> +
+> +unlock:
+> +	mutex_unlock(&mmu->fault_ranges_mutex);
+> +	return node;
+> +}
+> +
+> +static void remove_fault_range(struct kvm_s2_mmu *mmu,
+> +			       struct interval_tree_node *node)
+> +{
+> +	mutex_lock(&mmu->fault_ranges_mutex);
+> +
+> +	interval_tree_remove(node, &mmu->fault_ranges);
+> +	kfree(node);
+> +
+> +	mutex_unlock(&mmu->fault_ranges_mutex);
+> +}
+> +
+> +
+> +static int invalidate_icache_guest_page(struct kvm_s2_mmu *mmu,
+> +					void *va, u64 ipa, size_t size)
+> +{
+> +	struct interval_tree_node *node;
+> +
+> +	node = add_fault_range(mmu, ipa, size);
+> +	if (!node)
+> +		return -EAGAIN;
+> +
+>  	__invalidate_icache_guest_page(va, size);
+> +	remove_fault_range(mmu, node);
+
+Given that we add and remove the node in the same function, why can't
+we allocate the node on the stack instead?
+
+> +
+> +	return 0;
+>  }
+>  
+>  /*
+> @@ -859,6 +908,10 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu, unsigned long t
+>  	mmu->split_page_chunk_size = KVM_ARM_EAGER_SPLIT_CHUNK_SIZE_DEFAULT;
+>  	mmu->split_page_cache.gfp_zero = __GFP_ZERO;
+>  
+> +	/* Initialize the page fault ranges */
+> +	mutex_init(&mmu->fault_ranges_mutex);
+> +	mmu->fault_ranges = RB_ROOT_CACHED;
+> +
+>  	mmu->pgt = pgt;
+>  	mmu->pgd_phys = __pa(pgt->pgd);
+>  	return 0;
+
+I really wonder why we should add this complexity, rather than doing a
+full i-cache invalidation instead. Given what you describe, I don't
+think it would be worse.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
