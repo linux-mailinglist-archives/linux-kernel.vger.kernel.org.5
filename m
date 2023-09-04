@@ -2,131 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ED82791521
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA1679150F
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:51:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347424AbjIDJyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 05:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49674 "EHLO
+        id S1351352AbjIDJv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 05:51:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244654AbjIDJyE (ORCPT
+        with ESMTP id S231742AbjIDJv4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 05:54:04 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9DFDE72;
-        Mon,  4 Sep 2023 02:53:38 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A0E9F1474;
-        Mon,  4 Sep 2023 02:54:16 -0700 (PDT)
-Received: from localhost.localdomain (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3DD7D3F793;
-        Mon,  4 Sep 2023 02:53:35 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     linux-perf-users@vger.kernel.org, irogers@google.com
-Cc:     James Clark <james.clark@arm.com>,
-        John Garry <john.g.garry@oracle.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Jing Zhang <renyu.zj@linux.alibaba.com>,
-        Haixin Yu <yuhaixin.yhx@linux.alibaba.com>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@amd.com>,
-        Yang Jihong <yangjihong1@huawei.com>,
-        Eduard Zingerman <eddyz87@gmail.com>,
-        Madhavan Srinivasan <maddy@linux.ibm.com>,
-        Chen Zhongjin <chenzhongjin@huawei.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 6/7] perf pmus: Simplify perf_pmus__find_core_pmu()
-Date:   Mon,  4 Sep 2023 10:50:48 +0100
-Message-Id: <20230904095104.1162928-7-james.clark@arm.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230904095104.1162928-1-james.clark@arm.com>
-References: <20230904095104.1162928-1-james.clark@arm.com>
+        Mon, 4 Sep 2023 05:51:56 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E5C11D;
+        Mon,  4 Sep 2023 02:51:52 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 57F31B80DDF;
+        Mon,  4 Sep 2023 09:51:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B855FC433C8;
+        Mon,  4 Sep 2023 09:51:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693821110;
+        bh=u+xgETcg23UcZvAsSNoTKQTpoQDzWhh5CjfKLhaLfCA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GrBGNC0GUAEP92SVXDSYgvIeyQhEWu5ohv1UZxcq2j4jmPnZMVKVXd7PcLbrec+YC
+         YwtxwrDnv2HUbxAauD5LP+iZpv1hgd3J7v5N5AFier00fzuLYjkXSyalNCln662qcL
+         MOkKZFmfbFH61oxgNm/1PDUalOPIF/dG8en4lktLAOJKNet2WlaOi4SDB1WMRo8c1E
+         Fx1ryvNUFvNi9qlIPKbaeTXq/1cJbp6vtXGsOglG9wRy2wFIevByTxjIps/B3VRZZs
+         ZTGcqJO6bRRRPVV2zC3wt54/lylE+o7sVECKL3QKI1/oWONjJaYkFRkcM0vOKzehKT
+         ynVVLBmYA4BCQ==
+Date:   Mon, 4 Sep 2023 11:51:40 +0200
+From:   Christian Brauner <brauner@kernel.org>
+To:     Hao Xu <hao.xu@linux.dev>
+Cc:     io-uring@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stefan Roesch <shr@fb.com>, Clay Harris <bugs@claycon.org>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-cachefs@redhat.com,
+        ecryptfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-unionfs@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, codalist@coda.cs.cmu.edu,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        devel@lists.orangefs.org, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, linux-mtd@lists.infradead.org,
+        Wanpeng Li <wanpengli@tencent.com>
+Subject: Re: [PATCH 07/11] vfs: add nowait parameter for file_accessed()
+Message-ID: <20230904-trennen-gewettert-0b2dc5ba60bc@brauner>
+References: <20230827132835.1373581-1-hao.xu@linux.dev>
+ <20230827132835.1373581-8-hao.xu@linux.dev>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20230827132835.1373581-8-hao.xu@linux.dev>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently the while loop always either exits on the first iteration with
-a core PMU, or exits with NULL on heterogeneous systems or when not all
-CPUs are online.
+On Sun, Aug 27, 2023 at 09:28:31PM +0800, Hao Xu wrote:
+> From: Hao Xu <howeyxu@tencent.com>
+> 
+> Add a boolean parameter for file_accessed() to support nowait semantics.
+> Currently it is true only with io_uring as its initial caller.
+> 
+> Signed-off-by: Hao Xu <howeyxu@tencent.com>
+> ---
+>  arch/s390/hypfs/inode.c | 2 +-
+>  block/fops.c            | 2 +-
+>  fs/btrfs/file.c         | 2 +-
+>  fs/btrfs/inode.c        | 2 +-
+>  fs/coda/dir.c           | 4 ++--
+>  fs/ext2/file.c          | 4 ++--
+>  fs/ext4/file.c          | 6 +++---
+>  fs/f2fs/file.c          | 4 ++--
+>  fs/fuse/dax.c           | 2 +-
+>  fs/fuse/file.c          | 4 ++--
+>  fs/gfs2/file.c          | 2 +-
+>  fs/hugetlbfs/inode.c    | 2 +-
+>  fs/nilfs2/file.c        | 2 +-
+>  fs/orangefs/file.c      | 2 +-
+>  fs/orangefs/inode.c     | 2 +-
+>  fs/pipe.c               | 2 +-
+>  fs/ramfs/file-nommu.c   | 2 +-
+>  fs/readdir.c            | 2 +-
+>  fs/smb/client/cifsfs.c  | 2 +-
+>  fs/splice.c             | 2 +-
+>  fs/ubifs/file.c         | 2 +-
+>  fs/udf/file.c           | 2 +-
+>  fs/xfs/xfs_file.c       | 6 +++---
+>  fs/zonefs/file.c        | 4 ++--
+>  include/linux/fs.h      | 5 +++--
+>  mm/filemap.c            | 8 ++++----
+>  mm/shmem.c              | 6 +++---
+>  27 files changed, 43 insertions(+), 42 deletions(-)
+> 
+> diff --git a/arch/s390/hypfs/inode.c b/arch/s390/hypfs/inode.c
+> index ee919bfc8186..55f562027c4f 100644
+> --- a/arch/s390/hypfs/inode.c
+> +++ b/arch/s390/hypfs/inode.c
+> @@ -157,7 +157,7 @@ static ssize_t hypfs_read_iter(struct kiocb *iocb, struct iov_iter *to)
+>  	if (!count)
+>  		return -EFAULT;
+>  	iocb->ki_pos = pos + count;
+> -	file_accessed(file);
+> +	file_accessed(file, false);
 
-Both of the latter behaviors are undesirable for platforms other than
-Arm so simplify it to always return the first core PMU, or NULL if none
-exist.
+Why? If all you do is skip atime update anyway then just add something
+like:
 
-This behavior was depended on by the Arm version of
-pmu_metrics_table__find(), so the logic has been moved there instead.
+bool file_needs_atime(struct file *file)
+{
+       return !(file->f_flags & O_NOATIME) &&
+              atime_needs_update(&file->f_path, d_inode(path->dentry));
+}
 
-Suggested-by: Ian Rogers <irogers@google.com>
-Reviewed-by: Ian Rogers <irogers@google.com>
-Signed-off-by: James Clark <james.clark@arm.com>
----
- tools/perf/arch/arm64/util/pmu.c |  8 +++++++-
- tools/perf/util/pmus.c           | 14 +-------------
- 2 files changed, 8 insertions(+), 14 deletions(-)
+and then
 
-diff --git a/tools/perf/arch/arm64/util/pmu.c b/tools/perf/arch/arm64/util/pmu.c
-index 3d9330feebd2..3099f5f448ba 100644
---- a/tools/perf/arch/arm64/util/pmu.c
-+++ b/tools/perf/arch/arm64/util/pmu.c
-@@ -10,8 +10,14 @@
- 
- const struct pmu_metrics_table *pmu_metrics_table__find(void)
- {
--	struct perf_pmu *pmu = perf_pmus__find_core_pmu();
-+	struct perf_pmu *pmu;
-+
-+	/* Metrics aren't currently supported on heterogeneous Arm systems */
-+	if (perf_pmus__num_core_pmus() > 1)
-+		return NULL;
- 
-+	/* Doesn't matter which one here because they'll all be the same */
-+	pmu = perf_pmus__find_core_pmu();
- 	if (pmu)
- 		return perf_pmu__find_metrics_table(pmu);
- 
-diff --git a/tools/perf/util/pmus.c b/tools/perf/util/pmus.c
-index 032ce57d2b8e..5ae41644ccda 100644
---- a/tools/perf/util/pmus.c
-+++ b/tools/perf/util/pmus.c
-@@ -596,17 +596,5 @@ struct perf_pmu *evsel__find_pmu(const struct evsel *evsel)
- 
- struct perf_pmu *perf_pmus__find_core_pmu(void)
- {
--	struct perf_pmu *pmu = NULL;
--
--	while ((pmu = perf_pmus__scan_core(pmu))) {
--		/*
--		 * The cpumap should cover all CPUs. Otherwise, some CPUs may
--		 * not support some events or have different event IDs.
--		 */
--		if (RC_CHK_ACCESS(pmu->cpus)->nr != cpu__max_cpu().cpu)
--			return NULL;
--
--		return pmu;
--	}
--	return NULL;
-+	return perf_pmus__scan_core(NULL);
- }
--- 
-2.34.1
+if (file_needs_atime(file) && IOURING_WANTS_ASYNC)
+	return -EAGAIN;
 
+instead of touching all this code.
