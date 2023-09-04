@@ -2,58 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D7A7915AF
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:26:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50D2A7915A8
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:23:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237741AbjIDK02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53898 "EHLO
+        id S1349302AbjIDKXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:23:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbjIDK01 (ORCPT
+        with ESMTP id S229460AbjIDKXE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:26:27 -0400
-Received: from m12.mail.163.com (m12.mail.163.com [220.181.12.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45E06E6;
-        Mon,  4 Sep 2023 03:26:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=1uNL0
-        BPTOj1HVeuyaXcl4CbwoDH2iZ/vx7oaKm4Km+o=; b=YrIMSTPtaXjzn821oMoho
-        tCU1ULmdLBu/5HvLXprvBDPxJFsv71WUja4leOXiYFqJCWIPmLKyqb4qknt7NQjG
-        XCYvbA+mg+Ng2CI3ZyR0w/ud+dLONTRcUGYXiqPh7rHgmgMDJrR7OZT/RNJpuoyo
-        eXjpN1zO1L8DofP6Cbldt8=
-Received: from localhost.localdomain (unknown [111.35.184.199])
-        by zwqz-smtp-mta-g1-0 (Coremail) with SMTP id _____wCXywR6sPVkc_CRBA--.63070S4;
-        Mon, 04 Sep 2023 18:25:16 +0800 (CST)
-From:   David Wang <00107082@163.com>
-To:     fw@strlen.de
-Cc:     David Wang <00107082@163.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Subject: [PATCH] samples/bpf: Add sample usage for BPF_PROG_TYPE_NETFILTER
-Date:   Mon,  4 Sep 2023 18:21:28 +0800
-Message-Id: <20230904102128.11476-1-00107082@163.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 4 Sep 2023 06:23:04 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E79B3BD;
+        Mon,  4 Sep 2023 03:23:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693822980;
+        bh=pF47CKJ+Ktbx1cL6qvroO27lm9NOMfXb4lsDb/Pbtj8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=JnvPqdRMKlUNHvJ6yknzoBBDuy9pekNJkDDnUeFpiPuCHhuFFAxz7hwePLY95NCHg
+         Sf4GyO4FbUkTcLedFZs52gKAhRiJX7LobQqnt7nkEC2LDxauvuBO/wFbDumDa4yX/I
+         Pevli+2m79V7hdnaVBx3cgVU5rPyPT1NkswX1LWXilBKF9YEf6NvAkdtkfbnLIHrfj
+         grVF5uPMBk0TGwVaROZy00msW0PREF3V+Ggxhpa2M2ivRc3NZVhONPR31lT8OPo+pu
+         LJMO9fidbbKhLsb8hMJoxLg2FmNdz+MB5uHUudZ1ayYppi78Gv6StCQ6Dq0AuDt1qH
+         E0wSaTqleWtkg==
+Received: from [IPV6:2606:6d00:100:4000:cacb:9855:de1f:ded2] (unknown [IPv6:2606:6d00:100:4000:cacb:9855:de1f:ded2])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RfPpr0y1Rz1N2X;
+        Mon,  4 Sep 2023 06:23:00 -0400 (EDT)
+Message-ID: <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
+Date:   Mon, 4 Sep 2023 06:24:15 -0400
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: _____wCXywR6sPVkc_CRBA--.63070S4
-X-Coremail-Antispam: 1Uf129KBjvJXoW3GrWxJFW3Zry7uFW5KFWkXrb_yoWxWr4rpF
-        WrG345Gr48Xa9xJF95Gr4xCryagws5uF17CF93Gry7ArsrXr9xKa1rKrW0kF45trZrKr4a
-        qFyYkayrCrs7X3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pE8nYDUUUUU=
-X-Originating-IP: [111.35.184.199]
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiTA7gqmI0azHP+AAAsz
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_BL,
-        RCVD_IN_MSPIKE_L4,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] The value may overflow
+Content-Language: en-US
+To:     Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
+        trufanov@swemel.ru, vfh@swemel.ru
+References: <20230904094251.64022-1-arefev@swemel.ru>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <20230904094251.64022-1-arefev@swemel.ru>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,224 +57,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This sample code implements a simple ipv4
-blacklist via the new bpf type BPF_PROG_TYPE_NETFILTER,
-which was introduced in 6.4.
+On 9/4/23 05:42, Denis Arefev wrote:
+> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+> is subject to overflow due to a failure to cast operands to a larger
+> data type before performing arithmetic
 
-The bpf program drops package if destination ip address
-hits a match in the map of type BPF_MAP_TYPE_LPM_TRIE,
+The patch title should identify more precisely its context, e.g.:
 
-The userspace code would load the bpf program,
-attach it to netfilter's FORWARD/OUTPUT hook,
-and then write ip patterns into the bpf map.
+"srcu: Fix srcu_struct node grpmask overflow on 64-bit systems"
 
-Signed-off-by: David Wang <00107082@163.com>
----
- samples/bpf/Makefile                      |  3 +
- samples/bpf/netfilter_ip4_blacklist.bpf.c | 62 +++++++++++++++
- samples/bpf/netfilter_ip4_blacklist.c     | 96 +++++++++++++++++++++++
- 3 files changed, 161 insertions(+)
- create mode 100644 samples/bpf/netfilter_ip4_blacklist.bpf.c
- create mode 100644 samples/bpf/netfilter_ip4_blacklist.c
+Also, as I stated in my reply to the previous version, the patch commit
+message should describe the impact of the bug it fixes.
 
-diff --git a/samples/bpf/Makefile b/samples/bpf/Makefile
-index 4ccf4236031c..ff027ea5ce24 100644
---- a/samples/bpf/Makefile
-+++ b/samples/bpf/Makefile
-@@ -46,6 +46,7 @@ tprogs-y += xdp_fwd
- tprogs-y += task_fd_query
- tprogs-y += ibumad
- tprogs-y += hbm
-+tprogs-y += netfilter_ip4_blacklist
- 
- # Libbpf dependencies
- LIBBPF_SRC = $(TOOLS_PATH)/lib/bpf
-@@ -96,6 +97,7 @@ xdp_fwd-objs := xdp_fwd_user.o
- task_fd_query-objs := task_fd_query_user.o $(TRACE_HELPERS)
- ibumad-objs := ibumad_user.o
- hbm-objs := hbm.o $(CGROUP_HELPERS)
-+netfilter_ip4_blacklist-objs := netfilter_ip4_blacklist.o
- 
- xdp_router_ipv4-objs := xdp_router_ipv4_user.o $(XDP_SAMPLE)
- 
-@@ -149,6 +151,7 @@ always-y += task_fd_query_kern.o
- always-y += ibumad_kern.o
- always-y += hbm_out_kern.o
- always-y += hbm_edt_kern.o
-+always-y += netfilter_ip4_blacklist.bpf.o
- 
- ifeq ($(ARCH), arm)
- # Strip all except -D__LINUX_ARM_ARCH__ option needed to handle linux
-diff --git a/samples/bpf/netfilter_ip4_blacklist.bpf.c b/samples/bpf/netfilter_ip4_blacklist.bpf.c
-new file mode 100644
-index 000000000000..d315d64fda7f
---- /dev/null
-+++ b/samples/bpf/netfilter_ip4_blacklist.bpf.c
-@@ -0,0 +1,62 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include "vmlinux.h"
-+#include <bpf/bpf_helpers.h>
-+
-+
-+#define NF_DROP 0
-+#define NF_ACCEPT 1
-+
-+int bpf_dynptr_from_skb(struct sk_buff *skb,
-+		__u64 flags, struct bpf_dynptr *ptr__uninit) __ksym;
-+void *bpf_dynptr_slice(const struct bpf_dynptr *ptr,
-+		uint32_t offset, void *buffer, uint32_t buffer__sz) __ksym;
-+
-+
-+struct ipv4_lpm_key {
-+	__u32 prefixlen;
-+	__u32 data;
-+};
-+
-+struct {
-+	__uint(type, BPF_MAP_TYPE_LPM_TRIE);
-+	__type(key, struct ipv4_lpm_key);
-+	__type(value, __u32);
-+	__uint(map_flags, BPF_F_NO_PREALLOC);
-+	__uint(max_entries, 200);
-+} ipv4_lpm_map SEC(".maps");
-+
-+
-+SEC("netfilter")
-+int netfilter_ip4block(struct bpf_nf_ctx *ctx)
-+{
-+	struct sk_buff *skb = ctx->skb;
-+	struct bpf_dynptr ptr;
-+	struct iphdr *p, iph = {};
-+	struct ipv4_lpm_key key;
-+	__u32 *pvalue;
-+
-+	if (skb->len <= 20 || bpf_dynptr_from_skb(skb, 0, &ptr))
-+		return NF_ACCEPT;
-+	p = bpf_dynptr_slice(&ptr, 0, &iph, sizeof(iph));
-+	if (!p)
-+		return NF_ACCEPT;
-+
-+	/* ip4 only */
-+	if (p->version != 4)
-+		return NF_ACCEPT;
-+
-+	/* search p->daddr in trie */
-+	key.prefixlen = 32;
-+	key.data = p->daddr;
-+	pvalue = bpf_map_lookup_elem(&ipv4_lpm_map, &key);
-+	if (pvalue) {
-+		/* cat /sys/kernel/debug/tracing/trace_pipe */
-+		bpf_printk("rule matched with %d...\n", *pvalue);
-+		return NF_DROP;
-+	}
-+	return NF_ACCEPT;
-+}
-+
-+char _license[] SEC("license") = "GPL";
-+
-diff --git a/samples/bpf/netfilter_ip4_blacklist.c b/samples/bpf/netfilter_ip4_blacklist.c
-new file mode 100644
-index 000000000000..bb7b26e5e06d
---- /dev/null
-+++ b/samples/bpf/netfilter_ip4_blacklist.c
-@@ -0,0 +1,96 @@
-+// SPDX-License-Identifier: GPL-2.0
-+
-+#include <stdio.h>
-+#include <unistd.h>
-+#include <asm/unistd.h>
-+#include <bpf/libbpf.h>
-+#include <bpf/bpf.h>
-+#include <linux/netfilter.h>
-+
-+
-+static inline int sys_bpf(enum bpf_cmd cmd, union bpf_attr *attr, unsigned int size)
-+{
-+	return syscall(__NR_bpf, cmd, attr, size);
-+}
-+struct ipv4_lpm_key {
-+	__u32 prefixlen;
-+	__u32 data;
-+};
-+
-+int main(int argc, char **argv)
-+{
-+	int prog_fd, map_fd;
-+	int err;
-+	struct bpf_object *obj;
-+	struct bpf_program *prog;
-+	union bpf_attr attr = { };
-+
-+	obj = bpf_object__open_file("./netfilter_ip4_blacklist.bpf.o", NULL);
-+	if (libbpf_get_error(obj)) {
-+		printf("fail to open bpf file\n");
-+		return 1;
-+	}
-+	prog = bpf_object__find_program_by_name(obj, "netfilter_ip4block");
-+	if (!prog) {
-+		printf("fail to find bpf program\n");
-+		return 1;
-+	}
-+	bpf_program__set_type(prog, BPF_PROG_TYPE_NETFILTER);
-+	if (bpf_object__load(obj)) {
-+		printf("loading BPF object file failed\n");
-+		return 1;
-+	}
-+	map_fd = bpf_object__find_map_fd_by_name(obj, "ipv4_lpm_map");
-+	if (map_fd < 0) {
-+		printf("Fail to locate trie ipv4_lpm_map\n");
-+		return 1;
-+	}
-+	/* attach to netfilter forward handler */
-+	prog_fd = bpf_program__fd(prog);
-+	attr.link_create.prog_fd = prog_fd;
-+	attr.link_create.attach_type = BPF_NETFILTER;
-+	attr.link_create.netfilter.pf = NFPROTO_IPV4;
-+	attr.link_create.netfilter.hooknum = NF_INET_FORWARD;
-+	attr.link_create.netfilter.priority = -128;
-+	err = sys_bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
-+	if (err < 0) {
-+		perror("Fail to link bpf program to netfilter forward hook\n");
-+		return 1;
-+	}
-+	/* attach to netfilter output handler */
-+	attr.link_create.netfilter.hooknum = NF_INET_LOCAL_OUT;
-+	err = sys_bpf(BPF_LINK_CREATE, &attr, sizeof(attr));
-+	if (err < 0) {
-+		perror("Fail to link bpf program to netfilter output hook\n");
-+		return 1;
-+	}
-+	printf("bpf program/map loaded....\n");
-+	/* add rules */
-+	{
-+		struct ipv4_lpm_key key;
-+		__u32 value = 0;
-+		__u8 *p = (__u8 *) &key.data;
-+		/* block 192.168.11.107/32 */
-+		key.prefixlen = 32;
-+		/* same as key.data = 0x6B0BA8C0; on a little-endian machine */
-+		p[0] = 192;
-+		p[1] = 168;
-+		p[2] = 11;
-+		p[3] = 107;
-+		bpf_map_update_elem(map_fd, &key, &value, BPF_ANY);
-+		/* block 192.168.11.107/24 */
-+		key.prefixlen = 24;
-+		value++;
-+		bpf_map_update_elem(map_fd, &key, &value, BPF_ANY);
-+		/* block 192.168.11.107/27 */
-+		key.prefixlen = 27;
-+		value++;
-+		bpf_map_update_elem(map_fd, &key, &value, BPF_ANY);
-+		/* remove rule */
-+		/* bpf_map_delete_elem(map_fd, &key); */
-+		printf("rules inserted, ready to work\n");
-+	}
-+	while (1)
-+		sleep(600);
-+	return 0;
-+}
+Thanks,
+
+Mathieu
+
+
+> 
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> 
+> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> ---
+> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>   kernel/rcu/srcutree.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> index 20d7a238d675..6c18e6005ae1 100644
+> --- a/kernel/rcu/srcutree.c
+> +++ b/kernel/rcu/srcutree.c
+> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+>   				snp->grplo = cpu;
+>   			snp->grphi = cpu;
+>   		}
+> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+>   	}
+>   	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+>   	return true;
+> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
+>   	int cpu;
+>   
+>   	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+> -		if (!(mask & (1 << (cpu - snp->grplo))))
+> +		if (!(mask & (1UL << (cpu - snp->grplo))))
+>   			continue;
+>   		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+>   	}
+
 -- 
-2.20.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
