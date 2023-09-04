@@ -2,159 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F967917A1
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:55:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1ED77917A5
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 14:56:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350977AbjIDMzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 08:55:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52520 "EHLO
+        id S1351276AbjIDM4t convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 4 Sep 2023 08:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239018AbjIDMzI (ORCPT
+        with ESMTP id S238314AbjIDM4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 08:55:08 -0400
-Received: from mail-pj1-f77.google.com (mail-pj1-f77.google.com [209.85.216.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36751AD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 05:55:04 -0700 (PDT)
-Received: by mail-pj1-f77.google.com with SMTP id 98e67ed59e1d1-26d1ec91c8aso1478914a91.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 05:55:04 -0700 (PDT)
+        Mon, 4 Sep 2023 08:56:48 -0400
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3683189;
+        Mon,  4 Sep 2023 05:56:44 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-56cae50792fso93892eaf.1;
+        Mon, 04 Sep 2023 05:56:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693832104; x=1694436904;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mSFcZeG/HAdd7KkdAhnr1McNOW5cat4hY9kHmNWPcQs=;
-        b=YtlWpsrA8rVaWWTEC0NDUx4EDftad8vcfSnCBHt1+IirBZxD4QJPYLasNjUljSJHGS
-         GT4Hdcwqo8YLAWehdFTILckuyueqIkah0S7BY85wZ1XGtr5h7hDWdS+CUaG0KbkDi2Jh
-         XisCzA8+9go82rhpol/vG8XbrxpdmRR520rAFyHpabQB682gjeKVldDLeUewJLrsB8Lf
-         tyMZPPZRXhzPA9yqSvX8gPwS6IzH3VlpBI2qcgcDB6HGX0qbGoqi+eeOQf8ejIoZJHc4
-         oPq6NLpLy5SRrk+vtarnXQOzuKj0mqcv9wb4EBu7A0RpoWP5+BA6I9F4ICgxbgt458Ud
-         EGHA==
-X-Gm-Message-State: AOJu0YwO980ZHfXDPbhcSDsn/rgS8Rc7GVeAwtw4okV4Fw0S6ndoMzAz
-        HV5x2JamC9GQGV5/6jI3ot4DMvbZxfymRjPtmbXOswE6TcBv
-X-Google-Smtp-Source: AGHT+IEx2LAnq8FHlS02J/o9Kd6xLAgz2C8d3276StNqbNT0Ni6/XFKrjMGgJm2SridOqCwlyNieo/OkKhS5FQylK6INwyzkHfC9
+        d=1e100.net; s=20221208; t=1693832204; x=1694437004;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nwUNZ8XDJgKW0fZT9OLuV5qQA3P+QbavqZqYpV+ByCE=;
+        b=YIJn3FaIk95P9OYzmhmd5n0zafiKLjZp5OTzjPtpNipgQpmREQUKGnHjWMwmAznwE3
+         3FbTBt4Ut456kQvdJ5BPbLPexsE/Hw/5CHixJP/sYWmUi+IyC7gtRQJUkxk9sqT6WWlR
+         jCE+k0m0PAWxhAh3T8tC7IqJPEmv+XomE3CnVg1SDx3RdmOvX8sA+7deMvv+Ir7Ikx0g
+         hYIX8ZimcTZoRyAzaICWdvwuyG1dSx8DztGOqdCyn7aYl0u8yKhQmFeiSm9hAbYX6Ff4
+         qKZ0wxGrC0Gqi+gg/2gGLrFX+2RQob/KlMzmJ24ooibAMbrWFu99f10djvSCcBN+TRQ3
+         mfwg==
+X-Gm-Message-State: AOJu0Yy8A8zq6OSZvnsTZGCDukW74uoTqig1qTcHyMQQ5gxHSqKGR//D
+        yW0/vs0KHpXctL2zClNxobVKFhjqddAev2i6X6Q=
+X-Google-Smtp-Source: AGHT+IFcx7uOzoUx0fgNk7l/l3nThQI9qNWuhiaDPOyqHVx3f3WoRSPr0B7twGtcmzQQGk5MeIAFd9IufqngKNXKgT0=
+X-Received: by 2002:a4a:d508:0:b0:56e:6532:467a with SMTP id
+ m8-20020a4ad508000000b0056e6532467amr7723021oos.1.1693832204003; Mon, 04 Sep
+ 2023 05:56:44 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:1d2:b0:1b8:ecd:cb7f with SMTP id
- e18-20020a17090301d200b001b80ecdcb7fmr3510890plh.9.1693832104492; Mon, 04 Sep
- 2023 05:55:04 -0700 (PDT)
-Date:   Mon, 04 Sep 2023 05:55:04 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e5c8af0604880492@google.com>
-Subject: [syzbot] [net?] KASAN: global-out-of-bounds Read in
- macvlan_hard_header (4)
-From:   syzbot <syzbot+ae8588da4b5f2e5531d2@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        pabeni@redhat.com, syzkaller-bugs@googlegroups.com
+References: <1870450.tdWV9SEqCh@kreacher> <8272147.T7Z3S40VBb@kreacher>
+In-Reply-To: <8272147.T7Z3S40VBb@kreacher>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Mon, 4 Sep 2023 14:56:33 +0200
+Message-ID: <CAJZ5v0h_0xe6L_ASBfcxktXbHD_0HWAVyAWKfgQ2nTkzsRzapA@mail.gmail.com>
+Subject: Re: [PATCH v1 3/4] thermal: Use thermal_tripless_zone_device_register()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Sebastian Reichel <sre@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Aug 30, 2023 at 8:36 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+>
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+>
+> All of the remaining callers of thermal_zone_device_register()
+> can use thermal_tripless_zone_device_register(), so make them
+> do so in order to allow the former to be dropped.
+>
+> No intentional functional impact.
+>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-syzbot found the following issue on:
+Due to the lack of negative feedback, I'm going to assume that this
+patch in particular and the entire series in general is fine with
+everyone in the CC.
 
-HEAD commit:    27e462c8fad4 Merge tag 'xtensa-20230523' of https://github..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10961ec5280000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=927d4df6d674370e
-dashboard link: https://syzkaller.appspot.com/bug?extid=ae8588da4b5f2e5531d2
-compiler:       gcc (Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 2.35.2
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/8cc4e9023e9b/disk-27e462c8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0fae37d588a6/vmlinux-27e462c8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d99575c59a4d/bzImage-27e462c8.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ae8588da4b5f2e5531d2@syzkaller.appspotmail.com
-
-IPv6: ADDRCONF(NETDEV_CHANGE): team1: link becomes ready
-==================================================================
-BUG: KASAN: global-out-of-bounds in dev_hard_header include/linux/netdevice.h:3134 [inline]
-BUG: KASAN: global-out-of-bounds in macvlan_hard_header+0x12f/0x160 drivers/net/macvlan.c:603
-Read of size 8 at addr ffffffff90154998 by task kworker/1:0/21074
-
-CPU: 1 PID: 21074 Comm: kworker/1:0 Not tainted 6.4.0-rc3-syzkaller-00015-g27e462c8fad4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 04/28/2023
-Workqueue: mld mld_ifc_work
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x150 lib/dump_stack.c:106
- print_address_description.constprop.0+0x2c/0x3c0 mm/kasan/report.c:351
- print_report mm/kasan/report.c:462 [inline]
- kasan_report+0x11c/0x130 mm/kasan/report.c:572
- dev_hard_header include/linux/netdevice.h:3134 [inline]
- macvlan_hard_header+0x12f/0x160 drivers/net/macvlan.c:603
- dev_hard_header include/linux/netdevice.h:3137 [inline]
- neigh_resolve_output net/core/neighbour.c:1547 [inline]
- neigh_resolve_output+0x4b7/0x870 net/core/neighbour.c:1532
- neigh_output include/net/neighbour.h:544 [inline]
- ip6_finish_output2+0x55a/0x1560 net/ipv6/ip6_output.c:134
- __ip6_finish_output net/ipv6/ip6_output.c:195 [inline]
- ip6_finish_output+0x69a/0x1170 net/ipv6/ip6_output.c:206
- NF_HOOK_COND include/linux/netfilter.h:292 [inline]
- ip6_output+0x1f1/0x540 net/ipv6/ip6_output.c:227
- dst_output include/net/dst.h:458 [inline]
- NF_HOOK include/linux/netfilter.h:303 [inline]
- NF_HOOK include/linux/netfilter.h:297 [inline]
- mld_sendpack+0xa09/0xed0 net/ipv6/mcast.c:1820
- mld_send_cr net/ipv6/mcast.c:2121 [inline]
- mld_ifc_work+0x73c/0xe20 net/ipv6/mcast.c:2653
- process_one_work+0x99a/0x15e0 kernel/workqueue.c:2405
- worker_thread+0x67d/0x10c0 kernel/workqueue.c:2552
- kthread+0x344/0x440 kernel/kthread.c:379
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
- </TASK>
-
-The buggy address belongs to the variable:
- nr_zapped_lock_chains+0x18/0x40
-
-The buggy address belongs to the physical page:
-page:ffffea0000405500 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10154
-flags: 0xfff00000001000(reserved|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000001000 ffffea0000405508 ffffea0000405508 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner info is not present (never set?)
-
-Memory state around the buggy address:
- ffffffff90154880: 00 00 00 00 f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9
- ffffffff90154900: 04 f9 f9 f9 f9 f9 f9 f9 04 f9 f9 f9 f9 f9 f9 f9
->ffffffff90154980: 00 f9 f9 f9 f9 f9 f9 f9 00 00 00 00 00 00 00 00
-                            ^
- ffffffff90154a00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffffff90154a80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>  drivers/power/supply/power_supply_core.c                |    4 ++--
+>  drivers/thermal/armada_thermal.c                        |    5 +++--
+>  drivers/thermal/dove_thermal.c                          |    4 ++--
+>  drivers/thermal/intel/int340x_thermal/int3400_thermal.c |    6 +++---
+>  drivers/thermal/kirkwood_thermal.c                      |    4 ++--
+>  drivers/thermal/spear_thermal.c                         |    4 ++--
+>  6 files changed, 14 insertions(+), 13 deletions(-)
+>
+> Index: linux-pm/drivers/power/supply/power_supply_core.c
+> ===================================================================
+> --- linux-pm.orig/drivers/power/supply/power_supply_core.c
+> +++ linux-pm/drivers/power/supply/power_supply_core.c
+> @@ -1305,8 +1305,8 @@ static int psy_register_thermal(struct p
+>
+>         /* Register battery zone device psy reports temperature */
+>         if (psy_has_property(psy->desc, POWER_SUPPLY_PROP_TEMP)) {
+> -               psy->tzd = thermal_zone_device_register(psy->desc->name,
+> -                               0, 0, psy, &psy_tzd_ops, NULL, 0, 0);
+> +               psy->tzd = thermal_tripless_zone_device_register(psy->desc->name,
+> +                               psy, &psy_tzd_ops, NULL);
+>                 if (IS_ERR(psy->tzd))
+>                         return PTR_ERR(psy->tzd);
+>                 ret = thermal_zone_device_enable(psy->tzd);
+> Index: linux-pm/drivers/thermal/armada_thermal.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/armada_thermal.c
+> +++ linux-pm/drivers/thermal/armada_thermal.c
+> @@ -876,8 +876,9 @@ static int armada_thermal_probe(struct p
+>                 /* Wait the sensors to be valid */
+>                 armada_wait_sensor_validity(priv);
+>
+> -               tz = thermal_zone_device_register(priv->zone_name, 0, 0, priv,
+> -                                                 &legacy_ops, NULL, 0, 0);
+> +               tz = thermal_tripless_zone_device_register(priv->zone_name,
+> +                                                          priv, &legacy_ops,
+> +                                                          NULL);
+>                 if (IS_ERR(tz)) {
+>                         dev_err(&pdev->dev,
+>                                 "Failed to register thermal zone device\n");
+> Index: linux-pm/drivers/thermal/dove_thermal.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/dove_thermal.c
+> +++ linux-pm/drivers/thermal/dove_thermal.c
+> @@ -139,8 +139,8 @@ static int dove_thermal_probe(struct pla
+>                 return ret;
+>         }
+>
+> -       thermal = thermal_zone_device_register("dove_thermal", 0, 0,
+> -                                              priv, &ops, NULL, 0, 0);
+> +       thermal = thermal_tripless_zone_device_register("dove_thermal", priv,
+> +                                                       &ops, NULL);
+>         if (IS_ERR(thermal)) {
+>                 dev_err(&pdev->dev,
+>                         "Failed to register thermal zone device\n");
+> Index: linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> +++ linux-pm/drivers/thermal/intel/int340x_thermal/int3400_thermal.c
+> @@ -609,9 +609,9 @@ static int int3400_thermal_probe(struct
+>
+>         evaluate_odvp(priv);
+>
+> -       priv->thermal = thermal_zone_device_register("INT3400 Thermal", 0, 0,
+> -                                               priv, &int3400_thermal_ops,
+> -                                               &int3400_thermal_params, 0, 0);
+> +       priv->thermal = thermal_tripless_zone_device_register("INT3400 Thermal", priv,
+> +                                                             &int3400_thermal_ops,
+> +                                                             &int3400_thermal_params);
+>         if (IS_ERR(priv->thermal)) {
+>                 result = PTR_ERR(priv->thermal);
+>                 goto free_art_trt;
+> Index: linux-pm/drivers/thermal/kirkwood_thermal.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/kirkwood_thermal.c
+> +++ linux-pm/drivers/thermal/kirkwood_thermal.c
+> @@ -71,8 +71,8 @@ static int kirkwood_thermal_probe(struct
+>         if (IS_ERR(priv->sensor))
+>                 return PTR_ERR(priv->sensor);
+>
+> -       thermal = thermal_zone_device_register("kirkwood_thermal", 0, 0,
+> -                                              priv, &ops, NULL, 0, 0);
+> +       thermal = thermal_tripless_zone_device_register("kirkwood_thermal",
+> +                                                       priv, &ops, NULL);
+>         if (IS_ERR(thermal)) {
+>                 dev_err(&pdev->dev,
+>                         "Failed to register thermal zone device\n");
+> Index: linux-pm/drivers/thermal/spear_thermal.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/spear_thermal.c
+> +++ linux-pm/drivers/thermal/spear_thermal.c
+> @@ -122,8 +122,8 @@ static int spear_thermal_probe(struct pl
+>         stdev->flags = val;
+>         writel_relaxed(stdev->flags, stdev->thermal_base);
+>
+> -       spear_thermal = thermal_zone_device_register("spear_thermal", 0, 0,
+> -                               stdev, &ops, NULL, 0, 0);
+> +       spear_thermal = thermal_tripless_zone_device_register("spear_thermal",
+> +                                                             stdev, &ops, NULL);
+>         if (IS_ERR(spear_thermal)) {
+>                 dev_err(&pdev->dev, "thermal zone device is NULL\n");
+>                 ret = PTR_ERR(spear_thermal);
+>
+>
+>
