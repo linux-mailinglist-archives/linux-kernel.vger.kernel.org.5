@@ -2,123 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B776791912
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AE76791916
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:48:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345511AbjIDNqU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:46:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37304 "EHLO
+        id S242267AbjIDNsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343833AbjIDNqS (ORCPT
+        with ESMTP id S234122AbjIDNsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:46:18 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD80CC4
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 06:46:14 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51e28cac164so4947247a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 06:46:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1693835173; x=1694439973; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MvFpohTVYIZg5zZrtXqASIgY84rg/Ko8jDcHzB0T9Sk=;
-        b=AGWgoqtOgAoGQ9YM2Q8tVG78Z0ckLz16CVxzS5E+VvbkH5aA4dGWTfytqMvSL6/Q5S
-         HGELQoRTgrfYrAJ4fQTF7Azzp2SLGWV+NyXDQV2STuEYJ7CIpknDZiskukv/IiPzufsD
-         1uKzAIc/J8674rZdIhyv2YWD6FkexdKXgQ/PPO6P5efqlmzuhoyjcLtZ0ebz0aK0vuHY
-         +rVBqjZwlYmK14s46dxuFEQH+iDtqkL0Y4yAzT2fVHNqxHpsQqWtxCuJaF1FUugdtB6U
-         yWQVb14ItOs62DOuTPIstV7WmyzuiqJoIhDgizy6tYoAzQs+9Va83LRSYNxNH8pM/U2B
-         MTWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693835173; x=1694439973;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MvFpohTVYIZg5zZrtXqASIgY84rg/Ko8jDcHzB0T9Sk=;
-        b=EbGOapv6Jgpq4elPiYFoUbwdvJioxEjR5ZkGrjqJcTHyDilOQ6R7Rpsdz1L7SLfkjM
-         D7KmCPwjBXMyTAglJHgnhWUSXt0ZoNAZ+X1jGFQ3BeyC9grKm3GkiF8ZFIwjjA1pOCHE
-         PoR9EdyQV3KOU+09cjsvLqBZmkZG/F+KQ2INtsy1Yzxfc/eaDKYsY4UwnbYtWuyfrOPk
-         X4Vy3uNQsRIrBhkjMKzMwQ3f8bhZKbdqxk+SVqXJTcFcgQNSqlQsCbGr5Y9lu10ZJJoi
-         0bdsC4B54JZ1PYFuFW6n8nNiwhaTnr19yU6uqhvJ3k1wx4DnLs58Ts/8aoPNdkFD7JI0
-         Glww==
-X-Gm-Message-State: AOJu0YzdfhlDt+BbSkdaaEmjI/KLx4rHQ+JwinIYXAa1+9GG3/SUQjeY
-        THf3wAUZNcntUNv+R6BJSVco5g==
-X-Google-Smtp-Source: AGHT+IEdZjuBxG+ZQHNKrQOJiw6f0psWqsTfKbwqOJ2nIP8Um69rD+e7ovBSZFqMEfeYtMk2y26GEQ==
-X-Received: by 2002:a17:906:51c5:b0:99c:5056:4e31 with SMTP id v5-20020a17090651c500b0099c50564e31mr10901921ejk.15.1693835172485;
-        Mon, 04 Sep 2023 06:46:12 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id l18-20020a1709066b9200b009930308425csm6163942ejr.31.2023.09.04.06.46.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 06:46:12 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 15:46:11 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <haibo1.xu@intel.com>
-Cc:     xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>, wchen <waylingii@gmail.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Peter Gonda <pgonda@google.com>,
-        Thomas Huth <thuth@redhat.com>, Like Xu <likexu@tencent.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 5/8] KVM: riscv: selftests: Add exception handling
- support
-Message-ID: <20230904-c4d2ea8fcfdea6e6722332b2@orel>
-References: <cover.1693659382.git.haibo1.xu@intel.com>
- <ff41e98a062e0fbb5c2d8dc26d9e4e02c4ce3ea8.1693659382.git.haibo1.xu@intel.com>
+        Mon, 4 Sep 2023 09:48:10 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C7B9E
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 06:48:07 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 384DiTQB024253;
+        Mon, 4 Sep 2023 08:47:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        PODMain02222019; bh=9lo+H9wIA0QecRCLjQGWgsacOvhyB7kUZKO0cOScbL4=; b=
+        Wux5zVK9I6ysDTldkw439DZ7iuIxeZsjuqzuRQS+57uqzx7XMNyfiXf7OHZkcAZ9
+        ROHzys19LxwRtld+luyTyX6FcujLO6vh1ywONFeXH0PYHK2jh5ktrIFg6OpIHSJQ
+        nBWuUal7hP0QQYl7S9Eyuw2UokZzlc3q8N6WTrja7JI2QIGzW3UBuDWW2HfgO6Vz
+        8nC6IMO5Jx5R8TqcBzrHhxoKPre2OOurKQAWog5B6cxZaJoO08vgCfTyIv7Jc/CH
+        OwGOCLGun/IkRyvNzgbUnjbLbB2G6RvybZgGGm8tyW9GTU7nnU5wmvcdtWc5qeXq
+        JdpNVcBuJ4vfOtO/Xd24zw==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sv1fhsxxx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 08:47:51 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 4 Sep
+ 2023 14:47:49 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Mon, 4 Sep 2023 14:47:49 +0100
+Received: from [198.61.65.243] (LONN2DGDQ73.ad.cirrus.com [198.61.65.243])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 86A70B06;
+        Mon,  4 Sep 2023 13:47:49 +0000 (UTC)
+Message-ID: <0dc89771-07d5-6a3a-3ca6-7b99cf53ab98@opensource.cirrus.com>
+Date:   Mon, 4 Sep 2023 14:47:49 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ff41e98a062e0fbb5c2d8dc26d9e4e02c4ce3ea8.1693659382.git.haibo1.xu@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v1] ALSA: hda: cs35l41: Support mute notifications for
+ CS35L41 HDA
+To:     Takashi Iwai <tiwai@suse.de>
+CC:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+References: <20230825120525.1337417-1-sbinding@opensource.cirrus.com>
+ <87edjr7218.wl-tiwai@suse.de>
+ <32a62c2f-5000-132c-255c-8ccd135ba60f@opensource.cirrus.com>
+ <87h6oisz9c.wl-tiwai@suse.de>
+ <71808adb-bf54-a34b-5a63-70d454e3d426@opensource.cirrus.com>
+ <87zg22jf53.wl-tiwai@suse.de>
+From:   Stefan Binding <sbinding@opensource.cirrus.com>
+In-Reply-To: <87zg22jf53.wl-tiwai@suse.de>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-ORIG-GUID: umK4einIf2IGBY1d8zKE3lvG83gXAtp7
+X-Proofpoint-GUID: umK4einIf2IGBY1d8zKE3lvG83gXAtp7
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 02, 2023 at 08:59:27PM +0800, Haibo Xu wrote:
-> Add the infrastructure for guest exception handling in riscv selftests.
-> Customized handlers can be enabled by vm_install_exception_handler(vector)
-> or vm_install_interrupt_handler().
-> 
-> The code is inspired from that of x86/arm64.
-> 
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../selftests/kvm/include/riscv/processor.h   |  43 ++++++++
->  .../selftests/kvm/lib/riscv/handlers.S        | 101 ++++++++++++++++++
->  .../selftests/kvm/lib/riscv/processor.c       |  69 ++++++++++++
->  4 files changed, 214 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/lib/riscv/handlers.S
->
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+On 04/09/2023 13:29, Takashi Iwai wrote:
+> On Mon, 04 Sep 2023 14:00:20 +0200,
+> Stefan Binding wrote:
+>>
+>> On 29/08/2023 15:23, Takashi Iwai wrote:
+>>> On Tue, 29 Aug 2023 16:18:12 +0200,
+>>> Stefan Binding wrote:
+>>>> On 25/08/2023 13:13, Takashi Iwai wrote:
+>>>>> On Fri, 25 Aug 2023 14:05:25 +0200,
+>>>>> Stefan Binding wrote:
+>>>>>> From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+>>>>>>
+>>>>>> Some laptops require a hardware based mute system, where when a hotkey
+>>>>>> is pressed, it forces the amp to be muted.
+>>>>>>
+>>>>>> For CS35L41, when the hotkey is pressed, an acpi notification is sent
+>>>>>> to the CS35L41 Device Node. The driver needs to handle this notification
+>>>>>> and call a _DSM function to retrieve the mute state.
+>>>>>>
+>>>>>> Since the amp is only muted during playback, the driver will only mute
+>>>>>> or unmute if playback is occurring, otherwise it will save the mute
+>>>>>> state for when playback starts.
+>>>>>>
+>>>>>> Only one handler can be registered for the acpi notification, but all
+>>>>>> amps need to receive that notification, we can register a single handler
+>>>>>> inside the Realtek HDA driver, so that it can then notify through the
+>>>>>> component framework.
+>>>>>>
+>>>>>> Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+>>>>>> Signed-off-by: Stefan Binding <sbinding@opensource.cirrus.com>
+>>>>> We don't do normally in this way.  The ACPI hot key handling is done
+>>>>> via user-space, and user-space daemon triggers the mute of the
+>>>>> system.
+>>>>>
+>>>>> Can't the ACPI notify the key event on those machines?
+>>>> This feature is not the "normal" mute button on a keyboard, it is a
+>>>> custom request
+>>>> from a manufacturer which only mutes the audio on the speakers.
+>>>> On previous generations, this was achieved using a GPIO controlled by
+>>>> the BIOS/EC.
+>>>> However, since CS35L41 does not have such GPIO, we must control it by
+>>>> other means.
+>>>>
+>>>> Our solution, which we have to share with the Windows driver, it to use ACPI
+>>>> notifications to tell the driver to mute the amps when the shortcut is
+>>>> pressed.
+>>>>
+>>>> Does this seem like a valid exception to the typical approach?
+>>> It's still the question whether we have to do this inevitably in the
+>>> kernel in a way like that.  It sounds quite unusual.  Why this must be
+>>> handled directly?  IOW, what's the difference from the "normal" mute
+>>> button?
+>>>
+>>> And, even if we take this approach, it leaves the device muted without
+>>> exposing it to user-space.  Then user wouldn't know what happens.
+>>>
+>>>
+>>> thanks,
+>>>
+>>> Takashi
+>> We spoke to the ODM for this system to get a more detailed explanation
+>> of this feature.
+>> The keyboard shortcut enables something called "Unobtrusive
+>> Mode". According to their explanation:
+>>
+>> - Unobtrusive mode is distinct to normal mute, as it only mutes the speakers
+>> - There is no requirement to update the volume controls, as the screen
+>> backlight will be off anyway in this mode
+>> - All other unobtrusive mode functions are enabled without user-space
+>> dependencies, and they would prefer not to make speaker mute an
+>> exception
+> Thanks, it gives a bit better clue.
+> The remaining question is rather the exact behavior of this
+> "unobtrusive mode".  How is it triggered, and what's the exact
+> expectation?  e.g. It must secretly mute the speaker?  That is, it
+> must not  expose the mixer state change to user-space?  Or is it tied
+> with the normal mixer state and user may unmute again?
+>
+>
+> Takashi
+ From what we understand, unobtrusive mode, which is activated by a 
+keyboard shortcut (not a single key), performs several operations, such as:
+- muting the speaker (headphones remain unmuted)
+- dimming/shutting down the LCD backlight
+- turning off keyboard backlight and any keyboard LEDs
+Apart from muting the speaker, all of these operations are done in 
+hardware, as the keyboard shortcut still works in the BIOS.
+Previous laptops with this feature appear to use a GPIO to mute the 
+speaker, and we are informed that on those laptops userspace was not 
+informed of the mute.
+Since CS35L41 does not have a GPIO mute, we had to use a different 
+solution, involving ACPI notifications, which request the driver to mute.
+The same mechanism is used in Windows.
+Our understanding is that it is not intended for the mute to be 
+overridden by userspace.
+Similarly, on previous laptops, userspace could not override this mute, 
+since it was not informed of it.
+
+Thanks,
+Stefan
