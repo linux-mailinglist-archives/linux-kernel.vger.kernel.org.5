@@ -2,169 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC23791331
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C387791334
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:21:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352525AbjIDIT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 04:19:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38972 "EHLO
+        id S237259AbjIDIVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 04:21:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234006AbjIDITz (ORCPT
+        with ESMTP id S230273AbjIDIVQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 04:19:55 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF96106
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 01:19:51 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a1de3417acso441699566b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 01:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1693815590; x=1694420390; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4SqCPlUACmzuR897Jw/2/k1NSEPnLNm8tSMQQYrDWME=;
-        b=sCURjlIECG75NChDPAFgJtYUliKIkBlB5lHdZQsZ03Nz7U91Yl93d2PkC76eTQNQk/
-         y0slJPkhPVfgWNEAicJ2mbdQB0OnQhmscuPWuv5ky5okEf7xFID7n7oroxJrHDZBO0sq
-         3FsW5kDCZHGOb/9qkERTek0aJxrchdLiTtpNQL3rvxN9b9O2xGfZePu1+Jc6RufwuLlR
-         DbA1aI0VzXXBXSQjBtLWvcSjhj7kDTNZFpHDoGX2YKkyIs43Wxps+LCXh7azfN0k0Zqr
-         qHNbnaC0hiDziup3gy7Oq38fzCrnTcnC7TJyESBQxbhLMtqlj7Kj0IJPDvwzP2V4Ly4B
-         n45w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693815590; x=1694420390;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4SqCPlUACmzuR897Jw/2/k1NSEPnLNm8tSMQQYrDWME=;
-        b=HMq2ivc+gKvXtuxE6rB2toAr5A8X6YH1CJHHT7/EUsrvvWZgOHjwTEPUo+0E7DiEHs
-         psf7+RSZ6RhhTUbCOsEUFDedZkEL/B853wyWyFR3ivJ5NsrKIED2+dLG1qkVB609mr3X
-         Cw5B585T4vRMPczOY6g0DwAQhzGiyAUWboolJETQjbX0ZbSWY4ON0Emvj1Vnv//Zf995
-         a5ODVjWc5fZ6cJSP5KUgXslRM1FouDfdqHT2+4KwQL6lyMUuG3C4V1r/6WmdzIQgkypV
-         n8Sg0BsEWJCGZL23UKEprykNXYC/jphuDdAxEjIBCzFMZL98yNMFeXFTCiwlvsYl5Axd
-         Nisw==
-X-Gm-Message-State: AOJu0YzYMUhzBZfQqlova9mULh7yGAMPWp5KHoI1nKvTpC+D2yZKplgP
-        0BrJdxvhB9Ur1bb/Pr/7g7dD+w==
-X-Google-Smtp-Source: AGHT+IFdJLo8jZ3klMSQBPs2qIeMjRwZjzw3rOcgPXXM7tKUsmLDAMqJLlkkomMSQn9J8vCqgpfIIg==
-X-Received: by 2002:a17:906:76c9:b0:9a1:fc1e:19b8 with SMTP id q9-20020a17090676c900b009a1fc1e19b8mr9748830ejn.29.1693815589734;
-        Mon, 04 Sep 2023 01:19:49 -0700 (PDT)
-Received: from localhost (144-178-202-138.static.ef-service.nl. [144.178.202.138])
-        by smtp.gmail.com with ESMTPSA id le18-20020a170906ae1200b0099bcbaa242asm5757648ejb.9.2023.09.04.01.19.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 01:19:49 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 04 Sep 2023 10:19:49 +0200
-Message-Id: <CV9ZIJFTEBQE.1035ODUQD2B78@otso>
-Cc:     <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-gpio@vger.kernel.org>, <linux-pm@vger.kernel.org>
-Subject: Re: [PATCH 11/11] arm64: dts: qcom: qcm6490: Add device-tree for
- Fairphone 5
-From:   "Luca Weiss" <luca.weiss@fairphone.com>
-To:     "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        "Andy Gross" <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Srinivas Kandagatla" <srinivas.kandagatla@linaro.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Viresh Kumar" <viresh.kumar@linaro.org>
-X-Mailer: aerc 0.15.2
-References: <20230830-fp5-initial-v1-0-5a954519bbad@fairphone.com>
- <20230830-fp5-initial-v1-11-5a954519bbad@fairphone.com>
- <72c2fd33-613b-49be-b394-0663f459f0c5@linaro.org>
- <CV7NGPVH4U0W.PN2NOIO19Z7U@otso>
- <5f05c76e-e74e-4954-a729-3ed2a1d33605@linaro.org>
-In-Reply-To: <5f05c76e-e74e-4954-a729-3ed2a1d33605@linaro.org>
+        Mon, 4 Sep 2023 04:21:16 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 981BBD8
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 01:21:12 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (85-76-147-166-nat.elisa-mobile.fi [85.76.147.166])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2B9781AAA;
+        Mon,  4 Sep 2023 10:19:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693815585;
+        bh=mkCXKIkCSR27mQvQN5gWogztLalhX3Iq6vRcoBH69l0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YjFPw/9bGsIqesoC5uYqMcIfEIEhzqhy0ywCYrJIOBXYGafc0LaXfiXVEhw9b88Pi
+         93ic1HRHXDbKkuhZEt3u5hD9qYFkXSWC0cCwXhMv8B6QwcEM1BCFXqW3GHlXe+D/fP
+         ESfLmfr6m+gKiOT8051g/j7cFQ0MsVb5Jy6cANe4=
+Date:   Mon, 4 Sep 2023 11:21:17 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Biju Das <biju.das.jz@bp.renesas.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.au@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v2] regulator: max20086: Make similar OF and ID table
+Message-ID: <20230904082117.GB8907@pendragon.ideasonboard.com>
+References: <20230903154257.70800-1-biju.das.jz@bp.renesas.com>
+ <20230903203719.GC13794@pendragon.ideasonboard.com>
+ <OS0PR01MB59222C22997B3391673A69BA86E9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <OS0PR01MB59222C22997B3391673A69BA86E9A@OS0PR01MB5922.jpnprd01.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat Sep 2, 2023 at 1:45 PM CEST, Konrad Dybcio wrote:
-> On 1.09.2023 16:27, Luca Weiss wrote:
-> > On Wed Aug 30, 2023 at 12:45 PM CEST, Konrad Dybcio wrote:
-> >> On 30.08.2023 11:58, Luca Weiss wrote:
-> >>> Add device tree for the Fairphone 5 smartphone which is based on
-> >>> the QCM6490 SoC.
-> >>>
-> >>> Supported features are, as of now:
-> >>> * Bluetooth
-> >>> * Debug UART
-> >>> * Display via simplefb
-> >>> * Flash/torch LED
-> >>> * Flip cover sensor
-> >>> * Power & volume buttons
-> >>> * RTC
-> >>> * SD card
-> >>> * USB
-> >>> * Various plumbing like regulators, i2c, spi, etc
-> >>>
-> >>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> >>> ---
-> [...]
->
-> >>> +	panel: panel {
-> >>> +		compatible =3D "boe,rm692e5";
-> >> Undocumented compatbile
-> >=20
-> > Not quite sure how to document this properly. This dummy panel node is
-> > used for the simplefb/simpledrm so that user space can get panel
-> > dimensions already.
-> >=20
-> > This approach of a separate panel node was apparently preferred when th=
-e
-> > functionality was upstreamed but of course as can be seen this panel
-> > node is very barebones where many properties are not present which woul=
-d
-> > be needed with the full panel driver (once it's working).
-> >=20
-> > Also for example for the bindings I think width-mm and height-mm won't
-> > be needed anymore since that information will be provided by the driver
-> > then.
-> >=20
-> > Please let me know how/where to document this.
-> As discussed offline, the workflow here would be to oneOf: (wink)
->
-> - wait until there's a proper driver and create a binding based on
->   what you know (because you have a working driver and can test it)
->   is necessary for it to function
->
-> - create the binding for that display panel + driver ic combo in
->   advance and pray that whatever you put there will be enough when
->   you take upon yourself to write the driver
->
-> I'd suggest dropping these properties (or keeping them downstream or
-> something) for now, the display should not be terribly hard to bring
-> up properly, let's hope that can be done soon!
+Hi Biju,
 
-Yeah that sounds like a solution for now.
+On Mon, Sep 04, 2023 at 07:03:32AM +0000, Biju Das wrote:
+> Subject: Re: [PATCH v2] regulator: max20086: Make similar OF and ID table
+> > On Sun, Sep 03, 2023 at 04:42:57PM +0100, Biju Das wrote:
+> > > Make similar OF and ID table to extend support for ID match using
+> > > i2c_match_data(). Currently it works only for OF match tables as the
+> > > driver_data is wrong for ID match.
+> > 
+> > If it's currently broken for the I2C ID table, let's drop it instead of
+> > fixing it. We can always add it back when this device will appear on non-OF
+> > systems, if it ever does. The max20086_dt_ids table would then not need to
+> > be modified to extract the max20086_chip_info instances.
+> 
+> I am leaving this to respective maintainer to take a decision, whether
+> to enhance the driver or drop broken support like DRM bridge driver
+> (analogix-anx78xx?
 
-But for other devices I hope something can be figured out so that these
-dummy panels can go into upstream dts. Otherwise the functionality added
-in the simplefb driver is kinda useless for pure upstream if noone's
-allowed to have incomplete bindings for providing the panel dimensions.
+I'm listed as the maintainer of the driver :-) I'd rather drop non-OF
+support until needed as it doesn't work currently.
 
->
-> > I'm aware, but will work on this later since it's not useful without
-> > USB-C role switching and working audio.
-> You can still peek at it in like sysfs or so, but up to you.
+> > > While at it, drop blank lines before MODULE_DEVICE_TABLE* and remove
+> > > trailing comma in the terminator entry for OF/ID table.
+> > >
+> > > Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > > ---
+> > > Note:
+> > >  This patch is only compile tested.
+> > >
+> > > v1->v2:
+> > >  * Removed trailing comma in the terminator entry for OF/ID table.
+> > > ---
+> > >  drivers/regulator/max20086-regulator.c | 65
+> > > ++++++++++++--------------
+> > >  1 file changed, 31 insertions(+), 34 deletions(-)
+> > >
+> > > diff --git a/drivers/regulator/max20086-regulator.c
+> > > b/drivers/regulator/max20086-regulator.c
+> > > index 32f47b896fd1..59eb23d467ec 100644
+> > > --- a/drivers/regulator/max20086-regulator.c
+> > > +++ b/drivers/regulator/max20086-regulator.c
+> > > @@ -223,7 +223,7 @@ static int max20086_i2c_probe(struct i2c_client *i2c)
+> > >  		return -ENOMEM;
+> > >
+> > >  	chip->dev = &i2c->dev;
+> > > -	chip->info = device_get_match_data(chip->dev);
+> > > +	chip->info = i2c_get_match_data(i2c);
+> > >
+> > >  	i2c_set_clientdata(i2c, chip);
+> > >
+> > > @@ -275,45 +275,42 @@ static int max20086_i2c_probe(struct i2c_client
+> > *i2c)
+> > >  	return 0;
+> > >  }
+> > >
+> > > -static const struct i2c_device_id max20086_i2c_id[] = {
+> > > -	{ "max20086" },
+> > > -	{ "max20087" },
+> > > -	{ "max20088" },
+> > > -	{ "max20089" },
+> > > -	{ /* Sentinel */ },
+> > > +static const struct max20086_chip_info max20086_chip_info = {
+> > > +	.id = MAX20086_DEVICE_ID_MAX20086,
+> > > +	.num_outputs = 4,
+> > > +};
+> > > +
+> > > +static const struct max20086_chip_info max20087_chip_info = {
+> > > +	.id = MAX20086_DEVICE_ID_MAX20087,
+> > > +	.num_outputs = 4,
+> > > +};
+> > > +
+> > > +static const struct max20086_chip_info max20088_chip_info = {
+> > > +	.id = MAX20086_DEVICE_ID_MAX20088,
+> > > +	.num_outputs = 2,
+> > > +};
+> > > +
+> > > +static const struct max20086_chip_info max20089_chip_info = {
+> > > +	.id = MAX20086_DEVICE_ID_MAX20089,
+> > > +	.num_outputs = 2,
+> > >  };
+> > >
+> > > +static const struct i2c_device_id max20086_i2c_id[] = {
+> > > +	{ "max20086", (kernel_ulong_t)&max20086_chip_info },
+> > > +	{ "max20087", (kernel_ulong_t)&max20087_chip_info },
+> > > +	{ "max20088", (kernel_ulong_t)&max20088_chip_info },
+> > > +	{ "max20089", (kernel_ulong_t)&max20089_chip_info },
+> > > +	{ /* Sentinel */ }
+> > > +};
+> > >  MODULE_DEVICE_TABLE(i2c, max20086_i2c_id);
+> > >
+> > >  static const struct of_device_id max20086_dt_ids[] __maybe_unused = {
+> > > -	{
+> > > -		.compatible = "maxim,max20086",
+> > > -		.data = &(const struct max20086_chip_info) {
+> > > -			.id = MAX20086_DEVICE_ID_MAX20086,
+> > > -			.num_outputs = 4,
+> > > -		}
+> > > -	}, {
+> > > -		.compatible = "maxim,max20087",
+> > > -		.data = &(const struct max20086_chip_info) {
+> > > -			.id = MAX20086_DEVICE_ID_MAX20087,
+> > > -			.num_outputs = 4,
+> > > -		}
+> > > -	}, {
+> > > -		.compatible = "maxim,max20088",
+> > > -		.data = &(const struct max20086_chip_info) {
+> > > -			.id = MAX20086_DEVICE_ID_MAX20088,
+> > > -			.num_outputs = 2,
+> > > -		}
+> > > -	}, {
+> > > -		.compatible = "maxim,max20089",
+> > > -		.data = &(const struct max20086_chip_info) {
+> > > -			.id = MAX20086_DEVICE_ID_MAX20089,
+> > > -			.num_outputs = 2,
+> > > -		}
+> > > -	},
+> > > -	{ /* Sentinel */ },
+> > > +	{ .compatible = "maxim,max20086", .data = &max20086_chip_info },
+> > > +	{ .compatible = "maxim,max20087", .data = &max20087_chip_info },
+> > > +	{ .compatible = "maxim,max20088", .data = &max20088_chip_info },
+> > > +	{ .compatible = "maxim,max20089", .data = &max20089_chip_info },
+> > > +	{ /* Sentinel */ }
+> > >  };
+> > > -
+> > >  MODULE_DEVICE_TABLE(of, max20086_dt_ids);
+> > >
+> > >  static struct i2c_driver max20086_regulator_driver = {
 
-Yes, later ;)
+-- 
+Regards,
 
-Regards
-Luca
-
->
->
-> Konrad
-
+Laurent Pinchart
