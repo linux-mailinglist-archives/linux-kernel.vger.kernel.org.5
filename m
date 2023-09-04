@@ -2,119 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD84F791807
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:26:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC00779180B
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237713AbjIDN0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39568 "EHLO
+        id S1353029AbjIDN05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:26:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231185AbjIDN0w (ORCPT
+        with ESMTP id S237952AbjIDN04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:26:52 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D07219B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 06:26:44 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4cbso1929532a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 06:26:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1693834003; x=1694438803; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/uL2B+XqPFUs3X1qoEJuP1SxRFKqVUX3leZ/vaoEUcA=;
-        b=aiTrpEn/hhG7AJydLun6Cs2uzWNfhpFECX2ZZWUubsQipyd89eZR+kRR3iGm22Qmxm
-         0rfRTgjPOCGpeebTtXH8VKUs4VBAzy8f/daWWsvoNVvA+f1C540Y+9/mOvjPMSJmorI4
-         aKjQZnxNiQ9Jvrtj+MLjngXYRqHxcPuChM75zJX2ruE7m9bxWx6s2SpHnkaA/UI//CUp
-         3c3Y61pe0NlsjSu7miqrroGPSsvwT4w/Qf4Ne/QOJ1YP2oEOUD56Vy/QXxDA/PYlKHLp
-         HokpMbhgoak7/XDhJEGUJ1ptAtEnryVyb8KXzIHWYTpoqsXBdRyMSzsczT/hDNvc1ZUG
-         CJeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693834003; x=1694438803;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/uL2B+XqPFUs3X1qoEJuP1SxRFKqVUX3leZ/vaoEUcA=;
-        b=Zqg6JBvWeQ7sIdgucLEwa6JLZo9/pMMfqKmbJf1lJiw62bbhMErXpIlXMX8E7R62LK
-         KVZkUiF16soiAAnHXYW8hXqmX0147l2CIg3DAEbO9XUDrYKRVhEzGmPtPPyJKiDyW4IR
-         keioeXZ270rkoQfF2iRz4Bo+Tbwohgpt8dH65V33GYCSXWIuDz/gdXhIWhxPmdF2afSy
-         kPZRZKoFdzY9iPECn6myBH2NOLB4IGYgNh5XXPd9vZ5IPyTz/623Eu4/to0PDyUst2Tc
-         TAEDhAy2NzrIHtAXIxmm2aNE/uv3qJMEsOCgRLAVg3t4nPey+N/JWj1yfU5T/vRTkCvF
-         gx0A==
-X-Gm-Message-State: AOJu0YzY1SZHU62yM9hTbDluaHV1STSOuGgdEw9e2+QDf8bw+CZoI8LO
-        4x80i8kcJMWTy5Hw8Z1ChShFduYDmQ0338Vb3b/sew==
-X-Google-Smtp-Source: AGHT+IGOFIwY6Wm7dsAMFZC9Eb7yEm5sipTomJmGwCL0leiifhPgy+OojWu1/AqpYEmyOm13m0TRlA==
-X-Received: by 2002:a05:6402:17d7:b0:52c:84c4:a0bf with SMTP id s23-20020a05640217d700b0052c84c4a0bfmr4777586edy.30.1693834002867;
-        Mon, 04 Sep 2023 06:26:42 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id n18-20020a056402515200b0052a3aa50d72sm5855572edd.40.2023.09.04.06.26.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 06:26:42 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 15:26:41 +0200
-From:   Andrew Jones <ajones@ventanamicro.com>
-To:     Haibo Xu <haibo1.xu@intel.com>
-Cc:     xiaobo55x@gmail.com, Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Guo Ren <guoren@kernel.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-        wchen <waylingii@gmail.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Vipin Sharma <vipinsh@google.com>,
-        Aaron Lewis <aaronlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Lei Wang <lei4.wang@intel.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Peter Gonda <pgonda@google.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Thomas Huth <thuth@redhat.com>, Like Xu <likexu@tencent.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Michal Luczaj <mhal@rbox.co>,
-        zhang songyi <zhang.songyi@zte.com.cn>,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvm-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 3/8] tools: riscv: Add header file csr.h
-Message-ID: <20230904-79306f36fc9cbe222eb0ef8f@orel>
-References: <cover.1693659382.git.haibo1.xu@intel.com>
- <8173daae52720dbdabbd88a5d412f653e6706de1.1693659382.git.haibo1.xu@intel.com>
+        Mon, 4 Sep 2023 09:26:56 -0400
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F06CD7;
+        Mon,  4 Sep 2023 06:26:53 -0700 (PDT)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6BEDD68AFE; Mon,  4 Sep 2023 15:26:49 +0200 (CEST)
+Date:   Mon, 4 Sep 2023 15:26:49 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, djwong@kernel.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        song@kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu,
+        yukuai3@huawei.com, zhang_shurong@foxmail.com,
+        linux-block@vger.kernel.org, axboe@kernel.dk, hch@lst.de
+Subject: Re: [syzbot] [xfs?] [ext4?] kernel BUG in __block_write_begin_int
+Message-ID: <20230904132649.GA4819@lst.de>
+References: <000000000000e76944060483798d@google.com> <ZPWWZeWliX7RhOAZ@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8173daae52720dbdabbd88a5d412f653e6706de1.1693659382.git.haibo1.xu@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+In-Reply-To: <ZPWWZeWliX7RhOAZ@dread.disaster.area>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Sep 02, 2023 at 08:59:25PM +0800, Haibo Xu wrote:
-> Borrow the csr definitions and operations from kernel's
-> arch/riscv/include/asm/csr.h to tools/ for riscv.
-> 
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
->  tools/arch/riscv/include/asm/csr.h | 521 +++++++++++++++++++++++++++++
->  1 file changed, 521 insertions(+)
->  create mode 100644 tools/arch/riscv/include/asm/csr.h
->
+On Mon, Sep 04, 2023 at 06:33:41PM +1000, Dave Chinner wrote:
+> It appears that 0010:__block_write_begin_int() has iterated beyond
+> the iomap that was passed in, triggering the BUG_ON() check in
+> iomap_to_bh().
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Yes, I'll look into it.
