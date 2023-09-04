@@ -2,62 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A97BF791D56
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:45:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 857C5791D58
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:46:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353505AbjIDSpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 14:45:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47970 "EHLO
+        id S1353561AbjIDSqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 14:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbjIDSpX (ORCPT
+        with ESMTP id S236304AbjIDSqD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 14:45:23 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7AA118B
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:45:20 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1c337aeefbdso9823215ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:45:20 -0700 (PDT)
+        Mon, 4 Sep 2023 14:46:03 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AD1CDB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:45:50 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-26d5970cd28so918118a91.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:45:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693853120; x=1694457920; darn=vger.kernel.org;
+        d=gmail.com; s=20221208; t=1693853150; x=1694457950; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tIC0vvBtQknXQrQ2iQzcpIL5nVgglpSsEX1r8/R4Dm4=;
-        b=jmoJY34itV1nfgekHte6maTs7G6ScfQ6SJlZ+FAVA/eNwo5qxh1G+Efe/jfvp7V/Gd
-         xXt+1PEg4djSFD25+ITRPiggvbfb7DA3vgboeN49gcBPXeXw+WIrcku4zVEbGHjBnPSm
-         0Tf4OlRq8lHsrXKsXs3rWhM1g3V12zC8A9/0lujHhT8czplPdBZDvbs7Nwc02RtTFU57
-         dNjaOwgFH4/sJ9l/5bFEb7A8e7yO410g/zUUxEuFpVAXZrNrYNhVAqXeTVu+67C0l6Ex
-         tOj8jhl8FyVhzqCSD/mfg43Htr1qHPyKveG7twCE8zrquDyEFspMp7VriDku/iRGm7Db
-         Dgbg==
+        bh=WZraNgcOpe7Ut9pr2LDBQ0Wst9d1OxSHG4PF5uMFpp0=;
+        b=QtJp45B/JBurQEdV/NCGrSQIKlRSdEeFBJ8zGaCCuTPOZqscof7IBZY40Rtyx4C6ci
+         dLvEP9czZJT5jwc8qpUuWhs2lr8zUXlqQ40HiQAmOy+kMTzPbVB0jE+0KCjleA3JDafQ
+         dXodJZyzYYiBj9zqreGxf/4v0KwYo79Wh44vbLm6JC/TnZmuNEE4nKoiCHKxgclZrGYm
+         oH9ZQkpVz1tLAcstiMN256iv8wNBtcfo+fyJiuddNtsZuMF1fXonktSVeXIMCQ29cgMQ
+         C6C379j0I/3cAgjjU7unXZKyisR3jONp5hJPcxdpSceYSkW7Vu6Er2p2gVzAHwX9jiTI
+         /dqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693853120; x=1694457920;
+        d=1e100.net; s=20221208; t=1693853150; x=1694457950;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tIC0vvBtQknXQrQ2iQzcpIL5nVgglpSsEX1r8/R4Dm4=;
-        b=Gp4KPcIE+IESG1qgtWswFYwUM4Zz+EWG38UVFH7G8ByzD3Ml1jWrIqGKp78jYmprYF
-         Y3FmMWypQ38lVImnY10SVeejbYpRvkTBafD/oFDjJ9sqzdW2gYHep90wc9aJEoepniLd
-         OXdlQ2O3H/RyaOTeBWuMi4rCOjEK+IQxwimZm43jY3lKubRwtPpjHUDperimVbAFZXss
-         bSH0521ClhjGo+yEJsZlsgQPWfxCFFP5ZVdRwLICnhCFBPAv3MqH6Fru6VAAxCP5JnaP
-         Kse0AgWOflfhoeoivAknTQ/5W/9YOUyhRk8kTR53pRZKy/vhJzHtgqq5qq19/aWOYyqO
-         jWIQ==
-X-Gm-Message-State: AOJu0YzTroGRpwmtznSKjKNx9KMCKNZTkUnpIXPhcjpefQpiItJO+8x1
-        4xaI/ThEmw7bXJ64RJZaG76u89MeZp/Lx1l1uW8=
-X-Google-Smtp-Source: AGHT+IEThPgz1V55Vl8XBsd/0dGFumQyosa4oaMfCufM9oHx/sB7SPUhjv5wNXIXgSnOoK1W6ivp9M2xfIVQrRF8fVs=
-X-Received: by 2002:a17:90a:4b08:b0:26f:e9fd:8287 with SMTP id
- g8-20020a17090a4b0800b0026fe9fd8287mr9859030pjh.20.1693853120048; Mon, 04 Sep
- 2023 11:45:20 -0700 (PDT)
+        bh=WZraNgcOpe7Ut9pr2LDBQ0Wst9d1OxSHG4PF5uMFpp0=;
+        b=YGPVUDFPWbaBa/gcrhBQ0SpRxdyl1SWmZZf4SiFF71DeURh+wfaFnS/ERrJRXzXMcB
+         q0BMobVWDemzf0fI3dm4rx5kzOFkYrgEjx11P7mr3ZkavP6Ez5rTzHDYGyEwlVnDUoJ+
+         7OpfP/fSjpfDQHUStGO/H11TJwCCqkgDf1GIoHqNuHQ0NtsQFpjOj5q0282TMKXa19e1
+         JYhJG4hiDLYr73TRklHJwVwFNyvbjydi6mijhYCgwVX8SVjJm0iWLc4jdOYPmq4Me4Nl
+         iVD5y4z9ilUVKm1MMWKZbfEiAaunzmUMzFqnzPzn1NTOTaGFWoaV2SA+Uk524b3MR6Am
+         DVEw==
+X-Gm-Message-State: AOJu0YwsWMu+6JRZYNjOWNorFxiBvXJDIktXzDavigE1MYYACkqi2+aa
+        o7j3PFkGxJS1Ztp28Eu+clRpQf1ahXxLXXknhvwikaIo
+X-Google-Smtp-Source: AGHT+IEFOgOrP0DsyXjT9jJFbC5jM1AAeRE10sr/JTIJgMwQ4oWyFgF22htl6bFnUV6yTQWnRQ8PAt++hxDrbhf9eeA=
+X-Received: by 2002:a17:90a:7e02:b0:26d:2b1d:1982 with SMTP id
+ i2-20020a17090a7e0200b0026d2b1d1982mr7353698pjl.24.1693853150181; Mon, 04 Sep
+ 2023 11:45:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1693328501.git.andreyknvl@google.com> <3948766e-5ebd-5e13-3c0d-f5e30c3ed724@suse.cz>
-In-Reply-To: <3948766e-5ebd-5e13-3c0d-f5e30c3ed724@suse.cz>
+References: <cover.1693328501.git.andreyknvl@google.com> <8ad8f778b43dab49e4e6214b8d90bed31b75436f.1693328501.git.andreyknvl@google.com>
+ <ZO7/CqwhzqulWP7K@elver.google.com>
+In-Reply-To: <ZO7/CqwhzqulWP7K@elver.google.com>
 From:   Andrey Konovalov <andreyknvl@gmail.com>
-Date:   Mon, 4 Sep 2023 20:45:09 +0200
-Message-ID: <CA+fCnZdRkJTG0Z1t00YGuzH4AFAicGUVyxFc63djewRz0vj=pQ@mail.gmail.com>
-Subject: Re: [PATCH 00/15] stackdepot: allow evicting stack traces
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     andrey.konovalov@linux.dev, Marco Elver <elver@google.com>,
+Date:   Mon, 4 Sep 2023 20:45:39 +0200
+Message-ID: <CA+fCnZdg4p3Lea6HpiKojSgtMEX+V-K+C5FBoGxpfSosDCcH9g@mail.gmail.com>
+Subject: Re: [PATCH 06/15] stackdepot: fix and clean-up atomic annotations
+To:     Marco Elver <elver@google.com>
+Cc:     andrey.konovalov@linux.dev,
         Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
         Evgenii Stepanov <eugenis@google.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org,
@@ -74,26 +76,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 9:46=E2=80=AFAM Vlastimil Babka <vbabka@suse.cz> wr=
-ote:
+On Wed, Aug 30, 2023 at 10:34=E2=80=AFAM Marco Elver <elver@google.com> wro=
+te:
 >
-> I wonder if there's also another thing to consider for the future:
+> > diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+> > index 93191ee70fc3..9ae71e1ef1a7 100644
+> > --- a/lib/stackdepot.c
+> > +++ b/lib/stackdepot.c
+> > @@ -226,10 +226,10 @@ static void depot_init_pool(void **prealloc)
+> >       /*
+> >        * If the next pool is already initialized or the maximum number =
+of
+> >        * pools is reached, do not use the preallocated memory.
+> > -      * smp_load_acquire() here pairs with smp_store_release() below a=
+nd
+> > -      * in depot_alloc_stack().
+> > +      * READ_ONCE is only used to mark the variable as atomic,
+> > +      * there are no concurrent writes.
 >
-> 3. With the number of stackdepot users increasing, each having their
-> distinct set of stacks from others, would it make sense to create separat=
-e
-> "storage instance" for each user instead of putting everything in a singl=
-e
-> shared one?
+> This doesn't make sense. If there are no concurrent writes, we should
+> drop the marking, so that if there are concurrent writes, tools like
+> KCSAN can tell us about it if our assumption was wrong.
 
-This shouldn't be hard to implement. However, do you see any
-particular use cases for this?
+Makes sense, will do in v2.
 
-One thing that comes to mind is that the users will then be able to
-create/destroy stack depot instances when required. But I don't know
-if any of the users need this: so far they all seem to require stack
-depot throughout the whole lifetime of the system.
+> > @@ -425,8 +424,8 @@ depot_stack_handle_t __stack_depot_save(unsigned lo=
+ng *entries,
+> >        * Check if another stack pool needs to be initialized. If so, al=
+locate
+> >        * the memory now - we won't be able to do that under the lock.
+> >        *
+> > -      * The smp_load_acquire() here pairs with smp_store_release() to
+> > -      * |next_pool_inited| in depot_alloc_stack() and depot_init_pool(=
+).
+> > +      * smp_load_acquire pairs with smp_store_release
+> > +      * in depot_alloc_stack and depot_init_pool.
+>
+> Reflow comment to match 80 cols used by comments elsewhere.
 
-> In any case, evicting support is a good development, thanks!
+Will do in v2.
 
-Thank you!
+Thanks!
