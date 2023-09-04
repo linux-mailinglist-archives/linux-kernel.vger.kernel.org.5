@@ -2,130 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB99791D6A
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E40791D6C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235023AbjIDSuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 14:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60696 "EHLO
+        id S235243AbjIDSw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 14:52:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjIDSuQ (ORCPT
+        with ESMTP id S229581AbjIDSwY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 14:50:16 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AA43DB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:50:12 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-26fc5a218daso931281a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1693853412; x=1694458212; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wf1kOMDJycx1EhXIXAvvdW5Sk/cZAAEVFAKi6ah34Mc=;
-        b=xxZxk0Wjw/ZjPZeVX4MkS6P5K4lR4twGvYaCcte1beOQcjIUhfTademzb88TOZvutm
-         h9H1yKmivhsOY/nrj6iT0r5j4c/M9EhZ6G6BTCbrg5KmkXF7vMVITgYXgUJ12jq3fZTI
-         ZYxu034iG7IioF8k4L+ZyRRiAPqHljTx3TvabnP/dAzAujcpDi4mcXmGHJeiVpdwKo/4
-         M1lIX8fqza8s+cB/aQkxHrVsXu55QVEa4UGNRMH5ZsOtF7RuFejhMpNv5ClPNWk+zN48
-         mIcMZdnENK+XLrkH4rXz4+oWinH3ZYmsF5eXQLExOgkny5/Vv9gVsKhzfPSKIt5UOGF+
-         9z1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693853412; x=1694458212;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wf1kOMDJycx1EhXIXAvvdW5Sk/cZAAEVFAKi6ah34Mc=;
-        b=GLSO6R4DakimGiD1B+2hmDQNXWq4ZXANpiF+0SMx6MXSqZciS4H8yeR/bH6OEuHG60
-         kG/HIuB3nAmoV5EyISjK6NvZQP3Oqd7e+cOYlckyGppaoXuuuQyD6+aZ0dWSf5vLYNhW
-         yLxETN4dpp2/l/7yDZQWT1+Ai4ex6a2H2B70LQL+EBlBWAON/tCvlwlZsueJA78O2wPb
-         6/pfbGludjcxtM7pX2PkSrm0ZtUU/4Wc61H9pbh8o1FN2fC+GzpR5JDE8iQ+ULt0v7X+
-         19g6w9FWlbeQfMSJsUdk5JwzSLC7tMWsG5DWPa5EnXaEPNWKh6pvJARbGF58uvjHw5N0
-         DTew==
-X-Gm-Message-State: AOJu0YyHN/t6zVMjbqe8AnYvSIGCqQPZi7ZTRKczPoSOG3vqeoBbU+ZI
-        2/yztyH3Jo/i9FbSzG+fwtnm5Q==
-X-Google-Smtp-Source: AGHT+IEVP+hJormX1Eur4mwRVG0JSZQfY+VMOFl6HpD2U+AUVAnaRoOKLQ/Bfg+HqlHUGlzs5PLo4g==
-X-Received: by 2002:a17:90a:6e0d:b0:26c:f6d2:2694 with SMTP id b13-20020a17090a6e0d00b0026cf6d22694mr8751480pjk.12.1693853411971;
-        Mon, 04 Sep 2023 11:50:11 -0700 (PDT)
-Received: from x1 ([2601:1c2:1800:f680:e0eb:2a3d:8122:b588])
-        by smtp.gmail.com with ESMTPSA id fa24-20020a17090af0d800b00268032f6a64sm9266991pjb.25.2023.09.04.11.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 11:50:11 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 11:50:09 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Guo Ren <guoren@kernel.org>, Fu Wei <wefu@redhat.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: dts: thead: set dma-noncoherent to soc bus
-Message-ID: <ZPYm4S0GKr/TEtXk@x1>
-References: <20230820115353.1962-1-jszhang@kernel.org>
- <ZPUXhe7ogxvaB6Eg@x1>
- <ZPXtl1iWlsYwmixc@xhacker>
+        Mon, 4 Sep 2023 14:52:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89EAEDB;
+        Mon,  4 Sep 2023 11:52:21 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 419D0B80EF6;
+        Mon,  4 Sep 2023 18:52:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6041EC433C7;
+        Mon,  4 Sep 2023 18:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693853539;
+        bh=O1MC3wFR2Sy6fvMGMKwaFVW+8rboa7AiTtU4zV8hHVg=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=dXWBLYmfP6YG1YrnLK9lalz0EKyGqjAZTbzHa70LXySSbr4utgjJX3jDarlKAE6sj
+         Ap/iyjCgv6KjWgWDbsB/fDIeaUMPKA4Pzh4j3xwjTBouJbcg5Qlt/95wBJi/DQDAX4
+         h9zC7WWl9JcafOAKjWuPqYikFWTtjeUFUhSjVWQWeWO1olSCBn84tHAONT9Qi+MZe3
+         Vue0vvOYhPWhiZ2R1OAkNaHb7YBoA5+/ZwW9YdSOkT03nkc0FiC36fuHI+7pSFLzPC
+         ylB5GQgYdMPBJ0Lf9GygBZPvfaFd9GY7Jx11pBRD/xY19UkG8sYtUtsToDtdFmLO78
+         U+qIE/pnwofag==
+From:   Mark Brown <broonie@kernel.org>
+To:     Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Tobias Schramm <t.schramm@manjaro.org>
+Cc:     linux-spi@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20230827152558.5368-1-t.schramm@manjaro.org>
+References: <20230827152558.5368-1-t.schramm@manjaro.org>
+Subject: Re: [PATCH 0/2] spi: sun6i: fix RX data corruption in DMA mode
+Message-Id: <169385353709.55844.16088323808280958557.b4-ty@kernel.org>
+Date:   Mon, 04 Sep 2023 19:52:17 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZPXtl1iWlsYwmixc@xhacker>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-034f2
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 10:45:43PM +0800, Jisheng Zhang wrote:
-> On Sun, Sep 03, 2023 at 04:32:21PM -0700, Drew Fustini wrote:
-> > On Sun, Aug 20, 2023 at 07:53:53PM +0800, Jisheng Zhang wrote:
-> > > riscv select ARCH_DMA_DEFAULT_COHERENT by default, and th1520 isn't
-> > > dma coherent, so set dma-noncoherent to reflect this fact.
-> > > 
-> > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > > ---
-> > >  arch/riscv/boot/dts/thead/th1520.dtsi | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > > 
-> > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > index 56a73134b49e..58108f0eb3fd 100644
-> > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > @@ -139,6 +139,7 @@ soc {
-> > >  		interrupt-parent = <&plic>;
-> > >  		#address-cells = <2>;
-> > >  		#size-cells = <2>;
-> > > +		dma-noncoherent;
-> > >  		ranges;
-> > >  
-> > >  		plic: interrupt-controller@ffd8000000 {
-> > > -- 
-> > > 2.40.1
-> > > 
-> > 
-> > Tested-by: Drew Fustini <dfustini@baylibre.com>
-> > 
-> > I tried this on the BeagleV Ahead. They system booted as expected and I
-> > did not notice any problems in the boot log.
-> > 
-> > Are there other patches such as the dwmac series that I should test this
-> > with?
+On Sun, 27 Aug 2023 17:25:56 +0200, Tobias Schramm wrote:
+> Hey folks,
 > 
-> Hmm, this patch is necessary to test dwmac, emmc ;)
+> this set of patches fixes two bugs in the sun6i SPI driver that result in
+> corruption of received data in DMA RX mode.
+> 
+> The first bug seems to be related to an incompatibility of the SPI RX FIFO
+> with wider than single byte read accesses during SPI transfers. I'm not
+> sure if this bug affects all types of SPI controllers found in Allwinner
+> SoCs supported by this driver. However reducing the access width should
+> always be safe. I've tested this change on a V3s SoC. Further testing to
+> narrow down the set of affected SoCs in the future would be welcome.
+> 
+> [...]
 
-Would you be able to share list of patches you are currently using so
-that I can apply them all?
+Applied to
 
-Do you have any changes in the device tree that you are using that is
-not in mainline?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-I added the linux,cma node [1] with compatible "shared-dma-pool" from 
-light.dtsi in the thead sdk, but that did not seem to make a difference.
+Thanks!
 
-thanks,
-drew
+[1/2] spi: sun6i: reduce DMA RX transfer width to single byte
+      commit: 171f8a49f212e87a8b04087568e1b3d132e36a18
+[2/2] spi: sun6i: fix race between DMA RX transfer completion and RX FIFO drain
+      commit: 1f11f4202caf5710204d334fe63392052783876d
 
-[1] https://git.beagleboard.org/beaglev-ahead/kernel/-/blob/master/arch/riscv/boot/dts/thead/light.dtsi#L88
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
