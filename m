@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 259C67914FB
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25FAC7914FE
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 11:50:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352671AbjIDJsO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 05:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
+        id S240107AbjIDJuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 05:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351007AbjIDJsK (ORCPT
+        with ESMTP id S232600AbjIDJuQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 05:48:10 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C081AB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 02:48:05 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-99bcf2de59cso191273166b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 02:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1693820884; x=1694425684; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0epdMrGvIaocozD28WN92DhFdwnzjDxG6GkFKqitp5c=;
-        b=X3KJcH9fvRdS+vnmg8WuwZuv1QzBif8j9GE2/ODFSQgxDkpZBBC9jyHrW44JpgtU3r
-         /QdSTMQtKike4+e8cTuLhuxQIfpnkmzYGBEmpkLpk++LZxfuHvX4jwdCGNt8T5aY8Nkh
-         KugJMBN0FgAH9ZGxSBdKK2H6Vh+betrErBKaYaMhabvoDZAN8F/pZGUrKEMmGpI8pDCH
-         rssyiZuCUta7cG5aloIv1MhYjo7SKGILIs4wyqB3L5lmAWY3l9Oz87v8ENefhsmwXaIB
-         E9grNOfJbSc8lkGGvmNEsqjexTo8GL8lEuymFyiSfaIhNL0ZE+i9MJlntx+2BA9e07ot
-         yv9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693820884; x=1694425684;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0epdMrGvIaocozD28WN92DhFdwnzjDxG6GkFKqitp5c=;
-        b=Dy3w2eGDuXjAd8zskHm9KBTb5gpiP3lBz/DMchwK63HwE05JAaZRNPkI1M0OI4OorX
-         I4qkKMnKMiH2gr34kuC4gMkn7aYMERQuYzV2ZJqgcnNhdLK/rFPU0pRGMIBoMZcm7g5r
-         laUgKQg58bkL8iIRQhbARlI0a+D/xHfpCL+zZHGTk5ikDDO7tEeIGOYIzoG3dJlL1RaM
-         DPXxqIXD+21IEIeIKQ8NNkd0eAzbn9S1himkI0XD9+pz27Z916oG/8d5bCZlnS1sPFmT
-         AYuBqnzd9PSW0NLIbW1zhktzfYVHVFPwH0A6LjbpB05372kF+SZU4qQapqN3QsyHqOue
-         dB1Q==
-X-Gm-Message-State: AOJu0YzK8EABNuz2HYVltrW0V80tw0rslEn3zu5SMxbIHidYEvTSNqVE
-        QNRdbO2emShTFA4NJ1yI8qbgug==
-X-Google-Smtp-Source: AGHT+IHqDjTOUN8MmVWa39gr2DF/D9xBYWMBEA79M3UTLu7/Zx3QJrUK2Da+M+QFZ4HycCUSamyMuw==
-X-Received: by 2002:a17:907:9619:b0:99d:decd:3dde with SMTP id gb25-20020a170907961900b0099ddecd3ddemr8877234ejc.18.1693820883978;
-        Mon, 04 Sep 2023 02:48:03 -0700 (PDT)
-Received: from blmsp ([2001:4090:a245:8020:2b3e:29eb:352d:d92e])
-        by smtp.gmail.com with ESMTPSA id g20-20020a1709067c5400b00999bb1e01dfsm5867619ejp.52.2023.09.04.02.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 02:48:03 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 11:48:02 +0200
-From:   Markus Schneider-Pargmann <msp@baylibre.com>
-To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>
-Cc:     mturquette@baylibre.com, sboyd@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, wenst@chromium.org,
-        frank.li@vivo.com, robh@kernel.org, jamesjj.liao@mediatek.com,
-        shunli.wang@mediatek.com, erin.lo@mediatek.com,
-        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] clk: mediatek: clk-mt2701: Add check for
- mtk_alloc_clk_data
-Message-ID: <20230904094802.6fasingt4m4yked3@blmsp>
-References: <20230901024658.23405-1-jiasheng@iscas.ac.cn>
+        Mon, 4 Sep 2023 05:50:16 -0400
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A24AB;
+        Mon,  4 Sep 2023 02:50:12 -0700 (PDT)
+X-UUID: 6d7e64264b0811eea33bb35ae8d461a2-20230904
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=pDcVkHt0PgOyyDOoExjE+TeYuugV9WTIUjuLd6MGDyg=;
+        b=GxzsFXWXOCMWi9zBfbTxmpjGlIEVIEiwC1jgnV33zN5mhITHMwT+ReosEUxbq5ZLvxj9NYb2bdjabCqTEH1hjr4cGZ4n3jDbTtjrGk47GW6lVmblmtWiZtVy9+bMXwoVsZrYB+XuXnA+Wer/lYoIMX7zUBho1T2eSbO2z3tQA04=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:50857094-f2af-43a7-8087-da395980b8a2,IP:0,U
+        RL:0,TC:0,Content:3,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:3
+X-CID-META: VersionHash:0ad78a4,CLOUDID:1b691720-33fd-4aaa-bb43-d3fd68d9d5ae,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:4,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 6d7e64264b0811eea33bb35ae8d461a2-20230904
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1406635621; Mon, 04 Sep 2023 17:50:06 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Mon, 4 Sep 2023 17:50:05 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n1.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Mon, 4 Sep 2023 17:50:03 +0800
+Message-ID: <00f0a1cf-6246-92e9-13b0-cf31bb292a94@mediatek.com>
+Date:   Mon, 4 Sep 2023 17:50:01 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20230901024658.23405-1-jiasheng@iscas.ac.cn>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH 1/2] dt-bindings: arm64: dts: mediatek: Add mt8395-evk
+ board
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>
+References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
+ <e2e35d4d-7853-fccc-28c2-b8ecf309d6ec@linaro.org>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <e2e35d4d-7853-fccc-28c2-b8ecf309d6ec@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_PASS,
+        SPF_PASS,UNPARSEABLE_RELAY autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 10:46:58AM +0800, Jiasheng Jiang wrote:
-> Add the check for the return value of mtk_alloc_clk_data() in order to
-> avoid NULL pointer dereference.
-> 
-> Fixes: e9862118272a ("clk: mediatek: Add MT2701 clock support")
-> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 
-Reviewed-by: Markus Schneider-Pargmann <msp@baylibre.com>
 
-Best,
-Markus
+On 9/4/23 17:33, Krzysztof Kozlowski wrote:
+> 	
+> 
+> External email : Please do not click links or open attachments until you 
+> have verified the sender or the content.
+> 
+> On 04/09/2023 11:20, Macpaul Lin wrote:
+>> Add bindings for the MediaTek mt8395-evk board.
+>> The mt8359-evk board is also named as "Genio 1200-EVK".
+>> MT8195 and MT8395 are the same family series SoC could share
+> 
+> How can be the same and have different numbers? You sill need dedicated
+> compatible.
+> 
 
-> ---
->  drivers/clk/mediatek/clk-mt2701.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+The SoCs mt8195 and mt8395 are designed for different market application 
+and physical characteristics, using different efuse values for 
+distinction. The booting flow and configurations are controllered by the 
+boot loaders, firmware, and TF-A. Therefore, the part numbers and 
+procurement channels are different. The detail information of these 
+efuse values is proprietary, so I cant disclose it futher. Hence the 
+most of peripheral drivers and base address are almost the same.
+
 > 
-> diff --git a/drivers/clk/mediatek/clk-mt2701.c b/drivers/clk/mediatek/clk-mt2701.c
-> index c81f3e33ce56..12d9560eb4ba 100644
-> --- a/drivers/clk/mediatek/clk-mt2701.c
-> +++ b/drivers/clk/mediatek/clk-mt2701.c
-> @@ -667,6 +667,8 @@ static int mtk_topckgen_init(struct platform_device *pdev)
->  		return PTR_ERR(base);
->  
->  	clk_data = mtk_alloc_clk_data(CLK_TOP_NR);
-> +	if (!clk_data)
-> +		return -ENOMEM;
->  
->  	mtk_clk_register_fixed_clks(top_fixed_clks, ARRAY_SIZE(top_fixed_clks),
->  								clk_data);
-> @@ -747,6 +749,8 @@ static void __init mtk_infrasys_init_early(struct device_node *node)
->  
->  	if (!infra_clk_data) {
->  		infra_clk_data = mtk_alloc_clk_data(CLK_INFRA_NR);
-> +		if (!infra_clk_data)
-> +			return;
->  
->  		for (i = 0; i < CLK_INFRA_NR; i++)
->  			infra_clk_data->hws[i] = ERR_PTR(-EPROBE_DEFER);
-> @@ -774,6 +778,8 @@ static int mtk_infrasys_init(struct platform_device *pdev)
->  
->  	if (!infra_clk_data) {
->  		infra_clk_data = mtk_alloc_clk_data(CLK_INFRA_NR);
-> +		if (!infra_clk_data)
-> +			return -ENOMEM;
->  	} else {
->  		for (i = 0; i < CLK_INFRA_NR; i++) {
->  			if (infra_clk_data->hws[i] == ERR_PTR(-EPROBE_DEFER))
-> @@ -890,6 +896,8 @@ static int mtk_pericfg_init(struct platform_device *pdev)
->  		return PTR_ERR(base);
->  
->  	clk_data = mtk_alloc_clk_data(CLK_PERI_NR);
-> +	if (!clk_data)
-> +		return -ENOMEM;
->  
->  	mtk_clk_register_gates(&pdev->dev, node, peri_clks,
->  			       ARRAY_SIZE(peri_clks), clk_data);
-> -- 
-> 2.25.1
+> Best regards,
+> Krzysztof
 > 
+
+Best regards,
+Macpaul Lin
