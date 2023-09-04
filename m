@@ -2,116 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB4F791C12
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:34:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01731791C14
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347632AbjIDReu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 13:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47812 "EHLO
+        id S1345915AbjIDRke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 13:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbjIDReu (ORCPT
+        with ESMTP id S229719AbjIDRke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 13:34:50 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC92CE0
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 10:34:46 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-500c37d479aso2601580e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 10:34:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1693848885; x=1694453685; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HBeJW1trCbDc5M4JM8VJRHuXLyN1Y56AYcyYx/jjbLY=;
-        b=em13aYKZnWyLKJnN7gcZ432bmkQFb9eWL5Ow+gwRZuoHiQnqwX9iHZ0PnGgYEYWdgV
-         T7CslgfXaGuxASxpzdj+BgpeZjwG0APdIW/+YIl11GRXT+61Owq7gTHSZ208uYnEtooa
-         GmpngCGNIRUxBvDHVYcinsWgPlNW810F4wikc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693848885; x=1694453685;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HBeJW1trCbDc5M4JM8VJRHuXLyN1Y56AYcyYx/jjbLY=;
-        b=fdQjrKIYy7xz9zoJMlPXvhpzFxxtPkfFyQee73GzE+62/TJTIbjpl/llPHVRGykIi5
-         GwbusugJBqN3x/FFxceGsggoI7+bnmlhz+jtPc0F9xKsrLcK7h3oEdj528MfGGZ98HVy
-         V6sqcrXERG0QjdqMAHMKWwQm6HYI5GQSAYyO+aAyhw9mwDQvnir6XYvQE0hy135FIKH9
-         DXS5zDITGj9NbGv/LmVB61h3uiGMePAIUzA4txEol0rSYzslLIkzQuqqbAYqHCQoM+ob
-         y3F0RBlqaeDIUK0NE4ihErZ63V0/+pkJCgU9oVsechYmz7s0qTb6aPCnfOt0Zp5X+1W2
-         X54w==
-X-Gm-Message-State: AOJu0YxfD/6aNFxIjpRAKUv9eT1Qp7TLY1DgPDPX6eA5nOQNw8VW8Nxc
-        TC5OKft7xAQOw/SjNFc5AlaSTCBc3yugmuaI4cam7t3z
-X-Google-Smtp-Source: AGHT+IF6lE1dZNwLBAcfPeRY+b8J8Iv5Gxt+DluI6Mh77xhYC+2WA4PbSR3rfeADlsmGyExKPoXkoA==
-X-Received: by 2002:a19:670e:0:b0:4fd:c83b:a093 with SMTP id b14-20020a19670e000000b004fdc83ba093mr5917279lfc.1.1693848884810;
-        Mon, 04 Sep 2023 10:34:44 -0700 (PDT)
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com. [209.85.167.48])
-        by smtp.gmail.com with ESMTPSA id s12-20020a19ad4c000000b004fbb011c9bcsm1844545lfd.161.2023.09.04.10.34.42
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 10:34:42 -0700 (PDT)
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-4ff9b389677so2605439e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 10:34:42 -0700 (PDT)
-X-Received: by 2002:a05:6512:1192:b0:4ff:86c7:f17e with SMTP id
- g18-20020a056512119200b004ff86c7f17emr8348631lfr.50.1693848881833; Mon, 04
- Sep 2023 10:34:41 -0700 (PDT)
+        Mon, 4 Sep 2023 13:40:34 -0400
+Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC4CAF;
+        Mon,  4 Sep 2023 10:40:26 -0700 (PDT)
+X-QQ-mid: bizesmtpipv601t1693849204tj3l
+Received: from [IPV6:2001:da8:c000:3005:b045:d ( [255.215.175.9])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Tue, 05 Sep 2023 01:40:02 +0800 (CST)
+X-QQ-SSF: 00200000000000907000000A0000000
+X-QQ-FEAT: DQ0OCu3gog332B5EbRVImgzcowyQN9LD7dD52UAWS8C7Inf9cu8kOhxm7cdHS
+        WXKoJqe+YyRmEKKYZw4GYzjLNTv98IPNpEEtuxgXBVdcV744/Js4rYxrhcT1XOOwTR8mDkr
+        nxs0jzm7vT9hk6iBsfEH8SnIcpKqlIY0ysKUFlO/O5QGfdUcL8Eyjm2COKmJsDFJsd/QO70
+        9HgobAmEohizPYZQ3AeIEjdJqDuwAXOQJh58rcTCI2oZyJu19olr6xFZfJJBKUQN4/hONS+
+        gl3gvsrDaPX7wDWcHs2O7I7cQvoaZFGlziCE8rQ4cXeTxIrHcGKzVSsAtBrW+2gW8vnBevS
+        d6+Z5SONIIPWgb4diE=
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 11219486753922426849
+Message-ID: <8464A5F00EFC8C59+502c989a-3814-4686-8c6f-0a8f814e1c39@tinylab.org>
+Date:   Tue, 5 Sep 2023 01:40:02 +0800
 MIME-Version: 1.0
-References: <20230831105252.1385911-1-zhaoyang.huang@unisoc.com>
- <ZPCEim0AZG5hTSYH@casper.infradead.org> <CAGWkznGAJVZtn49zNHsMAjRSfTRR707QXYY0m8Q+yABTsiig2Q@mail.gmail.com>
- <CAG_fn=VJrO3e9q0M6KA9nopqyDuRO4g7SBak6YptiEvzdE+nkA@mail.gmail.com> <ZPWNTiAxZZh/kzew@dhcp22.suse.cz>
-In-Reply-To: <ZPWNTiAxZZh/kzew@dhcp22.suse.cz>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 4 Sep 2023 10:34:25 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh2s26=Hj03cJXBWELmgCY=z5=mhTTDNVVKDAbda8g7Xw@mail.gmail.com>
-Message-ID: <CAHk-=wh2s26=Hj03cJXBWELmgCY=z5=mhTTDNVVKDAbda8g7Xw@mail.gmail.com>
-Subject: Re: [PATCH] mm: make __GFP_SKIP_ZERO visible to skip zero operation
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Alexander Potapenko <glider@google.com>,
-        Zhaoyang Huang <huangzhaoyang@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, ke.wang@unisoc.com,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Mateusz Guzik <mjguzik@gmail.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=no
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] kconfig: add dependencies of POWER_RESET for mips
+ malta
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
+        "hdegoede@redhat.com" <hdegoede@redhat.com>
+Cc:     "linux@weissschuh.net" <linux@weissschuh.net>,
+        "w@1wt.eu" <w@1wt.eu>, "falcon@tinylab.org" <falcon@tinylab.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <cover.1693535514.git.tanyuan@tinylab.org>
+ <1c17f017d6c837ef887d08bd2f85102df3fbc17c.1693535514.git.tanyuan@tinylab.org>
+ <915a9e2d-36ea-4a74-7b1b-9688f215b6f1@linaro.org>
+ <55C9BDEDAB4E0B76+838dbd4f-425d-4f2e-94ee-f2bc3092ae13@tinylab.org>
+ <c001c34b-e20c-f32e-f247-722d34a8db3d@linaro.org>
+ <54da2376-dc65-0a96-55df-7a5acfbb9bff@csgroup.eu>
+Content-Language: en-GB
+From:   Yuan Tan <tanyuan@tinylab.org>
+In-Reply-To: <54da2376-dc65-0a96-55df-7a5acfbb9bff@csgroup.eu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpipv:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
+X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
+        RCVD_ILLEGAL_IP,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Sept 2023 at 00:55, Michal Hocko <mhocko@suse.com> wrote:
+
+On 9/4/2023 6:58 PM, Christophe Leroy wrote:
 >
->       Sooner or later this will become an
-> unreviewable mess so the value of init_on_alloc will become very
-> dubious.
+> Le 04/09/2023 à 12:51, Philippe Mathieu-Daudé a écrit :
+>> On 4/9/23 11:24, Yuan Tan wrote:
+>>> Hi,
+>>>
+>>> On 9/4/2023 3:40 PM, Philippe Mathieu-Daudé wrote:
+>>>> Hi,
+>>>>
+>>>> On 1/9/23 04:42, Yuan Tan wrote:
+>>>>> MIPS Malta's power off depends on PCI, PCI_QUIRKS, and
+>>>>> POWER_RESET_PIIX4_POWEROFF to work. Enable them when POWER_RESET is set
+>>>>> for convenience.
+>>>>>
+>>>>> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
+>>>>> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
+>>>>> ---
+>>>>>    arch/mips/Kconfig | 3 +++
+>>>>>    1 file changed, 3 insertions(+)
+>>>>>
+>>>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+>>>>> index bc8421859006..13bacbd05125 100644
+>>>>> --- a/arch/mips/Kconfig
+>>>>> +++ b/arch/mips/Kconfig
+>>>>> @@ -547,6 +547,9 @@ config MIPS_MALTA
+>>>>>        select MIPS_L1_CACHE_SHIFT_6
+>>>>>        select MIPS_MSC
+>>>>>        select PCI_GT64XXX_PCI0
+>>>>> +    select PCI if POWER_RESET
+>>>>> +    select PCI_QUIRKS if POWER_RESET
+>>>>> +    select POWER_RESET_PIIX4_POWEROFF if POWER_RESET
+>>>>>        select SMP_UP if SMP
+>>>>>        select SWAP_IO_SPACE
+>>>>>        select SYS_HAS_CPU_MIPS32_R1
+>>>> Shouldn't we also update the _defconfig files?
+>>>>
+>>> Sorry, in my last email, I forgot to reply to all. So I am now
+>>> resending this email.
+>>>
+>>> In malta_defconfig, PCI and POWER_RESET_PIIX4_POWEROFF have already
+>>> been set and PCI_QUIRKS is also selected by FSL_PCI [=n].
+>>>
+>>> So shutdown and reboot with malta_defconfig is working and there is no
+>>> need to update the malta_defconfig 🙂
+>> Since the dependency is now enforced by Kconfig, the defconfig can
+>> be simplified:
+>>
+>> --- a/arch/mips/configs/malta_defconfig
+>> +++ b/arch/mips/configs/malta_defconfig
+>> @@ -306,3 +306,2 @@ CONFIG_SERIAL_8250_CONSOLE=y
+>>    CONFIG_POWER_RESET=y
+>> -CONFIG_POWER_RESET_PIIX4_POWEROFF=y
+>>    CONFIG_POWER_RESET_SYSCON=y
+>>
+>> But maybe we don't care, I don't know.
+> I understand from what you say that you update malta_defconfig manually ?
+>
+> defconfigs shouldn't be updated manually.
+>
+> Once you have the new .config you should use "make savedefconfig" then
+> replace your file by the newly generated defconfig file.
+>
+> Christophe
 
-The value of init_on_alloc is *already* very dubious.
+To do so, I just unset CONFIG_POWER_RESET and set it again in 
+menuconfig, then "make savedefconfig". The POWER_RESET part is simplified.
 
-Exactly because people will turn it off, because it hurts performance
-so much - and in pointless ways.
+  CONFIG_POWER_RESET=y
+-CONFIG_POWER_RESET_PIIX4_POWEROFF=y
+-CONFIG_POWER_RESET_SYSCON=y
 
-You do realize that distributions - well, at least Fedora - simply
-don't turn INIT_ON_ALLOC_DEFAULT_ON on at all?
+  However, I found that there's other changes in this new 
+malta_defconfig, for example
 
-So the current state of init_on_alloc is that nobody sane uses it. You
-have to think you're special to enable it, because it is *so* bad.
+CONFIG_NLS_KOI8_U=m CONFIG_CRYPTO_CRYPTD=m -CONFIG_CRYPTO_LRW=m 
+-CONFIG_CRYPTO_PCBC=m -CONFIG_CRYPTO_HMAC=y -CONFIG_CRYPTO_XCBC=m 
+-CONFIG_CRYPTO_MD4=m -CONFIG_CRYPTO_SHA512=m -CONFIG_CRYPTO_WP512=m 
+-CONFIG_CRYPTO_ANUBIS=m CONFIG_CRYPTO_BLOWFISH=m CONFIG_CRYPTO_CAMELLIA=m
 
-Security people need to realize that the primary point of computing is
-NEVER EVER security. Security is entirely pointless without a usable
-system.
+Should I import all these changes in a commit? Or only POWER_RESET part.
 
-Unless security people realize that they are always secondary, they
-aren't security people, they are just random wankers.
-
-And people who state this truism had better not get shamed for
-standing up to stupidity.
-
-             Linus
