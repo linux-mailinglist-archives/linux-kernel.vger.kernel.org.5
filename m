@@ -2,166 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C4AB0791C57
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D54B2791C58
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353401AbjIDSIR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 14:08:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45584 "EHLO
+        id S1353407AbjIDSIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 14:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243473AbjIDSIP (ORCPT
+        with ESMTP id S1353403AbjIDSIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 14:08:15 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BCC13E
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:08:12 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id ca18e2360f4ac-794c7d95ba5so67088939f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693850891; x=1694455691; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0tEFwq12UF5zCmmOpDsVAwQyIeVifd7dDTHpnacK0UQ=;
-        b=PTcBrWDTKRVwDJCh5irhuLEFhYUxsCnlwhsHqwYC9Sp0jahhxdX6GwDHbmTDHsvkSz
-         8U3jcti9oj7DdR42hKGOba0N9st/4c7q5TihNvTLd9BO7OTUdpc0X0dPcdNJ+tUusclR
-         MvMPCECcle8HeKPBRT9GibPeVCwbLkQTGWmv4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693850891; x=1694455691;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0tEFwq12UF5zCmmOpDsVAwQyIeVifd7dDTHpnacK0UQ=;
-        b=XzR0j6/svkLSCFiYJkMX4Ffgq6DiOkAvmPAiQiQZCiQNfcMOT3/PhGEqazEu2YltzC
-         f4ebc7vkxedrDmarvZc03iaOeKSWAlqXTc9jRwVH+JcLqeegO9iV0DYXkqCsNSL+NZVC
-         Mo1shINA9MXG3baHKNvvhHVlt5UlAH9z48YxykjNb2ETrEX/eOg4gmGFxpcktewRRUub
-         80Xhju9plQfqYDUzaVm58aAePxXUQSY+0vfID2e1s3gRiIFYNnQMtuBCHrpCX716Wh4P
-         CuqULOEhpaTN83p4Lm1xrkQ76k7ivG4DMH1T6d+fouLaNy5fC3U+NtrwrapoopUefz3P
-         G9qA==
-X-Gm-Message-State: AOJu0Yz6tyZsXHr9vgy1r1ZoWnmq6yVNMDkTrXzjj+gtJwdIERttq1nC
-        DfJrXJF00HxRUs9TvZgg4wcc0nf2e4uAdsnR9lk=
-X-Google-Smtp-Source: AGHT+IEHZt1WRuZqA2Wmfc55FNOuRsD84phTBzjghuiQXLfZnRv1pVitPty4syUUp7DZ6Ov+pU33MA==
-X-Received: by 2002:a5e:a618:0:b0:794:c9a2:5fe3 with SMTP id q24-20020a5ea618000000b00794c9a25fe3mr12586673ioi.4.1693850891310;
-        Mon, 04 Sep 2023 11:08:11 -0700 (PDT)
-Received: from joelboxx5.corp.google.com (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id g15-20020a02b70f000000b0042bb13cb80fsm3520216jam.120.2023.09.04.11.08.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 11:08:10 -0700 (PDT)
-From:   "Joel Fernandes (Google)" <joel@joelfernandes.org>
-To:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Cc:     Zqiang <qiang.zhang1211@gmail.com>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        stable@vger.kernel.org, Joel Fernandes <joel@joelfernandes.org>,
-        linux-mm@kvack.org
-Subject: [PATCH v3 2/2] rcu: Dump vmalloc memory info safely
-Date:   Mon,  4 Sep 2023 18:08:05 +0000
-Message-ID: <20230904180806.1002832-2-joel@joelfernandes.org>
-X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-In-Reply-To: <20230904180806.1002832-1-joel@joelfernandes.org>
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
+        Mon, 4 Sep 2023 14:08:21 -0400
+Received: from de-smtp-delivery-113.mimecast.com (de-smtp-delivery-113.mimecast.com [194.104.111.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C157199
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=toradex.com; s=toradex-com;
+        t=1693850896;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=fk22hQVQEhlIiF2PqzQ91kuxeTmN8GISTuD5VXq4EqY=;
+        b=N3lmaw+RPLyKEXG70UfPInobT/ikKSbKf8bd30DYFNCLEici0cLVDuOTaO9ykaF+MuWJuc
+        Kh3id5kPuc3oIvzQEGu/icgGYUxHLLr3jaEk8jZnJTEtZGiv4qtymmERCjO/75XIGny5Px
+        WZcTv+HIcjBGgQH6rWG+lOgSok6SQ7g=
+Received: from CHE01-GV0-obe.outbound.protection.outlook.com
+ (mail-gv0che01lp2042.outbound.protection.outlook.com [104.47.22.42]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ de-mta-40-2G5Ms86mP0OIyWYjVgDUXg-3; Mon, 04 Sep 2023 20:08:14 +0200
+X-MC-Unique: 2G5Ms86mP0OIyWYjVgDUXg-3
+Received: from GVAP278MB0679.CHEP278.PROD.OUTLOOK.COM (2603:10a6:710:4b::13)
+ by ZRAP278MB0143.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:12::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Mon, 4 Sep
+ 2023 18:08:12 +0000
+Received: from GVAP278MB0679.CHEP278.PROD.OUTLOOK.COM
+ ([fe80::b790:4918:d21c:71ff]) by GVAP278MB0679.CHEP278.PROD.OUTLOOK.COM
+ ([fe80::b790:4918:d21c:71ff%4]) with mapi id 15.20.6745.030; Mon, 4 Sep 2023
+ 18:08:12 +0000
+From:   Marcel Ziswiler <marcel.ziswiler@toradex.com>
+To:     "Laurent.pinchart@ideasonboard.com" 
+        <Laurent.pinchart@ideasonboard.com>,
+        "andrzej.hajda@intel.com" <andrzej.hajda@intel.com>,
+        "neil.armstrong@linaro.org" <neil.armstrong@linaro.org>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
+        "tomi.valkeinen@ideasonboard.com" <tomi.valkeinen@ideasonboard.com>,
+        "adrien.grassein@gmail.com" <adrien.grassein@gmail.com>,
+        "rfoss@kernel.org" <rfoss@kernel.org>,
+        "airlied@gmail.com" <airlied@gmail.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        "jonas@kwiboo.se" <jonas@kwiboo.se>,
+        "jernej.skrabec@gmail.com" <jernej.skrabec@gmail.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+CC:     "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/4] drm/bridge: lt8912b: Manually disable HPD only if it
+ was enabled
+Thread-Topic: [PATCH 3/4] drm/bridge: lt8912b: Manually disable HPD only if it
+ was enabled
+Thread-Index: AQHZ31rEQ9B5AddLfk2dySZvpk3rdg==
+Date:   Mon, 4 Sep 2023 18:08:12 +0000
+Message-ID: <cb069b10a38b018868f370fada3e97da7257264b.camel@toradex.com>
+References: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com>
+         <20230804-lt8912b-v1-3-c542692c6a2f@ideasonboard.com>
+In-Reply-To: <20230804-lt8912b-v1-3-c542692c6a2f@ideasonboard.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: GVAP278MB0679:EE_|ZRAP278MB0143:EE_
+x-ms-office365-filtering-correlation-id: 9ea7a26c-8562-42cc-647a-08dbad71e731
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: ZxUpLSteGezpaw0AFEcSOc47FT32KRIFE27pVfVlLd8OnOPI2VQBBL9KyxKsGi6iQBQYH5DdMEE8+rsPy4Adl/3fNWy2wZlyhQgup2reaNgnVo+wMy6eIhxnx90ZjMRSDJa9FLVVk1lqGn54vXKF/xJHWcWt/BFWNVvUtRIpdXQgnBuWxb7KgQdBngF4JOy6JptpLc4Fap0nON1L5EP8LXEbPVGWE5wrIV/hPjZqgI/8yaax6M0ax99qAILxaS0jfZN6+KMuIlY+o/viSYKPe0hNlX8OJpPTu1jDp7ZuSpCs7+TG7g2mqchbO51XjcTLg7p2kkohEqE7tLNmDendgSNXOA83OdKTaWX25igfiU6adhlMLL/W7k9mQdOHYWNo6xnELpqfpkVNvVr+O5wfDPp544QTnURiwCa7O4utiK1/it/jjO+BcLjZWHcp3InONWDsT2U32RMhTUc6rHvBds6Ee2ia1hso/Fo5maWnuKu0CQyAPBFg3WzKx7/2LO0NQZq08qbH7BfsWUc1qFaliK3rUkIRGbhZlxPwe4WYoK5sHXQ1hvFKr9yIkU443I0a7pz5ZaTYE1jSmxkHn+fUQ+BBtSh6Ur5HGcoxztai4OBf3d0XFbuPQZXuZ09O5J3lkX19YxaJVCQDN7kTHSYk1Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GVAP278MB0679.CHEP278.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(39840400004)(396003)(346002)(366004)(376002)(1800799009)(186009)(451199024)(2906002)(38070700005)(38100700002)(36756003)(86362001)(921005)(122000001)(71200400001)(4326008)(8936002)(8676002)(2616005)(5660300002)(44832011)(76116006)(91956017)(110136005)(41300700001)(6512007)(54906003)(64756008)(66446008)(66556008)(66946007)(66476007)(316002)(6506007)(6486002)(7416002)(83380400001)(478600001);DIR:OUT;SFP:1102
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?V3YwbmJBN2lER2FyeHR1ajN0RHc0TFY0NVRCZ2tkSEdiMkxaTXpjUUdJV0JR?=
+ =?utf-8?B?VTBFQTRiWnlxQkZrWHZnTU0zOE9vaFZYNno1MXI1Ty96eHJLZFlWS2lnbUFy?=
+ =?utf-8?B?bWFNVjZqQlFVbW8yNllITFA4R0NCVTlhOXBTaE0rMHM2WGZ0UDBydVpSZURO?=
+ =?utf-8?B?SWtFRTI4QnUvS0JMMGFZSWMxOStRd3QyNFFVSFpUMlFZV1JNVXNXK05wUmxO?=
+ =?utf-8?B?cXpCa0tZOGVVSXJ1ZXRsUHY2YjQ3OTluWnBtRTQrRUhJR2N0QlR0WnBjbHM3?=
+ =?utf-8?B?YlVmUTlJeG9pR1hUVG11N3lEQ0NLWjE3MTZ2dGdWZUlJNWZyakpGWHV3Qkdv?=
+ =?utf-8?B?VVhUWWhCblY4ZTJvNm9sUDRIc0lzMGhuU1ErbkpXTmplV3ZCbGpLNTJLTkhK?=
+ =?utf-8?B?UjRxajdLZ0xUS0hTSU1oWmltVFpFWWJsdzVhMWl3YlBUZTFEQ1F0cVlxMmpJ?=
+ =?utf-8?B?MXR1bER0VzFoWjlSWWZneXd4S0FKQml2M3RnN0ZmV1ArNTRFclVwMjN3SldX?=
+ =?utf-8?B?cGc0eWE5SlNGMlBuejJDWTJIUmlCbkFEQndlbFlXQTVuMnUyNU9yaFZwMFd0?=
+ =?utf-8?B?dzI3WS80ZUlqeDZNMzVIWDFSdUJnTVZjQXFibkl2dTBCbnZLZ01BN2dBcHpG?=
+ =?utf-8?B?c1l2dVQ4MXN1Q04yTUFacWI3QzdlYzNWbmVnSGNSQUV4V0FHOEVFVHl0Qnps?=
+ =?utf-8?B?N2dYWXpoSG5pTVN5RytwZHBwaUFiSTVUZUpUTmlJZ0g1ZG04eXB6R25lc0lZ?=
+ =?utf-8?B?MVIzYm81c0g5WlAvaGZFN29lSndheWh4U1ZMN2I1NXl1S1k5OHczbXJpdzJN?=
+ =?utf-8?B?dU5Fdkw5VkFOMmNyWmRXWEh1MUZPNjVKeUs1emdoTCs0YlpiZlZEQUlSMXd5?=
+ =?utf-8?B?SmJzQTdMMjhBZmZ5dlpsang3SDBNZ1hzVmdqZVFmRUp3VzVSU3NQbTRQWnp0?=
+ =?utf-8?B?SDFqMC9NaGIrZ081UENTcjNxY0lPWlFNY0toaG1TNmVyTmFPV3lqeXZmL2RZ?=
+ =?utf-8?B?MktyZlVFVFd5eG5JZHpSOGZRdVlWbHhwS3BtUHYrZDIrNmNaTzg4N2tNS0tY?=
+ =?utf-8?B?djhpSXVDTDNIeEYzVFIvQVZBZnV1Tjd3Mmo1bXNHbEtSa2lLbFlyZHhza1M1?=
+ =?utf-8?B?VGVPWStVNHA1RUdZNmZmNWovTWVnUlk3ZjlKU3ZIa1pSeHc1dmhYOW8vS0RL?=
+ =?utf-8?B?dVhYbGovc1RKOWt1Vks0c1RSTmp5SWV6QnErRWtJL2tPZjJJTmI1UEtTUE80?=
+ =?utf-8?B?amxaamo0ZE1sL2dGK05aNUVhWW4ySndsM3FOaVZyTmZtM25nZm5Vck9YWUdx?=
+ =?utf-8?B?SEpIZWRaaHVxVlM1WVlDZVZ3cWRUKzZ2ZFpFRW1lR044ZXB1SHlvWXhNdVJs?=
+ =?utf-8?B?VWczVDB0cnBqT0tkZTFkd2JFRUFoY21xREJMR1JCSDJINFhYbFRqRDJYZXdH?=
+ =?utf-8?B?WWFHbTNQMXc3NVlCZGxGQzVqZmZWZFppa2hyckEydzZ6TWVnNG9qRWNkV1Fr?=
+ =?utf-8?B?dC9qc1orSmhnN1hhWENKYlBXV3NWem5FanNxVDlkY09PWFRtdlc5VkZ0bWQ3?=
+ =?utf-8?B?ZlFQUXFJYmxVMlJ4bnBPN3R5Skp3WTZYdm95cWI1RWdmb294VVMwcWhKZnhO?=
+ =?utf-8?B?dk53VlJKYXNjMnZITGJCOUNWcHBUc3YrSHVwekcwYjdLZnQydDZ6eXN5SElC?=
+ =?utf-8?B?YkN1dnFDN1NXbFdJK09ZUUVtVDROZHFqTlQrT3BoMlRPSkJ1NUlPYTNwdHhV?=
+ =?utf-8?B?cnJMYmZzcjdSNXFGZnRWQzZ5SEhNejc3eU1lTFhGbEdWVlBlOENHdUtLQkpv?=
+ =?utf-8?B?L2o3UjFEZy9IcFJHM2FBbldnZGl3UTZ4WGFPcHZybjhHWXBzclYzUEdkQ1Vo?=
+ =?utf-8?B?SXQxZUh5MHhaWVQrU0VhQkhGMnFXRVFBc2hUZkg0VVNCSVNtQnFnQzl4Vmtq?=
+ =?utf-8?B?WEJzTjhGc0w3Qmh3RStYKyt3ZUo1MDFOYW90OUJHVEpoSzJOMEc3Z0wyaEVl?=
+ =?utf-8?B?YmF2VzlxZkpSc08xNThxZEwxb3dxbnlRNUVBblk0N240QVFLb1pDMWwrWm5u?=
+ =?utf-8?B?K1BocTRmN0cyd1kycXVQWHhlQmdCQ2xRYmh6ZGJxY3ZUZXc3ZkNseXBwSUpy?=
+ =?utf-8?B?U3dyckRZMk1GY0tWUGYzM3h3V0xKYU1HK2tKRE05TmtDSjM2MlN1b0dHaVRy?=
+ =?utf-8?Q?at9nkwgn2Kpxm6qXWmCcuco=3D?=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: toradex.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: GVAP278MB0679.CHEP278.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9ea7a26c-8562-42cc-647a-08dbad71e731
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Sep 2023 18:08:12.4537
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d9995866-0d9b-4251-8315-093f062abab4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Oxd0hyChZX/r+HfB9Dm3t5WMOkBUhgqF/1WCyVQVQKJhQjJ/cIYLgsBQBaHwwpl0JNrE9c2SpqYiWPmuaTTu/UyYshrgnzE91zwnsn9Zc2E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZRAP278MB0143
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: toradex.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-ID: <367F2779FF10D7409ED9885EB2E3801F@CHEP278.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang1211@gmail.com>
-
-Currently, for double invoke call_rcu(), will dump rcu_head objects
-memory info, if the objects is not allocated from the slab allocator,
-the vmalloc_dump_obj() will be invoke and the vmap_area_lock spinlock
-need to be held, since the call_rcu() can be invoked in interrupt context,
-therefore, there is a possibility of spinlock deadlock scenarios.
-
-And in Preempt-RT kernel, the rcutorture test also trigger the following
-lockdep warning:
-
-BUG: sleeping function called from invalid context at kernel/locking/spinlock_rt.c:48
-in_atomic(): 1, irqs_disabled(): 1, non_block: 0, pid: 1, name: swapper/0
-preempt_count: 1, expected: 0
-RCU nest depth: 1, expected: 1
-3 locks held by swapper/0/1:
- #0: ffffffffb534ee80 (fullstop_mutex){+.+.}-{4:4}, at: torture_init_begin+0x24/0xa0
- #1: ffffffffb5307940 (rcu_read_lock){....}-{1:3}, at: rcu_torture_init+0x1ec7/0x2370
- #2: ffffffffb536af40 (vmap_area_lock){+.+.}-{3:3}, at: find_vmap_area+0x1f/0x70
-irq event stamp: 565512
-hardirqs last  enabled at (565511): [<ffffffffb379b138>] __call_rcu_common+0x218/0x940
-hardirqs last disabled at (565512): [<ffffffffb5804262>] rcu_torture_init+0x20b2/0x2370
-softirqs last  enabled at (399112): [<ffffffffb36b2586>] __local_bh_enable_ip+0x126/0x170
-softirqs last disabled at (399106): [<ffffffffb43fef59>] inet_register_protosw+0x9/0x1d0
-Preemption disabled at:
-[<ffffffffb58040c3>] rcu_torture_init+0x1f13/0x2370
-CPU: 0 PID: 1 Comm: swapper/0 Tainted: G        W          6.5.0-rc4-rt2-yocto-preempt-rt+ #15
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x68/0xb0
- dump_stack+0x14/0x20
- __might_resched+0x1aa/0x280
- ? __pfx_rcu_torture_err_cb+0x10/0x10
- rt_spin_lock+0x53/0x130
- ? find_vmap_area+0x1f/0x70
- find_vmap_area+0x1f/0x70
- vmalloc_dump_obj+0x20/0x60
- mem_dump_obj+0x22/0x90
- __call_rcu_common+0x5bf/0x940
- ? debug_smp_processor_id+0x1b/0x30
- call_rcu_hurry+0x14/0x20
- rcu_torture_init+0x1f82/0x2370
- ? __pfx_rcu_torture_leak_cb+0x10/0x10
- ? __pfx_rcu_torture_leak_cb+0x10/0x10
- ? __pfx_rcu_torture_init+0x10/0x10
- do_one_initcall+0x6c/0x300
- ? debug_smp_processor_id+0x1b/0x30
- kernel_init_freeable+0x2b9/0x540
- ? __pfx_kernel_init+0x10/0x10
- kernel_init+0x1f/0x150
- ret_from_fork+0x40/0x50
- ? __pfx_kernel_init+0x10/0x10
- ret_from_fork_asm+0x1b/0x30
- </TASK>
-
-The previous patch fixes this by using the deadlock-safe best-effort
-version of find_vm_area. However, in case of failure print the fact that
-the pointer was a vmalloc pointer so that we print at least something.
-
-Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: rcu@vger.kernel.org
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-Cc: stable@vger.kernel.org
-Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
----
- mm/util.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/mm/util.c b/mm/util.c
-index dd12b9531ac4..406634f26918 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -1071,7 +1071,9 @@ void mem_dump_obj(void *object)
- 	if (vmalloc_dump_obj(object))
- 		return;
- 
--	if (virt_addr_valid(object))
-+	if (is_vmalloc_addr(object))
-+		type = "vmalloc memory";
-+	else if (virt_addr_valid(object))
- 		type = "non-slab/vmalloc memory";
- 	else if (object == NULL)
- 		type = "NULL pointer";
--- 
-2.42.0.283.g2d96d420d3-goog
+SGkgVG9taQ0KDQpMb29rcyBnb29kLiBUaGFua3MhIFRlc3RlZCBib3RoIG9uIFZlcmRpbiBBTTYy
+IGFzIHdlbGwgYXMgb24gVmVyZGluIGlNWDhNIE1pbmkuDQoNCkp1c3QgYSBtaW5vciBuaXQtcGlj
+ayBpbiB5b3VyIGNvbW1pdCBtZXNzYWdlLg0KDQpPbiBGcmksIDIwMjMtMDgtMDQgYXQgMTM6NDgg
+KzAzMDAsIFRvbWkgVmFsa2VpbmVuIHdyb3RlOg0KPiBsdDg5MTJiIG9ubHkgY2FsbHMgZHJtX2Jy
+aWRnZV9ocGRfZW5hYmxlKCkgaWYgaXQgY3JlYXRlcyBhIGNvbm5lY3RvciBhbmQNCj4gdGhlIG5l
+eHQgYnJpZGdlIGhhcyBEUk1fQlJJREdFX09QX0hQRCBzZXQuIEhvd2V2ZXIsIHdoZW4gY2FsbGlu
+Zw0KPiBkcm1fYnJpZGdlX2hwZF9kaXNhYmxlKCkgaXQgbWlzc2VzIGNoZWNraW5nIGlmIGEgY29u
+bmVjdG9yIHdhcyBjcmVhdGVkLA0KPiBjYWxsaW5nIGRybV9icmlkZ2VfaHBkX2Rpc2FibGUoKSBl
+dmVuIGlmIEhQRCB3YXMgbmVudmVyIGVuYWJsZWQuIEkgZG9uJ3QNCg0Kd2FzIG5ldmVyIGVuYWJs
+ZWQNCg0KPiBzZWUgYW55IGlzc3VlcyBjYXVzaW5nIGJ5IHRoaXMgd3JvbmcgY2FsbCwgdGhvdWdo
+Lg0KDQphbnkgaXNzdWVzIGNhdXNlZCBieSB0aGlzIHdyb25nIGNhbGwNCg0KPiBBZGQgdGhlIGNo
+ZWNrIHRvIGF2b2lkIHdyb25nbHkgY2FsbGluZyBkcm1fYnJpZGdlX2hwZF9kaXNhYmxlKCkuDQo+
+IA0KPiBGaXhlczogM2IwYTAxYTZhNTIyICgiZHJtL2JyaWRnZTogbHQ4OTEyYjogQWRkIGhvdCBw
+bHVnIGRldGVjdGlvbiIpDQo+IFNpZ25lZC1vZmYtYnk6IFRvbWkgVmFsa2VpbmVuIDx0b21pLnZh
+bGtlaW5lbkBpZGVhc29uYm9hcmQuY29tPg0KDQpGb3IgdGhlIHdob2xlIHNlcmllczoNCg0KVGVz
+dGVkLWJ5OiBNYXJjZWwgWmlzd2lsZXIgPG1hcmNlbC56aXN3aWxlckB0b3JhZGV4LmNvbT4NCg0K
+PiAtLS0NCj4gwqBkcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2xvbnRpdW0tbHQ4OTEyYi5jIHwgMiAr
+LQ0KPiDCoDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKSwgMSBkZWxldGlvbigtKQ0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvbG9udGl1bS1sdDg5MTJiLmMg
+Yi9kcml2ZXJzL2dwdS9kcm0vYnJpZGdlL2xvbnRpdW0tbHQ4OTEyYi5jDQo+IGluZGV4IDJkNzUy
+ZTA4MzQzMy4uOWVlNjM5ZTc1YTFjIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9kcm0vYnJp
+ZGdlL2xvbnRpdW0tbHQ4OTEyYi5jDQo+ICsrKyBiL2RyaXZlcnMvZ3B1L2RybS9icmlkZ2UvbG9u
+dGl1bS1sdDg5MTJiLmMNCj4gQEAgLTU4Nyw3ICs1ODcsNyBAQCBzdGF0aWMgdm9pZCBsdDg5MTJf
+YnJpZGdlX2RldGFjaChzdHJ1Y3QgZHJtX2JyaWRnZSAqYnJpZGdlKQ0KPiDCoA0KPiDCoMKgwqDC
+oMKgwqDCoMKgbHQ4OTEyX2hhcmRfcG93ZXJfb2ZmKGx0KTsNCj4gwqANCj4gLcKgwqDCoMKgwqDC
+oMKgaWYgKGx0LT5oZG1pX3BvcnQtPm9wcyAmIERSTV9CUklER0VfT1BfSFBEKQ0KPiArwqDCoMKg
+wqDCoMKgwqBpZiAobHQtPmNvbm5lY3Rvci5kZXYgJiYgbHQtPmhkbWlfcG9ydC0+b3BzICYgRFJN
+X0JSSURHRV9PUF9IUEQpDQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZHJtX2Jy
+aWRnZV9ocGRfZGlzYWJsZShsdC0+aGRtaV9wb3J0KTsNCj4gwqB9DQoNCkNoZWVycw0KDQpNYXJj
+ZWwNCg==
 
