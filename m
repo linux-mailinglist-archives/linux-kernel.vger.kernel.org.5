@@ -2,149 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD08E791291
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:52:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D152479129A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 09:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244518AbjIDHwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 03:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
+        id S1348406AbjIDHxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 03:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbjIDHwZ (ORCPT
+        with ESMTP id S229539AbjIDHxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 03:52:25 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA2EAF
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 00:52:21 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 691286607239;
-        Mon,  4 Sep 2023 08:52:19 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693813940;
-        bh=qDLcWoPKJotDDqdrPehwbo7fA/IUDDuKz/QM3kq8ocE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=MuENvPRR5UPyp0YvJWlgBkS6v3RyftroIhFz7PClFmI2fzjxoanJhm3XAM/eVo3NV
-         6jwj6h/Yiudb6UKZD7BiQa855ndK0057ROLNsWRhtorn4Cj64oIXCx4Kfawn7shVJL
-         RJYakEPjwjg/KaRe5qhbHJ+G/oil8ZZXQJQ0MglUa8H1VDqUuupiXM0r2roNKxm0f4
-         sXqfdWCuq5QLZCt0o1lXBtD90D8hIVItH5PvSTTgQKYg4hu7wxx58eAqsk5jAGRxmh
-         YZeDJHJS3lBHHHXuKlXhSBRKeO5/pPK1aFCwywRpvWapn9ftwe/w8IVnTPInt88p1y
-         xU971xAGvEKIA==
-Date:   Mon, 4 Sep 2023 09:52:17 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org,
-        intel-gfx@lists.freedesktop.org
-Subject: Re: [PATCH v15 02/23] drm/shmem-helper: Use flag for tracking page
- count bumped by get_pages_sgt()
-Message-ID: <20230904095217.06eb80f0@collabora.com>
-In-Reply-To: <1a40d9c6-fdbf-1494-00f2-1e37206fc984@collabora.com>
-References: <20230827175449.1766701-1-dmitry.osipenko@collabora.com>
-        <20230827175449.1766701-3-dmitry.osipenko@collabora.com>
-        <20230828125518.7b926fc6@collabora.com>
-        <1a40d9c6-fdbf-1494-00f2-1e37206fc984@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Mon, 4 Sep 2023 03:53:18 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C297ED
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 00:53:13 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso1443864a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 00:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693813991; x=1694418791; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hKg+j0ij0bj6tL0Ubk+HvKTshP5Zvzo1++prZoHQU4M=;
+        b=Bv0Cy/Cv4Lz9Mv/lKx/1cWP7Cwa4jvYVvtyPanjJQMhAuHzEc+jPdPCGA7/zg/MoHb
+         Fh03ltRwp2HqkAqR8FWnOjO+QikhymMNJB+gT2Dvj0zsaM7V1J8gQZEv5+HY3rtlD6ZL
+         YpuSJ8K5RC0DYAo2z05SLwF+BsYT1seXXawb6Y42RjXvJxJzo5IYmOV3uLBzZXioxhrE
+         5QGtUp25Wn3HtL6iN5vQFfwsU/itXmtJ3dYCGU/zipG31Sg/krqbz7vTUFXX5IYtn3S0
+         L/8+FGyo3iWiXtEps6Dt4bHlvgjI4sRHEu2O3Sf5OLLlwVR4/nrlG0RiH/C5j4QJ3nwB
+         xf5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693813991; x=1694418791;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hKg+j0ij0bj6tL0Ubk+HvKTshP5Zvzo1++prZoHQU4M=;
+        b=HdxDE5kPcQxzFBsnAKzaXWjEHmJka0eTzHkLf34+eO2HXgqftsBPAG0Ulw4um+bfHS
+         LMAtzyThj/zOYuC/vvMpPWB9KO8ekq46fFLy4UeM+E+v8YurOei08CGw43OynkbjFMP9
+         F8ZRvtAiSMqYawIPJVgQ1hePK/wgTC0nFbrjjgaXrcipUKRZAzEEH01z/yCLnUz66e6R
+         lV4oT1wNeDulpm5d9f4RCkNj6dCP2BI7+gDdQ9kbFIS2sBXq5h6/Yy/ZSZoq7b+XBe/c
+         OgGlTGX7PexwZTZA1nhOhqeRB5Lg5zFaRlBifKyyoFqsUAhKurnjjkFfg8z+qMCIXDVn
+         fTmQ==
+X-Gm-Message-State: AOJu0YwTt99UVZW0CaRGC8Bpk/fzxPaHuQUPUBShM61XNxKuDIrPFsC1
+        Ep87fPejAt1J5uPB+B/VF/yn7A==
+X-Google-Smtp-Source: AGHT+IG51yyXlEkoIHVtZBQ6BjDgQ9Ot4st5+o3nOo3wNnbxIkT/ovnRE6ZUUWjLC2qouRxMzCXnNQ==
+X-Received: by 2002:aa7:d982:0:b0:525:5ed2:abed with SMTP id u2-20020aa7d982000000b005255ed2abedmr6686818eds.30.1693813991487;
+        Mon, 04 Sep 2023 00:53:11 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id w25-20020aa7cb59000000b005222c6fb512sm5484731edt.1.2023.09.04.00.53.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 04 Sep 2023 00:53:11 -0700 (PDT)
+Message-ID: <4b88a31a-bbff-21b5-a53d-19a3e66e2f3e@linaro.org>
+Date:   Mon, 4 Sep 2023 09:53:09 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v11 5/6] dt-bindings: media: wave5: add yaml devicetree
+ bindings
+Content-Language: en-US
+To:     Sebastian Fricke <sebastian.fricke@collabora.com>
+Cc:     linux-media@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        kernel@collabora.com, bob.beckett@collabora.com,
+        hverkuil-cisco@xs4all.nl, nicolas.dufresne@collabora.com,
+        nas.chung@chipsnmedia.com, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20221207121350.66217-1-sebastian.fricke@collabora.com>
+ <20221207121350.66217-6-sebastian.fricke@collabora.com>
+ <48d60bd0-4de1-4a5e-eca1-1f8a9303cce0@linaro.org>
+ <20230904062502.qtajep4zyslnouxv@basti-XPS-13-9310>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230904062502.qtajep4zyslnouxv@basti-XPS-13-9310>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2 Sep 2023 21:28:21 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+On 04/09/2023 08:25, Sebastian Fricke wrote:
 
-> On 8/28/23 13:55, Boris Brezillon wrote:
-> > On Sun, 27 Aug 2023 20:54:28 +0300
-> > Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-> >   
-> >> Use separate flag for tracking page count bumped by shmem->sgt to avoid
-> >> imbalanced page counter during of drm_gem_shmem_free() time. It's fragile
-> >> to assume that populated shmem->pages at a freeing time means that the
-> >> count was bumped by drm_gem_shmem_get_pages_sgt(), using a flag removes
-> >> the ambiguity.
-> >>
-> >> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> >> ---
-> >>  drivers/gpu/drm/drm_gem_shmem_helper.c | 3 ++-
-> >>  drivers/gpu/drm/lima/lima_gem.c        | 1 +
-> >>  include/drm/drm_gem_shmem_helper.h     | 7 +++++++
-> >>  3 files changed, 10 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >> index 78d9cf2355a5..db20b9123891 100644
-> >> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> >> @@ -152,7 +152,7 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
-> >>  			sg_free_table(shmem->sgt);
-> >>  			kfree(shmem->sgt);
-> >>  		}
-> >> -		if (shmem->pages)
-> >> +		if (shmem->got_sgt)
-> >>  			drm_gem_shmem_put_pages(shmem);  
-> > 
-> > Can't we just move this drm_gem_shmem_put_pages() call in the
-> > if (shmem->sgt) block?  
+>>> +  sram:
+>>
+>> Missing vendor prefix.
 > 
-> As you've seen in patch #1, the shmem->sgt may belong to imported dmabuf
-> and pages aren't referenced in this case.
+> After some discussion with the the manufacturer of this CODEC chip, the SRAM
+> is not fixed to the CODEC chip but instead part of the SoC, thus the
+> vendor can vary. It sounds like the policy is to use the vendor prefix
+> of the SoC, that was used for upstreaming. But that policy sounds a bit
+> like a potential for future confusion to me, so I wanted to ask what you
+> would like to see. The SoC we develop on is from TI and the CODEC chip is from
+> C&M, so I could either call it: `ti,sram` or `cnm,sram`
 
-Unless I'm wrong, you're already in the if (!import_attach) branch
-here, so shmem->sgt should not be a dmabuf sgt.
+I meant vendor prefix of this device. It does not matter what SoC is
+that, however it turns out it is already a generic property, so no
+vendor prefix is needed if you use the same property - phandle points to
+a node which is a sram.yaml.
 
-> 
-> I agree that the freeing code is confusing. The flags make it a better,
-> not ideal. Though, the flags+comments solution is good enough to me.
 
-But what's the point of adding a flag when you can just do an
-if (!shmem->import_attach && shmem->sgt) check. At best, it just
-confuses people as to what these fields mean/are used for (especially
-when the field has such a generic name, when what you want is actually
-something like ->got_sgt_for_non_imported_object). But the most
-problematic aspect is that it adds fields to maintain, and those might
-end up being inconsistent with the object state because
-new/driver-specific code forgot to update them.
+Best regards,
+Krzysztof
 
-> Please let me know if you have more suggestions, otherwise I'll add
-> comment to the code and keep this patch for v16.
-
-I'd definitely prefer adding the following helper
-
-static bool has_implicit_pages_ref(struct drm_gem_shmem_object *shmem)
-{
-	return !shmem->import_attach && shmem->sgt;
-}
-
-which provides the same logic without adding a new field/flag.
-
-> 
-> BTW, I realized that the new flag wasn't placed properly in the Lima
-> driver, causing unbalanced page count in the error path. Will correct it
-> in v16.
-
-See, that's the sort of subtle bugs I'm talking about. If the state is
-inferred from other fields that can't happen.
