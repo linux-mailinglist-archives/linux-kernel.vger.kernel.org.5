@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A3AD791D71
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4DF791D74
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 20:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236675AbjIDS41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 14:56:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44134 "EHLO
+        id S237208AbjIDS7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 14:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbjIDS40 (ORCPT
+        with ESMTP id S236481AbjIDS7c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 14:56:26 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B5A3109
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:56:23 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-401b5516104so17348475e9.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:56:23 -0700 (PDT)
+        Mon, 4 Sep 2023 14:59:32 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86981109
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 11:59:28 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3fbd33a57b6so16732745e9.2
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 11:59:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693853782; x=1694458582; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1693853967; x=1694458767; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G4qsjVHBpGU5sO+OGh4AT0ORwR6myZD1vH3gXnj6fKc=;
-        b=TYPjLWV8pZflDv7yRqMrUuHUegg31N3+ehYxccKZcI+UgZNbLBg2QVzAUhZvdWOL3s
-         JnID2zAshxz4DGlxD8Tsj19HA3P451vcBSsT2kpLz3Uh9GshC0MlAkM5bwht/q0SdHF1
-         FYyFNFmIf2MIjxglbjoaQe66d07kBrD9xcpRDq1AdN64JBVZ4G1srqZ5YgQCjpAX0NPy
-         2W7FhLUjykguPAyqpS9erMaVQSsUBHMQZKYqDq77wwgjS73tfh1gSDXOvmh1pioCc9Ps
-         Df+auGrQxB0FrLkWG45fd1JKjNB9pnIE//NS+PP1jpvSK1BvjY5UlCMpH62N5lLOgQuh
-         bMMw==
+        bh=GDbiLlEqmBfltBmTsCoRx2b9yjBtdlH6iWz3M1Lt5wc=;
+        b=UsacGrYwpzfvG2zkN3iCDcReyHgmqZk0Xa6lI75Ewve+G/UCWqNdfr7vyCKIA6N3pL
+         3xKwfnIniiKHYvxUTPX2K2n0WjnM3skwcd16WASci6Mqcnd/kZqRjSb/wRfGTKh95eA8
+         621Y31CKPG0s8190HKIAa/B3NIUqkAtwXlCxJgMjG9FxQqJOncJ7O8QctflmRTQ5Ceom
+         ejfzdtT9ZVPqSeABsqDqObvemAjegw+CCp07DJFs87Yx+8LD2MrcNPTDtwyYQNsvnOe2
+         TiVIDzXAE+tF9MEkAShk+BL8xnbjdRpeB8xPzdg8cWqgupnTA2ZjvrypqmB2X0stCo0Z
+         UYrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693853782; x=1694458582;
+        d=1e100.net; s=20221208; t=1693853967; x=1694458767;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G4qsjVHBpGU5sO+OGh4AT0ORwR6myZD1vH3gXnj6fKc=;
-        b=VzHsh4Ct1fMsNec2msdMtVKnmYiD1eQyvuxNBGoD9n68lSDMK++7+AmxuU2O6y94Aa
-         mJ9Wzey97j5CKxYe+xD41NZXzGVBSuz2m3nqJhWw/gyplxt7AvqYmeHF50HVgmrE6kk7
-         5jthwfAGmBDrE1Ap+CtrRJK3JJqTBpMbjW6l+P65b3GWZLHozUH8FO0Vb1lzPIMEF6Vq
-         6OY/ydMstJTmfCXw4tfb+mP2rTP3xT5ip16qdcfwQYpDwhvWDTUuj+1Z2HIhcZKHgVbu
-         DHtvJxJV/nathsnBPOyLw2Wzl1K+067NlgpIOLLXmiEGiBuFRJZ6L/LzhYdWs0Gm+4o5
-         3/vg==
-X-Gm-Message-State: AOJu0Yz8Yz9/jYmzS2Dw93EczC6VD+4/awiFU//+ImXwfC187xeym7WR
-        fVsu2ptyPAiqMXyfVIvf3fa7BnTBFO8W646SVzeu/w==
-X-Google-Smtp-Source: AGHT+IGEkM6yU1BmhM0IjjtrWKLwQVKxsWSFXCXmknm61mhhl3SRDwE1ksYYd+kDr42Q9QRCG3TiB9s/QTueIeFgH0s=
-X-Received: by 2002:a05:600c:2218:b0:401:b53e:6c3b with SMTP id
- z24-20020a05600c221800b00401b53e6c3bmr7443728wml.6.1693853781573; Mon, 04 Sep
- 2023 11:56:21 -0700 (PDT)
+        bh=GDbiLlEqmBfltBmTsCoRx2b9yjBtdlH6iWz3M1Lt5wc=;
+        b=YBKgP7R9zBGt2afZXFmjzBgTbtHCKEYtbN2hlf7f6+eaoMDilLvnKHzFD1d4BhHgeQ
+         eKcCJVTYuizFOzs7HPOVP9pMDiEAhOtosk6/HOCXHL5Nz+gkNJbYMBE+47RDkEjKRsBu
+         GYSnlcBkTkiISEpUGcRQPd6Rur4rVIOV055+lxjSE4n5WvXxJDbxE6IPvMqjmRQzX+UC
+         eGKljcTkT1hip8FDoH6ecsNEG49yytgBqt0nHyKJmL9iHNDtkDAfVnAv3otfkFQkmnr9
+         mBQEFKYQxJvsyZoMNxxIxXVTBly1E8RHR7AYZUm+RtIqrn3kUOlbUjs80EvbqPmxpSNj
+         caJQ==
+X-Gm-Message-State: AOJu0YzJc7xPPOnWIRIXXxwRs7LZTOxceJiWvX/nomokPsl0fb1Ed5RK
+        pc44P8leuEP6GrqxDLUTUvlJz9aUf+QR0t6WCC011g==
+X-Google-Smtp-Source: AGHT+IHOsC3Af4FNjKO9QGMexCyA+QCLKl7uog8SZuiwiBIkzWUkqdvWTyJBAuXaxokuy1BJ3nGY6bHsOOQBsnoybKI=
+X-Received: by 2002:a7b:ce18:0:b0:3fb:f0ef:4669 with SMTP id
+ m24-20020a7bce18000000b003fbf0ef4669mr8247988wmc.17.1693853966862; Mon, 04
+ Sep 2023 11:59:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1693328501.git.andreyknvl@google.com> <306aeddcd3c01f432d308043c382669e5f63b395.1693328501.git.andreyknvl@google.com>
- <ZO8MxUqcL1dnykcl@elver.google.com> <CA+fCnZe2ZRQe+xt9A7suXrYW8Sb7WGD+oJJVWz6Co-KGYghZLw@mail.gmail.com>
-In-Reply-To: <CA+fCnZe2ZRQe+xt9A7suXrYW8Sb7WGD+oJJVWz6Co-KGYghZLw@mail.gmail.com>
+References: <cover.1693328501.git.andreyknvl@google.com> <f7ab7ad4013669f25808bb0e39b3613b98189063.1693328501.git.andreyknvl@google.com>
+ <ZO8OACjoGtRuy1Rm@elver.google.com> <CA+fCnZcAuipLKDiNY6LJAs6ODaOG9i6goVLQSdbALrzUDsnv5w@mail.gmail.com>
+In-Reply-To: <CA+fCnZcAuipLKDiNY6LJAs6ODaOG9i6goVLQSdbALrzUDsnv5w@mail.gmail.com>
 From:   Marco Elver <elver@google.com>
-Date:   Mon, 4 Sep 2023 20:55:42 +0200
-Message-ID: <CANpmjNPYNTTfBAay4J96hm=3tb4kUBH2OwpaCfJxL7rP=aibJA@mail.gmail.com>
-Subject: Re: [PATCH 12/15] stackdepot: add refcount for records
+Date:   Mon, 4 Sep 2023 20:58:50 +0200
+Message-ID: <CANpmjNPVu10Y+gO=r3eaU9GP8VL_dqmch3QQXYX8g9D-+HjVPg@mail.gmail.com>
+Subject: Re: [PATCH 15/15] kasan: use stack_depot_evict for tag-based modes
 To:     Andrey Konovalov <andreyknvl@gmail.com>
 Cc:     andrey.konovalov@linux.dev,
         Alexander Potapenko <glider@google.com>,
@@ -77,38 +77,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Sept 2023 at 20:46, Andrey Konovalov <andreyknvl@gmail.com> wrote=
+On Mon, 4 Sept 2023 at 20:48, Andrey Konovalov <andreyknvl@gmail.com> wrote=
 :
 >
-> On Wed, Aug 30, 2023 at 11:33=E2=80=AFAM Marco Elver <elver@google.com> w=
+> On Wed, Aug 30, 2023 at 11:38=E2=80=AFAM Marco Elver <elver@google.com> w=
 rote:
 > >
-> > If someone doesn't use stack_depot_evict(), and the refcount eventually
-> > overflows, it'll do a WARN (per refcount_warn_saturate()).
+> > > --- a/mm/kasan/tags.c
+> > > +++ b/mm/kasan/tags.c
+> > > @@ -96,7 +96,7 @@ static void save_stack_info(struct kmem_cache *cach=
+e, void *object,
+> > >                       gfp_t gfp_flags, bool is_free)
+> > >  {
+> > >       unsigned long flags;
+> > > -     depot_stack_handle_t stack;
+> > > +     depot_stack_handle_t stack, old_stack;
+> > >       u64 pos;
+> > >       struct kasan_stack_ring_entry *entry;
+> > >       void *old_ptr;
+> > > @@ -120,6 +120,8 @@ static void save_stack_info(struct kmem_cache *ca=
+che, void *object,
+> > >       if (!try_cmpxchg(&entry->ptr, &old_ptr, STACK_RING_BUSY_PTR))
+> > >               goto next; /* Busy slot. */
+> > >
+> > > +     old_stack =3D READ_ONCE(entry->stack);
 > >
-> > I think the interface needs to be different:
+> > Why READ_ONCE? Is it possible that there is a concurrent writer once th=
+e
+> > slot has been "locked" with STACK_RING_BUSY_PTR?
 > >
-> >         stack_depot_get(): increments refcount (could be inline if just
-> >         wrapper around refcount_inc())
-> >
-> >         stack_depot_put(): what stack_depot_evict() currently does
-> >
-> > Then it's clear that if someone uses either stack_depot_get() or _put()
-> > that these need to be balanced. Not using either will result in the old
-> > behaviour of never evicting an entry.
+> > If there is no concurrency, it would be clearer to leave it unmarked an=
+d
+> > add a comment to that effect. (I also think a comment would be good to
+> > say what the WRITE_ONCE below pair with, because at this point I've
+> > forgotten.)
 >
-> So you mean the exported interface needs to be different? And the
-> users will need to call both stack_depot_save+stack_depot_get for
-> saving? Hm, this seems odd.
+> Hm, I actually suspect we don't need these READ/WRITE_ONCE to entry
+> fields at all. This seems to be a leftover from the initial series
+> when I didn't yet have the rwlock. The rwlock prevents the entries
+> from being read (in kasan_complete_mode_report_info) while being
+> written and the try_cmpxchg prevents the same entry from being
+> rewritten (in the unlikely case of wrapping during writing).
 >
-> WDYT about adding a new flavor of stack_depot_save called
-> stack_depot_save_get that would increment the refcount? And renaming
-> stack_depot_evict to stack_depot_put.
+> Marco, do you think we can drop these READ/WRITE_ONCE?
 
-If there are no other uses of stack_depot_get(), which seems likely,
-just stack_depot_save_get() seems ok.
-
-> I'm not sure though if the overflow is actually an issue. Hitting that
-> would require calling stack_depot_save INT_MAX times.
-
-With a long-running kernel it's possible.
+Yes, I think they can be dropped.
