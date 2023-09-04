@@ -2,86 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CC437915C4
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9777E7915CF
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 12:43:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347809AbjIDKjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 06:39:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S1351418AbjIDKnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 06:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234139AbjIDKju (ORCPT
+        with ESMTP id S233006AbjIDKnJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 06:39:50 -0400
-Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C70161B5;
-        Mon,  4 Sep 2023 03:39:46 -0700 (PDT)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046049;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VrJdE4N_1693823980;
-Received: from 30.240.117.141(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VrJdE4N_1693823980)
-          by smtp.aliyun-inc.com;
-          Mon, 04 Sep 2023 18:39:42 +0800
-Message-ID: <e8dbdc1e-1c58-4aac-9f34-10bd55ab5fe7@linux.alibaba.com>
-Date:   Mon, 4 Sep 2023 18:39:39 +0800
+        Mon, 4 Sep 2023 06:43:09 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5954191;
+        Mon,  4 Sep 2023 03:42:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693824179; x=1725360179;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KG2QeDOlI8MHwoCPiPd6JfLSLSr0kBD/fqXSBY4+KyQ=;
+  b=Uk6LKvYlA+UvUUUOjLLbyzwrv4wCfCtCkSLV3131fj9GmXa6V2Nz9UAq
+   bwhQTiZPBsbpmmet5J1ulq7H0mT/n6RlEvBjaMEOIoEdy6iEz4Bf06pdk
+   HIfRhChwvoDjoEv85vBOG38+ngdVAuyl583iFCeFVrV0bvTRO81InUgoO
+   g8VFlvMZivQV3x2W+7vC2xetPV+P/MLsX8ZymjOy9aHoY6i/FIpUBTzeX
+   St1rGEdxCgYDMF9Egvz6t4ON0FfexsaJg9DnXRfbDD5DGYgxcW70iCgla
+   6WhR8JKqmGeSvwaYkgOIi/y88p+HIuUYcDpxCKLnc3hhM2od8loocl/jp
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="407570314"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="407570314"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 03:40:52 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="855567438"
+X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
+   d="scan'208";a="855567438"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 04 Sep 2023 03:40:49 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 0ED14892; Mon,  4 Sep 2023 13:40:47 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Saravana Kannan <saravanak@google.com>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [PATCH v1 1/1] device property: Clarify usage scope of some struct fwnode_handle members
+Date:   Mon,  4 Sep 2023 13:40:46 +0300
+Message-Id: <20230904104046.1682875-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.40.0.1.gaa8946217a0b
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.14.0
-Subject: Re: [PATCH] HWPOISON: add a pr_err message when forcibly send a
- sigbus
-To:     "Luck, Tony" <tony.luck@intel.com>, Will Deacon <will@kernel.org>
-Cc:     "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "James.Bottomley@HansenPartnership.com" 
-        <James.Bottomley@HansenPartnership.com>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Lutomirski, Andy" <luto@kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>
-References: <20230819102212.21103-1-xueshuai@linux.alibaba.com>
- <20230821105025.GB19469@willie-the-truck>
- <44c4d801-3e21-426b-2cf0-a7884d2bf5ff@linux.alibaba.com>
- <54114b64-4726-da46-8ffa-16749ec0887a@linux.alibaba.com>
- <20230830221814.GB30121@willie-the-truck>
- <d1c8c0fa-815f-6804-e4e5-89a5259e4bb1@linux.alibaba.com>
- <SJ1PR11MB6083A4F9312C34F69DBA8EEDFCE5A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Shuai Xue <xueshuai@linux.alibaba.com>
-In-Reply-To: <SJ1PR11MB6083A4F9312C34F69DBA8EEDFCE5A@SJ1PR11MB6083.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-11.4 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Most of the struct fwnode_handle members are for exclusive use with
+device links framework. Clarify this by adding a respective comment.
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/fwnode.h | 2 ++
+ 1 file changed, 2 insertions(+)
 
-On 2023/9/1 00:56, Luck, Tony wrote:
->> + @Tony for ERST
->> I found that after /dev/mcelog driver deprecated, both x86 and ARM64 platform does not
->> support to collect MCE record of previous boot in persistent storage via APEI ERST.
->> I propose to add a mechanism to do it for rasdaemon. Do you have any suggestion?
-> 
-> APEI ERST stored records should be available in /sys/fs/pstore after the system reboots.
-> 
-> Can rasdaemon collect them from there?
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index 5700451b300f..2a72f55d26eb 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -41,6 +41,8 @@ struct device;
+ struct fwnode_handle {
+ 	struct fwnode_handle *secondary;
+ 	const struct fwnode_operations *ops;
++
++	/* The below is used solely by device links, don't use otherwise */
+ 	struct device *dev;
+ 	struct list_head suppliers;
+ 	struct list_head consumers;
+-- 
+2.40.0.1.gaa8946217a0b
 
-I am afraid not yet. I will give it a shot and try to send a patch set.
-
-> 
-> -Tony
-
-Thank you.
-
-Best Regards,
-Shuai
