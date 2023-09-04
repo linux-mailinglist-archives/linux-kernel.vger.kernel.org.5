@@ -2,80 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E67791605
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2486791625
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 13:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352781AbjIDLCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 07:02:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45552 "EHLO
+        id S242581AbjIDLSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 07:18:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352768AbjIDLC0 (ORCPT
+        with ESMTP id S230398AbjIDLSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 07:02:26 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F0BCAB;
-        Mon,  4 Sep 2023 04:02:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693825342; x=1725361342;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/jMyoju6ZJux8VDzcuGeVRIrNRrTX37ly2ZnWUfckE4=;
-  b=ajL+r1bksC7mbGrO6rF4N50sgOD1BKuiTCOhpRPaUH8GCOpf5hnwoyiB
-   Z79TmWgmIvxqcitw2tPyekQSCFPKGQ/ijwkhAt1M5k++43SBSGE5O/Crq
-   4snqpkx/RK6hs/LnpR2SlKh1XWTIIVUBfjiJ5NTuTLO73STg6Q4BTP+uO
-   HxQ4Us5EsZRQ5Y/1VcRt34VOMUXPsoaoSFhDzBfOX98xIHEWT58RlZ4EW
-   WRCBb3HkpEsdM+tk4r8h2HivjmJ/gVh3dhKEgfeYaTNvpAZJOiPFWa8DB
-   CEvVLa5U/XG5KNsSyge5XapMMiWpVWieBqA+aMbessAPTouof/R0mBfY+
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="356894134"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="356894134"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 04:02:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10822"; a="740721668"
-X-IronPort-AV: E=Sophos;i="6.02,226,1688454000"; 
-   d="scan'208";a="740721668"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 04:02:19 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id 3E3B711F854;
-        Mon,  4 Sep 2023 14:02:16 +0300 (EEST)
-Date:   Mon, 4 Sep 2023 11:02:16 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Saravana Kannan <saravanak@google.com>, linux-acpi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Daniel Scally <djrscally@gmail.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v1 1/1] device property: Clarify usage scope of some
- struct fwnode_handle members
-Message-ID: <ZPW5OEEXw+C7aH5U@kekkonen.localdomain>
-References: <20230904104046.1682875-1-andriy.shevchenko@linux.intel.com>
+        Mon, 4 Sep 2023 07:18:02 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15801E3
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 04:17:59 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qd7Nu-0007D3-GP; Mon, 04 Sep 2023 13:04:46 +0200
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qd7Ns-003rVV-AK; Mon, 04 Sep 2023 13:04:44 +0200
+Received: from mtr by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <mtr@pengutronix.de>)
+        id 1qd7Nr-00110g-Um; Mon, 04 Sep 2023 13:04:43 +0200
+Date:   Mon, 4 Sep 2023 13:04:43 +0200
+From:   Michael Tretter <m.tretter@pengutronix.de>
+To:     Inki Dae <daeinki@gmail.com>
+Cc:     Jagan Teki <jagan@amarulasolutions.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Robert Foss <rfoss@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 2/5] drm/bridge: samsung-dsim: reread ref clock before
+ configuring PLL
+Message-ID: <20230904110443.GB224131@pengutronix.de>
+References: <20230818-samsung-dsim-v1-0-b39716db6b7a@pengutronix.de>
+ <20230818-samsung-dsim-v1-2-b39716db6b7a@pengutronix.de>
+ <CAAQKjZOuRVsF7vE6ghBG7KH_QkE-5_UXjXMY080ynzZLpDjs7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230904104046.1682875-1-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAQKjZOuRVsF7vE6ghBG7KH_QkE-5_UXjXMY080ynzZLpDjs7w@mail.gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mtr@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 01:40:46PM +0300, Andy Shevchenko wrote:
-> Most of the struct fwnode_handle members are for exclusive use with
-> device links framework. Clarify this by adding a respective comment.
+On Mon, 04 Sep 2023 13:38:33 +0900, Inki Dae wrote:
+> 2023년 8월 29일 (화) 오전 12:59, Michael Tretter <m.tretter@pengutronix.de>님이 작성:
 > 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> >
+> > The PLL reference clock may change at runtime. Thus, reading the clock
+> > rate during probe is not sufficient to correctly configure the PLL for
+> > the expected hs clock.
+> >
+> > Read the actual rate of the reference clock before calculating the PLL
+> > configuration parameters.
+> >
+> > Signed-off-by: Michael Tretter <m.tretter@pengutronix.de>
+> > ---
+> >  drivers/gpu/drm/bridge/samsung-dsim.c | 16 +++++++++-------
+> >  include/drm/bridge/samsung-dsim.h     |  1 +
+> >  2 files changed, 10 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > index 6778f1751faa..da90c2038042 100644
+> > --- a/drivers/gpu/drm/bridge/samsung-dsim.c
+> > +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
+> > @@ -611,7 +611,12 @@ static unsigned long samsung_dsim_set_pll(struct samsung_dsim *dsi,
+> >         u16 m;
+> >         u32 reg;
+> >
+> > -       fin = dsi->pll_clk_rate;
+> > +       if (dsi->pll_clk)
+> > +               fin = clk_get_rate(dsi->pll_clk);
+> > +       else
+> > +               fin = dsi->pll_clk_rate;
+> > +       dev_dbg(dsi->dev, "PLL ref clock freq %lu\n", fin);
+> > +
+> 
+> Could you share us the actual use case that in runtime the pll
+> reference clock can be changed?
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+On i.MX8M Nano, the VIDEO_PLL_CLK drives the DISPLAY_PIXEL_CLK_ROOT, which is
+used as pixel clock by the LCDIF. Changes to the pixel clock propagate to the
+VIDEO_PLL_CLK and may reconfigure the VIDEO_PLL_CLK. This is done to reduce
+the error on the pixel clock.
 
--- 
-Sakari Ailus
+As the ADV3575 as MIPI-DSI device reconstructs the pixel clock, it is
+necessary to keep the pixel clock and MIDI-DSI reference clock in
+sync. This can be done by using the VIDEO_PLL_CLK to drive the PLL reference
+clock (MIPI_DSI_CORE_CLK_ROOT). Without this, a connected HDMI Monitor will
+occasionally loose sync.
+
+In this setup, a mode change that changes the pixel clock may change the
+VIDEO_PLL, which will change the PLL reference clock.
+
+> 
+> This patch is trying to change clock binding behavior which is
+> described in dt binding[1]
+> [1] Documentation/devicetree/bindings/display/bridge/samsung,mipi-dsim.yaml
+> 
+> It says,
+> "DISM oscillator clock frequency. If absent, the clock frequency of
+> sclk_mipi will be used instead."
+> 
+> However, this patch makes the sclk_mipi to be used first.
+
+No, the behavior, as described in the dt binding, is preserved by the hunk
+below. dsi->pll_clk is only set, if the samsung,pll-clock-frequency property
+is absent. If the dt property exists, dsi->pll_clk will be NULL and
+dsi->pll_clk_rate will be used here.
+
+Michael
+
+> 
+> Thanks,
+> Inki Dae
+> 
+> >         fout = samsung_dsim_pll_find_pms(dsi, fin, freq, &p, &m, &s);
+> >         if (!fout) {
+> >                 dev_err(dsi->dev,
+> > @@ -1821,18 +1826,15 @@ static int samsung_dsim_parse_dt(struct samsung_dsim *dsi)
+> >         u32 lane_polarities[5] = { 0 };
+> >         struct device_node *endpoint;
+> >         int i, nr_lanes, ret;
+> > -       struct clk *pll_clk;
+> >
+> >         ret = samsung_dsim_of_read_u32(node, "samsung,pll-clock-frequency",
+> >                                        &dsi->pll_clk_rate, 1);
+> >         /* If it doesn't exist, read it from the clock instead of failing */
+> >         if (ret < 0) {
+> >                 dev_dbg(dev, "Using sclk_mipi for pll clock frequency\n");
+> > -               pll_clk = devm_clk_get(dev, "sclk_mipi");
+> > -               if (!IS_ERR(pll_clk))
+> > -                       dsi->pll_clk_rate = clk_get_rate(pll_clk);
+> > -               else
+> > -                       return PTR_ERR(pll_clk);
+> > +               dsi->pll_clk = devm_clk_get(dev, "sclk_mipi");
+> > +               if (IS_ERR(dsi->pll_clk))
+> > +                       return PTR_ERR(dsi->pll_clk);
+> >         }
+> >
+> >         /* If it doesn't exist, use pixel clock instead of failing */
+> > diff --git a/include/drm/bridge/samsung-dsim.h b/include/drm/bridge/samsung-dsim.h
+> > index 05100e91ecb9..31ff88f152fb 100644
+> > --- a/include/drm/bridge/samsung-dsim.h
+> > +++ b/include/drm/bridge/samsung-dsim.h
+> > @@ -87,6 +87,7 @@ struct samsung_dsim {
+> >         void __iomem *reg_base;
+> >         struct phy *phy;
+> >         struct clk **clks;
+> > +       struct clk *pll_clk;
+> >         struct regulator_bulk_data supplies[2];
+> >         int irq;
+> >         struct gpio_desc *te_gpio;
+> >
+> > --
+> > 2.39.2
+> >
+> 
