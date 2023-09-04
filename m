@@ -2,154 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 01731791C14
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910A4791C1A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 19:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345915AbjIDRke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 13:40:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
+        id S1350806AbjIDRoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 13:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjIDRke (ORCPT
+        with ESMTP id S229719AbjIDRol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 13:40:34 -0400
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC4CAF;
-        Mon,  4 Sep 2023 10:40:26 -0700 (PDT)
-X-QQ-mid: bizesmtpipv601t1693849204tj3l
-Received: from [IPV6:2001:da8:c000:3005:b045:d ( [255.215.175.9])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Tue, 05 Sep 2023 01:40:02 +0800 (CST)
-X-QQ-SSF: 00200000000000907000000A0000000
-X-QQ-FEAT: DQ0OCu3gog332B5EbRVImgzcowyQN9LD7dD52UAWS8C7Inf9cu8kOhxm7cdHS
-        WXKoJqe+YyRmEKKYZw4GYzjLNTv98IPNpEEtuxgXBVdcV744/Js4rYxrhcT1XOOwTR8mDkr
-        nxs0jzm7vT9hk6iBsfEH8SnIcpKqlIY0ysKUFlO/O5QGfdUcL8Eyjm2COKmJsDFJsd/QO70
-        9HgobAmEohizPYZQ3AeIEjdJqDuwAXOQJh58rcTCI2oZyJu19olr6xFZfJJBKUQN4/hONS+
-        gl3gvsrDaPX7wDWcHs2O7I7cQvoaZFGlziCE8rQ4cXeTxIrHcGKzVSsAtBrW+2gW8vnBevS
-        d6+Z5SONIIPWgb4diE=
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 11219486753922426849
-Message-ID: <8464A5F00EFC8C59+502c989a-3814-4686-8c6f-0a8f814e1c39@tinylab.org>
-Date:   Tue, 5 Sep 2023 01:40:02 +0800
+        Mon, 4 Sep 2023 13:44:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A56AAAF;
+        Mon,  4 Sep 2023 10:44:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 39FF760FFB;
+        Mon,  4 Sep 2023 17:44:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF822C433C7;
+        Mon,  4 Sep 2023 17:44:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693849475;
+        bh=YvrmulUiFFn/NobkUjd6sOl1dt0QMsFH5NPz/lhd9Ak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DUaW/2wfixpVSCoxOkzamyqusPm1ayWPvKAYivsybGuMUieEjwCwHuqEdL4Fpo6wb
+         eRjw2NElkfQ7PdK+XJE4HU08dbDA4KF6yUkGnvgWB7/mA0Ity95eh6TzeR6ue8oJw1
+         OIlqHYVBg8XuTINrjEMJCZ4SdNmfbM2l7mrx7Q0jFDmTsI0Rf0JcO1GyvwESkcNy4C
+         Z/Z9QBNFBIH+cY2eorlfSTYf8IzBOB7DXKlGoVoVZ394DHjQK7eZVJq1uMjp2UV6GR
+         kWTGzghngoM1U9neksj/nvyCwv3fIuzqR03RrQDsEKyDLhMMfKp4k1h6gWzWEw4taO
+         scTpMEFunrAkA==
+Date:   Mon, 4 Sep 2023 20:43:50 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org
+Subject: Re: [PATCH v6 26/38] sparc64: Implement the new page table range API
+Message-ID: <20230904174350.GF3223@kernel.org>
+References: <20230802151406.3735276-1-willy@infradead.org>
+ <20230802151406.3735276-27-willy@infradead.org>
+ <2513a500-920d-4e32-8231-f428175c7182@roeck-us.net>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] kconfig: add dependencies of POWER_RESET for mips
- malta
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "hdegoede@redhat.com" <hdegoede@redhat.com>
-Cc:     "linux@weissschuh.net" <linux@weissschuh.net>,
-        "w@1wt.eu" <w@1wt.eu>, "falcon@tinylab.org" <falcon@tinylab.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-References: <cover.1693535514.git.tanyuan@tinylab.org>
- <1c17f017d6c837ef887d08bd2f85102df3fbc17c.1693535514.git.tanyuan@tinylab.org>
- <915a9e2d-36ea-4a74-7b1b-9688f215b6f1@linaro.org>
- <55C9BDEDAB4E0B76+838dbd4f-425d-4f2e-94ee-f2bc3092ae13@tinylab.org>
- <c001c34b-e20c-f32e-f247-722d34a8db3d@linaro.org>
- <54da2376-dc65-0a96-55df-7a5acfbb9bff@csgroup.eu>
-Content-Language: en-GB
-From:   Yuan Tan <tanyuan@tinylab.org>
-In-Reply-To: <54da2376-dc65-0a96-55df-7a5acfbb9bff@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpipv:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=1.7 required=5.0 tests=BAYES_00,FORGED_MUA_MOZILLA,
-        RCVD_ILLEGAL_IP,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: *
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2513a500-920d-4e32-8231-f428175c7182@roeck-us.net>
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Sep 04, 2023 at 08:36:44AM -0700, Guenter Roeck wrote:
+> Hi,
+> 
+> On Wed, Aug 02, 2023 at 04:13:54PM +0100, Matthew Wilcox (Oracle) wrote:
+> > Add set_ptes(), update_mmu_cache_range(), flush_dcache_folio() and
+> > flush_icache_pages().  Convert the PG_dcache_dirty flag from being
+> > per-page to per-folio.
+> > 
+> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> > Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: sparclinux@vger.kernel.org
+> 
+> This patch causes all my sparc64 qemu boot tests to crash.
+> 
+> [    4.890744] Unable to handle kernel NULL pointer dereference
+> [    4.891273] tsk->{mm,active_mm}->context = 0000000000000001
+> [    4.891475] tsk->{mm,active_mm}->pgd = fffff80005452000
+> [    4.891660]               \|/ ____ \|/
+> [    4.891660]               "@'/ .. \`@"
+> [    4.891660]               /_| \__/ |_\
+> [    4.891660]                  \__U_/
+> [    4.892116] modprobe(45): Oops [#1]
+> [    4.892555] CPU: 0 PID: 45 Comm: modprobe Tainted: G                 N 6.5.0+ #1
+> [    4.892949] TSTATE: 0000004411001601 TPC: 00000000004565d8 TNPC: 00000000004565dc Y: 00000008    Tainted: G                 N
 
-On 9/4/2023 6:58 PM, Christophe Leroy wrote:
->
-> Le 04/09/2023 à 12:51, Philippe Mathieu-Daudé a écrit :
->> On 4/9/23 11:24, Yuan Tan wrote:
->>> Hi,
->>>
->>> On 9/4/2023 3:40 PM, Philippe Mathieu-Daudé wrote:
->>>> Hi,
->>>>
->>>> On 1/9/23 04:42, Yuan Tan wrote:
->>>>> MIPS Malta's power off depends on PCI, PCI_QUIRKS, and
->>>>> POWER_RESET_PIIX4_POWEROFF to work. Enable them when POWER_RESET is set
->>>>> for convenience.
->>>>>
->>>>> Suggested-by: Zhangjin Wu <falcon@tinylab.org>
->>>>> Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
->>>>> ---
->>>>>    arch/mips/Kconfig | 3 +++
->>>>>    1 file changed, 3 insertions(+)
->>>>>
->>>>> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
->>>>> index bc8421859006..13bacbd05125 100644
->>>>> --- a/arch/mips/Kconfig
->>>>> +++ b/arch/mips/Kconfig
->>>>> @@ -547,6 +547,9 @@ config MIPS_MALTA
->>>>>        select MIPS_L1_CACHE_SHIFT_6
->>>>>        select MIPS_MSC
->>>>>        select PCI_GT64XXX_PCI0
->>>>> +    select PCI if POWER_RESET
->>>>> +    select PCI_QUIRKS if POWER_RESET
->>>>> +    select POWER_RESET_PIIX4_POWEROFF if POWER_RESET
->>>>>        select SMP_UP if SMP
->>>>>        select SWAP_IO_SPACE
->>>>>        select SYS_HAS_CPU_MIPS32_R1
->>>> Shouldn't we also update the _defconfig files?
->>>>
->>> Sorry, in my last email, I forgot to reply to all. So I am now
->>> resending this email.
->>>
->>> In malta_defconfig, PCI and POWER_RESET_PIIX4_POWEROFF have already
->>> been set and PCI_QUIRKS is also selected by FSL_PCI [=n].
->>>
->>> So shutdown and reboot with malta_defconfig is working and there is no
->>> need to update the malta_defconfig 🙂
->> Since the dependency is now enforced by Kconfig, the defconfig can
->> be simplified:
->>
->> --- a/arch/mips/configs/malta_defconfig
->> +++ b/arch/mips/configs/malta_defconfig
->> @@ -306,3 +306,2 @@ CONFIG_SERIAL_8250_CONSOLE=y
->>    CONFIG_POWER_RESET=y
->> -CONFIG_POWER_RESET_PIIX4_POWEROFF=y
->>    CONFIG_POWER_RESET_SYSCON=y
->>
->> But maybe we don't care, I don't know.
-> I understand from what you say that you update malta_defconfig manually ?
->
-> defconfigs shouldn't be updated manually.
->
-> Once you have the new .config you should use "make savedefconfig" then
-> replace your file by the newly generated defconfig file.
->
-> Christophe
+...
 
-To do so, I just unset CONFIG_POWER_RESET and set it again in 
-menuconfig, then "make savedefconfig". The POWER_RESET part is simplified.
+> [    4.901535] note: modprobe[45] exited with preempt_count 2
 
-  CONFIG_POWER_RESET=y
--CONFIG_POWER_RESET_PIIX4_POWEROFF=y
--CONFIG_POWER_RESET_SYSCON=y
+This should fix it:
 
-  However, I found that there's other changes in this new 
-malta_defconfig, for example
+From 8181d1f582a309b51fe4cb02a783628257b91c86 Mon Sep 17 00:00:00 2001
+From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+Date: Mon, 4 Sep 2023 20:37:59 +0300
+Subject: [PATCH] sparc64: add missing initialization of folio in
+ tlb_batch_add()
 
-CONFIG_NLS_KOI8_U=m CONFIG_CRYPTO_CRYPTD=m -CONFIG_CRYPTO_LRW=m 
--CONFIG_CRYPTO_PCBC=m -CONFIG_CRYPTO_HMAC=y -CONFIG_CRYPTO_XCBC=m 
--CONFIG_CRYPTO_MD4=m -CONFIG_CRYPTO_SHA512=m -CONFIG_CRYPTO_WP512=m 
--CONFIG_CRYPTO_ANUBIS=m CONFIG_CRYPTO_BLOWFISH=m CONFIG_CRYPTO_CAMELLIA=m
+Commit 1a10a44dfc1d ("sparc64: implement the new page table range API")
+missed initialization of folio variable in tlb_batch_add() which causes
+boot tests to crash.
 
-Should I import all these changes in a commit? Or only POWER_RESET part.
+Add missing initialization.
 
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+Fixes: 1a10a44dfc1d ("sparc64: implement the new page table range API")
+Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+---
+ arch/sparc/mm/tlb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/sparc/mm/tlb.c b/arch/sparc/mm/tlb.c
+index 0d41c94ec3ac..b44d79d778c7 100644
+--- a/arch/sparc/mm/tlb.c
++++ b/arch/sparc/mm/tlb.c
+@@ -128,6 +128,7 @@ void tlb_batch_add(struct mm_struct *mm, unsigned long vaddr,
+ 			goto no_cache_flush;
+ 
+ 		/* A real file page? */
++		folio = page_folio(page);
+ 		mapping = folio_flush_mapping(folio);
+ 		if (!mapping)
+ 			goto no_cache_flush;
+-- 
+2.39.2
+
+ 
+> Guenter
+> 
+
+-- 
+Sincerely yours,
+Mike.
