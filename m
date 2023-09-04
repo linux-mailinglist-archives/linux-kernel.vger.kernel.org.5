@@ -2,171 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB890791368
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B3879136E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 10:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243134AbjIDI2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 04:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
+        id S1345417AbjIDI3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 04:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232237AbjIDI2e (ORCPT
+        with ESMTP id S230466AbjIDI3u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 04:28:34 -0400
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69607126
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 01:28:24 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1756A60002;
-        Mon,  4 Sep 2023 08:28:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1693816102;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w1tg0DEdbRVfpiEp2gPgVWZAfvgOXilZ2u3vG2u4UKQ=;
-        b=UYc8lyQbE8zR9m+WA07Iwq7a5URwXnqxaxmNBqU0AiS05zsuuEs9UbhBQr9v3OO9uTcak3
-        LwGedNk4yaCWVp16a325cRb+tCAi6WilHGYSrvAdAeLBHCGkFUYTbHXB9QLduBBdbelbms
-        4Yx8sSISw2bkdmu7IQChDu1kfoXHHPHPfRcAO2qY5XcWWAZC9RN5L4VzPBjgAoeUbJlYjT
-        5xzFCntykCNX3rSeUiGcSxvm2CbMIk2s837u+6qng0l3UDCsq4KCO4DJVOYQq6oOEO61bS
-        dCuHABXDdXoGkp5F+3827CKzO7CzwTdWnFOvELDgRLmV6n8uG7LCezmrBzbPmw==
-Date:   Mon, 4 Sep 2023 10:28:19 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
-        Tudor Ambarus <Tudor.Ambarus@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Michael Walle <michael@walle.cc>,
-        Pratyush Yadav <pratyush@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] mtd: Changes for v6.6-rc1
-Message-ID: <20230904102819.54d95098@xps-13>
-In-Reply-To: <CAHk-=wgUntc0u-6WQ9U3OmNHTqB=cZQoWcTOXaipB+gixV5NPA@mail.gmail.com>
-References: <20230901184136.73b2833e@xps-13>
-        <CAHk-=wgUntc0u-6WQ9U3OmNHTqB=cZQoWcTOXaipB+gixV5NPA@mail.gmail.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+        Mon, 4 Sep 2023 04:29:50 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC15CD8;
+        Mon,  4 Sep 2023 01:29:46 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id 2adb3069b0e04-500c7796d8eso1805157e87.1;
+        Mon, 04 Sep 2023 01:29:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693816185; x=1694420985; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FSQN7fQrN24zOcl+Pz1ofkIl/DUjbLFfNjlnwngy+q8=;
+        b=VFI2ZCkWpshMA/bgcw+6fT6xeQR9E5ukBNl4C1gD46UwHP/VxaitvuKXLcRlp2+ny8
+         8CTDiWMraeVxk2ZdSMJ1CCKJO2Jee3BEwoNVCU7zXfQp/SRKSJtm0CEeusixm++2sqdD
+         pBt0orqiFcqv2paqEKWQZ2ddh+TKYBtYTjBOdJRd8NbnrmW1J72iQpG8SsYAGxuklmIe
+         HPn2DJ20TU19mUs91kN4Q/mHyaUSKg31RmG4mOmwbKgL7wq4go9vsywYDCkD989bQzub
+         4nAYyKJ0R4FLXr4O/h07mbqjOpJnGjgm2Amp/1jxrPzdNNlp7cfx7fNT0wNOHoj1LPUA
+         s2EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693816185; x=1694420985;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FSQN7fQrN24zOcl+Pz1ofkIl/DUjbLFfNjlnwngy+q8=;
+        b=FdaLYIjjiUpWJEW4qx6mM3iyh2lpA7kdJyOAbj4NZaeu42pTmXrEFBOMUgLXFdP5W9
+         g7zEkvmdXfTsSdv4Qjnu9DigktsDrGb1+y3aAOxjVDjZBuqxUjtLcEPR+OZ9Q6hrOxgb
+         Q2R9sDpwTOGjCpeBvLMU1naz4IWAJwuzDKPk2Az6j1HeUMeBEWlZpeRstOtCnuquDGOg
+         /wAO9+VoMA47T70oEtjsfJ2u6LW0O/y/hLG+GX2DCWAWEJs8f7Uo2W+FU+cHZhD1sqX+
+         oaixBY2307uxRafbZAvklQ7TG1iKxlknVcUJ1++32RFz9MlJN5eGeuLG4u6VYAA8+noi
+         jj6Q==
+X-Gm-Message-State: AOJu0YxgO7f8Dz9ghIv6AtB8QBdcYXTqkl7QtIKvdafOH+/mUMt+iFgP
+        n4g098mGjhzNUIUvv/KDNQ1i8l3/8aM=
+X-Google-Smtp-Source: AGHT+IElqWJcui3EeYMMBUsZPvO53t34k8zy+aGUzwGn20FizbdtafmlhAUIwiHLVvPxfX8faVTnyQ==
+X-Received: by 2002:ac2:4f0a:0:b0:500:ca0f:605e with SMTP id k10-20020ac24f0a000000b00500ca0f605emr6690362lfr.6.1693816184732;
+        Mon, 04 Sep 2023 01:29:44 -0700 (PDT)
+Received: from pc636 (host-90-235-20-237.mobileonline.telia.com. [90.235.20.237])
+        by smtp.gmail.com with ESMTPSA id c19-20020ac244b3000000b005008b5191aesm1604815lfm.284.2023.09.04.01.29.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 01:29:44 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 4 Sep 2023 10:29:41 +0200
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Zhen Lei <thunder.leizhen@huaweicloud.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Zqiang <qiang.zhang1211@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org
+Subject: Re: [PATCH v2 1/2] mm/vmalloc: Add a safer version of find_vm_area()
+ for debug
+Message-ID: <ZPWVdYvoAPdIBTyt@pc636>
+References: <ZPHdjvFwvtzXO/6z@pc636>
+ <AF34FDF1-CAD9-43FD-B97D-F6A7439F310A@joelfernandes.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-GND-Sasl: miquel.raynal@bootlin.com
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <AF34FDF1-CAD9-43FD-B97D-F6A7439F310A@joelfernandes.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Fri, Sep 01, 2023 at 12:41:24PM -0400, Joel Fernandes wrote:
+> 
+> 
+> > On Sep 1, 2023, at 8:48 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
+> > 
+> > ﻿On Fri, Sep 01, 2023 at 12:33:21AM +0000, Joel Fernandes wrote:
+> >>> On Fri, Sep 01, 2023 at 12:19:17AM +0000, Joel Fernandes wrote:
+> >>> On Thu, Aug 31, 2023 at 09:47:52PM +0200, Uladzislau Rezki wrote:
+> >>>> On Thu, Aug 31, 2023 at 05:18:25PM +0000, Joel Fernandes (Google) wrote:
+> >>>>> It is unsafe to dump vmalloc area information when trying to do so from
+> >>>>> some contexts. Add a safer trylock version of the same function to do a
+> >>>>> best-effort VMA finding and use it from vmalloc_dump_obj().
+> >>>>> 
+> >>>>> [apply test robot feedback on unused function fix.]
+> >>>>> 
+> >>>>> Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
+> >>>>> Cc: Paul E. McKenney <paulmck@kernel.org>
+> >>>>> Cc: rcu@vger.kernel.org
+> >>>>> Cc: Zqiang <qiang.zhang1211@gmail.com>
+> >>>>> Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> >>>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >>>>> ---
+> >>>>> v1->v2: Apply review tags and test robot feedback.
+> >>>>> 
+> >>>>> mm/vmalloc.c | 39 ++++++++++++++++++++++++++++++++++++++-
+> >>>>> 1 file changed, 38 insertions(+), 1 deletion(-)
+> >>>>> 
+> >>>>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> >>>>> index 93cf99aba335..f09e882ae3b8 100644
+> >>>>> --- a/mm/vmalloc.c
+> >>>>> +++ b/mm/vmalloc.c
+> >>>>> @@ -1865,6 +1865,20 @@ struct vmap_area *find_vmap_area(unsigned long addr)
+> >>>>>    return va;
+> >>>>> }
+> >>>>> 
+> >>>>> +#ifdef CONFIG_PRINTK
+> >>>>> +static struct vmap_area *find_vmap_area_trylock(unsigned long addr)
+> >>>>> +{
+> >>>>> +    struct vmap_area *va;
+> >>>>> +
+> >>>>> +    if (!spin_trylock(&vmap_area_lock))
+> >>>>> +        return NULL;
+> >>>>> +    va = __find_vmap_area(addr, &vmap_area_root);
+> >>>>> +    spin_unlock(&vmap_area_lock);
+> >>>>> +
+> >>>>> +    return va;
+> >>>>> +}
+> >>>>> +#endif
+> >>>>> +
+> >>>>> static struct vmap_area *find_unlink_vmap_area(unsigned long addr)
+> >>>>> {
+> >>>>>    struct vmap_area *va;
+> >>>>> @@ -2671,6 +2685,29 @@ struct vm_struct *find_vm_area(const void *addr)
+> >>>>>    return va->vm;
+> >>>>> }
+> >>>>> 
+> >>>>> +/**
+> >>>>> + * try_to_find_vm_area - find a continuous kernel virtual area
+> >>>>> + * @addr:      base address
+> >>>>> + *
+> >>>>> + * This function is the same as find_vm_area() except that it is
+> >>>>> + * safe to call if vmap_area_lock is already held and returns NULL
+> >>>>> + * if it is. See comments in find_vmap_area() for other details.
+> >>>>> + *
+> >>>>> + * Return: the area descriptor on success or %NULL on failure.
+> >>>>> + */
+> >>>>> +#ifdef CONFIG_PRINTK
+> >>>>> +static struct vm_struct *try_to_find_vm_area(const void *addr)
+> >>>>> +{
+> >>>>> +    struct vmap_area *va;
+> >>>>> +
+> >>>>> +    va = find_vmap_area_trylock((unsigned long)addr);
+> >>>>> +    if (!va)
+> >>>>> +        return NULL;
+> >>>>> +
+> >>>>> +    return va->vm;
+> >>>>> +}
+> >>>>> +#endif
+> >>>>> +
+> >>>>> /**
+> >>>>>  * remove_vm_area - find and remove a continuous kernel virtual area
+> >>>>>  * @addr:        base address
+> >>>>> @@ -4277,7 +4314,7 @@ bool vmalloc_dump_obj(void *object)
+> >>>>>    struct vm_struct *vm;
+> >>>>>    void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> >>>>> 
+> >>>>> -    vm = find_vm_area(objp);
+> >>>>> +    vm = try_to_find_vm_area(objp);
+> >>>>>    if (!vm)
+> >>>>>        return false;
+> >>>>>    pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+> >>> 
+> >>> Hi Vlad,
+> >>> Thanks for taking a look.
+> >>> 
+> >>>> I am not sure if this patch makes a lot of sense. I agree, this is a
+> >>>> problem and it mitigates it. But it is broken in terms of once you drop
+> >>>> the lock, the VA should not be accessed.
+> >>> 
+> >>> Just to note the lockless-access issue you are referring to is not introduced
+> >>> by this patch but is rather in the existing code. Also just to note this is
+> >>> debug code.
+> >>> 
+> >>>> Is that a real issue or it gets triggered due to some syntetic test case?
+> >>> 
+> >>> It is a real issue. See 2/2.
+> >>> 
+> >>>> If i were you, i would go with open-coded version of trylock. Because
+> >>>> there is only one user so far.
+> >>> 
+> >>> Taking your open coding and locking suggestions, I came up with the below
+> >>> which actually results in a smaller patch. Does it look good to you?
+> >>> 
+> >>> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> >>> index 93cf99aba335..aaf6bad997a7 100644
+> >> 
+> >> And with some trivial compiler errors fixed (sorry should have build tested
+> >> but wanted to just share the idea earlier):
+> >> 
+> >> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> >> index 93cf99aba335..2c6a0e2ff404 100644
+> >> --- a/mm/vmalloc.c
+> >> +++ b/mm/vmalloc.c
+> >> @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+> >> #ifdef CONFIG_PRINTK
+> >> bool vmalloc_dump_obj(void *object)
+> >> {
+> >> -    struct vm_struct *vm;
+> >>    void *objp = (void *)PAGE_ALIGN((unsigned long)object);
+> >> +    const void *caller;
+> >> +    struct vm_struct *vm;
+> >> +    struct vmap_area *va;
+> >> +    unsigned long addr;
+> >> +    unsigned int nr_pages;
+> >> 
+> >> -    vm = find_vm_area(objp);
+> >> -    if (!vm)
+> >> +    if (!spin_trylock(&vmap_area_lock))
+> >> +        return false;
+> >> +    va = __find_vmap_area((unsigned long)objp, &vmap_area_root);
+> >> +    if (!va) {
+> >> +        spin_unlock(&vmap_area_lock);
+> >>        return false;
+> >> +    }
+> >> +
+> >> +    vm = va->vm;
+> >> +    if (!vm) {
+> >> +        spin_unlock(&vmap_area_lock);
+> >> +        return false;
+> >> +    }
+> >> +    addr = (unsigned long)vm->addr;
+> >> +    caller = vm->caller;
+> >> +    nr_pages = vm->nr_pages;
+> >> +    spin_unlock(&vmap_area_lock);
+> >>    pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
+> >> -        vm->nr_pages, (unsigned long)vm->addr, vm->caller);
+> >> +        nr_pages, addr, caller);
+> >>    return true;
+> >> }
+> >> #endif
+> >> 
+> > Looks good to me and thank you for fixing a locking issue :)
+> > I think you will re-spin and resend it one more time?
+> 
+> Yes. May I add your Reviewed-by tag to both patches after re-spinning as mentioned above?
+> 
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-torvalds@linux-foundation.org wrote on Sat, 2 Sep 2023 11:59:55 -0700:
-
-> On Fri, 1 Sept 2023 at 09:42, Miquel Raynal <miquel.raynal@bootlin.com> w=
-rote:
-> >
-> > Core MTD changes:
-> > * Use refcount to prevent corruption
-> > * Call external _get and _put in right order
-> > * Fix use-after-free in mtd release
-> > * Explicitly include correct DT includes
-> > * Clean refcounting with MTD_PARTITIONED_MASTER
-> > * mtdblock: make warning messages ratelimited
-> > * dt-bindings: Add SEAMA partition bindings =20
->=20
-> Ok, so the above list isa fairly reasonable, but then:
->=20
-> > MTD device driver changes:
-> > * spear_smi: Use helper function devm_clk_get_enabled()
-> > * maps: fix -Wvoid-pointer-to-enum-cast warning
-> > * docg3: Remove unnecessary (void*) conversions
-> > * physmap-core, spear_smi, st_spi_fsm, lpddr2_nvm, lantiq-flash, plat-r=
-am:
-> >   - Use devm_platform_get_and_ioremap_resource() =20
-> [...]
->=20
-> This is not a "summary of changes". The above is basically just a
-> re-organized shortlog.
->=20
-> What I want a merge message to be is to be an _overview_ of what the
-> merge brings in, and it's why I ask peopel to summarize what they have
-> worked on in the pull request.
->=20
-> But when the "summary" is just a list of every single detail, it's no
-> longer a summary. It doesn't give an overview of what has changed.
-> It's not useful to an outsider as a way to see "this is what the merge
-> brings in".
->=20
-> End result: I might as well just use "git shortlog", and it would
-> probably be about as readable as this is. In fact, I get the strong
-> feeling that this was auto-generated from something very much akin to
-> "git shortlog", just edited to combine multiple commits that just did
-> the same thing to several drivers.
->=20
-> Please - this is meant for *humans*. If it is just another form of
-> "git shortlog", then the automated version is *better*, because I can
-> use "git shortlog" to look at one particular driver (or a particular
-> set of drivers), so having a static version of "git shortlog" that has
-> been slightly munged to another format is actually _inferior_.
->=20
-> No, what the merge message should be is a general overview of "this is
-> the big picture". Not just a list of every single change, just by
-> sub-area.
->=20
-> For example, you list "Use devm_platform_get_and_ioremap_resource" not
-> just for individual drivers (nobody cares!), you do it *twice*,
-> because you've split up MTD drivers from raw NAND controller drivers.
->=20
-> And then you separately list "Use helper function
-> devm_clk_get_optional_enabled" from that list too, _and_ you then list
-> "Use devm_platform_ioremap_resource_byname()" for the brcm nand
-> driver.
->=20
-> Not to mention individually lising "Fix alignment with open
-> parenthesis" and "Fix the spacing" and "Fix wrong indentation" and
-> "Fix a typo" for the Qcom driver.
->=20
-> See why I'm frustrated? This has been going on for some time, but it's
-> gett9ing *worse*. This is absolutely ridiculous. I could try to make a
-> summary of it all, but honestly, now it feels like just complete
-> wasted time.
->=20
-> So I pulled this, looked at the "summary" in the fag, and decided that
-> it's just not worth it, and unpulled it.
->=20
-> Please give me a *summary* of what has changed. A list of *important&
-> things. Not a list of pointless typo fixes.
-
-Back in 2020, you complained about one of my pull requests with:
-
-> You didn't even mention the stm32 controller change, which seems to be
-> the biggest individual thing in here..
-
-And indeed that was a mistake on my side, but I received that comment
-as a request for a more detailed list of what had been touched. That's
-likely an over interpretation, but it lead me to be more exhaustive so
-the "you did not mention <this>" would no longer happen.
-
-About your request today, I totally get why you would like something
-more meaningful, but I don't know how to do it. Sometimes I get series
-which have a goal and I could definitely try to capture that goal in
-the summary rather than listing the patches. But then, what about the
-endless list of miscellaneous patches to fix the style, the W=3D1
-warnings, various robot complains... Because this is what I mostly get
-currently, and I believe there is no way you'll prefer something like
-this:
-* Fix misc typos
-* Fix misc style fixes
-* Update to newer API's
-Or maybe it is as long as the patches are trivial?
-
-I believe among the load of PR you receive there must be other
-subsystems than mtd which receive a lot of miscellaneous changes like
-that, don't hesitate to share a couple which look useful yet
-concise enough to you.
-
-Thanks anyway for pulling.
-
-Kind regards,
-Miqu=C3=A8l
+--
+Uladzislau Rezki
