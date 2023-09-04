@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F0D791129
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 07:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75FAB791138
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:03:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352306AbjIDFvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 01:51:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53106 "EHLO
+        id S241609AbjIDGDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 02:03:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352303AbjIDFu6 (ORCPT
+        with ESMTP id S232856AbjIDGDk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 01:50:58 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB38A103;
-        Sun,  3 Sep 2023 22:50:54 -0700 (PDT)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3843F6ZB009342;
-        Mon, 4 Sep 2023 05:50:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=qcppdkim1;
- bh=OidOuEeHwvTWTstDMB6aXlGb/mdxwTzx1wHxAbFI7pw=;
- b=lKdB861jfXp5XTsFmq2x/FTwSJoW0/K4a2Hue0VQ53oSqMhHLCv0tj+chlYybgacSMY3
- xdoupWjArL6Axp2pgfrufuv6adqu0DUokVyqPlQVCNbAoxKdXD1KmVL+BHMB2B/Ongku
- XNOopZLBMXtVK1TyBsaYVtACnaDwMZCFNrDbeWfPk1EBDGgVvVtqhiUIQ/YHVJV7KSWr
- AoiSS/mYGpN6OQxA6c0hqZntwrOGWwMWnx7h+ucQs87nmTmAjy8/DhwaQNOWmjlXXT0V
- cgMztA8tWzEPig3q5ChMo2SfJbKQQLQEvH7DlzTLX63ofXk4JAomWK1mnkkvqMMZNMe6 fA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suw99avtp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 04 Sep 2023 05:50:47 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3845oki0025998
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 4 Sep 2023 05:50:46 GMT
-Received: from hu-viswanat-blr.qualcomm.com (10.80.80.8) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Sun, 3 Sep 2023 22:50:41 -0700
-From:   Vignesh Viswanathan <quic_viswanat@quicinc.com>
-To:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ohad@wizery.com>,
-        <baolin.wang@linux.alibaba.com>, <linux-remoteproc@vger.kernel.org>
-CC:     <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
-        <quic_sjaganat@quicinc.com>, <quic_srichara@quicinc.com>,
-        <quic_varada@quicinc.com>,
-        Vignesh Viswanathan <quic_viswanat@quicinc.com>
-Subject: [PATCH 3/3] dt-bindings: hwlock: Drop unused qcom,ipq6018-tcsr-mutex
-Date:   Mon, 4 Sep 2023 11:20:10 +0530
-Message-ID: <20230904055010.4118982-4-quic_viswanat@quicinc.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20230904055010.4118982-1-quic_viswanat@quicinc.com>
-References: <20230904055010.4118982-1-quic_viswanat@quicinc.com>
+        Mon, 4 Sep 2023 02:03:40 -0400
+Received: from mail-oo1-xc33.google.com (mail-oo1-xc33.google.com [IPv6:2607:f8b0:4864:20::c33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E840DE;
+        Sun,  3 Sep 2023 23:03:36 -0700 (PDT)
+Received: by mail-oo1-xc33.google.com with SMTP id 006d021491bc7-5733d431209so708499eaf.0;
+        Sun, 03 Sep 2023 23:03:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693807415; x=1694412215; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=5NEE0gxqnoeOZjv0T50x54n3sgHDhEJypJ5XwUuKe6M=;
+        b=fz1rGjRsUeFR0gKtk4jUUcZcwnflA8Tj0vwTxyOXxaW4vmtKH6K5evwn0IcMDcQmjC
+         WUy1SdQNhhKnfBwLKjGs/zgb4SBjd0P4oNK2XXUiwnGXlWqxRQPOjBLrwC64gvkP1eC9
+         YAP31HY4XsZJiZq17I3aijXpwNxOtxS+SvPw1HR6JeHq8sMtWyN1UukghBYK7VNTlCyy
+         Fdm00XteuRVyOQcTBZEatxEvgTO4m4Fctqs1oss2g85QP93sQId4Y+MwsXVIKQ+PJ8oC
+         v3onv/SWP+5XOoaB3V7u064yn97qO+mbwL1bNDcJKXk21LbFM4QrV1sCBKpNfwJnz/8H
+         xXMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693807415; x=1694412215;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5NEE0gxqnoeOZjv0T50x54n3sgHDhEJypJ5XwUuKe6M=;
+        b=XxuICqCkJqQQGaIveME3gxk7C9n2pUIfn/wsMjlCYnW5ag26aWNH8F5jxe5O9y5Qdz
+         TyxU78da0R2Ky25faNboBUo0uSJprgimQJrknh/+lTYrodKFIj1GpUhVdkccl0CgDPhv
+         irrpqzC7paUSvVkFBi3BugzQCP7HenHwFnPr0eCdjo0HE+M3gZZTZBjLJ+D6idI72cAI
+         KpnTU8oonO/+nE1Uk/XOt+NjhWJFZaMB4++d7b9W/FT85FCJOQNKEFfka+sSXuuwVTYc
+         QgxPKGnHxBESQVFOahgEw1G3E6bEw3XCfBg/WhLrq1VQLoIcRqsXwRquUAvkRsikXCeX
+         lNXA==
+X-Gm-Message-State: AOJu0YxyHCwkYaQb715CpJavC208Zbw2qAKkDot5LEOzjuxGN0E0mq2C
+        UwlNKjDUl5ihcBQo1WKlzet/jPeypXl/68r8HlA=
+X-Google-Smtp-Source: AGHT+IHzRToA6/kS0AxdI3BVPu+s47OfOeohQ5UXCrOjKxmneWhd4wNOtDlf34aw10kzHGEaxzKNKxbK8xkFqp8h0cA=
+X-Received: by 2002:a4a:764d:0:b0:56d:10bb:c2d4 with SMTP id
+ w13-20020a4a764d000000b0056d10bbc2d4mr8416013ooe.1.1693807415379; Sun, 03 Sep
+ 2023 23:03:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UT38wzCvhoO31iPmE9OixILSXv69WUTD
-X-Proofpoint-ORIG-GUID: UT38wzCvhoO31iPmE9OixILSXv69WUTD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-04_03,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- priorityscore=1501 impostorscore=0 adultscore=0 mlxscore=0 malwarescore=0
- phishscore=0 bulkscore=0 mlxlogscore=845 lowpriorityscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309040052
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Received: by 2002:a8a:60c:0:b0:4f0:1250:dd51 with HTTP; Sun, 3 Sep 2023
+ 23:03:34 -0700 (PDT)
+In-Reply-To: <CAHk-=whnEF7-+DL+71wVgnJG1xjeHAQjzqMAULgQq_uhWfP0ZA@mail.gmail.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
+ <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
+ <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
+ <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com>
+ <20230903204858.lv7i3kqvw6eamhgz@f> <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
+ <ZPT/LzkPR/jaiaDb@gmail.com> <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
+ <CAGudoHG1_r1B0pz6-HUqb6AfbAgWHxBy+TnimvQtwLLqkKtchA@mail.gmail.com>
+ <CAHk-=wjM6KwAvC9+sCAm9BgBSspZm60VBLzHcuonGcHrPKJrbw@mail.gmail.com> <CAHk-=whnEF7-+DL+71wVgnJG1xjeHAQjzqMAULgQq_uhWfP0ZA@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Mon, 4 Sep 2023 08:03:34 +0200
+Message-ID: <CAGudoHENT1yPBD=+xAUTzWxL+iro8CE3+hHLtYiU6j3cCv7PPA@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, bp@alien8.de
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Drop qcom,ipq6018-tcsr-mutex enum as this is does not map to the correct
-config for IPQ6018. IPQ6018 will use qcom,tcsr-mutex compatible string.
+On 9/4/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Sun, 3 Sept 2023 at 20:07, Linus Torvalds
+> <torvalds@linux-foundation.org> wrote:
+>>
+>> Try it and you'll see it is not even *remotely* as easy as you claim.
+>> Not when you have to deal with random sizes and padding of 20+
+>> different architectures.
+>
+> Perhaps more importantly, nobody actually seems to have the energy to care.
+>
 
-Signed-off-by: Vignesh Viswanathan <quic_viswanat@quicinc.com>
----
- Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml | 1 -
- 1 file changed, 1 deletion(-)
+Perhaps in this context I should have explicitly mentioned that only
+64-bit archs would be considered, as in placing the func you wrote in
+fs/stat.c and it is explicitly 64-bit. This should whack all archs
+which would never bother with their implementation anyway.
 
-diff --git a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-index ee2726149cf3..a595396fd3f9 100644
---- a/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-+++ b/Documentation/devicetree/bindings/hwlock/qcom-hwspinlock.yaml
-@@ -22,7 +22,6 @@ properties:
-       - items:
-           - enum:
-               - qcom,apq8084-tcsr-mutex
--              - qcom,ipq6018-tcsr-mutex
-               - qcom,msm8226-tcsr-mutex
-               - qcom,msm8994-tcsr-mutex
-           - const: qcom,tcsr-mutex
+Worst case if the 64 bit structs differ one can settle for
+user-accessing INIT_STRUCT_STAT_PADDING.
+
+My point though was that code filling the struct escaping to
+arch-dependent file is rather regrettable, even if x86-64 would be the
+only case. And it definitely can be avoided, even if would require
+tolerating that some of the stores are reordered. They are already
+reordered for dodging memset.
+
 -- 
-2.41.0
-
+Mateusz Guzik <mjguzik gmail.com>
