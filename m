@@ -2,168 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5919F791B0B
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EA93791B0E
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 18:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352179AbjIDQAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 12:00:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
+        id S241905AbjIDQBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 12:01:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241905AbjIDQAJ (ORCPT
+        with ESMTP id S230430AbjIDQBN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 12:00:09 -0400
-Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EB71BE
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 09:00:03 -0700 (PDT)
-Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1c093862623so22038375ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 09:00:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693843203; x=1694448003;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+O3G+dlqCRtnovR02+v2yf1Tamh83CEJZbdexepJT5w=;
-        b=Ne8ohRib9asTS2T78Y8REsjAvhwxIrMNn2JSWS6l/JTIf/lLVvBKjts4prUZ/5hLRF
-         3bRutqz8utoIQtNbAlNTPVls02vao1IO5PL114/nuyNzfutWZxrmgY7QR7xJPY70pi0J
-         TVYiwXQb0A2bcWjGqGBXqzRfCsRBDMK6a/QwPmUo5WfTbgEnuQOnAsd6OUP4HHexMU2h
-         FfXArgg5N/CGpZvbvadJLqZw+2CfIZiM9OHX4uBCDVjZxQgVo6jyVjKpMUIYWGm68hBP
-         Poi9AJR5r8CvRltoZ5paKw+6Kl1tQpNAKOeenvTWxowJeNn+RnWuMvjPjzbbdocjUHLj
-         CHqQ==
-X-Gm-Message-State: AOJu0YxVWSJ8pAapODE9WkxkmMs5z+6WUO8CgEj7r3nGjd0AvfSP7gfE
-        0LT5A8LRrSwnobQHBtHBMCzu9vGF4PvRyLq9xTUc3zDWHpU/
-X-Google-Smtp-Source: AGHT+IE4hY1cOldP6E1tE8K6v9oucZ0pUa4JKR7Q8el9qijGMkJhK8JTHvG0bVYm6TQgfeBmuBxCgssMGLGtlQSDM4LK1AE6mRQC
+        Mon, 4 Sep 2023 12:01:13 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C3BF1B9
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 09:01:09 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 384FucYc024881;
+        Mon, 4 Sep 2023 11:00:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=e
+        QlUtlxlF6Opmaia7IykypffgHqprXrCNqsK+uQbJ/s=; b=IHyUcogQrIecMjcoh
+        6qgiUO6tB+CvLZrxHdmAp+HQZRKSTk9mnyMkf7XiARpMVBXHnxNFD14k5rk4VuK1
+        trljbIAmvhVX2BByW4/0ncPSD6jH21sHfJCQgOZFHdQ/SQNulquvWYMIDxVnSlHb
+        bgbiEIzk574SY9vfps4dEK08MHVg58pHd/ZXcQ3AKk8qO9N0PF91zYL48p5ypovD
+        9UnQQFQFqFZ6Cna/17nNmjMo8ACr/Uia3umskY+aivDAPPrfZZcUXbLG1u60AJxt
+        KdxyOAE7fNhb5aZvtn/AUkula3lQKfb6rrvRfrFqh7twNl4I7SJFvmcoktzH4QJQ
+        +10OQ==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex2h0d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 11:00:52 -0500 (CDT)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Mon, 4 Sep
+ 2023 17:00:50 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.37 via Frontend Transport; Mon, 4 Sep 2023 17:00:50 +0100
+Received: from lon-bigdaddy.ad.cirrus.com (EDIN8DL6Q13.ad.cirrus.com [198.61.65.94])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id D7FC6B06;
+        Mon,  4 Sep 2023 16:00:49 +0000 (UTC)
+From:   Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+To:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
+CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>,
+        Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+Subject: [PATCH] ALSA: hda/cirrus: Fix broken audio on hardware with two CS42L42 codecs.
+Date:   Mon, 4 Sep 2023 17:00:33 +0100
+Message-ID: <20230904160033.908135-1-vitalyr@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a17:903:5c5:b0:1ba:a36d:f82c with SMTP id
- kf5-20020a17090305c500b001baa36df82cmr2950872plb.7.1693843203111; Mon, 04 Sep
- 2023 09:00:03 -0700 (PDT)
-Date:   Mon, 04 Sep 2023 09:00:02 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006d415806048a9aee@google.com>
-Subject: [syzbot] [mm?] BUG: unable to handle kernel paging request in list_lru_add
-From:   syzbot <syzbot+2403e3909382fbdeaf6c@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: OV6jqtEfgAPbh_mZXziWqXpPMMNihcyK
+X-Proofpoint-GUID: OV6jqtEfgAPbh_mZXziWqXpPMMNihcyK
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Recently in v6.3-rc1 there was a change affecting behaviour of hrtimers
+(commit 0c52310f260014d95c1310364379772cb74cf82d) and causing
+few issues on platforms with two CS42L42 codecs. Canonical/Dell
+has reported an issue with Vostro-3910.
+We need to increase this value by 15ms.
 
-syzbot found the following issue on:
+Link: https://bugs.launchpad.net/somerville/+bug/2031060
+Fixes: 9fb9fa18fb50 (ALSA: hda/cirrus: Add extra 10 ms delay to allow PLL settle and lock.)
 
-HEAD commit:    708283abf896 Merge tag 'dmaengine-6.6-rc1' of git://git.ke..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=17424cd0680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=15f37e053f1602f8
-dashboard link: https://syzkaller.appspot.com/bug?extid=2403e3909382fbdeaf6c
-compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-708283ab.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ae645c88b07f/vmlinux-708283ab.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/32d5997bb055/Image-708283ab.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2403e3909382fbdeaf6c@syzkaller.appspotmail.com
-
-Unable to handle kernel paging request at virtual address dfff800000000001
-KASAN: null-ptr-deref in range [0x0000000000000008-0x000000000000000f]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000001] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 2922 Comm: udevd Not tainted 6.5.0-syzkaller-11329-g708283abf896 #0
-Hardware name: linux,dummy-virt (DT)
-pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : list_add_tail include/linux/list.h:183 [inline]
-pc : list_lru_add+0x174/0x464 mm/list_lru.c:129
-lr : list_lru_from_memcg_idx mm/list_lru.c:56 [inline]
-lr : list_lru_from_memcg_idx mm/list_lru.c:53 [inline]
-lr : list_lru_from_kmem mm/list_lru.c:78 [inline]
-lr : list_lru_add+0x354/0x464 mm/list_lru.c:128
-sp : ffff80008dd57520
-x29: ffff80008dd57520 x28: 0000000000000008 x27: ffff0000378c4000
-x26: 0000000000000001 x25: 0000000000000000 x24: 0000000000000000
-x23: 1fffe0000293550a x22: 0000000000000000 x21: ffff000012d1c7a0
-x20: ffff0000149aa850 x19: ffff0000146f7a00 x18: 0000000000000000
-x17: 0000000000000000 x16: 0000000000000000 x15: ffff800080915234
-x14: ffff800080914c58 x13: ffff800080914c58 x12: 000000000000f1f1
-x11: dfff800000000000 x10: 00000000f3000000 x9 : 00000000f3f3f3f3
-x8 : ffff700011baae76 x7 : 00000000f1f1f1f1 x6 : dfff800000000000
-x5 : ffff700011baae7a x4 : 00000000f204f1f1 x3 : 1fffe0000d51ff28
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : dfff800000000000
-Call trace:
- list_add_tail include/linux/list.h:183 [inline]
- list_lru_add+0x174/0x464 mm/list_lru.c:129
- d_lru_add+0x180/0x31c fs/dcache.c:431
- retain_dentry fs/dcache.c:685 [inline]
- dput+0x4ac/0x96c fs/dcache.c:908
- handle_mounts fs/namei.c:1554 [inline]
- step_into+0xc18/0x16c4 fs/namei.c:1839
- walk_component+0xa8/0x484 fs/namei.c:2007
- link_path_walk.part.0.constprop.0+0x4cc/0x970 fs/namei.c:2328
- link_path_walk fs/namei.c:2253 [inline]
- path_openat+0x1bc/0x2058 fs/namei.c:3792
- do_filp_open+0x16c/0x330 fs/namei.c:3823
- do_sys_openat2+0x12c/0x160 fs/open.c:1422
- do_sys_open fs/open.c:1437 [inline]
- __do_sys_openat fs/open.c:1453 [inline]
- __se_sys_openat fs/open.c:1448 [inline]
- __arm64_sys_openat+0x12c/0x1b8 fs/open.c:1448
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x6c/0x258 arch/arm64/kernel/syscall.c:51
- el0_svc_common.constprop.0+0xac/0x230 arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x40/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x58/0x140 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x100/0x12c arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-Code: 9100231c d2d00000 f2fbffe0 d343ff9a (38e06b40) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	9100231c 	add	x28, x24, #0x8
-   4:	d2d00000 	mov	x0, #0x800000000000        	// #140737488355328
-   8:	f2fbffe0 	movk	x0, #0xdfff, lsl #48
-   c:	d343ff9a 	lsr	x26, x28, #3
-* 10:	38e06b40 	ldrsb	w0, [x26, x0] <-- trapping instruction
-
-
+Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ sound/pci/hda/patch_cs8409.c | 2 +-
+ sound/pci/hda/patch_cs8409.h | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/sound/pci/hda/patch_cs8409.c b/sound/pci/hda/patch_cs8409.c
+index 0ba1fbcbb21e..627899959ffe 100644
+--- a/sound/pci/hda/patch_cs8409.c
++++ b/sound/pci/hda/patch_cs8409.c
+@@ -888,7 +888,7 @@ static void cs42l42_resume(struct sub_codec *cs42l42)
+ 
+ 	/* Initialize CS42L42 companion codec */
+ 	cs8409_i2c_bulk_write(cs42l42, cs42l42->init_seq, cs42l42->init_seq_num);
+-	usleep_range(30000, 35000);
++	msleep(CS42L42_INIT_TIMEOUT_MS);
+ 
+ 	/* Clear interrupts, by reading interrupt status registers */
+ 	cs8409_i2c_bulk_read(cs42l42, irq_regs, ARRAY_SIZE(irq_regs));
+diff --git a/sound/pci/hda/patch_cs8409.h b/sound/pci/hda/patch_cs8409.h
+index 2a8dfb4ff046..937e9387abdc 100644
+--- a/sound/pci/hda/patch_cs8409.h
++++ b/sound/pci/hda/patch_cs8409.h
+@@ -229,6 +229,7 @@ enum cs8409_coefficient_index_registers {
+ #define CS42L42_I2C_SLEEP_US			(2000)
+ #define CS42L42_PDN_TIMEOUT_US			(250000)
+ #define CS42L42_PDN_SLEEP_US			(2000)
++#define CS42L42_INIT_TIMEOUT_MS			(45)
+ #define CS42L42_FULL_SCALE_VOL_MASK		(2)
+ #define CS42L42_FULL_SCALE_VOL_0DB		(1)
+ #define CS42L42_FULL_SCALE_VOL_MINUS6DB		(0)
+-- 
+2.34.1
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
