@@ -2,82 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8CC67911B2
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:57:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3EAC7911B7
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 08:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349603AbjIDG5Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 02:57:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37278 "EHLO
+        id S1352380AbjIDG6C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 02:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345038AbjIDG5Y (ORCPT
+        with ESMTP id S1345038AbjIDG6B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 02:57:24 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:242:246e::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA64E11A;
-        Sun,  3 Sep 2023 23:57:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-        Content-Type:References:In-Reply-To:Date:To:From:Subject:Message-ID:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-        Resent-Cc:Resent-Message-ID; bh=ML3nN0Bovw/HBwQG6YVdv3gL++y5/3rFGx6GGczGCis=;
-        t=1693810640; x=1695020240; b=P1ZLi6DGpReD2zSdvNT7Q/UeDBrHqldsWHtVX4tGtN4n5z5
-        xDI5U3AOwTKGZ8MbdJ1cduLYBTiOZQXpdVskQIZU6VoCB6HDmJe2b/YPjWXwKG6IH+pwraa9ywl7N
-        2cx/wfVw+pN4fLFpzvBNCukokACNy7Z9/Y7rci4fAz/EPa+REWJRVsdPYWgNICRoiCL+lFbeUNwAa
-        CDfI5YXCIE3A1wSg/HZhqus3pmuaLvZobldb0qzPltexpDYnenLlsBQtbQRPLtH0pF8a5L3lZu6T+
-        LipEn74Sp/nbC3bcd0IV+N+5lhzwFtmVYqOkbGUSbk0d1zND+Sgye/25IX/KzN0A==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.96)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1qd3WL-00ChVX-20;
-        Mon, 04 Sep 2023 08:57:13 +0200
-Message-ID: <cf6ab60c42705625a7b1d71e53db0edb78fe6e2d.camel@sipsolutions.net>
-Subject: Re: [syzbot] [wireless?] WARNING in ieee80211_link_release_channel
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     syzbot <syzbot+9817a610349542589c42@syzkaller.appspotmail.com>,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, pabeni@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Date:   Mon, 04 Sep 2023 08:57:11 +0200
-In-Reply-To: <000000000000bcd80b06046a98ac@google.com>
-References: <000000000000bcd80b06046a98ac@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Mon, 4 Sep 2023 02:58:01 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67C71123;
+        Sun,  3 Sep 2023 23:57:58 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 384657cT018056;
+        Mon, 4 Sep 2023 06:57:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=f/6q3k2/wRZz7MrXuwsX/SOSEOJVMJyRe+NGRs2DE0g=;
+ b=P9+55I561j+wbDV0HQvurE3EjvwAfgfmBYOIc3BB8ooUBR3MS0m4KTD9TGDxCs1b0wiv
+ pbSPWE/Mg6YRC61MQhNq0mVk3Y1N7qqpZ8ofEr6DXjKpjSkHjLrtCwQxdcMeRxQErKOe
+ 11wLsW30Ogq56hky9h9wAAkRDde2UR3h6xw/7qlJzTB4UZ5Nb3tP7UztIW+2H78Wv9Ts
+ 5jsar31snGsXxlQVfv2EaYoj8A8O7rD6Lvx+Jepu9gMjDyEUrU/uAP0fvzHiDJ9GIxrA
+ BSl/lHoBk8s2jAG38CZReqsEoP4LbySN6aC0n/1U3ItqbZ2Q6meUH7QbAfDDDRh1WRGR Dw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suw50tqd4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 04 Sep 2023 06:57:51 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3846vo49007109
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 4 Sep 2023 06:57:50 GMT
+Received: from [10.201.162.56] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.30; Sun, 3 Sep
+ 2023 23:57:45 -0700
+Message-ID: <7579f8d6-8968-44c4-bba7-8221d5d4516f@quicinc.com>
+Date:   Mon, 4 Sep 2023 12:27:41 +0530
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
-X-Spam-Status: No, score=0.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] arm64: dts: qcom: ipq6018: Fix tcsr_mutex register
+ size
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <ohad@wizery.com>,
+        <baolin.wang@linux.alibaba.com>, <linux-remoteproc@vger.kernel.org>
+CC:     <quic_kathirav@quicinc.com>, <quic_anusha@quicinc.com>,
+        <quic_sjaganat@quicinc.com>, <quic_srichara@quicinc.com>,
+        <quic_varada@quicinc.com>
+References: <20230904055010.4118982-1-quic_viswanat@quicinc.com>
+ <20230904055010.4118982-2-quic_viswanat@quicinc.com>
+ <9380d42a-2c24-89ad-14ca-99e0f1ffcbf7@linaro.org>
+From:   Vignesh Viswanathan <quic_viswanat@quicinc.com>
+In-Reply-To: <9380d42a-2c24-89ad-14ca-99e0f1ffcbf7@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -sm1hK-OuwDX9mdZj_jh7sFlt59J_EIh
+X-Proofpoint-ORIG-GUID: -sm1hK-OuwDX9mdZj_jh7sFlt59J_EIh
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-04_03,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 suspectscore=0 mlxlogscore=670 clxscore=1011
+ spamscore=0 impostorscore=0 adultscore=0 bulkscore=0 mlxscore=0
+ malwarescore=0 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309040062
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SORTED_RECIPS,SPF_HELO_PASS,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-09-02 at 18:48 -0700, syzbot wrote:
->=20
-> WARNING: CPU: 0 PID: 7597 at net/mac80211/chan.c:2021 ieee80211_link_rele=
-ase_channel+0x19f/0x200 net/mac80211/chan.c:2021
->=20
 
-That's a lockdep warning, so it's kind of a known issue. I don't know if
-I've yet encountered this specific way to get the locking checks
-screaming, but generally we knew for a while that the locking was a bit
-messy and possibly to some extent broken (*).
 
-Anyway, point is - this is basically the reason I did this series:
-https://lore.kernel.org/linux-wireless/20230828115927.116700-41-johannes@si=
-psolutions.net/
+On 9/4/2023 12:10 PM, Krzysztof Kozlowski wrote:
+> On 04/09/2023 07:50, Vignesh Viswanathan wrote:
+>> IPQ6018 has 32 tcsr_mutex hwlock registers and size of each is 0x1000.
+>>
+>> Fix size of the tcsr_mutex hwlock register to 0x20000.
+>> Also, remove the qcom,ipq6018-tcsr-mutex compatible as this maps to
+>> incorrect stride and mutex config for IPQ6018 in hwspinlock driver.
+> 
+> This is 6018, so if 6018 compatible is incorrect... this does not make
+> any sense.
+> 
+> NAK
+> 
 
-so this should go away - though sadly only in -next. Per the footnote, I
-believe that the issue in the current kernel is mostly not an issue, and
-it should only happen with multi-link in the first place. There may be
-an issue in what syzbot found, processing a multi-link response or
-something though.
+Understood, Instead of removing the 6018 compatible, I'll use the same
+and fix the config mapped to 6018 in the hwspinlock driver.
 
-johannes
-
-(*) in many cases it's not _actually_ broken because we hold some common
-outer lock anyway, so no data races are possible
+Thanks,
+Vignesh
+> 
+> Best regards,
+> Krzysztof
+> 
