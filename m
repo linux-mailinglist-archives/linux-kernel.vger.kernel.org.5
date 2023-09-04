@@ -2,182 +2,359 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4D0791D96
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:27:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7064B791D9C
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 21:31:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244182AbjIDT14 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 15:27:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52038 "EHLO
+        id S235798AbjIDTbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 15:31:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbjIDT1z (ORCPT
+        with ESMTP id S1343677AbjIDT3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 15:27:55 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE2F3CDA
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:27:49 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-68bed2c786eso998219b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 12:27:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1693855669; x=1694460469; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yWREej5t+eIqMC63lmoGy+XChxC2cKp7ZhM4c1pDWR0=;
-        b=Ylatk4oMqX4DLeqkZXR5HOXv27jd4k5xLgL8zKr7OoCdqGTnukdwQUeSh7HbVwzDsq
-         ql4qd7gD4XB8/ZXQVItAH45uEG649qttWb+tOEHcDiorrNfC9MopjcskaQQO8ioKVVVN
-         hvrHzkYGRB1ZvKFwPI8S0CaeCr9kIoteYcdkxYCjfnu8d1csaY8nqUnMm4r8jXPvCU2r
-         tsXz7fwxpeRE7MLdqzbcwsONvs/p5koEYZ7GNynZwY1tFRKTsb1j8cJv3pB2BXMOzO33
-         B8EGAx+KV7szKraE1YtKCXtRUn17YHXH19Z6IbrpRkAecT38e6L05LKnX3JeKdBuak89
-         5UFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693855669; x=1694460469;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yWREej5t+eIqMC63lmoGy+XChxC2cKp7ZhM4c1pDWR0=;
-        b=d9o4f5e2EJs59RpObbX58cWVdvGmC6Xuuho1V7xNMtVvf4X6o3myXg5uV2uYe1qvUu
-         kQ5A1O8pLlQ+xmRCCVx0nMdnIPx5GaccpL03aijBJ4YvIEoT47iT/r6SRgQFkL9ws6hv
-         qFVJTM0pd9sMFTtIBIZVv5zTltBr0FzhF5ZNVElu8AJYPTlBRWJaabfoUB6+7hxs7Ov0
-         wMaSIRdr633bpFY+2LykyXzObp26qsJO0wx6E6TGBPeDIpb96q4sXItj21qobErG5rfa
-         oO68yzu5Y4PT0vjsb4s3hgo0dquTSQ2nwmciiqfgdWtj69jxRL4pwi1A7SMx9iRekxhv
-         oUtA==
-X-Gm-Message-State: AOJu0YxEDCZdjBmAmEgLgMu54+ERQuD21O3PbLokXyYun4m09KRv2RRe
-        lELgEswwQRpcFjfxCkn1aN0qdg==
-X-Google-Smtp-Source: AGHT+IF8jZgXYFF7x4w9/EJ+mUhvyY5RomvN8zh7QIx1a3gn13jt+ZjTcXlJuczNF8kMK83V8bbJpg==
-X-Received: by 2002:a05:6a21:4841:b0:14c:c511:387d with SMTP id au1-20020a056a21484100b0014cc511387dmr9713357pzc.9.1693855669066;
-        Mon, 04 Sep 2023 12:27:49 -0700 (PDT)
-Received: from x1 ([2601:1c2:1800:f680:5de2:2323:20de:e26d])
-        by smtp.gmail.com with ESMTPSA id cg11-20020a056a00290b00b0068c9fc82bfbsm6591591pfb.197.2023.09.04.12.27.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 12:27:48 -0700 (PDT)
-Date:   Mon, 4 Sep 2023 12:27:46 -0700
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Xi Ruoyao <xry111@xry111.site>
-Cc:     Jisheng Zhang <jszhang@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, Conor Dooley <conor@kernel.org>,
+        Mon, 4 Sep 2023 15:29:19 -0400
+Received: from relay08.th.seeweb.it (relay08.th.seeweb.it [5.144.164.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 733D1132
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 12:29:14 -0700 (PDT)
+Received: from [192.168.2.144] (bband-dyn191.178-41-225.t-com.sk [178.41.225.191])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 0B72A3F294;
+        Mon,  4 Sep 2023 21:29:04 +0200 (CEST)
+Date:   Mon, 04 Sep 2023 21:28:57 +0200
+From:   Martin Botka <martin.botka@somainline.org>
+Subject: Re: [PATCH 4/6] cpufreq: sun50i: Add H616 support
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Yangtao Li <tiny.windzz@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: dts: thead: set dma-noncoherent to soc bus
-Message-ID: <ZPYvsvCYWibrKXOz@x1>
-References: <20230820115353.1962-1-jszhang@kernel.org>
- <ZPUXhe7ogxvaB6Eg@x1>
- <ZPXtl1iWlsYwmixc@xhacker>
- <292198d3915bafbe1c82372da2f2755a1842512f.camel@xry111.site>
- <ZPYZZ4blDwaM8/ru@x1>
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        devicetree@vger.kernel.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Alan Ma <tech@biqu3d.com>,
+        Luke Harrison <bttuniversity@biqu3d.com>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Rogerio Goncalves <rogerlz@gmail.com>,
+        Martin Botka <martin@biqu3d.com>
+Message-Id: <9G7H0S.VAAJCUTOCA353@somainline.org>
+In-Reply-To: <20230904-cpufreq-h616-v1-4-b8842e525c43@somainline.org>
+References: <20230904-cpufreq-h616-v1-0-b8842e525c43@somainline.org>
+        <20230904-cpufreq-h616-v1-4-b8842e525c43@somainline.org>
+X-Mailer: geary/43.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZPYZZ4blDwaM8/ru@x1>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 10:52:39AM -0700, Drew Fustini wrote:
-> On Tue, Sep 05, 2023 at 12:28:41AM +0800, Xi Ruoyao wrote:
-> > On Mon, 2023-09-04 at 22:45 +0800, Jisheng Zhang wrote:
-> > > On Sun, Sep 03, 2023 at 04:32:21PM -0700, Drew Fustini wrote:
-> > > > On Sun, Aug 20, 2023 at 07:53:53PM +0800, Jisheng Zhang wrote:
-> > > > > riscv select ARCH_DMA_DEFAULT_COHERENT by default, and th1520 isn't
-> > > > > dma coherent, so set dma-noncoherent to reflect this fact.
-> > > > > 
-> > > > > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > > > > ---
-> > > > >  arch/riscv/boot/dts/thead/th1520.dtsi | 1 +
-> > > > >  1 file changed, 1 insertion(+)
-> > > > > 
-> > > > > diff --git a/arch/riscv/boot/dts/thead/th1520.dtsi b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > index 56a73134b49e..58108f0eb3fd 100644
-> > > > > --- a/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > +++ b/arch/riscv/boot/dts/thead/th1520.dtsi
-> > > > > @@ -139,6 +139,7 @@ soc {
-> > > > >                 interrupt-parent = <&plic>;
-> > > > >                 #address-cells = <2>;
-> > > > >                 #size-cells = <2>;
-> > > > > +               dma-noncoherent;
-> > > > >                 ranges;
-> > > > >  
-> > > > >                 plic: interrupt-controller@ffd8000000 {
-> > > > > -- 
-> > > > > 2.40.1
-> > > > > 
-> > > > 
-> > > > Tested-by: Drew Fustini <dfustini@baylibre.com>
-> > > > 
-> > > > I tried this on the BeagleV Ahead. They system booted as expected and I
-> > > > did not notice any problems in the boot log.
-> > > > 
-> > > > Are there other patches such as the dwmac series that I should test this
-> > > > with?
-> > > 
-> > > Hmm, this patch is necessary to test dwmac, emmc ;)
-> > 
-> > Drew: does this fix the "broken DMA" issue you've mentioned in the EMMC
-> > support patch?
-> 
-> After I sent my reply yesterday, I then tried applying this patch on top
-> of my eMMC series. I removed SDHCI_QUIRK_BROKEN_DMA and I discovered
-> that SDMA did not immediately break and the mmcblk0 partitions appeared
-> in /dev [1]. Note - I am using CONFIG_INITRAMFS_SOURCE set to my
-> buidlroot rootfs.cpio so that the system will boot okay regardless of
-> the emmc.
-> 
-> I was able to mount the emmc boot partition /dev/mmcblk0p2. However,
-> after unmounting it, I noticed that I could not mount it again:
-> 
->   # mount /dev/mmcblk0p2 /mnt/p2 
->   [   41.684899] EXT4-fs (mmcblk0p2): mounted filesystem 6ea98ccf-2178-48a9-a1ad-0eb454f57268 r/w with ordered data mode
->   # ls -la /mnt/p2
->   total 22696
->   drwxr-xr-x    5 root     root          4096 Sep  4  2023 .
->   drwxr-xr-x    4 root     root             0 Jan  1 00:00 ..
->   -rw-rw-r--    1 1000     1000      26455552 Sep  4  2023 Image
->   drwxr-xr-x    2 root     root          4096 Jul 29  2023 extlinux
->   <snip>
->   # umount /mnt/p2
->   [   52.101003] EXT4-fs (mmcblk0p2): unmounting filesystem 6ea98ccf-2178-48a9-a1ad-0eb454f57268.
->   # mount /dev/mmcblk0p2 /mnt/p2
->   [   58.826078] JBD2: no valid journal superblock found
->   [   58.831041] EXT4-fs (mmcblk0p2): Could not load journal inode
->   mount: mounting /dev/mmcblk0p2 on /mnt/p2 failed: Invalid argument
-> 
-> I was completely unable to mount the root fs partition /dev/mmcblk0p3:
-> 
->   # mount /dev/mmcblk0p2 /mnt/p2
->   [   58.826078] JBD2: no valid journal superblock found
->   [   58.831041] EXT4-fs (mmcblk0p2): Could not load journal inode
->   mount: mounting /dev/mmcblk0p2 on /mnt/p2 failed: Invalid argument
->   # umount /mnt/p2
->   umount: can't unmount /mnt/p2: Invalid argument
-> 
-> I suspect there is some corruption of the buffers happening. I see there
-> are also these patch series from Jisheng so I will try applying them and
-> see if there is any difference:
-> 
->   [PATCH v2 0/2] riscv: errata: improve T-Head CMO
->   [PATCH] riscv: mm: update T-Head memory type definitions
 
-Good news, I applied "riscv: errata: improve T-Head CMO" [1] and SDMA is
-now working correctly. I can mount both boot and rootfs paritions and
-then is no problem umounting and then remounting [2].
 
-Note - I didn't 'riscv: mm: update T-Head memory type definitions' yet
-but I will do that next and make sure everything is still working.
+On Mon, Sep 4 2023 at 05:57:04 PM +02:00:00, Martin Botka 
+<martin.botka@somainline.org> wrote:
+> AllWinner H616 SoC has few revisions that support different list
+> of uV and frequencies.
+> 
+> Some revisions have the same NVMEM value and thus we have to check
+> the SoC revision from SMCCC to differentiate between them.
+> 
+> Signed-off-by: Martin Botka <martin.botka@somainline.org>
+> ---
+>  drivers/cpufreq/sun50i-cpufreq-nvmem.c | 149 
+> ++++++++++++++++++++++++++++-----
+>  1 file changed, 126 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/cpufreq/sun50i-cpufreq-nvmem.c 
+> b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+> index 4321d7bbe769..19c126fb081e 100644
+> --- a/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+> +++ b/drivers/cpufreq/sun50i-cpufreq-nvmem.c
+> @@ -10,6 +10,7 @@
+> 
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+> 
+> +#include <linux/arm-smccc.h>
+>  #include <linux/cpu.h>
+>  #include <linux/module.h>
+>  #include <linux/nvmem-consumer.h>
+> @@ -23,20 +24,94 @@
+>  #define NVMEM_MASK	0x7
+>  #define NVMEM_SHIFT	5
+> 
+> +struct sunxi_cpufreq_soc_data {
+> +	int (*efuse_xlate)(u32 *versions, u32 *efuse, char *name, size_t 
+> len);
+> +	u8 ver_freq_limit;
+> +};
+> +
+>  static struct platform_device *cpufreq_dt_pdev, *sun50i_cpufreq_pdev;
+> 
+> +static int sun50i_h616_efuse_xlate(u32 *versions, u32 *efuse, char 
+> *name, size_t len)
+> +{
+> +	int value = 0;
+> +	u32 speedgrade = 0;
+> +	u32 i;
+> +	int ver_bits = arm_smccc_get_soc_id_revision();
+> +
+> +	if (len > 4) {
+> +		pr_err("Invalid nvmem cell length\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	for (i = 0; i < len; i++)
+> +		speedgrade |= (efuse[i] << (i * 8));
+> +
+> +	switch (speedgrade) {
+> +	case 0x2000:
+> +		value = 0;
+> +		break;
+> +	case 0x2400:
+> +	case 0x7400:
+> +	case 0x2c00:
+> +	case 0x7c00:
+> +		if (ver_bits <= 1) {
+> +			/* ic version A/B */
+> +			value = 1;
+> +		} else {
+> +			/* ic version C and later version */
+> +			value = 2;
+> +		}
+> +		break;
+> +	case 0x5000:
+> +	case 0x5400:
+> +	case 0x6000:
+> +		value = 3;
+> +		break;
+> +	case 0x5c00:
+> +		value = 4;
+> +		break;
+> +	case 0x5d00:
+> +	default:
+> +		value = 0;
+> +	}
+> +	*versions = (1 << value);
+> +	snprintf(name, MAX_NAME_LEN, "speed%d", value);
+> +	return 0;
+> +}
+> +
+> +static int sun50i_h6_efuse_xlate(u32 *versions, u32 *efuse, char 
+> *name, size_t len)
+> +{
+> +	int efuse_value = (*efuse >> NVMEM_SHIFT) & NVMEM_MASK;
+> +
+> +	/*
+> +	 * We treat unexpected efuse values as if the SoC was from
+> +	 * the slowest bin. Expected efuse values are 1-3, slowest
+> +	 * to fastest.
+> +	 */
+> +	if (efuse_value >= 1 && efuse_value <= 3)
+> +		*versions = efuse_value - 1;
+> +	else
+> +		*versions = 0;
+> +
+> +	snprintf(name, MAX_NAME_LEN, "speed%d", *versions);
+> +	return 0;
+> +}
+> +
+>  /**
+>   * sun50i_cpufreq_get_efuse() - Determine speed grade from efuse 
+> value
+> + * @soc_data: Struct containing soc specific data & functions
+>   * @versions: Set to the value parsed from efuse
+> + * @name: Set to the name of speed
+>   *
+>   * Returns 0 if success.
+>   */
+> -static int sun50i_cpufreq_get_efuse(u32 *versions)
+> +static int sun50i_cpufreq_get_efuse(const struct 
+> sunxi_cpufreq_soc_data *soc_data,
+> +				    u32 *versions, char *name)
+>  {
+>  	struct nvmem_cell *speedbin_nvmem;
+>  	struct device_node *np;
+>  	struct device *cpu_dev;
+> -	u32 *speedbin, efuse_value;
+> +	u32 *speedbin;
+>  	size_t len;
+>  	int ret;
+> 
+> @@ -48,9 +123,9 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
+>  	if (!np)
+>  		return -ENOENT;
+> 
+> -	ret = of_device_is_compatible(np,
+> -				      "allwinner,sun50i-h6-operating-points");
+> -	if (!ret) {
+> +	if (of_device_is_compatible(np, 
+> "allwinner,sun50i-h6-operating-points")) {
+> +	} else if (of_device_is_compatible(np, 
+> "allwinner,sun50i-h616-operating-points")) {
+> +	} else {
+>  		of_node_put(np);
+>  		return -ENOENT;
+>  	}
+> @@ -66,17 +141,9 @@ static int sun50i_cpufreq_get_efuse(u32 *versions)
+>  	if (IS_ERR(speedbin))
+>  		return PTR_ERR(speedbin);
+> 
+> -	efuse_value = (*speedbin >> NVMEM_SHIFT) & NVMEM_MASK;
+> -
+> -	/*
+> -	 * We treat unexpected efuse values as if the SoC was from
+> -	 * the slowest bin. Expected efuse values are 1-3, slowest
+> -	 * to fastest.
+> -	 */
+> -	if (efuse_value >= 1 && efuse_value <= 3)
+> -		*versions = efuse_value - 1;
+> -	else
+> -		*versions = 0;
+> +	ret = soc_data->efuse_xlate(versions, speedbin, name, len);
+> +	if (ret)
+> +		return ret;
+> 
+>  	kfree(speedbin);
+>  	return 0;
+> @@ -84,25 +151,30 @@ static int sun50i_cpufreq_get_efuse(u32 
+> *versions)
+> 
+>  static int sun50i_cpufreq_nvmem_probe(struct platform_device *pdev)
+>  {
+> +	const struct of_device_id *match;
+> +	const struct sunxi_cpufreq_soc_data *soc_data;
+>  	int *opp_tokens;
+>  	char name[MAX_NAME_LEN];
+>  	unsigned int cpu;
+> -	u32 speed = 0;
+> +	u32 version = 0;
+>  	int ret;
+> 
+> +	match = dev_get_platdata(&pdev->dev);
+> +	if (!match)
+> +		return -EINVAL;
+> +	soc_data = match->data;
+> +
+>  	opp_tokens = kcalloc(num_possible_cpus(), sizeof(*opp_tokens),
+>  			     GFP_KERNEL);
+>  	if (!opp_tokens)
+>  		return -ENOMEM;
+> 
+> -	ret = sun50i_cpufreq_get_efuse(&speed);
+> +	ret = sun50i_cpufreq_get_efuse(match->data, &version, name);
+>  	if (ret) {
+>  		kfree(opp_tokens);
+>  		return ret;
+>  	}
+> 
+> -	snprintf(name, MAX_NAME_LEN, "speed%d", speed);
+> -
+>  	for_each_possible_cpu(cpu) {
+>  		struct device *cpu_dev = get_cpu_device(cpu);
+> 
+> @@ -117,6 +189,16 @@ static int sun50i_cpufreq_nvmem_probe(struct 
+> platform_device *pdev)
+>  			pr_err("Failed to set prop name\n");
+>  			goto free_opp;
+>  		}
+> +
+> +		if (soc_data->ver_freq_limit) {
+> +			opp_tokens[cpu] = dev_pm_opp_set_supported_hw(cpu_dev,
+> +								  &version, 1);
+> +			if (opp_tokens[cpu] < 0) {
+> +				ret = opp_tokens[cpu];
+> +				pr_err("Failed to set hw\n");
+> +				goto free_opp;
+> +			}
+> +		}
+>  	}
+> 
+>  	cpufreq_dt_pdev = platform_device_register_simple("cpufreq-dt", -1,
+> @@ -132,6 +214,8 @@ static int sun50i_cpufreq_nvmem_probe(struct 
+> platform_device *pdev)
+>  free_opp:
+>  	for_each_possible_cpu(cpu)
+>  		dev_pm_opp_put_prop_name(opp_tokens[cpu]);
+> +		if (soc_data->ver_freq_limit)
+> +			dev_pm_opp_put_supported_hw(opp_tokens[cpu]);
+>  	kfree(opp_tokens);
+> 
+>  	return ret;
+> @@ -140,12 +224,21 @@ static int sun50i_cpufreq_nvmem_probe(struct 
+> platform_device *pdev)
+>  static int sun50i_cpufreq_nvmem_remove(struct platform_device *pdev)
+>  {
+>  	int *opp_tokens = platform_get_drvdata(pdev);
+> +	const struct of_device_id *match;
+> +	const struct sunxi_cpufreq_soc_data *soc_data;
+>  	unsigned int cpu;
+> 
+> +	match = dev_get_platdata(&pdev->dev);
+> +	if (!match)
+> +		return -EINVAL;
+> +	soc_data = match->data;
+> +
+>  	platform_device_unregister(cpufreq_dt_pdev);
+> 
+>  	for_each_possible_cpu(cpu)
+>  		dev_pm_opp_put_prop_name(opp_tokens[cpu]);
+> +		if (soc_data->ver_freq_limit)
+> +			dev_pm_opp_put_supported_hw(opp_tokens[cpu]);
+I completely overlooked this issue here. Clang didnt report a warning 
+here. I will fix it in both cases in V2 :) Sorry.
+> 
+>  	kfree(opp_tokens);
+> 
+> @@ -160,8 +253,18 @@ static struct platform_driver 
+> sun50i_cpufreq_driver = {
+>  	},
+>  };
+> 
+> +static const struct sunxi_cpufreq_soc_data sun50i_h616_data = {
+> +	.efuse_xlate = sun50i_h616_efuse_xlate,
+> +	.ver_freq_limit = true,
+> +};
+> +
+> +static const struct sunxi_cpufreq_soc_data sun50i_h6_data = {
+> +	.efuse_xlate = sun50i_h6_efuse_xlate,
+> +};
+> +
+>  static const struct of_device_id sun50i_cpufreq_match_list[] = {
+> -	{ .compatible = "allwinner,sun50i-h6" },
+> +	{ .compatible = "allwinner,sun50i-h6", .data = &sun50i_h6_data },
+> +	{ .compatible = "allwinner,sun50i-h616", .data = &sun50i_h616_data 
+> },
+>  	{}
+>  };
+>  MODULE_DEVICE_TABLE(of, sun50i_cpufreq_match_list);
+> @@ -197,8 +300,8 @@ static int __init sun50i_cpufreq_init(void)
+>  		return ret;
+> 
+>  	sun50i_cpufreq_pdev =
+> -		platform_device_register_simple("sun50i-cpufreq-nvmem",
+> -						-1, NULL, 0);
+> +		platform_device_register_data(NULL, "sun50i-cpufreq-nvmem",
+> +						-1, match, sizeof(*match));
+>  	ret = PTR_ERR_OR_ZERO(sun50i_cpufreq_pdev);
+>  	if (ret == 0)
+>  		return 0;
+> 
+> --
+> 2.42.0
+> 
 
-I'll post an update to my eMMC series.
-
--Drew
-
-[1] https://lore.kernel.org/all/20230827090813.1353-1-jszhang@kernel.org/
-[2] https://gist.github.com/pdp7/c72c91530c46ef560f4d1940ea1964c9
 
