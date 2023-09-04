@@ -2,156 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5759791888
-	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:37:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D4AF79183A
+	for <lists+linux-kernel@lfdr.de>; Mon,  4 Sep 2023 15:34:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353113AbjIDNhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 09:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43510 "EHLO
+        id S245493AbjIDNeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 09:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353115AbjIDNhT (ORCPT
+        with ESMTP id S231911AbjIDNea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 09:37:19 -0400
-Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CB41702;
-        Mon,  4 Sep 2023 06:37:06 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.228])
-        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4RfTrn39KDz9xqpg;
-        Mon,  4 Sep 2023 21:24:57 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.204.63.22])
-        by APP1 (Coremail) with SMTP id LxC2BwDHerrf3PVkUqceAg--.16511S12;
-        Mon, 04 Sep 2023 14:36:38 +0100 (CET)
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Subject: [PATCH v3 10/25] evm: Align evm_inode_post_setxattr() definition with LSM infrastructure
-Date:   Mon,  4 Sep 2023 15:34:00 +0200
-Message-Id: <20230904133415.1799503-11-roberto.sassu@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwDHerrf3PVkUqceAg--.16511S12
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFWruw1DCF48XFW5CFWrAFb_yoW5Zw4fpF
-        Z8Ka4qkw1rJFyUWryvyF4xua4v9ayrWryjy3yDKw1IyFn3tr92qrWxAr1j9ry5Jr48GrnY
-        qa1avrs5K3W3X3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBvb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-        Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-        rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-        AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E
-        14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrV
-        C2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
-        7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20x
-        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIx
-        AIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI
-        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z2
-        80aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UZo7tUUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgAKBF1jj4+BVwAAsk
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,KHOP_HELO_FCRDNS,
-        RDNS_DYNAMIC,SPF_HELO_NONE,SPF_NONE autolearn=no autolearn_force=no
-        version=3.4.6
+        Mon, 4 Sep 2023 09:34:30 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66324CD0
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 06:34:27 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 102B7B80C9D
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 13:34:26 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61DD4C433C9;
+        Mon,  4 Sep 2023 13:34:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693834464;
+        bh=XlE4k0vgthfsdyvbT2GloP3TGTyr0FTxoWOtRyXD1+E=;
+        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+        b=XoLeSKXsbzkYNFMTlGbsAh2EBCLnITpizjH/MgGpP18H8gdwzf1KLCLYexD8whhsA
+         IH9wfDimDpM+CBREKTGDW3y257C0qG76vHjNrSHz+FwwWI5ccXsjh6PBQGV6wBDBXy
+         sqmHJrB7fqMtzobqvziiwcVUVajz0pnkzhvX+GRew/kcNBqYLB0NYBpVgAIoHrKljv
+         O26vKdI/+NBq4x9+5gzgE6KwZHXZJWsUhDalEPEeusNwT4EMEn9+oW9suXhna/ynKU
+         Q/Lm1fMDWmv/zMERJCz9TG/2E7Z/Nxk0wvvYoQO52QoM8uIbHKdmUC66TkbuUPJheW
+         FDKwdmldC1lWg==
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailauth.nyi.internal (Postfix) with ESMTP id 4E12127C006B;
+        Mon,  4 Sep 2023 09:34:23 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Mon, 04 Sep 2023 09:34:23 -0400
+X-ME-Sender: <xms:3tz1ZPeCoKIpGVtEiBwhvOu3urZSo2w4D_PEXgVAK9DZAPno0nG1vw>
+    <xme:3tz1ZFPJq6l5JTVXE92Uz3ZVM2DUBYxfvL2MmtQJ3d5gf2L4Dz3Cop2aVJbLlcfyu
+    mTr4rVxeUBVU9nfHRc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudegkedgieejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
+    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
+    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
+    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
+    guvg
+X-ME-Proxy: <xmx:3tz1ZIii6R7w8Av4ouO9z_nouBELw47M-asu5pOmNsWAlkCjY9Jakg>
+    <xmx:3tz1ZA_QwxvaL2vO79XNX4pCmVrHgLmypRXDwqw-Le6tGkFjoTc3kA>
+    <xmx:3tz1ZLvUZMtNb7ixhW-zE_nLqqe6AltCS2BoYKvDFEECuM-2NDXjpA>
+    <xmx:39z1ZLKEATaB4MCY8CPiZcGEZElm4-yEJ6upMGAZk2iqfnbcEbHf3g>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id C0C96B60089; Mon,  4 Sep 2023 09:34:22 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-701-g9b2f44d3ee-fm-20230823.001-g9b2f44d3
+Mime-Version: 1.0
+Message-Id: <8728313c-997a-46c1-8225-d57369e9292c@app.fastmail.com>
+In-Reply-To: <ab5baa69-ae3c-4973-8563-670395a3c976@mev.co.uk>
+References: <20230901192615.89591-1-abbotti@mev.co.uk>
+ <33c2292b-08cb-44c7-9438-07d4060976ab@app.fastmail.com>
+ <f0e88ae3-d38e-40d1-900c-395ddc9c8231@mev.co.uk>
+ <65d620b2644e2d60b041815fa4bb544a818ae55a.camel@linux.ibm.com>
+ <ab5baa69-ae3c-4973-8563-670395a3c976@mev.co.uk>
+Date:   Mon, 04 Sep 2023 09:34:01 -0400
+From:   "Arnd Bergmann" <arnd@kernel.org>
+To:     "Ian Abbott" <abbotti@mev.co.uk>,
+        "Niklas Schnelle" <schnelle@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Hartley Sweeten" <hsweeten@visionengravers.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] comedi: Fix driver module dependencies since HAS_IOPORT changes
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Roberto Sassu <roberto.sassu@huawei.com>
+On Mon, Sep 4, 2023, at 08:01, Ian Abbott wrote:
+> On 04/09/2023 12:23, Niklas Schnelle wrote:
+>> On Mon, 2023-09-04 at 11:10 +0100, Ian Abbott wrote:
+>
+> Thanks for the confirmation.  Will it be safe to assume that anything 
+> that selects ISA will also select HAS_IOPORT?  That is trivially the 
+> case for arch/{alpha,arm,x86}; arch/mips explicitly selects HAS_IOPORT 
+> if ISA is selected; arch/powerpc explicitly selects HAS_IOPORT if PCI is 
+> selected and it is only possible to configure ISA if PPC_CHRP is 
+> configured which selects FORCE_PCI and therefore selects PCI and 
+> therefore selects HAS_IOPORT; arch/um does not select HAS_IOPORT and 
+> although it has a 'config ISA', nothing appears to select it.  None of 
+> the remaining arch/* have 'select ISA'.
 
-Change evm_inode_post_setxattr() definition, so that it can be registered
-as implementation of the inode_post_setxattr hook.
+Yes, I think that will always be a safe assumption, ISA without port I/O
+is just not a sensible configuration. A few of the later ISA devices use
+PCI style memory mapped I/O, but I can't think of any driver that doesn't
+also require port I/O, and you wouldn't find ISA slots in a system that
+lacks support for port I/O.
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
----
- include/linux/evm.h               | 8 +++++---
- security/integrity/evm/evm_main.c | 4 +++-
- security/security.c               | 2 +-
- 3 files changed, 9 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/evm.h b/include/linux/evm.h
-index bed63ed7bde9..642e52483adc 100644
---- a/include/linux/evm.h
-+++ b/include/linux/evm.h
-@@ -31,7 +31,8 @@ extern int evm_inode_setxattr(struct mnt_idmap *idmap,
- extern void evm_inode_post_setxattr(struct dentry *dentry,
- 				    const char *xattr_name,
- 				    const void *xattr_value,
--				    size_t xattr_value_len);
-+				    size_t xattr_value_len,
-+				    int flags);
- extern int evm_inode_removexattr(struct mnt_idmap *idmap,
- 				 struct dentry *dentry, const char *xattr_name);
- extern void evm_inode_post_removexattr(struct dentry *dentry,
-@@ -55,7 +56,7 @@ static inline void evm_inode_post_set_acl(struct dentry *dentry,
- 					  const char *acl_name,
- 					  struct posix_acl *kacl)
- {
--	return evm_inode_post_setxattr(dentry, acl_name, NULL, 0);
-+	return evm_inode_post_setxattr(dentry, acl_name, NULL, 0, 0);
- }
- 
- int evm_inode_init_security(struct inode *inode, struct inode *dir,
-@@ -114,7 +115,8 @@ static inline int evm_inode_setxattr(struct mnt_idmap *idmap,
- static inline void evm_inode_post_setxattr(struct dentry *dentry,
- 					   const char *xattr_name,
- 					   const void *xattr_value,
--					   size_t xattr_value_len)
-+					   size_t xattr_value_len,
-+					   int flags)
- {
- 	return;
- }
-diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
-index 779ec35fb39f..2e8f6d1c9984 100644
---- a/security/integrity/evm/evm_main.c
-+++ b/security/integrity/evm/evm_main.c
-@@ -731,6 +731,7 @@ bool evm_revalidate_status(const char *xattr_name)
-  * @xattr_name: pointer to the affected extended attribute name
-  * @xattr_value: pointer to the new extended attribute value
-  * @xattr_value_len: pointer to the new extended attribute value length
-+ * @flags: flags to pass into filesystem operations
-  *
-  * Update the HMAC stored in 'security.evm' to reflect the change.
-  *
-@@ -739,7 +740,8 @@ bool evm_revalidate_status(const char *xattr_name)
-  * i_mutex lock.
-  */
- void evm_inode_post_setxattr(struct dentry *dentry, const char *xattr_name,
--			     const void *xattr_value, size_t xattr_value_len)
-+			     const void *xattr_value, size_t xattr_value_len,
-+			     int flags)
- {
- 	if (!evm_revalidate_status(xattr_name))
- 		return;
-diff --git a/security/security.c b/security/security.c
-index 743fd0f58698..cb6242feb968 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -2269,7 +2269,7 @@ void security_inode_post_setxattr(struct dentry *dentry, const char *name,
- 	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
- 		return;
- 	call_void_hook(inode_post_setxattr, dentry, name, value, size, flags);
--	evm_inode_post_setxattr(dentry, name, value, size);
-+	evm_inode_post_setxattr(dentry, name, value, size, flags);
- }
- 
- /**
--- 
-2.34.1
-
+      Arnd
