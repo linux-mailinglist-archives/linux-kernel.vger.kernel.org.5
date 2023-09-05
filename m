@@ -2,120 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF28C7929EF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847FF7929D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354967AbjIEQaX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
+        id S1353895AbjIEQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:29:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354702AbjIENgo (ORCPT
+        with ESMTP id S1354703AbjIENhA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:36:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD5B0191;
-        Tue,  5 Sep 2023 06:36:40 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Tue, 5 Sep 2023 09:37:00 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6957D191;
+        Tue,  5 Sep 2023 06:36:56 -0700 (PDT)
+Received: from [192.168.1.23] (unknown [171.76.82.102])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5320F609EB;
-        Tue,  5 Sep 2023 13:36:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5EB5C433C7;
-        Tue,  5 Sep 2023 13:36:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693920999;
-        bh=3kc77G13Twj+OR0TFxL3rm0LAU3kzvn7sJGLwOT/KyE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lRkf1G5XXsvZRREsWN72KNgh+/Ex5d9uSNWnUgW47RcKOeS/1RnvKfVRAHRWjVV9n
-         C8pI6KVoh6Sv2JZ7iMXNcazirIuStaBspyEO6wVMnPXbMjQq5eZZ3enw/w5NNaIAsL
-         VlNH8aWpJQA86cIKdTqEgsuO6uZwTb1JXdL0nG0/Zzo5eMaM/4VH8yqDchJADtf7EE
-         OQnA6Wq2hEwbRhzG1dWBS+lclquaArIHZBcR9083BoVPPV3WWfjjJFulbD2xU8MdY7
-         WVSqBWb1aeHnNlKZ204YgJZKsEysOwQ1HVfc3yIWe9xNvHm+OU5JL15iliIpVa+axQ
-         fjayyVd9IbAYA==
-Date:   Tue, 5 Sep 2023 22:36:33 +0900
-From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To:     Sven Schnelle <svens@linux.ibm.com>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Florent Revest <revest@chromium.org>,
-        linux-trace-kernel@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 4/9] fprobe: rethook: Use ftrace_regs in fprobe exit
- handler and rethook
-Message-Id: <20230905223633.23cd4e6e8407c45b934be477@kernel.org>
-In-Reply-To: <yt9d5y4pozrl.fsf@linux.ibm.com>
-References: <169280372795.282662.9784422934484459769.stgit@devnote2>
-        <169280377434.282662.7610009313268953247.stgit@devnote2>
-        <20230904224038.4420a76ea15931aa40179697@kernel.org>
-        <yt9d5y4pozrl.fsf@linux.ibm.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        (Authenticated sender: vignesh)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8925A66028F5;
+        Tue,  5 Sep 2023 14:36:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693921014;
+        bh=Jrym+Ky16xApwfLUAeFb6AP634wzyVW+sZXlItpUeVA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=C8/+a4DuIQRb0J3o7lNrwSoVRG1+YurJ+S/AWRRmeXMd6FpAVrzaW+mkXBemfTWOM
+         Vz+5vKLJX8hhwhW1eJ4xEUo4DFoVXahuSO1Xf5IC09U2tNkWsHKNys/6IDUCdSUgCV
+         +VxNygTXoEfwohPaZqbsGtSw7MECBECFl2Eo962KXal/5SaLmx5SUCNIeWdyMDgE0V
+         LMh++CG+U3jtZ7OPTRHukHPMyyocraqM7ScRkm7BsXzIugmxRFezrxObEIBt4oE1G0
+         FZi3cUJVFHx9tcJhULppHUI0VyUqFcx8+HjU3XQH2edua5LgoE81hSBjyuUnMTaUEo
+         zcujGn0lBtVAQ==
+Message-ID: <427ceb32-054f-41ff-df95-446b18aa178f@collabora.com>
+Date:   Tue, 5 Sep 2023 19:06:43 +0530
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/7] drm: ci: Force db410c to host mode
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        dri-devel@lists.freedesktop.org, helen.koike@collabora.com,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        david.heidelberg@collabora.com, daniels@collabora.com,
+        gustavo.padovan@collabora.com, emma@anholt.net,
+        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
+        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230904161516.66751-1-vignesh.raman@collabora.com>
+ <20230904161516.66751-3-vignesh.raman@collabora.com>
+ <CAA8EJpq_cmFQ6TGy1xELh3ButWKLfSkQcp5ix049s_iqKw6DvQ@mail.gmail.com>
+ <ueznsu2dlvq5zp3ls262fww54bnlqa3e2ssr6f65vrrionloms@ir2ywgeajj4w>
+ <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
+ <2jz6wurh6ejbaejwtb5r5gukjuw4zs7ujk5hbwfpsn26o6esqe@g2nnb2gjpnjp>
+ <CAA8EJpoGoopP64T1nm1ye1ukTwT=u+LYY1ubQG-9dQ-j41iHiA@mail.gmail.com>
+ <6be5f5d8-8940-c79b-4a01-3f3d73641e4e@collabora.com>
+ <ktikqf5hu2dmqb4p7dvrqv2tjm565qn3qu2gggrvncfu47l23j@o6t2rnpbya3x>
+From:   Vignesh Raman <vignesh.raman@collabora.com>
+In-Reply-To: <ktikqf5hu2dmqb4p7dvrqv2tjm565qn3qu2gggrvncfu47l23j@o6t2rnpbya3x>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_HI,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Sep 2023 09:17:02 +0200
-Sven Schnelle <svens@linux.ibm.com> wrote:
+Hi Maxime,
 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
+On 05/09/23 17:27, Maxime Ripard wrote:
+> On Tue, Sep 05, 2023 at 05:11:43PM +0530, Vignesh Raman wrote:
+>>>> Also, that node actually has a label ("usb"), defined here:
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/msm8916.dtsi#n2322
+>>>>
+>>>> So you can end up with
+>>>>
+>>>> &usb {
+>>>>           dr_mode = "host";
+>>>> };
+>>>
+>>> ... which is the simplest and thus more robust one.
+>>>
+>>
+>> Should it be,
+>> &{/soc@0/usb} {
+>> 	dr_mode = "host";
+>> };
 > 
-> > I found that this is not enough becuase s390/loongarch already implemented
-> > their rethook, and as far as I can see, the s390 ftrace_regs does not save
-> > the required registers for rethook. Thus, for such architecture, we need
-> > another kconfig flag and keep using the pt_regs for rethook.
-> 
-> Looking into arch_rethook_trampoline() i think we save all required
-> registers - which register do you think are missing? Or is there another
-> function i should look at?
+> No. The &{/...} syntax refers to a path. &... refers to a label. They
+> are not equivalent.
 
-Yes, arch_rethook_trampoline() is good. It needs to save all registers.
+Sorry I was not clear before.
 
-In this series, I'm trying to change the pt_regs with ftrace_regs which will
-reduce trampoline overhead if DYNAMIC_FTRACE_WITH_ARGS=y.
+With,
+&usb {
+	dr_mode = "host";
+};
 
-kprobe -> (pt_regs) -> rethook_try_hook()
-fprobe -> (ftrace_regs) -> rethook_try_hook_ftrace() # new function
+The target is <0xffffffff> and fdtoverlay fails to apply the dtbo.
 
-Thus, we need to ensure that the ftrace_regs which is saved in the ftrace
-*without* FTRACE_WITH_REGS flags, can be used for hooking the function
-return. I saw;
+With,
+&{/soc@0/usb} {
+          dr_mode = "host";
+};
 
-void arch_rethook_prepare(struct rethook_node *rh, struct pt_regs *regs, bool mcount)
-{
-        rh->ret_addr = regs->gprs[14];
-        rh->frame = regs->gprs[15];
+The target-path is "/soc@0/usb" (usb: usb@78d9000)
 
-        /* Replace the return addr with trampoline addr */
-        regs->gprs[14] = (unsigned long)&arch_rethook_trampoline;
-}
+/ {
 
-gprs[15] is a stack pointer, so it is saved in ftrace_regs too, but what about
-gprs[14]? (I guess it is a link register)
-We need to read the gprs[14] and ensure that is restored to gpr14 when the
-ftrace is exit even without FTRACE_WITH_REGS flag.
+	fragment@0 {
+		target-path = "/soc@0/usb";
 
-IOW, it is ftrace save regs/restore regs code issue. I need to check how the
-function_graph implements it.
+		__overlay__ {
+			dr_mode = "host";
+		};
+	};
+};
 
-Thank you,
+So will use  &{/...} syntax in this case.
 
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Regards,
+Vignesh
