@@ -2,58 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F4149792E0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:59:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96BDE792E68
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236343AbjIES72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:59:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S238638AbjIETKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:10:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235752AbjIES71 (ORCPT
+        with ESMTP id S232710AbjIETKm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:59:27 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11246E9;
-        Tue,  5 Sep 2023 11:59:00 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 30914B81109;
-        Tue,  5 Sep 2023 16:37:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2A1BC433C8;
-        Tue,  5 Sep 2023 16:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693931835;
-        bh=w+oEgQVQbOnu49ifCvEgRbOLpeyCI0kFGG7aALURPuA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=SZiKoDobJ73xtwVhTW8bCkYjbuMn9ns3UIbfSBhdrJqwrdxa51jFyXM0GxrDFaLiN
-         EfeDZrPGNkI8R2Nur6TKMtjCEftwLRB52jqbd/QaqyXgbdn737rQTKH4WoR32O7Yzv
-         xAV9RlpI4O9PUDK9mXC2DHekQQmUVgwbp9ED/RqlKr/kqrj93fwuLhDmVoCnncpX5O
-         rYL9ZElWgKxwTlORHQX3m6FPd4JqOWtnhNQVwVkxwm3weGED6PbbIILADm1OJgYYpr
-         2sBtUblLNWbYdn0Tkkn7L4W34dIZkzx2PkYNvZBtz5iOyvUAK6X/gP7aEVd1cC7DYe
-         tFmtkddPtPu0Q==
-Date:   Tue, 5 Sep 2023 11:37:13 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     "Verma, Achal" <a-verma1@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Tom Joseph <tjoseph@cadence.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof Wilczy_ski <kw@linux.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-omap@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [EXTERNAL] Re: [RFC PATCH 2/2] PCI: j721e: Add support to build
- pci-j721e as a kernel module
-Message-ID: <20230905163713.GA175472@bhelgaas>
+        Tue, 5 Sep 2023 15:10:42 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74FA0113
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:10:15 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-401ec23be82so30284035e9.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:10:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693940960; x=1694545760; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bjksFs9ME0ZMeGOd6P3pA7Ye4FZ8i8SMNjWPMfIw5lk=;
+        b=HtKmzNM1O7x/oGmkulyzo08oLBcOSUelwcsKDOMChokZxl7GIkBOt9mHWfZ3iBKP3B
+         waYeoQo4IfVQyhTDvZtaN1euNQPG8J39cZEuRb6p8d2utlx0dMau5r1+HMyGBswR4wbK
+         emvkfwC1uc7PHHNUDfLaR7kYlyk4g3XAFzjAS7oVm6vGdjhwn5rcTrXPZ83M6aqTVwJb
+         DVDC8BIuO6DJyS5lupR+kCMbOt+wUJqSpgNIDzzwVqxZKzpj/g/lBiaTbDcFlV1vsFwk
+         s3W2rCv0V+jM+awIubEKxIv4AH4TJDzR5EMphJzvx6YpHB/f3mVrAD45AGKzC77dQRuQ
+         gAnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693940960; x=1694545760;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bjksFs9ME0ZMeGOd6P3pA7Ye4FZ8i8SMNjWPMfIw5lk=;
+        b=F0WGoInzw3NuPafO63ZABjoUm72sYZvgVD3LvcUyMbtDwotlXP/3Zr1FHJexU4sqTq
+         /7zROxnjo5ejza4NQtXa4pW76iM4zKbfAiCAPqRYHKOgyIKGUNsBaNhqcLCfAruoXkZ7
+         wzj3HSaYVrlw7XJDr5ddDYELa6JuvYypezfxXDZVhp6YxG3AtOINI0ZAXkG9N54c+Kf/
+         5x8JM8tZLObW+aCEeTyKmvD1GpE8/qu3B1R7M5pH5diKfWUPtLmVjqZqi0SK/awIgmLe
+         fbFgR1k4j7GswRCuz7Zg7LAcL0mDPWUsiEBQB/CYzDK5G7grDsC5Yg4PjLY5+LoKDu1R
+         xazw==
+X-Gm-Message-State: AOJu0YzIKnnWcaIRtdmDF7b2uhZRATD2uAIzoHI1DxR8ypZdv9KhQDBV
+        5eITd96cmjtrKRx/sb+iPmbpNlot4MKs1o7uU0s=
+X-Google-Smtp-Source: AGHT+IGPdPwLCLtw5pl5htm08s4io9/1/fHruh8qkZPW18UOGYZ04JcE/v4EnVNpCFOI8nTRGZI5ow==
+X-Received: by 2002:a17:906:3057:b0:9a1:6252:16a0 with SMTP id d23-20020a170906305700b009a1625216a0mr240900ejd.46.1693931837438;
+        Tue, 05 Sep 2023 09:37:17 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id k23-20020a1709061c1700b00992b71d8f19sm7750341ejg.133.2023.09.05.09.37.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 09:37:16 -0700 (PDT)
+Message-ID: <f5b05cfa-f12c-4f4d-a801-3aa76d843d6d@linaro.org>
+Date:   Tue, 5 Sep 2023 18:37:14 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ed9164d7-e2a2-1a63-3574-a305d8f8d3fc@ti.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v3 0/3] Add qcom hvc/shmem transport
+To:     Nikunj Kela <quic_nkela@quicinc.com>, sudeep.holla@arm.com
+Cc:     cristian.marussi@arm.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20230718160833.36397-1-quic_nkela@quicinc.com>
+ <20230811175719.28378-1-quic_nkela@quicinc.com>
+ <3342d8bf-5281-c082-cb9a-7a027b413237@quicinc.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <3342d8bf-5281-c082-cb9a-7a027b413237@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -61,85 +80,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 04:09:34PM +0530, Verma, Achal wrote:
-> On 8/17/2023 10:34 PM, Bjorn Helgaas wrote:
-> > On Thu, Aug 17, 2023 at 05:38:23PM +0530, Achal Verma wrote:
-> > > pci-j721e driver can be build as a in-built kernel driver only, which is
-> > > not required as it is not used during boot time in most cases.
-> > > This change add support to build pci-j721e as a kernel loadable module.
-> > > 
-> > > J721e PCIe controller can work in both host mode and end-point mode.
-> > > In order to enable host mode driver and endpoint driver to be built
-> > > independently either as built-in or kernel module, the pcie-j721e.c driver
-> > > is refactored into following components:
-> > > 
-> > > 1) pci-j721e-host.c: Driver used when PCIe controller has to be
-> > > initialized in host mode.
-> > > 
-> > > 2) pci-j721e-ep.c: Driver used when PCIe controller has to be
-> > > initialized in endpoint mode.
-> > > 
-> > > 3) pci-j721e.c: contains common code required in both modes.
-> > 
-> > Sounds like at least two commits (I'm not sure what the best order
-> > would be):
-> > 
-> >    1) Split into separate host mode and endpoint mode drivers
-> > 
-> >    2) Make both drivers tristate
+On 05/09/2023 18:06, Nikunj Kela wrote:
 > 
-> So one patch for .c files and Makefile and other one for Kconfig.
+> On 8/11/2023 10:57 AM, Nikunj Kela wrote:
+>> This change introduce a new transport channel for Qualcomm virtual
+>> platforms. The transport is mechanically similar to ARM_SCMI_TRANSPORT_SMC.
+>> The difference between the two transports is that a parameter is passed in
+>> the hypervisor call to identify which doorbell to assert. This parameter is
+>> dynamically generated at runtime on the device and insuitable to pass via
+>> the devicetree.
+>>
+>> The function ID and parameter are stored by firmware in the shmem region.
+>>
+>> This has been tested on ARM64 virtual Qualcomm platform.
+>>
+>> ---
+>> v3 -> fix the compilation error reported by the test bot,
+>>        add support for polling based instances
+>>
+>> v2 -> use allOf construct in dtb schema,
+>>        remove wrappers from mutexes,
+>>        use architecture independent channel layout
+>>
+>> v1 -> original patches
+>>
+>> Nikunj Kela (3):
+>>    dt-bindings: arm: convert nested if-else construct to allOf
+>>    dt-bindings: arm: Add qcom specific hvc transport for SCMI
+>>    firmware: arm_scmi: Add qcom hvc/shmem transport
+>>
+>>   .../bindings/firmware/arm,scmi.yaml           |  67 ++---
+>>   drivers/firmware/arm_scmi/Kconfig             |  13 +
+>>   drivers/firmware/arm_scmi/Makefile            |   2 +
+>>   drivers/firmware/arm_scmi/common.h            |   3 +
+>>   drivers/firmware/arm_scmi/driver.c            |   4 +
+>>   drivers/firmware/arm_scmi/qcom_hvc.c          | 232 ++++++++++++++++++
+>>   6 files changed, 293 insertions(+), 28 deletions(-)
+>>   create mode 100644 drivers/firmware/arm_scmi/qcom_hvc.c
+> Gentle Ping!
 
-Well, not exactly.  I think there are some .c file changes related to
-making the drivers tristate, e.g., adding .remove(), etc.  Those
-specific changes and the Kconfig change from bool to tristate should
-be in the same patch.
+It's third ping these two weeks from Qualcomm. Folks, it is merge
+window. What do you think will happen with your ping during this time?
 
-The split into two drivers should be basically a code rearrangement
-that doesn't add any new functionality.  That should be in a separate
-patch by itself.
+Best regards,
+Krzysztof
 
-> > It looks like you implement both module loading and removal.  Do we
-> > now think removal of these modules is safe?  IIRC there used to be a
-> > question related to irq_desc lifetimes, e.g., there's some discussion
-> > here: https://lore.kernel.org/linux-pci/87k085xekg.wl-maz@kernel.org/
-> > 
-> > The ability to *load* drivers as modules is definitely useful.  The
-> > ability to *remove* them is useful for developers but not really
-> > useful for users.
-> > 
-> > But I guess j721e_pcie_remove() already exists, so maybe you're not
-> > changing anything as far as irq_desc lifetimes
->
-> I went through the email-thread you have shared.
-> It looks like its related to the issue when pcie bridge driver also working
-> as a interrupt domain/controller for EP.
-> In case of legacy interrupt support, its required that pcie host driver free
-> interrupt mapping before freeing the interrupt domain.
-> 
-> Note that current upstream implementation of pci-j721e doesn't support
-> interrupt domain, so issue doesn't applies here but its there in TI kernel
-> and I believe we are handling this in proper way by freeing the mappings
-> before.
-> 
-> Also pci-j721e remove() was lacking some important clean-up functions
-> including pci_remove_root_bus() without which remove wasn't possible, so
-> added required calls and checked the correct sequence of calls.
-
-These changes should be separate from the patch that splits into
-host/endpoint drivers.
-
-> I have tested load/un-load multiple times on J784S4 EVM PCIe1 instance, it
-> worked fine but reload after load->un-load in case of j721e fails leading to
-> kernel hung, I suspect this as something to do with improper (sequence)
-> handling of refclk for endpoint (shutting down and then powering up) as the
-> only difference between these is that for J784S4 both host controller and EP
-> side use shared ref-clk generated by pcie phy while in j721e case host
-> controller use pcie-phy clock while EP side uses board generated ref-clock,
-> so something to do with power and clock off/on sequence.
-
-We should not make module unload possible until reload is reliable.
-But in the meantime, we can certainly make it possible to build the
-drivers as modules and load them at runtime.
-
-Bjorn
