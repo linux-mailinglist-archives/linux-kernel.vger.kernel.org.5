@@ -2,91 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 29D9C7929E3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 908B87929C1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354332AbjIEQ3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:29:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45446 "EHLO
+        id S1352590AbjIEQ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:27:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344535AbjIEDrp (ORCPT
+        with ESMTP id S1344772AbjIEDxj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 23:47:45 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04484CCB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 20:47:42 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-76ef653af2eso130827285a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 20:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693885660; x=1694490460; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p3kqOBQ4SWwtmqJaVKiTK8RTKEn/bkc8/7Nm3cWOW8M=;
-        b=KocYGqBnZFT+mzfNLlCBVZa2LwDOlsKxiAyCDNp+Tb2LJ9/XILq85nib37wx1NORB2
-         0XPAFbcnNEHpsRjocv/Ym7yH2EDf6Myz17q6VSoAL8E2pb9pnCoM6qW6QhAuz6YelJfy
-         x61uiVOxNlS3Zl9mt8vuzAFk3l+WkqFlLR4GnID/CeBp+2LYfiAe0RacJPzNXsHBVn6T
-         WKC6LIgxnIG+TrU80YnB4eYuGnrx6+L0CPU+s5RPP1O4rA/P200LEyxKdRAbYlW7mZqB
-         bMXWAMJuu8o+hNP8xZ9XHCoYvNIq8cNciJb1dhdoTJpxDsqfNDwy8sSUMuSvTz2cpKC1
-         PKtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693885660; x=1694490460;
-        h=content-disposition:mime-version:message-id:subject:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p3kqOBQ4SWwtmqJaVKiTK8RTKEn/bkc8/7Nm3cWOW8M=;
-        b=O87ziOzwwNEb57elaLUJ5SLyzomt7dBsRjrbu+sj6NYTS0RXXvhAgk9zHE69GY4K0L
-         lN1i/6/sIsG9JaU8L537GRAGqKUbPyOkyoHKc4s33F+2RZ8QzMj/5lg1XGAAYvEyBMdq
-         DzQ1QHmYM8Tnc2VTijlS3IVpM5st6FXMq9iPLkvo6+vwZzI2Ev6oIjtu6WDGF03j3a8+
-         K/9wqJ289rnGEnf+ebSYhUqoMCYjAeljzziNABMygDnPPTUyEHWaNNhIm96Mwhhgrs9d
-         9enl5P9hYVK5+CJCpGwPqXuciH61oBgKpxJwSFzwfb9C7GvXj3h0PePY6HhbWpl5tDiy
-         TRhA==
-X-Gm-Message-State: AOJu0Yx0YLmEBFFAnIIJRF2xSVEQOA+hExEtU3FUPj0fVpRVaCOCQ2O3
-        p4Ac/k1tm7udjbhpRVRTVGFAg4JOBa+WiQ==
-X-Google-Smtp-Source: AGHT+IGDY1gvVPRRgh0SuAQ7QVmCzNsri1r/n/759svhqiET99omlzUAbIV+g5tu9e9ZCWDFMBq4Hw==
-X-Received: by 2002:a05:620a:4509:b0:76f:272f:46ad with SMTP id t9-20020a05620a450900b0076f272f46admr14964942qkp.49.1693885660224;
-        Mon, 04 Sep 2023 20:47:40 -0700 (PDT)
-Received: from midnight ([2001:8003:6434:b000:c30f:d88d:412c:6e9a])
-        by smtp.gmail.com with ESMTPSA id d22-20020aa78696000000b00686bf824b3bsm8022513pfo.136.2023.09.04.20.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 20:47:39 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 13:47:36 +1000
-From:   Angus Gardner <angusg778@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: wlan-ng
-Message-ID: <ZPak2AD8lKfcqEXG@midnight>
+        Mon, 4 Sep 2023 23:53:39 -0400
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A77CCB;
+        Mon,  4 Sep 2023 20:53:34 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.30.67.143])
+        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rfs6y0QmDz4f3wt3;
+        Tue,  5 Sep 2023 11:53:30 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+        by APP4 (Coremail) with SMTP id gCh0CgDHVqk5pvZkQLWYCQ--.57068S4;
+        Tue, 05 Sep 2023 11:53:31 +0800 (CST)
+From:   linan666@huaweicloud.com
+To:     dlemoal@kernel.org
+Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
+        houtao1@huawei.com, yangerkun@huawei.com
+Subject: [PATCH v2] scsi: ata: Fix a race condition between scsi error handler and ahci interrupt
+Date:   Tue,  5 Sep 2023 11:48:40 +0800
+Message-Id: <20230905034840.478332-1-linan666@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: gCh0CgDHVqk5pvZkQLWYCQ--.57068S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFy7XF4DWFWxGr1ftw1DZFb_yoW5JFy7pF
+        Z8Zw1DWryUtry2qr4qq3WrXryrGaykK3y2gryDGw1Svr4qka4rt39rCF90gFy3Kr97XF13
+        uan0g3sxCF18Zr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
+        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
+        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4kE6xkIj40E
+        w7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
+        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
+        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwc_TUU
+        UUU
+X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unnecessary parentheses identified by checkpatch.pl removed.
+From: Li Nan <linan122@huawei.com>
 
-Signed-off-by: Angus Gardner <angusg778@gmail.com>
+If a disk is removed and quickly inserted when an I/O error is processing,
+the disk may not be able to be re-added. The function call timeline is as
+follows:
+
+  interrupt                            scsi_eh
+
+  ahci_error_intr
+   ata_port_freeze
+    __ata_port_freeze
+     =>ahci_freeze (turn IRQ off)
+    ata_port_abort
+     ata_do_link_abort
+      ata_port_schedule_eh
+       =>ata_std_sched_eh
+        ata_eh_set_pending
+	 set EH_PENDING
+        scsi_schedule_eh
+         shost->host_eh_scheduled++ (=1)
+                                       scsi_error_handler
+                                        =>ata_scsi_error
+                                         ata_scsi_port_error_handler
+					  clear EH_PENDING
+                                          =>ahci_error_handler
+                                          . sata_pmp_error_handler
+                                          .  ata_eh_reset
+                                          .   ata_eh_thaw_port
+                                          .   . =>ahci_thaw (turn IRQ on)
+  ahci_error_intr			  .   .
+   ata_port_freeze			  .   .
+    __ata_port_freeze			  .   .
+     =>ahci_freeze (turn IRQ off)	  .   .
+    ...					  .   .
+        ata_eh_set_pending		  .   .
+	 set EH_PENDING			  .   .
+        scsi_schedule_eh		  .   .
+         shost->host_eh_scheduled++ (=2)  .   .
+					  .   clear EH_PENDING
+					  check EH_PENDING
+                                          =>ata_std_end_eh
+                                           host->host_eh_scheduled = 0;
+
+'host_eh_scheduled' is 0 and scsi eh thread will not be scheduled again.
+The ata port remain freeze and will never be enabled.
+
+Decrease ’host_eh_scheduled‘ instead of set it to 0 roughly and move
+WARN_ON of nr_active_links to ata_scsi_port_error_handler().
+
+Reported-by: luojian <luojian5@huawei.com>
+Signed-off-by: Li Nan <linan122@huawei.com>
 ---
- drivers/staging/wlan-ng/cfg80211.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Changes in v2:
+  - fix the bug by decrease 'host_eh_scheduled’
+  - improve commit message.
 
-diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
-index 471bb310176f..948db2433463 100644
---- a/drivers/staging/wlan-ng/cfg80211.c
-+++ b/drivers/staging/wlan-ng/cfg80211.c
-@@ -351,7 +351,7 @@ static int prism2_scan(struct wiphy *wiphy,
- 		msg2->bssindex.data = i;
+ drivers/ata/libata-eh.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
+index 159ba6ba19eb..b9454756ecde 100644
+--- a/drivers/ata/libata-eh.c
++++ b/drivers/ata/libata-eh.c
+@@ -735,6 +735,12 @@ void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap)
+ 	 */
+ 	ap->ops->end_eh(ap);
  
- 		result = p80211req_dorequest(wlandev, (u8 *)&msg2);
--		if ((result != 0) ||
-+		if (result != 0 ||
- 		    (msg2->resultcode.data != P80211ENUM_resultcode_success)) {
- 			break;
++	if (!ap->scsi_host->host_eh_scheduled) {
++		/* make sure nr_active_links is zero after EH */
++		WARN_ON(ap->nr_active_links);
++		ap->nr_active_links = 0;
++	}
++
+ 	spin_unlock_irqrestore(ap->lock, flags);
+ 	ata_eh_release(ap);
+ 
+@@ -948,7 +954,7 @@ void ata_std_end_eh(struct ata_port *ap)
+ {
+ 	struct Scsi_Host *host = ap->scsi_host;
+ 
+-	host->host_eh_scheduled = 0;
++	host->host_eh_scheduled--;
+ }
+ EXPORT_SYMBOL(ata_std_end_eh);
+ 
+@@ -3922,10 +3928,6 @@ void ata_eh_finish(struct ata_port *ap)
+ 			}
  		}
+ 	}
+-
+-	/* make sure nr_active_links is zero after EH */
+-	WARN_ON(ap->nr_active_links);
+-	ap->nr_active_links = 0;
+ }
+ 
+ /**
 -- 
-2.40.1
+2.39.2
 
