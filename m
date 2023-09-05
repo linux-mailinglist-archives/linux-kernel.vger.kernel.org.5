@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00052791FBD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 02:09:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6947F791FBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 02:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242551AbjIEAJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Sep 2023 20:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
+        id S242709AbjIEAKR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Sep 2023 20:10:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237175AbjIEAJm (ORCPT
+        with ESMTP id S237175AbjIEAKQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 20:09:42 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1971ECDE
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 17:09:38 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-77acb04309dso77891439f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 17:09:38 -0700 (PDT)
+        Mon, 4 Sep 2023 20:10:16 -0400
+Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 133BF10DE
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 17:09:53 -0700 (PDT)
+Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7926b7f8636so39328739f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 17:09:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693872577; x=1694477377; darn=vger.kernel.org;
+        d=joelfernandes.org; s=google; t=1693872592; x=1694477392; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=otKgkzyWUDGh27y2Rs72bFcGYMbP5/W8N5JOO8p4hSw=;
-        b=RYfRxHiu5Mj/tp2lVpOuu436wZW9xcDn7II/foi7Fljv3zY/vII+O5KkyGuya01QxL
-         iBSnq1yLfnEN+UCOtGmkcIhHeZ2qtII9z7vF7Qp/xaHj4XpnrIrHGJiWQ4dXtFL9mord
-         kqZbBNupkVtaEUdx6olSDwzvdDJezCLnLYal8=
+        bh=9P2LGDxqic3zb5p3b4NCk0WwMm8b4LssupHDf94x/5U=;
+        b=oISBoF59mLYK5Trh33VdN7+leUyDoZLhv4BH4Cy2C6pCQZyazQkm3e9WhNOvJ+cp3r
+         Tb7b0XSQItKuuTe4HdQThunT3tP2+EE3jmj7RC/LuJJWHu0wu89m6H0GzIYxYTAd6Pye
+         rUqdJM09CX3QlUXwQK/SkDFxtLNJqIveUHocY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693872577; x=1694477377;
+        d=1e100.net; s=20221208; t=1693872592; x=1694477392;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=otKgkzyWUDGh27y2Rs72bFcGYMbP5/W8N5JOO8p4hSw=;
-        b=keJuhtYTn4rRVggKuNiFfM6VtAU3oIHsijxHG4nbZ6BQPVgU7pLSM8xVkYiVvkGwsX
-         8vhsfjvS43BQynYercz2WG3lY2cuUCFgwVDQk/SXJLdjt/jst40WSl68p8Fc5PhKxoe/
-         Nm0+Y/+N9nUVdLP16EGdMB385J7Ko42KNHDihjV5P1XNnGnyY4LMzySgRkfpEk1bWq+e
-         NmvCctSJ6Dt9xN2VXWCuclg8kD8xSSFwmRWF1HUb1/9XpKKzNwIrCkqix1ziW3UREd1l
-         6elJi7O6RrP2S5tClaEP1e4f9GdWhsrXpTAN9kdupXvU2Y8AqyEawyPHVp8wLXaRQ2Ra
-         cPfA==
-X-Gm-Message-State: AOJu0YzfeoAghnr7hRBXFQ/zoU0qk3DkWex9XgmQUHN9Cb8L/V/N1WLJ
-        Dhk4Qn4y1J2WXLF45hFeupQoBQ==
-X-Google-Smtp-Source: AGHT+IFEOG4zzjOlyN77CxR7BrlgzRJt1K/MuK1tUHEe4Im0K8EPI6b67QDCAR8Ou3Q68vESTV668A==
-X-Received: by 2002:a05:6602:1b02:b0:785:ff35:f340 with SMTP id dk2-20020a0566021b0200b00785ff35f340mr14336669iob.14.1693872577492;
-        Mon, 04 Sep 2023 17:09:37 -0700 (PDT)
+        bh=9P2LGDxqic3zb5p3b4NCk0WwMm8b4LssupHDf94x/5U=;
+        b=fR0jAvWne5h4uhvi24g0VtXTdA60cKP+qa5/b/jntrL/pQk2/NCPbOR46HbrWRzeAv
+         33aoODE1vz71GVfxeWy86s5fzUUE/V1XXwwzd3CUEUCMUwKQ4yyl9ORnG/a9+GaI7Txq
+         vhCyWPxM87Zs+bbxPOxUlu7U5PLNDrwZNcSeUdzXOgkPC7mfInflhvTWWH2vMKXx9oBf
+         GdYG7DpU13hqPYtrtcEuY9Dfd4HdpHKw2Au3O1UsZAwyNfdkjDrk3LzO4h9YkQp8TbFr
+         ILPrjLWnLquAZ7cCeXaSiN9TFUeP07Klg93YfTRA6SPVOoc4R6RELUeyb7tKOuPLGwRn
+         AAmg==
+X-Gm-Message-State: AOJu0Yx8h0i12Q/ypUA5gUcD/dIqtk+Pr6qOP1srYQvgNaxR8g2VdCnk
+        x3EBwB5SSwtymuvSoEYEFf/yQg==
+X-Google-Smtp-Source: AGHT+IG5OP+CMJnMlbVJ9GSAMYTUf5tHcERSDViUStlQ+D5MxuDsqKByilHuooczHDAwnMcv0oQjdg==
+X-Received: by 2002:a05:6602:168f:b0:792:7c46:3dec with SMTP id s15-20020a056602168f00b007927c463decmr15518481iow.4.1693872592420;
+        Mon, 04 Sep 2023 17:09:52 -0700 (PDT)
 Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id b19-20020a5ea713000000b00783737db8ebsm3949910iod.38.2023.09.04.17.09.36
+        by smtp.gmail.com with ESMTPSA id j22-20020a02cc76000000b0042bae96eba7sm3693388jaq.7.2023.09.04.17.09.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 17:09:37 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 00:09:36 +0000
+        Mon, 04 Sep 2023 17:09:52 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 00:09:51 +0000
 From:   Joel Fernandes <joel@joelfernandes.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
@@ -56,26 +56,25 @@ Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
         jonathanh@nvidia.com, f.fainelli@gmail.com,
         sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
         conor@kernel.org
-Subject: Re: [PATCH 6.4 00/32] 6.4.15-rc1 review
-Message-ID: <20230905000936.GD1104186@google.com>
-References: <20230904182947.899158313@linuxfoundation.org>
+Subject: Re: [PATCH 6.5 00/34] 6.5.2-rc1 review
+Message-ID: <20230905000951.GE1104186@google.com>
+References: <20230904182948.594404081@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904182947.899158313@linuxfoundation.org>
+In-Reply-To: <20230904182948.594404081@linuxfoundation.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 07:29:58PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.15 release.
-> There are 32 patches in this series, all will be posted as a response
+On Mon, Sep 04, 2023 at 07:29:47PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.2 release.
+> There are 34 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -83,9 +82,9 @@ On Mon, Sep 04, 2023 at 07:29:58PM +0100, Greg Kroah-Hartman wrote:
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.15-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.2-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
 > and the diffstat can be found below.
 
 For RCU,
@@ -104,7 +103,7 @@ thanks,
 > Pseudo-Shortlog of commits:
 > 
 > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 6.4.15-rc1
+>     Linux 6.5.2-rc1
 > 
 > Mario Limonciello <mario.limonciello@amd.com>
 >     pinctrl: amd: Don't show `Invalid config param` errors
@@ -114,6 +113,9 @@ thanks,
 > 
 > Ryusuke Konishi <konishi.ryusuke@gmail.com>
 >     nilfs2: fix WARNING in mark_buffer_dirty due to discarded buffer reuse
+> 
+> Brian Foster <bfoster@redhat.com>
+>     tracing: Zero the pipe cpumask on alloc to avoid spurious -EBUSY
 > 
 > Hugo Villeneuve <hvilleneuve@dimonoff.com>
 >     dt-bindings: sc16is7xx: Add property to change GPIO function
@@ -202,6 +204,9 @@ thanks,
 > Gao Xiang <xiang@kernel.org>
 >     erofs: ensure that the post-EOF tails are all zeroed
 > 
+> Lang Yu <Lang.Yu@amd.com>
+>     drm/amdgpu: correct vmhub index in GMC v10/11
+> 
 > 
 > -------------
 > 
@@ -216,6 +221,8 @@ thanks,
 >  arch/mips/alchemy/devboards/db1300.c               | 10 +----
 >  drivers/firmware/stratix10-svc.c                   |  2 +-
 >  drivers/fsi/fsi-master-ast-cf.c                    |  1 +
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c             |  4 +-
+>  drivers/gpu/drm/amd/amdgpu/gmc_v11_0.c             |  4 +-
 >  drivers/hid/wacom.h                                |  1 +
 >  drivers/hid/wacom_sys.c                            | 25 ++++++++++--
 >  drivers/hid/wacom_wac.c                            |  1 +
@@ -248,7 +255,8 @@ thanks,
 >  fs/smb/server/transport_rdma.c                     | 25 ++++++++----
 >  include/linux/usb/tcpci.h                          |  1 +
 >  kernel/module/main.c                               | 14 +++++--
+>  kernel/trace/trace.c                               |  4 +-
 >  sound/usb/stream.c                                 | 11 +++++-
->  42 files changed, 212 insertions(+), 95 deletions(-)
+>  45 files changed, 220 insertions(+), 99 deletions(-)
 > 
 > 
