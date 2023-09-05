@@ -2,174 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D33BF792966
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:52:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7766792A03
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351882AbjIEQ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:26:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52054 "EHLO
+        id S1355127AbjIEQad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:30:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354857AbjIEPH2 (ORCPT
+        with ESMTP id S1354863AbjIEPKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 11:07:28 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E25A18D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:07:24 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id 38308e7fff4ca-2b72161c6e9so41475091fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1693926442; x=1694531242; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X8d5KFcSRcmH0JCc/DKLzz+3RGk6xH5isDQxBMPU7qY=;
-        b=Ox0TsDWCkmQl4dyhtUVoL9kJqYjU+WDovLFWVvvSDlj4rezLOmqnONAWnH8J/Ki0wC
-         oYj8GT2mlT1Gdrtvr8CRyLGvO0lZjfENOCA4B9gTnJQ+1PUGcrUC+zGSUTbSUBwrlHNk
-         G87DhZrgTbtYTVXuIBm5LqT1OzkrSKpZSmrVXPtpHuFXWGEwJGF5DpTtUKzhKex6AOtd
-         LzbipKmChBMtgt0M52BvzBZv3gm6P9QLiVLAWrRCCcbSvyRtqwXXCWa8fEe5X6vR5mFU
-         vFwMlv5CcigyNgelbzuB38maMMA/0oXgbzn+crDGt82X7h+wp/fSagpuTr9pjDHl7dMr
-         2nhQ==
+        Tue, 5 Sep 2023 11:10:05 -0400
+Received: from mail-pj1-f80.google.com (mail-pj1-f80.google.com [209.85.216.80])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398C8191
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:10:01 -0700 (PDT)
+Received: by mail-pj1-f80.google.com with SMTP id 98e67ed59e1d1-26b752bc74fso2491372a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:10:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693926442; x=1694531242;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X8d5KFcSRcmH0JCc/DKLzz+3RGk6xH5isDQxBMPU7qY=;
-        b=cKIm2lCDpt/43f6tRHGpuuhnYXs4I9VupUHa1lqRocZX3Oq87XzPgmrViy0Gx49dxW
-         n4EYhZFzNs1YcVIz5JBa9PXzmSERV5+6Ucs3K5jo/Id9LgYXP1anMBaFyLmZXmV82haQ
-         wCmjlIdyCAUExlbA6mqL6s6mj4wYLcreeDyt98cApQz5hrTlHCLFCXw9VGRio5kmZU+G
-         IILAbOi44ms1+c2BzfGRINR90MHUbexOY3TuHRpFQd2tCdJEBqgdZDOfdgwFKkiQtnLD
-         5pbmUBf8CVWaS0wfguoI72Fa9SzPCvhRZAhKpr3p0uJUV0PLh0E/lt1nf7IRHPA78rKO
-         7E9w==
-X-Gm-Message-State: AOJu0YwvWWp9Q6hX1MYhIIP/1w1FZGdMkKIPKeSMAdsg+N2rsHFcKD55
-        JrppQd6wydCyBeFOnXGjesQbkhcFKxBok+5F137yyQ==
-X-Google-Smtp-Source: AGHT+IHOnDDzrKhACbl2MVW/szUGryvjFTJ7hcXSlFr4SFXnR0m9slCKMXPxqlVlZCIWngKKVMz0uryu42aXAN6j2Ks=
-X-Received: by 2002:a2e:7c09:0:b0:2bb:94e4:6b07 with SMTP id
- x9-20020a2e7c09000000b002bb94e46b07mr34242ljc.12.1693926442628; Tue, 05 Sep
- 2023 08:07:22 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693926600; x=1694531400;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zmaWqdjOtt9j6z//ErR2j9KoqmwRo3rNHVaNiamOmos=;
+        b=gM9Qb8BkNDQuirHxSEdNAmK6Y4UpIw70Qh5iulDT39NaqdyHqrJF6kNmvMr7OfgPO/
+         SrL3vleNVUf4lxE33dv6RB0ZnbKlHrq9L5M+XOSog8XapnFJCqkS+xapoB63U0qsWq04
+         wca/bqQqNu5euso2TMh5cvjh9FnAWuxVRDK5SgkdUpngwlrcCVkiGEgvwP2M+jtg1s5S
+         Orbo01XGv2kw5MxLj3zgVLEBAe/8us70di8ycux3DX96qwiGBYosJ6qufbCsIKB4ITob
+         g7GiHFprZPj6OFzLtRBdouQ1IkmNPkhVGlJlMmxfBlveXn6rx8KOK2USZHDDkz1/ToKx
+         wVMw==
+X-Gm-Message-State: AOJu0YzOn0XR72jL6SLxinGTFZWLMcW9GKx8Tlw/h1h4O9xWWVP0jBJn
+        /I2JMlte2r+9z2muAqCPJBWS3tPNrL8d3RhzLqpQ++fyGPK7
+X-Google-Smtp-Source: AGHT+IEmuaB2xmUxHtmQZ3alrUy3R1NLKvFYpm/C9UXlkG59HS+rOQkSaNz31B+GxxonH1/yXR4WbaVewoWWNyrik2gWFJOsYwei
 MIME-Version: 1.0
-References: <20230720135125.21240-1-eric.lin@sifive.com> <20230720135125.21240-2-eric.lin@sifive.com>
- <20230720-slept-guru-216e2803061e@spud>
-In-Reply-To: <20230720-slept-guru-216e2803061e@spud>
-From:   Eric Lin <eric.lin@sifive.com>
-Date:   Tue, 5 Sep 2023 23:07:11 +0800
-Message-ID: <CAPqJEFrM51aQrcVgj8RFvai4QPR2+iOC=ueqFpU0oNX+h4aQbg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] dt-bindings: riscv: sifive: Add SiFive Private L2
- cache controller
-To:     Conor Dooley <conor@kernel.org>
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        zong.li@sifive.com, greentime.hu@sifive.com,
-        vincent.chen@sifive.com
+X-Received: by 2002:a17:90a:ba0b:b0:26d:ae3:f6a4 with SMTP id
+ s11-20020a17090aba0b00b0026d0ae3f6a4mr3045072pjr.5.1693926600763; Tue, 05 Sep
+ 2023 08:10:00 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 08:10:00 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005071ca06049e05f0@google.com>
+Subject: [syzbot] [gfs2?] BUG: sleeping function called from invalid context
+ in gfs2_flush_delete_work
+From:   syzbot <syzbot+f695093038cdf1175371@syzkaller.appspotmail.com>
+To:     agruenba@redhat.com, cluster-devel@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Conor and Krzysztof,
+Hello,
 
-On Fri, Jul 21, 2023 at 1:10=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> Hey Eric,
->
-> On Thu, Jul 20, 2023 at 09:51:19PM +0800, Eric Lin wrote:
-> > This add YAML DT binding documentation for SiFive Private L2
-> > cache controller
-> >
-> > Signed-off-by: Eric Lin <eric.lin@sifive.com>
-> > Reviewed-by: Zong Li <zong.li@sifive.com>
-> > Reviewed-by: Nick Hu <nick.hu@sifive.com>
-> > ---
-> >  .../bindings/cache/sifive,pl2cache.yaml       | 62 +++++++++++++++++++
->
-> btw, your $subject should be "dt-bindings: cache: ...." rather than
-> "riscv: sifive".
->
-> >  1 file changed, 62 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/cache/sifive,pl2c=
-ache.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/cache/sifive,pl2cache.ya=
-ml b/Documentation/devicetree/bindings/cache/sifive,pl2cache.yaml
-> > new file mode 100644
-> > index 000000000000..ee8356c5eeee
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/cache/sifive,pl2cache.yaml
-> > @@ -0,0 +1,62 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +# Copyright (C) 2023 SiFive, Inc.
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/cache/sifive,pl2cache.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: SiFive Private L2 Cache Controller
-> > +
-> > +maintainers:
-> > +  - Greentime Hu  <greentime.hu@sifive.com>
-> > +  - Eric Lin  <eric.lin@sifive.com>
->
-> There's extra spaces in these lines for some reason.
->
-> > +
-> > +description:
-> > +  The SiFive Private L2 Cache Controller is per core and
-> > +  communicates with both the upstream L1 caches and
-> > +  downstream L3 cache or memory, enabling a high-performance
-> > +  cache subsystem.
-> > +
-> > +allOf:
-> > +  - $ref: /schemas/cache-controller.yaml#
-> > +
->
-> I'm pretty sure that I pointed out last time around that you need to add
-> something like in the ccache driver:
->
-> select:
->   properties:
->     compatible:
->       contains:
->         enum:
->           - sifive,ccache0
->           - sifive,fu540-c000-ccache
->           - sifive,fu740-c000-ccache
->
-> otherwise this binding will be used for anything containing "cache" in
-> the dt-binding.
-> For this binding, I think that the following is sufficient:
->
-> select:
->   properties:
->     compatible:
->       contains:
->           const: sifive,pl2cache1
->
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: sifive,pl2cache1
-> > +      - const: cache
->
-> You omitted the pl2cache0 from here, that needs to come back! You'll end
-> up with 2 items entries.
-> Either way, I can't take this binding without a soc-specific compatible,
-> per sifive-blocks-ip-versioning.txt..
->
-Sorry for the late reply.
-OK, I will wait until the customer's SoC tape-out before upstreaming
-the PL2 cache and PMU drivers.
-Thank you for your review.
+syzbot found the following issue on:
 
-Best regards,
-Eric Lin
+HEAD commit:    99d99825fc07 Merge tag 'nfs-for-6.6-1' of git://git.linux-..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=114e462fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=30b036635ccf91ce
+dashboard link: https://syzkaller.appspot.com/bug?extid=f695093038cdf1175371
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13536d8fa80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13aeb870680000
 
-> Thanks,
-> Conor.
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-99d99825.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ce6af6f13dfd/vmlinux-99d99825.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/10b5fe4e45b5/bzImage-99d99825.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/6bbc32f93f62/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f695093038cdf1175371@syzkaller.appspotmail.com
+
+loop0: rw=1, sector=3280942697285464, nr_sectors = 8 limit=32768
+gfs2: fsid=syz:syz.0: Error 10 writing to journal, jid=0
+gfs2: fsid=syz:syz.0: fatal: I/O error(s)
+gfs2: fsid=syz:syz.0: about to withdraw this file system
+BUG: sleeping function called from invalid context at fs/gfs2/glock.c:2081
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5143, name: syz-executor333
+preempt_count: 1, expected: 0
+RCU nest depth: 0, expected: 0
+INFO: lockdep is turned off.
+Preemption disabled at:
+[<0000000000000000>] 0x0
+CPU: 1 PID: 5143 Comm: syz-executor333 Not tainted 6.5.0-syzkaller-09276-g99d99825fc07 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
+ __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10187
+ glock_hash_walk fs/gfs2/glock.c:2081 [inline]
+ gfs2_flush_delete_work+0x1f6/0x2b0 fs/gfs2/glock.c:2108
+ gfs2_make_fs_ro+0x460/0x740 fs/gfs2/super.c:550
+ signal_our_withdraw fs/gfs2/util.c:153 [inline]
+ gfs2_withdraw+0xc2e/0x10c0 fs/gfs2/util.c:334
+ gfs2_ail1_empty+0x8cc/0xab0 fs/gfs2/log.c:377
+ gfs2_flush_revokes+0x6b/0x90 fs/gfs2/log.c:815
+ revoke_lo_before_commit+0x22/0x640 fs/gfs2/lops.c:868
+ lops_before_commit fs/gfs2/lops.h:40 [inline]
+ gfs2_log_flush+0x105e/0x27f0 fs/gfs2/log.c:1101
+ gfs2_write_inode+0x24a/0x4b0 fs/gfs2/super.c:453
+ write_inode fs/fs-writeback.c:1456 [inline]
+ __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
+ writeback_single_inode+0x2af/0x590 fs/fs-writeback.c:1724
+ sync_inode_metadata+0xa5/0xe0 fs/fs-writeback.c:2786
+ gfs2_fsync+0x218/0x380 fs/gfs2/file.c:761
+ vfs_fsync_range+0x141/0x220 fs/sync.c:188
+ generic_write_sync include/linux/fs.h:2625 [inline]
+ gfs2_file_write_iter+0xd97/0x10c0 fs/gfs2/file.c:1150
+ call_write_iter include/linux/fs.h:1985 [inline]
+ do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
+ do_iter_write+0x17f/0x830 fs/read_write.c:860
+ vfs_iter_write+0x7a/0xb0 fs/read_write.c:901
+ iter_file_splice_write+0x698/0xbf0 fs/splice.c:736
+ do_splice_from fs/splice.c:933 [inline]
+ direct_splice_actor+0x118/0x180 fs/splice.c:1142
+ splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
+ do_splice_direct+0x1af/0x280 fs/splice.c:1194
+ do_sendfile+0xb88/0x1390 fs/read_write.c:1254
+ __do_sys_sendfile64 fs/read_write.c:1322 [inline]
+ __se_sys_sendfile64 fs/read_write.c:1308 [inline]
+ __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f47de46e6b9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fff21f08188 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 00007fff21f08358 RCX: 00007f47de46e6b9
+RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000007
+RBP: 00007f47de4f3610 R08: 00007fff21f08358 R09: 00007fff21f08358
+R10: 0001000000201004 R11: 0000000000000246 R12: 0000000000000001
+R13: 00007fff21f08348 R14: 0000000000000001 R15: 0000000000000001
+ </TASK>
+BUG: scheduling while atomic: syz-executor333/5143/0x00000002
+INFO: lockdep is turned off.
+Modules linked in:
+Preemption disabled at:
+[<0000000000000000>] 0x0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
