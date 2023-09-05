@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D3BD4792BC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E80792AA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244178AbjIERAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59062 "EHLO
+        id S244964AbjIEQki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:40:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353875AbjIEI1W (ORCPT
+        with ESMTP id S1353879AbjIEI2C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:27:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3C6CC7
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693902391;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wr7DwURnCr/necd9JNHVzn6++72JC9JfYbJ7saAJJBg=;
-        b=H4oh7587IXQSnF5KRXqDxr1sEETXRJAq5p9KwrUFvjPF4wBE6t9a9Ppxf3iWH30u3OTtPl
-        h+u6rgMf8gTUcOSiGCPH+r5C7L7T/TKXNDXLbCNugMkN+d8LRQGOAJ4DP6dIK/BeMKM35f
-        dgfBb1lx9khY15Pcq55MYRU9VqPfzsw=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-513-7UXTA6PZM1G_oGLX9DRuhw-1; Tue, 05 Sep 2023 04:26:28 -0400
-X-MC-Unique: 7UXTA6PZM1G_oGLX9DRuhw-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9a62b121c43so46322866b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:26:28 -0700 (PDT)
+        Tue, 5 Sep 2023 04:28:02 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0EECCF
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:27:55 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4018af103bcso14249535e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:27:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693902474; x=1694507274; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yZOJVeABpFpne+4zxTVbLhiPldIS4DZuhrgZSQO5xhg=;
+        b=C7jRPpvPWdKNofhdUtxIkmuetQa24LV+ISujOD1s0qovUmBNySN/gzmGe7K50ny1EO
+         dMqdwWj3WkwqwPHF9Q9HS1osrF2/whi54U9+wviKwCRqYRMFUL2vOBq2bk0/JWUNUppb
+         JVDL8WbeCxGgO2VclnkxO1yXxQ57ve+5ASmo7o2haJBuLp1kIRt9l3DMZCpJcsqv38If
+         Ivf5BwtycJQzfh9qPqug81e+x064j/ARInbhzd8nW87vMel7Deg+na53fa5Nec8INQL9
+         bMBNNUmCPK1s5GOBERoMYnh3yZ2fnq6P3kaYXJPIYD0pNJnYWj/q2Fpgv6S/I4x0q4pf
+         aylQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693902387; x=1694507187;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wr7DwURnCr/necd9JNHVzn6++72JC9JfYbJ7saAJJBg=;
-        b=GtNH+oeohr11AFY0KeZeaTMtS87gVwBVjRmqJucNi3yT/LsXbFQ6KRDGrSkhugT8a9
-         yE3Tw94Z4EAhebUG5XLGCQMTghtCbi0FeqUpylMRe/+RyuGDiMtb5g0nxIycvzyBJJxI
-         uuYgXykdPGQlco1kCVigvyxFq8DllS3uYHFAMvI43oYLPolHR+ZtDfdTjo43rfEi2V4K
-         B842fkwug5ygeiE5PxfKUCLh28hKN1Lc4aIdTqb7fr3iiRiRAWD0iPUuouau1LapibPF
-         NXk5qZj3EceqwqdI48EB+qFwqf9181yH3xelQSiYnuhVdc2oeKXwPZXLeq9guwn2G4fM
-         ALyQ==
-X-Gm-Message-State: AOJu0YxIdHKBF6PKPBxcmZGd6/Rg2jD6VsFQI5qpXmOmHeq1OshMPrNc
-        gbsrjQOpRBc7Dco+n8ibgGjLM7mjLdjS28hWnOqZ1K/NO6CFBz0ukfx3ecCVru97zmEMuEGrk1c
-        QRUgCgNACewxf7DQ1bwKbd7DX
-X-Received: by 2002:a17:906:109b:b0:9a1:c4ce:65b8 with SMTP id u27-20020a170906109b00b009a1c4ce65b8mr8489406eju.4.1693902387153;
-        Tue, 05 Sep 2023 01:26:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEG+whJWY7ZKsZzIZ+azxlEM5vF1xXpWf5XsikJWrsPYr05TGyW5mgNt+gzuGt+4iSo+solTA==
-X-Received: by 2002:a17:906:109b:b0:9a1:c4ce:65b8 with SMTP id u27-20020a170906109b00b009a1c4ce65b8mr8489388eju.4.1693902386790;
-        Tue, 05 Sep 2023 01:26:26 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-254-194.dyn.eolo.it. [146.241.254.194])
-        by smtp.gmail.com with ESMTPSA id cf20-20020a170906b2d400b00988dbbd1f7esm7210115ejb.213.2023.09.05.01.26.25
+        d=1e100.net; s=20221208; t=1693902474; x=1694507274;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yZOJVeABpFpne+4zxTVbLhiPldIS4DZuhrgZSQO5xhg=;
+        b=CGQSVF4lVB+tZfhc2DPTCd35KGTOnFPlHLgH3yDFwUBpfNSItfW38sSxYQki8O26HG
+         EO+lnM1vfMiTYU2brbpQakQZWIMyJ3wSL5/gDhl2l4h/RnmaKodJeZeTIY2l12ADZIEl
+         lG8Flx3bAu8MBBC54RuvjU88IMujhnHWqPXPW8/aqlxr1zXlOPyR7bJZ5g8m5JmqWC+S
+         lWC8JBLVips21aSL0JVXHM46nTlKbBJYfv1FkwEs3PG1eUDQFCkdDkj/WCLDLvrZgOW4
+         jNXEo5zHnrGa2ZH5Zb3ef5ZVs2nZCfBHUrtSGF/YJ+kpi0FFb6+KaIxH+LLXVoj6eQNU
+         zXag==
+X-Gm-Message-State: AOJu0YxqE0pPI5Fc33PzDwYYnOkHGo4fsST0uLAdvAJxLvCmF7i/9wrQ
+        0r2s8qryDwCaaFVpRtlLwKnGRg==
+X-Google-Smtp-Source: AGHT+IG/8oMolQYl3peTlkwkusxIIAHFH1Y84dqOJM5uxINZi5NFn9P2rlDqHiO5pvuSl/HD1+tYoQ==
+X-Received: by 2002:a05:600c:4656:b0:401:b24b:8279 with SMTP id n22-20020a05600c465600b00401b24b8279mr12036182wmo.1.1693902474406;
+        Tue, 05 Sep 2023 01:27:54 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id n9-20020a05600c294900b003feff926fc5sm16206338wmd.17.2023.09.05.01.27.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 01:26:26 -0700 (PDT)
-Message-ID: <7125d734bdf73708aae9f431fb5d18b1699499a5.camel@redhat.com>
-Subject: Re: [PATCH net v3] team: fix null-ptr-deref when team device type
- is changed
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>, jiri@resnulli.us,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        netdev@vger.kernel.org, liuhangbin@gmail.com
-Cc:     linux-kernel@vger.kernel.org
-Date:   Tue, 05 Sep 2023 10:26:25 +0200
-In-Reply-To: <20230905081056.3365013-1-william.xuanziyang@huawei.com>
-References: <20230905081056.3365013-1-william.xuanziyang@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 05 Sep 2023 01:27:53 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 11:27:50 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Mark Brown <broonie@kernel.org>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: Re: [RFT PATCH v2] spi: bcm2835: reduce the abuse of the GPIO API
+Message-ID: <527c52aa-e9c6-41d5-a60d-60d79ab94439@kadam.mountain>
+References: <20230901111548.12733-1-brgl@bgdev.pl>
+ <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,72 +84,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-05 at 16:10 +0800, Ziyang Xuan wrote:
-> Get a null-ptr-deref bug as follows with reproducer [1].
->=20
-> BUG: kernel NULL pointer dereference, address: 0000000000000228
-> ...
-> RIP: 0010:vlan_dev_hard_header+0x35/0x140 [8021q]
-> ...
-> Call Trace:
->  <TASK>
->  ? __die+0x24/0x70
->  ? page_fault_oops+0x82/0x150
->  ? exc_page_fault+0x69/0x150
->  ? asm_exc_page_fault+0x26/0x30
->  ? vlan_dev_hard_header+0x35/0x140 [8021q]
->  ? vlan_dev_hard_header+0x8e/0x140 [8021q]
->  neigh_connected_output+0xb2/0x100
->  ip6_finish_output2+0x1cb/0x520
->  ? nf_hook_slow+0x43/0xc0
->  ? ip6_mtu+0x46/0x80
->  ip6_finish_output+0x2a/0xb0
->  mld_sendpack+0x18f/0x250
->  mld_ifc_work+0x39/0x160
->  process_one_work+0x1e6/0x3f0
->  worker_thread+0x4d/0x2f0
->  ? __pfx_worker_thread+0x10/0x10
->  kthread+0xe5/0x120
->  ? __pfx_kthread+0x10/0x10
->  ret_from_fork+0x34/0x50
->  ? __pfx_kthread+0x10/0x10
->  ret_from_fork_asm+0x1b/0x30
->=20
-> [1]
-> $ teamd -t team0 -d -c '{"runner": {"name": "loadbalance"}}'
-> $ ip link add name t-dummy type dummy
-> $ ip link add link t-dummy name t-dummy.100 type vlan id 100
-> $ ip link add name t-nlmon type nlmon
-> $ ip link set t-nlmon master team0
-> $ ip link set t-nlmon nomaster
-> $ ip link set t-dummy up
-> $ ip link set team0 up
-> $ ip link set t-dummy.100 down
-> $ ip link set t-dummy.100 master team0
->=20
-> When enslave a vlan device to team device and team device type is changed
-> from non-ether to ether, header_ops of team device is changed to
-> vlan_header_ops. That is incorrect and will trigger null-ptr-deref
-> for vlan->real_dev in vlan_dev_hard_header() because team device is not
-> a vlan device.
->=20
-> Assign eth_header_ops to header_ops of team device when its type is chang=
-ed
-> from non-ether to ether to fix the bug.
->=20
-> Fixes: 1d76efe1577b ("team: add support for non-ethernet devices")
-> Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
-> Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+On Fri, Sep 01, 2023 at 02:15:39PM +0200, Linus Walleij wrote:
+> On Fri, Sep 1, 2023 at 1:15 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> 
+> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> >
+> > Currently the bcm2835 SPI driver uses functions that are available
+> > exclusively to GPIO providers as a way to handle a platform quirk. Let's
+> > use a slightly better alternative that avoids poking around in GPIOLIB's
+> > internals and use GPIO lookup tables.
+> >
+> > Link: https://www.spinics.net/lists/linux-gpio/msg36218.html
+> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+> 
+> > +#include <linux/cleanup.h>
+> (...)
+> > -       struct gpio_chip *chip;
+> > +       struct gpiod_lookup_table *lookup __free(kfree) = NULL;
+> 
+> Whoa!
+> This is really neat.
 
-I'm sorry to note that this submission does not fit our process:
+Yeah.  I like this stuff.  It should fix a lot of issues.  In some ways
+I prefer this kind of clean up to devm_ managed resources.
 
-https://elixir.bootlin.com/linux/latest/source/Documentation/process/mainta=
-iner-netdev.rst#L353
+> As noted, it will confuse static checkers at no end, but they just have
+> to adopt. (CC to Dan C if he now runs into this.)
 
-this specific kind of process violations tend to make reviewers quite
-unhappy, please be more careful.
+I think I updated Smatch to parse this correctly.  I've tested on this
+patch and it seems to work okay.  There probably will be some fall out
+in weird corners of Smatch.  Let me know if you see any problems.
 
-Regards,
-
-Paolo
+regards,
+dan carpenter
 
