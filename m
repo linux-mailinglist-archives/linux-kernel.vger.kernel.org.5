@@ -2,48 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9795E792F99
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:09:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45391792F9B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:09:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243132AbjIEUJC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:09:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41246 "EHLO
+        id S243150AbjIEUJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 16:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242653AbjIEUIo (ORCPT
+        with ESMTP id S242644AbjIEUIo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Sep 2023 16:08:44 -0400
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030F1113;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A22FA;
         Tue,  5 Sep 2023 13:08:38 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 962D7C433CA;
-        Tue,  5 Sep 2023 18:01:53 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28D04C433D9;
+        Tue,  5 Sep 2023 18:08:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693936913;
-        bh=UeCnBfGRR27Bp4L1bePKrudEhg5rLWXlnlgNPZrCoEY=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=TZakgHbIrdtF06C79N6m8ODKoeNqxiKjqTe2YJP/VjilPawkI9IoNFJJgyUZT3lJD
-         6+ZC5b8LESvNZjvassNAUYbZ5OFsRn3+CompvHzQrFGeAlpFLpgXH0EmWB3XWH9nJ4
-         Q6EhFeJtLN6JzswPkttbiJmjvrgzoo/BuXyZg+gZvtJi0Kbv7OrhnuNNBNmTVo4mv/
-         nKgtbCAOp96tIeMhvNniazfr/2XeeSksJ/IyK4Je2S04hldqqpNZChaF2rWAYhoC4r
-         VgErB6I0plKWYENRANJ2mOXRGvSry4ZMDBX/uD2gf/YLoZvrG7bJLS7/Fces+E2TFs
-         VbmS/Y/0A0ESA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 80BACC595D2;
-        Tue,  5 Sep 2023 18:01:53 +0000 (UTC)
+        s=k20201202; t=1693937337;
+        bh=VVC3ib3yzE5r+s4aYfv/gsIn3joMY0xc0kaVf9r7Pjo=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=Glp/DEi794B19AMkAOdIIUixhFhfqKy+S3zCb/RYTWw5CVfyaOr7GzrqrSqy5Q23T
+         gEMybJBxWZVovfCR+BIeD8IMVKlYaRw0omHeILDvJ8l4PNrz3bJG9vDv63rmvcNkXu
+         RQZ2vY5NCGYbUMj/pKIq0U+9ZEQph85omsAF1BMSo/9z7VsmiDr7MYp0au9wbndkz1
+         I0SaBQTjBzUk4k+rHLKT+ejWyvyjDlKRPB5gSu2YlvP/iQT+D/+bjKv72we8T6zw3b
+         9JyCyU9O/Of7wJvahxZPIR6oYIGCzR20UJcnZVuy5OqYIxLGzT3FgncoqpMQdPyZmF
+         gptmozQSDwfhQ==
+Received: (nullmailer pid 3699774 invoked by uid 1000);
+        Tue, 05 Sep 2023 18:08:55 -0000
 Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] Bluetooth: Fix hci_link_tx_to RCU lock usage
-From:   patchwork-bot+bluetooth@kernel.org
-Message-Id: <169393691352.22693.18079475480346597244.git-patchwork-notify@kernel.org>
-Date:   Tue, 05 Sep 2023 18:01:53 +0000
-References: <20230904141155.1688673-1-yinghsu@chromium.org>
-In-Reply-To: <20230904141155.1688673-1-yinghsu@chromium.org>
-To:     Ying Hsu <yinghsu@chromium.org>
-Cc:     linux-bluetooth@vger.kernel.org,
-        chromeos-bluetooth-upstreaming@chromium.org,
-        johan.hedberg@gmail.com, luiz.dentz@gmail.com, marcel@holtmann.org,
-        linux-kernel@vger.kernel.org
+MIME-Version: 1.0
+From:   Rob Herring <robh@kernel.org>
+To:     Achal Verma <a-verma1@ti.com>
+Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-pci@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Krzysztof Wilczy_ski <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>
+In-Reply-To: <20230905114816.2993628-2-a-verma1@ti.com>
+References: <20230905114816.2993628-1-a-verma1@ti.com>
+ <20230905114816.2993628-2-a-verma1@ti.com>
+Message-Id: <169393733505.3699703.7061210607519627009.robh@kernel.org>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: PCI: ti,j721e-pci-*: Add
+ "ti,syscon-pcie-refclk-out" property
+Date:   Tue, 05 Sep 2023 13:08:55 -0500
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -54,45 +59,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to bluetooth/bluetooth-next.git (master)
-by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
-
-On Mon,  4 Sep 2023 14:11:51 +0000 you wrote:
-> Syzbot found a bug "BUG: sleeping function called from invalid context
-> at kernel/locking/mutex.c:580". It is because hci_link_tx_to holds an
-> RCU read lock and calls hci_disconnect which would hold a mutex lock
-> since the commit a13f316e90fd ("Bluetooth: hci_conn: Consolidate code
-> for aborting connections"). Here's an example call trace:
+On Tue, 05 Sep 2023 17:18:15 +0530, Achal Verma wrote:
+> Added "ti,syscon-pcie-refclk-out" property to specify the ACSPCIE clock
+> buffer register offset in SYSCON, which would be used to enable serdes
+> reference clock output.
 > 
->    __dump_stack lib/dump_stack.c:88 [inline]
->    dump_stack_lvl+0xfc/0x174 lib/dump_stack.c:106
->    ___might_sleep+0x4a9/0x4d3 kernel/sched/core.c:9663
->    __mutex_lock_common kernel/locking/mutex.c:576 [inline]
->    __mutex_lock+0xc7/0x6e7 kernel/locking/mutex.c:732
->    hci_cmd_sync_queue+0x3a/0x287 net/bluetooth/hci_sync.c:388
->    hci_abort_conn+0x2cd/0x2e4 net/bluetooth/hci_conn.c:1812
->    hci_disconnect+0x207/0x237 net/bluetooth/hci_conn.c:244
->    hci_link_tx_to net/bluetooth/hci_core.c:3254 [inline]
->    __check_timeout net/bluetooth/hci_core.c:3419 [inline]
->    __check_timeout+0x310/0x361 net/bluetooth/hci_core.c:3399
->    hci_sched_le net/bluetooth/hci_core.c:3602 [inline]
->    hci_tx_work+0xe8f/0x12d0 net/bluetooth/hci_core.c:3652
->    process_one_work+0x75c/0xba1 kernel/workqueue.c:2310
->    worker_thread+0x5b2/0x73a kernel/workqueue.c:2457
->    kthread+0x2f7/0x30b kernel/kthread.c:319
->    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:298
+> Signed-off-by: Achal Verma <a-verma1@ti.com>
+> ---
+>  .../bindings/pci/ti,j721e-pci-host.yaml       | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
 > 
-> [...]
 
-Here is the summary with links:
-  - Bluetooth: Fix hci_link_tx_to RCU lock usage
-    https://git.kernel.org/bluetooth/bluetooth-next/c/d606d5f4024d
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:171:6: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:172:6: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:173:6: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:174:6: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:177:10: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:178:10: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:180:9: [error] syntax error: expected <block end>, but found '<block mapping start>' (syntax)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:197:18: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:198:18: [error] missing starting space in comment (comments)
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:199:17: [warning] wrong indentation: expected 8 but found 16 (indentation)
 
+dtschema/dtc warnings/errors:
+make[2]: *** Deleting file 'Documentation/devicetree/bindings/pci/ti,j721e-pci-host.example.dts'
+Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:180:9: expected <block end>, but found '<block mapping start>'
+make[2]: *** [Documentation/devicetree/bindings/Makefile:26: Documentation/devicetree/bindings/pci/ti,j721e-pci-host.example.dts] Error 1
+make[2]: *** Waiting for unfinished jobs....
+Traceback (most recent call last):
+  File "/usr/bin/yamllint", line 33, in <module>
+    sys.exit(load_entry_point('yamllint==1.29.0', 'console_scripts', 'yamllint')())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/yamllint/cli.py", line 228, in run
+    prob_level = show_problems(problems, file, args_format=args.format,
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/yamllint/cli.py", line 113, in show_problems
+    for problem in problems:
+  File "/usr/lib/python3/dist-packages/yamllint/linter.py", line 200, in _run
+    for problem in get_cosmetic_problems(buffer, conf, filepath):
+  File "/usr/lib/python3/dist-packages/yamllint/linter.py", line 137, in get_cosmetic_problems
+    for problem in rule.check(rule_conf,
+  File "/usr/lib/python3/dist-packages/yamllint/rules/indentation.py", line 583, in check
+    yield from _check(conf, token, prev, next, nextnext, context)
+  File "/usr/lib/python3/dist-packages/yamllint/rules/indentation.py", line 344, in _check
+    if expected < 0:
+       ^^^^^^^^^^^^
+TypeError: '<' not supported between instances of 'NoneType' and 'int'
+./Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml:180:9: expected <block end>, but found '<block mapping start>'
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml: ignoring, error parsing file
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1500: dt_binding_check] Error 2
+make: *** [Makefile:234: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20230905114816.2993628-2-a-verma1@ti.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
