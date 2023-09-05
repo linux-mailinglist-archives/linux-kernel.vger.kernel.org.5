@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51040792597
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:23:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF4A792B56
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348318AbjIEQSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:18:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35514 "EHLO
+        id S233369AbjIEQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:51:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245719AbjIEC1o (ORCPT
+        with ESMTP id S1343542AbjIECdJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 22:27:44 -0400
-Received: from 167-179-156-38.a7b39c.syd.nbn.aussiebb.net (167-179-156-38.a7b39c.syd.nbn.aussiebb.net [167.179.156.38])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 818D3CC7;
-        Mon,  4 Sep 2023 19:27:39 -0700 (PDT)
-Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
-        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
-        id 1qdLmg-00ArED-E7; Tue, 05 Sep 2023 10:27:19 +0800
-Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Tue, 05 Sep 2023 10:27:20 +0800
-Date:   Tue, 5 Sep 2023 10:27:20 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Longfang Liu <liulongfang@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Zaibo Xu <xuzaibo@huawei.com>, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-crypto@vger.kernel.org
-Subject: Re: [PATCH] crypto: hisilicon/hpre - Fix a erroneous check after
- snprintf()
-Message-ID: <ZPaSCOX1F9b36rxV@gondor.apana.org.au>
-References: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
+        Mon, 4 Sep 2023 22:33:09 -0400
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E553FCC6
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 19:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+        s=201909; t=1693881184;
+        bh=oYSw+lAsn5fW0NHyAGD8kP2eBNm2Gv1EzsjNXsi3X+s=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=NRL+iJQg/CfAtSnxyA8TTmE9AUVAPSA8q1cUdDkN831C3mzeHdT9Hx5NWdY8FsNWo
+         gc1QqwhQvGunaf6ME/zpw09X8axTZsVQ5v1UbVnaE0IfMHTktKcULCqIKQZIQGrgp8
+         wjJfMJURXHNDefyVdOlxOBL8IlYlpKJoJD5m9mM4+ZD7h5+7IVQUXX03UIS35SQtIk
+         E4Rem0Pmj92oyGBGZ3vbgETg/A/AvE5iEEV8GW11gDxsEeDSuGvn6HVPXUDdelSIUb
+         9S+gJzZ6c/P9Ajawrkv/p5M1aZmDkREWttR+s6ig1DM9p10BWILWZrWRq/NEfKPpX8
+         fhh/4dzrLm1RA==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RfqL83pLzz4wZn;
+        Tue,  5 Sep 2023 12:33:04 +1000 (AEST)
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [GIT pull] smp/core for v6.6-rc1
+In-Reply-To: <169322654880.420889.9261217338657613439.tglx@xen13.tec.linutronix.de>
+References: <169322654636.420889.373907562030292433.tglx@xen13.tec.linutronix.de>
+ <169322654880.420889.9261217338657613439.tglx@xen13.tec.linutronix.de>
+Date:   Tue, 05 Sep 2023 12:33:03 +1000
+Message-ID: <87cyyxic2o.fsf@mail.lhotse>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73534cb1713f58228d54ea53a8a137f4ef939bad.1693858632.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=2.7 required=5.0 tests=BAYES_00,HELO_DYNAMIC_IPADDR2,
-        RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS,TVD_RCVD_IP
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 10:17:29PM +0200, Christophe JAILLET wrote:
-> This error handling looks really strange.
-> Check if the string has been truncated instead.
-> 
-> Fixes: 02ab994635eb ("crypto: hisilicon - Fixed some tiny bugs of HPRE")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/crypto/hisilicon/hpre/hpre_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/hisilicon/hpre/hpre_main.c b/drivers/crypto/hisilicon/hpre/hpre_main.c
-> index 39297ce70f44..db44d889438a 100644
-> --- a/drivers/crypto/hisilicon/hpre/hpre_main.c
-> +++ b/drivers/crypto/hisilicon/hpre/hpre_main.c
-> @@ -1033,7 +1033,7 @@ static int hpre_cluster_debugfs_init(struct hisi_qm *qm)
->  
->  	for (i = 0; i < clusters_num; i++) {
->  		ret = snprintf(buf, HPRE_DBGFS_VAL_MAX_LEN, "cluster%d", i);
-> -		if (ret < 0)
-> +		if (ret >= HPRE_DBGFS_VAL_MAX_LEN)
->  			return -EINVAL;
->  		tmp_d = debugfs_create_dir(buf, qm->debug.debug_root);
+Thomas Gleixner <tglx@linutronix.de> writes:
+> Linus,
+>
+> please pull the latest smp/core branch from:
+>
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git smp-core-2023-08-28
+>
+> up to:  e0a99a839f04: Documentation: core-api/cpuhotplug: Fix state names
+>
+>
+> Updates for the CPU hotplug core:
+>
+>   - Support partial SMT enablement.
+>
+>     So far the sysfs SMT control only allows to toggle between SMT on and
+>     off. That's sufficient for x86 which usually has at max two threads
+>     except for the Xeon PHI platform which has four threads per core.
+>
+>     Though PowerPC has up to 16 threads per core and so far it's only
 
-Who is going to free the allocated memory in case of error?
+The threads per core value comes from firmware, so in theory it can be
+anything.
 
-The other snprintf in the same file also looks suspect.
+But in practice the max on any existing system is 8 threads per core.
 
-Thanks,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
+cheers
