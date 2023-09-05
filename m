@@ -2,134 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 419627930D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E46507930D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243885AbjIEVPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
+        id S234644AbjIEVQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234191AbjIEVPP (ORCPT
+        with ESMTP id S232709AbjIEVQq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:15:15 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C10ABC
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:15:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1693948509;
-        bh=lTr6EzwtsWBs1ryCwPpdcGriJCkNGGE3Hi2jPSrb2Xw=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Dx7WQasapbl9T0xWMikss/droqGd3TOi+BoOLhhIoqXhlsuybDT1cWdUKi1feBY0X
-         /oXgpuRaNqa+EH6UNuqQY+JhdT5d6RCpNozKCZiglPlKwGkXu2HNlqiYlOylfr7cB2
-         ssXfX5hdZjxxkWEfiy0R8JPksnFxqZPdDdTnBKbaXha1XmYLwyjFEdlQ6rlg3TV5b0
-         eFjHG41l7aO4AEcW6/rP1fiKUckkv4FiEJ0CGUcB3lMucQitBNhEY1/9jEYRZqqXwW
-         vHUQPvlbUAo0wR0dzFnJzjpTmYeeIu/ihhpkHnJBX/KHf7HiKashvqnlm3cfEeBRa6
-         zfmnW1lA0l69A==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RgJDs1PtWz1NG4;
-        Tue,  5 Sep 2023 17:15:09 -0400 (EDT)
-Message-ID: <866f23cc-6725-fc74-099f-450939fc0dc4@efficios.com>
-Date:   Tue, 5 Sep 2023 17:16:25 -0400
+        Tue, 5 Sep 2023 17:16:46 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB0EB4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:16:43 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id ca18e2360f4ac-792973a659fso22618439f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1693948603; x=1694553403; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lN5fpIYRwWULY83XeFrIApl3PJ3oceB+pvimMrfAuCE=;
+        b=fWDnDClKbjxZIfM8wBa4YvCaJ+yAjDmnmRreDh8xOheTL2CqwTdMm7/QIPmxVcViln
+         ZxfhOGJ8DveHhGSRlSpJsh8CDam+4fKXtfEmNle21d927J7LHN48JOy4zNHD563WsowS
+         wNRAXhoQOGpmci/MJ23cXsYx2KcDyOkmGW1CE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693948603; x=1694553403;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lN5fpIYRwWULY83XeFrIApl3PJ3oceB+pvimMrfAuCE=;
+        b=cPM40uAWgPcTtpGaZSMNXspEEbBgUKfUH5PZPpLvquNDOqKfRiUEqUycLUVWnC4oqM
+         J5pZAuS/F21Q2/0hxX/stTxN4KWP+MYLc0tFTTKBHjnuWPX4qocE38KtsGUXObaa3tJH
+         Mbv2/F/H+TkjZTrob6QEJgPltMQVUIjHfU75JCCLRPIflkxeuYkkq1stBEPTC/+XLd8E
+         asZCAZ/qdcpJhkjAGytWAM9Isay9sqIhswxZJXtPNebtC4BdPMYVdTqPQrIhBDlHIwLh
+         FrLKz9JT1EeI5Ittl/aHvb/x5qFnSoTd/H6Gfvyc/aza0J826u/802EjXBlJYjEFCUIa
+         LWpA==
+X-Gm-Message-State: AOJu0YxqDVdosT4u8xbFP2uEq8X3xAlnSIjWSqFsuRS/7DxZ6K/6Lfis
+        4BMQyZpeKdMJBd5SXZKrziuBeQ==
+X-Google-Smtp-Source: AGHT+IHEPY4lFmXX0Ow6iJOiyRNqTd9k5SNtoCEfUz2WO8gHrcXjl+GBxtNwXR+mSJe6ze4lMbh59w==
+X-Received: by 2002:a05:6602:4192:b0:792:8011:22f with SMTP id bx18-20020a056602419200b007928011022fmr12640055iob.0.1693948602750;
+        Tue, 05 Sep 2023 14:16:42 -0700 (PDT)
+Received: from [192.168.1.128] ([38.15.45.1])
+        by smtp.gmail.com with ESMTPSA id v6-20020a02b906000000b0042ff466c9bdsm4449092jan.127.2023.09.05.14.16.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 14:16:42 -0700 (PDT)
+Message-ID: <3c819b63-19be-62a6-a3a7-5c4430f7827c@linuxfoundation.org>
+Date:   Tue, 5 Sep 2023 15:16:41 -0600
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC PATCH 1/2] sched: Rate limit migrations to 1 per 2ms per
- task
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 5.15 00/28] 5.15.131-rc1 review
 Content-Language: en-US
-To:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
-        Aaron Lu <aaron.lu@intel.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
-References: <20230905171105.1005672-1-mathieu.desnoyers@efficios.com>
- <20230905171105.1005672-2-mathieu.desnoyers@efficios.com>
- <cfc3de8fa3172cedf406ccef8c94ef4da0a00281.camel@linux.intel.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <cfc3de8fa3172cedf406ccef8c94ef4da0a00281.camel@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20230904182945.178705038@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20230904182945.178705038@linuxfoundation.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/23 16:28, Tim Chen wrote:
-> On Tue, 2023-09-05 at 13:11 -0400, Mathieu Desnoyers wrote:
->> Rate limit migrations to 1 migration per 2 milliseconds per task. On a
->> kernel with EEVDF scheduler (commit b97d64c722598ffed42ece814a2cb791336c6679),
->> this speeds up hackbench from 62s to 45s on AMD EPYC 192-core (over 2 sockets).
->>
->>
->>
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index 479db611f46e..0d294fce261d 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -4510,6 +4510,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
->>   	p->se.vruntime			= 0;
->>   	p->se.vlag			= 0;
->>   	p->se.slice			= sysctl_sched_base_slice;
->> +	p->se.next_migration_time	= 0;
+On 9/4/23 12:30, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.15.131 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> It seems like the next_migration_time should be initialized to the current time,
-> in case the system run for a long time and clock wrap around could cause problem.
-
-next_migration_time is a u64, which should "never" overflow. Other 
-scheduler code comparing with sched_clock() don't appear to care about 
-u64 overflow. Sampling the next_migration_time on fork could delay 
-migrations for a 2ms window after process creation, which I don't think 
-is something we want. Or if we do want this behavior, it should be 
-validated with benchmarks beforehand.
-
+> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
+> Anything received after that time might be too late.
 > 
->>   	INIT_LIST_HEAD(&p->se.group_node);
->>   
->>   #ifdef CONFIG_FAIR_GROUP_SCHED
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index d92da2d78774..24ac69913005 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -960,6 +960,14 @@ int sched_update_scaling(void)
->>   
->>   static void clear_buddies(struct cfs_rq *cfs_rq, struct sched_entity *se);
->>   
->> +static bool should_migrate_task(struct task_struct *p, int prev_cpu)
->> +{
->> +	/* Rate limit task migration. */
->> +	if (sched_clock_cpu(prev_cpu) < p->se.next_migration_time)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.131-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
+> and the diffstat can be found below.
 > 
-> Should we use time_before(sched_clock_cpu(prev_cpu), p->se.next_migration_time) ?
-
-No, because time_before expects unsigned long parameters, and 
-sched_clock_cpu() and next_migration_time are u64.
-
-Thanks,
-
-Mathieu
-
+> thanks,
 > 
->> +	       return false;
->> +	return true;
->> +}
->> +
+> greg k-h
 > 
-> Thanks.
-> 
-> Tim
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+Compiled and booted on my test system. No dmesg regressions.
 
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
