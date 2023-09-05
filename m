@@ -2,64 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38D2E7926E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B666F792AD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239523AbjIEQIC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:08:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52358 "EHLO
+        id S243253AbjIEQnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:43:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354207AbjIEKJq (ORCPT
+        with ESMTP id S1354212AbjIEKKR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:09:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DDC21B4;
-        Tue,  5 Sep 2023 03:09:42 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 10:09:40 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693908581;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/zAW1sY8y/CFtmVQ3AG6AXSgo3LrJt8x+AHQltKYCTY=;
-        b=Ui+aKj/JzK2cMg4MxPGpkxlrvNygtE5vTNZR+4YM12pTK0J9wlgYXuOWDo6onf+FfPcZpO
-        BHbnKU/6zBdrYSrAkts88x5KuPoyevb+RRMLDOlVfW54Rlj8perTSdhvMMiMcZfqe0KmBj
-        kT3lbpMSh5STT43eL6MvOPPUQXLQPmMnMhp3/gwmPCzKFBgcB9WdmCqNfgFBuaukHUTmDv
-        nRrY743bYLHLgwWtm7NYafPgFyHtdXJ+bH3LRfZS6s8kNxcGXRlR1gXxCMbvQgskYsPNco
-        QBM1fruQwxp17xNTIFWwGucIqcOZ+Pb2ge3bA7s9GXInkeWD8oiSSMeb8Yktsg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693908581;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/zAW1sY8y/CFtmVQ3AG6AXSgo3LrJt8x+AHQltKYCTY=;
-        b=AR5hYpX5E5PURkPVwBHMNeD7J3HwKqaPtgClIz0OauPsZEdhNf5SLCZTnU0Q9LQeFVtAMq
-        kJFift+lrTQxrECg==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/srso: Set CPUID feature bits independently of bug
- or mitigation status
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <869a1709abfe13b673bdd10c2f4332ca253a40bc.1693889988.git.jpoimboe@kernel.org>
-References: <869a1709abfe13b673bdd10c2f4332ca253a40bc.1693889988.git.jpoimboe@kernel.org>
+        Tue, 5 Sep 2023 06:10:17 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52781AB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:10:13 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-44d426d0e05so1014977137.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693908612; x=1694513412; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D1NVo9wK9uR6XB7OEqVjA5/FypKBWn8rSsF+XNP2y7I=;
+        b=a72jylmkIoYnjXaDvFcKy0oR94ab7vefso8+72n1KVQv3ey8XA9jDeCQSDIIS9bKTR
+         vpfWhlwWdXdQ5vn8do1cohTJanoTZSiM57cxIOmojT0Il7PoXI34fxCyQ7tg339ZpwxT
+         12TSBWO0BQ2hQ4HvuQLvBUhe58Ve1hjcOa2aJFrFqCMAoVpAzbU3/Dd3pvBcpSqX3F4W
+         YaEQCxvqXUvBU24Uerx9yW0b4MhgbSmqwK0F0a1ln6BdVQUC9vr0R85YF3XFKToRkEJm
+         ErhwghiGEq/82KK+h95gjISYCAM82MTR8Ma2vctvn/j66VO1SKn2dPJxnJ/i2TlvwA8H
+         uMLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693908612; x=1694513412;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D1NVo9wK9uR6XB7OEqVjA5/FypKBWn8rSsF+XNP2y7I=;
+        b=g65Ifk3Rsc5HClET/TQXi/SL4bpkPS1yaphc2/g8Z43bfSEj1cECUROl6ggZVLSSN/
+         M6GKYtTCAoq3wsrng7n1xLOL0iWLmE1CSHrUKThiuffr7oUyEWWkeZRcyhTE4mgMTnTR
+         WzR4jPZ0/BK0qvTxAY2j9Y9HfCKijxrCnu2ZVt4vbzRr12/mSqHvdsYs9KQhAzmIdC1t
+         L15dcZWyoalVGFJvGGqk3dp5BOqT5UzWtAkbE8qm7+M+xwzptrhGt4+ysjvDd+DQDzLx
+         FB6z/Ly7/loXRDunWBJKB5pzijcrAF5uDgpO8PmdTJUi7Pkb0C48KQ9QI91PS/Tzo5US
+         urrQ==
+X-Gm-Message-State: AOJu0YycftizIBJ/6fbh7vmYSerIFBBzWup994/rqXxNs89/kOPOlnhG
+        RFHPLKgdAEV0M2dFpGnh/W9k53WhQec5I09rn5wr3g==
+X-Google-Smtp-Source: AGHT+IE1V6bh5Wpm7L8b3xz92pn+LrSd3K1fkSSS8XT9JUjoqIZlkLmMmgJwNcjHVjrcuXzyd/kx7ikhguuSfU0jKJI=
+X-Received: by 2002:a05:6102:2454:b0:44e:d28f:e49c with SMTP id
+ g20-20020a056102245400b0044ed28fe49cmr10435179vss.23.1693908612436; Tue, 05
+ Sep 2023 03:10:12 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <169390858054.27769.11564324626267743244.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20230904182945.178705038@linuxfoundation.org>
+In-Reply-To: <20230904182945.178705038@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 5 Sep 2023 15:40:00 +0530
+Message-ID: <CA+G9fYsXyPe92z8Urfn46vSypOd9EYYGh1Ei1YTkHWJdGmBUJw@mail.gmail.com>
+Subject: Re: [PATCH 5.15 00/28] 5.15.131-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,135 +73,170 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
+On Tue, 5 Sept 2023 at 00:06, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.15.131 release.
+> There are 28 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.131-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Commit-ID:     2ab15814d800b8c4526eda2750bf33b58555b86b
-Gitweb:        https://git.kernel.org/tip/2ab15814d800b8c4526eda2750bf33b58555b86b
-Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:04:46 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 05 Sep 2023 12:05:06 +02:00
 
-x86/srso: Set CPUID feature bits independently of bug or mitigation status
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Booting with mitigations=off incorrectly prevents the
-X86_FEATURE_{IBPB_BRTYPE,SBPB} CPUID bits from getting set.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Also, future CPUs without X86_BUG_SRSO might still have IBPB with branch
-type prediction flushing, in which case SBPB should be used instead of
-IBPB.  The current code doesn't allow for that.
+## Build
+* kernel: 5.15.131-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.15.y
+* git commit: bec292fb85c525832713d1aa73f07c39a477e2ab
+* git describe: v5.15.130-29-gbec292fb85c5
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
+.130-29-gbec292fb85c5
 
-Also, cpu_has_ibpb_brtype_microcode() has some surprising side effects
-and the setting of these feature bits really doesn't belong in the
-mitigation code anyway.  Move it to earlier.
+## Test Regressions (compared to v5.15.130)
 
-Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/869a1709abfe13b673bdd10c2f4332ca253a40bc.1693889988.git.jpoimboe@kernel.org
----
- arch/x86/include/asm/processor.h |  2 --
- arch/x86/kernel/cpu/amd.c        | 28 +++++++++-------------------
- arch/x86/kernel/cpu/bugs.c       | 13 +------------
- 3 files changed, 10 insertions(+), 33 deletions(-)
+## Metric Regressions (compared to v5.15.130)
 
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 0086920..a3669a7 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -683,13 +683,11 @@ extern u16 get_llc_id(unsigned int cpu);
- #ifdef CONFIG_CPU_SUP_AMD
- extern u32 amd_get_nodes_per_socket(void);
- extern u32 amd_get_highest_perf(void);
--extern bool cpu_has_ibpb_brtype_microcode(void);
- extern void amd_clear_divider(void);
- extern void amd_check_microcode(void);
- #else
- static inline u32 amd_get_nodes_per_socket(void)	{ return 0; }
- static inline u32 amd_get_highest_perf(void)		{ return 0; }
--static inline bool cpu_has_ibpb_brtype_microcode(void)	{ return false; }
- static inline void amd_clear_divider(void)		{ }
- static inline void amd_check_microcode(void)		{ }
- #endif
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index dd8379d..afacc48 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -766,6 +766,15 @@ static void early_init_amd(struct cpuinfo_x86 *c)
- 
- 	if (cpu_has(c, X86_FEATURE_TOPOEXT))
- 		smp_num_siblings = ((cpuid_ebx(0x8000001e) >> 8) & 0xff) + 1;
-+
-+	if (!cpu_has(c, X86_FEATURE_IBPB_BRTYPE)) {
-+		if (c->x86 == 0x17 && boot_cpu_has(X86_FEATURE_AMD_IBPB))
-+			setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
-+		else if (c->x86 >= 0x19 && !wrmsrl_safe(MSR_IA32_PRED_CMD, PRED_CMD_SBPB)) {
-+			setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
-+			setup_force_cpu_cap(X86_FEATURE_SBPB);
-+		}
-+	}
- }
- 
- static void init_amd_k8(struct cpuinfo_x86 *c)
-@@ -1301,25 +1310,6 @@ void amd_check_microcode(void)
- 	on_each_cpu(zenbleed_check_cpu, NULL, 1);
- }
- 
--bool cpu_has_ibpb_brtype_microcode(void)
--{
--	switch (boot_cpu_data.x86) {
--	/* Zen1/2 IBPB flushes branch type predictions too. */
--	case 0x17:
--		return boot_cpu_has(X86_FEATURE_AMD_IBPB);
--	case 0x19:
--		/* Poke the MSR bit on Zen3/4 to check its presence. */
--		if (!wrmsrl_safe(MSR_IA32_PRED_CMD, PRED_CMD_SBPB)) {
--			setup_force_cpu_cap(X86_FEATURE_SBPB);
--			return true;
--		} else {
--			return false;
--		}
--	default:
--		return false;
--	}
--}
--
- /*
-  * Issue a DIV 0/1 insn to clear any division data from previous DIV
-  * operations.
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index bdd3e29..b0ae985 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2404,27 +2404,16 @@ early_param("spec_rstack_overflow", srso_parse_cmdline);
- 
- static void __init srso_select_mitigation(void)
- {
--	bool has_microcode;
-+	bool has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE);
- 
- 	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
- 		goto pred_cmd;
- 
--	/*
--	 * The first check is for the kernel running as a guest in order
--	 * for guests to verify whether IBPB is a viable mitigation.
--	 */
--	has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE) || cpu_has_ibpb_brtype_microcode();
- 	if (!has_microcode) {
- 		pr_warn("IBPB-extending microcode not applied!\n");
- 		pr_warn(SRSO_NOTICE);
- 	} else {
- 		/*
--		 * Enable the synthetic (even if in a real CPUID leaf)
--		 * flags for guests.
--		 */
--		setup_force_cpu_cap(X86_FEATURE_IBPB_BRTYPE);
--
--		/*
- 		 * Zen1/2 with SMT off aren't vulnerable after the right
- 		 * IBPB microcode has been applied.
- 		 */
+## Test Fixes (compared to v5.15.130)
+
+## Metric Fixes (compared to v5.15.130)
+
+## Test result summary
+total: 91910, pass: 75958, fail: 2130, skip: 13741, xfail: 81
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 112 total, 111 passed, 1 failed
+* arm64: 41 total, 40 passed, 1 failed
+* i386: 32 total, 31 passed, 1 failed
+* mips: 27 total, 26 passed, 1 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 27 total, 26 passed, 1 failed
+* riscv: 11 total, 10 passed, 1 failed
+* s390: 12 total, 11 passed, 1 failed
+* sh: 14 total, 12 passed, 2 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 37 total, 36 passed, 1 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
