@@ -2,321 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EC81E792467
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 17:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145777924C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230471AbjIEP64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 11:58:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51690 "EHLO
+        id S232786AbjIEP7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 11:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353533AbjIEGfO (ORCPT
+        with ESMTP id S1353647AbjIEHCm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 02:35:14 -0400
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE41BD;
-        Mon,  4 Sep 2023 23:35:09 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 197D81BF20D;
-        Tue,  5 Sep 2023 06:35:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1693895708;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9/qNxvvIN1DMOdd6K0/v1/1he9CNJQC3OqEVPPxjBiI=;
-        b=hhHnaTV+C9lUEffPJX6azGDot8g0b39Mf72fpvmqzjYRjVulOK36Qtw8pYE/39dkr9hf/7
-        N0VtbZheDJYMrKAMZLVS44rlks58KDIuaXYL5yzIEp0SOW1u07DIVuZSdianwKhrbJQNEI
-        eSqUi8R3zBoaHxeGxQGoisatCliJwRccgK9VCCJxWA4kHknBxnq+1cE9B1fgWk45caFQ3p
-        7YYN4RACsqgIpP/8AsPk7esT1oz2t4FiEc1mo+A7wlPemtN/AcJPa2wDDgSJB13MwGLM/I
-        iMGnL+t1cAM8v8azZC5Zq8kCtcA/2teK5zXyrwuRSxVy7ZmXd5XHVO2XEcwhqw==
-Date:   Tue, 5 Sep 2023 08:35:05 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Mia Lin <mimi05633@gmail.com>
-Cc:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
-        venture@google.com, yuenn@google.com, benjaminfair@google.com,
-        a.zummo@towertech.it, KWLIU@nuvoton.com, JJLIU0@nuvoton.com,
-        KFLIN@nuvoton.com, mylin1@nuvoton.com, openbmc@lists.ozlabs.org,
-        linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/1] rtc: nuvoton: Compatible with NCT3015Y-R and
- NCT3018Y-R
-Message-ID: <202309050635059ecd17a2@mail.local>
-References: <20230905060341.5632-1-mimi05633@gmail.com>
- <20230905060341.5632-2-mimi05633@gmail.com>
+        Tue, 5 Sep 2023 03:02:42 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7921DCCB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:02:37 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-986d8332f50so327374766b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 00:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693897356; x=1694502156; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wElbC8XfctBuRgr5ePtm4H+5YKr2KuwZN20exhxXdW8=;
+        b=ZkbT7MXO1xKlDHUzbt7+8PZIAtXUmGbdFkwOdB7rjZ9Y+rHqHct08E/20Y0OlK1NMA
+         JMpBTM821HiOHSCU1YDnm8tpts61fGS4GM6Xg81lBP28yBu6DUKWsGDquqwASSVal36q
+         U+AQscySg87PSjXgl8tyJAGTqE1tQt2B8xM7PUVwgzu0xHYGcfcE0TTw7cmsuCwfKB76
+         h+8dLgYGdiwU7bEZt+WIWVFbRbTS8IwgtG9RCuDkjQP34dgzOMQ4TK3/5WI3/JdFsa44
+         YtHxSCZc2JFm7rD8UY4W+qRsPfP3tIkgnJRe6EltMXluDFaWhjnWSEVP57Vw6BcTZjVI
+         sSbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693897356; x=1694502156;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wElbC8XfctBuRgr5ePtm4H+5YKr2KuwZN20exhxXdW8=;
+        b=KeXqkJ8Dgp0NiItOtSVNA9hAbF6QyOVH3hgyY/wW0eNblYuFVJZJxgxjvpp00tQQuj
+         fBncwiE+f1GuoeaLI+/A81qCJ6wgSuLB5zA1LL5YTK7m4FwImA8Qxo3ULJL9os9uqukp
+         J3Flf7Py6L4Y3YCAjhgZUceRN8lT8hd7Ff95Q0j8QH2z+C2dj2aLeIaxqVWga0RR1AGg
+         XEiyBS2xgTuNla91bALMy9NpAnHfDSJmDCG75Ce/GIr4Vlb8KniD9z7jAXpY3cY+9juD
+         zQ4DizZ2Lr1l8FNmgvoFfQ473nxZWesPJTMUArFhlHIkpODD8lDKVAOetrrk0AE/xv3+
+         3A2Q==
+X-Gm-Message-State: AOJu0Yx3Tg3P6zgO2ASYg0emFFxSdxmgDxCkOjW6jbYMzUoiSF4X/9/s
+        MgKc6IUrXhWFjN3bR9LYRz+J+A==
+X-Google-Smtp-Source: AGHT+IHxxGC5YKgGBmdlTmXb/K0ebj7hQvYI0Muv2z9d81aCbHywKXfToAJc/9PfA62pmLi7cv2CaQ==
+X-Received: by 2002:a17:907:a04d:b0:9a5:cab0:b050 with SMTP id gz13-20020a170907a04d00b009a5cab0b050mr7895529ejc.13.1693897355841;
+        Tue, 05 Sep 2023 00:02:35 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id rl21-20020a170907217500b0099315454e76sm7105834ejb.211.2023.09.05.00.02.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 00:02:35 -0700 (PDT)
+Message-ID: <4388cb18-ada2-656b-ff1d-e75bf1e8b82d@linaro.org>
+Date:   Tue, 5 Sep 2023 09:02:34 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905060341.5632-2-mimi05633@gmail.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH 2/2] interconnect: qcom: Add SDX75 interconnect provider
+ driver
+Content-Language: en-US
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, djakov@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@quicinc.com
+References: <1693889975-19122-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1693889975-19122-3-git-send-email-quic_rohiagar@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1693889975-19122-3-git-send-email-quic_rohiagar@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2023 14:03:41+0800, Mia Lin wrote:
-> The NCT3015Y-R and NCT3018Y-R use the same datasheet
->     but have different topologies as follows.
-> - Topology (Only 1st i2c can set TWO bit and HF bit)
->   In NCT3015Y-R,
->     rtc 1st i2c is connected to a host CPU
->     rtc 2nd i2c is connected to a BMC
->   In NCT3018Y-R,
->     rtc 1st i2c is connected to a BMC
->     rtc 2nd i2c is connected to a host CPU
-> In order to be compatible with NCT3015Y-R and NCT3018Y-R,
-> - In probe,
->   If part number is NCT3018Y-R, only set HF bit to 24-Hour format.
->   Else, do nothing
-> - In set_time,
->   If part number is NCT3018Y-R && TWO bit is 0,
->      change TWO bit to 1, and restore TWO bit after updating time.
-> - Refine error messages to pinpoint the correct location.
+On 05/09/2023 06:59, Rohit Agarwal wrote:
+> Add driver for the Qualcomm interconnect buses found in SDX75.
 > 
-> Signed-off-by: Mia Lin <mimi05633@gmail.com>
-> ---
->  drivers/rtc/rtc-nct3018y.c | 87 ++++++++++++++++++++++++++++----------
->  1 file changed, 64 insertions(+), 23 deletions(-)
-> 
-> diff --git a/drivers/rtc/rtc-nct3018y.c b/drivers/rtc/rtc-nct3018y.c
-> index a4e3f924837e..9ec20f241e15 100644
-> --- a/drivers/rtc/rtc-nct3018y.c
-> +++ b/drivers/rtc/rtc-nct3018y.c
-> @@ -23,6 +23,7 @@
->  #define NCT3018Y_REG_CTRL	0x0A /* timer control */
->  #define NCT3018Y_REG_ST		0x0B /* status */
->  #define NCT3018Y_REG_CLKO	0x0C /* clock out */
-> +#define NCT3018Y_REG_PART	0x21 /* part info */
->  
->  #define NCT3018Y_BIT_AF		BIT(7)
->  #define NCT3018Y_BIT_ST		BIT(7)
-> @@ -37,6 +38,7 @@
->  #define NCT3018Y_REG_BAT_MASK		0x07
->  #define NCT3018Y_REG_CLKO_F_MASK	0x03 /* frequenc mask */
->  #define NCT3018Y_REG_CLKO_CKE		0x80 /* clock out enabled */
-> +#define NCT3018Y_REG_PART_NCT3018Y	0x02
->  
->  struct nct3018y {
->  	struct rtc_device *rtc;
-> @@ -46,6 +48,8 @@ struct nct3018y {
->  #endif
->  };
->  
-> +static int part_num;
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+
+...
+
 > +
+> +static struct qcom_icc_bcm *system_noc_bcms[] = {
 
-This must be part of struct nct3018y.
+Please do not copy your code from downstream, but work on upstream. We
+changed this long time ago, so you clearly used some old or obsolete
+file as template.
 
->  static int nct3018y_set_alarm_mode(struct i2c_client *client, bool on)
->  {
->  	int err, flags;
-> @@ -55,7 +59,7 @@ static int nct3018y_set_alarm_mode(struct i2c_client *client, bool on)
->  	flags =  i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
->  	if (flags < 0) {
->  		dev_dbg(&client->dev,
-> -			"Failed to read NCT3018Y_REG_CTRL\n");
-> +			"%s: Failed to read ctrl reg.\n", __func__);
-
-If you really insist on this change, what about:
-
-#define pr_fmt(fmt) "%s: " fmt, __func__
-
->  		return flags;
->  	}
->  
-> @@ -67,21 +71,21 @@ static int nct3018y_set_alarm_mode(struct i2c_client *client, bool on)
->  	flags |= NCT3018Y_BIT_CIE;
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __func__);
->  		return err;
->  	}
->  
->  	flags =  i2c_smbus_read_byte_data(client, NCT3018Y_REG_ST);
->  	if (flags < 0) {
->  		dev_dbg(&client->dev,
-> -			"Failed to read NCT3018Y_REG_ST\n");
-> +			"%s: Failed to read status reg.\n", __func__);
->  		return flags;
->  	}
->  
->  	flags &= ~(NCT3018Y_BIT_AF);
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_ST, flags);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_ST\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write status reg.\n", __func__);
->  		return err;
->  	}
->  
-> @@ -155,7 +159,7 @@ static int nct3018y_rtc_read_time(struct device *dev, struct rtc_time *tm)
->  		return err;
->  
->  	if (!buf[0]) {
-> -		dev_dbg(&client->dev, " voltage <=1.7, date/time is not reliable.\n");
-> +		dev_dbg(&client->dev, "%s: voltage <=1.7, date/time is not reliable.\n", __func__);
->  		return -EINVAL;
->  	}
->  
-> @@ -178,26 +182,44 @@ static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
->  {
->  	struct i2c_client *client = to_i2c_client(dev);
->  	unsigned char buf[4] = {0};
-> -	int err;
-> +	int err, flags;
-> +	int restore_flags = 0;
+> +	&bcm_ce0,
+> +	&bcm_cn0,
+> +	&bcm_sn0,
+> +	&bcm_sn1,
+> +	&bcm_sn2,
+> +};
 > +
-> +	flags = i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
-> +	if (flags < 0) {
-> +		dev_dbg(&client->dev, "%s: Failed to read ctrl reg.\n", __func__);
-> +		return flags;
-> +	}
+> +static struct qcom_icc_node *system_noc_nodes[] = {
+> +	[MASTER_AUDIO] = &qhm_audio,
+> +	[MASTER_GIC_AHB] = &qhm_gic,
+> +	[MASTER_PCIE_RSCC] = &qhm_pcie_rscc,
+> +	[MASTER_QDSS_BAM] = &qhm_qdss_bam,
+> +	[MASTER_QPIC] = &qhm_qpic,
+> +	[MASTER_QUP_0] = &qhm_qup0,
+> +	[MASTER_ANOC_SNOC] = &qnm_aggre_noc,
+> +	[MASTER_GEM_NOC_CNOC] = &qnm_gemnoc_cnoc,
+> +	[MASTER_GEM_NOC_PCIE_SNOC] = &qnm_gemnoc_pcie,
+> +	[MASTER_SNOC_CFG] = &qnm_system_noc_cfg,
+> +	[MASTER_PCIE_ANOC_CFG] = &qnm_system_noc_pcie_cfg,
+> +	[MASTER_CRYPTO] = &qxm_crypto,
+> +	[MASTER_IPA] = &qxm_ipa,
+> +	[MASTER_MVMSS] = &qxm_mvmss,
+> +	[MASTER_EMAC_0] = &xm_emac_0,
+> +	[MASTER_EMAC_1] = &xm_emac_1,
+> +	[MASTER_QDSS_ETR] = &xm_qdss_etr0,
+> +	[MASTER_QDSS_ETR_1] = &xm_qdss_etr1,
+> +	[MASTER_SDCC_1] = &xm_sdc1,
+> +	[MASTER_SDCC_4] = &xm_sdc4,
+> +	[MASTER_USB3_0] = &xm_usb3,
+> +	[SLAVE_ETH0_CFG] = &ps_eth0_cfg,
+> +	[SLAVE_ETH1_CFG] = &ps_eth1_cfg,
+> +	[SLAVE_AUDIO] = &qhs_audio,
+> +	[SLAVE_CLK_CTL] = &qhs_clk_ctl,
+> +	[SLAVE_CRYPTO_0_CFG] = &qhs_crypto_cfg,
+> +	[SLAVE_IMEM_CFG] = &qhs_imem_cfg,
+> +	[SLAVE_IPA_CFG] = &qhs_ipa,
+> +	[SLAVE_IPC_ROUTER_CFG] = &qhs_ipc_router,
+> +	[SLAVE_CNOC_MSS] = &qhs_mss_cfg,
+> +	[SLAVE_ICBDI_MVMSS_CFG] = &qhs_mvmss_cfg,
+> +	[SLAVE_PCIE_0_CFG] = &qhs_pcie0_cfg,
+> +	[SLAVE_PCIE_1_CFG] = &qhs_pcie1_cfg,
+> +	[SLAVE_PCIE_2_CFG] = &qhs_pcie2_cfg,
+> +	[SLAVE_PCIE_RSC_CFG] = &qhs_pcie_rscc,
+> +	[SLAVE_PDM] = &qhs_pdm,
+> +	[SLAVE_PRNG] = &qhs_prng,
+> +	[SLAVE_QDSS_CFG] = &qhs_qdss_cfg,
+> +	[SLAVE_QPIC] = &qhs_qpic,
+> +	[SLAVE_QUP_0] = &qhs_qup0,
+> +	[SLAVE_SDCC_1] = &qhs_sdc1,
+> +	[SLAVE_SDCC_4] = &qhs_sdc4,
+> +	[SLAVE_SPMI_VGI_COEX] = &qhs_spmi_vgi_coex,
+> +	[SLAVE_TCSR] = &qhs_tcsr,
+> +	[SLAVE_TLMM] = &qhs_tlmm,
+> +	[SLAVE_USB3] = &qhs_usb3,
+> +	[SLAVE_USB3_PHY_CFG] = &qhs_usb3_phy,
+> +	[SLAVE_A1NOC_CFG] = &qns_a1noc,
+> +	[SLAVE_DDRSS_CFG] = &qns_ddrss_cfg,
+> +	[SLAVE_SNOC_GEM_NOC_SF] = &qns_gemnoc_sf,
+> +	[SLAVE_SNOC_CFG] = &qns_system_noc_cfg,
+> +	[SLAVE_PCIE_ANOC_CFG] = &qns_system_noc_pcie_cfg,
+> +	[SLAVE_IMEM] = &qxs_imem,
+> +	[SLAVE_SERVICE_PCIE_ANOC] = &srvc_pcie_system_noc,
+> +	[SLAVE_SERVICE_SNOC] = &srvc_system_noc,
+> +	[SLAVE_PCIE_0] = &xs_pcie_0,
+> +	[SLAVE_PCIE_1] = &xs_pcie_1,
+> +	[SLAVE_PCIE_2] = &xs_pcie_2,
+> +	[SLAVE_QDSS_STM] = &xs_qdss_stm,
+> +	[SLAVE_TCU] = &xs_sys_tcu_cfg,
+> +};
 > +
-> +	/* Check and set TWO bit */
-> +	if ((part_num & NCT3018Y_REG_PART_NCT3018Y) && !(flags & NCT3018Y_BIT_TWO)) {
-> +		restore_flags = 1;
-> +		flags |= NCT3018Y_BIT_TWO;
-> +		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-> +		if (err < 0) {
-> +			dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __func__);
-> +			return err;
-> +		}
-> +	}
->  
->  	buf[0] = bin2bcd(tm->tm_sec);
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_SC, buf[0]);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_SC\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write seconds reg.\n", __func__);
->  		return err;
->  	}
->  
->  	buf[0] = bin2bcd(tm->tm_min);
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_MN, buf[0]);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_MN\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write minutes reg.\n", __func__);
->  		return err;
->  	}
->  
->  	buf[0] = bin2bcd(tm->tm_hour);
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_HR, buf[0]);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_HR\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write hour reg.\n", __func__);
->  		return err;
->  	}
->  
-> @@ -208,10 +230,22 @@ static int nct3018y_rtc_set_time(struct device *dev, struct rtc_time *tm)
->  	err = i2c_smbus_write_i2c_block_data(client, NCT3018Y_REG_DW,
->  					     sizeof(buf), buf);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write for day and mon and year\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write for day and mon and year.\n", __func__);
->  		return -EIO;
->  	}
->  
-> +	/* Restore TWO bit */
-> +	if (restore_flags) {
-> +		if (part_num & NCT3018Y_REG_PART_NCT3018Y)
-> +			flags &= ~NCT3018Y_BIT_TWO;
-> +
-> +		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-> +		if (err < 0) {
-> +			dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __func__);
-> +			return err;
-> +		}
-> +	}
-> +
->  	return err;
->  }
->  
-> @@ -224,7 +258,7 @@ static int nct3018y_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *tm)
->  	err = i2c_smbus_read_i2c_block_data(client, NCT3018Y_REG_SCA,
->  					    sizeof(buf), buf);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to read date\n");
-> +		dev_dbg(&client->dev, "%s: Unable to read date.\n", __func__);
->  		return -EIO;
->  	}
->  
-> @@ -257,19 +291,19 @@ static int nct3018y_rtc_set_alarm(struct device *dev, struct rtc_wkalrm *tm)
->  
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_SCA, bin2bcd(tm->time.tm_sec));
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_SCA\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write seconds alarm reg.\n", __func__);
->  		return err;
->  	}
->  
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_MNA, bin2bcd(tm->time.tm_min));
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_MNA\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write minutes alarm reg.\n", __func__);
->  		return err;
->  	}
->  
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_HRA, bin2bcd(tm->time.tm_hour));
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_HRA\n");
-> +		dev_dbg(&client->dev, "%s: Unable to write hour alarm reg.\n", __func__);
->  		return err;
->  	}
->  
-> @@ -473,23 +507,29 @@ static int nct3018y_probe(struct i2c_client *client)
->  
->  	flags = i2c_smbus_read_byte_data(client, NCT3018Y_REG_CTRL);
->  	if (flags < 0) {
-> -		dev_dbg(&client->dev, "%s: read error\n", __func__);
-> +		dev_dbg(&client->dev, "%s: Failed to read ctrl reg.\n", __func__);
->  		return flags;
->  	} else if (flags & NCT3018Y_BIT_TWO) {
-> -		dev_dbg(&client->dev, "%s: NCT3018Y_BIT_TWO is set\n", __func__);
-> +		dev_dbg(&client->dev, "%s: TWO bit is set.\n", __func__);
->  	}
->  
-> -	flags = NCT3018Y_BIT_TWO;
-> -	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-> -	if (err < 0) {
-> -		dev_dbg(&client->dev, "Unable to write NCT3018Y_REG_CTRL\n");
-> -		return err;
-> +	part_num = i2c_smbus_read_byte_data(client, NCT3018Y_REG_PART);
-> +	if (part_num < 0) {
-> +		dev_dbg(&client->dev, "%s: Failed to read part info reg.\n", __func__);
-> +		return part_num;
-> +	} else if (part_num & NCT3018Y_REG_PART_NCT3018Y) {
-> +		flags = NCT3018Y_BIT_HF;
-> +		err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_CTRL, flags);
-> +		if (err < 0) {
-> +			dev_dbg(&client->dev, "%s: Unable to write ctrl reg.\n", __func__);
-> +			return err;
-> +		}
->  	}
->  
->  	flags = 0;
->  	err = i2c_smbus_write_byte_data(client, NCT3018Y_REG_ST, flags);
->  	if (err < 0) {
-> -		dev_dbg(&client->dev, "%s: write error\n", __func__);
-> +		dev_dbg(&client->dev, "%s: Failed to clear status reg.\n", __func__);
->  		return err;
->  	}
->  
-> @@ -507,7 +547,8 @@ static int nct3018y_probe(struct i2c_client *client)
->  						IRQF_ONESHOT | IRQF_TRIGGER_FALLING,
->  						"nct3018y", client);
->  		if (err) {
-> -			dev_dbg(&client->dev, "unable to request IRQ %d\n", client->irq);
-> +			dev_dbg(&client->dev, "%s: Unable to request IRQ %d.\n",
-> +				__func__, client->irq);
->  			return err;
->  		}
->  	} else {
-> -- 
-> 2.17.1
-> 
+> +static struct qcom_icc_desc sdx75_system_noc = {
 
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Come on... we fixed it.
+
+There could be more issues because you used old file as template. Start
+from scratch from new file.
+
+Best regards,
+Krzysztof
+
