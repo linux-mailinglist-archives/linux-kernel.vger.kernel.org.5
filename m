@@ -2,125 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879D87927EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:41:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD247929F5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237895AbjIEQFS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:05:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37434 "EHLO
+        id S1355195AbjIEQai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:30:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354225AbjIEKLv (ORCPT
+        with ESMTP id S1354226AbjIEKMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:11:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CB818D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:11:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693908661;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GQdWO1HDrc5GSIvIHSQgMIQsBgppoW3wramLkpYKpHg=;
-        b=eN3jc+hBb+Nu0AkQ82G8cz58B8vofRpza5wPFCal1jY9TS6hVTInVl28EuJr5Y4hbFZHG7
-        mmhPW+60xgSpAd+6xv1YWL3G8ysobl5ILlnG0qf4oFa/x9MTOAD+GahI5l+4Dow4CY12gw
-        G/Sd+rVOdSFTjWxax2n/Bp/Po2vUuek=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-658-FsGpVYgrOOCwvymN5akZ1g-1; Tue, 05 Sep 2023 06:11:00 -0400
-X-MC-Unique: FsGpVYgrOOCwvymN5akZ1g-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5222c47ab80so440104a12.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:10:59 -0700 (PDT)
+        Tue, 5 Sep 2023 06:12:02 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 478CBCF6
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:11:54 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id 2adb3069b0e04-5007abb15e9so3872211e87.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:11:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693908712; x=1694513512; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VHEH9rnQ97SImbcU7qAAWtu/p+2tFkTRvQr/ac40kco=;
+        b=S5cUGFOtH8m2eNDiQ6GW92zAaBgv668/nJ6gExtSPk08Fj8uxpkQFps3xRBf8AcBIp
+         9CYSzIBNkY+2AsNoOi8tN5E39qprTabVmkvkMkSCikX0/ZXy5fsNIs2vQmHZrPapgsYO
+         StT5+gd0qD3YSsb4p5fNYpbnKo8HntukXzsUd9/RsxnJBxNLq5Zpf9OF3l1Ft/WBJ+3l
+         5ZYcVF9GvwLVD+ZkSPe7MWdj/PDMVHxEWdsfSKEV59acpus/Itu52Qo5M33KoEmk8AxM
+         Sf85/obZc9AmREsW6Fn+kJfAHk/wC/qIn+ADFio/D/2pdTB6zWto/ZjyESc+zR8xaxop
+         OLWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693908659; x=1694513459;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GQdWO1HDrc5GSIvIHSQgMIQsBgppoW3wramLkpYKpHg=;
-        b=JgjvgKF0EIxoKl3/KfaZ9MR7O7eNXVUKjNdiGdi4pT09LlHelGto6UsNM/K9Xu4/pc
-         2UH83Ieqztjg5j66wS+tNuU2H8PIN2VvWPk/we24MjH5NKP34LpBnmYppOogCXn8DmjV
-         TTt4IIHlgFFsBqDmM4h+ql6WsIH1D3e/KNALQHgyygcnUIfO/VYtl2L2r6U7VjBvljK2
-         P5eliHgKJDj4fnEHgc3k9GpO3w89AEDiLJXbepZ0bN0iVPTQRrocvJFOHKDPWfo0eFnm
-         +2pUAmGUwP/SDuq4zfMqBFUB2kqUqhlG20xcMtPVQ04bv5uw+usIVKX+61Qe7PZMLHcQ
-         i35w==
-X-Gm-Message-State: AOJu0YxcFFw8bMOozBa5DkOtJsKReeK/5QEy0kxqZwTsZeloieJh5qe7
-        jdc83E5kAGwQnC9xLoR5UKYEmqtI7MPAwFJwN19C5SbLQvFUNEqUmBe9LlhNxbo5Dg/y5QwScng
-        GqJxxL90IHwAvfQ9f6jj0Er2e
-X-Received: by 2002:a05:6402:50cf:b0:523:f69:9a0d with SMTP id h15-20020a05640250cf00b005230f699a0dmr9451055edb.4.1693908659095;
-        Tue, 05 Sep 2023 03:10:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE6aGBnhekg22nlCvU2kF5kNulTXZk+b95Z2pPwYKc4FHamoUqVIRjdWI3V8NiUNW153C9yzQ==
-X-Received: by 2002:a05:6402:50cf:b0:523:f69:9a0d with SMTP id h15-20020a05640250cf00b005230f699a0dmr9451032edb.4.1693908658710;
-        Tue, 05 Sep 2023 03:10:58 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-254-194.dyn.eolo.it. [146.241.254.194])
-        by smtp.gmail.com with ESMTPSA id k22-20020a056402049600b0050488d1d376sm6940864edv.0.2023.09.05.03.10.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 03:10:58 -0700 (PDT)
-Message-ID: <32c71d3245127b4aa02b8abd75edcb8f5767e966.camel@redhat.com>
-Subject: Re: [PATCH net] r8152: avoid the driver drops a lot of packets
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Hayes Wang <hayeswang@realtek.com>, kuba@kernel.org,
-        davem@davemloft.net
-Cc:     netdev@vger.kernel.org, nic_swsd@realtek.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
-Date:   Tue, 05 Sep 2023 12:10:57 +0200
-In-Reply-To: <20230904121706.7132-420-nic_swsd@realtek.com>
-References: <20230904121706.7132-420-nic_swsd@realtek.com>
+        d=1e100.net; s=20221208; t=1693908712; x=1694513512;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VHEH9rnQ97SImbcU7qAAWtu/p+2tFkTRvQr/ac40kco=;
+        b=BF/9khei4eciTSY+GqgF0/8ahVLPx9L+XLoqyQsMRqxV2gWQqh+gq6o8/g9kYE7JXC
+         5pN2dZ8wJjFHi9cXovtg1B8LhHnF7E02gkzVNZbbIupDyscul7t/hdzNY9xOnOsvt8ah
+         2l40YZbAOb9OsgcUGkYWIrCOuRrM4IvBMgYt8l4AykjjhHw4QB81aLNL3+M0r3KZRpHf
+         clMbErwwVSDpIIOfxrx8stl6iQeEF6QbMGtICwWwexRZmXEzrnZ09yNPDcsahgJzDWc1
+         49A+lHPPbm+yms9XNXrAGJdZaoge9xlqWiu8Z7jL5LFAsY5ixjKm3sgLwdRMXZI/fRtC
+         dx0A==
+X-Gm-Message-State: AOJu0YxkMWeyGrcI0gmOrjfW+g29oyLDcZ0dbXU75TlSLyGdWUQj9hGx
+        cFKOZnV1iEckTrSjyBwvOdrevxS9AusOvZ+1m+Cb6BoNqIfXiw==
+X-Google-Smtp-Source: AGHT+IF9IY3RYqucOi52/vHPu6UTpRWZ5T237B6hgu9ACXAHR7ZkPR60rDE2lf9Xe3hy4iPJ0vDCJA7I/NgY9ZUVE1Y=
+X-Received: by 2002:a05:6512:3990:b0:500:9734:b415 with SMTP id
+ j16-20020a056512399000b005009734b415mr9566704lfu.30.1693908712167; Tue, 05
+ Sep 2023 03:11:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230904152230.9227-1-ubizjak@gmail.com> <ZPb5kt_XD6Ta2X6n@FVFF77S0Q05N>
+In-Reply-To: <ZPb5kt_XD6Ta2X6n@FVFF77S0Q05N>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Tue, 5 Sep 2023 12:11:40 +0200
+Message-ID: <CAFULd4Yc3g1+20X6xaKmDJ_eGt17Ea=RHtKm7d21-Fci5ZbtHQ@mail.gmail.com>
+Subject: Re: [PATCH] panic: Use atomic_try_cmpxchg in panic() and nmi_panic()
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Sep 5, 2023 at 11:49=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
+ wrote:
+>
+> On Mon, Sep 04, 2023 at 05:21:01PM +0200, Uros Bizjak wrote:
+> > Use atomic_try_cmpxchg instead of atomic_cmpxchg (*ptr, old, new) =3D=
+=3D old
+> > in panic() and nmi_panic().  x86 CMPXCHG instruction returns success in
+> > ZF flag, so this change saves a compare after cmpxchg (and related move
+> > instruction in front of cmpxchg).
+> >
+> > Also, rename cpu variable to this_cpu in nmi_panic() and try to unify
+> > logic flow between panic() and nmi_panic().
+> >
+> > No functional change intended.
+>
+> Do we really need to save a compare here? A panic isn't exactly a fast pa=
+th,
+> and robustness and code clarity is far more important than performance he=
+re.
+>
+> >
+> > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> > ---
+> >  kernel/panic.c | 22 +++++++++++++---------
+> >  1 file changed, 13 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/kernel/panic.c b/kernel/panic.c
+> > index 07239d4ad81e..8740ac65cb2c 100644
+> > --- a/kernel/panic.c
+> > +++ b/kernel/panic.c
+> > @@ -192,14 +192,15 @@ atomic_t panic_cpu =3D ATOMIC_INIT(PANIC_CPU_INVA=
+LID);
+> >   */
+> >  void nmi_panic(struct pt_regs *regs, const char *msg)
+> >  {
+> > -     int old_cpu, cpu;
+> > +     int old_cpu, this_cpu;
+> >
+> > -     cpu =3D raw_smp_processor_id();
+> > -     old_cpu =3D atomic_cmpxchg(&panic_cpu, PANIC_CPU_INVALID, cpu);
+> > +     old_cpu =3D PANIC_CPU_INVALID;
+> > +     this_cpu =3D raw_smp_processor_id();
+> >
+> > -     if (old_cpu =3D=3D PANIC_CPU_INVALID)
+> > +     /* atomic_try_cmpxchg updates old_cpu on failure */
+> > +     if (atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu))
+> >               panic("%s", msg);
+> > -     else if (old_cpu !=3D cpu)
+> > +     else if (old_cpu !=3D this_cpu)
+> >               nmi_panic_self_stop(regs);
+> >  }
+> >  EXPORT_SYMBOL(nmi_panic);
+> > @@ -311,15 +312,18 @@ void panic(const char *fmt, ...)
+> >        * stop themself or will wait until they are stopped by the 1st C=
+PU
+> >        * with smp_send_stop().
+> >        *
+> > -      * `old_cpu =3D=3D PANIC_CPU_INVALID' means this is the 1st CPU w=
+hich
+> > -      * comes here, so go ahead.
+> > +      * cmpxchg success means this is the 1st CPU which comes here,
+> > +      * so go ahead.
+> >        * `old_cpu =3D=3D this_cpu' means we came from nmi_panic() which=
+ sets
+> >        * panic_cpu to this CPU.  In this case, this is also the 1st CPU=
+.
+> >        */
+> > +     old_cpu =3D PANIC_CPU_INVALID;
+> >       this_cpu =3D raw_smp_processor_id();
+> > -     old_cpu  =3D atomic_cmpxchg(&panic_cpu, PANIC_CPU_INVALID, this_c=
+pu);
+> >
+> > -     if (old_cpu !=3D PANIC_CPU_INVALID && old_cpu !=3D this_cpu)
+> > +     /* atomic_try_cmpxchg updates old_cpu on failure */
+> > +     if (atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu))
+> > +             ;
+> > +     else if (old_cpu !=3D this_cpu)
+> >               panic_smp_self_stop();
+>
+> That empty statement is quite painful to read and would be easy to break =
+in
+> future with other changes. It'd be better to either avoid that entirely, =
+or use
+> braces, e.g.
+>
+>         if (!atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu) &&
+>             old_cpu !=3D this_cpu)
+>                  panic_smp_self_stop();
+>
+> ... or:
+>
+>         if (atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu)) {
+>                 /* do nothing */
+>         } else if (old_cpu !=3D this_cpu) {
+>                 panic_smp_self_stop();
+>         }
+>
+> The former is closer to the existing logic, so that's probably best.
 
-On Mon, 2023-09-04 at 20:17 +0800, Hayes Wang wrote:
-> Stop submitting rx, if the driver queue more than 256 packets.
->=20
-> If the hardware is more fast than the software, the driver would start
-> queuing the packets. And, the driver starts dropping the packets, if it
-> queues more than 1000 packets.
->=20
-> Increase the weight of NAPI could improve the situation. However, the
-> weight has been changed to 64, so we have to stop submitting rx when the
-> driver queues too many packets. Then,the device may send the pause frame
-> to slow down the receiving, when the FIFO of the device is full.
->=20
-> Fixes: cf74eb5a5bc8 ("eth: r8152: try to use a normal budget")
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-> ---
->  drivers/net/usb/r8152.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
->=20
-> diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-> index 332c853ca99b..b5ed55938b1c 100644
-> --- a/drivers/net/usb/r8152.c
-> +++ b/drivers/net/usb/r8152.c
-> @@ -2484,10 +2484,6 @@ static int rx_bottom(struct r8152 *tp, int budget)
->  			unsigned int pkt_len, rx_frag_head_sz;
->  			struct sk_buff *skb;
-> =20
-> -			/* limit the skb numbers for rx_queue */
-> -			if (unlikely(skb_queue_len(&tp->rx_queue) >=3D 1000))
-> -				break;
-> -
+The reason for the split of the conditional is the comment above the
+function that says to go ahead in case old_cpu =3D=3D PANIC_CPU_INVALID
+(or with patch, in case cmpxchg succeeds). I think that with the split
+conditional it is easier to follow the logic, so maybe this part of
+the code should read:
 
-Dropping this check looks dangerous to me. What if pause frames are
-disabled on the other end or dropped? It looks like this would cause
-unlimited memory consumption?!?
+    /* atomic_try_cmpxchg updates old_cpu on failure */
+    if (atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu)) {
+        /* go ahead */
+    } else if (old_cpu !=3D this_cpu)
+        panic_smp_self_stop();
 
-If this limit is not supposed to be reached under normal conditions,
-perhaps is worthy changing it into a WARN_ON_ONCE()?
-
-Thanks!
-
-Paolo
-
+Uros.
