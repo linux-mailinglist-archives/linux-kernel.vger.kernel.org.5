@@ -2,99 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E64FE792D15
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9E3792D07
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:05:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238809AbjIESIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:08:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
+        id S239069AbjIESFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 14:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238420AbjIESIX (ORCPT
+        with ESMTP id S237187AbjIESFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:08:23 -0400
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CCECBA9
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 10:29:15 -0700 (PDT)
-Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7a257fabae5so996500241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 10:29:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1693934800; x=1694539600; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7h1pOWAWn2f3/0pIwmJa14UCgmY4tfc3A2xWVFCKn/A=;
-        b=Q8QhQM3GXvB7j6yR84r8U0OebCuFVooe4FYtys5EtSb1ub1QCdZ133gfuSx3wgk2Do
-         pnj9NXS/k+NL7Xg0LwpqnML3Rb2gwY9sILWtWJ9xDSlhnDmWMhMLWmRjIjJeLkrEDnXz
-         d9lwBrz+IBNRuE36KIGCdyC18QSMxb0rpJZ7I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693934800; x=1694539600;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7h1pOWAWn2f3/0pIwmJa14UCgmY4tfc3A2xWVFCKn/A=;
-        b=YYUToWpcJGE0m3hNtGNcENdXfhcAoPnohf15xm0b/tlf5hXIkq2C5JMjCyTfz1u5a9
-         PXG45oD70vyoUFIwUselMYiDZSyIpL+nofayruxigiRk6r+rBj03uFslf8f8sCIc/7PT
-         /rBi9RCarozbQSeri4elHsTQPJvLqnvBlLc2HKv4rIgIQIJkhsdCbmkTn1LHdiyeOlKM
-         pu8xb0Zsft4Ql/w2NBryyMuiYml5FOE015Vk9umO7490vkaFbgHbYF0UoQ83ZinL0ObG
-         jKDFutMphr7WjmGUoVRF7Rht0j3iuBYd2M8KJP9XbfdnlyeU6UUiRH8onn+cHkhGUIO/
-         ZNrg==
-X-Gm-Message-State: AOJu0YxNuA+UL+ufqGh9yATZPOHIgLglXW/1o31sPaNX4B++1rKwprgW
-        C48YZzqN9sM0UdaNHmM6Llt3z4dkiAQsPOlNYurC85PY
-X-Google-Smtp-Source: AGHT+IHyoieeDB0PNwVvLRlAczgv2xHwUxOdj1W5kcWlyPok77Aa/jXmKT28xB8W4J/4Y/qekumOfQ==
-X-Received: by 2002:a9d:4b05:0:b0:6b2:9bdb:a84a with SMTP id q5-20020a9d4b05000000b006b29bdba84amr15026049otf.32.1693933771878;
-        Tue, 05 Sep 2023 10:09:31 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id t25-20020a9d66d9000000b006b89596bc61sm5666307otm.61.2023.09.05.10.09.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 10:09:31 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Tue, 5 Sep 2023 12:09:29 -0500
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.4 00/32] 6.4.15-rc1 review
-Message-ID: <ZPdgyWKSJkXf7Q/z@fedora64.linuxtx.org>
-References: <20230904182947.899158313@linuxfoundation.org>
+        Tue, 5 Sep 2023 14:05:03 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A280BE00
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 10:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693933807;
+        bh=AcMD81TekA/JK8LoCnSfZUmeGklie5gXP/o4TUk+hg8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MbZ3+UHu2Hn7pCY3Vfd/ktDB78uR6Kon3udHrJMu5q8chkpW7mJUOFM+aeCcJjLSw
+         ZZFk0Q0tdyzACEojrA4zSrXLpOEbJxWOxakZzVlJJ6vYJ+cNZwICHfFkzat3jOoxAC
+         CnXztkQX3cscwR2Fiwg6AdTDQ38lX2Tz1s7g5yfZI4FhF1NqoilQANAPI7YC9XB+QF
+         wYMXvlJFZd0SGjm6tnH3sWkS31iYC+ma4wuMc0sZAS0SmgUE6mVnvZIwqDLYDd0pRc
+         hqCfo0iuAOohH8b4dGafx1fmlW4Kyz5jMT/jw1cD2XFMxlq4iYiGXR0JLwekcHqZBK
+         +ZfcjqgeRg1IA==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RgBp65H6tz1NXl;
+        Tue,  5 Sep 2023 13:10:06 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
+Subject: [RFC PATCH 0/2] sched/eevdf: Rate limit task migration
+Date:   Tue,  5 Sep 2023 13:11:03 -0400
+Message-Id: <20230905171105.1005672-1-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904182947.899158313@linuxfoundation.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 07:29:58PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.4.15 release.
-> There are 32 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.15-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Implement task migration rate limiting to speed up workload patterns
+such as hackbench which trigger frequent migrations.
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+The first patch implements a simple rate limiting of 1 migration per
+2ms. The second patch implements adaptative task migration rate
+limiting.
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+I would be interested to hear feedback on this approach, especially
+about how it behaves on various workloads.
+
+Thanks,
+
+Mathieu
+
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <vschneid@redhat.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ben Segall <bsegall@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Juri Lelli <juri.lelli@redhat.com>
+Cc: Swapnil Sapkal <Swapnil.Sapkal@amd.com>
+Cc: Aaron Lu <aaron.lu@intel.com>
+Cc: Julien Desfossez <jdesfossez@digitalocean.com>
+Cc: x86@kernel.org
+
+Mathieu Desnoyers (2):
+  sched: rate limit migrations to 1 per 2ms per task
+  sched: Implement adaptative rate limiting of task migrations
+
+ include/linux/sched.h |  4 ++++
+ kernel/sched/core.c   |  3 +++
+ kernel/sched/fair.c   | 40 ++++++++++++++++++++++++++++++++++++++++
+ kernel/sched/sched.h  |  4 ++++
+ 4 files changed, 51 insertions(+)
+
+-- 
+2.39.2
+
