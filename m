@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B45F792E4E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:07:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B37B792E76
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241504AbjIETH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:07:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49636 "EHLO
+        id S241916AbjIETLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242121AbjIETHz (ORCPT
+        with ESMTP id S241868AbjIETLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:07:55 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10F5110D2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:07:27 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99357737980so440757666b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:07:26 -0700 (PDT)
+        Tue, 5 Sep 2023 15:11:34 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98128E52
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:11:03 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so45508491fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:11:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693940784; x=1694545584; darn=vger.kernel.org;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693941009; x=1694545809; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=0Lyvqa4ehdDUPxRvhVu2QVwAbbRfiYfIlEbafqal+r0=;
-        b=quDqb1hzyoM/SMK5DI1+cYbXAcSV0s+uZgqZEVUb6hMlIFom9ab+fELjUH9ykrnYH+
-         PS9vo1kkwUA7ZHN0IsdBde4ekUJioshTWKsdn+NR6fyMMQCDekPt5BJC7Ume30Pdi1Qm
-         dpw1CUIoaxww/hCPtKhLWIoxqgc9xxTIEuAhCTgVMf3zBbvykVUXwBni2HJgtcW8GqcS
-         kmrs2uK70V6C8r0EGR6KLBfrNOWko9xnpWXtxOQe4xr6b2DtqN2zoDzB/tegn+9dfcdF
-         AgVViyoYubehYAXfdlfUFH/hfi8/vxUswLUvX9nt7Dsd+XGUwS+IhY2Qpk+IzVw1OPcg
-         6p9g==
+        bh=TyBIfAzUG/Tst2tDFyTRTa17LASZ2n9GApjCcuynorg=;
+        b=ZLFjbnUXInETRgO4T5n0GXgGDfOnGIVfR7fXNA36ovVtMbHG/9DiAzE63f/fHBZr5I
+         /FnT4MfPP4KlBdxv2ICmVOUbkR1p40zwzZDvvEt8X03MddzN9ApIC5Q29z5Xihfl7ily
+         IqbJ0Baa/qoo/rUtmj6nNMU88Ut3xTU6hdK4GFKlo3VptoENkzqt4nb7xssIbz+m/oap
+         64s1H+57kPlEPw9KHUfsF4JWfNQuOc9Bw5n2xOxmuBCF4+la6gs3iMKGZgcd+LoA21D2
+         qeyqeZY0mm0HNZNiYI5yfNpOhFxUMlS/ICTPbSl1ilPeDETroHnobV5gF6yJmnGszTNF
+         Oltw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693940784; x=1694545584;
+        d=1e100.net; s=20221208; t=1693941009; x=1694545809;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0Lyvqa4ehdDUPxRvhVu2QVwAbbRfiYfIlEbafqal+r0=;
-        b=KujTla5hVfH4ZAK9OxK+6gw+En2yUWGkZMR78S6vjxMP9t/SBfF9ldA1hg13GUZ/LV
-         SrCU474N/xrAkWAaASisfPnah4OlYFJ/bo+czzX8l/ITI8Q0yB9Yhv/lEMb0paVwnsjR
-         4ycKeZq+kUyCUHZFJRj07yknwfjKB2PKcUXBxIgzCsf4Y6w0jH3qwTOz9dLM5NsycLJz
-         Al2zi0KXZvk+9L29bqu6N7fes1Nho3f1PqRiKmbUd7m8Mf1HGYLNDj7uQoRmrbEjRc9O
-         z1sk/rXSBAEmYoFFz9Rso46+aHcWAcDGnjP7RYzzGju+GYO6pnZzE4k8a/HBBVLUibij
-         /1ew==
-X-Gm-Message-State: AOJu0YwcptIvmQB6XVYaDG3pDJ///es8dJMUnhhQEuKh8YTF6SKNPNZZ
-        LS93NviLPgz/Hq1ui1S49vjuP3dhp6f5GhxXWe4=
-X-Google-Smtp-Source: AGHT+IG/jv5LelRKHFkS+zSS/4W2MFsO0ZmIobecKNQDMGWNcj2BwZSzitK+fLdVa7TdoNhlKNwX4g==
-X-Received: by 2002:a05:6000:1190:b0:313:f399:6cea with SMTP id g16-20020a056000119000b00313f3996ceamr489890wrx.4.1693940018296;
-        Tue, 05 Sep 2023 11:53:38 -0700 (PDT)
+        bh=TyBIfAzUG/Tst2tDFyTRTa17LASZ2n9GApjCcuynorg=;
+        b=Nfphwa00+jKpE1bnt8WnVGMszUWT72pY5BCmtEukOElszGO5fAEDMWvm/5NC98SKnk
+         P+III3qgzEJkd+zrjuYkcEuWqmaLrjxG39a3iJ9sA5kB/0OXC3cvXnr8O9l6uE4x5r3Z
+         4CbJrTHRRWIprd+o6w2e2JNG2cEzgKKy4H87yjT77O1jnfn70jdK147ArfpMRbDV5nbN
+         w23vgUke7sICUyzbC9S8vND4SpXed0tqiaf7JafLq2/Zw2ODUZT78HUMe+XqM198n2IU
+         rKjsYkTLFsJiRsY3c25WO0U1pv+B5l/EjcU88L9Yph/pjfLBQxvPIjWhu2UWteVeJw/o
+         umEA==
+X-Gm-Message-State: AOJu0YyKD9HZ75Eh8FeXRO7J59Zo2nSraQbyMXxePNMWJDprjpnpO6dW
+        wsdZVWDbSoKVJdjTi/bLYmNVdPqYjB1rcJmokQI=
+X-Google-Smtp-Source: AGHT+IG6EifQrYWqD0xKG3/BJghDnSpVupHCLvA51a9h0XWSNzRpKylYhH8S6fQzecUWzA90ZfjUyw==
+X-Received: by 2002:a7b:c8ca:0:b0:3fe:f667:4e4c with SMTP id f10-20020a7bc8ca000000b003fef6674e4cmr457674wml.12.1693940019484;
+        Tue, 05 Sep 2023 11:53:39 -0700 (PDT)
 Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:7a54:5dbc:6d09:48b7])
-        by smtp.gmail.com with ESMTPSA id 17-20020a05600c249100b003fbc30825fbsm17550010wms.39.2023.09.05.11.53.37
+        by smtp.gmail.com with ESMTPSA id 17-20020a05600c249100b003fbc30825fbsm17550010wms.39.2023.09.05.11.53.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 11:53:37 -0700 (PDT)
+        Tue, 05 Sep 2023 11:53:39 -0700 (PDT)
 From:   Bartosz Golaszewski <brgl@bgdev.pl>
 To:     Aaro Koskinen <aaro.koskinen@iki.fi>,
         Janusz Krzysztofik <jmkrzyszt@gmail.com>,
@@ -69,9 +69,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
         linux-acpi@vger.kernel.org, timestamp@lists.linux.dev,
         linux-tegra@vger.kernel.org, platform-driver-x86@vger.kernel.org,
         Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH 10/21] gpiolib: replace find_chip_by_name() with gpio_device_find_by_label()
-Date:   Tue,  5 Sep 2023 20:52:58 +0200
-Message-Id: <20230905185309.131295-11-brgl@bgdev.pl>
+Subject: [RFT PATCH 11/21] platform: x86: android-tablets: don't access GPIOLIB private members
+Date:   Tue,  5 Sep 2023 20:52:59 +0200
+Message-Id: <20230905185309.131295-12-brgl@bgdev.pl>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230905185309.131295-1-brgl@bgdev.pl>
 References: <20230905185309.131295-1-brgl@bgdev.pl>
@@ -88,106 +88,104 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Remove all remaining uses of find_chip_by_name() (and subsequently:
-gpiochip_find()) from gpiolib.c and use the new
-gpio_device_find_by_label() instead.
+We're slowly removing cases of abuse of the GPIOLIB public API. One of
+the biggest issues is looking up and accessing struct gpio_chip whose
+life-time is tied to the provider and which can disappear from under any
+user at any given moment. We have provided new interfaces that use the
+opaque struct gpio_device which is reference counted and will soon be
+thorougly protected with appropriate locking.
+
+Stop using old interfaces in this driver and switch to safer
+alternatives.
 
 Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 ---
- drivers/gpio/gpiolib.c | 36 ++++++++++++------------------------
- 1 file changed, 12 insertions(+), 24 deletions(-)
+ .../platform/x86/x86-android-tablets/core.c   | 38 ++++++++++---------
+ 1 file changed, 20 insertions(+), 18 deletions(-)
 
-diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
-index 408f8a7753f9..90e8c3d8b6f6 100644
---- a/drivers/gpio/gpiolib.c
-+++ b/drivers/gpio/gpiolib.c
-@@ -1161,18 +1161,6 @@ struct gpio_device *gpio_device_find_by_label(const char *label)
- }
- EXPORT_SYMBOL_GPL(gpio_device_find_by_label);
+diff --git a/drivers/platform/x86/x86-android-tablets/core.c b/drivers/platform/x86/x86-android-tablets/core.c
+index 2fd6060a31bb..687f84cd193c 100644
+--- a/drivers/platform/x86/x86-android-tablets/core.c
++++ b/drivers/platform/x86/x86-android-tablets/core.c
+@@ -12,6 +12,7 @@
  
--static int gpiochip_match_name(struct gpio_chip *gc, void *data)
+ #include <linux/acpi.h>
+ #include <linux/dmi.h>
++#include <linux/gpio/consumer.h>
+ #include <linux/gpio/driver.h>
+ #include <linux/gpio/machine.h>
+ #include <linux/irq.h>
+@@ -21,27 +22,28 @@
+ #include <linux/string.h>
+ 
+ #include "x86-android-tablets.h"
+-/* For gpiochip_get_desc() which is EXPORT_SYMBOL_GPL() */
+-#include "../../../gpio/gpiolib.h"
+-#include "../../../gpio/gpiolib-acpi.h"
+-
+-static int gpiochip_find_match_label(struct gpio_chip *gc, void *data)
 -{
--	const char *name = data;
--
--	return !strcmp(gc->label, name);
+-	return gc->label && !strcmp(gc->label, data);
 -}
--
--static struct gpio_chip *find_chip_by_name(const char *name)
--{
--	return gpiochip_find((void *)name, gpiochip_match_name);
--}
--
- /**
-  * gpio_device_get() - Increase the reference count of this GPIO device
-  * @gdev: GPIO device to increase the refcount for
-@@ -3924,21 +3912,22 @@ EXPORT_SYMBOL_GPL(gpiod_remove_lookup_table);
-  */
- void gpiod_add_hogs(struct gpiod_hog *hogs)
+ 
+ int x86_android_tablet_get_gpiod(const char *label, int pin, struct gpio_desc **desc)
  {
--	struct gpio_chip *gc;
- 	struct gpiod_hog *hog;
++	struct gpio_device *gdev;
+ 	struct gpio_desc *gpiod;
+-	struct gpio_chip *chip;
  
- 	mutex_lock(&gpio_machine_hogs_mutex);
- 
- 	for (hog = &hogs[0]; hog->chip_label; hog++) {
-+		struct gpio_device *gdev __free(gpio_device_put) = NULL;
-+
- 		list_add_tail(&hog->list, &gpio_machine_hogs);
- 
- 		/*
- 		 * The chip may have been registered earlier, so check if it
- 		 * exists and, if so, try to hog the line now.
- 		 */
--		gc = find_chip_by_name(hog->chip_label);
--		if (gc)
--			gpiochip_machine_hog(gc, hog);
-+		gdev = gpio_device_find_by_label(hog->chip_label);
-+		if (gdev)
-+			gpiochip_machine_hog(gdev->chip, hog);
+-	chip = gpiochip_find((void *)label, gpiochip_find_match_label);
+-	if (!chip) {
+-		pr_err("error cannot find GPIO chip %s\n", label);
++	/*
++	 * FIXME: handle GPIOs correctly! This driver should really use struct
++	 * device and GPIO lookup tables.
++	 *
++	 * WONTDO: We do leak this reference, but the whole approach to getting
++	 * GPIOs in this driver is such an abuse of the GPIOLIB API that it
++	 * doesn't make it much worse and it's the only way to keep the
++	 * interrupt requested later functional...
++	 */
++	gdev = gpio_device_find_by_label(label);
++	if (!gdev) {
++		pr_err("error cannot find GPIO device %s\n", label);
+ 		return -ENODEV;
  	}
  
- 	mutex_unlock(&gpio_machine_hogs_mutex);
-@@ -3999,7 +3988,7 @@ static struct gpio_desc *gpiod_find(struct device *dev, const char *con_id,
- 		return desc;
+-	gpiod = gpiochip_get_desc(chip, pin);
++	gpiod = gpio_device_get_desc(gdev, pin);
+ 	if (IS_ERR(gpiod)) {
+ 		pr_err("error %ld getting GPIO %s %d\n", PTR_ERR(gpiod), label, pin);
+ 		return PTR_ERR(gpiod);
+@@ -257,9 +259,9 @@ static void x86_android_tablet_cleanup(void)
  
- 	for (p = &table->table[0]; p->key; p++) {
--		struct gpio_chip *gc;
-+		struct gpio_device *gdev __free(gpio_device_put) = NULL;
+ static __init int x86_android_tablet_init(void)
+ {
++	struct gpio_device *gdev __free(gpio_device_put) = NULL;
+ 	const struct x86_dev_info *dev_info;
+ 	const struct dmi_system_id *id;
+-	struct gpio_chip *chip;
+ 	int i, ret = 0;
  
- 		/* idx must always match exactly */
- 		if (p->idx != idx)
-@@ -4021,9 +4010,8 @@ static struct gpio_desc *gpiod_find(struct device *dev, const char *con_id,
- 			return ERR_PTR(-EPROBE_DEFER);
- 		}
- 
--		gc = find_chip_by_name(p->key);
--
--		if (!gc) {
-+		gdev = gpio_device_find_by_label(p->key);
+ 	id = dmi_first_match(x86_android_tablet_ids);
+@@ -273,13 +275,13 @@ static __init int x86_android_tablet_init(void)
+ 	 * _AEI (ACPI Event Interrupt) handlers, disable these.
+ 	 */
+ 	if (dev_info->invalid_aei_gpiochip) {
+-		chip = gpiochip_find(dev_info->invalid_aei_gpiochip,
+-				     gpiochip_find_match_label);
+-		if (!chip) {
++		gdev = gpio_device_find_by_label(
++				dev_info->invalid_aei_gpiochip);
 +		if (!gdev) {
- 			/*
- 			 * As the lookup table indicates a chip with
- 			 * p->key should exist, assume it may
-@@ -4036,15 +4024,15 @@ static struct gpio_desc *gpiod_find(struct device *dev, const char *con_id,
- 			return ERR_PTR(-EPROBE_DEFER);
+ 			pr_err("error cannot find GPIO chip %s\n", dev_info->invalid_aei_gpiochip);
+ 			return -ENODEV;
  		}
+-		acpi_gpiochip_free_interrupts(chip);
++		acpi_gpio_device_free_interrupts(gdev);
+ 	}
  
--		if (gc->ngpio <= p->chip_hwnum) {
-+		if (gdev->chip->ngpio <= p->chip_hwnum) {
- 			dev_err(dev,
- 				"requested GPIO %u (%u) is out of range [0..%u] for chip %s\n",
--				idx, p->chip_hwnum, gc->ngpio - 1,
--				gc->label);
-+				idx, p->chip_hwnum, gdev->chip->ngpio - 1,
-+				gdev->chip->label);
- 			return ERR_PTR(-EINVAL);
- 		}
- 
--		desc = gpiochip_get_desc(gc, p->chip_hwnum);
-+		desc = gpiochip_get_desc(gdev->chip, p->chip_hwnum);
- 		*flags = p->flags;
- 
- 		return desc;
+ 	/*
 -- 
 2.39.2
 
