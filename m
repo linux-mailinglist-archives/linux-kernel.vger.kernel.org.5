@@ -2,111 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55B3F792AB3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB1FC792BF5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344087AbjIEQlS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:41:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        id S1349026AbjIEREh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:04:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354123AbjIEJoh (ORCPT
+        with ESMTP id S1354126AbjIEJqI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:44:37 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C51B0132;
-        Tue,  5 Sep 2023 02:44:33 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so23150655e9.3;
-        Tue, 05 Sep 2023 02:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693907072; x=1694511872; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HVPs2SvSjXuP7B7EaHf0fnpwbvuEGtBL/UiPRCBlCIs=;
-        b=qCNZ7SEN1PpEMEkVgSESiWhfuKelPSuM9UYWejx6GmOsvF3tGRuhqeiGo/JjnJ25Wl
-         g7RZjo7L7MfLZH55Vtj2p6HyApe0ie7MGDX+7c6qWTxwe3FAeIVO6X32pY0iVIWKELnW
-         EkXJlgvbjeVloAvdJRhFVlxLrA1jQ+xyoFd4okQvSL3hn49tqnbJY5SIpurQNyJmUf1D
-         DTHV+f9pqtELgWXc2tcQoJxkYrmhf00FK1+qFM49tkreRUAor5MLObeRuH9tDP02pKqx
-         cF2DQm9tQZ1lFSFkAPjdY1pcgYhdFrk5JvfR2DQVBkzFKiVeUSgh7lh47Yw36tykGxn7
-         LmDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693907072; x=1694511872;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HVPs2SvSjXuP7B7EaHf0fnpwbvuEGtBL/UiPRCBlCIs=;
-        b=IIJz5w3oYsLx+HnBrv7j5gvZNGBKPtIF1aupbanKj/TdGjTvn4qVXTWw1yKnDmxxAr
-         +HmCaCl6tfcjKFzpZuZ9ooXD0BDm8V1GlTswrOKdSk49HstkKM3mJ6CulTaeE/e52dAc
-         Pam21aihxl51RerG1YI0seendjk1A8ilQryWiqdqWL5iSyduj2xsDvhdUsF+7d58zENu
-         Bxcob4n2PY7WonTHOjuftkAVMev4RE8nAPMw2R/rIkm1tZ5AteEUlINUlu8dN8GfQ+/k
-         DPJv76DKfCFR/DFPXPCJaHA8B340o3LrqBzD4f4m99kgd1upvWdk+oShmP2D01lAdzzi
-         j7XA==
-X-Gm-Message-State: AOJu0YyTGugMuEO6rlJx4m2YNDl27CBhVt3b/EbmF4w9i8gH4pDA5KM6
-        7rGX9dUZ1Ra4s3g8MnGXfkxiW4jtRtI=
-X-Google-Smtp-Source: AGHT+IH448207ERtKGtfi1Ay2Rcqr8Iq2mUadXBog9oVQuhWs4ht34ZxFDgG5kwoqM6IViTgr09phA==
-X-Received: by 2002:a5d:6a47:0:b0:31c:8151:86a9 with SMTP id t7-20020a5d6a47000000b0031c815186a9mr8988836wrw.67.1693907072147;
-        Tue, 05 Sep 2023 02:44:32 -0700 (PDT)
-Received: from debian ([63.135.72.41])
-        by smtp.gmail.com with ESMTPSA id x2-20020adff0c2000000b0031971ab70c9sm16975574wro.73.2023.09.05.02.44.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 02:44:31 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 10:44:30 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.5 00/34] 6.5.2-rc1 review
-Message-ID: <ZPb4fiZyzCvtvX38@debian>
-References: <20230904182948.594404081@linuxfoundation.org>
+        Tue, 5 Sep 2023 05:46:08 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4791AD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:46:04 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3856L0ej015029;
+        Tue, 5 Sep 2023 04:45:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=R1PXGn/5wGrB3Y7
+        MxvWTug+xiW8/98V2SY3ME2SCowg=; b=qbID/8r+ndv/7kvkjrQTTUay/Ti0zeT
+        CDh/JRWSNkCdGhk2Qh3CIA3aW5Vrrf5ece1hlUKCvSaYFNtGvJ+1OEQPaWXfrfTh
+        vTX5QJefj2qbTZ8SDISnWQR7pjrI7nqJUIIbl2Vaj6vxpUgzT90N3wODK9PmPrzF
+        0K5AM9q7j/h88SZRZF+CnDbbpbcZ8sooigQnG9rSqLS0tZCWtf1nY2uKF5PD5rh0
+        ajjNZqB48CjfJ7Y1c9UBuAJR3ZnD+74T1NKNnInxZnN4BIHB/8K8eCKkvMx1oOmd
+        a+yCvXgzSHyxC8qylT3s83iFI9b19zMNx50BsttBY7WaY9eLJxSyiKw==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex3bun-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 04:45:38 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 5 Sep
+ 2023 10:45:35 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Tue, 5 Sep 2023 10:45:35 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5C1D911AA;
+        Tue,  5 Sep 2023 09:45:35 +0000 (UTC)
+Date:   Tue, 5 Sep 2023 09:45:35 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Stefan Binding" <sbinding@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <kernel@collabora.com>
+Subject: Re: [PATCH 9/9] ASoC: cs35l41: Use devm_pm_runtime_enable()
+Message-ID: <20230905094535.GK103419@ediswmail.ad.cirrus.com>
+References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+ <20230902210621.1184693-10-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230904182948.594404081@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230902210621.1184693-10-cristian.ciocaltea@collabora.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: f05LQqp9LadCj4InE97tI91FBtGyZO61
+X-Proofpoint-GUID: f05LQqp9LadCj4InE97tI91FBtGyZO61
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Sun, Sep 03, 2023 at 12:06:21AM +0300, Cristian Ciocaltea wrote:
+> Simplify runtime PM during probe by converting pm_runtime_enable() to
+> the managed version.
+> 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> ---
+> @@ -1376,7 +1379,6 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
+>  	cancel_work_sync(&cs35l41->mdsync_up_work);
+>  
+>  	pm_runtime_get_sync(cs35l41->dev);
+> -	pm_runtime_disable(cs35l41->dev);
+>  
+>  	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
+>  	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
 
-On Mon, Sep 04, 2023 at 07:29:47PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.2 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Are we sure this is safe? The remove handler appears to be
+written to disable pm_runtime at the start presumably to stop the
+resume/suspend handler running during the remove callback.
+Whereas after this change the pm_runtime isn't disabled until
+after the remove callback has run. Does this open a window were
+we could get an erroneous pm_runtime suspend after the
+pm_runtime_put_noidle?
 
-Build test (gcc version 12.3.1 20230829):
-mips: 52 configs -> no failure
-arm: 70 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/4947
-[2]. https://openqa.qa.codethink.co.uk/tests/4955
-[3]. https://openqa.qa.codethink.co.uk/tests/4956
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
--- 
-Regards
-Sudip
+Thanks,
+Charles
