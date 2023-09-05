@@ -2,203 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 654CF792AAA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83ED7792A8B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245661AbjIEQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:40:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
+        id S242429AbjIEQjH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:39:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353758AbjIEHz3 (ORCPT
+        with ESMTP id S1353759AbjIEH4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:55:29 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5B3DF
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:55:25 -0700 (PDT)
-Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id A98F96607033;
-        Tue,  5 Sep 2023 08:55:23 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693900524;
-        bh=xt47hUabKnjBtbHUoL8inJXCx6CIgoMdxyYnRODbfk4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=Nm9jiGx03PuBQ6bzC3uYyuldX+v2XvpzGRYCoqsiMdDgQvlvmxZDE46YoBY/io4nL
-         42t1gquH3BXJe6ygHMkY+ewiBe6BmuK+2GE/GYpn0Mzkfdpj0dU3FJSqvX5mHX0ovt
-         ObeEbaotc/Xzgz+RwjjlyW0TGSdU9WkqIhjAm+GonA9AxnvNXNGtOnhakJlS3hPxio
-         A2oZ+gACpzH0KRglts6dzTYrZhLvcI5MaPv1KZkbLWYUHVDAf64eNYGWEsvBccuTku
-         JziVX1QqfJw9NgaKLAGjEPzDdZcYQ/dEjAk2vZ6MVWCc/M8eBzQdELy8l3Nt2YSxt7
-         b3dERTjLrBpkA==
-Message-ID: <d7e6917d-7315-12d6-d7d4-dc7ea8c58dc9@collabora.com>
-Date:   Tue, 5 Sep 2023 09:55:21 +0200
+        Tue, 5 Sep 2023 03:56:19 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB80BDF
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:56:14 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-99bcf2de59cso323860066b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 00:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693900573; x=1694505373; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tA6N1zwAD88Cgl3i6p7QciLW3xFhFAIdikvljwPx/E4=;
+        b=PVHrswjZUhRRQRska/pIH66dsoT64dhltonmNPceeOhBbcB7eMuOP3q9HZeaC4Yp1r
+         PwPJjKtKaKry3k71XIAf3/srkcBdaMQZIvsRYnmxkQKAAzQJkSWOeeYJadLfqU8sTZ3K
+         XiPEicfhNP4LQC0hxO4Uloj+QFyh+OfB0qx4TTR/8K6Om8xL2GPiY10ltGrIqKVGF/87
+         uBMCOdIHYAPqeRHOwK2y1Kgf++Jk7XXqApKWAlMCwV012UPPD6tl6IniiR7aLSxGA78f
+         j81eguDI8kgxWmmHykLhAmFVyU4A0YXYMlw4S1chF/f9nqqN6p+o6Xi+pRQvtEukQM2x
+         S0aA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693900573; x=1694505373;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tA6N1zwAD88Cgl3i6p7QciLW3xFhFAIdikvljwPx/E4=;
+        b=kWIv6gSxv7lllrblkXthzo1jPJpyJR+lx3M7jKAzUgf5V9eQPiy5FN8EnJ2vfyJ8ZS
+         l0xmVOia2cnSzw5EkdxgBSI1X5ifBJ5cMF+dDIUATQvRKjz2aJHPbOR5inJ0Kf2shLST
+         e5wgO4HayHjvu7znaCb4LOWBzXYipxWU2YryglVlAWNJbnhPN6vxSoRutT1SOGhvUyTE
+         7IDp5AZ7QFosQsUfJ9iEUljsJDR3XfcvzjuuyninSZN7tJGgdJbW1d6+R+adRZYILeSk
+         r465IygYDdYYuBirvRZCQCIoqCZChiJWRDegwCa2Huju6OojE5XPtmhuShr0Ybj4T14K
+         T57Q==
+X-Gm-Message-State: AOJu0YwVlrBuDRVkiFdZgp0mqifSfPnCqOvB+LyC6FJs01ri8irdPIAo
+        ZuRROJJmQQSW2jxTIfmmSpHJkw==
+X-Google-Smtp-Source: AGHT+IFzwHQmm2igqrBiBviDINXZhxNp5rbCu7WH1mYkxMQ5qhActIok3Pu8r3eEr4NGuhQcAx9ykw==
+X-Received: by 2002:a17:907:75f4:b0:9a1:d79a:418e with SMTP id jz20-20020a17090775f400b009a1d79a418emr9434819ejc.40.1693900573242;
+        Tue, 05 Sep 2023 00:56:13 -0700 (PDT)
+Received: from krzk-bin.. (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id j9-20020a170906410900b009926928d486sm7208682ejk.35.2023.09.05.00.56.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 00:56:12 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To:     Chanwoo Choi <cw00.choi@samsung.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: [PATCH] dt-bindings: mfd: Revert "dt-bindings: mfd: maxim,max77693: Add USB connector"
+Date:   Tue,  5 Sep 2023 09:55:58 +0200
+Message-Id: <20230905075558.21219-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 2/2] drm/mediatek: dpi/dsi: fix possible_crtcs
- calculation
-Content-Language: en-US
-To:     Michael Walle <mwalle@kernel.org>,
-        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
-        <nfraprado@collabora.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     "Nancy . Lin" <nancy.lin@mediatek.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Jitao Shi <jitao.shi@mediatek.com>,
-        Stu Hsieh <stu.hsieh@mediatek.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20230901174557.3617839-1-mwalle@kernel.org>
- <20230901174557.3617839-2-mwalle@kernel.org>
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-In-Reply-To: <20230901174557.3617839-2-mwalle@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il 01/09/23 19:45, Michael Walle ha scritto:
-> mtk_drm_find_possible_crtc_by_comp() assumed that the main path will
-> always have the CRTC with id 0, the ext id 1 and the third id 2. This
-> is only true if the paths are all available. But paths are optional (see
-> also comment in mtk_drm_kms_init()), e.g. the main path might not be
-> enabled or available at all. Then the CRTC IDs will shift one up, e.g.
-> ext will be 0 and the third path will be 1.
-> 
-> To fix that, dynamically calculate the IDs by the presence of the paths.
-> 
-> Fixes: 5aa8e7647676 ("drm/mediatek: dpi/dsi: Change the getting possible_crtc way")
-> Suggested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
-> Reviewed-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
-> ---
-> v3:
->   - use data instead of priv_n->data
->   - fixed typos
->   - collected Rb and Tb tags
-> v2:
->   - iterate over all_drm_private[] to get any vdosys
->   - new check if a path is available
-> ---
->   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 72 +++++++++++++++++----
->   1 file changed, 58 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> index 771f4e173353..c00f4669cc50 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-> @@ -507,6 +507,27 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
->   	return false;
->   }
->   
-> +static bool mtk_ddp_path_available(const unsigned int *path,
-> +				   unsigned int path_len,
-> +				   struct device_node **comp_node)
-> +{
-> +	unsigned int i;
-> +
-> +	if (!path)
-> +		return false;
-> +
-> +	for (i = 0U; i < path_len; i++) {
-> +		/* OVL_ADAPTOR doesn't have a device node */
-> +		if (path[i] == DDP_COMPONENT_DRM_OVL_ADAPTOR)
-> +			continue;
-> +
-> +		if (!comp_node[path[i]])
-> +			return false;
-> +	}
-> +
-> +	return true;
-> +}
-> +
->   int mtk_ddp_comp_get_id(struct device_node *node,
->   			enum mtk_ddp_comp_type comp_type)
->   {
-> @@ -526,21 +547,44 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
->   						struct device *dev)
->   {
->   	struct mtk_drm_private *private = drm->dev_private;
-> -	unsigned int ret = 0;
-> -
-> -	if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path, private->data->main_len,
-> -				     private->ddp_comp))
-> -		ret = BIT(0);
-> -	else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
-> -					  private->data->ext_len, private->ddp_comp))
-> -		ret = BIT(1);
-> -	else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
-> -					  private->data->third_len, private->ddp_comp))
-> -		ret = BIT(2);
-> -	else
-> -		DRM_INFO("Failed to find comp in ddp table\n");
-> +	const struct mtk_mmsys_driver_data *data;
-> +	struct mtk_drm_private *priv_n;
-> +	int i = 0, j;
-> +
-> +	for (j = 0; j < private->data->mmsys_dev_num; j++) {
-> +		priv_n = private->all_drm_private[j];
-> +		data = priv_n->data;
-> +
-> +		if (mtk_ddp_path_available(data->main_path, data->main_len,
-> +					   priv_n->comp_node)) {
-> +			if (mtk_drm_find_comp_in_ddp(dev, data->main_path,
-> +						     data->main_len,
-> +						     priv_n->ddp_comp))
-> +				return BIT(i);
-> +			i++;
-> +		}
-> +
-> +		if (mtk_ddp_path_available(data->ext_path, data->ext_len,
-> +					   priv_n->comp_node)) {
-> +			if (mtk_drm_find_comp_in_ddp(dev, data->ext_path,
-> +						     data->ext_len,
-> +						     priv_n->ddp_comp))
-> +				return BIT(i);
-> +			i++;
-> +		}
-> +
-> +		if (mtk_ddp_path_available(data->third_path, data->third_len,
-> +					   priv_n->comp_node)) {
-> +			if (mtk_drm_find_comp_in_ddp(dev, data->third_path,
-> +						     data->third_len,
-> +						     priv_n->ddp_comp))
-> +				return BIT(i);
-> +			i++;
-> +		}
-> +	}
->   
-> -	return ret;
-> +	DRM_INFO("Failed to find comp in ddp table\n");
-> +	return 0;
+This reverts commit da7ee30ae6662f016f28a9ef090b2132b3c0fb48.
 
-At this point, I think that it would be sane to change this function to
-return a signed type, so that we can return -ENOENT if we couldn't find
-any DDP path (so, if we couldn't find any possible crtc).
+Commit da7ee30ae666 ("dt-bindings: mfd: maxim,max77693: Add USB
+connector") was an earlier version of my patch adding the connector,
+later superseded by commit 789c9ce9b46f ("dt-bindings: mfd:
+maxim,max77693: Add USB connector").
 
-This function is called only twice, once in DPI, once in DSI - so the
-change should also be pretty straightforward to do.
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Cheers,
-Angelo
+---
 
->   }
->   
->   int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
+Fix for v6.6-rc1.
+---
+ Documentation/devicetree/bindings/mfd/maxim,max77693.yaml | 4 ----
+ 1 file changed, 4 deletions(-)
 
-
+diff --git a/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml b/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml
+index 9804d13de648..6a6f222b868f 100644
+--- a/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml
++++ b/Documentation/devicetree/bindings/mfd/maxim,max77693.yaml
+@@ -31,10 +31,6 @@ properties:
+   charger:
+     $ref: /schemas/power/supply/maxim,max77693.yaml
+ 
+-  connector:
+-    $ref: /schemas/connector/usb-connector.yaml#
+-    unevaluatedProperties: false
+-
+   led:
+     $ref: /schemas/leds/maxim,max77693.yaml
+ 
+-- 
+2.34.1
 
