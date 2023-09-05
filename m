@@ -2,177 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FD27925B8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6691A792BEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241158AbjIEQJo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:09:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55202 "EHLO
+        id S1348136AbjIEREP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:04:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352879AbjIEGDi (ORCPT
+        with ESMTP id S1353052AbjIEGDy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 02:03:38 -0400
-Received: from out28-53.mail.aliyun.com (out28-53.mail.aliyun.com [115.124.28.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8240B1B6;
-        Mon,  4 Sep 2023 23:03:33 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07437018|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0078599-0.000796544-0.991344;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=wangweidong.a@awinic.com;NM=1;PH=DS;RN=25;RT=25;SR=0;TI=SMTPD_---.UXsaVvi_1693893801;
-Received: from ubuntu-VirtualBox..(mailfrom:wangweidong.a@awinic.com fp:SMTPD_---.UXsaVvi_1693893801)
-          by smtp.aliyun-inc.com;
-          Tue, 05 Sep 2023 14:03:29 +0800
-From:   wangweidong.a@awinic.com
-To:     krzysztof.kozlowski@linaro.org
-Cc:     13916275206@139.com, alsa-devel@alsa-project.org,
-        broonie@kernel.org, ckeepax@opensource.cirrus.com,
-        colin.i.king@gmail.com, conor+dt@kernel.org,
-        devicetree@vger.kernel.org, herve.codina@bootlin.com,
-        krzysztof.kozlowski+dt@linaro.org, lgirdwood@gmail.com,
-        linus.walleij@linaro.org, linux-kernel@vger.kernel.org,
-        liweilei@awinic.com, perex@perex.cz, rdunlap@infradead.org,
-        rf@opensource.cirrus.com, robh+dt@kernel.org, ryans.lee@analog.com,
-        shumingf@realtek.com, tiwai@suse.com, trix@redhat.com,
-        wangweidong.a@awinic.com, yijiangtao@awinic.com,
-        zhangjianming@awinic.com
-Subject: Re: [PATCH V1 3/3] ASoC: codecs: Add aw87390 amplifier driver
-Date:   Tue,  5 Sep 2023 14:03:21 +0800
-Message-ID: <20230905060321.15849-1-wangweidong.a@awinic.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <5ea76d3f-c9dd-10f5-4f9a-7b32b535ab5c@linaro.org>
-References: <5ea76d3f-c9dd-10f5-4f9a-7b32b535ab5c@linaro.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 02:03:54 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4F561B8;
+        Mon,  4 Sep 2023 23:03:50 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-68bed2c786eso1228840b3a.0;
+        Mon, 04 Sep 2023 23:03:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693893830; x=1694498630; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KiBuOJI+CBSIVZXrdUCIwxPgk0hrH9gjlhPqB1GT98I=;
+        b=laQ4p0HbC2hElTTSGIId3gk68kCbl+/k0gDwgCKvWw/JajajBejHFGuiyeU/PrFtcq
+         LSR+nMS26vKTiOQWcdssImxlOBvslumY/VglZJQrBB9PXU93IpvLwmiqk2V4Ux5ZLjL2
+         rciaZhNjugv9PwZ/kw4Sz76Zbzd2xX7ryGD8M3Od1Z/Um3AokgTAQVhI8FMyLCAdOcQJ
+         YelhicN5XlG0QlBojsgqssmeaQYTlPavfRpTjVoA/UD+4GfRT6Fi3Euc8VSwXfpIvUv0
+         NMrOhTt+ghQ+q/BLRvlBFiEVJ8W5pyM3Btao2VCdqxxLoAsEQI8tX8MCSiKsK79+a0rF
+         0vsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693893830; x=1694498630;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KiBuOJI+CBSIVZXrdUCIwxPgk0hrH9gjlhPqB1GT98I=;
+        b=ZVgf4iTkLx9vVBdYPNtQHXKJnkHlARRruo7lFfe/YOr4Py5MqO5gimIGmwRmk+HAud
+         le95q2U9CGP9iVSbA55ETS8ghnsJ8SZiDIEXIsihP75bXWJ527nl3UzqtvUzVIYMB+uM
+         N3XR5eBkMSjDuCXIur52+cEF0RuwPq+tOnz6gsirPJ5tmEWmvOVyPnJ+vcmgpmyWDJZq
+         gGc8BFAKx3GQVCLhDtGlGxEsSm/0DmLE4vUGZO6pP7AlTnjG2u5CZJTKzGMlxImUy4J5
+         hkudvFaxUEgI8JD2e0Pvj4JqrdJbqsdoj7oPhBRVUhFxfP7WCX9em19D3NSk9SCZX1NS
+         4zpQ==
+X-Gm-Message-State: AOJu0YwHJb8ic1TYxz3Kthp4P3yIsBFM/qiQWVjDME27EdyNYq8aI3cI
+        Qe9K9oWz3NFO3OxXrJqebcI=
+X-Google-Smtp-Source: AGHT+IFP8zd0itczP3+4VNTwpFdK3waU0XTslf+VWq3OTW1dVfoSL3qvPmwgTG6xNUFXXfIY9L0Usw==
+X-Received: by 2002:a05:6a20:8f17:b0:133:e3e3:dc07 with SMTP id b23-20020a056a208f1700b00133e3e3dc07mr12560721pzk.49.1693893830108;
+        Mon, 04 Sep 2023 23:03:50 -0700 (PDT)
+Received: from localhost.localdomain (60-250-192-107.hinet-ip.hinet.net. [60.250.192.107])
+        by smtp.gmail.com with ESMTPSA id t18-20020a170902d21200b001bf6ea340b3sm8482921ply.116.2023.09.04.23.03.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 23:03:49 -0700 (PDT)
+From:   Mia Lin <mimi05633@gmail.com>
+To:     avifishman70@gmail.com, tmaimon77@gmail.com, tali.perry1@gmail.com,
+        venture@google.com, yuenn@google.com, benjaminfair@google.com,
+        a.zummo@towertech.it, alexandre.belloni@bootlin.com,
+        KWLIU@nuvoton.com, JJLIU0@nuvoton.com, KFLIN@nuvoton.com,
+        mylin1@nuvoton.com
+Cc:     openbmc@lists.ozlabs.org, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mia Lin <mimi05633@gmail.com>
+Subject: [PATCH v5 0/1] Compatible with NCT3015Y-R and NCT3018Y-R
+Date:   Tue,  5 Sep 2023 14:03:40 +0800
+Message-Id: <20230905060341.5632-1-mimi05633@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thank you very much. Here are some things I'd like to discuss with you.
+Changes since version 5:
+  Add global parameter to store part number.
+  Remove unnecessary changes for easier reading.
 
-On 05/09/2023 11:50, krzysztof.kozlowski@linaro.org wrote:
-> On 04/09/2023 13:46, wangweidong.a@awinic.com wrote:
->> From: Weidong Wang <wangweidong.a@awinic.com>
->> 
+Changes since version 4:
+  Add an introduction bewteen NCT3015Y-R and NCT3018Y-R.
+  Restore the initial value of err in nct3018y_rtc_set_time().
+  Refine error messages to pinpoint the correct location.
 
-> ...
+Changes since version 3:
+  Remove the comparison between DT compatible and chip data.
 
->> +static void aw87390_parse_channel_dt(struct aw87390 *aw87390)
->> +{
->> +	struct aw_device *aw_dev = aw87390->aw_pa;
->> +	struct device_node *np = aw_dev->dev->of_node;
->> +	u32 channel_value = AW87390_DEV_DEFAULT_CH;
->> +
->> +	of_property_read_u32(np, "sound-channel", &channel_value);
+Changes since version 2:
+  Add DT compatible to check the chip matches or not.
 
-> NAK, there is no such property. It seems you already sneaked in such for
-> other codecs. Please do not repeat such patterns of work.
+Changes since version 1:
+  rtc: nuvoton: Compatible with NCT3015Y-R and NCT3018Y-R
 
-> That's also why I expect full DTS example, not some reduced pieces.
+Mia Lin (1):
+  rtc: nuvoton: Compatible with NCT3015Y-R and NCT3018Y-R
 
-Thank you very much. I would like to add a sound-channel property to awinic,aw87390.yaml
-This property is used to distinguish between multiple PA's in order to 
-load different configurations for different PA's
+ drivers/rtc/rtc-nct3018y.c | 87 ++++++++++++++++++++++++++++----------
+ 1 file changed, 64 insertions(+), 23 deletions(-)
 
->> +
->> +	aw_dev->channel = channel_value;
->> +}
->> +
->> +static int aw87390_init(struct aw87390 **aw87390, struct i2c_client *i2c, struct regmap *regmap)
->> +{
->> +	struct aw_device *aw_dev;
->> +	unsigned int chip_id;
->> +	int ret;
->> +
->> +	/* read chip id */
->> +	ret = regmap_read(regmap, AW87390_ID_REG, &chip_id);
->> +	if (ret) {
->> +		dev_err(&i2c->dev, "%s read chipid error. ret = %d\n", __func__, ret);
->> +		return ret;
->> +	}
->> +
->> +	if (chip_id != AW87390_CHIP_ID) {
->> +		dev_err(&i2c->dev, "unsupported device\n");
+-- 
+2.17.1
 
-> Why? The compatible tells it cannot be anything else.
-
->> +		return -ENXIO;
->> +	}
->> +
->> +	dev_info(&i2c->dev, "chip id = 0x%x\n", chip_id);
->> +
->> +	aw_dev = devm_kzalloc(&i2c->dev, sizeof(*aw_dev), GFP_KERNEL);
->> +	if (!aw_dev)
->> +		return -ENOMEM;
->> +
->> +	(*aw87390)->aw_pa = aw_dev;
->> +	aw_dev->i2c = i2c;
->> +	aw_dev->regmap = regmap;
->> +	aw_dev->dev = &i2c->dev;
->> +	aw_dev->chip_id = AW87390_CHIP_ID;
->> +	aw_dev->acf = NULL;
->> +	aw_dev->prof_info.prof_desc = NULL;
->> +	aw_dev->prof_info.count = 0;
->> +	aw_dev->prof_info.prof_type = AW88395_DEV_NONE_TYPE_ID;
->> +	aw_dev->channel = AW87390_DEV_DEFAULT_CH;
->> +	aw_dev->fw_status = AW87390_DEV_FW_FAILED;
->> +	aw_dev->prof_index = AW87390_INIT_PROFILE;
->> +	aw_dev->status = AW87390_DEV_PW_OFF;
->> +
->> +	aw87390_parse_channel_dt(*aw87390);
->> +
->> +	return ret;
->> +}
->> +
->> +static int aw87390_i2c_probe(struct i2c_client *i2c)
->> +{
->> +	struct aw87390 *aw87390;
->> +	int ret;
->> +
->> +	ret = i2c_check_functionality(i2c->adapter, I2C_FUNC_I2C);
->> +	if (!ret)
->> +		return dev_err_probe(&i2c->dev, -ENXIO, "check_functionality failed\n");
->> +
->> +	aw87390 = devm_kzalloc(&i2c->dev, sizeof(*aw87390), GFP_KERNEL);
->> +	if (!aw87390)
->> +		return -ENOMEM;
->> +
->> +	mutex_init(&aw87390->lock);
->> +
->> +	i2c_set_clientdata(i2c, aw87390);
->> +
->> +	aw87390->regmap = devm_regmap_init_i2c(i2c, &aw87390_remap_config);
->> +	if (IS_ERR(aw87390->regmap)) {
->> +		ret = PTR_ERR(aw87390->regmap);
-
-> ret is not needed here, so just:
-> return dev_err_probe()
-
-Thank you very much. I will modify it to 
-"return dev_err_probe(&i2c->dev, PTR_ERR(aw87390->regmap), "failed to init regmap: %d\n", ret);"
-
->> +		return dev_err_probe(&i2c->dev, ret, "failed to init regmap: %d\n", ret);
->> +	}
->> +
->> +	/* aw pa init */
->> +	ret = aw87390_init(&aw87390, i2c, aw87390->regmap);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = regmap_write(aw87390->regmap, AW87390_ID_REG, AW87390_SOFT_RESET_VALUE);
->> +	if (ret)
->> +		return ret;
->> +
->> +	ret = devm_snd_soc_register_component(&i2c->dev,
->> +				&soc_codec_dev_aw87390, NULL, 0);
->> +	if (ret)
->> +		dev_err(&i2c->dev, "failed to register aw87390: %d\n", ret);
->> +
->> +	return ret;
->> +}
-
-
-Best regards,
-Weidong Wang
