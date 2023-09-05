@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C42A792C9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:40:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B4BF792C94
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:40:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239567AbjIERkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:40:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55794 "EHLO
+        id S233380AbjIERkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:40:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239501AbjIERkT (ORCPT
+        with ESMTP id S239978AbjIERjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 13:40:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 822AC55A2;
-        Tue,  5 Sep 2023 10:17:29 -0700 (PDT)
+        Tue, 5 Sep 2023 13:39:35 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BC55395DE;
+        Tue,  5 Sep 2023 10:15:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 60B2660B4B;
-        Tue,  5 Sep 2023 17:00:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B5AB0C433C8;
-        Tue,  5 Sep 2023 17:00:11 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 14762B815B4;
+        Tue,  5 Sep 2023 17:07:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9F2FC433C7;
+        Tue,  5 Sep 2023 17:07:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693933213;
-        bh=pJ0DvRrFskUG6FBsMu3DpwPIdUV6eUR/tLrf5Kjc+9w=;
+        s=k20201202; t=1693933658;
+        bh=wvydTW5tlFfjmX77STi/JFlf00/5kzHytlOiPmKMEV0=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q7X/dAMpDMNEF7A3EVR4YOtR1NVmBflXkV7a316esIoXn9lNYU45E2DtGh5rfp3Z8
-         fFH60IlDJWg86y1p10GzoapFvrpnmOEaUUP1s1yiW+LQPSnBu7XRrXnP1AlRpDQ6Yx
-         qSz9ozZGjdw3VrREiCZKUQbVZWxM7onm25vMx2PaS/+INSn/JxtOoigc6HeuvJa+6i
-         3BoV6b3NeVk5ulDKzxads/bHGbJnBnLVJbQHobg225MjNwQx2gFWpKdDFYJK4PTI6Y
-         QqjNMnopi8/d0I/j+wfg0GWAWtMNKY3t64Q0c0Nlos9LbRnW58VKIc78riugK9nqDq
-         NL+1leog/wszg==
-Received: (nullmailer pid 3528491 invoked by uid 1000);
-        Tue, 05 Sep 2023 17:00:10 -0000
-Date:   Tue, 5 Sep 2023 12:00:10 -0500
+        b=uXlbNU97DMqwAC9ZNu5M7ajd6mDymvsmtCU7vrn1VzmDTcTpbt0vvMp1v641v2IQZ
+         SgVsL37pQLJ/Gp4U5eQffjkCedFKhKlriLxtQAh7m7RFlWBXj13W1YVwXqPfOmfJZF
+         vx1JCiQ4Ylx48/d2kHSiqhU93FzLfhAIaKFUhqGmoddtVvktDjJGF3LkiQJlVL++Q0
+         1zVL4u23WIIDcAaP3kxgwZwe32m2/F5Uh6SiFLBZWOUUp8D3ZxzkN+s25HRuMfDEpX
+         VwMPqEwD8llmszk0BL/HJOAZevfkwn64EsM4CTipbwOMQo+5pLTtFrkQYZhoHcNMIG
+         IRFBOOwr4tiIA==
+Received: (nullmailer pid 3568796 invoked by uid 1000);
+        Tue, 05 Sep 2023 17:07:35 -0000
+Date:   Tue, 5 Sep 2023 12:07:35 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Billy Tsai <billy_tsai@aspeedtech.com>
 Cc:     jdelvare@suse.com, linux@roeck-us.net,
@@ -47,14 +47,15 @@ Cc:     jdelvare@suse.com, linux@roeck-us.net,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-pwm@vger.kernel.org,
         BMC-SW@aspeedtech.com, patrick@stwcx.xyz
-Subject: Re: [PATCH v8 1/3] dt-bindings: hwmon: fan: Add fan binding to schema
-Message-ID: <20230905170010.GA3505375-robh@kernel.org>
+Subject: Re: [PATCH v8 2/3] dt-bindings: hwmon: Support Aspeed g6 PWM TACH
+ Control
+Message-ID: <20230905170735.GA3528724-robh@kernel.org>
 References: <20230830123202.3408318-1-billy_tsai@aspeedtech.com>
- <20230830123202.3408318-2-billy_tsai@aspeedtech.com>
+ <20230830123202.3408318-3-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230830123202.3408318-2-billy_tsai@aspeedtech.com>
+In-Reply-To: <20230830123202.3408318-3-billy_tsai@aspeedtech.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
@@ -65,147 +66,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 08:32:00PM +0800, Billy Tsai wrote:
-> From: Naresh Solanki <naresh.solanki@9elements.com>
+On Wed, Aug 30, 2023 at 08:32:01PM +0800, Billy Tsai wrote:
+> Document the compatible for aspeed,ast2600-pwm-tach device, which can
+> support up to 16 PWM outputs and 16 fan tach input.
 > 
-> Add common fan properties bindings to a schema.
-> 
-> Bindings for fan controllers can reference the common schema for the
-> fan
-> 
-> child nodes:
-> 
->   patternProperties:
->     "^fan@[0-2]":
->       type: object
->       $ref: fan-common.yaml#
-
-        unevaluatedProperties: false
-
-
-> 
-> Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
 > Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
 > ---
->  .../devicetree/bindings/hwmon/fan-common.yaml | 63 +++++++++++++++++++
->  1 file changed, 63 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/fan-common.yaml
+>  .../bindings/hwmon/aspeed,g6-pwm-tach.yaml    | 67 +++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/fan-common.yaml b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
+> diff --git a/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
 > new file mode 100644
-> index 000000000000..a69b4d553e45
+> index 000000000000..95bac5588c04
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/fan-common.yaml
-> @@ -0,0 +1,63 @@
-> +# SPDX-License-Identifier: GPL-2.0-or-later OR BSD-2-Clause
+> +++ b/Documentation/devicetree/bindings/hwmon/aspeed,g6-pwm-tach.yaml
+> @@ -0,0 +1,67 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 Aspeed, Inc.
 
-Drop 'or-later'. It's GPL2 only.
+A few years out of date.
 
 > +%YAML 1.2
 > +---
-> +$id: http://devicetree.org/schemas/hwmon/fan-common.yaml#
+> +$id: http://devicetree.org/schemas/hwmon/aspeed,g6-pwm-tach.yaml#
 > +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +title: Common Fan Properties
+> +title: ASPEED G6 PWM and Fan Tach controller device driver
 > +
 > +maintainers:
-> +  - Naresh Solanki <naresh.solanki@9elements.com>
 > +  - Billy Tsai <billy_tsai@aspeedtech.com>
 > +
+> +description: |
+> +  The ASPEED PWM controller can support up to 16 PWM outputs.
+> +  The ASPEED Fan Tacho controller can support up to 16 fan tach input.
+
+Are PWM and tach channels independent? Would be useful to know here.
+
+> +
 > +properties:
-> +  max-rpm:
-> +    description:
-> +      Max RPM supported by fan.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-Physics will limit this to something much less than 2^32. Add some 
-constraints. 10000?
-
+> +  compatible:
+> +    enum:
+> +      - aspeed,ast2600-pwm-tach
 > +
-> +  min-rpm:
-> +    description:
-> +      Min RPM supported by fan.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-ditto
-
+> +  reg:
+> +    maxItems: 1
 > +
-> +  pulses-per-revolution:
-> +    description:
-> +      The number of pulse from fan sensor per revolution.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-Needs constraints. I assume this is never more than 4 (or 2 even)?
-
-> +  div:
-
-Too generic of a name.
-
-> +    description:
-> +      Fan clock divisor
-
-But what is a fan clock?
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +  clocks:
+> +    maxItems: 1
 > +
-> +  target-rpm:
-> +    description:
-> +      Target RPM the fan should be configured during driver probe.
-
-What driver? By the time the OS driver runs, a bunch of other boot 
-software has already run on modern systems. So this value would likely 
-be used much earlier. The point is that when exactly is outside the 
-scope of DT. This is "what RPM do I use in case of no other information 
-(e.g. temperature)".
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +  resets:
+> +    maxItems: 1
 > +
-> +  mode:
-
-Too generic.
-
-> +    description:
-> +      Select the operational mode of the fan.
-
-What are modes? Spin and don't spin?
-
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +  "#pwm-cells":
+> +    const: 3
 > +
-> +  pwms:
-> +    description:
-> +      PWM provider.
+> +patternProperties:
+> +  "^fan[0-9a-f]_hwmon+$":
 
-maxItems: 1
+Drop 'hwmon'. Standard practice for naming without 'reg' is 
+'^fan-[0-9]+$'.
 
-I don't think there are fans with more than 1 PWM input?
+> +    $ref: fan-common.yaml#
 
+       unevaluatedProperties: false
+
+> +    required:
+> +      - tach-ch
 > +
-> +  tach-ch:
-> +    description:
-> +      The tach channel used for the fan.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +required:
+> +  - reg
+> +  - clocks
+> +  - resets
+> +  - "#pwm-cells"
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/aspeed-clock.h>
+> +    pwm_tach: pwm-tach-controller@1e610000 {
+> +      compatible = "aspeed,ast2600-pwm-tach";
+> +      reg = <0x1e610000 0x100>;
+> +      clocks = <&syscon ASPEED_CLK_AHB>;
+> +      resets = <&syscon ASPEED_RESET_PWM>;
+> +      #pwm-cells = <3>;
 
-The existing ASpeed version of this property allows more than 1 entry. I 
-don't understand how a fan would have 2 tach signals, but if so, the 
-generic property should allow for that.
+Blank line.
 
-Perhaps 'reg' should be defined in here with some text saying 'reg' 
-corresponds to the fan controller specific id which may be the PWM+TACH 
-channel, PWM channel (deprecated), or TACH channel. I think there are 
-examples of all 3 of these cases.
+> +      fan0_hwmon {
+> +        tach-ch = <0x0>;
 
-> +
-> +  label:
-> +    description:
-> +      Optional fan label
-> +
-> +  fan-supply:
-> +    description:
-> +      Power supply for fan.
-> +
-> +additionalProperties: true
-> +
-> +...
+Don't you need 'pwms'?
+
+> +      };
+
+Blank line.
+
+> +      fan1_hwmon {
+> +        tach-ch = <0x1>;
+> +      };
+> +      fan2_hwmon {
+> +        tach-ch = <0x2>;
+> +      };
+> +    };
 > -- 
 > 2.25.1
 > 
