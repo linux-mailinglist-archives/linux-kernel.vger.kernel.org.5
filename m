@@ -2,104 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E91537931FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BCA7931FC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239948AbjIEW3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 18:29:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
+        id S236874AbjIEWcF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 18:32:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbjIEW3y (ORCPT
+        with ESMTP id S231249AbjIEWcF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 18:29:54 -0400
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C472C1;
-        Tue,  5 Sep 2023 15:29:50 -0700 (PDT)
-Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52c4d3ff424so4451848a12.0;
-        Tue, 05 Sep 2023 15:29:50 -0700 (PDT)
+        Tue, 5 Sep 2023 18:32:05 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52A32C1
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 15:32:01 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5701dbebed5so3353584a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 15:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693952989; x=1694557789; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q4kI0vCYh22AUz7pwGwsZuGiIBkiy8O/f0wOKLk4wnQ=;
-        b=eUMCP0KJw03G4hCImbLu86XwyE927cMrkOWNoCqBSj2TpEE+078Wpc8hs+9/+khWiX
-         3RSyJ4JkvD4AlCXC5lp7IMZVHe08fiax//eFlP1IQi0JEJ8r468YxumZfmUAHWHntFlr
-         UBfSUuEJ5ZOKGvWuNwo3GXeBtEADG6w7wFq5c0l6zYuGu8MNck271DCima8uokmsT7P9
-         Ad29uJz96UVVdklreQGxR3mkixpWlf4Ab21oGB0U/syQjy6RYJafUjBNvZtGGdPSvb0R
-         Pxd+8Ef7zgITBZEx0H31jOOIjyDcOFMvMWpqAA36JKg6fFRcoWKcMPY9eRITAjmdHHBS
-         w/9w==
+        d=google.com; s=20221208; t=1693953121; x=1694557921; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6K862BSBqqIAmRQmrzKkyydyLip85Zk0D+j3zzIdJ9A=;
+        b=AcL2fVv5AGY/TTHFMQ2K1cTiBsqmglnW/9nxEonpzawO1qiKtU6AkjPuhozIuMl9xk
+         WAIQv1EWeKebfIpINgvknLirEnxmZZ1mutVg4qsFvWnI+fQwQ3XEz1qvdO6NLnQMnXco
+         DFuqh7GlNbadQgfwV1M3yjqnUyOXEMoetRk5m6uhrt6DgDG8aipYszQMa135gSZ6brn0
+         aAn0glJxR5YVzoTZol42ZvpLDOFsMq4as8D5Jryg4ovXdcRyT51MZNPL2oHgxdA8LWeh
+         flMq/lwdcN514kda6FheAsxfp+xQQdfRSYY4fnmPb/oGwkorso98RWEADk8IZ+k8ohjB
+         MS2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693952989; x=1694557789;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q4kI0vCYh22AUz7pwGwsZuGiIBkiy8O/f0wOKLk4wnQ=;
-        b=JRrHL982XGibHGva7NzhQhInCGUu0BB3Jr37DU5uf4yaqvz6oO2FxHRbSAr7UjVRPH
-         dBUp56eyQBJoHj2tGGMCgTBjEorUIozJ4FYqg9+8m+qwkJ0FE5fhgk5JvoA1H+hjhAzb
-         HFAUASQ4JH/zLQYiyXEK6pZs4FDwaHiSFbKQlaeYmtai6NFzQtg5xoIP3q3ovDIAE7+/
-         nTSuokt7nF4HtNfWAJokH00/QzWk8t4nQd9PCgmdhufpn/wCtK6fyiQrBM1Rz74e6t1z
-         fjviZG+z9VmV4MFxERuV9hCEnYMqjK81YTRTtiWkSpd5ueHgitmxGXeqUjOgplcAK8yK
-         mcFw==
-X-Gm-Message-State: AOJu0YwQ3uheiA0M3EgGWG6pedjurmZm37JejNAgk2oG2J69fp4muAEh
-        QkQrcc1Q3Ib8O/fZYPljYks=
-X-Google-Smtp-Source: AGHT+IGCGgYbC8m6sN9Mz7TprCiFy60xJUeFOyQSd6R/Md3u5DOgefUjY7SeNU6q4IuJQdeZKr48DQ==
-X-Received: by 2002:a17:906:739e:b0:99b:dd1d:bc58 with SMTP id f30-20020a170906739e00b0099bdd1dbc58mr872893ejl.41.1693952988751;
-        Tue, 05 Sep 2023 15:29:48 -0700 (PDT)
-Received: from skbuf ([188.26.57.165])
-        by smtp.gmail.com with ESMTPSA id p19-20020a17090635d300b0099c971ba285sm8060447ejb.5.2023.09.05.15.29.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 15:29:48 -0700 (PDT)
-Date:   Wed, 6 Sep 2023 01:29:45 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
-        Russell King <linux@armlinux.org.uk>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Oleksij Rempel <linux@rempel-privat.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [net v4] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
-Message-ID: <20230905222945.h7tuzlraxdp5imbh@skbuf>
-References: <20230905093315.784052-1-lukma@denx.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905093315.784052-1-lukma@denx.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693953121; x=1694557921;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6K862BSBqqIAmRQmrzKkyydyLip85Zk0D+j3zzIdJ9A=;
+        b=WFAew+R632q+ENUsMBOCfBi3nIKBh+Q3YnfGEY6qFnmKtgK5kxZaibujGIW9HuMtfz
+         gZMeljUda2HEnO/yuj0hfpzalUhvrBfjNAvx0Remv6IMQLyFi4q0uTyhQvsH3Yc72ad1
+         Xm594cd7JU6kZaICs7A9xXUJbVAwGgRpU9lPn4lW6+ont2OMI4sW7Ntdwj50js5c8Asy
+         Hb4gaX2qx9UFaHq5ED/U6hd7ydBilOpeVSj7dL9sANdTmjnVgwYbhVVSeLhPT049Wkvr
+         5toXiWlya+9SD8NI93urnBYNaCGRPzJEwhnzX7yGeLxE4BBDCz3NrC8+lIflYVW2QYwc
+         ranA==
+X-Gm-Message-State: AOJu0YzT63NDcII1RdAbwrql3XWcc8oH2Hly3azuqOD2t1SScg4LJJwh
+        vWXvibXUF9qDXYeF2wKSEmXovPeFjEI=
+X-Google-Smtp-Source: AGHT+IGSXDkHmoPaGYMFJnlAS2cINxHXbqIReujJOyjiGjn8aSTJoO5naTAUWcCdS0qyyvcGSlBmcq4mguk=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:7410:0:b0:564:2c32:360a with SMTP id
+ p16-20020a637410000000b005642c32360amr2850602pgc.12.1693953120727; Tue, 05
+ Sep 2023 15:32:00 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 15:31:59 -0700
+In-Reply-To: <ZPWHtUh9SZDc4EoN@yzhao56-desk.sh.intel.com>
+Mime-Version: 1.0
+References: <20230714064656.20147-1-yan.y.zhao@intel.com> <20230714065631.20869-1-yan.y.zhao@intel.com>
+ <ZOkeZi/Xx+1inver@google.com> <ZPWHtUh9SZDc4EoN@yzhao56-desk.sh.intel.com>
+Message-ID: <ZPesX2xp6rGZsxlE@google.com>
+Subject: Re: [PATCH v4 12/12] KVM: x86/mmu: convert kvm_zap_gfn_range() to use
+ shared mmu_lock in TDP MMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, chao.gao@intel.com, kai.huang@intel.com,
+        robert.hoo.linux@gmail.com, yuan.yao@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 11:33:15AM +0200, Lukasz Majewski wrote:
-> @@ -1847,6 +1844,12 @@ static int ksz9477_config_init(struct phy_device *phydev)
->  			return err;
->  	}
->  
-> +	/* According to KSZ9477 Errata DS80000754C (Module 4) all EEE modes
-> +	 * in this switch shall be regarded as broken.
-> +	 */
-> +	if (phydev->dev_flags & MICREL_NO_EEE)
-> +		phydev->eee_broken_modes = -1;
+On Mon, Sep 04, 2023, Yan Zhao wrote:
+> On Fri, Aug 25, 2023 at 02:34:30PM -0700, Sean Christopherson wrote:
+> > On Fri, Jul 14, 2023, Yan Zhao wrote:
+> > > Convert kvm_zap_gfn_range() from holding mmu_lock for write to holding for
+> > > read in TDP MMU and allow zapping of non-leaf SPTEs of level <= 1G.
+> > > TLB flushes are executed/requested within tdp_mmu_zap_spte_atomic() guarded
+> > > by RCU lock.
+> > > 
+> > > GFN zap can be super slow if mmu_lock is held for write when there are
+> > > contentions. In worst cases, huge cpu cycles are spent on yielding GFN by
+> > > GFN, i.e. the loop of "check and flush tlb -> drop rcu lock ->
+> > > drop mmu_lock -> cpu_relax() -> take mmu_lock -> take rcu lock" are entered
+> > > for every GFN.
+> > > Contentions can either from concurrent zaps holding mmu_lock for write or
+> > > from tdp_mmu_map() holding mmu_lock for read.
+> > 
+> > The lock contention should go away with a pre-check[*], correct?  That's a more
+> Yes, I think so, though I don't have time to verify it yet.
+> 
+> > complete solution too, in that it also avoids lock contention for the shadow MMU,
+> > which presumably suffers the same problem (I don't see anything that would prevent
+> > it from yielding).
+> > 
+> > If we do want to zap with mmu_lock held for read, I think we should convert
+> > kvm_tdp_mmu_zap_leafs() and all its callers to run under read, because unless I'm
+> > missing something, the rules are the same regardless of _why_ KVM is zapping, e.g.
+> > the zap needs to be protected by mmu_invalidate_in_progress, which ensures no other
+> > tasks will race to install SPTEs that are supposed to be zapped.
+> Yes. I did't do that to the unmap path was only because I don't want to make a
+> big code change.
+> The write lock in kvm_unmap_gfn_range() path is taken in arch-agnostic code,
+> which is not easy to change, right?
 
-I know this is just another quick'n'dirty code snippet exchanged over
-email which turned into a proper patch, but wouldn't it be more
-civilized to use "MDIO_EEE_100TX | MDIO_EEE_1000T" here, than to declare
-EEE broken for link modes which aren't even supported by the internal
-switch PHYs?
+Yeah.  The lock itself isn't bad, especially if we can convert all mmu_nofitier
+hooks, e.g. we already have KVM_MMU_LOCK(), adding a variant for mmu_notifiers
+would be quite easy.
 
-It's probably not causing practical harm, but currently, we tell
-genphy_config_eee_advert() to include reserved bits of the MMD EEE
-Advertising Register (MMD 0x07 : 0x3C) into its modification mask.
+The bigger problem would be kvm_mmu_invalidate_{begin,end}() and getting the
+memory ordering right, especially if there are multiple mmu_notifier events in
+flight.
+
+But I was actually thinking of a cheesier approach: drop and reacquire mmu_lock
+when zapping, e.g. without the necessary changes in tdp_mmu_zap_leafs():
+
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 735c976913c2..c89a2511789b 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -882,9 +882,15 @@ bool kvm_tdp_mmu_zap_leafs(struct kvm *kvm, int as_id, gfn_t start, gfn_t end,
+ {
+        struct kvm_mmu_page *root;
+ 
++       write_unlock(&kvm->mmu_lock);
++       read_lock(&kvm->mmu_lock);
++
+        for_each_tdp_mmu_root_yield_safe(kvm, root, as_id)
+                flush = tdp_mmu_zap_leafs(kvm, root, start, end, can_yield, flush);
+ 
++       read_unlock(&kvm->mmu_lock);
++       write_lock(&kvm->mmu_lock);
++
+        return flush;
+ }
+
+vCPUs would still get blocked, but for a smaller duration, and the lock contention
+between vCPUs and the zapping task would mostly go away.
+
+> > If you post a version of this patch that converts kvm_tdp_mmu_zap_leafs(), please
+> > post it as a standalone patch.  At a glance it doesn't have any dependencies on the
+> > MTRR changes, and I don't want this type of changed buried at the end of a series
+> > that is for a fairly niche setup.  This needs a lot of scrutiny to make sure zapping
+> > under read really is safe
+> Given the pre-check patch should work, do you think it's still worthwhile to do
+> this convertion?
+
+I do think it would be a net positive, though I don't know that it's worth your
+time without a concrete use cases.  My gut instinct could be wrong, so I wouldn't
+want to take on the risk of running with mmu_lock held for read without hard
+performance numbers to justify the change.
