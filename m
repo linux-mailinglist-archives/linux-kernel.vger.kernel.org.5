@@ -2,111 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00504792C33
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A95E792B15
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353413AbjIERF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36348 "EHLO
+        id S234696AbjIEQra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:47:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354103AbjIEJin (ORCPT
+        with ESMTP id S1354104AbjIEJjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:38:43 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560B51A7;
-        Tue,  5 Sep 2023 02:38:40 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id ffacd0b85a97d-31dcf18f9e2so2044188f8f.0;
-        Tue, 05 Sep 2023 02:38:40 -0700 (PDT)
+        Tue, 5 Sep 2023 05:39:05 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB6F1A7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:39:01 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-50091b91a83so3793441e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 02:39:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693906719; x=1694511519; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693906740; x=1694511540; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5YWqYpOjejr1s3ck7UjoKhIuDCJZwI6o2HKvOQT7nAA=;
-        b=m/kOVLveNQnhHJvREx9xa6nl81Ysfw9Uihm7VZ5IKdOx4qBQNu8nHU8SCjpco5Y2zx
-         3JyqXoPEtn3LbhxFL6vOYbbJWTrCCot88X9QWvpnv3ln5LYj2ojy+hBsk0P1TIJ0LvPg
-         RwfLtRYkX3Gj/B5iEIzGw/kue2ymKVp56cGde6c4qc8WkeRluzc0tSV3O1fhIgSutxr7
-         oidBll4U2nCbppsgoTLIDRlmJm+hdMQVj6gz9QZ5nwZxhKa5KW6z+bYjZzjoLtsnzod/
-         zhcIPBhjkHPy3xV7fHBdiAgawS1G9sSx2WrCfRroYQFsWuctULo2syByVx2UrjY8DrCj
-         B77A==
+        bh=i199O6KiKKQM7slulMeIIsZKZZFjKrLdAh5+q0Dt1H4=;
+        b=N/DWZxW6NVKhyspA7d8cM+gRsGCcrel/b7uf5r0ilh9UpYovkh5QcIUvhsjN50yeI+
+         5CrxzG8T++XzdORdl+L7l409hV+qYAKEJnZZnU5xIE4ObE/65U7/vHXlhuzjhHmjnJI/
+         5PNSIMo/vPqn1plP7QoEXHrzRhZ5/5GxHNydsz3I0OLO/XSCIlNyMpTQ/qXwWvCnJdkJ
+         +GZ4BRZ9JjxVxWvL4Q+vB5GtQdqmdZaAhiliS0N4F1CNsJHjNvR1tJ96eH8fHTJLCL11
+         Ni3h2sdbEIazd4NxsAMJ9CdhuAazOiM8TcK+Tln0+ZL6QXKhmH/qRxtiu0trHN2Jffgp
+         fyZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693906719; x=1694511519;
+        d=1e100.net; s=20221208; t=1693906740; x=1694511540;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5YWqYpOjejr1s3ck7UjoKhIuDCJZwI6o2HKvOQT7nAA=;
-        b=Dl7m+JPAlQLk/URm1hsWhVDd4CP3cz23iG26L+iYzW+4b7nAynHDlwbhK8fSr7+wZP
-         uZd5QPP4pnHsZEzEWg+TM+JhZZIV8g0aOulrjqiGRxEJHqE5T9SGgmmUAlvuSxIbxV2W
-         IypBkbk02QQ/7RVQK+Eoz4TkW8MacOudTBMqcCvYa4n8uIQHVKxp94pvcFkEP/LbNoov
-         WWYO0ZvEjOrQMvFEILnMPaMJBJrh0l/34P4DgcRvt+69gRL/1+tU4XU2Oe5KbdqpSoh4
-         Ultv+/Xz3nheEzoPc+feIWYXPcSUm+NdhCz3ziFGSwYi8XPAFeMmQwcAeutnfI7IIVMN
-         T7mA==
-X-Gm-Message-State: AOJu0YxPFbjpT8OfNiblgullwGZyUsBQDLc7/kUicpnMbiWlDy+PGs+M
-        A2hcbbo9k6x/jj1WemYF2mw=
-X-Google-Smtp-Source: AGHT+IE2wZOjcVFoM9PsqHK1B8bLhtoW705WXFzXq05pi2XmB6vFZniKw69cfoSvxGWmMcwph+PH0w==
-X-Received: by 2002:adf:de0e:0:b0:319:7c1f:8dae with SMTP id b14-20020adfde0e000000b003197c1f8daemr9628315wrm.3.1693906718063;
-        Tue, 05 Sep 2023 02:38:38 -0700 (PDT)
-Received: from debian ([63.135.72.41])
-        by smtp.gmail.com with ESMTPSA id m18-20020a056000181200b00317f29ad113sm16819997wrh.32.2023.09.05.02.38.37
+        bh=i199O6KiKKQM7slulMeIIsZKZZFjKrLdAh5+q0Dt1H4=;
+        b=ZM0iFQRZuu77xVErtLgmu3yL6p4ms/zXBeOgwhYl9JMgtD1JBgNghAwhqGGkkJkQPJ
+         637QooCxWqAKEWxICViIajIVMI8iMAnOeO/DIrq/DJOE7gJh9ugQDeRT8TdykJ8SJpUg
+         u4q8uHCpiNpaekY3761lF3VyUHEFNIxPdNTTOrU9YKUCMfvrJHUvl90RLYJnJmdaQmhD
+         YS2f6BIv7znKXxbn89axQPrGEj8NOtbn+ZGz4byX1KtmyQ/aRz13HTw0A2oH+8AhmGPF
+         qowjCUbVhZo5xzvm+rsL80IKfWQWNzDegcxSAA6WfDuBhPuNV/TFkI8BJVIHgvfZq04u
+         bUOw==
+X-Gm-Message-State: AOJu0YxBzxyHbzZw+17XAq0n7M7UV7QsHIedlQgJkRY7HSCsZId9yB8i
+        IcXkGxOjy4AHNSxFvNfwyF4KDg==
+X-Google-Smtp-Source: AGHT+IHHn25rlu/t0c0vstO4j/XpuwapT2mw2oB/ChLqaG0B8v4X+GFfCmsaepyxblW51Jp99wh0hg==
+X-Received: by 2002:a19:384a:0:b0:4f8:49a8:a0e2 with SMTP id d10-20020a19384a000000b004f849a8a0e2mr7254434lfj.16.1693906740044;
+        Tue, 05 Sep 2023 02:39:00 -0700 (PDT)
+Received: from localhost ([102.36.222.112])
+        by smtp.gmail.com with ESMTPSA id y8-20020adff148000000b00317c742ca9asm16707010wro.43.2023.09.05.02.38.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 02:38:37 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 10:38:35 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.1 00/31] 6.1.52-rc1 review
-Message-ID: <ZPb3G4Pi0C2pCCrn@debian>
-References: <20230904182946.999390199@linuxfoundation.org>
+        Tue, 05 Sep 2023 02:38:59 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 12:38:56 +0300
+From:   Dan Carpenter <dan.carpenter@linaro.org>
+To:     Oliver Crumrine <ozlinux@hotmail.com>
+Cc:     gregkh@linuxfoundation.org, colin.i.king@gmail.com,
+        sumitraartsy@gmail.com, u.kleine-koenig@pengutronix.de,
+        geert@linux-m68k.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+Subject: Re: [PATCH v3 0/6] staging: octeon: clean up the octeon ethernet
+ driver
+Message-ID: <88fdf861-91fa-4ab7-8f43-53d844e9bca5@kadam.mountain>
+References: <PH7PR11MB76434E13489C9713CB562A74BCE1A@PH7PR11MB7643.namprd11.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904182946.999390199@linuxfoundation.org>
+In-Reply-To: <PH7PR11MB76434E13489C9713CB562A74BCE1A@PH7PR11MB7643.namprd11.prod.outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Sun, Aug 27, 2023 at 07:58:16PM -0400, Oliver Crumrine wrote:
+> Make the octeon ethernet driver better adhere to the
+> kernel coding standards
+> 
+> Oliver Crumrine (6):
+>   staging: octeon: clean up the octeon ethernet driver
+>   staging: octeon: clean up the octeon ethernet driver
+>   staging: octeon: clean up the octeon ethernet driver
+>   staging: octeon: clean up the octeon ethernet driver
+>   staging: octeon: clean up the octeon ethernet driver
+>   staging: octeon: clean up the octeon ethernet driver
 
-On Mon, Sep 04, 2023 at 07:30:08PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.52 release.
-> There are 31 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+You can't send more than one patch with the same subject.  These all
+have the same subject.
 
-Build test (gcc version 12.3.1 20230829):
-mips: 52 configs -> no failure
-arm: 100 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
+Also you're resending v2 v3 v4 too quickly.  You should wait for a day.
+Do some testing.  See if people have additional comments.  There is no
+rush.
 
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
+regards,
+dan carpenter
 
-[1]. https://openqa.qa.codethink.co.uk/tests/4936
-[2]. https://openqa.qa.codethink.co.uk/tests/4952
-[3]. https://openqa.qa.codethink.co.uk/tests/4951
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
--- 
-Regards
-Sudip
