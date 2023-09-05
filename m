@@ -2,91 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8BF792C28
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D19D792C27
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237455AbjIERHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:07:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35820 "EHLO
+        id S1354264AbjIERHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:07:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244286AbjIEQ7V (ORCPT
+        with ESMTP id S244924AbjIEQuB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 12:59:21 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F1E61AA;
-        Tue,  5 Sep 2023 09:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693931435; x=1725467435;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=Wsj83dMuB0IsLZ+OQSDNV5lLeqy1G/b0RknIK8INS+M=;
-  b=n3h8G3aPd+SlgsRH3zGqmW7I+3lrQZHDbP/owfe6TdoxTfHvtv4NiANa
-   PJYKMWe5SqgCsTeu8d3LyrvDs5PHrhhARhDr9/1iva7k35NU1bACGujYZ
-   gUbJpyn0Ycv7/r8ycCBph0ZljFExMTp3PjqCSC+j0MUXHo3FeSeCeLEZH
-   2LQVkbajnz5+oshq3Aqk3T3rQUN95bmY7BSbHFHH9sQW4GaUlmBK1t4M4
-   MgrcxQ30XinjyYWSrfTgjbI28w2Da6AjKm26K9Sw15hzSvv/MgJMh1kAI
-   YnqrUdeNOVa5SNnifoCzopuFXCu+UiZb+jSqbpxojzQlfRpDD3B8zbjor
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="374228903"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="374228903"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 09:21:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="806665737"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="806665737"
-Received: from hha-mobl1.amr.corp.intel.com (HELO [10.209.14.88]) ([10.209.14.88])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 09:21:45 -0700
-Message-ID: <c3b0a87e-b680-3141-93df-911b00211ceb@intel.com>
-Date:   Tue, 5 Sep 2023 09:21:45 -0700
+        Tue, 5 Sep 2023 12:50:01 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0019B5BB3;
+        Tue,  5 Sep 2023 09:30:44 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 391381FEF8;
+        Tue,  5 Sep 2023 16:29:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1693931383;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=scDQjkVnkP474Si/VsVHrEoK0XtwyaG7IHpMwnxTK40=;
+        b=h9jzS1gnl56U7vScfpMOZDCEgkQtk1zFxW3EnCTfjXT7iuACjq8exIemovXL3Ts0GTZPiH
+        ndcMBvvAgI0yMw8qkGYbLae5WG1ZoXukoX1Z9Khaa7PBLxCz9sZbn6IRmK79rKiAvOLpbJ
+        0ckLkVw3TPx9JWFh+pKuGMJAp6141mE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1693931383;
+        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=scDQjkVnkP474Si/VsVHrEoK0XtwyaG7IHpMwnxTK40=;
+        b=Gif/1kHXKHDPOA7rWQngqT/EBKaoOmiEP8AsFS7+phy5buv9Qpc7pGyjhdE9fsxWnqrq6R
+        LkOZ7H98ZPuhpICQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CADC513911;
+        Tue,  5 Sep 2023 16:29:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6HyTMHZX92QPHAAAMHmgww
+        (envelope-from <dsterba@suse.cz>); Tue, 05 Sep 2023 16:29:42 +0000
+Date:   Tue, 5 Sep 2023 18:23:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        ardb@kernel.org, kees@kernel.org, linux-kernel@vger.kernel.org,
+        enlin.mu@unisoc.com, ebiggers@google.com, gpiccoli@igalia.com,
+        willy@infradead.org, yunlong.xing@unisoc.com,
+        yuxiaozhang@google.com, qat-linux@intel.com,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Yang Shen <shenyang39@huawei.com>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Weigang Li <weigang.li@intel.com>, Chris Mason <clm@meta.com>,
+        Brian Will <brian.will@intel.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/4] crypto: qat - Remove zlib-deflate
+Message-ID: <20230905162302.GD14420@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <ZO8ULhlJSrJ0Mcsx@gondor.apana.org.au>
+ <E1qbI7x-009Bvo-IM@formenos.hmeau.com>
+ <ZPcqALQ0Ck/3lF0U@gcabiddu-mobl1.ger.corp.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-From:   Dave Hansen <dave.hansen@intel.com>
-Subject: Re: Fwd: RCU indicates stalls with iwlwifi, causing boot failures
-To:     Hugh Dickins <hughd@google.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>
-Cc:     Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Gregory Greenman <gregory.greenman@intel.com>,
-        Ben Greear <greearb@candelatech.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Wireless <linux-wireless@vger.kernel.org>,
-        Linux RCU <rcu@vger.kernel.org>
-References: <c1caa7c1-b2c6-aac5-54ab-8bcc6e139ca8@gmail.com>
- <c3f9b35c-087d-0e34-c251-e249f2c058d3@candelatech.com>
- <f0f6a6ec-e968-a91c-dc46-357566d8811@google.com>
-Content-Language: en-US
-In-Reply-To: <f0f6a6ec-e968-a91c-dc46-357566d8811@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZPcqALQ0Ck/3lF0U@gcabiddu-mobl1.ger.corp.intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/1/23 23:59, Hugh Dickins wrote:
-> I just took a look at your dmesg in bugzilla: I see lots of page tables
-> dumped, including "ESPfix Area", and think you're hitting my screwup: see
+On Tue, Sep 05, 2023 at 02:15:44PM +0100, Giovanni Cabiddu wrote:
+> Hi Herbert,
 > 
-> https://lore.kernel.org/linux-mm/CABXGCsNi8Tiv5zUPNXr6UJw6qV1VdaBEfGqEAMkkXE3QPvZuAQ@mail.gmail.com/
+> On Wed, Aug 30, 2023 at 06:08:47PM +0800, Herbert Xu wrote:
+> > Remove the implementation of zlib-deflate because it is completely
+> > unused in the kernel.
+> We are working at a new revision of [1] which enables BTRFS to use acomp
+> for offloading zlib-deflate. We see that there is value in using QAT for
+> such use case in terms of throughput / CPU utilization / compression ratio
+> compared to software.
+> Zlib-deflate is preferred to deflate since BTRFS already uses that
+> format.
 > 
-> Please give the patch from the end of that thread a try:
+> We expect to send this patch for 6.7.
+> Can we keep zlib-deflate in the kernel?
+> 
+> Thanks,
+> 
+> [1] https://patchwork.kernel.org/project/linux-btrfs/patch/1467083180-111750-1-git-send-email-weigang.li@intel.com/
 
-Thanks, Hugh.
+The patch is from 2016 and zlib though still supported has been
+superseded by zstd that is from 2017. It would be good to see numbers
+comparing zlib (cpu), zlib (qat) against relevant zstd levels. The
+offloading might be an improvement and worth adding the support
+otherwise I don't see much reason to add it unless there are users.
 
-I tried a random commit from Linus's tree that didn't boot for me
-earlier.  Applying your fix allowed me to boot!
-
-I still can't boot Linus's _current_ tree with your patch in it, but
-that looks like another failure mode altogether.
+I can see there's QAT support for zstd too,
+https://github.com/intel/QAT-ZSTD-Plugin, can't find one for lzo but in
+case ther's QAT for all 3 algorithms used by btrfs I wouldn't mind
+keeping the QAT support for zlib for parity.
