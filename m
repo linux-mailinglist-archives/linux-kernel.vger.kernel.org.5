@@ -2,282 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D142792839
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40F6F792AA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241072AbjIEQJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:09:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60084 "EHLO
+        id S245118AbjIEQkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:40:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354299AbjIEKh6 (ORCPT
+        with ESMTP id S1354302AbjIEKii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:37:58 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B29E8;
-        Tue,  5 Sep 2023 03:37:54 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id 4fb4d7f45d1cf-522dd6b6438so2992799a12.0;
-        Tue, 05 Sep 2023 03:37:54 -0700 (PDT)
+        Tue, 5 Sep 2023 06:38:38 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEAF199
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:38:35 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bcfe28909so334798266b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:38:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693910273; x=1694515073; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ApbezLaRT9D4Gr9PvWZAHTC2S+HnA1h1J9QKZkIqIyU=;
-        b=d9+P83O8iGhliqtWZp6jd8DNvOMTMWWXAJ5JpIRYlGFD8Fc1v7KYscPZfm9TLHAAhg
-         Wp8/ecjd/NMYNz1dVhxHyIDEIks/+c3j330B0KhUppHjPbgsr1qXD+CjSj/flsJ0zh7w
-         nsQt0ZTXMr/JjUJH0wROx1rENCmFNWdboKP3a1iLmnWp/VnbQfdipmFNdTiSxRd2T1tn
-         R08yKjpBOb0+aPr5xsEljFRKe4QNH2vQsHci5+ChCBCIreaqzzinhUaS14UIbO2uk1kx
-         H1YNOs2Pddo115crBVf3bdtqYozdbVgzUwA6hQmldQhHFHJWC06FzRB8zezMdMwy7JBA
-         u4MA==
+        d=linaro.org; s=google; t=1693910314; x=1694515114; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4WKpCpzUJa8iRluzL4OMCEUy6exJH98L6niCS735SFI=;
+        b=QGvjM3JR/MttzXfj4LbMqEsQe92IMOSuD+hjNzPOZSLzrFcerItkxlkQLOwCITfybP
+         c0TGlCXNZoRJXmLGyBAx30JYb17ckKFXsZeBoted2CDM7P6DyHFialzzOw32xGT7Z6xv
+         ZciEo3FjKk5dzl7vDoeQybN8Oy9tevA0gcdy/t/o8wax4ZrXf1dNLa0EuwjV7jBClGk5
+         cvnX13xUI3017rCcrXd81veMYoympfE92JQdL4Q08igLOv/nsqlNxq5RG33bf6/zdVb7
+         jFUBEsFBNhac51nlmra/8NSuuYeVA/LV9MKk8kJBqpNDA5Xz42rQZdtUTEqn2BZ4lgl1
+         jkAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693910273; x=1694515073;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ApbezLaRT9D4Gr9PvWZAHTC2S+HnA1h1J9QKZkIqIyU=;
-        b=H98RqwzId26dFN4eFrwnBgnkt0zQO+4xOVWo9S9Kxc+sGta7CBYkMpHa+g6pwnYkha
-         N1sDlimh//WL6c22C4au2aFV/qGZVv0lqfCDBPzQr+pxn6r0bZMjfkaosdMzXYTGNw9o
-         Bnh1nJr7+3WY9YluOS1vunlNGXoPdn7pNCBKE/wvJFjJqmOMW9CD5GUwyzI7PmIDcMgn
-         CjhPeHUOhOYdhaTqNX+8caaD+7l6T937SpdMOhfkdvxWFkHEpT62IdrvkH0ghMV9+CFQ
-         eYYlTxWXPILaJVNsALGaSZwKWfDWBH0GYPcXiNhqFPLSFShYhgnEY90bZepYAfRq1nVS
-         xlQQ==
-X-Gm-Message-State: AOJu0Yy9jcqfgTxqmpJ6qSK67WObGvLAMb0FT+iZNEt9caD5S88B6W4J
-        gMxtgqwzcWDe+7dqjOVRHHU=
-X-Google-Smtp-Source: AGHT+IF0deXQ4ftfhJLVJAn7+JuV5lMIxdkGqAE23fn/n2jtRIQ+3h2pbJsonILyVi9x+bRkgsN2sQ==
-X-Received: by 2002:a05:6402:124c:b0:52c:164:efe4 with SMTP id l12-20020a056402124c00b0052c0164efe4mr9102439edw.34.1693910272867;
-        Tue, 05 Sep 2023 03:37:52 -0700 (PDT)
-Received: from skbuf ([188.26.57.165])
-        by smtp.gmail.com with ESMTPSA id w16-20020a056402269000b0052e1959db1csm2930863edd.20.2023.09.05.03.37.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 03:37:52 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 13:37:50 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
-        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
-        George McCollister <george.mccollister@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RFC 3/4] net: dsa: hsr: Enable in KSZ9477 switch HW
- HSR offloading
-Message-ID: <20230905103750.u3hbn6xmgthgdpnw@skbuf>
-References: <20230904120209.741207-1-lukma@denx.de>
- <20230904120209.741207-1-lukma@denx.de>
- <20230904120209.741207-4-lukma@denx.de>
- <20230904120209.741207-4-lukma@denx.de>
+        d=1e100.net; s=20221208; t=1693910314; x=1694515114;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4WKpCpzUJa8iRluzL4OMCEUy6exJH98L6niCS735SFI=;
+        b=anF3GxFbSScQ/Du+86z5eIeHcNXJ5hYjUygQlhvmcIfGxBgWycYB43q4V6m3a+WdEd
+         5kIjurke9xuSZ/RDOIEhz3S1G/NttHVkX1B5oQBsTLGkNT8xS+nDWS0WeNjdSeIaOct4
+         n+kXMYPwVJWPu3cv7zElKIDL7pCRABaIuu46zonsoYLHCtdjGFxI38y06avwUiJ607z4
+         /R4SqwlmvY3+9AOFDAGer/fzmi4UfR7jUvB0iuM+Hte364ZwhuhWT/P93E9/L+RSYikc
+         6k2/tTmzBvtO91sEwFuVUrwnJlnQg1jXMBU5WzYLiBEDTwwxTdodMjlM1mugCnjZZYgd
+         /zyQ==
+X-Gm-Message-State: AOJu0YwEnAiRVgcwTvxCPskL7U16CS9mzduVM2dIdmpbgUi1st75in/1
+        J1YEZoiuBLalWWY2i1JYhhZNvQ==
+X-Google-Smtp-Source: AGHT+IGDPbqZkn81hlAaihoCBFF4Kq/KErYZluh4+aPmtASgvaAQ5tkK7GxPPmEKCJnHVZaZn7mygQ==
+X-Received: by 2002:a17:906:319a:b0:9a5:d095:a8e4 with SMTP id 26-20020a170906319a00b009a5d095a8e4mr8946249ejy.1.1693910313669;
+        Tue, 05 Sep 2023 03:38:33 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id ss22-20020a170907c01600b00992e14af9c3sm7437367ejc.143.2023.09.05.03.38.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 03:38:33 -0700 (PDT)
+Message-ID: <a0f0ab97-2333-542a-327f-f5711136b35a@linaro.org>
+Date:   Tue, 5 Sep 2023 12:38:31 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904120209.741207-4-lukma@denx.de>
- <20230904120209.741207-4-lukma@denx.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v4 1/2] ARM: dts: aspeed: Minerva: Add Facebook Minerva
+ (AST2600) BMC
+Content-Language: en-US
+To:     PeterYin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
+        daniel-hsu@quantatw.com
+References: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
+ <20230830090212.3880559-2-peteryin.openbmc@gmail.com>
+ <b9cbe9be-b03e-6c7a-d06c-b75b012b5b25@linaro.org>
+ <18b78489-6a12-a09f-620d-985be747f9da@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <18b78489-6a12-a09f-620d-985be747f9da@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 02:02:08PM +0200, Lukasz Majewski wrote:
-> This patch adds functions for providing in KSZ9477 switch HSR
-> (High-availability Seamless Redundancy) hardware offloading.
+On 05/09/2023 11:55, PeterYin wrote:
 > 
-> According to AN3474 application note following features are provided:
-> - TX packet duplication from host to switch (NETIF_F_HW_HSR_DUP)
-> - RX packet duplication discarding
-> - Prevention of packet loop
+> On 8/30/23 17:44, Krzysztof Kozlowski wrote:
+>> On 30/08/2023 11:02, peteryin wrote:
+>>> Add linux device tree entry related to
+>>> Minerva specific devices connected to BMC SoC.
+>>>
+>>> Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
+>> To clarify: your full name or known identity is "peteryin"?
+>>
+>>> ---
+>>>   arch/arm/boot/dts/Makefile                    |   1 +
+>>>   .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 385 ++++++++++++++++++
+>>>   2 files changed, 386 insertions(+)
+>>>   create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
+>>>
+>>> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+>>> index 9e1d7bf3cff6..edb0b2105333 100644
+>>> --- a/arch/arm/boot/dts/Makefile
+>>> +++ b/arch/arm/boot/dts/Makefile
+>>> @@ -1604,6 +1604,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>>>   	aspeed-bmc-facebook-wedge400.dtb \
+>>>   	aspeed-bmc-facebook-yamp.dtb \
+>>>   	aspeed-bmc-facebook-yosemitev2.dtb \
+>>> +	aspeed-bmc-facebook-minerva.dtb \
+>> Nothing improved here.
+>>
+>>>   	aspeed-bmc-ibm-bonnell.dtb \
+>>>   	aspeed-bmc-ibm-everest.dtb \
+>>>   	aspeed-bmc-ibm-rainier.dtb \
+>>
+>>> +	"","","","","","","","",
+>>> +	/*O0-O3 line 224-231*/
+>>> +	"","","","","","","","",
+>>> +	/*O4-O7 line 232-239*/
+>>> +	"","","","","","","","",
+>>> +	/*P0-P3 line 240-247*/
+>>> +	"","","","","","","","",
+>>> +	/*P4-P7 line 248-255*/
+>>> +	"","","","","","","","";
+>>> +};
+>>> +
+>> Nor here.
+>>
+>> This is a friendly reminder during the review process.
+>>
+>> It seems my previous comments were not fully addressed. Maybe my
+>> feedback got lost between the quotes, maybe you just forgot to apply it.
+>> Please go back to the previous discussion and either implement all
+>> requested changes or keep discussing them.
+>>
+> Could you please clarify for me?
 > 
-> For last two ones - there is a probability that some packets will not
-> be filtered in HW (in some special cases). Hence, the HSR core code
-> shall be used to discard those not caught frames.
-> 
-> Moreover, some switch registers adjustments are required - like setting
-> MAC address of HSR network interface.
-> 
-> Additionally, the KSZ9477 switch has been configured to forward frames
-> between HSR ports (1,2) members.
-> 
-> Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> ---
-> Changes for v2:
-> - Use struct ksz_device to store hsr ports information (not struct dsa)
-> 
-> Changes for v3:
-> - Enable in-switch forwarding of frames between HSR ports (i.e. enable
->   bridging of those two ports)
-> 
-> - The NETIF_F_HW_HSR_FWD flag has been marked as supported by the HSR
->   network device
-> 
-> - Remove ETH MAC address validity check as it is done earlier in the net
->   driver
-> 
-> - Add comment regarding adding support for NETIF_F_HW_HSR_FWD flag
-> ---
->  drivers/net/dsa/microchip/ksz9477.c | 103 ++++++++++++++++++++++++++++
->  drivers/net/dsa/microchip/ksz9477.h |   4 ++
->  2 files changed, 107 insertions(+)
-> 
-> diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-> index 83b7f2d5c1ea..c4ed89c1de48 100644
-> --- a/drivers/net/dsa/microchip/ksz9477.c
-> +++ b/drivers/net/dsa/microchip/ksz9477.c
-> @@ -1141,6 +1141,109 @@ int ksz9477_tc_cbs_set_cinc(struct ksz_device *dev, int port, u32 val)
->  	return ksz_pwrite16(dev, port, REG_PORT_MTI_CREDIT_INCREMENT, val);
->  }
->  
-> +/* The KSZ9477 provides following HW features to accelerate
-> + * HSR frames handling:
-> + *
-> + * 1. TX PACKET DUPLICATION FROM HOST TO SWITCH
-> + * 2. RX PACKET DUPLICATION DISCARDING
-> + * 3. PREVENTING PACKET LOOP IN THE RING BY SELF-ADDRESS FILTERING
-> + *
-> + * Only one from point 1. has the NETIF_F* flag available.
-> + *
-> + * Ones from point 2 and 3 are "best effort" - i.e. those will
-> + * work correctly most of the time, but it may happen that some
-> + * frames will not be caught. Hence, the SW needs to handle those
-> + * special cases. However, the speed up gain is considerable when
-> + * above features are used.
-> + *
-> + * Moreover, the NETIF_F_HW_HSR_FWD feature is also enabled, as HSR frames
-> + * can be forwarded in the switch fabric between HSR ports.
+> Are you asking if the last line should not have a blank line, or I can't 
+> set a comment for the sgpio line like this:
 
-How do these 2 concepts (autonomous forwarding + software-based
-elimination of some frames) work together? If software is not the sole
-receiver of traffic which needs to be filtered further, and duplicates
-also get forwarded to the network, does this not break the HSR ring?
+6 or 7 versions ago I said:
+"Still redundant blank line."
+so it is about stray blank line.
 
-What are the causes due to which self-address filtering and duplicate
-elimination only work "most of the time"?
+https://lore.kernel.org/all/9f499fe5-db59-f4c8-6a50-93725b7287fd@linaro.org/
 
-> + */
-> +#define KSZ9477_SUPPORTED_HSR_FEATURES (NETIF_F_HW_HSR_DUP | NETIF_F_HW_HSR_FWD)
-> +
-> +int ksz9477_hsr_join(struct dsa_switch *ds, int port, struct net_device *hsr,
-> +		     struct dsa_port *partner)
-> +{
-> +	struct ksz_device *dev = ds->priv;
-> +	struct net_device *slave;
-> +	u8 i, data;
-> +	int ret;
-> +
-> +	/* Program which ports shall support HSR */
-> +	dev->hsr_ports = BIT(port) | BIT(partner->index);
-> +	ksz_write32(dev, REG_HSR_PORT_MAP__4, dev->hsr_ports);
-> +
-> +	/* Forward frames between HSR ports (i.e. bridge together HSR ports) */
-> +	ksz_prmw32(dev, port, REG_PORT_VLAN_MEMBERSHIP__4, dev->hsr_ports,
-> +		   dev->hsr_ports);
-> +	ksz_prmw32(dev, partner->index, REG_PORT_VLAN_MEMBERSHIP__4,
-> +		   dev->hsr_ports, dev->hsr_ports);
-
-Call ksz9477_cfg_port_member() instead?
-
-> +
-> +	/* Enable discarding of received HSR frames */
-> +	ksz_read8(dev, REG_HSR_ALU_CTRL_0__1, &data);
-> +	data |= HSR_DUPLICATE_DISCARD;
-> +	data &= ~HSR_NODE_UNICAST;
-> +	ksz_write8(dev, REG_HSR_ALU_CTRL_0__1, data);
-> +
-> +	/* Self MAC address filtering for HSR frames to avoid
-> +	 * traverse of the HSR ring more than once.
-> +	 *
-> +	 * The HSR port (i.e. hsr0) MAC address is used.
-> +	 */
-> +	for (i = 0; i < ETH_ALEN; i++) {
-> +		ret = ksz_write8(dev, REG_SW_MAC_ADDR_0 + i, hsr->dev_addr[i]);
-> +		if (ret)
-> +			return ret;
-
-FWIW: https://lore.kernel.org/netdev/155ff37f-43d5-5fe0-6de4-c4639909553d@gmail.com/
-Some coordination will be required regarding the MAC address that the
-switch driver needs to program to these registers. It seems that it is
-not single purpose.
-
-> +	}
-> +
-> +	/* Enable global self-address filtering if not yet done during switch
-> +	 * start
-> +	 */
-> +	ksz_read8(dev, REG_SW_LUE_CTRL_1, &data);
-> +	if (!(data & SW_SRC_ADDR_FILTER)) {
-> +		data |= SW_SRC_ADDR_FILTER;
-> +		ksz_write8(dev, REG_SW_LUE_CTRL_1, data);
-> +	}
-
-If there is no way that SW_SRC_ADDR_FILTER can be unset after
-ksz9477_reset_switch() is called, then this is dead code which should be
-removed.
-
-> +
-> +	/* Enable per port self-address filtering */
-> +	ksz_port_cfg(dev, port, REG_PORT_LUE_CTRL, PORT_SRC_ADDR_FILTER, true);
-> +	ksz_port_cfg(dev, partner->index, REG_PORT_LUE_CTRL,
-> +		     PORT_SRC_ADDR_FILTER, true);
-> +
-> +	/* Setup HW supported features for lan HSR ports */
-> +	slave = dsa_to_port(ds, port)->slave;
-> +	slave->features |= KSZ9477_SUPPORTED_HSR_FEATURES;
-> +
-> +	slave = dsa_to_port(ds, partner->index)->slave;
-> +	slave->features |= KSZ9477_SUPPORTED_HSR_FEATURES;
-
-Can the code that is duplicated for the partner port be moved to the
-caller?
-
-> +
-> +	pr_debug("%s: HSR join port: %d partner: %d port_map: 0x%x\n", __func__,
-> +		 port, partner->index, dev->hsr_ports);
-> +
-> +	return 0;
-> +}
-> +
-> +int ksz9477_hsr_leave(struct dsa_switch *ds, int port, struct net_device *hsr,
-> +		      struct dsa_port *partner)
-> +{
-> +	struct ksz_device *dev = ds->priv;
-> +
-> +	/* Clear ports HSR support */
-> +	ksz_write32(dev, REG_HSR_PORT_MAP__4, 0);
-> +
-> +	/* Disable forwarding frames between HSR ports */
-> +	ksz_prmw32(dev, port, REG_PORT_VLAN_MEMBERSHIP__4, dev->hsr_ports, 0);
-> +	ksz_prmw32(dev, partner->index, REG_PORT_VLAN_MEMBERSHIP__4,
-> +		   dev->hsr_ports, 0);
-> +
-> +	/* Disable per port self-address filtering */
-> +	ksz_port_cfg(dev, port, REG_PORT_LUE_CTRL, PORT_SRC_ADDR_FILTER, false);
-> +	ksz_port_cfg(dev, partner->index, REG_PORT_LUE_CTRL,
-> +		     PORT_SRC_ADDR_FILTER, false);
-> +
-> +	return 0;
-> +}
-> +
->  int ksz9477_switch_init(struct ksz_device *dev)
->  {
->  	u8 data8;
-> diff --git a/drivers/net/dsa/microchip/ksz9477.h b/drivers/net/dsa/microchip/ksz9477.h
-> index b6f7e3c46e3f..634262efb73c 100644
-> --- a/drivers/net/dsa/microchip/ksz9477.h
-> +++ b/drivers/net/dsa/microchip/ksz9477.h
-> @@ -58,5 +58,9 @@ int ksz9477_dsa_init(struct ksz_device *dev);
->  int ksz9477_switch_init(struct ksz_device *dev);
->  void ksz9477_switch_exit(struct ksz_device *dev);
->  void ksz9477_port_queue_split(struct ksz_device *dev, int port);
-> +int ksz9477_hsr_join(struct dsa_switch *ds, int port, struct net_device *hsr,
-> +		     struct dsa_port *partner);
-> +int ksz9477_hsr_leave(struct dsa_switch *ds, int port, struct net_device *hsr,
-> +		      struct dsa_port *partner);
->  
->  #endif
-> -- 
-> 2.20.1
-> 
+Best regards,
+Krzysztof
 
