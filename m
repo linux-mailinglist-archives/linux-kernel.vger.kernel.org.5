@@ -2,193 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE373792621
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C91792B89
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229873AbjIEQV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
+        id S244861AbjIEQy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354835AbjIEOxk (ORCPT
+        with ESMTP id S1354840AbjIEO44 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:53:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14024113
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:52:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693925567;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=klLyCH+/rZQLSXpVNPH8e0sfHO/gz4bHny9eZkg3wb8=;
-        b=C8N/RLCEP6Nif1ZeDcbyeNlXO8ZVqVTKTxK9lZs+v3vAeo5aD4GsngH72t2XwnlBggvLLb
-        tzn2C6NBP4ikbev0bFzveyYpROhKU556pjaBhJJxYbO5BHHNOj8GbBbRAuQQNSVm0WcZEm
-        jAwcVxQyVDRA8BRnMlq+x1Jf7tlSsJg=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-226-juKePEdCN0Ce_NKVyOSMVg-1; Tue, 05 Sep 2023 10:52:45 -0400
-X-MC-Unique: juKePEdCN0Ce_NKVyOSMVg-1
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-34e141c5a5bso15799455ab.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:52:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693925565; x=1694530365;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=klLyCH+/rZQLSXpVNPH8e0sfHO/gz4bHny9eZkg3wb8=;
-        b=HtB86nY+vUVeJY0e2mGd9bxIN/8UJ/qCQcYQopIya+lgFxDRRYaSJctXMYotXdzJIT
-         PoblTzN2gT6ISB8TnR1yCLW72i6CMiffykGNRqav/Q5140L439tFHmXXh82wPwIkfO4W
-         4jJ/6hL+OQ9sUZjJaah8AQjk+jc/AMImUGBvPhd52xNScDanKordGcFBy28YqHahfC/n
-         gT9FFANPzp8M34YMq+tE22FEZrfXfL9W/frkmZp7zw29ZSHvFl6mnFMkM/PBfGfqJXKX
-         4q89fAsr1XKorQuCWlam0cR8GufT62gSdOdwsK3aalxfcnIMaO8nWyHaejqW4x8zP7Ys
-         OteA==
-X-Gm-Message-State: AOJu0YwWLmojsT5VhQzmVcvQSV8zc6QLC31LbB5FPgrJq2dEUwSk7BOT
-        ANJOFcirPNzUlBIUTdXNz0UTGx/f6eEn2EaVQuIzwBuXlUq/xr19UbhgoLeTUHtWawlhIuzbKSi
-        +jnN10hA1PBX/DpR3LKWk2l6O
-X-Received: by 2002:a05:6e02:f94:b0:34f:1de2:150a with SMTP id v20-20020a056e020f9400b0034f1de2150amr3311625ilo.9.1693925565022;
-        Tue, 05 Sep 2023 07:52:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEqMN4rRQuc7MxjlhBxrXzdipuAgTC1ZIBNcH5MY3K6vAQBnfx3fyFu0UqPkhZtlNZh3SkN8w==
-X-Received: by 2002:a05:6e02:f94:b0:34f:1de2:150a with SMTP id v20-20020a056e020f9400b0034f1de2150amr3311613ilo.9.1693925564783;
-        Tue, 05 Sep 2023 07:52:44 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id p8-20020a92c608000000b00345b34fcf34sm4189494ilm.38.2023.09.05.07.52.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 07:52:44 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 08:52:43 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        amd-gfx@lists.freedesktop.org, linux-pci@vger.kernel.org
-Subject: Re: [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user to
- select the primary video adapter at boot time
-Message-ID: <20230905085243.4b22725e.alex.williamson@redhat.com>
-In-Reply-To: <20230904195724.633404-1-sui.jingfeng@linux.dev>
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
+        Tue, 5 Sep 2023 10:56:56 -0400
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8863C18C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:56:51 -0700 (PDT)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id 85490100023;
+        Tue,  5 Sep 2023 17:56:48 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 85490100023
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
+        s=mail; t=1693925808;
+        bh=j9WIM1QwjBQaTjxYjUQA7Rlw46Hleq4M73BzeKtUxCA=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+        b=SWyAwGXWBWuzrAxrV5mQGBGpQ3HBlWtnGQ8PD7Vwj44nclVuVbHc1rt0Sw8kwO63W
+         BJ7O0cU+1oZr0cBCZ3KmlOHD4/kW6vsxbOMHtvMP8uAjFlrVXionpuQ2eeEs6WG7ur
+         fDVnUrWCMZ3mSnBDQVCHWE+PfiXd1aJuFPA7ue83m6uekxiuTXDzlZK/vvOl56Xh3S
+         kQkoB8JFShEWrRhVj/ufbP8i1GzMw2pC9BUApOtBPnnUXljrWL2lcc2mFxJidYauTk
+         feRbtXIIIdavmzghY6/jwIaE3YEMPJxrYn2tVVb5ouTZN0NrWdGLr5pL+8AB0MrH7f
+         XbYaAVLY4AQrw==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 17:56:48 +0300 (MSK)
+Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.30; Tue, 5 Sep 2023 17:56:46 +0300
+From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <kernel@sberdevices.ru>,
+        Martin Kurbanov <mmkurbanov@sberdevices.ru>,
+        Frieder Schrempf <frieder.schrempf@kontron.de>
+Subject: [PATCH v3] mtd: spinand: micron: correct bitmask for ecc status
+Date:   Tue, 5 Sep 2023 17:56:37 +0300
+Message-ID: <20230905145637.139068-1-mmkurbanov@sberdevices.ru>
+X-Mailer: git-send-email 2.40.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 179666 [Sep 05 2023]
+X-KSMG-AntiSpam-Version: 5.9.59.0
+X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/09/05 13:24:00
+X-KSMG-LinksScanning: Clean, bases: 2023/09/05 13:24:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/05 12:20:00 #21804326
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  5 Sep 2023 03:57:15 +0800
-Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+Valid bitmask is 0x70 in the status register.
 
-> From: Sui Jingfeng <suijingfeng@loongson.cn>
-> 
-> On a machine with multiple GPUs, a Linux user has no control over which
-> one is primary at boot time. This series tries to solve above mentioned
-> problem by introduced the ->be_primary() function stub. The specific
-> device drivers can provide an implementation to hook up with this stub by
-> calling the vga_client_register() function.
-> 
-> Once the driver bound the device successfully, VGAARB will call back to
-> the device driver. To query if the device drivers want to be primary or
-> not. Device drivers can just pass NULL if have no such needs.
-> 
-> Please note that:
-> 
-> 1) The ARM64, Loongarch, Mips servers have a lot PCIe slot, and I would
->    like to mount at least three video cards.
-> 
-> 2) Typically, those non-86 machines don't have a good UEFI firmware
->    support, which doesn't support select primary GPU as firmware stage.
->    Even on x86, there are old UEFI firmwares which already made undesired
->    decision for you.
-> 
-> 3) This series is attempt to solve the remain problems at the driver level,
->    while another series[1] of me is target to solve the majority of the
->    problems at device level.
-> 
-> Tested (limited) on x86 with four video card mounted, Intel UHD Graphics
-> 630 is the default boot VGA, successfully override by ast2400 with
-> ast.modeset=10 append at the kernel cmd line.
-> 
-> $ lspci | grep VGA
-> 
->  00:02.0 VGA compatible controller: Intel Corporation CoffeeLake-S GT2 [UHD Graphics 630]
+Fixes: a508e8875e13 ("mtd: spinand: Add initial support for Micron MT29F2G01ABAGD")
+Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+---
+Changes v3 since v2 at [1]:
+  - Remove the commit for fixing OOB layout.
+  - Add Fixes tag.
 
-In all my previous experiments with VGA routing and IGD I found that
-IGD can't actually release VGA routing and Intel confirmed the hardware
-doesn't have the ability to do so.  It will always be primary from a
-VGA routing perspective.  Was this actually tested with non-UEFI?
+Changes v2 since v1 at [2]:
+  - Split into two individual patches.
+  - Remove the fix for using only non-protected ECC bytes from OOB area.
 
-I suspect it might only work in UEFI mode where we probably don't
-actually have a dependency on VGA routing.  This is essentially why
-vfio requires UEFI ROMs when assigning GPUs to VMs, VGA routing is too
-broken to use on Intel systems with IGD.  Thanks,
+Links:
+  [1] https://lore.kernel.org/all/20230822122534.872646-1-mmkurbanov@sberdevices.ru/
+  [2] https://lore.kernel.org/all/20230815161024.810729-1-mmkurbanov@sberdevices.ru/
 
-Alex
+ drivers/mtd/nand/spi/micron.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Caicos XTX [Radeon HD 8490 / R5 235X OEM]
->  04:00.0 VGA compatible controller: ASPEED Technology, Inc. ASPEED Graphics Family (rev 30)
->  05:00.0 VGA compatible controller: NVIDIA Corporation GK208B [GeForce GT 720] (rev a1)
-> 
-> $ sudo dmesg | grep vgaarb
-> 
->  pci 0000:00:02.0: vgaarb: setting as boot VGA device
->  pci 0000:00:02.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
->  pci 0000:01:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
->  pci 0000:04:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
->  pci 0000:05:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
->  vgaarb: loaded
->  ast 0000:04:00.0: vgaarb: Override as primary by driver
->  i915 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=io+mem
->  radeon 0000:01:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=none
->  ast 0000:04:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=none
-> 
-> v2:
-> 	* Add a simple implemment for drm/i915 and drm/ast
-> 	* Pick up all tags (Mario)
-> v3:
-> 	* Fix a mistake for drm/i915 implement
-> 	* Fix patch can not be applied problem because of merge conflect.
-> v4:
-> 	* Focus on solve the real problem.
-> 
-> v1,v2 at https://patchwork.freedesktop.org/series/120059/
->    v3 at https://patchwork.freedesktop.org/series/120562/
-> 
-> [1] https://patchwork.freedesktop.org/series/122845/
-> 
-> Sui Jingfeng (9):
->   PCI/VGA: Allowing the user to select the primary video adapter at boot
->     time
->   drm/nouveau: Implement .be_primary() callback
->   drm/radeon: Implement .be_primary() callback
->   drm/amdgpu: Implement .be_primary() callback
->   drm/i915: Implement .be_primary() callback
->   drm/loongson: Implement .be_primary() callback
->   drm/ast: Register as a VGA client by calling vga_client_register()
->   drm/hibmc: Register as a VGA client by calling vga_client_register()
->   drm/gma500: Register as a VGA client by calling vga_client_register()
-> 
->  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    | 11 +++-
->  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       | 13 ++++-
->  drivers/gpu/drm/ast/ast_drv.c                 | 31 ++++++++++
->  drivers/gpu/drm/gma500/psb_drv.c              | 57 ++++++++++++++++++-
->  .../gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c   | 15 +++++
->  drivers/gpu/drm/i915/display/intel_vga.c      | 15 ++++-
->  drivers/gpu/drm/loongson/loongson_module.c    |  2 +-
->  drivers/gpu/drm/loongson/loongson_module.h    |  1 +
->  drivers/gpu/drm/loongson/lsdc_drv.c           | 10 +++-
->  drivers/gpu/drm/nouveau/nouveau_vga.c         | 11 +++-
->  drivers/gpu/drm/radeon/radeon_device.c        | 10 +++-
->  drivers/pci/vgaarb.c                          | 43 ++++++++++++--
->  drivers/vfio/pci/vfio_pci_core.c              |  2 +-
->  include/linux/vgaarb.h                        |  8 ++-
->  14 files changed, 210 insertions(+), 19 deletions(-)
-> 
+diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
+index 50b7295bc922..12601bc4227a 100644
+--- a/drivers/mtd/nand/spi/micron.c
++++ b/drivers/mtd/nand/spi/micron.c
+@@ -12,7 +12,7 @@
+
+ #define SPINAND_MFR_MICRON		0x2c
+
+-#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
++#define MICRON_STATUS_ECC_MASK		GENMASK(6, 4)
+ #define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
+ #define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
+ #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
+--
+2.40.0
 
