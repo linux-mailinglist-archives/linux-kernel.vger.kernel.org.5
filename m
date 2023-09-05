@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8575479273A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C334F792B4C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239933AbjIEQIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
+        id S245490AbjIEQuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:50:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353928AbjIEIjI (ORCPT
+        with ESMTP id S1353929AbjIEIkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:39:08 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB093CCB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:39:04 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id 4fb4d7f45d1cf-52a1ce52ef4so3077805a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:39:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693903143; x=1694507943; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hyTIowAic/QcOcDxtwV9f9KcXdjYO2MpLikA3ZRxr2g=;
-        b=LYjRE278YjytkP+Om5BIOaf1blc42O9Uo/Izn/n949OTFeChn5Xk1BKi309MRbJaUi
-         wcAux8j7tr+2INc5Odd9jATKqh7Dyhs0LufkcSL2Vi0L4tHkvbg5XfnLN2YaeSgWIlcY
-         o+L1Nd3LtJMhamkOLKMDNZH7o11GYBwRTunubG+WY8mVpsQEltbVaHI5tzMFlWVeNpba
-         ZXa4JJR9ygPovzlQSFGN433EdQ1Za25jlhdWkusWbM2mihEMLLAyCDIC+tzP/WRaR/eF
-         KUFQYQhlIfeZE16WiSsoZIigGFFEPKVOWEFvkPhpmzTjved7iNCQQM6Skq3t41WbH4Kp
-         aajg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693903143; x=1694507943;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hyTIowAic/QcOcDxtwV9f9KcXdjYO2MpLikA3ZRxr2g=;
-        b=DwPFcFaxWKpjoPwl+apeFvJtYJBaUSw7zlAMx2Am6SGKg5nAG7tBU/IJmozVSQjE48
-         FAeh35eRqXKy3cdr+AFHeQ/V7UrznAWmCDRf7y9GMygZTTQLBGYtko4yHOY8Rrm/eHhP
-         o6qSNhQlboa17qjPRlTgukvl2ZiSU5+B9sH0c851ZGlCACGME4PEpHsf+PyWNDiOCxYM
-         of0eQXQXlAHBXTp+CD9NCko7G8YvRoDTWkmYpsso6ve3HFFK8Wmrstxho9LdT6QacHrR
-         hZ+AKYY4FmKKcBgJqI9y8DtVm/VH6NZCiaukzdqtLHx5ihoXw+rAvjVGXnYM45/4ChEh
-         m36w==
-X-Gm-Message-State: AOJu0Yw8B8RLHsyxT4aimY+/6OfE95aTMwNutES+Dpa+W8GvOU7K9d+z
-        WVlOnH5RhdF/V7N+D4Ee/o9OH9d13r5CC17nJI8=
-X-Google-Smtp-Source: AGHT+IGvboT0n0FCdxIyLWG3+sgCRVSpETjl94gJDApfq2U6U/ZxByemehUhnYNg885l3xVpViaFPtwkgNT5/10xASw=
-X-Received: by 2002:a05:6402:5170:b0:522:ab06:7213 with SMTP id
- d16-20020a056402517000b00522ab067213mr7900175ede.27.1693903143129; Tue, 05
- Sep 2023 01:39:03 -0700 (PDT)
+        Tue, 5 Sep 2023 04:40:42 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92BB8E6;
+        Tue,  5 Sep 2023 01:40:36 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0129E11FB;
+        Tue,  5 Sep 2023 01:41:14 -0700 (PDT)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0D283F766;
+        Tue,  5 Sep 2023 01:40:34 -0700 (PDT)
+Message-ID: <d7bae298-9d83-1bff-15a2-4ebe433ec8af@arm.com>
+Date:   Tue, 5 Sep 2023 09:40:30 +0100
 MIME-Version: 1.0
-Received: by 2002:a54:2785:0:b0:228:8da6:e795 with HTTP; Tue, 5 Sep 2023
- 01:39:02 -0700 (PDT)
-From:   john mike <johnson707mike@gmail.com>
-Date:   Tue, 5 Sep 2023 01:39:02 -0700
-Message-ID: <CALQr8iMj2dHEer=5hvE4H3S88Ot_jiWC46nAUhpttqa36kX6MA@mail.gmail.com>
-Subject: waiting transfer
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=3.4 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,LOTS_OF_MONEY,
-        MONEY_NOHTML,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UNDISC_MONEY
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: ***
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v1] perf parse-events: Fix driver config term
+Content-Language: en-US
+To:     Ian Rogers <irogers@google.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+References: <20230905033805.3094293-1-irogers@google.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20230905033805.3094293-1-irogers@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valued Attention
-Our recent record   indicates that you are eligible to receive an
-optional repayment of cash fund!! $1.2m which has been found in
-the security vault registered in your favor under your email account
-waiting to be dispatch without claims.
-the account is set up under your email address  can only be obtained
-by you (receiver),all  you have to do is to provide
-Your full Name.....................
-Direct Telephone: ..............
-And delivery address........... For immediate shipment
-Thanks and anticipating your urgent respond
-Levy ,DHL delivery charges and other costs which amount total 630 Euro
-Yours faithfully,
-Johnson Mike
-Section assistance and   Verification committee
-USAfro-Euro   Debit Reconciliation Office
+
+
+On 05/09/2023 04:38, Ian Rogers wrote:
+> Inadvertently deleted in commit 30f4ade33d64 ("perf tools: Revert
+> enable indices setting syntax for BPF map").
+> 
+> Reported-by: James Clark <james.clark@arm.com>
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/util/parse-events.y | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
+> index 4a305df61f74..21bfe7e0d944 100644
+> --- a/tools/perf/util/parse-events.y
+> +++ b/tools/perf/util/parse-events.y
+> @@ -839,6 +839,23 @@ PE_TERM
+>  
+>  	$$ = term;
+>  }
+> +|
+> +PE_DRV_CFG_TERM
+> +{
+> +	struct parse_events_term *term;
+> +	char *config = strdup($1);
+> +	int err;
+> +
+> +	if (!config)
+> +		YYNOMEM;
+> +	err = parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV_CFG, config, $1, &@1, NULL);
+> +	if (err) {
+> +		free($1);
+> +		free(config);
+> +		PE_ABORT(err);
+> +	}
+> +	$$ = term;
+> +}
+>  
+>  sep_dc: ':' |
+>  
+
+Reviewed-by: James Clark <james.clark@arm.com>
