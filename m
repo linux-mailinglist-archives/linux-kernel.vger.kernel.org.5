@@ -2,48 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2777930FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:37:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D039793101
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:38:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244269AbjIEVhT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:37:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40906 "EHLO
+        id S244296AbjIEViG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:38:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232877AbjIEVhS (ORCPT
+        with ESMTP id S230340AbjIEViF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:37:18 -0400
-X-Greylist: delayed 591 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 14:37:15 PDT
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1711F133;
-        Tue,  5 Sep 2023 14:37:15 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EBAA9C433C7;
-        Tue,  5 Sep 2023 21:37:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693949834;
-        bh=1tW/2YmVkVDqbE9TScoPDDYvN/EtPZ3iDJNQoYXntFk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=rB1yc9fjSlhx1N807FdykNMbNdeJR6JH1pqqabkB1XrRZorOa0DC80wxLQRF+SBol
-         JBgqszR6mgnozoT0yiOBD39CPCCNFctGwNKc8SaXCky/fjbL9FqMDPxuqWcI+ylUwC
-         2JF0JqiZtpO2DcbeqkkkEB6wyrmgHcqSzbn85NTrKaTo3mX4fVUFWkycYrMcDPgzZw
-         6G5IR22g0/0vG+rj7JEf2zeYsHEJ15OQsbpfy/3LWSWuPqXwP6NjMA1QEKauKCknJ6
-         oyWxbBb7lNe6D0HCIJA3jJafukqb2toqV2woo8X+AScpfRNBihPftHJqCx3F7ntPQX
-         1jftW0YOT9eKg==
-Date:   Tue, 5 Sep 2023 23:37:10 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Tue, 5 Sep 2023 17:38:05 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54907133;
+        Tue,  5 Sep 2023 14:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693949882; x=1725485882;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9apBiphN57rQ3aiF+Q7XIdDoQMMdkK/gnjUcFUrpp1Y=;
+  b=eEThhPxsH7/2we0hJiQL8UXRpyA4U/RHkrpnSuyVVfT1oLgKhzUfowW4
+   7dQKZzNuCd08qh4UYN2gwvwcG5c6uHBEIylMRtWJuAC/XICHK97o77pXv
+   9o8IVQgkNFUEpSL8ilMRS0tcyiu2CswIuPYMxqoMJfChzYKoQYFAWDY4u
+   tOhnmlpCe77HGBGx69FngXabvfB0MkAs09zGZqUK0RDvxqUF2YvBZrCy2
+   bVcM0iOe67wBqO1Mm5cl2w0E1naPNq60iX62FQDoHAz3C/ktT4H+KqZFC
+   2fT9j2Al/OKX6gkiEXAKNm2Vu3j4ZasawC8lCcTGTsWkcBKIEGxHIYHOs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="443298014"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="443298014"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 14:38:02 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="864902564"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="864902564"
+Received: from vcostago-mobl3.jf.intel.com ([10.24.14.106])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 14:38:01 -0700
+From:   Vinicius Costa Gomes <vinicius.gomes@intel.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     sasha.neftin@intel.com,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Ferenc Fejes <ferenc.fejes@ericsson.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jithu Joseph <jithu.joseph@intel.com>,
+        Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
+        Vedang Patel <vedang.patel@intel.com>,
+        Andre Guedes <andre.guedes@intel.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] i2c: rcar: add FastMode+ support
-Message-ID: <20230905213710.3dv5h6zvwu4tpnby@zenone.zhora.eu>
-References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
- <20230904135852.12146-4-wsa+renesas@sang-engineering.com>
+Subject: [PATCH iwl-net v1] igc: Fix infinite initialization loop with early XDP redirect
+Date:   Tue,  5 Sep 2023 14:37:52 -0700
+Message-ID: <20230905213753.697461-1-vinicius.gomes@intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904135852.12146-4-wsa+renesas@sang-engineering.com>
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,91 +71,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+When a XDP redirect happens before the link is ready, that
+transmission will not finish and will timeout, causing an adapter
+reset. If the redirects do not stop, the adapter will not stop
+resetting.
 
-[...]
+Wait for the driver to signal that there's a carrier before allowing
+transmissions to proceed.
 
-> @@ -217,7 +228,17 @@ static void rcar_i2c_init(struct rcar_i2c_priv *priv)
->  	rcar_i2c_write(priv, ICMCR, MDBS);
->  	rcar_i2c_write(priv, ICMSR, 0);
->  	/* start clock */
-> -	rcar_i2c_write(priv, ICCCR, priv->icccr);
-> +	if (priv->flags & ID_P_FMPLUS) {
-> +		rcar_i2c_write(priv, ICCCR, 0);
-> +		rcar_i2c_write(priv, ICMPR, priv->clock_val);
-> +		rcar_i2c_write(priv, ICHPR, 3 * priv->clock_val);
-> +		rcar_i2c_write(priv, ICLPR, 3 * priv->clock_val);
-> +		rcar_i2c_write(priv, ICCCR2, FMPE | CDFD | HLSE | SME);
-> +	} else {
-> +		rcar_i2c_write(priv, ICCCR, priv->clock_val);
-> +		if (priv->devtype >= I2C_RCAR_GEN3)
-> +			rcar_i2c_write(priv, ICCCR2, 0);
+Fixes: 4ff320361092 ("igc: Add support for XDP_REDIRECT action")
+Reported-by: Ferenc Fejes <ferenc.fejes@ericsson.com>
+Closes: https://lore.kernel.org/netdev/0caf33cf6adb3a5bf137eeaa20e89b167c9986d5.camel@ericsson.com/
+Signed-off-by: Vinicius Costa Gomes <vinicius.gomes@intel.com>
+Tested-by: Ferenc Fejes <ferenc.fejes@ericsson.com>
+---
+ drivers/net/ethernet/intel/igc/igc_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-is this last bit part of the FM+ enabling or is it part of the
-GEN4 support?
+diff --git a/drivers/net/ethernet/intel/igc/igc_main.c b/drivers/net/ethernet/intel/igc/igc_main.c
+index 293b45717683..98de34d0ce07 100644
+--- a/drivers/net/ethernet/intel/igc/igc_main.c
++++ b/drivers/net/ethernet/intel/igc/igc_main.c
+@@ -6491,7 +6491,7 @@ static int igc_xdp_xmit(struct net_device *dev, int num_frames,
+ 	struct igc_ring *ring;
+ 	int i, drops;
+ 
+-	if (unlikely(test_bit(__IGC_DOWN, &adapter->state)))
++	if (unlikely(!netif_carrier_ok(dev)))
+ 		return -ENETDOWN;
+ 
+ 	if (unlikely(flags & ~XDP_XMIT_FLAGS_MASK))
+-- 
+2.41.0
 
-> +	}
-
-[...]
-
-> +	if (priv->flags & ID_P_FMPLUS) {
-> +		/*
-> +		 * SMD should be smaller than SCLD and SCHD, we arbitrarily set
-> +		 * the ratio 1:3. SCHD:SCLD ratio is 1:1, thus:
-> +		 * SCL	= clkp / (8 + SMD * 2 + SCLD + SCHD + F[(ticf + tr + intd) * clkp])
-> +		 * SCL	= clkp / (8 + SMD * 2 + SMD * 3 + SMD * 3 + F[...])
-> +		 * SCL	= clkp / (8 + SMD * 8 + F[...])
-> +		 */
-> +		smd = DIV_ROUND_UP(ick / t.bus_freq_hz - 8 - round, 8);
-> +		scl = ick / (8 + 8 * smd + round);
->  
-> -	if (scgd == 0x40) {
-> -		dev_err(dev, "it is impossible to calculate best SCL\n");
-> -		return -EIO;
-> -	}
-> +		if (smd > 0xff) {
-> +			dev_err(dev, "it is impossible to calculate best SCL\n");
-> +			return -EINVAL;
-> +		}
->  
-> -	dev_dbg(dev, "clk %d/%d(%lu), round %u, CDF:0x%x, SCGD: 0x%x\n",
-> -		scl, t.bus_freq_hz, rate, round, cdf, scgd);
-> +		dev_dbg(dev, "clk %d/%d(%lu), round %u, SMD:0x%x, SCHD: 0x%x\n",
-> +			scl, t.bus_freq_hz, rate, round, smd, 3 * smd);
-
-I trust the formula application is right here... I can't say much :)
-I don't see anything odd here.
-
->  
-> -	/* keep icccr value */
-> -	priv->icccr = scgd << cdf_width | cdf;
-> +		priv->clock_val = smd;
-> +	} else {
-> +		/*
-> +		 * SCL	= ick / (20 + SCGD * 8 + F[(ticf + tr + intd) * ick])
-> +		 *
-> +		 * Calculation result (= SCL) should be less than
-> +		 * bus_speed for hardware safety
-> +		 *
-> +		 * We could use something along the lines of
-> +		 *	div = ick / (bus_speed + 1) + 1;
-> +		 *	scgd = (div - 20 - round + 7) / 8;
-> +		 *	scl = ick / (20 + (scgd * 8) + round);
-> +		 * (not fully verified) but that would get pretty involved
-> +		 */
-> +		for (scgd = 0; scgd < 0x40; scgd++) {
-> +			scl = ick / (20 + (scgd * 8) + round);
-> +			if (scl <= t.bus_freq_hz)
-> +				break;
-> +		}
-> +
-> +		if (scgd == 0x40) {
-
-would be nice to give a meaning to this 0x40 constant... either
-having it in a define or a comment, at least.
-
-Andi
-
-> +			dev_err(dev, "it is impossible to calculate best SCL\n");
-> +			return -EINVAL;
-> +		}
