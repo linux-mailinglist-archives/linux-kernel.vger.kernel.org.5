@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 99B2A7929DE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01574792B6C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354062AbjIEQ3X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:29:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
+        id S237326AbjIEQw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:52:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353668AbjIEHJz (ORCPT
+        with ESMTP id S1353673AbjIEHLI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:09:55 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7011B4
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:09:51 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1c0d5b16aacso12452735ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 00:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1693897791; x=1694502591; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=A/t6gia3kis5Pkr4/PDqi3tggIgG29f6OdAUFBmTTOk=;
-        b=koepeEpHqKf1XFWEqqdu2qOp6fZ0MfwVwqDyNH1l3KrW8seRRSNjlNsfhYJp681uOd
-         Uv2k8/oTFazmUIS5oTCjwNxbZzGxY7kdDXl/Bee4CFVMG8o4oQ2Ymgn1pnp/l1GLbzGv
-         WqMTBCCRDhPIHvRGua3P6br1gD+aYaQXNl2rlENnnCUqP99rX4agO+9TKF20mHZBfNT3
-         8x3wEV0YTzOz0eqUAnd11progqc9qf/8Gm15uTb6oKW+uPUtchUwQ9jRowiohzO/F1UQ
-         54J8w/EFq6uImye+LEbdnDxsjjPTvQVy+iGUXm4MjwQsrHoaPSdweSVL6lFiVjULxyeC
-         vGFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693897791; x=1694502591;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=A/t6gia3kis5Pkr4/PDqi3tggIgG29f6OdAUFBmTTOk=;
-        b=fb2XeJyGXjeCujpkNWve4ubO5Jhw0R0xpZ67FEYRTmKhyCg5RgkDQmwTpz9RJPXDv6
-         Ua3olGVM/5K9irVci0oGI8NBf/EwfBVsmyM+YSTJbj8zqBfipPauY5E9OM1RxzjgKd1/
-         tz6Ntlug/rqGaAecHGcmezs6uVApNqZ8v1UOcXEzSrtGrbjjZHvTK+6RvGB+a0WFUmgd
-         Pnepe/Qv9/2EpKyUClBKMBC71jAcMRmsFzLIFmfFlbTd5pGStJm8dWul5vr+1Hmndnw5
-         tTE5NeoW7gwNylhqKmZj47GEL482KDHSTUebId2pPmAz3S9sR8dvLNtC4R+XE5Kzonzd
-         x7IQ==
-X-Gm-Message-State: AOJu0Yxpl2qUMy7QLxHaPwj7HgemcKjC8sYCGmB6nfJFGI8BUDCKCkfi
-        GpLmU0+nYiYzB3Ntsyx5FyGaXA==
-X-Google-Smtp-Source: AGHT+IFg5mjDF/xLoT8UBfYSdSyH069wYXbqbw5XRMPo3JKPzr9PBc5B4a/NsjiR4eXCDgNdqiCezQ==
-X-Received: by 2002:a17:903:183:b0:1b8:865d:6e1d with SMTP id z3-20020a170903018300b001b8865d6e1dmr12529712plg.51.1693897791009;
-        Tue, 05 Sep 2023 00:09:51 -0700 (PDT)
-Received: from Vincent-X1Extreme-TW.. (111-251-205-31.dynamic-ip.hinet.net. [111.251.205.31])
-        by smtp.gmail.com with ESMTPSA id m1-20020a170902d18100b001bf5c12e9fesm8613213plb.125.2023.09.05.00.09.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 00:09:50 -0700 (PDT)
-From:   Vincent Chen <vincent.chen@sifive.com>
-To:     daniel.lezcano@linaro.org, tglx@linutronix.de,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        vincent.chen@sifive.com
-Subject: [PATCH] clocksource: extend the max_delta_ns of timer-riscv and timer-clint to ULONG_MAX
-Date:   Tue,  5 Sep 2023 15:09:45 +0800
-Message-Id: <20230905070945.404653-1-vincent.chen@sifive.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 5 Sep 2023 03:11:08 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1012ACCB;
+        Tue,  5 Sep 2023 00:11:05 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3856YYvi029908;
+        Tue, 5 Sep 2023 07:10:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=CicEJnznBAhMloNzVL9Wyk+0gAikM4+YSKPIwH/GY3I=;
+ b=XFpwLYQjzHNGih18/OTEsHtfqNvjAWfNU6VYiygLgKMrsfEJ57vG2Us4cgzJ0Vd5hx0C
+ hUBQoPb/ItRJx+Lew2f4L6W00alHJHXmwSK6zsFWxPAWgg8P40/IlBQMhBuZuuISmLWb
+ 4Ak1fQlou20NzMjhDuiZN2s1HvkmGSfRS1t0XbUmioZPIzzNyPLokuoiNaS8B+LGwC3Q
+ Cb76r+1ZgcMDk97iLzF2sW1dOBgAYqZm5M8KUO6iAiOrX5CiE2gcY+ZcsPdirsNu0cEk
+ 26qjFvEsdg7Kzqi6o8CrH8NWF3R6MfyV+aMC8Xek6hHhpmAhCroick3ajzS4XM6uP9es Ww== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swpr6gqck-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 07:10:57 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3857Autu012502
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Sep 2023 07:10:56 GMT
+Received: from [10.216.59.199] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 5 Sep
+ 2023 00:10:47 -0700
+Message-ID: <e864890e-89cc-a37a-99c1-73a521790673@quicinc.com>
+Date:   Tue, 5 Sep 2023 12:40:42 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH 3/5] dt-bindings: usb: dwc3: Add missing SDX65 compatible
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <abel.vesa@linaro.org>,
+        <quic_wcheng@quicinc.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <kernel@quicinc.com>
+References: <1693889028-6485-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1693889028-6485-4-git-send-email-quic_rohiagar@quicinc.com>
+ <96c76c55-d5d4-e4ef-e7c3-ee35b2d7ad78@linaro.org>
+ <b8bb019d-6832-a956-b314-e7861748d188@linaro.org>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <b8bb019d-6832-a956-b314-e7861748d188@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: sHU1DPaVwMOgJiexu9Pdp_UmQwFjUnyJ
+X-Proofpoint-GUID: sHU1DPaVwMOgJiexu9Pdp_UmQwFjUnyJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_05,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=668 clxscore=1015 adultscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309050063
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When registering the riscv-timer or clint-timer as a clock_event device,
-the driver needs to specify the value of max_delta_ticks. This value
-directly influences the max_delta_ns, which represents the maximum time
-interval for configuring subsequent clock events. Currently, both
-riscv-timer and clint-timer are set with a max_delta_ticks value of
-0x7fff_ffff. When the timer operates at a high frequency, this values
-limists the system to sleep only for a short time. For the 1GHz case,
-the sleep cannot exceed two seconds. To address this limitation, refer to
-other timer implementations to extend it to 2^(bit-width of the timer) - 1.
-Because the bit-width of $mtimecmp is 64bit, this value becomes ULONG_MAX
-(0xffff_ffff_ffff_ffff).
 
-Signed-off-by: Vincent Chen <vincent.chen@sifive.com>
----
- drivers/clocksource/timer-clint.c | 2 +-
- drivers/clocksource/timer-riscv.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+On 9/5/2023 12:21 PM, Krzysztof Kozlowski wrote:
+> On 05/09/2023 08:49, Krzysztof Kozlowski wrote:
+>> On 05/09/2023 06:43, Rohit Agarwal wrote:
+>>> Add missing SDX65 compatible for specifying the clocks used.
+>>>
+>>> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+>>> ---
+>>>   Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
+>>>   1 file changed, 1 insertion(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>>> index 5c13229..fa51f50 100644
+>>> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>>> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
+>>> @@ -186,6 +186,7 @@ allOf:
+>>>                 - qcom,sdm670-dwc3
+>>>                 - qcom,sdm845-dwc3
+>>>                 - qcom,sdx55-dwc3
+>>> +              - qcom,sdx65-dwc3
+>> That's not a complete change. Update the rest of the file.
+> Hm, your subject is confusing. The SDX65 is not missing and you do not
+> add missing compatible.
+Sure will rephrase the subject for this.
 
-diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-index 9a55e733ae99..09fd292eb83d 100644
---- a/drivers/clocksource/timer-clint.c
-+++ b/drivers/clocksource/timer-clint.c
-@@ -131,7 +131,7 @@ static int clint_timer_starting_cpu(unsigned int cpu)
- 	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
- 
- 	ce->cpumask = cpumask_of(cpu);
--	clockevents_config_and_register(ce, clint_timer_freq, 100, 0x7fffffff);
-+	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
- 
- 	enable_percpu_irq(clint_timer_irq,
- 			  irq_get_trigger_type(clint_timer_irq));
-diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
-index da3071b387eb..b25c91d41968 100644
---- a/drivers/clocksource/timer-riscv.c
-+++ b/drivers/clocksource/timer-riscv.c
-@@ -94,7 +94,7 @@ static int riscv_timer_starting_cpu(unsigned int cpu)
- 	ce->irq = riscv_clock_event_irq;
- 	if (riscv_timer_cannot_wake_cpu)
- 		ce->features |= CLOCK_EVT_FEAT_C3STOP;
--	clockevents_config_and_register(ce, riscv_timebase, 100, 0x7fffffff);
-+	clockevents_config_and_register(ce, riscv_timebase, 100, ULONG_MAX);
- 
- 	enable_percpu_irq(riscv_clock_event_irq,
- 			  irq_get_trigger_type(riscv_clock_event_irq));
--- 
-2.34.1
-
+Thanks,
+Rohit.
+> Best regards,
+> Krzysztof
+>
