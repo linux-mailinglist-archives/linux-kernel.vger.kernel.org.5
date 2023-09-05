@@ -2,69 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE14F7930BB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:08:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3B17930C0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233934AbjIEVIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
+        id S241142AbjIEVJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:09:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230117AbjIEVIq (ORCPT
+        with ESMTP id S238196AbjIEVJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:08:46 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A785CFB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:08:30 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50095f6bdc5so480e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:08:30 -0700 (PDT)
+        Tue, 5 Sep 2023 17:09:50 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B333C2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:09:40 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id d2e1a72fcca58-68e2c2a6abfso314406b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:09:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693948108; x=1694552908; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3UtgOQUTnvsg8LqXUGehogATK7JC4MN9JVIJsfm4tuQ=;
-        b=GNelMF0AaV3PkxVWUXie0i31i0oF7rhBM/OKWRNDgYFT6fhKZ9Nuhvdrm1KdLdz5sq
-         2RUqdWfXJ8D6V5dxDbM/dNUSLVsrt5wItlZrc89TvNNKwIVzhckvnGQwII9cz9qwt6Gl
-         scIsrSSAvB2/5f2gjVUYyAf4RnSidtTYjA0NYF/BlZTgWCeqcEn7WlHU7OLdY1lPq0Yc
-         dzQ85XKVkiPHKTAkqQXHK0pZUAlmMeBSaS52GVhcb3NReeH49NwJqJ/GC9N+DKj52+tU
-         yyPIco5SAv/zaAuqRGqSy0Tp9zWieIeMHTvofSv5EM9Kf8+p2NiGzFx4Zllcgkykds1s
-         IVWg==
+        d=google.com; s=20221208; t=1693948180; x=1694552980; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HxWd/JxgmSGajFF87A8h9wNUEFwW+sZa+eEy3CYAxpg=;
+        b=Gc5STmxqUeIoxFwRhte5YyhM4UOJ5MIgSmqvewy6bq2GHf7MbfmQMHhHuuXHmX+AvO
+         IW1K7oK+6n+uqRMwrhC678PeMiBvoab0nbvMazhOYnhl3iXPZQhGIn+sak//iT+M5kDe
+         sCZxtDn2SFFlmvEbSfeQp2I+VmXKz7kzdWgJUcaU5O+kyXiWylSIS/D9VS12PJ/7QxH9
+         tXx3czKZK9VbYLc4LKgwOUUr1Hst52QypGDtfsEqbJduj7+a0mMOnApjZQhKBbw6V3Ai
+         aAjHcRo4oO//Gp/4GFTsK9v/J6MofD8garwT7G0Lb3HNR7T4LB9WkzdP4uyA058xJZof
+         NdKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693948108; x=1694552908;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3UtgOQUTnvsg8LqXUGehogATK7JC4MN9JVIJsfm4tuQ=;
-        b=TKbugspdOIqjQxx4K6Lrr1il5KvGpOaifYTPIOn7Ev4FGEQ4hyyzWGMk1xAKi/IYqy
-         mnozfAs5LiB5dKB0cKvVtL5p/DKDzOjuX6uT85bnXSyWDXh6ptTXVKCNP8dF3rQlvOBv
-         pUMiMy1QONe25DC+twiSwtjyijHias66F63wCbJ/9RV2r96UIrbzaHBX974vHqmfdYWS
-         CgXrDG9MQaSxgtHxd3whGn6jS6RGzkFeSrWsmVV3zSZoTPaCKvXQzjjKumaJhcsnxo+j
-         SXpDWTyIiqOq00tJG/VqSfw096zHrSJCex7rBHpVomPEZlyihJTe2KcuztDw5D5OnwiB
-         BXuw==
-X-Gm-Message-State: AOJu0Yy1CYPGfzw+cGN3w6AzaY/lOAsRAfVLoOzj8+eAuco38dAsfYSF
-        ujak/SXbwZKZ79aUPXFGzg1TgGYrFRgvblLGoSTKJQ==
-X-Google-Smtp-Source: AGHT+IGi3r+D8G/m6L/u8s3c3u9ly6kqm/fYyRUgxE2gdVAY6ZpMN36MDzAzf+bQYHc/wP4eqlM/AnJ1aPr9KwBrIAA=
-X-Received: by 2002:ac2:54b6:0:b0:501:3d3:cbc0 with SMTP id
- w22-20020ac254b6000000b0050103d3cbc0mr36289lfk.2.1693948108334; Tue, 05 Sep
- 2023 14:08:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230905161048.3178838-1-pgonda@google.com> <ZPeWXNpwYua9S+tV@google.com>
-In-Reply-To: <ZPeWXNpwYua9S+tV@google.com>
-From:   Peter Gonda <pgonda@google.com>
-Date:   Tue, 5 Sep 2023 15:08:16 -0600
-Message-ID: <CAMkAt6qTF0oMFJg0ZJsyUY88TegjuETdLj9WsJvDG+jDxO_Thg@mail.gmail.com>
-Subject: Re: [PATCH] KVM: SEV: Update SEV-ES shutdown intercepts with more metadata
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        d=1e100.net; s=20221208; t=1693948180; x=1694552980;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HxWd/JxgmSGajFF87A8h9wNUEFwW+sZa+eEy3CYAxpg=;
+        b=gYsd8l63Lnx4QTd1fxXLC+8lVdoDVKJDdY3K/HmrDS6eA6rlJOf8OHX5k7hudrFdRq
+         ezL/obxJ6+aTI0/c0mUm9OsbQjox7dWjV1oRrzmuY24QzKTgdajith9D5XZtyMLorVJw
+         23xojrnTnSyVjTUMSeHyLQkXOYs1Pn91Wkn/VH17OsulFyDNLkEB4rpoGDU4VsICQa32
+         A3e+iI6fa4qpCrImBliWtC0CPDjRbwNbv36lhlbZA6QWG0te705MY9oBIJJQvYdfS1H4
+         4U9J/rd7FWiDKOlMI1Gv8glMZNEQ2OzQ0nBsFmkYtGWZHR58inuK0cnVsAVV6sooLWDf
+         7LEw==
+X-Gm-Message-State: AOJu0Ywm3ENY+gXX2f9I5088X1TqT0lomCUcLXyafbeV9nHNTn4z6DAr
+        DIXnLYsSw6/HL5OUeJr7+qoM/MPGTpc=
+X-Google-Smtp-Source: AGHT+IGI+Vz9BgR1PXF97IznQmBHRaIcD4F8AI2rGPVPalycx2vl24NpJSXelSsFzyRf0WUSSrif3BRxw+k=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d0d:b0:68a:5937:ea87 with SMTP id
+ fa13-20020a056a002d0d00b0068a5937ea87mr5398834pfb.3.1693948179970; Tue, 05
+ Sep 2023 14:09:39 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 14:09:38 -0700
+In-Reply-To: <99cf9b5929418e8876e95a169d20ee26e126c51c.camel@intel.com>
+Mime-Version: 1.0
+References: <20230902175431.2925-1-zeming@nfschina.com> <ZPIVzccIAiQnG4IA@google.com>
+ <99cf9b5929418e8876e95a169d20ee26e126c51c.camel@intel.com>
+Message-ID: <ZPeZEpn391RGLob6@google.com>
+Subject: Re: [PATCH] x86/kvm/mmu: =?utf-8?Q?Remove_?= =?utf-8?B?dW5uZWNlc3Nhcnkg4oCYTlVMTOKAmQ==?=
+ values from sptep
+From:   Sean Christopherson <seanjc@google.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     "zeming@nfschina.com" <zeming@nfschina.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -72,48 +76,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 2:58=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> On Tue, Sep 05, 2023, Peter Gonda wrote:
-> > Currently if an SEV-ES VM shuts down userspace sees KVM_RUN struct with
-> > only the INVALID_ARGUMENT. This is a very limited amount of information
-> > to debug the situation. Instead KVM can return a
-> > KVM_SYSTEM_EVENT_SEV_TERM to alert userspace the VM is shutting down an=
-d
-> > is not usable any further. This latter point can be enforced using the
-> > kvm_vm_dead() functionality.
->
-> Add the kvm_vm_dead() thing in a separate patch.  If we want to actually =
-harden
-> KVM against consuming a garbage VMSA then we do need to mark the VM dead,=
- but on
-> the other hand that will block _all_ KVM ioctls(), which will make debug =
-even
-> harder.
+On Mon, Sep 04, 2023, Kai Huang wrote:
+> On Fri, 2023-09-01 at 09:48 -0700, Sean Christopherson wrote:
+> > @@ -3447,6 +3447,14 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
+> >                 else
+> >                         sptep = fast_pf_get_last_sptep(vcpu, fault->addr, &spte);
+> >  
+> > +               /*
+> > +                * It's entirely possible for the mapping to have been zapped
+> > +                * by a different task, but the root page is should always be
+> > +                * available as the vCPU holds a reference to its root(s).
+> > +                */
+> > +               if (WARN_ON_ONCE(!sptep))
+> > +                       spte = REMOVED_SPTE;
+> 
+> If I recall correctly, REMOVED_SPTE is only used by TDP MMU code.  Should we use
+> 0 (or initial SPTE value for case like TDX) instead of REMOVED_SPTE?
 
-Will do. Do we have better functionality for just blocking running the vCPU=
-?
+I deliberately suggested REMOVED_SPTE in part because of TDX introducing "initial
+SPTE"; finding/remembering '0' initialization of SPTEs is hard.  Though FWIW, '0'
+would be totally fine for TDX because the value is never exposed to hardware.
 
->
-> > Signed-off-by: Peter Gonda <pgonda@google.com>
-> > Cc: Paolo Bonzini <pbonzini@redhat.com>
-> > Cc: Sean Christopherson <seanjc@google.com>
-> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> > Cc: Joerg Roedel <joro@8bytes.org>
-> > Cc: Borislav Petkov <bp@alien8.de>
-> > Cc: x86@kernel.org
-> > Cc: kvm@vger.kernel.org
-> > Cc: linux-kernel@vger.kernel.org
-> >
-> > ---
-> >
-> > I am not sure if this is the right path forward maybe just returning
-> > KVM_EXIT_SHUTDOWN is better. But the current behavior is very unhelpful=
-.
->
-> Ya, KVM_EXIT_SHUTDOWN is better, we should leave KVM_SYSTEM_EVENT_SEV_TER=
-M to
-> explicit "requests" from the guest.
-
-Sounds good to me. I'll send a V2 that just updates to KVM_EXIT_SHUTDOWN.
+I think it's totally fine to use REMOVED_SPTE like this in common code, I would
+be quite surprised if it causes confusion.  Even though REMOVED_SPTE was introduced
+by the TDP MMU, its value/semantics are generic.
