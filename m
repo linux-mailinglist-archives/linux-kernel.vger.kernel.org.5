@@ -2,209 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30FAA792B29
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BA9F792B70
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242605AbjIEQtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:49:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
+        id S239167AbjIEQxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354235AbjIEKQX (ORCPT
+        with ESMTP id S1354246AbjIEKTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:16:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192A8199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693908933;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qwpPqy/Nul6ICV3KsGmrMJGyrANxddxrtAj9ez3IBjE=;
-        b=Xy+Wgh1AbbKwmXjLruSN/Hgxg6aGk0dJUGaCDObd0bmhHCbwkFQTyv5VPjCyrRJhJ7T2Hb
-        Eyjwmjqvq3GpxYmsu6lhIq7W6x6nbYeLKHwcxPG7Wowen6VPbKkCLIOagQ7tcyU18CxML9
-        4489GI3BGeAcxvP4syLIb5x62/CIudg=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-660-ONroLj-aN-28_ruL75vVrQ-1; Tue, 05 Sep 2023 06:15:31 -0400
-X-MC-Unique: ONroLj-aN-28_ruL75vVrQ-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-993eeb3a950so194799366b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:15:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693908930; x=1694513730;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qwpPqy/Nul6ICV3KsGmrMJGyrANxddxrtAj9ez3IBjE=;
-        b=RjKNpKFrqVPoJMdO0KrusDP3taCJmmmi6gdADRR8wx+LWFTI07XvGVeAMGuYz42DsF
-         JvMumMmMtwnwbC2QlfMZ1gNmzWGxBGIJtqkbHMXRkfW/uaZDS/loKHvbkTyMaKtDf66D
-         iiF2lcRJq39HFd+IwBNaqWlp0dRZt5p479ZsTkh36TYrsxMPLgTRybC7S8m1c/N4ZQwQ
-         0uoUvRwTYfGvk7L4h3t7Zbv/i6prNHElMc2w9P1BlY8UoaA90//lO0yYdZWwFtg4Ry7e
-         8m3Geq8iXyzG8SX7ZTExuuDta9UnxmX7e0wcfRgSlw4FzgIj8hbIcVtlbYcGZ3fuhf7M
-         mjBg==
-X-Gm-Message-State: AOJu0YzV9EFEDUObMl3y5RuiLGiGttRO80d2KW3PyGFOkmGCz27K5/uv
-        UlqBFC8s3OWbJVhynsqCpKVa+cVPjGQMY6DsHKLk32G+JuSw608y8KX22T9NEDHJBF8vWp8XbFV
-        6ixYNw4OePGh0BjmRP3AkXfaQ
-X-Received: by 2002:a17:907:272a:b0:992:7295:61c9 with SMTP id d10-20020a170907272a00b00992729561c9mr9770475ejl.69.1693908930649;
-        Tue, 05 Sep 2023 03:15:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFOZ3vRjEeXXTTre5eaeA9/5V2DgQpaicUSn9RLKUyLaRClmWMLa5EvQ5id1mZBpcbjlMrHJg==
-X-Received: by 2002:a17:907:272a:b0:992:7295:61c9 with SMTP id d10-20020a170907272a00b00992729561c9mr9770461ejl.69.1693908930364;
-        Tue, 05 Sep 2023 03:15:30 -0700 (PDT)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id mf25-20020a170906cb9900b0099d804da2e9sm7422886ejb.225.2023.09.05.03.15.29
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 03:15:29 -0700 (PDT)
-Message-ID: <ead0bc03-2008-96d8-c313-5dc4a9e63479@redhat.com>
-Date:   Tue, 5 Sep 2023 12:15:28 +0200
+        Tue, 5 Sep 2023 06:19:34 -0400
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A2B618D;
+        Tue,  5 Sep 2023 03:19:31 -0700 (PDT)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3853PHAT011372;
+        Tue, 5 Sep 2023 10:18:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=EcuX8KjamwI7Dq570CAvr+Skf4pa4oyab+qhvsVTb8k=;
+ b=J91QkLkgzxT5Si7NG6c+3JhqkLy94fXYlHHbAMLdDOUQqJSip2UD8QhL9kFwtUxiTkw/
+ p75fAeMnNYyGD59SCJo1pUWhSKydH6cR/G3iQvesHas5c8GVMlTLaAQLRSrrkAZxUBtb
+ a152pkB7PX7pVZZcnDtHBLY2gc201IjvUCDmH+kyBdUxeYaXm2D244sCJhw3N27vz5cM
+ NaiKtQbuLtl3iizt280dOv/rd25RyqM5Xr8qcaJklcUI63HRxovAJRXjvtJLp9tjrJuD
+ 4Kcdmw1b1zE+Z9kUqj7JvwAgBnBXb9oXz4UsaFYFHrDGD5QkzGMF6Cr2aIFJE0ndGApT Aw== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3suuu3mxup-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Sep 2023 10:18:49 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3859eCR1029092;
+        Tue, 5 Sep 2023 10:18:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3suug4j8b2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 05 Sep 2023 10:18:48 +0000
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385AIlOV032271;
+        Tue, 5 Sep 2023 10:18:47 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTP id 3suug4j85n-1;
+        Tue, 05 Sep 2023 10:18:47 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        stanley.chu@mediatek.com, beanhuo@micron.com, bvanassche@acm.org,
+        tomas.winkler@intel.com, cang@codeaurora.org,
+        jonghwi.rha@samsung.com, Bean Huo <beanhuo@iokpp.de>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/2] Changes for UFS advanced RPMB
+Date:   Tue,  5 Sep 2023 06:18:24 -0400
+Message-Id: <169390541198.1533355.3634162443096116989.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230809181847.102123-1-beanhuo@iokpp.de>
+References: <20230809181847.102123-1-beanhuo@iokpp.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v16 3/3] platform/x86/amd: pmc: Don't let PCIe root ports
- go into D3
-Content-Language: en-US, nl
-To:     Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Mario Limonciello <mario.limonciello@amd.com>,
-        bhelgaas@google.com, rafael@kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        Iain Lane <iain@orangesquash.org.uk>
-References: <20230829171212.156688-1-mario.limonciello@amd.com>
- <20230829171212.156688-4-mario.limonciello@amd.com>
- <ceda84a0-e5cd-f6dc-3e3c-52e85fda8318@amd.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <ceda84a0-e5cd-f6dc-3e3c-52e85fda8318@amd.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_08,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
+ bulkscore=0 mlxlogscore=619 malwarescore=0 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309050092
+X-Proofpoint-ORIG-GUID: VfTuX7lK00J7tZbqDhGwzp7TbcIHBSjf
+X-Proofpoint-GUID: VfTuX7lK00J7tZbqDhGwzp7TbcIHBSjf
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shyam,
+On Wed, 09 Aug 2023 20:18:45 +0200, Bean Huo wrote:
 
-On 9/5/23 12:08, Shyam Sundar S K wrote:
+> Bean Huo (2):
+>   scsi: ufs: core: Add advanced RPMB support where UFSHCI 4.0 does not
+>     support EHS length in UTRD
+>   scsi: ufs: core: No need to update UPIU.header.flags and lun in
+>     advanced RPMB handler
 > 
+> drivers/ufs/core/ufs_bsg.c |  3 +--
+>  drivers/ufs/core/ufshcd.c  | 14 ++++++++++----
+>  2 files changed, 11 insertions(+), 6 deletions(-)
 > 
-> On 8/29/2023 10:42 PM, Mario Limonciello wrote:
->> commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
->> changed pci_bridge_d3_possible() so that any vendor's PCIe ports
->> from modern machines (>=2015) are allowed to be put into D3.
->>
->> Iain reports that USB devices can't be used to wake a Lenovo Z13
->> from suspend. This is because the PCIe root port has been put
->> into D3 and AMD's platform can't handle USB devices waking from
->> a hardware sleep state in this case.
->>
->> This problem only occurs on Linux, and only when the AMD PMC driver
->> is utilized to put the device into a hardware sleep state. Comparing
->> the behavior on Windows and Linux, Windows doesn't put the root ports
->> into D3.
->>
->> A variety of approaches were discussed to change PCI core to handle this
->> case generically but no consensus was reached. To limit the scope of
->> effect only to the affected machines introduce a workaround into the
->> amd-pmc driver to only apply to the PCI root ports in affected machines
->> when going into hardware sleep.
->>
->> Link: https://lore.kernel.org/linux-pci/20230818193932.27187-1-mario.limonciello@amd.com/
->> Fixes: 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
->> Reported-by: Iain Lane <iain@orangesquash.org.uk>
->> Closes: https://forums.lenovo.com/t5/Ubuntu/Z13-can-t-resume-from-suspend-with-external-USB-keyboard/m-p/5217121
->> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> 
-> See if this change can be moved to pmc-quirks.c, besides that change
-> looks good to me. Thank you.
-> 
-> Acked-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+> [...]
 
-Thank you for the review.
+Applied to 6.6/scsi-queue, thanks!
 
-I also just replied to this series (to the cover-letter)
-with an alternative approach based on making the
-XHCI driver call pci_d3cold_disable() on the XHCI
-PCIe-device on affected AMD chipsets.
+[1/2] scsi: ufs: core: Add advanced RPMB support where UFSHCI 4.0 does not support EHS length in UTRD
+      https://git.kernel.org/mkp/scsi/c/c91e585cfb3d
+[2/2] scsi: ufs: core: No need to update UPIU.header.flags and lun in advanced RPMB handler
+      https://git.kernel.org/mkp/scsi/c/9f6fec656613
 
-That seems like a cleaner approach to me. I wonder
-if you have any remarks about that approach ?
-
-Regards,
-
-Hans
-
-
-> 
->> ---
->> v15->v16:
->>  * Only match PCIe root ports with ACPI companions
->>  * Use constraints when workaround activated
->> ---
->>  drivers/platform/x86/amd/pmc/pmc.c | 39 ++++++++++++++++++++++++++++++
->>  1 file changed, 39 insertions(+)
->>
->> diff --git a/drivers/platform/x86/amd/pmc/pmc.c b/drivers/platform/x86/amd/pmc/pmc.c
->> index eb2a4263814c..6a037447ec5a 100644
->> --- a/drivers/platform/x86/amd/pmc/pmc.c
->> +++ b/drivers/platform/x86/amd/pmc/pmc.c
->> @@ -741,6 +741,41 @@ static int amd_pmc_czn_wa_irq1(struct amd_pmc_dev *pdev)
->>  	return 0;
->>  }
->>  
->> +/* only allow PCIe root ports with a LPS0 constraint configured to go to D3 */
->> +static int amd_pmc_rp_wa(struct amd_pmc_dev *pdev)
->> +{
->> +	struct pci_dev *pci_dev = NULL;
->> +
->> +	while ((pci_dev = pci_get_device(PCI_VENDOR_ID_AMD, PCI_ANY_ID, pci_dev))) {
->> +		struct acpi_device *adev;
->> +		int constraint;
->> +
->> +		if (!pci_is_pcie(pci_dev) ||
->> +		    !(pci_pcie_type(pci_dev) == PCI_EXP_TYPE_ROOT_PORT))
->> +			continue;
->> +
->> +		if (pci_dev->current_state == PCI_D3hot ||
->> +		    pci_dev->current_state == PCI_D3cold)
->> +			continue;
->> +
->> +		adev = ACPI_COMPANION(&pci_dev->dev);
->> +		if (!adev)
->> +			continue;
->> +
->> +		constraint = acpi_get_lps0_constraint(adev);
->> +		if (constraint != ACPI_STATE_UNKNOWN &&
->> +		    constraint >= ACPI_STATE_S3)
->> +			continue;
->> +
->> +		if (pci_dev->bridge_d3 == 0)
->> +			continue;
->> +		pci_dev->bridge_d3 = 0;
->> +		dev_info(&pci_dev->dev, "Disabling D3 on PCIe root port due lack of constraint\n");
->> +	}
->> +
->> +	return 0;
->> +}
->> +
->>  static int amd_pmc_verify_czn_rtc(struct amd_pmc_dev *pdev, u32 *arg)
->>  {
->>  	struct rtc_device *rtc_device;
->> @@ -893,6 +928,10 @@ static int amd_pmc_suspend_handler(struct device *dev)
->>  	case AMD_CPU_ID_CZN:
->>  		rc = amd_pmc_czn_wa_irq1(pdev);
->>  		break;
->> +	case AMD_CPU_ID_YC:
->> +	case AMD_CPU_ID_PS:
->> +		rc = amd_pmc_rp_wa(pdev);
->> +		break;
->>  	default:
->>  		break;
->>  	}
->>
-> 
-
+-- 
+Martin K. Petersen	Oracle Linux Engineering
