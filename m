@@ -2,180 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 96B8E7929F9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7868A7925F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355364AbjIEQav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43176 "EHLO
+        id S240862AbjIEQJY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354651AbjIENQA (ORCPT
+        with ESMTP id S1354652AbjIENQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:16:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FA0519B;
-        Tue,  5 Sep 2023 06:15:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693919757; x=1725455757;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=ZEx2zW62QhvfWDCWwaBix+aJtI2XIf6x8jG6VwFL9II=;
-  b=cue8o8XDovLNBVF/azvr6C5rq2KVWvq1SnF4bA423CaZ4Bg3b5ERi5GA
-   TMgyfJ7kvhZ0cvE+FpisPSQT9ZBhen689YfGWsTLHsTZ/uocESwomzGkZ
-   QIzkvP0KfZn3Q8tIZUXmgI8Pcym6HO+oYfr00myVL8TBfgLvXx31FSkyu
-   uNesHtj5GUKqnsMZMJfSVqnION/iivnmLLBJaqR6qXrdWizKar15P9EFO
-   sXoE97DPCD8RRx/1GIP1rmhfdIEd0r10dkUHq3jKlfR2c/pVchU0LYRMe
-   HLjBBbzElGN97/WgAzR0VKZv0D+c1mzP41GUkJEU4R6K/MDPJ4Size7I9
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="376711718"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="376711718"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 06:15:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="831249663"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="831249663"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by FMSMGA003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 06:15:55 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 5 Sep 2023 06:15:54 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 06:15:54 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 5 Sep 2023 06:15:54 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QyzGVs1sH9U2U+ex8I3MUXoRCj9nTZITDv0s/7iEIhgAK97nGV1DipHC0WvcMDdG+s2dVLkTRdaXvlVXCbSuAQ5Z/e44Rw7aS9AuIP1+2jfhm5dQzugr4DlUKXs5EgrTqQ77fK/HavRYpf0uyO4qfWl39WxmYwBoTnVnZUruD7MKd4HYg5/wQ7EzBGLgpJ0/XruI79Yju+b2hW4sZ2cRnRi/Q1rF87S6m/KAya0/UEbQSYHYW/wZU8VV+kOIGxNQlChQNNEhyAwN9GiZI8wytLWcoP9KykmA2SwjrwStmTB26abVWGam6piWTsgXR6o7qNvbpncdDSh57ZouW6nijQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=n2oR1VDYynI+S96mMnYOCibYlSH2LoVQkKPPT0tMHdA=;
- b=NTSlQtJvBlN9sHGoogYTRUTcSeHloAL5I5PibDp9QLCrXfGxBAUJrD5BdLjztj7rk7ou3FIdghsm7YsW+C4KmUJ+9EHVd/oeQsJ8K5GmXhi3307bQK9tcdRal5v6EY5tZQX0CQYhyLe+KQIYz9zDQK1Pu3hoD5CrP8YTidKeBAgJ1VUkeizqOVc9DmdUU9TQTON7JROSCMraCuqWXl8B6DENtzsFGuxZ60WDKYR5Nky3nKtFVATImXw/wNLBFOx5Sftgio103IvYcclxfUg2MR4Z6tXMKNgWOacB9ZRGD8NgcXBPJh8VwHJxbXUdnM6Keud8dhy7hSBLZ7FC2dUHQg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS0PR11MB6374.namprd11.prod.outlook.com (2603:10b6:8:ca::8) by
- BN9PR11MB5436.namprd11.prod.outlook.com (2603:10b6:408:101::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
- 2023 13:15:50 +0000
-Received: from DS0PR11MB6374.namprd11.prod.outlook.com
- ([fe80::854f:7dca:2a5f:b763]) by DS0PR11MB6374.namprd11.prod.outlook.com
- ([fe80::854f:7dca:2a5f:b763%3]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
- 13:15:50 +0000
-Date:   Tue, 5 Sep 2023 14:15:44 +0100
-From:   Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>, <ardb@kernel.org>,
-        <kees@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <enlin.mu@unisoc.com>, <ebiggers@google.com>,
-        <gpiccoli@igalia.com>, <willy@infradead.org>,
-        <yunlong.xing@unisoc.com>, <yuxiaozhang@google.com>,
-        <qat-linux@intel.com>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Yang Shen <shenyang39@huawei.com>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Weigang Li <weigang.li@intel.com>, Chris Mason <clm@meta.com>,
-        Brian Will <brian.will@intel.com>,
-        <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 2/4] crypto: qat - Remove zlib-deflate
-Message-ID: <ZPcqALQ0Ck/3lF0U@gcabiddu-mobl1.ger.corp.intel.com>
-References: <ZO8ULhlJSrJ0Mcsx@gondor.apana.org.au>
- <E1qbI7x-009Bvo-IM@formenos.hmeau.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <E1qbI7x-009Bvo-IM@formenos.hmeau.com>
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
- Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-X-ClientProxiedBy: DUZPR01CA0086.eurprd01.prod.exchangelabs.com
- (2603:10a6:10:46a::13) To DS0PR11MB6374.namprd11.prod.outlook.com
- (2603:10b6:8:ca::8)
+        Tue, 5 Sep 2023 09:16:35 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4405C19B
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 06:16:29 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-268bc714ce0so2161797a91.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 06:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693919788; x=1694524588; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=erXQ5eudf2h+mjM/A19CSPwgUL1mwzyKAy3jWj8M0MM=;
+        b=XWsWJg081nHdWv6JyHOaoF5ZkS2G3bqqb8eGT6rPe1Xwxq/tq+v1M5uCE5hVitDGUC
+         MNfUUSJ5N7N6zcN9ngAa5Jt771hheivn4ZSqMmo2OFEgIHHs3LcMafC+SiHPYEOwspsd
+         1ItP1VEPrvEcNhiQXu9GqpAMGEVw3hHdsbzSUe+VI6A98xx+JZkhBIo9g7jBeRD7Y1Q5
+         8vCb13Jy0AtxvgTUYlQrHKdBtnqmu26G3aQ2rm/fSfTaoaxzjUX7aDtjs/m+XZH4rXbK
+         LPAU/i2VWeA4GFlcNh0GCrALAp+2CvvGVrXg+iyMXR9qoJpDu2ucn6tlS807wawCStI9
+         6CVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693919788; x=1694524588;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=erXQ5eudf2h+mjM/A19CSPwgUL1mwzyKAy3jWj8M0MM=;
+        b=LltcrtochDR/PI9HjXALm7w8aMuHUHrg+XJg3wsn06JMV0U5PQxrSIxuTdM7lA5XTy
+         cLsidzAk/9rBawgOWq9QyVb9EavDSF4IA2LhpmAsfsUkpKWnD51VbMBfSMT+5vAnVqcJ
+         XQTVwYCFBuocEuszIk/lSIRIyGnap+4zSGvZhxlQABujO5X8cWP+jOQ12C2mWg0bkZZM
+         4K8xXJ7K+XJFF/zbNMG3Wcxgvtfw12kTGzfFYjvifNUOGGz+zrZkf9zOJ+7YtN5tB/Eh
+         F5LA95fuAYiKU6ij0nEL96LAe+8srl/3Z3yGI3+6ulef9CudeLHI6eEAhD0atuQazKH6
+         9GKQ==
+X-Gm-Message-State: AOJu0YwI+fGjO9Y5pXi+zrqmBpZva1Jbxi+bHgvZKacWR++GVinRQwK5
+        5vOW1G29TIIgzp90l7Ku4QC+Lvw5ns2IXa+JjU2UoA==
+X-Google-Smtp-Source: AGHT+IH1+9ZesuntgXO1B0Qubf+cgwm+/rcpVm2vlet/G3P2qMbSrDGXHFpqTkVoBj6UAQFNduQDgqruyYM7xIaeg9o=
+X-Received: by 2002:a17:90a:6089:b0:26d:609a:74cd with SMTP id
+ z9-20020a17090a608900b0026d609a74cdmr14918486pji.24.1693919788583; Tue, 05
+ Sep 2023 06:16:28 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB6374:EE_|BN9PR11MB5436:EE_
-X-MS-Office365-Filtering-Correlation-Id: 52a001d8-18eb-4cd0-4a7c-08dbae123975
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: aIN2Bha73NGkFLnC6BmQ7nep5tJM7fT8S1V2FkUgfP5OiJv1YhkS/it7P5vgVv1gXzenOg05CsD9okBiEIjaivvR3j5MyW7VELkbWUBrz1v8z7bZTP/xa7lvPfD1PlNkQ20Uv/5KYGFfwT/SpMQDtw5TC5GbeJFsXva5mEKN5DXA8nsRPyu/KM6bfVrk8nO+JiJr9Y6+Jrec2+S952UQw4OkSQ3BNWiLlKtq41DmrbO3ya1/BEa8W6wkVFps18pS1VriznzLRuXqopyc791FJ7oFbMIlhGiQZRkuihM7vw1RZmQiSxIC0xW5TksPFmxYiHg4/SomlY7n8spY+hoim0WC/SzpOtkJ9sksbMEfMR0Sek1T9AdgWU/TrjFYhekTj4qnH4+T8QWxQkhBLAroUv8bQ0LP4kN1gNAd08ivFOZccHoF6V3Oo7iWqeEtmAcehkMSi+SunXrehMJGgPF3ssOtMW1zXmCC/oDMQaGUGJVsLRHh24zz8j5yqNIFVTN6L1dqEuWnmHV11Fq9RWXpqA2dJ92pN+g7s9dv75L1xkA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6374.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(39860400002)(366004)(376002)(186009)(1800799009)(451199024)(41300700001)(7416002)(38100700002)(86362001)(82960400001)(478600001)(966005)(6666004)(6512007)(26005)(6506007)(6486002)(36916002)(66946007)(6916009)(316002)(54906003)(2906002)(66556008)(66476007)(4744005)(5660300002)(8936002)(44832011)(8676002)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?DsRBpMQBezqr6HYfIcbUjwp+2TD5+po5NLJQjq9uhq4iXCyKyTV+EZyYZ0vW?=
- =?us-ascii?Q?CNHqQFL0VkeGVbP9yovugucQIvOklXWkamV/hjwi1Lek8eeSY+5z7A23eBTy?=
- =?us-ascii?Q?HVZ/FyNxNQ/UQuTCronKodhjrrmC0E5jrtw1elWfhtjnTS/ElCnWbcMnuuvv?=
- =?us-ascii?Q?oj91DhH3CEF0GX63jpFCg4m3VvxKsfDg8xqQe0KQxGtvS+yNUp5qE27sAgJ0?=
- =?us-ascii?Q?SaFv8bScy6Id+63UoHVWPqRbseC7x7rg5PEqTOd3+WwE/dMdKxvN17pXCAcP?=
- =?us-ascii?Q?UIvi+aFZhuWuQyFcQiIbak/72Q7HPXGfilWhQo/AgLgXrqHtueqb0ibgMAKO?=
- =?us-ascii?Q?cR6kITqVnZgpM7XbgD8HVhh26igmzVl7uXshsJVEONXYqPeqMgLmW7B1a6d3?=
- =?us-ascii?Q?t5F3V5EBKov/XaBMjlzdICDiqmz8pUBq33gNXB8m65TyrVvBslEDBgeDBG5n?=
- =?us-ascii?Q?PpJV1qJ1twKVQ+u1MLMci6shisDf5DVAvBlmCOpSN3cMcJgcKuw2yXwSVYG3?=
- =?us-ascii?Q?ggaE4Powlvn26Xs5gwDMME8205I0dRwQ8Jh5A3Mbsw3tQ3/etCshKh3fUqud?=
- =?us-ascii?Q?C+7aY7gqZlEoMIuNWg7ers7bMWYK380EG1BaHouzy3GjynmrU6XXmHgqElyJ?=
- =?us-ascii?Q?2LPFk8mnr4o/p8deBFohiCR41zR/qq8NcACvcgOxesU4YILTzdAAF7+Jkxxl?=
- =?us-ascii?Q?w7zODzh6rtZ1KI3lMnxSCmZAkUkj55mXidiFEeXiuZ6/jqtsnUE46ajRkyLO?=
- =?us-ascii?Q?UWJW7hFZUJDlrNmqMAQX7ur5IXlMYb59UHmXamN46CCnOpvRq0Kcvjmtnb58?=
- =?us-ascii?Q?yYY/k6V0Y+AUYYPJXXJagcUQqK46V6tz/JQQwgwERZkajUC2OYL8SESVFj68?=
- =?us-ascii?Q?22IHK3br7wOShNhlQ6NrihCPHF3+YCFagtPtqj4XOTM9ctGA6VJz7HHkPx81?=
- =?us-ascii?Q?0C/XtUswhPQeQXe1a97MI11yrC2IkKG6MTB5qdn4DY95pgIm4S2xEHDqDfLW?=
- =?us-ascii?Q?JoNc7b+ymaD3sZkQlzXPOWNXKWosn7QP2pcpyC7ulP9kmzqC0hdY3ftPFlpS?=
- =?us-ascii?Q?MyVuecuD7ONg2B1wYkWliUJzRYvOTzCNfmu8d4S12rOTtr5sqyMhUMb2Vr19?=
- =?us-ascii?Q?D4mEnwe81U0uCUYg70jZZePXRnWPsuoOwiFcs/bd/gaTr6x4Uhy56BG9ZHug?=
- =?us-ascii?Q?Bgf8SPydzGEiG8oiNMPmw62FxwJCu7679htza7Yg0K4EdmqYrqaNXMaHQgmQ?=
- =?us-ascii?Q?ABqFmb5UJDwgjjZp5G58GFMEmCf5ITkKaWA1plkHAt6YvLR6KuabJ0nKQ7Hm?=
- =?us-ascii?Q?6xk7qOAJQ5CquU4G7CmALB4G8+XA/TcPIlWXrEboTgeG0p4zxJl2FnEB3b4X?=
- =?us-ascii?Q?LlCJaWT8/tONeT+b7GIaL+Pwm88Enxdc8UOAuQ93z5IxBTgKTPXIU6tVwgry?=
- =?us-ascii?Q?dXb/xnUtB+mbuHHzVoB5CNfzJOomljTUiV+KgjTxV0cSyJy07NURxeyI6dsF?=
- =?us-ascii?Q?hxjkLF3atOBrFrUQMr64T1/tUaEGODkj1zIBIKKBrKox5DruMbVwFJF0ArNa?=
- =?us-ascii?Q?6wnX6Wu0qfWQaFUR1mQFqhmVbAYLeAjVXvuT8u9dRQg2Y0T2lwtwyZmDBJxU?=
- =?us-ascii?Q?EA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52a001d8-18eb-4cd0-4a7c-08dbae123975
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB6374.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 13:15:50.3537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Y7upGcr08izs7xMOp5VKe/98aWQLad4U3mQ24R4Rng/2/9Mg+T+CCT/EDKaiVDZzR5GLRPfgL4eMD9gjaznjmqgrFP4iHY42c/KGLRA3vVg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR11MB5436
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+References: <20230901130312.247719-1-vincent.guittot@linaro.org>
+ <20230901130312.247719-5-vincent.guittot@linaro.org> <cd795543-53db-ed14-e9dd-b5738a4f3b9d@arm.com>
+In-Reply-To: <cd795543-53db-ed14-e9dd-b5738a4f3b9d@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Tue, 5 Sep 2023 15:16:17 +0200
+Message-ID: <CAKfTPtA2uWNFm+zqZODvjkNDy0joUKzRTnChEOppgi-eXBm+DQ@mail.gmail.com>
+Subject: Re: [PATCH 4/4] energy_model: use a fixed reference frequency
+To:     Pierre Gondois <pierre.gondois@arm.com>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, sudeep.holla@arm.com,
+        gregkh@linuxfoundation.org, rafael@kernel.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        viresh.kumar@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-pm@vger.kernel.org, conor.dooley@microchip.com,
+        suagrfillet@gmail.com, ajones@ventanamicro.com, lftan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herbert,
+On Tue, 5 Sept 2023 at 12:05, Pierre Gondois <pierre.gondois@arm.com> wrote:
+>
+> Hello Vincent,
+> I tried the patch-set on a platform using cppc_cpufreq and that has boosting
+> frequencies,
+>
+> 1-
+> On such platform, the CPU capacity comes from the CPPC highest_frequency
+> field. The CPU capacity is set to the capacity of the boosting frequency.
+> This behaviour is different from DT platforms where the CPU capacity is
+> updated whenever the boosting mode is enabled (it seems).
 
-On Wed, Aug 30, 2023 at 06:08:47PM +0800, Herbert Xu wrote:
-> Remove the implementation of zlib-deflate because it is completely
-> unused in the kernel.
-We are working at a new revision of [1] which enables BTRFS to use acomp
-for offloading zlib-deflate. We see that there is value in using QAT for
-such use case in terms of throughput / CPU utilization / compression ratio
-compared to software.
-Zlib-deflate is preferred to deflate since BTRFS already uses that
-format.
+ok, I haven't noticed that cppc_cpufreq would be impacted by this
+change in arch_topology. I'm going to check how to fix that
 
-We expect to send this patch for 6.7.
-Can we keep zlib-deflate in the kernel?
+>
+> Wouldn't it be better to have CPU max capacities set to their boosting
+> capacity as for CPPC base platforms ? It seems the max frequency is always
+> available somehow for all the cpufreq drivers with boosting available, i.e.
+> acpi-cpufreq, amd-pstate, cppc_cpufreq.
 
-Thanks,
+Some platforms will never enable boost or  boost is only temporarily
+available before being capped. As a result some prefer to use a more
+sustainable freq for their max capacity. That's why we can't always
+use the max/boost freq
 
-[1] https://patchwork.kernel.org/project/linux-btrfs/patch/1467083180-111750-1-git-send-email-weigang.li@intel.com/
+>
+>
+> 2-
+> On the CPPC based platforms, the per_cpu freq_factor is not used/updated,
+> meaning that we have:
+> arch_scale_freq_ref_em()
+> \-arch_scale_freq_ref()
+>    \-topology_get_freq_ref()
+>      \-per_cpu(freq_factor, cpu) (set to the default value: 1)
+> and em_cpu_energy()'s ref_freq variable is then set to 1 instead of the max
+> frequency (leading to a 0 energy computation).
 
--- 
-Giovanni
+IIUC, cppc uses the default cpu capacity of arch_topology and then
+never updates it  and it creates an EM for this SMP system.
+ok, so you have an EM sets with ACPI and SMP.
+
+I'm going to check where we could set this reference frequency for your case.
+
+>
+> 3-
+> Also just in case, arch_scale_freq_ref_policy() and cpufreq_get_hw_max_freq()
+> seem to have close (but not identical) purpose,
+>
+> Regards,
+> Pierre
+>
+> On 9/1/23 15:03, Vincent Guittot wrote:
+> > The last item of a performance domain is not always the performance point
+> > that has been used to compute CPU's capacity. This can lead to different
+> > target frequency compared with other part of the system like schedutil and
+> > would result in wrong energy estimation.
+> >
+> > a new arch_scale_freq_ref() is available to return a fixed and coherent
+> > frequency reference that can be used when computing the CPU's frequency
+> > for an level of utilization. Use this function when available or fallback
+> > to the last performance domain item otherwise.
+> >
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >   include/linux/energy_model.h | 20 +++++++++++++++++---
+> >   1 file changed, 17 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> > index b9caa01dfac4..7ee07be6928e 100644
+> > --- a/include/linux/energy_model.h
+> > +++ b/include/linux/energy_model.h
+> > @@ -204,6 +204,20 @@ struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
+> >       return ps;
+> >   }
+> >
+> > +#ifdef arch_scale_freq_ref
+> > +static __always_inline
+> > +unsigned long  arch_scale_freq_ref_em(int cpu, struct em_perf_domain *pd)
+> > +{
+> > +     return arch_scale_freq_ref(cpu);
+> > +}
+> > +#else
+> > +static __always_inline
+> > +unsigned long  arch_scale_freq_ref_em(int cpu, struct em_perf_domain *pd)
+> > +{
+> > +     return pd->table[pd->nr_perf_states - 1].frequency;
+> > +}
+> > +#endif
+> > +
+> >   /**
+> >    * em_cpu_energy() - Estimates the energy consumed by the CPUs of a
+> >    *          performance domain
+> > @@ -224,7 +238,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+> >                               unsigned long max_util, unsigned long sum_util,
+> >                               unsigned long allowed_cpu_cap)
+> >   {
+> > -     unsigned long freq, scale_cpu;
+> > +     unsigned long freq, ref_freq, scale_cpu;
+> >       struct em_perf_state *ps;
+> >       int cpu;
+> >
+> > @@ -241,11 +255,11 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+> >        */
+> >       cpu = cpumask_first(to_cpumask(pd->cpus));
+> >       scale_cpu = arch_scale_cpu_capacity(cpu);
+> > -     ps = &pd->table[pd->nr_perf_states - 1];
+> > +     ref_freq = arch_scale_freq_ref_em(cpu, pd);
+> >
+> >       max_util = map_util_perf(max_util);
+> >       max_util = min(max_util, allowed_cpu_cap);
+> > -     freq = map_util_freq(max_util, ps->frequency, scale_cpu);
+> > +     freq = map_util_freq(max_util, ref_freq, scale_cpu);
+> >
+> >       /*
+> >        * Find the lowest performance state of the Energy Model above the
