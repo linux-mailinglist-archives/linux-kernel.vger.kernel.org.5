@@ -2,100 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09902792779
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50EA1792B30
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236012AbjIEQT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:19:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
+        id S243540AbjIEQt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353962AbjIEIwy (ORCPT
+        with ESMTP id S1353969AbjIEI6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:52:54 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE73BF;
-        Tue,  5 Sep 2023 01:52:49 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id 5614622812f47-3a76d882052so1674888b6e.0;
-        Tue, 05 Sep 2023 01:52:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693903968; x=1694508768; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qKlFBdT69991S4JouznjRtmsXJ6kfeTl4DK2mPOKTKw=;
-        b=DZz/4IeaamMpxVBjZCugIsu7B7msWvnnsljoszWagQY7hsGxJ9kjtNNTTHmqCu8lNs
-         zF1foPNBbKEQyDFV5Ubb+IlkWTLCcAYHxMNhSIlc6llUyAv9cL/R6PuHKH+Cf/b4f1Xx
-         h/9vXkxKkVf6QBPdUgSd/Dc6CmnYpXGxlS4X4q0UjJo1eJW0DZacj2B8qKlFtu7dqzNZ
-         I9qtpBTfws8GwPcu7WQkHn+RFqxUSaxJxQHnJWFHjK5I3O1SlGmz1OTlQiOnjroN6RdS
-         NDz216kyB9BU1J4JRaFcdDP/Vk6zvZEUcO5fN73Y1IyxcWSDEjCsn5fFxTSP7jN5cXbK
-         3uyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693903968; x=1694508768;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qKlFBdT69991S4JouznjRtmsXJ6kfeTl4DK2mPOKTKw=;
-        b=ZhQw1iKJUBwUYEaZB6kbMxHV3nseo+f+7/dLimcOawygH8hxBV7FbOqy6rOBSOOsxb
-         f46w2HRisJ5GNu7yaqlXu5W2xQaCQ9PypO1vSIaBpntYvK2LY/BZtnNkjEQrnSf4EIyU
-         ENArEe2YbpJ0ZZuuIKiuwxXnnkDAf3ULE0IuEOoLTUvrV9TAZJcC6kU93bo4QQS6DgBp
-         jzZXRGnCct8+aN8aJSb88uTASk3zJTQjL42YVy4l9h+ehZpO6K5SSsOxU8DKE3M2EuAx
-         3a07r5QyqfIvvONuY4ojQ1Twxt/UcDIdSMQdZSPP98golIUTq8VxeKa8i9cQVBtJeDDh
-         Mfuw==
-X-Gm-Message-State: AOJu0YywrcKhfUhVoaJXm7dQYFvplRTSfg4b/l3NA6wz0FfQmt/KlZJH
-        gpSPArlKOS5p3dhmlgoLP/4=
-X-Google-Smtp-Source: AGHT+IGKsBYD96Y9PIesIV969naQHZRiGscrONh4e6FH/zoYp/Qr77D6jcDFGDxUve00lLjI5RAUhQ==
-X-Received: by 2002:a05:6358:3994:b0:13e:bd8d:c2a2 with SMTP id b20-20020a056358399400b0013ebd8dc2a2mr11467833rwe.23.1693903968280;
-        Tue, 05 Sep 2023 01:52:48 -0700 (PDT)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id x52-20020a056a000bf400b0063b898b3502sm8606742pfu.153.2023.09.05.01.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 01:52:47 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 16:52:43 +0800
-From:   Hangbin Liu <liuhangbin@gmail.com>
-To:     Ziyang Xuan <william.xuanziyang@huawei.com>
-Cc:     jiri@resnulli.us, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net v2] team: fix null-ptr-deref when team device type is
- changed
-Message-ID: <ZPbsW/bOGeO9Ww8+@Laptop-X1>
-References: <20230905074638.3304732-1-william.xuanziyang@huawei.com>
+        Tue, 5 Sep 2023 04:58:08 -0400
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA156184;
+        Tue,  5 Sep 2023 01:58:03 -0700 (PDT)
+Received: from pendragon.ideasonboard.com (ftip006315900.acc1.colindale.21cn-nte.bt.net [81.134.214.249])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7A2F610FE;
+        Tue,  5 Sep 2023 10:56:35 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1693904195;
+        bh=CEfJ5B7GYScrvKciZArVaQtY9njQRmml6KbxPfNxMr0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VSJ+CQNm7i1hzp8OTXh07Rkr+BR0y2/7qVCkkFaRlnESR5I52J6nZLH84eQYJn7FM
+         sEsUu/N51ql8T+K0NxD1pLHSBBNH11eGqaM0fUxhBtyi7EWmGl4wCTVARTRKWrO8NV
+         1DGHHqQ0GCtikXSjsmwM/oTTAxH4vgTreZ8K50go=
+Date:   Tue, 5 Sep 2023 11:58:14 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Alain Volmat <alain.volmat@foss.st.com>
+Cc:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Dan Scally <dan.scally@ideasonboard.com>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/5] dt-bindings: media: add bindings for stm32 dcmipp
+Message-ID: <20230905085814.GA31594@pendragon.ideasonboard.com>
+References: <20230901155732.252436-1-alain.volmat@foss.st.com>
+ <20230901155732.252436-2-alain.volmat@foss.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230905074638.3304732-1-william.xuanziyang@huawei.com>
+In-Reply-To: <20230901155732.252436-2-alain.volmat@foss.st.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 03:46:38PM +0800, Ziyang Xuan wrote:
-> diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-> index d3dc22509ea5..12fb5f4cff06 100644
-> --- a/drivers/net/team/team.c
-> +++ b/drivers/net/team/team.c
-> @@ -2127,7 +2127,10 @@ static const struct ethtool_ops team_ethtool_ops = {
->  static void team_setup_by_port(struct net_device *dev,
->  			       struct net_device *port_dev)
->  {
-> -	dev->header_ops	= port_dev->header_ops;
-> +	if (port_dev->type == ARPHRD_ETHER)
-> +		dev->header_ops	= &eth_header_ops;
-> +	else
-> +		dev->header_ops	= port_dev->header_ops;
->  	dev->type = port_dev->type;
->  	dev->hard_header_len = port_dev->hard_header_len;
->  	dev->needed_headroom = port_dev->needed_headroom;
+Hi Alain,
 
-Hmm.. Do we need to export eth_header_ops? I got error like
-ERROR: modpost: "eth_header_ops" [drivers/net/team/team.ko] undefined!
+Thank you for the patch.
 
-But I saw function loopback_setup() could reference this. Not sure what
-I missed here.
+On Fri, Sep 01, 2023 at 05:57:20PM +0200, Alain Volmat wrote:
+> Add the yaml binding for the ST Microelectronics STM32 DCMIPP
+> (Digital Camera Memory Interface Pixel Processor)
+> 
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
 
-Thanks
-Hangbin
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> ---
+>  .../bindings/media/st,stm32-dcmipp.yaml       | 89 +++++++++++++++++++
+>  1 file changed, 89 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+> new file mode 100644
+> index 000000000000..87731f3ce7bd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmipp.yaml
+> @@ -0,0 +1,89 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/st,stm32-dcmipp.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: STMicroelectronics STM32 DCMIPP Digital Camera Memory Interface Pixel Processor
+> +
+> +maintainers:
+> +  - Hugues Fruchet <hugues.fruchet@foss.st.com>
+> +  - Alain Volmat <alain.volmat@foss.st.com>
+> +
+> +properties:
+> +  compatible:
+> +    const: st,stm32mp13-dcmipp
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  resets:
+> +    maxItems: 1
+> +
+> +  port:
+> +    $ref: /schemas/graph.yaml#/$defs/port-base
+> +    unevaluatedProperties: false
+> +    description:
+> +      DCMIPP supports a single port node with parallel bus.
+> +
+> +    properties:
+> +      endpoint:
+> +        $ref: video-interfaces.yaml#
+> +        unevaluatedProperties: false
+> +
+> +        properties:
+> +          bus-type:
+> +            enum: [5, 6]
+> +            default: 5
+> +
+> +          bus-width:
+> +            enum: [8, 10, 12, 14]
+> +            default: 8
+> +
+> +          pclk-sample: true
+> +          hsync-active: true
+> +          vsync-active: true
+> +
+> +        required:
+> +          - pclk-sample
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - resets
+> +  - port
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/clock/stm32mp13-clks.h>
+> +    #include <dt-bindings/reset/stm32mp13-resets.h>
+> +    dcmipp@5a000000 {
+> +        compatible = "st,stm32mp13-dcmipp";
+> +        reg = <0x5a000000 0x400>;
+> +        interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+> +        resets = <&rcc DCMIPP_R>;
+> +        clocks = <&rcc DCMIPP_K>;
+> +
+> +        port {
+> +             endpoint {
+> +                   remote-endpoint = <&mipid02_2>;
+> +                   bus-width = <8>;
+> +                   hsync-active = <0>;
+> +                   vsync-active = <0>;
+> +                   pclk-sample = <0>;
+> +             };
+> +        };
+> +    };
+> +
+> +...
+
+-- 
+Regards,
+
+Laurent Pinchart
