@@ -2,119 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 09E80792AA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9978C792A73
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244964AbjIEQki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58392 "EHLO
+        id S235453AbjIEQhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:37:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353879AbjIEI2C (ORCPT
+        with ESMTP id S1353880AbjIEI2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:28:02 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED0EECCF
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:27:55 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-4018af103bcso14249535e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:27:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693902474; x=1694507274; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=yZOJVeABpFpne+4zxTVbLhiPldIS4DZuhrgZSQO5xhg=;
-        b=C7jRPpvPWdKNofhdUtxIkmuetQa24LV+ISujOD1s0qovUmBNySN/gzmGe7K50ny1EO
-         dMqdwWj3WkwqwPHF9Q9HS1osrF2/whi54U9+wviKwCRqYRMFUL2vOBq2bk0/JWUNUppb
-         JVDL8WbeCxGgO2VclnkxO1yXxQ57ve+5ASmo7o2haJBuLp1kIRt9l3DMZCpJcsqv38If
-         Ivf5BwtycJQzfh9qPqug81e+x064j/ARInbhzd8nW87vMel7Deg+na53fa5Nec8INQL9
-         bMBNNUmCPK1s5GOBERoMYnh3yZ2fnq6P3kaYXJPIYD0pNJnYWj/q2Fpgv6S/I4x0q4pf
-         aylQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693902474; x=1694507274;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=yZOJVeABpFpne+4zxTVbLhiPldIS4DZuhrgZSQO5xhg=;
-        b=CGQSVF4lVB+tZfhc2DPTCd35KGTOnFPlHLgH3yDFwUBpfNSItfW38sSxYQki8O26HG
-         EO+lnM1vfMiTYU2brbpQakQZWIMyJ3wSL5/gDhl2l4h/RnmaKodJeZeTIY2l12ADZIEl
-         lG8Flx3bAu8MBBC54RuvjU88IMujhnHWqPXPW8/aqlxr1zXlOPyR7bJZ5g8m5JmqWC+S
-         lWC8JBLVips21aSL0JVXHM46nTlKbBJYfv1FkwEs3PG1eUDQFCkdDkj/WCLDLvrZgOW4
-         jNXEo5zHnrGa2ZH5Zb3ef5ZVs2nZCfBHUrtSGF/YJ+kpi0FFb6+KaIxH+LLXVoj6eQNU
-         zXag==
-X-Gm-Message-State: AOJu0YxqE0pPI5Fc33PzDwYYnOkHGo4fsST0uLAdvAJxLvCmF7i/9wrQ
-        0r2s8qryDwCaaFVpRtlLwKnGRg==
-X-Google-Smtp-Source: AGHT+IG/8oMolQYl3peTlkwkusxIIAHFH1Y84dqOJM5uxINZi5NFn9P2rlDqHiO5pvuSl/HD1+tYoQ==
-X-Received: by 2002:a05:600c:4656:b0:401:b24b:8279 with SMTP id n22-20020a05600c465600b00401b24b8279mr12036182wmo.1.1693902474406;
-        Tue, 05 Sep 2023 01:27:54 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id n9-20020a05600c294900b003feff926fc5sm16206338wmd.17.2023.09.05.01.27.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 01:27:53 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 11:27:50 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Mark Brown <broonie@kernel.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [RFT PATCH v2] spi: bcm2835: reduce the abuse of the GPIO API
-Message-ID: <527c52aa-e9c6-41d5-a60d-60d79ab94439@kadam.mountain>
-References: <20230901111548.12733-1-brgl@bgdev.pl>
- <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
+        Tue, 5 Sep 2023 04:28:30 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 964D5CC7;
+        Tue,  5 Sep 2023 01:28:23 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2070F5C00D7;
+        Tue,  5 Sep 2023 04:28:21 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 05 Sep 2023 04:28:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1693902501; x=1693988901; bh=5jDiTe+a/3
+        BCTH6WBKikex+dCxi9PDN83ta/4fvqmq4=; b=OQ2OZCMhVJRg+6WqZErqBVoT9v
+        2xMzxyifLmMlWa5I9bvt3rBkxS1WTu1MtEy58VSE1oj4+U4cOkhcwq6W4VaOZEce
+        YbNAh5lC1UBN8upNmD4zFgcdF9ml4y0QyYzQgbw9JqGK26iu7RPCgrtZbqP2Ibj6
+        I019kBPGIt4wE36JC6a6OjnmGD70GX1pgoDz74iTMo9QKjJPjsnaw8vFGyk8jDjI
+        wehj4+5GWVrQrTsjVBjFLBgdMyyllzS2bJVoPRX4yNAtu85bjIYnk2PmupnlNK6O
+        KOAD8ZLgiusjtvdAFYtSf+hTuu5BVs1BoUbjnu7kqGt330hBrMpQCr1TZsgw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1693902501; x=1693988901; bh=5jDiTe+a/3BCT
+        H6WBKikex+dCxi9PDN83ta/4fvqmq4=; b=2ifOQ2uCleqetPbzngex4dyPZdi2d
+        hqs/QhUV3DE7CCygtSKs3p8KpzO+6JedjlqyCO2FvOlaL5L2MfEGkQezNGfsvamL
+        ZgmFOOZFTuJo7stjRrWbT6J8cm7nw5MDH/rx3DopXCySwp6s4SpQGgT4sYqNoSG/
+        VuCoAJcFEiCSLLoEBsBwyw0718ViPlkwjnYmLSxwSgFq8ftCn0pVuHoV475LMAIA
+        MwKYX6/KutsaxxEtUxDNE+pW7x6S/vD3cz0r5yHUsq5flV87PYaeBnDR0PnXIpEY
+        3nviijDCeIiqZQfH1kB2/lKcu8M5mEdeNiac29P7GHkdLES3Y62QaAnlw==
+X-ME-Sender: <xms:pOb2ZHgZlA9kWQD45_1qmEBGVxUucbb6WPne_oR_alJNWKfpSRBEVQ>
+    <xme:pOb2ZEDEhoONAfZ4BFvqqazyS6SFNEcRbdNC2GbR9bNl9BKqnU3MD3i-T5tGqre7i
+    v6WGz7DjYM6BOJKXVk>
+X-ME-Received: <xmr:pOb2ZHFnE3e3nPNbjL9sHGDITjKvaoqTA4CuxcZD59fcmsqQ86FueEHNuhpz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudehtddgtdefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffoggfgsedtkeertd
+    ertddtnecuhfhrohhmpedfnfhukhgvucffrdculfhonhgvshdfuceolhhukhgvsehljhho
+    nhgvshdruggvvheqnecuggftrfgrthhtvghrnhepgfdujedthfduudekffefkeeiffdttd
+    dvhfegudduueffuefhfefggeefteevvdegnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomheplhhukhgvsehljhhonhgvshdruggvvh
+X-ME-Proxy: <xmx:pOb2ZET9QcHJX99u1L6lEHba7Chzd094Nbdjr_BeTUjlgJ5G3-Sfag>
+    <xmx:pOb2ZEyyl0G7srbsMCObuAknbAKiMlSuyJU9r6xuQA_CrgWPWcdnRw>
+    <xmx:pOb2ZK7Ovf77afHvUVQH5ncI0Mf1baFjD6xDrQODOLveS9xRmpKMQw>
+    <xmx:peb2ZA8cpJCVl8lTP7X8Qxo6NEGi8HGnMtTAwFrItqQRKPeuaAaMEw>
+Feedback-ID: i5ec1447f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 5 Sep 2023 04:28:18 -0400 (EDT)
+From:   "Luke D. Jones" <luke@ljones.dev>
+To:     hdegoede@redhat.com
+Cc:     corentin.chary@gmail.com, markgross@kernel.org,
+        linux-kernel@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        "Luke D. Jones" <luke@ljones.dev>
+Subject: [PATCH] platform/x86: asus-wmi: Support 2023 ROG X16 tablet mode
+Date:   Tue,  5 Sep 2023 20:28:13 +1200
+Message-ID: <20230905082813.13470-1-luke@ljones.dev>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYLcOZQ9r46aBwesh-H392C_0AWC8n2ikuwUknfEhoNNA@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023 at 02:15:39PM +0200, Linus Walleij wrote:
-> On Fri, Sep 1, 2023 at 1:15 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> 
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > Currently the bcm2835 SPI driver uses functions that are available
-> > exclusively to GPIO providers as a way to handle a platform quirk. Let's
-> > use a slightly better alternative that avoids poking around in GPIOLIB's
-> > internals and use GPIO lookup tables.
-> >
-> > Link: https://www.spinics.net/lists/linux-gpio/msg36218.html
-> > Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> 
-> > +#include <linux/cleanup.h>
-> (...)
-> > -       struct gpio_chip *chip;
-> > +       struct gpiod_lookup_table *lookup __free(kfree) = NULL;
-> 
-> Whoa!
-> This is really neat.
+Add quirk for ASUS ROG X16 (GV601V, 2023 versions) Flow 2-in-1
+to enable tablet mode with lid flip (all screen rotations).
 
-Yeah.  I like this stuff.  It should fix a lot of issues.  In some ways
-I prefer this kind of clean up to devm_ managed resources.
+Signed-off-by: Luke D. Jones <luke@ljones.dev>
+---
+ drivers/platform/x86/asus-nb-wmi.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> As noted, it will confuse static checkers at no end, but they just have
-> to adopt. (CC to Dan C if he now runs into this.)
-
-I think I updated Smatch to parse this correctly.  I've tested on this
-patch and it seems to work okay.  There probably will be some fall out
-in weird corners of Smatch.  Let me know if you see any problems.
-
-regards,
-dan carpenter
+diff --git a/drivers/platform/x86/asus-nb-wmi.c b/drivers/platform/x86/asus-nb-wmi.c
+index fdf7da06af30..d85d895fee89 100644
+--- a/drivers/platform/x86/asus-nb-wmi.c
++++ b/drivers/platform/x86/asus-nb-wmi.c
+@@ -478,6 +478,15 @@ static const struct dmi_system_id asus_quirks[] = {
+ 		},
+ 		.driver_data = &quirk_asus_tablet_mode,
+ 	},
++	{
++		.callback = dmi_matched,
++		.ident = "ASUS ROG FLOW X16",
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++			DMI_MATCH(DMI_PRODUCT_NAME, "GV601V"),
++		},
++		.driver_data = &quirk_asus_tablet_mode,
++	},
+ 	{
+ 		.callback = dmi_matched,
+ 		.ident = "ASUS VivoBook E410MA",
+-- 
+2.41.0
 
