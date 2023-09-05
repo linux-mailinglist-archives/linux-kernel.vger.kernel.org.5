@@ -2,149 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95AA6792D42
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:15:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64FE792D15
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:08:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240957AbjIESP4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:15:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33212 "EHLO
+        id S238809AbjIESIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 14:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231249AbjIESPo (ORCPT
+        with ESMTP id S238420AbjIESIX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:15:44 -0400
-Received: from smtp-fw-80006.amazon.com (smtp-fw-80006.amazon.com [99.78.197.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E2F3C28;
-        Tue,  5 Sep 2023 11:10:46 -0700 (PDT)
+        Tue, 5 Sep 2023 14:08:23 -0400
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2CCECBA9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 10:29:15 -0700 (PDT)
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7a257fabae5so996500241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 10:29:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1693937447; x=1725473447;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=QaGIBp+4yXT+4ZJENNV5tF4S5zI+vHTeYurxUnNu70g=;
-  b=CIioFm80Lqy8nX6NZjJL0Z8296AbZefvcwJxNGcgZb8DUTl7tix6zCpo
-   UcXwqq9fPR2t3cQ0utQG58mXTSCLxxapsQFVdHHpK/s9+iDf3WbVCKLIp
-   y+wE1q+qR8cLzDKAEkdq2Xpu6wmpcXFGhTrK6BddoDzCaIgRp/oGuIEQx
-   U=;
-X-IronPort-AV: E=Sophos;i="6.02,229,1688428800"; 
-   d="scan'208";a="236876355"
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-pdx-2a-m6i4x-1cca8d67.us-west-2.amazon.com) ([10.25.36.214])
-  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 17:03:29 +0000
-Received: from EX19MTAUEA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
-        by email-inbound-relay-pdx-2a-m6i4x-1cca8d67.us-west-2.amazon.com (Postfix) with ESMTPS id 1D65080EAA;
-        Tue,  5 Sep 2023 17:03:28 +0000 (UTC)
-Received: from EX19MTAUEB001.ant.amazon.com (10.252.135.35) by
- EX19MTAUEA001.ant.amazon.com (10.252.134.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 5 Sep 2023 17:03:27 +0000
-Received: from dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com (10.39.210.33)
- by mail-relay.amazon.com (10.252.135.35) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Tue, 5 Sep 2023 17:03:27 +0000
-Received: by dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com (Postfix, from userid 23276196)
-        id AF4648FE; Tue,  5 Sep 2023 17:03:27 +0000 (UTC)
-Date:   Tue, 5 Sep 2023 17:03:27 +0000
-From:   Luiz Capitulino <luizcap@amazon.com>
-To:     <tj@kernel.org>, <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <longman@redhat.com>
-CC:     <lcapitulino@gmail.com>
-Subject: Re: [PATH] cgroup: add cgroup_favordynmods= command-line option
-Message-ID: <20230905170318.GA16629@dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com>
-References: <20230831142046.37177-1-luizcap@amazon.com>
+        d=linuxtx.org; s=google; t=1693934800; x=1694539600; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7h1pOWAWn2f3/0pIwmJa14UCgmY4tfc3A2xWVFCKn/A=;
+        b=Q8QhQM3GXvB7j6yR84r8U0OebCuFVooe4FYtys5EtSb1ub1QCdZ133gfuSx3wgk2Do
+         pnj9NXS/k+NL7Xg0LwpqnML3Rb2gwY9sILWtWJ9xDSlhnDmWMhMLWmRjIjJeLkrEDnXz
+         d9lwBrz+IBNRuE36KIGCdyC18QSMxb0rpJZ7I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693934800; x=1694539600;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7h1pOWAWn2f3/0pIwmJa14UCgmY4tfc3A2xWVFCKn/A=;
+        b=YYUToWpcJGE0m3hNtGNcENdXfhcAoPnohf15xm0b/tlf5hXIkq2C5JMjCyTfz1u5a9
+         PXG45oD70vyoUFIwUselMYiDZSyIpL+nofayruxigiRk6r+rBj03uFslf8f8sCIc/7PT
+         /rBi9RCarozbQSeri4elHsTQPJvLqnvBlLc2HKv4rIgIQIJkhsdCbmkTn1LHdiyeOlKM
+         pu8xb0Zsft4Ql/w2NBryyMuiYml5FOE015Vk9umO7490vkaFbgHbYF0UoQ83ZinL0ObG
+         jKDFutMphr7WjmGUoVRF7Rht0j3iuBYd2M8KJP9XbfdnlyeU6UUiRH8onn+cHkhGUIO/
+         ZNrg==
+X-Gm-Message-State: AOJu0YxNuA+UL+ufqGh9yATZPOHIgLglXW/1o31sPaNX4B++1rKwprgW
+        C48YZzqN9sM0UdaNHmM6Llt3z4dkiAQsPOlNYurC85PY
+X-Google-Smtp-Source: AGHT+IHyoieeDB0PNwVvLRlAczgv2xHwUxOdj1W5kcWlyPok77Aa/jXmKT28xB8W4J/4Y/qekumOfQ==
+X-Received: by 2002:a9d:4b05:0:b0:6b2:9bdb:a84a with SMTP id q5-20020a9d4b05000000b006b29bdba84amr15026049otf.32.1693933771878;
+        Tue, 05 Sep 2023 10:09:31 -0700 (PDT)
+Received: from fedora64.linuxtx.org ([99.47.93.78])
+        by smtp.gmail.com with ESMTPSA id t25-20020a9d66d9000000b006b89596bc61sm5666307otm.61.2023.09.05.10.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 10:09:31 -0700 (PDT)
+Sender: Justin Forbes <jmforbes@linuxtx.org>
+Date:   Tue, 5 Sep 2023 12:09:29 -0500
+From:   Justin Forbes <jforbes@fedoraproject.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Subject: Re: [PATCH 6.4 00/32] 6.4.15-rc1 review
+Message-ID: <ZPdgyWKSJkXf7Q/z@fedora64.linuxtx.org>
+References: <20230904182947.899158313@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230831142046.37177-1-luizcap@amazon.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230904182947.899158313@linuxfoundation.org>
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Aug 31, 2023 at 10:20:46AM -0400, Luiz Capitulino wrote:
-> We have a need of using favordynmods with cgroup v1, which doesn't support
-> changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
-> build-time is not an option because we want to be able to selectively
-> enable it for certain systems.
+On Mon, Sep 04, 2023 at 07:29:58PM +0100, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.4.15 release.
+> There are 32 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> This commit addresses this by introducing the cgroup_favordynmods=
-> command-line option. This option works for both cgroup v1 and v2 and
-> also allows for disabling favorynmods when the kernel built with
-> CONFIG_FAVOR_DYNMODS=y.
+> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Luiz Capitulino <luizcap@amazon.com>
-
-Hi,
-
-Would somebody take a look at this patch please?
-
-Thanks,
-
-- Luiz
-
-> ---
->  Documentation/admin-guide/kernel-parameters.txt |  4 ++++
->  kernel/cgroup/cgroup.c                          | 14 +++++++++++---
->  2 files changed, 15 insertions(+), 3 deletions(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.4.15-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.4.y
+> and the diffstat can be found below.
 > 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index 0c38a8af95ce..672f76a3c002 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -580,6 +580,10 @@
->  			named mounts. Specifying both "all" and "named" disables
->  			all v1 hierarchies.
->  
-> +	cgroup_favordynmods= [KNL] Enable or Disable favordynmods.
-> +			Format: { "true" | "false" }
-> +			Defaults to the value of CONFIG_CGROUP_FAVOR_DYNMODS.
-> +
->  	cgroup.memory=	[KNL] Pass options to the cgroup memory controller.
->  			Format: <string>
->  			nosocket -- Disable socket memory accounting.
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 5fa95f86cb4d..b625825e270b 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -207,6 +207,8 @@ static u16 have_exit_callback __read_mostly;
->  static u16 have_release_callback __read_mostly;
->  static u16 have_canfork_callback __read_mostly;
->  
-> +static bool have_favordynmods __read_mostly = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
-> +
->  /* cgroup namespace for init task */
->  struct cgroup_namespace init_cgroup_ns = {
->  	.ns.count	= REFCOUNT_INIT(2),
-> @@ -2265,9 +2267,9 @@ static int cgroup_init_fs_context(struct fs_context *fc)
->  	fc->user_ns = get_user_ns(ctx->ns->user_ns);
->  	fc->global = true;
->  
-> -#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
-> -	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
-> -#endif
-> +	if (have_favordynmods)
-> +		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
-> +
->  	return 0;
->  }
->  
-> @@ -6767,6 +6769,12 @@ static int __init enable_cgroup_debug(char *str)
->  }
->  __setup("cgroup_debug", enable_cgroup_debug);
->  
-> +static int __init cgroup_favordynmods_setup(char *str)
-> +{
-> +	return (kstrtobool(str, &have_favordynmods) == 0);
-> +}
-> +__setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
-> +
->  /**
->   * css_tryget_online_from_dir - get corresponding css from a cgroup dentry
->   * @dentry: directory dentry of interest
-> -- 
-> 2.40.1
+> thanks,
 > 
+> greg k-h
+
+Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
+x86_64), and boot tested x86_64. No regressions noted.
+
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
