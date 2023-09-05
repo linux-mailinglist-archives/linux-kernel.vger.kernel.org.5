@@ -2,143 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EF9792B36
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0ED792B1D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244175AbjIEQto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:49:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
+        id S240449AbjIEQsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:48:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353787AbjIEILL (ORCPT
+        with ESMTP id S1353790AbjIEIPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:11:11 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17D31AD;
-        Tue,  5 Sep 2023 01:11:06 -0700 (PDT)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rfylw0HxmzGpts;
-        Tue,  5 Sep 2023 16:07:24 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 5 Sep 2023 16:11:03 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <jiri@resnulli.us>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <liuhangbin@gmail.com>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v3] team: fix null-ptr-deref when team device type is changed
-Date:   Tue, 5 Sep 2023 16:10:56 +0800
-Message-ID: <20230905081056.3365013-1-william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Sep 2023 04:15:24 -0400
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ADDACDB;
+        Tue,  5 Sep 2023 01:15:14 -0700 (PDT)
+X-UUID: 527d15b64bc411ee8051498923ad61e6-20230905
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:References:CC:To:Subject:MIME-Version:Date:Message-ID; bh=PdtLuvK5FoLWlrvycOTnaJ+HduNbx6ANjKzfliekyu4=;
+        b=svc1DzMHb8sp0cR91beGFmHizs82nCOdNG9OJtoZhNzxoYW2AEObx3ADd1vPYPnw4vqiGVCTy52EkuEFlCqBV9QfgHPAQAaYGW5F/+kzVq+dho+xUxAA5cJ6wfbt6TcN8SnrpyF/N/bF4IKahOVEcejLCM3790OKHLfr47aP5FA=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.31,REQID:49b7700b-7047-4762-be5d-f1b70f9474a4,IP:0,U
+        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+        release,TS:0
+X-CID-META: VersionHash:0ad78a4,CLOUDID:cc7154ef-9a6e-4c39-b73e-f2bc08ca3dc5,B
+        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
+        DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 527d15b64bc411ee8051498923ad61e6-20230905
+Received: from mtkmbs11n1.mediatek.inc [(172.21.101.185)] by mailgw02.mediatek.com
+        (envelope-from <macpaul.lin@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 895902181; Tue, 05 Sep 2023 16:15:06 +0800
+Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
+ MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 5 Sep 2023 16:15:05 +0800
+Received: from [172.21.84.99] (172.21.84.99) by mtkmbs13n2.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.2.1118.26 via Frontend
+ Transport; Tue, 5 Sep 2023 16:15:03 +0800
+Message-ID: <6e39b4b1-42b5-515c-aca0-08374ee7634e@mediatek.com>
+Date:   Tue, 5 Sep 2023 16:15:01 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v3 1/2] arm64: dts: mediatek: mt8195-demo: fix the memory
+ size to 8GB
+Content-Language: en-US
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Alexandre Mergnat <amergnat@baylibre.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Fabien Parent <fparent@baylibre.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>
+CC:     Bear Wang <bear.wang@mediatek.com>,
+        Pablo Sun <pablo.sun@mediatek.com>,
+        Macpaul Lin <macpaul@gmail.com>, <stable@vger.kernel.org>
+References: <20230825114623.16884-1-macpaul.lin@mediatek.com>
+ <20230905034511.11232-1-macpaul.lin@mediatek.com>
+ <4e0c1222-5211-5515-99f1-b44b25f8ecfe@collabora.com>
+From:   Macpaul Lin <macpaul.lin@mediatek.com>
+In-Reply-To: <4e0c1222-5211-5515-99f1-b44b25f8ecfe@collabora.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RDNS_NONE,
+        SPF_HELO_PASS,T_SPF_TEMPERROR,UNPARSEABLE_RELAY autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get a null-ptr-deref bug as follows with reproducer [1].
 
-BUG: kernel NULL pointer dereference, address: 0000000000000228
-...
-RIP: 0010:vlan_dev_hard_header+0x35/0x140 [8021q]
-...
-Call Trace:
- <TASK>
- ? __die+0x24/0x70
- ? page_fault_oops+0x82/0x150
- ? exc_page_fault+0x69/0x150
- ? asm_exc_page_fault+0x26/0x30
- ? vlan_dev_hard_header+0x35/0x140 [8021q]
- ? vlan_dev_hard_header+0x8e/0x140 [8021q]
- neigh_connected_output+0xb2/0x100
- ip6_finish_output2+0x1cb/0x520
- ? nf_hook_slow+0x43/0xc0
- ? ip6_mtu+0x46/0x80
- ip6_finish_output+0x2a/0xb0
- mld_sendpack+0x18f/0x250
- mld_ifc_work+0x39/0x160
- process_one_work+0x1e6/0x3f0
- worker_thread+0x4d/0x2f0
- ? __pfx_worker_thread+0x10/0x10
- kthread+0xe5/0x120
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x34/0x50
- ? __pfx_kthread+0x10/0x10
- ret_from_fork_asm+0x1b/0x30
 
-[1]
-$ teamd -t team0 -d -c '{"runner": {"name": "loadbalance"}}'
-$ ip link add name t-dummy type dummy
-$ ip link add link t-dummy name t-dummy.100 type vlan id 100
-$ ip link add name t-nlmon type nlmon
-$ ip link set t-nlmon master team0
-$ ip link set t-nlmon nomaster
-$ ip link set t-dummy up
-$ ip link set team0 up
-$ ip link set t-dummy.100 down
-$ ip link set t-dummy.100 master team0
+On 9/5/23 16:00, AngeloGioacchino Del Regno wrote:
+> Il 05/09/23 05:45, Macpaul Lin ha scritto:
+>> The onboard dram of mt8195-demo board is 8GB.
+>>
+>> Cc: stable@vger.kernel.org      # 6.1, 6.4, 6.5
+>> Fixes: 6147314aeedc ("arm64: dts: mediatek: Add device-tree for MT8195 
+>> Demo board")
+>> Signed-off-by: Macpaul Lin <macpaul.lin@mediatek.com>
+>> ---
+>>   arch/arm64/boot/dts/mediatek/mt8195-demo.dts | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> Changes for v2:
+>> Changes for v3:
+>>   - No change.
+>>
+>> diff --git a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts 
+>> b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+>> index b2485ddfd33b..ff363ab925e9 100644
+>> --- a/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+>> +++ b/arch/arm64/boot/dts/mediatek/mt8195-demo.dts
+>> @@ -48,7 +48,7 @@
+>>       memory@40000000 {
+>>           device_type = "memory";
+>> -        reg = <0 0x40000000 0 0x80000000>;
+>> +        reg = <0 0x40000000 0x2 0x00000000>;
+> 
+> Shouldn't this get automatically filled in by the bootloader?
+> Usually, that's the case: if it is, then the right thing to do here
+> is to change this property to
+> 
+>          /* The bootloader will fill in the size */
+>          reg = <0x0 0x40000000 0x0 0x0>;
+> 
+> Regards,
+> Angelo
+> 
 
-When enslave a vlan device to team device and team device type is changed
-from non-ether to ether, header_ops of team device is changed to
-vlan_header_ops. That is incorrect and will trigger null-ptr-deref
-for vlan->real_dev in vlan_dev_hard_header() because team device is not
-a vlan device.
+Thanks for the review. However, this value seems depends on the boot 
+method. Take u-boot as the example, the total memory size which Linux 
+kernel get will be different via EBBR boot or fitImage boot.
 
-Assign eth_header_ops to header_ops of team device when its type is changed
-from non-ether to ether to fix the bug.
+It the system is booted through EBBR, the memory size should be filled 
+by u-boot's UEFI variables, which is from u-boot's dts file. If the 
+system is booted from fitImage, the memory size should be filled by 
+kernel's dts file which is usually packed with fitImage. That's why we 
+still need this fix.
 
-Fixes: 1d76efe1577b ("team: add support for non-ethernet devices")
-Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
----
-v3:
-  - Export eth_header_ops to fix modpost error.
-v2:
-  - Just modify header_ops to eth_header_ops not use ether_setup().
----
- drivers/net/team/team.c | 5 ++++-
- net/ethernet/eth.c      | 1 +
- 2 files changed, 5 insertions(+), 1 deletion(-)
+>>       };
+>>       reserved-memory {
+> 
+> 
 
-diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-index d3dc22509ea5..12fb5f4cff06 100644
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -2127,7 +2127,10 @@ static const struct ethtool_ops team_ethtool_ops = {
- static void team_setup_by_port(struct net_device *dev,
- 			       struct net_device *port_dev)
- {
--	dev->header_ops	= port_dev->header_ops;
-+	if (port_dev->type == ARPHRD_ETHER)
-+		dev->header_ops	= &eth_header_ops;
-+	else
-+		dev->header_ops	= port_dev->header_ops;
- 	dev->type = port_dev->type;
- 	dev->hard_header_len = port_dev->hard_header_len;
- 	dev->needed_headroom = port_dev->needed_headroom;
-diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
-index 2edc8b796a4e..157833509adb 100644
---- a/net/ethernet/eth.c
-+++ b/net/ethernet/eth.c
-@@ -347,6 +347,7 @@ const struct header_ops eth_header_ops ____cacheline_aligned = {
- 	.cache_update	= eth_header_cache_update,
- 	.parse_protocol	= eth_header_parse_protocol,
- };
-+EXPORT_SYMBOL(eth_header_ops);
- 
- /**
-  * ether_setup - setup Ethernet network device
--- 
-2.25.1
-
+Thanks.
+Macpaul Lin
