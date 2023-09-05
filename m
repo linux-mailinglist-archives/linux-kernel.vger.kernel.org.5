@@ -2,246 +2,521 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3548B792BA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6C89792C2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345775AbjIEQ4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:56:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51396 "EHLO
+        id S244158AbjIERCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353793AbjIEIQC (ORCPT
+        with ESMTP id S1353794AbjIEIRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:16:02 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9AF7CCF
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:15:58 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-44d4c3fa6a6so894830137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:15:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693901758; x=1694506558; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q54+t+GkvMz0+EsIrXlLUHC247aFke2V/z6h4/2GcDU=;
-        b=oegmXLLOJ1Dv451Dmz3Xr9y8BaXt0ufSRa4qeUAkZlSspDobVon5c1iDvTx5Iv2IWA
-         ikmZuJsgpziOi9cZzXexXLvB+15IxAgV1N3pArHhp/GaAptTs1srJfstRLA0l6ciB1MM
-         c6H2/TY/cb4SklhwO5SQ8XWoqwsxJQwy+X9rPZ89DhMSi52TC0kIhBKnIhXf+7SB0uYK
-         HPT+0FXCQnh6FA5NoBlVoe7uXHKrVNmeB4DlwHOp4ycss0Qp5UNg4hgMgD4yMDl2uXPZ
-         QHzoUnmsKPrriTpBvNjq8hLsEwl2uDlOwVkF25JQTaukQnI5e4jT0jnmRrYSvQTwYgtf
-         EDkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693901758; x=1694506558;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q54+t+GkvMz0+EsIrXlLUHC247aFke2V/z6h4/2GcDU=;
-        b=BENsuQ6VWfSgIraa9nnegUclbNkAcpKC2MQXwxXBgxksFWg/e0WOOLmLzwKiCblUQR
-         re1gnPwa1QvKovhz2qyOUhvuR7Hwl+ZVexkPNPr1uV9t7ZfuYOvlDNCAcylLwsK6VNwL
-         +oAbOGY+xghIQgDlvzhMm2YDCPV539Je474s5qYn6Acd6ipWmE8K+Dzxs7YXPEJembEX
-         0iwnGxfLe+YdvFE906UePb5Bhz5+JD8QKAd/7UvM0jI6Vz6TBts5aDTkGcm0SZYjKc+M
-         Om4A1cLeKrgrIivYbRCLm2A+phwykxDgpI+5d8Vfwh4ygkBEDWwecTnt2x0HAehL+P2B
-         ycdw==
-X-Gm-Message-State: AOJu0YwS5xZvHKJ4aI+ZQA5JnVbWOGd3lwzCD9pmcscZL5wxeUpljobF
-        aT/dC/WI1tc0oDj9OLuDBJdB8tV6JwwgkonAenPibA==
-X-Google-Smtp-Source: AGHT+IHsKZp4iDKBLFP1UeXIV+qaRIH3SJ/11EW4C6xwXMMWSQDhVHAvHyS3ZhAORKFgZUZ/IxVjp04oYbfGd15tqds=
-X-Received: by 2002:a67:e951:0:b0:44d:4aa1:9d3a with SMTP id
- p17-20020a67e951000000b0044d4aa19d3amr11478780vso.32.1693901757911; Tue, 05
- Sep 2023 01:15:57 -0700 (PDT)
+        Tue, 5 Sep 2023 04:17:23 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE1B21AE;
+        Tue,  5 Sep 2023 01:17:16 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2A092B8107E;
+        Tue,  5 Sep 2023 08:17:15 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7233C433C8;
+        Tue,  5 Sep 2023 08:17:10 +0000 (UTC)
+Message-ID: <814130d1-8597-d567-ddea-cb82cadea00f@xs4all.nl>
+Date:   Tue, 5 Sep 2023 10:17:08 +0200
 MIME-Version: 1.0
-References: <20230904182948.594404081@linuxfoundation.org>
-In-Reply-To: <20230904182948.594404081@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 5 Sep 2023 13:45:46 +0530
-Message-ID: <CA+G9fYv-JmXWxjTuUDGujo39xiaCg8SciMuvKCrqRie4YzA8Vw@mail.gmail.com>
-Subject: Re: [PATCH 6.5 00/34] 6.5.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v6 17/18] media: v4l2: Add DELETE_BUFS ioctl
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+ <20230901124414.48497-18-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20230901124414.48497-18-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sept 2023 at 00:02, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.5.2 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.5.2-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.5.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 01/09/2023 14:44, Benjamin Gaignard wrote:
+> VIDIOC_DELETE_BUFS ioctl allows to delete buffers from a queue.
+> The number of buffers to delete in given by count field of
+> struct v4l2_delete_buffers and the range start at the index
+> specified in the same structure.
+> 
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> ---
+> v6:
+> - Add lock in vb2_core_delete_buf()
+> - Fix typo and comments
+> - Add flags in VIDIOC_DELETE_BUFS decalaration
+> 
+>  .../userspace-api/media/v4l/user-func.rst     |  1 +
+>  .../media/v4l/vidioc-delete-bufs.rst          | 73 +++++++++++++++++++
+>  .../media/common/videobuf2/videobuf2-core.c   | 24 ++++++
+>  .../media/common/videobuf2/videobuf2-v4l2.c   | 38 +++++++++-
+>  drivers/media/v4l2-core/v4l2-dev.c            |  1 +
+>  drivers/media/v4l2-core/v4l2-ioctl.c          | 17 +++++
+>  include/media/v4l2-ioctl.h                    |  4 +
+>  include/media/videobuf2-core.h                |  9 +++
+>  include/media/videobuf2-v4l2.h                | 11 +++
+>  include/uapi/linux/videodev2.h                | 16 ++++
+>  10 files changed, 193 insertions(+), 1 deletion(-)
+>  create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+> 
+> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
+> index 15ff0bf7bbe6..3fd567695477 100644
+> --- a/Documentation/userspace-api/media/v4l/user-func.rst
+> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
+> @@ -17,6 +17,7 @@ Function Reference
+>      vidioc-dbg-g-chip-info
+>      vidioc-dbg-g-register
+>      vidioc-decoder-cmd
+> +    vidioc-delete-bufs
+>      vidioc-dqevent
+>      vidioc-dv-timings-cap
+>      vidioc-encoder-cmd
+> diff --git a/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+> new file mode 100644
+> index 000000000000..a55fe6331fc8
+> --- /dev/null
+> +++ b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+> @@ -0,0 +1,73 @@
+> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+> +.. c:namespace:: V4L
+> +
+> +.. _VIDIOC_DELETE_BUFS:
+> +
+> +************************
+> +ioctl VIDIOC_DELETE_BUFS
+> +************************
+> +
+> +Name
+> +====
+> +
+> +VIDIOC_DELETE_BUFS - Deletes buffers from a queue
+> +
+> +Synopsis
+> +========
+> +
+> +.. c:macro:: VIDIOC_DELETE_BUFs
+> +
+> +``int ioctl(int fd, VIDIOC_DELETE_BUFs, struct v4l2_delete_buffers *argp)``
+> +
+> +Arguments
+> +=========
+> +
+> +``fd``
+> +    File descriptor returned by :c:func:`open()`.
+> +
+> +``argp``
+> +    Pointer to struct :c:type:`v4l2_delete_buffers`.
+> +
+> +Description
+> +===========
+> +
+> +Applications can optionally call the :ref:`VIDIOC_DELETE_BUFS` ioctl to
+> +delete buffers from a queue.
+> +
+> +.. c:type:: v4l2_delete_buffers
+> +
+> +.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.5cm}|
+> +
+> +.. flat-table:: struct v4l2_delete_buffers
+> +    :header-rows:  0
+> +    :stub-columns: 0
+> +    :widths:       1 1 2
+> +
+> +    * - __u32
+> +      - ``index``
+> +      - The starting buffer index to delete.
+> +    * - __u32
+> +      - ``count``
+> +      - The number of buffers to be deleted.
 
+That's not quite correct. This function will delete the buffers with indices
+index until index+count-1. And indices in that range have to be valid buffers,
+i.e. you can't have already deleted buffers in that range.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Or should we allow that? It is a fair question.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+All buffers also have to be in the DEQUEUED state.
 
-## Build
-* kernel: 6.5.2-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.5.y
-* git commit: 3b1345379dfa8756bebb7a0a5dcb41cf9e0ba98e
-* git describe: v6.5.1-35-g3b1345379dfa
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.5.y/build/v6.5.1=
--35-g3b1345379dfa
+The text above suggests that given the following valid indices:
 
-## Test Regressions (compared to v6.5.1)
+0, 1, 3, 4 (so the buffer with index 2 was already deleted)
 
-## Metric Regressions (compared to v6.5.1)
+deleting 2 buffers from index 1 would delete buffers 1, 3. When in
+fact it will attempt to delete buffers 1 and 2.
 
-## Test Fixes (compared to v6.5.1)
+Also document explicitly that calling this with count=0 (and perhaps
+index=0 as well?) can be used to check if this ioctl is supported.
 
-## Metric Fixes (compared to v6.5.1)
+> +    * - __u32
+> +      - ``type``
+> +      - Type of the stream or buffers, this is the same as the struct
+> +	:c:type:`v4l2_format` ``type`` field. See
+> +	:c:type:`v4l2_buf_type` for valid values.
+> +    * - __u32
+> +      - ``reserved``\ [13]
+> +      - A place holder for future extensions. Drivers and applications
+> +	must set the array to zero.
 
-## Test result summary
-total: 142284, pass: 122577, fail: 2113, skip: 17398, xfail: 196
+What should happen if you delete ALL buffers with this call? I.e., the
+equivalent to REQBUFS with count=0.
 
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 142 total, 140 passed, 2 failed
-* arm64: 53 total, 50 passed, 3 failed
-* i386: 41 total, 39 passed, 2 failed
-* mips: 30 total, 28 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 37 total, 35 passed, 2 failed
-* riscv: 25 total, 22 passed, 3 failed
-* s390: 16 total, 13 passed, 3 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 46 total, 42 passed, 4 failed
+Thinking about this the main difference is that DELETE_BUFS can only delete
+dequeued buffers and it does not stop streaming if all buffers are deleted.
 
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
+So REQBUFS with count=0 (or a STREAMOFF) is still needed to officially stop
+streaming and cancel the queue.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Basically REQBUFS with count=0 is almost the equivalent of calling STREAMOFF followed
+by DELETE_BUFS for all buffers. Almost, but not quite: REQBUFS(0) also reports
+if the queue is unbalanced, and it sets q->num_buffers to 0. And in vb2_ioctl_reqbufs
+it will set vdev->queue->owner to NULL.
+
+I am inclined to do the same if DELETE_BUFS deletes all buffers.
+
+> +
+> +Return Value
+> +============
+> +
+> +On success 0 is returned, on error -1 and the ``errno`` variable is set
+> +appropriately. The generic error codes are described at the
+> +:ref:`Generic Error Codes <gen-errors>` chapter.
+> +
+> +EBUSY
+> +    File I/O is in progress.
+> +
+> +EINVAL
+> +    The buffer ``index`` doesn't exist in the queue.
+> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+> index dc7f6b59d237..9edb2a1e95fc 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+> @@ -1633,6 +1633,30 @@ int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb)
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
+>  
+> +int vb2_core_delete_buf(struct vb2_queue *q, struct vb2_buffer *vb)
+> +{
+> +	mutex_lock(&q->mmap_lock);
+> +	if (vb->planes[0].mem_priv)
+> +		call_void_vb_qop(vb, buf_cleanup, vb);
+> +
+> +	/* Free MMAP buffers or release USERPTR buffers */
+> +	if (q->memory == VB2_MEMORY_MMAP)
+> +		__vb2_buf_mem_free(vb);
+> +	else if (q->memory == VB2_MEMORY_DMABUF)
+> +		__vb2_buf_dmabuf_put(vb);
+> +	else
+> +		__vb2_buf_userptr_put(vb);
+> +
+> +	vb2_queue_remove_buffer(q, vb);
+> +	mutex_unlock(&q->mmap_lock);
+> +
+> +	dprintk(q, 2, "buffer %d deleted\n", vb->index);
+> +	kfree(vb);
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(vb2_core_delete_buf);
+
+This is duplicating what already happens in __vb2_free_mem and __vb2_queue_free.
+
+That code needs to be refactored.
+
+What you want is a __vb2_delete_buffers(struct vb2_queue *q, unsigned int index, unsigned int buffers)
+function that is called with mmap_lock held and that deletes buffers in the range 'index'
+to 'index + count - 1'. Buffers may already be deleted.
+
+__vb2_free_mem does almost do all of that already.
+
+Then this new function can be called from __vb2_queue_free() and you can make
+a vb2_core_delete_bufs() function that takes the lock and calls __vb2_delete_buffers.
+
+Another note: currently __vb2_queue_free checks if any of the buffers had unbalanced
+operations. That check needs to be moved to __vb2_delete_buffers as well otherwise
+that would never be reported when using DELETE_BUFS.
+
+> +
+>  /*
+>   * vb2_start_streaming() - Attempt to start streaming.
+>   * @q:		videobuf2 queue
+> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> index 8ba658ad9891..d0098f58a65c 100644
+> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+> @@ -385,7 +385,7 @@ static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *md
+>  
+>  	vb = vb2_get_buffer(q, b->index);
+>  	if (!vb) {
+> -		dprintk(q, 1, "%s: buffer is NULL\n", opname);
+> +		dprintk(q, 1, "%s: buffer %u was deleted\n", opname, b->index);
+>  		return -EINVAL;
+>  	}
+>  
+> @@ -757,6 +757,42 @@ int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>  }
+>  EXPORT_SYMBOL_GPL(vb2_prepare_buf);
+>  
+> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d)
+> +{
+> +	struct vb2_buffer *vb;
+> +	unsigned int index;
+> +	int ret = 0;
+> +
+
+Add:
+
+	if (!d->count)
+		return 0;
+
+(possibly also check if !d->index)
+
+> +	if (d->index > q->num_buffers ||
+
+> should be >= here.
+
+> +	    d->count > q->num_buffers ||
+> +	    (d->index + d->count) > q->num_buffers) {
+> +		return -EINVAL;
+> +	}
+
+Once we can delete buffers, how does that change the meaning of num_buffers?
+Isn't this really max_buffer_index or something similar? But we probably also
+still need to keep track of the actual number of buffers.
+
+And create_bufs still allocated buffers from the last index onwards, it does
+not attempt to reuse indices of previously deleted buffers.
+
+There are a lot of drivers that use num_buffers, they will have to be audited.
+
+This needs a lot more thought.
+
+> +
+> +	for (index = d->index; index < d->index + d->count; index++) {
+> +		vb = vb2_get_buffer(q, index);
+> +		if (!vb) {
+> +			dprintk(q, 1, "can't find the requested buffer\n");
+> +			ret = -EINVAL;
+> +			goto error;
+> +		}
+> +		if (vb->state != VB2_BUF_STATE_DEQUEUED) {
+> +			dprintk(q, 1, "can't delete non dequeued buffer index %d\n", vb->index);
+> +			ret = -EINVAL;
+> +			goto error;
+> +		}
+
+These checks have to take place first, then, if all is OK, you call vb2_core_delete_bufs.
+
+Actually, thinking this over, I would move all these checks to vb2_core_delete_bufs.
+
+It can all be put under the mmap_lock mutex to ensure nobody is messing around
+with the queue while this takes place.
+
+Note that when vb2_core_reqbufs() is called with count=0, then if it sees that
+a buffer is still in use (mmaped), it will log a debug message that the buffers
+are orphaned. We should keep that, I believe.
+
+> +
+> +		ret = vb2_core_delete_buf(q, vb);
+> +		if (ret)
+> +			break;
+> +	}
+> +
+> +error:
+> +	d->index = index;
+
+I wouldn't do this. I don't think this is useful.
+
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL_GPL(vb2_delete_bufs);
+> +
+>  int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
+>  {
+>  	unsigned requested_planes = 1;
+> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+> index f81279492682..215654fd6581 100644
+> --- a/drivers/media/v4l2-core/v4l2-dev.c
+> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+> @@ -720,6 +720,7 @@ static void determine_valid_ioctls(struct video_device *vdev)
+>  		SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF, vidioc_prepare_buf);
+>  		SET_VALID_IOCTL(ops, VIDIOC_STREAMON, vidioc_streamon);
+>  		SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF, vidioc_streamoff);
+> +		SET_VALID_IOCTL(ops, VIDIOC_DELETE_BUFS, vidioc_delete_bufs);
+>  	}
+>  
+>  	if (is_vid || is_vbi || is_meta) {
+> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+> index f4d9d6279094..aac3a0ea0126 100644
+> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+> @@ -489,6 +489,13 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
+>  	v4l_print_format(&p->format, write_only);
+>  }
+>  
+> +static void v4l_print_delete_buffers(const void *arg, bool write_only)
+> +{
+> +	const struct v4l2_delete_buffers *p = arg;
+> +
+> +	pr_cont("index=%d, count=%d\n", p->index, p->count);
+
+Use %u since both args are unsigned.
+
+> +}
+> +
+>  static void v4l_print_streamparm(const void *arg, bool write_only)
+>  {
+>  	const struct v4l2_streamparm *p = arg;
+> @@ -2160,6 +2167,15 @@ static int v4l_prepare_buf(const struct v4l2_ioctl_ops *ops,
+>  	return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
+>  }
+>  
+> +static int v4l_delete_bufs(const struct v4l2_ioctl_ops *ops,
+> +			   struct file *file, void *fh, void *arg)
+> +{
+> +	struct v4l2_delete_buffers *delete = arg;
+> +	int ret = check_fmt(file, delete->type);
+> +
+> +	return ret ? ret : ops->vidioc_delete_bufs(file, fh, delete);
+> +}
+> +
+>  static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
+>  				struct file *file, void *fh, void *arg)
+>  {
+> @@ -2909,6 +2925,7 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
+>  	IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands, v4l_print_freq_band, 0),
+>  	IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info, v4l_print_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
+>  	IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl, v4l_print_query_ext_ctrl, INFO_FL_CTRL | INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
+> +	IOCTL_INFO(VIDIOC_DELETE_BUFS, v4l_delete_bufs, v4l_print_delete_buffers, INFO_FL_PRIO | INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_delete_buffers, type)),
+>  };
+>  #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+>  
+> diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+> index edb733f21604..55afbde54211 100644
+> --- a/include/media/v4l2-ioctl.h
+> +++ b/include/media/v4l2-ioctl.h
+> @@ -163,6 +163,8 @@ struct v4l2_fh;
+>   *	:ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
+>   * @vidioc_prepare_buf: pointer to the function that implements
+>   *	:ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
+> + * @vidioc_delete_bufs: pointer to the function that implements
+> + *	:ref:`VIDIOC_DELETE_BUFS <vidioc_delete_bufs>` ioctl
+>   * @vidioc_overlay: pointer to the function that implements
+>   *	:ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
+>   * @vidioc_g_fbuf: pointer to the function that implements
+> @@ -422,6 +424,8 @@ struct v4l2_ioctl_ops {
+>  				  struct v4l2_create_buffers *b);
+>  	int (*vidioc_prepare_buf)(struct file *file, void *fh,
+>  				  struct v4l2_buffer *b);
+> +	int (*vidioc_delete_bufs)(struct file *file, void *fh,
+> +				  struct v4l2_delete_buffers *d);
+>  
+>  	int (*vidioc_overlay)(struct file *file, void *fh, unsigned int i);
+>  	int (*vidioc_g_fbuf)(struct file *file, void *fh,
+> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> index 97153c69583f..e2c5ff31efd0 100644
+> --- a/include/media/videobuf2-core.h
+> +++ b/include/media/videobuf2-core.h
+> @@ -843,6 +843,15 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>   */
+>  int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb);
+>  
+> +/**
+> + * vb2_core_delete_buf() -
+> + * @q: pointer to &struct vb2_queue with videobuf2 queue.
+> + * @vb:		pointer to struct &vb2_buffer.
+> + *
+> + *  Return: returns zero on success; an error code otherwise.
+> + */
+> +int vb2_core_delete_buf(struct vb2_queue *q, struct vb2_buffer *vb);
+> +
+>  /**
+>   * vb2_core_qbuf() - Queue a buffer from userspace
+>   *
+> diff --git a/include/media/videobuf2-v4l2.h b/include/media/videobuf2-v4l2.h
+> index 5a845887850b..2ef68fdf388f 100644
+> --- a/include/media/videobuf2-v4l2.h
+> +++ b/include/media/videobuf2-v4l2.h
+> @@ -118,6 +118,17 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create);
+>   */
+>  int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>  		    struct v4l2_buffer *b);
+> +/**
+> + * vb2_delete_bufs() - Delete buffers from the queue
+> + *
+> + * @q:		pointer to &struct vb2_queue with videobuf2 queue.
+> + * @d:		delete parameter, passed from userspace to
+> + *		&v4l2_ioctl_ops->vidioc_delete_bufs handler in driver
+> + *
+> + * The return values from this function are intended to be directly returned
+> + * from &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver.
+> + */
+> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d);
+
+I'm missing the vb2_ioctl_delete_bufs function with a call to vb2_queue_is_busy().
+
+>  
+>  /**
+>   * vb2_qbuf() - Queue a buffer from userspace
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index 78260e5d9985..9cc7f570d995 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -2616,6 +2616,20 @@ struct v4l2_create_buffers {
+>  	__u32			reserved[6];
+>  };
+>  
+> +/**
+> + * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
+> + * @index:	the first buffer to be deleted
+> + * @count:	number of buffers to delete
+> + * @type:	enum v4l2_buf_type
+> + * @reserved:	future extensions
+> + */
+> +struct v4l2_delete_buffers {
+> +	__u32			index;
+> +	__u32			count;
+> +	__u32			type;
+> +	__u32			reserved[13];
+> +};
+> +
+>  /*
+>   *	I O C T L   C O D E S   F O R   V I D E O   D E V I C E S
+>   *
+> @@ -2715,6 +2729,8 @@ struct v4l2_create_buffers {
+>  #define VIDIOC_DBG_G_CHIP_INFO  _IOWR('V', 102, struct v4l2_dbg_chip_info)
+>  
+>  #define VIDIOC_QUERY_EXT_CTRL	_IOWR('V', 103, struct v4l2_query_ext_ctrl)
+> +#define VIDIOC_DELETE_BUFS	_IOWR('V', 104, struct v4l2_delete_buffers)
+> +
+>  
+>  /* Reminder: when adding new ioctls please add support for them to
+>     drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+
+You need much more extensive compliance checks for this, esp. mixing
+create_bufs and delete_bufs. And test it with the test-media test script.
+
+Regards,
+
+	Hans
