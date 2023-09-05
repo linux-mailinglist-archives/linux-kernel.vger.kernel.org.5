@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C31079312C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 939EB79312B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244674AbjIEVpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46850 "EHLO
+        id S242402AbjIEVpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244639AbjIEVom (ORCPT
+        with ESMTP id S244646AbjIEVom (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Sep 2023 17:44:42 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735ACE60
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:42:50 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787D8E4A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:42:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693950169;
+        s=mimecast20190719; t=1693950166;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=i4qwgXUgzQeLfKMT3tv3YVc7S/hLt8ARXOPSgsfGIQ4=;
-        b=XtHLdi6r6DtJCVMPx5dQlW7HHYJ2QAKdDhxH/E0LH9lzibvJmy3vhjd1qVHgaxrM1LOiS5
-        MdrxoJXI4rRDSmu9UwxHqKgPYxZFonBpKYeXUPHQF/30JZOHjR/pfrBvs1RiFhPqe1ZqtY
-        aYoB/oO1uutN/ZSSbrMB6P0dkPMmSHc=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=uQJce4v94fBnSsGo2eU4ZKQw/Wk8m14ksf+Px8TLSGM=;
+        b=ZBE8Hs7oczX6PZ8XChPGE5ZUsFIMv36rZzXvpmcXUxVYgo1iXbPiJC6YJDSLYMul5tmdt7
+        beT4rpG+ztXE2xqrNiP82JEmhbU5XvS108E2oBKz+6YDSBZw1FSOadKaEss0upzlNOSujn
+        9Viw6tkBlRLT6OgcpP4ac6hPCq8vXwY=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-503-lLsrIXcTMGCDJCI5DUz_jQ-1; Tue, 05 Sep 2023 17:42:48 -0400
-X-MC-Unique: lLsrIXcTMGCDJCI5DUz_jQ-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-63c9463c116so6468536d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:42:48 -0700 (PDT)
+ us-mta-345-HJX9hqtSMx2YFj3fHLMPWQ-1; Tue, 05 Sep 2023 17:42:45 -0400
+X-MC-Unique: HJX9hqtSMx2YFj3fHLMPWQ-1
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-76f0d1c4045so44104685a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:42:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693950163; x=1694554963;
+        d=1e100.net; s=20221208; t=1693950164; x=1694554964;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=i4qwgXUgzQeLfKMT3tv3YVc7S/hLt8ARXOPSgsfGIQ4=;
-        b=WyRky7bljvuqu++itzdowO5P4hCHShL6eqDZ4sS2KqBnQvBETWuN7wmJD6fxmLeh/p
-         ZXzd4Mx+E+gu2aE0svLJ6BMwPq9CuHCmqpZqK3lUtZ/3FOl67SuiUEL0lWZgtWAjDs2D
-         sWjKE/k7lxs7ioTqwuHUJRr/QjggxajxD+7W10IbMHfY6DQSBZL0MV08m/sRjF2ERiVA
-         bTI26H5KFf/y7gvahRuX8cH58sEWmyIDguO4cbCGw8SZMByTFFq7j0osstXPf0T0WYSx
-         58W73F10fap/SmmaEqMV/QUIkIMhpwUDHUOmakcIicDOJ7gpdYUQBuTkHrgSh7mR/jDE
-         H72A==
-X-Gm-Message-State: AOJu0Yy73QFDc0kRC0UFBBv/AE3M89YY8pzDMUP8601apRHKAg7/wNKT
-        0Hpna7r43+RcXvbxZojssqrYBWeAUnCKzJ0QGHW/zrO4qfbXjpvEhx8tzNbVzLJKG/QlgtoJxET
-        XfnOilQK+I097hz56OI5P+mvLWaSHSnNC8zh6S/LgsRRtgkp6IU0hRBpJcUyWpUrQ0cvl3z+vHQ
-        ui3+0r8g==
-X-Received: by 2002:a05:6214:21e4:b0:64a:8d39:3378 with SMTP id p4-20020a05621421e400b0064a8d393378mr17304056qvj.4.1693950163094;
-        Tue, 05 Sep 2023 14:42:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFlS4tLxX3RT0SNIZn/SUsnHB3xGIbADDb9sPouLrcBV//Rq31qTbeRmNhRZtJnSN5gXEiBhA==
-X-Received: by 2002:a05:6214:21e4:b0:64a:8d39:3378 with SMTP id p4-20020a05621421e400b0064a8d393378mr17304030qvj.4.1693950162797;
-        Tue, 05 Sep 2023 14:42:42 -0700 (PDT)
+        bh=uQJce4v94fBnSsGo2eU4ZKQw/Wk8m14ksf+Px8TLSGM=;
+        b=dmZYr6zYxA9GX69SxdqYLS3O2Xxl2ejVxROMZKgNxoZjpxhC7VOAmJVAR6cXyRUw1p
+         05SqFbZyLdEZMHEIkgXz6j42BqeVhssO5Gd6d/lYo6wJKV+PW9Pd5AYFYG+AEMHlV6XN
+         HLuDi2iUrYART0L81dKopaw+7TNSvFDaIK/w/zqIO7PoVSxebZ1I5OMCtnp+m2PyqM9u
+         3A9Qcor5aNbVceJoLjl27nukxkithBqYTuNlCKUjXvcj8CnPVf3Jasrn7zmRL0K1+aRV
+         reO+rI+3KCVFaooCFcrBDtq0CSzpbjanGD8wcTIQrOODLKFodK1ihqQsPHSD1r/2Pj+G
+         sv6A==
+X-Gm-Message-State: AOJu0YxtypG+oyVUi7o7K9wy0Uvy9KSGy5y+NRsyz3MNO6nPWpqgulRd
+        Jjqob25wekqYTrLL42uhSk7vy+ueaqHNsuLE9A1ZkDzDYpHkC2dvklkLCMessq886bQJQmeiyCp
+        LxhB3tqnJeKhUViHedlgIUirh7X/xqlUT7l+j8GFGZN0aSyNVuVjDADFDNwOkR5Kq0sCV464hmR
+        Tj0GaSqg==
+X-Received: by 2002:a05:620a:1aa4:b0:76f:1614:577d with SMTP id bl36-20020a05620a1aa400b0076f1614577dmr16479585qkb.4.1693950164646;
+        Tue, 05 Sep 2023 14:42:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH0CeamzOJT7Goeqq7g3UHhRHuitMC171tC//j49BSbILvNCZigPeU/QwAtYa7Vbv4u1ikW+A==
+X-Received: by 2002:a05:620a:1aa4:b0:76f:1614:577d with SMTP id bl36-20020a05620a1aa400b0076f1614577dmr16479552qkb.4.1693950164161;
+        Tue, 05 Sep 2023 14:42:44 -0700 (PDT)
 Received: from x1n.redhat.com (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id i2-20020a37c202000000b007682af2c8aasm4396938qkm.126.2023.09.05.14.42.41
+        by smtp.gmail.com with ESMTPSA id i2-20020a37c202000000b007682af2c8aasm4396938qkm.126.2023.09.05.14.42.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 14:42:42 -0700 (PDT)
+        Tue, 05 Sep 2023 14:42:43 -0700 (PDT)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Anish Moorthy <amoorthy@google.com>,
@@ -72,9 +72,9 @@ Cc:     Anish Moorthy <amoorthy@google.com>,
         Ingo Molnar <mingo@redhat.com>,
         James Houghton <jthoughton@google.com>,
         Nadav Amit <nadav.amit@gmail.com>
-Subject: [PATCH 4/7] fs/userfaultfd: Use exclusive waitqueue for poll()
-Date:   Tue,  5 Sep 2023 17:42:32 -0400
-Message-ID: <20230905214235.320571-5-peterx@redhat.com>
+Subject: [PATCH 5/7] selftests/mm: Replace uffd_read_mutex with a semaphore
+Date:   Tue,  5 Sep 2023 17:42:33 -0400
+Message-ID: <20230905214235.320571-6-peterx@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20230905214235.320571-1-peterx@redhat.com>
 References: <20230905214235.320571-1-peterx@redhat.com>
@@ -90,27 +90,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Userfaultfd is the kind of fd that does not need a wake all semantics when
-wake up.  Enqueue using the new POLL_ENQUEUE_EXCLUSIVE flag.
+Each uffd read threads unlocks the read mutex first, probably just to make
+sure the thread is reaching a stage where pthread_cancel() can always work
+before the main thread moves on.
+
+However keeping the mutex locked always and unlock in the thread is a bit
+hacky.  Replacing it with a semaphore which should be much clearer, where
+the main thread will wait() and the thread will just post().  Move it to
+uffd-common.* to be reused later.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- fs/userfaultfd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/mm/uffd-common.c | 1 +
+ tools/testing/selftests/mm/uffd-common.h | 2 ++
+ tools/testing/selftests/mm/uffd-stress.c | 8 +++-----
+ 3 files changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index f7fda7d0c994..9c39adc398fc 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -994,7 +994,7 @@ static __poll_t userfaultfd_poll(struct file *file, poll_table *wait)
- 	struct userfaultfd_ctx *ctx = file->private_data;
- 	__poll_t ret;
+diff --git a/tools/testing/selftests/mm/uffd-common.c b/tools/testing/selftests/mm/uffd-common.c
+index 02b89860e193..aded06cab285 100644
+--- a/tools/testing/selftests/mm/uffd-common.c
++++ b/tools/testing/selftests/mm/uffd-common.c
+@@ -17,6 +17,7 @@ bool map_shared;
+ bool test_uffdio_wp = true;
+ unsigned long long *count_verify;
+ uffd_test_ops_t *uffd_test_ops;
++sem_t uffd_read_sem;
  
--	poll_wait(file, &ctx->fd_wqh, wait);
-+	poll_wait_exclusive(file, &ctx->fd_wqh, wait);
+ static int uffd_mem_fd_create(off_t mem_size, bool hugetlb)
+ {
+diff --git a/tools/testing/selftests/mm/uffd-common.h b/tools/testing/selftests/mm/uffd-common.h
+index 7c4fa964c3b0..521523baded1 100644
+--- a/tools/testing/selftests/mm/uffd-common.h
++++ b/tools/testing/selftests/mm/uffd-common.h
+@@ -32,6 +32,7 @@
+ #include <inttypes.h>
+ #include <stdint.h>
+ #include <sys/random.h>
++#include <semaphore.h>
  
- 	if (!userfaultfd_is_initialized(ctx))
- 		return EPOLLERR;
+ #include "../kselftest.h"
+ #include "vm_util.h"
+@@ -97,6 +98,7 @@ extern bool map_shared;
+ extern bool test_uffdio_wp;
+ extern unsigned long long *count_verify;
+ extern volatile bool test_uffdio_copy_eexist;
++extern sem_t uffd_read_sem;
+ 
+ extern uffd_test_ops_t anon_uffd_test_ops;
+ extern uffd_test_ops_t shmem_uffd_test_ops;
+diff --git a/tools/testing/selftests/mm/uffd-stress.c b/tools/testing/selftests/mm/uffd-stress.c
+index 469e0476af26..7219f55ae794 100644
+--- a/tools/testing/selftests/mm/uffd-stress.c
++++ b/tools/testing/selftests/mm/uffd-stress.c
+@@ -125,14 +125,12 @@ static int copy_page_retry(int ufd, unsigned long offset)
+ 	return __copy_page(ufd, offset, true, test_uffdio_wp);
+ }
+ 
+-pthread_mutex_t uffd_read_mutex = PTHREAD_MUTEX_INITIALIZER;
+-
+ static void *uffd_read_thread(void *arg)
+ {
+ 	struct uffd_args *args = (struct uffd_args *)arg;
+ 	struct uffd_msg msg;
+ 
+-	pthread_mutex_unlock(&uffd_read_mutex);
++	sem_post(&uffd_read_sem);
+ 	/* from here cancellation is ok */
+ 
+ 	for (;;) {
+@@ -196,7 +194,7 @@ static int stress(struct uffd_args *args)
+ 					   uffd_read_thread,
+ 					   (void *)&args[cpu]))
+ 				return 1;
+-			pthread_mutex_lock(&uffd_read_mutex);
++			sem_wait(&uffd_read_sem);
+ 		}
+ 		if (pthread_create(&background_threads[cpu], &attr,
+ 				   background_thread, (void *)cpu))
+@@ -258,7 +256,7 @@ static int userfaultfd_stress(void)
+ 	zeropage = area;
+ 	bzero(zeropage, page_size);
+ 
+-	pthread_mutex_lock(&uffd_read_mutex);
++	sem_init(&uffd_read_sem, 0, 0);
+ 
+ 	pthread_attr_init(&attr);
+ 	pthread_attr_setstacksize(&attr, 16*1024*1024);
 -- 
 2.41.0
 
