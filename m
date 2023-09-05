@@ -2,227 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC257929EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 645B2792B2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354679AbjIEQ35 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 12:29:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47836 "EHLO
+        id S242961AbjIEQtL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:49:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354527AbjIEMVR (ORCPT
+        with ESMTP id S1354533AbjIEMWv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:21:17 -0400
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7961AE;
-        Tue,  5 Sep 2023 05:21:10 -0700 (PDT)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id D68BB80B2;
-        Tue,  5 Sep 2023 20:21:07 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 5 Sep
- 2023 20:21:07 +0800
-Received: from ubuntu.localdomain (113.72.144.73) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 5 Sep
- 2023 20:21:06 +0800
-From:   Hal Feng <hal.feng@starfivetech.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andreas Schwab <schwab@suse.de>,
-        Conor Dooley <conor@kernel.org>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Jianlong Huang <jianlong.huang@starfivetech.com>,
-        Hal Feng <hal.feng@starfivetech.com>
-CC:     <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v1 2/2] pinctrl: starfive: jh7110: Add system pm ops to save and restore context
-Date:   Tue, 5 Sep 2023 20:21:05 +0800
-Message-ID: <20230905122105.117000-3-hal.feng@starfivetech.com>
-X-Mailer: git-send-email 2.38.1
-In-Reply-To: <20230905122105.117000-1-hal.feng@starfivetech.com>
-References: <20230905122105.117000-1-hal.feng@starfivetech.com>
+        Tue, 5 Sep 2023 08:22:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706681A8;
+        Tue,  5 Sep 2023 05:22:48 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 05AB660686;
+        Tue,  5 Sep 2023 12:22:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB9ADC433C7;
+        Tue,  5 Sep 2023 12:22:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693916567;
+        bh=SoNW2HIc86v/ID8fpk0tLx5Hbits5RDiuL3Og0Y11Fs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M91M2qjYeHxPHsS+sEAzDLTaa25Cp66UkgL/p5L0b9ufh1drfgHSzZ6FQ/1DZr+ey
+         QbnrPvUeEWQSguEWNg34rKqKqxxwyhvXBoaqCpTG3gCIswqLR5FBuVcoWljYaYanH3
+         E7TNBDkAUXzzO8UrTLUyfPtOhGGLU5LF7iwD68oQJRHKMkB1cnYpdmcgHLsTFsFPWb
+         +9e28y1UXEINMQpTxiEiRvky+cuwmElTZiLARmV85SmDdB6MME8Ng3y1U0sIsAu63E
+         y1zb0CAGseuP4pD8O0h8Fmce62dW+rcL3ps/qri/EYYyjZnycN9wgPQIGFtaKRzBL1
+         zg2uEle1EpS4g==
+Date:   Tue, 5 Sep 2023 14:22:42 +0200
+From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Fang Xiang <fangxiang3@xiaomi.com>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH 1/2] dt-bindings: interrupt-controller: arm,gic-v3: Add
+ dma-noncoherent property
+Message-ID: <ZPcdkob6L8RbUVP3@lpieralisi>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+ <20230905104721.52199-2-lpieralisi@kernel.org>
+ <932355b4-7d43-a465-a2da-8dded8e2d069@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [113.72.144.73]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <932355b4-7d43-a465-a2da-8dded8e2d069@arm.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add system pm ops to save and restore pinctrl registers
-when suspending and resuming the driver, respectively.
+On Tue, Sep 05, 2023 at 12:17:51PM +0100, Robin Murphy wrote:
+> On 05/09/2023 11:47 am, Lorenzo Pieralisi wrote:
+> > The GIC v3 specifications allow redistributors and ITSes interconnect
+> > ports used to access memory to be wired up in a way that makes the
+> > respective initiators/memory observers non-coherent.
+> > 
+> > Add the standard dma-noncoherent property to the GICv3 bindings to
+> > allow firmware to describe the redistributors/ITSes components and
+> > interconnect ports behaviour in system designs where the redistributors
+> > and ITSes are not coherent with the CPU.
+> > 
+> > Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
+> > Cc: Rob Herring <robh@kernel.org>
+> > ---
+> >   .../bindings/interrupt-controller/arm,gic-v3.yaml         | 8 ++++++++
+> >   1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml b/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
+> > index 39e64c7f6360..0a81ae4519a6 100644
+> > --- a/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
+> > +++ b/Documentation/devicetree/bindings/interrupt-controller/arm,gic-v3.yaml
+> > @@ -106,6 +106,10 @@ properties:
+> >       $ref: /schemas/types.yaml#/definitions/uint32
+> >       maximum: 4096
+> > +  dma-noncoherent:
+> > +    description: |
+> > +      Present if the GIC redistributors are not cache coherent with the CPU.
+> 
+> I wonder if it's worth being a bit more specific here, e.g. "if the GIC
+> {redistributors,ITS} permit programming cacheable inner-shareable memory
+> attributes, but are connected to a non-coherent downstream interconnect."
 
-Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
----
- MAINTAINERS                                   |  1 +
- .../starfive/pinctrl-starfive-jh7110-aon.c    |  4 ++
- .../starfive/pinctrl-starfive-jh7110-sys.c    |  4 ++
- .../starfive/pinctrl-starfive-jh7110.c        | 40 +++++++++++++++++++
- .../starfive/pinctrl-starfive-jh7110.h        |  4 ++
- 5 files changed, 53 insertions(+)
+In my opinion it is and I wanted to elaborate on what I wrote but then I
+thought that this is a standard DT property, I wasn't sure whether we
+really need to explain what it is there for.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4cc6bf79fdd8..6c7eabeef28f 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -20302,6 +20302,7 @@ F:	include/dt-bindings/clock/starfive?jh71*.h
- STARFIVE JH71X0 PINCTRL DRIVERS
- M:	Emil Renner Berthing <kernel@esmil.dk>
- M:	Jianlong Huang <jianlong.huang@starfivetech.com>
-+M:	Hal Feng <hal.feng@starfivetech.com>
- L:	linux-gpio@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/pinctrl/starfive,jh71*.yaml
-diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-aon.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-aon.c
-index 8cf28aaed254..8691fd55594a 100644
---- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-aon.c
-+++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-aon.c
-@@ -34,6 +34,8 @@
- #define JH7110_AON_NGPIO		4
- #define JH7110_AON_GC_BASE		64
- 
-+#define JH7110_AON_REGS_NUM		37
-+
- /* registers */
- #define JH7110_AON_DOEN			0x0
- #define JH7110_AON_DOUT			0x4
-@@ -148,6 +150,7 @@ static const struct jh7110_pinctrl_soc_info jh7110_aon_pinctrl_info = {
- 	.gpi_mask	= GENMASK(3, 0),
- 	.gpioin_reg_base	   = JH7110_AON_GPIOIN,
- 	.irq_reg		   = &jh7110_aon_irq_reg,
-+	.nsaved_regs		   = JH7110_AON_REGS_NUM,
- 	.jh7110_set_one_pin_mux  = jh7110_aon_set_one_pin_mux,
- 	.jh7110_get_padcfg_base  = jh7110_aon_get_padcfg_base,
- 	.jh7110_gpio_irq_handler = jh7110_aon_irq_handler,
-@@ -168,6 +171,7 @@ static struct platform_driver jh7110_aon_pinctrl_driver = {
- 	.driver = {
- 		.name = "starfive-jh7110-aon-pinctrl",
- 		.of_match_table = jh7110_aon_pinctrl_of_match,
-+		.pm = pm_sleep_ptr(&jh7110_pinctrl_pm_ops),
- 	},
- };
- module_platform_driver(jh7110_aon_pinctrl_driver);
-diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-sys.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-sys.c
-index bc279a39613f..0654731d5c27 100644
---- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-sys.c
-+++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110-sys.c
-@@ -33,6 +33,8 @@
- #define JH7110_SYS_NGPIO		64
- #define JH7110_SYS_GC_BASE		0
- 
-+#define JH7110_SYS_REGS_NUM		174
-+
- /* registers */
- #define JH7110_SYS_DOEN			0x000
- #define JH7110_SYS_DOUT			0x040
-@@ -419,6 +421,7 @@ static const struct jh7110_pinctrl_soc_info jh7110_sys_pinctrl_info = {
- 	.gpi_mask	= GENMASK(6, 0),
- 	.gpioin_reg_base	   = JH7110_SYS_GPIOIN,
- 	.irq_reg		   = &jh7110_sys_irq_reg,
-+	.nsaved_regs		   = JH7110_SYS_REGS_NUM,
- 	.jh7110_set_one_pin_mux  = jh7110_sys_set_one_pin_mux,
- 	.jh7110_get_padcfg_base  = jh7110_sys_get_padcfg_base,
- 	.jh7110_gpio_irq_handler = jh7110_sys_irq_handler,
-@@ -439,6 +442,7 @@ static struct platform_driver jh7110_sys_pinctrl_driver = {
- 	.driver = {
- 		.name = "starfive-jh7110-sys-pinctrl",
- 		.of_match_table = jh7110_sys_pinctrl_of_match,
-+		.pm = pm_sleep_ptr(&jh7110_pinctrl_pm_ops),
- 	},
- };
- module_platform_driver(jh7110_sys_pinctrl_driver);
-diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-index 72747ad497b5..813b5c2f11b6 100644
---- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-+++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.c
-@@ -873,6 +873,13 @@ int jh7110_pinctrl_probe(struct platform_device *pdev)
- 	if (!sfp)
- 		return -ENOMEM;
- 
-+#if IS_ENABLED(CONFIG_PM_SLEEP)
-+	sfp->saved_regs = devm_kcalloc(dev, info->nsaved_regs,
-+				       sizeof(*sfp->saved_regs), GFP_KERNEL);
-+	if (!sfp->saved_regs)
-+		return -ENOMEM;
-+#endif
-+
- 	sfp->base = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(sfp->base))
- 		return PTR_ERR(sfp->base);
-@@ -974,6 +981,39 @@ int jh7110_pinctrl_probe(struct platform_device *pdev)
- }
- EXPORT_SYMBOL_GPL(jh7110_pinctrl_probe);
- 
-+static int jh7110_pinctrl_suspend(struct device *dev)
-+{
-+	struct jh7110_pinctrl *sfp = dev_get_drvdata(dev);
-+	unsigned long flags;
-+	unsigned int i;
-+
-+	raw_spin_lock_irqsave(&sfp->lock, flags);
-+	for (i = 0 ; i < sfp->info->nsaved_regs ; i++)
-+		sfp->saved_regs[i] = readl_relaxed(sfp->base + 4 * i);
-+
-+	raw_spin_unlock_irqrestore(&sfp->lock, flags);
-+	return 0;
-+}
-+
-+static int jh7110_pinctrl_resume(struct device *dev)
-+{
-+	struct jh7110_pinctrl *sfp = dev_get_drvdata(dev);
-+	unsigned long flags;
-+	unsigned int i;
-+
-+	raw_spin_lock_irqsave(&sfp->lock, flags);
-+	for (i = 0 ; i < sfp->info->nsaved_regs ; i++)
-+		writel_relaxed(sfp->saved_regs[i], sfp->base + 4 * i);
-+
-+	raw_spin_unlock_irqrestore(&sfp->lock, flags);
-+	return 0;
-+}
-+
-+const struct dev_pm_ops jh7110_pinctrl_pm_ops = {
-+	LATE_SYSTEM_SLEEP_PM_OPS(jh7110_pinctrl_suspend, jh7110_pinctrl_resume)
-+};
-+EXPORT_SYMBOL_GPL(jh7110_pinctrl_pm_ops);
-+
- MODULE_DESCRIPTION("Pinctrl driver for the StarFive JH7110 SoC");
- MODULE_AUTHOR("Emil Renner Berthing <kernel@esmil.dk>");
- MODULE_AUTHOR("Jianlong Huang <jianlong.huang@starfivetech.com>");
-diff --git a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.h b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.h
-index 3f20b7ff96dd..a33d0d4e1382 100644
---- a/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.h
-+++ b/drivers/pinctrl/starfive/pinctrl-starfive-jh7110.h
-@@ -21,6 +21,7 @@ struct jh7110_pinctrl {
- 	/* register read/write mutex */
- 	struct mutex mutex;
- 	const struct jh7110_pinctrl_soc_info *info;
-+	u32 *saved_regs;
- };
- 
- struct jh7110_gpio_irq_reg {
-@@ -50,6 +51,8 @@ struct jh7110_pinctrl_soc_info {
- 
- 	const struct jh7110_gpio_irq_reg *irq_reg;
- 
-+	unsigned int nsaved_regs;
-+
- 	/* generic pinmux */
- 	int (*jh7110_set_one_pin_mux)(struct jh7110_pinctrl *sfp,
- 				      unsigned int pin,
-@@ -66,5 +69,6 @@ void jh7110_set_gpiomux(struct jh7110_pinctrl *sfp, unsigned int pin,
- 			unsigned int din, u32 dout, u32 doen);
- int jh7110_pinctrl_probe(struct platform_device *pdev);
- struct jh7110_pinctrl *jh7110_from_irq_desc(struct irq_desc *desc);
-+extern const struct dev_pm_ops jh7110_pinctrl_pm_ops;
- 
- #endif /* __PINCTRL_STARFIVE_JH7110_H__ */
--- 
-2.38.1
+We are using the property to plug a hole so I agree with you, we should
+be as clear as possible in the property definition but I will rely on
+Rob/Marc's opinion, I don't know what's the DT policy for this.
 
+> That might help clarify why the negative property, which could seem a bit
+> backwards at first glance, and that it's not so important in the cases where
+> the GIC itself is fundamentally non-coherent anyway (which *is*
+> software-discoverable).
+
+Is it ? Again, see above, are we defining "dma-noncoherent" to fix a bug
+or to fix the specs ? The shareability bits are writeable and even a
+fundamentally non-coherent GIC design could allow writing them, AFAIU.
+
+I would avoid putting ourselves into a corner where we can't use
+this property because the binding itself is too strict on what it is
+solving.
+ 
+> Otherwise, this is the same approach that I like and have previously lobbied
+> for, so obviously I approve :)
+> 
+> (plus I do think it's the right shape to be able to slot an equivalent field
+> into ACPI MADT entries without *too* much bother)
+
+We are in agreement, let's see what others think.
+
+Thanks,
+Lorenzo
+
+> 
+> Thanks,
+> Robin.
+> 
+> > +
+> >     msi-controller:
+> >       description:
+> >         Only present if the Message Based Interrupt functionality is
+> > @@ -193,6 +197,10 @@ patternProperties:
+> >         compatible:
+> >           const: arm,gic-v3-its
+> > +      dma-noncoherent:
+> > +        description: |
+> > +          Present if the GIC ITS is not cache coherent with the CPU.
+> > +
+> >         msi-controller: true
+> >         "#msi-cells":
+> 
+> _______________________________________________
+> linux-arm-kernel mailing list
+> linux-arm-kernel@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
