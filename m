@@ -2,186 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4746792698
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F9A792BE8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240160AbjIEQIq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53596 "EHLO
+        id S1347043AbjIERDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:03:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354169AbjIEKCw (ORCPT
+        with ESMTP id S1354173AbjIEKEg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:02:52 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A85E1AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:02:49 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2bd0d19a304so37580741fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:02:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693908167; x=1694512967; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uYGR7uuW7UPI/w9fw3s9+lxIPdVOpDrXZDwG9etXioU=;
-        b=Haxyrdl6Ja8pSyKeaU7BzL/UQu1328QkRXuse0icojx1BQ/sDNKsN2cM/jJRIvZ0SO
-         xuR6MFk36R/2kxr+iUEKqUtPyZJhZxR7d+JhW657+MtNWbhAzglLkOUMIG505gv5hseP
-         O+6kL/ru+Z8fblrDPIDoyeFkox3n2UX/tYNBVbdhRgIJB5PhWcRFTyYXoOMynF03ljSK
-         G8sJW+fLwgLGCLt0Sdc7rnNJqrtedk7jnQ1oASKUBYvM8iRGkxzXJsBzDc2/174ga8Dr
-         0INyPBvBbBzNXqCByYJUv0EOq8gh3jO6WHP/NtQ5WduBfeuKzssQlf0W6CFIz7+jyGVv
-         gLWQ==
+        Tue, 5 Sep 2023 06:04:36 -0400
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9F01B4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:04:32 -0700 (PDT)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1c0a90de7a2so30579495ad.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:04:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693908167; x=1694512967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uYGR7uuW7UPI/w9fw3s9+lxIPdVOpDrXZDwG9etXioU=;
-        b=ESnvSgQKBVN+rHpZxPDXLzKV6KibvS+Cr1VG3zR9EuyefvXO4os/OvzEPEcnj+lq/i
-         51H/gzZf2aYWWF88nk4Nu28cb2dVzBd6upX+u2GZ0quyxpynF1N7ns7TR/G41GSicQqW
-         F5v4Ly5dulDp3eJJngCesdcSANCl/i50wTZ5Cw8fRuQIRmWd2aUWbLc/2SD+uEVBBOTw
-         +7J40uPzA+YLOfgdiH1BSs8sCUNrrcLWtMfxGj2qK8JBOO1cL/akgZs29ff0yBgP5RSC
-         pMI7RqAnlSwzjAuDcjSagtkd0hRCg4GSp3qzSZifedSWoIg6P06e/tqmdQlwB56eTxcf
-         H1Lw==
-X-Gm-Message-State: AOJu0Yw1hpfzxNUC+Hik1v2dASDI0MMeR3N9XM3j9gzeCU2qDca1h4hX
-        PIZV/DyBSAq4vU45M/1tESQ=
-X-Google-Smtp-Source: AGHT+IH+P+hWUsphZuKUjHUJDujAPScoPnEWatQST0MiWhn9PBSSf3QaOBbgHUHZ5qfM8xPNsIvIxA==
-X-Received: by 2002:a05:651c:236:b0:2bd:16e6:e34a with SMTP id z22-20020a05651c023600b002bd16e6e34amr8805725ljn.19.1693908166895;
-        Tue, 05 Sep 2023 03:02:46 -0700 (PDT)
-Received: from gmail.com (1F2EF6A2.nat.pool.telekom.hu. [31.46.246.162])
-        by smtp.gmail.com with ESMTPSA id y13-20020adffa4d000000b00317df42e91dsm17159880wrr.4.2023.09.05.03.02.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 03:02:43 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date:   Tue, 5 Sep 2023 12:02:41 +0200
-From:   Ingo Molnar <mingo@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Nikolay Borisov <nik.borisov@suse.com>,
-        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v3 00/20] SRSO fixes/cleanups
-Message-ID: <ZPb8we3RAespXmXI@gmail.com>
-References: <cover.1693889988.git.jpoimboe@kernel.org>
- <20230905063550.GAZPbMRuLizPxmRuHF@fat_crate.local>
+        d=1e100.net; s=20221208; t=1693908272; x=1694513072;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wwZYeHvtD9GZdB9/hKTalrH/ocSz88uD/tT+zhW9brI=;
+        b=D1T4HcTfPqwKkixZkLXMENuIXCix6HZvn4dMvgZ6Idqi07bXw9kPTtK6t5rpvWw5VQ
+         MCjOADk72Ueatb9ciPkSzw9B6XG5qigMaql24IqKM+wZqLSgEww+kSgqNIHDlAaQuIP+
+         pMm9SJOiKQZ2NY1SqG9VLNcjnrWYogvh8hpf460wN4Husz8FcinFmbVmUT5TTyr7PFz7
+         3gPMQSmAMQDE/MJy4qey+O8TqIwi+V+z8AhQLitV0HCAD5PquejOayUmydHpfveifDgd
+         sQg2BtjfEa+LrVnOPvv680I9HoxdVY0MFgq+zmcvLooZSmILBn6ZvoxKfeZ0T7ImW4Yf
+         J/7Q==
+X-Gm-Message-State: AOJu0Yxk2Xy9fv6C2wW1PKbjnqse3TU1db6CqqSPApp3i7kW/T0J+vFj
+        tWES/B9WNGz1a+xe/Mo2huI59T5pD0V/0WuDK3Ld9cUNSKVs
+X-Google-Smtp-Source: AGHT+IHikA7EnkeoU+BIWTDaP4XZIFS90veVBj/F+9Kv4krrGsmoDY8YF039ZFFbOkLb9ZOdVyHzzQ05/3mjkQGls8eEuUPFLn53
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905063550.GAZPbMRuLizPxmRuHF@fat_crate.local>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:f344:b0:1bb:a13a:c21e with SMTP id
+ q4-20020a170902f34400b001bba13ac21emr3542263ple.10.1693908272272; Tue, 05 Sep
+ 2023 03:04:32 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 03:04:32 -0700
+In-Reply-To: <CANp29Y65sCETzq3CttPHww40W_tQ2S=0HockV-aSUi9dE8HGow@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d9daf4060499c0c9@google.com>
+Subject: Re: [syzbot] [block] kernel BUG in __block_write_begin_int
+From:   syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, djwong@kernel.org, hch@infradead.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nogikh@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu, yukuai3@huawei.com,
+        zhang_shurong@foxmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-* Borislav Petkov <bp@alien8.de> wrote:
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+WARNING in __kthread_create_on_node
 
-> On Mon, Sep 04, 2023 at 10:04:44PM -0700, Josh Poimboeuf wrote:
-> > v3:
-> > - drop kvm patches (to be picked up by Sean)
-> > - fix "no microcode, no microcode" printk
-> > - fix "Safe Ret" capitalization in documentation
-> > - fix chopped line in commit log
-> > - drop "x86/srso: Remove redundant X86_FEATURE_ENTRY_IBPB check" patch
-> > 
-> > Josh Poimboeuf (20):
-> >   x86/srso: Fix srso_show_state() side effect
-> >   x86/srso: Set CPUID feature bits independently of bug or mitigation
-> >     status
-> >   x86/srso: Don't probe microcode in a guest
-> >   x86/srso: Fix SBPB enablement for spec_rstack_overflow=off
-> >   x86/srso: Fix SBPB enablement for (possible) future fixed HW
-> >   x86/srso: Print actual mitigation if requested mitigation isn't
-> >     possible
-> >   x86/srso: Print mitigation for retbleed IBPB case
-> >   x86/srso: Fix vulnerability reporting for missing microcode
-> >   x86/srso: Fix unret validation dependencies
-> >   x86/alternatives: Remove faulty optimization
-> >   x86/srso: Improve i-cache locality for alias mitigation
-> >   x86/srso: Unexport untraining functions
-> >   x86/srso: Remove 'pred_cmd' label
-> >   x86/bugs: Remove default case for fully switched enums
-> >   x86/srso: Move retbleed IBPB check into existing 'has_microcode' code
-> >     block
-> >   x86/srso: Disentangle rethunk-dependent options
-> >   x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
-> >   x86/retpoline: Remove .text..__x86.return_thunk section
-> >   x86/nospec: Refactor UNTRAIN_RET[_*]
-> >   x86/calldepth: Rename __x86_return_skl() to call_depth_return_thunk()
-> > 
-> >  Documentation/admin-guide/hw-vuln/srso.rst |  24 ++-
-> >  arch/x86/include/asm/nospec-branch.h       |  69 ++++-----
-> >  arch/x86/include/asm/processor.h           |   2 -
-> >  arch/x86/kernel/alternative.c              |   8 -
-> >  arch/x86/kernel/cpu/amd.c                  |  28 ++--
-> >  arch/x86/kernel/cpu/bugs.c                 | 102 ++++++------
-> >  arch/x86/kernel/vmlinux.lds.S              |  10 +-
-> >  arch/x86/lib/retpoline.S                   | 171 +++++++++++----------
-> >  include/linux/objtool.h                    |   3 +-
-> >  scripts/Makefile.vmlinux_o                 |   3 +-
-> >  10 files changed, 201 insertions(+), 219 deletions(-)
-> 
-> They all look good to me, thanks!
-> 
-> Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+------------[ cut here ]------------
+different return values (11 and 6) from vsnprintf("kmmpd-%.*s", ...)
+WARNING: CPU: 1 PID: 12350 at lib/kasprintf.c:31 kvasprintf+0x17b/0x190 lib/kasprintf.c:30
+Modules linked in:
+CPU: 1 PID: 12350 Comm: syz-executor.0 Not tainted 6.5.0-syzkaller-11705-gfd19eb3c02e0 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+RIP: 0010:kvasprintf+0x17b/0x190 lib/kasprintf.c:30
+Code: 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 cb db 55 fd 48 c7 c7 a0 0a 59 8b 44 89 e6 89 da 48 8b 4c 24 18 e8 65 56 1c fd <0f> 0b eb 98 e8 2c 46 90 06 66 2e 0f 1f 84 00 00 00 00 00 66 90 f3
+RSP: 0018:ffffc90003507620 EFLAGS: 00010246
+RAX: 2ce359f82b370100 RBX: 0000000000000006 RCX: ffff88806a543b80
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
+RBP: ffffc900035076f0 R08: ffffffff81541672 R09: 1ffff1101732516a
+R10: dffffc0000000000 R11: ffffed101732516b R12: 000000000000000b
+R13: ffffc90003507880 R14: 1ffff920006a0ec8 R15: ffff888025476fa0
+FS:  00007f224ed5d6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2c420000 CR3: 00000000691b6000 CR4: 00000000003506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __kthread_create_on_node+0x1a9/0x3c0 kernel/kthread.c:444
+ kthread_create_on_node+0xde/0x120 kernel/kthread.c:512
+ ext4_multi_mount_protect+0x792/0x9f0 fs/ext4/mmp.c:392
+ __ext4_fill_super fs/ext4/super.c:5363 [inline]
+ ext4_fill_super+0x4495/0x6d10 fs/ext4/super.c:5703
+ get_tree_bdev+0x416/0x5b0 fs/super.c:1577
+ vfs_get_tree+0x8c/0x280 fs/super.c:1750
+ do_new_mount+0x28f/0xae0 fs/namespace.c:3335
+ do_mount fs/namespace.c:3675 [inline]
+ __do_sys_mount fs/namespace.c:3884 [inline]
+ __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3861
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+RIP: 0033:0x7f224e07e1ea
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 09 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f224ed5cee8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f224ed5cf80 RCX: 00007f224e07e1ea
+RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007f224ed5cf40
+RBP: 0000000020000040 R08: 00007f224ed5cf80 R09: 0000000000004500
+R10: 0000000000004500 R11: 0000000000000246 R12: 0000000020000500
+R13: 00007f224ed5cf40 R14: 00000000000004b4 R15: 0000000020000540
+ </TASK>
 
-I've applied them to tip:x86/bugs, thanks guys!
 
-Below is the delta diff from v2 to v3.
+Tested on:
 
-Thanks,
+commit:         fd19eb3c iomap: handle error conditions more gracefull..
+git tree:       git://git.infradead.org/users/hch/misc.git bdev-iomap-fix
+console output: https://syzkaller.appspot.com/x/log.txt?x=11955af0680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead
+dashboard link: https://syzkaller.appspot.com/bug?extid=4a08ffdf3667b36650a1
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-	Ingo
-
-diff --git a/Documentation/admin-guide/hw-vuln/srso.rst b/Documentation/admin-guide/hw-vuln/srso.rst
-index 4516719e00b5..e715bfc09879 100644
---- a/Documentation/admin-guide/hw-vuln/srso.rst
-+++ b/Documentation/admin-guide/hw-vuln/srso.rst
-@@ -57,7 +57,7 @@ The possible values in this file are:
- 
-  * 'Vulnerable: Safe RET, no microcode':
- 
--   The "Safe Ret" mitigation (see below) has been applied to protect the
-+   The "Safe RET" mitigation (see below) has been applied to protect the
-    kernel, but the IBPB-extending microcode has not been applied.  User
-    space tasks may still be vulnerable.
- 
-@@ -139,7 +139,7 @@ an indrect branch prediction barrier after having applied the required
- microcode patch for one's system. This mitigation comes also at
- a performance cost.
- 
--Mitigation: safe RET
-+Mitigation: Safe RET
- --------------------
- 
- The mitigation works by ensuring all RET instructions speculate to
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d538043c776d..016a32613259 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2494,7 +2494,7 @@ static void __init srso_select_mitigation(void)
- 
- 	case SRSO_CMD_IBPB_ON_VMEXIT:
- 		if (IS_ENABLED(CONFIG_CPU_SRSO)) {
--			if (has_microcode) {
-+			if (!boot_cpu_has(X86_FEATURE_ENTRY_IBPB) && has_microcode) {
- 				setup_force_cpu_cap(X86_FEATURE_IBPB_ON_VMEXIT);
- 				srso_mitigation = SRSO_MITIGATION_IBPB_ON_VMEXIT;
- 			}
-@@ -2505,7 +2505,7 @@ static void __init srso_select_mitigation(void)
- 	}
- 
- out:
--	pr_info("%s%s\n", srso_strings[srso_mitigation], has_microcode ? "" : ", no microcode");
-+	pr_info("%s\n", srso_strings[srso_mitigation]);
- }
- 
- #undef pr_fmt
+Note: no patches were applied.
