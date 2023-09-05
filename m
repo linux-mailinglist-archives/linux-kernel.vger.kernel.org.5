@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DBF5E792CC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 118A9792C35
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238442AbjIERxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:53:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+        id S1354178AbjIERHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:07:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238163AbjIERxF (ORCPT
+        with ESMTP id S243131AbjIEQjc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 13:53:05 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 014211AF2C;
-        Tue,  5 Sep 2023 10:39:22 -0700 (PDT)
+        Tue, 5 Sep 2023 12:39:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755F076BE;
+        Tue,  5 Sep 2023 09:35:33 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 608E3B8125E;
-        Tue,  5 Sep 2023 16:32:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF28CC433C7;
-        Tue,  5 Sep 2023 16:32:18 +0000 (UTC)
-Date:   Tue, 5 Sep 2023 12:32:16 -0400
-From:   William Breathitt Gray <william.gray@linaro.org>
-To:     Dharma Balasubiramani <dharma.b@microchip.com>
-Cc:     kamel.bouhara@bootlin.com, linux-arm-kernel@lists.infradead.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        balamanikandan.gunasundar@microchip.com,
-        hari.prasathge@microchip.com, nicolas.ferre@microchip.com
-Subject: Re: [linux][PATCH] counter: microchip-tcb-capture: Fix the use of
- internal GCLK logic
-Message-ID: <ZPdYEC25YMSA0GEq@ishi>
-References: <20230905100835.315024-1-dharma.b@microchip.com>
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6EF0A60B99;
+        Tue,  5 Sep 2023 16:34:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2FC1FC433C7;
+        Tue,  5 Sep 2023 16:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693931651;
+        bh=X5L10YoHz2zVk5p4qYnAUloFN9ZU4ucYAmPjaaoOySo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZiRm+ulKAd/8crD2KbxWsd8Z1u6QSPzvjsg3PZi/Ay9sIVGqFZh1oiDzQ3Iuh1tHJ
+         q2s5rvZgpGwFwt7+D9xghQlwMy5cya4SYELzWd5VinCDXVWABFJ/oyHVo62d5UyzXp
+         8qhJO2iairFbbwQ+eEVxTK9It94jANP8iPShHeR6dRwnPdLUBjctZN2V1srDCPdN5J
+         C0Z8vTh3s//RVWM9P1Wy0qmpqbSWEXj6uBT/yVxsSqgXHdNIC2whzwI5baDILCe21A
+         LPPE9/6G9J0KwHuvHBjd0aoO4zgl+aYA34WVJf7FZQIZcUc2/ekrBPr0sYhkiV1Ady
+         xiG14GAhJs2pg==
+Date:   Tue, 5 Sep 2023 10:34:08 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     =?iso-8859-1?Q?Cl=E1udio?= Sampaio <patola@gmail.com>
+Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
+        Bagas Sanjaya <bagasdotme@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVMe <linux-nvme@lists.infradead.org>,
+        Linux Stable <stable@vger.kernel.org>
+Subject: Re: Fwd: Lexar NM790 SSDs are not recognized anymore after 6.1.50 LTS
+Message-ID: <ZPdYgK0ebgHtDTXd@kbusch-mbp>
+References: <8af186ba-5f64-2102-8f9c-3969b0906893@gmail.com>
+ <faa245bf-e925-45b0-9827-b0c9c117e06c@leemhuis.info>
+ <ZPc8v9-lHF4jAcxL@kbusch-mbp>
+ <2a379b3a-6ff3-444b-bbad-0fba0bc3a28b@leemhuis.info>
+ <ZPdF3uqbJNSZADzv@kbusch-mbp>
+ <CA+4wXKCi+idhPQHx3ywdEDHqRmOyBbhz4Gj4gGr_dDvWBWohQQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="IBs/xuK4vyQAAN/S"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230905100835.315024-1-dharma.b@microchip.com>
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+4wXKCi+idhPQHx3ywdEDHqRmOyBbhz4Gj4gGr_dDvWBWohQQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Sep 05, 2023 at 05:50:06PM +0200, Cláudio Sampaio wrote:
+> Hi Thorsten and Keith,
+> 
+> Thanks for the details. I'm still unsure if responding by email is better
+> or adding to the ticket, but here it goes: I have tried for days both with
+> complete power off of the machine and cycle-booting all kernels in
+> succession and without exception, 6.1.x LTS and the patched 6.5.1 kernel
+> always recognize and operate the NVME, whilst the other kernels also fail
+> with the same error message. As this is my "production" desktop, though,
+> during the week it's more difficult to me to perform tests with it, but I
+> will try to do it in a more methodic way and also with 6.5.1 vanilla.
+> 
+> As for the reason the Lexar doesn't catch the quirk default, I can't say I
+> catch the complex logic of the driver activation, but I found out how to
+> "fix" for my case because there are three other Lexar models in the pci.c
+> file: NM610, NM620 and NM760 (this one with an additional quirk marked on
+> it on the code, NVME_QUIRK_IGNORE_DEV_SUBNQN) -- so I guess whatever
+> justifies the exception for them also justifies for my model, NM790. Might
+> even be the case that I would need NVME_QUIRK_IGNORE_DEV_SUBNQN (not sure
+> what it does) like in the NM760 case, but it activates correctly without it.
 
---IBs/xuK4vyQAAN/S
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The existing Lexar quirks for the identifier existed before the default
+kernel behavior changed with respect to how identifiers are considered.
 
-On Tue, Sep 05, 2023 at 03:38:35PM +0530, Dharma Balasubiramani wrote:
-> As per the datasheet, the clock selection Bits 2:0 =E2=80=93 TCCLKS[2:0] =
-should
-> be set to 0 while using the internal GCLK (TIMER_CLOCK1).
->=20
-> Fixes: 106b104137fd ("counter: Add microchip TCB capture counter")
-> Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
-> ---
->  drivers/counter/microchip-tcb-capture.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/counter/microchip-tcb-capture.c b/drivers/counter/mi=
-crochip-tcb-capture.c
-> index e2d1dc6ca668..c7af13aca36c 100644
-> --- a/drivers/counter/microchip-tcb-capture.c
-> +++ b/drivers/counter/microchip-tcb-capture.c
-> @@ -98,7 +98,7 @@ static int mchp_tc_count_function_write(struct counter_=
-device *counter,
->  		priv->qdec_mode =3D 0;
->  		/* Set highest rate based on whether soc has gclk or not */
->  		bmr &=3D ~(ATMEL_TC_QDEN | ATMEL_TC_POSEN);
-> -		if (priv->tc_cfg->has_gclk)
-> +		if (!priv->tc_cfg->has_gclk)
->  			cmr |=3D ATMEL_TC_TIMER_CLOCK2;
->  		else
->  			cmr |=3D ATMEL_TC_TIMER_CLOCK1;
-> --=20
-> 2.25.1
+But the report says the device failed to enumerate with a "device not
+ready" error message. That error message happens *before* identifiers
+are checked, so the quirk should be a no-op with respect to that error
+message. And the driver abandons the device after printing that message,
+so no futher action should be taken no matter what quirk you've set.
 
-Applied to counter-fixes as commit df8fdd01c98b.
-
-Thanks,
-
-William Breathitt Gray
-
---IBs/xuK4vyQAAN/S
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQSNN83d4NIlKPjon7a1SFbKvhIjKwUCZPdYEAAKCRC1SFbKvhIj
-K1MKAP9E6JRTEYYf67ux4TBjDQjMrZOTu5kghFg/hzzk6Q0BhwD/cdGiI//RMHXq
-Q4EZXZ0BJFEs6FAi8zbtNOAf4XXS7QI=
-=lPuS
------END PGP SIGNATURE-----
-
---IBs/xuK4vyQAAN/S--
+In order for this quirk to have any effect at all, the error you should
+have seen should look like a "duplicate IDs" message.
