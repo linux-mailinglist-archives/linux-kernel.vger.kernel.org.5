@@ -2,106 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 275C7792DAC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:48:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 810BF792D73
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:36:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235854AbjIESsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:48:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43100 "EHLO
+        id S241420AbjIESg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 14:36:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235749AbjIESsu (ORCPT
+        with ESMTP id S238428AbjIESg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:48:50 -0400
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BAE1AE
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:48:21 -0700 (PDT)
-Received: by mail-qt1-x835.google.com with SMTP id d75a77b69052e-412137ae07aso16879481cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 11:48:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693939634; x=1694544434; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2Z5P61rHX3TJCqeK0dVJotGAV1FyleJ9U0LtLbQPTDk=;
-        b=Ls3bbLfI/JDL+GsNgVoT7A4fZ8jFvpBUDbiP9Wtni3yeQLsgGOsarQ9MU3Oj314A7w
-         b6JFJ8Iz+5cSb+8ulB7jqw6W0RgqfR5+uW3cagfNuVWtLOeiNJ/PaeS0NppZJU9Vm6Ku
-         gLYKlA4V2t/fKEUv/D+0/dUGt7WbP6/wkPphX3K66sZZwErBL+ZkLA8h4A6oZvH9Mp5k
-         1ivCoTCnepspHuOZLR0GIxTeW4gcH4k+wuMXXZutXbHqM5aTSA5NW6uWaHS4aZLqKWjt
-         jUvaJudrn13e9ygNh9my7LydPVlsPrYC4ZGJlln7cmWdoBzrHMKji7KbO/BzcKSBjsDk
-         h3Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693939634; x=1694544434;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2Z5P61rHX3TJCqeK0dVJotGAV1FyleJ9U0LtLbQPTDk=;
-        b=D813d/ox8UdOsOa19leHooAx54lADPi3xv3Xg36PzroWkIa9a3ITaHqYnHSOEHfmVJ
-         gLaLLDcqTHeOwTkVX3I8eg8KG3+LoMn60zcOC9849uvCz7xGRqWDWwizHaIr9hMz9W5U
-         gSbTnwo6cBWlh3bAleBqdh8Xfs0BX4ck4/mRM+q2+YvohP3tRizRlj6pdv94IGnkQTk5
-         6Em9bzLJyaUTSpou3ZagegXBb5/+rEfSDAFkv84QKc0tvjZjaRJ5PtcewrL9nzxAb9cy
-         NI7HCFKSnUdb22QTrUQMfQpCyf720jnqrBUpd8X504kXbROPs2tK2DstrKANoUJM6yoe
-         f2Ew==
-X-Gm-Message-State: AOJu0Yw1nQta44eNNMxPmEzM02JjMZM13X+61k6Y7VcaaxRrz4p/JeRL
-        BTFk27xBE+MZPlBYfZL/VbQSdXEk0m12Ye1xfPRDbPl8
-X-Google-Smtp-Source: AGHT+IHPib75naSjYJTJfVF7LppbLLE6k6pU+0i1iZmAN1p38X6cF2pRWpirWqMujp6N2mdrF24R5dwzOOJvBpK6oQE=
-X-Received: by 2002:a05:6870:b027:b0:1c8:b82b:cbdb with SMTP id
- y39-20020a056870b02700b001c8b82bcbdbmr16663096oae.33.1693935517234; Tue, 05
- Sep 2023 10:38:37 -0700 (PDT)
+        Tue, 5 Sep 2023 14:36:57 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18610E75;
+        Tue,  5 Sep 2023 11:36:34 -0700 (PDT)
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385HNE7N013330;
+        Tue, 5 Sep 2023 17:40:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Ld64bg6DoVAaSajRnJTTPI+85fKEcgBbLZT2tpmMA48=;
+ b=WFmReFAZZ/8MhTigkZcdSCE4mi40DYSGe2/RPiU5ebFRIkAqhAWHhcIYQR+t+Cdig2N/
+ YshF3jUiybnbPZwDnK1Ceqb7VCA1gwCqJllMpBixEzHft/2Xrpx5wM7nPbRBsED+U09G
+ ar44FTn7bbz3ERFPCe4+t5TpXMCL0uGvlUEO60spod6nj/HTxmatpgXWMEKdBPUwbk6+
+ nLcn4r+diUWvZm9vP/rDPLGXxyY5vLsdpdDjcSOIg33RWimgwTlJnEfsK0ZUyA7+nl7S
+ PoeObCuhC8A4TcE1N+ODYCd7L5NYyT0JRnoF4weJIoOFkWIENh1xeBHadOCv9te3aBgj vw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8pg0pbb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 17:40:38 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385HQ8HO023071;
+        Tue, 5 Sep 2023 17:40:38 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8pg0pa7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 17:40:37 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385HDaXl006622;
+        Tue, 5 Sep 2023 17:40:36 GMT
+Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvkcej5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 17:40:36 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385HeZx326804598
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 17:40:36 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 92FDF58056;
+        Tue,  5 Sep 2023 17:40:35 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 17CD75803F;
+        Tue,  5 Sep 2023 17:40:34 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 17:40:34 +0000 (GMT)
+Message-ID: <380f9312-97f9-7ccf-1854-dc15135a76cc@linux.ibm.com>
+Date:   Tue, 5 Sep 2023 13:40:33 -0400
 MIME-Version: 1.0
-References: <20230901012924.120196-1-yang.lee@linux.alibaba.com> <20230901012924.120196-5-yang.lee@linux.alibaba.com>
-In-Reply-To: <20230901012924.120196-5-yang.lee@linux.alibaba.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 5 Sep 2023 13:38:26 -0400
-Message-ID: <CADnq5_MO1+vf=SBJ4jpGab-fXMOfuJ7j=JgHBNJhaqYZsSNwow@mail.gmail.com>
-Subject: Re: [PATCH -next 5/5] drm/amd/display: clean up one inconsistent indenting
-To:     Yang Li <yang.lee@linux.alibaba.com>
-Cc:     alexander.deucher@amd.com, airlied@gmail.com, daniel@ffwll.ch,
-        harry.wentland@amd.com, Rodrigo.Siqueira@amd.com,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 12/25] security: Introduce inode_post_setattr hook
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+ <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: oGx3S1xEnHqv5zFYdKRH45Z2702CyqST
+X-Proofpoint-GUID: jVfQhPQUkfioEGflO-yolUrB0Sb5lBmv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_10,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 impostorscore=0 phishscore=0
+ mlxlogscore=999 clxscore=1015 mlxscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050152
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied the series.  Thanks!
+On 9/4/23 09:34, Roberto Sassu wrote:
 
-Alex
-
-On Thu, Aug 31, 2023 at 9:29=E2=80=AFPM Yang Li <yang.lee@linux.alibaba.com=
-> wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> drivers/gpu/drm/amd/amdgpu/../display/dc/dml/dcn35/dcn35_fpu.c:260 dcn35_=
-update_bw_bounding_box_fpu() warn: inconsistent indenting
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the inode_post_setattr hook.
 >
-> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> It is useful for EVM to recalculate the HMAC on modified file attributes
+> and other file metadata, after it verified the HMAC of current file
+> metadata with the inode_setattr hook.
+>
+> LSMs should use the new hook instead of inode_setattr, when they need to
+> know that the operation was done successfully (not known in inode_setattr).
+> The new hook cannot return an error and cannot cause the operation to be
+> reverted.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 > ---
->  drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>   fs/attr.c                     |  1 +
+>   include/linux/lsm_hook_defs.h |  2 ++
+>   include/linux/security.h      |  7 +++++++
+>   security/security.c           | 16 ++++++++++++++++
+>   4 files changed, 26 insertions(+)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c b/drive=
-rs/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
-> index 525ca0ed9ea9..46eb2d0592f3 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dml/dcn35/dcn35_fpu.c
-> @@ -348,8 +348,8 @@ void dcn35_update_bw_bounding_box_fpu(struct dc *dc,
->                         dc->debug.dram_clock_change_latency_ns / 1000.0;
->         }
->         /*temp till dml2 fully work without dml1*/
-> -               dml_init_instance(&dc->dml, &dcn3_5_soc, &dcn3_5_ip,
-> -                                 DML_PROJECT_DCN31);
-> +       dml_init_instance(&dc->dml, &dcn3_5_soc, &dcn3_5_ip,
-> +                               DML_PROJECT_DCN31);
->  }
->
->  static bool is_dual_plane(enum surface_pixel_format format)
-> --
-> 2.20.1.7.g153144c
->
+> diff --git a/fs/attr.c b/fs/attr.c
+> index 431f667726c7..3c309eb456c6 100644
+> --- a/fs/attr.c
+> +++ b/fs/attr.c
+> @@ -486,6 +486,7 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
+>   
+>   	if (!error) {
+>   		fsnotify_change(dentry, ia_valid);
+> +		security_inode_post_setattr(idmap, dentry, ia_valid);
+>   		ima_inode_post_setattr(idmap, dentry, ia_valid);
+>   		evm_inode_post_setattr(idmap, dentry, ia_valid);
+>   	}
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index fdf075a6b1bb..995d30336cfa 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -136,6 +136,8 @@ LSM_HOOK(int, 0, inode_follow_link, struct dentry *dentry, struct inode *inode,
+>   LSM_HOOK(int, 0, inode_permission, struct inode *inode, int mask)
+>   LSM_HOOK(int, 0, inode_setattr, struct mnt_idmap *idmap, struct dentry *dentry,
+>   	 struct iattr *attr)
+> +LSM_HOOK(void, LSM_RET_VOID, inode_post_setattr, struct mnt_idmap *idmap,
+> +	 struct dentry *dentry, int ia_valid)
+>   LSM_HOOK(int, 0, inode_getattr, const struct path *path)
+>   LSM_HOOK(int, 0, inode_setxattr, struct mnt_idmap *idmap,
+>   	 struct dentry *dentry, const char *name, const void *value,
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index dcb3604ffab8..820899db5276 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -355,6 +355,8 @@ int security_inode_follow_link(struct dentry *dentry, struct inode *inode,
+>   int security_inode_permission(struct inode *inode, int mask);
+>   int security_inode_setattr(struct mnt_idmap *idmap,
+>   			   struct dentry *dentry, struct iattr *attr);
+> +void security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				 int ia_valid);
+>   int security_inode_getattr(const struct path *path);
+>   int security_inode_setxattr(struct mnt_idmap *idmap,
+>   			    struct dentry *dentry, const char *name,
+> @@ -856,6 +858,11 @@ static inline int security_inode_setattr(struct mnt_idmap *idmap,
+>   	return 0;
+>   }
+>   
+> +static inline void
+> +security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +			    int ia_valid)
+> +{ }
+
+Existing security_sem_free() and others are also formatted like it, so 
+it should be ok.
+
+
+> +
+>   static inline int security_inode_getattr(const struct path *path)
+>   {
+>   	return 0;
+> diff --git a/security/security.c b/security/security.c
+> index 2b24d01cf181..764a6f28b3b9 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2124,6 +2124,22 @@ int security_inode_setattr(struct mnt_idmap *idmap,
+>   }
+>   EXPORT_SYMBOL_GPL(security_inode_setattr);
+>   
+> +/**
+> + * security_inode_post_setattr() - Update the inode after a setattr operation
+> + * @idmap: idmap of the mount
+> + * @dentry: file
+> + * @ia_valid: file attributes set
+> + *
+> + * Update inode security field after successful setting file attributes.
+> + */
+> +void security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> +				 int ia_valid)
+> +{
+> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> +		return;
+> +	call_void_hook(inode_post_setattr, idmap, dentry, ia_valid);
+> +}
+> +
+>   /**
+>    * security_inode_getattr() - Check if getting file attributes is allowed
+>    * @path: file
+
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+
+
