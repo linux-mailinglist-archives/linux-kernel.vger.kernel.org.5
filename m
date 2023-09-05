@@ -2,151 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98A74792B23
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C95679282C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241952AbjIEQsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
+        id S241685AbjIEQKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:10:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354539AbjIEMZm (ORCPT
+        with ESMTP id S1354541AbjIEM1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:25:42 -0400
-Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C3A1A8;
-        Tue,  5 Sep 2023 05:25:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1693916735;
-        bh=CPBdmsVi+RC8AZkE/89HdSzguIfSlQf/+GkllycK6Lo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=RJcgXDpdCUilrU70w2ztD+Aqbe4WFPwMiS7gS3VQZkcqmxUeLdoJ+ujNMxc+5WJZP
-         2Z8ig75ftP+Pqcg06lZpFAKWqPs4V29AvJIJWZ8wYHQxhkOSi/FTIYLBp48+uplUux
-         3DhB+Ue5SnFudd6moHRjytH53ff1fyg+6I8rb1G+rECM8JHnOyyNTt/AGetfjp4hG2
-         7FAT/UZZi6U5g2Xm3PmJkD77xIcTSnmvf9G/m2Nn5P0OffxYdHUnMt46egYrqJG84L
-         osugeOPdywqRKOw5OV0qr/6QIYC7x5oPO0+eikMkqi9OTvWZbL5eYUgtx9cb4UQISc
-         t0+hA2cSdGBZg==
-Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rg4Tq2KcMz1NMR;
-        Tue,  5 Sep 2023 08:25:35 -0400 (EDT)
-Message-ID: <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
-Date:   Tue, 5 Sep 2023 08:26:51 -0400
+        Tue, 5 Sep 2023 08:27:06 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158081A8;
+        Tue,  5 Sep 2023 05:27:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eVxmERvkhRQsWzv7hKcub8nBL8Ebk3iyCYi7oJyr1Qk=; b=y1nZcAesjx2xv+SqYWukES/nxx
+        qxVnUugSjtZ7Rv+bkJJ6GZIdmJGlCLcs8CZEB+opdncPZkN8ySSXTFFA9n3825sRirzrtgHedCb6Y
+        xVaJXXjwPg3j1NrmFUhs2YDq66bVYir9KESsctaZ/K7zI5iJ/7/Syy9Tjm4oJ53hAypHgRYapUnBI
+        Du1mmz4gZGYHfNXUaeRFE1/vD4OBuZO6WRSug9LrHMCZd+Fxeo+r5eEjX0DEnDHXqjQn/VtktT/OS
+        lT97QzO09PtP3N5ZNy00mxVHFBt85fKdar8/4wc/er2Bx8o3t5+AcoVG2flc6LAz8j2jfr7gmohWf
+        LJKCN9qg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+        id 1qdV8x-0060Oq-0K;
+        Tue, 05 Sep 2023 12:26:55 +0000
+Date:   Tue, 5 Sep 2023 05:26:55 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>
+Cc:     adilger.kernel@dilger.ca, djwong@kernel.org, hch@infradead.org,
+        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        nogikh@google.com, song@kernel.org,
+        syzkaller-bugs@googlegroups.com, tytso@mit.edu, yukuai3@huawei.com,
+        zhang_shurong@foxmail.com
+Subject: Re: [syzbot] [block] kernel BUG in __block_write_begin_int
+Message-ID: <ZPcej+rJjg+6SgzK@infradead.org>
+References: <CANp29Y65sCETzq3CttPHww40W_tQ2S=0HockV-aSUi9dE8HGow@mail.gmail.com>
+ <000000000000d9daf4060499c0c9@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] The value may overflow
-Content-Language: en-US
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>
-References: <20230904094251.64022-1-arefev@swemel.ru>
- <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
- <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000d9daf4060499c0c9@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/23 05:31, David Laight wrote:
-> From: Mathieu Desnoyers
->> Sent: 04 September 2023 11:24
->>
->> On 9/4/23 05:42, Denis Arefev wrote:
->>> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
->>> is subject to overflow due to a failure to cast operands to a larger
->>> data type before performing arithmetic
->>
->> The patch title should identify more precisely its context, e.g.:
->>
->> "srcu: Fix srcu_struct node grpmask overflow on 64-bit systems"
->>
->> Also, as I stated in my reply to the previous version, the patch commit
->> message should describe the impact of the bug it fixes.
+On Tue, Sep 05, 2023 at 03:04:32AM -0700, syzbot wrote:
+> Hello,
 > 
-> And is the analysis complete?
-> Is 1UL right for 32bit archs??
-> Is 64 bits even enough??
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> WARNING in __kthread_create_on_node
 
-I understand from include/linux/rcu_node_tree.h and kernel/rcu/Kconfig 
-RCU_FANOUT and RCU_FANOUT_LEAF ranges that a 32-bit integer is 
-sufficient to hold the mask on 32-bit architectures, and a 64-bit 
-integer is enough on 64-bit architectures given the current implementation.
+Well, that is
 
-At least this appears to be the intent. I did not do a thorough analysis 
-of the various parameter limits.
 
-Thanks,
-
-Mathieu
-
-> 
-> 	David
-> 
->>
->> Thanks,
->>
->> Mathieu
->>
->>
->>>
->>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
->>>
->>> Signed-off-by: Denis Arefev <arefev@swemel.ru>
->>> ---
->>> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
->>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->>>    kernel/rcu/srcutree.c | 4 ++--
->>>    1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
->>> index 20d7a238d675..6c18e6005ae1 100644
->>> --- a/kernel/rcu/srcutree.c
->>> +++ b/kernel/rcu/srcutree.c
->>> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
->>>    				snp->grplo = cpu;
->>>    			snp->grphi = cpu;
->>>    		}
->>> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
->>> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
->>>    	}
->>>    	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
->>>    	return true;
->>> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
->>>    	int cpu;
->>>
->>>    	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
->>> -		if (!(mask & (1 << (cpu - snp->grplo))))
->>> +		if (!(mask & (1UL << (cpu - snp->grplo))))
->>>    			continue;
->>>    		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
->>>    	}
->>
->> --
->> Mathieu Desnoyers
->> EfficiOS Inc.
->> https://www.efficios.com
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
+ a) a different issue in ext4
+ b) just a warning
 
