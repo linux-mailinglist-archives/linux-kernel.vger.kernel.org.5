@@ -2,68 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C95679282C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:42:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 386727929A5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241685AbjIEQKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:10:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
+        id S244071AbjIEQXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:23:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354541AbjIEM1G (ORCPT
+        with ESMTP id S1354542AbjIEM2f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:27:06 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 158081A8;
-        Tue,  5 Sep 2023 05:27:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=eVxmERvkhRQsWzv7hKcub8nBL8Ebk3iyCYi7oJyr1Qk=; b=y1nZcAesjx2xv+SqYWukES/nxx
-        qxVnUugSjtZ7Rv+bkJJ6GZIdmJGlCLcs8CZEB+opdncPZkN8ySSXTFFA9n3825sRirzrtgHedCb6Y
-        xVaJXXjwPg3j1NrmFUhs2YDq66bVYir9KESsctaZ/K7zI5iJ/7/Syy9Tjm4oJ53hAypHgRYapUnBI
-        Du1mmz4gZGYHfNXUaeRFE1/vD4OBuZO6WRSug9LrHMCZd+Fxeo+r5eEjX0DEnDHXqjQn/VtktT/OS
-        lT97QzO09PtP3N5ZNy00mxVHFBt85fKdar8/4wc/er2Bx8o3t5+AcoVG2flc6LAz8j2jfr7gmohWf
-        LJKCN9qg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdV8x-0060Oq-0K;
-        Tue, 05 Sep 2023 12:26:55 +0000
-Date:   Tue, 5 Sep 2023 05:26:55 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, djwong@kernel.org, hch@infradead.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        nogikh@google.com, song@kernel.org,
-        syzkaller-bugs@googlegroups.com, tytso@mit.edu, yukuai3@huawei.com,
-        zhang_shurong@foxmail.com
-Subject: Re: [syzbot] [block] kernel BUG in __block_write_begin_int
-Message-ID: <ZPcej+rJjg+6SgzK@infradead.org>
-References: <CANp29Y65sCETzq3CttPHww40W_tQ2S=0HockV-aSUi9dE8HGow@mail.gmail.com>
- <000000000000d9daf4060499c0c9@google.com>
+        Tue, 5 Sep 2023 08:28:35 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C595F1A8;
+        Tue,  5 Sep 2023 05:28:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693916911; x=1725452911;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=bIvwvVLX2QgqgZ6NIpuMrd+CJE12wHgoLPkmBc9kTgM=;
+  b=CYASRsL8e8a3oLKwz5mE5kMg0LV/sV484j52k61uesQ7Zpjjp3RMXcZp
+   F7Qm5J5ugUGEzeGW9yDokC13KVGlSsx5Pchjoro3NJRX1FlkvYmd6OL3e
+   mnIrodc3m+pwHtSIum0eScmq1Soyc7LAK88LK1oHOw2U+/kY8dm4bAfzv
+   p86we1SP/1f9E//fRE9BuRxuKRKfNDVoYtjUlDMs4znu0yoSGsB0OAvo+
+   SqHge78sMH7IUkVJiVMBnsL21s8d5pafVZcdqQjBocYmQc8aUAv1YfvtE
+   5oKRmSOLVKDgjZ8sIbbN9wvqW74h7GxQSxTBAsW1Dqqb68TtERsj7uDsd
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="379501517"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="379501517"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 05:28:31 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="776187146"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="776187146"
+Received: from joe-255.igk.intel.com (HELO localhost) ([10.91.220.57])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 05:28:29 -0700
+Date:   Tue, 5 Sep 2023 14:28:27 +0200
+From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Oded Gabbay <ogabbay@kernel.org>,
+        Dani Liberman <dliberman@habana.ai>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] accel/habanalabs/gaudi2: Fix incorrect string length
+ computation in gaudi2_psoc_razwi_get_engines()
+Message-ID: <20230905122827.GD184247@linux.intel.com>
+References: <d38582083ece76155dabdfd9a29d5a9dd0d6bce7.1693855091.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000d9daf4060499c0c9@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <d38582083ece76155dabdfd9a29d5a9dd0d6bce7.1693855091.git.christophe.jaillet@wanadoo.fr>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 03:04:32AM -0700, syzbot wrote:
-> Hello,
+On Mon, Sep 04, 2023 at 09:18:36PM +0200, Christophe JAILLET wrote:
+> snprintf() returns the "number of characters which *would* be generated for
+> the given input", not the size *really* generated.
 > 
-> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-> WARNING in __kthread_create_on_node
-
-Well, that is
-
-
- a) a different issue in ext4
- b) just a warning
-
+> In order to avoid too large values for 'str_size' (and potential negative
+> values for "PSOC_RAZWI_ENG_STR_SIZE - str_size") use scnprintf()
+> instead of snprintf().
+> 
+> Fixes: c0e6df916050 ("accel/habanalabs: fix address decode RAZWI handling")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
