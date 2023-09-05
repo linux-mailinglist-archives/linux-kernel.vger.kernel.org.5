@@ -2,165 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E745792AB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A95E0792AF2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344237AbjIEQlZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:41:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58992 "EHLO
+        id S229999AbjIEQpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:45:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350512AbjIEFEI (ORCPT
+        with ESMTP id S1350519AbjIEFEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 01:04:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3382CCB
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 22:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693890191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QF++iXxEZpFrQCnUt3ZrjX7wcQsJCw0Lcgs8IhL6Xus=;
-        b=AxzYfISoEu17fCftaFqDG0vjpLHEVF7YF02GnFWWAKF+3b8stvDNlKV1azCdSqUdXMHhJz
-        tiA0yoH3rd9eR8XB+Mn5yDExnBzyzrWTm6+dtSX9j0TQGkvs+3hOa1VO3dVDED5EVQLTY/
-        4JP4fHSZLXHBXRk+YbNfMxsphUOWMYs=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-625-4rUGPEBPMYipOttOl5wP7g-1; Tue, 05 Sep 2023 01:03:06 -0400
-X-MC-Unique: 4rUGPEBPMYipOttOl5wP7g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Tue, 5 Sep 2023 01:04:10 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A3CCC5;
+        Mon,  4 Sep 2023 22:04:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B587B1817904;
-        Tue,  5 Sep 2023 05:03:05 +0000 (UTC)
-Received: from localhost (unknown [10.72.113.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B496340C6CCC;
-        Tue,  5 Sep 2023 05:03:04 +0000 (UTC)
-Date:   Tue, 5 Sep 2023 13:03:01 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Hari Bathini <hbathini@linux.ibm.com>, mpe@ellerman.id.au
-Cc:     Ming Lei <ming.lei@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-scsi@vger.kernel.org,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Pingfan Liu <piliu@redhat.com>, Dave Young <dyoung@redhat.com>,
-        npiggin@gmail.com, linux-kernel@vger.kernel.org,
-        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
-        Wen Xiong <wenxiong@linux.ibm.com>, kexec@lists.infradead.org,
-        Keith Busch <kbusch@kernel.org>, linuxppc-dev@lists.ozlabs.org,
-        Christoph Hellwig <hch@lst.de>,
-        Mahesh J Salgaonkar <mahesh@linux.ibm.com>
-Subject: Re: [PATCH V3 01/14] blk-mq: add blk_mq_max_nr_hw_queues()
-Message-ID: <ZPa2hbRQUdFRNqr9@MiWiFi-R3L-srv>
-References: <20230808104239.146085-1-ming.lei@redhat.com>
- <20230808104239.146085-2-ming.lei@redhat.com>
- <20230809134401.GA31852@lst.de>
- <ZNQqt1C0pXspGl3d@fedora>
- <ZNQ64xhCIBU6XM/5@MiWiFi-R3L-srv>
- <ZNRGNsRzEJfzUEzH@fedora>
- <ZNRTGrRuwf69EgnE@MiWiFi-R3L-srv>
- <772c4140-3035-16d8-0253-f5893c3698e2@linux.ibm.com>
+        by sin.source.kernel.org (Postfix) with ESMTPS id 15C2ACE1020;
+        Tue,  5 Sep 2023 05:04:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3746C433C7;
+        Tue,  5 Sep 2023 05:04:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693890242;
+        bh=rNZ6gSz952FnYbdOwNayc8WW+NGygaXz472YSAOluYk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=b0GC0EYlTsTH7sHYMimcCh/EOaOHV4uGQ7vqQf/HuRw9Qulq+4xw75y80YOFRnkv9
+         b4LwteX6i6uFW4Fi/ztQKY0pa4fXglePRsstW5agm7HVr4h21wC+8G73P3d1omz09n
+         GGU1bpU3WQG8xLoTtxpVnQnHg6fx0QC3kZW9vs1ru7oUifErFtuAMkxJEKXZ7d4ht6
+         sryxO7lp4qym/OQ1QPl3o9iWxAJOcuRmQROuIxNSbTxRonsykbGilksIMBUfibE0jK
+         Q7wJoHWgM41x5ogHEVlUfkVJZSQroVIQvuP5b5/gvHNG2/fsm7hFKRlU03NC6GpKOD
+         +ekqiIr73cSXQ==
+Message-ID: <b5dcc85d-f709-a3a3-e7ad-9c71f278842a@kernel.org>
+Date:   Tue, 5 Sep 2023 14:04:00 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <772c4140-3035-16d8-0253-f5893c3698e2@linux.ibm.com>
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_NONE,
-        T_SPF_HELO_TEMPERROR autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ata: sata_mv: Fix incorrect string length computation in
+ mv_dump_mem()
+Content-Language: en-US
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-ide@vger.kernel.org
+References: <1a35e114a3dcc33053ca7cca41cb06b8426d8c40.1693857262.git.christophe.jaillet@wanadoo.fr>
+From:   Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <1a35e114a3dcc33053ca7cca41cb06b8426d8c40.1693857262.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hari, Michael
-
-On 08/11/23 at 01:23pm, Hari Bathini wrote:
+On 9/5/23 04:54, Christophe JAILLET wrote:
+> snprintf() returns the "number of characters which *would* be generated for
+> the given input", not the size *really* generated.
 > 
+> In order to avoid too large values for 'o' (and potential negative values
+> for "sizeof(linebuf) o") use scnprintf() instead of snprintf().
 > 
-> On 10/08/23 8:31 am, Baoquan He wrote:
-> > On 08/10/23 at 10:06am, Ming Lei wrote:
-> > > On Thu, Aug 10, 2023 at 09:18:27AM +0800, Baoquan He wrote:
-> > > > On 08/10/23 at 08:09am, Ming Lei wrote:
-> > > > > On Wed, Aug 09, 2023 at 03:44:01PM +0200, Christoph Hellwig wrote:
-> > > > > > I'm starting to sound like a broken record, but we can't just do random
-> > > > > > is_kdump checks, and it's not going to get better by resending it again and
-> > > > > > again.  If kdump kernels limit the number of possible CPUs, it needs to
-> > > > > > reflected in cpu_possible_map and we need to use that information.
-> > > > > > 
-> > > > > 
-> > > > > Can you look at previous kdump/arch guys' comment about kdump usage &
-> > > > > num_possible_cpus?
-> > > > > 
-> > > > >      https://lore.kernel.org/linux-block/CAF+s44RuqswbosY9kMDx35crviQnxOeuvgNsuE75Bb0Y2Jg2uw@mail.gmail.com/
-> > > > >      https://lore.kernel.org/linux-block/ZKz912KyFQ7q9qwL@MiWiFi-R3L-srv/
-> > > > > 
-> > > > > The point is that kdump kernels does not limit the number of possible CPUs.
-> > > > > 
-> > > > > 1) some archs support 'nr_cpus=1' for kdump kernel, which is fine, since
-> > > > > num_possible_cpus becomes 1.
-> > > > 
-> > > > Yes, "nr_cpus=" is strongly suggested in kdump kernel because "nr_cpus="
-> > > > limits the possible cpu numbers, while "maxcpuss=" only limits the cpu
-> > > > number which can be brought up during bootup. We noticed this diference
-> > > > because a large number of possible cpus will cost more memory in kdump
-> > > > kernel. e.g percpu initialization, even though kdump kernel have set
-> > > > "maxcpus=1".
-> > > > 
-> > > > Currently x86 and arm64 all support "nr_cpus=". Pingfan ever spent much
-> > > > effort to make patches to add "nr_cpus=" support to ppc64, seems ppc64
-> > > > dev and maintainers do not care about it. Finally the patches are not
-> > > > accepted, and the work is not continued.
-> > > > 
-> > > > Now, I am wondering what is the barrier to add "nr_cpus=" to power ach.
-> > > > Can we reconsider adding 'nr_cpus=' to power arch since real issue
-> > > > occurred in kdump kernel?
-> > > 
-> > > If 'nr_cpus=' can be supported on ppc64, this patchset isn't needed.
-> > > 
-> > > > 
-> > > > As for this patchset, it can be accpeted so that no failure in kdump
-> > > > kernel is seen on ARCHes w/o "nr_cpus=" support? My personal opinion.
-> > > 
-> > > IMO 'nr_cpus=' support should be preferred, given it is annoying to
-> > > maintain two kinds of implementation for kdump kernel from driver
-> > > viewpoint. I guess kdump things can be simplified too with supporting
-> > > 'nr_cpus=' only.
-> > 
-> > Yes, 'nr_cpus=' is ideal. Not sure if there's some underlying concerns so
-> > that power people decided to not support it.
+> Note that given the "w < 4" in the for loop, the buffer can NOT
+> overflow, but using the *right* function is always better.
 > 
-> Though "nr_cpus=1" is an ideal solution, maintainer was not happy with
-> the patch as the code changes have impact for regular boot path and
-> it is likely to cause breakages. So, even if "nr_cpus=1" support for
-> ppc64 is revived, the change is going to take time to be accepted
-> upstream.
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-I talked to pingfan recently, he said he posted patches to add 'nr_cpus='
-support in powerpc in order to reduce memory amount for kdump kernel.
-His patches were rejected by maintainer because maintainer thought the
-reason is not sufficient. So up to now, in architectures fedora/RHEL
-supports to provide default crashkernel reservation value, powerpc costs
-most. Now with this emerging issue, can we reconsider supporting
-'nr_cpus=' in powerpc?
+Doesn't this need Fixes and CC stable tags ?
 
+> ---
+>  drivers/ata/sata_mv.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> Also, I see is_kdump_kernel() being used irrespective of "nr_cpus=1"
-> support for other optimizations in the driver for the special dump
-> capture environment kdump is.
-> 
-> If there is no other downside for driver code, to use is_kdump_kernel(),
-> other than the maintainability aspect, I think the above changes are
-> worth considering.
+> diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
+> index d105db5c7d81..45e48d653c60 100644
+> --- a/drivers/ata/sata_mv.c
+> +++ b/drivers/ata/sata_mv.c
+> @@ -1255,8 +1255,8 @@ static void mv_dump_mem(struct device *dev, void __iomem *start, unsigned bytes)
+>  
+>  	for (b = 0; b < bytes; ) {
+>  		for (w = 0, o = 0; b < bytes && w < 4; w++) {
+> -			o += snprintf(linebuf + o, sizeof(linebuf) - o,
+> -				      "%08x ", readl(start + b));
+> +			o += scnprintf(linebuf + o, sizeof(linebuf) - o,
+> +				       "%08x ", readl(start + b));
+>  			b += sizeof(u32);
+>  		}
+>  		dev_dbg(dev, "%s: %p: %s\n",
 
-Hi Hari,
-
-By the way, will you use the ppc specific is_kdump_kernel() and
-is_crashdump_kernel() in your patches to fix this issue?
-
-Thanks
-Baoquan
+-- 
+Damien Le Moal
+Western Digital Research
 
