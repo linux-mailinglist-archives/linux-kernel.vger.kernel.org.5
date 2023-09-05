@@ -2,128 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF978792577
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:22:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07634792B2F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236431AbjIEQC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:02:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
+        id S243444AbjIEQtW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:49:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353740AbjIEHqw (ORCPT
+        with ESMTP id S1353739AbjIEHqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:46:52 -0400
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FD1CCCB;
-        Tue,  5 Sep 2023 00:46:46 -0700 (PDT)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4RfyF41Rb3zVkRh;
-        Tue,  5 Sep 2023 15:44:08 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 5 Sep 2023 15:46:43 +0800
-From:   Ziyang Xuan <william.xuanziyang@huawei.com>
-To:     <jiri@resnulli.us>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <liuhangbin@gmail.com>,
-        <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>
-Subject: [PATCH net v2] team: fix null-ptr-deref when team device type is changed
-Date:   Tue, 5 Sep 2023 15:46:38 +0800
-Message-ID: <20230905074638.3304732-1-william.xuanziyang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 5 Sep 2023 03:46:50 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7673FCC;
+        Tue,  5 Sep 2023 00:46:44 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 97E5966071F8;
+        Tue,  5 Sep 2023 08:46:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693900003;
+        bh=iVSSjE9/cDR/vb6gfa9QEPy8bbBHcPSNTM8rId6Vj1A=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=mBozDZO9FUZ+xEUFBzpXScqadGnVdhN1h7klNZLiMacQspgC+ouurNBbY+sZusuaw
+         OOgD3AwpZbxkYhfPtFgoYLfDCFsWKUTFf1kl4dLW5rVE+cARrpubWNcY2JbkOnOYOe
+         qXdrJVJgbxIscLugRKZmOE2ZwVe5NTEpYZiydnqShmCrbMyi2VWFbuPIeduT8rbRUt
+         4kRDdHnIEVePdSjhWbQA2MScJdR2SvN7ePla9EaJKcjiN/DU+Vs5iuoXTYJt/xBUp1
+         c+NE8hKf6J46GO/TPpOVMWsyozPnPti94RKUosYHQ/mzi9gn21JJ9fxX3mYLNQVTmC
+         elM+nMdLTHhng==
+Message-ID: <cf5f7df1-64eb-05d8-e6d4-87ef0a846f79@collabora.com>
+Date:   Tue, 5 Sep 2023 09:46:40 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v17 00/14] Add support for MT8195 SCP 2nd core
+Content-Language: en-US
+To:     Tinghan Shen <tinghan.shen@mediatek.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230901080935.14571-1-tinghan.shen@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230901080935.14571-1-tinghan.shen@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Get a null-ptr-deref bug as follows with reproducer [1].
+Il 01/09/23 10:09, Tinghan Shen ha scritto:
+> The mediatek remoteproc driver currently only allows bringing up a
+> single core SCP, e.g. MT8183. It also only bringing up the 1st
+> core in SoCs with a dual-core SCP, e.g. MT8195. This series support
+> to bring-up the 2nd core of the dual-core SCP.
+> 
 
-BUG: kernel NULL pointer dereference, address: 0000000000000228
-...
-RIP: 0010:vlan_dev_hard_header+0x35/0x140 [8021q]
-...
-Call Trace:
- <TASK>
- ? __die+0x24/0x70
- ? page_fault_oops+0x82/0x150
- ? exc_page_fault+0x69/0x150
- ? asm_exc_page_fault+0x26/0x30
- ? vlan_dev_hard_header+0x35/0x140 [8021q]
- ? vlan_dev_hard_header+0x8e/0x140 [8021q]
- neigh_connected_output+0xb2/0x100
- ip6_finish_output2+0x1cb/0x520
- ? nf_hook_slow+0x43/0xc0
- ? ip6_mtu+0x46/0x80
- ip6_finish_output+0x2a/0xb0
- mld_sendpack+0x18f/0x250
- mld_ifc_work+0x39/0x160
- process_one_work+0x1e6/0x3f0
- worker_thread+0x4d/0x2f0
- ? __pfx_worker_thread+0x10/0x10
- kthread+0xe5/0x120
- ? __pfx_kthread+0x10/0x10
- ret_from_fork+0x34/0x50
- ? __pfx_kthread+0x10/0x10
- ret_from_fork_asm+0x1b/0x30
+Whole series is
+Tested-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 
-[1]
-$ teamd -t team0 -d -c '{"runner": {"name": "loadbalance"}}'
-$ ip link add name t-dummy type dummy
-$ ip link add link t-dummy name t-dummy.100 type vlan id 100
-$ ip link add name t-nlmon type nlmon
-$ ip link set t-nlmon master team0
-$ ip link set t-nlmon nomaster
-$ ip link set t-dummy up
-$ ip link set team0 up
-$ ip link set t-dummy.100 down
-$ ip link set t-dummy.100 master team0
+On MT8195 Tomato Chromebook.
 
-When enslave a vlan device to team device and team device type is changed
-from non-ether to ether, header_ops of team device is changed to
-vlan_header_ops. That is incorrect and will trigger null-ptr-deref
-for vlan->real_dev in vlan_dev_hard_header() because team device is not
-a vlan device.
+> v16 -> v17:
+> 1. add a comment in scp_add_multi_core() at patchset 8
+> 
+> v15 -> v16:
+> 1. fix the checkpatch warning at patchset 1
+> 2. move changes on scp_probe() to the new added patchset 6
+> 3. revise platform_set_drvdata() at patchset 8
+> 4. fix commit message at patchset 9
+> 
+> v15 -> v14:
+> 1. use the common SCP registers in struct mtk_scp_of_cluster instead of
+>     copy it to struct mtk_scp at patchset 5
+> 2. use platform_set_drvdata instead of platform_device_add_data at patchset 5
+> 3. rename l2tcm_lock to cluster_lock at patchset 8
+> 4. check l2tcm_refcnt value before decreasing at patchset 8
+> 5. revise the commit message at patchset 11
+> 
+> v13 -> v14:
+> 1. add review tag to patchset 1,6
+> 2. exchange the order of sram power on and reset assert in
+> mt8195_scp_c1_before_load at patchset 2
+> 3. use ERR_CAST in patchset 5
+> 4. re-write patchset 7 to remove dependency between core 0 and core 1
+> 5. add patch set 10 to report watchdot timeout to all cores
+> 
+> v12 -> v13:
+> 1. replace subdevice with new mediatek scp operations in patchset 7
+> 2. add review tag to patchset 3
+> 3. modify mediatek,scp phandle name of video-codec@18000000 at patchset 11
+> 
+> v11 -> v12:
+> 1. add scp_add_single/multi_core() to patchset 6
+> 2. remove unused comment in patchset 6
+> 3. rename list name from mtk_scp_cluster to mtk_scp_list
+> 4. rewrite the multi-core probe flow
+> 5. disable rproc->autoboot and boot rproc by request_firmware_nowait at patchset 7
+> 6. remove patchset 7 review tag
+> 
+> v10 -> v11:
+> 1. rewrite patchset 5 to probe single-core SCP with the cluster list
+> 2. Also in patchset 5, move the pointer of mtk_scp object from the
+>     platform data property to the driver data property
+> 3. move the appearance of mtk_scp cluster property to patcheset 7
+> 
+> v9 -> v10:
+> 1. move the global mtk_scp list into the platform device driver data structure
+> 2. remove an unnecessary if() condition
+> 
+> v8 -> v9:
+> 1. initialize l1tcm_size/l1tcm_phys at patchset 05/11
+> 2. rewrite patchset 06/11 to unify the flow and remove hacks
+> 
+> v7 -> v8:
+> 1. update the node name of mt8192 asurada SCP rpmsg subnode
+> 2. squash register definitions into driver patches
+> 3. initialize local variables on the declaration at patch v8 06/11
+> 
+> v6 -> v7:
+> 1. merge the mtk_scp_cluster struct into the mtk_scp structure
+>     at the "Probe multi-core SCP" patch
+> 
+> v5 -> v6:
+> 1. move the mtk_scp_of_regs structure from mtk_common.h to mtk_scp.c
+> 2. rename the SCP core 0 label from 'scp' to 'scp_c0'
+> 
+> v4 -> v5:
+> 1. move resource release actions to the platform driver remove operation
+> 2. fix dual-core watchdog handling
+> 
+> v3 -> v4:
+> 1. change the representation of dual-core SCP in dts file and update SCP yaml
+> 2. rewrite SCP driver to reflect the change of dts node
+> 3. drop 'remove redundant call of rproc_boot for SCP' in v3 for further investigation
+> 
+> v2 -> v3:
+> 1. change the representation of dual-core SCP in dts file and update SCP yaml
+> 2. rewrite SCP driver to reflect the change of dts node
+> 3. add SCP core 1 node to mt8195.dtsi
+> 4. remove redundant call of rproc_boot for SCP
+> 5. refine IPI error message
+> 
+> v1 -> v2:
+> 1. update dt-binding property description
+> 2. remove kconfig for scp dual driver
+> 3. merge mtk_scp_dual.c and mtk_scp_subdev.c to mtk_scp.c
+> 
+> 
+> Tinghan Shen (14):
+>    dt-bindings: remoteproc: mediatek: Improve the rpmsg subnode
+>      definition
+>    arm64: dts: mediatek: Update the node name of SCP rpmsg subnode
+>    dt-bindings: remoteproc: mediatek: Support MT8195 dual-core SCP
+>    remoteproc: mediatek: Add MT8195 SCP core 1 operations
+>    remoteproc: mediatek: Extract SCP common registers
+>    remoteproc: mediatek: Revise SCP rproc initialization flow for
+>      multi-core SCP
+>    remoteproc: mediatek: Probe SCP cluster on single-core SCP
+>    remoteproc: mediatek: Probe SCP cluster on multi-core SCP
+>    remoteproc: mediatek: Remove dependency of MT8195 SCP L2TCM power
+>      control on dual-core SCP
+>    remoteproc: mediatek: Setup MT8195 SCP core 1 SRAM offset
+>    remoteproc: mediatek: Handle MT8195 SCP core 1 watchdog timeout
+>    remoteproc: mediatek: Report watchdog crash to all cores
+>    remoteproc: mediatek: Refine ipi handler error message
+>    arm64: dts: mediatek: mt8195: Add SCP 2nd core
+> 
+>   .../bindings/remoteproc/mtk,scp.yaml          | 176 +++++-
+>   .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi |   2 +-
+>   .../boot/dts/mediatek/mt8192-asurada.dtsi     |   2 +-
+>   .../boot/dts/mediatek/mt8195-cherry.dtsi      |   6 +-
+>   arch/arm64/boot/dts/mediatek/mt8195.dtsi      |  34 +-
+>   drivers/remoteproc/mtk_common.h               |  39 +-
+>   drivers/remoteproc/mtk_scp.c                  | 539 ++++++++++++++----
+>   drivers/remoteproc/mtk_scp_ipi.c              |   4 +-
+>   8 files changed, 656 insertions(+), 146 deletions(-)
+> 
 
-Assign eth_header_ops to header_ops of team device when its type is changed
-from non-ether to ether to fix the bug.
-
-Fixes: 1d76efe1577b ("team: add support for non-ethernet devices")
-Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
-Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
----
-v2:
-  - Just modify header_ops to eth_header_ops not use ether_setup().
----
- drivers/net/team/team.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
-index d3dc22509ea5..12fb5f4cff06 100644
---- a/drivers/net/team/team.c
-+++ b/drivers/net/team/team.c
-@@ -2127,7 +2127,10 @@ static const struct ethtool_ops team_ethtool_ops = {
- static void team_setup_by_port(struct net_device *dev,
- 			       struct net_device *port_dev)
- {
--	dev->header_ops	= port_dev->header_ops;
-+	if (port_dev->type == ARPHRD_ETHER)
-+		dev->header_ops	= &eth_header_ops;
-+	else
-+		dev->header_ops	= port_dev->header_ops;
- 	dev->type = port_dev->type;
- 	dev->hard_header_len = port_dev->hard_header_len;
- 	dev->needed_headroom = port_dev->needed_headroom;
--- 
-2.25.1
 
