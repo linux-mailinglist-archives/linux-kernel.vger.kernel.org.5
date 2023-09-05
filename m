@@ -2,140 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CFD51792819
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EF9792B36
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238805AbjIEQVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54666 "EHLO
+        id S244175AbjIEQto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353785AbjIEIKk (ORCPT
+        with ESMTP id S1353787AbjIEILL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:10:40 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A794CD2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:09:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693901390;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dxz+8eCTkxEOHGidOvFv8Aj94pooA+xm4HPyOHRACMo=;
-        b=YTCGxqkAKT6k6/OXG6khFduaJJqItKP2060lsUjVZQShEvJlZ4LbpHxoFyasx4ae4+EzNx
-        igJpX3k49VSQ0838dBUZZBC9tzzd0sjgSMyzd49TA/CFIDtlMmgLp8f3zxJ4EEaTXgwF7m
-        HPpzMxXPH9bHpD63UrVXSJ4RK55KmC4=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-358-CPhjkGm6P6eBBFlPe_ZHoQ-1; Tue, 05 Sep 2023 04:09:46 -0400
-X-MC-Unique: CPhjkGm6P6eBBFlPe_ZHoQ-1
-Received: by mail-ed1-f72.google.com with SMTP id 4fb4d7f45d1cf-525691cfd75so311283a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:09:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693901386; x=1694506186;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dxz+8eCTkxEOHGidOvFv8Aj94pooA+xm4HPyOHRACMo=;
-        b=loJzsVIGTMGx6qrjpr++dIlnWDPrS1MzS7CvMEy8abHSRfHMPJnFqr+xZ0xFuF8fr+
-         zOOkPQJJ9cJyQoVckBgLcLY1ENuLYSj/mD5WSH6ZZZX3aSi0fR9rfEek0fVTdib13GsP
-         nXU2bq1OGcTV+tWEOOhQs1tPQ8LTJvLVYR1+WMcWDn8DiB6nmokf08IfoaMiA9+KCAS1
-         SYor4rQ9JgAOmH2VuBIoMcIqCyWuD/pChfmgv84b/lZtor3LnlZOwQnatvJ4wPUpeZBM
-         Q9ttWPE3ot5GE6IwA7qVpPQcvsV2CCB1SKmqSz2C/goA6WtWaRgFGnpW/y/WxKDB4tcM
-         o+5w==
-X-Gm-Message-State: AOJu0Yz2tpgJja4kSMS1Q7IkVbhIS6aVpAMM9I9L4ANCfKaOEdv8gRH1
-        CkiutfEdspsUpyna/PMhkhRi6szrI2NZ1EO5HeLn+5as7Zi3ZtU/1bm3r//o6hX0J6q4oELpxFb
-        BF9uW59WWRzGeFkZHuVWZlPHV
-X-Received: by 2002:a05:6402:5191:b0:523:37cf:6f37 with SMTP id q17-20020a056402519100b0052337cf6f37mr8515192edd.4.1693901385904;
-        Tue, 05 Sep 2023 01:09:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEp5vySoMRlvjLb2rntCU9VeYWU42eXy2n6MkRFMnPRU9gWL6Mq0jqfLFqUlxt7M1SUBUQyYA==
-X-Received: by 2002:a05:6402:5191:b0:523:37cf:6f37 with SMTP id q17-20020a056402519100b0052337cf6f37mr8515175edd.4.1693901385595;
-        Tue, 05 Sep 2023 01:09:45 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-254-194.dyn.eolo.it. [146.241.254.194])
-        by smtp.gmail.com with ESMTPSA id a9-20020aa7d749000000b005257da6be23sm6873549eds.75.2023.09.05.01.09.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 01:09:45 -0700 (PDT)
-Message-ID: <279a856aa6710becf9ebb13ab74e7afb6add0045.camel@redhat.com>
-Subject: Re: [PATCH net] kcm: Fix memory leak in error path of kcm_sendmsg()
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Shigeru Yoshida <syoshida@redhat.com>, davem@davemloft.net,
-        edumazet@google.com, kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com
-Date:   Tue, 05 Sep 2023 10:09:43 +0200
-In-Reply-To: <20230902165216.1721082-1-syoshida@redhat.com>
-References: <20230902165216.1721082-1-syoshida@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+        Tue, 5 Sep 2023 04:11:11 -0400
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17D31AD;
+        Tue,  5 Sep 2023 01:11:06 -0700 (PDT)
+Received: from canpemm500006.china.huawei.com (unknown [172.30.72.55])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Rfylw0HxmzGpts;
+        Tue,  5 Sep 2023 16:07:24 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 5 Sep 2023 16:11:03 +0800
+From:   Ziyang Xuan <william.xuanziyang@huawei.com>
+To:     <jiri@resnulli.us>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <liuhangbin@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>
+Subject: [PATCH net v3] team: fix null-ptr-deref when team device type is changed
+Date:   Tue, 5 Sep 2023 16:10:56 +0800
+Message-ID: <20230905081056.3365013-1-william.xuanziyang@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500006.china.huawei.com (7.192.105.130)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Get a null-ptr-deref bug as follows with reproducer [1].
 
-On Sun, 2023-09-03 at 01:52 +0900, Shigeru Yoshida wrote:
-> syzbot reported a memory leak like below [1]:
->=20
-> BUG: memory leak
-> unreferenced object 0xffff88810b088c00 (size 240):
->   comm "syz-executor186", pid 5012, jiffies 4294943306 (age 13.680s)
->   hex dump (first 32 bytes):
->     00 89 08 0b 81 88 ff ff 00 00 00 00 00 00 00 00  ................
->     00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
->   backtrace:
->     [<ffffffff83e5d5ff>] __alloc_skb+0x1ef/0x230 net/core/skbuff.c:634
->     [<ffffffff84606e59>] alloc_skb include/linux/skbuff.h:1289 [inline]
->     [<ffffffff84606e59>] kcm_sendmsg+0x269/0x1050 net/kcm/kcmsock.c:815
->     [<ffffffff83e479c6>] sock_sendmsg_nosec net/socket.c:725 [inline]
->     [<ffffffff83e479c6>] sock_sendmsg+0x56/0xb0 net/socket.c:748
->     [<ffffffff83e47f55>] ____sys_sendmsg+0x365/0x470 net/socket.c:2494
->     [<ffffffff83e4c389>] ___sys_sendmsg+0xc9/0x130 net/socket.c:2548
->     [<ffffffff83e4c536>] __sys_sendmsg+0xa6/0x120 net/socket.c:2577
->     [<ffffffff84ad7bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inlin=
-e]
->     [<ffffffff84ad7bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:=
-80
->     [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
->=20
-> In kcm_sendmsg(), newly allocated socket buffers can be added to skb->nex=
-t. If
-> an error occurred and jumped to out_error label, those newly allocated so=
-cket
-> buffers can be leaked. This patch fixes this issue by remembering the las=
-t
-> allocated socket buffer in kcm_tx_msg(head)->last_skb.
+BUG: kernel NULL pointer dereference, address: 0000000000000228
+...
+RIP: 0010:vlan_dev_hard_header+0x35/0x140 [8021q]
+...
+Call Trace:
+ <TASK>
+ ? __die+0x24/0x70
+ ? page_fault_oops+0x82/0x150
+ ? exc_page_fault+0x69/0x150
+ ? asm_exc_page_fault+0x26/0x30
+ ? vlan_dev_hard_header+0x35/0x140 [8021q]
+ ? vlan_dev_hard_header+0x8e/0x140 [8021q]
+ neigh_connected_output+0xb2/0x100
+ ip6_finish_output2+0x1cb/0x520
+ ? nf_hook_slow+0x43/0xc0
+ ? ip6_mtu+0x46/0x80
+ ip6_finish_output+0x2a/0xb0
+ mld_sendpack+0x18f/0x250
+ mld_ifc_work+0x39/0x160
+ process_one_work+0x1e6/0x3f0
+ worker_thread+0x4d/0x2f0
+ ? __pfx_worker_thread+0x10/0x10
+ kthread+0xe5/0x120
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork+0x34/0x50
+ ? __pfx_kthread+0x10/0x10
+ ret_from_fork_asm+0x1b/0x30
 
-I think the root cause should be clarified a little more.=C2=A0When the
-'head' skb will be freed, all the frag_list skbs will be released, too.
+[1]
+$ teamd -t team0 -d -c '{"runner": {"name": "loadbalance"}}'
+$ ip link add name t-dummy type dummy
+$ ip link add link t-dummy name t-dummy.100 type vlan id 100
+$ ip link add name t-nlmon type nlmon
+$ ip link set t-nlmon master team0
+$ ip link set t-nlmon nomaster
+$ ip link set t-dummy up
+$ ip link set team0 up
+$ ip link set t-dummy.100 down
+$ ip link set t-dummy.100 master team0
 
-AFAICS the issue is that in case of error after copying some bytes,
-kcm_tx_msg(head)->last_skb is left unmodified and such reference is
-used as the cursor to append newly allocated skbs to 'head'.
+When enslave a vlan device to team device and team device type is changed
+from non-ether to ether, header_ops of team device is changed to
+vlan_header_ops. That is incorrect and will trigger null-ptr-deref
+for vlan->real_dev in vlan_dev_hard_header() because team device is not
+a vlan device.
 
-A later kcm_sendmsg will use an obsoleted 'last_skb' reference,
-corrupting the 'head' frag_list and causing the leak.
+Assign eth_header_ops to header_ops of team device when its type is changed
+from non-ether to ether to fix the bug.
 
-The fix looks correct, but could you please send a v2 with an
-updated/more extensive commit message?
+Fixes: 1d76efe1577b ("team: add support for non-ethernet devices")
+Suggested-by: Hangbin Liu <liuhangbin@gmail.com>
+Signed-off-by: Ziyang Xuan <william.xuanziyang@huawei.com>
+---
+v3:
+  - Export eth_header_ops to fix modpost error.
+v2:
+  - Just modify header_ops to eth_header_ops not use ether_setup().
+---
+ drivers/net/team/team.c | 5 ++++-
+ net/ethernet/eth.c      | 1 +
+ 2 files changed, 5 insertions(+), 1 deletion(-)
 
-> Link: https://syzkaller.appspot.com/bug?extid=3D6f98de741f7dbbfc4ccb [1]
-> Reported-by: syzbot+6f98de741f7dbbfc4ccb@syzkaller.appspotmail.com
-> Fixes: ab7ac4eb9832 ("kcm: Kernel Connection Multiplexor module")
-> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-
-Additionally please feed the patch to syzbot, so it can verify the fix,
-and add the relevant tag.
-
-Thanks,
-
-Paolo
+diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
+index d3dc22509ea5..12fb5f4cff06 100644
+--- a/drivers/net/team/team.c
++++ b/drivers/net/team/team.c
+@@ -2127,7 +2127,10 @@ static const struct ethtool_ops team_ethtool_ops = {
+ static void team_setup_by_port(struct net_device *dev,
+ 			       struct net_device *port_dev)
+ {
+-	dev->header_ops	= port_dev->header_ops;
++	if (port_dev->type == ARPHRD_ETHER)
++		dev->header_ops	= &eth_header_ops;
++	else
++		dev->header_ops	= port_dev->header_ops;
+ 	dev->type = port_dev->type;
+ 	dev->hard_header_len = port_dev->hard_header_len;
+ 	dev->needed_headroom = port_dev->needed_headroom;
+diff --git a/net/ethernet/eth.c b/net/ethernet/eth.c
+index 2edc8b796a4e..157833509adb 100644
+--- a/net/ethernet/eth.c
++++ b/net/ethernet/eth.c
+@@ -347,6 +347,7 @@ const struct header_ops eth_header_ops ____cacheline_aligned = {
+ 	.cache_update	= eth_header_cache_update,
+ 	.parse_protocol	= eth_header_parse_protocol,
+ };
++EXPORT_SYMBOL(eth_header_ops);
+ 
+ /**
+  * ether_setup - setup Ethernet network device
+-- 
+2.25.1
 
