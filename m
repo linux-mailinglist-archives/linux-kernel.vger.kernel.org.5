@@ -2,67 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FFCA792F04
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEEE0792F1A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230363AbjIETgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:36:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48182 "EHLO
+        id S237254AbjIETkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:40:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233035AbjIETgD (ORCPT
+        with ESMTP id S232335AbjIETkM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:36:03 -0400
-Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1C6ACEF;
-        Tue,  5 Sep 2023 12:35:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
-        s=smtpout1; t=1693942524;
-        bh=J2nnbwAyoujgZF6ODsDkP2hOx4p7tQtrCVrHCehMsBo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=gHwvIllzmkO40KscGsCyhUMeVMSenMqney97Ar610bq+xcbCmdg+pN2Wftutv6nnT
-         e9/bc8ZrSj8SFa4Xea143wGmju1xhTF567ltxO/emCGZR8s3w153CeBAQ3cQQJH2in
-         PVq6SyToD5TBt0Z0T0MLzL1SiKj/F/d7shqUMPp3T4IoFNMRmouzkwSO8dhzu2tiM0
-         pLzUmZ+yaJMzpnQQX8yPr8z6SgmSgEEfyWZfrNz/1OkOU4OqA/aQOnRnY2uzqA2roF
-         4un4wy7VDNTG78wX24bmEUVEKnDMsOXZi8alUtfbcQBpoECiM6AOBW6UyGlnONQNAj
-         gpPAQF+CDt32w==
-Received: from [172.16.0.85] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
-        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RgG1m0lnDz1N2t;
-        Tue,  5 Sep 2023 15:35:24 -0400 (EDT)
-Message-ID: <d2a3456b-aee9-f5b0-f8e4-5c5030c3217f@efficios.com>
-Date:   Tue, 5 Sep 2023 15:36:40 -0400
+        Tue, 5 Sep 2023 15:40:12 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5854283
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:40:09 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id 98e67ed59e1d1-26d50a832a9so1752818a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:40:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693942809; x=1694547609; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H3JoIdLXtum5k3l+D+Jgfb75PDibqNu9cKpZO/53M1U=;
+        b=o5FWa8hzpV5Vr9CBZnztl/QxmMEt8CtGWWZTgaQzeDQvsDIr3DlCQBjje+f5oYBQeT
+         e7+fXpFeHS3O7uGtL3FFdiAw2gA42i2TND1qmhTD27A5cg+RMAIERUCRTikAMtWDzKsm
+         5X3dWaoznehugUDM1JAgBK6+Nex7P7ReZdAf0bwvLyLiTRWAb3s0QqLOKKvLXN/elJNZ
+         Sv8TraLmxRWQOAH0qlzssqG4bOFVdDOG3ICMSrdOEczRGO6Ir8jSVT0CfhwCDQpu0BqO
+         YG7iMPgGjsOsoq1/EP8HOEm7qqAAfWBFXdzGunNXhD2MyR/pBtnOG18lxnI/dKIqCxr7
+         q1lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693942809; x=1694547609;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H3JoIdLXtum5k3l+D+Jgfb75PDibqNu9cKpZO/53M1U=;
+        b=f049AHOWK6JT8lvJjcQtRbdSONknGS3pU3Ot2oWUN8B7V7IfNORAlQAWDT84dsV8dD
+         eA6ef0w/9WBdeu6Gm+a7Kf1BU63H5Cn/5bebJRHRs2SdcSB84XW23WcPI3vwuTlIJYZq
+         cNEjm/J4tzyxySu9e07JoKKByWyvs60zF7SwbArkkOt0wp94GPJl3dhfaEN20ydS0U9d
+         tXLBlrLKQl5ld12599eIXW8TB0L4tdnqtOnmf0qumf89+k5BN/PkoKEM9ucQ42yoiy6V
+         8AMHPcU3ai10CMyrlNotufXLQ4d8hAlnMULD5SGIV6JAPk8bfIpM0LsaAxY90TA2yRvE
+         w9Kw==
+X-Gm-Message-State: AOJu0YygIZf5+QQZww4Utv2GOkojkpRRQmg3I1x/hNXDBTkhvSIif3f9
+        Cxc5v82nZs+GiSPGXBYoPf/sOF0Wv9v1IukxEitViJyw3/ov+QFZ
+X-Google-Smtp-Source: AGHT+IEPJxcZundO63bCDqfIc8khpXnGiihMK5NjNiHBG2uKgIfOrZ55TyG073a8ocRfpvxcE2WLPeKoDDT2jY1IASg=
+X-Received: by 2002:a17:90a:6e0d:b0:26c:f6d2:2694 with SMTP id
+ b13-20020a17090a6e0d00b0026cf6d22694mr11717461pjk.12.1693942808650; Tue, 05
+ Sep 2023 12:40:08 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] The value may overflow
-Content-Language: en-US
-To:     paulmck@kernel.org
-Cc:     David Laight <David.Laight@aculab.com>,
-        Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>, ldufour@linux.ibm.com
-References: <20230904094251.64022-1-arefev@swemel.ru>
- <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
- <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
- <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
- <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
- <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com>
- <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
- <c312066b2cc44919bd11b6cd938cb05f@AcuMS.aculab.com>
- <ce51b768-9988-197c-0c35-7574aba77810@efficios.com>
- <abe14f37-ec05-48c3-87fc-9294848d221f@paulmck-laptop>
- <83422425-0534-4b12-a6e4-8068b7164a17@paulmck-laptop>
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-In-Reply-To: <83422425-0534-4b12-a6e4-8068b7164a17@paulmck-laptop>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20230903203732.585378-1-bergh.jonathan@gmail.com> <8ab11a98-5631-4ff2-93d7-dd0a7d72dd6a@kadam.mountain>
+In-Reply-To: <8ab11a98-5631-4ff2-93d7-dd0a7d72dd6a@kadam.mountain>
+From:   Jonathan Bergh <bergh.jonathan@gmail.com>
+Date:   Tue, 5 Sep 2023 21:39:56 +0200
+Message-ID: <CA+MPq=W-HX0t2=PqzbrSX900RQ4Su2+Gf+X968KeXBKmq5xACw@mail.gmail.com>
+Subject: Re: [PATCH] staging: vme_user: Fix block comments where '*' on each
+ line should be aligned
+To:     Dan Carpenter <dan.carpenter@linaro.org>
+Cc:     gregkh@linuxfoundation.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,212 +70,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/23 15:27, Paul E. McKenney wrote:
-> On Tue, Sep 05, 2023 at 09:40:51AM -0700, Paul E. McKenney wrote:
->> On Tue, Sep 05, 2023 at 10:34:43AM -0400, Mathieu Desnoyers wrote:
->>> On 9/5/23 10:15, David Laight wrote:
->>>> ...
->>>>> That would instead be more than 512-16=496 CPUs, correct?  496 CPUs would
->>>>> only require a 31-bit shift, which should be OK, but 497 would require
->>>>> a 32-bit shift, which would result in sign extension.  If it turns out
->>>>> that sign extension is OK, then we should get in trouble at 513 CPUs,
->>>>> which would result in a 33-bit shift (and is that even defined in C?).
->>>>
->>>> Not quite right :-)
->>>>
->>>> (1 << 31) is int and negative, that gets sign extended before
->>>> being converted to 'unsigned long' - so has the top 33 bits set.
->>
->> Good point, thank you for the correction.
->>
->>>> (1 << 32) is undefined, the current x86 cpu ignore the high
->>>> shift bits so it is (1 << 0).
->>
->> Which would cause it to attempt to invoke SRCU callbacks on the
->> lowest-numbered CPU associated with that srcu_node structure.
->>
->>> Yes, I was about to reply the same thing. A shift of 31 is buggy,
->>> because shifting 1 << 31 raises the sign bit, which sets the top 33
->>> bits when cast to unsigned long. A shift of 1 << 32 is undefined,
->>> with for instance x86 choosing to ignore the top bit.
->>>
->>> But in order to have a 1 << 31 shift from this expression:
->>>
->>>                  sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
->>>
->>> I *think* we need the group to have 32 cpus or more (indexed within
->>> the group from grplo to grplo + 31 (both inclusive)).
->>>
->>> So as soon as we have one group with 32 cpus, the problem should show
->>> up. With FANOUT_LEAF=16, we can have 15 groups of 31 cpus and 1
->>> group of 32 cpus, for:
->>>
->>>    15*31 + 32 = 497 cpus.
->>>
->>> AFAIU, this would be the minimum value for smp_processor_id()+1 which
->>> triggers this issue.
->>
->> By default, there are 16 CPUs per leaf srcu_node structure.  Each leaf
->> srcu_node structure takes up one bit in the parent srcu_node structures'
->> srcu_data_have_cbs[] array.  Up to 30 bits is OK, 31 bits is questionable,
->> and 32 bits and larger erroneous.
->>
->> This is the situation as I see it (assuming dense CPU numbering):
->>
->> 	# Leaf srcu_node		Largest
->> 	structures	#CPUs		CPU #		Status
->>
->> 	0-30		0-480		479		Good
->> 	31		481-496		495		Questionable
->> 	32-		497-		496+		Bad.
->>
->> Tree SRCU differs from Tree RCU in its operation, so this bug should
->> not hold up SRCU grace periods.  It might instead cause SRCU callbacks
->> to be ignored (which would admittedly look quite similar to the user).
->>
->> My attempts to cheat the numbering system ran up against the limited
->> height of the srcu_node tree.
->>
->> But there is still the question of why this has not been seen in the
->> wild, given that there really are systems with more than 479 CPUs
->> out there.  One possibility is the call to srcu_schedule_cbs_sdp()
->> from srcu_funnel_gp_start().  But it does not seem likely that this
->> would happen all that often, as it requires back-to-back grace periods
->> and then some.
->>
->> Maybe people with large systems boot with srcutree.convert_to_big=0?
->>
->> Adding Laurent for his thoughts.
->>
->> Aha!
->>
->> Here is what makes it work, given David's description of 1<<32:
->>
->> static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp,
->> 				  unsigned long mask, unsigned long delay)
->> {
->> 	int cpu;
->>
->> 	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
->> 		if (!(mask & (1 << (cpu - snp->grplo))))
->> 			continue;
->> 		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
->> 	}
->> }
->>
->> As long as at least one bit is set in the result of 1<<N, and as long
->> as the compiler always does the same thing for a given N, then this loop
->> will make the right thing happen.
->>
->> But even that is not relied upon, because the calling code looks like
->> this:
->>
->> 			spin_lock_irq_rcu_node(snp);
->> 			cbs = false;
->> 			last_lvl = snp >= sup->level[rcu_num_lvls - 1];
->> 			if (last_lvl)
->> 				cbs = ss_state < SRCU_SIZE_BIG || snp->srcu_have_cbs[idx] == gpseq;
->> 			snp->srcu_have_cbs[idx] = gpseq;
->> 			rcu_seq_set_state(&snp->srcu_have_cbs[idx], 1);
->> 			sgsne = snp->srcu_gp_seq_needed_exp;
->> 			if (srcu_invl_snp_seq(sgsne) || ULONG_CMP_LT(sgsne, gpseq))
->> 				WRITE_ONCE(snp->srcu_gp_seq_needed_exp, gpseq);
->> 			if (ss_state < SRCU_SIZE_BIG)
->> 				mask = ~0;
->> 			else
->> 				mask = snp->srcu_data_have_cbs[idx];
->> 			snp->srcu_data_have_cbs[idx] = 0;
->> 			spin_unlock_irq_rcu_node(snp);
->> 			if (cbs)
->> 				srcu_schedule_cbs_snp(ssp, snp, mask, cbdelay);
->>
->> So that last_lvl check means that the srcu_schedule_cbs_snp() function
->> is invoked only for leaf srcu_node structures.  Which by default limit
->> the shift to 16.
->>
->> So this bug appears to have no effect for default RCU setups, even on very
->> large 64-bit systems, which is consistent with field experience.  Even if
->> this is the case, it still should be fixed, to avoid confusion if nothing
->> else.  Or just in case someone decides to set CONFIG_RCU_FANOUT_LEAF=32.
->> Which actually happened the other day due to someone trusting ChatGPT's
->> opinion about RCU Kconfig options...
-> 
-> And I therefore queued Denis's v3 patch with an edited commit log.
-> Of course, if anyone sees some other way that the bug could manifest
-> other than in a 64-bit kernel built with CONFIG_RCU_FANOUT_LEAF greater
-> than 30 on a system with at least 31 CPUs, please let me know so that
-> I can adjust.
-> 
-> 							Thanx, Paul
-> 
-> ------------------------------------------------------------------------
-> 
-> commit ed083b0e22f1396dee3599896249a3f218845298
-> Author: Denis Arefev <arefev@swemel.ru>
-> Date:   Mon Sep 4 15:21:14 2023 +0300
-> 
->      Fix srcu_struct node grpmask overflow on 64-bit systems
->      
->      The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+Ok
 
-AFAIU, the overflow resides in the "bitwise expression" and not
-the arithmetic expression.
-
-Other than this, please add my
-
-Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-
-
->      is subject to overflow due to a failure to cast operands to a larger
->      data type before performing arithmetic.
->      
->      The maximum result of this subtraction is defined by the RCU_FANOUT_LEAF
->      Kconfig option, which on 64-bit systems defaults to 16 (resulting in a
->      maximum shift of 15), but which can be set up as high as 64 (resulting
->      in a maximum shift of 63).  A value of 31 can result in sign extension,
->      resulting in 0xffffffff80000000 instead of the desired 0x80000000.
->      A value of 31 or greater triggers undefined behavior per the C standard.
->      
->      This bug has not been known to cause issues because almost all kernels
->      take the default CONFIG_RCU_FANOUT_LEAF=16.  Furthermore, as long as
->      a given compiler gives a deterministic result for 1<<N for N>=32, the
->      code correctly invokes all SRCU callbacks, albeit wasting CPU time along
->      the way.
->      
->      This commit therefore substitutes the correct 1UL for the buggy 1.
->      
->      Found by Linux Verification Center (linuxtesting.org) with SVACE.
->      
->      Signed-off-by: Denis Arefev <arefev@swemel.ru>
->      Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->      Cc: David Laight <David.Laight@aculab.com>
->      Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index 833a8f848a90..5602042856b1 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
->   				snp->grplo = cpu;
->   			snp->grphi = cpu;
->   		}
-> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
->   	}
->   	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
->   	return true;
-> @@ -835,7 +835,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
->   	int cpu;
->   
->   	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> -		if (!(mask & (1 << (cpu - snp->grplo))))
-> +		if (!(mask & (1UL << (cpu - snp->grplo))))
->   			continue;
->   		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
->   	}
-
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-https://www.efficios.com
-
+On Tue, Sep 5, 2023 at 1:28=E2=80=AFPM Dan Carpenter <dan.carpenter@linaro.=
+org> wrote:
+>
+> On Sun, Sep 03, 2023 at 10:37:32PM +0200, Jonathan Bergh wrote:
+> > Fixed checkpatch warnings where lines with '*' in block comments should
+> > be aligned and were not as well as incorrect tab spacings at the start =
+of
+> > comment lines. Also removed spurious newlines between define statements
+> > in define blocks
+>
+> Do this in two patches.
+>
+> patch 1: delete blank lines
+> patch 2: change comments
+>
+> regards,
+> dan carpenter
+>
