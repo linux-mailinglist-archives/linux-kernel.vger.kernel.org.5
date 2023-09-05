@@ -2,261 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E15DC7931ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE6A7931EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:23:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244823AbjIEWX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 18:23:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
+        id S244805AbjIEWXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 18:23:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243944AbjIEWXt (ORCPT
+        with ESMTP id S229475AbjIEWXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 18:23:49 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00571185;
-        Tue,  5 Sep 2023 15:23:44 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-52889bc61b6so4191752a12.0;
-        Tue, 05 Sep 2023 15:23:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693952623; x=1694557423; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1T55w72TpNqnSrtyLfrBfFw2Bj7G/h6hqY2N0kbcyw4=;
-        b=oKwj9TwTKDt0bCNPeZkawKVg68OKxkg1ALrHhNO/JoYPOyVFFZUPU9CnY5fNBzSgxZ
-         k2Z0HfXh5P/vlYYAVFjsIWy7uBirm0PPTGCxSrOkCe4cSJJ5bFs8l87EpJMMIG416Gsb
-         I3b5S0sRJ0CzwB35nZb+3lidmYMi13f0IMh8OaE6LbR/xkcBsT/3a4xjPUN88T1lPPyb
-         TEOZtWd1EFE3wjdsvS4NstsZTWvtYMdXo9a6R9nLu+Ct39wKPKMuynAfnfkSt6AFqhFU
-         lWBewUqyFvl2tuCzyDYh6/Gwntgs5U+6OTvBt0dlrbkE5J2YyyI0koa8APP2sQJ7CIS7
-         iuCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693952623; x=1694557423;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1T55w72TpNqnSrtyLfrBfFw2Bj7G/h6hqY2N0kbcyw4=;
-        b=ISvViJN8R1+dRQLeYybu0Ib+gCBxyCYjtv3gOD/3NqS7YS+1nk6kD5HKiZ6SYX9sQg
-         JzBY7Ts9DW1PYNfsWHZDjCLdQ/02D8s0yKWvBsefncxbpSpEzfH3yUTBB2bHg6ZN1lYP
-         OWO3al2djYyplj8nugUYxhV7S+goPODnkvaTiMW6h17R9hWytSaw4+V9woTSX5fKtdPC
-         MgmsK1f0mTsJOWtVqy//GRb2Mh8v2Izukpn4ANsb+pLnpWr/GK6vxLu2k33fl/Nxf8kg
-         IaoSkJ8Y+DYqnawlBIlmoIifAX9OhGQrhDCBa+TDW/8QHpFtZNMdogFH/4IdTyFBua2g
-         ms/w==
-X-Gm-Message-State: AOJu0Yx1KCG8R6oJsO2eTny2QguBQBtsMIJFh2YedemjSKmLyjkV7uAS
-        I/5vmYKTTJzj7lNseaENs7FoCExLAlKWQ2nfkpw=
-X-Google-Smtp-Source: AGHT+IGaNhh5xAZtd1HQ7K+uOvEuJt6MrFF437Bu/DNH19srdrf+ltw2URQ82OywTRN2n3QE0XOen0vftZ3tepICecQ=
-X-Received: by 2002:a17:906:10cd:b0:9a5:821e:1655 with SMTP id
- v13-20020a17090610cd00b009a5821e1655mr760091ejv.71.1693952623162; Tue, 05 Sep
- 2023 15:23:43 -0700 (PDT)
+        Tue, 5 Sep 2023 18:23:45 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB51D185;
+        Tue,  5 Sep 2023 15:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693952622; x=1725488622;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=PZ8K/Y6fP2+GV/U6uh2DerdNLUjBinIKc22XgnQErp0=;
+  b=O08x02vUr3X9Igtack++7Rxn8Lv52jtfz/1mlIiONX/OgRSyie/rxbdi
+   XVtbcJm7PnlmdeybtsfBNgZOIluL8smG3T844lG1SqHSvvYvSZwntEmpb
+   459SFn0y+Sm8tYtybZc/WniH2l/uxxcAQ8wmYIU1EGKMa8tBRdcZm9YiI
+   x0D+hmHYxd7xzZswr8ztv/5bOuqpu+r9mMP2NnAFmDtLLR601glXmgW11
+   mront3sBeL2KRu9l12PGVzgQD03rUssEsmEn7U1dfzJg2I+T/g6x7/lid
+   HErD+62oplzKrTHQM4zbFeafX2D/Pm8wanusUdx1piiGUH2DhpeEA/Wly
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="443306960"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="443306960"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 15:23:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="734820249"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="734820249"
+Received: from yjie-desk1.jf.intel.com (HELO [10.24.100.126]) ([10.24.100.126])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 15:23:41 -0700
+Message-ID: <3b798806-d144-58a8-6fa3-e893299bc690@linux.intel.com>
+Date:   Tue, 5 Sep 2023 15:23:41 -0700
 MIME-Version: 1.0
-References: <20230824013604.466224-1-adrian.larumbe@collabora.com>
- <20230824013604.466224-7-adrian.larumbe@collabora.com> <CAF6AEGtXUTs3ta0N+0hiORa+Tsyh94AXPYm9XdaK6xZbqf+nzA@mail.gmail.com>
- <tc7x4uzxvfwakzoqxgaxbkzh3nyhub56ksrgaqmrb4uaq4rruw@7xwan7qfofw7>
-In-Reply-To: <tc7x4uzxvfwakzoqxgaxbkzh3nyhub56ksrgaqmrb4uaq4rruw@7xwan7qfofw7>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Tue, 5 Sep 2023 15:23:31 -0700
-Message-ID: <CAF6AEGtueEoHCT1rg6G3BPAMaFMidr0un1i6X1VFMxq_xeUq7w@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] drm/drm-file: Allow size unit selection in drm_show_memory_stats
-To:     =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>
-Cc:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
-        quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
-        sean@poorly.run, marijn.suijten@somainline.org, robh@kernel.org,
-        steven.price@arm.com, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, healych@amazon.com,
-        kernel@collabora.com, Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Rob Clark <robdclark@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH v2] cpufreq: intel_pstate: set stale CPU frequency to
+ minimum
+Content-Language: en-US
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Doug Smythies <dsmythies@telus.net>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <001d01d9d3a7$71736f50$545a4df0$@telus.net>
+ <CAJZ5v0g=TEY0+dL9AGh1cYNnwQ=L6G8CRxXVD0AyWsaK5aDsdA@mail.gmail.com>
+ <9665af79-d439-e05a-5333-62f71a2ac55c@linux.intel.com>
+ <2023082901-moonscape-album-b7cc@gregkh>
+ <02d8a574-a07a-f595-aee2-13908df74e68@linux.intel.com>
+ <CAJZ5v0i4_PnCJGkkMzBMF9GX3N6LLNQdnuyX6nRzWHy_f9T=3A@mail.gmail.com>
+From:   Keyon Jie <yang.jie@linux.intel.com>
+In-Reply-To: <CAJZ5v0i4_PnCJGkkMzBMF9GX3N6LLNQdnuyX6nRzWHy_f9T=3A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,LOTS_OF_MONEY,MONEY_NOHTML,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Aug 30, 2023 at 8:51=E2=80=AFAM Adri=C3=A1n Larumbe
-<adrian.larumbe@collabora.com> wrote:
->
-> >> The current implementation will try to pick the highest available
-> >> unit. This is rather unflexible, and allowing drivers to display BO si=
-ze
-> >> statistics through fdinfo in units of their choice might be desirable.
-> >>
-> >> The new argument to drm_show_memory_stats is to be interpreted as the
-> >> integer multiplier of a 10-power of 2, so 1 would give us size in Kib =
-and 2
-> >> in Mib. If we want drm-file functions to pick the highest unit, then 0
-> >> should be passed.
-> >>
-> >> Signed-off-by: Adri=C3=A1n Larumbe <adrian.larumbe@collabora.com>
-> >> ---
-> >>  drivers/gpu/drm/drm_file.c              | 22 +++++++++++++---------
-> >>  drivers/gpu/drm/msm/msm_drv.c           |  2 +-
-> >>  drivers/gpu/drm/panfrost/panfrost_drv.c |  2 +-
-> >>  include/drm/drm_file.h                  |  5 +++--
-> >>  4 files changed, 18 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/drm_file.c b/drivers/gpu/drm/drm_file.c
-> >> index 762965e3d503..517e1fb8072a 100644
-> >> --- a/drivers/gpu/drm/drm_file.c
-> >> +++ b/drivers/gpu/drm/drm_file.c
-> >> @@ -873,7 +873,7 @@ void drm_send_event(struct drm_device *dev, struct=
- drm_pending_event *e)
-> >>  EXPORT_SYMBOL(drm_send_event);
-> >>
-> >>  static void print_size(struct drm_printer *p, const char *stat,
-> >> -                      const char *region, u64 sz)
-> >> +                      const char *region, u64 sz, unsigned int unit)
-> >>  {
-> >>         const char *units[] =3D {"", " KiB", " MiB"};
-> >>         unsigned u;
-> >> @@ -881,6 +881,8 @@ static void print_size(struct drm_printer *p, cons=
-t char *stat,
-> >>         for (u =3D 0; u < ARRAY_SIZE(units) - 1; u++) {
-> >>                 if (sz < SZ_1K)
-> >>                         break;
-> >> +               if (unit > 0 && unit =3D=3D u)
-> >> +                       break;
-> >>                 sz =3D div_u64(sz, SZ_1K);
-> >>         }
-> >>
-> >> @@ -898,17 +900,18 @@ static void print_size(struct drm_printer *p, co=
-nst char *stat,
-> >>  void drm_print_memory_stats(struct drm_printer *p,
-> >>                             const struct drm_memory_stats *stats,
-> >>                             enum drm_gem_object_status supported_statu=
-s,
-> >> -                           const char *region)
-> >> +                           const char *region,
-> >> +                           unsigned int unit)
-> >
-> >I'm not really adverse to changing what units we use.. or perhaps
-> >changing the threshold to go to higher units to be 10000x or 100000x
-> >of the previous unit.  But I'm less excited about having different
-> >drivers using different units.
-> >
-> >BR,
-> >-R
->
-> Would it be alright if I left it set to the default unit, and allow chang=
-ing it
-> at runtime with a debugfs file?
+On 9/5/23 11:30, Rafael J. Wysocki wrote:
+> On Tue, Sep 5, 2023 at 8:17 PM Keyon Jie <yang.jie@linux.intel.com> wrote:
+>>
+>>
+>>
+>> On 8/29/23 01:57, Greg KH wrote:
+>>> On Mon, Aug 28, 2023 at 04:35:13PM -0700, Keyon Jie wrote:
+>>>>
+>>>>
+>>>> On 8/22/23 04:46, Rafael J. Wysocki wrote:
+>>>>> On Sun, Aug 20, 2023 at 10:46 PM Doug Smythies <dsmythies@telus.net> wrote:
+>>>>>>
+>>>>>> The intel_pstate CPU frequency scaling driver does not
+>>>>>> use policy->cur and it is 0.
+>>>>>> When the CPU frequency is outdated arch_freq_get_on_cpu()
+>>>>>> will default to the nominal clock frequency when its call to
+>>>>>> cpufreq_quick_getpolicy_cur returns the never updated 0.
+>>>>>> Thus, the listed frequency might be outside of currently
+>>>>>> set limits. Some users are complaining about the high
+>>>>>> reported frequency, albeit stale, when their system is
+>>>>>> idle and/or it is above the reduced maximum they have set.
+>>>>>>
+>>>>>> This patch will maintain policy_cur for the intel_pstate
+>>>>>> driver at the current minimum CPU frequency.
+>>>>>>
+>>>>>> Reported-by: Yang Jie <yang.jie@linux.intel.com>
+>>>>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217597
+>>>>>> Signed-off-by: Doug Smythies <dsmythies@telus.net>
+>>>>>> ---
+>>>>>>
+>>>>>> v1 -> v2:
+>>>>>>       * v1 was a completely different approach, programming around
+>>>>>>         the issue rather than fixing it at the source.
+>>>>>>         reference:
+>>>>>>         https://patchwork.kernel.org/project/linux-pm/patch/006901d9be8c$f4439930$dccacb90$@telus.net/
+>>>>>>       * v2 does not fix an issue with the intel_cpufreq CPU scaling
+>>>>>>         driver (A.K.A. the intel_pstate driver in passive mode) and
+>>>>>>         the schedutil CPU frequency scaling governor when HWP is enabled
+>>>>>>         where limit changes are not reflected in the stale listed frequencies.
+>>>>>>         A fix for that will be some future patch.
+>>>>>>
+>>>>>> ---
+>>>>>>     drivers/cpufreq/intel_pstate.c | 5 +++++
+>>>>>>     1 file changed, 5 insertions(+)
+>>>>>>
+>>>>>> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
+>>>>>> index 8ca2bce4341a..08284dee583a 100644
+>>>>>> --- a/drivers/cpufreq/intel_pstate.c
+>>>>>> +++ b/drivers/cpufreq/intel_pstate.c
+>>>>>> @@ -2609,6 +2609,11 @@ static int intel_pstate_set_policy(struct cpufreq_policy *policy)
+>>>>>>                            intel_pstate_clear_update_util_hook(policy->cpu);
+>>>>>>                    intel_pstate_hwp_set(policy->cpu);
+>>>>>>            }
+>>>>>> +       /* policy current is never updated with the intel_pstate driver
+>>>>>> +        * but it is used as a stale frequency value. So, keep it within
+>>>>>> +        * limits.
+>>>>>> +        */
+>>>>>> +       policy->cur = policy->min;
+>>>>>>
+>>>>>>            mutex_unlock(&intel_pstate_limits_lock);
+>>>>>>
+>>>>>> --
+>>>>>
+>>>>> Applied as 6.6 material, with some mailer-induced white space damage
+>>>>> fixed and the new comment adjusted to the kernel coding style.
+>>>>>
+>>>>> Thanks!
+>>>>
+>>>> Hi Doug and Rafael,
+>>>>
+>>>> Thank you for making the fix happen.
+>>>>
+>>>> Hi Greg,
+>>>>
+>>>> Will this be picked to the stable linux-6.1.y and linux-6.4.y kernel, it
+>>>> could benefit to users there.
+>>>
+>>> Sure, when it hits Linus's tree, please follow the instructions in:
+>>>       https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+>>> for how to get it merged.
+>>
+>> Thank you Greg.
+>>
+>> Hi Rafael,
+>>
+>> As the issue happens from the 5.18 onward kernels, we need the fix to be
+>> picked for stable kernels after that, could you please help to add "Cc:
+>> stable@vger.kernel.org" in the sign-off area when you send it to the
+>> mainline?
+> 
+> It's already merged, as commit d51847acb018 ("cpufreq: intel_pstate:
+> set stale CPU frequency to minimum").
+> 
+> Please feel free to send an inclusion request for it to stable@vger.kernel.org
 
-I suppose we could, but it does seem a bit like overkill.  OTOH I
-think it would make sense to increase the threshold, ie. switch to MiB
-after 10MiB instead of 1MiB.. at that point the fractional component
-is less significant..
+Thank you Rafael, will do.
 
-BR,
--R
+Thanks,
+~Keyon
 
-> >>  {
-> >> -       print_size(p, "total", region, stats->private + stats->shared)=
-;
-> >> -       print_size(p, "shared", region, stats->shared);
-> >> -       print_size(p, "active", region, stats->active);
-> >> +       print_size(p, "total", region, stats->private + stats->shared,=
- unit);
-> >> +       print_size(p, "shared", region, stats->shared, unit);
-> >> +       print_size(p, "active", region, stats->active, unit);
-> >>
-> >>         if (supported_status & DRM_GEM_OBJECT_RESIDENT)
-> >> -               print_size(p, "resident", region, stats->resident);
-> >> +               print_size(p, "resident", region, stats->resident, uni=
-t);
-> >>
-> >>         if (supported_status & DRM_GEM_OBJECT_PURGEABLE)
-> >> -               print_size(p, "purgeable", region, stats->purgeable);
-> >> +               print_size(p, "purgeable", region, stats->purgeable, u=
-nit);
-> >>  }
-> >>  EXPORT_SYMBOL(drm_print_memory_stats);
-> >>
-> >> @@ -916,11 +919,12 @@ EXPORT_SYMBOL(drm_print_memory_stats);
-> >>   * drm_show_memory_stats - Helper to collect and show standard fdinfo=
- memory stats
-> >>   * @p: the printer to print output to
-> >>   * @file: the DRM file
-> >> + * @unit: multipliyer of power of two exponent of desired unit
-> >>   *
-> >>   * Helper to iterate over GEM objects with a handle allocated in the =
-specified
-> >>   * file.
-> >>   */
-> >> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *fi=
-le)
-> >> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *fi=
-le, unsigned int unit)
-> >>  {
-> >>         struct drm_gem_object *obj;
-> >>         struct drm_memory_stats status =3D {};
-> >> @@ -967,7 +971,7 @@ void drm_show_memory_stats(struct drm_printer *p, =
-struct drm_file *file)
-> >>         }
-> >>         spin_unlock(&file->table_lock);
-> >>
-> >> -       drm_print_memory_stats(p, &status, supported_status, "memory")=
-;
-> >> +       drm_print_memory_stats(p, &status, supported_status, "memory",=
- unit);
-> >>  }
-> >>  EXPORT_SYMBOL(drm_show_memory_stats);
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_d=
-rv.c
-> >> index 2a0e3529598b..cd1198151744 100644
-> >> --- a/drivers/gpu/drm/msm/msm_drv.c
-> >> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> >> @@ -1067,7 +1067,7 @@ static void msm_show_fdinfo(struct drm_printer *=
-p, struct drm_file *file)
-> >>
-> >>         msm_gpu_show_fdinfo(priv->gpu, file->driver_priv, p);
-> >>
-> >> -       drm_show_memory_stats(p, file);
-> >> +       drm_show_memory_stats(p, file, 0);
-> >>  }
-> >>
-> >>  static const struct file_operations fops =3D {
-> >> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm=
-/panfrost/panfrost_drv.c
-> >> index 93d5f5538c0b..79c08cee3e9d 100644
-> >> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> >> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> >> @@ -563,7 +563,7 @@ static void panfrost_show_fdinfo(struct drm_printe=
-r *p, struct drm_file *file)
-> >>
-> >>         panfrost_gpu_show_fdinfo(pfdev, file->driver_priv, p);
-> >>
-> >> -       drm_show_memory_stats(p, file);
-> >> +       drm_show_memory_stats(p, file, 1);
-> >>  }
-> >>
-> >>  static const struct file_operations panfrost_drm_driver_fops =3D {
-> >> diff --git a/include/drm/drm_file.h b/include/drm/drm_file.h
-> >> index 010239392adf..21a3b022dd63 100644
-> >> --- a/include/drm/drm_file.h
-> >> +++ b/include/drm/drm_file.h
-> >> @@ -466,9 +466,10 @@ enum drm_gem_object_status;
-> >>  void drm_print_memory_stats(struct drm_printer *p,
-> >>                             const struct drm_memory_stats *stats,
-> >>                             enum drm_gem_object_status supported_statu=
-s,
-> >> -                           const char *region);
-> >> +                           const char *region,
-> >> +                           unsigned int unit);
-> >>
-> >> -void drm_show_memory_stats(struct drm_printer *p, struct drm_file *fi=
-le);
-> >> +void drm_show_memory_stats(struct drm_printer *p, struct drm_file *fi=
-le, unsigned int unit);
-> >>  void drm_show_fdinfo(struct seq_file *m, struct file *f);
-> >>
-> >>  struct file *mock_drm_getfile(struct drm_minor *minor, unsigned int f=
-lags);
-> >> --
-> >> 2.42.0
-> >>
+> 
+> Thanks!
