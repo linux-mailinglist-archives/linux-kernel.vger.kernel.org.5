@@ -2,78 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6C7792BAF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D8E79267B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236260AbjIEQ5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:57:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52078 "EHLO
+        id S231190AbjIEQTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:19:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353597AbjIEGuB (ORCPT
+        with ESMTP id S1353600AbjIEGuY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 02:50:01 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08178CC2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 23:49:58 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-977e0fbd742so300207266b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 23:49:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693896596; x=1694501396; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rTMu+0u1+GO0RL61mvq2i6DERDDrEIJ4goYljDbYbAQ=;
-        b=zAG5Rkgar3WTia2u+0QYNX+A9XVEpGQf6It0zcKEc8nyfeOgvZI/vOIW21pLvMNHrT
-         Aw0OIBAEOZpOXgRP13kpct/KnnfGOiX0bWf8Jpkn+WCs3nLC82MIZS7kuuJJzDhqYMTd
-         Dlfl1t4iOZgrvGsn1TGoTMwnM/fIj1CJrGLDEoTSrHvZ1/Z2CYIoww4eiG+0XCq1q+YS
-         PZBQl06Qmha25vFe+dHjzfCsAz9g2n8cXObyHD3ZwXP5o+JQaMKdFTB6jiiu1+Vpf2mx
-         pmnPw2fS1TxAZGwB5FBOHGAFK7Wk22wrIWR5CUowIBDaRAQ498tQc8wdCDlzle71dKNN
-         kI0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693896596; x=1694501396;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rTMu+0u1+GO0RL61mvq2i6DERDDrEIJ4goYljDbYbAQ=;
-        b=eXKnpguB71+Pp67cy0wpCeEYSgiLGJiGPClY850i9RhxovZmDfZWiC2cqZDbCxDAN1
-         uHCnHptVU69dfLV1V2ucyPz4oyuOXxbDROPpMJuOnA8C+JvXnypfAurP995eq9AzFJmE
-         zmro5U8XOdPxnfD4pokoIqn/3/uzB2jv/BO25IOy0UNdJZN7ZPJZHULMgtQGgR4RKkvH
-         Q4W0VjkE+CzJvH8hdyz0xMprOujPi0j7TSrByVq5/goe9JYIeZpmCLg3mPTY2Z2bqvHT
-         nVa7XcjkeH9c2Qbje4JnHW4wvXGO2I4ddFDNg4lqMKZmWp6G8K/ttfpjNhUK+Q5GTSzW
-         sb8g==
-X-Gm-Message-State: AOJu0YzU1wmtoST7XEkL5vXbxxNRotPPjY5alA62S3a6dw6Pz+CABJIl
-        TWB4SHM6ANBKrpsh00sAiksSsw==
-X-Google-Smtp-Source: AGHT+IGijYOlHUHa+7vPd8yx3B9LIbKbDQ/ea2dKVeTDc3FfNuD1fkI+KN/sbWU2UGjgA6cTDy6BZA==
-X-Received: by 2002:a17:906:209c:b0:9a6:1811:e4eb with SMTP id 28-20020a170906209c00b009a61811e4ebmr8481802ejq.38.1693896596631;
-        Mon, 04 Sep 2023 23:49:56 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id c25-20020a170906529900b0099b42c90830sm7156243ejm.36.2023.09.04.23.49.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 23:49:56 -0700 (PDT)
-Message-ID: <96c76c55-d5d4-e4ef-e7c3-ee35b2d7ad78@linaro.org>
-Date:   Tue, 5 Sep 2023 08:49:54 +0200
+        Tue, 5 Sep 2023 02:50:24 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B6267DB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 23:50:18 -0700 (PDT)
+Received: from loongson.cn (unknown [10.180.13.176])
+        by gateway (Coremail) with SMTP id _____8Dxg_Cnz_Zk8GQfAA--.63794S3;
+        Tue, 05 Sep 2023 14:50:15 +0800 (CST)
+Received: from loongson-pc.loongson.cn (unknown [10.180.13.176])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxjiOWz_ZkwHtsAA--.24493S2;
+        Tue, 05 Sep 2023 14:50:13 +0800 (CST)
+From:   Hongchen Zhang <zhanghongchen@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        "Mike Rapoport IBM)" <rppt@kernel.org>,
+        Feiyang Chen <chenfeiyang@loongson.cn>,
+        Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Qi Zheng <zhengqi.arch@bytedance.com>,
+        "Matthew Wilcox Oracle)" <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     loongarch@lists.linux.dev, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] LoongArch: add p?d_leaf() definitions
+Date:   Tue,  5 Sep 2023 14:49:55 +0800
+Message-Id: <20230905064955.16316-1-zhanghongchen@loongson.cn>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 3/5] dt-bindings: usb: dwc3: Add missing SDX65 compatible
-Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
-        quic_wcheng@quicinc.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kernel@quicinc.com
-References: <1693889028-6485-1-git-send-email-quic_rohiagar@quicinc.com>
- <1693889028-6485-4-git-send-email-quic_rohiagar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1693889028-6485-4-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8AxjiOWz_ZkwHtsAA--.24493S2
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAFB2T2qrUBGQASsE
+X-Coremail-Antispam: 1Uk129KBj9xXoWrZr48Zw45XF17CF4xCFWfWFX_yoWkGwc_Z3
+        WxZan5Cryvqa1Iq3WDJr93Jw17K3WrCFn5Zr9Ikr4UAFyUKa15Gw4UG343ZryY93y5uFs5
+        CFWktryrAF45tosvyTuYvTs0mTUanT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbfxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        GcCE3s1ln4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2
+        x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1D
+        McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr4
+        1lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
+        Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
+        AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
+        cVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
+        8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v2
+        6r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -82,26 +68,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2023 06:43, Rohit Agarwal wrote:
-> Add missing SDX65 compatible for specifying the clocks used.
-> 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/usb/qcom,dwc3.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> index 5c13229..fa51f50 100644
-> --- a/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> +++ b/Documentation/devicetree/bindings/usb/qcom,dwc3.yaml
-> @@ -186,6 +186,7 @@ allOf:
->                - qcom,sdm670-dwc3
->                - qcom,sdm845-dwc3
->                - qcom,sdx55-dwc3
-> +              - qcom,sdx65-dwc3
+When I do LTP test, LTP test case ksm06 caused panic at
+	break_ksm_pmd_entry
+	  -> pmd_leaf (Huge page table but False)
+	  -> pte_present (panic)
 
-That's not a complete change. Update the rest of the file.
+The reason is pmd_leaf is not defined, So like
+commit 501b81046701 ("mips: mm: add p?d_leaf() definitions")
+add p?d_leaf() definition for LoongArch.
 
-Best regards,
-Krzysztof
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+---
+ arch/loongarch/include/asm/pgtable.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+index 370c6568ceb8..ea54653b7aab 100644
+--- a/arch/loongarch/include/asm/pgtable.h
++++ b/arch/loongarch/include/asm/pgtable.h
+@@ -243,6 +243,9 @@ static inline void pmd_clear(pmd_t *pmdp)
+ 
+ #define pmd_phys(pmd)		PHYSADDR(pmd_val(pmd))
+ 
++#define pmd_leaf(pmd)		((pmd_val(pmd) & _PAGE_HUGE) != 0)
++#define pud_leaf(pud)		((pud_val(pud) & _PAGE_HUGE) != 0)
++
+ #ifndef CONFIG_TRANSPARENT_HUGEPAGE
+ #define pmd_page(pmd)		(pfn_to_page(pmd_phys(pmd) >> PAGE_SHIFT))
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE  */
+-- 
+2.33.0
 
