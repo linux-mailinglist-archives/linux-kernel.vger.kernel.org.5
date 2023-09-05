@@ -2,246 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF80C792B0C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1540792A80
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235391AbjIEQqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37020 "EHLO
+        id S240591AbjIEQi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353882AbjIEI2r (ORCPT
+        with ESMTP id S1353884AbjIEIaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:28:47 -0400
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E13CCF
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:28:43 -0700 (PDT)
-Received: by mail-vs1-xe32.google.com with SMTP id ada2fe7eead31-44e84fbaab9so960012137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:28:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693902522; x=1694507322; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eLVlLYXm43et59ODiKK6ekSSR9heDIXhgIR04XcWgxo=;
-        b=uQrEEXnxuoU2H1wi1LZ1zuholBNmIFo3tqKWertwgDjUHIhQQcqsZH/T9KWhxrkNOe
-         g2f5l+fKiQiGjh5+Nj5GKDGwQgwo/pi3p4La7jWhLvYUqIc+SN3AYGkiLqPqkWMy6LDw
-         6xURt7Uqe34FtIONJ4rckFDVxso4J3AFUn6AhWg7CYhP/SdmUCR4ZetU7ZquGmSk1f1q
-         hHqM1PwTEelJhPtHbms6wLnAPkLtLeCxR0+Gvll9sBLAzC4fOuWST4ChzeYhkwznNXf3
-         EoOrpXd1Yw+ovmsYxi8cnZVWFH0/PvUPBqeeCwS2otZOEtW6fogHTnc1neXuSxIhQYLN
-         bk0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693902522; x=1694507322;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eLVlLYXm43et59ODiKK6ekSSR9heDIXhgIR04XcWgxo=;
-        b=fq2NDP6gv2GctotAC3ELaeC2CgXmRVJDD2Dnt1C6QMg5a1lR5P2zARmlL4Pqm+d7jD
-         CvutxfUAZImAyaUEY1jjxXW/2Fr7udS7O6Ezaq4KU58AsAxDvn+7jUrY6uPsiUQgVHAa
-         YpHZC+4hAMBLLcJrdwooSksl1P8jBdnkOz+ZLW64J+BK50phzbjJLtpPzViGhKWZs42k
-         X9JRlDkjd2RIJOqIgdE8jtjMtFBfnOfb/fjmvOrTECmgbtb6/NaG4YrMv1ZZCL7EeWs8
-         cn2zf4C4exEqihcBq1spvuEpQYf5ETPZTPsx/jCZKLBaMWazGxQXo8dNBAG0+s7tL4Et
-         tnGg==
-X-Gm-Message-State: AOJu0Yy9TqcKkmQRyXSzxwX7ULVgeP08eSAutHJdoY/7anwvioFJeFEv
-        qyREUofuTHRwgcJIexNR3xHW0Kx6SrSqzUqMemi0Sg==
-X-Google-Smtp-Source: AGHT+IGL8pgqFDTwFbkEIpOfSyXCLO20l9z11J7mChyhzMGqbFg7zCWL1ivXwG5Mf6e7Mq08MS4vXaERVY/M67z3K6E=
-X-Received: by 2002:a67:e9da:0:b0:44e:a558:5ec4 with SMTP id
- q26-20020a67e9da000000b0044ea5585ec4mr10817714vso.9.1693902522605; Tue, 05
- Sep 2023 01:28:42 -0700 (PDT)
+        Tue, 5 Sep 2023 04:30:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9185CCB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:29:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693902575;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=I5qwaCnM8A6hekNnw5uw9hHW7jhIEIVhSWRsoqN1YfI=;
+        b=RiWXTvAqPuTgo6QsnAaf+qvC7mX+rC8hRs5SltAo5rQyEBYfsAMW4nDtmlhUpSzut7Jmqu
+        2CBcqEWTM6RFK33KNziyE7mLEEZm2tYMYmOoCZPlp9g4mZ2DOxoULw4fS0Y0LOpLOqgRqH
+        rwmXwMTyjoeQCK2SYYVCPUHz92zcaaQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-251-vn0oRFxSOrmUEzgrn2VTWg-1; Tue, 05 Sep 2023 04:29:30 -0400
+X-MC-Unique: vn0oRFxSOrmUEzgrn2VTWg-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2126618DA720;
+        Tue,  5 Sep 2023 08:29:30 +0000 (UTC)
+Received: from localhost (unknown [10.72.113.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2245749310E;
+        Tue,  5 Sep 2023 08:29:28 +0000 (UTC)
+Date:   Tue, 5 Sep 2023 16:29:25 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     "Leizhen (ThunderTown)" <thunder.leizhen@huaweicloud.com>
+Cc:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        catalin.marinas@arm.com, thunder.leizhen@huawei.com,
+        dyoung@redhat.com, prudo@redhat.com, samuel.holland@sifive.com,
+        kexec@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v2 3/8] crash_core: change parse_crashkernel() to support
+ crashkernel=,high|low parsing
+Message-ID: <ZPbm5SwHOhiAtG7w@MiWiFi-R3L-srv>
+References: <20230829121610.138107-1-bhe@redhat.com>
+ <20230829121610.138107-4-bhe@redhat.com>
+ <c4a1f96e-2c8d-a496-61f3-0299d77c5c84@huaweicloud.com>
+ <ZPGzlIkXqVThTwjg@MiWiFi-R3L-srv>
+ <2b9af1b7-8d80-46b7-d582-156a97456a36@huaweicloud.com>
 MIME-Version: 1.0
-References: <20230904182947.899158313@linuxfoundation.org>
-In-Reply-To: <20230904182947.899158313@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 5 Sep 2023 13:58:31 +0530
-Message-ID: <CA+G9fYteSobTv4ASoYX=1Z=V1B4grPpeYSkJq+1WDFBeQP4nyg@mail.gmail.com>
-Subject: Re: [PATCH 6.4 00/32] 6.4.15-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2b9af1b7-8d80-46b7-d582-156a97456a36@huaweicloud.com>
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sept 2023 at 00:04, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.4.15 release.
-> There are 32 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.4.15-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 09/04/23 at 10:47am, Leizhen (ThunderTown) wrote:
+> 
+> 
+> On 2023/9/1 17:49, Baoquan He wrote:
+> >>> +
+> >>> +		*high = true;
+> >>> +	} else if (ret || !*crash_size) {
+> >> This check can be moved outside of #ifdef. Because even '!high', it's completely
+> >> applicable. The overall adjustment is as follows:
+> > Hmm, the current logic is much easier to understand. However, I may not
+> > 100% get your suggestion. Can you paste the complete code in your
+> > suggested way? Do not need 100% correct code, just the skeleton of code logic
+> > so that I can better understand it and add inline comment.
+> 
+> int __init parse_crashkernel(...)
+> {
+> 	int ret;
+> 
+> 	/* crashkernel=X[@offset] */
+> 	ret = __parse_crashkernel(cmdline, system_ram, crash_size,
+> 				crash_base, NULL);
+> 
+> #ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+> 	if (high && ret == -ENOENT) {
+> 		... ...		//The code for your original branch "else if (ret == -ENOENT) {"
+> 		ret = 0;	//Added based on the next discussion
+> 	}
+> +#endif
+> 
+>  	if (!*crash_size)
+> 		ret = -EINVAL;
+> 
+> 	return ret;
+> }
+> 
+Thanks, Zhen Lei.
 
+I paste the whole parse_crashkernel() as you suggested at bottom. Please
+check if it's what you want. To me, both is fine to me. I have two minor
+concerns to your suggested way.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+1)
+I took the "if (!high) return" way because except of x86/arm64, all
+other architectures will call parse_crashkerne() and check
+if *crash_size ==0. Please try 'git grep "parse_crashkernel(" arch'
+and check those call sites. With that, we will have duplicated checking.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+        ret = __parse_crashkernel(cmdline, system_ram, crash_size,
+                                crash_base, NULL);
+        if (!high)
+                return ret;
+2)
+I actually like below branch and the code comment. It can give people
+hint about what's going on in that case. Discarding it is a little pity.
 
-## Build
-* kernel: 6.4.15-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.4.y
-* git commit: 9d9f43e3652f3df0f5a4b81d201bbcc97b88c7d5
-* git describe: v6.4.14-33-g9d9f43e3652f
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.4.y/build/v6.4.1=
-4-33-g9d9f43e3652f
+        } else if (ret || !*crash_size) {
+                /* The specified value is invalid */
+                return -1;
+        }
 
-## Test Regressions (compared to v6.4.14)
+int __init parse_crashkernel(...)
+{
+	int ret;
 
-## Metric Regressions (compared to v6.4.14)
+	/* crashkernel=X[@offset] */
+	ret = __parse_crashkernel(cmdline, system_ram, crash_size,
+				crash_base, NULL);
+#ifdef CONFIG_ARCH_HAS_GENERIC_CRASHKERNEL_RESERVATION
+	if (high && ret == -ENOENT) {
+		ret = __parse_crashkernel(cmdline, 0, crash_size,
+				crash_base, suffix_tbl[SUFFIX_HIGH]);
+		if (ret || !*crash_size)
+			return -EINVAL;
 
-## Test Fixes (compared to v6.4.14)
+		/*
+		 * crashkernel=Y,low can be specified or not, but invalid value
+		 * is not allowed.
+		 */
+		ret = __parse_crashkernel(cmdline, 0, low_size,
+				crash_base, suffix_tbl[SUFFIX_LOW]);
+		if (ret == -ENOENT) {
+			*low_size = DEFAULT_CRASH_KERNEL_LOW_SIZE;
+			ret = 0;
+		} else if (ret) {
+			return ret;
+		}
 
-## Metric Fixes (compared to v6.4.14)
+		*high = true;
+	}
+#endif
 
-## Test result summary
-total: 142519, pass: 123130, fail: 2060, skip: 17149, xfail: 180
+	if (!*crash_size)
+		ret = -EINVAL;
 
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 141 total, 139 passed, 2 failed
-* arm64: 53 total, 50 passed, 3 failed
-* i386: 41 total, 39 passed, 2 failed
-* mips: 28 total, 26 passed, 2 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 34 passed, 2 failed
-* riscv: 25 total, 22 passed, 3 failed
-* s390: 16 total, 14 passed, 2 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 44 total, 40 passed, 4 failed
+	return ret;
+}
 
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
