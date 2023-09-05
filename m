@@ -2,134 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073C37927E6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:41:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8007792B7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237172AbjIEQET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:04:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57540 "EHLO
+        id S242222AbjIEQyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:54:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354475AbjIEL7Y (ORCPT
+        with ESMTP id S1354478AbjIEL7n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:59:24 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC7F1AB;
-        Tue,  5 Sep 2023 04:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693915161; x=1725451161;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=TcBkexx1ijuD6/7qzSOMMmTOOVh0jXXDYPWa8+VyVY4=;
-  b=RKlXh3U0vw4fy6pE/3/82fyF0IQD15hvIZA7hne3ZUb/+CqL3l+ufJ/t
-   E+KaT6IZnWiy+sZp0K9/FJMGt4dCpBvl4lDsKdbYyf8PY7NJCmB5kMkRG
-   b4Iu+efmni5wrQyc/0CDI75MJVmOv0cT6HO3PCpme58Xl17Bg0buOVyc9
-   //2yASEAJHIRl2RXnQXrLYMT8ZldHCIh5KOY0gK0wLaH/rPkX7gOYOwfK
-   VkZP0FzoIhqGCe2Uez4/s3V80xvVgTvkZ3kEg9uacDEa2Yi6UkQJQjR51
-   zA7uH25tGh7ugnB2BQfLdMDfLz/1mdtIzl2zsgTrF23DNXCpIhQUbSyi8
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="407764460"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="407764460"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 04:59:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="806575589"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="806575589"
-Received: from unknown (HELO smile.fi.intel.com) ([10.237.72.54])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 04:59:19 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.96)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1qdUiD-006g0F-06;
-        Tue, 05 Sep 2023 14:59:17 +0300
-Date:   Tue, 5 Sep 2023 14:59:16 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH 2/2] gpiolib: rename gpio_chip_hwgpio() for consistency
-Message-ID: <ZPcYFF7sSrriFYqV@smile.fi.intel.com>
-References: <20230904073410.5880-1-brgl@bgdev.pl>
- <20230904073410.5880-2-brgl@bgdev.pl>
- <ZPWjAUzqeAwF1wro@smile.fi.intel.com>
- <CAMRc=MeMYi0KbK=1RYGX2zbUjVZyQp-Y_aXfy6+EZcEtUSEU0A@mail.gmail.com>
- <ZPcEFXF9Fz762kzK@smile.fi.intel.com>
- <CAMRc=MctTGNe2v8bBKQp6Dh3EuhP+OmO8yxrMgrHT3+m2AGjnQ@mail.gmail.com>
+        Tue, 5 Sep 2023 07:59:43 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316D61AB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:59:39 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52a250aa012so3333602a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 04:59:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693915177; x=1694519977; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MG0Nhg1W7b5wNWtTY+WBpN6gGjenK9zPawNVXiy4rFs=;
+        b=uo4JLLHxcpsZ+1k9YONkNmrTLgejPUYC2PYvYGbpNDFD60K331UgVGJzV/eILmautN
+         kTLaxlcpmGZMpGH0jPrHE5KIAq/7am2RgvT+BvQL3RN05zydfM+eaFYN97SjE5rN0c6U
+         uGAiN/yPR0mgDHXsB2D1dSEiLNEyxo5hqFgeTVP4bqdIa0Ax/r9Srcd4vULrNMuPznKS
+         Xmesb6BLCqyWDol6leWMyUg2ajXu2PtWH58O+nTVekR1H9xxwjc+25CMnSKFHsT4SUyh
+         QAvVyFktnsiyDjFGsLh7vntWrIlhYvTmaw/D2l32uNrqVoXWS2a78MNUr+TWffKvrAYW
+         UpUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693915177; x=1694519977;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MG0Nhg1W7b5wNWtTY+WBpN6gGjenK9zPawNVXiy4rFs=;
+        b=izg+FCpHKBBWLye7D/4PKgW6EWjzz8DsECNlf1rry44hwGw4RgXA/Wilgq/2lhaZNr
+         kMthuHWj45z41KYuhlX8uSuqVYFhtmJcCY20u7jzW6hsiTHSX2HWcX3qaocQ4Cw+oE0u
+         dL2LMjsG0JbulpBPb15qWjGs8Wg8jFIlKgpDXbbdU3ezUZEthywV+v2IG0V+9qW+waJc
+         SsBm0b9KESsZJrMu3A94LHomQA/GgkKmF9hbeiV2y7yJgY6gmVjcQcPe6BGUBwgNRqds
+         7wiVMvl0p6HcmlpgYdkXbVY8jnHi/R9PCIPRAhzEKhDC28EYmDMY9BJuBSBSYvttS9X2
+         pSYA==
+X-Gm-Message-State: AOJu0Yw8/OZIgvsJxJjnSPR+x99hHnHzq90aavS1OQrGXM+lA0FDAWlR
+        7BOCzoNGpN2t3uF6NIui3TdeXw==
+X-Google-Smtp-Source: AGHT+IE6a1ExoObFvqj+qBBtiUE9AGxJcNNshk+ae8fGtV99y3l1l23ej25irHxV/IdQfF3pH/iM+Q==
+X-Received: by 2002:a05:6402:327:b0:524:547b:59eb with SMTP id q7-20020a056402032700b00524547b59ebmr8950570edw.15.1693915177691;
+        Tue, 05 Sep 2023 04:59:37 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id f26-20020a056402069a00b0051e2670d599sm7112416edy.4.2023.09.05.04.59.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 04:59:37 -0700 (PDT)
+Message-ID: <3a4988ae-97d7-66ee-5787-294b1204b1e2@linaro.org>
+Date:   Tue, 5 Sep 2023 13:59:36 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MctTGNe2v8bBKQp6Dh3EuhP+OmO8yxrMgrHT3+m2AGjnQ@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [RFC PATCH 1/2] dt-bindings: PCI: ti,j721e-pci-*: Add
+ "ti,syscon-pcie-refclk-out" property
+Content-Language: en-US
+To:     Achal Verma <a-verma1@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof Wilczy_ski <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+References: <20230905114816.2993628-1-a-verma1@ti.com>
+ <20230905114816.2993628-2-a-verma1@ti.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230905114816.2993628-2-a-verma1@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 01:26:34PM +0200, Bartosz Golaszewski wrote:
-> On Tue, Sep 5, 2023 at 12:34 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> >
-> > On Tue, Sep 05, 2023 at 10:37:32AM +0200, Bartosz Golaszewski wrote:
-> > > On Mon, Sep 4, 2023 at 11:27 AM Andy Shevchenko
-> > > <andriy.shevchenko@linux.intel.com> wrote:
-> > > > On Mon, Sep 04, 2023 at 09:34:10AM +0200, Bartosz Golaszewski wrote:
-> > > > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> > > > >
-> > > > > All other functions that manipulate a struct gpio_desc use the gpiod_
-> > > > > prefix. Follow this convention and rename gpio_chip_hwgpio() to
-> > > > > gpiod_get_hwgpio().
-> > > >
-> > > > Same comment. Also, I don't think it's good idea as it steps on the exported
-> > > > API's toes. I.o.w. I won't mix those two.
-> > >
-> > > Even if I agreed with your other comment, gpio_chip_hwgpio() is a
-> > > terrible name and if I didn't know, I couldn't tell you what it does
-> > > just from looking at the name.
-> >
-> > That's can be improved, my previous comments were basically to avoid
-> > mixing prefixes for internal and external APIs, let's say prefix them
-> > similarly, but for internal with space and/or more verbose naming
-> >
-> >         gpiod_          gpio_desc_
-> >         gpiochip_       gpio_chip_
-> >         gdev_           gpio_device_
+On 05/09/2023 13:48, Achal Verma wrote:
+> Added "ti,syscon-pcie-refclk-out" property to specify the ACSPCIE clock
+> buffer register offset in SYSCON, which would be used to enable serdes
+> reference clock output.
 > 
-> There's one more possibility. Have all exported symbols be prefixed
-> with gpiod in one way or another and the internal symbols just drop
-> the prefix so it would be like:
+> Signed-off-by: Achal Verma <a-verma1@ti.com>
+> ---
+>  .../bindings/pci/ti,j721e-pci-host.yaml       | 53 +++++++++++++++++++
+>  1 file changed, 53 insertions(+)
 > 
-> gpiod_
-> gpiochip_
-> gpio_device_
-> 
-> and
-> 
-> desc_
-> chip_
-> device_
-> 
-> Because for internal symbols we already know they refer to gpiolib.
+> diff --git a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> index a2c5eaea57f5..27bdc52282c4 100644
+> --- a/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> +++ b/Documentation/devicetree/bindings/pci/ti,j721e-pci-host.yaml
+> @@ -44,6 +44,18 @@ properties:
+>            - description: pcie_ctrl register offset within SYSCON
+>      description: Specifier for configuring PCIe mode and link speed.
+>  
+> +  ti,syscon-pcie-refclk-out:
+> +    $ref: /schemas/types.yaml#/definitions/phandle-array
+> +    items:
+> +      - items:
+> +          - description: Phandle to the SYSCON entry
+> +          - description: lock2_kick0 register offset within SYSCON
+> +          - description: lock2_kick1 register offset within SYSCON
+> +          - description: acspcie_ctrl register offset within SYSCON
+> +          - description: pcie_refclk_clksel register offset within SYSCON
+> +          - description: clock source index to source ref clock
+> +    description: Specifier for enabling ACSPCIe clock buffer for reference clock output.
 
-With the above schema we have two caveats, one is not significant
-(as we have desc_to_gpio() and complimentary API). And another one
-is device/dev, which is conflicting with global. That's why I still
-prefer gpio_desc_ and so on.
+No, syscon is not a way to avoid creating clock/reset/power controllers.
+NAK.
 
-> Anyway, I'll drop the patches for now and let's revisit in the future
-> when the consensus is reached.
 
-Yes, let's focus on something more important now.
+>    power-domains:
+>      maxItems: 1
+>  
+> @@ -99,6 +111,7 @@ required:
+>    - reg
+>    - reg-names
+>    - ti,syscon-pcie-ctrl
+> +  - ti,syscon-pcie-refclk-out
 
--- 
-With Best Regards,
-Andy Shevchenko
+So an ABI break?
 
+>    - max-link-speed
+>    - num-lanes
+>    - power-domains
+> @@ -153,3 +166,43 @@ examples:
+>              dma-ranges = <0x02000000 0x0 0x0 0x0 0x0 0x10000 0x0>;
+>          };
+>      };
+> +
+> +  -
+> +    #include <dt-bindings/mux/mux.h>
+> +    #include <dt-bindings/mux/ti-serdes.h>
+> +    #include <dt-bindings/phy/phy.h>
+> +    #include <dt-bindings/phy/phy-ti.h>
+> +
+> +    bus {
+> +        #address-cells = <2>;
+> +        #size-cells = <2>;
+> +
+> +        pcie1_rc: pcie@2910000 {
+> +                compatible = "ti,j784s4-pcie-host";
+> +                reg = <0x00 0x02910000 0x00 0x1000>,
+
+No need for new example. It's anyway wrongly formatted...
+
+
+Best regards,
+Krzysztof
 
