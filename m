@@ -2,158 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6D4792542
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:02:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19FB379253B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:02:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234488AbjIEQCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:02:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S235152AbjIEQBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354140AbjIEJz0 (ORCPT
+        with ESMTP id S1354148AbjIEJ5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:55:26 -0400
-Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D2132;
-        Tue,  5 Sep 2023 02:55:21 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id AC3398691E;
-        Tue,  5 Sep 2023 11:55:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693907719;
-        bh=tneArmjlXh/92OwvwEXRg4SIPn/5tACoYN/VdtMqX14=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hXxj3B8h4GHsX/ZSHDzI34CBEnFu2WhGmLXrvtV5RWh+6T8Mh2svxNrTFiWkbPRVm
-         vOKLhARth24umPrEVhrLJ4g2bZsSjKlimjle2n+v5yi1Q8RkYm65X53sCdwiktn+ka
-         J8xLelHLKg8uzvfCZUMVgFqJNlsA2RAjsE72z+BOCfkhrjibUT4KPsuDKvXWoZwuZ4
-         qhCeowwtX/ukvKz6gg+eWVXFbRiZX4YEcGumwZ9E4n2jzhlwJ3DbakQLI18hYNFe8F
-         BA6dO89qrM/bFVDJvMJtmQDlPVePSf4w1X/AoXKts0lAPIgfSsuyEvkC5cqhNwPmkd
-         rjKwk98/uwEQw==
-Date:   Tue, 5 Sep 2023 11:55:12 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
-        davem@davemloft.net, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Kristian Overskeid <koverskeid@gmail.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andreas Oetken <ennoerlangen@gmail.com>
-Subject: Re: [PATCH] net: hsr : Provide fix for HSRv1 supervisor frames
- decoding
-Message-ID: <20230905115512.3ac6649c@wsk>
-In-Reply-To: <20230905080614.ImjTS6iw@linutronix.de>
-References: <20230825153111.228768-1-lukma@denx.de>
-        <20230905080614.ImjTS6iw@linutronix.de>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 5 Sep 2023 05:57:38 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF0B18C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:57:33 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso160525e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 02:57:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693907852; x=1694512652; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uKoqPDQ4c4wMdHCcrBupTOrOf6nGa4D/pvESizqweVY=;
+        b=tbLhlm9bS7qbaDVQAS25szwWRY+RrgHuGYhmJ8iDLa1MRyTke8jcXrSIuU/a2jCaMi
+         9unz1FTSGqA1nL/2l0LWss6NtrECt6xIgy5C2RkDSuslprW7JmKLFFitoHBOJhBnxLDF
+         ekI4fx+dEyi22h92zeT/4/kp/OyuhsQMiq0C1nPww4Lwo6JI/Tnt//C6xA//d88JjXzd
+         x4oxRvYI/0lcTrbmExjxPqs51VHhsQLKY7cCdhVO7V3dtk2lFL94xlON5NPI9b9eOaSR
+         FkkW2DDisKwJhTR+xWBJyY5QJtaCwVQojAVI4sJ75ezC1UtWol1s/ukycNwhjte3L7mF
+         gxAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693907852; x=1694512652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uKoqPDQ4c4wMdHCcrBupTOrOf6nGa4D/pvESizqweVY=;
+        b=l/m/lMZhsdSo9oq8+r/Lw753REX+Y1nk031GnkmfIYAfmRzGsH4BQ5PiCAuuvDyxug
+         LHuCQ30wpXBjm4obSxkVUlB+EqEqOjmsgkBpkSn3KG5xMdE7ncDfH5+Z9n5xZJyafFvM
+         2k/mUvFdd8KQKc0jS7BwMAlslL+ZRVCRfmfzS7B44fYEKNVXoC0jqZ0xUvL61LKKpUlK
+         3b3frR+V7LfbBhROulmLVVz8rPBTQtUBP3mbYSDZ79F2MBRFd6i1bQhhxCJpBgJ2Es59
+         Aa13WwQjT2lWjdl0QDidrntFFSES0RVpl9u4R5Uu8a9HzyCJA6yv6qeqzYnJpZSRdYrg
+         jQmQ==
+X-Gm-Message-State: AOJu0YyKFQtUSv9scd1yWiXDQu+R6lztrBl6ncDdoxoG0KY7rYgaVRs4
+        q/Xh9oSdDiNWJJjdyg3uezzp1F2QvyarUQDdQpm5uQ==
+X-Google-Smtp-Source: AGHT+IFvBTvFUF7R7ANkYgde9PIYsgXPp7fox9gwEeYNhLFnCB3TvKs0r2mns8WNAIXVHQWCoxvSCOzyVDapcZgHkxc=
+X-Received: by 2002:a05:600c:1c25:b0:400:c6de:6a20 with SMTP id
+ j37-20020a05600c1c2500b00400c6de6a20mr241680wms.3.1693907851956; Tue, 05 Sep
+ 2023 02:57:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/K9EA_PJANH_w1VlIBP+xs5a";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <00000000000050a49105f63ed997@google.com> <000000000000fe1297060492eb88@google.com>
+In-Reply-To: <000000000000fe1297060492eb88@google.com>
+From:   Aleksandr Nogikh <nogikh@google.com>
+Date:   Tue, 5 Sep 2023 11:57:20 +0200
+Message-ID: <CANp29Y4nitnu-iF77=8rNH_k02=N_1+C7C-ix_1XmpMsf1A=BA@mail.gmail.com>
+Subject: Re: [syzbot] [gfs2?] general protection fault in gfs2_dump_glock (2)
+To:     syzbot <syzbot+427fed3295e9a7e887f2@syzkaller.appspotmail.com>
+Cc:     agruenba@redhat.com, cluster-devel@redhat.com, elver@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, rpeterso@redhat.com,
+        syzkaller-bugs@googlegroups.com, valentin.schneider@arm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/K9EA_PJANH_w1VlIBP+xs5a
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hmm, no, it might theoretically be that preemption affected bug
+reproducibility, but this commit itself definitely has nothing to do
+with the gfs2 problem.
 
-Hi Sebastian,
-
-> On 2023-08-25 17:31:11 [+0200], Lukasz Majewski wrote:
-> > Provide fix to decode correctly supervisory frames when HSRv1
-> > version of the HSR protocol is used.
-> >=20
-> > Without this patch console is polluted with:
-> > ksz-switch spi1.0 lan1: hsr_addr_subst_dest: Unknown node
-> >=20
-> > as a result of destination node's A MAC address equals to:
-> > 00:00:00:00:00:00.
-> >=20
-> > cat /sys/kernel/debug/hsr/hsr0/node_table
-> > Node Table entries for (HSR) device
-> > MAC-Address-A,    MAC-Address-B,    time_in[A], time_in[B],
-> > Address-B 00:00:00:00:00:00 00:10:a1:94:77:30      400bf,
-> > 399c,	        0
-> >=20
-> > It was caused by wrong frames decoding in the
-> > hsr_handle_sup_frame().
-> >=20
-> > As the supervisor frame is encapsulated in HSRv1 frame:
-> >=20
-> > SKB_I100000000: 01 15 4e 00 01 2d 00 10 a1 94 77 30 89 2f 00 34
-> > SKB_I100000010: 02 59 88 fb 00 01 84 15 17 06 00 10 a1 94 77 30
-> > SKB_I100000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > SKB_I100000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> > SKB_I100000040: 00 00
-> >=20
-> > The code had to be adjusted accordingly and the MAC-Address-A now
-> > has the proper address (the MAC-Address-B now has all 0's). =20
->=20
-> Was this broken by commit
-> 	eafaa88b3eb7f ("net: hsr: Add support for redbox supervision
-> frames")
->=20
-
-Yes, it seems so.
-
-> ? Is this frame somehow special? I don't remember this=E2=80=A6
->=20
-
-Please refer to the whole thread - I've described this issue thoroughly
-(including hex dump of frames):
-https://lore.kernel.org/lkml/20230904175419.7bed196b@wsk/T/#m35cbfa4f1b8901=
-d341fbc39659ace6a041f84c98
-
-In short - the HSRv1 is not recognized correctly anymore:
-
-HSR v0:
-    [Protocols in frame: eth:ethertype:hsr_prp_supervision]
-                                                                       =20
-HSR v1:
-    [Protocols in frame: eth:ethertype:hsr:hsr_prp_supervision]
-
-
-> > Signed-off-by: Lukasz Majewski <lukma@denx.de> =20
->=20
-> Sebastian
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/K9EA_PJANH_w1VlIBP+xs5a
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmT2+wAACgkQAR8vZIA0
-zr072Qf/eV4LIBVYp9d5zhpfLc7ppusqB5QsQQ3ksDnOCRoNJkFEH04Gk17UTyQR
-YlSHdWsJ9GQRRZUdldGo4c8D+xSKzI+W46HT8nsnAsDTRcalABJ5zIb+2SCmFhL/
-QLwkMMTbRKSWFqKsCk1Viy9+wiLpn6TfdbO+rY+8hTuA1H9rC++a1KaeYecy+O1q
-gDZ4Be12ic1P/CWeGLH7FAWtUFyEHHojTdIAkrRvUFUol8GfZspJq3SlIaPAJLqu
-Oy9Fq3suxIONkufZIa89ypP2ADreYAcXw6BDuPohBZJmUDM/4fPluC6dNisx7I6Q
-oHPcVKeIvWb8AcqvCucDd58xdSkQYg==
-=0DwX
------END PGP SIGNATURE-----
-
---Sig_/K9EA_PJANH_w1VlIBP+xs5a--
+On Tue, Sep 5, 2023 at 3:55=E2=80=AFAM syzbot
+<syzbot+427fed3295e9a7e887f2@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has bisected this issue to:
+>
+> commit a8b76910e465d718effce0cad306a21fa4f3526b
+> Author: Valentin Schneider <valentin.schneider@arm.com>
+> Date:   Wed Nov 10 20:24:44 2021 +0000
+>
+>     preempt: Restore preemption model selection configs
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1633aaf068=
+0000
+> start commit:   58390c8ce1bd Merge tag 'iommu-updates-v6.4' of git://git.=
+k..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D1533aaf068=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1133aaf068000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D5eadbf0d3c2ec=
+e89
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D427fed3295e9a7e=
+887f2
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D172bead8280=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14d01d0828000=
+0
+>
+> Reported-by: syzbot+427fed3295e9a7e887f2@syzkaller.appspotmail.com
+> Fixes: a8b76910e465 ("preempt: Restore preemption model selection configs=
+")
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
