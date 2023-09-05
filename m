@@ -2,225 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E187792AF0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E40D0792AAC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230371AbjIEQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:45:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
+        id S1343568AbjIEQlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354572AbjIEMoN (ORCPT
+        with ESMTP id S1354582AbjIEMpb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:44:13 -0400
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B2A1AD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:44:09 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qdVPD-0000Dg-Rh; Tue, 05 Sep 2023 14:43:43 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qdVPB-004CML-Sv; Tue, 05 Sep 2023 14:43:41 +0200
-Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
-        (envelope-from <ore@pengutronix.de>)
-        id 1qdVPB-00HGwM-1Z;
-        Tue, 05 Sep 2023 14:43:41 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Eric Dumazet <edumazet@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Arun Ramadoss <arun.ramadoss@microchip.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        UNGLinuxDriver@microchip.com,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        devicetree@vger.kernel.org
-Subject: [RFC net-next v1 2/2] net: dsa: microchip: ksz9477: Add drive strength configuration
-Date:   Tue,  5 Sep 2023 14:43:40 +0200
-Message-Id: <20230905124340.4116542-2-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230905124340.4116542-1-o.rempel@pengutronix.de>
-References: <20230905124340.4116542-1-o.rempel@pengutronix.de>
+        Tue, 5 Sep 2023 08:45:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0BC3D8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:45:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693917927; x=1725453927;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=EzNgbAolDS0RgHgfgYlr7Sxm2fQRjZKiPPUyl4EE+RY=;
+  b=iHVxs8Y3uWdppcfFZVhGTV+TlR7Zn7sQCz8Q+Vp2McoClk641eEV6DXC
+   HJOVszn2zllSY/+Bm7vS8NX63gOsDGREyEYQtWQ9+WJsBrFflO02dddTm
+   M22RvFrZQH9SG2pA6oWZorLfcTgBru8bkQK/j2xUuAb/D6s/Xzn2iZ7EK
+   BYjSuT+ZLDLcOre+wzPjq6GW2Oqo6UWp+TZ4aMii09QSL8NC05DEnuxtQ
+   1DaTe/Zj/RJ6NlKoOJ9cIfFFmXbylgZYd51wgab/sP+oEIxmdpH2qzu67
+   h+tx2qXW2nKjZO6uTTUq+/6nA2RH1YCV5wwQEfso7Ie3Td953MSRaJBtq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="443182020"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="443182020"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 05:45:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="914826098"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="914826098"
+Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
+  by orsmga005.jf.intel.com with ESMTP; 05 Sep 2023 05:45:25 -0700
+Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qdVQk-0001fo-3B;
+        Tue, 05 Sep 2023 12:45:20 +0000
+Date:   Tue, 5 Sep 2023 20:44:37 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/firmware/efi/libstub/efi-stub-helper.c:662: warning:
+ Function parameter or member 'out' not described in 'efi_load_initrd'
+Message-ID: <202309052015.D3SZMitP-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree based drive strength configuration support. It is needed to
-pass EMI validation on our hardware.
+Hi Ard,
 
-Configuration values are based on the vendor's reference driver.
+FYI, the error/warning still remains.
 
-Tested on KSZ9563R.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f86ed6ec0b390c033eae7f9c487a3fea268e027
+commit: f4dc7fffa9873db50ec25624572f8217a6225de8 efi: libstub: unify initrd loading between architectures
+date:   11 months ago
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20230905/202309052015.D3SZMitP-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230905/202309052015.D3SZMitP-lkp@intel.com/reproduce)
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/microchip/ksz9477.c | 120 ++++++++++++++++++++++++++++
- 1 file changed, 120 insertions(+)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309052015.D3SZMitP-lkp@intel.com/
 
-diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
-index 83b7f2d5c1ea6..04582d3fcbe14 100644
---- a/drivers/net/dsa/microchip/ksz9477.c
-+++ b/drivers/net/dsa/microchip/ksz9477.c
-@@ -19,6 +19,30 @@
- #include "ksz_common.h"
- #include "ksz9477.h"
- 
-+/**
-+ * struct ksz9477_drive_strength - drive strength mapping
-+ * @reg_val:	register value
-+ * @milliamp:	milliamp value
-+ */
-+struct ksz9477_drive_strength {
-+	u32 reg_val;
-+	u32 milliamp;
-+};
-+
-+/* Drive strength mapping.
-+ * This values are not documented and taken from vendor's reference driver.
-+ */
-+static const struct ksz9477_drive_strength ksz9477_drive_strengths[] = {
-+	{ SW_DRIVE_STRENGTH_2MA,  2000 },
-+	{ SW_DRIVE_STRENGTH_4MA,  4000 },
-+	{ SW_DRIVE_STRENGTH_8MA,  8000 },
-+	{ SW_DRIVE_STRENGTH_12MA, 12000 },
-+	{ SW_DRIVE_STRENGTH_16MA, 16000 },
-+	{ SW_DRIVE_STRENGTH_20MA, 20000 },
-+	{ SW_DRIVE_STRENGTH_24MA, 24000 },
-+	{ SW_DRIVE_STRENGTH_28MA, 28000 },
-+};
-+
- static void ksz_cfg(struct ksz_device *dev, u32 addr, u8 bits, bool set)
- {
- 	regmap_update_bits(ksz_regmap_8(dev), addr, bits, set ? bits : 0);
-@@ -1097,11 +1121,107 @@ int ksz9477_enable_stp_addr(struct ksz_device *dev)
- 	return 0;
- }
- 
-+/**
-+ * ksz9477_drive_strength_to_reg() - convert milliamp value to register value
-+ * @milliamp:	milliamp value
-+ *
-+ * Return: register value
-+ */
-+static u32 ksz9477_drive_strength_to_reg(u32 milliamp)
-+{
-+	size_t array_size = ARRAY_SIZE(ksz9477_drive_strengths);
-+	int i;
-+
-+	for (i = 0; i < array_size; i++) {
-+		if (ksz9477_drive_strengths[i].milliamp >= milliamp)
-+			return ksz9477_drive_strengths[i].reg_val;
-+	}
-+
-+	/* return the highest value if the requested value is too high */
-+	return ksz9477_drive_strengths[array_size - 1].reg_val;
-+}
-+
-+/**
-+ * ksz9477_parse_drive_strength() - parse drive strength from device tree
-+ * @dev:	ksz device
-+ *
-+ * Return: 0 on success, error code otherwise
-+ */
-+static int ksz9477_parse_drive_strength(struct ksz_device *dev)
-+{
-+	struct of_prop {
-+		const char *name;
-+		int offset;
-+		int value;
-+	} of_props[] = {
-+		{
-+			"microchip,hi-drive-strength-microamp",
-+			SW_HI_SPEED_DRIVE_STRENGTH_S,
-+			-1
-+		},
-+		{
-+			"microchip,lo-drive-strength-microamp",
-+			SW_LO_SPEED_DRIVE_STRENGTH_S,
-+			-1
-+		},
-+	};
-+	struct device_node *np = dev->dev->of_node;
-+	bool found = false;
-+	int ret;
-+	u8 val;
-+
-+	if (!np)
-+		return 0;
-+
-+	for (int i = 0; i < ARRAY_SIZE(of_props); i++) {
-+		ret = of_property_read_u32(np, of_props[i].name,
-+					   &of_props[i].value);
-+		if (ret && ret != -EINVAL)
-+			dev_warn(dev->dev, "Failed to read %s\n",
-+				 of_props[i].name);
-+		if (ret)
-+			continue;
-+
-+		if (of_props[i].value > 28000 || of_props[i].value < 2000) {
-+			dev_warn(dev->dev, "Drive strength value is out of range: %d. Supported values are (2000 - 28000)\n",
-+				 of_props[i].value);
-+			continue;
-+		}
-+
-+		found = true;
-+	}
-+
-+	if (!found)
-+		return 0;
-+
-+	ret = ksz_read8(dev, REG_SW_IO_STRENGTH__1, &val);
-+	if (ret)
-+		return ret;
-+
-+	for (int i = 0; i < ARRAY_SIZE(of_props); i++) {
-+		int strength_val;
-+
-+		if (of_props[i].value == -1)
-+			continue;
-+
-+		strength_val = ksz9477_drive_strength_to_reg(of_props[i].value);
-+
-+		val &= ~(SW_DRIVE_STRENGTH_M << of_props[i].offset);
-+		val |= strength_val << of_props[i].offset;
-+	}
-+
-+	return ksz_write8(dev, REG_SW_IO_STRENGTH__1, val);
-+}
-+
- int ksz9477_setup(struct dsa_switch *ds)
- {
- 	struct ksz_device *dev = ds->priv;
- 	int ret = 0;
- 
-+	ret = ksz9477_parse_drive_strength(dev);
-+	if (ret)
-+		return ret;
-+
- 	ds->mtu_enforcement_ingress = true;
- 
- 	/* Required for port partitioning. */
+All warnings (new ones prefixed by >>):
+
+   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Function parameter or member 'initrd' not described in 'efi_load_initrd_dev_path'
+   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Excess function parameter 'load_addr' description in 'efi_load_initrd_dev_path'
+   drivers/firmware/efi/libstub/efi-stub-helper.c:559: warning: Excess function parameter 'load_size' description in 'efi_load_initrd_dev_path'
+>> drivers/firmware/efi/libstub/efi-stub-helper.c:662: warning: Function parameter or member 'out' not described in 'efi_load_initrd'
+
+
+vim +662 drivers/firmware/efi/libstub/efi-stub-helper.c
+
+f046fff8bc4c4d Ilias Apalodimas    2021-11-19  649  
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  650  /**
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  651   * efi_load_initrd() - Load initial RAM disk
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  652   * @image:	EFI loaded image protocol
+947228cb9f1a2c Atish Patra         2021-07-02  653   * @soft_limit:	preferred address for loading the initrd
+947228cb9f1a2c Atish Patra         2021-07-02  654   * @hard_limit:	upper limit address for loading the initrd
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  655   *
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  656   * Return:	status code
+8c0a839c2bccb7 Heinrich Schuchardt 2020-06-16  657   */
+f61900fd0ebf6c Arvind Sankar       2020-04-30  658  efi_status_t efi_load_initrd(efi_loaded_image_t *image,
+f61900fd0ebf6c Arvind Sankar       2020-04-30  659  			     unsigned long soft_limit,
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  660  			     unsigned long hard_limit,
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  661  			     const struct linux_efi_initrd **out)
+f61900fd0ebf6c Arvind Sankar       2020-04-30 @662  {
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  663  	efi_guid_t tbl_guid = LINUX_EFI_INITRD_MEDIA_GUID;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  664  	efi_status_t status = EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  665  	struct linux_efi_initrd initrd, *tbl;
+f61900fd0ebf6c Arvind Sankar       2020-04-30  666  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  667  	if (!IS_ENABLED(CONFIG_BLK_DEV_INITRD) || efi_noinitrd)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  668  		return EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  669  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  670  	status = efi_load_initrd_dev_path(&initrd, hard_limit);
+f61900fd0ebf6c Arvind Sankar       2020-04-30  671  	if (status == EFI_SUCCESS) {
+f61900fd0ebf6c Arvind Sankar       2020-04-30  672  		efi_info("Loaded initrd from LINUX_EFI_INITRD_MEDIA_GUID device path\n");
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  673  		if (initrd.size > 0)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  674  			efi_measure_initrd(initrd.base, initrd.size);
+f61900fd0ebf6c Arvind Sankar       2020-04-30  675  	} else if (status == EFI_NOT_FOUND) {
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  676  		status = efi_load_initrd_cmdline(image, &initrd, soft_limit,
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  677  						 hard_limit);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  678  		/* command line loader disabled or no initrd= passed? */
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  679  		if (status == EFI_UNSUPPORTED || status == EFI_NOT_READY)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  680  			return EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  681  		if (status == EFI_SUCCESS)
+f61900fd0ebf6c Arvind Sankar       2020-04-30  682  			efi_info("Loaded initrd from command line option\n");
+f61900fd0ebf6c Arvind Sankar       2020-04-30  683  	}
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  684  	if (status != EFI_SUCCESS)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  685  		goto failed;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  686  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  687  	status = efi_bs_call(allocate_pool, EFI_LOADER_DATA, sizeof(initrd),
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  688  			     (void **)&tbl);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  689  	if (status != EFI_SUCCESS)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  690  		goto free_initrd;
+f046fff8bc4c4d Ilias Apalodimas    2021-11-19  691  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  692  	*tbl = initrd;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  693  	status = efi_bs_call(install_configuration_table, &tbl_guid, tbl);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  694  	if (status != EFI_SUCCESS)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  695  		goto free_tbl;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  696  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  697  	if (out)
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  698  		*out = tbl;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  699  	return EFI_SUCCESS;
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  700  
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  701  free_tbl:
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  702  	efi_bs_call(free_pool, tbl);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  703  free_initrd:
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  704  	efi_free(initrd.size, initrd.base);
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  705  failed:
+f4dc7fffa9873d Ard Biesheuvel      2022-09-16  706  	efi_err("Failed to load initrd: 0x%lx\n", status);
+f61900fd0ebf6c Arvind Sankar       2020-04-30  707  	return status;
+f61900fd0ebf6c Arvind Sankar       2020-04-30  708  }
+14c574f35cfbc9 Arvind Sankar       2020-05-18  709  
+
+:::::: The code at line 662 was first introduced by commit
+:::::: f61900fd0ebf6c6b91719d63272a54f4d11051df efi/libstub: Unify initrd loading across architectures
+
+:::::: TO: Arvind Sankar <nivedita@alum.mit.edu>
+:::::: CC: Ard Biesheuvel <ardb@kernel.org>
+
 -- 
-2.39.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
