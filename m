@@ -2,82 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B3297932BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 01:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE087932C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 01:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243316AbjIEX4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 19:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40984 "EHLO
+        id S243325AbjIEX7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 19:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235018AbjIEX4i (ORCPT
+        with ESMTP id S233081AbjIEX7L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 19:56:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A03241B7
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 16:56:33 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d782a2ba9f9so747289276.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 16:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693958193; x=1694562993; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BTMdUX0G2lv2+kU2WiYySTJObpffzgV002stI1a1W7I=;
-        b=e7n6Yjksn2CMZRtFHL5RDakHGb5NbF8DYWqlKCV2VtvDz+bekmAxT60g6N1QEt4Q9x
-         TnsqFvLITcWcza8/3XwZpqAt0gi0gYzd1nGQYtSJxMLnJNH2oHGZIMTvMrQVoz/ZFZik
-         tbKvfANIdod5uVbLAZYsDMDpiT3PiNLOr8kAox4fLx9MwiOZYQKmhuLC6uF8FytOaf5d
-         qY3XUntd/mCB+S4TE8YGHPYj5zzee1tN1PA42iKcQUw5WQLVQW/JKAEVFoQlof+IXjgO
-         Fcy86VDmQgAqbHsdDgcGCn8ZxzB3Jb49XYlt7LU9Mv15oAV8iTZFBLCCmUqI4wpgNEW6
-         QFFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693958193; x=1694562993;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=BTMdUX0G2lv2+kU2WiYySTJObpffzgV002stI1a1W7I=;
-        b=JIU2vlbXprNdcx1WRdaNPInOsppMcpseVQANgBcLR92K5G+hm1THdpUSRlK91WXeAF
-         RbibfiT/kEiskM4pDyVBwHpVFVxuT09yKzrpF0OFUTHEeOIEsIkmEsQmfZh/DQAprcij
-         t2ryiPM6d0CEf0iUHeHu+hiu1Wlgm+bK/FZx5++Z92Q6lDaw+tfDE19zevciy+r3TEyB
-         NuIVxTMVbAKtikEkTKkAGCU9DJGjU3psmCP7D/Pj6nQH7SepHoRgCpPSv7nHKQAK8Q8Z
-         yTG1s7LWcCSZPqy69qINczAZcdjTAfD29Kz2GK8t5YaIJFNynFWcIK3f0GlDP4wmzgzY
-         4SLA==
-X-Gm-Message-State: AOJu0YxYHWvS+K97UH8vDIkxTnQrBm+DMap5R9mPKWz3WXSQmEgoPBAv
-        ns9x2jFzRSYctY050hda974W+iN063M=
-X-Google-Smtp-Source: AGHT+IGHRLIyxOEOlqNogao+wtJt3d7D+zZNTRSCijTepfZz1QuZZsrU81NGe3dzgdfi+rQuqyfdUQCuPic=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:4211:0:b0:d7e:c4af:22d2 with SMTP id
- p17-20020a254211000000b00d7ec4af22d2mr293199yba.4.1693958192804; Tue, 05 Sep
- 2023 16:56:32 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 16:56:31 -0700
-In-Reply-To: <20230901082025.20548-2-vbabka@suse.cz>
-Mime-Version: 1.0
-References: <20230901082025.20548-2-vbabka@suse.cz>
-Message-ID: <ZPfAL0D95AwXD9tg@google.com>
-Subject: Re: [PATCH gmem FIXUP] mm, compaction: make testing
- mapping_unmovable() safe
-From:   Sean Christopherson <seanjc@google.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     ackerleytng@google.com, akpm@linux-foundation.org,
-        anup@brainfault.org, aou@eecs.berkeley.edu,
-        chao.p.peng@linux.intel.com, chenhuacai@kernel.org,
-        david@redhat.com, isaku.yamahata@gmail.com, jarkko@kernel.org,
-        jmorris@namei.org, kirill.shutemov@linux.intel.com,
-        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
-        kvmarm@lists.linux.dev, liam.merwick@oracle.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org,
-        linux-security-module@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, mail@maciej.szmigiero.name,
-        maz@kernel.org, michael.roth@amd.com, mpe@ellerman.id.au,
-        oliver.upton@linux.dev, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, paul@paul-moore.com, pbonzini@redhat.com,
-        qperret@google.com, serge@hallyn.com, tabba@google.com,
-        vannapurve@google.com, wei.w.wang@intel.com, willy@infradead.org,
-        yu.c.zhang@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
+        Tue, 5 Sep 2023 19:59:11 -0400
+Received: from cmx-mtlrgo001.bell.net (mta-mtl-003.bell.net [209.71.208.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CE0C1AB;
+        Tue,  5 Sep 2023 16:59:07 -0700 (PDT)
+X-RG-CM-BuS: 0
+X-RG-CM-SC: 0
+X-RG-CM: Clean
+X-Originating-IP: [142.198.135.111]
+X-RG-Env-Sender: dave.anglin@bell.net
+X-RG-Rigid: 64C35282037E9D70
+X-CM-Envelope: MS4xfMZOeoLC1ZyliLnrYcNL8rcSX1FQsv+QSr6yamJep8J7IwEiRAkfqllSJj3Ix6RpB1xKWd2XrR9/bCNq7Aeleqvp5UIlNwIgtVf0/AkBYTYb2o7PdI+f
+ RPZICdLhonibeHz/wwBMuYmMz9e/WQKef6q4uzZspV6P0juaFtiIaPTmxnZRa8TO62joNFQUCm1PTMrlZ65XSvKhbIYsylQmM2JyVCymqohqTUCWTtTmnEBR
+ dw/Kob9iWsFlnP0iFd1iI8Yz6WYwlnOB4mTLVA5VSsspRQop+RMOpXv4gN2NU3kh3NuNnc9QUICJolQ5eE34/DA+cYx7ba/X+m0oUd6XjFCBgaKmC2A3OAKD
+ W0OT18Uxw9nEXZz4N4P+HDCUNQKhOeeD2yQzxCZTyaLj1Pgu+/KiDgkUU14ocOkKN1yf91qKEuzwI/7pj6kkhJHEysK/sA==
+X-CM-Analysis: v=2.4 cv=W7Nb6Tak c=1 sm=1 tr=0 ts=64f7c0c5
+ a=m0hBPjpnfWKpZW+YOe+Hqw==:117 a=m0hBPjpnfWKpZW+YOe+Hqw==:17
+ a=IkcTkHD0fZMA:10 a=FBHGMhGWAAAA:8 a=sxHeeXqbiIlOdLNL7AwA:9 a=QEXdDO2ut3YA:10
+ a=9gvnlMMaQFpL9xblJ6ne:22
+Received: from [192.168.2.49] (142.198.135.111) by cmx-mtlrgo001.bell.net (5.8.814) (authenticated as dave.anglin@bell.net)
+        id 64C35282037E9D70; Tue, 5 Sep 2023 19:59:01 -0400
+Message-ID: <c6568683-86b4-c48d-ed37-f1f87677eb44@bell.net>
+Date:   Tue, 5 Sep 2023 19:59:01 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Subject: Re: [PATCH] linux/export: fix reference to exported functions for
+ parisc64
+Content-Language: en-US
+From:   John David Anglin <dave.anglin@bell.net>
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-parisc@vger.kernel.org, Helge Deller <deller@gmx.de>
+Cc:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>
+References: <20230905190828.790400-1-masahiroy@kernel.org>
+ <c8a92dc8-de78-7484-bcc8-d4a91bec77de@bell.net>
+In-Reply-To: <c8a92dc8-de78-7484-bcc8-d4a91bec77de@bell.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,14 +58,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 01, 2023, Vlastimil Babka wrote:
-> As Kirill pointed out, mapping can be removed under us due to
-> truncation. Test it under folio lock as already done for the async
-> compaction / dirty folio case. To prevent locking every folio with
-> mapping to do the test, do it only for unevictable folios, as we can
-> expect the unmovable mapping folios are also unevictable - it is the
-> case for guest memfd folios.
+On 2023-09-05 5:57 p.m., John David Anglin wrote:
+> I'll check ddb5cdbafaaa.
+Similar fault with ddb5cdbafaaa:
 
-Rather than expect/assume that unmovable mappings are always unevictable, how about
-requiring that?  E.g. either through a VM_WARN_ON in mapping_set_unmovable(), or by
-simply having that helper forcefully set AS_UNEVICTABLE as well.
+sata_sil24 0000:00:01.0: Applying completion IRQ loss on PCI-X errata fix
+Backtrace:
+scsi host2: sata_sil24
+  [<0000000040bf2c00>] mutex_lock+0x48/0xc8
+  [<000000004023d370>] cpu_hotplug_disable+0x80/0x98
+scsi host3: sata_sil24
+  [<0000000040792314>] pci_device_probe+0x144/0x2a8
+  [<00000000408af87c>] really_probe+0x12c/0x5a8
+scsi host4: sata_sil24
+  [<00000000408afd7c>] __driver_probe_device+0x84/0x1a0
+  [<00000000408aff44>] driver_probe_device+0xac/0x260
+scsi host5: sata_sil24
+  [<00000000408b0684>] __driver_attach_async_helper+0x8c/0x160
+  [<000000004028043c>] async_run_entry_fn+0x64/0x1d0
+ata3: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80080000 ir6
+  [<0000000040269c88>] process_one_work+0x238/0x520
+  [<000000004026a184>] worker_thread+0x214/0x770
+ata4: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80082000 ir6
+  [<00000000402788d4>] kthread+0x274/0x280
+ata5: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80084000 ir6
+  [<0000000040202020>] ret_from_kernel_thread+0x20/0x28
+ata6: SATA max UDMA/100 host m128@0xffffffff80088000 port 0xffffffff80086000 ir6
+
+
+Page fault: no context: Code=6 (Instruction TLB miss fault) at addr 0b3a029a8348
+CPU: 0 PID: 10 Comm: kworker/u64:0 Not tainted 6.4.0-rc2+ #1
+Hardware name: 9000/785/C8000
+Workqueue: events_unbound async_run_entry_fn
+
+      YZrvWESTHLNXBCVMcbcbcbcbOGFRQPDI
+PSW: 00001000000001001111111100001111 Not tainted
+r00-03  000000ff0804ff0f 0b3a029a83406038 0000000000010770 0000000050d94c50
+r04-07  0000000000010000 0000000053a97000 00000000515398b0 0000000000000000
+r08-11  0000000051539800 0000000053a97800 0000000053a97120 00000000515398b0
+r12-15  0000000050c10000 0000000000000002 0000000040d54d60 0000000000000001
+r16-19  0000000040ca1d20 0000000050ce46c0 0000000050d56150 0000000000020000
+r20-23  000000007f41c000 000000000000000f 0002000000000002 0000000000044b38
+r24-27  0000000000000000 0000000000000003 0000000000000002 0000000000010000
+r28-31  0000000000002395 0000000050d94d60 0000000050d94d00 0000000000001033
+sr00-03  00000000000c7000 0000000000000000 0000000000000000 00000000000c5c00
+sr04-07  0000000000000000 0000000000000000 0000000000000000 0000000000000000
+
+IASQ: 000000000b3a029a 000000000b3a029a IAOQ: 0b3a029a83406038 0b3a029a8340603c
+  IIR: 43ffff80    ISR: 0000000000000dc0  IOR: 00000000402849ac
+  CPU:        0   CR30: 0000000050d56150 CR31: ffffffffffffffff
+  ORIG_R28: 0000000000000080
+  IAOQ[0]: 0xb3a029a83406038
+  IAOQ[1]: 0xb3a029a8340603c
+  RP(r2): ehci_pci_setup+0x100/0x780 [ehci_pci]
+Backtrace:
+  [<0000000040bf2c00>] mutex_lock+0x48/0xc8
+  [<000000004023d370>] cpu_hotplug_disable+0x80/0x98
+  [<0000000040792314>] pci_device_probe+0x144/0x2a8
+  [<00000000408af87c>] really_probe+0x12c/0x5a8
+  [<00000000408afd7c>] __driver_probe_device+0x84/0x1a0
+  [<00000000408aff44>] driver_probe_device+0xac/0x260
+  [<00000000408b0684>] __driver_attach_async_helper+0x8c/0x160
+  [<000000004028043c>] async_run_entry_fn+0x64/0x1d0
+  [<0000000040269c88>] process_one_work+0x238/0x520
+  [<000000004026a184>] worker_thread+0x214/0x770
+  [<00000000402788d4>] kthread+0x274/0x280
+  [<0000000040202020>] ret_from_kernel_thread+0x20/0x28
+
+Kernel panic - not syncing: Page fault: no context
+
+Dave
+
+-- 
+John David Anglin  dave.anglin@bell.net
+
