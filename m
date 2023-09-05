@@ -2,340 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDAD0793162
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED1C793163
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234813AbjIEVx4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:53:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
+        id S239125AbjIEVyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231794AbjIEVxz (ORCPT
+        with ESMTP id S231794AbjIEVyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:53:55 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81616CDC
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:53:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693950802; x=1725486802;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=yfFD5NiYt3S8WapLQkaV3NbZYyR3M0QTiRq/+bnxcus=;
-  b=h4O0ddW3AUn/HxZqA+VM5tfUboXNKkInYyUOwqcakO1uJiK1V15oHeBu
-   DTO6azyw2B2u3IeDxuZpRmRcyEAPD6MTVC+1D54+GDksOq9BP+sJhh2Os
-   DWZMpEtv9SdveWDI7ODqRf1zU9Rk7mVhCAfx6HcZCvse3WEY90eKbxpsB
-   IDbrBYuT45ZtoQEJqZkfuhgZ4/JSVwX/6QxPy6aUTny2vHgLKkkzSKsiJ
-   h61IZ80hnqOraBbdamp3weQ4nLXnfmni+ooBqB1x0rrfpQV1JQvdEXhxV
-   bGd9iOrZV8n7i42CUEiiZ/noxFKj5SzJNXywdo+uAbxDzaTLZgEbKhzIE
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="407909208"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="407909208"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 14:53:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="811412210"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="811412210"
-Received: from dpdesmon-mobl.amr.corp.intel.com (HELO [10.209.18.208]) ([10.209.18.208])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 14:53:21 -0700
-Message-ID: <9b23259e62826ee8be14c6fe5dcb4bfad40d4bee.camel@linux.intel.com>
-Subject: Re: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware
- depending on the architecture
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Pierre Gondois <pierre.gondois@arm.com>,
-        Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-Cc:     dietmar.eggemann@arm.com, vincent.guittot@linaro.org,
-        peterz@infradead.org, mingo@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        quentin.perret@arm.com, srikar@linux.vnet.ibm.com,
-        mgorman@techsingularity.net, mingo@kernel.org, yu.c.chen@intel.com
-Date:   Tue, 05 Sep 2023 14:53:20 -0700
-In-Reply-To: <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
-References: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
-         <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        Tue, 5 Sep 2023 17:54:14 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2066.outbound.protection.outlook.com [40.107.20.66])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AE3198;
+        Tue,  5 Sep 2023 14:53:54 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BHOsXtmMmM20gYqtrvi3kPWtQySaw3gV4Dv5TnoUI1xFpTvXaOopJs9KaUXtnZEE9iyVcRJbSLHk5VGwlG8iFk6SRUviLfKo4+X03Yi79rAz+4520nqHLvBgPW8z7rTlSlpd9a0Z48F4JzzNSAV0Usk2UcaKsUMZB7No472LXlPtZtC8XDGa1BEPjNNQnbkpTmjZNKESXKvgFC9DOUgHuH1DZ1WQ5mgGOGFkFx1diFpRuRpnY3OHQVdYSpCYSNydgrFS+o6vDlNVG3yJR2at537LuY+u6hAVNKnw7ZWHRD3knh5ZqVc42eu25LQWlZ99add6pvqhz+p9WgzXgwPQ1A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vOKSd5/PpiV3jiCIKk/8+utgvFKp9rzWzZpqk82Ksz4=;
+ b=mVPf310ucUtH+310d+NPCl9eQP8WHZEK8eHomS2bc1odr6OAMPz1KXk+uAEDDypk6SKdVvIDzHVuDPBjD4hg96j2Q2rBG7E7n612fmXEC6kvM2I6GxNGm5Hf2JhV8oAYBeCtf4LBoovdDyWsKANTNcBqP1X2kp2bmIirqNWc2Y1/NuKY4lSd1eGjscHM3kBXxPcDq7ceMzHB5WLM7FA6kPYCeQbLLn8E0U3X88EXyYTCh/RLyLYgzQdDRiEoRF2LerXQPifb33BaelqLZFrxeRPPjaksNsVwdgRbYVJGVSWEIDUZvYjE+yS2KRDxKa8HfVoR4CyQh3gX77Yjp+0bDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vOKSd5/PpiV3jiCIKk/8+utgvFKp9rzWzZpqk82Ksz4=;
+ b=fO1X8TkyWgDMMAwWiZuYUgH9j4+G9M7LTXAk1SxAl6Zf8m474++kpGfdnassn4p4ATsyPjd5k88E/1nTMTF1m6tB6StllyPYvAvhd79yPRdxZYgA/l16psCbC3w1X4jvQvKO0mtFuCUPPLU0gXaK8v/1Dy7p2Sm0/P7fKSw8L5o=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
+ by AM0PR04MB6963.eurprd04.prod.outlook.com (2603:10a6:208:18b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Tue, 5 Sep
+ 2023 21:53:52 +0000
+Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
+ ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 21:53:51 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     netdev@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Yanan Yang <yanan.yang@nxp.com>,
+        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net 0/3] tc-cbs offload fixes for SJA1105 DSA
+Date:   Wed,  6 Sep 2023 00:53:35 +0300
+Message-Id: <20230905215338.4027793-1-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: AM0PR07CA0029.eurprd07.prod.outlook.com
+ (2603:10a6:208:ac::42) To AM0PR04MB6452.eurprd04.prod.outlook.com
+ (2603:10a6:208:16d::21)
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM0PR04MB6963:EE_
+X-MS-Office365-Filtering-Correlation-Id: c7035f64-f95c-48db-20e3-08dbae5a979e
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yBzHBFp5kozE69hoIHrroP1g+rGBlhqRr8ihMqx6eoWDf4sRDj4A8XeE82czVkrVP/np3nd9PVa9yQsYoc719Ap6fF685K+881Y2FJWAT30FIM8ORl1hmg6BTxJ0cP32jXdQ7waWhPEyTX7XMwvdLYuzgDWBTaPYbRyxHsjMon0175s2VcsZOT0S1iJ8MdzUWX+yqmAGMyLMLm5MoY6brFvuBfnTqNmDWDgI15oUa3tVbFPxn5PnRqtkZQmIeK1ZO+xxHxwo/L/1PM8XIbN4uQX5PgMS6bNfgmESnv7w6qp305Z/UxHoZk7MD3Gf28bg1lCY0zk4VUgpxHxCc8btWfKSGqwEDsIPz5q+Cs+LninGG0TbY6yxif0wt0thOcyOE6YL7mFvSjNw8hNsdwOwYj0U0fneMJZ6ATobUcbk0/xW4FzA2EOmkPVcr+AmJCSG6n1Kn9qG3mQaxIOYadBeVxixhCQlpdfOiQzqh3wzrAUi40SviMSEwqApsF8TXF2sBcyav1TxbySTgWzhV9lH0nWSsru+jtogaDMwCskNlhMa1hP3VV5w55jaJjbowFK3snAREtwax4LGJYMPF7z319CP2Iv13mNsP/UttrAnEfP4mTfY53bAoMbSawgEe/Ck
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(376002)(39860400002)(396003)(451199024)(1800799009)(186009)(38100700002)(38350700002)(44832011)(83380400001)(5660300002)(36756003)(86362001)(41300700001)(6666004)(66476007)(66946007)(1076003)(66556008)(478600001)(2616005)(6512007)(8936002)(4326008)(6486002)(8676002)(26005)(316002)(52116002)(54906003)(4744005)(6916009)(6506007)(2906002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eTBgc0gJKcsg0WmwTyjzmvFO4PmkDoH3NIHZQR156lNryAzMP+zFi505vM6n?=
+ =?us-ascii?Q?2FjYQdQAEz7rb+tsiJLe9/2TaslJ4R6Ji2xnJJhpmv/5GO/PcZcg2cQVsJRj?=
+ =?us-ascii?Q?Os5SCZzDSQvI5uFf+qP/cd/52LLODJoMOtjIrOCpxnjwMP+3j3yciVSrgiyc?=
+ =?us-ascii?Q?agkxhpgLu6itOJOTPfdVc1p+nKFmp9fIIwRxbJ2oox4P1uquH/0TUN/Kx5z/?=
+ =?us-ascii?Q?/0xyH7yrjVtSxUtaoJ50lm7Qv+JBZecVZtJB2LIwGrgAfUixO3Urpzrkva/5?=
+ =?us-ascii?Q?Cb7vmrFSOOEt5QqxcZbMOt7aNok7X0+QUIvyUzQBwS/vJDdkzWz9D8zB1ghz?=
+ =?us-ascii?Q?a8kd5/irriaGj01f6RhR8Um9dhXc7+tRHJgHO/lt5KZf8bBuqTTuy58sP93K?=
+ =?us-ascii?Q?gsW4eAD7S6NDBEnCszU6PVLMssPRdHouwFrw1rzJcPw1qHFq3XB2B74cfzlp?=
+ =?us-ascii?Q?DKTSk0m7aNXI65gEeqF3skoc4TqzBsggO05mbg621TzqRISKUUzOG8T5w+Vp?=
+ =?us-ascii?Q?XAXWwDkoCa7elJST5AZIi52UY7n58uISNfnPsL2eU5ZO2PNZePyYY8BQnKc6?=
+ =?us-ascii?Q?9/Tlj2ZaEg2cyMlKQapgclTYu+wz1rjlf1sqa5d3bEshgxHkR8uKRd1JkWNS?=
+ =?us-ascii?Q?olsOumiICKlqFBC6Vnm6b84AWP7oMX95Os2LwMm/3GY2jCAOhGp4PYBHiHtf?=
+ =?us-ascii?Q?MbB7KT+jwiHCXV8kZDkqZnx2j+kZ2MGXQXeD8jznF2kd+4RX87MrvSw+JZ+p?=
+ =?us-ascii?Q?HuS/nb2T+jdyYYSKAlMINX9rNVeCYHrietsbuGSgHJ+A4pXNcRCjPaAetY/Y?=
+ =?us-ascii?Q?OmkkbU0ANC6eHZpNQLY+pG1LpaB7gl705rHFwz1aBX5zsH7uqQjqy8cuXPS/?=
+ =?us-ascii?Q?+D2nQ/xJ3NSKD+ASRijn89POAX1vw17Opfco02tBEgeDi3TABhxbaGPBP/sl?=
+ =?us-ascii?Q?8kNRBI8BZbdE92Vk7Qgrtm6mr6poAZFGc1V654qcUjrMdrPqtjp7vIcriNQS?=
+ =?us-ascii?Q?Tz/RpLvSpve6t9CEcgbDpJG5IJlxbDplmQqT/oNLXtLtzU/r688ZETuSAM7u?=
+ =?us-ascii?Q?aPF+ENVdnt031L9dzn00NajyPyY1Y1R6rgF5oQF5TeEsa53qzzuvAgLDZZuf?=
+ =?us-ascii?Q?vB77ZWUg84+/+n5kKr4yE8q2noPxRHbmsBuQQcTEQfdNASK5G1AMawei2lBk?=
+ =?us-ascii?Q?PY14ErZWbU5TUhRpFrudd5sCJGt5uHJEZeMdjgbldntu9Tpa7hjBMtFvdPWh?=
+ =?us-ascii?Q?t4eX5SctISF/+Zb7DbNVIvoKhj0sHi1s1A9E8ajPAZyoQd+ignd/DcNp4ZYk?=
+ =?us-ascii?Q?OOBSaE7h1gYG4b4fhnBRW1JUFxFsWPf137QYLCwIYuAsOvSMVazYRwLYlAP0?=
+ =?us-ascii?Q?lRUoiqkoJntu9amvpdxekJWFdzdgyRXNur3GT8+PzgeXS4Q1nEmvkLadR0wX?=
+ =?us-ascii?Q?yPzD2LxpE4jSgNbnKYgJ7z9PEmRbnoa0ZNa/RRMJ8fQsBEA3HtWf7AD1N/Wa?=
+ =?us-ascii?Q?aA4+XOfKGPOpL795RELrt/t/Cy/G2UmP4aBwy1fjn+P11nkS4ekRAgVtZ8gA?=
+ =?us-ascii?Q?M9qVxYJxCYc4uLx9SplZ7YcbNcN+HQsbWtIJaNdXiMnpE3vDJf/lQScOnEfF?=
+ =?us-ascii?Q?VA=3D=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7035f64-f95c-48db-20e3-08dbae5a979e
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 21:53:51.8778
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H4jdI3EdvK2SMWb89ib/7/QQUXhkN8eBiQ4AdoeRNa715OtYKK31NcyDaDlJsbnkKd/ho32b65jj1frVW7CdKQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6963
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-05 at 16:03 +0200, Pierre Gondois wrote:
-> Hello Shrikanth,
-> I tried the patch (on a platform using the cppc_cpufreq driver). The plat=
-form
-> normally has EAS enabled, but the patch removed the sched_energy_aware sy=
-sctl.
-> It seemed the following happened (in the below order):
->=20
-> 1. sched_energy_aware_sysctl_init()
-> Doesn't set sysctl_sched_energy_aware as cpufreq_freq_invariance isn't se=
-t
-> and arch_scale_freq_invariant() returns false
->=20
-> 2. cpufreq_register_driver()
-> Sets cpufreq_freq_invariance during cpufreq initialization sched_energy_s=
-et()
->=20
-> 3. sched_energy_set()
-> Is called with has_eas=3D0 since build_perf_domains() doesn't see the pla=
-tform
-> as EAS compatible. Indeed sysctl_sched_energy_aware=3D0.
-> So with sysctl_sched_energy_aware=3D0 and has_eas=3D0, sched_energy_aware=
- sysctl
-> is not enabled even though EAS should be possible.
->=20
->=20
-> On 9/1/23 08:52, Shrikanth Hegde wrote:
-> > Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
-> > some of the architectures. IIUC its meant to either force rebuild the
-> > perf domains or cleanup the perf domains by echoing 1 or 0 respectively=
-.
->=20
-> There is a definition of the sysctl at:
-> Documentation/admin-guide/sysctl/kernel.rst::sched_energy_aware
->=20
-> Also a personal comment about the commit message (FWIW), I think it shoul=
-d
-> be a bit more impersonal and factual. The commit message seems to describ=
-e
-> the code rather than the desired behaviour.
+Yanan Yang has pointed out to me that certain tc-cbs offloaded
+configurations do not appear to do any shaping on the LS1021A-TSN board
+(SJA1105T).
 
-I also wonder if Shrikanth's description of the operations can be simplifie=
-d.
+This is due to an apparent documentation error that also made its way
+into the driver, which patch 1/3 now fixes.
 
-In my mind, There are 3 variables describing the system:
+While investigating and then testing, I've found 2 more bugs, which are
+patches 2/3 and 3/3.
 
-1. sched_energy_capable : whether system is EAS capable
-2. sched_energy_aware   : whether the admin wants to enables EAS
-3. sched_energy_status  : sched_energy_capable && sched_energy_aware
+Vladimir Oltean (3):
+  net: dsa: sja1105: fix bandwidth discrepancy between tc-cbs software
+    and offload
+  net: dsa: sja1105: fix -ENOSPC when replacing the same tc-cbs too many
+    times
+  net: dsa: sja1105: complete tc-cbs offload support on SJA1110
 
-Whenever there is a change in sched_energy_status, then we should trigger a=
- rebuild
-of the sched domain.  We should expose sched_energy_capable
-to user rather than removing sched_energy_aware when sched_energy_capable =
-=3D=3D 0.
+ drivers/net/dsa/sja1105/sja1105.h      |  2 +
+ drivers/net/dsa/sja1105/sja1105_main.c | 51 +++++++++++++++++++++++---
+ drivers/net/dsa/sja1105/sja1105_spi.c  |  4 ++
+ 3 files changed, 51 insertions(+), 6 deletions(-)
 
-If the user know the value of sched_energy_capable, the user will know
-if setting sched_energy_aware will change the system's sched_energy_status.
-
-For system that can never support EAS,
-we should simply make sched_energy_aware to be 0 and disallow it from getti=
-ng written.
-
-On systems that allow sched_energy_capable to be enabled (e.g. by brining s=
-mt on/offline),
-we should allow setting sched_energy_aware even when sched_energy_capable i=
-s 0.
-Once sched_energy_capable becomes 1, EAS is enabled.
-
-
-Tim=20
- =20
->=20
-> >=20
-> > perf domains are not built when there is SMT, or when there is no
-> > Asymmetric CPU topologies or when there is no frequency invariance.
-> > Since such cases EAS is not set and perf domains are not built. By
-> > changing the values of sysctl_sched_energy_aware, its not possible to
-> > force build the perf domains. Hence remove this sysctl on such platform=
-s
-> > that dont support it. Some of the settings can be changed later
-> > such as smt_active by offlining the CPU's, In those cases if
-> > build_perf_domains returns true, re-enable the sysctl.
-> >=20
-> > Anytime, when sysctl_sched_energy_aware is changed sched_energy_update
-> > is set when building the perf domains. Making use of that to find out i=
-f
-> > the change is happening by sysctl or dynamic system change.
-> >=20
-> > Taking different cases:
-> > Case1. system while booting has EAS capability, sysctl will be set 1. H=
-ence
-> > perf domains will be built if needed. On changing the sysctl to 0, sinc=
-e
-> > sched_energy_update is true, perf domains would be freed and sysctl wil=
-l
-> > not be removed. later sysctl is changed to 1, enabling the perf domains
-> > rebuild again. Since sysctl is already there, it will skip register.
-> >=20
-> > Case2. System while booting doesn't have EAS Capability. Later after sy=
-stem
-> > change it becomes capable of EAS. sched_energy_update is false. Though
-> > sysctl is 0, will go ahead and try to enable eas. This is the current
-> > behaviour. if has_eas  is true, then sysctl will be registered. After
-> > that any sysctl change is same as Case1.
-> >=20
-> > Case3. System becomes not capable of EAS due to system change. Here sin=
-ce
-> > sched_energy_update is false, build_perf_domains return has_eas as fals=
-e
-> > due to one of the checks and Since this is dynamic change remove the sy=
-sctl.
-> > Any further change which enables EAS is Case2
-> >=20
-> > Note: This hasn't been tested on platform which supports EAS. If the
-> > change can be verified on that it would really help. This has been
-> > tested on power10 which doesn't support EAS. sysctl_sched_energy_aware
-> > is removed with patch.
-> >=20
-> > changes since v1:
-> > Chen Yu had pointed out that this will not destroy the perf domains on
-> > architectures where EAS is supported by changing the sysctl. This patch
-> > addresses that.
-> > [v1] Link: https://lore.kernel.org/lkml/20230829065040.920629-1-sshegde=
-@linux.vnet.ibm.com/#t
-> >=20
-> > Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-> > ---
-> >   kernel/sched/topology.c | 45 +++++++++++++++++++++++++++++++++-------=
--
-> >   1 file changed, 37 insertions(+), 8 deletions(-)
-> >=20
-> > diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> > index 05a5bc678c08..4d16269ac21a 100644
-> > --- a/kernel/sched/topology.c
-> > +++ b/kernel/sched/topology.c
-> > @@ -208,7 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd, struc=
-t sched_domain *parent)
-> >=20
-> >   #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHED=
-UTIL)
-> >   DEFINE_STATIC_KEY_FALSE(sched_energy_present);
-> > -static unsigned int sysctl_sched_energy_aware =3D 1;
-> > +static unsigned int sysctl_sched_energy_aware;
-> > +static struct ctl_table_header *sysctl_eas_header;
->=20
-> The variables around the presence/absence of EAS are:
-> - sched_energy_present:
-> EAS is up and running
->=20
-> - sysctl_sched_energy_aware:
-> The user wants to use EAS (or not). Doesn't mean EAS can run on the
-> platform.
->=20
-> - sched_energy_set/partition_sched_domains_locked's "has_eas":
-> Local variable. Represent whether EAS can run on the platform.
->=20
-> IMO it would be simpler to (un)register sched_energy_aware sysctl
-> in partition_sched_domains_locked(), based on the value of "has_eas".
-> This would allow to let all the logic as it is right now, inside
-> build_perf_domains(), and then advertise sched_energy_aware sysctl
-> if EAS can run on the platform.
-> sched_energy_aware_sysctl_init() would be deleted then.
->=20
->=20
-> >   static DEFINE_MUTEX(sched_energy_mutex);
-> >   static bool sched_energy_update;
-> >=20
-> > @@ -226,6 +227,7 @@ static int sched_energy_aware_handler(struct ctl_ta=
-ble *table, int write,
-> >   		void *buffer, size_t *lenp, loff_t *ppos)
-> >   {
-> >   	int ret, state;
-> > +	int prev_val =3D sysctl_sched_energy_aware;
-> >=20
-> >   	if (write && !capable(CAP_SYS_ADMIN))
-> >   		return -EPERM;
-> > @@ -233,8 +235,11 @@ static int sched_energy_aware_handler(struct ctl_t=
-able *table, int write,
-> >   	ret =3D proc_dointvec_minmax(table, write, buffer, lenp, ppos);
-> >   	if (!ret && write) {
-> >   		state =3D static_branch_unlikely(&sched_energy_present);
-> > -		if (state !=3D sysctl_sched_energy_aware)
-> > +		if (state !=3D sysctl_sched_energy_aware && prev_val !=3D sysctl_sch=
-ed_energy_aware) {
-> > +			if (sysctl_sched_energy_aware && !state)
-> > +				pr_warn("Attempt to build energy domains when EAS is disabled\n");
-> >   			rebuild_sched_domains_energy();
-> > +		}
-> >   	}
-> >=20
-> >   	return ret;
-> > @@ -255,7 +260,14 @@ static struct ctl_table sched_energy_aware_sysctls=
-[] =3D {
-> >=20
-> >   static int __init sched_energy_aware_sysctl_init(void)
-> >   {
-> > -	register_sysctl_init("kernel", sched_energy_aware_sysctls);
-> > +	int cpu =3D cpumask_first(cpu_active_mask);
-> > +
-> > +	if (sched_smt_active() || !per_cpu(sd_asym_cpucapacity, cpu) ||
-> > +	    !arch_scale_freq_invariant())
-> > +		return 0;
-> > +
-> > +	sysctl_eas_header =3D register_sysctl("kernel", sched_energy_aware_sy=
-sctls);
-> > +	sysctl_sched_energy_aware =3D 1;
-> >   	return 0;
-> >   }
-> >=20
-> > @@ -336,10 +348,28 @@ static void sched_energy_set(bool has_eas)
-> >   		if (sched_debug())
-> >   			pr_info("%s: stopping EAS\n", __func__);
-> >   		static_branch_disable_cpuslocked(&sched_energy_present);
-> > +#ifdef CONFIG_PROC_SYSCTL
-> > +		/*
-> > +		 * if the architecture supports EAS and forcefully
-> > +		 * perf domains are destroyed, there should be a sysctl
-> > +		 * to enable it later. If this was due to dynamic system
-> > +		 * change such as SMT<->NON_SMT then remove sysctl.
-> > +		 */
-> > +		if (sysctl_eas_header && !sched_energy_update) {
-> > +			unregister_sysctl_table(sysctl_eas_header);
-> > +			sysctl_eas_header =3D NULL;
-> > +		}
-> > +#endif
-> > +		sysctl_sched_energy_aware =3D 0;
-> >   	} else if (has_eas && !static_branch_unlikely(&sched_energy_present)=
-) {
-> >   		if (sched_debug())
-> >   			pr_info("%s: starting EAS\n", __func__);
-> >   		static_branch_enable_cpuslocked(&sched_energy_present);
-> > +#ifdef CONFIG_PROC_SYSCTL
-> > +		if (!sysctl_eas_header)
-> > +			sysctl_eas_header =3D register_sysctl("kernel", sched_energy_aware_=
-sysctls);
-> > +#endif
-> > +		sysctl_sched_energy_aware =3D 1;
-> >   	}
-> >   }
-> >=20
-> > @@ -380,15 +410,14 @@ static bool build_perf_domains(const struct cpuma=
-sk *cpu_map)
-> >   	struct cpufreq_policy *policy;
-> >   	struct cpufreq_governor *gov;
-> >=20
-> > -	if (!sysctl_sched_energy_aware)
-> > +	if (!sysctl_sched_energy_aware && sched_energy_update)
-> >   		goto free;
-> >=20
-> >   	/* EAS is enabled for asymmetric CPU capacity topologies. */
-> >   	if (!per_cpu(sd_asym_cpucapacity, cpu)) {
-> > -		if (sched_debug()) {
-> > -			pr_info("rd %*pbl: CPUs do not have asymmetric capacities\n",
-> > -					cpumask_pr_args(cpu_map));
-> > -		}
-> > +		if (sched_debug())
-> > +			pr_info("rd %*pbl: Disabling EAS,  CPUs do not have asymmetric capa=
-cities\n",
-> > +				cpumask_pr_args(cpu_map));
-> >   		goto free;
-> >   	}
-> >=20
-> > --
-> > 2.31.1
-> >=20
-> >=20
->=20
-> Regards,
-> Pierre
+-- 
+2.34.1
 
