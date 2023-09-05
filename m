@@ -2,171 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E28792854
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:43:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10434792A99
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239443AbjIEQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:18:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
+        id S243881AbjIEQkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:40:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354363AbjIELBE (ORCPT
+        with ESMTP id S1354364AbjIELBR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:01:04 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7551AB;
-        Tue,  5 Sep 2023 04:01:00 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so5060946a12.1;
-        Tue, 05 Sep 2023 04:01:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693911659; x=1694516459; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zwy2enTt2SO2Sv9oRLC9SuqNesFb2onrt5Fx6Ho7KA8=;
-        b=nk8+2inmrknKcgvJL7umnAT63490i7hGLWbkcO5hoFSSBbxLpjZNkPztQ9lhGlYVVK
-         Jn7zKvfE83QSCjB8FBSDUm+qxC7ItIbFDnGAq2L55noUqg37YXgsOmDsDkCIQqC0Jehn
-         VsvNjqpc7/Fl+2joPT9n83+YGlf7jcAfhw1mXDbldqFNBrDVv8o4Esg8K0YqhDuzKtGM
-         NwKN1GTnpE3vQfddpak9PpFBPsa++F2yKSqFEK+49DxDA4uFnYvXhA9Kpmw4HGqFWM/N
-         xQ2nhVYCIaVIuRmCwQTnFi0dQT34dI3JaQCLWpGLv3xKER8JwyoGEvSUc5hBv6rb1Hu9
-         ruqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693911659; x=1694516459;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zwy2enTt2SO2Sv9oRLC9SuqNesFb2onrt5Fx6Ho7KA8=;
-        b=Wdqet+AhXZ5x37ubVEvLZ5yqD90O0OPfySBJg7GtRU+lHnQ61lUUrf1zhG2qaW6jK5
-         R4jWQ7FXKGbHP9tXs1ZDGBohUvWaveJ7M7ZwD0+Qw3kQo6hTX2MQZiK1KetTKWkMzgaf
-         orA0r4MQNp+UJf9L61yNuuNPxsfWYID9JWHXlAk6s1QA4IEQPH2fjXN9Fq/Zc9mcdvtj
-         72iTBE4MoUp6rd8/E/Y7UV6hDt6/xtg8z89J+kFOmrgq7lRtMtmbMehniLiP1zwNS/ka
-         Un2ILFg5jhiGwKD04hTS+poY0NwLyKuVZsqAmkeDfpKnnKG6AybZzrJewxJqwEWjE/Uc
-         G7Sg==
-X-Gm-Message-State: AOJu0YxmVEQ0J/9phACWCIMsapXUGHw50qbqe6i8UpYpIZIgcJUvJNiQ
-        Lu6FZFab8Ni4OSFqOfmk65k=
-X-Google-Smtp-Source: AGHT+IECWinjGCWmQ4Iuzke+met9TY4SkOWQQZKuyx1EiJ4+IFPhm7nCQotFIWo+YDGJJDiil7HquA==
-X-Received: by 2002:a05:6402:32e:b0:522:d801:7d07 with SMTP id q14-20020a056402032e00b00522d8017d07mr13252480edw.10.1693911658944;
-        Tue, 05 Sep 2023 04:00:58 -0700 (PDT)
-Received: from skbuf ([188.26.57.165])
-        by smtp.gmail.com with ESMTPSA id z14-20020aa7c64e000000b00528922bb53bsm7014864edr.76.2023.09.05.04.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 04:00:58 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 14:00:56 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Lukasz Majewski <lukma@denx.de>
-Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
-        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
-        George McCollister <george.mccollister@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RFC 2/4] net: dsa: Extend ksz9477 TAG setup to support
- HSR frames duplication
-Message-ID: <20230905110056.gzkaiznlq5hcvrac@skbuf>
-References: <20230904120209.741207-1-lukma@denx.de>
- <20230904120209.741207-3-lukma@denx.de>
- <20230905102239.mkufbzxwrvuatlrb@skbuf>
- <20230905124409.40c7c2f1@wsk>
+        Tue, 5 Sep 2023 07:01:17 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71381AB;
+        Tue,  5 Sep 2023 04:01:13 -0700 (PDT)
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385Ad8lr009106;
+        Tue, 5 Sep 2023 11:01:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=9toUWMnBTPzr30H7hB+mEnlmhwveyOLT5sLs6DzuLeo=;
+ b=T+UhntOhkUzkiYjpA8VSB699dd+/A36IfnRgrXS8qbXQOdEO3u5jXIgrI5YcEDQ8DVNC
+ 5kazg3qlfXyRjU/WcyWp/lobqb7o0wL5Mv4CAhYqGaNkLyjSq20bzn+mScZG6M4Vhep+
+ 38eFcRFSr30XMEnPwytxJrdPcOZ3Sd2UL0DJ+gWYdfEGfyRYlYkup0Lf9YgS7nl9JbEb
+ vL6dTMOde2BmVOpldBHaG0kAugvp373GEQiVALRxBWNC8aClI2CZQUTFMSz++0ScUQdm
+ jAh487VUtkmjqOH3UaklK7raPubef5YTrTpcNPGvXXCLfIEP4ZAISsTMcqyMat+h2PMJ ag== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx0aqvh3b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 11:01:09 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 38596Psw001615;
+        Tue, 5 Sep 2023 11:01:08 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svfcsjbn1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 11:01:08 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+        by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385B163s23265792
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 11:01:06 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 7A96F20040;
+        Tue,  5 Sep 2023 11:01:06 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 41FD720043;
+        Tue,  5 Sep 2023 11:01:05 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.in.ibm.com (unknown [9.109.253.169])
+        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue,  5 Sep 2023 11:01:05 +0000 (GMT)
+From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
+Subject: [RFC 0/1] ext4: Replace linear search with array of lists in CR_GOAL_LEN_SLOW
+Date:   Tue,  5 Sep 2023 16:31:03 +0530
+Message-Id: <cover.1693911548.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.31.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: L--kFvG2LdAobeduF2Rmo56y8h3q0heM
+X-Proofpoint-ORIG-GUID: L--kFvG2LdAobeduF2Rmo56y8h3q0heM
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905124409.40c7c2f1@wsk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_08,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ impostorscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 clxscore=1015 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050094
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 12:44:09PM +0200, Lukasz Majewski wrote:
-> > Not to mention that there are other problems with the "dev->hsr_ports"
-> > concept. For example, having a hsr0 over lan0 and lan1, and a hsr1
-> > over lan2 and lan3, would set dev->hsr_ports to GENMASK(3, 0).
-> 
-> I doubt that having two hsr{01} interfaces is possible with current
-> kernel.
+Hello all!
 
-You mean 2 hsr{01} interfaces not being able to coexist in general,
-or just "offloaded" ones?
+This patch changes the linear searching in CR_GOAL_LEN_SLOW to use an array of
+lists based on the order of requested length. The list array itself holds one
+list for each possible order of free blocks in a block group.
 
-> The KSZ9477 allows only to have 2 ports of 5 available as HSR
-> ones.
-> 
-> The same is with earlier chip xrs700x (but this have even bigger
-> constrain - there only ports 1 and 2 can support HSR). 
+While running some performance tests on my setup, I noticed that although the
+groups we were considering before finding a good group in CR_GOAL_LEN_SLOW did
+improve however there was not much improvement (or regression) in performance
+as such, which I believe could be partly because my test disk was not
+big enough to highlight the issues of linear traversal in
+CR_GOAL_LEN_SLOW.  Unfortunately, I currently don't have a disk that
+might be big enough for this however I think theoretically we should see
+improvement when we have a very large disk and most of the BGs are near
+full. Suggestions on alternate ways to test this or help in getting some
+performance numbers is welcome.
 
-> > > +	if (dev->features & NETIF_F_HW_HSR_DUP) {
-> > > +		val &= ~KSZ9477_TAIL_TAG_LOOKUP;  
-> > 
-> > No need to unset a bit which was never set.
-> 
-> I've explicitly followed the vendor's guidelines - the TAG_LOOKUP needs
-> to be cleared.
-> 
-> But if we can assure that it is not set here I can remove it.
+That being said, I do believe that other than performance, having such a design
+in CR_GOAL_LEN_SLOW is beneficial because:
 
-Let's look at ksz9477_xmit(), filtering only for changes to "u16 val".
+1. We'll be able to select a BG whose free block order matches our goal length
+and hence we won't be filling up bigger holes for small requests. This can
+improve fragmentation in the longer run.
 
-static struct sk_buff *ksz9477_xmit(struct sk_buff *skb,
-				    struct net_device *dev)
-{
-	u16 val;
+2. We'll have more control in what block groups we want to allocate from,
+making CR_GOAL_LEN_SLOW more flexible. For example, the ongoing discussions
+around introducing new types of BGs marked w/ IOPS flag [1]  which we only want
+to use for metadata allocation. With the current design of linear search, we'll
+have to check for this flag everytime and skip the BG if we have a data
+allocation.  However, with the proposed design, we can easily set up our
+freelist to ignore IOPS BGs, which is much more inline with how that patch
+handles other criterias.
 
-	val = BIT(dp->index);
+Now, with this patch, we'll no longer look for BGs linearly and hence this has a
+chance of increasing the spread of allocation however I think that shouldn't be
+a problem since we still have the MB_DEFAULT_LINEAR_LIMIT for rotational devices
+combined with Jan's (merged) patchset that fixed several issues related to
+allocation spread [2].
 
-	val |= FIELD_PREP(KSZ9477_TAIL_TAG_PRIO, prio);
+This seems to pass quick xfstests and several iterations for the generic/269
+test that stresses the mballoc code. However, there's still some todos in the
+patchset eg more testing, refactoring code, bug hunting etc. I wanted to
+get the RFC out to check what the community feels about this and for any
+suggestions and ideas.
 
-	if (is_link_local_ether_addr(hdr->h_dest))
-		val |= KSZ9477_TAIL_TAG_OVERRIDE;
+Thanks!
 
-	if (dev->features & NETIF_F_HW_HSR_DUP) {
-		val &= ~KSZ9477_TAIL_TAG_LOOKUP;
-		val |= ksz_hsr_get_ports(dp->ds);
-	}
-}
+[1] https://lore.kernel.org/linux-ext4/OS3P286MB056789DF4EBAA7363A4346B5AF06A@OS3P286MB0567.JPNP286.PROD.OUTLOOK.COM/
+[2] https://lore.kernel.org/all/20220908091301.147-1-jack@suse.cz/
 
-Is KSZ9477_TAIL_TAG_LOOKUP ever set in "val", or am I missing something?
+Ojaswin Mujoo (1):
+  ext4: Replace linear search with array of lists in CR_GOAL_LEN_SLOW
 
-> > > +		val |= ksz_hsr_get_ports(dp->ds);
-> > > +	}  
-> > 
-> > Would this work instead?
-> > 
-> > 	struct net_device *hsr_dev = dp->hsr_dev;
-> > 	struct dsa_port *other_dp;
-> > 
-> > 	dsa_hsr_foreach_port(other_dp, dp->ds, hsr_dev)
-> > 		val |= BIT(other_dp->index);
-> > 
-> 
-> I thought about this solution as well, but I've been afraid, that going
-> through the loop of all 5 ports each time we want to send single packet
-> will reduce the performance.
-> 
-> Hence, the idea with having the "hsr_ports" set once during join
-> function and then use this cached value afterwards.
+ fs/ext4/ext4.h    |  25 +++++++--
+ fs/ext4/mballoc.c | 134 ++++++++++++++++++++++++++++++++++++++++++++--
+ fs/ext4/mballoc.h |   5 ++
+ 3 files changed, 156 insertions(+), 8 deletions(-)
 
-There was a quote about "premature optimization" which I can't quite remember...
+-- 
+2.31.1
 
-If you can see a measurable performance difference, then the list
-traversal can be converted to something more efficient.
-
-In this case, struct dsa_port :: hsr_dev can be converted to a larger
-struct dsa_hsr structure, similar to struct dsa_port :: bridge.
-That structure could look like this:
-
-struct dsa_hsr {
-	struct net_device *dev;
-	unsigned long port_mask;
-	refcount_t refcount;
-};
-
-and you could replace the list traversal with "val |= dp->hsr->port_mask".
-But a more complex solution requires a justification, which in this case
-is performance-related. So performance data must be gathered.
-
-FWIW, dsa_master_find_slave() also performs a list traversal.
-But similar discussions about performance improvements didn't lead anywhere.
