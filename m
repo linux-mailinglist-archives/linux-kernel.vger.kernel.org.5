@@ -2,129 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8741B792ABE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23AFF7929E0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238603AbjIEQly (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:41:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36490 "EHLO
+        id S1354170AbjIEQ32 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:29:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354803AbjIEOcN (ORCPT
+        with ESMTP id S1354808AbjIEOec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:32:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B5B197
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:31:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693924283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Bzenq7VqMMCkwJKsd3mDOY8BIzQvuIbJSxbV97ojg0w=;
-        b=Ad5w9qK8S2xzJjPyXPTdPWRtosjOGXAjcdnz35LEZchUGiHCC90dZQJ7Nq8c177q6Jy4nY
-        53cT7PQ3A0BEKQUwSp4BuZeeS/csw7Vxg5TEqcESRjE7TB8gCLnUtiBBOGcwrN/NuKAfwb
-        RazMHqv12tiu2i0wRsQnt8Uxub2h/CE=
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
- [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-90-H-oUcoIOPWmspAG0-V0M5w-1; Tue, 05 Sep 2023 10:31:22 -0400
-X-MC-Unique: H-oUcoIOPWmspAG0-V0M5w-1
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-34f2cb006c9so1889235ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:31:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693924281; x=1694529081;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Bzenq7VqMMCkwJKsd3mDOY8BIzQvuIbJSxbV97ojg0w=;
-        b=i4Wdde0L4+eePtRe5wWMumgkqNsmBuhFxFV9JstkXUaCyc+5PygJRmIIANHJs0YMP6
-         TmfTp0Ea/PAl7UT3MDPKwTNDu7X3ZoJHuRN7APvtBpuSX5Zh7FcGmsHDEw0Nti1/nDSq
-         G69WiopOcq1DG2N6QCWmBemGsSQf06lxL0pNZfmSWGs5jNZXsdRrE9NWABp4KV7y23P8
-         OYO8hLhP5GN1IsGJ2fV5mn2v3aHXMMU61p3dEOAkfEWZT4VyQ65U6ocChoX8qwCdaNzJ
-         9kWKcr4FyjJb7Hht9ixf1CaXBS2KErP3+BPUNj18alvCGVc5/jh5wcpLlVbd2t45Mcu2
-         vTgA==
-X-Gm-Message-State: AOJu0YzeaypCOMSxtS+qoho35OtyjokKOIVT3A0GeGbf9ZSuFT2oV2+B
-        WjVLN4soEyteqnv2QtYZOp44/iLMpSZ4R6/1W2DKZ/rS12nefyTKzC3HXJ0RwGNlHSCLaDiQaO0
-        amq5HrpYn3gYyKgDlWoSaHh9I
-X-Received: by 2002:a05:6e02:1546:b0:34f:22a6:7f64 with SMTP id j6-20020a056e02154600b0034f22a67f64mr2356888ilu.1.1693924281448;
-        Tue, 05 Sep 2023 07:31:21 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGyGxu88UZAZRlTw19DFI9aMUF5xkID0nsw3RuvJTzJTc5NTXg0lLNV0gwLtA4fgTd1j8Zc5w==
-X-Received: by 2002:a05:6e02:1546:b0:34f:22a6:7f64 with SMTP id j6-20020a056e02154600b0034f22a67f64mr2356866ilu.1.1693924281229;
-        Tue, 05 Sep 2023 07:31:21 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id m14-20020a924b0e000000b00345cce526cdsm4200396ilg.54.2023.09.05.07.31.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 07:31:20 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 08:31:19 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     oushixiong <oushixiong@kylinos.cn>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Yishai Hadas <yishaih@nvidia.com>,
-        Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Brett Creeley <brett.creeley@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] vfio/pds: Limit Calling dev_dbg function to
- CONFIG_PCI_ATS
-Message-ID: <20230905083119.27cf3c03.alex.williamson@redhat.com>
-In-Reply-To: <20230905024028.940377-1-oushixiong@kylinos.cn>
-References: <20230905024028.940377-1-oushixiong@kylinos.cn>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.35; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 10:34:32 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88DA6189;
+        Tue,  5 Sep 2023 07:34:29 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 1B7E4601D4;
+        Tue,  5 Sep 2023 14:34:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69E45C433C8;
+        Tue,  5 Sep 2023 14:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693924468;
+        bh=JKzU5c4fzZh7BqSu7lUu+UIbm/Xs4iJnRhgm0x1qGEw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fQ4Ilp76JURnoa3wZePrwy+N/8dSE58crRHBdJaIcF+vuMSt6WoE3alHqX6xFMbjq
+         iWxt+b+ml6R9tXnOOyUgy6xH4prZDPci+HWVe9b4nU+kx0pQ9/IJ3aF0pNtIEnOie1
+         ecc81Yq6g4gK5jYGZp21jchXbPHqkIVnnLHVhWIgUvCN8gpkK4bqcomrG63BHM/EQU
+         3951VlNwvwuMZa2dyrqkbp/wJmfYEIuxj/rHtEy9Xxe+rn4/3pBRaiBmKCGFo6+1p+
+         LyteVD367Z4n4ftRanNPk/3ANx3YQZvypVIxb8IvZfhEhPZEUfBbj6+Bv/Q4UWNiO6
+         0CMysHAewrTng==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qdX8M-00AaTS-0t;
+        Tue, 05 Sep 2023 15:34:26 +0100
+Date:   Tue, 05 Sep 2023 15:34:24 +0100
+Message-ID: <86il8oeljj.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Fang Xiang <fangxiang3@xiaomi.com>
+Subject: Re: [PATCH 2/2] irqchip/gic-v3: Enable non-coherent redistributors/ITSes probing
+In-Reply-To: <ZPc6M6Of/dGl4kIT@lpieralisi>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+        <20230905104721.52199-3-lpieralisi@kernel.org>
+        <86msy0etul.wl-maz@kernel.org>
+        <ZPc6M6Of/dGl4kIT@lpieralisi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, robh+dt@kernel.org, fangxiang3@xiaomi.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue,  5 Sep 2023 10:40:28 +0800
-oushixiong <oushixiong@kylinos.cn> wrote:
+On Tue, 05 Sep 2023 15:24:51 +0100,
+Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+> 
+> On Tue, Sep 05, 2023 at 12:34:58PM +0100, Marc Zyngier wrote:
 
-> From: Shixiong Ou <oushixiong@kylinos.cn>
->=20
-> If CONFIG_PCI_ATS isn't set, then pdev->physfn is not defined.
-> So it causes a compilation issue:
->=20
-> ../drivers/vfio/pci/pds/vfio_dev.c:165:30: error: =E2=80=98struct pci_dev=
-=E2=80=99 has no member named =E2=80=98physfn=E2=80=99; did you mean =E2=80=
-=98is_physfn=E2=80=99?
->   165 |   __func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
->       |                              ^~~~~~
->=20
-> Signed-off-by: Shixiong Ou <oushixiong@kylinos.cn>
-> ---
->  drivers/vfio/pci/pds/vfio_dev.c | 3 +++
->  1 file changed, 3 insertions(+)
->=20
-> diff --git a/drivers/vfio/pci/pds/vfio_dev.c b/drivers/vfio/pci/pds/vfio_=
-dev.c
-> index b46174f5eb09..18b4a6a5bc16 100644
-> --- a/drivers/vfio/pci/pds/vfio_dev.c
-> +++ b/drivers/vfio/pci/pds/vfio_dev.c
-> @@ -160,10 +160,13 @@ static int pds_vfio_init_device(struct vfio_device =
-*vdev)
->  	vdev->log_ops =3D &pds_vfio_log_ops;
-> =20
->  	pci_id =3D PCI_DEVID(pdev->bus->number, pdev->devfn);
+> > @@ -4808,6 +4812,11 @@ static const struct gic_quirk its_quirks[] = {
+> >  		.init   = its_enable_rk3588001,
+> >  	},
+> >  #endif
+> > +	{
+> > +		.desc	= "ITS: non-coherent attribute",
+> > +		.property = "dma-noncoherent",
+> > +		.init	= its_set_non_coherent,
+> > +	},
+> 
+> For the records, that requires adding a gic_enable_of_quirks() call for the
+> ITS DT node that at the moment is not needed, something like this:
+> 
+> -- >8 --
+> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+> index 25a12b46ce35..3ae3cb9aadd9 100644
+> --- a/drivers/irqchip/irq-gic-v3-its.c
+> +++ b/drivers/irqchip/irq-gic-v3-its.c
+> @@ -4826,6 +4826,10 @@ static void its_enable_quirks(struct its_node *its)
+>  	u32 iidr = readl_relaxed(its->base + GITS_IIDR);
+>  
+>  	gic_enable_quirks(iidr, its_quirks, its);
 > +
-> +#ifdef CONFIG_PCI_ATS
->  	dev_dbg(&pdev->dev,
->  		"%s: PF %#04x VF %#04x vf_id %d domain %d pds_vfio %p\n",
->  		__func__, pci_dev_id(pdev->physfn), pci_id, vf_id,
->  		pci_domain_nr(pdev->bus), pds_vfio);
-> +#endif
-> =20
->  	return 0;
+> +	if (is_of_node(its->fwnode_handle))
+> +		gic_enable_of_quirks(to_of_node(its->fwnode_handle),
+> +				     its_quirks, its);
 >  }
+>  
 
-AIUI, this whole driver is dependent on SR-IOV functionality, so perhaps
-this should be gated at Kconfig?  Thanks,
+Ah, well spotted. Yes, please fold this in.
 
-Alex
+Thanks,
 
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
