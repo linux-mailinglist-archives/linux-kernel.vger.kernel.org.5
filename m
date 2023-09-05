@@ -2,91 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C8979245B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 17:58:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF6D4792542
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230208AbjIEP6s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 11:58:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51996 "EHLO
+        id S234488AbjIEQCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353921AbjIEIht (ORCPT
+        with ESMTP id S1354140AbjIEJz0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:37:49 -0400
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEEACCB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:37:43 -0700 (PDT)
-Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-450711d9bf1so65858137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:37:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693903063; x=1694507863; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mpHFtm2THaSdixGrwHLfve5bKSsogpNgznR46/rAI8Q=;
-        b=LK355mLUVlYWcVLJYzOKbCwA/c6MjFh6VpoiGz6b2DnKuzyefwo1Wv5cRvK8e75/kI
-         AwHxuDc0jw+yBfN+AowhfneCMSigF1XX9y87d2PAgcLq6MOA4RtZtfwPMNamcPZxRmmJ
-         xpizx0/J/D1pWZl89n7bkbixNq6A73lvoPeN0S18+zXGVTX0oGuFPTMaFKjHq5QkKks+
-         xau5dvJ6U3DGa8Nm+JNmoLVvHvjinnRabyhVuGv2w1ZJWSJKUjd6ZLFNwopjNYvHpTQV
-         DmeV2ZkThHXCfB9Ge8RCYvulwYy62+vP8sh0e58YgHOMjFoevG7CPWd0Lm5lOZ8+SAzs
-         qSng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693903063; x=1694507863;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mpHFtm2THaSdixGrwHLfve5bKSsogpNgznR46/rAI8Q=;
-        b=J/pOYvbTRQHzXA78QkBNAEIW25kTpTlJcZPmahKY9KZNo75JfSftfeYSvfrVZw6ltx
-         QvTcp0DTIriYHSI4plj4HZSZ1SQAWDBT6d41lYo9zGl9J0Cxf2CyxhAcCpF2tl7fO42p
-         x56loxuBmJiuzUmqyZD19FyEsntNKGCvhky/Ecm95dqnsdbPOPYjXAsNuukrlHKQm7/v
-         t/TkzWpViOWNnuNRXOE2lFZqlVJuvgPdHuDp5CbJbo9V7PsHyQOXMAd9gdzOCEThNcd5
-         XHpA2ushK1sxW0AeR3yLKy6V/iLNbENs/MT8LaxFzt0cVpgGQmqV55p2lL0Rg1LC3EE0
-         xnmA==
-X-Gm-Message-State: AOJu0YyZKcutwOPnupQNzKtzYd82ORmWNutYziOeehM1ptwPp5ilhzps
-        FND1QvWab/8dCreQUhurngL+HqbFd4jw1R8ywftkNgn/iFwq5UEMieo=
-X-Google-Smtp-Source: AGHT+IFZqQ6NUVEHdjCmDa5Gac5UutlTevVj90aTgLVjwaCXFeHZRN+XSXCgpz0qM5EyEULv6okfGE7VoUrVAqweOQE=
-X-Received: by 2002:a67:e294:0:b0:44e:ac98:c65f with SMTP id
- g20-20020a67e294000000b0044eac98c65fmr12293123vsf.21.1693903062895; Tue, 05
- Sep 2023 01:37:42 -0700 (PDT)
+        Tue, 5 Sep 2023 05:55:26 -0400
+Received: from phobos.denx.de (phobos.denx.de [85.214.62.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103D2132;
+        Tue,  5 Sep 2023 02:55:21 -0700 (PDT)
+Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: lukma@denx.de)
+        by phobos.denx.de (Postfix) with ESMTPSA id AC3398691E;
+        Tue,  5 Sep 2023 11:55:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
+        s=phobos-20191101; t=1693907719;
+        bh=tneArmjlXh/92OwvwEXRg4SIPn/5tACoYN/VdtMqX14=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hXxj3B8h4GHsX/ZSHDzI34CBEnFu2WhGmLXrvtV5RWh+6T8Mh2svxNrTFiWkbPRVm
+         vOKLhARth24umPrEVhrLJ4g2bZsSjKlimjle2n+v5yi1Q8RkYm65X53sCdwiktn+ka
+         J8xLelHLKg8uzvfCZUMVgFqJNlsA2RAjsE72z+BOCfkhrjibUT4KPsuDKvXWoZwuZ4
+         qhCeowwtX/ukvKz6gg+eWVXFbRiZX4YEcGumwZ9E4n2jzhlwJ3DbakQLI18hYNFe8F
+         BA6dO89qrM/bFVDJvMJtmQDlPVePSf4w1X/AoXKts0lAPIgfSsuyEvkC5cqhNwPmkd
+         rjKwk98/uwEQw==
+Date:   Tue, 5 Sep 2023 11:55:12 +0200
+From:   Lukasz Majewski <lukma@denx.de>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        davem@davemloft.net, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Kristian Overskeid <koverskeid@gmail.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andreas Oetken <ennoerlangen@gmail.com>
+Subject: Re: [PATCH] net: hsr : Provide fix for HSRv1 supervisor frames
+ decoding
+Message-ID: <20230905115512.3ac6649c@wsk>
+In-Reply-To: <20230905080614.ImjTS6iw@linutronix.de>
+References: <20230825153111.228768-1-lukma@denx.de>
+        <20230905080614.ImjTS6iw@linutronix.de>
+Organization: denx.de
+X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20230904073410.5880-1-brgl@bgdev.pl> <20230904073410.5880-2-brgl@bgdev.pl>
- <ZPWjAUzqeAwF1wro@smile.fi.intel.com>
-In-Reply-To: <ZPWjAUzqeAwF1wro@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 5 Sep 2023 10:37:32 +0200
-Message-ID: <CAMRc=MeMYi0KbK=1RYGX2zbUjVZyQp-Y_aXfy6+EZcEtUSEU0A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] gpiolib: rename gpio_chip_hwgpio() for consistency
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/K9EA_PJANH_w1VlIBP+xs5a";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
+X-Virus-Status: Clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 4, 2023 at 11:27=E2=80=AFAM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Mon, Sep 04, 2023 at 09:34:10AM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > All other functions that manipulate a struct gpio_desc use the gpiod_
-> > prefix. Follow this convention and rename gpio_chip_hwgpio() to
-> > gpiod_get_hwgpio().
->
-> Same comment. Also, I don't think it's good idea as it steps on the expor=
-ted
-> API's toes. I.o.w. I won't mix those two.
->
+--Sig_/K9EA_PJANH_w1VlIBP+xs5a
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Even if I agreed with your other comment, gpio_chip_hwgpio() is a
-terrible name and if I didn't know, I couldn't tell you what it does
-just from looking at the name.
+Hi Sebastian,
 
-Bart
+> On 2023-08-25 17:31:11 [+0200], Lukasz Majewski wrote:
+> > Provide fix to decode correctly supervisory frames when HSRv1
+> > version of the HSR protocol is used.
+> >=20
+> > Without this patch console is polluted with:
+> > ksz-switch spi1.0 lan1: hsr_addr_subst_dest: Unknown node
+> >=20
+> > as a result of destination node's A MAC address equals to:
+> > 00:00:00:00:00:00.
+> >=20
+> > cat /sys/kernel/debug/hsr/hsr0/node_table
+> > Node Table entries for (HSR) device
+> > MAC-Address-A,    MAC-Address-B,    time_in[A], time_in[B],
+> > Address-B 00:00:00:00:00:00 00:10:a1:94:77:30      400bf,
+> > 399c,	        0
+> >=20
+> > It was caused by wrong frames decoding in the
+> > hsr_handle_sup_frame().
+> >=20
+> > As the supervisor frame is encapsulated in HSRv1 frame:
+> >=20
+> > SKB_I100000000: 01 15 4e 00 01 2d 00 10 a1 94 77 30 89 2f 00 34
+> > SKB_I100000010: 02 59 88 fb 00 01 84 15 17 06 00 10 a1 94 77 30
+> > SKB_I100000020: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > SKB_I100000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> > SKB_I100000040: 00 00
+> >=20
+> > The code had to be adjusted accordingly and the MAC-Address-A now
+> > has the proper address (the MAC-Address-B now has all 0's). =20
+>=20
+> Was this broken by commit
+> 	eafaa88b3eb7f ("net: hsr: Add support for redbox supervision
+> frames")
+>=20
+
+Yes, it seems so.
+
+> ? Is this frame somehow special? I don't remember this=E2=80=A6
+>=20
+
+Please refer to the whole thread - I've described this issue thoroughly
+(including hex dump of frames):
+https://lore.kernel.org/lkml/20230904175419.7bed196b@wsk/T/#m35cbfa4f1b8901=
+d341fbc39659ace6a041f84c98
+
+In short - the HSRv1 is not recognized correctly anymore:
+
+HSR v0:
+    [Protocols in frame: eth:ethertype:hsr_prp_supervision]
+                                                                       =20
+HSR v1:
+    [Protocols in frame: eth:ethertype:hsr:hsr_prp_supervision]
+
+
+> > Signed-off-by: Lukasz Majewski <lukma@denx.de> =20
+>=20
+> Sebastian
+
+
+Best regards,
+
+Lukasz Majewski
+
+--
+
+DENX Software Engineering GmbH,      Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
+
+--Sig_/K9EA_PJANH_w1VlIBP+xs5a
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmT2+wAACgkQAR8vZIA0
+zr072Qf/eV4LIBVYp9d5zhpfLc7ppusqB5QsQQ3ksDnOCRoNJkFEH04Gk17UTyQR
+YlSHdWsJ9GQRRZUdldGo4c8D+xSKzI+W46HT8nsnAsDTRcalABJ5zIb+2SCmFhL/
+QLwkMMTbRKSWFqKsCk1Viy9+wiLpn6TfdbO+rY+8hTuA1H9rC++a1KaeYecy+O1q
+gDZ4Be12ic1P/CWeGLH7FAWtUFyEHHojTdIAkrRvUFUol8GfZspJq3SlIaPAJLqu
+Oy9Fq3suxIONkufZIa89ypP2ADreYAcXw6BDuPohBZJmUDM/4fPluC6dNisx7I6Q
+oHPcVKeIvWb8AcqvCucDd58xdSkQYg==
+=0DwX
+-----END PGP SIGNATURE-----
+
+--Sig_/K9EA_PJANH_w1VlIBP+xs5a--
