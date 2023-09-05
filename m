@@ -2,79 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 648A9792A8F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66333792AE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243037AbjIEQjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:39:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47656 "EHLO
+        id S1344972AbjIEQob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354753AbjIEOFV (ORCPT
+        with ESMTP id S1354748AbjIEOEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:05:21 -0400
-Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B77C1A7;
-        Tue,  5 Sep 2023 07:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-        s=s201512; t=1693922711;
-        bh=8KlD3VW8L/5ayf8Ou0ZPfzGKalOanhbYs3ssojj7Rzo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=LdVlag21s+/faTL1akapXYiZja4GG2XtDEo/qT8ygWc1hYPXmDbomZTX/1SqGEdAm
-         1faIpbJ6D99z6I3eyi78bGWA9Jq8nOgSsbiwIz3xMkyYuvRvFtvDXNYuKBuJjIf8ry
-         j71sRqHv8E65mEMHc6/VFQeqVYZGeY8FUPOnUtwU=
-Received: from rtoax.lan ([120.245.114.157])
-        by newxmesmtplogicsvrszc2-0.qq.com (NewEsmtp) with SMTP
-        id 12C80033; Tue, 05 Sep 2023 22:04:44 +0800
-X-QQ-mid: xmsmtpt1693922699t0dv0dw9r
-Message-ID: <tencent_B44B7295FED7E0D11EC445032021F2AC8107@qq.com>
-X-QQ-XMAILINFO: OUMxvQDaATieCv4GzYM8TxrYu4PTLFyfFshfV5c5Zjsi/jYVNr1yaBkldHod6j
-         lYb/2nctmJPtCLSeVterfhWNKVaSC1Hw1IXm43J7JQKHcZIHEC9/ml08GA/RSOOeoNzFyUEefE+G
-         EcbQwZL+CtmgWlY1tjnHgI5jqlM7igrBcNXLotQDNdy5OzBrGYwgf6k4JeyF0ecgqV+DhVnSHl5n
-         6W7lM0BN4e/QdFYJ7r1V1lLKkjc6iKJeGKMpY9v09jTX2frjav0WIJUBfJyoVLqewoumV1fFJ9f0
-         BjCrtVPjE5S7tYSI4mPRBc/ikuw021AYVYfeWA6r04p0/3j06WyA7o2pFG8yxA59plf/l2eucODK
-         6An1iUGxxsciTjCmIRqwtTpOuHyAxgB/cCJR1D7wghzgtsNhRG/9BGUCsJ+iYwXWxJOpJB7EEHNT
-         bUE7o/v/mPmH+2UZHR+zKDSEbHXdjX8fNHF77RXU0cTe17g/AdlYz8YSzIWzI4TnKHWMPtNYiJLo
-         Z70i7AQlD+Us/ppjvPnz+OeSH24eMqUwPpqUhQRNYv3VXA9CpN9Ie2nslF7+YHK1b7pHHAHDtDUp
-         OIH0ODulB6EktMufPvGYl1gni9Sfi0K7YQAJ8IdzEO30axwlkYFhuwzmHrYattgHmdWqYe5sQoYg
-         6DyVDjIWY8VMSjs693sQJG7Z8z6Yoj3PHu3CbkERAE5/kQbR4E/DcVbBIT8E70up71mZ+YWjGbvt
-         eFexZLgVTmf2sr5VSQwAji+5jgtjLwWQUM4z4x3XU3O7/uHtHluy+nxAU8doCLvYhrV8ejNAdD/2
-         BFafAQZYJqO1AGuvtio+OjbA6aIfOEdV372IlMFvxpQRrx3TNbvGho+r3bZSu1KTB/6aewSIrVDj
-         EiUd3ONBwTPXksWhId9V1Yqb+holqTA+CJglFgFPvsa/YQOw318nFbLHlFnlGX0mAXLOoIrTzaGt
-         yf2hthNx0TYpClbb7kny+hHDO2iXTLOlYdc9Gf2FjBdZXYmGbooTzu+Kl02Wwc
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From:   Rong Tao <rtoax@foxmail.com>
-To:     olsajiri@gmail.com, andrii@kernel.org, daniel@iogearbox.net,
-        sdf@google.com
-Cc:     Rong Tao <rongtao@cestc.cn>, Alexei Starovoitov <ast@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        bpf@vger.kernel.org (open list:BPF [GENERAL] (Safe Dynamic Programs and
-        Tools)), linux-kernel@vger.kernel.org (open list),
-        linux-kselftest@vger.kernel.org (open list:KERNEL SELFTEST FRAMEWORK),
-        linux-stm32@st-md-mailman.stormreply.com (moderated list:ARM/STM32
-        ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/STM32
-        ARCHITECTURE)
-Subject: [PATCH bpf-next v11 2/2] selftests/bpf: trace_helpers.c: Add a global ksyms initialization mutex
-Date:   Tue,  5 Sep 2023 22:04:19 +0800
-X-OQ-MSGID: <b554ee17328a8bab6a815d1d3b8e7ecf6124cc68.1693922135.git.rongtao@cestc.cn>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <cover.1693922135.git.rongtao@cestc.cn>
-References: <cover.1693922135.git.rongtao@cestc.cn>
+        Tue, 5 Sep 2023 10:04:32 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3EC4198;
+        Tue,  5 Sep 2023 07:04:28 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-52a250aa012so3541393a12.3;
+        Tue, 05 Sep 2023 07:04:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693922667; x=1694527467; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=L9psAb430jC90VCdqe63QauPmlT/EpRgnVSmF0m3boE=;
+        b=VH5HTP5wmcyWJl/2LQM5GmBBP9jl9m3EAhcre0cuhma5VOw4vBgxRrkdw8x3O72fao
+         CpiCFbgFAz5iqJDXG3LR7Z2bHAuJ31zvqvtHSRYFH9u0JEWdTSac17/Z1BL903qXSVRo
+         Yfuw7Ezujc0YWIeDF/lBF4PjQB1PIvo5cvzhZ/d7a1jO0qRvDumbKiZyDujWEgUoPYOa
+         1G5WXfO9pyrOYVQc20/xtidsOUj46c/5zVW+mK8Ud4fGUHRO6xU66dudqxcSoa0GLibp
+         aVLYP0D5ncKP3AQRewD2T39zMvFZ+kPg7vcxJRhnyk7MIY7XefN/VBMg2OO5EFZkNqsl
+         xHDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693922667; x=1694527467;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L9psAb430jC90VCdqe63QauPmlT/EpRgnVSmF0m3boE=;
+        b=I/YX/cg5ee4uw6EOWCixhGwNglR+ejp2XhVf324GCc9rRZYlqpdH1/BJVTxGwT5I3L
+         y0W6u2pH1i5vCagG/FZn85g/uWP+oAxfcd6/jUDp/vu8Um7tllOEM6IcSedRzd/1s8Ls
+         mRBhyZNCPq/y789oaWMfmzDrDZltvu7DBQQLl9likR6UlfVq8iOki2bWL1BC6BM+2cTk
+         sO++tSqMdH4luy/xCS0pGRvX8qFogmS2vQuHUlr6LOXTRD1Ulg9z556WFG5azqIgBbfj
+         eHehq2IUbtDNMHuRmmEBRevlRzYKrd19zGnZQdtfcLX1Ldm29AKygBerC4VdLN0LrYRK
+         mHrA==
+X-Gm-Message-State: AOJu0YwhUdng2clnEz4y29Olu0+hwxF/okyA6pU6KUzPbIUmhcDTUjPz
+        t3e0UQ/GeG+mFZcSQU4/mdk=
+X-Google-Smtp-Source: AGHT+IE21Z/EFgzhQDzJSm0Hu31eOBpIi92vifw4CNSyPJg4tSrU3ibqgWuetSCsKEXTAorFGPQjjg==
+X-Received: by 2002:aa7:c3d4:0:b0:523:4bfa:b450 with SMTP id l20-20020aa7c3d4000000b005234bfab450mr9349362edr.27.1693922666576;
+        Tue, 05 Sep 2023 07:04:26 -0700 (PDT)
+Received: from skbuf ([188.26.57.165])
+        by smtp.gmail.com with ESMTPSA id c24-20020a056402121800b005256d4d58a6sm7129550edw.18.2023.09.05.07.04.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 07:04:26 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 17:04:23 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
+        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
+        George McCollister <george.mccollister@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RFC 4/4] net: dsa: hsr: Provide generic HSR
+ ksz_hsr_{join|leave} functions
+Message-ID: <20230905140423.weisoaygc2tjvezb@skbuf>
+References: <20230904120209.741207-1-lukma@denx.de>
+ <20230904120209.741207-5-lukma@denx.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230904120209.741207-5-lukma@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,RDNS_DYNAMIC,SPF_HELO_NONE,SPF_PASS autolearn=no
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -82,49 +79,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rong Tao <rongtao@cestc.cn>
+On Mon, Sep 04, 2023 at 02:02:09PM +0200, Lukasz Majewski wrote:
+> +static int ksz_hsr_leave(struct dsa_switch *ds, int port,
+> +			 struct net_device *hsr)
+> +{
+> +	struct dsa_port *partner = NULL, *dp;
+> +	struct ksz_device *dev = ds->priv;
+> +
+> +	dsa_hsr_foreach_port(dp, ds, hsr) {
+> +		if (dp->index != port) {
+> +			partner = dp;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (!partner)
+> +		return 0;
+> +
+> +	switch (dev->chip_id) {
+> +	case KSZ9477_CHIP_ID:
+> +		return ksz9477_hsr_leave(ds, port, hsr, partner);
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	return 0;
+> +}
 
-As Jirka said [0], we just need to make sure that global ksyms
-initialization won't race.
+It's hard for me to put this in the proper perspective in this email,
+since ksz9477_hsr_leave() is implemented in a different patch, so I'm
+just going to reproduce it here:
 
-[0] https://lore.kernel.org/lkml/ZPCbAs3ItjRd8XVh@krava/
+int ksz9477_hsr_leave(struct dsa_switch *ds, int port, struct net_device *hsr,
+		      struct dsa_port *partner)
+{
+	struct ksz_device *dev = ds->priv;
 
-Signed-off-by: Rong Tao <rongtao@cestc.cn>
----
- tools/testing/selftests/bpf/trace_helpers.c | 4 ++++
- 1 file changed, 4 insertions(+)
+	/* Clear ports HSR support */
+	ksz_write32(dev, REG_HSR_PORT_MAP__4, 0);
 
-diff --git a/tools/testing/selftests/bpf/trace_helpers.c b/tools/testing/selftests/bpf/trace_helpers.c
-index 7d026c128252..411f87d5aac7 100644
---- a/tools/testing/selftests/bpf/trace_helpers.c
-+++ b/tools/testing/selftests/bpf/trace_helpers.c
-@@ -7,6 +7,7 @@
- #include <errno.h>
- #include <fcntl.h>
- #include <poll.h>
-+#include <pthread.h>
- #include <unistd.h>
- #include <linux/perf_event.h>
- #include <sys/mman.h>
-@@ -26,6 +27,7 @@ struct ksyms {
- };
- 
- static struct ksyms *ksyms;
-+static pthread_mutex_t ksyms_mutex = PTHREAD_MUTEX_INITIALIZER;
- 
- static int ksyms__add_symbol(struct ksyms *ksyms, const char *name,
- 			     unsigned long addr)
-@@ -110,8 +112,10 @@ struct ksyms *load_kallsyms_local(struct ksyms *ksyms)
- 
- int load_kallsyms(void)
- {
-+	pthread_mutex_lock(&ksyms_mutex);
- 	if (!ksyms)
- 		ksyms = load_kallsyms_local(NULL);
-+	pthread_mutex_unlock(&ksyms_mutex);
- 	return ksyms ? 0 : 1;
- }
- 
--- 
-2.41.0
+	/* Disable forwarding frames between HSR ports */
+	ksz_prmw32(dev, port, REG_PORT_VLAN_MEMBERSHIP__4, dev->hsr_ports, 0);
+	ksz_prmw32(dev, partner->index, REG_PORT_VLAN_MEMBERSHIP__4,
+		   dev->hsr_ports, 0);
 
+	/* Disable per port self-address filtering */
+	ksz_port_cfg(dev, port, REG_PORT_LUE_CTRL, PORT_SRC_ADDR_FILTER, false);
+	ksz_port_cfg(dev, partner->index, REG_PORT_LUE_CTRL,
+		     PORT_SRC_ADDR_FILTER, false);
+
+	return 0;
+}
+
+The code pattern from ksz_hsr_leave() is to disable HSR offload in both
+member ports, after *both* member ports have left the HSR device, correct?
+
+So it means that after this set of commands:
+
+ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 version 1
+ip link set dev lan1 up
+ip link set dev lan2 up
+ip link set lan1 nomaster
+
+lan1 will still have HSR offload enabled, and forwarding enabled towards
+lan2, correct? That's not good, because lan1 is now a standalone port
+and should operate as such.
