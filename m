@@ -2,113 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FB379253B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:02:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EB8792470
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 17:58:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235152AbjIEQBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:01:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45068 "EHLO
+        id S231159AbjIEP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 11:58:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354148AbjIEJ5i (ORCPT
+        with ESMTP id S1354196AbjIEKJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:57:38 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF0B18C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:57:33 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id 5b1f17b1804b1-4009fdc224dso160525e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 02:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693907852; x=1694512652; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uKoqPDQ4c4wMdHCcrBupTOrOf6nGa4D/pvESizqweVY=;
-        b=tbLhlm9bS7qbaDVQAS25szwWRY+RrgHuGYhmJ8iDLa1MRyTke8jcXrSIuU/a2jCaMi
-         9unz1FTSGqA1nL/2l0LWss6NtrECt6xIgy5C2RkDSuslprW7JmKLFFitoHBOJhBnxLDF
-         ekI4fx+dEyi22h92zeT/4/kp/OyuhsQMiq0C1nPww4Lwo6JI/Tnt//C6xA//d88JjXzd
-         x4oxRvYI/0lcTrbmExjxPqs51VHhsQLKY7cCdhVO7V3dtk2lFL94xlON5NPI9b9eOaSR
-         FkkW2DDisKwJhTR+xWBJyY5QJtaCwVQojAVI4sJ75ezC1UtWol1s/ukycNwhjte3L7mF
-         gxAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693907852; x=1694512652;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=uKoqPDQ4c4wMdHCcrBupTOrOf6nGa4D/pvESizqweVY=;
-        b=l/m/lMZhsdSo9oq8+r/Lw753REX+Y1nk031GnkmfIYAfmRzGsH4BQ5PiCAuuvDyxug
-         LHuCQ30wpXBjm4obSxkVUlB+EqEqOjmsgkBpkSn3KG5xMdE7ncDfH5+Z9n5xZJyafFvM
-         2k/mUvFdd8KQKc0jS7BwMAlslL+ZRVCRfmfzS7B44fYEKNVXoC0jqZ0xUvL61LKKpUlK
-         3b3frR+V7LfbBhROulmLVVz8rPBTQtUBP3mbYSDZ79F2MBRFd6i1bQhhxCJpBgJ2Es59
-         Aa13WwQjT2lWjdl0QDidrntFFSES0RVpl9u4R5Uu8a9HzyCJA6yv6qeqzYnJpZSRdYrg
-         jQmQ==
-X-Gm-Message-State: AOJu0YyKFQtUSv9scd1yWiXDQu+R6lztrBl6ncDdoxoG0KY7rYgaVRs4
-        q/Xh9oSdDiNWJJjdyg3uezzp1F2QvyarUQDdQpm5uQ==
-X-Google-Smtp-Source: AGHT+IFvBTvFUF7R7ANkYgde9PIYsgXPp7fox9gwEeYNhLFnCB3TvKs0r2mns8WNAIXVHQWCoxvSCOzyVDapcZgHkxc=
-X-Received: by 2002:a05:600c:1c25:b0:400:c6de:6a20 with SMTP id
- j37-20020a05600c1c2500b00400c6de6a20mr241680wms.3.1693907851956; Tue, 05 Sep
- 2023 02:57:31 -0700 (PDT)
+        Tue, 5 Sep 2023 06:09:41 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A281B6;
+        Tue,  5 Sep 2023 03:09:37 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 10:09:35 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1693908576;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sqQLMgrCgqN/1wDb4uxRuFBa8U8u0Tmfh2XMQP4e0ig=;
+        b=2rQTEj8jlJ/cYZicCt2jtj16+52cBK6wzjv+ja2o9SfSvZzsykzdtuxyILIgkOnq3RA3MA
+        cXjp82Ti8ABTxBH93cSLelIkIo3PClpzziSOi2Vj1BT21amDHernqRgHgWCDAHYgk0VZ+L
+        OvkUZ9/rXmtcG4q3UTmCpP0QGsOJhXfDmiazNLQpiNSuV6fT2b4L0KybuWmhLkxFxi7pYi
+        QWbSBeKvgmRSSfchgi3u0bbE8hNVjsr5MNEirg8H7+yzzIY9ZrSowIygsVwG47Ea1CeB0Q
+        zVhlclBedXSoI1aLopRoI4RZZUppeiOu9Q3B3OFyn10RpQX3RZzmQidnibhHnQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1693908576;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=sqQLMgrCgqN/1wDb4uxRuFBa8U8u0Tmfh2XMQP4e0ig=;
+        b=WX1YKQj+pUM6nj76yq60uz+JKJeSxLjsDSJhyb2uCoXDKqLtjOP561QNp24Bqlem0iALgL
+        d438aVcJ9GNGwpBA==
+From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/bugs] x86/srso: Remove 'pred_cmd' label
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org>
+References: <bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-References: <00000000000050a49105f63ed997@google.com> <000000000000fe1297060492eb88@google.com>
-In-Reply-To: <000000000000fe1297060492eb88@google.com>
-From:   Aleksandr Nogikh <nogikh@google.com>
-Date:   Tue, 5 Sep 2023 11:57:20 +0200
-Message-ID: <CANp29Y4nitnu-iF77=8rNH_k02=N_1+C7C-ix_1XmpMsf1A=BA@mail.gmail.com>
-Subject: Re: [syzbot] [gfs2?] general protection fault in gfs2_dump_glock (2)
-To:     syzbot <syzbot+427fed3295e9a7e887f2@syzkaller.appspotmail.com>
-Cc:     agruenba@redhat.com, cluster-devel@redhat.com, elver@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        peterz@infradead.org, rpeterso@redhat.com,
-        syzkaller-bugs@googlegroups.com, valentin.schneider@arm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-15.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=no autolearn_force=no version=3.4.6
+Message-ID: <169390857558.27769.7857328882132359611.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hmm, no, it might theoretically be that preemption affected bug
-reproducibility, but this commit itself definitely has nothing to do
-with the gfs2 problem.
+The following commit has been merged into the x86/bugs branch of tip:
 
-On Tue, Sep 5, 2023 at 3:55=E2=80=AFAM syzbot
-<syzbot+427fed3295e9a7e887f2@syzkaller.appspotmail.com> wrote:
->
-> syzbot has bisected this issue to:
->
-> commit a8b76910e465d718effce0cad306a21fa4f3526b
-> Author: Valentin Schneider <valentin.schneider@arm.com>
-> Date:   Wed Nov 10 20:24:44 2021 +0000
->
->     preempt: Restore preemption model selection configs
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1633aaf068=
-0000
-> start commit:   58390c8ce1bd Merge tag 'iommu-updates-v6.4' of git://git.=
-k..
-> git tree:       upstream
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D1533aaf068=
-0000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1133aaf068000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D5eadbf0d3c2ec=
-e89
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D427fed3295e9a7e=
-887f2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D172bead8280=
-000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D14d01d0828000=
-0
->
-> Reported-by: syzbot+427fed3295e9a7e887f2@syzkaller.appspotmail.com
-> Fixes: a8b76910e465 ("preempt: Restore preemption model selection configs=
-")
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
+Commit-ID:     7a7b33e7a36b13e0032f77406461bd0fed68f55c
+Gitweb:        https://git.kernel.org/tip/7a7b33e7a36b13e0032f77406461bd0fed68f55c
+Author:        Josh Poimboeuf <jpoimboe@kernel.org>
+AuthorDate:    Mon, 04 Sep 2023 22:04:57 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Tue, 05 Sep 2023 12:05:07 +02:00
+
+x86/srso: Remove 'pred_cmd' label
+
+SBPB is only enabled in two distinct cases:
+
+1) when SRSO has been disabled with srso=off
+
+2) when SRSO has been fixed (in future HW)
+
+Simplify the control flow by getting rid of the 'pred_cmd' label and
+moving the SBPB enablement check to the two corresponding code sites.
+This makes it more clear when exactly SBPB gets enabled.
+
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/r/bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org
+---
+ arch/x86/kernel/cpu/bugs.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
+
+diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
+index e45dd69..4f1ad23 100644
+--- a/arch/x86/kernel/cpu/bugs.c
++++ b/arch/x86/kernel/cpu/bugs.c
+@@ -2410,13 +2410,21 @@ static void __init srso_select_mitigation(void)
+ {
+ 	bool has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE);
+ 
+-	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
+-		goto pred_cmd;
++	if (cpu_mitigations_off())
++		return;
++
++	if (!boot_cpu_has_bug(X86_BUG_SRSO)) {
++		if (boot_cpu_has(X86_FEATURE_SBPB))
++			x86_pred_cmd = PRED_CMD_SBPB;
++		return;
++	}
+ 
+ 	if (has_microcode) {
+ 		/*
+ 		 * Zen1/2 with SMT off aren't vulnerable after the right
+ 		 * IBPB microcode has been applied.
++		 *
++		 * Zen1/2 don't have SBPB, no need to try to enable it here.
+ 		 */
+ 		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
+ 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
+@@ -2439,7 +2447,9 @@ static void __init srso_select_mitigation(void)
+ 
+ 	switch (srso_cmd) {
+ 	case SRSO_CMD_OFF:
+-		goto pred_cmd;
++		if (boot_cpu_has(X86_FEATURE_SBPB))
++			x86_pred_cmd = PRED_CMD_SBPB;
++		return;
+ 
+ 	case SRSO_CMD_MICROCODE:
+ 		if (has_microcode) {
+@@ -2501,11 +2511,6 @@ static void __init srso_select_mitigation(void)
+ 
+ out:
+ 	pr_info("%s\n", srso_strings[srso_mitigation]);
+-
+-pred_cmd:
+-	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
+-	     boot_cpu_has(X86_FEATURE_SBPB))
+-		x86_pred_cmd = PRED_CMD_SBPB;
+ }
+ 
+ #undef pr_fmt
