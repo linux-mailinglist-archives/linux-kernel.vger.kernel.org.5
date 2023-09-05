@@ -2,110 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34053792B73
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A067792713
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239749AbjIEQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
+        id S242216AbjIEQUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:20:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354515AbjIEMK4 (ORCPT
+        with ESMTP id S1354519AbjIEMOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:10:56 -0400
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5924B1AD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:10:50 -0700 (PDT)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7a512434bc9so1971752241.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 05:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693915849; x=1694520649; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ByQYrlg6Hr1sWKjfl7KMv/Ov1X/DbHEMOLisUi7M1Ps=;
-        b=fxq/tCupmv/nOG039/9BvceDZmOdl3BFA0L1HvnPKARgYgLupl6F2FSp+/9lIcL8Hn
-         dBpNlSpgXV4nkMFXZsTNOwbJaS6FDAUr4bw5UEt5ST2yYX1eVKqeMfs5sw7Yp1vVt3E9
-         lYQmBdSQRTHL4S0Gm3pFCX/uIhV5/Hc50MzjBm9NYzDcUeHai8Kqorgd8y+ucqzZ0U50
-         VxQz7tzG6/9HYTu88FkKsr0ju20OBzcftL5LtIfzQbsq2brqTvAqKA2eAmNDu4PexoYq
-         xH/K9cwAc9RAaU7t7r5jsBm88LtRNbWcfltz0CEhzaOcKJHaXN/srgYmSxeZiGM7yTiC
-         sWUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693915849; x=1694520649;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ByQYrlg6Hr1sWKjfl7KMv/Ov1X/DbHEMOLisUi7M1Ps=;
-        b=Asdqa/BwyD9FFOo35EUhqJ89tbRDhOOyehg9ifFKBUvxGCqg1PJRXeafWtWnfMvupQ
-         Wex2FcHfOKjO0KeUyimQwxyiuAW4bRV7MWZDSWK8aMi6R4QGsmu1ZP8hE33Q6gDUuyBL
-         zGhaoNpVLTsDu8bvVcvfAukU5oTI6YLRqKtlSBdaFrwNzYbynZemwXjjXXWo8fawhTPp
-         1jX0NhPs8EVfq8QU9JTJOqMTYQaIN4/L8MzVuA77gGyFqD+BUXhH5h2kjjF1eHHKAHmj
-         bBQ42jRFLrIisN/f6ibP8K+3K5ATQtOb+YQXUxBZdGQrwH1xYunQ+p3OovWYX3OGOJnQ
-         dVig==
-X-Gm-Message-State: AOJu0YxlY5yRBOMexRf2mVBX6bIDO3gNhPFKMomv6CllmZQf7OFDk+GQ
-        rzns//GvMwerbudq1PkfgT+lnmFgG1PaXa3C/z8J2g==
-X-Google-Smtp-Source: AGHT+IEIDe8QcwF4NCVvAh4n2QHR7c6zc20jFgCDper8N68SO8cyxneqQqWx+EiQVQWMnfeTiEiFMG1aT5aP6qIC0QQ=
-X-Received: by 2002:a05:6102:1481:b0:44d:6281:4fc2 with SMTP id
- d1-20020a056102148100b0044d62814fc2mr9197302vsv.3.1693915849457; Tue, 05 Sep
- 2023 05:10:49 -0700 (PDT)
+        Tue, 5 Sep 2023 08:14:12 -0400
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 283901AD;
+        Tue,  5 Sep 2023 05:14:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=CPf+YfFnjEQJOQ/RYkXxlg/l/+zr7prHRX9DUuuREfs=; b=RS8cG2jN8GlohFNVCaY4hqmwhN
+        iTtoH5cUEJDvqOm2yZ/zia4LU+wRduzI/1v78NoAJfTq2XeqGTS08+Yaa2w21nhVKeviXlqNenwN6
+        pIPgAPAP/g7YmveFDAJGei5cHgKxSg0sE0C72y/p/D2iSHMZxv/neKmH/GgKRK/Ab34k=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1qdUwA-005nv7-E6; Tue, 05 Sep 2023 14:13:42 +0200
+Date:   Tue, 5 Sep 2023 14:13:42 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alvin =?utf-8?Q?=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+Message-ID: <033d3a71-783d-40b6-a972-2021ae17813a@lunn.ch>
+References: <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <CAJq09z6eghuHY+b2y-kGmjKnLiEEOABXGKhjnB-PxJ=-GtYD4w@mail.gmail.com>
+ <20230905111127.hql3pjlrtqc7gybv@skbuf>
 MIME-Version: 1.0
-References: <20230905082413.21954-1-brgl@bgdev.pl> <ZPcZfd5UtzMmIUvm@smile.fi.intel.com>
- <ZPcaVjOudGeLd5EP@smile.fi.intel.com>
-In-Reply-To: <ZPcaVjOudGeLd5EP@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 5 Sep 2023 14:10:38 +0200
-Message-ID: <CAMRc=McjfYqkX5jL=kwWnceHopebbgDr2XV_h5fjkG=7n7kD-Q@mail.gmail.com>
-Subject: Re: [PATCH v3] gpio: sim: don't fiddle with GPIOLIB private members
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905111127.hql3pjlrtqc7gybv@skbuf>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 2:09=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Sep 05, 2023 at 03:05:17PM +0300, Andy Shevchenko wrote:
-> > On Tue, Sep 05, 2023 at 10:24:13AM +0200, Bartosz Golaszewski wrote:
->
-> ...
->
-> > > +   chip->swnode =3D swnode;
-> > > +   ret =3D device_for_each_child(dev, chip, gpio_sim_chip_set_device=
-);
-> > > +   if (!ret)
-> > > +           return -ENODEV;
-> >
-> > Can bus_find_device_by_fwnode() be used here?
->
-> Answering to myself: you already mentioned that this should cover any bus=
-,
-> so the answer is "no".
->
+> It is possible to set up PHY IRQs even if the MDIO bus is not OF-based.
+> I think that mv88e6xxx_g2_irq_mdio_setup() does that (sets bus->irq[]).
 
-I think I mentioned it under the gpio-consumer where it's true. Here
-we are sure it's on the platform bus.
+Yes. It took me a while to realise you could do this, so there is
+probably some complexity in mv88e6xxx i might of been able to avoid if
+i had discovered this earlier.
 
-> But also we have device_find_child() if I understood the purpose of the a=
-bove
-> it should suit better, no?
->
-
-Right, it's a better match.
-
-Bart
-
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+	Andrew
