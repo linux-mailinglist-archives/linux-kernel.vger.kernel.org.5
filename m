@@ -2,82 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 81A9A79324E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 01:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D2E793267
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 01:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238930AbjIEXPx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 19:15:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54690 "EHLO
+        id S235323AbjIEXT0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 19:19:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235045AbjIEXPw (ORCPT
+        with ESMTP id S235535AbjIEXTX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 19:15:52 -0400
-Received: from out-224.mta0.migadu.com (out-224.mta0.migadu.com [91.218.175.224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FAFE199;
-        Tue,  5 Sep 2023 16:15:47 -0700 (PDT)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jookia.org; s=key1;
-        t=1693955745;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=D2FPcQErshs4neWBv0GJQwsUJ0sNwOZwOWcL1QTkHiU=;
-        b=pKEFyUpvyndg11JUWXB7DM5ejZKm8naVU4OCa+6/Wf4T2hWwbVEtTZ0dKj8b0kyC8wXI3W
-        KweQzg8UfOrKJhUaMzO3T4ox+0s12mbZ8C+mNbOrPj8NHI+vyUnmh0jV7GiO+kvSMQYiVU
-        Tq3meJwnnMIB02l1d99bAuaABeeeSvTOuOgf4Y3JtqwU6vNGcB++5Z4ZYSPTkge2bpkLSO
-        tRZKrtPAcdp7c0Oub4tF21uqXmdWetZUE+CQEu6DRdBWL8Zs5/4R+WK+m9YbpriKWTQVxk
-        EfIE2hcgppl9m4aVikaTd6F72mDCRYLIS6ABcUTrSyWbJjsvfqt3uMiVGggC3g==
-From:   John Watts <contact@jookia.org>
-To:     linux-can@vger.kernel.org
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        John Watts <contact@jookia.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH] can: sun4i_can: Only show Kconfig if ARCH_SUNXI is set
-Date:   Wed,  6 Sep 2023 09:13:43 +1000
-Message-ID: <20230905231342.2042759-2-contact@jookia.org>
+        Tue, 5 Sep 2023 19:19:23 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CA2BB0;
+        Tue,  5 Sep 2023 16:19:20 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1757BC433C8;
+        Tue,  5 Sep 2023 23:19:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693955959;
+        bh=tkLbpV5CYYO3vwi6utL6T6ePfooLRu8OIzUvsyy5lUw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u6NcJsYZn2RyIAvQigeFmahcfloKDTk7xZoLkOrk1UmsjkW6yHUSfdAEiGeOa8BQO
+         usPjt9dvhzbV5AnjFq/p1CyiZdZl8vzXfS+ZLM0HDi3zdsDNAmbzFp7xz0Kg7f1fEx
+         TRD9p/tvbbyIw8kmHYcEDCX/JhDDVkjbvoH4jn34Y3U/TKpOCNq4PoDbOO6329Yf4G
+         N4yDzef4zY/eg4Tr4jpkG90tHwY4AoK03DZBhFcgYPDTpJiO9+x7ui1RcyVvRHjV3h
+         /9R+PI2dI6qobu60856oGC1ytxE4XZ0EkqdrS4zBtGrkDgQxdwBXEDeL1dfgtWm4lB
+         qtBXT/gKuedFg==
+Date:   Wed, 6 Sep 2023 01:19:15 +0200
+From:   Andi Shyti <andi.shyti@kernel.org>
+To:     Tommy Huang <tommy_huang@aspeedtech.com>
+Cc:     brendan.higgins@linux.dev, p.zabel@pengutronix.de,
+        linux-i2c@vger.kernel.org, openbmc@lists.ozlabs.org,
+        benh@kernel.crashing.org, joel@jms.id.au, andrew@aj.id.au,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, jae.hyun.yoo@linux.intel.com,
+        linux-kernel@vger.kernel.org, BMC-SW@aspeedtech.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] i2c: aspeed: Reset the i2c controller when timeout occurs
+Message-ID: <20230905231915.rv2ysvxa3bshekjq@zenone.zhora.eu>
+References: <20230904012505.340455-1-tommy_huang@aspeedtech.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230904012505.340455-1-tommy_huang@aspeedtech.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When adding the RISCV option I didn't gate it behind ARCH_SUNXI.
-As a result this option shows up with Allwinner support isn't enabled.
-Fix that by requiring ARCH_SUNXI to be set if RISCV is set.
+Hi Tommy,
 
-Fixes: 8abb95250ae6 ("can: sun4i_can: Add support for the Allwinner D1")
-Reported-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Closes: https://lore.kernel.org/linux-sunxi/CAMuHMdV2m54UAH0X2dG7stEg=grFihrdsz4+o7=_DpBMhjTbkw@mail.gmail.com/
-Signed-off-by: John Watts <contact@jookia.org>
----
- drivers/net/can/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for fixing what I asked, I'm going to review here:
 
-diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
-index 649453a3c858..f8cde9f9f554 100644
---- a/drivers/net/can/Kconfig
-+++ b/drivers/net/can/Kconfig
-@@ -190,7 +190,7 @@ config CAN_SLCAN
- 
- config CAN_SUN4I
- 	tristate "Allwinner A10 CAN controller"
--	depends on MACH_SUN4I || MACH_SUN7I || RISCV || COMPILE_TEST
-+	depends on MACH_SUN4I || MACH_SUN7I || (RISCV && ARCH_SUNXI) || COMPILE_TEST
- 	help
- 	  Say Y here if you want to use CAN controller found on Allwinner
- 	  A10/A20/D1 SoCs.
--- 
-2.42.0
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org> 
 
+But still there are 3 things I will ask you for your next
+patches:
+
+  1. Please add a version to the patch, this is patch version 2,
+     so that the title should be "[PATCH v2] i2c...."
+
+     You can have that with git-format-patch:
+
+        git format-patch -v 2 ....
+
+On Mon, Sep 04, 2023 at 09:25:05AM +0800, Tommy Huang wrote:
+> Reset the i2c controller when an i2c transfer timeout occurs.
+> The remaining interrupts and device should be reset to avoid
+> unpredictable controller behavior.
+> 
+> Fixes: 2e57b7cebb98 ("i2c: aspeed: Add multi-master use case support")
+> Cc: Jae Hyun Yoo <jae.hyun.yoo@linux.intel.com>
+> Cc: <stable@vger.kernel.org> # v5.1+
+> 
+> Signed-off-by: Tommy Huang <tommy_huang@aspeedtech.com>
+
+  2. Don't leave blank lines between tags. But I think Wolfram
+     can fix this before pushing.
+
+> ---
+
+  3. After the '---' it comes the freedom of speach section where
+     you can write anything. Please add the changelog, something
+     like:
+
+       v1 -> v2
+        - Fixed comment...
+	- Fixed commit log...
+	- etc.
+
+     This is important for reviewers in order to understand what
+     has changed from patch v1 to patch v2.
+
+Please, before your next patch, read first the
+Documentation/process/submitting-patches.rst document.
+
+Thanks,
+Andi
+
+>  drivers/i2c/busses/i2c-aspeed.c | 7 +++++--
+>  1 file changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+> index 2e5acfeb76c8..5a416b39b818 100644
+> --- a/drivers/i2c/busses/i2c-aspeed.c
+> +++ b/drivers/i2c/busses/i2c-aspeed.c
+> @@ -698,13 +698,16 @@ static int aspeed_i2c_master_xfer(struct i2c_adapter *adap,
+>  
+>  	if (time_left == 0) {
+>  		/*
+> -		 * If timed out and bus is still busy in a multi master
+> -		 * environment, attempt recovery at here.
+> +		 * In a multi-master setup, if a timeout occurs, attempt
+> +		 * recovery. But if the bus is idle, we still need to reset the
+> +		 * i2c controller to clear the remaining interrupts.
+>  		 */
+>  		if (bus->multi_master &&
+>  		    (readl(bus->base + ASPEED_I2C_CMD_REG) &
+>  		     ASPEED_I2CD_BUS_BUSY_STS))
+>  			aspeed_i2c_recover_bus(bus);
+> +		else
+> +			aspeed_i2c_reset(bus);
+>  
+>  		/*
+>  		 * If timed out and the state is still pending, drop the pending
+> -- 
+> 2.25.1
+> 
