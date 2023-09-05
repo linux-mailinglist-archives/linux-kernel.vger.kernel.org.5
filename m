@@ -2,75 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0483F79257A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA52D792BB6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238278AbjIEQHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51162 "EHLO
+        id S237494AbjIEQ6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354821AbjIEOoR (ORCPT
+        with ESMTP id S1354827AbjIEOpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:44:17 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B051C197
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:44:14 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id e9e14a558f8ab-34bae11c5a6so2007845ab.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:44:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1693925054; x=1694529854; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=j09CxfP7Q9c0us68Fz35zVFIrzbKcMJUU91bdn4MiJs=;
-        b=z7aFB/p1HB1Caf4HGAmTGuPhtaCkYeGHQGLcUI4w4ijNNaAtyh2K+AQoGHBEc+nHYt
-         psLdFhryQmQazRwEcsNWM+PqORloAJfYhjX9R7mynk0FHiACggNLq9VGDz11jCyINkwy
-         j45uOvMG4IhMMc45BaxEvI1uUs8XD1XFL5RYdAy/5MQbWFOj11vE+fuiExx6x7VdaIV/
-         Ju7ivMcOXThNhIriiL7DxTcLUIkFEMp9IZZwh4jNFi3gTkdVjSkbNIzdhnhHozBuPNCG
-         n/y2lbnStTj6zSE/QIwo7qxudrUqOovbRy4Rc+veHziZ3dnSr9VQeI0hZ8qF1nrOQgs7
-         b6BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693925054; x=1694529854;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=j09CxfP7Q9c0us68Fz35zVFIrzbKcMJUU91bdn4MiJs=;
-        b=PbCpU0CWnAf8XEywyOqvKfIYgx60T1Ii7Z5HefVo36oMq1iBJaW+3K3RswsDmTlI3h
-         U4jrw+wPTEZvHj1hSjd4xLlYtcJV/AtePx6UQFhMLlBjevebiL/lFzsP5InjeFpY95cJ
-         QL4AxdPkIEOnz/4FT+9oBbDojoL/5LRRQrfv4flP7E0x1wPXgE6LTBRqQToOnebw7YiA
-         nUk6VDoNI//YsK8A9GxQtWlLO18V5Vh/vZu/OwdjHKd8OHFw+iFesUZjtUPTxwyRWTsT
-         CIlHg+FV5dR03dXDUDH8FaWZ/scoysjUwy8AkviOyhciDf4c6uWy3G+QDntCNmU551Xy
-         ywfw==
-X-Gm-Message-State: AOJu0YxsdSEHUzZzhbYU1MoOB6GXnJBVmkL98nxVN/otitx9RQ8uMSWP
-        ya5lT6Ff27GOf+gN5Yt/zlgVCw==
-X-Google-Smtp-Source: AGHT+IEqR7NZpLw0o7Jy5Fy6ggwR2P/wQtoDxjAfsShcmCERKsOPbno+7dCzN+xZIM5O4CBXw7WwSA==
-X-Received: by 2002:a92:d785:0:b0:34d:18b:aeca with SMTP id d5-20020a92d785000000b0034d018baecamr13282187iln.3.1693925054096;
-        Tue, 05 Sep 2023 07:44:14 -0700 (PDT)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id m10-20020a92caca000000b003426356a35asm4188519ilq.0.2023.09.05.07.44.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 07:44:13 -0700 (PDT)
-From:   Jens Axboe <axboe@kernel.dk>
-To:     matteorizzo@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        asml.silence@gmail.com, Jeff Moyer <jmoyer@redhat.com>
-Cc:     corbet@lwn.net, akpm@linux-foundation.org, keescook@chromium.org,
-        ribalda@chromium.org, rostedt@goodmis.org, jannh@google.com,
-        chenhuacai@kernel.org, gpiccoli@igalia.com, ldufour@linux.ibm.com,
-        evn@google.com, poprdi@google.com, jordyzomer@google.com,
-        krisman@suse.de, andres@anarazel.de
-In-Reply-To: <x49y1i42j1z.fsf@segfault.boston.devel.redhat.com>
-References: <x49y1i42j1z.fsf@segfault.boston.devel.redhat.com>
-Subject: Re: [PATCH v5] io_uring: add a sysctl to disable io_uring
- system-wide
-Message-Id: <169392505265.592530.1699660694804027481.b4-ty@kernel.dk>
-Date:   Tue, 05 Sep 2023 08:44:12 -0600
+        Tue, 5 Sep 2023 10:45:45 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962AB197
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:45:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 37907B8120F
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:45:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EEC4BC433C8;
+        Tue,  5 Sep 2023 14:45:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693925139;
+        bh=u5an2J/LxUD2OI55rxZZehNpr5yCUsPpbC08EcVzH54=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=gyTFF/ylLhrdlt41XanKC7fHVhJ/u8mz8U9ZGeLDO3FaNWWGXKP2YscbsZw4Idwgl
+         rdL5DYbVvJByrna7KHIYjGo49YRmYpctpcdPLSYZod+u6jHI9ilat58HAqGNecoGE9
+         SNTdQG6XMLdiS7oQA4ryNJaSgGWu8p//HTgBPTWDTT5yMupgqpWnd7TUcfHwRWBgSS
+         oYlyPvDJfC4OwlekjHQrq8jY7oHDIma7FicGNRa4lap/V4BMiAG/A+0hR3kzqGGyPq
+         HCdehC9ixYpG1DN+YjKBPxcdqLJaP193Rcd3bW01bQZsSoCyTwTqAV/S/5F7wO/mSc
+         aw1rWJOEdBH1Q==
+From:   Robert Foss <rfoss@kernel.org>
+To:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Andrzej Hajda <andrzej.hajda@intel.com>,
+        Adrien Grassein <adrien.grassein@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@gmail.com>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>,
+        Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Cc:     Robert Foss <rfoss@kernel.org>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH 0/4] drm/bridge: lt8912b: Init & remove related fixes
+Date:   Tue,  5 Sep 2023 16:45:31 +0200
+Message-ID: <169392507968.1016167.9152438724091665305.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com>
+References: <20230804-lt8912b-v1-0-c542692c6a2f@ideasonboard.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,25 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Mon, 21 Aug 2023 17:15:52 -0400, Jeff Moyer wrote:
-> Introduce a new sysctl (io_uring_disabled) which can be either 0, 1, or
-> 2. When 0 (the default), all processes are allowed to create io_uring
-> instances, which is the current behavior.  When 1, io_uring creation is
-> disabled (io_uring_setup() will fail with -EPERM) for unprivileged
-> processes not in the kernel.io_uring_group group.  When 2, calls to
-> io_uring_setup() fail with -EPERM regardless of privilege.
+On Fri, 04 Aug 2023 13:48:09 +0300, Tomi Valkeinen wrote:
+> Fix various issues in lt8912b driver.
 > 
-> [...]
+>  Tomi
+> 
+> 
+
+Fixed the mentioned commit message typos, and an incorrect has
+for a "Fixes" tag.
 
 Applied, thanks!
 
-[1/1] io_uring: add a sysctl to disable io_uring system-wide
-      commit: 76d3ccecfa186af3120e206d62f03db1a94a535f
+[1/4] drm/bridge: lt8912b: Fix bridge_detach
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=941882a0e96d
+[2/4] drm/bridge: lt8912b: Fix crash on bridge detach
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=44283993144a
+[3/4] drm/bridge: lt8912b: Manually disable HPD only if it was enabled
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=6985c5efc405
+[4/4] drm/bridge: lt8912b: Add missing drm_bridge_attach call
+      https://cgit.freedesktop.org/drm/drm-misc/commit/?id=f45acf7acf75
 
-Best regards,
--- 
-Jens Axboe
 
 
+Rob
 
