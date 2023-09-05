@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DA9792B1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7694792BB8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240285AbjIEQsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:48:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
+        id S238369AbjIEQ6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354562AbjIEMk6 (ORCPT
+        with ESMTP id S1354563AbjIEMl3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:40:58 -0400
-Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 901041A8;
-        Tue,  5 Sep 2023 05:40:54 -0700 (PDT)
-Received: from localhost.biz (unknown [10.81.81.211])
-        by gw.red-soft.ru (Postfix) with ESMTPA id 3C26F3E1A8C;
-        Tue,  5 Sep 2023 15:40:53 +0300 (MSK)
-From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
-        Leon Romanovsky <leon@kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH v2] infiniband: cxgb4: cm: Check skb value
-Date:   Tue,  5 Sep 2023 15:40:48 +0300
-Message-Id: <20230905124048.284165-1-artem.chernyshev@red-soft.ru>
-X-Mailer: git-send-email 2.37.3
-In-Reply-To: <fe404996-6568-e2ad-656d-e75523d96637@kernel.org>
-References: 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 179655 [Sep 05 2023]
-X-KLMS-AntiSpam-Version: 5.9.59.0
-X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;localhost.biz:7.1.1;red-soft.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/09/05 05:09:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/09/05 09:52:00 #21801295
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 08:41:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA6E21A8;
+        Tue,  5 Sep 2023 05:41:22 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 35C89601BF;
+        Tue,  5 Sep 2023 12:41:22 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EFACC433C8;
+        Tue,  5 Sep 2023 12:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693917681;
+        bh=7bjn59laMYA7VVyYuv0UAlFCh+TQZjzRtHywg7sV2Aw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PTVlgh0GdGDk4WmpmUVrfH+qVJzfmaq3cbvqexNmane40EBFSMjYQe4Vuua5IYThT
+         ZWGF27j6nTw0DweD6bGDo2JzIfFPF2FmKWUVtw4qjRYC26Cv2jG3voqiEyQYDBaF1C
+         F2G4Bx4DJKGGIxBJ25SOHiaL+/TYrBlgASR4FNC7j4iT/ifd021OKypZNqjBlgOGyr
+         pyjPe4GOPzQsP9jo/dJ1MfP1e8Z/dDT/goRwXLfefqMBumWDMqhBuJcevQW56hPTse
+         YawASxyZAN617y3T6c43NyYsj9WAnquoNqUhE2INkeMGJBeqpgOL/sNRwqcVR6ywP2
+         rMCyHdaKz9mAg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qdVMt-00AZkj-1L;
+        Tue, 05 Sep 2023 13:41:19 +0100
+Date:   Tue, 05 Sep 2023 13:41:18 +0100
+Message-ID: <86ledkeqs1.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Fang Xiang <fangxiang3@xiaomi.com>
+Subject: Re: [PATCH 2/2] irqchip/gic-v3: Enable non-coherent redistributors/ITSes probing
+In-Reply-To: <ZPcfd9I4NvXceJTb@lpieralisi>
+References: <20230905104721.52199-1-lpieralisi@kernel.org>
+        <20230905104721.52199-3-lpieralisi@kernel.org>
+        <86msy0etul.wl-maz@kernel.org>
+        <ZPcfd9I4NvXceJTb@lpieralisi>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: lpieralisi@kernel.org, linux-kernel@vger.kernel.org, robin.murphy@arm.com, mark.rutland@arm.com, linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, robh+dt@kernel.org, fangxiang3@xiaomi.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-get_skb() can't allocate skb in case of OOM.
+On Tue, 05 Sep 2023 13:30:47 +0100,
+Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
+> 
+> On Tue, Sep 05, 2023 at 12:34:58PM +0100, Marc Zyngier wrote:
+> > I came up with the following alternative approach, which is as usual
+> > completely untested. It is entirely based on the quirk infrastructure,
+> > and doesn't touch the ACPI path at all.
+> 
+> The patch below makes sense and it is much cleaner - provided we
+> consider this a quirk, which I am not sure it is, that's the only
+> question I have.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Come on, the whole architecture is a bag of sick hacks. And given that
+it makes the change slightly less ugly, I'd rather have that.
 
-Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
----
-V2 -> remove pr_err
+	M.
 
- drivers/infiniband/hw/cxgb4/cm.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-index ced615b5ea09..54145b33a523 100644
---- a/drivers/infiniband/hw/cxgb4/cm.c
-+++ b/drivers/infiniband/hw/cxgb4/cm.c
-@@ -1965,6 +1965,8 @@ static int send_fw_act_open_req(struct c4iw_ep *ep, unsigned int atid)
- 	int win;
- 
- 	skb = get_skb(NULL, sizeof(*req), GFP_KERNEL);
-+	if (!skb)
-+		return -ENOMEM;
- 	req = __skb_put_zero(skb, sizeof(*req));
- 	req->op_compl = htonl(WR_OP_V(FW_OFLD_CONNECTION_WR));
- 	req->len16_pkd = htonl(FW_WR_LEN16_V(DIV_ROUND_UP(sizeof(*req), 16)));
 -- 
-2.37.3
-
+Without deviation from the norm, progress is not possible.
