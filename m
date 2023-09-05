@@ -2,52 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35551792851
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5085A79279D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235450AbjIEQF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:05:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        id S239225AbjIEQHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354254AbjIEKWq (ORCPT
+        with ESMTP id S1354255AbjIEKWt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:22:46 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 359EA199;
-        Tue,  5 Sep 2023 03:22:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 8ECFDCE10BD;
-        Tue,  5 Sep 2023 10:22:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E07CC433C8;
-        Tue,  5 Sep 2023 10:22:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693909358;
-        bh=d0WWaRDwoMZNo0weBWOUYSbs+np+nwdICmtyfDltmrY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XHFaFS7lrm51Y4lZmWc8wotwtZwwFaqSlPglbvV1Tmr3HVisKCEZ9TGiKhl4HSNC8
-         MozOQ2C7M0fOECRfCwuiogBiKDjfXnnG0WFcTsXGLHyVXphtemu2xKZorP/LTayBIM
-         da+psHNUc91ULQXG/UzcLEDmMBfo5uS7Daec1omTdf4brQKqRuxaRBUqdfL9A/FC4l
-         9BhYtRhbyTYpMRdfIPuMXWpLnZEjuMUTy4V2zE33YLmAXbVyTb5rRtba7lxro6e+a0
-         bxeph+LETCcCPm4DasybnHEYxTJ3fV0xBkf0MPzL8vIgMmZyPMadrKzp5RF7+Wpt+F
-         18sLx14L3orTg==
-Date:   Tue, 5 Sep 2023 12:22:34 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c:octeon:Add block-mode r/w
-Message-ID: <20230905102234.nlaeskxbbvu74co2@zenone.zhora.eu>
-References: <20230903123446.vjgpplnogejbzneb@zenone.zhora.eu>
- <20230904231439.485925-1-aryan.srivastava@alliedtelesis.co.nz>
+        Tue, 5 Sep 2023 06:22:49 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5A611AB;
+        Tue,  5 Sep 2023 03:22:43 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c1d03e124so323051166b.2;
+        Tue, 05 Sep 2023 03:22:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693909362; x=1694514162; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=OAZ9jRe0bzAzd6VhG2nCrvonILXtr+sxGi5FjeeHfTA=;
+        b=d4EKutAZafHvZi+ds5DVcldWFK1eaq2LOaCWMBb2Mi+r8159G3Er7wA5+RxsSQMk0C
+         u+uej6DMjadhW208pISpcE41F3VhHS2uwwt8jO38Dx8aKbQir3I8nbwNeBzU4aH74lgI
+         RgyT09IplaZnndvhhzmaTqdHASmhdmowywD+9DIJvzFRgih75BAfk1OBpl4DEko9K/qM
+         1wJ9OPQmHO3djrKqPW8f8b4o34gZq12Pfsw11+y/j59/On1rUS6g6u7oSnQMy3s2t/E4
+         75w1uOiHOlrV0vhd7dmtf+dnvK5tx7W9RkeHXBNv3YcPmbeDn+APaY7WvhFSf++Xcc7k
+         gDrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693909362; x=1694514162;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OAZ9jRe0bzAzd6VhG2nCrvonILXtr+sxGi5FjeeHfTA=;
+        b=FQAlyjLzlxFJQLmRNggd8FRJ30pOpasPFPV5+634a8c4BQmFXHOeQecVd3gRSRIgmr
+         JxPK0Sy0DTcTg/kOn05Gh4ys+mYpetVUZHlm0hhQlLIAAD2+ngqvWVEY21UYUsiJucrZ
+         iRDlDmOnWBZzAtY0qbjXtCwfLw519Q6qtffme0VxyTyopac2l5eO6i+m4fW1Tw9WhGUI
+         xm2T2atC/cmg+0UAEQ39WoshWKtRjVM7r+ft8E2ZWW6brnShd+0gj8D0Uc91AB9kIx8+
+         l0L5oFH0YoFQk+3xQAE/LN0vqVgj4NSHejFnYfhQ/QMRoMWPABEHKK0nWXD+8pCDOrpF
+         l6UA==
+X-Gm-Message-State: AOJu0YwOWy3CHKp2MXDSGUh8ipm+yibzsw1FN4FnX9IqWRDS5m7i0nBI
+        vJr5FUYvQ/kDUjP5LqDlhGw=
+X-Google-Smtp-Source: AGHT+IET9073GaNYuPveg/+7AZNtR5MZ5kiO9Cb1gts1cAcPYc/CWRlrpfRllzGw2MLnKt6Xv3CO+A==
+X-Received: by 2002:a17:907:762b:b0:9a1:e8c0:7e30 with SMTP id jy11-20020a170907762b00b009a1e8c07e30mr8401825ejc.7.1693909361991;
+        Tue, 05 Sep 2023 03:22:41 -0700 (PDT)
+Received: from skbuf ([188.26.57.165])
+        by smtp.gmail.com with ESMTPSA id s14-20020a17090699ce00b0099bccb03eadsm7297200ejn.205.2023.09.05.03.22.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 03:22:41 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 13:22:39 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
+        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
+        George McCollister <george.mccollister@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RFC 2/4] net: dsa: Extend ksz9477 TAG setup to support
+ HSR frames duplication
+Message-ID: <20230905102239.mkufbzxwrvuatlrb@skbuf>
+References: <20230904120209.741207-1-lukma@denx.de>
+ <20230904120209.741207-3-lukma@denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904231439.485925-1-aryan.srivastava@alliedtelesis.co.nz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+In-Reply-To: <20230904120209.741207-3-lukma@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,124 +79,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aryan,
-
-In the title, please leave a space after the ':'
-
-   i2c: octeon: Add block-mode r/w
-
-Please check with "git log drivers..." to see what's the rule in
-a particular community.
-
-I guess Wolfram can fix this, though, before pushing.
-
-[...]
-
-> +/* high-level-controller composite block write+read, msg0=addr, msg1=data */
-
-I think this comment is fine and great to have it, but it's
-missing a bit of clarity, can you please expand the concept?
-
-> +static int octeon_i2c_hlc_block_comp_read(struct octeon_i2c *i2c, struct i2c_msg *msgs)
+On Mon, Sep 04, 2023 at 02:02:07PM +0200, Lukasz Majewski wrote:
+> The KSZ9477 has support for HSR (High-Availability Seamless Redundancy).
+> One of its offloading (i.e. performed in the switch IC hardware) features
+> is to duplicate received frame to both HSR aware switch ports.
+> 
+> To achieve this goal - the tail TAG needs to be modified. To be more
+> specific, both ports must be marked as destination (egress) ones.
+> 
+> Moreover, according to AN3474 application note, the lookup bit (10)
+> should not be set in the tail tag.
+> 
+> Last but not least - the NETIF_F_HW_HSR_DUP flag indicates that the device
+> supports HSR and assures (in HSR core code) that frame is sent only once
+> from HOST to switch with tail tag indicating both ports.
+> 
+> Information about bits to be set in tag is provided via KSZ generic
+> ksz_hsr_get_ports() function.
+> 
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
+> ---
+> Changes for v2:
+> - Use ksz_hsr_get_ports() to obtain the bits values corresponding to
+>   HSR aware ports
+> 
+> Changes for v3:
+> - None
+> ---
+>  drivers/net/dsa/microchip/ksz_common.c | 12 ++++++++++++
+>  include/linux/dsa/ksz_common.h         |  1 +
+>  net/dsa/tag_ksz.c                      |  5 +++++
+>  3 files changed, 18 insertions(+)
+> 
+> diff --git a/drivers/net/dsa/microchip/ksz_common.c b/drivers/net/dsa/microchip/ksz_common.c
+> index d9d843efd111..579fde54d1e1 100644
+> --- a/drivers/net/dsa/microchip/ksz_common.c
+> +++ b/drivers/net/dsa/microchip/ksz_common.c
+> @@ -3421,6 +3421,18 @@ static int ksz_setup_tc(struct dsa_switch *ds, int port,
+>  	}
+>  }
+>  
+> +u16 ksz_hsr_get_ports(struct dsa_switch *ds)
 > +{
-> +	int i, j, len, ret = 0;
-> +	u64 cmd = 0, rd = 0;
-
-can please you move rd, j inside the for loop? The basic common
-sense is to have all variable declared in the innermost section
-in order to avoid confusion.
-
-It's a nitpick though, not a strong comment and, afaik, not a
-real rule.
-
-Same comment for the function below.
-
+> +	struct ksz_device *dev = ds->priv;
 > +
-> +	octeon_i2c_hlc_enable(i2c);
-> +	octeon_i2c_block_enable(i2c);
-> +
-> +	/* Write (size - 1) into block control register */
-> +	len = msgs[1].len - 1;
-> +	octeon_i2c_writeq_flush((u64)(len), i2c->twsi_base + TWSI_BLOCK_CTL(i2c));
-> +
-> +	/* Prepare core command */
-> +	cmd = SW_TWSI_V | SW_TWSI_R | SW_TWSI_SOVR;
-> +	cmd |= (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-> +
-> +	if (msgs[0].flags & I2C_M_TEN)
-> +		cmd |= SW_TWSI_OP_10_IA;
-> +	else
-> +		cmd |= SW_TWSI_OP_7_IA;
-> +
-> +	if (msgs[0].len == 2) {
-> +		u64 ext = 0;
-> +
-> +		cmd |= SW_TWSI_EIA;
-> +		ext = (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-> +		cmd |= (u64)msgs[0].buf[1] << SW_TWSI_IA_SHIFT;
-> +		octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
-> +	} else {
-> +		cmd |= (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-> +	}
-
-This first part is basically a copy/paste with the write()
-function... can we put them together in a common function?
-
-Can we put as much as we can in a single function?
-
-> +	/* Send command to core (send data to FIFO) */
-> +	octeon_i2c_hlc_int_clear(i2c);
-> +	octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
-> +
-> +	/* Wait for transaction to complete */
-> +	ret = octeon_i2c_hlc_wait(i2c);
-> +	if (ret)
-> +		return ret;
-> +
-> +	cmd = __raw_readq(i2c->twsi_base + SW_TWSI(i2c));
-> +	if ((cmd & SW_TWSI_R) == 0)
-> +		return octeon_i2c_check_status(i2c, false);
-> +
-> +	/* read data in FIFO */
-> +	octeon_i2c_writeq_flush(TWSI_BLOCK_STS_RESET_PTR, i2c->twsi_base + TWSI_BLOCK_STS(i2c));
-> +	for (i = 0; i < len; i += 8) {
-> +		rd = __raw_readq(i2c->twsi_base + TWSI_BLOCK_FIFO(i2c));
-> +		for (j = 7; j >= 0; j--)
-
-is len always a multiple of 8?
-
-> +			msgs[1].buf[i + (7 - j)] = (rd >> (8 * j)) & 0xff;
+> +	switch (dev->chip_id) {
+> +	case KSZ9477_CHIP_ID:
+> +		return dev->hsr_ports;
 > +	}
 > +
-> +	octeon_i2c_block_disable(i2c);
-> +	return ret;
+> +	return 0;
 > +}
 
-[...]
+When CONFIG_NET_DSA_MICROCHIP_KSZ_COMMON=m:
 
-> -		    msgs[1].len > 0 && msgs[1].len <= 8 &&
-> +		    msgs[1].len > 0 &&
->  		    msgs[0].addr == msgs[1].addr) {
-> -			if (msgs[1].flags & I2C_M_RD)
-> -				ret = octeon_i2c_hlc_comp_read(i2c, msgs);
-> -			else
-> -				ret = octeon_i2c_hlc_comp_write(i2c, msgs);
-> -			goto out;
-> +			if (msgs[1].len <= 8) {
-> +				if (msgs[1].flags & I2C_M_RD)
-> +					ret = octeon_i2c_hlc_comp_read(i2c, msgs);
-> +				else
-> +					ret = octeon_i2c_hlc_comp_write(i2c, msgs);
-> +				goto out;
-> +			} else if (msgs[1].len <= 1024 && TWSI_BLOCK_CTL(i2c)) {
-> +				if (msgs[1].flags & I2C_M_RD)
-> +					ret = octeon_i2c_hlc_block_comp_read(i2c, msgs);
-> +				else
-> +					ret = octeon_i2c_hlc_block_comp_write(i2c, msgs);
-> +				goto out;
-> +			}
+ld.lld: error: undefined symbol: ksz_hsr_get_ports
+referenced by tag_ksz.c:298 (/opt/net-next/output-arm64-clang/../net/dsa/tag_ksz.c:298)
+              net/dsa/tag_ksz.o:(ksz9477_xmit) in archive vmlinux.a
 
-the rest looks good...
+But before you rush to add EXPORT_SYMBOL_GPL(ksz_hsr_get_ports), be aware
+that due to DSA's design, tag_ksz.ko and ksz_common.ko cannot have any
+symbol dependency on each other, and if you do that, you will break
+module auto-loading. More information here, there were also patches that
+removed those dependencies for other tagger/switch driver pairs:
+https://lore.kernel.org/netdev/20210908220834.d7gmtnwrorhharna@skbuf/
 
-Thanks,
-Andi
+Not to mention that there are other problems with the "dev->hsr_ports"
+concept. For example, having a hsr0 over lan0 and lan1, and a hsr1 over
+lan2 and lan3, would set dev->hsr_ports to GENMASK(3, 0). But you want
+an xmit coming from hsr0 to get sent only to GENMASK(1, 0), and an xmit
+from hsr1 only to GENMASK(3, 2).
+
+In this particular case, the best option seems to be to delete ksz_hsr_get_ports().
+
+> +
+>  static const struct dsa_switch_ops ksz_switch_ops = {
+>  	.get_tag_protocol	= ksz_get_tag_protocol,
+>  	.connect_tag_protocol   = ksz_connect_tag_protocol,
+> diff --git a/include/linux/dsa/ksz_common.h b/include/linux/dsa/ksz_common.h
+> index 576a99ca698d..fa3d9b0f3a72 100644
+> --- a/include/linux/dsa/ksz_common.h
+> +++ b/include/linux/dsa/ksz_common.h
+> @@ -50,4 +50,5 @@ ksz_tagger_data(struct dsa_switch *ds)
+>  	return ds->tagger_data;
+>  }
+>  
+> +u16 ksz_hsr_get_ports(struct dsa_switch *ds);
+>  #endif /* _NET_DSA_KSZ_COMMON_H_ */
+> diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
+> index ea100bd25939..903db95c37ee 100644
+> --- a/net/dsa/tag_ksz.c
+> +++ b/net/dsa/tag_ksz.c
+> @@ -293,6 +293,11 @@ static struct sk_buff *ksz9477_xmit(struct sk_buff *skb,
+>  	if (is_link_local_ether_addr(hdr->h_dest))
+>  		val |= KSZ9477_TAIL_TAG_OVERRIDE;
+>  
+> +	if (dev->features & NETIF_F_HW_HSR_DUP) {
+> +		val &= ~KSZ9477_TAIL_TAG_LOOKUP;
+
+No need to unset a bit which was never set.
+
+> +		val |= ksz_hsr_get_ports(dp->ds);
+> +	}
+
+Would this work instead?
+
+	struct net_device *hsr_dev = dp->hsr_dev;
+	struct dsa_port *other_dp;
+
+	dsa_hsr_foreach_port(other_dp, dp->ds, hsr_dev)
+		val |= BIT(other_dp->index);
+
+> +
+>  	*tag = cpu_to_be16(val);
+>  
+>  	return ksz_defer_xmit(dp, skb);
+> -- 
+> 2.20.1
+> 
