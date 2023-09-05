@@ -2,47 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC275792ABF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25F67792B08
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239459AbjIEQl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:41:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S237717AbjIEQqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:46:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354520AbjIEMOT (ORCPT
+        with ESMTP id S1354522AbjIEMR0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:14:19 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8806012A;
-        Tue,  5 Sep 2023 05:14:14 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4FD1E11FB;
-        Tue,  5 Sep 2023 05:14:52 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 327123F67D;
-        Tue,  5 Sep 2023 05:14:13 -0700 (PDT)
-Message-ID: <c069085b-3686-c36e-615b-0783af71a252@arm.com>
-Date:   Tue, 5 Sep 2023 13:14:08 +0100
+        Tue, 5 Sep 2023 08:17:26 -0400
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B3D1A8;
+        Tue,  5 Sep 2023 05:17:21 -0700 (PDT)
+Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.56])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rg4G80bL8z1M97v;
+        Tue,  5 Sep 2023 20:15:28 +0800 (CST)
+Received: from localhost.localdomain (10.67.175.61) by
+ dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 5 Sep 2023 20:17:14 +0800
+From:   Zheng Yejian <zhengyejian1@huawei.com>
+To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <yeweihua4@huawei.com>,
+        <zhengyejian1@huawei.com>
+Subject: [PATCH] tracing: Fix unexpected ring buffer expand by instance
+Date:   Tue, 5 Sep 2023 20:17:14 +0800
+Message-ID: <20230905121714.3229131-1-zhengyejian1@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH 2/2] irqchip/gic-v3: Enable non-coherent
- redistributors/ITSes probing
-Content-Language: en-GB
-To:     Marc Zyngier <maz@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Fang Xiang <fangxiang3@xiaomi.com>
-References: <20230905104721.52199-1-lpieralisi@kernel.org>
- <20230905104721.52199-3-lpieralisi@kernel.org> <86msy0etul.wl-maz@kernel.org>
-From:   Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <86msy0etul.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.175.61]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500012.china.huawei.com (7.185.36.15)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,226 +47,316 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2023 12:34 pm, Marc Zyngier wrote:
-> On Tue, 05 Sep 2023 11:47:21 +0100,
-> Lorenzo Pieralisi <lpieralisi@kernel.org> wrote:
->>
->> The GIC architecture specification defines a set of registers
->> for redistributors and ITSes that control the sharebility and
->> cacheability attributes of redistributors/ITSes initiator ports
->> on the interconnect (GICR_[V]PROPBASER, GICR_[V]PENDBASER,
->> GITS_BASER<n>).
->>
->> Architecturally the GIC provides a means to drive shareability
->> and cacheability attributes signals and related IWB/OWB/ISH barriers
->> but it is not mandatory for designs to wire up the corresponding
->> interconnect signals that control the cacheability/shareability
->> of transactions.
->>
->> Redistributors and ITSes interconnect ports can be connected to
->> non-coherent interconnects that are not able to manage the
->> shareability/cacheability attributes; this implicitly makes
->> the redistributors and ITSes non-coherent observers.
->>
->> So far, the GIC driver on probe executes a write to "probe" for
->> the redistributors and ITSes registers shareability bitfields
->> by writing a value (ie InnerShareable - the shareability domain the
->> CPUs are in) and check it back to detect whether the value sticks or
->> not; this hinges on a GIC programming model behaviour that predates the
->> current specifications, that just define shareability bits as writeable
->> but do not guarantee that writing certain shareability values
->> enable the expected behaviour for the redistributors/ITSes
->> memory interconnect ports.
->>
->> To enable non-coherent GIC designs, introduce the "dma-noncoherent"
->> device tree property to allow firmware to describe redistributors and
->> ITSes as non-coherent observers on the memory interconnect and use the
->> property to force the shareability attributes to be programmed into the
->> redistributors and ITSes registers.
->>
->> Signed-off-by: Lorenzo Pieralisi <lpieralisi@kernel.org>
->> Cc: Robin Murphy <robin.murphy@arm.com>
->> Cc: Mark Rutland <mark.rutland@arm.com>
->> Cc: Marc Zyngier <maz@kernel.org>
->> ---
->>   drivers/irqchip/irq-gic-v3-its.c | 19 +++++++++++++++----
->>   1 file changed, 15 insertions(+), 4 deletions(-)
->>
->> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
->> index e0c2b10d154d..758ea3092305 100644
->> --- a/drivers/irqchip/irq-gic-v3-its.c
->> +++ b/drivers/irqchip/irq-gic-v3-its.c
->> @@ -5056,7 +5056,8 @@ static int __init its_compute_its_list_map(struct resource *res,
->>   }
->>   
->>   static int __init its_probe_one(struct resource *res,
->> -				struct fwnode_handle *handle, int numa_node)
->> +				struct fwnode_handle *handle, int numa_node,
->> +				bool non_coherent)
->>   {
->>   	struct its_node *its;
->>   	void __iomem *its_base;
->> @@ -5148,7 +5149,7 @@ static int __init its_probe_one(struct resource *res,
->>   	gits_write_cbaser(baser, its->base + GITS_CBASER);
->>   	tmp = gits_read_cbaser(its->base + GITS_CBASER);
->>   
->> -	if (its->flags & ITS_FLAGS_FORCE_NON_SHAREABLE)
->> +	if (its->flags & ITS_FLAGS_FORCE_NON_SHAREABLE || non_coherent)
->>   		tmp &= ~GITS_CBASER_SHAREABILITY_MASK;
-> 
-> Please use the non_coherent attribute to set the flag, instead of
-> using it as some sideband signalling. Not having this information
-> stored in the its_node structure makes it harder to debug.
-> 
-> We have an over-engineered quirk framework, and it should be put to a
-> good use.
-> 
->>   
->>   	if ((tmp ^ baser) & GITS_CBASER_SHAREABILITY_MASK) {
->> @@ -5356,11 +5357,19 @@ static const struct of_device_id its_device_id[] = {
->>   	{},
->>   };
->>   
->> +static void of_check_rdists_coherent(struct device_node *node)
->> +{
->> +	if (of_property_read_bool(node, "dma-noncoherent"))
->> +		gic_rdists->flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
->> +}
->> +
->>   static int __init its_of_probe(struct device_node *node)
->>   {
->>   	struct device_node *np;
->>   	struct resource res;
->>   
->> +	of_check_rdists_coherent(node);
-> 
-> It really feels that the flag should instead be communicated by the
-> base GIC driver, as it readily communicates the whole rdists structure
-> already.
-> 
->> +
->>   	/*
->>   	 * Make sure *all* the ITS are reset before we probe any, as
->>   	 * they may be sharing memory. If any of the ITS fails to
->> @@ -5396,7 +5405,8 @@ static int __init its_of_probe(struct device_node *node)
->>   			continue;
->>   		}
->>   
->> -		its_probe_one(&res, &np->fwnode, of_node_to_nid(np));
->> +		its_probe_one(&res, &np->fwnode, of_node_to_nid(np),
->> +			      of_property_read_bool(np, "dma-noncoherent"));
->>   	}
->>   	return 0;
->>   }
->> @@ -5533,7 +5543,8 @@ static int __init gic_acpi_parse_madt_its(union acpi_subtable_headers *header,
->>   	}
->>   
->>   	err = its_probe_one(&res, dom_handle,
->> -			acpi_get_its_numa_node(its_entry->translation_id));
->> +			acpi_get_its_numa_node(its_entry->translation_id),
->> +			false);
-> 
-> I came up with the following alternative approach, which is as usual
-> completely untested. It is entirely based on the quirk infrastructure,
-> and doesn't touch the ACPI path at all.
+The ring buffer of global_trace is set to the minimum size in
+order to save memory on boot up and then it will be expand when
+some trace feature enabled.
 
-FWIW I think I agree that looks a bit easier to follow overall, and 
-especially since we already have the SoC-based Rockchip variant of this 
-using a quirk, having two different ways of carrying the same underlying 
-information through certain paths does seem a bit icky.
+However currently operations under an instance can also cause
+global_trace ring buffer being expanded, and the expanded memory
+would be wasted if global_trace then not being used.
 
-Cheers,
-Robin.
+See following case, we enable 'sched_switch' event in instance 'A', then
+ring buffer of global_trace is unexpectedly expanded to be 1410KB, also
+the '(expanded: 1408)' from 'buffer_size_kb' of instance is confusing.
 
-> 
-> Thanks,
-> 
-> 	M.
-> 
-> diff --git a/drivers/irqchip/irq-gic-common.h b/drivers/irqchip/irq-gic-common.h
-> index 3db4592cda1c..00641e88aa38 100644
-> --- a/drivers/irqchip/irq-gic-common.h
-> +++ b/drivers/irqchip/irq-gic-common.h
-> @@ -29,4 +29,8 @@ void gic_enable_quirks(u32 iidr, const struct gic_quirk *quirks,
->   void gic_enable_of_quirks(const struct device_node *np,
->   			  const struct gic_quirk *quirks, void *data);
->   
-> +#define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
-> +#define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
-> +#define RDIST_FLAGS_FORCE_NON_SHAREABLE		(1 << 2)
-> +
->   #endif /* _IRQ_GIC_COMMON_H */
-> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
-> index e0c2b10d154d..6edf59af757b 100644
-> --- a/drivers/irqchip/irq-gic-v3-its.c
-> +++ b/drivers/irqchip/irq-gic-v3-its.c
-> @@ -44,10 +44,6 @@
->   #define ITS_FLAGS_WORKAROUND_CAVIUM_23144	(1ULL << 2)
->   #define ITS_FLAGS_FORCE_NON_SHAREABLE		(1ULL << 3)
->   
-> -#define RDIST_FLAGS_PROPBASE_NEEDS_FLUSHING	(1 << 0)
-> -#define RDIST_FLAGS_RD_TABLES_PREALLOCATED	(1 << 1)
-> -#define RDIST_FLAGS_FORCE_NON_SHAREABLE		(1 << 2)
-> -
->   #define RD_LOCAL_LPI_ENABLED                    BIT(0)
->   #define RD_LOCAL_PENDTABLE_PREALLOCATED         BIT(1)
->   #define RD_LOCAL_MEMRESERVE_DONE                BIT(2)
-> @@ -4754,6 +4750,14 @@ static bool __maybe_unused its_enable_rk3588001(void *data)
->   	return true;
->   }
->   
-> +static bool its_set_non_coherent(void *data)
-> +{
-> +	struct its_node *its = data;
-> +
-> +	its->flags |= ITS_FLAGS_FORCE_NON_SHAREABLE;
-> +	return true;
-> +}
-> +
->   static const struct gic_quirk its_quirks[] = {
->   #ifdef CONFIG_CAVIUM_ERRATUM_22375
->   	{
-> @@ -4808,6 +4812,11 @@ static const struct gic_quirk its_quirks[] = {
->   		.init   = its_enable_rk3588001,
->   	},
->   #endif
-> +	{
-> +		.desc	= "ITS: non-coherent attribute",
-> +		.property = "dma-noncoherent",
-> +		.init	= its_set_non_coherent,
-> +	},
->   	{
->   	}
->   };
-> diff --git a/drivers/irqchip/irq-gic-v3.c b/drivers/irqchip/irq-gic-v3.c
-> index eedfa8e9f077..7f518c0ae723 100644
-> --- a/drivers/irqchip/irq-gic-v3.c
-> +++ b/drivers/irqchip/irq-gic-v3.c
-> @@ -1857,6 +1857,14 @@ static bool gic_enable_quirk_arm64_2941627(void *data)
->   	return true;
->   }
->   
-> +static bool rd_set_non_coherent(void *data)
-> +{
-> +	struct gic_chip_data *d = data;
-> +
-> +	d->rdists.flags |= RDIST_FLAGS_FORCE_NON_SHAREABLE;
-> +	return true;
-> +}
-> +
->   static const struct gic_quirk gic_quirks[] = {
->   	{
->   		.desc	= "GICv3: Qualcomm MSM8996 broken firmware",
-> @@ -1923,6 +1931,11 @@ static const struct gic_quirk gic_quirks[] = {
->   		.mask	= 0xff0f0fff,
->   		.init	= gic_enable_quirk_arm64_2941627,
->   	},
-> +	{
-> +		.desc	= "GICv3: non-coherent attribute",
-> +		.property = "dma-noncoherent",
-> +		.init	= rd_set_non_coherent,
-> +	},
->   	{
->   	}
->   };
-> 
+  # cd /sys/kernel/tracing
+  # mkdir instances/A
+  # cat buffer_size_kb
+  7 (expanded: 1408)
+  # cat instances/A/buffer_size_kb
+  1410 (expanded: 1408)
+  # echo sched:sched_switch > instances/A/set_event
+  # cat buffer_size_kb
+  1410
+  # cat instances/A/buffer_size_kb
+  1410
+
+To fix it, we can:
+  - Make 'ring_buffer_expanded' as a member of 'struct trace_array';
+  - Make 'ring_buffer_expanded' of instance is defaultly true,
+    global_trace is defaultly false;
+  - In order not to expose 'global_trace' outside of file
+    'kernel/trace/trace.c', introduce trace_set_ring_buffer_expanded()
+    to set 'ring_buffer_expanded' as 'true';
+  - Pass the expected trace_array to tracing_update_buffers().
+
+Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
+---
+ kernel/trace/trace.c        | 46 ++++++++++++++++++++-----------------
+ kernel/trace/trace.h        |  9 ++++++--
+ kernel/trace/trace_events.c | 22 ++++++++++--------
+ 3 files changed, 44 insertions(+), 33 deletions(-)
+
+diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
+index 2b4ded753367..5360ffdf98a3 100644
+--- a/kernel/trace/trace.c
++++ b/kernel/trace/trace.c
+@@ -54,12 +54,6 @@
+ #include "trace.h"
+ #include "trace_output.h"
+ 
+-/*
+- * On boot up, the ring buffer is set to the minimum size, so that
+- * we do not waste memory on systems that are not using tracing.
+- */
+-bool ring_buffer_expanded;
+-
+ #ifdef CONFIG_FTRACE_STARTUP_TEST
+ /*
+  * We need to change this state when a selftest is running.
+@@ -202,7 +196,7 @@ static int __init set_cmdline_ftrace(char *str)
+ 	strscpy(bootup_tracer_buf, str, MAX_TRACER_SIZE);
+ 	default_bootup_tracer = bootup_tracer_buf;
+ 	/* We are using ftrace early, expand it */
+-	ring_buffer_expanded = true;
++	trace_set_ring_buffer_expanded(NULL);
+ 	return 1;
+ }
+ __setup("ftrace=", set_cmdline_ftrace);
+@@ -247,7 +241,7 @@ static int __init boot_alloc_snapshot(char *str)
+ 	} else {
+ 		allocate_snapshot = true;
+ 		/* We also need the main ring buffer expanded */
+-		ring_buffer_expanded = true;
++		trace_set_ring_buffer_expanded(NULL);
+ 	}
+ 	return 1;
+ }
+@@ -490,6 +484,13 @@ static struct trace_array global_trace = {
+ 	.trace_flags = TRACE_DEFAULT_FLAGS,
+ };
+ 
++void trace_set_ring_buffer_expanded(struct trace_array *tr)
++{
++	if (!tr)
++		tr = &global_trace;
++	tr->ring_buffer_expanded = true;
++}
++
+ LIST_HEAD(ftrace_trace_arrays);
+ 
+ int trace_array_get(struct trace_array *this_tr)
+@@ -2012,7 +2013,7 @@ static int run_tracer_selftest(struct tracer *type)
+ #ifdef CONFIG_TRACER_MAX_TRACE
+ 	if (type->use_max_tr) {
+ 		/* If we expanded the buffers, make sure the max is expanded too */
+-		if (ring_buffer_expanded)
++		if (tr->ring_buffer_expanded)
+ 			ring_buffer_resize(tr->max_buffer.buffer, trace_buf_size,
+ 					   RING_BUFFER_ALL_CPUS);
+ 		tr->allocated_snapshot = true;
+@@ -2038,7 +2039,7 @@ static int run_tracer_selftest(struct tracer *type)
+ 		tr->allocated_snapshot = false;
+ 
+ 		/* Shrink the max buffer again */
+-		if (ring_buffer_expanded)
++		if (tr->ring_buffer_expanded)
+ 			ring_buffer_resize(tr->max_buffer.buffer, 1,
+ 					   RING_BUFFER_ALL_CPUS);
+ 	}
+@@ -3403,7 +3404,7 @@ void trace_printk_init_buffers(void)
+ 	pr_warn("**********************************************************\n");
+ 
+ 	/* Expand the buffers to set size */
+-	tracing_update_buffers();
++	tracing_update_buffers(&global_trace);
+ 
+ 	buffers_allocated = 1;
+ 
+@@ -6347,7 +6348,7 @@ static int __tracing_resize_ring_buffer(struct trace_array *tr,
+ 	 * we use the size that was given, and we can forget about
+ 	 * expanding it later.
+ 	 */
+-	ring_buffer_expanded = true;
++	trace_set_ring_buffer_expanded(tr);
+ 
+ 	/* May be called before buffers are initialized */
+ 	if (!tr->array_buffer.buffer)
+@@ -6433,13 +6434,13 @@ ssize_t tracing_resize_ring_buffer(struct trace_array *tr,
+  *
+  * This function is to be called when a tracer is about to be used.
+  */
+-int tracing_update_buffers(void)
++int tracing_update_buffers(struct trace_array *tr)
+ {
+ 	int ret = 0;
+ 
+ 	mutex_lock(&trace_types_lock);
+-	if (!ring_buffer_expanded)
+-		ret = __tracing_resize_ring_buffer(&global_trace, trace_buf_size,
++	if (!tr->ring_buffer_expanded)
++		ret = __tracing_resize_ring_buffer(tr, trace_buf_size,
+ 						RING_BUFFER_ALL_CPUS);
+ 	mutex_unlock(&trace_types_lock);
+ 
+@@ -6493,7 +6494,7 @@ int tracing_set_tracer(struct trace_array *tr, const char *buf)
+ 
+ 	mutex_lock(&trace_types_lock);
+ 
+-	if (!ring_buffer_expanded) {
++	if (!tr->ring_buffer_expanded) {
+ 		ret = __tracing_resize_ring_buffer(tr, trace_buf_size,
+ 						RING_BUFFER_ALL_CPUS);
+ 		if (ret < 0)
+@@ -7161,7 +7162,7 @@ tracing_entries_read(struct file *filp, char __user *ubuf,
+ 		}
+ 
+ 		if (buf_size_same) {
+-			if (!ring_buffer_expanded)
++			if (!tr->ring_buffer_expanded)
+ 				r = sprintf(buf, "%lu (expanded: %lu)\n",
+ 					    size >> 10,
+ 					    trace_buf_size >> 10);
+@@ -7218,10 +7219,10 @@ tracing_total_entries_read(struct file *filp, char __user *ubuf,
+ 	mutex_lock(&trace_types_lock);
+ 	for_each_tracing_cpu(cpu) {
+ 		size += per_cpu_ptr(tr->array_buffer.data, cpu)->entries >> 10;
+-		if (!ring_buffer_expanded)
++		if (!tr->ring_buffer_expanded)
+ 			expanded_size += trace_buf_size >> 10;
+ 	}
+-	if (ring_buffer_expanded)
++	if (tr->ring_buffer_expanded)
+ 		r = sprintf(buf, "%lu\n", size);
+ 	else
+ 		r = sprintf(buf, "%lu (expanded: %lu)\n", size, expanded_size);
+@@ -7615,7 +7616,7 @@ tracing_snapshot_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 	unsigned long val;
+ 	int ret;
+ 
+-	ret = tracing_update_buffers();
++	ret = tracing_update_buffers(tr);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -9496,6 +9497,9 @@ static struct trace_array *trace_array_create(const char *name)
+ 	if (allocate_trace_buffers(tr, trace_buf_size) < 0)
+ 		goto out_free_tr;
+ 
++	/* The ring buffer is defaultly expanded */
++	trace_set_ring_buffer_expanded(tr);
++
+ 	if (ftrace_allocate_ftrace_ops(tr) < 0)
+ 		goto out_free_tr;
+ 
+@@ -10390,7 +10394,7 @@ __init static int tracer_alloc_buffers(void)
+ 		trace_printk_init_buffers();
+ 
+ 	/* To save memory, keep the ring buffer size to its minimum */
+-	if (ring_buffer_expanded)
++	if (global_trace.ring_buffer_expanded)
+ 		ring_buf_size = trace_buf_size;
+ 	else
+ 		ring_buf_size = 1;
+diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
+index 5669dd1f90d9..c02ae9cbd108 100644
+--- a/kernel/trace/trace.h
++++ b/kernel/trace/trace.h
+@@ -410,6 +410,11 @@ struct trace_array {
+ 	struct cond_snapshot	*cond_snapshot;
+ #endif
+ 	struct trace_func_repeats	__percpu *last_func_repeats;
++	/*
++	 * On boot up, the ring buffer is set to the minimum size, so that
++	 * we do not waste memory on systems that are not using tracing.
++	 */
++	bool ring_buffer_expanded;
+ };
+ 
+ enum {
+@@ -759,7 +764,7 @@ extern int DYN_FTRACE_TEST_NAME(void);
+ #define DYN_FTRACE_TEST_NAME2 trace_selftest_dynamic_test_func2
+ extern int DYN_FTRACE_TEST_NAME2(void);
+ 
+-extern bool ring_buffer_expanded;
++extern void trace_set_ring_buffer_expanded(struct trace_array *tr);
+ extern bool tracing_selftest_disabled;
+ 
+ #ifdef CONFIG_FTRACE_STARTUP_TEST
+@@ -1303,7 +1308,7 @@ static inline void trace_branch_disable(void)
+ #endif /* CONFIG_BRANCH_TRACER */
+ 
+ /* set ring buffers to default size if not already done so */
+-int tracing_update_buffers(void);
++int tracing_update_buffers(struct trace_array *tr);
+ 
+ union trace_synth_field {
+ 	u8				as_u8;
+diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
+index ed367d713be0..a32d50a136d8 100644
+--- a/kernel/trace/trace_events.c
++++ b/kernel/trace/trace_events.c
+@@ -1179,7 +1179,7 @@ ftrace_event_write(struct file *file, const char __user *ubuf,
+ 	if (!cnt)
+ 		return 0;
+ 
+-	ret = tracing_update_buffers();
++	ret = tracing_update_buffers(tr);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -1410,18 +1410,20 @@ event_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = tracing_update_buffers();
+-	if (ret < 0)
+-		return ret;
+-
+ 	switch (val) {
+ 	case 0:
+ 	case 1:
+ 		ret = -ENODEV;
+ 		mutex_lock(&event_mutex);
+ 		file = event_file_data(filp);
+-		if (likely(file))
++		if (likely(file)) {
++			ret = tracing_update_buffers(file->tr);
++			if (ret < 0) {
++				mutex_unlock(&event_mutex);
++				return ret;
++			}
+ 			ret = ftrace_event_enable_disable(file, val);
++		}
+ 		mutex_unlock(&event_mutex);
+ 		break;
+ 
+@@ -1495,7 +1497,7 @@ system_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = tracing_update_buffers();
++	ret = tracing_update_buffers(dir->tr);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -1969,7 +1971,7 @@ event_pid_write(struct file *filp, const char __user *ubuf,
+ 	if (!cnt)
+ 		return 0;
+ 
+-	ret = tracing_update_buffers();
++	ret = tracing_update_buffers(tr);
+ 	if (ret < 0)
+ 		return ret;
+ 
+@@ -2829,7 +2831,7 @@ static __init int setup_trace_triggers(char *str)
+ 	int i;
+ 
+ 	strscpy(bootup_trigger_buf, str, COMMAND_LINE_SIZE);
+-	ring_buffer_expanded = true;
++	trace_set_ring_buffer_expanded(NULL);
+ 	disable_tracing_selftest("running event triggers");
+ 
+ 	buf = bootup_trigger_buf;
+@@ -3619,7 +3621,7 @@ static char bootup_event_buf[COMMAND_LINE_SIZE] __initdata;
+ static __init int setup_trace_event(char *str)
+ {
+ 	strscpy(bootup_event_buf, str, COMMAND_LINE_SIZE);
+-	ring_buffer_expanded = true;
++	trace_set_ring_buffer_expanded(NULL);
+ 	disable_tracing_selftest("running event tracing");
+ 
+ 	return 1;
+-- 
+2.25.1
+
