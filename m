@@ -2,104 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CE0792E13
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EE86792E2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:01:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239415AbjIETAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:00:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37872 "EHLO
+        id S237143AbjIETBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240481AbjIETAA (ORCPT
+        with ESMTP id S241034AbjIETBB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:00:00 -0400
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04olkn0803.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe0d::803])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE228CDB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:59:33 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RcS6EfXmxYzfZdSs+yjj484IdkHgWzmTEr7ltsHDId636WieI4wWUXlk1ojI9QGjCLY/EObKpspMO2Iu7UfZg8K2U73ccMJDf2AXHFpjeYjyVlNQR4xItujkzqhPzgkpMHAuUusiGif9Cy8Pw25ErX8UYZzxxXw8m9qfpWddx67TnBZ7fUEcSy345fZPaLWQ/e9Mtq+NWI9+R1glHpdRgFmmSLQUkyeqVokSVp68awhxHlCwT2Ey05O9RXPDvWOOH263xnwsQCA0t6LcIGTUc66rdORkN/Jd/+tP5AEvbNkxR9h29fSOvK4BINUkJKBUxJB4g9SQM/hw/GDcBBxENQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=O2nJlojxDbO/g6WeLpYr3xQaCYaYvkMVSUxmowO+FzU=;
- b=Efw4jj6L9C90pTg0gvodUJVmxGPVuMatSj6YV8pqpP7thMjlCveO7KZarsU+zSmwCke4ra7XUn0hKDNI6TaZNRtnTbih7T1R4oG1S+rgZVh//2JaWsIXnulmBrW3YuOwsJ5cEultKZB2aL0YJTq4gz83eRHON5FPeW6Y0mPnkzIboPzmcJceLN/v4NCZPGs4xRM5ACdPPxWzGGWvlUzZf56aP+ouSeuedheoGo9WXEEwu3cyzOc129/EJX7LTVAoSu/oJzF6Kb09y7FvF9/R8tzPbsbPsWrkwHNAKhoZfPaSd1XFJ39lC6jUHsr6xS6TLXPM7duPDaSnnjlWH98tig==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=O2nJlojxDbO/g6WeLpYr3xQaCYaYvkMVSUxmowO+FzU=;
- b=J/O6HddLzd3O1HyzoaFFffBdc85S352pKGD77U+bElVS3bjcI3o+FUZbUB4bScKu4IYExV6U+tE9f+DvKIIAXvwVzP7ZQvcEyrF5ZZPiYrwDqDx4lMsji6wgncbYKTF1FOaK19kfqDFToN/u6dl+gWPj7wDTXPA8NuciZ4G/DTfqstX37PZtvVto0ZOnqWqLVt9zvEt+Xy3EhGitrNhdCWlslEkk4TIlfyvLY+cyj6hNdigNEhuvKuqAGKO215RVxw1PNUqy0TG3B5N8cySIZJp0ccIuWlQg/wWxjNhJoy4tTabWwbdX2Cul/GWTU4FT8nUVj5tZQdkIDfUOqf3Zhg==
-Received: from PAVP192MB2135.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:323::12)
- by DB9P192MB1388.EURP192.PROD.OUTLOOK.COM (2603:10a6:10:296::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
- 2023 18:58:18 +0000
-Received: from PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
- ([fe80::1293:a49d:9b32:afc4]) by PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
- ([fe80::1293:a49d:9b32:afc4%7]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
- 18:58:18 +0000
-From:   =?iso-8859-1?Q?Ywe_C=E6rlyn?= <ywec4rlyn@outlook.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Sv: c64s S i D is from the Kuran
-Thread-Topic: c64s S i D is from the Kuran
-Thread-Index: AQHZ4Bn3vmlUcB4H30S+wekg8VjNxLAMhY2a
-Date:   Tue, 5 Sep 2023 18:58:18 +0000
-Message-ID: <226d36c62c7f44d7999aad21ffaece36PAVP192MB2135455CB9DDAAE3E1B52716E9E8A@PAVP192MB2135.EURP192.PROD.OUTLOOK.COM>
-References: <PAVP192MB21353F8A49235D2B9D535457E9E8A@PAVP192MB2135.EURP192.PROD.OUTLOOK.COM>
-In-Reply-To: <PAVP192MB21353F8A49235D2B9D535457E9E8A@PAVP192MB2135.EURP192.PROD.OUTLOOK.COM>
-Accept-Language: nb-NO, en-US
-Content-Language: nb-NO
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: 
-x-ms-publictraffictype: Email
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [uZQRnjPuQ/u0hNh7xItqtcOz1jSQFM4V]
-x-ms-traffictypediagnostic: PAVP192MB2135:EE_|DB9P192MB1388:EE_
-x-ms-office365-filtering-correlation-id: 55828ee3-5f59-42f7-e6d7-08dbae421158
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NHdXLOqcTCaOC0MjquFg7gNbfaA5/ROO7pWUSBefFTDYMq1PgchOok5hd0OONT0+F9BctsBCvW8RdnzGcoz10W5pYFYq9GzMvaRnDUPWpBpXnqLQKnirQ+wrgWRBlkLn6C02T8i+QCV5rKjRX5mNy+jApiW67FYGrEwudwYiPfDqaiJOCOdwdqKV2nH/SFjskRNnNWHWCm71qTpZ01DbwGP+BsV1SgGlhWJj5KLPZGSsIK40GVIMfbQYWHuN7pNbzvyBlUmAGavpZmi5WsNmxVf3G5HJDYOfm6nvKITTpqXF+G5X5IWHJu0VwE1c/KKOrzN8RVENw5U4kQvssJGZIKys1Av+cJWepYLHW5NmnL321m7ag2kIrTQNpIgUNKwm4LiNRIzl6YVFuglxqabhlwX2/JSgBMAKEfCv+ip9a8KSEnw0DTCV01oY/FNMdx3MvPaWcF/bEqWwsHkL5K/EtG4fP+gr2NS/2QVPYA05i82bjyR7i+pwbEL8C5wpZAMQ0YUBp1DxH8aiZc7Figzmb2BbyPuP2cGMuojhJ8s3ieGU5APqlEjCJwkyd+n3ojYf
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?KbvpTDNPFpw6A16x5SgKN70gM70GVP9BHS+USQji5lpRXQvOfXzcH3LItH?=
- =?iso-8859-1?Q?q+TmKg8HNKc6n4yCLneCzrvlspq5gzX39DqQ8XAPUP9h49Lc7wK9/bEOnS?=
- =?iso-8859-1?Q?up7iXQoywKXztsH+lMYLTH1wQ/7irsCyegrxkUYUFYFw5Gj8Y4o1nIxQV0?=
- =?iso-8859-1?Q?0GjCwTFoNeiUVf1ZAdPkcm22KtaOJfjLhplMXK/RU5MZhI68fOspdtz6GK?=
- =?iso-8859-1?Q?MLvW8lyKhS3o/lb5IhYkmKVml6ATcZeuRgIjFojUUEBxD2kFkgEN6zPphx?=
- =?iso-8859-1?Q?c+PRT9YHlDQosjkRGxPWm9bkPEPZlXcxrLxQFq8hwDfswA3F4eCrs2LqGp?=
- =?iso-8859-1?Q?FeNOoCgZm653WLSlz8Nz+zt30K3F7SUt/DCe1l4SYLIotbysW/isON7D0b?=
- =?iso-8859-1?Q?v5R7hmw+QW1vvuKuYEZ0svcXN3io4WoL+K6EwdGOwLlV6NBqEPdyKn6DKN?=
- =?iso-8859-1?Q?Jw9SxCx5B97kYcfR5kAvulsvrnifKt987xSZ8l+MeAdCB/WK+VkCIXo916?=
- =?iso-8859-1?Q?Nz25SJHl1wP1C/duSNQayrF+VrJu73golA5Pr4C6XkB8GkGiX62qGvpGef?=
- =?iso-8859-1?Q?NRt1t0szJoBvEUlhdMjCd0quvK9Uzf3jKzsIdRAWkqpyVwqjfX/aN3h99+?=
- =?iso-8859-1?Q?5w4pt3YEjAWOeWH/8cQBE6ZQuaLPw37B9eL7bmfiv4Ps+Jp9ljN9rtGLD8?=
- =?iso-8859-1?Q?AdRVoUu35Ol+tYhVze+CHeqNnCrElWSYH0qSUCun1FkeHQVZN979PNNogn?=
- =?iso-8859-1?Q?YbJ26Ypr07bQmT/rUWOEUfTkqdW20OL5HrWlJ+eamw3aEeJJ9qZA/i+M5z?=
- =?iso-8859-1?Q?LuxvUxs7YxokzYuTcQPprLWZaUTzicKUGRBtTZp0BnZMS49Wb65xE4D/U5?=
- =?iso-8859-1?Q?tqYa9ollxRQ4BcFJr16Drju6jOXWp/o2gIxin4UvIGXP1BbuywcwEVdvRA?=
- =?iso-8859-1?Q?rpaifMDE1imelyMrv0uVD5UMWZ9ljNBszvnjJWFnBSSnlZRHy4s9ZLqSxi?=
- =?iso-8859-1?Q?m4Np8ffduG4dzu3rV3zcBaTvcx4qz/Hyv8GNH3EA2bBE3rZ3AMCd70MU+X?=
- =?iso-8859-1?Q?HzPDiP+kAj+nXMHkhE6DsyPJ/nbrALxT7HEfFMbR9nJgRo2/b+nqgwXkQF?=
- =?iso-8859-1?Q?rMPw4VzSSifRrdftB3Y7PHx0AwLo7ZzlpiOEP9IlF/ygcUn1qV5efdltt8?=
- =?iso-8859-1?Q?0pyGw144l/XUxUDD6HCkCMCb5AoO2G7BcBSFC2fW/ktXf3C74wKwK4e6Ni?=
- =?iso-8859-1?Q?hHDkpc8t5gfhN5Ekp2sg=3D=3D?=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-ID: <0D2BB5C50BE52C469909EA736D87D2B1@EURP192.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55828ee3-5f59-42f7-e6d7-08dbae421158
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2023 18:58:18.4879
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P192MB1388
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Tue, 5 Sep 2023 15:01:01 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86C7CA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:00:33 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68bde27f7c0so166071b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:00:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693940351; x=1694545151; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3pnfyd6yBzdd/T/rKllIScbRlqlXMgiDo0DWoktzebA=;
+        b=JaKNPUOiB2kQYgY/MFE6FWpWuRhlAU7Hwxv0gZrxvBrojUPCDRBSNsY9u+Cky1VDX/
+         GeGrKoxfsgsPWtVLgcc+jcmC/rdFF7o8ZpAn7V4SmvOUVAk9kp7+w5YCIk5uqQ8w8j9x
+         tvInlK4/DZGjS45gHz/JZEYz3DTTd7tLfBqxeBltHvhICEQbKSkfOv8JiNTH5/invN6e
+         SKUZ5IXMPZjcQ4lJcLgZkLaZSLHl6SIQTQtOEB7uqXuDQJg4/0fAy1lB0uwIpN4gDc5b
+         7WU+rfQhl8tR3s8gFq1rVqYbU1xmqw1Lkvi4l/pCAIrbLy8lOVmRAW7A3zf1UxPTh9qn
+         fEHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693940351; x=1694545151;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3pnfyd6yBzdd/T/rKllIScbRlqlXMgiDo0DWoktzebA=;
+        b=l/OHYFS62K7dcxLi/thUtCQROda0nfki5GoUysmyL9bS1p853CUHS49hAMR4e3WVOo
+         yg+MxoUgUI1q4MWIxdIY6ENjcnXe+0asLF/p81qIQNkpcN7+wHi+TJPK2k+zByyVyNhz
+         SAeiG1kZRgdhaMyyMnuWLXPBby1CnQN4S9GYLsE/ovYKDY0ZgeN4pWOHfHhOJCraUpd3
+         IYwvH/vWlr6ovQ0uE8a0Btuqk8StOgdtCcBx1HbouBLjhjJBZ8tAdMMG+IPLQNs3Ydaz
+         XBjsyj0Yp2JIyW6iEmU5scyN9+O3XppY0nzWD1xqXZfiUVOd0Kte3NYgWQH0Bw0I8/ly
+         0pbg==
+X-Gm-Message-State: AOJu0Yyr0kP51RIHV78P4PkMYHsjNgUF5Xw3J7V89YuQiql4ZSo1C5kG
+        L/1YpyI1nkCrqPnkQC50p8qb1Mz1zPs=
+X-Google-Smtp-Source: AGHT+IE72/hMTQwRCNIc72pTtUS+2lyNsqg46Lcoy8pF3ZAs+Zv+1exY0kgXCsALesTF/zSq3lHwp7x4zw4=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2d0d:b0:68a:5937:ea87 with SMTP id
+ fa13-20020a056a002d0d00b0068a5937ea87mr5290185pfb.3.1693940351350; Tue, 05
+ Sep 2023 11:59:11 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 11:59:09 -0700
+In-Reply-To: <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
+Mime-Version: 1.0
+References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
+ <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com>
+ <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com> <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
+Message-ID: <ZPd6Y9KJ0FfbCa0Q@google.com>
+Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -107,12 +72,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Or why not try and combine electronics SIN, and homecomputers S i D, into T=
-aSIN? =0A=
-=0A=
-And maybe 8 X? 8 representing TaSIN?=0A=
-=0A=
-Refocusing a bit, trying this.  Bit-8.net coming.=0A=
-=0A=
-Peace.=0A=
-=0A=
++swiotbl maintainers and Linus
+
+Spinning off a discussion about swiotlb behavior to its own thread.
+
+Quick background: when running Linux as a KVM guest, Yan observed memory accesses
+where Linux is reading completely uninitialized memory (never been written by the
+guest) and traced it back to this code in the swiotlb:
+
+	/*
+	 * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
+	 * to the tlb buffer, if we knew for sure the device will
+	 * overwrite the entire current content. But we don't. Thus
+	 * unconditional bounce may prevent leaking swiotlb content (i.e.
+	 * kernel memory) to user-space.
+	 */
+	swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
+
+The read-before-write behavior results in suboptimal performance as KVM maps the
+memory as read-only, and then triggers CoW when the guest inevitably writes the
+memory (CoW is significantly more expensive when KVM is involved).
+
+There are a variety of ways to workaround this in KVM, but even if we decide to
+address this in KVM, the swiotlb behavior is sketchy.  Not to mention that any
+KVM changes are highly unlikely to be backported to LTS kernels.
+
+On Mon, Sep 04, 2023, Yan Zhao wrote:
+> ...
+> > > Actually, I don't even completely understand how you're seeing CoW behavior in
+> > > the first place.  No sane guest should blindly read (or execute) uninitialized
+> > > memory.  IIUC, you're not running a Windows guest, and even if you are, AFAIK
+> > > QEMU doesn't support Hyper-V's enlightment that lets the guest assume memory has
+> > > been zeroed by the hypervisor.  If KSM is to blame, then my answer it to turn off
+> > > KSM, because turning on KSM is antithetical to guest performance (not to mention
+> > > that KSM is wildly insecure for the guest, especially given the number of speculative
+> > > execution attacks these days).
+> > I'm running a linux guest.
+> > KSM is not turned on both in guest and host.
+> > Both guest and host have turned on transparent huge page.
+> > 
+> > The guest first reads a GFN in a writable memslot (which is for "pc.ram"),
+> > which will cause
+> >     (1) KVM first sends a GUP without FOLL_WRITE, leaving a huge_zero_pfn or a zero-pfn
+> >         mapped.
+> >     (2) KVM calls get_user_page_fast_only() with FOLL_WRITE as the memslot is writable,
+> >         which will fail
+> > 
+> > The guest then writes the GFN.
+> > This step will trigger (huge pmd split for huge page case) and .change_pte().
+> > 
+> > My guest is surely a sane guest. But currently I can't find out why
+> > certain pages are read before write.
+> > Will return back to you the reason after figuring it out after my long vacation.
+> Finally I figured out the reason.
+> 
+> Except 4 pages were read before written from vBIOS (I just want to skip finding
+> out why vBIOS does this), the remaining thousands of pages were read before
+> written from the guest Linux kernel.
+
+...
+
+> When the guest kernel triggers a guest block device read ahead, pages are
+> allocated as page cache pages, and requests to read disk data into the page
+> cache are issued.
+> 
+> The disk data read requests will cause dma_direct_map_page() called if vIOMMU
+> is not enabled. Then, because the virtual IDE device can only direct access
+> 32-bit DMA address (equal to GPA) at maximum, swiotlb will be used as DMA
+> bounce if page cache pages are with GPA > 32 bits.
+>
+> Then the call path is
+> dma_direct_map_page() --> swiotlb_map() -->swiotlb_tbl_map_single()
+> 
+> In swiotlb_tbl_map_single(), though DMA direction is DMA_FROM_DEVICE,
+> this swiotlb_tbl_map_single() will call
+> swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE) to read page cache
+> content to the bounce buffer first.
+> Then, during device DMAs, device content is DMAed into the bounce buffer.
+> After that, the bounce buffer data will be copied back to the page cache page
+> after calling dma_direct_unmap_page() --> swiotlb_tbl_unmap_single().
+> 
+> 
+> IOW, before reading ahead device data into the page cache, the page cache is
+> read and copied to the bounce buffer, though an immediate write is followed to
+> copy bounce buffer data back to the page cache.
+> 
+> This explains why it's observed in host that most pages are written immediately
+> after it's read, and .change_pte() occurs heavily during guest boot-up and
+> nested guest boot-up, -- when disk readahead happens abundantly.
+> 
+> The reason for this unconditional read of page into bounce buffer
+> (caused by "swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE)")
+> is explained in the code:
+> 
+> /*
+>  * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
+>  * to the tlb buffer, if we knew for sure the device will
+>  * overwrite the entire current content. But we don't. Thus
+>  * unconditional bounce may prevent leaking swiotlb content (i.e.
+>  * kernel memory) to user-space.
+>  */
+> 
+> If we neglect this risk and do changes like
+> -       swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
+> +       if (dir != DMA_FROM_DEVICE)
+> +               swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
+> 
+> the issue of pages read before written from guest kernel just went away.
+> 
+> I don't think it's a swiotlb bug, because to prevent leaking swiotlb
+> content, if target page content is not copied firstly to the swiotlb's
+> bounce buffer, then the bounce buffer needs to be initialized to 0.
+> However, swiotlb_tbl_map_single() does not know whether the target page
+> is initialized or not. Then, it would cause page content to be trimmed
+> if device does not overwrite the entire memory.
+
+The math doesn't add up though.  Observing a read-before-write means the intended
+goal of preventing data leaks to userspace is not being met.  I.e. instead of
+leaking old swiotlb, the kernel is (theoretically) leaking whatever data is in the
+original page (page cache in your case).
+
+That data *may* be completely uninitialized, especially during boot, but the
+original pages may also contain data from whatever was using the pages before they
+were allocated by the driver.
+
+It's possible the read of uninitialized data is observed only when either the
+driver that triggered the mapping _knows_ that the device will overwrite the entire
+mapping, or the driver will consume only the written parts.  But in those cases,
+copying from the original memory is completely pointless.
+
+If neither of the above holds true, then copying from the original adds value only
+if preserving the data is necessary for functional correctness, or the driver
+explicitly initialized the original memory.  Given that preserving source data was
+recently added, I highly doubt it's necessary for functional correctness.
+
+And if the driver *doesn't* initialize the data, then the copy is at best pointless,
+and possibly even worse than leaking stale swiotlb data.
+
+Looking at commit ddbd89deb7d3 ("swiotlb: fix info leak with DMA_FROM_DEVICE"),
+IIUC the data leak was observed with a synthetic test "driver" that was developed
+to verify a real data leak fixed by commit a45b599ad808 ("scsi: sg: allocate with
+__GFP_ZERO in sg_build_indirect()").  Which basically proves my point: copying
+from the source only adds value absent a bug in the owning driver.
+
+IMO, rather than copying from the original memory, swiotlb_tbl_map_single() should
+simply zero the original page(s) when establishing the mapping.  That would harden
+all usage of swiotlb and avoid the read-before-write behavior that is problematic
+for KVM.
