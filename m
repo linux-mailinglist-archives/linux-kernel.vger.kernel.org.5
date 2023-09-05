@@ -2,113 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94ADD792A9D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C4F6792BD3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244398AbjIEQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:40:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36364 "EHLO
+        id S240468AbjIERBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:01:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348511AbjIEEnj (ORCPT
+        with ESMTP id S1348616AbjIEEoM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 00:43:39 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2521B9;
-        Mon,  4 Sep 2023 21:43:36 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id 41be03b00d2f7-563f8e8a53dso917479a12.3;
-        Mon, 04 Sep 2023 21:43:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693889015; x=1694493815; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J0V2FgytkL6qM48rXQ4oVsdXH0Mo9LDUYeEyaMnuyp8=;
-        b=PSz090PlTguY8CdCTjFVbe+kRuf3TKPKoiG/6wml6O2Vxqq34n6n6QdR8XRB2eXLJT
-         6mkQ8FXnKZyJhgX8lo3xavk0nEl6ZupAI8EGvAENEI2t6goxBI4i6JsAqHONRN9kAX1q
-         IwU2OJ9Ch5hdm4JL6RFK4aDZfwd9l7dn7gaf2lJeOwaFFZ0quK89ADQEutwu9ZhxWH2K
-         djg8jq64gIl53Upi+7XtFFCnM4Q7JKovvYj3eWx9VJxOarYy9mm+g1vO7JwNS9BQYcMC
-         BBMpQAPYWB97XXawoQyUOVLEngsGIBJByKY+hkBMYCG3ZZWNpXFsLpvJ7ZacmrW/P2zt
-         ZVLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693889015; x=1694493815;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J0V2FgytkL6qM48rXQ4oVsdXH0Mo9LDUYeEyaMnuyp8=;
-        b=S8fL597HjtpVtQxm7TCBu1E0MURl34IqK3rX6x5z8yeZAXC7XSbHv4ZZoIzdevSLGK
-         HCGcXNs7LTE0I731iUdX/qmmZi+Nxp2nUIRf4DNL3qAPRBLdq9u4tAYngbsvj9xd+1Cc
-         9iXWOBuNxffdCA96nUMnwowMZpldvf8BrtWuGkh8sN8q4pB9BmKbNP7XYbQdNy4pn4c7
-         cLX5DaIWLIA4ChbxasYUWK79H1m7dFNwc/HS/DBNUwfkfx2WPzkIlyQUbmAvfhlGy10M
-         36zjl17Axj6jnVfOmFe/mHMmnCiXrFV92rX+2P0xSG6fGnaHaqLufxherDAkIfBXUkvI
-         AwDg==
-X-Gm-Message-State: AOJu0Yxab9n/cBiN3MoI3FMS96ZRUld4k50PXcGHgJL2j9g+eiNDxPRr
-        v9l89Pq2em9PFA6CpHxs9CA=
-X-Google-Smtp-Source: AGHT+IEnU+MIeffFTI+Kg7b5FgdzaHIO67u2BytPQHqVVH4istZfGmO7HzXkoOlBjNODUrLKv9bTZw==
-X-Received: by 2002:a05:6a20:9183:b0:13d:bf07:7444 with SMTP id v3-20020a056a20918300b0013dbf077444mr11402794pzd.0.1693889015324;
-        Mon, 04 Sep 2023 21:43:35 -0700 (PDT)
-Received: from debian.me ([103.124.138.83])
-        by smtp.gmail.com with ESMTPSA id jd5-20020a170903260500b001bb8895848bsm8343417plb.71.2023.09.04.21.43.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Sep 2023 21:43:34 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id AE2B180E14C8; Tue,  5 Sep 2023 11:43:31 +0700 (WIB)
-Date:   Tue, 5 Sep 2023 11:43:31 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.5 00/34] 6.5.2-rc1 review
-Message-ID: <ZPax8-wQGxLMxvoE@debian.me>
-References: <20230904182948.594404081@linuxfoundation.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qNCG87IULPT+hZbQ"
-Content-Disposition: inline
-In-Reply-To: <20230904182948.594404081@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 00:44:12 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2119CCC7;
+        Mon,  4 Sep 2023 21:44:09 -0700 (PDT)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3854SVRs027202;
+        Tue, 5 Sep 2023 04:43:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id; s=qcppdkim1;
+ bh=+X5Uesm0llKqCoNL/0vF3pB+UsjNNWAzmz9Idy6g96c=;
+ b=TXxTZ3G5GznamcheUKDvfZzMH3msE27Zv76+tUkiBW8G/VbZ4IhG5zuYbUj/kVOlklIo
+ MnUUr1UwEmA57MLn8iyp2wMcWkkHFYe/8JfhotejqWKyFov3ZwDk1Nn9UqgFRbBOXjDC
+ Ylv3BcJG96boRJQbuPidCpL6QHjarpneOUP6EGYIENp9bb5H7aIHq+VQ/Psu1FE5H0EC
+ vbsy2Ieiib3wazhVvQyfG1a1MBf0Z9sajbRbuI5P781cMG3RUkFp+XxQgLXE0pEtjVQj
+ /c0+pgis4xecvxmN0FmyOmrSE8VI0GfGDmIMEdEr5iGljWHQj2F/ERo2Ud4dPNQFuDKX dQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swpr6ggab-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 04:43:55 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3854hp6b013087;
+        Tue, 5 Sep 2023 04:43:51 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sux4kav14-1;
+        Tue, 05 Sep 2023 04:43:51 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3854hp9c013081;
+        Tue, 5 Sep 2023 04:43:51 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3854hp7P013080;
+        Tue, 05 Sep 2023 04:43:51 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
+        id 54FBE1D04; Tue,  5 Sep 2023 10:13:50 +0530 (+0530)
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
+        quic_wcheng@quicinc.com
+Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, kernel@quicinc.com,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>
+Subject: [PATCH 0/5] Add USB Support on Qualcomm's SDX75 Platform
+Date:   Tue,  5 Sep 2023 10:13:43 +0530
+Message-Id: <1693889028-6485-1-git-send-email-quic_rohiagar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: k84bsobKjY3Q1GS3RNdcdMaeK4nR1BTX
+X-Proofpoint-GUID: k84bsobKjY3Q1GS3RNdcdMaeK4nR1BTX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_02,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0
+ impostorscore=0 mlxlogscore=432 clxscore=1011 adultscore=0
+ priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2308100000 definitions=main-2309050040
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---qNCG87IULPT+hZbQ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series adds support of USB3 PHY support for Qualcomm's SDX75 Platform.
 
-On Mon, Sep 04, 2023 at 07:29:47PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.2 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->=20
+Thanks,
+Rohit.
 
-Successfully compiled and installed bindeb-pkgs on my computer (Acer
-Aspire E15, Intel Core i3 Haswell). No noticeable regressions.
+Rohit Agarwal (5):
+  dt-bindings: phy: qcom,snps-eusb2-phy: Add compatible for SDX75
+  dt-bindings: phy: Add qcom,sdx75-qmp-usb3-uni schema file
+  dt-bindings: usb: dwc3: Add missing SDX65 compatible
+  dt-bindings: usb: dwc3: Add SDX75 compatible
+  phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support
 
-Tested-by: Bagas Sanjaya <bagasdotme@gmail.com>
+ .../bindings/phy/qcom,sdx75-qmp-usb3-uni-phy.yaml  | 106 ++++++++++++++
+ .../bindings/phy/qcom,snps-eusb2-phy.yaml          |   7 +-
+ .../devicetree/bindings/usb/qcom,dwc3.yaml         |   4 +
+ drivers/phy/qualcomm/phy-qcom-qmp-usb.c            | 160 +++++++++++++++++++++
+ 4 files changed, 276 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/phy/qcom,sdx75-qmp-usb3-uni-phy.yaml
 
---=20
-An old man doll... just what I always wanted! - Clara
+-- 
+2.7.4
 
---qNCG87IULPT+hZbQ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZPax7QAKCRD2uYlJVVFO
-oybNAP9b3aeerA2Jw6GE3bfYmmvJe3AZQr3cxuCDeO2GjA3oogEAlqQ+B3O+QO7L
-PZQSgZb1Syhhsw2JsbO4jDiA9ry2RwU=
-=pT0D
------END PGP SIGNATURE-----
-
---qNCG87IULPT+hZbQ--
