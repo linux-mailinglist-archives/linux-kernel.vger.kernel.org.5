@@ -2,60 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E63D2792BD8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 675C5792AA8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239406AbjIERCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55574 "EHLO
+        id S245539AbjIEQkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:40:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354361AbjIELAT (ORCPT
+        with ESMTP id S1354360AbjIELAT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Sep 2023 07:00:19 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FC6199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:00:15 -0700 (PDT)
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B1312A;
+        Tue,  5 Sep 2023 04:00:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 96D8CB811E0
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:00:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4589EC433CC
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:00:13 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 6C860CE10BD;
+        Tue,  5 Sep 2023 11:00:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C47EC433C7;
+        Tue,  5 Sep 2023 11:00:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693911613;
-        bh=SgKV5ClqeLo1hlnR01GNFopDaqavZ/k0YiN5RC0/iBY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=snQjlbTOtWhbPjg+P/Vqfi9sJ6Aa0vKuoNjtFGHihdIJkQhRu2sYWV/szwN/5efqn
-         qhXlBhrqSip9hnUAWZjB2Ki62cjqs9B3xWQ1KBa0qUliaVoLSLQFk6H8ncsO6M9ASU
-         sTA3EkM1j9DClv4Dreo/1POGylXUytWwpmZobBpgLPOgGvUaJkoveeq5/YG9b1kK/p
-         5vqqTN0Cflb+66vchO+UR9z6Am60JAtGWPM75nkuXiHbj7RM/QC42En2zprSELafOL
-         BMf3xzG1RWP/8VVzljnnMmg6RTNJQRd5HdgguP0h+WhRom0eHszUJZ9zyQ7Bg7RgVT
-         Xo4+p62lI0WvQ==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-99bcc0adab4so351201166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 04:00:13 -0700 (PDT)
-X-Gm-Message-State: AOJu0YwqoUwHPtKzvA0pyipUqkwA8YGPTH1cb6haFRaEBjk3Tf8Pxj2X
-        kxyyBwkXvOu81BoGzDW1pZe4V7xVeDfEIXQ9Dqg=
-X-Google-Smtp-Source: AGHT+IFgRuoOb9wfYkJVyhU+h1VY+IW46m9VrAHtO2gesGZBBFMelgYIg1qqOD5QTGCICK6cd3WvwyXqgnlDuLiOTGI=
-X-Received: by 2002:a17:906:7691:b0:9a5:c8ad:20be with SMTP id
- o17-20020a170906769100b009a5c8ad20bemr7703246ejm.4.1693911611418; Tue, 05 Sep
- 2023 04:00:11 -0700 (PDT)
+        s=k20201202; t=1693911611;
+        bh=Wfk1BuK7Xhfcrf4xZDmH9THWGITu0aqQKjO7PM3R1kk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=phwKNbWl+Q1EF5s4UKKO34pA7mX/nDJdHQO+AJCheMIBRtMD5JQ/mrDJbaWwZqs3c
+         OlgUil3K0caYN+kKH4/TNBWGmbV2kkl3o7eFWeKQ8VnOAgvk9jnfA5uQoOb4Ujhojt
+         AVeoAlnl2O1GW6Sb1Y7LBXJ8V/NvE46QuNAJpWARUPzn1BC7n/UQUWiEFFZ906Kb6A
+         UEC4H0DIYMdyqaAy2822ULAeUcRUIpXaV0anrm6oUZjkLPGhgzTkR94a/EcI51Ywuk
+         96CPMIfuyUguLsh+/hXEpWnUVQ+OyvtZ1Q8h3dZg95LvMMqOb4dLqu3aRY3CJwc1pR
+         EVEL/1N7/nlhA==
+Date:   Tue, 5 Sep 2023 13:00:09 +0200
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Vignesh Raman <vignesh.raman@collabora.com>
+Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        dri-devel@lists.freedesktop.org, helen.koike@collabora.com,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        david.heidelberg@collabora.com, daniels@collabora.com,
+        gustavo.padovan@collabora.com, emma@anholt.net,
+        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
+        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 2/7] drm: ci: Force db410c to host mode
+Message-ID: <2jz6wurh6ejbaejwtb5r5gukjuw4zs7ujk5hbwfpsn26o6esqe@g2nnb2gjpnjp>
+References: <20230904161516.66751-1-vignesh.raman@collabora.com>
+ <20230904161516.66751-3-vignesh.raman@collabora.com>
+ <CAA8EJpq_cmFQ6TGy1xELh3ButWKLfSkQcp5ix049s_iqKw6DvQ@mail.gmail.com>
+ <ueznsu2dlvq5zp3ls262fww54bnlqa3e2ssr6f65vrrionloms@ir2ywgeajj4w>
+ <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
 MIME-Version: 1.0
-References: <20230905080147.1625448-1-maobibo@loongson.cn> <20230905080147.1625448-3-maobibo@loongson.cn>
-In-Reply-To: <20230905080147.1625448-3-maobibo@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 5 Sep 2023 18:59:59 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6DR7huH+c9ox9vsHDaQf5BAOvhvZtpKY5rKUQsEpbVOA@mail.gmail.com>
-Message-ID: <CAAhV-H6DR7huH+c9ox9vsHDaQf5BAOvhvZtpKY5rKUQsEpbVOA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] LoongArch: Use static defined zero page rather than allocated
-To:     Bibo Mao <maobibo@loongson.cn>
-Cc:     WANG Xuerui <kernel@xen0n.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
@@ -65,114 +68,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Bibo,
+On Tue, Sep 05, 2023 at 03:39:33PM +0530, Vignesh Raman wrote:
+> Hi Dmitry, Maxime,
+>=20
+> On 05/09/23 14:13, Maxime Ripard wrote:
+> > Hi,
+> >=20
+> > On Mon, Sep 04, 2023 at 07:59:26PM +0300, Dmitry Baryshkov wrote:
+> > > On Mon, 4 Sept 2023 at 19:16, Vignesh Raman <vignesh.raman@collabora.=
+com> wrote:
+> > > >=20
+> > > > Force db410c to host mode to fix network issue which results in fai=
+lure
+> > > > to mount root fs via NFS.
+> > > > See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8=
+c15c80a54dda510743cefd1c4b65b8
+> > > >=20
+> > > > Use fdtoverlay command to merge base device tree with an overlay
+> > > > which contains the fix for USB controllers to work in host mode.
+> > > >=20
+> > > > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+> > > > ---
+> > > >=20
+> > > > v2:
+> > > >    - Use fdtoverlay command to merge overlay dtbo with the base dtb=
+ instead of modifying the kernel sources
+> > > >=20
+> > > > ---
+> > > >   drivers/gpu/drm/ci/build.sh                         |  5 +++++
+> > > >   .../gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts  | 13 ++++++++=
++++++
+> > > >   2 files changed, 18 insertions(+)
+> > > >   create mode 100644 drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-ove=
+rlay.dts
+> > > >=20
+> > > > diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build=
+=2Esh
+> > > > index 7b014287a041..92ffd98cd09e 100644
+> > > > --- a/drivers/gpu/drm/ci/build.sh
+> > > > +++ b/drivers/gpu/drm/ci/build.sh
+> > > > @@ -92,6 +92,11 @@ done
+> > > >=20
+> > > >   if [[ -n ${DEVICE_TREES} ]]; then
+> > > >       make dtbs
+> > > > +    if [[ -e arch/arm64/boot/dts/qcom/apq8016-sbc.dtb ]]; then
+> > > > +        dtc -@ -I dts -O dtb -o drivers/gpu/drm/ci/dt-overlays/apq=
+8016-sbc-overlay.dtbo drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
+> > > > +        fdtoverlay -i arch/arm64/boot/dts/qcom/apq8016-sbc.dtb -o =
+arch/arm64/boot/dts/qcom/apq8016-sbc-overlay.dtb drivers/gpu/drm/ci/dt-over=
+lays/apq8016-sbc-overlay.dtbo
+> > > > +        mv arch/arm64/boot/dts/qcom/apq8016-sbc-overlay.dtb arch/a=
+rm64/boot/dts/qcom/apq8016-sbc.dtb
+> > > > +    fi
+> > > >       cp ${DEVICE_TREES} /lava-files/.
+> > > >   fi
+> > > >=20
+> > > > diff --git a/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts=
+ b/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
+> > > > new file mode 100644
+> > > > index 000000000000..57b7604f1c23
+> > > > --- /dev/null
+> > > > +++ b/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
+> > > > @@ -0,0 +1,13 @@
+> > > > +/dts-v1/;
+> > > > +/plugin/;
+> > > > +
+> > > > +/ {
+> > > > +    fragment@0 {
+> > > > +        target-path =3D "/soc@0";
+> > > > +        __overlay__ {
+> > > > +            usb@78d9000 {
+> > > > +                dr_mode =3D "host";
+> > > > +            };
+> > > > +        };
+> > > > +    };
+> > > > +};
+> > > > --
+> > > > 2.40.1
+> > >=20
+> > > Can we use normal dtso syntax here instead of defining fragments manu=
+ally?
+> >=20
+> > What Dmitry is hinting about is to use the "Sugar Syntax". There a good=
+ documentation here:
+> > https://source.android.com/docs/core/architecture/dto/syntax
+>=20
+>=20
+> With the below DTO syntax,
+> /dts-v1/;
+> /plugin/;
+>=20
+> &usb {
+>   usb@78d9000 {
+>     dr_mode =3D "host";
+>   };
+> };
+>=20
+> Decoded dtbo file is,
+> /dts-v1/;
+>=20
+> / {
+>=20
+> 	fragment@0 {
+> 		target =3D <0xffffffff>;
+>=20
+> 		__overlay__ {
+>=20
+> 			usb@78d9000 {
+> 				dr_mode =3D "host";
+> 			};
+> 		};
+> 	};
+>=20
+> 	__fixups__ {
+> 		usb =3D "/fragment@0:target:0";
+> 	};
+> };
+>=20
+> With the previous fix using fragment we get,
+> / {
+>=20
+> 	fragment@0 {
+> 		target-path	 =3D "/soc@0";
+>=20
+> 		__overlay__ {
+>=20
+> 			usb@78d9000 {
+> 				dr_mode =3D "host";
+> 			};
+> 		};
+> 	};
+> };
+>=20
+> Decoded apq8016-sbc.dtb file with the fix (setting dr_mode to host) is,
+> /dts-v1/;
+> / {=09
+> 	soc@0 {
+> 		usb@78d9000 {
+> 			dr_mode =3D "host";
+> 		};=09
+> 	};
+> };
+>=20
+> How can set the target to "soc@0" using the DTO syntax?
 
-On Tue, Sep 5, 2023 at 4:01=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrote=
-:
->
-> Like other popular architectures, zero page is defined in kernel
-> BSS code segment, rather than dynamically alloted page. It is
-> simpler.
->
-> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-> ---
->  arch/loongarch/include/asm/mmzone.h  |  2 --
->  arch/loongarch/include/asm/pgtable.h |  6 ++----
->  arch/loongarch/kernel/numa.c         |  1 -
->  arch/loongarch/mm/init.c             | 21 +--------------------
->  4 files changed, 3 insertions(+), 27 deletions(-)
->
-> diff --git a/arch/loongarch/include/asm/mmzone.h b/arch/loongarch/include=
-/asm/mmzone.h
-> index fe67d0b4b33d..2b9a90727e19 100644
-> --- a/arch/loongarch/include/asm/mmzone.h
-> +++ b/arch/loongarch/include/asm/mmzone.h
-> @@ -13,6 +13,4 @@ extern struct pglist_data *node_data[];
->
->  #define NODE_DATA(nid) (node_data[(nid)])
->
-> -extern void setup_zero_pages(void);
-> -
->  #endif /* _ASM_MMZONE_H_ */
-> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/includ=
-e/asm/pgtable.h
-> index 342c5f9c25d2..70bd57daf42a 100644
-> --- a/arch/loongarch/include/asm/pgtable.h
-> +++ b/arch/loongarch/include/asm/pgtable.h
-> @@ -70,10 +70,8 @@ struct vm_area_struct;
->   * for zero-mapped memory areas etc..
->   */
->
-> -extern unsigned long empty_zero_page;
-> -
-> -#define ZERO_PAGE(vaddr) \
-> -       (virt_to_page((void *)(empty_zero_page)))
-> +extern unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)];
-> +#define ZERO_PAGE(vaddr)       ((void)(vaddr), virt_to_page(empty_zero_p=
-age))
-Can we simply use virt_to_page(empty_zero_page) here? Only x86 does it
-like this now.
+To strictly answer your question, that would be something like
 
-Huacai
->
->  /*
->   * TLB refill handlers may also map the vmalloc area into xkvrange.
-> diff --git a/arch/loongarch/kernel/numa.c b/arch/loongarch/kernel/numa.c
-> index 708665895b47..6f464d49f0c2 100644
-> --- a/arch/loongarch/kernel/numa.c
-> +++ b/arch/loongarch/kernel/numa.c
-> @@ -470,7 +470,6 @@ void __init mem_init(void)
->  {
->         high_memory =3D (void *) __va(get_num_physpages() << PAGE_SHIFT);
->         memblock_free_all();
-> -       setup_zero_pages();     /* This comes from node 0 */
->  }
->
->  int pcibus_to_node(struct pci_bus *bus)
-> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
-> index 8ec668f97b00..628ebe42b519 100644
-> --- a/arch/loongarch/mm/init.c
-> +++ b/arch/loongarch/mm/init.c
-> @@ -35,27 +35,9 @@
->  #include <asm/pgalloc.h>
->  #include <asm/tlb.h>
->
-> -unsigned long empty_zero_page;
-> +unsigned long empty_zero_page[PAGE_SIZE / sizeof(unsigned long)] __page_=
-aligned_bss;
->  EXPORT_SYMBOL(empty_zero_page);
->
-> -void setup_zero_pages(void)
-> -{
-> -       unsigned int order, i;
-> -       struct page *page;
-> -
-> -       order =3D 0;
-> -
-> -       empty_zero_page =3D __get_free_pages(GFP_KERNEL | __GFP_ZERO, ord=
-er);
-> -       if (!empty_zero_page)
-> -               panic("Oh boy, that early out of memory?");
-> -
-> -       page =3D virt_to_page((void *)empty_zero_page);
-> -       split_page(page, order);
-> -       for (i =3D 0; i < (1 << order); i++, page++)
-> -               mark_page_reserved(page);
-> -
-> -}
-> -
->  void copy_user_highpage(struct page *to, struct page *from,
->         unsigned long vaddr, struct vm_area_struct *vma)
->  {
-> @@ -99,7 +81,6 @@ void __init mem_init(void)
->         high_memory =3D (void *) __va(max_low_pfn << PAGE_SHIFT);
->
->         memblock_free_all();
-> -       setup_zero_pages();     /* Setup zeroed pages.  */
->  }
->  #endif /* !CONFIG_NUMA */
->
-> --
-> 2.27.0
->
->
+&{/soc@0} {
+	usb@78d9000 {
+		dr_mode =3D "host";
+	};
+};
+
+You can simplify this further however by doing:
+
+
+&{/soc@0/usb@78d9000} {
+	dr_mode =3D "host";
+};
+
+Also, that node actually has a label ("usb"), defined here:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arc=
+h/arm64/boot/dts/qcom/msm8916.dtsi#n2322
+
+So you can end up with
+
+&usb {
+	dr_mode =3D "host";
+};
+
+All of them should be equivalent to the one you had in your patch.
+
+Maxime
