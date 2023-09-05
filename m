@@ -2,249 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 57002793114
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAE3793120
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235163AbjIEVlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:41:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47508 "EHLO
+        id S238847AbjIEVoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:44:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238191AbjIEVlD (ORCPT
+        with ESMTP id S244176AbjIEVnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:41:03 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F82B10C3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:40:26 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-9a1de3417acso64423066b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:40:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693950024; x=1694554824; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ftHNFQGZNkAXLxgpiw6/3lCLKom4x3ijuZmKXi24tTU=;
-        b=xipF4/TE+J7hoNY88VFIBZHjxzlUk7eQOTjI/EEI7jEIV1Kb5BEQpTtxpf6JuEuIC7
-         /vJvVP6veP7vrDTBtsEpufvv0bCs6/aqhNVwK3BICC5tAHVeNuLNGvmIjb0DPeNA5Wcu
-         dXDgheFltVamZmZG2vaPmKbcLES3ixWBlzMkuYSP2xmGoGRUlS2HchzVaPcmqUKfFfAk
-         0u9YFMW+jSiXj9lBc0pOd3zfqA6w6TmZvC2BiOylLARKR1aAr+Qd3yaXuHoJh+JmkuPx
-         4Nab36xbVEFXHUJ1vpJcZ55K/WiT04rG02HrMoPMM0tbBzIY5b538/xUsku8D69Nmi8k
-         DZ0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693950024; x=1694554824;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ftHNFQGZNkAXLxgpiw6/3lCLKom4x3ijuZmKXi24tTU=;
-        b=HtFuH7zTt9Yfc90nucOi0s2Mj+ywxrYf0PlLGgLf4iECdBrbcnrOCgUSbz4x0d+NSy
-         wlwU1o/qGQd1lORG6fZ7t1JQKkGRcltRVar0AyiAauaW+tl7HFMUBMocjSXCX0VcWwYt
-         BlnUhT0OsAlk18bxPA9SBayjSLAEDj/f6D9DsrT+PaBoEO/9o/Ju8AS2VgzCy32MWmN0
-         tck3WH+Oa94UVOjtSb9tJRwr6Kk8YMlZJPUj6PJ7GRJNdXtPtyCN+tr32BuwDhlJg6rG
-         wiEmGnVm57JkhauDO9aFv6pMQYL4RV+Z+ccWLqXX80+4I+F3EhcjWw8xWVuHCq7oF/TL
-         CHCQ==
-X-Gm-Message-State: AOJu0Yw83Ml6ghNycCp8A7mfzB9SIXuJz0NIo2Ro7ZINLupT2pBGFQin
-        kTMA7fLK2l8uFUsFRFa6bPh56fUos8py3nF0/M/lkg==
-X-Google-Smtp-Source: AGHT+IEMEhXVZsRVEMtjU89/Dvw/FRWlEJmOTvL/QdzNNU2bgrWU7M/nv4RmlZrpgAFmszFzkzajJuGmbex0Rqn6dGM=
-X-Received: by 2002:a17:907:60cd:b0:9a4:11a3:c32b with SMTP id
- hv13-20020a17090760cd00b009a411a3c32bmr902957ejc.29.1693950023734; Tue, 05
- Sep 2023 14:40:23 -0700 (PDT)
+        Tue, 5 Sep 2023 17:43:55 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F416CEA;
+        Tue,  5 Sep 2023 14:43:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693950185; x=1725486185;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=KoYZbbY5D8/eTzliWOMmIAXkXXl+PXE3mcrXCjQyE/0=;
+  b=H64nKdxzkWhX/OSThWz4kbjPQ0gfwCkqBpWQ6q77HdYNSksjl89aBd8Z
+   tsEPIe3S4/JgpG4xdlrrk5m8z5rOlOX8oDuafAs7hVwPO3qqvnZz5ekHh
+   tBoTNnyK4HtQjB/bBPjk760x+bIX9X/WJkmcm/YYI/r5YrD7vSd3F93Ik
+   PhX5gJeBaj4Sgw2s+LeWEbYiRreuGsMpqFX/5AgT2v79kJZsY3wDnCHc0
+   vwFjlHrZZ8OS7qbuy2vRJuIsajK+GkJypfzB+EG4ZDaFlkBoqpHCF0QAT
+   8uN+cM8jYfgFk/qhaD0iZ53XO1iEc22pRrMd3CD1QSLbAo/MTHf9wkSa0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="376827966"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="376827966"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 14:41:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="770489430"
+X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
+   d="scan'208";a="770489430"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orsmga008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 14:41:24 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 5 Sep 2023 14:41:23 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 14:41:17 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 5 Sep 2023 14:41:17 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Wz5clSfiQNu6g4OXr4gSppOnD+l6Mj1O+JvQ4QD32Ifm+v0AjpCXH3vXUSG4ome9moBNy85sLBAXyQRYRIn0jfSX88g178x4vmKZc1MMJsdjUD3Zy1enPmIokNCktp+mEBlkUVOanhoX2ylfzh31zqLXgvc3i36txH1l4VSNXy/6GNqzAz1EWR2WikqgHx411mds4O9urSm4+bkgJt2/7ccCvsD8EkNWantjY40Y4vJjRl7odevkk0FgMMha1H6KxEPUK7PPP/cOaRIjTIfCyr2wVBFH4rzyMH/lo3gZwNKg0x2gE6RjDQQmFrjOTgljsknHDCWKaYOtFIkXsgnhJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hX+h0qQ0QgcUXitSrOWz330Nl1GJkS5jrNolJXveXJg=;
+ b=k8CkUHIGnTWZetaaA6QuQZ4iV+8H0QP859t1r+SSUnvG/Y6ZxwZJWwYxcVTAZNAHkMycKRqGObsxHZnZ0P6LPjohBfM2wp2DqgsorImD63EYpCef3EFYuYgTccwIGS811m7jKXIZ4I66QaUo4vJO0A4O5ZOB8oq2QzTKmY+k8bcMYSTlC5Z6D83wQdRtzd8Q4gjlxHg8uCw10QemOi/N5so0K2IV7V+nRZLqB+xdmZP1aZxyB0MGnrlbAuVJ9MsyIUCwstgoPZd2/Uzwz6y23Z4o7Isbgrhum2Mf+TgGCBJK63a1s024qvcd/RllKyUh7c6gufILTDmMjOT+fzU26Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by DM4PR11MB8226.namprd11.prod.outlook.com (2603:10b6:8:182::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 21:41:15 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 21:41:15 +0000
+Date:   Tue, 5 Sep 2023 14:41:12 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 09/18] cxl/mem: Read extents on memory device
+ discovery
+Message-ID: <64f7a078298ec_1e8e7829471@iweiny-mobl.notmuch>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+ <20230604-dcd-type2-upstream-v2-9-f740c47e7916@intel.com>
+ <20230829162600.00004ac2@Huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230829162600.00004ac2@Huawei.com>
+X-ClientProxiedBy: BYAPR07CA0100.namprd07.prod.outlook.com
+ (2603:10b6:a03:12b::41) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
-References: <20230824-strncpy-arch-x86-platform-uv-uv_nmi-v2-1-e16d9a3ec570@google.com>
- <685e4951-e283-835c-5cce-ddd802fadf62@redhat.com>
-In-Reply-To: <685e4951-e283-835c-5cce-ddd802fadf62@redhat.com>
-From:   Justin Stitt <justinstitt@google.com>
-Date:   Tue, 5 Sep 2023 14:40:11 -0700
-Message-ID: <CAFhGd8rzrUDwKyP7Bp-u4WZ1pS1Qbkapci+J+PCLFmD9Pv4Oyg@mail.gmail.com>
-Subject: Re: [PATCH v2] x86/platform/uv: refactor deprecated strcpy and strncpy
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
-        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
-        Russ Anderson <russ.anderson@hpe.com>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Yang Yang <yang.yang29@zte.com.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|DM4PR11MB8226:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1811146e-8d6b-4f71-2fa4-08dbae58d49f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XKLq8sYuLVysrp6i1IRG1ikbyJqU8Yr9VuzGg/yQcfSG/+xMu1WiObH7E3uGo9QS+oLzSqN9kwSazXytTFmzrorEyfTxvcMB9/LUPXDI0RvrpBWaXX458wFZBYBU4XHwld1FBfSM/UXMmzsWCjmXVtcAdb//CuvYTSRBJyGH1IHQB9ox0UJfq16zVNy9bSq/U6PPxpl1m6+1koRpZP5ncdCLme1b8RHw1hIvuCv/qS38bl6lGi2MOjQtMEvbYwauvcSj2pP2q0gMbMXv2gyP5RuTF3hBPvEeFj6ElDKe2QO+3Igx533ttCLVheTk2NTjyjPqIwrn5YD83t56trmj0B6CMiYb194lf4Q2LVilHL5fmPqv8U112fLC0+yKmtynoKTK244q4S0XJSPQ4o7PAkuzgJLnbgcmmqdDcrd+Tc2kYz+TKuRxCP4jIptdHB94qw5UBaxitsI6C8sOf3qB8wtXZPin1jaU+w6gV4DWUx0Un+nyFKfsa5pdt1E6MjAFLXA/ocD/PP8UCsjikfO43tgwOGR/dv+jHQqDTVNfyb628Ew7rcVbpqsgHUKJIo58
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(396003)(346002)(366004)(376002)(39860400002)(451199024)(1800799009)(186009)(6486002)(6512007)(9686003)(6666004)(6506007)(82960400001)(38100700002)(86362001)(2906002)(26005)(110136005)(478600001)(66946007)(5660300002)(8936002)(44832011)(4326008)(8676002)(66476007)(316002)(41300700001)(54906003)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4aX+hMQpOHcIEDJF7TLBKO/FYKkxCaKJyMKJd+KFmiqBYjTFYI54vR5wFeFs?=
+ =?us-ascii?Q?dbt0E4VpbnnJ+V0tq5WhHjRnmOxZqHoqpB8kYnBn5OrdEncn6Ln17RNaHXug?=
+ =?us-ascii?Q?8bLx+EjK5KUTv4/6OIeUchGsYKnUE6aYWI34si7TZ9m6rl7Ae+081kV0kT8N?=
+ =?us-ascii?Q?b9wDu2RYqe0rXP7P0yszznXCgqdEIsAorvwg4ZcptCtU3ZrfTibwYfywwkh8?=
+ =?us-ascii?Q?UKPgybFIKXBDW6S9D/nzZcz77OX7wCVz2pxOMvMzZDqUlLLR89q4bTzkw7uu?=
+ =?us-ascii?Q?GFvG2nCzFHsuvsq+OsBjlIBmajE7oMdvehhOJJc/teuEsp+zuFc4BWiqFr9B?=
+ =?us-ascii?Q?skqpIGftHzAX3xrZtYjq9YMOHj/r1DYObiFdjJpB9L8SMtBKWit7Vw9LyX1e?=
+ =?us-ascii?Q?a4xGnuOh4PpIyWSThuUC9ehTjpWj8mEU9YY2fwgfHNGPr4iJ+77o7gk4iZif?=
+ =?us-ascii?Q?WHjFBniCqkBgAVErY2wdt2a8pH0y2/vMLg45b3on8hKm67H8ygAV32gwiFuC?=
+ =?us-ascii?Q?oPTJRyrr+MMHxzguCCexmHX1AmT2NG01iEJrJpQKJBuGF10S3uYHpK5PlBoN?=
+ =?us-ascii?Q?S4XbffKG5+teU2dXM5jVAgwd2IZ+VMZLrqbqJq5S9+rMzDjSZxfAbeQt5xlV?=
+ =?us-ascii?Q?nbjwT1FjKaWeB6cj/6oGOmvT2OGp+ETa2BNn2ywaU0vsbCymZdmGWCcZe48M?=
+ =?us-ascii?Q?X/NjuysG1hSddGfBtn4aECmwZHReEH+MXbisWjdERy9NxtQ5l/h7xhXZJQi5?=
+ =?us-ascii?Q?nFNEywF1aZmi3izAVzt07/30/5PTq5BKyRdI/2Q7BTeqFeHTdgrbU6TtT8sP?=
+ =?us-ascii?Q?sTOUFc3uCinuX17H8Tpo4Te8ixb8On+n3Ud1/Bkr7cQkrw/4/OdNYy4hNUNZ?=
+ =?us-ascii?Q?kHbJ61yO+W7/Z9btK3Wdgvchm82lb0ULwU4TZRMOcrtwc5LxwdlO3WCwISp5?=
+ =?us-ascii?Q?Ldtre6DvXX7qadFDJxNPGPJBTrEuK/fAw0Iv1nbLgp9OaaJRPUPKKHuXqbCU?=
+ =?us-ascii?Q?HXn0ZlItrPhb0uxi5qbgYZ3fapLoH+tilWNQszZJl3apR393vSqHUtG9I0Mk?=
+ =?us-ascii?Q?r5DilEH75Q4UrVUWpknpPZ7cMxiswPtkqLTg7iT9s0iMREQl+VDNstNjD4d7?=
+ =?us-ascii?Q?M3PvZGUX4oCwZ2zpxfXEu1O7l1tERCsf/pb2Tqn3zqT/ZvlVYnaizMH/zviB?=
+ =?us-ascii?Q?036I2KqFieP9XZVHNNPODa07UukUftRxZ6ZZawLmh9WgT7s1eJ5ML156Uk81?=
+ =?us-ascii?Q?wVxJH/xoa8Rw6gMJH+E0EVQKuWfUHXwnL9ZzMlrih8aZwpqK3O0qGeOWLfAL?=
+ =?us-ascii?Q?YtyEob4eOHUxxyZj/IT965T0GNpjCaieTIbKg+yidO4vDf5AAHvwXsAEpH6z?=
+ =?us-ascii?Q?1kpxsnzLNKXjZ3/qY5bczrU0nm8CDWg7fJ2AlAflF8DKkHxXWS5wU4S8ILHe?=
+ =?us-ascii?Q?Cg6lH2+YUWE5mvksf5GEKTZwf1FsMoK84EU0t8tr0UKxIRTQVSL78ibXwXRc?=
+ =?us-ascii?Q?yMpGIpOoVPEwXAAuLO3nn2JsNSQM7jX8uJVZcdX6L8mzF4Jk4vNO5ZVRs6wl?=
+ =?us-ascii?Q?CbMeu37ipRUZod4/s/8GtrVOcdLFL2o562S71z6s?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1811146e-8d6b-4f71-2fa4-08dbae58d49f
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 21:41:15.2997
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VhXszqwxXJitM6B/FmCGCvgcVF0LE5KKsXhu7DO/roYvhu7lYKTYv/pjJr2w06iooIN8E/BDQmF2EBFipuMCcA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB8226
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 3:52=E2=80=AFAM Hans de Goede <hdegoede@redhat.com> =
-wrote:
->
-> Hi Justin,
->
-> On 8/24/23 20:52, Justin Stitt wrote:
-> > Both `strncpy` and `strcpy` are deprecated for use on NUL-terminated
-> > destination strings [1].
-> >
-> > A suitable replacement is `strscpy` [2] due to the fact that it
-> > guarantees NUL-termination on its destination buffer argument which is
-> > _not_ the case for `strncpy` or `strcpy`!
-> >
-> > In this case, we can drop both the forced NUL-termination and the `... =
--1` from:
-> > |       strncpy(arg, val, ACTION_LEN - 1);
-> > as `strscpy` implicitly has this behavior.
-> >
-> > Also include slight refactor to code removing possible new-line chars a=
-s
-> > per Yang Yang's work at [3]. This reduces code size and complexity by
-> > using more robust and better understood interfaces.
-> >
-> > Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on=
--nul-terminated-strings[1]
-> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
-.html [2]
-> > Link: https://lore.kernel.org/all/202212091545310085328@zte.com.cn/ [3]
-> > Link: https://github.com/KSPP/linux/issues/90
-> > Cc: linux-hardening@vger.kernel.org
-> > Co-developed-by: Yang Yang <yang.yang29@zte.com.cn>
-> > Signed-off-by: Justin Stitt <justinstitt@google.com>
-> > ---
-> > Changes in v2:
-> > - use `sizeof` on destination string instead of `strlen` (thanks Andy, =
-Kees and Dimitri)
-> > - refactor code to remove potential new-line chars (thanks Yang Yang an=
-d Andy)
-> > - Link to v1: https://lore.kernel.org/r/20230822-strncpy-arch-x86-platf=
-orm-uv-uv_nmi-v1-1-931f2943de0d@google.com
-> > ---
-> > Note: build-tested only
-> >
-> > Another thing, Yang Yang's patch [3] had some review from Andy regardin=
-g
-> > the use of `-1` and `+1` in and around the strnchrnul invocation. I
-> > believe Yang Yang's original implementation is correct but let's also
-> > just use sizeof(arg) instead of ACTION_LEN.
-> >
-> > Here's a godbolt link detailing some findings around the new-line
-> > refactor in response to Andy's feedback: https://godbolt.org/z/K8drG3oq=
-5
-> > ---
-> >  arch/x86/platform/uv/uv_nmi.c | 12 ++++--------
-> >  1 file changed, 4 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nm=
-i.c
-> > index a60af0230e27..913347b2b9ab 100644
-> > --- a/arch/x86/platform/uv/uv_nmi.c
-> > +++ b/arch/x86/platform/uv/uv_nmi.c
-> > @@ -202,21 +202,17 @@ static int param_set_action(const char *val, cons=
-t struct kernel_param *kp)
-> >  {
-> >       int i;
-> >       int n =3D ARRAY_SIZE(valid_acts);
-> > -     char arg[ACTION_LEN], *p;
-> > +     char arg[ACTION_LEN];
-> >
-> >       /* (remove possible '\n') */
-> > -     strncpy(arg, val, ACTION_LEN - 1);
-> > -     arg[ACTION_LEN - 1] =3D '\0';
-> > -     p =3D strchr(arg, '\n');
-> > -     if (p)
-> > -             *p =3D '\0';
-> > +     strscpy(arg, val, strnchrnul(val, sizeof(arg) - 1, '\n') - val + =
-1);
->
-> I have 25 years of C-programming experience and even I
-> cannot read this.
->
-> It seems to me that you are trying to use the length
-> argument to not copy the '\n' here.
->
-> While at the same time using strnchr(..., sizeof(arg) ...)
-> instead of normal strchr() to make sure you don't pass\
-> a value bigger then sizeof(arg) as length to strscpy().
->
-> Please do not do this it is needlessly complicated and
-> makes the code almost impossible to read / reason about.
->
-> What the original code was doing, first copying at
-> most ACTION_LEN - 1 bytes into arg and then ensuring
-> 0 termination, followed by stripping '\n' from the
-> writable copy we have just made is much cleaner.
->
-> IMHO this patch should simple replace the strncpy()
-> + 0 termination with a strscpy() and not make
-> any other changes, leading to:
->
->         /* (remove possible '\n') */
->         strscpy(arg, val, sizeof(arg));
->         p =3D strchr(arg, '\n');
->         if (p)
->                 *p =3D '\0';
->
-> See how this is much much more readable /
-> much easier to wrap ones mind around ?
+Jonathan Cameron wrote:
+> On Mon, 28 Aug 2023 22:21:00 -0700
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > When a Dynamic Capacity Device (DCD) is realized some extents may
+> > already be available within the DC Regions.  This can happen if the host
+> > has accepted extents and been rebooted or any other time the host driver
+> > software has become out of sync with the device hardware.
+> > 
+> > Read the available extents during probe and store them for later
+> > use.
+> > 
+> > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> > Co-developed-by: Navneet Singh <navneet.singh@intel.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > 
+> A few minor comments inline.
+> 
+> Thanks,
+> 
+> Jonathan
+> 
 
-Right, I agree. This was basically the v1 of my patch. I will send a
-v3 with feedback implemented.
+[snip]
 
->
-> And then as a *separate* followup patch
-> you could simplify this further by using strchrnul():
->
->         /* (remove possible '\n') */
->         strscpy(arg, val, sizeof(arg));
->         p =3D strchrnul(arg, '\n');
->         *p =3D '\0';
->
-> But again that belongs in a separate patch
-> since it is not:
->
-> "refactor deprecated strcpy and strncpy"
->
-> Regards,
->
-> Hans
->
->
->
->
->
->
-> >
-> >       for (i =3D 0; i < n; i++)
-> >               if (!strcmp(arg, valid_acts[i].action))
-> >                       break;
-> >
-> >       if (i < n) {
-> > -             strcpy(uv_nmi_action, arg);
-> > +             strscpy(uv_nmi_action, arg, sizeof(uv_nmi_action));
-> >               pr_info("UV: New NMI action:%s\n", uv_nmi_action);
-> >               return 0;
-> >       }
-> > @@ -959,7 +955,7 @@ static int uv_handle_nmi(unsigned int reason, struc=
-t pt_regs *regs)
-> >
-> >               /* Unexpected return, revert action to "dump" */
-> >               if (master)
-> > -                     strncpy(uv_nmi_action, "dump", strlen(uv_nmi_acti=
-on));
-> > +                     strscpy(uv_nmi_action, "dump", sizeof(uv_nmi_acti=
-on));
-> >       }
-> >
-> >       /* Pause as all CPU's enter the NMI handler */
-> >
-> > ---
-> > base-commit: 706a741595047797872e669b3101429ab8d378ef
-> > change-id: 20230822-strncpy-arch-x86-platform-uv-uv_nmi-474e5295c2c1
-> >
-> > Best regards,
-> > --
-> > Justin Stitt <justinstitt@google.com>
-> >
->
+> 
+> > +static int cxl_dev_get_dc_extent_cnt(struct cxl_memdev_state *mds,
+> > +				     unsigned int *extent_gen_num)
+> > +{
+> > +	struct cxl_mbox_get_dc_extent get_dc_extent;
+> > +	struct cxl_mbox_dc_extents dc_extents;
+> > +	struct device *dev = mds->cxlds.dev;
+> > +	struct cxl_mbox_cmd mbox_cmd;
+> > +	unsigned int count;
+> > +	int rc;
+> > +
+> > +	/* Check GET_DC_EXTENT_LIST is supported by device */
+> > +	if (!test_bit(CXL_DCD_ENABLED_GET_EXTENT_LIST, mds->dcd_cmds)) {
+> > +		dev_dbg(dev, "unsupported cmd : get dyn cap extent list\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	get_dc_extent = (struct cxl_mbox_get_dc_extent) {
+> > +		.extent_cnt = cpu_to_le32(0),
+> > +		.start_extent_index = cpu_to_le32(0),
+> > +	};
+> > +
+> > +	mbox_cmd = (struct cxl_mbox_cmd) {
+> > +		.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
+> > +		.payload_in = &get_dc_extent,
+> > +		.size_in = sizeof(get_dc_extent),
+> > +		.size_out = mds->payload_size,
+> 
+> If all you are after is the count, then size_out can be a lot smaller than that
+> I think as we know it can't return any extents.
+
+Done.
+
+> 
+> > +		.payload_out = &dc_extents,
+> > +		.min_out = 1,
+> > +	};
+> > +
+> > +	rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+> > +	if (rc < 0)
+> > +		return rc;
+> > +
+> > +	count = le32_to_cpu(dc_extents.total_extent_cnt);
+> > +	*extent_gen_num = le32_to_cpu(dc_extents.extent_list_num);
+> > +
+> > +	return count;
+> > +}
+> > +
+> > +static int cxl_dev_get_dc_extents(struct cxl_memdev_state *mds,
+> > +				  unsigned int start_gen_num,
+> > +				  unsigned int exp_cnt)
+> > +{
+> > +	struct cxl_mbox_dc_extents *dc_extents;
+> > +	unsigned int start_index, total_read;
+> > +	struct device *dev = mds->cxlds.dev;
+> > +	struct cxl_mbox_cmd mbox_cmd;
+> > +	int retry = 3;
+> 
+> Why 3?
+
+Removed.
+
+> 
+> > +	int rc;
+> > +
+> > +	/* Check GET_DC_EXTENT_LIST is supported by device */
+> > +	if (!test_bit(CXL_DCD_ENABLED_GET_EXTENT_LIST, mds->dcd_cmds)) {
+> > +		dev_dbg(dev, "unsupported cmd : get dyn cap extent list\n");
+> > +		return 0;
+> > +	}
+> > +
+> > +	dc_extents = kvmalloc(mds->payload_size, GFP_KERNEL);
+> 
+> Maybe __free magic would simplify this enough to be useful.
+
+Yes.  I'd not wrapped my head around the __free magic until you mentioned in
+in the other patch.  It is pretty easy to use.  But I'm worried because it
+seems 'too easy'...  ;-)
+
+I'll convert this one too.  So far the other one seems good.  So dare I
+say "I know what I'm doing now"...  :-D
+
+> 
+> > +	if (!dc_extents)
+> > +		return -ENOMEM;
+> > +
+> > +reset:
+> > +	total_read = 0;
+> > +	start_index = 0;
+> > +	do {
+> > +		unsigned int nr_ext, total_extent_cnt, gen_num;
+> > +		struct cxl_mbox_get_dc_extent get_dc_extent;
+> > +
+> > +		get_dc_extent = (struct cxl_mbox_get_dc_extent) {
+> > +			.extent_cnt = exp_cnt - start_index,
+> > +			.start_extent_index = start_index,
+> > +		};
+> > +		
+> > +		mbox_cmd = (struct cxl_mbox_cmd) {
+> > +			.opcode = CXL_MBOX_OP_GET_DC_EXTENT_LIST,
+> > +			.payload_in = &get_dc_extent,
+> > +			.size_in = sizeof(get_dc_extent),
+> > +			.size_out = mds->payload_size,
+> > +			.payload_out = dc_extents,
+> > +			.min_out = 1,
+> > +		};
+> > +		
+> > +		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+> > +		if (rc < 0)
+> > +			goto out;
+> > +		
+> > +		nr_ext = le32_to_cpu(dc_extents->ret_extent_cnt);
+> > +		total_read += nr_ext;
+> > +		total_extent_cnt = le32_to_cpu(dc_extents->total_extent_cnt);
+> > +		gen_num = le32_to_cpu(dc_extents->extent_list_num);
+> > +
+> > +		dev_dbg(dev, "Get extent list count:%d generation Num:%d\n",
+> > +			total_extent_cnt, gen_num);
+> > +
+> > +		if (gen_num != start_gen_num || exp_cnt != total_extent_cnt) {
+> > +			dev_err(dev, "Extent list changed while reading; %u != %u : %u != %u\n",
+> > +				gen_num, start_gen_num, exp_cnt, total_extent_cnt);
+> > +			if (retry--)
+> > +				goto reset;
+> > +			return -EIO;
+
+And this was a bug too :-(  ...  Fixed with the __free() magic.
+
+Thanks for the review,
+Ira
+
+> > +		}
+> > +		
+> > +		for (int i = 0; i < nr_ext ; i++) {
+> > +			dev_dbg(dev, "Storing extent %d/%d\n",
+> > +				start_index + i, exp_cnt);
+> > +			rc = cxl_store_dc_extent(mds, &dc_extents->extent[i]);
+> > +			if (rc)
+> > +				goto out;
+> > +		}
+> > +
+> > +		start_index += nr_ext;
+> > +	} while (exp_cnt > total_read);
+> > +
+> > +out:
+> > +	kvfree(dc_extents);
+> > +	return rc;
+> > +}
+> 
+> 
+
+
