@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F033C79316B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:55:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA14279316A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:55:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbjIEVzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59860 "EHLO
+        id S244772AbjIEVzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:55:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233147AbjIEVzN (ORCPT
+        with ESMTP id S244688AbjIEVzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:55:13 -0400
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2066.outbound.protection.outlook.com [40.107.20.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9F1AE48;
-        Tue,  5 Sep 2023 14:54:55 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fMDcuXeUDshjHgz8eZJdn+73WjarFh2S4Dz8pDZeQUQk+cET2pslmCMN05xZAUt0elN9yDKeoTnoeRkx9k1pnxnhcQiXBZQ8UgOUbd9Kp6D+AvbtGLTFO/VEHT+VKxW4aoVtT7hyqcljdoFzMqfIvVIT4RvlaCh3pwXzjvdzgVrb9ELSNd3YkA6cf/316pU8FBYBtI0nDQfddzKeEaiB4NSE0j8iNqyUKhR7rblqjBL3+Z1NHb7ob7jhaVt5FSg5swgz6OpEbXkoUSDuyVFvjTOQZQrHoGF+Rw89tXkAIrBnQTFeI6c7ZXX3FDqZcvfR9Sk1lVznES6hh84u4lno+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/NqVeKn/xUcWG7L/7aivMRpWX0KOY+CqKYET3VcoAVI=;
- b=m6gEeYI/TOQ7kfiq9B+GPPpTayxPn2O1teVk7hL6Vnfsuz5+nlpc6qjoCk3sY+izDwnfgEWBu+oxtgLJas2z2ySiPAfr6Ie5UVfevO2Lw1TfdwD0l8plzG4bzmcIyU++ACK6ARkzO4vCGNGzBifpVRUF+7habwvEMMvAOd2Toeo/0dPEnpeVVcNveMPyGz0eWs3BDN1llUdGbd8fuvoFokO9v1DmCuBW/wTmd//cXQ/n5OD0wICTZK0JQYvtU04+Sx8FrzuQdMncty7/LeQ2vTpu5rPcjJkTHWl+UnzSiy8KRObW7mlJ+SrETnTYIslIurB+SkYkgRwS7+9iKLjBoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/NqVeKn/xUcWG7L/7aivMRpWX0KOY+CqKYET3VcoAVI=;
- b=lcIq0e/hePabuDv4MqP0lEtI7Ip0uNHeAmtqbU80oq8xw3dqc1Wm9bQQ/kWaA7DncFa7R2w7JuRMl6RteC6MZwusGxVN8qsMwA5A4grAgQVA3NsO/g++XJCR4mkRQWg58D28kBjq+50J/xOcIa5BJcJr0D3iateiWzzEMXosVR8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com (2603:10a6:208:16d::21)
- by AM0PR04MB6963.eurprd04.prod.outlook.com (2603:10a6:208:18b::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Tue, 5 Sep
- 2023 21:53:54 +0000
-Received: from AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454]) by AM0PR04MB6452.eurprd04.prod.outlook.com
- ([fe80::568a:57ee:35b5:e454%3]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
- 21:53:54 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     netdev@vger.kernel.org
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Yanan Yang <yanan.yang@nxp.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net 3/3] net: dsa: sja1105: complete tc-cbs offload support on SJA1110
-Date:   Wed,  6 Sep 2023 00:53:38 +0300
-Message-Id: <20230905215338.4027793-4-vladimir.oltean@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230905215338.4027793-1-vladimir.oltean@nxp.com>
-References: <20230905215338.4027793-1-vladimir.oltean@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR07CA0029.eurprd07.prod.outlook.com
- (2603:10a6:208:ac::42) To AM0PR04MB6452.eurprd04.prod.outlook.com
- (2603:10a6:208:16d::21)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM0PR04MB6452:EE_|AM0PR04MB6963:EE_
-X-MS-Office365-Filtering-Correlation-Id: ffada9da-9918-435e-5730-08dbae5a993f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LKMXqHV2fB4dsEFx2WjG2ZTQ7S/LCkgINwdHaaPFWF3hfoidUEda9irPSnLxdiqck4r+IDKuxhPTDzJC5OtFcz5Y1BjRAqyPYozU0lkSIf10qqy+OetirI7UPXqwr3gGnWHhQYv05f3V4zH+VFrk3vUmHclavFv3AGbtG09pBipKBiBL5OXqF3bCXU8bbxp13CYP7SML5a+E6bu65RyzqmoNhn/XwUecDuhTWuXdtaPUBeBfcZ4uab/x05t5My4BQLnAqNH07jcpfOSPCNk2kRMFrE4Q2fUEiIDuczqrqRA+0uneRinrkI7b/UcAvNmV2s3gBchvS69sc//oIIlZsWbxqBRiAvstSyMiR37cjGv8F7ceCGdugeiqkqHgACkTtX3ehWMf83PFGiMBZXQTqrxIAVVoWOv9Q8X222x3M75fZoJ6iTxxCGlz+hLo+q2Lhrm0pBy7p0QSSvAOEpOI/h6kUj9p/9H3Rw+XRzf9kA+r3L58NVt5fqYBocUwUmi1HsfIJGIEZ0LBw/WPC3EwhOAEWrh7anfpdFQtVY18wbi+mLSJT/uQutziwKSUSKzYm04Em11/q4zrzBqOEIwlA66NKjQIJ5liaBpY6BFbnuMWLMjRzk1kGO6R/Ld2/Qez
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB6452.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(376002)(39860400002)(396003)(451199024)(1800799009)(186009)(38100700002)(38350700002)(44832011)(83380400001)(5660300002)(36756003)(86362001)(41300700001)(6666004)(66476007)(66946007)(1076003)(66556008)(478600001)(2616005)(6512007)(8936002)(4326008)(6486002)(8676002)(26005)(316002)(52116002)(54906003)(6916009)(6506007)(2906002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?VClfTtyRkbSQsxLeQMf59SVKlH1eq9qkOu3iJfcITal0egZQmlwlR58bhWzH?=
- =?us-ascii?Q?FW9mxFcbtNnT2BQpjkaSd+CI7pXAagscHQHJqipzdasPboZp1fMMI6GQ9Pla?=
- =?us-ascii?Q?QXYxUrbu9YVRcraDKNci8xJl2N1Oc7em9clNi5O3aOy1wG6mTI2z0yLUESQ6?=
- =?us-ascii?Q?FnRzbUSLs83QKemLaKX/LdI0vzuG0ThgIHU2IdG5HrkNKRbksYoSOFZ/nJgu?=
- =?us-ascii?Q?1NehhVjtJP1Y3mRFHP9PMhC1oF/0me5Kw5jgPyNcLtdcbGWkeA2jibbbowXB?=
- =?us-ascii?Q?MdDoemHxAQQBJPywav2eMrazKSCESK7KVzDBxogy9SEt0N3ZYrZENPiIlSNb?=
- =?us-ascii?Q?W+QguXaMtA5+xeAkI62syzmuKcmlMpd77JV0Tkfx+m+N8S4n+4IQ4teIpWUr?=
- =?us-ascii?Q?D/mvZjYGLfuTmdFBRXkorSyUijZ5mOjmF8Jsck44c5HkuXdUF5Mbo+Zf1u7m?=
- =?us-ascii?Q?AuvRM/UHaiOQxPxQSXPtRvbhsAFzLfP/Z2H4zR4HuXSQt6E51VCZKIX2d2A3?=
- =?us-ascii?Q?pxzwfVXc1wK6N//0TI333AK07MoQgtpuI9VgTMoCphxNNAgdjXTmLcoX9mIN?=
- =?us-ascii?Q?UWx4TkjHKxu8JTgEGQqUVPwRZtBdKAAjg3QpEu1JLTw7/qL/DbYsAoBzFJ2N?=
- =?us-ascii?Q?sIo+pmiUULHi+Finz/LG46poTIdelPY4Wn7xZmcpmslXAMwEooc6mJaM63r8?=
- =?us-ascii?Q?ma/33KdjVbb+ShxLLd/72yw+lN2MYsIvOaAXx8N/Mk//oNOMxmSpCf4nlBYW?=
- =?us-ascii?Q?xNusMzdxw+YZc5EKWw7rQGfbZvK4PcAKGHPrapgThP6k+f1iXdhxoE5V5X7Y?=
- =?us-ascii?Q?Siv0t21cTuGh7sIvFO40G/Fmb3jbPE/eISvY6uR8CGZUjNreH2d9XG0CKlmp?=
- =?us-ascii?Q?hjUwmkStPA7JctI8LGISDQJt+3qLmX8B4dO2VYh8CEHUuUcr0szKWeQk+qi8?=
- =?us-ascii?Q?H1/qPsSFpe0+jMZAWNYz6+4oiV78FDTM11dqOmRIBhlCVG5R8q3EwGy/bKuq?=
- =?us-ascii?Q?lsKNCDMX/QnJmvdUk1UOoch5xu9yIE2pNSkGOGATp2xBlAuTGy1uBCN+yn17?=
- =?us-ascii?Q?Gvc+sI9GTMYo9UquIZB+J4+zg1WbGdywm0f6niBYJxTmiWd/5uiH/5WForFL?=
- =?us-ascii?Q?oLOVtJ/sYR5dZ84YVhQnKAZCbifPHKqdJTgm5TNkolMdW4KRxtzkbmSUQw68?=
- =?us-ascii?Q?efkFuXdWCqiQjOJxp6iFsDO72DTusz7gyW/gvjx5liPsexihbyp/Lnfvnxb0?=
- =?us-ascii?Q?TQkax1r+FHmm9LXO8Qsgrvk5e8hUApKRwYjiXKyM5EO3kImEz3jNA1QKvRJe?=
- =?us-ascii?Q?yq/lgsnzCOpi7NUomWuBDODw3/EEugZuxUbmKTplH/ma7KdQEkjzE4Szi1e+?=
- =?us-ascii?Q?GZap1PPUwOH564so4g1q/FZN/ofha3KiMMYsWv/FHZeJzzVm+yFZ3vRnQiwf?=
- =?us-ascii?Q?3+tC3Rfrahd2V/fQWfVtvaDVMXryokwTpbZHbW6G2f39OTvcjxEWIirJZ7Vq?=
- =?us-ascii?Q?jaj1DcjpHgzSQdNg89NI8v9TyeoFvLxSrffSeYe50ZXaXZtq6pI/o3jHaY6M?=
- =?us-ascii?Q?W5iKt/T+siLJKFgu2V978hOwXwALChmosJua8uJ+d5kBt3CVCdb9UvREOIAq?=
- =?us-ascii?Q?Ow=3D=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ffada9da-9918-435e-5730-08dbae5a993f
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB6452.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 21:53:54.6134
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: hP/lMx/SPO4/LeBWqt6Z8WgBfZsld8fWi8DZiXQjH9FL/fRhR1cdcfvEmrSlWUb7p51tg3U3bIwmW3r3+frwyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB6963
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        Tue, 5 Sep 2023 17:55:01 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE32A197
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:54:46 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c8f360a07a2so2647306276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693950886; x=1694555686; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mYSSYqyZSAKIfvzMRnscK0LuxZzE2hQmiaI7r8kw+io=;
+        b=JyJk91Z+QZRTbtKgeOK+Nk934z+HbCX09Ydgq9HHngyKBl70aBv7Rf2twBg9hzmzTt
+         zfzpoq49lcoW2YyU3UgP1jpTMEteaB7Ig6Er6LCRSfjl6cu9uFwNBDlJDNw9MzPBS7cD
+         cwG0b7IP9X1QqwomSD4xPJJo5tqAHMwBz/24zmJIMPtcHADklz6M1aF8lBROfeK3Ou/z
+         PYlLA0CvCCY2q9iY3H/NhSXeQu5kt7mXdBesBuGt00om7K1dMtt4K/HL9fw+ROybWgV9
+         vxTxisuE0bsczIrZmkVKEFLUiStgtA7pmsqmWXO8uGOoacbufOPjcGO/WYpKPJo7j8SJ
+         dfpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693950886; x=1694555686;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mYSSYqyZSAKIfvzMRnscK0LuxZzE2hQmiaI7r8kw+io=;
+        b=Diz25AKnL4I4RBEL/9DI3W7tL7JRwXJLs8wgsg+CyRtpWjWiMu14dBENpOb62ndGZZ
+         sSbwZtFSHbMTm2ewG7OM4AG2Qjp4ZoDE5WB6bsGnWk7hmVQfSspMgsEoN1mL+QKuyxIG
+         DOUR58I1cHfk9+4IpI7qf2SIGulN6q2VV1UrA2if+9oTaHTC3MfyjwIvDoGTZqYhpEW8
+         3j0uucCm4zJ2HZtpNmvefCm8NqwfAsQNZ0KWcJXKOMJLB7K3MBkDYP4Ym+6c2tOGF8HN
+         R3jVthCKCx1I3jEJ4Q3gHjOokYkqfeGF9V6StHK34S5OLfc/ug9SVBxLeCkKoAVgI9l1
+         pLlQ==
+X-Gm-Message-State: AOJu0YxzW+HK5WNS+rxXo/X0gRxO0TOKQAj3DDRXIxl5DrkTA3yZz3E2
+        ju9SM5KSSGSaRTcSOUKqKzmK9IlT0Ez1EsnW7g==
+X-Google-Smtp-Source: AGHT+IEthNzV8ZE+tRL4eK9ihsAlyb2EPkYYpRYCKGSbFbV8n6cZni6u1SkJNkJThkTG6zrJpu4FeNqiuTv3OYY/+g==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a25:b082:0:b0:d01:60ec:d0e with SMTP
+ id f2-20020a25b082000000b00d0160ec0d0emr340324ybj.9.1693950886135; Tue, 05
+ Sep 2023 14:54:46 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 21:54:40 +0000
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAJ+j92QC/5XNQQ6CMBCF4auQrh1DpwXElfcwxjRlgCZASYsNh
+ HB3CyvdaTKbfxbfW5knZ8iza7IyR8F4Y4cY4pQw3aqhITBVbIYpivSCCH5ygx4XUE63MF9yGDs
+ 11db18ArxnkNvQBaSMiwzjZqzKI2OajMfK/dH7Nb4ybrlGA18//7nBw4cSsFrLKWoKK1ujbVNR 2dte7YPBPxE5W8oRpR4XpVKkM6K9Avdtu0NRuNskCwBAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1693950885; l=2964;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=gDNLo7BwDTNW1pc/8WsCxyt7x3/IodsVK/vgZb9S0ms=; b=IXGF5h8HALV0QqVdSV0NY5o+3DcKJUjKJaxugsEIOU5l5nkn5MICgLmVSJpktWLpi5DXLER2m
+ +QzOs8fM8cADr7PK33mrLHiIBTTAif+aH/Gsy4Qv8sV8thWQW0bekKZ
+X-Mailer: b4 0.12.3
+Message-ID: <20230905-strncpy-arch-x86-platform-uv-uv_nmi-v3-1-3efd6798b569@google.com>
+Subject: [PATCH v3] x86/platform/uv: refactor deprecated strcpy and strncpy
+From:   Justin Stitt <justinstitt@google.com>
+To:     Steve Wahl <steve.wahl@hpe.com>, Mike Travis <mike.travis@hpe.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        Russ Anderson <russ.anderson@hpe.com>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Dimitri Sivanich <dimitri.sivanich@hpe.com>,
+        linux-hardening@vger.kernel.org,
+        Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -122,128 +85,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The blamed commit left this delta behind:
+Both `strncpy` and `strcpy` are deprecated for use on NUL-terminated
+destination strings [1].
 
-  struct sja1105_cbs_entry {
- -	u64 port;
- -	u64 prio;
- +	u64 port; /* Not used for SJA1110 */
- +	u64 prio; /* Not used for SJA1110 */
-  	u64 credit_hi;
-  	u64 credit_lo;
-  	u64 send_slope;
-  	u64 idle_slope;
-  };
+We can see that `arg` and `uv_nmi_action` are expected to be
+NUL-terminated strings due to their use within `strcmp()` and format
+strings respectively.
 
-but did not actually implement tc-cbs offload fully for the new switch.
-The offload is accepted, but it doesn't work.
+With this in mind, a suitable replacement is `strscpy` [2] due to the
+fact that it guarantees NUL-termination on its destination buffer
+argument which is _not_ the case for `strncpy` or `strcpy`!
 
-The difference compared to earlier switch generations is that now, the
-table of CBS shapers is sparse, because there are many more shapers, so
-the mapping between a {port, prio} and a table index is static, rather
-than requiring us to store the port and prio into the sja1105_cbs_entry.
+In this case, we can drop both the forced NUL-termination and the `... -1` from:
+|       strncpy(arg, val, ACTION_LEN - 1);
+as `strscpy` implicitly has this behavior.
 
-So, the problem is that the code programs the CBS shaper parameters at a
-dynamic table index which is incorrect.
-
-All that needs to be done for SJA1110 CBS shapers to work is to bypass
-the logic which allocates shapers in a dense manner, as for SJA1105, and
-use the fixed mapping instead.
-
-Fixes: 3e77e59bf8cf ("net: dsa: sja1105: add support for the SJA1110 switch family")
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Link: www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings[1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
 ---
- drivers/net/dsa/sja1105/sja1105.h      |  2 ++
- drivers/net/dsa/sja1105/sja1105_main.c | 13 +++++++++++++
- drivers/net/dsa/sja1105/sja1105_spi.c  |  4 ++++
- 3 files changed, 19 insertions(+)
+Changes in v3:
+- Use sizeof instead of strlen (thanks Andy and Dimitri)
+- Drop unrelated changes regarding strnchrnul (thanks Hans)
+- Link to v2: https://lore.kernel.org/r/20230824-strncpy-arch-x86-platform-uv-uv_nmi-v2-1-e16d9a3ec570@google.com
 
-diff --git a/drivers/net/dsa/sja1105/sja1105.h b/drivers/net/dsa/sja1105/sja1105.h
-index dee35ba924ad..0617d5ccd3ff 100644
---- a/drivers/net/dsa/sja1105/sja1105.h
-+++ b/drivers/net/dsa/sja1105/sja1105.h
-@@ -132,6 +132,8 @@ struct sja1105_info {
- 	int max_frame_mem;
- 	int num_ports;
- 	bool multiple_cascade_ports;
-+	/* Every {port, TXQ} has its own CBS shaper */
-+	bool fixed_cbs_mapping;
- 	enum dsa_tag_protocol tag_proto;
- 	const struct sja1105_dynamic_table_ops *dyn_ops;
- 	const struct sja1105_table_ops *static_ops;
-diff --git a/drivers/net/dsa/sja1105/sja1105_main.c b/drivers/net/dsa/sja1105/sja1105_main.c
-index d7f57f223031..a23d980d28f5 100644
---- a/drivers/net/dsa/sja1105/sja1105_main.c
-+++ b/drivers/net/dsa/sja1105/sja1105_main.c
-@@ -2115,12 +2115,22 @@ static void sja1105_bridge_leave(struct dsa_switch *ds, int port,
- }
+Changes in v2:
+- use `sizeof` on destination string instead of `strlen` (thanks Andy, Kees and Dimitri)
+- refactor code to remove potential new-line chars (thanks Yang Yang and Andy)
+- Link to v1: https://lore.kernel.org/r/20230822-strncpy-arch-x86-platform-uv-uv_nmi-v1-1-931f2943de0d@google.com
+---
+Note: build-tested only
+---
+ arch/x86/platform/uv/uv_nmi.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/platform/uv/uv_nmi.c b/arch/x86/platform/uv/uv_nmi.c
+index a60af0230e27..dd30fb2baf6c 100644
+--- a/arch/x86/platform/uv/uv_nmi.c
++++ b/arch/x86/platform/uv/uv_nmi.c
+@@ -205,8 +205,7 @@ static int param_set_action(const char *val, const struct kernel_param *kp)
+ 	char arg[ACTION_LEN], *p;
  
- #define BYTES_PER_KBIT (1000LL / 8)
-+/* Port 0 (the uC port) does not have CBS shapers */
-+#define SJA1110_FIXED_CBS(port, prio) ((((port) - 1) * SJA1105_NUM_TC) + (prio))
+ 	/* (remove possible '\n') */
+-	strncpy(arg, val, ACTION_LEN - 1);
+-	arg[ACTION_LEN - 1] = '\0';
++	strscpy(arg, val, sizeof(arg));
+ 	p = strchr(arg, '\n');
+ 	if (p)
+ 		*p = '\0';
+@@ -216,7 +215,7 @@ static int param_set_action(const char *val, const struct kernel_param *kp)
+ 			break;
  
- static int sja1105_find_cbs_shaper(struct sja1105_private *priv,
- 				   int port, int prio)
- {
- 	int i;
+ 	if (i < n) {
+-		strcpy(uv_nmi_action, arg);
++		strscpy(uv_nmi_action, arg, sizeof(uv_nmi_action));
+ 		pr_info("UV: New NMI action:%s\n", uv_nmi_action);
+ 		return 0;
+ 	}
+@@ -959,7 +958,7 @@ static int uv_handle_nmi(unsigned int reason, struct pt_regs *regs)
  
-+	if (priv->info->fixed_cbs_mapping) {
-+		i = SJA1110_FIXED_CBS(port, prio);
-+		if (i >= 0 && i < priv->info->num_cbs_shapers)
-+			return i;
-+
-+		return -1;
-+	}
-+
- 	for (i = 0; i < priv->info->num_cbs_shapers; i++)
- 		if (priv->cbs[i].port == port && priv->cbs[i].prio == prio)
- 			return i;
-@@ -2132,6 +2142,9 @@ static int sja1105_find_unused_cbs_shaper(struct sja1105_private *priv)
- {
- 	int i;
+ 		/* Unexpected return, revert action to "dump" */
+ 		if (master)
+-			strncpy(uv_nmi_action, "dump", strlen(uv_nmi_action));
++			strscpy(uv_nmi_action, "dump", sizeof(uv_nmi_action));
+ 	}
  
-+	if (priv->info->fixed_cbs_mapping)
-+		return -1;
-+
- 	for (i = 0; i < priv->info->num_cbs_shapers; i++)
- 		if (!priv->cbs[i].idle_slope && !priv->cbs[i].send_slope)
- 			return i;
-diff --git a/drivers/net/dsa/sja1105/sja1105_spi.c b/drivers/net/dsa/sja1105/sja1105_spi.c
-index 5ce29c8057a4..834b5c1b4db0 100644
---- a/drivers/net/dsa/sja1105/sja1105_spi.c
-+++ b/drivers/net/dsa/sja1105/sja1105_spi.c
-@@ -781,6 +781,7 @@ const struct sja1105_info sja1110a_info = {
- 	.tag_proto		= DSA_TAG_PROTO_SJA1110,
- 	.can_limit_mcast_flood	= true,
- 	.multiple_cascade_ports	= true,
-+	.fixed_cbs_mapping	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
-@@ -831,6 +832,7 @@ const struct sja1105_info sja1110b_info = {
- 	.tag_proto		= DSA_TAG_PROTO_SJA1110,
- 	.can_limit_mcast_flood	= true,
- 	.multiple_cascade_ports	= true,
-+	.fixed_cbs_mapping	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
-@@ -881,6 +883,7 @@ const struct sja1105_info sja1110c_info = {
- 	.tag_proto		= DSA_TAG_PROTO_SJA1110,
- 	.can_limit_mcast_flood	= true,
- 	.multiple_cascade_ports	= true,
-+	.fixed_cbs_mapping	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
-@@ -931,6 +934,7 @@ const struct sja1105_info sja1110d_info = {
- 	.tag_proto		= DSA_TAG_PROTO_SJA1110,
- 	.can_limit_mcast_flood	= true,
- 	.multiple_cascade_ports	= true,
-+	.fixed_cbs_mapping	= true,
- 	.ptp_ts_bits		= 32,
- 	.ptpegr_ts_bytes	= 8,
- 	.max_frame_mem		= SJA1110_MAX_FRAME_MEMORY,
--- 
-2.34.1
+ 	/* Pause as all CPU's enter the NMI handler */
+
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230822-strncpy-arch-x86-platform-uv-uv_nmi-474e5295c2c1
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
