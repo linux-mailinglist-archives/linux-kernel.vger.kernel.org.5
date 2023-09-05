@@ -2,129 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 847FF7929D9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8B37927A8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:37:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353895AbjIEQ3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33890 "EHLO
+        id S240368AbjIEQI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354703AbjIENhA (ORCPT
+        with ESMTP id S1354704AbjIENiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:37:00 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6957D191;
-        Tue,  5 Sep 2023 06:36:56 -0700 (PDT)
-Received: from [192.168.1.23] (unknown [171.76.82.102])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        Tue, 5 Sep 2023 09:38:10 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F5F191;
+        Tue,  5 Sep 2023 06:38:06 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        (Authenticated sender: vignesh)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 8925A66028F5;
-        Tue,  5 Sep 2023 14:36:49 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693921014;
-        bh=Jrym+Ky16xApwfLUAeFb6AP634wzyVW+sZXlItpUeVA=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=C8/+a4DuIQRb0J3o7lNrwSoVRG1+YurJ+S/AWRRmeXMd6FpAVrzaW+mkXBemfTWOM
-         Vz+5vKLJX8hhwhW1eJ4xEUo4DFoVXahuSO1Xf5IC09U2tNkWsHKNys/6IDUCdSUgCV
-         +VxNygTXoEfwohPaZqbsGtSw7MECBECFl2Eo962KXal/5SaLmx5SUCNIeWdyMDgE0V
-         LMh++CG+U3jtZ7OPTRHukHPMyyocraqM7ScRkm7BsXzIugmxRFezrxObEIBt4oE1G0
-         FZi3cUJVFHx9tcJhULppHUI0VyUqFcx8+HjU3XQH2edua5LgoE81hSBjyuUnMTaUEo
-         zcujGn0lBtVAQ==
-Message-ID: <427ceb32-054f-41ff-df95-446b18aa178f@collabora.com>
-Date:   Tue, 5 Sep 2023 19:06:43 +0530
+        by ams.source.kernel.org (Postfix) with ESMTPS id DD857B810B5;
+        Tue,  5 Sep 2023 13:38:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99E9EC433C8;
+        Tue,  5 Sep 2023 13:38:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693921083;
+        bh=GP737J1srpQ4kz3nu8M7l1IjptSuNU5aoFj2UR81F78=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=p7PNs2oCy5PK6thQg+MML7g9h+Qze+jXnCaKB4s0YxAq9xoaVBJOZUmlFH7Q1Ki78
+         6h2hYRoUE1Wei70OYk0CucVSfZ+sw/BEwTKCD8kTPYeqGBNBMEQyRXKk1lBtISK9AT
+         +Z8DowqF513Jpq69vmerwgb8e2GD4zQ2A2sLyo7iEiuvzfn0/twqlQY07isxWT8h2b
+         wcMQgSlJCNlpZtfBbyPfzRVQbA0nIxuAxlCXHlciqH+LlXZynX9Rjn595lt8Ny2Xjt
+         Z2/O0APiee24eihN2UCPSYeNCuNtik0f2VVm9cLa/XcAMC2if2vmIbHiuYmwZ+j1Il
+         xCIAYPoSxb0nQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 3110ACE0CF9; Tue,  5 Sep 2023 06:38:03 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 06:38:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc:     Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
+        trufanov@swemel.ru, vfh@swemel.ru,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
+ systems
+Message-ID: <98c676a6-3c11-48f1-b7cb-81356c362680@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20230904122114.66757-1-arefev@swemel.ru>
+ <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
+ <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
+ <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
+ <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 2/7] drm: ci: Force db410c to host mode
-Content-Language: en-US
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        dri-devel@lists.freedesktop.org, helen.koike@collabora.com,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        david.heidelberg@collabora.com, daniels@collabora.com,
-        gustavo.padovan@collabora.com, emma@anholt.net,
-        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
-        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org
-References: <20230904161516.66751-1-vignesh.raman@collabora.com>
- <20230904161516.66751-3-vignesh.raman@collabora.com>
- <CAA8EJpq_cmFQ6TGy1xELh3ButWKLfSkQcp5ix049s_iqKw6DvQ@mail.gmail.com>
- <ueznsu2dlvq5zp3ls262fww54bnlqa3e2ssr6f65vrrionloms@ir2ywgeajj4w>
- <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
- <2jz6wurh6ejbaejwtb5r5gukjuw4zs7ujk5hbwfpsn26o6esqe@g2nnb2gjpnjp>
- <CAA8EJpoGoopP64T1nm1ye1ukTwT=u+LYY1ubQG-9dQ-j41iHiA@mail.gmail.com>
- <6be5f5d8-8940-c79b-4a01-3f3d73641e4e@collabora.com>
- <ktikqf5hu2dmqb4p7dvrqv2tjm565qn3qu2gggrvncfu47l23j@o6t2rnpbya3x>
-From:   Vignesh Raman <vignesh.raman@collabora.com>
-In-Reply-To: <ktikqf5hu2dmqb4p7dvrqv2tjm565qn3qu2gggrvncfu47l23j@o6t2rnpbya3x>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime,
-
-On 05/09/23 17:27, Maxime Ripard wrote:
-> On Tue, Sep 05, 2023 at 05:11:43PM +0530, Vignesh Raman wrote:
->>>> Also, that node actually has a label ("usb"), defined here:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/qcom/msm8916.dtsi#n2322
->>>>
->>>> So you can end up with
->>>>
->>>> &usb {
->>>>           dr_mode = "host";
->>>> };
->>>
->>> ... which is the simplest and thus more robust one.
->>>
->>
->> Should it be,
->> &{/soc@0/usb} {
->> 	dr_mode = "host";
->> };
+On Tue, Sep 05, 2023 at 08:57:53AM -0400, Mathieu Desnoyers wrote:
+> On 9/4/23 09:58, Paul E. McKenney wrote:
+> > On Mon, Sep 04, 2023 at 08:58:48AM -0400, Mathieu Desnoyers wrote:
+> > > On 9/4/23 08:42, Mathieu Desnoyers wrote:
+> > > > On 9/4/23 08:21, Denis Arefev wrote:
+> > > > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+> > > > > is subject to overflow due to a failure to cast operands to a larger
+> > > > > data type before performing arithmetic.
+> > > > > 
+> > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
+> > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
+> > > > > which can indeed cause the signed 32-bit integer literal ("1") to
+> > > > > overflow
+> > > > > when shifted by any value greater than 31.
+> > > > 
+> > > > We could expand on this:
+> > > > 
+> > > > The maximum result of this subtraction is defined by the RCU_FANOUT
+> > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
+> > > > which can indeed cause the signed 32-bit integer literal ("1") to overflow
+> > > > when shifted by any value greater than 31 on a 64-bit system.
+> > > > 
+> > > > Moreover, when the subtraction value is 31, the 1 << 31 expression results
+> > > > in 0xffffffff80000000 when the signed integer is promoted to unsigned long
+> > > > on 64-bit systems due to type promotion rules, which is certainly not the
+> > > > intended result.
+> > 
+> > Thank you both!  Could you please also add something to the effect of:
+> > "Given default Kconfig options, this bug affects only systems with more
+> > than 512 CPUs."?
 > 
-> No. The &{/...} syntax refers to a path. &... refers to a label. They
-> are not equivalent.
+> Hi Paul,
+> 
+> I'm trying to understand this "NR_CPUS > 512 CPUs" default Kconfig lower
+> bound from kernel/rcu/Kconfig and rcu_node_tree.h. Is that on a 32-bit or
+> 64-bit architecture ? Also, I suspect that something like x86-64 MAXSMP (or
+> an explicit NR_CPUS) needs to be selected over a default Kconfig to support
+> that many CPUs.
 
-Sorry I was not clear before.
+64-bit only.  I believe that 32-bit kernels are unaffected by this bug.
 
-With,
-&usb {
-	dr_mode = "host";
-};
+The trick is that RCU reshapes the rcu_node tree in rcu_init_geometry(),
+which is invoked during early boot from rcu_init().  This reshaping is
+based on nr_cpu_ids.  So if NR_CPUS is (say) 4096, there will be enough
+rcu_node structures allocated at build time to accommodate 4096 CPUs
+(259 of them, 256 leaf nodes, four internal nodes, and one root node),
+but only assuming dense numbering of CPUs.  If rcu_init_geometry() sees
+that nr_cpu_ids is (say) 64, it will use only five of them, that is,
+four leaf nodes and one root node.  The leaf nodes will need to shift
+by at most 16, and the root node by at most 4.
 
-The target is <0xffffffff> and fdtoverlay fails to apply the dtbo.
+But the possibility of sparse CPU numbering (perhaps to your point)
+means that the bug can occur in 64-bit kernels booted on systems with
+512 CPUs or fewer if that system has sparse CPU IDs.  For example,
+there have been systems that disable all but one hardware thread per
+core, but leave places in the CPU numbering for those disabled threads.
+Such a system with four hardware threads per core could have a CPU 516
+(and thus be affected by this bug) with as few as 129 CPUs.
 
-With,
-&{/soc@0/usb} {
-          dr_mode = "host";
-};
+So a better request would be for something like: "Given default Kconfig
+options, this bug affects only 64-bit systems having at least one CPU
+for which smp_processor_id() returns 512 or greater."
 
-The target-path is "/soc@0/usb" (usb: usb@78d9000)
+Does that help, or am I missing your point?
 
-/ {
+							Thanx, Paul
 
-	fragment@0 {
-		target-path = "/soc@0/usb";
-
-		__overlay__ {
-			dr_mode = "host";
-		};
-	};
-};
-
-So will use  &{/...} syntax in this case.
-
-Regards,
-Vignesh
+> Thanks,
+> 
+> Mathieu
+> 
+> 
+> > 
+> > 							Thanx, Paul
+> > 
+> > > > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> > > > 
+> > > > With the commit message updated with my comment above, please also add:
+> > > > 
+> > > > Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures
+> > > > containing callbacks")
+> > > > Cc: <stable@vger.kernel.org> # v4.11
+> > > 
+> > > Sorry, the line above should read:
+> > > 
+> > > Cc: <stable@vger.kernel.org> # v4.11+
+> > > 
+> > > Thanks,
+> > > 
+> > > Mathieu
+> > > 
+> > > > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > 
+> > > > Thanks!
+> > > > 
+> > > > Mathieu
+> > > > 
+> > > > > 
+> > > > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
+> > > > > ---
+> > > > > v3: Changed the name of the patch, as suggested by
+> > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+> > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+> > > > >    kernel/rcu/srcutree.c | 4 ++--
+> > > > >    1 file changed, 2 insertions(+), 2 deletions(-)
+> > > > > 
+> > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+> > > > > index 20d7a238d675..6c18e6005ae1 100644
+> > > > > --- a/kernel/rcu/srcutree.c
+> > > > > +++ b/kernel/rcu/srcutree.c
+> > > > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct
+> > > > > srcu_struct *ssp, gfp_t gfp_flags)
+> > > > >                    snp->grplo = cpu;
+> > > > >                snp->grphi = cpu;
+> > > > >            }
+> > > > > -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+> > > > > +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+> > > > >        }
+> > > > >        smp_store_release(&ssp->srcu_sup->srcu_size_state,
+> > > > > SRCU_SIZE_WAIT_BARRIER);
+> > > > >        return true;
+> > > > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct
+> > > > > srcu_struct *ssp, struct srcu_node *snp
+> > > > >        int cpu;
+> > > > >        for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+> > > > > -        if (!(mask & (1 << (cpu - snp->grplo))))
+> > > > > +        if (!(mask & (1UL << (cpu - snp->grplo))))
+> > > > >                continue;
+> > > > >            srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+> > > > >        }
+> > > > 
+> > > 
+> > > -- 
+> > > Mathieu Desnoyers
+> > > EfficiOS Inc.
+> > > https://www.efficios.com
+> > > 
+> 
+> -- 
+> Mathieu Desnoyers
+> EfficiOS Inc.
+> https://www.efficios.com
+> 
