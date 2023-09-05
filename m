@@ -2,196 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0446879261D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:26:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2127929E2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245106AbjIEQRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:17:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39288 "EHLO
+        id S1354293AbjIEQ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353636AbjIEG7s (ORCPT
+        with ESMTP id S1353714AbjIEH3Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 02:59:48 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D11ECC7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 23:59:43 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-52a49a42353so3044384a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 23:59:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693897181; x=1694501981; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WrNPDmoDml6ewedsTVmufnMzTpEiM1aVD/7pamw5cy0=;
-        b=CiTImDm8bxsB0BLttDcrTGg4O0Klu1frvTzKlWCWwZ0ITft2L5RRbKpWf4pxKZ0tcE
-         Nq1PLic4fW+fPYbHlfKheFUzc4nUygsmvu17EgMzxQDX3wrZMUCduXHGC5nXRlO/tHT3
-         kkj3H7c1PkeBSybgRyoBE9Ogwf8iz+CtRR/ur9t/fEQS77t2c9CMjbbpnAbmyxuVs2OV
-         60K969ou9ukHni8tLa7vwBHIfzlefihpwEysQR5cfOO2U5/5qrXfXJNf3nTESXCbG66z
-         Wb5NDlB7hnudwuabpwgDmUg8xKEWw8lceki4TkRDVU0VykAeZtPRbLLFMdambVYWMnb9
-         Akow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693897181; x=1694501981;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WrNPDmoDml6ewedsTVmufnMzTpEiM1aVD/7pamw5cy0=;
-        b=BkR5rCu+RkRcB7lSWE2CyEit5MadSVf0R+AgpB+e1xae4SNkJq7PC9G64TWUOhBrtA
-         DhhVtXsd7pOxe9nMAqTc9+v3SCC4Qjj2e5pgbqCoSW6kAjSv1YvVpZt78oXGmSEECrb8
-         iWPTGk1YKLiUR9RD9yoiv7BHi4us5EvYszomDEqxtB59yuprFtbZ/FrbQ7ZBqIneLFTx
-         I1CBSQj1ARpPQc1wkjvZ7iPtpwzpf7m9UOqc6UZXckMqSWaSM0eElpElwMMB0IJezPCE
-         wCEzpLbb1p1+kbk8aiA0octJ20hDKYfoBzYnD9KZcepYDgUntVROggTNk2si1empSmev
-         Unow==
-X-Gm-Message-State: AOJu0YweXNPULN6kmmdGzZf7SCll203kLbmAeMDVPt43t+zApYyVl/uq
-        4uLPaXEwkjxdNhtIUCZ/tUzCdQ==
-X-Google-Smtp-Source: AGHT+IGesTQJgs+z4nRuVPWyMq2OEnKeRGOp/g7gWt/KdczzMAHmZ5xYUUJhLYCqvpdwwZVeh/f2KQ==
-X-Received: by 2002:a50:ee92:0:b0:52a:3ee9:a78a with SMTP id f18-20020a50ee92000000b0052a3ee9a78amr9260429edr.26.1693897181567;
-        Mon, 04 Sep 2023 23:59:41 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id m21-20020aa7c495000000b005233deb30aesm6719419edq.10.2023.09.04.23.59.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 23:59:40 -0700 (PDT)
-Message-ID: <c19e0ecf-7e8c-b9c3-0741-40c7aa3cb200@linaro.org>
-Date:   Tue, 5 Sep 2023 08:59:39 +0200
+        Tue, 5 Sep 2023 03:29:16 -0400
+X-Greylist: delayed 1699 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 00:29:13 PDT
+Received: from mx1.spacex.com (mx1.spacex.com [192.31.242.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF2612A;
+        Tue,  5 Sep 2023 00:29:13 -0700 (PDT)
+Received: from pps.filterd (mx1.spacex.com [127.0.0.1])
+        by mx1.spacex.com (8.17.1.19/8.17.1.19) with ESMTP id 3856mRwG024661;
+        Tue, 5 Sep 2023 00:00:20 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spacex.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=dkim; bh=cq23JOlHgu5rbK1y8IOKTZCBV67iU0GG+0pR+xzjC70=;
+ b=QZg0ONkZ4E7pUbbCYrsoh6pe7J9yxNfeTgYYiCerjlg/bC0/ZOnk2aG0HTiNC04kS5y1
+ 3hEpgQMkcIgAWrjnuQ/bEo1rzQ3HiMqmPnhDlsx5TawS/kq9DvBNsmmNJEaF1hhnQtYX
+ iEi3DnmaoIuhP5+m7jOj/c1CuaOkk2Rxspr1cJwCThMIZW4sEmP5JvNhmeJO3HO19QaJ
+ Czu4/TGJcAxvKNHPn7NcDv3ZF9cP5uGW7hhfI1Ig9/19tRf5qzHRg/kSQfgCeZasKUMQ
+ H/ffqWLtlwm7Q+r3UmlJJ55vSkbII6060ZoSzvxc5q1svptzoFOb2uytiKulZ+uhQQDR pA== 
+Received: from smtp.spacex.corp ([10.34.3.233])
+        by mx1.spacex.com (PPS) with ESMTPS id 3sv2fgkwgc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 05 Sep 2023 00:00:20 -0700
+Received: from spacex.com (10.1.32.161) by HT-DC-EX-D2-N1.spacex.corp
+ (10.34.3.233) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 5 Sep
+ 2023 00:00:20 -0700
+Date:   Tue, 5 Sep 2023 00:00:10 -0700
+From:   Andy Spencer <aspencer@spacex.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     Kevin Bosien <kbosien@spacex.com>, Jim Gruen <jgruen@spacex.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Mario Tesi <mario.tesi@st.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] RFC: iio: lsm6dsx: Support temperature channel on
+ some devices
+Message-ID: <20230905070010.GA10702@spacex.com>
+References: <20230829-iio-spacex-lsm6ds0-v2-1-584e161b612f@linaro.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add compatibles for SDX75
-Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, djakov@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel@quicinc.com
-References: <1693889975-19122-1-git-send-email-quic_rohiagar@quicinc.com>
- <1693889975-19122-2-git-send-email-quic_rohiagar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1693889975-19122-2-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20230829-iio-spacex-lsm6ds0-v2-1-584e161b612f@linaro.org>
+X-ClientProxiedBy: ht-dc-ex-d3-n1.spacex.corp (10.34.3.236) To
+ HT-DC-EX-D2-N1.spacex.corp (10.34.3.233)
+X-Proofpoint-GUID: KB-a4pQQh9igq_YYGD7iljXL0vDjqAlF
+X-Proofpoint-ORIG-GUID: KB-a4pQQh9igq_YYGD7iljXL0vDjqAlF
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 suspectscore=0
+ impostorscore=0 adultscore=0 clxscore=1011 mlxlogscore=999
+ priorityscore=1501 mlxscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050062
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2023 06:59, Rohit Agarwal wrote:
-> Add dt-bindings compatibles and interconnect IDs for
-> Qualcomm SDX75 platform.
-> 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
->  .../bindings/interconnect/qcom,sdx75-rpmh.yaml     | 100 ++++++++++++++++++++
->  include/dt-bindings/interconnect/qcom,sdx75.h      | 102 +++++++++++++++++++++
->  2 files changed, 202 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
->  create mode 100644 include/dt-bindings/interconnect/qcom,sdx75.h
-> 
-> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml b/Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
-> new file mode 100644
-> index 0000000..f2dc87c
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
-> @@ -0,0 +1,100 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/interconnect/qcom,sdx75-rpmh.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm RPMh Network-On-Chip Interconnect on SDX75
-> +
-> +maintainers:
-> +  - Georgi Djakov <djakov@kernel.org>
+Hi Linus,
 
-I don't think Georgi maintains this device. It's maintainer of device,
-not the subsystem.
+Thanks for helping get this into mainline :)
 
-> +
-> +description:
-> +  RPMh interconnect providers support system bandwidth requirements through
-> +  RPMh hardware accelerators known as Bus Clock Manager (BCM). The provider is
-> +  able to communicate with the BCM through the Resource State Coordinator (RSC)
-> +  associated with each execution environment. Provider nodes must point to at
-> +  least one RPMh device child node pertaining to their RSC and each provider
-> +  can map to multiple RPMh resources.
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,sdx75-clk-virt
-> +      - qcom,sdx75-dc-noc
-> +      - qcom,sdx75-gem-noc
-> +      - qcom,sdx75-mc-virt
-> +      - qcom,sdx75-pcie-anoc
-> +      - qcom,sdx75-system-noc
-> +
-> +  '#interconnect-cells': true'
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +allOf:
-> +  - $ref: qcom,rpmh-common.yaml#
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,sdx75-clk-virt
-> +              - qcom,sdx75-mc-virt
-> +    then:
-> +      properties:
-> +        reg: false
-> +    else:
-> +      required:
-> +        - reg
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,sdx75-clk-virt
-> +    then:
-> +      properties:
-> +        clocks:
-> +          items:
-> +            - description: RPMH CC QPIC Clock
-> +
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            enum:
-> +              - qcom,sdx75-clk-virt
 
-This if: clause should be merged with the one earlier.
+> Changes in v2:
+> - Put to RFC because I can't test changes.
+> - Added some mail addresses to SpaceX to the header. Maybe you
+>   guys can check if this works for you. Or forward to designated
+>   open source ambassador or whatever can help. (Addresses found
+>   in SpaceX code drop.)
 
-> +    then:
-> +      required:
-> +        - clocks
-> +    else:
-> +      properties:
-> +        clocks: false
-> +
-> +required:
-> +  - compatible
+I am familiar with these changes and can help review and test this.
 
-Please keep the order like in example-schema, so required: goes before
-allOf.
 
-> +
-> +unevaluatedProperties: false
+> - Drop the code with strings for ism330dhc as we concluded that
+>   this is probably ism330dhcx which is already supported.
+>   (Would be nice if SpaceX can confirm.)
 
-Best regards,
-Krzysztof
+I believe we did use the ism330dhc a long time ago but have since
+switched to the ism330dhcx. The register maps are compatible, so the old
+name stuck around. Adding support for ism330dhcx only is fine.
 
+
+> - Don't write in nonsense register 0x0a for temperature sensor
+> - More elaborate code to just avoid writing ODR for the temperature
+>   sensor and instead rely on gyro or accelerometer to drive
+>   the odr
+
+OK, we only use this in batch mode, I'll confirm that removing this
+write (for non-batch mode) works as expected.
+
+
+> +				/*
+> +				 * NOTE: this ODR will be capped and controllerd by the
+> +				 * gyro and accelerometer don't have any reg to configure
+> +				 * this ODR.
+> +				 */
+> +				.odr_avl[0] = {  12500, 0x01 },
+> +				.odr_avl[1] = {  26000, 0x02 },
+> +				.odr_avl[2] = {  52000, 0x03 },
+> +				.odr_len = 3,
+
+As per the other thread, the data rate should be 1600, 12500, and 52000.
+
+
+> +		/*
+> +		 * The temperature sensor has a fixed scale and offset such
+> +		 * that: temp_C = (raw / 256) + 25
+> +		 */
+> +		sensor->gain = 3906;
+> +		sensor->offset = 25;
+
+I believe the gain should be set to 3906250 now (1e9 / 256). 3906 was an
+approximation from an older kernel that used IIO_VAL_INT_PLUS_MICRO
+instead of IIO_VAL_INT_PLUS_NANO.
+
+Also in st_lsm6dsx_alloc_iiodev(), I believe we can/should avoid setting
+available_scan_masks, the mask (0x7) isn't really valid for the
+temperature sensor that has only one channel.
