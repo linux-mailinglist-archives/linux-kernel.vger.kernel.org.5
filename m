@@ -2,285 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 75745792583
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:23:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFCF179264A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235426AbjIEQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S240825AbjIEQJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:09:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354278AbjIEKbD (ORCPT
+        with ESMTP id S1354282AbjIEKbv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:31:03 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34F6199;
-        Tue,  5 Sep 2023 03:30:58 -0700 (PDT)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3859FYNi003973;
-        Tue, 5 Sep 2023 10:30:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=HH1fGw8OoDxxKsHO3+PgpjDkieydz0BVf4fiWs/N+x4=;
- b=DUVjvZHjxHg6llwDgruuT1VwrLVn4MuOh94LEFpXQB1bU3B4xnz3O6lIyG+aIf60qxfS
- YAHLx0jvObc+60ubQTYQokdy0T+vOjtG3H1Qvc4HOzUCiIjE9mNONXTqZWdFYtRPF3G1
- Vud3nWO6r4YSJE2FGbWf4yAGrNZvWrXY8YcIfhHTWr2e/i3bTNDg9IbJhzg80f+A6Iy6
- BqEWz1JvoSI9CH8HbfZAwzV6gEXjjCVZKysNRHgTRqQZMeSASJdGuIHJHBDXsGDbq4xp
- K5nW5dvfYOidbZYsK8kow8dnRjlhBc+X8iuW3abII4/TmZyVloA9oKYbL8QNezgzOqab ug== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swpr6h335-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 10:30:44 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 385AUeEn018085;
-        Tue, 5 Sep 2023 10:30:41 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3sux4km175-1;
-        Tue, 05 Sep 2023 10:30:41 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385AUfl0018138;
-        Tue, 5 Sep 2023 10:30:41 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 385AUf7p018132;
-        Tue, 05 Sep 2023 10:30:41 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
-        id E2DC11D1B; Tue,  5 Sep 2023 16:00:40 +0530 (+0530)
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
-        quic_wcheng@quicinc.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kernel@quicinc.com,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>
-Subject: [PATCH v2 5/5] phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support
-Date:   Tue,  5 Sep 2023 16:00:38 +0530
-Message-Id: <1693909838-6682-6-git-send-email-quic_rohiagar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1693909838-6682-1-git-send-email-quic_rohiagar@quicinc.com>
-References: <1693909838-6682-1-git-send-email-quic_rohiagar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 8o4Q8RZhASXWmuc4EccFIj0JaAKwyWcy
-X-Proofpoint-GUID: 8o4Q8RZhASXWmuc4EccFIj0JaAKwyWcy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_08,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 suspectscore=0 bulkscore=0
- impostorscore=0 mlxlogscore=939 clxscore=1015 adultscore=0
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2308100000 definitions=main-2309050093
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,UPPERCASE_50_75
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 06:31:51 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABB9E199
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:31:47 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id a640c23a62f3a-9a603159f33so340662966b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:31:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1693909906; x=1694514706; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=S35RjLtTeUiL0oK4WaMu3773GIHLmxuJ99VNH62qR3I=;
+        b=QrzMNPFUg9LSi8GQnuGc0hR4eANbZzNr3iUKsbWQ4Txo5WCMstfky91Br/5+QJV7CE
+         WRCktZidvpTLsLDxTimIew5iG5LXE6uNts1MM+zAnkvPMkXhuK+8uCiTgJRTZ1DneP1u
+         UNvf2h/V8eMTww+QYCM/9YeZu2ppURyR65XzWYu65pul+uJODHDraWkxwRbsx0+Vu1OP
+         ixhiBjPQvv5qV6IDanq+n9lgvjn0BuD7npJ0AgPRXLlCYeyunW4mjeVJ3me6ESNs1P+E
+         PEXORthZ9ZncD7NJXw+2ycZYYX9MMyPlLeXVTb7rXonLAllWC4T/g6U3eumrahBH0vvs
+         tVJA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693909906; x=1694514706;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S35RjLtTeUiL0oK4WaMu3773GIHLmxuJ99VNH62qR3I=;
+        b=Iq1rTM0TR4ktnjYZu2/w80qIPQTOu30lpVuZxvTidQRtVg94JqeoesNGvpotpW8Gsf
+         cPVM6G3tS2fHhYkHBGmdzNEjRMFtp8gSKNzObKhEzhQCjzuwfT9ccHz/lUaoXoWphsA4
+         QBTAnTA8iNndnE1XdBnErXZMXnyhvr7/X81sEylhXpUtus8rni7K4D6VRRcdpl5X3cll
+         JqO70YkeFwdRSaPZmgtnvngk6S7Owh8S3QLY6N0iq75LCHIikD8E+3+33NtFb8CgPfri
+         d+huYG+5CW54t7XFkonmiZPcRY0Prnt/ToTTUjZIpzIEPgKkGg0/1V/v5oSC1YVWiwFu
+         GxLQ==
+X-Gm-Message-State: AOJu0YzczwThbEJFlue8ZsF1uQkYMaxTO2Lunjw4uJE/WooRc5Og0ntf
+        BLD214t7ZGZE3mppjJXJgb2zIQ==
+X-Google-Smtp-Source: AGHT+IHXiMYQ0dzTcFvGucvEc9/hoAyHyfOVwPGQSUHueN8hnJX8qAOgE5kuEmsUExIqJ9+lbjSNqw==
+X-Received: by 2002:a17:906:319b:b0:9a1:fcd7:b825 with SMTP id 27-20020a170906319b00b009a1fcd7b825mr9273316ejy.71.1693909905990;
+        Tue, 05 Sep 2023 03:31:45 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id i7-20020a170906850700b00993664a9987sm7371811ejx.103.2023.09.05.03.31.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 03:31:44 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 12:31:42 +0200
+From:   Andrew Jones <ajones@ventanamicro.com>
+To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
+Cc:     Anup Patel <apatel@ventanamicro.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Anup Patel <anup@brainfault.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "ardb@kernel.org" <ardb@kernel.org>,
+        "Li, Haicheng" <haicheng.li@intel.com>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+Message-ID: <20230905-d4d7b1944ac3487156ce4f5c@orel>
+References: <20230806024715.3061589-1-xiao.w.wang@intel.com>
+ <CAAhSdy2_djw2JX+8tmF2V190+x9KLvt7u8rCX-TaGCKQrUVOYQ@mail.gmail.com>
+ <DM8PR11MB57512001CAFA07EC58203A7BB8E6A@DM8PR11MB5751.namprd11.prod.outlook.com>
+ <20230830-breeze-washboard-ef496d5c9d5a@wendy>
+ <DM8PR11MB575116E5EE183D7D41361B74B8E5A@DM8PR11MB5751.namprd11.prod.outlook.com>
+ <CAK9=C2XTS539ew_rty6_MOwyZkdBBbGBCzxp33u1UpMP5STAqQ@mail.gmail.com>
+ <20230831-f0f847c5703875f1e67635c1@orel>
+ <DM8PR11MB5751CDA12CB037C678F1B829B8E8A@DM8PR11MB5751.namprd11.prod.outlook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DM8PR11MB5751CDA12CB037C678F1B829B8E8A@DM8PR11MB5751.namprd11.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for USB3 QMP PHY found in SDX75 platform.
 
-Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
----
- drivers/phy/qualcomm/phy-qcom-qmp-usb.c | 158 ++++++++++++++++++++++++++++++++
- 1 file changed, 158 insertions(+)
+Hi Xiao,
 
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-index 0130bb8..57b8b5b 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-@@ -23,6 +23,7 @@
- #include "phy-qcom-qmp-pcs-misc-v3.h"
- #include "phy-qcom-qmp-pcs-usb-v4.h"
- #include "phy-qcom-qmp-pcs-usb-v5.h"
-+#include "phy-qcom-qmp-pcs-usb-v6.h"
- 
- /* QPHY_SW_RESET bit */
- #define SW_RESET				BIT(0)
-@@ -858,6 +859,134 @@ static const struct qmp_phy_init_tbl sdx65_usb3_uniphy_rx_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V5_RX_SIGDET_ENABLES, 0x00),
- };
- 
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_serdes_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE1, 0x9e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE1, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE1, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORECLK_DIV_MODE1, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE1, 0x2e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE1, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE1, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE1, 0xea),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE1_MODE1, 0x25),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE2_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE1, 0xb7),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE1, 0x1e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE0, 0xb7),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE0, 0x1e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE0, 0x9e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE0, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x12),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x34),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE0, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE0, 0xea),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE1_MODE0, 0x25),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE2_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BG_TIMER, 0x0e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_EN_CENTER, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER1, 0x31),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER2, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYSCLK_BUF_ENABLE, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYSCLK_EN_SEL, 0x1a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_CFG, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORE_CLK_EN, 0x20),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_CONFIG_1, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_1, 0xb6),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_2, 0x4b),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_3, 0x37),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_ADDITIONAL_MISC, 0x0c),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_tx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_TX, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_RX, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_OFFSET_TX, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_OFFSET_RX, 0x09),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_1, 0xf5),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_3, 0x3f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_4, 0x3f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_5, 0x5f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RCV_DETECT_LVL_2, 0x12),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_PI_QEC_CTRL, 0x21),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_rx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FO_GAIN, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SO_GAIN, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_FO_GAIN, 0x2f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x7f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_COUNT_LOW, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_COUNT_HIGH, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_PI_CONTROLS, 0x99),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_THRESH1, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_THRESH2, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_GAIN1, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_GAIN2, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_AUX_DATA_TCOARSE_TFINE, 0xa0),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_VGA_CAL_CNTRL1, 0x54),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_VGA_CAL_CNTRL2, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_GM_CAL, 0x13),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL2, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL3, 0x4a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL4, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_IDAC_TSETTLE_LOW, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_IDAC_TSETTLE_HIGH, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x47),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CNTRL, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_DEGLITCH_CNTRL, 0x0e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_LOW, 0x3f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH, 0xbf),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH2, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH3, 0xdf),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH4, 0xed),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_LOW, 0xdc),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH, 0x5c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH2, 0x9c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH3, 0x1d),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH4, 0x09),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_DFE_EN_TIMER, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_DFE_CTLE_POST_CAL_OFFSET, 0x38),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_DCC_CTRL1, 0x0c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_VTH_CODE, 0x10),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CAL_CTRL1, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CAL_TRIM, 0x08),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_pcs_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG1, 0xc4),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG2, 0x89),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG3, 0x20),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG6, 0x13),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_REFGEN_REQ_CONFIG1, 0x21),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_RX_SIGDET_LVL, 0xaa),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_CDR_RESET_TIME, 0x0a),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_ALIGN_DETECT_CONFIG1, 0x88),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_ALIGN_DETECT_CONFIG2, 0x13),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_PCS_TX_RX_CONFIG, 0x0c),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG1, 0x4b),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG5, 0x10),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_pcs_usb_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
-+};
-+
- static const struct qmp_phy_init_tbl sm8350_usb3_uniphy_tx_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V5_TX_LANE_MODE_1, 0xa5),
- 	QMP_PHY_INIT_CFG(QSERDES_V5_TX_LANE_MODE_2, 0x82),
-@@ -1556,6 +1685,32 @@ static const struct qmp_phy_cfg sdx65_usb3_uniphy_cfg = {
- 	.has_pwrdn_delay	= true,
- };
- 
-+static const struct qmp_phy_cfg sdx75_usb3_uniphy_cfg = {
-+	.lanes			= 1,
-+	.offsets		= &qmp_usb_offsets_v5,
-+
-+	.serdes_tbl		= sdx75_usb3_uniphy_serdes_tbl,
-+	.serdes_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_serdes_tbl),
-+	.tx_tbl			= sdx75_usb3_uniphy_tx_tbl,
-+	.tx_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_tx_tbl),
-+	.rx_tbl			= sdx75_usb3_uniphy_rx_tbl,
-+	.rx_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_rx_tbl),
-+	.pcs_tbl		= sdx75_usb3_uniphy_pcs_tbl,
-+	.pcs_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_pcs_tbl),
-+	.pcs_usb_tbl		= sdx75_usb3_uniphy_pcs_usb_tbl,
-+	.pcs_usb_tbl_num	= ARRAY_SIZE(sdx75_usb3_uniphy_pcs_usb_tbl),
-+	.clk_list		= qmp_v4_sdx55_usbphy_clk_l,
-+	.num_clks		= ARRAY_SIZE(qmp_v4_sdx55_usbphy_clk_l),
-+	.reset_list		= msm8996_usb3phy_reset_l,
-+	.num_resets		= ARRAY_SIZE(msm8996_usb3phy_reset_l),
-+	.vreg_list		= qmp_phy_vreg_l,
-+	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
-+	.regs			= qmp_v5_usb3phy_regs_layout,
-+	.pcs_usb_offset		= 0x1000,
-+
-+	.has_pwrdn_delay	= true,
-+};
-+
- static const struct qmp_phy_cfg sm8350_usb3_uniphy_cfg = {
- 	.lanes			= 1,
- 
-@@ -2256,6 +2411,9 @@ static const struct of_device_id qmp_usb_of_match_table[] = {
- 		.compatible = "qcom,sdx65-qmp-usb3-uni-phy",
- 		.data = &sdx65_usb3_uniphy_cfg,
- 	}, {
-+		.compatible = "qcom,sdx75-qmp-usb3-uni-phy",
-+		.data = &sdx75_usb3_uniphy_cfg,
-+	}, {
- 		.compatible = "qcom,sm6115-qmp-usb3-phy",
- 		.data = &qcm2290_usb3phy_cfg,
- 	}, {
--- 
-2.7.4
+On Tue, Sep 05, 2023 at 09:46:20AM +0000, Wang, Xiao W wrote:
+> 
+> 
+> > -----Original Message-----
+> > From: Andrew Jones <ajones@ventanamicro.com>
+> > Sent: Friday, September 1, 2023 1:00 AM
+> > To: Anup Patel <apatel@ventanamicro.com>
+> > Cc: Wang, Xiao W <xiao.w.wang@intel.com>; Conor Dooley
+> > <conor.dooley@microchip.com>; Anup Patel <anup@brainfault.org>;
+> > paul.walmsley@sifive.com; palmer@dabbelt.com; aou@eecs.berkeley.edu;
+> > ardb@kernel.org; Li, Haicheng <haicheng.li@intel.com>; linux-
+> > riscv@lists.infradead.org; linux-efi@vger.kernel.org; linux-
+> > kernel@vger.kernel.org
+> > Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> > 
+> > On Thu, Aug 31, 2023 at 09:37:30PM +0530, Anup Patel wrote:
+> > > +Andrew
+> > >
+> > > On Thu, Aug 31, 2023 at 9:29 PM Wang, Xiao W <xiao.w.wang@intel.com>
+> > wrote:
+> > > >
+> > > >
+> > > > > -----Original Message-----
+> > > > > From: Conor Dooley <conor.dooley@microchip.com>
+> > > > > Sent: Wednesday, August 30, 2023 2:59 PM
+> > > > > To: Wang, Xiao W <xiao.w.wang@intel.com>
+> > > > > Cc: Anup Patel <anup@brainfault.org>; paul.walmsley@sifive.com;
+> > > > > palmer@dabbelt.com; aou@eecs.berkeley.edu; ardb@kernel.org; Li,
+> > Haicheng
+> > > > > <haicheng.li@intel.com>; linux-riscv@lists.infradead.org; linux-
+> > > > > efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > > > Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> > > > >
+> > > > > On Wed, Aug 30, 2023 at 06:14:12AM +0000, Wang, Xiao W wrote:
+> > > > > > Hi,
+> > > > > >
+> > > > > > > -----Original Message-----
+> > > > > > > From: Anup Patel <anup@brainfault.org>
+> > > > > > > Sent: Tuesday, August 29, 2023 7:08 PM
+> > > > > > > To: Wang, Xiao W <xiao.w.wang@intel.com>
+> > > > > > > Cc: paul.walmsley@sifive.com; palmer@dabbelt.com;
+> > > > > > > aou@eecs.berkeley.edu; ardb@kernel.org; Li, Haicheng
+> > > > > > > <haicheng.li@intel.com>; linux-riscv@lists.infradead.org; linux-
+> > > > > > > efi@vger.kernel.org; linux-kernel@vger.kernel.org
+> > > > > > > Subject: Re: [PATCH] RISC-V: Optimize bitops with Zbb extension
+> > > > > > >
+> > > > > > > On Sun, Aug 6, 2023 at 8:09 AM Xiao Wang
+> > <xiao.w.wang@intel.com>
+> > > > > wrote:
+> > > > > > > >
+> > > > > > > > This patch leverages the alternative mechanism to dynamically
+> > optimize
+> > > > > > > > bitops (including __ffs, __fls, ffs, fls) with Zbb instructions. When
+> > > > > > > > Zbb ext is not supported by the runtime CPU, legacy implementation
+> > is
+> > > > > > > > used. If Zbb is supported, then the optimized variants will be
+> > selected
+> > > > > > > > via alternative patching.
+> > > > > > > >
+> > > > > > > > The legacy bitops support is taken from the generic C
+> > implementation as
+> > > > > > > > fallback.
+> > > > > > > >
+> > > > > > > > If the parameter is a build-time constant, we leverage compiler
+> > builtin to
+> > > > > > > > calculate the result directly, this approach is inspired by x86 bitops
+> > > > > > > > implementation.
+> > > > > > > >
+> > > > > > > > EFI stub runs before the kernel, so alternative mechanism should not
+> > be
+> > > > > > > > used there, this patch introduces a macro EFI_NO_ALTERNATIVE for
+> > this
+> > > > > > > > purpose.
+> > > > > > >
+> > > > > > > I am getting the following compile error with this patch:
+> > > > > > >
+> > > > > > >   GEN     Makefile
+> > > > > > >   UPD     include/config/kernel.release
+> > > > > > >   UPD     include/generated/utsrelease.h
+> > > > > > >   CC      kernel/bounds.s
+> > > > > > > In file included from /home/anup/Work/riscv-
+> > > > > > > test/linux/include/linux/bitmap.h:9,
+> > > > > > >                  from
+> > > > > > > /home/anup/Work/riscv-
+> > > > > test/linux/arch/riscv/include/asm/cpufeature.h:9,
+> > > > > > >                  from
+> > > > > > > /home/anup/Work/riscv-
+> > test/linux/arch/riscv/include/asm/hwcap.h:90,
+> > > > > >
+> > > > > >
+> > > > > > It looks there's a cyclic header including, which leads to this build error.
+> > > > > > I checked https://github.com/kvm-riscv/linux/tree/master and
+> > > > > > https://github.com/torvalds/linux/tree/master, but I don't see
+> > > > > > "asm/cpufeature.h" is included in asm/hwcap.h:90, maybe I miss
+> > > > > something,
+> > > > > > could you help point me to the repo/branch I should work on?
+> > > > >
+> > > > > From MAINTAINERS:
+> > > > >       RISC-V ARCHITECTURE
+> > > > >       ...
+> > > > >       T:      git git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git
+> > > > >
+> > > > > The for-next branch there is what you should be basing work on top of.
+> > > > > AFAICT, you've made bitops.h include hwcap.h while cpufeature.h
+> > includes
+> > > > > both bitops.h (indirectly) and hwcap.h.
+> > > >
+> > > > Thanks for the info, but I can't reproduce Anup's build error with this for-
+> > next branch, cpufeature.h is not included by hwcap.h there.
+> > > > Maybe Anup could help double check the test environment?
+> > >
+> > > I figured that cpufeature.h included in hwcap.h is added by
+> > > Drew's patch "RISC-V: Enable cbo.zero in usermode"
+> > 
+> > I think we should probably split hwcap.h into two parts. The defines stay
+> > and the rest can move to cpufeature.h
+> 
+> OK, I will base on your cbo.zero enabling patch series to make a new version. Will move some contents from hwcap.h into cpufeature.h so that we can remove the including of cpufeature.h in hwcap.h.
+> 
 
+I just realized I forgot to CC you on my v3 posting of the cbo.zero
+series[1] yesterday. Sorry about that.
+
+[1] https://lore.kernel.org/all/20230904170220.167816-8-ajones@ventanamicro.com/
+
+Thanks,
+drew
