@@ -2,129 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9A3792BD9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A78792A7C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242005AbjIERCv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:02:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
+        id S239688AbjIEQiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354133AbjIEJtm (ORCPT
+        with ESMTP id S1354139AbjIEJyn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:49:42 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 341781AD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:49:39 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E2F3111FB;
-        Tue,  5 Sep 2023 02:50:16 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 352A13F793;
-        Tue,  5 Sep 2023 02:49:38 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 10:49:33 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] panic: Use atomic_try_cmpxchg in panic() and nmi_panic()
-Message-ID: <ZPb5kt_XD6Ta2X6n@FVFF77S0Q05N>
-References: <20230904152230.9227-1-ubizjak@gmail.com>
+        Tue, 5 Sep 2023 05:54:43 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6516D1B4
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:54:39 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 1E0EB1F74D;
+        Tue,  5 Sep 2023 09:54:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1693907678; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=OtL84FcEIthPu1azLIEBceBkZW4PPRMQ449CQaLKrj4=;
+        b=JqD6PwEqmeOPoAfo53ptle0dBOZ8S3aM7NhtPU+1U6KG/D+7WpPCtr0dcf2yJT8LMdiSpd
+        N3rj8nZjuQpQ9qI3Vwc/LQzPAaxfSocdQKj4HvHjAV6exJX2z42UqD52ME9wYX2z+xW675
+        w2niBnRam02clQ0651pO/tIK6JGO+4w=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 6CAF12C142;
+        Tue,  5 Sep 2023 09:54:37 +0000 (UTC)
+Date:   Tue, 5 Sep 2023 11:54:37 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     rostedt@goodmis.org, john.ogness@linutronix.de,
+        senozhatsky@chromium.org, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Yunlong Xing <yunlong.xing@unisoc.com>, enlinmu@gmail.com,
+        yunlong.xing23@gmail.com
+Subject: Re: [PATCH] Revert "printk: export symbols for debug modules"
+Message-ID: <ZPb63crhycde0E0Q@alley>
+References: <20230905081902.321778-1-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904152230.9227-1-ubizjak@gmail.com>
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230905081902.321778-1-hch@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 05:21:01PM +0200, Uros Bizjak wrote:
-> Use atomic_try_cmpxchg instead of atomic_cmpxchg (*ptr, old, new) == old
-> in panic() and nmi_panic().  x86 CMPXCHG instruction returns success in
-> ZF flag, so this change saves a compare after cmpxchg (and related move
-> instruction in front of cmpxchg).
+Added people from the original thread into Cc.
+
+On Tue 2023-09-05 10:19:02, Christoph Hellwig wrote:
+> This reverts commit 3e00123a13d824d63072b1824c9da59cd78356d9.
 > 
-> Also, rename cpu variable to this_cpu in nmi_panic() and try to unify
-> logic flow between panic() and nmi_panic().
-> 
-> No functional change intended.
+> No, we never export random symbols for out of tree modules.
 
-Do we really need to save a compare here? A panic isn't exactly a fast path,
-and robustness and code clarity is far more important than performance here.
+Yeah, I did not have a good feeling about this patch.
 
-> 
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> ---
->  kernel/panic.c | 22 +++++++++++++---------
->  1 file changed, 13 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/panic.c b/kernel/panic.c
-> index 07239d4ad81e..8740ac65cb2c 100644
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -192,14 +192,15 @@ atomic_t panic_cpu = ATOMIC_INIT(PANIC_CPU_INVALID);
->   */
->  void nmi_panic(struct pt_regs *regs, const char *msg)
->  {
-> -	int old_cpu, cpu;
-> +	int old_cpu, this_cpu;
->  
-> -	cpu = raw_smp_processor_id();
-> -	old_cpu = atomic_cmpxchg(&panic_cpu, PANIC_CPU_INVALID, cpu);
-> +	old_cpu = PANIC_CPU_INVALID;
-> +	this_cpu = raw_smp_processor_id();
->  
-> -	if (old_cpu == PANIC_CPU_INVALID)
-> +	/* atomic_try_cmpxchg updates old_cpu on failure */
-> +	if (atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu))
->  		panic("%s", msg);
-> -	else if (old_cpu != cpu)
-> +	else if (old_cpu != this_cpu)
->  		nmi_panic_self_stop(regs);
->  }
->  EXPORT_SYMBOL(nmi_panic);
-> @@ -311,15 +312,18 @@ void panic(const char *fmt, ...)
->  	 * stop themself or will wait until they are stopped by the 1st CPU
->  	 * with smp_send_stop().
->  	 *
-> -	 * `old_cpu == PANIC_CPU_INVALID' means this is the 1st CPU which
-> -	 * comes here, so go ahead.
-> +	 * cmpxchg success means this is the 1st CPU which comes here,
-> +	 * so go ahead.
->  	 * `old_cpu == this_cpu' means we came from nmi_panic() which sets
->  	 * panic_cpu to this CPU.  In this case, this is also the 1st CPU.
->  	 */
-> +	old_cpu = PANIC_CPU_INVALID;
->  	this_cpu = raw_smp_processor_id();
-> -	old_cpu  = atomic_cmpxchg(&panic_cpu, PANIC_CPU_INVALID, this_cpu);
->  
-> -	if (old_cpu != PANIC_CPU_INVALID && old_cpu != this_cpu)
-> +	/* atomic_try_cmpxchg updates old_cpu on failure */
-> +	if (atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu))
-> +		;
-> +	else if (old_cpu != this_cpu)
->  		panic_smp_self_stop();
+I accepted it because there was an intention to upstream
+the module, see
+https://lore.kernel.org/all/CAAfh-jM0B2Cn579B0CkCrW44pJGGvjs112K+oMuViib+jDKafg@mail.gmail.com/
 
-That empty statement is quite painful to read and would be easy to break in
-future with other changes. It'd be better to either avoid that entirely, or use
-braces, e.g.
+I think that it was bad decision. We should not export
+symbols when there is no in-tree user.
 
-	if (!atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu) &&
-	    old_cpu != this_cpu)
-		 panic_smp_self_stop();
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-... or:
+Acked-by: Petr Mladek <pmladek@suse.com>
 
-	if (atomic_try_cmpxchg(&panic_cpu, &old_cpu, this_cpu)) {
-		/* do nothing */
-	} else if (old_cpu != this_cpu) {
-		panic_smp_self_stop();
-	}
-
-The former is closer to the existing logic, so that's probably best.
-
-Mark.
+Best Regards,
+Petr
