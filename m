@@ -2,92 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 616C679313E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:49:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9ED85793124
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235241AbjIEVtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:49:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33902 "EHLO
+        id S244485AbjIEVoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjIEVtH (ORCPT
+        with ESMTP id S231590AbjIEVoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:49:07 -0400
-X-Greylist: delayed 366 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 14:48:30 PDT
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24A70E42
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:48:30 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A66EDC433C7;
-        Tue,  5 Sep 2023 21:42:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693950123;
-        bh=2Iajz7evUFqefJ+Ul0Dd22EaqRmY10gsQ1dCN3caeg8=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=h0ECxCYhZL6DrKXu08nzNYIMTmvCxCGQ4K7ruSgE55Mn6fy0xifArqhGWNAAqA8Ne
-         +88ZqFzExO51dLZtLqOfLDAI/5gXr5tC3yZFdojfpM7vK2zubAaSk57N38nV3FGThb
-         IjTBZ/eHgpPb77pq4C91EQd5uX2pB53yk+4CbKKycwu1/Sc3tYj4xX+TN5DHv3QA2O
-         auHGnWm+VxOt5cLXnCiQ5hvVSrLEU6xqaRwh2Y9kEag2hZutW7mMoSAvmY9lyag8Ci
-         +sZX2069xJUs81UwSgiSp+zqbpnlXxoRo+fKdAXfwhEoUFf6nJMRp6DTq8d9FIuqc1
-         rP+grTXvU3/CA==
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Esteban Blanc <eblanc@baylibre.com>,
-        Jerome Neanne <jneanne@baylibre.com>
-Cc:     linux-kernel@vger.kernel.org, u-kumar1@ti.com, jpanis@baylibre.com,
-        khilman@baylibre.com, s.sharma@ti.com, aseketeli@baylibre.com
-In-Reply-To: <20230828-tps6594_random_boot_crash_fix-v1-1-f29cbf9ddb37@baylibre.com>
-References: <20230828-tps6594_random_boot_crash_fix-v1-1-f29cbf9ddb37@baylibre.com>
-Subject: Re: [PATCH] regulator: tps6594-regulator: Fix random kernel crash
-Message-Id: <169395012139.75721.16869885332079252742.b4-ty@kernel.org>
-Date:   Tue, 05 Sep 2023 22:42:01 +0100
-MIME-Version: 1.0
+        Tue, 5 Sep 2023 17:44:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DEDD1B7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:42:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693950159;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=2votGtQ/EmYNPgTamqeLYt96PKfJV24HUJfzovJnoxc=;
+        b=TbwCBz8MIGGi2CjIVhfivGUCQWbOqqvNji/1te/8P6UH7lTSdYUAVsRhNSR4XwZNX6YPf7
+        h6h21x25fUAUN36qMtt6TgoFRN3Fd7EmWj9RUMuRSeVAjTfnsbpShdDB8bet3kLPYkXQws
+        9pazDYsvoOBlLY1FVDGuDSlaVw2WgpI=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-68-wGXoEgXUNhW4m5moQlIqSQ-1; Tue, 05 Sep 2023 17:42:38 -0400
+X-MC-Unique: wGXoEgXUNhW4m5moQlIqSQ-1
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-637948b24bdso7829086d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:42:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693950158; x=1694554958;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=2votGtQ/EmYNPgTamqeLYt96PKfJV24HUJfzovJnoxc=;
+        b=TA/n5x2b8Rdw0yIObS0KBagaDbVW2f/JRY0zAKDeF3iBbr9CJ31SfS+qKXeZvQeRVq
+         H4bsksAL09IxjqjVipVgyXRkEeTOaJf2nPRMqi9j7YrDdJ68/qFV3e4EEngroS/hlM2K
+         gNiqcvhJwVKw6GZvX9hobUplE8sc8UzOzguViDPbHmm2hErqvZDBvdjsZzFK8WkPdth2
+         dSM2Y5CLdSQVWH3UAZOGNlO1LroscxTDZBnQ5ZkANcj+zoo6N23n7np/j0saKYHYBlqz
+         nv+jOcXJsndLsdyckdKZ1X58NSxuQef5eU6ga98GkR8nJ3gRxI2yI246Br63fFhE8dJd
+         uRaA==
+X-Gm-Message-State: AOJu0YyjdhLQ4e7ElBNpXW0pKDEB4NqtB4j9BFDJB4+4VmUyappA6++s
+        fcwrEb65MgEnVXT/1PV+BkNtCt+INLhtBUxzGPmlAorxgvhmScxaYAFq8A4T1lqhxdJ+YVVfYkw
+        7U3d7fDDDDoaACzIMD9Pcyuyw8KFjDcy2fi9TNE0ZSh+5TpJBgec+UOSUhg5U3r+dQTFT+wai3J
+        ZUUeTnlQ==
+X-Received: by 2002:a0c:e9d1:0:b0:653:576d:1ea with SMTP id q17-20020a0ce9d1000000b00653576d01eamr16086412qvo.1.1693950157867;
+        Tue, 05 Sep 2023 14:42:37 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEHBe5ptOe+VReq+OVr1GVxtc25t18NWKbckRbhhKeOXRYvyzzK/YbOev4YaqKhe9uOKa0FSQ==
+X-Received: by 2002:a0c:e9d1:0:b0:653:576d:1ea with SMTP id q17-20020a0ce9d1000000b00653576d01eamr16086382qvo.1.1693950157387;
+        Tue, 05 Sep 2023 14:42:37 -0700 (PDT)
+Received: from x1n.redhat.com (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
+        by smtp.gmail.com with ESMTPSA id i2-20020a37c202000000b007682af2c8aasm4396938qkm.126.2023.09.05.14.42.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 14:42:37 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Cc:     Anish Moorthy <amoorthy@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Christian Brauner <brauner@kernel.org>, peterx@redhat.com,
+        linux-fsdevel@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        James Houghton <jthoughton@google.com>,
+        Nadav Amit <nadav.amit@gmail.com>
+Subject: [PATCH 0/7] mm/userfaultfd/poll: Scale userfaultfd wakeups
+Date:   Tue,  5 Sep 2023 17:42:28 -0400
+Message-ID: <20230905214235.320571-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.41.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-034f2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 05 Sep 2023 16:07:34 +0200, Jerome Neanne wrote:
-> Random kernel crash detected in TI CICD when regulator driver is added.
-> This is root caused to irq index increment being done twice causing
-> irq_data being allocated outside of the range.
-> 
-> - Rework tps6594_request_reg_irqs with correct index increment
-> - Adjust irq_data kmalloc size to the exact size needed for the device
-> 
-> [...]
+Userfaultfd is the type of file that doesn't need wake-all semantics: if
+there is a message enqueued (for either a fault address, or an event), we
+only need to wake up one service thread to handle it.  Waking up more
+normally means a waste of cpu cycles.  Besides that, and more importantly,
+that just doesn't scale.
 
-Applied to
+Andrea used to have one patch that made read() to be O(1) but never hit
+upstream.  This is my effort to try upstreaming that (which is a
+oneliner..), meanwhile on top of that I also made poll() O(1) on wakeup,
+too (more or less bring EPOLLEXCLUSIVE to poll()), with some tests showing
+that effect.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+To verify this, I added a test called uffd-perf (leveraging the refactored
+uffd selftest suite) that will measure the messaging channel latencies on
+wakeups, and the waitqueue optimizations can be reflected by the new test:
 
-Thanks!
+        Constants: 40 uffd threads, on N_CPUS=40, memsize=512M
+        Units: milliseconds (to finish the test)
+        |-----------------+--------+-------+------------|
+        | test case       | before | after |   diff (%) |
+        |-----------------+--------+-------+------------|
+        | workers=8,poll  |   1762 |  1133 | -55.516328 |
+        | workers=8,read  |   1437 |   585 | -145.64103 |
+        | workers=16,poll |   1117 |  1097 | -1.8231541 |
+        | workers=16,read |   1159 |   759 | -52.700922 |
+        | workers=32,poll |   1001 |   973 | -2.8776978 |
+        | workers=32,read |    866 |   713 | -21.458626 |
+        |-----------------+--------+-------+------------|
 
-[1/1] regulator: tps6594-regulator: Fix random kernel crash
-      commit: ca0e36e3e39a4e8b5a4b647dff8c5938ca6ccbec
+The more threads hanging on the fd_wqh, a bigger difference will be there
+shown in the numbers.  "8 worker threads" is the worst case here because it
+means there can be a worst case of 40-8=32 threads hanging idle on fd_wqh
+queue.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+In real life, workers can be more than this, but small number of active
+worker threads will cause similar effect.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+This is currently based on Andrew's mm-unstable branch, but assuming this
+is applicable to most of the not-so-old trees.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Comments welcomed, thanks.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Andrea Arcangeli (1):
+  mm/userfaultfd: Make uffd read() wait event exclusive
 
-Thanks,
-Mark
+Peter Xu (6):
+  poll: Add a poll_flags for poll_queue_proc()
+  poll: POLL_ENQUEUE_EXCLUSIVE
+  fs/userfaultfd: Use exclusive waitqueue for poll()
+  selftests/mm: Replace uffd_read_mutex with a semaphore
+  selftests/mm: Create uffd_fault_thread_create|join()
+  selftests/mm: uffd perf test
+
+ drivers/vfio/virqfd.c                    |   4 +-
+ drivers/vhost/vhost.c                    |   2 +-
+ drivers/virt/acrn/irqfd.c                |   2 +-
+ fs/aio.c                                 |   2 +-
+ fs/eventpoll.c                           |   2 +-
+ fs/select.c                              |   9 +-
+ fs/userfaultfd.c                         |   8 +-
+ include/linux/poll.h                     |  25 ++-
+ io_uring/poll.c                          |   4 +-
+ mm/memcontrol.c                          |   4 +-
+ net/9p/trans_fd.c                        |   3 +-
+ tools/testing/selftests/mm/Makefile      |   2 +
+ tools/testing/selftests/mm/uffd-common.c |  65 +++++++
+ tools/testing/selftests/mm/uffd-common.h |   7 +
+ tools/testing/selftests/mm/uffd-perf.c   | 207 +++++++++++++++++++++++
+ tools/testing/selftests/mm/uffd-stress.c |  53 +-----
+ virt/kvm/eventfd.c                       |   2 +-
+ 17 files changed, 337 insertions(+), 64 deletions(-)
+ create mode 100644 tools/testing/selftests/mm/uffd-perf.c
+
+-- 
+2.41.0
 
