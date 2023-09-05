@@ -2,171 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C82727929E5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7F0792B54
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354372AbjIEQ3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:29:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43566 "EHLO
+        id S237561AbjIEQva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:51:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353543AbjIEGkK (ORCPT
+        with ESMTP id S1353553AbjIEGlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 02:40:10 -0400
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A8B8BD
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 23:40:05 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        Tue, 5 Sep 2023 02:41:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 123A6CC2
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 23:41:34 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 97A566607186;
-        Tue,  5 Sep 2023 07:40:01 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693896002;
-        bh=g+OWJT4s3+bbYpOWkEKJ7hdMk/aXOOMG+H2OMRK+Xc0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=A1KaqNOA4wfy9xhf17B1BcBTv99Vb9Rz/xWQLPWSWKOXfsjbNM0wTsNqDkaa++pkd
-         vOwVAfF0/R0zYShFAm35J9+Gr+ONTI81TTCQtUqVVjw/i8bXfg4Hhd15HRZCwaztKV
-         rPEh5CPeHSy7Zeh4XzKzWVoDUv1tIidMnfBNwP0xH7iYjdalCoCrv/pxpZbP82yXx+
-         5mrbG7fKVy8VH88l4idvig5fuu8bkBpT+UTokK+jV3beCF+/N7dMaIMyX6naFR+80b
-         YXFfPDpFzUhTd6yEdQW7jFU88buYG88+dFXKhKSI1xgJABw6X1dwx+a9S5/wBxyjiA
-         Oy7E9/LAgar2A==
-Date:   Tue, 5 Sep 2023 08:39:58 +0200
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
-Cc:     David Airlie <airlied@gmail.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Steven Price <steven.price@arm.com>,
-        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v16 10/20] drm/shmem-helper: Add and use pages_pin_count
-Message-ID: <20230905083958.64a1d100@collabora.com>
-In-Reply-To: <20230903170736.513347-11-dmitry.osipenko@collabora.com>
-References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
-        <20230903170736.513347-11-dmitry.osipenko@collabora.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
-MIME-Version: 1.0
+        by smtp-out1.suse.de (Postfix) with ESMTPS id AEF942183F;
+        Tue,  5 Sep 2023 06:41:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693896092; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3PE0NRYqcaoH1xgDyVw88dT71TtOVhXgZWR8hgT6OzE=;
+        b=LkJxQHb6jn5LOwuwEu74/yTfHIGTWB8eji7Ohia6RbR4gcF13Il/X1MGU2gztCAjk/eCiL
+        trTV/3+fRMPBftpYp3rx2H8iOAqU2U6sx1DPVzvP5iNqJq/dsw9FYKsyyBlQnkyPfYaIBK
+        NzmaFd113syKLx4Vy+4J1ciEYd7bFBE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693896092;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3PE0NRYqcaoH1xgDyVw88dT71TtOVhXgZWR8hgT6OzE=;
+        b=X91vtaxe+XGuE15NMuLjmH6TFq8M5dQ8A3IUslNTIVsYxfhUT3meW0uNkSvFNZHYVGW7JQ
+        nh7afi3IlLJh5pCg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 4930413499;
+        Tue,  5 Sep 2023 06:41:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id fw7FEJzN9mQLUwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 05 Sep 2023 06:41:32 +0000
+Date:   Tue, 05 Sep 2023 08:41:31 +0200
+Message-ID: <875y4pi0kk.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Shenghao Ding <shenghao-ding@ti.com>
+Cc:     <robh+dt@kernel.org>, <andriy.shevchenko@linux.intel.com>,
+        <lgirdwood@gmail.com>, <perex@perex.cz>,
+        <pierre-louis.bossart@linux.intel.com>, <kevin-lu@ti.com>,
+        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
+        <mengdong.lin@intel.com>, <baojun.xu@ti.com>,
+        <thomas.gfeller@q-drop.com>, <peeyush@ti.com>, <navada@ti.com>,
+        <broonie@kernel.org>, <gentuser@gmail.com>
+Subject: Re: [PATCH v3] ALSA: hda/tas2781: Revert structure name back to cs35l41_dev_name
+In-Reply-To: <20230905041331.834-1-shenghao-ding@ti.com>
+References: <20230905041331.834-1-shenghao-ding@ti.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  3 Sep 2023 20:07:26 +0300
-Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
-
-> Add separate pages_pin_count for tracking of whether drm-shmem pages are
-> moveable or not. With the addition of memory shrinker support to drm-shmem,
-> the pages_use_count will no longer determine whether pages are hard-pinned
-> in memory, but whether pages exist and are soft-pinned (and could be swapped
-> out). The pages_pin_count > 1 will hard-pin pages in memory.
+On Tue, 05 Sep 2023 06:13:30 +0200,
+Shenghao Ding wrote:
 > 
-> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> Revert structure name back to cs35l41_dev_name, this structure won't be
+> used any more in tas25781 driver code, the "bus" name can be passed by
+> tas2781_generic_fixup, hid is actually "TIAS2781", can be hardcode and
+> become an unneeded argument passed from tas2781_generic_fixup, as to
+> "index", it is a redundant member in tas2781 driver, and have never been
+> used in tas2781 hda driver before. And redefine tas2781_generic_fixup.
 
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
+OK, now it's clearer.
 
+So the purpose of this patch is rather to simplify the code.  The
+revert of struct name is merely a side-effect.
+
+That said, you can split even more, two logical changes: one is to
+just simplify the code by the fixed name string, and another is the
+rename back to struct cs35l41_dev_name.
+
+But honestly speaking, I don't see the need for rename again; the
+struct may be used by other codecs, and it's fine to keep a generic
+struct name like the current one.  Leaving the struct name as is will
+make the patch only as a cleanup (and you should correct the patch
+subject accordingly).
+
+And, I believe a more sensible improvement would be the use of the
+standard acpi_*_match*() API as Andy already suggested.  It can be
+folded into this cleanup or create a new patch on top of the cleanup.
+
+
+thanks,
+
+Takashi
+
+
+> 
+> Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+> 
 > ---
->  drivers/gpu/drm/drm_gem_shmem_helper.c | 24 ++++++++++++++++--------
->  include/drm/drm_gem_shmem_helper.h     | 10 ++++++++++
->  2 files changed, 26 insertions(+), 8 deletions(-)
+> Changes in v3:
+>  - Redefine tas2781_generic_fixup, remove hid argument, and do not use
+>    structure scodec_dev_name any more in tas2781_generic_fixup.
+>  - remove cs35l41_dev_name from comp_match_tas2781_dev_name, which is
+>    useless in tas2781 driver. bus name is passed by tas2781_generic_fixup,
+>    hid is actually "TIAS2781", can be hardcode and unneeded argument
+>    passed from tas2781_generic_fixup. Index is a redundant member, and
+>    never used in tas2781 hda driver.
+>  - revert from scodec_dev_name back to cs35l41_dev_name, tas2781 pass only
+>    bus name instead of cs35l41_dev_name, so it seemed unnecessary for
+>    tas2781.
+>  - revert from scodec_dev_name back to cs35l41_dev_name in
+>    cs35l41_generic_fixup
+> ---
+>  sound/pci/hda/patch_realtek.c | 27 ++++++++++-----------------
+>  1 file changed, 10 insertions(+), 17 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> index 25e99468ced2..7e1e674e2c9f 100644
-> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
-> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
-> @@ -236,18 +236,16 @@ static int drm_gem_shmem_pin_locked(struct drm_gem_shmem_object *shmem)
->  
->  	dma_resv_assert_held(shmem->base.resv);
->  
-> +	if (refcount_inc_not_zero(&shmem->pages_pin_count))
-> +		return 0;
-> +
->  	ret = drm_gem_shmem_get_pages_locked(shmem);
-> +	if (!ret)
-> +		refcount_set(&shmem->pages_pin_count, 1);
->  
->  	return ret;
+> diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+> index a07df6f929..c3e410152b 100644
+> --- a/sound/pci/hda/patch_realtek.c
+> +++ b/sound/pci/hda/patch_realtek.c
+> @@ -6745,7 +6745,7 @@ static void comp_generic_playback_hook(struct hda_pcm_stream *hinfo, struct hda_
+>  	}
 >  }
 >  
-> -static void drm_gem_shmem_unpin_locked(struct drm_gem_shmem_object *shmem)
-> -{
-> -	dma_resv_assert_held(shmem->base.resv);
-> -
-> -	drm_gem_shmem_put_pages_locked(shmem);
-> -}
-> -
->  /**
->   * drm_gem_shmem_pin - Pin backing pages for a shmem GEM object
->   * @shmem: shmem GEM object
-> @@ -265,6 +263,9 @@ int drm_gem_shmem_pin(struct drm_gem_shmem_object *shmem)
+> -struct scodec_dev_name {
+> +struct cs35l41_dev_name {
+>  	const char *bus;
+>  	const char *hid;
+>  	int index;
+> @@ -6754,7 +6754,7 @@ struct scodec_dev_name {
+>  /* match the device name in a slightly relaxed manner */
+>  static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+>  {
+> -	struct scodec_dev_name *p = data;
+> +	struct cs35l41_dev_name *p = data;
+>  	const char *d = dev_name(dev);
+>  	int n = strlen(p->bus);
+>  	char tmp[32];
+> @@ -6773,19 +6773,19 @@ static int comp_match_cs35l41_dev_name(struct device *dev, void *data)
+>  static int comp_match_tas2781_dev_name(struct device *dev,
+>  	void *data)
+>  {
+> -	struct scodec_dev_name *p = data;
+> +	const char *bus = data;
+>  	const char *d = dev_name(dev);
+> -	int n = strlen(p->bus);
+> +	int n = strlen(bus);
+>  	char tmp[32];
 >  
->  	drm_WARN_ON(obj->dev, obj->import_attach);
+>  	/* check the bus name */
+> -	if (strncmp(d, p->bus, n))
+> +	if (strncmp(d, bus, n))
+>  		return 0;
+>  	/* skip the bus number */
+>  	if (isdigit(d[n]))
+>  		n++;
+>  	/* the rest must be exact matching */
+> -	snprintf(tmp, sizeof(tmp), "-%s:00", p->hid);
+> +	snprintf(tmp, sizeof(tmp), "-%s:00", "TIAS2781");
 >  
-> +	if (refcount_inc_not_zero(&shmem->pages_pin_count))
-> +		return 0;
-> +
->  	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
->  	if (ret)
->  		return ret;
-> @@ -288,8 +289,14 @@ void drm_gem_shmem_unpin(struct drm_gem_shmem_object *shmem)
->  
->  	drm_WARN_ON(obj->dev, obj->import_attach);
->  
-> +	if (refcount_dec_not_one(&shmem->pages_pin_count))
-> +		return;
-> +
->  	dma_resv_lock(shmem->base.resv, NULL);
-> -	drm_gem_shmem_unpin_locked(shmem);
-> +
-> +	if (refcount_dec_and_test(&shmem->pages_pin_count))
-> +		drm_gem_shmem_put_pages_locked(shmem);
-> +
->  	dma_resv_unlock(shmem->base.resv);
+>  	return !strcmp(d + n, tmp);
 >  }
->  EXPORT_SYMBOL_GPL(drm_gem_shmem_unpin);
-> @@ -634,6 +641,7 @@ void drm_gem_shmem_print_info(const struct drm_gem_shmem_object *shmem,
->  	if (shmem->base.import_attach)
->  		return;
+> @@ -6795,7 +6795,7 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
+>  {
+>  	struct device *dev = hda_codec_dev(cdc);
+>  	struct alc_spec *spec = cdc->spec;
+> -	struct scodec_dev_name *rec;
+> +	struct cs35l41_dev_name *rec;
+>  	int ret, i;
 >  
-> +	drm_printf_indent(p, indent, "pages_pin_count=%u\n", refcount_read(&shmem->pages_pin_count));
->  	drm_printf_indent(p, indent, "pages_use_count=%u\n", shmem->pages_use_count);
->  	drm_printf_indent(p, indent, "vmap_use_count=%u\n", shmem->vmap_use_count);
->  	drm_printf_indent(p, indent, "vaddr=%p\n", shmem->vaddr);
-> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
-> index 808083279fd5..1cd74ae5761a 100644
-> --- a/include/drm/drm_gem_shmem_helper.h
-> +++ b/include/drm/drm_gem_shmem_helper.h
-> @@ -39,6 +39,16 @@ struct drm_gem_shmem_object {
->  	 */
->  	unsigned int pages_use_count;
+>  	switch (action) {
+> @@ -6824,24 +6824,17 @@ static void cs35l41_generic_fixup(struct hda_codec *cdc, int action, const char
+>  }
 >  
-> +	/**
-> +	 * @pages_pin_count:
-> +	 *
-> +	 * Reference count on the pinned pages table.
-> +	 * The pages allowed to be evicted and purged by memory
-> +	 * shrinker only when the count is zero, otherwise pages
-> +	 * are hard-pinned in memory.
-> +	 */
-> +	refcount_t pages_pin_count;
-> +
->  	/**
->  	 * @madv: State for madvise
->  	 *
-
+>  static void tas2781_generic_fixup(struct hda_codec *cdc, int action,
+> -	const char *bus, const char *hid)
+> +	const char *bus)
+>  {
+>  	struct device *dev = hda_codec_dev(cdc);
+>  	struct alc_spec *spec = cdc->spec;
+> -	struct scodec_dev_name *rec;
+>  	int ret;
+>  
+>  	switch (action) {
+>  	case HDA_FIXUP_ACT_PRE_PROBE:
+> -		rec = devm_kmalloc(dev, sizeof(*rec), GFP_KERNEL);
+> -		if (!rec)
+> -			return;
+> -		rec->bus = bus;
+> -		rec->hid = hid;
+> -		rec->index = 0;
+>  		spec->comps[0].codec = cdc;
+>  		component_match_add(dev, &spec->match,
+> -			comp_match_tas2781_dev_name, rec);
+> +			comp_match_tas2781_dev_name, (void *)bus);
+>  		ret = component_master_add_with_match(dev, &comp_master_ops,
+>  			spec->match);
+>  		if (ret)
+> @@ -6888,7 +6881,7 @@ static void alc287_fixup_legion_16ithg6_speakers(struct hda_codec *cdc, const st
+>  static void tas2781_fixup_i2c(struct hda_codec *cdc,
+>  	const struct hda_fixup *fix, int action)
+>  {
+> -	 tas2781_generic_fixup(cdc, action, "i2c", "TIAS2781");
+> +	 tas2781_generic_fixup(cdc, action, "i2c");
+>  }
+>  
+>  /* for alc295_fixup_hp_top_speakers */
+> -- 
+> 2.34.1
+> 
