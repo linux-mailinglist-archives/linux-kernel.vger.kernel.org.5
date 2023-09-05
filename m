@@ -2,149 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D5317932AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 01:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB55E7932B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 01:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238805AbjIEXrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 19:47:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44174 "EHLO
+        id S240545AbjIEXto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 19:49:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjIEXrc (ORCPT
+        with ESMTP id S229999AbjIEXtj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 19:47:32 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED3E1B4;
-        Tue,  5 Sep 2023 16:47:28 -0700 (PDT)
+        Tue, 5 Sep 2023 19:49:39 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D1971BE;
+        Tue,  5 Sep 2023 16:49:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693957648; x=1725493648;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=hUd8sNGF/C/RPQnApA8yYCgFpYEMb3ZN33wk2AGU2QM=;
-  b=MwVUwjk77Lr49JmgkX7YPCey6JGdOx0Lp08f9jV4pyng3VtFEybvQiO2
-   hEwVWS6xp9KgQ6oDCKbv3vA7J7UozS9+4l/nTx6Dhkpx8yi6dzhputwCY
-   FyXQDexiFtxxR4NqmhfPRzr2igqq7jBLHjP3bYJFcvGU3/LOVvopRk+KU
-   j76e0ZN9/oTvVl0L2APHt1SPVvh7np2uVozCh4Lt1bFl7YB845W6Lmhay
-   8Qi9N7cgEgAmKYkEqLjsV7rNrv7g3SHLYMbnQNs8AvY9hHYTRhxUbc6iM
-   OX7LBfunGXlBbyynffwelHTA24O+Wr8zpQKIPGd/E0M60ALYQ40QrUvxY
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="375828384"
+  t=1693957775; x=1725493775;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=NP5G6QvC2pGeBXcNJgadWRBzt0MIOFwOlugbqf1icZQ=;
+  b=dhmabb7FS0lWSX2X5yibYG8/V8NF7BVIZ7BNXH4OGAdysVLH4GgCpNvi
+   7XLFtmm6a6M1Tn2mFUciN4toS4QWHfi5GahWEDfIISgfXGdPz5uatrl+z
+   96vnJqQTZXIqKubh2yFB5XDf627LeQhilqQwxEyG7i4/jG1cKvEWwdWuH
+   iTt0QsdvxabBFjmMqexyX4+GnicfxxvQs+ed338cbIrFOaVCdiSpQEfCS
+   BzDTpQ3ObHu/qOywZ4S757vzW0stwG/J0yLA0BEpxlXEoxzT+P8zbCK3C
+   XMj1J2z4WYSmsukkDx3Zme9pFhqKy8ebHgUKN6zwK1OG4VcDRwb2KIlgK
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="374321738"
 X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="375828384"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 16:47:27 -0700
+   d="scan'208";a="374321738"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 16:49:35 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="734836053"
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="806801362"
 X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="734836053"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 16:47:27 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+   d="scan'208";a="806801362"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 16:49:34 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27; Tue, 5 Sep 2023 16:47:26 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ 15.1.2507.27; Tue, 5 Sep 2023 16:49:34 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 16:47:26 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ 15.1.2507.27; Tue, 5 Sep 2023 16:49:33 -0700
+Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 16:49:33 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
+ by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.27; Tue, 5 Sep 2023 16:47:26 -0700
+ 15.1.2507.27; Tue, 5 Sep 2023 16:49:33 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lSOtfqiL/XbSUYbXE0BT4WwJigK8NT1ghd/CgJsQhLmUj8e2di34gkgh7IgPH2mQlFuWKEdSA8rrM6ZjEWOEmSf8qXMXxs+GeXyBmHklYYj3NajGRtgMP2P6EXBgFmWvOeamSjUiuJ5hts9GLGTJAiTkiLNgmIzVpTwRfouLWkSBBIO/59LqCWva5L3N2ooVkW7OG2g8GPoMMjv9f0EGnBVdAKs6bmc61HQfUG/7vN2WEjkpFiBlVixSjahjadb1bvuppptovsFkWIMaVHbLbbruNgMABJjjiUffHjnJQvw8XrAx6+P8rcQujVGvFvijPsZp4iMYIDkmS4J2lClUmg==
+ b=jK2dp3LPNVIFbPcQiEl7phcvAvOnzJcKh+ufBAOiUM/JvDO2rMwlQC5O/4BMHcIEpmSXa1lGoxX/vAdSJoY6H85oGWukOxi2CsjX0P0btj2kQOvHzpGn7GkzfVD7nXY7WB5/B/Ncjan5U56o3hSTHDT9m1HEookalWZQFLqUBI7pTaq9rhrAfFXWwvhv6KNqxr/0L3mM6J3pjsciJugkjIErGjf0MvxD7udV3KZdl9eOfu2mr3gnEs3tHtASgGAVXEVUDjtv75iuZIQ+BF11tL8+0uTTsgJkMcWDL/PqsiwwdrtwbtIkFLLwh/vGDypPrhQr/1/ZpON4rJkH3nsWiQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=LUFU2hGu7Rxf+sE9mpIEFzlzAcZKuCLZyc3UIfCOyXw=;
- b=k1Ns1/KYpMmaNufLyt/ofhM0dFz9w5OzTcCTqmJapluNTh2dOZFpzQpg1t846iGVxDE25bHo8ULyl3yIUTxe8Kp17UQrjr5C1Rcb7xPq8hL3y1PyBBLSjF5TVz1POrlRLazebIgKRx/NgS2MmDVY38jDlLavJOB71SYyTwpFkbmhbk+LVszDGQGn1cHTFVGY5I5rtYaXx7hYKxAxP1lQuMSH8xalEaK5fpxsZnxG7tPz9wJtjkL5dKVw1jDWh4WvOFOnT9LNyVk+YPCfaFCyyrtJwsySFTCB9nANaq2dz1eUQCJPPKguB2bNQ0eeebJ5dA+XZhU7gldIjfKOxWdS9A==
+ bh=bpWJg4CccjlexYRJPh8z4RG27Q+nnfX7hZDIYgw17tY=;
+ b=iEkLQBN9TGksvJJ5fxVZR5TsXJtuRZxkhbnYzIxfyt0obLgGxLp/6OuALPadQSo9E2gMWThSZ6ZUvNVwvJoEA7P40RzvNxY3V6eR62WQHFbxIgoi/SqCzYNXy7ZXPjfJpSplzRVPLSMpKfkcn/0ZnjFLrlO91SZ+37WKiTekJzwTh8e0Kg/dMW2TIxUvf/uRSTI4zj9VB8FS+Lt2Y9D4XAFGGyqKNDOO9CjelFqC7OPSzO7h80UyBgDFPvvLFGTDbhEtynQ5GrV3YZMGJ4+CT2KZNwUEtg4wzof9ehHlLkonKHB1li34jfrRIz1REWn3MuJCVKuCyhJM9xNK1rjnNw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com (2603:10b6:301:6a::31)
- by DM4PR11MB6043.namprd11.prod.outlook.com (2603:10b6:8:62::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6745.33; Tue, 5 Sep 2023 23:47:24 +0000
-Received: from MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::da4:d67d:40ed:9786]) by MWHPR11MB0048.namprd11.prod.outlook.com
- ([fe80::da4:d67d:40ed:9786%4]) with mapi id 15.20.6699.035; Tue, 5 Sep 2023
- 23:47:24 +0000
-From:   "Patel, Utkarsh H" <utkarsh.h.patel@intel.com>
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "pmalani@chromium.org" <pmalani@chromium.org>,
-        "chrome-platform@lists.linux.dev" <chrome-platform@lists.linux.dev>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "bleung@chromium.org" <bleung@chromium.org>
-Subject: RE: [PATCH v2 3/5] usb: pd: Add helper macro to get Type C cable
- speed
-Thread-Topic: [PATCH v2 3/5] usb: pd: Add helper macro to get Type C cable
- speed
-Thread-Index: AQHZ25LkcToieundFEaWWNQn/m56F7AKRhsAgAAA4gCAAqhFAA==
-Date:   Tue, 5 Sep 2023 23:47:24 +0000
-Message-ID: <MWHPR11MB0048D7DE0329B6EDD2222E80A9E8A@MWHPR11MB0048.namprd11.prod.outlook.com>
-References: <20230830223950.1360865-1-utkarsh.h.patel@intel.com>
- <20230830223950.1360865-4-utkarsh.h.patel@intel.com>
- <ZPWCdiSkeRA+CJ+i@kuha.fi.intel.com> <ZPWDNLoxq22bL9gM@kuha.fi.intel.com>
-In-Reply-To: <ZPWDNLoxq22bL9gM@kuha.fi.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
+Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MWHPR11MB0048:EE_|DM4PR11MB6043:EE_
-x-ms-office365-filtering-correlation-id: 0441810c-f1aa-4091-2f19-08dbae6a7450
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: exGuEBtug4hwghtmc/cBx9dKrwvtCTjE9hJHN1Q+AFCIOaA1RyAhpybKssNYQ9OArTQ8iWrOXavlsNxgyMesI5TPMEgnNhy8txxfMj9A30MtcpZCAi591VT3rBGU8nt/Ldf+45dPWwXRqtAy6hOg05rtpKbjkp+jwCHNZhgfbUd7ezZ6lYPQWWzL3oE9wqcOkwzUzRLHQHQ4D2PxZIk+uMqCsHFnq5q0MSj24k9Ej7WeNtQosYjzVB8AVH6i3SBPQJ93O2jloblx3LstYMr4hhmd5RFo0wIoTxwMkDJMuKSDa7oJOLkiHnGwVtOSvRnAvnnfCTVz1OHORG7OxJewuliY/+x8AVZEPYWHilPyifgllslALoyL5arCS5sB1CFYYeDESje91wGRbefnbB8MSd75hkiPIparNIM5Vw0WjESDNgoweuR4m2Z+PNkxHP4TdlnevroYI7fbZzKEZSzQjNy4JKLzmZP8BFQd0yFVKN5rQHwhHMblxzj9pEa/YS5s5TSHMamtUPKtURcSsboYnQX7Lp8FXHTe/wXkAG3HkuEN9LsBcdUrYfH4Oq2wp0/rkTDY75ew5WxtKHjT6194kpj9A27fLj5Nhhj6KI0xemu6m8ph0GxE41cfXkKlvT4e
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB0048.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(346002)(376002)(396003)(186009)(451199024)(1800799009)(76116006)(53546011)(71200400001)(66556008)(54906003)(64756008)(66946007)(66446008)(6916009)(66476007)(55016003)(7696005)(6506007)(316002)(9686003)(41300700001)(478600001)(4326008)(8676002)(52536014)(26005)(5660300002)(33656002)(122000001)(82960400001)(38070700005)(38100700002)(2906002)(8936002)(86362001)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?+kGXHx3cwJEtkwzfqTrUvRjvTJwXArjUW1fl2msJKv35zUQAQmvg4VNdcKng?=
- =?us-ascii?Q?vfZOXwnH1M1dAIbMK0l9YdFZOZsxCzYYOhFk9pKxUcnN/Kavy0F375SeFvcO?=
- =?us-ascii?Q?w0k+uK2Muxc/OU3c7wezACckstR9L2aIAkRF0kRTexVhUvI7y5yU28JYvIRM?=
- =?us-ascii?Q?HSMhpOfonOn6LKI34Mmvydadp67JzpwwmjweVYekZ66cbXBtFBif08x4Dzz2?=
- =?us-ascii?Q?sy9u1vm3SSl7QJHnFVXJgDDFDcuSHKlX6NS1Gr7vpK3EaM1wJVA8dAUnU4aj?=
- =?us-ascii?Q?WdsNqo6gUoHSYrMWrw646BLlQGuDapd3FLgzlnYWqOvWtbj4Eb9iTLoEwNzH?=
- =?us-ascii?Q?xM6LWmh69bwk+wXb+6y0vs/aK6Figr3t+MOzs+A5qT+O4aJXe70JUs3IhaKF?=
- =?us-ascii?Q?DeUaQhT1OAe6BIcqH2Fhb8yKuHzZvVmMdutewOVAYl5G8snSzBa9LFCdLnmM?=
- =?us-ascii?Q?+JCEfSsk2rTm6XGPJ4uka7pYa5ldGLW++zZrcm3ziFpRHfgt+szvJ0OEacXq?=
- =?us-ascii?Q?51MAg5WQAXPMlPiAtf1AHpyiC9YzcJz6EZUWYUFtTD3YxZHvfs0NSPLxPNel?=
- =?us-ascii?Q?DSqO4ZPcZA1a7Ba1rUMbs+4zxzuAwzTJwFkrPMpa78yeZUNXkrWnlbxeaxrj?=
- =?us-ascii?Q?S0VwVBddkv9wWlmmFLxpGMRLdUbkU82DkZnIvIZgG+vivXQM9+Bzp4ceFu5R?=
- =?us-ascii?Q?hXCuTcjiPT7TMezA/ojiqRmc14OhvjF4lY9ISF9bBMLVgs9N8+LJwCKjWC73?=
- =?us-ascii?Q?XdckUKxC5E1CUmrJ8xwLSmtcgbJcaXeYy0hiWJLrj2jBjBH6/qwV7o0GHXp4?=
- =?us-ascii?Q?CstRanyxMyaNuZtzUj7a9MUzH9UOeQgk2oJCw8crAOTC3vYLGNUdPocfxz3r?=
- =?us-ascii?Q?Sj6kb8qqRLZPtfVa7sVljD+fGWRGhaSbqsiucRKe6rss9exNN/Vg83B2baKC?=
- =?us-ascii?Q?ZoCbkVtUDKvTw8nJ+2c/gfNI8qDVKzs4OZdrEqpqth6TX9hkfy6aie5usH6w?=
- =?us-ascii?Q?rO4ldv7MXiq2I+ilsXHNItn4vNhJUq7MTfW1cZbTuleGXicSvT0zCjQJa7r6?=
- =?us-ascii?Q?lIaRkA7MP8FL61n49VH0iQzBp99fDozkQMqkveRDBZeQWH7LoeVb65sqtZ+Z?=
- =?us-ascii?Q?kbQMR1IDh3j1/jtiD75UqFec+zY6kutbJsfty0rv2dVs7VfP5+pFuDG8OQql?=
- =?us-ascii?Q?NXYt0kI1ulajE+d5eWgZvA9z5krvcClh9ywuWiH07VcBSaEBkHZE6YXXU5Cc?=
- =?us-ascii?Q?0cz83tdphomkjZNKRkLfLlry5aoqaGoGnKj4fMVQDsWQX539fNKOAnH4Zcvi?=
- =?us-ascii?Q?gfrIjscnO384umCrOQok2U864ssNX1umzTepsXkA1v7sLF1QZrbpmx7G4fLx?=
- =?us-ascii?Q?dr8z9t1z/iSGjycREozKPlaPCamWKiGHZp/8C3BrU8x66NgvL9vN2T9hxliY?=
- =?us-ascii?Q?GET7khz7+8DTk3BFiDVB7llTdqRPK/Pr2u1eYxxyBvFYECYYS0enShZVnF7/?=
- =?us-ascii?Q?65RbexwIM02Igm5bqBJue52ortft3iFyzqZj1ttWkz9qsatepPObTF2ycUhb?=
- =?us-ascii?Q?HQlVXQeXVwRhmHtB8l59KN2HGyjoe/mex5uX0Kq2s05DPZ4NWCwqNKP8MAoR?=
- =?us-ascii?Q?MQ=3D=3D?=
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com (2603:10b6:806:25c::17)
+ by SN7PR11MB8281.namprd11.prod.outlook.com (2603:10b6:806:26b::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 23:49:30 +0000
+Received: from SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938]) by SA1PR11MB6733.namprd11.prod.outlook.com
+ ([fe80::6da5:f747:ba54:6938%6]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 23:49:30 +0000
+Date:   Tue, 5 Sep 2023 16:49:25 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Ira Weiny <ira.weiny@intel.com>
+CC:     Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH RFC v2 10/18] cxl/mem: Handle DCD add and release
+ capacity events.
+Message-ID: <64f7be8553587_1e8e782946e@iweiny-mobl.notmuch>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+ <20230604-dcd-type2-upstream-v2-10-f740c47e7916@intel.com>
+ <20230829165930.0000208c@Huawei.com>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <20230829165930.0000208c@Huawei.com>
+X-ClientProxiedBy: BYAPR05CA0045.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::22) To SA1PR11MB6733.namprd11.prod.outlook.com
+ (2603:10b6:806:25c::17)
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA1PR11MB6733:EE_|SN7PR11MB8281:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3dc2e0c0-668b-465a-e8e2-08dbae6abf79
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Rn0ie0sVqFp4Vqom3hvGJH0uCPshnfHozfcmDaXs1Sfe6eg7pIgKA3XeeOryRzjIE1fahH/7stWSPsVfDfrScARAf6cHxmc0cz+4urnQSSakb+f/6TKb2z0SZ/JvqzxKvYgTh7hPpTr1XjuQy3NHIfLAIAMNfc6IXi71GUxFlF7WJJPfAWbNxffj8pb1GeWDR/phXPoh0VObFAUGqRGd9HuOt7kS3j1jTUjA65V2RgsXMLJAummvtJE3evjeDLskNtZxo1qULNEtcA/xUmpSvN9EJGUzFPG9iUXLVG/PgqzpEPlh4O6UJzHNvdkxq+PcafBx71+FmCoKgibqawWYypFj8NLY5cgINTlB9hz4Drk+WkRO0/ZeTTWyw11RN7kiBQ9DTnBakUpgfnsxOLU07Z5yYh35fhrR3ioiSVw63M2lP4FlYurHYOffpDLD6yTcmnS7gyhzOXf4EpWx0/8Azyzr9CWb+FWElToQllxo22Upu1zjRO7BmoSMaksnDtJ9l+E8KLieLcPuOkuYQ81s7jKvca/m0QpYFY7CzaZhWZtbA4ymkeXTbdgJEjjdzAaK
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR11MB6733.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(39860400002)(136003)(376002)(396003)(346002)(1800799009)(186009)(451199024)(83380400001)(26005)(2906002)(8936002)(8676002)(478600001)(82960400001)(4326008)(5660300002)(44832011)(41300700001)(6666004)(316002)(86362001)(110136005)(54906003)(66476007)(66556008)(66946007)(6512007)(9686003)(6506007)(38100700002)(6486002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?hSwNgVHcgaNOFPPPhfQHVcCD9Kf47AhGo2UTfyG91gDV+CYqRrnWGjcmJc3Z?=
+ =?us-ascii?Q?H3mMSnO9vw+ig7CefuxLjedvS98Jhdp9EXMcCDwRTiZfC7BvVmF/0SYpMTxX?=
+ =?us-ascii?Q?j6nKHVQcIBxwEUbcGrD5yjAyktZxY0Uu6GxfMoGOOBhI7fOfWq6RGY/6+xpK?=
+ =?us-ascii?Q?LBAD4XkgvJUhmDMQ9OofcMMcJm/RfuE80bdgxxtRSFhb73iu6TdAiYEHfsUo?=
+ =?us-ascii?Q?Nh7wwKvySgEv64S3pf0LYR2VzzbbxE+oQPA97S+KieqtwuBSYWwRjjkr5U56?=
+ =?us-ascii?Q?xzD+fdqzERdtgpNz/4yMGvaC63NPuLrviS49pXlbhv1nXi3isB33NKtU/ZE+?=
+ =?us-ascii?Q?GTlgvJzfNfbdXDG0RJoTad2lwtuYQVknfO/YBuEh01b6mmRxG74WhBRW+vy+?=
+ =?us-ascii?Q?cTmfl9tCLIkU9BJlp0k46yOA0EfuUG9MQiutrvksdqxeOw/i96uM2yN46BKb?=
+ =?us-ascii?Q?KgesxkR1MOcmmer4gd5gbXgrgcjisJYVErk2hMQ1IbPyg5wNt1GZbbPgeAcI?=
+ =?us-ascii?Q?BGNkmPULcPX8ayWT+TnvB9GqGYGAGKxwCoHfnAYC2Bkfh7kU4bTbpSy9mWDz?=
+ =?us-ascii?Q?usU6mS8Ur5piQOofjwklk/Lk1wFCn1LrNndSonLSMhLcXQamT0wLT8OJS5kc?=
+ =?us-ascii?Q?BdA5U730JkSo1T7bsLBy5DHHMdd+v59+j0+mT2uKV3x2R8H+OxSNtL+luAoH?=
+ =?us-ascii?Q?BDXl5XCnYhCzccC+fPGsVqJaCRgcYMeTti+x2YuE8HR0W0sc5CFNTPIiPzNY?=
+ =?us-ascii?Q?rXgya6ALoQmc8yb6gCEN/LEZwPO62T3HNaSI8lJrgcMLszY4SfxDsW1hIBSz?=
+ =?us-ascii?Q?o41/9aCWAzujLepbgYiu09zYy98H7v2RviyPxvcIu9ClPCGcWFfX0XxVgb2d?=
+ =?us-ascii?Q?V+lO+4JNPnOqYwryXS4ad+pGy9hVahBoQsOJ5iag+IXODv8z/DExbXDa84cd?=
+ =?us-ascii?Q?5mYxH6gT971LUx5eMM1TklV/dkMrgfd3J13IhZe0vuAlTN974PjyaWVWJlFk?=
+ =?us-ascii?Q?bssdZHjoNh9CWobXmc2Rz6CQmM/s/L6/jddxxi6Vatjjj3ona8BH6ggKhEpD?=
+ =?us-ascii?Q?l/9fA+21Cv0p/kACt+FTSgK0yFQq7FRIoLNzM81eXBKiqT22o7HhYY5OFazp?=
+ =?us-ascii?Q?pNAIOza70WjnwQPHVUe2MYQoRu0Cl6bdAeEL5VMSu2uPpuW2YpaTjuqF8uWJ?=
+ =?us-ascii?Q?i5Y6kQm9pmxHk+RVqUyYfnNBS9pkuox6FNFSwLEzoSMavv3C3qL2PfHQzfsw?=
+ =?us-ascii?Q?IzG7KpPxgQyfMQAgUnzwWOzr5HjJVZOrKtwd5ooUnki3wIdBVUxlU607AWbz?=
+ =?us-ascii?Q?+q8EgyX+fWg1ORJdMEBcdBGI8kaBHmgiq/XJNP3/fJ74LY99+reTG1op8n6p?=
+ =?us-ascii?Q?J1M1WJUM4DlIcBdUntSLRq/x3gb67ZI38krhfhSbw5xSgsf/frtP9aTOmKwL?=
+ =?us-ascii?Q?WHfs31aYd3BJIVxagaX4sr6kykDUqFODrNgTjtEow5FLrEMSdy05WqTuCXx8?=
+ =?us-ascii?Q?deiicosLr7cQzgsLogMMFOdHF5morQCJFL/f6zBQHnFKAhlRm1HCtXEup3lf?=
+ =?us-ascii?Q?9UhAgxQpTltooUoBVLMs7oLW7opAyc0yP+oAh4hu?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3dc2e0c0-668b-465a-e8e2-08dbae6abf79
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR11MB6733.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB0048.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0441810c-f1aa-4091-2f19-08dbae6a7450
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2023 23:47:24.4136
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 23:49:30.7395
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wkQ6JdxubAOBbcbH7ZUvCXvfk7JPHBy+tR83/OmB500bFnrRbRR3IMtnhl36kxYwNJ5JdaHM/9/r0Yp86P9O0s2on3GJFSGJbIYnD2fK1nQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB6043
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PQc0QHWd9HZPH95jby7ZhsMkogqoq7Dq1IxnJSBhvN8IyMpIlVU1WWLRCJQ9+nk2lnix5aguSCH94Nglg4u0cw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR11MB8281
 X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -156,57 +159,147 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+Jonathan Cameron wrote:
+> On Mon, 28 Aug 2023 22:21:01 -0700
+> Ira Weiny <ira.weiny@intel.com> wrote:
+> 
+> > A Dynamic Capacity Device (DCD) utilizes events to signal the host about
+> > the changes to the allocation of Dynamic Capacity (DC) extents. The
+> > device communicates the state of DC extents through an extent list that
+> > describes the starting DPA, length, and meta data of the blocks the host
+> > can access.
+> > 
+> > Process the dynamic capacity add and release events.  The addition or
+> > removal of extents can occur at any time.  Adding asynchronous memory is
+> > straight forward.  Also remember the host is under no obligation to
+> > respond to a release event until it is done with the memory.  Introduce
+> > extent kref's to handle the delay of extent release.
+> > 
+> > In the case of a force removal, access to the memory will fail and may
+> > cause a crash.  However, the extent tracking object is preserved for the
+> > region to safely tear down as long as the memory is not accessed.
+> > 
+> > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> > Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> Minor stuff inline.
+> 
+> 
+> > +static int cxl_prepare_ext_list(struct cxl_mbox_dc_response **res,
+> > +				int *n, struct range *extent)
+> > +{
+> > +	struct cxl_mbox_dc_response *dc_res;
+> > +	unsigned int size;
+> > +
+> > +	if (!extent)
+> > +		size = struct_size(dc_res, extent_list, 0);
+> 
+> This is confusing as if you did have *n > 0 I'd kind of expect
+> this to just not extend the list rather than shortening it.
+> Now I guess that never happens, but locally it looks odd.
+> 
+> Maybe just handle that case in a separate function as it doesn't
+> share much code with the case where there is an extent and I would
+> assume we always know at the caller which one we want.
 
-Thank you for the review.
+Yea I forget why I left this alone.  I did not care for it during internal
+review and I think I got so busy with the other code that this just got
+left behind.
 
-> -----Original Message-----
-> From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> Sent: Monday, September 4, 2023 12:12 AM
-> To: Patel, Utkarsh H <utkarsh.h.patel@intel.com>
-> Cc: linux-kernel@vger.kernel.org; linux-usb@vger.kernel.org;
-> pmalani@chromium.org; chrome-platform@lists.linux.dev;
-> andriy.shevchenko@linux.intel.com; bleung@chromium.org
-> Subject: Re: [PATCH v2 3/5] usb: pd: Add helper macro to get Type C cable
-> speed
->=20
-> On Mon, Sep 04, 2023 at 10:08:42AM +0300, Heikki Krogerus wrote:
-> > On Wed, Aug 30, 2023 at 03:39:48PM -0700, Utkarsh Patel wrote:
-> > > Added a helper macro to get the Type C cable speed when provided the
-> > > cable VDO.
-> > >
-> > > Signed-off-by: Utkarsh Patel <utkarsh.h.patel@intel.com>
-> >
-> > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> >
-> > > ---
-> > > Changes in v2:
-> > > - This change is being added as new patch in this series.
-> > >
-> > >  include/linux/usb/pd_vdo.h | 1 +
-> > >  1 file changed, 1 insertion(+)
-> > >
-> > > diff --git a/include/linux/usb/pd_vdo.h b/include/linux/usb/pd_vdo.h
-> > > index b057250704e8..3a747938cdab 100644
-> > > --- a/include/linux/usb/pd_vdo.h
-> > > +++ b/include/linux/usb/pd_vdo.h
-> > > @@ -376,6 +376,7 @@
-> > >  	 | ((vbm) & 0x3) << 9 | (sbu) << 8 | (sbut) << 7 | ((cur) & 0x3) <<=
- 5
-> 	\
-> > >  	 | (vbt) << 4 | (sopp) << 3 | ((spd) & 0x7))
-> > >
-> > > +#define VDO_TYPEC_CABLE_SPEED(vdo)	((vdo) & 0x7)
-> > >  #define VDO_TYPEC_CABLE_TYPE(vdo)	(((vdo) >> 18) & 0x3)
->=20
-> Hold on! You are not using this anywhere in the patch set?
->=20
-> Since this is just a helper, I think it would be appropriate to introduce=
- it
-> together with a user for it.
->=20
+Frankly this is a candidate for the __free() magic as well.  But in a
+helper function which handles sending the response...
 
-Ack.=20
+This needs some refactoring for sure...  :-/
 
-Sincerely,
-Utkarsh Patel.
+> 
+> 
+> > +	else
+> > +		size = struct_size(dc_res, extent_list, *n + 1);
+> 
+> Might be clearer with a local variable for the number of extents.
+> 
+> extents_count = *n;
+> 
+> if (extent)
+> 	extents_count++;
+> 
+> size = struct_size(dc_res, extent_list, extents_count);
+> 
+> Though I'm not sure that really helps.  Maybe this will just need
+> to be a little confusing :)
+
+Actually no.  IIRC the original idea was to have a running response data
+structure realloc'ed as events were processed from the log and then to
+send out a final large response...  But in my refactoring I did not do
+that.  The refactoring processes each event (extent) before going on to
+the next event.  I suppose this may be an issue later if large numbers
+of extents are added to the logs rapidly and the processing is not fast
+enough and the logs overflow.
+
+But I don't think the complexity is warranted at this time.  Especially
+because under that condition the size of the response needs to be
+contained within mds->payload_size.  So there is quite a bit more
+complexity there that I don't think was accounted for initially.
+
+I think cxl_send_dc_cap_response() should handle this allocation (using
+__free() magic) and then do the send all in 1 function.
+
+I'll refactor and see how it goes.
+
+> 
+> > +
+> > +	dc_res = krealloc(*res, size, GFP_KERNEL);
+> > +	if (!dc_res)
+> > +		return -ENOMEM;
+> > +
+> > +	if (extent) {
+> > +		dc_res->extent_list[*n].dpa_start = cpu_to_le64(extent->start);
+> > +		memset(dc_res->extent_list[*n].reserved, 0, 8);
+> > +		dc_res->extent_list[*n].length = cpu_to_le64(range_len(extent));
+> > +		(*n)++;
+> > +	}
+> > +
+> > +	*res = dc_res;
+> > +	return 0;
+> > +}
+> 
+> > +
+> > +/* Returns 0 if the event was handled successfully. */
+> > +static int cxl_handle_dcd_event_records(struct cxl_memdev_state *mds,
+> > +					struct cxl_event_record_raw *rec)
+> > +{
+> > +	struct dcd_event_dyn_cap *record = (struct dcd_event_dyn_cap *)rec;
+> > +	uuid_t *id = &rec->hdr.id;
+> > +	int rc;
+> > +
+> > +	if (!uuid_equal(id, &dc_event_uuid))
+> > +		return -EINVAL;
+> > +
+> > +	switch (record->data.event_type) {
+> > +	case DCD_ADD_CAPACITY:
+> > +		rc = cxl_handle_dcd_add_event(mds, &record->data.extent);
+> > +		break;
+> 
+> I guess it might not be consistent with local style...
+> 		return cxl_handle_dcd_add_event()  etc
+
+Sure.  That is cleaner.  Done.
+
+Ira
+
+> 
+> > +	case DCD_RELEASE_CAPACITY:
+> > +        case DCD_FORCED_CAPACITY_RELEASE:
+> > +		rc = cxl_handle_dcd_release_event(mds, &record->data.extent);
+> > +		break;
+> > +	default:
+> > +		return -EINVAL;
+> > +	}
+> > +
+> > +	return rc;
+> > +}
+> > +
+> 
+> 
+
+
