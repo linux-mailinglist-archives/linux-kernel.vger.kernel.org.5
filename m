@@ -2,56 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6363E792AAB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AB29792B12
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245741AbjIEQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48208 "EHLO
+        id S234915AbjIEQrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:47:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354555AbjIEMhN (ORCPT
+        with ESMTP id S1354731AbjIENwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:37:13 -0400
-Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 43CDC1AD;
-        Tue,  5 Sep 2023 05:37:08 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.81.81.211])
-        (using TLSv1.2 with cipher AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by gw.red-soft.ru (Postfix) with ESMTPSA id 276823E1A8B;
-        Tue,  5 Sep 2023 15:37:05 +0300 (MSK)
-Date:   Tue, 5 Sep 2023 15:37:03 +0300
-From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Leon Romanovsky <leon@kernel.org>,
-        Potnuri Bharat Teja <bharat@chelsio.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH] infiniband: cxgb4: cm: Check skb value
-Message-ID: <ZPcg7/QbN73C/OYK@localhost.localdomain>
-References: <20230904115925.261974-1-artem.chernyshev@red-soft.ru>
- <fe404996-6568-e2ad-656d-e75523d96637@kernel.org>
+        Tue, 5 Sep 2023 09:52:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BAD0197
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 06:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693921964; x=1725457964;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=GGTb85SwmehwRQFdOE4/kZdtjUSb36Ogu5VpLNfqXYs=;
+  b=ivtLKZJpntQW/kv7VF5FLWAGMWULne1uYvDtwHiCTHiTFn3nKf11WzE/
+   PaimC9gqh055KCa0CjXXVbugqZVOQHeEuW7iNIP10EH7ArjkVCMZmjZlg
+   wscxJdi9TqzcAgzootzzs0AqiAlv70TMOsFhzhWwj2kYIJz6Hd3p1oFsh
+   Q3CTlbdp54vQeMDmk/5/Pra1DmsfebKVhgC2en6WIF5HGGHQKkE7TcQWR
+   DlOLIDEWjTK4VN6QlYlBqIC3x/2TQzxHYaKwNh7BNO8sLraFMeWarakbw
+   MmGqjJrUbrTk20tTRf8DQKA8l6GIrHSi3Y+PXVKe8C7k2utaIMvw2+lR8
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="463165892"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="463165892"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 06:52:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="741100793"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="741100793"
+Received: from qatran-mobl2.amr.corp.intel.com (HELO [10.212.36.84]) ([10.212.36.84])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 06:52:41 -0700
+Message-ID: <4d84a799-c07e-e917-7c82-2f24456e3ac2@linux.intel.com>
+Date:   Tue, 5 Sep 2023 08:37:24 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fe404996-6568-e2ad-656d-e75523d96637@kernel.org>
-X-KLMS-Rule-ID: 1
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Lua-Profiles: 179655 [Sep 05 2023]
-X-KLMS-AntiSpam-Version: 5.9.59.0
-X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
-X-KLMS-AntiSpam-Rate: 0
-X-KLMS-AntiSpam-Status: not_detected
-X-KLMS-AntiSpam-Method: none
-X-KLMS-AntiSpam-Auth: dkim=none
-X-KLMS-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;red-soft.ru:7.1.1, FromAlignment: s
-X-MS-Exchange-Organization-SCL: -1
-X-KLMS-AntiSpam-Interceptor-Info: scan successful
-X-KLMS-AntiPhishing: Clean, bases: 2023/09/05 05:09:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/09/05 09:52:00 #21801295
-X-KLMS-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Firefox/102.0 Thunderbird/102.13.0
+Subject: Re: [PATCH v4 01/11] ASoC: SOF: core: add 'no_wq' probe and remove
+ callbacks
+Content-Language: en-US
+To:     =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Daniel Baluta <daniel.baluta@nxp.com>,
+        linux-kernel@vger.kernel.org, sound-open-firmware@alsa-project.org
+References: <20230830153652.217855-1-maarten.lankhorst@linux.intel.com>
+ <20230830153652.217855-2-maarten.lankhorst@linux.intel.com>
+ <alpine.DEB.2.22.394.2309011509200.3532114@eliteleevi.tm.intel.com>
+ <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <4252a4dc-0cf3-4ff2-aa55-c03e56345276@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,35 +77,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 10:07:26PM +0200, Krzysztof Kozlowski wrote:
-> On 04/09/2023 13:59, Artem Chernyshev wrote:
-> > get_skb() can't allocate skb in case of OOM.
-> > 
-> > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > 
-> > Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
-> > ---
-> >  drivers/infiniband/hw/cxgb4/cm.c | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> > 
-> > diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
-> > index ced615b5ea09..775da62b38ec 100644
-> > --- a/drivers/infiniband/hw/cxgb4/cm.c
-> > +++ b/drivers/infiniband/hw/cxgb4/cm.c
-> > @@ -1965,6 +1965,10 @@ static int send_fw_act_open_req(struct c4iw_ep *ep, unsigned int atid)
-> >  	int win;
-> >  
-> >  	skb = get_skb(NULL, sizeof(*req), GFP_KERNEL);
-> > +	if (!skb) {
-> > +		pr_err("%s - cannot alloc skb!\n", __func__);
-> 
-> I don't think we print memory allocation failures.
-> 
-> Best regards,
-> Krzysztof
-> 
 
-Sure, will fix that in v2
 
-Thanks,
-Artem
+On 9/1/23 08:44, Péter Ujfalusi wrote:
+> 
+> 
+> On 01/09/2023 15:15, Kai Vehmanen wrote:
+>> Hi,
+>>
+>> On Wed, 30 Aug 2023, Maarten Lankhorst wrote:
+>>
+>>> With the upcoming changes for i915/Xe driver relying on the
+>>> -EPROBE_DEFER mechanism, we need to have a first pass of the probe
+>>> which cannot be pushed to a workqueue. Introduce 2 new optional
+>>> callbacks.
+>> [...]
+>>> diff --git a/sound/soc/sof/core.c b/sound/soc/sof/core.c
+>>> index 30db685cc5f4b..54c384a5d6140 100644
+>>> --- a/sound/soc/sof/core.c
+>>> +++ b/sound/soc/sof/core.c
+>>> @@ -327,8 +327,6 @@ static int sof_probe_continue(struct snd_sof_dev *sdev)
+>>>  dsp_err:
+>>>  	snd_sof_remove(sdev);
+>>>  probe_err:
+>>> -	sof_ops_free(sdev);
+>>> -
+>>
+>> this seems a bit out-of-place in this patch. It seems a valid change,
+>> but not really related to this patch, right?
+> 
+> The ops needs to be preserved even if the wq fails since the patch wants
+> to call snd_sof_remove_no_wq() unconditionally on remove.
+> 
+>> We seem to have a related fix waiting to be sent to alsa-devel, by
+>> Peter:
+>> "ASoC: SOF: core: Only call sof_ops_free() on remove if the probe wa"
+>> https://github.com/thesofproject/linux/pull/4515
+> 
+> I guess we can revert that in sof-dev, if this is the preferred way?
+> 
+>> ... not yet in Mark's tree.
+>>
+>> Otherwise patch looks good to me.
+> 
+> I would have not created the snd_sof_remove_no_wq() as it makes not much
+> functional sense.
+> It might be even better if the remove in the wq would do the
+> hda_codec_i915_exit() as the module will remain in there until the user
+> removes it.
+
+I think find all this very confusing, because there is no workqueue used
+in the remove steps. The workqueue is only used ONCE during the probe.
