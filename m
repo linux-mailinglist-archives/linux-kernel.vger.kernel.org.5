@@ -2,70 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F33F793144
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:49:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC11793146
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:50:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241784AbjIEVty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:49:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44326 "EHLO
+        id S241453AbjIEVup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:50:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236526AbjIEVtx (ORCPT
+        with ESMTP id S235780AbjIEVun (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:49:53 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFD5CF2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:49:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 586ECC433C8;
-        Tue,  5 Sep 2023 21:49:16 +0000 (UTC)
-Date:   Tue, 5 Sep 2023 17:49:35 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: [PATCH] workqueue: Removed double allocation of
- wq_update_pod_attrs_buf
-Message-ID: <20230905174935.2d75feab@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 5 Sep 2023 17:50:43 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 750828E;
+        Tue,  5 Sep 2023 14:50:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=RjYVcovQwGIMChPsBzWzCng27uL6Qkw1MCKSw167nPA=; b=nDLyRYzrfXZV7kll8VOiusPyIj
+        Vw8Xt7G3BJI623eee8WWL1accKvcttauaIegcAvZVTbx3WY1OVFIRcBr0ZK1d/N6wuiSckWcF71uB
+        WEBNFOIQOTV6zykQbB1S7aPI6/fnByGGxA141STaAYXHZbpXCWIqW+Rdmi5tbVZnITRW5+Piku+gM
+        aKmCRKZuGjaAL5cZuM632Mrim/EOXGpC+zjcdQwWbhx/vp6JnJsm/BF7P20t995jFfm1TCloy8tUV
+        a4cMNB0t6OTsajdOxnxeHA577PqWnPhGryEaxCpsNw8LMTy4TDpl8WUi3ydRwpDYfhGImvK3ingEH
+        5CbHHnYQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:42980)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qddwG-0008MI-0q;
+        Tue, 05 Sep 2023 22:50:24 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qddwF-00043J-8o; Tue, 05 Sep 2023 22:50:23 +0100
+Date:   Tue, 5 Sep 2023 22:50:23 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 6/8] arm32, bpf: add support for 64 bit division
+ instruction
+Message-ID: <ZPein8oS5egqGwzp@shell.armlinux.org.uk>
+References: <20230905210621.1711859-1-puranjay12@gmail.com>
+ <20230905210621.1711859-7-puranjay12@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905210621.1711859-7-puranjay12@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
+On Tue, Sep 05, 2023 at 09:06:19PM +0000, Puranjay Mohan wrote:
+> +cont:
+> +
+> +	/* Call appropriate function */
+> +	if (sign)
+> +		emit_mov_i(ARM_IP, op == BPF_DIV ? (u32)jit_sdiv64 : (u32)jit_smod64, ctx);
+> +	else
+> +		emit_mov_i(ARM_IP, op == BPF_DIV ? (u32)jit_udiv64 : (u32)jit_mod64, ctx);
 
-First commit 2930155b2e272 ("workqueue: Initialize unbound CPU pods later in
-the boot") added the initialization of wq_update_pod_attrs_buf to
-workqueue_init_early(), and then latter on, commit 84193c07105c6
-("workqueue: Generalize unbound CPU pods") added it as well. This appeared
-in a kmemleak run where the second allocation made the first allocation
-leak.
+Same comment as the previous patch here.
 
-Fixes: 84193c07105c6 ("workqueue: Generalize unbound CPU pods")
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- kernel/workqueue.c | 3 ---
- 1 file changed, 3 deletions(-)
+> +
+> +	emit_blx_r(ARM_IP, ctx);
+> +
+> +	/* Save return value */
+> +	if (rd[1] != ARM_R0) {
+> +		emit(ARM_MOV_R(rd[0], ARM_R1), ctx);
+> +		emit(ARM_MOV_R(rd[1], ARM_R0), ctx);
+> +	}
+> +
+> +	/* Recover {R1, R0} from stack if it is not Rd */
+> +	if (rd[1] != ARM_R0)
+> +		emit(ARM_POP(BIT(ARM_R0) | BIT(ARM_R1)), ctx);
+> +	else
+> +		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
+> +
+> +	/* Recover {R3, R2} from stack if it is not Rd */
+> +	if (rd[1] != ARM_R2)
+> +		emit(ARM_POP(BIT(ARM_R2) | BIT(ARM_R3)), ctx);
+> +	else
+> +		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
 
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index c85825e17df8..129328b765fb 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -6535,9 +6535,6 @@ void __init workqueue_init_early(void)
- 
- 	BUG_ON(!zalloc_cpumask_var_node(&pt->pod_cpus[0], GFP_KERNEL, NUMA_NO_NODE));
- 
--	wq_update_pod_attrs_buf = alloc_workqueue_attrs();
--	BUG_ON(!wq_update_pod_attrs_buf);
--
- 	pt->nr_pods = 1;
- 	cpumask_copy(pt->pod_cpus[0], cpu_possible_mask);
- 	pt->pod_node[0] = NUMA_NO_NODE;
+	if (rd[1] != ARM_R0) {
+		emit(ARM_POP(BIT(ARM_R0) | BIT(ARM_R1)), ctx);
+		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
+	} else if (rd[1] != ARM_R2) {
+		emit(ARM_ADD_I(ARM_SP, ARM_SP, 8), ctx);
+		emit(ARM_POP(BIT(ARM_R2) | BIT(ARM_R3)), ctx);
+	} else {
+		emit(ARM_ADD_I(ARM_SP, ARM_SP, 16), ctx);
+	}
+
+Hmm?
+
 -- 
-2.40.1
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
