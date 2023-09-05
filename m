@@ -2,99 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A95E0792AF2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30577792A68
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbjIEQpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:45:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        id S236021AbjIEQge (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350519AbjIEFEK (ORCPT
+        with ESMTP id S1350928AbjIEFFN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 01:04:10 -0400
+        Tue, 5 Sep 2023 01:05:13 -0400
 Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09A3CCC5;
-        Mon,  4 Sep 2023 22:04:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49390CCB
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 22:05:10 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 15C2ACE1020;
-        Tue,  5 Sep 2023 05:04:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3746C433C7;
-        Tue,  5 Sep 2023 05:04:01 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id 934EECE10A3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:05:08 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CC70C433C8;
+        Tue,  5 Sep 2023 05:05:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693890242;
-        bh=rNZ6gSz952FnYbdOwNayc8WW+NGygaXz472YSAOluYk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=b0GC0EYlTsTH7sHYMimcCh/EOaOHV4uGQ7vqQf/HuRw9Qulq+4xw75y80YOFRnkv9
-         b4LwteX6i6uFW4Fi/ztQKY0pa4fXglePRsstW5agm7HVr4h21wC+8G73P3d1omz09n
-         GGU1bpU3WQG8xLoTtxpVnQnHg6fx0QC3kZW9vs1ru7oUifErFtuAMkxJEKXZ7d4ht6
-         sryxO7lp4qym/OQ1QPl3o9iWxAJOcuRmQROuIxNSbTxRonsykbGilksIMBUfibE0jK
-         Q7wJoHWgM41x5ogHEVlUfkVJZSQroVIQvuP5b5/gvHNG2/fsm7hFKRlU03NC6GpKOD
-         +ekqiIr73cSXQ==
-Message-ID: <b5dcc85d-f709-a3a3-e7ad-9c71f278842a@kernel.org>
-Date:   Tue, 5 Sep 2023 14:04:00 +0900
+        s=k20201202; t=1693890306;
+        bh=BD3BaAX8xgtKJl99GW2gGHo4WFlWj3W64cI+MHUIFx0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=p11JHm6ODjs55qeF6CQu1wmuACALq6ovVREZsXpBvazUgytaeyzYajjKMrU3ntKq7
+         T+UxZ59v5pVrjdbN0Yo0nXjAew/3BWvN2lXpw5REqcrsvzOZ8mhB87LI2QoyZia6HF
+         Yr5bFuPFpt2meVcr8+1Ne4VypcxlvsKjCEnnAgcrVZHgexL/KBYKsbExJxxgxt93db
+         qLC0BnpoecGlXvxwrMyTe0xWB/wNdfjqn8sESkEzIFmFDXWSFowVBCRxxPSuLQvVaX
+         u+gEu0aGETtxLgTxwKRGqX4Og8thB7R0U5ylOD9HcR6n046rBkewZjOy211m324oH1
+         HwxhvyqTfl0Sw==
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Babu Moger <babu.moger@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, David.Kaplan@amd.com,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Nikolay Borisov <nik.borisov@suse.com>,
+        gregkh@linuxfoundation.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v3 00/20] SRSO fixes/cleanups
+Date:   Mon,  4 Sep 2023 22:04:44 -0700
+Message-ID: <cover.1693889988.git.jpoimboe@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ata: sata_mv: Fix incorrect string length computation in
- mv_dump_mem()
-Content-Language: en-US
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-ide@vger.kernel.org
-References: <1a35e114a3dcc33053ca7cca41cb06b8426d8c40.1693857262.git.christophe.jaillet@wanadoo.fr>
-From:   Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <1a35e114a3dcc33053ca7cca41cb06b8426d8c40.1693857262.git.christophe.jaillet@wanadoo.fr>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/5/23 04:54, Christophe JAILLET wrote:
-> snprintf() returns the "number of characters which *would* be generated for
-> the given input", not the size *really* generated.
-> 
-> In order to avoid too large values for 'o' (and potential negative values
-> for "sizeof(linebuf) o") use scnprintf() instead of snprintf().
-> 
-> Note that given the "w < 4" in the for loop, the buffer can NOT
-> overflow, but using the *right* function is always better.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+v3:
+- drop kvm patches (to be picked up by Sean)
+- fix "no microcode, no microcode" printk
+- fix "Safe Ret" capitalization in documentation
+- fix chopped line in commit log
+- drop "x86/srso: Remove redundant X86_FEATURE_ENTRY_IBPB check" patch
 
-Doesn't this need Fixes and CC stable tags ?
+Josh Poimboeuf (20):
+  x86/srso: Fix srso_show_state() side effect
+  x86/srso: Set CPUID feature bits independently of bug or mitigation
+    status
+  x86/srso: Don't probe microcode in a guest
+  x86/srso: Fix SBPB enablement for spec_rstack_overflow=off
+  x86/srso: Fix SBPB enablement for (possible) future fixed HW
+  x86/srso: Print actual mitigation if requested mitigation isn't
+    possible
+  x86/srso: Print mitigation for retbleed IBPB case
+  x86/srso: Fix vulnerability reporting for missing microcode
+  x86/srso: Fix unret validation dependencies
+  x86/alternatives: Remove faulty optimization
+  x86/srso: Improve i-cache locality for alias mitigation
+  x86/srso: Unexport untraining functions
+  x86/srso: Remove 'pred_cmd' label
+  x86/bugs: Remove default case for fully switched enums
+  x86/srso: Move retbleed IBPB check into existing 'has_microcode' code
+    block
+  x86/srso: Disentangle rethunk-dependent options
+  x86/rethunk: Use SYM_CODE_START[_LOCAL]_NOALIGN macros
+  x86/retpoline: Remove .text..__x86.return_thunk section
+  x86/nospec: Refactor UNTRAIN_RET[_*]
+  x86/calldepth: Rename __x86_return_skl() to call_depth_return_thunk()
 
-> ---
->  drivers/ata/sata_mv.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/ata/sata_mv.c b/drivers/ata/sata_mv.c
-> index d105db5c7d81..45e48d653c60 100644
-> --- a/drivers/ata/sata_mv.c
-> +++ b/drivers/ata/sata_mv.c
-> @@ -1255,8 +1255,8 @@ static void mv_dump_mem(struct device *dev, void __iomem *start, unsigned bytes)
->  
->  	for (b = 0; b < bytes; ) {
->  		for (w = 0, o = 0; b < bytes && w < 4; w++) {
-> -			o += snprintf(linebuf + o, sizeof(linebuf) - o,
-> -				      "%08x ", readl(start + b));
-> +			o += scnprintf(linebuf + o, sizeof(linebuf) - o,
-> +				       "%08x ", readl(start + b));
->  			b += sizeof(u32);
->  		}
->  		dev_dbg(dev, "%s: %p: %s\n",
+ Documentation/admin-guide/hw-vuln/srso.rst |  24 ++-
+ arch/x86/include/asm/nospec-branch.h       |  69 ++++-----
+ arch/x86/include/asm/processor.h           |   2 -
+ arch/x86/kernel/alternative.c              |   8 -
+ arch/x86/kernel/cpu/amd.c                  |  28 ++--
+ arch/x86/kernel/cpu/bugs.c                 | 102 ++++++------
+ arch/x86/kernel/vmlinux.lds.S              |  10 +-
+ arch/x86/lib/retpoline.S                   | 171 +++++++++++----------
+ include/linux/objtool.h                    |   3 +-
+ scripts/Makefile.vmlinux_o                 |   3 +-
+ 10 files changed, 201 insertions(+), 219 deletions(-)
 
 -- 
-Damien Le Moal
-Western Digital Research
+2.41.0
 
