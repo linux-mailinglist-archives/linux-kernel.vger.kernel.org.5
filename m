@@ -2,123 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC99792D50
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33786792EAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbjIESTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:19:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35652 "EHLO
+        id S233552AbjIETTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232385AbjIESTj (ORCPT
+        with ESMTP id S236059AbjIETS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:19:39 -0400
-Received: from out-228.mta1.migadu.com (out-228.mta1.migadu.com [IPv6:2001:41d0:203:375::e4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F2097AA3
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:08:13 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 11:06:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693937197;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZWf0V7LgHDPNADTCt39gF6q3V8XNc51DCpIR5HUJ2EQ=;
-        b=ODIOaaUBR3t/W03PG+9H+gBeI+TrdOywWQpdhaKwCOOxad7Ag2kSxA4N2VdiGsqu9exO9r
-        lU91KCwMDpqgqfAx12ewwtc7maZB0BSg49J5U1mN5gPq8bcdwlrmZ+y1CFtusZ1uk9hL1p
-        qdMtVvcEa9c+Uhdw3Pes+im1iBJkjeM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        maz@kernel.org, james.morse@arm.com, suzuki.poulose@arm.com,
-        yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org,
-        qperret@google.com, ricarkol@google.com, tabba@google.com,
-        bgardon@google.com, zhenyzha@redhat.com, yihyu@redhat.com,
-        shan.gavin@gmail.com
-Subject: Re: [PATCH] KVM: arm64: Fix soft-lockup on relaxing PTE permission
-Message-ID: <ZPduJ08GKaKXwIhM@linux.dev>
-References: <20230904072826.1468907-1-gshan@redhat.com>
- <ZPWPoEgBETeI1um1@linux.dev>
- <0f93a015-4f10-b53e-f67f-a84db43ca533@redhat.com>
+        Tue, 5 Sep 2023 15:18:59 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E914C1712;
+        Tue,  5 Sep 2023 12:18:30 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385I8xgF006487;
+        Tue, 5 Sep 2023 18:11:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=oMCSbySD6qO+hkVV2TOuyb10G6/TIsmRykN9ZPcb8uo=;
+ b=qbLsYYFw8RIxd2Z+iaaw8PE5o8PDj3XJT1GJHVbL9/t5ie8/CzB1E+kwO4/RVKbl/+m2
+ efGJBEntMd2xdMQM0XSWGTcHcWQ27/B8UVU1m1muWpPdsYvA1EJl4myebCUi8aqkwVuz
+ sTZ5qEZktMHjEa++uzSfqE/uB6FvVAC7zBrLcJZub1bph8HTDZiebqsc4OTd/OTqVKUe
+ A6yXhJ7aBCDMebepCr3BgyDoSuVxpJge8xrYSJZ0fmg0UQ8AzFTR8OwYdmzMea7UbEKF
+ j+LDDUPD/Tsc9iSg2jwCezZqJIJ3jQONLq9pNyrVOTUGe6WWjW6jxG7Nfb+QJGQaZ8eK QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8h49hrk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 18:11:02 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385I95WB007967;
+        Tue, 5 Sep 2023 18:10:58 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8h49h7g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 18:10:58 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385GfDTu026826;
+        Tue, 5 Sep 2023 18:10:47 GMT
+Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgcnctbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 18:10:47 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385IAkl528770574
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 18:10:47 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8CBFB58061;
+        Tue,  5 Sep 2023 18:10:46 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0D81858063;
+        Tue,  5 Sep 2023 18:10:45 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 18:10:44 +0000 (GMT)
+Message-ID: <20a588ca-baee-e94b-11d6-d1f56c695c5b@linux.ibm.com>
+Date:   Tue, 5 Sep 2023 14:10:44 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f93a015-4f10-b53e-f67f-a84db43ca533@redhat.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 14/25] security: Introduce file_post_open hook
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+ <20230904133415.1799503-15-roberto.sassu@huaweicloud.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20230904133415.1799503-15-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: N2nLnmKdOlRduIAmDgmOzWx21xdhznR2
+X-Proofpoint-ORIG-GUID: jtZkXbFKod4PEqOeGQ915dTFzUpQYLco
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_11,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ impostorscore=0 mlxlogscore=999 mlxscore=0 clxscore=1015
+ priorityscore=1501 adultscore=0 spamscore=0 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050157
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 10:06:14AM +1000, Gavin Shan wrote:
+On 9/4/23 09:34, Roberto Sassu wrote:
 
-[...]
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> In preparation to move IMA and EVM to the LSM infrastructure, introduce the
+> file_post_open hook. Also, export security_file_post_open() for NFS.
+>
+> It is useful for IMA to calculate the digest of the file content, and to
+> decide based on that digest whether the file should be made accessible to
+> the requesting process.
+>
+> LSMs should use this hook instead of file_open, if they need to make their
+> decision based on an opened file (for example by inspecting the file
+> content). The file is not open yet in the file_open hook. The new hook can
+> return an error and can cause the open to be aborted.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
 
-> >   static inline void __invalidate_icache_guest_page(void *va, size_t size)
-> >   {
-> > +	size_t nr_lines = size / __icache_line_size();
-> > +
-> >   	if (icache_is_aliasing()) {
-> >   		/* any kind of VIPT cache */
-> >   		icache_inval_all_pou();
-> >   	} else if (read_sysreg(CurrentEL) != CurrentEL_EL1 ||
-> >   		   !icache_is_vpipt()) {
-> >   		/* PIPT or VPIPT at EL2 (see comment in __kvm_tlb_flush_vmid_ipa) */
-> > -		icache_inval_pou((unsigned long)va, (unsigned long)va + size);
-> > +		if (nr_lines > MAX_TLBI_OPS)
-> > +			icache_inval_all_pou();
-> > +		else
-> > +			icache_inval_pou((unsigned long)va,
-> > +					 (unsigned long)va + size);
-> >   	}
-> >   }
-> 
-> I'm not sure if it's worthy to pull the @iminline from CTR_EL0 since it's almost
-> fixed to 64-bytes. 
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-I firmly disagree. The architecture allows implementers to select a
-different minimum line size, and non-64b systems _do_ exist in the wild.
-Furthermore, some implementers have decided to glue together cores with
-mismatched line sizes too...
 
-Though we could avoid some headache by normalizing on 64b, the cold
-reality of the ecosystem requires that we go out of our way to
-accomodate ~any design choice allowed by the architecture.
-
-> @size is guranteed to be PAGE_SIZE or PMD_SIZE aligned. Maybe
-> we can just aggressively do something like below, disregarding the icache thrashing.
-> In this way, the code is further simplified.
-> 
->     if (size > PAGE_SIZE) {
->         icache_inval_all_pou();
->     } else {
->         icache_inval_pou((unsigned long)va,
->                          (unsigned long)va + size);
->     }                                                          // parantheses is still needed
-
-This could work too but we already have a kernel heuristic for limiting
-the amount of broadcast invalidations, which is MAX_TLBI_OPS. I don't
-want to introduce a second, KVM-specific hack to address the exact same
-thing.
-
-> I'm leveraging the chance to ask one question, which isn't related to the issue.
-> It seems we're doing the icache/dcache coherence differently for stage1 and stage-2
-> page table entries. The question is why we needn't to clean the dcache for stage-2,
-> as we're doing for the stage-1 case?
-
-KVM always does its required dcache maintenance (if any) on the first
-translation abort to a given IPA. On systems w/o FEAT_DIC, we lazily
-grant execute permissions as an optimization to avoid unnecessary icache
-invalidations, which as you've seen tends to be a bit of a sore spot.
-
-Between the two faults, we've effectively guaranteed that any
-host-initiated writes to the PA are visible to the guest on both the I
-and D side. Any CMOs for making guest-initiated writes coherent after
-the translation fault are the sole responsibility of the guest.
-
--- 
-Thanks,
-Oliver
+> ---
+>   fs/namei.c                    |  2 ++
+>   fs/nfsd/vfs.c                 |  6 ++++++
+>   include/linux/lsm_hook_defs.h |  1 +
+>   include/linux/security.h      |  6 ++++++
+>   security/security.c           | 17 +++++++++++++++++
+>   5 files changed, 32 insertions(+)
+>
+> diff --git a/fs/namei.c b/fs/namei.c
+> index 1f5ec71360de..7dc4626859f0 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3634,6 +3634,8 @@ static int do_open(struct nameidata *nd,
+>   	error = may_open(idmap, &nd->path, acc_mode, open_flag);
+>   	if (!error && !(file->f_mode & FMODE_OPENED))
+>   		error = vfs_open(&nd->path, file);
+> +	if (!error)
+> +		error = security_file_post_open(file, op->acc_mode);
+>   	if (!error)
+>   		error = ima_file_check(file, op->acc_mode);
+>   	if (!error && do_truncate)
+> diff --git a/fs/nfsd/vfs.c b/fs/nfsd/vfs.c
+> index 8a2321d19194..3450bb1c8a18 100644
+> --- a/fs/nfsd/vfs.c
+> +++ b/fs/nfsd/vfs.c
+> @@ -862,6 +862,12 @@ __nfsd_open(struct svc_rqst *rqstp, struct svc_fh *fhp, umode_t type,
+>   		goto out_nfserr;
+>   	}
+>   
+> +	host_err = security_file_post_open(file, may_flags);
+> +	if (host_err) {
+> +		fput(file);
+> +		goto out_nfserr;
+> +	}
+> +
+>   	host_err = ima_file_check(file, may_flags);
+>   	if (host_err) {
+>   		fput(file);
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 1153e7163b8b..60ed33f0c80d 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -188,6 +188,7 @@ LSM_HOOK(int, 0, file_send_sigiotask, struct task_struct *tsk,
+>   	 struct fown_struct *fown, int sig)
+>   LSM_HOOK(int, 0, file_receive, struct file *file)
+>   LSM_HOOK(int, 0, file_open, struct file *file)
+> +LSM_HOOK(int, 0, file_post_open, struct file *file, int mask)
+>   LSM_HOOK(int, 0, file_truncate, struct file *file)
+>   LSM_HOOK(int, 0, task_alloc, struct task_struct *task,
+>   	 unsigned long clone_flags)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 665bba3e0081..a0f16511c059 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -403,6 +403,7 @@ int security_file_send_sigiotask(struct task_struct *tsk,
+>   				 struct fown_struct *fown, int sig);
+>   int security_file_receive(struct file *file);
+>   int security_file_open(struct file *file);
+> +int security_file_post_open(struct file *file, int mask);
+>   int security_file_truncate(struct file *file);
+>   int security_task_alloc(struct task_struct *task, unsigned long clone_flags);
+>   void security_task_free(struct task_struct *task);
+> @@ -1044,6 +1045,11 @@ static inline int security_file_open(struct file *file)
+>   	return 0;
+>   }
+>   
+> +static inline int security_file_post_open(struct file *file, int mask)
+> +{
+> +	return 0;
+> +}
+> +
+>   static inline int security_file_truncate(struct file *file)
+>   {
+>   	return 0;
+> diff --git a/security/security.c b/security/security.c
+> index 3947159ba5e9..3e0078b51e46 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2856,6 +2856,23 @@ int security_file_open(struct file *file)
+>   	return fsnotify_perm(file, MAY_OPEN);
+>   }
+>   
+> +/**
+> + * security_file_post_open() - Recheck access to a file after it has been opened
+> + * @file: the file
+> + * @mask: access mask
+> + *
+> + * Recheck access with mask after the file has been opened. The hook is useful
+> + * for LSMs that require the file content to be available in order to make
+> + * decisions.
+> + *
+> + * Return: Returns 0 if permission is granted.
+> + */
+> +int security_file_post_open(struct file *file, int mask)
+> +{
+> +	return call_int_hook(file_post_open, 0, file, mask);
+> +}
+> +EXPORT_SYMBOL_GPL(security_file_post_open);
+> +
+>   /**
+>    * security_file_truncate() - Check if truncating a file is allowed
+>    * @file: file
