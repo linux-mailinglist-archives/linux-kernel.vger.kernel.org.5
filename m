@@ -2,113 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B098792C1C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD0A792C5D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353942AbjIERGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:06:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49058 "EHLO
+        id S230471AbjIERTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:19:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356017AbjIEQbw (ORCPT
+        with ESMTP id S1353744AbjIEROU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 12:31:52 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17D2E1FDF;
-        Tue,  5 Sep 2023 09:29:08 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-26fe4997871so1337468a91.3;
-        Tue, 05 Sep 2023 09:29:08 -0700 (PDT)
+        Tue, 5 Sep 2023 13:14:20 -0400
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2AF09014
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:43:51 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-50078e52537so4589772e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 09:43:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693931278; x=1694536078; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0lXaZC4lJgr9JMdxNZHELcwQzbUjuJdgxkRaJXVL56E=;
-        b=dI1yIOJ7f/gKrBLYTC8kLvhDaiv45hoSjTOYqIUmfw8exnOouryHfzBsi0jH7/LRgE
-         zNe04XWrWluOz0gBMteD0jCEaWhdulvADUuFLMrnSqXXqpwuwfNPG80ZK/kQCdo1iUvA
-         x3bHHQuGsNsDo8mk2Kh8CH+xPM7StKt8XNL4kLz+9jI2uagzVOAIP16Ns9rT36pW//wP
-         TAswtbCgWiwnr1zOfk94l1XCPnGIbvF5BhgmdoBHkOGZmoUDxHtjhRJjrZviAhRlL2Jo
-         mexAdDGkn5iib+ZubMT7dM36ZptrQQHenJFbU8Xb/3LFHTYZSRmScSsHqJa8aY8tOqPQ
-         o8dA==
+        d=cloud.com; s=cloud; t=1693931848; x=1694536648; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OfYnmYbnlw/oOdEXRRJF1VOqzdakA8jCVvd4ZjMv2EM=;
+        b=jMRP8oAAkiBZVEwFJW+sFORSPsaVhjIITorJz4siwagMjIeQAO2WFQPwOrCB7xXLKx
+         AK8XZDbc0TiZYXBH+LgPJZcoYMT+lU/ZLbKZuC69gIf9ktm8ESOcw1BtCbZnz5xgbAa3
+         a1Q+fW58jeYS82Lrr8A0wQvK5MVpg59kVc8Sw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693931278; x=1694536078;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0lXaZC4lJgr9JMdxNZHELcwQzbUjuJdgxkRaJXVL56E=;
-        b=ho7XILYpNDWDBPUmi7pwYl0c9+5FYGfPE0kK2KZbJSPDbo/HjHt8j8B6Zfc9RbaK46
-         8qElKLtBukEHgytDtX0CrigJ/IbtlsgVrQJv3ROV3xhONwf7VUqKLzd4oFx2+L2J+qKZ
-         XiLryrrzn/BIIQNjtOTWe9XXmZFxZ3BBVEeKIJkfNg1oONV9xV0ANAwcBpnGJN0oGA8+
-         6arNKOP9TNTKDvgFtNKE/8nDr6PyrVOHts+zZK3o1/tNJNSFyzi5TiB1RM8Vavy4RQL3
-         NtOf9HIFdEDHquLY6JUcPd2+1l2LmzeRXStAtE8UZmogd/Q/iNwyNB9hbzBXaE0LZ08I
-         Ew6w==
-X-Gm-Message-State: AOJu0YwyY8GjdozlGjx3r/sL7JijMWGoFCzTkuzuA4oeAkuOy6jQbSdI
-        9TgQykXyO6Tz4TrGxHManic=
-X-Google-Smtp-Source: AGHT+IHgQ4W+ASzS7VkGl3S7peWoxrNZhGjnSAhyH7Vq/Wl8souodszOsjfMAmTu9d1TJ/zDISXEMg==
-X-Received: by 2002:a17:90a:a684:b0:26d:3d3a:a198 with SMTP id d4-20020a17090aa68400b0026d3d3aa198mr9655941pjq.42.1693931277904;
-        Tue, 05 Sep 2023 09:27:57 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.93])
-        by smtp.gmail.com with ESMTPSA id p10-20020a17090a868a00b00263f41a655esm9411178pjn.43.2023.09.05.09.27.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 09:27:57 -0700 (PDT)
-Message-ID: <1bbe7772-09f4-6c5a-8c4d-c88988b34c99@gmail.com>
-Date:   Tue, 5 Sep 2023 21:57:52 +0530
+        d=1e100.net; s=20221208; t=1693931848; x=1694536648;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OfYnmYbnlw/oOdEXRRJF1VOqzdakA8jCVvd4ZjMv2EM=;
+        b=OJWiDPvneypOniCazRPrpC/l9tZbnu7qx36BFdoyFs2w4B2MN7w/ikAyz61FvKx652
+         scS/dglvinU6vokYgPNIkgIhKpP2EfUEpMS0FXFaqhLJ/tE7vFn3cn1HNcYffz1DXN0O
+         ewtK9pCpHGTKoXEv/6OAIGqLhFyI6cbC+TU7LBCVM+10F/Ez5M98H47JheCaUmOf1YFm
+         zXwIGUvz2OO76MINBV9EXdqXqIUrYIkfQalvVoeo/k5BggzxEKnqbPs9l3dxIMUp22Fk
+         6MVCYUoGIrC6mKfP2AejAqtX+A0sef8rVlrtb3nH/dgbYiwdtZWwgXuBYAT2B/9W7Ltx
+         M+2Q==
+X-Gm-Message-State: AOJu0YxazbpDBzSDlkrvsP5JlfDErJND6eMxTYgJaMfiw04G3UvF4H9a
+        vRsgRPq8qBaQEG9ylRspHN8wLlqPKUURq4/klI1hehxkLu5AwWzL+w==
+X-Google-Smtp-Source: AGHT+IHRpYJwtBkvQItpDOzpsoiC8Dj7/UWfHFdTNS2CIKeWgrIXNYkWJnDsvCEq1d6lrwFV0p0pXAjnk5zgzKOzDrQ=
+X-Received: by 2002:ac2:5925:0:b0:500:b828:7a04 with SMTP id
+ v5-20020ac25925000000b00500b8287a04mr259335lfi.18.1693931329871; Tue, 05 Sep
+ 2023 09:28:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.12.0
-Subject: Re: [PATCH v4 2/3] greybus: Add BeaglePlay Linux Driver
-To:     Krzysztof Kozlowski <krzk@kernel.org>, greybus-dev@lists.linaro.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org,
-        Vaishnav M A <vaishnav@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        Nishanth Menon <nm@ti.com>
-References: <20230902182845.1840620-1-ayushdevel1325@gmail.com>
- <20230902182845.1840620-3-ayushdevel1325@gmail.com>
- <27a445d6-d904-244f-266c-ffb2d68d0e27@kernel.org>
-Content-Language: en-US
-From:   Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <27a445d6-d904-244f-266c-ffb2d68d0e27@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+References: <878r9sga1t.fsf@kernel.org>
+In-Reply-To: <878r9sga1t.fsf@kernel.org>
+From:   Ross Lagerwall <ross.lagerwall@cloud.com>
+Date:   Tue, 5 Sep 2023 17:28:38 +0100
+Message-ID: <CAG7k0Epk6KJvoDJKVc86sc_ems3DTbKvPLouBzOoVvn1tZwQ=w@mail.gmail.com>
+Subject: Re: [regression v6.5-rc1] PCI: comm "swapper/0" leaking memory
+To:     Kalle Valo <kvalo@kernel.org>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        regressions@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> +static void hdlc_handle_rx_frame(struct gb_beagleplay *bg)
->> +{
->> +	u8 address = bg->rx_buffer[0];
->> +	char *buffer = &bg->rx_buffer[2];
->> +	size_t buffer_len = bg->rx_buffer_len - 4;
->> +
->> +	switch (address) {
->> +	case ADDRESS_DBG:
->> +		hdlc_handle_dbg_frame(bg, buffer, buffer_len);
->> +		break;
->> +	case ADDRESS_GREYBUS:
->> +		hdlc_handle_greybus_frame(bg, buffer, buffer_len);
->> +		break;
->> +	default:
->> +		dev_warn(&bg->serdev->dev, "Got Unknown Frame %u", address);
-> ratelimit
-> Probably as well in several places with possible flooding.
+On Wed, Aug 30, 2023 at 10:21=E2=80=AFAM Kalle Valo <kvalo@kernel.org> wrot=
+e:
+>
+> [CAUTION - EXTERNAL EMAIL] DO NOT reply, click links, or open attachments=
+ unless you have verified the sender and know the content is safe.
+>
+> Hi,
+>
+> I noticed that starting from v6.5-rc1 my ath11k tests reported several
+> memory leaks from swapper/0:
+>
+> unreferenced object 0xffff88810a02b7a8 (size 96):
+>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>   hex dump (first 32 bytes):
+>     80 b8 02 0a 81 88 ff ff b8 72 07 00 00 c9 ff ff  .........r......
+>     c8 b7 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+> unreferenced object 0xffff88810a02b880 (size 96):
+>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>   hex dump (first 32 bytes):
+>     58 b9 02 0a 81 88 ff ff a8 b7 02 0a 81 88 ff ff  X...............
+>     a0 b8 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  ................
+>   backtrace:
+> unreferenced object 0xffff88810a02b958 (size 96):
+>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>   hex dump (first 32 bytes):
+>     30 ba 02 0a 81 88 ff ff 80 b8 02 0a 81 88 ff ff  0...............
+>     78 b9 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  x...............
+>   backtrace:
+> unreferenced object 0xffff88810a02ba30 (size 96):
+>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>   hex dump (first 32 bytes):
+>     08 bb 02 0a 81 88 ff ff 58 b9 02 0a 81 88 ff ff  ........X.......
+>     50 ba 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  P...............
+>   backtrace:
+> unreferenced object 0xffff88810a02bb08 (size 96):
+>   comm "swapper/0", pid 1, jiffies 4294671838 (age 98.120s)
+>   hex dump (first 32 bytes):
+>     e0 bb 02 0a 81 88 ff ff 30 ba 02 0a 81 88 ff ff  ........0.......
+>     28 bb 02 0a 81 88 ff ff 00 00 00 00 00 00 00 00  (...............
+>   backtrace:
+>
+> I can easily reproduce this by doing a simple insmod and rmmod of ath11k
+> and it's dependencies (mac80211, MHI etc). I can reliability reproduce
+> the leaks but I only see them once after a boot, I need to reboot the
+> host to see the leaks again. v6.4 has no leaks.
+>
+> I did a bisect and found the commit below. I verified reverting the
+> commit makes the leaks go away.
+>
+> commit e54223275ba1bc6f704a6bab015fcd2ae4f72572
+> Author:     Ross Lagerwall <ross.lagerwall@citrix.com>
+> AuthorDate: Thu May 25 16:32:48 2023 +0100
+> Commit:     Bjorn Helgaas <bhelgaas@google.com>
+> CommitDate: Fri Jun 9 15:06:16 2023 -0500
+>
+>     PCI: Release resource invalidated by coalescing
+>
+> Kalle
+>
 
-I don't think `hdlc_handle_rx_frame` is the correct place since it only 
-processes a single completed HDLC frame.  The more appropriate place 
-would be `hdlc_rx` if we want to limit based on the number of HDLC 
-frames or `gb_beagleplay_tty_receive` to limit based on the number of bytes.
+Hi Kalle,
 
-I would like to ask, though, why is rate limiting required here? Won't 
-`serdev_device_ops->receive_buf` already rate limit the number of bytes 
-somewhat? Or is it related to blocking in the 
-`serdev_device_ops->receive_buf` callback? In the case of latter, it 
-would probably make sense to ratelimit based on number of frames, I think.
+I can't reproduce the leak by loading/unloading the ath11k module. I suspec=
+t
+that the leak is always there when PCI resources are coalesced but
+kmemleak doesn't notice until ath11k is loaded.
 
+Can you please try the following to confirm it fixes it?
 
-Ayush Singh
+Ross
 
+8<-----------------------
+
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 8bac3ce02609..907c873473e2 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -998,6 +998,7 @@ static int pci_register_host_bridge(struct
+pci_host_bridge *bridge)
+         res =3D window->res;
+         if (!res->flags && !res->start && !res->end) {
+             release_resource(res);
++            resource_list_destroy_entry(window);
+             continue;
+         }
