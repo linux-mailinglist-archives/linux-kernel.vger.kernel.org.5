@@ -2,185 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 90077792A37
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68631792A02
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237838AbjIEQe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:34:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40898 "EHLO
+        id S1355146AbjIEQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:30:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354568AbjIEMmd (ORCPT
+        with ESMTP id S1354569AbjIEMm4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:42:33 -0400
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2089.outbound.protection.outlook.com [40.107.243.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 452DE1B6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:42:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PZfW0v2bibuOCwNYRcSF9i7mJOuQX/9AyPCGUI+85OvW/NGN18TQRfhcxnfBBSZIMevVSquLMyxYvKc3cGoWgdOql3zuBwIq2Cafuph1i3gPSFBKPCPkFHXdhFsvl6oH2H6eTXbqgtVcZqAmrwKUtMh86IsfOl36WSqWkxHmPS7wA7XfBtxwWIC8nb43psFSYC/d1XbtXZfs9nvZQWEHm7SJPmrvqNMdppecSMO0Ehl1auK8Rx4UCuSVejdKiZJfF3EI1KqU39h+Mo3YcuwueZsoSzNOKXpBQGvkvnc8g/CXtC282mIC1T6v0iBGA4c3qCL8yQqPIm83ZjAqll3Eow==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Nm2DCUXtb+LMgiw9REldUi6QmcT0dJNjf4s66J9v/S8=;
- b=Qdpb5AOrRPTZr2pSd57g9fNdNJFWZmQRMgwaA8paQYdY/HT+roygcZEeofjL/JGerk43m4FXkV2bwde0Q8tGRbYu0WPR2clnSq9tj92WwudzfTnFw0ix6W8enJPmWfcrrA34CyrkWsr0iyezUep5olltsAL2fKO0sLtQ2JAiAkLk/QdRSQq/9DrW3eKJErOycswI4Vgc+VbgXYXl9d5NeIgVCaWcLcHXluWsru7mJLGTwusIdiVMOJgXYCigmFFYpPM5+3IvwjD5o0QxrREvxga23689mdK4OujFmUfuVcfdAW7Y8pJRDogyO1EPSFsk482Fxr0Ew+DeNQBaCG7zyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nm2DCUXtb+LMgiw9REldUi6QmcT0dJNjf4s66J9v/S8=;
- b=O5Wzk/+krmj9uiGbwWQ41QxvPtGfU2Bdw9icHD4JtFUeryPgln0w0MyYPXZxWMy3kUrgBQQLZjBRnctU1tomJT29JpE3C6x0PXeBGtANs3+rnPqDGbj5E25P6/gRn+dWiDDaKL9jJU245HtMkqfZhuW7mhXhZ5FzqXJQ4wgcivSDiUxML2m6GCqC5WV1rNEP7VJ4bNPuGPcRKTYB1avlxpQcey35dZKdht84WdNvW9lJoLhXb6Xx8NcDCNsJl/9lATIiaiA+y7ZBecXAQirocsrHk9m7yP0fXvKtDXcBioIMA4Vh/VKjzLUFj1hH203D7ZBdEmNBXIGzfiEXq30Y2w==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by CH3PR12MB8970.namprd12.prod.outlook.com (2603:10b6:610:176::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
- 2023 12:42:24 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::faf:4cd0:ae27:1073%5]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
- 12:42:24 +0000
-Date:   Tue, 5 Sep 2023 09:42:20 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Michael Shavit <mshavit@google.com>
-Cc:     iommu@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, will@kernel.org,
-        robin.murphy@arm.com, nicolinc@nvidia.com,
-        jean-philippe@linaro.org, tina.zhang@intel.com,
-        Joerg Roedel <joro@8bytes.org>,
-        Kevin Tian <kevin.tian@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Tomas Krcka <krckatom@amazon.de>,
-        Yicong Yang <yangyicong@hisilicon.com>
-Subject: Re: [PATCH v1 3/3] iommu/arm-smmu-v3-sva: Remove arm_smmu_bond
-Message-ID: <ZPciLKG2Gi/Biovp@nvidia.com>
-References: <20230905115013.1572240-1-mshavit@google.com>
- <20230905194849.v1.3.I211f2ab0ee241f53cdfbc3a8a573f14b8a46fb26@changeid>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905194849.v1.3.I211f2ab0ee241f53cdfbc3a8a573f14b8a46fb26@changeid>
-X-ClientProxiedBy: BYAPR08CA0042.namprd08.prod.outlook.com
- (2603:10b6:a03:117::19) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Tue, 5 Sep 2023 08:42:56 -0400
+Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B561A8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:42:53 -0700 (PDT)
+Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1b88decb2a9so34978805ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 05:42:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693917771; x=1694522571;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+A22TUng3ehfxKNM9eOPCzIy7tpRELO/RihFdMxcoOw=;
+        b=CpoMcORfPrND60Sr+4+IsKJgfm+qhCnYoqdSbn7tdDN0hDlfAt4ejvWT+eNBuCCXFh
+         r6XHf1gGQ9syScNQtYsxOjQzpH3gZlLqU9aeMl9OLeoRsdPMfXqJfJtJlFkVSnTWtUwx
+         FJRKdJpeTaq4S0mNyFe8CImnuXqy7syqLRbM2uNLeMtDewyNC6Q+xUHPHR4gwIFZ1NLC
+         Y15TEEEq0mEfm6hD+QANuzjdyP8ZFRPaIITCfvT0Vflh9e5KfWf9nYbm0FZgmmZIbD+q
+         IBamuVpYwX3tmgLENdgtfXrh3OGs33o/7mkSLIyaPh0CKKz0YwJCPFJd6t2/sBoyrHj8
+         9AMg==
+X-Gm-Message-State: AOJu0YwlbtpHCEsYCeda7pRQmk0js6kL60D2zGz/1evppyDBKXueuRPe
+        2zoeSHQs2V+cy3O41HvZqf5Zy2nu21ErT1KuK2msyNbXYYFH
+X-Google-Smtp-Source: AGHT+IHekrccDvZh3yL6oOrsD0OJeiraoLHOiYi6pobMI/N+w1SGXocvD4awgQmGYdOUDTsREl1+E1Ma+dIIH8wj4aUyPFgsN0iK
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|CH3PR12MB8970:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e5d1d95-2d1a-459a-37c8-08dbae0d8d9f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: e6QBgYg/GVvNpVCosmWt4RhvV1N0fPopfNRIAQFXVSHE8fG2OVGbSEcWeQL/N9pmuzQvYzse5DbGk8927rI0h9AtJcXT5pSypyjXVylUtjeUl9WtoKGmwz1csf6foVjlkX/ITFInfxoktf/NQXezi06k1OV3hz7jLVmmYMqMIrKyHIpArshBuuZWQ3KEJ4M8HPCmWGiuIiFGnHssStKkpiA898pDP+tNXbTlKtX2xpLlD+f138TyyCwRntl4AmkYuJEKY7ol92F2b5EKsA+en9k55/nMA1addEmkg0O306EOwJMj5LUAIfOjAVsSOitQOCc/KmB3B//LNjyxjVL1xx4UhUCLwcopDHqMgGm8QqcMKS+iG02B1kBcS4jJ8UbB+y80B5jttR9JH1T9Lbrk1Amr1s4zmkpPmnm/eYaejRFIznYhAUAB+cnT5iAWlon2M4B6AvtqyQBRLeoXI6bMVqbGTcyxex40XwiI2ZWH77Ze2gFHSicQgbq022RMHK91h+7CqeTirlZCJQI4qzQGtQ9KZAucHY1y2X0dEy7dVd5np0rYr6fc35dkEYarUYH0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(136003)(396003)(39860400002)(451199024)(186009)(1800799009)(26005)(5660300002)(2616005)(66556008)(66946007)(66476007)(54906003)(316002)(6512007)(6916009)(6506007)(41300700001)(6666004)(4326008)(8676002)(8936002)(478600001)(6486002)(83380400001)(7416002)(2906002)(86362001)(36756003)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?L3MsQq6L+fyitP9gYRsbABpJkJCRFlccpOMCfc6OZwFIQEbuzxo7lJy6kcEO?=
- =?us-ascii?Q?RsoRZjpWAxglD/PQZCpXs+H9IqNouxgE+wS71KuTTIv3u4+UKE7xGphhGEZq?=
- =?us-ascii?Q?eOGwmLqEfjuoNjEZWaJyn5OvkHe/gPnqyW6n2FHHedapRt1M4Jio7BTYET5m?=
- =?us-ascii?Q?APKfwspwOi1eJDibVe/5dsGwLiN58o6h54SBkrd1Up/MJOj3yOWQxrTLW7Y/?=
- =?us-ascii?Q?sW1fAxw2FHY5TGJ1VuiLFjQ8f+l1kEo5E64sZ2vJA2gjEiC1CgqIu1Pr7xso?=
- =?us-ascii?Q?60liI9eZveJaAIDc8hFTjvGc/m3tC6rbZvQgcc/CQm5JvSZGeNZfTdMOlj/2?=
- =?us-ascii?Q?6NM0pWUCqk/lHXzvX4aGTlulGeC1j5UUOD6vsU4LFyWkq2BJqAXWdLBGkXfV?=
- =?us-ascii?Q?rRBbVfJk9ethbpoSLo5PjZQBW7U/tTNi0YYSlcJa+KkMoIooMPACUBXI/KpU?=
- =?us-ascii?Q?zQ1+G0kWNU4HRdKjH3NK7O52yVG9sh4XdUhWtf31qK8ISw7YhWLZ/cvdlIdu?=
- =?us-ascii?Q?6bW6j40ZEfEn7uXjmnMN6QJ34YNEDd2oTTHqy4jJy5F51+/EahsQ4tbF8Rk8?=
- =?us-ascii?Q?4EjAo/Nbp1Uh3eb5wAJDDfxM7zrRQAk8qdLGPhuhOpbTYR8hFf12ARUM4ea2?=
- =?us-ascii?Q?V6U9LM81+Tq0/Pw3GbB7IFtFChlFe92CNXjs6mApLJvL6WNuZ3v4f17POEWb?=
- =?us-ascii?Q?wBB8EBeESB2s0HjGoB0cI+BqeJCjOmSeNY+lDvrMokTi1+5SdOuh4RbDuKQk?=
- =?us-ascii?Q?0owOwUtHFX5AuCMrkSGuy3BniBwG/HjfohQRQDkSjPghzEQW1RRtvusTSBs3?=
- =?us-ascii?Q?aGfNn/9d6y87TVjVcRaGnoFORlo2sMefEkJGU0W/ukFw4iPQBLHKjat55US/?=
- =?us-ascii?Q?1c/LHtLF5p69lekqGyleEKtPSA09LK/H0VM1g/beweuJGUPSEEZkdvYo+pBJ?=
- =?us-ascii?Q?YHA203FZEiCpuPdx32x8QfxteRcLzPRqRPypzuvKv2fqLPeENLJ5evt1F8sU?=
- =?us-ascii?Q?D/76tvkcfTy5jYTqAH+V12kvPSvPpaxsAJECrAz49uJmArOpxMPdYhbKl1CA?=
- =?us-ascii?Q?BYgsB5kAPOuqLaqkzTOp4+ZyAvVZYXZQZD+uKu0zNhKqLpZdQ5IqHnaHBPOd?=
- =?us-ascii?Q?PLSxSFJt2gpYAmb+tbpVMqddbrENNTu7OdE/R8Apk+oBBrFcZzy0ufrF7us8?=
- =?us-ascii?Q?c94dd/N6C0+O+vzSNS1670KktwrnlR+3eKmskltjwn+xZ3a5l2BNbR7AENwv?=
- =?us-ascii?Q?zwjZRnzyytYnjoC/a25omxBMPIT2EdYhrKyqGPYLL+N4ykurhQB3VIh5zyj7?=
- =?us-ascii?Q?VHslb75ErLjlVeIddki0pE/xK7/MsNS0Cw4evmNok/uqSfsgC/T5jt6JHd3A?=
- =?us-ascii?Q?frMlDoE5ArVz4g7Yc/r4X6LeOAxmuZCLj7J57pKu6UOLSQTzaqISraZrd9Nw?=
- =?us-ascii?Q?hFogytT/N7KWuMOYQ4oap2pdHfadoWzO6I+H1pzrRAZSwo4uhrqzQJZIj1XX?=
- =?us-ascii?Q?F512uzC6q5kqTILWlDxfKCNZM3h261Y8iA/vcgp4uWcPNAhQVmgK2XZYlAm5?=
- =?us-ascii?Q?cosn217YVtktHF1b0yvgps6RJ1H38oEkygzu14tV?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e5d1d95-2d1a-459a-37c8-08dbae0d8d9f
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 12:42:23.9662
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HHtx9CSQttbvKFLqRjc8Hxh93dzmeAZvhQMYRt0pKFcQmg7eZxaUVbqDRpylz4Vn
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8970
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:fb06:b0:1bb:cdea:d959 with SMTP id
+ le6-20020a170902fb0600b001bbcdead959mr2555938plb.0.1693917771735; Tue, 05 Sep
+ 2023 05:42:51 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 05:42:51 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001027a206049bf7da@google.com>
+Subject: [syzbot] [bluetooth?] KASAN: use-after-free Read in hci_conn_security
+From:   syzbot <syzbot+b1b9423479233352b99e@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
+        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 07:49:14PM +0800, Michael Shavit wrote:
-> Create a new iommu_domain subclass for SVA iommu domains to hold the
-> data previously stored in the dynamically allocated arm_smmu_bond. Add a
-> simple count of attached SVA domains to arm_smmu_master to replace the
-> list of bonds.
-> 
-> Signed-off-by: Michael Shavit <mshavit@google.com>
-> ---
-> 
->  .../iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c   | 70 +++++++------------
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c   |  1 -
->  drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.h   |  2 +-
->  3 files changed, 26 insertions(+), 47 deletions(-)
-> 
-> diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> index 9fb6907c5e7d4..0342c0f35d55a 100644
-> --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3-sva.c
-> @@ -24,14 +24,13 @@ struct arm_smmu_mmu_notifier {
->  
->  #define mn_to_smmu(mn) container_of(mn, struct arm_smmu_mmu_notifier, mn)
->  
-> -struct arm_smmu_bond {
-> -	struct mm_struct		*mm;
-> +struct arm_smmu_sva_domain {
-> +	struct iommu_domain		iommu_domain;
->  	struct arm_smmu_mmu_notifier	*smmu_mn;
-> -	struct list_head		list;
->  };
->  
-> -#define sva_to_bond(handle) \
-> -	container_of(handle, struct arm_smmu_bond, sva)
-> +#define to_sva_domain(domain) \
-> +	container_of(domain, struct arm_smmu_sva_domain, iommu_domain)
+Hello,
 
-I'm not sure about this? This seems like a strange direction
+syzbot found the following issue on:
 
-The SVA domain and a UNMANAGED/PAGING domain should be basically the
-same thing. Making a sva_domain a completely different type looks like
-it would stand in the way of that?
-> @@ -545,12 +526,11 @@ static const struct iommu_domain_ops arm_smmu_sva_domain_ops = {
->  
->  struct iommu_domain *arm_smmu_sva_domain_alloc(void)
->  {
-> -	struct iommu_domain *domain;
-> +	struct arm_smmu_sva_domain *sva_domain;
->  
-> -	domain = kzalloc(sizeof(*domain), GFP_KERNEL);
-> -	if (!domain)
-> +	sva_domain = kzalloc(sizeof(*sva_domain), GFP_KERNEL);
-> +	if (!sva_domain)
->  		return NULL;
-> -	domain->ops = &arm_smmu_sva_domain_ops;
-> -
-> -	return domain;
-> +	sva_domain->iommu_domain.ops = &arm_smmu_sva_domain_ops;
+HEAD commit:    2ea35288c83b skbuff: skb_segment, Call zero copy functions..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=17f46d87a80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
+dashboard link: https://syzkaller.appspot.com/bug?extid=b1b9423479233352b99e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
 
-arm_smmu_sva_domain_free() should container_of before freeing, but
-gross to assume the iommu_domain is the first member.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Jason
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/d8d28ba7b968/disk-2ea35288.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/12a9f785a85b/vmlinux-2ea35288.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d71c4427c061/bzImage-2ea35288.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b1b9423479233352b99e@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+BUG: KASAN: use-after-free in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+BUG: KASAN: use-after-free in hci_conn_ssp_enabled include/net/bluetooth/hci_core.h:988 [inline]
+BUG: KASAN: use-after-free in hci_conn_security+0x324/0x990 net/bluetooth/hci_conn.c:2409
+Read of size 8 at addr ffff8880784dda70 by task kworker/1:11/12886
+
+CPU: 1 PID: 12886 Comm: kworker/1:11 Not tainted 6.5.0-syzkaller-04006-g2ea35288c83b #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
+Workqueue: events l2cap_info_timeout
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_address_description mm/kasan/report.c:364 [inline]
+ print_report+0xc4/0x620 mm/kasan/report.c:475
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ check_region_inline mm/kasan/generic.c:181 [inline]
+ kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+ hci_conn_ssp_enabled include/net/bluetooth/hci_core.h:988 [inline]
+ hci_conn_security+0x324/0x990 net/bluetooth/hci_conn.c:2409
+ l2cap_chan_check_security+0x16f/0x320 net/bluetooth/l2cap_core.c:929
+ l2cap_conn_start+0x59b/0xa40 net/bluetooth/l2cap_core.c:1646
+ process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
+ worker_thread+0x687/0x1110 kernel/workqueue.c:2751
+ kthread+0x33a/0x430 kernel/kthread.c:389
+ ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
+ </TASK>
+
+The buggy address belongs to the physical page:
+page:ffffea0001e13740 refcount:0 mapcount:0 mapping:0000000000000000 index:0x4 pfn:0x784dd
+flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
+page_type: 0xffffffff()
+raw: 00fff00000000000 0000000000000000 ffffffff00000201 0000000000000000
+raw: 0000000000000004 0000000000000000 00000000ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+page_owner tracks the page as freed
+page last allocated via order 2, migratetype Unmovable, gfp_mask 0x140dc0(GFP_USER|__GFP_COMP|__GFP_ZERO), pid 9825, tgid 9825 (syz-executor.2), ts 251793148654, free_ts 864555377636
+ set_page_owner include/linux/page_owner.h:31 [inline]
+ post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1570
+ prep_new_page mm/page_alloc.c:1577 [inline]
+ get_page_from_freelist+0x10a9/0x31e0 mm/page_alloc.c:3221
+ __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4477
+ __alloc_pages_node include/linux/gfp.h:237 [inline]
+ alloc_pages_node include/linux/gfp.h:260 [inline]
+ __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1126
+ __do_kmalloc_node mm/slab_common.c:973 [inline]
+ __kmalloc.cold+0xb/0xe0 mm/slab_common.c:998
+ kmalloc include/linux/slab.h:586 [inline]
+ kzalloc include/linux/slab.h:703 [inline]
+ hci_alloc_dev_priv+0x1d/0x2780 net/bluetooth/hci_core.c:2467
+ hci_alloc_dev include/net/bluetooth/hci_core.h:1600 [inline]
+ __vhci_create_device+0xf7/0x800 drivers/bluetooth/hci_vhci.c:402
+ vhci_create_device drivers/bluetooth/hci_vhci.c:475 [inline]
+ vhci_get_user drivers/bluetooth/hci_vhci.c:532 [inline]
+ vhci_write+0x2c7/0x470 drivers/bluetooth/hci_vhci.c:612
+ call_write_iter include/linux/fs.h:1985 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x650/0xe40 fs/read_write.c:584
+ ksys_write+0x12f/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+page last free stack trace:
+ reset_page_owner include/linux/page_owner.h:24 [inline]
+ free_pages_prepare mm/page_alloc.c:1161 [inline]
+ free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2348
+ free_unref_page+0x33/0x3b0 mm/page_alloc.c:2443
+ hci_release_dev+0x4da/0x600 net/bluetooth/hci_core.c:2792
+ bt_host_release+0x6a/0xb0 net/bluetooth/hci_sysfs.c:93
+ device_release+0xa1/0x240 drivers/base/core.c:2484
+ kobject_cleanup lib/kobject.c:682 [inline]
+ kobject_release lib/kobject.c:713 [inline]
+ kref_put include/linux/kref.h:65 [inline]
+ kobject_put+0x1f7/0x5b0 lib/kobject.c:730
+ put_device+0x1f/0x30 drivers/base/core.c:3733
+ vhci_release+0x87/0x100 drivers/bluetooth/hci_vhci.c:670
+ __fput+0x3f7/0xa70 fs/file_table.c:384
+ task_work_run+0x14d/0x240 kernel/task_work.c:179
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa99/0x2a20 kernel/exit.c:874
+ do_group_exit+0xd4/0x2a0 kernel/exit.c:1024
+ __do_sys_exit_group kernel/exit.c:1035 [inline]
+ __se_sys_exit_group kernel/exit.c:1033 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1033
+ do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+ do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+Memory state around the buggy address:
+ ffff8880784dd900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880784dd980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+>ffff8880784dda00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+                                                             ^
+ ffff8880784dda80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ ffff8880784ddb00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the bug is already fixed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite bug's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the bug is a duplicate of another bug, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
