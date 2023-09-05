@@ -2,70 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B666F792AD6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4AF77929D7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243253AbjIEQnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:43:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59562 "EHLO
+        id S1353830AbjIEQ3D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:29:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354212AbjIEKKR (ORCPT
+        with ESMTP id S1354221AbjIEKKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:10:17 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52781AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:10:13 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id ada2fe7eead31-44d426d0e05so1014977137.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693908612; x=1694513412; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D1NVo9wK9uR6XB7OEqVjA5/FypKBWn8rSsF+XNP2y7I=;
-        b=a72jylmkIoYnjXaDvFcKy0oR94ab7vefso8+72n1KVQv3ey8XA9jDeCQSDIIS9bKTR
-         vpfWhlwWdXdQ5vn8do1cohTJanoTZSiM57cxIOmojT0Il7PoXI34fxCyQ7tg339ZpwxT
-         12TSBWO0BQ2hQ4HvuQLvBUhe58Ve1hjcOa2aJFrFqCMAoVpAzbU3/Dd3pvBcpSqX3F4W
-         YaEQCxvqXUvBU24Uerx9yW0b4MhgbSmqwK0F0a1ln6BdVQUC9vr0R85YF3XFKToRkEJm
-         ErhwghiGEq/82KK+h95gjISYCAM82MTR8Ma2vctvn/j66VO1SKn2dPJxnJ/i2TlvwA8H
-         uMLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693908612; x=1694513412;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D1NVo9wK9uR6XB7OEqVjA5/FypKBWn8rSsF+XNP2y7I=;
-        b=g65Ifk3Rsc5HClET/TQXi/SL4bpkPS1yaphc2/g8Z43bfSEj1cECUROl6ggZVLSSN/
-         M6GKYtTCAoq3wsrng7n1xLOL0iWLmE1CSHrUKThiuffr7oUyEWWkeZRcyhTE4mgMTnTR
-         WzR4jPZ0/BK0qvTxAY2j9Y9HfCKijxrCnu2ZVt4vbzRr12/mSqHvdsYs9KQhAzmIdC1t
-         L15dcZWyoalVGFJvGGqk3dp5BOqT5UzWtAkbE8qm7+M+xwzptrhGt4+ysjvDd+DQDzLx
-         FB6z/Ly7/loXRDunWBJKB5pzijcrAF5uDgpO8PmdTJUi7Pkb0C48KQ9QI91PS/Tzo5US
-         urrQ==
-X-Gm-Message-State: AOJu0YycftizIBJ/6fbh7vmYSerIFBBzWup994/rqXxNs89/kOPOlnhG
-        RFHPLKgdAEV0M2dFpGnh/W9k53WhQec5I09rn5wr3g==
-X-Google-Smtp-Source: AGHT+IE1V6bh5Wpm7L8b3xz92pn+LrSd3K1fkSSS8XT9JUjoqIZlkLmMmgJwNcjHVjrcuXzyd/kx7ikhguuSfU0jKJI=
-X-Received: by 2002:a05:6102:2454:b0:44e:d28f:e49c with SMTP id
- g20-20020a056102245400b0044ed28fe49cmr10435179vss.23.1693908612436; Tue, 05
- Sep 2023 03:10:12 -0700 (PDT)
+        Tue, 5 Sep 2023 06:10:31 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B95E2C2;
+        Tue,  5 Sep 2023 03:10:27 -0700 (PDT)
+Received: from lhrpeml500004.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rg1Nk0Lh7z67Gnx;
+        Tue,  5 Sep 2023 18:05:58 +0800 (CST)
+Received: from mscphis00759.huawei.com (10.123.66.134) by
+ lhrpeml500004.china.huawei.com (7.191.163.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 5 Sep 2023 11:10:24 +0100
+From:   Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+To:     <jgg@ziepe.ca>
+CC:     <leon@kernel.org>, <gregkh@linuxfoundation.org>,
+        <benjamin.tissoires@redhat.com>, <linux-rdma@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <yusongping@huawei.com>,
+        <artem.kuzin@huawei.com>
+Subject: [PATCH] RDMA/uverbs: Fix typo of sizeof argument
+Date:   Tue, 5 Sep 2023 18:10:21 +0800
+Message-ID: <20230905101021.1722796-1-konstantin.meskhidze@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20230904182945.178705038@linuxfoundation.org>
-In-Reply-To: <20230904182945.178705038@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 5 Sep 2023 15:40:00 +0530
-Message-ID: <CA+G9fYsXyPe92z8Urfn46vSypOd9EYYGh1Ei1YTkHWJdGmBUJw@mail.gmail.com>
-Subject: Re: [PATCH 5.15 00/28] 5.15.131-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.123.66.134]
+X-ClientProxiedBy: mscpeml100002.china.huawei.com (7.188.26.75) To
+ lhrpeml500004.china.huawei.com (7.191.163.9)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,170 +48,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sept 2023 at 00:06, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.15.131 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.15.131-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.15.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Since size of 'hdr' pointer and '*hdr' structure is equal on 64-bit
+machines issue probably didn't cause any wrong behavior. But anyway,
+fixing of typo is required.
 
+Fixes: da0f60df7bd5 ("RDMA/uverbs: Prohibit write() calls with too small buffers")
+Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
+Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+---
+ drivers/infiniband/core/uverbs_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
+index 7c9c79c13941..508d6712e14d 100644
+--- a/drivers/infiniband/core/uverbs_main.c
++++ b/drivers/infiniband/core/uverbs_main.c
+@@ -535,7 +535,7 @@ static ssize_t verify_hdr(struct ib_uverbs_cmd_hdr *hdr,
+ 	if (hdr->in_words * 4 != count)
+ 		return -EINVAL;
+ 
+-	if (count < method_elm->req_size + sizeof(hdr)) {
++	if (count < method_elm->req_size + sizeof(*hdr)) {
+ 		/*
+ 		 * rdma-core v18 and v19 have a bug where they send DESTROY_CQ
+ 		 * with a 16 byte write instead of 24. Old kernels didn't
+-- 
+2.34.1
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.15.131-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-5.15.y
-* git commit: bec292fb85c525832713d1aa73f07c39a477e2ab
-* git describe: v5.15.130-29-gbec292fb85c5
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
-.130-29-gbec292fb85c5
-
-## Test Regressions (compared to v5.15.130)
-
-## Metric Regressions (compared to v5.15.130)
-
-## Test Fixes (compared to v5.15.130)
-
-## Metric Fixes (compared to v5.15.130)
-
-## Test result summary
-total: 91910, pass: 75958, fail: 2130, skip: 13741, xfail: 81
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 112 total, 111 passed, 1 failed
-* arm64: 41 total, 40 passed, 1 failed
-* i386: 32 total, 31 passed, 1 failed
-* mips: 27 total, 26 passed, 1 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 27 total, 26 passed, 1 failed
-* riscv: 11 total, 10 passed, 1 failed
-* s390: 12 total, 11 passed, 1 failed
-* sh: 14 total, 12 passed, 2 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 37 total, 36 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-lib
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libgpiod
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* perf
-* rcutorture
-
---
-Linaro LKFT
-https://lkft.linaro.org
