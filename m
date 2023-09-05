@@ -2,137 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 773B9792BDD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80270792BC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344920AbjIERDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51748 "EHLO
+        id S233856AbjIERAF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354191AbjIEKJj (ORCPT
+        with ESMTP id S1354209AbjIEKJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:09:39 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94D7B1B7;
-        Tue,  5 Sep 2023 03:09:35 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 10:09:32 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693908573;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d7nkECszsry0rSk0DgCWSWbFGZv5iq8J2XANaiqx57c=;
-        b=OD51tqLSBHKMcG14aPLMcE8mpaVovotTMfFVNXpzbrrTXAF8BD0NFgGMPKdfhwDydGrJmS
-        VaSl9n1SFexyQbcKA+wPw7KvbFl3nvEdvcasxCSXg6i7Jc21fWiCyzhQZvsnZbW+cMEIzt
-        y5Y7VyAYc1O56ovLXFyOgTHdUTQM2ZF7B8mbZP2CVp5y1DEvRNgE5DGvBwg5wA56ZmPESU
-        iLgzuPxli9p07XAmCrb16Zm33qiS96fxgpH0dWLtRU/E+fCuZpB46OIBamqA+J/dq0/sgW
-        f1HDwUmKOe5fHKZPHpYzPlAY0b2btwGtARlj6HlYeRYwPqOfMlhc8aiUxgwTxA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693908573;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d7nkECszsry0rSk0DgCWSWbFGZv5iq8J2XANaiqx57c=;
-        b=jN5FvE3dnlHA+MlOHDQ1Lbg745BbTch+hWSYEYxCL9Z5VB0WN0eroKnUxvKpSwzcqVdVxe
-        YhKoLOSF8wVz3lBA==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/nospec: Refactor UNTRAIN_RET[_*]
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <f06d45489778bd49623297af2a983eea09067a74.1693889988.git.jpoimboe@kernel.org>
-References: <f06d45489778bd49623297af2a983eea09067a74.1693889988.git.jpoimboe@kernel.org>
+        Tue, 5 Sep 2023 06:09:48 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 545DF90;
+        Tue,  5 Sep 2023 03:09:44 -0700 (PDT)
+Received: from [192.168.1.23] (unknown [171.76.82.102])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: vignesh)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 73F02660716C;
+        Tue,  5 Sep 2023 11:09:37 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693908581;
+        bh=PHDlogbWriNpSInDU6bgIDQgv8X9PfNf4xdH4kqZ9Sk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=eQ77jxssWPUan9oBzIXWOuFcqRHIwZgu5AUK/namoH9kzlCuPUDvKCAxDWPHn9Q5+
+         D3xfI2I2zg48ZwcE0p2Wsd5JJZxOMmajFxZWcv20Yr30f3EnUFO4kBnlZT5bmmzfj+
+         PhthVN+NmbADogATjEMdgnWBQRZqoHZe4Tj6lbn1MeGwDArJ3AYlR2+cvQmpNkdOTs
+         puY18CIyqzWoC6EBwxfSYDzW7Uaf77Oa0ft/WGm49VfAF5Q1u5VH8dddlrrssR6y0f
+         0OJ7ZlIC7Xy2wvhqv1j0HR0o04z78w+PPS1skuLvbBuoP4mYovi4K88GhE+E6XJ81Q
+         /0azjpFaYmK8Q==
+Message-ID: <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
+Date:   Tue, 5 Sep 2023 15:39:33 +0530
 MIME-Version: 1.0
-Message-ID: <169390857277.27769.6934569658577515640.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/7] drm: ci: Force db410c to host mode
+Content-Language: en-US
+To:     Maxime Ripard <mripard@kernel.org>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     dri-devel@lists.freedesktop.org, helen.koike@collabora.com,
+        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
+        david.heidelberg@collabora.com, daniels@collabora.com,
+        gustavo.padovan@collabora.com, emma@anholt.net,
+        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
+        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
+        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        virtualization@lists.linux-foundation.org,
+        linux-arm-msm@vger.kernel.org
+References: <20230904161516.66751-1-vignesh.raman@collabora.com>
+ <20230904161516.66751-3-vignesh.raman@collabora.com>
+ <CAA8EJpq_cmFQ6TGy1xELh3ButWKLfSkQcp5ix049s_iqKw6DvQ@mail.gmail.com>
+ <ueznsu2dlvq5zp3ls262fww54bnlqa3e2ssr6f65vrrionloms@ir2ywgeajj4w>
+From:   Vignesh Raman <vignesh.raman@collabora.com>
+In-Reply-To: <ueznsu2dlvq5zp3ls262fww54bnlqa3e2ssr6f65vrrionloms@ir2ywgeajj4w>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
+Hi Dmitry, Maxime,
 
-Commit-ID:     ef96daae49597e76a99f3db00dfc2c1559fe2443
-Gitweb:        https://git.kernel.org/tip/ef96daae49597e76a99f3db00dfc2c1559fe2443
-Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:05:03 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 05 Sep 2023 12:05:08 +02:00
+On 05/09/23 14:13, Maxime Ripard wrote:
+> Hi,
+> 
+> On Mon, Sep 04, 2023 at 07:59:26PM +0300, Dmitry Baryshkov wrote:
+>> On Mon, 4 Sept 2023 at 19:16, Vignesh Raman <vignesh.raman@collabora.com> wrote:
+>>>
+>>> Force db410c to host mode to fix network issue which results in failure
+>>> to mount root fs via NFS.
+>>> See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8c15c80a54dda510743cefd1c4b65b8
+>>>
+>>> Use fdtoverlay command to merge base device tree with an overlay
+>>> which contains the fix for USB controllers to work in host mode.
+>>>
+>>> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
+>>> ---
+>>>
+>>> v2:
+>>>    - Use fdtoverlay command to merge overlay dtbo with the base dtb instead of modifying the kernel sources
+>>>
+>>> ---
+>>>   drivers/gpu/drm/ci/build.sh                         |  5 +++++
+>>>   .../gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts  | 13 +++++++++++++
+>>>   2 files changed, 18 insertions(+)
+>>>   create mode 100644 drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
+>>>
+>>> diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build.sh
+>>> index 7b014287a041..92ffd98cd09e 100644
+>>> --- a/drivers/gpu/drm/ci/build.sh
+>>> +++ b/drivers/gpu/drm/ci/build.sh
+>>> @@ -92,6 +92,11 @@ done
+>>>
+>>>   if [[ -n ${DEVICE_TREES} ]]; then
+>>>       make dtbs
+>>> +    if [[ -e arch/arm64/boot/dts/qcom/apq8016-sbc.dtb ]]; then
+>>> +        dtc -@ -I dts -O dtb -o drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dtbo drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
+>>> +        fdtoverlay -i arch/arm64/boot/dts/qcom/apq8016-sbc.dtb -o arch/arm64/boot/dts/qcom/apq8016-sbc-overlay.dtb drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dtbo
+>>> +        mv arch/arm64/boot/dts/qcom/apq8016-sbc-overlay.dtb arch/arm64/boot/dts/qcom/apq8016-sbc.dtb
+>>> +    fi
+>>>       cp ${DEVICE_TREES} /lava-files/.
+>>>   fi
+>>>
+>>> diff --git a/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts b/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
+>>> new file mode 100644
+>>> index 000000000000..57b7604f1c23
+>>> --- /dev/null
+>>> +++ b/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
+>>> @@ -0,0 +1,13 @@
+>>> +/dts-v1/;
+>>> +/plugin/;
+>>> +
+>>> +/ {
+>>> +    fragment@0 {
+>>> +        target-path = "/soc@0";
+>>> +        __overlay__ {
+>>> +            usb@78d9000 {
+>>> +                dr_mode = "host";
+>>> +            };
+>>> +        };
+>>> +    };
+>>> +};
+>>> --
+>>> 2.40.1
+>>
+>> Can we use normal dtso syntax here instead of defining fragments manually?
+> 
+> What Dmitry is hinting about is to use the "Sugar Syntax". There a good documentation here:
+> https://source.android.com/docs/core/architecture/dto/syntax
 
-x86/nospec: Refactor UNTRAIN_RET[_*]
 
-Factor out the UNTRAIN_RET[_*] common bits into a helper macro.
+With the below DTO syntax,
+/dts-v1/;
+/plugin/;
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/f06d45489778bd49623297af2a983eea09067a74.1693889988.git.jpoimboe@kernel.org
----
- arch/x86/include/asm/nospec-branch.h | 31 ++++++++-------------------
- 1 file changed, 10 insertions(+), 21 deletions(-)
+&usb {
+   usb@78d9000 {
+     dr_mode = "host";
+   };
+};
 
-diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
-index 51e3f1a..dcc7847 100644
---- a/arch/x86/include/asm/nospec-branch.h
-+++ b/arch/x86/include/asm/nospec-branch.h
-@@ -288,35 +288,24 @@
-  * As such, this must be placed after every *SWITCH_TO_KERNEL_CR3 at a point
-  * where we have a stack but before any RET instruction.
-  */
--.macro UNTRAIN_RET
-+.macro __UNTRAIN_RET ibpb_feature, call_depth_insns
- #if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
- 	VALIDATE_UNRET_END
- 	ALTERNATIVE_3 "",						\
- 		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
--		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
--		     __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
-+		      "call entry_ibpb", \ibpb_feature,			\
-+		     __stringify(\call_depth_insns), X86_FEATURE_CALL_DEPTH
- #endif
- .endm
- 
--.macro UNTRAIN_RET_VM
--#if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
--	VALIDATE_UNRET_END
--	ALTERNATIVE_3 "",						\
--		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
--		      "call entry_ibpb", X86_FEATURE_IBPB_ON_VMEXIT,	\
--		      __stringify(RESET_CALL_DEPTH), X86_FEATURE_CALL_DEPTH
--#endif
--.endm
-+#define UNTRAIN_RET \
-+	__UNTRAIN_RET X86_FEATURE_ENTRY_IBPB, __stringify(RESET_CALL_DEPTH)
- 
--.macro UNTRAIN_RET_FROM_CALL
--#if defined(CONFIG_RETHUNK) || defined(CONFIG_CPU_IBPB_ENTRY)
--	VALIDATE_UNRET_END
--	ALTERNATIVE_3 "",						\
--		      CALL_UNTRAIN_RET, X86_FEATURE_UNRET,		\
--		      "call entry_ibpb", X86_FEATURE_ENTRY_IBPB,	\
--		      __stringify(RESET_CALL_DEPTH_FROM_CALL), X86_FEATURE_CALL_DEPTH
--#endif
--.endm
-+#define UNTRAIN_RET_VM \
-+	__UNTRAIN_RET X86_FEATURE_IBPB_ON_VMEXIT, __stringify(RESET_CALL_DEPTH)
-+
-+#define UNTRAIN_RET_FROM_CALL \
-+	__UNTRAIN_RET X86_FEATURE_ENTRY_IBPB, __stringify(RESET_CALL_DEPTH_FROM_CALL)
- 
- 
- .macro CALL_DEPTH_ACCOUNT
+Decoded dtbo file is,
+/dts-v1/;
+
+/ {
+
+	fragment@0 {
+		target = <0xffffffff>;
+
+		__overlay__ {
+
+			usb@78d9000 {
+				dr_mode = "host";
+			};
+		};
+	};
+
+	__fixups__ {
+		usb = "/fragment@0:target:0";
+	};
+};
+
+With the previous fix using fragment we get,
+/ {
+
+	fragment@0 {
+		target-path	 = "/soc@0";
+
+		__overlay__ {
+
+			usb@78d9000 {
+				dr_mode = "host";
+			};
+		};
+	};
+};
+
+Decoded apq8016-sbc.dtb file with the fix (setting dr_mode to host) is,
+/dts-v1/;
+/ {	
+	soc@0 {
+		usb@78d9000 {
+			dr_mode = "host";
+		};	
+	};
+};
+
+How can set the target to "soc@0" using the DTO syntax? Otherwise 
+fdtoverlay fails to apply the dtbo file with the base dtb.
+
+Regards,
+Vignesh
