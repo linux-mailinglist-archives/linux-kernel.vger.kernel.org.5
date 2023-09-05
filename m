@@ -2,135 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F90E792B9A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 591AC792B8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345349AbjIEQz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:55:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53130 "EHLO
+        id S245059AbjIEQzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:55:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353484AbjIEGWH (ORCPT
+        with ESMTP id S1353492AbjIEGYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 02:22:07 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525FA191;
-        Mon,  4 Sep 2023 23:22:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693894922; x=1725430922;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=VEoIeRK2p8fuiPJCyGj4dLFE/iZ5NCsrzx+VLk9PNNE=;
-  b=dUvSJdiX7lhbKow5UpXMvHQzNxkKmFzV8b1Oky35l9ZnCDiSEuOw+xED
-   jyY3csQLwdjwFIIvlMGhP7GcZAdp+d/ygFf1pVyG7Ds8CwOanvOQGR0fm
-   Nk9pmwDaMEv4qIIvebld8EK5jHZx73YUeUHkCKTAV7ZnfyyCVJ5T9aufV
-   ft8fgale13WKcs6w0DnwLuV60HSRCBDi6FFYXytSGuJ8l5XhEMHMAedlc
-   Q+GKYuf7GbLvVrj07Xs5tj9vePLV4lKyF2WPY3eJF0MPaQo466fwTFLtR
-   lkl4YCLV2XLN9k0rASZaMcQY+u1TPdDNWn9wdWQ8cb3fTbwZkA+gA1aGl
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="380515106"
-X-IronPort-AV: E=Sophos;i="6.02,228,1688454000"; 
-   d="scan'208";a="380515106"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 23:22:01 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="806484363"
-X-IronPort-AV: E=Sophos;i="6.02,228,1688454000"; 
-   d="scan'208";a="806484363"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.153])
-  by fmsmga008.fm.intel.com with SMTP; 04 Sep 2023 23:21:58 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Tue, 05 Sep 2023 09:21:57 +0300
-Date:   Tue, 5 Sep 2023 09:21:57 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Zhang Rui <rui.zhang@intel.com>
-Cc:     linux-pm@vger.kernel.org, rafael.j.wysocki@intel.com,
-        daniel.lezcano@linaro.org, linux-kernel@vger.kernel.org,
-        srinivas.pandruvada@intel.com
-Subject: Re: [PATCH v2 09/15] powercap/intel_rapl: Cleanup Power Limits
- support
-Message-ID: <ZPbJBanVmoMuOhMR@intel.com>
-References: <20230419024419.324436-1-rui.zhang@intel.com>
- <20230419024419.324436-10-rui.zhang@intel.com>
+        Tue, 5 Sep 2023 02:24:35 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C53F191;
+        Mon,  4 Sep 2023 23:24:32 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id 41be03b00d2f7-56b0c5a140dso1552640a12.0;
+        Mon, 04 Sep 2023 23:24:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693895071; x=1694499871; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=iZe9XtPeDijJTfBrAmZ3rs+0VNHgiBDEk7wGRdjI3c4=;
+        b=Q0NIVVx+L5/0TPSpLLuPQCkGsCtCDePKeJzGBpMSzTmOL/G+1I2qTTO8ot49oZ23Jd
+         7c3XkkeG01gP4h5cOolHCERRl9U+8//zpzE+hp4iO+2224FT4Pd9TGOUg/om7I40e6x3
+         o28YPA6YWh4K9yMB/j7+QfV5RrkGXct4Qrz1QH0q0g3HylPKIMkpIt739TVdFhBHfkX7
+         K/+DbuVaESTX6vmw9pYox6w1OTS8DliHjoaWnLBRLOtLkl3z/y2rjmHFTxitimjupNbs
+         H+RBOlxcr1Nh1p+0nFbMQ/6H2V0KmhJcXmOwZB3NHWxtzX0dMLd2lRBhhXi6oyN4yCA4
+         TpAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693895071; x=1694499871;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iZe9XtPeDijJTfBrAmZ3rs+0VNHgiBDEk7wGRdjI3c4=;
+        b=GZiS2Pa5U5PxKxRgDk7k9YeN0G927CaDwrVvKgF8XnSjPKQjUZBtgvfTIhWEC/2b7s
+         yx31pSTuRg8TKqxDK/3N1Yi1+rdzj/3xflbF3hyXRmQ0W8E1gpXiwXvr/Sq+wClCTGQK
+         DJNVK4bcHEPXG1+HAXQ+IH5mhZRXoveAoCkLpeTYeGi3gqqaB9kuiu5vynpz3dRJtCCY
+         d4aIjppeCLYO36YZPieO7RDnX17vQol4oJ+OobNDFMWv6s8p0a2Ub04Oc7kWTr+G6iFe
+         /pQTwpuG1u4tYmGKLiGcbO4bbWhgo1rhU96Ti08XmBEdK5KdyAXQP99G8Ugj8PI19lnn
+         gvXQ==
+X-Gm-Message-State: AOJu0Yy1++/1f4g+sfojRphnGiTdRGRV9+q4PpWoOhAPdM/GfsN+qG4a
+        4nwTOTWrGO8JW3GhUUm2S7M=
+X-Google-Smtp-Source: AGHT+IF+MDQa2Y721EGnUs4M/DkAWziEdIlV8HdGxLhcRV71seoYweMUgY5Oosud0dFN4iHAX6FM+A==
+X-Received: by 2002:a05:6a20:7491:b0:12e:73bb:cbb6 with SMTP id p17-20020a056a20749100b0012e73bbcbb6mr15530522pzd.14.1693895071456;
+        Mon, 04 Sep 2023 23:24:31 -0700 (PDT)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
+        by smtp.gmail.com with ESMTPSA id e18-20020a17090301d200b001bd41b70b60sm8526721plh.45.2023.09.04.23.24.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Sep 2023 23:24:31 -0700 (PDT)
+From:   Peter Yin <peteryin.openbmc@gmail.com>
+To:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Cc:     peter.yin@quantatw.com, Peter Yin <peteryin.openbmc@gmail.com>
+Subject: [PATCH v8 0/2] Add Facebook Minerva (AST2600) BMC
+Date:   Tue,  5 Sep 2023 14:22:20 +0800
+Message-Id: <20230905062223.774871-1-peteryin.openbmc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230419024419.324436-10-rui.zhang@intel.com>
-X-Patchwork-Hint: comment
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 10:44:13AM +0800, Zhang Rui wrote:
-> The same set of operations are shared by different Powert Limits,
-> including Power Limit get/set, Power Limit enable/disable, clamping
-> enable/disable, time window get/set, and max power get/set, etc.
-> 
-> But the same operation for different Power Limit has different
-> primitives because they use different registers/register bits.
-> 
-> A lot of dirty/duplicate code was introduced to handle this difference.
-> 
-> Introduce a universal way to issue Power Limit operations.
-> Instead of using hardcoded primitive name directly, use Power Limit id
-> + operation type, and hide all the Power Limit difference details in a
-> central place, get_pl_prim(). Two helpers, rapl_read_pl_data() and
-> rapl_write_pl_data(), are introduced at the same time to simplify the
-> code for issuing Power Limit operations.
-> 
-> Signed-off-by: Zhang Rui <rui.zhang@intel.com>
-> Tested-by: Wang Wendy <wendy.wang@intel.com>
-> ---
->  drivers/powercap/intel_rapl_common.c | 343 ++++++++++++---------------
->  include/linux/intel_rapl.h           |   1 -
->  2 files changed, 146 insertions(+), 198 deletions(-)
-> 
-> diff --git a/drivers/powercap/intel_rapl_common.c b/drivers/powercap/intel_rapl_common.c
-> index 8e77df42257a..7f80c35e5c86 100644
-> --- a/drivers/powercap/intel_rapl_common.c
-> +++ b/drivers/powercap/intel_rapl_common.c
-<snip>
-> @@ -818,6 +778,33 @@ static int rapl_write_data_raw(struct rapl_domain *rd,
->  	return ret;
->  }
->  
-> +static int rapl_read_pl_data(struct rapl_domain *rd, int pl,
-> +			      enum pl_prims pl_prim, bool xlate, u64 *data)
-> +{
-> +	enum rapl_primitives prim = get_pl_prim(pl, pl_prim);
-> +
-> +	if (!is_pl_valid(rd, pl))
-> +		return -EINVAL;
-> +
-> +	return rapl_read_data_raw(rd, prim, xlate, data);
-> +}
-> +
-> +static int rapl_write_pl_data(struct rapl_domain *rd, int pl,
-> +			       enum pl_prims pl_prim,
-> +			       unsigned long long value)
-> +{
-> +	enum rapl_primitives prim = get_pl_prim(pl, pl_prim);
-> +
-> +	if (!is_pl_valid(rd, pl))
-> +		return -EINVAL;
-> +
-> +	if (rd->state & DOMAIN_STATE_BIOS_LOCKED) {
-> +		pr_warn("%s:%s:%s locked by BIOS\n", rd->rp->name, rd->name, pl_names[pl]);
-> +		return -EACCES;
+Summary:
+Correcting the arrangement order in Makefile.
+  +	aspeed-bmc-facebook-greatlakes.dtb \
+  +	aspeed-bmc-facebook-minerva.dtb \
+  +	aspeed-bmc-facebook-minipack.dtb \
 
-This seems to be causing a lot of WARN level dmesg spam [1] during
-suspend/resume on several machines. I suppose previously the
-warning was only printed when trying to change the limits explicitly,
-but now it gets printed in a lot more cases even if the user didn't
-try to change anything.
+Correcting the arrangement order in Document
+  +            - facebook,greatlakes-bmc
+  +            - facebook,minerva-bmc
+  +            - facebook,yosemite4-bmc
 
-[1] https://intel-gfx-ci.01.org/tree/drm-tip/CI_DRM_13594/fi-snb-2520m/igt@i915_suspend@basic-s2idle-without-i915.html
+Remove redundant blank line.
+1.
+  +	/*P4-P7 line 248-255*/
+  +	"","","","","","","","";
+  +};
+
+2.
+  +
+  +// SOL Host Console
+
+3.
+  +
+  +//BIOS Flash
+
+4.
+  +&uart2 {
+  +	status = "okay";
+  +	pinctrl-0 = <>;
+  +};
+
+Use stdout-path.
+  +	chosen {
+  +		stdout-path = &uart5;
+  +	};
+
+Fix dts path.
+  old:arch/arm/boot/dts/
+  new:arch/arm/boot/dts/aspeed
+
+
+*** BLURB HERE ***
+
+Peter Yin (2):
+  ARM: dts: aspeed: Minerva: Add Facebook Minerva (AST2600) BMC
+  dt-bindings: arm: aspeed: add Meta Minerva board
+
+ .../bindings/arm/aspeed/aspeed.yaml           |   1 +
+ arch/arm/boot/dts/aspeed/Makefile             |   1 +
+ .../aspeed/aspeed-bmc-facebook-minerva.dts    | 377 ++++++++++++++++++
+ 3 files changed, 379 insertions(+)
+ create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-facebook-minerva.dts
 
 -- 
-Ville Syrjälä
-Intel
+2.25.1
+
