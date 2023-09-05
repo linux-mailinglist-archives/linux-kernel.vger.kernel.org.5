@@ -2,76 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 386727929A5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B049792B33
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244071AbjIEQXG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:23:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        id S243901AbjIEQtf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:49:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354542AbjIEM2f (ORCPT
+        with ESMTP id S1354543AbjIEM3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:28:35 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C595F1A8;
-        Tue,  5 Sep 2023 05:28:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693916911; x=1725452911;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bIvwvVLX2QgqgZ6NIpuMrd+CJE12wHgoLPkmBc9kTgM=;
-  b=CYASRsL8e8a3oLKwz5mE5kMg0LV/sV484j52k61uesQ7Zpjjp3RMXcZp
-   F7Qm5J5ugUGEzeGW9yDokC13KVGlSsx5Pchjoro3NJRX1FlkvYmd6OL3e
-   mnIrodc3m+pwHtSIum0eScmq1Soyc7LAK88LK1oHOw2U+/kY8dm4bAfzv
-   p86we1SP/1f9E//fRE9BuRxuKRKfNDVoYtjUlDMs4znu0yoSGsB0OAvo+
-   SqHge78sMH7IUkVJiVMBnsL21s8d5pafVZcdqQjBocYmQc8aUAv1YfvtE
-   5oKRmSOLVKDgjZ8sIbbN9wvqW74h7GxQSxTBAsW1Dqqb68TtERsj7uDsd
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="379501517"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="379501517"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 05:28:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="776187146"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="776187146"
-Received: from joe-255.igk.intel.com (HELO localhost) ([10.91.220.57])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 05:28:29 -0700
-Date:   Tue, 5 Sep 2023 14:28:27 +0200
-From:   Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     Oded Gabbay <ogabbay@kernel.org>,
-        Dani Liberman <dliberman@habana.ai>,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH] accel/habanalabs/gaudi2: Fix incorrect string length
- computation in gaudi2_psoc_razwi_get_engines()
-Message-ID: <20230905122827.GD184247@linux.intel.com>
-References: <d38582083ece76155dabdfd9a29d5a9dd0d6bce7.1693855091.git.christophe.jaillet@wanadoo.fr>
+        Tue, 5 Sep 2023 08:29:08 -0400
+Received: from outbound-smtp08.blacknight.com (outbound-smtp08.blacknight.com [46.22.139.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D2DE1A8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:29:01 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
+        by outbound-smtp08.blacknight.com (Postfix) with ESMTPS id B86FE1C3975
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:28:59 +0100 (IST)
+Received: (qmail 3911 invoked from network); 5 Sep 2023 12:28:59 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Sep 2023 12:28:59 -0000
+Date:   Tue, 5 Sep 2023 13:28:57 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, nsaenzju@redhat.com, yj.chiang@mediatek.com,
+        Mark-pk Tsai <mark-pk.tsai@mediatek.com>,
+        Joe Liu <joe.liu@mediatek.com>
+Subject: Re: [PATCH] mm: page_alloc: fix cma pageblock was stolen in rmqueue
+ fallback
+Message-ID: <20230905122857.b3kwlxm6qxa2tgpb@techsingularity.net>
+References: <20230830111332.7599-1-lecopzer.chen@mediatek.com>
+ <20230905090922.zy7srh33rg5c3zao@techsingularity.net>
+ <bf16a7ea-22db-700b-7194-c4fa1d943baa@suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <d38582083ece76155dabdfd9a29d5a9dd0d6bce7.1693855091.git.christophe.jaillet@wanadoo.fr>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <bf16a7ea-22db-700b-7194-c4fa1d943baa@suse.cz>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 09:18:36PM +0200, Christophe JAILLET wrote:
-> snprintf() returns the "number of characters which *would* be generated for
-> the given input", not the size *really* generated.
+On Tue, Sep 05, 2023 at 11:37:30AM +0200, Vlastimil Babka wrote:
+> On 9/5/23 11:09, Mel Gorman wrote:
+> > On Wed, Aug 30, 2023 at 07:13:33PM +0800, Lecopzer Chen wrote:
+> >> commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a
+> >> spinlock") fallback freeing page to free_one_page() if pcp trylock
+> >> failed. This make MIGRATE_CMA be able to fallback and be stolen
+> >> whole pageblock by MIGRATE_UNMOVABLE in the page allocation.
+> >> 
+> >> PCP free is fine because free_pcppages_bulk() will always get
+> >> migratetype again before freeing the page, thus this only happen when
+> >> someone tried to put CMA page in to other MIGRATE_TYPE's freelist.
+> >> 
+> >> Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
+> >> Reported-by: Joe Liu <joe.liu@mediatek.com>
+> >> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> >> Cc: Mark-pk Tsai <mark-pk.tsai@mediatek.com>
+> >> Cc: Joe Liu <joe.liu@mediatek.com>
+> > 
+> > Sorry for the long delay and thanks Lecopzer for the patch.
+> > 
+> > This changelog is difficult to parse but the fix may also me too specific
+> > and could be more robust against types other than CMA. It is true that
+> > a failed PCP acquire may return a !is_migrate_isolate page to the wrong
+> > list but it's more straight-forward to unconditionally lookup the PCP
+> > migratetype of the spinlock is not acquired.
+> > 
+> > How about this? It unconditionally looks up the PCP migratetype after
+> > spinlock contention. It's build tested only
+> > 
+> > --8<--
+> > mm: page_alloc: Free pages to correct buddy list after PCP lock contention
+> > 
+> > Commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
+> > returns pages to the buddy list on PCP lock contention. However, for
+> > migratetypes that are not MIGRATE_PCPTYPES, the migratetype may have
+> > been clobbered already for pages that are not being isolated. In
+> > practice, this means that CMA pages may be returned to the wrong
+> > buddy list. While this might be harmless in some cases as it is
+> > MIGRATE_MOVABLE, the pageblock could be reassigned in rmqueue_fallback
+> > and prevent a future CMA allocation. Lookup the PCP migratetype
+> > against unconditionally if the PCP lock is contended.
+> > 
+> > [lecopzer.chen@mediatek.com: CMA-specific fix]
+> > Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
 > 
-> In order to avoid too large values for 'str_size' (and potential negative
-> values for "PSOC_RAZWI_ENG_STR_SIZE - str_size") use scnprintf()
-> instead of snprintf().
+> I think we should Cc: stable for the sake of 6.1 LTS?
 > 
-> Fixes: c0e6df916050 ("accel/habanalabs: fix address decode RAZWI handling")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+
+Yep.
+
+> > Reported-by: Joe Liu <joe.liu@mediatek.com>
+> > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
+> 
+
+Thanks.
+
+-- 
+Mel Gorman
+SUSE Labs
