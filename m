@@ -2,69 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2757792FDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C33AC792FE0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243465AbjIEUWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39496 "EHLO
+        id S238623AbjIEUXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 16:23:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243460AbjIEUWw (ORCPT
+        with ESMTP id S231629AbjIEUXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:22:52 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77740CC;
-        Tue,  5 Sep 2023 13:22:48 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcfd3220d3so44141011fa.2;
-        Tue, 05 Sep 2023 13:22:48 -0700 (PDT)
+        Tue, 5 Sep 2023 16:23:42 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D1428E;
+        Tue,  5 Sep 2023 13:23:39 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-991c786369cso459288666b.1;
+        Tue, 05 Sep 2023 13:23:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693945366; x=1694550166; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fG5rfBSuPXfXle+iI7qfryofXP3nifEMoZ37UvmA0n8=;
-        b=sThmf14zJl8SRFMRn6NvBI4FNvLHQzOTRCvnp/i1N8ogDRsnU3kFHUU2mjwEJ88yGG
-         5g4t/bGnuXaEOajN7Wf3tjhr4KXARGwDEsGdEUBXx3cBOXv/6pLBsgask/UaqoCQBvoK
-         wppxyQu3Y6X5+TJEtiDllzQQCp7Ifwx1NO9zRm7vauLFCMa/njWiYnFIkgZrQDena4EZ
-         wQKHSyVgVd/d//NQDmmP798Ib7YJYMgCuQgNCVf44TZ+qv8qUXCyVWTM7YGYEuVuOdn9
-         rEHddAw4do8PCPQ18OyJbM+ulpAVonlDEm9Oa4bveNvOIm+UBnAaCtr+ST4o4N5WSpSX
-         EuwQ==
+        d=gmail.com; s=20221208; t=1693945417; x=1694550217; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=W7FEvRnQff1RFIy6G/Scp5VfoqVl8Fl9R26EpZ41ssQ=;
+        b=lWrFnxMWH56mAAYRBqSP80rEP7abc/BGdgchUTeroB66ZQO1qonI0wom7R1AWUsWa5
+         x+3YlFyh0k32JBmjrSqBLoDg8QFoGzsk+28ELUekaM28Ka1llyut0lzXjHxaqc/cGV3X
+         iFzT+0mMogIfBdvY17+qZS3u3/Glf5q0Je6H6mN+w1aq123H3UPuj7wlul70WX0A4bBj
+         MxXkRx4XmuePuFw26OU1qHTDCBhNYjTaEvCGEhqJu0sy+QgHhIeGWLae7clGHPyQS/J3
+         jITdYSo04bZYQPxFnm49UeJ1iWxVfn6XXj60YlAgoPi08nrKZI13MC29XQxhQcl9tkwI
+         ixEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693945366; x=1694550166;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fG5rfBSuPXfXle+iI7qfryofXP3nifEMoZ37UvmA0n8=;
-        b=NtB0HK/SC3bKn+WC6qH454NEqHP5bsaEwKKt966e/fgVEDDyFcMIddlaGgp5GurjBC
-         E964i3gX4I5wxotqi+kwTvKOA5pVQeVvEIdRS3w9NluRoG3F96KZTCfXKfi45Hjfm3Nk
-         PCdu/OQ26OLuGdpp48jv3SNL6CXdoFC+Aa4vrARNSZY/xNNJjlEnIPhgNeQmIalIiUx9
-         hKohmS3KQvW5wBVCPEM/7h3CPF0zGIFsDGqKe7eNOdALwBIfv7Gpn22Y8AjilcebQHmS
-         emD40R9UD1BbEpctYgBS4MATM+yaCzwI3pgTD52yGf19zE7m6tBAwEiPrF8Mo6HKwwOE
-         gqJA==
-X-Gm-Message-State: AOJu0YzLoNZbWEB0yE3QXVgoaSWcPg8ZlK0GfrXmNocu6Lg2FogDJF6d
-        96AoAnKC6asD2gKyasTZXpanhOe/nEhQW3UYg4A=
-X-Google-Smtp-Source: AGHT+IElFCbjQ8SNtWknYAVBmUIgOQnWgkA8SKNq1xMdkZKmNfW5urzHgHNVH3M6IIja9nXx7Gmyy5EEMK046lLflyQ=
-X-Received: by 2002:a2e:9646:0:b0:2bc:b9cd:8bc2 with SMTP id
- z6-20020a2e9646000000b002bcb9cd8bc2mr596401ljh.4.1693945366347; Tue, 05 Sep
- 2023 13:22:46 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693945417; x=1694550217;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=W7FEvRnQff1RFIy6G/Scp5VfoqVl8Fl9R26EpZ41ssQ=;
+        b=QsJMO1b/znkhmMmCeMQm6WA7987qkVqKn5btexOM3i5tA2jZViO16219urPVmkW2o3
+         JInlp+8hPwOHcmQ/+vACM06boWHN8RdHbZlgi8Gw5ZDSDNXaSp4Z6ZbYe9ycFBTgWTeG
+         Fm8p3GDrA6+ET/DqSdD0q2lAfaqykj1QVNumuyd45JKjIDK0U39/N3Av9vQbOz/6inMG
+         fmdIgCU4H51s7t1lrV8czmXhccqdZ3vfDRdxxYE2xFUf5iucJglj2kVA2XmtxTqC64q/
+         v7QXvVBydbkddPkRSae4O79WxJGwPv9CTloyGeJtRkhVdxOzwtew/RGXyFWXJciuS4RL
+         TEMg==
+X-Gm-Message-State: AOJu0YwJ70+pPW4ZQ2FtIU7MnXVc1O+cP3aVSrLO/1ugwTgJUvZXKIFU
+        WY+dsMwn9e0hfya6JyH2jVbgEdXRNBCSgA==
+X-Google-Smtp-Source: AGHT+IG2mFnmzU6dZ1Lll+hMk7JV4ZmDPpxt54hgKUw+BKq9w4jCarie89LEsaJFEj3D1lcN6wDTcA==
+X-Received: by 2002:a17:907:b0a:b0:9a1:b705:75d1 with SMTP id h10-20020a1709070b0a00b009a1b70575d1mr579098ejl.51.1693945417163;
+        Tue, 05 Sep 2023 13:23:37 -0700 (PDT)
+Received: from ?IPV6:2a02:908:8b3:1840:5b7b:492a:c913:71fb? ([2a02:908:8b3:1840:5b7b:492a:c913:71fb])
+        by smtp.gmail.com with ESMTPSA id l18-20020a1709066b9200b0099bc08862b6sm8166003ejr.171.2023.09.05.13.23.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 13:23:26 -0700 (PDT)
+Message-ID: <755a2be4-6947-d756-2eee-0ba14086d781@gmail.com>
+Date:   Tue, 5 Sep 2023 22:23:16 +0200
 MIME-Version: 1.0
-References: <20230827072057.1591929-1-zhouchuyi@bytedance.com> <20230827072057.1591929-4-zhouchuyi@bytedance.com>
-In-Reply-To: <20230827072057.1591929-4-zhouchuyi@bytedance.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Tue, 5 Sep 2023 13:22:35 -0700
-Message-ID: <CAADnVQLbDWUxFen-RS67C86sOE5DykEPD8xyihJ2RnG1WEnTQg@mail.gmail.com>
-Subject: Re: [RFC PATCH bpf-next 3/4] bpf: Introduce css_descendant open-coded
- iterator kfuncs
-To:     Chuyi Zhou <zhouchuyi@bytedance.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+From:   Maxim Schwalm <maxim.schwalm@gmail.com>
+Subject: Re: [PATCH v3 2/5] dt-bindings: display: tegra: nvidia,tegra20-dc:
+ Add parallel RGB output port node
+To:     Rob Herring <robh@kernel.org>,
+        Svyatoslav Ryhel <clamor95@gmail.com>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>,
+        Dmitry Osipenko <digetx@gmail.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230807143515.7882-1-clamor95@gmail.com>
+ <20230807143515.7882-3-clamor95@gmail.com>
+ <20230821161441.GA1743870-robh@kernel.org>
+Content-Language: en-US
+In-Reply-To: <20230821161441.GA1743870-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -73,95 +86,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.co=
-m> wrote:
->
-> This Patch adds kfuncs bpf_iter_css_{new,next,destroy} which allow creati=
-on
-> and manipulation of struct bpf_iter_css in open-coded iterator style. The=
-se
-> kfuncs actually wrapps css_next_descendant_{pre, post}. BPF programs can
-> use these kfuncs through bpf_for_each macro for iteration of all descenda=
-nt
-> css under a root css.
->
-> Normally, css_next_descendant_{pre, post} should be called with rcu
-> locking. Although we have bpf_rcu_read_lock(), here we still calls
-> rcu_read_lock in bpf_iter_css_new and unlock in bpf_iter_css_destroy
-> for convenience use.
->
-> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
-> ---
->  include/uapi/linux/bpf.h       |  5 +++++
->  kernel/bpf/helpers.c           |  3 +++
->  kernel/bpf/task_iter.c         | 39 ++++++++++++++++++++++++++++++++++
->  tools/include/uapi/linux/bpf.h |  5 +++++
->  tools/lib/bpf/bpf_helpers.h    |  6 ++++++
->  5 files changed, 58 insertions(+)
->
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index cfbd527e3733..19f1f1bf9301 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -7203,4 +7203,9 @@ struct bpf_iter_process {
->         __u64 __opaque[1];
->  } __attribute__((aligned(8)));
->
-> +struct bpf_iter_css {
-> +       __u64 __opaque[2];
-> +       char __opaque_c[1];
+Hi Rob,
 
-Burning extra 8 bytes for flags seems excessive.
-Maybe let's add two iterators for descendant_post/_pre ?
-The bpf prog code will be easier to read (no need to guess
-what bool flag does).
+On 21.08.23 18:14, Rob Herring wrote:
+> On Mon, Aug 07, 2023 at 05:35:12PM +0300, Svyatoslav Ryhel wrote:
+>> From: Maxim Schwalm <maxim.schwalm@gmail.com>
+>>
+>> Either this node, which is optional, or the nvidia,panel property can be
+>> present.
+>>
+>> Signed-off-by: Maxim Schwalm <maxim.schwalm@gmail.com>
+>> Signed-off-by: Svyatoslav Ryhel <clamor95@gmail.com>
+>> ---
+>>  .../display/tegra/nvidia,tegra20-dc.yaml      | 31 +++++++++++++++++++
+>>  1 file changed, 31 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-dc.yaml b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-dc.yaml
+>> index 69be95afd562..102304703062 100644
+>> --- a/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-dc.yaml
+>> +++ b/Documentation/devicetree/bindings/display/tegra/nvidia,tegra20-dc.yaml
+>> @@ -127,6 +127,37 @@ allOf:
+>>                $ref: /schemas/types.yaml#/definitions/phandle
+>>                description: phandle of a display panel
+>>  
+>> +            port:
+>> +              $ref: /schemas/graph.yaml#/$defs/port-base
+>> +              description: Parallel RGB output port
+>> +
+>> +              properties:
+>> +                endpoint:
+>> +                  $ref: /schemas/media/video-interfaces.yaml#
+> 
+> Just to make sure, what properties are you using from this? Usually 
+> we'll list them though not a hard requirement. If none, then you just 
+> need to ref graph.yaml#/properties/port instead and can drop the rest.
 
-> +} __attribute__((aligned(8)));
-> +
->  #endif /* _UAPI__LINUX_BPF_H__ */
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 81a2005edc26..47d46a51855f 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2461,6 +2461,9 @@ BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_IT=
-ER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
->  BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
-> +BTF_ID_FLAGS(func, bpf_iter_css_new, KF_ITER_NEW)
-> +BTF_ID_FLAGS(func, bpf_iter_css_next, KF_ITER_NEXT | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_iter_css_destroy, KF_ITER_DESTROY)
->  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
->  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
-> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
-> index a6717a76c1e0..ef9aef62f1ac 100644
-> --- a/kernel/bpf/task_iter.c
-> +++ b/kernel/bpf/task_iter.c
-> @@ -893,6 +893,45 @@ __bpf_kfunc void bpf_iter_process_destroy(struct bpf=
-_iter_process *it)
->         rcu_read_unlock();
->  }
->
-> +struct bpf_iter_css_kern {
-> +       struct cgroup_subsys_state *root;
-> +       struct cgroup_subsys_state *pos;
-> +       char flag;
-> +} __attribute__((aligned(8)));
-> +
-> +__bpf_kfunc int bpf_iter_css_new(struct bpf_iter_css *it,
-> +               struct cgroup_subsys_state *root, char flag)
-> +{
-> +       struct bpf_iter_css_kern *kit =3D (void *)it;
-> +
-> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_kern) !=3D sizeof(struct =
-bpf_iter_css));
-> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_kern) !=3D __alignof=
-__(struct bpf_iter_css));
-> +       kit->root =3D root;
-> +       kit->pos =3D NULL;
-> +       kit->flag =3D flag;
-> +       rcu_read_lock();
+currently, just bus-width is used in devicetrees, but I don't think that
+it is needed at the moment. So perhaps the property can be dropped.
 
-Same request as in previous patch.
-let's make bpf prog do explicit bpf_rcu_read_lock() instead.
+>> +                  unevaluatedProperties: false
+>> +
+>> +              unevaluatedProperties: false
+> 
+> In the indented cases, it's easier to read if this is before 
+> properties/patternProperties.
+> 
+>> +
+>> +          anyOf:
+>> +            - if:
+>> +                not:
+>> +                  properties:
+>> +                    nvidia,panel: false
+>> +              then:
+>> +                not:
+>> +                  properties:
+>> +                    port: true
+>> +            - if:
+>> +                not:
+>> +                  properties:
+>> +                    port: false
+>> +              then:
+>> +                not:
+>> +                  properties:
+>> +                    nvidia,panel: true
+> 
+> I would prefer to drop this and mark "nvidia,panel" as deprecated. 
+> Eventually I plan to add a mode to the tools to warn on using deprecated 
+> properties. Having both could be perfectly fine too. You have the 
+> "nvidia,panel" for compatibility with an old OS version and 'port' to 
+> work with newer users.
+
+The reason for adding this was that just one of them can be utilized at
+the same time. Having both could potentially break the display output.
+I think that all the other nvidia,* properties could marked as
+deprecated as well because they don't seem to be doing much since commit
+d9f980ebcd01 ("drm/tegra: output: rgb: Wrap directly-connected panel
+into DRM bridge").
+
+>> +
+>> +          additionalProperties: false
+> 
+> Move this up too.
+> 
+
+Best regards,
+Maxim
