@@ -2,102 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C41792B3C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5538792633
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245014AbjIEQuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:50:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59556 "EHLO
+        id S1348617AbjIEQSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354868AbjIEPNQ (ORCPT
+        with ESMTP id S1354870AbjIEPOr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 11:13:16 -0400
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2EB518D;
-        Tue,  5 Sep 2023 08:13:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Cc:To
-        :From:subject:date:message-id:reply-to;
-        bh=5XhwL8Vr3H2MzLqLvHtq0Ny1lCroiMgQQZwfX3heG5g=; b=jqvLwFVXA8lkTQnSYM1D+CXOX7
-        ZeQMdZ8TyC1fE9vWofE1eDTjLcJU89+lKytHKENXjIgJlimqvZBKxq25A+EvE39vHa6q9ddCyWfoW
-        MzaRUvOhapn9AitOoeqrNSRWCvj+5Z/rU4KAk4F2/zvCLQoWv0VnEICTPgW+rJzkFX74=;
-Received: from modemcable061.19-161-184.mc.videotron.ca ([184.161.19.61]:55420 helo=localhost.localdomain)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1qdXjo-0001SD-1E; Tue, 05 Sep 2023 11:13:08 -0400
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>
-Cc:     hugo@hugovil.com, Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Lech Perczak <lech.perczak@camlingroup.com>,
-        linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Date:   Tue,  5 Sep 2023 11:13:00 -0400
-Message-Id: <20230905151300.15365-1-hugo@hugovil.com>
-X-Mailer: git-send-email 2.30.2
+        Tue, 5 Sep 2023 11:14:47 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B592191;
+        Tue,  5 Sep 2023 08:14:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E1AEECE10C2;
+        Tue,  5 Sep 2023 15:14:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9375EC433C7;
+        Tue,  5 Sep 2023 15:14:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693926881;
+        bh=MZxTQDzJvL3TKBJNWbi9qEr79IBFR2kYRZ8zfG3sVtc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ooglhayVbYjqTRt3Zcgr4L3EZ6hQTlB2Y2JzzB9M5z9u9B0ZS0l/WDjCZLnwIGTrl
+         7U8cMIqE/QLjvdRdDDZiUMCbauATB8gi7x/ZoqSP52J2uAbC9Fmn4yLiUvldPicDuK
+         S8GqMDYxrKLlPyXwAcpNn3ycBD/fILkFqrPp+ULMoACZcUUKa0VFSZmQ283b5PEuv2
+         JaKCllNqV3SgauysH/VIYuMG284xPSXjY0X5ycfGiNHqX7mtpgNlb0Y/1NanrgMLRq
+         91Owc/PaAwDW5oqeBXdoA6xvSYOhnucprNoVIn2WwiUntTlMfrjrU/huLhaIMLjeP3
+         MWD1kviohfq9g==
+Date:   Tue, 5 Sep 2023 09:14:38 -0600
+From:   Keith Busch <kbusch@kernel.org>
+To:     Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Bagas Sanjaya <bagasdotme@gmail.com>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Claudio Sampaio <patola@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux NVMe <linux-nvme@lists.infradead.org>,
+        Linux Stable <stable@vger.kernel.org>
+Subject: Re: Fwd: Lexar NM790 SSDs are not recognized anymore after 6.1.50 LTS
+Message-ID: <ZPdF3uqbJNSZADzv@kbusch-mbp>
+References: <8af186ba-5f64-2102-8f9c-3969b0906893@gmail.com>
+ <faa245bf-e925-45b0-9827-b0c9c117e06c@leemhuis.info>
+ <ZPc8v9-lHF4jAcxL@kbusch-mbp>
+ <2a379b3a-6ff3-444b-bbad-0fba0bc3a28b@leemhuis.info>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 184.161.19.61
-X-SA-Exim-Mail-From: hugo@hugovil.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a379b3a-6ff3-444b-bbad-0fba0bc3a28b@leemhuis.info>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
-Subject: [PATCH] serial: sc16is7xx: improve comments about variants
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
+On Tue, Sep 05, 2023 at 04:49:11PM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> But what can Claudio do to find the root cause? Check hardware
+> (especially the connectors), update firmware, ...? And if that doesn't
+> lead to anything, bisect the issue?
 
-Replace 740/750/760 with generic terms like 74x/75x/76x to account for
-variants like 741, 752 and 762.
+Try the current 6.5.1 as-is where the failure was previously seen and
+verify if this observation is indeed 100% reproducible with the "device
+not ready" kernel message. Full system power cycle between tests, too.
 
-Signed-off-by: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-Reviewed-by: Lech Perczak <lech.perczak@camlingroup.com>
----
- drivers/tty/serial/sc16is7xx.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index f61d98e09dc3..f89eba15ddcd 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -223,7 +223,7 @@
-  * trigger levels. Trigger levels from 4 characters to 60 characters are
-  * available with a granularity of four.
-  *
-- * When the trigger level setting in TLR is zero, the SC16IS740/750/760 uses the
-+ * When the trigger level setting in TLR is zero, the SC16IS74x/75x/76x uses the
-  * trigger level setting defined in FCR. If TLR has non-zero trigger level value
-  * the trigger level defined in FCR is discarded. This applies to both transmit
-  * FIFO and receive FIFO trigger level setting.
-@@ -234,7 +234,7 @@
- #define SC16IS7XX_TLR_TX_TRIGGER(words)	((((words) / 4) & 0x0f) << 0)
- #define SC16IS7XX_TLR_RX_TRIGGER(words)	((((words) / 4) & 0x0f) << 4)
- 
--/* IOControl register bits (Only 750/760) */
-+/* IOControl register bits (Only 75x/76x) */
- #define SC16IS7XX_IOCONTROL_LATCH_BIT	(1 << 0) /* Enable input latching */
- #define SC16IS7XX_IOCONTROL_MODEM_A_BIT	(1 << 1) /* Enable GPIO[7:4] as modem A pins */
- #define SC16IS7XX_IOCONTROL_MODEM_B_BIT	(1 << 2) /* Enable GPIO[3:0] as modem B pins */
-@@ -249,9 +249,9 @@
- #define SC16IS7XX_EFCR_RTS_INVERT_BIT	(1 << 5) /* RTS output inversion */
- #define SC16IS7XX_EFCR_IRDA_MODE_BIT	(1 << 7) /* IrDA mode
- 						  * 0 = rate upto 115.2 kbit/s
--						  *   - Only 750/760
-+						  *   - Only 75x/76x
- 						  * 1 = rate upto 1.152 Mbit/s
--						  *   - Only 760
-+						  *   - Only 76x
- 						  */
- 
- /* EFR register bits */
-
-base-commit: 3f86ed6ec0b390c033eae7f9c487a3fea268e027
--- 
-2.30.2
-
+If this is truly a regression, my only guess is some platform power
+setting that a newer kernel changed. I am currently suspicious of that
+right now since 6.5.1 was reported to fail but succeed with a "quirk"
+that doesn't accomplish anything. I'm more leaning toward my "device is
+not reliable" theory.
