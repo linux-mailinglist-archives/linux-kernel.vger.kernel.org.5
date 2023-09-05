@@ -2,77 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1689C7926D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0370F7929EB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241344AbjIEQJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
+        id S1354717AbjIEQaA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:30:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354534AbjIEMXm (ORCPT
+        with ESMTP id S1354536AbjIEMYb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:23:42 -0400
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF08B1A8;
-        Tue,  5 Sep 2023 05:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=mH+z1pBMdYARyiLQ+raRnOwLNOvDHlI+88zIddX6yI8=; b=TrKg0pZmkW7eG3RHN00Y9V1gAj
-        b84AX0OegIp9znWXHtAtCT4w0yM8wcLutk7hlZ6MprBXMQUau6kCSEtYE8sQ++JQbJSVRHRs/GcAI
-        gUezTQpM9nb5EwW+YxmKuqlxuJVEqrPcBNcGH725DtZ+G/4MMOgBPVM03nxsnmIlZlCE=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1qdV5d-005nyR-QK; Tue, 05 Sep 2023 14:23:29 +0200
-Date:   Tue, 5 Sep 2023 14:23:29 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Lukasz Majewski <lukma@denx.de>,
-        Eric Dumazet <edumazet@google.com>, davem@davemloft.net,
-        Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
-        George McCollister <george.mccollister@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RFC 4/4] net: dsa: hsr: Provide generic HSR
- ksz_hsr_{join|leave} functions
-Message-ID: <583cd9b6-06e1-4ed7-8a24-c977b2001e20@lunn.ch>
-References: <20230904120209.741207-1-lukma@denx.de>
- <20230904120209.741207-1-lukma@denx.de>
- <20230904120209.741207-5-lukma@denx.de>
- <20230904120209.741207-5-lukma@denx.de>
- <20230905104725.zy3lwbxjhqhqyzdj@skbuf>
- <20230905132351.2e129d53@wsk>
- <20230905120501.tvkrrzcneq4fdzqa@skbuf>
+        Tue, 5 Sep 2023 08:24:31 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FA841A8;
+        Tue,  5 Sep 2023 05:24:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id E70811FD8E;
+        Tue,  5 Sep 2023 12:24:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693916666; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+7M4X3ltwI/VM1laJUfqoL6rnCUoo+tPTHyGF9EcSb4=;
+        b=BSh4tK42t37/hjB81tIVJaoFbkEnB6TT/FK0HXE+uFX6Bw5xI1/G+94VWY4bjgEVS1GsLN
+        9CesqlourNuHjoPH/ZzJwE87JSVCVcWft8zO/5qxhY2n1FjhWR88pJW0EVVp2oB5TwVjuI
+        9J3ZjN23vadJmaQ7RXmH+8Uzr0YfeUk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693916666;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=+7M4X3ltwI/VM1laJUfqoL6rnCUoo+tPTHyGF9EcSb4=;
+        b=Pvu8ACuOSzN6VLftdOMZeeF6kb0rzpSRVD0zDfew662reQ86XWGhE0rRmAViHV6je5hvcE
+        7iBXBna3vnmbFNAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B027213911;
+        Tue,  5 Sep 2023 12:24:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YS15Jfod92QpEwAAMHmgww
+        (envelope-from <krisman@suse.de>); Tue, 05 Sep 2023 12:24:26 +0000
+From:   Gabriel Krisman Bertazi <krisman@suse.de>
+To:     Breno Leitao <leitao@debian.org>
+Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
+        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
+        pabeni@redhat.com
+Subject: Re: [PATCH v4 08/10] io_uring/cmd: Introduce
+ SOCKET_URING_OP_GETSOCKOPT
+In-Reply-To: <20230904162504.1356068-9-leitao@debian.org> (Breno Leitao's
+        message of "Mon, 4 Sep 2023 09:25:01 -0700")
+Organization: SUSE
+References: <20230904162504.1356068-1-leitao@debian.org>
+        <20230904162504.1356068-9-leitao@debian.org>
+Date:   Tue, 05 Sep 2023 08:24:25 -0400
+Message-ID: <87a5u0byfa.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905120501.tvkrrzcneq4fdzqa@skbuf>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > And then we would have one port with SW HSR and another one with HW
-> > HSR?
-> 
-> No. One HSR device (hsr0, with 2 member ports) with offload and one
-> HSR device (hsr1, with 2 member ports) without offload (see (b) below).
+Breno Leitao <leitao@debian.org> writes:
 
-I just wanted to comment that offloading is about taking what Linux
-can do in software and getting the hardware to do it. Linux should
-happily allow two HSR devices, working in software. If you can only
-offload one of them, Linux should continue to do the other one in
-software.
+> Add support for getsockopt command (SOCKET_URING_OP_GETSOCKOPT), where
+> level is SOL_SOCKET. This is leveraging the sockptr_t infrastructure,
+> where a sockptr_t is either userspace or kernel space, and handled as
+> such.
+>
+> Differently from the getsockopt(2), the optlen field is not a userspace
+> pointers. In getsockopt(2), userspace provides optlen pointer, which is
+> overwritten by the kernel.  In this implementation, userspace passes a
+> u32, and the new value is returned in cqe->res. I.e., optlen is not a
+> pointer.
+>
+> Important to say that userspace needs to keep the pointer alive until
+> the CQE is completed.
+>
+> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-So please do follow what Vladimir is suggesting.
+IMO, this looks much cleaner with most of the bpf and socket logic under
+net/.
 
-	Andrew
+Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+
+Thanks!
+
+
+-- 
+Gabriel Krisman Bertazi
