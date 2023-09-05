@@ -2,84 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D23F4792C7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:34:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7857D792C6A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:29:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238835AbjIERby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:31:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
+        id S238152AbjIER33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:29:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbjIERbd (ORCPT
+        with ESMTP id S240341AbjIER2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 13:31:33 -0400
-Received: from mail-oa1-x41.google.com (mail-oa1-x41.google.com [IPv6:2001:4860:4864:20::41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC3825EAD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:57:08 -0700 (PDT)
-Received: by mail-oa1-x41.google.com with SMTP id 586e51a60fabf-1ba5cda3530so2179991fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 09:57:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693932961; x=1694537761; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=KF9jy66K812i/KOAycoaswZOJPkoHyr11P3pLmaBV84=;
-        b=FKc9JGInhgQtkjpFu3B4jt54eCgQjSRMnAfFLqViWzMx6mqzN6G9rwzwHLK7HDmv0L
-         OCbFFeMZ73VKvOUXw6IVgWTpZgcx0Tceflxxu3N8/nqZNoewP6g4UQ5bgQHkZ4F6RHVC
-         8OK9QNJkunjsaznkTWO6flzYASL70k4JFVj7KkJe1leh7ZcmERV3D6LNWWj414vL3jUY
-         clQHr4RgKzXDO3O39+VU5Nan5+X0OjR9GEOMUCxWuNWq3De2/j/9PcI/QuR5vgSLHD+Y
-         wqiWEp6PdL9PZ5F4Y4gszwHJdcidrg4KcsQrLP+iEcof4Y7gTE4U4h7pP8CV0z2aRj74
-         mQYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693932961; x=1694537761;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KF9jy66K812i/KOAycoaswZOJPkoHyr11P3pLmaBV84=;
-        b=X22PVLGx/7So6itsIMbdT6IU3AeCBl/xu28TijB2YVAF5KXA1pu3pFHgPxfJVymZnc
-         SfEHXs/PCg1dwvWAocEq2lFB2L/3LUwT+h0UrKJq4PrYSL3t+gsIhJvZ4xZXb/y4INnX
-         33qMyhpYNT7PEFPd5ZxmWDfEgxKGvby4AyXsZxVPFEGfMTKlAb1iYvMPymPc++iI4r/F
-         14lL5/EHLao2XWxIYXOOcCGOeZoK3DgwF4ykfVWXbtbOKxwWmNsd33AAuodTilJUnSG9
-         yTM1YENQ0xHd2xGZtWuonLOUZAZqZ/lq0RJ1DB3wcCuN6GLMagKh4Hj56etWCAnImZH9
-         yDEA==
-X-Gm-Message-State: AOJu0Yw7IDdBjQDyAFRhZKQziSOTJnCHO9Y7UaeJmHLw9UvBlM/nyZaV
-        uH4fo896XPNAk983O3FnbrGpBf2wRvVsVLcEoJLQjHDrJ8qjbZq4fRM=
-X-Google-Smtp-Source: AGHT+IH1XZ5x1wvYb9wC2NYnoIWK3GEGTtrNNnR9T34UA/yHtbZloDweM4DejWIdxIKTK9Zf6Qx21p9I1RKmwfI602c=
-X-Received: by 2002:a67:fc08:0:b0:44d:4c28:55ca with SMTP id
- o8-20020a67fc08000000b0044d4c2855camr391871vsq.16.1693932228932; Tue, 05 Sep
- 2023 09:43:48 -0700 (PDT)
+        Tue, 5 Sep 2023 13:28:04 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5A314A9C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693932680; x=1725468680;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=gbLcVPinYyWvw3Hz2yndjFJmwU1wyR4blU8WbVUGCvI=;
+  b=KEI1euk8Av9+3mIhJrwcLAoBIze0dCmIxyssPRw4F1DwXbt53zQxivaq
+   /nnnDMCeS0b4Lwe/44bFcF30lpZ1yJ/Imt2LdNpxvoimOz+YPonF1cSNL
+   rxu2ttqMFMQx0vTBOO44qibgtjinpH8Huszd7l4X0/vm803SAa607dROD
+   C9bmS4y++kCKSnBub2ysekAcC6ssa2/B6z+SzliI9jZEP4/LwV5APlLlt
+   OvzZZs1Mmm4we7EtTe4uTDC5tMfD27jPqoO49E8MSXO1cxqqXB2R6Wdwp
+   qi9VmKyls7ijFPD8OHKzgHbJcRcxAnDNcL8ta3QeJ44q+g9l9Rskslt1L
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="356335451"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="356335451"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 09:50:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="741151427"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="741151427"
+Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 05 Sep 2023 09:50:37 -0700
+Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1qdZG6-0001sR-2K;
+        Tue, 05 Sep 2023 16:50:34 +0000
+Date:   Wed, 6 Sep 2023 00:45:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/firmware/efi/libstub/alignedmem.c:27: warning: Function
+ parameter or member 'memory_type' not described in
+ 'efi_allocate_pages_aligned'
+Message-ID: <202309060040.oB844fn2-lkp@intel.com>
 MIME-Version: 1.0
-From:   Jodi Gray <wwwmarketingproductleads@gmail.com>
-Date:   Tue, 5 Sep 2023 11:43:36 -0500
-Message-ID: <CA+9O=BUg00Gu=TVQd29BbhVw6iZ9Ho-GJnkJ+E=DPhBUpybDNg@mail.gmail.com>
-Subject: RE: Verified Dreamforce Data List - 2023
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Ard,
 
-I trust all is well with you.
+FYI, the error/warning still remains.
 
-Are you looking to compile the 2023 Dreamforce Conference Attendees Databank?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f86ed6ec0b390c033eae7f9c487a3fea268e027
+commit: 9cf42bca30e98a1c6c9e8abf876940a551eaa3d1 efi: libstub: use EFI_LOADER_CODE region when moving the kernel in memory
+date:   10 months ago
+config: x86_64-defconfig (https://download.01.org/0day-ci/archive/20230906/202309060040.oB844fn2-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230906/202309060040.oB844fn2-lkp@intel.com/reproduce)
 
-The following information is included in the data: Organization Name,
-First and Last Names, Contact Job Title, Verified Email Address,
-Website URL, Industry, and many more.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202309060040.oB844fn2-lkp@intel.com/
 
-40,630 Verified Contacts are present.
-Cost                             :  $ 1,826
+All warnings (new ones prefixed by >>):
 
-We do have an all industry list and conference attendee list from
-across the globe
+>> drivers/firmware/efi/libstub/alignedmem.c:27: warning: Function parameter or member 'memory_type' not described in 'efi_allocate_pages_aligned'
 
-best regards
-Coordinator of Marketing Jodi Gray
 
-Please respond with "leave out" if you do not want to receive
-communications from us in the future.
+vim +27 drivers/firmware/efi/libstub/alignedmem.c
+
+43b1df0e013c25 Ard Biesheuvel 2020-03-27   7  
+43b1df0e013c25 Ard Biesheuvel 2020-03-27   8  /**
+43b1df0e013c25 Ard Biesheuvel 2020-03-27   9   * efi_allocate_pages_aligned() - Allocate memory pages
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  10   * @size:	minimum number of bytes to allocate
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  11   * @addr:	On return the address of the first allocated page. The first
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  12   *		allocated page has alignment EFI_ALLOC_ALIGN which is an
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  13   *		architecture dependent multiple of the page size.
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  14   * @max:	the address that the last allocated memory page shall not
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  15   *		exceed
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  16   * @align:	minimum alignment of the base of the allocation
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  17   *
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  18   * Allocate pages as EFI_LOADER_DATA. The allocated pages are aligned according
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  19   * to @align, which should be >= EFI_ALLOC_ALIGN. The last allocated page will
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  20   * not exceed the address given by @max.
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  21   *
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  22   * Return:	status code
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  23   */
+43b1df0e013c25 Ard Biesheuvel 2020-03-27  24  efi_status_t efi_allocate_pages_aligned(unsigned long size, unsigned long *addr,
+9cf42bca30e98a Ard Biesheuvel 2022-08-02  25  					unsigned long max, unsigned long align,
+9cf42bca30e98a Ard Biesheuvel 2022-08-02  26  					int memory_type)
+43b1df0e013c25 Ard Biesheuvel 2020-03-27 @27  {
+
+:::::: The code at line 27 was first introduced by commit
+:::::: 43b1df0e013c25abb536699f46d0e9f291b586a0 efi/libstub: Add API function to allocate aligned memory
+
+:::::: TO: Ard Biesheuvel <ardb@kernel.org>
+:::::: CC: Ard Biesheuvel <ardb@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
