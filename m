@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7766792A03
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B69792BE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355127AbjIEQad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:30:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33004 "EHLO
+        id S1346724AbjIERDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354863AbjIEPKF (ORCPT
+        with ESMTP id S1354865AbjIEPKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Sep 2023 11:10:05 -0400
-Received: from mail-pj1-f80.google.com (mail-pj1-f80.google.com [209.85.216.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398C8191
+Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6495199
         for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:10:01 -0700 (PDT)
-Received: by mail-pj1-f80.google.com with SMTP id 98e67ed59e1d1-26b752bc74fso2491372a91.2
+Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1c1fc51a5c6so35070585ad.3
         for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:10:01 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693926600; x=1694531400;
+        d=1e100.net; s=20221208; t=1693926601; x=1694531401;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=zmaWqdjOtt9j6z//ErR2j9KoqmwRo3rNHVaNiamOmos=;
-        b=gM9Qb8BkNDQuirHxSEdNAmK6Y4UpIw70Qh5iulDT39NaqdyHqrJF6kNmvMr7OfgPO/
-         SrL3vleNVUf4lxE33dv6RB0ZnbKlHrq9L5M+XOSog8XapnFJCqkS+xapoB63U0qsWq04
-         wca/bqQqNu5euso2TMh5cvjh9FnAWuxVRDK5SgkdUpngwlrcCVkiGEgvwP2M+jtg1s5S
-         Orbo01XGv2kw5MxLj3zgVLEBAe/8us70di8ycux3DX96qwiGBYosJ6qufbCsIKB4ITob
-         g7GiHFprZPj6OFzLtRBdouQ1IkmNPkhVGlJlMmxfBlveXn6rx8KOK2USZHDDkz1/ToKx
-         wVMw==
-X-Gm-Message-State: AOJu0YzOn0XR72jL6SLxinGTFZWLMcW9GKx8Tlw/h1h4O9xWWVP0jBJn
-        /I2JMlte2r+9z2muAqCPJBWS3tPNrL8d3RhzLqpQ++fyGPK7
-X-Google-Smtp-Source: AGHT+IEmuaB2xmUxHtmQZ3alrUy3R1NLKvFYpm/C9UXlkG59HS+rOQkSaNz31B+GxxonH1/yXR4WbaVewoWWNyrik2gWFJOsYwei
+        bh=Zptu25zAJQ4Aig1qjwOjOEyFmtuG8Q5eB0pDaPNvFgM=;
+        b=VIvKgy0U3Fk9Rl/ej1P3DvBveS0aQJb933lEna8IAOmFJqF9vNrma4wCtZ8A6k67PF
+         o9UVkWM1oV5amzbz69RWOiLNqCJVqzPc3XU9AGO7i9rzhuWPSM7OJdI9nStKPQ0HN1bq
+         pWpW3COZhRFMxeJ0HX/vgf5d9vm5Kftz4LOmQFWGIHNUeGqVx4TeLEDrS+yGCVIi51K2
+         aVazccW69y3TTwSP4AfbD7PHgsx2FrkrLMhfCs8DDSUZPKISxTvaDLudz8a0dwj+id22
+         2lg4rxP9Z8Zn3vOGl3N1SuH7JyC75Vb/gckAf8oTau+2e54g5obMLrF1rJtLMsdJXUeb
+         X58g==
+X-Gm-Message-State: AOJu0Yw3a7hAd0j7+ErJweLvJg7h974hpRdpqscu0kWZOCbLdTV6PxSk
+        1l4NBkyoxhNPT5Ie5b/0KLtJG8k/THnub3tD7MB1hXp0UgJA
+X-Google-Smtp-Source: AGHT+IHOaatneJIiY8Vpq/QHv5/A4HITVO5axXAoW2BTmzdBYreEy69CnddsU6RY2cwqhzAkHiAhllo50shJMAPo4h3kdY8zVUTK
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:ba0b:b0:26d:ae3:f6a4 with SMTP id
- s11-20020a17090aba0b00b0026d0ae3f6a4mr3045072pjr.5.1693926600763; Tue, 05 Sep
- 2023 08:10:00 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 08:10:00 -0700
+X-Received: by 2002:a17:902:cec4:b0:1c1:f658:7cfa with SMTP id
+ d4-20020a170902cec400b001c1f6587cfamr4546090plg.9.1693926601194; Tue, 05 Sep
+ 2023 08:10:01 -0700 (PDT)
+Date:   Tue, 05 Sep 2023 08:10:01 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005071ca06049e05f0@google.com>
+Message-ID: <00000000000057049306049e0525@google.com>
 Subject: [syzbot] [gfs2?] BUG: sleeping function called from invalid context
- in gfs2_flush_delete_work
-From:   syzbot <syzbot+f695093038cdf1175371@syzkaller.appspotmail.com>
+ in glock_hash_walk
+From:   syzbot <syzbot+10c6178a65acf04efe47@syzkaller.appspotmail.com>
 To:     agruenba@redhat.com, cluster-devel@redhat.com,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
@@ -60,87 +60,83 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    99d99825fc07 Merge tag 'nfs-for-6.6-1' of git://git.linux-..
+HEAD commit:    3f86ed6ec0b3 Merge tag 'arc-6.6-rc1' of git://git.kernel.o..
 git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=114e462fa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=30b036635ccf91ce
-dashboard link: https://syzkaller.appspot.com/bug?extid=f695093038cdf1175371
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13536d8fa80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13aeb870680000
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1346753fa80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead
+dashboard link: https://syzkaller.appspot.com/bug?extid=10c6178a65acf04efe47
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e4ea14680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f76f10680000
 
 Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-99d99825.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/ce6af6f13dfd/vmlinux-99d99825.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/10b5fe4e45b5/bzImage-99d99825.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/6bbc32f93f62/mount_0.gz
+disk image: https://storage.googleapis.com/syzbot-assets/6f4f710c5033/disk-3f86ed6e.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/555548fedbdc/vmlinux-3f86ed6e.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c06d7c39bbc0/bzImage-3f86ed6e.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/9cc536caad57/mount_0.gz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f695093038cdf1175371@syzkaller.appspotmail.com
+Reported-by: syzbot+10c6178a65acf04efe47@syzkaller.appspotmail.com
 
+syz-executor585: attempt to access beyond end of device
 loop0: rw=1, sector=3280942697285464, nr_sectors = 8 limit=32768
 gfs2: fsid=syz:syz.0: Error 10 writing to journal, jid=0
 gfs2: fsid=syz:syz.0: fatal: I/O error(s)
 gfs2: fsid=syz:syz.0: about to withdraw this file system
 BUG: sleeping function called from invalid context at fs/gfs2/glock.c:2081
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5143, name: syz-executor333
+in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5030, name: syz-executor585
 preempt_count: 1, expected: 0
 RCU nest depth: 0, expected: 0
 INFO: lockdep is turned off.
 Preemption disabled at:
 [<0000000000000000>] 0x0
-CPU: 1 PID: 5143 Comm: syz-executor333 Not tainted 6.5.0-syzkaller-09276-g99d99825fc07 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+CPU: 0 PID: 5030 Comm: syz-executor585 Not tainted 6.5.0-syzkaller-11704-g3f86ed6ec0b3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
 Call Trace:
  <TASK>
  __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x125/0x1b0 lib/dump_stack.c:106
- __might_resched+0x3c3/0x5e0 kernel/sched/core.c:10187
- glock_hash_walk fs/gfs2/glock.c:2081 [inline]
- gfs2_flush_delete_work+0x1f6/0x2b0 fs/gfs2/glock.c:2108
- gfs2_make_fs_ro+0x460/0x740 fs/gfs2/super.c:550
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ __might_resched+0x5cf/0x780 kernel/sched/core.c:10187
+ glock_hash_walk+0x13b/0x1b0 fs/gfs2/glock.c:2081
+ gfs2_flush_delete_work+0x1c/0x50 fs/gfs2/glock.c:2108
+ gfs2_make_fs_ro+0x109/0x680 fs/gfs2/super.c:550
  signal_our_withdraw fs/gfs2/util.c:153 [inline]
- gfs2_withdraw+0xc2e/0x10c0 fs/gfs2/util.c:334
- gfs2_ail1_empty+0x8cc/0xab0 fs/gfs2/log.c:377
- gfs2_flush_revokes+0x6b/0x90 fs/gfs2/log.c:815
- revoke_lo_before_commit+0x22/0x640 fs/gfs2/lops.c:868
+ gfs2_withdraw+0x48a/0x11e0 fs/gfs2/util.c:334
+ gfs2_ail1_empty+0x7d0/0x860 fs/gfs2/log.c:377
+ gfs2_flush_revokes+0x5e/0x90 fs/gfs2/log.c:815
+ revoke_lo_before_commit+0x2c/0x5f0 fs/gfs2/lops.c:868
  lops_before_commit fs/gfs2/lops.h:40 [inline]
- gfs2_log_flush+0x105e/0x27f0 fs/gfs2/log.c:1101
- gfs2_write_inode+0x24a/0x4b0 fs/gfs2/super.c:453
+ gfs2_log_flush+0xc93/0x25f0 fs/gfs2/log.c:1101
+ gfs2_write_inode+0x20e/0x3b0 fs/gfs2/super.c:453
  write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0xa81/0xe70 fs/fs-writeback.c:1668
- writeback_single_inode+0x2af/0x590 fs/fs-writeback.c:1724
- sync_inode_metadata+0xa5/0xe0 fs/fs-writeback.c:2786
- gfs2_fsync+0x218/0x380 fs/gfs2/file.c:761
- vfs_fsync_range+0x141/0x220 fs/sync.c:188
+ __writeback_single_inode+0x69b/0xfa0 fs/fs-writeback.c:1668
+ writeback_single_inode+0x21b/0x790 fs/fs-writeback.c:1724
+ sync_inode_metadata+0xcc/0x130 fs/fs-writeback.c:2786
+ gfs2_fsync+0x1a7/0x340 fs/gfs2/file.c:761
  generic_write_sync include/linux/fs.h:2625 [inline]
- gfs2_file_write_iter+0xd97/0x10c0 fs/gfs2/file.c:1150
- call_write_iter include/linux/fs.h:1985 [inline]
- do_iter_readv_writev+0x21e/0x3c0 fs/read_write.c:735
- do_iter_write+0x17f/0x830 fs/read_write.c:860
- vfs_iter_write+0x7a/0xb0 fs/read_write.c:901
- iter_file_splice_write+0x698/0xbf0 fs/splice.c:736
+ gfs2_file_write_iter+0xb33/0xe60 fs/gfs2/file.c:1159
+ do_iter_write+0x84f/0xde0 fs/read_write.c:860
+ iter_file_splice_write+0x86d/0x1010 fs/splice.c:736
  do_splice_from fs/splice.c:933 [inline]
- direct_splice_actor+0x118/0x180 fs/splice.c:1142
- splice_direct_to_actor+0x347/0xa30 fs/splice.c:1088
- do_splice_direct+0x1af/0x280 fs/splice.c:1194
- do_sendfile+0xb88/0x1390 fs/read_write.c:1254
+ direct_splice_actor+0xea/0x1c0 fs/splice.c:1142
+ splice_direct_to_actor+0x376/0x9e0 fs/splice.c:1088
+ do_splice_direct+0x2ac/0x3f0 fs/splice.c:1194
+ do_sendfile+0x623/0x1070 fs/read_write.c:1254
  __do_sys_sendfile64 fs/read_write.c:1322 [inline]
- __se_sys_sendfile64 fs/read_write.c:1308 [inline]
- __x64_sys_sendfile64+0x1d6/0x220 fs/read_write.c:1308
+ __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1308
  do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+ do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
  entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f47de46e6b9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff21f08188 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 00007fff21f08358 RCX: 00007f47de46e6b9
-RDX: 0000000000000000 RSI: 0000000000000005 RDI: 0000000000000007
-RBP: 00007f47de4f3610 R08: 00007fff21f08358 R09: 00007fff21f08358
-R10: 0001000000201004 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007fff21f08348 R14: 0000000000000001 R15: 0000000000000001
+RIP: 0033:0x7fb0ea97bd59
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd9f19f258 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb0ea97bd59
+RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000007
+RBP: 0000000000000246 R08: 0000000000000002 R09: 00005555571844c0
+R10: 0000000080000001 R11: 0000000000000246 R12: 00007ffd9f19f280
+R13: 00007fb0ea95cac4 R14: 431bde82d7b634db R15: 00007fb0ea9c503b
  </TASK>
-BUG: scheduling while atomic: syz-executor333/5143/0x00000002
+BUG: scheduling while atomic: syz-executor585/5030/0x00000002
 INFO: lockdep is turned off.
 Modules linked in:
 Preemption disabled at:
