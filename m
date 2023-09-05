@@ -2,52 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 591C6792BF9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 228E1792BAD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350210AbjIEREx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:04:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        id S1346452AbjIEQ4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354408AbjIEL0b (ORCPT
+        with ESMTP id S1354412AbjIEL10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:26:31 -0400
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B731AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:26:28 -0700 (PDT)
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-26d269dc983so2377628a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 04:26:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693913188; x=1694517988;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kQPJMHSAtzWXG2gW3deKh6579jIDQUBLJdslJvkNDNo=;
-        b=XMI9t1/wkGCJ5+wWPPM94xiWP4TROfomIGIKt+qLvi4a5WA3fQIdeOtzXaRXHnjOQ2
-         FlOFwR9PvLbiwoYZd5NDt+3V2qW+cQy9nIvyR7pKM0+DJN7EVyvZjWFRnnYsl6oYRToz
-         yEURLkAZIqdLQDCY+6L8PUmolYIIKMaTepzJAdw/UpFx4UhMYRS7zOj/6+hBfp0jck/5
-         lzc4eXOZHY9tLMeG5PN4T/P8mxbRI8jAZMqheEgTwDmgSlyPUI2iNOLPqepewYcHS8Xk
-         tBPdvLMuvtmkidyK65oCqY74vfTFrR6HnAwDbFUCtvlSQGDUvZ0gAtZrnx4Ir/67pTdQ
-         to3Q==
-X-Gm-Message-State: AOJu0Ywn/0F07d1aNBZBx6BQ7QmlNLUNuqSGJYqk5zB9xOvCmMnJQi+A
-        7zvBRrGPPrj1WHpluEKXgn24r6N+c3mTrpHg3D2qQ+1xIO26
-X-Google-Smtp-Source: AGHT+IH0FNjePIQA0qaE8PcpIxxptgs5CL2dHIaS4rzQXfPnmxwLJY+asAJbs437D54ej2lVpLRV2KgagwtNQVXI0e2ynp5R7RJY
+        Tue, 5 Sep 2023 07:27:26 -0400
+Received: from AUS01-SY4-obe.outbound.protection.outlook.com (mail-sy4aus01olkn2174.outbound.protection.outlook.com [40.92.62.174])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C3121BE;
+        Tue,  5 Sep 2023 04:27:21 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jFXjT1l/YT3oFX7gtyQvmUtCu72D1W0/i5pGPokDUgA40lWvWAHcGZgnI7R/QsOrYFULRg/4y9EmnZex574NPV6R14MHVPoX+pawIA/iMdxTWTC/ww0NNCOFaBDcSO+1g9lXnqEii7r7CYkBkJdeha8RE2SjzX7jABbMZAE/ToeHLl8U3RCmo1OERQRZlUnUq5KKMhgvx4yQYjy2HHEtmIPyI8kGjpdhsjY4WVCupfdke0LcOLaOJCdVGdqTmOS1HKW0ONajsk+f9MXI+M9QMN5rvE1oOGtfiowxLLOeUuDiwTdAuubo5tMC8H4/yMWju6Z6Z3S5Sv2wHIJTQjw7Zg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=LgT+/ItCgKV5iqqbKWGsCzs2Q6+PfD37ivhEOy1uiqA=;
+ b=DYkEYhpoLhwtBBLzI3lUzCOb2WXjylc6/cMWPcjwA8jJobGUWGM9ASNUAfdxv8C2KUreo1tiXPfGHU9jNRipa9TQkwgPdRSjfxGIRTKrinQAGk3rm03smNSm0hoOp9SmgIVk7NsSj1b9BE432c0t2X3bwdIa3o4njU5iulKGrW6v9R1aWRzg1k2rRzc0aSv0y0HJy58OHltTcvDnjA+oyShelzSDIHc42OZnSsHdJrNvQOSU7T4U8h9gPIe4yYgG1uPmG0jOkDZ3752AIOCXEucAVZz6ZFZWyJ/pFS8oqYiU+J6OxyE/DD0/M+M8vDLzg1KTMj1bRv5sUbjN+hIAIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LgT+/ItCgKV5iqqbKWGsCzs2Q6+PfD37ivhEOy1uiqA=;
+ b=N+2RstP3JaJLm0phLvE+9ThraupngBiCJCZ5Vh6Xx5t/IpwfV7x3IA3kUl8BFRWqohHQ8+0uflCmmk69J0Fuo4x7F4zK9nFWdZNhvkoeq3el2b663N9DOmmt++tarA/rIHOdrmGwCBbDY0ZVggl/1F/e+RdCbzoSX6W14fDShyO0LAcQlUgbZn5YREt94vZpIkLaXkfC8qXMjOefF+tZ/fkvLzvTWX22mkVD1o9QoXYFNfKiERPp7ScAlA6MeOUqJ4oll3j5XDzknYYG6z2DmjIdbi9GUPIAdb43S5IDXo0lUNMwxbZKzkY7QvGU9aZwR14p8rx8cYipS3mziroJpQ==
+Received: from MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:14c::12)
+ by SY6P282MB3213.AUSP282.PROD.OUTLOOK.COM (2603:10c6:10:164::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 11:27:14 +0000
+Received: from MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::beb:8e33:17b1:a347]) by MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM
+ ([fe80::beb:8e33:17b1:a347%4]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 11:27:13 +0000
+From:   Jinjian Song <songjinjian@hotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, corbet@lwn.net, loic.poulain@linaro.org,
+        ryazanov.s.a@gmail.com
+Cc:     jiri@resnulli.us, johannes@sipsolutions.net,
+        chandrashekar.devegowda@intel.com, linuxwwan@intel.com,
+        chiranjeevi.rapolu@linux.intel.com, haijun.liu@mediatek.com,
+        m.chetan.kumar@linux.intel.com, ricardo.martinez@linux.intel.com,
+        netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, nmarupaka@google.com,
+        vsankar@lenovo.com, danielwinkler@google.com,
+        Jinjian Song <songjinjian@hotmail.com>
+Subject: [net-next v3 0/5] net: wwan: t7xx: fw flashing & coredump support
+Date:   Tue,  5 Sep 2023 19:26:32 +0800
+Message-ID: <MEYP282MB2697DB3C2C854F72A78BE7F4BBE8A@MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [pnkax81OKd+/ZQkHPwuJyHYSzva5LGyj]
+X-ClientProxiedBy: SGAP274CA0006.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::18)
+ To MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM (2603:10c6:220:14c::12)
+X-Microsoft-Original-Message-ID: <20230905112637.18877-1-songjinjian@hotmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:1104:b0:26b:62d9:d32 with SMTP id
- gi4-20020a17090b110400b0026b62d90d32mr2878845pjb.8.1693913187710; Tue, 05 Sep
- 2023 04:26:27 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 04:26:27 -0700
-In-Reply-To: <20230905104933.5567-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000d57ffb06049ae51e@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in sco_conn_del
-From:   syzbot <syzbot+6b9277cad941daf126a2@syzkaller.appspotmail.com>
-To:     hdanton@sina.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MEYP282MB2697:EE_|SY6P282MB3213:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6b38c148-ea4a-4956-d141-08dbae030d36
+X-MS-Exchange-SLBlob-MailProps: 0wLWl8rLpvtTivgWW+sCOa5Ki5B5X387drGJ7Jcymve7vktlkPrU1QZhxi6KEdEcB1YLh5FQXFXSt8+y9Lsi5EW69O7HXOZm2L7ZZNUvQQFWxESpNMaps/jAiHTyv5tmvj5gr46UhObgvQ15C2mtVTxDuJBPSBklgYM1bpl/XGRVHY/xFDA1+8EUjZlWxO24E9jTkibBKeOc0zeGqKdXTFzFccSSu7gLD84wucWxTW2vxpHl/IeqkNVTQX9RQa/bcoJw4rNPi6CXOU9ciAYZILJaQRo8drMrq36MrCY5JiQyIYNElrFyo3j3cLpGq0b7GFz1rvqTO8BXVuHgCdMyqj7so9/CTaJKmCN+2IOsnswrKGBN7P7M0d+7dQIWJCwJjRVUgUyppo8ppAwO/PkjSp8CiK4Yo6bqoJk24GKo0VGgi3QTa7cW7eGDT8Vz0fB705c6rihgZ/9vN+8gOMmd52u3O97pWgjFKHe2pVm7WTp0Oxlr1HFtPjI5wXv2i2IkZOaD5c/ExWlV01EdyJoWOLXRxVFh+Y4yxMM2MuCRUpdAv/wlESgSA8SjJivTj6oj/6TNCFo5RM4YrzmF/fJ69xnShy6qrIY6Kh7Ar6r7fTDYuqQkuI0phl7AywX5KDeCIKwLeUhT9kLN75j+vTuyXgBCbvGq7Mm2AcoP3NwRaUkSl64fST9Z7RaOSyaR23YWu8gSie4+XsIAdraHZe/nDN04pJvcnTuLF7kaa0mSofbc0bue3coFCUgMUPTcpvfXdvSJs8Eyblg=
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bRS2U2DzhlgIaiLhzXrRvZaM7prP8o+N8xi/vxPIjYWQWBEnwihYlW9RPhDxMuGeind5Bokdl2iTu+Czqy2EnuKB3g5xAW/PJBa3APoyt99rcV/ArjCeui1Ej442UqPZIQ131pHjEvEZiJ4YjLDQZI20R9+yeRveadJTqzQ6Rb1cVwmDPwQKM2CPiJnkd6CPdJtPNWXcILT2Qu/KxtWgCYmg9kqtU85yGE1ZhFEmYrzqDxQcE/6U96v1SoZu+Mgdgxv3Ks7zmE1qp0A4NFVZSKge4B2g9dytTdjr4LYr9p5pd94fqz4h1Dv9C8evWb+VJxoi0bpLwUW/bvBru+DN+qgYhLH0cTTS0IHwjAvQYgdINj8fSDzeOC9Ch/Irx+KLUDhTAn0abX8HewNX8j9Jci78ETVXLd4NIA6R5SETq5VzAaqv/anL6IJpa7k/E++Dd0pXU9KZi2Oyf6Usw6UYkwrr5IwDLKy9dZ/KyOqSpMtKRboXXgSuSP/EQb4AMncOj79+o+Am+f2lcNCDA55ISEgTj5Y29ORqMcAYbs4d9qmS/qvZbU0VTW1NgejSfzXYF6mXVtoRvvgKCuVhxbp2qbG9nD3eae0Vjbriyf5fUoYh0AlznEXzESBJe5h0R6Gw
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?pQ9PgG51kVtm81qmPCyPOGgwFUo5h2Fb/G+By6ntKFGt9ilayBhUIks1Qla3?=
+ =?us-ascii?Q?k1eCMDQHwXlB/z8jqrSPygReVQ289jWerTIa17m1Lpax+aDUwWcIPZ+kRZJM?=
+ =?us-ascii?Q?W4ctSDomJG1JQoSBiTP+WqiscYlXo5Ldx+yJ7EWFqL2Jy/iX133sP4mCR4cj?=
+ =?us-ascii?Q?FSPCMwmoqvFUuL/x4kLQZD4ziwDNkfF3wxv08NJLKliE3B5gOkz0P4u0EIC1?=
+ =?us-ascii?Q?PsA2dCa2Uy2UgV/ljTnfGKlD0+inyI0Nl91X8YTUjCOn4zC/QDQPAFjerlRm?=
+ =?us-ascii?Q?Ip/j6En37ullVCGCrETUaZBpevcrLaSloEpZXbPzZTf5B65vNtS9gzbUVFiK?=
+ =?us-ascii?Q?mOpr86D+ZNxWyv3Kc2yqqdRUXAKNtIWZtRqQHQvt1IPzNKD15PP6fzkJhqTT?=
+ =?us-ascii?Q?NO/cKh2j81wg7q6909lEfIBXlzduRfhpVLnPatkfDK52LeFFNJGpvy2l3OB/?=
+ =?us-ascii?Q?Tf0DAmYW8dK1DxLJDaUD1oMvUC3BleB/qTWz9inzK0nHCbkvuNoLNlvHIqfE?=
+ =?us-ascii?Q?gQ7P91+tUCxoBBbdR+oKohMiWyRqqThE8zB1/Bw+eEKWmxPOSD78gnD086m6?=
+ =?us-ascii?Q?LeAu9RBnzsXgqf8IZY3uNU9RKYNtjbA/EMZyEsbNzG2IsEUhWUOVWNUQn+3W?=
+ =?us-ascii?Q?KfgyoaPYR3f6IIjTELIpJpUBwkUdfjpJ2l5z6zdBGnmjfHcM6gLDNKO1KhqS?=
+ =?us-ascii?Q?ixCEsovhs0OwEk5CFP20xkpk9mu7lCbg/SgixvMnXPoICoAqD8ZJZe/Scws0?=
+ =?us-ascii?Q?M9k9Z0FP8gcKPmWWHj2dgvpESbrZnj2pRIxfAs0rbc99RsOv01hCK1BIqJEN?=
+ =?us-ascii?Q?VvkzBqG0o9zEhoCMcAONjJo2NIUGmXigm77uc3X0aV2Qpd97D8cqfCzIZcGO?=
+ =?us-ascii?Q?RWEgH0OkyKAetcsa8x8z/gmT5o2Dz77N+5kBLfx1zZBZuVkysp6NHsol9KqF?=
+ =?us-ascii?Q?w6Be5eEuAPuTvpNeGmOT5mcIa8mEKG0CxRtIWI8CkVyyxP7rfWp1ghGViowT?=
+ =?us-ascii?Q?EXJFt9SyjqidGEg5nfZ6gIAt6TUP9Fm/ZkiAnV2wPr871ndyfKzXKLDtj6t3?=
+ =?us-ascii?Q?Qsm402SagV4JK5O4CWsH1E+oNvwIwI7IMmnLWWbIuWobZpWUEmeZ8Iv+SBI7?=
+ =?us-ascii?Q?IauY4waipvSKA3Tyiy/59+5HkHFz55vn8UOKSkYSgEIWbB4MsTeYf7tH9EIC?=
+ =?us-ascii?Q?GhXXH2u8ZapDG37TPeKttG70ej2r/EXHUyxkuECFQMbBm7AKLqemclbFM2w?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-746f3.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6b38c148-ea4a-4956-d141-08dbae030d36
+X-MS-Exchange-CrossTenant-AuthSource: MEYP282MB2697.AUSP282.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 11:27:13.8625
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SY6P282MB3213
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,189 +111,95 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Adds support for t7xx wwan device firmware flashing & coredump collection
+using devlink.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KASAN: slab-use-after-free Write in sco_conn_del
+On early detection of wwan device in fastboot mode driver sets up CLDMA0 HW
+tx/rx queues for raw data transfer and then registers to devlink framework.
+On user space application issuing command for firmware update the driver
+sends fastboot flash command & firmware to program NAND.
 
-Bluetooth: hci0: command 0x0405 tx timeout
-Bluetooth: hci0: command 0x0405 tx timeout
-Bluetooth: hci0: command 0x0405 tx timeout
-==================================================================
-BUG: KASAN: slab-use-after-free in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
-BUG: KASAN: slab-use-after-free in atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
-BUG: KASAN: slab-use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
-BUG: KASAN: slab-use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
-BUG: KASAN: slab-use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
-BUG: KASAN: slab-use-after-free in sock_hold include/net/sock.h:777 [inline]
-BUG: KASAN: slab-use-after-free in sco_conn_del+0xb9/0x2d0 net/bluetooth/sco.c:195
-Write of size 4 at addr ffff888068c19080 by task kworker/u5:2/5037
+In flashing procedure the fastboot command & response are exchanged between
+driver and device. Once firmware flashing is success, user space application
+get modem event by sysfs interface.
 
-CPU: 0 PID: 5037 Comm: kworker/u5:2 Not tainted 6.5.0-syzkaller-03967-gbd6c11bc43c4-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: hci0 hci_cmd_sync_work
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- check_region_inline mm/kasan/generic.c:181 [inline]
- kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
- __refcount_add include/linux/refcount.h:193 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- sock_hold include/net/sock.h:777 [inline]
- sco_conn_del+0xb9/0x2d0 net/bluetooth/sco.c:195
- sco_connect_cfm+0x205/0xb70 net/bluetooth/sco.c:1339
- hci_connect_cfm include/net/bluetooth/hci_core.h:1935 [inline]
- hci_conn_failed+0x196/0x320 net/bluetooth/hci_conn.c:1251
- hci_conn_cleanup_child net/bluetooth/hci_conn.c:1065 [inline]
- hci_conn_unlink+0x6f9/0x9b0 net/bluetooth/hci_conn.c:1092
- hci_conn_del+0x59/0xd10 net/bluetooth/hci_conn.c:1118
- hci_abort_conn_sync+0xacb/0xe20 net/bluetooth/hci_sync.c:5435
- abort_conn_sync+0x18e/0x3a0 net/bluetooth/hci_conn.c:2894
- hci_cmd_sync_work+0x1a4/0x3c0 net/bluetooth/hci_sync.c:306
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
- worker_thread+0x687/0x1110 kernel/workqueue.c:2751
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
+The devlink param fastboot is set to true via devlink param command.
 
-Allocated by task 5848:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xa2/0xb0 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:196 [inline]
- __do_kmalloc_node mm/slab_common.c:985 [inline]
- __kmalloc+0x5d/0x100 mm/slab_common.c:998
- kmalloc include/linux/slab.h:586 [inline]
- sk_prot_alloc+0x1a4/0x2a0 net/core/sock.c:2089
- sk_alloc+0x3a/0x7f0 net/core/sock.c:2142
- bt_sock_alloc+0x3b/0x3e0 net/bluetooth/af_bluetooth.c:148
- sco_sock_alloc net/bluetooth/sco.c:473 [inline]
- sco_sock_create+0xe3/0x3b0 net/bluetooth/sco.c:504
- bt_sock_create+0x180/0x340 net/bluetooth/af_bluetooth.c:132
- __sock_create+0x334/0x810 net/socket.c:1549
- sock_create net/socket.c:1600 [inline]
- __sys_socket_create net/socket.c:1637 [inline]
- __sys_socket+0x14c/0x260 net/socket.c:1688
- __do_sys_socket net/socket.c:1702 [inline]
- __se_sys_socket net/socket.c:1700 [inline]
- __x64_sys_socket+0x72/0xb0 net/socket.c:1700
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+$ devlink dev param set pci/0000:bdf name fastboot value 1 cmode driverinit
 
-Freed by task 5849:
- kasan_save_stack+0x33/0x50 mm/kasan/common.c:45
- kasan_set_track+0x25/0x30 mm/kasan/common.c:52
- kasan_save_free_info+0x2b/0x40 mm/kasan/generic.c:522
- ____kasan_slab_free mm/kasan/common.c:236 [inline]
- ____kasan_slab_free+0x15e/0x1b0 mm/kasan/common.c:200
- kasan_slab_free include/linux/kasan.h:162 [inline]
- slab_free_hook mm/slub.c:1792 [inline]
- slab_free_freelist_hook+0x10b/0x1e0 mm/slub.c:1818
- slab_free mm/slub.c:3801 [inline]
- __kmem_cache_free+0xb8/0x2f0 mm/slub.c:3814
- sk_prot_free net/core/sock.c:2125 [inline]
- __sk_destruct+0x5fc/0x770 net/core/sock.c:2217
- sk_destruct+0xc2/0xf0 net/core/sock.c:2232
- __sk_free+0xc4/0x3a0 net/core/sock.c:2243
- sk_free+0x7c/0xa0 net/core/sock.c:2254
- sock_put include/net/sock.h:1983 [inline]
- sco_sock_kill net/bluetooth/sco.c:426 [inline]
- sco_sock_kill+0x19d/0x1c0 net/bluetooth/sco.c:416
- sco_sock_release+0x154/0x2c0 net/bluetooth/sco.c:1234
- __sock_release+0xae/0x260 net/socket.c:657
- sock_close+0x1c/0x20 net/socket.c:1399
- __fput+0x3f7/0xa70 fs/file_table.c:384
- task_work_run+0x14d/0x240 kernel/task_work.c:179
- get_signal+0x1075/0x2770 kernel/signal.c:2657
- arch_do_signal_or_restart+0x89/0x5f0 arch/x86/kernel/signal.c:308
- exit_to_user_mode_loop kernel/entry/common.c:168 [inline]
- exit_to_user_mode_prepare+0x11f/0x240 kernel/entry/common.c:204
- __syscall_exit_to_user_mode_work kernel/entry/common.c:285 [inline]
- syscall_exit_to_user_mode+0x1d/0x60 kernel/entry/common.c:296
- do_syscall_64+0x44/0xb0 arch/x86/entry/common.c:86
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+The wwan device is put into fastboot mode via devlink reload command, by
+passing `driver_reinit`.
 
-The buggy address belongs to the object at ffff888068c19000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 128 bytes inside of
- freed 2048-byte region [ffff888068c19000, ffff888068c19800)
+$ devlink dev reload pci/0000:$bdf action driver_reinit
 
-The buggy address belongs to the physical page:
-page:ffffea0001a30600 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x68c18
-head:ffffea0001a30600 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000010200 ffff888012842000 ffffea0001a30400 0000000000000002
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0x1d20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC|__GFP_HARDWALL), pid 22, tgid 22 (kworker/1:0), ts 96674696674, free_ts 74879599637
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1570
- prep_new_page mm/page_alloc.c:1577 [inline]
- get_page_from_freelist+0x10a9/0x31e0 mm/page_alloc.c:3221
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4477
- alloc_pages+0x1a9/0x270 mm/mempolicy.c:2298
- alloc_slab_page mm/slub.c:1862 [inline]
- allocate_slab+0x24e/0x380 mm/slub.c:2009
- new_slab mm/slub.c:2062 [inline]
- ___slab_alloc+0x8bc/0x1570 mm/slub.c:3215
- __slab_alloc.constprop.0+0x56/0xa0 mm/slub.c:3314
- __slab_alloc_node mm/slub.c:3367 [inline]
- slab_alloc_node mm/slub.c:3460 [inline]
- __kmem_cache_alloc_node+0x137/0x350 mm/slub.c:3509
- __do_kmalloc_node mm/slab_common.c:984 [inline]
- __kmalloc_node_track_caller+0x4d/0x100 mm/slab_common.c:1005
- kmalloc_reserve+0xef/0x270 net/core/skbuff.c:575
- __alloc_skb+0x12b/0x330 net/core/skbuff.c:644
- alloc_skb include/linux/skbuff.h:1286 [inline]
- alloc_skb_with_frags+0xe4/0x710 net/core/skbuff.c:6299
- sock_alloc_send_pskb+0x7c8/0x950 net/core/sock.c:2794
- sock_alloc_send_skb include/net/sock.h:1879 [inline]
- mld_newpack.isra.0+0x1ee/0x790 net/ipv6/mcast.c:1746
- add_grhead+0x295/0x340 net/ipv6/mcast.c:1849
- add_grec+0x10bb/0x1680 net/ipv6/mcast.c:1987
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1161 [inline]
- __free_pages_ok+0x6b3/0xef0 mm/page_alloc.c:1300
- kvfree+0x47/0x50 mm/util.c:650
- proc_sys_call_handler+0x549/0x6c0 fs/proc/proc_sysctl.c:610
- call_read_iter include/linux/fs.h:1979 [inline]
- new_sync_read fs/read_write.c:389 [inline]
- vfs_read+0x4e0/0x930 fs/read_write.c:470
- ksys_read+0x12f/0x250 fs/read_write.c:613
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
+Note: user space application get the fastboot download event of devcie
+from /sys/bus/pci/devices/${bdf}/t7xx_event then do remove(echo 1 >
+/sys/bus/pci/devices/${bdf}/remove) and rescan(echo 1 > /sys/bus/pci/rescan)
+to let driver goes to firmware flash process.
 
-Memory state around the buggy address:
- ffff888068c18f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888068c19000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888068c19080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888068c19100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888068c19180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+Below is the devlink command usage for firmware flashing
 
+$ devlink dev flash pci/$BDF file ABC.img component ABC
 
-Tested on:
+Note: ABC.img is the firmware to be programmed to "ABC" partition.
 
-commit:         bd6c11bc Merge tag 'net-next-6.6' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1214c5ec680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
-dashboard link: https://syzkaller.appspot.com/bug?extid=6b9277cad941daf126a2
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=130fd8afa80000
+In case of coredump collection when wwan device encounters an exception
+it reboots & stays in fastboot mode for coredump collection by host driver.
+On detecting exception state driver collects the core dump, creates the
+devlink region & reports an event to user space application for dump
+collection. The user space application invokes devlink region read command
+for dump collection.
+
+Below are the devlink commands used for coredump collection.
+
+$ devlink region new pci/$BDF/mr_dump
+$ devlink region read pci/$BDF/mr_dump snapshot $ID address $ADD length $LEN
+$ devlink region del pci/$BDF/mr_dump snapshot $ID
+
+Upon completion of firmware flashing or coredump collection the wwan device
+is reset to normal mode using devlink reload command, by passing `fw_activate`.
+
+$ devlink dev reload pci/0000:$bdf action fw_activate
+
+Note: user space application get the reset event of devcie
+from /sys/bus/pci/devices/${bdf}/t7xx_event then do remove(echo 1 >
+/sys/bus/pci/devices/${bdf}/remove) and rescan(echo 1 > /sys/bus/pci/rescan)
+to let driver goes to normal process.
+
+Jinjian Song (5):
+  net: wwan: t7xx: Infrastructure for early port configuration
+  net: wwan: t7xx: Register with devlink and implement firmware flashing
+  net: wwan: t7xx: Creates region & snapshot for coredump log collection
+  net: wwan: t7xx: Adds sysfs attribute of modem event
+  net: wwan: t7xx: Devlink documentation
+
+ Documentation/networking/devlink/index.rst   |   1 +
+ Documentation/networking/devlink/t7xx.rst    | 232 +++++++
+ drivers/net/wwan/Kconfig                     |   1 +
+ drivers/net/wwan/t7xx/Makefile               |   4 +-
+ drivers/net/wwan/t7xx/t7xx_hif_cldma.c       |  47 +-
+ drivers/net/wwan/t7xx/t7xx_hif_cldma.h       |  18 +-
+ drivers/net/wwan/t7xx/t7xx_modem_ops.c       |   5 +-
+ drivers/net/wwan/t7xx/t7xx_pci.c             |  79 ++-
+ drivers/net/wwan/t7xx/t7xx_pci.h             |  19 +
+ drivers/net/wwan/t7xx/t7xx_port.h            |   6 +
+ drivers/net/wwan/t7xx/t7xx_port_ap_msg.c     |  78 +++
+ drivers/net/wwan/t7xx/t7xx_port_ap_msg.h     |  11 +
+ drivers/net/wwan/t7xx/t7xx_port_flash_dump.c | 695 +++++++++++++++++++
+ drivers/net/wwan/t7xx/t7xx_port_flash_dump.h |  85 +++
+ drivers/net/wwan/t7xx/t7xx_port_proxy.c      | 118 +++-
+ drivers/net/wwan/t7xx/t7xx_port_proxy.h      |  14 +
+ drivers/net/wwan/t7xx/t7xx_port_wwan.c       |  27 +-
+ drivers/net/wwan/t7xx/t7xx_reg.h             |  28 +-
+ drivers/net/wwan/t7xx/t7xx_state_monitor.c   | 137 +++-
+ drivers/net/wwan/t7xx/t7xx_state_monitor.h   |   1 +
+ 20 files changed, 1528 insertions(+), 78 deletions(-)
+ create mode 100644 Documentation/networking/devlink/t7xx.rst
+ create mode 100644 drivers/net/wwan/t7xx/t7xx_port_ap_msg.c
+ create mode 100644 drivers/net/wwan/t7xx/t7xx_port_ap_msg.h
+ create mode 100644 drivers/net/wwan/t7xx/t7xx_port_flash_dump.c
+ create mode 100644 drivers/net/wwan/t7xx/t7xx_port_flash_dump.h
+
+-- 
+2.34.1
 
