@@ -2,118 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB7E7929FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FAA792B29
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354039AbjIEQ3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42124 "EHLO
+        id S242605AbjIEQtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:49:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354231AbjIEKNv (ORCPT
+        with ESMTP id S1354235AbjIEKQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:13:51 -0400
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050:0:465::201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA5318D;
-        Tue,  5 Sep 2023 03:13:44 -0700 (PDT)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4Rg1Yb3HrXz9spR;
-        Tue,  5 Sep 2023 12:13:39 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sylv.io; s=MBO0001;
-        t=1693908819;
+        Tue, 5 Sep 2023 06:16:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192A8199
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693908933;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=vwy3Wn4HAyhcZ+X2rFN5+szTEY2owO70dhUnqcdje/E=;
-        b=ULiqjIKb0Q+2GOone/Fy+az7Q0foq75ZVenkefWE5MFShINpjUQOvrHC5fWLEF0ftSyMY+
-        exSPaoqk5pk3fgmvMOWPbT/3sSmvNAat/wlYBBpwFG+VwiyHiHJO6XEkxMNLC0Drdjod2+
-        6Fow5hrECrH2DZB0jucg+CvmoTt3qaAZ1vYVEfntCU+puqWcw2S2cy5Q7MlP6dc3t7OkqW
-        sFQ7smR3FWLypr93JLAkgss14QUWDbLPRWGHAg8kZrmTzPpVKgt5SX5MD7liT/+4/nKVg3
-        DAWHkMd9AuygaHWZ6mwgh3w43lm8qfjHHR5knbUudT1sRbXmKegA2Ta8JlbFsA==
-Message-ID: <d1cf5a66-03e1-44b8-929d-ac123b1bbd7b@sylv.io>
-Date:   Tue, 5 Sep 2023 12:13:36 +0200
+        bh=qwpPqy/Nul6ICV3KsGmrMJGyrANxddxrtAj9ez3IBjE=;
+        b=Xy+Wgh1AbbKwmXjLruSN/Hgxg6aGk0dJUGaCDObd0bmhHCbwkFQTyv5VPjCyrRJhJ7T2Hb
+        Eyjwmjqvq3GpxYmsu6lhIq7W6x6nbYeLKHwcxPG7Wowen6VPbKkCLIOagQ7tcyU18CxML9
+        4489GI3BGeAcxvP4syLIb5x62/CIudg=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-660-ONroLj-aN-28_ruL75vVrQ-1; Tue, 05 Sep 2023 06:15:31 -0400
+X-MC-Unique: ONroLj-aN-28_ruL75vVrQ-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-993eeb3a950so194799366b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:15:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693908930; x=1694513730;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qwpPqy/Nul6ICV3KsGmrMJGyrANxddxrtAj9ez3IBjE=;
+        b=RjKNpKFrqVPoJMdO0KrusDP3taCJmmmi6gdADRR8wx+LWFTI07XvGVeAMGuYz42DsF
+         JvMumMmMtwnwbC2QlfMZ1gNmzWGxBGIJtqkbHMXRkfW/uaZDS/loKHvbkTyMaKtDf66D
+         iiF2lcRJq39HFd+IwBNaqWlp0dRZt5p479ZsTkh36TYrsxMPLgTRybC7S8m1c/N4ZQwQ
+         0uoUvRwTYfGvk7L4h3t7Zbv/i6prNHElMc2w9P1BlY8UoaA90//lO0yYdZWwFtg4Ry7e
+         8m3Geq8iXyzG8SX7ZTExuuDta9UnxmX7e0wcfRgSlw4FzgIj8hbIcVtlbYcGZ3fuhf7M
+         mjBg==
+X-Gm-Message-State: AOJu0YzV9EFEDUObMl3y5RuiLGiGttRO80d2KW3PyGFOkmGCz27K5/uv
+        UlqBFC8s3OWbJVhynsqCpKVa+cVPjGQMY6DsHKLk32G+JuSw608y8KX22T9NEDHJBF8vWp8XbFV
+        6ixYNw4OePGh0BjmRP3AkXfaQ
+X-Received: by 2002:a17:907:272a:b0:992:7295:61c9 with SMTP id d10-20020a170907272a00b00992729561c9mr9770475ejl.69.1693908930649;
+        Tue, 05 Sep 2023 03:15:30 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFOZ3vRjEeXXTTre5eaeA9/5V2DgQpaicUSn9RLKUyLaRClmWMLa5EvQ5id1mZBpcbjlMrHJg==
+X-Received: by 2002:a17:907:272a:b0:992:7295:61c9 with SMTP id d10-20020a170907272a00b00992729561c9mr9770461ejl.69.1693908930364;
+        Tue, 05 Sep 2023 03:15:30 -0700 (PDT)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id mf25-20020a170906cb9900b0099d804da2e9sm7422886ejb.225.2023.09.05.03.15.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 03:15:29 -0700 (PDT)
+Message-ID: <ead0bc03-2008-96d8-c313-5dc4a9e63479@redhat.com>
+Date:   Tue, 5 Sep 2023 12:15:28 +0200
 MIME-Version: 1.0
-Content-Language: en-US, de-DE
-To:     Paolo Abeni <pabeni@redhat.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <0490137bbc24e95eadf01bed9c31eb1d0a856a21.1693823464.git.sylv@sylv.io>
- <a88c3486dafcc9e7a8cb5eecf14b6e6b93a13c65.camel@redhat.com>
-From:   Marcello Sylverster Bauer <sylv@sylv.io>
-Subject: Re: [PATCH v2 1/1] xfrm: Use skb_mac_header_was_set() to check for
- MAC header presence
-In-Reply-To: <a88c3486dafcc9e7a8cb5eecf14b6e6b93a13c65.camel@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v16 3/3] platform/x86/amd: pmc: Don't let PCIe root ports
+ go into D3
+Content-Language: en-US, nl
+To:     Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        bhelgaas@google.com, rafael@kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        Iain Lane <iain@orangesquash.org.uk>
+References: <20230829171212.156688-1-mario.limonciello@amd.com>
+ <20230829171212.156688-4-mario.limonciello@amd.com>
+ <ceda84a0-e5cd-f6dc-3e3c-52e85fda8318@amd.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <ceda84a0-e5cd-f6dc-3e3c-52e85fda8318@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paolo,
+Hi Shyam,
 
-On 9/5/23 11:59, Paolo Abeni wrote:
-> On Mon, 2023-09-04 at 12:32 +0200, Marcello Sylvester Bauer wrote:
->> From: Marcello Sylvester Bauer <sylv@sylv.io>
+On 9/5/23 12:08, Shyam Sundar S K wrote:
+> 
+> 
+> On 8/29/2023 10:42 PM, Mario Limonciello wrote:
+>> commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+>> changed pci_bridge_d3_possible() so that any vendor's PCIe ports
+>> from modern machines (>=2015) are allowed to be put into D3.
 >>
->> Add skb_mac_header_was_set() in xfrm4_remove_tunnel_encap() and
->> xfrm6_remove_tunnel_encap() to detect the presence of a MAC header.
->> This change prevents a kernel page fault on a non-zero mac_len when the
->> mac_header is not set.
+>> Iain reports that USB devices can't be used to wake a Lenovo Z13
+>> from suspend. This is because the PCIe root port has been put
+>> into D3 and AMD's platform can't handle USB devices waking from
+>> a hardware sleep state in this case.
 >>
->> Signed-off-by: Marcello Sylvester Bauer <sylv@sylv.io>
+>> This problem only occurs on Linux, and only when the AMD PMC driver
+>> is utilized to put the device into a hardware sleep state. Comparing
+>> the behavior on Windows and Linux, Windows doesn't put the root ports
+>> into D3.
+>>
+>> A variety of approaches were discussed to change PCI core to handle this
+>> case generically but no consensus was reached. To limit the scope of
+>> effect only to the affected machines introduce a workaround into the
+>> amd-pmc driver to only apply to the PCI root ports in affected machines
+>> when going into hardware sleep.
+>>
+>> Link: https://lore.kernel.org/linux-pci/20230818193932.27187-1-mario.limonciello@amd.com/
+>> Fixes: 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+>> Reported-by: Iain Lane <iain@orangesquash.org.uk>
+>> Closes: https://forums.lenovo.com/t5/Ubuntu/Z13-can-t-resume-from-suspend-with-external-USB-keyboard/m-p/5217121
+>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
 > 
-> Please include a suitable fixes tag.
+> See if this change can be moved to pmc-quirks.c, besides that change
+> looks good to me. Thank you.
 > 
-> Please also include in the commit message the stacktrace:
-> 
-> https://lore.kernel.org/netdev/636d3434-d47a-4cd4-b3ba-7f7254317b64@sylv.io/
-> 
-> trimming the asm code and lines starting with ' ? '
+> Acked-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
 
-Sure, will be added to the next version in addition to a cover letter to 
-give additional context to this patch.
+Thank you for the review.
+
+I also just replied to this series (to the cover-letter)
+with an alternative approach based on making the
+XHCI driver call pci_d3cold_disable() on the XHCI
+PCIe-device on affected AMD chipsets.
+
+That seems like a cleaner approach to me. I wonder
+if you have any remarks about that approach ?
+
+Regards,
+
+Hans
+
 
 > 
-> I think the real issue could be elsewhere, we should not reach here
-> with mac_len > 0 && !skb_mac_header_was_set().
+>> ---
+>> v15->v16:
+>>  * Only match PCIe root ports with ACPI companions
+>>  * Use constraints when workaround activated
+>> ---
+>>  drivers/platform/x86/amd/pmc/pmc.c | 39 ++++++++++++++++++++++++++++++
+>>  1 file changed, 39 insertions(+)
+>>
+>> diff --git a/drivers/platform/x86/amd/pmc/pmc.c b/drivers/platform/x86/amd/pmc/pmc.c
+>> index eb2a4263814c..6a037447ec5a 100644
+>> --- a/drivers/platform/x86/amd/pmc/pmc.c
+>> +++ b/drivers/platform/x86/amd/pmc/pmc.c
+>> @@ -741,6 +741,41 @@ static int amd_pmc_czn_wa_irq1(struct amd_pmc_dev *pdev)
+>>  	return 0;
+>>  }
+>>  
+>> +/* only allow PCIe root ports with a LPS0 constraint configured to go to D3 */
+>> +static int amd_pmc_rp_wa(struct amd_pmc_dev *pdev)
+>> +{
+>> +	struct pci_dev *pci_dev = NULL;
+>> +
+>> +	while ((pci_dev = pci_get_device(PCI_VENDOR_ID_AMD, PCI_ANY_ID, pci_dev))) {
+>> +		struct acpi_device *adev;
+>> +		int constraint;
+>> +
+>> +		if (!pci_is_pcie(pci_dev) ||
+>> +		    !(pci_pcie_type(pci_dev) == PCI_EXP_TYPE_ROOT_PORT))
+>> +			continue;
+>> +
+>> +		if (pci_dev->current_state == PCI_D3hot ||
+>> +		    pci_dev->current_state == PCI_D3cold)
+>> +			continue;
+>> +
+>> +		adev = ACPI_COMPANION(&pci_dev->dev);
+>> +		if (!adev)
+>> +			continue;
+>> +
+>> +		constraint = acpi_get_lps0_constraint(adev);
+>> +		if (constraint != ACPI_STATE_UNKNOWN &&
+>> +		    constraint >= ACPI_STATE_S3)
+>> +			continue;
+>> +
+>> +		if (pci_dev->bridge_d3 == 0)
+>> +			continue;
+>> +		pci_dev->bridge_d3 = 0;
+>> +		dev_info(&pci_dev->dev, "Disabling D3 on PCIe root port due lack of constraint\n");
+>> +	}
+>> +
+>> +	return 0;
+>> +}
+>> +
+>>  static int amd_pmc_verify_czn_rtc(struct amd_pmc_dev *pdev, u32 *arg)
+>>  {
+>>  	struct rtc_device *rtc_device;
+>> @@ -893,6 +928,10 @@ static int amd_pmc_suspend_handler(struct device *dev)
+>>  	case AMD_CPU_ID_CZN:
+>>  		rc = amd_pmc_czn_wa_irq1(pdev);
+>>  		break;
+>> +	case AMD_CPU_ID_YC:
+>> +	case AMD_CPU_ID_PS:
+>> +		rc = amd_pmc_rp_wa(pdev);
+>> +		break;
+>>  	default:
+>>  		break;
+>>  	}
+>>
 > 
-> Could you please try the following debug patch in your setup, and see
-> if hints at some other relevant place?
 
-Unfortunately the person with the hardware is OOO for two weeks. But I 
-could ask him to test it when he gets back.
-
-Thanks,
-Marcello
-
-> 
-> Thanks,
-> 
-> Paolo
-> 
-> ---
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index 4174c4b82d13..38ca2c7e50ca 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -2793,6 +2793,7 @@ static inline void skb_reset_inner_headers(struct sk_buff *skb)
->   
->   static inline void skb_reset_mac_len(struct sk_buff *skb)
->   {
-> +	WARN_ON_ONCE(!skb_mac_header_was_set(skb));
->   	skb->mac_len = skb->network_header - skb->mac_header;
->   }
->   
-> 
