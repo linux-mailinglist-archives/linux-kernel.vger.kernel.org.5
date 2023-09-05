@@ -2,158 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B0F792DF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0025D792F01
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241321AbjIESzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41170 "EHLO
+        id S235084AbjIETdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:33:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239485AbjIESzX (ORCPT
+        with ESMTP id S230363AbjIETdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:55:23 -0400
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (mail-dm3nam02on2061d.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e83::61d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EAD6170A;
-        Tue,  5 Sep 2023 11:54:58 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qd3ngPFH5nLw+9vmY3wVmHzTnZyBIxOOKh3AOT5qdGvNvb0XAYQQvWBlGpLOkH0K3Az2yiGhaWS6dbhoIPbcbmSBALQjkqJU8yhMX26yk/LNGt/bpciAfl/2QGSL5RVb/ZPKLL8jt/kphL4xF6ULyhUOd76R+SfrEbCNWVo9YRoDnKqoiLPCRFfv62NN4CkahmjEoK6Fp64X2VoL701+LL5oaSvavzU8cdN7cNZXVisf9hizkgIEE1USQf4VjIRGzanNa+7gwC4cIfHR11VHgX3d6fpch48Q0lHuqdZg4VGjLkjFVYKaAayF7M826tAsNA5y5R1cgTsCDyZvrfVuTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0bp3ak/SjhdvLl7Q/X3K00mHhnoEnqXF8UbNZ5Vm2Tw=;
- b=Uf/TlYAaq3jR0X69k5uX2HVSIdqbopJJMk3+WagTk3zTVR/1FQl39tC8iK4xs+MWDmlRUxWrVRNch+C94RMd4waIpxekm6woVs2QHG5+WoZlbhCsTUqmZ1m05vrXF9CwRCksIcWASURsmzuY7ErYACYOFVD5wOnzW/LdqugX5uJqVrnXU/oIHL8lx/5u1i+gPGrSfLAVpncDl8B/K3naACJubkCehb9qh3LKXvQcOzGPK84wC1aRSMwuRf2V2+hpcN3ycQLFXa77u1vCKgUaN6elQc4VlUudL7Wpdyis/YIAVJNpLYUW/7/uTF6oWSzAhz1UA+LmLAZCUgDi7q9mCw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=lists.freedesktop.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0bp3ak/SjhdvLl7Q/X3K00mHhnoEnqXF8UbNZ5Vm2Tw=;
- b=Sw6cH1paZEzekP0Q7cMUKwXhJbcyImVDjxDfsMDIPjESzMpyFz7stiRxWPSEu5VB8/snTvJr7r2gT/Ez+7y+MZIaWueCsz9sGgYeV42YJZE4nHkVSS2LIZcl0ZYotxZ2YWyBruN207apPurqy8Vc7I1fbpSidwlr9uzDqo7PrnA=
-Received: from DS7PR06CA0024.namprd06.prod.outlook.com (2603:10b6:8:2a::8) by
- PH7PR12MB9256.namprd12.prod.outlook.com (2603:10b6:510:2fe::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
- 2023 18:53:48 +0000
-Received: from CY4PEPF0000EE3C.namprd03.prod.outlook.com
- (2603:10b6:8:2a:cafe::cf) by DS7PR06CA0024.outlook.office365.com
- (2603:10b6:8:2a::8) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33 via Frontend
- Transport; Tue, 5 Sep 2023 18:53:48 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE3C.mail.protection.outlook.com (10.167.242.16) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.6768.25 via Frontend Transport; Tue, 5 Sep 2023 18:53:47 +0000
-Received: from hamza-pc.localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Tue, 5 Sep
- 2023 13:53:45 -0500
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-To:     <amd-gfx@lists.freedesktop.org>
-CC:     Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        <stable@vger.kernel.org>, Harry Wentland <harry.wentland@amd.com>,
-        Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Tom Rix <trix@redhat.com>,
-        Qingqing Zhuo <qingqing.zhuo@amd.com>,
-        Aric Cyr <aric.cyr@amd.com>,
-        Austin Zheng <austin.zheng@amd.com>,
-        Mike Hsieh <Mike.Hsieh@amd.com>,
-        "Leo (Hanghong) Ma" <hanghong.ma@amd.com>,
-        Dillon Varone <Dillon.Varone@amd.com>,
-        Bayan Zabihiyan <bayan.zabihiyan@amd.com>,
-        Amanda Liu <amanda.liu@amd.com>,
-        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/amd/display: prevent potential division by zero errors
-Date:   Tue, 5 Sep 2023 14:53:28 -0400
-Message-ID: <20230905185329.26934-1-hamza.mahfooz@amd.com>
-X-Mailer: git-send-email 2.41.0
+        Tue, 5 Sep 2023 15:33:13 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706A9113;
+        Tue,  5 Sep 2023 12:32:47 -0700 (PDT)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385HLeG4016177;
+        Tue, 5 Sep 2023 18:56:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Fpz6H8ceq4vaOKU2N55mPxgBHzxv2t5ItUHtKZtfpSc=;
+ b=j3OpZ2Yo8fHUpFiDJDRiz6/vPChj1xXPo7IHWwaDMMuL3Si7tFLrFCATgTT7VbnobAnR
+ vW4Cc1dqN+YYA+MM8iQ5vowGRFWZ+55n0WYaU4S06iJgYQEngvVIdAyu7kTUN8fe5rOq
+ WOBOGre9Sx2ChNvwtxkSblkNJolylp7421JEW3Bemyj+z2DlfjwRlFRg4KuLG8DkeI6d
+ NJsql0yKETVnPSKcfprzw6DknQ3H8Zw/99gbY0z0qAiYFIQrXBb1brkaGKQ070Sdbj3F
+ xH2mwE2T2cbztjb0wS05rVhqpvOU337rQqlWw4DrrquDA2C5Y41nKYlPYXFiEWkKxiH3 YA== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swtevj471-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 18:56:48 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 385IuaTB024903
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Sep 2023 18:56:36 GMT
+Received: from [10.216.3.103] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 5 Sep
+ 2023 11:56:31 -0700
+Message-ID: <8550749b-b16f-c6ad-cf44-54d23c4cbb43@quicinc.com>
+Date:   Wed, 6 Sep 2023 00:26:28 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE3C:EE_|PH7PR12MB9256:EE_
-X-MS-Office365-Filtering-Correlation-Id: 132d4fab-e30a-4c79-8481-08dbae417012
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7n/z/kvblcRqLo0Z8sjKzR5wuawJ2mZwFps2WwQ5ArdKzmliTSl93X3s2pF0ViLG0B2Fm902kDvnFR8GSU/wS9cIYzCiZl34wzSogyxwupFMproxJnENo85BHW6Hjzo2pMXx2dzDPDuUIjfLajspPwOdN+vjn9cqrpAxfsyVpBxpf/lrxKZN4kTtNEjwOaJP9t/h/aACiPmKk80Ph69qyHMoMu1EG0esE65ikzJiyE7HXExBXq41pO6IfKGp3jqkEkmCl62OaJkfmi/QRsyLIyd042EV1l0P2tbwpqPJXZNA5shlGbAdRvk+mjijdyq7q6yF2xcgBPgtsgd0bMsL2CvkCeuJ8dw2bN0eJwRq0jlTh44NrvU1D54lg20gHFa9atdlP2T5kFb4rJNNLCJOoaH0vVjG5Zxf78TKATHAXDvzqOSSgUOgSEmy/mAx87KvQUetaF3GgxoodVhFWS3KWoLGbXNYz0vUrOsFhtS+JmIvjco9EWp+EgFJgo0gGLbLrg9eHCyllRwNteQ/mcuTRkiSsasNfYHS7/klwh6DV8WD7drFX9VoNSG0RNPlxL0dOlNycwG4jhtawRigHwyQ5NT7l2V2hz0s7T0hcibZqDqlebQKS3/AIoSUKeumK6GLrJbiVmLFlW+okCFm5vwN5rSc8+Sc92u8yiZxKo109yYvD4IcR6Fj+9oOL0n/It+ixnkshVH9PgtMb/0LYwZa3HAJLBTrPj0L49lJMORpnY5OhSv5nOx8LPMZ1UU56fSBa3hot7talBJu4VewWHfWdbvRfvwQ83UNigNN3lC/YSU=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(376002)(136003)(396003)(39860400002)(82310400011)(1800799009)(451199024)(186009)(40470700004)(46966006)(36840700001)(40460700003)(41300700001)(356005)(82740400003)(81166007)(6666004)(86362001)(966005)(478600001)(83380400001)(2616005)(16526019)(426003)(47076005)(26005)(36860700001)(1076003)(336012)(40480700001)(70206006)(2906002)(70586007)(54906003)(316002)(6916009)(36756003)(8936002)(8676002)(5660300002)(44832011)(4326008)(36900700001)(16060500005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 18:53:47.8332
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 132d4fab-e30a-4c79-8481-08dbae417012
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE3C.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB9256
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE autolearn=no
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.3.2
+Subject: Re: [PATCH V3 2/2] phy: qcom-qmp-ufs: Add Phy Configuration support
+ for SC7280
+Content-Language: en-US
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Manish Pandey <quic_mapa@quicinc.com>
+References: <20230823091757.31311-1-quic_nitirawa@quicinc.com>
+ <20230823091757.31311-3-quic_nitirawa@quicinc.com>
+From:   Nitin Rawat <quic_nitirawa@quicinc.com>
+In-Reply-To: <20230823091757.31311-3-quic_nitirawa@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: mX3Fcfz8cc94YoKAbcuPtSzYUZlfm6ws
+X-Proofpoint-ORIG-GUID: mX3Fcfz8cc94YoKAbcuPtSzYUZlfm6ws
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_12,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ adultscore=0 impostorscore=0 priorityscore=1501 clxscore=1011 bulkscore=0
+ lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309050165
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,UPPERCASE_50_75
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are two places in apply_below_the_range() where it's possible for
-a divide by zero error to occur. So, to fix this make sure the divisor
-is non-zero before attempting the computation in both cases.
 
-Cc: stable@vger.kernel.org
-Link: https://gitlab.freedesktop.org/drm/amd/-/issues/2637
-Fixes: a463b263032f ("drm/amd/display: Fix frames_to_insert math")
-Fixes: ded6119e825a ("drm/amd/display: Reinstate LFC optimization")
-Signed-off-by: Hamza Mahfooz <hamza.mahfooz@amd.com>
----
- drivers/gpu/drm/amd/display/modules/freesync/freesync.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/modules/freesync/freesync.c b/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
-index dbd60811f95d..ef3a67409021 100644
---- a/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
-+++ b/drivers/gpu/drm/amd/display/modules/freesync/freesync.c
-@@ -338,7 +338,9 @@ static void apply_below_the_range(struct core_freesync *core_freesync,
- 		 *  - Delta for CEIL: delta_from_mid_point_in_us_1
- 		 *  - Delta for FLOOR: delta_from_mid_point_in_us_2
- 		 */
--		if ((last_render_time_in_us / mid_point_frames_ceil) < in_out_vrr->min_duration_in_us) {
-+		if (mid_point_frames_ceil &&
-+		    (last_render_time_in_us / mid_point_frames_ceil) <
-+		    in_out_vrr->min_duration_in_us) {
- 			/* Check for out of range.
- 			 * If using CEIL produces a value that is out of range,
- 			 * then we are forced to use FLOOR.
-@@ -385,8 +387,9 @@ static void apply_below_the_range(struct core_freesync *core_freesync,
- 		/* Either we've calculated the number of frames to insert,
- 		 * or we need to insert min duration frames
- 		 */
--		if (last_render_time_in_us / frames_to_insert <
--				in_out_vrr->min_duration_in_us){
-+		if (frames_to_insert &&
-+		    (last_render_time_in_us / frames_to_insert) <
-+		    in_out_vrr->min_duration_in_us){
- 			frames_to_insert -= (frames_to_insert > 1) ?
- 					1 : 0;
- 		}
--- 
-2.41.0
+On 8/23/2023 2:47 PM, Nitin Rawat wrote:
+> Add SC7280 specific register layout and table configs.
+> 
+> Co-developed-by: Manish Pandey <quic_mapa@quicinc.com>
+> Signed-off-by: Manish Pandey <quic_mapa@quicinc.com>
+> Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+> ---
+>   drivers/phy/qualcomm/phy-qcom-qmp-ufs.c | 142 ++++++++++++++++++++++++
+>   1 file changed, 142 insertions(+)
+> 
+> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> index 3927eba8e468..514fa14df634 100644
+> --- a/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c
+> @@ -177,6 +177,111 @@ static const struct qmp_phy_init_tbl msm8996_ufsphy_rx[] = {
+>   	QMP_PHY_INIT_CFG(QSERDES_RX_RX_EQU_ADAPTOR_CNTRL2, 0x0E),
+>   };
+> 
+> +static const struct qmp_phy_init_tbl sc7280_ufsphy_tx[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_PWM_GEAR_1_DIVIDER_BAND0_1, 0x06),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_PWM_GEAR_2_DIVIDER_BAND0_1, 0x03),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_PWM_GEAR_3_DIVIDER_BAND0_1, 0x01),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_PWM_GEAR_4_DIVIDER_BAND0_1, 0x00),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_LANE_MODE_1, 0x35),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_TX_TRAN_DRVR_EMP_EN, 0x0c),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sc7280_ufsphy_rx[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_LVL, 0x24),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_CNTRL, 0x0f),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_DEGLITCH_CNTRL, 0x1e),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_BAND, 0x18),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_FO_GAIN, 0x0a),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x5a),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_PI_CONTROLS, 0xf1),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_COUNT_LOW, 0x80),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_PI_CTRL2, 0x80),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FO_GAIN, 0x0e),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_GAIN, 0x04),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_TERM_BW, 0x1b),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL2, 0x06),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL3, 0x04),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL4, 0x1d),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x00),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_MEASURE_TIME, 0x10),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_LOW, 0xc0),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_HIGH, 0x00),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_LOW, 0x6d),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH, 0x6d),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH2, 0xed),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH3, 0x3b),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH4, 0x3c),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_LOW, 0xe0),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH, 0xc8),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH2, 0xc8),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH3, 0x3b),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH4, 0xb1),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_LOW, 0xe0),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH, 0xc8),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH2, 0xc8),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH3, 0x3b),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH4, 0xb1),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DCC_CTRL1, 0x0c),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sc7280_ufsphy_pcs[] = {
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_RX_SIGDET_CTRL2, 0x6d),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_LARGE_AMP_DRV_LVL, 0x0a),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_SMALL_AMP_DRV_LVL, 0x02),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_MID_TERM_CTRL1, 0x43),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_DEBUG_BUS_CLKSEL, 0x1f),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_RX_MIN_HIBERN8_TIME, 0xff),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_MULTI_LANE_CTRL1, 0x02),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_PLL_CNTL, 0x03),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TIMER_20US_CORECLK_STEPS_MSB, 0x16),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TIMER_20US_CORECLK_STEPS_LSB, 0xd8),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_PWM_GEAR_BAND, 0xaa),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_HS_GEAR_BAND, 0x06),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_TX_HSGEAR_CAPABILITY, 0x03),
+> +	QMP_PHY_INIT_CFG(QPHY_V4_PCS_UFS_RX_HSGEAR_CAPABILITY, 0x03),
+> +};
+> +
+> +static const struct qmp_phy_init_tbl sc7280_ufsphy_hs_g4_rx[] = {
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_LVL, 0x24),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_CNTRL, 0x0f),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_SIGDET_DEGLITCH_CNTRL, 0x1e),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_BAND, 0x18),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_FO_GAIN, 0x0a),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x5a),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_PI_CONTROLS, 0xf1),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FASTLOCK_COUNT_LOW, 0x80),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_PI_CTRL2, 0x81),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_FO_GAIN, 0x0e),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_UCDR_SO_GAIN, 0x04),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_TERM_BW, 0x6f),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL1, 0x04),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL2, 0x00),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL3, 0x09),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQU_ADAPTOR_CNTRL4, 0x07),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x17),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_OFFSET_ADAPTOR_CNTRL2, 0x00),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_MEASURE_TIME, 0x20),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_LOW, 0x80),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_IDAC_TSETTLE_HIGH, 0x01),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_LOW, 0x3f),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH, 0xff),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH2, 0xff),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH3, 0x7f),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_00_HIGH4, 0x2c),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_LOW, 0x6d),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH, 0x6d),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH2, 0xed),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH3, 0x3b),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_01_HIGH4, 0x3c),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_LOW, 0xe0),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH, 0xc8),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH2, 0xc8),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH3, 0x3b),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_RX_MODE_10_HIGH4, 0xb1),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_DCC_CTRL1, 0x0c),
+> +	QMP_PHY_INIT_CFG(QSERDES_V4_RX_GM_CAL, 0x0f),
+> +};
+> +
+>   static const struct qmp_phy_init_tbl sm6115_ufsphy_serdes[] = {
+>   	QMP_PHY_INIT_CFG(QSERDES_COM_CMN_CONFIG, 0x0e),
+>   	QMP_PHY_INIT_CFG(QSERDES_COM_SYSCLK_EN_SEL, 0x14),
+> @@ -888,6 +993,40 @@ static const struct qmp_phy_cfg sa8775p_ufsphy_cfg = {
+>   	.regs			= ufsphy_v5_regs_layout,
+>   };
+> 
+> +static const struct qmp_phy_cfg sc7280_ufsphy_cfg = {
+> +	.lanes                  = 2,
+> +
+> +	.offsets                = &qmp_ufs_offsets,
+> +
+> +	.tbls = {
+> +		.serdes         = sm8150_ufsphy_serdes,
+> +		.serdes_num     = ARRAY_SIZE(sm8150_ufsphy_serdes),
+> +		.tx             = sc7280_ufsphy_tx,
+> +		.tx_num         = ARRAY_SIZE(sc7280_ufsphy_tx),
+> +		.rx             = sc7280_ufsphy_rx,
+> +		.rx_num         = ARRAY_SIZE(sc7280_ufsphy_rx),
+> +		.pcs            = sc7280_ufsphy_pcs,
+> +		.pcs_num        = ARRAY_SIZE(sc7280_ufsphy_pcs),
+> +	},
+> +	.tbls_hs_b = {
+> +		.serdes         = sm8150_ufsphy_hs_b_serdes,
+> +		.serdes_num     = ARRAY_SIZE(sm8150_ufsphy_hs_b_serdes),
+> +	},
+> +	.tbls_hs_g4 = {
+> +		.tx             = sm8250_ufsphy_hs_g4_tx,
+> +		.tx_num         = ARRAY_SIZE(sm8250_ufsphy_hs_g4_tx),
+> +		.rx             = sc7280_ufsphy_hs_g4_rx,
+> +		.rx_num         = ARRAY_SIZE(sc7280_ufsphy_hs_g4_rx),
+> +		.pcs            = sm8150_ufsphy_hs_g4_pcs,
+> +		.pcs_num        = ARRAY_SIZE(sm8150_ufsphy_hs_g4_pcs),
+> +	},
+> +	.clk_list               = sm8450_ufs_phy_clk_l,
+> +	.num_clks               = ARRAY_SIZE(sm8450_ufs_phy_clk_l),
+> +	.vreg_list              = qmp_phy_vreg_l,
+> +	.num_vregs              = ARRAY_SIZE(qmp_phy_vreg_l),
+> +	.regs                   = ufsphy_v4_regs_layout,
+> +};
+> +
+>   static const struct qmp_phy_cfg sc8280xp_ufsphy_cfg = {
+>   	.lanes			= 2,
+> 
+> @@ -1648,6 +1787,9 @@ static const struct of_device_id qmp_ufs_of_match_table[] = {
+>   	}, {
+>   		.compatible = "qcom,sa8775p-qmp-ufs-phy",
+>   		.data = &sa8775p_ufsphy_cfg,
+> +	}, {
+> +		.compatible = "qcom,sc7280-qmp-ufs-phy",
+> +		.data = &sc7280_ufsphy_cfg,
+>   	}, {
+>   		.compatible = "qcom,sc8180x-qmp-ufs-phy",
+>   		.data = &sm8150_ufsphy_cfg,
+> --
+> 2.17.1
+> 
 
+Gentle reminder, kindly let me know any further comments.
+
+Thanks,
+Nitin
