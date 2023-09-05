@@ -2,161 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5D5A792D66
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFB80792D9F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240329AbjIEScb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 14:32:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56076 "EHLO
+        id S233396AbjIESrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 14:47:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234121AbjIESc3 (ORCPT
+        with ESMTP id S232489AbjIESrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:32:29 -0400
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12B331B7;
-        Tue,  5 Sep 2023 11:31:56 -0700 (PDT)
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3a9f094b399so153277b6e.0;
-        Tue, 05 Sep 2023 11:31:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693938645; x=1694543445;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=h8rxdS5gZfTweDJAb7+tn6z5B9vsKxogFFuV/jTlAKI=;
-        b=IwGqIfH5oAmxQvYSYr9N+xvdA0gPO7c94joDJpKj/O/48TO9ESJ8DwliprW6R0dDmi
-         hNz7ZEnsBrs1aKp9fEQ44Lx+n9pZ6lwX/7SmntC6dNCrPDFQNiVgM/E5qgA1NK/L5L2W
-         YIYNu76UvLDd2gkJLV6VfuiJwAC6zngtywe8Pl1aY8/NREtoz4cXznbM/hTMTic3LmrU
-         Ydsoa+YTOYSC2PRH5RvCqEapDu8YIhlS0L5JzNNj/kZzo1qj1y1huwcDpsyvEmvhL71S
-         HKHDfjU1u259ppE3k++DpawKhGt5RElj4wT+rlUGZMf/8FHbw5Jgo1Nlah+2TAUOyYN2
-         Y5IA==
-X-Gm-Message-State: AOJu0Ywdr+lFDtlw6NaQf7LVE5GG+COHK8n28K10o4lQY9QdBt41rJ8c
-        apMJN0NgJYZnOB42Z6WTXPGJCn0HqR+aFedQerk=
-X-Google-Smtp-Source: AGHT+IGEysi/fNPxz0Ty9WdbG+m/nnpz4E7E1jsKKNwH27GPpMJAaNAoqpjnup006hyr22QdcYVpKrqF64cUF1hvEVw=
-X-Received: by 2002:a05:6808:1a06:b0:3a8:8aa8:a4c8 with SMTP id
- bk6-20020a0568081a0600b003a88aa8a4c8mr15862937oib.2.1693938645234; Tue, 05
- Sep 2023 11:30:45 -0700 (PDT)
+        Tue, 5 Sep 2023 14:47:04 -0400
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2082b.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e1a::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D81BDD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:46:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fAu7Fq/+Rdp4TVQ0ODtnLu1XRcumniR3qeKlRXoXkiurTu67ir6E5ho7Xgk4dfAYfMVNbGYHEdbM4GcMVK0PTIVrVm0ekibARcYrEI+GSF5gEBLgxW83pllYpsqihgEXgV0mk4Nm0TCpz407kcfMpe57U5LOS8DveqwBIjotBV1t0I0Wk/CERhGwapqdjFdN9uEQgTWTalNfIkla/D1AONobOUso7JKLeNQ7j+x2zpqhfbtcpfORT4ZuTbcdbGPzghf0YJxMy34Sjd/1kJV+ad8HWD8FzVLTEf/JQPJUfpVp1YEKEhbABJ/7U4045guvUYnCIl5AFpr9M9/dY+hP5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sdHOsL0S+zkNZ9kOW3saA7NoPONhkqojuHIi24VAWxc=;
+ b=XwC1tBriUmmulZcKLHc7kpOfrpav3bGnJF5I4ZMM+1pmjA+1XBy91sL/+Bger1r0gdSNCz23r9gtW4+Y4dqbrVWJoUDicRuUtTGoQkpNpDbHUiJIipvi/y/OeKE0BVfms4GRgOKYBXKKcCo2f6B2azQwLZXJVU0HykhDd/s9trrFyC+nPHoYGEyCZEVzqPht/rrmzeoL8ZFQ3TNGrSlzZ/7I8aDu9u9y3Q9rNBs3xzQTzduw6fSQVQ1jGfg2eFI84NDH2dDGlEniOH34/+/jYVa3uea4DKzfrkhAmbsdiYCd8ZcTW+xK2p7CSZFHdhdixkPpadHIs9QiqmAZQgamZQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sdHOsL0S+zkNZ9kOW3saA7NoPONhkqojuHIi24VAWxc=;
+ b=KVE9ohkNA/MtX2kiCOjqSClcfZol0nkvhLDeXPcSBkjwSXIBn7CxXgUK3cMtYuo1VRcGnX+Kex36XS6i31iky6DnK3AkDJJGNRAoY1tdp/Tn/3gK7+JIbivD1MvYs33Ltq1bma/ZtEjQGis5EZLjhv5qyAgLJF/v+qWuUlGOshY9hoU2Kz6Wd24/AQteEcpR+lZCkrlNrJw5R2FROQuIp5GMbuPLtwqUM+n01dzpkIapnYfZ4qY9YUV3zQr8bIvRMOHvMCttFTuR4G8w+obAJerS3g+I5xlu/vnMl+uHG7Jpicm4eE2zvWjt/6OGzQHFbKOIim/BnK3Qxy81Vf3amQ==
+Received: from PAVP192MB2135.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:323::12)
+ by PAWP192MB2150.EURP192.PROD.OUTLOOK.COM (2603:10a6:102:358::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 18:33:19 +0000
+Received: from PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
+ ([fe80::1293:a49d:9b32:afc4]) by PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
+ ([fe80::1293:a49d:9b32:afc4%7]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 18:33:18 +0000
+From:   =?iso-8859-1?Q?Ywe_C=E6rlyn?= <ywec4rlyn@outlook.com>
+To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: c64s S i D is from the Kuran
+Thread-Topic: c64s S i D is from the Kuran
+Thread-Index: AQHZ4Bn3vmlUcB4H30S+wekg8VjNxLAMhY2a
+Date:   Tue, 5 Sep 2023 18:33:18 +0000
+Message-ID: <f32f79588a6442d38c63ded9cefeb43cPAVP192MB2135455CB9DDAAE3E1B52716E9E8A@PAVP192MB2135.EURP192.PROD.OUTLOOK.COM>
+References: <PAVP192MB21353F8A49235D2B9D535457E9E8A@PAVP192MB2135.EURP192.PROD.OUTLOOK.COM>
+In-Reply-To: <PAVP192MB21353F8A49235D2B9D535457E9E8A@PAVP192MB2135.EURP192.PROD.OUTLOOK.COM>
+Accept-Language: nb-NO, en-US
+Content-Language: nb-NO
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: 
+x-ms-publictraffictype: Email
+x-ms-exchange-messagesentrepresentingtype: 1
+x-tmn:  [AmMZfKwwIFoAZQJk89X2recGfYIjKQRw]
+x-ms-traffictypediagnostic: PAVP192MB2135:EE_|PAWP192MB2150:EE_
+x-ms-office365-filtering-correlation-id: 53ae97b7-fe03-4489-be4d-08dbae3e9378
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 8aww/w5RHQBqtOGxw/xikV5I/lsL9MgRj8VWtSoDN6742lDyAUqsSUDKcNlDPlN6O1VcGQK7JBWTFI+Lp13GH+s//Zo2V06OiHrEBExAbhtwxBUfChvwLo69YtxofnWeDEtAuT1hOx9y4VFWSgsFY4VLvoKaqLyspuJ09wlbLR/U8dOmtcNuDv3oyjJRN9UzSgTjo+5poKRv7icF9k08dGGSEEggN9YvwAtU1wAq8nuCAiixE226G/uT++uSJEYFK9UYEFWpm6B/6kczbLGsQxr3P4qc8Bkh/wcLOL2Dql1e4eXtPIvuXY3eLcWg2lTHhMwG64l7WOH8vUeBbGX3TovUIAAeIWw2LnnsFRJKyuotQIgRn/tUCDSYHjd1XJ3ekmn3K4YCSyakvJ9XPWHRwRA9virv1dOJ4lTo11jToyOUmQq4yxTtQy94yqqvqgEouv9Pcr5YtVoITItigYc0T5F0cQYIr+2uL1Ngbvc5t5tYWWydE87dhylxpR1d9RZgxw8nqtw7QNYO122xWWaO5PRTEpcx7dhKR2CGRStLE5vGwpFV8ypRaOEndnbVYBIC
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?iso-8859-1?Q?lN5wUKokRW9LlH2GxY7VgE0yO0PtWHhYbFj0Gma0MkaEYsTA/3xUOW4dXX?=
+ =?iso-8859-1?Q?kEv6MgqbKAu0YXHg9SGHsBOCLDKvfVU6Q6DUti7aZhucyhdxrgoGe1SRHk?=
+ =?iso-8859-1?Q?fZ0s54BAWKmAwGKDu8kjCjUqNcUFMBG7fjb8Zbo4S5uhX35cTMrA/CJAu/?=
+ =?iso-8859-1?Q?slGH7RDLE6ww8z9sSskES8M9W+zgUkGTaG5AnYZrgP+TgDI98Vxna6Xbxy?=
+ =?iso-8859-1?Q?yw+TeFw65B4flQcK2Kf97/unsB7/abJutgDwNxIdRkphw7ghDfAWiTmMfv?=
+ =?iso-8859-1?Q?xS8rC+YBFEVvvKSdbRTuzCFgT0KDzjHtsTfi8XmlCsaZ39KtmNSxSiBDML?=
+ =?iso-8859-1?Q?K/7W8ICmeybankCwXPpVviJXa3lVH3TiUpsxyLPsKeBIkthH7gRM+DaGXb?=
+ =?iso-8859-1?Q?P72cbbUWFIYoL8VNNn8qG/VtMgXGJHwhw2lnK+5vL6pdqItJZWxeJTMlcE?=
+ =?iso-8859-1?Q?05ePJTYx0Xuk1pWLkXKpgQw9Fmqcc2VOSQQ/affRG9wlSnRi7cj8Dss9+Z?=
+ =?iso-8859-1?Q?TNJJqCU5bq+G/ySEOHOussnQNn3h5y0JzKh9eqV6w9Rvzaon6a5gCW/ZL7?=
+ =?iso-8859-1?Q?8mm6PC66a2VOp6l2ZhviZUr/YtZsfqEPZWrhgaM8uv1Ro8t1cn0hhZTy9e?=
+ =?iso-8859-1?Q?aADXEr11MPzJKRsVukPvj55lQgzdquUVDXlF8V2/xHo4Z9uV0K/d5gujlJ?=
+ =?iso-8859-1?Q?dqM8Xo9k9ErSsQb57xQYmludZVVgvoYmtXzWys10S63D8poJsVVRHxubJS?=
+ =?iso-8859-1?Q?Nt8zCthbazBwimqBBLfavfnCv3mW1sxY9JikDD8QP6HscY+SYzSTMTEu0D?=
+ =?iso-8859-1?Q?FSiNcaBzTapyuTTxDAn5wRTesHuGT9spHHjvGWq78fbyvPFEwQoLIGXS6E?=
+ =?iso-8859-1?Q?wfwMYoJvAfwWfD41iiiEUlyRe8H+LcARyWszN4INjjjCCLBZ5+dkbcJ5wp?=
+ =?iso-8859-1?Q?r77R0myhZlPn/eAhmrv9h9mSBk2zkbxeDDAXhW7+9dQFldNNSDlHcuEPnf?=
+ =?iso-8859-1?Q?HVFPWmZjyJ6Ragc+EGX0uFfuGnLUFWjmbTtUTssz64sa2RiKqIWcMWFfrF?=
+ =?iso-8859-1?Q?wca8+ciqsVZyqiwqE25WdWAg98nbirnRXZtt3Il4E1gYZx2DuGxh79x6rM?=
+ =?iso-8859-1?Q?l9+ylwGsuwOpUoYSa6UKY8lWyoCpbJHRNZztKIAAPctYYol+JJFfqDBoMj?=
+ =?iso-8859-1?Q?mMArePIkVHIDQJr1Cvze7Jty9hzQ5d0hB/d7owoVS1Q6UQpqiZeh8DsQKg?=
+ =?iso-8859-1?Q?Jainyr7dxRcWPUZLHUIA=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <0D2BB5C50BE52C469909EA736D87D2B1@EURP192.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <001d01d9d3a7$71736f50$545a4df0$@telus.net> <CAJZ5v0g=TEY0+dL9AGh1cYNnwQ=L6G8CRxXVD0AyWsaK5aDsdA@mail.gmail.com>
- <9665af79-d439-e05a-5333-62f71a2ac55c@linux.intel.com> <2023082901-moonscape-album-b7cc@gregkh>
- <02d8a574-a07a-f595-aee2-13908df74e68@linux.intel.com>
-In-Reply-To: <02d8a574-a07a-f595-aee2-13908df74e68@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 5 Sep 2023 20:30:34 +0200
-Message-ID: <CAJZ5v0i4_PnCJGkkMzBMF9GX3N6LLNQdnuyX6nRzWHy_f9T=3A@mail.gmail.com>
-Subject: Re: [PATCH v2] cpufreq: intel_pstate: set stale CPU frequency to minimum
-To:     Keyon Jie <yang.jie@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Doug Smythies <dsmythies@telus.net>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        LOTS_OF_MONEY,MONEY_NOHTML,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PAVP192MB2135.EURP192.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53ae97b7-fe03-4489-be4d-08dbae3e9378
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2023 18:33:18.7908
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAWP192MB2150
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 8:17 PM Keyon Jie <yang.jie@linux.intel.com> wrote:
->
->
->
-> On 8/29/23 01:57, Greg KH wrote:
-> > On Mon, Aug 28, 2023 at 04:35:13PM -0700, Keyon Jie wrote:
-> >>
-> >>
-> >> On 8/22/23 04:46, Rafael J. Wysocki wrote:
-> >>> On Sun, Aug 20, 2023 at 10:46 PM Doug Smythies <dsmythies@telus.net> wrote:
-> >>>>
-> >>>> The intel_pstate CPU frequency scaling driver does not
-> >>>> use policy->cur and it is 0.
-> >>>> When the CPU frequency is outdated arch_freq_get_on_cpu()
-> >>>> will default to the nominal clock frequency when its call to
-> >>>> cpufreq_quick_getpolicy_cur returns the never updated 0.
-> >>>> Thus, the listed frequency might be outside of currently
-> >>>> set limits. Some users are complaining about the high
-> >>>> reported frequency, albeit stale, when their system is
-> >>>> idle and/or it is above the reduced maximum they have set.
-> >>>>
-> >>>> This patch will maintain policy_cur for the intel_pstate
-> >>>> driver at the current minimum CPU frequency.
-> >>>>
-> >>>> Reported-by: Yang Jie <yang.jie@linux.intel.com>
-> >>>> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=217597
-> >>>> Signed-off-by: Doug Smythies <dsmythies@telus.net>
-> >>>> ---
-> >>>>
-> >>>> v1 -> v2:
-> >>>>      * v1 was a completely different approach, programming around
-> >>>>        the issue rather than fixing it at the source.
-> >>>>        reference:
-> >>>>        https://patchwork.kernel.org/project/linux-pm/patch/006901d9be8c$f4439930$dccacb90$@telus.net/
-> >>>>      * v2 does not fix an issue with the intel_cpufreq CPU scaling
-> >>>>        driver (A.K.A. the intel_pstate driver in passive mode) and
-> >>>>        the schedutil CPU frequency scaling governor when HWP is enabled
-> >>>>        where limit changes are not reflected in the stale listed frequencies.
-> >>>>        A fix for that will be some future patch.
-> >>>>
-> >>>> ---
-> >>>>    drivers/cpufreq/intel_pstate.c | 5 +++++
-> >>>>    1 file changed, 5 insertions(+)
-> >>>>
-> >>>> diff --git a/drivers/cpufreq/intel_pstate.c b/drivers/cpufreq/intel_pstate.c
-> >>>> index 8ca2bce4341a..08284dee583a 100644
-> >>>> --- a/drivers/cpufreq/intel_pstate.c
-> >>>> +++ b/drivers/cpufreq/intel_pstate.c
-> >>>> @@ -2609,6 +2609,11 @@ static int intel_pstate_set_policy(struct cpufreq_policy *policy)
-> >>>>                           intel_pstate_clear_update_util_hook(policy->cpu);
-> >>>>                   intel_pstate_hwp_set(policy->cpu);
-> >>>>           }
-> >>>> +       /* policy current is never updated with the intel_pstate driver
-> >>>> +        * but it is used as a stale frequency value. So, keep it within
-> >>>> +        * limits.
-> >>>> +        */
-> >>>> +       policy->cur = policy->min;
-> >>>>
-> >>>>           mutex_unlock(&intel_pstate_limits_lock);
-> >>>>
-> >>>> --
-> >>>
-> >>> Applied as 6.6 material, with some mailer-induced white space damage
-> >>> fixed and the new comment adjusted to the kernel coding style.
-> >>>
-> >>> Thanks!
-> >>
-> >> Hi Doug and Rafael,
-> >>
-> >> Thank you for making the fix happen.
-> >>
-> >> Hi Greg,
-> >>
-> >> Will this be picked to the stable linux-6.1.y and linux-6.4.y kernel, it
-> >> could benefit to users there.
-> >
-> > Sure, when it hits Linus's tree, please follow the instructions in:
-> >      https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-> > for how to get it merged.
->
-> Thank you Greg.
->
-> Hi Rafael,
->
-> As the issue happens from the 5.18 onward kernels, we need the fix to be
-> picked for stable kernels after that, could you please help to add "Cc:
-> stable@vger.kernel.org" in the sign-off area when you send it to the
-> mainline?
-
-It's already merged, as commit d51847acb018 ("cpufreq: intel_pstate:
-set stale CPU frequency to minimum").
-
-Please feel free to send an inclusion request for it to stable@vger.kernel.org
-
-Thanks!
+Or why not try and combine electronics SIN, and homecomputers S i D, into T=
+aSIN? (updated post).=0A=
+=0A=
+And maybe 8 X? 8 representing TaSIN?=0A=
+=0A=
+I think I will refocus and try this a bit.  Bit-8.net coming.=0A=
+=0A=
+Peace.=0A=
