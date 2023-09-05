@@ -2,116 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD7C792741
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:35:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41DA9792B1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236278AbjIEQCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33996 "EHLO
+        id S240285AbjIEQsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:48:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354561AbjIEMk0 (ORCPT
+        with ESMTP id S1354562AbjIEMk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:40:26 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C42118D;
-        Tue,  5 Sep 2023 05:40:20 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id EDBC660686;
-        Tue,  5 Sep 2023 12:40:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C63CC433C7;
-        Tue,  5 Sep 2023 12:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693917619;
-        bh=beRODS9NYcKlQSB25WXmlWwIwOWQhbiWrJCkehvjCO0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pMkVCa9aywMm+uN7iQSKUhFIovvYGElYMFesQ/Kfh0qR8MxeYHCibpoQpDtFFoVUN
-         Ba6kDf3CbvD23Emg/ojfYvZiCNyM/3EiRBtzu1Hbdh7vw9zopKbhTRSLVFRTJ2hflP
-         lay1jQLQ0PWLX7hdiEq9EfRk/2HIFpCL5VTd/SIpEet2nx1kpBY5TDx7+fW3OVfu+S
-         fhbeb5r2FIsF9yAx1Lr8s6q+PMCNE9pxGEMY0wAb+ZLDhQgoQY4q6RnNjFd0jvIyKr
-         9XrqhFQ+c97jpvmBY12NxBKRwazzeu8eHhIMImjAR99jTGHJ54muZWsIi1xqgRgHGl
-         ekt6UHrne6tkQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id B783B40722; Tue,  5 Sep 2023 09:40:16 -0300 (-03)
-Date:   Tue, 5 Sep 2023 09:40:16 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     James Clark <james.clark@arm.com>
-Cc:     Ian Rogers <irogers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-Subject: Re: [PATCH v1] perf parse-events: Fix driver config term
-Message-ID: <ZPchsHYId3ylN2P4@kernel.org>
-References: <20230905033805.3094293-1-irogers@google.com>
- <d7bae298-9d83-1bff-15a2-4ebe433ec8af@arm.com>
+        Tue, 5 Sep 2023 08:40:58 -0400
+Received: from gw.red-soft.ru (red-soft.ru [188.246.186.2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 901041A8;
+        Tue,  5 Sep 2023 05:40:54 -0700 (PDT)
+Received: from localhost.biz (unknown [10.81.81.211])
+        by gw.red-soft.ru (Postfix) with ESMTPA id 3C26F3E1A8C;
+        Tue,  5 Sep 2023 15:40:53 +0300 (MSK)
+From:   Artem Chernyshev <artem.chernyshev@red-soft.ru>
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Artem Chernyshev <artem.chernyshev@red-soft.ru>,
+        Leon Romanovsky <leon@kernel.org>,
+        Potnuri Bharat Teja <bharat@chelsio.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: [PATCH v2] infiniband: cxgb4: cm: Check skb value
+Date:   Tue,  5 Sep 2023 15:40:48 +0300
+Message-Id: <20230905124048.284165-1-artem.chernyshev@red-soft.ru>
+X-Mailer: git-send-email 2.37.3
+In-Reply-To: <fe404996-6568-e2ad-656d-e75523d96637@kernel.org>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d7bae298-9d83-1bff-15a2-4ebe433ec8af@arm.com>
-X-Url:  http://acmel.wordpress.com
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-KLMS-Rule-ID: 1
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Lua-Profiles: 179655 [Sep 05 2023]
+X-KLMS-AntiSpam-Version: 5.9.59.0
+X-KLMS-AntiSpam-Envelope-From: artem.chernyshev@red-soft.ru
+X-KLMS-AntiSpam-Rate: 0
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Auth: dkim=none
+X-KLMS-AntiSpam-Info: LuaCore: 529 529 a773548e495283fecef97c3e587259fde2135fef, {Tracking_from_domain_doesnt_match_to}, 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;localhost.biz:7.1.1;red-soft.ru:7.1.1, FromAlignment: s
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2023/09/05 05:09:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2023/09/05 09:52:00 #21801295
+X-KLMS-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, Sep 05, 2023 at 09:40:30AM +0100, James Clark escreveu:
-> 
-> 
-> On 05/09/2023 04:38, Ian Rogers wrote:
-> > Inadvertently deleted in commit 30f4ade33d64 ("perf tools: Revert
-> > enable indices setting syntax for BPF map").
-> > 
-> > Reported-by: James Clark <james.clark@arm.com>
-> > Signed-off-by: Ian Rogers <irogers@google.com>
-> > ---
-> >  tools/perf/util/parse-events.y | 17 +++++++++++++++++
-> >  1 file changed, 17 insertions(+)
-> > 
-> > diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> > index 4a305df61f74..21bfe7e0d944 100644
-> > --- a/tools/perf/util/parse-events.y
-> > +++ b/tools/perf/util/parse-events.y
-> > @@ -839,6 +839,23 @@ PE_TERM
-> >  
-> >  	$$ = term;
-> >  }
-> > +|
-> > +PE_DRV_CFG_TERM
-> > +{
-> > +	struct parse_events_term *term;
-> > +	char *config = strdup($1);
-> > +	int err;
-> > +
-> > +	if (!config)
-> > +		YYNOMEM;
-> > +	err = parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV_CFG, config, $1, &@1, NULL);
-> > +	if (err) {
-> > +		free($1);
-> > +		free(config);
-> > +		PE_ABORT(err);
-> > +	}
-> > +	$$ = term;
-> > +}
-> >  
-> >  sep_dc: ':' |
-> >  
-> 
-> Reviewed-by: James Clark <james.clark@arm.com>
+get_skb() can't allocate skb in case of OOM.
 
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
+Signed-off-by: Artem Chernyshev <artem.chernyshev@red-soft.ru>
+---
+V2 -> remove pr_err
 
-Thanks, applied.
+ drivers/infiniband/hw/cxgb4/cm.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-- Arnaldo
+diff --git a/drivers/infiniband/hw/cxgb4/cm.c b/drivers/infiniband/hw/cxgb4/cm.c
+index ced615b5ea09..54145b33a523 100644
+--- a/drivers/infiniband/hw/cxgb4/cm.c
++++ b/drivers/infiniband/hw/cxgb4/cm.c
+@@ -1965,6 +1965,8 @@ static int send_fw_act_open_req(struct c4iw_ep *ep, unsigned int atid)
+ 	int win;
+ 
+ 	skb = get_skb(NULL, sizeof(*req), GFP_KERNEL);
++	if (!skb)
++		return -ENOMEM;
+ 	req = __skb_put_zero(skb, sizeof(*req));
+ 	req->op_compl = htonl(WR_OP_V(FW_OFLD_CONNECTION_WR));
+ 	req->len16_pkd = htonl(FW_WR_LEN16_V(DIV_ROUND_UP(sizeof(*req), 16)));
+-- 
+2.37.3
 
