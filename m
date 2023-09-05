@@ -2,96 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD793792C1B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA503792C63
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353922AbjIERGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
+        id S240003AbjIERTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353610AbjIEQ2s (ORCPT
+        with ESMTP id S1353109AbjIERNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 12:28:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2F42D54;
-        Tue,  5 Sep 2023 09:18:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08A3160A71;
-        Tue,  5 Sep 2023 16:17:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C9B81C433C7;
-        Tue,  5 Sep 2023 16:17:25 +0000 (UTC)
-Date:   Tue, 5 Sep 2023 12:17:44 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zheng Yejian <zhengyejian1@huawei.com>
-Cc:     <mhiramat@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <yeweihua4@huawei.com>
-Subject: Re: [PATCH] tracing: Fix unexpected ring buffer expand by instance
-Message-ID: <20230905121744.538b92cc@gandalf.local.home>
-In-Reply-To: <20230905121714.3229131-1-zhengyejian1@huawei.com>
-References: <20230905121714.3229131-1-zhengyejian1@huawei.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 5 Sep 2023 13:13:38 -0400
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CD2E199C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:43:36 -0700 (PDT)
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-31c73c21113so2265045f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 09:43:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1693931836; x=1694536636; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p6oY7/OBmfJxk+eRddlxtREgaCt+NRSSuVpUhmBP/Wg=;
+        b=RaTUMETJKl6CBtQ+/BXpAGCVcQor3tJXbyoT3/aJ34c9lwTn4DfmQiFIo/oYS8w3L6
+         cjQYGr47b+c4r+QCUOmFepmbP8+tnw1+Qc9YOFQSo6IOoYu5QpD1IAIP1YyrWlQxXEsU
+         F+/8oxoLgkcezMEEBYrBWq7hYZWDt0R6UcjO54SYPGZhrWsbb8vOSJC17VWfxkUonXCB
+         3n1dVrVLRC153DuOz3u0uUbBOh7hSu2bJeVCwFrKN2XBwCJTyIZLAYK0JoznFNKfuEMk
+         bj8sWlnwYFjDRHBAtvf+HBNggryLeEqOFJVZAzRxBjRu8k5D2Ep89On9KcCAypSkiFdM
+         0OEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693931836; x=1694536636;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p6oY7/OBmfJxk+eRddlxtREgaCt+NRSSuVpUhmBP/Wg=;
+        b=Y01xDfn3X/Jifyly36KSzJOZLR1Sj0BR1QONG7FnuTnXYpVOpEgC9WP/Wz38Zkox14
+         2kbbK5ipckkzx9GvNO7krgHuQImddPdhJ6ps4RiM3DNYKWE4AuBXLAnQz4TyiqoBXqsn
+         svMpn1DzIWHUTK7ZAHrLe5imCdL8x933OxEt5V0ZLWlUEpg6rMrwvbDIQm7ycqY/uJx/
+         TncdXdiwl2XK1jvg1H9OmE9NtsaQmGXuGJWIZxffs5eBLsgmr6kMbM0MkURC2LSTvtPf
+         fqG520h4EwODqnYHZTAVE5xl8of1eJUErBPXPUe+uZNYnqo0VCNQe6shrjoCs8Ea5biB
+         TL2w==
+X-Gm-Message-State: AOJu0YwmGKAQpAnFPa3JG3SCB82YTLtdE+4IjKIDCiLkF2gJaguITa1M
+        j56SyQlcu+Fhsois2V7sF2X5w+Y9V+waCqmT92rjzBN+oLZYpwTLIbQ=
+X-Google-Smtp-Source: AGHT+IHgIi5xOb5oO6jm3/TW79RYdN1DcImmHLU2S7XjWjL6nk5B/JcNIzHulmIGY0UX5hVn2L7SCxVCc7KoQy4tvIs=
+X-Received: by 2002:a05:600c:128f:b0:3fe:4cbc:c345 with SMTP id
+ t15-20020a05600c128f00b003fe4cbcc345mr162850wmd.41.1693930780661; Tue, 05 Sep
+ 2023 09:19:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+References: <cover.1693328501.git.andreyknvl@google.com> <6db160185d3bd9b3312da4ccc073adcdac58709e.1693328501.git.andreyknvl@google.com>
+ <ZO8IMysDIT7XnN9Z@elver.google.com> <CA+fCnZdLi3g999PeBWf36Z3RB1ObHyZDR_xS0kwJWm6fNUqSrA@mail.gmail.com>
+In-Reply-To: <CA+fCnZdLi3g999PeBWf36Z3RB1ObHyZDR_xS0kwJWm6fNUqSrA@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 5 Sep 2023 18:19:04 +0200
+Message-ID: <CANpmjNNtT1WUpJu_n5x_tA2sL4+utP0a6oGUzqrU5JuEu3mowg@mail.gmail.com>
+Subject: Re: [PATCH 11/15] stackdepot: use read/write lock
+To:     Andrey Konovalov <andreyknvl@gmail.com>
+Cc:     andrey.konovalov@linux.dev,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, kasan-dev@googlegroups.com,
+        Evgenii Stepanov <eugenis@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Andrey Konovalov <andreyknvl@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sep 2023 20:17:14 +0800
-Zheng Yejian <zhengyejian1@huawei.com> wrote:
+On Mon, 4 Sept 2023 at 20:46, Andrey Konovalov <andreyknvl@gmail.com> wrote=
+:
+>
+> On Wed, Aug 30, 2023 at 11:13=E2=80=AFAM Marco Elver <elver@google.com> w=
+rote:
+> >
+> > > -static int new_pool_required =3D 1;
+> > > +static bool new_pool_required =3D true;
+> > > +/* Lock that protects the variables above. */
+> > > +static DEFINE_RWLOCK(pool_rwlock);
+> >
+> > Despite this being a rwlock, it'll introduce tons of (cache) contention
+> > for the common case (stack depot entry exists).
+> >
+> > If creating new stack depot entries is only common during "warm-up" and
+> > then becomes exceedingly rare, I think a percpu-rwsem (read-lock is a
+> > CPU-local access, but write-locking is expensive) may be preferable.
+>
+> Good suggestion. I propose that we keep the rwlock for now, and I'll
+> check whether the performance is better with percpu-rwsem once I get
+> to implementing and testing the performance changes. I'll also check
+> whether percpu-rwsem makes sense for stack ring in tag-based KASAN
+> modes.
 
-> The ring buffer of global_trace is set to the minimum size in
-> order to save memory on boot up and then it will be expand when
-> some trace feature enabled.
-> 
-> However currently operations under an instance can also cause
-> global_trace ring buffer being expanded, and the expanded memory
-> would be wasted if global_trace then not being used.
-> 
-> See following case, we enable 'sched_switch' event in instance 'A', then
-> ring buffer of global_trace is unexpectedly expanded to be 1410KB, also
-> the '(expanded: 1408)' from 'buffer_size_kb' of instance is confusing.
-> 
->   # cd /sys/kernel/tracing
->   # mkdir instances/A
->   # cat buffer_size_kb
->   7 (expanded: 1408)
->   # cat instances/A/buffer_size_kb
->   1410 (expanded: 1408)
->   # echo sched:sched_switch > instances/A/set_event
->   # cat buffer_size_kb
->   1410
->   # cat instances/A/buffer_size_kb
->   1410
-> 
-> To fix it, we can:
->   - Make 'ring_buffer_expanded' as a member of 'struct trace_array';
->   - Make 'ring_buffer_expanded' of instance is defaultly true,
->     global_trace is defaultly false;
->   - In order not to expose 'global_trace' outside of file
->     'kernel/trace/trace.c', introduce trace_set_ring_buffer_expanded()
->     to set 'ring_buffer_expanded' as 'true';
->   - Pass the expected trace_array to tracing_update_buffers().
-> 
-> Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
-> ---
->  kernel/trace/trace.c        | 46 ++++++++++++++++++++-----------------
->  kernel/trace/trace.h        |  9 ++++++--
->  kernel/trace/trace_events.c | 22 ++++++++++--------
->  3 files changed, 44 insertions(+), 33 deletions(-)
-> 
+I think it's quite obvious that the percpu-rwsem is better. A simple
+experiment is to measure the ratio of stackdepot hits vs misses. If
+the ratio is obviously skewed towards hits, then I'd just go with the
+percpu-rwsem.
 
-Looks good, but as the merge window is still open, it will need to wait
-till it is closed to be reviewed.
-
-Thanks,
-
--- Steve
+The performance benefit may not be measurable if you use a small system.
