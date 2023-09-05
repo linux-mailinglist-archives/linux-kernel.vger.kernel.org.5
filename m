@@ -2,194 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 137877930E2
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A220D7930E8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:27:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234489AbjIEVYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:24:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
+        id S239183AbjIEV1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjIEVYc (ORCPT
+        with ESMTP id S231444AbjIEV1o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:24:32 -0400
-Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CF2BD;
-        Tue,  5 Sep 2023 14:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=+RBJLgVUDREWIJFzDxWWK30XLiLgsU765nHC8rQ9Yyw=; b=F6TDlNuM4fI7YMJzbG/8XgKzX3
-        ozDbzJRyVym9Gv9OXc9wSOTPi3/x1ddUJWjW0wnsE31XbV+JfbZOzl0ee6fWJJQIwcyB3cmvgoPf7
-        NlEHg1+sntq9odnIgy1tmA8LefWVfCkVbrtznv2NQcHNCxhuVRu0ABDJHxbMdoXcq9yzn9w7DWSk3
-        rG5IeFQmO//qCHjYKpYdkbGTUHkGRyhD55Z7fNc7K1wvcA26AmvCimv3dHQMlsoOyWRUtm1hpUvs1
-        14Xfuy8zVwPvtC8mPOKhL14DjQfGnLcfb+IJzwzUNjb26gDj49cyLP8zyh/Kh40ee+aemN7L2+Z4R
-        HBYk9qWA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36086)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1qddWr-0008KL-2e;
-        Tue, 05 Sep 2023 22:24:09 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1qddWr-00041p-C4; Tue, 05 Sep 2023 22:24:09 +0100
-Date:   Tue, 5 Sep 2023 22:24:09 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next 2/8] arm32, bpf: add support for sign-extension
- load instruction
-Message-ID: <ZPeceR+qKgsedJ1H@shell.armlinux.org.uk>
-References: <20230905210621.1711859-1-puranjay12@gmail.com>
- <20230905210621.1711859-3-puranjay12@gmail.com>
+        Tue, 5 Sep 2023 17:27:44 -0400
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DC4128
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:27:41 -0700 (PDT)
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mx1.riseup.net (Postfix) with ESMTPS id 4RgJWK0Fd4zDqXL;
+        Tue,  5 Sep 2023 21:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+        t=1693949261; bh=UbCNfpJ2iYv4OT+FGI/rAxnQ+FU3FTA5HjspoDIWjDE=;
+        h=From:Subject:Date:To:Cc:From;
+        b=N5yeO3gHUplK1D0jPsrK9uNx+PtclxcnsUG9wmqtiscyvS9EwZ7SHMyf5mjJ7mASR
+         rp1Q8y1lplOOjG8F+cOQfu09kZsZCwtoT29wobsFb27nNqb8Ad8pPkhzFmyQMl8JNO
+         7s6RvywRd7ER8/IP7x38Lv83d4mwZx9KUblnRUN4=
+X-Riseup-User-ID: 6934392532D780A5519A9C895F9BC6107AB603C0A435710DDE58289EC8876F82
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+         by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4RgJWC2Qf0zFpyg;
+        Tue,  5 Sep 2023 21:27:34 +0000 (UTC)
+From:   Arthur Grillo <arthurgrillo@riseup.net>
+Subject: [PATCH v2 0/2] Add KUnit tests for drm_fb_blit()
+Date:   Tue, 05 Sep 2023 18:27:08 -0300
+Message-Id: <20230905-final-gsoc-v2-0-b52e8cb068ea@riseup.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905210621.1711859-3-puranjay12@gmail.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIACyd92QC/23MSw7CIBSF4a00dyyGV5V25D5MBwQv7U0MNFCJp
+ mHvYscO/5Ocb4eMiTDD2O2QsFCmGFrIUwdusWFGRo/WILlUfOCCeQr2yeYcHVNDb43WWjnjoR3
+ WhJ7eB3afWi+Ut5g+h13Eb/3LFMEEQyW4u15MPxh5S5TxtZ4DbjDVWr+0aALApQAAAA==
+To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
+        mairacanal@riseup.net, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?utf-8?q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Arthur Grillo <arthurgrillo@riseup.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 09:06:15PM +0000, Puranjay Mohan wrote:
-> The cpuv4 added the support of an instruction that is similar to load
-> but also sign-extends the result after the load.
-> 
-> BPF_MEMSX | <size> | BPF_LDX means dst = *(signed size *) (src + offset)
-> here <size> can be one of BPF_B, BPF_H, BPF_W.
-> 
-> ARM32 has instructions to load a byte or a half word with sign
-> extension into a 32bit register. As the JIT uses two 32 bit registers
-> to simulate a 64-bit BPF register, an extra instruction is emitted to
-> sign-extent the result up to the second register.
-> 
-> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> ---
->  arch/arm/net/bpf_jit_32.c | 69 ++++++++++++++++++++++++++++++++++++++-
->  arch/arm/net/bpf_jit_32.h |  2 ++
->  2 files changed, 70 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/net/bpf_jit_32.c b/arch/arm/net/bpf_jit_32.c
-> index b26579da770e..f7c162479cf2 100644
-> --- a/arch/arm/net/bpf_jit_32.c
-> +++ b/arch/arm/net/bpf_jit_32.c
-> @@ -333,6 +333,9 @@ static u32 arm_bpf_ldst_imm8(u32 op, u8 rt, u8 rn, s16 imm8)
->  #define ARM_LDRD_I(rt, rn, off)	arm_bpf_ldst_imm8(ARM_INST_LDRD_I, rt, rn, off)
->  #define ARM_LDRH_I(rt, rn, off)	arm_bpf_ldst_imm8(ARM_INST_LDRH_I, rt, rn, off)
->  
-> +#define ARM_LDRSH_I(rt, rn, off) arm_bpf_ldst_imm8(ARM_INST_LDRSH_I, rt, rn, off)
-> +#define ARM_LDRSB_I(rt, rn, off) arm_bpf_ldst_imm8(ARM_INST_LDRSB_I, rt, rn, off)
-> +
->  #define ARM_STR_I(rt, rn, off)	arm_bpf_ldst_imm12(ARM_INST_STR_I, rt, rn, off)
->  #define ARM_STRB_I(rt, rn, off)	arm_bpf_ldst_imm12(ARM_INST_STRB_I, rt, rn, off)
->  #define ARM_STRD_I(rt, rn, off)	arm_bpf_ldst_imm8(ARM_INST_STRD_I, rt, rn, off)
-> @@ -1026,6 +1029,24 @@ static bool is_ldst_imm(s16 off, const u8 size)
->  	return -off_max <= off && off <= off_max;
->  }
->  
-> +static bool is_ldst_imm8(s16 off, const u8 size)
-> +{
-> +	s16 off_max = 0;
-> +
-> +	switch (size) {
-> +	case BPF_B:
-> +		off_max = 0xff;
-> +		break;
-> +	case BPF_W:
-> +		off_max = 0xfff;
-> +		break;
-> +	case BPF_H:
-> +		off_max = 0xff;
-> +		break;
-> +	}
-> +	return -off_max <= off && off <= off_max;
-> +}
-> +
->  /* *(size *)(dst + off) = src */
->  static inline void emit_str_r(const s8 dst, const s8 src[],
->  			      s16 off, struct jit_ctx *ctx, const u8 sz){
-> @@ -1105,6 +1126,45 @@ static inline void emit_ldx_r(const s8 dst[], const s8 src,
->  	arm_bpf_put_reg64(dst, rd, ctx);
->  }
->  
-> +/* dst = *(signed size*)(src + off) */
-> +static inline void emit_ldsx_r(const s8 dst[], const s8 src,
-> +			       s16 off, struct jit_ctx *ctx, const u8 sz){
-> +	const s8 *tmp = bpf2a32[TMP_REG_1];
-> +	const s8 *rd = is_stacked(dst_lo) ? tmp : dst;
-> +	s8 rm = src;
-> +
-> +	if (!is_ldst_imm8(off, sz)) {
-> +		emit_a32_mov_i(tmp[0], off, ctx);
-> +		emit(ARM_ADD_R(tmp[0], tmp[0], src), ctx);
+This patchset tests the drm_fb_blit() function.
 
-Hmm. This looks inefficient when "off" is able to fit in an immediate.
-Please try:
+As this function can be used with already tested formats, the first
+patch adds calls to drm_fb_blit() on the tests of supported formats.
 
-	int add_off;
+Some supported formats were not yet covered by the existing tests
+because they are only supported by drm_fb_blit(). The second patch
+adds those format conversion tests.
 
-	if (!is_ldst_imm8(off, sz)) {
-		add_off = imm8m(off);
-		if (add_off > 0) {
-			emit(ARM_ADD_I(tmp[0], src, add_off), ctx);
-			rm = tmp[0];
-		} else {
-			emit_a32_mov_i(tmp[0], off, ctx);
-			emit(ARM_ADD_R(tmp[0], tmp[0], src), ctx);
-			rm = tmp[0];
-		}
-		off = 0;
-> +	} else if (rd[1] == rm) {
-> +		emit(ARM_MOV_R(tmp[0], rm), ctx);
-> +		rm = tmp[0];
+Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+---
+Changes in v2:
+- Split the patch into two (Maíra Canal)
+- Link to v1: https://lore.kernel.org/r/20230901-final-gsoc-v1-1-e310c7685982@riseup.net
 
-Why do you need this? rd and rm can be the same for LDRS[BH].
+---
+Arthur Grillo (2):
+      drm/tests: Add calls to drm_fb_blit() on supported format conversion tests
+      drm/tests: Add new format conversion tests to better cover drm_fb_blit()
 
-> +	}
-> +	switch (sz) {
-> +	case BPF_B:
-> +		/* Load a Byte with sign extension*/
-> +		emit(ARM_LDRSB_I(rd[1], rm, off), ctx);
-> +		/* Carry the sign extension to upper 32 bits */
-> +		emit(ARM_ASR_I(rd[0], rd[1], 31), ctx);
-> +		break;
-> +	case BPF_H:
-> +		/* Load a HalfWord with sign extension*/
-> +		emit(ARM_LDRSH_I(rd[1], rm, off), ctx);
-> +		/* Carry the sign extension to upper 32 bits */
-> +		emit(ARM_ASR_I(rd[0], rd[1], 31), ctx);
-> +		break;
-> +	case BPF_W:
-> +		/* Load a Word*/
-> +		emit(ARM_LDR_I(rd[1], rm, off), ctx);
-> +		/* Carry the sign extension to upper 32 bits */
-> +		emit(ARM_ASR_I(rd[0], rd[1], 31), ctx);
+ drivers/gpu/drm/tests/drm_format_helper_test.c | 284 +++++++++++++++++++++++++
+ 1 file changed, 284 insertions(+)
+---
+base-commit: f45acf7acf75921c0409d452f0165f51a19a74fd
+change-id: 20230901-final-gsoc-395a84443c8f
 
-The last instruction extending to the upper 32 bits is the same in each
-of these cases, so is there any reason not to do it outside the switch
-statement?
-
+Best regards,
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Arthur Grillo <arthurgrillo@riseup.net>
+
