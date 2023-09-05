@@ -2,213 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E61FD792F3B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFD6E792E3C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241263AbjIETrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43940 "EHLO
+        id S238459AbjIETEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232993AbjIETrI (ORCPT
+        with ESMTP id S232185AbjIETEM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:47:08 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C076283;
-        Tue,  5 Sep 2023 12:47:00 -0700 (PDT)
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385IcTX4025333;
-        Tue, 5 Sep 2023 19:01:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=RbGG0JMEkT1YvxWzhDbzrzewytMoYeXhTP6+OTsHwnk=;
- b=jt5bnX516m4U+z7VNYDdHh6fBuV1NUVKjW8rVnmH68RqoyEdP0k2+G/71u13EEIrbhqV
- fo6FqXBQPQ5MYG6bQ6LfG22YTIE25yMRp2iRzh0mTT8isHjJArB3wraKvbU8lSthBKNT
- 9WaW/VIhsjF5kz+ArnODtlQ79a72thmOUtDkNG2H3tlE/dhOgQ1OypYCMEwHd+J8WanN
- I0iAtC8kQkLkV8waeKQrwwYrkLLcJs4YDifHGnwmQCdCQioQ1WCPYvGTkKQ15LrKRmNz
- 9x8ETpeEkXOLFAGOV9nSsnbwcnMyziDgoZFITVAMjeH21Dd9oea9Fzq/okjuMY+bkz95 Gw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx9ef1r0p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 19:01:54 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385IcmdD027855;
-        Tue, 5 Sep 2023 19:01:53 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx9ef1qy4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 19:01:53 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385IAvRq011169;
-        Tue, 5 Sep 2023 19:01:52 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-        by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svj31mksx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 19:01:52 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385J1pLp63242618
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Sep 2023 19:01:51 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id EAE535806C;
-        Tue,  5 Sep 2023 19:01:50 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5D4D258061;
-        Tue,  5 Sep 2023 19:01:48 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue,  5 Sep 2023 19:01:48 +0000 (GMT)
-Message-ID: <f202cf50-1284-9df6-6930-10dfa7a8c3b4@linux.ibm.com>
-Date:   Tue, 5 Sep 2023 15:01:47 -0400
+        Tue, 5 Sep 2023 15:04:12 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4740CFB;
+        Tue,  5 Sep 2023 12:03:44 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id 38308e7fff4ca-2bcfdadd149so48931841fa.0;
+        Tue, 05 Sep 2023 12:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693940535; x=1694545335; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=F8NiPKI5PhDDcqjH4zcDRbhwV4vLtMzV50YnSL6Mscs=;
+        b=dsiOoeC5pEr2HakLCfazcmyO6GF07pZX4mCAiqtKyHY4qSdAwHQCZlOQ3MaEUIL14r
+         fIpLLq7kZr2Z3L5qdXSIXuegTcxuWVag4vVVzcAEmhQzIPurdqZKLMz8U9PR3HbTFC9d
+         PbrPhrEc3tg+sZnT9/IYypsLDHolUrVjM4w8eQ3iW5TQT1pGqjZTuwh9AwaKlyDecxdc
+         dJUpY3DMGmuRSYJa4WQq0Oe/VHW5vJ5ZypSF1quAZAX/AxHgC0H9CpZ5FWvUwPRdMwQ3
+         z/2ARzgu2a8hUQrhvfbQiJO27NDimgMxO53tHuJWCEUQppt3FP31OZ27alKC0o4iMADF
+         89kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693940535; x=1694545335;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=F8NiPKI5PhDDcqjH4zcDRbhwV4vLtMzV50YnSL6Mscs=;
+        b=T5zD8sXnEgrEMKkq4ZlfBbCbsNoC9a0iIQ1peOrBWNjJ2X2uyy2HmKcu+YJGCszdMZ
+         pwgTks54B2/R0lkXq0DmXBlz+mAQN8mOOE0McncfGg7KVAbE+EBlMyVWEvtt3b+kleWm
+         hhr6o++EaPZ80CjpBAeDuDHSEAkUcmBn4Meb3g15guo1wEdPt0Y1L336PJF0H2EADUAl
+         xZKr8EtnMtNgwsivP+qYM9yyk/uYa/+bZ/NWsuBLFsyrWv6VJbRHZJMx8EuSiO2h+MoD
+         hRpnEDg5iRWJjOkuJOsJwT77gBDzgYKzDbdzCYJXasWZNNod3R0VrlfSbqKeJzJGgBEQ
+         M8mw==
+X-Gm-Message-State: AOJu0Yynmg4+zTQvTEV8AeY7OrEu0aMvZicS40hOLCVyOnqjN9FdYKwj
+        hmLIHOJzKOpZogFTr9vac3y+mgI2p5zIvjcnJC8=
+X-Google-Smtp-Source: AGHT+IF+hF4stxcRR9nVxQZa6PvOBsnji9E+Mx0JTzlKdnKeQ1p/yIBj9llAbSod8zAonBqVdJx0rWyHPVoYXlM7kow=
+X-Received: by 2002:a2e:a174:0:b0:2bc:e51d:d09c with SMTP id
+ u20-20020a2ea174000000b002bce51dd09cmr471221ljl.36.1693940534515; Tue, 05 Sep
+ 2023 12:02:14 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 19/25] security: Introduce inode_post_remove_acl hook
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
- <20230904133415.1799503-20-roberto.sassu@huaweicloud.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20230904133415.1799503-20-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: pDxbPR99nTpnXAXTx-OssX3jXWVMDnzs
-X-Proofpoint-GUID: 9r68kwj-_BlQBEtF9MZvSedkoZHJ36X1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_11,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- clxscore=1015 impostorscore=0 suspectscore=0 phishscore=0 spamscore=0
- mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309050161
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230827072057.1591929-1-zhouchuyi@bytedance.com> <20230827072057.1591929-2-zhouchuyi@bytedance.com>
+In-Reply-To: <20230827072057.1591929-2-zhouchuyi@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 5 Sep 2023 12:02:03 -0700
+Message-ID: <CAADnVQJpZRoOtC0JF7uub+vPY5JZusWmPyjOJQD=eTxUFWOr_A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 1/4] bpf: Introduce css_task open-coded
+ iterator kfuncs
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/4/23 09:34, Roberto Sassu wrote:
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.co=
+m> wrote:
 >
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the inode_post_remove_acl hook.
+> This Patch adds kfuncs bpf_iter_css_task_{new,next,destroy} which allow
+> creation and manipulation of struct bpf_iter_css_task in open-coded
+> iterator style. These kfuncs actually wrapps
+> css_task_iter_{start,next,end}. BPF programs can use these kfuncs through
+> bpf_for_each macro for iteration of all tasks under a css.
 >
-> It is useful for EVM to recalculate the HMAC on the remaining POSIX ACLs
-> and other file metadata, after it verified the HMAC of current file
-> metadata with the inode_remove_acl hook.
->
-> LSMs should use the new hook instead of inode_remove_acl, when they need to
-> know that the operation was done successfully (not known in
-> inode_remove_acl). The new hook cannot return an error and cannot cause the
-> operation to be reverted.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
 > ---
->   fs/posix_acl.c                |  1 +
->   include/linux/lsm_hook_defs.h |  2 ++
->   include/linux/security.h      |  8 ++++++++
->   security/security.c           | 17 +++++++++++++++++
->   4 files changed, 28 insertions(+)
+>  include/uapi/linux/bpf.h       |  4 ++++
+>  kernel/bpf/helpers.c           |  3 +++
+>  kernel/bpf/task_iter.c         | 39 ++++++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  4 ++++
+>  tools/lib/bpf/bpf_helpers.h    |  7 ++++++
+>  5 files changed, 57 insertions(+)
 >
-> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
-> index 3b7dbea5c3ff..2a2a2750b3e9 100644
-> --- a/fs/posix_acl.c
-> +++ b/fs/posix_acl.c
-> @@ -1246,6 +1246,7 @@ int vfs_remove_acl(struct mnt_idmap *idmap, struct dentry *dentry,
->   		error = -EIO;
->   	if (!error) {
->   		fsnotify_xattr(dentry);
-> +		security_inode_post_remove_acl(idmap, dentry, acl_name);
->   		evm_inode_post_remove_acl(idmap, dentry, acl_name);
->   	}
->   
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index bba1fbd97207..eedc26790a07 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -163,6 +163,8 @@ LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
->   	 struct dentry *dentry, const char *acl_name)
->   LSM_HOOK(int, 0, inode_remove_acl, struct mnt_idmap *idmap,
->   	 struct dentry *dentry, const char *acl_name)
-> +LSM_HOOK(void, LSM_RET_VOID, inode_post_remove_acl, struct mnt_idmap *idmap,
-> +	 struct dentry *dentry, const char *acl_name)
->   LSM_HOOK(int, 0, inode_need_killpriv, struct dentry *dentry)
->   LSM_HOOK(int, 0, inode_killpriv, struct mnt_idmap *idmap,
->   	 struct dentry *dentry)
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 556d019ebe5c..e543ae80309b 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -373,6 +373,9 @@ int security_inode_get_acl(struct mnt_idmap *idmap,
->   			   struct dentry *dentry, const char *acl_name);
->   int security_inode_remove_acl(struct mnt_idmap *idmap,
->   			      struct dentry *dentry, const char *acl_name);
-> +void security_inode_post_remove_acl(struct mnt_idmap *idmap,
-> +				    struct dentry *dentry,
-> +				    const char *acl_name);
->   void security_inode_post_setxattr(struct dentry *dentry, const char *name,
->   				  const void *value, size_t size, int flags);
->   int security_inode_getxattr(struct dentry *dentry, const char *name);
-> @@ -915,6 +918,11 @@ static inline int security_inode_remove_acl(struct mnt_idmap *idmap,
->   	return 0;
->   }
->   
-> +static inline void security_inode_post_remove_acl(struct mnt_idmap *idmap,
-> +						  struct dentry *dentry,
-> +						  const char *acl_name)
-> +{ }
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 60a9d59beeab..2a6e9b99564b 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7195,4 +7195,8 @@ struct bpf_iter_num {
+>         __u64 __opaque[1];
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_iter_css_task {
+> +       __u64 __opaque[1];
+> +} __attribute__((aligned(8)));
 > +
->   static inline void security_inode_post_setxattr(struct dentry *dentry,
->   		const char *name, const void *value, size_t size, int flags)
->   { }
-> diff --git a/security/security.c b/security/security.c
-> index aabace9e24d9..554f4925323d 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2323,6 +2323,23 @@ int security_inode_remove_acl(struct mnt_idmap *idmap,
->   	return evm_inode_remove_acl(idmap, dentry, acl_name);
->   }
->   
-> +/**
-> + * security_inode_post_remove_acl() - Update inode sec after remove_acl op
-> + * @idmap: idmap of the mount
-> + * @dentry: file
-> + * @acl_name: acl name
-> + *
-> + * Update inode security field after successful remove_acl operation on @dentry
-> + * in @idmap. The posix acls are identified by @acl_name.
-> + */
-> +void security_inode_post_remove_acl(struct mnt_idmap *idmap,
-> +				    struct dentry *dentry, const char *acl_name)
+>  #endif /* _UAPI__LINUX_BPF_H__ */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index 9e80efa59a5d..cf113ad24837 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2455,6 +2455,9 @@ BTF_ID_FLAGS(func, bpf_dynptr_slice_rdwr, KF_RET_NU=
+LL)
+>  BTF_ID_FLAGS(func, bpf_iter_num_new, KF_ITER_NEW)
+>  BTF_ID_FLAGS(func, bpf_iter_num_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DESTROY)
+> +BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
+> +BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index c4ab9d6cdbe9..b1bdba40b684 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -823,6 +823,45 @@ const struct bpf_func_proto bpf_find_vma_proto =3D {
+>         .arg5_type      =3D ARG_ANYTHING,
+>  };
+>
+> +struct bpf_iter_css_task_kern {
+> +       struct css_task_iter *css_it;
+> +} __attribute__((aligned(8)));
+> +
+> +__bpf_kfunc int bpf_iter_css_task_new(struct bpf_iter_css_task *it,
+> +               struct cgroup_subsys_state *css, unsigned int flags)
 > +{
-> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +		return;
-> +	call_void_hook(inode_post_remove_acl, idmap, dentry, acl_name);
-> +}
+> +       struct bpf_iter_css_task_kern *kit =3D (void *)it;
 > +
->   /**
->    * security_inode_post_setxattr() - Update the inode after a setxattr operation
->    * @dentry: file
+> +       BUILD_BUG_ON(sizeof(struct bpf_iter_css_task_kern) !=3D sizeof(st=
+ruct bpf_iter_css_task));
+> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_css_task_kern) !=3D
+> +                                       __alignof__(struct bpf_iter_css_t=
+ask));
+> +
+> +       kit->css_it =3D kzalloc(sizeof(struct css_task_iter), GFP_KERNEL)=
+;
+> +       if (!kit->css_it)
+> +               return -ENOMEM;
+> +       css_task_iter_start(css, flags, kit->css_it);
 
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+Some of the flags are internal. Like CSS_TASK_ITER_SKIPPED.
+The kfunc should probably only allow CSS_TASK_ITER_PROCS |
+CSS_TASK_ITER_THREADED,
+and not CSS_TASK_ITER_THREADED alone.
+
+Since they're #define-s it's not easy for bpf prog to use them.
+I think would be good to have a pre-patch that converts them to enum,
+so that bpf prog can take them from vmlinux.h.
 
 
+But the main issue of the patch that it adds this iter to common kfuncs.
+That's not safe, since css_task_iter_*() does spin_unlock_irq() which
+might screw up irq flags depending on the context where bpf prog is running=
+.
+Can css_task_iter internals switch to irqsave/irqrestore?
+css_set_lock is also global, so the bpf side has to be careful in
+where it allows to use this iter.
+bpf_lsm hooks are safe, most of bpf iter-s are safe too.
+Future bpf-oom hooks are probably safe as well.
+We probably need an allowlist here.
