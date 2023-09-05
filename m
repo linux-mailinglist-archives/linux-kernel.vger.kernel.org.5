@@ -2,173 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C93579307C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:56:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAFFF7930BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244056AbjIEU4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:56:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42892 "EHLO
+        id S237037AbjIEVJc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:09:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234705AbjIEU4e (ORCPT
+        with ESMTP id S244282AbjIEU6M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:56:34 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B222A113
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:56:25 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcc14ea414so47021011fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:56:25 -0700 (PDT)
+        Tue, 5 Sep 2023 16:58:12 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753AB1B6
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:58:06 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7e8e12df78so2688908276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:58:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693947384; x=1694552184; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9diK8PcHgpyU+i311Vkwvacj1OZq+KDSvCqh6K53Ntw=;
-        b=J2PXZ57Exa3e3ftGJLJsjdiHAcCj2+F0V+KFdYhZm6HCrdsUxP2vdQS4LbP+cFy1JR
-         8pCIeD0Aqd8fzIm526EI4TcFzRGJJCcdaFzYktNJ6iLWhBzIZliETltDWsT6mbkK4qvt
-         8OOgthlHp7RTTAezJ0mzJa/7hMO7waGNVvDPU=
+        d=google.com; s=20221208; t=1693947485; x=1694552285; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=aD7t+y8x19H6PztCQZwx+di86N55Bv5EtpGCFtvEp88=;
+        b=enOkdyESHyk9tSYGfhL0mBDI9Ycisocpo0YOffBUfFu54FThi8MpSG+OI8fumMbpna
+         UaBMwh7k/qpIImxDNfDr+ts/Pw/RPArjZYyEXE4YavvL0ZYV9SbT0iV5M3lOrT6aSKp8
+         6PXshopWFK376HvmIGnfETIm/ND56m9Lgkp+2Rn5Ujnta/iA4QvbeRfZo9axaGGEyFCe
+         sVgAPuj+Azp7AHplkAPV4gIj67oB2Yww6GGUfaZcHVSjQbU8CkR2yeBs8YpvY9Xtq/90
+         UTQPNGu1ccsSASru/8H4/LmtI9y7kbqyrE58MIv6DipAWRbhw+0YcP4tAuFJ8Ifd8paw
+         gxRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693947384; x=1694552184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9diK8PcHgpyU+i311Vkwvacj1OZq+KDSvCqh6K53Ntw=;
-        b=DxGn+8BhLz2hMwoJD75azrk6BTq8A6t0E6oelO66V0X2EIO1C0XsEKV4ndaAcJskYK
-         wBjeSHd6B7zqUdFcremPfBlAeOpGzaPQWHv8sgOH9mZCcmi/kR2QoLq56SnvtpKWQ49p
-         Zeflm9NL2BlW2wrhNhfttyGzY2v8itnbkawYTp8A+eryQbSC0FedTPv/1coHtxjY7tBX
-         NGPLNucsgAU/5sBD6dLQvktr7UzdgY/IMsCpSX1EMlUvJFXW8WlzXPUfc6ryd8yNFcYB
-         8laSnPYs8btYih6FR6e4MQvqytoXEisBqMIlNbM9I9dY0h2V78UQx+6CZ1/TKGoFNbRl
-         lLsA==
-X-Gm-Message-State: AOJu0Yy9gIgdu2CY3CIwYFWnNQtQtdbDtvrlVqduqulA5tViaettM2ON
-        BnS/w1H4YxGxrxfMvSbS3NnBRR6EMvk48v3l+boCVQ==
-X-Google-Smtp-Source: AGHT+IH7F1r/gNPC69vO2am/Jp4XAKZERI9nP33sqw6EPdbN0utatfTsHoMRZaYPC3kDLL58ZVoMRMigLaaIJsH1uKI=
-X-Received: by 2002:a2e:9047:0:b0:2b6:df23:2117 with SMTP id
- n7-20020a2e9047000000b002b6df232117mr666823ljg.43.1693947383760; Tue, 05 Sep
- 2023 13:56:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
- <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com> <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
- <c312066b2cc44919bd11b6cd938cb05f@AcuMS.aculab.com> <ce51b768-9988-197c-0c35-7574aba77810@efficios.com>
- <abe14f37-ec05-48c3-87fc-9294848d221f@paulmck-laptop> <83422425-0534-4b12-a6e4-8068b7164a17@paulmck-laptop>
- <d2a3456b-aee9-f5b0-f8e4-5c5030c3217f@efficios.com> <b561c3a9-dc70-4c3d-b561-3f24398b01d8@paulmck-laptop>
- <CAEXW_YSe=s9S8OirDJARPvOrGUNXVPBkhucx5iKysjVk=AcLYg@mail.gmail.com> <a51db423-722c-43ab-9182-00f64c460043@paulmck-laptop>
-In-Reply-To: <a51db423-722c-43ab-9182-00f64c460043@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 5 Sep 2023 16:56:12 -0400
-Message-ID: <CAEXW_YQW_0RD5mmtwnzwik9Q9K9XL9rxHUyb98SLqCJ-840xOQ@mail.gmail.com>
-Subject: Re: [PATCH v2] The value may overflow
-To:     paulmck@kernel.org
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Laight <David.Laight@aculab.com>,
-        Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>, ldufour@linux.ibm.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693947485; x=1694552285;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aD7t+y8x19H6PztCQZwx+di86N55Bv5EtpGCFtvEp88=;
+        b=AUkcvNDPr0Sehq2K7CFzsKIIFhrsTZWwB8jjsGqsdgCrPs5Kzl/G7G/MQeCq1dqsQ2
+         Lb58YKDFvnjp+mRuXzP8myVXGc6adPjG6aFLoAC2AVfn6Lr+Hv5CLSGcWxQjKaQuR2p1
+         kSafLOjZFeulTcgJMqHQnt61AXU1fbq8+BWNaxcV3M77qji9RYLgRcoByR1RvNiOg3Zz
+         tmR7xxNPIwWbKYU+WvHjVkg6OsumkUxS+ctwJnGGia/COAg3xe8mWd8sjkH8NN4+leXN
+         QwNdXMY3NLYEijYITxsqC5ISPuaN64bK8x26oqZ4sjqhkNmTntYfpCijqtAwciyP6r+R
+         Yf7A==
+X-Gm-Message-State: AOJu0Yz0GvaakRcC7T/4LJMz+RREyHcbwAmthUxocN5gxoiuwMTaof1U
+        7fH3h5O/fFwaz5Dvbm5+flPRKlTQSmw=
+X-Google-Smtp-Source: AGHT+IFX2u113VgxY7mGL7ETLl/8BnbAdcjqqkgLG+sXMxJgGOPrQ9PcI/mFnory99gwuec041MEk6e+KwU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:aaf2:0:b0:d7e:add7:4de6 with SMTP id
+ t105-20020a25aaf2000000b00d7eadd74de6mr279581ybi.4.1693947485734; Tue, 05 Sep
+ 2023 13:58:05 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 13:58:04 -0700
+In-Reply-To: <20230905161048.3178838-1-pgonda@google.com>
+Mime-Version: 1.0
+References: <20230905161048.3178838-1-pgonda@google.com>
+Message-ID: <ZPeWXNpwYua9S+tV@google.com>
+Subject: Re: [PATCH] KVM: SEV: Update SEV-ES shutdown intercepts with more metadata
+From:   Sean Christopherson <seanjc@google.com>
+To:     Peter Gonda <pgonda@google.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 4:52=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
->
-> On Tue, Sep 05, 2023 at 04:40:46PM -0400, Joel Fernandes wrote:
-[...]
-> > > > > > So this bug appears to have no effect for default RCU setups, e=
-ven on very
-> > > > > > large 64-bit systems, which is consistent with field experience=
-.  Even if
-> > > > > > this is the case, it still should be fixed, to avoid confusion =
-if nothing
-> > > > > > else.  Or just in case someone decides to set CONFIG_RCU_FANOUT=
-_LEAF=3D32.
-> > > > > > Which actually happened the other day due to someone trusting C=
-hatGPT's
-> > > > > > opinion about RCU Kconfig options...
-> > > > >
-> > > > > And I therefore queued Denis's v3 patch with an edited commit log=
-.
-> > > > > Of course, if anyone sees some other way that the bug could manif=
-est
-> > > > > other than in a 64-bit kernel built with CONFIG_RCU_FANOUT_LEAF g=
-reater
-> > > > > than 30 on a system with at least 31 CPUs, please let me know so =
-that
-> > > > > I can adjust.
-> > > > >
-> > > > >                                                     Thanx, Paul
-> > > > >
-> > > > > -----------------------------------------------------------------=
--------
-> > > > >
-> > > > > commit ed083b0e22f1396dee3599896249a3f218845298
-> > > > > Author: Denis Arefev <arefev@swemel.ru>
-> > > > > Date:   Mon Sep 4 15:21:14 2023 +0300
-> > > > >
-> > > > >      Fix srcu_struct node grpmask overflow on 64-bit systems
-> > > > >      The value of an arithmetic expression 1 << (cpu - sdp->mynod=
-e->grplo)
-> > > >
-> > > > AFAIU, the overflow resides in the "bitwise expression" and not
-> > > > the arithmetic expression.
-> > >
-> > > Rather than quibble about exactly what constitutes arithmetic, I
-> > > updated the first paragraph and added your Reviewed-by as shown
-> > > below.  ;-)
-> > >
-> > > > Other than this, please add my
-> > > >
-> > > > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > >
-> > > Thank you all!!!
-> > >
-> > > ---------------------------------------------------------------------=
----
-> > >
-> > > commit 50477ff756ab99402b1523b7c6be8b5d790d05e7
-> > > Author: Denis Arefev <arefev@swemel.ru>
-> > > Date:   Mon Sep 4 15:21:14 2023 +0300
-> > >
-> > >     Fix srcu_struct node grpmask overflow on 64-bit systems
-> > >
-> > >     The value of a bitwise expression 1 << (cpu - sdp->mynode->grplo)
-> > >     is subject to overflow due to a failure to cast operands to a lar=
-ger
-> > >     data type before performing the bitwise operation.
-> > >
-> > >     The maximum result of this subtraction is defined by the RCU_FANO=
-UT_LEAF
-> > >     Kconfig option, which on 64-bit systems defaults to 16 (resulting=
- in a
-> > >     maximum shift of 15), but which can be set up as high as 64 (resu=
-lting
-> > >     in a maximum shift of 63).  A value of 31 can result in sign exte=
-nsion,
-> > >     resulting in 0xffffffff80000000 instead of the desired 0x80000000=
-.
-> > >     A value of 31 or greater triggers undefined behavior per the C st=
-andard.
-> >
-> > Do you mean here "A value of 32 or greater"?
-> >
-> > Only N >=3D 32 throws warning for:
-> > unsigned long foo =3D (1 << N);
-> >
-> > N=3D31 does undesirable sign extension but no warning.
->
-> Good catch, thank you, and I will update this on my next rebase.
+On Tue, Sep 05, 2023, Peter Gonda wrote:
+> Currently if an SEV-ES VM shuts down userspace sees KVM_RUN struct with
+> only the INVALID_ARGUMENT. This is a very limited amount of information
+> to debug the situation. Instead KVM can return a
+> KVM_SYSTEM_EVENT_SEV_TERM to alert userspace the VM is shutting down and
+> is not usable any further. This latter point can be enforced using the
+> kvm_vm_dead() functionality.
 
-Thanks, and with that the patch looks good to me:
-Reviewed-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Add the kvm_vm_dead() thing in a separate patch.  If we want to actually harden
+KVM against consuming a garbage VMSA then we do need to mark the VM dead, but on
+the other hand that will block _all_ KVM ioctls(), which will make debug even
+harder.
 
- - Joel
+> Signed-off-by: Peter Gonda <pgonda@google.com>
+> Cc: Paolo Bonzini <pbonzini@redhat.com>
+> Cc: Sean Christopherson <seanjc@google.com>
+> Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> Cc: Joerg Roedel <joro@8bytes.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: x86@kernel.org
+> Cc: kvm@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> 
+> ---
+> 
+> I am not sure if this is the right path forward maybe just returning
+> KVM_EXIT_SHUTDOWN is better. But the current behavior is very unhelpful.
+
+Ya, KVM_EXIT_SHUTDOWN is better, we should leave KVM_SYSTEM_EVENT_SEV_TERM to
+explicit "requests" from the guest.
