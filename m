@@ -2,94 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C31F792B34
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 061A5792C14
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244021AbjIEQtj convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 12:49:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44352 "EHLO
+        id S1353682AbjIERGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:06:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354774AbjIEOPg (ORCPT
+        with ESMTP id S1354780AbjIEOTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:15:36 -0400
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D9A1A7
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:15:32 -0700 (PDT)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-213-W_uhwjSCPzKzgPTx1pZAYg-1; Tue, 05 Sep 2023 15:15:29 +0100
-X-MC-Unique: W_uhwjSCPzKzgPTx1pZAYg-1
-Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
- (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Tue, 5 Sep
- 2023 15:15:25 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Tue, 5 Sep 2023 15:15:25 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'paulmck@kernel.org'" <paulmck@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-CC:     Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>
-Subject: RE: [PATCH v2] The value may overflow
-Thread-Topic: [PATCH v2] The value may overflow
-Thread-Index: AQHZ3xnFNLjoHgiM306HccvtrgnILrAL+RdggABM0NiAAADkEA==
-Date:   Tue, 5 Sep 2023 14:15:25 +0000
-Message-ID: <c312066b2cc44919bd11b6cd938cb05f@AcuMS.aculab.com>
-References: <20230904094251.64022-1-arefev@swemel.ru>
- <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
- <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
- <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
- <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
- <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com>
- <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
-In-Reply-To: <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 5 Sep 2023 10:19:01 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937371AB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:18:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=d5oE
+        VPZounkZyPqSJjsmtIRWD+j5ouluxyYTqoZnQ+s=; b=SfL2lb7f6vxDpXS15/8P
+        4L1xAOIHOiTnlsNiamQ3rD1s0zUp+7ntho7wHhZqury92ytZS3Uap6WRrwr9jmW4
+        g+k7q1okcnHEmagshZIAu2WiBWd8qqNcXdNxZ9GAd7uYLWcZ6zDtCWxfdYLnxxjM
+        piJr8qLerL10kQhweg52r+9+ggZtk98QjEVzXpPSoGmC88bHARR0WGnUsNPlgFLl
+        vHQ0VgrbSkFH+qs/GUSLORsrCihVD6mvu3eD0U5ur1Z/LTsad4AkX/2nLZUQTKEd
+        bkf674LM7mZ22fc9kuKnjB78vDtljj8fWA+ph/B5TlTgelNSL6Mj/nhYkZKNK45r
+        2Q==
+Received: (qmail 2493423 invoked from network); 5 Sep 2023 16:18:53 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Sep 2023 16:18:53 +0200
+X-UD-Smtp-Session: l3s3148p1@g4JWTp0Ejt1ehhrI
+Date:   Tue, 5 Sep 2023 16:18:50 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Andi Shyti <andi.shyti@kernel.org>
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] i2c: rcar: introduce Gen4 devices
+Message-ID: <ZPc4ylzR4MJEMlbx@ninjato>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        linux-renesas-soc@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
+ <20230904135852.12146-3-wsa+renesas@sang-engineering.com>
+ <20230905113624.5o2hfjojh3he7aex@zenone.zhora.eu>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="N/d25QGf6h+4Nz7R"
+Content-Disposition: inline
+In-Reply-To: <20230905113624.5o2hfjojh3he7aex@zenone.zhora.eu>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-...
-> That would instead be more than 512-16=496 CPUs, correct?  496 CPUs would
-> only require a 31-bit shift, which should be OK, but 497 would require
-> a 32-bit shift, which would result in sign extension.  If it turns out
-> that sign extension is OK, then we should get in trouble at 513 CPUs,
-> which would result in a 33-bit shift (and is that even defined in C?).
 
-Not quite right :-)
+--N/d25QGf6h+4Nz7R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-(1 << 31) is int and negative, that gets sign extended before
-being converted to 'unsigned long' - so has the top 33 bits set.
+On Tue, Sep 05, 2023 at 01:36:24PM +0200, Andi Shyti wrote:
+> Hi Wolfram,
+>=20
+> > @@ -1031,10 +1021,12 @@ static const struct of_device_id rcar_i2c_dt_id=
+s[] =3D {
+> >  	{ .compatible =3D "renesas,i2c-r8a7794", .data =3D (void *)I2C_RCAR_G=
+EN2 },
+> >  	{ .compatible =3D "renesas,i2c-r8a7795", .data =3D (void *)I2C_RCAR_G=
+EN3 },
+> >  	{ .compatible =3D "renesas,i2c-r8a7796", .data =3D (void *)I2C_RCAR_G=
+EN3 },
+> > +	/* S4 has no FM+ bit */
+> > +	{ .compatible =3D "renesas,i2c-r8a779f0", .data =3D (void *)I2C_RCAR_=
+GEN3 },
+>=20
+> is this I2C_RCAR_GEN3 or I2C_RCAR_GEN4?
 
-(1 << 32) is undefined, the current x86 cpu ignore the high
-shift bits so it is (1 << 0).
+Technically, it is Gen4. But its I2C controller behaves like Gen3. This
+is why it has a seperate entry to avoid the generic Gen4 fallback...
 
-If the mask is being used to optimise a search the code might
-just happen to work!
+> > -	{ .compatible =3D "renesas,rcar-gen4-i2c", .data =3D (void *)I2C_RCAR=
+_GEN3 },
+> > +	{ .compatible =3D "renesas,rcar-gen4-i2c", .data =3D (void *)I2C_RCAR=
+_GEN4 },
 
-	David
+=2E.. here.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
+--N/d25QGf6h+4Nz7R
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmT3OMYACgkQFA3kzBSg
+KbYaFg/9Fbrlwi3OToLBSRjgWHy76zRq9Q0XHUIwgaGhdHjUs+1rXuyWVaJhIsfb
+k3KFquWYNODEEJbTDTe6i2K+ZAXMPVuSDru1/ocZ1ksSuKiZvA510UjRRlNRHS0j
+W0jnvZJjt7FbLyERxZR51vu2LjqxW72MIb6LnAAjopk0606jhwkydMF5J68L1uZk
+7fiGrNjPVzf09uKF7uqUQRPevp7m8b7h2P5lo9ng4qX+5o0ra8wzAcPxjt6bzhF4
+MTL9YN41pMC86SwhNLSa5eVvvjh6nnYGgKgz3/lMRbfI1bfj10ZUoeKcdghmvdae
+Ca9+cXBZ7Db8xapXZWQ2sLF3NogORRgdMc1LLfJhUDrGGkvw4D2FIY2fqgIwKzV6
+LCiQqzYKaJyhB55NvskrjqYMA7azGHlpN122oPxFobseeRUljvdmpUFY6Uc9Th3a
+4aiy/Nzq2rLeLCbaBekxr5QDO2sec0PPZOA/FzowMzSJ8RoH2qGhyK1YUs6yv7EC
+YuN0Yg4b/NaGn05pu3tu2SWJwzH2mgKErQfmKUJWihJrFQNPreegVYxLK4bP3hOX
+0EzGhr0nB5EsSQSfBJiy6uZSWaz9ciG+QP+NjtkBnDX86C9XGSD6gDI0EOTx951E
+rQLa1OGkeKQ5bfqP6jJJpHnNOj9pMlmRBgZjWV8JUit6J+/nm8E=
+=5g/h
+-----END PGP SIGNATURE-----
+
+--N/d25QGf6h+4Nz7R--
