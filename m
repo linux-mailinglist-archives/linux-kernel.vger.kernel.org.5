@@ -2,119 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C91792B89
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 319AF7929C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244861AbjIEQy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:54:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51982 "EHLO
+        id S1353045AbjIEQ2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:28:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354840AbjIEO44 (ORCPT
+        with ESMTP id S1354845AbjIEPAZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:56:56 -0400
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8863C18C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:56:51 -0700 (PDT)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 85490100023;
-        Tue,  5 Sep 2023 17:56:48 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 85490100023
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sberdevices.ru;
-        s=mail; t=1693925808;
-        bh=j9WIM1QwjBQaTjxYjUQA7Rlw46Hleq4M73BzeKtUxCA=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-        b=SWyAwGXWBWuzrAxrV5mQGBGpQ3HBlWtnGQ8PD7Vwj44nclVuVbHc1rt0Sw8kwO63W
-         BJ7O0cU+1oZr0cBCZ3KmlOHD4/kW6vsxbOMHtvMP8uAjFlrVXionpuQ2eeEs6WG7ur
-         fDVnUrWCMZ3mSnBDQVCHWE+PfiXd1aJuFPA7ue83m6uekxiuTXDzlZK/vvOl56Xh3S
-         kQkoB8JFShEWrRhVj/ufbP8i1GzMw2pC9BUApOtBPnnUXljrWL2lcc2mFxJidYauTk
-         feRbtXIIIdavmzghY6/jwIaE3YEMPJxrYn2tVVb5ouTZN0NrWdGLr5pL+8AB0MrH7f
-         XbYaAVLY4AQrw==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Tue,  5 Sep 2023 17:56:48 +0300 (MSK)
-Received: from CAB-WSD-0004828.sigma.sbrf.ru (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.30; Tue, 5 Sep 2023 17:56:46 +0300
-From:   Martin Kurbanov <mmkurbanov@sberdevices.ru>
-To:     Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-        <kernel@sberdevices.ru>,
-        Martin Kurbanov <mmkurbanov@sberdevices.ru>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: [PATCH v3] mtd: spinand: micron: correct bitmask for ecc status
-Date:   Tue, 5 Sep 2023 17:56:37 +0300
-Message-ID: <20230905145637.139068-1-mmkurbanov@sberdevices.ru>
-X-Mailer: git-send-email 2.40.0
+        Tue, 5 Sep 2023 11:00:25 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C96718C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:00:11 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-26b47df332eso1259053a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:00:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=monstr-eu.20230601.gappssmtp.com; s=20230601; t=1693926011; x=1694530811; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iPvJLoyycJ8FP0yyR5An9IwotXlbUbPD3qnANIFUgNA=;
+        b=2NpsyeMsbx5CPvLbZPXTkvCPiiHWIUWyM3/EYeLIk4Qdvk+LqH6ntbDzC/vOxTAzC4
+         Ftak/dd72WLSm1nSIBqDBTOcbfv9TV696fbL2HJ2tXLvriEq0D7agwzOZNADgniGMaNM
+         lKH2K3kDa5kIyzR/FhTFVh572clFJTPhb4Amh48oghpdzdqFBmjQ4xlrjeGWf+Oc50MM
+         S4tKLAcdyqYyKpBFyTupSHViNIDpCYxcQT8+R5WYqJnE0YZb1/rBnZqm+Wv2T/TYCgwK
+         dKGP33Nxb5TEnFKCT3S286OZBPDsbfiYzxpwHY7DDKnSVwfFfXSMy9KI+zYJj2RWxZca
+         j/vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693926011; x=1694530811;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=iPvJLoyycJ8FP0yyR5An9IwotXlbUbPD3qnANIFUgNA=;
+        b=llHHXcZNFkbtQCiXpUPqbOP4iiH0uEiCzPpbDWT8n8Z+St9opYSkcft170kJJgcpEO
+         1SFFg8ZVlcmbPdwHISlwp94qcZOLMglR8guTUfAf3BBL9b2BICkU0Dy9VHlhWXeKrEzF
+         YEOqyYiyoPRdpDjekEEw8tM07BASzFutyFU0KDsPriZYq3QtEc7lHZTQaovq4cU6xQyq
+         UTFWRcRg9qZsZZpcLo29gPS9w5XGg1VYq3EgDZtMJ/KJp9PZUodfM3yf1TbtDBzNYApZ
+         0gZCvs0oq+PA1rFjYS7QBLtRGEm2jRqx5zIoPDDVEsPBRK+tFR+JblDtnIXm2Y9XNsZt
+         YvfA==
+X-Gm-Message-State: AOJu0YwTw4MjpK8AdW/Y6oBruc7xYFuXRmB3zDh3BSnV+nYA5erH2gtX
+        IbZTZ0TMvAlm+ncdarjDe7Oo/A==
+X-Google-Smtp-Source: AGHT+IFLFt+j2AJFVoUL8TgAiutUSWnl+6SJXEKxttZm/NKF0d5BCmFn4HM4lXV0/Smqx+T418+RIg==
+X-Received: by 2002:a17:90a:c90c:b0:269:2356:19fb with SMTP id v12-20020a17090ac90c00b00269235619fbmr9873947pjt.15.1693926010784;
+        Tue, 05 Sep 2023 08:00:10 -0700 (PDT)
+Received: from [192.168.137.2] ([149.199.80.128])
+        by smtp.gmail.com with ESMTPSA id h18-20020a170902eed200b001b8a1a25e6asm9410186plb.128.2023.09.05.08.00.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 08:00:09 -0700 (PDT)
+Message-ID: <6d8d829b-0ca5-8f8c-8b62-a9736b26b586@monstr.eu>
+Date:   Tue, 5 Sep 2023 16:59:43 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 179666 [Sep 05 2023]
-X-KSMG-AntiSpam-Version: 5.9.59.0
-X-KSMG-AntiSpam-Envelope-From: mmkurbanov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 530 530 ecb1547b3f72d1df4c71c0b60e67ba6b4aea5432, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;lore.kernel.org:7.1.1;salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/09/05 13:24:00
-X-KSMG-LinksScanning: Clean, bases: 2023/09/05 13:24:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/09/05 12:20:00 #21804326
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Content-Language: en-US
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   Michal Simek <monstr@monstr.eu>
+Subject: [GIT PULL] arch/microblaze patches for 6.6-rc1
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,NO_DNS_FOR_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        T_SPF_TEMPERROR autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Valid bitmask is 0x70 in the status register.
+Hi Linus,
 
-Fixes: a508e8875e13 ("mtd: spinand: Add initial support for Micron MT29F2G01ABAGD")
-Signed-off-by: Martin Kurbanov <mmkurbanov@sberdevices.ru>
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
----
-Changes v3 since v2 at [1]:
-  - Remove the commit for fixing OOB layout.
-  - Add Fixes tag.
+please pull these 3 patches to your tree. There should be other patches for 
+Microblaze to go through Andrew's tree.
 
-Changes v2 since v1 at [2]:
-  - Split into two individual patches.
-  - Remove the fix for using only non-protected ECC bytes from OOB area.
+Thanks,
+Michal
 
-Links:
-  [1] https://lore.kernel.org/all/20230822122534.872646-1-mmkurbanov@sberdevices.ru/
-  [2] https://lore.kernel.org/all/20230815161024.810729-1-mmkurbanov@sberdevices.ru/
+The following changes since commit 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5:
 
- drivers/mtd/nand/spi/micron.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+   Linux 6.5-rc1 (2023-07-09 13:53:13 -0700)
 
-diff --git a/drivers/mtd/nand/spi/micron.c b/drivers/mtd/nand/spi/micron.c
-index 50b7295bc922..12601bc4227a 100644
---- a/drivers/mtd/nand/spi/micron.c
-+++ b/drivers/mtd/nand/spi/micron.c
-@@ -12,7 +12,7 @@
+are available in the Git repository at:
 
- #define SPINAND_MFR_MICRON		0x2c
+   git://git.monstr.eu/linux-2.6-microblaze.git tags/microblaze-v6.6
 
--#define MICRON_STATUS_ECC_MASK		GENMASK(7, 4)
-+#define MICRON_STATUS_ECC_MASK		GENMASK(6, 4)
- #define MICRON_STATUS_ECC_NO_BITFLIPS	(0 << 4)
- #define MICRON_STATUS_ECC_1TO3_BITFLIPS	(1 << 4)
- #define MICRON_STATUS_ECC_4TO6_BITFLIPS	(3 << 4)
---
-2.40.0
+for you to fetch changes up to 0d2b49479bf91c857d83608da7b64328e556dff7:
 
+   microblaze: Make virt_to_pfn() a static inline (2023-08-23 09:35:22 +0200)
+
+----------------------------------------------------------------
+Microblaze patches for 6.6-rc1
+
+- Cleanup DT headers
+- Remove unused zalloc_maybe_bootmem()
+- Make virt_to_pfn() a static inline
+
+----------------------------------------------------------------
+Christophe Leroy (1):
+       microblaze: Remove zalloc_maybe_bootmem()
+
+Linus Walleij (1):
+       microblaze: Make virt_to_pfn() a static inline
+
+Rob Herring (1):
+       microblaze: Explicitly include correct DT includes
+
+  arch/microblaze/include/asm/page.h  | 27 ++++++++++++++------
+  arch/microblaze/include/asm/setup.h |  2 --
+  arch/microblaze/kernel/reset.c      |  1 -
+  arch/microblaze/mm/init.c           | 16 ------------
+  4 files changed, 19 insertions(+), 27 deletions(-)
+
+-- 
+Michal Simek, Ing. (M.Eng), OpenPGP -> KeyID: FE3D1F91
+w: www.monstr.eu p: +42-0-721842854
+Maintainer of Linux kernel - Xilinx Microblaze
+Maintainer of Linux kernel - Xilinx Zynq ARM and ZynqMP/Versal ARM64 SoCs
+U-Boot custodian - Xilinx Microblaze/Zynq/ZynqMP/Versal/Versal NET SoCs
+TF-A maintainer - Xilinx ZynqMP/Versal/Versal NET SoCs
