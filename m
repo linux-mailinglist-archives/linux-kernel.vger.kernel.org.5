@@ -2,142 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B225792AE3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2B7792AE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344471AbjIEQoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:44:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47038 "EHLO
+        id S1344390AbjIEQoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343636AbjIECl6 (ORCPT
+        with ESMTP id S1343644AbjIECmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 22:41:58 -0400
-Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C4E2CC9
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 19:41:50 -0700 (PDT)
-Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-57013c62b3dso1560376a12.2
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 19:41:50 -0700 (PDT)
+        Mon, 4 Sep 2023 22:42:36 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63563CC6;
+        Mon,  4 Sep 2023 19:42:33 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bc63e0d8cdso29990031fa.2;
+        Mon, 04 Sep 2023 19:42:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693881751; x=1694486551; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Nt6ay0ilUmrNIrakmOthvuLnYKcSlh/71zqVmBj/MNI=;
+        b=eAVqggZ4SYFDQkPgn4YOQuLjtL7pkRlt9fAwagRklY3YslyBOUJG5lhAAN2Xtqw6qe
+         mkkICwFL0xcSiR5qoSjXYHIYxDPNJR2+5SK38n46QfsU/9bkMTISu7cYWL5FgZLyfrKB
+         UI7oMix7gM55h7WuxDA39BjAGydhYLVAOHOAPIjuBxSYTJdbRa9lAQVxmpcH4TOxkUkQ
+         HMzCqo7fPHWjUw4+gUBup7+Rd33BmvqztccMDfGruovD1I1nif/0ewizy9Bl5a9/rYkA
+         +60GB4YNC9haEOc2eeTy2+1RjWcXVGYY7K6RADPh3uHfLycVypM1tjgzAxEjvXXTDxAw
+         /hXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693881710; x=1694486510;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4rel8C/D7Odl/6HR0dA8yx8orsYr6F/O5Rkd47PoIZI=;
-        b=cbOYWtADzioElRqxZI9YuIl1VhFuMcqU9c0GVVMAUhAxfTW4d1VxH8XPtPm7ZIPd28
-         NAbNyeMKYHZ/KtnjUSOOTbW35nFUAnYdjKeEO+7ADbn0kMs5qvMrK6vr6ZAI04APnmYj
-         FKPgaaevw0e8auCbBk+ABiKW3G9zreClGoeoBI58vlEFYk1REdD7DxtwAxAZwbbt+uln
-         Ew+j46JY0S2qPgaadz07e0ddC1vfQNhcnv2rqjuHD31FAMLuFyY/YaXZy4kL8lEzewKI
-         UqSXl1Q8zSFXvCQchPEPrUuzmXzSlgCMsQqwv1gDdUFRNE/yd2AE2SRc71vVm2qXwi78
-         PbSg==
-X-Gm-Message-State: AOJu0YwKOvjHCcoUzqyNyg2stF3uNWfbkiouilqWYNPtAbe+tG6WXmoB
-        YhYU403j6B7LY5zFzGK0W8gTiil1SU4TsCUPUpgRotwjUEj+
-X-Google-Smtp-Source: AGHT+IGW0pF60lKuZHOAJcmKE6HN4PYUeBmo0mzrxsM76DNHFjwYTiAIjApYnrJ1yttLxPBKU5Z3Gjv+vCKsyccE4kcwow3QL93C
+        d=1e100.net; s=20221208; t=1693881751; x=1694486551;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Nt6ay0ilUmrNIrakmOthvuLnYKcSlh/71zqVmBj/MNI=;
+        b=OVZAxkqjlUzQjiM22yszhNMPifMACktdH/Soke8zBmF42UNgtN1ipJE4iptpUDhYgG
+         R8tF9b63VqCmglZ2TnDy4t2TzJj1bxjFHTw5RslWqQNoIPfoAvfSHd+r27koGZ2HpIIn
+         XEy0MKm/rX33roKUSjcC+PKGrHpI35xUwY1hNwL1qtl2bb8cAyAlH9VjJIRQcUwNR9Mx
+         offW5AUK2+iUiy7nD71SFsH3gsg4nMToNd4CX/xkOIcZukN3JxRaO3L8W5nRThbV4ikB
+         3waKQ506FahqWsZRSlEeL7pe119sp5RIrmxOlLumdmvaEat1TVbMFPAl4FRZlNbUd2NO
+         eS1Q==
+X-Gm-Message-State: AOJu0Yxm7POxbvV6TipWyU1PFT/mBaMHLoOxMeyNgs02kJYWXK2TWq+i
+        yRbrjMJ/dGWF76AOT2kiStfbNds4vCK8uO5vwQhczOTOvvH5Gg==
+X-Google-Smtp-Source: AGHT+IGDYEM/D+VjDs53lbJVDTyoT0Bkv7iXApFmItzvgobWbxVZW0eXbIPiwJUhubc08jbCg8gVCb4oxy8r4PLOtqU=
+X-Received: by 2002:a2e:980a:0:b0:2bd:1ea9:f0fc with SMTP id
+ a10-20020a2e980a000000b002bd1ea9f0fcmr8939737ljj.21.1693881751359; Mon, 04
+ Sep 2023 19:42:31 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a63:2903:0:b0:564:aeb6:c383 with SMTP id
- bt3-20020a632903000000b00564aeb6c383mr2470013pgb.1.1693881710227; Mon, 04 Sep
- 2023 19:41:50 -0700 (PDT)
-Date:   Mon, 04 Sep 2023 19:41:50 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a13b2c06049391bf@google.com>
-Subject: [syzbot] [btrfs?] WARNING in __btrfs_run_delayed_items
-From:   syzbot <syzbot+90ad99829e4f013084b7@syzkaller.appspotmail.com>
-To:     clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20230812091708.34665-3-arinc.unal@arinc9.com> <abc44324-454c-4524-b05e-fe989755ea47@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com> <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com> <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com> <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com> <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+In-Reply-To: <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+From:   Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Date:   Mon, 4 Sep 2023 23:42:19 -0300
+Message-ID: <CAJq09z6eghuHY+b2y-kGmjKnLiEEOABXGKhjnB-PxJ=-GtYD4w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+To:     =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+> > [1] ...this. The SMI-controlled and MDIO-controlled Realtek switches are
+> > otherwise the same, right? So why would they have different dt-bindings?
+>
+> Honestly, I'm wondering the answer to this as well. For some reason, when
+> probing the SMI controlled Realtek switches, instead of just letting
+> dsa_switch_setup() populate ds->slave_mii_bus, on realtek_smi_setup_mdio()
+> on realtek-smi.c:
+>
+> - priv->slave_mii_bus is allocated.
+> - mdio_np = of_get_compatible_child(priv->dev->of_node, "realtek,smi-mdio");
+> - priv->slave_mii_bus->dev.of_node = mdio_np;
+> - ds->slave_mii_bus = priv->slave_mii_bus;
 
-syzbot found the following issue on:
+I might be able to help here. The Realtek SMI version created a custom
+slave_mii driver because it was the only way to associate it with an
+MDIO DT node. And that DT node was required to specify the interrupts
+for each phy0.
+It would work without that mdio node, letting DSA setup handle the
+slave bus, but it would rely only on polling for port status.
 
-HEAD commit:    b97d64c72259 Merge tag '6.6-rc-smb3-client-fixes-part1' of..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11e8d7dfa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=958c1fdc38118172
-dashboard link: https://syzkaller.appspot.com/bug?extid=90ad99829e4f013084b7
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+As we only have a single internal MDIO, the compatible string
+"realtek,smi-mdio" would not be necessary if the driver checks for a
+"mdio"-named child node. Maybe the code was just inspired by another
+DSA driver that uses more MDIO buses or external ones. The "mdio" name
+is suggested by docs since it was committed
+(https://www.kernel.org/doc/Documentation/devicetree/bindings/net/dsa/realtek-smi.txt).
+That name was also kept in the YAML translation
+(https://www.kernel.org/doc/Documentation/devicetree/bindings/net/dsa/realtek.yaml).
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The Realtek MDIO driver was merged at the same release that included
+the change that allows dsa_switch_setup() to reference the "mdio"
+OF-node if present. That way, it could avoid creating a custom
+slave_mii_bus driver.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/99875b49c50b/disk-b97d64c7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5bcacc1a3f5b/vmlinux-b97d64c7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/e2fe9c8de38a/bzImage-b97d64c7.xz
+I submitted a small series of patches to unify that behavior between
+those two drivers:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+90ad99829e4f013084b7@syzkaller.appspotmail.com
+https://lore.kernel.org/netdev/CAJq09z44SNGFkCi_BCpQ+3DuXhKfGVsMubRYE7AezJsGGOboVA@mail.gmail.com/
+(This is my answer to the series opening message to include the first
+paragraph ate by the editor)
 
-------------[ cut here ]------------
-BTRFS: Transaction aborted (error -17)
-WARNING: CPU: 0 PID: 3647 at fs/btrfs/delayed-inode.c:1158 __btrfs_run_delayed_items+0x3d3/0x430 fs/btrfs/delayed-inode.c:1158
-Modules linked in:
-CPU: 0 PID: 3647 Comm: syz-executor.2 Not tainted 6.5.0-syzkaller-08894-gb97d64c72259 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-RIP: 0010:__btrfs_run_delayed_items+0x3d3/0x430 fs/btrfs/delayed-inode.c:1158
-Code: fe c1 38 c1 0f 8c b5 fc ff ff 48 89 ef e8 f5 e3 42 fe e9 a8 fc ff ff e8 7b 2a e9 fd 48 c7 c7 e0 2a 4c 8b 89 de e8 5d dd af fd <0f> 0b e9 69 ff ff ff f3 0f 1e fa e8 5d 2a e9 fd 48 8b 44 24 10 42
-RSP: 0018:ffffc9001403f8f0 EFLAGS: 00010246
-RAX: 005f0d5eac152800 RBX: 00000000ffffffef RCX: ffff888026da1dc0
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffff888031242a00 R08: ffffffff8153f992 R09: 1ffff92002807e94
-R10: dffffc0000000000 R11: fffff52002807e95 R12: dffffc0000000000
-R13: ffff8880312429d8 R14: 0000000000000000 R15: ffff888031242a00
-FS:  00007f5361bdd6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffdbc30a6b8 CR3: 000000007bf09000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- btrfs_commit_transaction+0xf44/0x2ff0 fs/btrfs/transaction.c:2393
- create_snapshot+0x4a5/0x7e0 fs/btrfs/ioctl.c:845
- btrfs_mksubvol+0x5d0/0x750 fs/btrfs/ioctl.c:995
- btrfs_mksnapshot+0xb5/0xf0 fs/btrfs/ioctl.c:1041
- __btrfs_ioctl_snap_create+0x344/0x460 fs/btrfs/ioctl.c:1294
- btrfs_ioctl_snap_create+0x13c/0x190 fs/btrfs/ioctl.c:1321
- btrfs_ioctl+0xbbf/0xd40
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl+0xf8/0x170 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7f536a47cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f5361bdd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f536a59c050 RCX: 00007f536a47cae9
-RDX: 0000000020001200 RSI: 0000000050009401 RDI: 0000000000000007
-RBP: 00007f536a4c847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f536a59c050 R15: 00007fffdca166a8
- </TASK>
+There was some discussion but not NAC, ACK or RFC. It would have
+dropped some lines of code. I can revive it if there is interest.
 
+Regards,
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Luiz
