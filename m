@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1FC792BF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555F3792BCB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349026AbjIEREh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:04:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44684 "EHLO
+        id S239835AbjIERAa convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 13:00:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354126AbjIEJqI (ORCPT
+        with ESMTP id S1354127AbjIEJqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:46:08 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD4791AD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:46:04 -0700 (PDT)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3856L0ej015029;
-        Tue, 5 Sep 2023 04:45:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=PODMain02222019; bh=R1PXGn/5wGrB3Y7
-        MxvWTug+xiW8/98V2SY3ME2SCowg=; b=qbID/8r+ndv/7kvkjrQTTUay/Ti0zeT
-        CDh/JRWSNkCdGhk2Qh3CIA3aW5Vrrf5ece1hlUKCvSaYFNtGvJ+1OEQPaWXfrfTh
-        vTX5QJefj2qbTZ8SDISnWQR7pjrI7nqJUIIbl2Vaj6vxpUgzT90N3wODK9PmPrzF
-        0K5AM9q7j/h88SZRZF+CnDbbpbcZ8sooigQnG9rSqLS0tZCWtf1nY2uKF5PD5rh0
-        ajjNZqB48CjfJ7Y1c9UBuAJR3ZnD+74T1NKNnInxZnN4BIHB/8K8eCKkvMx1oOmd
-        a+yCvXgzSHyxC8qylT3s83iFI9b19zMNx50BsttBY7WaY9eLJxSyiKw==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3sv2ex3bun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 04:45:38 -0500 (CDT)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 5 Sep
- 2023 10:45:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
- Transport; Tue, 5 Sep 2023 10:45:35 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 5C1D911AA;
-        Tue,  5 Sep 2023 09:45:35 +0000 (UTC)
-Date:   Tue, 5 Sep 2023 09:45:35 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-CC:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "Liam Girdwood" <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Stefan Binding" <sbinding@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>, <kernel@collabora.com>
-Subject: Re: [PATCH 9/9] ASoC: cs35l41: Use devm_pm_runtime_enable()
-Message-ID: <20230905094535.GK103419@ediswmail.ad.cirrus.com>
-References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
- <20230902210621.1184693-10-cristian.ciocaltea@collabora.com>
+        Tue, 5 Sep 2023 05:46:16 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6A4871AD;
+        Tue,  5 Sep 2023 02:46:12 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 160B211FB;
+        Tue,  5 Sep 2023 02:46:50 -0700 (PDT)
+Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A8FD53F793;
+        Tue,  5 Sep 2023 02:46:10 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 10:46:08 +0100
+From:   Andre Przywara <andre.przywara@arm.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-phy@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH] phy: sun4i-usb: Fix a W=1 compilation failure
+Message-ID: <20230905104608.74490e60@donnerap.manchester.arm.com>
+In-Reply-To: <858ca657-3845-f65e-b9d8-9d7700e4a069@wanadoo.fr>
+References: <0bc81612171baaa6d5dff58c8e009debc03e1ba8.1693735840.git.christophe.jaillet@wanadoo.fr>
+        <20230904005855.658819b3@slackpad.lan>
+        <858ca657-3845-f65e-b9d8-9d7700e4a069@wanadoo.fr>
+Organization: ARM
+X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20230902210621.1184693-10-cristian.ciocaltea@collabora.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-ORIG-GUID: f05LQqp9LadCj4InE97tI91FBtGyZO61
-X-Proofpoint-GUID: f05LQqp9LadCj4InE97tI91FBtGyZO61
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Sep 03, 2023 at 12:06:21AM +0300, Cristian Ciocaltea wrote:
-> Simplify runtime PM during probe by converting pm_runtime_enable() to
-> the managed version.
+On Mon, 4 Sep 2023 19:57:33 +0200
+Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+
+Hi,
+
+> Le 04/09/2023 à 01:58, Andre Przywara a écrit :
+> > On Sun,  3 Sep 2023 12:11:06 +0200
+> > Christophe JAILLET <christophe.jaillet@wanadoo.fr> wrote:
+> >   
+> >> With gcc 12.3.0, when this file is built, we get errors such as:
+> >>
+> >> drivers/phy/allwinner/phy-sun4i-usb.c: In function ‘sun4i_usb_phy_probe’:
+> >> drivers/phy/allwinner/phy-sun4i-usb.c:790:52: error: ‘_vbus’ directive output may be truncated writing 5 bytes into a region of size between 2 and 12 [-Werror=format-truncation=]
+> >>    790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
+> >>        |                                                    ^~~~~
+> >> drivers/phy/allwinner/phy-sun4i-usb.c:790:17: note: ‘snprintf’ output between 10 and 20 bytes into a destination of size 16
+> >>    790 |                 snprintf(name, sizeof(name), "usb%d_vbus", i);
+> >>        |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> >>
+> >> Because of the possible value of 'i', this can't be an issue in real world  
+> > 
+> > Would using "u8 i;" help? After all currently there are only 4 PHYs
+> > max, and in general this isn't expected to be more than a "handful", so
+> > 8 bits should be plenty. An unsigned is better anyway.
+> > It leaves a bit of a bitter taste, though, as we shouldn't do this kind
+> > type tweaking, especially not to work around the compiler trying to be
+> > clever, but then not seeing the whole picture (that "i" is bounded by
+> > compile time constants not exceeding "4").  
 > 
-> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
-> ---
-> @@ -1376,7 +1379,6 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
->  	cancel_work_sync(&cs35l41->mdsync_up_work);
->  
->  	pm_runtime_get_sync(cs35l41->dev);
-> -	pm_runtime_disable(cs35l41->dev);
->  
->  	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
->  	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
+> data->cfg->num_phys is also an int, and having 'i' as an char is really 
+> unusual.
 
-Are we sure this is safe? The remove handler appears to be
-written to disable pm_runtime at the start presumably to stop the
-resume/suspend handler running during the remove callback.
-Whereas after this change the pm_runtime isn't disabled until
-after the remove callback has run. Does this open a window were
-we could get an erroneous pm_runtime suspend after the
-pm_runtime_put_noidle?
+So 'i' is just used as the phy index is this loop, nothing else in the
+function uses that. So we could just rename it to "idx" or even "phy_idx",
+then the u8 might look less odd?
 
-Thanks,
-Charles
+> So, if changing the size of name (only to waste some stack in order to 
+> silence a compiler warning) is not acceptable, I think that the best is 
+> to leave things as-is.
+
+But that's not really an option, is it? Since we normally don't tolerate
+warnings?
+
+And I am not against increasing the size, that's probably indeed the
+simplest solution, and given that it's indeed on the stack shouldn't
+affect much else. I just wanted to suggest an alternative, since the
+increased buffer size is not necessary.
+
+Cheers,
+Andre
+
+> > 
+> > Cheers,
+> > Andre
+> >   
+> >> application, but in order to have "make W=1" work correctly, give more
+> >> space for 'name'.
+> >>
+> >> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> >> ---
+> >>   drivers/phy/allwinner/phy-sun4i-usb.c | 2 +-
+> >>   1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/drivers/phy/allwinner/phy-sun4i-usb.c b/drivers/phy/allwinner/phy-sun4i-usb.c
+> >> index ec551464dd4f..e53a9a9317bc 100644
+> >> --- a/drivers/phy/allwinner/phy-sun4i-usb.c
+> >> +++ b/drivers/phy/allwinner/phy-sun4i-usb.c
+> >> @@ -782,7 +782,7 @@ static int sun4i_usb_phy_probe(struct platform_device *pdev)
+> >>   
+> >>   	for (i = 0; i < data->cfg->num_phys; i++) {
+> >>   		struct sun4i_usb_phy *phy = data->phys + i;
+> >> -		char name[16];
+> >> +		char name[32];
+> >>   
+> >>   		if (data->cfg->missing_phys & BIT(i))
+> >>   			continue;  
+> > 
+> >   
+> 
+
