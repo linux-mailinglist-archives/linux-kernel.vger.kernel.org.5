@@ -2,319 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 66879793029
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B003479302B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237491AbjIEUlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:41:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
+        id S234917AbjIEUlj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 16:41:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234150AbjIEUlE (ORCPT
+        with ESMTP id S231315AbjIEUli (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:41:04 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4CB4F4
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:40:59 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id 38308e7fff4ca-2bcb54226e7so3013181fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:40:59 -0700 (PDT)
+        Tue, 5 Sep 2023 16:41:38 -0400
+Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24942D8;
+        Tue,  5 Sep 2023 13:41:35 -0700 (PDT)
+Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1d4e0c2901bso1721735fac.0;
+        Tue, 05 Sep 2023 13:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693946458; x=1694551258; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BLvO1/quM6MRE3uT/W69Rv7/AXjyzxcKaiimJD/JpAA=;
-        b=dB1kijSZ3WPoZhoIp8bLfQpVw8SeMO88g4IZS4a+xP8pX6lweRYT9luSVqiKeirDrk
-         SEjeTsS5koLIwwLNYaepKcrZBstJN8a/Q3sxDill56KnTvtX0lZ8B1Dn/ABzEKWvT2mU
-         uqLoY8ibOw1cpxZz1SzsPPAKsqssXimXvEm6s=
+        d=gmail.com; s=20221208; t=1693946494; x=1694551294; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=lN8/blfhbXNk42zQ+dhE95HQtpdju1g6GvGHzJNaOwI=;
+        b=XaHZK+s9p+pOYVhF+3TOHD7pGcR8pGf6d0dh5VLMBWqUJ07S0uwB0+Hw6+KH39YT0B
+         zRw0nZu6tE+/bdjCywp4y7dUQWwvQPNlI1dB7vYlZEMpTFceZ+uIGs1pyqbEUwFUoOJW
+         TVk3ZPFOXKyrYR8MBwy3zWmOV4AJUuDyPN24QEbFpX5cXIu+ipAIWfpEwelnqfQ4X/rc
+         u0YxU4T8OaJsxT7eDJK2xg368tHDeS3+6HO62HCSnR4KZ8Is/Iehq/UaLEOPAIaTdX2w
+         wqlOU//5tKKNL0iMjSoapO9JovylAbLExCaK11QXr87rW7ZOkyhHtyf7nsi/Bq0iJeFJ
+         /0XA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693946458; x=1694551258;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BLvO1/quM6MRE3uT/W69Rv7/AXjyzxcKaiimJD/JpAA=;
-        b=GY9qTdrx6XIF8pOwHMbGhCu6OfB2Y4ctIgFB+vwfxwaPcWEqWmV53KWpeYLi9ceqzo
-         6mRsSa1OGYjUWsBEo2evvw2nj9NE9te9JCktmoOegv6/L41RWM10iOmokSp7hZ3KygVD
-         5zAyVlQR6vK56DKKRDyZEhcYKslGhfNzzC9Il5mVz4Wxcgy3DnHeXV78hC7UWKBw4VdW
-         sSp7++PhW/1Etj1UqsXiUNo3aHUHw+soXOb6ZFkg/xQy3Y+f5zWPRB1XQzNEn/01TlwX
-         +XQH4e4JXMpTyAdtAd9DfznC0Urshje0yx3PUVMBmyT+D4YovnJuoRWoyRtPPQVjOo1/
-         wh8A==
-X-Gm-Message-State: AOJu0YyoP6dj4yc0ULN/jE16WxzxLMr1F+Uy+GizMFgU6s5UYCGTkT9J
-        Id8Qg5N/IfhzbWWpsAQxlaNCFqeBO2kbSsWSihwldg==
-X-Google-Smtp-Source: AGHT+IH19giFhG1mVRTADa3fgVZBwaCPWbDiRO3Ex/IHfhZ8HZtV8jv/v/l53tuJdS8JE7lRk65d2SmhtaiNnJdad4I=
-X-Received: by 2002:a2e:b5af:0:b0:2bc:b63c:e823 with SMTP id
- f15-20020a2eb5af000000b002bcb63ce823mr291067ljn.22.1693946457960; Tue, 05 Sep
- 2023 13:40:57 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693946494; x=1694551294;
+        h=cc:to:subject:message-id:date:from:references:in-reply-to
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=lN8/blfhbXNk42zQ+dhE95HQtpdju1g6GvGHzJNaOwI=;
+        b=ObKiImq6Z/HEXQlIUyb6vMQwmUG2BjUZmdXsAz1caLmELVqNPhGu4dbreEjsrV7xzg
+         vfMVl02jJx67BAeRMKwjw/8vew63i1+79wyFPAOGzqe4wrJQQJP81/+tH8vZQfam23sP
+         GM8k5NZXk4G9JV70Nth+E3u5EFCuPx3J8bCfzJjXisG3rRruPsNdtIfolctwyrkL5rZj
+         wBkmWNiMoVs8ymmRXA8r2H77iFbNTmGCMqcyzlkFf9ZrKgprQHZ092YPn/USHal78cY8
+         IS9vevtEH2hFnb5Ec+v6RCMEaUr8H2Kspmf/XmzyXQRGaJt+JxzjGXtYZL4b3KE6KW8M
+         WNKA==
+X-Gm-Message-State: AOJu0YwCB5f1R9kzSG3TOhQCAWE03vWzSib7uSRcYTo41aD6RpqjyWS2
+        gcEPOaqY6bCd8Frz8AK8ENbgnKPJeAtKiyzqWb6k8eJt
+X-Google-Smtp-Source: AGHT+IFfcSyC12XlgmDD1sbRygiarzs/SN/Tb4fwGhnuRiCcbIPOCV/x7fIYwZdm3uYJFjQOXN4vF8JxITpXs5jQUnQ=
+X-Received: by 2002:a05:6870:a11e:b0:1c3:c43d:838 with SMTP id
+ m30-20020a056870a11e00b001c3c43d0838mr18588532oae.39.1693946494387; Tue, 05
+ Sep 2023 13:41:34 -0700 (PDT)
 MIME-Version: 1.0
-References: <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
- <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com> <f4e8d869-401b-43f0-a326-52522730fb17@paulmck-laptop>
- <228160e9-96f1-6d1c-06c7-a5336dc93536@efficios.com> <b79eb142-67b2-48f0-9ad9-f9b634491e09@paulmck-laptop>
- <c312066b2cc44919bd11b6cd938cb05f@AcuMS.aculab.com> <ce51b768-9988-197c-0c35-7574aba77810@efficios.com>
- <abe14f37-ec05-48c3-87fc-9294848d221f@paulmck-laptop> <83422425-0534-4b12-a6e4-8068b7164a17@paulmck-laptop>
- <d2a3456b-aee9-f5b0-f8e4-5c5030c3217f@efficios.com> <b561c3a9-dc70-4c3d-b561-3f24398b01d8@paulmck-laptop>
-In-Reply-To: <b561c3a9-dc70-4c3d-b561-3f24398b01d8@paulmck-laptop>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Tue, 5 Sep 2023 16:40:46 -0400
-Message-ID: <CAEXW_YSe=s9S8OirDJARPvOrGUNXVPBkhucx5iKysjVk=AcLYg@mail.gmail.com>
-Subject: Re: [PATCH v2] The value may overflow
-To:     paulmck@kernel.org
-Cc:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        David Laight <David.Laight@aculab.com>,
-        Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "trufanov@swemel.ru" <trufanov@swemel.ru>,
-        "vfh@swemel.ru" <vfh@swemel.ru>, ldufour@linux.ibm.com
+Received: by 2002:ac9:745a:0:b0:4f0:1250:dd51 with HTTP; Tue, 5 Sep 2023
+ 13:41:33 -0700 (PDT)
+In-Reply-To: <CAHk-=wgjyGX3OVDtzJW6Oh2ukviXtJYi9+7eJW75DgX+d673iw@mail.gmail.com>
+References: <20230830140315.2666490-1-mjguzik@gmail.com> <CAHk-=wgADyL9i8r1=YkRTehKG8T89TzqAFMXDJV1Ag+_4_25Cw@mail.gmail.com>
+ <CAGudoHH95OKVgf0jW5pz_Nt2ab0HTnt3H9hbmU=aSHozOS5B0Q@mail.gmail.com>
+ <CAHk-=wh+=W2k1V_0Om=_=QpPAN_VgHzdZ4FLXSfcyTSK7xo0Eg@mail.gmail.com>
+ <CAHk-=wg6bzTdQHSsswHPYFUbb1DfszyWTZ97hZv7bYxaNHVkHw@mail.gmail.com>
+ <20230903204858.lv7i3kqvw6eamhgz@f> <CAHk-=wjYOZf2wPj_=arATJ==DQQAQwh0ki=Za0RcE542rWBGFw@mail.gmail.com>
+ <ZPT/LzkPR/jaiaDb@gmail.com> <CAHk-=wh1hi-HnBQRu9_ALQL-fbhyn_go+2c9FajO26khf2dsTw@mail.gmail.com>
+ <CAGudoHG1_r1B0pz6-HUqb6AfbAgWHxBy+TnimvQtwLLqkKtchA@mail.gmail.com>
+ <CAHk-=wjM6KwAvC9+sCAm9BgBSspZm60VBLzHcuonGcHrPKJrbw@mail.gmail.com>
+ <CAHk-=whnEF7-+DL+71wVgnJG1xjeHAQjzqMAULgQq_uhWfP0ZA@mail.gmail.com>
+ <CAGudoHENT1yPBD=+xAUTzWxL+iro8CE3+hHLtYiU6j3cCv7PPA@mail.gmail.com> <CAHk-=wgjyGX3OVDtzJW6Oh2ukviXtJYi9+7eJW75DgX+d673iw@mail.gmail.com>
+From:   Mateusz Guzik <mjguzik@gmail.com>
+Date:   Tue, 5 Sep 2023 22:41:33 +0200
+Message-ID: <CAGudoHEXyYSZj-7=3Xss=65jGyX4Lq=R-BdbnmGKJwSS8QznSw@mail.gmail.com>
+Subject: Re: [PATCH v2] x86: bring back rep movsq for user access on CPUs
+ without ERMS
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, bp@alien8.de
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 4:13=E2=80=AFPM Paul E. McKenney <paulmck@kernel.org=
-> wrote:
+On 9/4/23, Linus Torvalds <torvalds@linux-foundation.org> wrote:
+> On Sun, 3 Sept 2023 at 23:03, Mateusz Guzik <mjguzik@gmail.com> wrote:
+>>
+>> Worst case if the 64 bit structs differ one can settle for
+>> user-accessing INIT_STRUCT_STAT_PADDING.
 >
-> On Tue, Sep 05, 2023 at 03:36:40PM -0400, Mathieu Desnoyers wrote:
-> > On 9/5/23 15:27, Paul E. McKenney wrote:
-> > > On Tue, Sep 05, 2023 at 09:40:51AM -0700, Paul E. McKenney wrote:
-> > > > On Tue, Sep 05, 2023 at 10:34:43AM -0400, Mathieu Desnoyers wrote:
-> > > > > On 9/5/23 10:15, David Laight wrote:
-> > > > > > ...
-> > > > > > > That would instead be more than 512-16=3D496 CPUs, correct?  =
-496 CPUs would
-> > > > > > > only require a 31-bit shift, which should be OK, but 497 woul=
-d require
-> > > > > > > a 32-bit shift, which would result in sign extension.  If it =
-turns out
-> > > > > > > that sign extension is OK, then we should get in trouble at 5=
-13 CPUs,
-> > > > > > > which would result in a 33-bit shift (and is that even define=
-d in C?).
-> > > > > >
-> > > > > > Not quite right :-)
-> > > > > >
-> > > > > > (1 << 31) is int and negative, that gets sign extended before
-> > > > > > being converted to 'unsigned long' - so has the top 33 bits set=
-.
-> > > >
-> > > > Good point, thank you for the correction.
-> > > >
-> > > > > > (1 << 32) is undefined, the current x86 cpu ignore the high
-> > > > > > shift bits so it is (1 << 0).
-> > > >
-> > > > Which would cause it to attempt to invoke SRCU callbacks on the
-> > > > lowest-numbered CPU associated with that srcu_node structure.
-> > > >
-> > > > > Yes, I was about to reply the same thing. A shift of 31 is buggy,
-> > > > > because shifting 1 << 31 raises the sign bit, which sets the top =
-33
-> > > > > bits when cast to unsigned long. A shift of 1 << 32 is undefined,
-> > > > > with for instance x86 choosing to ignore the top bit.
-> > > > >
-> > > > > But in order to have a 1 << 31 shift from this expression:
-> > > > >
-> > > > >                  sdp->grpmask =3D 1 << (cpu - sdp->mynode->grplo)=
-;
-> > > > >
-> > > > > I *think* we need the group to have 32 cpus or more (indexed with=
-in
-> > > > > the group from grplo to grplo + 31 (both inclusive)).
-> > > > >
-> > > > > So as soon as we have one group with 32 cpus, the problem should =
-show
-> > > > > up. With FANOUT_LEAF=3D16, we can have 15 groups of 31 cpus and 1
-> > > > > group of 32 cpus, for:
-> > > > >
-> > > > >    15*31 + 32 =3D 497 cpus.
-> > > > >
-> > > > > AFAIU, this would be the minimum value for smp_processor_id()+1 w=
-hich
-> > > > > triggers this issue.
-> > > >
-> > > > By default, there are 16 CPUs per leaf srcu_node structure.  Each l=
-eaf
-> > > > srcu_node structure takes up one bit in the parent srcu_node struct=
-ures'
-> > > > srcu_data_have_cbs[] array.  Up to 30 bits is OK, 31 bits is questi=
-onable,
-> > > > and 32 bits and larger erroneous.
-> > > >
-> > > > This is the situation as I see it (assuming dense CPU numbering):
-> > > >
-> > > >   # Leaf srcu_node                Largest
-> > > >   structures      #CPUs           CPU #           Status
-> > > >
-> > > >   0-30            0-480           479             Good
-> > > >   31              481-496         495             Questionable
-> > > >   32-             497-            496+            Bad.
-> > > >
-> > > > Tree SRCU differs from Tree RCU in its operation, so this bug shoul=
-d
-> > > > not hold up SRCU grace periods.  It might instead cause SRCU callba=
-cks
-> > > > to be ignored (which would admittedly look quite similar to the use=
-r).
-> > > >
-> > > > My attempts to cheat the numbering system ran up against the limite=
-d
-> > > > height of the srcu_node tree.
-> > > >
-> > > > But there is still the question of why this has not been seen in th=
-e
-> > > > wild, given that there really are systems with more than 479 CPUs
-> > > > out there.  One possibility is the call to srcu_schedule_cbs_sdp()
-> > > > from srcu_funnel_gp_start().  But it does not seem likely that this
-> > > > would happen all that often, as it requires back-to-back grace peri=
-ods
-> > > > and then some.
-> > > >
-> > > > Maybe people with large systems boot with srcutree.convert_to_big=
-=3D0?
-> > > >
-> > > > Adding Laurent for his thoughts.
-> > > >
-> > > > Aha!
-> > > >
-> > > > Here is what makes it work, given David's description of 1<<32:
-> > > >
-> > > > static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct s=
-rcu_node *snp,
-> > > >                             unsigned long mask, unsigned long delay=
-)
-> > > > {
-> > > >   int cpu;
-> > > >
-> > > >   for (cpu =3D snp->grplo; cpu <=3D snp->grphi; cpu++) {
-> > > >           if (!(mask & (1 << (cpu - snp->grplo))))
-> > > >                   continue;
-> > > >           srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> > > >   }
-> > > > }
-> > > >
-> > > > As long as at least one bit is set in the result of 1<<N, and as lo=
-ng
-> > > > as the compiler always does the same thing for a given N, then this=
- loop
-> > > > will make the right thing happen.
-> > > >
-> > > > But even that is not relied upon, because the calling code looks li=
-ke
-> > > > this:
-> > > >
-> > > >                   spin_lock_irq_rcu_node(snp);
-> > > >                   cbs =3D false;
-> > > >                   last_lvl =3D snp >=3D sup->level[rcu_num_lvls - 1=
-];
-> > > >                   if (last_lvl)
-> > > >                           cbs =3D ss_state < SRCU_SIZE_BIG || snp->=
-srcu_have_cbs[idx] =3D=3D gpseq;
-> > > >                   snp->srcu_have_cbs[idx] =3D gpseq;
-> > > >                   rcu_seq_set_state(&snp->srcu_have_cbs[idx], 1);
-> > > >                   sgsne =3D snp->srcu_gp_seq_needed_exp;
-> > > >                   if (srcu_invl_snp_seq(sgsne) || ULONG_CMP_LT(sgsn=
-e, gpseq))
-> > > >                           WRITE_ONCE(snp->srcu_gp_seq_needed_exp, g=
-pseq);
-> > > >                   if (ss_state < SRCU_SIZE_BIG)
-> > > >                           mask =3D ~0;
-> > > >                   else
-> > > >                           mask =3D snp->srcu_data_have_cbs[idx];
-> > > >                   snp->srcu_data_have_cbs[idx] =3D 0;
-> > > >                   spin_unlock_irq_rcu_node(snp);
-> > > >                   if (cbs)
-> > > >                           srcu_schedule_cbs_snp(ssp, snp, mask, cbd=
-elay);
-> > > >
-> > > > So that last_lvl check means that the srcu_schedule_cbs_snp() funct=
-ion
-> > > > is invoked only for leaf srcu_node structures.  Which by default li=
-mit
-> > > > the shift to 16.
-> > > >
-> > > > So this bug appears to have no effect for default RCU setups, even =
-on very
-> > > > large 64-bit systems, which is consistent with field experience.  E=
-ven if
-> > > > this is the case, it still should be fixed, to avoid confusion if n=
-othing
-> > > > else.  Or just in case someone decides to set CONFIG_RCU_FANOUT_LEA=
-F=3D32.
-> > > > Which actually happened the other day due to someone trusting ChatG=
-PT's
-> > > > opinion about RCU Kconfig options...
-> > >
-> > > And I therefore queued Denis's v3 patch with an edited commit log.
-> > > Of course, if anyone sees some other way that the bug could manifest
-> > > other than in a 64-bit kernel built with CONFIG_RCU_FANOUT_LEAF great=
-er
-> > > than 30 on a system with at least 31 CPUs, please let me know so that
-> > > I can adjust.
-> > >
-> > >                                                     Thanx, Paul
-> > >
-> > > ---------------------------------------------------------------------=
----
-> > >
-> > > commit ed083b0e22f1396dee3599896249a3f218845298
-> > > Author: Denis Arefev <arefev@swemel.ru>
-> > > Date:   Mon Sep 4 15:21:14 2023 +0300
-> > >
-> > >      Fix srcu_struct node grpmask overflow on 64-bit systems
-> > >      The value of an arithmetic expression 1 << (cpu - sdp->mynode->g=
-rplo)
-> >
-> > AFAIU, the overflow resides in the "bitwise expression" and not
-> > the arithmetic expression.
+> As I said, try it. I think you'll find that you are wrong.  It's
+> _hard_ to get the padding right. The "use a temporary" model of the
+> current code makes the fallback easy - just clear it before copying
+> the fields. Without that, you have to get every architecture padding
+> right manually.
 >
-> Rather than quibble about exactly what constitutes arithmetic, I
-> updated the first paragraph and added your Reviewed-by as shown
-> below.  ;-)
->
-> > Other than this, please add my
-> >
-> > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->
-> Thank you all!!!
->
-> ------------------------------------------------------------------------
->
-> commit 50477ff756ab99402b1523b7c6be8b5d790d05e7
-> Author: Denis Arefev <arefev@swemel.ru>
-> Date:   Mon Sep 4 15:21:14 2023 +0300
->
->     Fix srcu_struct node grpmask overflow on 64-bit systems
->
->     The value of a bitwise expression 1 << (cpu - sdp->mynode->grplo)
->     is subject to overflow due to a failure to cast operands to a larger
->     data type before performing the bitwise operation.
->
->     The maximum result of this subtraction is defined by the RCU_FANOUT_L=
-EAF
->     Kconfig option, which on 64-bit systems defaults to 16 (resulting in =
-a
->     maximum shift of 15), but which can be set up as high as 64 (resultin=
-g
->     in a maximum shift of 63).  A value of 31 can result in sign extensio=
-n,
->     resulting in 0xffffffff80000000 instead of the desired 0x80000000.
->     A value of 31 or greater triggers undefined behavior per the C standa=
-rd.
 
-Do you mean here "A value of 32 or greater"?
+See below for an unrelated patch. ;)
 
-Only N >=3D 32 throws warning for:
-unsigned long foo =3D (1 << N);
+In the worst case user-accessing INIT_STRUCT_STAT_PADDING would simply
+have these padding assignments spelled out, like you had to do anyway
+in your patch (among other things) and which already happens with
+existing code for x86-64. The code would not be fully optimized due to
+"bad" ordering, but the implementation would avoid escaping fs/stat.c
+which imo justifies it.
 
-N=3D31 does undesirable sign extension but no warning.
+I said my $0,03 on the matter twice, I don't think this convo is
+getting anywhere or that it is particularly important.
 
-thanks,
+With that out of the way:
 
- - Joel
+Earlier you attached a patch to check for an empty path early, that
+was a nice win but can result in duplicated smap trips for nasty
+software.
+
+Then you mentioned doing the check after the name is fully copied in,
+which I incorrectly dismissed from the get go -- mentally I had a
+state from $elsewhere where it would require patching namei. But in
+Linux this is not the case:
+
+        name = getname_flags(filename,
+getname_statx_lookup_flags(statx_flags), NULL);
+        ret = vfs_statx(dfd, name, statx_flags, stat, STATX_BASIC_STATS);
+        putname(name);
+
+So something like this:
+
+@@ -312,7 +314,15 @@ int vfs_fstatat(int dfd, const char __user *filename,
+        struct filename *name;
+
+        name = getname_flags(filename,
+getname_statx_lookup_flags(statx_flags), NULL);
+-       ret = vfs_statx(dfd, name, statx_flags, stat, STATX_BASIC_STATS);
++       /*
++        * Hack: ugliness below damage controls glibc which reimplemented fstat
++        * on top of newfstatat(fd, "", buf, AT_EMPTY_PATH). We still pay for
++        * kmalloc and user access, but elide lockref.
++        */
++       if (name->name[0] == '\0' && flags == AT_EMPTY_PATH && dfd >= 0)
++               ret = vfs_fstat(dfd, stat);
++       else
++               ret = vfs_statx(dfd, name, statx_flags, stat,
+STATX_BASIC_STATS);
+        putname(name);
+
+        return ret;
+
+Previous numbers:
+> stock fstat     5088199
+> patched fstat   7625244 (+49%)
+> real fstat      8540383 (+67% / +12%)
+
+while moving the check lower:
+patchedv2 fstat 6253694 (+22%)
+
+So quite a bit slower than the hackiest variant, but avoids the double
+smap problem for cases passing AT_EMPTY_PATH and a non-"" name.
+
+I think this is a justifiable patch, can submit properly formatted
+(this is copy pasted into gmail, sorry). Alternatively since it is
+trivial and it was your idea feel free to take it or reimpement or
+whatever in similar vein.
+
+-- 
+Mateusz Guzik <mjguzik gmail.com>
