@@ -2,99 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 92975792C96
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D5BA792CA3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238215AbjIERkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:40:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57020 "EHLO
+        id S236791AbjIERnU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:43:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239423AbjIERjQ (ORCPT
+        with ESMTP id S229448AbjIERma (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 13:39:16 -0400
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B38E36950
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 10:14:07 -0700 (PDT)
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-1d4e0c29028so1460281fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 10:14:07 -0700 (PDT)
+        Tue, 5 Sep 2023 13:42:30 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BD83EDC3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 10:21:32 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-68bec3a9bdbso1515166b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 10:21:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxtx.org; s=google; t=1693933906; x=1694538706; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1693934391; x=1694539191; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aKkV/gdpVbXWeDor+5ZiimyzgnnKqYGNlXMHbycLo6g=;
-        b=PIFP6jCQQVc123Msh8lgfyZSlNP0DPcmoAIN3f3cpH8es8msPLaTuWQ7nDMXxb3Fkp
-         gg+HrtSGBPMrB7NQ96R2iqVo8Qiozy4/KYvfBVUFUMdJP2//A8jqrHtOaoEveGj3i2ac
-         p06VLJYoEpKlapA7AEnGhrBlpj/BQMu/geRl4=
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YhofM3bw/D7JmLHAqAOlbfqpJqObIGkow5TCG1+iH+E=;
+        b=ySyp72u+Q8Uds/M4sd6BWAAw4gFXAMy7BQtgWnhBprPBMDsDLC30pPdFl2LQ6a6p1Z
+         xcRJT6yBt6bO25atJctms6eHxJIdkLbcfyHLiJTZYyqJA/wXBjjhi2jR83cTKJyQ3aOZ
+         GozpbjvWvtfrX+14CXx71izY8Y6YMCti+6heVC9hZKJmLKgVbE1rQFkYehSq6y2tZvTQ
+         ccz7drKXc1dQvMavRpjvR3691jit1QdL9vi7Qn4cCUQrvqW+AX7oHPmXKXyVQKo7QCGS
+         EPzPKXELa5yh/EKxuDJ7ZTlitEc/AEb2ESxHiEppOMTj94ZfAgF+BA/CyDLYdq9fp6Rl
+         OWZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693933906; x=1694538706;
+        d=1e100.net; s=20221208; t=1693934391; x=1694539191;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aKkV/gdpVbXWeDor+5ZiimyzgnnKqYGNlXMHbycLo6g=;
-        b=TcEzrBXMc980ApqXljSnH08IKsm74hM97mgEU0frzmtr2WVvNTD7OU13m+jWSwibpR
-         35IKJ1TP23HsxT/UDmnRYsh+2ACsTJIP3Qa0aHtJDV3v/JhcppQVGRy9XY4nueRBg6ds
-         twvzDS+w9cfPAoR7KGFNHsLp6KH+muBJ+HpzrqH9yB8Uil43jQRsK3UlvV7Y5kMkWgn4
-         yJXDk8UjklqBksdIMqDbG5cGnXK+hazXI7lQ2bX9U15y/WCtVukyURbyO/Yay8cE45j9
-         5Isdpk4mWl7i2mJUnGeQx6Wm00Wjb3pbVeWr+KjkIma1j6m2dASglwN8xNTpRjCsmY7X
-         1VWw==
-X-Gm-Message-State: AOJu0Yy7TarSarOKUDNtuCSQsGVvWz1f/UTqr4jIZopaKcztewvklqWA
-        q97aB3deGmkPHDCOlSAux24t/w==
-X-Google-Smtp-Source: AGHT+IEzhtU1JZMoj8kA++Rihq9U3PC0Oyza2Z9UchGDwNwhqqyrJHcKEMD0nUuF32FRQAGsyfAr5A==
-X-Received: by 2002:a05:6870:78e:b0:1bb:9c27:c7e6 with SMTP id en14-20020a056870078e00b001bb9c27c7e6mr16121041oab.41.1693933906036;
-        Tue, 05 Sep 2023 10:11:46 -0700 (PDT)
-Received: from fedora64.linuxtx.org ([99.47.93.78])
-        by smtp.gmail.com with ESMTPSA id g1-20020a056870c38100b001bb919237cesm6736729oao.3.2023.09.05.10.11.45
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YhofM3bw/D7JmLHAqAOlbfqpJqObIGkow5TCG1+iH+E=;
+        b=JQ8vIAO7IFLSvuYj5YGJKKiWSSdI9QpvoaxMc0BTDN6vrKUNzL6ri+7bgldiWKDxrL
+         kQHv65UXLrv3mD84tz2PsgrdCvHYXvisy4dOLOtJ2DSJM7mr2OGqEdhdzknptSqS5cCG
+         BquFfhqpmafXNsCidFiN7+aRWkiVZWuUgGnV0yn1gN+UuR8WvVQzj0IIMDBJZaQwEQ7G
+         9OY/tJNVtmsw6qUXLmiH08PjAxGax+ew1SdGKkdhgJLgzk6UOYXehcxuxGp9Q4ooCDFb
+         5hzGi4FWoTLTexfjeJzxbkRFsdQOnfWD8Gf1x/UqTjy3xpZJzke+KfvvDtue8UxYhRj1
+         fY0Q==
+X-Gm-Message-State: AOJu0YxIMp0MAU32COrOVxI3FVx8spueyaazumMCfwOOFyixHJfDkPwD
+        g/kazB0uU1Jfx4h51D3Rb/4o8A==
+X-Google-Smtp-Source: AGHT+IH2ivAZ9iS1818zKelhz3wBhZbxoKMEE8BbGKoPj91HSOz21S6fFF52/HYoHSuAyRzbHDCxig==
+X-Received: by 2002:a05:6a20:9183:b0:14e:3ba7:2933 with SMTP id v3-20020a056a20918300b0014e3ba72933mr13666725pzd.54.1693934390760;
+        Tue, 05 Sep 2023 10:19:50 -0700 (PDT)
+Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
+        by smtp.gmail.com with ESMTPSA id e1-20020a170902744100b001bb988ac243sm9532247plt.297.2023.09.05.10.19.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 10:11:45 -0700 (PDT)
-Sender: Justin Forbes <jmforbes@linuxtx.org>
-Date:   Tue, 5 Sep 2023 12:11:44 -0500
-From:   Justin Forbes <jforbes@fedoraproject.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Subject: Re: [PATCH 6.5 00/34] 6.5.2-rc1 review
-Message-ID: <ZPdhUB3R/vYp+zxz@fedora64.linuxtx.org>
-References: <20230904182948.594404081@linuxfoundation.org>
+        Tue, 05 Sep 2023 10:19:49 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 17:19:45 +0000
+From:   Carlos Llamas <cmllamas@google.com>
+To:     Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc:     gregkh@linuxfoundation.org, arve@android.com, tkjos@android.com,
+        maco@android.com, joel@joelfernandes.org, brauner@kernel.org,
+        surenb@google.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] binderfs: fix typo in binderfs.c
+Message-ID: <ZPdjMXdDBxYRwNA7@google.com>
+References: <20230903204250.2697370-1-visitorckw@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230904182948.594404081@linuxfoundation.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <20230903204250.2697370-1-visitorckw@gmail.com>
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023 at 07:29:47PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.2 release.
-> There are 34 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Mon, Sep 04, 2023 at 04:42:50AM +0800, Kuan-Wei Chiu wrote:
+> The word "wich"
+> was corrected to "which" for spelling accuracy.
 > 
-> Responses should be made by Wed, 06 Sep 2023 18:29:29 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> ---
+>  drivers/android/binderfs.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
+> diff --git a/drivers/android/binderfs.c b/drivers/android/binderfs.c
+> index 81effec17b3d..ae2a8413ec12 100644
+> --- a/drivers/android/binderfs.c
+> +++ b/drivers/android/binderfs.c
+> @@ -93,7 +93,7 @@ bool is_binderfs_device(const struct inode *inode)
+>  /**
+>   * binderfs_binder_device_create - allocate inode from super block of a
+>   *                                 binderfs mount
+> - * @ref_inode: inode from wich the super block will be taken
+> + * @ref_inode: inode from which the super block will be taken
+>   * @userp:     buffer to copy information about new device for userspace to
+>   * @req:       struct binderfs_device as copied from userspace
+>   *
+> -- 
+> 2.25.1
 > 
-> thanks,
-> 
-> greg k-h
 
-Tested rc1 against the Fedora build system (aarch64, ppc64le, s390x,
-x86_64), and boot tested x86_64. No regressions noted.
+Thanks,
 
-Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
+Acked-by: Carlos Llamas <cmllamas@google.com>
