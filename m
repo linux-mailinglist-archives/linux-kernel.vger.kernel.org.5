@@ -2,94 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DEE792A93
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70C4792707
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:34:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243394AbjIEQjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55748 "EHLO
+        id S237372AbjIEQEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:04:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353621AbjIEGyW (ORCPT
+        with ESMTP id S1353627AbjIEG4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 02:54:22 -0400
-Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA7ACC7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 23:54:18 -0700 (PDT)
-Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52a5c0d949eso2796234a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Sep 2023 23:54:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693896857; x=1694501657; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CnhlhLhE/Awy7OSGd1LKlGWZhliLjEnOAa8ccfaPRH4=;
-        b=BwFZjPsPIoA4J4JCdvGGGWdNQw9G4bMX5mJRvtHMlyB+XvcZKsbmNE5WS4oSklcOBe
-         1LVGixYBSvVroZpcYFZEDOu6TysKd4gSXgkM9LP5f0RCRbxYnO80y5bfO89nKTILkoHP
-         EtSZt8mjPTIMrllnoFzWWDC+umSQHRkG3+44A9scor8fdIFUzSKm/mhPQM4O5gIIUzut
-         XXBc+CyLx4dr+PY6cHFh9BkjCM+gsxpCAHsZtQkoYaY3E6Hs936Hs3P/7Hu+EA4Dg6Fc
-         WRMLphgw4KTeNw8hNCO55XTLCuyAXsr9IDv9LCBZhyYkAb+IhUALcQxaB0AbY+7ShEoa
-         DdCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693896857; x=1694501657;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CnhlhLhE/Awy7OSGd1LKlGWZhliLjEnOAa8ccfaPRH4=;
-        b=ZOaS0w5pfqKunlbO0016LmzinzVGoXlOuUJ6/jR/I87exu/4tmO8YaNLwcjsmue+pM
-         /U1S7747FuxOnJF3WiHoGsWG338V2Ns1BCwZGYV35PbW7F7NioiZphJ6bs2R/wIDAqvh
-         bV76ObAUF3UqbgyDV9puUyFsL64YHdzGg2mpbTu8Pk5M+VPOJ5lkpWlwPZfgL3GG4bcX
-         P9q/YySLj+Sh2IRNbqulhztH7NNSq3+0o9ZwwtzT2wGSb6xRxfJabzEPJmGdlfJ1C8qb
-         rU9YUVEu43wnOyO5RdUfW85m8ZhKNdRGpAmo/XhLdjc/jGZzatbMEcdZMYKC92lvWb0t
-         S2LA==
-X-Gm-Message-State: AOJu0YyMwaTyHHAS5U+v13iS2VYCPvjcBWXr9Pfgk992Jm3V0r5OAbeP
-        umdZ/Tf+zWvFkyeKDesWMV2h/A==
-X-Google-Smtp-Source: AGHT+IEnUt712GLa7l6H3ls8ICRUbtE/Y6r3iAIzhxkPkhXkmuW0uCxLL9ywUhnD4fUrSBpo+16v7w==
-X-Received: by 2002:a17:907:2cf1:b0:9a5:cb18:3b11 with SMTP id hz17-20020a1709072cf100b009a5cb183b11mr8093371ejc.17.1693896857246;
-        Mon, 04 Sep 2023 23:54:17 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id g24-20020a170906395800b00992e265495csm7161204eje.212.2023.09.04.23.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Sep 2023 23:54:16 -0700 (PDT)
-Message-ID: <f348a896-93dc-8181-adfe-77ff73ae6c3a@linaro.org>
-Date:   Tue, 5 Sep 2023 08:54:15 +0200
+        Tue, 5 Sep 2023 02:56:37 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF29C1B4
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 23:56:32 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 131296607186;
+        Tue,  5 Sep 2023 07:56:31 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693896991;
+        bh=JHqTWW5qePWPrhtaEWzXFcu5nWOXVqNpQrMkThmLz/4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=gXixS2oxgFajfNPpnj8TqPqK4DT50LybyGhv7lKfhjj80d+yqd9ItXHUN71KsYAlr
+         aKMf8QXxJIetgIMqYIkudi7Kv6evw14qne1/CzuIbYeYYNQGQgLBX6F1bLBksSlYHS
+         Z5nLd9OSc6XUcibJXIlfXk0+3oh3KbKb02lzsqaWhncLjj5pBKXhyEoW5q2xML78yI
+         3ZZAFJJ9dYbdz14X2c19AjxRuiNNk2ZDt/xv60yEuuzeh/DkwoT5rmTC06+nczwfGb
+         h5DtzfKFDJC9OwY5INqI007hbfhqHMs0y4QhaH3hP/wxUrQqWYABBGhdodi2hspmjX
+         Z0gN5TgrHt6Ig==
+Date:   Tue, 5 Sep 2023 08:56:28 +0200
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v16 11/20] drm/shmem-helper: Use refcount_t for
+ pages_use_count
+Message-ID: <20230905085628.4cf50ace@collabora.com>
+In-Reply-To: <20230903170736.513347-12-dmitry.osipenko@collabora.com>
+References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
+        <20230903170736.513347-12-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 4/5] dt-bindings: usb: dwc3: Add SDX75 compatible
-Content-Language: en-US
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, konrad.dybcio@linaro.org, vkoul@kernel.org,
-        kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
-        quic_wcheng@quicinc.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kernel@quicinc.com
-References: <1693889028-6485-1-git-send-email-quic_rohiagar@quicinc.com>
- <1693889028-6485-5-git-send-email-quic_rohiagar@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <1693889028-6485-5-git-send-email-quic_rohiagar@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2023 06:43, Rohit Agarwal wrote:
-> Document the SDX75 dwc3 compatible.
+On Sun,  3 Sep 2023 20:07:27 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> Use atomic refcount_t helper for pages_use_count to optimize pin/unpin
+> functions by skipping reservation locking while GEM's pin refcount > 1.
 > 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> Suggested-by: Boris Brezillon <boris.brezillon@collabora.com>
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 > ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c  | 35 +++++++++++--------------
+>  drivers/gpu/drm/lima/lima_gem.c         |  2 +-
+>  drivers/gpu/drm/panfrost/panfrost_mmu.c |  2 +-
+>  include/drm/drm_gem_shmem_helper.h      |  2 +-
+>  4 files changed, 19 insertions(+), 22 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 7e1e674e2c9f..a0faef3e762d 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -152,12 +152,12 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  			sg_free_table(shmem->sgt);
+>  			kfree(shmem->sgt);
+>  		}
+> -		if (shmem->pages) {
+> +		if (refcount_read(&shmem->pages_use_count)) {
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+As explained in my v15 review, I'm not convinced this is the right
+thing to do. We should instead move the
+drm_gem_shmem_put_pages_locked() call in the preceding 'if (shmem->sgt)'
+block, because the sgt creation logic is where this implicit pages ref
+was taken. If shmem->sgt == NULL, there's no reason to call
+drm_gem_shmem_put_pages_locked() and we should let the following
+drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count)) complain.
 
-Best regards,
-Krzysztof
+Besides, I don't think this change should be part of the
+uint -> refcount_t conversion.
+
+>  			drm_gem_shmem_put_pages_locked(shmem);
+>  			drm_WARN_ON(obj->dev, !shmem->got_pages_sgt);
+>  		}
+>  
+> -		drm_WARN_ON(obj->dev, shmem->pages_use_count);
+> +		drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+>  
+>  		dma_resv_unlock(shmem->base.resv);
+>  	}
+> @@ -174,14 +174,13 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
+>  
+>  	dma_resv_assert_held(shmem->base.resv);
+>  
+> -	if (shmem->pages_use_count++ > 0)
+> +	if (refcount_inc_not_zero(&shmem->pages_use_count))
+>  		return 0;
+>  
+>  	pages = drm_gem_get_pages(obj);
+>  	if (IS_ERR(pages)) {
+>  		drm_dbg_kms(obj->dev, "Failed to get pages (%ld)\n",
+>  			    PTR_ERR(pages));
+> -		shmem->pages_use_count = 0;
+>  		return PTR_ERR(pages);
+>  	}
+>  
+> @@ -197,6 +196,8 @@ static int drm_gem_shmem_get_pages_locked(struct drm_gem_shmem_object *shmem)
+>  
+>  	shmem->pages = pages;
+>  
+> +	refcount_set(&shmem->pages_use_count, 1);
+> +
+>  	return 0;
+>  }
+>  
+> @@ -212,21 +213,17 @@ void drm_gem_shmem_put_pages_locked(struct drm_gem_shmem_object *shmem)
+>  
+>  	dma_resv_assert_held(shmem->base.resv);
+>  
+> -	if (drm_WARN_ON_ONCE(obj->dev, !shmem->pages_use_count))
+> -		return;
+> -
+> -	if (--shmem->pages_use_count > 0)
+> -		return;
+> -
+> +	if (refcount_dec_and_test(&shmem->pages_use_count)) {
+>  #ifdef CONFIG_X86
+> -	if (shmem->map_wc)
+> -		set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+> +		if (shmem->map_wc)
+> +			set_pages_array_wb(shmem->pages, obj->size >> PAGE_SHIFT);
+>  #endif
+>  
+> -	drm_gem_put_pages(obj, shmem->pages,
+> -			  shmem->pages_mark_dirty_on_put,
+> -			  shmem->pages_mark_accessed_on_put);
+> -	shmem->pages = NULL;
+> +		drm_gem_put_pages(obj, shmem->pages,
+> +				  shmem->pages_mark_dirty_on_put,
+> +				  shmem->pages_mark_accessed_on_put);
+> +		shmem->pages = NULL;
+> +	}
+>  }
+>  EXPORT_SYMBOL_GPL(drm_gem_shmem_put_pages_locked);
+>  
+> @@ -553,8 +550,8 @@ static void drm_gem_shmem_vm_open(struct vm_area_struct *vma)
+>  	 * mmap'd, vm_open() just grabs an additional reference for the new
+>  	 * mm the vma is getting copied into (ie. on fork()).
+>  	 */
+> -	if (!drm_WARN_ON_ONCE(obj->dev, !shmem->pages_use_count))
+> -		shmem->pages_use_count++;
+> +	drm_WARN_ON_ONCE(obj->dev,
+> +			 !refcount_inc_not_zero(&shmem->pages_use_count));
+>  
+>  	dma_resv_unlock(shmem->base.resv);
+>  
+> @@ -642,7 +639,7 @@ void drm_gem_shmem_print_info(const struct drm_gem_shmem_object *shmem,
+>  		return;
+>  
+>  	drm_printf_indent(p, indent, "pages_pin_count=%u\n", refcount_read(&shmem->pages_pin_count));
+> -	drm_printf_indent(p, indent, "pages_use_count=%u\n", shmem->pages_use_count);
+> +	drm_printf_indent(p, indent, "pages_use_count=%u\n", refcount_read(&shmem->pages_use_count));
+>  	drm_printf_indent(p, indent, "vmap_use_count=%u\n", shmem->vmap_use_count);
+>  	drm_printf_indent(p, indent, "vaddr=%p\n", shmem->vaddr);
+>  }
+> diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+> index ec8f718aa539..4be2fccbf6d9 100644
+> --- a/drivers/gpu/drm/lima/lima_gem.c
+> +++ b/drivers/gpu/drm/lima/lima_gem.c
+> @@ -47,8 +47,8 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
+>  		}
+>  
+>  		bo->base.pages = pages;
+> -		bo->base.pages_use_count = 1;
+>  		bo->base.got_pages_sgt = true;
+> +		refcount_set(&bo->base.pages_use_count, 1);
+>  
+>  		mapping_set_unevictable(mapping);
+>  	}
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> index 7771769f0ce0..a91252053aa3 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
+> @@ -487,7 +487,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
+>  			goto err_unlock;
+>  		}
+>  		bo->base.pages = pages;
+> -		bo->base.pages_use_count = 1;
+> +		refcount_set(&bo->base.pages_use_count, 1);
+>  	} else {
+>  		pages = bo->base.pages;
+>  		if (pages[page_offset]) {
+> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
+> index 1cd74ae5761a..bd545428a7ee 100644
+> --- a/include/drm/drm_gem_shmem_helper.h
+> +++ b/include/drm/drm_gem_shmem_helper.h
+> @@ -37,7 +37,7 @@ struct drm_gem_shmem_object {
+>  	 * Reference count on the pages table.
+>  	 * The pages are put when the count reaches zero.
+>  	 */
+> -	unsigned int pages_use_count;
+> +	refcount_t pages_use_count;
+>  
+>  	/**
+>  	 * @pages_pin_count:
 
