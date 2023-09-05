@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A444A792B3D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B4179272C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245120AbjIEQuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
+        id S241657AbjIEQKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352448AbjIEFsV (ORCPT
+        with ESMTP id S1352453AbjIEFsX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 01:48:21 -0400
+        Tue, 5 Sep 2023 01:48:23 -0400
 Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5D312E;
-        Mon,  4 Sep 2023 22:48:18 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D29812E;
+        Mon,  4 Sep 2023 22:48:19 -0700 (PDT)
 Received: from authenticated-user (box.trvn.ru [194.87.146.52])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by box.trvn.ru (Postfix) with ESMTPSA id 6338B4243A;
-        Tue,  5 Sep 2023 10:48:08 +0500 (+05)
+        by box.trvn.ru (Postfix) with ESMTPSA id ECA5742444;
+        Tue,  5 Sep 2023 10:48:11 +0500 (+05)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-        t=1693892889; bh=94WYtO7i7RiviKXkVzwc9KKusQ2/IejlQ7IgqMIIY1A=;
+        t=1693892892; bh=wAuaJLhjPcRFdx6t9Gz0AhRtHiLNO8hfsMHaHITa5So=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=Xxobzq4e56Z/axil1YXKVBtmxkgQnPwkEmrYnwH4JP96sEru1rhQ+GT+qo096OK+k
-         5uc2zPZkW9193QUh/xbQgo2Y3Fzane4PrIt2RulTpWIQ33f6TZgAR/ehXuwdlgli+U
-         l9l9k5caZSoHl6aBJjM0sM4LlFUo8rJw1guiKhzhdq6IyZPbUGyCw5q6BqxwiDM0PI
-         G6JYliotfKeMJ+TC4pDnR+y3ypfH7GZNMIxCk8PFnAmTjVEE3tFeX/211DnR4FYbFk
-         rSUj9o429TiPMOZVxt3Ekh00AyRrcTK1Ozdo97NzbErXQBWLZN0WuemkafUFPW92Jm
-         el3wcGpbMKckw==
+        b=YVElSKZjLW727lxP8uVtwgKmze3bpUkpnM1SCcAYY+5HZMeDnta7TgXVaha6rKdsJ
+         DrCO4ZqV7rPu3qFpGIH8GJzwd37S7gcoFUOFMTsY9vxs5G+rgEEN2qRpnVfBpksBPe
+         Axtxu1IGY7Tqn9yX/Np7JJADklr6dTwa7/r9nELknwfJ39yzAXddYvtz5IxO0veKpN
+         XlqYRb/1IvEp+5WDJJ3cqH49CLHTOlxdTUNYa+dVboQtj3ZuuzDRUEyMjjZwpRUoEq
+         f1ouxpkYjdJXEYMd8nLGruEReZkX4GmOYnuUW7jt/UmAhZK/Phy1sk/BPvhZoLLNSM
+         iECXRjwIP6lKw==
 From:   Nikita Travkin <nikita@trvn.ru>
-Date:   Tue, 05 Sep 2023 10:47:22 +0500
-Subject: [PATCH 3/4] arm64: dts: qcom: sc7180: Add tertiary mi2s pinctrl
+Date:   Tue, 05 Sep 2023 10:47:23 +0500
+Subject: [PATCH 4/4] arm64: dts: qcom: sc7180: Add ADSP
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230905-sc7180-adsp-rproc-v1-3-dfea7699da7b@trvn.ru>
+Message-Id: <20230905-sc7180-adsp-rproc-v1-4-dfea7699da7b@trvn.ru>
 References: <20230905-sc7180-adsp-rproc-v1-0-dfea7699da7b@trvn.ru>
 In-Reply-To: <20230905-sc7180-adsp-rproc-v1-0-dfea7699da7b@trvn.ru>
 To:     Andy Gross <agross@kernel.org>,
@@ -52,20 +52,20 @@ Cc:     David Wronek <davidwronek@gmail.com>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         ~postmarketos/upstreaming@lists.sr.ht,
         Nikita Travkin <nikita@trvn.ru>
-X-Developer-Signature: v=1; a=openpgp-sha256; l=900; i=nikita@trvn.ru;
- h=from:subject:message-id; bh=94WYtO7i7RiviKXkVzwc9KKusQ2/IejlQ7IgqMIIY1A=;
- b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBk9sESU0L+EdBYL1kTsdO/1Nw58Zav86S5JiNIZ
- sYf2KS7ViuJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZPbBEgAKCRBDHOzuKBm/
- dRKWD/4tG5iumQ0FRqT3xRYJEgsOGxa+st3+/TACrblG7ryPFTIWqnOED4TWIpvi0TJJrMjTCRB
- G8LvRpgheE8jzdoHQ8Ma1b1WWx4NDBQh/Ugw64KbuMZSjju7ZX4sRdKc2kmntTibyy2/RADNdRy
- +vxPlCbk65DqbmWkmihIM0NGvjidajE55CJDUv2Oq2aquuAQ29n3kW2t3H22rhqb3GSJa0xzmlS
- UYVWr8i9zuCr0H/KnmxAybAes41nUJTRFvL37ZI49w7hlbeoqwQvD5UuKfmpSRPus2sfMEPCs9C
- TDHR6y9wH5TfDfE7qIbBIhAYMz+KX2LTCmhSrh5BhIxyN5FVezovQXG5xp0QMNwYpnhFA4A0Hh4
- Qtu2AaMrWt15laoELeLr1G25qGEP0i5bw05PLzGmZHcsR7mk5Ro7YvcgbIlQUxF4ZBG134yrxYh
- eB7PxCP7qyFR8zslOntNYqNnwYch+JZ+VkYjHjrk0eMC1GdM72Dj9ZOCtjU/LCYRnZpEBFDlnb9
- iQXej1cyWLIr4H4fdqvMK82NgSkF0yGS2llkxkRskZW5sjfjm8xeBSg8AqEN/bwL0gFPfHh33YO
- DRgOqHoPZ7b8EU7UL6soVCc0JOkAVLzNAdAC8yRo7WUOngqnaIVCJk32sjHcqXYHrpdxdsyT9p8
- za68eIcLj6TMmHQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4272; i=nikita@trvn.ru;
+ h=from:subject:message-id; bh=wAuaJLhjPcRFdx6t9Gz0AhRtHiLNO8hfsMHaHITa5So=;
+ b=owEBbQKS/ZANAwAIAUMc7O4oGb91AcsmYgBk9sETu7ptQNZMsIhrHe2sebPNY5ZWc8nampQd1
+ MqDNP0vwOqJAjMEAAEIAB0WIQTAhK9UUj+qg34uxUdDHOzuKBm/dQUCZPbBEwAKCRBDHOzuKBm/
+ dXgKD/sF0PRhjkDK5pa/Bq73qltDf6YNa4veyquiRzUDlIQbD8+mpocQUC1V8mrMk8b7WM99Jea
+ SEB56pTz47IxmZRP2KTb0aPHws8ZWvtU2LiBam1HjUQJ/ZVcpd6qUdgUEURFtxErZsxOXNAyxZU
+ pxYgBTLIPum0mQCCRX+jWYQYlUbj94E0uT5VKSPOpkBNOly5vFQnDbYnHgB8HevtQJcAg9tb48Z
+ zxacix3nXaBtrZxOTy0bTfM0UoGgp31J0E9ObfO1FLTIydUWWEYq6M1qKgaRQ46gnkmnkDqPNwy
+ N7i4XsR5zYmMz6bkiaXbqyefUEn4eGL0Tkr/OLSAwjfUMQMSxNwgQt389ztG/EOLnQC8SmKiaL5
+ WtgvA269NyM9eSvzpdnA3icXZJlXDZZhoK44uB/tSm94Slr/JiA1MsHQheKYA/0zI06UVIEHNp/
+ KI82iZEn9EOmIDht3gHpOVQO9E2WK4RQd+lmsdvt4GXEHqAeP03H7MNQJkspoiyavABi4vr5OHD
+ la2Wq3rFmDnm9ZqcYs4U3xSFBh2JriUeXlyzE96Vd2ZVzttFT23n12FOSOUN1jb9cQdcJ/AqgXV
+ lyVKn/OUyvBSwyfKNHAywpIfMc4WsJSlideTBPEugtNR56VUXPLpUWFse0AEyU/IzJZ11xL0Uvv
+ AFwnMQSet4dFbXg==
 X-Developer-Key: i=nikita@trvn.ru; a=openpgp;
  fpr=C084AF54523FAA837E2EC547431CECEE2819BF75
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -77,31 +77,156 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some devices use tertiary mi2s to connect external audio codec.
-Add it near the other two i2s pinctrl definitions so the devices don't
-have to duplicate it.
+sc7180 has an ADSP remoteproc that exclusively controls the audio
+hardware on devices that use Qualcomm firmware.
+
+Add it along with the relevant audio services.
 
 Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 ---
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/arm64/boot/dts/qcom/sc7180.dtsi | 122 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 122 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index a79c0f2e1879..9f68b5ff0030 100644
+index 9f68b5ff0030..30c58186900a 100644
 --- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
 +++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2033,6 +2033,11 @@ sec_mi2s_active: sec-mi2s-active-state {
- 				function = "mi2s_1";
- 			};
+@@ -20,6 +20,8 @@
+ #include <dt-bindings/reset/qcom,sdm845-aoss.h>
+ #include <dt-bindings/reset/qcom,sdm845-pdc.h>
+ #include <dt-bindings/soc/qcom,rpmh-rsc.h>
++#include <dt-bindings/soc/qcom,apr.h>
++#include <dt-bindings/sound/qcom,q6afe.h>
+ #include <dt-bindings/thermal/thermal.h>
  
-+			ter_mi2s_active: ter-mi2s-active-state {
-+				pins = "gpio63", "gpio64", "gpio65", "gpio66";
-+				function = "mi2s_2";
-+			};
+ / {
+@@ -3781,6 +3783,126 @@ wifi: wifi@18800000 {
+ 			status = "disabled";
+ 		};
+ 
++		remoteproc_adsp: remoteproc@62400000 {
++			compatible = "qcom,sc7180-adsp-pas";
++			reg = <0 0x62400000 0 0x100>;
 +
- 			pri_mi2s_active: pri-mi2s-active-state {
- 				pins = "gpio53", "gpio54", "gpio55", "gpio56";
- 				function = "mi2s_0";
++			interrupts-extended = <&intc GIC_SPI 162 IRQ_TYPE_EDGE_RISING>,
++					      <&adsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
++					      <&adsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
++					      <&adsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
++					      <&adsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>;
++			interrupt-names = "wdog",
++					  "fatal",
++					  "ready",
++					  "handover",
++					  "stop-ack";
++
++			clocks = <&rpmhcc RPMH_CXO_CLK>;
++			clock-names = "xo";
++
++			power-domains = <&rpmhpd SC7180_LCX>,
++					<&rpmhpd SC7180_LMX>;
++			power-domain-names = "lcx", "lmx";
++
++			qcom,qmp = <&aoss_qmp>;
++			qcom,smem-states = <&adsp_smp2p_out 0>;
++			qcom,smem-state-names = "stop";
++
++			status = "disabled";
++
++			glink-edge {
++				interrupts = <GIC_SPI 156 IRQ_TYPE_EDGE_RISING>;
++				label = "lpass";
++				qcom,remote-pid = <2>;
++				mboxes = <&apss_shared 8>;
++
++				apr {
++					compatible = "qcom,apr-v2";
++					qcom,glink-channels = "apr_audio_svc";
++					qcom,apr-domain = <APR_DOMAIN_ADSP>;
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					apr-service@3 {
++						reg = <APR_SVC_ADSP_CORE>;
++						compatible = "qcom,q6core";
++						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++					};
++
++					q6afe: apr-service@4 {
++						compatible = "qcom,q6afe";
++						reg = <APR_SVC_AFE>;
++						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++
++						q6afedai: dais {
++							compatible = "qcom,q6afe-dais";
++							#address-cells = <1>;
++							#size-cells = <0>;
++							#sound-dai-cells = <1>;
++						};
++
++						q6afecc: cc {
++							compatible = "qcom,q6afe-clocks";
++							#clock-cells = <2>;
++						};
++					};
++
++					q6asm: apr-service@7 {
++						compatible = "qcom,q6asm";
++						reg = <APR_SVC_ASM>;
++						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++
++						q6asmdai: dais {
++							compatible = "qcom,q6asm-dais";
++							#address-cells = <1>;
++							#size-cells = <0>;
++							#sound-dai-cells = <1>;
++							iommus = <&apps_smmu 0x1001 0x0>;
++						};
++					};
++
++					q6adm: apr-service@8 {
++						compatible = "qcom,q6adm";
++						reg = <APR_SVC_ADM>;
++						qcom,protection-domain = "avs/audio", "msm/adsp/audio_pd";
++
++						q6routing: routing {
++							compatible = "qcom,q6adm-routing";
++							#sound-dai-cells = <0>;
++						};
++					};
++				};
++
++				fastrpc {
++					compatible = "qcom,fastrpc";
++					qcom,glink-channels = "fastrpcglink-apps-dsp";
++					label = "adsp";
++					#address-cells = <1>;
++					#size-cells = <0>;
++
++					compute-cb@3 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <3>;
++						iommus = <&apps_smmu 0x1003 0x0>;
++					};
++
++					compute-cb@4 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <4>;
++						iommus = <&apps_smmu 0x1004 0x0>;
++					};
++
++					compute-cb@5 {
++						compatible = "qcom,fastrpc-compute-cb";
++						reg = <5>;
++						iommus = <&apps_smmu 0x1005 0x0>;
++						qcom,nsessions = <5>;
++					};
++				};
++			};
++		};
++
+ 		lpasscc: clock-controller@62d00000 {
+ 			compatible = "qcom,sc7180-lpasscorecc";
+ 			reg = <0 0x62d00000 0 0x50000>,
 
 -- 
 2.41.0
