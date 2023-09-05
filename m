@@ -2,202 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B75C2792525
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65E127924C3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234895AbjIEQBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:01:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55426 "EHLO
+        id S232709AbjIEP7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 11:59:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354333AbjIEKrU (ORCPT
+        with ESMTP id S1354362AbjIELAj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:47:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C8519B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693910790;
+        Tue, 5 Sep 2023 07:00:39 -0400
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45C7B12A;
+        Tue,  5 Sep 2023 04:00:35 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DC1F22000E;
+        Tue,  5 Sep 2023 11:00:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+        t=1693911633;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KDobuVmsHf6VbTCDGPgqLnhe8HEWnYtAH71GRAdCw84=;
-        b=Z07qXoNbzkJOBA5N3RmnBjieYhyU0Jt2ujSCwEhQjCvPAN9sVPwYJ/6gRgSOGwuuCCOLwr
-        73kV0R9TqSOKBJWDrJd9BBnxnLOc1OSXxsrBuiOnAeh1ww1FPHxP3ZZuBNznug5jduAD3o
-        z+dLmae1oITSHRwWQrC8ee10RtkOdcc=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-642-7rejvRzKNzGk5yDPopRCpQ-1; Tue, 05 Sep 2023 06:46:29 -0400
-X-MC-Unique: 7rejvRzKNzGk5yDPopRCpQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9a1c4506e1eso39121766b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:46:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693910788; x=1694515588;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KDobuVmsHf6VbTCDGPgqLnhe8HEWnYtAH71GRAdCw84=;
-        b=HviZ/PdQcoKmqCivw6MZzGYG+syGSFNGqWDJ3bC7H3Et9AZYVhtgQnBKayuwzoz0Um
-         THH5uIuu7hywdLSFWUNswuNVkaecS4H7hihInhppXuWWCr0y7liHxbmF+HbA2U7QwJIY
-         cXF1EZTbw5JVHRbtzkiyjrTpnfhcDXczkmyOy3ET+se8pjBMkaAG3pE8CS11zdZ7S97r
-         85GXUqyhkcDRzcytN4NDZ1AsOEpJSZcyAnmEknsUSZpgdYQF7q7WPlcUJrNglXdKFx6t
-         sNQUMsue+/4ebG2noMzX2Wr2Hy0EupHaeqowDHUYxy19OBi+Nh2S91oxbS/XZzfoNK3X
-         MyEw==
-X-Gm-Message-State: AOJu0Yz9TG5wR36rPxWvXLCFq3ZdbF5HAM3Yb8o7h8U1cx9veXNcnBtJ
-        tmAxP2pTexU+1t9fZAdp2Zk5S+HFKD/E4UA5WwS9rHuLlUV8Au9VerZOa8xznqvNp0SAq1DOELS
-        ZthrPPKaznHlTg2nFzmUdhLcYd+vzDkfu
-X-Received: by 2002:a17:906:1d9:b0:9a5:ce62:6e1a with SMTP id 25-20020a17090601d900b009a5ce626e1amr9074525ejj.1.1693910788542;
-        Tue, 05 Sep 2023 03:46:28 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHVP0e7U+C7DkOymIDEKc3tYHSdF8TqbQ0M/RyNmnZKDwX7FgEegi976Dw6DLG26KofkHwMIg==
-X-Received: by 2002:a17:906:1d9:b0:9a5:ce62:6e1a with SMTP id 25-20020a17090601d900b009a5ce626e1amr9074509ejj.1.1693910788209;
-        Tue, 05 Sep 2023 03:46:28 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-254-194.dyn.eolo.it. [146.241.254.194])
-        by smtp.gmail.com with ESMTPSA id qw17-20020a170906fcb100b0099d798a6bb5sm7469193ejb.67.2023.09.05.03.46.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 03:46:27 -0700 (PDT)
-Message-ID: <c1437313a3fea94a66d33f7bf97f363c77838359.camel@redhat.com>
-Subject: Re: [PATCH v4] drivers/net: process the result of hdlc_open() and
- add call of hdlc_close() in uhdlc_close()
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Alexandra Diupina <adiupina@astralinux.ru>,
-        Zhao Qiang <qiang.zhao@nxp.com>
-Cc:     "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        bh=vYzf4PHEoghXFdMmCHAIIQGECn1QD3BWvIxyh4qMpVg=;
+        b=b4qq1/Q1XTOsh7nK+KHIVbBxbzwl/avkrWEXgKOU2B+Pj2K6R2wBhChiSGk4Zu6IuZM9QG
+        JCkh12kBuPNaYmUpT+Auid5rRkeOQZIJWiOGxBeuI4uoU6BARODxPVO3OT2dFqeQohREd9
+        2LoT+xQwnHIyxXD//Skg6vsAXfBsChtx+E1yd2x9EN4X14piSf8DElXn19XSXTMoSIC4S7
+        7DaQqiu/W03BQK8ZqYHsYbZ+uXdcK7+sjJbuEuAc9sNu62H96AGoUDMYHHiECZ6FVFGjIP
+        HarvB3RK0ZrrkTB5/8oQ5V2y6C56O44zgBf/2JCfP+E8RdfZwaFYtaPjAoVv9w==
+Message-ID: <03d3341b-be77-4b25-bec2-fcae91a549d3@arinc9.com>
+Date:   Tue, 5 Sep 2023 14:00:21 +0300
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: net: dsa: document internal MDIO bus
+To:     Luiz Angelo Daros de Luca <luizluca@gmail.com>
+Cc:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
-Date:   Tue, 05 Sep 2023 12:46:26 +0200
-In-Reply-To: <1005f190-8c03-bb5d-214c-c7fca9dd876b@csgroup.eu>
-References: <20230904123130.14099-1-adiupina@astralinux.ru>
-         <1005f190-8c03-bb5d-214c-c7fca9dd876b@csgroup.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?UTF-8?Q?Alvin_=C5=A0ipraga?= <alsi@bang-olufsen.dk>,
+        Daniel Golle <daniel@makrotopia.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
+        erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20230812091708.34665-3-arinc.unal@arinc9.com>
+ <abc44324-454c-4524-b05e-fe989755ea47@arinc9.com>
+ <47b61929-5c2d-4906-b153-2046a94858c8@arinc9.com>
+ <20230813112026.ohsx6srbt2staxma@skbuf>
+ <8a8e14f1-0493-4298-a2cc-6e7ae7929334@arinc9.com>
+ <20230813190157.4y3zoro53qsz43pe@skbuf>
+ <f5f468c1-b5a2-4336-b1d9-fd82da95b21d@arinc9.com>
+ <20230814143601.mnpxtcm2zybnbvoh@skbuf>
+ <0cee0928-74c9-4048-8cd8-70bfbfafd9b2@arinc9.com>
+ <20230827121235.zog4c3ehu2cyd3jy@skbuf>
+ <676d1a2b-6ffa-4aff-8bed-a749c373f5b3@arinc9.com>
+ <CAJq09z6eghuHY+b2y-kGmjKnLiEEOABXGKhjnB-PxJ=-GtYD4w@mail.gmail.com>
+Content-Language: en-US
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <CAJq09z6eghuHY+b2y-kGmjKnLiEEOABXGKhjnB-PxJ=-GtYD4w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: arinc.unal@arinc9.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2023-09-04 at 17:03 +0000, Christophe Leroy wrote:
->=20
-> Le 04/09/2023 =C3=A0 14:31, Alexandra Diupina a =C3=A9crit=C2=A0:
-> > diff --git a/drivers/net/wan/fsl_ucc_hdlc.c b/drivers/net/wan/fsl_ucc_h=
-dlc.c
-> > index 47c2ad7a3e42..fd999dabdd39 100644
-> > --- a/drivers/net/wan/fsl_ucc_hdlc.c
-> > +++ b/drivers/net/wan/fsl_ucc_hdlc.c
-> > @@ -34,6 +34,8 @@
-> >   #define TDM_PPPOHT_SLIC_MAXIN
-> >   #define RX_BD_ERRORS (R_CD_S | R_OV_S | R_CR_S | R_AB_S | R_NO_S | R_=
-LG_S)
-> >  =20
-> > +static int uhdlc_close(struct net_device *dev);
-> > +
-> >   static struct ucc_tdm_info utdm_primary_info =3D {
-> >   	.uf_info =3D {
-> >   		.tsa =3D 0,
-> > @@ -731,7 +733,9 @@ static int uhdlc_open(struct net_device *dev)
-> >   		napi_enable(&priv->napi);
-> >   		netdev_reset_queue(dev);
-> >   		netif_start_queue(dev);
-> > -		hdlc_open(dev);
-> > +
-> > +		int rc =3D hdlc_open(dev);
->=20
-> Do not mix declarations and code. Please put all declaration at the top=
-=20
-> of the block.
->=20
-> > +		return rc =3D=3D 0 ? 0 : (uhdlc_close(dev), rc);
-> >   	}
->=20
-> That's not easy to read.
->=20
-> I know that's more changes, but I'd prefer something like:
->=20
-> static int uhdlc_open(struct net_device *dev)
-> {
-> 	u32 cecr_subblock;
-> 	hdlc_device *hdlc =3D dev_to_hdlc(dev);
-> 	struct ucc_hdlc_private *priv =3D hdlc->priv;
-> 	struct ucc_tdm *utdm =3D priv->utdm;
-> 	int rc;
->=20
-> 	if (priv->hdlc_busy !=3D 1)
-> 		return 0;
->=20
-> 	if (request_irq(priv->ut_info->uf_info.irq,
-> 			ucc_hdlc_irq_handler, 0, "hdlc", priv))
-> 		return -ENODEV;
->=20
-> 	cecr_subblock =3D ucc_fast_get_qe_cr_subblock(
-> 				priv->ut_info->uf_info.ucc_num);
->=20
-> 	qe_issue_cmd(QE_INIT_TX_RX, cecr_subblock,
-> 		     QE_CR_PROTOCOL_UNSPECIFIED, 0);
->=20
-> 	ucc_fast_enable(priv->uccf, COMM_DIR_RX | COMM_DIR_TX);
->=20
-> 	/* Enable the TDM port */
-> 	if (priv->tsa)
-> 		qe_setbits_8(&utdm->si_regs->siglmr1_h, 0x1 << utdm->tdm_port);
->=20
-> 	priv->hdlc_busy =3D 1;
-> 	netif_device_attach(priv->ndev);
-> 	napi_enable(&priv->napi);
-> 	netdev_reset_queue(dev);
-> 	netif_start_queue(dev);
->=20
-> 	rc =3D hdlc_open(dev);
-> 	if (rc)
-> 		uhdlc_close(dev);
->=20
-> 	return rc;
-> }
+On 5.09.2023 05:42, Luiz Angelo Daros de Luca wrote:
+>>> [1] ...this. The SMI-controlled and MDIO-controlled Realtek switches are
+>>> otherwise the same, right? So why would they have different dt-bindings?
+>>
+>> Honestly, I'm wondering the answer to this as well. For some reason, when
+>> probing the SMI controlled Realtek switches, instead of just letting
+>> dsa_switch_setup() populate ds->slave_mii_bus, on realtek_smi_setup_mdio()
+>> on realtek-smi.c:
+>>
+>> - priv->slave_mii_bus is allocated.
+>> - mdio_np = of_get_compatible_child(priv->dev->of_node, "realtek,smi-mdio");
+>> - priv->slave_mii_bus->dev.of_node = mdio_np;
+>> - ds->slave_mii_bus = priv->slave_mii_bus;
+> 
+> I might be able to help here. The Realtek SMI version created a custom
+> slave_mii driver because it was the only way to associate it with an
+> MDIO DT node. And that DT node was required to specify the interrupts
+> for each phy0.
+> It would work without that mdio node, letting DSA setup handle the
+> slave bus, but it would rely only on polling for port status.
+> 
+> As we only have a single internal MDIO, the compatible string
+> "realtek,smi-mdio" would not be necessary if the driver checks for a
+> "mdio"-named child node. Maybe the code was just inspired by another
+> DSA driver that uses more MDIO buses or external ones. The "mdio" name
+> is suggested by docs since it was committed
+> (https://www.kernel.org/doc/Documentation/devicetree/bindings/net/dsa/realtek-smi.txt).
+> That name was also kept in the YAML translation
+> (https://www.kernel.org/doc/Documentation/devicetree/bindings/net/dsa/realtek.yaml).
+> 
+> The Realtek MDIO driver was merged at the same release that included
+> the change that allows dsa_switch_setup() to reference the "mdio"
+> OF-node if present. That way, it could avoid creating a custom
+> slave_mii_bus driver.
+> 
+> I submitted a small series of patches to unify that behavior between
+> those two drivers:
+> 
+> https://lore.kernel.org/netdev/CAJq09z44SNGFkCi_BCpQ+3DuXhKfGVsMubRYE7AezJsGGOboVA@mail.gmail.com/
+> (This is my answer to the series opening message to include the first
+> paragraph ate by the editor)
+> 
+> There was some discussion but not NAC, ACK or RFC. It would have
+> dropped some lines of code. I can revive it if there is interest.
 
-I agree the above is more readable, but I don't think the whole
-refactor is not worthy for a -net fix. I think simply rewriting the
-final statements as:
+I'd like this to happen, thanks Luiz!
 
-		rc =3D hdlc_open(dev);
-		if (rc)
-			uhdlc_close(dev);
-
-		return rc;=09
-
-would be good for -net.
-=20
-> >   	return 0;
-> > @@ -824,6 +828,8 @@ static int uhdlc_close(struct net_device *dev)
-> >   	netdev_reset_queue(dev);
-> >   	priv->hdlc_busy =3D 0;
-> >  =20
-> > +	hdlc_close(dev);
-> > +
-> >   return 0;
-> >    =20
->=20
-> And while you are looking at the correctness of this code, is it sure=20
-> that uhdlc_open() cannot be called twice in parallele ?
-> If it can be called in parall=C3=A8le I think the "if (priv->hdlc_busy !=
-=3D 1)"=20
-> should be replaced by something using cmpxchg()
-
-That part is safe, ndo_open() is invoked under the rtnl lock.
-
-The other comments are IMHO relevant, @Alexandra: please address them.
-
-Thanks!
-
-Paolo
-
+Arınç
