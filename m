@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D00792B39
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830F6792AC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244538AbjIEQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:49:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51770 "EHLO
+        id S232583AbjIEQmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354917AbjIEPyJ (ORCPT
+        with ESMTP id S1354920AbjIEPz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 11:54:09 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E7B198
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:54:02 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-99c3c8adb27so406703766b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:54:02 -0700 (PDT)
+        Tue, 5 Sep 2023 11:55:27 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B92912A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:55:24 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-9a5e37a39ecso377483166b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:55:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693929240; x=1694534040; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pVpIOfthLWFFGPvccuIJVh5mPH0Rncfx7vuDB280HqM=;
-        b=tVCCGzM9Lo7sQ4Zq616P09neAPC63utATraDDBPUuOFrgBzP+jrWI3cEQSqwWGWuG7
-         OzpmC7ACbp4Z31+08N3maAK+AYocCpkL6Vyq0Zqop0vlwnKIPAAA+py8lsRY0fUC9p2o
-         7w2doNXUTKYKxe4oEvJafaRDIaLo1kUb+2oFYiPdzvSenHZDz4AnBK6MwaJdAkxlxAEH
-         al2jtBHB0xH7zf0e1lPBz8bTAM49uXQyQs5O8XDvwFAL+DHlz94oggibjuUWYzbM42vH
-         MuRmIL3WAsrj3d7PzoHz/naeQTJi4M4X5Z3LUAobhCiZXvl5YtHyKTx2lYw8kCtdavl9
-         b41Q==
+        d=google.com; s=20221208; t=1693929323; x=1694534123; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wfVVipA0o6H6ewNJe4xhsC2K0XPQ+3N1YnkSldVjkDY=;
+        b=Hz853w87jY9/nR9lnAL2MD006JQ677WdRtB8Vhnlob6er4Cxab+/VZLaD+LcrG9h0C
+         bg6gdMYpppIsHgrr4yUB4DdHLE7hcPJUlobsChkPMscryE7yMWJygest7mAP65y8iHYq
+         XIW0763Z+nzmcnty+UhYS1ealuX2q6lMFh1I3XyaI5c5kB4kNkq/rae6DKklNmjbJqJw
+         HDjfQLaplFlqHNBxvvCJF1epQWMpOgpJiM4Wn0JppYv8Kqixmvr8pz7Em0+1faYN/cWf
+         UUoydLmr2t9n+a0eK0Z6fGWMWlp9HvQkQbZ326U8FYj4LhG4plynRSQi+dFSUJYi2129
+         wmCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693929240; x=1694534040;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pVpIOfthLWFFGPvccuIJVh5mPH0Rncfx7vuDB280HqM=;
-        b=B7vKgUtpBC47ylT38tsl2F+c+hG9l8hT9Y7O+sS1zhf9X5c8Zbv/eP6+zXnKJzdmx5
-         R4ksl2zoeTvTQjzeJR1QmotRmdQqaYSCA2k7rliwi7T4BNbJvTwxHHpXxiq9P/lcLqZz
-         Wl3437mop8rDeYdjAq7M6nqJAOSPOLCVAxjHZYOFSiTRpIcr/S7pgrirxvoRuHRX26cD
-         tZglhvoRH801t3gHJsVnOT9zGTj1iFc4pqLGFnrp5/3SmGosKxISnylXthRix/+HtS1n
-         NSYPWFL6RrQCAcha3GI7/sJprodN06c8CbD3b5oUR0LohlvaXNsKVCR53S78JhX+6rSK
-         TV2w==
-X-Gm-Message-State: AOJu0Yzskx+Q72vRggMXQt+8+lNbvAO7rJDuSTa2hfZXlatOT2GmfPSv
-        LcvTjDWi/vUDwit1BDSVOtUoCA==
-X-Google-Smtp-Source: AGHT+IGvqSCRUiGNuCpTmv+0pI7XTpvHQL8WD+82ZwYSrD8wS8xN+/n8Nc5wLbXyRVOtN9JDnbM8bA==
-X-Received: by 2002:a17:906:214:b0:9a2:86b:bb18 with SMTP id 20-20020a170906021400b009a2086bbb18mr202776ejd.26.1693929240687;
-        Tue, 05 Sep 2023 08:54:00 -0700 (PDT)
-Received: from [192.168.37.233] (178235177232.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.232])
-        by smtp.gmail.com with ESMTPSA id l13-20020a170906a40d00b0099bc0daf3d7sm7838028ejz.182.2023.09.05.08.53.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 08:54:00 -0700 (PDT)
-Message-ID: <4b87a766-9e8d-4676-b77e-d54e6d9c36ef@linaro.org>
-Date:   Tue, 5 Sep 2023 17:53:57 +0200
+        d=1e100.net; s=20221208; t=1693929323; x=1694534123;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wfVVipA0o6H6ewNJe4xhsC2K0XPQ+3N1YnkSldVjkDY=;
+        b=CNG5MDVwP6fA8jaOnNOzDjupaGWqo5eVIKNnOQbj72EsRgTnvAlK2zyeIARoBIN3SB
+         SqSNk0GiAr9vpSw4QRzAEsU0IcCzbjqsQRa0jEmgUgLE8WUFeT/TpxhyfUmXfB2CCkq1
+         +f6N1cOWq3Z5qVq6XCjeOi/huOcruScNrWMzVhWMMkIEWo/rr+rXkJ8xbIvtuaf/q1BC
+         PPOB9ppeBftIVrdxZ7INi3zq1evk0fx1w1dfEntn41HEH0hxO4VCZNrPP6mjEhreskqK
+         mtaqomFAv4YDTzPbcBsQzR2nRNTNmr4exXvKdadbuWQt7M332qrG061qmVurxs1tlrz7
+         EYFA==
+X-Gm-Message-State: AOJu0YxhogndsiJ0SPiKwcvIpKjBZEPgN6Mhb4Zx0VvSV/QdwUkLreSy
+        N/NhDZT8ikciGMa4SC4j1B3CHVWmZqORskQi1cUGlQ==
+X-Google-Smtp-Source: AGHT+IHBYVFFzy3HhlEK57FsPeAPJfaIdcatC02JBosyz+97/FG9t3Bxbx1UhO1wT8hxqmFoAJwEcmpeUAvBxwczKFo=
+X-Received: by 2002:a17:906:9bed:b0:9a5:b95a:1179 with SMTP id
+ de45-20020a1709069bed00b009a5b95a1179mr169757ejc.77.1693929322556; Tue, 05
+ Sep 2023 08:55:22 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] arm64: dts: qcom: sc7180: Add tertiary mi2s
- pinctrl
-Content-Language: en-US
-To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        cros-qcom-dts-watchers@chromium.org
-Cc:     David Wronek <davidwronek@gmail.com>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <20230905-sc7180-adsp-rproc-v2-0-8ab7f299600a@trvn.ru>
- <20230905-sc7180-adsp-rproc-v2-3-8ab7f299600a@trvn.ru>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
- BB/OmIWU6X+LZW6P88ZmHe+KeyABLMP5s1tJNK1j4ntT7mECcWZDzafPWF4F6m4WJOG27kTJ
- HGWdmtO+RvadOVi6CoUDqALsmfS3MUG5Pj2Ne9+0jRg4hEnB92AyF9rW2G3qisFcwPgvatt7
- TXD5E38mLyOPOUyXNj9XpDbt1hNwKQfiidmPh5e7VNAWRnW1iCMMoKqzM1Anzq7e5Afyeifz
- zRcQPLaqrPjnKqZGL2BKQSZDh6NkI5ZLRhhHQf61fkWcUpTp1oDC6jWVfT7hwRVIQLrrNj9G
- MpPzrlN4YuAqKeIer1FMt8cq64ifgTzxHzXsMcUdclzq2LTk2RXaPl6Jg/IXWqUClJHbamSk
- t1bfif3SnmhA6TiNvEpDKPiT3IDs42THU6ygslrBxyROQPWLI9IL1y8S6RtEh8H+NZQWZNzm
- UQ3imZirlPjxZtvz1BtnnBWS06e7x/UEAguj7VHCuymVgpl2Za17d1jj81YN5Rp5L9GXxkV1
- aUEwONM3eCI3qcYm5JNc5X+JthZOWsbIPSC1Rhxz3JmWIwP1udr5E3oNRe9u2LIEq+wH/toH
- kpPDhTeMkvt4KfE5m5ercid9+ZXAqoaYLUL4HCEw+HW0DXcKDwARAQABzShLb25yYWQgRHli
- Y2lvIDxrb25yYWQuZHliY2lvQGxpbmFyby5vcmc+wsGOBBMBCAA4FiEEU24if9oCL2zdAAQV
- R4cBcg5dfFgFAmQ5bqwCGwMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AACgkQR4cBcg5dfFjO
- BQ//YQV6fkbqQCceYebGg6TiisWCy8LG77zV7DB0VMIWJv7Km7Sz0QQrHQVzhEr3trNenZrf
- yy+o2tQOF2biICzbLM8oyQPY8B///KJTWI2khoB8IJSJq3kNG68NjPg2vkP6CMltC/X3ohAo
- xL2UgwN5vj74QnlNneOjc0vGbtA7zURNhTz5P/YuTudCqcAbxJkbqZM4WymjQhe0XgwHLkiH
- 5LHSZ31MRKp/+4Kqs4DTXMctc7vFhtUdmatAExDKw8oEz5NbskKbW+qHjW1XUcUIrxRr667V
- GWH6MkVceT9ZBrtLoSzMLYaQXvi3sSAup0qiJiBYszc/VOu3RbIpNLRcXN3KYuxdQAptacTE
- mA+5+4Y4DfC3rUSun+hWLDeac9z9jjHm5rE998OqZnOU9aztbd6zQG5VL6EKgsVXAZD4D3RP
- x1NaAjdA3MD06eyvbOWiA5NSzIcC8UIQvgx09xm7dThCuQYJR4Yxjd+9JPJHI6apzNZpDGvQ
- BBZzvwxV6L1CojUEpnilmMG1ZOTstktWpNzw3G2Gis0XihDUef0MWVsQYJAl0wfiv/0By+XK
- mm2zRR+l/dnzxnlbgJ5pO0imC2w0TVxLkAp0eo0LHw619finad2u6UPQAkZ4oj++iIGrJkt5
- Lkn2XgB+IW8ESflz6nDY3b5KQRF8Z6XLP0+IEdLOOARkOW7yEgorBgEEAZdVAQUBAQdAwmUx
- xrbSCx2ksDxz7rFFGX1KmTkdRtcgC6F3NfuNYkYDAQgHwsF2BBgBCAAgFiEEU24if9oCL2zd
- AAQVR4cBcg5dfFgFAmQ5bvICGwwACgkQR4cBcg5dfFju1Q//Xta1ShwL0MLSC1KL1lXGXeRM
- 8arzfyiB5wJ9tb9U/nZvhhdfilEDLe0jKJY0RJErbdRHsalwQCrtq/1ewQpMpsRxXzAjgfRN
- jc4tgxRWmI+aVTzSRpywNahzZBT695hMz81cVZJoZzaV0KaMTlSnBkrviPz1nIGHYCHJxF9r
- cIu0GSIyUjZ/7xslxdvjpLth16H27JCWDzDqIQMtg61063gNyEyWgt1qRSaK14JIH/DoYRfn
- jfFQSC8bffFjat7BQGFz4ZpRavkMUFuDirn5Tf28oc5ebe2cIHp4/kajTx/7JOxWZ80U70mA
- cBgEeYSrYYnX+UJsSxpzLc/0sT1eRJDEhI4XIQM4ClIzpsCIN5HnVF76UQXh3a9zpwh3dk8i
- bhN/URmCOTH+LHNJYN/MxY8wuukq877DWB7k86pBs5IDLAXmW8v3gIDWyIcgYqb2v8QO2Mqx
- YMqL7UZxVLul4/JbllsQB8F/fNI8AfttmAQL9cwo6C8yDTXKdho920W4WUR9k8NT/OBqWSyk
- bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
- nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
- izWDgYvmBE8=
-In-Reply-To: <20230905-sc7180-adsp-rproc-v2-3-8ab7f299600a@trvn.ru>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20230831165611.2610118-1-yosryahmed@google.com>
+ <20230831165611.2610118-4-yosryahmed@google.com> <ZPXupwjewuLgksAI@dhcp22.suse.cz>
+ <6tne52ip62ucev7nmnim3m7fhcydnwcytyxynrlxxgaf4cbqea@r4hec425izap>
+ <ZPX6luPGqypp68+L@dhcp22.suse.cz> <hrpw2bjsrs3pzxympb7cz4nohyeztnxkmdtzbzlfdba6ugkken@dhcdbbbrv4fn>
+In-Reply-To: <hrpw2bjsrs3pzxympb7cz4nohyeztnxkmdtzbzlfdba6ugkken@dhcdbbbrv4fn>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 5 Sep 2023 08:54:46 -0700
+Message-ID: <CAJD7tkaHVtMiMYFocNiABuyhPcqt77gei0UeaDq4J7V-=tMFYA@mail.gmail.com>
+Subject: Re: [PATCH v4 3/4] mm: memcg: let non-unified root stats flushes help
+ unified flushes
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
+        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5.09.2023 12:41, Nikita Travkin wrote:
-> Some devices use tertiary mi2s to connect external audio codec.
-> Add it near the other two i2s pinctrl definitions so the devices don't
-> have to duplicate it.
-> 
-> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
-> ---
-This sorting makes no sense, neither alphabetically nor gpio-idx-wise
+On Tue, Sep 5, 2023 at 7:10=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.com=
+> wrote:
+>
+> On Mon, Sep 04, 2023 at 05:41:10PM +0200, Michal Hocko <mhocko@suse.com> =
+wrote:
+> > So it also creates an undocumented but userspace visible behavior.
+> > Something that userspace might start depending on, right?
+>
+> Yes but -
+> - depending on undocumented behavior is a mistake,
+> - breaking the dependency would manifest (in the case I imagine) as a
+>   performance regression (and if there are some users, the future can
+>   allow them configuring periodic kernel flush to compensate for that).
 
-I'd suggest chucking it in after pri_mi2s_mclk_active.
+I think I am missing something. This change basically makes userspace
+readers (for the root memcg) help out unified flushers, which are
+in-kernel readers (e.g. reclaim) -- not the other way around.
 
-Konrad
+How would that create a userspace visible behavior that a dependency
+can be formed on? Users expecting reclaim to be faster right after
+reading root stats? I would guess that would be too flaky to cause a
+behavior that people can depend on tbh.
