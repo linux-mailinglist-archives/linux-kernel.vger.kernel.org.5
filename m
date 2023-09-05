@@ -2,146 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E1EB8792470
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 17:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEACA79251F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231159AbjIEP67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 11:58:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51794 "EHLO
+        id S234708AbjIEQBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354196AbjIEKJl (ORCPT
+        with ESMTP id S1354253AbjIEKVi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:09:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0A281B6;
-        Tue,  5 Sep 2023 03:09:37 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 10:09:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693908576;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqQLMgrCgqN/1wDb4uxRuFBa8U8u0Tmfh2XMQP4e0ig=;
-        b=2rQTEj8jlJ/cYZicCt2jtj16+52cBK6wzjv+ja2o9SfSvZzsykzdtuxyILIgkOnq3RA3MA
-        cXjp82Ti8ABTxBH93cSLelIkIo3PClpzziSOi2Vj1BT21amDHernqRgHgWCDAHYgk0VZ+L
-        OvkUZ9/rXmtcG4q3UTmCpP0QGsOJhXfDmiazNLQpiNSuV6fT2b4L0KybuWmhLkxFxi7pYi
-        QWbSBeKvgmRSSfchgi3u0bbE8hNVjsr5MNEirg8H7+yzzIY9ZrSowIygsVwG47Ea1CeB0Q
-        zVhlclBedXSoI1aLopRoI4RZZUppeiOu9Q3B3OFyn10RpQX3RZzmQidnibhHnQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693908576;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqQLMgrCgqN/1wDb4uxRuFBa8U8u0Tmfh2XMQP4e0ig=;
-        b=WX1YKQj+pUM6nj76yq60uz+JKJeSxLjsDSJhyb2uCoXDKqLtjOP561QNp24Bqlem0iALgL
-        d438aVcJ9GNGwpBA==
-From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/srso: Remove 'pred_cmd' label
-Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org>
-References: <bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org>
+        Tue, 5 Sep 2023 06:21:38 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AEB2D199
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:21:34 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68ED711FB;
+        Tue,  5 Sep 2023 03:22:12 -0700 (PDT)
+Received: from localhost.localdomain (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 068553F738;
+        Tue,  5 Sep 2023 03:21:31 -0700 (PDT)
+From:   James Clark <james.clark@arm.com>
+To:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, broonie@kernel.org
+Cc:     maz@kernel.org, James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        James Morse <james.morse@arm.com>,
+        Kristina Martsenko <kristina.martsenko@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Jintack Lim <jintack.lim@linaro.org>,
+        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/2] coresight: Allow guests to be traced when FEAT_TRF and VHE are present
+Date:   Tue,  5 Sep 2023 11:21:15 +0100
+Message-Id: <20230905102117.2011094-3-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230905102117.2011094-1-james.clark@arm.com>
+References: <20230905102117.2011094-1-james.clark@arm.com>
 MIME-Version: 1.0
-Message-ID: <169390857558.27769.7857328882132359611.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/bugs branch of tip:
+Currently the userspace and kernel filters for guests are never set, so
+no trace will be generated for them. Add it by writing to the guest
+filters when exclude_guest isn't set. By writing either E1TRE or E0TRE,
+filtering on either guest kernel or guest userspace is also supported.
 
-Commit-ID:     7a7b33e7a36b13e0032f77406461bd0fed68f55c
-Gitweb:        https://git.kernel.org/tip/7a7b33e7a36b13e0032f77406461bd0fed68f55c
-Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:04:57 -07:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Tue, 05 Sep 2023 12:05:07 +02:00
+Since TRFCR_EL1 access is trapped, this can't be  modified by the guest.
 
-x86/srso: Remove 'pred_cmd' label
+This change also brings exclude_host support which is difficult to add
+as a separate commit without excess churn and resulting in no trace at
+all.
 
-SBPB is only enabled in two distinct cases:
+Testing
+=======
 
-1) when SRSO has been disabled with srso=off
+The addresses were counted with the following:
 
-2) when SRSO has been fixed (in future HW)
+  $ perf report -D | grep -Eo 'EL2|EL1|EL0' | sort | uniq -c
 
-Simplify the control flow by getting rid of the 'pred_cmd' label and
-moving the SBPB enablement check to the two corresponding code sites.
-This makes it more clear when exactly SBPB gets enabled.
+Guest kernel only:
 
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/bb20e8569cfa144def5e6f25e610804bc4974de2.1693889988.git.jpoimboe@kernel.org
+  $ perf record -e cs_etm//Gk -a -- true
+    535 EL1
+      1 EL2
+
+Guest user only (0 addresses expected because the guest OS hasn't reached
+userspace yet):
+
+  $ perf record -e cs_etm//Gu -a -- true
+
+Host kernel only:
+
+  $  perf record -e cs_etm//Hk -a -- true
+   3501 EL2
+
+Host userspace only:
+
+  $  perf record -e cs_etm//Hu -a -- true
+    408 EL0
+      1 EL2
+
+Reviewed-by: Mark Brown <broonie@kernel.org> (sysreg)
+Signed-off-by: James Clark <james.clark@arm.com>
 ---
- arch/x86/kernel/cpu/bugs.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ arch/arm64/tools/sysreg                       |  4 ++
+ .../coresight/coresight-etm4x-core.c          | 51 ++++++++++++++++---
+ drivers/hwtracing/coresight/coresight-etm4x.h |  2 +-
+ drivers/hwtracing/coresight/coresight-priv.h  |  3 ++
+ 4 files changed, 53 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index e45dd69..4f1ad23 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -2410,13 +2410,21 @@ static void __init srso_select_mitigation(void)
- {
- 	bool has_microcode = boot_cpu_has(X86_FEATURE_IBPB_BRTYPE);
- 
--	if (!boot_cpu_has_bug(X86_BUG_SRSO) || cpu_mitigations_off())
--		goto pred_cmd;
-+	if (cpu_mitigations_off())
-+		return;
+diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
+index 757d41db0aed..6a3aab04192f 100644
+--- a/arch/arm64/tools/sysreg
++++ b/arch/arm64/tools/sysreg
+@@ -2532,3 +2532,7 @@ EndSysreg
+ Sysreg	TRFCR_EL2	3	4	1	2	1
+ Fields	TRFCR_EL2
+ EndSysreg
 +
-+	if (!boot_cpu_has_bug(X86_BUG_SRSO)) {
-+		if (boot_cpu_has(X86_FEATURE_SBPB))
-+			x86_pred_cmd = PRED_CMD_SBPB;
-+		return;
-+	}
- 
- 	if (has_microcode) {
- 		/*
- 		 * Zen1/2 with SMT off aren't vulnerable after the right
- 		 * IBPB microcode has been applied.
-+		 *
-+		 * Zen1/2 don't have SBPB, no need to try to enable it here.
- 		 */
- 		if (boot_cpu_data.x86 < 0x19 && !cpu_smt_possible()) {
- 			setup_force_cpu_cap(X86_FEATURE_SRSO_NO);
-@@ -2439,7 +2447,9 @@ static void __init srso_select_mitigation(void)
- 
- 	switch (srso_cmd) {
- 	case SRSO_CMD_OFF:
--		goto pred_cmd;
-+		if (boot_cpu_has(X86_FEATURE_SBPB))
-+			x86_pred_cmd = PRED_CMD_SBPB;
-+		return;
- 
- 	case SRSO_CMD_MICROCODE:
- 		if (has_microcode) {
-@@ -2501,11 +2511,6 @@ static void __init srso_select_mitigation(void)
- 
- out:
- 	pr_info("%s\n", srso_strings[srso_mitigation]);
--
--pred_cmd:
--	if ((!boot_cpu_has_bug(X86_BUG_SRSO) || srso_cmd == SRSO_CMD_OFF) &&
--	     boot_cpu_has(X86_FEATURE_SBPB))
--		x86_pred_cmd = PRED_CMD_SBPB;
++Sysreg TRFCR_EL12	3	5	1	2	1
++Fields	TRFCR_ELx
++EndSysreg
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 77b0271ce6eb..6c16a14d6fbe 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -274,6 +274,18 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
+ 	cpu_prohibit_trace();
  }
  
- #undef pr_fmt
++static u64 etm4x_get_kern_user_filter(struct etmv4_drvdata *drvdata)
++{
++	u64 trfcr = drvdata->trfcr;
++
++	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
++		trfcr &= ~TRFCR_ELx_ExTRE;
++	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
++		trfcr &= ~TRFCR_ELx_E0TRE;
++
++	return trfcr;
++}
++
+ /*
+  * etm4x_allow_trace - Allow CPU tracing in the respective ELs,
+  * as configured by the drvdata->config.mode for the current
+@@ -286,18 +298,39 @@ static void etm4x_prohibit_trace(struct etmv4_drvdata *drvdata)
+  */
+ static void etm4x_allow_trace(struct etmv4_drvdata *drvdata)
+ {
+-	u64 trfcr = drvdata->trfcr;
++	u64 trfcr;
+ 
+ 	/* If the CPU doesn't support FEAT_TRF, nothing to do */
+-	if (!trfcr)
++	if (!drvdata->trfcr)
+ 		return;
+ 
+-	if (drvdata->config.mode & ETM_MODE_EXCL_KERN)
+-		trfcr &= ~TRFCR_ELx_ExTRE;
+-	if (drvdata->config.mode & ETM_MODE_EXCL_USER)
+-		trfcr &= ~TRFCR_ELx_E0TRE;
++	if (drvdata->config.mode & ETM_MODE_EXCL_HOST)
++		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
++	else
++		trfcr = etm4x_get_kern_user_filter(drvdata);
+ 
+ 	write_trfcr(trfcr);
++
++	/*
++	 * Filters for EL1 and EL0 (when running a guest) are stored in
++	 * TRFCR_EL1 so write it there for VHE. For nVHE, the filters in
++	 * have to be re-applied when switching to the guest instead.
++	 */
++	if (!is_kernel_in_hyp_mode())
++		return;
++
++	if (drvdata->config.mode & ETM_MODE_EXCL_GUEST)
++		trfcr = drvdata->trfcr & ~(TRFCR_ELx_ExTRE | TRFCR_ELx_E0TRE);
++	else
++		trfcr = etm4x_get_kern_user_filter(drvdata);
++
++	/*
++	 * TRFCR_EL1 doesn't have CX and TRFCR_EL1.TS has no effect when TS is
++	 * set in EL2 so mask them out.
++	 */
++	trfcr &= ~(TRFCR_ELx_TS_MASK | TRFCR_EL2_CX);
++
++	write_sysreg_s(trfcr, SYS_TRFCR_EL12);
+ }
+ 
+ #ifdef CONFIG_ETM4X_IMPDEF_FEATURE
+@@ -655,6 +688,12 @@ static int etm4_parse_event_config(struct coresight_device *csdev,
+ 	if (attr->exclude_user)
+ 		config->mode = ETM_MODE_EXCL_USER;
+ 
++	if (attr->exclude_host)
++		config->mode |= ETM_MODE_EXCL_HOST;
++
++	if (attr->exclude_guest)
++		config->mode |= ETM_MODE_EXCL_GUEST;
++
+ 	/* Always start from the default config */
+ 	etm4_set_default_config(config);
+ 
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+index 20e2e4cb7614..3f170599822f 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.h
++++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+@@ -841,7 +841,7 @@ enum etm_impdef_type {
+  * @s_ex_level: Secure ELs where tracing is supported.
+  */
+ struct etmv4_config {
+-	u32				mode;
++	u64				mode;
+ 	u32				pe_sel;
+ 	u32				cfg;
+ 	u32				eventctrl0;
+diff --git a/drivers/hwtracing/coresight/coresight-priv.h b/drivers/hwtracing/coresight/coresight-priv.h
+index 767076e07970..727dd27ba800 100644
+--- a/drivers/hwtracing/coresight/coresight-priv.h
++++ b/drivers/hwtracing/coresight/coresight-priv.h
+@@ -39,6 +39,9 @@
+ 
+ #define ETM_MODE_EXCL_KERN	BIT(30)
+ #define ETM_MODE_EXCL_USER	BIT(31)
++#define ETM_MODE_EXCL_HOST	BIT(32)
++#define ETM_MODE_EXCL_GUEST	BIT(33)
++
+ struct cs_pair_attribute {
+ 	struct device_attribute attr;
+ 	u32 lo_off;
+-- 
+2.34.1
+
