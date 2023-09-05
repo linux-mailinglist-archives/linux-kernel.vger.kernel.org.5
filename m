@@ -2,135 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7137792C73
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B22F2792C19
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234791AbjIERbV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:31:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S1353867AbjIERGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230428AbjIERa5 (ORCPT
+        with ESMTP id S1344618AbjIEQOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 13:30:57 -0400
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A993BE31
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:56:06 -0700 (PDT)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-52bcd4db4cbso3713691a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 09:56:06 -0700 (PDT)
+        Tue, 5 Sep 2023 12:14:32 -0400
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B21ACE2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:13:50 -0700 (PDT)
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-58fc4291239so26803377b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 09:13:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693932599; x=1694537399; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SDmEkkiomzbm/t0kyOHY3bm7nezdvpUGCm1Gee0mEtE=;
-        b=KA52YT5/Aa7h/7BHI5TEjC4kU4BHmqUqzH31JKe83xEmTU9Bl2KGTPcvEIvAFqLB9w
-         8lyPtbyeXhK+k+RSEnAdA1tBTT82WgB12ucfgt4CKUjR9vg5ATLq0KYoKs7uszBoWNki
-         scBtx/vht7qui26kF4WbHT0N4rYDQIiI/4XHN+Qcq8zP7NVjNnYolcIM1aqDeb12sm+E
-         c0ntrtzXlh2KjQyLEk8lEnLy5AoExBSguxAopPV5Ftm4cGQKJvuPuO+2ZzjJrTTelOd/
-         xPpEePzy9KOVVfM8IdF7vYu4aVvVgeTN5TFRX1/ovCtfUi8rW5yg2v4mcL4Dl0c0EXtD
-         RPhQ==
+        d=google.com; s=20221208; t=1693930269; x=1694535069; darn=vger.kernel.org;
+        h=cc:to:from:subject:mime-version:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=elh2tvnOEwSPsnja2sHYhfiZcx7ynquPFXavmZ4ChDc=;
+        b=sB7R8/R6Eou9UxhWHe6z06FZiLaDzmt65AIjI3G/ffs6Dx1x4BkGxy5ywBf71Nfuyg
+         8whBe8YA78f/Vc76txZxsjcbPqrd1bm1NjnH/MILpI3YAhSx7s8gHi/AKyPniIWYKuaa
+         IX2hd5yMmpvgHerSBwSNojtWN9CW/CHB59m24sg/WdaoORadyvB3F7YxrsDAs50u4CuF
+         fq+UtuP7v82WaReM3lI1y7/bjccy7TWd0nKc4bJkBOil6STDkamkTjV3JCX0M3lqiy03
+         vIb6k7skssNoij5xjcXEixh8yx55k/j38jX+I9d0OtHXTGTbHGPN3lIl4lIS0on+YO7C
+         ILbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693932599; x=1694537399;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SDmEkkiomzbm/t0kyOHY3bm7nezdvpUGCm1Gee0mEtE=;
-        b=koYMsgY/Q9VwZMQckdEfzTqQHXo1TAsBLzX4kep2d+I8GxdZnPK5sOprQ5CfN78Ro1
-         p79/W37dBymLiUYebYvMlsgn1StPe1gt5WZh7QRP9D60yfqUgVWFPRlGzoEGNIMvsRFq
-         CePNJTRj2HsgPhu2U4qglrhycThiZn97had8RiVAJcIed/bnjLVXe+g2zPiIhD02O34Z
-         o4oRqcdtbGv2++OH5yHGLXL2sSVEeUY/bTnl2qbkhs5q9NaeQxrkqGE+TmzRytmUD0xK
-         2vklRKPozGt6o8TMDFTZm7eHzUztlMaYIl8wIYzS17HnmJP2MVWQWpcgEfIxhzxeCcM8
-         pzSA==
-X-Gm-Message-State: AOJu0YyTaC5m4arjJ/D83yUnFkiupau7qEta5mUq8MxC0lst1Vh+xFSQ
-        EvS6BWTsL4OQ/aAbkpr+eykKFhNpZ96S+MymcU+umg==
-X-Google-Smtp-Source: AGHT+IG95JkmN66/glE3KZ9evrj4ynCBfjln8sFmAB+NvGPgcflf1KTh5SG7UN7y6QuRyekGl9BiHg==
-X-Received: by 2002:a17:907:7714:b0:9a2:1df2:8e08 with SMTP id kw20-20020a170907771400b009a21df28e08mr219686ejc.45.1693930070557;
-        Tue, 05 Sep 2023 09:07:50 -0700 (PDT)
-Received: from [192.168.37.232] (178235177232.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.232])
-        by smtp.gmail.com with ESMTPSA id rl21-20020a170907217500b0099315454e76sm7701782ejb.211.2023.09.05.09.07.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 09:07:50 -0700 (PDT)
-Message-ID: <5446a3fd-59bc-4297-b3c4-204d014ac3cd@linaro.org>
-Date:   Tue, 5 Sep 2023 18:07:47 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] arm64: dts: qcom: ipq6018: Fix tcsr_mutex register
- size
-Content-Language: en-US
-To:     Vignesh Viswanathan <quic_viswanat@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ohad@wizery.com,
-        baolin.wang@linux.alibaba.com, linux-remoteproc@vger.kernel.org
-Cc:     quic_kathirav@quicinc.com, quic_anusha@quicinc.com,
-        quic_sjaganat@quicinc.com, quic_srichara@quicinc.com,
-        quic_varada@quicinc.com, stable@vger.kernel.org
-References: <20230905095535.1263113-1-quic_viswanat@quicinc.com>
- <20230905095535.1263113-2-quic_viswanat@quicinc.com>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20230905095535.1263113-2-quic_viswanat@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693930269; x=1694535069;
+        h=cc:to:from:subject:mime-version:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=elh2tvnOEwSPsnja2sHYhfiZcx7ynquPFXavmZ4ChDc=;
+        b=b+xk5bgBFU7hLjwca0LZD1AxsQQ0qQrBMUfeP3q3PkuHLWDwJbvzQfynt5Go7hGOdH
+         2IVQMMWnCWZmeIsnJ1nOeVdLBZxp4t+Lqck/FEBV4MwVb11GpkbP+kzTt4hmVV0Ssjfk
+         upwod9nnyzcKC8lF2SI+ojf6bJgbEr+0C/KPxk50HcWrsAZXpews/DwO4EkprKPIRyk7
+         1ESaZHFR8+zrRNl824X5Zy8GP7GKnzycVKN6U2st+yueFzE2Ng1jiDFJj3cSiTi0kQhn
+         A112pWppOTj1bEOioIGkH5IS2yU2SVzEP0aRrUBFotioCB3KIl38izepqz9yzgAg+Gny
+         0QVg==
+X-Gm-Message-State: AOJu0YwY1dbk1qPK31kTQSI5Z1P5ad5rtgccusGNiUdCepRrJ7e0R4Ap
+        Q7lOmi4UbZKLLDpOslfRCyKfFevysVM=
+X-Google-Smtp-Source: AGHT+IHTRH2f5FQkBHRdyOy5nv59i/lThHn59yLvVKowANeAl0uNOjZs7MrTDcdffQ1mbM6m6fwIoZFlcbQ=
+X-Received: from pgonda1.kir.corp.google.com ([2620:0:1008:15:a655:3f3b:27cc:1272])
+ (user=pgonda job=sendgmr) by 2002:a81:c649:0:b0:583:4f82:b9d9 with SMTP id
+ q9-20020a81c649000000b005834f82b9d9mr356053ywj.5.1693930269081; Tue, 05 Sep
+ 2023 09:11:09 -0700 (PDT)
+Date:   Tue,  5 Sep 2023 09:10:48 -0700
+Message-Id: <20230905161048.3178838-1-pgonda@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
+Subject: [PATCH] KVM: SEV: Update SEV-ES shutdown intercepts with more metadata
+From:   Peter Gonda <pgonda@google.com>
+To:     kvm@vger.kernel.org
+Cc:     Peter Gonda <pgonda@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5.09.2023 11:55, Vignesh Viswanathan wrote:
-> IPQ6018's TCSR Mutex HW lock register has 32 locks of size 4KB each.
-> Total size of the TCSR Mutex registers is 128KB.
-> 
-> Fix size of the tcsr_mutex hwlock register to 0x20000.
-> 
-> Changes in v2:
->  - Drop change to remove qcom,ipq6018-tcsr-mutex compatible string
->  - Added Fixes and stable tags
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 5bf635621245 ("arm64: dts: ipq6018: Add a few device nodes")
-> Signed-off-by: Vignesh Viswanathan <quic_viswanat@quicinc.com>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Currently if an SEV-ES VM shuts down userspace sees KVM_RUN struct with
+only the INVALID_ARGUMENT. This is a very limited amount of information
+to debug the situation. Instead KVM can return a
+KVM_SYSTEM_EVENT_SEV_TERM to alert userspace the VM is shutting down and
+is not usable any further. This latter point can be enforced using the
+kvm_vm_dead() functionality.
 
-Konrad
+Signed-off-by: Peter Gonda <pgonda@google.com>
+Cc: Paolo Bonzini <pbonzini@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: kvm@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+
+---
+
+I am not sure if this is the right path forward maybe just returning
+KVM_EXIT_SHUTDOWN is better. But the current behavior is very unhelpful.
+
+---
+
+ arch/x86/kvm/svm/svm.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 956726d867aa..547526616d60 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -2131,12 +2131,16 @@ static int shutdown_interception(struct kvm_vcpu *vcpu)
+ 	 * The VM save area has already been encrypted so it
+ 	 * cannot be reinitialized - just terminate.
+ 	 */
+-	if (sev_es_guest(vcpu->kvm))
+-		return -EINVAL;
++	if (sev_es_guest(vcpu->kvm)) {
++		vcpu->run->exit_reason = KVM_EXIT_SYSTEM_EVENT;
++		vcpu->run->system_event.type = KVM_SYSTEM_EVENT_SEV_TERM;
++		kvm_vm_dead(vcpu->kvm);
++		return 0;
++	}
+ 
+ 	/*
+ 	 * VMCB is undefined after a SHUTDOWN intercept.  INIT the vCPU to put
+-	 * the VMCB in a known good state.  Unfortuately, KVM doesn't have
++	 * the VMCB in a known good state.  Unfortunately, KVM doesn't have
+ 	 * KVM_MP_STATE_SHUTDOWN and can't add it without potentially breaking
+ 	 * userspace.  At a platform view, INIT is acceptable behavior as
+ 	 * there exist bare metal platforms that automatically INIT the CPU
+-- 
+2.42.0.283.g2d96d420d3-goog
+
