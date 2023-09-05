@@ -2,406 +2,538 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 76459792A00
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A587927D9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:38:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354925AbjIEQaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
+        id S238919AbjIEQHJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:07:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354813AbjIEOhX (ORCPT
+        with ESMTP id S1354814AbjIEOiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:37:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A86A189;
-        Tue,  5 Sep 2023 07:37:18 -0700 (PDT)
+        Tue, 5 Sep 2023 10:38:10 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [145.40.73.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17D1189;
+        Tue,  5 Sep 2023 07:38:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 0CBF460919;
-        Tue,  5 Sep 2023 14:37:18 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B90C433C7;
-        Tue,  5 Sep 2023 14:37:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693924637;
-        bh=5z+qovhzpo6/C/xT/TuONLH39TFjv9fG82EZ1l76Paw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fQt1ky3JSDCsgNX3pZLjcXfsN02LVSOkka1oK+oGCg2XVUmnR3JY8xR8h0KiJAOCe
-         DhPDnhbzgdVIVp+IR4o3IZsMwJbo6rbU0GHaZxax5KZvm9IzAYRsRpUXT7Heev3OLj
-         QRQKxyqqpHd20NqzFKTDw6BETXq+LAhixH0pd2xsLXcrdKyqVWhAcdJaKxanY7VqnT
-         CW/F02OO/+Lbv8C13c9V5dsF9SCRHPe/CX48AuDH16pn3yuJHUyOU1BCL4as/6f7Wq
-         G1wF8ArbCyCJrY0CSoqdayKUlMsgMyCo668BLLRL6W2Y6lX3ArbjNRg4adUNvkDJHC
-         6lJae/EOyVMXA==
-Date:   Tue, 5 Sep 2023 15:37:12 +0100
-From:   Will Deacon <will@kernel.org>
-To:     syzbot <syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com>
-Cc:     catalin.marinas@arm.com, fw@strlen.de, kadlec@netfilter.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
-        pablo@netfilter.org, syzkaller-bugs@googlegroups.com,
-        robin.murphy@arm.com
-Subject: Re: [syzbot] [arm?] [netfilter?] KASAN: slab-out-of-bounds Read in
- do_csum
-Message-ID: <20230905143711.GB3322@willie-the-truck>
-References: <000000000000e0e94c0603f8d213@google.com>
+        by sin.source.kernel.org (Postfix) with ESMTPS id 111E9CE1084;
+        Tue,  5 Sep 2023 14:38:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44EF0C433C8;
+        Tue,  5 Sep 2023 14:37:58 +0000 (UTC)
+Message-ID: <f6de65fa-088a-d136-e72f-14ea0d14c135@xs4all.nl>
+Date:   Tue, 5 Sep 2023 16:37:56 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000e0e94c0603f8d213@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,GB_FAKE_RF_SHORT,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v6 17/18] media: v4l2: Add DELETE_BUFS ioctl
+Content-Language: en-US, nl
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        mchehab@kernel.org, tfiga@chromium.org, m.szyprowski@samsung.com,
+        ming.qian@nxp.com, ezequiel@vanguardiasur.com.ar,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        nicolas.dufresne@collabora.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-arm-msm@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev,
+        kernel@collabora.com
+References: <20230901124414.48497-1-benjamin.gaignard@collabora.com>
+ <20230901124414.48497-18-benjamin.gaignard@collabora.com>
+ <814130d1-8597-d567-ddea-cb82cadea00f@xs4all.nl>
+ <294f4150-cbae-f71b-9804-f985d0b0492a@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <294f4150-cbae-f71b-9804-f985d0b0492a@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+Robin as he's had fun with the checksum code in the past]
+Hi Benjamin,
 
-On Mon, Aug 28, 2023 at 03:04:44AM -0700, syzbot wrote:
-> Hello,
+On 05/09/2023 16:28, Benjamin Gaignard wrote:
 > 
-> syzbot found the following issue on:
+> Le 05/09/2023 à 10:17, Hans Verkuil a écrit :
+>> On 01/09/2023 14:44, Benjamin Gaignard wrote:
+>>> VIDIOC_DELETE_BUFS ioctl allows to delete buffers from a queue.
+>>> The number of buffers to delete in given by count field of
+>>> struct v4l2_delete_buffers and the range start at the index
+>>> specified in the same structure.
+>>>
+>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>> ---
+>>> v6:
+>>> - Add lock in vb2_core_delete_buf()
+>>> - Fix typo and comments
+>>> - Add flags in VIDIOC_DELETE_BUFS decalaration
+>>>
+>>>   .../userspace-api/media/v4l/user-func.rst     |  1 +
+>>>   .../media/v4l/vidioc-delete-bufs.rst          | 73 +++++++++++++++++++
+>>>   .../media/common/videobuf2/videobuf2-core.c   | 24 ++++++
+>>>   .../media/common/videobuf2/videobuf2-v4l2.c   | 38 +++++++++-
+>>>   drivers/media/v4l2-core/v4l2-dev.c            |  1 +
+>>>   drivers/media/v4l2-core/v4l2-ioctl.c          | 17 +++++
+>>>   include/media/v4l2-ioctl.h                    |  4 +
+>>>   include/media/videobuf2-core.h                |  9 +++
+>>>   include/media/videobuf2-v4l2.h                | 11 +++
+>>>   include/uapi/linux/videodev2.h                | 16 ++++
+>>>   10 files changed, 193 insertions(+), 1 deletion(-)
+>>>   create mode 100644 Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>>
+>>> diff --git a/Documentation/userspace-api/media/v4l/user-func.rst b/Documentation/userspace-api/media/v4l/user-func.rst
+>>> index 15ff0bf7bbe6..3fd567695477 100644
+>>> --- a/Documentation/userspace-api/media/v4l/user-func.rst
+>>> +++ b/Documentation/userspace-api/media/v4l/user-func.rst
+>>> @@ -17,6 +17,7 @@ Function Reference
+>>>       vidioc-dbg-g-chip-info
+>>>       vidioc-dbg-g-register
+>>>       vidioc-decoder-cmd
+>>> +    vidioc-delete-bufs
+>>>       vidioc-dqevent
+>>>       vidioc-dv-timings-cap
+>>>       vidioc-encoder-cmd
+>>> diff --git a/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>> new file mode 100644
+>>> index 000000000000..a55fe6331fc8
+>>> --- /dev/null
+>>> +++ b/Documentation/userspace-api/media/v4l/vidioc-delete-bufs.rst
+>>> @@ -0,0 +1,73 @@
+>>> +.. SPDX-License-Identifier: GFDL-1.1-no-invariants-or-later
+>>> +.. c:namespace:: V4L
+>>> +
+>>> +.. _VIDIOC_DELETE_BUFS:
+>>> +
+>>> +************************
+>>> +ioctl VIDIOC_DELETE_BUFS
+>>> +************************
+>>> +
+>>> +Name
+>>> +====
+>>> +
+>>> +VIDIOC_DELETE_BUFS - Deletes buffers from a queue
+>>> +
+>>> +Synopsis
+>>> +========
+>>> +
+>>> +.. c:macro:: VIDIOC_DELETE_BUFs
+>>> +
+>>> +``int ioctl(int fd, VIDIOC_DELETE_BUFs, struct v4l2_delete_buffers *argp)``
+>>> +
+>>> +Arguments
+>>> +=========
+>>> +
+>>> +``fd``
+>>> +    File descriptor returned by :c:func:`open()`.
+>>> +
+>>> +``argp``
+>>> +    Pointer to struct :c:type:`v4l2_delete_buffers`.
+>>> +
+>>> +Description
+>>> +===========
+>>> +
+>>> +Applications can optionally call the :ref:`VIDIOC_DELETE_BUFS` ioctl to
+>>> +delete buffers from a queue.
+>>> +
+>>> +.. c:type:: v4l2_delete_buffers
+>>> +
+>>> +.. tabularcolumns:: |p{4.4cm}|p{4.4cm}|p{8.5cm}|
+>>> +
+>>> +.. flat-table:: struct v4l2_delete_buffers
+>>> +    :header-rows:  0
+>>> +    :stub-columns: 0
+>>> +    :widths:       1 1 2
+>>> +
+>>> +    * - __u32
+>>> +      - ``index``
+>>> +      - The starting buffer index to delete.
+>>> +    * - __u32
+>>> +      - ``count``
+>>> +      - The number of buffers to be deleted.
+>> That's not quite correct. This function will delete the buffers with indices
+>> index until index+count-1. And indices in that range have to be valid buffers,
+>> i.e. you can't have already deleted buffers in that range.
+>>
+>> Or should we allow that? It is a fair question.
+>>
+>> All buffers also have to be in the DEQUEUED state.
+>>
+>> The text above suggests that given the following valid indices:
+>>
+>> 0, 1, 3, 4 (so the buffer with index 2 was already deleted)
+>>
+>> deleting 2 buffers from index 1 would delete buffers 1, 3. When in
+>> fact it will attempt to delete buffers 1 and 2.
+>>
+>> Also document explicitly that calling this with count=0 (and perhaps
+>> index=0 as well?) can be used to check if this ioctl is supported.
 > 
-> HEAD commit:    908f31f2a05b Merge branch 'for-next/core', remote-tracking..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=155e0463280000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c1058fe68f4b7b2c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4a9f9820bd8d302e22f7
-> compiler:       Debian clang version 15.0.7, GNU ld (GNU Binutils for Debian) 2.35.2
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16bc548d280000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=135bba3b280000
+> I will do that.
 > 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/87d095820229/disk-908f31f2.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/a1bf67af9675/vmlinux-908f31f2.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/7784a88b37e8/Image-908f31f2.gz.xz
+>>
+>>> +    * - __u32
+>>> +      - ``type``
+>>> +      - Type of the stream or buffers, this is the same as the struct
+>>> +    :c:type:`v4l2_format` ``type`` field. See
+>>> +    :c:type:`v4l2_buf_type` for valid values.
+>>> +    * - __u32
+>>> +      - ``reserved``\ [13]
+>>> +      - A place holder for future extensions. Drivers and applications
+>>> +    must set the array to zero.
+>> What should happen if you delete ALL buffers with this call? I.e., the
+>> equivalent to REQBUFS with count=0.
+>>
+>> Thinking about this the main difference is that DELETE_BUFS can only delete
+>> dequeued buffers and it does not stop streaming if all buffers are deleted.
+>>
+>> So REQBUFS with count=0 (or a STREAMOFF) is still needed to officially stop
+>> streaming and cancel the queue.
+>>
+>> Basically REQBUFS with count=0 is almost the equivalent of calling STREAMOFF followed
+>> by DELETE_BUFS for all buffers. Almost, but not quite: REQBUFS(0) also reports
+>> if the queue is unbalanced, and it sets q->num_buffers to 0. And in vb2_ioctl_reqbufs
+>> it will set vdev->queue->owner to NULL.
+>>
+>> I am inclined to do the same if DELETE_BUFS deletes all buffers.
 > 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4a9f9820bd8d302e22f7@syzkaller.appspotmail.com
-> 
-> netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-> netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-> ==================================================================
-> BUG: KASAN: slab-out-of-bounds in do_csum+0x44/0x254 arch/arm64/lib/csum.c:39
-> Read of size 4294966928 at addr ffff0000d7ac0170 by task syz-executor412/5975
+> Unlike REQBUFS DELETE_BUFS can delete buffers while streaming so for me the ownership
+> should not change even if there is no more dequeued buffers.
+> For REQBUFS with count=0 means that the going stream is stopped so we can delete all the buffers
+> while DELETE_BUFS usage is to delete buffers while keeping the stream alive.
 
-Judging by the UBSAN errors:
+I'm undecided on this. It's something we can decide later.
 
-| shift exponent 3008 is too large for 64-bit type 'u64' (aka 'unsigned long long')
+> 
+>>
+>>> +
+>>> +Return Value
+>>> +============
+>>> +
+>>> +On success 0 is returned, on error -1 and the ``errno`` variable is set
+>>> +appropriately. The generic error codes are described at the
+>>> +:ref:`Generic Error Codes <gen-errors>` chapter.
+>>> +
+>>> +EBUSY
+>>> +    File I/O is in progress.
+>>> +
+>>> +EINVAL
+>>> +    The buffer ``index`` doesn't exist in the queue.
+>>> diff --git a/drivers/media/common/videobuf2/videobuf2-core.c b/drivers/media/common/videobuf2/videobuf2-core.c
+>>> index dc7f6b59d237..9edb2a1e95fc 100644
+>>> --- a/drivers/media/common/videobuf2/videobuf2-core.c
+>>> +++ b/drivers/media/common/videobuf2/videobuf2-core.c
+>>> @@ -1633,6 +1633,30 @@ int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb)
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(vb2_core_prepare_buf);
+>>>   +int vb2_core_delete_buf(struct vb2_queue *q, struct vb2_buffer *vb)
+>>> +{
+>>> +    mutex_lock(&q->mmap_lock);
+>>> +    if (vb->planes[0].mem_priv)
+>>> +        call_void_vb_qop(vb, buf_cleanup, vb);
+>>> +
+>>> +    /* Free MMAP buffers or release USERPTR buffers */
+>>> +    if (q->memory == VB2_MEMORY_MMAP)
+>>> +        __vb2_buf_mem_free(vb);
+>>> +    else if (q->memory == VB2_MEMORY_DMABUF)
+>>> +        __vb2_buf_dmabuf_put(vb);
+>>> +    else
+>>> +        __vb2_buf_userptr_put(vb);
+>>> +
+>>> +    vb2_queue_remove_buffer(q, vb);
+>>> +    mutex_unlock(&q->mmap_lock);
+>>> +
+>>> +    dprintk(q, 2, "buffer %d deleted\n", vb->index);
+>>> +    kfree(vb);
+>>> +
+>>> +    return 0;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(vb2_core_delete_buf);
+>> This is duplicating what already happens in __vb2_free_mem and __vb2_queue_free.
+>>
+>> That code needs to be refactored.
+>>
+>> What you want is a __vb2_delete_buffers(struct vb2_queue *q, unsigned int index, unsigned int buffers)
+>> function that is called with mmap_lock held and that deletes buffers in the range 'index'
+>> to 'index + count - 1'. Buffers may already be deleted.
+>>
+>> __vb2_free_mem does almost do all of that already.
+>>
+>> Then this new function can be called from __vb2_queue_free() and you can make
+>> a vb2_core_delete_bufs() function that takes the lock and calls __vb2_delete_buffers.
+>>
+>> Another note: currently __vb2_queue_free checks if any of the buffers had unbalanced
+>> operations. That check needs to be moved to __vb2_delete_buffers as well otherwise
+>> that would never be reported when using DELETE_BUFS.
+> 
+> Loops in __vb2_queue_free() and __vb2_free_mem() try to delete buffers at the end of the
+> queue, I could just modify these functions prototype and loops to start from a given index.
+> That should do the job but have impact on create_bufs (see below)
+> 
+>>
+>>> +
+>>>   /*
+>>>    * vb2_start_streaming() - Attempt to start streaming.
+>>>    * @q:        videobuf2 queue
+>>> diff --git a/drivers/media/common/videobuf2/videobuf2-v4l2.c b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> index 8ba658ad9891..d0098f58a65c 100644
+>>> --- a/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> +++ b/drivers/media/common/videobuf2/videobuf2-v4l2.c
+>>> @@ -385,7 +385,7 @@ static int vb2_queue_or_prepare_buf(struct vb2_queue *q, struct media_device *md
+>>>         vb = vb2_get_buffer(q, b->index);
+>>>       if (!vb) {
+>>> -        dprintk(q, 1, "%s: buffer is NULL\n", opname);
+>>> +        dprintk(q, 1, "%s: buffer %u was deleted\n", opname, b->index);
+>>>           return -EINVAL;
+>>>       }
+>>>   @@ -757,6 +757,42 @@ int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(vb2_prepare_buf);
+>>>   +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d)
+>>> +{
+>>> +    struct vb2_buffer *vb;
+>>> +    unsigned int index;
+>>> +    int ret = 0;
+>>> +
+>> Add:
+>>
+>>     if (!d->count)
+>>         return 0;
+>>
+>> (possibly also check if !d->index)
+>>
+>>> +    if (d->index > q->num_buffers ||
+>>> should be >= here.
+>>> +        d->count > q->num_buffers ||
+>>> +        (d->index + d->count) > q->num_buffers) {
+>>> +        return -EINVAL;
+>>> +    }
+>> Once we can delete buffers, how does that change the meaning of num_buffers?
+>> Isn't this really max_buffer_index or something similar? But we probably also
+>> still need to keep track of the actual number of buffers.
+>>
+>> And create_bufs still allocated buffers from the last index onwards, it does
+>> not attempt to reuse indices of previously deleted buffers.
+> 
+> Reuse previous indices require to be sure that a range of index is free because
+> create_bufs returns, in index parameter, the starting buffer index.
+> I will add a function to find the first available range and use it in vb2_create_bufs()
+> to change how create->index is set.
+> Hans, sound good for you ?
 
-We're probably being passed a negative 'len' argument. It looks like the
-generic version in lib/checksum.c rejects that early, so maybe we should
-do the same in the arch code?
+That's what I had in mind. It is an option to keep a bitmap to keep track
+of which buffer indices are in use. You could use bitmap_find_next_zero_area
+to find the free range.
 
-Will
+Just an option.
 
-> CPU: 0 PID: 5975 Comm: syz-executor412 Not tainted 6.4.0-rc4-syzkaller-g908f31f2a05b #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-> Call trace:
->  dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
->  show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
->  print_address_description mm/kasan/report.c:351 [inline]
->  print_report+0x174/0x514 mm/kasan/report.c:462
->  kasan_report+0xd4/0x130 mm/kasan/report.c:572
->  kasan_check_range+0x264/0x2a4 mm/kasan/generic.c:187
->  __kasan_check_read+0x20/0x30 mm/kasan/shadow.c:31
->  do_csum+0x44/0x254 arch/arm64/lib/csum.c:39
->  csum_partial+0x30/0x58 lib/checksum.c:128
->  gso_make_checksum include/linux/skbuff.h:4928 [inline]
->  __udp_gso_segment+0xaf4/0x1bc4 net/ipv4/udp_offload.c:332
->  udp6_ufo_fragment+0x540/0xca0 net/ipv6/udp_offload.c:47
->  ipv6_gso_segment+0x5cc/0x1760 net/ipv6/ip6_offload.c:119
->  skb_mac_gso_segment+0x2b4/0x5b0 net/core/gro.c:141
->  __skb_gso_segment+0x250/0x3d0 net/core/dev.c:3401
->  skb_gso_segment include/linux/netdevice.h:4859 [inline]
->  validate_xmit_skb+0x364/0xdbc net/core/dev.c:3659
->  validate_xmit_skb_list+0x94/0x130 net/core/dev.c:3709
->  sch_direct_xmit+0xe8/0x548 net/sched/sch_generic.c:327
->  __dev_xmit_skb net/core/dev.c:3805 [inline]
->  __dev_queue_xmit+0x147c/0x3318 net/core/dev.c:4210
->  dev_queue_xmit include/linux/netdevice.h:3085 [inline]
->  packet_xmit+0x6c/0x318 net/packet/af_packet.c:276
->  packet_snd net/packet/af_packet.c:3081 [inline]
->  packet_sendmsg+0x376c/0x4c98 net/packet/af_packet.c:3113
->  sock_sendmsg_nosec net/socket.c:724 [inline]
->  sock_sendmsg net/socket.c:747 [inline]
->  __sys_sendto+0x3b4/0x538 net/socket.c:2144
->  __do_sys_sendto net/socket.c:2156 [inline]
->  __se_sys_sendto net/socket.c:2152 [inline]
->  __arm64_sys_sendto+0xd8/0xf8 net/socket.c:2152
->  __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
->  invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
->  el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
->  do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
->  el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
 > 
-> Allocated by task 5975:
->  kasan_save_stack mm/kasan/common.c:45 [inline]
->  kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
->  kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:510
->  ____kasan_kmalloc mm/kasan/common.c:374 [inline]
->  __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
->  kasan_kmalloc include/linux/kasan.h:196 [inline]
->  __do_kmalloc_node mm/slab_common.c:966 [inline]
->  __kmalloc_node_track_caller+0xd0/0x1c0 mm/slab_common.c:986
->  kmalloc_reserve+0x120/0x240 net/core/skbuff.c:585
->  __alloc_skb+0x1c8/0x3d8 net/core/skbuff.c:654
->  skb_segment+0xa80/0x32f0 net/core/skbuff.c:4516
->  __udp_gso_segment+0x5d0/0x1bc4 net/ipv4/udp_offload.c:290
->  udp6_ufo_fragment+0x540/0xca0 net/ipv6/udp_offload.c:47
->  ipv6_gso_segment+0x5cc/0x1760 net/ipv6/ip6_offload.c:119
->  skb_mac_gso_segment+0x2b4/0x5b0 net/core/gro.c:141
->  __skb_gso_segment+0x250/0x3d0 net/core/dev.c:3401
->  skb_gso_segment include/linux/netdevice.h:4859 [inline]
->  validate_xmit_skb+0x364/0xdbc net/core/dev.c:3659
->  validate_xmit_skb_list+0x94/0x130 net/core/dev.c:3709
->  sch_direct_xmit+0xe8/0x548 net/sched/sch_generic.c:327
->  __dev_xmit_skb net/core/dev.c:3805 [inline]
->  __dev_queue_xmit+0x147c/0x3318 net/core/dev.c:4210
->  dev_queue_xmit include/linux/netdevice.h:3085 [inline]
->  packet_xmit+0x6c/0x318 net/packet/af_packet.c:276
->  packet_snd net/packet/af_packet.c:3081 [inline]
->  packet_sendmsg+0x376c/0x4c98 net/packet/af_packet.c:3113
->  sock_sendmsg_nosec net/socket.c:724 [inline]
->  sock_sendmsg net/socket.c:747 [inline]
->  __sys_sendto+0x3b4/0x538 net/socket.c:2144
->  __do_sys_sendto net/socket.c:2156 [inline]
->  __se_sys_sendto net/socket.c:2152 [inline]
->  __arm64_sys_sendto+0xd8/0xf8 net/socket.c:2152
->  __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
->  invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
->  el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
->  do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
->  el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-> 
-> The buggy address belongs to the object at ffff0000d7ac0000
->  which belongs to the cache kmalloc-8k of size 8192
-> The buggy address is located 368 bytes inside of
->  allocated 8192-byte region [ffff0000d7ac0000, ffff0000d7ac2000)
-> 
-> The buggy address belongs to the physical page:
-> page:000000002bfc4c52 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x117ac0
-> head:000000002bfc4c52 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-> flags: 0x5ffc00000010200(slab|head|node=0|zone=2|lastcpupid=0x7ff)
-> page_type: 0xffffffff()
-> raw: 05ffc00000010200 ffff0000c0002c00 fffffc00035e7e00 0000000000000002
-> raw: 0000000000000000 0000000080020002 00000001ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> 
-> Memory state around the buggy address:
->  ffff0000d7ac1f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff0000d7ac1f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> >ffff0000d7ac2000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->                    ^
->  ffff0000d7ac2080: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff0000d7ac2100: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ==================================================================
-> ================================================================================
-> UBSAN: shift-out-of-bounds in arch/arm64/lib/csum.c:116:15
-> shift exponent 3008 is too large for 64-bit type 'u64' (aka 'unsigned long long')
-> CPU: 0 PID: 5975 Comm: syz-executor412 Tainted: G    B              6.4.0-rc4-syzkaller-g908f31f2a05b #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-> Call trace:
->  dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
->  show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
->  dump_stack+0x1c/0x28 lib/dump_stack.c:113
->  ubsan_epilogue lib/ubsan.c:217 [inline]
->  __ubsan_handle_shift_out_of_bounds+0x2f4/0x36c lib/ubsan.c:387
->  do_csum+0x238/0x254 arch/arm64/lib/csum.c:116
->  csum_partial+0x30/0x58 lib/checksum.c:128
->  gso_make_checksum include/linux/skbuff.h:4928 [inline]
->  __udp_gso_segment+0xaf4/0x1bc4 net/ipv4/udp_offload.c:332
->  udp6_ufo_fragment+0x540/0xca0 net/ipv6/udp_offload.c:47
->  ipv6_gso_segment+0x5cc/0x1760 net/ipv6/ip6_offload.c:119
->  skb_mac_gso_segment+0x2b4/0x5b0 net/core/gro.c:141
->  __skb_gso_segment+0x250/0x3d0 net/core/dev.c:3401
->  skb_gso_segment include/linux/netdevice.h:4859 [inline]
->  validate_xmit_skb+0x364/0xdbc net/core/dev.c:3659
->  validate_xmit_skb_list+0x94/0x130 net/core/dev.c:3709
->  sch_direct_xmit+0xe8/0x548 net/sched/sch_generic.c:327
->  __dev_xmit_skb net/core/dev.c:3805 [inline]
->  __dev_queue_xmit+0x147c/0x3318 net/core/dev.c:4210
->  dev_queue_xmit include/linux/netdevice.h:3085 [inline]
->  packet_xmit+0x6c/0x318 net/packet/af_packet.c:276
->  packet_snd net/packet/af_packet.c:3081 [inline]
->  packet_sendmsg+0x376c/0x4c98 net/packet/af_packet.c:3113
->  sock_sendmsg_nosec net/socket.c:724 [inline]
->  sock_sendmsg net/socket.c:747 [inline]
->  __sys_sendto+0x3b4/0x538 net/socket.c:2144
->  __do_sys_sendto net/socket.c:2156 [inline]
->  __se_sys_sendto net/socket.c:2152 [inline]
->  __arm64_sys_sendto+0xd8/0xf8 net/socket.c:2152
->  __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
->  invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
->  el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
->  do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
->  el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-> ================================================================================
-> ================================================================================
-> UBSAN: shift-out-of-bounds in arch/arm64/lib/csum.c:116:25
-> shift exponent 3008 is too large for 64-bit type 'u64' (aka 'unsigned long long')
-> CPU: 0 PID: 5975 Comm: syz-executor412 Tainted: G    B              6.4.0-rc4-syzkaller-g908f31f2a05b #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-> Call trace:
->  dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
->  show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
->  dump_stack+0x1c/0x28 lib/dump_stack.c:113
->  ubsan_epilogue lib/ubsan.c:217 [inline]
->  __ubsan_handle_shift_out_of_bounds+0x2f4/0x36c lib/ubsan.c:387
->  do_csum+0x250/0x254 arch/arm64/lib/csum.c:116
->  csum_partial+0x30/0x58 lib/checksum.c:128
->  gso_make_checksum include/linux/skbuff.h:4928 [inline]
->  __udp_gso_segment+0xaf4/0x1bc4 net/ipv4/udp_offload.c:332
->  udp6_ufo_fragment+0x540/0xca0 net/ipv6/udp_offload.c:47
->  ipv6_gso_segment+0x5cc/0x1760 net/ipv6/ip6_offload.c:119
->  skb_mac_gso_segment+0x2b4/0x5b0 net/core/gro.c:141
->  __skb_gso_segment+0x250/0x3d0 net/core/dev.c:3401
->  skb_gso_segment include/linux/netdevice.h:4859 [inline]
->  validate_xmit_skb+0x364/0xdbc net/core/dev.c:3659
->  validate_xmit_skb_list+0x94/0x130 net/core/dev.c:3709
->  sch_direct_xmit+0xe8/0x548 net/sched/sch_generic.c:327
->  __dev_xmit_skb net/core/dev.c:3805 [inline]
->  __dev_queue_xmit+0x147c/0x3318 net/core/dev.c:4210
->  dev_queue_xmit include/linux/netdevice.h:3085 [inline]
->  packet_xmit+0x6c/0x318 net/packet/af_packet.c:276
->  packet_snd net/packet/af_packet.c:3081 [inline]
->  packet_sendmsg+0x376c/0x4c98 net/packet/af_packet.c:3113
->  sock_sendmsg_nosec net/socket.c:724 [inline]
->  sock_sendmsg net/socket.c:747 [inline]
->  __sys_sendto+0x3b4/0x538 net/socket.c:2144
->  __do_sys_sendto net/socket.c:2156 [inline]
->  __se_sys_sendto net/socket.c:2152 [inline]
->  __arm64_sys_sendto+0xd8/0xf8 net/socket.c:2152
->  __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
->  invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
->  el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
->  do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
->  el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-> ================================================================================
-> skb len=9070 headroom=178 headlen=9070 tailroom=6816
-> mac=(178,14) net=(192,176) trans=368
-> shinfo(txflags=0 nr_frags=0 gso(size=7321 type=131074 segs=0))
-> csum(0x0 ip_summed=0 complete_sw=0 valid=0 level=0)
-> hash(0x0 sw=0 l4=0) proto=0x86dd pkttype=0 iif=0
-> dev name=erspan0 feat=0x0000000000006869
-> sk family=17 type=3 proto=0
-> skb linear:   00000000: 0c 2c ff f5 7b 01 6d 27 63 bd 56 37 86 dd 39 8d
-> skb linear:   00000010: 53 75 03 e5 2b 02 59 1f 11 1e e6 16 d5 c0 18 43
-> skb linear:   00000020: 74 a7 ff e4 ec 55 e0 65 47 86 a7 01 00 93 5b a5
-> skb linear:   00000030: 14 d4 08 08 ef a0 11 10 16 01 84 2f d0 8d 49 a4
-> skb linear:   00000040: 7e ff 71 bc 41 31 fe 4c 1f 99 bf 00 a9 00 00 00
-> skb linear:   00000050: 08 d1 84 3e 77 0a fd 6e 9e f5 83 7d bd 00 00 00
-> skb linear:   00000060: 00 53 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   00000070: 00 00 00 00 00 00 11 00 00 00 05 00 00 00 01 00
-> skb linear:   00000080: 00 06 89 7b 42 8e 75 eb 00 00 00 00 00 00 00 00
-> skb linear:   00000090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   000000a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   000000b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   000000c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   000000d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   000000e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   000000f0: 00 00 00 00 00 00 65 72 73 70 61 6e 30 00 00 00
-> skb linear:   00000100: 00 00 00 00 00 00 05 00 00 00 00 00 00 00 00 00
-> skb linear:   00000110: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> skb linear:   00000120: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ------------[ cut here ]------------
-> erspan0: caps=(0x0000000000006869, 0x0000000000000000)
-> WARNING: CPU: 0 PID: 5975 at net/core/dev.c:3230 skb_warn_bad_offload+0x160/0x194 net/core/dev.c:3228
-> Modules linked in:
-> CPU: 0 PID: 5975 Comm: syz-executor412 Tainted: G    B              6.4.0-rc4-syzkaller-g908f31f2a05b #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 05/25/2023
-> pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-> pc : skb_warn_bad_offload+0x160/0x194 net/core/dev.c:3228
-> lr : skb_warn_bad_offload+0x160/0x194 net/core/dev.c:3228
-> sp : ffff800096947280
-> x29: ffff800096947280 x28: dfff800000000000 x27: ffff0000d2086000
-> x26: 0000000000000020 x25: 1fffe0001ae170d8 x24: ffff80008c6f97c0
-> x23: dfff800000000000 x22: ffff0000d70b8658 x21: ffff0000d2086000
-> x20: ffff0000d2086000 x19: ffff0000d20860f0 x18: 0000000000000000
-> x17: 0000000000000000 x16: ffff80008a4342bc x15: 0000000000000203
-> x14: 0000000000000000 x13: 0000000000000001 x12: 0000000000000001
-> x11: 0000000000000201 x10: 0000000000000000 x9 : e71a9b1dab1be800
-> x8 : e71a9b1dab1be800 x7 : 0000000000000001 x6 : 0000000000000001
-> x5 : ffff800096946b78 x4 : ffff80008df9ed80 x3 : ffff800080597be8
-> x2 : 0000000000000001 x1 : 0000000000000201 x0 : 0000000000000000
-> Call trace:
->  skb_warn_bad_offload+0x160/0x194 net/core/dev.c:3228
->  __skb_gso_segment+0x2f8/0x3d0 net/core/dev.c:3404
->  skb_gso_segment include/linux/netdevice.h:4859 [inline]
->  validate_xmit_skb+0x364/0xdbc net/core/dev.c:3659
->  validate_xmit_skb_list+0x94/0x130 net/core/dev.c:3709
->  sch_direct_xmit+0xe8/0x548 net/sched/sch_generic.c:327
->  __dev_xmit_skb net/core/dev.c:3805 [inline]
->  __dev_queue_xmit+0x147c/0x3318 net/core/dev.c:4210
->  dev_queue_xmit include/linux/netdevice.h:3085 [inline]
->  packet_xmit+0x6c/0x318 net/packet/af_packet.c:276
->  packet_snd net/packet/af_packet.c:3081 [inline]
->  packet_sendmsg+0x376c/0x4c98 net/packet/af_packet.c:3113
->  sock_sendmsg_nosec net/socket.c:724 [inline]
->  sock_sendmsg net/socket.c:747 [inline]
->  __sys_sendto+0x3b4/0x538 net/socket.c:2144
->  __do_sys_sendto net/socket.c:2156 [inline]
->  __se_sys_sendto net/socket.c:2152 [inline]
->  __arm64_sys_sendto+0xd8/0xf8 net/socket.c:2152
->  __invoke_syscall arch/arm64/kernel/syscall.c:38 [inline]
->  invoke_syscall+0x98/0x2c0 arch/arm64/kernel/syscall.c:52
->  el0_svc_common+0x138/0x244 arch/arm64/kernel/syscall.c:142
->  do_el0_svc+0x64/0x198 arch/arm64/kernel/syscall.c:191
->  el0_svc+0x4c/0x160 arch/arm64/kernel/entry-common.c:647
->  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:665
->  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:591
-> irq event stamp: 128240
-> hardirqs last  enabled at (128240): [<ffff80008a4321bc>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
-> hardirqs last  enabled at (128240): [<ffff80008a4321bc>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
-> hardirqs last disabled at (128239): [<ffff80008a42fdf4>] __el1_irq arch/arm64/kernel/entry-common.c:470 [inline]
-> hardirqs last disabled at (128239): [<ffff80008a42fdf4>] el1_interrupt+0x24/0x68 arch/arm64/kernel/entry-common.c:488
-> softirqs last  enabled at (128206): [<ffff80008861d870>] spin_unlock_bh include/linux/spinlock.h:395 [inline]
-> softirqs last  enabled at (128206): [<ffff80008861d870>] release_sock+0x15c/0x1b0 net/core/sock.c:3495
-> softirqs last disabled at (128224): [<ffff8000886a21f0>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
-> ---[ end trace 0000000000000000 ]---
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the bug is already fixed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite bug's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the bug is a duplicate of another bug, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+>>
+>> There are a lot of drivers that use num_buffers, they will have to be audited.
+>>
+>> This needs a lot more thought.
+>>
+>>> +
+>>> +    for (index = d->index; index < d->index + d->count; index++) {
+>>> +        vb = vb2_get_buffer(q, index);
+>>> +        if (!vb) {
+>>> +            dprintk(q, 1, "can't find the requested buffer\n");
+>>> +            ret = -EINVAL;
+>>> +            goto error;
+>>> +        }
+>>> +        if (vb->state != VB2_BUF_STATE_DEQUEUED) {
+>>> +            dprintk(q, 1, "can't delete non dequeued buffer index %d\n", vb->index);
+>>> +            ret = -EINVAL;
+>>> +            goto error;
+>>> +        }
+>> These checks have to take place first, then, if all is OK, you call vb2_core_delete_bufs.
+>>
+>> Actually, thinking this over, I would move all these checks to vb2_core_delete_bufs.
+>>
+>> It can all be put under the mmap_lock mutex to ensure nobody is messing around
+>> with the queue while this takes place.
+>>
+>> Note that when vb2_core_reqbufs() is called with count=0, then if it sees that
+>> a buffer is still in use (mmaped), it will log a debug message that the buffers
+>> are orphaned. We should keep that, I believe.
+>>
+>>> +
+>>> +        ret = vb2_core_delete_buf(q, vb);
+>>> +        if (ret)
+>>> +            break;
+>>> +    }
+>>> +
+>>> +error:
+>>> +    d->index = index;
+>> I wouldn't do this. I don't think this is useful.
+>>
+>>> +    return ret;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(vb2_delete_bufs);
+>>> +
+>>>   int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create)
+>>>   {
+>>>       unsigned requested_planes = 1;
+>>> diff --git a/drivers/media/v4l2-core/v4l2-dev.c b/drivers/media/v4l2-core/v4l2-dev.c
+>>> index f81279492682..215654fd6581 100644
+>>> --- a/drivers/media/v4l2-core/v4l2-dev.c
+>>> +++ b/drivers/media/v4l2-core/v4l2-dev.c
+>>> @@ -720,6 +720,7 @@ static void determine_valid_ioctls(struct video_device *vdev)
+>>>           SET_VALID_IOCTL(ops, VIDIOC_PREPARE_BUF, vidioc_prepare_buf);
+>>>           SET_VALID_IOCTL(ops, VIDIOC_STREAMON, vidioc_streamon);
+>>>           SET_VALID_IOCTL(ops, VIDIOC_STREAMOFF, vidioc_streamoff);
+>>> +        SET_VALID_IOCTL(ops, VIDIOC_DELETE_BUFS, vidioc_delete_bufs);
+>>>       }
+>>>         if (is_vid || is_vbi || is_meta) {
+>>> diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>> index f4d9d6279094..aac3a0ea0126 100644
+>>> --- a/drivers/media/v4l2-core/v4l2-ioctl.c
+>>> +++ b/drivers/media/v4l2-core/v4l2-ioctl.c
+>>> @@ -489,6 +489,13 @@ static void v4l_print_create_buffers(const void *arg, bool write_only)
+>>>       v4l_print_format(&p->format, write_only);
+>>>   }
+>>>   +static void v4l_print_delete_buffers(const void *arg, bool write_only)
+>>> +{
+>>> +    const struct v4l2_delete_buffers *p = arg;
+>>> +
+>>> +    pr_cont("index=%d, count=%d\n", p->index, p->count);
+>> Use %u since both args are unsigned.
+>>
+>>> +}
+>>> +
+>>>   static void v4l_print_streamparm(const void *arg, bool write_only)
+>>>   {
+>>>       const struct v4l2_streamparm *p = arg;
+>>> @@ -2160,6 +2167,15 @@ static int v4l_prepare_buf(const struct v4l2_ioctl_ops *ops,
+>>>       return ret ? ret : ops->vidioc_prepare_buf(file, fh, b);
+>>>   }
+>>>   +static int v4l_delete_bufs(const struct v4l2_ioctl_ops *ops,
+>>> +               struct file *file, void *fh, void *arg)
+>>> +{
+>>> +    struct v4l2_delete_buffers *delete = arg;
+>>> +    int ret = check_fmt(file, delete->type);
+>>> +
+>>> +    return ret ? ret : ops->vidioc_delete_bufs(file, fh, delete);
+>>> +}
+>>> +
+>>>   static int v4l_g_parm(const struct v4l2_ioctl_ops *ops,
+>>>                   struct file *file, void *fh, void *arg)
+>>>   {
+>>> @@ -2909,6 +2925,7 @@ static const struct v4l2_ioctl_info v4l2_ioctls[] = {
+>>>       IOCTL_INFO(VIDIOC_ENUM_FREQ_BANDS, v4l_enum_freq_bands, v4l_print_freq_band, 0),
+>>>       IOCTL_INFO(VIDIOC_DBG_G_CHIP_INFO, v4l_dbg_g_chip_info, v4l_print_dbg_chip_info, INFO_FL_CLEAR(v4l2_dbg_chip_info, match)),
+>>>       IOCTL_INFO(VIDIOC_QUERY_EXT_CTRL, v4l_query_ext_ctrl, v4l_print_query_ext_ctrl, INFO_FL_CTRL | INFO_FL_CLEAR(v4l2_query_ext_ctrl, id)),
+>>> +    IOCTL_INFO(VIDIOC_DELETE_BUFS, v4l_delete_bufs, v4l_print_delete_buffers, INFO_FL_PRIO | INFO_FL_QUEUE | INFO_FL_CLEAR(v4l2_delete_buffers, type)),
+>>>   };
+>>>   #define V4L2_IOCTLS ARRAY_SIZE(v4l2_ioctls)
+>>>   diff --git a/include/media/v4l2-ioctl.h b/include/media/v4l2-ioctl.h
+>>> index edb733f21604..55afbde54211 100644
+>>> --- a/include/media/v4l2-ioctl.h
+>>> +++ b/include/media/v4l2-ioctl.h
+>>> @@ -163,6 +163,8 @@ struct v4l2_fh;
+>>>    *    :ref:`VIDIOC_CREATE_BUFS <vidioc_create_bufs>` ioctl
+>>>    * @vidioc_prepare_buf: pointer to the function that implements
+>>>    *    :ref:`VIDIOC_PREPARE_BUF <vidioc_prepare_buf>` ioctl
+>>> + * @vidioc_delete_bufs: pointer to the function that implements
+>>> + *    :ref:`VIDIOC_DELETE_BUFS <vidioc_delete_bufs>` ioctl
+>>>    * @vidioc_overlay: pointer to the function that implements
+>>>    *    :ref:`VIDIOC_OVERLAY <vidioc_overlay>` ioctl
+>>>    * @vidioc_g_fbuf: pointer to the function that implements
+>>> @@ -422,6 +424,8 @@ struct v4l2_ioctl_ops {
+>>>                     struct v4l2_create_buffers *b);
+>>>       int (*vidioc_prepare_buf)(struct file *file, void *fh,
+>>>                     struct v4l2_buffer *b);
+>>> +    int (*vidioc_delete_bufs)(struct file *file, void *fh,
+>>> +                  struct v4l2_delete_buffers *d);
+>>>         int (*vidioc_overlay)(struct file *file, void *fh, unsigned int i);
+>>>       int (*vidioc_g_fbuf)(struct file *file, void *fh,
+>>> diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+>>> index 97153c69583f..e2c5ff31efd0 100644
+>>> --- a/include/media/videobuf2-core.h
+>>> +++ b/include/media/videobuf2-core.h
+>>> @@ -843,6 +843,15 @@ int vb2_core_create_bufs(struct vb2_queue *q, enum vb2_memory memory,
+>>>    */
+>>>   int vb2_core_prepare_buf(struct vb2_queue *q, struct vb2_buffer *vb, void *pb);
+>>>   +/**
+>>> + * vb2_core_delete_buf() -
+>>> + * @q: pointer to &struct vb2_queue with videobuf2 queue.
+>>> + * @vb:        pointer to struct &vb2_buffer.
+>>> + *
+>>> + *  Return: returns zero on success; an error code otherwise.
+>>> + */
+>>> +int vb2_core_delete_buf(struct vb2_queue *q, struct vb2_buffer *vb);
+>>> +
+>>>   /**
+>>>    * vb2_core_qbuf() - Queue a buffer from userspace
+>>>    *
+>>> diff --git a/include/media/videobuf2-v4l2.h b/include/media/videobuf2-v4l2.h
+>>> index 5a845887850b..2ef68fdf388f 100644
+>>> --- a/include/media/videobuf2-v4l2.h
+>>> +++ b/include/media/videobuf2-v4l2.h
+>>> @@ -118,6 +118,17 @@ int vb2_create_bufs(struct vb2_queue *q, struct v4l2_create_buffers *create);
+>>>    */
+>>>   int vb2_prepare_buf(struct vb2_queue *q, struct media_device *mdev,
+>>>               struct v4l2_buffer *b);
+>>> +/**
+>>> + * vb2_delete_bufs() - Delete buffers from the queue
+>>> + *
+>>> + * @q:        pointer to &struct vb2_queue with videobuf2 queue.
+>>> + * @d:        delete parameter, passed from userspace to
+>>> + *        &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver
+>>> + *
+>>> + * The return values from this function are intended to be directly returned
+>>> + * from &v4l2_ioctl_ops->vidioc_delete_bufs handler in driver.
+>>> + */
+>>> +int vb2_delete_bufs(struct vb2_queue *q, struct v4l2_delete_buffers *d);
+>> I'm missing the vb2_ioctl_delete_bufs function with a call to vb2_queue_is_busy().
+>>
+>>>     /**
+>>>    * vb2_qbuf() - Queue a buffer from userspace
+>>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>>> index 78260e5d9985..9cc7f570d995 100644
+>>> --- a/include/uapi/linux/videodev2.h
+>>> +++ b/include/uapi/linux/videodev2.h
+>>> @@ -2616,6 +2616,20 @@ struct v4l2_create_buffers {
+>>>       __u32            reserved[6];
+>>>   };
+>>>   +/**
+>>> + * struct v4l2_delete_buffers - VIDIOC_DELETE_BUFS argument
+>>> + * @index:    the first buffer to be deleted
+>>> + * @count:    number of buffers to delete
+>>> + * @type:    enum v4l2_buf_type
+>>> + * @reserved:    future extensions
+>>> + */
+>>> +struct v4l2_delete_buffers {
+>>> +    __u32            index;
+>>> +    __u32            count;
+>>> +    __u32            type;
+>>> +    __u32            reserved[13];
+>>> +};
+>>> +
+>>>   /*
+>>>    *    I O C T L   C O D E S   F O R   V I D E O   D E V I C E S
+>>>    *
+>>> @@ -2715,6 +2729,8 @@ struct v4l2_create_buffers {
+>>>   #define VIDIOC_DBG_G_CHIP_INFO  _IOWR('V', 102, struct v4l2_dbg_chip_info)
+>>>     #define VIDIOC_QUERY_EXT_CTRL    _IOWR('V', 103, struct v4l2_query_ext_ctrl)
+>>> +#define VIDIOC_DELETE_BUFS    _IOWR('V', 104, struct v4l2_delete_buffers)
+>>> +
+>>>     /* Reminder: when adding new ioctls please add support for them to
+>>>      drivers/media/v4l2-core/v4l2-compat-ioctl32.c as well! */
+>> You need much more extensive compliance checks for this, esp. mixing
+>> create_bufs and delete_bufs. And test it with the test-media test script.
+>>
+>> Regards,
+>>
+>>     Hans
+>>
+
+Regards,
+
+	Hans
