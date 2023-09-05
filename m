@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E7667925E1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98A74792B23
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238528AbjIEQGT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:06:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41434 "EHLO
+        id S241952AbjIEQsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:48:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354537AbjIEMZC (ORCPT
+        with ESMTP id S1354539AbjIEMZm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:25:02 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 650911A8;
-        Tue,  5 Sep 2023 05:24:59 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 25A0E219F8;
-        Tue,  5 Sep 2023 12:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1693916698; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y+TAx88oFB04zxtoLdsW/MXynwxPjQoRFvKwN54GWMg=;
-        b=LRYOH3LSFhDzKKM4DUzc+kdHqXIyM/vtRKortnk8B8zJmC1aexzJ2+eT6gRElpNRDZNfst
-        DyGtFNvQr6R6tVo1/IaVw9bdB30839uFy0RejToseG/6up6DpaDQqny7cP3ZDsRanvxi0t
-        VZWI53CYa/vTrJx6zjiIFewzzYnYSo0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1693916698;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y+TAx88oFB04zxtoLdsW/MXynwxPjQoRFvKwN54GWMg=;
-        b=XhEKCOXH9DQMmv1df2jH6uZaO4bpBzLAea6Wewzyko1Hefv5pdX+kO2qmB2MQJLdZZlpuP
-        aIA+BSwTRzugwAAg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E526313911;
-        Tue,  5 Sep 2023 12:24:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3Gq1Mhke92RZEwAAMHmgww
-        (envelope-from <krisman@suse.de>); Tue, 05 Sep 2023 12:24:57 +0000
-From:   Gabriel Krisman Bertazi <krisman@suse.de>
-To:     Breno Leitao <leitao@debian.org>
-Cc:     sdf@google.com, axboe@kernel.dk, asml.silence@gmail.com,
-        willemdebruijn.kernel@gmail.com, martin.lau@linux.dev,
-        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, io-uring@vger.kernel.org, kuba@kernel.org,
-        pabeni@redhat.com
-Subject: Re: [PATCH v4 09/10] io_uring/cmd: Introduce
- SOCKET_URING_OP_SETSOCKOPT
-In-Reply-To: <20230904162504.1356068-10-leitao@debian.org> (Breno Leitao's
-        message of "Mon, 4 Sep 2023 09:25:02 -0700")
-Organization: SUSE
-References: <20230904162504.1356068-1-leitao@debian.org>
-        <20230904162504.1356068-10-leitao@debian.org>
-Date:   Tue, 05 Sep 2023 08:24:56 -0400
-Message-ID: <875y4obyef.fsf@suse.de>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Tue, 5 Sep 2023 08:25:42 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C3A1A8;
+        Tue,  5 Sep 2023 05:25:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693916735;
+        bh=CPBdmsVi+RC8AZkE/89HdSzguIfSlQf/+GkllycK6Lo=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=RJcgXDpdCUilrU70w2ztD+Aqbe4WFPwMiS7gS3VQZkcqmxUeLdoJ+ujNMxc+5WJZP
+         2Z8ig75ftP+Pqcg06lZpFAKWqPs4V29AvJIJWZ8wYHQxhkOSi/FTIYLBp48+uplUux
+         3DhB+Ue5SnFudd6moHRjytH53ff1fyg+6I8rb1G+rECM8JHnOyyNTt/AGetfjp4hG2
+         7FAT/UZZi6U5g2Xm3PmJkD77xIcTSnmvf9G/m2Nn5P0OffxYdHUnMt46egYrqJG84L
+         osugeOPdywqRKOw5OV0qr/6QIYC7x5oPO0+eikMkqi9OTvWZbL5eYUgtx9cb4UQISc
+         t0+hA2cSdGBZg==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rg4Tq2KcMz1NMR;
+        Tue,  5 Sep 2023 08:25:35 -0400 (EDT)
+Message-ID: <89dc5f3f-f959-0586-6f3c-1481c5d3efc4@efficios.com>
+Date:   Tue, 5 Sep 2023 08:26:51 -0400
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] The value may overflow
+Content-Language: en-US
+To:     David Laight <David.Laight@ACULAB.COM>,
+        Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "rcu@vger.kernel.org" <rcu@vger.kernel.org>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "trufanov@swemel.ru" <trufanov@swemel.ru>,
+        "vfh@swemel.ru" <vfh@swemel.ru>
+References: <20230904094251.64022-1-arefev@swemel.ru>
+ <bb708695-a513-2006-0985-d6686e525f5a@efficios.com>
+ <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <429249323d5f41ebbfa4f9e0294b2ddb@AcuMS.aculab.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Breno Leitao <leitao@debian.org> writes:
+On 9/5/23 05:31, David Laight wrote:
+> From: Mathieu Desnoyers
+>> Sent: 04 September 2023 11:24
+>>
+>> On 9/4/23 05:42, Denis Arefev wrote:
+>>> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+>>> is subject to overflow due to a failure to cast operands to a larger
+>>> data type before performing arithmetic
+>>
+>> The patch title should identify more precisely its context, e.g.:
+>>
+>> "srcu: Fix srcu_struct node grpmask overflow on 64-bit systems"
+>>
+>> Also, as I stated in my reply to the previous version, the patch commit
+>> message should describe the impact of the bug it fixes.
+> 
+> And is the analysis complete?
+> Is 1UL right for 32bit archs??
+> Is 64 bits even enough??
 
-> Add initial support for SOCKET_URING_OP_SETSOCKOPT. This new command is
-> similar to setsockopt. This implementation leverages the function
-> do_sock_setsockopt(), which is shared with the setsockopt() system call
-> path.
->
-> Important to say that userspace needs to keep the pointer's memory alive
-> until the operation is completed. I.e, the memory could not be
-> deallocated before the CQE is returned to userspace.
->
-> Signed-off-by: Breno Leitao <leitao@debian.org>
+I understand from include/linux/rcu_node_tree.h and kernel/rcu/Kconfig 
+RCU_FANOUT and RCU_FANOUT_LEAF ranges that a 32-bit integer is 
+sufficient to hold the mask on 32-bit architectures, and a 64-bit 
+integer is enough on 64-bit architectures given the current implementation.
 
-Likewise, much cleaner!  Feel free to add:
-
-Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+At least this appears to be the intent. I did not do a thorough analysis 
+of the various parameter limits.
 
 Thanks,
 
+Mathieu
+
+> 
+> 	David
+> 
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>>
+>>>
+>>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>>
+>>> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+>>> ---
+>>> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+>>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>    kernel/rcu/srcutree.c | 4 ++--
+>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>>> index 20d7a238d675..6c18e6005ae1 100644
+>>> --- a/kernel/rcu/srcutree.c
+>>> +++ b/kernel/rcu/srcutree.c
+>>> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct srcu_struct *ssp, gfp_t gfp_flags)
+>>>    				snp->grplo = cpu;
+>>>    			snp->grphi = cpu;
+>>>    		}
+>>> -		sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+>>> +		sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+>>>    	}
+>>>    	smp_store_release(&ssp->srcu_sup->srcu_size_state, SRCU_SIZE_WAIT_BARRIER);
+>>>    	return true;
+>>> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct srcu_struct *ssp, struct srcu_node *snp
+>>>    	int cpu;
+>>>
+>>>    	for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+>>> -		if (!(mask & (1 << (cpu - snp->grplo))))
+>>> +		if (!(mask & (1UL << (cpu - snp->grplo))))
+>>>    			continue;
+>>>    		srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+>>>    	}
+>>
+>> --
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+
 -- 
-Gabriel Krisman Bertazi
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
+
