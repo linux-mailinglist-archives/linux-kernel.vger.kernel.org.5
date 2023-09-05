@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6492792E4D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF830792E4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241537AbjIETH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42512 "EHLO
+        id S241473AbjIETHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:07:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241782AbjIETHt (ORCPT
+        with ESMTP id S241181AbjIETHO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:07:49 -0400
+        Tue, 5 Sep 2023 15:07:14 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DB8CFD;
-        Tue,  5 Sep 2023 12:07:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5FBE42;
+        Tue,  5 Sep 2023 12:06:39 -0700 (PDT)
 Received: from localhost.localdomain (unknown [IPv6:2a02:8010:65b5:0:1ac0:4dff:feee:236a])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: alarumbe)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 69C5266071F8;
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A4F36660725E;
         Tue,  5 Sep 2023 19:45:44 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
         s=mail; t=1693939544;
-        bh=40cxse3JQ9cf/lsBsQtEwOdtU5azU2vw7zoB5H2GdF8=;
+        bh=T0w/9ewtGaSWFKXNKJjvPNLeGF3c6rlMCZOOwei27ac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U4d860lZYNiD+uQ8PYYCwqyD/zDNxDDoQ0nDrUu6G9IPoMKqJv/w0xhHnn9o6E6FS
-         fEBvzZNPX63Fj8NAYMM2W5e1lne8Wf9EexMYLOGpVmaYuYv0hgkX8teD4bZgrS/iyv
-         64cIa0uZYV+84JB5wwK7y+LL7C1hV4WT2ee/41Uyzh3hdg5jDrCwhbaldfA33z/+XP
-         JQ0bIfhLJOdV5gwSNXv2/kqJxCHH+Z/pLOFBnH9YAom5aB0i11qLux0FvJHqoJahXQ
-         DSUbjOKV4TXe00lnjrFtfnGAPHBTZLv72n7aR/WraPtJ5w3tF/zxJSLpsbgj/0e9oM
-         GlwImsrKAX+Og==
+        b=fKWc2FrDs195RFkGo1XHWwPKlwIxs1Tnoex74M1zYAWh2kptEVsSKvvTMx3LqGGNg
+         vU89h7tUm31YrrPaGmbqvJ+tQ89x2bog8QB00CAaNxu7nyNNkhiN/wQJLuo1Ll6V0O
+         4G9qBbIgcnIFAPm4p6rzI9WLQxt1cq9RnypvuxRoX57Ua2GDFfyg6s+pswC0AUsCQ8
+         T86rSVf3R9u8Q8hFLK36FAEwhfKeuHNVlQMjf1Y+Ix6RgbZT+fhUw9K+Gk8/wWrClZ
+         P2gJKzaaHPWLrwCog78L1aQ8LWYYNBI0PDYylm8i6N1t6+STz/zNtrXSkBrrDqvaKk
+         aJ7++Zmov1COQ==
 From:   =?UTF-8?q?Adri=C3=A1n=20Larumbe?= <adrian.larumbe@collabora.com>
 To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
         tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
@@ -42,11 +42,10 @@ To:     maarten.lankhorst@linux.intel.com, mripard@kernel.org,
 Cc:     adrian.larumbe@collabora.com, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         freedreno@lists.freedesktop.org, healych@amazon.com,
-        kernel@collabora.com,
-        Boris Brezillon <boris.brezillon@collabora.com>
-Subject: [PATCH v3 1/8] drm/panfrost: Add cycle count GPU register definitions
-Date:   Tue,  5 Sep 2023 19:45:17 +0100
-Message-ID: <20230905184533.959171-2-adrian.larumbe@collabora.com>
+        kernel@collabora.com
+Subject: [PATCH v3 2/8] drm/panfrost: Enable cycle counter register upon job submission
+Date:   Tue,  5 Sep 2023 19:45:18 +0100
+Message-ID: <20230905184533.959171-3-adrian.larumbe@collabora.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20230905184533.959171-1-adrian.larumbe@collabora.com>
 References: <20230905184533.959171-1-adrian.larumbe@collabora.com>
@@ -62,39 +61,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These GPU registers will be used when programming the cycle counter, which
-we need for providing accurate fdinfo drm-cycles values to user space.
+In a future development, we will want to keep track of the number of GPU
+cycles spent on a given job. That means we should enable it only when the
+GPU has work to do, and switch it off whenever it is idle to avoid power
+waste.
+
+To avoid race conditions during enablement/disabling, a reference counting
+mechanism was introduced, and a job flag that tells us whether a given job
+increased the refcount. This is necessary, because a future development
+will let user space toggle cycle counting through a debugfs file, and a
+given job might have been in flight by the time cycle counting was
+disabled.
+
+Toggling of GPU cycle counting has to be done through a module parameter.
 
 Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-Reviewed-by: Boris Brezillon <boris.brezillon@collabora.com>
-Reviewed-by: Steven Price <steven.price@arm.com>
 ---
- drivers/gpu/drm/panfrost/panfrost_regs.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/gpu/drm/panfrost/panfrost_device.c |  5 +++
+ drivers/gpu/drm/panfrost/panfrost_device.h |  6 +++
+ drivers/gpu/drm/panfrost/panfrost_gpu.c    | 43 ++++++++++++++++++++++
+ drivers/gpu/drm/panfrost/panfrost_gpu.h    |  6 +++
+ drivers/gpu/drm/panfrost/panfrost_job.c    | 10 +++++
+ drivers/gpu/drm/panfrost/panfrost_job.h    |  1 +
+ 6 files changed, 71 insertions(+)
 
-diff --git a/drivers/gpu/drm/panfrost/panfrost_regs.h b/drivers/gpu/drm/panfrost/panfrost_regs.h
-index 919f44ac853d..55ec807550b3 100644
---- a/drivers/gpu/drm/panfrost/panfrost_regs.h
-+++ b/drivers/gpu/drm/panfrost/panfrost_regs.h
-@@ -46,6 +46,8 @@
- #define   GPU_CMD_SOFT_RESET		0x01
- #define   GPU_CMD_PERFCNT_CLEAR		0x03
- #define   GPU_CMD_PERFCNT_SAMPLE	0x04
-+#define   GPU_CMD_CYCLE_COUNT_START	0x05
-+#define   GPU_CMD_CYCLE_COUNT_STOP	0x06
- #define   GPU_CMD_CLEAN_CACHES		0x07
- #define   GPU_CMD_CLEAN_INV_CACHES	0x08
- #define GPU_STATUS			0x34
-@@ -73,6 +75,9 @@
- #define GPU_PRFCNT_TILER_EN		0x74
- #define GPU_PRFCNT_MMU_L2_EN		0x7c
+diff --git a/drivers/gpu/drm/panfrost/panfrost_device.c b/drivers/gpu/drm/panfrost/panfrost_device.c
+index fa1a086a862b..1ea2ac3804f0 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_device.c
++++ b/drivers/gpu/drm/panfrost/panfrost_device.c
+@@ -18,6 +18,9 @@
+ #include "panfrost_mmu.h"
+ #include "panfrost_perfcnt.h"
  
-+#define GPU_CYCLE_COUNT_LO		0x90
-+#define GPU_CYCLE_COUNT_HI		0x94
++static bool profile;
++module_param(profile, bool, 0600);
 +
- #define GPU_THREAD_MAX_THREADS		0x0A0	/* (RO) Maximum number of threads per core */
- #define GPU_THREAD_MAX_WORKGROUP_SIZE	0x0A4	/* (RO) Maximum workgroup size */
- #define GPU_THREAD_MAX_BARRIER_SIZE	0x0A8	/* (RO) Maximum threads waiting at a barrier */
+ static int panfrost_reset_init(struct panfrost_device *pfdev)
+ {
+ 	pfdev->rstc = devm_reset_control_array_get_optional_exclusive(pfdev->dev);
+@@ -207,6 +210,8 @@ int panfrost_device_init(struct panfrost_device *pfdev)
+ 
+ 	spin_lock_init(&pfdev->as_lock);
+ 
++	atomic_set(&pfdev->profile_mode, profile);
++
+ 	err = panfrost_clk_init(pfdev);
+ 	if (err) {
+ 		dev_err(pfdev->dev, "clk init failed %d\n", err);
+diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
+index b0126b9fbadc..5c09c9f3ae08 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_device.h
++++ b/drivers/gpu/drm/panfrost/panfrost_device.h
+@@ -107,6 +107,7 @@ struct panfrost_device {
+ 	struct list_head scheduled_jobs;
+ 
+ 	struct panfrost_perfcnt *perfcnt;
++	atomic_t profile_mode;
+ 
+ 	struct mutex sched_lock;
+ 
+@@ -121,6 +122,11 @@ struct panfrost_device {
+ 	struct shrinker shrinker;
+ 
+ 	struct panfrost_devfreq pfdevfreq;
++
++	struct {
++		atomic_t use_count;
++		spinlock_t lock;
++	} cycle_counter;
+ };
+ 
+ struct panfrost_mmu {
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.c b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+index 2faa344d89ee..fddbc72bf093 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.c
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.c
+@@ -73,6 +73,8 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev)
+ 	gpu_write(pfdev, GPU_INT_CLEAR, GPU_IRQ_MASK_ALL);
+ 	gpu_write(pfdev, GPU_INT_MASK, GPU_IRQ_MASK_ALL);
+ 
++	atomic_set(&pfdev->cycle_counter.use_count, 0);
++
+ 	return 0;
+ }
+ 
+@@ -321,6 +323,46 @@ static void panfrost_gpu_init_features(struct panfrost_device *pfdev)
+ 		 pfdev->features.shader_present, pfdev->features.l2_present);
+ }
+ 
++void panfrost_cycle_counter_get(struct panfrost_device *pfdev)
++{
++	if (atomic_inc_not_zero(&pfdev->cycle_counter.use_count))
++		return;
++
++	spin_lock(&pfdev->cycle_counter.lock);
++	if (atomic_inc_return(&pfdev->cycle_counter.use_count) == 1)
++		gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_START);
++	spin_unlock(&pfdev->cycle_counter.lock);
++}
++
++void panfrost_cycle_counter_put(struct panfrost_device *pfdev)
++{
++	if (atomic_add_unless(&pfdev->cycle_counter.use_count, -1, 1))
++		return;
++
++	spin_lock(&pfdev->cycle_counter.lock);
++	if (atomic_dec_return(&pfdev->cycle_counter.use_count) == 0)
++		gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_STOP);
++	spin_unlock(&pfdev->cycle_counter.lock);
++}
++
++void panfrost_cycle_counter_stop(struct panfrost_device *pfdev)
++{
++	atomic_set(&pfdev->profile_mode, 0);
++	gpu_write(pfdev, GPU_CMD, GPU_CMD_CYCLE_COUNT_STOP);
++}
++
++unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev)
++{
++	u32 hi, lo;
++
++	do {
++		hi = gpu_read(pfdev, GPU_CYCLE_COUNT_HI);
++		lo = gpu_read(pfdev, GPU_CYCLE_COUNT_LO);
++	} while (hi != gpu_read(pfdev, GPU_CYCLE_COUNT_HI));
++
++	return ((u64)hi << 32) | lo;
++}
++
+ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ {
+ 	int ret;
+@@ -367,6 +409,7 @@ void panfrost_gpu_power_on(struct panfrost_device *pfdev)
+ 
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev)
+ {
++	panfrost_cycle_counter_stop(pfdev);
+ 	gpu_write(pfdev, TILER_PWROFF_LO, 0);
+ 	gpu_write(pfdev, SHADER_PWROFF_LO, 0);
+ 	gpu_write(pfdev, L2_PWROFF_LO, 0);
+diff --git a/drivers/gpu/drm/panfrost/panfrost_gpu.h b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+index 468c51e7e46d..4d62e8901c79 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_gpu.h
++++ b/drivers/gpu/drm/panfrost/panfrost_gpu.h
+@@ -16,6 +16,12 @@ int panfrost_gpu_soft_reset(struct panfrost_device *pfdev);
+ void panfrost_gpu_power_on(struct panfrost_device *pfdev);
+ void panfrost_gpu_power_off(struct panfrost_device *pfdev);
+ 
++void panfrost_stop_cycle_counter(struct panfrost_device *pfdev);
++void panfrost_cycle_counter_get(struct panfrost_device *pfdev);
++void panfrost_cycle_counter_stop(struct panfrost_device *pfdev);
++void panfrost_cycle_counter_put(struct panfrost_device *pfdev);
++unsigned long long panfrost_cycle_counter_read(struct panfrost_device *pfdev);
++
+ void panfrost_gpu_amlogic_quirk(struct panfrost_device *pfdev);
+ 
+ #endif
+diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
+index 033f5e684707..8b1bf6ac48f8 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_job.c
++++ b/drivers/gpu/drm/panfrost/panfrost_job.c
+@@ -297,6 +297,11 @@ int panfrost_job_push(struct panfrost_job *job)
+ 
+ 	kref_get(&job->refcount); /* put by scheduler job completion */
+ 
++	if (atomic_read(&pfdev->profile_mode)) {
++		panfrost_cycle_counter_get(pfdev);
++		job->is_profiled = true;
++	}
++
+ 	drm_sched_entity_push_job(&job->base);
+ 
+ 	mutex_unlock(&pfdev->sched_lock);
+@@ -351,6 +356,9 @@ static void panfrost_job_free(struct drm_sched_job *sched_job)
+ 
+ 	drm_sched_job_cleanup(sched_job);
+ 
++	if (job->is_profiled)
++		panfrost_cycle_counter_put(job->pfdev);
++
+ 	panfrost_job_put(job);
+ }
+ 
+@@ -842,6 +850,8 @@ int panfrost_job_init(struct panfrost_device *pfdev)
+ 		}
+ 	}
+ 
++	spin_lock_init(&pfdev->cycle_counter.lock);
++
+ 	panfrost_job_enable_interrupts(pfdev);
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
+index 8becc1ba0eb9..2aa0add35459 100644
+--- a/drivers/gpu/drm/panfrost/panfrost_job.h
++++ b/drivers/gpu/drm/panfrost/panfrost_job.h
+@@ -32,6 +32,7 @@ struct panfrost_job {
+ 
+ 	/* Fence to be signaled by drm-sched once its done with the job */
+ 	struct dma_fence *render_done_fence;
++	bool is_profiled;
+ };
+ 
+ int panfrost_job_init(struct panfrost_device *pfdev);
 -- 
 2.42.0
 
