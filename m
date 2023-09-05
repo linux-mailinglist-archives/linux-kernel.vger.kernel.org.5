@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C117925FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB58A792B43
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234365AbjIEQR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:17:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49426 "EHLO
+        id S1343948AbjIEQuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:50:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353744AbjIEHvB (ORCPT
+        with ESMTP id S1353753AbjIEHw6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:51:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C135BCCF;
-        Tue,  5 Sep 2023 00:50:57 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 09:50:52 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693900254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MutGdXNEcm5iJDpAgKUMr2fqtKokWlFeWhM1/hK0FPk=;
-        b=MQPZHtcpYu7nAzsnmZmdKdnVT5XJx3bG34npCaLOERPJMBpMaYb0/WJUbYh5c7VMTPcZVs
-        oJ453im8jU5ntjMHcDLxMqlab8bot5lKodlOFRhph5AE3SFMG+EKoWmBDHF/miSEAOf2ai
-        fW/5K6Lv0nrSTrFBO11/FsqtfM1qKYmhDAJelhP+d7vAEjMIoJu0cVYJA9AWqFDUQVdP3/
-        6w4HlEgcfJVjB3LupiebrRdhUO7fLjZJakVlrg7vs7sR9cCifbCjFBt46tPq51bWnmsHKQ
-        EsL9rIr4PgUtmav6z0xRwLT0UBrAJM0pQolK/KJTFG9vAinWyUaNm6rBw4+Sgg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693900254;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MutGdXNEcm5iJDpAgKUMr2fqtKokWlFeWhM1/hK0FPk=;
-        b=YJbuJ0Rz5XvuEK5doHmJd2yNtdE/eAPnbSibnL87Gv9f6dL1r0+cn9CTuv+8ywiPNDYFRh
-        CefZku2HOhzscQAA==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Ratheesh Kannoth <rkannoth@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, hawk@kernel.org,
-        alexander.duyck@gmail.com, ilias.apalodimas@linaro.org,
-        linyunsheng@huawei.com
-Subject: Re: [PATCH net] octeontx2-pf: Fix page pool cache index corruption.
-Message-ID: <20230905075052.KwIVTze9@linutronix.de>
-References: <20230904144304.3280804-1-rkannoth@marvell.com>
+        Tue, 5 Sep 2023 03:52:58 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0DE3CC
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:52:54 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-34e202a9cc9so6238865ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 00:52:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693900374; x=1694505174; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g/s66p9pwSSI1fSoYztzIq0uZUi+KONsknkXUZ5g+do=;
+        b=kk/3AsBtX3ePS69xgCApgu8GJE3cTZGgo7aacIVPeM4NFKfnKSnB5H/Oapmrj/hgjk
+         exnuluKA5/K8JF2FYHphkm/L41CkRx/pl125HJha4w4sBI3lGaa8yVCaC+dA2O2RdMvR
+         nw0ETcjHEPES2S3lrnbWog7LMoov8t3x212fxoY/IPKQl8fwZebdHX8/u/0VwgE5/V6H
+         v/zSgiSFiq45zCoCBoozJZYkrhSLt7QMBxLWYZeYcys9VBV2gmUw2+Gj3z6cpHkP44X6
+         AVypYX5G7XCeKu1LmPxCOdzJYKpbXEg3Hw7jUWShCsvcKGXWeEFDGlhjCcNByEnEkm4p
+         Vmqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693900374; x=1694505174;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g/s66p9pwSSI1fSoYztzIq0uZUi+KONsknkXUZ5g+do=;
+        b=NbghLKFMlWb1jHsvpraSu9yLh8+iWBY2KpdgxBDtPGF+Si8cfx5H3ifpJFUuXj1MsS
+         MNBVjpJ8twSSJ2n89RyQ4RlxtmLlEFd5OB1SmEdKPGNY0WAXp3b7GkEDaxdRcvEodHxJ
+         UCU3t8WE/EFK2Ryr3cipQJolNQD9gfODiCr71Nj4PTxBBLSHUakSGnFBJ6lWpTcW0Eqn
+         jAEn+sNl9JNTf6/5PqxLOwlMEZ+r7hAV8qsaELBhGXpO22tsj7oYSqrMOYiKUhdgHTJf
+         sXLtP/bDjdx4JOjQZN2CFJWvf+7OfeV7emoofbAUPJUu57/xgVsOaMLT9MAgTZDUlhK7
+         Dymg==
+X-Gm-Message-State: AOJu0YxPhL6m6FzsARm6v8MW1b9AmCAW+5QaE9jznsjj9v9A9IbF1zdh
+        FgQV9Fy4q0rAt5NKJt8Pllp+s3y32cvsKaMNCvw=
+X-Google-Smtp-Source: AGHT+IEySP94eVLl7AiEPYh5FDmpxXtZ41VikaFi3omLii57sxmTMraaEjMpLk1CCaU/fWHLAoG/v/+5gKsnnWCUapQ=
+X-Received: by 2002:a05:6e02:128f:b0:349:9665:38b with SMTP id
+ y15-20020a056e02128f00b003499665038bmr11582256ilq.30.1693900373973; Tue, 05
+ Sep 2023 00:52:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20230901110320.312674-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20230902-plexiglas-cannot-e4ca8494ef95@spud>
+In-Reply-To: <20230902-plexiglas-cannot-e4ca8494ef95@spud>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Tue, 5 Sep 2023 08:52:27 +0100
+Message-ID: <CA+V-a8umzZ7eGDQ-CAL0+uV7mQcr6HC5BR3b=UWJoV2VjNm-4Q@mail.gmail.com>
+Subject: Re: [PATCH] riscv: Kconfig.errata: Add dependency for RISCV_SBI in
+ ERRATA_ANDES config
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20230904144304.3280804-1-rkannoth@marvell.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-04 20:13:04 [+0530], Ratheesh Kannoth wrote:
-=E2=80=A6
->=20
-> Fixes: b2e3406a38f0 ("octeontx2-pf: Add support for page pool")
-Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Ratheesh Kannoth <rkannoth@marvell.com>
+Hi Conor,
 
-> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c b/dri=
-vers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> index e369baf11530..cf2e631af58b 100644
-> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_txrx.c
-> @@ -561,10 +566,18 @@ int otx2_napi_handler(struct napi_struct *napi, int=
- budget)
->  				otx2_config_irq_coalescing(pfvf, i);
->  		}
-> =20
-> -		/* Re-enable interrupts */
-> -		otx2_write64(pfvf, NIX_LF_CINTX_ENA_W1S(cq_poll->cint_idx),
-> -			     BIT_ULL(0));
-> +		/* Schedule NAPI again to refill rx buffers */
-> +		if (unlikely(!filled_cnt)) {
-> +			udelay(1000);
+On Sat, Sep 2, 2023 at 12:02=E2=80=AFPM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Fri, Sep 01, 2023 at 12:03:20PM +0100, Prabhakar wrote:
+> > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> >
+> > Andes errata uses sbi_ecalll() which is only available if RISCV_SBI is
+> > enabled. So add an dependency for RISCV_SBI in ERRATA_ANDES config to
+> > avoid any build failures.
+> >
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > Closes: https://lore.kernel.org/oe-kbuild-all/202308311610.ec6bm2G8-lkp=
+@intel.com/
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Replied here earlier, but pressed the wrong key & it only went to the
+> list.
+> I think this patch probably also needs to grow a Fixes tag, for
+> commit f2863f30d1b0 ("riscv: errata: Add Andes alternative ports").
+>
+> The 4 Kconfig patches ideally would've been in a series, since 3 of the
+> 4 seem to be fixes & the 4th depends on one of the fixes being applied.
+>
+My bad I should i've posted them as a series.
 
-A delay of 1ms? Short term I would suggest to set up a timer for polling
-this case instead of delay. On a UP you wouldn't make progress that way.
-
-Long term it might make sense to allocate new page/ memory before
-handing the current page/skb over to the stack. Should allocation fail
-then you have at least one slot (your current one) which can ensure that
-you can receive on further packet (which you either drop on the floor or
-pass to the stack).
-
-> +			napi_schedule(napi);
-> +		} else {
-> +			/* Re-enable interrupts */
-> +			otx2_write64(pfvf,
-> +				     NIX_LF_CINTX_ENA_W1S(cq_poll->cint_idx),
-> +				     BIT_ULL(0));
-> +		}
->  	}
-> +
->  	return workdone;
->  }
-
-Sebastian
+Cheers,
+Prabhakar
