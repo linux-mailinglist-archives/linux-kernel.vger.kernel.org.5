@@ -2,378 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C15C792AE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E9A1792C08
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344352AbjIEQoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:44:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51426 "EHLO
+        id S1352693AbjIERFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354901AbjIEPlp (ORCPT
+        with ESMTP id S1354894AbjIEPcw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 11:41:45 -0400
-X-Greylist: delayed 598 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 08:41:40 PDT
-Received: from er-systems.de (er-systems.de [IPv6:2a01:4f8:261:3c41::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FD7DA8
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:41:40 -0700 (PDT)
-Received: from localhost.localdomain (localhost [127.0.0.1])
-        by er-systems.de (Postfix) with ESMTP id 0ECB5ECDAE2;
-        Tue,  5 Sep 2023 17:31:36 +0200 (CEST)
+        Tue, 5 Sep 2023 11:32:52 -0400
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2104.outbound.protection.outlook.com [40.107.255.104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E59133
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:32:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NdkKX1aOz6+syfWNpBc8W7D0w585otIoCvzN1N1/9+a73waJzDUgztS2MHccuLBsCjUigXnWoRUoy0PRclKI/45D6jS6aZhgjn6NacAcTvN/EsWCS5ZFG78AZIpk7izCexnsVjFg3zyJ3rrVWKb50ghcNDN4QIWTbsJqdFZNhLaSErIdRR4rTL/Guj7b+vJI33PvLY2uhL7ZilgHmxGsO/Wh9Qa5ArPlhNxQ1cpfsP7jxBW/UvRFJaDc45iP2Bze3F8Oc5fjuIXnhg4XO1verV0YBsdN5uFfIk85JNbcR58wJd2EW4ilz8xpnwOLz7FiWK5Aj5D1AUVtTWDnbC/1JQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=twHlCeM3dnAe+HvNVRTTveVWZyZpck98tJZfZ6eK69w=;
+ b=aABajT33ViJ32X/bQCEROm4ih+JEJgQ6lzn5ADpo5FcVIzsEKDbROaEI1dUy0Ddm2M9uDpR3kfzbU6xq8PJaMgOTv29lVtNPUHUN+nnpSMLxcAcgtPuN1FfWDcCgKNpm31ifbZYOkunU10viJFtWsSgsJJfv48snyp3lAjgAPPyZnRwuZ/tJcxS685k9nrMY9FSG+7cq44GJyfhlZRPxUUNc266w//EAVoRzNIeuhN5wog0dDDgmFxVm8fYxrRDtvpIHO6f2yJ7mJsEFMZLZBoo/8vEXawzH5tLNFhvwW5OhbPROFAhXN7MkXg2TNNhHQJ4zl7R3JhfDRLj5xby1Vg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=twHlCeM3dnAe+HvNVRTTveVWZyZpck98tJZfZ6eK69w=;
+ b=nFPPrOiC0E/IL3RQC2YkjzhNJ007kTUxAoFtFcY31b6npdG87JqYbf2n2axi9JG4HXMChEQo7S+tCzpsSNBVus+jute1lBF1s6OPfC6YTvPGeIqfGV7U+VMnO1/Ummb4l4mrAN0YWS9nTV0bxHyMCX8I5SARcswB62tW2YTPDvX3sTLscuU4+IVbzo6os9dzf56s/oHICBgWJ22xcr0rvs+NwkdXvGQIJ+8NXlWKuZ71NuvkJBUp3Iwmgbuxo0TRaBApGoJAnncKj6skRmg8aFFoi33rRL2e4NNfYesumtX0oA2W+0fEUEQI52tCFsayXrFN/kFw5uoUyYhSLDr/5g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by KL1PR0601MB5864.apcprd06.prod.outlook.com (2603:1096:820:9d::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.32; Tue, 5 Sep
+ 2023 15:32:41 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::832:19a2:2f83:1cfc]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::832:19a2:2f83:1cfc%4]) with mapi id 15.20.6745.034; Tue, 5 Sep 2023
+ 15:32:41 +0000
+From:   Zhiguo Jiang <justinjiang@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Zhiguo Jiang <justinjiang@vivo.com>
+Subject: [PATCH] mm: page_alloc: remove MIGRATE_HIGHATOMIC order0 page
+Date:   Tue,  5 Sep 2023 23:32:30 +0800
+Message-ID: <20230905153230.1291-1-justinjiang@vivo.com>
+X-Mailer: git-send-email 2.41.0.windows.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SGAP274CA0008.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::20)
+ To JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|KL1PR0601MB5864:EE_
+X-MS-Office365-Filtering-Correlation-Id: ea812e3b-3175-4a7a-ace9-08dbae25576c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: OY74F2PnK80M8J5RKwmAqXhKb6rDxnfL7Li4CJLUo8I+SAMvtZrdxXH44p7IiklsN+8FPgjns4qp31K5iTpUzGtqC1PJyjns4ScfdbbbMzP91GNB0RZoCSV8LgZsOUedQL3G4ovl0bsi2gB7ZlY9KyGDNuPKkekScfY0gDS9ARmYHMHJBrmy9Er34ILhmXUZ1jGUxq+oD55tAA+MRyKc2vphzM1ze2GrE98LE9gNXbHtA2lNyzLMTRtALDdmqRJ9ph0mIg4P5leBj29om+GJtykh8DTJEa0vyF0FahPPCwXfUwefy7LGxu+K7KrBITQxXA70p7iStjTrV9oBck1K7poVGomRr70w0hdIrJ1k+bmBZYvmwlsdooIqrwICzeeNXM3PyjJQbJ3vQWk2Wxu3fHPU6YefGzNYv3gLAM7tnbXYLvQB6m7iM3LtljF+raRYa+E1VNb1v+uncrOxL+6i2/25Td6V51zHP4hKqAsCiPNx/ZT6DctMKx+N6QUF4qEnjdTk8kHbAkTgadPu8BBOVGVF+DkxLkxUjZAzEF7JztGAAK9WrDrBTzqvFU/+PQvAGK0IwMRRwC2zFZuOrp0AAuxj7c1siByE+oOYcXvdcoCjd3ExCViwXRz4Kwe4wQkx
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(346002)(39860400002)(396003)(366004)(451199024)(1800799009)(186009)(66476007)(36756003)(66946007)(2906002)(316002)(86362001)(66556008)(5660300002)(8936002)(4326008)(8676002)(41300700001)(1076003)(6512007)(2616005)(83380400001)(26005)(107886003)(38350700002)(38100700002)(478600001)(52116002)(6486002)(6506007)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?I5pXT4YjO9okdubAY5o/KMbXMB1uaAtFpiT85WcRW8QCSLTb+7Wue5pwzNPt?=
+ =?us-ascii?Q?6O20lralrejL2sgZpejGn0j6CuMyWaczScXDHuxsUqdm30FpE9wueEGtqQwH?=
+ =?us-ascii?Q?26LTtkQlpxbJTdfRJ18lHhg3VwZ4nhdEo18+1V40kOf6MhM6yfwWDOp6ywij?=
+ =?us-ascii?Q?MlsKRNNIUzpT432we84+oR7On7fLGBxGHfOYtJLpmw6zQ27W5dQYwc4fEx89?=
+ =?us-ascii?Q?7JRWia+kUx79leW1mxUvPd1baZbMffbVYl8b3b0O2vFWdzh5P6S0uDzJdrJU?=
+ =?us-ascii?Q?SqpTDVFqaUpA+qYBqpyE8xqmSd2FKb4mCxoGiw8YlxPrDty+k3GRW5Hplkmt?=
+ =?us-ascii?Q?T9jdzFGFD6gGnmQjcVKUqwta0ybqNtQkpgLEoYJm8ap73KOVowo+Eu0U9QQa?=
+ =?us-ascii?Q?+5JntdzY9r+eMzkfM8I32y7fukMyyqdZHdEO9SAaBgJfiPW+kQmR6OcBh3N9?=
+ =?us-ascii?Q?cxbRIfXDArNld7HZ4z/db6Vq3upVFLK043l30K127CdeIw9z4n5o5aXdJf4Y?=
+ =?us-ascii?Q?FD6v8YnhpyKdTQwi1yQt4i5UfnjG1kES078WOAvfLPyDMgAW17qwcJw331YA?=
+ =?us-ascii?Q?TYCvwlXW42/7hyqSO8FLJAVaP7Mrb0JFKmczRZidR1v2Nj98DI3NxK8BaBIy?=
+ =?us-ascii?Q?f6kKb/9mSzs8ULft6vmHMFtE5d92HW3emkftAO40pw86HpUDjmeve2yTCd66?=
+ =?us-ascii?Q?fb9y+8a+KyYh0VpNlDePCsAK1DWOx2XM4iKhjSRGmvD7PKRBSHNzkixbI0MK?=
+ =?us-ascii?Q?jlZY61Rl70rlUyPIAIaUaQHoTQsabT7GJl0lgRF5weEcuZneCzf2s5i6LCkK?=
+ =?us-ascii?Q?xml8RpC6ZbjdQs/6egfOK8FrEtaEu1f+wHEKCzYjhuL/Hn93gCNj09sxwsTi?=
+ =?us-ascii?Q?hKLWtHP+dGYIGhjFcQ6lplHDfPJYZhrW3rg6AIUk1Ght28r8dEUrAR8oHN+g?=
+ =?us-ascii?Q?3pxrC+dGFaZYSWexybkRruJQz/iP4ZtKxxMm/fHQwG0sW7cYM7XUuwZYx1g6?=
+ =?us-ascii?Q?jSr+KitLJU7DSJrBMCZ+DpRTw806yNi/mivCD8pJ1KA3OuqKu64A5HlvtUef?=
+ =?us-ascii?Q?z2MK+XBex1M4ig447zm/8mXJhQ9VWFJ0a4a43gOHZ9BStfS+WSaBupA1kCRo?=
+ =?us-ascii?Q?r31D3SF/pJVtos5jtA7nZ8cPHQmi9oyLChn0IF+bQzlZyT91yGCdP5kIL4hw?=
+ =?us-ascii?Q?VL82JMK0NdZdY4L81G40GWkYH0KlSgQP0fUfA3yOdpwfvpUFDzDWfyDB5aY7?=
+ =?us-ascii?Q?nCa9zAIAgpglqSX+R2Nsfc9bBwWU+Z+IzsetXItO6W7JHUwHlSabGedwDgqN?=
+ =?us-ascii?Q?SGP6GE+tyHyxmGCXXrTAWIJxHIZoW9tCnTo3zb6GGSrtKt6mkcAYI2/32Wuw?=
+ =?us-ascii?Q?TeghlgLrAlmzySQCm6bIqGc9w/zon2TeGU83SdRLZ1H1V76QT6exXPRKuJa7?=
+ =?us-ascii?Q?bl2tOndCVL18xvkM+U1vRBiN4M2uDnh83fWhN8IQA/CTLoqdaSrbBRRBpN2E?=
+ =?us-ascii?Q?Ge6OVuLZe/27N+Ifn5HP4TBImZAZoq2LaOj+dZwfxoWhXLRaM7WWRRI4el9T?=
+ =?us-ascii?Q?NgOaG4YqQs7Wn3fHtCi71JemO9bLXRQUkusAvyuh?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea812e3b-3175-4a7a-ace9-08dbae25576c
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 15:32:40.8458
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nPxlIZ8c2Cv1uJJrp5QyzKjaCsB7qQrfzXFeGmz7engTPlKFwfc3VdbZ3T2EM2omCuP+GLWbkmOfJNYsDwtBfg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: KL1PR0601MB5864
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
-Received: from localhost (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by er-systems.de (Postfix) with ESMTPS id E2A9AEC0039;
-        Tue,  5 Sep 2023 17:31:35 +0200 (CEST)
-Date:   Tue, 5 Sep 2023 17:31:34 +0200 (CEST)
-From:   Thomas Voegtle <tv@lio96.de>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-cc:     Serguei Ivantsov <manowar@gsc-game.com>,
-        Philipp Reisner <philipp.reisner@linbit.com>,
-        Lars Ellenberg <lars.ellenberg@linbit.com>,
-        =?ISO-8859-15?Q?Christoph_B=F6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>, drbd-dev@lists.linbit.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>
-Subject: Re: DRBD broken in kernel 6.5 and 6.5.1
-In-Reply-To: <c6282b47-114d-7bd7-6efb-856d76bea128@leemhuis.info>
-Message-ID: <33bf67cc-4f5e-b504-ce94-195d36ffc8a4@lio96.de>
-References: <CAKH+VT3YLmAn0Y8=q37UTDShqxDLsqPcQ4hBMzY7HPn7zNx+RQ@mail.gmail.com> <c6282b47-114d-7bd7-6efb-856d76bea128@leemhuis.info>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-X-Virus-Status: No
-X-Virus-Checker-Version: clamassassin 1.2.4 with clamdscan / ClamAV 0.103.9/27022/Tue Sep  5 09:59:33 2023
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 3 Sep 2023, Linux regression tracking (Thorsten Leemhuis) wrote:
+The MIGRATE_HIGHATOMIC pages are used for order > 0 allocation,
+so pages in MIGRATE_HIGHATOMIC order0 freelist are invalid.
 
-> CCing the DRBD maintainers and the appropriate lists, as they should
-> know about this -- or actually might know what is causing this already
-> or be able to guess the cause. For the rest of this mail:
->
-> [TLDR: I'm adding this report to the list of tracked Linux kernel
-> regressions; the text you find below is based on a few templates
-> paragraphs you might have encountered already in similar form.]
->
-> On 02.09.23 22:37, Serguei Ivantsov wrote:
->> Hello,
->>
->> After upgrading the kernel to 6.5 the system can't connect to the peer
->> (6.4.11) anymore.
->> I checked 6.5.1 - same issue.
->> All previous kernels including 6.4.14 are working just fine.
->> Checking the 6.5 changelog, I found commit
->> 9ae440b8fdd6772b6c007fa3d3766530a09c9045 which mentioned some changes
->> to DRBD.
->>
->> On the 6.5.X system I have the following in the kernel log
->> (drbd_send_block() failed):
->>
->> [    2.473497] drbd: initialized. Version: 8.4.11 (api:1/proto:86-101)
->>
->> [    2.475394] drbd: built-in
->>
->> [    2.477254] drbd: registered as block device major 147
->>
->> [    7.421400] drbd drbd0: Starting worker thread (from drbdsetup-84 [3844])
->>
->> [    7.421509] drbd drbd0/0 drbd0: disk( Diskless -> Attaching )
->>
->> [    7.421552] drbd drbd0: Method to ensure write ordering: flush
->>
->> [    7.421554] drbd drbd0/0 drbd0: max BIO size = 131072
->>
->> [    7.421557] drbd drbd0/0 drbd0: drbd_bm_resize called with capacity
->> == 1845173184
->>
->> [    7.428017] drbd drbd0/0 drbd0: resync bitmap: bits=230646648
->> words=3603854 pages=7039
->>
->> [    7.467370] drbd0: detected capacity change from 0 to 1845173184
->>
->> [    7.467372] drbd drbd0/0 drbd0: size = 880 GB (922586592 KB)
->>
->> [    7.486005] drbd drbd0/0 drbd0: recounting of set bits took
->> additional 0 jiffies
->>
->> [    7.486010] drbd drbd0/0 drbd0: 0 KB (0 bits) marked out-of-sync by
->> on disk bit-map.
->>
->> [    7.486017] drbd drbd0/0 drbd0: disk( Attaching -> UpToDate )
->>
->> [    7.486021] drbd drbd0/0 drbd0: attached to UUIDs
->> 32DDB2019708F68A:0000000000000000:7D97648599B446DD:7D96648599B446DD
->>
->> [    7.486863] drbd drbd0: conn( StandAlone -> Unconnected )
->>
->> [    7.486871] drbd drbd0: Starting receiver thread (from drbd_w_drbd0 [3847])
->>
->> [    7.486918] drbd drbd0: receiver (re)started
->>
->> [    7.486929] drbd drbd0: conn( Unconnected -> WFConnection )
->>
->> [   12.340212] drbd drbd0: initial packet S crossed
->>
->> [   22.310856] drbd drbd0: Handshake successful: Agreed network
->> protocol version 101
->>
->> [   22.311087] drbd drbd0: Feature flags enabled on protocol level:
->> 0xf TRIM THIN_RESYNC WRITE_SAME WRITE_ZEROES.
->>
->> [   22.311425] drbd drbd0: conn( WFConnection -> WFReportParams )
->>
->> [   22.311621] drbd drbd0: Starting ack_recv thread (from drbd_r_drbd0 [4071])
->>
->> [   22.400702] drbd drbd0/0 drbd0: drbd_sync_handshake:
->>
->> [   22.400869] drbd drbd0/0 drbd0: self
->> 32DDB2019708F68A:0000000000000000:7D97648599B446DD:7D96648599B446DD
->> bits:0 flags:0
->>
->> [   22.401205] drbd drbd0/0 drbd0: peer
->> 32DDB2019708F68A:0000000000000000:7D97648599B446DC:7D96648599B446DD
->> bits:0 flags:0
->>
->> [   22.401538] drbd drbd0/0 drbd0: uuid_compare()=0 by rule 40
->>
->> [   22.401709] drbd drbd0/0 drbd0: peer( Unknown -> Secondary ) conn(
->> WFReportParams -> Connected ) pdsk( DUnknown -> UpToDate )
->>
->> [   22.415394] drbd drbd0/0 drbd0: role( Secondary -> Primary )
->>
->> [   22.506540] drbd drbd0/0 drbd0: _drbd_send_page: size=4096 len=4096 sent=-5
->>
->> [   22.506773] drbd drbd0: peer( Secondary -> Unknown ) conn(
->> Connected -> NetworkFailure ) pdsk( UpToDate -> DUnknown )
->>
->> [   22.507109] drbd drbd0/0 drbd0: new current UUID
->> 7F8B15C04AF49C4D:32DDB2019708F68B:7D97648599B446DD:7D96648599B446DD
->>
->> [   22.507451] drbd drbd0: ack_receiver terminated
->>
->> [   22.507588] drbd drbd0: Terminating drbd_a_drbd0
->>
->> [   22.600693] drbd drbd0: Connection closed
->>
->> [   22.600937] drbd drbd0: conn( NetworkFailure -> Unconnected )
->>
->> [   22.601115] drbd drbd0: receiver terminated
->>
->> [   22.601238] drbd drbd0: Restarting receiver thread
->>
->> [   22.601378] drbd drbd0: receiver (re)started
->>
->> [   22.601508] drbd drbd0: conn( Unconnected -> WFConnection )
->>
->> [   23.260624] drbd drbd0: Handshake successful: Agreed network
->> protocol version 101
->>
->> [   23.260859] drbd drbd0: Feature flags enabled on protocol level:
->> 0xf TRIM THIN_RESYNC WRITE_SAME WRITE_ZEROES.
->>
->> [   23.261187] drbd drbd0: conn( WFConnection -> WFReportParams )
->>
->> [   23.261367] drbd drbd0: Starting ack_recv thread (from drbd_r_drbd0 [4071])
->>
->> [   23.340593] drbd drbd0/0 drbd0: drbd_sync_handshake:
->>
->> [   23.340771] drbd drbd0/0 drbd0: self
->> 7F8B15C04AF49C4D:32DDB2019708F68B:7D97648599B446DD:7D96648599B446DD
->> bits:1 flags:0
->>
->> [   23.341192] drbd drbd0/0 drbd0: peer
->> 32DDB2019708F68A:0000000000000000:7D97648599B446DC:7D96648599B446DD
->> bits:0 flags:0
->>
->> [   23.341649] drbd drbd0/0 drbd0: uuid_compare()=1 by rule 70
->>
->> [   23.341824] drbd drbd0/0 drbd0: peer( Unknown -> Secondary ) conn(
->> WFReportParams -> WFBitMapS ) pdsk( DUnknown -> Consistent )
->>
->> [   23.344911] drbd drbd0/0 drbd0: send bitmap stats [Bytes(packets)]:
->> plain 0(0), RLE 23(1), total 23; compression: 100.0%
->>
->> [   23.396792] drbd drbd0/0 drbd0: receive bitmap stats
->> [Bytes(packets)]: plain 0(0), RLE 23(1), total 23; compression: 100.0%
->>
->> [   23.397210] drbd drbd0/0 drbd0: helper command: /sbin/drbdadm
->> before-resync-source minor-0
->>
->> [   23.407965] drbd drbd0/0 drbd0: helper command: /sbin/drbdadm
->> before-resync-source minor-0 exit code 0 (0x0)
->>
->> [   23.417547] drbd drbd0/0 drbd0: conn( WFBitMapS -> SyncSource )
->> pdsk( Consistent -> Inconsistent )
->>
->> [   23.426697] drbd drbd0/0 drbd0: Began resync as SyncSource (will
->> sync 4 KB [1 bits set]).
->>
->> [   23.435638] drbd drbd0/0 drbd0: updated sync UUID
->> 7F8B15C04AF49C4D:32DEB2019708F68B:32DDB2019708F68B:7D97648599B446DD
->>
->> [   23.488608] drbd drbd0/0 drbd0: _drbd_send_page: size=4096 len=4096 sent=-5
->>
->> [   23.498182] drbd drbd0/0 drbd0: drbd_send_block() failed
->>
->> [   23.508498] drbd drbd0: peer( Secondary -> Unknown ) conn(
->> SyncSource -> NetworkFailure )
->>
->> [   23.517597] drbd drbd0: ack_receiver terminated
->>
->> [   23.527513] drbd drbd0: Terminating drbd_a_drbd0
->>
->> [   23.690598] drbd drbd0: Connection closed
->>
->> [   23.701857] drbd drbd0: conn( NetworkFailure -> Unconnected )
->>
->> [   23.712017] drbd drbd0: receiver terminated
->>
->> [   23.721597] drbd drbd0: Restarting receiver thread
->>
->>
->>
->> On the peer:
->>
->>
->> [349071.038278] drbd drbd0: conn( Unconnected -> WFConnection )
->>
->> [349071.558245] drbd drbd0: Handshake successful: Agreed network
->> protocol version 101
->>
->> [349071.562105] drbd drbd0: Feature flags enabled on protocol level:
->> 0xf TRIM THIN_RESYNC WRITE_SAME WRITE_ZEROES.
->>
->> [349071.569889] drbd drbd0: conn( WFConnection -> WFReportParams )
->>
->> [349071.573802] drbd drbd0: Starting ack_recv thread (from drbd_r_drbd0 [2660])
->>
->> [349071.688547] drbd drbd0/0 drbd0: drbd_sync_handshake:
->>
->> [349071.692323] drbd drbd0/0 drbd0: self
->> 3375B2019708F68A:0000000000000000:7D97648599B446DC:7D96648599B446DD
->> bits:1 flags:0
->>
->> [349071.699871] drbd drbd0/0 drbd0: peer
->> 7F8B15C04AF49C4D:3375B2019708F68B:3374B2019708F68B:3373B2019708F68B
->> bits:1 flags:0
->>
->> [349071.707687] drbd drbd0/0 drbd0: uuid_compare()=-1 by rule 50
->>
->> [349071.711563] drbd drbd0/0 drbd0: Becoming sync target due to disk states.
->>
->> [349071.715381] drbd drbd0/0 drbd0: peer( Unknown -> Primary ) conn(
->> WFReportParams -> WFBitMapT ) pdsk( DUnknown -> UpToDate )
->>
->> [349071.723039] drbd drbd0/0 drbd0: receive bitmap stats
->> [Bytes(packets)]: plain 0(0), RLE 23(1), total 23; compression: 100.0%
->>
->> [349071.732489] drbd drbd0/0 drbd0: send bitmap stats
->> [Bytes(packets)]: plain 0(0), RLE 23(1), total 23; compression: 100.0%
->>
->> [349071.740178] drbd drbd0/0 drbd0: conn( WFBitMapT -> WFSyncUUID )
->>
->> [349071.787113] drbd drbd0/0 drbd0: updated sync uuid
->> 3376B2019708F68A:0000000000000000:7D97648599B446DC:7D96648599B446DD
->>
->> [349071.794907] drbd drbd0/0 drbd0: helper command: /sbin/drbdadm
->> before-resync-target minor-0
->>
->> [349071.800006] drbd drbd0/0 drbd0: helper command: /sbin/drbdadm
->> before-resync-target minor-0 exit code 0 (0x0)
->>
->> [349071.807737] drbd drbd0/0 drbd0: conn( WFSyncUUID -> SyncTarget )
->>
->> [349071.811639] drbd drbd0/0 drbd0: Began resync as SyncTarget (will
->> sync 4 KB [1 bits set]).
->>
->> [349071.916117] drbd drbd0: sock was shut down by peer
->>
->> [349071.919955] drbd drbd0: peer( Primary -> Unknown ) conn(
->> SyncTarget -> BrokenPipe ) pdsk( UpToDate -> DUnknown )
->>
->> [349071.927796] drbd drbd0: short read (expected size 4096)
->>
->> [349071.931812] drbd drbd0: error receiving RSDataReply, e: -5 l: 4096!
->>
->> [349071.935864] drbd drbd0: ack_receiver terminated
->>
->> [349071.939906] drbd drbd0: Terminating drbd_a_drbd0
->>
->> [349072.088385] drbd drbd0: Connection closed
->>
->> [349072.092398] drbd drbd0: conn( BrokenPipe -> Unconnected )
->>
->> [349072.096436] drbd drbd0: receiver terminated
->>
->> [349072.100469] drbd drbd0: Restarting receiver thread
->>
->> [349072.104454] drbd drbd0: receiver (re)started
->>
->> [349072.108373] drbd drbd0: conn( Unconnected -> WFConnection )
->>
->>
->> --
->>
->>  Best Regards,
->>
->>  Serguei
->
->
-> Thanks for the report. To be sure the issue doesn't fall through the
-> cracks unnoticed, I'm adding it to regzbot, the Linux kernel regression
-> tracking bot:
->
-> #regzbot ^introduced v6.4..v6.5
-> #regzbot title drbd: drbd_send_block() failed
-> #regzbot ignore-activity
->
-> This isn't a regression? This issue or a fix for it are already
-> discussed somewhere else? It was fixed already? You want to clarify when
-> the regression started to happen? Or point out I got the title or
-> something else totally wrong? Then just reply and tell me -- ideally
-> while also telling regzbot about it, as explained by the page listed in
-> the footer of this mail.
->
-> Developers: When fixing the issue, remember to add 'Link:' tags pointing
-> to the report (the parent of this mail). See page linked in footer for
-> details.
->
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> That page also explains what to do if mails like this annoy you.
->
->
+This patch can solve the allocation failure from buddy, due to
+the reserved MIGRATE_HIGHATOMIC order0 pages.
 
-Saw the same problem today.
-Didn't bisect, just started reverting commits.
+Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
+---
+ mm/page_alloc.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-I found out that a revert of
-commit eeac7405c735acde8ec78869489a5aa25a141c13
-    drbd: Use sendmsg(MSG_SPLICE_PAGES) rather than sendpage()
-
-fixed drbd for me on Linux 6.5.0.
-
-You will need to return these as well, otherwise you will not be able to
-build:
-
-commit dc97391e661009eab46783030d2404c9b6e6f2e7
-     sock: Remove ->sendpage*() in favour of sendmsg(MSG_SPLICE_PAGES)
-
-commit b848b26c6672c9b977890ba85f5a155e5eb221f0
-     net: Kill MSG_SENDPAGE_NOTLAST
-
-
-Hope this helps.
-
-       Thomas
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 14b51d1ef4c3..10c5b053bedf 100755
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -831,6 +831,9 @@ static inline void __free_one_page(struct page *page,
+ 	else
+ 		to_tail = buddy_merge_likely(pfn, buddy_pfn, page, order);
+ 
++	if (unlikely(!order && is_migrate_highatomic(migratetype)))
++		migratetype = MIGRATE_MOVABLE;
++
+ 	if (to_tail)
+ 		add_to_free_list_tail(page, zone, order, migratetype);
+ 	else
+@@ -1639,9 +1642,13 @@ static int move_freepages(struct zone *zone,
+ 		VM_BUG_ON_PAGE(page_zone(page) != zone, page);
+ 
+ 		order = buddy_order(page);
+-		move_to_free_list(page, zone, order, migratetype);
++		if (unlikely(!order && is_migrate_highatomic(migratetype)))
++			move_to_free_list(page, zone, order, MIGRATE_MOVABLE);
++		else {
++			move_to_free_list(page, zone, order, migratetype);
++			pages_moved += 1 << order;
++		}
+ 		pfn += 1 << order;
+-		pages_moved += 1 << order;
+ 	}
+ 
+ 	return pages_moved;
+-- 
+2.39.0
 
