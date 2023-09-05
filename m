@@ -2,76 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F52E792C15
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A21792C16
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353709AbjIERG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
+        id S1353737AbjIERGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229658AbjIEP6b (ORCPT
+        with ESMTP id S231468AbjIEP7D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 11:58:31 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26947194
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:58:27 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-529fb2c6583so3794216a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:58:27 -0700 (PDT)
+        Tue, 5 Sep 2023 11:59:03 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C2CCD2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:58:42 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id 6a1803df08f44-64b3ae681d1so12943536d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:58:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693929505; x=1694534305; darn=vger.kernel.org;
+        d=google.com; s=20221208; t=1693929522; x=1694534322; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Aa7aT+i5EQ3QihS49Ljt9BqKnGTT4ELtv83ViKOgL14=;
-        b=UArbWcRcXVqkPI/gWwdovn2eBFuRbC7cTNXS6U0/8hTT11YZ8+45n3YquwqFdj41Sk
-         rWct0MjHHE7y7P/SHg15twTMKCVuXQ1M7anyqRE6AIoKmmqOiIF0Qr9ET3f3jqjKRwUQ
-         z/xfZUVAfGyFQtkv+5ZLXSs9arMap7jaBVYKrg2TIi+nE7eeQ2MWkk9/WYcsesfC1gEJ
-         gxjNJaIpnbdoMtvhOhW6oiHTfv8XrWb0f9GdVfmn/V/POAnCCkoPSbVgCkVg2WzPPF7I
-         rg+Yqf4uF92ZjVJYxPZ/fBfg/FK0fOGmtRgJtY4IOHcZQcRVRiaWzbPFrGbxa6EXpzJ6
-         RlQA==
+        bh=w8PsOUdlYxNm6DRIQuojE/DnPuosQCXfxt+6iE22b50=;
+        b=MGA/r38IsqKT0As46X5NECxj23E/EcOE82GmAQgQekQ+lTlv+naD6SWUuNNdGqmwTo
+         Vpz50ek76Z8NFmKrvJie+kT+HXhWsk0b6Q5nu6DogtvuLbfNZiKlt/gUNOHdi0jIo/iQ
+         4s/11hvV9ijJlLU5zvsuR5N6Lx6g0syI/Qw0GB9dffPYdRru1cvAcath+kTHVbG6QyjT
+         Q3Un1RpZBzIWRZ4x7F8Nun2mGnZTt+sNZCKsy7pNpgETLXljspb2YXVwvDDM8KFe6ujX
+         +4AvxahIOLt69EZ9XOd7uDHA22PlpLRqBfnna+CWQ1MZ2qJfpHbcS6rSypP3s26WhkzM
+         x10Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693929505; x=1694534305;
+        d=1e100.net; s=20221208; t=1693929522; x=1694534322;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Aa7aT+i5EQ3QihS49Ljt9BqKnGTT4ELtv83ViKOgL14=;
-        b=WeXwX9nAubKD0HOSZOogZySF+jWfM2czmVYsQqH7WR4tLwpKphVH2NgeTmXsISVvTL
-         f9DHF01J93Luxi1ulDuroMLlhlLYmvZVse9EXatjoFJuHeC7vZVpISynQ7sXLMncmqPj
-         MJsVYGYByO54vvWZncUVwm6jyYg8VAcC/qVggFvRp2TmFYjPbIeqiOdg+OnUszN+MtmG
-         rDHxt1pIQQpWC3/DC9GdJt7LbtyQoqpE+X86i0c9dOKTw+UJYN84+hSTla2I7QhTshXn
-         Apwl0WtNit6AqFi/kyeSPY6F8IIsFaAjXL8paH3KIzv492AuOfAvNJGTtnuyRnN59VSr
-         aHyw==
-X-Gm-Message-State: AOJu0YxGp4Y2tRhW6s8cZvSXze2X5p1xdzIsIzoy9E4Uz+r5o5nGhuJX
-        UWAlnk4QTmsMPNe0IDtlbYvm95ivCToAbQnz+HtBhA==
-X-Google-Smtp-Source: AGHT+IHjV3kT/fsRM56CZxbDIb5jloyTUmWtIcr9xzj8Z6MUrQT/VCOG7UqITNEAVlfwe9bTc0z+KPP3US9GKxsDU7Y=
-X-Received: by 2002:a17:906:1baa:b0:9a1:e941:6f49 with SMTP id
- r10-20020a1709061baa00b009a1e9416f49mr190033ejg.44.1693929505416; Tue, 05 Sep
- 2023 08:58:25 -0700 (PDT)
+        bh=w8PsOUdlYxNm6DRIQuojE/DnPuosQCXfxt+6iE22b50=;
+        b=Do8kUIceAWgROToLAp147tLgMbQ/xlKDl9vNNpcSeEBKyCAVc9UIXN/vUGbOO4NOAd
+         t2cLiS0wVYDb64E9+jeewKA0JfHtJZsinuWLLOLiC1gt9F/pqJmtlJnqW5tdg1ZkZoXP
+         tmst9R9ligVxR3dkEzbzHp2qWS4Ciq0uXCuxuREmOz6OxqaqQKJ/kYszZqB4XJi7amCf
+         Tb4Qz+spB/u5fRFlE9iF6g4fcU0WXViWb7FSqJVT1BMSPm4IDWnjMNC1e+YuPTFJoPzP
+         Ww4d2fTl1byMmPjlO1IhAqSb72nxYNAztjJusNWxmM4BOm35YCwY8tbcVoi80uLc9q3n
+         klJw==
+X-Gm-Message-State: AOJu0YxCSszLzlmIjQ0EBHo7O1A0BoGmrLbYliGg10ROedYOCW8Y4pPI
+        G/yBlg/Z/yA25HcV4AoLLhhrA5ET4dFr42EBXNnd/JHlGCtI3xjJor0=
+X-Google-Smtp-Source: AGHT+IH944pHkAw9VZ43TlFt4vDYO+U/xgVcpDbk7Uk7nqpkI1sHOyU1e3MQrvHBpKUd+yKPV3EdWCfKvx4JwEp8Mlo=
+X-Received: by 2002:a0c:e503:0:b0:64a:2b04:c10a with SMTP id
+ l3-20020a0ce503000000b0064a2b04c10amr12801883qvm.29.1693929521690; Tue, 05
+ Sep 2023 08:58:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230831165611.2610118-1-yosryahmed@google.com>
- <20230831165611.2610118-5-yosryahmed@google.com> <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
-In-Reply-To: <ZPX0kCKd4TaVLJY7@dhcp22.suse.cz>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Tue, 5 Sep 2023 08:57:49 -0700
-Message-ID: <CAJD7tkbgM-pAPhEpQTzJB+TJ8+JPr2tiuVUe8LYCzztAcpyO3Q@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] mm: memcg: use non-unified stats flushing for
- userspace reads
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <ZPcuvEg5Mf5MoM2L@rli9-mobl>
+In-Reply-To: <ZPcuvEg5Mf5MoM2L@rli9-mobl>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Tue, 5 Sep 2023 08:58:30 -0700
+Message-ID: <CAKwvOdm281duZtm7t6MHnKpkJr8DU7=wRs_ud7uAWzKXmF7mBQ@mail.gmail.com>
+Subject: Re: arch/x86/kernel/fpu/xstate.c:1691: warning: Excess function
+ parameter 'tsk' description in 'fpu_xstate_prctl'
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        kernel test robot <philip.li@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -79,168 +72,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 4, 2023 at 8:15=E2=80=AFAM Michal Hocko <mhocko@suse.com> wrote=
-:
+On Tue, Sep 5, 2023 at 6:36=E2=80=AFAM kernel test robot <philip.li@intel.c=
+om> wrote:
 >
-> On Thu 31-08-23 16:56:11, Yosry Ahmed wrote:
-> > Unified flushing allows for great concurrency for paths that attempt to
-> > flush the stats, at the expense of potential staleness and a single
-> > flusher paying the extra cost of flushing the full tree.
-> >
-> > This tradeoff makes sense for in-kernel flushers that may observe high
-> > concurrency (e.g. reclaim, refault). For userspace readers, stale stats
-> > may be unexpected and problematic, especially when such stats are used
-> > for critical paths such as userspace OOM handling. Additionally, a
-> > userspace reader will occasionally pay the cost of flushing the entire
-> > hierarchy, which also causes problems in some cases [1].
-> >
-> > Opt userspace reads out of unified flushing. This makes the cost of
-> > reading the stats more predictable (proportional to the size of the
-> > subtree), as well as the freshness of the stats. Userspace readers are
-> > not expected to have similar concurrency to in-kernel flushers,
-> > serializing them among themselves and among in-kernel flushers should b=
-e
-> > okay. Nonetheless, for extra safety, introduce a mutex when flushing fo=
-r
-> > userspace readers to make sure only a single userspace reader can compe=
-te
-> > with in-kernel flushers at a time. This takes away userspace ability to
-> > directly influence or hurt in-kernel lock contention.
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
+t master
+> head:   3f86ed6ec0b390c033eae7f9c487a3fea268e027
+> commit: f5c0b4f30416c670408a77be94703d04d22b57df x86/prctl: Remove pointl=
+ess task argument
+> date:   1 year, 4 months ago
+> :::::: branch date: 14 hours ago
+> :::::: commit date: 1 year, 4 months ago
+> config: i386-allnoconfig (https://download.01.org/0day-ci/archive/2023090=
+5/202309052029.TNyqXyIT-lkp@intel.com/config)
+> compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git =
+ae42196bc493ffe877a7e3dff8be32035dea4d07)
+> reproduce (this is a W=3D1 build): (https://download.01.org/0day-ci/archi=
+ve/20230905/202309052029.TNyqXyIT-lkp@intel.com/reproduce)
 >
-> I think it would be helpful to note that the primary reason this is a
-> concern is that the spinlock is dropped during flushing under
-> contention.
+> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
+ion of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/r/202309052029.TNyqXyIT-lkp@intel.com/
 >
-> > An alternative is to remove flushing from the stats reading path
-> > completely, and rely on the periodic flusher. This should be accompanie=
-d
-> > by making the periodic flushing period tunable, and providing an
-> > interface for userspace to force a flush, following a similar model to
-> > /proc/vmstat. However, such a change will be hard to reverse if the
-> > implementation needs to be changed because:
-> > - The cost of reading stats will be very cheap and we won't be able to
-> >   take that back easily.
-> > - There are user-visible interfaces involved.
-> >
-> > Hence, let's go with the change that's most reversible first and revisi=
-t
-> > as needed.
-> >
-> > This was tested on a machine with 256 cpus by running a synthetic test
-> > script [2] that creates 50 top-level cgroups, each with 5 children (250
-> > leaf cgroups). Each leaf cgroup has 10 processes running that allocate
-> > memory beyond the cgroup limit, invoking reclaim (which is an in-kernel
-> > unified flusher). Concurrently, one thread is spawned per-cgroup to rea=
-d
-> > the stats every second (including root, top-level, and leaf cgroups --
-> > so total 251 threads). No significant regressions were observed in the
-> > total run time, which means that userspace readers are not significantl=
-y
-> > affecting in-kernel flushers:
-> >
-> > Base (mm-unstable):
-> >
-> > real  0m22.500s
-> > user  0m9.399s
-> > sys   73m41.381s
-> >
-> > real  0m22.749s
-> > user  0m15.648s
-> > sys   73m13.113s
-> >
-> > real  0m22.466s
-> > user  0m10.000s
-> > sys   73m11.933s
-> >
-> > With this patch:
-> >
-> > real  0m23.092s
-> > user  0m10.110s
-> > sys   75m42.774s
-> >
-> > real  0m22.277s
-> > user  0m10.443s
-> > sys   72m7.182s
-> >
-> > real  0m24.127s
-> > user  0m12.617s
-> > sys   78m52.765s
-> >
-> > [1]https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43K=
-O9ME4-dsgfoQ@mail.gmail.com/
-> > [2]https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOB=
-Zcz6POYTV-4g@mail.gmail.com/
-> >
-> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> All warnings (new ones prefixed by >>):
 >
-> OK, I can live with that but I still believe that locking involved in
-> the user interface only begs for issues later on as there is no control
-> over that lock contention other than the number of processes involved.
-> As it seems that we cannot make a consensus on this concern now and this
-> should be already helping existing workloads then let's just buy some
-> more time ;)
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
+> >> arch/x86/kernel/fpu/xstate.c:1691: warning: Excess function parameter =
+'tsk' description in 'fpu_xstate_prctl'
 
-Thanks!
-
-I agree, let's fix problems if/when they arise, maybe it will be just fine =
-:)
-
-I will send a v5 collecting Ack's and augmenting the changelog and
-comment below as you suggested (probably after we resolve patch 3).
+FWIW, this is `make htmldocs` complaining about the comment above the funct=
+ion.
 
 >
-> Thanks!
 >
-> > ---
-> >  mm/memcontrol.c | 24 ++++++++++++++++++++----
-> >  1 file changed, 20 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 94d5a6751a9e..46a7abf71c73 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -588,6 +588,7 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgrou=
-p_tree_per_node *mctz)
-> >  static void flush_memcg_stats_dwork(struct work_struct *w);
-> >  static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dw=
-ork);
-> >  static DEFINE_PER_CPU(unsigned int, stats_updates);
-> > +static DEFINE_MUTEX(stats_user_flush_mutex);
-> >  static atomic_t stats_unified_flush_ongoing =3D ATOMIC_INIT(0);
-> >  static atomic_t stats_flush_threshold =3D ATOMIC_INIT(0);
-> >  static u64 flush_next_time;
-> > @@ -655,6 +656,21 @@ static void do_stats_flush(struct mem_cgroup *memc=
-g)
-> >       cgroup_rstat_flush(memcg->css.cgroup);
-> >  }
-> >
-> > +/*
-> > + * mem_cgroup_user_flush_stats - do a stats flush for a user read
-> > + * @memcg: memory cgroup to flush
-> > + *
-> > + * Flush the subtree of @memcg. A mutex is used for userspace readers =
-to gate
-> > + * the global rstat spinlock. This protects in-kernel flushers from us=
-erspace
-> > + * readers hogging the lock.
+> vim +1691 arch/x86/kernel/fpu/xstate.c
 >
-> readers hogging the lock as do_stats_flush drops the spinlock under
-> contention.
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1671
+> db8268df0983ad Chang S. Bae    2021-10-21  1672  /**
+> db8268df0983ad Chang S. Bae    2021-10-21  1673   * fpu_xstate_prctl - xs=
+tate permission operations
+> db8268df0983ad Chang S. Bae    2021-10-21  1674   * @tsk:       Redundant=
+ pointer to current
+
+^ this line should be deleted.
+
+> db8268df0983ad Chang S. Bae    2021-10-21  1675   * @option:    A subfunc=
+tion of arch_prctl()
+> db8268df0983ad Chang S. Bae    2021-10-21  1676   * @arg2:      option ar=
+gument
+> db8268df0983ad Chang S. Bae    2021-10-21  1677   * Return:     0 if succ=
+essful; otherwise, an error code
+> db8268df0983ad Chang S. Bae    2021-10-21  1678   *
+> db8268df0983ad Chang S. Bae    2021-10-21  1679   * Option arguments:
+> db8268df0983ad Chang S. Bae    2021-10-21  1680   *
+> db8268df0983ad Chang S. Bae    2021-10-21  1681   * ARCH_GET_XCOMP_SUPP: =
+Pointer to user space u64 to store the info
+> db8268df0983ad Chang S. Bae    2021-10-21  1682   * ARCH_GET_XCOMP_PERM: =
+Pointer to user space u64 to store the info
+> db8268df0983ad Chang S. Bae    2021-10-21  1683   * ARCH_REQ_XCOMP_PERM: =
+Facility number requested
+> db8268df0983ad Chang S. Bae    2021-10-21  1684   *
+> db8268df0983ad Chang S. Bae    2021-10-21  1685   * For facilities which =
+require more than one XSTATE component, the request
+> db8268df0983ad Chang S. Bae    2021-10-21  1686   * must be the highest s=
+tate component number related to that facility,
+> db8268df0983ad Chang S. Bae    2021-10-21  1687   * e.g. for AMX which re=
+quires XFEATURE_XTILE_CFG(17) and
+> db8268df0983ad Chang S. Bae    2021-10-21  1688   * XFEATURE_XTILE_DATA(1=
+8) this would be XFEATURE_XTILE_DATA(18).
+> db8268df0983ad Chang S. Bae    2021-10-21  1689   */
+> f5c0b4f30416c6 Thomas Gleixner 2022-05-12  1690  long fpu_xstate_prctl(in=
+t option, unsigned long arg2)
+> db8268df0983ad Chang S. Bae    2021-10-21 @1691  {
+> db8268df0983ad Chang S. Bae    2021-10-21  1692         u64 __user *uptr =
+=3D (u64 __user *)arg2;
+> db8268df0983ad Chang S. Bae    2021-10-21  1693         u64 permitted, su=
+pported;
+> db8268df0983ad Chang S. Bae    2021-10-21  1694         unsigned long idx=
+ =3D arg2;
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1695         bool guest =3D fa=
+lse;
+> db8268df0983ad Chang S. Bae    2021-10-21  1696
+> db8268df0983ad Chang S. Bae    2021-10-21  1697         switch (option) {
+> db8268df0983ad Chang S. Bae    2021-10-21  1698         case ARCH_GET_XCO=
+MP_SUPP:
+> db8268df0983ad Chang S. Bae    2021-10-21  1699                 supported=
+ =3D fpu_user_cfg.max_features | fpu_user_cfg.legacy_features;
+> db8268df0983ad Chang S. Bae    2021-10-21  1700                 return pu=
+t_user(supported, uptr);
+> db8268df0983ad Chang S. Bae    2021-10-21  1701
+> db8268df0983ad Chang S. Bae    2021-10-21  1702         case ARCH_GET_XCO=
+MP_PERM:
+> db8268df0983ad Chang S. Bae    2021-10-21  1703                 /*
+> db8268df0983ad Chang S. Bae    2021-10-21  1704                  * Lockle=
+ss snapshot as it can also change right after the
+> db8268df0983ad Chang S. Bae    2021-10-21  1705                  * droppi=
+ng the lock.
+> db8268df0983ad Chang S. Bae    2021-10-21  1706                  */
+> db8268df0983ad Chang S. Bae    2021-10-21  1707                 permitted=
+ =3D xstate_get_host_group_perm();
+> db8268df0983ad Chang S. Bae    2021-10-21  1708                 permitted=
+ &=3D XFEATURE_MASK_USER_SUPPORTED;
+> db8268df0983ad Chang S. Bae    2021-10-21  1709                 return pu=
+t_user(permitted, uptr);
+> db8268df0983ad Chang S. Bae    2021-10-21  1710
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1711         case ARCH_GET_XCO=
+MP_GUEST_PERM:
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1712                 permitted=
+ =3D xstate_get_guest_group_perm();
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1713                 permitted=
+ &=3D XFEATURE_MASK_USER_SUPPORTED;
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1714                 return pu=
+t_user(permitted, uptr);
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1715
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1716         case ARCH_REQ_XCO=
+MP_GUEST_PERM:
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1717                 guest =3D=
+ true;
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1718                 fallthrou=
+gh;
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1719
+> db8268df0983ad Chang S. Bae    2021-10-21  1720         case ARCH_REQ_XCO=
+MP_PERM:
+> db8268df0983ad Chang S. Bae    2021-10-21  1721                 if (!IS_E=
+NABLED(CONFIG_X86_64))
+> db8268df0983ad Chang S. Bae    2021-10-21  1722                         r=
+eturn -EOPNOTSUPP;
+> db8268df0983ad Chang S. Bae    2021-10-21  1723
+> 980fe2fddcff21 Thomas Gleixner 2022-01-05  1724                 return xs=
+tate_request_perm(idx, guest);
+> db8268df0983ad Chang S. Bae    2021-10-21  1725
+> db8268df0983ad Chang S. Bae    2021-10-21  1726         default:
+> db8268df0983ad Chang S. Bae    2021-10-21  1727                 return -E=
+INVAL;
+> db8268df0983ad Chang S. Bae    2021-10-21  1728         }
+> db8268df0983ad Chang S. Bae    2021-10-21  1729  }
+> db8268df0983ad Chang S. Bae    2021-10-21  1730
 >
-> > + */
-> > +static void mem_cgroup_user_flush_stats(struct mem_cgroup *memcg)
-> > +{
-> > +     mutex_lock(&stats_user_flush_mutex);
-> > +     do_stats_flush(memcg);
-> > +     mutex_unlock(&stats_user_flush_mutex);
-> > +}
-> > +
-> >  /*
-> >   * do_unified_stats_flush - do a unified flush of memory cgroup statis=
-tics
-> >   *
+> :::::: The code at line 1691 was first introduced by commit
+> :::::: db8268df0983adc2bb1fb48c9e5f7bfbb5f617f3 x86/arch_prctl: Add contr=
+ols for dynamic XSTATE components
+>
+> :::::: TO: Chang S. Bae <chang.seok.bae@intel.com>
+> :::::: CC: Borislav Petkov <bp@suse.de>
+>
 > --
-> Michal Hocko
-> SUSE Labs
+> 0-DAY CI Kernel Test Service
+> https://github.com/intel/lkp-tests/wiki
+>
+>
+
+
+--=20
+Thanks,
+~Nick Desaulniers
