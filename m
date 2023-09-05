@@ -2,53 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B69792BE6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC779792C05
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346724AbjIERDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:03:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
+        id S1352220AbjIERFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354865AbjIEPKF (ORCPT
+        with ESMTP id S1354867AbjIEPLy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 11:10:05 -0400
-Received: from mail-pl1-f206.google.com (mail-pl1-f206.google.com [209.85.214.206])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6495199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:10:01 -0700 (PDT)
-Received: by mail-pl1-f206.google.com with SMTP id d9443c01a7336-1c1fc51a5c6so35070585ad.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 08:10:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693926601; x=1694531401;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Zptu25zAJQ4Aig1qjwOjOEyFmtuG8Q5eB0pDaPNvFgM=;
-        b=VIvKgy0U3Fk9Rl/ej1P3DvBveS0aQJb933lEna8IAOmFJqF9vNrma4wCtZ8A6k67PF
-         o9UVkWM1oV5amzbz69RWOiLNqCJVqzPc3XU9AGO7i9rzhuWPSM7OJdI9nStKPQ0HN1bq
-         pWpW3COZhRFMxeJ0HX/vgf5d9vm5Kftz4LOmQFWGIHNUeGqVx4TeLEDrS+yGCVIi51K2
-         aVazccW69y3TTwSP4AfbD7PHgsx2FrkrLMhfCs8DDSUZPKISxTvaDLudz8a0dwj+id22
-         2lg4rxP9Z8Zn3vOGl3N1SuH7JyC75Vb/gckAf8oTau+2e54g5obMLrF1rJtLMsdJXUeb
-         X58g==
-X-Gm-Message-State: AOJu0Yw3a7hAd0j7+ErJweLvJg7h974hpRdpqscu0kWZOCbLdTV6PxSk
-        1l4NBkyoxhNPT5Ie5b/0KLtJG8k/THnub3tD7MB1hXp0UgJA
-X-Google-Smtp-Source: AGHT+IHOaatneJIiY8Vpq/QHv5/A4HITVO5axXAoW2BTmzdBYreEy69CnddsU6RY2cwqhzAkHiAhllo50shJMAPo4h3kdY8zVUTK
+        Tue, 5 Sep 2023 11:11:54 -0400
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2102.outbound.protection.outlook.com [40.107.117.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A42191
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:11:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=CcwDqya3WL2ckSQyMjX6lDW6oupSmhTvXQFzezQLJ3erp3W33nq7h6v3DQtxTloB4QK6m7n5vsw7JxlQnWUrcORkgQ38FfXCsGhNAE0wX8FDtkENfJtePjlq6+F7EPihM/NempegOBVq4wVigHt7P2w2pO7aRY1FlpYvAk7GH/tSIt/Njgkice7z52cKl3/13BKGWQYduJwf6HkmcNvi2w6TW4jm9q1xrIbYxNH5IBDRy53LLhiB+vS0IMKo6YoT65hW4usLfvKLRVElOyC6cTVtP7CzJ2TsHInwLHBKCK80wjPAVKAmfyp3xKo0DvEJJVAblnnPPWtoDh4HY76ztA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=lAmy2ovKFFeM4S9smnbu/WqS71+rhndZozmVUFO3lLY=;
+ b=He5q1N9IwpgvqVGjJzbFunkpgwcgKlnA6YAkwDkSd/nbT66CY/OjVgYb8kG+LqHOmnUS81TCdVRyVJkOf+dHY2ngii6fnxvBgvmCjzpY7X4nZACSdtGA6XEvVx/pIRmWk32Ag4EeauaGofeNPZMaH8Xe8cwbaXAZm8cSzCaxJhGp+okcXUYbLoc04bsSqySoA8IAbqAamylCV+Bix/qNCwc+XZjQkUp66/9JrzebbnKCF23uNx89hhJHo0znFpB+xqrXDjcAX+mkZ4H95keUTZGSkJbf+fKrJXdxKA59NrwhuVsBU39/wQC+wU3gL/I7QTS1JJlDTdlHYzzw/td1UA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vivo.com; dmarc=pass action=none header.from=vivo.com;
+ dkim=pass header.d=vivo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivo.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lAmy2ovKFFeM4S9smnbu/WqS71+rhndZozmVUFO3lLY=;
+ b=pFsqX280iVrAV4ppPygXPzBgHBX6bGw8ZvPlTktgUWC50KPUVaVtTh/I6dgFtQ2JaOS9/fhUozEVPorS8Xd7LaeC/7NhHt39m3rgqYHFFnZZTdcIz/gjmGTqbrrjpx5H+zPt+mGsAevmEB8hTmDj7biZYbHRiFkNYPRRcUNYZSFL9/FuwHUtRLECq12lcseDm/LgKitM4q9cRBDNbDkBkmCsmEaBsv79H5dC2U212E0IJqW+S6voUku/c6H0UR8M5tbrK756OJ0zENs2OJxBmDAQ6SPtBTeUe4gUFujNm7DjkMEk1JOrKlSaFeXjMBetPJ+HlnR+EdYSlrtPUbvbZQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vivo.com;
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
+ by SEZPR06MB5589.apcprd06.prod.outlook.com (2603:1096:101:c9::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.34; Tue, 5 Sep
+ 2023 15:11:45 +0000
+Received: from JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::832:19a2:2f83:1cfc]) by JH0PR06MB6849.apcprd06.prod.outlook.com
+ ([fe80::832:19a2:2f83:1cfc%4]) with mapi id 15.20.6745.034; Tue, 5 Sep 2023
+ 15:11:45 +0000
+From:   Zhiguo Jiang <justinjiang@vivo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Zhiguo Jiang <justinjiang@vivo.com>
+Subject: [PATCH] mm: page_alloc: ALLOC_HIGHATOMIC flag allocation issue
+Date:   Tue,  5 Sep 2023 23:11:34 +0800
+Message-ID: <20230905151134.1195-1-justinjiang@vivo.com>
+X-Mailer: git-send-email 2.41.0.windows.3
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SG3P274CA0020.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::32)
+ To JH0PR06MB6849.apcprd06.prod.outlook.com (2603:1096:990:47::12)
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:cec4:b0:1c1:f658:7cfa with SMTP id
- d4-20020a170902cec400b001c1f6587cfamr4546090plg.9.1693926601194; Tue, 05 Sep
- 2023 08:10:01 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 08:10:01 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000057049306049e0525@google.com>
-Subject: [syzbot] [gfs2?] BUG: sleeping function called from invalid context
- in glock_hash_walk
-From:   syzbot <syzbot+10c6178a65acf04efe47@syzkaller.appspotmail.com>
-To:     agruenba@redhat.com, cluster-devel@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        rpeterso@redhat.com, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=no
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: JH0PR06MB6849:EE_|SEZPR06MB5589:EE_
+X-MS-Office365-Filtering-Correlation-Id: 72df2566-2bc0-4ab2-312b-08dbae226adb
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ydMoK1w7PtWkKInY/qA+6NDf/EJfwrsQjvoGtFSOtpyR10Gc9lhN0kOha0ehHPLMVQSKGdh/jbivIHogiOvV6INLxqqQkCot8OAbUfnmu3rytm/VTbbbQFxFbtX5m4j6tqD/l1I+sD1VxTAQTETYV4se/FDkQOzkSJXYrbMBYrmb/c90LxajJ0zVcHE+TE6T7ZEONeKI1a/MY2Z6K1AEE3Ao7ftI8I1AVmY9/f3oURKOe7mmf+xqFvhtvckWb9AqZ/fVXyJH+HwWXhtg7LvK/DpiSL9MW6OwgGFhFR7jA8a1RK/9VlxXPbRduVCeJw0shh9WNvDXXtN0aAy7GYnRjoeE21GweAID7avIzPd/S0bCqKZdADR5QTxqDwilPUxZA15GY1JqicrEAlcUfjPkHiANtp6QXmnpAupukUrxQcUKTg8sWS1JMhqUMaDHtcIqefHyDyOAiWDiAzJk5Wq2O8GMyz1kmN/7VjqzgKOwchPpsvoI1nMepqmfyV3kKlhSqakVqJN2oOk9gIfcDVmFUKm9moEX5PuoBfjmsjFpVJ2KOuD8Kvo/kUtY78Dl733LtpWjRapup8bMVCzJ3UR6V5gkhaltNOarnpWrIuj38NnCZl3Cq+xEOYO3ftzDuJ7j
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:JH0PR06MB6849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(396003)(136003)(39860400002)(376002)(346002)(1800799009)(186009)(451199024)(2906002)(38350700002)(38100700002)(36756003)(86362001)(1076003)(107886003)(8936002)(8676002)(4326008)(6666004)(2616005)(26005)(5660300002)(52116002)(41300700001)(6512007)(66476007)(66556008)(66946007)(316002)(6506007)(6486002)(83380400001)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?thU7jcXB6yKq6DDTiCI1XmcJJdkwLgMxHG3duD/2VSHs2x8Qtl5GnuTrlvTT?=
+ =?us-ascii?Q?tghSE2NRCvppP/u72vt7a+t2/S1xrdBoOA01hqidGbJ3aRAlaxmNzOMSyDyk?=
+ =?us-ascii?Q?0hvRli4dKeJi/gp3JIl53l34rU2qBF7kzCy4D8RuZkqVVgvPC5ISHbyH8gzy?=
+ =?us-ascii?Q?0NGYmz7MX1DfLTrGDP6TRpmjF7fA+K90OX7h5+MLwub467h+dIgaLqWTpkok?=
+ =?us-ascii?Q?0e2ydQqZudQlfPrqfmMX61bQd0ADyp6blKB8a25JmwfXUeaDnj7XNwKOOiQ/?=
+ =?us-ascii?Q?F8FVKdQ5I/NpxT8LILMqTD5A3xOaUMYzUWc4ocsdaq5JVZqAcEKnYXlL7HgT?=
+ =?us-ascii?Q?3LqRo6Z9Amj+NvG+DGWsipiayqu+RJWzaF/YdcJn5LFVHLUwygcDedQX/DJk?=
+ =?us-ascii?Q?LcdtsHwa7u29UrZpT7q4AIGhzw63sP7KKCdVIHz9Dm2G8YhY2tzrlAfawfgo?=
+ =?us-ascii?Q?lNDOJstexMojBvMixMICZe78pigjDNlE7AVz69NLwmpt0I1KnGfRx+6nHiKO?=
+ =?us-ascii?Q?Dzsb/d31SenXhKI8VGDB4YZeCnYYzElEyeTAhgofmqcKKldkvlCuBtALLXIW?=
+ =?us-ascii?Q?eovWqIR6yRzTq36ISW/x2IwemQtaFei4gP4sggCq5iDwxGNgRI20nX1XRRkN?=
+ =?us-ascii?Q?KgkamZ6rEIRrVm7JQ4Xxbmov3LxytxAbnADzxo7+K7OVbTzQhs4wsSOZZaui?=
+ =?us-ascii?Q?G4SFWW7ADHbaAhAADlOePECYp0+VJhwpiEXWGT0mOltESQL03e5ZP2rCeEFU?=
+ =?us-ascii?Q?1xxCCy8QFx+58VnFmksc4dJM7QPVi0OF9265/OsF5lrf3yJoEZW/OyNbwMsW?=
+ =?us-ascii?Q?R0qMfnzPGsMYJDZLL2MIug88g5E20ARFf71iHP5eTveQyssCKUwgpcNASKH3?=
+ =?us-ascii?Q?TnhZT6C9cyH0fThOVwr3BfC+rGZc9finEkw9dpm6e5BXdQlY+cnf5ExNQdPR?=
+ =?us-ascii?Q?UNOQLyavSajnareWIp6cUsDywgwjlk6qZ6MZaCC1Y4r9yymxbsgyx/BSoavA?=
+ =?us-ascii?Q?DoJF6Z02/jpMIww16tWeYN0pbM0821KJgaOSwpIxFXNNqQpMFsNj9ctjvqf6?=
+ =?us-ascii?Q?+87zyt6wm0SPUCqK3kVxYAXIkZj702UB7ojRKvLLA3456E2lgD4y/K9gxIfu?=
+ =?us-ascii?Q?25Wt75WrH2fHcWEkTNqTZmBct4en0i8U1r25Ce5DvZDtX40HBFVqVu5oCW8V?=
+ =?us-ascii?Q?NfEvpdVzscFyIJ6vdptxuczJ9OdEFqktfKyyKjQDx/0xDp7usfRsDZq7JdTc?=
+ =?us-ascii?Q?Sg4tKGW7BHFHSLouBe9iFtF9Mt8NPBWPuhfn7mit1pUiaGaEgMmay+pn3deQ?=
+ =?us-ascii?Q?BGAIC8qvVogQe/pCxy3R0kv1Y+SpkEJ9Wg3U2+Pgx0k2mqk1uvRTn4Y7vFPr?=
+ =?us-ascii?Q?oiX3PgMO+Sz92Cy/MKQKZl0HyIr8CLirO7fYwbG683o5LNBvexJ2GLiTLrb1?=
+ =?us-ascii?Q?Qe16ApBfNI0tZkCaF85ToTO4Yy7tBpKYV8qPDILhrARgMxckXADfAFL4LpVJ?=
+ =?us-ascii?Q?MIB8+GjduydFAijVysnkNNYMTCPlCpd74A517ILkC3VLaUEaQO8r0bsfU6yR?=
+ =?us-ascii?Q?4tiKizSh+AYddbvO86fwPX101lroYJ8K8ctEMboV?=
+X-OriginatorOrg: vivo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72df2566-2bc0-4ab2-312b-08dbae226adb
+X-MS-Exchange-CrossTenant-AuthSource: JH0PR06MB6849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 15:11:45.1354
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 923e42dc-48d5-4cbe-b582-1a797a6412ed
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: qsNZy9HG4U9sdQX20ygZOZH9MomFMS75B2Wd7vQng9KDOoQeVT+UpLHYJOVm3yYBWw4AgB0fEFr9qrD7XdNTrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR06MB5589
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,114 +110,122 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In case of alloc_flags contain ALLOC_HIGHATOMIC and alloc order
+is order1/2/3/10 in rmqueue(),if pages are alloced successfully
+from pcplist cache, and move a free pageblock from the alloced
+migratetype freelist to MIGRATE_HIGHATOMIC freelist, rather than
+alloc from MIGRATE_HIGHATOMIC freelist firstly, so this will result
+in an increasing number of pages on the MIGRATE_HIGHATOMIC freelist,
+pages in other migratetype freelist are reduced and more likely to
+allocation failure.
 
-syzbot found the following issue on:
+Currently the sequence of ALLOC_HIGHATOMIC allocation is:
+pcplist cache --> buddy (batch >> order) allocation migratetype
+freelist --> buddy MIGRATE_HIGHATOMIC freelist --> buddy allocation
+migratetype freelist.
 
-HEAD commit:    3f86ed6ec0b3 Merge tag 'arc-6.6-rc1' of git://git.kernel.o..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1346753fa80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ff0db7a15ba54ead
-dashboard link: https://syzkaller.appspot.com/bug?extid=10c6178a65acf04efe47
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e4ea14680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13f76f10680000
+Due to the fact that requesting pages from the pcplist cache is faster
+than buddy, the sequence of modifying the ALLOC_HIGHATOMIC allocation is:
+pcplist --> buddy MIGRATE_HIGHATOMIC freelist --> buddy allocation
+migrate freelist.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6f4f710c5033/disk-3f86ed6e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/555548fedbdc/vmlinux-3f86ed6e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c06d7c39bbc0/bzImage-3f86ed6e.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/9cc536caad57/mount_0.gz
+This patch can solve the failure problem of allocating other types of
+pages due to excessive MIGRATE_HIGHATOMIC freelist reservations.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+10c6178a65acf04efe47@syzkaller.appspotmail.com
-
-syz-executor585: attempt to access beyond end of device
-loop0: rw=1, sector=3280942697285464, nr_sectors = 8 limit=32768
-gfs2: fsid=syz:syz.0: Error 10 writing to journal, jid=0
-gfs2: fsid=syz:syz.0: fatal: I/O error(s)
-gfs2: fsid=syz:syz.0: about to withdraw this file system
-BUG: sleeping function called from invalid context at fs/gfs2/glock.c:2081
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 5030, name: syz-executor585
-preempt_count: 1, expected: 0
-RCU nest depth: 0, expected: 0
-INFO: lockdep is turned off.
-Preemption disabled at:
-[<0000000000000000>] 0x0
-CPU: 0 PID: 5030 Comm: syz-executor585 Not tainted 6.5.0-syzkaller-11704-g3f86ed6ec0b3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
- __might_resched+0x5cf/0x780 kernel/sched/core.c:10187
- glock_hash_walk+0x13b/0x1b0 fs/gfs2/glock.c:2081
- gfs2_flush_delete_work+0x1c/0x50 fs/gfs2/glock.c:2108
- gfs2_make_fs_ro+0x109/0x680 fs/gfs2/super.c:550
- signal_our_withdraw fs/gfs2/util.c:153 [inline]
- gfs2_withdraw+0x48a/0x11e0 fs/gfs2/util.c:334
- gfs2_ail1_empty+0x7d0/0x860 fs/gfs2/log.c:377
- gfs2_flush_revokes+0x5e/0x90 fs/gfs2/log.c:815
- revoke_lo_before_commit+0x2c/0x5f0 fs/gfs2/lops.c:868
- lops_before_commit fs/gfs2/lops.h:40 [inline]
- gfs2_log_flush+0xc93/0x25f0 fs/gfs2/log.c:1101
- gfs2_write_inode+0x20e/0x3b0 fs/gfs2/super.c:453
- write_inode fs/fs-writeback.c:1456 [inline]
- __writeback_single_inode+0x69b/0xfa0 fs/fs-writeback.c:1668
- writeback_single_inode+0x21b/0x790 fs/fs-writeback.c:1724
- sync_inode_metadata+0xcc/0x130 fs/fs-writeback.c:2786
- gfs2_fsync+0x1a7/0x340 fs/gfs2/file.c:761
- generic_write_sync include/linux/fs.h:2625 [inline]
- gfs2_file_write_iter+0xb33/0xe60 fs/gfs2/file.c:1159
- do_iter_write+0x84f/0xde0 fs/read_write.c:860
- iter_file_splice_write+0x86d/0x1010 fs/splice.c:736
- do_splice_from fs/splice.c:933 [inline]
- direct_splice_actor+0xea/0x1c0 fs/splice.c:1142
- splice_direct_to_actor+0x376/0x9e0 fs/splice.c:1088
- do_splice_direct+0x2ac/0x3f0 fs/splice.c:1194
- do_sendfile+0x623/0x1070 fs/read_write.c:1254
- __do_sys_sendfile64 fs/read_write.c:1322 [inline]
- __se_sys_sendfile64+0x17c/0x1e0 fs/read_write.c:1308
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x41/0xc0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-RIP: 0033:0x7fb0ea97bd59
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd9f19f258 EFLAGS: 00000246 ORIG_RAX: 0000000000000028
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fb0ea97bd59
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: 0000000000000007
-RBP: 0000000000000246 R08: 0000000000000002 R09: 00005555571844c0
-R10: 0000000080000001 R11: 0000000000000246 R12: 00007ffd9f19f280
-R13: 00007fb0ea95cac4 R14: 431bde82d7b634db R15: 00007fb0ea9c503b
- </TASK>
-BUG: scheduling while atomic: syz-executor585/5030/0x00000002
-INFO: lockdep is turned off.
-Modules linked in:
-Preemption disabled at:
-[<0000000000000000>] 0x0
-
-
+Signed-off-by: Zhiguo Jiang <justinjiang@vivo.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ mm/internal.h   |  1 +
+ mm/page_alloc.c | 21 ++++++++++++++-------
+ 2 files changed, 15 insertions(+), 7 deletions(-)
+ mode change 100644 => 100755 mm/internal.h
+ mode change 100644 => 100755 mm/page_alloc.c
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/mm/internal.h b/mm/internal.h
+index 7499b5ea1cf6..a3b3fdda8031
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -844,6 +844,7 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+ #endif
+ #define ALLOC_HIGHATOMIC	0x200 /* Allows access to MIGRATE_HIGHATOMIC */
+ #define ALLOC_KSWAPD		0x800 /* allow waking of kswapd, __GFP_KSWAPD_RECLAIM set */
++#define ALLOC_PCPLIST		0x1000 /* page alloced from pcplist */
+ 
+ /* Flags that allow allocations below the min watermark. */
+ #define ALLOC_RESERVES (ALLOC_NON_BLOCK|ALLOC_MIN_RESERVE|ALLOC_HIGHATOMIC|ALLOC_OOM)
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index fefc4074d9d0..14b51d1ef4c3
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2716,6 +2716,9 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+ 			int batch = READ_ONCE(pcp->batch);
+ 			int alloced;
+ 
++			if (alloc_flags & ALLOC_HIGHATOMIC)
++				goto out;
++
+ 			/*
+ 			 * Scale batch relative to order if batch implies
+ 			 * free pages can be stored on the PCP. Batch can
+@@ -2730,6 +2733,7 @@ struct page *__rmqueue_pcplist(struct zone *zone, unsigned int order,
+ 					migratetype, alloc_flags);
+ 
+ 			pcp->count += alloced << order;
++out:
+ 			if (unlikely(list_empty(list)))
+ 				return NULL;
+ 		}
+@@ -2792,7 +2796,7 @@ __no_sanitize_memory
+ static inline
+ struct page *rmqueue(struct zone *preferred_zone,
+ 			struct zone *zone, unsigned int order,
+-			gfp_t gfp_flags, unsigned int alloc_flags,
++			gfp_t gfp_flags, unsigned int *alloc_flags,
+ 			int migratetype)
+ {
+ 	struct page *page;
+@@ -2805,17 +2809,19 @@ struct page *rmqueue(struct zone *preferred_zone,
+ 
+ 	if (likely(pcp_allowed_order(order))) {
+ 		page = rmqueue_pcplist(preferred_zone, zone, order,
+-				       migratetype, alloc_flags);
+-		if (likely(page))
++				       migratetype, *alloc_flags);
++		if (likely(page)) {
++			*alloc_flags |= ALLOC_PCPLIST;
+ 			goto out;
++		}
+ 	}
+ 
+-	page = rmqueue_buddy(preferred_zone, zone, order, alloc_flags,
++	page = rmqueue_buddy(preferred_zone, zone, order, *alloc_flags,
+ 							migratetype);
+ 
+ out:
+ 	/* Separate test+clear to avoid unnecessary atomics */
+-	if ((alloc_flags & ALLOC_KSWAPD) &&
++	if ((*alloc_flags & ALLOC_KSWAPD) &&
+ 	    unlikely(test_bit(ZONE_BOOSTED_WATERMARK, &zone->flags))) {
+ 		clear_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
+ 		wakeup_kswapd(zone, 0, 0, zone_idx(zone));
+@@ -3195,7 +3201,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 
+ try_this_zone:
+ 		page = rmqueue(ac->preferred_zoneref->zone, zone, order,
+-				gfp_mask, alloc_flags, ac->migratetype);
++				gfp_mask, &alloc_flags, ac->migratetype);
+ 		if (page) {
+ 			prep_new_page(page, order, gfp_mask, alloc_flags);
+ 
+@@ -3203,7 +3209,8 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 			 * If this is a high-order atomic allocation then check
+ 			 * if the pageblock should be reserved for the future
+ 			 */
+-			if (unlikely(alloc_flags & ALLOC_HIGHATOMIC))
++			if (unlikely(alloc_flags & ALLOC_HIGHATOMIC)
++				&& unlikely(!(alloc_flags & ALLOC_PCPLIST)))
+ 				reserve_highatomic_pageblock(page, zone);
+ 
+ 			return page;
+-- 
+2.39.0
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
