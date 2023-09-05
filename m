@@ -2,79 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2717792BB5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F716792A8A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236667AbjIEQ6F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
+        id S242313AbjIEQjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354433AbjIELgc (ORCPT
+        with ESMTP id S1354436AbjIELhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:36:32 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CA061AB;
-        Tue,  5 Sep 2023 04:36:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CABA3602E0;
-        Tue,  5 Sep 2023 11:36:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAA19C433C8;
-        Tue,  5 Sep 2023 11:36:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693913788;
-        bh=JJ1xgbKs1Vv5+UBKm7oDOUD1ckh8Fc4bT3kqxnA3/sg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DGQX5q5hkl16T4RhaWAG4GCnv6bCK0EwaWZ9Ztvnh8bfULdbZqoFFL+LN4ptVukir
-         Ib/NOa2YKgggCD2D7iBAegSc5e8caSpP0r48/8O7pR6E8s0CciR8cUuBuOhXeyLXbu
-         AMqEd1pSvTOZUZCR3d8ZDxGwNnXR9HGKZZaRUayB9b1aeHOZsDVDDwLns7sVZAPnEN
-         D31jV9zkSr6fYBtFEAXFCaH0224mkWO1s8Kadr3gcvECqhb8wamOG2UF3poCpaACZ/
-         yf/NRTrWYz/bn0PkiyTwP5o0KZ+IOkZdwwlACkEVZtf3k4lze7Mh6rbxsmicJQKEkb
-         /hXyAvTfIrp+g==
-Date:   Tue, 5 Sep 2023 13:36:24 +0200
-From:   Andi Shyti <andi.shyti@kernel.org>
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] i2c: rcar: introduce Gen4 devices
-Message-ID: <20230905113624.5o2hfjojh3he7aex@zenone.zhora.eu>
-References: <20230904135852.12146-1-wsa+renesas@sang-engineering.com>
- <20230904135852.12146-3-wsa+renesas@sang-engineering.com>
+        Tue, 5 Sep 2023 07:37:16 -0400
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B72041AB;
+        Tue,  5 Sep 2023 04:37:12 -0700 (PDT)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3858B0Zo026337;
+        Tue, 5 Sep 2023 13:36:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        message-id:date:mime-version:subject:to:cc:references:from
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        selector1; bh=xTreX0qrOQ8jivX3KmmeTeFgWDwnQFOPBeV+r8cQ//4=; b=zH
+        aoKBjbidp/+Kg/QdJ2WI6CrCICt/P9Blwt6/UJ4kFnfyoz7JHFgJmnqHa34/nohK
+        wiG7VaavvDoYXgqLgsvvt+V7k8c5eYNDTCTKP+gmdRZ9j9IgEcjl2Rc7VO93NMF+
+        f3DcJdcNsZ5KwylR/DDBREF1Q8/k/jCOb1Skr9rRyLvD8NToSf+AMDjuTp+dOTvr
+        xfKAH0BCGUcvmQpDNIgsEjzPxbTnf6H/iIzUiGZnl/k9YY8Ah8a6rsyXKvoi7mt+
+        iU3OxHmk//hpUMYLVFVK8o9XzkCFq5icXX/QOkhmVI82PMW1xSMHYuXu0aNV3DHj
+        p32daEkRh8yxREvNzQgg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3svem0hfxw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 13:36:52 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 95AD1100057;
+        Tue,  5 Sep 2023 13:36:51 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node2.st.com [10.75.129.70])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 84F6D23C685;
+        Tue,  5 Sep 2023 13:36:51 +0200 (CEST)
+Received: from [10.129.178.32] (10.129.178.32) by SHFDAG1NODE2.st.com
+ (10.75.129.70) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21; Tue, 5 Sep
+ 2023 13:36:50 +0200
+Message-ID: <f5abe08e-4dec-1ff0-ccef-9224e3ab7b6b@foss.st.com>
+Date:   Tue, 5 Sep 2023 13:36:50 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904135852.12146-3-wsa+renesas@sang-engineering.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ARM: dts: stm32: stm32f7-pinctrl: don't use multiple
+ blank lines
+To:     Dario Binacchi <dario.binacchi@amarulasolutions.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-amarula@amarulasolutions.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20230904180341.923038-1-dario.binacchi@amarulasolutions.com>
+Content-Language: en-US
+From:   Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>
+In-Reply-To: <20230904180341.923038-1-dario.binacchi@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.129.178.32]
+X-ClientProxiedBy: SHFCAS1NODE1.st.com (10.75.129.72) To SHFDAG1NODE2.st.com
+ (10.75.129.70)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_10,2023-09-05_01,2023-05-22_02
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+Hi Dario
 
-> @@ -1031,10 +1021,12 @@ static const struct of_device_id rcar_i2c_dt_ids[] = {
->  	{ .compatible = "renesas,i2c-r8a7794", .data = (void *)I2C_RCAR_GEN2 },
->  	{ .compatible = "renesas,i2c-r8a7795", .data = (void *)I2C_RCAR_GEN3 },
->  	{ .compatible = "renesas,i2c-r8a7796", .data = (void *)I2C_RCAR_GEN3 },
-> +	/* S4 has no FM+ bit */
-> +	{ .compatible = "renesas,i2c-r8a779f0", .data = (void *)I2C_RCAR_GEN3 },
+On 9/4/23 20:03, Dario Binacchi wrote:
+> The patch fixes the following warning:
+>
+> arch/arm/dts/stm32f7-pinctrl.dtsi:380: check: Please don't use multiple blank lines
+>
+> Fixes: ba287d1a0137 ("ARM: dts: stm32: add pin map for LTDC on stm32f7")
+> Signed-off-by: Dario Binacchi <dario.binacchi@amarulasolutions.com>
 
-is this I2C_RCAR_GEN3 or I2C_RCAR_GEN4?
 
-Rest looks good.
+Reviewed-by: Raphaël Gallais-Pou <raphael.gallais-pou@foss.st.com>
 
-Andi
 
->  	{ .compatible = "renesas,rcar-gen1-i2c", .data = (void *)I2C_RCAR_GEN1 },
->  	{ .compatible = "renesas,rcar-gen2-i2c", .data = (void *)I2C_RCAR_GEN2 },
->  	{ .compatible = "renesas,rcar-gen3-i2c", .data = (void *)I2C_RCAR_GEN3 },
-> -	{ .compatible = "renesas,rcar-gen4-i2c", .data = (void *)I2C_RCAR_GEN3 },
-> +	{ .compatible = "renesas,rcar-gen4-i2c", .data = (void *)I2C_RCAR_GEN4 },
->  	{},
+Regards,
+
+Raphaël
+
