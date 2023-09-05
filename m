@@ -2,186 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6289F792FCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B169792FD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:21:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243264AbjIEUTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:19:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        id S242312AbjIEUVp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Sep 2023 16:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231444AbjIEUS7 (ORCPT
+        with ESMTP id S232376AbjIEUVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:18:59 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE7713E
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:18:39 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58c8b2d6784so29239937b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:18:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693945105; x=1694549905; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKMnAp9f8EJc20n4vg/did2TL5InJz+rEZP+feSjN0k=;
-        b=MgrkBZQvfca4vswOCBULKXhkU3IPwHPR8eorxO4KxnpXly8T0tsDgHGuFlm2l8EOaW
-         +03vwC+Az6rxCmoPFOBirjnCwSQRSL+wBOE8HTrVGH806aBTs+IFM9vn/nm4H5NBHMSU
-         qoh4GdNE33goEgIQXna9QDUNrdCE7WfarTGfxsA7VkukKeQOF6ZztCysBlpXBR2MT7ke
-         W8q7Vu4Glhw/GYhK9bax1F2Jtu71VST0ZayMDMorox6V+EQStE8YqqPR1BI8BPqS/Ysw
-         +qB3D0a1ZLHXPxtWFqJza3XZqKf9do16STZZseSixosbHH2JQ+TihKbzwK35WuAgVyYy
-         dJrw==
+        Tue, 5 Sep 2023 16:21:45 -0400
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3675CC;
+        Tue,  5 Sep 2023 13:21:38 -0700 (PDT)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5711d5dac14so691528eaf.0;
+        Tue, 05 Sep 2023 13:21:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693945105; x=1694549905;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SKMnAp9f8EJc20n4vg/did2TL5InJz+rEZP+feSjN0k=;
-        b=RrZ+COa1OeWRGQbVSPpkO11o698g5OPnqLnp8yp7p+kNuL5SPut6eE3zslQNO6yrAR
-         f2m7Ae/Ea5MDYFnMcUqkOG5xUC91RBtxo8mRRJ0YHh5ODjIleAlH0FH56twlm3bD00AA
-         DhX76UMqA8e7sw8elZ9ChYc4M1RKMO54WkN6jBZwoo8UyY29qD8ft9fi+HxFkAyhY5jx
-         duZGt5QOoMuz9pe5LGQ/AXQ+ITNIw4W0Lqe5Qm08lJO0gj06ILuJmGr7XiZexrGKXQ0/
-         q0Luqye7FsfRSrbRa5gpR9miz7E6N5oRklS6SKJmuguh/CHRy5IYWEJLlXS/FH1kmZfV
-         isNQ==
-X-Gm-Message-State: AOJu0YxS/mjutNzR52a+kf/dG/+EtT8HOLTxXd9mCnIYY2gWjuO+nIWY
-        MI0NPdvBslKdlWKFRTwTPhBcJ2F3ZYE=
-X-Google-Smtp-Source: AGHT+IFepumOsNdi8jAStIn5DzvkpJUSBmneVeq1kh6ElDXQoU7LqwxwQZX7KSyykOvZjEbMckvsQoANfBU=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:b38a:0:b0:595:4ab7:bd64 with SMTP id
- r132-20020a81b38a000000b005954ab7bd64mr370290ywh.7.1693945105293; Tue, 05 Sep
- 2023 13:18:25 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 13:18:23 -0700
-In-Reply-To: <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
-Mime-Version: 1.0
-References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
- <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com>
- <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com> <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
-Message-ID: <ZPeND9WFHR2Xx8BM@google.com>
-Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693945298; x=1694550098;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gqmUDO2TVzPYAnNQVahrjzI0bVUxc1RvWHpjYvgFhjI=;
+        b=guTnggz4CJWrCcc/2lWfqP61U0I6fs9HTHB/LYgyUdgC/DGm2iCFt/OTKq0iAgjlYk
+         arnk0Y1xtkqCLQXc27iAnNPBOmE4jDu8iAPVYDcM2qo6v2R1ki/K23PPtjWPUahgqcZ1
+         z0zfaNlj96MSU0fx8C70VFoJvjskb7M17yLQIQBi8ak1tsdR0UbivyAGNyghu8PiUig5
+         8FuX7eBi2aC5cXpXURKK6bCKwTk6eGQRj6lWlJmq0hLUadkS/feoBULJMD0psyBIHBWp
+         MywjVeMUA3CQ3NoZol94WvX1Wk3C8VeQJo3monXWGKiynhEX2uMYP1lu+BnoGnLGQSdH
+         TMdA==
+X-Gm-Message-State: AOJu0Ywg00EyERbtB7RPBPkAlm2ucrf8knpltiPi4CCyHmS+HbFKkrZW
+        8fQrBtIv2CIz2fAZXIFV3TQvJPOQlmzrdX56VmY=
+X-Google-Smtp-Source: AGHT+IF+rVWTTtREO43KaXIUg4yrMf2Rqt/lXRG7d75/4KbLqE0xzo29kqTQemqewyg7UZEZ0Bs76jRlTcDqrHolj1w=
+X-Received: by 2002:a4a:de43:0:b0:573:2a32:6567 with SMTP id
+ z3-20020a4ade43000000b005732a326567mr11610639oot.0.1693945297813; Tue, 05 Sep
+ 2023 13:21:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230829171212.156688-1-mario.limonciello@amd.com>
+ <20230829171212.156688-4-mario.limonciello@amd.com> <ceda84a0-e5cd-f6dc-3e3c-52e85fda8318@amd.com>
+ <ead0bc03-2008-96d8-c313-5dc4a9e63479@redhat.com> <f1c65b21-88cb-4ba3-8380-0d2d3fb42c8d@amd.com>
+In-Reply-To: <f1c65b21-88cb-4ba3-8380-0d2d3fb42c8d@amd.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Tue, 5 Sep 2023 22:21:26 +0200
+Message-ID: <CAJZ5v0iqn=Pj1k4=u5Mb9PyYeB471Efob5rUiEBchbUrJeL=rg@mail.gmail.com>
+Subject: Re: [PATCH v16 3/3] platform/x86/amd: pmc: Don't let PCIe root ports
+ go into D3
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        bhelgaas@google.com, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        Iain Lane <iain@orangesquash.org.uk>, rafael@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Sep 04, 2023, Yan Zhao wrote:
-> ...
-> > > Actually, I don't even completely understand how you're seeing CoW behavior in
-> > > the first place.  No sane guest should blindly read (or execute) uninitialized
-> > > memory.  IIUC, you're not running a Windows guest, and even if you are, AFAIK
-> > > QEMU doesn't support Hyper-V's enlightment that lets the guest assume memory has
-> > > been zeroed by the hypervisor.  If KSM is to blame, then my answer it to turn off
-> > > KSM, because turning on KSM is antithetical to guest performance (not to mention
-> > > that KSM is wildly insecure for the guest, especially given the number of speculative
-> > > execution attacks these days).
-> > I'm running a linux guest.
-> > KSM is not turned on both in guest and host.
-> > Both guest and host have turned on transparent huge page.
-> > 
-> > The guest first reads a GFN in a writable memslot (which is for "pc.ram"),
-> > which will cause
-> >     (1) KVM first sends a GUP without FOLL_WRITE, leaving a huge_zero_pfn or a zero-pfn
-> >         mapped.
-> >     (2) KVM calls get_user_page_fast_only() with FOLL_WRITE as the memslot is writable,
-> >         which will fail
-> > 
-> > The guest then writes the GFN.
-> > This step will trigger (huge pmd split for huge page case) and .change_pte().
-> > 
-> > My guest is surely a sane guest. But currently I can't find out why
-> > certain pages are read before write.
-> > Will return back to you the reason after figuring it out after my long vacation.
-> Finally I figured out the reason.
-> 
-> Except 4 pages were read before written from vBIOS (I just want to skip finding
-> out why vBIOS does this), the remaining thousands of pages were read before
-> written from the guest Linux kernel.
-> 
-> If the guest kernel were configured with "CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y" or
-> "CONFIG_INIT_ON_FREE_DEFAULT_ON=y", or booted with param "init_on_alloc=1" or
-> "init_on_free=1", this read before written problem goes away.
-> 
-> However, turning on those configs has side effects as said in kernel config
-> message:
-> "all page allocator and slab allocator memory will be zeroed when allocated,
-> eliminating many kinds of "uninitialized heap memory" flaws, especially
-> heap content exposures. The performance impact varies by workload, but most
-> cases see <1% impact. Some synthetic workloads have measured as high as 7%."
-> 
-> If without the above two configs, or if with init_on_alloc=0 && init_on_free=0,
-> the root cause for all the reads of uninitialized heap memory are related to
+On Tue, Sep 5, 2023 at 9:57 PM Mario Limonciello
+<mario.limonciello@amd.com> wrote:
+>
+> On 9/5/2023 05:15, Hans de Goede wrote:
+> > Hi Shyam,
+> >
+> > On 9/5/23 12:08, Shyam Sundar S K wrote:
+> >>
+> >>
+> >> On 8/29/2023 10:42 PM, Mario Limonciello wrote:
+> >>> commit 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> >>> changed pci_bridge_d3_possible() so that any vendor's PCIe ports
+> >>> from modern machines (>=2015) are allowed to be put into D3.
+> >>>
+> >>> Iain reports that USB devices can't be used to wake a Lenovo Z13
+> >>> from suspend. This is because the PCIe root port has been put
+> >>> into D3 and AMD's platform can't handle USB devices waking from
+> >>> a hardware sleep state in this case.
+> >>>
+> >>> This problem only occurs on Linux, and only when the AMD PMC driver
+> >>> is utilized to put the device into a hardware sleep state. Comparing
+> >>> the behavior on Windows and Linux, Windows doesn't put the root ports
+> >>> into D3.
+> >>>
+> >>> A variety of approaches were discussed to change PCI core to handle this
+> >>> case generically but no consensus was reached. To limit the scope of
+> >>> effect only to the affected machines introduce a workaround into the
+> >>> amd-pmc driver to only apply to the PCI root ports in affected machines
+> >>> when going into hardware sleep.
+> >>>
+> >>> Link: https://lore.kernel.org/linux-pci/20230818193932.27187-1-mario.limonciello@amd.com/
+> >>> Fixes: 9d26d3a8f1b0 ("PCI: Put PCIe ports into D3 during suspend")
+> >>> Reported-by: Iain Lane <iain@orangesquash.org.uk>
+> >>> Closes: https://forums.lenovo.com/t5/Ubuntu/Z13-can-t-resume-from-suspend-with-external-USB-keyboard/m-p/5217121
+> >>> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> >>
+> >> See if this change can be moved to pmc-quirks.c, besides that change
+> >> looks good to me. Thank you.
+> >>
+> >> Acked-by: Shyam Sundar S K <Shyam-sundar.S-k@amd.com>
+> >
+> > Thank you for the review.
+> >
+> > I also just replied to this series (to the cover-letter)
+> > with an alternative approach based on making the
+> > XHCI driver call pci_d3cold_disable() on the XHCI
+> > PCIe-device on affected AMD chipsets.
+> >
+> > That seems like a cleaner approach to me. I wonder
+> > if you have any remarks about that approach ?
+> >
+>
+> I was thinking more about Hans' comments to the cover letter as well as
+> Shyam's comments to move it into pmc-quirks.c.
+>
+> Perhaps it would better be conveying what's going on by having a
+> dedicated step that amd-pmc calls pci_choose_state() for each PCIe
+> device and checks the value against the constraints.  If "any" of them
+> are mismatched it could emit a message.  This is a little bit of
+> duplication though because drivers/acpi/x86/s2idle.c already also emits
+> a similar message for some devices when pm_debug_messages is enabled.
+>
+> Then the special case would be for PCIe root ports that are mismatched
+> the driver overrides it.  If this logic change is wouldn't make sense
+> for it to be moved into pmc-quirks.c.
+>
+> I don't think using pci_d3cold_disable() / pci_d3cold_enable() is
+> correct though.  If PCI core stays the same it should still be setting
+> pdev->bridge_d3 to zero.  The problem isn't with D3cold on the PCIe RP
+> at s2didle, it's with D3hot.
 
-Yeah, forcing the guest to pre-initialize all memory is a hack-a-fix and not a
-real solution.
+Well, it's not even that.
 
-> page cache pages of the guest virtual devices (specifically the virtual IDE
-> device in my case).
+If there were no devices expected to wake up the system from sleep
+under the given Root Port, it might very well go into D3hot IIUC, so
+the wakeup capability seems to be the key property here.
 
-Why are you using IDE?  IDE is comically slow compared to VirtIO, and VirtIO has
-been broadly supported for something like 15 years, even on Windows.
-
-> The reason for this unconditional read of page into bounce buffer
-> (caused by "swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE)")
-> is explained in the code:
-> 
-> /*
->  * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
->  * to the tlb buffer, if we knew for sure the device will
->  * overwrite the entire current content. But we don't. Thus
->  * unconditional bounce may prevent leaking swiotlb content (i.e.
->  * kernel memory) to user-space.
->  */
-> 
-> If we neglect this risk and do changes like
-> -       swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
-> +       if (dir != DMA_FROM_DEVICE)
-> +               swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
-> 
-> the issue of pages read before written from guest kernel just went away.
-> 
-> I don't think it's a swiotlb bug, because to prevent leaking swiotlb
-> content, if target page content is not copied firstly to the swiotlb's
-> bounce buffer, then the bounce buffer needs to be initialized to 0.
-> However, swiotlb_tbl_map_single() does not know whether the target page
-> is initialized or not. Then, it would cause page content to be trimmed
-> if device does not overwrite the entire memory.
-> 
-> > 
-> > > 
-> > > If there's something else going on, i.e. if your VM really is somehow generating
-> > > reads before writes, and if we really want to optimize use cases that can't use
-> > > hugepages for whatever reason, I would much prefer to do something like add a
-> > > memslot flag to state that the memslot should *always* be mapped writable.  Because
-> > Will check if this flag is necessary after figuring out the reason.
-> As explained above, I think it's a valid and non-rare practice in guest kernel to
-> cause read of uninitialized heap memory.
-
-Heh, for some definitions of valid.  
-
-> And the host admin may not know exactly when it's appropriate to apply the
-> memslot flag.
-
-Yeah, a memslot flag is too fine-grained.
-
-> Do you think it's good to make the "always write_fault = true" solution enabled
-> by default?
-
-Sadly, probably not, because that would regress setups that do want to utilize
-CoW, e.g. I'm pretty sure requesting everything to be writable would be a big
-negative for KSM.
-
-I do think we should add a KVM knob though.  Regardless of the validity or frequency
-of the guest behavior, and even though userspace can also workaround this by
-preallocating guest memory, I am struggling to think of any reason outside of KSM
-where CoW semantics are desirable.
-
-Ooh, actually, maybe we could do
-
-	static bool <name_tbd> = !IS_ENABLED(CONFIG_KSM);
-
-and then cross our fingers that that doesn't regress some other funky setups.
+I need to think a bit more about this.
