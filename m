@@ -2,139 +2,311 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF9DB792A01
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E6A792B96
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354950AbjIEQaU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:30:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
+        id S1344525AbjIEQzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354121AbjIEJnD (ORCPT
+        with ESMTP id S1354122AbjIEJn3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:43:03 -0400
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F35921AD;
-        Tue,  5 Sep 2023 02:42:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
-  t=1693906979; x=1725442979;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=O0H3j8c8BQZviF3vxfdKkYvpPvrhf6bVYI7dwJKyPqU=;
-  b=Vf2qLBaTB7bbIURLT+DZKiT7+v8p5sG+bkDz4wZTTZkPgeqgs1/cY3Jm
-   lPhnjEcEnIeD4i+xKDh8RTaNBPekjurPP8++2/NfdNFfn6hqGFqsc2jmQ
-   QERpwIkrk9xXni8zAfq1vDb5xj4k7PuXdIulhCVL1JpcVmDFQ36h+B8cC
-   E=;
-X-IronPort-AV: E=Sophos;i="6.02,229,1688428800"; 
-   d="scan'208";a="349440223"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 09:42:55 +0000
-Received: from EX19D008EUA001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan3.pdx.amazon.com [10.236.137.198])
-        by email-inbound-relay-pdx-2b-m6i4x-7fa2de02.us-west-2.amazon.com (Postfix) with ESMTPS id 35C6A40D88;
-        Tue,  5 Sep 2023 09:42:54 +0000 (UTC)
-Received: from EX19MTAUWC001.ant.amazon.com (10.250.64.145) by
- EX19D008EUA001.ant.amazon.com (10.252.50.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.37; Tue, 5 Sep 2023 09:42:49 +0000
-Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
- by mail-relay.amazon.com (10.250.64.145) with Microsoft SMTP Server id
- 15.2.1118.37 via Frontend Transport; Tue, 5 Sep 2023 09:42:47 +0000
-Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
-        id 750807BBB; Tue,  5 Sep 2023 09:42:47 +0000 (UTC)
-From:   Maximilian Heyne <mheyne@amazon.de>
-CC:     Maximilian Heyne <mheyne@amazon.de>, <stable@vger.kernel.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] virtio-mmio: fix memory leak of vm_dev
-Date:   Tue, 5 Sep 2023 09:42:28 +0000
-Message-ID: <20230905094228.97125-1-mheyne@amazon.de>
-X-Mailer: git-send-email 2.40.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,T_SPF_PERMERROR
-        autolearn=ham autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 05:43:29 -0400
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 940671AD;
+        Tue,  5 Sep 2023 02:43:22 -0700 (PDT)
+Received: from localhost.localdomain (unknown [124.16.141.245])
+        by APP-05 (Coremail) with SMTP id zQCowACnrWE1+PZkgCnQCg--.20711S2;
+        Tue, 05 Sep 2023 17:43:17 +0800 (CST)
+From:   sunying@nj.iscas.ac.cn
+To:     masahiroy@kernel.org
+Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        senozhatsky@chromium.org, mr.bossman075@gmail.com,
+        Ying Sun <sunying@nj.iscas.ac.cn>,
+        Siyuan Guo <zy21df106@buaa.edu.cn>
+Subject: [PATCHv2 -next] kconfig: add dependency warning print about invalid values in verbose mode
+Date:   Tue,  5 Sep 2023 17:43:13 +0800
+Message-Id: <20230905094313.11609-1-sunying@nj.iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230809002436.18079-1-sunying@nj.iscas.ac.cn>
+References: <20230809002436.18079-1-sunying@nj.iscas.ac.cn>
+X-CM-TRANSID: zQCowACnrWE1+PZkgCnQCg--.20711S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3XFWxXw4UCFy8WF4kGr18AFb_yoW3XrW5pa
+        18uayUKrsrAFySvw17KF18Cw1rJ3yvgr4xCwsxCw17ZFy3ta92vw47Gr1Yqa15Cr48ArWj
+        ka4F9FWFkF4xJaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUva14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwAKzVCY07xG64k0
+        F24lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI
+        8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AK
+        xVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI
+        8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
+        uYvjfUOrWrDUUUU
+X-Originating-IP: [124.16.141.245]
+X-CM-SenderInfo: 5vxq5xdqj60y4olvutnvoduhdfq/
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_PASS,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the recent removal of vm_dev from devres its memory is only freed
-via the callback virtio_mmio_release_dev. However, this only takes
-effect after device_add is called by register_virtio_device. Until then
-it's an unmanaged resource and must be explicitly freed on error exit.
+From: Ying Sun <sunying@nj.iscas.ac.cn>
 
-This bug was discovered and resolved using Coverity Static Analysis
-Security Testing (SAST) by Synopsys, Inc.
+Add warning about the configuration option's invalid value in verbose mode,
+ including error causes, mismatch dependency, old and new values,
+ to help users correct them.
 
-Cc: stable@vger.kernel.org
-Fixes: 55c91fedd03d ("virtio-mmio: don't break lifecycle of vm_dev")
-Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+Detailed error messages are printed only when the environment variable
+ is set like "KCONFIG_VERBOSE=1".
+By default, the current behavior is not changed.
+
+Signed-off-by: Siyuan Guo <zy21df106@buaa.edu.cn>
+Signed-off-by: Ying Sun <sunying@nj.iscas.ac.cn>
 ---
-Please note that I have only compile tested this code.
+v1 -> v2:
+* Reduced the number of code lines by refactoring and simplifying the logic.
+* Changed the print "ERROR" to "WARNING".
+* Focused on handling dependency errors: dir_dep and rev_dep, and range error.
+  - A downgrade from 'y' to 'm' has be warned.
+  - A new CONFIG option should not be warned.
+  - Overwriting caused by default value is not an error and is no longer printed.
+* Fixed style issues.
+---
+ scripts/kconfig/confdata.c | 100 +++++++++++++++++++++++++++++++++++--
+ scripts/kconfig/lkc.h      |   7 +++
+ scripts/kconfig/symbol.c   |  24 +++++++--
+ 3 files changed, 121 insertions(+), 10 deletions(-)
 
- drivers/virtio/virtio_mmio.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/virtio/virtio_mmio.c b/drivers/virtio/virtio_mmio.c
-index 97760f611295..b2a48d07e973 100644
---- a/drivers/virtio/virtio_mmio.c
-+++ b/drivers/virtio/virtio_mmio.c
-@@ -631,13 +631,16 @@ static int virtio_mmio_probe(struct platform_device *pdev)
- 	spin_lock_init(&vm_dev->lock);
+diff --git a/scripts/kconfig/confdata.c b/scripts/kconfig/confdata.c
+index 4a6811d77d18..86794ab39d7d 100644
+--- a/scripts/kconfig/confdata.c
++++ b/scripts/kconfig/confdata.c
+@@ -154,6 +154,56 @@ static void conf_message(const char *fmt, ...)
  
- 	vm_dev->base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(vm_dev->base))
-+	if (IS_ERR(vm_dev->base)) {
-+		kfree(vm_dev);
- 		return PTR_ERR(vm_dev->base);
+ static const char *conf_filename;
+ static int conf_lineno, conf_warnings;
++const char *verbose;
++
++void conf_error_log(enum error_type type, struct symbol *sym, char *log, ...)
++{
++	static char *const tristate2str[3] = {"n", "m", "y"};
++	struct gstr gs = str_new();
++	char s[100];
++	char *oldval = NULL;
++	va_list args;
++
++	va_start(args, log);
++	vsnprintf(s, sizeof(s), log, args);
++	va_end(args);
++
++	switch (sym->type) {
++	case S_BOOLEAN:
++	case S_TRISTATE:
++		oldval = tristate2str[sym->def[S_DEF_USER].tri];
++		break;
++	case S_INT:
++	case S_HEX:
++	case S_STRING:
++		oldval = sym->def[S_DEF_USER].val;
++	default:
++		break;
 +	}
++
++	str_printf(&gs,
++		"\nWARNING : %s [%s] value is invalid\n",
++		sym->name, oldval);
++	str_printf(&gs, s);
++	switch (type) {
++	case DIR_DEP:
++		str_printf(&gs,
++			"  Depends on [%c]: ",
++			sym->dir_dep.tri == mod ? 'm' : 'n');
++		expr_gstr_print(sym->dir_dep.expr, &gs);
++		str_printf(&gs, "\n");
++		break;
++	case REV_DEP:
++		expr_gstr_print_revdep(sym->rev_dep.expr, &gs, yes,
++					"  Selected by [y]:\n");
++		expr_gstr_print_revdep(sym->rev_dep.expr, &gs, mod,
++					"  Selected by [m]:\n");
++		break;
++	default:
++		break;
++	}
++	fputs(str_get(&gs), stderr);
++}
  
- 	/* Check magic value */
- 	magic = readl(vm_dev->base + VIRTIO_MMIO_MAGIC_VALUE);
- 	if (magic != ('v' | 'i' << 8 | 'r' << 16 | 't' << 24)) {
- 		dev_warn(&pdev->dev, "Wrong magic value 0x%08lx!\n", magic);
-+		kfree(vm_dev);
- 		return -ENODEV;
+ static void conf_warning(const char *fmt, ...)
+ {
+@@ -226,11 +276,14 @@ static const char *conf_get_rustccfg_name(void)
+ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
+ {
+ 	char *p2;
++	static const char * const type[] = {"unknown", "bool", "tristate", "int", "hex", "string"};
+ 
+ 	switch (sym->type) {
+ 	case S_TRISTATE:
+ 		if (p[0] == 'm') {
+ 			sym->def[def].tri = mod;
++
++
+ 			sym->flags |= def_flags;
+ 			break;
+ 		}
+@@ -246,9 +299,14 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
+ 			sym->flags |= def_flags;
+ 			break;
+ 		}
+-		if (def != S_DEF_AUTO)
+-			conf_warning("symbol value '%s' invalid for %s",
++		if (def != S_DEF_AUTO) {
++			if (verbose)
++				conf_warning("symbol value '%s' invalid for %s\n due to its type is %s",
++				     p, sym->name, type[sym->type]);
++			else
++				conf_warning("symbol value '%s' invalid for %s",
+ 				     p, sym->name);
++		}
+ 		return 1;
+ 	case S_STRING:
+ 		/* No escaping for S_DEF_AUTO (include/config/auto.conf) */
+@@ -274,9 +332,14 @@ static int conf_set_sym_val(struct symbol *sym, int def, int def_flags, char *p)
+ 			sym->def[def].val = xstrdup(p);
+ 			sym->flags |= def_flags;
+ 		} else {
+-			if (def != S_DEF_AUTO)
+-				conf_warning("symbol value '%s' invalid for %s",
+-					     p, sym->name);
++			if (def != S_DEF_AUTO) {
++				if (verbose)
++					conf_warning("symbol value '%s' invalid for %s\n due to its type is %s",
++						p, sym->name, type[sym->type]);
++				else
++					conf_warning("symbol value '%s' invalid for %s",
++						p, sym->name);
++			}
+ 			return 1;
+ 		}
+ 		break;
+@@ -545,6 +608,7 @@ int conf_read(const char *name)
+ 	int conf_unsaved = 0;
+ 	int i;
+ 
++	verbose = getenv("KCONFIG_VERBOSE");
+ 	conf_set_changed(false);
+ 
+ 	if (conf_read_simple(name, S_DEF_USER)) {
+@@ -576,6 +640,32 @@ int conf_read(const char *name)
+ 			continue;
+ 		conf_unsaved++;
+ 		/* maybe print value in verbose mode... */
++		if (verbose) {
++			switch (sym->type) {
++			case S_BOOLEAN:
++			case S_TRISTATE:
++				if (sym->def[S_DEF_USER].tri != sym->curr.tri) {
++					if (sym->dir_dep.tri < sym->def[S_DEF_USER].tri)
++						conf_error_log(DIR_DEP, sym,
++							"  due to unmet direct dependencies\n",
++							NULL);
++					if (sym->rev_dep.tri > sym->def[S_DEF_USER].tri)
++						conf_error_log(REV_DEP, sym,
++							"  due to it is selected\n", NULL);
++				}
++				break;
++			case S_INT:
++			case S_HEX:
++			case S_STRING:
++				if (sym->dir_dep.tri == no &&
++					strcmp((char *)(sym->def[S_DEF_USER].val), "") != 0)
++					conf_error_log(DIR_DEP, sym,
++						"  due to unmet direct dependencies\n", NULL);
++				break;
++			default:
++				break;
++			}
++		}
  	}
  
-@@ -646,6 +649,7 @@ static int virtio_mmio_probe(struct platform_device *pdev)
- 	if (vm_dev->version < 1 || vm_dev->version > 2) {
- 		dev_err(&pdev->dev, "Version %ld not supported!\n",
- 				vm_dev->version);
-+		kfree(vm_dev);
- 		return -ENXIO;
- 	}
+ 	for_all_symbols(i, sym) {
+diff --git a/scripts/kconfig/lkc.h b/scripts/kconfig/lkc.h
+index 471a59acecec..242b24650f47 100644
+--- a/scripts/kconfig/lkc.h
++++ b/scripts/kconfig/lkc.h
+@@ -38,10 +38,17 @@ void zconf_initscan(const char *name);
+ void zconf_nextfile(const char *name);
+ int zconf_lineno(void);
+ const char *zconf_curname(void);
++extern const char *verbose;
++enum error_type {
++	DIR_DEP,
++	REV_DEP,
++	RANGE
++};
  
-@@ -655,6 +659,7 @@ static int virtio_mmio_probe(struct platform_device *pdev)
- 		 * virtio-mmio device with an ID 0 is a (dummy) placeholder
- 		 * with no function. End probing now with no error reported.
- 		 */
-+		kfree(vm_dev);
- 		return -ENODEV;
- 	}
- 	vm_dev->vdev.id.vendor = readl(vm_dev->base + VIRTIO_MMIO_VENDOR_ID);
+ /* confdata.c */
+ const char *conf_get_configname(void);
+ void set_all_choice_values(struct symbol *csym);
++void conf_error_log(enum error_type type, struct symbol *sym, char *log, ...);
+ 
+ /* confdata.c and expr.c */
+ static inline void xfwrite(const void *str, size_t len, size_t count, FILE *out)
+diff --git a/scripts/kconfig/symbol.c b/scripts/kconfig/symbol.c
+index 0572330bf8a7..a78f7eb64f40 100644
+--- a/scripts/kconfig/symbol.c
++++ b/scripts/kconfig/symbol.c
+@@ -600,7 +600,7 @@ bool sym_string_valid(struct symbol *sym, const char *str)
+ bool sym_string_within_range(struct symbol *sym, const char *str)
+ {
+ 	struct property *prop;
+-	long long val;
++	long long val, left, right;
+ 
+ 	switch (sym->type) {
+ 	case S_STRING:
+@@ -612,8 +612,15 @@ bool sym_string_within_range(struct symbol *sym, const char *str)
+ 		if (!prop)
+ 			return true;
+ 		val = strtoll(str, NULL, 10);
+-		return val >= sym_get_range_val(prop->expr->left.sym, 10) &&
+-		       val <= sym_get_range_val(prop->expr->right.sym, 10);
++		left = sym_get_range_val(prop->expr->left.sym, 10);
++		right = sym_get_range_val(prop->expr->right.sym, 10);
++		if (val >= left && val <= right)
++			return true;
++		if (verbose)
++			conf_error_log(RANGE, sym,
++				"  symbol value is %lld, the range is (%lld %lld)\n",
++				val, left, right);
++		return false;
+ 	case S_HEX:
+ 		if (!sym_string_valid(sym, str))
+ 			return false;
+@@ -621,8 +628,15 @@ bool sym_string_within_range(struct symbol *sym, const char *str)
+ 		if (!prop)
+ 			return true;
+ 		val = strtoll(str, NULL, 16);
+-		return val >= sym_get_range_val(prop->expr->left.sym, 16) &&
+-		       val <= sym_get_range_val(prop->expr->right.sym, 16);
++		left = sym_get_range_val(prop->expr->left.sym, 16);
++		right = sym_get_range_val(prop->expr->right.sym, 16);
++		if (val >= left && val <= right)
++			return true;
++		if (verbose)
++			conf_error_log(RANGE, sym,
++				"  symbol value is 0x%llx, the range is (0x%llx 0x%llx)\n",
++				val, left, right);
++		return false;
+ 	case S_BOOLEAN:
+ 	case S_TRISTATE:
+ 		switch (str[0]) {
 -- 
-2.40.1
-
-
-
-
-Amazon Development Center Germany GmbH
-Krausenstr. 38
-10117 Berlin
-Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
-Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
-Sitz: Berlin
-Ust-ID: DE 289 237 879
-
-
+2.17.1
 
