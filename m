@@ -2,154 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3934792EE7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CE5792F09
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:36:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243032AbjIETbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:31:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56586 "EHLO
+        id S239817AbjIETgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:36:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234761AbjIETbX (ORCPT
+        with ESMTP id S237705AbjIETga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:31:23 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B81F7CF6
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:30:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693942258; x=1725478258;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=zUOk16uSP2T6YbhQY+oXHAFeCMv4lYDusKdYAsDqpag=;
-  b=cryPvaqDbRi+sm1oWFdBX+f4zo9JBx4ZaiWzIt7wHGmF5kq/SHQZ9gTT
-   7dz+IgSFBxMcjxJ+9p3akJIBcNLkkKoyFYgQ0TPokS5UoPJfHYh2M5oU3
-   a1CibGL4lSWKmpx9dYpF+uxiPiX51FncrtIF9Rp3C0TYRwOVFKcKuPUea
-   OTRufEbiYJL6dbf14cde/ZUOQkMnURSv8stk8gqGCo5GAMMGfLUvoBhpy
-   6ohYIRQ3OwV2czJ/2oWGzThzJVlkCjm9rTFtObcbkROirXN5P8lNCDbDC
-   SUM/dfBW0RrajzISIRtI6V9Gm2Ur0eUo/sepxugqCav6ZRex3De1znM4i
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="379604255"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="379604255"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 12:30:52 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="717976621"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="717976621"
-Received: from dpdesmon-mobl.amr.corp.intel.com (HELO [10.209.18.208]) ([10.209.18.208])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 12:30:51 -0700
-Message-ID: <925bbda25461035fdec1bebf8487f84f9a3852a7.camel@linux.intel.com>
-Subject: Re: [PATCH] sched/fair: optimize should_we_balance for higher SMT
- systems
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>, mingo@redhat.com,
-        peterz@infradead.org, vincent.guittot@linaro.org
-Cc:     dietmar.eggemann@arm.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org, srikar@linux.vnet.ibm.com,
-        mgorman@techsingularity.net, mingo@kernel.org, yu.c.chen@intel.com,
-        ricardo.neri-calderon@linux.intel.com, iamjoonsoo.kim@lge.com,
-        juri.lelli@redhat.com, rocking@linux.alibaba.com,
-        joshdon@google.com
-Date:   Tue, 05 Sep 2023 12:30:51 -0700
-In-Reply-To: <20230902081204.232218-1-sshegde@linux.vnet.ibm.com>
-References: <20230902081204.232218-1-sshegde@linux.vnet.ibm.com>
+        Tue, 5 Sep 2023 15:36:30 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9827B1B4;
+        Tue,  5 Sep 2023 12:36:13 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6bd0a0a6766so2144808a34.2;
+        Tue, 05 Sep 2023 12:36:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693942572; x=1694547372; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eqUQg0zMZLwgq0WsuJJKdJpvD6RBeoiu/NWcTYcjvUo=;
+        b=URL2bNo6rl4EKu8sD1Ajz2zurBQ8zmvPNeq9DmibOpAYbs0ovsHx6+hGlgjCCdfC9s
+         466Ht2DUzzHONXxynjwmDXQsp0U0NAAaTxL5t9TLgRu7rYqucyghPGG0T1djfL8frqZg
+         6dSMNGBpb6sPKpOLdOxuGFv9V0v8VtOhI3tspqc8nc7dLilecxswig7sFTXV9eWsV6rv
+         r/CfrnqRbSWLaBV3BJXQpgaPRuHvnKRmA4Ee38XLB5haL7DeAI/6gz58IlOxM3mf4dYz
+         GbywsmnAUiP9kdMiXp2ML3lXpl/GDUsQn/Zls3i8dZ85MU0caFH4dQW3OlcIigzeEjzJ
+         Yy9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693942572; x=1694547372;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eqUQg0zMZLwgq0WsuJJKdJpvD6RBeoiu/NWcTYcjvUo=;
+        b=DL+IeExs/0TpGIWsU2bPSsE4rISvv5za/JMLakPvcJs3qPhRRjbms56MMbmdw+2QEA
+         zIlPk+LUP8kxxn6q30dyX3xXQbkbhKIRY74sNCyWKJxzQiXcj9subo1tIfNjFB6tkUIC
+         XGL7V4rV3II4lVc0o71bVnMw9lIHm7PYZ0Pf9qzSQJwyAR8WAChoaPlg9AMRq7vx6zFc
+         DqyV737QvfA4Y3A5IjHTlid6uu92AgM9n7ErlnF+nwAd1eJl9capzCw9YZIwamU/AbqO
+         n6wqGf9Z+gW8TICRmvRG6W5Gtvjcg0VuKcMs2rt3LzZL5vnpWGMZaE5RDteybzbrOngy
+         9cKw==
+X-Gm-Message-State: AOJu0YwazJA6qhAadgG9MaNFDB4R5rns3dIOYULFBR2WsCspzVmvkHP3
+        XkvEum83wOWIe7c1BSzXkaPb9Cj6IjEOzCMzGHM=
+X-Google-Smtp-Source: AGHT+IG4KsVoswA9/HKK1dHnAhZCIdOaEBAg0DAlX4uU6o6k8YqLFhqbrFcmbyxzXPj4+CgnxAksRCSpL1RP9/6LisU=
+X-Received: by 2002:a05:6358:279e:b0:13a:bfc:8546 with SMTP id
+ l30-20020a056358279e00b0013a0bfc8546mr972132rwb.7.1693942572396; Tue, 05 Sep
+ 2023 12:36:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230905191333.never.707-kees@kernel.org>
+In-Reply-To: <20230905191333.never.707-kees@kernel.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 5 Sep 2023 21:36:01 +0200
+Message-ID: <CANiq72=B9s4+4BhezmDPWc6K9tYvhyNpw9uWnRhVdymSUAO_sA@mail.gmail.com>
+Subject: Re: [PATCH] module: Clarify documentation of module_param_call()
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Luis Chamberlain <mcgrof@kernel.org>,
+        Johan Hovold <johan@kernel.org>, Jessica Yu <jeyu@kernel.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2023-09-02 at 13:42 +0530, Shrikanth Hegde wrote:
->=20
->=20
-> Fixes: b1bfeab9b002 ("sched/fair: Consider the idle state of the whole co=
-re for load balance")
-> Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
-> ---
->  kernel/sched/fair.c | 15 ++++++++++++++-
->  1 file changed, 14 insertions(+), 1 deletion(-)
->=20
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 0b7445cd5af9..6e31923293bb 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6619,6 +6619,7 @@ static void dequeue_task_fair(struct rq *rq, struct=
- task_struct *p, int flags)
->  /* Working cpumask for: load_balance, load_balance_newidle. */
->  static DEFINE_PER_CPU(cpumask_var_t, load_balance_mask);
->  static DEFINE_PER_CPU(cpumask_var_t, select_rq_mask);
-> +static DEFINE_PER_CPU(cpumask_var_t, should_we_balance_tmpmask);
->=20
->  #ifdef CONFIG_NO_HZ_COMMON
->=20
-> @@ -10913,6 +10914,7 @@ static int active_load_balance_cpu_stop(void *dat=
-a);
->=20
->  static int should_we_balance(struct lb_env *env)
->  {
-> +	struct cpumask *swb_cpus =3D this_cpu_cpumask_var_ptr(should_we_balance=
-_tmpmask);
->  	struct sched_group *sg =3D env->sd->groups;
->  	int cpu, idle_smt =3D -1;
->=20
-> @@ -10936,8 +10938,9 @@ static int should_we_balance(struct lb_env *env)
->  		return 1;
->  	}
->=20
-> +	cpumask_copy(swb_cpus, group_balance_mask(sg));
->  	/* Try to find first idle CPU */
-> -	for_each_cpu_and(cpu, group_balance_mask(sg), env->cpus) {
-> +	for_each_cpu_and(cpu, swb_cpus, env->cpus) {
->  		if (!idle_cpu(cpu))
->  			continue;
->=20
-> @@ -10949,6 +10952,14 @@ static int should_we_balance(struct lb_env *env)
->  		if (!(env->sd->flags & SD_SHARE_CPUCAPACITY) && !is_core_idle(cpu)) {
->  			if (idle_smt =3D=3D -1)
->  				idle_smt =3D cpu;
-> +			/*
-> +			 * If the core is not idle, and first SMT sibling which is
-> +			 * idle has been found, then its not needed to check other
-> +			 * SMT siblings for idleness
-> +			 */
-> +#ifdef CONFIG_SCHED_SMT
-> +			cpumask_andnot(swb_cpus, swb_cpus, cpu_smt_mask(cpu));
-> +#endif
->  			continue;
->  		}
->=20
-> @@ -12914,6 +12925,8 @@ __init void init_sched_fair_class(void)
->  	for_each_possible_cpu(i) {
->  		zalloc_cpumask_var_node(&per_cpu(load_balance_mask, i), GFP_KERNEL, cp=
-u_to_node(i));
->  		zalloc_cpumask_var_node(&per_cpu(select_rq_mask,    i), GFP_KERNEL, cp=
-u_to_node(i));
-> +		zalloc_cpumask_var_node(&per_cpu(should_we_balance_tmpmask, i),
-> +					GFP_KERNEL, cpu_to_node(i));
+On Tue, Sep 5, 2023 at 9:13=E2=80=AFPM Kees Cook <keescook@chromium.org> wr=
+ote:
+>
+> Commit 9bbb9e5a3310 ("param: use ops in struct kernel_param, rather than
+> get and set fns directly") added the comment that module_param_call()
+> was deprecated, during a large scale refactoring to bring sanity to type
+> casting back then. In 2017 following more cleanups, it became useful
+> against as it wraps a common pattern of creating an ops struct for a
 
-Shrianth,
+s/against/again/
 
-Wonder if we can avoid allocating the=20
-should_we_balance_tmpmask for SMT2 case to save memory
-for system with large number of cores.
+> Many users of module_param_cb() appear to be almost universally
+> open-coding the same thing that module_param_call() does now. Don't
+> discourage[1] people from using module_param_call() but clarifying the
+> comment: module_param_cb() is useful if you repeatedly use the same pair
+> of get/set functions.
 
-The new mask and logic I think is only needed for more than 2 threads in a =
-core.
+s/clarifying/clarify/
 
-Tim
->=20
->  #ifdef CONFIG_CFS_BANDWIDTH
->  		INIT_CSD(&cpu_rq(i)->cfsb_csd, __cfsb_csd_unthrottle, cpu_rq(i));
-> --
-> 2.31.1
->=20
+I sampled some, and indeed many define the ops struct.
 
+> [1] https://lore.kernel.org/lkml/202308301546.5C789E5EC@keescook/
+
+Link: tag here? It is actually quite nicely explained there.
+
+> -/* Obsolete - use module_param_cb() */
+> +/* For repeated _set & _get usage use module_param_cb() */
+
+Perhaps add "instead"? Or perhaps add a bit more detail, something like:
+
+    Useful for describing a set/get pair used only once (i.e. for this
+parameter). For repeated set/get pairs (i.e. the same kernel_param_ops
+struct), use module_param_cb() instead.
+
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+
+Cheers,
+Miguel
