@@ -2,233 +2,434 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD11792B6A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 333E1792A0B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236248AbjIEQwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:52:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34576 "EHLO
+        id S1356671AbjIEQda (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351685AbjIEFYq (ORCPT
+        with ESMTP id S1351652AbjIEFYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 01:24:46 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F5BECCB;
-        Mon,  4 Sep 2023 22:24:42 -0700 (PDT)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3855OWa5013157;
-        Tue, 5 Sep 2023 05:24:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=xf/2nGjSik8b/0EhB8apq7LpsXXUl07A3GKBk2B6mxE=;
- b=bWDC8MaM9eTQ3Sq/YyMlY8Sf1/FKxA4/bOYdE5dP3l/lN9gGj9E5JcxIE14tkY8vH3f4
- ixfrWrsWDovi45CSJXoxSBrWMyXemfDpCP0CwIXsvUdxL34xl9JhEe/k/iGZvMEUuV0V
- E2HbxSZia2UjYEUQbC5f+nSJPLNZNw36p6Xj3bARzeT8oQcjD6dn7dZ+WjyeiIC21DsW
- AR+8788Jh7yX9kFK8ywIvOpJgAe+elXa7TVdYBw5IU+RJBDGXQpkgq030bce5sc7bYyd
- ArzXFJsPUJgmXnpPf+pWktvwVyOTYZb4RQJ+/qeD86br8dO2wyFwYV64e2sXSidQ/+kX yA== 
-Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swfae1j0m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 05:24:32 +0000
-Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3855O5Pf029359;
-        Tue, 5 Sep 2023 05:24:10 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3sux4kjpw6-1;
-        Tue, 05 Sep 2023 05:24:10 +0000
-Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3855O9qo029500;
-        Tue, 5 Sep 2023 05:24:09 GMT
-Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3855O9Ti029498;
-        Tue, 05 Sep 2023 05:24:09 +0000
-Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id A4CD7504921; Tue,  5 Sep 2023 10:54:08 +0530 (+0530)
-From:   Nitin Rawat <quic_nitirawa@quicinc.com>
-To:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Nitin Rawat <quic_nitirawa@quicinc.com>,
-        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Subject: [PATCH V8 5/5] scsi: ufs: qcom: Configure SYS1CLK_1US_REG for UFS V4 and above
-Date:   Tue,  5 Sep 2023 10:54:00 +0530
-Message-Id: <20230905052400.13935-6-quic_nitirawa@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20230905052400.13935-1-quic_nitirawa@quicinc.com>
-References: <20230905052400.13935-1-quic_nitirawa@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: BAOW-TZ_DwGwrr9DMIYqR1IGvAnWs1dj
-X-Proofpoint-ORIG-GUID: BAOW-TZ_DwGwrr9DMIYqR1IGvAnWs1dj
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_04,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
- phishscore=0 priorityscore=1501 mlxlogscore=999 suspectscore=0
- lowpriorityscore=0 clxscore=1015 impostorscore=0 mlxscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309050048
-X-Spam-Status: No, score=-2.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 01:24:38 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0549E8;
+        Mon,  4 Sep 2023 22:24:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693891474; x=1725427474;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=7yRpurzzwCMrF3BW5n2uSjqy7aK/uDwBCGx05tS4LrI=;
+  b=flAiemb0Mp8d2UGF4GIVSydyXVFX0Mq/d0VGuYoZHojAHFlVCskY76un
+   R9RshMz+GYe/A5ezb6VuR5wGBhJmQTIOYBlx45XwcTOU2H/hcMXe30/u9
+   XfmOXO4K7qcX21pmP+w7XrGL/o+XPYcEHGnxOvl+jxU/dPkVUY6oJZH7o
+   cagn0XF03uxF3c/M3Gehw6UQfX+9wlsGzCQjqWeKJHsGUEFeQK/S1kRts
+   sUHC3YlxevchlSwB6XKP7DbHPfCgCGDSLUzN42zHtfom9rRSISfVX7FzW
+   VCY1dH0gqAG9R6oZfNAIBWG0rrJkHwLHKATioC1OrIfRih9oCsbpP+Rl9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="366935207"
+X-IronPort-AV: E=Sophos;i="6.02,228,1688454000"; 
+   d="scan'208";a="366935207"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 22:24:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="734505788"
+X-IronPort-AV: E=Sophos;i="6.02,228,1688454000"; 
+   d="scan'208";a="734505788"
+Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.254.214.54]) ([10.254.214.54])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Sep 2023 22:24:29 -0700
+Message-ID: <c9228377-0a5c-adf8-d0ef-9a791226603d@linux.intel.com>
+Date:   Tue, 5 Sep 2023 13:24:26 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.0
+Cc:     baolu.lu@linux.intel.com, "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 09/10] iommu: Make iommu_queue_iopf() more generic
+Content-Language: en-US
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Nicolin Chen <nicolinc@nvidia.com>
+References: <20230825023026.132919-1-baolu.lu@linux.intel.com>
+ <20230825023026.132919-10-baolu.lu@linux.intel.com>
+ <BN9PR11MB52762A33BC9F41AB424915688CE3A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <cfd9e0b8-167e-a79b-9ef1-b3bfa38c9199@linux.intel.com>
+ <BN9PR11MB5276926066CC3A8FCCFD3DB08CE6A@BN9PR11MB5276.namprd11.prod.outlook.com>
+ <ed11a5c4-7256-e6ea-e94e-0dfceba6ddbf@linux.intel.com>
+ <BN9PR11MB5276622C8271402487FA44708CE4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB5276622C8271402487FA44708CE4A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SYS1CLK_1US represents the required number of system 1-clock cycles for
-one microsecond. UFS Host Controller V4.0 and above mandates to write
-SYS1CLK_1US_REG register and also these timer configuration needs to be
-called from clk scaling pre ops as per HPG.
+On 2023/9/1 10:50, Tian, Kevin wrote:
+>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>> Sent: Thursday, August 31, 2023 7:25 PM
+>>
+>> On 2023/8/30 15:55, Tian, Kevin wrote:
+>>>> From: Baolu Lu <baolu.lu@linux.intel.com>
+>>>> Sent: Saturday, August 26, 2023 4:04 PM
+>>>>
+>>>> On 8/25/23 4:17 PM, Tian, Kevin wrote:
+>>>>>> +static void assert_no_pending_iopf(struct device *dev, ioasid_t pasid)
+>>>>>> +{
+>>>>>> +	struct iommu_fault_param *iopf_param = dev->iommu-
+>>>>>>> fault_param;
+>>>>>> +	struct iopf_fault *iopf;
+>>>>>> +
+>>>>>> +	if (!iopf_param)
+>>>>>> +		return;
+>>>>>> +
+>>>>>> +	mutex_lock(&iopf_param->lock);
+>>>>>> +	list_for_each_entry(iopf, &iopf_param->partial, list) {
+>>>>>> +		if (WARN_ON(iopf->fault.prm.pasid == pasid))
+>>>>>> +			break;
+>>>>>> +	}
+>>>>> partial list is protected by dev_iommu lock.
+>>>>>
+>>>>
+>>>> Ah, do you mind elaborating a bit more? In my mind, partial list is
+>>>> protected by dev_iommu->fault_param->lock.
+>>>>
+>>>
+>>> well, it's not how the code is currently written. iommu_queue_iopf()
+>>> doesn't hold dev_iommu->fault_param->lock to update the partial
+>>> list.
+>>>
+>>> while at it looks there is also a mislocking in iopf_queue_discard_partial()
+>>> which only acquires queue->lock.
+>>>
+>>> So we have three places touching the partial list all with different locks:
+>>>
+>>> - iommu_queue_iopf() relies on dev_iommu->lock
+>>> - iopf_queue_discard_partial() relies on queue->lock
+>>> - this new assert function uses dev_iommu->fault_param->lock
+>>
+>> Yeah, I see your point now. Thanks for the explanation.
+>>
+>> So, my understanding is that dev_iommu->lock protects the whole
+>> pointer of dev_iommu->fault_param, while dev_iommu->fault_param->lock
+>> protects the lists inside it.
+>>
+> 
+> yes. let's use fault_param->lock consistently for those lists in all paths.
 
-Refactor ufs_qcom_cfg_timers and add the below code support to align
-with HPG.
+Hi Kevin,
 
-a)Configure SYS1CLK_1US_REG for UFS V4 and above.
-b)Introduce a new argument is_pre_scale_up for ufs_qcom_cfg_timers
-to configure SYS1CLK_1US for max freq during prescale and link startup
-condition.
-c)Move ufs_qcom_cfg_timers from clk scaling post change ops
-to clk scaling pre change ops.
+I am trying to address this issue in below patch. Does it looks sane to
+you?
 
-Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
-Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+iommu: Consolidate per-device fault data management
+
+The per-device fault data is a data structure that is used to store
+information about faults that occur on a device. This data is allocated
+when IOPF is enabled on the device and freed when IOPF is disabled. The
+data is used in the paths of iopf reporting, handling, responding, and
+draining.
+
+The fault data is protected by two locks:
+
+- dev->iommu->lock: This lock is used to protect the allocation and
+   freeing of the fault data.
+- dev->iommu->fault_parameter->lock: This lock is used to protect the
+   fault data itself.
+
+Improve the iopf code to enforce this lock mechanism and add a reference
+counter in the fault data to avoid use-after-free issue.
+
+Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/ufs/host/ufs-qcom.c | 56 ++++++++++++++++++++++++++-----------
- 1 file changed, 40 insertions(+), 16 deletions(-)
+  include/linux/iommu.h      |   3 +
+  drivers/iommu/io-pgfault.c | 122 +++++++++++++++++++++++--------------
+  2 files changed, 79 insertions(+), 46 deletions(-)
 
-diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
-index d437c75c8e14..dd549363fb2a 100644
---- a/drivers/ufs/host/ufs-qcom.c
-+++ b/drivers/ufs/host/ufs-qcom.c
-@@ -527,11 +527,20 @@ static int ufs_qcom_hce_enable_notify(struct ufs_hba *hba,
- 	return err;
- }
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index 1697ac168f05..77ad33ffe3ac 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -480,6 +480,8 @@ struct iommu_device {
+  /**
+   * struct iommu_fault_param - per-device IOMMU fault data
+   * @lock: protect pending faults list
++ * @users: user counter to manage the lifetime of the data, this field
++ *         is protected by dev->iommu->lock.
+   * @dev: the device that owns this param
+   * @queue: IOPF queue
+   * @queue_list: index into queue->devices
+@@ -489,6 +491,7 @@ struct iommu_device {
+   */
+  struct iommu_fault_param {
+  	struct mutex lock;
++	int users;
 
--/*
-+/**
-+ * ufs_qcom_cfg_timers - Configure ufs qcom cfg timers
-+ *
-+ * @hba: host controller instance
-+ * @gear: Current operating gear
-+ * @hs: current power mode
-+ * @rate: current operating rate (A or B)
-+ * @update_link_startup_timer: indicate if link_start ongoing
-+ * @is_pre_scale_up: flag to check if pre scale up condition.
-  * Return: zero for success and non-zero in case of a failure.
-  */
- static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
--			       u32 hs, u32 rate, bool update_link_startup_timer)
-+			       u32 hs, u32 rate, bool update_link_startup_timer,
-+			       bool is_pre_scale_up)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
- 	struct ufs_clk_info *clki;
-@@ -562,11 +571,14 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
- 	/*
- 	 * The Qunipro controller does not use following registers:
- 	 * SYS1CLK_1US_REG, TX_SYMBOL_CLK_1US_REG, CLK_NS_REG &
--	 * UFS_REG_PA_LINK_STARTUP_TIMER
--	 * But UTP controller uses SYS1CLK_1US_REG register for Interrupt
-+	 * UFS_REG_PA_LINK_STARTUP_TIMER.
-+	 * However UTP controller uses SYS1CLK_1US_REG register for Interrupt
- 	 * Aggregation logic.
--	*/
--	if (ufs_qcom_cap_qunipro(host) && !ufshcd_is_intr_aggr_allowed(hba))
-+	 * It is mandatory to write SYS1CLK_1US_REG register on UFS host
-+	 * controller V4.0.0 onwards.
-+	 */
-+	if (host->hw_ver.major < 4 && ufs_qcom_cap_qunipro(host) &&
-+	    !ufshcd_is_intr_aggr_allowed(hba))
- 		return 0;
+  	struct device *dev;
+  	struct iopf_queue *queue;
+diff --git a/drivers/iommu/io-pgfault.c b/drivers/iommu/io-pgfault.c
+index 7e5c6798ce24..3e6845bc5902 100644
+--- a/drivers/iommu/io-pgfault.c
++++ b/drivers/iommu/io-pgfault.c
+@@ -26,6 +26,49 @@ void iopf_free_group(struct iopf_group *group)
+  }
+  EXPORT_SYMBOL_GPL(iopf_free_group);
 
- 	if (gear == 0) {
-@@ -575,8 +587,14 @@ static int ufs_qcom_cfg_timers(struct ufs_hba *hba, u32 gear,
- 	}
-
- 	list_for_each_entry(clki, &hba->clk_list_head, list) {
--		if (!strcmp(clki->name, "core_clk"))
--			core_clk_rate = clk_get_rate(clki->clk);
-+		if (!strcmp(clki->name, "core_clk")) {
-+			if (is_pre_scale_up)
-+				core_clk_rate = clki->max_freq;
-+			else
-+				core_clk_rate = clk_get_rate(clki->clk);
-+			break;
-+		}
++/*
++ * Return the fault parameter of a device if it exists. Otherwise, 
+return NULL.
++ * On a successful return, the caller takes a reference of this 
+parameter and
++ * should put it after use by calling iopf_put_dev_fault_param().
++ */
++static struct iommu_fault_param *iopf_get_dev_fault_param(struct device 
+*dev)
++{
++	struct dev_iommu *param = dev->iommu;
++	struct iommu_fault_param *fault_param;
 +
- 	}
-
- 	/* If frequency is smaller than 1MHz, set to 1MHz */
-@@ -678,7 +696,7 @@ static int ufs_qcom_link_startup_notify(struct ufs_hba *hba,
- 	switch (status) {
- 	case PRE_CHANGE:
- 		if (ufs_qcom_cfg_timers(hba, UFS_PWM_G1, SLOWAUTO_MODE,
--					0, true)) {
-+					0, true, false)) {
- 			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
- 				__func__);
- 			return -EINVAL;
-@@ -922,7 +940,7 @@ static int ufs_qcom_pwr_change_notify(struct ufs_hba *hba,
- 	case POST_CHANGE:
- 		if (ufs_qcom_cfg_timers(hba, dev_req_params->gear_rx,
- 					dev_req_params->pwr_rx,
--					dev_req_params->hs_rate, false)) {
-+					dev_req_params->hs_rate, false, false)) {
- 			dev_err(hba->dev, "%s: ufs_qcom_cfg_timers() failed\n",
- 				__func__);
- 			/*
-@@ -1418,10 +1436,22 @@ static int ufs_qcom_set_core_clk_ctrl(struct ufs_hba *hba, bool is_scale_up)
- static int ufs_qcom_clk_scale_up_pre_change(struct ufs_hba *hba)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
-+	struct ufs_pa_layer_attr *attr = &host->dev_req_params;
-+	int ret;
-
- 	if (!ufs_qcom_cap_qunipro(host))
- 		return 0;
-
-+	if (attr) {
-+		ret = ufs_qcom_cfg_timers(hba, attr->gear_rx,
-+					attr->pwr_rx, attr->hs_rate,
-+					false, true);
-+		if (ret) {
-+			dev_err(hba->dev, "%s ufs cfg timer failed\n",
-+						__func__);
-+			return ret;
-+		}
++	if (!param)
++		return NULL;
++
++	mutex_lock(&param->lock);
++	fault_param = param->fault_param;
++	if (fault_param)
++		fault_param->users++;
++	mutex_unlock(&param->lock);
++
++	return fault_param;
++}
++
++/* Caller must hold a reference of the fault parameter. */
++static void iopf_put_dev_fault_param(struct iommu_fault_param *fault_param)
++{
++	struct device *dev = fault_param->dev;
++	struct dev_iommu *param = dev->iommu;
++
++	mutex_lock(&param->lock);
++	if (WARN_ON(fault_param->users <= 0 ||
++		    fault_param != param->fault_param)) {
++		mutex_unlock(&param->lock);
++		return;
 +	}
- 	/* set unipro core clock attributes and clear clock divider */
- 	return ufs_qcom_set_core_clk_ctrl(hba, true);
- }
-@@ -1471,7 +1501,6 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
- 		bool scale_up, enum ufs_notify_change_status status)
- {
- 	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
--	struct ufs_pa_layer_attr *dev_req_params = &host->dev_req_params;
- 	int err = 0;
++
++	if (--fault_param->users == 0) {
++		param->fault_param = NULL;
++		kfree(fault_param);
++		put_device(dev);
++	}
++	mutex_unlock(&param->lock);
++}
++
+  /**
+   * iommu_handle_iopf - IO Page Fault handler
+   * @fault: fault event
+@@ -72,23 +115,14 @@ static int iommu_handle_iopf(struct iommu_fault 
+*fault, struct device *dev)
+  	struct iopf_group *group;
+  	struct iommu_domain *domain;
+  	struct iopf_fault *iopf, *next;
+-	struct iommu_fault_param *iopf_param;
+-	struct dev_iommu *param = dev->iommu;
++	struct iommu_fault_param *iopf_param = dev->iommu->fault_param;
 
- 	/* check the host controller state before sending hibern8 cmd */
-@@ -1501,11 +1530,6 @@ static int ufs_qcom_clk_scale_notify(struct ufs_hba *hba,
- 			return err;
- 		}
+-	lockdep_assert_held(&param->lock);
++	lockdep_assert_held(&iopf_param->lock);
 
--		ufs_qcom_cfg_timers(hba,
--				    dev_req_params->gear_rx,
--				    dev_req_params->pwr_rx,
--				    dev_req_params->hs_rate,
--				    false);
- 		ufs_qcom_icc_update_bw(host);
- 		ufshcd_uic_hibern8_exit(hba);
- 	}
---
-2.17.1
+  	if (fault->type != IOMMU_FAULT_PAGE_REQ)
+  		/* Not a recoverable page fault */
+  		return -EOPNOTSUPP;
 
+-	/*
+-	 * As long as we're holding param->lock, the queue can't be unlinked
+-	 * from the device and therefore cannot disappear.
+-	 */
+-	iopf_param = param->fault_param;
+-	if (!iopf_param)
+-		return -ENODEV;
+-
+  	if (!(fault->prm.flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE)) {
+  		iopf = kzalloc(sizeof(*iopf), GFP_KERNEL);
+  		if (!iopf)
+@@ -167,18 +201,15 @@ static int iommu_handle_iopf(struct iommu_fault 
+*fault, struct device *dev)
+   */
+  int iommu_report_device_fault(struct device *dev, struct iopf_fault *evt)
+  {
+-	struct dev_iommu *param = dev->iommu;
++	struct iommu_fault_param *fault_param;
+  	struct iopf_fault *evt_pending = NULL;
+-	struct iommu_fault_param *fparam;
+  	int ret = 0;
+
+-	if (!param || !evt)
++	fault_param = iopf_get_dev_fault_param(dev);
++	if (!fault_param)
+  		return -EINVAL;
+
+-	/* we only report device fault if there is a handler registered */
+-	mutex_lock(&param->lock);
+-	fparam = param->fault_param;
+-
++	mutex_lock(&fault_param->lock);
+  	if (evt->fault.type == IOMMU_FAULT_PAGE_REQ &&
+  	    (evt->fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_LAST_PAGE)) {
+  		evt_pending = kmemdup(evt, sizeof(struct iopf_fault),
+@@ -187,20 +218,18 @@ int iommu_report_device_fault(struct device *dev, 
+struct iopf_fault *evt)
+  			ret = -ENOMEM;
+  			goto done_unlock;
+  		}
+-		mutex_lock(&fparam->lock);
+-		list_add_tail(&evt_pending->list, &fparam->faults);
+-		mutex_unlock(&fparam->lock);
++		list_add_tail(&evt_pending->list, &fault_param->faults);
+  	}
+
+  	ret = iommu_handle_iopf(&evt->fault, dev);
+  	if (ret && evt_pending) {
+-		mutex_lock(&fparam->lock);
+  		list_del(&evt_pending->list);
+-		mutex_unlock(&fparam->lock);
+  		kfree(evt_pending);
+  	}
+  done_unlock:
+-	mutex_unlock(&param->lock);
++	mutex_unlock(&fault_param->lock);
++	iopf_put_dev_fault_param(fault_param);
++
+  	return ret;
+  }
+  EXPORT_SYMBOL_GPL(iommu_report_device_fault);
+@@ -212,19 +241,20 @@ int iommu_page_response(struct device *dev,
+  	int ret = -EINVAL;
+  	struct iopf_fault *evt;
+  	struct iommu_fault_page_request *prm;
+-	struct dev_iommu *param = dev->iommu;
++	struct iommu_fault_param *fault_param;
+  	const struct iommu_ops *ops = dev_iommu_ops(dev);
+  	bool has_pasid = msg->flags & IOMMU_PAGE_RESP_PASID_VALID;
+
+  	if (!ops->page_response)
+  		return -ENODEV;
+
+-	if (!param || !param->fault_param)
+-		return -EINVAL;
++	fault_param = iopf_get_dev_fault_param(dev);
++	if (!fault_param)
++		return -ENODEV;
+
+  	/* Only send response if there is a fault report pending */
+-	mutex_lock(&param->fault_param->lock);
+-	if (list_empty(&param->fault_param->faults)) {
++	mutex_lock(&fault_param->lock);
++	if (list_empty(&fault_param->faults)) {
+  		dev_warn_ratelimited(dev, "no pending PRQ, drop response\n");
+  		goto done_unlock;
+  	}
+@@ -232,7 +262,7 @@ int iommu_page_response(struct device *dev,
+  	 * Check if we have a matching page request pending to respond,
+  	 * otherwise return -EINVAL
+  	 */
+-	list_for_each_entry(evt, &param->fault_param->faults, list) {
++	list_for_each_entry(evt, &fault_param->faults, list) {
+  		prm = &evt->fault.prm;
+  		if (prm->grpid != msg->grpid)
+  			continue;
+@@ -260,7 +290,9 @@ int iommu_page_response(struct device *dev,
+  	}
+
+  done_unlock:
+-	mutex_unlock(&param->fault_param->lock);
++	mutex_unlock(&fault_param->lock);
++	iopf_put_dev_fault_param(fault_param);
++
+  	return ret;
+  }
+  EXPORT_SYMBOL_GPL(iommu_page_response);
+@@ -279,22 +311,15 @@ EXPORT_SYMBOL_GPL(iommu_page_response);
+   */
+  int iopf_queue_flush_dev(struct device *dev)
+  {
+-	int ret = 0;
+-	struct iommu_fault_param *iopf_param;
+-	struct dev_iommu *param = dev->iommu;
++	struct iommu_fault_param *iopf_param = iopf_get_dev_fault_param(dev);
+
+-	if (!param)
++	if (!iopf_param)
+  		return -ENODEV;
+
+-	mutex_lock(&param->lock);
+-	iopf_param = param->fault_param;
+-	if (iopf_param)
+-		flush_workqueue(iopf_param->queue->wq);
+-	else
+-		ret = -ENODEV;
+-	mutex_unlock(&param->lock);
++	flush_workqueue(iopf_param->queue->wq);
++	iopf_put_dev_fault_param(iopf_param);
+
+-	return ret;
++	return 0;
+  }
+  EXPORT_SYMBOL_GPL(iopf_queue_flush_dev);
+
+@@ -318,11 +343,13 @@ int iopf_queue_discard_partial(struct iopf_queue 
+*queue)
+
+  	mutex_lock(&queue->lock);
+  	list_for_each_entry(iopf_param, &queue->devices, queue_list) {
++		mutex_lock(&iopf_param->lock);
+  		list_for_each_entry_safe(iopf, next, &iopf_param->partial,
+  					 list) {
+  			list_del(&iopf->list);
+  			kfree(iopf);
+  		}
++		mutex_unlock(&iopf_param->lock);
+  	}
+  	mutex_unlock(&queue->lock);
+  	return 0;
+@@ -361,6 +388,7 @@ int iopf_queue_add_device(struct iopf_queue *queue, 
+struct device *dev)
+  	INIT_LIST_HEAD(&fault_param->faults);
+  	INIT_LIST_HEAD(&fault_param->partial);
+  	fault_param->dev = dev;
++	fault_param->users = 1;
+  	list_add(&fault_param->queue_list, &queue->devices);
+  	fault_param->queue = queue;
+
+@@ -413,9 +441,11 @@ int iopf_queue_remove_device(struct iopf_queue 
+*queue, struct device *dev)
+  	list_for_each_entry_safe(iopf, next, &fault_param->partial, list)
+  		kfree(iopf);
+
+-	param->fault_param = NULL;
+-	kfree(fault_param);
+-	put_device(dev);
++	if (--fault_param->users == 0) {
++		param->fault_param = NULL;
++		kfree(fault_param);
++		put_device(dev);
++	}
+  unlock:
+  	mutex_unlock(&param->lock);
+  	mutex_unlock(&queue->lock);
+-- 
+2.34.1
+
+Best regards,
+baolu
