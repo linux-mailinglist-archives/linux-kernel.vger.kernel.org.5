@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 952BC792EA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADC30792EA4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236565AbjIETRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:17:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51484 "EHLO
+        id S242139AbjIETRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:17:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242139AbjIETRI (ORCPT
+        with ESMTP id S242172AbjIETRH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:17:08 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 034C31AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:16:45 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2bcda0aaf47so1944011fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:16:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693941354; x=1694546154; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MsWRVBFEL3St6TG3Dmm9kVxN1Ow0LMYu4TSTEd74xWc=;
-        b=IO9Q2ewZ1xt/BTnwyavEoLvmjlUq6z1lRdxDEdhtxR+IUgaZFhahJ7rjZ4Mk3GxE2V
-         sHB6yLG4NXgtaLjXsflrsFsUWmAPZ0x8oi4a3rAMgSInx3tsZAsqiPXLBOQW4npkG5V5
-         AmCGF7qAXJ1ckGjEy3ka5U9adKZ1wjETI9aO4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693941354; x=1694546154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MsWRVBFEL3St6TG3Dmm9kVxN1Ow0LMYu4TSTEd74xWc=;
-        b=GCCAMTF3j7HevgqrUMC100Z/Z2PTtFddRcy/F7tzV5W45ecfnudYd5tqUtScZle1/1
-         v/d9upGLi0j5vUKNWg2cMR3H1NPl5JkDYLB0ceXa2rc4aGW2pRM2/50aZB/gOjgezS5V
-         BpBtBfXulStiLuP7JJJlfnWGh1l0tRSkEHcRGfCUTl23C+7/fh+YV3CxOM3mRreYegto
-         GFxKPPeBQ+cGI0cRhuYM7hzSOhcdWf/2b0frPuuhBs4cypN2EP37pj9uKXmgtHa4XK3r
-         3VZwCpbaDqpodcQrIyXiu3z6/o738sKdSLHBSHaCo7s6+sZYIfaS7WyIDSclVZL0+N5Z
-         NzaA==
-X-Gm-Message-State: AOJu0YxowyH/5+BQyqUEUr57Pa5eXIA8WVA6oE5oAZPHVxS7nUYMFbnU
-        to2gn3KCSsbtJWCnoctCgtmahrZa9VAPnAdBeI4q7UUZ
-X-Google-Smtp-Source: AGHT+IFJ6OY8qXitSURfvhVkaI+t3nvIxhRVvnrKNDe80WMRJI5BJM8Zpo8TcW8v7hUL0wdOIKx7iw==
-X-Received: by 2002:a05:6512:33ce:b0:4f8:6b98:f4dd with SMTP id d14-20020a05651233ce00b004f86b98f4ddmr295446lfg.32.1693941353871;
-        Tue, 05 Sep 2023 12:15:53 -0700 (PDT)
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com. [209.85.167.52])
-        by smtp.gmail.com with ESMTPSA id n2-20020a195502000000b004fe48d0b639sm2490340lfe.83.2023.09.05.12.15.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 12:15:53 -0700 (PDT)
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5009dd43130so851e87.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:15:53 -0700 (PDT)
-X-Received: by 2002:a05:600c:4fd1:b0:3fe:ef25:8b86 with SMTP id
- o17-20020a05600c4fd100b003feef258b86mr26556wmq.4.1693941331939; Tue, 05 Sep
- 2023 12:15:31 -0700 (PDT)
+        Tue, 5 Sep 2023 15:17:07 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 381FD194
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:16:44 -0700 (PDT)
+Received: from [192.168.1.90] (unknown [81.18.92.207])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id B246866071F8;
+        Tue,  5 Sep 2023 20:15:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693941350;
+        bh=1KbKUPXG/G2Ebjt5z5wrFNajgBmUipSNJpzYBN+VQds=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Hml/1wnL4PtSAqvy0A46oLOoGvX9TCHnhQHwJMiP/oshaaCdZNdK2Rm2zqW3UdMM5
+         iD3BP5vJrgNDINETNpXzi0eGD5vJApts3/7J8tJ+El6ZVkt7Zd8MY1w9S4CsIWQ9gn
+         q2V5eCsR9hR+k+cI6tiHJw3ZWW8IdML0ljS+VT2ww3pMJn4oNb73+prSvNEp5vAn8H
+         cwB/f/uw2ZdIz0yedX1RNhdIu5Sjk4v4hTdhNjgu49FiHbCJwE3xTcFeI7OHfT3WHu
+         DstzttEVG3+QLUL0L3VLFgG53joSceQKXEJAomX3g7F2tAKiMZphfZUoMJx1xNpEis
+         8x8/xndNmQ/aw==
+Message-ID: <953eb242-4d52-4cdc-8f7d-71af003778c5@collabora.com>
+Date:   Tue, 5 Sep 2023 22:15:46 +0300
 MIME-Version: 1.0
-References: <20230804210644.1862287-1-dianders@chromium.org> <CACRpkdaF4GqHtdJeBed0JGVXNkpA9dvbPgGMK=Qy0_RZyvOtNQ@mail.gmail.com>
-In-Reply-To: <CACRpkdaF4GqHtdJeBed0JGVXNkpA9dvbPgGMK=Qy0_RZyvOtNQ@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Sep 2023 12:15:19 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UFuUsrrZmkL8_RL5WLvkJryDwRSAy_PWTa-hX_p0dF+Q@mail.gmail.com>
-Message-ID: <CAD=FV=UFuUsrrZmkL8_RL5WLvkJryDwRSAy_PWTa-hX_p0dF+Q@mail.gmail.com>
-Subject: Re: [RFC PATCH 00/10] drm/panel: Remove most store/double-check of
- prepared/enabled state
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Jerry Han <hanxu5@huaqin.corp-partner.google.com>,
-        Jianhua Lu <lujianhua000@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Ondrej Jirman <megi@xff.cz>, Ondrej Jirman <megous@megous.com>,
-        Purism Kernel Team <kernel@puri.sm>,
-        Robert Chiras <robert.chiras@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stefan Mavrodiev <stefan@olimex.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 9/9] ASoC: cs35l41: Use devm_pm_runtime_enable()
+Content-Language: en-US
+To:     Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Stefan Binding <sbinding@opensource.cirrus.com>,
+        alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+        linux-kernel@vger.kernel.org, kernel@collabora.com
+References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+ <20230902210621.1184693-10-cristian.ciocaltea@collabora.com>
+ <20230905094535.GK103419@ediswmail.ad.cirrus.com>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <20230905094535.GK103419@ediswmail.ad.cirrus.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/5/23 12:45, Charles Keepax wrote:
+> On Sun, Sep 03, 2023 at 12:06:21AM +0300, Cristian Ciocaltea wrote:
+>> Simplify runtime PM during probe by converting pm_runtime_enable() to
+>> the managed version.
+>>
+>> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+>> ---
+>> @@ -1376,7 +1379,6 @@ void cs35l41_remove(struct cs35l41_private *cs35l41)
+>>  	cancel_work_sync(&cs35l41->mdsync_up_work);
+>>  
+>>  	pm_runtime_get_sync(cs35l41->dev);
+>> -	pm_runtime_disable(cs35l41->dev);
+>>  
+>>  	regmap_write(cs35l41->regmap, CS35L41_IRQ1_MASK1, 0xFFFFFFFF);
+>>  	if (cs35l41->hw_cfg.bst_type == CS35L41_SHD_BOOST_PASS ||
+> 
+> Are we sure this is safe? The remove handler appears to be
+> written to disable pm_runtime at the start presumably to stop the
+> resume/suspend handler running during the remove callback.
+> Whereas after this change the pm_runtime isn't disabled until
+> after the remove callback has run. Does this open a window were
+> we could get an erroneous pm_runtime suspend after the
+> pm_runtime_put_noidle?
 
-On Thu, Aug 10, 2023 at 1:23=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
-.org> wrote:
->
-> On Fri, Aug 4, 2023 at 11:07=E2=80=AFPM Douglas Anderson <dianders@chromi=
-um.org> wrote:
->
-> > As talked about in commit d2aacaf07395 ("drm/panel: Check for already
-> > prepared/enabled in drm_panel"), we want to remove needless code from
-> > panel drivers that was storing and double-checking the
-> > prepared/enabled state. Even if someone was relying on the
-> > double-check before, that double-check is now in the core and not
-> > needed in individual drivers.
-> >
-> > This series attempts to do just that. While the original grep, AKA:
-> >   git grep 'if.*>prepared' -- drivers/gpu/drm/panel
-> >   git grep 'if.*>enabled' -- drivers/gpu/drm/panel
-> > ...still produces a few hits after my series, they are _mostly_ all
-> > gone. The ones that are left are less trivial to fix.
-> >
-> > One of the main reasons that many panels probably needed to store and
-> > double-check their prepared/enabled appears to have been to handle
-> > shutdown and/or remove. Panels drivers often wanted to force the power
-> > off for panels in these cases and this was a good reason for the
-> > double-check. As part of this series a new helper is added that uses
-> > the state tracking that the drm_panel core is doing so each individual
-> > panel driver doesn't need to do it.
-> >
-> > This series changes a lot of drivers and obviously the author can't
-> > test on all of them. The changes here are also not completely trivial
-> > in all cases. Please double-check your drivers carefully to make sure
-> > something wasn't missed. After looking at over 40 drivers I'll admit
-> > that my eyes glazed over a little.
-> >
-> > I've attempted to organize these patches like to group together panels
-> > that needed similar handling. Panels that had code that didn't seem to
-> > match anyone else got their own patch. I made judgement calls on what
-> > I considered "similar".
-> >
-> > As noted in individual patches, there are some cases here where I
-> > expect behavior to change a little bit. I'm hoping these changes are
-> > for the better and don't cause any problems. Fingers crossed.
-> >
-> > I have at least confirmed that "allmodconfig" for arm64 doesn't fall
-> > on its face with this series. I haven't done a ton of other testing.
->
-> The series:
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
->
-> Please send out a non-RFC version, this is clearly the right thing to
-> do.
+I've just made a test adding a 6s sleep before returning from the remove 
+handler: 
 
-As per the long discussion in response to patch #4, I think there are
-still open questions about the later patches in this series. However,
-I could land patches #1 - #3 if there are no concerns. Would anyone
-object if I just landed them straight from this series with Linus's
-review, or would I need to repost just patches #1 - #3 without the
-"RFC" tag?
+[14444.894316] cs35l41 spi-VLV1776:00: Runtime resume
+[14444.894469] cs35l41 spi-VLV1776:00: sleep 6s before return of cs35l41_remove()
+[14448.338994] cs35l41 spi-VLV1776:00: Runtime suspend
+[14451.079649] cs35l41 spi-VLV1776:00: return from cs35l41_remove()
+[14451.080129] cs35l41 spi-VLV1776:00: Runtime resume
+[14451.080165] cs35l41 spi-VLV1776:00: ASoC: Unregistered DAI 'cs35l41-pcm'
+[14451.080181] cs35l41 spi-VLV1776:00: Runtime suspend
+[14451.813639] acp5x_i2s_playcap acp5x_i2s_playcap.0: ASoC: Unregistered DAI 'acp5x_i2s_playcap.0'
 
-Thanks!
+As expected, suspend triggered, but a resume was issued later, before DAI
+got unregistered.
 
--Doug
+I didn't notice any issues while repeating the test several times, hence 
+I wonder what would be the reason to prevent getting suspend/resume events 
+at this point?
+
+Thanks,
+Cristian
