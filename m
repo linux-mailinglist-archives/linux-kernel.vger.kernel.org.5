@@ -2,257 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C477929CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9C807929C8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353194AbjIEQ23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48444 "EHLO
+        id S1352966AbjIEQ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:28:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354329AbjIEKoe (ORCPT
+        with ESMTP id S1354331AbjIEKpV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:44:34 -0400
-Received: from phobos.denx.de (phobos.denx.de [IPv6:2a01:238:438b:c500:173d:9f52:ddab:ee01])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C20F4199;
-        Tue,  5 Sep 2023 03:44:25 -0700 (PDT)
-Received: from wsk (85-222-111-42.dynamic.chello.pl [85.222.111.42])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Tue, 5 Sep 2023 06:45:21 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6029E199;
+        Tue,  5 Sep 2023 03:45:17 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        (Authenticated sender: lukma@denx.de)
-        by phobos.denx.de (Postfix) with ESMTPSA id 09C148644B;
-        Tue,  5 Sep 2023 12:44:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=denx.de;
-        s=phobos-20191101; t=1693910658;
-        bh=oQfqvrxQxUYX2AyYJlPF+NiDhn4uUqpVgDZrhk7D6zE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=rOq8V4i9cW6heqvuJKA65SoD77mF4+5cK0R5up1Npp6qiKuxuswBT4/r4VkM8e6ZL
-         7PXst1Qqt8y2+EZaMTDwPVvLoQG3WDxLuGDiT0f6x+znd1vDSdYPTaynQspKsaOPsc
-         PR4OAaBx+RNFE/9rrdFn/0b0/hKTCfgEMbJ5WFFaC3nw5dewSfAx8Rl/30bAjDADyT
-         a1qG0ElLXU2SrhDempCa1+AJrHYuSKSt6tjnzkQ+M0UmgqHKMCvzmdVmW9weguuHY8
-         11bLvkmxSCjJYwdz1ZQeHATM0tbwOyV5lyTGOUe9wSLVBSWHrit47HZ+GT+rx/Nb+B
-         EjTiXLAx/4OjA==
-Date:   Tue, 5 Sep 2023 12:44:09 +0200
-From:   Lukasz Majewski <lukma@denx.de>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
-        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
-        George McCollister <george.mccollister@gmail.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 RFC 2/4] net: dsa: Extend ksz9477 TAG setup to
- support HSR frames duplication
-Message-ID: <20230905124409.40c7c2f1@wsk>
-In-Reply-To: <20230905102239.mkufbzxwrvuatlrb@skbuf>
-References: <20230904120209.741207-1-lukma@denx.de>
-        <20230904120209.741207-3-lukma@denx.de>
-        <20230905102239.mkufbzxwrvuatlrb@skbuf>
-Organization: denx.de
-X-Mailer: Claws Mail 3.19.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1733921853;
+        Tue,  5 Sep 2023 10:45:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693910716; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hi9B89fg5HTXSyf3WMrSDcgO7uE0bPSzn7lT6dwsbIY=;
+        b=oZ9ye6AE6Ox0fEdxccTPJizt6gUL+Jy1HDCbF0yTrI3j+Th/X+/rVY+CMWy8uPdxfHIU/4
+        lNtmhTIYVny53NeNiop7FqkvP5wlWR6IGAxsKg4mVYC2YAkOdRj31pWQuplS75KN6kdLq6
+        HwW/TUmCt0KR1Kjm9am9/3gratreBbo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693910716;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hi9B89fg5HTXSyf3WMrSDcgO7uE0bPSzn7lT6dwsbIY=;
+        b=hLW/r+BhmKquhYTGrl++IiYCC3720gATPfan7395kMKxnGkza7uZiQsCVXcrvOY5cQzJJw
+        8EuQooxweBz7r7Cw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D9ED513499;
+        Tue,  5 Sep 2023 10:45:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id usUvNLsG92Q1WgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 05 Sep 2023 10:45:15 +0000
+Message-ID: <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+Date:   Tue, 5 Sep 2023 12:45:15 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/NbD=vAmHvH3dutbc5EgpdLp";
- protocol="application/pgp-signature"; micalg=pgp-sha512
-X-Virus-Scanned: clamav-milter 0.103.8 at phobos.denx.de
-X-Virus-Status: Clean
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        T_SPF_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
+Content-Language: en-US
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Sui Jingfeng <suijingfeng@loongson.cn>,
+        nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-pci@vger.kernel.org
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------BTstAG8q8zg5VW0v3P4ZzVup"
+X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/NbD=vAmHvH3dutbc5EgpdLp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------BTstAG8q8zg5VW0v3P4ZzVup
+Content-Type: multipart/mixed; boundary="------------3ZPp6QYt3D76sVOXL0p4Kqe0";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Sui Jingfeng <sui.jingfeng@linux.dev>, Bjorn Helgaas <bhelgaas@google.com>
+Cc: Sui Jingfeng <suijingfeng@loongson.cn>, nouveau@lists.freedesktop.org,
+ intel-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+ linux-pci@vger.kernel.org
+Message-ID: <44ec8549-dc36-287e-4359-abd3ec8d22d6@suse.de>
+Subject: Re: [Nouveau] [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user
+ to select the primary video adapter at boot time
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+In-Reply-To: <20230904195724.633404-1-sui.jingfeng@linux.dev>
 
-Hi Vladimir,
+--------------3ZPp6QYt3D76sVOXL0p4Kqe0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> On Mon, Sep 04, 2023 at 02:02:07PM +0200, Lukasz Majewski wrote:
-> > The KSZ9477 has support for HSR (High-Availability Seamless
-> > Redundancy). One of its offloading (i.e. performed in the switch IC
-> > hardware) features is to duplicate received frame to both HSR aware
-> > switch ports.
-> >=20
-> > To achieve this goal - the tail TAG needs to be modified. To be more
-> > specific, both ports must be marked as destination (egress) ones.
-> >=20
-> > Moreover, according to AN3474 application note, the lookup bit (10)
-> > should not be set in the tail tag.
-> >=20
-> > Last but not least - the NETIF_F_HW_HSR_DUP flag indicates that the
-> > device supports HSR and assures (in HSR core code) that frame is
-> > sent only once from HOST to switch with tail tag indicating both
-> > ports.
-> >=20
-> > Information about bits to be set in tag is provided via KSZ generic
-> > ksz_hsr_get_ports() function.
-> >=20
-> > Signed-off-by: Lukasz Majewski <lukma@denx.de>
-> > ---
-> > Changes for v2:
-> > - Use ksz_hsr_get_ports() to obtain the bits values corresponding to
-> >   HSR aware ports
-> >=20
-> > Changes for v3:
-> > - None
-> > ---
-> >  drivers/net/dsa/microchip/ksz_common.c | 12 ++++++++++++
-> >  include/linux/dsa/ksz_common.h         |  1 +
-> >  net/dsa/tag_ksz.c                      |  5 +++++
-> >  3 files changed, 18 insertions(+)
-> >=20
-> > diff --git a/drivers/net/dsa/microchip/ksz_common.c
-> > b/drivers/net/dsa/microchip/ksz_common.c index
-> > d9d843efd111..579fde54d1e1 100644 ---
-> > a/drivers/net/dsa/microchip/ksz_common.c +++
-> > b/drivers/net/dsa/microchip/ksz_common.c @@ -3421,6 +3421,18 @@
-> > static int ksz_setup_tc(struct dsa_switch *ds, int port, }
-> >  }
-> > =20
-> > +u16 ksz_hsr_get_ports(struct dsa_switch *ds)
-> > +{
-> > +	struct ksz_device *dev =3D ds->priv;
-> > +
-> > +	switch (dev->chip_id) {
-> > +	case KSZ9477_CHIP_ID:
-> > +		return dev->hsr_ports;
-> > +	}
-> > +
-> > +	return 0;
-> > +} =20
->=20
-> When CONFIG_NET_DSA_MICROCHIP_KSZ_COMMON=3Dm:
->=20
-> ld.lld: error: undefined symbol: ksz_hsr_get_ports
-> referenced by tag_ksz.c:298
-> (/opt/net-next/output-arm64-clang/../net/dsa/tag_ksz.c:298)
-> net/dsa/tag_ksz.o:(ksz9477_xmit) in archive vmlinux.a
->=20
-> But before you rush to add EXPORT_SYMBOL_GPL(ksz_hsr_get_ports), be
-> aware that due to DSA's design, tag_ksz.ko and ksz_common.ko cannot
-> have any symbol dependency on each other, and if you do that, you
-> will break module auto-loading. More information here, there were
-> also patches that removed those dependencies for other tagger/switch
-> driver pairs:
-> https://lore.kernel.org/netdev/20210908220834.d7gmtnwrorhharna@skbuf/
->=20
+SGkNCg0KQW0gMDQuMDkuMjMgdW0gMjE6NTcgc2NocmllYiBTdWkgSmluZ2Zlbmc6DQo+IEZy
+b206IFN1aSBKaW5nZmVuZyA8c3VpamluZ2ZlbmdAbG9vbmdzb24uY24+DQo+IA0KPiBPbiBh
+IG1hY2hpbmUgd2l0aCBtdWx0aXBsZSBHUFVzLCBhIExpbnV4IHVzZXIgaGFzIG5vIGNvbnRy
+b2wgb3ZlciB3aGljaA0KPiBvbmUgaXMgcHJpbWFyeSBhdCBib290IHRpbWUuIFRoaXMgc2Vy
+aWVzIHRyaWVzIHRvIHNvbHZlIGFib3ZlIG1lbnRpb25lZA0KDQpJZiBhbnl0aGluZywgdGhl
+IHByaW1hcnkgZ3JhcGhpY3MgYWRhcHRlciBpcyB0aGUgb25lIGluaXRpYWxpemVkIGJ5IHRo
+ZSANCmZpcm13YXJlLiBJIHRoaW5rIG91ciBib290LXVwIGdyYXBoaWNzIGFsc28gbWFrZSB0
+aGlzIGFzc3VtcHRpb24gaW1wbGljaXRseS4NCg0KQnV0IHdoYXQncyB0aGUgdXNlIGNhc2Ug
+Zm9yIG92ZXJyaWRpbmcgdGhpcyBzZXR0aW5nPw0KDQpCZXN0IHJlZ2FyZHMNClRob21hcw0K
+DQo+IHByb2JsZW0gYnkgaW50cm9kdWNlZCB0aGUgLT5iZV9wcmltYXJ5KCkgZnVuY3Rpb24g
+c3R1Yi4gVGhlIHNwZWNpZmljDQo+IGRldmljZSBkcml2ZXJzIGNhbiBwcm92aWRlIGFuIGlt
+cGxlbWVudGF0aW9uIHRvIGhvb2sgdXAgd2l0aCB0aGlzIHN0dWIgYnkNCj4gY2FsbGluZyB0
+aGUgdmdhX2NsaWVudF9yZWdpc3RlcigpIGZ1bmN0aW9uLg0KPiANCj4gT25jZSB0aGUgZHJp
+dmVyIGJvdW5kIHRoZSBkZXZpY2Ugc3VjY2Vzc2Z1bGx5LCBWR0FBUkIgd2lsbCBjYWxsIGJh
+Y2sgdG8NCj4gdGhlIGRldmljZSBkcml2ZXIuIFRvIHF1ZXJ5IGlmIHRoZSBkZXZpY2UgZHJp
+dmVycyB3YW50IHRvIGJlIHByaW1hcnkgb3INCj4gbm90LiBEZXZpY2UgZHJpdmVycyBjYW4g
+anVzdCBwYXNzIE5VTEwgaWYgaGF2ZSBubyBzdWNoIG5lZWRzLg0KPiANCj4gUGxlYXNlIG5v
+dGUgdGhhdDoNCj4gDQo+IDEpIFRoZSBBUk02NCwgTG9vbmdhcmNoLCBNaXBzIHNlcnZlcnMg
+aGF2ZSBhIGxvdCBQQ0llIHNsb3QsIGFuZCBJIHdvdWxkDQo+ICAgICBsaWtlIHRvIG1vdW50
+IGF0IGxlYXN0IHRocmVlIHZpZGVvIGNhcmRzLg0KPiANCj4gMikgVHlwaWNhbGx5LCB0aG9z
+ZSBub24tODYgbWFjaGluZXMgZG9uJ3QgaGF2ZSBhIGdvb2QgVUVGSSBmaXJtd2FyZQ0KPiAg
+ICAgc3VwcG9ydCwgd2hpY2ggZG9lc24ndCBzdXBwb3J0IHNlbGVjdCBwcmltYXJ5IEdQVSBh
+cyBmaXJtd2FyZSBzdGFnZS4NCj4gICAgIEV2ZW4gb24geDg2LCB0aGVyZSBhcmUgb2xkIFVF
+RkkgZmlybXdhcmVzIHdoaWNoIGFscmVhZHkgbWFkZSB1bmRlc2lyZWQNCj4gICAgIGRlY2lz
+aW9uIGZvciB5b3UuDQo+IA0KPiAzKSBUaGlzIHNlcmllcyBpcyBhdHRlbXB0IHRvIHNvbHZl
+IHRoZSByZW1haW4gcHJvYmxlbXMgYXQgdGhlIGRyaXZlciBsZXZlbCwNCj4gICAgIHdoaWxl
+IGFub3RoZXIgc2VyaWVzWzFdIG9mIG1lIGlzIHRhcmdldCB0byBzb2x2ZSB0aGUgbWFqb3Jp
+dHkgb2YgdGhlDQo+ICAgICBwcm9ibGVtcyBhdCBkZXZpY2UgbGV2ZWwuDQo+IA0KPiBUZXN0
+ZWQgKGxpbWl0ZWQpIG9uIHg4NiB3aXRoIGZvdXIgdmlkZW8gY2FyZCBtb3VudGVkLCBJbnRl
+bCBVSEQgR3JhcGhpY3MNCj4gNjMwIGlzIHRoZSBkZWZhdWx0IGJvb3QgVkdBLCBzdWNjZXNz
+ZnVsbHkgb3ZlcnJpZGUgYnkgYXN0MjQwMCB3aXRoDQo+IGFzdC5tb2Rlc2V0PTEwIGFwcGVu
+ZCBhdCB0aGUga2VybmVsIGNtZCBsaW5lLg0KPiANCj4gJCBsc3BjaSB8IGdyZXAgVkdBDQo+
+IA0KPiAgIDAwOjAyLjAgVkdBIGNvbXBhdGlibGUgY29udHJvbGxlcjogSW50ZWwgQ29ycG9y
+YXRpb24gQ29mZmVlTGFrZS1TIEdUMiBbVUhEIEdyYXBoaWNzIDYzMF0NCj4gICAwMTowMC4w
+IFZHQSBjb21wYXRpYmxlIGNvbnRyb2xsZXI6IEFkdmFuY2VkIE1pY3JvIERldmljZXMsIElu
+Yy4gW0FNRC9BVEldIENhaWNvcyBYVFggW1JhZGVvbiBIRCA4NDkwIC8gUjUgMjM1WCBPRU1d
+DQo+ICAgMDQ6MDAuMCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVyOiBBU1BFRUQgVGVjaG5v
+bG9neSwgSW5jLiBBU1BFRUQgR3JhcGhpY3MgRmFtaWx5IChyZXYgMzApDQo+ICAgMDU6MDAu
+MCBWR0EgY29tcGF0aWJsZSBjb250cm9sbGVyOiBOVklESUEgQ29ycG9yYXRpb24gR0syMDhC
+IFtHZUZvcmNlIEdUIDcyMF0gKHJldiBhMSkNCj4gDQo+ICQgc3VkbyBkbWVzZyB8IGdyZXAg
+dmdhYXJiDQo+IA0KPiAgIHBjaSAwMDAwOjAwOjAyLjA6IHZnYWFyYjogc2V0dGluZyBhcyBi
+b290IFZHQSBkZXZpY2UNCj4gICBwY2kgMDAwMDowMDowMi4wOiB2Z2FhcmI6IFZHQSBkZXZp
+Y2UgYWRkZWQ6IGRlY29kZXM9aW8rbWVtLG93bnM9aW8rbWVtLGxvY2tzPW5vbmUNCj4gICBw
+Y2kgMDAwMDowMTowMC4wOiB2Z2FhcmI6IFZHQSBkZXZpY2UgYWRkZWQ6IGRlY29kZXM9aW8r
+bWVtLG93bnM9bm9uZSxsb2Nrcz1ub25lDQo+ICAgcGNpIDAwMDA6MDQ6MDAuMDogdmdhYXJi
+OiBWR0EgZGV2aWNlIGFkZGVkOiBkZWNvZGVzPWlvK21lbSxvd25zPW5vbmUsbG9ja3M9bm9u
+ZQ0KPiAgIHBjaSAwMDAwOjA1OjAwLjA6IHZnYWFyYjogVkdBIGRldmljZSBhZGRlZDogZGVj
+b2Rlcz1pbyttZW0sb3ducz1ub25lLGxvY2tzPW5vbmUNCj4gICB2Z2FhcmI6IGxvYWRlZA0K
+PiAgIGFzdCAwMDAwOjA0OjAwLjA6IHZnYWFyYjogT3ZlcnJpZGUgYXMgcHJpbWFyeSBieSBk
+cml2ZXINCj4gICBpOTE1IDAwMDA6MDA6MDIuMDogdmdhYXJiOiBjaGFuZ2VkIFZHQSBkZWNv
+ZGVzOiBvbGRkZWNvZGVzPWlvK21lbSxkZWNvZGVzPW5vbmU6b3ducz1pbyttZW0NCj4gICBy
+YWRlb24gMDAwMDowMTowMC4wOiB2Z2FhcmI6IGNoYW5nZWQgVkdBIGRlY29kZXM6IG9sZGRl
+Y29kZXM9aW8rbWVtLGRlY29kZXM9bm9uZTpvd25zPW5vbmUNCj4gICBhc3QgMDAwMDowNDow
+MC4wOiB2Z2FhcmI6IGNoYW5nZWQgVkdBIGRlY29kZXM6IG9sZGRlY29kZXM9aW8rbWVtLGRl
+Y29kZXM9bm9uZTpvd25zPW5vbmUNCj4gDQo+IHYyOg0KPiAJKiBBZGQgYSBzaW1wbGUgaW1w
+bGVtbWVudCBmb3IgZHJtL2k5MTUgYW5kIGRybS9hc3QNCj4gCSogUGljayB1cCBhbGwgdGFn
+cyAoTWFyaW8pDQo+IHYzOg0KPiAJKiBGaXggYSBtaXN0YWtlIGZvciBkcm0vaTkxNSBpbXBs
+ZW1lbnQNCj4gCSogRml4IHBhdGNoIGNhbiBub3QgYmUgYXBwbGllZCBwcm9ibGVtIGJlY2F1
+c2Ugb2YgbWVyZ2UgY29uZmxlY3QuDQo+IHY0Og0KPiAJKiBGb2N1cyBvbiBzb2x2ZSB0aGUg
+cmVhbCBwcm9ibGVtLg0KPiANCj4gdjEsdjIgYXQgaHR0cHM6Ly9wYXRjaHdvcmsuZnJlZWRl
+c2t0b3Aub3JnL3Nlcmllcy8xMjAwNTkvDQo+ICAgICB2MyBhdCBodHRwczovL3BhdGNod29y
+ay5mcmVlZGVza3RvcC5vcmcvc2VyaWVzLzEyMDU2Mi8NCj4gDQo+IFsxXSBodHRwczovL3Bh
+dGNod29yay5mcmVlZGVza3RvcC5vcmcvc2VyaWVzLzEyMjg0NS8NCj4gDQo+IFN1aSBKaW5n
+ZmVuZyAoOSk6DQo+ICAgIFBDSS9WR0E6IEFsbG93aW5nIHRoZSB1c2VyIHRvIHNlbGVjdCB0
+aGUgcHJpbWFyeSB2aWRlbyBhZGFwdGVyIGF0IGJvb3QNCj4gICAgICB0aW1lDQo+ICAgIGRy
+bS9ub3V2ZWF1OiBJbXBsZW1lbnQgLmJlX3ByaW1hcnkoKSBjYWxsYmFjaw0KPiAgICBkcm0v
+cmFkZW9uOiBJbXBsZW1lbnQgLmJlX3ByaW1hcnkoKSBjYWxsYmFjaw0KPiAgICBkcm0vYW1k
+Z3B1OiBJbXBsZW1lbnQgLmJlX3ByaW1hcnkoKSBjYWxsYmFjaw0KPiAgICBkcm0vaTkxNTog
+SW1wbGVtZW50IC5iZV9wcmltYXJ5KCkgY2FsbGJhY2sNCj4gICAgZHJtL2xvb25nc29uOiBJ
+bXBsZW1lbnQgLmJlX3ByaW1hcnkoKSBjYWxsYmFjaw0KPiAgICBkcm0vYXN0OiBSZWdpc3Rl
+ciBhcyBhIFZHQSBjbGllbnQgYnkgY2FsbGluZyB2Z2FfY2xpZW50X3JlZ2lzdGVyKCkNCj4g
+ICAgZHJtL2hpYm1jOiBSZWdpc3RlciBhcyBhIFZHQSBjbGllbnQgYnkgY2FsbGluZyB2Z2Ff
+Y2xpZW50X3JlZ2lzdGVyKCkNCj4gICAgZHJtL2dtYTUwMDogUmVnaXN0ZXIgYXMgYSBWR0Eg
+Y2xpZW50IGJ5IGNhbGxpbmcgdmdhX2NsaWVudF9yZWdpc3RlcigpDQo+IA0KPiAgIGRyaXZl
+cnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9kZXZpY2UuYyAgICB8IDExICsrKy0NCj4g
+ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfZHJ2LmMgICAgICAgfCAxMyAr
+KysrLQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9hc3QvYXN0X2Rydi5jICAgICAgICAgICAgICAg
+ICB8IDMxICsrKysrKysrKysNCj4gICBkcml2ZXJzL2dwdS9kcm0vZ21hNTAwL3BzYl9kcnYu
+YyAgICAgICAgICAgICAgfCA1NyArKysrKysrKysrKysrKysrKystDQo+ICAgLi4uL2dwdS9k
+cm0vaGlzaWxpY29uL2hpYm1jL2hpYm1jX2RybV9kcnYuYyAgIHwgMTUgKysrKysNCj4gICBk
+cml2ZXJzL2dwdS9kcm0vaTkxNS9kaXNwbGF5L2ludGVsX3ZnYS5jICAgICAgfCAxNSArKysr
+LQ0KPiAgIGRyaXZlcnMvZ3B1L2RybS9sb29uZ3Nvbi9sb29uZ3Nvbl9tb2R1bGUuYyAgICB8
+ICAyICstDQo+ICAgZHJpdmVycy9ncHUvZHJtL2xvb25nc29uL2xvb25nc29uX21vZHVsZS5o
+ICAgIHwgIDEgKw0KPiAgIGRyaXZlcnMvZ3B1L2RybS9sb29uZ3Nvbi9sc2RjX2Rydi5jICAg
+ICAgICAgICB8IDEwICsrKy0NCj4gICBkcml2ZXJzL2dwdS9kcm0vbm91dmVhdS9ub3V2ZWF1
+X3ZnYS5jICAgICAgICAgfCAxMSArKystDQo+ICAgZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9y
+YWRlb25fZGV2aWNlLmMgICAgICAgIHwgMTAgKysrLQ0KPiAgIGRyaXZlcnMvcGNpL3ZnYWFy
+Yi5jICAgICAgICAgICAgICAgICAgICAgICAgICB8IDQzICsrKysrKysrKysrKy0tDQo+ICAg
+ZHJpdmVycy92ZmlvL3BjaS92ZmlvX3BjaV9jb3JlLmMgICAgICAgICAgICAgIHwgIDIgKy0N
+Cj4gICBpbmNsdWRlL2xpbnV4L3ZnYWFyYi5oICAgICAgICAgICAgICAgICAgICAgICAgfCAg
+OCArKy0NCj4gICAxNCBmaWxlcyBjaGFuZ2VkLCAyMTAgaW5zZXJ0aW9ucygrKSwgMTkgZGVs
+ZXRpb25zKC0pDQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGljcyBEcml2
+ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdtYkgNCkZy
+YW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjogSXZvIFRv
+dGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2VybWFuDQpI
+UkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
-Ok. I will look on that
+--------------3ZPp6QYt3D76sVOXL0p4Kqe0--
 
-> Not to mention that there are other problems with the "dev->hsr_ports"
-> concept. For example, having a hsr0 over lan0 and lan1, and a hsr1
-> over lan2 and lan3, would set dev->hsr_ports to GENMASK(3, 0).
-
-I doubt that having two hsr{01} interfaces is possible with current
-kernel.
-
-The KSZ9477 allows only to have 2 ports of 5 available as HSR
-ones.
-
-The same is with earlier chip xrs700x (but this have even bigger
-constrain - there only ports 1 and 2 can support HSR).=20
-
-> But
-> you want an xmit coming from hsr0 to get sent only to GENMASK(1, 0),
-> and an xmit from hsr1 only to GENMASK(3, 2).
->=20
-> In this particular case, the best option seems to be to delete
-> ksz_hsr_get_ports().
-
-Please see my below comment.
-
->=20
-> > +
-> >  static const struct dsa_switch_ops ksz_switch_ops =3D {
-> >  	.get_tag_protocol	=3D ksz_get_tag_protocol,
-> >  	.connect_tag_protocol   =3D ksz_connect_tag_protocol,
-> > diff --git a/include/linux/dsa/ksz_common.h
-> > b/include/linux/dsa/ksz_common.h index 576a99ca698d..fa3d9b0f3a72
-> > 100644 --- a/include/linux/dsa/ksz_common.h
-> > +++ b/include/linux/dsa/ksz_common.h
-> > @@ -50,4 +50,5 @@ ksz_tagger_data(struct dsa_switch *ds)
-> >  	return ds->tagger_data;
-> >  }
-> > =20
-> > +u16 ksz_hsr_get_ports(struct dsa_switch *ds);
-> >  #endif /* _NET_DSA_KSZ_COMMON_H_ */
-> > diff --git a/net/dsa/tag_ksz.c b/net/dsa/tag_ksz.c
-> > index ea100bd25939..903db95c37ee 100644
-> > --- a/net/dsa/tag_ksz.c
-> > +++ b/net/dsa/tag_ksz.c
-> > @@ -293,6 +293,11 @@ static struct sk_buff *ksz9477_xmit(struct
-> > sk_buff *skb, if (is_link_local_ether_addr(hdr->h_dest))
-> >  		val |=3D KSZ9477_TAIL_TAG_OVERRIDE;
-> > =20
-> > +	if (dev->features & NETIF_F_HW_HSR_DUP) {
-> > +		val &=3D ~KSZ9477_TAIL_TAG_LOOKUP; =20
->=20
-> No need to unset a bit which was never set.
-
-I've explicitly followed the vendor's guidelines - the TAG_LOOKUP needs
-to be cleared.
-
-But if we can assure that it is not set here I can remove it.
-
->=20
-> > +		val |=3D ksz_hsr_get_ports(dp->ds);
-> > +	} =20
->=20
-> Would this work instead?
->=20
-> 	struct net_device *hsr_dev =3D dp->hsr_dev;
-> 	struct dsa_port *other_dp;
->=20
-> 	dsa_hsr_foreach_port(other_dp, dp->ds, hsr_dev)
-> 		val |=3D BIT(other_dp->index);
->=20
-
-I thought about this solution as well, but I've been afraid, that going
-through the loop of all 5 ports each time we want to send single packet
-will reduce the performance.
-
-Hence, the idea with having the "hsr_ports" set once during join
-function and then use this cached value afterwards.
-
-> > +
-> >  	*tag =3D cpu_to_be16(val);
-> > =20
-> >  	return ksz_defer_xmit(dp, skb);
-> > --=20
-> > 2.20.1
-> >  =20
-
-
-
-
-Best regards,
-
-Lukasz Majewski
-
---
-
-DENX Software Engineering GmbH,      Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-59 Fax: (+49)-8142-66989-80 Email: lukma@denx.de
-
---Sig_/NbD=vAmHvH3dutbc5EgpdLp
-Content-Type: application/pgp-signature
+--------------BTstAG8q8zg5VW0v3P4ZzVup
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCgAdFiEEgAyFJ+N6uu6+XupJAR8vZIA0zr0FAmT3BnkACgkQAR8vZIA0
-zr1vLgf+PU00qM1jp1h9eWcq3/+PT1Dz1wvwfAJyo0RfNKZs+/+OK9kSQjl0kJsX
-0tWT4/0EMUfin/oRNTjjCYPmXukqZntiU5o98EPRfPGUSEI6namnIuqlhyC0r8cS
-U/EIHPzr7UAdsbt7ovFDQiA33OvA1vShU3NQwMozjQwVRVcouZBNu03EwsHjeax4
-sRjxAGt+YaRi06Ft4G3Trm1e1Toxks3b7F0rykxPAQX1I3sADo0yrjPk7SA3BgXJ
-kBS8/f2kz4WQUhVbwHFSoYaybod+We8nF14HzSnHSh7bHrtGOJJjG/Wl21+1p+KR
-e1jP/Cnq0KUxzoZ/lDDXW8vJlxj0gQ==
-=uWmA
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmT3BrsFAwAAAAAACgkQlh/E3EQov+CS
+8RAAiF0CggcJT9N2Ltb2z5+iPEE0JHOT7Qg60S1nY31dw/TchEcloYeqWymWzXj5BLYHgxTNzV2P
+6BLpPqz/8kgb7RGb20atNYW+sHNMD2l8Y3fbUfBxgA1ZgDm3FGGkiOEYPWZrAuHuBqjUGvKbpxEc
+67nqG+KapwZCpHZqF37yjzfpHKHVl6CNBIhlFAvNk1iZ61GQc/Pe/N9gINmdbP3iZfI70y0yK6mZ
+uw8EE7Ihz4nf2+fYkKAUMe6dJKO1e6+3OyMzaCiXaIxJ8Q1zsaBmg+CDzZKULMVhJoHKsxlpurQx
+SgKJ+4wHnQR7iPFU7RJuoScA3QdfqR7DRtVII86qhnGc9yRhecE786DGiCAeU8vkcOFFo+wty8q8
+k7FhRjwdysEtsDvQIJSjrjwz1wHFsnikkOEKgqMwLiRwBizC1O5501jhgUDjorbRgR9b0Fa6ewM0
+CiKDabNBoGqnTmCcJrBYtGhpqczwYjPv51IQtGfwZlyzbIJpQgYjzvV4BNe+z7jMCqMQl0jlpjET
+2YsVfkQUWl8Xgl/+JG0LVKlUWh5QjAPOKozcCeT1NEYdhWnaIU85UXVjjskDsSiywE8YMFwYKFst
+uWJktoqdgTJmCEblcE1eMsRyqbFlHOXfVT/FxSICyRnkavGM1oydu+Jo8bSoJPpCTdcnU4SFNRYV
+g6A=
+=Vpmn
 -----END PGP SIGNATURE-----
 
---Sig_/NbD=vAmHvH3dutbc5EgpdLp--
+--------------BTstAG8q8zg5VW0v3P4ZzVup--
