@@ -2,220 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE86792E2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:01:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9652D792E52
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237143AbjIETBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49476 "EHLO
+        id S238283AbjIETIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:08:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241034AbjIETBB (ORCPT
+        with ESMTP id S241625AbjIETIV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:01:01 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86C7CA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:00:33 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-68bde27f7c0so166071b3a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693940351; x=1694545151; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=3pnfyd6yBzdd/T/rKllIScbRlqlXMgiDo0DWoktzebA=;
-        b=JaKNPUOiB2kQYgY/MFE6FWpWuRhlAU7Hwxv0gZrxvBrojUPCDRBSNsY9u+Cky1VDX/
-         GeGrKoxfsgsPWtVLgcc+jcmC/rdFF7o8ZpAn7V4SmvOUVAk9kp7+w5YCIk5uqQ8w8j9x
-         tvInlK4/DZGjS45gHz/JZEYz3DTTd7tLfBqxeBltHvhICEQbKSkfOv8JiNTH5/invN6e
-         SKUZ5IXMPZjcQ4lJcLgZkLaZSLHl6SIQTQtOEB7uqXuDQJg4/0fAy1lB0uwIpN4gDc5b
-         7WU+rfQhl8tR3s8gFq1rVqYbU1xmqw1Lkvi4l/pCAIrbLy8lOVmRAW7A3zf1UxPTh9qn
-         fEHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693940351; x=1694545151;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3pnfyd6yBzdd/T/rKllIScbRlqlXMgiDo0DWoktzebA=;
-        b=l/OHYFS62K7dcxLi/thUtCQROda0nfki5GoUysmyL9bS1p853CUHS49hAMR4e3WVOo
-         yg+MxoUgUI1q4MWIxdIY6ENjcnXe+0asLF/p81qIQNkpcN7+wHi+TJPK2k+zByyVyNhz
-         SAeiG1kZRgdhaMyyMnuWLXPBby1CnQN4S9GYLsE/ovYKDY0ZgeN4pWOHfHhOJCraUpd3
-         IYwvH/vWlr6ovQ0uE8a0Btuqk8StOgdtCcBx1HbouBLjhjJBZ8tAdMMG+IPLQNs3Ydaz
-         XBjsyj0Yp2JIyW6iEmU5scyN9+O3XppY0nzWD1xqXZfiUVOd0Kte3NYgWQH0Bw0I8/ly
-         0pbg==
-X-Gm-Message-State: AOJu0Yyr0kP51RIHV78P4PkMYHsjNgUF5Xw3J7V89YuQiql4ZSo1C5kG
-        L/1YpyI1nkCrqPnkQC50p8qb1Mz1zPs=
-X-Google-Smtp-Source: AGHT+IE72/hMTQwRCNIc72pTtUS+2lyNsqg46Lcoy8pF3ZAs+Zv+1exY0kgXCsALesTF/zSq3lHwp7x4zw4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2d0d:b0:68a:5937:ea87 with SMTP id
- fa13-20020a056a002d0d00b0068a5937ea87mr5290185pfb.3.1693940351350; Tue, 05
- Sep 2023 11:59:11 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 11:59:09 -0700
-In-Reply-To: <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
-Mime-Version: 1.0
-References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
- <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com>
- <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com> <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
-Message-ID: <ZPd6Y9KJ0FfbCa0Q@google.com>
-Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yan Zhao <yan.y.zhao@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pbonzini@redhat.com, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 15:08:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3D4B0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:07:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693940763;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/0aAtKGZKY2TsC8NWxjXlesPhzcxWuJvtlmaEX2vDxs=;
+        b=QAiL9R46erX6/bzfzi7P4+A/e70IrnKBWZdghVWADr5unJe+iUaX/VAQOL1x1UHHlyyTJ3
+        LvAD8+HBrgFjby3HsU1rWIwtIIhcNzKqyc0SgF7zB/u16jhClbM1WoYjIMepgsIvROYjXz
+        rjRKxfjGsJm0i/GN4YFXxbUI0a3Eqp0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-390-s5tbT2DAPQe3yptpBGAfnQ-1; Tue, 05 Sep 2023 14:59:44 -0400
+X-MC-Unique: s5tbT2DAPQe3yptpBGAfnQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A765928E61;
+        Tue,  5 Sep 2023 18:59:44 +0000 (UTC)
+Received: from [10.22.9.87] (unknown [10.22.9.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id ADFA9200A4B6;
+        Tue,  5 Sep 2023 18:59:43 +0000 (UTC)
+Message-ID: <af394f53-224d-baff-5c7d-87eff7fcaad2@redhat.com>
+Date:   Tue, 5 Sep 2023 14:59:43 -0400
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATH] cgroup: add cgroup_favordynmods= command-line option
+Content-Language: en-US
+To:     Luiz Capitulino <luizcap@amazon.com>, tj@kernel.org,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     lcapitulino@gmail.com
+References: <20230831142046.37177-1-luizcap@amazon.com>
+ <20230905170318.GA16629@dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <20230905170318.GA16629@dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+swiotbl maintainers and Linus
 
-Spinning off a discussion about swiotlb behavior to its own thread.
-
-Quick background: when running Linux as a KVM guest, Yan observed memory accesses
-where Linux is reading completely uninitialized memory (never been written by the
-guest) and traced it back to this code in the swiotlb:
-
-	/*
-	 * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
-	 * to the tlb buffer, if we knew for sure the device will
-	 * overwrite the entire current content. But we don't. Thus
-	 * unconditional bounce may prevent leaking swiotlb content (i.e.
-	 * kernel memory) to user-space.
-	 */
-	swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
-
-The read-before-write behavior results in suboptimal performance as KVM maps the
-memory as read-only, and then triggers CoW when the guest inevitably writes the
-memory (CoW is significantly more expensive when KVM is involved).
-
-There are a variety of ways to workaround this in KVM, but even if we decide to
-address this in KVM, the swiotlb behavior is sketchy.  Not to mention that any
-KVM changes are highly unlikely to be backported to LTS kernels.
-
-On Mon, Sep 04, 2023, Yan Zhao wrote:
-> ...
-> > > Actually, I don't even completely understand how you're seeing CoW behavior in
-> > > the first place.  No sane guest should blindly read (or execute) uninitialized
-> > > memory.  IIUC, you're not running a Windows guest, and even if you are, AFAIK
-> > > QEMU doesn't support Hyper-V's enlightment that lets the guest assume memory has
-> > > been zeroed by the hypervisor.  If KSM is to blame, then my answer it to turn off
-> > > KSM, because turning on KSM is antithetical to guest performance (not to mention
-> > > that KSM is wildly insecure for the guest, especially given the number of speculative
-> > > execution attacks these days).
-> > I'm running a linux guest.
-> > KSM is not turned on both in guest and host.
-> > Both guest and host have turned on transparent huge page.
-> > 
-> > The guest first reads a GFN in a writable memslot (which is for "pc.ram"),
-> > which will cause
-> >     (1) KVM first sends a GUP without FOLL_WRITE, leaving a huge_zero_pfn or a zero-pfn
-> >         mapped.
-> >     (2) KVM calls get_user_page_fast_only() with FOLL_WRITE as the memslot is writable,
-> >         which will fail
-> > 
-> > The guest then writes the GFN.
-> > This step will trigger (huge pmd split for huge page case) and .change_pte().
-> > 
-> > My guest is surely a sane guest. But currently I can't find out why
-> > certain pages are read before write.
-> > Will return back to you the reason after figuring it out after my long vacation.
-> Finally I figured out the reason.
-> 
-> Except 4 pages were read before written from vBIOS (I just want to skip finding
-> out why vBIOS does this), the remaining thousands of pages were read before
-> written from the guest Linux kernel.
-
-...
-
-> When the guest kernel triggers a guest block device read ahead, pages are
-> allocated as page cache pages, and requests to read disk data into the page
-> cache are issued.
-> 
-> The disk data read requests will cause dma_direct_map_page() called if vIOMMU
-> is not enabled. Then, because the virtual IDE device can only direct access
-> 32-bit DMA address (equal to GPA) at maximum, swiotlb will be used as DMA
-> bounce if page cache pages are with GPA > 32 bits.
+On 9/5/23 13:03, Luiz Capitulino wrote:
+> On Thu, Aug 31, 2023 at 10:20:46AM -0400, Luiz Capitulino wrote:
+>> We have a need of using favordynmods with cgroup v1, which doesn't support
+>> changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
+>> build-time is not an option because we want to be able to selectively
+>> enable it for certain systems.
+>>
+>> This commit addresses this by introducing the cgroup_favordynmods=
+>> command-line option. This option works for both cgroup v1 and v2 and
+>> also allows for disabling favorynmods when the kernel built with
+>> CONFIG_FAVOR_DYNMODS=y.
+>>
+>> Signed-off-by: Luiz Capitulino <luizcap@amazon.com>
+> Hi,
 >
-> Then the call path is
-> dma_direct_map_page() --> swiotlb_map() -->swiotlb_tbl_map_single()
-> 
-> In swiotlb_tbl_map_single(), though DMA direction is DMA_FROM_DEVICE,
-> this swiotlb_tbl_map_single() will call
-> swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE) to read page cache
-> content to the bounce buffer first.
-> Then, during device DMAs, device content is DMAed into the bounce buffer.
-> After that, the bounce buffer data will be copied back to the page cache page
-> after calling dma_direct_unmap_page() --> swiotlb_tbl_unmap_single().
-> 
-> 
-> IOW, before reading ahead device data into the page cache, the page cache is
-> read and copied to the bounce buffer, though an immediate write is followed to
-> copy bounce buffer data back to the page cache.
-> 
-> This explains why it's observed in host that most pages are written immediately
-> after it's read, and .change_pte() occurs heavily during guest boot-up and
-> nested guest boot-up, -- when disk readahead happens abundantly.
-> 
-> The reason for this unconditional read of page into bounce buffer
-> (caused by "swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE)")
-> is explained in the code:
-> 
-> /*
->  * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
->  * to the tlb buffer, if we knew for sure the device will
->  * overwrite the entire current content. But we don't. Thus
->  * unconditional bounce may prevent leaking swiotlb content (i.e.
->  * kernel memory) to user-space.
->  */
-> 
-> If we neglect this risk and do changes like
-> -       swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
-> +       if (dir != DMA_FROM_DEVICE)
-> +               swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
-> 
-> the issue of pages read before written from guest kernel just went away.
-> 
-> I don't think it's a swiotlb bug, because to prevent leaking swiotlb
-> content, if target page content is not copied firstly to the swiotlb's
-> bounce buffer, then the bounce buffer needs to be initialized to 0.
-> However, swiotlb_tbl_map_single() does not know whether the target page
-> is initialized or not. Then, it would cause page content to be trimmed
-> if device does not overwrite the entire memory.
+> Would somebody take a look at this patch please?
+>
+> Thanks,
+>
+> - Luiz
 
-The math doesn't add up though.  Observing a read-before-write means the intended
-goal of preventing data leaks to userspace is not being met.  I.e. instead of
-leaking old swiotlb, the kernel is (theoretically) leaking whatever data is in the
-original page (page cache in your case).
+The patch looks good to me. I do have a minor comment that it may be 
+better to use the relatively new __ro_after_init qualifier instead of 
+__read_mostly.
 
-That data *may* be completely uninitialized, especially during boot, but the
-original pages may also contain data from whatever was using the pages before they
-were allocated by the driver.
+Cheers,
+Longman
 
-It's possible the read of uninitialized data is observed only when either the
-driver that triggered the mapping _knows_ that the device will overwrite the entire
-mapping, or the driver will consume only the written parts.  But in those cases,
-copying from the original memory is completely pointless.
+>> ---
+>>   Documentation/admin-guide/kernel-parameters.txt |  4 ++++
+>>   kernel/cgroup/cgroup.c                          | 14 +++++++++++---
+>>   2 files changed, 15 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+>> index 0c38a8af95ce..672f76a3c002 100644
+>> --- a/Documentation/admin-guide/kernel-parameters.txt
+>> +++ b/Documentation/admin-guide/kernel-parameters.txt
+>> @@ -580,6 +580,10 @@
+>>   			named mounts. Specifying both "all" and "named" disables
+>>   			all v1 hierarchies.
+>>   
+>> +	cgroup_favordynmods= [KNL] Enable or Disable favordynmods.
+>> +			Format: { "true" | "false" }
+>> +			Defaults to the value of CONFIG_CGROUP_FAVOR_DYNMODS.
+>> +
+>>   	cgroup.memory=	[KNL] Pass options to the cgroup memory controller.
+>>   			Format: <string>
+>>   			nosocket -- Disable socket memory accounting.
+>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+>> index 5fa95f86cb4d..b625825e270b 100644
+>> --- a/kernel/cgroup/cgroup.c
+>> +++ b/kernel/cgroup/cgroup.c
+>> @@ -207,6 +207,8 @@ static u16 have_exit_callback __read_mostly;
+>>   static u16 have_release_callback __read_mostly;
+>>   static u16 have_canfork_callback __read_mostly;
+>>   
+>> +static bool have_favordynmods __read_mostly = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
+>> +
+>>   /* cgroup namespace for init task */
+>>   struct cgroup_namespace init_cgroup_ns = {
+>>   	.ns.count	= REFCOUNT_INIT(2),
+>> @@ -2265,9 +2267,9 @@ static int cgroup_init_fs_context(struct fs_context *fc)
+>>   	fc->user_ns = get_user_ns(ctx->ns->user_ns);
+>>   	fc->global = true;
+>>   
+>> -#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
+>> -	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
+>> -#endif
+>> +	if (have_favordynmods)
+>> +		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
+>> +
+>>   	return 0;
+>>   }
+>>   
+>> @@ -6767,6 +6769,12 @@ static int __init enable_cgroup_debug(char *str)
+>>   }
+>>   __setup("cgroup_debug", enable_cgroup_debug);
+>>   
+>> +static int __init cgroup_favordynmods_setup(char *str)
+>> +{
+>> +	return (kstrtobool(str, &have_favordynmods) == 0);
+>> +}
+>> +__setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
+>> +
+>>   /**
+>>    * css_tryget_online_from_dir - get corresponding css from a cgroup dentry
+>>    * @dentry: directory dentry of interest
+>> -- 
+>> 2.40.1
+>>
 
-If neither of the above holds true, then copying from the original adds value only
-if preserving the data is necessary for functional correctness, or the driver
-explicitly initialized the original memory.  Given that preserving source data was
-recently added, I highly doubt it's necessary for functional correctness.
-
-And if the driver *doesn't* initialize the data, then the copy is at best pointless,
-and possibly even worse than leaking stale swiotlb data.
-
-Looking at commit ddbd89deb7d3 ("swiotlb: fix info leak with DMA_FROM_DEVICE"),
-IIUC the data leak was observed with a synthetic test "driver" that was developed
-to verify a real data leak fixed by commit a45b599ad808 ("scsi: sg: allocate with
-__GFP_ZERO in sg_build_indirect()").  Which basically proves my point: copying
-from the source only adds value absent a bug in the owning driver.
-
-IMO, rather than copying from the original memory, swiotlb_tbl_map_single() should
-simply zero the original page(s) when establishing the mapping.  That would harden
-all usage of swiotlb and avoid the read-before-write behavior that is problematic
-for KVM.
