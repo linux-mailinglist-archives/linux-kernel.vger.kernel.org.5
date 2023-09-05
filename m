@@ -2,63 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3922C792C67
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23F4792C7E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238654AbjIER3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40368 "EHLO
+        id S238835AbjIERby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:31:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240692AbjIER2H (ORCPT
+        with ESMTP id S230071AbjIERbd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 13:28:07 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7075F5065F;
-        Tue,  5 Sep 2023 09:51:47 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id CC8F4CE1288;
-        Tue,  5 Sep 2023 16:41:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C81B1C433C7;
-        Tue,  5 Sep 2023 16:41:13 +0000 (UTC)
-Date:   Tue, 5 Sep 2023 12:41:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-Cc:     <mhiramat@kernel.org>, <bobule.chang@mediatek.com>,
-        <wsd_upstream@mediatek.com>, <cheng-jui.wang@mediatek.com>,
-        <stable@vger.kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: Re: [PATCH] ring-buffer: Do not read at &event->array[0] if it
- across the page
-Message-ID: <20230905124132.672be4c0@gandalf.local.home>
-In-Reply-To: <20230905142319.32582-1-Tze-nan.Wu@mediatek.com>
-References: <20230905142319.32582-1-Tze-nan.Wu@mediatek.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 5 Sep 2023 13:31:33 -0400
+Received: from mail-oa1-x41.google.com (mail-oa1-x41.google.com [IPv6:2001:4860:4864:20::41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC3825EAD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:57:08 -0700 (PDT)
+Received: by mail-oa1-x41.google.com with SMTP id 586e51a60fabf-1ba5cda3530so2179991fac.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 09:57:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693932961; x=1694537761; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KF9jy66K812i/KOAycoaswZOJPkoHyr11P3pLmaBV84=;
+        b=FKc9JGInhgQtkjpFu3B4jt54eCgQjSRMnAfFLqViWzMx6mqzN6G9rwzwHLK7HDmv0L
+         OCbFFeMZ73VKvOUXw6IVgWTpZgcx0Tceflxxu3N8/nqZNoewP6g4UQ5bgQHkZ4F6RHVC
+         8OK9QNJkunjsaznkTWO6flzYASL70k4JFVj7KkJe1leh7ZcmERV3D6LNWWj414vL3jUY
+         clQHr4RgKzXDO3O39+VU5Nan5+X0OjR9GEOMUCxWuNWq3De2/j/9PcI/QuR5vgSLHD+Y
+         wqiWEp6PdL9PZ5F4Y4gszwHJdcidrg4KcsQrLP+iEcof4Y7gTE4U4h7pP8CV0z2aRj74
+         mQYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693932961; x=1694537761;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KF9jy66K812i/KOAycoaswZOJPkoHyr11P3pLmaBV84=;
+        b=X22PVLGx/7So6itsIMbdT6IU3AeCBl/xu28TijB2YVAF5KXA1pu3pFHgPxfJVymZnc
+         SfEHXs/PCg1dwvWAocEq2lFB2L/3LUwT+h0UrKJq4PrYSL3t+gsIhJvZ4xZXb/y4INnX
+         33qMyhpYNT7PEFPd5ZxmWDfEgxKGvby4AyXsZxVPFEGfMTKlAb1iYvMPymPc++iI4r/F
+         14lL5/EHLao2XWxIYXOOcCGOeZoK3DgwF4ykfVWXbtbOKxwWmNsd33AAuodTilJUnSG9
+         yTM1YENQ0xHd2xGZtWuonLOUZAZqZ/lq0RJ1DB3wcCuN6GLMagKh4Hj56etWCAnImZH9
+         yDEA==
+X-Gm-Message-State: AOJu0Yw7IDdBjQDyAFRhZKQziSOTJnCHO9Y7UaeJmHLw9UvBlM/nyZaV
+        uH4fo896XPNAk983O3FnbrGpBf2wRvVsVLcEoJLQjHDrJ8qjbZq4fRM=
+X-Google-Smtp-Source: AGHT+IH1XZ5x1wvYb9wC2NYnoIWK3GEGTtrNNnR9T34UA/yHtbZloDweM4DejWIdxIKTK9Zf6Qx21p9I1RKmwfI602c=
+X-Received: by 2002:a67:fc08:0:b0:44d:4c28:55ca with SMTP id
+ o8-20020a67fc08000000b0044d4c2855camr391871vsq.16.1693932228932; Tue, 05 Sep
+ 2023 09:43:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+From:   Jodi Gray <wwwmarketingproductleads@gmail.com>
+Date:   Tue, 5 Sep 2023 11:43:36 -0500
+Message-ID: <CA+9O=BUg00Gu=TVQd29BbhVw6iZ9Ho-GJnkJ+E=DPhBUpybDNg@mail.gmail.com>
+Subject: RE: Verified Dreamforce Data List - 2023
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.6 required=5.0 tests=BAYES_50,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Sep 2023 22:23:15 +0800
-Tze-nan Wu <Tze-nan.Wu@mediatek.com> wrote:
+Hi,
 
-> resend again due to forget cc stable@vger.kernel.org
+I trust all is well with you.
 
-You don't need to Cc' stable. I'll add the Cc if I feel it is the right
-patch for the solution.
+Are you looking to compile the 2023 Dreamforce Conference Attendees Databank?
 
--- Steve
+The following information is included in the data: Organization Name,
+First and Last Names, Contact Job Title, Verified Email Address,
+Website URL, Industry, and many more.
+
+40,630 Verified Contacts are present.
+Cost                             :  $ 1,826
+
+We do have an all industry list and conference attendee list from
+across the globe
+
+best regards
+Coordinator of Marketing Jodi Gray
+
+Please respond with "leave out" if you do not want to receive
+communications from us in the future.
