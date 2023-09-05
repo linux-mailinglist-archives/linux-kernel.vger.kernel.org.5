@@ -2,361 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F67792B08
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BABB5792BBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237717AbjIEQqR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:46:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45726 "EHLO
+        id S243825AbjIEQ6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:58:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354522AbjIEMR0 (ORCPT
+        with ESMTP id S1354523AbjIEMSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:17:26 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B3D1A8;
-        Tue,  5 Sep 2023 05:17:21 -0700 (PDT)
-Received: from dggpeml500012.china.huawei.com (unknown [172.30.72.56])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Rg4G80bL8z1M97v;
-        Tue,  5 Sep 2023 20:15:28 +0800 (CST)
-Received: from localhost.localdomain (10.67.175.61) by
- dggpeml500012.china.huawei.com (7.185.36.15) with Microsoft SMTP Server
+        Tue, 5 Sep 2023 08:18:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E321A8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:18:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693916300; x=1725452300;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=iwu9ZP+3SKRdduSnw1cQjQ5MR55HRbuE15NADiGhRV8=;
+  b=PmcXDvAMIMIeJPXSsJz/Z9FzyMx5EepnhKZwyMQ0DmKoRVbHMDYpzEx1
+   lsyy2PNpGT7gkdz58gJXjjF1UGMqev5UGqXjwedRpqILqlEbouex8kEos
+   DQXOldHeqeZvV91cvho6j2VMgjiP1UaeGFwKYdmqolIbSGGiHlEHdycoE
+   VhXDeZGZKNurxnu/YlNJFy/tM4wxZAhYsHmei6mDBoneK/en967Zl/xB0
+   BpliNTWdNCnH/50QteCEAg1I3G8a2MUk74V32YslSImU4lAFGXob4fwq+
+   561wI/pk4nNIJdO99F2kUlqxWinJKPSrjl8M4c7lZ7NIFhBPMVwKiuTEq
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="379500038"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="379500038"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 05:18:20 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="776184868"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="776184868"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 05 Sep 2023 05:18:19 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 5 Sep 2023 20:17:14 +0800
-From:   Zheng Yejian <zhengyejian1@huawei.com>
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <yeweihua4@huawei.com>,
-        <zhengyejian1@huawei.com>
-Subject: [PATCH] tracing: Fix unexpected ring buffer expand by instance
-Date:   Tue, 5 Sep 2023 20:17:14 +0800
-Message-ID: <20230905121714.3229131-1-zhengyejian1@huawei.com>
-X-Mailer: git-send-email 2.25.1
+ 15.1.2507.27; Tue, 5 Sep 2023 05:18:19 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Tue, 5 Sep 2023 05:18:18 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27 via Frontend Transport; Tue, 5 Sep 2023 05:18:18 -0700
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.27; Tue, 5 Sep 2023 05:18:18 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YAs1O2PvDgM2eJDk/I4RjtL/4UP/jautPA987gXWUyQx/zh9jTuwH01c7FiyWnraWJAAA7kH4Dh9jDklj6TByFf7h33k4Q2EB7+00rSJMIgY9tWNU4zOyCRxfOx7CxoPOxKMpClJIJpNO2AJ7uQO3hndsJ6yxEijG35K2HGoxi0ICBm2Yjc3LAzdmZpa0hE3JITfygW4vwdKLfdQWS1AXi0993ink1WfQbayWmjZHSFiuAeApCDfqly2iRZTeCmWotXel0YDOBXxEoZ7bFwCoNcU3QywVqBJ1WKA8CbLIfvU/2hIqU1Qwapu3T7XohANmWcZycBekhmyCvrsfm9LYg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=4O5620JIu3NexKEB7HVx/hIaWvLy/PUewuER17r2u8M=;
+ b=S2254e7rx9QbkZpFe7pBtn+Pqd8COge5YUppkV1GKy8ylk/SJ6yWTZLfCvH1AKSsXByc5OpL7EbSVF5tinNrXXd1z16tULghdtlw0pm0troZxzOvspqwBcf3a702D12agQ8XjItgOgcnoaw/10VD6Q8/SaHssmNtNgCwZMSFkdGAPpEleRdz+5Vdr+0wdjVG/3wBbTqQ2kjRIazts9IL+3UoTfZOylSDH48oU8x0j+Tyud99tlKDYADvioJn7Wkb3FblTjwqINxffRAwm1vd/gXHHTCUrKmRLAKfs3FtjMK4CnKCS1NAEo//g2Etc5lH/rluH72Ye3ivv8KyNq86RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+ by DM6PR11MB4754.namprd11.prod.outlook.com (2603:10b6:5:2ad::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 12:18:16 +0000
+Received: from BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::b844:be65:8430:f80e]) by BL0PR11MB2995.namprd11.prod.outlook.com
+ ([fe80::b844:be65:8430:f80e%4]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 12:18:16 +0000
+Date:   Tue, 5 Sep 2023 20:18:05 +0800
+From:   kernel test robot <philip.li@intel.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+CC:     <llvm@lists.linux.dev>, <oe-kbuild-all@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>
+Subject: mm/slub.c:2142:15: warning: variable 'partial_slabs' set but not used
+Message-ID: <ZPccfSJvDXi/xOnI@rli9-mobl>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+X-ClientProxiedBy: SG2PR04CA0156.apcprd04.prod.outlook.com (2603:1096:4::18)
+ To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.175.61]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|DM6PR11MB4754:EE_
+X-MS-Office365-Filtering-Correlation-Id: a3f3802a-7291-4b63-bb45-08dbae0a2eec
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zJXAUGiKXwGDznl0xGVRqwC8qCjpuMJmNdW4DZ//9skh9OkLLUyy+J68LmzEQjkmOv+epNobKbK77w/hnLjiDJ2D8ZLL+tZjfeKD3outxPNQpY+C5oJsebH0u3zUc+SItkd1V7njxf8pVeZiZCISGk/qeJievb3w2WzrCkJhqK+OneiwnVQRFeyPZAUKZ5s9wfwtT24KCA0506vZb0gEIhTcIfT1At8IbhuozgykLZYA6C7v6gNsObl2HBY5vEjmaDUrVDU5dLWVFrEfWlLLQj3wGcjTZaslIEg5NRAWtmR5g6aykZzRqgrn37m7OyGUtq/eggzFOAOjYkUeo9kcLdk/bhbWJKqxCzJF1wTIt4OLmOvuSJX8RVw4jGHgaavFtAGzVqd+kR+IHk3min2YKRwWsGVrFFc3SkEMHqAg3JDXOc2xWSrKaXUflxKYIyJ3aPf+Y2HhyqQokFGbJkX47yIE3AYpO3SgHDdHX2oNy+zD4l7jVHDf93U0ht+H6I8P/5gh6vZ6Sgb/bCSZYu2zEQ6JRvsecZEECeBh7zgtKcY85aQ7svChG/r7RC01n+D8Ma/AOOUJW0xnmSH8tBZC4A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(346002)(136003)(396003)(39860400002)(366004)(451199024)(1800799009)(186009)(8936002)(54906003)(316002)(6916009)(8676002)(4326008)(66946007)(66476007)(66556008)(6486002)(6506007)(6512007)(9686003)(41300700001)(26005)(5660300002)(83380400001)(478600001)(6666004)(966005)(4001150100001)(2906002)(33716001)(86362001)(38100700002)(82960400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?mXgZmeu4QyI541yJyzKrvzc0Mx+mFRRKgUttDRYseVVDM1s5zXuZpcVvH+5E?=
+ =?us-ascii?Q?/EzQy/pObzmcrEQszaEsUUkLN37diYveVk4yRu2mUlvbAxxWIUNbjVlAL8yb?=
+ =?us-ascii?Q?Y1Pygv2QfYxQ+db8cGSDda4eV4LrF5wnVcdIBpgALpd972CxjX9bR/CLQHEs?=
+ =?us-ascii?Q?u3Zfva8Imw/48VI7Nnkj50WzYqZ+gq4WDj/tKGCURgzfA5j9WqHxiraMIrLq?=
+ =?us-ascii?Q?iVMQmAx7BnZXQ87xILJNPRNSpNaYhOTjn2HZ9oeo09ibT9fiEseEDwaaJFPV?=
+ =?us-ascii?Q?8MUMRBcgJy2AY2gdiJhBqsXTqRIXbzu4Kg8ThKMh7o7Zn/DPNurnXTvTIRLR?=
+ =?us-ascii?Q?ndzg/YMMN4/Jn+ux0L9s3itSa0N/3oyf+2p4HKQVSBBw8XPTUKIJJBZpJ7K7?=
+ =?us-ascii?Q?AHSDOuAXB9Y8JgZShu71ALMJT02n8j8DImny1KqP5ejwen6ltlV2sDwUpS8C?=
+ =?us-ascii?Q?itKPrUC1y1+8EHR2r4Bra3CH87nmVfrYZtOt/1PbCzOyKaPVI+RZ2HNdHOSr?=
+ =?us-ascii?Q?t6IeknHqGCop/NHqv59q05BcbP0m1PHsuzkqlbO/iIH13tSzyIBbVNWfItqw?=
+ =?us-ascii?Q?enUpsy9eh2hfLEqjvWn2lKOZkIhlWw0oIO3KutfS7vAqytzTNolpgPsBwxO2?=
+ =?us-ascii?Q?Fo71mIrHASXTlcutk9pnHR30WsdCgm84SV552rh0EmWNwaPwDAktjtUdj+KB?=
+ =?us-ascii?Q?tesF+FXEwdeb2NztEJnE1HS4+MTqzbYb4utC3V2NSFwYlx3aDr4RXZbOpHIq?=
+ =?us-ascii?Q?6q9oVnfZ6+40X+v0x8Kd9AjleyZwkdtuQdNgQeF4S2nl2uDBk8SJoZxEdRAy?=
+ =?us-ascii?Q?iTVEFq9EVtzTvk238OBkuCVcs7Rz8cO2GEQkU0zyODv9/10g8f0z9EWuK68V?=
+ =?us-ascii?Q?UNjf4le76W6tse0KlNPD3bozd3jk4Rn4dCDB8Rmi5Yvy44b6ZvpMeGwJhDv8?=
+ =?us-ascii?Q?U4cjb4ZbWOwu4BdwvmUckcf56PSX7WXIxBrwcJa7sWMFewAoGKoIcrkT8BoC?=
+ =?us-ascii?Q?LmspwqbpRFzxdbkLVB82mFzINjrddrZ2JAZFPVaZ5bcTEZpjkKPU/4XezUnV?=
+ =?us-ascii?Q?ZyWLonx6OEga/Nzkp2StqdvzWFxjHQqnZ9AWoQVahHkizJjrysPFjzi7I24a?=
+ =?us-ascii?Q?d+FHtq1GSGlxhUtPXFc+xbMmB/UJURV5yj8k6dhwOr7ps/E0pr7h+BrXU2+2?=
+ =?us-ascii?Q?ixV7tZEeGlMwWOkCL4NEbuE/MRpx7HWISlx7KyqYGdVy0xO7XiwzAnLtcqva?=
+ =?us-ascii?Q?ANInb+zWZWyc0MYlNyLVZKjxafrHfZ6v75HaJ3BNg/MbvyJxdOSYBMAO+1Tl?=
+ =?us-ascii?Q?5HgNwScDKcnH661Jc2jJecridxHf9sDpumDah3nQJ+NSsaCIhC95MGtMnrFT?=
+ =?us-ascii?Q?kd2x81+FHuJlDl/gmhKR4Z8eTrpMgC/wnYXeKdUtVFbk98100/+22rINLB02?=
+ =?us-ascii?Q?u1M7lD5/QnrZKDUII7px6NEAZx2Qb7G2HBF01nzhGdsl07mvQJklUhINKQjN?=
+ =?us-ascii?Q?CKZEbwiHQ9T0ztZDgZkMw4w1X+oaUuYRb/IQK1kIp86hdiew46C/L06u3iyD?=
+ =?us-ascii?Q?QsAnq+B99KJQfhk5NaJcNN70LexM3rSSuHa9o0Cj?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: a3f3802a-7291-4b63-bb45-08dbae0a2eec
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 12:18:16.6547
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I4iSk0ph1FF6NPxn+IjXrK+VyHTXm4YKNRoH9kNtfUaW7Ax/JdMoXlFbpLB4uMYr6CULKj4M1QudRIzZuzfcPg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4754
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ring buffer of global_trace is set to the minimum size in
-order to save memory on boot up and then it will be expand when
-some trace feature enabled.
+Hi Vlastimil,
 
-However currently operations under an instance can also cause
-global_trace ring buffer being expanded, and the expanded memory
-would be wasted if global_trace then not being used.
+FYI, the error/warning was bisected to this commit, please ignore it if it's irrelevant.
 
-See following case, we enable 'sched_switch' event in instance 'A', then
-ring buffer of global_trace is unexpectedly expanded to be 1410KB, also
-the '(expanded: 1408)' from 'buffer_size_kb' of instance is confusing.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   3f86ed6ec0b390c033eae7f9c487a3fea268e027
+commit: bb192ed9aa7191a5d65548f82c42b6750d65f569 mm/slub: Convert most struct page to struct slab by spatch
+date:   1 year, 8 months ago
+:::::: branch date: 12 hours ago
+:::::: commit date: 1 year, 8 months ago
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20230905/202309051941.72ZiILCM-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230905/202309051941.72ZiILCM-lkp@intel.com/reproduce)
 
-  # cd /sys/kernel/tracing
-  # mkdir instances/A
-  # cat buffer_size_kb
-  7 (expanded: 1408)
-  # cat instances/A/buffer_size_kb
-  1410 (expanded: 1408)
-  # echo sched:sched_switch > instances/A/set_event
-  # cat buffer_size_kb
-  1410
-  # cat instances/A/buffer_size_kb
-  1410
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/r/202309051941.72ZiILCM-lkp@intel.com/
 
-To fix it, we can:
-  - Make 'ring_buffer_expanded' as a member of 'struct trace_array';
-  - Make 'ring_buffer_expanded' of instance is defaultly true,
-    global_trace is defaultly false;
-  - In order not to expose 'global_trace' outside of file
-    'kernel/trace/trace.c', introduce trace_set_ring_buffer_expanded()
-    to set 'ring_buffer_expanded' as 'true';
-  - Pass the expected trace_array to tracing_update_buffers().
+All warnings (new ones prefixed by >>):
 
-Signed-off-by: Zheng Yejian <zhengyejian1@huawei.com>
----
- kernel/trace/trace.c        | 46 ++++++++++++++++++++-----------------
- kernel/trace/trace.h        |  9 ++++++--
- kernel/trace/trace_events.c | 22 ++++++++++--------
- 3 files changed, 44 insertions(+), 33 deletions(-)
+>> mm/slub.c:2142:15: warning: variable 'partial_slabs' set but not used [-Wunused-but-set-variable]
+           unsigned int partial_slabs = 0;
+                        ^
+   mm/slub.c:1681:21: warning: unused function 'kmalloc_large_node_hook' [-Wunused-function]
+   static inline void *kmalloc_large_node_hook(void *ptr, size_t size, gfp_t flags)
+                       ^
+   2 warnings generated.
 
-diff --git a/kernel/trace/trace.c b/kernel/trace/trace.c
-index 2b4ded753367..5360ffdf98a3 100644
---- a/kernel/trace/trace.c
-+++ b/kernel/trace/trace.c
-@@ -54,12 +54,6 @@
- #include "trace.h"
- #include "trace_output.h"
- 
--/*
-- * On boot up, the ring buffer is set to the minimum size, so that
-- * we do not waste memory on systems that are not using tracing.
-- */
--bool ring_buffer_expanded;
--
- #ifdef CONFIG_FTRACE_STARTUP_TEST
- /*
-  * We need to change this state when a selftest is running.
-@@ -202,7 +196,7 @@ static int __init set_cmdline_ftrace(char *str)
- 	strscpy(bootup_tracer_buf, str, MAX_TRACER_SIZE);
- 	default_bootup_tracer = bootup_tracer_buf;
- 	/* We are using ftrace early, expand it */
--	ring_buffer_expanded = true;
-+	trace_set_ring_buffer_expanded(NULL);
- 	return 1;
- }
- __setup("ftrace=", set_cmdline_ftrace);
-@@ -247,7 +241,7 @@ static int __init boot_alloc_snapshot(char *str)
- 	} else {
- 		allocate_snapshot = true;
- 		/* We also need the main ring buffer expanded */
--		ring_buffer_expanded = true;
-+		trace_set_ring_buffer_expanded(NULL);
- 	}
- 	return 1;
- }
-@@ -490,6 +484,13 @@ static struct trace_array global_trace = {
- 	.trace_flags = TRACE_DEFAULT_FLAGS,
- };
- 
-+void trace_set_ring_buffer_expanded(struct trace_array *tr)
-+{
-+	if (!tr)
-+		tr = &global_trace;
-+	tr->ring_buffer_expanded = true;
-+}
-+
- LIST_HEAD(ftrace_trace_arrays);
- 
- int trace_array_get(struct trace_array *this_tr)
-@@ -2012,7 +2013,7 @@ static int run_tracer_selftest(struct tracer *type)
- #ifdef CONFIG_TRACER_MAX_TRACE
- 	if (type->use_max_tr) {
- 		/* If we expanded the buffers, make sure the max is expanded too */
--		if (ring_buffer_expanded)
-+		if (tr->ring_buffer_expanded)
- 			ring_buffer_resize(tr->max_buffer.buffer, trace_buf_size,
- 					   RING_BUFFER_ALL_CPUS);
- 		tr->allocated_snapshot = true;
-@@ -2038,7 +2039,7 @@ static int run_tracer_selftest(struct tracer *type)
- 		tr->allocated_snapshot = false;
- 
- 		/* Shrink the max buffer again */
--		if (ring_buffer_expanded)
-+		if (tr->ring_buffer_expanded)
- 			ring_buffer_resize(tr->max_buffer.buffer, 1,
- 					   RING_BUFFER_ALL_CPUS);
- 	}
-@@ -3403,7 +3404,7 @@ void trace_printk_init_buffers(void)
- 	pr_warn("**********************************************************\n");
- 
- 	/* Expand the buffers to set size */
--	tracing_update_buffers();
-+	tracing_update_buffers(&global_trace);
- 
- 	buffers_allocated = 1;
- 
-@@ -6347,7 +6348,7 @@ static int __tracing_resize_ring_buffer(struct trace_array *tr,
- 	 * we use the size that was given, and we can forget about
- 	 * expanding it later.
- 	 */
--	ring_buffer_expanded = true;
-+	trace_set_ring_buffer_expanded(tr);
- 
- 	/* May be called before buffers are initialized */
- 	if (!tr->array_buffer.buffer)
-@@ -6433,13 +6434,13 @@ ssize_t tracing_resize_ring_buffer(struct trace_array *tr,
-  *
-  * This function is to be called when a tracer is about to be used.
-  */
--int tracing_update_buffers(void)
-+int tracing_update_buffers(struct trace_array *tr)
- {
- 	int ret = 0;
- 
- 	mutex_lock(&trace_types_lock);
--	if (!ring_buffer_expanded)
--		ret = __tracing_resize_ring_buffer(&global_trace, trace_buf_size,
-+	if (!tr->ring_buffer_expanded)
-+		ret = __tracing_resize_ring_buffer(tr, trace_buf_size,
- 						RING_BUFFER_ALL_CPUS);
- 	mutex_unlock(&trace_types_lock);
- 
-@@ -6493,7 +6494,7 @@ int tracing_set_tracer(struct trace_array *tr, const char *buf)
- 
- 	mutex_lock(&trace_types_lock);
- 
--	if (!ring_buffer_expanded) {
-+	if (!tr->ring_buffer_expanded) {
- 		ret = __tracing_resize_ring_buffer(tr, trace_buf_size,
- 						RING_BUFFER_ALL_CPUS);
- 		if (ret < 0)
-@@ -7161,7 +7162,7 @@ tracing_entries_read(struct file *filp, char __user *ubuf,
- 		}
- 
- 		if (buf_size_same) {
--			if (!ring_buffer_expanded)
-+			if (!tr->ring_buffer_expanded)
- 				r = sprintf(buf, "%lu (expanded: %lu)\n",
- 					    size >> 10,
- 					    trace_buf_size >> 10);
-@@ -7218,10 +7219,10 @@ tracing_total_entries_read(struct file *filp, char __user *ubuf,
- 	mutex_lock(&trace_types_lock);
- 	for_each_tracing_cpu(cpu) {
- 		size += per_cpu_ptr(tr->array_buffer.data, cpu)->entries >> 10;
--		if (!ring_buffer_expanded)
-+		if (!tr->ring_buffer_expanded)
- 			expanded_size += trace_buf_size >> 10;
- 	}
--	if (ring_buffer_expanded)
-+	if (tr->ring_buffer_expanded)
- 		r = sprintf(buf, "%lu\n", size);
- 	else
- 		r = sprintf(buf, "%lu (expanded: %lu)\n", size, expanded_size);
-@@ -7615,7 +7616,7 @@ tracing_snapshot_write(struct file *filp, const char __user *ubuf, size_t cnt,
- 	unsigned long val;
- 	int ret;
- 
--	ret = tracing_update_buffers();
-+	ret = tracing_update_buffers(tr);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -9496,6 +9497,9 @@ static struct trace_array *trace_array_create(const char *name)
- 	if (allocate_trace_buffers(tr, trace_buf_size) < 0)
- 		goto out_free_tr;
- 
-+	/* The ring buffer is defaultly expanded */
-+	trace_set_ring_buffer_expanded(tr);
-+
- 	if (ftrace_allocate_ftrace_ops(tr) < 0)
- 		goto out_free_tr;
- 
-@@ -10390,7 +10394,7 @@ __init static int tracer_alloc_buffers(void)
- 		trace_printk_init_buffers();
- 
- 	/* To save memory, keep the ring buffer size to its minimum */
--	if (ring_buffer_expanded)
-+	if (global_trace.ring_buffer_expanded)
- 		ring_buf_size = trace_buf_size;
- 	else
- 		ring_buf_size = 1;
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 5669dd1f90d9..c02ae9cbd108 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -410,6 +410,11 @@ struct trace_array {
- 	struct cond_snapshot	*cond_snapshot;
- #endif
- 	struct trace_func_repeats	__percpu *last_func_repeats;
-+	/*
-+	 * On boot up, the ring buffer is set to the minimum size, so that
-+	 * we do not waste memory on systems that are not using tracing.
-+	 */
-+	bool ring_buffer_expanded;
- };
- 
- enum {
-@@ -759,7 +764,7 @@ extern int DYN_FTRACE_TEST_NAME(void);
- #define DYN_FTRACE_TEST_NAME2 trace_selftest_dynamic_test_func2
- extern int DYN_FTRACE_TEST_NAME2(void);
- 
--extern bool ring_buffer_expanded;
-+extern void trace_set_ring_buffer_expanded(struct trace_array *tr);
- extern bool tracing_selftest_disabled;
- 
- #ifdef CONFIG_FTRACE_STARTUP_TEST
-@@ -1303,7 +1308,7 @@ static inline void trace_branch_disable(void)
- #endif /* CONFIG_BRANCH_TRACER */
- 
- /* set ring buffers to default size if not already done so */
--int tracing_update_buffers(void);
-+int tracing_update_buffers(struct trace_array *tr);
- 
- union trace_synth_field {
- 	u8				as_u8;
-diff --git a/kernel/trace/trace_events.c b/kernel/trace/trace_events.c
-index ed367d713be0..a32d50a136d8 100644
---- a/kernel/trace/trace_events.c
-+++ b/kernel/trace/trace_events.c
-@@ -1179,7 +1179,7 @@ ftrace_event_write(struct file *file, const char __user *ubuf,
- 	if (!cnt)
- 		return 0;
- 
--	ret = tracing_update_buffers();
-+	ret = tracing_update_buffers(tr);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1410,18 +1410,20 @@ event_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
- 	if (ret)
- 		return ret;
- 
--	ret = tracing_update_buffers();
--	if (ret < 0)
--		return ret;
--
- 	switch (val) {
- 	case 0:
- 	case 1:
- 		ret = -ENODEV;
- 		mutex_lock(&event_mutex);
- 		file = event_file_data(filp);
--		if (likely(file))
-+		if (likely(file)) {
-+			ret = tracing_update_buffers(file->tr);
-+			if (ret < 0) {
-+				mutex_unlock(&event_mutex);
-+				return ret;
-+			}
- 			ret = ftrace_event_enable_disable(file, val);
-+		}
- 		mutex_unlock(&event_mutex);
- 		break;
- 
-@@ -1495,7 +1497,7 @@ system_enable_write(struct file *filp, const char __user *ubuf, size_t cnt,
- 	if (ret)
- 		return ret;
- 
--	ret = tracing_update_buffers();
-+	ret = tracing_update_buffers(dir->tr);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -1969,7 +1971,7 @@ event_pid_write(struct file *filp, const char __user *ubuf,
- 	if (!cnt)
- 		return 0;
- 
--	ret = tracing_update_buffers();
-+	ret = tracing_update_buffers(tr);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -2829,7 +2831,7 @@ static __init int setup_trace_triggers(char *str)
- 	int i;
- 
- 	strscpy(bootup_trigger_buf, str, COMMAND_LINE_SIZE);
--	ring_buffer_expanded = true;
-+	trace_set_ring_buffer_expanded(NULL);
- 	disable_tracing_selftest("running event triggers");
- 
- 	buf = bootup_trigger_buf;
-@@ -3619,7 +3621,7 @@ static char bootup_event_buf[COMMAND_LINE_SIZE] __initdata;
- static __init int setup_trace_event(char *str)
- {
- 	strscpy(bootup_event_buf, str, COMMAND_LINE_SIZE);
--	ring_buffer_expanded = true;
-+	trace_set_ring_buffer_expanded(NULL);
- 	disable_tracing_selftest("running event tracing");
- 
- 	return 1;
+
+vim +/partial_slabs +2142 mm/slub.c
+
+49e2258586b423 Christoph Lameter 2011-08-09  2132  
+81819f0fc8285a Christoph Lameter 2007-05-06  2133  /*
+672bba3a4b2e65 Christoph Lameter 2007-05-09  2134   * Try to allocate a partial slab from a specific node.
+81819f0fc8285a Christoph Lameter 2007-05-06  2135   */
+8ba00bb68a067c Joonsoo Kim       2012-09-17  2136  static void *get_partial_node(struct kmem_cache *s, struct kmem_cache_node *n,
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2137  			      struct slab **ret_slab, gfp_t gfpflags)
+81819f0fc8285a Christoph Lameter 2007-05-06  2138  {
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2139  	struct slab *slab, *slab2;
+49e2258586b423 Christoph Lameter 2011-08-09  2140  	void *object = NULL;
+4b1f449dedd2ff Vlastimil Babka   2021-05-11  2141  	unsigned long flags;
+bb192ed9aa7191 Vlastimil Babka   2021-11-03 @2142  	unsigned int partial_slabs = 0;
+81819f0fc8285a Christoph Lameter 2007-05-06  2143  
+81819f0fc8285a Christoph Lameter 2007-05-06  2144  	/*
+81819f0fc8285a Christoph Lameter 2007-05-06  2145  	 * Racy check. If we mistakenly see no partial slabs then we
+81819f0fc8285a Christoph Lameter 2007-05-06  2146  	 * just allocate an empty slab. If we mistakenly try to get a
+70b6d25ec59cbc Chen Tao          2020-10-15  2147  	 * partial slab and there is none available then get_partial()
+672bba3a4b2e65 Christoph Lameter 2007-05-09  2148  	 * will return NULL.
+81819f0fc8285a Christoph Lameter 2007-05-06  2149  	 */
+81819f0fc8285a Christoph Lameter 2007-05-06  2150  	if (!n || !n->nr_partial)
+81819f0fc8285a Christoph Lameter 2007-05-06  2151  		return NULL;
+81819f0fc8285a Christoph Lameter 2007-05-06  2152  
+4b1f449dedd2ff Vlastimil Babka   2021-05-11  2153  	spin_lock_irqsave(&n->list_lock, flags);
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2154  	list_for_each_entry_safe(slab, slab2, &n->partial, slab_list) {
+8ba00bb68a067c Joonsoo Kim       2012-09-17  2155  		void *t;
+49e2258586b423 Christoph Lameter 2011-08-09  2156  
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2157  		if (!pfmemalloc_match(slab, gfpflags))
+8ba00bb68a067c Joonsoo Kim       2012-09-17  2158  			continue;
+8ba00bb68a067c Joonsoo Kim       2012-09-17  2159  
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2160  		t = acquire_slab(s, n, slab, object == NULL);
+49e2258586b423 Christoph Lameter 2011-08-09  2161  		if (!t)
+9b1ea29bc0d7b9 Linus Torvalds    2021-03-10  2162  			break;
+49e2258586b423 Christoph Lameter 2011-08-09  2163  
+12d79634f8d7af Alex Shi          2011-09-07  2164  		if (!object) {
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2165  			*ret_slab = slab;
+49e2258586b423 Christoph Lameter 2011-08-09  2166  			stat(s, ALLOC_FROM_PARTIAL);
+49e2258586b423 Christoph Lameter 2011-08-09  2167  			object = t;
+49e2258586b423 Christoph Lameter 2011-08-09  2168  		} else {
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2169  			put_cpu_partial(s, slab, 0);
+8028dcea8abbbd Alex Shi          2012-02-03  2170  			stat(s, CPU_PARTIAL_NODE);
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2171  			partial_slabs++;
+49e2258586b423 Christoph Lameter 2011-08-09  2172  		}
+b47291ef02b0be Vlastimil Babka   2021-11-05  2173  #ifdef CONFIG_SLUB_CPU_PARTIAL
+345c905d13a4ec Joonsoo Kim       2013-06-19  2174  		if (!kmem_cache_has_cpu_partial(s)
+bb192ed9aa7191 Vlastimil Babka   2021-11-03  2175  			|| partial_slabs > s->cpu_partial_slabs / 2)
+49e2258586b423 Christoph Lameter 2011-08-09  2176  			break;
+b47291ef02b0be Vlastimil Babka   2021-11-05  2177  #else
+b47291ef02b0be Vlastimil Babka   2021-11-05  2178  		break;
+b47291ef02b0be Vlastimil Babka   2021-11-05  2179  #endif
+49e2258586b423 Christoph Lameter 2011-08-09  2180  
+497b66f2ecc978 Christoph Lameter 2011-08-09  2181  	}
+4b1f449dedd2ff Vlastimil Babka   2021-05-11  2182  	spin_unlock_irqrestore(&n->list_lock, flags);
+497b66f2ecc978 Christoph Lameter 2011-08-09  2183  	return object;
+81819f0fc8285a Christoph Lameter 2007-05-06  2184  }
+81819f0fc8285a Christoph Lameter 2007-05-06  2185  
+
 -- 
-2.25.1
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
