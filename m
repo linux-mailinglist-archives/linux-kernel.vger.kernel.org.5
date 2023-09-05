@@ -2,83 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A34E792BCD
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1BA7792B84
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241896AbjIERAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:00:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
+        id S243916AbjIEQyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353686AbjIEHOc (ORCPT
+        with ESMTP id S1353690AbjIEHSM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:14:32 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09E9BCC2;
-        Tue,  5 Sep 2023 00:14:28 -0700 (PDT)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3855JpU7027600;
-        Tue, 5 Sep 2023 07:14:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=Jr56pPCe7vVwa+GfRWq+o850n4WReVzh3wS0xw4a67s=;
- b=ZTDcYurxmtEMP6fV0CX3+5wcYejARGL4n02HeWnyTdZJLZOr74QGq2oU3ss0nmL8u/+8
- vwaoxS8FM8unLsnNm1PAp9PoLd5mhh80IJKyDBb+8U5Vd6hIA2bC2qC7Sv+ggRy06ArB
- YOvZC77M2hqe1ihJsEH0DEitDGKvHfFQbg4OJwiho2c43B3SARCSNZQSIdoxlIE59baB
- SM5PEYfcNDeCRXIZ6WsPvrpot6f/VlRtFuzFEKtN/V4sZVydl8BwN4VK+ztS6r8jwoG+
- CS2JL+vH0odLFMqy48PD9ucgbMVdHVWnkrtYllO8J4JOU7FFSsYvPIDKzGikopfyOe6O sA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suvcrcyct-1
+        Tue, 5 Sep 2023 03:18:12 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CD9CC2;
+        Tue,  5 Sep 2023 00:18:09 -0700 (PDT)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 38579cdT029373;
+        Tue, 5 Sep 2023 07:17:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=/QXwxsZ9MuUmF1JZkwsPDaGAhWW+XIONdzVxoFAaUqg=;
+ b=kQiD+xZpOziq8OMBf4qi7cxGjSFQd/OljYiLe6pOlXtyiC563ek8lv8X7qsyiSoev4UK
+ G6wuNDdJzGyu/TLaKTn/Ms3/fUFFmgYpuBTwNkyKLc2gTiN6bkskZUcs38vEkSBVg1c8
+ SxZSnBa/dW12K4XEtB04SaHPTrx3QIhNGfuE0d17Avg7Znez7J3EckLBaEIVzVgPt6V4
+ VSeX4Y4MEBxDGr0njbmY6vzk2rGua/d7drWCSkyVjan2Qs091ZyHoIt1L5bf0pEJEGMt
+ aPbOh6vnCMv+XYC7Iuso8kEEHGbUjpnyjlgvEdhR1doaRiwDlFxV9D0AZbxGwbIpQLFh IQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3swtk8dg3h-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 07:14:25 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3857EOrB017725
+        Tue, 05 Sep 2023 07:17:18 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 38579Xcx029262;
+        Tue, 5 Sep 2023 07:17:18 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3swtk8dfxh-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 5 Sep 2023 07:14:24 GMT
-Received: from [10.216.59.199] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 5 Sep
- 2023 00:14:17 -0700
-Message-ID: <4c0736a1-eb9e-b81f-06ad-7ed407dbc702@quicinc.com>
-Date:   Tue, 5 Sep 2023 12:44:13 +0530
+        Tue, 05 Sep 2023 07:17:18 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3856L79L001614;
+        Tue, 5 Sep 2023 07:17:05 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svfcsh1af-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 07:17:04 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3857H3Hf5833376
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 07:17:03 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2D53020043;
+        Tue,  5 Sep 2023 07:17:03 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9670D20040;
+        Tue,  5 Sep 2023 07:17:02 +0000 (GMT)
+Received: from tuxmaker.linux.ibm.com (unknown [9.152.85.9])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 07:17:02 +0000 (GMT)
+From:   Sven Schnelle <svens@linux.ibm.com>
+To:     Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Florent Revest <revest@chromium.org>,
+        linux-trace-kernel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v4 4/9] fprobe: rethook: Use ftrace_regs in fprobe exit
+ handler and rethook
+In-Reply-To: <20230904224038.4420a76ea15931aa40179697@kernel.org> (Masami
+        Hiramatsu's message of "Mon, 4 Sep 2023 22:40:38 +0900")
+References: <169280372795.282662.9784422934484459769.stgit@devnote2>
+        <169280377434.282662.7610009313268953247.stgit@devnote2>
+        <20230904224038.4420a76ea15931aa40179697@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
+Date:   Tue, 05 Sep 2023 09:17:02 +0200
+Message-ID: <yt9d5y4pozrl.fsf@linux.ibm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [PATCH 1/2] dt-bindings: interconnect: Add compatibles for SDX75
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <djakov@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <1693889975-19122-1-git-send-email-quic_rohiagar@quicinc.com>
- <1693889975-19122-2-git-send-email-quic_rohiagar@quicinc.com>
- <c19e0ecf-7e8c-b9c3-0741-40c7aa3cb200@linaro.org>
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <c19e0ecf-7e8c-b9c3-0741-40c7aa3cb200@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: BA2MT8c0g0iXhHun8UP_yJ0s5qAEazoh
-X-Proofpoint-ORIG-GUID: BA2MT8c0g0iXhHun8UP_yJ0s5qAEazoh
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: h6neAfUENXt_QOPhPicsniXfU8S1la4E
+X-Proofpoint-ORIG-GUID: abmBX9jCiytLwL0ak0Xh8KbMGsZGIlpS
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-05_05,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
- priorityscore=1501 mlxlogscore=999 impostorscore=0 suspectscore=0
- lowpriorityscore=0 mlxscore=0 spamscore=0 clxscore=1015 adultscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309050063
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ suspectscore=0 priorityscore=1501 adultscore=0 spamscore=0 phishscore=0
+ clxscore=1011 malwarescore=0 mlxscore=0 impostorscore=0 bulkscore=0
+ mlxlogscore=341 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050062
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,120 +106,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Masami Hiramatsu (Google) <mhiramat@kernel.org> writes:
 
-On 9/5/2023 12:29 PM, Krzysztof Kozlowski wrote:
-> On 05/09/2023 06:59, Rohit Agarwal wrote:
->> Add dt-bindings compatibles and interconnect IDs for
->> Qualcomm SDX75 platform.
->>
->> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
->> ---
->>   .../bindings/interconnect/qcom,sdx75-rpmh.yaml     | 100 ++++++++++++++++++++
->>   include/dt-bindings/interconnect/qcom,sdx75.h      | 102 +++++++++++++++++++++
->>   2 files changed, 202 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
->>   create mode 100644 include/dt-bindings/interconnect/qcom,sdx75.h
->>
->> diff --git a/Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml b/Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
->> new file mode 100644
->> index 0000000..f2dc87c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/interconnect/qcom,sdx75-rpmh.yaml
->> @@ -0,0 +1,100 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/interconnect/qcom,sdx75-rpmh.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Qualcomm RPMh Network-On-Chip Interconnect on SDX75
->> +
->> +maintainers:
->> +  - Georgi Djakov <djakov@kernel.org>
-> I don't think Georgi maintains this device. It's maintainer of device,
-> not the subsystem.
-Ok, Will update the maintainer.
->
->> +
->> +description:
->> +  RPMh interconnect providers support system bandwidth requirements through
->> +  RPMh hardware accelerators known as Bus Clock Manager (BCM). The provider is
->> +  able to communicate with the BCM through the Resource State Coordinator (RSC)
->> +  associated with each execution environment. Provider nodes must point to at
->> +  least one RPMh device child node pertaining to their RSC and each provider
->> +  can map to multiple RPMh resources.
->> +
->> +properties:
->> +  compatible:
->> +    enum:
->> +      - qcom,sdx75-clk-virt
->> +      - qcom,sdx75-dc-noc
->> +      - qcom,sdx75-gem-noc
->> +      - qcom,sdx75-mc-virt
->> +      - qcom,sdx75-pcie-anoc
->> +      - qcom,sdx75-system-noc
->> +
->> +  '#interconnect-cells': true'
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  clocks:
->> +    maxItems: 1
->> +
->> +allOf:
->> +  - $ref: qcom,rpmh-common.yaml#
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,sdx75-clk-virt
->> +              - qcom,sdx75-mc-virt
->> +    then:
->> +      properties:
->> +        reg: false
->> +    else:
->> +      required:
->> +        - reg
->> +
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,sdx75-clk-virt
->> +    then:
->> +      properties:
->> +        clocks:
->> +          items:
->> +            - description: RPMH CC QPIC Clock
->> +
->> +  - if:
->> +      properties:
->> +        compatible:
->> +          contains:
->> +            enum:
->> +              - qcom,sdx75-clk-virt
-> This if: clause should be merged with the one earlier.
-Ok, understood.
->> +    then:
->> +      required:
->> +        - clocks
->> +    else:
->> +      properties:
->> +        clocks: false
->> +
->> +required:
->> +  - compatible
-> Please keep the order like in example-schema, so required: goes before
-> allOf.
-Sure, will update this.
+> I found that this is not enough becuase s390/loongarch already implemented
+> their rethook, and as far as I can see, the s390 ftrace_regs does not save
+> the required registers for rethook. Thus, for such architecture, we need
+> another kconfig flag and keep using the pt_regs for rethook.
 
-Thanks,
-Rohit.
->> +
->> +unevaluatedProperties: false
-> Best regards,
-> Krzysztof
->
+Looking into arch_rethook_trampoline() i think we save all required
+registers - which register do you think are missing? Or is there another
+function i should look at?
