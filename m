@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 701F77925CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EC67927AC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239600AbjIEQIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:08:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S240211AbjIEQIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:08:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354194AbjIEKJl (ORCPT
+        with ESMTP id S1354197AbjIEKJl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Sep 2023 06:09:41 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A521B4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9D51B7;
         Tue,  5 Sep 2023 03:09:37 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 10:09:35 -0000
+Date:   Tue, 05 Sep 2023 10:09:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693908575;
+        s=2020; t=1693908576;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nVFjMzZ0uVpVK9SuKtUwEP9lEvgFNF9zhwLG/IGFnMA=;
-        b=dxk3WSY5p+wgGeBR/wrQs8vCj5NR1tDYt6CYjEd1LMQqqZmFfTfp+BDB2QQNrJp5ow3wle
-        9AY5QlGSS5AvxNCwjObSZtmVjoFESicONBNNR0W9jb4nQSzekmgtIDDByPEP4kI1GY8B9R
-        Lrx5/zqzvY6HIPzqKGkWz8NDH4MYSpcGpg9Lrk6kBqei3nvJtgGA0d6o518N8d+haa58qz
-        OpFR2jVG4DGP8VzihO3YjSj+4vzMzoA6Jv/d4Zw3UcHugJ5nvX3jkAysoOmmUxa1aXQ7XH
-        Y5X4/hezMhqHe9dyRFqpujBdsb3lA7NTmIjKPphEj04imh6QMqQPumEVNyQUyw==
+        bh=4SpGGQxHEMgk18I56r46647a/jxZFGS0K9p1AllQ6Gk=;
+        b=KxzGZm4jMHgFrn03C1ReU4bHizYRpsonqU32UGDl7bFKiW4pOwngB9iJoR6fyvtQfSa7i3
+        XpwHwlIkuN62x8u74SOEVlMBPf3IwGk0BUyyhgzXqdlNRN/VThh7Tsi+NIhINvsUTNgPWc
+        iOdRO4gT8X9yQoSVl3G1VfEKvjsaOX207ldh+jm1qNctnkxqZbZqDoaBWuFEZI3uHn9OAf
+        MttRBLNmctAnPIitl0ox9KzgVkYbGVzUbWt9vRSrIMtFUdj2VW1+OqEInsy1wmVw0CTEDB
+        84vcdcEzQRpZ8gqJ5ytRJmrGPFsf2P8GQoqodP2528R+zuk12cVlxbigIhkj5g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693908575;
+        s=2020e; t=1693908576;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=nVFjMzZ0uVpVK9SuKtUwEP9lEvgFNF9zhwLG/IGFnMA=;
-        b=gNF4A9tkq9SoJRj9XVRTpSAukGghEsrQHEdVLb7bc3q1j5Hp7eDocMW7Mc+9qpUKLIXxrt
-        vNg94tIZUqXsEtCA==
+        bh=4SpGGQxHEMgk18I56r46647a/jxZFGS0K9p1AllQ6Gk=;
+        b=aYuaqctYD3IHGOT/GZivpKKz+LxK841tuMkE8rYW4/dWuuWxQ9cHAbUQb/PrHPP3yQSUCZ
+        yyTveAgwrrMyhKDA==
 From:   "tip-bot2 for Josh Poimboeuf" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/bugs] x86/bugs: Remove default case for fully switched enums
+Subject: [tip: x86/bugs] x86/srso: Unexport untraining functions
 Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <fcf6feefab991b72e411c2aed688b18e65e06aed.1693889988.git.jpoimboe@kernel.org>
-References: <fcf6feefab991b72e411c2aed688b18e65e06aed.1693889988.git.jpoimboe@kernel.org>
+In-Reply-To: <1ae080f95ce7266c82cba6d2adde82349b832654.1693889988.git.jpoimboe@kernel.org>
+References: <1ae080f95ce7266c82cba6d2adde82349b832654.1693889988.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
-Message-ID: <169390857513.27769.18186847409002472877.tip-bot2@tip-bot2>
+Message-ID: <169390857600.27769.9434905038030669762.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -67,88 +67,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/bugs branch of tip:
 
-Commit-ID:     3cd8bc46c3e4147551c89a38ca0ffc5ff7915e52
-Gitweb:        https://git.kernel.org/tip/3cd8bc46c3e4147551c89a38ca0ffc5ff7915e52
+Commit-ID:     253553c3364c20d4ff8f61ae53456a7429c5261b
+Gitweb:        https://git.kernel.org/tip/253553c3364c20d4ff8f61ae53456a7429c5261b
 Author:        Josh Poimboeuf <jpoimboe@kernel.org>
-AuthorDate:    Mon, 04 Sep 2023 22:04:58 -07:00
+AuthorDate:    Mon, 04 Sep 2023 22:04:56 -07:00
 Committer:     Ingo Molnar <mingo@kernel.org>
 CommitterDate: Tue, 05 Sep 2023 12:05:07 +02:00
 
-x86/bugs: Remove default case for fully switched enums
+x86/srso: Unexport untraining functions
 
-For enum switch statements which handle all possible cases, remove the
-default case so a compiler warning gets printed if one of the enums gets
-accidentally omitted from the switch statement.
+These functions aren't called outside of retpoline.S.
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 Signed-off-by: Ingo Molnar <mingo@kernel.org>
 Acked-by: Borislav Petkov (AMD) <bp@alien8.de>
-Link: https://lore.kernel.org/r/fcf6feefab991b72e411c2aed688b18e65e06aed.1693889988.git.jpoimboe@kernel.org
+Link: https://lore.kernel.org/r/1ae080f95ce7266c82cba6d2adde82349b832654.1693889988.git.jpoimboe@kernel.org
 ---
- arch/x86/kernel/cpu/bugs.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ arch/x86/include/asm/nospec-branch.h | 4 ----
+ arch/x86/lib/retpoline.S             | 7 ++-----
+ 2 files changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index 4f1ad23..941ac94 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -1019,7 +1019,6 @@ static void __init retbleed_select_mitigation(void)
+diff --git a/arch/x86/include/asm/nospec-branch.h b/arch/x86/include/asm/nospec-branch.h
+index 197ff4f..6c14fd1 100644
+--- a/arch/x86/include/asm/nospec-branch.h
++++ b/arch/x86/include/asm/nospec-branch.h
+@@ -352,10 +352,6 @@ extern void retbleed_return_thunk(void);
+ extern void srso_return_thunk(void);
+ extern void srso_alias_return_thunk(void);
  
- do_cmd_auto:
- 	case RETBLEED_CMD_AUTO:
--	default:
- 		if (boot_cpu_data.x86_vendor == X86_VENDOR_AMD ||
- 		    boot_cpu_data.x86_vendor == X86_VENDOR_HYGON) {
- 			if (IS_ENABLED(CONFIG_CPU_UNRET_ENTRY))
-@@ -1290,6 +1289,8 @@ spectre_v2_user_select_mitigation(void)
- 
- 		spectre_v2_user_ibpb = mode;
- 		switch (cmd) {
-+		case SPECTRE_V2_USER_CMD_NONE:
-+			break;
- 		case SPECTRE_V2_USER_CMD_FORCE:
- 		case SPECTRE_V2_USER_CMD_PRCTL_IBPB:
- 		case SPECTRE_V2_USER_CMD_SECCOMP_IBPB:
-@@ -1301,8 +1302,6 @@ spectre_v2_user_select_mitigation(void)
- 		case SPECTRE_V2_USER_CMD_SECCOMP:
- 			static_branch_enable(&switch_mm_cond_ibpb);
- 			break;
--		default:
--			break;
- 		}
- 
- 		pr_info("mitigation: Enabling %s Indirect Branch Prediction Barrier\n",
-@@ -2160,6 +2159,10 @@ static int l1d_flush_prctl_get(struct task_struct *task)
- static int ssb_prctl_get(struct task_struct *task)
- {
- 	switch (ssb_mode) {
-+	case SPEC_STORE_BYPASS_NONE:
-+		if (boot_cpu_has_bug(X86_BUG_SPEC_STORE_BYPASS))
-+			return PR_SPEC_ENABLE;
-+		return PR_SPEC_NOT_AFFECTED;
- 	case SPEC_STORE_BYPASS_DISABLE:
- 		return PR_SPEC_DISABLE;
- 	case SPEC_STORE_BYPASS_SECCOMP:
-@@ -2171,11 +2174,8 @@ static int ssb_prctl_get(struct task_struct *task)
- 		if (task_spec_ssb_disable(task))
- 			return PR_SPEC_PRCTL | PR_SPEC_DISABLE;
- 		return PR_SPEC_PRCTL | PR_SPEC_ENABLE;
--	default:
--		if (boot_cpu_has_bug(X86_BUG_SPEC_STORE_BYPASS))
--			return PR_SPEC_ENABLE;
--		return PR_SPEC_NOT_AFFECTED;
- 	}
-+	BUG();
- }
- 
- static int ib_prctl_get(struct task_struct *task)
-@@ -2504,9 +2504,6 @@ static void __init srso_select_mitigation(void)
- 			pr_err("WARNING: kernel not compiled with CPU_SRSO.\n");
-                 }
- 		break;
+-extern void retbleed_untrain_ret(void);
+-extern void srso_untrain_ret(void);
+-extern void srso_alias_untrain_ret(void);
 -
--	default:
--		break;
- 	}
+ extern void entry_untrain_ret(void);
+ extern void entry_ibpb(void);
  
- out:
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 9ab634f..a40ba18 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -157,7 +157,6 @@ SYM_START(srso_alias_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
+ 	lfence
+ 	jmp srso_alias_return_thunk
+ SYM_FUNC_END(srso_alias_untrain_ret)
+-__EXPORT_THUNK(srso_alias_untrain_ret)
+ 
+ 	.section .text..__x86.rethunk_safe
+ #else
+@@ -215,7 +214,7 @@ SYM_CODE_END(srso_alias_return_thunk)
+  */
+ 	.align 64
+ 	.skip 64 - (retbleed_return_thunk - retbleed_untrain_ret), 0xcc
+-SYM_START(retbleed_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
++SYM_START(retbleed_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
+ 	ANNOTATE_NOENDBR
+ 	/*
+ 	 * As executed from retbleed_untrain_ret, this is:
+@@ -263,7 +262,6 @@ SYM_CODE_END(retbleed_return_thunk)
+ 	jmp retbleed_return_thunk
+ 	int3
+ SYM_FUNC_END(retbleed_untrain_ret)
+-__EXPORT_THUNK(retbleed_untrain_ret)
+ 
+ /*
+  * SRSO untraining sequence for Zen1/2, similar to retbleed_untrain_ret()
+@@ -277,7 +275,7 @@ __EXPORT_THUNK(retbleed_untrain_ret)
+  */
+ 	.align 64
+ 	.skip 64 - (srso_safe_ret - srso_untrain_ret), 0xcc
+-SYM_START(srso_untrain_ret, SYM_L_GLOBAL, SYM_A_NONE)
++SYM_START(srso_untrain_ret, SYM_L_LOCAL, SYM_A_NONE)
+ 	ANNOTATE_NOENDBR
+ 	.byte 0x48, 0xb8
+ 
+@@ -298,7 +296,6 @@ SYM_INNER_LABEL(srso_safe_ret, SYM_L_GLOBAL)
+ 	ud2
+ SYM_CODE_END(srso_safe_ret)
+ SYM_FUNC_END(srso_untrain_ret)
+-__EXPORT_THUNK(srso_untrain_ret)
+ 
+ SYM_CODE_START(srso_return_thunk)
+ 	UNWIND_HINT_FUNC
