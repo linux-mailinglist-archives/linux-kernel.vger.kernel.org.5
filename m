@@ -2,166 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B1C792A81
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 654CF792AAA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240839AbjIEQia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:38:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54022 "EHLO
+        id S245661AbjIEQk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353754AbjIEHxG (ORCPT
+        with ESMTP id S1353758AbjIEHz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:53:06 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3024CC;
-        Tue,  5 Sep 2023 00:53:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693900383; x=1725436383;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=AnzlJ/ONUPwEn3gpEL9v0QBU/P1wozxQo+07ttxfhWs=;
-  b=jXaHKSheANoC8zPU0270NONqmymc9jG0o0J53S9ehMVt9bkF56zbh8Gl
-   m6JlDW353k/9oHOzN5FLQyPIv+SOOQyfqc9nlZ8j9Vh3UK2PISVtcp2i+
-   O9XSe/saWGyChhkVs1wAgB0hvbf173MkGE1rfodBYKuVHeVBp2Bmzl3cX
-   l14u3424+YbhsFAgY4vtr4gRowsnEKHCIh/7n3oBj6ghtOUyY3cCQzb8A
-   tPUlZ4OQQXNedX0TzdjOExjnSTb8CAQ9ZAHmY/U7ETEi5srIpsbCUDAjY
-   g5is02aLcSPa/CMhtlh/8aEaExvJLMvbDad5iwZMxXdHC1/7KIBVbzbdX
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="356224965"
-X-IronPort-AV: E=Sophos;i="6.02,228,1688454000"; 
-   d="scan'208";a="356224965"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 00:52:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="690841279"
-X-IronPort-AV: E=Sophos;i="6.02,228,1688454000"; 
-   d="scan'208";a="690841279"
-Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 05 Sep 2023 00:52:53 -0700
-Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qdQri-0001Oz-32;
-        Tue, 05 Sep 2023 07:52:50 +0000
-Date:   Tue, 5 Sep 2023 15:52:47 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Aryan Srivastava <aryan.srivastava@alliedtelesis.co.nz>,
-        andi.shyti@kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        aryan.srivastava@alliedtelesis.co.nz, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] i2c:octeon:Add block-mode r/w
-Message-ID: <202309051505.K5sogLFe-lkp@intel.com>
-References: <20230904231439.485925-1-aryan.srivastava@alliedtelesis.co.nz>
+        Tue, 5 Sep 2023 03:55:29 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB5B3DF
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:55:25 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A98F96607033;
+        Tue,  5 Sep 2023 08:55:23 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693900524;
+        bh=xt47hUabKnjBtbHUoL8inJXCx6CIgoMdxyYnRODbfk4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Nm9jiGx03PuBQ6bzC3uYyuldX+v2XvpzGRYCoqsiMdDgQvlvmxZDE46YoBY/io4nL
+         42t1gquH3BXJe6ygHMkY+ewiBe6BmuK+2GE/GYpn0Mzkfdpj0dU3FJSqvX5mHX0ovt
+         ObeEbaotc/Xzgz+RwjjlyW0TGSdU9WkqIhjAm+GonA9AxnvNXNGtOnhakJlS3hPxio
+         A2oZ+gACpzH0KRglts6dzTYrZhLvcI5MaPv1KZkbLWYUHVDAf64eNYGWEsvBccuTku
+         JziVX1QqfJw9NgaKLAGjEPzDdZcYQ/dEjAk2vZ6MVWCc/M8eBzQdELy8l3Nt2YSxt7
+         b3dERTjLrBpkA==
+Message-ID: <d7e6917d-7315-12d6-d7d4-dc7ea8c58dc9@collabora.com>
+Date:   Tue, 5 Sep 2023 09:55:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230904231439.485925-1-aryan.srivastava@alliedtelesis.co.nz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 2/2] drm/mediatek: dpi/dsi: fix possible_crtcs
+ calculation
+Content-Language: en-US
+To:     Michael Walle <mwalle@kernel.org>,
+        =?UTF-8?Q?N=c3=adcolas_F_=2e_R_=2e_A_=2e_Prado?= 
+        <nfraprado@collabora.com>, Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     "Nancy . Lin" <nancy.lin@mediatek.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Jitao Shi <jitao.shi@mediatek.com>,
+        Stu Hsieh <stu.hsieh@mediatek.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20230901174557.3617839-1-mwalle@kernel.org>
+ <20230901174557.3617839-2-mwalle@kernel.org>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230901174557.3617839-2-mwalle@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aryan,
+Il 01/09/23 19:45, Michael Walle ha scritto:
+> mtk_drm_find_possible_crtc_by_comp() assumed that the main path will
+> always have the CRTC with id 0, the ext id 1 and the third id 2. This
+> is only true if the paths are all available. But paths are optional (see
+> also comment in mtk_drm_kms_init()), e.g. the main path might not be
+> enabled or available at all. Then the CRTC IDs will shift one up, e.g.
+> ext will be 0 and the third path will be 1.
+> 
+> To fix that, dynamically calculate the IDs by the presence of the paths.
+> 
+> Fixes: 5aa8e7647676 ("drm/mediatek: dpi/dsi: Change the getting possible_crtc way")
+> Suggested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> Reviewed-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> Tested-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
+> ---
+> v3:
+>   - use data instead of priv_n->data
+>   - fixed typos
+>   - collected Rb and Tb tags
+> v2:
+>   - iterate over all_drm_private[] to get any vdosys
+>   - new check if a path is available
+> ---
+>   drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 72 +++++++++++++++++----
+>   1 file changed, 58 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> index 771f4e173353..c00f4669cc50 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
+> @@ -507,6 +507,27 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
+>   	return false;
+>   }
+>   
+> +static bool mtk_ddp_path_available(const unsigned int *path,
+> +				   unsigned int path_len,
+> +				   struct device_node **comp_node)
+> +{
+> +	unsigned int i;
+> +
+> +	if (!path)
+> +		return false;
+> +
+> +	for (i = 0U; i < path_len; i++) {
+> +		/* OVL_ADAPTOR doesn't have a device node */
+> +		if (path[i] == DDP_COMPONENT_DRM_OVL_ADAPTOR)
+> +			continue;
+> +
+> +		if (!comp_node[path[i]])
+> +			return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+>   int mtk_ddp_comp_get_id(struct device_node *node,
+>   			enum mtk_ddp_comp_type comp_type)
+>   {
+> @@ -526,21 +547,44 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
+>   						struct device *dev)
+>   {
+>   	struct mtk_drm_private *private = drm->dev_private;
+> -	unsigned int ret = 0;
+> -
+> -	if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path, private->data->main_len,
+> -				     private->ddp_comp))
+> -		ret = BIT(0);
+> -	else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
+> -					  private->data->ext_len, private->ddp_comp))
+> -		ret = BIT(1);
+> -	else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
+> -					  private->data->third_len, private->ddp_comp))
+> -		ret = BIT(2);
+> -	else
+> -		DRM_INFO("Failed to find comp in ddp table\n");
+> +	const struct mtk_mmsys_driver_data *data;
+> +	struct mtk_drm_private *priv_n;
+> +	int i = 0, j;
+> +
+> +	for (j = 0; j < private->data->mmsys_dev_num; j++) {
+> +		priv_n = private->all_drm_private[j];
+> +		data = priv_n->data;
+> +
+> +		if (mtk_ddp_path_available(data->main_path, data->main_len,
+> +					   priv_n->comp_node)) {
+> +			if (mtk_drm_find_comp_in_ddp(dev, data->main_path,
+> +						     data->main_len,
+> +						     priv_n->ddp_comp))
+> +				return BIT(i);
+> +			i++;
+> +		}
+> +
+> +		if (mtk_ddp_path_available(data->ext_path, data->ext_len,
+> +					   priv_n->comp_node)) {
+> +			if (mtk_drm_find_comp_in_ddp(dev, data->ext_path,
+> +						     data->ext_len,
+> +						     priv_n->ddp_comp))
+> +				return BIT(i);
+> +			i++;
+> +		}
+> +
+> +		if (mtk_ddp_path_available(data->third_path, data->third_len,
+> +					   priv_n->comp_node)) {
+> +			if (mtk_drm_find_comp_in_ddp(dev, data->third_path,
+> +						     data->third_len,
+> +						     priv_n->ddp_comp))
+> +				return BIT(i);
+> +			i++;
+> +		}
+> +	}
+>   
+> -	return ret;
+> +	DRM_INFO("Failed to find comp in ddp table\n");
+> +	return 0;
 
-kernel test robot noticed the following build errors:
+At this point, I think that it would be sane to change this function to
+return a signed type, so that we can return -ENOENT if we couldn't find
+any DDP path (so, if we couldn't find any possible crtc).
 
-[auto build test ERROR on wsa/i2c/for-next]
-[also build test ERROR on linus/master v6.5 next-20230905]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+This function is called only twice, once in DPI, once in DSI - so the
+change should also be pretty straightforward to do.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Aryan-Srivastava/i2c-octeon-Add-block-mode-r-w/20230905-071739
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-next
-patch link:    https://lore.kernel.org/r/20230904231439.485925-1-aryan.srivastava%40alliedtelesis.co.nz
-patch subject: [PATCH] i2c:octeon:Add block-mode r/w
-config: riscv-randconfig-001-20230905 (https://download.01.org/0day-ci/archive/20230905/202309051505.K5sogLFe-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20230905/202309051505.K5sogLFe-lkp@intel.com/reproduce)
+Cheers,
+Angelo
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202309051505.K5sogLFe-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> drivers/i2c/busses/i2c-octeon-core.c:725:8: error: use of undeclared label 'ret'
-     725 |                 goto ret;
-         |                      ^
-   1 error generated.
+>   }
+>   
+>   int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
 
 
-vim +/ret +725 drivers/i2c/busses/i2c-octeon-core.c
 
-   674	
-   675	/* high-level-controller composite block write+write, m[0]len<=2, m[1]len<=1024 */
-   676	static int octeon_i2c_hlc_block_comp_write(struct octeon_i2c *i2c, struct i2c_msg *msgs)
-   677	{
-   678		bool set_ext = false;
-   679		int i, j, len, ret = 0;
-   680		u64 cmd, buf = 0, ext = 0;
-   681	
-   682		octeon_i2c_hlc_enable(i2c);
-   683		octeon_i2c_block_enable(i2c);
-   684	
-   685		/* Write (size - 1) into block control register */
-   686		len = msgs[1].len - 1;
-   687		octeon_i2c_writeq_flush((u64)(len), i2c->twsi_base + TWSI_BLOCK_CTL(i2c));
-   688	
-   689		/* Prepare core command */
-   690		cmd = SW_TWSI_V | SW_TWSI_SOVR;
-   691		cmd |= (u64)(msgs[0].addr & 0x7full) << SW_TWSI_ADDR_SHIFT;
-   692	
-   693		if (msgs[0].flags & I2C_M_TEN)
-   694			cmd |= SW_TWSI_OP_10_IA;
-   695		else
-   696			cmd |= SW_TWSI_OP_7_IA;
-   697	
-   698		if (msgs[0].len == 2) {
-   699			cmd |= SW_TWSI_EIA;
-   700			ext |= (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-   701			set_ext = true;
-   702			cmd |= (u64)msgs[0].buf[1] << SW_TWSI_IA_SHIFT;
-   703		} else {
-   704			cmd |= (u64)msgs[0].buf[0] << SW_TWSI_IA_SHIFT;
-   705		}
-   706	
-   707		/* Write msg into FIFO buffer */
-   708		octeon_i2c_writeq_flush(TWSI_BLOCK_STS_RESET_PTR, i2c->twsi_base + TWSI_BLOCK_STS(i2c));
-   709		for (i = 0; i < len; i += 8) {
-   710			buf = 0;
-   711			for (j = 7; j >= 0; j--)
-   712				buf |= (msgs[1].buf[i + (7 - j)] << (8 * j));
-   713			octeon_i2c_writeq_flush(buf, i2c->twsi_base + TWSI_BLOCK_FIFO(i2c));
-   714		}
-   715		if (set_ext)
-   716			octeon_i2c_writeq_flush(ext, i2c->twsi_base + SW_TWSI_EXT(i2c));
-   717	
-   718		/* Send command to core (send data in FIFO) */
-   719		octeon_i2c_hlc_int_clear(i2c);
-   720		octeon_i2c_writeq_flush(cmd, i2c->twsi_base + SW_TWSI(i2c));
-   721	
-   722		/* Wait for transaction to complete */
-   723		ret = octeon_i2c_hlc_wait(i2c);
-   724		if (ret)
- > 725			goto ret;
-   726	
-   727		cmd = __raw_readq(i2c->twsi_base + SW_TWSI(i2c));
-   728		if ((cmd & SW_TWSI_R) == 0)
-   729			return octeon_i2c_check_status(i2c, false);
-   730	
-   731		octeon_i2c_block_disable(i2c);
-   732		return ret;
-   733	}
-   734	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
