@@ -2,144 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E72D5792994
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:52:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4457A792A98
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349732AbjIEQ1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:27:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33000 "EHLO
+        id S243799AbjIEQj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354663AbjIENWv (ORCPT
+        with ESMTP id S1354666AbjIENXg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:22:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FC9019B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 06:22:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693920168; x=1725456168;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=hkJRK04JX1DUOtu+OnP0WBjpHDZLTz6wdJrsqh8md7A=;
-  b=OhLaLg6RLEliGnxIiJ0o7/8T1BO0W0YhO3+Q1eWgbZZCXWQEUv1Kh0JE
-   IVeH1e4GnxorQFQlup5y0sr7V6S6L8gA7OuWxwAI6mJ57JJG4AWk3dn1o
-   3sid9uFeC5m/baCbD5OcpJmi39VLsR5RS4oNR2qYalYw4faDYhatCG4VG
-   zKZnMxvBhP3HuEG/qiaDnmWyVYiIaO+JQEKTzB7pfTJdvfdvw/5lrk0+5
-   xCXbqaq/gAdzJJtvHIQKCPEe7Jov0kXT9OCTTkbzvyf1I3T2BzbfDrrfC
-   TGPwwTfwDiXNLluMBd/n6cRiN/bgmiATvnlxRVD6GW2iGgZPw56rNMeMr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="440765639"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="440765639"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 06:22:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="776199477"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="776199477"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga001.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 06:22:47 -0700
-Received: from [10.209.168.123] (hhong-mobl.amr.corp.intel.com [10.209.168.123])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id 062BF580DA0;
-        Tue,  5 Sep 2023 06:22:46 -0700 (PDT)
-Message-ID: <b706693a-b259-0c70-4ee3-0f63abca1519@linux.intel.com>
-Date:   Tue, 5 Sep 2023 09:22:45 -0400
+        Tue, 5 Sep 2023 09:23:36 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBF319B;
+        Tue,  5 Sep 2023 06:23:32 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id 46e09a7af769-6bb1133b063so298386a34.1;
+        Tue, 05 Sep 2023 06:23:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693920212; x=1694525012; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=tAnyjNoEHzOtoWr8RZt8Z0B0PvJcndgHMjpREL+JJTc=;
+        b=BKfp3hMsq6pBIVCozL+NV4m3WSnJh85eG61DsCI6irpq9MxhaiLrh7NWjsPqfVB9Fn
+         9ZhRghXNv71ttQjrvWhuu4WHaaKy0KAKhrbHGUZ1TA9xUsHf4b3+xhx+ZHopZBPSzjdo
+         L0jLVwl/XRbcQFR1Pfm5zd0op5Sj5J0hUq6+m43hCFScVpzIAbJhqTMngtAwRMuMFnVm
+         hXuU7MDv9TVfAtuaDjuWZEV7m5a+7AewoxLdWlFvvJBMRRdDNvmA3XPyKrt0hu8hwdJ+
+         t7B4TCcZMLbe12jUPYsXCesrT0yIKrgpWYj9Q14L+vbMfzOPLvIsgZtCso7tRTZMf0Wk
+         AEjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693920212; x=1694525012;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tAnyjNoEHzOtoWr8RZt8Z0B0PvJcndgHMjpREL+JJTc=;
+        b=gqFq6K4hwr9N4kPTMtcSdtk6jy3U0VIpYZHgYqag0LqXsqEmjXF6z9IBJ2jAhkjfBS
+         H6rd9+hvbviHs/oyHF82x1cFz9scx6FMuYVJa8UMSjWrHnqLeQFSu7Kv8YkcTfJ1Slzs
+         Tnlfzqm/ipyqlz47dZBGVzrpXOzEFy3eAXhyfmdzQ34aVfsccR08pgNrUdXiHzPLAX5L
+         As8ZgpHq48SUzFY1aZRdY6tgfgGJ0jyi0vT2tdNZeWA6RX48CxsXP9bAli9TkWj88lTr
+         IwhSszyWFtJryr5jRJvLcNLjY1BP6LkgI804YppuF7b9M6IyThtSZKSxXohhB2atpxDe
+         pQrA==
+X-Gm-Message-State: AOJu0YytNPWH+H5hNNX/sbryXTzT/dl7C7njtX5Gz2IJqBWJdVif1bFN
+        OA4kjrdRbHCRPjOz1pLLbO0=
+X-Google-Smtp-Source: AGHT+IGzXHFvxkJru02iZ4T7UiUFfUmCbJBdZ7YcOEEj2J6kpE0YGf1LLj2iwpaTeIynToQfSlvAFQ==
+X-Received: by 2002:a05:6830:6a9b:b0:6bc:a6d0:ab7 with SMTP id da27-20020a0568306a9b00b006bca6d00ab7mr11675305otb.3.1693920212064;
+        Tue, 05 Sep 2023 06:23:32 -0700 (PDT)
+Received: from fabio-Precision-3551.. ([2804:14c:485:4b61:ed1a:13f:d0c6:913b])
+        by smtp.gmail.com with ESMTPSA id e26-20020a9d63da000000b006b9d8c31e94sm5443062otl.39.2023.09.05.06.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 06:23:31 -0700 (PDT)
+From:   Fabio Estevam <festevam@gmail.com>
+To:     alexandre.belloni@bootlin.com
+Cc:     robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, sam@ravnborg.or, linux-rtc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fabio Estevam <festevam@denx.de>
+Subject: [PATCH] dt-bindings: rtc: pcf8523: Convert to YAML
+Date:   Tue,  5 Sep 2023 10:23:24 -0300
+Message-Id: <20230905132324.3146722-1-festevam@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH] perf/x86/uncore: Correct the number of CHAs on EMR
-To:     Ingo Molnar <mingo@kernel.org>
-Cc:     peterz@infradead.org, mingo@redhat.com,
-        linux-kernel@vger.kernel.org,
-        Stephane Eranian <eranian@google.com>,
-        Yunying Sun <yunying.sun@intel.com>
-References: <20230901142028.298051-1-kan.liang@linux.intel.com>
- <ZPRGmoXKvOCFrK26@gmail.com>
- <37afe50a-44f1-7fb1-c4c0-1e45c38c9a6d@linux.intel.com>
- <ZPYrjW9+hIOJODHY@gmail.com>
-Content-Language: en-US
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <ZPYrjW9+hIOJODHY@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Fabio Estevam <festevam@denx.de>
 
+Convert the PCF8523 bindings from text format to YAML.
 
-On 2023-09-04 3:10 p.m., Ingo Molnar wrote:
-> 
-> * Liang, Kan <kan.liang@linux.intel.com> wrote:
-> 
->>
->>
->> On 2023-09-03 4:40 a.m., Ingo Molnar wrote:
->>>
->>> * kan.liang@linux.intel.com <kan.liang@linux.intel.com> wrote:
->>>
->>>> From: Kan Liang <kan.liang@linux.intel.com>
->>>>
->>>> The MSR UNC_CBO_CONFIG, which was used to detect the number of CHAs on
->>>> SPR, is broken on EMR XCC. It always returns 0.
->>>>
->>>> Roll back to the discovery method, which can give the correct number for
->>>> this case.
->>>>
->>>> Fixes: 38776cc45eb7 ("perf/x86/uncore: Correct the number of CHAs on SPR")
->>>> Reported-by: Stephane Eranian <eranian@google.com>
->>>> Reported-by: Yunying Sun <yunying.sun@intel.com>
->>>> Tested-by: Yunying Sun <yunying.sun@intel.com>
->>>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
->>>> ---
->>>>  arch/x86/events/intel/uncore_snbep.c | 4 +++-
->>>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
->>>> index d49e90dc04a4..c41d7d46481c 100644
->>>> --- a/arch/x86/events/intel/uncore_snbep.c
->>>> +++ b/arch/x86/events/intel/uncore_snbep.c
->>>> @@ -6475,7 +6475,9 @@ void spr_uncore_cpu_init(void)
->>>>  	type = uncore_find_type_by_id(uncore_msr_uncores, UNCORE_SPR_CHA);
->>>>  	if (type) {
->>>>  		rdmsrl(SPR_MSR_UNC_CBO_CONFIG, num_cbo);
->>>> -		type->num_boxes = num_cbo;
->>>> +		/* The MSR doesn't work on the EMR XCC. Roll back to the discovery method. */
->>>> +		if (num_cbo)
->>>> +			type->num_boxes = num_cbo;
->>>
->>> So in the zero case we don't write type->num_boxes and leave it as-is.
->>>
->>> How does this fall back to the discovery method, is the existing (default?) 
->>> value of type->num_boxes some special value?
->>>
->>
->> Starts from SPR, the basic uncore PMON information are retrieved from
->> the discovery table (resides in an MMIO space populated by BIOS.). It is
->> called the discovery method. The existing value of the type->num_boxes
->> is from the discovery table.
->>
->> On some SPR variants, there is a firmware bug. So the value from the
->> discovery table is incorrect. We use the value from
->> SPR_MSR_UNC_CBO_CONFIG to replace the one from the discovery table.
->> 38776cc45eb7 ("perf/x86/uncore: Correct the number of CHAs on SPR")
->>
->> Unfortunately, the SPR_MSR_UNC_CBO_CONFIG isn't available for the EMR
->> XCC (It works well for other EMR variants). But the above firmware bug
->> doesn't impact the EMR XCC. So this patch NOT lets the value from the
->> SPR_MSR_UNC_CBO_CONFIG replace the existing value from the discovery table.
-> 
-> Thanks - the comment & changelog should probably reflect this background.
-> 
+The YAML format is preferred as it allows validation.
 
-I will update the comment & changelog and send a V2.
+Signed-off-by: Fabio Estevam <festevam@denx.de>
+---
+ .../devicetree/bindings/rtc/nxp,pcf8523.txt   | 18 -------
+ .../devicetree/bindings/rtc/nxp,pcf8523.yaml  | 48 +++++++++++++++++++
+ 2 files changed, 48 insertions(+), 18 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
+ create mode 100644 Documentation/devicetree/bindings/rtc/nxp,pcf8523.yaml
 
-Thanks,
-Kan
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
+deleted file mode 100644
+index 0b1080c60f63..000000000000
+--- a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-* NXP PCF8523 Real Time Clock
+-
+-Required properties:
+-- compatible: Should contain "nxp,pcf8523".
+-- reg: I2C address for chip.
+-
+-Optional property:
+-- quartz-load-femtofarads: The capacitive load of the quartz(x-tal),
+-  expressed in femto Farad (fF). Valid values are 7000 and 12500.
+-  Default value (if no value is specified) is 12500fF.
+-
+-Example:
+-
+-pcf8523: rtc@68 {
+-	compatible = "nxp,pcf8523";
+-	reg = <0x68>;
+-	quartz-load-femtofarads = <7000>;
+-};
+diff --git a/Documentation/devicetree/bindings/rtc/nxp,pcf8523.yaml b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.yaml
+new file mode 100644
+index 000000000000..111cb9938f8f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/nxp,pcf8523.yaml
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/nxp,pcf8523.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PCF8523 Real Time Clock
++
++maintainers:
++  - Sam Ravnborg <sam@ravnborg.org>
++
++allOf:
++  - $ref: rtc.yaml#
++
++properties:
++  compatible:
++    const: nxp,pcf8523
++
++  reg:
++    maxItems: 1
++
++  quartz-load-femtofarads:
++    description:
++      The capacitive load of the crystal, expressed in femto Farad (fF).
++      Valid values are 7000 and 12500. The default value when this property
++      is absent is 12500fF.
++    enum: [ 7000, 12500 ]
++
++  wakeup-source: true
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        rtc@68 {
++            compatible = "nxp,pcf8523";
++            reg = <0x68>;
++            quartz-load-femtofarads = <7000>;
++        };
++    };
+-- 
+2.34.1
+
