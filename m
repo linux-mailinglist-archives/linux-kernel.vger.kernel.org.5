@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A7459792BD7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03B66792C0D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344664AbjIERCd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:02:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49470 "EHLO
+        id S1353455AbjIERGB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:06:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354365AbjIELBS (ORCPT
+        with ESMTP id S1354368AbjIELDG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:01:18 -0400
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05A251AD;
-        Tue,  5 Sep 2023 04:01:14 -0700 (PDT)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385AgwpT019766;
-        Tue, 5 Sep 2023 11:01:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=C+TUwBTCtIdc1cmlDb9hg/uZ6p9FFeooRc6oMwrbPrk=;
- b=tlo1+aiiqnUphZ2A1usVMxB6zVVn7XRdrL+IflZ/MkuhpmlDjBNwHGsZsd9c5h7kOw5S
- joIOd3vcAR712nm8gI9S6md+/2GBbft0qH1tsTWDL+A4/fwxX99sUW33/8hUFrX2OKVZ
- mnz9e8G7G5ooED/x4UP6Gy4rqidKaxoQKlXxJn/ew5UxddyEtf0mBt7AL0HAvG8SBRu2
- jKmTx93uZtdeHhCZPcvJyH8O30hJj7VK0fqdwNy6cjPk3hXCHG6os/25v4S+Uz0OZCA8
- PyMNonpm5DAHWQVWHY+7IwJX+YwVR3bKXoX2ghio4jEVbwLfdHgr6cPELFXZjAvpS+PP gA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx2hn90dk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 11:01:10 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3859gtGG026826;
-        Tue, 5 Sep 2023 11:01:10 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgcn9ydk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 11:01:10 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-        by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385B18pU42402388
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Sep 2023 11:01:08 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 21C3920043;
-        Tue,  5 Sep 2023 11:01:08 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C4F0C20040;
-        Tue,  5 Sep 2023 11:01:06 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.in.ibm.com (unknown [9.109.253.169])
-        by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Tue,  5 Sep 2023 11:01:06 +0000 (GMT)
-From:   Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To:     linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: [RFC 1/1] ext4: Replace linear search with array of lists in CR_GOAL_LEN_SLOW
-Date:   Tue,  5 Sep 2023 16:31:04 +0530
-Message-Id: <f5c56b0f4c9f0ce3f934ec44a60c6f4dba4410da.1693911548.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1693911548.git.ojaswin@linux.ibm.com>
-References: <cover.1693911548.git.ojaswin@linux.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: oxA3HdeKYCjjACEb2du5qnRfrnqFbXxo
-X-Proofpoint-GUID: oxA3HdeKYCjjACEb2du5qnRfrnqFbXxo
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Tue, 5 Sep 2023 07:03:06 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 214D41AB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:02:58 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.170])
+        by gateway (Coremail) with SMTP id _____8BxIvDhCvdk7oYfAA--.62931S3;
+        Tue, 05 Sep 2023 19:02:57 +0800 (CST)
+Received: from [10.20.42.170] (unknown [10.20.42.170])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxB83hCvdkx8lsAA--.58503S3;
+        Tue, 05 Sep 2023 19:02:57 +0800 (CST)
+Message-ID: <22b90beb-4eeb-de44-fce5-e8504c58f1f0@loongson.cn>
+Date:   Tue, 5 Sep 2023 19:02:57 +0800
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_08,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
- malwarescore=0 bulkscore=0 phishscore=0 mlxscore=0 mlxlogscore=999
- clxscore=1015 adultscore=0 impostorscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309050094
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT autolearn=ham
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH 1/2] LoongArch: Remove zero_page_mask symbol
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20230905080147.1625448-1-maobibo@loongson.cn>
+ <20230905080147.1625448-2-maobibo@loongson.cn>
+ <CAAhV-H7VK+XkpCJUjX8vE2MtHDqzteCeDkvdxurKMbCZ6brSFg@mail.gmail.com>
+Content-Language: en-US
+From:   bibo mao <maobibo@loongson.cn>
+In-Reply-To: <CAAhV-H7VK+XkpCJUjX8vE2MtHDqzteCeDkvdxurKMbCZ6brSFg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxB83hCvdkx8lsAA--.58503S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7ur1UAw4kArWkWryfKF4fCrX_yoW5JF18pF
+        9rAF1vgF48GryrArn2vwnF9r18JwsxKF4IgFy2yFyq93sFqry0gr1ktrZ7ZFyUtayxGFWI
+        va15Gr1avFs0yacCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
+        xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v2
+        6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67
+        vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2
+        KfnxnUUI43ZEXa7IU8zwZ7UUUUU==
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,382 +68,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Originally, in CR_GOAL_LEN_SLOW, we start at goal block group and
-keep looking at each BG linearly till we find one with
-free blocks > requested blocks and then we allocate from there.
 
-However, due to the linear nature of search we can end up unnecessarily
-looping through BGs when none of them have enough free blocks. To avoid
-this use an array of lists structure similar to ones used by the faster
-CRs. Call this array of lists as freelists as the array has one list for
-each possible order of free blocks in a block group.
 
-* Design *
+在 2023/9/5 18:58, Huacai Chen 写道:
+> Hi, Bibo,
+> 
+> On Tue, Sep 5, 2023 at 4:01 PM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> On LoongArch system, there is only one page for zero page, and
+>> there is no COLOR_ZERO_PAGE, so zero_page_mask is useless and
+>> macro __HAVE_COLOR_ZERO_PAGE is not necessary. This patch removes
+>> zero_page_mask and macro __HAVE_COLOR_ZERO_PAGE.
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>  arch/loongarch/include/asm/pgtable.h | 4 +---
+>>  arch/loongarch/mm/init.c             | 9 +--------
+>>  2 files changed, 2 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/arch/loongarch/include/asm/pgtable.h b/arch/loongarch/include/asm/pgtable.h
+>> index 06963a172319..342c5f9c25d2 100644
+>> --- a/arch/loongarch/include/asm/pgtable.h
+>> +++ b/arch/loongarch/include/asm/pgtable.h
+>> @@ -71,11 +71,9 @@ struct vm_area_struct;
+>>   */
+>>
+>>  extern unsigned long empty_zero_page;
+>> -extern unsigned long zero_page_mask;
+>>
+>>  #define ZERO_PAGE(vaddr) \
+>> -       (virt_to_page((void *)(empty_zero_page + (((unsigned long)(vaddr)) & zero_page_mask))))
+>> -#define __HAVE_COLOR_ZERO_PAGE
+>> +       (virt_to_page((void *)(empty_zero_page)))
+>>
+>>  /*
+>>   * TLB refill handlers may also map the vmalloc area into xkvrange.
+>> diff --git a/arch/loongarch/mm/init.c b/arch/loongarch/mm/init.c
+>> index 3b7d8129570b..8ec668f97b00 100644
+>> --- a/arch/loongarch/mm/init.c
+>> +++ b/arch/loongarch/mm/init.c
+>> @@ -35,14 +35,8 @@
+>>  #include <asm/pgalloc.h>
+>>  #include <asm/tlb.h>
+>>
+>> -/*
+>> - * We have up to 8 empty zeroed pages so we can map one of the right colour
+>> - * when needed.         Since page is never written to after the initialization we
+>> - * don't have to care about aliases on other CPUs.
+>> - */
+>> -unsigned long empty_zero_page, zero_page_mask;
+>> +unsigned long empty_zero_page;
+>>  EXPORT_SYMBOL(empty_zero_page);
+>> -EXPORT_SYMBOL(zero_page_mask);
+>>
+>>  void setup_zero_pages(void)
+>>  {
+>> @@ -60,7 +54,6 @@ void setup_zero_pages(void)
+>>         for (i = 0; i < (1 << order); i++, page++)
+>>                 mark_page_reserved(page);
+>>
+>> -       zero_page_mask = ((PAGE_SIZE << order) - 1) & PAGE_MASK;
+> In my opinion it is better to combine two patches to one. Because this
+> patch can only work *accidently* when 'order' is zero.
+sure, will do.
 
-- Calculate freelist order of each BG as fls(grp->bb_free) with empty
-  groups having an order of 0.
+Regards
+Bibo Mao
 
-- Create 1 linked list for each order and place each BG in the respective
-  order. Since we have free block data of all BGs on mount, we can classify
-  all BGs in one of these lists.
-
-- Upon allocation, if we enter CR_GOAL_LEN_SLOW, we use these freelists
-  to quickly find the next group to use based on the request order.
-
-- We update freelist order of a BG after every allocation or free operation
-  on it.
-
-* Motivation *
-
-Having such a design in CR_GOAL_LEN_SLOW is beneficial because:
-
-1. Theoretically, if we have a very large disk with large number of filled up
-block groups, we'll be able to find the good group faster than linear searching.
-
-2. We'll be able to select a BG whose free block order matches our goal length
-and hence we won't be filling up bigger holes for small requests. This can
-improve fragmentation in the longer run.
-
-3. We'll have more control in what block groups we want to allocate from,
-making CR_GOAL_LEN_SLOW more flexible.
-
-NOTE: With this patch, we'll no longer look for BGs linearly and hence this has a
-chance of increasing the spread of allocation however I think that shouldn't be
-a problem since we still have the MB_DEFAULT_LINEAR_LIMIT for rotational devices
-combined with Jan's (merged) patchset that fixed several issues related to
-allocation spread [1].
-
-[1] https://lore.kernel.org/all/20220908091301.147-1-jack@suse.cz/
-
-(Also cleanup some comments to reflect the new symbolic names of criterias)
-
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
- fs/ext4/ext4.h    |  25 +++++++--
- fs/ext4/mballoc.c | 134 ++++++++++++++++++++++++++++++++++++++++++++--
- fs/ext4/mballoc.h |   5 ++
- 3 files changed, 156 insertions(+), 8 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 84618c46f239..fd0f9054a5cc 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -213,12 +213,23 @@ enum criteria {
- #define EXT4_MB_USE_RESERVED		0x2000
- /* Do strict check for free blocks while retrying block allocation */
- #define EXT4_MB_STRICT_CHECK		0x4000
--/* Large fragment size list lookup succeeded at least once for cr = 0 */
-+/*
-+ * Large fragment size list lookup succeeded at least once for
-+ * CR_POWER2_ALIGNED
-+ */
- #define EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED		0x8000
--/* Avg fragment size rb tree lookup succeeded at least once for cr = 1 */
-+/*
-+ * Avg fragment size rb tree lookup succeeded at least once for
-+ * CR_GOAL_LEN_FAST
-+ */
- #define EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED		0x00010000
--/* Avg fragment size rb tree lookup succeeded at least once for cr = 1.5 */
-+/*
-+ * Avg fragment size rb tree lookup succeeded at least once for
-+ * CR_BEST_AVAIL_LEN
-+ */
- #define EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED		0x00020000
-+/* Freelist lookup succeeded at least once for CR_GOAL_LEN_SLOW */
-+#define EXT4_MB_CR_GOAL_LEN_SLOW_OPTIMIZED 	0x00040000
- 
- struct ext4_allocation_request {
- 	/* target inode for block we're allocating */
-@@ -1567,6 +1578,8 @@ struct ext4_sb_info {
- 	rwlock_t *s_mb_avg_fragment_size_locks;
- 	struct list_head *s_mb_largest_free_orders;
- 	rwlock_t *s_mb_largest_free_orders_locks;
-+	struct list_head *s_mb_freelist;
-+	rwlock_t *s_mb_freelist_locks;
- 
- 	/* tunables */
- 	unsigned long s_stripe;
-@@ -1599,6 +1612,7 @@ struct ext4_sb_info {
- 	atomic_t s_bal_p2_aligned_bad_suggestions;
- 	atomic_t s_bal_goal_fast_bad_suggestions;
- 	atomic_t s_bal_best_avail_bad_suggestions;
-+	atomic_t s_bal_goal_slow_bad_suggestions;
- 	atomic64_t s_bal_cX_groups_considered[EXT4_MB_NUM_CRS];
- 	atomic64_t s_bal_cX_hits[EXT4_MB_NUM_CRS];
- 	atomic64_t s_bal_cX_failed[EXT4_MB_NUM_CRS];		/* cX loop didn't find blocks */
-@@ -3397,6 +3411,10 @@ struct ext4_group_info {
- 	int		bb_avg_fragment_size_order;	/* order of average
- 							   fragment in BG */
- 	ext4_grpblk_t	bb_largest_free_order;/* order of largest frag in BG */
-+	/*
-+	 * Determines which freelist will this group be added to
-+	 */
-+	ext4_grpblk_t 	bb_freelist_order;
- 	ext4_group_t	bb_group;	/* Group number */
- 	struct          list_head bb_prealloc_list;
- #ifdef DOUBLE_CHECK
-@@ -3405,6 +3423,7 @@ struct ext4_group_info {
- 	struct rw_semaphore alloc_sem;
- 	struct list_head bb_avg_fragment_size_node;
- 	struct list_head bb_largest_free_order_node;
-+	struct list_head bb_freelist_node;
- 	ext4_grpblk_t	bb_counters[];	/* Nr of free power-of-two-block
- 					 * regions, index is order.
- 					 * bb_counters[3] = 5 means
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index c91db9f57524..885571f9be7a 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -866,6 +866,31 @@ mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
- 					grp->bb_avg_fragment_size_order]);
- }
- 
-+static void mb_update_freelist(struct super_block *sb,
-+			       struct ext4_group_info *grp)
-+{
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	int new_order, prev_order;
-+
-+	if (!test_opt2(sb, MB_OPTIMIZE_SCAN))
-+		return;
-+
-+	new_order = fls(grp->bb_free);
-+	prev_order = grp->bb_freelist_order;
-+	if (new_order == prev_order)
-+		return;
-+
-+	if (prev_order != -1) {
-+		write_lock(&sbi->s_mb_freelist_locks[prev_order]);
-+		list_del(&grp->bb_freelist_node);
-+		write_unlock(&sbi->s_mb_freelist_locks[prev_order]);
-+	}
-+	write_lock(&sbi->s_mb_freelist_locks[new_order]);
-+	grp->bb_freelist_order = new_order;
-+	list_add_tail(&grp->bb_freelist_node, &sbi->s_mb_freelist[new_order]);
-+	write_unlock(&sbi->s_mb_freelist_locks[new_order]);
-+}
-+
- /*
-  * Choose next group by traversing largest_free_order lists. Updates *new_cr if
-  * cr level needs an update.
-@@ -1065,11 +1090,63 @@ static void ext4_mb_choose_next_group_best_avail(struct ext4_allocation_context
- 	*new_cr = CR_GOAL_LEN_SLOW;
- }
- 
-+static void ext4_mb_choose_next_group_goal_slow(struct ext4_allocation_context *ac,
-+					  enum criteria *new_cr,
-+					  ext4_group_t *group,
-+					  ext4_group_t ngroups)
-+{
-+	struct ext4_sb_info *sbi = EXT4_SB(ac->ac_sb);
-+	struct ext4_group_info *iter, *grp = NULL;
-+	int i, order;
-+	unsigned freelist_max_order = MB_FREELIST_NUM_ORDERS(ac->ac_sb);
-+
-+	if (unlikely(ac->ac_flags & EXT4_MB_CR_GOAL_LEN_SLOW_OPTIMIZED)) {
-+		if (sbi->s_mb_stats)
-+			atomic_inc(&sbi->s_bal_goal_slow_bad_suggestions);
-+	}
-+
-+	order = fls(ac->ac_g_ex.fe_len);
-+	for (i = order; i < freelist_max_order; i++) {
-+		if (list_empty(&sbi->s_mb_freelist[i]))
-+			continue;
-+
-+		read_lock(&sbi->s_mb_freelist_locks[i]);
-+		if (list_empty(&sbi->s_mb_freelist[i])) {
-+			read_unlock(&sbi->s_mb_freelist_locks[i]);
-+			continue;
-+		}
-+		grp = NULL;
-+		list_for_each_entry(iter, &sbi->s_mb_freelist[i],
-+				    bb_freelist_node) {
-+			if (sbi->s_mb_stats)
-+				atomic64_inc(&sbi->s_bal_cX_groups_considered
-+						      [CR_GOAL_LEN_SLOW]);
-+
-+			if (likely(ext4_mb_good_group(ac, iter->bb_group,
-+						      CR_GOAL_LEN_SLOW))) {
-+				grp = iter;
-+				break;
-+			}
-+		}
-+		read_unlock(&sbi->s_mb_freelist_locks[i]);
-+
-+		if (grp)
-+			break;
-+	}
-+
-+	if (grp) {
-+		*group = grp->bb_group;
-+		ac->ac_flags |= EXT4_MB_CR_GOAL_LEN_SLOW_OPTIMIZED;
-+	} else {
-+		*new_cr = CR_ANY_FREE;
-+	}
-+}
-+
- static inline int should_optimize_scan(struct ext4_allocation_context *ac)
- {
- 	if (unlikely(!test_opt2(ac->ac_sb, MB_OPTIMIZE_SCAN)))
- 		return 0;
--	if (ac->ac_criteria >= CR_GOAL_LEN_SLOW)
-+	if (ac->ac_criteria >= CR_ANY_FREE)
- 		return 0;
- 	if (!ext4_test_inode_flag(ac->ac_inode, EXT4_INODE_EXTENTS))
- 		return 0;
-@@ -1130,10 +1207,13 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
- 		ext4_mb_choose_next_group_goal_fast(ac, new_cr, group, ngroups);
- 	} else if (*new_cr == CR_BEST_AVAIL_LEN) {
- 		ext4_mb_choose_next_group_best_avail(ac, new_cr, group, ngroups);
-+	} else if (*new_cr == CR_GOAL_LEN_SLOW) {
-+		ext4_mb_choose_next_group_goal_slow(ac, new_cr, group, ngroups);
- 	} else {
- 		/*
--		 * TODO: For CR=2, we can arrange groups in an rb tree sorted by
--		 * bb_free. But until that happens, we should never come here.
-+		 * We should never reach this point since should_opitimize_scan()
-+		 * will make sure we don't use mb_optimize_scan for the remaining
-+		 * CR_ANY_FREE criteria.
- 		 */
- 		WARN_ON(1);
- 	}
-@@ -1952,6 +2032,7 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- done:
- 	mb_set_largest_free_order(sb, e4b->bd_info);
- 	mb_update_avg_fragment_size(sb, e4b->bd_info);
-+	mb_update_freelist(e4b->bd_sb, e4b->bd_info);
- 	mb_check_buddy(e4b);
- }
- 
-@@ -2096,6 +2177,7 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
- 	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
- 
- 	mb_update_avg_fragment_size(e4b->bd_sb, e4b->bd_info);
-+	mb_update_freelist(e4b->bd_sb, e4b->bd_info);
- 	mb_set_bits(e4b->bd_bitmap, ex->fe_start, len0);
- 	mb_check_buddy(e4b);
- 
-@@ -3125,6 +3207,8 @@ int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
- 		   atomic_read(&sbi->s_bal_cX_ex_scanned[CR_GOAL_LEN_SLOW]));
- 	seq_printf(seq, "\t\tuseless_loops: %llu\n",
- 		   atomic64_read(&sbi->s_bal_cX_failed[CR_GOAL_LEN_SLOW]));
-+	seq_printf(seq, "\t\tbad_suggestions: %u\n",
-+		   atomic_read(&sbi->s_bal_goal_slow_bad_suggestions));
- 
- 	/* CR_ANY_FREE stats */
- 	seq_puts(seq, "\tcr_any_free_stats:\n");
-@@ -3164,7 +3248,8 @@ __acquires(&EXT4_SB(sb)->s_mb_rb_lock)
- 	struct super_block *sb = pde_data(file_inode(seq->file));
- 	unsigned long position;
- 
--	if (*pos < 0 || *pos >= 2*MB_NUM_ORDERS(sb))
-+	if (*pos < 0 ||
-+	    *pos >= 2 * MB_NUM_ORDERS(sb) + fls(EXT4_CLUSTERS_PER_GROUP(sb)))
- 		return NULL;
- 	position = *pos + 1;
- 	return (void *) ((unsigned long) position);
-@@ -3176,7 +3261,8 @@ static void *ext4_mb_seq_structs_summary_next(struct seq_file *seq, void *v, lof
- 	unsigned long position;
- 
- 	++*pos;
--	if (*pos < 0 || *pos >= 2*MB_NUM_ORDERS(sb))
-+	if (*pos < 0 ||
-+	    *pos >= 2 * MB_NUM_ORDERS(sb) + fls(EXT4_CLUSTERS_PER_GROUP(sb)))
- 		return NULL;
- 	position = *pos + 1;
- 	return (void *) ((unsigned long) position);
-@@ -3191,6 +3277,23 @@ static int ext4_mb_seq_structs_summary_show(struct seq_file *seq, void *v)
- 	unsigned int count;
- 
- 	position--;
-+
-+	if (position >= 2*MB_NUM_ORDERS(sb)) {
-+		position -= 2*MB_NUM_ORDERS(sb);
-+		if (position == 0)
-+			seq_puts(seq, "freelists:\n");
-+
-+		count = 0;
-+		read_lock(&sbi->s_mb_freelist_locks[position]);
-+		list_for_each_entry(grp, &sbi->s_mb_freelist[position],
-+				    bb_freelist_node)
-+			count++;
-+		read_unlock(&sbi->s_mb_freelist_locks[position]);
-+		seq_printf(seq, "\tfreelist_order_%u_groups: %u\n",
-+			   (unsigned int)position, count);
-+		return 0;
-+	}
-+
- 	if (position >= MB_NUM_ORDERS(sb)) {
- 		position -= MB_NUM_ORDERS(sb);
- 		if (position == 0)
-@@ -3334,6 +3437,7 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
- 			ext4_free_group_clusters(sb, desc);
- 	}
- 
-+	INIT_LIST_HEAD(&meta_group_info[i]->bb_freelist_node);
- 	INIT_LIST_HEAD(&meta_group_info[i]->bb_prealloc_list);
- 	init_rwsem(&meta_group_info[i]->alloc_sem);
- 	meta_group_info[i]->bb_free_root = RB_ROOT;
-@@ -3341,8 +3445,10 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
- 	INIT_LIST_HEAD(&meta_group_info[i]->bb_avg_fragment_size_node);
- 	meta_group_info[i]->bb_largest_free_order = -1;  /* uninit */
- 	meta_group_info[i]->bb_avg_fragment_size_order = -1;  /* uninit */
-+	meta_group_info[i]->bb_freelist_order = -1; /* uninit */
- 	meta_group_info[i]->bb_group = group;
- 
-+	mb_update_freelist(sb, meta_group_info[i]);
- 	mb_group_bb_bitmap_alloc(sb, meta_group_info[i], group);
- 	return 0;
- 
-@@ -3553,6 +3659,7 @@ int ext4_mb_init(struct super_block *sb)
- 	unsigned i, j;
- 	unsigned offset, offset_incr;
- 	unsigned max;
-+	unsigned freelist_max_order = MB_FREELIST_NUM_ORDERS(sb);
- 	int ret;
- 
- 	i = MB_NUM_ORDERS(sb) * sizeof(*sbi->s_mb_offsets);
-@@ -3627,6 +3734,23 @@ int ext4_mb_init(struct super_block *sb)
- 		INIT_LIST_HEAD(&sbi->s_mb_largest_free_orders[i]);
- 		rwlock_init(&sbi->s_mb_largest_free_orders_locks[i]);
- 	}
-+	/* Empty block groups get an order of 0 */
-+	freelist_max_order = MB_FREELIST_NUM_ORDERS(sb);
-+	sbi->s_mb_freelist = kmalloc_array(freelist_max_order, sizeof(struct list_head), GFP_KERNEL);
-+	if (!sbi->s_mb_freelist) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	sbi->s_mb_freelist_locks =
-+		kmalloc_array(freelist_max_order, sizeof(rwlock_t), GFP_KERNEL);
-+	if (!sbi->s_mb_freelist_locks) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+	for (i = 0; i < freelist_max_order; i++) {
-+		INIT_LIST_HEAD(&sbi->s_mb_freelist[i]);
-+		rwlock_init(&sbi->s_mb_freelist_locks[i]);
-+	}
- 
- 	spin_lock_init(&sbi->s_md_lock);
- 	sbi->s_mb_free_pending = 0;
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index d7aeb5da7d86..a3b53802899c 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -97,6 +97,11 @@
-  */
- #define MB_NUM_ORDERS(sb)		((sb)->s_blocksize_bits + 2)
- 
-+/*
-+ * Number of valid freelist orders. One extra order for 0 blocks.
-+ */
-+#define MB_FREELIST_NUM_ORDERS(sb) (fls(EXT4_CLUSTERS_PER_GROUP(sb)) + 1)
-+
- struct ext4_free_data {
- 	/* this links the free block information from sb_info */
- 	struct list_head		efd_list;
--- 
-2.31.1
+> 
+> Huacai
+>>  }
+>>
+>>  void copy_user_highpage(struct page *to, struct page *from,
+>> --
+>> 2.27.0
+>>
+>>
 
