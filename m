@@ -2,222 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03717926CA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E03AC792738
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230201AbjIEQUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49012 "EHLO
+        id S235704AbjIEQC1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:02:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354739AbjIEN4f (ORCPT
+        with ESMTP id S1354740AbjIEN51 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:56:35 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1C67197;
-        Tue,  5 Sep 2023 06:56:31 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 540EA21AD2;
-        Tue,  5 Sep 2023 13:56:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693922190; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BnNbZmpVxIuS2BOlgd/tEGnEIeSQoFZTx2iHFPSc4mI=;
-        b=ciKXi3l1Ha5z2PZ2BDnzEiMWhD+C4bNAB+qBTTH3fC+FFngmzNOIMGtiD5PmUMQcx4sBAj
-        kt9TA3xsCecAHmBpO0EB4uuHHLusmW8qbC8SFIBvcxg6JEB15jBYi1CKtqVg8X44+GPxGr
-        1gnl1gOS1MsIaZoalDedSXXUlWOJtLc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693922190;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BnNbZmpVxIuS2BOlgd/tEGnEIeSQoFZTx2iHFPSc4mI=;
-        b=Wn2hz/d85qD1aEc4S49DpeqS6I93TPG1dFMtvinHW2gVqTgZc6e3IfbdCR17bGfFD45QKl
-        fcl03+/4Ple1XNDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 44F8513499;
-        Tue,  5 Sep 2023 13:56:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 8EayEI4z92QcRgAAMHmgww
-        (envelope-from <jack@suse.cz>); Tue, 05 Sep 2023 13:56:30 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id AF555A0776; Tue,  5 Sep 2023 15:56:29 +0200 (CEST)
-Date:   Tue, 5 Sep 2023 15:56:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc:     linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-        Ritesh Harjani <riteshh@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 1/1] ext4: Mark buffer new if it is unwritten to avoid
- stale data exposure
-Message-ID: <20230905135629.wdjl2b6s3pzh7idg@quack3>
-References: <cover.1693909504.git.ojaswin@linux.ibm.com>
- <c307579df7e109eb4eedaaf07ebdc98b15d8b7ff.1693909504.git.ojaswin@linux.ibm.com>
+        Tue, 5 Sep 2023 09:57:27 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46951197;
+        Tue,  5 Sep 2023 06:57:24 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99c3c8adb27so385085666b.1;
+        Tue, 05 Sep 2023 06:57:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693922243; x=1694527043; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AbqRVHgQYQHhHZOk6eeSls+sEH+8z1toioax1pRSrQA=;
+        b=TgU27uf+DwLJLsSEgKST8+Z6yx8ttbmFZBx45RSGGKQJCkydlYk/yBk4pmarFFvdBV
+         75llmKmmbLZY4308Xj34P1nEjaUlNfRfFz+dIM2fJJRV7hJWDheDuvl+z8sb3x4ioYhC
+         Uo3qrw7sny2r2RcyKH6hwhJyWAWk/euTieQ7xQaEW7iXAlK9BvArx/HEOj2xe8hV6QRJ
+         2Yv0lv2oE5KDNKyEeLghZ6ker1SILjnhBUS1OyjNf8fBn8QHi1Ln5PNLWPTwQNSpGgO8
+         ID8Qjp1ICTDbI2sTN28jrYHzNpbV2E2WnBM8kzxDXKVMl3xiTKFu23Y2D6bAnraKQ3pO
+         uuOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693922243; x=1694527043;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AbqRVHgQYQHhHZOk6eeSls+sEH+8z1toioax1pRSrQA=;
+        b=Tc0dlz7gHW8BKsVA9zW/B8iZT508ayWHYLUvg/gxOC5pZmhB8ghVWNyWDPfoHfX0wf
+         6Z1uD2NuFIVu6mFcujmpU6NQ9I7HOM8UCQP/mhCFdsgz2rgbHtVoircFLv5JIImIByLt
+         TXC0tij/tSe1z/u7bQFcqyKubRokvzGJQqXvK8XhUFFhtWoeZ6guGdlV/lHOM1nKmCR9
+         t/hh7KPyiV/ChxA8eDCjumgsETmh6r+mo+EdzUMc8UZ3o1Xc9i29drejyvsCOPBFswJo
+         scgTvybyxgJC+KKEZqGWjf+0+YY6oFqCa6acpPHqFfgxYbRnBKArF/HOFU/rOFu83+kJ
+         JDqw==
+X-Gm-Message-State: AOJu0YxoL3UywGtY7lID7NQ+ePYGIDNkyf7TB4cYAzahpvs4SGjk/ioc
+        2LRyUd1lHpO/GKN24T6RM8A=
+X-Google-Smtp-Source: AGHT+IFUkfcraBHHjcQBhvbodWnNWOfSRc1PyhGLkQIHdxnC7JN5ddNxJpAQCPbpjEuB58MvQmJtPw==
+X-Received: by 2002:a17:907:7611:b0:9a5:ebfd:79a3 with SMTP id jx17-20020a170907761100b009a5ebfd79a3mr10419926ejc.29.1693922242624;
+        Tue, 05 Sep 2023 06:57:22 -0700 (PDT)
+Received: from skbuf ([188.26.57.165])
+        by smtp.gmail.com with ESMTPSA id p27-20020a17090635db00b00991d54db2acsm7594293ejb.44.2023.09.05.06.57.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 06:57:22 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 16:57:19 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
+        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
+        George McCollister <george.mccollister@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RFC 4/4] net: dsa: hsr: Provide generic HSR
+ ksz_hsr_{join|leave} functions
+Message-ID: <20230905135719.yycwfgonlt244gvx@skbuf>
+References: <20230904120209.741207-1-lukma@denx.de>
+ <20230904120209.741207-1-lukma@denx.de>
+ <20230904120209.741207-5-lukma@denx.de>
+ <20230904120209.741207-5-lukma@denx.de>
+ <20230905104725.zy3lwbxjhqhqyzdj@skbuf>
+ <20230905132351.2e129d53@wsk>
+ <20230905120501.tvkrrzcneq4fdzqa@skbuf>
+ <20230905154744.648c1a8b@wsk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c307579df7e109eb4eedaaf07ebdc98b15d8b7ff.1693909504.git.ojaswin@linux.ibm.com>
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20230905154744.648c1a8b@wsk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-09-23 15:58:01, Ojaswin Mujoo wrote:
-> ** Short Version **
+On Tue, Sep 05, 2023 at 03:47:44PM +0200, Lukasz Majewski wrote:
+> > > Moreover, for me it seems more natural, that we only allow full HSR
+> > > support for 2 ports or none. Please be aware, that HSR supposed to
+> > > support only 2 ports, and having only one working is not
+> > > recommended by vendor.  
+> > 
+> > And where is it enforced that full HSR offload is only applied to 2
+> > ports or none?
 > 
-> In ext4 with dioread_nolock, we could have a scenario where the bh returned by
-> get_blocks (ext4_get_block_unwritten()) in __block_write_begin_int() has
-> UNWRITTEN and MAPPED flag set. Since such a bh does not have NEW flag set we
-> never zero out the range of bh that is not under write, causing whatever stale
-> data is present in the folio at that time to be written out to disk. To fix this
-> mark the buffer as new in _ext4_get_block(), in case it is unwritten.
-> 
-> -----
-> ** Long Version **
-> 
-> The issue mentioned above was resulting in two different bugs:
-> 
-> 1. On block size < page size case in ext4, generic/269 was reliably
-> failing with dioread_nolock. The state of the write was as follows:
-> 
->   * The write was extending i_size.
->   * The last block of the file was fallocated and had an unwritten extent
->   * We were near ENOSPC and hence we were switching to non-delayed alloc
->     allocation.
-> 
-> In this case, the back trace that triggers the bug is as follows:
-> 
->   ext4_da_write_begin()
->     /* switch to nodelalloc due to low space */
->     ext4_write_begin()
->       ext4_should_dioread_nolock() // true since mount flags still have delalloc
->       __block_write_begin(..., ext4_get_block_unwritten)
->         __block_write_begin_int()
->           for(each buffer head in page) {
->             /* first iteration, this is bh1 which contains i_size */
->             if (!buffer_mapped)
->               get_block() /* returns bh with only UNWRITTEN and MAPPED */
->             /* second iteration, bh2 */
->               if (!buffer_mapped)
->                 get_block() /* we fail here, could be ENOSPC */
->           }
->           if (err)
->             /*
->              * this would zero out all new buffers and mark them uptodate.
->              * Since bh1 was never marked new, we skip it here which causes
->              * the bug later.
->              */
->             folio_zero_new_buffers();
->       /* ext4_wrte_begin() error handling */
->       ext4_truncate_failed_write()
->         ext4_truncate()
->           ext4_block_truncate_page()
->             __ext4_block_zero_page_range()
-	>               if(!buffer_uptodate())
->                 ext4_read_bh_lock()
->                   ext4_read_bh() -> ... ext4_submit_bh_wbc()
->                     BUG_ON(buffer_unwritten(bh)); /* !!! */
-> 
-> 2. The second issue is stale data exposure with page size >= blocksize
-> with dioread_nolock. The conditions needed for it to happen are same as
-> the previous issue ie dioread_nolock around ENOSPC condition. The issue
-> is also similar where in __block_write_begin_int() when we call
-> ext4_get_block_unwritten() on the buffer_head and the underlying extent
-> is unwritten, we get an unwritten and mapped buffer head. Since it is
-> not new, we never zero out the partial range which is not under write,
-> thus writing stale data to disk. This can be easily observed with the
-> following reporducer:
-> 
->  fallocate -l 4k testfile
->  xfs_io -c "pwrite 2k 2k" testfile
->  # hexdump output will have stale data in from byte 0 to 2k in testfile
->  hexdump -C testfile
-> 
-> NOTE: To trigger this, we need dioread_nolock enabled and write
-> happening via ext4_write_begin(), which is usually used when we have -o
-> nodealloc. Since dioread_nolock is disabled with nodelalloc, the only
-> alternate way to call ext4_write_begin() is to fill make sure dellayed
-> alloc switches to nodelalloc (ext4_da_write_begin() calls
-> ext4_write_begin()).  This will usually happen when FS is almost full
-> like the way generic/269 was triggering it in Issue 1 above. This might
-> make this issue harder to replicate hence for reliable replicate, I used
-> the below patch to temporarily allow dioread_nolock with nodelalloc and
-> then mount the disk with -o nodealloc,dioread_nolock. With this you can
-> hit the stale data issue 100% of times:
-> 
-> @@ -508,8 +508,8 @@ static inline int ext4_should_dioread_nolock(struct inode *inode)
->   if (ext4_should_journal_data(inode))
->     return 0;
->   /* temporary fix to prevent generic/422 test failures */
-> - if (!test_opt(inode->i_sb, DELALLOC))
-> -   return 0;
-> + // if (!test_opt(inode->i_sb, DELALLOC))
-> + //  return 0;
->   return 1;
->  }
-> 
-> -------
-> 
-> After applying this patch to mark buffer as NEW, both the above issues are
-> fixed.
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> In the ksz_jsr_join() at ksz_common.c -> we exit from this function
+> when !partner.
 
-Good catch! But I'm wondering whether this is really the right fix. For
-example in ext4_block_truncate_page() shouldn't we rather be checking
-whether the buffer isn't unwritten and if yes then bail because there's
-nothing to zero out in the block? That would seem like a more logical
-and robust solution of the first problem to me.
+And what about 4 or 6 ports being placed as members of 2 or 3 HSR devices?
+How does the !partner condition help there?
 
-Regarding the second issue I agree that using buffer_new flag makes the
-most sense. But it would make most sense to me to put this special logic
-directly into ext4_get_block_unwritten() because it is really special logic
-when preparing buffered write via unwritten extent (and it relies on
-__block_write_begin_int() logic to interpret buffer_new flag in the right
-way). Putting in _ext4_get_block() seems confusing to me because it raises
-questions like why should we set it for reads? And why not set it already
-in ext4_map_blocks() which is also used by iomap?
-
-								Honza
-
-
-> ---
->  fs/ext4/inode.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> > Results:
+> > With KSZ9477 offloading support added: RX: 100 Mbps TX: 98 Mbps
+> > With no offloading                     RX: 63 Mbps  TX: 63 Mbps
+> > 
+> > What was the setup for the "no offloading" case?
+> > 
 > 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 6c490f05e2ba..a30bfec0b525 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -765,6 +765,10 @@ static int _ext4_get_block(struct inode *inode, sector_t iblock,
->  	if (ret > 0) {
->  		map_bh(bh, inode->i_sb, map.m_pblk);
->  		ext4_update_bh_state(bh, map.m_flags);
-> +
-> +		if (buffer_unwritten(bh))
-> +			set_buffer_new(bh);
-> +
->  		bh->b_size = inode->i_sb->s_blocksize * map.m_len;
->  		ret = 0;
->  	} else if (ret == 0) {
-> -- 
-> 2.31.1
+> I used two boards. I've used the same kernel with and without HSR
+> offloading patches.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Cables were connected to port1 and port2 on each board. Non HSR network
+> was connected to port3.
+> 
+> > (a) kernel did not contain the offloading patch set
+> > 
+> 
+> Yes.
+
+Ok, then it would be good to check that your patch set does not break
+something that used to work (software HSR - easiest to check with a
+second pair of ports, but if not possible, it can also be emulated by
+returning -EOPNOTSUPP in .port_hsr_join on an artificial other condition).
+
+> > (b) the testing was on hsr1, in the situation below:
+> > 
+> > ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45
+> > version 1 # offloaded ip link add name hsr1 type hsr slave1 lan3
+> > slave2 lan4 supervision 45 version 1 # unoffloaded
+> 
+> I did not setup two hsr devices on the same board. I've used two boards
+> with hsr0 setup on each.
+
+Ok, but can you?
+
+> > (d) in some other way (please detail)
+> > 
+> > I was specifically asking about situation (b).
+> 
+> I did not tested the hsr0, hsr1 as my (real) use case is with KSZ9477
+> having only 3 ports available for connection (port 1,2,3).
+
+ksz_chip_data :: port_cnt is set to 7 for KSZ9477. I guess that the
+limitation of having only 3 user ports for testing is specific to your
+board, and not to the entire switch as may be seen on other boards,
+correct?
+
+It doesn't mean that the "single HSR device" restriction shouldn't be
+enforced.
