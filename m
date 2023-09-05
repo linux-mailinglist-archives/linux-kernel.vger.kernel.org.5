@@ -2,50 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D109C7929AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 307B3792B6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244701AbjIEQXK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:23:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53878 "EHLO
+        id S238085AbjIEQxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354444AbjIELn2 (ORCPT
+        with ESMTP id S1354448AbjIELqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:43:28 -0400
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0686A1AB;
-        Tue,  5 Sep 2023 04:43:22 -0700 (PDT)
-Received: from canpemm500006.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Rg3TD6XKdzMl8L;
-        Tue,  5 Sep 2023 19:40:00 +0800 (CST)
-Received: from [10.174.179.200] (10.174.179.200) by
- canpemm500006.china.huawei.com (7.192.105.130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 5 Sep 2023 19:43:19 +0800
-Subject: Re: [PATCH net v2] team: fix null-ptr-deref when team device type is
- changed
-To:     Hangbin Liu <liuhangbin@gmail.com>
-CC:     <jiri@resnulli.us>, <davem@davemloft.net>, <edumazet@google.com>,
-        <kuba@kernel.org>, <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230905074638.3304732-1-william.xuanziyang@huawei.com>
- <ZPbsW/bOGeO9Ww8+@Laptop-X1>
-From:   "Ziyang Xuan (William)" <william.xuanziyang@huawei.com>
-Message-ID: <ecd693a5-105b-d2b8-5f6d-618d14b491dd@huawei.com>
-Date:   Tue, 5 Sep 2023 19:43:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        Tue, 5 Sep 2023 07:46:09 -0400
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985BC1AB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:46:01 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out2.suse.de (Postfix) with ESMTP id 5981B1F8D9;
+        Tue,  5 Sep 2023 11:46:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1693914360; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lcPZST/iVpALGuN/zbIUlwYfstIdFMsrI/czOq3yqOo=;
+        b=raogWvK9AVddY0jjKcLCkk3KlorkVk/Pq+ZJRfXJB4ir4tEihxcRpWcwL65/XGlJBLDE3t
+        6w1WSml/UzAQVdunSXKMgAKwzXAS+of91m37ea/0BR1WN84rjZwmHGgx2eeQ3coQmwinBk
+        tvnqkKcD/ONoIhbbX70hBsEi5PdxAEM=
+Received: from suse.cz (pmladek.tcp.ovpn2.prg.suse.de [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 05D292C142;
+        Tue,  5 Sep 2023 11:45:59 +0000 (UTC)
+Date:   Tue, 5 Sep 2023 13:45:59 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     John Ogness <john.ogness@linutronix.de>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH printk v3 1/7] printk: Add non-BKL (nbcon) console basic
+ infrastructure
+Message-ID: <ZPcU96WWkDyssEie@alley>
+References: <20230903150539.245076-1-john.ogness@linutronix.de>
+ <20230903150539.245076-2-john.ogness@linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <ZPbsW/bOGeO9Ww8+@Laptop-X1>
-Content-Type: text/plain; charset="gbk"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.200]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500006.china.huawei.com (7.192.105.130)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230903150539.245076-2-john.ogness@linutronix.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,38 +57,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Tue, Sep 05, 2023 at 03:46:38PM +0800, Ziyang Xuan wrote:
->> diff --git a/drivers/net/team/team.c b/drivers/net/team/team.c
->> index d3dc22509ea5..12fb5f4cff06 100644
->> --- a/drivers/net/team/team.c
->> +++ b/drivers/net/team/team.c
->> @@ -2127,7 +2127,10 @@ static const struct ethtool_ops team_ethtool_ops = {
->>  static void team_setup_by_port(struct net_device *dev,
->>  			       struct net_device *port_dev)
->>  {
->> -	dev->header_ops	= port_dev->header_ops;
->> +	if (port_dev->type == ARPHRD_ETHER)
->> +		dev->header_ops	= &eth_header_ops;
->> +	else
->> +		dev->header_ops	= port_dev->header_ops;
->>  	dev->type = port_dev->type;
->>  	dev->hard_header_len = port_dev->hard_header_len;
->>  	dev->needed_headroom = port_dev->needed_headroom;
+On Sun 2023-09-03 17:11:33, John Ogness wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 > 
-> Hmm.. Do we need to export eth_header_ops? I got error like
-> ERROR: modpost: "eth_header_ops" [drivers/net/team/team.ko] undefined!
+> The current console/printk subsystem is protected by a Big Kernel Lock,
+> (aka console_lock) which has ill defined semantics and is more or less
+> stateless. This puts severe limitations on the console subsystem and
+> makes forced takeover and output in emergency and panic situations a
+> fragile endeavour that is based on try and pray.
 > 
-> But I saw function loopback_setup() could reference this. Not sure what
-> I missed here.
+> The goal of non-BKL (nbcon) consoles is to break out of the console lock
+> jail and to provide a new infrastructure that avoids the pitfalls and
+> also allows console drivers to be gradually converted over.
+> 
+> The proposed infrastructure aims for the following properties:
+> 
+>   - Per console locking instead of global locking
+>   - Per console state that allows to make informed decisions
+>   - Stateful handover and takeover
+> 
+> As a first step, state is added to struct console. The per console state
+> is an atomic_t using a 32bit bit field.
+> 
+> Reserve state bits, which will be populated later in the series. Wire
+> it up into the console register/unregister functionality.
+> 
+> It was decided to use a bitfield because using a plain u32 with
+> mask/shift operations resulted in uncomprehensible code.
+> 
+> Co-developed-by: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: John Ogness <john.ogness@linutronix.de>
+> Signed-off-by: Thomas Gleixner (Intel) <tglx@linutronix.de>
 
-Yes, I also got the same error, and gave v3 patch with exporting eth_header_ops.
+Looks good to me:
 
-drivers/net/loopback.o controlled by CONFIG_NET, CONFIG_NET is bool type and usually Y.
-So drivers/net/loopback.o does not need to export eth_header_ops.
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
-> 
-> Thanks
-> Hangbin
-> 
-> .
-> 
+Best Regards,
+Petr
