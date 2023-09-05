@@ -2,88 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A682792E99
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:14:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 184A6792E9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239409AbjIETOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:14:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35292 "EHLO
+        id S229509AbjIETPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:15:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237038AbjIETOn (ORCPT
+        with ESMTP id S242071AbjIETPi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:14:43 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FB1D2
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:14:17 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99bcc0adab4so428367166b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:14:17 -0700 (PDT)
+        Tue, 5 Sep 2023 15:15:38 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3313EE41
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:15:10 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-55b0e7efb1cso1508316a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:15:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693941195; x=1694545995; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BUlpaGleIWzbTmcbFt9fpixpRahjTzIY6Eh3TvOZ30I=;
-        b=ZVi0gty2OSESc9ZWShP4hzETHKY/cdLA9mLsO/TYauOUW4hkSz5i7C2q/u59etTo6n
-         c9C2eQBgUKLvBHjwRle3ypcTIqJ9wcuplJxbtgqh+IIZqOG6ebBEEHyU+EqWxcpYWPrJ
-         DOXIExx0QaaFB78tbm4hQvWxGRPEfRURDVjMQ=
+        d=chromium.org; s=google; t=1693941221; x=1694546021; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4TXgvmJLu+K+I9kZcFR3KfNae3WSDNL4+bYanlcn9kg=;
+        b=EHnvBvBc+85KhToee5+QdAwZlObPsALVVB1emcmJfw6BLjwKbxMGDupm5kWtR48XHc
+         4m50b0JYmtEMqAk1Pe90ppixnQjGn0LEoMPICt0QagNsLA8mr3aNRYC5Yit/Q6Mt3nnN
+         PYQO55kIR5bsfJCCkMm7QXu1CNyzzTQlqi6TU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693941195; x=1694545995;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BUlpaGleIWzbTmcbFt9fpixpRahjTzIY6Eh3TvOZ30I=;
-        b=DKPcr+XQlRWhjQGXopoo75txggLaU32Hop69l4WrFcjkNhGwcGui5uU4yG1jI2nGnf
-         OUAgNJh3rzBMdiMNZMaAd0a/N46cemuFSnyDCcPKD7XVUfkXLXksrLMQ2LAzkYEsrBS8
-         2mv1ShrNI4VH9F9VKq4fzpYKkABjuNcOkxd+GSwvqFBtgGkv3bPjVSQATAdwluqWstyv
-         JdIYUctqCWiGfiHDyNB+XFmrI3kwn1XdC39M8frOS+iayzJV8vTjuIjDyWPcrFvIRMhj
-         OeDmwHgUok34y+8nP5fwSTeoWxpipl9NdZrKIEJx5Wf4FYAszMPKvlunXp+BYC70bNWj
-         C4Sg==
-X-Gm-Message-State: AOJu0YwoyaUhRXsNWPfok2gKRYRr1Pb6+B8GH5ELA0Q6soyT9tjpSJdD
-        od78c/MhPr5NT+Kd6Idz3O7t5t6R8Bhm1Fs+x2eS7nJ+
-X-Google-Smtp-Source: AGHT+IEZJqVM/UDJCJXo3ymnOEd2tuTWr2VUwd8xbY3yGPQ7csv0MoUQT8dHTUUbNXrx5HxGPTtq/A==
-X-Received: by 2002:a17:906:cc5b:b0:9a2:143e:a062 with SMTP id mm27-20020a170906cc5b00b009a2143ea062mr553994ejb.49.1693941194908;
-        Tue, 05 Sep 2023 12:13:14 -0700 (PDT)
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com. [209.85.128.53])
-        by smtp.gmail.com with ESMTPSA id j9-20020a170906410900b009926928d486sm7931160ejk.35.2023.09.05.12.13.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 12:13:14 -0700 (PDT)
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4005f0a6c2bso18795e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 12:13:14 -0700 (PDT)
-X-Received: by 2002:a05:600c:4f14:b0:3fe:e9ea:9653 with SMTP id
- l20-20020a05600c4f1400b003fee9ea9653mr25746wmq.4.1693941193859; Tue, 05 Sep
- 2023 12:13:13 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1693941221; x=1694546021;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4TXgvmJLu+K+I9kZcFR3KfNae3WSDNL4+bYanlcn9kg=;
+        b=T8sLDWxD/OJvU5hSFVKigZbEtSoG+X/R8ySoWVoT3icxuMadQ1hZ1yHzjLESOMf8n1
+         gQ7yNYxgUs79OUmXhQXdeAxwM42HihMVI24TFxzz4OVdZb2HJIBhGbeAdatM4TPvxIk0
+         N9O7e8rxGpwEmRYqFfv4zQmETaKCxmYTGGr7l34BwVKdqg6lxC2tp2VXHTFWsRMmnPJW
+         3vk4PBIf5+qJegAGOoIVbBoUiy+dJ9w810dWpNgigc5qWH0KQ5rb+g0f4tolvL+dz//i
+         Ci+VVPmPyNyExpmht5wY9CrgG5+HQNQcTCXvi4iR6OOzRE3VtUMhDUI6ColOn7oJ793x
+         Ja3A==
+X-Gm-Message-State: AOJu0YycKy23Hxe3UHpn2F+PvcmW+xQuWeVKreSisL2TJb0Ts6BW62hw
+        +AyaJdQiRwLvtY2H+7B1CSVUlg==
+X-Google-Smtp-Source: AGHT+IEUIHzj4gKawoDNkJH8MjO1eQQeCwXX59tDRQILYoHaf4f+zWYoobJ4Rh/dDipZrN1hXry2fQ==
+X-Received: by 2002:a05:6a21:3b46:b0:140:4563:2243 with SMTP id zy6-20020a056a213b4600b0014045632243mr11481977pzb.50.1693941220744;
+        Tue, 05 Sep 2023 12:13:40 -0700 (PDT)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id v23-20020aa78097000000b0063f0068cf6csm9385016pff.198.2023.09.05.12.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 12:13:39 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Johan Hovold <johan@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        Miguel Ojeda <ojeda@kernel.org>, Joe Perches <joe@perches.com>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] module: Clarify documentation of module_param_call()
+Date:   Tue,  5 Sep 2023 12:13:37 -0700
+Message-Id: <20230905191333.never.707-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <bphkopaq76imqzut7xrx7aprqybhx3veajdympqhig2wqlix6c@64ck23rc5cv7>
- <CAD=FV=XiVkoCsjin4R74nkcd8vzOq9uPq+o5cRjd=YOoPXuQkg@mail.gmail.com>
- <lhd6ai7d6swlxhisjhikytguor7pptrymo3bmfwej4k7zqrnv4@hp2gvhw7mh3m>
- <CAD=FV=XUhzguFCC=aKzHFMV0bBnZzkHXP_tx+P=PNkVr=8SnTA@mail.gmail.com>
- <mumiep5q7x7qj7k64h3cyodxrgk737iy5rum5keguquwymf2gy@3qruwfrqjgy7>
- <CAD=FV=VEene+nr1us87iA+bomxzQ039r-E+wqvizvFGbxXjDvA@mail.gmail.com>
- <wwzbd7dt5qyimshnd7sbgkf5gxk7tq5dxtrerz76uw5p6s7tzt@cbiezkfeuqqn>
- <CAD=FV=XcUVvg5Om__dD=i9zu7ZtQmvWicms9yN7w0c2nWGhqYg@mail.gmail.com>
- <p7okuysh442hulqls3ekbaar2bguqv67fum3gsb2cj75kjvdpx@uebwlgvf46sy>
- <CAD=FV=Xr4nZUeHY-FdiedcV=BuP5szNBEHPKjdRnA7c+3MADqg@mail.gmail.com>
- <nahwibpea2akyg7swbdb3f6xyv7fqs35v5spqbjfzfchxnoqqz@glgg5core75d> <CAD=FV=UKSc4mNjWcvLCXT9Tdeok=xRjA0oVoLKVkq+kQ9-4M0A@mail.gmail.com>
-In-Reply-To: <CAD=FV=UKSc4mNjWcvLCXT9Tdeok=xRjA0oVoLKVkq+kQ9-4M0A@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Sep 2023 12:12:58 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=UZOxT58=jx4=iAyjXGnON_qROy4puosT0WfB5yy+2Ndw@mail.gmail.com>
-Message-ID: <CAD=FV=UZOxT58=jx4=iAyjXGnON_qROy4puosT0WfB5yy+2Ndw@mail.gmail.com>
-Subject: Re: [RFC PATCH 04/10] drm/panel_helper: Introduce drm_panel_helper
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2525; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=2gl+o4SRoHaQVcttgjZhYq0Is37kI1hlnwzbQN5zDGg=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBk933hZ3IhiyCBUuiGWz5YX9hla+CnKgiWgcUhX
+ QCafDdP062JAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZPd94QAKCRCJcvTf3G3A
+ JoQpEACXWjlYTg6OiUiUpym5wEwvwnUewYnpahiHOhonlgfgSaPT8XpFDWuExVJs40vbV7V5R7Q
+ RcXJBxgn/8VTQXvwk02VLL/RYODT0LWwCxJMlQGCmtoQIHzFoedX748TciV2ThFfW4+nSfg26HL
+ 1vCjvpHtVYotnDFevFoC3H4WUa7BSVI7TPobreLBJ+Lx6CdNqUvjDmKf9fQlaA1TEI6oHYNEojj
+ BCjhzwceuYX67/ulaePn7AaH11onT1C/B5exrHK+RaK21uYxQrf4lvadp+l7rOzfryGGSiZQJ/d
+ NhafNovhIRVs3zfKSW3KJH9cKHg2qH5atIzIcnL1L2BwTcleupVO2kIFqO8Tu3xbDrXFPLc02dp
+ kxUaNSajibzTD5jhRgoicMsUOnfJWgYG/EsHyAP0XtEpCkYa7gizT3WAgryhp/vio6S4u0FD0wg
+ 7e8A0IRcsHUdyjawKOG0lgDZk6Mx0G7zCjYlfsr0NAhbMGL6PvA+/WXdwQhHN020W2SCpbYSqud
+ uPt+95gGr7kgNAB4Xsxbw17ZWrcoplrhc/Eh5TqMNAFrox0zrGzwZgatT+nEyo8jQoFfahC7uiL
+ 6q3XJQuPPl8qLfwo4ediBtsk6aloab94SotaUkjmvsb0tBgWrMQmGZd/ivfkYIxO2zDUtxOr6F3
+ rVzJura wS6eE5Eg==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,30 +86,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Commit 9bbb9e5a3310 ("param: use ops in struct kernel_param, rather than
+get and set fns directly") added the comment that module_param_call()
+was deprecated, during a large scale refactoring to bring sanity to type
+casting back then. In 2017 following more cleanups, it became useful
+against as it wraps a common pattern of creating an ops struct for a
+given get/set pair:
 
-On Tue, Sep 5, 2023 at 9:45=E2=80=AFAM Doug Anderson <dianders@chromium.org=
-> wrote:
->
-> As per our discussion, in V2 we will make drm_panel_remove() actually
-> unprepare / disable a panel if it was left enabled. This would
-> essentially fold in the drm_panel_helper_shutdown() from my RFC patch.
-> This would make tdo_tl070wsh30_panel_remove() behave the same as it
-> did before. Ugh, though I may have to think about this more when I get
-> to implementation since I don't think there's a guarantee of the
-> ordering of shutdown calls between the DRM driver and the panel.
-> Anyway, something to discuss later.
+  b2f270e87473 ("module: Prepare to convert all module_param_call() prototypes")
+  ece1996a21ee ("module: Do not paper over type mismatches in module_param_call()")
 
-Ugh, ignore the above paragraph. I managed to confuse myself and was
-thinking about shutdown but talking about remove. Sigh. :( Instead,
-pretend the above paragraph said:
+        static const struct kernel_param_ops __param_ops_##name = \
+                { .flags = 0, .set = _set, .get = _get }; \
+        __module_param_call(MODULE_PARAM_PREFIX, \
+                            name, &__param_ops_##name, arg, perm, -1, 0)
 
-As per our discussion, in V2 we will make drm_panel_remove() actually
-unprepare / disable a panel (and print a warning) if it was left
-enabled. This would essentially fold in the
-drm_panel_helper_shutdown() from my RFC patch (but add a warning).
-This would make tdo_tl070wsh30_panel_remove() behave the same as it
-did before with the addition of a warning if someone tries to remove a
-currently powered panel.
+        __module_param_call(MODULE_PARAM_PREFIX, name, ops, arg, perm, -1, 0)
 
--Doug
+Many users of module_param_cb() appear to be almost universally
+open-coding the same thing that module_param_call() does now. Don't
+discourage[1] people from using module_param_call() but clarifying the
+comment: module_param_cb() is useful if you repeatedly use the same pair
+of get/set functions.
+
+[1] https://lore.kernel.org/lkml/202308301546.5C789E5EC@keescook/
+
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Johan Hovold <johan@kernel.org>
+Cc: Jessica Yu <jeyu@kernel.org>
+Cc: Sagi Grimberg <sagi@grimberg.me>
+Cc: Nick Desaulniers <ndesaulniers@gooogle.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>
+Cc: Joe Perches <joe@perches.com>
+Cc: Azeem Shaikh <azeemshaikh38@gmail.com>
+Cc: linux-modules@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+Luis, I note that include/linux/moduleparam.h isn't in the MAINTAINERS
+file pattern. Perhaps you want to use include/linux/module*.h?
+---
+ include/linux/moduleparam.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/moduleparam.h b/include/linux/moduleparam.h
+index 962cd41a2cb5..d32450583182 100644
+--- a/include/linux/moduleparam.h
++++ b/include/linux/moduleparam.h
+@@ -293,7 +293,7 @@ struct kparam_array
+ 	= { __param_str_##name, THIS_MODULE, ops,			\
+ 	    VERIFY_OCTAL_PERMISSIONS(perm), level, flags, { arg } }
+ 
+-/* Obsolete - use module_param_cb() */
++/* For repeated _set & _get usage use module_param_cb() */
+ #define module_param_call(name, _set, _get, arg, perm)			\
+ 	static const struct kernel_param_ops __param_ops_##name =	\
+ 		{ .flags = 0, .set = _set, .get = _get };		\
+-- 
+2.34.1
+
