@@ -2,95 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C334F792B4C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7857792BB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245490AbjIEQuI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:50:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50302 "EHLO
+        id S241121AbjIEQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353929AbjIEIkm (ORCPT
+        with ESMTP id S1353930AbjIEIld (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:40:42 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92BB8E6;
-        Tue,  5 Sep 2023 01:40:36 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0129E11FB;
-        Tue,  5 Sep 2023 01:41:14 -0700 (PDT)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B0D283F766;
-        Tue,  5 Sep 2023 01:40:34 -0700 (PDT)
-Message-ID: <d7bae298-9d83-1bff-15a2-4ebe433ec8af@arm.com>
-Date:   Tue, 5 Sep 2023 09:40:30 +0100
+        Tue, 5 Sep 2023 04:41:33 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7E3E6
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:41:30 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D791E60AFA
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 08:41:29 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F3D9C433C7;
+        Tue,  5 Sep 2023 08:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693903289;
+        bh=0FEt4XuiCupoBQ6w4wjOKxVM3NSL60l5Rgl/mPesGj0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=dzEuwrOuckVM06GIWlpPtpXgBGfpTSsuhMVQMA65s3r9o5BXlcklA0FILdaqJaCqW
+         LYDX1RsYmuR0Zg2YArZtkU+G06G/mftmP7ht3VcTcHxFrhOk5+mQUPRVz6hYdq3zFR
+         in69ct1+0v5O3vEeGSEEiYfpF59qxYYOWEyNIWX/XA+5adlSbY2ZUUrrSRnT7hgk81
+         Fh0K3GYPDXotbNmsZ1ZdFHJW61U0ou2/TPWoIaNyrF07soAK+oa2/sWhaZPHIUbLtM
+         4NifjPKWufUknMhHN6A2PvdB0qXsWiM+WVNMWCgELUzU5w8ENbAy6oSz7DxNJvl/93
+         HaFtWY2E4aDhg==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+        id 0A54EDC62C2; Tue,  5 Sep 2023 10:41:24 +0200 (CEST)
+From:   Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To:     David Wang <00107082@163.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Florian Westphal <fw@strlen.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Subject: Re: [PATCH] samples/bpf: Add sample usage for BPF_PROG_TYPE_NETFILTER
+In-Reply-To: <49e1d877.1e64.18a63574e6a.Coremail.00107082@163.com>
+References: <20230904102128.11476-1-00107082@163.com>
+ <20230904104856.GE11802@breakpoint.cc>
+ <CAADnVQJVyQQ5geDuUgoDYygN9R1gJr-21XmQOR8gY5UkZsosCQ@mail.gmail.com>
+ <49e1d877.1e64.18a63574e6a.Coremail.00107082@163.com>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date:   Tue, 05 Sep 2023 10:41:23 +0200
+Message-ID: <87wmx5ovv0.fsf@toke.dk>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH v1] perf parse-events: Fix driver config term
-Content-Language: en-US
-To:     Ian Rogers <irogers@google.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-References: <20230905033805.3094293-1-irogers@google.com>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20230905033805.3094293-1-irogers@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.7 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_NONE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"David Wang" <00107082@163.com> writes:
 
+> At 2023-09-05 05:01:14, "Alexei Starovoitov" <alexei.starovoitov@gmail.co=
+m> wrote:
+>>On Mon, Sep 4, 2023 at 3:49=E2=80=AFAM Florian Westphal <fw@strlen.de> wr=
+ote:
+>>>
+>>> David Wang <00107082@163.com> wrote:
+>>> > This sample code implements a simple ipv4
+>>> > blacklist via the new bpf type BPF_PROG_TYPE_NETFILTER,
+>>> > which was introduced in 6.4.
+>>> >
+>>> > The bpf program drops package if destination ip address
+>>> > hits a match in the map of type BPF_MAP_TYPE_LPM_TRIE,
+>>> >
+>>> > The userspace code would load the bpf program,
+>>> > attach it to netfilter's FORWARD/OUTPUT hook,
+>>> > and then write ip patterns into the bpf map.
+>>>
+>>> Thanks, I think its good to have this.
+>>
+>>Yes, but only in selftests/bpf.
+>>samples/bpf/ are not tested and bit rot heavily.
+>
+> My purpose is to demonstrate the basic usage of BPF_PROG_TYPE_NETFILTER ,=
+  showing what bpf program and userspace program should do to make it work.
+> The code is neither  thorough  enough to make a valid test suite,  nor  d=
+etailed enough to make out a tool (Could be a start for a tool)
+>
+> samples/bpf is a good  place to start for  beginners to get along  with b=
+pf quickly,   those  sample/bpf codes do help me a lot,
+>   but selftests/bpf is not that  friendly, at least not friendly for begi=
+nners, I think.=20=20=20
+> There are already test codes for   BPF_PROG_TYPE_NETFILTER in selftests/b=
+pf,  actually I did refer to those code  when I made this sample.
+>
+> Get a feeling samples/bpf would be deprecated sooner or later, hope that =
+would not happen.
+>
+> Anyway, this sample code is not meant to test.=20
 
-On 05/09/2023 04:38, Ian Rogers wrote:
-> Inadvertently deleted in commit 30f4ade33d64 ("perf tools: Revert
-> enable indices setting syntax for BPF map").
-> 
-> Reported-by: James Clark <james.clark@arm.com>
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/util/parse-events.y | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
-> 
-> diff --git a/tools/perf/util/parse-events.y b/tools/perf/util/parse-events.y
-> index 4a305df61f74..21bfe7e0d944 100644
-> --- a/tools/perf/util/parse-events.y
-> +++ b/tools/perf/util/parse-events.y
-> @@ -839,6 +839,23 @@ PE_TERM
->  
->  	$$ = term;
->  }
-> +|
-> +PE_DRV_CFG_TERM
-> +{
-> +	struct parse_events_term *term;
-> +	char *config = strdup($1);
-> +	int err;
-> +
-> +	if (!config)
-> +		YYNOMEM;
-> +	err = parse_events_term__str(&term, PARSE_EVENTS__TERM_TYPE_DRV_CFG, config, $1, &@1, NULL);
-> +	if (err) {
-> +		free($1);
-> +		free(config);
-> +		PE_ABORT(err);
-> +	}
-> +	$$ = term;
-> +}
->  
->  sep_dc: ':' |
->  
+FYI, we maintain a Github repository with BPF example programs of
+various types at https://github.com/xdp-project/bpf-examples
 
-Reviewed-by: James Clark <james.clark@arm.com>
+Happy to include this example there as an alternative to the in-tree
+samples/bpf :)
+
+-Toke
