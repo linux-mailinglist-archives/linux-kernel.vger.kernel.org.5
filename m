@@ -2,180 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38095792801
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:42:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F6B792ADC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236170AbjIEQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:02:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S245709AbjIEQnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354451AbjIELrP (ORCPT
+        with ESMTP id S1354467AbjIELzY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:47:15 -0400
-Received: from mail-io1-xd2d.google.com (mail-io1-xd2d.google.com [IPv6:2607:f8b0:4864:20::d2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E4E61AD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 04:47:11 -0700 (PDT)
-Received: by mail-io1-xd2d.google.com with SMTP id ca18e2360f4ac-7927f241772so96430239f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 04:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1693914430; x=1694519230; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=+kMHasHVGTn26MkV0Q3sK5DIWqCalskCsDPU3m7M6q0=;
-        b=LC+h8u6cF0c0fLz/EIVeetNf8OEC2QS079RJZ8N9WcXC6VmZ2pYTkzD7WOafMP7Fn+
-         GJ6sG4Q66AxRqaNEOAgonm8+2zQAZtlo+QaO2Rk+535guRHEdPp5r4h+jJo8ME0JkFvv
-         h52rJZiAXrwfDr7Gnlzg8XeyArkWE02SjP4bU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693914430; x=1694519230;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+kMHasHVGTn26MkV0Q3sK5DIWqCalskCsDPU3m7M6q0=;
-        b=HTR6DhsdmEM4RfrqzoF5Lo1kQu0pFMgssf/xUSqAg9Gq4GlIOWQyMk5OHPTnsoWzK2
-         3gwoSu8alqedsLj+EYvdRLp0KyuvPn4+ULOgp2Oa8JI4g5c1KNzfL2J2ZYv/G2sgMQ4L
-         0QGlcTLfbAh9I41UPs0BkqIpdaFHEh8KA3phfA/wPH2ZOxkLUCAm+JN8AyYXbeWRlshu
-         9M3ibRIvqCFRSy6Q9jqSCU9Agn0xFGtSCBccMpwsCi2qoRQaegEONBS45YnkOgNMFoiM
-         Awu0+giMX1Qy0ZH4tGlGplx+1WFXxy6MbGKbQ9lAQdL9yToUOssIthMSHttNcDZyqJNq
-         NsIg==
-X-Gm-Message-State: AOJu0YxQ9y2TsVeO/RZxxgaELHpSY7KVJzRexQA0Y8/rqUCpRrmGfqcf
-        fFSTH/WInD7rdtWeeBBomN4jIw==
-X-Google-Smtp-Source: AGHT+IHDwYBN4jbjbJ2InS/JWRLSveg7Bkkv+CFcAJjUWQW7JPDz2+SoDzDcEpMiiPdIjwRdBiw2KQ==
-X-Received: by 2002:a5e:dc49:0:b0:785:5917:a35f with SMTP id s9-20020a5edc49000000b007855917a35fmr14731736iop.8.1693914430477;
-        Tue, 05 Sep 2023 04:47:10 -0700 (PDT)
-Received: from localhost (156.190.123.34.bc.googleusercontent.com. [34.123.190.156])
-        by smtp.gmail.com with ESMTPSA id k26-20020a6b401a000000b0077e3566a801sm4266287ioa.29.2023.09.05.04.47.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 04:47:09 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 11:47:09 +0000
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Zhen Lei <thunder.leizhen@huaweicloud.com>,
-        rcu@vger.kernel.org, Zqiang <qiang.zhang1211@gmail.com>,
-        stable@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v3 1/2] mm/vmalloc: Add a safer version of find_vm_area()
- for debug
-Message-ID: <20230905114709.GA3881391@google.com>
-References: <20230904180806.1002832-1-joel@joelfernandes.org>
- <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
+        Tue, 5 Sep 2023 07:55:24 -0400
+Received: from mail.avm.de (mail.avm.de [212.42.244.94])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDBB1AE;
+        Tue,  5 Sep 2023 04:55:20 -0700 (PDT)
+Received: from mail-auth.avm.de (unknown [IPv6:2001:bf0:244:244::71])
+        by mail.avm.de (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 13:49:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=avm.de; s=mail;
+        t=1693914590; bh=KyKR2i+DGj/6JbddwGXrO2TV0yqaQ4X+XFsdxioIsO4=;
+        h=From:Subject:Date:To:Cc:From;
+        b=Il/S80Jk4rxGPM8D/O5EE86iJVccCG0FzuVlQrvkksGAejUEqu/5fh+XecO6rUulR
+         u7G4ZbPvMzSn5XgEhal0ubPb8BT2ZhW+w1DciDw2OV9n3ExY45ldpEAm1bSfSvfwx+
+         cqRKH4L1LeRsgnNwC8fryg7WyqmoU2CqUVBTjENY=
+Received: from localhost (unknown [172.17.88.63])
+        by mail-auth.avm.de (Postfix) with ESMTPSA id DAA8482158;
+        Tue,  5 Sep 2023 13:49:49 +0200 (CEST)
+From:   Johannes Nixdorf <jnixdorf-oss@avm.de>
+Subject: [PATCH net-next v3 0/6] bridge: Add a limit on learned FDB entries
+Date:   Tue, 05 Sep 2023 13:47:17 +0200
+Message-Id: <20230905-fdb_limit-v3-0-7597cd500a82@avm.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <571d4a4a-0674-4c84-b714-8e7582699e30@lucifer.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEUV92QC/x3MQQqAIBBA0avErBMsK6yrRITWWANloRJCePek5
+ YPPf8GjI/QwFC84fMjTZTNEWcCyK7shozUbal4L3vOGmVXPB50UmFHYam2qbpEScn87NBT/1wg
+ WA7MYA0wpfYVzNOllAAAA
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@gmail.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ido Schimmel <idosch@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Nikolay Aleksandrov <razor@blackwall.org>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Roopa Prabhu <roopa@nvidia.com>, Shuah Khan <shuah@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Johannes Nixdorf <jnixdorf-oss@avm.de>
+X-Mailer: b4 0.12.3
+X-purgate-ID: 149429::1693914590-514F145F-D2900F6B/0/0
+X-purgate-type: clean
+X-purgate-size: 3779
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 08:09:16AM +0100, Lorenzo Stoakes wrote:
-> On Mon, Sep 04, 2023 at 06:08:04PM +0000, Joel Fernandes (Google) wrote:
-> > It is unsafe to dump vmalloc area information when trying to do so from
-> > some contexts. Add a safer trylock version of the same function to do a
-> > best-effort VMA finding and use it from vmalloc_dump_obj().
-> 
-> It'd be nice to have more details as to precisely which contexts and what this
-> resolves.
+Introduce a limit on the amount of learned FDB entries on a bridge,
+configured by netlink with a build time default on bridge creation in
+the kernel config.
 
-True. I was hoping the 'trylock' mention would be sufficient (example hardirq
-context interrupting a lock-held region) but you're right.
+For backwards compatibility the kernel config default is disabling the
+limit (0).
 
-> > [applied test robot feedback on unused function fix.]
-> > [applied Uladzislau feedback on locking.]
-> >
-> > Reported-by: Zhen Lei <thunder.leizhen@huaweicloud.com>
-> > Cc: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: rcu@vger.kernel.org
-> > Cc: Zqiang <qiang.zhang1211@gmail.com>
-> > Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
-> > Fixes: 98f180837a89 ("mm: Make mem_dump_obj() handle vmalloc() memory")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> > ---
-> >  mm/vmalloc.c | 26 ++++++++++++++++++++++----
-> >  1 file changed, 22 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-> > index 93cf99aba335..2c6a0e2ff404 100644
-> > --- a/mm/vmalloc.c
-> > +++ b/mm/vmalloc.c
-> > @@ -4274,14 +4274,32 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
-> >  #ifdef CONFIG_PRINTK
-> >  bool vmalloc_dump_obj(void *object)
-> >  {
-> > -	struct vm_struct *vm;
-> >  	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-> > +	const void *caller;
-> > +	struct vm_struct *vm;
-> > +	struct vmap_area *va;
-> > +	unsigned long addr;
-> > +	unsigned int nr_pages;
-> >
-> > -	vm = find_vm_area(objp);
-> > -	if (!vm)
-> > +	if (!spin_trylock(&vmap_area_lock))
-> > +		return false;
-> 
-> It'd be good to have a comment here explaining why we must trylock here. I am
-> also concerned that in the past this function would return false only if the
-> address was not a vmalloc one, but now it might just return false due to lock
-> contention and the user has no idea which it is?
-> 
-> I'd want to at least output "vmalloc region cannot lookup lock contention"
-> vs. the below cannot find case.
+Without any limit a malicious actor may OOM a kernel by spamming packets
+with changing MAC addresses on their bridge port, so allow the bridge
+creator to limit the number of entries.
 
-In the patch 2/2 we do print if the address looks like a vmalloc address even
-if the vmalloc look up fails.
+Currently the manual entries are identified by the bridge flags
+BR_FDB_LOCAL or BR_FDB_ADDED_BY_USER, atomically bundled under the new
+flag BR_FDB_DYNAMIC_LEARNED. This means the limit also applies to
+entries created with BR_FDB_ADDED_BY_EXT_LEARN but none of BR_FDB_LOCAL
+or BR_FDB_ADDED_BY_USER, e.g. ones added by SWITCHDEV_FDB_ADD_TO_BRIDGE.
 
-Also the reporter's usecase is not a common one. We only attempt to dump
-information if there was a debug objects failure (example if somebody did a
-double call_rcu). In such a situation, the patch will prevent a deadlock and
-still print something about the address.
+Changes since v2:
+ - Fixed the flags for fdb_create in fdb_add_entry to use
+   BIT(...). Previously we passed garbage. (from review)
+ - Set strict_start_type for br_policy. (from review)
+ - Split out the combined accounting and limit patch, and the netlink
+   patch from the combined patch in v2. (from review)
+ - Count atomically, remove the newly introduced lock. (from review)
+ - Added the new attributes to br_policy. (from review)
+ - Added a selftest for the new feature. (from review)
 
-> Under heavy lock contention aren't you potentially breaking the ability to
-> introspect vmalloc addresses? Wouldn't it be better to explicitly detect the
-> contexts under which acquiring this spinlock is not appropriate?
+Changes since v1:
+ - Added BR_FDB_ADDED_BY_USER earlier in fdb_add_entry to ensure the
+   limit is not applied.
+ - Do not initialize fdb_*_entries to 0. (from review)
+ - Do not skip decrementing on 0. (from review)
+ - Moved the counters to a conditional hole in struct net_bridge to
+   avoid growing the struct. (from review, it still grows the struct as
+   there are 2 32-bit values)
+ - Add IFLA_BR_FDB_CUR_LEARNED_ENTRIES (from review)
+ - Fix br_get_size() with the added attributes.
+ - Only limit learned entries, rename to
+   *_(CUR|MAX)_LEARNED_ENTRIES. (from review)
+ - Added a default limit in Kconfig. (deemed acceptable in review
+   comments, helps with embedded use-cases where a special purpose kernel
+   is built anyways)
+ - Added an iproute2 patch for easier testing.
 
-Yes this is a good point, but there's another case as well: PREEMPT_RT can
-sleep on lock contention (as spinlocks are sleeping) and we can't sleep from
-call_rcu() as it may be called in contexts that cannot sleep. So we handle
-that also using trylock.
+Obsolete v1 review comments:
+ - Return better errors to users: Due to limiting the limit to
+   automatically created entries, netlink fdb add requests and changing
+   bridge ports are never rejected, so they do not yet need a more
+   friendly error returned.
 
-Thanks for the review!
+iproute2-next v3: https://lore.kernel.org/netdev/20230905-fdb_limit-v3-1-34bb124556d8@avm.de/
 
- - Joel
+v2: https://lore.kernel.org/netdev/20230619071444.14625-1-jnixdorf-oss@avm.de/
+v1: https://lore.kernel.org/netdev/20230515085046.4457-1-jnixdorf-oss@avm.de/
 
+Signed-off-by: Johannes Nixdorf <jnixdorf-oss@avm.de>
+---
+Johannes Nixdorf (6):
+      net: bridge: Set BR_FDB_ADDED_BY_USER early in fdb_add_entry
+      net: bridge: Set strict_start_type for br_policy
+      net: bridge: Track and limit dynamically learned FDB entries
+      net: bridge: Add netlink knobs for number / max learned FDB entries
+      net: bridge: Add a configurable default FDB learning limit
+      selftests: forwarding: bridge_fdb_learning_limit: Add a new selftest
 
-> 
-> > +	va = __find_vmap_area((unsigned long)objp, &vmap_area_root);
-> > +	if (!va) {
-> > +		spin_unlock(&vmap_area_lock);
-> >  		return false;
-> > +	}
-> > +
-> > +	vm = va->vm;
-> > +	if (!vm) {
-> > +		spin_unlock(&vmap_area_lock);
-> > +		return false;
-> > +	}
-> > +	addr = (unsigned long)vm->addr;
-> > +	caller = vm->caller;
-> > +	nr_pages = vm->nr_pages;
-> > +	spin_unlock(&vmap_area_lock);
-> >  	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
-> > -		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
-> > +		nr_pages, addr, caller);
-> >  	return true;
-> >  }
-> >  #endif
-> > --
-> > 2.42.0.283.g2d96d420d3-goog
-> >
+ include/uapi/linux/if_link.h                       |   2 +
+ net/bridge/Kconfig                                 |  13 +
+ net/bridge/br_device.c                             |   2 +
+ net/bridge/br_fdb.c                                |  40 ++-
+ net/bridge/br_netlink.c                            |  16 +-
+ net/bridge/br_private.h                            |   4 +
+ .../net/forwarding/bridge_fdb_learning_limit.sh    | 283 +++++++++++++++++++++
+ 7 files changed, 354 insertions(+), 6 deletions(-)
+---
+base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
+change-id: 20230904-fdb_limit-fae5bbf16c88
+
+Best regards,
+-- 
+Johannes Nixdorf <jnixdorf-oss@avm.de>
+
