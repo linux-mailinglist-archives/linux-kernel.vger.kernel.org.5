@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED2F7929EE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47427792BCF
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354888AbjIEQaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:30:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        id S244587AbjIERA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:00:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353923AbjIEIiB (ORCPT
+        with ESMTP id S1353924AbjIEIiE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:38:01 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32746CC7
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:37:57 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c337aeefbdso13507115ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:37:57 -0700 (PDT)
+        Tue, 5 Sep 2023 04:38:04 -0400
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 556F7CC7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:38:00 -0700 (PDT)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-48d0ae408b8so483057e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:38:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693903076; x=1694507876; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CHSManN0UNuChf3lmrBYHNNbnSNiN5+kD6ujL6JiRno=;
-        b=UuLRjNpm3aMLSDXhgT2LUNb9cHL5Gjnfnsx6aEM9RJZ3Bd+e2/jBk5XbDNUd27ho10
-         +VuFX1NV5SlGH1V2tQMtEdNriatyeWfrZKKVjlHW3gieQHTAAjEphdqovX5KhCNXLpap
-         v5khRum9Pfn1VaojBBVksW3lF5u0iBbBdXDeSaL0QsCR0HsXnuPobsgGwz+aaKXOvzwa
-         UNeDBLr1v3hXgNwZ9Aev5gD+P46bAqbv6BG9a588f3MSbp2uOA9GjvK7JKJFCZKjy3uI
-         UR1XG5kXQRLZDSpfIRaRSN2cEUfsH9icRTOAjlipfNlvqoWwS4d616raxNI425GLW1JP
-         tWGg==
+        d=gmail.com; s=20221208; t=1693903079; x=1694507879; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rkgNbunsEpsa1F93RE8WdDpVLSpHzuJk3rJkYKzrBk4=;
+        b=lGzGKgvEJA0jYCDNENisQVFrGmPocXNFwnXgHDERJgENdF5UwAgF+ycQgIKesrDWUq
+         XFlk8b2ReKHTESAsx7MJrdsXf75RG8Ewvg3erRb4S0y6+DH499iBenOfvfNTs0zGyc8e
+         DTPg4zO43vX4BXDUZCEgTBur7Ho2wOajGbXq0xcLASQw8b/IjiqcVwOOuc9hViZTdStQ
+         NwGOc4alvlL+ZedsSKUKY0H7yCchBNeP85RaawUHB5Uvk3VezdvD5acFk3HssAqmWMv0
+         0sK2s/aM4ehI/jDZPD2aghu/0hsDPzFbY13PRKtIyI++UMFyMYBOBbxrcIoz6I0a94LC
+         W1dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693903076; x=1694507876;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CHSManN0UNuChf3lmrBYHNNbnSNiN5+kD6ujL6JiRno=;
-        b=Pp6MjsRibclGd5biwnm+ZC5CMoFe1hraITXIhxovD50a83RLmvuDOGsx1czoaEwLxu
-         NRHVLajx1WIk9lOn075uqDGeQgd+roNFXSyMaQQfw0+Y0VySgwaV2Qbpxfh8m8WHz5xV
-         LdCg5GuGKkm/NHNSKu2/odrEiOgICZ6vRnDqYhgKXWbzq5BK4h0NZ0omNHCofVH4XUaT
-         uey40F6GY9hgTyJEswdHos9TLNcC6hH4Gp+vRMpJ4L7VkzqMXyux4dgnb3EH1DY17XOr
-         pjEsMgKIvqj1FktX9jx//0uew/wRn9k839bXD8no6pnIBpT5ILuZICNufIgLMkciVNil
-         n83g==
-X-Gm-Message-State: AOJu0YyWujxOPdwVrgfR4uE1OZZUbOJzJfHho7K9zX98goXZXD5hDY3g
-        zY5QR5SlON3KMODJhDIpqebU5L40OW4=
-X-Google-Smtp-Source: AGHT+IF+z1hdeEmzmnwUO+lGWwoev6kQxOdQEXPj4tYWhU5gkwjQpNirTHNHFdyivm9i8zastBSWUA==
-X-Received: by 2002:a17:90a:f0c8:b0:268:ac3:b1f6 with SMTP id fa8-20020a17090af0c800b002680ac3b1f6mr10714996pjb.24.1693903076367;
-        Tue, 05 Sep 2023 01:37:56 -0700 (PDT)
-Received: from wenkaidev ([123.51.235.123])
-        by smtp.gmail.com with ESMTPSA id i3-20020a17090a65c300b00263b4b1255esm10119470pjs.51.2023.09.05.01.37.55
+        d=1e100.net; s=20221208; t=1693903079; x=1694507879;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rkgNbunsEpsa1F93RE8WdDpVLSpHzuJk3rJkYKzrBk4=;
+        b=SGGGLX7DX+GUKaOUJnFDmJIj5EF2W60MxkVudbZ/Mb61y4u+AKPgnGqS7y8o695Ll2
+         66ObcXZEftoleMWD/FjtKg1YM0BJuTBKU93gV4WcaD8ya+GRT7nVVXSHeKDb7pcSGoRH
+         18WJoYcJ0ywQ3qa+i3cXMSYwjlUGkaRrpxz/fmRcBK4I59X+gmTKTuXw184iuaH6h3dY
+         lU/heDv9zVhgeqK4JMUtCS/M2t2T/THbFmzf4zKsWyLgjY2u6TdTaR/o9SNQorl7ZERS
+         DD426aBM2fPzxSFqwEJLRRgnHkD/AXgNADdnYK8zwsk1uXUu1LmPxe6HOblyeVhmUnmQ
+         oduQ==
+X-Gm-Message-State: AOJu0Yyibd4dev8rE9l+xD1a4oUBs901q5Y4PYdTIxkP6MCVv1HF3qvG
+        0TirpdOX9chcQmtxXuTrnEsnrSC7epk=
+X-Google-Smtp-Source: AGHT+IGxCeJ/AVh8xFX0ZocOvSpdDVGn3BP1XqTKXv3g+Z4TC5SYho2jS529kEMEDXMLz/r1M8Oh3w==
+X-Received: by 2002:a1f:ed06:0:b0:48f:9778:2ba2 with SMTP id l6-20020a1fed06000000b0048f97782ba2mr10011259vkh.5.1693903079203;
+        Tue, 05 Sep 2023 01:37:59 -0700 (PDT)
+Received: from wenkaidev (118-163-147-182.hinet-ip.hinet.net. [118.163.147.182])
+        by smtp.gmail.com with ESMTPSA id z8-20020aa791c8000000b006884844dfcdsm8571961pfa.55.2023.09.05.01.37.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 01:37:55 -0700 (PDT)
+        Tue, 05 Sep 2023 01:37:58 -0700 (PDT)
 From:   wenkai <advantech.susiteam@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     wenkai <advantech.susiteam@gmail.com>
-Subject: [PATCH] mfd: eiois200: Add core driver for Advantech EIO-IS200.
-Date:   Tue,  5 Sep 2023 16:36:52 +0800
-Message-Id: <20230905083653.205794-1-advantech.susiteam@gmail.com>
+Subject: [PATCH] mfd: eiois200: Add core driver for Advantech EIOIS200.
+Date:   Tue,  5 Sep 2023 16:36:53 +0800
+Message-Id: <20230905083653.205794-2-advantech.susiteam@gmail.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230905083653.205794-1-advantech.susiteam@gmail.com>
+References: <20230905083653.205794-1-advantech.susiteam@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        RCVD_IN_DNSWL_NONE,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS autolearn=no
         autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The EIO-IS200 is an embedded controller (EC) developed by Advantech,
-designed to communicate over the LPC (Low Pin Count) bus. All of its
-functionality is achieved through its own PMC (Power Management
-Channel) for communication with its firmware.
+EIO-IS200 is Advantech's embedded controller (EC) that communicates
+over the LPC (low pin count) bus. All functionality is achieved
+through its own PMC (Power Management Channel) for communication
+with its firmware.
 
-This driver introduces functions, a regmap, and a mutex for accessing
-this EC firmware, which will be utilized by its child drivers:
+Note that during menuconfig, the driver can only be selected as a
+module or none (not built-in). All its child drivers can be inserted
+and removed separately.
+
+This driver exposes functions, regmap and mutex for its child drivers:
  - eiois200_wdt
  - gpio_eiois200
  - eiois200_hwmon
  - eiois200_i2c
  - eiois200_thermal
 
-Please note that, when configuring using menuconfig, this driver can
-only be selected as a module or none (not built-in). All of its child
-drivers can be inserted and removed separately.
-
-Additionally, the driver provides various sysfs attributes to expose
+Additionally, the driver provides several sysfs attributes to expose
 information about the EC chip, firmware, and motherboard.
 
-We've included a timeout parameter to allow modification of th
-default PMC command timeout value, particularly useful when dealing
-with extremely slow-responding devices.
+We provide the timeout parameter to modify the default PMC command
+timeout value, only when dealing with issues with slow responding
+devices.
 
 Signed-off-by: wenkai <advantech.susiteam@gmail.com>
 ---
@@ -131,14 +134,14 @@ index 85be64579fc9..fb702b426f2a 100644
  	tristate "Allwinner sunxi platforms' GPADC MFD driver"
  	select MFD_CORE
 diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index c66f07edcd0e..46dc303ddae4 100644
+index c66f07edcd0e..9f0f2fd7a702 100644
 --- a/drivers/mfd/Makefile
 +++ b/drivers/mfd/Makefile
 @@ -16,6 +16,7 @@ obj-$(CONFIG_MFD_CROS_EC_DEV)	+= cros_ec_dev.o
  obj-$(CONFIG_MFD_CS42L43)	+= cs42l43.o
  obj-$(CONFIG_MFD_CS42L43_I2C)	+= cs42l43-i2c.o
  obj-$(CONFIG_MFD_CS42L43_SDW)	+= cs42l43-sdw.o
-+obj-$(CONFIG_MFD_EIOIS200)	+= eiois200_core.o
++obj-$(CONFIG_MFD_EIOIS200)	    += eiois200_core.o
  obj-$(CONFIG_MFD_ENE_KB3930)	+= ene-kb3930.o
  obj-$(CONFIG_MFD_EXYNOS_LPASS)	+= exynos-lpass.o
  obj-$(CONFIG_MFD_GATEWORKS_GSC)	+= gateworks-gsc.o
