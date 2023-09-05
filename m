@@ -2,111 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C78792A92
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C126F79276E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:36:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243282AbjIEQjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:39:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
+        id S239175AbjIEQH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354093AbjIEJgf (ORCPT
+        with ESMTP id S1354097AbjIEJgw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:36:35 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C191A7;
-        Tue,  5 Sep 2023 02:36:31 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-402cc6b8bedso19405235e9.1;
-        Tue, 05 Sep 2023 02:36:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693906589; x=1694511389; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YN74zXxSunmC1J1XCmYDd1Mc9iKNJ+pIChJ9we9c978=;
-        b=JN1HjS5PuVsQpxCCIVgVNnv98BGzfV6jICqmd1W8TBpPBk0g56sqaNke+xCGyqu2Fx
-         F0t87QuCL/MZAJ82Gcgm4FDErRUQTZbe0MPgJAomX0aEskUBkXm15qW3ADAXxh2XjllX
-         /ZMN/AP4X/eCZxB3LcwvpObA/xyh8P8WPFERH5oafD21MGHKKPQXilM90zkMdXwmKron
-         BJZe31G90+rY+eSYd74jO3jJoSUjckSRQE77AIGpDHi2q3ZVwmJcI9TVHasCtY8Er7br
-         AepzsYxmB3W8g48UDs8cuURW8/4IFGsadC6DRzoC/SFV6BrkBeHSSmsDyVPmELQSNH8q
-         g7LA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693906589; x=1694511389;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YN74zXxSunmC1J1XCmYDd1Mc9iKNJ+pIChJ9we9c978=;
-        b=k+UDTyggNVRwtiqwqmU/2EwwEN+kP14SBbw6rDO4/5vMNN+ALakwWiWsouIArmq/58
-         QQ9ObgThIS2oxeXzWgOkPuJc0THhq5N/T2MkL3oMbh6+ylmbhglnqv+FmxAm0dkc2icl
-         kjhRggGSnL1NTKuiMRj/ONaBL5bGQTLdXmUzZD38puCmnNhgATMS4/cwYG4IqyHyv6TN
-         tQlsG8e6SPt+MrbSGE8w/5WkZwruvjxo5CSl24PDUZnGd8KodZqV43f5/8WgFok7vKQp
-         7oagqHaycamJ/HhwQujMKogbe9rFWC/mFPNjfPo+wllKwx5ZGaWLHN8mKFJvDquFJbY4
-         jRxA==
-X-Gm-Message-State: AOJu0YxBKGuPKFCA/YqJFshCns3tWJZOo9zWvH4gzuBvnTwI8Z6HVIFy
-        kAnLyQCXRjiugoH0vLDN5Ic=
-X-Google-Smtp-Source: AGHT+IEX3lGhBHiQY6i51kVXIPsNIJpgoOagjFoCu+G51Cy78QGjFeHnRZ+SJcKliEm3g4SK0jGHCQ==
-X-Received: by 2002:a05:600c:28c:b0:401:db0b:48dc with SMTP id 12-20020a05600c028c00b00401db0b48dcmr9500781wmk.37.1693906589310;
-        Tue, 05 Sep 2023 02:36:29 -0700 (PDT)
-Received: from debian ([63.135.72.41])
-        by smtp.gmail.com with ESMTPSA id e10-20020a05600c438a00b00402d34ea099sm2614344wmn.29.2023.09.05.02.36.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 02:36:28 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 10:36:27 +0100
-From:   "Sudip Mukherjee (Codethink)" <sudipm.mukherjee@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, srw@sladewatkins.net,
-        rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 5.15 00/28] 5.15.131-rc1 review
-Message-ID: <ZPb2m6bxirMCA2cf@debian>
-References: <20230904182945.178705038@linuxfoundation.org>
+        Tue, 5 Sep 2023 05:36:52 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D671A7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:36:48 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3858Y7u3006177;
+        Tue, 5 Sep 2023 04:36:29 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=PODMain02222019; bh=SDlOxuu7Uo3W5Kj
+        A/a8pV8zd//4tX+9LFSKkBFBusr8=; b=UNS/Hk5L6CSRuIwjJs5wg6hJOwRmnAQ
+        7Tz3ff60Y/cRADssfWHG2qIHsUZghCfJ9g9PbAl37dnyphPIlWZJzOBWxaAGVmFi
+        KYgw4dqZfJCSSTUIx+qkbxck4pOhXda7CbcGso1V0EXNYUGHylsH72UpHIMg89Cb
+        tZusvNzJRj2WyQd7nhZ8JrWyt9NeUYxmHVSUSUt99TjCxN3vl2BDcSM4hkNclJJv
+        AjPMhxL0ehXXdinrLRoIcrLFWcmdRgWvYj5ljx95b1ZbDNNhGc2TeyfWbwLkXXw+
+        8/m3YdH7VR1EsL4OiRo9qqsq0+k7AUc/pyffhFWG2rQ6mLuLheBA9Hg==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3sv1fhts21-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 04:36:28 -0500 (CDT)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.37; Tue, 5 Sep
+ 2023 10:36:27 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.37 via Frontend
+ Transport; Tue, 5 Sep 2023 10:36:27 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 3983D11AA;
+        Tue,  5 Sep 2023 09:36:27 +0000 (UTC)
+Date:   Tue, 5 Sep 2023 09:36:27 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+CC:     James Schulman <james.schulman@cirrus.com>,
+        David Rhodes <david.rhodes@cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Stefan Binding" <sbinding@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <linux-kernel@vger.kernel.org>, <kernel@collabora.com>
+Subject: Re: [PATCH 6/9] ASoC: cs35l41: Make use of dev_err_probe()
+Message-ID: <20230905093627.GH103419@ediswmail.ad.cirrus.com>
+References: <20230902210621.1184693-1-cristian.ciocaltea@collabora.com>
+ <20230902210621.1184693-7-cristian.ciocaltea@collabora.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20230904182945.178705038@linuxfoundation.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20230902210621.1184693-7-cristian.ciocaltea@collabora.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: MHH3QmBB3KVCkFEfka8UHaKRE-468d9Y
+X-Proofpoint-GUID: MHH3QmBB3KVCkFEfka8UHaKRE-468d9Y
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Sun, Sep 03, 2023 at 12:06:18AM +0300, Cristian Ciocaltea wrote:
+> Use dev_err_probe() helper where possible, to simplify error handling
+> during probe.
+> 
+> Signed-off-by: Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+> ---
 
-On Mon, Sep 04, 2023 at 07:30:31PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.131 release.
-> There are 28 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Build test (gcc version 12.3.1 20230829):
-mips: 62 configs -> no failure
-arm: 99 configs -> no failure
-arm64: 3 configs -> no failure
-x86_64: 4 configs -> no failure
-alpha allmodconfig -> no failure
-csky allmodconfig -> no failure
-powerpc allmodconfig -> no failure
-riscv allmodconfig -> no failure
-s390 allmodconfig -> no failure
-xtensa allmodconfig -> no failure
-
-Boot test:
-x86_64: Booted on my test laptop. No regression.
-x86_64: Booted on qemu. No regression. [1]
-arm64: Booted on rpi4b (4GB model). No regression. [2]
-mips: Booted on ci20 board. No regression. [3]
-
-[1]. https://openqa.qa.codethink.co.uk/tests/4932
-[2]. https://openqa.qa.codethink.co.uk/tests/4950
-[3]. https://openqa.qa.codethink.co.uk/tests/4949
-
-Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
-
--- 
-Regards
-Sudip
+Thanks,
+Charles
