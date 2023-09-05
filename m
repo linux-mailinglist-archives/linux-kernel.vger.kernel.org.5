@@ -2,67 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 466B4792A97
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F0B79275C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:36:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243700AbjIEQjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:39:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52422 "EHLO
+        id S240765AbjIEQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:09:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354511AbjIEMJa (ORCPT
+        with ESMTP id S1354513AbjIEMKK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:09:30 -0400
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 642471AD
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:09:27 -0700 (PDT)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-5733aa10291so1670082eaf.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 05:09:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693915766; x=1694520566; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Fpl8PdcHUyXhdg581Pr7P2ixRHMIHFGIKvQFb4jyDKo=;
-        b=sJ/fTBdet8LkFz2uB8x6RUvblR09cBZA3GXHn7Vr/xJNiUsSgJSWPs6tONhMlwFOfZ
-         whYwQcgxT6553kXSKvtehKAWJkWSkViR9sOCP9R/iD7OO6GdJODrqRmqNcLCMIkMYeF+
-         T/Z6b2F4rhDsyINdmiCXlfbCPUxZY51O4kodIgKlVzSavKOxHKUNHCrifNh2mcN24eHU
-         4ICU6w1FdDbe/SZWuuC/xkERkB7NKTsEXvh8XRmsNY97Up4uO1Mi6uMo097Qp6LKQZB+
-         Gmpd2wrShbDmMq1f3PG3SOEStWPxwbhYsYwnQWDluUC3z8x5CWJcQtZJKiJXSnob80vN
-         dxwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693915766; x=1694520566;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Fpl8PdcHUyXhdg581Pr7P2ixRHMIHFGIKvQFb4jyDKo=;
-        b=QN1OMlPjgiKR8WpgDWfVip3zFXUaAyhFPBCLW6fvtdekWGWUn4WmeGajBcAyLRCNCz
-         wQtOd6Zv0avciucfvU0fVfncGBfFEhDjy7yy+nc4UH/OVv6O+LbAUQxOa8Ri77xv/0Fa
-         Ns6HZqI/2am6PtZM7BsmtKq9aJq5bqpD2Z+BYvChUvKEBuAgdCjjogU71NPY35jjDWqI
-         bI/WnQOQ6wAwN+T+UtFg7tK5rBIbfe3Zwvba0DIo7lnYTryEXuuh9neOYOZS41V3n/Ey
-         pVyOXDCeCIzSMXfLB68gcj0+t6INndgcATuwGiD5ZUBBBeV7ZGvhVGMtQ3uzwEQXsXU8
-         sNmQ==
-X-Gm-Message-State: AOJu0Yx7+dfYD06CbfJ8dlh2qKYQ0nv83C6ICv/oLQOwRl8AoER9bMR8
-        iwd5N8/dqIyzfJyQvYCxLNjLEBdi+xB3YQmMlXkNyg==
-X-Google-Smtp-Source: AGHT+IF9zcrS8LKzm6uHHdeppxKv0cPOMhqbqlgFXgvwTMW24s0LoHG8DAK9cA2YZKwCujua/+5uMRHi0yoPnbrd/uk=
-X-Received: by 2002:a05:6358:e485:b0:139:f5e9:4463 with SMTP id
- by5-20020a056358e48500b00139f5e94463mr13912752rwb.2.1693915766671; Tue, 05
- Sep 2023 05:09:26 -0700 (PDT)
+        Tue, 5 Sep 2023 08:10:10 -0400
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470361AB;
+        Tue,  5 Sep 2023 05:10:07 -0700 (PDT)
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        id 1qdUsf-0006J5-Ge; Tue, 05 Sep 2023 14:10:05 +0200
+Message-ID: <1d79cc64-46d8-42ab-8219-e45e8d19532f@leemhuis.info>
+Date:   Tue, 5 Sep 2023 14:10:04 +0200
 MIME-Version: 1.0
-References: <20230905082413.21954-1-brgl@bgdev.pl> <ZPcZfd5UtzMmIUvm@smile.fi.intel.com>
-In-Reply-To: <ZPcZfd5UtzMmIUvm@smile.fi.intel.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Tue, 5 Sep 2023 14:09:15 +0200
-Message-ID: <CAMRc=Mc1K-xMzbtLSvZcSuXpLPmGkHekonjx5m_519OuxOxuxA@mail.gmail.com>
-Subject: Re: [PATCH v3] gpio: sim: don't fiddle with GPIOLIB private members
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: Don't fill the kernel log with memfd_create messages
+Content-Language: en-US, de-DE
+To:     Linux kernel regressions list <regressions@lists.linux.dev>
+Cc:     stable@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+References: <1693408388.rwssx8r1h9.none.ref@localhost>
+ <1693408388.rwssx8r1h9.none@localhost>
+ <14b4a922-a31a-a329-0264-3d8bd101ee6b@suse.cz>
+From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
+        <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <14b4a922-a31a-a329-0264-3d8bd101ee6b@suse.cz>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693915807;afc559ae;
+X-HE-SMSGID: 1qdUsf-0006J5-Ge
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,89 +48,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 5, 2023 at 2:05=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Tue, Sep 05, 2023 at 10:24:13AM +0200, Bartosz Golaszewski wrote:
-> > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-> >
-> > We access internals of struct gpio_device and struct gpio_desc because
-> > it's easier but it can actually be avoided and we're working towards a
-> > better encapsulation of GPIO data structures across the kernel so let's
-> > start at home.
-> >
-> > Instead of checking gpio_desc flags, let's just track the requests of
-> > GPIOs in the driver. We also already store the information about
-> > direction of simulated lines.
-> >
-> > For kobjects needed by sysfs callbacks: we can iterate over the childre=
-n
-> > devices of the top-level platform device and compare their fwnodes
-> > against the one passed to the init function from probe.
-> >
-> > While at it: fix one line break and remove the untrue part about
-> > configfs callbacks using dev_get_drvdata() from a comment.
->
-> ...
->
-> > v2 -> v3:
-> > - don't use fwnode internal fields, instead: iterate over the platform
-> >   device's children and locate the GPIO device
->
-> Thank you!
->
-> ...
->
-> > @@ -181,7 +178,7 @@ static int gpio_sim_get_direction(struct gpio_chip =
-*gc, unsigned int offset)
->
-> >  static int gpio_sim_set_config(struct gpio_chip *gc,
-> > -                               unsigned int offset, unsigned long conf=
-ig)
-> > +                            unsigned int offset, unsigned long config)
->
-> Looking at other prototypes, it can be
->
-> static int gpio_sim_set_config(struct gpio_chip *gc, unsigned int offset,
->                                unsigned long config)
->
-> ...
->
-> > +static int gpio_sim_chip_set_device(struct device *dev, void *data)
-> > +{
-> > +     struct gpio_sim_chip *chip =3D data;
->
-> > +     if (chip->swnode =3D=3D dev->fwnode) {
->
-> Please do not dereference fwnode from the struct device, we have an API!
-> device_match_fwnode()
->
-> > +             chip->dev =3D dev;
-> > +             return 1;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
->
-> ...
->
-> > +     chip->swnode =3D swnode;
-> > +     ret =3D device_for_each_child(dev, chip, gpio_sim_chip_set_device=
-);
-> > +     if (!ret)
-> > +             return -ENODEV;
->
-> Can bus_find_device_by_fwnode() be used here?
->
+[TLDR: This mail in primarily relevant for Linux kernel regression
+tracking. See link in footer if these mails annoy you.]
 
-I can but then we're iterating over all platform devices and not just
-children of this GPIO simulator. If you think it's better for even
-less fwnode juggling then I can go with it.
+On 04.09.23 15:31, Vlastimil Babka wrote:
+> On 8/30/23 17:52, Alex Xu (Hello71) wrote:
+>> Hi all,
+>>
+>> Recently "memfd: improve userspace warnings for missing exec-related 
+>> flags" was merged. On my system, this is a regression, not an 
+>> improvement, because the entire 256k kernel log buffer (default on x86) 
+>> is filled with these warnings and "__do_sys_memfd_create: 122 callbacks 
+>> suppressed". I haven't investigated too closely, but the most likely 
+>> cause is Wayland libraries.
+>>
+>> This is too serious of a consequence for using an old API, especially 
+>> considering how recently the flags were added. The vast majority of 
+>> software has not had time to add the flags: glibc does not define the 
+>> macros until 2.38 which was released less than one month ago, man-pages 
+>> does not document the flags, and according to Debian Code Search, only 
+>> systemd, stress-ng, and strace actually pass either of these flags.
+>>
+>> Furthermore, since old kernels reject unknown flags, it's not just a 
+>> matter of defining and passing the flag; every program needs to 
+>> add logic to handle EINVAL and try again.
+>>
+>> Some other way needs to be found to encourage userspace to add the 
+>> flags; otherwise, this message will be patched out because the kernel 
+>> log becomes unusable after running unupdated programs, which will still 
+>> exist even after upstreams are fixed. In particular, AppImages, 
+>> flatpaks, snaps, and similar app bundles contain vendored Wayland 
+>> libraries which can be difficult or impossible to update.
+> 
+> It's being reverted:
+> https://lore.kernel.org/all/20230902230530.6B663C433C8@smtp.kernel.org/
 
-Bart
+in that case:
 
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+#regzbot fix: revert "memfd: improve userspace warnings for missing
+exec-related flags".
+#regzbot ignore-activity
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+That page also explains what to do if mails like this annoy you.
