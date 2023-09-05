@@ -2,69 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F70E792BB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E063792BEA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237673AbjIEQ6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50600 "EHLO
+        id S1347515AbjIEREC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353902AbjIEIei (ORCPT
+        with ESMTP id S1353908AbjIEIfW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 04:34:38 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95077CDB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:34:34 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2bcb89b4767so33314701fa.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:34:34 -0700 (PDT)
+        Tue, 5 Sep 2023 04:35:22 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76826CD2
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 01:35:17 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2bcb54226e7so26697801fa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 01:35:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693902873; x=1694507673; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1693902916; x=1694507716; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=CTGH+1pVNhjtiXQkQ7n6lrjl8K9tEbIsrU+0ovPX2qI=;
-        b=cO2zo51X/vfbfhZGuoIZL6YhfT/cnhkmKJDC+K4v5YB0m5RneAeogELj1IY78eoNnn
-         YBApu7v94C5Z3Mo7dJnHb665txYf9AG53A33JfWVKXW3KZYu0CKuPdudSSofwd5ckuWr
-         O5tpmS42luREgmccHFXIXgIT10C63M2csCqEAeyGGV6NzA7/5SEpGEDvXYsLHyKReF4k
-         hJeIycUbJwdrv7OJSMErYcFHRjVbnuvCe7KvgRp+1n9XvtfABaR0ahDDO1Lxmz/h/FTU
-         kxXHJyzCN1hhmwNtQ5lJcvA2O0XAKizt2AOjh2eAxKBOWtgsVwZKr2xSze1kIcyJU/e8
-         NTaQ==
+        bh=3LfDnYTHePLsAsYGK+DM6wWW+5RZk9c64DC8XRFDWYw=;
+        b=GmfVgNbE+ZqBRIIvcFeFjhXktdRjEyAUX+vhJ0ePs19IX6jc1azNrB5eyzA8SNFzHG
+         Vax0iAuUFE1EsAzw2yuNFRpvDdElmqU62kOxR8vtLEG1QYCgFLYTZJgVcQRWcJ/4LkYw
+         7duWfwji0VgRLOPZxxkjw0QvbVz6TOLJUstucD84hEfGiAARlHSqouo5YetcR0rgGwlf
+         Kt+E7SzCxZX/FURXjcwi9o1eMp1363L63BF8apd/cChWmTT41Z3s53fQ5ZMuVbK4L6+/
+         ogUoxekbBo8SN8rKEHTXb5ecQUT3yquBE/Ah5S8rpZpdOUfQJu4hWayl6y1STFh4Zsjq
+         d2Xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693902873; x=1694507673;
+        d=1e100.net; s=20221208; t=1693902916; x=1694507716;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CTGH+1pVNhjtiXQkQ7n6lrjl8K9tEbIsrU+0ovPX2qI=;
-        b=Jx0GYEGxj1fGPKWE7tunGoRDh5jPxbImH5sbRASYeRw9eibae1iskwvDm07uTuYHLB
-         e2a86fG7wThzgX6/exNxVm5hY0Rbw5gRThV7JY5Rfr+DT4d696NZQZfRHGzFTZoMIHz9
-         rgzlkaRe9IfbOsde6sTlZcdGVoiXhg91DdWsyA1zreebB+PvBYnBRDCITbC70e/HwQKA
-         g57qsqdZnHpV3dJAK4P0+RMC91nI174McoyuXmrOgmcBqEOYj9wO/ZqRX0vTtfMid/e/
-         Iqo5QPfqTuR0A7U7xSZIXLdJd1szq1rztNiUc4Sr3qdLvfHkeoaEMgrucGcGd558/0x0
-         aXvQ==
-X-Gm-Message-State: AOJu0YwYG0CEwmqsxzIiJBsQq9ec/tQJ3OtaesANzFtePxJrViyr1m3y
-        LxaHHwTNiN1HYTTPbo7znkuU8XCbPad26kjB/7O8uw==
-X-Google-Smtp-Source: AGHT+IFiKumTsMVRkq9//4/xK/5aF2y7nOg/3IOpthhey4Xl5TIFMEakn8LlQI5tMrxIync8gexAOw==
-X-Received: by 2002:a2e:b6c5:0:b0:2bb:9781:1a4c with SMTP id m5-20020a2eb6c5000000b002bb97811a4cmr8507865ljo.27.1693902872976;
-        Tue, 05 Sep 2023 01:34:32 -0700 (PDT)
+        bh=3LfDnYTHePLsAsYGK+DM6wWW+5RZk9c64DC8XRFDWYw=;
+        b=K/NBI37b9wk+hKQxYr0OQvWS6ETKd/Eo0cK1QETeZ/id+lG2grlDm8RwPhy03GyK7D
+         eE1QGqzHjz2QPsJ7pTbxhvDphFIuePpWziuY6dIgkjjuLcZvYpZhkBmOVw0UBIorKu+t
+         Uth79FAPPK3Ga6Oe7Zh7ugNx/4BS0o7o5z5cJoTiL4J+I7iViev+o9wI/ir10NFdlKB5
+         8Is5DoQUcJh0BH9dQPxd2q7rAG26bHbduMfRhpaOkivfJGJnDSLFmoCTVzE9nZ+kSJdI
+         5wKRyYrjg5g0ryyk4Xr8wRX+tYttxr0p40SnRJA1zmmZdhCuCs/UsEeYLA2dJk4HzOy9
+         XP2g==
+X-Gm-Message-State: AOJu0YwVNg5lVCE1arBueY/qJPvSc5SLaQFKSOcLfBa41UvqBAO6xhuL
+        MnKiyBXleVr+bbhqBUCrJTqPUA==
+X-Google-Smtp-Source: AGHT+IHwXgo+HUZn38FPp3aXrfF2CLysPysBVI/MsXPeJ8t2wBJz9mPAUJ6CpcAMVniKqYqyPAfPhg==
+X-Received: by 2002:a2e:900e:0:b0:2b6:d0c1:7cd0 with SMTP id h14-20020a2e900e000000b002b6d0c17cd0mr4218307ljg.22.1693902915739;
+        Tue, 05 Sep 2023 01:35:15 -0700 (PDT)
 Received: from [192.168.1.101] (abxj43.neoplus.adsl.tpnet.pl. [83.9.3.43])
-        by smtp.gmail.com with ESMTPSA id z9-20020a2e8849000000b002b9415597d0sm2774957ljj.78.2023.09.05.01.34.31
+        by smtp.gmail.com with ESMTPSA id z9-20020a2e8849000000b002b9415597d0sm2774957ljj.78.2023.09.05.01.35.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 01:34:32 -0700 (PDT)
-Message-ID: <ad099cf1-1973-4471-a96b-348c4156a13d@linaro.org>
-Date:   Tue, 5 Sep 2023 10:34:31 +0200
+        Tue, 05 Sep 2023 01:35:15 -0700 (PDT)
+Message-ID: <b85245cc-868a-442e-8f27-ae6ee60d49cc@linaro.org>
+Date:   Tue, 5 Sep 2023 10:35:14 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] crypto: qcom-rng - Add hw_random interface support
+Subject: Re: [PATCH 2/4] remoteproc: qcom: pas: Add sc7180 adsp
 Content-Language: en-US
-To:     Om Prakash Singh <quic_omprsing@quicinc.com>
-Cc:     neil.armstrong@linaro.org, agross@kernel.org, andersson@kernel.org,
-        conor+dt@kernel.org, davem@davemloft.net,
-        devicetree@vger.kernel.org, herbert@gondor.apana.org.au,
-        krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marijn.suijten@somainline.org, robh+dt@kernel.org, vkoul@kernel.org
-References: <20230901131502.1549809-1-quic_omprsing@quicinc.com>
- <20230905062420.3983268-1-quic_omprsing@quicinc.com>
+To:     Nikita Travkin <nikita@trvn.ru>, Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        cros-qcom-dts-watchers@chromium.org
+Cc:     David Wronek <davidwronek@gmail.com>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <20230905-sc7180-adsp-rproc-v1-0-dfea7699da7b@trvn.ru>
+ <20230905-sc7180-adsp-rproc-v1-2-dfea7699da7b@trvn.ru>
 From:   Konrad Dybcio <konrad.dybcio@linaro.org>
 Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  xsFNBF9ALYUBEADWAhxdTBWrwAgDQQzc1O/bJ5O7b6cXYxwbBd9xKP7MICh5YA0DcCjJSOum
@@ -101,11 +106,11 @@ Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
  bGqMHex48FVZhexNPYOd58EY9/7mL5u0sJmo+jTeb4JBgIbFPJCFyng4HwbniWgQJZ1WqaUC
  nas9J77uICis2WH7N8Bs9jy0wQYezNzqS+FxoNXmDQg2jetX8en4bO2Di7Pmx0jXA4TOb9TM
  izWDgYvmBE8=
-In-Reply-To: <20230905062420.3983268-1-quic_omprsing@quicinc.com>
+In-Reply-To: <20230905-sc7180-adsp-rproc-v1-2-dfea7699da7b@trvn.ru>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -114,20 +119,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5.09.2023 08:24, Om Prakash Singh wrote:
-> Add hw_random interface support in qcom-rng driver as new IP block
-> in Qualcomm SoC has inbuilt NIST SP800 90B compliant entropic source
-> to generate true random number.
+On 5.09.2023 07:47, Nikita Travkin wrote:
+> sc7180 has a dedicated ADSP similar to the one found in sm8250.
+> Add it's compatible to the driver reusing the existing config so
+> the devices that use the adsp can probe it.
 > 
-> Keeping current rng_alg interface as well for random number generation
-> using Kernel Crypto API.
-> 
-> Signed-off-by: Om Prakash Singh <quic_omprsing@quicinc.com>
+> Signed-off-by: Nikita Travkin <nikita@trvn.ru>
 > ---
+>  drivers/remoteproc/qcom_q6v5_pas.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Changes in V2:
-> - Address review comment from Bjorn and Krzysztof
-"make changes" is not a valid changelog, please be more specific
-next time around
+> diff --git a/drivers/remoteproc/qcom_q6v5_pas.c b/drivers/remoteproc/qcom_q6v5_pas.c
+> index b5447dd2dd35..55fafc68200e 100644
+> --- a/drivers/remoteproc/qcom_q6v5_pas.c
+> +++ b/drivers/remoteproc/qcom_q6v5_pas.c
+> @@ -1161,6 +1161,7 @@ static const struct of_device_id adsp_of_match[] = {
+>  	{ .compatible = "qcom,qcs404-adsp-pas", .data = &adsp_resource_init },
+>  	{ .compatible = "qcom,qcs404-cdsp-pas", .data = &cdsp_resource_init },
+>  	{ .compatible = "qcom,qcs404-wcss-pas", .data = &wcss_resource_init },
+> +	{ .compatible = "qcom,sc7180-adsp-pas", .data = &sm8250_adsp_resource},
+Should we use a fallback here, maybe?
 
 Konrad
