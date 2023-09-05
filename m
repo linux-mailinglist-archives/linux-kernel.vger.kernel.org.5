@@ -2,156 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C147B792B35
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C35C792B88
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244094AbjIEQtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:49:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
+        id S244648AbjIEQyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:54:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348838AbjIEEq4 (ORCPT
+        with ESMTP id S1349010AbjIEEsg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 00:46:56 -0400
-Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2071.outbound.protection.outlook.com [40.107.12.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1D7CC5
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 21:46:50 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KjD6ej2Dp71SGbNsJfMEREgeToUBJPgkcvCSwY/nxdKl+T8UjRC6plHemk0JwAFnpT5s5ySyRwz0fXXLm0HmRN+aiXqju8HYvfckamoW9xZrpT3BHUwLoyxNER906lrgQfvIZI0CLvbqF7+QsnIyojvi1h7wqs8+Z52IsZjpYnoeZ+m6B4gzA9nejOk2bxmgyzIx8gPDQlikBEgrcvhF9uHsmM3QN/0kszHZhGyiiSujTpacr7PB8VL2cS1YKaewcxObo+r4JlMXRQJLe05FYXij6byoCo0BwUz5mUdPtdk53Zqt189zJE/ohI7Fw3T4+IDpHLMFiZVod4XI4up/IA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EfgIyWb9cetCQgEs2dbd+YP/muRFeq22Q7M13AjGozM=;
- b=TfCFZI+wvfoC9/yElBQ4Z5ruYKBZBcsA0k+rRe3dqS38eNojvbJdsR4/iNqymrRc417BYcopoLml1AvuDnJUNCEQKIPFXphevyCAJd0ydK3F5vXUDqKim0QuUMk1h6XSB15LcOosRb8ufUxA6H1CRWWHv+rjq0qlCBQ6pLu5Lsdo96NY7iysIXRoxDCXbJxXZhkIT7SxLjsxqAxqsOVFpgUzZItvhTp0NMXhUPZoHkje7wmbyPG1YQDwYbGtidb2X4uBb8Lc9CNn7Fe4YyKF2Hh40smt+0bS40ZixOOvOq/Zj0iGbduFSCot08MknGkM/oE2XSpMrMGLJJ05KPEgoA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EfgIyWb9cetCQgEs2dbd+YP/muRFeq22Q7M13AjGozM=;
- b=dMSkIWGhWHROl4G8dMlXVgur04MecWhYzfF+io5qZCMNIWEoyXNVCh0t8GNQZv766XWyanLPzip5D+eITyNOeXJjuPO4UOmi8TXwfiUpCy/+O7SWPwT8JPlnBSb2ESMUzN/QYtoccXRf2CAtFrUO+9jluuVyk2e6p8jXk2v0dBFbmMlyEgCLwhXPf6wl33PGT8cMVMuCY/NGLnkx4QT7VLn/Hy6STtpWIT3XEXI7GpEzn5kFQqx4rg19MZ/2AjVqndbrqWjfMMqfmP6WVo7TzWpMcnAMOQIJ1Pkqk6d4nXuj0fz8GML670chHdRIsxyYIJlfWWOzO7cuAOAREP8jNw==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by PAZP264MB2464.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f3::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
- 2023 04:46:48 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
- 04:46:47 +0000
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-To:     Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH] powerpc/64e: Fix wrong test in
- __ptep_test_and_clear_young()
-Thread-Topic: [PATCH] powerpc/64e: Fix wrong test in
- __ptep_test_and_clear_young()
-Thread-Index: AQHZ3ZWvgclbkC122kmCn9+H/csT2LALiGkAgAAkXgA=
-Date:   Tue, 5 Sep 2023 04:46:47 +0000
-Message-ID: <57fccd67-39c7-f5c8-ce9c-a6e390ca5d5e@csgroup.eu>
-References: <2daed51109cbd7e7fbd26fab4e77fc6a27dee63e.1693643773.git.christophe.leroy@csgroup.eu>
- <87a5u1ibwr.fsf@mail.lhotse>
-In-Reply-To: <87a5u1ibwr.fsf@mail.lhotse>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAZP264MB2464:EE_
-x-ms-office365-filtering-correlation-id: e0c37841-4a37-48e3-6c4e-08dbadcb1ce0
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 1FlcsB95c+e1Xi0nbXS8GT0/bn3v+j8WJzkxbuAzRr+gv60QRKlf0Paaqm2Fq2Ypk0yMBGQ0EM+9kgiR52jXC7FA0ghDGACHdfoMTacwuNnCnhOcj6TgEoO7Mw8hg47Lchrr2EjcnqZFkO6yM7nfnl58O02KoXpDdFGNw2zkygw0iZSf+6XyU5sWboTVsqtA2c1YHBiPEHpwtNGFTUC0IaYmBm2JgDRxTqt3evA6VRCnnB/jgIGdbCsioPCigp/ZpxAziBmY6ZHIumPjJxsnqx5Vr9NzST2u2F8A8stDyttFfAU6xjBj2S5cW3eAYEHIZSeXEDSwb9TeaoeR/CO6uTnTokrbQdQct9M0VW5QPU50U/B1xWZwhmVAC0ZURdINUuVg7kqL/6TKbQNldT4F1I3d8/b0Kk9lD6xK8OnxyoVDhnATXcg7kW5mA85C6J8LF8iK8a7rt3BsHxTrX+XFAL39NraHdj37J8nAnN57h6YfX2sg/F2GtLFpSetDhEqfseFs2A0ijbcgLuykw7cYwSRCJXFJCBpisS3DFJ+Iz7muCIq68Pvw69dJ4kbHUIerXgg1L/4I1NcHFFEaXiuUYEmMDIYmC8B1kRRxxbFVTwyNywimhCZElRBOYiEigjWSRBm8VBpQDSSGxjueoDLDExuKxl3S43MiN+MGIMKKHnU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(376002)(39850400004)(451199024)(1800799009)(186009)(66946007)(66556008)(66476007)(66446008)(64756008)(54906003)(76116006)(110136005)(91956017)(122000001)(478600001)(38070700005)(38100700002)(316002)(2906002)(86362001)(31696002)(41300700001)(8676002)(8936002)(4326008)(5660300002)(44832011)(83380400001)(6506007)(6512007)(71200400001)(6486002)(2616005)(26005)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dytLK0JFWU5RbkxRVWpHaHZrL0dwTHo4d20zQ1U4RnhhSFNWOUNVWGY5dUNJ?=
- =?utf-8?B?US9vazcxdW9XQ2tpTmhnWU1ON3kzZTRibmx1cGF4N1NqUHc0R0FESnlMZUU4?=
- =?utf-8?B?N1MzSVNCdDRhZ3JVYldTZDMyQ3o4Y25uOW9HemNhb1Nxd013UUxGMVN1YjFO?=
- =?utf-8?B?WW1Pb05nSDdiV3RtRW9qQVR2b3Q1Z28rclhOYjlWRnhhQkt5NFpaQ0k3dlZ3?=
- =?utf-8?B?ZzQyZWplektONlI5QzBkTkEvTW1hWWYwNEYybWdDSnkvVkl4bWpsN3VQeURK?=
- =?utf-8?B?NTZmN0FjNHpXQTVxa0kyUlpUbXJhR2JYdkVjeERKWlRWaDdHSmcybE8vclZm?=
- =?utf-8?B?NXFtc0ptdEZnWENQc2RzSkxodnRCQXZ5NEVaSDBDMmRRc2llbk1ndHdVVk1Y?=
- =?utf-8?B?RlFCcWFwNHpTck9qZ1JoLzNmVjhYcW0xV3BxTDEwQ3pKbU9GUGthL1ZIeVVC?=
- =?utf-8?B?UElvdWRHcjlXTnhtL1czRThRYjhHT2Y5YzJqRGdZYTVETFJYMWZUWGNqbzFl?=
- =?utf-8?B?NTBEb29XOWxaVEs3QmVkc2hSUms2ZHBHd0ErTWw4ZEVhdkFHL1JRMzhtMlJK?=
- =?utf-8?B?cXMyR25hcmJFemJZSDkrcTVUaWpFVUYrVG5vdU5KZzBWRHczd3AzcWFGSEk0?=
- =?utf-8?B?TTQ0aDUvc1R4Q0dlTVBYREd6c1lvU042aFdEOENwVE4vZ1g2cEJidHArdmsz?=
- =?utf-8?B?QkowU3Fqam50Z0huYXN4SzgxL1FUR1A0U3NOQlhqenMwUjQ1WU9jSFY5Nldi?=
- =?utf-8?B?T3pKODBOb0RxWVIvYVZSVjZXRFg0N0xhWm5pOXUvMFVHSERNQWgrd016eUZn?=
- =?utf-8?B?bnBUeHM5MWFLQWhEUDBXWEoya0dqNThPUmVhbnkzaVc0bEpQcDFkYVUrR3dP?=
- =?utf-8?B?NzJqeTZ6S1JnRy9obmdWa1RrY2ZDWG5qUG5Sdi9URnYwM28zMnFGV28zaG1U?=
- =?utf-8?B?OWlDM0E4QVZDY0szb09GR0FQNzZTNE8wQ1ViVmJyVitBQ1NHbHhwTk5LdC8y?=
- =?utf-8?B?TkpqTklCQzd6VGlDNWpyaDZMNTNmZUdCdXovMmRlVlFwR3hnaW9FcitLT0g3?=
- =?utf-8?B?VklybTVFU211eVBLL3c3QnlNZnVTUzlsUVlJTzNocml5K0Y1a0VDVFUrLzRi?=
- =?utf-8?B?U2FpWmlybDZHWG1XYmZnQXdBdDZQdjY4TXFpamYvb2dmNjRiSkt6YnJDcDh2?=
- =?utf-8?B?R0llSlpvQ0h6TXZwcElzRkpsUEh6bEF6L1BRUG5BOFBpQVhhZms1VkxKVTg5?=
- =?utf-8?B?WXhpeHV5UEdlWDVKcGVoL2QvK3lPbi9XM1o4LytzYThMVnhkRTVsNi8vckNn?=
- =?utf-8?B?ejc0bWhKYUp4LzhPdUprR1hscEI5NFhVbnA0V2JhaXZUK1J6VTByR3VkYkcx?=
- =?utf-8?B?R08xT213RXZMTDJoZ2lUc3lqU2dYaU9RVlNueGJvbzgzNWxtQS9zQ0Mvalg3?=
- =?utf-8?B?bnVUZ3BLd1UyS0MyTmhxdUUrTC96OWwxTEk3U3BrM0h4ZkN1b2hFajFvQUdq?=
- =?utf-8?B?anJsMXhXVDVWOHVNa3M5dW03Ujd2am5NRzU0YXJLTUE1VUFjRjNJb3g4MEZI?=
- =?utf-8?B?cnF6eWNzMmdBTHdmUmdlSHdWSHZ0UStoNzJwdkhCTzJtK1FpcXQ5bG5Na0Zk?=
- =?utf-8?B?UWpqbzJ3OGhYT21nT2xKQTN2bUh4Sk92TFlRanlKUUVEZU9Dd2VxaDZUWll6?=
- =?utf-8?B?djBYSWx3a1FCSGE4MXh3SVo0T3FpRWcrRU04T3JTZ2UxamVyZ2pVOWpYUmtZ?=
- =?utf-8?B?MWUwRTNqMkdFQW1vK1BLNmg0SnZ6ZndzdEQ1Ri9IZzJyeWxkUmxnTXVvVU42?=
- =?utf-8?B?Mmd3Kzh5bWZsUlBEeHdBQW9RaDZjQTlaRG1jbEw2RXVQRHlnZ3RpdEpHMmlh?=
- =?utf-8?B?SGNqSzdiYlJyYUdSUWkwT0x1VHVRN0lHbFdCaGFvS1dqK2lHVzYyRXkzeDU0?=
- =?utf-8?B?T3UyMndLcnNkdnlsVDVnSkFsV1k4OUlUaGFNb3RvZ0xGQjhOTm9DWGQra3p2?=
- =?utf-8?B?NFhNYU9MNlRKc21BMklqaG1VelFXRXZBM2ExODcxZ01wNXJteklDQ1dNeXYw?=
- =?utf-8?B?Q0g4NnM2L0liaU03Q0IvSC9mNkJQVzVNSW9ZNTlER3dyc1ExZklKTUlmK0xh?=
- =?utf-8?B?OHhadjIxY1Q2c2dCeU1wQ3BLRW1pU1hBMGpzQW1BMGV2dkI1dE1zbEtuMElz?=
- =?utf-8?B?Y2c9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B72DB024C4DD8E499C9FA528A87D3AF0@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+        Tue, 5 Sep 2023 00:48:36 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96C97CC7
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 21:48:30 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.9.158])
+        by gateway (Coremail) with SMTP id _____8BxpPAcs_ZkglQfAA--.63249S3;
+        Tue, 05 Sep 2023 12:48:28 +0800 (CST)
+Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfSMcs_ZkF1psAA--.16709S2;
+        Tue, 05 Sep 2023 12:48:28 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     WANG Xuerui <kernel@xen0n.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] LoongArch: Clear invalid tlb when set huge page PTE entry
+Date:   Tue,  5 Sep 2023 12:48:28 +0800
+Message-Id: <20230905044828.1460721-1-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0c37841-4a37-48e3-6c4e-08dbadcb1ce0
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2023 04:46:47.7381
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: UObeSsY/9WV8EYa3aU16wbdIsygYgWqK49nHtLsuhSJcGdSqCimb8wshaemrt1VkhXcM3lHlgfrtNK1VT+q+yhazNvGeFXW0z7VbSGcjVA0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB2464
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8DxfSMcs_ZkF1psAA--.16709S2
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxWr1fZrWxCr1UtrWxCw1xJFc_yoW5Aw13pF
+        9xC3Z5Xr4fGr9ayr9ayr4q9F43JFn7K3y2gF93Jay8AFnxWr15Wr97J39xZa4UX395W3yf
+        W3yagr1DWF1DXwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
+        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAF
+        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
+        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
+        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
+        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+        0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzZ2-UUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCkxlIDA1LzA5LzIwMjMgw6AgMDQ6MzYsIE1pY2hhZWwgRWxsZXJtYW4gYSDDqWNyaXTCoDoN
-Cj4gQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3cml0ZXM6
-DQo+PiBDb21taXQgNDUyMDFjODc5NDY5ICgicG93ZXJwYy9ub2hhc2g6IFJlbW92ZSBoYXNoIHJl
-bGF0ZWQgY29kZSBmcm9tDQo+PiBub2hhc2ggaGVhZGVycy4iKSByZXBsYWNlZDoNCj4+DQo+PiAg
-ICBpZiAoKHB0ZV92YWwoKnB0ZXApICYgKF9QQUdFX0FDQ0VTU0VEIHwgX1BBR0VfSEFTSFBURSkp
-ID09IDApDQo+PiAJcmV0dXJuIDA7DQo+Pg0KPj4gQnk6DQo+Pg0KPj4gICAgaWYgKHB0ZV95b3Vu
-ZygqcHRlcCkpDQo+PiAJcmV0dXJuIDA7DQo+Pg0KPj4gQnV0IGl0IHNob3VsZCBiZToNCj4+DQo+
-PiAgICBpZiAoIXB0ZV95b3VuZygqcHRlcCkpDQo+PiAJcmV0dXJuIDA7DQo+IA0KPiANCj4gVGhh
-dCBzZWVtcyBiYWQgOikNCj4gDQo+IEJ1dCBJIGRvbid0IGtub3cgb2ZmIHRoZSB0b3Agb2YgbXkg
-aGVhZCB3aGVyZQ0KPiBfX3B0ZXBfdGVzdF9hbmRfY2xlYXJfeW91bmcoKSBpcyB1c2VkLCBhbmQg
-c28gd2hhdCB0aGUgc3ltcHRvbXMgY291bGQNCj4gYmUuIFByZXN1bWFibHkgbm90aGluZyB0b28g
-YmFkIG9yIHNvbWVvbmUgd291bGQgaGF2ZSBub3RpY2VkPw0KPiANCg0KVGhlIHR3byB1c2VzIGlu
-IG1tL3Ztc2Nhbi5jIGFyZSBhcyBmb2xsb3dzOg0KDQoJaWYgKCFwdGVwX3Rlc3RfYW5kX2NsZWFy
-X3lvdW5nKGFyZ3MtPnZtYSwgYWRkciwgcHRlICsgaSkpDQoJCVZNX1dBUk5fT05fT05DRSh0cnVl
-KTsNCg0KU28gaXQgc2VlbXMgdG8gYmUgZXhwZWN0ZWQgdG8gbmV2ZXIgaGFwcGVuLg0KDQpUaGUg
-b25seSB1c2VmdWwgcGxhY2UgaXQgaXMgdXNlZCBzZWVtcyB0byBiZSBmb2xpb19jaGVja19yZWZl
-cmVuY2VzKCkgDQp3aGljaCBpcyBwYXJ0IG9mIHRoZSByZWNsYWltIHByb2Nlc3MuIFNvIHByb2Jh
-Ymx5IGl0IG1lc3NlcyB1cCBzd2FwLCBidXQgDQp0byB3aGF0IGV4dGVudCA/IHBwYzY0ZSBpcyBm
-b3IgZW1iZWRkZWQgc3lzdGVtcy4gRG8gZW1iZWRkZWQgc3lzdGVtcyANCmhhdmUgc3dhcCBhdCBh
-bGwgPw0KDQpBbHNvIHN1cnByaXNpbmcgdGhhdCBpdCBpcyBhbHNvIGNhbGxlZCBmcm9tIG1tL2Rl
-YnVnX3ZtX3BndGFibGUuYyBzbyANCnNob3VsZG4ndCB3ZSBoYXZlIG5vdGljZWQgZWFybGllciA/
-IEknbGwgY2hlY2sgaWYgaXQgd29ya3MuDQo=
+For LoongArch machines where hardware page table walk is not
+support, if hugetlb pte entry is invalid, invalid tlb with normal
+page will be filled and triggers page fault exception from HW.
+
+During page fault handling, current thread maybe migrates to other
+CPUs and set huge page pte entry. And if the thread migrates to
+the old CPU, stale tlb with normal page exists still, there will
+be confliction. So the invalid tlb need be flushed when set  huge
+page pte entry like set_huge_pte_at and set_pmd_at function.
+
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ arch/loongarch/include/asm/hugetlb.h |  4 ++++
+ arch/loongarch/mm/pgtable.c          |  8 +++++++-
+ arch/loongarch/mm/tlb.c              | 17 +++++++++++++++++
+ 3 files changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/arch/loongarch/include/asm/hugetlb.h b/arch/loongarch/include/asm/hugetlb.h
+index aa44b3fe43dd..62cd7528a07f 100644
+--- a/arch/loongarch/include/asm/hugetlb.h
++++ b/arch/loongarch/include/asm/hugetlb.h
+@@ -59,6 +59,10 @@ static inline int huge_pte_none(pte_t pte)
+ 	return !val || (val == (unsigned long)invalid_pte_table);
+ }
+ 
++#define __HAVE_ARCH_HUGE_SET_HUGE_PTE_AT
++extern void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
++				pte_t *ptep, pte_t pte);
++
+ #define __HAVE_ARCH_HUGE_PTEP_SET_ACCESS_FLAGS
+ static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
+ 					     unsigned long addr,
+diff --git a/arch/loongarch/mm/pgtable.c b/arch/loongarch/mm/pgtable.c
+index b14343e211b6..dfae34484f43 100644
+--- a/arch/loongarch/mm/pgtable.c
++++ b/arch/loongarch/mm/pgtable.c
+@@ -116,8 +116,14 @@ pmd_t mk_pmd(struct page *page, pgprot_t prot)
+ void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+ 		pmd_t *pmdp, pmd_t pmd)
+ {
++	/*
++	 * The similar with function set_huge_pte_at
++	 * Need flush invalid normal page pte if hw ptw is not supported
++	 */
++	if (!cpu_has_ptw && pmd_none(*pmdp))
++		flush_tlb_mm(mm);
++
+ 	*pmdp = pmd;
+-	flush_tlb_all();
+ }
+ 
+ void __init pagetable_init(void)
+diff --git a/arch/loongarch/mm/tlb.c b/arch/loongarch/mm/tlb.c
+index eb8572e201ea..ef7a89a98982 100644
+--- a/arch/loongarch/mm/tlb.c
++++ b/arch/loongarch/mm/tlb.c
+@@ -201,6 +201,23 @@ void __update_tlb(struct vm_area_struct *vma, unsigned long address, pte_t *ptep
+ 	local_irq_restore(flags);
+ }
+ 
++void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
++		pte_t *ptep, pte_t pte)
++{
++	/*
++	 * If huge pte entry is none, tlb entry with normal page size is filled
++	 * for machines which does not support hardware page walking.
++	 *
++	 * Thread maybe migrates to other CPUs after page fault happends and
++	 * migrates back again after hugepage pte is set, tlbs with normal page
++	 * about invalid_pte_table need be flushed
++	 */
++	if (!cpu_has_ptw && huge_pte_none(*ptep))
++		flush_tlb_mm(mm);
++
++	set_pte_at(mm, addr, ptep, pte);
++}
++
+ static void setup_ptwalker(void)
+ {
+ 	unsigned long pwctl0, pwctl1;
+-- 
+2.27.0
+
