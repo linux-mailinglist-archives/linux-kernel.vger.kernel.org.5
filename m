@@ -2,241 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 675C5792AA8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E28792854
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245539AbjIEQkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:40:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55562 "EHLO
+        id S239443AbjIEQSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:18:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354360AbjIELAT (ORCPT
+        with ESMTP id S1354363AbjIELBE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 07:00:19 -0400
-Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B1312A;
-        Tue,  5 Sep 2023 04:00:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by sin.source.kernel.org (Postfix) with ESMTPS id 6C860CE10BD;
-        Tue,  5 Sep 2023 11:00:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C47EC433C7;
-        Tue,  5 Sep 2023 11:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693911611;
-        bh=Wfk1BuK7Xhfcrf4xZDmH9THWGITu0aqQKjO7PM3R1kk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=phwKNbWl+Q1EF5s4UKKO34pA7mX/nDJdHQO+AJCheMIBRtMD5JQ/mrDJbaWwZqs3c
-         OlgUil3K0caYN+kKH4/TNBWGmbV2kkl3o7eFWeKQ8VnOAgvk9jnfA5uQoOb4Ujhojt
-         AVeoAlnl2O1GW6Sb1Y7LBXJ8V/NvE46QuNAJpWARUPzn1BC7n/UQUWiEFFZ906Kb6A
-         UEC4H0DIYMdyqaAy2822ULAeUcRUIpXaV0anrm6oUZjkLPGhgzTkR94a/EcI51Ywuk
-         96CPMIfuyUguLsh+/hXEpWnUVQ+OyvtZ1Q8h3dZg95LvMMqOb4dLqu3aRY3CJwc1pR
-         EVEL/1N7/nlhA==
-Date:   Tue, 5 Sep 2023 13:00:09 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Vignesh Raman <vignesh.raman@collabora.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        dri-devel@lists.freedesktop.org, helen.koike@collabora.com,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        david.heidelberg@collabora.com, daniels@collabora.com,
-        gustavo.padovan@collabora.com, emma@anholt.net,
-        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
-        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] drm: ci: Force db410c to host mode
-Message-ID: <2jz6wurh6ejbaejwtb5r5gukjuw4zs7ujk5hbwfpsn26o6esqe@g2nnb2gjpnjp>
-References: <20230904161516.66751-1-vignesh.raman@collabora.com>
- <20230904161516.66751-3-vignesh.raman@collabora.com>
- <CAA8EJpq_cmFQ6TGy1xELh3ButWKLfSkQcp5ix049s_iqKw6DvQ@mail.gmail.com>
- <ueznsu2dlvq5zp3ls262fww54bnlqa3e2ssr6f65vrrionloms@ir2ywgeajj4w>
- <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
+        Tue, 5 Sep 2023 07:01:04 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D7551AB;
+        Tue,  5 Sep 2023 04:01:00 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5298e43bb67so5060946a12.1;
+        Tue, 05 Sep 2023 04:01:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693911659; x=1694516459; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zwy2enTt2SO2Sv9oRLC9SuqNesFb2onrt5Fx6Ho7KA8=;
+        b=nk8+2inmrknKcgvJL7umnAT63490i7hGLWbkcO5hoFSSBbxLpjZNkPztQ9lhGlYVVK
+         Jn7zKvfE83QSCjB8FBSDUm+qxC7ItIbFDnGAq2L55noUqg37YXgsOmDsDkCIQqC0Jehn
+         VsvNjqpc7/Fl+2joPT9n83+YGlf7jcAfhw1mXDbldqFNBrDVv8o4Esg8K0YqhDuzKtGM
+         NwKN1GTnpE3vQfddpak9PpFBPsa++F2yKSqFEK+49DxDA4uFnYvXhA9Kpmw4HGqFWM/N
+         xQ2nhVYCIaVIuRmCwQTnFi0dQT34dI3JaQCLWpGLv3xKER8JwyoGEvSUc5hBv6rb1Hu9
+         ruqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693911659; x=1694516459;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Zwy2enTt2SO2Sv9oRLC9SuqNesFb2onrt5Fx6Ho7KA8=;
+        b=Wdqet+AhXZ5x37ubVEvLZ5yqD90O0OPfySBJg7GtRU+lHnQ61lUUrf1zhG2qaW6jK5
+         R4jWQ7FXKGbHP9tXs1ZDGBohUvWaveJ7M7ZwD0+Qw3kQo6hTX2MQZiK1KetTKWkMzgaf
+         orA0r4MQNp+UJf9L61yNuuNPxsfWYID9JWHXlAk6s1QA4IEQPH2fjXN9Fq/Zc9mcdvtj
+         72iTBE4MoUp6rd8/E/Y7UV6hDt6/xtg8z89J+kFOmrgq7lRtMtmbMehniLiP1zwNS/ka
+         Un2ILFg5jhiGwKD04hTS+poY0NwLyKuVZsqAmkeDfpKnnKG6AybZzrJewxJqwEWjE/Uc
+         G7Sg==
+X-Gm-Message-State: AOJu0YxmVEQ0J/9phACWCIMsapXUGHw50qbqe6i8UpYpIZIgcJUvJNiQ
+        Lu6FZFab8Ni4OSFqOfmk65k=
+X-Google-Smtp-Source: AGHT+IECWinjGCWmQ4Iuzke+met9TY4SkOWQQZKuyx1EiJ4+IFPhm7nCQotFIWo+YDGJJDiil7HquA==
+X-Received: by 2002:a05:6402:32e:b0:522:d801:7d07 with SMTP id q14-20020a056402032e00b00522d8017d07mr13252480edw.10.1693911658944;
+        Tue, 05 Sep 2023 04:00:58 -0700 (PDT)
+Received: from skbuf ([188.26.57.165])
+        by smtp.gmail.com with ESMTPSA id z14-20020aa7c64e000000b00528922bb53bsm7014864edr.76.2023.09.05.04.00.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 04:00:58 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 14:00:56 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Eric Dumazet <edumazet@google.com>, Andrew Lunn <andrew@lunn.ch>,
+        davem@davemloft.net, Paolo Abeni <pabeni@redhat.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Tristram.Ha@microchip.com, Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, UNGLinuxDriver@microchip.com,
+        George McCollister <george.mccollister@gmail.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 RFC 2/4] net: dsa: Extend ksz9477 TAG setup to support
+ HSR frames duplication
+Message-ID: <20230905110056.gzkaiznlq5hcvrac@skbuf>
+References: <20230904120209.741207-1-lukma@denx.de>
+ <20230904120209.741207-3-lukma@denx.de>
+ <20230905102239.mkufbzxwrvuatlrb@skbuf>
+ <20230905124409.40c7c2f1@wsk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230905124409.40c7c2f1@wsk>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 03:39:33PM +0530, Vignesh Raman wrote:
-> Hi Dmitry, Maxime,
->=20
-> On 05/09/23 14:13, Maxime Ripard wrote:
-> > Hi,
-> >=20
-> > On Mon, Sep 04, 2023 at 07:59:26PM +0300, Dmitry Baryshkov wrote:
-> > > On Mon, 4 Sept 2023 at 19:16, Vignesh Raman <vignesh.raman@collabora.=
-com> wrote:
-> > > >=20
-> > > > Force db410c to host mode to fix network issue which results in fai=
-lure
-> > > > to mount root fs via NFS.
-> > > > See https://gitlab.freedesktop.org/gfx-ci/linux/-/commit/cb72a629b8=
-c15c80a54dda510743cefd1c4b65b8
-> > > >=20
-> > > > Use fdtoverlay command to merge base device tree with an overlay
-> > > > which contains the fix for USB controllers to work in host mode.
-> > > >=20
-> > > > Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
-> > > > ---
-> > > >=20
-> > > > v2:
-> > > >    - Use fdtoverlay command to merge overlay dtbo with the base dtb=
- instead of modifying the kernel sources
-> > > >=20
-> > > > ---
-> > > >   drivers/gpu/drm/ci/build.sh                         |  5 +++++
-> > > >   .../gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts  | 13 ++++++++=
-+++++
-> > > >   2 files changed, 18 insertions(+)
-> > > >   create mode 100644 drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-ove=
-rlay.dts
-> > > >=20
-> > > > diff --git a/drivers/gpu/drm/ci/build.sh b/drivers/gpu/drm/ci/build=
-=2Esh
-> > > > index 7b014287a041..92ffd98cd09e 100644
-> > > > --- a/drivers/gpu/drm/ci/build.sh
-> > > > +++ b/drivers/gpu/drm/ci/build.sh
-> > > > @@ -92,6 +92,11 @@ done
-> > > >=20
-> > > >   if [[ -n ${DEVICE_TREES} ]]; then
-> > > >       make dtbs
-> > > > +    if [[ -e arch/arm64/boot/dts/qcom/apq8016-sbc.dtb ]]; then
-> > > > +        dtc -@ -I dts -O dtb -o drivers/gpu/drm/ci/dt-overlays/apq=
-8016-sbc-overlay.dtbo drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
-> > > > +        fdtoverlay -i arch/arm64/boot/dts/qcom/apq8016-sbc.dtb -o =
-arch/arm64/boot/dts/qcom/apq8016-sbc-overlay.dtb drivers/gpu/drm/ci/dt-over=
-lays/apq8016-sbc-overlay.dtbo
-> > > > +        mv arch/arm64/boot/dts/qcom/apq8016-sbc-overlay.dtb arch/a=
-rm64/boot/dts/qcom/apq8016-sbc.dtb
-> > > > +    fi
-> > > >       cp ${DEVICE_TREES} /lava-files/.
-> > > >   fi
-> > > >=20
-> > > > diff --git a/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts=
- b/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
-> > > > new file mode 100644
-> > > > index 000000000000..57b7604f1c23
-> > > > --- /dev/null
-> > > > +++ b/drivers/gpu/drm/ci/dt-overlays/apq8016-sbc-overlay.dts
-> > > > @@ -0,0 +1,13 @@
-> > > > +/dts-v1/;
-> > > > +/plugin/;
-> > > > +
-> > > > +/ {
-> > > > +    fragment@0 {
-> > > > +        target-path =3D "/soc@0";
-> > > > +        __overlay__ {
-> > > > +            usb@78d9000 {
-> > > > +                dr_mode =3D "host";
-> > > > +            };
-> > > > +        };
-> > > > +    };
-> > > > +};
-> > > > --
-> > > > 2.40.1
-> > >=20
-> > > Can we use normal dtso syntax here instead of defining fragments manu=
-ally?
-> >=20
-> > What Dmitry is hinting about is to use the "Sugar Syntax". There a good=
- documentation here:
-> > https://source.android.com/docs/core/architecture/dto/syntax
->=20
->=20
-> With the below DTO syntax,
-> /dts-v1/;
-> /plugin/;
->=20
-> &usb {
->   usb@78d9000 {
->     dr_mode =3D "host";
->   };
-> };
->=20
-> Decoded dtbo file is,
-> /dts-v1/;
->=20
-> / {
->=20
-> 	fragment@0 {
-> 		target =3D <0xffffffff>;
->=20
-> 		__overlay__ {
->=20
-> 			usb@78d9000 {
-> 				dr_mode =3D "host";
-> 			};
-> 		};
-> 	};
->=20
-> 	__fixups__ {
-> 		usb =3D "/fragment@0:target:0";
-> 	};
-> };
->=20
-> With the previous fix using fragment we get,
-> / {
->=20
-> 	fragment@0 {
-> 		target-path	 =3D "/soc@0";
->=20
-> 		__overlay__ {
->=20
-> 			usb@78d9000 {
-> 				dr_mode =3D "host";
-> 			};
-> 		};
-> 	};
-> };
->=20
-> Decoded apq8016-sbc.dtb file with the fix (setting dr_mode to host) is,
-> /dts-v1/;
-> / {=09
-> 	soc@0 {
-> 		usb@78d9000 {
-> 			dr_mode =3D "host";
-> 		};=09
-> 	};
-> };
->=20
-> How can set the target to "soc@0" using the DTO syntax?
+On Tue, Sep 05, 2023 at 12:44:09PM +0200, Lukasz Majewski wrote:
+> > Not to mention that there are other problems with the "dev->hsr_ports"
+> > concept. For example, having a hsr0 over lan0 and lan1, and a hsr1
+> > over lan2 and lan3, would set dev->hsr_ports to GENMASK(3, 0).
+> 
+> I doubt that having two hsr{01} interfaces is possible with current
+> kernel.
 
-To strictly answer your question, that would be something like
+You mean 2 hsr{01} interfaces not being able to coexist in general,
+or just "offloaded" ones?
 
-&{/soc@0} {
-	usb@78d9000 {
-		dr_mode =3D "host";
-	};
+> The KSZ9477 allows only to have 2 ports of 5 available as HSR
+> ones.
+> 
+> The same is with earlier chip xrs700x (but this have even bigger
+> constrain - there only ports 1 and 2 can support HSR). 
+
+> > > +	if (dev->features & NETIF_F_HW_HSR_DUP) {
+> > > +		val &= ~KSZ9477_TAIL_TAG_LOOKUP;  
+> > 
+> > No need to unset a bit which was never set.
+> 
+> I've explicitly followed the vendor's guidelines - the TAG_LOOKUP needs
+> to be cleared.
+> 
+> But if we can assure that it is not set here I can remove it.
+
+Let's look at ksz9477_xmit(), filtering only for changes to "u16 val".
+
+static struct sk_buff *ksz9477_xmit(struct sk_buff *skb,
+				    struct net_device *dev)
+{
+	u16 val;
+
+	val = BIT(dp->index);
+
+	val |= FIELD_PREP(KSZ9477_TAIL_TAG_PRIO, prio);
+
+	if (is_link_local_ether_addr(hdr->h_dest))
+		val |= KSZ9477_TAIL_TAG_OVERRIDE;
+
+	if (dev->features & NETIF_F_HW_HSR_DUP) {
+		val &= ~KSZ9477_TAIL_TAG_LOOKUP;
+		val |= ksz_hsr_get_ports(dp->ds);
+	}
+}
+
+Is KSZ9477_TAIL_TAG_LOOKUP ever set in "val", or am I missing something?
+
+> > > +		val |= ksz_hsr_get_ports(dp->ds);
+> > > +	}  
+> > 
+> > Would this work instead?
+> > 
+> > 	struct net_device *hsr_dev = dp->hsr_dev;
+> > 	struct dsa_port *other_dp;
+> > 
+> > 	dsa_hsr_foreach_port(other_dp, dp->ds, hsr_dev)
+> > 		val |= BIT(other_dp->index);
+> > 
+> 
+> I thought about this solution as well, but I've been afraid, that going
+> through the loop of all 5 ports each time we want to send single packet
+> will reduce the performance.
+> 
+> Hence, the idea with having the "hsr_ports" set once during join
+> function and then use this cached value afterwards.
+
+There was a quote about "premature optimization" which I can't quite remember...
+
+If you can see a measurable performance difference, then the list
+traversal can be converted to something more efficient.
+
+In this case, struct dsa_port :: hsr_dev can be converted to a larger
+struct dsa_hsr structure, similar to struct dsa_port :: bridge.
+That structure could look like this:
+
+struct dsa_hsr {
+	struct net_device *dev;
+	unsigned long port_mask;
+	refcount_t refcount;
 };
 
-You can simplify this further however by doing:
+and you could replace the list traversal with "val |= dp->hsr->port_mask".
+But a more complex solution requires a justification, which in this case
+is performance-related. So performance data must be gathered.
 
-
-&{/soc@0/usb@78d9000} {
-	dr_mode =3D "host";
-};
-
-Also, that node actually has a label ("usb"), defined here:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arc=
-h/arm64/boot/dts/qcom/msm8916.dtsi#n2322
-
-So you can end up with
-
-&usb {
-	dr_mode =3D "host";
-};
-
-All of them should be equivalent to the one you had in your patch.
-
-Maxime
+FWIW, dsa_master_find_slave() also performs a list traversal.
+But similar discussions about performance improvements didn't lead anywhere.
