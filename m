@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 716657928E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A09A792B92
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350355AbjIEQYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
+        id S1343858AbjIEQz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:55:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354756AbjIEOHi (ORCPT
+        with ESMTP id S1354758AbjIEOHj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:07:38 -0400
+        Tue, 5 Sep 2023 10:07:39 -0400
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84A291AB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:07:35 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A6DF1A7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:07:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693922855; x=1725458855;
+  t=1693922856; x=1725458856;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=Q95MzduZqjx1H3qSsIIWM/4xzW0Di0Tyl1YsUi4/EEk=;
-  b=b9O00clt7a9N6CWPs2n7+O9xNN6xeXOqYRrK1WQPdlGf59URCG9hJ3tT
-   IyK4Fu7ZQtmEYMci7EWK2h1MLU7gwUF5LvIQ1FlaYRzFJn95KNZw7VBAd
-   RpJXBkLQKSwjlmCkUbfrvg2adCDPOaW8sP/lOl4wu62f1sj6NSXvV/jhc
-   zLs4hYmHz3rpHvCiY/o5PXEyV51pOOXM84/W32+tXXQGqQpa7XwdimfyD
-   CbyMLJJLeNxiQNDRswdpoFYU7PJueMPTcZIdXgrAdUxHaRPqOLwC2p8rl
-   HKRIT0aItSb8Wh3RGf8uc0G5TSwOQ834IyjnmCjd5p8jmTA1gzeOT90Bl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="380609601"
+  bh=dvT4bjQOLiJP78MPuTog+CQfsmhI/8vfzdHD6sqXSeU=;
+  b=n8vuWiACSzfFi0hQCYZnDr/R3KjuzXRMbEFn+f3hyZMu9ttaXnhlVEpo
+   d/1MuZJHTZMu3RCAPA09YpwISUmtYdEStx60akGgUz0QWhHLh426szOWh
+   y+QxiJg6nNy3oRgQrh4L9yH1+1WlqtgyEv+W5SyDT680I26lBCrbGnHzO
+   IqH4m9tsKFvz0Ci/r+deXv3EGHmLE2303ZbLI384UrEB3mu6WZBbbl4Te
+   2LVn94LEd7uLzd7MEbe4y95VloGiOXmxvAtwLZ6L4AYAxx9BtR2pLCkoF
+   oiUt5HBN6FJiwzdzYXqk32r1TxMjNwijw02n/b2ijwaTu2pOuqL2nVRf6
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="380609616"
 X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="380609601"
+   d="scan'208";a="380609616"
 Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 07:06:25 -0700
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 07:06:28 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="811242153"
+X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="811242163"
 X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="811242153"
+   d="scan'208";a="811242163"
 Received: from shbuild999.sh.intel.com ([10.239.146.107])
-  by fmsmga004.fm.intel.com with ESMTP; 05 Sep 2023 07:06:23 -0700
+  by fmsmga004.fm.intel.com with ESMTP; 05 Sep 2023 07:06:25 -0700
 From:   Feng Tang <feng.tang@intel.com>
 To:     Vlastimil Babka <vbabka@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -50,9 +50,9 @@ To:     Vlastimil Babka <vbabka@suse.cz>,
         Hyeonggon Yoo <42.hyeyoo@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Cc:     Feng Tang <feng.tang@intel.com>
-Subject: [RFC Patch 2/3] mm/slub: double per-cpu partial number for large systems
-Date:   Tue,  5 Sep 2023 22:13:47 +0800
-Message-Id: <20230905141348.32946-3-feng.tang@intel.com>
+Subject: [RFC Patch 3/3] mm/slub: setup maxim per-node partial according to cpu numbers
+Date:   Tue,  5 Sep 2023 22:13:48 +0800
+Message-Id: <20230905141348.32946-4-feng.tang@intel.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20230905141348.32946-1-feng.tang@intel.com>
 References: <20230905141348.32946-1-feng.tang@intel.com>
@@ -68,74 +68,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are reports about severe lock contention for slub's per-node
-'list_lock' in 'hackbench' test, [1][2], on server systems. And
-similar contention is also seen when running 'mmap1' case of
-will-it-scale on big systems. As the trend is one processor (socket)
-will have more and more CPUs (100+, 200+), the contention could be
-much more severe and becomes a scalability issue.
+Currently most of the slab's min_partial is set to 5 (as MIN_PARTIAL
+is 5). This is fine for older or small systesms, and could be too
+small for a large system with hundreds of CPUs, when per-node
+'list_lock' is contended for allocating from and freeing to per-node
+partial list.
 
-One way to help reducing the contention is to double the per-cpu
-partial number for large systems.
-
-Following is some performance data, where it shows big improvment
-in will-it-scale/mmap1 case, but no ovbious change for the 'hackbench'
-test.
-
-The patch itself only makes the per-cpu partial number 2X, and for
-better analysis, the 4X case is also profiled
-
-will-it-scale/mmap1
--------------------
-Run will-it-scale benchmark's 'mmap1' test case on a 2 socket Sapphire
-Rapids server (112 cores / 224 threads) with 256 GB DRAM, run 3
-configurations with parallel test threads of 25%, 50% and 100% of
-number of CPUs, and the data is (base is vanilla v6.5 kernel):
-
-		  base             base + 2X patch        base + 4X patch
-wis-mmap1-25	 223670    +12.7%     251999     +34.9%     301749    per_process_ops
-wis-mmap1-50	 186020    +28.0%     238067     +55.6%     289521    per_process_ops
-wis-mmap1-100	  89200    +40.7%     125478     +62.4%     144858    per_process_ops
-
-Take the perf-profile comparasion of 50% test case, the lock contention
-is greatly reduced:
-
-     43.80           -11.5       32.27           -27.9       15.91   pp.self.native_queued_spin_lock_slowpath
-
-hackbench
----------
-
-Run same hackbench testcase  mentioned in [1], use same HW/SW as will-it-scale:
-
-		  base             base + 2X patch        base + 4X patch
-hackbench	759951      +0.2%    761506      +0.5%     763972     hackbench.throughput
-
-[1]. https://lore.kernel.org/all/202307172140.3b34825a-oliver.sang@intel.com/
-[2]. ttps://lore.kernel.org/lkml/ZORaUsd+So+tnyMV@chenyu5-mobl2/
+So enlarge it based on the CPU numbers per node.
 
 Signed-off-by: Feng Tang <feng.tang@intel.com>
 ---
- mm/slub.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/linux/nodemask.h | 1 +
+ mm/slub.c                | 9 +++++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
+index 8d07116caaf1..6e22caab186d 100644
+--- a/include/linux/nodemask.h
++++ b/include/linux/nodemask.h
+@@ -530,6 +530,7 @@ static inline int node_random(const nodemask_t *maskp)
+ 
+ #define num_online_nodes()	num_node_state(N_ONLINE)
+ #define num_possible_nodes()	num_node_state(N_POSSIBLE)
++#define num_cpu_nodes()		num_node_state(N_CPU)
+ #define node_online(node)	node_state((node), N_ONLINE)
+ #define node_possible(node)	node_state((node), N_POSSIBLE)
+ 
 diff --git a/mm/slub.c b/mm/slub.c
-index f7940048138c..51ca6dbaad09 100644
+index 09ae1ed642b7..984e012d7bbc 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -4361,6 +4361,13 @@ static void set_cpu_partial(struct kmem_cache *s)
- 	else
- 		nr_objects = 120;
+@@ -4533,6 +4533,7 @@ static int calculate_sizes(struct kmem_cache *s)
  
-+	/*
-+	 * Give larger system more per-cpu partial slabs to reduce/postpone
-+	 * contending per-node partial list.
-+	 */
-+	if (num_cpus() >= 32)
-+		nr_objects *= 2;
+ static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+ {
++	unsigned long min_partial;
+ 	s->flags = kmem_cache_flags(s->size, flags, s->name);
+ #ifdef CONFIG_SLAB_FREELIST_HARDENED
+ 	s->random = get_random_long();
+@@ -4564,8 +4565,12 @@ static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+ 	 * The larger the object size is, the more slabs we want on the partial
+ 	 * list to avoid pounding the page allocator excessively.
+ 	 */
+-	s->min_partial = min_t(unsigned long, MAX_PARTIAL, ilog2(s->size) / 2);
+-	s->min_partial = max_t(unsigned long, MIN_PARTIAL, s->min_partial);
 +
- 	slub_set_cpu_partial(s, nr_objects);
- #endif
- }
++	min_partial = rounddown_pow_of_two(num_cpus() / num_cpu_nodes());
++	min_partial = max_t(unsigned long, MIN_PARTIAL, min_partial);
++
++	s->min_partial = min_t(unsigned long, min_partial * 2, ilog2(s->size) / 2);
++	s->min_partial = max_t(unsigned long, min_partial, s->min_partial);
+ 
+ 	set_cpu_partial(s);
+ 
 -- 
 2.27.0
 
