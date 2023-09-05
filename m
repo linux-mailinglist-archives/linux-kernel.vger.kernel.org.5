@@ -2,217 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA67792CF8
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:00:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD417792D20
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbjIESA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34414 "EHLO
+        id S239893AbjIESK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 14:10:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233812AbjIESAE (ORCPT
+        with ESMTP id S238745AbjIESKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:00:04 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA10769C;
-        Tue,  5 Sep 2023 10:57:08 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385Hrnxm015843;
-        Tue, 5 Sep 2023 17:55:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=kT06frDQt3xylLC8EbArkQbk0wDCQ4MMKDzf+HhXt80=;
- b=loQfl1WabIEqQqg+xWr/7/LLgrRN1xh0xMOWQk9dggAsqvDv6itAciwOuybdehyxzwrH
- 8bb0BvPgsVAeEjuk1s1yI21UXhxp3M01ZjgMWZv+jbgPY02QJjFi9O57c363eWvWyXIP
- QWTXLJYX54boQ74EiHUSSC9tftwHTpqe0MRarigCxK+s7x4/b7V5VyKabMzz7ANK6K85
- uwVvRWdRqAwk5m4fw9Bgc+asHJozidmRhvaL3bWFrUMypXWbC3LeCvu3DkV8x+PtACc/
- 3AwaeS4QrqfrLB1Yzsqy/jNfRZ13XKvCK01Ro6e2HZJ8uCxpCnTLxOCJHOSJG25RH81A Tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8pg109s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 17:55:41 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385HrxJE016927;
-        Tue, 5 Sep 2023 17:55:41 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8pg1099-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 17:55:41 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385GJCvu021478;
-        Tue, 5 Sep 2023 17:55:39 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svfrycwqv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 17:55:39 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385HtcSD1180304
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Sep 2023 17:55:39 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C143B58061;
-        Tue,  5 Sep 2023 17:55:38 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D901D5806A;
-        Tue,  5 Sep 2023 17:55:36 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue,  5 Sep 2023 17:55:36 +0000 (GMT)
-Message-ID: <bfed43cd-029b-be93-8b0b-9e901eb57a5e@linux.ibm.com>
-Date:   Tue, 5 Sep 2023 13:55:35 -0400
+        Tue, 5 Sep 2023 14:10:14 -0400
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2061d.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe5a::61d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1897658B8F;
+        Tue,  5 Sep 2023 09:55:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b6DWgo5+Hbj4xXpH9CcUdKMgUYqfbYfSHqHHfcrN91NKepVlzl2xs+8oNyGEjw4HIiAP4b1lQcx2nXLa7A8O07iDQ9Ajd4k8cHN6oXJ6I+VJdqewNlix1zfeGj3XoeN1IH46kRyCLruGNW2KI5V4U4p8c3GVv7h0aat+9U1+U9GYGzp/rllJbT6/YJ5jZxU4wV9fDjZG1QehUh+wsqBm5zEg+5l6FmmJ9W8rXtHbXafX+SB9tNwo/hmDXWQDSfjHlHP+w9ork3skEUaQohK5XIQM8kvInhGtd2GxGVtTz5Mep1QGM+FLbOBRNkdYk1DGtbwvi8JTo63A+wiiRCLd2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ROiLYAaVHUrGDrfxs8Pd0CG5e2N46o408depLf6ybhM=;
+ b=kaARNbt7I70THjY1pBES7Sxu2cz5A+oRp/uDtKNXfDqBtjXmKpCGIUw5u5e+PvugoqUdUKeeQuT6jYuSUO0MON5ghdSpcmLmmQfCWkNqSr8vjtYOnQxwqqNX0LUEQ8EJC7Hj98xiO4G5m57BTFJRlQPY5AyF6fmYRtSbYqDqz7yxkEZE5IOA5DfGbrvFjLfMbG4OPtEJ7Y3MQIjU2JQfr1FFgCRW9QPwh4kncVaktM7Q604aNbrBKq6KKTxVc76pOWDzuUXkJV/HW+auWASBNpijaHEbsjuukagK+/zWHGgzl4fM62dnAceGCmqkgONmhb7JZEcvKbIiFGtaGeiGNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.232) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ROiLYAaVHUrGDrfxs8Pd0CG5e2N46o408depLf6ybhM=;
+ b=quQkyBYw+HvFVB2J8X9NIECuqk3LC5412Eoc8UTuSj6keUhz3htQ39k+nBok1lTqVyrcrlwAcwr0aRqti76o1cnjYugP5PEBg1luRCNrPn50j1CEQvK0Xj3ndibXGdB/Bd/cgMnsKIsCKv9NkS9vBpP0EqK3DA9bkOqngUwnWqyRtOFpnetdMtA1OFnPoE4a0BpplvZhJDgNrTWjkw0/nVb+ZQEMJ3B5WFMPkezYY0Fq9niigUiPQSdV3VxPJkmhCwnpRRfOJ4k7M/W6j6a6k6V5xrGfntDqSR47tErv5ncXF2kpxt05eBkaUbkh4EvJMPSGslA8DegKOB+Tx3NmEA==
+Received: from PR3P195CA0027.EURP195.PROD.OUTLOOK.COM (2603:10a6:102:b6::32)
+ by DS0PR12MB7584.namprd12.prod.outlook.com (2603:10b6:8:13b::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 16:37:02 +0000
+Received: from SN1PEPF0002636D.namprd02.prod.outlook.com
+ (2603:10a6:102:b6:cafe::89) by PR3P195CA0027.outlook.office365.com
+ (2603:10a6:102:b6::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33 via Frontend
+ Transport; Tue, 5 Sep 2023 16:37:00 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ SN1PEPF0002636D.mail.protection.outlook.com (10.167.241.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6768.25 via Frontend Transport; Tue, 5 Sep 2023 16:37:00 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 5 Sep 2023
+ 09:36:31 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.37; Tue, 5 Sep 2023 09:36:31 -0700
+Received: from localhost.localdomain (10.127.8.12) by mail.nvidia.com
+ (10.126.190.181) with Microsoft SMTP Server id 15.2.986.37 via Frontend
+ Transport; Tue, 5 Sep 2023 09:36:26 -0700
+From:   Kartik <kkartik@nvidia.com>
+To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+        <sumitg@nvidia.com>, <arnd@arndb.de>, <pshete@nvidia.com>,
+        <andriy.shevchenko@linux.intel.com>, <kkartik@nvidia.com>,
+        <digetx@gmail.com>, <petlozup@nvidia.com>, <windhl@126.com>,
+        <frank.li@vivo.com>, <robh@kernel.org>, <stefank@nvidia.com>,
+        <pdeschrijver@nvidia.com>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2 3/6] soc/tegra: fuse: Add function to add lookups
+Date:   Tue, 5 Sep 2023 18:28:21 +0530
+Message-ID: <20230905125824.2947-4-kkartik@nvidia.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20230905125824.2947-1-kkartik@nvidia.com>
+References: <20230905125824.2947-1-kkartik@nvidia.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 13/25] security: Introduce inode_post_removexattr hook
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
- <20230904133415.1799503-14-roberto.sassu@huaweicloud.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20230904133415.1799503-14-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: uP63RghdXrVrrOQzg33fDaoggNWa6l_9
-X-Proofpoint-GUID: sxq69O-4b-DSCGXrVqQCGnCssxGsJcny
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_10,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- malwarescore=0 bulkscore=0 spamscore=0 impostorscore=0 phishscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309050152
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SN1PEPF0002636D:EE_|DS0PR12MB7584:EE_
+X-MS-Office365-Filtering-Correlation-Id: cc39bec0-7b58-4129-96c1-08dbae2e541c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z5p84VrVnOCRIlkDIhE6Ex1KXz1qYl44GMAjcheKMZYj5eLxHXjtCy3tqW0iyzydpRhFZrMunwGjKjU8hoDYtnGgA7KczuOV9VFaOMKxzZVx8PsnDxFEnULEMH0VR+4Ezbl6wp2FqCKwAn3PrhLxR7EiOMt2Gh0uS1aLwA8aRyqnBmUdXf0MHE4pLlN1m592RfU6iRQ73g/zUIb3kNY8uNcT97bQfVLhrcUrFTuMicgJahQzWcEAafTgPsPVuaAppKG+SXsGENc/MJwDT3GQWy7RQ2w69s3nrTZsSGe08o9wtlACv5mYDLOaLkvo8bACpOQebdWNKM7IejMBecl7wWJoAR1WdRuxt1UHd46a2USHfpYbool8F/MD0Ycp50OusxZsp1Zr/F0fFLKakGL3vxt9dxIqs1i40jnflIDlT4e8z8BHkMZ+5yAoHE4A0N954knq855PX7TaUuNvLn6L/CfreJLDfaimlOCcgmwAYhgDgFP1KmVfC/RC/bTPY0R3cMEId3YXMSIjhGLLEiHow9Z3cFT9DDctZkIhipUQ1M9OEynItnlvJoU6SlhSdMiFMCrY2Ovf5OmKvw2zFnQTrYQECD3XTBqQ00aJxbfTa8SlVrnOW1H8h3JRA1gzPhM9wMQPX6erHWbP0fzHEfyA688yfBrUP107oxkDtdz0sm9YtujdNu0MQ708equApLaGoS9YqCoPNklbpxmnioBJIiYiLSyWXPNHo2tktLrJAQ/gfNX1SU4Wp+Mm96SuEn9zadCMkto6mU4zhoBL9o5Z+w==
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(346002)(136003)(376002)(451199024)(82310400011)(186009)(1800799009)(36840700001)(40470700004)(46966006)(110136005)(41300700001)(70586007)(70206006)(36860700001)(2616005)(26005)(1076003)(6666004)(478600001)(356005)(316002)(82740400003)(921005)(7636003)(8676002)(5660300002)(8936002)(47076005)(86362001)(426003)(2906002)(336012)(83380400001)(36756003)(40460700003)(40480700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 16:37:00.4383
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: cc39bec0-7b58-4129-96c1-08dbae2e541c
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: SN1PEPF0002636D.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB7584
+X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
+        DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/23 09:34, Roberto Sassu wrote:
+Add helper function tegra_fuse_add_lookups() to register Tegra fuse
+nvmem lookups. So, this can be shared between tegra_fuse_init() and
+ACPI probe, which is to be introduced later.
 
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the inode_post_removexattr hook.
->
-> It is useful for EVM to recalculate the HMAC on the remaining file xattrs,
-> and other file metadata, after it verified the HMAC of current file
-> metadata with the inode_removexattr hook.
->
-> LSMs should use the new hook instead of inode_removexattr, when they need
-> to know that the operation was done successfully (not known in
-> inode_removexattr). The new hook cannot return an error and cannot cause
-> the operation to be reverted.
->
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->   fs/xattr.c                    |  9 +++++----
->   include/linux/lsm_hook_defs.h |  2 ++
->   include/linux/security.h      |  5 +++++
->   security/security.c           | 14 ++++++++++++++
->   4 files changed, 26 insertions(+), 4 deletions(-)
->
-> diff --git a/fs/xattr.c b/fs/xattr.c
-> index e7bbb7f57557..4a0280295686 100644
-> --- a/fs/xattr.c
-> +++ b/fs/xattr.c
-> @@ -552,11 +552,12 @@ __vfs_removexattr_locked(struct mnt_idmap *idmap,
->   		goto out;
->   
->   	error = __vfs_removexattr(idmap, dentry, name);
-> +	if (error)
-> +		goto out;
->   
-> -	if (!error) {
-> -		fsnotify_xattr(dentry);
-> -		evm_inode_post_removexattr(dentry, name);
-> -	}
-> +	fsnotify_xattr(dentry);
-> +	security_inode_post_removexattr(dentry, name);
-> +	evm_inode_post_removexattr(dentry, name);
->   
->   out:
->   	return error;
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index 995d30336cfa..1153e7163b8b 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -148,6 +148,8 @@ LSM_HOOK(int, 0, inode_getxattr, struct dentry *dentry, const char *name)
->   LSM_HOOK(int, 0, inode_listxattr, struct dentry *dentry)
->   LSM_HOOK(int, 0, inode_removexattr, struct mnt_idmap *idmap,
->   	 struct dentry *dentry, const char *name)
-> +LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
-> +	 const char *name)
->   LSM_HOOK(int, 0, inode_set_acl, struct mnt_idmap *idmap,
->   	 struct dentry *dentry, const char *acl_name, struct posix_acl *kacl)
->   LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 820899db5276..665bba3e0081 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -374,6 +374,7 @@ int security_inode_getxattr(struct dentry *dentry, const char *name);
->   int security_inode_listxattr(struct dentry *dentry);
->   int security_inode_removexattr(struct mnt_idmap *idmap,
->   			       struct dentry *dentry, const char *name);
-> +void security_inode_post_removexattr(struct dentry *dentry, const char *name);
->   int security_inode_need_killpriv(struct dentry *dentry);
->   int security_inode_killpriv(struct mnt_idmap *idmap, struct dentry *dentry);
->   int security_inode_getsecurity(struct mnt_idmap *idmap,
-> @@ -919,6 +920,10 @@ static inline int security_inode_removexattr(struct mnt_idmap *idmap,
->   	return cap_inode_removexattr(idmap, dentry, name);
->   }
->   
-> +static inline void security_inode_post_removexattr(struct dentry *dentry,
-> +						   const char *name)
-> +{ }
-> +
->   static inline int security_inode_need_killpriv(struct dentry *dentry)
->   {
->   	return cap_inode_need_killpriv(dentry);
-> diff --git a/security/security.c b/security/security.c
-> index 764a6f28b3b9..3947159ba5e9 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2354,6 +2354,20 @@ int security_inode_removexattr(struct mnt_idmap *idmap,
->   	return evm_inode_removexattr(idmap, dentry, name);
->   }
->   
-> +/**
-> + * security_inode_post_removexattr() - Update the inode after a removexattr op
-> + * @dentry: file
-> + * @name: xattr name
-> + *
-> + * Update the inode after a successful removexattr operation.
-> + */
-> +void security_inode_post_removexattr(struct dentry *dentry, const char *name)
-> +{
-> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +		return;
-> +	call_void_hook(inode_post_removexattr, dentry, name);
-> +}
-> +
->   /**
->    * security_inode_need_killpriv() - Check if security_inode_killpriv() required
->    * @dentry: associated dentry
+Signed-off-by: Kartik <kkartik@nvidia.com>
+---
+ drivers/soc/tegra/fuse/fuse-tegra.c | 29 +++++++++++++++++++++++------
+ 1 file changed, 23 insertions(+), 6 deletions(-)
 
-
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-
+diff --git a/drivers/soc/tegra/fuse/fuse-tegra.c b/drivers/soc/tegra/fuse/fuse-tegra.c
+index a2c28f493a75..821bb485ec45 100644
+--- a/drivers/soc/tegra/fuse/fuse-tegra.c
++++ b/drivers/soc/tegra/fuse/fuse-tegra.c
+@@ -113,6 +113,24 @@ static void tegra_fuse_restore(void *base)
+ 	fuse->clk = NULL;
+ }
+ 
++static int tegra_fuse_add_lookups(struct tegra_fuse *fuse)
++{
++	size_t size;
++
++	if (!fuse->soc->lookups)
++		return 0;
++
++	size = size_mul(sizeof(*fuse->lookups), fuse->soc->num_lookups);
++
++	fuse->lookups = kmemdup(fuse->soc->lookups, size, GFP_KERNEL);
++	if (!fuse->lookups)
++		return -ENOMEM;
++
++	nvmem_add_cell_lookups(fuse->lookups, fuse->soc->num_lookups);
++
++	return 0;
++}
++
+ static int tegra_fuse_probe(struct platform_device *pdev)
+ {
+ 	void __iomem *base = fuse->base;
+@@ -407,6 +425,7 @@ static int __init tegra_init_fuse(void)
+ 	const struct of_device_id *match;
+ 	struct device_node *np;
+ 	struct resource regs;
++	int err;
+ 
+ 	tegra_init_apbmisc();
+ 
+@@ -504,12 +523,10 @@ static int __init tegra_init_fuse(void)
+ 	pr_debug("Tegra CPU Speedo ID %d, SoC Speedo ID %d\n",
+ 		 tegra_sku_info.cpu_speedo_id, tegra_sku_info.soc_speedo_id);
+ 
+-	if (fuse->soc->lookups) {
+-		size_t size = sizeof(*fuse->lookups) * fuse->soc->num_lookups;
+-
+-		fuse->lookups = kmemdup(fuse->soc->lookups, size, GFP_KERNEL);
+-		if (fuse->lookups)
+-			nvmem_add_cell_lookups(fuse->lookups, fuse->soc->num_lookups);
++	err = tegra_fuse_add_lookups(fuse);
++	if (err) {
++		pr_err("failed to add FUSE lookups\n");
++		return err;
+ 	}
+ 
+ 	return 0;
+-- 
+2.34.1
 
