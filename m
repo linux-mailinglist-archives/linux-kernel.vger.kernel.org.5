@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B029B7930B0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE14F7930BB
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:08:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229994AbjIEVGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:06:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38424 "EHLO
+        id S233934AbjIEVIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:08:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236222AbjIEVGg (ORCPT
+        with ESMTP id S230117AbjIEVIq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:06:36 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1933B3;
-        Tue,  5 Sep 2023 14:06:31 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-3ff1c397405so29878765e9.3;
-        Tue, 05 Sep 2023 14:06:31 -0700 (PDT)
+        Tue, 5 Sep 2023 17:08:46 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A785CFB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:08:30 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-50095f6bdc5so480e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 14:08:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693947990; x=1694552790; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=google.com; s=20221208; t=1693948108; x=1694552908; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JXVC/JwrfhCwCFZ9CTtjljVWM7ojc7dibWwdrN2Ohcw=;
-        b=hIGX5EZbuvnGBuxxaNrQ9G2oJFcL7VmYYxDBG3DctHuo8l8PHkZ6lWVBZ2N00JkDaQ
-         r9qofupGu3akUcaHtZZyUV6jhmSmnfC88mne1GYEiQr5KsFB2hqw3+YIf43XpETRT0Lp
-         oUUlkTEaeYNZWnstvV6BvZlIl/cG3cfWUhote0H2vh89U+DKGPo0/uv5WBRQ0YqdDfjP
-         P/FgZt26iMkEB8Vor1uBw7baL3EcDkRjI0zvakNUD3EXrEwdt+GduZ0eVZjafzVwuHq5
-         jh+QeY7/0wlLuy0k6faj/8reCBXGPLD76kpjUShbbPlisvuZvE4BSFyveT0F1yIGUeqN
-         cPBA==
+        bh=3UtgOQUTnvsg8LqXUGehogATK7JC4MN9JVIJsfm4tuQ=;
+        b=GNelMF0AaV3PkxVWUXie0i31i0oF7rhBM/OKWRNDgYFT6fhKZ9Nuhvdrm1KdLdz5sq
+         2RUqdWfXJ8D6V5dxDbM/dNUSLVsrt5wItlZrc89TvNNKwIVzhckvnGQwII9cz9qwt6Gl
+         scIsrSSAvB2/5f2gjVUYyAf4RnSidtTYjA0NYF/BlZTgWCeqcEn7WlHU7OLdY1lPq0Yc
+         dzQ85XKVkiPHKTAkqQXHK0pZUAlmMeBSaS52GVhcb3NReeH49NwJqJ/GC9N+DKj52+tU
+         yyPIco5SAv/zaAuqRGqSy0Tp9zWieIeMHTvofSv5EM9Kf8+p2NiGzFx4Zllcgkykds1s
+         IVWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693947990; x=1694552790;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20221208; t=1693948108; x=1694552908;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JXVC/JwrfhCwCFZ9CTtjljVWM7ojc7dibWwdrN2Ohcw=;
-        b=i++5xmglbG2bR8/C7jO2LfmnE0VeIj3JoALdtkGLX+A1UMpX1fI6tAtD/+krRoTV6G
-         ZsWSA6los7QH5IIDpZkAvDve2DJwg5aAVK5N4PJosyeiH4LP7wHypaVqSVsFMZzPZInn
-         /iYhj0DUGv2aqWd+6v1iAZRICdn31vujlu231lnk32o8o6IVLDijkvoSe9//s47TH5oi
-         NrAS58hyWOdUtC3DNXyFteuwsn5aw44OLQIqtrZisbpR1BRzbljDoA0xqFwfQpyy0iGg
-         XZE7Sc8L/Z2EhOppnfURRjnFls01FWeh06iYbpDicwxuR4ydo7/Tvnq3iBRvh6wbsOa+
-         2MHw==
-X-Gm-Message-State: AOJu0YxEzdiTIBOmYa3MjFMYOFPqcYfESyyUV4eniE625Vya7KD2pyYD
-        rxlcIrCyxqVH7oMlW4bEQuM=
-X-Google-Smtp-Source: AGHT+IG+YAQizWkhpE5LBtPff61O4Zcsp7ao6Jf4ke732+w7uCIM5whn9JtfhRm36UqLST1pJ05Xzg==
-X-Received: by 2002:adf:e507:0:b0:31a:d3fd:221b with SMTP id j7-20020adfe507000000b0031ad3fd221bmr827649wrm.20.1693947989942;
-        Tue, 05 Sep 2023 14:06:29 -0700 (PDT)
-Received: from ip-172-31-30-46.eu-west-1.compute.internal (ec2-54-170-241-106.eu-west-1.compute.amazonaws.com. [54.170.241.106])
-        by smtp.gmail.com with ESMTPSA id e18-20020a5d5012000000b00317b063590fsm18427672wrt.55.2023.09.05.14.06.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 14:06:29 -0700 (PDT)
-From:   Puranjay Mohan <puranjay12@gmail.com>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
-        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     puranjay12@gmail.com
-Subject: [PATCH bpf-next 8/8] bpf/tests: add tests for cpuv4 instructions
-Date:   Tue,  5 Sep 2023 21:06:21 +0000
-Message-Id: <20230905210621.1711859-9-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230905210621.1711859-1-puranjay12@gmail.com>
-References: <20230905210621.1711859-1-puranjay12@gmail.com>
+        bh=3UtgOQUTnvsg8LqXUGehogATK7JC4MN9JVIJsfm4tuQ=;
+        b=TKbugspdOIqjQxx4K6Lrr1il5KvGpOaifYTPIOn7Ev4FGEQ4hyyzWGMk1xAKi/IYqy
+         mnozfAs5LiB5dKB0cKvVtL5p/DKDzOjuX6uT85bnXSyWDXh6ptTXVKCNP8dF3rQlvOBv
+         pUMiMy1QONe25DC+twiSwtjyijHias66F63wCbJ/9RV2r96UIrbzaHBX974vHqmfdYWS
+         CgXrDG9MQaSxgtHxd3whGn6jS6RGzkFeSrWsmVV3zSZoTPaCKvXQzjjKumaJhcsnxo+j
+         SXpDWTyIiqOq00tJG/VqSfw096zHrSJCex7rBHpVomPEZlyihJTe2KcuztDw5D5OnwiB
+         BXuw==
+X-Gm-Message-State: AOJu0Yy1CYPGfzw+cGN3w6AzaY/lOAsRAfVLoOzj8+eAuco38dAsfYSF
+        ujak/SXbwZKZ79aUPXFGzg1TgGYrFRgvblLGoSTKJQ==
+X-Google-Smtp-Source: AGHT+IGi3r+D8G/m6L/u8s3c3u9ly6kqm/fYyRUgxE2gdVAY6ZpMN36MDzAzf+bQYHc/wP4eqlM/AnJ1aPr9KwBrIAA=
+X-Received: by 2002:ac2:54b6:0:b0:501:3d3:cbc0 with SMTP id
+ w22-20020ac254b6000000b0050103d3cbc0mr36289lfk.2.1693948108334; Tue, 05 Sep
+ 2023 14:08:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+References: <20230905161048.3178838-1-pgonda@google.com> <ZPeWXNpwYua9S+tV@google.com>
+In-Reply-To: <ZPeWXNpwYua9S+tV@google.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Tue, 5 Sep 2023 15:08:16 -0600
+Message-ID: <CAMkAt6qTF0oMFJg0ZJsyUY88TegjuETdLj9WsJvDG+jDxO_Thg@mail.gmail.com>
+Subject: Re: [PATCH] KVM: SEV: Update SEV-ES shutdown intercepts with more metadata
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,524 +72,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BPF JITs now support cpuv4 instructions. Add tests for these new
-instructions to the test suite:
+On Tue, Sep 5, 2023 at 2:58=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
+>
+> On Tue, Sep 05, 2023, Peter Gonda wrote:
+> > Currently if an SEV-ES VM shuts down userspace sees KVM_RUN struct with
+> > only the INVALID_ARGUMENT. This is a very limited amount of information
+> > to debug the situation. Instead KVM can return a
+> > KVM_SYSTEM_EVENT_SEV_TERM to alert userspace the VM is shutting down an=
+d
+> > is not usable any further. This latter point can be enforced using the
+> > kvm_vm_dead() functionality.
+>
+> Add the kvm_vm_dead() thing in a separate patch.  If we want to actually =
+harden
+> KVM against consuming a garbage VMSA then we do need to mark the VM dead,=
+ but on
+> the other hand that will block _all_ KVM ioctls(), which will make debug =
+even
+> harder.
 
-1. Sign extended Load
-2. Sign extended Mov
-3. Unconditional byte swap
-4. Unconditional jump with 32-bit offset
-5. Signed division and modulo
+Will do. Do we have better functionality for just blocking running the vCPU=
+?
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- include/linux/filter.h |  50 +++++-
- lib/test_bpf.c         | 371 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 417 insertions(+), 4 deletions(-)
+>
+> > Signed-off-by: Peter Gonda <pgonda@google.com>
+> > Cc: Paolo Bonzini <pbonzini@redhat.com>
+> > Cc: Sean Christopherson <seanjc@google.com>
+> > Cc: Tom Lendacky <thomas.lendacky@amd.com>
+> > Cc: Joerg Roedel <joro@8bytes.org>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: x86@kernel.org
+> > Cc: kvm@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> >
+> > ---
+> >
+> > I am not sure if this is the right path forward maybe just returning
+> > KVM_EXIT_SHUTDOWN is better. But the current behavior is very unhelpful=
+.
+>
+> Ya, KVM_EXIT_SHUTDOWN is better, we should leave KVM_SYSTEM_EVENT_SEV_TER=
+M to
+> explicit "requests" from the guest.
 
-diff --git a/include/linux/filter.h b/include/linux/filter.h
-index 761af6b3cf2b..0138832ad571 100644
---- a/include/linux/filter.h
-+++ b/include/linux/filter.h
-@@ -117,21 +117,25 @@ struct ctl_table_header;
- 
- /* ALU ops on immediates, bpf_add|sub|...: dst_reg += imm32 */
- 
--#define BPF_ALU64_IMM(OP, DST, IMM)				\
-+#define BPF_ALU64_IMM_OFF(OP, DST, IMM, OFF)			\
- 	((struct bpf_insn) {					\
- 		.code  = BPF_ALU64 | BPF_OP(OP) | BPF_K,	\
- 		.dst_reg = DST,					\
- 		.src_reg = 0,					\
--		.off   = 0,					\
-+		.off   = OFF,					\
- 		.imm   = IMM })
-+#define BPF_ALU64_IMM(OP, DST, IMM)				\
-+	BPF_ALU64_IMM_OFF(OP, DST, IMM, 0)
- 
--#define BPF_ALU32_IMM(OP, DST, IMM)				\
-+#define BPF_ALU32_IMM_OFF(OP, DST, IMM, OFF)			\
- 	((struct bpf_insn) {					\
- 		.code  = BPF_ALU | BPF_OP(OP) | BPF_K,		\
- 		.dst_reg = DST,					\
- 		.src_reg = 0,					\
--		.off   = 0,					\
-+		.off   = OFF,					\
- 		.imm   = IMM })
-+#define BPF_ALU32_IMM(OP, DST, IMM)				\
-+	BPF_ALU32_IMM_OFF(OP, DST, IMM, 0)
- 
- /* Endianess conversion, cpu_to_{l,b}e(), {l,b}e_to_cpu() */
- 
-@@ -143,6 +147,16 @@ struct ctl_table_header;
- 		.off   = 0,					\
- 		.imm   = LEN })
- 
-+/* Byte Swap, bswap16/32/64 */
-+
-+#define BPF_BSWAP(DST, LEN)					\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_ALU64 | BPF_END | BPF_SRC(BPF_TO_LE),	\
-+		.dst_reg = DST,					\
-+		.src_reg = 0,					\
-+		.off   = 0,					\
-+		.imm   = LEN })
-+
- /* Short form of mov, dst_reg = src_reg */
- 
- #define BPF_MOV64_REG(DST, SRC)					\
-@@ -179,6 +193,24 @@ struct ctl_table_header;
- 		.off   = 0,					\
- 		.imm   = IMM })
- 
-+/* Short form of movsx, dst_reg = (s8,s16,s32)src_reg */
-+
-+#define BPF_MOVSX64_REG(DST, SRC, OFF)				\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_ALU64 | BPF_MOV | BPF_X,		\
-+		.dst_reg = DST,					\
-+		.src_reg = SRC,					\
-+		.off   = OFF,					\
-+		.imm   = 0 })
-+
-+#define BPF_MOVSX32_REG(DST, SRC, OFF)				\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_ALU | BPF_MOV | BPF_X,		\
-+		.dst_reg = DST,					\
-+		.src_reg = SRC,					\
-+		.off   = OFF,					\
-+		.imm   = 0 })
-+
- /* Special form of mov32, used for doing explicit zero extension on dst. */
- #define BPF_ZEXT_REG(DST)					\
- 	((struct bpf_insn) {					\
-@@ -263,6 +295,16 @@ static inline bool insn_is_zext(const struct bpf_insn *insn)
- 		.off   = OFF,					\
- 		.imm   = 0 })
- 
-+/* Memory load, dst_reg = *(signed size *) (src_reg + off16) */
-+
-+#define BPF_LDX_MEMSX(SIZE, DST, SRC, OFF)			\
-+	((struct bpf_insn) {					\
-+		.code  = BPF_LDX | BPF_SIZE(SIZE) | BPF_MEMSX,	\
-+		.dst_reg = DST,					\
-+		.src_reg = SRC,					\
-+		.off   = OFF,					\
-+		.imm   = 0 })
-+
- /* Memory store, *(uint *) (dst_reg + off16) = src_reg */
- 
- #define BPF_STX_MEM(SIZE, DST, SRC, OFF)			\
-diff --git a/lib/test_bpf.c b/lib/test_bpf.c
-index ecde4216201e..7916503e6a6a 100644
---- a/lib/test_bpf.c
-+++ b/lib/test_bpf.c
-@@ -5111,6 +5111,104 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 0xffffffff } }
- 	},
-+	/* MOVSX32 */
-+	{
-+		"ALU_MOVSX | BPF_B",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R2, 0x00000000ffffffefLL),
-+			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
-+			BPF_MOVSX32_REG(R1, R3, 8),
-+			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
-+			BPF_MOV32_IMM(R0, 2),
-+			BPF_EXIT_INSN(),
-+			BPF_MOV32_IMM(R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x1 } },
-+	},
-+	{
-+		"ALU_MOVSX | BPF_H",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R2, 0x00000000ffffbeefLL),
-+			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
-+			BPF_MOVSX32_REG(R1, R3, 16),
-+			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
-+			BPF_MOV32_IMM(R0, 2),
-+			BPF_EXIT_INSN(),
-+			BPF_MOV32_IMM(R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x1 } },
-+	},
-+	{
-+		"ALU_MOVSX | BPF_W",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R2, 0x00000000deadbeefLL),
-+			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
-+			BPF_MOVSX32_REG(R1, R3, 32),
-+			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
-+			BPF_MOV32_IMM(R0, 2),
-+			BPF_EXIT_INSN(),
-+			BPF_MOV32_IMM(R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x1 } },
-+	},
-+	/* MOVSX64 REG */
-+	{
-+		"ALU64_MOVSX | BPF_B",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R2, 0xffffffffffffffefLL),
-+			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
-+			BPF_MOVSX64_REG(R1, R3, 8),
-+			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
-+			BPF_MOV32_IMM(R0, 2),
-+			BPF_EXIT_INSN(),
-+			BPF_MOV32_IMM(R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x1 } },
-+	},
-+	{
-+		"ALU64_MOVSX | BPF_H",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R2, 0xffffffffffffbeefLL),
-+			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
-+			BPF_MOVSX64_REG(R1, R3, 16),
-+			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
-+			BPF_MOV32_IMM(R0, 2),
-+			BPF_EXIT_INSN(),
-+			BPF_MOV32_IMM(R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x1 } },
-+	},
-+	{
-+		"ALU64_MOVSX | BPF_W",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R2, 0xffffffffdeadbeefLL),
-+			BPF_LD_IMM64(R3, 0xdeadbeefdeadbeefLL),
-+			BPF_MOVSX64_REG(R1, R3, 32),
-+			BPF_JMP_REG(BPF_JEQ, R2, R1, 2),
-+			BPF_MOV32_IMM(R0, 2),
-+			BPF_EXIT_INSN(),
-+			BPF_MOV32_IMM(R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x1 } },
-+	},
- 	/* BPF_ALU | BPF_ADD | BPF_X */
- 	{
- 		"ALU_ADD_X: 1 + 2 = 3",
-@@ -6105,6 +6203,106 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 2 } },
- 	},
-+	/* BPF_ALU | BPF_DIV | BPF_X off=1 (SDIV) */
-+	{
-+		"ALU_SDIV_X: -6 / 2 = -3",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -6),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 2),
-+			BPF_ALU32_REG_OFF(BPF_DIV, R0, R1, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -3 } },
-+	},
-+	/* BPF_ALU | BPF_DIV | BPF_K off=1 (SDIV) */
-+	{
-+		"ALU_SDIV_K: -6 / 2 = -3",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -6),
-+			BPF_ALU32_IMM_OFF(BPF_DIV, R0, 2, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -3 } },
-+	},
-+	/* BPF_ALU64 | BPF_DIV | BPF_X off=1 (SDIV64) */
-+	{
-+		"ALU64_SDIV_X: -6 / 2 = -3",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -6),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 2),
-+			BPF_ALU64_REG_OFF(BPF_DIV, R0, R1, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -3 } },
-+	},
-+	/* BPF_ALU64 | BPF_DIV | BPF_K off=1 (SDIV64) */
-+	{
-+		"ALU64_SDIV_K: -6 / 2 = -3",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -6),
-+			BPF_ALU64_IMM_OFF(BPF_DIV, R0, 2, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -3 } },
-+	},
-+	/* BPF_ALU | BPF_MOD | BPF_X off=1 (SMOD) */
-+	{
-+		"ALU_SMOD_X: -7 % 2 = -1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -7),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 2),
-+			BPF_ALU32_REG_OFF(BPF_MOD, R0, R1, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -1 } },
-+	},
-+	/* BPF_ALU | BPF_MOD | BPF_K off=1 (SMOD) */
-+	{
-+		"ALU_SMOD_K: -7 % 2 = -1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -7),
-+			BPF_ALU32_IMM_OFF(BPF_MOD, R0, 2, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -1 } },
-+	},
-+	/* BPF_ALU64 | BPF_MOD | BPF_X off=1 (SMOD64) */
-+	{
-+		"ALU64_SMOD_X: -7 % 2 = -1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -7),
-+			BPF_ALU32_IMM(BPF_MOV, R1, 2),
-+			BPF_ALU64_REG_OFF(BPF_MOD, R0, R1, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -1 } },
-+	},
-+	/* BPF_ALU64 | BPF_MOD | BPF_K off=1 (SMOD64) */
-+	{
-+		"ALU64_SMOD_X: -7 % 2 = -1",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, -7),
-+			BPF_ALU64_IMM_OFF(BPF_MOD, R0, 2, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, -1 } },
-+	},
- 	/* BPF_ALU | BPF_AND | BPF_X */
- 	{
- 		"ALU_AND_X: 3 & 2 = 2",
-@@ -7837,6 +8035,104 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, (u32) (cpu_to_le64(0xfedcba9876543210ULL) >> 32) } },
- 	},
-+	/* BSWAP */
-+	{
-+		"BSWAP 16: 0x0123456789abcdef -> 0xefcd",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-+			BPF_BSWAP(R0, 16),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0xefcd } },
-+	},
-+	{
-+		"BSWAP 32: 0x0123456789abcdef -> 0xefcdab89",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-+			BPF_BSWAP(R0, 32),
-+			BPF_ALU64_REG(BPF_MOV, R1, R0),
-+			BPF_ALU64_IMM(BPF_RSH, R1, 32),
-+			BPF_ALU32_REG(BPF_ADD, R0, R1), /* R1 = 0 */
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0xefcdab89 } },
-+	},
-+	{
-+		"BSWAP 64: 0x0123456789abcdef -> 0x67452301",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-+			BPF_BSWAP(R0, 64),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x67452301 } },
-+	},
-+	{
-+		"BSWAP 64: 0x0123456789abcdef >> 32 -> 0xefcdab89",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0x0123456789abcdefLL),
-+			BPF_BSWAP(R0, 64),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0xefcdab89 } },
-+	},
-+	/* BSWAP, reversed */
-+	{
-+		"BSWAP 16: 0xfedcba9876543210 -> 0x1032",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_BSWAP(R0, 16),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x1032 } },
-+	},
-+	{
-+		"BSWAP 32: 0xfedcba9876543210 -> 0x10325476",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_BSWAP(R0, 32),
-+			BPF_ALU64_REG(BPF_MOV, R1, R0),
-+			BPF_ALU64_IMM(BPF_RSH, R1, 32),
-+			BPF_ALU32_REG(BPF_ADD, R0, R1), /* R1 = 0 */
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x10325476 } },
-+	},
-+	{
-+		"BSWAP 64: 0xfedcba9876543210 -> 0x98badcfe",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_BSWAP(R0, 64),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x98badcfe } },
-+	},
-+	{
-+		"BSWAP 64: 0xfedcba9876543210 >> 32 -> 0x10325476",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R0, 0xfedcba9876543210ULL),
-+			BPF_BSWAP(R0, 64),
-+			BPF_ALU64_IMM(BPF_RSH, R0, 32),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0x10325476 } },
-+	},
- 	/* BPF_LDX_MEM B/H/W/DW */
- 	{
- 		"BPF_LDX_MEM | BPF_B, base",
-@@ -8228,6 +8524,67 @@ static struct bpf_test tests[] = {
- 		{ { 32, 0 } },
- 		.stack_depth = 0,
- 	},
-+	/* BPF_LDX_MEMSX B/H/W */
-+	{
-+		"BPF_LDX_MEMSX | BPF_B",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R1, 0xdead0000000000f0ULL),
-+			BPF_LD_IMM64(R2, 0xfffffffffffffff0ULL),
-+			BPF_STX_MEM(BPF_DW, R10, R1, -8),
-+#ifdef __BIG_ENDIAN
-+			BPF_LDX_MEMSX(BPF_B, R0, R10, -1),
-+#else
-+			BPF_LDX_MEMSX(BPF_B, R0, R10, -8),
-+#endif
-+			BPF_JMP_REG(BPF_JNE, R0, R2, 1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, 0),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0 } },
-+		.stack_depth = 8,
-+	},
-+	{
-+		"BPF_LDX_MEMSX | BPF_H",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R1, 0xdead00000000f123ULL),
-+			BPF_LD_IMM64(R2, 0xfffffffffffff123ULL),
-+			BPF_STX_MEM(BPF_DW, R10, R1, -8),
-+#ifdef __BIG_ENDIAN
-+			BPF_LDX_MEMSX(BPF_H, R0, R10, -2),
-+#else
-+			BPF_LDX_MEMSX(BPF_H, R0, R10, -8),
-+#endif
-+			BPF_JMP_REG(BPF_JNE, R0, R2, 1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, 0),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0 } },
-+		.stack_depth = 8,
-+	},
-+	{
-+		"BPF_LDX_MEMSX | BPF_W",
-+		.u.insns_int = {
-+			BPF_LD_IMM64(R1, 0x00000000deadbeefULL),
-+			BPF_LD_IMM64(R2, 0xffffffffdeadbeefULL),
-+			BPF_STX_MEM(BPF_DW, R10, R1, -8),
-+#ifdef __BIG_ENDIAN
-+			BPF_LDX_MEMSX(BPF_W, R0, R10, -4),
-+#else
-+			BPF_LDX_MEMSX(BPF_W, R0, R10, -8),
-+#endif
-+			BPF_JMP_REG(BPF_JNE, R0, R2, 1),
-+			BPF_ALU64_IMM(BPF_MOV, R0, 0),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 0 } },
-+		.stack_depth = 8,
-+	},
- 	/* BPF_STX_MEM B/H/W/DW */
- 	{
- 		"BPF_STX_MEM | BPF_B",
-@@ -9474,6 +9831,20 @@ static struct bpf_test tests[] = {
- 		{ },
- 		{ { 0, 1 } },
- 	},
-+	/* BPF_JMP32 | BPF_JA */
-+	{
-+		"JMP32_JA: Unconditional jump: if (true) return 1",
-+		.u.insns_int = {
-+			BPF_ALU32_IMM(BPF_MOV, R0, 0),
-+			BPF_JMP32_IMM(BPF_JA, 0, 1, 0),
-+			BPF_EXIT_INSN(),
-+			BPF_ALU32_IMM(BPF_MOV, R0, 1),
-+			BPF_EXIT_INSN(),
-+		},
-+		INTERNAL,
-+		{ },
-+		{ { 0, 1 } },
-+	},
- 	/* BPF_JMP | BPF_JSLT | BPF_K */
- 	{
- 		"JMP_JSLT_K: Signed jump: if (-2 < -1) return 1",
--- 
-2.39.2
-
+Sounds good to me. I'll send a V2 that just updates to KVM_EXIT_SHUTDOWN.
