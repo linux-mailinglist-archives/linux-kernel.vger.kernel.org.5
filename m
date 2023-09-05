@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40E42792C01
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 380C8792B4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351404AbjIERFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:05:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50034 "EHLO
+        id S233989AbjIEQvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:51:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353724AbjIEHd2 (ORCPT
+        with ESMTP id S1353729AbjIEHk6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:33:28 -0400
+        Tue, 5 Sep 2023 03:40:58 -0400
 Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1DF918C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:33:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23CB21A8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 00:40:55 -0700 (PDT)
 Received: from localhost (unknown [IPv6:2a01:e0a:2c:6930:5cf4:84a1:2763:fe0d])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
         (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EB205660716C;
-        Tue,  5 Sep 2023 08:33:22 +0100 (BST)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 1C2B766028F5;
+        Tue,  5 Sep 2023 08:40:53 +0100 (BST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1693899203;
-        bh=77PTdlmF0OU78SUMZuNK96mglFtntqL2JeT8yn02ajs=;
+        s=mail; t=1693899653;
+        bh=MMtwZSS4hAHlzfbMlS/VKZ1O76qe9W6PnspTivVDuWA=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EqvzcgU5VH/pSuVHsNn6GF+WxvkX4Z61bGfgcsACjQrW0qnZAXPPKBS8On4o/nw2K
-         CiJfsgpszqWOeWdGwBrh7VD3lYAr+FUUMyAEdrKP0DHVdAg4i+EXvSCBeDDvILsxnY
-         7ouEn1J/6n+bh5XqV9K6CUfTivk1MaXtP+WTMQe8+TcvXa2tt0WZRjuJcBNIkhghxR
-         B4boyww+atN/8YZ0AFwC4EUqDLr8w/G89wYpgp04T4+DcialHK2eHXKGeM5l8OdlFo
-         bUjvinVuakOuI56VfQ5c85rd2RLVvHRck5CyDYHk/4TbmBrkFmPhP3woHm5s+3TWSY
-         EW+a/t02HPIvw==
-Date:   Tue, 5 Sep 2023 09:33:19 +0200
+        b=B3JctmSNqpV709VZaf7ywJ4+xd8I1iG3MdkG/7wYLuviVhmz2Ld6WaW645AkFHWYO
+         PoEaUo35CD3y/VtNQ8a5cwMwd5BSG7vd2CNXFm8lm+7tU76jnCVCaX6qkYZpuibrgF
+         X9tRnaYw/FlTpG3RTzlj3zJTFXk/vmfbGXrDewUpe3Kj5mSgG0wlkdjm6WYKLTsuKL
+         eozOt/j1Xp03SoctIPp0bxjsgoAWe/BZQwoG6ktXRyzVLpZjuEfW1qcR9Q66bubC2r
+         fJi1Cu580Rq57DNjkSCmPEnPDiZMYTHJVcNDKMIQIVC9HHBbqEYMv81hsigui2Pllj
+         2+EM0ZZ+oYyLg==
+Date:   Tue, 5 Sep 2023 09:40:50 +0200
 From:   Boris Brezillon <boris.brezillon@collabora.com>
 To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
 Cc:     David Airlie <airlied@gmail.com>,
@@ -48,12 +48,12 @@ Cc:     David Airlie <airlied@gmail.com>,
         Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         kernel@collabora.com, virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v16 05/20] drm/v3d: Replace open-coded
- drm_gem_shmem_free() with drm_gem_object_put()
-Message-ID: <20230905093319.25300fa4@collabora.com>
-In-Reply-To: <20230903170736.513347-6-dmitry.osipenko@collabora.com>
+Subject: Re: [PATCH v16 02/20] drm/shmem-helper: Use flag for tracking page
+ count bumped by get_pages_sgt()
+Message-ID: <20230905094050.3c918a43@collabora.com>
+In-Reply-To: <20230903170736.513347-3-dmitry.osipenko@collabora.com>
 References: <20230903170736.513347-1-dmitry.osipenko@collabora.com>
-        <20230903170736.513347-6-dmitry.osipenko@collabora.com>
+        <20230903170736.513347-3-dmitry.osipenko@collabora.com>
 Organization: Collabora
 X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
@@ -68,79 +68,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun,  3 Sep 2023 20:07:21 +0300
+On Sun,  3 Sep 2023 20:07:18 +0300
 Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-> The drm_gem_shmem_free() doesn't put GEM's kref to zero, which becomes
-> important with addition of the shrinker support to drm-shmem that will
-> use kref=0 in order to prevent taking lock during special GEM-freeing
-> time in order to avoid spurious lockdep warning about locking ordering
-> vs fs_reclaim code paths.
-
-As for patch 4, I don't mind the change (I actually think it's better
-to have a single error path with a free function handling partially
-initialized GEM objects, which is exactly what your patch is doing), but
-I disagree with the explanation, especially after you dropped
-"drm/shmem-helper: Add and use drm_gem_shmem_resv_assert_held() helper"
-and went for a drm_gem_shmem_do_release_pages_locked() helper called in
-drm_gem_shmem_free().
-
-> 
-> Replace open-coded drm_gem_shmem_free() with drm_gem_object_put() that
-> drops kref to zero before freeing GEM.
+> Use separate flag for tracking page count bumped by shmem->sgt to avoid
+> imbalanced page counter during of drm_gem_shmem_free() time. It's fragile
+> to assume that populated shmem->pages at a freeing time means that the
+> count was bumped by drm_gem_shmem_get_pages_sgt(), using a flag removes
+> the ambiguity.
 > 
 > Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 > ---
->  drivers/gpu/drm/v3d/v3d_bo.c | 22 ++++++++++++----------
->  1 file changed, 12 insertions(+), 10 deletions(-)
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 11 ++++++++++-
+>  drivers/gpu/drm/lima/lima_gem.c        |  1 +
+>  include/drm/drm_gem_shmem_helper.h     |  7 +++++++
+>  3 files changed, 18 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/v3d/v3d_bo.c b/drivers/gpu/drm/v3d/v3d_bo.c
-> index 8b3229a37c6d..70c1095d6eec 100644
-> --- a/drivers/gpu/drm/v3d/v3d_bo.c
-> +++ b/drivers/gpu/drm/v3d/v3d_bo.c
-> @@ -33,16 +33,18 @@ void v3d_free_object(struct drm_gem_object *obj)
->  	struct v3d_dev *v3d = to_v3d_dev(obj->dev);
->  	struct v3d_bo *bo = to_v3d_bo(obj);
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 6693d4061ca1..848435e08eb2 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -152,8 +152,10 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  			sg_free_table(shmem->sgt);
+>  			kfree(shmem->sgt);
+>  		}
+> -		if (shmem->pages)
+> +		if (shmem->pages) {
+>  			drm_gem_shmem_put_pages(shmem);
+> +			drm_WARN_ON(obj->dev, !shmem->got_pages_sgt);
+> +		}
+
+Already mentioned in v15, but I keep thinking the following:
+
+		if (shmem->sgt) {
+			// existing code in the preceding
+			// if (shmem->sgt) branch
+			...
+
+			/*
+			 * Release the implicit pages ref taken in
+			 * drm_gem_shmem_get_pages_sgt_locked().
+			 */
+			drm_gem_shmem_put_pages(shmem);
+		}
+
+does exactly the same without requiring the addition of a new field.
+
 >  
-> -	v3d_mmu_remove_ptes(bo);
-> +	if (drm_mm_node_allocated(&bo->node)) {
-> +		v3d_mmu_remove_ptes(bo);
+>  		drm_WARN_ON(obj->dev, shmem->pages_use_count);
 >  
-> -	mutex_lock(&v3d->bo_lock);
-> -	v3d->bo_stats.num_allocated--;
-> -	v3d->bo_stats.pages_allocated -= obj->size >> PAGE_SHIFT;
-> -	mutex_unlock(&v3d->bo_lock);
-> +		mutex_lock(&v3d->bo_lock);
-> +		v3d->bo_stats.num_allocated--;
-> +		v3d->bo_stats.pages_allocated -= obj->size >> PAGE_SHIFT;
-> +		mutex_unlock(&v3d->bo_lock);
+> @@ -693,6 +695,13 @@ static struct sg_table *drm_gem_shmem_get_pages_sgt_locked(struct drm_gem_shmem_
+>  	if (ret)
+>  		goto err_free_sgt;
 >  
-> -	spin_lock(&v3d->mm_lock);
-> -	drm_mm_remove_node(&bo->node);
-> -	spin_unlock(&v3d->mm_lock);
-> +		spin_lock(&v3d->mm_lock);
-> +		drm_mm_remove_node(&bo->node);
-> +		spin_unlock(&v3d->mm_lock);
-> +	}
+> +	/*
+> +	 * This flag prevents imbalanced pages_use_count during
+> +	 * drm_gem_shmem_free(), where pages_use_count=1 only if
+> +	 * drm_gem_shmem_get_pages_sgt() was used by a driver.
+> +	 */
+> +	shmem->got_pages_sgt = true;
+> +
+>  	shmem->sgt = sgt;
 >  
->  	/* GPU execution may have dirtied any pages in the BO. */
->  	bo->base.pages_mark_dirty_on_put = true;
-> @@ -142,7 +144,7 @@ struct v3d_bo *v3d_bo_create(struct drm_device *dev, struct drm_file *file_priv,
->  	return bo;
+>  	return sgt;
+> diff --git a/drivers/gpu/drm/lima/lima_gem.c b/drivers/gpu/drm/lima/lima_gem.c
+> index 4f9736e5f929..67c39b95e30e 100644
+> --- a/drivers/gpu/drm/lima/lima_gem.c
+> +++ b/drivers/gpu/drm/lima/lima_gem.c
+> @@ -48,6 +48,7 @@ int lima_heap_alloc(struct lima_bo *bo, struct lima_vm *vm)
 >  
->  free_obj:
-> -	drm_gem_shmem_free(shmem_obj);
-> +	drm_gem_object_put(&shmem_obj->base);
->  	return ERR_PTR(ret);
->  }
+>  		bo->base.pages = pages;
+>  		bo->base.pages_use_count = 1;
+> +		bo->base.got_pages_sgt = true;
 >  
-> @@ -160,7 +162,7 @@ v3d_prime_import_sg_table(struct drm_device *dev,
->  
->  	ret = v3d_bo_create_finish(obj);
->  	if (ret) {
-> -		drm_gem_shmem_free(&to_v3d_bo(obj)->base);
-> +		drm_gem_object_put(obj);
->  		return ERR_PTR(ret);
+>  		mapping_set_unevictable(mapping);
 >  	}
+> diff --git a/include/drm/drm_gem_shmem_helper.h b/include/drm/drm_gem_shmem_helper.h
+> index ec70a98a8fe1..a53c0874b3c4 100644
+> --- a/include/drm/drm_gem_shmem_helper.h
+> +++ b/include/drm/drm_gem_shmem_helper.h
+> @@ -73,6 +73,13 @@ struct drm_gem_shmem_object {
+>  	 */
+>  	unsigned int vmap_use_count;
 >  
+> +	/**
+> +	 * @got_pages_sgt:
+> +	 *
+> +	 * True if SG table was retrieved using drm_gem_shmem_get_pages_sgt()
+> +	 */
+> +	bool got_pages_sgt : 1;
+> +
+>  	/**
+>  	 * @imported_sgt:
+>  	 *
 
