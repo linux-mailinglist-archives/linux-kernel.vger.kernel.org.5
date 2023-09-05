@@ -2,88 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C5E7930D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:15:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 419627930D3
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243883AbjIEVP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:15:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S243885AbjIEVPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233308AbjIEVP1 (ORCPT
+        with ESMTP id S234191AbjIEVPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:15:27 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75423B8;
-        Tue,  5 Sep 2023 14:15:23 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06260C433C7;
-        Tue,  5 Sep 2023 21:15:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693948523;
-        bh=1pdQsTvxS6GAHzbsLvraJ8XaQMyxfYiRxjVALwTCHOI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ippbUdejxKQ1jDq3bWA2SrVcrfPNp/UFkH8M37LZS2l3+QClFBWy9ja9nQTxYsWGf
-         /nXc7OGo1Yv5JFJ5THJQam+kHuqJH3CPKVYYDJcNklhOHcm+4QYzdt/7bWmmIpZ4gG
-         iYehm+LFFNQWuMbNhU3Z5AQrHZO41gQDmavifArbXTQGc1INcdN3qXG69QLVgKnNV0
-         /Os5OpjGqraWYeNjuAMDRwGEU8Co3h1SRgNu53G0w+VXAAVQ6IIFC/U+i/mXN+mknX
-         5mgRZx5vIX1dNJOlsI/e+lRFFnFymDsfyr0Z4ofE+C968pKSNW+yj5W3Dq094Z0Wyq
-         KQ1/j/h5YJyKw==
-Received: (nullmailer pid 4030509 invoked by uid 1000);
-        Tue, 05 Sep 2023 21:15:15 -0000
-Date:   Tue, 5 Sep 2023 16:15:15 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Raphael Gallais-Pou <rgallaispou@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4] dt-bindings: irqchip: convert st,stih407-irq-syscfg
- to DT schema
-Message-ID: <169394850991.4030364.7708098240384382428.robh@kernel.org>
-References: <20230905072740.23859-1-rgallaispou@gmail.com>
+        Tue, 5 Sep 2023 17:15:15 -0400
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C10ABC
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693948509;
+        bh=lTr6EzwtsWBs1ryCwPpdcGriJCkNGGE3Hi2jPSrb2Xw=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=Dx7WQasapbl9T0xWMikss/droqGd3TOi+BoOLhhIoqXhlsuybDT1cWdUKi1feBY0X
+         /oXgpuRaNqa+EH6UNuqQY+JhdT5d6RCpNozKCZiglPlKwGkXu2HNlqiYlOylfr7cB2
+         ssXfX5hdZjxxkWEfiy0R8JPksnFxqZPdDdTnBKbaXha1XmYLwyjFEdlQ6rlg3TV5b0
+         eFjHG41l7aO4AEcW6/rP1fiKUckkv4FiEJ0CGUcB3lMucQitBNhEY1/9jEYRZqqXwW
+         vHUQPvlbUAo0wR0dzFnJzjpTmYeeIu/ihhpkHnJBX/KHf7HiKashvqnlm3cfEeBRa6
+         zfmnW1lA0l69A==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4RgJDs1PtWz1NG4;
+        Tue,  5 Sep 2023 17:15:09 -0400 (EDT)
+Message-ID: <866f23cc-6725-fc74-099f-450939fc0dc4@efficios.com>
+Date:   Tue, 5 Sep 2023 17:16:25 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230905072740.23859-1-rgallaispou@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [RFC PATCH 1/2] sched: Rate limit migrations to 1 per 2ms per
+ task
+Content-Language: en-US
+To:     Tim Chen <tim.c.chen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Swapnil Sapkal <Swapnil.Sapkal@amd.com>,
+        Aaron Lu <aaron.lu@intel.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>, x86@kernel.org
+References: <20230905171105.1005672-1-mathieu.desnoyers@efficios.com>
+ <20230905171105.1005672-2-mathieu.desnoyers@efficios.com>
+ <cfc3de8fa3172cedf406ccef8c94ef4da0a00281.camel@linux.intel.com>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <cfc3de8fa3172cedf406ccef8c94ef4da0a00281.camel@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 9/5/23 16:28, Tim Chen wrote:
+> On Tue, 2023-09-05 at 13:11 -0400, Mathieu Desnoyers wrote:
+>> Rate limit migrations to 1 migration per 2 milliseconds per task. On a
+>> kernel with EEVDF scheduler (commit b97d64c722598ffed42ece814a2cb791336c6679),
+>> this speeds up hackbench from 62s to 45s on AMD EPYC 192-core (over 2 sockets).
+>>
+>>
+>>
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 479db611f46e..0d294fce261d 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -4510,6 +4510,7 @@ static void __sched_fork(unsigned long clone_flags, struct task_struct *p)
+>>   	p->se.vruntime			= 0;
+>>   	p->se.vlag			= 0;
+>>   	p->se.slice			= sysctl_sched_base_slice;
+>> +	p->se.next_migration_time	= 0;
+> 
+> It seems like the next_migration_time should be initialized to the current time,
+> in case the system run for a long time and clock wrap around could cause problem.
 
-On Tue, 05 Sep 2023 09:27:40 +0200, Raphael Gallais-Pou wrote:
-> Convert deprecated format to DT schema format.
-> 
-> Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> Changes in v2:
-> 	- Added Conor's r-by
-> 	- Removed quotes surrounding $refs
-> 	- Hardcoded 'st,invert-ext' possible values
-> 
-> Changes in v3:
-> 	- Fixed enum syntax warnings
-> 	- Removed reference to driver in favor of device
-> 
-> Changes in v4:
-> 	- Make clearer description for "st,invert-ext" property
-> 	- Handle better bitwise logic
-> ---
->  .../st,sti-irq-syscfg.txt                     | 30 ---------
->  .../st,stih407-irq-syscfg.yaml                | 65 +++++++++++++++++++
->  2 files changed, 65 insertions(+), 30 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-> 
+next_migration_time is a u64, which should "never" overflow. Other 
+scheduler code comparing with sched_clock() don't appear to care about 
+u64 overflow. Sampling the next_migration_time on fork could delay 
+migrations for a 2ms window after process creation, which I don't think 
+is something we want. Or if we do want this behavior, it should be 
+validated with benchmarks beforehand.
 
-Applied, thanks!
+> 
+>>   	INIT_LIST_HEAD(&p->se.group_node);
+>>   
+>>   #ifdef CONFIG_FAIR_GROUP_SCHED
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index d92da2d78774..24ac69913005 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -960,6 +960,14 @@ int sched_update_scaling(void)
+>>   
+>>   static void clear_buddies(struct cfs_rq *cfs_rq, struct sched_entity *se);
+>>   
+>> +static bool should_migrate_task(struct task_struct *p, int prev_cpu)
+>> +{
+>> +	/* Rate limit task migration. */
+>> +	if (sched_clock_cpu(prev_cpu) < p->se.next_migration_time)
+> 
+> Should we use time_before(sched_clock_cpu(prev_cpu), p->se.next_migration_time) ?
+
+No, because time_before expects unsigned long parameters, and 
+sched_clock_cpu() and next_migration_time are u64.
+
+Thanks,
+
+Mathieu
+
+> 
+>> +	       return false;
+>> +	return true;
+>> +}
+>> +
+> 
+> Thanks.
+> 
+> Tim
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
