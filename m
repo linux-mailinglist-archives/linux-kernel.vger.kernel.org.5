@@ -2,110 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F82792B11
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B167792845
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:43:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbjIEQrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:47:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
+        id S240034AbjIEQIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354306AbjIEKj6 (ORCPT
+        with ESMTP id S1354307AbjIEKkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:39:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D539E8;
-        Tue,  5 Sep 2023 03:39:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        Tue, 5 Sep 2023 06:40:01 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C25E8
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:39:57 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1620BB8110F;
-        Tue,  5 Sep 2023 10:39:54 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54D6AC433C9;
-        Tue,  5 Sep 2023 10:39:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1693910392;
-        bh=j8+1Hm4mUtM7Sdzk8t3pym7+APouKwS+Fm2dc4RCSX0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nUK1W8ki5VZew0euPZppawmgK/OH7XKYcJKl9dSF8bM5V5HF836tBWu1ORPqzPlGP
-         9JNtuYCCM6KlDqkQUxkG03MY2XQyVOYoGEEEaW47GIFkcE7hdo+OzPCjYU0n4LLAGr
-         iMXhGEQAawxDg1bLQxWduT+viuFmZdsASTIA5NFE=
-Date:   Tue, 5 Sep 2023 11:39:50 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc:     jgg@ziepe.ca, leon@kernel.org, benjamin.tissoires@redhat.com,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yusongping@huawei.com, artem.kuzin@huawei.com
-Subject: Re: [PATCH] RDMA/uverbs: Fix typo of sizeof argument
-Message-ID: <2023090538-seduce-saucy-6b2c@gregkh>
-References: <20230905103258.1738246-1-konstantin.meskhidze@huawei.com>
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 9B13821850;
+        Tue,  5 Sep 2023 10:39:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693910396; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxL7juv5/sEpLVZRkPTB76RBwFoczrKMqzvZ2otKvu0=;
+        b=XvyS7ci+Gzc2tebs1hE88GngORss7gTKmhW0slYef07W1bL1VI0u+ufgxigHqt4nDa3pGe
+        c3CzAwHWAmFufkIqifBvoaXPZWu27Hm4MMlDP2gJ2JTNskAYBfFI7SW2a6nVNlXrdA7u5v
+        WTve5Qz17/XHghKmQhv06RMR9lp6QjI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693910396;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kxL7juv5/sEpLVZRkPTB76RBwFoczrKMqzvZ2otKvu0=;
+        b=QC34U4AyZ9BeP1qTOWcLduVTYsgt9KWWFduofCBvYAg8JSL1XakmHLpQA8TV4ZuOt3ddF1
+        2B6BwJ2rrm8hp+Dg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 72B5713499;
+        Tue,  5 Sep 2023 10:39:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id cIhAG3wF92RiVwAAMHmgww
+        (envelope-from <dwagner@suse.de>); Tue, 05 Sep 2023 10:39:56 +0000
+Date:   Tue, 5 Sep 2023 12:40:24 +0200
+From:   Daniel Wagner <dwagner@suse.de>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hannes Reinecke <hare@suse.de>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        James Smart <james.smart@broadcom.com>,
+        Chaitanya Kulkarni <kch@nvidia.com>
+Subject: Re: [RFC v1 4/4] nvmet-discovery: do not use invalid port
+Message-ID: <vml2mmhjurjaalzcmugnu2c4cm4okfkl43swbmudmaotew4gsy@o4q44el473to>
+References: <20230829091350.16156-1-dwagner@suse.de>
+ <20230829091350.16156-5-dwagner@suse.de>
+ <20230905065032.GC19701@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230905103258.1738246-1-konstantin.meskhidze@huawei.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20230905065032.GC19701@lst.de>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 06:32:58PM +0800, Konstantin Meskhidze wrote:
-> Since size of 'hdr' pointer and '*hdr' structure is equal on 64-bit
-> machines issue probably didn't cause any wrong behavior. But anyway,
-> fixing of typo is required.
+On Tue, Sep 05, 2023 at 08:50:32AM +0200, Christoph Hellwig wrote:
+> > +	/* No port assigned, portentrybinding is missing */
 > 
-> Fixes: da0f60df7bd5 ("RDMA/uverbs: Prohibit write() calls with too small buffers")
-> Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
-> Signed-off-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
-> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-> ---
->  drivers/infiniband/core/uverbs_main.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/infiniband/core/uverbs_main.c b/drivers/infiniband/core/uverbs_main.c
-> index 7c9c79c13941..508d6712e14d 100644
-> --- a/drivers/infiniband/core/uverbs_main.c
-> +++ b/drivers/infiniband/core/uverbs_main.c
-> @@ -535,7 +535,7 @@ static ssize_t verify_hdr(struct ib_uverbs_cmd_hdr *hdr,
->  	if (hdr->in_words * 4 != count)
->  		return -EINVAL;
-> 
-> -	if (count < method_elm->req_size + sizeof(hdr)) {
-> +	if (count < method_elm->req_size + sizeof(*hdr)) {
->  		/*
->  		 * rdma-core v18 and v19 have a bug where they send DESTROY_CQ
->  		 * with a 16 byte write instead of 24. Old kernels didn't
-> --
-> 2.34.1
-> 
+> Double new line above, and I think a missing white space before
+> binding.
 
-Hi,
+Yep, sorry.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+> But I'm still confused how we can get here without req->port
+> set.  Can you try to do a little more analysis as I suspect we have
+> a deeper problem somewhere.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
-
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+I am only able to reproduce this if there are two connect/discovery
+attempts happening at the same time. I'll collect some logs and attempt
+to make some sense out of it.
