@@ -2,185 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3CA792D81
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29F0792E31
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237343AbjIESle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:41:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55814 "EHLO
+        id S241063AbjIETBa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:01:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240551AbjIESWT (ORCPT
+        with ESMTP id S240614AbjIETBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:22:19 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CEE5BCA;
-        Tue,  5 Sep 2023 11:21:47 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8Cx7+tgZPdkSMQfAA--.62735S3;
-        Wed, 06 Sep 2023 01:24:48 +0800 (CST)
-Received: from [0.0.0.0] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx5sxgZPdk7UltAA--.46048S3;
-        Wed, 06 Sep 2023 01:24:48 +0800 (CST)
-Message-ID: <40f32814-ca87-6e29-0e10-4b4463a2920d@loongson.cn>
-Date:   Wed, 6 Sep 2023 01:24:47 +0800
+        Tue, 5 Sep 2023 15:01:25 -0400
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7040EE53;
+        Tue,  5 Sep 2023 12:00:54 -0700 (PDT)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385H7fKk026800;
+        Tue, 5 Sep 2023 17:26:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=Ia1C3iKF3m+Dgw5fxSrpVwcFV9fIiMHXNzvPBAEcalE=;
+ b=H7+iFy/7LT+1CmV1/kXfZq+1e554gphzAM3ojGb8quyi52L4MxWJgPZJmwVycmZ5svn5
+ 2aY4CxUqkgGfjgaV0/GliYmHjtBg2gv5Q9VQpgbONqQxIhWgm4xPcQteacfJjPwDgdtj
+ pWdljAbzkq5l/H9WuSeju+R+5kL/gl1GEc6knKMlReqxXhZI3s5ZvFGl05SQXJg4s7O7
+ XpafsS2t15U5kp5NedwVgBgZ1C3g6YaVgQ+bLjJkX6L2kUv5Fl61aKViHMHDasT7aoJ8
+ ifZTmOFCf5s7YHvhPoaKv1z3H9fRyoN92d4WL9gSlGfWL/Qv9sYI/ECJ8ZXRKukP64bH RA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx7tbj07g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 17:26:41 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385HNMNM007369;
+        Tue, 5 Sep 2023 17:26:40 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx7tbj076-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 17:26:40 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385GvSlv006710;
+        Tue, 5 Sep 2023 17:26:39 GMT
+Received: from smtprelay03.dal12v.mail.ibm.com ([172.16.1.5])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvkcbnq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 17:26:39 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay03.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385HQcg759375874
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 17:26:38 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ABFAC58056;
+        Tue,  5 Sep 2023 17:26:38 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AC5785803F;
+        Tue,  5 Sep 2023 17:26:36 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 17:26:36 +0000 (GMT)
+Message-ID: <d1a03980-11ea-c2a2-69c3-6137e69e5db9@linux.ibm.com>
+Date:   Tue, 5 Sep 2023 13:26:35 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [RFC,drm-misc-next v4 3/9] drm/radeon: Implement .be_primary()
- callback
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 03/25] ima: Align ima_post_create_tmpfile() definition
+ with LSM infrastructure
 Content-Language: en-US
-To:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Sui Jingfeng <sui.jingfeng@linux.dev>,
-        Bjorn Helgaas <bhelgaas@google.com>
-Cc:     amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org, linux-pci@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>
-References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
- <20230904195724.633404-4-sui.jingfeng@linux.dev>
- <d3e6a9ce-1c7a-8e44-3127-413cd471a8e9@amd.com>
-From:   suijingfeng <suijingfeng@loongson.cn>
-In-Reply-To: <d3e6a9ce-1c7a-8e44-3127-413cd471a8e9@amd.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+ <20230904133415.1799503-4-roberto.sassu@huaweicloud.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20230904133415.1799503-4-roberto.sassu@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx5sxgZPdk7UltAA--.46048S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxGry3tr4UZrW7Zr1fCw13WrX_yoWruFW8pa
-        ySqFW7ArykG3W0y347Aw4UuFyrX3yrJayUtrn5Jas5Zws8JrW0vryjvw4qgasrJrZ3Aw4Y
-        va4ag3W7ZFyDA3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Sb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-        AlzVAYIcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE
-        7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
-        8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWU
-        CwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
-        1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
-        daVFxhVjvjDU0xZFpf9x07j0WlkUUUUU=
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: mH9497JBU-JGokhYJM_EQ7FVLKqdlTde
+X-Proofpoint-ORIG-GUID: PEnAzxXSl_CKe-6xjoSQi5wVko_julzc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_10,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ mlxlogscore=999 spamscore=0 mlxscore=0 phishscore=0 adultscore=0
+ malwarescore=0 priorityscore=1501 bulkscore=0 suspectscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050148
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 9/4/23 09:33, Roberto Sassu wrote:
 
-
-On 2023/9/5 13:50, Christian König wrote:
-> Am 04.09.23 um 21:57 schrieb Sui Jingfeng:
->> From: Sui Jingfeng <suijingfeng@loongson.cn>
->>
->> On a machine with multiple GPUs, a Linux user has no control over 
->> which one
->> is primary at boot time.
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> Question is why is that useful? Should we give users the ability to 
-> control that?
+> Change ima_post_create_tmpfile() definition, so that it can be registered
+> as implementation of the post_create_tmpfile hook.
 >
-> I don't see an use case for this.
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>   fs/namei.c                        | 2 +-
+>   include/linux/ima.h               | 7 +++++--
+>   security/integrity/ima/ima_main.c | 8 ++++++--
+>   3 files changed, 12 insertions(+), 5 deletions(-)
 >
-
-On a specific machine with multiple GPUs mounted, only the
-primary graphics get POST-ed (initialized) by the firmware.
-Therefore the DRM drivers for the rest video cards have to
-work without the prerequisite setups done by firmware, This
-is called as POST.
-
-One of the use cases is to test if a specific DRM driver
-would works properly, under the circumstance of not being
-POST-ed, The ast drm driver is the first one which refused
-to work if not being POST-ed by the firmware.
-
-Before apply this series, I was unable make drm/ast as the
-primary video card easily. The problem is that on a multiple
-video card configuration, the monitor connected with my
-AST2400 card not light up. While confusing, a naive programmer
-may suspect the PRIME is not working.
-
-After applied this series and passing ast.modeset=10 on the
-kernel cmd line, I found that the monitor connected with my
-ast2400 video card still black, It doesn't display and It
-doesn't show image to me.
-
-While in the process of study drm/ast, I know that drm/ast
-driver has the POST code shipped, See the ast_post_gpu() function.
-Then, I was wondering why this function doesn't works.
-
-After a short-time (hasty) debugging, I found that the ast_post_gpu()
-function didn't get run. Because it have something to do with the
-ast->config_mode. Without thinking too much, I hardcoded the
-ast->config_mode as ast_use_p2a, the key point is to force the
-ast_post_gpu() function to run.
-
-
-```
-
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -132,6 +132,8 @@ static int ast_device_config_init(struct ast_device 
-*ast)
-                 }
-         }
-
-+       ast->config_mode = ast_use_p2a;
-+
-         switch (ast->config_mode) {
-         case ast_use_defaults:
-                 drm_info(dev, "Using default configuration\n");
-
-```
-
-Then, the monitor light up, it display the Ubuntu greeter to me. Therefore
-my patch is useful, at least for the Linux drm driver tester and developer.
-It allow programmers to test the specific part of a specific driver without
-changing a line of the source code and without the need of sudo authority.
-
-It improves the efficiency of the testing and patch verification. I know
-the PrimaryGPU option of Xorg conf, but this approach will remember the
-setup have been made, you need modify it with root authority each time
-you want to switch the primary. But on the process of rapid developing
-and/or testing for multiple video drivers, with only one computer hardware
-resource available. What we really want is a one-shot command, as provided
-by this series.  So, this is the first use case.
-
-
-The second use case is that sometime the firmware is not reliable.
-While there are thousands of ARM64, PowerPC and Mips servers machine,
-Most of them don't have a good UEFI firmware support. I haven't test the
-drm/amdgpu and drm/radeon at my ARM64 server yet. Because this ARM64
-server always use the platform(BMC) integrated display controller as primary.
-The UEFI firmware of it does not provide options menu to tune.
-So, for the first time, the discrete card because useless, despite more powerful.
-I will take time to carry on the testing, so I will be able to tell more
-in the future.
+> diff --git a/fs/namei.c b/fs/namei.c
+> index c5e96f716f98..1f5ec71360de 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3698,7 +3698,7 @@ static int vfs_tmpfile(struct mnt_idmap *idmap,
+>   		inode->i_state |= I_LINKABLE;
+>   		spin_unlock(&inode->i_lock);
+>   	}
+> -	ima_post_create_tmpfile(idmap, inode);
+> +	ima_post_create_tmpfile(idmap, dir, file, mode);
+>   	return 0;
+>   }
+>   
+> diff --git a/include/linux/ima.h b/include/linux/ima.h
+> index 179ce52013b2..893c3b98b4d0 100644
+> --- a/include/linux/ima.h
+> +++ b/include/linux/ima.h
+> @@ -19,7 +19,8 @@ extern enum hash_algo ima_get_current_hash_algo(void);
+>   extern int ima_bprm_check(struct linux_binprm *bprm);
+>   extern int ima_file_check(struct file *file, int mask);
+>   extern void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> -				    struct inode *inode);
+> +				    struct inode *dir, struct file *file,
+> +				    umode_t mode);
+>   extern void ima_file_free(struct file *file);
+>   extern int ima_file_mmap(struct file *file, unsigned long reqprot,
+>   			 unsigned long prot, unsigned long flags);
+> @@ -69,7 +70,9 @@ static inline int ima_file_check(struct file *file, int mask)
+>   }
+>   
+>   static inline void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> -					   struct inode *inode)
+> +					   struct inode *dir,
+> +					   struct file *file,
+> +					   umode_t mode)
+>   {
+>   }
+>   
+> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+> index 76eba92d7f10..52e742d32f4b 100644
+> --- a/security/integrity/ima/ima_main.c
+> +++ b/security/integrity/ima/ima_main.c
+> @@ -663,16 +663,20 @@ EXPORT_SYMBOL_GPL(ima_inode_hash);
+>   /**
+>    * ima_post_create_tmpfile - mark newly created tmpfile as new
+>    * @idmap: idmap of the mount the inode was found from
+> - * @inode: inode of the newly created tmpfile
+> + * @dir: inode structure of the parent of the new file
+> + * @file: file descriptor of the new file
+> + * @mode: mode of the new file
+>    *
+>    * No measuring, appraising or auditing of newly created tmpfiles is needed.
+>    * Skip calling process_measurement(), but indicate which newly, created
+>    * tmpfiles are in policy.
+>    */
+>   void ima_post_create_tmpfile(struct mnt_idmap *idmap,
+> -			     struct inode *inode)
+> +			     struct inode *dir, struct file *file,
+> +			     umode_t mode)
+>   {
+>   	struct integrity_iint_cache *iint;
+> +	struct inode *inode = file_inode(file);
+>   	int must_appraise;
+>   
+>   	if (!ima_policy_flag || !S_ISREG(inode->i_mode))
 
 
-Even on X86, when select the PEG as primary on the UEFI BIOS menu.
-There is no way to tell the bios which one of my three
-discrete video be the primary. Not to mention some old UEFI
-firmware, which doesn't provide a setting at all.
-While the benefit of my approach is the flexibility.
-Yes the i915, amdgpu and radeon are good quality,
-but there may have programmers want to try nouveau.
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-
-The third use case is that VGAARB is also not reliable, It will
-select a wrong device as primary. Especially on Arm64, Loongarch
-and mips arch etc. And the X server will use this wrong device
-as primary and completely crash there. Either because of lacking
-a driver or the driver has a bug which can not bear the graphic
-environment up. VGAARB is firmware dependent.
-My patch provide a temporary method to rescue.
-
-
-The forth is probably the PRIME and reverse PRIME development
-and developing driver for new video cards.
 
