@@ -2,136 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 363B4792F9F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 779D9792FA1
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237600AbjIEULF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:11:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S239357AbjIEUL6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 16:11:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233456AbjIEULE (ORCPT
+        with ESMTP id S232214AbjIEUL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:11:04 -0400
-Received: from mail-oa1-x49.google.com (mail-oa1-x49.google.com [IPv6:2001:4860:4864:20::49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F09C8180
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:10:30 -0700 (PDT)
-Received: by mail-oa1-x49.google.com with SMTP id 586e51a60fabf-1bf00c27c39so3314040fac.2
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:10:30 -0700 (PDT)
+        Tue, 5 Sep 2023 16:11:56 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1458DCFB;
+        Tue,  5 Sep 2023 13:11:30 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-501bd6f7d11so1939195e87.1;
+        Tue, 05 Sep 2023 13:11:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693944623; x=1694549423; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4pmzv+LLCuNutmWDx5XVz6vIet3weuj1okr6x6iIDqs=;
-        b=TPU6mE8hSKglsyJ4Nxkp5or/4zoZ5VLI2BO/lYaPBoQ7YKnDiXYRSojEB+RYItZQN8
-         AHBoIHmcYPUJRBKEnulPf40GcFHIC22nUzTIJjPlQyY5b52wFm51WQxVgl1tChM7Wglw
-         UBWmKRkOftMZgqVJ6pCsekrCRQgSIVFjXbEghL8FDKin5IGUR3KNDKgnIHi3dlH9QVvX
-         60CWj5JEymFV9um6Mfz73g/n8Rs8Wi5UR0buM6ohElkLFhmksKxIBOIvXFw+gO4vb66X
-         GgS9tE3CKoF0DhU+XuatGRzvztaJ5MRjwW9/Zs2W0/44BJ3s1ackmB/WdWiQcPqTZ7HE
-         harg==
+        d=gmail.com; s=20221208; t=1693944688; x=1694549488; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=w2c0X/15jRHBgEVSCCaDEJe6vWwc+ez2XuJO2zWQ3kY=;
+        b=JwB8FgeZPMzk5dAK7hSFEEcstBOD/DzXqohh7xbfnYHAIrJG2dw1yPY5Z/M0SPK1+X
+         M8B60V1xshjkj4c9g0+HWU0usxuUNpoZNgtfxZT9a97S2WeFAoUsjz6BFh+tolI27AT/
+         lVce3f9Y1MpF6YjOYhTZS6MhkEgBEOLOMFeiTdNUO6YdP4g0sXC7Apvg52/gog/OCvdH
+         Lp2Bon0xBNfwg9HB3SHU6kR711OSKbz11rDY2aAcJJ3WTPvfgyEvZkvgmOdsAr5oLOJf
+         TlNxgn3qNydlxEn0yHxwE+6A7mvB5hUxcd4yD1XFqZG6Oz4jT1W2hFpZ208WbDbuOhZx
+         Ed0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693944623; x=1694549423;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4pmzv+LLCuNutmWDx5XVz6vIet3weuj1okr6x6iIDqs=;
-        b=EL99nhIDky6GDNEHQq8PgKeLiyAtbyvA5gHgTnLOUce07hGNGhBK+nbSeKYSj7ClcG
-         XXnmp7leiiFa/KS9el71n0OAh476QYiAF1IsDbA3aXh2YopKwQzxPeFoXqjJE0CqEJtY
-         +GMEcZaphiTeLyePJ4o+48Eq2uDeWYB0NgZQ1qmOv3ugJEvwzr27s28KnnjxSr9bt+ir
-         W3ie/F9h8NJSDOOAfC3lUlUUVhkBdZKGESD3CP+rULi7RNFjCezqOR8c4pm3JwYXIwhe
-         usE1PnpIghkBoBXPZbA6SaoS7rqjY/deiHI6JHx8hn0+Mmy08qShIVwW2qAMmGf2M413
-         cq6g==
-X-Gm-Message-State: AOJu0Yz1BJk+X5U0CHrsI2Ork9KtGTPaLVZamZdaGdmGW5NJrhWJbdhJ
-        aE7h7GYt2ui5DBDAI/B02qLjVD55eNC0EHgFvw==
-X-Google-Smtp-Source: AGHT+IH0UAhU/aEXaLYwKV529bYDq2+IrLYFkojxcQXZZrpNvgRPipYWy3B0aEIwkrHJxkLEyoHB42gmo8sADZGiSQ==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6870:98b3:b0:1c6:7d66:d47 with
- SMTP id eg51-20020a05687098b300b001c67d660d47mr350044oab.3.1693944623730;
- Tue, 05 Sep 2023 13:10:23 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 20:10:21 +0000
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAC2L92QC/33NSwqDMBCA4atI1k0xDzXtqvcoXeQx0UBrJJFQE
- e/e6MpS6WbgH5hvZhQhOIjoWswoQHLR+T4HPxVId7JvATuTG9GSslKQEscx9HqYsAy6y+NVc0w
- sM4wKZS5KoHw4BLDuvaH3R+7OxdGHafuRyLr9yyWCCbZ1Y1ktKm1qfmu9b59w1v6FVi/RvUEOD ZoNJQUHqayVRv0YbGewY4NlQxulCDQgKyBfxrIsH3BtrsE9AQAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1693944622; l=2237;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=t/5OxQrRWKo7ANfBmo93SLcVLgmcGRCwdycJFf2MN74=; b=3u23MHg/jPWsU7x0jAafSrxxG4WZqrLPGQs34EinIy6nacmqUYB0HuRg2pkyCwTWc6oyA62E7
- wNCh34KUVbPDkbS3QVngsClDPBUK9kMKubaBgFgZcoSnQY/jTofVttO
-X-Mailer: b4 0.12.3
-Message-ID: <20230905-strncpy-arch-arm64-v4-1-bc4b14ddfaef@google.com>
-Subject: [PATCH v4] arm64/sysreg: refactor deprecated strncpy
-From:   Justin Stitt <justinstitt@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mostafa Saleh <smostafa@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kees Cook <keescook@chromium.org>,
-        linux-hardening@vger.kernel.org,
-        Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        d=1e100.net; s=20221208; t=1693944688; x=1694549488;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w2c0X/15jRHBgEVSCCaDEJe6vWwc+ez2XuJO2zWQ3kY=;
+        b=UrJwmCqQiG9xYa5sEZnKKKAfQbKvFdpLxkfAgYd0I3lyEQWV00cMU1yVqdsRC6k/l/
+         BIeEHEZjPi6MZxQsLvx3K2/V2tfbZxgfS6UjlgcY2NOs/N5IhZPD/ol33G1+RGph/87N
+         6asBSfyWVFQYLCPlA85A8D4hlGvAss6lyad0KVswZvfiTMrWx9fCtAUyuIYrgj6YN4uP
+         h1gB9aNAU3AuGQV/dwV3D3ohDwSTojBznJFl2b4HVI320mb53kNDut1EIbBgsXo93Ke4
+         8/9uTxnjnOnW2zQXg0dgui9P8d0E+0m6Ig/Wyp07ytFr/KWXOXFHxjDs3sF3RF4vF1qt
+         3pQA==
+X-Gm-Message-State: AOJu0YzvvgvW/HOZ3BPebY23znjPibJbpBKS/yu1RZOPWrI43KR1OQML
+        y+s5jRIa3tAq7pw1pIii9cRvWLGyJY96WA==
+X-Google-Smtp-Source: AGHT+IHFowLDY6tJlLBXTNIpcha+Msm1E/UAmVgsnSTFGVA9BG8YgXxGRbHrBqfPB59mY2lJT0YERg==
+X-Received: by 2002:a05:6512:313b:b0:500:8f65:c624 with SMTP id p27-20020a056512313b00b005008f65c624mr557196lfd.53.1693944687570;
+        Tue, 05 Sep 2023 13:11:27 -0700 (PDT)
+Received: from [192.168.10.127] (net-188-216-175-96.cust.vodafonedsl.it. [188.216.175.96])
+        by smtp.gmail.com with ESMTPSA id j11-20020a17090686cb00b0098e422d6758sm7964172ejy.219.2023.09.05.13.11.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 13:11:26 -0700 (PDT)
+Message-ID: <fdd2ff37-8944-4186-844f-9698e8b2f31c@gmail.com>
+Date:   Tue, 5 Sep 2023 22:11:25 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+From:   Sergio Callegari <sergio.callegari@gmail.com>
+Subject: Re: Regression with AX88179A: can't manually set MAC address anymore
+To:     netdev@vger.kernel.org
+Cc:     Linux Kernel Mailing list <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+References: <54cb50af-b8e7-397b-ff7e-f6933b01a4b9@gmail.com>
+ <ZPcfsd_QcJwQq0dK@debian.me>
+Content-Language: en-US, it-IT
+In-Reply-To: <ZPcfsd_QcJwQq0dK@debian.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-strncpy is deprecated [1] and should not be used if the src string is
-not NUL-terminated.
+On 05/09/2023 14:31, Bagas Sanjaya wrote:
+> On Tue, Sep 05, 2023 at 01:02:22PM +0200, Sergio Callegari wrote:
+>> Hi, reporting here as the issue I am seeing is cross distro and relevant to
+>> recent kernels. Hope this is appropriate.
+>>
+>> I have a USB hub with AX88179A ethernet. I was able to use it regularly,
+>> until something changed in recent kernels to have this interface supported
+>> by the cdc_ncm driver. After this change it is not possible anymore to work
+>> with a manually set MAC address.
+> Exactly on what version range?
 
-When dealing with `cmdline` we are counting the number of characters
-until a space then copying these over into `buf`. Let's not use any of
-the str*() functions since the src string is not necessarily NUL-terminated.
+Hard to say without extensive testing since distros move from kernel to 
+kernel with big version jumps. The adapter was surely usable in ubuntu 
+22.04 with kernel 5.15, breaking this Summer as kernel 6.2 arrived as an 
+HWE kernel.
 
-Prefer `memcpy()` alongside a forced NUL-termination as it more
-accurately describes what is going on within this function, i.e: copying
-from non NUL-terminated buffer into a NUL-terminated buffer.
+>> More details:
+>>
+>> - before the kernel changes, the interface was supported by a dedicated
+>> kernel driver. The driver had glitches but was more or less working. The
+>> main issue was that after some usage the driver stopped working. Could fix
+>> these glitches with the driver at
+>> https://github.com/nothingstopsme/AX88179_178A_Linux_Driver
+> Did you mean that you use out-of-tree module?
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Suggested-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Changes in v4:
-- rebase onto mainline (thanks Will)
-- Link to v3: https://lore.kernel.org/r/20230831-strncpy-arch-arm64-v3-1-cdbb1e7ea5e1@google.com
+I mean that with kernel 5.15 I could use the in-tree module with some 
+glitches (interface occasionally stopping on teleconferencing) as well 
+as the indicated out of tree module with no glitches.
 
-Changes in v3:
-- Fix faulty logic and use memcpy over strscpy (thanks Mostafa and Kees)
-- Use '\0' instead of 0 to make it abundantly clear that `buf` is a NUL-terminated string
-- Link to v2: https://lore.kernel.org/r/20230811-strncpy-arch-arm64-v2-1-ba84eabffadb@google.com
+With current kernels (certainly from 6.2 on) manually setting a MAC 
+address breaks the interface. Furthermore, even if it compiles and loads 
+fine, it is impossible to use the out of tree module because it does not 
+create the eth device anymore (the eth device now appears with the 
+cdc_ncn module). Being this an out of tree module, this is not very 
+important, though.
 
-Changes in v2:
-- Utilize return value from strscpy and check for truncation (thanks Kees)
-- Link to v1: https://lore.kernel.org/r/20230810-strncpy-arch-arm64-v1-1-f67f3685cd64@google.com
----
- arch/arm64/kernel/idreg-override.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+>> - after the kernel changes, loading the ax88179_178a.ko does not create a
+>> network device anymore. The interface can be used with the cdc_ncm driver,
+>> however it is not possible anymore to use a manually set MAC address.
+>>
+>> When you manually set a MAC this appears to be accepted (e.g. ip link
+>> reports it correctly), but the card does not receive data anymore. For
+>> instance, trying to connect to a DHCP server, you see that the server
+>> receives the request, makes an offer, but the offer is never received by the
+>> network card.
+>>
+> How is the reproducer?
 
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 2fe2491b692c..3addc09f8746 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -263,8 +263,8 @@ static __init void __parse_cmdline(const char *cmdline, bool parse_aliases)
- 			return;
- 
- 		len = min(len, ARRAY_SIZE(buf) - 1);
--		strncpy(buf, cmdline, len);
--		buf[len] = 0;
-+		memcpy(buf, cmdline, len);
-+		buf[len] = '\0';
- 
- 		if (strcmp(buf, "--") == 0)
- 			return;
+1. Turn down the interface with the `ip` command.
 
----
-base-commit: 2dde18cd1d8fac735875f2e4987f11817cc0bc2c
-change-id: 20230810-strncpy-arch-arm64-1f3d328bd9b8
+2. Use the `ip` command to set an hardware address (xx:xx:xx:xx:xx:xx) 
+different from the original one (yy:yy:yy:yy:yy:yy) from the adapter.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+3. Try to get an IP address from a DHCP server configured to respond to 
+xx:xx:xx:xx:xx:xx
+
+4. Observe that the system is unable to get an IP address from DHCP 
+(keeps asking)
+
+5. Look at the DHCP server logs and observe that the DHCP server 
+receives the request from mac xx:xx:xx:xx:xx:xx and makes an offer, but 
+this is never accepted (possibly never received).
+
+Skipping 2. and setting the DHCP server to respond to yy:yy:yy:yy:yy:yy, 
+everything works as expected. So it is the manual setting of an hardware 
+address that triggers the issue. The DHCP server is OK: steps 1-5 work 
+fine with other NICs and used to work fine with the AX88179A USB NIC 
+with kernel 5.15.
+
+Would like to triage better, but it is not easy for me since I do not 
+own the USB Hubs containing the AX88179A based ethernet port. I get 
+these where I work and I am not expected to detach them from the office 
+equipment. I'll see what I can do.
+
+>> This may be the same issue reported here:https://discussion.fedoraproject.org/t/ax88179-178a-network-fails-to-start-usb-to-eth/77687
+>> where the user says he cannot use the adapter when Network Manager is
+>> configured to employ a randomized MAC address.
+>>
+> Confused...
+
+The discussion on the fedora forum that I linked is what provided me 
+with a hint about the issue with the manual MAC address. In that 
+discussion a user reports an issue about an AX88179A unusable in fedora 
+(that uses fairly recent kernels). The user solved the issue disabling 
+randomization of the MAC address (which implies changing the MAC). 
+Namely he says "The wired connection had a “virtual mac address” 
+randomly generated set in Network Manager GUI (I can’t remember why I 
+had set that before) [...] disabling this configuration the wired 
+connection started ok". However, the details are modest, so that user 
+might as well had encountered an unrelated problem, pointing me to the 
+manual MAC setting just by coincidence.
+
+Thanks for your reply that testifies attention for the issue.
+
+Sergio Callegari
 
