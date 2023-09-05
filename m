@@ -2,160 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 908B87929C1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EE6F792A09
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352590AbjIEQ1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:27:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52788 "EHLO
+        id S1356657AbjIEQd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:33:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344772AbjIEDxj (ORCPT
+        with ESMTP id S1344595AbjIEDtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 23:53:39 -0400
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A77CCB;
-        Mon,  4 Sep 2023 20:53:34 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.30.67.143])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Rfs6y0QmDz4f3wt3;
-        Tue,  5 Sep 2023 11:53:30 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP4 (Coremail) with SMTP id gCh0CgDHVqk5pvZkQLWYCQ--.57068S4;
-        Tue, 05 Sep 2023 11:53:31 +0800 (CST)
-From:   linan666@huaweicloud.com
-To:     dlemoal@kernel.org
-Cc:     linux-ide@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linan122@huawei.com, yukuai3@huawei.com, yi.zhang@huawei.com,
-        houtao1@huawei.com, yangerkun@huawei.com
-Subject: [PATCH v2] scsi: ata: Fix a race condition between scsi error handler and ahci interrupt
-Date:   Tue,  5 Sep 2023 11:48:40 +0800
-Message-Id: <20230905034840.478332-1-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+        Mon, 4 Sep 2023 23:49:08 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79633CC7
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 20:49:04 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4A3C7B810A0
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:49:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AD83C433C7;
+        Tue,  5 Sep 2023 03:49:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693885741;
+        bh=lr8JZFOrIMmBf3b1VvvA03Ns1Iavbh5ZrCVGwpM6Nik=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=lr3y/LfQjAjdQkg0Cyq3KvExgeue5Yw7O9pcscK462LKG4pds0vVH3HK5jEzulHxk
+         V8tZPPHjhjDQtaEe9wdO/DkaoSy2zYyCUp+2husOnGCtg3q+7xbxW3ZICoXOw2BlEz
+         c667MQA2GVGMubLjQcFDpOrCRA2bl0NQPd88lbfCImp2EuTELjar1Of7YHtgI7hcUI
+         Yv0ERYj9STG6pMjYf1qiNvlbTV7aFVHf9CmkLypJIR+R385mEUKcKllLnFSPXnIS2b
+         2s3QCEnwFJEIbSMEXnE904NOhypIm+1blPhgo5stDL1HG4QOD+AxM3kj0/BWk6iWKq
+         Xh8gntPwmoIGA==
+From:   SeongJae Park <sj@kernel.org>
+To:     SeongJae Park <sj@kernel.org>
+Cc:     damon@lists.linux.dev, Andrew Morton <akpm@linux-foundation.org>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] mm/damon/core: use number of passed access sampling as a timer
+Date:   Tue,  5 Sep 2023 03:48:58 +0000
+Message-Id: <20230905034858.127810-1-sj@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20230827003727.49369-1-sj@kernel.org>
+References: 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: gCh0CgDHVqk5pvZkQLWYCQ--.57068S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFy7XF4DWFWxGr1ftw1DZFb_yoW5JFy7pF
-        Z8Zw1DWryUtry2qr4qq3WrXryrGaykK3y2gryDGw1Svr4qka4rt39rCF90gFy3Kr97XF13
-        uan0g3sxCF18Zr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-        0267AKxVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487
-        Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aV
-        AFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4kE6xkIj40E
-        w7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
-        v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkG
-        c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_
-        Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwc_TUU
-        UUU
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Nan <linan122@huawei.com>
+On Sun, 27 Aug 2023 00:37:27 +0000 SeongJae Park <sj@kernel.org> wrote:
 
-If a disk is removed and quickly inserted when an I/O error is processing,
-the disk may not be able to be re-added. The function call timeline is as
-follows:
+> DAMON sleeps for sampling interval after each sampling, and check if
+> it's time for further doing aggregation and ops updating using
+> ktime_get_coarse_ts64() and baseline timestamps for the two periodic
+> operations.  That's for making the operations occur at deterministic
+> timing.  However, it turned out it could still result in indeterministic
+> and even not-that-intuitive results.
+> 
+> After all, timer functions, and especially sleep functions that DAMON
+> uses to wait for specific timing, could contain some errors.  Those
+> errors are legal, so no problem.  However, depending on such legal
+> timing errors, the nr_accesses can be larger than aggregation interval
+> divided by sampling interval.  For example, with the default setting (5
+> ms sampling interval and 100 ms aggregation interval) we frequently show
+> regions having nr_accesses larger than 20.  Also, if the execution of a
+> DAMOS scheme takes a long time, next aggregation could happen before
+> enough number of samples are collected.
+> 
+> Since access check sampling is the smallest unit work of DAMON, using
+> the number of passed sampling intervals as the DAMON-internal timer can
+> easily avoid these problems.  That is, convert aggregation and ops
+> update intervals to numbers of sampling intervals that need to be passed
+> before those operations be executed, count the number of passed sampling
+> intervals, and invoke the operations as soon as the specific amount of
+> sampling intervals passed.  Make the change.
+> 
+> Signed-off-by: SeongJae Park <sj@kernel.org>
+> ---
+>  include/linux/damon.h | 14 ++++++--
+>  mm/damon/core.c       | 84 +++++++++++++++++++------------------------
+>  2 files changed, 48 insertions(+), 50 deletions(-)
+> 
+[...]
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index 988dc39e44b1..83af336bb0e6 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+[...]
+> @@ -577,6 +580,9 @@ static void damon_update_monitoring_results(struct damon_ctx *ctx,
+>   */
+>  int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+>  {
+> +	unsigned long sample_interval;
+> +	unsigned long remaining_interval_us;
+> +
+>  	if (attrs->min_nr_regions < 3)
+>  		return -EINVAL;
+>  	if (attrs->min_nr_regions > attrs->max_nr_regions)
+> @@ -584,6 +590,20 @@ int damon_set_attrs(struct damon_ctx *ctx, struct damon_attrs *attrs)
+>  	if (attrs->sample_interval > attrs->aggr_interval)
+>  		return -EINVAL;
+>  
+> +	sample_interval = attrs->sample_interval ? attrs->sample_interval : 1;
+> +
+> +	/* adjust next_aggregation_sis */
+> +	remaining_interval_us = ctx->attrs.sample_interval *
+> +		(ctx->next_aggregation_sis - ctx->passed_sample_intervals);
+> +	ctx->next_aggregation_sis = ctx->passed_sample_intervals +
+> +		remaining_interval_us / sample_interval;
+> +
+> +	/* adjust next_ops_update_sis */
+> +	remaining_interval_us = ctx->attrs.sample_interval *
+> +		(ctx->next_ops_update_sis - ctx->passed_sample_intervals);
+> +	ctx->next_ops_update_sis = ctx->passed_sample_intervals +
+> +		remaining_interval_us / sample_interval;
 
-  interrupt                            scsi_eh
+The above remaining interval based adjustments mean we will respect the old
+intervals for one more time.  However, user wants to change it right now, so
+respecting it yet makes no sense.  Also, since this function is to be called
+while no aggregation is ongoing, the remaining_interval_us for
+next_aggregation_sis will be always zero.  So, simply ignoring past and
+resetting the timings as below may make better sense.
 
-  ahci_error_intr
-   ata_port_freeze
-    __ata_port_freeze
-     =>ahci_freeze (turn IRQ off)
-    ata_port_abort
-     ata_do_link_abort
-      ata_port_schedule_eh
-       =>ata_std_sched_eh
-        ata_eh_set_pending
-	 set EH_PENDING
-        scsi_schedule_eh
-         shost->host_eh_scheduled++ (=1)
-                                       scsi_error_handler
-                                        =>ata_scsi_error
-                                         ata_scsi_port_error_handler
-					  clear EH_PENDING
-                                          =>ahci_error_handler
-                                          . sata_pmp_error_handler
-                                          .  ata_eh_reset
-                                          .   ata_eh_thaw_port
-                                          .   . =>ahci_thaw (turn IRQ on)
-  ahci_error_intr			  .   .
-   ata_port_freeze			  .   .
-    __ata_port_freeze			  .   .
-     =>ahci_freeze (turn IRQ off)	  .   .
-    ...					  .   .
-        ata_eh_set_pending		  .   .
-	 set EH_PENDING			  .   .
-        scsi_schedule_eh		  .   .
-         shost->host_eh_scheduled++ (=2)  .   .
-					  .   clear EH_PENDING
-					  check EH_PENDING
-                                          =>ata_std_end_eh
-                                           host->host_eh_scheduled = 0;
+    ctx->next_aggregation_sis = ctx->passed_sample_intervals +
+    		attrs->aggr_interval / sample_interval;
 
-'host_eh_scheduled' is 0 and scsi eh thread will not be scheduled again.
-The ata port remain freeze and will never be enabled.
+    ctx->next_ops_update_sis = ctx->passed_sample_intervals +
+    		attrs->ops_update_interval / sample_interval;
 
-Decrease ’host_eh_scheduled‘ instead of set it to 0 roughly and move
-WARN_ON of nr_active_links to ata_scsi_port_error_handler().
+I will replace the adjustments as above.
 
-Reported-by: luojian <luojian5@huawei.com>
-Signed-off-by: Li Nan <linan122@huawei.com>
----
-Changes in v2:
-  - fix the bug by decrease 'host_eh_scheduled’
-  - improve commit message.
 
- drivers/ata/libata-eh.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Thanks,
+SJ
 
-diff --git a/drivers/ata/libata-eh.c b/drivers/ata/libata-eh.c
-index 159ba6ba19eb..b9454756ecde 100644
---- a/drivers/ata/libata-eh.c
-+++ b/drivers/ata/libata-eh.c
-@@ -735,6 +735,12 @@ void ata_scsi_port_error_handler(struct Scsi_Host *host, struct ata_port *ap)
- 	 */
- 	ap->ops->end_eh(ap);
- 
-+	if (!ap->scsi_host->host_eh_scheduled) {
-+		/* make sure nr_active_links is zero after EH */
-+		WARN_ON(ap->nr_active_links);
-+		ap->nr_active_links = 0;
-+	}
-+
- 	spin_unlock_irqrestore(ap->lock, flags);
- 	ata_eh_release(ap);
- 
-@@ -948,7 +954,7 @@ void ata_std_end_eh(struct ata_port *ap)
- {
- 	struct Scsi_Host *host = ap->scsi_host;
- 
--	host->host_eh_scheduled = 0;
-+	host->host_eh_scheduled--;
- }
- EXPORT_SYMBOL(ata_std_end_eh);
- 
-@@ -3922,10 +3928,6 @@ void ata_eh_finish(struct ata_port *ap)
- 			}
- 		}
- 	}
--
--	/* make sure nr_active_links is zero after EH */
--	WARN_ON(ap->nr_active_links);
--	ap->nr_active_links = 0;
- }
- 
- /**
--- 
-2.39.2
-
+[...]
