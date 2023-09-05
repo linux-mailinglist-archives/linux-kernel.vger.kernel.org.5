@@ -2,216 +2,282 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 810BF792D73
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7307E792F5F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:56:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241420AbjIESg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52428 "EHLO
+        id S242186AbjIET4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238428AbjIESg5 (ORCPT
+        with ESMTP id S234122AbjIET4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:36:57 -0400
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18610E75;
-        Tue,  5 Sep 2023 11:36:34 -0700 (PDT)
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385HNE7N013330;
-        Tue, 5 Sep 2023 17:40:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Ld64bg6DoVAaSajRnJTTPI+85fKEcgBbLZT2tpmMA48=;
- b=WFmReFAZZ/8MhTigkZcdSCE4mi40DYSGe2/RPiU5ebFRIkAqhAWHhcIYQR+t+Cdig2N/
- YshF3jUiybnbPZwDnK1Ceqb7VCA1gwCqJllMpBixEzHft/2Xrpx5wM7nPbRBsED+U09G
- ar44FTn7bbz3ERFPCe4+t5TpXMCL0uGvlUEO60spod6nj/HTxmatpgXWMEKdBPUwbk6+
- nLcn4r+diUWvZm9vP/rDPLGXxyY5vLsdpdDjcSOIg33RWimgwTlJnEfsK0ZUyA7+nl7S
- PoeObCuhC8A4TcE1N+ODYCd7L5NYyT0JRnoF4weJIoOFkWIENh1xeBHadOCv9te3aBgj vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8pg0pbb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 17:40:38 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385HQ8HO023071;
-        Tue, 5 Sep 2023 17:40:38 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx8pg0pa7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 17:40:37 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385HDaXl006622;
-        Tue, 5 Sep 2023 17:40:36 GMT
-Received: from smtprelay01.wdc07v.mail.ibm.com ([172.16.1.68])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvkcej5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 17:40:36 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay01.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385HeZx326804598
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 5 Sep 2023 17:40:36 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 92FDF58056;
-        Tue,  5 Sep 2023 17:40:35 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 17CD75803F;
-        Tue,  5 Sep 2023 17:40:34 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
-        Tue,  5 Sep 2023 17:40:34 +0000 (GMT)
-Message-ID: <380f9312-97f9-7ccf-1854-dc15135a76cc@linux.ibm.com>
-Date:   Tue, 5 Sep 2023 13:40:33 -0400
+        Tue, 5 Sep 2023 15:56:46 -0400
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E191AB;
+        Tue,  5 Sep 2023 12:56:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.us;
+ s=s31663417; t=1693943801; x=1694548601; i=fan.ni@gmx.us;
+ bh=fH5fl2iT7bJK58HYQS61E8lV0EElinXPEGRDeSG774o=;
+ h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+ b=sIbOg/13QgrWZTAnXi+N/5zBxKEmvxiMSSTzrJ2p5jw97RUc1M4V2EMk0RckDttucTbxDXD
+ UWuCQ8bpb1ObvHtk+yePEB6ZdoQ130dOCURiqYOe1Rp0UvcPSKKW05buNFPfWrkNcNd2q+sxD
+ n8scVq4ytZPy3PVqVRj5fxERVYUbLC/XxAMjyCDsUyw1pMiybRo5//NwHo5s/sil7ybkQV0iL
+ NArbTJ02b1kFnD7ODROBMFZc9z2wDt7+Mm0rEtu2JI0rj9zywibRPoKvGFV9Wj+V33CnrxOt9
+ AKDxG6op/sYvr2XZRfsG53lXQN/EiyU7bXl3pYxvouLuN8bpy8NA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from debian ([50.205.20.42]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MORAU-1qI4sX1A10-00Pxua; Tue, 05
+ Sep 2023 19:55:23 +0200
+Date:   Tue, 5 Sep 2023 10:55:12 -0700
+From:   Fan Ni <fan.ni@gmx.us>
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     ira.weiny@intel.com, Dan Williams <dan.j.williams@intel.com>,
+        Navneet Singh <navneet.singh@intel.com>,
+        Fan Ni <fan.ni@samsung.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC v2 07/18] cxl/mem: Expose device dynamic capacity
+ configuration
+Message-ID: <ZPdrgN9mt8oIxil0@debian>
+References: <20230604-dcd-type2-upstream-v2-0-f740c47e7916@intel.com>
+ <20230604-dcd-type2-upstream-v2-7-f740c47e7916@intel.com>
+ <20230829161449.00000c7a@Huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 12/25] security: Introduce inode_post_setattr hook
-Content-Language: en-US
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
- <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
-From:   Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20230904133415.1799503-13-roberto.sassu@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: oGx3S1xEnHqv5zFYdKRH45Z2702CyqST
-X-Proofpoint-GUID: jVfQhPQUkfioEGflO-yolUrB0Sb5lBmv
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_10,2023-09-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- malwarescore=0 bulkscore=0 spamscore=0 impostorscore=0 phishscore=0
- mlxlogscore=999 clxscore=1015 mlxscore=0 lowpriorityscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2308100000 definitions=main-2309050152
-X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230829161449.00000c7a@Huawei.com>
+X-Provags-ID: V03:K1:7FPfXhisLSI5kaGGZv7QSee2tVduCM+GGxg07v26LnQxmJb/e2Y
+ FbZ8OozFEEM/40NKV6fLI4a0kSuNBMG2KRFpV0QCAvoUha4X23E0SGNyxQIp1nHuLTTRsGN
+ Xbselzcygt4H8Lt0lP94xfuCecNICDqX8Ozo9sB2RSPL1ORa/wVptzyNvMAyJqFpqQ2kfg+
+ /DGjsm5aILKhJGgxS1baw==
+UI-OutboundReport: notjunk:1;M01:P0:0w8GjRTky48=;3F3nJFdQAnPV2FCoraDBQRYPbdV
+ 7rV9e5EKoIgOHv+HKfvO8zPNGqFgSK6wAoVAlT8O3UrrhwUysgQzKDGXerQVMSk4gxI86inKa
+ Zi3sDFMwevK0FN3dcwdkKu6zEBcrQoS/NIMyPqSnvf66cgEW8RNzPWpkRMalwr79pSTnWrB2C
+ jfPbGofYzTHinYisduwUoyZUE5pgJc01E5unlidWOwdXWGRzkDhVxGl5nZfYLPofculBCYcRy
+ Ji/siB7unuefEdiyg3D/aeQRPjc1AU3z4csPDubGBjIGU+MrQydr+QOKYgxx5vYgkbeLXV64o
+ hnHjuRno0daFZvEmP1b2pIlcFZRMBpELtbBxs4k1itSCovvewhiORZrF9DsJsa7L4s+fYCAAN
+ YfMmc5QY4MdGZXjidFf4ldGH9gWc0CxBs8kyeS06NPR4n7sMD+s0oNs0pgvyFKjZ+3gYyC3lb
+ fmqNWD01kwgeiLmiYTzN/QhdFczpwmpmuhdh7RXV18GGqssTE+G6BMrlC+JizwST3ZgkQpbep
+ fJA2SO91FLS8uOqTC79UrsgFXhUbodgOHriWMrkWSwY09uBEZtIUAUkjQ3XDAGP/84ihE7SHK
+ les8bAY8b4WAHzCG8fadBSsC+VVhebpstN2H+CcjzfD2Ww5j7ZcyKS0h+XF85a/FjgHcrBkNy
+ UTBGCKwx+qMX6cCwaXvIcqowSSxSdg327GivaLDAFoc0496s5IH+s63pZ6jd6cG+JoIl3uTA/
+ 2z2CUEs87uflfU7SfsxoVhMNGFQ3AdAQXNsIYwmGreojaOnZWxesBEdXGc5ym+pfX3clQusbx
+ 4WO9basreyl/vRFLxxBRy+J7EJrPQvqNnfm0YIOt0zI6qZUfPo8186i2L7PI3KO3/UeY1Y7KO
+ YFDjvWl8dh7FDh5LHqi9QltjmQVgUI6Pfv1/fa4RrTe/MZUbTJAq95k9kP4pd32k5Ijm1oOFG
+ jz64tAXnRH2bGBItDH2SbY7knQ8=
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/4/23 09:34, Roberto Sassu wrote:
-
-> From: Roberto Sassu <roberto.sassu@huawei.com>
+On Tue, Aug 29, 2023 at 04:14:49PM +0100, Jonathan Cameron wrote:
+> On Mon, 28 Aug 2023 22:20:58 -0700
+> ira.weiny@intel.com wrote:
 >
-> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> the inode_post_setattr hook.
+> > From: Navneet Singh <navneet.singh@intel.com>
+> >
+> > To properly configure CXL regions on Dynamic Capacity Devices (DCD),
+> > user space will need to know the details of the DC Regions available o=
+n
+> > a device.
+> >
+> > Expose driver dynamic capacity configuration through sysfs
+> > attributes.
+> >
+> > Co-developed-by: Navneet Singh <navneet.singh@intel.com>
+> > Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> >
+> One trivial comment inline.  I wondered a bit if it would
+> be better to not present dc at all on devices that don't support
+> dynamic capacity, but for now there isn't an elegant way to do that
+> (some discussions and patches are flying around however so maybe this
+>  will be resolved before this series merges giving us that elegant
+>  option).
 >
-> It is useful for EVM to recalculate the HMAC on modified file attributes
-> and other file metadata, after it verified the HMAC of current file
-> metadata with the inode_setattr hook.
+> With commented code tidied up
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 >
-> LSMs should use the new hook instead of inode_setattr, when they need to
-> know that the operation was done successfully (not known in inode_setattr).
-> The new hook cannot return an error and cannot cause the operation to be
-> reverted.
+
+Agreed. It makes more sense to not show dc at all.
+Other than that, looks good to me.
+
+Reviewed-by: Fan Ni <fan.ni@samsung.com>
+
 >
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> ---
->   fs/attr.c                     |  1 +
->   include/linux/lsm_hook_defs.h |  2 ++
->   include/linux/security.h      |  7 +++++++
->   security/security.c           | 16 ++++++++++++++++
->   4 files changed, 26 insertions(+)
+> > ---
+> > Changes for v2:
+> > [iweiny: Rebased on latest master/type2 work]
+> > [iweiny: add documentation for sysfs entries]
+> > [iweiny: s/dc_regions_count/region_count/]
+> > [iweiny: s/dcY_size/regionY_size/]
+> > [alison: change size format to %#llx]
+> > [iweiny: change count format to %d]
+> > [iweiny: Formatting updates]
+> > [iweiny: Fix crash when device is not a mem device: found with cxl-tes=
+t]
+> > ---
+> >  Documentation/ABI/testing/sysfs-bus-cxl | 17 ++++++++
+> >  drivers/cxl/core/memdev.c               | 77 ++++++++++++++++++++++++=
++++++++++
+> >  2 files changed, 94 insertions(+)
+> >
+> > diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/A=
+BI/testing/sysfs-bus-cxl
+> > index 2268ffcdb604..aa65dc5b4e13 100644
+> > --- a/Documentation/ABI/testing/sysfs-bus-cxl
+> > +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> > @@ -37,6 +37,23 @@ Description:
+> >  		identically named field in the Identify Memory Device Output
+> >  		Payload in the CXL-2.0 specification.
+> >
+> > +What:		/sys/bus/cxl/devices/memX/dc/region_count
+> > +Date:		July, 2023
+> > +KernelVersion:	v6.6
+> > +Contact:	linux-cxl@vger.kernel.org
+> > +Description:
+> > +		(RO) Number of Dynamic Capacity (DC) regions supported on the
+> > +		device.  May be 0 if the device does not support Dynamic
+> > +		Capacity.
+> > +
+> > +What:		/sys/bus/cxl/devices/memX/dc/regionY_size
+> > +Date:		July, 2023
+> > +KernelVersion:	v6.6
+> > +Contact:	linux-cxl@vger.kernel.org
+> > +Description:
+> > +		(RO) Size of the Dynamic Capacity (DC) region Y.  Only
+> > +		available on devices which support DC and only for those
+> > +		region indexes supported by the device.
+> >
+> >  What:		/sys/bus/cxl/devices/memX/serial
+> >  Date:		January, 2022
+> > diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+> > index 492486707fd0..397262e0ebd2 100644
+> > --- a/drivers/cxl/core/memdev.c
+> > +++ b/drivers/cxl/core/memdev.c
+> > @@ -101,6 +101,20 @@ static ssize_t pmem_size_show(struct device *dev,=
+ struct device_attribute *attr,
+> >  static struct device_attribute dev_attr_pmem_size =3D
+> >  	__ATTR(size, 0444, pmem_size_show, NULL);
+> >
+> > +static ssize_t region_count_show(struct device *dev, struct device_at=
+tribute *attr,
+> > +				 char *buf)
+> > +{
+> > +	struct cxl_memdev *cxlmd =3D to_cxl_memdev(dev);
+> > +	struct cxl_memdev_state *mds =3D to_cxl_memdev_state(cxlmd->cxlds);
+> > +	int len =3D 0;
+> > +
+> > +	len =3D sysfs_emit(buf, "%d\n", mds->nr_dc_region);
+> > +	return len;
 >
-> diff --git a/fs/attr.c b/fs/attr.c
-> index 431f667726c7..3c309eb456c6 100644
-> --- a/fs/attr.c
-> +++ b/fs/attr.c
-> @@ -486,6 +486,7 @@ int notify_change(struct mnt_idmap *idmap, struct dentry *dentry,
->   
->   	if (!error) {
->   		fsnotify_change(dentry, ia_valid);
-> +		security_inode_post_setattr(idmap, dentry, ia_valid);
->   		ima_inode_post_setattr(idmap, dentry, ia_valid);
->   		evm_inode_post_setattr(idmap, dentry, ia_valid);
->   	}
-> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-> index fdf075a6b1bb..995d30336cfa 100644
-> --- a/include/linux/lsm_hook_defs.h
-> +++ b/include/linux/lsm_hook_defs.h
-> @@ -136,6 +136,8 @@ LSM_HOOK(int, 0, inode_follow_link, struct dentry *dentry, struct inode *inode,
->   LSM_HOOK(int, 0, inode_permission, struct inode *inode, int mask)
->   LSM_HOOK(int, 0, inode_setattr, struct mnt_idmap *idmap, struct dentry *dentry,
->   	 struct iattr *attr)
-> +LSM_HOOK(void, LSM_RET_VOID, inode_post_setattr, struct mnt_idmap *idmap,
-> +	 struct dentry *dentry, int ia_valid)
->   LSM_HOOK(int, 0, inode_getattr, const struct path *path)
->   LSM_HOOK(int, 0, inode_setxattr, struct mnt_idmap *idmap,
->   	 struct dentry *dentry, const char *name, const void *value,
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index dcb3604ffab8..820899db5276 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -355,6 +355,8 @@ int security_inode_follow_link(struct dentry *dentry, struct inode *inode,
->   int security_inode_permission(struct inode *inode, int mask);
->   int security_inode_setattr(struct mnt_idmap *idmap,
->   			   struct dentry *dentry, struct iattr *attr);
-> +void security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
-> +				 int ia_valid);
->   int security_inode_getattr(const struct path *path);
->   int security_inode_setxattr(struct mnt_idmap *idmap,
->   			    struct dentry *dentry, const char *name,
-> @@ -856,6 +858,11 @@ static inline int security_inode_setattr(struct mnt_idmap *idmap,
->   	return 0;
->   }
->   
-> +static inline void
-> +security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
-> +			    int ia_valid)
-> +{ }
-
-Existing security_sem_free() and others are also formatted like it, so 
-it should be ok.
-
-
-> +
->   static inline int security_inode_getattr(const struct path *path)
->   {
->   	return 0;
-> diff --git a/security/security.c b/security/security.c
-> index 2b24d01cf181..764a6f28b3b9 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -2124,6 +2124,22 @@ int security_inode_setattr(struct mnt_idmap *idmap,
->   }
->   EXPORT_SYMBOL_GPL(security_inode_setattr);
->   
-> +/**
-> + * security_inode_post_setattr() - Update the inode after a setattr operation
-> + * @idmap: idmap of the mount
-> + * @dentry: file
-> + * @ia_valid: file attributes set
-> + *
-> + * Update inode security field after successful setting file attributes.
-> + */
-> +void security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
-> +				 int ia_valid)
-> +{
-> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> +		return;
-> +	call_void_hook(inode_post_setattr, idmap, dentry, ia_valid);
-> +}
-> +
->   /**
->    * security_inode_getattr() - Check if getting file attributes is allowed
->    * @path: file
-
-Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-
-
+> return sysfs_emit(buf, "...);
+>
+> > +}
+> > +
+> > +struct device_attribute dev_attr_region_count =3D
+> > +	__ATTR(region_count, 0444, region_count_show, NULL);
+> > +
+> >  static ssize_t serial_show(struct device *dev, struct device_attribut=
+e *attr,
+> >  			   char *buf)
+> >  {
+> > @@ -454,6 +468,62 @@ static struct attribute *cxl_memdev_security_attr=
+ibutes[] =3D {
+> >  	NULL,
+> >  };
+> >
+> > +static ssize_t show_size_regionN(struct cxl_memdev *cxlmd, char *buf,=
+ int pos)
+> > +{
+> > +	struct cxl_memdev_state *mds =3D to_cxl_memdev_state(cxlmd->cxlds);
+> > +
+> > +	return sysfs_emit(buf, "%#llx\n", mds->dc_region[pos].decode_len);
+> > +}
+> > +
+> > +#define REGION_SIZE_ATTR_RO(n)						\
+> > +static ssize_t region##n##_size_show(struct device *dev,		\
+> > +				     struct device_attribute *attr,	\
+> > +				     char *buf)				\
+> > +{									\
+> > +	return show_size_regionN(to_cxl_memdev(dev), buf, (n));		\
+> > +}									\
+> > +static DEVICE_ATTR_RO(region##n##_size)
+> > +REGION_SIZE_ATTR_RO(0);
+> > +REGION_SIZE_ATTR_RO(1);
+> > +REGION_SIZE_ATTR_RO(2);
+> > +REGION_SIZE_ATTR_RO(3);
+> > +REGION_SIZE_ATTR_RO(4);
+> > +REGION_SIZE_ATTR_RO(5);
+> > +REGION_SIZE_ATTR_RO(6);
+> > +REGION_SIZE_ATTR_RO(7);
+> > +
+> > +static struct attribute *cxl_memdev_dc_attributes[] =3D {
+> > +	&dev_attr_region0_size.attr,
+> > +	&dev_attr_region1_size.attr,
+> > +	&dev_attr_region2_size.attr,
+> > +	&dev_attr_region3_size.attr,
+> > +	&dev_attr_region4_size.attr,
+> > +	&dev_attr_region5_size.attr,
+> > +	&dev_attr_region6_size.attr,
+> > +	&dev_attr_region7_size.attr,
+> > +	&dev_attr_region_count.attr,
+> > +	NULL,
+> > +};
+> > +
+> > +static umode_t cxl_dc_visible(struct kobject *kobj, struct attribute =
+*a, int n)
+> > +{
+> > +	struct device *dev =3D kobj_to_dev(kobj);
+> > +	struct cxl_memdev *cxlmd =3D to_cxl_memdev(dev);
+> > +	struct cxl_memdev_state *mds =3D to_cxl_memdev_state(cxlmd->cxlds);
+> > +
+> > +	/* Not a memory device */
+> > +	if (!mds)
+> > +		return 0;
+> > +
+> > +	if (a =3D=3D &dev_attr_region_count.attr)
+> > +		return a->mode;
+> > +
+> > +	if (n < mds->nr_dc_region)
+> > +		return a->mode;
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static umode_t cxl_memdev_visible(struct kobject *kobj, struct attrib=
+ute *a,
+> >  				  int n)
+> >  {
+> > @@ -482,11 +552,18 @@ static struct attribute_group cxl_memdev_securit=
+y_attribute_group =3D {
+> >  	.attrs =3D cxl_memdev_security_attributes,
+> >  };
+> >
+> > +static struct attribute_group cxl_memdev_dc_attribute_group =3D {
+> > +	.name =3D "dc",
+> > +	.attrs =3D cxl_memdev_dc_attributes,
+> > +	.is_visible =3D cxl_dc_visible,
+> > +};
+> > +
+> >  static const struct attribute_group *cxl_memdev_attribute_groups[] =
+=3D {
+> >  	&cxl_memdev_attribute_group,
+> >  	&cxl_memdev_ram_attribute_group,
+> >  	&cxl_memdev_pmem_attribute_group,
+> >  	&cxl_memdev_security_attribute_group,
+> > +	&cxl_memdev_dc_attribute_group,
+> >  	NULL,
+> >  };
+> >
+> >
+>
