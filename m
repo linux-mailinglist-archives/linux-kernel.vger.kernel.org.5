@@ -2,528 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04E0D792B47
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B1887929D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344304AbjIEQui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:50:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48046 "EHLO
+        id S1353863AbjIEQ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:29:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243831AbjIEBBQ (ORCPT
+        with ESMTP id S243958AbjIEBG5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 21:01:16 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D151B9;
-        Mon,  4 Sep 2023 18:01:08 -0700 (PDT)
-Received: from kwepemm600003.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4RfnG00V3wzrSbS;
-        Tue,  5 Sep 2023 08:59:20 +0800 (CST)
-Received: from [10.67.111.205] (10.67.111.205) by
- kwepemm600003.china.huawei.com (7.193.23.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 5 Sep 2023 09:01:05 +0800
-Subject: Re: [RFC v1 00/16] perf kwork: Implement perf kwork top
-To:     Ian Rogers <irogers@google.com>
-CC:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@kernel.org>, <namhyung@kernel.org>,
-        <adrian.hunter@intel.com>, <kan.liang@linux.intel.com>,
-        <sandipan.das@amd.com>, <ravi.bangoria@amd.com>,
-        <linux-kernel@vger.kernel.org>, <linux-perf-users@vger.kernel.org>
-References: <20230812084917.169338-1-yangjihong1@huawei.com>
- <CAP-5=fXYBD2LYo9Fx8Uky+RKx+qfPypo7nkqA1YnYMS3iVwryw@mail.gmail.com>
- <61f78bea-0846-1e7a-b64e-470a3f59285a@huawei.com>
- <CAP-5=fVTM3xV9feaZv4z53Pv-AM9Ldj7SC8rZcNsMwJcj2ZViQ@mail.gmail.com>
-From:   Yang Jihong <yangjihong1@huawei.com>
-Message-ID: <a92b118e-2820-f2a3-015a-aa0c959afc26@huawei.com>
-Date:   Tue, 5 Sep 2023 09:01:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
-MIME-Version: 1.0
-In-Reply-To: <CAP-5=fVTM3xV9feaZv4z53Pv-AM9Ldj7SC8rZcNsMwJcj2ZViQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+        Mon, 4 Sep 2023 21:06:57 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2082.outbound.protection.outlook.com [40.107.237.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 301FE1B8
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 18:06:51 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bfS9RjyuwVzIM4yJckJ1oPRftjrvwR0qxueWcqszFpFoRqDzPJEgZmsht0baW8pLv+G8bin85LWACTCeaqzN6gQuLRujxTh97WdLLTnToluWZ6cX15jm2lYP5U8itCVkz/H6jJGvZnkEu0ymkDtrrPGjVWbUAPJaS9WyOscG38ofcxKMFCvB8yIrQ6/TDCqh0Cbzw2cOT5Pxrg0vRaRYx2f1pGnLsqjlEaI2AHNekfu285QGdaL1OlOgX5bwPpl3LGVNlKJTI0U0UC81nME6L6e6C+BOCufDPQxgCTvNY6MKSlcOS75YOO6LEu+URyk/8yowJ/fYH/ehi8gy/korjA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PoJH8JQgoAvaCpVguMdRsk5d3DRN5W2yeRQ1srdY6VE=;
+ b=Y9ZOG5CGUWPCMMrPPb+RENJ0TBto1A5CXjSneKlPeDUtTog65+Cr5x7jjH4xPR3QaRng3fy8KnEWzOV18Ac961SSnHAwG0VBTheRkEglepM6BHfi2nNbhsht4kRteJRU5dnUJ35NEa/m8gb+Qq4zbg73skBaskBaJN2E7huPM3jC7BnJuY3EMwojSq4Zx2/EIpulbXJh2LKbISq3cWn4FSaQo1mqnV6WtByyB43Nrmnc43Tcc5xy67Q4p71Pcn3I/WA60kT+vaolVbLhGOnSHeAAZxbwebtOYvHNssatKjdzfXd7p34Q6LlhhF6VlYigtD5ffU/Z1qSeWL1RWsPBEw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PoJH8JQgoAvaCpVguMdRsk5d3DRN5W2yeRQ1srdY6VE=;
+ b=IhuZn3TC6iu44SvL1uvT3yh11sVG+WL9o+iNpoO6Zb80OQk0sb9ITZnPm6a/VFl8JVyoeoX4f9nLDXs57HfnEwiR/dPwRPy5KM6Rs2RBS30Ny+wpgIQY65ooT0qJLZK9qE3CjN55D20JNze3bLXpqnIm38k2AYaMNSqCPzP1y/s=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from MN2PR12MB3008.namprd12.prod.outlook.com (2603:10b6:208:c8::17)
+ by LV8PR12MB9418.namprd12.prod.outlook.com (2603:10b6:408:202::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 01:06:48 +0000
+Received: from MN2PR12MB3008.namprd12.prod.outlook.com
+ ([fe80::1ddb:13ad:2eae:53cb]) by MN2PR12MB3008.namprd12.prod.outlook.com
+ ([fe80::1ddb:13ad:2eae:53cb%3]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 01:06:47 +0000
+Message-ID: <2b79ab3b-56e7-926f-49f0-4c2584f6a72b@amd.com>
+Date:   Tue, 5 Sep 2023 06:36:33 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v2 0/9] x86/clear_huge_page: multi-page clearing
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.111.205]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600003.china.huawei.com (7.193.23.202)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+To:     Ankur Arora <ankur.a.arora@oracle.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, x86@kernel.org
+Cc:     akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        willy@infradead.org, mgorman@suse.de, peterz@infradead.org,
+        rostedt@goodmis.org, tglx@linutronix.de, jon.grimm@amd.com,
+        bharata@amd.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+References: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+From:   Raghavendra K T <raghavendra.kt@amd.com>
+In-Reply-To: <20230830184958.2333078-1-ankur.a.arora@oracle.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN2PR01CA0231.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:eb::7) To MN2PR12MB3008.namprd12.prod.outlook.com
+ (2603:10b6:208:c8::17)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN2PR12MB3008:EE_|LV8PR12MB9418:EE_
+X-MS-Office365-Filtering-Correlation-Id: b0d0df79-4755-48e9-b4e4-08dbadac6078
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ARec9LdQ3LVf79o3z6PvocZZHhsW1sQw4MPZK5uDHZdMcolObdr8u44nWVeCaBFULLAQc76XpDJ2VZg9Bbkow2Fwh7Rz4ACOPTxpF3/Ra1LLQQkp/DNOTmv0O4vptN/wGi1asjyQQ4BHqVLYUIew2leaxI5iWTqw9qk+DT509ySOAsqz6FOZbHvKGsKaBDXOnvWji8BAVsfEhZLj3BPStz9zfxoEgpUpKejj/UyAIct/+JgC9ASYsKgl0FNV4oyB+WwpVdQhtbtURfkLwTAQC/aQUYiUZbIJuCKrOZ0WPEF6QmL97BWmvy9cLrqVyCb5blp7X7fZG3WCpPQwMsb8IuBYohy5M8sdAnWXM6njaTqdJEngn0riReRP6+wfcohv8f4zVxolF2p1jvPVtnuHcYPycrwuveRUV6VTJY/eXbEf53yJ7l+Br/2YdmSGGmmtbqNNNBHFTZoO6ghzC816zHahmFDMBq+GNb9kYCdav7FlTWjXW15s9CR9tyHKaC62DG/EAA1s0tx6ost6KbRgNIhksZ8Oo13FYgTlbSxVlKk8JvUAVK8jMrzTcoCUCSpo537O6BWdtXj2iqVtP5l/wdsQ1mrng9ZYvSfYvhOqXzcyegOqSrydwrS2dRo6Jhg93S/ShV3gczHQqXECQe+fMxYTvgA4D7PHpZI74qTwirU=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3008.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(396003)(136003)(376002)(346002)(1800799009)(186009)(451199024)(31686004)(5660300002)(8936002)(316002)(66476007)(66556008)(36756003)(2906002)(66946007)(4326008)(8676002)(7416002)(41300700001)(53546011)(6486002)(6506007)(26005)(6512007)(38100700002)(6666004)(478600001)(2616005)(83380400001)(31696002)(14583001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SVNiRGhyM2xqbWFCb1ArZEtwRE1xeUl4d3hBWUVmNHRTbUJxejJVR1R2ZnYw?=
+ =?utf-8?B?YkNGY3c3SzFXUkpxSllXMFJ5Y3VwYVdheTNXU2Vnd3NGZDUvdzRjL3huSjRl?=
+ =?utf-8?B?NE9JNHVnUFRzc0dwQXVLMkhoUnR2ZXorakw1Z0RaU3Rya3BvNGdjbVV1U3pk?=
+ =?utf-8?B?cmVTY05ZcW0rMGcvNkwxRGxBR2hTN3RyVTRDN1cySFQ3czUxOFI0RzI2YW5k?=
+ =?utf-8?B?MHNhcHBjVGYxT2RJUmxVQW10UWlhR1p2TFFZc0dpN05lMGZ0eTZBRjVlZ0VJ?=
+ =?utf-8?B?NXN1dFduRUtqTzNCWXIxaFdWbTYvSytRK0dBcSt6VUszT2wvV3BFUmZzVmls?=
+ =?utf-8?B?bXJOQ1FHT1lXdERBUXlsczBULzQ5YnFRVU4zTnFBbjMwQ011VGV0TU5sNzlK?=
+ =?utf-8?B?WmhiK3pMclFvSHArblJneEI3SzNSWjcvYkNEZzdDQjNCYVplWnVqciswcmNx?=
+ =?utf-8?B?bTNqb2dBZ2ZlQXJGL1EvbFUya1U0cEE4UStZelBwSTVqOG5OamJhYXJYdzNm?=
+ =?utf-8?B?REJEZHY0VEhKQXRHQWxpd01BLzhxcU9nL0V1ZkYxWGtvWlh2SkVycnZHNFlX?=
+ =?utf-8?B?Q25NcHhVbnVDbnhzTFg3SW91aDJnM21GRTVvRTZ6R0lOVWhjRkZReTA0NEp1?=
+ =?utf-8?B?U1dWdm1nejZ5Qks3VmRLVmlVM3VtU2srQlpIK2w2ekVGckE3ZFgybkpIaGxq?=
+ =?utf-8?B?S0lHK25ScDdmZGVIK0wxbmJCajJQOEE4L29UM1EzMXJETkhtMFlhVUR6ZnNI?=
+ =?utf-8?B?S2dDWFFWMkFrbEcrZWdCL2JFanlLUFBZY1NRMzF3SWhFV3h0TEk4ZUhleDdS?=
+ =?utf-8?B?NFhWdERJUXhtUURjaGhTWUNxVmpKSE9ldDNtUC9vUHpDaU12N21uT1k5NVR2?=
+ =?utf-8?B?aDBGRE5mMkRKZDRrc1hpOWhnVDFQWUw2ODZ3dXBla29nZ1l5c0tScXVHMTlR?=
+ =?utf-8?B?WCtTM2YrT2dVZU5LTm9FNnJoa1BPcWM4TGZXd3lUVnVlREVHTHR4eTY5Q01G?=
+ =?utf-8?B?VnJVYXNxSGtJSXRESVJSLzJMNTZlMmV0TW5yTzQvdkIxTms2VjI4QVpZdXBM?=
+ =?utf-8?B?UWd2QlNKbUtxbzJGUTJjY0plUDYzYUsxM0dmZGRBbHlkdHFvQzE1SDJXZkFD?=
+ =?utf-8?B?cVE2cXJ4bzdFeURBVE9Eb1BpSnhyUDhHQy84YllWV0pFUitIS051cGs5S0lQ?=
+ =?utf-8?B?U1RteHdvQmg0RWMzUWJMZERRRmpsYUNBeCt2OWFOV29pcG5ReXBCdlZEYjg2?=
+ =?utf-8?B?MytpU2RqVEx3cEdTTitEN1VMS1o4RUZvQWh5V2xteDA5U212b203ODFuSFJk?=
+ =?utf-8?B?SjBCTmxodGI3WVJiUE9PdVRNckZ3Z0lZMnM4SmVGZjl4bExTUnZWTTkrUi8r?=
+ =?utf-8?B?OEptVm5JZjJwUDRPWXhDU3VQR2NTSmp1WFVXUXJKQzFxRGRMODlKY25YR2JI?=
+ =?utf-8?B?TE5JaG5FZEdGSWRMeVk3dllkU2pNSmRLMEc4bWk5cXliOG8zT2w3RDAyYURC?=
+ =?utf-8?B?blJybVFnLzU2MFZ5NHVZZWlIdEtXKzBPcksvWUpINWY3UmtKTWo2NXJlQlJ4?=
+ =?utf-8?B?TVdBZi80K0p2bGVQYjJNcXZReEc3M043Mi9aVmNHOE9za0Y2THdlc3ZDNmZ1?=
+ =?utf-8?B?dzIvdElteStlK1NXVDZBSUl5eUpVb0U2ZE9XcUJBWHM0U09Ya1NxTm5aZ1pP?=
+ =?utf-8?B?czlJbUxyVVlReFJaZ1VqdjRYeEN1bHllZ1dWRU9lMEtSTEJ6ZUllTTRVRXUx?=
+ =?utf-8?B?M2psdEMzL01Iek5oQWtXWlRhQ2JRdVErOVJsVEVSZk1OcXRCdzNPSHA1bEs1?=
+ =?utf-8?B?aEs4TXNGb0lveFhYcHRmUG5yQ25kcG95M1M3OU5tT01KMkJXbEJveHR4dHUw?=
+ =?utf-8?B?TE1ldmVDUTJCMXhPY2RydGtWaWJka3hySExya3UrSlpoLzNmblAxNUhBVWRl?=
+ =?utf-8?B?WVVQMlZTWTVnd2QrU2xGd0xWTldhcUp2Qk41YzVxMnUwT1hPOEJBUDJ2VWdi?=
+ =?utf-8?B?bW42T2xvY3JHZU9iUEsvRmlvZ3FoSnhncFdPUXM3TXg4bmQyWHJRNmxmTEJp?=
+ =?utf-8?B?cks1ay9uOG9sTkFaS3lEZjZpNEQwc2NQSCs0YXZ2NVlrUXBhMU85aUg2TXRY?=
+ =?utf-8?Q?gsvsZV9zuaIG3+blUWUTNS0FB?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b0d0df79-4755-48e9-b4e4-08dbadac6078
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3008.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 01:06:47.3778
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WRG7/CovZdp+TKGZgxllfbcVwGcRpgdR7k/I+LnAiGAzj/WDIYX6hRZjHUibcKDa9D2+dbQTHhbxT6ODOJLjjA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR12MB9418
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 2023/9/4 22:54, Ian Rogers wrote:
-> On Mon, Sep 4, 2023 at 4:59 AM Yang Jihong <yangjihong1@huawei.com> wrote:
->>
->> Hello,
->>
->> On 2023/9/4 13:13, Ian Rogers wrote:
->>> On Sat, Aug 12, 2023 at 1:52 AM Yang Jihong <yangjihong1@huawei.com> wrote:
->>>>
->>>> Some common tools for collecting statistics on CPU usage, such as top,
->>>> obtain statistics from timer interrupt sampling, and then periodically
->>>> read statistics from /proc/stat.
->>>>
->>>> This method has some deviations:
->>>> 1. In the tick interrupt, the time between the last tick and the current
->>>>      tick is counted in the current task. However, the task may be running
->>>>      only part of the time.
->>>> 2. For each task, the top tool periodically reads the /proc/{PID}/status
->>>>      information. For tasks with a short life cycle, it may be missed.
->>>>
->>>> In conclusion, the top tool cannot accurately collect statistics on the
->>>> CPU usage and running time of tasks.
->>>>
->>>> The statistical method based on sched_switch tracepoint can accurately
->>>> calculate the CPU usage of all tasks. This method is applicable to
->>>> scenarios where performance comparison data is of high precision.
->>>>
->>>> In addition to parsing the perf.data file, the provides BPF-based CPU usage
->>>> statistics to reduce the load of the perf process.
->>>>
->>>> Example usage:
->>>>
->>>>     # perf kwork top -h
->>>>
->>>>      Usage: perf kwork top [<options>]
->>>>
->>>>         -C, --cpu <cpu>       list of cpus to profile
->>>>         -i, --input <file>    input file name
->>>>         -n, --name <name>     event name to profile
->>>>         -s, --sort <key[,key2...]>
->>>>                               sort by key(s): rate, runtime, tid
->>>>             --time <str>      Time span for analysis (start,stop)
->>>>
->>>>     # ./perf kwork -k sched,irq,softirq record -- ./perf bench sched messaging -g 1 -l 10000
->>>>     # Running 'sched/messaging' benchmark:
->>>>     # 20 sender and receiver processes per group
->>>>     # 1 groups == 40 processes run
->>>>
->>>>          Total time: 1.854 [sec]
->>>>     [ perf record: Woken up 13 times to write data ]
->>>>     [ perf record: Captured and wrote 27.436 MB perf.data (235986 samples) ]
->>>>     #
->>>>     # perf kwork top
->>>>
->>>>     Total  :  22419.068 ms, 12 cpus
->>>>     %Cpu(s):  17.99% id,   0.00% hi,   0.09% si
->>>>     %Cpu0   [||||||||||||||||||||||||        82.56%]
->>>>     %Cpu1   [||||||||||||||||||||||||        81.73%]
->>>>     %Cpu2   [||||||||||||||||||||||||        83.00%]
->>>>     %Cpu3   [||||||||||||||||||||||||        81.01%]
->>>>     %Cpu4   [||||||||||||||||||||||||        81.66%]
->>>>     %Cpu5   [||||||||||||||||||||||||        82.10%]
->>>>     %Cpu6   [||||||||||||||||||||||||        81.65%]
->>>>     %Cpu7   [||||||||||||||||||||||||        82.00%]
->>>>     %Cpu8   [||||||||||||||||||||||||        82.54%]
->>>>     %Cpu9   [||||||||||||||||||||||||        81.02%]
->>>>     %Cpu10  [||||||||||||||||||||||||        81.78%]
->>>>     %Cpu11  [||||||||||||||||||||||||        81.87%]
->>>>
->>>>           PID    %CPU           RUNTIME  COMMMAND
->>>>       ----------------------------------------------------
->>>>       2913025   27.62        516.976 ms  sched-messaging
->>>>       2913017   27.56        516.273 ms  sched-messaging
->>>>       2913018   27.56        516.152 ms  sched-messaging
->>>>       2913008   27.54        515.447 ms  sched-messaging
->>>>       2913010   27.50        514.890 ms  sched-messaging
->>>>       2913007   27.48        514.411 ms  sched-messaging
->>>>       2913015   27.36        512.563 ms  sched-messaging
->>>>       2913026   27.35        512.198 ms  sched-messaging
->>>>       2913011   27.32        511.632 ms  sched-messaging
->>>>       2913014   27.32        511.381 ms  sched-messaging
->>>>       2913012   27.30        511.138 ms  sched-messaging
->>>>       2913013   27.30        511.109 ms  sched-messaging
->>>>       2913009   27.30        510.997 ms  sched-messaging
->>>>       2913019   27.25        510.488 ms  sched-messaging
->>>>       2913021   27.23        509.661 ms  sched-messaging
->>>>       2913023   27.21        509.400 ms  sched-messaging
->>>>       2913020   27.20        509.677 ms  sched-messaging
->>>>       2913022   27.19        509.061 ms  sched-messaging
->>>>       2913016   27.18        509.231 ms  sched-messaging
->>>>       2913024   27.18        509.108 ms  sched-messaging
->>>>       2912999   21.79        407.929 ms  sched-messaging
->>>>       2913000   21.78        408.045 ms  sched-messaging
->>>>       2912998   21.75        407.579 ms  sched-messaging
->>>>       2912993   21.69        406.166 ms  sched-messaging
->>>>       2912991   21.59        404.378 ms  sched-messaging
->>>>       2912992   21.57        403.845 ms  sched-messaging
->>>>       2913005   21.56        403.715 ms  sched-messaging
->>>>       2913001   21.55        403.803 ms  sched-messaging
->>>>       2912990   21.54        403.601 ms  sched-messaging
->>>>       2912994   21.52        403.087 ms  sched-messaging
->>>>       2912995   21.49        402.421 ms  sched-messaging
->>>>       2912996   21.48        402.666 ms  sched-messaging
->>>>       2912989   21.46        402.303 ms  sched-messaging
->>>>       2913003   21.46        402.034 ms  sched-messaging
->>>>       2912988   21.44        401.820 ms  sched-messaging
->>>>       2913004   21.37        400.242 ms  sched-messaging
->>>>       2912987   21.28        398.512 ms  sched-messaging
->>>>       2913002   21.27        398.759 ms  sched-messaging
->>>>       2912997   21.27        398.518 ms  sched-messaging
->>>>       2913006   21.23        397.888 ms  sched-messaging
->>>>             0   18.89        353.061 ms  swapper/3
->>>>             0   18.89        353.026 ms  swapper/9
->>>>             0   18.26        341.190 ms  swapper/6
->>>>             0   18.25        341.048 ms  swapper/4
->>>>             0   18.13        338.844 ms  swapper/10
->>>>             0   18.12        338.686 ms  swapper/1
->>>>             0   18.05        337.333 ms  swapper/11
->>>>             0   17.92        334.903 ms  swapper/7
->>>>             0   17.80        332.691 ms  swapper/5
->>>>             0   17.38        324.762 ms  swapper/8
->>>>             0   17.29        323.102 ms  swapper/0
->>>>             0   16.89        315.630 ms  swapper/2
->>>>       2912984    2.10         39.452 ms  perf
->>>>       2912985    0.73         14.004 ms  sched-messaging
->>>>        660381    0.14          3.527 ms  containerd
->>>>       3006112    0.07          1.402 ms  redis-server
->>>>       2904655    0.05          1.071 ms  kworker/0:0
->>>>        659822    0.03          1.729 ms  containerd
->>>>        659824    0.03          1.346 ms  containerd
->>>>          1053    0.01          0.353 ms  zabbix_agentd
->>>>       2895571    0.01          0.349 ms  kworker/8:1
->>>>            10    0.00          0.535 ms  rcu_sched
->>>>       2912192    0.00          0.272 ms  kworker/u24:2
->>>>       2903540    0.00          0.182 ms  sshd
->>>>           801    0.00          0.120 ms  jbd2/sda4-8
->>>>       2929605    0.00          0.108 ms  grpc_global_tim
->>>>       2912986    0.00          0.075 ms  perf
->>>>       2897765    0.00          0.073 ms  kworker/7:1
->>>>       2912817    0.00          0.070 ms  kworker/2:1
->>>>        391756    0.00          0.067 ms  grpc_global_tim
->>>>       2901459    0.00          0.056 ms  kworker/3:0
->>>>       2908185    0.00          0.052 ms  kworker/10:1
->>>>       2901521    0.00          0.050 ms  kworker/6:1
->>>>       2902444    0.00          0.046 ms  kworker/5:1
->>>>       2898513    0.00          0.041 ms  kworker/1:1
->>>>       2912280    0.00          0.039 ms  kworker/11:3
->>>>          1057    0.00          0.037 ms  zabbix_agentd
->>>>       2908010    0.00          0.037 ms  kworker/9:3
->>>>       2912951    0.00          0.036 ms  kworker/4:3
->>>>           793    0.00          0.027 ms  multipathd
->>>>            42    0.00          0.023 ms  ksoftirqd/5
->>>>             9    0.00          0.022 ms  ksoftirqd/0
->>>>            24    0.00          0.019 ms  ksoftirqd/2
->>>>            59    0.00          0.019 ms  migration/8
->>>>       2929607    0.00          0.018 ms  wecode-db
->>>>            29    0.00          0.012 ms  migration/3
->>>>            11    0.00          0.012 ms  migration/0
->>>>            65    0.00          0.012 ms  migration/9
->>>>            17    0.00          0.011 ms  migration/1
->>>>            71    0.00          0.011 ms  migration/10
->>>>            53    0.00          0.011 ms  migration/7
->>>>            23    0.00          0.011 ms  migration/2
->>>>            47    0.00          0.011 ms  migration/6
->>>>           789    0.00          0.010 ms  multipathd
->>>>            35    0.00          0.010 ms  migration/4
->>>>           480    0.00          0.009 ms  kworker/4:1H
->>>>            41    0.00          0.008 ms  migration/5
->>>>            54    0.00          0.006 ms  ksoftirqd/7
->>>>            36    0.00          0.005 ms  ksoftirqd/4
->>>>            72    0.00          0.005 ms  ksoftirqd/10
->>>>            66    0.00          0.005 ms  ksoftirqd/9
->>>>            30    0.00          0.004 ms  ksoftirqd/3
->>>>       2898362    0.00          0.003 ms  kworker/u24:0
->>>>
->>>>     # perf kwork top -C 2,4,5
->>>>
->>>>     Total  :   5604.885 ms, 3 cpus
->>>>     %Cpu(s):  17.65% id,   0.00% hi,   0.09% si
->>>>     %Cpu2   [||||||||||||||||||||||||        83.00%]
->>>>     %Cpu4   [||||||||||||||||||||||||        81.66%]
->>>>     %Cpu5   [||||||||||||||||||||||||        82.10%]
->>>>
->>>>           PID    %CPU           RUNTIME  COMMMAND
->>>>       ----------------------------------------------------
->>>>             0   18.25        341.048 ms  swapper/4
->>>>             0   17.80        332.691 ms  swapper/5
->>>>             0   16.89        315.630 ms  swapper/2
->>>>       2913012    8.99        168.201 ms  sched-messaging
->>>>       2913021    8.74        163.456 ms  sched-messaging
->>>>       2913026    8.34        156.120 ms  sched-messaging
->>>>       2913010    8.14        152.372 ms  sched-messaging
->>>>       2913007    7.74        144.754 ms  sched-messaging
->>>>       2913016    7.42        138.977 ms  sched-messaging
->>>>       2913022    7.28        136.279 ms  sched-messaging
->>>>       2913013    7.00        130.894 ms  sched-messaging
->>>>       2913019    6.96        130.455 ms  sched-messaging
->>>>       2913023    6.91        129.364 ms  sched-messaging
->>>>       2913008    6.47        121.331 ms  sched-messaging
->>>>       2913018    6.47        121.124 ms  sched-messaging
->>>>       2912994    6.42        120.213 ms  sched-messaging
->>>>       2913025    6.42        120.140 ms  sched-messaging
->>>>       2913020    6.37        119.386 ms  sched-messaging
->>>>       2913011    6.35        118.921 ms  sched-messaging
->>>>       2913014    6.24        116.779 ms  sched-messaging
->>>>       2913009    6.01        112.661 ms  sched-messaging
->>>>       2913005    5.96        111.587 ms  sched-messaging
->>>>       2913003    5.94        111.142 ms  sched-messaging
->>>>       2913024    5.87        109.876 ms  sched-messaging
->>>>       2912988    5.84        109.396 ms  sched-messaging
->>>>       2912987    5.80        108.550 ms  sched-messaging
->>>>       2912990    5.51        103.322 ms  sched-messaging
->>>>       2912993    5.45        102.045 ms  sched-messaging
->>>>       2912996    5.42        101.622 ms  sched-messaging
->>>>       2913006    5.42        101.592 ms  sched-messaging
->>>>       2913000    5.41        101.511 ms  sched-messaging
->>>>       2913002    5.41        101.420 ms  sched-messaging
->>>>       2912997    5.40        101.315 ms  sched-messaging
->>>>       2913004    5.33         99.872 ms  sched-messaging
->>>>       2913015    5.29         99.252 ms  sched-messaging
->>>>       2913017    5.22         97.822 ms  sched-messaging
->>>>       2912991    5.11         95.773 ms  sched-messaging
->>>>       2912992    5.11         95.579 ms  sched-messaging
->>>>       2913001    5.07         95.033 ms  sched-messaging
->>>>       2912989    4.93         92.425 ms  sched-messaging
->>>>       2912995    4.85         90.892 ms  sched-messaging
->>>>       2912998    4.78         89.617 ms  sched-messaging
->>>>       2912999    4.56         85.576 ms  sched-messaging
->>>>       3006112    0.07          1.402 ms  redis-server
->>>>        660381    0.02          0.566 ms  containerd
->>>>       2912984    0.02          0.452 ms  perf
->>>>        659824    0.01          0.369 ms  containerd
->>>>        659822    0.00          0.316 ms  containerd
->>>>            10    0.00          0.176 ms  rcu_sched
->>>>           801    0.00          0.120 ms  jbd2/sda4-8
->>>>       2912985    0.00          0.107 ms  sched-messaging
->>>>       2912986    0.00          0.075 ms  perf
->>>>       2912817    0.00          0.070 ms  kworker/2:1
->>>>       2912192    0.00          0.056 ms  kworker/u24:2
->>>>       2929605    0.00          0.046 ms  grpc_global_tim
->>>>       2902444    0.00          0.046 ms  kworker/5:1
->>>>       2912951    0.00          0.036 ms  kworker/4:3
->>>>            42    0.00          0.023 ms  ksoftirqd/5
->>>>            24    0.00          0.019 ms  ksoftirqd/2
->>>>            23    0.00          0.011 ms  migration/2
->>>>            35    0.00          0.010 ms  migration/4
->>>>           480    0.00          0.009 ms  kworker/4:1H
->>>>            41    0.00          0.008 ms  migration/5
->>>>            36    0.00          0.005 ms  ksoftirqd/4
->>>>
->>>>     # perf kwork top -n perf
->>>>
->>>>     Total  :  22419.068 ms, 12 cpus
->>>>     %Cpu(s):  17.99% id,   0.00% hi,   0.09% si
->>>>     %Cpu0   [                                 0.00%]
->>>>     %Cpu1   [                                 0.00%]
->>>>     %Cpu2   [                                 0.02%]
->>>>     %Cpu3   [                                 0.00%]
->>>>     %Cpu4   [                                 0.00%]
->>>>     %Cpu5   [                                 0.00%]
->>>>     %Cpu6   [                                 0.00%]
->>>>     %Cpu7   [                                 0.00%]
->>>>     %Cpu8   [                                 0.03%]
->>>>     %Cpu9   [                                 0.09%]
->>>>     %Cpu10  [                                 0.00%]
->>>>     %Cpu11  [                                 1.96%]
->>>>
->>>>           PID    %CPU           RUNTIME  COMMMAND
->>>>       ----------------------------------------------------
->>>>       2912984    2.10         39.452 ms  perf
->>>>       2912986    0.00          0.075 ms  perf
->>>>
->>>>     # perf kwork top -s tid -n sched-messaging
->>>>
->>>>     Total  :  22419.068 ms, 12 cpus
->>>>     %Cpu(s):  17.99% id,   0.00% hi,   0.09% si
->>>>     %Cpu0   [||||||||||||||||||||||||        81.80%]
->>>>     %Cpu1   [||||||||||||||||||||||||        81.65%]
->>>>     %Cpu2   [||||||||||||||||||||||||        82.88%]
->>>>     %Cpu3   [||||||||||||||||||||||||        80.96%]
->>>>     %Cpu4   [||||||||||||||||||||||||        81.64%]
->>>>     %Cpu5   [||||||||||||||||||||||||        82.04%]
->>>>     %Cpu6   [||||||||||||||||||||||||        81.63%]
->>>>     %Cpu7   [||||||||||||||||||||||||        81.97%]
->>>>     %Cpu8   [||||||||||||||||||||||||        82.43%]
->>>>     %Cpu9   [||||||||||||||||||||||||        80.86%]
->>>>     %Cpu10  [||||||||||||||||||||||||        81.72%]
->>>>     %Cpu11  [|||||||||||||||||||||||         79.89%]
->>>>
->>>>           PID    %CPU           RUNTIME  COMMMAND
->>>>       ----------------------------------------------------
->>>>       2912985    0.04          1.111 ms  sched-messaging
->>>>       2912987   21.28        398.512 ms  sched-messaging
->>>>       2912988   21.44        401.820 ms  sched-messaging
->>>>       2912989   21.46        402.303 ms  sched-messaging
->>>>       2912990   21.54        403.601 ms  sched-messaging
->>>>       2912991   21.59        404.378 ms  sched-messaging
->>>>       2912992   21.57        403.845 ms  sched-messaging
->>>>       2912993   21.69        406.166 ms  sched-messaging
->>>>       2912994   21.52        403.087 ms  sched-messaging
->>>>       2912995   21.49        402.421 ms  sched-messaging
->>>>       2912996   21.48        402.666 ms  sched-messaging
->>>>       2912997   21.27        398.518 ms  sched-messaging
->>>>       2912998   21.75        407.579 ms  sched-messaging
->>>>       2912999   21.79        407.929 ms  sched-messaging
->>>>       2913000   21.78        408.045 ms  sched-messaging
->>>>       2913001   21.55        403.803 ms  sched-messaging
->>>>       2913002   21.27        398.759 ms  sched-messaging
->>>>       2913003   21.46        402.034 ms  sched-messaging
->>>>       2913004   21.37        400.242 ms  sched-messaging
->>>>       2913005   21.56        403.715 ms  sched-messaging
->>>>       2913006   21.23        397.888 ms  sched-messaging
->>>>       2913007   27.48        514.411 ms  sched-messaging
->>>>       2913008   27.54        515.447 ms  sched-messaging
->>>>       2913009   27.30        510.997 ms  sched-messaging
->>>>       2913010   27.50        514.890 ms  sched-messaging
->>>>       2913011   27.32        511.632 ms  sched-messaging
->>>>       2913012   27.30        511.138 ms  sched-messaging
->>>>       2913013   27.30        511.109 ms  sched-messaging
->>>>       2913014   27.32        511.381 ms  sched-messaging
->>>>       2913015   27.36        512.563 ms  sched-messaging
->>>>       2913016   27.18        509.231 ms  sched-messaging
->>>>       2913017   27.56        516.273 ms  sched-messaging
->>>>       2913018   27.56        516.152 ms  sched-messaging
->>>>       2913019   27.25        510.488 ms  sched-messaging
->>>>       2913020   27.20        509.677 ms  sched-messaging
->>>>       2913021   27.23        509.661 ms  sched-messaging
->>>>       2913022   27.19        509.061 ms  sched-messaging
->>>>       2913023   27.21        509.400 ms  sched-messaging
->>>>       2913024   27.18        509.108 ms  sched-messaging
->>>>       2913025   27.62        516.976 ms  sched-messaging
->>>>       2913026   27.35        512.198 ms  sched-messaging
->>>>
->>>>     # perf kwork top -b
->>>>     Starting trace, Hit <Ctrl+C> to stop and report
->>>>     ^C
->>>>     Total  :  89209.004 ms, 4 cpus
->>>>     %Cpu(s):  13.47% id,   0.01% hi,   0.24% si
->>>>     %Cpu0   [|||||||||||||||||||||||||       86.08%]
->>>>     %Cpu1   [||||||||||||||||||||||||||      87.08%]
->>>>     %Cpu2   [|||||||||||||||||||||||||       86.10%]
->>>>     %Cpu3   [|||||||||||||||||||||||||       85.86%]
->>>>
->>>>           PID     SPID    %CPU           RUNTIME  COMMMAND
->>>>       -------------------------------------------------------------
->>>>             0        0   13.86       3092.482 ms  [swapper/3]
->>>>             0        0   13.71       3057.756 ms  [swapper/0]
->>>>             0        0   13.65       3044.987 ms  [swapper/2]
->>>>             0        0   12.63       2818.079 ms  [swapper/1]
->>>>           320      320    1.32        295.427 ms  bash
->>>>           414      320    1.09        247.658 ms  sched-messaging
->>>>           678      320    1.09        246.881 ms  sched-messaging
->>>>           354      320    1.09        246.683 ms  sched-messaging
->>>>           409      320    1.08        246.839 ms  sched-messaging
->>>>           554      320    1.07        243.045 ms  sched-messaging
->>>>           405      320    1.04        237.340 ms  sched-messaging
->>>>           525      320    1.04        235.718 ms  sched-messaging
->>>>           486      320    1.03        235.369 ms  sched-messaging
->>>>           714      320    1.03        235.142 ms  sched-messaging
->>>>           435      320    1.03        233.290 ms  sched-messaging
->>>>           408      320    1.03        231.687 ms  sched-messaging
->>>>           716      320    1.02        233.513 ms  sched-messaging
->>>>           453      320    1.02        233.181 ms  sched-messaging
->>>>           522      320    1.02        230.101 ms  sched-messaging
->>>>           651      320    1.02        229.554 ms  sched-messaging
->>>>           418      320    1.01        231.359 ms  sched-messaging
->>>>           644      320    1.01        229.848 ms  sched-messaging
->>>>           535      320    1.01        229.655 ms  sched-messaging
->>>>           536      320    1.01        229.147 ms  sched-messaging
->>>>           410      320    1.01        227.700 ms  sched-messaging
->>>>           689      320    1.00        227.988 ms  sched-messaging
->>>>           412      320    1.00        227.052 ms  sched-messaging
->>>>           489      320    1.00        226.374 ms  sched-messaging
->>>>           521      320    1.00        225.499 ms  sched-messaging
->>>>           530      320    1.00        225.262 ms  sched-messaging
->>>>           681      320    1.00        225.187 ms  sched-messaging
->>>>           415      320    0.99        225.714 ms  sched-messaging
->>>>           643      320    0.99        225.090 ms  sched-messaging
->>>>           325      320    0.99        223.385 ms  sched-messaging
->>>>           498      320    0.99        222.936 ms  sched-messaging
->>>>           413      320    0.98        225.213 ms  sched-messaging
->>>>           645      320    0.98        223.211 ms  sched-messaging
->>>>           544      320    0.98        222.714 ms  sched-messaging
->>>>           441      320    0.98        222.590 ms  sched-messaging
->>>>           697      320    0.98        222.426 ms  sched-messaging
->>>>           523      320    0.98        221.841 ms  sched-messaging
->>>>           402      320    0.98        221.776 ms  sched-messaging
->>>>     <SNIP>
->>>>
->>>> Yang Jihong (16):
->>>>     perf kwork: Fix incorrect and missing free atom in work_push_atom()
->>>>     perf kwork: Add the supported subcommands to the document
->>>>     perf kwork: Set ordered_events for perf_tool
->>>>     perf kwork: Add `kwork` and `src_type` to work_init() for struct
->>>>       kwork_class
->>>>     perf kwork: Overwrite original atom in the list when a new atom is
->>>>       pushed.
->>>>     perf kwork: Set default events list if not specified in
->>>>       setup_event_list()
->>>>     perf kwork: Add sched record support
->>>>     perf kwork: Add `root` parameter to work_sort()
->>>>     perf kwork: Implement perf kwork top
->>>>     perf evsel: Add evsel__intval_common() helper
->>>>     perf kwork top: Add statistics on hardirq event support
->>>>     perf kwork top: Add statistics on softirq event support
->>>>     perf kwork top: Add -C/--cpu -i/--input -n/--name -s/--sort --time
->>>>       options
->>>>     perf kwork top: Implements BPF-based cpu usage statistics
->>>>     perf kwork top: Add BPF-based statistics on hardirq event support
->>>>     perf kwork top: Add BPF-based statistics on softirq event support
->>>
->>> Besides documentation nits, series:
->>> Reviewed-by: Ian Rogers <irogers@google.com>
->>
->> Thanks for reivew.
->>
->>>
->>> Whilst looking at the series, could we clean up
->>> tools/perf/util/kwork.h ? Generally none of the structs are commented.
->>
->> Okay, I'll put up a separate patch and add comments about it.
->>> Some like:
->>>   > struct kwork_atom {
->>>          struct list_head list;
->>>          u64 time;
->>>          struct kwork_atom *prev;
->>>
->>>          void *page_addr;
->>>          unsigned long bit_inpage;
->>> };
->>>
->>> Why is it an atom? Why is there a prev when the kwork_atom is also on
->>> a list (which has a prev) ?
->>>
->> An atom indicates a minimum granularity event.
->> For example, an "irq_hander_entry" event of an IRQ whose irqnum==10 is
->> an atom.
->>
->> The prev member is used to store the sequence of events.
->> For example, the sequence of events is as follows:
->> raise -> entry -> exit
->>
->> Then:
->> entry_atom->prev = raise_atom
->>
->> This relationship needs to be saved because need to calculate latency
->> time and running time at the same time in the "perf kwork timehist"
+On 8/31/2023 12:19 AM, Ankur Arora wrote:
+> This series adds a multi-page clearing primitive, clear_pages(),
+> which enables more effective use of x86 string instructions by
+> advertising the real region-size to be cleared.
 > 
-> Thanks Yang, this is good context. Could it be added to the header
-
-Okay, I can submit a separate patch with comments.
-
-> file? I'm also wondering at some point we should start generating
-> kerneldoc from comments in the code. I don't know if you want to look
-> into kerneldoc style comments.
-
-Of course, would you like to tell me how to do it?
-Not just perf kwork, but the whole perf tool code, I can do some work on 
-this.
-
+> Region-size can be used as a hint by uarchs to optimize the
+> clearing.
 > 
-> Thanks,
-> Ian
+> Also add allow_resched() which marks a code-section as allowing
+> rescheduling in the irqentry_exit path. This allows clear_pages()
+> to get by without having to call cond_sched() periodically.
+> (preempt_model_full() already handles this via
+> irqentry_exit_cond_resched(), so we handle this similarly for
+> preempt_model_none() and preempt_model_voluntary().)
 > 
->> Thanks,
->> Yang
 > 
-> .
-> 
+
+Hello Ankur,
+Thansk for the patches.
+
+I tried the patches, Improvements look similar to V1 (even without
+circuitous chunk optimizations.)
+STill we see similar 50-60% improvement for 1G and 2M page sizes.
+
+
+SUT: Bergamo
+     CPU family:          25
+     Model:               160
+     Thread(s) per core:  2
+     Core(s) per socket:  128
+     Socket(s):           2
+
+NUMA:
+   NUMA node(s):          2
+   NUMA node0 CPU(s):     0-127,256-383
+   NUMA node1 CPU(s):     128-255,384-511
+
+Test:  Use mmap(MAP_HUGETLB) to demand a fault on 64GB region (NUMA 
+node0), for both base-hugepage-size=2M and 1GB
+Current result is with thp = always, but madv also did not make much 
+difference.
+
+perf stat -r 10 -d -d  numactl -m 0 -N 0 <test>
+
+time in seconds elapsed (average of 10 runs) (lower = better)
+
+Result:
+base: mm/clear_huge_page
+patched: x86/clear_huge_page
+
+page-size  base       patched     Improvement %
+2M         5.0779     2.50623     50.64
+1G         2.50623    1.012439    59.60
+
+More details:
+
+  Performance counter stats for 'mm/map_hugetlb' (10 runs):
+
+           5,058.71 msec task-clock                #    0.996 CPUs 
+utilized            ( +-  0.26% )
+                  8      context-switches          #    1.576 /sec 
+                ( +-  7.23% )
+                  0      cpu-migrations            #    0.000 /sec
+             32,917      page-faults               #    6.484 K/sec 
+                ( +-  0.00% )
+     15,797,804,067      cycles                    #    3.112 GHz 
+                ( +-  0.26% )  (35.70%)
+          2,073,754      stalled-cycles-frontend   #    0.01% frontend 
+cycles idle     ( +-  1.25% )  (35.71%)
+         27,508,977      stalled-cycles-backend    #    0.17% backend 
+cycles idle      ( +-  9.48% )  (35.74%)
+      1,143,710,651      instructions              #    0.07  insn per cycle
+                                                   #    0.03  stalled 
+cycles per insn  ( +-  0.15% )  (35.76%)
+        243,817,330      branches                  #   48.028 M/sec 
+                ( +-  0.12% )  (35.78%)
+            357,760      branch-misses             #    0.15% of all 
+branches          ( +-  1.52% )  (35.75%)
+      2,540,733,497      L1-dcache-loads           #  500.483 M/sec 
+                ( +-  0.04% )  (35.74%)
+      1,093,660,557      L1-dcache-load-misses     #   42.98% of all 
+L1-dcache accesses  ( +-  0.03% )  (35.71%)
+         73,335,478      L1-icache-loads           #   14.446 M/sec 
+                ( +-  0.08% )  (35.70%)
+            878,378      L1-icache-load-misses     #    1.19% of all 
+L1-icache accesses  ( +-  2.65% )  (35.68%)
+          1,025,714      dTLB-loads                #  202.049 K/sec 
+                ( +-  2.70% )  (35.69%)
+            405,407      dTLB-load-misses          #   37.35% of all 
+dTLB cache accesses  ( +-  1.59% )  (35.68%)
+                  2      iTLB-loads                #    0.394 /sec 
+                ( +- 41.63% )  (35.68%)
+             40,356      iTLB-load-misses          # 1552153.85% of all 
+iTLB cache accesses  ( +-  7.18% )  (35.68%)
+
+             5.0779 +- 0.0132 seconds time elapsed  ( +-  0.26% )
+
+  Performance counter stats for 'numactl -m 0 -N 0 x86/map_hugetlb' (10 
+runs):
+
+           2,538.40 msec task-clock                #    1.013 CPUs 
+utilized            ( +-  0.27% )
+                  4      context-switches          #    1.597 /sec 
+                ( +-  6.51% )
+                  1      cpu-migrations            #    0.399 /sec
+             32,916      page-faults               #   13.140 K/sec 
+                ( +-  0.00% )
+      7,901,830,782      cycles                    #    3.154 GHz 
+                ( +-  0.27% )  (35.67%)
+          6,590,473      stalled-cycles-frontend   #    0.08% frontend 
+cycles idle     ( +- 10.31% )  (35.71%)
+        329,970,288      stalled-cycles-backend    #    4.23% backend 
+cycles idle      ( +- 13.65% )  (35.74%)
+        725,811,962      instructions              #    0.09  insn per cycle
+                                                   #    0.80  stalled 
+cycles per insn  ( +-  0.37% )  (35.78%)
+        132,182,704      branches                  #   52.767 M/sec 
+                ( +-  0.26% )  (35.82%)
+            254,163      branch-misses             #    0.19% of all 
+branches          ( +-  2.47% )  (35.81%)
+      2,382,927,453      L1-dcache-loads           #  951.262 M/sec 
+                ( +-  0.04% )  (35.77%)
+      1,082,022,067      L1-dcache-load-misses     #   45.41% of all 
+L1-dcache accesses  ( +-  0.02% )  (35.74%)
+         47,164,491      L1-icache-loads           #   18.828 M/sec 
+                ( +-  0.37% )  (35.70%)
+            474,535      L1-icache-load-misses     #    0.99% of all 
+L1-icache accesses  ( +-  2.93% )  (35.66%)
+          1,477,334      dTLB-loads                #  589.750 K/sec 
+                ( +-  5.12% )  (35.65%)
+            624,125      dTLB-load-misses          #   56.24% of all 
+dTLB cache accesses  ( +-  5.66% )  (35.65%)
+                  0      iTLB-loads                #    0.000 /sec 
+                (35.65%)
+              1,626      iTLB-load-misses          # 7069.57% of all 
+iTLB cache accesses  ( +-283.51% )  (35.65%)
+
+            2.50623 +- 0.00691 seconds time elapsed  ( +-  0.28% )
+
+
+  Performance counter stats for 'numactl -m 0 -N 0 mm/map_hugetlb_1G' 
+(10 runs):
+
+
+           2,506.50 msec task-clock                #    0.995 CPUs 
+utilized            ( +-  0.17% )
+                  4      context-switches          #    1.589 /sec 
+                ( +-  9.28% )
+                  0      cpu-migrations            #    0.000 /sec
+                214      page-faults               #   84.997 /sec 
+                ( +-  0.13% )
+      7,821,519,053      cycles                    #    3.107 GHz 
+                ( +-  0.17% )  (35.72%)
+          2,037,744      stalled-cycles-frontend   #    0.03% frontend 
+cycles idle     ( +- 25.62% )  (35.73%)
+          6,578,899      stalled-cycles-backend    #    0.08% backend 
+cycles idle      ( +-  2.65% )  (35.73%)
+        468,648,780      instructions              #    0.06  insn per cycle
+                                                   #    0.01  stalled 
+cycles per insn  ( +-  0.10% )  (35.73%)
+        116,267,370      branches                  #   46.179 M/sec 
+                ( +-  0.08% )  (35.73%)
+            111,966      branch-misses             #    0.10% of all 
+branches          ( +-  2.98% )  (35.72%)
+      2,294,727,165      L1-dcache-loads           #  911.424 M/sec 
+                ( +-  0.02% )  (35.71%)
+      1,076,156,463      L1-dcache-load-misses     #   46.88% of all 
+L1-dcache accesses  ( +-  0.01% )  (35.70%)
+         26,093,151      L1-icache-loads           #   10.364 M/sec 
+                ( +-  0.21% )  (35.71%)
+            132,944      L1-icache-load-misses     #    0.51% of all 
+L1-icache accesses  ( +-  0.55% )  (35.70%)
+             30,925      dTLB-loads                #   12.283 K/sec 
+                ( +-  5.70% )  (35.71%)
+             27,437      dTLB-load-misses          #   86.22% of all 
+dTLB cache accesses  ( +-  1.98% )  (35.70%)
+                  0      iTLB-loads                #    0.000 /sec 
+                (35.71%)
+                 11      iTLB-load-misses          #   62.50% of all 
+iTLB cache accesses  ( +-140.21% )  (35.70%)
+
+            2.51890 +- 0.00433 seconds time elapsed  ( +-  0.17% )
+
+  Performance counter stats for 'numactl -m 0 -N 0 x86/map_hugetlb_1G' 
+(10 runs):
+
+           1,013.59 msec task-clock                #    1.001 CPUs 
+utilized            ( +-  0.07% )
+                  2      context-switches          #    1.978 /sec 
+                ( +- 12.91% )
+                  1      cpu-migrations            #    0.989 /sec
+                213      page-faults               #  210.634 /sec 
+                ( +-  0.17% )
+      3,169,391,694      cycles                    #    3.134 GHz 
+                ( +-  0.07% )  (35.53%)
+            109,925      stalled-cycles-frontend   #    0.00% frontend 
+cycles idle     ( +-  5.56% )  (35.63%)
+        950,638,913      stalled-cycles-backend    #   30.06% backend 
+cycles idle      ( +-  5.06% )  (35.73%)
+         51,189,571      instructions              #    0.02  insn per cycle
+                                                   #   21.03  stalled 
+cycles per insn  ( +-  1.22% )  (35.82%)
+          9,545,941      branches                  #    9.440 M/sec 
+                ( +-  1.50% )  (35.92%)
+             86,836      branch-misses             #    0.88% of all 
+branches          ( +-  3.74% )  (36.00%)
+         46,109,587      L1-dcache-loads           #   45.597 M/sec 
+                ( +-  3.92% )  (35.96%)
+         13,796,172      L1-dcache-load-misses     #   41.77% of all 
+L1-dcache accesses  ( +-  4.81% )  (35.85%)
+          1,179,166      L1-icache-loads           #    1.166 M/sec 
+                ( +-  1.22% )  (35.77%)
+             21,528      L1-icache-load-misses     #    1.90% of all 
+L1-icache accesses  ( +-  1.85% )  (35.66%)
+             14,529      dTLB-loads                #   14.368 K/sec 
+                ( +-  4.65% )  (35.57%)
+              8,505      dTLB-load-misses          #   67.88% of all 
+dTLB cache accesses  ( +-  5.61% )  (35.52%)
+                  0      iTLB-loads                #    0.000 /sec 
+                (35.52%)
+                  8      iTLB-load-misses          #    0.00% of all 
+iTLB cache accesses  ( +-267.99% )  (35.52%)
+
+           1.012439 +- 0.000723 seconds time elapsed  ( +-  0.07% )
+
+
+Please feel free to carry:
+
+Tested-by: Raghavendra K T <raghavendra.kt@amd.com>
+for any minor changes.
+
+Thanks and Regards
+- Raghu
