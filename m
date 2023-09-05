@@ -2,57 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E0A7931F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:28:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91537931FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Sep 2023 00:29:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237768AbjIEW3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 18:29:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55058 "EHLO
+        id S239948AbjIEW3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 18:29:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233077AbjIEW27 (ORCPT
+        with ESMTP id S233077AbjIEW3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 18:28:59 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D358FA
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 15:28:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693952935; x=1725488935;
-  h=date:from:to:cc:subject:message-id;
-  bh=MeoDeMfprVC3r08Z8SqeQKLZiU3DjSUU3L4QRA3gFOE=;
-  b=IddJhXRIExGRswis0tczSTXHSxI5ODks3OxFUhMPErw0YM3GAjQp1AOW
-   HkOGHvOuIa3CjqICuPCRTdjYDQothjlN78R7vhDN3RzHaIgj+bs26vmKO
-   DlynbcQXpersTzKztNTeX2vB/N+kajlv71RNPbH5hYbzrRu484Jqcase3
-   pbjOs1JAkCx+J4E0oZMw2t0VWt9G75MzriO3uZ6VvOiMC1jF27PMtPGbx
-   Mtgoi35lw1KVtIZQwdiyYF/IRsaB8A/s+Srgl/Md4kS2EpBtnNTOkbTyC
-   2iDSntX6bx5H/YAx6EVgPt9YHpyvRJJpkhVB1ZL/fKeaC87q7hHkAc4k7
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="374307631"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="374307631"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 15:28:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="831406602"
-X-IronPort-AV: E=Sophos;i="6.02,230,1688454000"; 
-   d="scan'208";a="831406602"
-Received: from lkp-server02.sh.intel.com (HELO e0b2ea88afd5) ([10.239.97.151])
-  by FMSMGA003.fm.intel.com with ESMTP; 05 Sep 2023 15:28:20 -0700
-Received: from kbuild by e0b2ea88afd5 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qdeWw-00029N-0E;
-        Tue, 05 Sep 2023 22:28:18 +0000
-Date:   Wed, 06 Sep 2023 06:28:05 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/bugs] BUILD SUCCESS
- 423a4484b9235af31b1fd60d6049b820586e57d2
-Message-ID: <202309060603.0qqr8BVI-lkp@intel.com>
-User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        Tue, 5 Sep 2023 18:29:54 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C472C1;
+        Tue,  5 Sep 2023 15:29:50 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-52c4d3ff424so4451848a12.0;
+        Tue, 05 Sep 2023 15:29:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693952989; x=1694557789; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q4kI0vCYh22AUz7pwGwsZuGiIBkiy8O/f0wOKLk4wnQ=;
+        b=eUMCP0KJw03G4hCImbLu86XwyE927cMrkOWNoCqBSj2TpEE+078Wpc8hs+9/+khWiX
+         3RSyJ4JkvD4AlCXC5lp7IMZVHe08fiax//eFlP1IQi0JEJ8r468YxumZfmUAHWHntFlr
+         UBfSUuEJ5ZOKGvWuNwo3GXeBtEADG6w7wFq5c0l6zYuGu8MNck271DCima8uokmsT7P9
+         Ad29uJz96UVVdklreQGxR3mkixpWlf4Ab21oGB0U/syQjy6RYJafUjBNvZtGGdPSvb0R
+         Pxd+8Ef7zgITBZEx0H31jOOIjyDcOFMvMWpqAA36JKg6fFRcoWKcMPY9eRITAjmdHHBS
+         w/9w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693952989; x=1694557789;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Q4kI0vCYh22AUz7pwGwsZuGiIBkiy8O/f0wOKLk4wnQ=;
+        b=JRrHL982XGibHGva7NzhQhInCGUu0BB3Jr37DU5uf4yaqvz6oO2FxHRbSAr7UjVRPH
+         dBUp56eyQBJoHj2tGGMCgTBjEorUIozJ4FYqg9+8m+qwkJ0FE5fhgk5JvoA1H+hjhAzb
+         HFAUASQ4JH/zLQYiyXEK6pZs4FDwaHiSFbKQlaeYmtai6NFzQtg5xoIP3q3ovDIAE7+/
+         nTSuokt7nF4HtNfWAJokH00/QzWk8t4nQd9PCgmdhufpn/wCtK6fyiQrBM1Rz74e6t1z
+         fjviZG+z9VmV4MFxERuV9hCEnYMqjK81YTRTtiWkSpd5ueHgitmxGXeqUjOgplcAK8yK
+         mcFw==
+X-Gm-Message-State: AOJu0YwQ3uheiA0M3EgGWG6pedjurmZm37JejNAgk2oG2J69fp4muAEh
+        QkQrcc1Q3Ib8O/fZYPljYks=
+X-Google-Smtp-Source: AGHT+IGCGgYbC8m6sN9Mz7TprCiFy60xJUeFOyQSd6R/Md3u5DOgefUjY7SeNU6q4IuJQdeZKr48DQ==
+X-Received: by 2002:a17:906:739e:b0:99b:dd1d:bc58 with SMTP id f30-20020a170906739e00b0099bdd1dbc58mr872893ejl.41.1693952988751;
+        Tue, 05 Sep 2023 15:29:48 -0700 (PDT)
+Received: from skbuf ([188.26.57.165])
+        by smtp.gmail.com with ESMTPSA id p19-20020a17090635d300b0099c971ba285sm8060447ejb.5.2023.09.05.15.29.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Sep 2023 15:29:48 -0700 (PDT)
+Date:   Wed, 6 Sep 2023 01:29:45 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Lukasz Majewski <lukma@denx.de>
+Cc:     Tristram.Ha@microchip.com, Eric Dumazet <edumazet@google.com>,
+        Andrew Lunn <andrew@lunn.ch>, davem@davemloft.net,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, UNGLinuxDriver@microchip.com,
+        Russell King <linux@armlinux.org.uk>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Oleksij Rempel <linux@rempel-privat.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [net v4] net: phy: Provide Module 4 KSZ9477 errata (DS80000754C)
+Message-ID: <20230905222945.h7tuzlraxdp5imbh@skbuf>
+References: <20230905093315.784052-1-lukma@denx.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905093315.784052-1-lukma@denx.de>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,191 +83,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/bugs
-branch HEAD: 423a4484b9235af31b1fd60d6049b820586e57d2  x86/calldepth: Rename __x86_return_skl() to call_depth_return_thunk()
+On Tue, Sep 05, 2023 at 11:33:15AM +0200, Lukasz Majewski wrote:
+> @@ -1847,6 +1844,12 @@ static int ksz9477_config_init(struct phy_device *phydev)
+>  			return err;
+>  	}
+>  
+> +	/* According to KSZ9477 Errata DS80000754C (Module 4) all EEE modes
+> +	 * in this switch shall be regarded as broken.
+> +	 */
+> +	if (phydev->dev_flags & MICREL_NO_EEE)
+> +		phydev->eee_broken_modes = -1;
 
-elapsed time: 727m
+I know this is just another quick'n'dirty code snippet exchanged over
+email which turned into a proper patch, but wouldn't it be more
+civilized to use "MDIO_EEE_100TX | MDIO_EEE_1000T" here, than to declare
+EEE broken for link modes which aren't even supported by the internal
+switch PHYs?
 
-configs tested: 172
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                   randconfig-001-20230905   gcc  
-arm                              alldefconfig   clang
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         at91_dt_defconfig   gcc  
-arm                          collie_defconfig   clang
-arm                                 defconfig   gcc  
-arm                        keystone_defconfig   gcc  
-arm                   randconfig-001-20230905   clang
-arm                  randconfig-r031-20230905   gcc  
-arm                  randconfig-r033-20230905   gcc  
-arm64                            allmodconfig   gcc  
-arm64                             allnoconfig   gcc  
-arm64                            allyesconfig   gcc  
-arm64                               defconfig   gcc  
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                 randconfig-r035-20230905   gcc  
-hexagon               randconfig-001-20230905   clang
-hexagon               randconfig-002-20230905   clang
-hexagon              randconfig-r012-20230905   clang
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20230905   clang
-i386         buildonly-randconfig-002-20230905   clang
-i386         buildonly-randconfig-003-20230905   clang
-i386         buildonly-randconfig-004-20230905   clang
-i386         buildonly-randconfig-005-20230905   clang
-i386         buildonly-randconfig-006-20230905   clang
-i386                              debian-10.3   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20230905   clang
-i386                  randconfig-002-20230905   clang
-i386                  randconfig-003-20230905   clang
-i386                  randconfig-004-20230905   clang
-i386                  randconfig-005-20230905   clang
-i386                  randconfig-006-20230905   clang
-i386                  randconfig-011-20230905   gcc  
-i386                  randconfig-012-20230905   gcc  
-i386                  randconfig-013-20230905   gcc  
-i386                  randconfig-014-20230905   gcc  
-i386                  randconfig-015-20230905   gcc  
-i386                  randconfig-016-20230905   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                        allyesconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20230905   gcc  
-loongarch            randconfig-r005-20230905   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                             allmodconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                    maltaup_xpa_defconfig   gcc  
-mips                 randconfig-r006-20230905   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                         allmodconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                         allyesconfig   gcc  
-openrisc                            defconfig   gcc  
-openrisc             randconfig-r016-20230905   gcc  
-parisc                           allmodconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                          allmodconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   gcc  
-powerpc              randconfig-r004-20230905   clang
-powerpc                     tqm8555_defconfig   gcc  
-powerpc                        warp_defconfig   gcc  
-powerpc64            randconfig-r024-20230905   gcc  
-riscv                            allmodconfig   gcc  
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                               defconfig   gcc  
-riscv                 randconfig-001-20230905   clang
-riscv                randconfig-r011-20230905   gcc  
-riscv                randconfig-r013-20230905   gcc  
-riscv                randconfig-r021-20230905   gcc  
-riscv                randconfig-r036-20230905   clang
-riscv                          rv32_defconfig   gcc  
-s390                             allmodconfig   gcc  
-s390                              allnoconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                                defconfig   gcc  
-s390                  randconfig-001-20230905   gcc  
-s390                 randconfig-r002-20230905   clang
-s390                 randconfig-r025-20230905   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                   randconfig-r001-20230905   gcc  
-sh                   randconfig-r022-20230905   gcc  
-sh                   randconfig-r034-20230905   gcc  
-sh                        sh7785lcr_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                            allyesconfig   gcc  
-sparc                               defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-sparc64              randconfig-r032-20230905   gcc  
-um                               allmodconfig   clang
-um                                allnoconfig   clang
-um                               allyesconfig   clang
-um                                  defconfig   gcc  
-um                             i386_defconfig   gcc  
-um                   randconfig-r023-20230905   clang
-um                           x86_64_defconfig   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20230905   clang
-x86_64       buildonly-randconfig-002-20230905   clang
-x86_64       buildonly-randconfig-003-20230905   clang
-x86_64       buildonly-randconfig-004-20230905   clang
-x86_64       buildonly-randconfig-005-20230905   clang
-x86_64       buildonly-randconfig-006-20230905   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20230905   gcc  
-x86_64                randconfig-002-20230905   gcc  
-x86_64                randconfig-003-20230905   gcc  
-x86_64                randconfig-004-20230905   gcc  
-x86_64                randconfig-005-20230905   gcc  
-x86_64                randconfig-006-20230905   gcc  
-x86_64                randconfig-011-20230905   clang
-x86_64                randconfig-012-20230905   clang
-x86_64                randconfig-013-20230905   clang
-x86_64                randconfig-014-20230905   clang
-x86_64                randconfig-015-20230905   clang
-x86_64                randconfig-016-20230905   clang
-x86_64                randconfig-071-20230905   clang
-x86_64                randconfig-072-20230905   clang
-x86_64                randconfig-073-20230905   clang
-x86_64                randconfig-074-20230905   clang
-x86_64                randconfig-075-20230905   clang
-x86_64                randconfig-076-20230905   clang
-x86_64               randconfig-r003-20230905   clang
-x86_64               randconfig-r015-20230905   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
-xtensa                           allyesconfig   gcc  
-xtensa               randconfig-r014-20230905   gcc  
-xtensa               randconfig-r026-20230905   gcc  
-xtensa                    smp_lx200_defconfig   gcc  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+It's probably not causing practical harm, but currently, we tell
+genphy_config_eee_advert() to include reserved bits of the MMD EEE
+Advertising Register (MMD 0x07 : 0x3C) into its modification mask.
