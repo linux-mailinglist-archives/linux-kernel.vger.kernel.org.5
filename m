@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB57792BA6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE25792860
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346041AbjIEQ4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        id S239898AbjIEQI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:08:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354589AbjIEMtw (ORCPT
+        with ESMTP id S1354588AbjIEMtv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:49:52 -0400
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2080.outbound.protection.outlook.com [40.107.220.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18A081A8;
-        Tue,  5 Sep 2023 05:49:49 -0700 (PDT)
+        Tue, 5 Sep 2023 08:49:51 -0400
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2058.outbound.protection.outlook.com [40.107.223.58])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D601A8;
+        Tue,  5 Sep 2023 05:49:47 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ImqpnLqeJJM/1GkiZf5d+6n/Ec+cZ0TnEnvIDgsQUhz/OAICOGgvY4wrB2Qw8uszv3OGFw6bbrEWSKkdzDxLlVGX1D0rQ/oqJ1ITSCMMmREY8vsrqG2y+P2EQroERzku1zIMIUMPrNiCRbh06fd/6P1iSCs1YrBPGodCUzpyMqeG7ix91SiJZ5uZef2295TTOH/JiJrKm96SoUWi6uKwecsICh5YTtN0n9zVJXsGZtKEDCVdHLSKP6tlYtdhPQyFhNdUXcuROCznoJN3tOE+o+eROXLA+RRDg63K5QR6vuCweTDFPq3l0KEUV/fBKKboMezYZAIcy6IBp5oYdSUZkg==
+ b=dgbfRIO+k3Op+FGwqojHs7hmn9olwVVUOiu+NEF1Ks3J3Q06jQ4XonWcB/+FxjuRD2ANdvN9vIRGVcvgj+gXXthpn1NBCjEVXKG4IYQi+hVeWgYHeKbC/Z61VpRYAzfSNLMiX1CmZULegnkUmELyVEH+iqXDVQvNuNn0ySBsnHMgKMMfiwVoXeQwTPk+HuuffxRD24ydCLlo2kWvUi5lIs5MA/A14SG0x82hsjTce6luXpavSJRyixBLWHDaqL1mOjjStBwdwjvIRNnJoxkJOu/xms2iBb52uuZQqLtlXSJGj2brhYT+7QibZ5GtXuLqaSfBJQ+bSsodGrPumR7HMg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9lQvfTyNrE5YQT6gT4wPxAa2JAa90K6zol19BLBtNNg=;
- b=VBJp4CaAIFVjM9J247juKDKEF5GJDmRAPtI9pd942Q5spaVLomlh5S41MxWRGhU0p9Hl6uhlMMAeSj9A2b28FT9XlSlhDYbVjYj2qLKZR3CP6lD37nQfstbTPIbYofX94Kdz86hUBj8ILmz9bi+6O3VJrnLG7y704ZZED7rkb9aH5tdlu7s4mfxXeHFYpQRJQfDEUOLONsAvtY/vu4N5FbwGywM5ruIuMSW8ciMXLJ6nL1ToEmLd6E3DdxUaXTLFOGhD4WhqnbYYiAzWKrxjSznrsPR8T4RM+tsYuh3l5SMUzGbkir7ICYiEeS+xLQybqgXh38yIvita6cHgzdFugw==
+ bh=bRPWyppAceuvfSFgwLFF7O6J8nvnNKM01OGA0U4NISU=;
+ b=J9FHsAaA1FHQE+nNc0wIEZbOeK4QiOmEkLLaLYIshVBKwP5ySx+KfivPGMZiv9fQhEAtnnL6tK22GXQHFvuM7bKR1h4eIlJbmre1YgEhdCHDkEgM1f0Q87moL2f4PLnuZNEMY49nAOmeSBd9R7y2GVH91kafjg1ryDQz5QYsAUaQdZ21dImvGWbCCecpGiquMYM54PDHsLFOeKlrc+LZtlQit7sDQCkL8RYsvl0lJDW/1NbP4jTZy6ObzS7AYnwbBIUmFcCnPElRTfpg3I0oZQTzIz0So0RD9ozS1v1EE8wVBc2op+kM/F5f5Mk4l3cxtFiukIls/Wh7clo/Pq9G9A==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.118.233) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
+ 216.228.118.232) smtp.rcpttodomain=redhat.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
  dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9lQvfTyNrE5YQT6gT4wPxAa2JAa90K6zol19BLBtNNg=;
- b=Il+IiXYi1Cmfmf28DdMn7sGOHiGjDPVnnvgQGsJ10XGC5rR21p3h0EReriJKvVdRGhF/5vf9hAu56mxbTIk+Glo8L55n/TWi0F9pNSPUrmFkeughHyt7ZfL3B8qzqX9a9Z4pt9lMCfECWwnJtfHk9P9BFp4f/RxcQ8SE/PoqrFWwoDa8IDQqO6oAJCEYXoHKWd72SzY29/IKpKeBe9iI2pf+Beck2KQ1hgal93mAIVF505XUAQBtr/vphsK0N++Bi3/+smqiwy3u7qH7AE7Xw002Fyue/JI4lsGfvA2z6q301NIjLCQKU8JHnWqmp8BgYy3UH1CLn+gt2WhCT7CfWQ==
-Received: from DS7PR03CA0205.namprd03.prod.outlook.com (2603:10b6:5:3b6::30)
- by SA0PR12MB4445.namprd12.prod.outlook.com (2603:10b6:806:95::15) with
+ bh=bRPWyppAceuvfSFgwLFF7O6J8nvnNKM01OGA0U4NISU=;
+ b=ZpgpdYzkJpqvSJSg/7DzPuNjnX7yBjrJRJuklZ2Qg2NuQUbW9VX1bEHCPWaPDYXrFv2huC4n8nKhecLIRdiFyFprDZ5N5jnAM6nCtkIjcfACyknGBhT51g11XOYOs3zfDn+kbf+IeVILr8VaasoZneJHjWgfCnSS3VGfRMwPQYrqroDLv0PA9fvuoJoYbfIUTZlc291WemT2Bp+3Q3kybibNU6/q94ixs+xy7w/Uw+LuLyrjEAUwLRw8L10PbxQxzYUNb4RLnMPToJ9q9hVzeBGaHpmqPv7eMWonGcbNyRZEZlswlwgHn12UlNVBU3CEf1jNl15/xFRQJEdySp/iMw==
+Received: from CY8PR22CA0001.namprd22.prod.outlook.com (2603:10b6:930:45::6)
+ by CH2PR12MB4907.namprd12.prod.outlook.com (2603:10b6:610:68::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
- 2023 12:49:46 +0000
-Received: from CY4PEPF0000EE37.namprd05.prod.outlook.com
- (2603:10b6:5:3b6:cafe::f5) by DS7PR03CA0205.outlook.office365.com
- (2603:10b6:5:3b6::30) with Microsoft SMTP Server (version=TLS1_2,
+ 2023 12:49:45 +0000
+Received: from CY4PEPF0000E9D0.namprd03.prod.outlook.com
+ (2603:10b6:930:45:cafe::8f) by CY8PR22CA0001.outlook.office365.com
+ (2603:10b6:930:45::6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33 via Frontend
- Transport; Tue, 5 Sep 2023 12:49:46 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ Transport; Tue, 5 Sep 2023 12:49:45 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.232)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
 Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.118.233) by
- CY4PEPF0000EE37.mail.protection.outlook.com (10.167.242.43) with Microsoft
+ 216.228.118.232 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.232; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.232) by
+ CY4PEPF0000E9D0.mail.protection.outlook.com (10.167.241.143) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.25 via Frontend Transport; Tue, 5 Sep 2023 12:49:46 +0000
+ 15.20.6768.25 via Frontend Transport; Tue, 5 Sep 2023 12:49:45 +0000
 Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
- (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ (10.127.129.5) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 5 Sep 2023
- 05:49:40 -0700
+ 05:49:42 -0700
 Received: from drhqmail201.nvidia.com (10.126.190.180) by
  drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Tue, 5 Sep 2023 05:49:40 -0700
+ 15.2.986.37; Tue, 5 Sep 2023 05:49:42 -0700
 Received: from vdi.nvidia.com (10.127.8.14) by mail.nvidia.com
  (10.126.190.180) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Tue, 5 Sep 2023 05:49:39 -0700
+ Transport; Tue, 5 Sep 2023 05:49:41 -0700
 From:   Shravan Kumar Ramani <shravankr@nvidia.com>
 To:     Hans de Goede <hdegoede@redhat.com>,
         Mark Gross <markgross@kernel.org>,
@@ -70,9 +70,9 @@ To:     Hans de Goede <hdegoede@redhat.com>,
 CC:     Shravan Kumar Ramani <shravankr@nvidia.com>,
         <platform-driver-x86@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 1/3] platform/mellanox: mlxbf-pmc: Fix potential buffer overflows
-Date:   Tue, 5 Sep 2023 08:49:32 -0400
-Message-ID: <bef39ef32319a31b32f999065911f61b0d3b17c3.1693917738.git.shravankr@nvidia.com>
+Subject: [PATCH v4 2/3] platform/mellanox: mlxbf-pmc: Fix reading of unprogrammed events
+Date:   Tue, 5 Sep 2023 08:49:33 -0400
+Message-ID: <04d0213932d32681de1c716b54320ed894e52425.1693917738.git.shravankr@nvidia.com>
 X-Mailer: git-send-email 2.30.1
 In-Reply-To: <cover.1693917738.git.shravankr@nvidia.com>
 References: <cover.1693917738.git.shravankr@nvidia.com>
@@ -82,23 +82,23 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE37:EE_|SA0PR12MB4445:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0fb47f5c-263e-488b-4ba5-08dbae0e95be
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D0:EE_|CH2PR12MB4907:EE_
+X-MS-Office365-Filtering-Correlation-Id: 47369a45-9400-4294-fa7f-08dbae0e94e2
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 0QcVV7hM+Eoppx6loLm7J1n+zAHMGIhrEZ6cmk5tQXc4D+NUI339BKCjuIj7NhWSS4/BOVRPuh1WBNdnQUxoQR6HD8Do2wA9RcrwwHFR6Ao5Ys99sU7DS1EvPLAadJy59DRVwGlCPSqC1nAeIMyEvjmcgprto9vTwx75g9wtUI0OXo8LRLAnDLPCZX0dhTzZU8l2t9qGC2JybmDvrCf3Oya1EZ/N/em1qeGTLXVZ9MxvSEqZ3HdHjdpGShMnL3ivWCC4mBNw/G3OvtIWmXd1pM8xL/ma31gA9aXcFeBlDfmhbkurSxB/gTaP2A6nuUr4oZ8R62aChihcnHp5kKT0JgIDe3XP++h0nDnc1x6tBSeEJISw/UqQ9xGhSakMXJ/hOhLrzJ/8AN7Ww24O+QFheT0ffXXIDPMbNR1dsuxQbd9OFiVz/4GCHcTfxKXsqMub0J/jdf7W0u5oOWw8szytECqJ87effwAkTIU6HqChESHl+O/Exzb5xhR38ypvYATA4De1YHBu+7EZU9tSpRdVnWY3vK7s0So144CoXT+K/LB7mj81LF9wmSry7+kQs9LriWyb80fV0FjGl9TK6Y4L3woOmqeELrv7Ng8tPsccsbMGLZQsLqfJtjmo23sUIcZK7QOlf0sqwUwEvb8URqQqZZzBdLyloImqcFCKTzseEIiVNjgbH4Qv+EsonqJkfy3w7nzns5VflsZaAhWm2+iN0dh9XNA/7WSq2Rg9a/qc7e6NzEAJnzCdNC3EKUD1wtX+
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(136003)(346002)(376002)(82310400011)(451199024)(1800799009)(186009)(36840700001)(40470700004)(46966006)(8676002)(316002)(110136005)(6636002)(54906003)(70206006)(4326008)(2616005)(70586007)(8936002)(82740400003)(40480700001)(356005)(7636003)(7696005)(41300700001)(336012)(26005)(5660300002)(426003)(6666004)(478600001)(2906002)(40460700003)(83380400001)(36860700001)(47076005)(86362001)(36756003);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: coKuitk4SdJDShubN2a/wC6qZV2Plwk/OfMDal9QzkXZXENa1lo1eskFTlUH8ZHkAMLuW8DogaF4D8JIjuRuH1P7E8wuQmcgCiS0R/TZLMLCjCmVS/mIgUqYQ0o1RQtQCsRMJsKzTEWP+o6gAEpOI6KKU6st5zXeWjJwyxk/Lg+qWGaVkAmPfIgbBthI8NQBrs31ClCPVpMkICgqayrYd5WM1ZtpGckZP0HNThE4+ZIRpyGcdcWBn6/WwtBvjakmaBDrmSxRb0olXbSH/W8BSQ8vv+4C4R9oLKZ+NKupGlVVFadIJgOYBVyl9MerARSuSKayrr9xX2I1dZLEn8e9AAwEfU4Ba1gy1IgvrWyRsTd/7TqxzXyGSUdKvm0NaAxOjPv0p1NHQd1quMwE0Cxi8WuuCg8EpxTbE4ht+ouhmnP6Clcldu3/12YPioH/GTXubVx2iP5JRTgwMHnIVGp8Rpaluz/tru81AJe9me2+n3O7hiaopv3n6tA/th8TXLtQ0LXj2t0Bw8gK2rXxgc1YFQU7fRqO7dGLzGuC8VSN3TglNXjAZaP1Mott5bSztRzbnsbOxIMiJtKEQHwUpUsu5LE6Wc9o6VnVG07RXVWas3PUg5DKNr2r8C4kv3gFpU7MAoVozh+ARzhcaJrtZiI0JDb6j+rSQPHBdyrf/I5x60+DnCE24xUWQftSM13fY0t/wHNnMu1VBXKAuHsapyV75W2juwy452tfKChW09Vp3GLiCWuZcO3fYnC6CnZmDCbE
+X-Forefront-Antispam-Report: CIP:216.228.118.232;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge1.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(346002)(39860400002)(376002)(1800799009)(82310400011)(186009)(451199024)(40470700004)(36840700001)(46966006)(26005)(5660300002)(2616005)(8676002)(4326008)(40460700003)(8936002)(2906002)(47076005)(83380400001)(86362001)(7636003)(356005)(36860700001)(36756003)(426003)(336012)(82740400003)(40480700001)(7696005)(6666004)(110136005)(70586007)(70206006)(54906003)(478600001)(6636002)(41300700001)(316002);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 12:49:46.7171
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 12:49:45.2798
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fb47f5c-263e-488b-4ba5-08dbae0e95be
+X-MS-Exchange-CrossTenant-Network-Message-Id: 47369a45-9400-4294-fa7f-08dbae0e94e2
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE37.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.232];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000E9D0.namprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4445
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4907
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE
@@ -109,68 +109,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace sprintf with sysfs_emit where possible.
-Size check in mlxbf_pmc_event_list_show should account for "\0".
+This fix involves 2 changes:
+ - All event regs have a reset value of 0, which is not a valid
+   event_number as per the event_list for most blocks and hence seen
+   as an error. Add a "disable" event with event_number 0 for all blocks.
+
+ - The enable bit for each counter need not be checked before
+   reading the event info, and hence removed.
 
 Fixes: 1a218d312e65 ("platform/mellanox: mlxbf-pmc: Add Mellanox BlueField PMC driver")
 Signed-off-by: Shravan Kumar Ramani <shravankr@nvidia.com>
 Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
 Reviewed-by: David Thompson <davthompson@nvidia.com>
 ---
- drivers/platform/mellanox/mlxbf-pmc.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ drivers/platform/mellanox/mlxbf-pmc.c | 27 +++++++--------------------
+ 1 file changed, 7 insertions(+), 20 deletions(-)
 
 diff --git a/drivers/platform/mellanox/mlxbf-pmc.c b/drivers/platform/mellanox/mlxbf-pmc.c
-index be967d797c28..95afcae7b9fa 100644
+index 95afcae7b9fa..2d4bbe99959e 100644
 --- a/drivers/platform/mellanox/mlxbf-pmc.c
 +++ b/drivers/platform/mellanox/mlxbf-pmc.c
-@@ -1008,7 +1008,7 @@ static ssize_t mlxbf_pmc_counter_show(struct device *dev,
- 	} else
+@@ -191,6 +191,7 @@ static const struct mlxbf_pmc_events mlxbf_pmc_smgen_events[] = {
+ };
+ 
+ static const struct mlxbf_pmc_events mlxbf_pmc_trio_events_1[] = {
++	{ 0x0, "DISABLE" },
+ 	{ 0xa0, "TPIO_DATA_BEAT" },
+ 	{ 0xa1, "TDMA_DATA_BEAT" },
+ 	{ 0xa2, "MAP_DATA_BEAT" },
+@@ -214,6 +215,7 @@ static const struct mlxbf_pmc_events mlxbf_pmc_trio_events_1[] = {
+ };
+ 
+ static const struct mlxbf_pmc_events mlxbf_pmc_trio_events_2[] = {
++	{ 0x0, "DISABLE" },
+ 	{ 0xa0, "TPIO_DATA_BEAT" },
+ 	{ 0xa1, "TDMA_DATA_BEAT" },
+ 	{ 0xa2, "MAP_DATA_BEAT" },
+@@ -246,6 +248,7 @@ static const struct mlxbf_pmc_events mlxbf_pmc_trio_events_2[] = {
+ };
+ 
+ static const struct mlxbf_pmc_events mlxbf_pmc_ecc_events[] = {
++	{ 0x0, "DISABLE" },
+ 	{ 0x100, "ECC_SINGLE_ERROR_CNT" },
+ 	{ 0x104, "ECC_DOUBLE_ERROR_CNT" },
+ 	{ 0x114, "SERR_INJ" },
+@@ -258,6 +261,7 @@ static const struct mlxbf_pmc_events mlxbf_pmc_ecc_events[] = {
+ };
+ 
+ static const struct mlxbf_pmc_events mlxbf_pmc_mss_events[] = {
++	{ 0x0, "DISABLE" },
+ 	{ 0xc0, "RXREQ_MSS" },
+ 	{ 0xc1, "RXDAT_MSS" },
+ 	{ 0xc2, "TXRSP_MSS" },
+@@ -265,6 +269,7 @@ static const struct mlxbf_pmc_events mlxbf_pmc_mss_events[] = {
+ };
+ 
+ static const struct mlxbf_pmc_events mlxbf_pmc_hnf_events[] = {
++	{ 0x0, "DISABLE" },
+ 	{ 0x45, "HNF_REQUESTS" },
+ 	{ 0x46, "HNF_REJECTS" },
+ 	{ 0x47, "ALL_BUSY" },
+@@ -323,6 +328,7 @@ static const struct mlxbf_pmc_events mlxbf_pmc_hnf_events[] = {
+ };
+ 
+ static const struct mlxbf_pmc_events mlxbf_pmc_hnfnet_events[] = {
++	{ 0x0, "DISABLE" },
+ 	{ 0x12, "CDN_REQ" },
+ 	{ 0x13, "DDN_REQ" },
+ 	{ 0x14, "NDN_REQ" },
+@@ -892,7 +898,7 @@ static int mlxbf_pmc_read_event(int blk_num, uint32_t cnt_num, bool is_l3,
+ 				uint64_t *result)
+ {
+ 	uint32_t perfcfg_offset, perfval_offset;
+-	uint64_t perfmon_cfg, perfevt, perfctl;
++	uint64_t perfmon_cfg, perfevt;
+ 
+ 	if (cnt_num >= pmc->block[blk_num].counters)
  		return -EINVAL;
+@@ -904,25 +910,6 @@ static int mlxbf_pmc_read_event(int blk_num, uint32_t cnt_num, bool is_l3,
+ 	perfval_offset = perfcfg_offset +
+ 			 pmc->block[blk_num].counters * MLXBF_PMC_REG_SIZE;
  
--	return sprintf(buf, "0x%llx\n", value);
-+	return sysfs_emit(buf, "0x%llx\n", value);
- }
- 
- /* Store function for "counter" sysfs files */
-@@ -1078,13 +1078,13 @@ static ssize_t mlxbf_pmc_event_show(struct device *dev,
- 
- 	err = mlxbf_pmc_read_event(blk_num, cnt_num, is_l3, &evt_num);
- 	if (err)
--		return sprintf(buf, "No event being monitored\n");
-+		return sysfs_emit(buf, "No event being monitored\n");
- 
- 	evt_name = mlxbf_pmc_get_event_name(pmc->block_name[blk_num], evt_num);
- 	if (!evt_name)
- 		return -EINVAL;
- 
--	return sprintf(buf, "0x%llx: %s\n", evt_num, evt_name);
-+	return sysfs_emit(buf, "0x%llx: %s\n", evt_num, evt_name);
- }
- 
- /* Store function for "event" sysfs files */
-@@ -1139,9 +1139,9 @@ static ssize_t mlxbf_pmc_event_list_show(struct device *dev,
- 		return -EINVAL;
- 
- 	for (i = 0, buf[0] = '\0'; i < size; ++i) {
--		len += sprintf(e_info, "0x%x: %s\n", events[i].evt_num,
--			       events[i].evt_name);
--		if (len > PAGE_SIZE)
-+		len += snprintf(e_info, sizeof(e_info), "0x%x: %s\n",
-+				events[i].evt_num, events[i].evt_name);
-+		if (len >= PAGE_SIZE)
- 			break;
- 		strcat(buf, e_info);
- 		ret = len;
-@@ -1168,7 +1168,7 @@ static ssize_t mlxbf_pmc_enable_show(struct device *dev,
- 
- 	value = FIELD_GET(MLXBF_PMC_L3C_PERF_CNT_CFG_EN, perfcnt_cfg);
- 
--	return sprintf(buf, "%d\n", value);
-+	return sysfs_emit(buf, "%d\n", value);
- }
- 
- /* Store function for "enable" sysfs files - only for l3cache */
+-	/* Set counter in "read" mode */
+-	perfmon_cfg = FIELD_PREP(MLXBF_PMC_PERFMON_CONFIG_ADDR,
+-				 MLXBF_PMC_PERFCTL);
+-	perfmon_cfg |= FIELD_PREP(MLXBF_PMC_PERFMON_CONFIG_STROBE, 1);
+-	perfmon_cfg |= FIELD_PREP(MLXBF_PMC_PERFMON_CONFIG_WR_R_B, 0);
+-
+-	if (mlxbf_pmc_write(pmc->block[blk_num].mmio_base + perfcfg_offset,
+-			    MLXBF_PMC_WRITE_REG_64, perfmon_cfg))
+-		return -EFAULT;
+-
+-	/* Check if the counter is enabled */
+-
+-	if (mlxbf_pmc_read(pmc->block[blk_num].mmio_base + perfval_offset,
+-			   MLXBF_PMC_READ_REG_64, &perfctl))
+-		return -EFAULT;
+-
+-	if (!FIELD_GET(MLXBF_PMC_PERFCTL_EN0, perfctl))
+-		return -EINVAL;
+-
+ 	/* Set counter in "read" mode */
+ 	perfmon_cfg = FIELD_PREP(MLXBF_PMC_PERFMON_CONFIG_ADDR,
+ 				 MLXBF_PMC_PERFEVT);
 -- 
 2.30.1
 
