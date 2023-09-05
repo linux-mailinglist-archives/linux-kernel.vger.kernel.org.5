@@ -2,148 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44D10792B3F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91D2792C00
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245547AbjIEQuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:50:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43074 "EHLO
+        id S1351206AbjIERFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:05:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354154AbjIEJ5o (ORCPT
+        with ESMTP id S1354162AbjIEJ71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:57:44 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AD001B7
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:57:39 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe15bfb1adso3844751e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 02:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693907857; x=1694512657; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AKHR62ul+UyAMBBLZNZLoFrH8efwjpri67YRyIEqGb8=;
-        b=ZM7D1UmPDfVFkSSO4UqZcDHdPUJVxtVWoKpFrg9rxoI0cQFhOlP0vjw7q3kBalQ/EZ
-         F6UCW83dzlPQN4XyfMOlpe4nFgqLsDbKfzhjP1CGGY+MyrIqXsLq9FMjBqsU4DDbRZnr
-         a9bmE4vOoB2APZkjtjBxV0+H35cYjQ9ZomvklF7I10LV6vRUA9OgYP2JDckETwzLeJep
-         rVSGqiVLgMxatcZ4zWEuBe5OI7Vhe+6Qv3attJa6sxREpOAfdh59Y5JRV3TnDn0f8XIQ
-         aY6Av2gK635lnE8nw43ojaYeQM7D3SEqhfH75kRNZuBkLy9IQoJPGg9+SAirYzM7EScr
-         mRbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693907857; x=1694512657;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AKHR62ul+UyAMBBLZNZLoFrH8efwjpri67YRyIEqGb8=;
-        b=VRn084+GIuEIpd7QjF2dMjYwQSa11V5sOkmr7fee58PutQUZkzjALc1mu+wrfOfb3I
-         hmP6l022KYqNQoBqYPZTLmRJ0nzcluvEmzOGVgYtUYIyLD1u1rxrx8tbcviua/PpDYx6
-         gs4m6lcHDiJ7sazwjkIX+536hW7I8F0boaw6jniqe6YCOud1WTnwvhZ3sstGjatUBMYe
-         H/elBj99oSdRtbbmbXYAXiBpmfdJU1kZSqTB7p+6jxeDsP1Lzl6I9/h6GRCUqyeTTu3P
-         aSF7dIRkEdman/Rnukd3mNYC/JWahl9v30/xFdoP7FVdQufhzocANRe/pRYbwstOgqjB
-         k74A==
-X-Gm-Message-State: AOJu0YyVExt8BkYJt8iRiag4HS3xx/dt67V5K96ygVdO/Ce4i1SDps2C
-        LBeEKN2N0xU/cojg0d4RMeUSVQ==
-X-Google-Smtp-Source: AGHT+IF/Krv9XoaHXmgTX6hA95PT3mrsyeECELy7hFWygISVfjLi7nO3m0A/foR0u3zSojYLTMDlFA==
-X-Received: by 2002:a19:8c09:0:b0:500:9d6c:913e with SMTP id o9-20020a198c09000000b005009d6c913emr7472258lfd.52.1693907857446;
-        Tue, 05 Sep 2023 02:57:37 -0700 (PDT)
-Received: from localhost ([102.36.222.112])
-        by smtp.gmail.com with ESMTPSA id o3-20020a5d4083000000b0031435731dfasm16913703wrp.35.2023.09.05.02.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 02:57:37 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 12:57:34 +0300
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     Ratheesh Kannoth <rkannoth@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ast@kernel.org, daniel@iogearbox.net,
-        hawk@kernel.org, john.fastabend@gmail.com, jiawenwu@trustnetic.com,
-        mengyuanlou@net-swift.com, yang.lee@linux.alibaba.com,
-        error27@gmail.com, linyunsheng@huawei.com,
-        linux-hyperv@vger.kernel.org, kys@microsoft.com,
-        haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-        longli@microsoft.com, shradhagupta@linux.microsoft.com,
-        linux-hwmon@vger.kernel.org, michael.chan@broadcom.com,
-        richardcochran@gmail.com, jdelvare@suse.com, linux@roeck-us.net,
-        yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, nbd@nbd.name, john@phrozen.org,
-        sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-        lorenzo@kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com, linux@armlinux.org.uk,
-        linux-rdma@vger.kernel.org, saeedm@nvidia.com, leon@kernel.org,
-        gerhard@engleder-embedded.com, maciej.fijalkowski@intel.com,
-        alexanderduyck@fb.com, wei.fang@nxp.com, shenwei.wang@nxp.com,
-        xiaoning.wang@nxp.com, linux-imx@nxp.com, lgirdwood@gmail.com,
-        broonie@kernel.org, jaswinder.singh@linaro.org,
-        ilias.apalodimas@linaro.org, UNGLinuxDriver@microchip.com,
-        horatiu.vultur@microchip.com, linux-omap@vger.kernel.org,
-        grygorii.strashko@ti.com, simon.horman@corigine.com,
-        vladimir.oltean@nxp.com, aleksander.lobakin@intel.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        alexandre.torgue@foss.st.com, joabreu@synopsys.com,
-        mcoquelin.stm32@gmail.com, p.zabel@pengutronix.de,
-        thomas.petazzoni@bootlin.com, mw@semihalf.com,
-        sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
-        hkelam@marvell.com, xen-devel@lists.xenproject.org,
-        jgross@suse.com, sstabellini@kernel.org,
-        oleksandr_tyshchenko@epam.com, linux-wireless@vger.kernel.org,
-        ryder.lee@mediatek.com, shayne.chen@mediatek.com, kvalo@kernel.org,
-        andrii@kernel.org, martin.lau@linux.dev, song@kernel.org,
-        yonghong.song@linux.dev, kpsingh@kernel.org, sdf@google.com,
-        haoluo@google.com, jolsa@kernel.org
-Subject: Re: [PATCH v1 net] page_pool: Cap queue size to 32k.
-Message-ID: <75bcd331-9a62-486f-a15f-6aebf4d1838b@kadam.mountain>
-References: <20230814060411.2401817-1-rkannoth@marvell.com>
+        Tue, 5 Sep 2023 05:59:27 -0400
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC8118C;
+        Tue,  5 Sep 2023 02:59:23 -0700 (PDT)
+Received: from lhrpeml500004.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Rg1CY4m95z6D8dW;
+        Tue,  5 Sep 2023 17:58:01 +0800 (CST)
+Received: from mscphis00759.huawei.com (10.123.66.134) by
+ lhrpeml500004.china.huawei.com (7.191.163.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 5 Sep 2023 10:59:20 +0100
+From:   Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+To:     <masahiroy@kernel.org>
+CC:     <linux-kbuild@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <yusongping@huawei.com>, <artem.kuzin@huawei.com>
+Subject: [PATCH] kconfig: fix possible buffer overflow
+Date:   Tue, 5 Sep 2023 17:59:14 +0800
+Message-ID: <20230905095914.1699335-1-konstantin.meskhidze@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230814060411.2401817-1-rkannoth@marvell.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.123.66.134]
+X-ClientProxiedBy: mscpeml100002.china.huawei.com (7.188.26.75) To
+ lhrpeml500004.china.huawei.com (7.191.163.9)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 14, 2023 at 11:34:11AM +0530, Ratheesh Kannoth wrote:
-> Clamp to 32k instead of returning error.
+Buffer 'new_argv' is accessed without bound check after accessing with
+bound check via 'new_argc' index.
 
-What is the motivation here?  What is the real world impact for the
-users?
+Fixes: e298f3b49def ("kconfig: add built-in function support")
+Co-developed-by: Ivanov Mikhail <ivanov.mikhail1@huawei-partners.com>
+Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+---
+ scripts/kconfig/preprocess.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-> 
-> Please find discussion at
-> https://lore.kernel.org/lkml/
-> CY4PR1801MB1911E15D518A77535F6E51E2D308A@CY4PR1801MB1911.
-> namprd18.prod.outlook.com/T/
-
-Please don't break the URL up like this.  I think normally we would just
-write up a normal commit message and use the Link: tag.
-
-Fixes: ff7d6b27f894 ("page_pool: refurbish version of page_pool code")
-Link: https://lore.kernel.org/lkml/CY4PR1801MB1911E15D518A77535F6E51E2D308A@CY4PR1801MB1911.namprd18.prod.outlook.com/
-Signed-off-by:
-
-> @@ -171,9 +171,10 @@ static int page_pool_init(struct page_pool *pool,
->  	if (pool->p.pool_size)
->  		ring_qsize = pool->p.pool_size;
->  
-> -	/* Sanity limit mem that can be pinned down */
-> +	/* Cap queue size to 32k */
->  	if (ring_qsize > 32768)
-> -		return -E2BIG;
-> +		ring_qsize = 32768;
-> +
->  
->  	/* DMA direction is either DMA_FROM_DEVICE or DMA_BIDIRECTIONAL.
-
-Don't introduce a blank line here.  Checkpatch will complain if you
-have to blank lines in a row.  It won't complain about the patch but it
-will complain if you apply the patch and then re-run checkpatch -f on
-the file.  (I didn't test this but it's wrong either way. :P).
-
-regards,
-dan carpenter
+diff --git a/scripts/kconfig/preprocess.c b/scripts/kconfig/preprocess.c
+index 748da578b418..d1f5bcff4b62 100644
+--- a/scripts/kconfig/preprocess.c
++++ b/scripts/kconfig/preprocess.c
+@@ -387,24 +387,27 @@ static char *eval_clause(const char *str, size_t len, int argc, char *argv[])
+ 			if (new_argc >= FUNCTION_MAX_ARGS)
+ 				pperror("too many function arguments");
+ 			new_argv[new_argc++] = prev;
+ 			prev = p + 1;
+ 		} else if (*p == '(') {
+ 			nest++;
+ 		} else if (*p == ')') {
+ 			nest--;
+ 		}
+ 
+ 		p++;
+ 	}
++
++	if (new_argc >= FUNCTION_MAX_ARGS)
++		pperror("too many function arguments");
+ 	new_argv[new_argc++] = prev;
+ 
+ 	/*
+ 	 * Shift arguments
+ 	 * new_argv[0] represents a function name or a variable name.  Put it
+ 	 * into 'name', then shift the rest of the arguments.  This simplifies
+ 	 * 'const' handling.
+ 	 */
+ 	name = expand_string_with_args(new_argv[0], argc, argv);
+ 	new_argc--;
+ 	for (i = 0; i < new_argc; i++)
+ 		new_argv[i] = expand_string_with_args(new_argv[i + 1],
+-- 
+2.34.1
 
