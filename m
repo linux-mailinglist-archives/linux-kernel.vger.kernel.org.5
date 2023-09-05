@@ -2,249 +2,256 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1EE7929D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E344E7926D6
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353701AbjIEQ2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:28:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50246 "EHLO
+        id S1348100AbjIEQS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354742AbjIEOAU (ORCPT
+        with ESMTP id S1354746AbjIEOD3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:00:20 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A02C9;
-        Tue,  5 Sep 2023 07:00:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 04AD360A05;
-        Tue,  5 Sep 2023 14:00:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5931DC433C8;
-        Tue,  5 Sep 2023 14:00:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693922415;
-        bh=764yMbuNMe5JetI5MaMMRQb1mxEqxLpU0jdCUiYvO2w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=pcJUcT6A1q+IhvNaKBGuS9tB/gTtXUinjnY0zK98Lc08Eq4tFiS2LRoCEeHFKlj7d
-         vxZbhDMM63vF+tNq2YKA/0FRk1KAgTcSLrqftS4PtfB3M0lpO1JcqQJgKqo4yol6vR
-         oNh/XUI/gs0795wz3iJ+kPWe+ba12B+RzzD08vpd01C4YJRVZX/HOuYgQ6WroLadK1
-         1nX/1tA5k5GTEEqhMogAUdNpIat6kidxD0gy5vizMmVOJBa9EEfw4o/TJbwAjW4sL/
-         Efsx6n6UqqlIh8dryApUAG90RvtSRqhYRKSOL2XjBm8IWo2zfGf5FaT7YLYVPTNa8U
-         KMWUmiznTNDlQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id EECEACE0CF9; Tue,  5 Sep 2023 07:00:14 -0700 (PDT)
-Date:   Tue, 5 Sep 2023 07:00:14 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Denis Arefev <arefev@swemel.ru>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
-        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
-        trufanov@swemel.ru, vfh@swemel.ru,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
- systems
-Message-ID: <ba1292b4-8feb-4359-9bfc-120082359a17@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20230904122114.66757-1-arefev@swemel.ru>
- <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
- <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
- <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
- <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
- <98c676a6-3c11-48f1-b7cb-81356c362680@paulmck-laptop>
- <2613d958-8e8a-c302-8779-8719a10c82e5@efficios.com>
+        Tue, 5 Sep 2023 10:03:29 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 45F7A1A7
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:03:25 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C071C11FB;
+        Tue,  5 Sep 2023 07:04:02 -0700 (PDT)
+Received: from [10.34.100.102] (e126645.nice.arm.com [10.34.100.102])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CBD2C3F67D;
+        Tue,  5 Sep 2023 07:03:22 -0700 (PDT)
+Message-ID: <b81e3d8f-88e3-e7b5-0dbc-78268193db7e@arm.com>
+Date:   Tue, 5 Sep 2023 16:03:18 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <2613d958-8e8a-c302-8779-8719a10c82e5@efficios.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2] sched/topology: remove sysctl_sched_energy_aware
+ depending on the architecture
+Content-Language: en-US
+To:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+Cc:     dietmar.eggemann@arm.com, vincent.guittot@linaro.org,
+        peterz@infradead.org, mingo@redhat.com, vschneid@redhat.com,
+        linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
+        quentin.perret@arm.com, srikar@linux.vnet.ibm.com,
+        mgorman@techsingularity.net, mingo@kernel.org, yu.c.chen@intel.com
+References: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
+From:   Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <20230901065249.137242-1-sshegde@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.4 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Sep 05, 2023 at 09:43:04AM -0400, Mathieu Desnoyers wrote:
-> On 9/5/23 09:38, Paul E. McKenney wrote:
-> > On Tue, Sep 05, 2023 at 08:57:53AM -0400, Mathieu Desnoyers wrote:
-> > > On 9/4/23 09:58, Paul E. McKenney wrote:
-> > > > On Mon, Sep 04, 2023 at 08:58:48AM -0400, Mathieu Desnoyers wrote:
-> > > > > On 9/4/23 08:42, Mathieu Desnoyers wrote:
-> > > > > > On 9/4/23 08:21, Denis Arefev wrote:
-> > > > > > > The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
-> > > > > > > is subject to overflow due to a failure to cast operands to a larger
-> > > > > > > data type before performing arithmetic.
-> > > > > > > 
-> > > > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > > > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > > > > > > which can indeed cause the signed 32-bit integer literal ("1") to
-> > > > > > > overflow
-> > > > > > > when shifted by any value greater than 31.
-> > > > > > 
-> > > > > > We could expand on this:
-> > > > > > 
-> > > > > > The maximum result of this subtraction is defined by the RCU_FANOUT
-> > > > > > or other srcu level-spread values assigned by rcu_init_levelspread(),
-> > > > > > which can indeed cause the signed 32-bit integer literal ("1") to overflow
-> > > > > > when shifted by any value greater than 31 on a 64-bit system.
-> > > > > > 
-> > > > > > Moreover, when the subtraction value is 31, the 1 << 31 expression results
-> > > > > > in 0xffffffff80000000 when the signed integer is promoted to unsigned long
-> > > > > > on 64-bit systems due to type promotion rules, which is certainly not the
-> > > > > > intended result.
-> > > > 
-> > > > Thank you both!  Could you please also add something to the effect of:
-> > > > "Given default Kconfig options, this bug affects only systems with more
-> > > > than 512 CPUs."?
-> > > 
-> > > Hi Paul,
-> > > 
-> > > I'm trying to understand this "NR_CPUS > 512 CPUs" default Kconfig lower
-> > > bound from kernel/rcu/Kconfig and rcu_node_tree.h. Is that on a 32-bit or
-> > > 64-bit architecture ? Also, I suspect that something like x86-64 MAXSMP (or
-> > > an explicit NR_CPUS) needs to be selected over a default Kconfig to support
-> > > that many CPUs.
-> > 
-> > 64-bit only.  I believe that 32-bit kernels are unaffected by this bug.
-> > 
-> > The trick is that RCU reshapes the rcu_node tree in rcu_init_geometry(),
-> > which is invoked during early boot from rcu_init().  This reshaping is
-> > based on nr_cpu_ids.  So if NR_CPUS is (say) 4096, there will be enough
-> > rcu_node structures allocated at build time to accommodate 4096 CPUs
-> > (259 of them, 256 leaf nodes, four internal nodes, and one root node),
-> > but only assuming dense numbering of CPUs.  If rcu_init_geometry() sees
-> > that nr_cpu_ids is (say) 64, it will use only five of them, that is,
-> > four leaf nodes and one root node.  The leaf nodes will need to shift
-> > by at most 16, and the root node by at most 4.
-> > 
-> > But the possibility of sparse CPU numbering (perhaps to your point)
-> > means that the bug can occur in 64-bit kernels booted on systems with
-> > 512 CPUs or fewer if that system has sparse CPU IDs.  For example,
-> > there have been systems that disable all but one hardware thread per
-> > core, but leave places in the CPU numbering for those disabled threads.
-> > Such a system with four hardware threads per core could have a CPU 516
-> > (and thus be affected by this bug) with as few as 129 CPUs.
-> > 
-> > So a better request would be for something like: "Given default Kconfig
-> > options, this bug affects only 64-bit systems having at least one CPU
-> > for which smp_processor_id() returns 512 or greater."
-> > 
-> > Does that help, or am I missing your point?
-> 
-> This is a good point, although not the one I was trying to make. See my
-> explanation about impact of having exactly 512 wrt signed integer type
-> promotion in a separate email. So your last phrasing "returns 512 or
-> greater" is better. Previously it appeared that only systems with _more
-> than_ 512 cpus were affected, which was off-by-one considering that systems
-> with exactly 512 cpus are an issue as well.
+Hello Shrikanth,
+I tried the patch (on a platform using the cppc_cpufreq driver). The platform
+normally has EAS enabled, but the patch removed the sched_energy_aware sysctl.
+It seemed the following happened (in the below order):
 
-If 512 CPUs is an issue, then so also is 497 CPUs.  Both result in a
-32-bit shift.  If having the upper 33 bits act as a unit is OK (and I
-*think* that it is), then you need that 513th CPU (or, better, a CPU
-whose smp_processor_id() return value is at least 513) to make something
-bad happen.
+1. sched_energy_aware_sysctl_init()
+Doesn't set sysctl_sched_energy_aware as cpufreq_freq_invariance isn't set
+and arch_scale_freq_invariant() returns false
 
-I would also be OK with noting that with 497 or more CPUs, strange
-things start happening.  My intent was definitely that there only be
-a single bit set in sdp->grpmask, after all!  The fact that it might
-(or might not) happen to work notwithstanding.  ;-)
+2. cpufreq_register_driver()
+Sets cpufreq_freq_invariance during cpufreq initialization sched_energy_set()
 
-							Thanx, Paul
+3. sched_energy_set()
+Is called with has_eas=0 since build_perf_domains() doesn't see the platform
+as EAS compatible. Indeed sysctl_sched_energy_aware=0.
+So with sysctl_sched_energy_aware=0 and has_eas=0, sched_energy_aware sysctl
+is not enabled even though EAS should be possible.
 
-> Thanks,
+
+On 9/1/23 08:52, Shrikanth Hegde wrote:
+> Currently sysctl_sched_energy_aware doesn't alter the said behaviour on
+> some of the architectures. IIUC its meant to either force rebuild the
+> perf domains or cleanup the perf domains by echoing 1 or 0 respectively.
+
+There is a definition of the sysctl at:
+Documentation/admin-guide/sysctl/kernel.rst::sched_energy_aware
+
+Also a personal comment about the commit message (FWIW), I think it should
+be a bit more impersonal and factual. The commit message seems to describe
+the code rather than the desired behaviour.
+
 > 
-> Mathieu
+> perf domains are not built when there is SMT, or when there is no
+> Asymmetric CPU topologies or when there is no frequency invariance.
+> Since such cases EAS is not set and perf domains are not built. By
+> changing the values of sysctl_sched_energy_aware, its not possible to
+> force build the perf domains. Hence remove this sysctl on such platforms
+> that dont support it. Some of the settings can be changed later
+> such as smt_active by offlining the CPU's, In those cases if
+> build_perf_domains returns true, re-enable the sysctl.
+> 
+> Anytime, when sysctl_sched_energy_aware is changed sched_energy_update
+> is set when building the perf domains. Making use of that to find out if
+> the change is happening by sysctl or dynamic system change.
+> 
+> Taking different cases:
+> Case1. system while booting has EAS capability, sysctl will be set 1. Hence
+> perf domains will be built if needed. On changing the sysctl to 0, since
+> sched_energy_update is true, perf domains would be freed and sysctl will
+> not be removed. later sysctl is changed to 1, enabling the perf domains
+> rebuild again. Since sysctl is already there, it will skip register.
+> 
+> Case2. System while booting doesn't have EAS Capability. Later after system
+> change it becomes capable of EAS. sched_energy_update is false. Though
+> sysctl is 0, will go ahead and try to enable eas. This is the current
+> behaviour. if has_eas  is true, then sysctl will be registered. After
+> that any sysctl change is same as Case1.
+> 
+> Case3. System becomes not capable of EAS due to system change. Here since
+> sched_energy_update is false, build_perf_domains return has_eas as false
+> due to one of the checks and Since this is dynamic change remove the sysctl.
+> Any further change which enables EAS is Case2
+> 
+> Note: This hasn't been tested on platform which supports EAS. If the
+> change can be verified on that it would really help. This has been
+> tested on power10 which doesn't support EAS. sysctl_sched_energy_aware
+> is removed with patch.
+> 
+> changes since v1:
+> Chen Yu had pointed out that this will not destroy the perf domains on
+> architectures where EAS is supported by changing the sysctl. This patch
+> addresses that.
+> [v1] Link: https://lore.kernel.org/lkml/20230829065040.920629-1-sshegde@linux.vnet.ibm.com/#t
+> 
+> Signed-off-by: Shrikanth Hegde <sshegde@linux.vnet.ibm.com>
+> ---
+>   kernel/sched/topology.c | 45 +++++++++++++++++++++++++++++++++--------
+>   1 file changed, 37 insertions(+), 8 deletions(-)
+> 
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 05a5bc678c08..4d16269ac21a 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -208,7 +208,8 @@ sd_parent_degenerate(struct sched_domain *sd, struct sched_domain *parent)
+> 
+>   #if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+>   DEFINE_STATIC_KEY_FALSE(sched_energy_present);
+> -static unsigned int sysctl_sched_energy_aware = 1;
+> +static unsigned int sysctl_sched_energy_aware;
+> +static struct ctl_table_header *sysctl_eas_header;
+
+The variables around the presence/absence of EAS are:
+- sched_energy_present:
+EAS is up and running
+
+- sysctl_sched_energy_aware:
+The user wants to use EAS (or not). Doesn't mean EAS can run on the
+platform.
+
+- sched_energy_set/partition_sched_domains_locked's "has_eas":
+Local variable. Represent whether EAS can run on the platform.
+
+IMO it would be simpler to (un)register sched_energy_aware sysctl
+in partition_sched_domains_locked(), based on the value of "has_eas".
+This would allow to let all the logic as it is right now, inside
+build_perf_domains(), and then advertise sched_energy_aware sysctl
+if EAS can run on the platform.
+sched_energy_aware_sysctl_init() would be deleted then.
+
+
+>   static DEFINE_MUTEX(sched_energy_mutex);
+>   static bool sched_energy_update;
+> 
+> @@ -226,6 +227,7 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>   		void *buffer, size_t *lenp, loff_t *ppos)
+>   {
+>   	int ret, state;
+> +	int prev_val = sysctl_sched_energy_aware;
+> 
+>   	if (write && !capable(CAP_SYS_ADMIN))
+>   		return -EPERM;
+> @@ -233,8 +235,11 @@ static int sched_energy_aware_handler(struct ctl_table *table, int write,
+>   	ret = proc_dointvec_minmax(table, write, buffer, lenp, ppos);
+>   	if (!ret && write) {
+>   		state = static_branch_unlikely(&sched_energy_present);
+> -		if (state != sysctl_sched_energy_aware)
+> +		if (state != sysctl_sched_energy_aware && prev_val != sysctl_sched_energy_aware) {
+> +			if (sysctl_sched_energy_aware && !state)
+> +				pr_warn("Attempt to build energy domains when EAS is disabled\n");
+>   			rebuild_sched_domains_energy();
+> +		}
+>   	}
+> 
+>   	return ret;
+> @@ -255,7 +260,14 @@ static struct ctl_table sched_energy_aware_sysctls[] = {
+> 
+>   static int __init sched_energy_aware_sysctl_init(void)
+>   {
+> -	register_sysctl_init("kernel", sched_energy_aware_sysctls);
+> +	int cpu = cpumask_first(cpu_active_mask);
+> +
+> +	if (sched_smt_active() || !per_cpu(sd_asym_cpucapacity, cpu) ||
+> +	    !arch_scale_freq_invariant())
+> +		return 0;
+> +
+> +	sysctl_eas_header = register_sysctl("kernel", sched_energy_aware_sysctls);
+> +	sysctl_sched_energy_aware = 1;
+>   	return 0;
+>   }
+> 
+> @@ -336,10 +348,28 @@ static void sched_energy_set(bool has_eas)
+>   		if (sched_debug())
+>   			pr_info("%s: stopping EAS\n", __func__);
+>   		static_branch_disable_cpuslocked(&sched_energy_present);
+> +#ifdef CONFIG_PROC_SYSCTL
+> +		/*
+> +		 * if the architecture supports EAS and forcefully
+> +		 * perf domains are destroyed, there should be a sysctl
+> +		 * to enable it later. If this was due to dynamic system
+> +		 * change such as SMT<->NON_SMT then remove sysctl.
+> +		 */
+> +		if (sysctl_eas_header && !sched_energy_update) {
+> +			unregister_sysctl_table(sysctl_eas_header);
+> +			sysctl_eas_header = NULL;
+> +		}
+> +#endif
+> +		sysctl_sched_energy_aware = 0;
+>   	} else if (has_eas && !static_branch_unlikely(&sched_energy_present)) {
+>   		if (sched_debug())
+>   			pr_info("%s: starting EAS\n", __func__);
+>   		static_branch_enable_cpuslocked(&sched_energy_present);
+> +#ifdef CONFIG_PROC_SYSCTL
+> +		if (!sysctl_eas_header)
+> +			sysctl_eas_header = register_sysctl("kernel", sched_energy_aware_sysctls);
+> +#endif
+> +		sysctl_sched_energy_aware = 1;
+>   	}
+>   }
+> 
+> @@ -380,15 +410,14 @@ static bool build_perf_domains(const struct cpumask *cpu_map)
+>   	struct cpufreq_policy *policy;
+>   	struct cpufreq_governor *gov;
+> 
+> -	if (!sysctl_sched_energy_aware)
+> +	if (!sysctl_sched_energy_aware && sched_energy_update)
+>   		goto free;
+> 
+>   	/* EAS is enabled for asymmetric CPU capacity topologies. */
+>   	if (!per_cpu(sd_asym_cpucapacity, cpu)) {
+> -		if (sched_debug()) {
+> -			pr_info("rd %*pbl: CPUs do not have asymmetric capacities\n",
+> -					cpumask_pr_args(cpu_map));
+> -		}
+> +		if (sched_debug())
+> +			pr_info("rd %*pbl: Disabling EAS,  CPUs do not have asymmetric capacities\n",
+> +				cpumask_pr_args(cpu_map));
+>   		goto free;
+>   	}
+> 
+> --
+> 2.31.1
 > 
 > 
-> > 
-> > 							Thanx, Paul
-> > 
-> > > Thanks,
-> > > 
-> > > Mathieu
-> > > 
-> > > 
-> > > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > > > > > Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> > > > > > 
-> > > > > > With the commit message updated with my comment above, please also add:
-> > > > > > 
-> > > > > > Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures
-> > > > > > containing callbacks")
-> > > > > > Cc: <stable@vger.kernel.org> # v4.11
-> > > > > 
-> > > > > Sorry, the line above should read:
-> > > > > 
-> > > > > Cc: <stable@vger.kernel.org> # v4.11+
-> > > > > 
-> > > > > Thanks,
-> > > > > 
-> > > > > Mathieu
-> > > > > 
-> > > > > > Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > > 
-> > > > > > Thanks!
-> > > > > > 
-> > > > > > Mathieu
-> > > > > > 
-> > > > > > > 
-> > > > > > > Signed-off-by: Denis Arefev <arefev@swemel.ru>
-> > > > > > > ---
-> > > > > > > v3: Changed the name of the patch, as suggested by
-> > > > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > > > v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
-> > > > > > > Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> > > > > > >     kernel/rcu/srcutree.c | 4 ++--
-> > > > > > >     1 file changed, 2 insertions(+), 2 deletions(-)
-> > > > > > > 
-> > > > > > > diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> > > > > > > index 20d7a238d675..6c18e6005ae1 100644
-> > > > > > > --- a/kernel/rcu/srcutree.c
-> > > > > > > +++ b/kernel/rcu/srcutree.c
-> > > > > > > @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct
-> > > > > > > srcu_struct *ssp, gfp_t gfp_flags)
-> > > > > > >                     snp->grplo = cpu;
-> > > > > > >                 snp->grphi = cpu;
-> > > > > > >             }
-> > > > > > > -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
-> > > > > > > +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
-> > > > > > >         }
-> > > > > > >         smp_store_release(&ssp->srcu_sup->srcu_size_state,
-> > > > > > > SRCU_SIZE_WAIT_BARRIER);
-> > > > > > >         return true;
-> > > > > > > @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct
-> > > > > > > srcu_struct *ssp, struct srcu_node *snp
-> > > > > > >         int cpu;
-> > > > > > >         for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
-> > > > > > > -        if (!(mask & (1 << (cpu - snp->grplo))))
-> > > > > > > +        if (!(mask & (1UL << (cpu - snp->grplo))))
-> > > > > > >                 continue;
-> > > > > > >             srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
-> > > > > > >         }
-> > > > > > 
-> > > > > 
-> > > > > -- 
-> > > > > Mathieu Desnoyers
-> > > > > EfficiOS Inc.
-> > > > > https://www.efficios.com
-> > > > > 
-> > > 
-> > > -- 
-> > > Mathieu Desnoyers
-> > > EfficiOS Inc.
-> > > https://www.efficios.com
-> > > 
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> https://www.efficios.com
-> 
+
+Regards,
+Pierre
