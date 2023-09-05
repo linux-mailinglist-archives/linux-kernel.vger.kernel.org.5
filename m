@@ -2,153 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F6F792AA5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3629792928
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:51:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245118AbjIEQkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:40:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38494 "EHLO
+        id S1350963AbjIEQZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:25:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354302AbjIEKii (ORCPT
+        with ESMTP id S1354304AbjIEKis (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:38:38 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FEAF199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:38:35 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-99bcfe28909so334798266b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:38:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693910314; x=1694515114; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4WKpCpzUJa8iRluzL4OMCEUy6exJH98L6niCS735SFI=;
-        b=QGvjM3JR/MttzXfj4LbMqEsQe92IMOSuD+hjNzPOZSLzrFcerItkxlkQLOwCITfybP
-         c0TGlCXNZoRJXmLGyBAx30JYb17ckKFXsZeBoted2CDM7P6DyHFialzzOw32xGT7Z6xv
-         ZciEo3FjKk5dzl7vDoeQybN8Oy9tevA0gcdy/t/o8wax4ZrXf1dNLa0EuwjV7jBClGk5
-         cvnX13xUI3017rCcrXd81veMYoympfE92JQdL4Q08igLOv/nsqlNxq5RG33bf6/zdVb7
-         jFUBEsFBNhac51nlmra/8NSuuYeVA/LV9MKk8kJBqpNDA5Xz42rQZdtUTEqn2BZ4lgl1
-         jkAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693910314; x=1694515114;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4WKpCpzUJa8iRluzL4OMCEUy6exJH98L6niCS735SFI=;
-        b=anF3GxFbSScQ/Du+86z5eIeHcNXJ5hYjUygQlhvmcIfGxBgWycYB43q4V6m3a+WdEd
-         5kIjurke9xuSZ/RDOIEhz3S1G/NttHVkX1B5oQBsTLGkNT8xS+nDWS0WeNjdSeIaOct4
-         n+kXMYPwVJWPu3cv7zElKIDL7pCRABaIuu46zonsoYLHCtdjGFxI38y06avwUiJ607z4
-         /R4SqwlmvY3+9AOFDAGer/fzmi4UfR7jUvB0iuM+Hte364ZwhuhWT/P93E9/L+RSYikc
-         6k2/tTmzBvtO91sEwFuVUrwnJlnQg1jXMBU5WzYLiBEDTwwxTdodMjlM1mugCnjZZYgd
-         /zyQ==
-X-Gm-Message-State: AOJu0YwEnAiRVgcwTvxCPskL7U16CS9mzduVM2dIdmpbgUi1st75in/1
-        J1YEZoiuBLalWWY2i1JYhhZNvQ==
-X-Google-Smtp-Source: AGHT+IGDPbqZkn81hlAaihoCBFF4Kq/KErYZluh4+aPmtASgvaAQ5tkK7GxPPmEKCJnHVZaZn7mygQ==
-X-Received: by 2002:a17:906:319a:b0:9a5:d095:a8e4 with SMTP id 26-20020a170906319a00b009a5d095a8e4mr8946249ejy.1.1693910313669;
-        Tue, 05 Sep 2023 03:38:33 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id ss22-20020a170907c01600b00992e14af9c3sm7437367ejc.143.2023.09.05.03.38.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 03:38:33 -0700 (PDT)
-Message-ID: <a0f0ab97-2333-542a-327f-f5711136b35a@linaro.org>
-Date:   Tue, 5 Sep 2023 12:38:31 +0200
+        Tue, 5 Sep 2023 06:38:48 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D36CE8;
+        Tue,  5 Sep 2023 03:38:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1693910325; x=1725446325;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=FOrzDSmYIDB82+DRnZRNZGG7/K5RvZ9RHJth/JxCWCI=;
+  b=V72mRxoSMB66O+P+dlm6J0qHfoDjQjzvfFgOFJQdQPjQOpNeFLcwxT7h
+   vZM86uQqSriaHQMH02xcocxxCv2EmjbkqHXknTBjWeKPdD7NxNLUGSnI2
+   ZNMyvP7xr5o/TzqZryILoEMzN4gevU9F8PNXgLz1VGXdIWT2AKBFEU+60
+   HTrcaP8Ot7+TxakDCmrvqUvBTMOb5NZ/ZOvE2XLtHdwTuO/rssR1OL9yn
+   tFIiZUSEqYgQln6441CWvXOErLunEW2rAbjatTdPIoocAl3+OWWbouTli
+   W221IM4+pnVo0Iy39FWfeDSOTgN5al/nx6aSRjkzZGv4sBZtf09HFCnlV
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="380573316"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="380573316"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 03:38:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10823"; a="987784595"
+X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
+   d="scan'208";a="987784595"
+Received: from amyachev-mobl3.ccr.corp.intel.com (HELO localhost) ([10.252.60.152])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 03:38:41 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>,
+        Bjorn Helgaas <bhelgaas@google.com>
+Cc:     Sui Jingfeng <suijingfeng@loongson.cn>,
+        nouveau@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        amd-gfx@lists.freedesktop.org, linux-pci@vger.kernel.org
+Subject: Re: [RFC, drm-misc-next v4 0/9] PCI/VGA: Allowing the user to
+ select the primary video adapter at boot time
+In-Reply-To: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20230904195724.633404-1-sui.jingfeng@linux.dev>
+Date:   Tue, 05 Sep 2023 13:38:39 +0300
+Message-ID: <874jk8j45s.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH v4 1/2] ARM: dts: aspeed: Minerva: Add Facebook Minerva
- (AST2600) BMC
-Content-Language: en-US
-To:     PeterYin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     cosmo.chou@quantatw.com, potin.lai@quantatw.com,
-        daniel-hsu@quantatw.com
-References: <20230830090212.3880559-1-peteryin.openbmc@gmail.com>
- <20230830090212.3880559-2-peteryin.openbmc@gmail.com>
- <b9cbe9be-b03e-6c7a-d06c-b75b012b5b25@linaro.org>
- <18b78489-6a12-a09f-620d-985be747f9da@gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <18b78489-6a12-a09f-620d-985be747f9da@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,WEIRD_QUOTING
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2023 11:55, PeterYin wrote:
-> 
-> On 8/30/23 17:44, Krzysztof Kozlowski wrote:
->> On 30/08/2023 11:02, peteryin wrote:
->>> Add linux device tree entry related to
->>> Minerva specific devices connected to BMC SoC.
->>>
->>> Signed-off-by: peteryin <peteryin.openbmc@gmail.com>
->> To clarify: your full name or known identity is "peteryin"?
->>
->>> ---
->>>   arch/arm/boot/dts/Makefile                    |   1 +
->>>   .../boot/dts/aspeed-bmc-facebook-minerva.dts  | 385 ++++++++++++++++++
->>>   2 files changed, 386 insertions(+)
->>>   create mode 100644 arch/arm/boot/dts/aspeed-bmc-facebook-minerva.dts
->>>
->>> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
->>> index 9e1d7bf3cff6..edb0b2105333 100644
->>> --- a/arch/arm/boot/dts/Makefile
->>> +++ b/arch/arm/boot/dts/Makefile
->>> @@ -1604,6 +1604,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
->>>   	aspeed-bmc-facebook-wedge400.dtb \
->>>   	aspeed-bmc-facebook-yamp.dtb \
->>>   	aspeed-bmc-facebook-yosemitev2.dtb \
->>> +	aspeed-bmc-facebook-minerva.dtb \
->> Nothing improved here.
->>
->>>   	aspeed-bmc-ibm-bonnell.dtb \
->>>   	aspeed-bmc-ibm-everest.dtb \
->>>   	aspeed-bmc-ibm-rainier.dtb \
->>
->>> +	"","","","","","","","",
->>> +	/*O0-O3 line 224-231*/
->>> +	"","","","","","","","",
->>> +	/*O4-O7 line 232-239*/
->>> +	"","","","","","","","",
->>> +	/*P0-P3 line 240-247*/
->>> +	"","","","","","","","",
->>> +	/*P4-P7 line 248-255*/
->>> +	"","","","","","","","";
->>> +};
->>> +
->> Nor here.
->>
->> This is a friendly reminder during the review process.
->>
->> It seems my previous comments were not fully addressed. Maybe my
->> feedback got lost between the quotes, maybe you just forgot to apply it.
->> Please go back to the previous discussion and either implement all
->> requested changes or keep discussing them.
->>
-> Could you please clarify for me?
-> 
-> Are you asking if the last line should not have a blank line, or I can't 
-> set a comment for the sgpio line like this:
+On Tue, 05 Sep 2023, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>
+> On a machine with multiple GPUs, a Linux user has no control over which
+> one is primary at boot time. This series tries to solve above mentioned
+> problem by introduced the ->be_primary() function stub. The specific
+> device drivers can provide an implementation to hook up with this stub by
+> calling the vga_client_register() function.
+>
+> Once the driver bound the device successfully, VGAARB will call back to
+> the device driver. To query if the device drivers want to be primary or
+> not. Device drivers can just pass NULL if have no such needs.
+>
+> Please note that:
+>
+> 1) The ARM64, Loongarch, Mips servers have a lot PCIe slot, and I would
+>    like to mount at least three video cards.
+>
+> 2) Typically, those non-86 machines don't have a good UEFI firmware
+>    support, which doesn't support select primary GPU as firmware stage.
+>    Even on x86, there are old UEFI firmwares which already made undesired
+>    decision for you.
+>
+> 3) This series is attempt to solve the remain problems at the driver level,
+>    while another series[1] of me is target to solve the majority of the
+>    problems at device level.
+>
+> Tested (limited) on x86 with four video card mounted, Intel UHD Graphics
+> 630 is the default boot VGA, successfully override by ast2400 with
+> ast.modeset=10 append at the kernel cmd line.
 
-6 or 7 versions ago I said:
-"Still redundant blank line."
-so it is about stray blank line.
+The value 10 is incredibly arbitrary, and multiplied as a magic number
+all over the place.
 
-https://lore.kernel.org/all/9f499fe5-db59-f4c8-6a50-93725b7287fd@linaro.org/
+> $ lspci | grep VGA
+>
+>  00:02.0 VGA compatible controller: Intel Corporation CoffeeLake-S GT2 [UHD Graphics 630]
+>  01:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Caicos XTX [Radeon HD 8490 / R5 235X OEM]
+>  04:00.0 VGA compatible controller: ASPEED Technology, Inc. ASPEED Graphics Family (rev 30)
+>  05:00.0 VGA compatible controller: NVIDIA Corporation GK208B [GeForce GT 720] (rev a1)
 
-Best regards,
-Krzysztof
+In this example, all of the GPUs are driven by different drivers. What
+good does a module parameter do if you have multiple GPUs of the same
+model, all driven by the same driver module?
 
+BR,
+Jani.
+
+>
+> $ sudo dmesg | grep vgaarb
+>
+>  pci 0000:00:02.0: vgaarb: setting as boot VGA device
+>  pci 0000:00:02.0: vgaarb: VGA device added: decodes=io+mem,owns=io+mem,locks=none
+>  pci 0000:01:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+>  pci 0000:04:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+>  pci 0000:05:00.0: vgaarb: VGA device added: decodes=io+mem,owns=none,locks=none
+>  vgaarb: loaded
+>  ast 0000:04:00.0: vgaarb: Override as primary by driver
+>  i915 0000:00:02.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=io+mem
+>  radeon 0000:01:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=none
+>  ast 0000:04:00.0: vgaarb: changed VGA decodes: olddecodes=io+mem,decodes=none:owns=none
+>
+> v2:
+> 	* Add a simple implemment for drm/i915 and drm/ast
+> 	* Pick up all tags (Mario)
+> v3:
+> 	* Fix a mistake for drm/i915 implement
+> 	* Fix patch can not be applied problem because of merge conflect.
+> v4:
+> 	* Focus on solve the real problem.
+>
+> v1,v2 at https://patchwork.freedesktop.org/series/120059/
+>    v3 at https://patchwork.freedesktop.org/series/120562/
+>
+> [1] https://patchwork.freedesktop.org/series/122845/
+>
+> Sui Jingfeng (9):
+>   PCI/VGA: Allowing the user to select the primary video adapter at boot
+>     time
+>   drm/nouveau: Implement .be_primary() callback
+>   drm/radeon: Implement .be_primary() callback
+>   drm/amdgpu: Implement .be_primary() callback
+>   drm/i915: Implement .be_primary() callback
+>   drm/loongson: Implement .be_primary() callback
+>   drm/ast: Register as a VGA client by calling vga_client_register()
+>   drm/hibmc: Register as a VGA client by calling vga_client_register()
+>   drm/gma500: Register as a VGA client by calling vga_client_register()
+>
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c    | 11 +++-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       | 13 ++++-
+>  drivers/gpu/drm/ast/ast_drv.c                 | 31 ++++++++++
+>  drivers/gpu/drm/gma500/psb_drv.c              | 57 ++++++++++++++++++-
+>  .../gpu/drm/hisilicon/hibmc/hibmc_drm_drv.c   | 15 +++++
+>  drivers/gpu/drm/i915/display/intel_vga.c      | 15 ++++-
+>  drivers/gpu/drm/loongson/loongson_module.c    |  2 +-
+>  drivers/gpu/drm/loongson/loongson_module.h    |  1 +
+>  drivers/gpu/drm/loongson/lsdc_drv.c           | 10 +++-
+>  drivers/gpu/drm/nouveau/nouveau_vga.c         | 11 +++-
+>  drivers/gpu/drm/radeon/radeon_device.c        | 10 +++-
+>  drivers/pci/vgaarb.c                          | 43 ++++++++++++--
+>  drivers/vfio/pci/vfio_pci_core.c              |  2 +-
+>  include/linux/vgaarb.h                        |  8 ++-
+>  14 files changed, 210 insertions(+), 19 deletions(-)
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
