@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 076687928D5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F968792AB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349330AbjIEQYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:24:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54536 "EHLO
+        id S1343930AbjIEQlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351606AbjIEFYS (ORCPT
+        with ESMTP id S1351612AbjIEFYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 01:24:18 -0400
+        Tue, 5 Sep 2023 01:24:19 -0400
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E1C1E8;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03734CCB;
         Mon,  4 Sep 2023 22:24:15 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3853ethn031037;
-        Tue, 5 Sep 2023 05:24:07 GMT
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3854O7DF027605;
+        Tue, 5 Sep 2023 05:24:08 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id; s=qcppdkim1;
- bh=9xgGYVRyVTnI6zKARP+VFTNIkbZn9PiwqwxkFDbQpcc=;
- b=eWPxs2K1Ul3AxG5UV3TeCPE0a4lIwb+gInViP0zNr0eDtqVEeotvndxUozwSjve5vJhf
- WmhKrBq7TEq1s4WVsE2SOEc+zlfzUNQ57UpYYxvfQM4zFiLl0y8xWjOUw6Kzd2hfKeoH
- zBlhL4jLE0Fr2hXXaVToPvCB8nDF41Lw0D1BjZmNd2fyGTptoSF7Cr99J3izFeaIX9Zg
- hbXbPc9v1fIXkBUisyMRDapkk5UnPOz7iImKW2v5CcZTGAW9CkKRfO32LGbNm5164jTW
- WYZ0A6t2kp//LIewDdsyL7QXWsWSiz8BaEUPFHDC0VV4xjKsmc2PL5KVT15mZEsEpv8Z 5A== 
+ subject : date : message-id : in-reply-to : references; s=qcppdkim1;
+ bh=ujAkzKfoJAD7OI+z7gmNkocWg2ZhUPj9x0EJEb3YVWA=;
+ b=iDe/tYqJgrmE17nYdMH/pBLMArSnZ86qvkhrFiG4iXzibb+4u+Kvd3PAP1C/8xE/PxWT
+ NlPqlLlGxgFJaGDRf3lBTdVpGKZT25pfjh/R0cHEmfuW1jOwufekkYHPMz+RbMIcBPUi
+ pP/Z3fTMo8m10/mEW5hgeXMlvZNAyfRWOEQuVOclz0hikGyLwC5PiESKeqDguJLV9qcJ
+ IOQ05RAM446/KGqwsaecPw+tlm2rFEQFa82JlGiwaxHGs8bMdNYoLSUhtOCY/rIVw7y/
+ Yr03GvNy7PPMmBODOmL1fWBQfQcSBi4JZPn82xnb5MsBLpYON8vTAwrbE28cPxg8M+dY iA== 
 Received: from apblrppmta02.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swtevgaxv-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suvcrct38-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 05:24:07 +0000
+        Tue, 05 Sep 2023 05:24:08 +0000
 Received: from pps.filterd (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3855O4AO029324;
+        by APBLRPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3855O4mH029335;
         Tue, 5 Sep 2023 05:24:04 GMT
 Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3sux4kjpur-1;
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3sux4kjpuw-1;
         Tue, 05 Sep 2023 05:24:04 +0000
 Received: from APBLRPPMTA02.qualcomm.com (APBLRPPMTA02.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3855O3dB029314;
-        Tue, 5 Sep 2023 05:24:03 GMT
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3855O4NQ029329;
+        Tue, 5 Sep 2023 05:24:04 GMT
 Received: from hu-maiyas-hyd.qualcomm.com (hu-nitirawa-hyd.qualcomm.com [10.213.109.152])
-        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3855O3bH029312;
-        Tue, 05 Sep 2023 05:24:03 +0000
+        by APBLRPPMTA02.qualcomm.com (PPS) with ESMTP id 3855O4MF029327;
+        Tue, 05 Sep 2023 05:24:04 +0000
 Received: by hu-maiyas-hyd.qualcomm.com (Postfix, from userid 2342877)
-        id AFDC0504920; Tue,  5 Sep 2023 10:54:02 +0530 (+0530)
+        id 5F69B504921; Tue,  5 Sep 2023 10:54:03 +0530 (+0530)
 From:   Nitin Rawat <quic_nitirawa@quicinc.com>
 To:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
         konrad.dybcio@linaro.org, jejb@linux.ibm.com,
@@ -51,25 +51,28 @@ To:     mani@kernel.org, agross@kernel.org, andersson@kernel.org,
 Cc:     quic_cang@quicinc.com, quic_nguyenb@quicinc.com,
         linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-msm@vger.kernel.org,
-        Nitin Rawat <quic_nitirawa@quicinc.com>
-Subject: [PATCH V8 0/5] scsi: ufs: qcom: Align programming sequence as per HW spec
-Date:   Tue,  5 Sep 2023 10:53:55 +0530
-Message-Id: <20230905052400.13935-1-quic_nitirawa@quicinc.com>
+        Nitin Rawat <quic_nitirawa@quicinc.com>,
+        Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Subject: [PATCH V8 1/5] scsi: ufs: qcom: Update MAX_CORE_CLK_1US_CYCLES for UFS V4 and above
+Date:   Tue,  5 Sep 2023 10:53:56 +0530
+Message-Id: <20230905052400.13935-2-quic_nitirawa@quicinc.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20230905052400.13935-1-quic_nitirawa@quicinc.com>
+References: <20230905052400.13935-1-quic_nitirawa@quicinc.com>
 X-QCInternal: smtphost
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: vUkqhYdZvTXCb1nP1T9nfdbD0VGtYoUZ
-X-Proofpoint-ORIG-GUID: vUkqhYdZvTXCb1nP1T9nfdbD0VGtYoUZ
+X-Proofpoint-GUID: Z-qvEttmJbCrIcBjqgEtPxY-cH8TeBjx
+X-Proofpoint-ORIG-GUID: Z-qvEttmJbCrIcBjqgEtPxY-cH8TeBjx
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
  definitions=2023-09-05_03,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- adultscore=0 impostorscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=542
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309050047
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=999 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 clxscore=1015 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050047
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
         SPF_NONE autolearn=no autolearn_force=no version=3.4.6
@@ -79,58 +82,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series adds programming support for Qualcomm UFS V4 and above
-to align avoid with Hardware Specification. This patch series will address
-stability and performance issues.
+UFS Controller V4 and above, the register layout for DME_VS_CORE_CLK_CTRL
+register has changed. MAX_CORE_CLK_1US_CYCLES offset has changed from
+0 to 0x10 and length of attrbute is changed from 8bit to 12bit.
 
-In this patch series below changes are taken care.
+Add support to configure MAX_CORE_CLK_1US_CYCLES for UFS V4 and above
+as per new register layout.
 
-1) Register layout for DME_VS_CORE_CLK_CTRL has changed for v4 and above.
-2) Adds Support to configure PA_VS_CORE_CLK_40NS_CYCLES attibute for UFS V4
-   and above.
-3) Adds Support to configure multiple unipro frequencies like 403MHz,
-   300MHz, 202MHz, 150 MHz, 75Mhz, 37.5 MHz for Qualcomm UFS Controller V4
-   and above.
-4) Allow configuration of SYS1CLK_1US_REG for UFS V4 and above.
+Co-developed-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Signed-off-by: Naveen Kumar Goud Arepalli <quic_narepall@quicinc.com>
+Signed-off-by: Nitin Rawat <quic_nitirawa@quicinc.com>
+---
+ drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++-----
+ drivers/ufs/host/ufs-qcom.h |  5 +++--
+ 2 files changed, 16 insertions(+), 7 deletions(-)
 
-Changes From v7:
-- Fix the compilation error for kernel doc
+diff --git a/drivers/ufs/host/ufs-qcom.c b/drivers/ufs/host/ufs-qcom.c
+index d1149b1c3ed5..d846e68a5734 100644
+--- a/drivers/ufs/host/ufs-qcom.c
++++ b/drivers/ufs/host/ufs-qcom.c
+@@ -1299,20 +1299,28 @@ static void ufs_qcom_exit(struct ufs_hba *hba)
+ static int ufs_qcom_set_dme_vs_core_clk_ctrl_clear_div(struct ufs_hba *hba,
+ 						       u32 clk_cycles)
+ {
++	struct ufs_qcom_host *host = ufshcd_get_variant(hba);
+ 	int err;
+ 	u32 core_clk_ctrl_reg;
 
-Changes from v6:
-- Addressed bjorn comment to optimize the code.
-- Addressed bjorn comment to update commit message
-- removed clean up part related for clk div configuration comapared to v6
+-	if (clk_cycles > DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK)
+-		return -EINVAL;
+-
+ 	err = ufshcd_dme_get(hba,
+ 			    UIC_ARG_MIB(DME_VS_CORE_CLK_CTRL),
+ 			    &core_clk_ctrl_reg);
+ 	if (err)
+ 		return err;
 
-changes from v5:
-- Addressed Mani comment to FIELD_PREP and FIELD_FIT.
-- Optimised ufs_qcom_set_core_clk_ctrl API.
-- Updated commit text for few patches to capture more details.
+-	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK;
+-	core_clk_ctrl_reg |= clk_cycles;
++	/* Bit mask is different for UFS host controller V4.0.0 onwards */
++	if (host->hw_ver.major >= 4) {
++		if (!FIELD_FIT(CLK_1US_CYCLES_MASK_V4, clk_cycles))
++			return -ERANGE;
++		core_clk_ctrl_reg &= ~CLK_1US_CYCLES_MASK_V4;
++		core_clk_ctrl_reg |= FIELD_PREP(CLK_1US_CYCLES_MASK_V4, clk_cycles);
++	} else {
++		if (!FIELD_FIT(CLK_1US_CYCLES_MASK, clk_cycles))
++			return -ERANGE;
++		core_clk_ctrl_reg &= ~CLK_1US_CYCLES_MASK;
++		core_clk_ctrl_reg |= FIELD_PREP(CLK_1US_CYCLES_MASK, clk_cycles);
++	}
 
-Changes from v4:
-- Addressed bjorn comment to split single patch to multiple patches.
+ 	/* Clear CORE_CLK_DIV_EN */
+ 	core_clk_ctrl_reg &= ~DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT;
+diff --git a/drivers/ufs/host/ufs-qcom.h b/drivers/ufs/host/ufs-qcom.h
+index d6f8e74bd538..8a9d3dbec297 100644
+--- a/drivers/ufs/host/ufs-qcom.h
++++ b/drivers/ufs/host/ufs-qcom.h
+@@ -129,8 +129,9 @@ enum {
+ #define PA_VS_CONFIG_REG1	0x9000
+ #define DME_VS_CORE_CLK_CTRL	0xD002
+ /* bit and mask definitions for DME_VS_CORE_CLK_CTRL attribute */
+-#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT		BIT(8)
+-#define DME_VS_CORE_CLK_CTRL_MAX_CORE_CLK_1US_CYCLES_MASK	0xFF
++#define CLK_1US_CYCLES_MASK_V4				GENMASK(27, 16)
++#define CLK_1US_CYCLES_MASK				GENMASK(7, 0)
++#define DME_VS_CORE_CLK_CTRL_CORE_CLK_DIV_EN_BIT	BIT(8)
 
-Changes from v3:
--Addressed bjorn comment to update commit msg to capture change details.
-
-Changes from v2:
-- Addressed bao comment, removed duplicate clock timer cfg API call
-
-Changes from v1:
-- Addressed bao comment, removed wrapper function
-- Tab alignment
-
-Nitin Rawat (5):
-  scsi: ufs: qcom: Update MAX_CORE_CLK_1US_CYCLES for UFS V4 and above
-  scsi: ufs: qcom: Add multiple frequency support for
-    MAX_CORE_CLK_1US_CYCLES
-  scsi: ufs: qcom: Add support to Configure PA_VS_CORE_CLK_40NS_CYCLES
-  scsi: ufs: qcom: Align programing of unipro clk attributes
-  scsi: ufs: qcom: Configure SYS1CLK_1US_REG for UFS V4 and above
-
- drivers/ufs/host/ufs-qcom.c | 202 ++++++++++++++++++++++++++++--------
- drivers/ufs/host/ufs-qcom.h |  18 +++-
- 2 files changed, 175 insertions(+), 45 deletions(-)
-
+ static inline void
+ ufs_qcom_get_controller_revision(struct ufs_hba *hba,
 --
 2.17.1
 
