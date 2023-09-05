@@ -2,160 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9652D792E52
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A360792F21
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238283AbjIETIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 15:08:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
+        id S240619AbjIETmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:42:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241625AbjIETIV (ORCPT
+        with ESMTP id S231634AbjIETmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 15:08:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3D4B0
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693940763;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/0aAtKGZKY2TsC8NWxjXlesPhzcxWuJvtlmaEX2vDxs=;
-        b=QAiL9R46erX6/bzfzi7P4+A/e70IrnKBWZdghVWADr5unJe+iUaX/VAQOL1x1UHHlyyTJ3
-        LvAD8+HBrgFjby3HsU1rWIwtIIhcNzKqyc0SgF7zB/u16jhClbM1WoYjIMepgsIvROYjXz
-        rjRKxfjGsJm0i/GN4YFXxbUI0a3Eqp0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-390-s5tbT2DAPQe3yptpBGAfnQ-1; Tue, 05 Sep 2023 14:59:44 -0400
-X-MC-Unique: s5tbT2DAPQe3yptpBGAfnQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2A765928E61;
-        Tue,  5 Sep 2023 18:59:44 +0000 (UTC)
-Received: from [10.22.9.87] (unknown [10.22.9.87])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id ADFA9200A4B6;
-        Tue,  5 Sep 2023 18:59:43 +0000 (UTC)
-Message-ID: <af394f53-224d-baff-5c7d-87eff7fcaad2@redhat.com>
-Date:   Tue, 5 Sep 2023 14:59:43 -0400
+        Tue, 5 Sep 2023 15:42:13 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39CE83;
+        Tue,  5 Sep 2023 12:42:09 -0700 (PDT)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385Ig0MM012704;
+        Tue, 5 Sep 2023 19:00:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=bCMjfEDcp2Ez/aiu5W/6HZO4RxBNtSX1WOn2U+dWPCY=;
+ b=Gji0eTjieYIopOMrSQXGQHj6dcyqbEtyjCGy/ECSfZzYxaG+foYg1Yd4TAJKmcpc94ps
+ TlMs4amep74vY/9pS/iB2Tbbf4Fc91VEexTTAT1D1IXVGXMbNY88lhDMuylIISMRg0xP
+ cB9IPL4RIihXEt8UJ9a8cfuvGvJB+219S31D02AaFHSyUFdrWn6aDrrykrOTH/yc9Wmb
+ M4tAFw8y0kYiznwrsg+SC5rSnCaCXq1CIPhQUb+I76vk2EuM/w/MDmIJz2m5ZwNWGuGc
+ bFogB9yNXxFL4T2jNXR4hZKxCtMAX3xj3vFuKfqS/ylHqUwfzlcZmz1coVilHYdc23ne mg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx9ubgqvh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 19:00:08 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385IiFbd024081;
+        Tue, 5 Sep 2023 19:00:07 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sx9ubgquc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 19:00:07 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385HEH1q006625;
+        Tue, 5 Sep 2023 19:00:05 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3svgvkcy8u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 19:00:05 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385J053m33292850
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 19:00:05 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 1023C5806F;
+        Tue,  5 Sep 2023 19:00:05 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8DE9958064;
+        Tue,  5 Sep 2023 19:00:03 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 19:00:03 +0000 (GMT)
+Message-ID: <50674258-0f4e-eb6f-c40a-d905249a46d5@linux.ibm.com>
+Date:   Tue, 5 Sep 2023 15:00:02 -0400
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATH] cgroup: add cgroup_favordynmods= command-line option
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 18/25] security: Introduce inode_post_set_acl hook
 Content-Language: en-US
-To:     Luiz Capitulino <luizcap@amazon.com>, tj@kernel.org,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     lcapitulino@gmail.com
-References: <20230831142046.37177-1-luizcap@amazon.com>
- <20230905170318.GA16629@dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com>
-From:   Waiman Long <longman@redhat.com>
-In-Reply-To: <20230905170318.GA16629@dev-dsk-luizcap-1d-37beaf15.us-east-1.amazon.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+ <20230904133415.1799503-19-roberto.sassu@huaweicloud.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20230904133415.1799503-19-roberto.sassu@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: NhzYSOGVVmNo22LqiQ8zhpZijtUlgBA9
+X-Proofpoint-ORIG-GUID: byrWmNkxEDSLDaLa4lbAbuEE84jvN08e
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_11,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ phishscore=0 spamscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ lowpriorityscore=0 adultscore=0 impostorscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050161
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 9/5/23 13:03, Luiz Capitulino wrote:
-> On Thu, Aug 31, 2023 at 10:20:46AM -0400, Luiz Capitulino wrote:
->> We have a need of using favordynmods with cgroup v1, which doesn't support
->> changing mount flags during remount. Enabling CONFIG_FAVOR_DYNMODS at
->> build-time is not an option because we want to be able to selectively
->> enable it for certain systems.
->>
->> This commit addresses this by introducing the cgroup_favordynmods=
->> command-line option. This option works for both cgroup v1 and v2 and
->> also allows for disabling favorynmods when the kernel built with
->> CONFIG_FAVOR_DYNMODS=y.
->>
->> Signed-off-by: Luiz Capitulino <luizcap@amazon.com>
-> Hi,
+On 9/4/23 09:34, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
 >
-> Would somebody take a look at this patch please?
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the inode_post_set_acl hook.
 >
-> Thanks,
+> It is useful for EVM to recalculate the HMAC on the modified POSIX ACL and
+> other file metadata, after it verified the HMAC of current file metadata
+> with the inode_set_acl hook.
 >
-> - Luiz
+> LSMs should use the new hook instead of inode_set_acl, when they need to
+> know that the operation was done successfully (not known in inode_set_acl).
+> The new hook cannot return an error and cannot cause the operation to be
+> reverted.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>   fs/posix_acl.c                |  1 +
+>   include/linux/lsm_hook_defs.h |  2 ++
+>   include/linux/security.h      |  7 +++++++
+>   security/security.c           | 17 +++++++++++++++++
+>   4 files changed, 27 insertions(+)
+>
+> diff --git a/fs/posix_acl.c b/fs/posix_acl.c
+> index 7fa1b738bbab..3b7dbea5c3ff 100644
+> --- a/fs/posix_acl.c
+> +++ b/fs/posix_acl.c
+> @@ -1137,6 +1137,7 @@ int vfs_set_acl(struct mnt_idmap *idmap, struct dentry *dentry,
+>   		error = -EIO;
+>   	if (!error) {
+>   		fsnotify_xattr(dentry);
+> +		security_inode_post_set_acl(dentry, acl_name, kacl);
+>   		evm_inode_post_set_acl(dentry, acl_name, kacl);
+>   	}
+>   
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index 9ae573b83737..bba1fbd97207 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -157,6 +157,8 @@ LSM_HOOK(void, LSM_RET_VOID, inode_post_removexattr, struct dentry *dentry,
+>   	 const char *name)
+>   LSM_HOOK(int, 0, inode_set_acl, struct mnt_idmap *idmap,
+>   	 struct dentry *dentry, const char *acl_name, struct posix_acl *kacl)
+> +LSM_HOOK(void, LSM_RET_VOID, inode_post_set_acl, struct dentry *dentry,
+> +	 const char *acl_name, struct posix_acl *kacl)
+>   LSM_HOOK(int, 0, inode_get_acl, struct mnt_idmap *idmap,
+>   	 struct dentry *dentry, const char *acl_name)
+>   LSM_HOOK(int, 0, inode_remove_acl, struct mnt_idmap *idmap,
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 5f296761883f..556d019ebe5c 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -367,6 +367,8 @@ int security_inode_setxattr(struct mnt_idmap *idmap,
+>   int security_inode_set_acl(struct mnt_idmap *idmap,
+>   			   struct dentry *dentry, const char *acl_name,
+>   			   struct posix_acl *kacl);
+> +void security_inode_post_set_acl(struct dentry *dentry, const char *acl_name,
+> +				 struct posix_acl *kacl);
+>   int security_inode_get_acl(struct mnt_idmap *idmap,
+>   			   struct dentry *dentry, const char *acl_name);
+>   int security_inode_remove_acl(struct mnt_idmap *idmap,
+> @@ -894,6 +896,11 @@ static inline int security_inode_set_acl(struct mnt_idmap *idmap,
+>   	return 0;
+>   }
+>   
+> +static inline void security_inode_post_set_acl(struct dentry *dentry,
+> +					       const char *acl_name,
+> +					       struct posix_acl *kacl)
+> +{ }
+> +
+>   static inline int security_inode_get_acl(struct mnt_idmap *idmap,
+>   					 struct dentry *dentry,
+>   					 const char *acl_name)
+> diff --git a/security/security.c b/security/security.c
+> index aa6274c90147..aabace9e24d9 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -2260,6 +2260,23 @@ int security_inode_set_acl(struct mnt_idmap *idmap,
+>   	return evm_inode_set_acl(idmap, dentry, acl_name, kacl);
+>   }
+>   
+> +/**
+> + * security_inode_post_set_acl() - Update inode security after set_acl()
+> + * @dentry: file
+> + * @acl_name: acl name
+> + * @kacl: acl struct
+> + *
+> + * Update inode security field after successful set_acl operation on @dentry.
+> + * The posix acls in @kacl are identified by @acl_name.
+> + */
+> +void security_inode_post_set_acl(struct dentry *dentry, const char *acl_name,
+> +				 struct posix_acl *kacl)
+> +{
+> +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> +		return;
+> +	call_void_hook(inode_post_set_acl, dentry, acl_name, kacl);
+> +}
+> +
+>   /**
+>    * security_inode_get_acl() - Check if reading posix acls is allowed
+>    * @idmap: idmap of the mount
 
-The patch looks good to me. I do have a minor comment that it may be 
-better to use the relatively new __ro_after_init qualifier instead of 
-__read_mostly.
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Cheers,
-Longman
-
->> ---
->>   Documentation/admin-guide/kernel-parameters.txt |  4 ++++
->>   kernel/cgroup/cgroup.c                          | 14 +++++++++++---
->>   2 files changed, 15 insertions(+), 3 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
->> index 0c38a8af95ce..672f76a3c002 100644
->> --- a/Documentation/admin-guide/kernel-parameters.txt
->> +++ b/Documentation/admin-guide/kernel-parameters.txt
->> @@ -580,6 +580,10 @@
->>   			named mounts. Specifying both "all" and "named" disables
->>   			all v1 hierarchies.
->>   
->> +	cgroup_favordynmods= [KNL] Enable or Disable favordynmods.
->> +			Format: { "true" | "false" }
->> +			Defaults to the value of CONFIG_CGROUP_FAVOR_DYNMODS.
->> +
->>   	cgroup.memory=	[KNL] Pass options to the cgroup memory controller.
->>   			Format: <string>
->>   			nosocket -- Disable socket memory accounting.
->> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->> index 5fa95f86cb4d..b625825e270b 100644
->> --- a/kernel/cgroup/cgroup.c
->> +++ b/kernel/cgroup/cgroup.c
->> @@ -207,6 +207,8 @@ static u16 have_exit_callback __read_mostly;
->>   static u16 have_release_callback __read_mostly;
->>   static u16 have_canfork_callback __read_mostly;
->>   
->> +static bool have_favordynmods __read_mostly = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
->> +
->>   /* cgroup namespace for init task */
->>   struct cgroup_namespace init_cgroup_ns = {
->>   	.ns.count	= REFCOUNT_INIT(2),
->> @@ -2265,9 +2267,9 @@ static int cgroup_init_fs_context(struct fs_context *fc)
->>   	fc->user_ns = get_user_ns(ctx->ns->user_ns);
->>   	fc->global = true;
->>   
->> -#ifdef CONFIG_CGROUP_FAVOR_DYNMODS
->> -	ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
->> -#endif
->> +	if (have_favordynmods)
->> +		ctx->flags |= CGRP_ROOT_FAVOR_DYNMODS;
->> +
->>   	return 0;
->>   }
->>   
->> @@ -6767,6 +6769,12 @@ static int __init enable_cgroup_debug(char *str)
->>   }
->>   __setup("cgroup_debug", enable_cgroup_debug);
->>   
->> +static int __init cgroup_favordynmods_setup(char *str)
->> +{
->> +	return (kstrtobool(str, &have_favordynmods) == 0);
->> +}
->> +__setup("cgroup_favordynmods=", cgroup_favordynmods_setup);
->> +
->>   /**
->>    * css_tryget_online_from_dir - get corresponding css from a cgroup dentry
->>    * @dentry: directory dentry of interest
->> -- 
->> 2.40.1
->>
 
