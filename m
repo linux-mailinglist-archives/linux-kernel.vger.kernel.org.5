@@ -2,200 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 68631792A02
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E187792AF0
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355146AbjIEQae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:30:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44390 "EHLO
+        id S230371AbjIEQpG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:45:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354569AbjIEMm4 (ORCPT
+        with ESMTP id S1354572AbjIEMoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:42:56 -0400
-Received: from mail-pl1-f207.google.com (mail-pl1-f207.google.com [209.85.214.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13B561A8
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:42:53 -0700 (PDT)
-Received: by mail-pl1-f207.google.com with SMTP id d9443c01a7336-1b88decb2a9so34978805ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 05:42:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693917771; x=1694522571;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+A22TUng3ehfxKNM9eOPCzIy7tpRELO/RihFdMxcoOw=;
-        b=CpoMcORfPrND60Sr+4+IsKJgfm+qhCnYoqdSbn7tdDN0hDlfAt4ejvWT+eNBuCCXFh
-         r6XHf1gGQ9syScNQtYsxOjQzpH3gZlLqU9aeMl9OLeoRsdPMfXqJfJtJlFkVSnTWtUwx
-         FJRKdJpeTaq4S0mNyFe8CImnuXqy7syqLRbM2uNLeMtDewyNC6Q+xUHPHR4gwIFZ1NLC
-         Y15TEEEq0mEfm6hD+QANuzjdyP8ZFRPaIITCfvT0Vflh9e5KfWf9nYbm0FZgmmZIbD+q
-         IBamuVpYwX3tmgLENdgtfXrh3OGs33o/7mkSLIyaPh0CKKz0YwJCPFJd6t2/sBoyrHj8
-         9AMg==
-X-Gm-Message-State: AOJu0YwlbtpHCEsYCeda7pRQmk0js6kL60D2zGz/1evppyDBKXueuRPe
-        2zoeSHQs2V+cy3O41HvZqf5Zy2nu21ErT1KuK2msyNbXYYFH
-X-Google-Smtp-Source: AGHT+IHekrccDvZh3yL6oOrsD0OJeiraoLHOiYi6pobMI/N+w1SGXocvD4awgQmGYdOUDTsREl1+E1Ma+dIIH8wj4aUyPFgsN0iK
+        Tue, 5 Sep 2023 08:44:13 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B2A1AD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:44:09 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qdVPD-0000Dg-Rh; Tue, 05 Sep 2023 14:43:43 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qdVPB-004CML-Sv; Tue, 05 Sep 2023 14:43:41 +0200
+Received: from ore by dude04.red.stw.pengutronix.de with local (Exim 4.96)
+        (envelope-from <ore@pengutronix.de>)
+        id 1qdVPB-00HGwM-1Z;
+        Tue, 05 Sep 2023 14:43:41 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Eric Dumazet <edumazet@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Arun Ramadoss <arun.ramadoss@microchip.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        UNGLinuxDriver@microchip.com,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        devicetree@vger.kernel.org
+Subject: [RFC net-next v1 2/2] net: dsa: microchip: ksz9477: Add drive strength configuration
+Date:   Tue,  5 Sep 2023 14:43:40 +0200
+Message-Id: <20230905124340.4116542-2-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230905124340.4116542-1-o.rempel@pengutronix.de>
+References: <20230905124340.4116542-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:fb06:b0:1bb:cdea:d959 with SMTP id
- le6-20020a170902fb0600b001bbcdead959mr2555938plb.0.1693917771735; Tue, 05 Sep
- 2023 05:42:51 -0700 (PDT)
-Date:   Tue, 05 Sep 2023 05:42:51 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001027a206049bf7da@google.com>
-Subject: [syzbot] [bluetooth?] KASAN: use-after-free Read in hci_conn_security
-From:   syzbot <syzbot+b1b9423479233352b99e@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.9 required=5.0 tests=BAYES_00,FROM_LOCAL_DIGITS,
-        FROM_LOCAL_HEX,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Add device tree based drive strength configuration support. It is needed to
+pass EMI validation on our hardware.
 
-syzbot found the following issue on:
+Configuration values are based on the vendor's reference driver.
 
-HEAD commit:    2ea35288c83b skbuff: skb_segment, Call zero copy functions..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f46d87a80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=634e05b4025da9da
-dashboard link: https://syzkaller.appspot.com/bug?extid=b1b9423479233352b99e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+Tested on KSZ9563R.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d8d28ba7b968/disk-2ea35288.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/12a9f785a85b/vmlinux-2ea35288.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d71c4427c061/bzImage-2ea35288.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b1b9423479233352b99e@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-BUG: KASAN: use-after-free in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
-BUG: KASAN: use-after-free in hci_conn_ssp_enabled include/net/bluetooth/hci_core.h:988 [inline]
-BUG: KASAN: use-after-free in hci_conn_security+0x324/0x990 net/bluetooth/hci_conn.c:2409
-Read of size 8 at addr ffff8880784dda70 by task kworker/1:11/12886
-
-CPU: 1 PID: 12886 Comm: kworker/1:11 Not tainted 6.5.0-syzkaller-04006-g2ea35288c83b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 07/26/2023
-Workqueue: events l2cap_info_timeout
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0xc4/0x620 mm/kasan/report.c:475
- kasan_report+0xda/0x110 mm/kasan/report.c:588
- check_region_inline mm/kasan/generic.c:181 [inline]
- kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
- instrument_atomic_read include/linux/instrumented.h:68 [inline]
- _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
- hci_conn_ssp_enabled include/net/bluetooth/hci_core.h:988 [inline]
- hci_conn_security+0x324/0x990 net/bluetooth/hci_conn.c:2409
- l2cap_chan_check_security+0x16f/0x320 net/bluetooth/l2cap_core.c:929
- l2cap_conn_start+0x59b/0xa40 net/bluetooth/l2cap_core.c:1646
- process_one_work+0xaa2/0x16f0 kernel/workqueue.c:2600
- worker_thread+0x687/0x1110 kernel/workqueue.c:2751
- kthread+0x33a/0x430 kernel/kthread.c:389
- ret_from_fork+0x2c/0x70 arch/x86/kernel/process.c:145
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:304
- </TASK>
-
-The buggy address belongs to the physical page:
-page:ffffea0001e13740 refcount:0 mapcount:0 mapping:0000000000000000 index:0x4 pfn:0x784dd
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 ffffffff00000201 0000000000000000
-raw: 0000000000000004 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 2, migratetype Unmovable, gfp_mask 0x140dc0(GFP_USER|__GFP_COMP|__GFP_ZERO), pid 9825, tgid 9825 (syz-executor.2), ts 251793148654, free_ts 864555377636
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x2d2/0x350 mm/page_alloc.c:1570
- prep_new_page mm/page_alloc.c:1577 [inline]
- get_page_from_freelist+0x10a9/0x31e0 mm/page_alloc.c:3221
- __alloc_pages+0x1d0/0x4a0 mm/page_alloc.c:4477
- __alloc_pages_node include/linux/gfp.h:237 [inline]
- alloc_pages_node include/linux/gfp.h:260 [inline]
- __kmalloc_large_node+0x87/0x1c0 mm/slab_common.c:1126
- __do_kmalloc_node mm/slab_common.c:973 [inline]
- __kmalloc.cold+0xb/0xe0 mm/slab_common.c:998
- kmalloc include/linux/slab.h:586 [inline]
- kzalloc include/linux/slab.h:703 [inline]
- hci_alloc_dev_priv+0x1d/0x2780 net/bluetooth/hci_core.c:2467
- hci_alloc_dev include/net/bluetooth/hci_core.h:1600 [inline]
- __vhci_create_device+0xf7/0x800 drivers/bluetooth/hci_vhci.c:402
- vhci_create_device drivers/bluetooth/hci_vhci.c:475 [inline]
- vhci_get_user drivers/bluetooth/hci_vhci.c:532 [inline]
- vhci_write+0x2c7/0x470 drivers/bluetooth/hci_vhci.c:612
- call_write_iter include/linux/fs.h:1985 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x650/0xe40 fs/read_write.c:584
- ksys_write+0x12f/0x250 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-page last free stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1161 [inline]
- free_unref_page_prepare+0x508/0xb90 mm/page_alloc.c:2348
- free_unref_page+0x33/0x3b0 mm/page_alloc.c:2443
- hci_release_dev+0x4da/0x600 net/bluetooth/hci_core.c:2792
- bt_host_release+0x6a/0xb0 net/bluetooth/hci_sysfs.c:93
- device_release+0xa1/0x240 drivers/base/core.c:2484
- kobject_cleanup lib/kobject.c:682 [inline]
- kobject_release lib/kobject.c:713 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1f7/0x5b0 lib/kobject.c:730
- put_device+0x1f/0x30 drivers/base/core.c:3733
- vhci_release+0x87/0x100 drivers/bluetooth/hci_vhci.c:670
- __fput+0x3f7/0xa70 fs/file_table.c:384
- task_work_run+0x14d/0x240 kernel/task_work.c:179
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa99/0x2a20 kernel/exit.c:874
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1024
- __do_sys_exit_group kernel/exit.c:1035 [inline]
- __se_sys_exit_group kernel/exit.c:1033 [inline]
- __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1033
- do_syscall_x64 arch/x86/entry/common.c:50 [inline]
- do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
- entry_SYSCALL_64_after_hwframe+0x63/0xcd
-
-Memory state around the buggy address:
- ffff8880784dd900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880784dd980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff8880784dda00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                                                             ^
- ffff8880784dda80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff8880784ddb00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ drivers/net/dsa/microchip/ksz9477.c | 120 ++++++++++++++++++++++++++++
+ 1 file changed, 120 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/drivers/net/dsa/microchip/ksz9477.c b/drivers/net/dsa/microchip/ksz9477.c
+index 83b7f2d5c1ea6..04582d3fcbe14 100644
+--- a/drivers/net/dsa/microchip/ksz9477.c
++++ b/drivers/net/dsa/microchip/ksz9477.c
+@@ -19,6 +19,30 @@
+ #include "ksz_common.h"
+ #include "ksz9477.h"
+ 
++/**
++ * struct ksz9477_drive_strength - drive strength mapping
++ * @reg_val:	register value
++ * @milliamp:	milliamp value
++ */
++struct ksz9477_drive_strength {
++	u32 reg_val;
++	u32 milliamp;
++};
++
++/* Drive strength mapping.
++ * This values are not documented and taken from vendor's reference driver.
++ */
++static const struct ksz9477_drive_strength ksz9477_drive_strengths[] = {
++	{ SW_DRIVE_STRENGTH_2MA,  2000 },
++	{ SW_DRIVE_STRENGTH_4MA,  4000 },
++	{ SW_DRIVE_STRENGTH_8MA,  8000 },
++	{ SW_DRIVE_STRENGTH_12MA, 12000 },
++	{ SW_DRIVE_STRENGTH_16MA, 16000 },
++	{ SW_DRIVE_STRENGTH_20MA, 20000 },
++	{ SW_DRIVE_STRENGTH_24MA, 24000 },
++	{ SW_DRIVE_STRENGTH_28MA, 28000 },
++};
++
+ static void ksz_cfg(struct ksz_device *dev, u32 addr, u8 bits, bool set)
+ {
+ 	regmap_update_bits(ksz_regmap_8(dev), addr, bits, set ? bits : 0);
+@@ -1097,11 +1121,107 @@ int ksz9477_enable_stp_addr(struct ksz_device *dev)
+ 	return 0;
+ }
+ 
++/**
++ * ksz9477_drive_strength_to_reg() - convert milliamp value to register value
++ * @milliamp:	milliamp value
++ *
++ * Return: register value
++ */
++static u32 ksz9477_drive_strength_to_reg(u32 milliamp)
++{
++	size_t array_size = ARRAY_SIZE(ksz9477_drive_strengths);
++	int i;
++
++	for (i = 0; i < array_size; i++) {
++		if (ksz9477_drive_strengths[i].milliamp >= milliamp)
++			return ksz9477_drive_strengths[i].reg_val;
++	}
++
++	/* return the highest value if the requested value is too high */
++	return ksz9477_drive_strengths[array_size - 1].reg_val;
++}
++
++/**
++ * ksz9477_parse_drive_strength() - parse drive strength from device tree
++ * @dev:	ksz device
++ *
++ * Return: 0 on success, error code otherwise
++ */
++static int ksz9477_parse_drive_strength(struct ksz_device *dev)
++{
++	struct of_prop {
++		const char *name;
++		int offset;
++		int value;
++	} of_props[] = {
++		{
++			"microchip,hi-drive-strength-microamp",
++			SW_HI_SPEED_DRIVE_STRENGTH_S,
++			-1
++		},
++		{
++			"microchip,lo-drive-strength-microamp",
++			SW_LO_SPEED_DRIVE_STRENGTH_S,
++			-1
++		},
++	};
++	struct device_node *np = dev->dev->of_node;
++	bool found = false;
++	int ret;
++	u8 val;
++
++	if (!np)
++		return 0;
++
++	for (int i = 0; i < ARRAY_SIZE(of_props); i++) {
++		ret = of_property_read_u32(np, of_props[i].name,
++					   &of_props[i].value);
++		if (ret && ret != -EINVAL)
++			dev_warn(dev->dev, "Failed to read %s\n",
++				 of_props[i].name);
++		if (ret)
++			continue;
++
++		if (of_props[i].value > 28000 || of_props[i].value < 2000) {
++			dev_warn(dev->dev, "Drive strength value is out of range: %d. Supported values are (2000 - 28000)\n",
++				 of_props[i].value);
++			continue;
++		}
++
++		found = true;
++	}
++
++	if (!found)
++		return 0;
++
++	ret = ksz_read8(dev, REG_SW_IO_STRENGTH__1, &val);
++	if (ret)
++		return ret;
++
++	for (int i = 0; i < ARRAY_SIZE(of_props); i++) {
++		int strength_val;
++
++		if (of_props[i].value == -1)
++			continue;
++
++		strength_val = ksz9477_drive_strength_to_reg(of_props[i].value);
++
++		val &= ~(SW_DRIVE_STRENGTH_M << of_props[i].offset);
++		val |= strength_val << of_props[i].offset;
++	}
++
++	return ksz_write8(dev, REG_SW_IO_STRENGTH__1, val);
++}
++
+ int ksz9477_setup(struct dsa_switch *ds)
+ {
+ 	struct ksz_device *dev = ds->priv;
+ 	int ret = 0;
+ 
++	ret = ksz9477_parse_drive_strength(dev);
++	if (ret)
++		return ret;
++
+ 	ds->mtu_enforcement_ingress = true;
+ 
+ 	/* Required for port partitioning. */
+-- 
+2.39.2
 
-If the bug is already fixed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite bug's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the bug is a duplicate of another bug, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
