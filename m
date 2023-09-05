@@ -2,156 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB31792FC7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:17:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6289F792FCC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242898AbjIEURX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:17:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37288 "EHLO
+        id S243264AbjIEUTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 16:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238362AbjIEURW (ORCPT
+        with ESMTP id S231444AbjIEUS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:17:22 -0400
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8434FAB
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:16:51 -0700 (PDT)
-Received: by mail-ej1-x634.google.com with SMTP id a640c23a62f3a-99c93638322so47417566b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:16:51 -0700 (PDT)
+        Tue, 5 Sep 2023 16:18:59 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EE7713E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:18:39 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-58c8b2d6784so29239937b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:18:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1693944982; x=1694549782; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FOMURYJK1jPXbcrQ6jgRnAGfsBHD/Md4WVv2cMc23FQ=;
-        b=AHTTgaTBiY4tRo8ExH4eQ3DXDosgrK4ZSdVrk8kEAKmjyOAifLo6r786QWd2nuuZDn
-         6JIxgk569ZRDePGC+3cNZuIQzg7Z02e5RA67AijcsL9RSxrEVwgM+nOVMSzCuYYFUs2U
-         KHZlU6QGoEle+z9cP9oD8Ze+dM9NDfB7/PVdo=
+        d=google.com; s=20221208; t=1693945105; x=1694549905; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SKMnAp9f8EJc20n4vg/did2TL5InJz+rEZP+feSjN0k=;
+        b=MgrkBZQvfca4vswOCBULKXhkU3IPwHPR8eorxO4KxnpXly8T0tsDgHGuFlm2l8EOaW
+         +03vwC+Az6rxCmoPFOBirjnCwSQRSL+wBOE8HTrVGH806aBTs+IFM9vn/nm4H5NBHMSU
+         qoh4GdNE33goEgIQXna9QDUNrdCE7WfarTGfxsA7VkukKeQOF6ZztCysBlpXBR2MT7ke
+         W8q7Vu4Glhw/GYhK9bax1F2Jtu71VST0ZayMDMorox6V+EQStE8YqqPR1BI8BPqS/Ysw
+         +qB3D0a1ZLHXPxtWFqJza3XZqKf9do16STZZseSixosbHH2JQ+TihKbzwK35WuAgVyYy
+         dJrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693944982; x=1694549782;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FOMURYJK1jPXbcrQ6jgRnAGfsBHD/Md4WVv2cMc23FQ=;
-        b=KbiwcY2sZsx0MP7qq9wrn9sbakdkfLYLyJpLwVySGjaWrG7QWomlckZsmulj+uwk/0
-         q9Nj09gNdG9rHDTwsxtETxYPBUQCmb73y2k1u2AXlmS7ZKtnJWDbO0vX0ubKAwwaiTHD
-         iDUG2GWspomOSEyOJdx0V2xQgJ2WzUIoPwzIHjWeHHvrNTGZsRNVAiXKKkFg5X/tafR6
-         VI+tz9X/UPxbLytaqKPfapV6xTOczakKkokwBSGwPvd2ABuNxjIJD1Jco08LEXmRfDUj
-         MUt9hwGL+RLmsN3Rsq73y/GItd9JAHkmjCq1XFSgx5oJyHjzmON744DmotGrMJk5S1gq
-         apmQ==
-X-Gm-Message-State: AOJu0YzgU7xjdFbSM41HwEEsvdXADogN11VayD1c88EnuXo9adRGtJpT
-        Z8WqSJEpJL31EFvIm6AgRra5FXtoSr4zY7wgaerq0oEV
-X-Google-Smtp-Source: AGHT+IGX7vjCB4IhV2WiBwRMT2bRwIEoZKRPew+M64wLQ6+u8likvf7sieHn/PtRLUJFzYk9ajZH2g==
-X-Received: by 2002:a17:906:76d4:b0:9a5:a543:2744 with SMTP id q20-20020a17090676d400b009a5a5432744mr859930ejn.33.1693944981909;
-        Tue, 05 Sep 2023 13:16:21 -0700 (PDT)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id pw9-20020a17090720a900b0098884f86e41sm7888636ejb.123.2023.09.05.13.16.21
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 13:16:21 -0700 (PDT)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-521e046f6c7so848a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 13:16:21 -0700 (PDT)
-X-Received: by 2002:a50:d0c1:0:b0:523:bdc9:48a9 with SMTP id
- g1-20020a50d0c1000000b00523bdc948a9mr54207edf.0.1693944980934; Tue, 05 Sep
- 2023 13:16:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230901234202.566951-1-dianders@chromium.org>
- <20230901164111.RFT.3.Iea742f06d8bec41598aa40378fc625fbd7e8a3d6@changeid> <288af70dafc5e73d0fdfac71a33449385d4d6bd3.camel@crapouillou.net>
-In-Reply-To: <288af70dafc5e73d0fdfac71a33449385d4d6bd3.camel@crapouillou.net>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Tue, 5 Sep 2023 13:16:08 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=VuJe7ACFw3pt1z=EAh14_Z4iTOc5VKJt24CGwZYjRpeQ@mail.gmail.com>
-Message-ID: <CAD=FV=VuJe7ACFw3pt1z=EAh14_Z4iTOc5VKJt24CGwZYjRpeQ@mail.gmail.com>
-Subject: Re: [RFT PATCH 03/15] drm/ingenic: Call drm_atomic_helper_shutdown()
- at shutdown time
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     dri-devel@lists.freedesktop.org,
-        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
-        daniel@ffwll.ch, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        d=1e100.net; s=20221208; t=1693945105; x=1694549905;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SKMnAp9f8EJc20n4vg/did2TL5InJz+rEZP+feSjN0k=;
+        b=RrZ+COa1OeWRGQbVSPpkO11o698g5OPnqLnp8yp7p+kNuL5SPut6eE3zslQNO6yrAR
+         f2m7Ae/Ea5MDYFnMcUqkOG5xUC91RBtxo8mRRJ0YHh5ODjIleAlH0FH56twlm3bD00AA
+         DhX76UMqA8e7sw8elZ9ChYc4M1RKMO54WkN6jBZwoo8UyY29qD8ft9fi+HxFkAyhY5jx
+         duZGt5QOoMuz9pe5LGQ/AXQ+ITNIw4W0Lqe5Qm08lJO0gj06ILuJmGr7XiZexrGKXQ0/
+         q0Luqye7FsfRSrbRa5gpR9miz7E6N5oRklS6SKJmuguh/CHRy5IYWEJLlXS/FH1kmZfV
+         isNQ==
+X-Gm-Message-State: AOJu0YxS/mjutNzR52a+kf/dG/+EtT8HOLTxXd9mCnIYY2gWjuO+nIWY
+        MI0NPdvBslKdlWKFRTwTPhBcJ2F3ZYE=
+X-Google-Smtp-Source: AGHT+IFepumOsNdi8jAStIn5DzvkpJUSBmneVeq1kh6ElDXQoU7LqwxwQZX7KSyykOvZjEbMckvsQoANfBU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a81:b38a:0:b0:595:4ab7:bd64 with SMTP id
+ r132-20020a81b38a000000b005954ab7bd64mr370290ywh.7.1693945105293; Tue, 05 Sep
+ 2023 13:18:25 -0700 (PDT)
+Date:   Tue, 5 Sep 2023 13:18:23 -0700
+In-Reply-To: <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
+Mime-Version: 1.0
+References: <20230808085056.14644-1-yan.y.zhao@intel.com> <ZN0S28lkbo6+D7aF@google.com>
+ <ZN1jBFBH4C2bFjzZ@yzhao56-desk.sh.intel.com> <ZN5elYQ5szQndN8n@google.com>
+ <ZN9FQf343+kt1YsX@yzhao56-desk.sh.intel.com> <ZPWBM5DDC6MKINUe@yzhao56-desk.sh.intel.com>
+Message-ID: <ZPeND9WFHR2Xx8BM@google.com>
+Subject: Re: [PATCH 0/2] KVM: x86/mmu: .change_pte() optimization in TDP MMU
+From:   Sean Christopherson <seanjc@google.com>
+To:     Yan Zhao <yan.y.zhao@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        pbonzini@redhat.com
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paul,
+On Mon, Sep 04, 2023, Yan Zhao wrote:
+> ...
+> > > Actually, I don't even completely understand how you're seeing CoW behavior in
+> > > the first place.  No sane guest should blindly read (or execute) uninitialized
+> > > memory.  IIUC, you're not running a Windows guest, and even if you are, AFAIK
+> > > QEMU doesn't support Hyper-V's enlightment that lets the guest assume memory has
+> > > been zeroed by the hypervisor.  If KSM is to blame, then my answer it to turn off
+> > > KSM, because turning on KSM is antithetical to guest performance (not to mention
+> > > that KSM is wildly insecure for the guest, especially given the number of speculative
+> > > execution attacks these days).
+> > I'm running a linux guest.
+> > KSM is not turned on both in guest and host.
+> > Both guest and host have turned on transparent huge page.
+> > 
+> > The guest first reads a GFN in a writable memslot (which is for "pc.ram"),
+> > which will cause
+> >     (1) KVM first sends a GUP without FOLL_WRITE, leaving a huge_zero_pfn or a zero-pfn
+> >         mapped.
+> >     (2) KVM calls get_user_page_fast_only() with FOLL_WRITE as the memslot is writable,
+> >         which will fail
+> > 
+> > The guest then writes the GFN.
+> > This step will trigger (huge pmd split for huge page case) and .change_pte().
+> > 
+> > My guest is surely a sane guest. But currently I can't find out why
+> > certain pages are read before write.
+> > Will return back to you the reason after figuring it out after my long vacation.
+> Finally I figured out the reason.
+> 
+> Except 4 pages were read before written from vBIOS (I just want to skip finding
+> out why vBIOS does this), the remaining thousands of pages were read before
+> written from the guest Linux kernel.
+> 
+> If the guest kernel were configured with "CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y" or
+> "CONFIG_INIT_ON_FREE_DEFAULT_ON=y", or booted with param "init_on_alloc=1" or
+> "init_on_free=1", this read before written problem goes away.
+> 
+> However, turning on those configs has side effects as said in kernel config
+> message:
+> "all page allocator and slab allocator memory will be zeroed when allocated,
+> eliminating many kinds of "uninitialized heap memory" flaws, especially
+> heap content exposures. The performance impact varies by workload, but most
+> cases see <1% impact. Some synthetic workloads have measured as high as 7%."
+> 
+> If without the above two configs, or if with init_on_alloc=0 && init_on_free=0,
+> the root cause for all the reads of uninitialized heap memory are related to
 
-On Mon, Sep 4, 2023 at 2:15=E2=80=AFAM Paul Cercueil <paul@crapouillou.net>=
- wrote:
->
-> Hi Douglas,
->
-> Le vendredi 01 septembre 2023 =C3=A0 16:41 -0700, Douglas Anderson a =C3=
-=A9crit :
-> > Based on grepping through the source code this driver appears to be
-> > missing a call to drm_atomic_helper_shutdown() at system shutdown
-> > time. Among other things, this means that if a panel is in use that
-> > it
-> > won't be cleanly powered off at system shutdown time.
-> >
-> > The fact that we should call drm_atomic_helper_shutdown() in the case
-> > of OS shutdown/restart comes straight out of the kernel doc "driver
-> > instance overview" in drm_drv.c.
-> >
-> > Since this driver uses the component model and shutdown happens at
-> > the
-> > base driver, we communicate whether we have to call
-> > drm_atomic_helper_shutdown() by seeing if drvdata is non-NULL.
-> >
-> > Suggested-by: Maxime Ripard <mripard@kernel.org>
-> > Signed-off-by: Douglas Anderson <dianders@chromium.org>
->
-> LGTM.
-> Acked-by: Paul Cercueil <paul@crapouillou.net>
+Yeah, forcing the guest to pre-initialize all memory is a hack-a-fix and not a
+real solution.
 
-Thanks for the Ack! Would you expect this patch to land through
-"drm-misc", or do you expect it to go through some other tree?
-Running:
+> page cache pages of the guest virtual devices (specifically the virtual IDE
+> device in my case).
 
-./scripts/get_maintainer.pl --scm -f drivers/gpu/drm/ingenic/ingenic-drm-dr=
-v.c
+Why are you using IDE?  IDE is comically slow compared to VirtIO, and VirtIO has
+been broadly supported for something like 15 years, even on Windows.
 
-...does not show that this driver normally goes through drm-misc, but
-it also doesn't show that it goes through any other tree so maybe it's
-just an artifact of the way it's tagged in the MAINTAINERS file? If
-it's fine for this to go through drm-misc, I'll probably land it (with
-your Ack and Maxime's Review) sooner rather than later just to make
-this patch series less unwieldy.
+> The reason for this unconditional read of page into bounce buffer
+> (caused by "swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE)")
+> is explained in the code:
+> 
+> /*
+>  * When dir == DMA_FROM_DEVICE we could omit the copy from the orig
+>  * to the tlb buffer, if we knew for sure the device will
+>  * overwrite the entire current content. But we don't. Thus
+>  * unconditional bounce may prevent leaking swiotlb content (i.e.
+>  * kernel memory) to user-space.
+>  */
+> 
+> If we neglect this risk and do changes like
+> -       swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
+> +       if (dir != DMA_FROM_DEVICE)
+> +               swiotlb_bounce(dev, tlb_addr, mapping_size, DMA_TO_DEVICE);
+> 
+> the issue of pages read before written from guest kernel just went away.
+> 
+> I don't think it's a swiotlb bug, because to prevent leaking swiotlb
+> content, if target page content is not copied firstly to the swiotlb's
+> bounce buffer, then the bounce buffer needs to be initialized to 0.
+> However, swiotlb_tbl_map_single() does not know whether the target page
+> is initialized or not. Then, it would cause page content to be trimmed
+> if device does not overwrite the entire memory.
+> 
+> > 
+> > > 
+> > > If there's something else going on, i.e. if your VM really is somehow generating
+> > > reads before writes, and if we really want to optimize use cases that can't use
+> > > hugepages for whatever reason, I would much prefer to do something like add a
+> > > memslot flag to state that the memslot should *always* be mapped writable.  Because
+> > Will check if this flag is necessary after figuring out the reason.
+> As explained above, I think it's a valid and non-rare practice in guest kernel to
+> cause read of uninitialized heap memory.
 
+Heh, for some definitions of valid.  
 
-> > ---
-> > This commit is only compile-time tested.
-> >
-> > NOTE: this patch touches a lot more than other similar patches since
-> > the bind() function is long and we want to make sure that we unset
-> > the
-> > drvdata if bind() fails.
-> >
-> > While making this patch, I noticed that the bind() function of this
-> > driver is using "devm" and thus assumes it doesn't need to do much
-> > explicit error handling. That's actually a bug. As per kernel docs
-> > [1]
-> > "the lifetime of the aggregate driver does not align with any of the
-> > underlying struct device instances. Therefore devm cannot be used and
-> > all resources acquired or allocated in this callback must be
-> > explicitly released in the unbind callback". Fixing that is outside
-> > the scope of this commit.
-> >
-> > [1] https://docs.kernel.org/driver-api/component.html
-> >
->
-> Noted, thanks.
+> And the host admin may not know exactly when it's appropriate to apply the
+> memslot flag.
 
-FWIW, I think that at least a few other DRM drivers handle this by
-doing some of their resource allocation / acquiring in the probe()
-function and then only doing things in the bind() that absolutely need
-to be in the bind. ;-)
+Yeah, a memslot flag is too fine-grained.
 
+> Do you think it's good to make the "always write_fault = true" solution enabled
+> by default?
 
--Doug
+Sadly, probably not, because that would regress setups that do want to utilize
+CoW, e.g. I'm pretty sure requesting everything to be writable would be a big
+negative for KSM.
+
+I do think we should add a KVM knob though.  Regardless of the validity or frequency
+of the guest behavior, and even though userspace can also workaround this by
+preallocating guest memory, I am struggling to think of any reason outside of KSM
+where CoW semantics are desirable.
+
+Ooh, actually, maybe we could do
+
+	static bool <name_tbd> = !IS_ENABLED(CONFIG_KSM);
+
+and then cross our fingers that that doesn't regress some other funky setups.
