@@ -2,83 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC81792F7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D3B792F9C
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:10:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242551AbjIEUHw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:07:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54682 "EHLO
+        id S233302AbjIEUK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 16:10:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233069AbjIEUHu (ORCPT
+        with ESMTP id S231374AbjIEUKz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:07:50 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43546AB;
-        Tue,  5 Sep 2023 13:07:47 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id d75a77b69052e-4142ca41b89so19844901cf.0;
-        Tue, 05 Sep 2023 13:07:47 -0700 (PDT)
+        Tue, 5 Sep 2023 16:10:55 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017C3E72;
+        Tue,  5 Sep 2023 13:10:21 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2bb9a063f26so46425271fa.2;
+        Tue, 05 Sep 2023 13:10:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693944466; x=1694549266; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wWLhmbexMwFItDsfUj1BiKajqO0nL+fAa0yKi72A9kg=;
-        b=ec35FZiQR6vs8ePnc92VgmiEMlr0k9jkEmCoUanW63vlV4icPo3bNmAtXwjalrZltM
-         zepKNTAfOFdpq0B+j8XW8ram3fbIu7xm8yOtbwwnez0ya1XShvT1exx20SWIzkuOOc1B
-         VIdBZcl07IsD8hJD2tmfGE9Lljg39Yz1sP5zM7ksZCvoc1BHgHHyEIqW9ibuCne6SVUP
-         OGeCrXe9cdnq+9tXl4niafFIHJ5wJjU4ypbxXk2FHmO1upI4oUN+Q4zZYiuZOzXI+ttS
-         Hhrq0g8sECWH11qQOTGKQ2nSw0MSIv3Feofg1XvhCx5Ez/82BXCfnIdp7J+5mvSHvf0z
-         l4mg==
+        d=gmail.com; s=20221208; t=1693944578; x=1694549378; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2Bg2ttwGZhXRH+IvLxorSyd3+PUy2fTzplCQnlymx4A=;
+        b=Nfcm+wWwhZhEk3lcVJc5QpJ5Z4mXlecfzPLd8c6WN6SDLYdzVCr/dX5Q0AmKbbUdei
+         3Zwo0yJYjQLARYhTz3G73pzojl3k9/0varZvjNHMtMfRPVGHgEYVI+VpOLS34K7nNY+f
+         O7S5TpHhp7YNTNuPt5+Cc9t6YkkJMXojFs1nnWb1ox9ipXTpmiwf9G8fZZDKs6J+KM0R
+         ec+fpSoVzB4QnmobpGoDK4AS1UdDBuh/yO3/xcIjfY3GikKTsMLZZ9PUe8fuCPRixeC1
+         hKNJni7VxI0uvtsFaMIGMVXcCo3k6iP90YkS2i9c1BVtuBGRQq6/ZpVGgJvjYnx7fd5y
+         dzTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693944466; x=1694549266;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wWLhmbexMwFItDsfUj1BiKajqO0nL+fAa0yKi72A9kg=;
-        b=Nr98bbChkN+FRHutYN0I7iLpZBMwFsbvoSyAEZhu66Yykm/3bnQ6WxuFAKhyA7WaKg
-         0Il3w0x9dqocpY92WL7NIQFn5CRGFaFl22kADVESRQjv+y2xzn+o5fqgu+Gao/VPFdy1
-         zHUiaRgMZpVBM9NFB8c0+l23nhs2wVSXKm41hLxzq7XIz4/GdlQs9nByuBlhsJrWjgu3
-         JHyNhOYStNhZKDj0krm/gYc+LqX8bABAfw0tL4KMeRgz6xviej+p1mKxm8zWweSdJmlB
-         GeZssAOLkbhdSNT9BEHPdZkRSxdC5vPlmyeWO61yhw/EIXuMH2EwdqJMijNlm5WEkUMo
-         GasQ==
-X-Gm-Message-State: AOJu0Yz/+4vFKbBcOznKlsisazoaI1rpjPjG+0x0Q4f4TxgHFkq9PD6l
-        JKHoh0lXRRhAQijDtNE5Xa+pvb0oRonICg==
-X-Google-Smtp-Source: AGHT+IHYXuEyrFsZo1mZAuwnxMK9+X1hIcxfibCAJKF/FhNk+CgDpk4pUHUE9pHQTzgCca8Z/CJKNw==
-X-Received: by 2002:a05:622a:288:b0:412:217:3d3d with SMTP id z8-20020a05622a028800b0041202173d3dmr14942089qtw.68.1693944466189;
-        Tue, 05 Sep 2023 13:07:46 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id b3-20020ac844c3000000b00410929fe3b9sm4630573qto.58.2023.09.05.13.07.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 13:07:45 -0700 (PDT)
-Message-ID: <3e573810-d50c-9b54-7ea3-f1d82a7ca5b5@gmail.com>
-Date:   Tue, 5 Sep 2023 13:07:41 -0700
+        d=1e100.net; s=20221208; t=1693944578; x=1694549378;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2Bg2ttwGZhXRH+IvLxorSyd3+PUy2fTzplCQnlymx4A=;
+        b=bWjEeeHZW+a6utGDhkMpgVi5wuaMSaLygeZ9Dmd+PXZ2Ue3efnyujMQR+wsfSOrqEL
+         AklCDFjrcC5q/VerFmgfMgNnJJNh403ISDGscFQ5IEXQrLctsr5C4ENVmlYVUAiKK0bp
+         t3ck4Z7UmFYCkrR4vwcYkdELRl05QRZaM6GPOO2Sdr7sNBC7k97ee81ZwjVFTqtRUbIk
+         fMmpz9SR4jUio6p6FS4IWmiInuQxz+VApC/4BtI9dDJKofGw2e3H3kndPr/5wo8SsZtD
+         UZNTg9HC4f41tx7a/nRL3yTnFG1BVytktkHoJ4osqlvYf3P72KKuNzNN3vR8mKGT64uZ
+         i7Sw==
+X-Gm-Message-State: AOJu0YzERrrTG0umJHIt9av01t4vZU/CgOSv/lSQBMDaqEDYc6R3+b+X
+        wUJ98DM2gftKuw6m8ctT5KZXUc9YoMe450U/fOQ=
+X-Google-Smtp-Source: AGHT+IHRWW+Daf1M6sC14e7UZhg9nUBvaleR10o8JR5lHRj0iHpreLU1y1DN4Q2aGqJh3zAcbKIfJzYwBeqSA4psnn4=
+X-Received: by 2002:a2e:8706:0:b0:2bc:c2cb:cd3f with SMTP id
+ m6-20020a2e8706000000b002bcc2cbcd3fmr537361lji.32.1693944578274; Tue, 05 Sep
+ 2023 13:09:38 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Subject: Re: ARM BCM53573 SoC hangs/lockups caused by locks/clock/random
- changes
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>,
-        Waiman Long <longman@redhat.com>
-Cc:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        openwrt-devel@lists.openwrt.org,
-        bcm-kernel-feedback-list@broadcom.com
-References: <a03a6e1d-e99c-40a3-bdac-0075b5339beb@gmail.com>
- <c98e6c5b-d334-075f-71b8-1c2a3b73b205@redhat.com>
- <ZPX6W6q4+ECPbBmq@shell.armlinux.org.uk>
-Content-Language: en-US
-In-Reply-To: <ZPX6W6q4+ECPbBmq@shell.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+References: <20230827072057.1591929-1-zhouchuyi@bytedance.com> <20230827072057.1591929-3-zhouchuyi@bytedance.com>
+In-Reply-To: <20230827072057.1591929-3-zhouchuyi@bytedance.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 5 Sep 2023 13:09:26 -0700
+Message-ID: <CAADnVQLKytNcAF_LkMgMJ1sq9Tv8QMNc3En7Psuxg+=FXP+B-A@mail.gmail.com>
+Subject: Re: [RFC PATCH bpf-next 2/4] bpf: Introduce process open coded
+ iterator kfuncs
+To:     Chuyi Zhou <zhouchuyi@bytedance.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,49 +73,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Aug 27, 2023 at 12:21=E2=80=AFAM Chuyi Zhou <zhouchuyi@bytedance.co=
+m> wrote:
+>
+> This patch adds kfuncs bpf_iter_process_{new,next,destroy} which allow
+> creation and manipulation of struct bpf_iter_process in open-coded iterat=
+or
+> style. BPF programs can use these kfuncs or through bpf_for_each macro to
+> iterate all processes in the system.
+>
+> Signed-off-by: Chuyi Zhou <zhouchuyi@bytedance.com>
+> ---
+>  include/uapi/linux/bpf.h       |  4 ++++
+>  kernel/bpf/helpers.c           |  3 +++
+>  kernel/bpf/task_iter.c         | 31 +++++++++++++++++++++++++++++++
+>  tools/include/uapi/linux/bpf.h |  4 ++++
+>  tools/lib/bpf/bpf_helpers.h    |  5 +++++
+>  5 files changed, 47 insertions(+)
+>
+> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
+> index 2a6e9b99564b..cfbd527e3733 100644
+> --- a/include/uapi/linux/bpf.h
+> +++ b/include/uapi/linux/bpf.h
+> @@ -7199,4 +7199,8 @@ struct bpf_iter_css_task {
+>         __u64 __opaque[1];
+>  } __attribute__((aligned(8)));
+>
+> +struct bpf_iter_process {
+> +       __u64 __opaque[1];
+> +} __attribute__((aligned(8)));
+> +
+>  #endif /* _UAPI__LINUX_BPF_H__ */
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index cf113ad24837..81a2005edc26 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2458,6 +2458,9 @@ BTF_ID_FLAGS(func, bpf_iter_num_destroy, KF_ITER_DE=
+STROY)
+>  BTF_ID_FLAGS(func, bpf_iter_css_task_new, KF_ITER_NEW)
+>  BTF_ID_FLAGS(func, bpf_iter_css_task_next, KF_ITER_NEXT | KF_RET_NULL)
+>  BTF_ID_FLAGS(func, bpf_iter_css_task_destroy, KF_ITER_DESTROY)
+> +BTF_ID_FLAGS(func, bpf_iter_process_new, KF_ITER_NEW)
+> +BTF_ID_FLAGS(func, bpf_iter_process_next, KF_ITER_NEXT | KF_RET_NULL)
+> +BTF_ID_FLAGS(func, bpf_iter_process_destroy, KF_ITER_DESTROY)
+>  BTF_ID_FLAGS(func, bpf_dynptr_adjust)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_null)
+>  BTF_ID_FLAGS(func, bpf_dynptr_is_rdonly)
+> diff --git a/kernel/bpf/task_iter.c b/kernel/bpf/task_iter.c
+> index b1bdba40b684..a6717a76c1e0 100644
+> --- a/kernel/bpf/task_iter.c
+> +++ b/kernel/bpf/task_iter.c
+> @@ -862,6 +862,37 @@ __bpf_kfunc void bpf_iter_css_task_destroy(struct bp=
+f_iter_css_task *it)
+>         kfree(kit->css_it);
+>  }
+>
+> +struct bpf_iter_process_kern {
+> +       struct task_struct *tsk;
+> +} __attribute__((aligned(8)));
+> +
+> +__bpf_kfunc int bpf_iter_process_new(struct bpf_iter_process *it)
+> +{
+> +       struct bpf_iter_process_kern *kit =3D (void *)it;
+> +
+> +       BUILD_BUG_ON(sizeof(struct bpf_iter_process_kern) !=3D sizeof(str=
+uct bpf_iter_process));
+> +       BUILD_BUG_ON(__alignof__(struct bpf_iter_process_kern) !=3D
+> +                                       __alignof__(struct bpf_iter_proce=
+ss));
+> +
+> +       rcu_read_lock();
+> +       kit->tsk =3D &init_task;
+> +       return 0;
+> +}
+> +
+> +__bpf_kfunc struct task_struct *bpf_iter_process_next(struct bpf_iter_pr=
+ocess *it)
+> +{
+> +       struct bpf_iter_process_kern *kit =3D (void *)it;
+> +
+> +       kit->tsk =3D next_task(kit->tsk);
+> +
+> +       return kit->tsk =3D=3D &init_task ? NULL : kit->tsk;
+> +}
+> +
+> +__bpf_kfunc void bpf_iter_process_destroy(struct bpf_iter_process *it)
+> +{
+> +       rcu_read_unlock();
+> +}
 
-
-On 9/4/2023 8:40 AM, Russell King (Oracle) wrote:
-> On Mon, Sep 04, 2023 at 11:25:57AM -0400, Waiman Long wrote:
->>
->> On 9/4/23 04:33, Rafał Miłecki wrote:
->>> As those hangs/lockups are related to so many different changes it's
->>> really hard to debug them.
->>>
->>> This bug seems to be specific to the slow arch clock that affects
->>> stability only when kernel locking code and symbols layout trigger some
->>> very specific timing.
->>>
->>> Enabling CONFIG_PROVE_LOCKING seems to make issue go away but it affects
->>> so much code it's hard to tell why it actually matters.
->>>
->>> Same for disabling CONFIG_SMP. I noticed Broadcom's SDK keeps it
->>> disabled. I tried it and it improves stability (I had 3 devices with 6
->>> days of uptime and counting) indeed. Again it affects a lot of kernel
->>> parts so it's hard to tell why it helps.
->>>
->>> Unless someone comes up with some magic solution I'll probably try
->>> building BCM53573 images without CONFIG_SMP for my personal needs.
->>
->> All the locking operations rely on the fact that the instruction to acquire
->> or release a lock is atomic. Is it possible that it may not be the case
->> under certain circumstances for this ARM BCM53573 SoC? Or maybe some Kconfig
->> options are not set correctly like missing some errata that are needed.
->>
->> I don't know enough about the 32-bit arm architecture to say whether this is
->> the case or not, but that is my best guess.
-> 
-> So, BCM53573 is Cortex-A7, which is ARMv7, which has the exclusive
-> load/store instructions. Whether the SoC has the necessary exclusive
-> monitors to support these instructions is another matter, and I
-> suspect someone with documentation would need to check that.
-
-Finding documentation about this SoC has been very difficult 
-unfortunately...
-
-Would any of the lock or mutex debugging self test catch hardware 
-designed without proper support for exclusive monitors in the DRAM 
-controller? Keep in mind this is an uni-processor system however, does 
-that mean we may have issues in our SMP_ON_UP alternative patching?
--- 
-Florian
+This iter can be used in all ctx-s which is nice, but let's
+make the verifier enforce rcu_read_lock/unlock done by bpf prog
+instead of doing in the ctor/dtor of iter, since
+in sleepable progs the verifier won't recognize that body is RCU CS.
+We'd need to teach the verifier to allow bpf_iter_process_new()
+inside in_rcu_cs() and make sure there is no rcu_read_unlock
+while BPF_ITER_STATE_ACTIVE.
+bpf_iter_process_destroy() would become a nop.
