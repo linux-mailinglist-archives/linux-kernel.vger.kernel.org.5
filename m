@@ -2,112 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98338792A17
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BBF792760
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229549AbjIEQds (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:33:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        id S238759AbjIEQGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:06:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354620AbjIEM4x (ORCPT
+        with ESMTP id S1354618AbjIEM4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:56:53 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089CF1A8;
-        Tue,  5 Sep 2023 05:56:48 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2b9338e4695so37616951fa.2;
-        Tue, 05 Sep 2023 05:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693918606; x=1694523406; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6UhzA8XSGVCuKKYnfBOKwjgBkteIxN0UPAGvmE+dfX0=;
-        b=mu90wKFv7POwPfWoN7x8dXtQXcEOZGh2Hnd3eBvhpMu9fuiXO59atiaSv2lxc1uEU/
-         rvPjW1ATv7hcOIxa+lMSpZSL/SPi04yxICJ5dWdvOLBjlIKAyHiMJMSMzv4pLHjCKsNw
-         CbnqJYAt2cVcChFnK8c3kNwEaMIz/Ni9uPNtYQmAaa/O+xna22HCMbeL+Lx5mm6J4sKn
-         0o7q/lVmfBr5SHgA7M/x/izey3eQmgaDNJrg/ltzHh5otRS4SwQJwigwlfClLddUee9d
-         W9e0W46w0x0R+X0XektDOMJ/CPJMbnjUJIcmuRva1a81O1ptEN53+e3o89jZAEe7lZFz
-         sBgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693918606; x=1694523406;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6UhzA8XSGVCuKKYnfBOKwjgBkteIxN0UPAGvmE+dfX0=;
-        b=Y/o2QH7m++nKugmXcKL8zDkgYuhIVjKxDZKOeqZz7j9feSU4DTEfNbH3a7xKjKQqk5
-         C2ZeZicTfMdKpJ5OyPqF02/HnBCnemgZmoLm4/K/g1ic62+qSij+mdmfAz5WKsX8bh5a
-         z9WOpLlivcpve/lhN7it+CBsuy9LGgoioNI5PyFjaGEDgKFVEzalOz+vd99uujnr9qNv
-         9IX2TfftUuh8JAjyJKMG9XbwFkWAAv10bg1FxzRB/U24QaHvA4LWHKHNln63aKzvkrAE
-         AiAeD2RPQYrSA6HtN/yk9LaaAFv7mUsv3mIMbBZGRxRpdFp5tEg4/Qk0xSNZPw0gnrEs
-         eIqg==
-X-Gm-Message-State: AOJu0Yxxl9UuEROLLchdVbeukOQpzkXmjSCRapXnnS77sH+Hdn48PVFV
-        4FUsjtVsgxoAXc0Zfbh6Kb8=
-X-Google-Smtp-Source: AGHT+IFN6dIuEYAFAeh9yLMH0Umds7V4Gz6vEzYtzLwlFLejVtQwSpZmueW/N3HZo5D5Mix6iYn1dw==
-X-Received: by 2002:a2e:8012:0:b0:2bd:1908:4432 with SMTP id j18-20020a2e8012000000b002bd19084432mr9333259ljg.3.1693918605899;
-        Tue, 05 Sep 2023 05:56:45 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2501:c701:2837:58dc:b622:9e39])
-        by smtp.gmail.com with ESMTPSA id l9-20020a1c7909000000b003fe1c332810sm20085767wme.33.2023.09.05.05.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 05:56:45 -0700 (PDT)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-renesas-soc@vger.kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] pinctrl: renesas: pinctrl-rzg2l: Add validation of GPIO pin in rzg2l_gpio_request()
-Date:   Tue,  5 Sep 2023 13:56:03 +0100
-Message-Id: <20230905125603.74528-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        Tue, 5 Sep 2023 08:56:43 -0400
+Received: from smtpout.efficios.com (unknown [IPv6:2607:5300:203:b2ee::31e5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A961E9;
+        Tue,  5 Sep 2023 05:56:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1693918598;
+        bh=455XTvC9ol/LhrdApr3vB/fUeAmbr04fqAzjMIGtI98=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=azEd68gv6XhyBJ5BYvepfRRBcO1bi1xUu9m9kZ0GWGdMASBhIWWqQQjTlZXWv5o1L
+         ZJ7p96OPgm+iEyhmR5RvjsI/wjsU/pvKT0AxiLjvsw1w929Rkesu1zOL6Co1DhWsX8
+         THxfZERNoD86M1gAzwup6mJnPGN6suW4p0iHbuVDkWDWPAdU8P33Km2JUTzuEIs+9O
+         Ktd9944/Ra6eTui31IB1bJPp3ig+NZ+UskJvvHteoT1YO/WHLCOo5+l4ZKmy/y8s+7
+         onVbzIOcbMzzw5eodILtMrlR9Cu/eER6SrZOW2TSzXXeISLNUCtswgyTRAE1zMrwWf
+         K2zCeoLPSv1Bw==
+Received: from [172.16.0.134] (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4Rg59f0yrdz1N0T;
+        Tue,  5 Sep 2023 08:56:38 -0400 (EDT)
+Message-ID: <7beb35c3-217a-d3c3-8e75-a1212500d2ac@efficios.com>
+Date:   Tue, 5 Sep 2023 08:57:53 -0400
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v3] Fix srcu_struct node grpmask overflow on 64-bit
+ systems
+Content-Language: en-US
+To:     paulmck@kernel.org
+Cc:     Denis Arefev <arefev@swemel.ru>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>, rcu@vger.kernel.org,
+        lvc-project@linuxtesting.org, linux-kernel@vger.kernel.org,
+        trufanov@swemel.ru, vfh@swemel.ru,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+References: <20230904122114.66757-1-arefev@swemel.ru>
+ <a60cf690-2af7-1eee-c1c1-3433d16a1939@efficios.com>
+ <40593b16-8232-27fc-808a-37bad7457dc0@efficios.com>
+ <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+In-Reply-To: <751d2afd-fc91-400d-8889-187031f2bbf0@paulmck-laptop>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 9/4/23 09:58, Paul E. McKenney wrote:
+> On Mon, Sep 04, 2023 at 08:58:48AM -0400, Mathieu Desnoyers wrote:
+>> On 9/4/23 08:42, Mathieu Desnoyers wrote:
+>>> On 9/4/23 08:21, Denis Arefev wrote:
+>>>> The value of an arithmetic expression 1 << (cpu - sdp->mynode->grplo)
+>>>> is subject to overflow due to a failure to cast operands to a larger
+>>>> data type before performing arithmetic.
+>>>>
+>>>> The maximum result of this subtraction is defined by the RCU_FANOUT
+>>>> or other srcu level-spread values assigned by rcu_init_levelspread(),
+>>>> which can indeed cause the signed 32-bit integer literal ("1") to
+>>>> overflow
+>>>> when shifted by any value greater than 31.
+>>>
+>>> We could expand on this:
+>>>
+>>> The maximum result of this subtraction is defined by the RCU_FANOUT
+>>> or other srcu level-spread values assigned by rcu_init_levelspread(),
+>>> which can indeed cause the signed 32-bit integer literal ("1") to overflow
+>>> when shifted by any value greater than 31 on a 64-bit system.
+>>>
+>>> Moreover, when the subtraction value is 31, the 1 << 31 expression results
+>>> in 0xffffffff80000000 when the signed integer is promoted to unsigned long
+>>> on 64-bit systems due to type promotion rules, which is certainly not the
+>>> intended result.
+> 
+> Thank you both!  Could you please also add something to the effect of:
+> "Given default Kconfig options, this bug affects only systems with more
+> than 512 CPUs."?
 
-Validate the GPIO pin request in rzg2l_gpio_request() callback using
-rzg2l_validate_gpio_pin() function. This stops any accidental usage
-of GPIO pins which are not supported by the SoCs.
+Hi Paul,
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/pinctrl/renesas/pinctrl-rzg2l.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+I'm trying to understand this "NR_CPUS > 512 CPUs" default Kconfig lower 
+bound from kernel/rcu/Kconfig and rcu_node_tree.h. Is that on a 32-bit 
+or 64-bit architecture ? Also, I suspect that something like x86-64 
+MAXSMP (or an explicit NR_CPUS) needs to be selected over a default 
+Kconfig to support that many CPUs.
 
-diff --git a/drivers/pinctrl/renesas/pinctrl-rzg2l.c b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-index 37cdfe4b04f9..4ad08a4b786a 100644
---- a/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-+++ b/drivers/pinctrl/renesas/pinctrl-rzg2l.c
-@@ -795,12 +795,18 @@ static const struct pinconf_ops rzg2l_pinctrl_confops = {
- static int rzg2l_gpio_request(struct gpio_chip *chip, unsigned int offset)
- {
- 	struct rzg2l_pinctrl *pctrl = gpiochip_get_data(chip);
-+	const struct pinctrl_pin_desc *pin = &pctrl->desc.pins[offset];
-+	u64 *pin_data = pin->drv_data;
- 	u32 port = RZG2L_PIN_ID_TO_PORT(offset);
- 	u8 bit = RZG2L_PIN_ID_TO_PIN(offset);
- 	unsigned long flags;
- 	u8 reg8;
- 	int ret;
- 
-+	ret = rzg2l_validate_gpio_pin(pctrl, *pin_data, port, bit);
-+	if (ret)
-+		return ret;
-+
- 	ret = pinctrl_gpio_request(chip->base + offset);
- 	if (ret)
- 		return ret;
+Thanks,
+
+Mathieu
+
+
+> 
+> 							Thanx, Paul
+> 
+>>>> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>>>
+>>> With the commit message updated with my comment above, please also add:
+>>>
+>>> Fixes: c7e88067c1 ("srcu: Exact tracking of srcu_data structures
+>>> containing callbacks")
+>>> Cc: <stable@vger.kernel.org> # v4.11
+>>
+>> Sorry, the line above should read:
+>>
+>> Cc: <stable@vger.kernel.org> # v4.11+
+>>
+>> Thanks,
+>>
+>> Mathieu
+>>
+>>> Reviewed-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>
+>>> Thanks!
+>>>
+>>> Mathieu
+>>>
+>>>>
+>>>> Signed-off-by: Denis Arefev <arefev@swemel.ru>
+>>>> ---
+>>>> v3: Changed the name of the patch, as suggested by
+>>>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>> v2: Added fixes to the srcu_schedule_cbs_snp function as suggested by
+>>>> Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+>>>>    kernel/rcu/srcutree.c | 4 ++--
+>>>>    1 file changed, 2 insertions(+), 2 deletions(-)
+>>>>
+>>>> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+>>>> index 20d7a238d675..6c18e6005ae1 100644
+>>>> --- a/kernel/rcu/srcutree.c
+>>>> +++ b/kernel/rcu/srcutree.c
+>>>> @@ -223,7 +223,7 @@ static bool init_srcu_struct_nodes(struct
+>>>> srcu_struct *ssp, gfp_t gfp_flags)
+>>>>                    snp->grplo = cpu;
+>>>>                snp->grphi = cpu;
+>>>>            }
+>>>> -        sdp->grpmask = 1 << (cpu - sdp->mynode->grplo);
+>>>> +        sdp->grpmask = 1UL << (cpu - sdp->mynode->grplo);
+>>>>        }
+>>>>        smp_store_release(&ssp->srcu_sup->srcu_size_state,
+>>>> SRCU_SIZE_WAIT_BARRIER);
+>>>>        return true;
+>>>> @@ -833,7 +833,7 @@ static void srcu_schedule_cbs_snp(struct
+>>>> srcu_struct *ssp, struct srcu_node *snp
+>>>>        int cpu;
+>>>>        for (cpu = snp->grplo; cpu <= snp->grphi; cpu++) {
+>>>> -        if (!(mask & (1 << (cpu - snp->grplo))))
+>>>> +        if (!(mask & (1UL << (cpu - snp->grplo))))
+>>>>                continue;
+>>>>            srcu_schedule_cbs_sdp(per_cpu_ptr(ssp->sda, cpu), delay);
+>>>>        }
+>>>
+>>
+>> -- 
+>> Mathieu Desnoyers
+>> EfficiOS Inc.
+>> https://www.efficios.com
+>>
+
 -- 
-2.34.1
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
 
