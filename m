@@ -2,273 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE5CD7930EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 669477930EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 23:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244121AbjIEV15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 17:27:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51840 "EHLO
+        id S244133AbjIEVcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 17:32:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244074AbjIEV14 (ORCPT
+        with ESMTP id S232877AbjIEVcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 17:27:56 -0400
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3074E185
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 14:27:52 -0700 (PDT)
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mx0.riseup.net (Postfix) with ESMTPS id 4RgJWW3z56z9sq8;
-        Tue,  5 Sep 2023 21:27:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-        t=1693949271; bh=SfC3acT52vqTQcJCjEZ9BZJRIMIFGBBoyzvQKMIu288=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=WAje50ByhEIxKU0ql98qZSwldR4/oWe+pkpmLDxOlGRJMm+JsJlTvIh/dShaK7RAE
-         182UWL/g6SnGrKhj0jtBfGQn/HKj2WtUSr/1enWkFI2EWZcOfmsiYhHvRvp99Up+lX
-         Kkq7Tw7miNQs2C3GgMcC3hTzW23XWuSu8RmRLFWQ=
-X-Riseup-User-ID: FB472200E3F3A7E10ADF48BBEEC92C28C2F7F0C102AD01F3B9A0A5FE1A323228
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-         by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4RgJWQ2kyqzFryd;
-        Tue,  5 Sep 2023 21:27:46 +0000 (UTC)
-From:   Arthur Grillo <arthurgrillo@riseup.net>
-Date:   Tue, 05 Sep 2023 18:27:10 -0300
-Subject: [PATCH v2 2/2] drm/tests: Add new format conversion tests to
- better cover drm_fb_blit()
+        Tue, 5 Sep 2023 17:32:53 -0400
+Received: from pandora.armlinux.org.uk (unknown [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EE19C;
+        Tue,  5 Sep 2023 14:32:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=LKja5aws2FuNbyMoiBbVd5qqc3cfPi6iSJhvodwsuqM=; b=bhse1LJf0wCvKVxWcxMHkE2xQX
+        1w5p5Ls0CgbTqToctz5FOJayXxu22r1vtmpavi6mHDvw/EhXjGib6Fscu//F6EUB5d74kx6/oi/UG
+        BgZ8htWEgiRNfZ3c1eUF+s8rRjhn6mh1Z99+md+APBnvyVuU0q5xkxF4nnkRVv1BkfKrtxL0RkpIM
+        EQKrBeLwSPQLCfK0fxY3yWnHDq7XmgDtYXMZgtBhjxcinQFjK0y2w/ekb9o/PJKMEan8mJRGCkTkg
+        x/6sGZHymUxuu/mWm4bR7iT7vE/1Jl8sVsAA/H5Kd5rxK6zZQRULsAaCu6uMz7CnK/qsweZIWS+ni
+        9AsRTH0g==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:36498)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1qddez-0008Kz-3A;
+        Tue, 05 Sep 2023 22:32:34 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1qddez-000424-EO; Tue, 05 Sep 2023 22:32:33 +0100
+Date:   Tue, 5 Sep 2023 22:32:33 +0100
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        Yonghong Song <yonghong.song@linux.dev>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Stanislav Fomichev <sdf@google.com>,
+        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+        Shubham Bansal <illusionist.neo@gmail.com>,
+        Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>,
+        bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH bpf-next 4/8] arm32, bpf: add support for unconditional
+ bswap instruction
+Message-ID: <ZPeecV807AVEkCJB@shell.armlinux.org.uk>
+References: <20230905210621.1711859-1-puranjay12@gmail.com>
+ <20230905210621.1711859-5-puranjay12@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230905-final-gsoc-v2-2-b52e8cb068ea@riseup.net>
-References: <20230905-final-gsoc-v2-0-b52e8cb068ea@riseup.net>
-In-Reply-To: <20230905-final-gsoc-v2-0-b52e8cb068ea@riseup.net>
-To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     tales.aparecida@gmail.com, andrealmeid@riseup.net,
-        mairacanal@riseup.net, David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?utf-8?q?Jos=C3=A9_Exp=C3=B3sito?= <jose.exposito89@gmail.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Arthur Grillo <arthurgrillo@riseup.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230905210621.1711859-5-puranjay12@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RDNS_NONE,SPF_HELO_NONE,
+        SPF_NONE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To fully cover drm_fb_blit(), add format conversion tests that are only
-supported through drm_fb_blit().
+On Tue, Sep 05, 2023 at 09:06:17PM +0000, Puranjay Mohan wrote:
+> The cpuv4 added a new unconditional bswap instruction with following
+> behaviour:
+> 
+> BPF_ALU64 | BPF_TO_LE | BPF_END with imm = 16/32/64 means:
+> dst = bswap16(dst)
+> dst = bswap32(dst)
+> dst = bswap64(dst)
+> 
+> As we already support converting to big-endian from little-endian we can
+> use the same for unconditional bswap.
+> Since ARM32 is always little-endian, just treat the unconditional scenario
 
-Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
----
- drivers/gpu/drm/tests/drm_format_helper_test.c | 142 +++++++++++++++++++++++++
- 1 file changed, 142 insertions(+)
+This is not true. Arm32 BPF is disabled for BE32 but not for BE8. It's
+entirely possible to build a kernel using BE8 for ARMv7 and have the
+BPF JIT enabled:
 
-diff --git a/drivers/gpu/drm/tests/drm_format_helper_test.c b/drivers/gpu/drm/tests/drm_format_helper_test.c
-index b888f7334510..889287245b1e 100644
---- a/drivers/gpu/drm/tests/drm_format_helper_test.c
-+++ b/drivers/gpu/drm/tests/drm_format_helper_test.c
-@@ -81,6 +81,16 @@ struct fb_swab_result {
- 	const u32 expected[TEST_BUF_SIZE];
- };
- 
-+struct convert_to_xbgr8888_result {
-+	unsigned int dst_pitch;
-+	const u32 expected[TEST_BUF_SIZE];
-+};
-+
-+struct convert_to_abgr8888_result {
-+	unsigned int dst_pitch;
-+	const u32 expected[TEST_BUF_SIZE];
-+};
-+
- struct convert_xrgb8888_case {
- 	const char *name;
- 	unsigned int pitch;
-@@ -98,6 +108,8 @@ struct convert_xrgb8888_case {
- 	struct convert_to_argb2101010_result argb2101010_result;
- 	struct convert_to_mono_result mono_result;
- 	struct fb_swab_result swab_result;
-+	struct convert_to_xbgr8888_result xbgr8888_result;
-+	struct convert_to_abgr8888_result abgr8888_result;
- };
- 
- static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
-@@ -155,6 +167,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
- 			.expected = { 0x0000FF01 },
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0x010000FF },
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0xFF0000FF },
-+		},
- 	},
- 	{
- 		.name = "single_pixel_clip_rectangle",
-@@ -213,6 +233,14 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
- 			.expected = { 0x0000FF10 },
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0x100000FF },
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = { 0xFF0000FF },
-+		},
- 	},
- 	{
- 		/* Well known colors: White, black, red, green, blue, magenta,
-@@ -343,6 +371,24 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 				0x00FFFF77, 0xFFFF0088,
- 			},
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = {
-+				0x11FFFFFF, 0x22000000,
-+				0x330000FF, 0x4400FF00,
-+				0x55FF0000, 0x66FF00FF,
-+				0x7700FFFF, 0x88FFFF00,
-+			},
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  TEST_USE_DEFAULT_PITCH,
-+			.expected = {
-+				0xFFFFFFFF, 0xFF000000,
-+				0xFF0000FF, 0xFF00FF00,
-+				0xFFFF0000, 0xFFFF00FF,
-+				0xFF00FFFF, 0xFFFFFF00,
-+			},
-+		},
- 	},
- 	{
- 		/* Randomly picked colors. Full buffer within the clip area. */
-@@ -458,6 +504,22 @@ static struct convert_xrgb8888_case convert_xrgb8888_cases[] = {
- 				0x0303A8C2, 0x73F06CD2, 0x9C440EA3, 0x00000000, 0x00000000,
- 			},
- 		},
-+		.xbgr8888_result = {
-+			.dst_pitch =  20,
-+			.expected = {
-+				0xA19C440E, 0xB1054D11, 0xC103F3A8, 0x00000000, 0x00000000,
-+				0xD173F06C, 0xA29C440E, 0xB2054D11, 0x00000000, 0x00000000,
-+				0xC20303A8, 0xD273F06C, 0xA39C440E, 0x00000000, 0x00000000,
-+			},
-+		},
-+		.abgr8888_result = {
-+			.dst_pitch =  20,
-+			.expected = {
-+				0xFF9C440E, 0xFF054D11, 0xFF03F3A8, 0x00000000, 0x00000000,
-+				0xFF73F06C, 0xFF9C440E, 0xFF054D11, 0x00000000, 0x00000000,
-+				0xFF0303A8, 0xFF73F06C, 0xFF9C440E, 0x00000000, 0x00000000,
-+			},
-+		},
- 	},
- };
- 
-@@ -1082,6 +1144,84 @@ static void drm_test_fb_swab(struct kunit *test)
- 	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
- }
- 
-+static void drm_test_fb_xrgb8888_to_abgr8888(struct kunit *test)
-+{
-+	const struct convert_xrgb8888_case *params = test->param_value;
-+	const struct convert_to_abgr8888_result *result = &params->abgr8888_result;
-+	size_t dst_size;
-+	u32 *buf = NULL;
-+	__le32 *xrgb8888 = NULL;
-+	struct iosys_map dst, src;
-+
-+	struct drm_framebuffer fb = {
-+		.format = drm_format_info(DRM_FORMAT_XRGB8888),
-+		.pitches = { params->pitch, 0, 0 },
-+	};
-+
-+	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
-+
-+	KUNIT_ASSERT_GT(test, dst_size, 0);
-+
-+	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-+	iosys_map_set_vaddr(&dst, buf);
-+
-+	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
-+	iosys_map_set_vaddr(&src, xrgb8888);
-+
-+	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
-+		NULL : &result->dst_pitch;
-+
-+	int blit_result = 0;
-+
-+	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_ABGR8888, &src, &fb, &params->clip);
-+
-+	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
-+
-+	KUNIT_EXPECT_FALSE(test, blit_result);
-+	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
-+}
-+
-+static void drm_test_fb_xrgb8888_to_xbgr8888(struct kunit *test)
-+{
-+	const struct convert_xrgb8888_case *params = test->param_value;
-+	const struct convert_to_xbgr8888_result *result = &params->xbgr8888_result;
-+	size_t dst_size;
-+	u32 *buf = NULL;
-+	__le32 *xrgb8888 = NULL;
-+	struct iosys_map dst, src;
-+
-+	struct drm_framebuffer fb = {
-+		.format = drm_format_info(DRM_FORMAT_XRGB8888),
-+		.pitches = { params->pitch, 0, 0 },
-+	};
-+
-+	dst_size = conversion_buf_size(DRM_FORMAT_XBGR8888, result->dst_pitch, &params->clip, 0);
-+
-+	KUNIT_ASSERT_GT(test, dst_size, 0);
-+
-+	buf = kunit_kzalloc(test, dst_size, GFP_KERNEL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, buf);
-+	iosys_map_set_vaddr(&dst, buf);
-+
-+	xrgb8888 = cpubuf_to_le32(test, params->xrgb8888, TEST_BUF_SIZE);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, xrgb8888);
-+	iosys_map_set_vaddr(&src, xrgb8888);
-+
-+	const unsigned int *dst_pitch = (result->dst_pitch == TEST_USE_DEFAULT_PITCH) ?
-+		NULL : &result->dst_pitch;
-+
-+	int blit_result = 0;
-+
-+	blit_result = drm_fb_blit(&dst, dst_pitch, DRM_FORMAT_XBGR8888, &src, &fb, &params->clip);
-+
-+	buf = le32buf_to_cpu(test, (__force const __le32 *)buf, dst_size / sizeof(u32));
-+
-+	KUNIT_EXPECT_FALSE(test, blit_result);
-+	KUNIT_EXPECT_MEMEQ(test, buf, result->expected, dst_size);
-+}
-+
- struct clip_offset_case {
- 	const char *name;
- 	unsigned int pitch;
-@@ -1700,6 +1840,8 @@ static struct kunit_case drm_format_helper_test_cases[] = {
- 	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_argb2101010, convert_xrgb8888_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_mono, convert_xrgb8888_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_swab, convert_xrgb8888_gen_params),
-+	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_xbgr8888, convert_xrgb8888_gen_params),
-+	KUNIT_CASE_PARAM(drm_test_fb_xrgb8888_to_abgr8888, convert_xrgb8888_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_clip_offset, clip_offset_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_build_fourcc_list, fb_build_fourcc_list_gen_params),
- 	KUNIT_CASE_PARAM(drm_test_fb_memcpy, fb_memcpy_gen_params),
+        select HAVE_EBPF_JIT if !CPU_ENDIAN_BE32
+
+So it's not true to say "Since ARM32 is always little-endian".
 
 -- 
-2.41.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
