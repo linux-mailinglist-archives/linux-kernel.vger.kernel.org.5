@@ -2,127 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6EE792DBA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCF2C792F3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231393AbjIESuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:50:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35952 "EHLO
+        id S232993AbjIETsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:48:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233497AbjIESuS (ORCPT
+        with ESMTP id S230033AbjIETsA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:50:18 -0400
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B036AEE
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:49:46 -0700 (PDT)
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5230a22cfd1so4066607a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 11:49:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693939427; x=1694544227; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jCtQWgbb02h7KYD8U2ktyb4TldTEghF6cZdnaKwaLc0=;
-        b=ZXPnm4Umne+nsvNglmk4s8t5JsjtnKGSciDSrjiLMXRxXW0DfKaFkN3qcJUQfYgnVk
-         r27xbyFeDJZ64kigB+m2091LwUKlRCwwpt6slS+BALeZ147p8P5+A1vBGcVGuy2KZgam
-         5PZ+flzcZPqMhrNYUN9BR3GsHC42A5DbPTK7CvYrVlMuqSG3Xm9UM8xuHDd6sz/STDw5
-         +JJJ716AQItNAZofn/EwWwEpZ16nUTEsLN198AsI/ZUe8EllvffneZRQSLgumOWVz1y3
-         d8WrD39eBQDsxkQbrli0tl1Z+K7Z7xJJ3Kj4CckGvqd8fVZI6n0JtisFw7SpcnJIdmNh
-         a8BA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693939427; x=1694544227;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jCtQWgbb02h7KYD8U2ktyb4TldTEghF6cZdnaKwaLc0=;
-        b=RlsiGUZa2H4OHKe9wuZ+sONym1MHeTlvxhDaDII5F47oqNbcGDV15eGwLOCfCiDxrV
-         3j9tAf7Nyh+F6i44RJYWXwVtxjA+sRI8C6brQx9+p807IFu4aPw88bI1I6clhTC4q44c
-         1/T5PCxdKixE5VGvSIJUs0UIfmecJJduEnf4ec2+4Fx9UFOEaxDKOc9RViZ/+eA004gP
-         86rYTaMtlEuWIICKc1i5rQyLOpKKhfGKTRflZ304sHCU4+op5BSagwG349/isN2Tifto
-         JnuqxZbvQEDaA/mEGKb7LLnBoygDhLlB6D9DNbGdToA2wqxpoVhKigb3wi50X9XPN9DZ
-         6AKA==
-X-Gm-Message-State: AOJu0YxODnXSyaktPhzSQK9JwynfbDCTF7DQi86z0wkcenPJxeJhVB9l
-        7QvcY7dn9J8abAdtySGj4JGee07Fng+WNpbfGS4=
-X-Google-Smtp-Source: AGHT+IG/vRGmEaxsFaRgwpx5PNlOfs16fo0/0gTaACViAusSmncbJI1uTB1sOjpWhj3mmg2REQVmcQ==
-X-Received: by 2002:a17:906:cc49:b0:9a1:bcf9:4f99 with SMTP id mm9-20020a170906cc4900b009a1bcf94f99mr237434ejb.36.1693930778172;
-        Tue, 05 Sep 2023 09:19:38 -0700 (PDT)
-Received: from krzk-bin.. (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id v26-20020a170906489a00b0099cc36c4681sm7743165ejq.157.2023.09.05.09.19.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 09:19:37 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 09/12] arm64: dts: qcom: msm8998-mtp: correct UFS pad supply
-Date:   Tue,  5 Sep 2023 18:19:17 +0200
-Message-Id: <20230905161920.252013-10-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20230905161920.252013-1-krzysztof.kozlowski@linaro.org>
-References: <20230905161920.252013-1-krzysztof.kozlowski@linaro.org>
+        Tue, 5 Sep 2023 15:48:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6982FB3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 12:47:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1693943229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kiG7LMI58PbxxQ7NC4rZfW+AyfhbvsaLPh/UOZNP78k=;
+        b=FibG8Kania1QHFDDxXBPqb1tYj+jCX1YE47UJYhGpLJRDKfKkB0ETRmNowfhljmY/e3ifh
+        UrBKV6pnH5EqJsy6ISya670FR6ky3VL3ZErrMylQwUldlW2TYAD5iKXB3bxSPpnhjNsVyC
+        GiF2kDf6ziC6aDAv6hYjdOlsHENC3iE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-657-j9vJhjXcOjWqfSdsL5P9pA-1; Tue, 05 Sep 2023 12:20:09 -0400
+X-MC-Unique: j9vJhjXcOjWqfSdsL5P9pA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8B0A11C09CC6;
+        Tue,  5 Sep 2023 16:20:08 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (unknown [10.2.16.42])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8C0EF2026D68;
+        Tue,  5 Sep 2023 16:20:06 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Damian Tometzki <dtometzki@fedoraproject.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Shuah Khan <shuah@kernel.org>, Jeff Xu <jeffxu@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Daniel Verkamp <dverkamp@chromium.org>,
+        Christian Brauner <brauner@kernel.org>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        stable@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] memfd: improve userspace warnings for missing
+ exec-related flags
+References: <20230814-memfd-vm-noexec-uapi-fixes-v2-0-7ff9e3e10ba6@cyphar.com>
+        <20230814-memfd-vm-noexec-uapi-fixes-v2-3-7ff9e3e10ba6@cyphar.com>
+        <ZPFzCSIgZ4QuHsSC@fedora.fritz.box>
+        <20230902155850.ca1d32c16862cbe54ebd36ef@linux-foundation.org>
+Date:   Tue, 05 Sep 2023 18:20:05 +0200
+In-Reply-To: <20230902155850.ca1d32c16862cbe54ebd36ef@linux-foundation.org>
+        (Andrew Morton's message of "Sat, 2 Sep 2023 15:58:50 -0700")
+Message-ID: <8734zs7ft6.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 3.1 on 10.11.54.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Qualcomm UFS phy switched from dedicated driver to QMP phy driver.
-Eventually the old driver was removed in commit 02dca8c981b5 ("phy:
-qcom: remove ufs qmp phy driver").  The original driver and its binding
-used vddp-ref-clk regulator supply, but the new one did not and left the
-supply unused.
+* Andrew Morton:
 
-The Qualcomm UFS phy bindings were also migrated to newer ones and
-dropped support for vddp-ref-clk regulator in commit dc5cb63592bd
-("dt-bindings: phy: migrate QMP UFS PHY bindings to
-qcom,sc8280xp-qmp-ufs-phy.yaml").
+> OK, thanks, I'll revert this.  Spamming everyone even harder isn't a
+> good way to get developers to fix their stuff.
 
-It turns out that this regulator, although with inaccurate name
-vddp-ref-clk, is actually needed to provide supply for VDD_PX10 (or
-similar, depending on the SoC) used by UFS controller.
+Is this really buggy userspace?  Are future kernels going to require
+some of these flags?
 
-Bring back handling of this supply by using more appropriate regulator -
-UFS controller host supply.  This also fixes dtbs_check warning:
+That's going to break lots of applications which use memfd_create to
+enable run-time code generation on locked-down systems because it looked
+like a stable interface (=E2=80=9Cdon't break userspace=E2=80=9D and all th=
+at).
 
-  msm8998-mtp.dtb: phy@1da7000: 'vddp-ref-clk-supply' does not match any of the regexes: 'pinctrl-[0-9]+'
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
- arch/arm64/boot/dts/qcom/msm8998-mtp.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/arm64/boot/dts/qcom/msm8998-mtp.dts b/arch/arm64/boot/dts/qcom/msm8998-mtp.dts
-index 4319f4da8996..7c77612fb990 100644
---- a/arch/arm64/boot/dts/qcom/msm8998-mtp.dts
-+++ b/arch/arm64/boot/dts/qcom/msm8998-mtp.dts
-@@ -412,6 +412,7 @@ &ufshc {
- 	vcc-supply = <&vreg_l20a_2p95>;
- 	vccq-supply = <&vreg_l26a_1p2>;
- 	vccq2-supply = <&vreg_s4a_1p8>;
-+	vdd-hba-supply = <&vreg_l26a_1p2>;
- 	vcc-max-microamp = <750000>;
- 	vccq-max-microamp = <560000>;
- 	vccq2-max-microamp = <750000>;
-@@ -421,7 +422,6 @@ &ufsphy {
- 	status = "okay";
- 	vdda-phy-supply = <&vreg_l1a_0p875>;
- 	vdda-pll-supply = <&vreg_l2a_1p2>;
--	vddp-ref-clk-supply = <&vreg_l26a_1p2>;
- };
- 
- &usb3 {
--- 
-2.34.1
+Thanks,
+Florian
 
