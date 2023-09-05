@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52613792A91
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215CC792B14
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243167AbjIEQjd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:39:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41386 "EHLO
+        id S232481AbjIEQr0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:47:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353709AbjIEH2E (ORCPT
+        with ESMTP id S1353710AbjIEH2G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:28:04 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 549F112A;
-        Tue,  5 Sep 2023 00:28:00 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-402c1407139so23182265e9.1;
-        Tue, 05 Sep 2023 00:28:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693898879; x=1694503679; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cZBR5s2TcOk6Ihcqiuwq7lQP4wWO0jnfk6ipoL5a/u8=;
-        b=Bl4UiPQoZSKOk3altYflwtKGKipmatWcGFBTMQiy2M9MAf17isLUv35yLO5ilZ3bW4
-         IFeFeiWjfM5tuvM49Ou5CtTYHUZfmaPtHFzlEEyNzSp0xF5WUU3im772/0uu8cQzTYiH
-         Gmd+TfXjYm1tZ+VlF88RgyUDZ+RvvhLkF/CIX/luYlQRpRtIB+68pEgP+PX7B3JHG3DS
-         TT+TRopS7PAafpl/bY3Zy15bdcG/TZJ0zR0oNkcQKZOu3RR0ifmDU5/HlVWcg4xQvNuo
-         mcGo8+ZBbyoTZihkKgfE/ipXKLHhn3z3Y/rIDsG3g4xO/Rf+POIWJ4njQeoVOmwmh+BJ
-         fiew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693898879; x=1694503679;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cZBR5s2TcOk6Ihcqiuwq7lQP4wWO0jnfk6ipoL5a/u8=;
-        b=UaFNoHsmtcw4+03wFEghAX/nACQADysyNkHlkrcZPDOpnBGXWYNuNkM769xK1ku6Ew
-         XDZxESbcDnWUgHQpn4ml/QKmwHQL1ZRdJjx1rvHhv0AsOcCWxnOu3vBrIfWh2LmpvmPM
-         +t2ZCgPbS0gRif79BcI92lP6OTCi+TcDzOnOhB9t7/fFwkKyx8O/mifS6pNrv7r+VGt2
-         IrGdhyfO4oyKC7MezMFLQI5PADdZkox7GHD2SUkl2UYE6Hp4SX7bWBSKWWuiDPIWF8UD
-         f38HS6nBlioeDjhpOD2T2kFTKJF6ZFgUZOll6kBfKJBWYdSnx65NE83+l8X+UnV5kyPV
-         PpfQ==
-X-Gm-Message-State: AOJu0YyDCGrUM7xF4klTMwy1GuI1aSN9Zax9hNBT5FZxqrMcKqM/0xvu
-        tv/oRxVRPZoPyroZ2HYbajQ=
-X-Google-Smtp-Source: AGHT+IF+72/5S5hbkeurgEqTmzG+tjG+g1oTHka6O9/k+8Qfm+UOMk7sVv4nGRX04aihjlgLpCC9FQ==
-X-Received: by 2002:a05:6000:4e:b0:317:f714:3be6 with SMTP id k14-20020a056000004e00b00317f7143be6mr7886347wrx.61.1693898878520;
-        Tue, 05 Sep 2023 00:27:58 -0700 (PDT)
-Received: from localhost ([2a01:e0a:32f:1f0:c25b:89f6:3b46:6d1e])
-        by smtp.gmail.com with ESMTPSA id b4-20020adfde04000000b0031aef72a021sm16440112wrm.86.2023.09.05.00.27.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 00:27:58 -0700 (PDT)
-From:   Raphael Gallais-Pou <rgallaispou@gmail.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v4] dt-bindings: irqchip: convert st,stih407-irq-syscfg to DT schema
-Date:   Tue,  5 Sep 2023 09:27:40 +0200
-Message-ID: <20230905072740.23859-1-rgallaispou@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 5 Sep 2023 03:28:06 -0400
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6BF12A;
+        Tue,  5 Sep 2023 00:28:03 -0700 (PDT)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3856YcAB002491;
+        Tue, 5 Sep 2023 07:27:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=256BKtyx5O9hoXC1Xrw2qF7WynCsICZfB8jrzWPy9aU=;
+ b=Q+KkD3ctRvtjvFbhUA+OSfAqg/lDVyaBi4CD53ZKY3cSU8/vTn+Yz66R0RA6DfTprwJk
+ dZbIzngcm17XtLPwrDQMX6Aes8yQwLCNhrxGCI/2d6sSA8FPitWD59pA7jwUyQQD2G91
+ xXW9i7/1qYXcusnUQ6w1joluGwvljqK1/mXlSJQtNwdx8kJWG8hzuYmf3njX8Sr/u2TO
+ ml3CMi/U5PJ0Si4Jliz90NEHLZ0eGIleK/DRtJGZqoSEBkVWeEiVkLKDgc5zxRiCNrsd
+ Et88d7E98bRsQRxZNyLZIM1xxnaoOe+KKk528fIhJh3nu8ahuJKTGS1F+NYfcTsJ/eYS yw== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3suvcrd046-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 07:27:56 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3857RtaW009798
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 5 Sep 2023 07:27:55 GMT
+Received: from [10.216.59.199] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.36; Tue, 5 Sep
+ 2023 00:27:46 -0700
+Message-ID: <08c35c13-fe97-4d81-5ecd-19b079ab9c3b@quicinc.com>
+Date:   Tue, 5 Sep 2023 12:57:42 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH 2/5] dt-bindings: phy: Add qcom,sdx75-qmp-usb3-uni schema
+ file
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+        <kishon@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <gregkh@linuxfoundation.org>, <abel.vesa@linaro.org>,
+        <quic_wcheng@quicinc.com>
+CC:     <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <kernel@quicinc.com>
+References: <1693889028-6485-1-git-send-email-quic_rohiagar@quicinc.com>
+ <1693889028-6485-3-git-send-email-quic_rohiagar@quicinc.com>
+ <0a2fcbc0-4b18-a54c-9f91-9710cc0bea1c@linaro.org>
+ <00bf888f-1501-70d6-eaf0-2592a36d1114@quicinc.com>
+ <4bd9e859-cbc1-6b8b-9c22-0a1745924475@linaro.org>
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+In-Reply-To: <4bd9e859-cbc1-6b8b-9c22-0a1745924475@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: cHLSh3U4hL-nMNCP5uu42IGkOBNJiDxp
+X-Proofpoint-ORIG-GUID: cHLSh3U4hL-nMNCP5uu42IGkOBNJiDxp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_05,2023-08-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 malwarescore=0
+ priorityscore=1501 mlxlogscore=738 impostorscore=0 suspectscore=0
+ lowpriorityscore=0 mlxscore=0 spamscore=0 clxscore=1015 adultscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2308100000 definitions=main-2309050065
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -74,137 +91,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert deprecated format to DT schema format.
 
-Signed-off-by: Raphael Gallais-Pou <rgallaispou@gmail.com>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
----
-Changes in v2:
-	- Added Conor's r-by
-	- Removed quotes surrounding $refs
-	- Hardcoded 'st,invert-ext' possible values
+On 9/5/2023 12:50 PM, Krzysztof Kozlowski wrote:
+> On 05/09/2023 09:08, Rohit Agarwal wrote:
+>> On 9/5/2023 12:19 PM, Krzysztof Kozlowski wrote:
+>>> On 05/09/2023 06:43, Rohit Agarwal wrote:
+>>>> Add a dt-binding schema for SDX75 SoC.
+>>>>
+>>> It's the same as qcom,ipq9574-qmp-usb3-phy.
+>> Seems like this change is not in the tree. Will rebase my change on top
+>> of it and mention the dependency.
+> ??? We do not talk about maintainer tree nor next. This was merged in
+> mainline. You work on some old tree.
+>
+> Sorry, rebase and recheck all your patches on latest next. This includes
+> running smatch, sparse and coccinelle. Do not develop on anything older
+> than maintainer tree or next.
+Oh, Not Sure which file I was looking into. Now got it. This change is 
+present in qcom,sc8280xp-qmp-usb3-uni-phy.yaml.
+Will update this to reuse the same bindings file and add the compatible 
+string here.
 
-Changes in v3:
-	- Fixed enum syntax warnings
-	- Removed reference to driver in favor of device
-
-Changes in v4:
-	- Make clearer description for "st,invert-ext" property
-	- Handle better bitwise logic
----
- .../st,sti-irq-syscfg.txt                     | 30 ---------
- .../st,stih407-irq-syscfg.yaml                | 65 +++++++++++++++++++
- 2 files changed, 65 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt b/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
-deleted file mode 100644
-index 977d7ed3670e..000000000000
---- a/Documentation/devicetree/bindings/interrupt-controller/st,sti-irq-syscfg.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--STMicroelectronics STi System Configuration Controlled IRQs
-------------------------------------------------------------
--
--On STi based systems; External, CTI (Core Sight), PMU (Performance Management),
--and PL310 L2 Cache IRQs are controlled using System Configuration registers.
--This driver is used to unmask them prior to use.
--
--Required properties:
--- compatible	: Should be "st,stih407-irq-syscfg"
--- st,syscfg	: Phandle to Cortex-A9 IRQ system config registers
--- st,irq-device	: Array of IRQs to enable - should be 2 in length
--- st,fiq-device	: Array of FIQs to enable - should be 2 in length
--
--Optional properties:
--- st,invert-ext	: External IRQs can be inverted at will.  This property inverts
--		  these IRQs using bitwise logic.  A number of defines have been
--		  provided for convenience:
--			ST_IRQ_SYSCFG_EXT_1_INV
--			ST_IRQ_SYSCFG_EXT_2_INV
--			ST_IRQ_SYSCFG_EXT_3_INV
--Example:
--
--irq-syscfg {
--	compatible    = "st,stih407-irq-syscfg";
--	st,syscfg     = <&syscfg_cpu>;
--	st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
--			<ST_IRQ_SYSCFG_PMU_1>;
--	st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
--			<ST_IRQ_SYSCFG_DISABLED>;
--};
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-new file mode 100644
-index 000000000000..2b153d7c5421
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/st,stih407-irq-syscfg.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/st,stih407-irq-syscfg.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: STMicroelectronics STi System Configuration Controlled IRQs
-+
-+maintainers:
-+  - Patrice Chotard <patrice.chotard@foss.st.com>
-+
-+description:
-+  On STi based systems; External, CTI (Core Sight), PMU (Performance
-+  Management), and PL310 L2 Cache IRQs are controlled using System
-+  Configuration registers.  This device is used to unmask them prior to use.
-+
-+properties:
-+  compatible:
-+    const: st,stih407-irq-syscfg
-+
-+  st,syscfg:
-+    description: Phandle to Cortex-A9 IRQ system config registers
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+
-+  st,irq-device:
-+    description: Array of IRQs to enable.
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    items:
-+      - description: Enable the IRQ of the channel one.
-+      - description: Enable the IRQ of the channel two.
-+
-+  st,fiq-device:
-+    description: Array of FIQs to enable.
-+    $ref: /schemas/types.yaml#/definitions/uint32-array
-+    items:
-+      - description: Enable the IRQ of the channel one.
-+      - description: Enable the IRQ of the channel two.
-+
-+  st,invert-ext:
-+    description: External IRQs can be inverted at will. This property inverts
-+      these three IRQs using bitwise logic, each one being encoded respectively
-+      on the first, second and fourth bit.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    enum: [ 1, 2, 3, 4, 5, 6 ]
-+
-+required:
-+  - compatible
-+  - st,syscfg
-+  - st,irq-device
-+  - st,fiq-device
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq-st.h>
-+    irq-syscfg {
-+        compatible    = "st,stih407-irq-syscfg";
-+        st,syscfg     = <&syscfg_cpu>;
-+        st,irq-device = <ST_IRQ_SYSCFG_PMU_0>,
-+                        <ST_IRQ_SYSCFG_PMU_1>;
-+        st,fiq-device = <ST_IRQ_SYSCFG_DISABLED>,
-+                        <ST_IRQ_SYSCFG_DISABLED>;
-+    };
-+...
--- 
-2.42.0
-
+Thanks,
+Rohit.
+>
+> Best regards,
+> Krzysztof
+>
