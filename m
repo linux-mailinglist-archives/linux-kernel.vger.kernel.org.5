@@ -2,95 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 51F0B79275C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34053792B73
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240765AbjIEQJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:09:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
+        id S239749AbjIEQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:53:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354513AbjIEMKK (ORCPT
+        with ESMTP id S1354515AbjIEMK4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 08:10:10 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 470361AB;
-        Tue,  5 Sep 2023 05:10:07 -0700 (PDT)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1qdUsf-0006J5-Ge; Tue, 05 Sep 2023 14:10:05 +0200
-Message-ID: <1d79cc64-46d8-42ab-8219-e45e8d19532f@leemhuis.info>
-Date:   Tue, 5 Sep 2023 14:10:04 +0200
+        Tue, 5 Sep 2023 08:10:56 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5924B1AD
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 05:10:50 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7a512434bc9so1971752241.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 05:10:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1693915849; x=1694520649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ByQYrlg6Hr1sWKjfl7KMv/Ov1X/DbHEMOLisUi7M1Ps=;
+        b=fxq/tCupmv/nOG039/9BvceDZmOdl3BFA0L1HvnPKARgYgLupl6F2FSp+/9lIcL8Hn
+         dBpNlSpgXV4nkMFXZsTNOwbJaS6FDAUr4bw5UEt5ST2yYX1eVKqeMfs5sw7Yp1vVt3E9
+         lYQmBdSQRTHL4S0Gm3pFCX/uIhV5/Hc50MzjBm9NYzDcUeHai8Kqorgd8y+ucqzZ0U50
+         VxQz7tzG6/9HYTu88FkKsr0ju20OBzcftL5LtIfzQbsq2brqTvAqKA2eAmNDu4PexoYq
+         xH/K9cwAc9RAaU7t7r5jsBm88LtRNbWcfltz0CEhzaOcKJHaXN/srgYmSxeZiGM7yTiC
+         sWUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693915849; x=1694520649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ByQYrlg6Hr1sWKjfl7KMv/Ov1X/DbHEMOLisUi7M1Ps=;
+        b=Asdqa/BwyD9FFOo35EUhqJ89tbRDhOOyehg9ifFKBUvxGCqg1PJRXeafWtWnfMvupQ
+         Wex2FcHfOKjO0KeUyimQwxyiuAW4bRV7MWZDSWK8aMi6R4QGsmu1ZP8hE33Q6gDUuyBL
+         zGhaoNpVLTsDu8bvVcvfAukU5oTI6YLRqKtlSBdaFrwNzYbynZemwXjjXXWo8fawhTPp
+         1jX0NhPs8EVfq8QU9JTJOqMTYQaIN4/L8MzVuA77gGyFqD+BUXhH5h2kjjF1eHHKAHmj
+         bBQ42jRFLrIisN/f6ibP8K+3K5ATQtOb+YQXUxBZdGQrwH1xYunQ+p3OovWYX3OGOJnQ
+         dVig==
+X-Gm-Message-State: AOJu0YxlY5yRBOMexRf2mVBX6bIDO3gNhPFKMomv6CllmZQf7OFDk+GQ
+        rzns//GvMwerbudq1PkfgT+lnmFgG1PaXa3C/z8J2g==
+X-Google-Smtp-Source: AGHT+IEIDe8QcwF4NCVvAh4n2QHR7c6zc20jFgCDper8N68SO8cyxneqQqWx+EiQVQWMnfeTiEiFMG1aT5aP6qIC0QQ=
+X-Received: by 2002:a05:6102:1481:b0:44d:6281:4fc2 with SMTP id
+ d1-20020a056102148100b0044d62814fc2mr9197302vsv.3.1693915849457; Tue, 05 Sep
+ 2023 05:10:49 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Don't fill the kernel log with memfd_create messages
-Content-Language: en-US, de-DE
-To:     Linux kernel regressions list <regressions@lists.linux.dev>
-Cc:     stable@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org
-References: <1693408388.rwssx8r1h9.none.ref@localhost>
- <1693408388.rwssx8r1h9.none@localhost>
- <14b4a922-a31a-a329-0264-3d8bd101ee6b@suse.cz>
-From:   "Linux regression tracking #update (Thorsten Leemhuis)" 
-        <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <14b4a922-a31a-a329-0264-3d8bd101ee6b@suse.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1693915807;afc559ae;
-X-HE-SMSGID: 1qdUsf-0006J5-Ge
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20230905082413.21954-1-brgl@bgdev.pl> <ZPcZfd5UtzMmIUvm@smile.fi.intel.com>
+ <ZPcaVjOudGeLd5EP@smile.fi.intel.com>
+In-Reply-To: <ZPcaVjOudGeLd5EP@smile.fi.intel.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 5 Sep 2023 14:10:38 +0200
+Message-ID: <CAMRc=McjfYqkX5jL=kwWnceHopebbgDr2XV_h5fjkG=7n7kD-Q@mail.gmail.com>
+Subject: Re: [PATCH v3] gpio: sim: don't fiddle with GPIOLIB private members
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[TLDR: This mail in primarily relevant for Linux kernel regression
-tracking. See link in footer if these mails annoy you.]
+On Tue, Sep 5, 2023 at 2:09=E2=80=AFPM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Sep 05, 2023 at 03:05:17PM +0300, Andy Shevchenko wrote:
+> > On Tue, Sep 05, 2023 at 10:24:13AM +0200, Bartosz Golaszewski wrote:
+>
+> ...
+>
+> > > +   chip->swnode =3D swnode;
+> > > +   ret =3D device_for_each_child(dev, chip, gpio_sim_chip_set_device=
+);
+> > > +   if (!ret)
+> > > +           return -ENODEV;
+> >
+> > Can bus_find_device_by_fwnode() be used here?
+>
+> Answering to myself: you already mentioned that this should cover any bus=
+,
+> so the answer is "no".
+>
 
-On 04.09.23 15:31, Vlastimil Babka wrote:
-> On 8/30/23 17:52, Alex Xu (Hello71) wrote:
->> Hi all,
->>
->> Recently "memfd: improve userspace warnings for missing exec-related 
->> flags" was merged. On my system, this is a regression, not an 
->> improvement, because the entire 256k kernel log buffer (default on x86) 
->> is filled with these warnings and "__do_sys_memfd_create: 122 callbacks 
->> suppressed". I haven't investigated too closely, but the most likely 
->> cause is Wayland libraries.
->>
->> This is too serious of a consequence for using an old API, especially 
->> considering how recently the flags were added. The vast majority of 
->> software has not had time to add the flags: glibc does not define the 
->> macros until 2.38 which was released less than one month ago, man-pages 
->> does not document the flags, and according to Debian Code Search, only 
->> systemd, stress-ng, and strace actually pass either of these flags.
->>
->> Furthermore, since old kernels reject unknown flags, it's not just a 
->> matter of defining and passing the flag; every program needs to 
->> add logic to handle EINVAL and try again.
->>
->> Some other way needs to be found to encourage userspace to add the 
->> flags; otherwise, this message will be patched out because the kernel 
->> log becomes unusable after running unupdated programs, which will still 
->> exist even after upstreams are fixed. In particular, AppImages, 
->> flatpaks, snaps, and similar app bundles contain vendored Wayland 
->> libraries which can be difficult or impossible to update.
-> 
-> It's being reverted:
-> https://lore.kernel.org/all/20230902230530.6B663C433C8@smtp.kernel.org/
+I think I mentioned it under the gpio-consumer where it's true. Here
+we are sure it's on the platform bus.
 
-in that case:
+> But also we have device_find_child() if I understood the purpose of the a=
+bove
+> it should suit better, no?
+>
 
-#regzbot fix: revert "memfd: improve userspace warnings for missing
-exec-related flags".
-#regzbot ignore-activity
+Right, it's a better match.
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
---
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-That page also explains what to do if mails like this annoy you.
+Bart
+
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
