@@ -2,55 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C00792C62
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E505792C20
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239660AbjIERTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:19:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49638 "EHLO
+        id S1354072AbjIERHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:07:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238962AbjIERLw (ORCPT
+        with ESMTP id S1354495AbjIEQ3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 13:11:52 -0400
+        Tue, 5 Sep 2023 12:29:49 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEEB15A09
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:42:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BCA535A3
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 09:19:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1693932064;
+        s=mimecast20190719; t=1693930651;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Izwd6VG11/eR+WdhWkmn/0JiAPOIwvSrL5xnlgkpZ4M=;
-        b=LF3JQU7AAqcxlU0aqGCkKyaKvIiE/nByJFrP5sf12poAzboavQAD5SVwwf4XgnsXz3R9VR
-        BYnXfeug74xkkjsiKDU8IE9wgMum+Vj0pJ0DKPaHXkiqDwLl28ol3m/WcCT5Y846de0+B1
-        ii5QRlsdWy8djcM36Ny7ouS9lqwq+LU=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-659-QXFy4yilNdyoVV1dPwcvsw-1; Tue, 05 Sep 2023 12:12:48 -0400
-X-MC-Unique: QXFy4yilNdyoVV1dPwcvsw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 14F583C1C98E;
-        Tue,  5 Sep 2023 16:12:48 +0000 (UTC)
-Received: from pasta.redhat.com (unknown [10.45.224.39])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0298740C6CCC;
-        Tue,  5 Sep 2023 16:12:46 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, gfs2@lists.linux.dev,
-        David Teigland <teigland@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] gfs2 fixes
-Date:   Tue,  5 Sep 2023 18:12:46 +0200
-Message-Id: <20230905161246.2042842-1-agruenba@redhat.com>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=U9FhosmOuX/2kxCqSD0g8v7LrAhamscfVyLfIomDXec=;
+        b=Rfpa8ZuUkCGDf/jIW1Xxgk79b8RtztxwJrDzo1Oxvo/H3cxETFZFD/9Sis5eZ8WSKxdQiA
+        7urwtLQ3kiE1l8Fqrzvm1a4kP5yxRZg/P0GdVb4yim1yqPQbeDN1xyGIaBenXkzzffHLvJ
+        NUjq5b5ssnB9Nesm/teUYDD5l633NQs=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-235-AOVEbKYANlmgYISdBYFobQ-1; Tue, 05 Sep 2023 12:17:30 -0400
+X-MC-Unique: AOVEbKYANlmgYISdBYFobQ-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-52a5e65d9b4so2082184a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 09:17:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693930649; x=1694535449;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=U9FhosmOuX/2kxCqSD0g8v7LrAhamscfVyLfIomDXec=;
+        b=ctDQZwCotbplmZERdiS1e4oQVCZJUb9e0mRW4iR5d+s9bVBdQY89M2fg1qPAV2HcHv
+         njvYaf413rKT9Rg4dF9YYfn0p3Erf0QB2LPID3S9xGG+rbwtSuRH0y+Ct9vEjej2RuT1
+         46jWwx1I90FwSDonfR6fSglDp/z26v9I2knwx1IcRpXqt5pHHV/A10v24rKMYxGzlQ8N
+         4OhE7fmNkfsR8Xpj9BQJaQLEGGQx0XCHNMSR9jV7ASzq9qpYz+6D4Deui0V/TD1Fzqet
+         YNsRC9PN9XVzJvgmxc9IruVusermpsmG2FUNV7KlOwxGEGP7o7Pz95u7ki+LtssPu868
+         xXEA==
+X-Gm-Message-State: AOJu0YxnTRXStPuIt4hjoMXv1izFuUK/4rWFkIxsrYjpLaUzceZJ5c1q
+        0d17oWEGUtcraHOP4WxKbE0j6oZwEbAbENMRD6fPOsL7NVkOqTZOfQLrOSOY0PQz5PM0lhqoWWf
+        2oT9XvVm8uDXqHMXRT8X1mufM
+X-Received: by 2002:aa7:c392:0:b0:523:2e63:b9b with SMTP id k18-20020aa7c392000000b005232e630b9bmr255962edq.24.1693930648989;
+        Tue, 05 Sep 2023 09:17:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEdZ4V2E5MhG38N8ZjsIoKBtNqCIGRlanPTQRsG/UZ5V1Q9XE0rUNc8DpFyG1DVZlMd0pR2rw==
+X-Received: by 2002:aa7:c392:0:b0:523:2e63:b9b with SMTP id k18-20020aa7c392000000b005232e630b9bmr255947edq.24.1693930648686;
+        Tue, 05 Sep 2023 09:17:28 -0700 (PDT)
+Received: from [192.168.0.224] (a-rm20-17.tin.it. [212.216.165.208])
+        by smtp.gmail.com with ESMTPSA id q6-20020aa7da86000000b0052a063e52b8sm7208162eds.83.2023.09.05.09.17.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 09:17:27 -0700 (PDT)
+Message-ID: <ee0ac345-e3b0-52ea-d70e-0048b2296e67@redhat.com>
+Date:   Tue, 5 Sep 2023 18:17:26 +0200
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.12.0
+Subject: Re: [PATCH v4 7/7] sched/fair: Fair server interface
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+References: <cover.1693510979.git.bristot@kernel.org>
+ <db775d65b18ddac4a75faad6761c6c2abf3efb78.1693510979.git.bristot@kernel.org>
+ <20230905135500.GB20703@noisy.programming.kicks-ass.net>
+Content-Language: en-US, pt-BR, it-IT
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <20230905135500.GB20703@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,133 +96,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 9/5/23 15:55, Peter Zijlstra wrote:
+> On Thu, Aug 31, 2023 at 10:28:58PM +0200, Daniel Bristot de Oliveira wrote:
+>> +static ssize_t
+>> +sched_fair_server_runtime_write(struct file *filp, const char __user *ubuf,
+>> +				size_t cnt, loff_t *ppos)
+>> +{
+>> +	long cpu = (long) ((struct seq_file *) filp->private_data)->private;
+>> +	struct rq *rq = cpu_rq(cpu);
+>> +	unsigned long flags;
+>> +	u64 runtime;
+>> +	int err;
+>> +
+>> +	err = kstrtoull_from_user(ubuf, cnt, 10, &runtime);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	raw_spin_rq_lock_irqsave(rq, flags);
+>> +	if (runtime > rq->fair_server.dl_period)
+>> +		err = -EINVAL;
+>> +	else
+>> +		rq->fair_server.dl_runtime = runtime;
+>> +	raw_spin_rq_unlock_irqrestore(rq, flags);
+>> +
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	*ppos += cnt;
+>> +	return cnt;
+>> +}
+> 
+>> +static ssize_t
+>> +sched_fair_server_period_write(struct file *filp, const char __user *ubuf,
+>> +			       size_t cnt, loff_t *ppos)
+>> +{
+>> +	long cpu = (long) ((struct seq_file *) filp->private_data)->private;
+>> +	struct rq *rq = cpu_rq(cpu);
+>> +	unsigned long flags;
+>> +	u64 period;
+>> +	int err;
+>> +
+>> +	err = kstrtoull_from_user(ubuf, cnt, 10, &period);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	if (period < fair_server_period_min || period > fair_server_period_max)
+>> +		return -EINVAL;
+>> +
+>> +	raw_spin_rq_lock_irqsave(rq, flags);
+>> +	if (period < rq->fair_server.dl_runtime)
+>> +		err = -EINVAL;
+>> +	else
+>> +		rq->fair_server.dl_period = period;
+>> +	raw_spin_rq_unlock_irqrestore(rq, flags);
+>> +
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	*ppos += cnt;
+>> +	return cnt;
+>> +}
+> 
+>> +static ssize_t
+>> +sched_fair_server_defer_write(struct file *filp, const char __user *ubuf,
+>> +			      size_t cnt, loff_t *ppos)
+>> +{
+>> +	long cpu = (long) ((struct seq_file *) filp->private_data)->private;
+>> +	struct rq *rq = cpu_rq(cpu);
+>> +	unsigned long flags;
+>> +	u64 defer;
+>> +	int err;
+>> +
+>> +	err = kstrtoull_from_user(ubuf, cnt, 10, &defer);
+>> +	if (err)
+>> +		return err;
+>> +
+>> +	if (defer < 0 || defer > 1)
+>> +		return -EINVAL;
+>> +
+>> +	raw_spin_rq_lock_irqsave(rq, flags);
+>> +	rq->fair_server_defer = defer;
+>> +	raw_spin_rq_unlock_irqrestore(rq, flags);
+>> +
+>> +	*ppos += cnt;
+>> +	return cnt;
+>> +}
+> 
+> Surely we can write a single function that does all of that with less
+> duplication?
 
-please consider pulling the following gfs2 fixes (*) into the current merge window.
+I agree, I will use your code as starting point for that...
 
-(*) Technically, this updates the address of the shared gfs2 and dlm mailing list
-    so this affects dlm as well; I've coordinated this change with David Teigland.
+> 
+> Additionally, should not the deadline parameters be vetted by access
+> control before being accepted ?
 
-Thanks,
-Andreas
+like security_task_getscheduler(p)? But we have no p...
 
-The following changes since commit 02aee814d37c563e24b73bcd0f9cb608fbd403d4:
+I checked rt throttling, but it seems that it does not check. Do you have
+a pointer?
 
-  Merge tag 'gfs2-v6.4-fixes' of git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2 (2023-08-08 09:27:08 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-v6.5-rc5-fixes
-
-for you to fetch changes up to 2938fd750e8b73a6dac4d9339fb6f7f1cd624a2d:
-
-  MAINTAINERS: Update dlm mailing list (2023-09-05 17:43:07 +0200)
-
-----------------------------------------------------------------
-gfs2 fixes
-
-- Fix a glock state (non-)transition bug when a dlm request times out
-  and is canceled, and we have locking requests that can now be granted
-  immediately.
-
-- Various fixes and cleanups in how the logd and quotad daemons are
-  woken up and terminated.
-
-- Fix several bugs in the quota data reference counting and shrinking.
-  Free quota data objects synchronously in put_super() instead of
-  letting call_rcu() run wild.
-
-- Make sure not to deallocate quota data during a withdraw; rather, defer
-  quota data deallocation to put_super().  Withdraws can happen in
-  contexts in which callers on the stack are holding quota data references.
-
-- Many minor quota fixes and cleanups by Bob.
-
-- Update the the mailing list address for gfs2 and dlm.  (It's the same
-  list for both and we are moving it to gfs2@lists.linux.dev.)
-
-- Various other minor cleanups.
-
-----------------------------------------------------------------
-Andreas Gruenbacher (24):
-      gfs2: Use mapping->gfp_mask for metadata inodes
-      gfs: Don't use GFP_NOFS in gfs2_unstuff_dinode
-      gfs2: do_promote cleanup
-      gfs2: Remove LM_FLAG_PRIORITY flag
-      gfs2: Switch to wait_event in gfs2_logd
-      gfs2: low-memory forced flush fixes
-      gfs2: Fix logd wakeup on I/O error
-      gfs2: journal flush threshold fixes and cleanup
-      gfs2: Rename sd_{ glock => kill }_wait
-      gfs2: Rename SDF_DEACTIVATING to SDF_KILL
-      gfs2: Fix wrong quota shrinker return value
-      gfs2: Use gfs2_qd_dispose in gfs2_quota_cleanup
-      gfs2: Factor out duplicate quota data disposal code
-      gfs2: No more quota complaints after withdraw
-      gfs2: Fix initial quota data refcount
-      gfs2: Free quota data objects synchronously
-      gfs2: Stop using gfs2_make_fs_ro for withdraw
-      gfs2: Fix asynchronous thread destruction
-      gfs2: Switch to wait_event in gfs2_quotad
-      gfs2: Sanitize kthread stopping
-      gfs2: Fix withdraw race
-      gfs2: Rename "gfs_recovery" workqueue to "gfs2_recovery"
-      gfs2: Rename "freeze_workqueue" to "gfs2_freeze"
-      gfs2: Add device name to gfs2_logd and gfs2_quotad
-
-Andrew Price (2):
-      MAINTAINERS: Update gfs2 mailing list
-      MAINTAINERS: Update dlm mailing list
-
-Bob Peterson (24):
-      gfs2: conversion deadlock do_promote bypass
-      gfs2: Use qd_sbd more consequently
-      gfs2: Introduce new quota=quiet mount option
-      gfs2: remove dead code for quota writes
-      gfs2: Pass sdp to gfs2_adjust_quota
-      gfs2: pass sdp in to gfs2_write_disk_quota
-      gfs2: pass sdp to gfs2_write_buf_to_page
-      gfs2: remove unneeded variable done
-      gfs2: remove unneeded pg_oflow variable
-      gfs2: Simplify function need_sync
-      gfs2: Don't try to sync non-changes
-      gfs2: improvements to sysfs status
-      gfs2: move qdsb_put and reduce redundancy
-      gfs2: Small gfs2_quota_lock cleanup
-      gfs2: Remove useless err set
-      gfs2: Set qd_sync_gen in do_sync
-      gfs2: use constant for array size
-      gfs2: Remove quota allocation info from quota file
-      gfs2: introduce qd_bh_get_or_undo
-      gfs2: Simplify qd2offset
-      gfs2: simplify slot_get
-      gfs2: Remove useless assignment
-      gfs2: check for no eligible quota changes
-      gfs2: change qd_slot_count to qd_slot_ref
-
-Minjie Du (1):
-      gfs2: increase usage of folio_next_index() helper
-
- Documentation/filesystems/gfs2-glocks.rst |   3 +-
- MAINTAINERS                               |   4 +-
- fs/gfs2/aops.c                            |   7 +-
- fs/gfs2/bmap.c                            |   2 +-
- fs/gfs2/glock.c                           |  47 ++--
- fs/gfs2/glock.h                           |   9 -
- fs/gfs2/glops.c                           |   2 +-
- fs/gfs2/incore.h                          |   7 +-
- fs/gfs2/inode.c                           |  14 +-
- fs/gfs2/lock_dlm.c                        |   5 -
- fs/gfs2/log.c                             |  69 +++---
- fs/gfs2/lops.c                            |   7 +-
- fs/gfs2/main.c                            |  10 +-
- fs/gfs2/ops_fstype.c                      |  42 ++--
- fs/gfs2/quota.c                           | 368 ++++++++++++++++--------------
- fs/gfs2/recovery.c                        |   4 +-
- fs/gfs2/recovery.h                        |   2 +-
- fs/gfs2/super.c                           |  28 +--
- fs/gfs2/super.h                           |   1 +
- fs/gfs2/sys.c                             |  12 +-
- fs/gfs2/util.c                            |  34 +--
- 21 files changed, 347 insertions(+), 330 deletions(-)
+-- Daniel
 
