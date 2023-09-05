@@ -2,79 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCE079287A
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFC8C792A21
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243515AbjIEQWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49238 "EHLO
+        id S1354556AbjIEQeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:34:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343575AbjIECgl (ORCPT
+        with ESMTP id S1343617AbjIECkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Sep 2023 22:36:41 -0400
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47A41CC6
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 19:36:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1693881397;
-        bh=5+JoxtLs6MVTssB1pdaRBmIYrJlBYbAptn7l8A1Vk+A=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Br/G74WdcIjQZxwDT+3mLhNHjcoPzFSvAB/Y+N6jsZfYbOgF3AbHwCA2vW91rZlkR
-         kVr/zcNm3e4X36YDgFg64oFezqScC1nSyMEJKS5hbIidm9gAd+K/o57X/f/wTVM1rx
-         l7omlV3WPJ63z7H3WOl4x/rqphjCnCs0X90rs7biRA0S0qE3vqHtsK9EWOBeAPkdHi
-         /KPsJpkfn6UjL4BevawmfW2+xPoBB5V/gN4KOst/Y+lDp3S0qDWtKRxUo9XjWb3lI6
-         1pdzYcSZ7Vm5hxGCkj8YaPZzUtEmBTSUzYTBbmw8HmkdQupT9tIZtSjsTk5W/ZjvXd
-         GnY495hVf7QUg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4RfqQF028Gz4wxy;
-        Tue,  5 Sep 2023 12:36:36 +1000 (AEST)
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Nicholas Piggin <npiggin@gmail.com>
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] powerpc/64e: Fix wrong test in
- __ptep_test_and_clear_young()
-In-Reply-To: <2daed51109cbd7e7fbd26fab4e77fc6a27dee63e.1693643773.git.christophe.leroy@csgroup.eu>
-References: <2daed51109cbd7e7fbd26fab4e77fc6a27dee63e.1693643773.git.christophe.leroy@csgroup.eu>
-Date:   Tue, 05 Sep 2023 12:36:36 +1000
-Message-ID: <87a5u1ibwr.fsf@mail.lhotse>
+        Mon, 4 Sep 2023 22:40:17 -0400
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EB2AEB;
+        Mon,  4 Sep 2023 19:40:10 -0700 (PDT)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3852dfYk095566;
+        Tue, 5 Sep 2023 10:39:41 +0800 (+08)
+        (envelope-from Wenchao.Chen@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4RfqQX1bnbz2RD6Z7;
+        Tue,  5 Sep 2023 10:36:52 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx05.spreadtrum.com
+ (10.29.1.56) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Tue, 5 Sep
+ 2023 10:39:39 +0800
+From:   Wenchao Chen <wenchao.chen@unisoc.com>
+To:     <ulf.hansson@linaro.org>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
+        <yuelin.tang@unisoc.com>, Wenchao Chen <wenchao.chen@unisoc.com>
+Subject: [PATCH V3 0/2 RESEND] mmc: hsq: dynamically adjust hsq_depth to improve performance
+Date:   Tue, 5 Sep 2023 10:39:19 +0800
+Message-ID: <20230905023921.10766-1-wenchao.chen@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ shmbx05.spreadtrum.com (10.29.1.56)
+X-MAIL: SHSQR01.spreadtrum.com 3852dfYk095566
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Commit 45201c879469 ("powerpc/nohash: Remove hash related code from
-> nohash headers.") replaced:
->
->   if ((pte_val(*ptep) & (_PAGE_ACCESSED | _PAGE_HASHPTE)) == 0)
-> 	return 0;
->
-> By:
->
->   if (pte_young(*ptep))
-> 	return 0;
->
-> But it should be:
->
->   if (!pte_young(*ptep))
-> 	return 0;
+Change in v3:
+- Use "mrq->data->blksz * mrq->data->blocks == 4096" for 4K.
+- Add explanation for "HSQ_PERFORMANCE_DEPTH".
 
+Change in v2:
+- Support for dynamic adjustment of hsq_depth.
 
-That seems bad :)
+Test
+=====
+I tested 3 times for each case and output a average speed.
+Ran 'fio' to evaluate the performance:
+1.Fixed hsq_depth
+1) Sequential write:
+Speed: 168 164 165
+Average speed: 165.67MB/S
 
-But I don't know off the top of my head where
-__ptep_test_and_clear_young() is used, and so what the symptoms could
-be. Presumably nothing too bad or someone would have noticed?
+2) Sequential read:
+Speed: 326 326 326
+Average speed: 326MB/S
 
-cheers
+3) Random write:
+Speed: 82.6 83 83
+Average speed: 82.87MB/S
+
+4) Random read:
+Speed: 48.2 48.3 47.6
+Average speed: 48.03MB/S
+
+2.Dynamic hsq_depth
+1) Sequential write:
+Speed: 167 166 166
+Average speed: 166.33MB/S
+
+2) Sequential read:
+Speed: 327 326 326
+Average speed: 326.3MB/S
+
+3) Random write:
+Speed: 86.1 86.2 87.7
+Average speed: 86.67MB/S
+
+4) Random read:
+Speed: 48.1 48 48
+Average speed: 48.03MB/S
+
+Based on the above data, dynamic hsq_depth can improve the performance of random writes.
+Random write improved by 4.6%.
+
+In addition, we tested 8K and 16K.
+1.Fixed hsq_depth
+1) Random write(bs=8K):
+Speed: 116 114 115
+Average speed: 115MB/S
+
+2) Random read(bs=8K):
+Speed: 83 83 82.5
+Average speed: 82.8MB/S
+
+3) Random write(bs=16K):
+Speed: 141 142 141
+Average speed: 141.3MB/S
+
+4) Random read(bs=16K):
+Speed: 132 132 132
+Average speed: 132MB/S
+
+2.Dynamic hsq_depth(mrq->data->blksz * mrq->data->blocks == 8192 or 16384)
+1) Random write(bs=8K):
+Speed: 115 115 115
+Average speed: 115MB/S
+
+2) Random read(bs=8K):
+Speed: 82.7 82.9 82.8
+Average speed: 82.8MB/S
+
+3) Random write(bs=16K):
+Speed: 143 141 141
+Average speed: 141.6MB/S
+
+4) Random read(bs=16K):
+Speed: 132 132 132
+Average speed: 132MB/S
+
+Increasing hsq_depth cannot improve 8k and 16k random read/write performance.
+To reduce latency, we dynamically increase hsq_depth only for 4k random writes.
+
+Test cmd
+=========
+1)write: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=write -bs=512K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+2)read: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=read -bs=512K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+3)randwrite: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randwrite -bs=4K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+4)randread: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randread -bs=4K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64
+5)randwrite: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randwrite -bs=8K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+6)randread: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randread -bs=8K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64
+7)randwrite: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randwrite -bs=16K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64									
+8)randread: fio -filename=/dev/mmcblk0p72 -direct=1 -rw=randread -bs=16K -size=512M -group_reporting -name=test -numjobs=8 -thread -iodepth=64
+
+Wenchao Chen (2):
+  mmc: queue: replace immediate with hsq->depth
+  mmc: hsq: dynamic adjustment of hsq->depth
+
+ drivers/mmc/core/queue.c   |  6 +-----
+ drivers/mmc/host/mmc_hsq.c | 28 ++++++++++++++++++++++++++++
+ drivers/mmc/host/mmc_hsq.h | 11 +++++++++++
+ include/linux/mmc/host.h   |  1 +
+ 4 files changed, 41 insertions(+), 5 deletions(-)
+
+-- 
+2.17.1
+
