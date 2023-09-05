@@ -2,293 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A55C97929D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C147B792B35
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1353634AbjIEQ2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
+        id S244094AbjIEQtl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:49:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348648AbjIEEoO (ORCPT
+        with ESMTP id S1348838AbjIEEq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 00:44:14 -0400
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C312DCC7;
-        Mon,  4 Sep 2023 21:44:10 -0700 (PDT)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3854L0Pv005503;
-        Tue, 5 Sep 2023 04:43:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references; s=qcppdkim1;
- bh=w7ruR7Fsnwz/cugtb7ofxHZoQFPMcrK/AYiS3I2EZjE=;
- b=Q/t9tHn48m26ybW23XH1rvgwcZEJFD8xhT+Rnvmocb6hGkXIhZV3FDamweHgJ8Ngawts
- HBmKM4t4OFVwpE1WcoUjSKdLith/70AC/hGhB3AB3bi7ZYVkZK4tv4kYel3ET3LzEoiY
- u436ZHCOzGGQbwU8Rg5lLnBvLwqq2OjwJJsc9gGvo7w3TAE99WyEhDrHQlIiNqUwOAh5
- H/kbDcCP7lkA2KV0LDlULsV6CXLPGKvjhzUUoeDfTQC2PwWTxAuGCtu/F/byUQAnH9kQ
- dPrxPGu9YoI8rzvYzilh50qz2KAKzISrOvOMUJe26wTMkdUCxG0z/EhEqtc2VVeS9c0Q yA== 
-Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3swtevg94q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 05 Sep 2023 04:43:56 +0000
-Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3854hp6c013087;
-        Tue, 5 Sep 2023 04:43:53 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3sux4kav1u-1;
-        Tue, 05 Sep 2023 04:43:53 +0000
-Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3854hqnZ013104;
-        Tue, 5 Sep 2023 04:43:53 GMT
-Received: from hu-sgudaval-hyd.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.213.106.138])
-        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3854hpCr013099;
-        Tue, 05 Sep 2023 04:43:53 +0000
-Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3970568)
-        id AF2E51D04; Tue,  5 Sep 2023 10:13:52 +0530 (+0530)
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        vkoul@kernel.org, kishon@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        gregkh@linuxfoundation.org, abel.vesa@linaro.org,
-        quic_wcheng@quicinc.com
-Cc:     linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, kernel@quicinc.com,
-        Rohit Agarwal <quic_rohiagar@quicinc.com>
-Subject: [PATCH 5/5] phy: qcom-qmp-usb: Add Qualcomm SDX75 USB3 PHY support
-Date:   Tue,  5 Sep 2023 10:13:48 +0530
-Message-Id: <1693889028-6485-6-git-send-email-quic_rohiagar@quicinc.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1693889028-6485-1-git-send-email-quic_rohiagar@quicinc.com>
-References: <1693889028-6485-1-git-send-email-quic_rohiagar@quicinc.com>
-X-QCInternal: smtphost
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: SrAyKqeK0xVfrkZiU6ZCOwbqkvgW1o5C
-X-Proofpoint-ORIG-GUID: SrAyKqeK0xVfrkZiU6ZCOwbqkvgW1o5C
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
- definitions=2023-09-05_02,2023-08-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- adultscore=0 impostorscore=0 priorityscore=1501 clxscore=1015 bulkscore=0
- lowpriorityscore=0 spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
- definitions=main-2309050040
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,SPF_HELO_NONE,
-        SPF_NONE,UPPERCASE_50_75 autolearn=no autolearn_force=no version=3.4.6
+        Tue, 5 Sep 2023 00:46:56 -0400
+Received: from FRA01-PR2-obe.outbound.protection.outlook.com (mail-pr2fra01on2071.outbound.protection.outlook.com [40.107.12.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1D7CC5
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 21:46:50 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KjD6ej2Dp71SGbNsJfMEREgeToUBJPgkcvCSwY/nxdKl+T8UjRC6plHemk0JwAFnpT5s5ySyRwz0fXXLm0HmRN+aiXqju8HYvfckamoW9xZrpT3BHUwLoyxNER906lrgQfvIZI0CLvbqF7+QsnIyojvi1h7wqs8+Z52IsZjpYnoeZ+m6B4gzA9nejOk2bxmgyzIx8gPDQlikBEgrcvhF9uHsmM3QN/0kszHZhGyiiSujTpacr7PB8VL2cS1YKaewcxObo+r4JlMXRQJLe05FYXij6byoCo0BwUz5mUdPtdk53Zqt189zJE/ohI7Fw3T4+IDpHLMFiZVod4XI4up/IA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EfgIyWb9cetCQgEs2dbd+YP/muRFeq22Q7M13AjGozM=;
+ b=TfCFZI+wvfoC9/yElBQ4Z5ruYKBZBcsA0k+rRe3dqS38eNojvbJdsR4/iNqymrRc417BYcopoLml1AvuDnJUNCEQKIPFXphevyCAJd0ydK3F5vXUDqKim0QuUMk1h6XSB15LcOosRb8ufUxA6H1CRWWHv+rjq0qlCBQ6pLu5Lsdo96NY7iysIXRoxDCXbJxXZhkIT7SxLjsxqAxqsOVFpgUzZItvhTp0NMXhUPZoHkje7wmbyPG1YQDwYbGtidb2X4uBb8Lc9CNn7Fe4YyKF2Hh40smt+0bS40ZixOOvOq/Zj0iGbduFSCot08MknGkM/oE2XSpMrMGLJJ05KPEgoA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
+ dkim=pass header.d=csgroup.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EfgIyWb9cetCQgEs2dbd+YP/muRFeq22Q7M13AjGozM=;
+ b=dMSkIWGhWHROl4G8dMlXVgur04MecWhYzfF+io5qZCMNIWEoyXNVCh0t8GNQZv766XWyanLPzip5D+eITyNOeXJjuPO4UOmi8TXwfiUpCy/+O7SWPwT8JPlnBSb2ESMUzN/QYtoccXRf2CAtFrUO+9jluuVyk2e6p8jXk2v0dBFbmMlyEgCLwhXPf6wl33PGT8cMVMuCY/NGLnkx4QT7VLn/Hy6STtpWIT3XEXI7GpEzn5kFQqx4rg19MZ/2AjVqndbrqWjfMMqfmP6WVo7TzWpMcnAMOQIJ1Pkqk6d4nXuj0fz8GML670chHdRIsxyYIJlfWWOzO7cuAOAREP8jNw==
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
+ by PAZP264MB2464.FRAP264.PROD.OUTLOOK.COM (2603:10a6:102:1f3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33; Tue, 5 Sep
+ 2023 04:46:48 +0000
+Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+ ([fe80::2820:d3a6:1cdf:c60e%7]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 04:46:47 +0000
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: Re: [PATCH] powerpc/64e: Fix wrong test in
+ __ptep_test_and_clear_young()
+Thread-Topic: [PATCH] powerpc/64e: Fix wrong test in
+ __ptep_test_and_clear_young()
+Thread-Index: AQHZ3ZWvgclbkC122kmCn9+H/csT2LALiGkAgAAkXgA=
+Date:   Tue, 5 Sep 2023 04:46:47 +0000
+Message-ID: <57fccd67-39c7-f5c8-ce9c-a6e390ca5d5e@csgroup.eu>
+References: <2daed51109cbd7e7fbd26fab4e77fc6a27dee63e.1693643773.git.christophe.leroy@csgroup.eu>
+ <87a5u1ibwr.fsf@mail.lhotse>
+In-Reply-To: <87a5u1ibwr.fsf@mail.lhotse>
+Accept-Language: fr-FR, en-US
+Content-Language: fr-FR
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=csgroup.eu;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: MRZP264MB2988:EE_|PAZP264MB2464:EE_
+x-ms-office365-filtering-correlation-id: e0c37841-4a37-48e3-6c4e-08dbadcb1ce0
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1FlcsB95c+e1Xi0nbXS8GT0/bn3v+j8WJzkxbuAzRr+gv60QRKlf0Paaqm2Fq2Ypk0yMBGQ0EM+9kgiR52jXC7FA0ghDGACHdfoMTacwuNnCnhOcj6TgEoO7Mw8hg47Lchrr2EjcnqZFkO6yM7nfnl58O02KoXpDdFGNw2zkygw0iZSf+6XyU5sWboTVsqtA2c1YHBiPEHpwtNGFTUC0IaYmBm2JgDRxTqt3evA6VRCnnB/jgIGdbCsioPCigp/ZpxAziBmY6ZHIumPjJxsnqx5Vr9NzST2u2F8A8stDyttFfAU6xjBj2S5cW3eAYEHIZSeXEDSwb9TeaoeR/CO6uTnTokrbQdQct9M0VW5QPU50U/B1xWZwhmVAC0ZURdINUuVg7kqL/6TKbQNldT4F1I3d8/b0Kk9lD6xK8OnxyoVDhnATXcg7kW5mA85C6J8LF8iK8a7rt3BsHxTrX+XFAL39NraHdj37J8nAnN57h6YfX2sg/F2GtLFpSetDhEqfseFs2A0ijbcgLuykw7cYwSRCJXFJCBpisS3DFJ+Iz7muCIq68Pvw69dJ4kbHUIerXgg1L/4I1NcHFFEaXiuUYEmMDIYmC8B1kRRxxbFVTwyNywimhCZElRBOYiEigjWSRBm8VBpQDSSGxjueoDLDExuKxl3S43MiN+MGIMKKHnU=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(396003)(346002)(376002)(39850400004)(451199024)(1800799009)(186009)(66946007)(66556008)(66476007)(66446008)(64756008)(54906003)(76116006)(110136005)(91956017)(122000001)(478600001)(38070700005)(38100700002)(316002)(2906002)(86362001)(31696002)(41300700001)(8676002)(8936002)(4326008)(5660300002)(44832011)(83380400001)(6506007)(6512007)(71200400001)(6486002)(2616005)(26005)(36756003)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dytLK0JFWU5RbkxRVWpHaHZrL0dwTHo4d20zQ1U4RnhhSFNWOUNVWGY5dUNJ?=
+ =?utf-8?B?US9vazcxdW9XQ2tpTmhnWU1ON3kzZTRibmx1cGF4N1NqUHc0R0FESnlMZUU4?=
+ =?utf-8?B?N1MzSVNCdDRhZ3JVYldTZDMyQ3o4Y25uOW9HemNhb1Nxd013UUxGMVN1YjFO?=
+ =?utf-8?B?WW1Pb05nSDdiV3RtRW9qQVR2b3Q1Z28rclhOYjlWRnhhQkt5NFpaQ0k3dlZ3?=
+ =?utf-8?B?ZzQyZWplektONlI5QzBkTkEvTW1hWWYwNEYybWdDSnkvVkl4bWpsN3VQeURK?=
+ =?utf-8?B?NTZmN0FjNHpXQTVxa0kyUlpUbXJhR2JYdkVjeERKWlRWaDdHSmcybE8vclZm?=
+ =?utf-8?B?NXFtc0ptdEZnWENQc2RzSkxodnRCQXZ5NEVaSDBDMmRRc2llbk1ndHdVVk1Y?=
+ =?utf-8?B?RlFCcWFwNHpTck9qZ1JoLzNmVjhYcW0xV3BxTDEwQ3pKbU9GUGthL1ZIeVVC?=
+ =?utf-8?B?UElvdWRHcjlXTnhtL1czRThRYjhHT2Y5YzJqRGdZYTVETFJYMWZUWGNqbzFl?=
+ =?utf-8?B?NTBEb29XOWxaVEs3QmVkc2hSUms2ZHBHd0ErTWw4ZEVhdkFHL1JRMzhtMlJK?=
+ =?utf-8?B?cXMyR25hcmJFemJZSDkrcTVUaWpFVUYrVG5vdU5KZzBWRHczd3AzcWFGSEk0?=
+ =?utf-8?B?TTQ0aDUvc1R4Q0dlTVBYREd6c1lvU042aFdEOENwVE4vZ1g2cEJidHArdmsz?=
+ =?utf-8?B?QkowU3Fqam50Z0huYXN4SzgxL1FUR1A0U3NOQlhqenMwUjQ1WU9jSFY5Nldi?=
+ =?utf-8?B?T3pKODBOb0RxWVIvYVZSVjZXRFg0N0xhWm5pOXUvMFVHSERNQWgrd016eUZn?=
+ =?utf-8?B?bnBUeHM5MWFLQWhEUDBXWEoya0dqNThPUmVhbnkzaVc0bEpQcDFkYVUrR3dP?=
+ =?utf-8?B?NzJqeTZ6S1JnRy9obmdWa1RrY2ZDWG5qUG5Sdi9URnYwM28zMnFGV28zaG1U?=
+ =?utf-8?B?OWlDM0E4QVZDY0szb09GR0FQNzZTNE8wQ1ViVmJyVitBQ1NHbHhwTk5LdC8y?=
+ =?utf-8?B?TkpqTklCQzd6VGlDNWpyaDZMNTNmZUdCdXovMmRlVlFwR3hnaW9FcitLT0g3?=
+ =?utf-8?B?VklybTVFU211eVBLL3c3QnlNZnVTUzlsUVlJTzNocml5K0Y1a0VDVFUrLzRi?=
+ =?utf-8?B?U2FpWmlybDZHWG1XYmZnQXdBdDZQdjY4TXFpamYvb2dmNjRiSkt6YnJDcDh2?=
+ =?utf-8?B?R0llSlpvQ0h6TXZwcElzRkpsUEh6bEF6L1BRUG5BOFBpQVhhZms1VkxKVTg5?=
+ =?utf-8?B?WXhpeHV5UEdlWDVKcGVoL2QvK3lPbi9XM1o4LytzYThMVnhkRTVsNi8vckNn?=
+ =?utf-8?B?ejc0bWhKYUp4LzhPdUprR1hscEI5NFhVbnA0V2JhaXZUK1J6VTByR3VkYkcx?=
+ =?utf-8?B?R08xT213RXZMTDJoZ2lUc3lqU2dYaU9RVlNueGJvbzgzNWxtQS9zQ0Mvalg3?=
+ =?utf-8?B?bnVUZ3BLd1UyS0MyTmhxdUUrTC96OWwxTEk3U3BrM0h4ZkN1b2hFajFvQUdq?=
+ =?utf-8?B?anJsMXhXVDVWOHVNa3M5dW03Ujd2am5NRzU0YXJLTUE1VUFjRjNJb3g4MEZI?=
+ =?utf-8?B?cnF6eWNzMmdBTHdmUmdlSHdWSHZ0UStoNzJwdkhCTzJtK1FpcXQ5bG5Na0Zk?=
+ =?utf-8?B?UWpqbzJ3OGhYT21nT2xKQTN2bUh4Sk92TFlRanlKUUVEZU9Dd2VxaDZUWll6?=
+ =?utf-8?B?djBYSWx3a1FCSGE4MXh3SVo0T3FpRWcrRU04T3JTZ2UxamVyZ2pVOWpYUmtZ?=
+ =?utf-8?B?MWUwRTNqMkdFQW1vK1BLNmg0SnZ6ZndzdEQ1Ri9IZzJyeWxkUmxnTXVvVU42?=
+ =?utf-8?B?Mmd3Kzh5bWZsUlBEeHdBQW9RaDZjQTlaRG1jbEw2RXVQRHlnZ3RpdEpHMmlh?=
+ =?utf-8?B?SGNqSzdiYlJyYUdSUWkwT0x1VHVRN0lHbFdCaGFvS1dqK2lHVzYyRXkzeDU0?=
+ =?utf-8?B?T3UyMndLcnNkdnlsVDVnSkFsV1k4OUlUaGFNb3RvZ0xGQjhOTm9DWGQra3p2?=
+ =?utf-8?B?NFhNYU9MNlRKc21BMklqaG1VelFXRXZBM2ExODcxZ01wNXJteklDQ1dNeXYw?=
+ =?utf-8?B?Q0g4NnM2L0liaU03Q0IvSC9mNkJQVzVNSW9ZNTlER3dyc1ExZklKTUlmK0xh?=
+ =?utf-8?B?OHhadjIxY1Q2c2dCeU1wQ3BLRW1pU1hBMGpzQW1BMGV2dkI1dE1zbEtuMElz?=
+ =?utf-8?B?Y2c9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B72DB024C4DD8E499C9FA528A87D3AF0@FRAP264.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: csgroup.eu
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0c37841-4a37-48e3-6c4e-08dbadcb1ce0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Sep 2023 04:46:47.7381
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UObeSsY/9WV8EYa3aU16wbdIsygYgWqK49nHtLsuhSJcGdSqCimb8wshaemrt1VkhXcM3lHlgfrtNK1VT+q+yhazNvGeFXW0z7VbSGcjVA0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAZP264MB2464
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for USB3 QMP PHY found in SDX75 platform.
-
-Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
----
- drivers/phy/qualcomm/phy-qcom-qmp-usb.c | 160 ++++++++++++++++++++++++++++++++
- 1 file changed, 160 insertions(+)
-
-diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-index a49711c..f95d117 100644
---- a/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-+++ b/drivers/phy/qualcomm/phy-qcom-qmp-usb.c
-@@ -24,6 +24,7 @@
- #include "phy-qcom-qmp-pcs-misc-v3.h"
- #include "phy-qcom-qmp-pcs-usb-v4.h"
- #include "phy-qcom-qmp-pcs-usb-v5.h"
-+#include "phy-qcom-qmp-pcs-usb-v6.h"
- 
- /* QPHY_SW_RESET bit */
- #define SW_RESET				BIT(0)
-@@ -1066,6 +1067,134 @@ static const struct qmp_phy_init_tbl sdx65_usb3_uniphy_rx_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V5_RX_SIGDET_ENABLES, 0x00),
- };
- 
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_serdes_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE1, 0x9e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE1, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE1, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE1, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORECLK_DIV_MODE1, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE1, 0x2e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE1, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE1, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE1, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE1, 0xea),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_HSCLK_SEL_1, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE1_MODE1, 0x25),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE2_MODE1, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE1, 0xb7),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE1, 0x1e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE1_MODE0, 0xb7),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BIN_VCOCAL_CMP_CODE2_MODE0, 0x1e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE1_MODE0, 0x9e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_STEP_SIZE2_MODE0, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CP_CTRL_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_RCTRL_MODE0, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_PLL_CCTRL_MODE0, 0x36),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP1_MODE0, 0x12),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP2_MODE0, 0x34),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DEC_START_MODE0, 0x82),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START1_MODE0, 0xab),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START2_MODE0, 0xea),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_DIV_FRAC_START3_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE1_MODE0, 0x25),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE2_MODE0, 0x02),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_BG_TIMER, 0x0e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_EN_CENTER, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER1, 0x31),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SSC_PER2, 0x01),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYSCLK_BUF_ENABLE, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_SYSCLK_EN_SEL, 0x1a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_LOCK_CMP_CFG, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_VCO_TUNE_MAP, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CORE_CLK_EN, 0x20),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_CMN_CONFIG_1, 0x16),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_1, 0xb6),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_2, 0x4b),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_AUTO_GAIN_ADJ_CTRL_3, 0x37),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_COM_ADDITIONAL_MISC, 0x0c),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_tx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_TX, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_RX, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_OFFSET_TX, 0x1f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RES_CODE_LANE_OFFSET_RX, 0x09),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_1, 0xf5),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_3, 0x3f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_4, 0x3f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_LANE_MODE_5, 0x5f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_RCV_DETECT_LVL_2, 0x12),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_TX_PI_QEC_CTRL, 0x21),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_rx_tbl[] = {
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FO_GAIN, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SO_GAIN, 0x06),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_FO_GAIN, 0x2f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SO_SATURATION_AND_ENABLE, 0x7f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_COUNT_LOW, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_FASTLOCK_COUNT_HIGH, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_PI_CONTROLS, 0x99),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_THRESH1, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_THRESH2, 0x08),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_GAIN1, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_UCDR_SB2_GAIN2, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_AUX_DATA_TCOARSE_TFINE, 0xa0),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_VGA_CAL_CNTRL1, 0x54),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_VGA_CAL_CNTRL2, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_GM_CAL, 0x13),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL2, 0x0f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL3, 0x4a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQU_ADAPTOR_CNTRL4, 0x0a),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_IDAC_TSETTLE_LOW, 0x07),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_IDAC_TSETTLE_HIGH, 0x00),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_EQ_OFFSET_ADAPTOR_CNTRL1, 0x47),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CNTRL, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_DEGLITCH_CNTRL, 0x0e),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_LOW, 0x3f),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH, 0xbf),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH2, 0xff),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH3, 0xdf),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_00_HIGH4, 0xed),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_LOW, 0xdc),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH, 0x5c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH2, 0x9c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH3, 0x1d),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_RX_MODE_01_HIGH4, 0x09),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_DFE_EN_TIMER, 0x04),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_DFE_CTLE_POST_CAL_OFFSET, 0x38),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_DCC_CTRL1, 0x0c),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_VTH_CODE, 0x10),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CAL_CTRL1, 0x14),
-+	QMP_PHY_INIT_CFG(QSERDES_V6_RX_SIGDET_CAL_TRIM, 0x08),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_pcs_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG1, 0xc4),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG2, 0x89),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG3, 0x20),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_LOCK_DETECT_CONFIG6, 0x13),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_REFGEN_REQ_CONFIG1, 0x21),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_RX_SIGDET_LVL, 0xaa),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_L, 0xe7),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_RCVR_DTCT_DLY_P1U2_H, 0x03),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_CDR_RESET_TIME, 0x0a),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_ALIGN_DETECT_CONFIG1, 0x88),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_ALIGN_DETECT_CONFIG2, 0x13),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_PCS_TX_RX_CONFIG, 0x0c),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG1, 0x4b),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_EQ_CONFIG5, 0x10),
-+};
-+
-+static const struct qmp_phy_init_tbl sdx75_usb3_uniphy_pcs_usb_tbl[] = {
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_LFPS_DET_HIGH_COUNT_VAL, 0xf8),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RXEQTRAINING_DFE_TIME_S2, 0x07),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_L, 0x40),
-+	QMP_PHY_INIT_CFG(QPHY_USB_V6_PCS_USB3_RCVR_DTCT_DLY_U3_H, 0x00),
-+};
-+
- static const struct qmp_phy_init_tbl sm8350_usb3_tx_tbl[] = {
- 	QMP_PHY_INIT_CFG(QSERDES_V5_TX_RES_CODE_LANE_TX, 0x00),
- 	QMP_PHY_INIT_CFG(QSERDES_V5_TX_RES_CODE_LANE_RX, 0x00),
-@@ -1868,6 +1997,33 @@ static const struct qmp_phy_cfg sdx65_usb3_uniphy_cfg = {
- 	.has_pwrdn_delay	= true,
- };
- 
-+static const struct qmp_phy_cfg sdx75_usb3_uniphy_cfg = {
-+	.lanes			= 1,
-+	.offsets		= &qmp_usb_offsets_v5,
-+
-+	.serdes_tbl		= sdx75_usb3_uniphy_serdes_tbl,
-+	.serdes_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_serdes_tbl),
-+	.tx_tbl			= sdx75_usb3_uniphy_tx_tbl,
-+	.tx_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_tx_tbl),
-+	.rx_tbl			= sdx75_usb3_uniphy_rx_tbl,
-+	.rx_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_rx_tbl),
-+	.pcs_tbl		= sdx75_usb3_uniphy_pcs_tbl,
-+	.pcs_tbl_num		= ARRAY_SIZE(sdx75_usb3_uniphy_pcs_tbl),
-+	.pcs_usb_tbl		= sdx75_usb3_uniphy_pcs_usb_tbl,
-+	.pcs_usb_tbl_num	= ARRAY_SIZE(sdx75_usb3_uniphy_pcs_usb_tbl),
-+	.clk_list		= qmp_v4_sdx55_usbphy_clk_l,
-+	.num_clks		= ARRAY_SIZE(qmp_v4_sdx55_usbphy_clk_l),
-+	.reset_list		= msm8996_usb3phy_reset_l,
-+	.num_resets		= ARRAY_SIZE(msm8996_usb3phy_reset_l),
-+	.vreg_list		= qmp_phy_vreg_l,
-+	.num_vregs		= ARRAY_SIZE(qmp_phy_vreg_l),
-+	.regs			= qmp_v5_usb3phy_regs_layout,
-+	.pcs_usb_offset		= 0x1000,
-+
-+	.has_pwrdn_delay	= true,
-+
-+};
-+
- static const struct qmp_phy_cfg sm8350_usb3phy_cfg = {
- 	.lanes			= 2,
- 
-@@ -1985,6 +2141,7 @@ static int qmp_usb_init(struct phy *phy)
- 	void __iomem *dp_com = qmp->dp_com;
- 	int ret;
- 
-+
- 	ret = regulator_bulk_enable(cfg->num_vregs, qmp->vregs);
- 	if (ret) {
- 		dev_err(qmp->dev, "failed to enable regulators, err=%d\n", ret);
-@@ -2619,6 +2776,9 @@ static const struct of_device_id qmp_usb_of_match_table[] = {
- 		.compatible = "qcom,sdx65-qmp-usb3-uni-phy",
- 		.data = &sdx65_usb3_uniphy_cfg,
- 	}, {
-+		.compatible = "qcom,sdx75-qmp-usb3-uni-phy",
-+		.data = &sdx75_usb3_uniphy_cfg,
-+	}, {
- 		.compatible = "qcom,sm6115-qmp-usb3-phy",
- 		.data = &qcm2290_usb3phy_cfg,
- 	}, {
--- 
-2.7.4
-
+DQoNCkxlIDA1LzA5LzIwMjMgw6AgMDQ6MzYsIE1pY2hhZWwgRWxsZXJtYW4gYSDDqWNyaXTCoDoN
+Cj4gQ2hyaXN0b3BoZSBMZXJveSA8Y2hyaXN0b3BoZS5sZXJveUBjc2dyb3VwLmV1PiB3cml0ZXM6
+DQo+PiBDb21taXQgNDUyMDFjODc5NDY5ICgicG93ZXJwYy9ub2hhc2g6IFJlbW92ZSBoYXNoIHJl
+bGF0ZWQgY29kZSBmcm9tDQo+PiBub2hhc2ggaGVhZGVycy4iKSByZXBsYWNlZDoNCj4+DQo+PiAg
+ICBpZiAoKHB0ZV92YWwoKnB0ZXApICYgKF9QQUdFX0FDQ0VTU0VEIHwgX1BBR0VfSEFTSFBURSkp
+ID09IDApDQo+PiAJcmV0dXJuIDA7DQo+Pg0KPj4gQnk6DQo+Pg0KPj4gICAgaWYgKHB0ZV95b3Vu
+ZygqcHRlcCkpDQo+PiAJcmV0dXJuIDA7DQo+Pg0KPj4gQnV0IGl0IHNob3VsZCBiZToNCj4+DQo+
+PiAgICBpZiAoIXB0ZV95b3VuZygqcHRlcCkpDQo+PiAJcmV0dXJuIDA7DQo+IA0KPiANCj4gVGhh
+dCBzZWVtcyBiYWQgOikNCj4gDQo+IEJ1dCBJIGRvbid0IGtub3cgb2ZmIHRoZSB0b3Agb2YgbXkg
+aGVhZCB3aGVyZQ0KPiBfX3B0ZXBfdGVzdF9hbmRfY2xlYXJfeW91bmcoKSBpcyB1c2VkLCBhbmQg
+c28gd2hhdCB0aGUgc3ltcHRvbXMgY291bGQNCj4gYmUuIFByZXN1bWFibHkgbm90aGluZyB0b28g
+YmFkIG9yIHNvbWVvbmUgd291bGQgaGF2ZSBub3RpY2VkPw0KPiANCg0KVGhlIHR3byB1c2VzIGlu
+IG1tL3Ztc2Nhbi5jIGFyZSBhcyBmb2xsb3dzOg0KDQoJaWYgKCFwdGVwX3Rlc3RfYW5kX2NsZWFy
+X3lvdW5nKGFyZ3MtPnZtYSwgYWRkciwgcHRlICsgaSkpDQoJCVZNX1dBUk5fT05fT05DRSh0cnVl
+KTsNCg0KU28gaXQgc2VlbXMgdG8gYmUgZXhwZWN0ZWQgdG8gbmV2ZXIgaGFwcGVuLg0KDQpUaGUg
+b25seSB1c2VmdWwgcGxhY2UgaXQgaXMgdXNlZCBzZWVtcyB0byBiZSBmb2xpb19jaGVja19yZWZl
+cmVuY2VzKCkgDQp3aGljaCBpcyBwYXJ0IG9mIHRoZSByZWNsYWltIHByb2Nlc3MuIFNvIHByb2Jh
+Ymx5IGl0IG1lc3NlcyB1cCBzd2FwLCBidXQgDQp0byB3aGF0IGV4dGVudCA/IHBwYzY0ZSBpcyBm
+b3IgZW1iZWRkZWQgc3lzdGVtcy4gRG8gZW1iZWRkZWQgc3lzdGVtcyANCmhhdmUgc3dhcCBhdCBh
+bGwgPw0KDQpBbHNvIHN1cnByaXNpbmcgdGhhdCBpdCBpcyBhbHNvIGNhbGxlZCBmcm9tIG1tL2Rl
+YnVnX3ZtX3BndGFibGUuYyBzbyANCnNob3VsZG4ndCB3ZSBoYXZlIG5vdGljZWQgZWFybGllciA/
+IEknbGwgY2hlY2sgaWYgaXQgd29ya3MuDQo=
