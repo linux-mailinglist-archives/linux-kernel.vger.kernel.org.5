@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69812792C25
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:11:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE411792CEC
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354213AbjIERHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:07:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57082 "EHLO
+        id S234769AbjIER6p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 13:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237455AbjIEQqB (ORCPT
+        with ESMTP id S241916AbjIER6O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 12:46:01 -0400
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2049.outbound.protection.outlook.com [40.107.93.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198AA44B2;
-        Tue,  5 Sep 2023 09:37:58 -0700 (PDT)
+        Tue, 5 Sep 2023 13:58:14 -0400
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2075.outbound.protection.outlook.com [40.107.237.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683493B060;
+        Tue,  5 Sep 2023 09:44:49 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dt0c6hklP8/VOGrxitN55VNt3lfI1r1rWDIuwoShYADWQFkOjVztGYkApDl3+Cu9FIS4LfqIEkBGUa8LED7c04Uq9D/gEVKpNDBa+XNUUQBXLsn+LsmJzVgMqgj9BYSLLY0Iy3O6KfCDmF9bDAbSg0EAV9GAAd3OXDi2aC5oASOrbUB86ih8gujGvZycLXrbDGUOxtoXQKF8Z81NA23xzQReB5YJUCz59R63I1dyEjP06/55bTQJzP521D4r1wnOoLqBSENuPIrKAe1c+SJ7SUuoxZW9/kyZUK5eSNcX1dkazUiPLKPqwfCI7qsO6s2phJT0gTQaFXhN7YL6X6uUAA==
+ b=c8/JR8n3C6Ef9ROU6X52W9UVaB8hin0kEcaSI9URmaGGePUuq0QGwCjFXDtF3aFLyPqv/sMt5m42DZe+lQwbRnjf8nOKWIT8jJjmExk4pYp+iculrkUurgNWNgrj2gJKSb6PKY9kE4f1l0wttsSLqV8ggDGSBcWNJdgI1U6WMMt3+XJDOgh9jnb8uyEvHuyWAB1JhqqhtXtxRR12qPgdWjnyFYEd7zZpE+83qBxOwuXgQdnh/zTVYoxYFc/ZyAM4boGMA+nVarcdFbVzaogthNnAfeKcEITQieO8GaktFNzueJ47IJwKLu4rR/9wmkB0giL9gEJDxjDi6KiSmq/mng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZGa+F45dRl1GhgDFs8eZ9qml8t/WIYcdx45wv/RJ7X0=;
- b=cnTZcLQLUyBBcBxn2GvG9PNc/3mIMyHvpctip7iKDROKHFvuo3VBpKqQYcbJP2uOIYIohMR5CoOWDXUJjhsKmFkedUxXlbCr8s8C+3EnJWxSnJz02dSrFlU0ssS9oIzPCeRZBA6bTcxAGgI7FzWTMW9maqoIh5v0pl2AoAkMwPz6nUDcdjMFiLIuPSWc9z4ZxeHORkdE3HNJDhe8j/D8S8+t7PI5WwdOVKjcfM9zMQzkS0NVsNr51Aq2oEKCXxpnHJDLSJz+qR0D2M5t87jadi+FxB4jdufM+qrH91D51fk1IUhqCaqvKu5pZZ5wdGXyKgHn+VMVbTJNzwEdrPncPQ==
+ bh=Vp6eGBd9z4s7ABrrY6Deo/xIhrITUXxGjV5BMctBBo4=;
+ b=DtCcBGosDdxCqoFsSzv7ljuabSfqOsKdKQbXcRszYjDeBXjkS/T79+xxA14/YkHje6qfk64BGTWnKegqQ5sxHF4FnlCAlDTFr/k0+CKQ4ovttmJop97OtS7kovFxnogoOXCaFXzA7MwEdtXb1A7k8WOOIbeNA51vvk4qODxj2+DiVA4JPpz8euqVmOLpazKJgQt4u8ec8ewkTbTDtDXRXi3o6jYKCw9X3glaY9uKzG16G1sh3W/6GK0VW269n4JxDsWahVvuKtF6mk99Wo4A3BrzpVdmNIVsL4xfk7c1FOv43Fr+rC7i+OROeblUJiJvaoFe1lBHQd8YMoJ0qDGJ3Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  216.228.118.233) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
  dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
@@ -29,18 +29,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZGa+F45dRl1GhgDFs8eZ9qml8t/WIYcdx45wv/RJ7X0=;
- b=cIcfipu9WF7/PD6ddIfq5J6aShj+ze3FUK8AfiFXOj6Fi1/NIhSi26bUXc5090pRx953CWY1xkrd2gk+uSV6vy/R/KKq0LCokF8mk4buR/vZDPrAy0lB3rZMkUjz4pBny14C/73vRbNctSDlvNMamE3ZQE5h62nDkfQ1u1ipBgWmIYUlAvj+C5xWE2YFeJq+URqJpxwZBDXS7Sb9laeTKjjG8txI7FQ37ngp+g6dLF4aG3g6rmwxY77bPutjclKaB5VwbqUuhTfKKupBCKHlyptFFPJ+l5Mwcg2lFzpKY69Uw1j+mYkZPV2HyWfVO8QwnBIbd8oja8mk/U30qCw31Q==
-Received: from SA9PR13CA0018.namprd13.prod.outlook.com (2603:10b6:806:21::23)
- by DS0PR12MB8198.namprd12.prod.outlook.com (2603:10b6:8:f2::17) with
+ bh=Vp6eGBd9z4s7ABrrY6Deo/xIhrITUXxGjV5BMctBBo4=;
+ b=c6K29ARCxP8/xpIAn+tUUKwn5bd+/s8f3iRI811LVbCHsVqeFkOD7Pitna9UP1IEoEIjYNGw5yflJ847R3mHDpoc0wGnf1eWE68CI7O/LojW953rp6KcEoPxZ1k3jGL4tqwwldwbvYNkibp52u0lDGsY7RiCDD6lzQfCWRKWkyPo0o2JBDQnGJzLKjyr5ZN2nBbp25xm/rpMxr+8FLK7m6sK5oZIXffPL7kfpj2aijLwwhirN6qcAzr1iYNkAnYkvPWTaZleyQjXC0RcK/yC2R+qLZdzAoQbFYRoo/CY0x5dTt4v424KlxzLkWjFiLo9i8MFaeeXi8Cv+Ww556jMPA==
+Received: from SN7PR04CA0207.namprd04.prod.outlook.com (2603:10b6:806:126::32)
+ by SN7PR12MB8772.namprd12.prod.outlook.com (2603:10b6:806:341::10) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.32; Tue, 5 Sep
- 2023 16:36:36 +0000
-Received: from SA2PEPF00001507.namprd04.prod.outlook.com
- (2603:10b6:806:21:cafe::23) by SA9PR13CA0018.outlook.office365.com
- (2603:10b6:806:21::23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6768.25 via Frontend
- Transport; Tue, 5 Sep 2023 16:36:35 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Tue, 5 Sep
+ 2023 16:37:07 +0000
+Received: from SA2PEPF0000150A.namprd04.prod.outlook.com
+ (2603:10b6:806:126:cafe::92) by SN7PR04CA0207.outlook.office365.com
+ (2603:10b6:806:126::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.33 via Frontend
+ Transport; Tue, 5 Sep 2023 16:37:06 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
  smtp.mailfrom=nvidia.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=nvidia.com;
@@ -48,20 +48,20 @@ Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
  216.228.118.233 as permitted sender) receiver=protection.outlook.com;
  client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
 Received: from mail.nvidia.com (216.228.118.233) by
- SA2PEPF00001507.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SA2PEPF0000150A.mail.protection.outlook.com (10.167.242.42) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6768.25 via Frontend Transport; Tue, 5 Sep 2023 16:36:35 +0000
+ 15.20.6768.25 via Frontend Transport; Tue, 5 Sep 2023 16:37:05 +0000
 Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
  (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.5; Tue, 5 Sep 2023
- 09:36:25 -0700
+ 09:36:49 -0700
 Received: from drhqmail202.nvidia.com (10.126.190.181) by
  drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.37; Tue, 5 Sep 2023 09:36:25 -0700
+ 15.2.986.37; Tue, 5 Sep 2023 09:36:49 -0700
 Received: from localhost.localdomain (10.127.8.12) by mail.nvidia.com
  (10.126.190.181) with Microsoft SMTP Server id 15.2.986.37 via Frontend
- Transport; Tue, 5 Sep 2023 09:36:19 -0700
+ Transport; Tue, 5 Sep 2023 09:36:43 -0700
 From:   Kartik <kkartik@nvidia.com>
 To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
         <sumitg@nvidia.com>, <arnd@arndb.de>, <pshete@nvidia.com>,
@@ -70,9 +70,9 @@ To:     <thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
         <frank.li@vivo.com>, <robh@kernel.org>, <stefank@nvidia.com>,
         <pdeschrijver@nvidia.com>, <linux-tegra@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/6] soc/tegra: fuse: Add tegra_acpi_init_apbmisc()
-Date:   Tue, 5 Sep 2023 18:28:20 +0530
-Message-ID: <20230905125824.2947-3-kkartik@nvidia.com>
+Subject: [PATCH v2 6/6] soc/tegra: fuse: Add support for Tegra241
+Date:   Tue, 5 Sep 2023 18:28:24 +0530
+Message-ID: <20230905125824.2947-7-kkartik@nvidia.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20230905125824.2947-1-kkartik@nvidia.com>
 References: <20230905125824.2947-1-kkartik@nvidia.com>
@@ -83,23 +83,23 @@ Content-Type: text/plain
 X-NV-OnPremToCloud: ExternallySecured
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001507:EE_|DS0PR12MB8198:EE_
-X-MS-Office365-Filtering-Correlation-Id: 32276f45-38a2-4ee1-9c7b-08dbae2e455d
+X-MS-TrafficTypeDiagnostic: SA2PEPF0000150A:EE_|SN7PR12MB8772:EE_
+X-MS-Office365-Filtering-Correlation-Id: af02c357-4440-4052-009c-08dbae2e577c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CJBUozi51uJZ0jmdv8W9nR3hQD/XPCGC1HZzomdhu86bM7XNoEweDJj20ZUqmWdbTFas5w+aeBP0uKlbEBmd3lMnFQXXOLzATc1rC8QAl3ykDWMvgmE3UZEaoZUHIFVG/2EMbqZg0Yl2e+McTsQFHk/RA2CHd6OsBMhXMJATwefCm6WF35FwmjTRuNxN2zZwdfhFYcTs744smx+8NSxA8IblxukJ5FyTN9mc/N3LAXeeyWy/ETioNR57NXi6jVh4vXKwQKStSV8PenX2Pm4EZjRlRg4Erbsgj4b7Y+9N8ws5AO/0Jh9z9wnTYXqHBetxKe+IXEWFW3xYZUtMwK6bpNdlvwXAey3nJHgweEVv6WDLnHM9acDdE5xE83dXt6NAm31+sdcGeoj3Q9mHHp/eFxEwcC+OKSqLtv7qu3iXmzR+YuLqcaWEuY/cLwNDg3TP8FMOSckuXoLGEYC/vbuy9enuks3u4DOrbBaDyihlQO1dPfdrnQbYQHdJFddqoH5BVWrV+DfJnouqDJccxB6hufYSKoxqHBKaZ8PKKhfEsCDIagYQ+UPRLG0xBKxFwsBoh4vsy7z4Z6/eL4pf9jgroYTP2mm3JurDJriXjVVx1O/WBAvNInqH/ubIlgNSCZ6SDz9w5x/+yiAZTf7BD0T7Yj74KeoIlZaYr+BcyLJdiOcrBqcrryfGwITkOpEVoqoPSwlW0RQ1XUxomnk2Jf2TAeuka6/+lFEAYG8/RkJFSiCGT1q97GXvR3RyeFu3p4Ji
-X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(39860400002)(136003)(451199024)(186009)(1800799009)(82310400011)(40470700004)(36840700001)(46966006)(36860700001)(40480700001)(7636003)(82740400003)(356005)(921005)(5660300002)(36756003)(86362001)(40460700003)(41300700001)(47076005)(26005)(70586007)(426003)(70206006)(2616005)(336012)(1076003)(478600001)(6666004)(110136005)(8936002)(8676002)(316002)(2906002);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: 8bxdcf95kmJSngdKVScn6mYB3zegdNiAohNgM7+TQ0QAYVBlgOUUlBSxvyY6h6R4TpjuiP352QSblHNo9iqz6ZvlNsVW6RVRZBTUQHi/dstsyyblStsFaD6zdgZ73thtHPN7NCtpFzyAtrtFIdKR4dQqMDPMQM4N63lQVjtD9tHd2HJyyz9t6N18J1NNloTLjLa36t7nVrDIfRqb813+3bU5dM8qz1oLcdiSST9wzHJ7o8el6zAVZLbRbHDf1hNoj/3WbeNOxsvrN2teLjjRyjvNPXmvesktPWvrRYsEQ8Zr3uA0UcB2EDnE9nKJjmGMJMnKVQxWCDOVJnP7nbWtvVjjYzNw8GeXyVpBb80ITp2ybRUg6fTHRugNFWVM+42Ap2UPgoO8nSspY96LwGOCUt+I0MNVgFj0PRImzWaQzzppf/u/lZkh59e1NCCBzQ93LK8BZRMuYye31FLu0CmcxuZSuo9Mg+F/bcOS5x27orUNrtbkoFijGvAoLfGdCRuXHy60KAgi40A3jAN4TY4nL0RtRKuyPN7oK7Of/hvz9R50hOzsTR26tfNPYG9CdS2jG2c+c5Nk5i352zJmF0IOolnVd2Z5SUi8fYjsnaYNKjF137f4C6biU7HKnazjyXy7pVhTYT0A2F2w5LO6Kr1+twiGrGsHS+bKpLj7Q2NRm/BYD7A1A2+o8HaTGsI4wpcjYFUnRTQ0IQuS6326hnH0W/2rbdIKXhlEggOW9rAozH6OCAQePfKqFYBqEoSHE+hl+bJXlG8yLU45DKMIQcTlvg==
+X-Forefront-Antispam-Report: CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(136003)(376002)(396003)(186009)(82310400011)(1800799009)(451199024)(46966006)(36840700001)(40470700004)(41300700001)(70586007)(40460700003)(7636003)(82740400003)(36756003)(356005)(2906002)(921005)(478600001)(110136005)(316002)(86362001)(70206006)(6666004)(40480700001)(8936002)(8676002)(426003)(1076003)(5660300002)(336012)(83380400001)(2616005)(26005)(36860700001)(47076005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 16:36:35.7298
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 16:37:05.5655
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32276f45-38a2-4ee1-9c7b-08dbae2e455d
+X-MS-Exchange-CrossTenant-Network-Message-Id: af02c357-4440-4052-009c-08dbae2e577c
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001507.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF0000150A.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB8198
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8772
 X-Spam-Status: No, score=0.5 required=5.0 tests=BAYES_00,DATE_IN_PAST_03_06,
         DKIMWL_WL_HIGH,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         FORGED_SPF_HELO,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
@@ -110,134 +110,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In preparation to ACPI support in Tegra fuse driver add function
-tegra_acpi_init_apbmisc() to initialize tegra-apbmisc driver.
-
-Note that function tegra_acpi_init_apbmisc() is not placed in the __init
-section, because it will be called during probe.
+Add support for Tegra241 which use ACPI boot.
 
 Signed-off-by: Kartik <kkartik@nvidia.com>
 ---
- drivers/soc/tegra/fuse/fuse.h          |  1 +
- drivers/soc/tegra/fuse/tegra-apbmisc.c | 72 ++++++++++++++++++++++++++
- 2 files changed, 73 insertions(+)
+ drivers/soc/tegra/Kconfig              |  5 +++++
+ drivers/soc/tegra/fuse/fuse-tegra.c    |  5 +++++
+ drivers/soc/tegra/fuse/fuse-tegra30.c  | 21 +++++++++++++++++++++
+ drivers/soc/tegra/fuse/fuse.h          |  4 ++++
+ drivers/soc/tegra/fuse/tegra-apbmisc.c |  1 +
+ include/soc/tegra/fuse.h               |  1 +
+ 6 files changed, 37 insertions(+)
 
-diff --git a/drivers/soc/tegra/fuse/fuse.h b/drivers/soc/tegra/fuse/fuse.h
-index 90f23be73894..a41e9f85281a 100644
---- a/drivers/soc/tegra/fuse/fuse.h
-+++ b/drivers/soc/tegra/fuse/fuse.h
-@@ -69,6 +69,7 @@ struct tegra_fuse {
+diff --git a/drivers/soc/tegra/Kconfig b/drivers/soc/tegra/Kconfig
+index 6f3098822969..5f5d9d663fef 100644
+--- a/drivers/soc/tegra/Kconfig
++++ b/drivers/soc/tegra/Kconfig
+@@ -133,6 +133,11 @@ config ARCH_TEGRA_234_SOC
+ 	help
+ 	  Enable support for the NVIDIA Tegra234 SoC.
  
- void tegra_init_revision(void);
- void tegra_init_apbmisc(void);
-+void tegra_acpi_init_apbmisc(void);
++config ARCH_TEGRA_241_SOC
++	bool "NVIDIA Tegra241 SoC"
++	help
++	  Enable support for the NVIDIA Tegra241 SoC.
++
+ endif
+ endif
  
- u32 __init tegra_fuse_read_spare(unsigned int spare);
- u32 __init tegra_fuse_read_early(unsigned int offset);
-diff --git a/drivers/soc/tegra/fuse/tegra-apbmisc.c b/drivers/soc/tegra/fuse/tegra-apbmisc.c
-index 06c1b3a2c7ec..ce8c3c25b6a6 100644
---- a/drivers/soc/tegra/fuse/tegra-apbmisc.c
-+++ b/drivers/soc/tegra/fuse/tegra-apbmisc.c
-@@ -3,9 +3,11 @@
-  * Copyright (c) 2014-2023, NVIDIA CORPORATION.  All rights reserved.
-  */
- 
-+#include <linux/acpi.h>
- #include <linux/export.h>
- #include <linux/io.h>
- #include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/of.h>
- #include <linux/of_address.h>
- 
-@@ -128,6 +130,11 @@ static const struct of_device_id apbmisc_match[] __initconst = {
- 	{},
+diff --git a/drivers/soc/tegra/fuse/fuse-tegra.c b/drivers/soc/tegra/fuse/fuse-tegra.c
+index f35f9651a653..eb11465e8092 100644
+--- a/drivers/soc/tegra/fuse/fuse-tegra.c
++++ b/drivers/soc/tegra/fuse/fuse-tegra.c
+@@ -172,6 +172,11 @@ static int tegra_fuse_probe(struct platform_device *pdev)
+ 		case TEGRA234:
+ 			fuse->soc = &tegra234_fuse_soc;
+ 			break;
++#endif
++#if defined(CONFIG_ARCH_TEGRA_241_SOC)
++		case TEGRA241:
++			fuse->soc = &tegra241_fuse_soc;
++			break;
+ #endif
+ 		default:
+ 			return dev_err_probe(&pdev->dev, -EINVAL, "Unsupported SoC: %02x\n", chip);
+diff --git a/drivers/soc/tegra/fuse/fuse-tegra30.c b/drivers/soc/tegra/fuse/fuse-tegra30.c
+index e94d46372a63..34fcc23a6449 100644
+--- a/drivers/soc/tegra/fuse/fuse-tegra30.c
++++ b/drivers/soc/tegra/fuse/fuse-tegra30.c
+@@ -678,3 +678,24 @@ const struct tegra_fuse_soc tegra234_fuse_soc = {
+ 	.clk_suspend_on = false,
  };
- 
-+static const struct acpi_device_id apbmisc_acpi_match[] = {
-+	{ "NVDA2010" },
-+	{ /* sentinel */ }
+ #endif
++
++#if defined(CONFIG_ARCH_TEGRA_241_SOC)
++static const struct tegra_fuse_info tegra241_fuse_info = {
++	.read = tegra30_fuse_read,
++	.size = 0x16008,
++	.spare = 0xcf0,
 +};
 +
- void __init tegra_init_revision(void)
- {
- 	u8 chip_id, minor_rev;
-@@ -180,6 +187,12 @@ static void tegra_init_apbmisc_resources(struct resource *apbmisc,
- 	}
- }
- 
-+/**
-+ * tegra_init_apbmisc - Initializes Tegra APBMISC and Strapping registers.
-+ *
-+ * This is called during early init as some of the old 32-bit ARM code needs
-+ * information from the APBMISC registers very early during boot.
-+ */
- void __init tegra_init_apbmisc(void)
- {
- 	struct resource apbmisc, straps;
-@@ -244,3 +257,62 @@ void __init tegra_init_apbmisc(void)
- put:
- 	of_node_put(np);
- }
++static const struct nvmem_keepout tegra241_fuse_keepouts[] = {
++	{ .start = 0xc, .end = 0x1600c }
++};
 +
-+#ifdef CONFIG_ACPI
-+void tegra_acpi_init_apbmisc(void)
-+{
-+	struct resource *resources[2] = { NULL };
-+	struct resource_entry *rentry, *tmp;
-+	struct acpi_device *adev = NULL;
-+	struct list_head resource_list;
-+	int rcount = 0;
-+	int ret;
-+
-+	adev = acpi_dev_get_first_match_dev(apbmisc_acpi_match[0].id, NULL, -1);
-+	if (!adev)
-+		return;
-+
-+	INIT_LIST_HEAD(&resource_list);
-+
-+	ret = acpi_dev_get_memory_resources(adev, &resource_list);
-+	if (ret < 0) {
-+		pr_err("failed to get APBMISC memory resources");
-+		goto out_put_acpi_dev;
-+	}
-+
-+	/*
-+	 * Get required memory resources.
-+	 *
-+	 * resources[0]: apbmisc.
-+	 * resources[1]: straps.
-+	 */
-+	resource_list_for_each_entry_safe(rentry, tmp, &resource_list) {
-+		if (rcount >= ARRAY_SIZE(resources))
-+			break;
-+
-+		resources[rcount++] = rentry->res;
-+	}
-+
-+	if (!resources[0]) {
-+		pr_err("failed to get APBMISC registers\n");
-+		goto out_free_resource_list;
-+	}
-+
-+	if (!resources[1]) {
-+		pr_err("failed to get strapping options registers\n");
-+		goto out_free_resource_list;
-+	}
-+
-+	tegra_init_apbmisc_resources(resources[0], resources[1]);
-+
-+out_free_resource_list:
-+	acpi_dev_free_resource_list(&resource_list);
-+
-+out_put_acpi_dev:
-+	acpi_dev_put(adev);
-+}
-+#else
-+void tegra_acpi_init_apbmisc(void)
-+{
-+}
++const struct tegra_fuse_soc tegra241_fuse_soc = {
++	.init = tegra30_fuse_init,
++	.info = &tegra241_fuse_info,
++	.keepouts = tegra241_fuse_keepouts,
++	.num_keepouts = ARRAY_SIZE(tegra241_fuse_keepouts),
++	.soc_attr_group = &tegra194_soc_attr_group,
++	.clk_suspend_on = false,
++};
 +#endif
+diff --git a/drivers/soc/tegra/fuse/fuse.h b/drivers/soc/tegra/fuse/fuse.h
+index a41e9f85281a..f3b705327c20 100644
+--- a/drivers/soc/tegra/fuse/fuse.h
++++ b/drivers/soc/tegra/fuse/fuse.h
+@@ -136,4 +136,8 @@ extern const struct tegra_fuse_soc tegra194_fuse_soc;
+ extern const struct tegra_fuse_soc tegra234_fuse_soc;
+ #endif
+ 
++#ifdef CONFIG_ARCH_TEGRA_241_SOC
++extern const struct tegra_fuse_soc tegra241_fuse_soc;
++#endif
++
+ #endif
+diff --git a/drivers/soc/tegra/fuse/tegra-apbmisc.c b/drivers/soc/tegra/fuse/tegra-apbmisc.c
+index ce8c3c25b6a6..f5b241a527c2 100644
+--- a/drivers/soc/tegra/fuse/tegra-apbmisc.c
++++ b/drivers/soc/tegra/fuse/tegra-apbmisc.c
+@@ -64,6 +64,7 @@ bool tegra_is_silicon(void)
+ 	switch (tegra_get_chip_id()) {
+ 	case TEGRA194:
+ 	case TEGRA234:
++	case TEGRA241:
+ 	case TEGRA264:
+ 		if (tegra_get_platform() == 0)
+ 			return true;
+diff --git a/include/soc/tegra/fuse.h b/include/soc/tegra/fuse.h
+index 3a513be50243..8f421b9f7585 100644
+--- a/include/soc/tegra/fuse.h
++++ b/include/soc/tegra/fuse.h
+@@ -17,6 +17,7 @@
+ #define TEGRA186	0x18
+ #define TEGRA194	0x19
+ #define TEGRA234	0x23
++#define TEGRA241	0x24
+ #define TEGRA264	0x26
+ 
+ #define TEGRA_FUSE_SKU_CALIB_0	0xf0
 -- 
 2.34.1
 
