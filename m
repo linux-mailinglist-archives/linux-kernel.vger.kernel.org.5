@@ -2,192 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D77792F73
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52C62792F94
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 22:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239595AbjIEUFR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 16:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36698 "EHLO
+        id S242867AbjIEUIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 16:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239553AbjIEUFQ (ORCPT
+        with ESMTP id S242574AbjIEUIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 16:05:16 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B09DD1
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:05:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693944313; x=1725480313;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=gE8wq2pMZ6pgS5VFP4+klcnhCOfTrYcfQ1UPEs8ziog=;
-  b=TY2hhD9SOz1O2yHByqc6+edEwxzKHI/ywMvHyMWz5SESlsDcwJVs1hH7
-   +LT29+ay8ISvPmfDdw25Wh0s2mScE//pO5AvivuQf1J0fcFJtGjRP7toR
-   bH/fXvpjyFJPgv+7ZtCeNcQecxe4Ryv+6MMLGf/Esbx83+jkFhoKHVPSB
-   zs6qjqQs5xMQVo42yuIymisUeb4HHExLXsffjH5JUST+45LBek9TTW740
-   OufibMHPKE9d8kWuvmokYJcP1TbcE4o11b7Ph9MSiHBOdNwoHp1iIpdub
-   wUc/jSRBgWuHYKnrDLA9Rt/CrLVW5fx96fMTu+t4Qn1ECSyOOj5P169bz
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="380672890"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="380672890"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 10:54:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10824"; a="741191744"
-X-IronPort-AV: E=Sophos;i="6.02,229,1688454000"; 
-   d="scan'208";a="741191744"
-Received: from dpdesmon-mobl.amr.corp.intel.com (HELO [10.209.18.208]) ([10.209.18.208])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2023 10:54:09 -0700
-Message-ID: <0410f8756bbcb2f893622de4e146c13e9565248e.camel@linux.intel.com>
-Subject: Re: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Shrikanth Hegde <sshegde@linux.vnet.ibm.com>, bristot@redhat.com,
-        bsegall@google.com, dietmar.eggemann@arm.com, hdanton@sina.com,
-        ionela.voinescu@arm.com, juri.lelli@redhat.com,
-        len.brown@intel.com, linux-kernel@vger.kernel.org, mgorman@suse.de,
-        naveen.n.rao@linux.vnet.ibm.com, rafael.j.wysocki@intel.com,
-        ravi.v.shankar@intel.com, ricardo.neri@intel.com,
-        rostedt@goodmis.org, srikar@linux.vnet.ibm.com,
-        srinivas.pandruvada@linux.intel.com, v-songbaohua@oppo.com,
-        vincent.guittot@linaro.org, vschneid@redhat.com, x86@kernel.org,
-        yangyicong@hisilicon.com, yu.c.chen@intel.com
-Date:   Tue, 05 Sep 2023 10:54:09 -0700
-In-Reply-To: <20230905104136.GC28319@noisy.programming.kicks-ass.net>
-References: <20230717133718.GJ4253@hirez.programming.kicks-ass.net>
-         <20230717145823.1531759-1-sshegde@linux.vnet.ibm.com>
-         <804548a12363479d41dee19bb843002d9e105afd.camel@linux.intel.com>
-         <6b20e0c0cd82d0d1aafc2a7fb14d9456e19c2c85.camel@linux.intel.com>
-         <20230905104136.GC28319@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4 (3.44.4-2.fc36) 
+        Tue, 5 Sep 2023 16:08:41 -0400
+X-Greylist: delayed 3481 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Sep 2023 13:08:37 PDT
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BC8CAB
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 13:08:37 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 038B6C433CD;
+        Tue,  5 Sep 2023 18:01:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693936900;
+        bh=sxrm7GJYYpa53mKmtigjhDSiMnrnMSAQumGhA5aO1xI=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=IkuSqaZ3jsxxd5mBuTGiUsrl/p3vBXzC/Jag5WBoQBWGAwaqurUtS9d8lBn//m5EN
+         h+F5dmK+yf1kmNUq9ZgvoCfymFxcCLnu6uPfIv0RM6+PAnlFf96DKbSz3ICoRtQhYk
+         mRbLEa8ntb8Jl651VeMwv2B9dlmMNnQ0/AF4GYcX6o639p+p5G4uCN7QTAjWDz0a4O
+         /V1yWePTZZwErTF6hYnL5VozzCsVd91zaKIo/lxY+vFUOCDkqrGrRDN+uOVMQSelXY
+         EakmAIt8Hs3L4GYSGn9FN1idjqsq0qEKR9XsFMas7gNGBPiZMwT1lJXV2+hfZehVQN
+         mKSViMyyzySjw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D7155C595CB;
+        Tue,  5 Sep 2023 18:01:39 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [net PATCH] octeontx2-af: Fix truncation of smq in CN10K NIX AQ
+ enqueue  mbox handler
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169393689987.22693.11325949462948037796.git-patchwork-notify@kernel.org>
+Date:   Tue, 05 Sep 2023 18:01:39 +0000
+References: <20230905064816.27514-1-gakula@marvell.com>
+In-Reply-To: <20230905064816.27514-1-gakula@marvell.com>
+To:     Geetha sowjanya <gakula@marvell.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, davem@davemloft.net, edumazet@google.com,
+        pabeni@redhat.com, sgoutham@marvell.com, lcherian@marvell.com,
+        jerinj@marvell.com, sbhatta@marvell.com, hkelam@marvell.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-09-05 at 12:41 +0200, Peter Zijlstra wrote:
-> On Thu, Jul 27, 2023 at 06:32:44AM -0700, Tim Chen wrote:
->=20
-> >  kernel/sched/fair.c | 18 ++++++++++++++++--
-> >  1 file changed, 16 insertions(+), 2 deletions(-)
-> >=20
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index a87988327f88..566686c5f2bd 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9563,7 +9563,7 @@ static inline long sibling_imbalance(struct lb_en=
-v *env,
-> >  	imbalance /=3D ncores_local + ncores_busiest;
-> > =20
-> >  	/* Take advantage of resource in an empty sched group */
-> > -	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-> > +	if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
-> >  	    busiest->sum_nr_running > 1)
-> >  		imbalance =3D 2;
-> > =20
-> > @@ -9751,6 +9751,20 @@ static bool update_sd_pick_busiest(struct lb_env=
- *env,
-> >  		break;
-> > =20
-> >  	case group_smt_balance:
-> > +		/* no idle cpus on both groups handled by group_fully_busy below */
-> > +		if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0) {
-> > +			if (sgs->idle_cpus > busiest->idle_cpus)
-> > +				return false;
-> > +			if (sgs->idle_cpus < busiest->idle_cpus)
-> > +				return true;
-> > +			if (sgs->sum_nr_running <=3D busiest->sum_nr_running)
-> > +				return false;
-> > +			else
-> > +				return true;
-> > +		}
-> > +		goto fully_busy;
-> > +		break;
->=20
-> This is really daft; why can't this simply be: fallthrough; ? At the
-> very least that break must go.
->=20
->=20
+Hello:
 
-Yes, the break should go.  I was adding the goto to prevent compiler
-from complaining about fall through code.  The break no longer is needed.
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-Tim
+On Tue, 5 Sep 2023 12:18:16 +0530 you wrote:
+> The smq value used in the CN10K NIX AQ instruction enqueue mailbox
+> handler was truncated to 9-bit value from 10-bit value because of
+> typecasting the CN10K mbox request structure to the CN9K structure.
+> Though this hasn't caused any problems when programming the NIX SQ
+> context to the HW because the context structure is the same size.
+> However, this causes a problem when accessing the structure parameters.
+> This patch reads the right smq value for each platform.
+> 
+> [...]
 
-From 81971a0b1eb64059756f00d8497b1865af2c0792 Mon Sep 17 00:00:00 2001
-From: Tim Chen <tim.c.chen@linux.intel.com>
-Date: Fri, 14 Jul 2023 16:09:30 -0700
-Subject: [PATCH] sched/fair: Add SMT4 group_smt_balance handling
+Here is the summary with links:
+  - [net] octeontx2-af: Fix truncation of smq in CN10K NIX AQ enqueue mbox handler
+    https://git.kernel.org/netdev/net/c/29fe7a1b6271
 
-For SMT4, any group with more than 2 tasks will be marked as
-group_smt_balance. Retain the behaviour of group_has_spare by marking
-the busiest group as the group which has the least number of idle_cpus.
-
-Also, handle rounding effect of adding (ncores_local + ncores_busy)
-when the local is fully idle and busy group has more than 2 tasks.
-Local group should try to pull at least 1 task in this case.
-
-Fixes: fee1759e4f04 ("sched/fair: Determine active load balance for SMT sch=
-ed groups")
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
----
- kernel/sched/fair.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 0b7445cd5af9..6e7ee2efc1ba 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9575,7 +9575,7 @@ static inline long sibling_imbalance(struct lb_env *e=
-nv,
- 	imbalance /=3D ncores_local + ncores_busiest;
-=20
- 	/* Take advantage of resource in an empty sched group */
--	if (imbalance =3D=3D 0 && local->sum_nr_running =3D=3D 0 &&
-+	if (imbalance <=3D 1 && local->sum_nr_running =3D=3D 0 &&
- 	    busiest->sum_nr_running > 1)
- 		imbalance =3D 2;
-=20
-@@ -9763,6 +9763,19 @@ static bool update_sd_pick_busiest(struct lb_env *en=
-v,
- 		break;
-=20
- 	case group_smt_balance:
-+		/* no idle cpus on both groups handled by group_fully_busy below */
-+		if (sgs->idle_cpus !=3D 0 || busiest->idle_cpus !=3D 0) {
-+			if (sgs->idle_cpus > busiest->idle_cpus)
-+				return false;
-+			if (sgs->idle_cpus < busiest->idle_cpus)
-+				return true;
-+			if (sgs->sum_nr_running <=3D busiest->sum_nr_running)
-+				return false;
-+			else
-+				return true;
-+		}
-+		goto fully_busy;
-+
- 	case group_fully_busy:
- 		/*
- 		 * Select the fully busy group with highest avg_load. In
-@@ -9775,7 +9788,7 @@ static bool update_sd_pick_busiest(struct lb_env *env=
-,
- 		 * select the 1st one, except if @sg is composed of SMT
- 		 * siblings.
- 		 */
--
-+fully_busy:
- 		if (sgs->avg_load < busiest->avg_load)
- 			return false;
-=20
---=20
-2.32.0
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
