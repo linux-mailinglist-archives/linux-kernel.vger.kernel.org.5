@@ -2,143 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DAE4792AB4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38FB5792A61
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:59:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344148AbjIEQlW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:41:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38156 "EHLO
+        id S231552AbjIEQfw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:35:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354706AbjIENlF (ORCPT
+        with ESMTP id S1354709AbjIENm3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 09:41:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46042191;
-        Tue,  5 Sep 2023 06:41:02 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D5C74603F3;
-        Tue,  5 Sep 2023 13:41:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BDA8CC433C8;
-        Tue,  5 Sep 2023 13:41:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693921261;
-        bh=Uvy2CPc4Wf3EmKiapYddhGQwSCoeFK0JXoU7RKfJDbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ef6ARLaLyVlsExJtD1u2IbeHQs6i4Qmn1d6d4745bnC2cgBTDU77MMyGSLuYGGE1E
-         MjPEYpDRVERFuNQhaL+wC8ezxuL7/sJN0vb4GfMjhbkmc8xPwj+fW21w1YoFAuEifK
-         VTtJj/jB2uLOPHjbjlGhcbKPORnltb/iJdZmK5vOEM20RTpypJhQX3+6QoLFwhIJ7x
-         2Qb4me9mbLj5AMipUT4r2RFXVzAgkJGgUyViGL57o+vffnujqL6ahaBYODqL6ZAPGM
-         9seyX7aNIqggY6azgVSjIxJsqc5N/6OIdTCIk30jPoCFHnFfr4tjAELSBKshMHeCx8
-         91LqBPdWW8GJw==
-Date:   Tue, 5 Sep 2023 15:40:57 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Vignesh Raman <vignesh.raman@collabora.com>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        dri-devel@lists.freedesktop.org, helen.koike@collabora.com,
-        guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
-        david.heidelberg@collabora.com, daniels@collabora.com,
-        gustavo.padovan@collabora.com, emma@anholt.net,
-        robclark@freedesktop.org, robdclark@google.com, anholt@google.com,
-        robdclark@gmail.com, airlied@gmail.com, daniel@ffwll.ch,
-        jani.nikula@linux.intel.com, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        virtualization@lists.linux-foundation.org,
-        linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v2 2/7] drm: ci: Force db410c to host mode
-Message-ID: <6uusq7jlofbztz34yksxbr6vgqq35a3x7ibuqm62dyrpzve4g5@boaladlcrjnv>
-References: <20230904161516.66751-1-vignesh.raman@collabora.com>
- <20230904161516.66751-3-vignesh.raman@collabora.com>
- <CAA8EJpq_cmFQ6TGy1xELh3ButWKLfSkQcp5ix049s_iqKw6DvQ@mail.gmail.com>
- <ueznsu2dlvq5zp3ls262fww54bnlqa3e2ssr6f65vrrionloms@ir2ywgeajj4w>
- <2c812fe4-04ba-0243-5330-c7b7e695cff9@collabora.com>
- <2jz6wurh6ejbaejwtb5r5gukjuw4zs7ujk5hbwfpsn26o6esqe@g2nnb2gjpnjp>
- <CAA8EJpoGoopP64T1nm1ye1ukTwT=u+LYY1ubQG-9dQ-j41iHiA@mail.gmail.com>
- <6be5f5d8-8940-c79b-4a01-3f3d73641e4e@collabora.com>
- <ktikqf5hu2dmqb4p7dvrqv2tjm565qn3qu2gggrvncfu47l23j@o6t2rnpbya3x>
- <427ceb32-054f-41ff-df95-446b18aa178f@collabora.com>
+        Tue, 5 Sep 2023 09:42:29 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BF41198
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 06:42:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bqoOHmymYGyCYcwuuZxVDZPcrsZGjm73ztv6M01Y0Rg=; b=H0qcfMXDDE7wagOGsKM0HUnGhj
+        8T+XRfVT5d+NKlNc3Nxk94TYxm0uWSrs11WhTOD5jV5FMYAANj09SvOTzOu8epAF4r6qCbNzBSHbH
+        YRNq9b1R+/MCCir+XCdXkzCEKG8GC95WZ3NHbVLRWRnudtg08Cwiyeh37mjF2jImzP63AlT+FyidI
+        JjXvEwnpXUeI2GZZL3Fw2UqNQfR5nU/nwI0Far5AZxy/vzmwENbol/IZFYkck1hLFr/nQhOPF5AQq
+        L6/9r2/Ecbw74jFqs/YEBb863Ew2sPxrpf09PYdVz8KJBC4piWpJmISbRUiWDyrx6jzZZvP0euK5G
+        gvPCwqxg==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1qdWJf-00A7hr-Jv; Tue, 05 Sep 2023 13:42:03 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 482A2300687; Tue,  5 Sep 2023 15:42:03 +0200 (CEST)
+Date:   Tue, 5 Sep 2023 15:42:03 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Daniel Bristot de Oliveira <bristot@kernel.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Luca Abeni <luca.abeni@santannapisa.it>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Vineeth Pillai <vineeth@bitbyteword.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Phil Auld <pauld@redhat.com>
+Subject: Re: [PATCH v4 6/7] sched/deadline: Deferrable dl server
+Message-ID: <20230905134203.GA20703@noisy.programming.kicks-ass.net>
+References: <cover.1693510979.git.bristot@kernel.org>
+ <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zzvnm44fyzbgrw5r"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <427ceb32-054f-41ff-df95-446b18aa178f@collabora.com>
-X-Spam-Status: No, score=-7.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_HI,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <754dab7f30695ca10a41613068bb63db3bfea003.1693510979.git.bristot@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Aug 31, 2023 at 10:28:57PM +0200, Daniel Bristot de Oliveira wrote:
+> +void dl_server_start(struct sched_dl_entity *dl_se, int defer)
+>  {
+> +	if (dl_se->server_state != DL_SERVER_STOPPED) {
+> +		WARN_ON_ONCE(!(on_dl_rq(dl_se) || dl_se->dl_throttled));
+> +		return;
+> +	}
+> +
+> +	if (defer) {
+> +		/*
+> +		 * Postpone the replenishment to the (next period - the execution time)
+> +		 *
+> +		 * With this in place, we have two cases:
+> +		 *
+> +		 * On the absence of DL tasks:
+> +		 *	The server will start at the replenishment time, getting
+> +		 *	its runtime before now + period. This is the expected
+> +		 *	throttling behavior.
+> +		 *
+> +		 * In the presense of DL tasks:
+> +		 *	The server will be replenished, and then it will be
+> +		 *	schedule according to EDF, not breaking SCHED_DEADLINE.
+> +		 *
+> +		 *	In the first cycle the server will be postponed at most
+> +		 *	at period + period - runtime at most. But then the
+> +		 *	server will receive its runtime/period.
+> +		 *
+> +		 *	The server will, however, run on top of any RT task, which
+> +		 *	is the expected throttling behavior.
+> +		 */
+> +		dl_se->deadline = rq_clock(dl_se->rq) + dl_se->dl_period - dl_se->dl_runtime;
 
---zzvnm44fyzbgrw5r
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I was confused by this, but this is an instance of
+replenish_dl_new_period(), where we explicitly do not preserve the
+period.
 
-On Tue, Sep 05, 2023 at 07:06:43PM +0530, Vignesh Raman wrote:
-> Hi Maxime,
->=20
-> On 05/09/23 17:27, Maxime Ripard wrote:
-> > On Tue, Sep 05, 2023 at 05:11:43PM +0530, Vignesh Raman wrote:
-> > > > > Also, that node actually has a label ("usb"), defined here:
-> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.gi=
-t/tree/arch/arm64/boot/dts/qcom/msm8916.dtsi#n2322
-> > > > >=20
-> > > > > So you can end up with
-> > > > >=20
-> > > > > &usb {
-> > > > >           dr_mode =3D "host";
-> > > > > };
-> > > >=20
-> > > > ... which is the simplest and thus more robust one.
-> > > >=20
-> > >=20
-> > > Should it be,
-> > > &{/soc@0/usb} {
-> > > 	dr_mode =3D "host";
-> > > };
-> >=20
-> > No. The &{/...} syntax refers to a path. &... refers to a label. They
-> > are not equivalent.
->=20
-> Sorry I was not clear before.
->=20
-> With,
-> &usb {
-> 	dr_mode =3D "host";
-> };
->=20
-> The target is <0xffffffff> and fdtoverlay fails to apply the dtbo.
+> +		/* Zero the runtime */
+> +		dl_se->runtime = 0;
+> +		/* throttle the server */
+> +		dl_se->dl_throttled = 1;
 
-You do have /plugin/ and have compiled the base device tree with overlay
-support, right?
+These comments are both obvious and placed so as to make everything
+unreadable :/ 
 
-> With,
-> &{/soc@0/usb} {
->          dr_mode =3D "host";
-> };
->=20
-> The target-path is "/soc@0/usb" (usb: usb@78d9000)
+> +
+> +		dl_se->server_state = DL_SERVER_DEFER;
+> +		start_dl_timer(dl_se);
+> +		return;
+> +	}
+> +
+>  	if (!dl_server(dl_se)) {
+>  		dl_se->dl_server = 1;
+>  		setup_new_dl_entity(dl_se);
+>  	}
+> +
+> +	dl_se->server_state = DL_SERVER_RUNNING;
+>  	enqueue_dl_entity(dl_se, ENQUEUE_WAKEUP);
+>  }
 
-Right, and that's not the path you want to modify. The path you want to
-modify is /soc@0/usb@78d9000. usb is the label, it's absolute, and you
-can't mix and match a path ("/soc@0/") and a label ("usb")
 
-Maxime
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 580e6764a68b..b9d0f08dc8ca 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -6499,9 +6499,6 @@ enqueue_task_fair(struct rq *rq, struct task_struct *p, int flags)
+>  	 */
+>  	util_est_enqueue(&rq->cfs, p);
+>  
+> -	if (!rq->cfs.h_nr_running)
+> -		dl_server_start(&rq->fair_server);
+> -
+>  	/*
+>  	 * If in_iowait is set, the code below may not trigger any cpufreq
+>  	 * utilization updates, so do it here explicitly with the IOWAIT flag
+> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
+> index e23cc67c9467..7595110a5a3e 100644
+> --- a/kernel/sched/rt.c
+> +++ b/kernel/sched/rt.c
+> @@ -1537,6 +1537,9 @@ enqueue_task_rt(struct rq *rq, struct task_struct *p, int flags)
+>  
+>  	if (!task_current(rq, p) && p->nr_cpus_allowed > 1)
+>  		enqueue_pushable_task(rq, p);
+> +
+> +	if (sched_fair_server_needed(rq))
+> +		dl_server_start(&rq->fair_server, rq->fair_server_defer);
+>  }
+>  
+>  static void dequeue_task_rt(struct rq *rq, struct task_struct *p, int flags)
+> @@ -1547,6 +1550,9 @@ static void dequeue_task_rt(struct rq *rq, struct task_struct *p, int flags)
+>  	dequeue_rt_entity(rt_se, flags);
+>  
+>  	dequeue_pushable_task(rq, p);
+> +
+> +	if (!sched_fair_server_needed(rq))
+> +		dl_server_stop(&rq->fair_server);
+>  }
+>  
+>  /*
 
---zzvnm44fyzbgrw5r
-Content-Type: application/pgp-signature; name="signature.asc"
+I'm thinking this is wrong -- ISTR there definite benefits to explicit
+slack time scheduling, meaning the server should also run while DL tasks
+are on. Additionally, running the server when there are only fair tasks
+is mostly harmless, right? So why this change?
 
------BEGIN PGP SIGNATURE-----
+One of the benefits was -- IIRC, that we no longer need to subtract some
+random margin from the reservation limit, but there were more I think.
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZPcv6QAKCRDj7w1vZxhR
-xfUfAPsGADRw4k1O20bltzgYsVzleJ+qXoptLhYG6tJKe0W2dgD7B15nLB6bDOQA
-W+FAFDt2PF7aelZR4Wdn21phYMb4LAI=
-=BmTo
------END PGP SIGNATURE-----
-
---zzvnm44fyzbgrw5r--
