@@ -2,182 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2072C792BF6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2521792A7A
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349482AbjIEREo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:04:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59118 "EHLO
+        id S238991AbjIEQiA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:38:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354785AbjIEOYB (ORCPT
+        with ESMTP id S1354791AbjIEOYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 10:24:01 -0400
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C153D189;
-        Tue,  5 Sep 2023 07:23:56 -0700 (PDT)
-X-UUID: d4b5e6924bf711eea33bb35ae8d461a2-20230905
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=zAwm/IYGf6NFCXp4FoAerIpc2O3P6mE2ikN67xCGKfM=;
-        b=NvQdIWQmpzHE0sOdolYcSFeeHZrWsU80pO3MgdJEz42TsBQ2UKfVnzRemqKfVXoSMVR3rISh2IonYOo1ty76HU3iu4CHecF3eIPAcEBHpEBOX5QSzSlTTt8jNzhk0heWWA0wfmTADZNcYG76IW+3NKn64W8B3KL569QzG88nazU=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.31,REQID:eeb17bee-1028-4acd-8af4-b660a635af47,IP:0,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:-5
-X-CID-META: VersionHash:0ad78a4,CLOUDID:d7e9abc2-1e57-4345-9d31-31ad9818b39f,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: d4b5e6924bf711eea33bb35ae8d461a2-20230905
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw01.mediatek.com
-        (envelope-from <tze-nan.wu@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1034999915; Tue, 05 Sep 2023 22:23:49 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 5 Sep 2023 22:23:47 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 5 Sep 2023 22:23:47 +0800
-From:   Tze-nan Wu <Tze-nan.Wu@mediatek.com>
-To:     <rostedt@goodmis.org>, <mhiramat@kernel.org>
-CC:     <bobule.chang@mediatek.com>, <wsd_upstream@mediatek.com>,
-        <cheng-jui.wang@mediatek.com>,
-        Tze-nan Wu <Tze-nan.Wu@mediatek.com>, <stable@vger.kernel.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [PATCH] ring-buffer: Do not read at &event->array[0] if it across the page
-Date:   Tue, 5 Sep 2023 22:23:15 +0800
-Message-ID: <20230905142319.32582-1-Tze-nan.Wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        Tue, 5 Sep 2023 10:24:18 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E274189
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 07:24:14 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-52a1ce529fdso3495579a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:24:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1693923852; x=1694528652; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iVp7mkHXr+2wOrv7T4nMYTKfiU2Rr3GKiul2WMppLoU=;
+        b=ZlRWyXnuO+BrDfbMBq01Cwa5R9LQRjuAt4zmH6Il52gYCLtQO5i/En92+4LDoylMAd
+         QdBtsJjb+YgSTAj5+In7MVl7cmMM3tmCW86u3w7ruXGaW3HaEq7KtbKNXZZzH6bKxKYf
+         ftsZ6zjnkUnKAy/em/joUaitSJBp8gXMGic+Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693923852; x=1694528652;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iVp7mkHXr+2wOrv7T4nMYTKfiU2Rr3GKiul2WMppLoU=;
+        b=D7KGinlZRYqU5+m5Uy79WBvhX5SGaYtEv7SJSWzMGhA/h+BqCpvpwOw9dWHoLE0BmV
+         TAPfLTu1obWDvt8jC3tVnrmCHooxEwNi02m5rpsayYQA8ZQnSFwfmXb6a5CqpCaJzNeZ
+         T9KiPLTudINblxgDQHDnf+1Hyii/JKgDh16aiKVztoTu8iF+2wb2jSisRfIknR66zax2
+         kP/gkHm/EOdmCVYR7AVhmztPOqbgTrgLnYqKXwmwTnc/UuJUjZN8iv55814HyL4jZmyi
+         1CMgMX3zdFU7fHiEc+69q+hxaKGc2ttP27/Tz57VFyEky0xWabVyfbYiztZN+JPh9UgH
+         EG/Q==
+X-Gm-Message-State: AOJu0YyiLpunJv/chIPeh04nSYb+ZDtPZTCI/O2MXtjgbEiXTtYjkhSQ
+        1+mBbHTJ1j2+lRrfod6PALY/htLvxXLT0eDUMysF5A==
+X-Google-Smtp-Source: AGHT+IFX8rb821OgcFc8qIcK62JuBl4SmmQIijoBDyGywsfrPN6CIkneUdX5ggtEweb0xyJ06tUReQ==
+X-Received: by 2002:aa7:d790:0:b0:52b:daff:f702 with SMTP id s16-20020aa7d790000000b0052bdafff702mr10127953edq.16.1693923852287;
+        Tue, 05 Sep 2023 07:24:12 -0700 (PDT)
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com. [209.85.128.48])
+        by smtp.gmail.com with ESMTPSA id v18-20020a056402349200b0052e1783ab25sm3182690edc.70.2023.09.05.07.24.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Sep 2023 07:24:11 -0700 (PDT)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4005f0a6c2bso179425e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 07:24:11 -0700 (PDT)
+X-Received: by 2002:a05:600c:3d0c:b0:3f7:3e85:36a with SMTP id
+ bh12-20020a05600c3d0c00b003f73e85036amr264789wmb.7.1693923851202; Tue, 05 Sep
+ 2023 07:24:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+References: <20230901234202.566951-1-dianders@chromium.org>
+ <20230901164111.RFT.1.I3d5598bd73a59b5ded71430736c93f67dc5dea61@changeid> <ZPSsBhbekKY7VyDg@shell.armlinux.org.uk>
+In-Reply-To: <ZPSsBhbekKY7VyDg@shell.armlinux.org.uk>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Tue, 5 Sep 2023 07:23:54 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WT4Hf1XVA641WtNFg4WRYFKarU1WOkLPEbr0eiVQuZPg@mail.gmail.com>
+Message-ID: <CAD=FV=WT4Hf1XVA641WtNFg4WRYFKarU1WOkLPEbr0eiVQuZPg@mail.gmail.com>
+Subject: Re: [RFT PATCH 01/15] drm/armada: Call drm_atomic_helper_shutdown()
+ at shutdown time
+To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>, airlied@gmail.com,
+        daniel@ffwll.ch, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While reading from the tracing/trace, the ftrace reader rarely encounters
-a KASAN invalid access issue.
-It is likely that the writer has disrupted the ring_buffer that the reader
-is currently parsing. the kasan report is as below:
+Hi,
 
-[name:report&]BUG: KASAN: invalid-access in rb_iter_head_event+0x27c/0x3d0
-[name:report&]Read of size 4 at addr 71ffff8111a18000 by task xxxx
-[name:report_sw_tags&]Pointer tag: [71], memory tag: [0f]
-[name:report&]
-CPU: 2 PID: 380 Comm: xxxx
-Call trace:
-dump_backtrace+0x168/0x1b0
-show_stack+0x2c/0x3c
-dump_stack_lvl+0xa4/0xd4
-print_report+0x268/0x9b0
-kasan_report+0xdc/0x148
-kasan_tag_mismatch+0x28/0x3c
-__hwasan_tag_mismatch+0x2c/0x58
-rb_event_length() [inline]
-rb_iter_head_event+0x27c/0x3d0
-ring_buffer_iter_peek+0x23c/0x6e0
-__find_next_entry+0x1ac/0x3d8
-s_next+0x1f0/0x310
-seq_read_iter+0x4e8/0x77c
-seq_read+0xf8/0x150
-vfs_read+0x1a8/0x4cc
+On Sun, Sep 3, 2023 at 8:53=E2=80=AFAM Russell King (Oracle)
+<linux@armlinux.org.uk> wrote:
+>
+> On Fri, Sep 01, 2023 at 04:41:12PM -0700, Douglas Anderson wrote:
+> > Based on grepping through the source code this driver appears to be
+> > missing a call to drm_atomic_helper_shutdown() at system shutdown
+> > time. Among other things, this means that if a panel is in use that it
+> > won't be cleanly powered off at system shutdown time.
+> >
+> > The fact that we should call drm_atomic_helper_shutdown() in the case
+> > of OS shutdown/restart comes straight out of the kernel doc "driver
+> > instance overview" in drm_drv.c.
+> >
+> > This driver was fairly easy to update. The drm_device is stored in the
+> > drvdata so we just have to make sure the drvdata is NULL whenever the
+> > device is not bound.
+>
+> ... and there I think you have a misunderstanding of the driver model.
+> Please have a look at device_unbind_cleanup() which will be called if
+> probe fails, or when the device is removed (in other words, when it is
+> not bound to a driver.)
 
-In some edge cases, ftrace reader could access to an invalid address,
-specifically when reading 4 bytes beyond the end of the currently page.
-While issue happened, the dump of rb_iter_head_event is shown as below:
+...and there I think you didn't read this patch closely enough and
+perhaps that you have a misunderstanding of the component model.
+Please have a look at the difference between armada_drm_unbind() and
+armada_drm_remove() and also check which of those two functions is
+being modified by my patch. Were this patch adding a call to
+"dev_set_drvdata(dev, NULL)" in armada_drm_remove() then your NAK
+would be justified. However, I am not aware of anything in the
+component unbind path nor in the failure case of component bind that
+would NULL the drvdata.
 
-    in function rb_iter_head_event:
-          - iter->head = 0xFEC
-          - iter->next_event = 0xFEC
-          - commit = 0xFF0
-          - read_stamp = 0x2955AC46DB0
-          - page_stamp = 0x2955AC2439A
-          - iter->head_page->page = 0x71FFFF8111A17000
-          - iter->head_page->time_stamp = 0x2956A142267
-          - iter->head_page->page->commit = 0xFF0
-          - the content in iter->head_page->page
-                0x71FFFF8111A17FF0: 01010075 00002421 0A123B7C FFFFFFC0
+Kindly look at the patch a second time with this in mind.
 
-In rb_iter_head_event, reader will call rb_event_length with argument
-(struct ring_buffer_event *event = 0x71FFFF8111A17FFC).
-Since the content data start at address 0x71FFFF8111A17FFC are 0xFFFFFFC0.
-event->type will be interpret as 0x0, than the reader will try to get the
-length by accessing event->array[0], which is an invalid address:
-    &event->array[0] = 0x71FFFF8111A18000
-
-Cc: stable@vger.kernel.org
-Signed-off-by: Tze-nan Wu <Tze-nan.Wu@mediatek.com>
----
-resend again due to forget cc stable@vger.kernel.org
-
-Following patch may not become a solution, it merely checks if the address
-to be accessed is valid or not within the rb_event_length before access.
-And not sure if there is any side-effect it can lead to.
-
-I am curious about what a better solution for this issue would look like.
-Should we address the problem from the writer or the reader?
-
-Also I wonder if the cause of the issue is exactly as I suspected.
-Any Suggestion will be appreciated.
-
-Test below can reproduce the issue in 2 hours on kernel-6.1.24:
-    $cd /sys/kernel/tracing/
-    # make the reader and writer race more through resize the buffer to 8kb
-    $echo 8 > buffer_size_kn
-    # enable all events
-    $echo 1 > event/enable
-    # enable trace
-    $echo 1 > tracing_on
- 
-    # write and run a script that keep reading trace
-    $./read_trace.sh
-
-    ``` read_trace.sh
-       while :
-       do
-           cat /sys/kernel/tracing/trace > /dev/null
-       done
-
-    ```
----
- kernel/trace/ring_buffer.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 78502d4c7214..ed5ddc3a134b 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -200,6 +200,8 @@ rb_event_length(struct ring_buffer_event *event)
- 		if (rb_null_event(event))
- 			/* undefined */
- 			return -1;
-+		if (((unsigned long)event & 0xfffUL) >= PAGE_SIZE - 4)
-+			return -1;
- 		return  event->array[0] + RB_EVNT_HDR_SIZE;
- 
- 	case RINGBUF_TYPE_TIME_EXTEND:
-@@ -209,6 +211,8 @@ rb_event_length(struct ring_buffer_event *event)
- 		return RB_LEN_TIME_STAMP;
- 
- 	case RINGBUF_TYPE_DATA:
-+		if ((((unsigned long)event & 0xfffUL) >= PAGE_SIZE - 4) && !event->type_len)
-+			return -1;
- 		return rb_event_data_length(event);
- 	default:
- 		WARN_ON_ONCE(1);
--- 
-2.18.0
-
+-Doug
