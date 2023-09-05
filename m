@@ -2,153 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0502A792A7E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:00:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73B3A79262F
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:26:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240095AbjIEQiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
+        id S1348499AbjIEQSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:18:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354289AbjIEKgI (ORCPT
+        with ESMTP id S1354297AbjIEKhZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 06:36:08 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 157B0199
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 03:36:04 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id 2adb3069b0e04-5007abb15e9so3910712e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 03:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693910162; x=1694514962; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/U9siKDyazHDG6r3zqTARi8NY0BAa80rOt591lmpFyA=;
-        b=aJmXjS1jCiGy32CzRTnfQyuYXlBEDVVB5skg8kPQ+KA/i/5aGEHvWGhr9QfcMzHod/
-         I8BrAViAFIuRAlWgvrC+Dde32wkYsIG1vuIg3ONE+fqZaNAXsb/wv0ebaqguSZk61qEH
-         0EUuOjRz8VkP/LDjhKwzHzrdkyhZMqs8S2Tn1I/8YQjf7Ef41wKF5qPs+/bdT78Rx+Ow
-         gCSxei3n0dd8maqFRcdUhq5CRC9/qaOgR7EOgP4ihLX4xRAg9RPgQAdXFi/cdIdhupNf
-         7wX5WJcxLLv1UpkddUXO7Nlj8W+llgLBPmyRCUFL4+XvDKrUFXprnbckJQFKQ+/wUXDW
-         TkmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693910162; x=1694514962;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/U9siKDyazHDG6r3zqTARi8NY0BAa80rOt591lmpFyA=;
-        b=brJVaroSgzg56Geq+rwfLALOP5rStYxhCAMtu6P4nzn9iw+t8lnEHYgS2vxCBf2X7Q
-         v8KbBEEaaydlJETnPfr3myzo236OcWaKsKJzmPQW0zjG1pC9kTJQmLj/THQR4R4K+xtX
-         ZXeXeXi/4aSUWWFB9+zztSDONaiJ4/XnvQv40vBD0nZWXw+rwkh7OP8hQWAcYIpCsUkZ
-         e3f0+OPaQZ+Od9wMtwdpuB4QeJ57eXXTD4mkytpH7ZZcE+R5HOVNHKHuW7c5uoAMwYRN
-         woJ3y7e1fVlrX4eHuXnvyfZ0Yq+qktDW73+bpqPf+O667S2/8j4aaI9WJM5/sXZguI5N
-         Qn8g==
-X-Gm-Message-State: AOJu0Yx+NJl+LR5AOabkfwrx09fojESb7NnnJVed1OP46wg4MWbDJqtA
-        wFTDnFF1PV47iuUAkiCngIpZCw==
-X-Google-Smtp-Source: AGHT+IEEwILeUUAxmLD1NfgpOLlzLDQpUZMD+JAAHfLvTOal4CKjljt/zxapSOY7fQ7wrcKXF88iDA==
-X-Received: by 2002:a05:6512:3087:b0:500:9a45:62f with SMTP id z7-20020a056512308700b005009a45062fmr10157967lfd.8.1693910162221;
-        Tue, 05 Sep 2023 03:36:02 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id f8-20020a1709067f8800b009a1a5a7ebacsm7282198ejr.201.2023.09.05.03.36.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Sep 2023 03:36:01 -0700 (PDT)
-Message-ID: <ddbc2681-bbda-88a1-643c-54fcabc9b83a@linaro.org>
-Date:   Tue, 5 Sep 2023 12:36:00 +0200
+        Tue, 5 Sep 2023 06:37:25 -0400
+Received: from BL0PR02CU006.outbound.protection.outlook.com (mail-eastusazon11013013.outbound.protection.outlook.com [52.101.54.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CEA199;
+        Tue,  5 Sep 2023 03:37:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GOdxZwm2fyltBhoYGrKMnm4Q1hAA7uVS/6vHKJwwpF6/axX52zpQF+trNbZGyzDRP7LmWlV+HB0lnGVWdwbeRxoegnRuQMbL7H0z+zqoKjZASF6T0oJayBlou7RTOezinFFBbP/Q6+rxW5jmrLbRoMEoWEwEnzPFY8snCM6Ai0meMCPfkCN+h9LBMkaWnHhr8cOBpPGA3L2p8n1olbzxLNp8ae1K0dNuotdlimCb0DDEeDU2UX2RA1tomjXbX+5gQxq34GlGZNbX8sbxgiBxYVG2T37r/aidU/pwndhiopkz0T8RrclS4ohczMd6td1aA+UNPx37slZcFu5SfKWT+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rUISHXSXZ9Ka1jT+VGMFd+gcL1cCJCxUY/PqYIWOIsQ=;
+ b=n+b+/dtG5C7xmmRWYzWf2wyzUXpmYhwCAXSkLFjTULeRUg58/1x/+hVSKbMWkOo/tUvBoLp4SAND9fdQ3orR3XybViX9ZRAf9RGwN7M1Eqbfw7EZ4w8r/HZEloHikGqq36IW5gG8ZVnGKP+k+Vy+7/uDUnJNbtSKq9AWXV3MrfkI7u3aMOAwca6WqhCUoMPchIq5AZG8f3aohveahZoYqHJuhg9FvgC9aMfsuHQGWP91IwNwBci1A00IOOYBmtougn5vhXt/w+oGQAFUj1lnuoKNxDc7BWq19ZILF3H0Rzk/rCpDfdjfiR2PQcD/uMNhUVDBUGDWB/bAyN5bwIrsOA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
+ dkim=pass header.d=vmware.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rUISHXSXZ9Ka1jT+VGMFd+gcL1cCJCxUY/PqYIWOIsQ=;
+ b=jafF78x+qVpPc6vwegmRwczjfHAsBxTPDEWTGlfFNPJkdiE0QkAYqlv3DMBFs3b4zjlyONTRY8WQcG64DJ19V0zungQHL6GvYc4/1lbepzu1LqLySnOt54xGE0P71N2UkZNFf2uPJEud7ZH0dAj+O1tIRFan0lh0iIY0tRIegfY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=vmware.com;
+Received: from BYAPR05MB4982.namprd05.prod.outlook.com (2603:10b6:a03:a3::31)
+ by SJ0PR05MB7853.namprd05.prod.outlook.com (2603:10b6:a03:2aa::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6745.30; Tue, 5 Sep
+ 2023 10:37:16 +0000
+Received: from BYAPR05MB4982.namprd05.prod.outlook.com
+ ([fe80::c1f7:4ed:2680:f088]) by BYAPR05MB4982.namprd05.prod.outlook.com
+ ([fe80::c1f7:4ed:2680:f088%4]) with mapi id 15.20.6745.030; Tue, 5 Sep 2023
+ 10:37:16 +0000
+From:   Quan Tian <qtian@vmware.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Quan Tian <qtian@vmware.com>, Lars Ekman <uablrek@gmail.com>
+Subject: [PATCH net v2] net/ipv6: SKB symmetric hash should incorporate transport ports
+Date:   Tue,  5 Sep 2023 10:36:10 +0000
+Message-ID: <20230905103610.3087983-1-qtian@vmware.com>
+X-Mailer: git-send-email 2.42.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR05CA0043.namprd05.prod.outlook.com
+ (2603:10b6:a03:74::20) To BYAPR05MB4982.namprd05.prod.outlook.com
+ (2603:10b6:a03:a3::31)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [PATCH 1/2] dt-bindings: arm64: dts: mediatek: Add mt8395-evk
- board
-To:     Macpaul Lin <macpaul.lin@mediatek.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        =?UTF-8?Q?Bernhard_Rosenkr=c3=a4nzer?= <bero@baylibre.com>,
-        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Bear Wang <bear.wang@mediatek.com>,
-        Pablo Sun <pablo.sun@mediatek.com>,
-        Macpaul Lin <macpaul@gmail.com>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-References: <20230904092043.5157-1-macpaul.lin@mediatek.com>
- <e2e35d4d-7853-fccc-28c2-b8ecf309d6ec@linaro.org>
- <00f0a1cf-6246-92e9-13b0-cf31bb292a94@mediatek.com>
- <97b82a16-8710-9430-35c8-673381aaa417@linaro.org>
- <d5645707-bcb0-4d4b-1d94-d3cd17c042fb@mediatek.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <d5645707-bcb0-4d4b-1d94-d3cd17c042fb@mediatek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR05MB4982:EE_|SJ0PR05MB7853:EE_
+X-MS-Office365-Filtering-Correlation-Id: c7cf7112-64a8-4fd9-c5b1-08dbadfc12e4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: M2ZJY7KxFfTQHT2E7UTvfJ1N0B/cRyiDQ/pUkgmFxQgZ1qM+QzitNJE4mscj2foINtY9Pc65NaJSbiNceQAIbeWmqt5lLpxTvb+8ApBDG+0bjtUxSrAV1ePvZpyj1BPK5R79NOlQrqQhnpKJRjWGT3heKUcFq0SQgleCQCR/gf/WEXpNbAtvrZg2dy3hNre4stqeGccvb6PMQG2ca5Xm6Wpwj8m7J1h3lyF+bK38D1WUWFsOA0S/N2JSewOd+6BC1ygopNVU7ouLHWgmoI8fsCqfdADZSTEp2Fz5jQ9X/Qbl2dBVRav5AyximfiCxsUFMqx7zTyVp6vWPUCUONHGezGGLqSZMrP8S2oG4CDFm6+NRfPsz+LIXVlOHSKurIA8scnPu7gzdv0S1c55ubWSduBDGcj2rYDb7WDMelNEcKlk2QKKguWGirk1aLhkYR7EoeCHXQerl63LSzEoi3eWYfVghc8RgLCX/MVa9HMUNdEe7Pt/t8HBhGlBkvLfR0i9wxgTYblhrSi662QEwfXdcd+01Fjwu4Pi40xhFm4qR5zCW9w36tAU5IW2rnTWExDrFr1EsxJUPgBULgAAEFy+IiEXcze+BCt/UNUTAVmySKs67QPuS1Gseyz7nPWgRAF7/NxvNnHeap7mhy3nTeMS4NvTpa5SfFmkqHyod/cM4y1WzH15YAlT9uB9scvLIzwjr1n9bF1qM+q7pyZbKt1doQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR05MB4982.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(346002)(39860400002)(136003)(451199024)(1800799009)(186009)(6506007)(6512007)(6666004)(52116002)(6486002)(36756003)(38100700002)(86362001)(38350700002)(2616005)(966005)(2906002)(26005)(83380400001)(478600001)(4326008)(66946007)(8936002)(8676002)(1076003)(5660300002)(41300700001)(316002)(54906003)(66556008)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?Yu6VqXK9o/yl7e2eAb4NFuxVNLt96LtKzQgpc3CxSCpc2zC65e0DNX/N1Ydw?=
+ =?us-ascii?Q?Bgw0ztp1LVeRFvUdOSMbC0L9wzXRXb2h35NWZVQs32xTbF5VAtviEeSoIk7M?=
+ =?us-ascii?Q?bBO9RjifhMWcD8zhQaevx+zCzuDq0tarVtzkprqraXeuDk00iof6r7AUYUn0?=
+ =?us-ascii?Q?bl1hUxmGwQu7EUbtI28nU/lFv6Rw7Rq2CjbZW7GUdUSL4fXyH/mEC6WQkmq5?=
+ =?us-ascii?Q?3NU/3AVe9HA6KS+2eXTFN/ofVtniGkoLdBR+b2A15A90MdALMnykuxvtju7w?=
+ =?us-ascii?Q?vkNAkswHrLMPAb5nBpvTxpEbbVCgWA0jmu15Kos1Rb7WH2qYwGx64pwd+3H4?=
+ =?us-ascii?Q?F6Vi8QFhjiWBDumG3aQQ0PckivO6ccQP1Q7+gBo9zfPPMh2wgMtMI7dg0hdG?=
+ =?us-ascii?Q?owFuk77htMGeGrlMOeVtaIvW5MpCG3vqXqutzePQOrhMb56f5XM+dxQ7O9UM?=
+ =?us-ascii?Q?v6kATV/Q3ryVa1sSi48VMrx+W1dGi0hSHSs8vx2kg7/CRwlxAQ+xnCb8D8y9?=
+ =?us-ascii?Q?Or16etma6Rb5oApKrS2ph8/86jwhN7i/KxNcQmoJdANP3LXXAoa0iVfks3AP?=
+ =?us-ascii?Q?pyqTq+hUIL+yUYgRar5BZwL9VTuOq14A+enzrX+u1OAMGFb1HGO9ZsLrTgd3?=
+ =?us-ascii?Q?DRih7Pf7ezbeY1uDvhAzCVb9aKCdbLDCbVMEosNjvfMHJyZwjo8E/B9ZZuCV?=
+ =?us-ascii?Q?OsFxjX/X4/BBKuL12FjNRoGE6yufIzKWmakB/LpEGoOFduRq/cmJAOzjPzze?=
+ =?us-ascii?Q?bUwlnrFxujcdLEZ0fNmZVSL4mR+VXl6uPLL1fCFxvRYW+zCvMdCky9pZuT8+?=
+ =?us-ascii?Q?BXX44R6LkXU2a3tcMA0j2TWhYMOMfKmZ7J4P2WCYWUXlN1I90StygRZq5wuh?=
+ =?us-ascii?Q?UWeRPPJHJSy3uVpxx2v6WY+zvE+i7hDtIz0tHFfYQ+qWX15sm9960zSG1BbV?=
+ =?us-ascii?Q?qDlQF0MCS5tFjIZKfLHONoBmV/8yRW9WoWBax1FzU9hiJnnAtvL9YvJFAty4?=
+ =?us-ascii?Q?ZknM/VLvYvDc0OKW0qfksLINPMZm5T2qOLRel2Xym2Mrl2AMw7QnRCRxN8MV?=
+ =?us-ascii?Q?NIo4+NVrKRY26CID5BncepawzsnVKUQD7e+5VZFxMSDWFjGx3Ai7UVmOLLws?=
+ =?us-ascii?Q?wyOarh3z2iY2ekGL5Y/s60jT5rSa4HKuiVLLieSauQ3h40oBOMdCK9+hU/Bx?=
+ =?us-ascii?Q?xK8T6Fj9fsxt06bNJoovvS/3KTenM6TmP6yz5+fLVb2kq+CJ66x44hJ1eBLp?=
+ =?us-ascii?Q?gLM1Z06oYq6BZrIsn1Eu86tCNSO7m8PKREortdhf3Iw3Xe25IrtHyz9LsMaP?=
+ =?us-ascii?Q?lqKtZrLMwzwEYY+3Ap29d7T1N3dG7qwT2HEFEKL1oOcNtjObd4GDIsU6XwzX?=
+ =?us-ascii?Q?e8YGbBLYDk9GStWoUOW1jj2KPRPg0463K59cN9EPLkvN3Qdc0QjUrTZLECSn?=
+ =?us-ascii?Q?Iyr8XX9d/NZ9/8hE9Pgj7y3gFwQ6P+UIopOW1Pk8ts/ia2vSHO9QDPnHdCPT?=
+ =?us-ascii?Q?hEjCVuUDmN28kyOUvQu9WFmT5bMTfVensVgFFJ+IZI8Cm/no4Lpdizg3q9Vg?=
+ =?us-ascii?Q?/rz/HtxjvWKqLkG40+tJQcBXNvqpvcBcTLaifMK3?=
+X-OriginatorOrg: vmware.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7cf7112-64a8-4fd9-c5b1-08dbadfc12e4
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR05MB4982.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Sep 2023 10:37:16.4372
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: lq1dE9IFOZ1oHvyP8QfGw7z4yhzgodvxpoaYqd3JCDwXL4R3tL8ubqx4R0xvY59ku4LaswvmGRydP43mQTLeXw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR05MB7853
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/09/2023 11:36, Macpaul Lin wrote:
-> 
-> 
-> On 9/4/23 20:11, Krzysztof Kozlowski wrote:
->> 	
->>
->> External email : Please do not click links or open attachments until you 
->> have verified the sender or the content.
->>
->> On 04/09/2023 11:50, Macpaul Lin wrote:
->>>
->>>
->>> On 9/4/23 17:33, Krzysztof Kozlowski wrote:
->>>>
->>>>
->>>> External email : Please do not click links or open attachments until you 
->>>> have verified the sender or the content.
->>>>
->>>> On 04/09/2023 11:20, Macpaul Lin wrote:
->>>>> Add bindings for the MediaTek mt8395-evk board.
->>>>> The mt8359-evk board is also named as "Genio 1200-EVK".
->>>>> MT8195 and MT8395 are the same family series SoC could share
->>>>
->>>> How can be the same and have different numbers? You sill need dedicated
->>>> compatible.
->>>>
->>>
->>> The SoCs mt8195 and mt8395 are designed for different market application 
->>> and physical characteristics, using different efuse values for 
->>> distinction. The booting flow and configurations are controllered by the 
->>> boot loaders, firmware, and TF-A. Therefore, the part numbers and 
->>> procurement channels are different. The detail information of these 
->>> efuse values is proprietary, so I cant disclose it futher. Hence the 
->>> most of peripheral drivers and base address are almost the same.
->>
->> 1. Drivers? So we talk about compatibility, not the same.
->> 2. "almost the same" is not the same. Follow the guidelines for writing
->> bindings.
->>
-> 
-> Thanks for the review.
-> 
-> After internal confirmation and discussion, it can be confirmed that the 
-> MT8195 and MT8395 are identical SoCs from to binding's perspective. 
+__skb_get_hash_symmetric() was added to compute a symmetric hash over
+the protocol, addresses and transport ports, by commit eb70db875671
+("packet: Use symmetric hash for PACKET_FANOUT_HASH."). It uses
+flow_keys_dissector_symmetric_keys as the flow_dissector to incorporate
+IPv4 addresses, IPv6 addresses and ports. However, it should not specify
+the flag as FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL, which stops further
+dissection when an IPv6 flow label is encountered, making transport
+ports not being incorporated in such case.
 
-I am sorry, but I really do not care what you internally discussed about
-bindings. I do not think your internal review respect existing
-guidelines. You talked about drivers, not "bindings perspective", so
-your internal discussion is clearly discussing something else.
+As a consequence, the symmetric hash is based on 5-tuple for IPv4 but
+3-tuple for IPv6 when flow label is present. It caused a few problems,
+e.g. when nft symhash and openvswitch l4_sym rely on the symmetric hash
+to perform load balancing as different L4 flows between two given IPv6
+addresses would always get the same symmetric hash, leading to uneven
+traffic distribution.
 
-> MediaTek hope the mt8395 boards could directly use mt8195.dtsi, without 
-> the need to create a separate mt8395.dtsi to include mt8195.dtsi. 
-> Therefore, we hope to fully adopt the bindings of mt8195. However, I 
-> will submit a revised patch for compatible since they are different boards.
+Removing the use of FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL makes sure the
+symmetric hash is based on 5-tuple for both IPv4 and IPv6 consistently.
 
-You can disagree but then I expect arguments from your side.
+Fixes: eb70db875671 ("packet: Use symmetric hash for PACKET_FANOUT_HASH.")
+Reported-by: Lars Ekman <uablrek@gmail.com>
+Closes: https://github.com/antrea-io/antrea/issues/5457
+Signed-off-by: Quan Tian <qtian@vmware.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+---
+Changes in v2:
+  - Add Fixes tag to help automation.
 
-Best regards,
-Krzysztof
+ net/core/flow_dissector.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/net/core/flow_dissector.c b/net/core/flow_dissector.c
+index 89d15ceaf9af..b3b3af0e7844 100644
+--- a/net/core/flow_dissector.c
++++ b/net/core/flow_dissector.c
+@@ -1831,8 +1831,7 @@ u32 __skb_get_hash_symmetric(const struct sk_buff *skb)
+ 
+ 	memset(&keys, 0, sizeof(keys));
+ 	__skb_flow_dissect(NULL, skb, &flow_keys_dissector_symmetric,
+-			   &keys, NULL, 0, 0, 0,
+-			   FLOW_DISSECTOR_F_STOP_AT_FLOW_LABEL);
++			   &keys, NULL, 0, 0, 0, 0);
+ 
+ 	return __flow_hash_from_keys(&keys, &hashrnd);
+ }
+-- 
+2.42.0
 
