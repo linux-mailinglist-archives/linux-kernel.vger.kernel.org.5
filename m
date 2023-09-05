@@ -2,57 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D0B792BED
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BD6B7925C7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 18:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347984AbjIEREM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 13:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51268 "EHLO
+        id S234800AbjIEQUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:20:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353999AbjIEJHv (ORCPT
+        with ESMTP id S1354000AbjIEJJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 05:07:51 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3AB1D8
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:07:46 -0700 (PDT)
-From:   John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1693904864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PWRrjrUEtylXDv3pxSFOM6Z4Sh/7jFmkYLcNS+9RmWQ=;
-        b=HBCdebEzsdhO44DbT5rW2MCHknV88PeoEPmrI6dkJyFY3rKCJWnpN/8cZjdF6PUPJjzr/O
-        F5MQ/BJ8gYsfFtvq/xUyFjhjSv5o3qFjhpFD/7XCtIM00LHeFUN7leX6UlFwaVJk0QIEFy
-        4Mb6eXDbQUeaLqF6A4A+jd4yOLFPp5Kprx3NUEnLoCW3Ienv5A0p6GI9e5Y0PSYxdKb3DM
-        rheJ4Jk6u1aqA+wgx5guN2TZ/yvZAbY/mvDRfKSNgOg0yt0kmcUR7ldGkpxayEmkjJthR+
-        r/suoIVnXvGjKbXqwXTOhRZmoDMDaWWlWUgjoxdbECiHAhQMHv87kl1hvMQhTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1693904864;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PWRrjrUEtylXDv3pxSFOM6Z4Sh/7jFmkYLcNS+9RmWQ=;
-        b=fQLpM0DNFpkO5jlfm6tKoVoGoTWW6pFYUdSuTxry2OkrY6TJlOsGaqR+iLnVKsfDZgF9U4
-        bZBMjibhoqETGfCg==
-To:     kernel test robot <lkp@intel.com>, Petr Mladek <pmladek@suse.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH printk v3 2/7] printk: nbcon: Add acquire/release logic
-In-Reply-To: <202309040038.Cn1kd5bN-lkp@intel.com>
-References: <20230903150539.245076-3-john.ogness@linutronix.de>
- <202309040038.Cn1kd5bN-lkp@intel.com>
-Date:   Tue, 05 Sep 2023 11:13:43 +0206
-Message-ID: <871qfdxa1s.fsf@jogness.linutronix.de>
+        Tue, 5 Sep 2023 05:09:32 -0400
+Received: from outbound-smtp55.blacknight.com (outbound-smtp55.blacknight.com [46.22.136.239])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BC6CE
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 02:09:25 -0700 (PDT)
+Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
+        by outbound-smtp55.blacknight.com (Postfix) with ESMTPS id 4379EFA9D9
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 10:09:24 +0100 (IST)
+Received: (qmail 1592 invoked from network); 5 Sep 2023 09:09:24 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.20.191])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 5 Sep 2023 09:09:24 -0000
+Date:   Tue, 5 Sep 2023 10:09:22 +0100
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Lecopzer Chen <lecopzer.chen@mediatek.com>
+Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, nsaenzju@redhat.com,
+        yj.chiang@mediatek.com, Mark-pk Tsai <mark-pk.tsai@mediatek.com>,
+        Joe Liu <joe.liu@mediatek.com>
+Subject: Re: [PATCH] mm: page_alloc: fix cma pageblock was stolen in rmqueue
+ fallback
+Message-ID: <20230905090922.zy7srh33rg5c3zao@techsingularity.net>
+References: <20230830111332.7599-1-lecopzer.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,INVALID_DATE_TZ_ABSURD,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS autolearn=ham
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20230830111332.7599-1-lecopzer.chen@mediatek.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,12 +45,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-09-04, kernel test robot <lkp@intel.com> wrote:
->>> kernel/printk/nbcon.c:392: warning: expecting prototype for nbcon_context_try_acquire_hostile(). Prototype was for nbcon_context_acquire_hostile() instead
+On Wed, Aug 30, 2023 at 07:13:33PM +0800, Lecopzer Chen wrote:
+> commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a
+> spinlock") fallback freeing page to free_one_page() if pcp trylock
+> failed. This make MIGRATE_CMA be able to fallback and be stolen
+> whole pageblock by MIGRATE_UNMOVABLE in the page allocation.
+> 
+> PCP free is fine because free_pcppages_bulk() will always get
+> migratetype again before freeing the page, thus this only happen when
+> someone tried to put CMA page in to other MIGRATE_TYPE's freelist.
+> 
+> Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
+> Reported-by: Joe Liu <joe.liu@mediatek.com>
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> Cc: Mark-pk Tsai <mark-pk.tsai@mediatek.com>
+> Cc: Joe Liu <joe.liu@mediatek.com>
 
-Thanks kernel test robot. The kerneldoc will be fixed for v4.
+Sorry for the long delay and thanks Lecopzer for the patch.
 
-The function was renamed for v3 because it now always succeeds. There is
-no need for "try" in the name.
+This changelog is difficult to parse but the fix may also me too specific
+and could be more robust against types other than CMA. It is true that
+a failed PCP acquire may return a !is_migrate_isolate page to the wrong
+list but it's more straight-forward to unconditionally lookup the PCP
+migratetype of the spinlock is not acquired.
 
-John Ogness
+How about this? It unconditionally looks up the PCP migratetype after
+spinlock contention. It's build tested only
+
+--8<--
+mm: page_alloc: Free pages to correct buddy list after PCP lock contention
+
+Commit 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
+returns pages to the buddy list on PCP lock contention. However, for
+migratetypes that are not MIGRATE_PCPTYPES, the migratetype may have
+been clobbered already for pages that are not being isolated. In
+practice, this means that CMA pages may be returned to the wrong
+buddy list. While this might be harmless in some cases as it is
+MIGRATE_MOVABLE, the pageblock could be reassigned in rmqueue_fallback
+and prevent a future CMA allocation. Lookup the PCP migratetype
+against unconditionally if the PCP lock is contended.
+
+[lecopzer.chen@mediatek.com: CMA-specific fix]
+Fixes: 4b23a68f9536 ("mm/page_alloc: protect PCP lists with a spinlock")
+Reported-by: Joe Liu <joe.liu@mediatek.com>
+Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
+---
+ mm/page_alloc.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 452459836b71..4053c377fee8 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -2428,7 +2428,13 @@ void free_unref_page(struct page *page, unsigned int order)
+ 		free_unref_page_commit(zone, pcp, page, migratetype, order);
+ 		pcp_spin_unlock(pcp);
+ 	} else {
+-		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
++		/*
++		 * The page migratetype may have been clobbered for types
++		 * (type >= MIGRATE_PCPTYPES && !is_migrate_isolate) so
++		 * must be rechecked.
++		 */
++		free_one_page(zone, page, pfn, order,
++			      get_pcppage_migratetype(page), FPI_NONE);
+ 	}
+ 	pcp_trylock_finish(UP_flags);
+ }
