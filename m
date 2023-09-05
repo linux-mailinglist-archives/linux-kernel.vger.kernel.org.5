@@ -2,55 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C75BA792AEA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42848792B3E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345341AbjIEQol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
+        id S245264AbjIEQuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:50:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1353735AbjIEHpH (ORCPT
+        with ESMTP id S1353737AbjIEHqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 03:45:07 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F8F11A8;
-        Tue,  5 Sep 2023 00:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I2yPyO8KwTzZJAloQMQFXyE6w4H4gDLyPF/VUjujH9w=; b=D6ocNZPrq6CZLc+BgM93gNO0a8
-        +mhp354GNUvRRmHjR/LyrZO531zXKlzD3Ut94MIzFGnbvX5Rlr8ukph2bMJ9ooyR1kRg0twVcIlpU
-        XTK6YQRP8yN5ZBbRekcLCOt2ohx7zIzlu93T6I2YuGx7h8RV4Ycjf+ZJPe0vbE6HHK5QrxDwvy0Ww
-        i6WF8aTlk/rV/ksu1KK6BWJhaGeFm1bQrspk9AFYQuq7t/P4tpXygb1Qpioqh00uet/Yq9qTt50XU
-        V+Zu+DVfx9y1VVyhiaEAtxuH+az+MJnaMptBB28lZU4LWGd0FgqlIHM2POmpv8YLObDxEBufjNjiO
-        7Fo2FXFg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1qdQk1-005SWK-33;
-        Tue, 05 Sep 2023 07:44:53 +0000
-Date:   Tue, 5 Sep 2023 00:44:53 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     syzbot <syzbot+4a08ffdf3667b36650a1@syzkaller.appspotmail.com>
-Cc:     adilger.kernel@dilger.ca, djwong@kernel.org,
-        linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        song@kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu,
-        yukuai3@huawei.com, zhang_shurong@foxmail.com
-Subject: Re: [syzbot] [xfs?] [ext4?] kernel BUG in __block_write_begin_int
-Message-ID: <ZPbcdagjHgbBE6A8@infradead.org>
-References: <000000000000e76944060483798d@google.com>
+        Tue, 5 Sep 2023 03:46:44 -0400
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D969CCB;
+        Tue,  5 Sep 2023 00:46:41 -0700 (PDT)
+Received: from [192.168.1.100] (2-237-20-237.ip236.fastwebnet.it [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0313D660716C;
+        Tue,  5 Sep 2023 08:46:38 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1693899999;
+        bh=M7ijh1NV65ef/d85X0SUJPK+cCBA9TUb25WnmHtKT/U=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=GfmE4x/kxAwI40jVpWeIH0F7aLiEdbCqghvYyXiLpppjDHyEi5ja0gmPY8JMxrMN2
+         EKUPi3uWTwy7Ju8OX43emkXri2FELmHV60atHRcwTBZuNYh0mEk+EsoPH1Ny/mas50
+         GOLBBCH/paJW7d+w9PSqz9ylfh9/UPUeNOeBaqzChlt/QCRdu/k3JsVlbIKtcgXM3v
+         tsp+q5ccXPg4ojEGFdPY9hXfw3kPJM8C4l4tku6YOegCB6mbPFh8ccyeYlJmJeSEEx
+         6mrkq+4VI4Te6IYiQimQkn6V5qGIU/Brawaag7fCO8e+QYzHl9FF0kGKlpv+GsATzO
+         f1czlQN0/EVtQ==
+Message-ID: <8f6390e4-690b-948c-f91b-f99768ba7cf0@collabora.com>
+Date:   Tue, 5 Sep 2023 09:46:35 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000e76944060483798d@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SORTED_RECIPS,
-        SPF_HELO_NONE,SPF_NONE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v17 09/14] remoteproc: mediatek: Remove dependency of
+ MT8195 SCP L2TCM power control on dual-core SCP
+Content-Language: en-US
+To:     Tinghan Shen <tinghan.shen@mediatek.com>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com
+References: <20230901080935.14571-1-tinghan.shen@mediatek.com>
+ <20230901080935.14571-10-tinghan.shen@mediatek.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <20230901080935.14571-10-tinghan.shen@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syz test: git://git.infradead.org/users/hch/misc.git bdev-iomap-fix
+Il 01/09/23 10:09, Tinghan Shen ha scritto:
+> Previously, SCP core 0 controlled the power of L2TCM and dictated that
+> SCP core 1 could only boot after SCP core 0. To address this constraint,
+> extracted the power control flow of L2TCM and made it shared
+> between both cores, enabling support for arbitrary boot order.
+> 
+> The flow for controlling L2TCM power has been incorporated into the
+> mt8195_scp_before_load() and mt8195_scp_stop() APIs, which are
+> respectively invoked during the rproc->ops->start() and
+> rproc->ops->stop() operations. These APIs effectively serve the same
+> purpose as the rproc prepare()/unprepare() APIs."
+> 
+> Signed-off-by: Tinghan Shen <tinghan.shen@mediatek.com>
+
+Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+
+
