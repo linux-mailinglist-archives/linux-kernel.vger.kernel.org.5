@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C35C792B88
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96CCE792B4E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 19:03:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244648AbjIEQyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 12:54:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50516 "EHLO
+        id S234805AbjIEQvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 12:51:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349010AbjIEEsg (ORCPT
+        with ESMTP id S1349788AbjIEE5l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 00:48:36 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96C97CC7
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Sep 2023 21:48:30 -0700 (PDT)
-Received: from loongson.cn (unknown [10.2.9.158])
-        by gateway (Coremail) with SMTP id _____8BxpPAcs_ZkglQfAA--.63249S3;
-        Tue, 05 Sep 2023 12:48:28 +0800 (CST)
-Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxfSMcs_ZkF1psAA--.16709S2;
-        Tue, 05 Sep 2023 12:48:28 +0800 (CST)
-From:   Bibo Mao <maobibo@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] LoongArch: Clear invalid tlb when set huge page PTE entry
-Date:   Tue,  5 Sep 2023 12:48:28 +0800
-Message-Id: <20230905044828.1460721-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        Tue, 5 Sep 2023 00:57:41 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01D0CC5;
+        Mon,  4 Sep 2023 21:57:36 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3F8246121E;
+        Tue,  5 Sep 2023 04:57:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 677BAC433C8;
+        Tue,  5 Sep 2023 04:57:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693889855;
+        bh=JIP++cPVdN4nK3wcHg3sRFafmL9acf1KxQP/30bEbZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BfxU8DmDHYvBQ5L1+iQFw3IbyQocEjxrHCCnJzwrPA2XPKbDIHPvt5y6+b797wLia
+         jJ00w09VMHovvemGQvOANj5vCTBg1/ESHuJotjKx3bseYPHEBYS8of0u0kyiGPFCt7
+         inmX63wH7bAuWWqIWp+s/rIpbDVVAZxXtz2tVS9RiYuxoj5fn6yOvgtlvh5s3vIExD
+         dJht24iJ4ZfKymIGu19DjkSw+dwq1BjSQ5EGGCRaMdAIKn3tYOn0aUwu2eUHAV0mXB
+         TGCyIThhe2kMYtJvDrvrIOEr/I60Mg6wa6gbZTcBq0FFKWJ0qJ1Xz3Ece32rWh2+Bz
+         mj8Phk/ngB93w==
+Date:   Mon, 4 Sep 2023 21:57:33 -0700
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
+To:     Ingo Molnar <mingo@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>, linux-tip-commits@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [tip: x86/bugs] x86/srso: Fix vulnerability reporting for
+ missing microcode
+Message-ID: <20230905045733.tcr7f4x6lxy7djsv@treble>
+References: <65556eeb1bf7cb9bd7db8662ef115dd73191db84.1692919072.git.jpoimboe@kernel.org>
+ <169295877252.27769.17888941552572030723.tip-bot2@tip-bot2>
+ <20230901094053.GDZPGxpcG56GwE0LyG@fat_crate.local>
+ <ZPMSbabIw5ZtTqbo@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8DxfSMcs_ZkF1psAA--.16709S2
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxWr1fZrWxCr1UtrWxCw1xJFc_yoW5Aw13pF
-        9xC3Z5Xr4fGr9ayr9ayr4q9F43JFn7K3y2gF93Jay8AFnxWr15Wr97J39xZa4UX395W3yf
-        W3yagr1DWF1DXwcCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAF
-        wI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
-        0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzZ2-UUUUU
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZPMSbabIw5ZtTqbo@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,86 +59,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For LoongArch machines where hardware page table walk is not
-support, if hugetlb pte entry is invalid, invalid tlb with normal
-page will be filled and triggers page fault exception from HW.
+On Sat, Sep 02, 2023 at 12:46:05PM +0200, Ingo Molnar wrote:
+> 
+> * Borislav Petkov <bp@alien8.de> wrote:
+> 
+> > On Fri, Aug 25, 2023 at 10:19:32AM -0000, tip-bot2 for Josh Poimboeuf wrote:
+> > > The following commit has been merged into the x86/bugs branch of tip:
+> > > 
+> > > Commit-ID:     b3be1397be0340b2c30b2dcd7339dbfaa5563e2b
+> > > Gitweb:        https://git.kernel.org/tip/b3be1397be0340b2c30b2dcd7339dbfaa5563e2b
+> > > Author:        Josh Poimboeuf <jpoimboe@kernel.org>
+> > > AuthorDate:    Fri, 25 Aug 2023 00:01:41 -07:00
+> > > Committer:     Ingo Molnar <mingo@kernel.org>
+> > > CommitterDate: Fri, 25 Aug 2023 11:21:59 +02:00
+> > > 
+> > > x86/srso: Fix vulnerability reporting for missing microcode
+> > > 
+> > > The SRSO default safe-ret mitigation is reported as "mitigated" even if
+> > > microcode hasn't been updated.  That's wrong because userspace may still
+> > > be vulnerable to SRSO attacks due to IBPB not flushing branch type
+> > > predictions.
+> > > 
+> > > Report the safe-ret + !microcode case as vulnerable.
+> > > 
+> > > Also report the microcode-only case as vulnerable as it leaves the
+> > > kernel open to attacks.
+> > > 
+> > > Fixes: fb3bd914b3ec ("x86/srso: Add a Speculative RAS Overflow mitigation")
+> > > Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+> > > Signed-off-by: Ingo Molnar <mingo@kernel.org>
+> > > Link: https://lore.kernel.org/r/65556eeb1bf7cb9bd7db8662ef115dd73191db84.1692919072.git.jpoimboe@kernel.org
+> > > ---
+> > >  Documentation/admin-guide/hw-vuln/srso.rst | 22 ++++++++++----
+> > >  arch/x86/kernel/cpu/bugs.c                 | 34 ++++++++++++---------
+> > >  2 files changed, 37 insertions(+), 19 deletions(-)
+> > 
+> > This is still unfixed:
+> > 
+> > https://lore.kernel.org/r/20230825072542.GFZOhXdgXpUidW51lC@fat_crate.local
+> > 
+> > mingo, do you want fixes ontop or do you wanna rebase this branch?
+> 
+> Since these are fixes that are supposed to be fully correct,
+> I'd suggest we rebase it.
+> 
+> Josh, mind sending a v3 SRSO series, as a replacement for x86/bugs,
+> with Boris's review & testing feedback addressed?
 
-During page fault handling, current thread maybe migrates to other
-CPUs and set huge page pte entry. And if the thread migrates to
-the old CPU, stale tlb with normal page exists still, there will
-be confliction. So the invalid tlb need be flushed when set  huge
-page pte entry like set_huge_pte_at and set_pmd_at function.
+Ok, I'll post a v3 (with Boris' comments integrated).
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- arch/loongarch/include/asm/hugetlb.h |  4 ++++
- arch/loongarch/mm/pgtable.c          |  8 +++++++-
- arch/loongarch/mm/tlb.c              | 17 +++++++++++++++++
- 3 files changed, 28 insertions(+), 1 deletion(-)
-
-diff --git a/arch/loongarch/include/asm/hugetlb.h b/arch/loongarch/include/asm/hugetlb.h
-index aa44b3fe43dd..62cd7528a07f 100644
---- a/arch/loongarch/include/asm/hugetlb.h
-+++ b/arch/loongarch/include/asm/hugetlb.h
-@@ -59,6 +59,10 @@ static inline int huge_pte_none(pte_t pte)
- 	return !val || (val == (unsigned long)invalid_pte_table);
- }
- 
-+#define __HAVE_ARCH_HUGE_SET_HUGE_PTE_AT
-+extern void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-+				pte_t *ptep, pte_t pte);
-+
- #define __HAVE_ARCH_HUGE_PTEP_SET_ACCESS_FLAGS
- static inline int huge_ptep_set_access_flags(struct vm_area_struct *vma,
- 					     unsigned long addr,
-diff --git a/arch/loongarch/mm/pgtable.c b/arch/loongarch/mm/pgtable.c
-index b14343e211b6..dfae34484f43 100644
---- a/arch/loongarch/mm/pgtable.c
-+++ b/arch/loongarch/mm/pgtable.c
-@@ -116,8 +116,14 @@ pmd_t mk_pmd(struct page *page, pgprot_t prot)
- void set_pmd_at(struct mm_struct *mm, unsigned long addr,
- 		pmd_t *pmdp, pmd_t pmd)
- {
-+	/*
-+	 * The similar with function set_huge_pte_at
-+	 * Need flush invalid normal page pte if hw ptw is not supported
-+	 */
-+	if (!cpu_has_ptw && pmd_none(*pmdp))
-+		flush_tlb_mm(mm);
-+
- 	*pmdp = pmd;
--	flush_tlb_all();
- }
- 
- void __init pagetable_init(void)
-diff --git a/arch/loongarch/mm/tlb.c b/arch/loongarch/mm/tlb.c
-index eb8572e201ea..ef7a89a98982 100644
---- a/arch/loongarch/mm/tlb.c
-+++ b/arch/loongarch/mm/tlb.c
-@@ -201,6 +201,23 @@ void __update_tlb(struct vm_area_struct *vma, unsigned long address, pte_t *ptep
- 	local_irq_restore(flags);
- }
- 
-+void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
-+		pte_t *ptep, pte_t pte)
-+{
-+	/*
-+	 * If huge pte entry is none, tlb entry with normal page size is filled
-+	 * for machines which does not support hardware page walking.
-+	 *
-+	 * Thread maybe migrates to other CPUs after page fault happends and
-+	 * migrates back again after hugepage pte is set, tlbs with normal page
-+	 * about invalid_pte_table need be flushed
-+	 */
-+	if (!cpu_has_ptw && huge_pte_none(*ptep))
-+		flush_tlb_mm(mm);
-+
-+	set_pte_at(mm, addr, ptep, pte);
-+}
-+
- static void setup_ptwalker(void)
- {
- 	unsigned long pwctl0, pwctl1;
 -- 
-2.27.0
-
+Josh
