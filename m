@@ -2,100 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91D69792DCA
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 20:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53827792F2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Sep 2023 21:42:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237192AbjIESx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Sep 2023 14:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60130 "EHLO
+        id S241005AbjIETml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Sep 2023 15:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237265AbjIESx2 (ORCPT
+        with ESMTP id S231634AbjIETmk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Sep 2023 14:53:28 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DFABE5B
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Sep 2023 11:52:58 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-271c700efb2so1536116a91.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Sep 2023 11:52:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693939915; x=1694544715; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vou55OuPtbMxRPN71f+bktWCwT2Bx77mocQVrSs8EVI=;
-        b=P21RDfmh9Pf8jYQMBsCVCRjpOnHC0UAJmCOlqmKHjwpNubYOildaVaXsL1Vve21gf+
-         /UQpexPlcqoepEjR79mNXdSE5TRhCGsqP5D63c0LgW1V6QXu/nXQJhIkoPK5dBJvA/CG
-         eZD9zV8YwHpRj7CeHWmlKpX/mdb2nVAr8geWeOV8Ol86CXaU5eZCwVyULdEpHstkQ8Pb
-         gPs9vBqHmFuKLBDXaVHK1LYSD8O6iKm4M4QrossAbfARJHggugaAOT2ZO1HNI4BsgYkE
-         rWt6AOD4Af32iz2p1mhlU8gEv050JoXj+kqWm9YqAZesxiOa5E5rNaZPieTPiw82/2o9
-         Te0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693939915; x=1694544715;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vou55OuPtbMxRPN71f+bktWCwT2Bx77mocQVrSs8EVI=;
-        b=ZWO9Z4lRn+NQRSknNAO7X0Auu2H6Y0FIDralZ8fSJ+3ENL3+KQCbUt4kCFNPIqPITp
-         c7uksHdrhrw83uwVL1dAEuXzQJIhZ/1nqbMluGhJIYgoAcMcx8TZTguC/KvAkCEeT7E5
-         GJrJwl4SX4dg9s+53K+jAgsti50q2WYuiRYSTsHqRNPTEM1l06eBATGZwReo3yQl5ISU
-         SdiPhy9Hh/VdXF08c+vgRGp/NTRZ/n4MQmdz9kA+lC+RVQ/z94VglcDWfAoQVAhXgEp4
-         TuIquyizX31n2pAOF8n6g8LzWLfLjY/qmXve/Kj0/F8EAntPfTbsPirJAnvsKGuVcfZn
-         V9TQ==
-X-Gm-Message-State: AOJu0Yw64FQUdWK/AuXeD9icrS8PX9UpYS8vcneYaMNXO0/qu+jotjY8
-        elVExuCoR298/MmnSJPVYmg=
-X-Google-Smtp-Source: AGHT+IEYIDbZnQUa0I9RSgw7WpothxVl5oHv82fY+/KlZ91D1ZzkXxbJnWfJEMpwyHIGnx+9Yebrjw==
-X-Received: by 2002:a17:90b:33c5:b0:26f:4685:5b6b with SMTP id lk5-20020a17090b33c500b0026f46855b6bmr10443612pjb.21.1693939914843;
-        Tue, 05 Sep 2023 11:51:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:eca7])
-        by smtp.gmail.com with ESMTPSA id bo4-20020a17090b090400b0026094c23d0asm9561814pjb.17.2023.09.05.11.51.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Sep 2023 11:51:53 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 5 Sep 2023 08:51:52 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Zqiang <qiang.zhang1211@gmail.com>
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: Fix UAF report by KASAN in
- pwq_release_workfn()
-Message-ID: <ZPd4yKqbvBNGV7cL@slm.duckdns.org>
-References: <20230902115026.13460-1-qiang.zhang1211@gmail.com>
+        Tue, 5 Sep 2023 15:42:40 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DE329C;
+        Tue,  5 Sep 2023 12:42:37 -0700 (PDT)
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 385JbE4N005359;
+        Tue, 5 Sep 2023 19:42:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=C2S+okgiC3q3xjhMLQLURdpKIlXqqgqAfrFIsMS+dHk=;
+ b=oBciih5S+vvO8syo1xz0vrSQrthE63QyAuhnTu/dB2pFTBM4Z7G7oYvfFpCc1DSp5B4d
+ GIT7y4Fm7fcNY79s+vZZmbU9URvaoLRpRmjsJK5aagrD9lmJYAG7Nc8SXzMgpCfabQdN
+ 2qJ1Lm8WrcIEUcMHqszR+aZl9tBURaO0XREMfL+TOf2b6na0W/EH8Edk2hbRihvrJpPw
+ kx5QahRKg8oz28BSRVpzb7TdVQf7QHfOXurx8ZtUj+RMuiGTRlghNtPYV2qjnMjJ4Vnn
+ pDc0V723isfjP9JDehWuAiXAFKb7+YBIFNQpfvikGUOeM0J6XTpyShLSRwBg9ZUeR22m cA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxafqgsqg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 19:42:00 +0000
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 385JbgVA009382;
+        Tue, 5 Sep 2023 19:41:59 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3sxafqgs70-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 19:41:58 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 385HaL2W012246;
+        Tue, 5 Sep 2023 18:52:22 GMT
+Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3svhkjvq0e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 05 Sep 2023 18:52:22 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 385IqLSc131726
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 5 Sep 2023 18:52:22 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C263458061;
+        Tue,  5 Sep 2023 18:52:21 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C3DC58064;
+        Tue,  5 Sep 2023 18:52:20 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTPS;
+        Tue,  5 Sep 2023 18:52:20 +0000 (GMT)
+Message-ID: <f4afdc6a-bc60-1032-21d8-2f1450ba993f@linux.ibm.com>
+Date:   Tue, 5 Sep 2023 14:52:19 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230902115026.13460-1-qiang.zhang1211@gmail.com>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 17/25] security: Introduce inode_post_create_tmpfile
+ hook
+Content-Language: en-US
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        paul@paul-moore.com, jmorris@namei.org, serge@hallyn.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+References: <20230904133415.1799503-1-roberto.sassu@huaweicloud.com>
+ <20230904133415.1799503-18-roberto.sassu@huaweicloud.com>
+From:   Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <20230904133415.1799503-18-roberto.sassu@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: I9Nai-GmrMO9y-P5hnb5rfRMfhEg5e1g
+X-Proofpoint-GUID: rMEsMEA_ht0gMfXchHlezw9cK4C9WmaI
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.267,Aquarius:18.0.957,Hydra:6.0.601,FMLib:17.11.176.26
+ definitions=2023-09-05_13,2023-09-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 spamscore=0
+ impostorscore=0 bulkscore=0 priorityscore=1501 adultscore=0 phishscore=0
+ clxscore=1015 lowpriorityscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2308100000
+ definitions=main-2309050171
+X-Spam-Status: No, score=-3.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Sat, Sep 02, 2023 at 07:50:26PM +0800, Zqiang wrote:
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index c85825e17df8..f3f9c9222070 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -4609,6 +4609,10 @@ static int alloc_and_link_pwqs(struct workqueue_struct *wq)
->  		free_percpu(wq->cpu_pwq);
->  		wq->cpu_pwq = NULL;
->  	}
-> +	wq_unregister_lockdep(wq);
-> +	wq_free_lockdep(wq);
-> +	free_workqueue_attrs(wq->unbound_attrs);
-> +	kfree(wq);
+On 9/4/23 09:34, Roberto Sassu wrote:
+> From: Roberto Sassu <roberto.sassu@huawei.com>
+>
+> In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> the inode_post_create_tmpfile hook.
+>
+> It is useful for IMA to mark new temp files as successfully appraised and
+> let them be subsequently opened for further modification.
+>
+> LSMs can benefit from this hook to update the inode state after a temp file
+> has been successfully created. The new hook cannot return an error and
+> cannot cause the operation to be canceled.
+>
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> ---
+>   fs/namei.c                    |  1 +
+>   include/linux/lsm_hook_defs.h |  2 ++
+>   include/linux/security.h      |  8 ++++++++
+>   security/security.c           | 18 ++++++++++++++++++
+>   4 files changed, 29 insertions(+)
+>
+> diff --git a/fs/namei.c b/fs/namei.c
+> index c8c4ab26b52a..efed0e1e93f5 100644
+> --- a/fs/namei.c
+> +++ b/fs/namei.c
+> @@ -3700,6 +3700,7 @@ static int vfs_tmpfile(struct mnt_idmap *idmap,
+>   		inode->i_state |= I_LINKABLE;
+>   		spin_unlock(&inode->i_lock);
+>   	}
+> +	security_inode_post_create_tmpfile(idmap, dir, file, mode);
+>   	ima_post_create_tmpfile(idmap, dir, file, mode);
+>   	return 0;
+>   }
+> diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+> index b1634b5de98c..9ae573b83737 100644
+> --- a/include/linux/lsm_hook_defs.h
+> +++ b/include/linux/lsm_hook_defs.h
+> @@ -121,6 +121,8 @@ LSM_HOOK(int, 0, inode_init_security_anon, struct inode *inode,
+>   	 const struct qstr *name, const struct inode *context_inode)
+>   LSM_HOOK(int, 0, inode_create, struct inode *dir, struct dentry *dentry,
+>   	 umode_t mode)
+> +LSM_HOOK(void, LSM_RET_VOID, inode_post_create_tmpfile, struct mnt_idmap *idmap,
+> +	 struct inode *dir, struct file *file, umode_t mode)
+>   LSM_HOOK(int, 0, inode_link, struct dentry *old_dentry, struct inode *dir,
+>   	 struct dentry *new_dentry)
+>   LSM_HOOK(int, 0, inode_unlink, struct inode *dir, struct dentry *dentry)
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index f210bd66e939..5f296761883f 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -338,6 +338,9 @@ int security_inode_init_security_anon(struct inode *inode,
+>   				      const struct qstr *name,
+>   				      const struct inode *context_inode);
+>   int security_inode_create(struct inode *dir, struct dentry *dentry, umode_t mode);
+> +void security_inode_post_create_tmpfile(struct mnt_idmap *idmap,
+> +					struct inode *dir, struct file *file,
+> +					umode_t mode);
+>   int security_inode_link(struct dentry *old_dentry, struct inode *dir,
+>   			 struct dentry *new_dentry);
+>   int security_inode_unlink(struct inode *dir, struct dentry *dentry);
+> @@ -788,6 +791,11 @@ static inline int security_inode_create(struct inode *dir,
+>   	return 0;
+>   }
+>   
+> +static inline void
+> +security_inode_post_create_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
+> +				   struct file *file, umode_t mode)
+> +{ }
+> +
+>   static inline int security_inode_link(struct dentry *old_dentry,
+>   				       struct inode *dir,
+>   				       struct dentry *new_dentry)
+> diff --git a/security/security.c b/security/security.c
+> index 78aeb24efedb..aa6274c90147 100644
+> --- a/security/security.c
+> +++ b/security/security.c
+> @@ -1920,6 +1920,24 @@ int security_inode_create(struct inode *dir, struct dentry *dentry,
+>   }
+>   EXPORT_SYMBOL_GPL(security_inode_create);
+>   
+> +/**
+> + * security_inode_post_create_tmpfile() - Update inode security field after creation of tmpfile
+> + * @idmap: idmap of the mount
+> + * @dir: the inode of the base directory
+> + * @file: file descriptor of the new tmpfile
+> + * @mode: the mode of the new tmpfile
+> + *
+> + * Update inode security field after a tmpfile has been created.
+> + */
+> +void security_inode_post_create_tmpfile(struct mnt_idmap *idmap,
+> +					struct inode *dir,
+> +					struct file *file, umode_t mode)
+> +{
+> +	if (unlikely(IS_PRIVATE(dir)))
+> +		return;
+> +	call_void_hook(inode_post_create_tmpfile, idmap, dir, file, mode);
+> +}
+> +
+>   /**
+>    * security_inode_link() - Check if creating a hard link is allowed
+>    * @old_dentry: existing file
 
-So, this would fix the bug but it's quite confusing because we end up taking
-two separate error handling paths and alloc_and_link_pwqs() ends up freeing
-stuff allocated outside the function. Wouldn't it be enough to flush the
-pwq_release_worker after apply_workqueue_attrs() failure so that the cleanup
-operation ordering is maintained?
 
-Thanks.
+Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
 
--- 
-tejun
+
